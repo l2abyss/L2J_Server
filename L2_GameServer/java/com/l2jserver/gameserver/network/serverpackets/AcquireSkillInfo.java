@@ -37,14 +37,14 @@ public class AcquireSkillInfo extends L2GameServerPacket
 	private static final String _S__A4_AQUIRESKILLINFO = "[S] 91 AcquireSkillInfo";
 	private List<Req> _reqs;
 	private int _id, _level, _spCost, _mode;
-
-	private class Req
+	
+	private static class Req
 	{
 		public int itemId;
 		public int count;
 		public int type;
 		public int unk;
-
+		
 		public Req(int pType, int pItemId, int pCount, int pUnk)
 		{
 			itemId = pItemId;
@@ -53,7 +53,7 @@ public class AcquireSkillInfo extends L2GameServerPacket
 			unk = pUnk;
 		}
 	}
-
+	
 	public AcquireSkillInfo(int id, int level, int spCost, int mode)
 	{
 		_reqs = new FastList<Req>();
@@ -62,12 +62,12 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		_spCost = spCost;
 		_mode = mode;
 	}
-
+	
 	public void addRequirement(int type, int id, int count, int unk)
 	{
 		_reqs.add(new Req(type, id, count, unk));
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -76,9 +76,9 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		writeD(_level);
 		writeD(_spCost);
 		writeD(_mode); //c4
-
+		
 		writeD(_reqs.size());
-
+		
 		for (Req temp : _reqs)
 		{
 			writeD(temp.type);
@@ -87,7 +87,7 @@ public class AcquireSkillInfo extends L2GameServerPacket
 			writeD(temp.unk);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -96,5 +96,5 @@ public class AcquireSkillInfo extends L2GameServerPacket
 	{
 		return _S__A4_AQUIRESKILLINFO;
 	}
-
+	
 }

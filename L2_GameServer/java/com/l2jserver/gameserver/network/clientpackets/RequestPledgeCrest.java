@@ -30,24 +30,24 @@ public final class RequestPledgeCrest extends L2GameClientPacket
 {
 	private static Logger _log = Logger.getLogger(RequestPledgeCrest.class.getName());
 	private static final String _C__68_REQUESTPLEDGECREST = "[C] 68 RequestPledgeCrest";
-
+	
 	private int _crestId;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_crestId = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		if (_crestId == 0)
-		    return;
+			return;
 		if (Config.DEBUG) _log.fine("crestid " + _crestId + " requested");
-
-        byte[] data = CrestCache.getInstance().getPledgeCrest(_crestId);
-
+		
+		byte[] data = CrestCache.getInstance().getPledgeCrest(_crestId);
+		
 		if (data != null)
 		{
 			PledgeCrest pc = new PledgeCrest(_crestId, data);
@@ -58,7 +58,7 @@ public final class RequestPledgeCrest extends L2GameClientPacket
 			if (Config.DEBUG) _log.fine("crest is missing:" + _crestId);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
@@ -67,7 +67,7 @@ public final class RequestPledgeCrest extends L2GameClientPacket
 	{
 		return _C__68_REQUESTPLEDGECREST;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

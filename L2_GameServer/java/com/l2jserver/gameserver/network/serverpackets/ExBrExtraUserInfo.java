@@ -24,32 +24,32 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 {
 	private int _charObjId;
 	private int _val;
-
+	
 	public ExBrExtraUserInfo(L2PcInstance player)
 	{
 		_charObjId = player.getObjectId();
 		_val = player.getEventEffectId();
 		_invisible = player.getAppearance().getInvisible();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		
 		writeC(0xfe);
-		writeH(0xbe);
+		writeH(0xcf);
 		writeD(_charObjId); //object ID of Player
 		writeD(_val);		// event effect id
 		//writeC(0x00);		// Event flag, added only if event is active
-
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
 	@Override
 	public String getType()
 	{
-		return "[S] FE:BE ExBrExtraUSerInfo";
+		return "[S] FE:CF ExBrExtraUSerInfo".intern();
 	}
 }

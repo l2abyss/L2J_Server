@@ -22,14 +22,14 @@ public class ExAskJoinPartyRoom extends L2GameServerPacket
 {
 	private static final String _S__FE_34_EXASKJOINPARTYROOM = "[S] FE:35 ExAskJoinPartyRoom";
 	private String _charName;
-
-
+	
+	
 	public ExAskJoinPartyRoom(String charName)
 	{
 		_charName = charName;
 	}
-
-
+	
+	
 	@Override
 	protected void writeImpl()
 	{
@@ -37,7 +37,7 @@ public class ExAskJoinPartyRoom extends L2GameServerPacket
 		writeH(0x35);
 		writeS(_charName);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -46,5 +46,5 @@ public class ExAskJoinPartyRoom extends L2GameServerPacket
 	{
 		return _S__FE_34_EXASKJOINPARTYROOM;
 	}
-
+	
 }

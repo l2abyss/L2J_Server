@@ -35,7 +35,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		
 		disableCoreAI(true);
 	}
-
+	
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
@@ -43,7 +43,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 			return false;
 		if (getCastle() == null || !getCastle().getZone().isActive())
 			return false;
-
+		
 		final L2PcInstance actingPlayer = attacker.getActingPlayer();
 		if (actingPlayer == null)
 			return false;
@@ -51,7 +51,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 			return false;
 		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getCastleId()))
 			return false;
-
+		
 		return true;
 	}
 	
@@ -65,17 +65,17 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	public void onSpawn()
 	{
 		super.onSpawn();
-
+		
 		if (getCastle() == null)
 			_log.warning("L2TerritoryWardInstance(" + getName() + ") spawned outside Castle Zone!");
 	}
-
+	
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
 		if (skill != null || !TerritoryWarManager.getInstance().isTWInProgress()) //wards can't be damaged by skills
 			return;
-
+		
 		final L2PcInstance actingPlayer = attacker.getActingPlayer();
 		if (actingPlayer == null)
 			return;
@@ -87,23 +87,23 @@ public final class L2TerritoryWardInstance extends L2Attackable
 			return;
 		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getCastleId()))
 			return;
-
+		
 		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
 	}
-
+	
 	@Override
 	public void reduceCurrentHpByDOT(double i, L2Character attacker, L2Skill skill)
 	{
 		// wards can't be damaged by DOTs
 	}
-
+	
 	@Override
 	public boolean doDie(L2Character killer)
 	{
 		// Kill the L2NpcInstance (the corpse disappeared after 7 seconds)
 		if (!super.doDie(killer) || getCastle() == null || !TerritoryWarManager.getInstance().isTWInProgress())
 			return false;
-
+		
 		if (killer instanceof L2PcInstance)
 		{
 			if (((L2PcInstance)killer).getSiegeSide() > 0 && !((L2PcInstance)killer).isCombatFlagEquipped())
@@ -120,35 +120,35 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		decayMe();
 		return true;
 	}
-
+	
 	@Override
 	public void onForcedAttack(L2PcInstance player)
 	{
 		onAction(player);
 	}
-
+	
 	@Override
 	public void onAction(L2PcInstance player, boolean interact)
 	{
 		if (player == null || !canTarget(player))
 			return;
-
-			// Check if the L2PcInstance already target the L2NpcInstance
+		
+		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
 		{
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-
+			
 			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
 			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
 			player.sendPacket(my);
-
+			
 			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
 			StatusUpdate su = new StatusUpdate(this);
 			su.addAttribute(StatusUpdate.CUR_HP, (int)getStatus().getCurrentHp() );
 			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp() );
 			player.sendPacket(su);
-
+			
 			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
 			player.sendPacket(new ValidateLocation(this));
 		}

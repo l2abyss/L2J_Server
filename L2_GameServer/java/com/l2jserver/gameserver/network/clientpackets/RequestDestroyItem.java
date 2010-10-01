@@ -42,31 +42,31 @@ public final class RequestDestroyItem extends L2GameClientPacket
 {
 	private static final String _C__59_REQUESTDESTROYITEM = "[C] 59 RequestDestroyItem";
 	private static Logger _log = Logger.getLogger(RequestDestroyItem.class.getName());
-
+	
 	private int _objectId;
 	private long _count;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
 		_count = readQ();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if(_count <= 0)
 		{
 			if (_count < 0)
 				Util.handleIllegalPlayerAction(activeChar,"[RequestDestroyItem] Character " + activeChar.getName() + " of account " + activeChar.getAccountName() + " tried to destroy item with oid " + _objectId + " but has count < 0!", Config.DEFAULT_PUNISH);
 			return;
 		}
-
+		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("destroy"))
 		{
 			activeChar.sendMessage("You destroying items too fast.");
@@ -74,13 +74,13 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		}
 		
 		long count = _count;
-
+		
 		if (activeChar.isProcessingTransaction() || activeChar.getPrivateStoreType() != 0)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
 			return;
 		}
-
+		
 		L2ItemInstance itemToRemove = activeChar.getInventory().getItemByObjectId(_objectId);
 		// if we can't find the requested item, its actually a cheat
 		if (itemToRemove == null)
@@ -88,7 +88,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 			return;
 		}
-
+		
 		// Cannot discard item that the skill is consuming
 		if (activeChar.isCastingNow())
 		{
@@ -107,10 +107,10 @@ public final class RequestDestroyItem extends L2GameClientPacket
 				return;
 			}
 		}
-
+		
 		int itemId = itemToRemove.getItemId();
 		
-		if (itemToRemove.isWear() || (!activeChar.isGM() && !itemToRemove.isDestroyable()) 
+		if (itemToRemove.isWear() || (!activeChar.isGM() && !itemToRemove.isDestroyable())
 				|| CursedWeaponsManager.getInstance().isCursed(itemId))
 		{
 			if (itemToRemove.isHeroItem())
@@ -125,11 +125,17 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			Util.handleIllegalPlayerAction(activeChar, "[RequestDestroyItem] Character " + activeChar.getName() + " of account " + activeChar.getAccountName() + " tried to destroy a non-stackable item with oid " + _objectId + " but has count > 1!", Config.DEFAULT_PUNISH);
 			return;
 		}
-
+		
+		if (!activeChar.getInventory().canManipulateWithItemId(itemToRemove.getItemId()))
+		{
+			activeChar.sendMessage("Cannot use this item.");
+			return;
+		}
+		
 		if (_count > itemToRemove.getCount())
 			count = itemToRemove.getCount();
-
-
+		
+		
 		if (itemToRemove.isEquipped())
 		{
 			L2ItemInstance[] unequiped =
@@ -138,13 +144,13 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			for (L2ItemInstance item: unequiped)
 			{
 				activeChar.checkSShotsMatch(null, item);
-
+				
 				iu.addModifiedItem(item);
 			}
 			activeChar.sendPacket(iu);
 			activeChar.broadcastUserInfo();
 		}
-
+		
 		if (PetDataTable.isPetItem(itemId))
 		{
 			Connection con = null;
@@ -154,7 +160,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 				{
 					activeChar.getPet().unSummon(activeChar);
 				}
-
+				
 				// if it's a pet control item, delete the pet
 				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?");
@@ -174,26 +180,26 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		if (itemToRemove.isTimeLimitedItem())
 			itemToRemove.endOfLife();
 		L2ItemInstance removedItem = activeChar.getInventory().destroyItem("Destroy", _objectId, count, activeChar, null);
-
+		
 		if(removedItem == null)
 			return;
-
+		
 		if (!Config.FORCE_INVENTORY_UPDATE)
 		{
 			InventoryUpdate iu = new InventoryUpdate();
 			if (removedItem.getCount() == 0) iu.addRemovedItem(removedItem);
 			else iu.addModifiedItem(removedItem);
-
+			
 			//client.getConnection().sendPacket(iu);
 			activeChar.sendPacket(iu);
 		}
 		else sendPacket(new ItemList(activeChar, true));
-
+		
 		StatusUpdate su = new StatusUpdate(activeChar);
 		su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 		activeChar.sendPacket(su);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

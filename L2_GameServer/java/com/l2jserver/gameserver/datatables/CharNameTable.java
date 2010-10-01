@@ -39,10 +39,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class CharNameTable
 {
 	private static Logger _log = Logger.getLogger(CharNameTable.class.getName());
-
+	
 	private final Map<Integer, String> _chars;
 	private final Map<Integer, Integer> _accessLevels;
-
+	
 	private CharNameTable()
 	{
 		_chars = new FastMap<Integer, String>();
@@ -55,7 +55,7 @@ public class CharNameTable
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	public final void addName(L2PcInstance player)
 	{
 		if (player != null)
@@ -64,7 +64,7 @@ public class CharNameTable
 			_accessLevels.put(player.getObjectId(), player.getAccessLevel().getLevel());
 		}
 	}
-
+	
 	private final void addName(int objId, String name)
 	{
 		if (name != null)
@@ -73,13 +73,13 @@ public class CharNameTable
 				_chars.put(objId, name);
 		}
 	}
-
+	
 	public final void removeName(int objId)
 	{
 		_chars.remove(objId);
 		_accessLevels.remove(objId);
 	}
-
+	
 	public final int getIdByName(String name)
 	{
 		if (name == null || name.isEmpty())
@@ -97,7 +97,7 @@ public class CharNameTable
 		
 		if (Config.CACHE_CHAR_NAMES)
 			return -1;
-
+		
 		int id = -1;
 		int accessLevel = 0;
 		Connection con = null;
@@ -130,10 +130,10 @@ public class CharNameTable
 			_accessLevels.put(id, accessLevel);
 			return id;
 		}
-
+		
 		return -1; // not found
 	}
-
+	
 	public final String getNameById(int id)
 	{
 		if (id <= 0)
@@ -142,7 +142,7 @@ public class CharNameTable
 		String name = _chars.get(id);
 		if (name != null)
 			return name;
-
+		
 		if (Config.CACHE_CHAR_NAMES)
 			return null;
 		
@@ -177,10 +177,10 @@ public class CharNameTable
 			_accessLevels.put(id, accessLevel);
 			return name;
 		}
-
+		
 		return null; //not found
 	}
-
+	
 	public final int getAccessLevelById(int objectId)
 	{
 		if (getNameById(objectId) != null)
@@ -188,7 +188,7 @@ public class CharNameTable
 		else
 			return 0;
 	}
-
+	
 	public synchronized boolean doesCharNameExist(String name)
 	{
 		boolean result = true;

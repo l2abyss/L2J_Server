@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -30,11 +30,11 @@ public final class RequestJoinSiege extends L2GameClientPacket
 {
 	private static final String _C__A4_RequestJoinSiege = "[C] a4 RequestJoinSiege";
 	//private static Logger _log = Logger.getLogger(RequestJoinSiege.class.getName());
-
+	
 	private int _castleId;
 	private int _isAttacker;
 	private int _isJoining;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -42,7 +42,7 @@ public final class RequestJoinSiege extends L2GameClientPacket
 		_isAttacker = readD();
 		_isJoining = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -77,7 +77,7 @@ public final class RequestJoinSiege extends L2GameClientPacket
 			castle.getSiege().removeSiegeClan(activeChar);
 		castle.getSiege().listRegisterClan(activeChar);
 	}
-
+	
 	@Override
 	public String getType()
 	{

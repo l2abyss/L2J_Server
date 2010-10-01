@@ -34,7 +34,7 @@ public final class Action extends L2GameClientPacket
 {
 	private static final String ACTION__C__04 = "[C] 04 Action";
 	private static final Logger _log = Logger.getLogger(Action.class.getName());
-
+	
 	// cddddc
 	private int _objectId;
 	@SuppressWarnings("unused")
@@ -44,7 +44,7 @@ public final class Action extends L2GameClientPacket
 	@SuppressWarnings("unused")
 	private int _originZ;
 	private int _actionId;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -54,7 +54,7 @@ public final class Action extends L2GameClientPacket
 		_originZ = readD();
 		_actionId = readC(); // Action identifier : 0-Simple click, 1-Shift click
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -62,22 +62,22 @@ public final class Action extends L2GameClientPacket
 			_log.fine("Action:" + _actionId);
 		if (Config.DEBUG)
 			_log.fine("oid:" + _objectId);
-
+		
 		// Get the current L2PcInstance of the player
 		final L2PcInstance activeChar = getClient().getActiveChar();
-
+		
 		if (activeChar == null)
 			return;
-
+		
 		if (activeChar.inObserverMode())
 		{
 			getClient().sendPacket(new SystemMessage(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE));
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		final L2Object obj;
-
+		
 		if (activeChar.getTargetId() == _objectId)
 			obj = activeChar.getTarget();
 		else if (activeChar.isInAirShip()
@@ -85,7 +85,7 @@ public final class Action extends L2GameClientPacket
 			obj = activeChar.getAirShip();
 		else
 			obj = L2World.getInstance().findObject(_objectId);
-
+		
 		// If object requested does not exist, add warn msg into logs
 		if (obj == null)
 		{
@@ -94,7 +94,7 @@ public final class Action extends L2GameClientPacket
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		// Players can't interact with objects in the other instances
 		// except from multiverse
 		if (obj.getInstanceId() != activeChar.getInstanceId()
@@ -103,7 +103,7 @@ public final class Action extends L2GameClientPacket
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		// Only GMs can directly interact with invisible characters
 		if (obj instanceof L2PcInstance
 				&& (((L2PcInstance)obj).getAppearance().getInvisible())
@@ -112,7 +112,7 @@ public final class Action extends L2GameClientPacket
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		// Check if the target is valid, if the player haven't a shop or isn't the requester of a transaction (ex : FriendInvite, JoinAlly, JoinParty...)
 		if (activeChar.getActiveRequester() == null)
 		{
@@ -138,7 +138,7 @@ public final class Action extends L2GameClientPacket
 			// Actions prohibited when in trade
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

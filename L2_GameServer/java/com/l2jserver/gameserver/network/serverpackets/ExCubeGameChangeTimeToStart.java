@@ -34,7 +34,7 @@ public class ExCubeGameChangeTimeToStart extends L2GameServerPacket
 	{
 		_seconds = seconds;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -47,7 +47,7 @@ public class ExCubeGameChangeTimeToStart extends L2GameServerPacket
 		
 		writeD(_seconds);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -56,5 +56,5 @@ public class ExCubeGameChangeTimeToStart extends L2GameServerPacket
 	{
 		return _S__FE_97_03_EXCUBEGAMECHANGETIMETOSTART;
 	}
-
+	
 }

@@ -14,11 +14,11 @@
  */
 package com.l2jserver.gameserver.cache;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
-import javolution.util.FastMap;
 
 /**
  *

@@ -22,12 +22,12 @@ public class ExDuelStart extends L2GameServerPacket
 {
 	private static final String _S__FE_4D_EXDUELSTART = "[S] FE:4e ExDuelStart";
 	private int _unk1;
-
+	
 	public ExDuelStart(int unk1)
 	{
 		_unk1 = unk1;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -36,10 +36,10 @@ public class ExDuelStart extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x4e);
-
+		
 		writeD(_unk1);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -48,5 +48,5 @@ public class ExDuelStart extends L2GameServerPacket
 	{
 		return _S__FE_4D_EXDUELSTART;
 	}
-
+	
 }

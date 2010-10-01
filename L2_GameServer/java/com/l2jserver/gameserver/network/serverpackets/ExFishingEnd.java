@@ -29,13 +29,13 @@ public class ExFishingEnd extends L2GameServerPacket
 	private static final String _S__FE_14_EXFISHINGEND = "[S] FE:1f ExFishingEnd";
 	private boolean _win;
 	L2Character _activeChar;
-
+	
 	public ExFishingEnd(boolean win, L2PcInstance character)
 	{
 		_win = win;
 		_activeChar = character;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -46,9 +46,9 @@ public class ExFishingEnd extends L2GameServerPacket
 		writeH(0x1f);
 		writeD(_activeChar.getObjectId());
 		writeC(_win ? 1 : 0);
-
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -57,5 +57,5 @@ public class ExFishingEnd extends L2GameServerPacket
 	{
 		return _S__FE_14_EXFISHINGEND;
 	}
-
+	
 }

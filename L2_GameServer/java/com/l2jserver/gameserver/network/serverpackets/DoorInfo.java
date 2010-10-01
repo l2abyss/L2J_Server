@@ -33,12 +33,12 @@ public final class DoorInfo extends L2GameServerPacket
 {
 	private static final String _S__60_DOORINFO = "[S] 4c DoorInfo";
 	private final L2DoorInstance _door;
-
+	
 	public DoorInfo(L2DoorInstance door)
 	{
 		_door = door;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -46,7 +46,7 @@ public final class DoorInfo extends L2GameServerPacket
 		writeD(_door.getObjectId());
 		writeD(_door.getDoorId());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -55,5 +55,5 @@ public final class DoorInfo extends L2GameServerPacket
 	{
 		return _S__60_DOORINFO;
 	}
-
+	
 }

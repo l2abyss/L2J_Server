@@ -28,34 +28,34 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 public class RequestRecordInfo extends L2GameClientPacket
 {
 	private static final String _0__CF_REQUEST_RECORD_INFO = "[0] CF RequestRecordInfo";
-
+	
 	/** urgent messages, execute immediatly */
 	public TaskPriority getPriority() { return TaskPriority.PR_NORMAL; }
-
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger
 	}
-
-    @Override
+	
+	@Override
 	protected void runImpl()
 	{
 		L2PcInstance _activeChar = getClient().getActiveChar();
-
+		
 		if (_activeChar == null)
 			return;
-
+		
 		_activeChar.sendPacket(new UserInfo(_activeChar));
 		_activeChar.sendPacket(new ExBrExtraUserInfo(_activeChar));
-
+		
 		Collection<L2Object> objs = _activeChar.getKnownList().getKnownObjects().values();
 		//synchronized (_activeChar.getKnownList().getKnownObjects())
 		{
 			for (L2Object object : objs)
 			{
 				if (object.getPoly().isMorphed()
-				        && object.getPoly().getPolyType().equals("item"))
+						&& object.getPoly().getPolyType().equals("item"))
 					_activeChar.sendPacket(new SpawnItem(object));
 				else
 				{
@@ -75,7 +75,7 @@ public class RequestRecordInfo extends L2GameClientPacket
 			}
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

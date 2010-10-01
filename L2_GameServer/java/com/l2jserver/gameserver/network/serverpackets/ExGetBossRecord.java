@@ -26,14 +26,14 @@ public class ExGetBossRecord extends L2GameServerPacket
 	private Map<Integer, Integer> _bossRecordInfo;
 	private int _ranking;
 	private int _totalPoints;
-
+	
 	public ExGetBossRecord(int ranking, int totalScore, Map<Integer, Integer> list)
 	{
 		_ranking = ranking;
 		_totalPoints = totalScore;
 		_bossRecordInfo = list;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -49,7 +49,7 @@ public class ExGetBossRecord extends L2GameServerPacket
 			writeD(0x00);
 			writeD(0x00);
 			writeD(0x00);
-			writeD(0x00);			
+			writeD(0x00);
 		}
 		else
 		{
@@ -62,7 +62,7 @@ public class ExGetBossRecord extends L2GameServerPacket
 			}
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

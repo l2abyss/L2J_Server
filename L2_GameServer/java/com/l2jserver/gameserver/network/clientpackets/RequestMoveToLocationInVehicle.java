@@ -29,13 +29,13 @@ import com.l2jserver.util.Point3D;
 public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 {
 	private static final String _C__75_MOVETOLOCATIONINVEHICLE = "[C] 75 RequestMoveToLocationInVehicle";
-
+	
 	private int _boatId;
 	private Point3D _pos;
 	private Point3D _origin_pos;
-
+	
 	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -50,7 +50,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		_z = readD();
 		_origin_pos = new Point3D(_x, _y, _z);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
 	 */
@@ -61,7 +61,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (activeChar.isAttackingNow()
 				&& activeChar.getActiveWeaponItem() != null
 				&& (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
@@ -69,27 +69,27 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		if (activeChar.isSitting() || activeChar.isMovementDisabled())
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		if (activeChar.getPet() != null)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.RELEASE_PET_ON_BOAT));
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		if (activeChar.isTransformed())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_POLYMORPH_ON_BOAT));
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		final L2BoatInstance boat;
 		if (activeChar.isInBoat())
 		{
@@ -110,11 +110,11 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 			}
 			activeChar.setVehicle(boat);
 		}
-
+		
 		activeChar.setInVehiclePosition(_pos);
 		activeChar.broadcastPacket(new MoveToLocationInVehicle(activeChar, _pos, _origin_pos));
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

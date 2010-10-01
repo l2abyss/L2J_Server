@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.skills.Env;
 public class ConditionPlayerHasPet extends Condition
 {
 	private final ArrayList<Integer> _controlItemIds;
-
+	
 	/**
 	 * Instantiates a new condition player has pet.
 	 *
@@ -40,7 +40,7 @@ public class ConditionPlayerHasPet extends Condition
 		else
 			_controlItemIds = itemIds;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
@@ -49,17 +49,17 @@ public class ConditionPlayerHasPet extends Condition
 	{
 		if (!(env.player instanceof L2PcInstance))
 			return false;
-
+		
 		if (!(env.player.getPet() instanceof L2PetInstance))
 			return false;
-
+		
 		if (_controlItemIds == null)
 			return true;
-
+		
 		final L2ItemInstance controlItem = ((L2PetInstance)env.player.getPet()).getControlItem();
 		if (controlItem == null)
 			return false;
-
+		
 		return _controlItemIds.contains(controlItem.getItemId());
 	}
 }

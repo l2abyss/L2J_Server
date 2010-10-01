@@ -108,7 +108,7 @@ public final class InitWorldInfo extends BaseWritePacket
 						
 						while (rset.next())
 							list.add(rset.getInt("friendId"));
-
+						
 						rset.close();
 						statement.close();
 					}

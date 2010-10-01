@@ -34,71 +34,72 @@ public abstract class IdFactory
 {
 	private static Logger _log = Logger.getLogger(IdFactory.class.getName());
 	
+	@Deprecated
 	protected static final String[] ID_UPDATES = {
-	        "UPDATE items                 SET owner_id = ?    WHERE owner_id = ?",
-	        "UPDATE items                 SET object_id = ?   WHERE object_id = ?",
-	        "UPDATE character_quests      SET charId = ?     WHERE charId = ?",
-	        "UPDATE character_friends     SET charId = ?     WHERE charId = ?",
-	        "UPDATE character_friends     SET friendId = ?   WHERE friendId = ?",
-	        "UPDATE character_hennas      SET charId = ? WHERE charId = ?",
-	        "UPDATE character_recipebook  SET charId = ? WHERE charId = ?",
-	        "UPDATE character_recipeshoplist  SET charId = ? WHERE charId = ?",
-	        "UPDATE character_shortcuts   SET charId = ? WHERE charId = ?",
-	        "UPDATE character_shortcuts   SET shortcut_id = ? WHERE shortcut_id = ? AND type = 1", // items
-	        "UPDATE character_macroses    SET charId = ? WHERE charId = ?",
-	        "UPDATE character_skills      SET charId = ? WHERE charId = ?",
-	        "UPDATE character_skills_save SET charId = ? WHERE charId = ?",
-	        "UPDATE character_subclasses  SET charId = ? WHERE charId = ?",
-	        "UPDATE character_ui_actions  SET charId = ? WHERE charId = ?",
-	        "UPDATE character_ui_categories  SET charId = ? WHERE charId = ?",
-	        "UPDATE characters            SET charId = ? WHERE charId = ?",
-	        "UPDATE characters            SET clanid = ?      WHERE clanid = ?",
-	        "UPDATE clan_data             SET clan_id = ?     WHERE clan_id = ?",
-	        "UPDATE siege_clans           SET clan_id = ?     WHERE clan_id = ?",
-	        "UPDATE clan_data             SET ally_id = ?     WHERE ally_id = ?",
-	        "UPDATE clan_data             SET leader_id = ?   WHERE leader_id = ?",
-	        "UPDATE pets                  SET item_obj_id = ? WHERE item_obj_id = ?",
-	        "UPDATE character_hennas     SET charId = ? WHERE charId = ?",
-	        "UPDATE itemsonground         SET object_id = ?   WHERE object_id = ?",
-	        "UPDATE auction_bid          SET bidderId = ?      WHERE bidderId = ?",
-	        "UPDATE auction_watch        SET charObjId = ?     WHERE charObjId = ?",
-	        "UPDATE olympiad_fights        SET charOneId = ?     WHERE charOneId = ?",
-	        "UPDATE olympiad_fights        SET charTwoId = ?     WHERE charTwoId = ?",
-	        "UPDATE heroes_diary        SET charId = ?     WHERE charId = ?",
-	        "UPDATE olympiad_nobles        SET charId = ?     WHERE charId = ?",
-	        "UPDATE character_offline_trade SET charId = ?     WHERE charId = ?",
-	        "UPDATE character_offline_trade_items SET charId = ? WHERE charId = ?",
-	        "UPDATE clanhall             SET ownerId = ?       WHERE ownerId = ?" };
+		"UPDATE items                 SET owner_id = ?    WHERE owner_id = ?",
+		"UPDATE items                 SET object_id = ?   WHERE object_id = ?",
+		"UPDATE character_quests      SET charId = ?     WHERE charId = ?",
+		"UPDATE character_friends     SET charId = ?     WHERE charId = ?",
+		"UPDATE character_friends     SET friendId = ?   WHERE friendId = ?",
+		"UPDATE character_hennas      SET charId = ? WHERE charId = ?",
+		"UPDATE character_recipebook  SET charId = ? WHERE charId = ?",
+		"UPDATE character_recipeshoplist  SET charId = ? WHERE charId = ?",
+		"UPDATE character_shortcuts   SET charId = ? WHERE charId = ?",
+		"UPDATE character_shortcuts   SET shortcut_id = ? WHERE shortcut_id = ? AND type = 1", // items
+		"UPDATE character_macroses    SET charId = ? WHERE charId = ?",
+		"UPDATE character_skills      SET charId = ? WHERE charId = ?",
+		"UPDATE character_skills_save SET charId = ? WHERE charId = ?",
+		"UPDATE character_subclasses  SET charId = ? WHERE charId = ?",
+		"UPDATE character_ui_actions  SET charId = ? WHERE charId = ?",
+		"UPDATE character_ui_categories  SET charId = ? WHERE charId = ?",
+		"UPDATE characters            SET charId = ? WHERE charId = ?",
+		"UPDATE characters            SET clanid = ?      WHERE clanid = ?",
+		"UPDATE clan_data             SET clan_id = ?     WHERE clan_id = ?",
+		"UPDATE siege_clans           SET clan_id = ?     WHERE clan_id = ?",
+		"UPDATE clan_data             SET ally_id = ?     WHERE ally_id = ?",
+		"UPDATE clan_data             SET leader_id = ?   WHERE leader_id = ?",
+		"UPDATE pets                  SET item_obj_id = ? WHERE item_obj_id = ?",
+		"UPDATE character_hennas     SET charId = ? WHERE charId = ?",
+		"UPDATE itemsonground         SET object_id = ?   WHERE object_id = ?",
+		"UPDATE auction_bid          SET bidderId = ?      WHERE bidderId = ?",
+		"UPDATE auction_watch        SET charObjId = ?     WHERE charObjId = ?",
+		"UPDATE olympiad_fights        SET charOneId = ?     WHERE charOneId = ?",
+		"UPDATE olympiad_fights        SET charTwoId = ?     WHERE charTwoId = ?",
+		"UPDATE heroes_diary        SET charId = ?     WHERE charId = ?",
+		"UPDATE olympiad_nobles        SET charId = ?     WHERE charId = ?",
+		"UPDATE character_offline_trade SET charId = ?     WHERE charId = ?",
+		"UPDATE character_offline_trade_items SET charId = ? WHERE charId = ?",
+	"UPDATE clanhall             SET ownerId = ?       WHERE ownerId = ?" };
 	
 	protected static final String[] ID_CHECKS = {
-	        "SELECT owner_id    FROM items                 WHERE object_id >= ?   AND object_id < ?",
-	        "SELECT object_id   FROM items                 WHERE object_id >= ?   AND object_id < ?",
-	        "SELECT charId     FROM character_quests      WHERE charId >= ?     AND charId < ?",
-	        "SELECT charId     FROM character_friends     WHERE charId >= ?     AND charId < ?",
-	        "SELECT charId     FROM character_friends     WHERE friendId >= ?   AND friendId < ?",
-	        "SELECT charId     FROM character_hennas      WHERE charId >= ? AND charId < ?",
-	        "SELECT charId     FROM character_recipebook  WHERE charId >= ?     AND charId < ?",
-	        "SELECT charId     FROM character_recipeshoplist  WHERE charId >= ?     AND charId < ?",
-	        "SELECT charId     FROM character_shortcuts   WHERE charId >= ? AND charId < ?",
-	        "SELECT charId     FROM character_macroses    WHERE charId >= ? AND charId < ?",
-	        "SELECT charId     FROM character_skills      WHERE charId >= ? AND charId < ?",
-	        "SELECT charId     FROM character_skills_save WHERE charId >= ? AND charId < ?",
-	        "SELECT charId     FROM character_subclasses  WHERE charId >= ? AND charId < ?",
-	        "SELECT charId     FROM character_ui_actions  WHERE charId >= ? AND charId < ?",
-	        "SELECT charId     FROM character_ui_categories  WHERE charId >= ? AND charId < ?",
-	        "SELECT charId      FROM characters            WHERE charId >= ?      AND charId < ?",
-	        "SELECT clanid      FROM characters            WHERE clanid >= ?      AND clanid < ?",
-	        "SELECT clan_id     FROM clan_data             WHERE clan_id >= ?     AND clan_id < ?",
-	        "SELECT clan_id     FROM siege_clans           WHERE clan_id >= ?     AND clan_id < ?",
-	        "SELECT ally_id     FROM clan_data             WHERE ally_id >= ?     AND ally_id < ?",
-	        "SELECT leader_id   FROM clan_data             WHERE leader_id >= ?   AND leader_id < ?",
-	        "SELECT item_obj_id FROM pets                  WHERE item_obj_id >= ? AND item_obj_id < ?",
-	        "SELECT object_id   FROM itemsonground        WHERE object_id >= ?   AND object_id < ?" };
-
+		"SELECT owner_id    FROM items                 WHERE object_id >= ?   AND object_id < ?",
+		"SELECT object_id   FROM items                 WHERE object_id >= ?   AND object_id < ?",
+		"SELECT charId     FROM character_quests      WHERE charId >= ?     AND charId < ?",
+		"SELECT charId     FROM character_friends     WHERE charId >= ?     AND charId < ?",
+		"SELECT charId     FROM character_friends     WHERE friendId >= ?   AND friendId < ?",
+		"SELECT charId     FROM character_hennas      WHERE charId >= ? AND charId < ?",
+		"SELECT charId     FROM character_recipebook  WHERE charId >= ?     AND charId < ?",
+		"SELECT charId     FROM character_recipeshoplist  WHERE charId >= ?     AND charId < ?",
+		"SELECT charId     FROM character_shortcuts   WHERE charId >= ? AND charId < ?",
+		"SELECT charId     FROM character_macroses    WHERE charId >= ? AND charId < ?",
+		"SELECT charId     FROM character_skills      WHERE charId >= ? AND charId < ?",
+		"SELECT charId     FROM character_skills_save WHERE charId >= ? AND charId < ?",
+		"SELECT charId     FROM character_subclasses  WHERE charId >= ? AND charId < ?",
+		"SELECT charId     FROM character_ui_actions  WHERE charId >= ? AND charId < ?",
+		"SELECT charId     FROM character_ui_categories  WHERE charId >= ? AND charId < ?",
+		"SELECT charId      FROM characters            WHERE charId >= ?      AND charId < ?",
+		"SELECT clanid      FROM characters            WHERE clanid >= ?      AND clanid < ?",
+		"SELECT clan_id     FROM clan_data             WHERE clan_id >= ?     AND clan_id < ?",
+		"SELECT clan_id     FROM siege_clans           WHERE clan_id >= ?     AND clan_id < ?",
+		"SELECT ally_id     FROM clan_data             WHERE ally_id >= ?     AND ally_id < ?",
+		"SELECT leader_id   FROM clan_data             WHERE leader_id >= ?   AND leader_id < ?",
+		"SELECT item_obj_id FROM pets                  WHERE item_obj_id >= ? AND item_obj_id < ?",
+	"SELECT object_id   FROM itemsonground        WHERE object_id >= ?   AND object_id < ?" };
+	
 	private static final String[] TIMESTAMPS_CLEAN = {
-        	"DELETE FROM character_instance_time WHERE time <= ?",
-			"DELETE FROM character_skills_save WHERE restore_type = 1 AND systime <= ?"	};
-
+		"DELETE FROM character_instance_time WHERE time <= ?",
+	"DELETE FROM character_skills_save WHERE restore_type = 1 AND systime <= ?"	};
+	
 	protected boolean _initialized;
 	
 	public static final int FIRST_OID = 0x10000000;
@@ -119,8 +120,9 @@ public abstract class IdFactory
 		switch (Config.IDFACTORY_TYPE)
 		{
 			case Compaction:
-				_instance = new CompactionIDFactory();
-				break;
+				throw new UnsupportedOperationException("Compaction IdFactory is disabled.");
+				//_instance = new CompactionIDFactory();
+				//break;
 			case BitSet:
 				_instance = new BitSetIDFactory();
 				break;
@@ -210,7 +212,9 @@ public abstract class IdFactory
 			cleanCount += stmt.executeUpdate("DELETE FROM character_ui_actions WHERE character_ui_actions.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_ui_categories WHERE character_ui_categories.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM items WHERE items.owner_id NOT IN (SELECT charId FROM characters) AND items.owner_id NOT IN (SELECT clan_id FROM clan_data);");
+			cleanCount += stmt.executeUpdate("DELETE FROM item_auction_bid WHERE item_auction_bid.playerObjId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM item_attributes WHERE item_attributes.itemId NOT IN (SELECT object_id FROM items);");
+			cleanCount += stmt.executeUpdate("DELETE FROM item_elementals WHERE item_elementals.itemId NOT IN (SELECT object_id FROM items);");
 			cleanCount += stmt.executeUpdate("DELETE FROM cursed_weapons WHERE cursed_weapons.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM heroes WHERE heroes.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM olympiad_nobles WHERE olympiad_nobles.charId NOT IN (SELECT charId FROM characters);");
@@ -229,7 +233,7 @@ public abstract class IdFactory
 			cleanCount += stmt.executeUpdate("DELETE FROM character_offline_trade_items WHERE character_offline_trade_items.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_quest_global_data WHERE character_quest_global_data.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_tpbookmark WHERE character_tpbookmark.charId NOT IN (SELECT charId FROM characters);");
-
+			
 			// If the clan does not exist...
 			cleanCount += stmt.executeUpdate("DELETE FROM clan_privs WHERE clan_privs.clan_id NOT IN (SELECT clan_id FROM clan_data);");
 			cleanCount += stmt.executeUpdate("DELETE FROM clan_skills WHERE clan_skills.clan_id NOT IN (SELECT clan_id FROM clan_data);");
@@ -273,7 +277,7 @@ public abstract class IdFactory
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	private void cleanUpTimeStamps()
 	{
 		Connection con = null;
@@ -289,7 +293,7 @@ public abstract class IdFactory
 				cleanCount += stmt.executeUpdate();
 				stmt.close();
 			}
-
+			
 			_log.info("Cleaned " + cleanCount + " expired timestamps from database.");
 		}
 		catch (SQLException e)
@@ -300,7 +304,7 @@ public abstract class IdFactory
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	/**
 	 * @param con
 	 * @return
@@ -364,7 +368,7 @@ public abstract class IdFactory
 			{
 				temp.add(rset.getInt(1));
 			}
-
+			
 			temp.sort();
 			
 			return temp.toNativeArray();

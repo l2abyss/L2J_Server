@@ -17,9 +17,9 @@ package com.l2jserver.gameserver.datatables;
 import java.util.Date;
 import java.util.List;
 
-import com.l2jserver.gameserver.script.DateRange;
-
 import javolution.util.FastList;
+
+import com.l2jserver.gameserver.script.DateRange;
 
 /**
  * This class manage drop of Special Events created by GM for a defined period.
@@ -41,7 +41,7 @@ public class EventDroplist
 		return SingletonHolder._instance;
 	}
 	
-	public class DateDrop
+	public static class DateDrop
 	{
 		/** Start and end date of the Event */
 		public DateRange dateRange;

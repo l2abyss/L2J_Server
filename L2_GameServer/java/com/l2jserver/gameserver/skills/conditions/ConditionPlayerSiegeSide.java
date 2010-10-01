@@ -22,9 +22,9 @@ import com.l2jserver.gameserver.skills.Env;
  */
 public class ConditionPlayerSiegeSide extends Condition
 {
-
+	
 	private final int _siegeSide;
-
+	
 	/**
 	 * Instantiates a new condition player siege side.
 	 *
@@ -34,7 +34,7 @@ public class ConditionPlayerSiegeSide extends Condition
 	{
 		_siegeSide = side;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

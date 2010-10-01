@@ -21,51 +21,51 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeBookItemList;
 
 public final class RequestRecipeBookDestroy extends L2GameClientPacket
 {
-    private static final String _C__AC_REQUESTRECIPEBOOKDESTROY = "[C] AD RequestRecipeBookDestroy";
-    //private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
-
-    private int _recipeID;
-
-    /**
-    * Unknown Packet:ad
-    * 0000: ad 02 00 00 00
-    */
-    @Override
+	private static final String _C__AC_REQUESTRECIPEBOOKDESTROY = "[C] AD RequestRecipeBookDestroy";
+	//private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
+	
+	private int _recipeID;
+	
+	/**
+	 * Unknown Packet:ad
+	 * 0000: ad 02 00 00 00
+	 */
+	@Override
 	protected void readImpl()
-    {
-        _recipeID = readD();
-    }
-
-    @Override
+	{
+		_recipeID = readD();
+	}
+	
+	@Override
 	protected void runImpl()
-    {
-        final L2PcInstance activeChar = getClient().getActiveChar();
-        if (activeChar == null)
-        	return;
-
-    	if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("RecipeDestroy"))
-    		return;
-
-    	final L2RecipeList rp = RecipeController.getInstance().getRecipeList(_recipeID);
-     	if (rp == null)
-     		return;
-        activeChar.unregisterRecipeList(_recipeID);
-
-        RecipeBookItemList response = new RecipeBookItemList(rp.isDwarvenRecipe(),activeChar.getMaxMp());
-     	if (rp.isDwarvenRecipe())
-     		response.addRecipes(activeChar.getDwarvenRecipeBook());
-     	else
-     		response.addRecipes(activeChar.getCommonRecipeBook());
-
-        activeChar.sendPacket(response);
-    }
-
-    /* (non-Javadoc)
-     * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-     */
-    @Override
+	{
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
+			return;
+		
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("RecipeDestroy"))
+			return;
+		
+		final L2RecipeList rp = RecipeController.getInstance().getRecipeList(_recipeID);
+		if (rp == null)
+			return;
+		activeChar.unregisterRecipeList(_recipeID);
+		
+		RecipeBookItemList response = new RecipeBookItemList(rp.isDwarvenRecipe(),activeChar.getMaxMp());
+		if (rp.isDwarvenRecipe())
+			response.addRecipes(activeChar.getDwarvenRecipeBook());
+		else
+			response.addRecipes(activeChar.getCommonRecipeBook());
+		
+		activeChar.sendPacket(response);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
+	 */
+	@Override
 	public String getType()
-    {
-        return _C__AC_REQUESTRECIPEBOOKDESTROY;
-    }
+	{
+		return _C__AC_REQUESTRECIPEBOOKDESTROY;
+	}
 }

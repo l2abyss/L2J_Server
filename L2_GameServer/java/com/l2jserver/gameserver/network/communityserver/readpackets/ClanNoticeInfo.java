@@ -16,12 +16,12 @@ package com.l2jserver.gameserver.network.communityserver.readpackets;
 
 import java.util.logging.Logger;
 
+import org.netcon.BaseReadPacket;
+
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
-
-import org.netcon.BaseReadPacket;
 
 /**
  * @authors  Forsaiken, Gigiikun
@@ -45,7 +45,7 @@ public final class ClanNoticeInfo extends BaseReadPacket
 		_type = type;
 		_cst = cst;
 	}
-
+	
 	@Override
 	public final void run()
 	{

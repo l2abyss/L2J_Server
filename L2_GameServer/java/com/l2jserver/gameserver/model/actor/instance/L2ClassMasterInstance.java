@@ -22,11 +22,13 @@ import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TutorialCloseHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowQuestionMark;
+import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.StringUtil;
 
@@ -35,7 +37,7 @@ import com.l2jserver.util.StringUtil;
  *
  * @version $Revision: 1.4.2.1.2.7 $ $Date: 2005/03/27 15:29:32 $
  */
-public final class L2ClassMasterInstance extends L2NpcInstance
+public final class L2ClassMasterInstance extends L2MerchantInstance
 {
 	/**
 	 * @param template
@@ -45,20 +47,20 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		super(objectId, template);
 		setInstanceType(InstanceType.L2ClassMasterInstance);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
 		String pom = "";
-
+		
 		if (val == 0)
 			pom = "" + npcId;
 		else
 			pom = npcId + "-" + val;
-
+		
 		return "data/html/classmaster/" + pom + ".htm";
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
@@ -77,7 +79,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		else if(command.startsWith("change_class"))
 		{
 			int val = Integer.parseInt(command.substring(13));
-
+			
 			if (checkAndChangeClass(player, val))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -86,22 +88,57 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 				player.sendPacket(html);
 			}
 		}
+		else if(command.startsWith("become_noble"))
+		{
+			if (!player.isNoble())
+			{
+				player.setNoble(true);
+				player.sendPacket(new UserInfo(player));
+				player.sendPacket(new ExBrExtraUserInfo(player));
+				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				html.setFile(player.getHtmlPrefix(), "data/html/classmaster/nobleok.htm");
+				player.sendPacket(html);
+			}
+		}
+		else if(command.startsWith("learn_skills"))
+		{
+			player.giveAvailableSkills();
+		}
+		else if(command.startsWith("increase_clan_level"))
+		{
+			if (player.getClan() == null || !player.isClanLeader())
+			{
+				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				html.setFile(player.getHtmlPrefix(), "data/html/classmaster/noclanleader.htm");
+				player.sendPacket(html);
+			}
+			else if (player.getClan().getLevel() >= 5)
+			{
+				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				html.setFile(player.getHtmlPrefix(), "data/html/classmaster/noclanlevel.htm");
+				player.sendPacket(html);
+			}
+			else
+			{
+				player.getClan().changeLevel(5);
+			}
+		}
 		else
 		{
 			super.onBypassFeedback(player, command);
 		}
 	}
-
+	
 	public static final void onTutorialLink(L2PcInstance player, String request)
 	{
 		if (!Config.ALTERNATE_CLASS_MASTER
 				|| request == null
 				|| !request.startsWith("CO"))
 			return;
-
+		
 		if (!player.getFloodProtectors().getServerBypass().tryPerformAction("changeclass"))
 			return;
-
+		
 		try
 		{
 			int val = Integer.parseInt(request.substring(2));
@@ -112,34 +149,34 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		}
 		player.sendPacket(new TutorialCloseHtml());
 	}
-
+	
 	public static final void onTutorialQuestionMark(L2PcInstance player, int number)
 	{
 		if (!Config.ALTERNATE_CLASS_MASTER || number != 1001)
 			return;
-
+		
 		showTutorialHtml(player);
 	}
-
+	
 	public static final void showQuestionMark(L2PcInstance player)
 	{
 		if (!Config.ALTERNATE_CLASS_MASTER)
 			return;
-
+		
 		final ClassId classId = player.getClassId();
 		if (getMinLevel(classId.level()) > player.getLevel())
 			return;
 		
 		if (!Config.CLASS_MASTER_SETTINGS.isAllowed(classId.level()+1))
 			return;
-
+		
 		player.sendPacket(new TutorialShowQuestionMark(1001));
 	}
-
+	
 	private static final void showHtmlMenu(L2PcInstance player, int objectId, int level)
 	{
 		NpcHtmlMessage html = new NpcHtmlMessage(objectId);
-
+		
 		if (!Config.ALLOW_CLASS_MASTERS)
 		{
 			html.setFile(player.getHtmlPrefix(), "data/html/classmaster/disabled.htm");
@@ -205,10 +242,10 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 									"\">",
 									CharTemplateTable.getInstance().getClassNameById(cid.getId()),
 									"</a><br>"
-									);
+							);
 						}
 					}
-
+					
 					if (menu.length() > 0)
 					{
 						html.setFile(player.getHtmlPrefix(), "data/html/classmaster/template.htm");
@@ -221,7 +258,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 						html.replace("%level%", String.valueOf(getMinLevel(level - 1)));
 					}
 				}
-				else	
+				else
 				{
 					if (minLevel < Integer.MAX_VALUE)
 					{
@@ -233,23 +270,23 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 				}
 			}
 		}
-
+		
 		html.replace("%objectId%", String.valueOf(objectId));
 		html.replace("%req_items%", getRequiredItems(level));
 		player.sendPacket(html);
 	}
-
+	
 	private static final void showTutorialHtml(L2PcInstance player)
 	{
 		final ClassId currentClassId = player.getClassId();
 		if (getMinLevel(currentClassId.level()) > player.getLevel()
 				&& !Config.ALLOW_ENTIRE_TREE)
 			return;
-
+		
 		String msg = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/classmaster/tutorialtemplate.htm");
-
+		
 		msg = msg.replaceAll("%name%", CharTemplateTable.getInstance().getClassNameById(currentClassId.getId()));
-
+		
 		final StringBuilder menu = new StringBuilder(100);
 		for (ClassId cid : ClassId.values())
 		{
@@ -261,37 +298,37 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 						"\">",
 						CharTemplateTable.getInstance().getClassNameById(cid.getId()),
 						"</a><br>"
-						);
+				);
 			}
 		}
-
+		
 		msg = msg.replaceAll("%menu%", menu.toString());
 		msg = msg.replace("%req_items%", getRequiredItems(currentClassId.level()+1));
 		player.sendPacket(new TutorialShowHtml(msg));
 	}
-
+	
 	private static final boolean checkAndChangeClass(L2PcInstance player, int val)
 	{
 		final ClassId currentClassId = player.getClassId();
 		if (getMinLevel(currentClassId.level()) > player.getLevel()
 				&& !Config.ALLOW_ENTIRE_TREE)
 			return false;
-
+		
 		if (!validateClassId(currentClassId, val))
 			return false;
 		
 		int newJobLevel = currentClassId.level() + 1;
-
+		
 		// Weight/Inventory check
 		if(!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty())
 		{
-			if (player.getWeightPenalty() >= 3 || (player.getInventoryLimit() * 0.8 <= player.getInventory().getSize()))
+			if (player.getWeightPenalty() >= 3 || (player.getInventoryLimit() * 0.8 <= player.getInventory().getSize(false)))
 			{
 				player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 				return false;
 			}
 		}
-
+		
 		// check if player have all required items for class transfer
 		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keys())
 		{
@@ -302,7 +339,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 				return false;
 			}
 		}
-
+		
 		// get all required items for class transfer
 		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keys())
 		{
@@ -310,25 +347,25 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 			if (!player.destroyItemByItemId("ClassMaster", _itemId, _count, player, true))
 				return false;
 		}
-
+		
 		// reward player with items
 		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).keys())
 		{
 			int _count = Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).get(_itemId);
 			player.addItem("ClassMaster", _itemId, _count, player, true);
-		}	
+		}
 		
 		player.setClassId(val);
-
+		
 		if (player.isSubClassActive())
 			player.getSubClasses().get(player.getClassIndex()).setClassId(player.getActiveClass());
 		else
 			player.setBaseClass(player.getActiveClass());
-
+		
 		Quest q = QuestManager.getInstance().getQuest("SkillTransfer");
 		if (q != null)
 			q.startQuestTimer("givePormanders", 1, null, player);
-
+		
 		player.broadcastUserInfo();
 		
 		if(Config.CLASS_MASTER_SETTINGS.isAllowed(player.getClassId().level() + 1) && Config.ALTERNATE_CLASS_MASTER && ((player.getClassId().level() == 1 && player.getLevel() >= 40) || (player.getClassId().level() == 2 && player.getLevel() >= 76)))
@@ -336,7 +373,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		
 		return true;
 	}
-
+	
 	/**
 	 * Returns minimum player level required for next class transfer
 	 * @param level - current skillId level (0 - start, 1 - first, etc)
@@ -355,7 +392,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 				return Integer.MAX_VALUE;
 		}
 	}
-
+	
 	/**
 	 * Returns true if class change is possible
 	 * @param oldCID current player ClassId
@@ -374,7 +411,7 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Returns true if class change is possible
 	 * @param oldCID current player ClassId
@@ -385,14 +422,14 @@ public final class L2ClassMasterInstance extends L2NpcInstance
 	{
 		if (newCID == null || newCID.getRace() == null)
 			return false;
-
+		
 		if (oldCID.equals(newCID.getParent()))
 			return true;
-
+		
 		if (Config.ALLOW_ENTIRE_TREE
 				&& newCID.childOf(oldCID))
 			return true;
-
+		
 		return false;
 	}
 	

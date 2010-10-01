@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Effect;
@@ -34,8 +36,6 @@ import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
-
-import javolution.util.FastList;
 
 /**
  * This class contains all informations concerning the item (weapon, armor, etc).<BR>
@@ -163,16 +163,16 @@ public abstract class L2Item
 	private final boolean _destroyable;
 	private final boolean _tradeable;
 	private final boolean _depositable;
-
+	
 	private final boolean _common;
 	private final boolean _heroItem;
-
+	
 	private final boolean _pvpItem;
-
+	
 	@SuppressWarnings({ "rawtypes" })
 	protected final Enum _type;
 	
-	protected Elementals _elementals = null;
+	protected Elementals[] _elementals = null;
 	protected FuncTemplate[] _funcTemplates;
 	protected EffectTemplate[] _effectTemplates;
 	protected L2Skill[] _skills;
@@ -223,10 +223,10 @@ public abstract class L2Item
 		_destroyable = set.getBool("destroyable", true);
 		_tradeable = set.getBool("tradeable", true);
 		_depositable = set.getBool("depositable", true);
-
+		
 		_common = (_itemId >= 12006 && _itemId <= 12361) || (_itemId >= 11605 && _itemId <= 12308);
 		_heroItem = (_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842;
-
+		
 		_pvpItem = (_itemId >= 10667 && _itemId <= 10792) || (_itemId >= 10793 && _itemId <= 10835) || (_itemId >= 12852 && _itemId <= 12977) || (_itemId >= 14363 && _itemId <= 14519) || (_itemId >= 14520 && _itemId <= 14525) || _itemId == 14528 || _itemId == 14529 || _itemId == 14558;
 	}
 	
@@ -332,7 +332,7 @@ public abstract class L2Item
 	{
 		return getCrystalType();
 	}
-
+	
 	/**
 	 * Returns the grade of the item.<BR><BR>
 	 * For grades S80 and S84 return S
@@ -349,7 +349,7 @@ public abstract class L2Item
 				return getItemGrade();
 		}
 	}
-
+	
 	/**
 	 * Returns the quantity of crystals for crystallization
 	 * @return int
@@ -404,24 +404,49 @@ public abstract class L2Item
 	 * Returns the base elemental of the item
 	 * @return Elementals
 	 */
-	public final Elementals getElementals()
+	public final Elementals[] getElementals()
 	{
 		return _elementals;
 	}
-
+	
+	public Elementals getElemental(byte attribute)
+	{
+		for (Elementals elm : _elementals)
+		{
+			if (elm.getElement() == attribute)
+				return elm;
+		}
+		return null;
+	}
+	
 	/**
 	 * Sets the base elemental of the item
 	 */
-	public final void setElementals(Elementals element)
+	public void setElementals(Elementals element)
 	{
-		if (_elementals != null)
+		if (_elementals == null)
 		{
-			_log.warning("Item " + getName() + "(" + getItemId() + ") has more than one element definition!");
-			return;
+			_elementals = new Elementals[1];
+			_elementals[0] = element;
 		}
-		_elementals = element;
+		else
+		{
+			Elementals elm = getElemental(element.getElement());
+			if (elm != null)
+			{
+				elm.setValue(element.getValue());
+			}
+			else
+			{
+				elm = element;
+				Elementals[] array = new Elementals[_elementals.length + 1];
+				System.arraycopy(_elementals, 0, array, 0, _elementals.length);
+				array[_elementals.length] = elm;
+				_elementals = array;
+			}
+		}
 	}
-
+	
 	/**
 	 * Return the part of the body used with the item.
 	 * @return int
@@ -507,7 +532,7 @@ public abstract class L2Item
 	{
 		return _tradeable;
 	}
-
+	
 	/**
 	 * Returns if the item can be put into warehouse
 	 * @return boolean
@@ -516,7 +541,7 @@ public abstract class L2Item
 	{
 		return _depositable;
 	}
-
+	
 	/**
 	 * Returns if item is common
 	 * @return boolean
@@ -525,7 +550,7 @@ public abstract class L2Item
 	{
 		return _common;
 	}
-
+	
 	/**
 	 * Returns if item is hero-only
 	 * @return
@@ -534,7 +559,7 @@ public abstract class L2Item
 	{
 		return _heroItem;
 	}
-
+	
 	/**
 	 * Returns if item is pvp
 	 * @return
@@ -543,7 +568,7 @@ public abstract class L2Item
 	{
 		return _pvpItem;
 	}
-
+	
 	/**
 	 * Returns if item is for hatchling
 	 * @return boolean
@@ -685,7 +710,7 @@ public abstract class L2Item
 			return _emptyEffectSet;
 		return effects.toArray(new L2Effect[effects.size()]);
 	}
-	*/
+	 */
 	/**
 	 * Add the FuncTemplate f to the list of functions used with the item
 	 * @param f : FuncTemplate to add
@@ -723,9 +748,9 @@ public abstract class L2Item
 		if (_funcTemplates == null)
 		{
 			_funcTemplates = new FuncTemplate[]
-			{
-				f
-			};
+			                                  {
+					f
+			                                  };
 		}
 		else
 		{
@@ -748,9 +773,9 @@ public abstract class L2Item
 		if (_effectTemplates == null)
 		{
 			_effectTemplates = new EffectTemplate[]
-			{
-				effect
-			};
+			                                      {
+					effect
+			                                      };
 		}
 		else
 		{
@@ -773,9 +798,9 @@ public abstract class L2Item
 		if (_skills == null)
 		{
 			_skills = new L2Skill[]
-			{
-				skill
-			};
+			                      {
+					skill
+			                      };
 		}
 		else
 		{
@@ -804,7 +829,7 @@ public abstract class L2Item
 	{
 		if (activeChar.isGM() && !Config.GM_ITEM_RESTRICTION)
 			return true;
-
+		
 		Env env = new Env();
 		env.player = activeChar;
 		if (target instanceof L2Character) // TODO: object or char?
@@ -813,8 +838,8 @@ public abstract class L2Item
 		for (Condition preCondition : _preConditions)
 		{
 			if (preCondition == null)
-				return true;			
-
+				return true;
+			
 			if (!preCondition.test(env))
 			{
 				if (activeChar instanceof L2SummonInstance)
@@ -822,7 +847,7 @@ public abstract class L2Item
 					((L2SummonInstance)activeChar).getOwner().sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
 					return false;
 				}
-
+				
 				if (sendMessage)
 				{
 					String msg = preCondition.getMessage();
@@ -843,6 +868,11 @@ public abstract class L2Item
 			}
 		}
 		return true;
+	}
+	
+	public boolean isQuestItem()
+	{
+		return getType2() == L2Item.TYPE2_QUEST;
 	}
 	
 	/**

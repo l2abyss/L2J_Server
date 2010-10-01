@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.skills.effects;
 import java.util.Collection;
 import java.util.List;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Object;
@@ -26,8 +28,6 @@ import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
 
 /**
  * @author littlecrow

@@ -16,27 +16,27 @@ package com.l2jserver.gameserver.instancemanager;
 
 import java.util.Map;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
 
-import javolution.util.FastMap;
-
 public class AntiFeedManager
 {
 	private Map<Integer,Long> _lastDeathTimes;
-
+	
 	public static final AntiFeedManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	private AntiFeedManager()
 	{
 		_lastDeathTimes = new FastMap<Integer,Long>().shared();
 	}
-
+	
 	/**
 	 * Set time of the last player's death to current
 	 * @param objectId Player's objectId
@@ -45,7 +45,7 @@ public class AntiFeedManager
 	{
 		_lastDeathTimes.put(objectId, System.currentTimeMillis());
 	}
-
+	
 	/**
 	 * Check if current kill should be counted as non-feeded.
 	 * @param attacker Attacker character
@@ -56,39 +56,39 @@ public class AntiFeedManager
 	{
 		if (!Config.L2JMOD_ANTIFEED_ENABLE)
 			return true;
-
+		
 		if (target == null)
 			return false;
-
+		
 		final L2PcInstance targetPlayer = target.getActingPlayer();
 		if (targetPlayer == null)
 			return false;
-
+		
 		if (Config.L2JMOD_ANTIFEED_INTERVAL > 0
 				&& _lastDeathTimes.containsKey(targetPlayer.getObjectId()))
 			return (System.currentTimeMillis() - _lastDeathTimes.get(targetPlayer.getObjectId())) > Config.L2JMOD_ANTIFEED_INTERVAL;
-
-		if (Config.L2JMOD_ANTIFEED_DUALBOX && attacker != null)
-		{
-			final L2PcInstance attackerPlayer = attacker.getActingPlayer();
-			if (attackerPlayer == null)
-				return false;
-
-			final L2GameClient targetClient = targetPlayer.getClient();
-			final L2GameClient attackerClient = attackerPlayer.getClient();
-			if (targetClient == null
-					|| attackerClient == null
-					|| targetClient.isDetached()
-					|| attackerClient.isDetached())
-				// unable to check ip address
-				return !Config.L2JMOD_ANTIFEED_DISCONNECTED_AS_DUALBOX;
-
-			return !targetClient.getConnection().getInetAddress().equals(attackerClient.getConnection().getInetAddress());
-		}
-
-		return true;
+			
+			if (Config.L2JMOD_ANTIFEED_DUALBOX && attacker != null)
+			{
+				final L2PcInstance attackerPlayer = attacker.getActingPlayer();
+				if (attackerPlayer == null)
+					return false;
+				
+				final L2GameClient targetClient = targetPlayer.getClient();
+				final L2GameClient attackerClient = attackerPlayer.getClient();
+				if (targetClient == null
+						|| attackerClient == null
+						|| targetClient.isDetached()
+						|| attackerClient.isDetached())
+					// unable to check ip address
+					return !Config.L2JMOD_ANTIFEED_DISCONNECTED_AS_DUALBOX;
+				
+				return !targetClient.getConnection().getInetAddress().equals(attackerClient.getConnection().getInetAddress());
+			}
+			
+			return true;
 	}
-
+	
 	/**
 	 * Clears all timestamps
 	 */
@@ -96,7 +96,7 @@ public class AntiFeedManager
 	{
 		_lastDeathTimes.clear();
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

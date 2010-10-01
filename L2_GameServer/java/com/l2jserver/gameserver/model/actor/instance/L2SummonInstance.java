@@ -194,7 +194,7 @@ public class L2SummonInstance extends L2Summon
 		return true;
 		
 	}
-
+	
 	/**
 	 * Servitors' skills automatically change their level based on the servitor's level.
 	 * Until level 70, the servitor gets 1 lv of skill per 10 levels. After that, it is 1
@@ -206,23 +206,23 @@ public class L2SummonInstance extends L2Summon
 	@Override
 	public void doCast(L2Skill skill)
 	{
-        final int petLevel = getLevel();
-        int skillLevel = petLevel/10;
-        if(petLevel >= 70)
-            skillLevel += (petLevel-65)/10;
-
-        // adjust the level for servitors less than lv 10
-        if (skillLevel < 1)
-            skillLevel = 1;
-
-        L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
-
+		final int petLevel = getLevel();
+		int skillLevel = petLevel/10;
+		if(petLevel >= 70)
+			skillLevel += (petLevel-65)/10;
+		
+		// adjust the level for servitors less than lv 10
+		if (skillLevel < 1)
+			skillLevel = 1;
+		
+		L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
+		
 		if (skillToCast != null)
-            super.doCast(skillToCast);
-        else
-            super.doCast(skill);
+			super.doCast(skillToCast);
+		else
+			super.doCast(skill);
 	}
-
+	
 	static class SummonLifetime implements Runnable
 	{
 		private L2PcInstance _activeChar;
@@ -316,32 +316,32 @@ public class L2SummonInstance extends L2Summon
 		
 		return getOwner().destroyItemByItemId(process, itemId, count, reference, sendMessage);
 	}
-
+	
 	@Override
 	public byte getAttackElement()
 	{
 		if (getOwner() == null || !getOwner().getClassId().isSummoner())
 			return super.getAttackElement();
-
+		
 		return getOwner().getAttackElement();
 	}
-
+	
 	@Override
 	public int getAttackElementValue(byte attribute)
 	{
-		if (getOwner() == null || !getOwner().getClassId().isSummoner())
+		if (getOwner() == null || !getOwner().getClassId().isSummoner() || getOwner().getExpertiseWeaponPenalty() > 0)
 			return super.getAttackElementValue(attribute);
-
+		
 		// 80% of the owner (onwer already has only 20%)
 		return 4 * getOwner().getAttackElementValue(attribute);
 	}
-
+	
 	@Override
 	public int getDefenseElementValue(byte attribute)
 	{
 		if (getOwner() == null || !getOwner().getClassId().isSummoner())
 			return super.getDefenseElementValue(attribute);
-
+		
 		// bonus from owner
 		return super.getDefenseElementValue(attribute) + getOwner().getDefenseElementValue(attribute);
 	}

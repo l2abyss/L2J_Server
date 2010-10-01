@@ -21,16 +21,16 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExDuelAskStart extends L2GameServerPacket
 {
 	private static final String _S__FE_4B_EXDUELASKSTART = "[S] FE:4c ExDuelAskStart";
-
+	
 	private String _requestorName;
 	private int _partyDuel;
-
+	
 	public ExDuelAskStart(String requestor, int partyDuel)
 	{
 		_requestorName = requestor;
 		_partyDuel = partyDuel;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -39,11 +39,11 @@ public class ExDuelAskStart extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x4c);
-
+		
 		writeS(_requestorName);
 		writeD(_partyDuel);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -52,5 +52,5 @@ public class ExDuelAskStart extends L2GameServerPacket
 	{
 		return _S__FE_4B_EXDUELASKSTART;
 	}
-
+	
 }

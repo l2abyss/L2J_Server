@@ -58,6 +58,7 @@ public class AccessLevels
 	private AccessLevels()
 	{
 		loadAccessLevels();
+		_accessLevels.put(_userAccessLevelNum, _userAccessLevel);
 	}
 	
 	/**

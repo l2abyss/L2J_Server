@@ -41,10 +41,10 @@ public final class RequestJoinParty extends L2GameClientPacket
 {
 	private static final String _C__29_REQUESTJOINPARTY = "[C] 29 RequestJoinParty";
 	private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
-
+	
 	private String _name;
 	private int _itemDistribution;
-
+	
 	@Override
 	protected void readImpl()
 	{

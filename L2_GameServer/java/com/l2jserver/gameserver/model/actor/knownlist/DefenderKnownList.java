@@ -28,21 +28,21 @@ public class DefenderKnownList extends AttackableKnownList
 {
 	// =========================================================
 	// Data Field
-
+	
 	// =========================================================
 	// Constructor
 	public DefenderKnownList(L2DefenderInstance activeChar)
 	{
 		super(activeChar);
 	}
-
+	
 	// =========================================================
 	// Method - Public
 	@Override
 	public boolean addKnownObject(L2Object object)
 	{
 		if (!super.addKnownObject(object)) return false;
-
+		
 		Castle castle = getActiveChar().getCastle();
 		Fort fortress = getActiveChar().getFort();
 		// Check if siege is in progress
@@ -55,7 +55,7 @@ public class DefenderKnownList extends AttackableKnownList
 			else if (object instanceof L2Summon)
 				player = ((L2Summon)object).getOwner();
 			int activeSiegeId = (fortress != null ? fortress.getFortId() : (castle != null ? castle.getCastleId() : 0));
-
+			
 			// Check if player is an enemy of this defender npc
 			if (player != null && ((player.getSiegeState() == 2 && !player.isRegisteredOnThisSiegeField(activeSiegeId))
 					|| (player.getSiegeState() == 1 && !TerritoryWarManager.getInstance().isAllyField(player, activeSiegeId))
@@ -67,7 +67,7 @@ public class DefenderKnownList extends AttackableKnownList
 		}
 		return true;
 	}
-
+	
 	// =========================================================
 	// Property - Public
 	@Override

@@ -16,9 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
 import javolution.util.FastList;
+
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 
 /**
@@ -36,7 +36,7 @@ public class ExOlympiadSpelledInfo extends L2GameServerPacket
 	private List<Effect> _effects;
 	
 	
-	private class Effect
+	private static class Effect
 	{
 		protected int _skillId;
 		protected int _level;

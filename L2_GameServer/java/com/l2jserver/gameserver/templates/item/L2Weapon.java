@@ -114,7 +114,7 @@ public final class L2Weapon extends L2Item
 			
 			if(info == null || info.length != 2)
 				continue;
-
+			
 			int id = 0;
 			int level = 0;
 			
@@ -312,9 +312,9 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	* Returns skill that player get when has equiped weapon +4  or more  (for duals SA)
-	* @return
-	*/
+	 * Returns skill that player get when has equiped weapon +4  or more  (for duals SA)
+	 * @return
+	 */
 	public L2Skill getEnchant4Skill()
 	{
 		return _enchant4Skill;
@@ -376,7 +376,7 @@ public final class L2Weapon extends L2Item
 		env.skill = _skillsOnCrit;
 		if (!_skillsOnCritCondition.test(env))
 			return _emptyEffectSet; // Skill condition not met
-			
+		
 		byte shld = Formulas.calcShldUse(caster, target, _skillsOnCrit);
 		if (!Formulas.calcSkillSuccess(caster, target, _skillsOnCrit, shld, false, false, false))
 			return _emptyEffectSet; // These skills should not work on RaidBoss

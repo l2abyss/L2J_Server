@@ -27,7 +27,7 @@ public class StopMoveInVehicle  extends L2GameServerPacket
 	private int _boatId;
 	private Point3D _pos;
 	private int _heading;
-
+	
 	public StopMoveInVehicle(L2PcInstance player, int boatId)
 	{
 		_charObjId = player.getObjectId();
@@ -35,7 +35,7 @@ public class StopMoveInVehicle  extends L2GameServerPacket
 		_pos = player.getInVehiclePosition();
 		_heading = player.getHeading();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -50,7 +50,7 @@ public class StopMoveInVehicle  extends L2GameServerPacket
 		writeD(_pos.getZ());
 		writeD(_heading);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

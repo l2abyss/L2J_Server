@@ -33,9 +33,9 @@ public final class JoinParty extends L2GameServerPacket
 {
 	private static final String _S__4C_JOINPARTY = "[S] 3a JoinParty";
 	//private static Logger _log = Logger.getLogger(JoinParty.class.getName());
-
+	
 	private int _response;
-
+	
 	/**
 	 * @param int
 	 */
@@ -43,14 +43,14 @@ public final class JoinParty extends L2GameServerPacket
 	{
 		_response = response;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x3a);
 		writeD(_response);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -59,5 +59,5 @@ public final class JoinParty extends L2GameServerPacket
 	{
 		return _S__4C_JOINPARTY;
 	}
-
+	
 }

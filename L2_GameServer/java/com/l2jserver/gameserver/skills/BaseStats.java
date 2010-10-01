@@ -42,38 +42,38 @@ public enum BaseStats
 	CON(new CON()),
 	MEN(new MEN()),
 	NULL(new NULL());
-
+	
 	protected static final Logger _log = Logger.getLogger(BaseStats.class.getName());
-
+	
 	public static final int MAX_STAT_VALUE = 100;
-
+	
 	private static final double[] STRbonus = new double[MAX_STAT_VALUE];
 	private static final double[] INTbonus = new double[MAX_STAT_VALUE];
 	private static final double[] DEXbonus = new double[MAX_STAT_VALUE];
 	private static final double[] WITbonus = new double[MAX_STAT_VALUE];
 	private static final double[] CONbonus = new double[MAX_STAT_VALUE];
 	private static final double[] MENbonus = new double[MAX_STAT_VALUE];
-
+	
 	private final BaseStat _stat;
-
+	
 	public final String getValue()
 	{
 		return _stat.getClass().getSimpleName();
 	}
-
+	
 	private BaseStats(BaseStat s)
 	{
 		_stat = s;
 	}
-
+	
 	public final double calcBonus(L2Character actor)
 	{
 		if (actor != null)
 			return _stat.calcBonus(actor);
-
+		
 		return 1;
 	}
-
+	
 	public static final BaseStats valueOfXml(String name)
 	{
 		name = name.intern();
@@ -82,15 +82,15 @@ public enum BaseStats
 			if (s.getValue().equalsIgnoreCase(name))
 				return s;
 		}
-
+		
 		throw new NoSuchElementException("Unknown name '" + name + "' for enum BaseStats");
 	}
-
+	
 	private interface BaseStat
 	{
 		public double calcBonus(L2Character actor);
 	}
-
+	
 	private static final class STR implements BaseStat
 	{
 		public final double calcBonus(L2Character actor)
@@ -98,7 +98,7 @@ public enum BaseStats
 			return STRbonus[actor.getSTR()];
 		}
 	}
-
+	
 	private static final class INT implements BaseStat
 	{
 		public final double calcBonus(L2Character actor)
@@ -106,7 +106,7 @@ public enum BaseStats
 			return INTbonus[actor.getINT()];
 		}
 	}
-
+	
 	private static final class DEX implements BaseStat
 	{
 		public final double calcBonus(L2Character actor)
@@ -114,7 +114,7 @@ public enum BaseStats
 			return DEXbonus[actor.getDEX()];
 		}
 	}
-
+	
 	private static final class WIT implements BaseStat
 	{
 		public final double calcBonus(L2Character actor)
@@ -122,7 +122,7 @@ public enum BaseStats
 			return WITbonus[actor.getWIT()];
 		}
 	}
-
+	
 	private static final class CON implements BaseStat
 	{
 		public final double calcBonus(L2Character actor)
@@ -130,7 +130,7 @@ public enum BaseStats
 			return CONbonus[actor.getCON()];
 		}
 	}
-
+	
 	private static final class MEN implements BaseStat
 	{
 		public final double calcBonus(L2Character actor)
@@ -138,7 +138,7 @@ public enum BaseStats
 			return MENbonus[actor.getMEN()];
 		}
 	}
-
+	
 	private static final class NULL implements BaseStat
 	{
 		public final double calcBonus(L2Character actor)
@@ -146,7 +146,7 @@ public enum BaseStats
 			return 1f;
 		}
 	}
-
+	
 	static
 	{
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -154,7 +154,7 @@ public enum BaseStats
 		factory.setIgnoringComments(true);
 		final File file = new File(Config.DATAPACK_ROOT, "data/statBonus.xml");
 		Document doc = null;
-
+		
 		if (file.exists())
 		{
 			try
@@ -165,7 +165,7 @@ public enum BaseStats
 			{
 				_log.log(Level.WARNING, "[BaseStats] Could not parse file: " + e.getMessage(), e);
 			}
-
+			
 			String statName;
 			int val;
 			double bonus;
@@ -192,7 +192,7 @@ public enum BaseStats
 									_log.severe("[BaseStats] Invalid stats value: "+value.getNodeValue()+", skipping");
 									continue;
 								}
-
+								
 								if ("STR".equalsIgnoreCase(statName))
 									STRbonus[val] = bonus;
 								else if ("INT".equalsIgnoreCase(statName))

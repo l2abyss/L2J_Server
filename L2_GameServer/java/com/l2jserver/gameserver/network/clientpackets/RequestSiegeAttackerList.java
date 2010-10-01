@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -26,31 +26,31 @@ import com.l2jserver.gameserver.network.serverpackets.SiegeAttackerList;
  */
 public final class RequestSiegeAttackerList extends L2GameClientPacket
 {
-
-    private static final String _C__A2_RequestSiegeAttackerList = "[C] a2 RequestSiegeAttackerList";
-    //private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
-
-    private int _castleId;
-
-    @Override
+	
+	private static final String _C__A2_RequestSiegeAttackerList = "[C] a2 RequestSiegeAttackerList";
+	//private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
+	
+	private int _castleId;
+	
+	@Override
 	protected void readImpl()
-    {
-        _castleId = readD();
-    }
-
-    @Override
+	{
+		_castleId = readD();
+	}
+	
+	@Override
 	protected void runImpl()
-    {
-            Castle castle = CastleManager.getInstance().getCastleById(_castleId);
-            if (castle == null) return;
-            SiegeAttackerList sal = new SiegeAttackerList(castle);
-            sendPacket(sal);      
-    }
-
-
-    @Override
+	{
+		Castle castle = CastleManager.getInstance().getCastleById(_castleId);
+		if (castle == null) return;
+		SiegeAttackerList sal = new SiegeAttackerList(castle);
+		sendPacket(sal);
+	}
+	
+	
+	@Override
 	public String getType()
-    {
-        return _C__A2_RequestSiegeAttackerList;
-    }
+	{
+		return _C__A2_RequestSiegeAttackerList;
+	}
 }

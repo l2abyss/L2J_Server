@@ -31,11 +31,11 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestDeleteReceivedPost extends L2GameClientPacket
 {
 	private static final String _C__D0_68_REQUESTDELETERECEIVEDPOST = "[C] D0:68 RequestDeleteReceivedPost";
-
+	
 	private static final int BATCH_LENGTH = 4; // length of the one item
-
+	
 	int[] _msgIds = null;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -44,25 +44,25 @@ public final class RequestDeleteReceivedPost extends L2GameClientPacket
 				|| count > Config.MAX_ITEM_IN_PACKET
 				|| count * BATCH_LENGTH != _buf.remaining())
 			return;
-
+		
 		_msgIds = new int[count];
 		for (int i = 0; i < count; i++)
 			_msgIds[i] = readD();
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null || _msgIds == null || !Config.ALLOW_MAIL)
 			return;
-
+		
 		if (!activeChar.isInsideZone(ZONE_PEACE))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
 			return;
 		}
-
+		
 		for (int msgId : _msgIds)
 		{
 			Message msg = MailManager.getInstance().getMessage(msgId);
@@ -74,21 +74,21 @@ public final class RequestDeleteReceivedPost extends L2GameClientPacket
 						"Player "+activeChar.getName()+" tried to delete not own post!", Config.DEFAULT_PUNISH);
 				return;
 			}
-
+			
 			if (msg.hasAttachments() || msg.isDeletedByReceiver())
 				return;
-
+			
 			msg.setDeletedByReceiver();
 		}
 		activeChar.sendPacket(new ExChangePostState(true, _msgIds, Message.DELETED));
 	}
-
+	
 	@Override
 	public String getType()
 	{
 		return _C__D0_68_REQUESTDELETERECEIVEDPOST;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

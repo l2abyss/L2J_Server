@@ -31,11 +31,11 @@ import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfoDetail;
 public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestExEnchantSkillInfoDetail.class.getName());
-
+	
 	private int _type;
 	private int _skillId;
 	private int _skillLvl;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -43,7 +43,7 @@ public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 		_skillId = readD();
 		_skillLvl = readD();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -53,25 +53,25 @@ public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-
+		
 		if (activeChar == null)
 			return;
-
+		
 		int reqSkillLvl = -2;
-
+		
 		if (_type == 0 || _type == 1)
 			reqSkillLvl = _skillLvl - 1; // enchant
 		else if (_type == 2)
 			reqSkillLvl = _skillLvl + 1; // untrain
 		else if (_type == 3)
 			reqSkillLvl = _skillLvl; // change route
-
+		
 		int playerSkillLvl = activeChar.getSkillLevel(_skillId);
-
+		
 		// dont have such skill
 		if (playerSkillLvl == -1)
 			return;
-
+		
 		// if reqlvl is 100,200,.. check base skill lvl enchant
 		if ((reqSkillLvl % 100) == 0)
 		{
@@ -92,12 +92,12 @@ public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 			if (_type == 3 && ((playerSkillLvl % 100) != (_skillLvl % 100)))
 				return;
 		}
-
+		
 		// send skill enchantment detail
 		ExEnchantSkillInfoDetail esd = new ExEnchantSkillInfoDetail(_type, _skillId, _skillLvl, activeChar);
 		activeChar.sendPacket(esd);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -108,5 +108,5 @@ public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 	{
 		return "[C] D0:46 RequestExEnchantSkillInfo";
 	}
-
+	
 }

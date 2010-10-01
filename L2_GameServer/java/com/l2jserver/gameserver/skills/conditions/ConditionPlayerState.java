@@ -68,7 +68,7 @@ public class ConditionPlayerState extends Condition
 				player = env.player.getActingPlayer();
 				if (player != null)
 					return player.getKarma() > 0 == _required;
-				return !_required;
+					return !_required;
 			case OLYMPIAD:
 				player = env.player.getActingPlayer();
 				if (player != null)

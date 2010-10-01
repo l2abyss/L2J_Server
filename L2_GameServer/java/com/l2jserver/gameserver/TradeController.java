@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.L2TradeList.L2TradeItem;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * This class ...
@@ -61,7 +61,7 @@ public class TradeController
 			ThreadPoolManager.getInstance().scheduleGeneral(new RestoreCount(_timer), (long)_timer*60*60*1000);
 		}
 	}*/
-
+	
 	public static TradeController getInstance()
 	{
 		return SingletonHolder._instance;

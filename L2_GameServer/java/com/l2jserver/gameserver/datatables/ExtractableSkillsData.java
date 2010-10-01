@@ -27,18 +27,17 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ExtractableProductItem;
 import com.l2jserver.gameserver.model.L2ExtractableSkill;
 import com.l2jserver.gameserver.model.L2Skill;
 
-import javolution.util.FastList;
-
 public class ExtractableSkillsData
 {
 	protected static final Logger _log = Logger.getLogger(ExtractableSkillsData.class.getName());
-	//          Map<FastMap<itemid, skill>, L2ExtractableItem>
-	private TIntObjectHashMap<L2ExtractableSkill> _items = new TIntObjectHashMap<L2ExtractableSkill>();
+	private final TIntObjectHashMap<L2ExtractableSkill> _items = new TIntObjectHashMap<L2ExtractableSkill>();
 	
 	public static ExtractableSkillsData getInstance()
 	{
@@ -47,8 +46,21 @@ public class ExtractableSkillsData
 	
 	public ExtractableSkillsData()
 	{
-		_items.clear();
-		
+		loadExtractableSkills();
+	}
+	
+	public L2ExtractableSkill getExtractableItem(L2Skill skill)
+	{
+		return _items.get(SkillTable.getSkillHashCode(skill));
+	}
+	
+	public void reload()
+	{
+		loadExtractableSkills();
+	}
+	
+	private void loadExtractableSkills()
+	{
 		Scanner s;
 		
 		try
@@ -61,6 +73,7 @@ public class ExtractableSkillsData
 			return;
 		}
 		
+		_items.clear();
 		int lineCount = 0;
 		
 		while (s.hasNextLine())
@@ -93,9 +106,9 @@ public class ExtractableSkillsData
 			L2Skill skill = SkillTable.getInstance().getInfo(skillID, skillLvl);
 			if (skill == null)
 			{
-					_log.warning("Extractable skills data: Error in line " + lineCount + " -> skill is null!");
-					_log.warning("		" + line);
-					ok = false;
+				_log.warning("Extractable skills data: Error in line " + lineCount + " -> skill is null!");
+				_log.warning("		" + line);
+				ok = false;
 			}
 			if (!ok)
 				continue;
@@ -133,7 +146,7 @@ public class ExtractableSkillsData
 						amount[k] = Integer.parseInt(lineSplit2[j+=1]);
 						k++;
 					}
-
+					
 					chance = Integer.parseInt(lineSplit2[lineSplit2.length-1]);
 				}
 				catch (Exception e)
@@ -168,11 +181,6 @@ public class ExtractableSkillsData
 		
 		s.close();
 		_log.info("Extractable skills data: Loaded " + _items.size() + " extractable skills!");
-	}
-	
-	public L2ExtractableSkill getExtractableItem(L2Skill skill)
-	{
-		return _items.get(SkillTable.getSkillHashCode(skill));
 	}
 	
 	private static class SingletonHolder

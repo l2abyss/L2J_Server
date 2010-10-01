@@ -54,7 +54,7 @@ public class BlockList
 	
 	private final L2PcInstance _owner;
 	private List<Integer> _blockList;
-
+	
 	public BlockList(L2PcInstance owner)
 	{
 		_owner = owner;
@@ -62,13 +62,13 @@ public class BlockList
 		if (_blockList == null)
 			_blockList = loadList(_owner.getObjectId());
 	}
-
+	
 	private synchronized void addToBlockList(int target)
 	{
 		_blockList.add(target);
 		updateInDB(target, true);
 	}
-
+	
 	private synchronized void removeFromBlockList(int target)
 	{
 		_blockList.remove(Integer.valueOf(target));
@@ -146,7 +146,7 @@ public class BlockList
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public boolean isInBlockList(L2PcInstance target)
 	{
 		return _blockList.contains(target.getObjectId());
@@ -156,12 +156,12 @@ public class BlockList
 	{
 		return _blockList.contains(targetId);
 	}
-
+	
 	private boolean isBlockAll()
 	{
 		return _owner.getMessageRefusal();
 	}
-
+	
 	public static boolean isBlocked(L2PcInstance listOwner, L2PcInstance target)
 	{
 		BlockList blockList = listOwner.getBlockList();
@@ -173,17 +173,17 @@ public class BlockList
 		BlockList blockList = listOwner.getBlockList();
 		return blockList.isBlockAll() || blockList.isInBlockList(targetId);
 	}
-
+	
 	private void setBlockAll(boolean state)
 	{
 		_owner.setMessageRefusal(state);
 	}
-
+	
 	private List<Integer> getBlockList()
 	{
 		return _blockList;
 	}
-
+	
 	public static void addToBlockList(L2PcInstance listOwner, int targetId)
 	{
 		if (listOwner == null)
@@ -206,13 +206,13 @@ public class BlockList
 		}
 		
 		listOwner.getBlockList().addToBlockList(targetId);
-
+		
 		SystemMessage sm = new SystemMessage(SystemMessageId.S1_WAS_ADDED_TO_YOUR_IGNORE_LIST);
 		sm.addString(charName);
 		listOwner.sendPacket(sm);
 		
 		L2PcInstance player = L2World.getInstance().getPlayer(targetId);
-
+		
 		if (player != null)
 		{
 			sm = new SystemMessage(SystemMessageId.S1_HAS_ADDED_YOU_TO_IGNORE_LIST);
@@ -220,7 +220,7 @@ public class BlockList
 			player.sendPacket(sm);
 		}
 	}
-
+	
 	public static void removeFromBlockList(L2PcInstance listOwner, int targetId)
 	{
 		if (listOwner == null)
@@ -238,27 +238,27 @@ public class BlockList
 		}
 		
 		listOwner.getBlockList().removeFromBlockList(targetId);
-
+		
 		sm = new SystemMessage(SystemMessageId.S1_WAS_REMOVED_FROM_YOUR_IGNORE_LIST);
 		sm.addString(charName);
 		listOwner.sendPacket(sm);
 	}
-
+	
 	public static boolean isInBlockList(L2PcInstance listOwner, L2PcInstance target)
 	{
 		return listOwner.getBlockList().isInBlockList(target);
 	}
-
+	
 	public boolean isBlockAll(L2PcInstance listOwner)
 	{
 		return listOwner.getBlockList().isBlockAll();
 	}
-
+	
 	public static void setBlockAll(L2PcInstance listOwner, boolean newValue)
 	{
 		listOwner.getBlockList().setBlockAll(newValue);
 	}
-
+	
 	public static void sendListToOwner(L2PcInstance listOwner)
 	{
 		int i = 1;
@@ -269,7 +269,7 @@ public class BlockList
 		}
 		listOwner.sendPacket(SystemMessageId.FRIEND_LIST_FOOTER);
 	}
-
+	
 	/**
 	 * 
 	 * @param ownerId object id of owner block list

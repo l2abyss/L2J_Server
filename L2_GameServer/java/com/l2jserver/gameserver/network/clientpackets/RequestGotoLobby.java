@@ -33,7 +33,7 @@ public class RequestGotoLobby extends L2GameClientPacket
 	{
 		// trigger
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
 	 */
@@ -43,7 +43,7 @@ public class RequestGotoLobby extends L2GameClientPacket
 		L2GameClient client = this.getClient();
 		client.sendPacket(new CharSelectionInfo(client.getAccountName(), client.getSessionId().playOkID1));
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
 	 */

@@ -20,16 +20,16 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class HennaItemRemoveInfo extends L2GameServerPacket
 {
 	private static final String _S__E3_HennaItemRemoveInfo = "[S] e7 HennaItemRemoveInfo";
-
+	
 	private L2PcInstance _activeChar;
 	private L2HennaInstance _henna;
-
+	
 	public HennaItemRemoveInfo(L2HennaInstance henna, L2PcInstance player)
 	{
 		_henna = henna;
 		_activeChar = player;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -53,7 +53,7 @@ public class HennaItemRemoveInfo extends L2GameServerPacket
 		writeD(_activeChar.getWIT()); //current WIT
 		writeC(_activeChar.getWIT() - _henna.getStatWIT());	//equip WIT
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

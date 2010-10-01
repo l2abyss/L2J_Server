@@ -69,6 +69,6 @@ public class EffectPhysicalMute extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().stopPsychicalMuted(this);
+		getEffected().stopPsychicalMuted(false);
 	}
 }

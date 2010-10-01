@@ -29,7 +29,7 @@ public class PlayerLogout extends BaseSendablePacket
 		writeC(0x03);
 		writeS(player);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
 	 */
@@ -38,5 +38,5 @@ public class PlayerLogout extends BaseSendablePacket
 	{
 		return getBytes();
 	}
-
+	
 }

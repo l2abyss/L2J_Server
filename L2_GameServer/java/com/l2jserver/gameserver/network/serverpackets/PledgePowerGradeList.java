@@ -25,35 +25,35 @@ import com.l2jserver.gameserver.model.L2Clan.RankPrivs;
  * 00 00
  * 00000000                                           ...
 
-  * format   dd ??
+ * format   dd ??
  *
  * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
  */
 public class PledgePowerGradeList extends L2GameServerPacket
 {
 	private static final String _S__FE_3B_PLEDGEPOWERGRADELIST = "[S] FE:3c PledgePowerGradeList";
-    private RankPrivs[] _privs;
-
+	private RankPrivs[] _privs;
+	
 	public PledgePowerGradeList(RankPrivs[] privs)
 	{
-        _privs = privs;
+		_privs = privs;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
-        writeC(0xFE);
-        writeH(0x3c);
-        writeD(_privs.length);
-        for (RankPrivs temp: _privs)
-        {
-            writeD(temp.getRank());
-            writeD(temp.getParty());
-            //_log.warning("rank: "+temp.getRank()+" party: "+temp.getParty());
-        }
-
+		writeC(0xFE);
+		writeH(0x3c);
+		writeD(_privs.length);
+		for (RankPrivs temp: _privs)
+		{
+			writeD(temp.getRank());
+			writeD(temp.getParty());
+			//_log.warning("rank: "+temp.getRank()+" party: "+temp.getParty());
+		}
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -62,5 +62,5 @@ public class PledgePowerGradeList extends L2GameServerPacket
 	{
 		return _S__FE_3B_PLEDGEPOWERGRADELIST;
 	}
-
+	
 }

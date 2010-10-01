@@ -36,10 +36,10 @@ public class RequestChangeNicknameColor extends L2GameClientPacket
 		0x486295,	// Chocolate
 		0x999999	// Silver
 	};
-
+	
 	private int _colorNum, _itemObjectId;
 	private String _title;
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
 	 */
@@ -50,7 +50,7 @@ public class RequestChangeNicknameColor extends L2GameClientPacket
 		_title = readS();
 		_itemObjectId = readD();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
 	 */
@@ -60,16 +60,16 @@ public class RequestChangeNicknameColor extends L2GameClientPacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (_colorNum < 0 || _colorNum >= COLORS.length)
 			return;
-
+		
 		final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_itemObjectId);
 		if (item == null
 				|| item.getEtcItem() == null
 				|| !item.getEtcItem().getHandlerName().equalsIgnoreCase("NicknameColor"))
 			return;
-
+		
 		if (activeChar.destroyItem("Consume", item, 1, null, true))
 		{
 			activeChar.setTitle(_title);
@@ -77,7 +77,7 @@ public class RequestChangeNicknameColor extends L2GameClientPacket
 			activeChar.broadcastUserInfo();
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
 	 */

@@ -14,13 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.actor.L2Character.ZONE_PEACE;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExShowReceivedPostList;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * @author Migi, DS
@@ -28,35 +24,35 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestReceivedPostList extends L2GameClientPacket
 {
 	private static final String _C__D0_67_REQUESTRECEIVEDPOSTLIST = "[C] D0:67 RequestReceivedPostList";
-
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger packet
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null || !Config.ALLOW_MAIL)
 			return;
-
-		if (!activeChar.isInsideZone(ZONE_PEACE))
+		
+		/*if (!activeChar.isInsideZone(ZONE_PEACE))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
 			return;
-		}
-
+		}*/
+		
 		activeChar.sendPacket(new ExShowReceivedPostList(activeChar.getObjectId()));
 	}
-
+	
 	@Override
 	public String getType()
 	{
 		return _C__D0_67_REQUESTRECEIVEDPOSTLIST;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

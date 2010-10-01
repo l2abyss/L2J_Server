@@ -27,14 +27,14 @@ import com.l2jserver.gameserver.model.entity.Message;
 public class ExShowReceivedPostList extends L2GameServerPacket
 {
 	private static final String _S__FE_AA_EXSHOWRECEIVEDPOSTLIST = "[S] FE:AA ExShowReceivedPostList";
-
+	
 	private List<Message> _inbox;
-
+	
 	public ExShowReceivedPostList(int objectId)
 	{
 		_inbox = MailManager.getInstance().getInbox(objectId);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -59,6 +59,7 @@ public class ExShowReceivedPostList extends L2GameServerPacket
 				writeD(msg.hasAttachments() ? 0x01 : 0x00);
 				writeD(msg.isFourStars() ? 0x01 : 0x00);
 				writeD(msg.isNews() ? 0x01 : 0x00);
+				writeD(0);
 			}
 		}
 		else
@@ -68,7 +69,7 @@ public class ExShowReceivedPostList extends L2GameServerPacket
 		FastList.recycle((FastList<Message>) _inbox);
 		_inbox = null;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

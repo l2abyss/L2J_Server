@@ -18,17 +18,17 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public final class L2FlyRaidBossInstance extends L2RaidBossInstance
 {
-
+	
 	public L2FlyRaidBossInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2FlyRaidBossInstance);
 	}
-
-    @Override
+	
+	@Override
 	public void onSpawn()
-    {
-    	this.setIsFlying(true);
-    	super.onSpawn();
-    }
+	{
+		this.setIsFlying(true);
+		super.onSpawn();
+	}
 }

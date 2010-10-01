@@ -29,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-
 import org.mmocore.network.SelectorConfig;
 import org.mmocore.network.SelectorThread;
 
@@ -44,7 +43,7 @@ import com.l2jserver.status.Status;
  */
 public class L2LoginServer
 {
-	public static final int PROTOCOL_REV = 0x0103;
+	public static final int PROTOCOL_REV = 0x0104;
 	
 	private static L2LoginServer _instance;
 	private Logger _log = Logger.getLogger(L2LoginServer.class.getName());

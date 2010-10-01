@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.skills.Env;
 public final class ConditionPlayerHasClanHall extends Condition
 {
 	private final ArrayList<Integer> _clanHall;
-
+	
 	/**
 	 * Instantiates a new condition player has clan hall.
 	 *
@@ -38,7 +38,7 @@ public final class ConditionPlayerHasClanHall extends Condition
 	{
 		_clanHall = clanHall;
 	}
-
+	
 	/**
 	 * Test impl.
 	 *
@@ -51,15 +51,15 @@ public final class ConditionPlayerHasClanHall extends Condition
 	{
 		if (!(env.player instanceof L2PcInstance))
 			return false;
-
+		
 		L2Clan clan = ((L2PcInstance)env.player).getClan();
 		if (clan == null)
 			return (_clanHall.size() == 1 && _clanHall.get(0) == 0);
-
+		
 		// All Clan Hall
 		if (_clanHall.size() == 1 && _clanHall.get(0) == -1)
 			return clan.getHasHideout() > 0;
-
-		return _clanHall.contains(clan.getHasHideout());
+			
+			return _clanHall.contains(clan.getHasHideout());
 	}
 }

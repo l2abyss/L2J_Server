@@ -65,12 +65,6 @@ public class L2CharTemplate
 	public final int baseMovement;
 	public final int baseConfusion;
 	public final int baseSleep;
-	public final int baseFire;
-	public final int baseWind;
-	public final int baseWater;
-	public final int baseEarth;
-	public final int baseHoly;
-	public final int baseDark;
 	public final double baseAggressionVuln;
 	public final double baseBleedVuln;
 	public final double basePoisonVuln;
@@ -79,6 +73,12 @@ public class L2CharTemplate
 	public final double baseMovementVuln;
 	public final double baseConfusionVuln;
 	public final double baseSleepVuln;
+	public int baseFire;
+	public int baseWind;
+	public int baseWater;
+	public int baseEarth;
+	public int baseHoly;
+	public int baseDark;
 	public double baseFireRes;
 	public double baseWindRes;
 	public double baseWaterRes;
@@ -99,7 +99,7 @@ public class L2CharTemplate
 	 * </B></FONT><BR><BR>
 	 */
 	public final int collisionRadius;
-
+	
 	/**
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> :
 	 * For client info use {@link fCollisionHeight}
@@ -155,14 +155,14 @@ public class L2CharTemplate
 		baseEarth = set.getInteger("baseEarth", 0);
 		baseHoly = set.getInteger("baseHoly", 0);
 		baseDark = set.getInteger("baseDark", 0);
-		baseAggressionVuln = set.getInteger("baseAaggressionVuln", 1);
-		baseBleedVuln = set.getInteger("baseBleedVuln", 1);
-		basePoisonVuln = set.getInteger("basePoisonVuln", 1);
-		baseStunVuln = set.getInteger("baseStunVuln", 1);
-		baseRootVuln = set.getInteger("baseRootVuln", 1);
-		baseMovementVuln = set.getInteger("baseMovementVuln", 1);
-		baseConfusionVuln = set.getInteger("baseConfusionVuln", 1);
-		baseSleepVuln = set.getInteger("baseSleepVuln", 1);
+		baseAggressionVuln = set.getInteger("baseAggressionVuln", 0);
+		baseBleedVuln = set.getInteger("baseBleedVuln", 0);
+		basePoisonVuln = set.getInteger("basePoisonVuln", 0);
+		baseStunVuln = set.getInteger("baseStunVuln", 0);
+		baseRootVuln = set.getInteger("baseRootVuln", 0);
+		baseMovementVuln = set.getInteger("baseMovementVuln", 0);
+		baseConfusionVuln = set.getInteger("baseConfusionVuln", 0);
+		baseSleepVuln = set.getInteger("baseSleepVuln", 0);
 		baseFireRes = set.getInteger("baseFireRes", 0);
 		baseWindRes = set.getInteger("baseWindRes", 0);
 		baseWaterRes = set.getInteger("baseWaterRes", 0);

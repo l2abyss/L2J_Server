@@ -55,48 +55,48 @@ public abstract class L2Vehicle extends L2Character
 	protected final FastList<L2PcInstance> _passengers = new FastList<L2PcInstance>();
 	protected Location _oustLoc = null;
 	private Runnable _engine = null;
-
+	
 	protected VehiclePathPoint[] _currentPath = null;
 	protected int _runState = 0;
-
+	
 	public L2Vehicle(int objectId, L2CharTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2Vehicle);
 		setIsFlying(true);
 	}
-
+	
 	public boolean isBoat()
 	{
 		return false;
 	}
-
+	
 	public boolean isAirShip()
 	{
 		return false;
 	}
-
+	
 	public boolean canBeControlled()
 	{
 		return _engine == null;
 	}
-
+	
 	public void registerEngine(Runnable r)
 	{
 		_engine = r;
 	}
-
+	
 	public void runEngine(int delay)
 	{
 		if (_engine != null)
 			ThreadPoolManager.getInstance().scheduleGeneral(_engine, delay);
 	}
-
+	
 	public void executePath(VehiclePathPoint[] path)
 	{
 		_runState = 0;
 		_currentPath = path;
-
+		
 		if (_currentPath != null && _currentPath.length > 0)
 		{
 			final VehiclePathPoint point = _currentPath[0];
@@ -104,18 +104,18 @@ public abstract class L2Vehicle extends L2Character
 				getStat().setMoveSpeed(point.moveSpeed);
 			if (point.rotationSpeed > 0)
 				getStat().setRotationSpeed(point.rotationSpeed);
-
+			
 			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(point.x, point.y, point.z, 0));
 			return;
 		}
 		getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 	}
-
+	
 	@Override
 	public boolean moveToNextRoutePoint()
 	{
 		_move = null;
-
+		
 		if (_currentPath != null)
 		{
 			_runState++;
@@ -135,7 +135,7 @@ public abstract class L2Vehicle extends L2Character
 							getStat().setMoveSpeed(point.moveSpeed);
 						if (point.rotationSpeed > 0)
 							getStat().setRotationSpeed(point.rotationSpeed);
-
+						
 						MoveData m = new MoveData();
 						m.disregardingGeodata = false;
 						m.onGeodataPathIndex = -1;
@@ -143,16 +143,16 @@ public abstract class L2Vehicle extends L2Character
 						m._yDestination = point.y;
 						m._zDestination = point.z;
 						m._heading = 0;
-
+						
 						final double dx = point.x - getX();
 						final double dy = point.y - getY();
 						final double distance = Math.sqrt(dx*dx + dy*dy);
 						if (distance > 1) // vertical movement heading check
 							setHeading(Util.calculateHeadingFrom(getX(), getY(), point.x, point.y));
-
+						
 						m._moveStartTime = GameTimeController.getGameTicks();
 						_move = m;
-
+						
 						GameTimeController.getInstance().registerMovingObject(this);
 						return true;
 					}
@@ -161,59 +161,59 @@ public abstract class L2Vehicle extends L2Character
 			else
 				_currentPath = null;
 		}
-
+		
 		runEngine(10);
 		return false;
 	}
-
+	
 	@Override
-    public void initKnownList()
-    {
+	public void initKnownList()
+	{
 		setKnownList(new VehicleKnownList(this));
-    }
-
+	}
+	
 	@Override
 	public VehicleStat getStat()
 	{
 		return (VehicleStat)super.getStat();
 	}
-
+	
 	@Override
 	public void initCharStat()
 	{
 		setStat(new VehicleStat(this));
 	}
-
+	
 	public boolean isInDock()
 	{
 		return _dockId > 0;
 	}
-
+	
 	public int getDockId()
 	{
 		return _dockId;
 	}
-
+	
 	public void setInDock(int d)
 	{
 		_dockId = d;
 	}
-
+	
 	public void setOustLoc(Location loc)
 	{
 		_oustLoc = loc;
 	}
-
+	
 	public Location getOustLoc()
 	{
 		return _oustLoc != null ? _oustLoc : MapRegionTable.getInstance().getTeleToLocation(this, MapRegionTable.TeleportWhereType.Town);
 	}
-
+	
 	public void oustPlayers()
 	{
 		L2PcInstance player;
-
-		// Use iterator because oustPlayer will try to remove player from _passengers 
+		
+		// Use iterator because oustPlayer will try to remove player from _passengers
 		final Iterator<L2PcInstance> iter = _passengers.iterator();
 		while (iter.hasNext())
 		{
@@ -223,27 +223,27 @@ public abstract class L2Vehicle extends L2Character
 				oustPlayer(player);
 		}
 	}
-
+	
 	public void oustPlayer(L2PcInstance player)
 	{
 		player.setVehicle(null);
 		player.setInVehiclePosition(null);
 		removePassenger(player);
 	}
-
+	
 	public boolean addPassenger(L2PcInstance player)
 	{
 		if (player == null || _passengers.contains(player))
 			return false;
-
+		
 		// already in other vehicle
 		if (player.getVehicle() != null && player.getVehicle() != this)
 			return false;
-
+		
 		_passengers.add(player);
 		return true;
 	}
-
+	
 	public void removePassenger(L2PcInstance player)
 	{
 		try
@@ -253,17 +253,17 @@ public abstract class L2Vehicle extends L2Character
 		catch (Exception e)
 		{}
 	}
-
+	
 	public boolean isEmpty()
 	{
 		return _passengers.isEmpty();
 	}
-
+	
 	public List<L2PcInstance> getPassengers()
 	{
 		return _passengers;
 	}
-
+	
 	public void broadcastToPassengers(L2GameServerPacket sm)
 	{
 		for (L2PcInstance player : _passengers)
@@ -272,7 +272,7 @@ public abstract class L2Vehicle extends L2Character
 				player.sendPacket(sm);
 		}
 	}
-
+	
 	/**
 	 * Consume ticket(s) and teleport player from boat if no correct ticket
 	 * @param itemId Ticket itemId
@@ -312,12 +312,12 @@ public abstract class L2Vehicle extends L2Character
 			}
 		}
 	}
-
+	
 	@Override
 	public boolean updatePosition(int gameTicks)
 	{
 		final boolean result = super.updatePosition(gameTicks);
-
+		
 		for (L2PcInstance player : _passengers)
 		{
 			if (player != null && player.getVehicle() == this)
@@ -326,37 +326,37 @@ public abstract class L2Vehicle extends L2Character
 				player.revalidateZone(false);
 			}
 		}
-
+		
 		return result;
 	}
-
+	
 	@Override
 	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
 	{
 		if (isMoving())
 			stopMove(null, false);
-
+		
 		setIsTeleporting(true);
-
+		
 		getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-
+		
 		for (L2PcInstance player : _passengers)
 		{
 			if (player != null)
 				player.teleToLocation(x, y, z);
 		}
-
+		
 		decayMe();
 		setXYZ(x, y, z);
-
+		
 		// temporary fix for heading on teleports
 		if (heading != 0)
 			getPosition().setHeading(heading);
-
+		
 		onTeleported();
 		revalidateZone(true);
 	}
-
+	
 	@Override
 	public void stopMove(L2CharPosition pos, boolean updateKnownObjects)
 	{
@@ -367,16 +367,16 @@ public abstract class L2Vehicle extends L2Character
 			setHeading(pos.heading);
 			revalidateZone(true);
 		}
-
+		
 		if (Config.MOVE_BASED_KNOWNLIST && updateKnownObjects)
 			this.getKnownList().findObjects();
 	}
-
+	
 	@Override
 	public void deleteMe()
 	{
 		_engine = null;
-
+		
 		try
 		{
 			if (isMoving())
@@ -386,7 +386,7 @@ public abstract class L2Vehicle extends L2Character
 		{
 			_log.log(Level.SEVERE, "Failed stopMove().", e);
 		}
-
+		
 		try
 		{
 			oustPlayers();
@@ -395,9 +395,9 @@ public abstract class L2Vehicle extends L2Character
 		{
 			_log.log(Level.SEVERE, "Failed oustPlayers().", e);
 		}
-
+		
 		final L2WorldRegion oldRegion = getWorldRegion();
-
+		
 		try
 		{
 			decayMe();
@@ -406,10 +406,10 @@ public abstract class L2Vehicle extends L2Character
 		{
 			_log.log(Level.SEVERE, "Failed decayMe().", e);
 		}
-
+		
 		if (oldRegion != null)
 			oldRegion.removeFromZones(this);
-
+		
 		try
 		{
 			getKnownList().removeAllKnownObjects();
@@ -418,13 +418,13 @@ public abstract class L2Vehicle extends L2Character
 		{
 			_log.log(Level.SEVERE, "Failed cleaning knownlist.", e);
 		}
-
+		
 		// Remove L2Object object from _allObjects of L2World
 		L2World.getInstance().removeObject(this);
-
+		
 		super.deleteMe();
 	}
-
+	
 	@Override
 	public void updateAbnormalEffect()
 	{
@@ -465,14 +465,14 @@ public abstract class L2Vehicle extends L2Character
 	{
 		return false;
 	}
-
+	
 	@Override
 	public void setAI(L2CharacterAI newAI)
 	{
 		if (_ai == null)
 			_ai = newAI;
 	}
-
+	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
 		@Override

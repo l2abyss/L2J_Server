@@ -38,7 +38,7 @@ public class L2CommandChannel
 	private final List<L2Party> _partys;
 	private L2PcInstance _commandLeader = null;
 	private int _channelLvl;
-
+	
 	/**
 	 * Creates a New Command Channel and Add the Leaders party to the CC
 	 *
@@ -55,7 +55,7 @@ public class L2CommandChannel
 		leader.getParty().broadcastToPartyMembers(new SystemMessage(SystemMessageId.COMMAND_CHANNEL_FORMED));
 		leader.getParty().broadcastToPartyMembers(new ExOpenMPCC());
 	}
-
+	
 	/**
 	 * Adds a Party to the Command Channel
 	 * @param Party
@@ -74,7 +74,7 @@ public class L2CommandChannel
 		party.broadcastToPartyMembers(new SystemMessage(SystemMessageId.JOINED_COMMAND_CHANNEL));
 		party.broadcastToPartyMembers(new ExOpenMPCC());
 	}
-
+	
 	/**
 	 * Removes a Party from the Command Channel
 	 * @param Party
@@ -97,14 +97,14 @@ public class L2CommandChannel
 		{
 			broadcastToChannelMembers(new SystemMessage(SystemMessageId.COMMAND_CHANNEL_DISBANDED));
 			disbandChannel();
-		} 
-		else 
+		}
+		else
 		{
 			// Update the CCinfo for existing players
 			this.broadcastToChannelMembers(new ExMPCCPartyInfoUpdate(party, 0));
 		}
 	}
-
+	
 	/**
 	 * disbands the whole Command Channel
 	 */
@@ -120,7 +120,7 @@ public class L2CommandChannel
 		}
 		_partys.clear();
 	}
-
+	
 	/**
 	 * @return overall membercount of the Command Channel
 	 */
@@ -134,7 +134,7 @@ public class L2CommandChannel
 		}
 		return count;
 	}
-
+	
 	/**
 	 * Broadcast packet to every channelmember
 	 * @param L2GameServerPacket
@@ -162,8 +162,8 @@ public class L2CommandChannel
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * @return list of Parties in Command Channel
 	 */
@@ -171,7 +171,7 @@ public class L2CommandChannel
 	{
 		return _partys;
 	}
-
+	
 	/**
 	 * @return list of all Members in Command Channel
 	 */
@@ -184,13 +184,13 @@ public class L2CommandChannel
 		}
 		return members;
 	}
-
+	
 	/**
 	 *
 	 * @return Level of CC
 	 */
 	public int getLevel() { return _channelLvl; }
-
+	
 	/**
 	 * @param sets the leader of the Command Channel
 	 */
@@ -198,7 +198,7 @@ public class L2CommandChannel
 	{
 		_commandLeader = leader;
 	}
-
+	
 	/**
 	 * @return the leader of the Command Channel
 	 */
@@ -206,7 +206,7 @@ public class L2CommandChannel
 	{
 		return _commandLeader;
 	}
-
+	
 	/**
 	 *
 	 *

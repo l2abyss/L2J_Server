@@ -22,30 +22,30 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  * @version $Revision: 1.3.4.2 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestChangePartyLeader extends L2GameClientPacket{
-
+	
 	private static final String _C__EE_REQUESTCHANGEPARTYLEADER = "[C] D0:0C RequestChangePartyLeader";
 	//private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
-
+	
 	private String _name;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_name = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
-
+			return;
+		
 		if (activeChar.isInParty() && activeChar.getParty().isLeader(activeChar))
 			activeChar.getParty().changePartyLeader(_name);
 	}
-
-
+	
+	
 	@Override
 	public String getType()
 	{

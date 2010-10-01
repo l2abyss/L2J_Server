@@ -29,11 +29,11 @@ public final class DlgAnswer extends L2GameClientPacket
 {
 	private static final String _C__C5_DLGANSWER = "[C] C5 DlgAnswer";
 	private static Logger _log = Logger.getLogger(DlgAnswer.class.getName());
-
+	
 	private int _messageId;
 	private int _answer;
 	private int _requesterId;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -41,7 +41,7 @@ public final class DlgAnswer extends L2GameClientPacket
 		_answer = readD();
 		_requesterId = readD();
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
@@ -63,7 +63,7 @@ public final class DlgAnswer extends L2GameClientPacket
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_CLOSE_THE_GATE.getId())
 			activeChar.gatesAnswer(_answer, 0);
 	}
-
+	
 	@Override
 	public String getType()
 	{

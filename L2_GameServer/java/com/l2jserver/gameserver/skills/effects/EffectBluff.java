@@ -61,7 +61,7 @@ public class EffectBluff extends L2Effect
 		
 		if (getEffected() instanceof L2SiegeSummonInstance)
 			return false;
-
+		
 		getEffected().broadcastPacket(new StartRotation(getEffected().getObjectId(), getEffected().getHeading(), 1, 65535));
 		getEffected().broadcastPacket(new StopRotation(getEffected().getObjectId(), getEffector().getHeading(), 65535));
 		getEffected().setHeading(getEffector().getHeading());

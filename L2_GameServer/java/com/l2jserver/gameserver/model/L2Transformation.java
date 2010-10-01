@@ -27,17 +27,17 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	private double _collisionRadius;
 	private double _collisionHeight;
 	private final boolean _isStance;
-
+	
 	public static final int TRANSFORM_ZARICHE = 301;
 	public static final int TRANSFORM_AKAMANAH = 302;
 	
 	protected static final int[] EMPTY_ARRAY = {};
-
+	
 	private L2PcInstance _player;
-
+	
 	/**
 	 * 
-	 * @param id Internal id that server will use to associate this transformation 
+	 * @param id Internal id that server will use to associate this transformation
 	 * @param graphicalId Client visible transformation id
 	 * @param collisionRadius Collision Radius of the player while transformed
 	 * @param collisionHeight  Collision Height of the player while transformed
@@ -50,10 +50,10 @@ public abstract class L2Transformation implements Cloneable, Runnable
 		_collisionHeight = collisionHeight;
 		_isStance = false;
 	}
-
+	
 	/**
 	 * 
-	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation 
+	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation
 	 * @param collisionRadius Collision Radius of the player while transformed
 	 * @param collisionHeight  Collision Height of the player while transformed
 	 */
@@ -61,7 +61,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		this(id, id, collisionRadius, collisionHeight);
 	}
-
+	
 	/**
 	 * 
 	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation
@@ -73,7 +73,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 		_graphicalId = id;
 		_isStance = true;
 	}
-
+	
 	/**
 	 * @return Returns the id.
 	 */
@@ -81,7 +81,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		return _id;
 	}
-
+	
 	/**
 	 * @return Returns the graphicalId.
 	 */
@@ -89,7 +89,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		return _graphicalId;
 	}
-
+	
 	/**
 	 * Return true if this is a stance (vanguard/inquisitor)
 	 * @return
@@ -98,7 +98,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		return _isStance;
 	}
-
+	
 	/**
 	 * @return Returns the collisionRadius.
 	 */
@@ -108,7 +108,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 			return _player.getCollisionRadius();
 		return _collisionRadius;
 	}
-
+	
 	/**
 	 * @return Returns the collisionHeight.
 	 */
@@ -118,12 +118,12 @@ public abstract class L2Transformation implements Cloneable, Runnable
 			return _player.getCollisionHeight();
 		return _collisionHeight;
 	}
-
+	
 	// Scriptable Events
 	public abstract void onTransform();
-
+	
 	public abstract void onUntransform();
-
+	
 	/**
 	 * @param player The player to set.
 	 */
@@ -131,7 +131,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		_player = player;
 	}
-
+	
 	/**
 	 * @return Returns the player.
 	 */
@@ -139,27 +139,27 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		return _player;
 	}
-
+	
 	public void start()
 	{
 		this.resume();
 	}
-
+	
 	public void resume()
 	{
 		this.getPlayer().transform(this);
 	}
-
+	
 	public void run()
 	{
 		this.stop();
 	}
-
+	
 	public void stop()
 	{
 		this.getPlayer().untransform();
 	}
-
+	
 	public L2Transformation createTransformationForPlayer(L2PcInstance player)
 	{
 		try
@@ -174,13 +174,13 @@ public abstract class L2Transformation implements Cloneable, Runnable
 			return null;
 		}
 	}
-
+	
 	// Override if necessary
 	public void onLevelUp()
 	{
-
+		
 	}
-
+	
 	/**
 	 * Returns true if transformation can do melee attack
 	 */
@@ -188,7 +188,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		return true;
 	}
-
+	
 	/**
 	 * Returns true if transformation can start follow target when trying to cast an skill out of range
 	 */

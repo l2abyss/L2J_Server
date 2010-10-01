@@ -66,7 +66,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 				_items = null;
 				return;
 			}
-
+			
 			_items.add(new ItemRequest(objectId, cnt, price));
 		}
 	}
@@ -90,8 +90,8 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 			return;
 		}
 		
-		L2Object object = L2World.getInstance().findObject(_storePlayerId);
-		if (!(object instanceof L2PcInstance))
+		L2Object object = L2World.getInstance().getPlayer(_storePlayerId);
+		if (object == null)
 			return;
 		
 		if (player.isCursedWeaponEquipped())
@@ -182,7 +182,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 	{
 		return _C__79_REQUESTPRIVATESTOREBUY;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#cleanUp()
 	 */

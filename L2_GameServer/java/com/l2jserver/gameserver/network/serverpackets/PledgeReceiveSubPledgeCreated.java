@@ -30,7 +30,7 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 	private static Logger _log = Logger.getLogger(PledgeReceiveSubPledgeCreated.class.getName());
 	private SubPledge _subPledge;
 	private L2Clan _clan;
-
+	
 	/**
 	 * @param member
 	 */
@@ -39,7 +39,7 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 		_subPledge = subPledge;
 		_clan = clan;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -48,11 +48,11 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x40);
-
+		
 		writeD(0x01);
-        writeD(_subPledge.getId());
-        writeS(_subPledge.getName());
-        writeS(getLeaderName());
+		writeD(_subPledge.getId());
+		writeS(_subPledge.getName());
+		writeS(getLeaderName());
 	}
 	
 	private String getLeaderName()
@@ -66,9 +66,9 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 			return "";
 		}
 		else
-			return _clan.getClanMember(LeaderId).getName(); 
+			return _clan.getClanMember(LeaderId).getName();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -77,5 +77,5 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 	{
 		return _S__FE_3F_PLEDGERECEIVESUBPLEDGECREATED;
 	}
-
+	
 }

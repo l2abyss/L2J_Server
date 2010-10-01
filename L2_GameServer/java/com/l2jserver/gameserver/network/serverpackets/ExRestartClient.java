@@ -22,7 +22,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExRestartClient extends L2GameServerPacket
 {
 	private static final String _S__FE_47_EXRESTARTCLIENT = "[S] FE:48 ExRestartClient";
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -33,7 +33,7 @@ public class ExRestartClient extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x48);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -42,5 +42,5 @@ public class ExRestartClient extends L2GameServerPacket
 	{
 		return _S__FE_47_EXRESTARTCLIENT;
 	}
-
+	
 }

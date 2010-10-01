@@ -25,12 +25,12 @@ public final class ObserverReturn extends L2GameClientPacket
 {
 	private static final String OBSRETURN__C__04 = "[C] b8 ObserverReturn";
 	//private static Logger _log = Logger.getLogger(Action.class.getName());
-
+	
 	@Override
 	protected void readImpl()
 	{
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -40,7 +40,7 @@ public final class ObserverReturn extends L2GameClientPacket
 		if (activeChar.inObserverMode()) activeChar.leaveObserverMode();
 		//activeChar.teleToLocation(activeChar.getObsX(), activeChar.getObsY(), activeChar.getObsZ());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

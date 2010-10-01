@@ -14,9 +14,9 @@
  */
 package com.l2jserver.gameserver.skills;
 
-import com.l2jserver.gameserver.skills.funcs.Func;
-
 import javolution.util.FastList;
+
+import com.l2jserver.gameserver.skills.funcs.Func;
 
 
 /**
@@ -35,9 +35,9 @@ import javolution.util.FastList;
 
 public final class Calculator
 {
-    /** Empty Func table definition */
+	/** Empty Func table definition */
 	private static final Func[] _emptyFuncs = new Func[0];
-
+	
 	/** Table of Func object */
 	private Func[] _functions;
 	/**
@@ -47,7 +47,7 @@ public final class Calculator
 	{
 		_functions = _emptyFuncs;
 	}
-
+	
 	/**
 	 * Constructor of Calculator (Init value : Calculator c).<BR><BR>
 	 */
@@ -55,8 +55,8 @@ public final class Calculator
 	{
 		_functions = c._functions;
 	}
-
-
+	
+	
 	/**
 	 * Check if 2 calculators are equals.<BR><BR>
 	 */
@@ -64,32 +64,32 @@ public final class Calculator
 	{
 		if (c1 == c2)
 			return true;
-
+		
 		if (c1 == null || c2 == null)
 			return false;
-
+		
 		Func[] funcs1 = c1._functions;
 		Func[] funcs2 = c2._functions;
-
+		
 		if (funcs1 == funcs2)
 			return true;
-
+		
 		if (funcs1.length != funcs2.length)
 			return false;
-
+		
 		if (funcs1.length == 0)
 			return true;
-
+		
 		for (int i=0; i < funcs1.length; i++)
 		{
 			if (funcs1[i] != funcs2[i])
 				return false;
 		}
 		return true;
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Return the number of Funcs in the Calculator.<BR><BR>
 	 */
@@ -97,8 +97,8 @@ public final class Calculator
 	{
 		return _functions.length;
 	}
-
-
+	
+	
 	/**
 	 * Add a Func to the Calculator.<BR><BR>
 	 */
@@ -106,22 +106,22 @@ public final class Calculator
 	{
 		Func[] funcs = _functions;
 		Func[] tmp = new Func[funcs.length+1];
-
+		
 		final int order = f.order;
 		int i;
-
+		
 		for (i=0; i < funcs.length && order >= funcs[i].order; i++)
 			tmp[i] = funcs[i];
-
+		
 		tmp[i] = f;
-
+		
 		for (; i < funcs.length; i++)
 			tmp[i+1] = funcs[i];
-
+		
 		_functions = tmp;
 	}
-
-
+	
+	
 	/**
 	 * Remove a Func from the Calculator.<BR><BR>
 	 */
@@ -129,32 +129,32 @@ public final class Calculator
 	{
 		Func[] funcs = _functions;
 		Func[] tmp = new Func[funcs.length-1];
-
+		
 		int i;
-
+		
 		for (i=0; i < funcs.length && f != funcs[i]; i++)
 			tmp[i] = funcs[i];
-
+		
 		if (i == funcs.length)
 			return;
-
+		
 		for (i++; i < funcs.length; i++)
 			tmp[i-1] = funcs[i];
-
+		
 		if (tmp.length == 0)
 			_functions = _emptyFuncs;
 		else
 			_functions = tmp;
-
+		
 	}
-
+	
 	/**
 	 * Remove each Func with the specified owner of the Calculator.<BR><BR>
 	 */
 	public synchronized FastList<Stats> removeOwner(Object owner)
 	{
 		FastList<Stats> modifiedStats = new FastList<Stats>();
-
+		
 		for (Func func: _functions)
 		{
 			if (func.funcOwner == owner)
@@ -164,10 +164,10 @@ public final class Calculator
 			}
 		}
 		return modifiedStats;
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Run each Func of the Calculator.<BR><BR>
 	 */
@@ -176,5 +176,5 @@ public final class Calculator
 		for (Func func: _functions)
 			func.calc(env);
 	}
-
+	
 }

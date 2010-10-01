@@ -32,7 +32,7 @@ public class L2BoatAI extends L2VehicleAI
 	{
 		super(accessor);
 	}
-
+	
 	@Override
 	protected void moveTo(int x, int y, int z)
 	{
@@ -40,19 +40,19 @@ public class L2BoatAI extends L2VehicleAI
 		{
 			if (!_clientMoving)
 				_actor.broadcastPacket(new VehicleStarted(getActor(), 1));
-
+			
 			_clientMoving = true;
 			_accessor.moveTo(x, y, z);
 			_actor.broadcastPacket(new VehicleDeparture(getActor()));
 		}
 	}
-
+	
 	@Override
 	protected void clientStopMoving(L2CharPosition pos)
 	{
 		if (_actor.isMoving())
 			_accessor.stopMove(pos);
-
+		
 		if (_clientMoving || pos != null)
 		{
 			_clientMoving = false;
@@ -60,14 +60,14 @@ public class L2BoatAI extends L2VehicleAI
 			_actor.broadcastPacket(new VehicleInfo(getActor()));
 		}
 	}
-
+	
 	@Override
 	public void describeStateToPlayer(L2PcInstance player)
 	{
 		if (_clientMoving)
 			player.sendPacket(new VehicleDeparture(getActor()));
 	}
-
+	
 	@Override
 	public L2BoatInstance getActor()
 	{

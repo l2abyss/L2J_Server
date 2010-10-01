@@ -16,11 +16,11 @@ package com.l2jserver.gameserver.templates.chars;
 
 import java.util.List;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.templates.StatsSet;
-
-import javolution.util.FastList;
 
 /**
  * @author mkizub
@@ -132,7 +132,7 @@ public class L2PcTemplate extends L2CharTemplate
 			return _equipped;
 		}
 	}
-
+	
 	public final int getFallHeight()
 	{
 		return 333; // TODO: unhardcode it

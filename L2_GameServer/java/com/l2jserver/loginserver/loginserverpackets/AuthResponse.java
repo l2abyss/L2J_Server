@@ -26,7 +26,7 @@ import com.l2jserver.util.network.BaseSendablePacket;
  */
 public class AuthResponse extends BaseSendablePacket
 {
-
+	
 	/**
 	 * @param serverId
 	 */
@@ -36,7 +36,7 @@ public class AuthResponse extends BaseSendablePacket
 		writeC(serverId);
 		writeS(GameServerTable.getInstance().getServerNameById(serverId));
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.loginserver.serverpackets.ServerBasePacket#getContent()
 	 */
@@ -45,5 +45,5 @@ public class AuthResponse extends BaseSendablePacket
 	{
 		return getBytes();
 	}
-
+	
 }

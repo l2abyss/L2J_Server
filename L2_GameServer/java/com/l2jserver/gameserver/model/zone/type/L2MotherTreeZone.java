@@ -95,7 +95,7 @@ public class L2MotherTreeZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
-
+	
 	/**
 	 * @return the _mpRegen
 	 */
@@ -103,7 +103,7 @@ public class L2MotherTreeZone extends L2ZoneType
 	{
 		return _mpRegen;
 	}
-
+	
 	/**
 	 * @return the _hpRegen
 	 */

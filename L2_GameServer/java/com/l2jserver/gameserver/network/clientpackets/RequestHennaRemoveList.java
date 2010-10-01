@@ -20,27 +20,27 @@ import com.l2jserver.gameserver.network.serverpackets.HennaRemoveList;
 public final class RequestHennaRemoveList extends L2GameClientPacket
 {
 	private static final String _C__BA_RequestHennaRemoveList = "[C] ba RequestHennaRemoveList";
-
+	
 	// This is just a trigger packet...
 	@SuppressWarnings("unused")
 	private int _unknown;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_unknown = readD(); // ??
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		activeChar.sendPacket(new HennaRemoveList(activeChar));
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

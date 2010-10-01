@@ -53,10 +53,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2ArtefactInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.zone.L2ZoneType;
-import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.model.zone.type.L2CastleTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
+import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 
@@ -295,7 +294,7 @@ public class Castle
 			setOwner(clan);
 		}
 	}
-
+	
 	// This method add to the treasury
 	/** Add amount to castle instance's treasury (warehouse). */
 	public void addToTreasury(long amount)
@@ -325,7 +324,7 @@ public class Castle
 				long adenTax = (long) (amount * aden.getTaxRate()); // Find out what Aden gets from the current castle instance's income
 				if (aden.getOwnerId() > 0)
 					aden.addToTreasury(adenTax); // Only bother to really add the tax to the treasury if not npc owned
-					
+				
 				amount -= adenTax; // Subtract Aden's income from current castle instance's income
 			}
 		}
@@ -394,11 +393,11 @@ public class Castle
 	{
 		if (_zone == null)
 		{
-			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
+			for (L2SiegeZone zone : ZoneManager.getInstance().getAllZones(L2SiegeZone.class))
 			{
-				if (zone instanceof L2SiegeZone && ((L2SiegeZone) zone).getSiegeObjectId() == getCastleId())
+				if (zone.getSiegeObjectId() == getCastleId())
 				{
-					_zone = (L2SiegeZone) zone;
+					_zone = zone;
 					break;
 				}
 			}
@@ -410,11 +409,11 @@ public class Castle
 	{
 		if (_castleZone == null)
 		{
-			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
+			for (L2CastleZone zone : ZoneManager.getInstance().getAllZones(L2CastleZone.class))
 			{
-				if (zone instanceof L2CastleZone && ((L2CastleZone) zone).getCastleId() == getCastleId())
+				if (zone.getCastleId() == getCastleId())
 				{
-					_castleZone = (L2CastleZone) zone;
+					_castleZone = zone;
 					break;
 				}
 			}
@@ -426,11 +425,11 @@ public class Castle
 	{
 		if (_teleZone == null)
 		{
-			for (L2ZoneType zone : ZoneManager.getInstance().getAllZones())
+			for (L2CastleTeleportZone zone : ZoneManager.getInstance().getAllZones(L2CastleTeleportZone.class))
 			{
-				if (zone instanceof L2CastleTeleportZone && ((L2CastleTeleportZone) zone).getCastleId() == getCastleId())
+				if (zone.getCastleId() == getCastleId())
 				{
-					_teleZone = (L2CastleTeleportZone) zone;
+					_teleZone = zone;
 					break;
 				}
 			}
@@ -660,9 +659,9 @@ public class Castle
 		L2DoorInstance door = getDoor(doorId);
 		if (door == null)
 			return;
-
+		
 		door.setCurrentHp(door.getMaxHp() + hp);
-
+		
 		saveDoorUpgrade(doorId, hp, pDef, mDef);
 	}
 	
@@ -851,6 +850,7 @@ public class Castle
 						+ rs.getInt("hp") + ";" + rs.getInt("pDef") + ";" + rs.getInt("mDef"));
 				
 				L2DoorInstance door = DoorTable.parseList(_doorDefault.get(_doorDefault.size() - 1), false);
+				door.setIsWall(rs.getBoolean("isWall"));
 				_doors.add(door);
 				DoorTable.getInstance().putDoor(door);
 			}
@@ -949,7 +949,7 @@ public class Castle
 			_ownerId = 0; // Remove owner
 			resetManor();
 		}
-			
+		
 		Connection con = null;
 		try
 		{
@@ -1191,7 +1191,7 @@ public class Castle
 				for (SeedProduction s : _production)
 				{
 					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + ","
-							+ s.getPrice() + "," + CastleManorManager.PERIOD_CURRENT + ")";
+					+ s.getPrice() + "," + CastleManorManager.PERIOD_CURRENT + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1214,7 +1214,7 @@ public class Castle
 				for (SeedProduction s : _productionNext)
 				{
 					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + ","
-							+ s.getPrice() + "," + CastleManorManager.PERIOD_NEXT + ")";
+					+ s.getPrice() + "," + CastleManorManager.PERIOD_NEXT + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1265,7 +1265,7 @@ public class Castle
 				for (SeedProduction s : prod)
 				{
 					values[count++] = "(" + getCastleId() + "," + s.getId() + "," + s.getCanProduce() + "," + s.getStartProduce() + ","
-							+ s.getPrice() + "," + period + ")";
+					+ s.getPrice() + "," + period + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1311,7 +1311,7 @@ public class Castle
 				for (CropProcure cp : _procure)
 				{
 					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + ","
-							+ cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_CURRENT + ")";
+					+ cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_CURRENT + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1333,7 +1333,7 @@ public class Castle
 				for (CropProcure cp : _procureNext)
 				{
 					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + ","
-							+ cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_NEXT + ")";
+					+ cp.getPrice() + "," + cp.getReward() + "," + CastleManorManager.PERIOD_NEXT + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1385,7 +1385,7 @@ public class Castle
 				for (CropProcure cp : proc)
 				{
 					values[count++] = "(" + getCastleId() + "," + cp.getId() + "," + cp.getAmount() + "," + cp.getStartAmount() + ","
-							+ cp.getPrice() + "," + cp.getReward() + "," + period + ")";
+					+ cp.getPrice() + "," + cp.getReward() + "," + period + ")";
 				}
 				if (values.length > 0)
 				{
@@ -1556,7 +1556,7 @@ public class Castle
 	}
 	
 	/**
-	 * Register Artefact to castle	
+	 * Register Artefact to castle
 	 * @param artefact
 	 */
 	public void registerArtefact(L2ArtefactInstance artefact)

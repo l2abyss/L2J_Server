@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 public class PetInfo extends L2GameServerPacket
 {
 	//private static Logger _log = Logger.getLogger(PetInfo.class.getName());
-
+	
 	private static final String _S__B2_PETINFO = "[S] b2 PetInfo";
 	private L2Summon _summon;
 	private int _x, _y, _z, _heading;
@@ -37,15 +37,15 @@ public class PetInfo extends L2GameServerPacket
 	private int _maxHp, _maxMp;
 	private int _maxFed, _curFed;
 	private float _multiplier;
-
+	
 	/**
 	 * rev 478  dddddddddddddddddddffffdddcccccSSdddddddddddddddddddddddddddhc
 	 * @param _characters
 	 */
 	public PetInfo(L2Summon summon, int val)
 	{
-        _summon = summon;
-        _isSummoned = _summon.isShowSummonAnimation();
+		_summon = summon;
+		_isSummoned = _summon.isShowSummonAnimation();
 		_x = _summon.getX();
 		_y = _summon.getY();
 		_z = _summon.getZ();
@@ -69,11 +69,11 @@ public class PetInfo extends L2GameServerPacket
 		else if (_summon instanceof L2SummonInstance)
 		{
 			L2SummonInstance sum = (L2SummonInstance)_summon;
-			_curFed = sum.getTimeRemaining(); 
+			_curFed = sum.getTimeRemaining();
 			_maxFed = sum.getTotalLifeTime();
 		}
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -82,7 +82,7 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_summon.getObjectId());
 		writeD(_summon.getTemplate().idTemplate+1000000);
 		writeD(0);    // 1=attackable
-
+		
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
@@ -98,7 +98,7 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_flWalkSpd);
 		writeD(_flyRunSpd);
 		writeD(_flyWalkSpd);
-
+		
 		writeF(_multiplier); // movement multiplier
 		writeF(1); // attack speed multiplier
 		writeF(_summon.getTemplate().fCollisionRadius);
@@ -144,42 +144,42 @@ public class PetInfo extends L2GameServerPacket
 		writeD((int) _summon.getStat().getMoveSpeed());//speed
 		writeD(_summon.getPAtkSpd());//atkspeed
 		writeD(_summon.getMAtkSpd());//casting speed
-
+		
 		writeD(_summon.getAbnormalEffect());//c2  abnormal visual effect... bleed=1; poison=2; poison & bleed=3; flame=4;
 		int npcId = _summon.getTemplate().npcId;
 		writeH(_summon.isMountable() ? 1 : 0);//c2    ride button
-
-        writeC(0); // c2
-
-        // Following all added in C4.
-        writeH(0); // ??
-        writeC(_summon.getOwner() != null ? _summon.getOwner().getTeam() : 0); // team aura (1 = blue, 2 = red)
+		
+		writeC(0); // c2
+		
+		// Following all added in C4.
+		writeH(0); // ??
+		writeC(_summon.getOwner() != null ? _summon.getOwner().getTeam() : 0); // team aura (1 = blue, 2 = red)
 		writeD(_summon.getSoulShotsPerHit()); // How many soulshots this servitor uses per hit
-        writeD(_summon.getSpiritShotsPerHit()); // How many spiritshots this servitor uses per hit
-        
-        int form = 0;
-        if (npcId == 16041 || npcId == 16042)
-        {
-        	if(_summon.getLevel() > 84)
-        		form = 3;
-        	else if(_summon.getLevel() > 79) 
-        		form = 2;
-        	else if(_summon.getLevel() > 74)
-        		form = 1;
-        }
-        else if (npcId == 16025 ||npcId == 16037)
-        {
-        	if(_summon.getLevel() > 69)
-        		form = 3;
-        	else if(_summon.getLevel() > 64) 
-        		form = 2;
-        	else if(_summon.getLevel() > 59) 
-        		form = 1;
-        }
-        writeD(form);//CT1.5 Pet form and skills
-        writeD(_summon.getSpecialEffect());
+		writeD(_summon.getSpiritShotsPerHit()); // How many spiritshots this servitor uses per hit
+		
+		int form = 0;
+		if (npcId == 16041 || npcId == 16042)
+		{
+			if(_summon.getLevel() > 84)
+				form = 3;
+			else if(_summon.getLevel() > 79)
+				form = 2;
+			else if(_summon.getLevel() > 74)
+				form = 1;
+		}
+		else if (npcId == 16025 ||npcId == 16037)
+		{
+			if(_summon.getLevel() > 69)
+				form = 3;
+			else if(_summon.getLevel() > 64)
+				form = 2;
+			else if(_summon.getLevel() > 59)
+				form = 1;
+		}
+		writeD(form);//CT1.5 Pet form and skills
+		writeD(_summon.getSpecialEffect());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -188,5 +188,5 @@ public class PetInfo extends L2GameServerPacket
 	{
 		return _S__B2_PETINFO;
 	}
-
+	
 }

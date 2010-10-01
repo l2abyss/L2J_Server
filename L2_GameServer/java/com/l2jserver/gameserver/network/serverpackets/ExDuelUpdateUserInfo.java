@@ -24,12 +24,12 @@ public class ExDuelUpdateUserInfo extends L2GameServerPacket
 {
 	private static final String _S__FE_4F_EXDUELUPDATEUSERINFO = "[S] FE:50 ExDuelUpdateUserInfo";
 	private L2PcInstance _activeChar;
-
+	
 	public ExDuelUpdateUserInfo(L2PcInstance cha)
 	{
 		_activeChar = cha;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -49,7 +49,7 @@ public class ExDuelUpdateUserInfo extends L2GameServerPacket
 		writeD((int)_activeChar.getCurrentCp());
 		writeD(_activeChar.getMaxCp());
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -58,5 +58,5 @@ public class ExDuelUpdateUserInfo extends L2GameServerPacket
 	{
 		return _S__FE_4F_EXDUELUPDATEUSERINFO;
 	}
-
+	
 }

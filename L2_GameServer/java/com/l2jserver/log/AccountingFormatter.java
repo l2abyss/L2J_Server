@@ -27,24 +27,24 @@ public class AccountingFormatter extends Formatter
 {
 	private static final String CRLF = "\r\n";
 	private SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
-
+	
 	@Override
 	public String format(LogRecord record)
 	{
 		final Object[] params = record.getParameters();
 		final StringBuilder output = StringUtil.startAppend(30
-		        + record.getMessage().length()
-		        + (params == null ? 0 : params.length * 10), "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
+				+ record.getMessage().length()
+				+ (params == null ? 0 : params.length * 10), "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
 		for (Object p : params)
 		{
 			if (p == null)
 				continue;
-
+			
 			StringUtil.append(output, ", ");
-
+			
 			if (p instanceof L2GameClient)
 			{
-				final L2GameClient client = (L2GameClient)p; 
+				final L2GameClient client = (L2GameClient)p;
 				String address = null;
 				try
 				{
@@ -54,7 +54,7 @@ public class AccountingFormatter extends Formatter
 				catch (Exception e)
 				{
 				}
-
+				
 				switch (client.getState())
 				{
 					case IN_GAME:

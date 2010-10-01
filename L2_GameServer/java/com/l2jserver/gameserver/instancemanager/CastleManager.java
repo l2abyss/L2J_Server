@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.InstanceListManager;
 import com.l2jserver.gameserver.SevenSigns;
@@ -30,8 +32,6 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
-
-import javolution.util.FastList;
 
 public class CastleManager implements InstanceListManager
 {

@@ -44,12 +44,12 @@ public class FriendList extends L2GameServerPacket
 	private static final String _S__FA_FRIENDLIST = "[S] 75 FriendList";
 	private List<FriendInfo> _info;
 	
-	private class FriendInfo
+	private static class FriendInfo
 	{
 		int objId;
 		String name;
 		boolean online;
-	
+		
 		public FriendInfo(int objId, String name, boolean online)
 		{
 			this.objId = objId;
@@ -66,7 +66,7 @@ public class FriendList extends L2GameServerPacket
 			String name = CharNameTable.getInstance().getNameById(objId);
 			L2PcInstance player1 = L2World.getInstance().getPlayer(objId);
 			boolean online = false;
-			if (player1 != null && player1.isOnline() == 1)
+			if (player1 != null && player1.isOnline())
 				online = true;
 			_info.add(new FriendInfo(objId, name, online));
 		}

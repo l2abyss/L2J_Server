@@ -22,7 +22,7 @@ public class StaticObjStatus extends CharStatus
 	{
 		super(activeChar);
 	}
-
+	
 	@Override
 	public L2StaticObjectInstance getActiveChar()
 	{

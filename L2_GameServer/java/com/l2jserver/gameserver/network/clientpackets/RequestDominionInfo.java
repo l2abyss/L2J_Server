@@ -31,7 +31,7 @@ public class RequestDominionInfo extends L2GameClientPacket
 	{
 		return "[C] D0:58 RequestDominionInfo";
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
 	 */
@@ -40,7 +40,7 @@ public class RequestDominionInfo extends L2GameClientPacket
 	{
 		// nothing
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
 	 */
@@ -50,7 +50,7 @@ public class RequestDominionInfo extends L2GameClientPacket
 		sendPacket(new ExReplyDominionInfo());
 		sendPacket(new ExShowOwnthingPos());
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

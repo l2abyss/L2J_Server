@@ -27,17 +27,17 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ExtractableItem;
 import com.l2jserver.gameserver.model.L2ExtractableProductItem;
-
-import javolution.util.FastList;
 
 public class ExtractableItemsData
 {
 	protected static final Logger _log = Logger.getLogger(ExtractableItemsData.class.getName());
 	//          Map<itemid, L2ExtractableItem>
-	private TIntObjectHashMap<L2ExtractableItem> _items;
+	private final TIntObjectHashMap<L2ExtractableItem> _items = new TIntObjectHashMap<L2ExtractableItem>();
 	
 	public static ExtractableItemsData getInstance()
 	{
@@ -46,8 +46,21 @@ public class ExtractableItemsData
 	
 	public ExtractableItemsData()
 	{
-		_items = new TIntObjectHashMap<L2ExtractableItem>();
-		
+		loadExtractableItems();
+	}
+	
+	public L2ExtractableItem getExtractableItem(int itemID)
+	{
+		return _items.get(itemID);
+	}
+	
+	public void reload()
+	{
+		loadExtractableItems();
+	}
+	
+	private void loadExtractableItems()
+	{
 		Scanner s;
 		
 		try
@@ -60,6 +73,7 @@ public class ExtractableItemsData
 			return;
 		}
 		
+		_items.clear();
 		int lineCount = 0;
 		
 		while (s.hasNextLine())
@@ -124,7 +138,7 @@ public class ExtractableItemsData
 						amount[k] = Integer.parseInt(lineSplit2[j+=1]);
 						k++;
 					}
-
+					
 					chance = Integer.parseInt(lineSplit2[lineSplit2.length-1]);
 				}
 				catch (Exception e)
@@ -158,11 +172,6 @@ public class ExtractableItemsData
 		
 		s.close();
 		_log.info("Extractable items data: Loaded " + _items.size() + " extractable items!");
-	}
-	
-	public L2ExtractableItem getExtractableItem(int itemID)
-	{
-		return _items.get(itemID);
 	}
 	
 	private static class SingletonHolder

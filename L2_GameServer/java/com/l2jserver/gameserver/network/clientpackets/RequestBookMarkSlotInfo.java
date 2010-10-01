@@ -25,21 +25,21 @@ import com.l2jserver.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
 public final class RequestBookMarkSlotInfo extends L2GameClientPacket
 {
 	private static final String _C__51_REQUESTBOOKMARKSLOTINFO = "[C] 51 RequestBookMarkSlotInfo";
-
+	
 	@Override
 	protected void readImpl()
 	{
 		//There is nothing to read.
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		player.sendPacket(new ExGetBookMarkInfoPacket(player));
 	}
-
-
+	
+	
 	@Override
 	public String getType()
 	{

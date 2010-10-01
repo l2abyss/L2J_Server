@@ -29,28 +29,28 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class L2FriendSay extends L2GameServerPacket
 {
 	private static final String _S__FD_FRIENDRECVMSG = "[S] 78 L2FriendSay";
-
+	
 	private String _sender, _receiver, _message;
-
+	
 	public L2FriendSay(String sender, String reciever, String message)
 	{
 		_sender = sender;
 		_receiver = reciever;
-
+		
 		_message = message;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x78);
-
+		
 		writeD(0); // ??
 		writeS(_receiver);
 		writeS(_sender);
 		writeS(_message);
 	}
-
+	
 	@Override
 	public String getType()
 	{

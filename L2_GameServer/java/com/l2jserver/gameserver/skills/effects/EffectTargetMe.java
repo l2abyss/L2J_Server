@@ -56,7 +56,7 @@ public class EffectTargetMe extends L2Effect
 		{
 			if (getEffected() instanceof L2SiegeSummonInstance)
 				return false;
-
+			
 			if (getEffected().getTarget() != getEffector())
 			{
 				// Target is different
@@ -69,7 +69,7 @@ public class EffectTargetMe extends L2Effect
 		}
 		else if (getEffected() instanceof L2Attackable && !getEffected().isRaid())
 			return true;
-
+		
 		return false;
 	}
 	

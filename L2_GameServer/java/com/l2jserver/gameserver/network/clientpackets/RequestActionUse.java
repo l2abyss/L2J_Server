@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2SummonAI;
 import com.l2jserver.gameserver.datatables.PetSkillsTable;
@@ -41,6 +42,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ChairSit;
+import com.l2jserver.gameserver.network.serverpackets.ExAskCoupleAction;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopManageList;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -157,8 +159,16 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			case 16:
 			case 22: // Attack (pet attack)
-				if (target != null && pet != null && pet != target && activeChar != target && !pet.isAttackingDisabled() && !pet.isBetrayed())
+				if (target != null && pet != null && pet != target && activeChar != target && !pet.isBetrayed())
 				{
+					if (pet.isAttackingDisabled())
+					{
+						if (pet.getAttackEndTime() > GameTimeController.getGameTicks())
+							pet.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
+						else
+							return;
+					}
+					
 					if (pet instanceof L2PetInstance && (pet.getLevel() - activeChar.getLevel() > 20))
 					{
 						activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_TOO_HIGH_TO_CONTROL));
@@ -176,7 +186,7 @@ public final class RequestActionUse extends L2GameClientPacket
 							&& target.getActingPlayer().getSiegeState() == pet.getOwner().getSiegeState()
 							&& target.getActingPlayer() != pet.getOwner() && target.getActingPlayer().getSiegeSide() == pet.getOwner().getSiegeSide())
 					{
-						// 
+						//
 						if (TerritoryWarManager.getInstance().isTWInProgress())
 							sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
 						else
@@ -202,7 +212,7 @@ public final class RequestActionUse extends L2GameClientPacket
 						pet.getOwner().sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
 						return;
 					}
-
+					
 					pet.setTarget(target);
 					if (target.isAutoAttackable(activeChar) || _ctrlPressed)
 					{
@@ -355,7 +365,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 54: // Move to target hatch/strider
 				if (target != null && pet != null && pet != target && !pet.isMovementDisabled() && !pet.isBetrayed())
 				{
-					pet.setFollowStatus(false); 
+					pet.setFollowStatus(false);
 					pet.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(target.getX(), target.getY(), target.getZ(), 0));
 				}
 				break;
@@ -390,6 +400,11 @@ public final class RequestActionUse extends L2GameClientPacket
 						activeChar.getAirShip().oustPlayer(activeChar);
 				}
 				break;
+			case 71:
+			case 72:
+			case 73:
+				useCoupleSocial(_actionId-55);
+				break;
 			case 1000: // Siege Golem - Siege Hammer
 				if (target instanceof L2DoorInstance)
 					useSkill(4079);
@@ -403,7 +418,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				useSkill(4711, activeChar);
 				break;
 			case 1005: // Star Hatchling/Strider - Bright Burst
-				useSkill(4712); 
+				useSkill(4712);
 				break;
 			case 1006: // Star Hatchling/Strider - Bright Heal
 				useSkill(4713, activeChar);
@@ -624,7 +639,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			case 5000: // TODO Baby Rudolph - Reindeer Scratch
 				break;
-			// Social Packets
+				// Social Packets
 			case 12: // Greeting
 				tryBroadcastSocial(2);
 				break;
@@ -728,7 +743,7 @@ public final class RequestActionUse extends L2GameClientPacket
 	}
 	
 	
-	/* 
+	/*
 	 * Check if player can broadcast SocialAction packet
 	 */
 	private void tryBroadcastSocial(int id)
@@ -736,7 +751,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (Config.DEBUG)
 			_log.fine("Social Action:" + id);
 		
@@ -746,12 +761,49 @@ public final class RequestActionUse extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() == 0 && activeChar.getActiveRequester() == null
-		        && !activeChar.isAlikeDead() && (!activeChar.isAllSkillsDisabled() || activeChar.isInDuel())
-		        && !activeChar.isCastingNow() && !activeChar.isCastingSimultaneouslyNow()
-		        && activeChar.getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+		if (activeChar.canMakeSocialAction())
 		{
 			activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), id));
+		}
+	}
+	
+	private void useCoupleSocial(int id)
+	{
+		L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
+			return;
+		L2Object target = activeChar.getTarget();
+		if (!(target instanceof L2PcInstance))
+		{
+			activeChar.sendPacket(SystemMessageId.INCORRECT_TARGET);
+			return;
+		}
+		L2PcInstance player = (L2PcInstance) target;
+		if (activeChar.isFishing() || player.isFishing())
+		{
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3));
+			return;
+		}
+		
+		double distance = activeChar.getPlanDistanceSq(player);
+		if (distance > 2000 || distance < 70)
+		{
+			activeChar.sendPacket(SystemMessageId.TARGET_DO_NOT_MEET_LOC_REQUIREMENTS);
+			return;
+		}
+		
+		if (activeChar.canMakeSocialAction() && player.canMakeSocialAction())
+		{
+			activeChar.setMultiSocialAction(id, player.getObjectId());
+			SystemMessage sm = new SystemMessage(SystemMessageId.YOU_HAVE_REQUESTED_COUPLE_ACTION_C1);
+			sm.addPcName(player);
+			activeChar.sendPacket(sm);
+			player.sendPacket(new ExAskCoupleAction(activeChar.getObjectId(), id));
+		}
+		else
+		{
+			//TODO appropriate message
+			activeChar.sendPacket(SystemMessageId.COUPLE_ACTION_CANCELED);
 		}
 	}
 	

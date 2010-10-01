@@ -32,36 +32,42 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 {
 	private static final String _C__CF_REQUESTAUTOSOULSHOT = "[C] D0:0D RequestAutoSoulShot";
 	private static Logger _log = Logger.getLogger(RequestAutoSoulShot.class.getName());
-
+	
 	// format cd
 	private int _itemId;
 	private int _type; // 1 = on : 0 = off;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_itemId = readD();
 		_type = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (activeChar.getPrivateStoreType() == 0 && activeChar.getActiveRequester() == null && !activeChar.isDead())
 		{
 			if (Config.DEBUG)
 				_log.fine("AutoSoulShot:" + _itemId);
-
+			
 			L2ItemInstance item = activeChar.getInventory().getItemByItemId(_itemId);
 			if (item == null)
 				return;
-
+			
 			if (_type == 1)
 			{
+				if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
+				{
+					activeChar.sendMessage("Cannot use this item.");
+					return;
+				}
+				
 				// Fishingshots are not automatic on retail
 				if (_itemId < 6535 || _itemId > 6540)
 				{
@@ -88,12 +94,12 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							}
 							activeChar.addAutoSoulShot(_itemId);
 							activeChar.sendPacket(new ExAutoSoulShot(_itemId, _type));
-
+							
 							// start the auto soulshot use
 							SystemMessage sm = new SystemMessage(SystemMessageId.USE_OF_S1_WILL_BE_AUTO);
 							sm.addItemName(item);// Update Message by rocknow
 							activeChar.sendPacket(sm);
-
+							
 							activeChar.rechargeAutoSoulShot(true, true, true);
 						}
 						else
@@ -113,16 +119,16 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 								activeChar.sendPacket(new SystemMessage(SystemMessageId.SPIRITSHOTS_GRADE_MISMATCH));
 							else
 								activeChar.sendPacket(new SystemMessage(SystemMessageId.SOULSHOTS_GRADE_MISMATCH));
-
+							
 							activeChar.addAutoSoulShot(_itemId);
 							activeChar.sendPacket(new ExAutoSoulShot(_itemId, _type));
 						}
-
+						
 						// start the auto soulshot use
 						SystemMessage sm = new SystemMessage(SystemMessageId.USE_OF_S1_WILL_BE_AUTO);
 						sm.addItemName(item);// Update Message by rocknow
 						activeChar.sendPacket(sm);
-
+						
 						activeChar.rechargeAutoSoulShot(true, true, false);
 					}
 				}
@@ -131,7 +137,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 			{
 				activeChar.removeAutoSoulShot(_itemId);
 				activeChar.sendPacket(new ExAutoSoulShot(_itemId, _type));
-
+				
 				// cancel the auto soulshot use
 				SystemMessage sm = new SystemMessage(SystemMessageId.AUTO_USE_OF_S1_CANCELLED);
 				sm.addItemName(item);// Update Message by rocknow
@@ -139,7 +145,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 			}
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()

@@ -35,7 +35,7 @@ public abstract class PathFinding
 			return GeoPathFinding.getInstance();
 		}
 		else
-		// Cell pathfinding, calculated directly from geodata files
+			// Cell pathfinding, calculated directly from geodata files
 		{
 			return CellPathFinding.getInstance();
 		}
@@ -45,7 +45,7 @@ public abstract class PathFinding
 	
 	public abstract List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean playable);
 	
-/*
+	/*
 	public List<AbstractNodeLoc> search(AbstractNode start, AbstractNode end, int instanceId)
 	{
 		// The simplest grid-based pathfinding.
@@ -95,8 +95,8 @@ public abstract class PathFinding
 		//No Path found
 		return null;
 	}
-*/
-/*
+	 */
+	/*
 	public List<AbstractNodeLoc> searchAStar(Node start, Node end, int instanceId)
 	{
 		// Not operational yet?
@@ -146,7 +146,7 @@ public abstract class PathFinding
 		//No Path found
 		return null;
 	}
-*/
+	 */
 	/**
 	 * Convert geodata position to pathnode position
 	 * @param geo_pos
@@ -201,7 +201,7 @@ public abstract class PathFinding
 	{
 		return L2World.MAP_MIN_Y + node_y * 128 + 48;
 	}
-
+	
 	public String[] getStat()
 	{
 		return null;

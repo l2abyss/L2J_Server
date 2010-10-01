@@ -26,33 +26,33 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ChairSit extends L2GameServerPacket
 {
-    private static final String _S__e1_CHAIRSIT = "[S] ed ChairSit";
-
-    private L2PcInstance _activeChar;
-    private int _staticObjectId;
-
-    /**
-     */
-    public ChairSit(L2PcInstance player, int staticObjectId)
-    {
-        _activeChar = player;
-        _staticObjectId = staticObjectId;
-    }
-
-    @Override
+	private static final String _S__e1_CHAIRSIT = "[S] ed ChairSit";
+	
+	private L2PcInstance _activeChar;
+	private int _staticObjectId;
+	
+	/**
+	 */
+	public ChairSit(L2PcInstance player, int staticObjectId)
+	{
+		_activeChar = player;
+		_staticObjectId = staticObjectId;
+	}
+	
+	@Override
 	protected final void writeImpl()
-    {
-        writeC(0xed);
-        writeD(_activeChar.getObjectId());
-        writeD(_staticObjectId);
-    }
-
-    /* (non-Javadoc)
-     * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-     */
-    @Override
+	{
+		writeC(0xed);
+		writeD(_activeChar.getObjectId());
+		writeD(_staticObjectId);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	 */
+	@Override
 	public String getType()
-    {
-        return _S__e1_CHAIRSIT;
-    }
+	{
+		return _S__e1_CHAIRSIT;
+	}
 }

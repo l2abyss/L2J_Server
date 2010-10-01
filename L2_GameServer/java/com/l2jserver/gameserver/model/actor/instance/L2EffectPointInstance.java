@@ -21,21 +21,22 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2EffectPointInstance extends L2Npc
 {
-	private L2Character _owner;
-
+	private final L2PcInstance _owner;
+	
 	public L2EffectPointInstance(int objectId, L2NpcTemplate template, L2Character owner)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2EffectPointInstance);
 		setIsInvul(false);
-		_owner = owner;
+		_owner = owner == null ? null : owner.getActingPlayer();
 	}
-
-	public L2Character getOwner()
+	
+	@Override
+	public L2PcInstance getActingPlayer()
 	{
 		return _owner;
 	}
-
+	
 	/**
 	 * this is called when a player interacts with this NPC
 	 * @param player
@@ -46,13 +47,13 @@ public class L2EffectPointInstance extends L2Npc
 		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	@Override
 	public void onActionShift(L2PcInstance player)
 	{
 		if (player == null)
 			return;
-
+		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 }

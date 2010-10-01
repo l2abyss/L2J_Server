@@ -26,13 +26,13 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public final class RequestMakeMacro extends L2GameClientPacket
 {
-    protected static final Logger _log = Logger.getLogger(RequestMakeMacro.class.getName());
+	protected static final Logger _log = Logger.getLogger(RequestMakeMacro.class.getName());
 	private L2Macro _macro;
 	private int _commandsLenght = 0;
-
+	
 	private static final String _C__C1_REQUESTMAKEMACRO = "[C] C1 RequestMakeMacro";
 	private static final int MAX_MACRO_LENGTH = 12;
-
+	
 	/**
 	 * packet type id 0xc1
 	 *
@@ -41,16 +41,16 @@ public final class RequestMakeMacro extends L2GameClientPacket
 	 * c1
 	 * d // id
 	 * S // macro name
-     * S // unknown  desc
-     * S // unknown  acronym
-     * c // icon
-     * c // count
-     *
-     * c // entry
-     * c // type
-     * d // skill id
-     * c // shortcut id
-     * S // command name
+	 * S // unknown  desc
+	 * S // unknown  acronym
+	 * c // icon
+	 * c // count
+	 *
+	 * c // entry
+	 * c // type
+	 * d // skill id
+	 * c // shortcut id
+	 * S // command name
 	 *
 	 * format:		cdSSScc (ccdcS)
 	 */
@@ -58,38 +58,38 @@ public final class RequestMakeMacro extends L2GameClientPacket
 	protected void readImpl()
 	{
 		int _id = readD();
-        String _name = readS();
+		String _name = readS();
 		String _desc = readS();
 		String _acronym = readS();
 		int _icon = readC();
 		int _count = readC();
 		if (_count > MAX_MACRO_LENGTH) _count = MAX_MACRO_LENGTH;
-
+		
 		L2MacroCmd[] commands = new L2MacroCmd[_count];
 		
-        if (Config.DEBUG) 
-            _log.info("Make macro id:"+_id+"\tname:"+_name+"\tdesc:"+_desc+"\tacronym:"+_acronym+"\ticon:"+_icon+"\tcount:"+_count);
-        for (int i = 0; i < _count; i++)
-        {
-            int entry      = readC();
-            int type       = readC(); // 1 = skill, 3 = action, 4 = shortcut
-            int d1         = readD(); // skill or page number for shortcuts
-            int d2         = readC();
-            String command = readS();
-            _commandsLenght += command.length();
+		if (Config.DEBUG)
+			_log.info("Make macro id:"+_id+"\tname:"+_name+"\tdesc:"+_desc+"\tacronym:"+_acronym+"\ticon:"+_icon+"\tcount:"+_count);
+		for (int i = 0; i < _count; i++)
+		{
+			int entry      = readC();
+			int type       = readC(); // 1 = skill, 3 = action, 4 = shortcut
+			int d1         = readD(); // skill or page number for shortcuts
+			int d2         = readC();
+			String command = readS();
+			_commandsLenght += command.length();
 			commands[i] = new L2MacroCmd(entry, type, d1, d2, command);
-            if (Config.DEBUG)
-                _log.info("entry:"+entry+"\ttype:"+type+"\td1:"+d1+"\td2:"+d2+"\tcommand:"+command);
-        }
+			if (Config.DEBUG)
+				_log.info("entry:"+entry+"\ttype:"+type+"\td1:"+d1+"\td2:"+d2+"\tcommand:"+command);
+		}
 		_macro = new L2Macro(_id, _icon, _name, _desc, _acronym, commands);
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance  player = getClient().getActiveChar();
 		if (player == null)
-		    return;
+			return;
 		if (_commandsLenght > 255)
 		{
 			//Invalid macro. Refer to the Help file for instructions.
@@ -116,7 +116,7 @@ public final class RequestMakeMacro extends L2GameClientPacket
 		}
 		player.registerMacro(_macro);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

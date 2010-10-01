@@ -33,18 +33,18 @@ public class ExGetBookMarkInfoPacket extends L2GameServerPacket
 	{
 		player = cha;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xFE);
 		writeH(0x84);
 		writeD(0x00); // Dummy
-		writeD(player._bookmarkslot);
-		writeD(player.tpbookmark.size());
-      
-
-		for (TeleportBookmark tpbm : player.tpbookmark) 
+		writeD(player.getBookmarkslot());
+		writeD(player.getTpbookmark().size());
+		
+		
+		for (TeleportBookmark tpbm : player.getTpbookmark())
 		{
 			writeD(tpbm._id);
 			writeD(tpbm._x);
@@ -55,7 +55,7 @@ public class ExGetBookMarkInfoPacket extends L2GameServerPacket
 			writeS(tpbm._tag);
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

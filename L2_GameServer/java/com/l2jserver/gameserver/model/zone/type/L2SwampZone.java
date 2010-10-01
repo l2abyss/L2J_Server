@@ -28,17 +28,17 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
 public class L2SwampZone extends L2ZoneType
 {
 	private int _move_bonus;
-
+	
 	private int _castleId;
 	private Castle _castle;
-
+	
 	public L2SwampZone(int id)
 	{
 		super(id);
 		
 		// Setup default speed reduce (in %)
 		_move_bonus = -50;
-
+		
 		// no castle by default
 		_castleId = 0;
 		_castle = null;
@@ -63,10 +63,10 @@ public class L2SwampZone extends L2ZoneType
 	{
 		if (_castleId > 0 && _castle == null)
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
-
+		
 		return _castle;
 	}
-
+	
 	@Override
 	protected void onEnter(L2Character character)
 	{
@@ -75,13 +75,13 @@ public class L2SwampZone extends L2ZoneType
 			// castle zones active only during siege
 			if (!getCastle().getSiege().getIsInProgress() || !getCastle().getSiege().isTrapsActive())
 				return;
-
+			
 			// defenders not affected
 			final L2PcInstance player = character.getActingPlayer();
 			if (player != null && player.isInSiege() && player.getSiegeState() == 2)
 				return;
 		}
-
+		
 		character.setInsideZone(L2Character.ZONE_SWAMP, true);
 		if (character instanceof L2PcInstance)
 		{

@@ -39,10 +39,10 @@ import com.l2jserver.gameserver.model.CursedWeapon;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FeedableBeastInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2GuardInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -290,7 +290,7 @@ public class CursedWeaponsManager
 						{
 							_log.warning("Error while deleting cursed weapon "+itemId+" skill from userId "+playerId);
 						}
-						*/
+						 */
 						// Restore the player's old karma and pk count
 						statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?");
 						statement.setInt(1, cw.getPlayerKarma());

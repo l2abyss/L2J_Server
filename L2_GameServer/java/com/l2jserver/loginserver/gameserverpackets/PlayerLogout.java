@@ -22,9 +22,9 @@ import com.l2jserver.util.network.BaseRecievePacket;
  */
 public class PlayerLogout extends BaseRecievePacket
 {
-
+	
 	private String _account;
-
+	
 	/**
 	 * @param decrypt
 	 */
@@ -33,7 +33,7 @@ public class PlayerLogout extends BaseRecievePacket
 		super(decrypt);
 		_account = readS();
 	}
-
+	
 	/**
 	 * @return Returns the account.
 	 */
@@ -41,5 +41,5 @@ public class PlayerLogout extends BaseRecievePacket
 	{
 		return _account;
 	}
-
+	
 }

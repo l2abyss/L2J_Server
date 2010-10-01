@@ -50,7 +50,7 @@ public class EffectBetray extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		if (getEffector() instanceof L2PcInstance && 
+		if (getEffector() instanceof L2PcInstance &&
 				getEffected() instanceof L2Summon)
 		{
 			L2PcInstance targetOwner = getEffected().getActingPlayer();

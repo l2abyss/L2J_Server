@@ -54,7 +54,7 @@ public class L2AccessLevel
 	private boolean _takeAggro = false;
 	/** Flag to gain exp in party */
 	private boolean _gainExp = false;
-
+	
 	/**
 	 * Initializes members<br><br>
 	 * 
@@ -84,14 +84,14 @@ public class L2AccessLevel
 		_allowPeaceAttack = allowPeaceAttack;
 		_allowFixedRes = allowFixedRes;
 		_allowTransaction = allowTransaction;
-		_allowAltG = allowAltG; 
+		_allowAltG = allowAltG;
 		_giveDamage = giveDamage;
 		_takeAggro = takeAggro;
 		_gainExp = gainExp;
 	}
 	
 	
-
+	
 	/**
 	 * Returns the access level<br><br>
 	 * 
@@ -101,7 +101,7 @@ public class L2AccessLevel
 	{
 		return _accessLevel;
 	}
-
+	
 	/**
 	 * Returns the access level name<br><br>
 	 * 
@@ -111,7 +111,7 @@ public class L2AccessLevel
 	{
 		return _name;
 	}
-
+	
 	/**
 	 * Returns the name color of the access level<br><br>
 	 * 
@@ -121,7 +121,7 @@ public class L2AccessLevel
 	{
 		return _nameColor;
 	}
-
+	
 	/**
 	 * Returns the title color color of the access level<br><br>
 	 * 
@@ -131,7 +131,7 @@ public class L2AccessLevel
 	{
 		return _titleColor;
 	}
-
+	
 	/**
 	 * Retuns if the access level has gm access or not<br><br>
 	 * 
@@ -141,7 +141,7 @@ public class L2AccessLevel
 	{
 		return _isGm;
 	}
-
+	
 	/**
 	 * Returns if the access level is allowed to attack in peace zone or not<br><br>
 	 * 
@@ -151,7 +151,7 @@ public class L2AccessLevel
 	{
 		return _allowPeaceAttack;
 	}
-
+	
 	/**
 	 * Retruns if the access level is allowed to use fixed res or not<br><br>
 	 * 
@@ -161,27 +161,27 @@ public class L2AccessLevel
 	{
 		return _allowFixedRes;
 	}
-
+	
 	/**
 	 * Returns if the access level is allowed to perform transactions or not<br><br>
-	 *  
+	 * 
 	 * @return boolean: true if access level is allowed to perform transactions, otherwise false<br>
 	 */
 	public boolean allowTransaction()
 	{
 		return _allowTransaction;
 	}
-
+	
 	/**
 	 * Returns if the access level is allowed to use AltG commands or not<br><br>
-	 *  
+	 * 
 	 * @return boolean: true if access level is allowed to use AltG commands, otherwise false<br>
 	 */
 	public boolean allowAltG()
 	{
 		return _allowAltG;
 	}
-
+	
 	/**
 	 * Returns if the access level can give damage or not<br><br>
 	 * 
@@ -191,7 +191,7 @@ public class L2AccessLevel
 	{
 		return _giveDamage;
 	}
-
+	
 	/**
 	 * Returns if the access level can take aggro or not<br><br>
 	 * 
@@ -201,7 +201,7 @@ public class L2AccessLevel
 	{
 		return _takeAggro;
 	}
-
+	
 	/**
 	 * Returns if the access level can gain exp or not<br><br>
 	 * 
@@ -211,7 +211,7 @@ public class L2AccessLevel
 	{
 		return _gainExp;
 	}
-
+	
 	/**
 	 * Returns if the access level contains allowedAccess as child<br><br>
 	 *
@@ -247,25 +247,25 @@ public class L2AccessLevel
 	private void setChildAccess(String childs)
 	{
 		String[] childsSplit = childs.split(";");
-
+		
 		_childsAccessLevel = new L2AccessLevel[childsSplit.length];
-
+		
 		for (int i = 0;i < childsSplit.length;++ i)
 		{
 			L2AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel(Integer.parseInt(childsSplit[i]));
-
+			
 			if (accessLevelInst == null)
 			{
 				_log.warning("AccessLevel: Undefined child access level " + childsSplit[i]);
 				continue;
 			}
-
+			
 			if (accessLevelInst.hasChildAccess(this))
 			{
 				_log.warning("AccessLevel: Child access tree overlapping for " + _name + " and " + accessLevelInst.getName());
 				continue;
 			}
-
+			
 			_childsAccessLevel[i] = accessLevelInst;
 		}
 	}

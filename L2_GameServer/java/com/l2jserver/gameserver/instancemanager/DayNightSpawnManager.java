@@ -111,7 +111,6 @@ public class DayNightSpawnManager
 						last.deleteMe();
 						i++;
 					}
-					spawn.decreaseCount(null);
 				}
 				_log.info("DayNightSpawnManager: Removed " + i + " " + UnspawnLogInfo + " creatures");
 			}

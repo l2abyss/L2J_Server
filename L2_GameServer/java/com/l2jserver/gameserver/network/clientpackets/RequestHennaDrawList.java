@@ -27,28 +27,28 @@ import com.l2jserver.gameserver.network.serverpackets.HennaEquipList;
 public final class RequestHennaDrawList extends L2GameClientPacket
 {
 	private static final String _C__BA_RequestHennaDrawList = "[C] ba RequestHennaDrawList";
-
+	
 	// This is just a trigger packet...
 	@SuppressWarnings("unused")
 	private int _unknown;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_unknown = readD(); // ??
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		L2HennaInstance[] henna = HennaTreeTable.getInstance().getAvailableHenna(activeChar.getClassId());
 		activeChar.sendPacket(new HennaEquipList(activeChar, henna));
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

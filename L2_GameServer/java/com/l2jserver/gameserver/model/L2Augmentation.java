@@ -15,6 +15,8 @@
 
 package com.l2jserver.gameserver.model;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -23,8 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.skills.funcs.FuncAdd;
 import com.l2jserver.gameserver.skills.funcs.LambdaConst;
-
-import javolution.util.FastList;
 
 /**
  * Used to store an augmentation and its boni
@@ -36,36 +36,36 @@ public final class L2Augmentation
 	private int _effectsId = 0;
 	private AugmentationStatBoni _boni = null;
 	private L2Skill _skill = null;
-
+	
 	public L2Augmentation(int effects, L2Skill skill)
 	{
 		_effectsId = effects;
 		_boni = new AugmentationStatBoni(_effectsId);
 		_skill = skill;
 	}
-
+	
 	public L2Augmentation(int effects, int skill, int skillLevel)
 	{
 		this(effects, SkillTable.getInstance().getInfo(skill, skillLevel));
 	}
-
+	
 	// =========================================================
 	// Nested Class
-
-	public class AugmentationStatBoni
+	
+	public static class AugmentationStatBoni
 	{
 		private Stats _stats[];
 		private float _values[];
 		private boolean _active;
-
+		
 		public AugmentationStatBoni(int augmentationId)
 		{
 			_active = false;
 			FastList <AugmentationData.AugStat> as = AugmentationData.getInstance().getAugStatsById(augmentationId);
-
+			
 			_stats = new Stats[as.size()];
 			_values = new float[as.size()];
-
+			
 			int i=0;
 			for (AugmentationData.AugStat aStat : as)
 			{
@@ -74,34 +74,34 @@ public final class L2Augmentation
 				i++;
 			}
 		}
-
+		
 		public void applyBonus(L2PcInstance player)
 		{
 			// make sure the bonuses are not applied twice..
 			if (_active) return;
-
+			
 			for (int i=0; i < _stats.length; i++)
 				((L2Character)player).addStatFunc(new FuncAdd(_stats[i], 0x40, this, new LambdaConst(_values[i])));
-
+			
 			_active = true;
 		}
-
+		
 		public void removeBonus(L2PcInstance player)
 		{
 			// make sure the bonuses are not removed twice
 			if (!_active) return;
-
+			
 			((L2Character)player).removeStatsOwner(this);
-
+			
 			_active = false;
 		}
 	}
-
+	
 	public int getAttributes()
 	{
 		return _effectsId;
 	}
-
+	
 	/**
 	 * Get the augmentation "id" used in serverpackets.
 	 * @return augmentationId
@@ -110,12 +110,12 @@ public final class L2Augmentation
 	{
 		return _effectsId;
 	}
-
+	
 	public L2Skill getSkill()
 	{
 		return _skill;
 	}
-
+	
 	/**
 	 * Applies the bonuses to the player.
 	 * @param player
@@ -123,8 +123,8 @@ public final class L2Augmentation
 	public void applyBonus(L2PcInstance player)
 	{
 		boolean updateTimeStamp = false;
-	    _boni.applyBonus(player);
-	
+		_boni.applyBonus(player);
+		
 		// add the skill if any
 		if (_skill != null)
 		{
@@ -153,7 +153,7 @@ public final class L2Augmentation
 	 */
 	public void removeBonus(L2PcInstance player)
 	{
-	    _boni.removeBonus(player);
+		_boni.removeBonus(player);
 		
 		// remove the skill if any
 		if (_skill != null)
@@ -162,7 +162,7 @@ public final class L2Augmentation
 				player.removeSkill(_skill, false, true);
 			else
 				player.removeSkill(_skill, false, false);
-
+			
 			player.sendSkillList();
 		}
 	}

@@ -16,9 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
-
 import javolution.util.FastList;
+
+import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 
 /**
  * This class ...
@@ -30,23 +30,23 @@ public class NewCharacterSuccess extends L2GameServerPacket
 	// dddddddddddddddddddd
 	private static final String _S__23_CHARTEMPLATES = "[S] 0d CharTemplates";
 	private List<L2PcTemplate> _chars = new FastList<L2PcTemplate>();
-
-    public NewCharacterSuccess()
-    {
-        
-    }
-    
+	
+	public NewCharacterSuccess()
+	{
+		
+	}
+	
 	public void addChar(L2PcTemplate template)
 	{
 		_chars.add(template);
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x0d);
 		writeD(_chars.size());
-
+		
 		for (L2PcTemplate temp : _chars)
 		{
 			if (temp == null)
@@ -74,7 +74,7 @@ public class NewCharacterSuccess extends L2GameServerPacket
 			writeD(0x0a);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

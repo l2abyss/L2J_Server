@@ -24,7 +24,7 @@ public class PledgeReceivePowerInfo extends L2GameServerPacket
 {
 	private static final String _S__FE_3C_PLEDGERECEIVEPOWERINFO = "[S] FE:3D PledgeReceivePowerInfo";
 	private L2ClanMember _member;
-
+	
 	/**
 	 * @param member
 	 */
@@ -32,7 +32,7 @@ public class PledgeReceivePowerInfo extends L2GameServerPacket
 	{
 		_member = member;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -41,12 +41,12 @@ public class PledgeReceivePowerInfo extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x3d);
-
+		
 		writeD(_member.getPowerGrade()); //power grade
 		writeS(_member.getName());
 		writeD(_member.getClan().getRankPrivs(_member.getPowerGrade())); //privileges
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -55,5 +55,5 @@ public class PledgeReceivePowerInfo extends L2GameServerPacket
 	{
 		return _S__FE_3C_PLEDGERECEIVEPOWERINFO;
 	}
-
+	
 }

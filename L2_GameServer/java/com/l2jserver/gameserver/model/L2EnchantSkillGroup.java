@@ -16,20 +16,20 @@ package com.l2jserver.gameserver.model;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
 import javolution.util.FastList;
+
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public final class L2EnchantSkillGroup
 {
 	private final int _id;
 	private List<EnchantSkillDetail> _enchantDetails = new FastList<EnchantSkillDetail>();
-
+	
 	public L2EnchantSkillGroup(int id)
 	{
 		_id = id;
 	}
-
+	
 	public void addEnchantDetail(EnchantSkillDetail detail)
 	{
 		_enchantDetails.add(detail);

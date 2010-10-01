@@ -25,21 +25,21 @@ public final class RequestQuestList extends L2GameClientPacket
 {
 	private static final String _C__63_REQUESTQUESTLIST = "[C] 63 RequestQuestList";
 	//private static Logger _log = Logger.getLogger(RequestQuestList.class.getName());
-
-
+	
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		QuestList ql = new QuestList();
 		sendPacket(ql);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

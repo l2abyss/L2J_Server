@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -29,42 +28,42 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestJoinAlly extends L2GameClientPacket
 {
-
+	
 	private static final String _C__82_REQUESTJOINALLY = "[C] 82 RequestJoinAlly";
 	//private static Logger _log = Logger.getLogger(RequestJoinAlly.class.getName());
-
+	
 	private int _id;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_id = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
-		    return;
+			return;
 		}
-
-		L2Object ob = L2World.getInstance().findObject(_id);
-
-		if (!(ob instanceof L2PcInstance))
+		
+		L2PcInstance ob = L2World.getInstance().getPlayer(_id);
+		
+		if (ob == null)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
 			return;
 		}
-
+		
 		if(activeChar.getClan() == null)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER));
 			return;
 		}
-
-		L2PcInstance target = (L2PcInstance)ob;
+		
+		L2PcInstance target = ob;
 		L2Clan clan = activeChar.getClan();
 		if (!clan.checkAllyJoinCondition(activeChar, target))
 		{
@@ -74,7 +73,7 @@ public final class RequestJoinAlly extends L2GameClientPacket
 		{
 			return;
 		}
-
+		
 		SystemMessage sm = new SystemMessage(SystemMessageId.S2_ALLIANCE_LEADER_OF_S1_REQUESTED_ALLIANCE);
 		sm.addString(activeChar.getClan().getAllyName());
 		sm.addString(activeChar.getName());
@@ -83,8 +82,8 @@ public final class RequestJoinAlly extends L2GameClientPacket
 		AskJoinAlly aja = new AskJoinAlly(activeChar.getObjectId(), activeChar.getClan().getAllyName());
 		target.sendPacket(aja);
 	}
-
-
+	
+	
 	@Override
 	public String getType()
 	{

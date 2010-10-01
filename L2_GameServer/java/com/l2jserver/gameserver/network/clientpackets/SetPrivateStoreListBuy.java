@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -26,13 +28,11 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
-
 /**
  * This class ...
  *
  * @version $Revision: 1.2.2.1.2.5 $ $Date: 2005/03/27 15:29:30 $
- * CPU Disasm 
+ * CPU Disasm
  * Packets: ddhhQQ cddb
  */
 public final class SetPrivateStoreListBuy extends L2GameClientPacket
@@ -56,8 +56,9 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		for (int i = 0; i < count; i++)
 		{
 			int itemId = readD();
-			readH();//TODO analyse this
-			readH();//TODO analyse this
+			
+			readD(); // TODO analyse this
+			
 			long cnt = readQ();
 			long price = readQ();
 			
@@ -66,10 +67,10 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 				_items = null;
 				return;
 			}
-			readC(); // FE
-			readD(); // FF 00 00 00
-			readD(); // 00 00 00 00
-			readB(new byte[7]); // Completely Unknown
+			readD(); // Unk
+			readD(); // Unk
+			readD(); // Unk
+			readD(); // Unk
 			
 			_items[i] = new Item(itemId, cnt, price);
 		}
@@ -153,7 +154,7 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		player.broadcastPacket(new PrivateStoreMsgBuy(player));
 	}
 	
-	private class Item
+	private static class Item
 	{
 		private final int _itemId;
 		private final long _count;

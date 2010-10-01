@@ -62,50 +62,64 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 		writeD(_itemList.length); //for potential sells
 		for (TradeList.TradeItem item : _itemList)
 		{
-			writeD(item.getItem().getType2());
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
+			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
-			writeH(0);
-			writeH(item.getEnchant());//enchant lvl
-			writeH(item.getCustomType2());
+			writeH(item.getItem().getType2());
+			writeH(item.getCustomType1());
+			writeH(0x00);
 			writeD(item.getItem().getBodyPart());
-			writeQ(item.getPrice()); //store price
-			
-			// T1
+			writeH(item.getEnchant());
+			writeH(item.getCustomType2());
+			// Player cannot sell/buy augmented, shadow or time-limited items.
+			// probably so hardcode values here
+			writeD(0x00);	// Augment
+			writeD(-1);		// Mana
+			writeD(-9999);	// Time
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
+			{
 				writeH(item.getElementDefAttr(i));
-			
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			}
+			// Enchant Effects
+			writeH(0x00);
+			writeH(0x00);
+			writeH(0x00);
+			writeQ(item.getItem().getReferencePrice() * 2);
 		}
 		//section 3
 		writeD(_sellList.length); //count for any items already added for sell
 		for (TradeList.TradeItem item : _sellList)
 		{
-			writeD(item.getItem().getType2());
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
+			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
-			writeH(0);
-			writeH(item.getEnchant());//enchant lvl
+			writeH(item.getItem().getType2());
+			writeH(item.getCustomType1());
 			writeH(0x00);
 			writeD(item.getItem().getBodyPart());
-			writeQ(item.getPrice());//your price
-			writeQ(item.getItem().getReferencePrice()); //store price
-			
-			// T1
+			writeH(item.getEnchant());
+			writeH(item.getCustomType2());
+			// Player cannot sell/buy augmented, shadow or time-limited items
+			// probably so hardcode values here
+			writeD(0x00);	// Augment
+			writeD(-1);		// Mana
+			writeD(-9999);	// Time
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
+			{
 				writeH(item.getElementDefAttr(i));
-			
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			}
+			// Enchant Effects
+			writeH(0x00);
+			writeH(0x00);
+			writeH(0x00);
+			writeQ(item.getPrice());
+			writeQ(item.getItem().getReferencePrice() * 2);
 		}
 	}
 	

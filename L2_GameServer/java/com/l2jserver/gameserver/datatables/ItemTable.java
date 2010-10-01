@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.datatables;
 
+import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,10 +35,11 @@ import com.l2jserver.gameserver.Item;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
+import com.l2jserver.gameserver.model.actor.instance.L2EventMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.SkillsEngine;
 import com.l2jserver.gameserver.templates.StatsSet;
@@ -113,13 +116,13 @@ public class ItemTable
 		_weaponTypes.put("dualfist", L2WeaponType.DUALFIST);
 		_weaponTypes.put("etc", L2WeaponType.ETC);
 		_weaponTypes.put("fist", L2WeaponType.FIST);
-		_weaponTypes.put("none", L2WeaponType.NONE); // these are shields !  
+		_weaponTypes.put("none", L2WeaponType.NONE); // these are shields !
 		_weaponTypes.put("pole", L2WeaponType.POLE);
 		_weaponTypes.put("sword", L2WeaponType.SWORD);
-		_weaponTypes.put("bigsword", L2WeaponType.BIGSWORD); //Two-Handed Swords  
-		_weaponTypes.put("pet", L2WeaponType.PET); //Pet Weapon   
-		_weaponTypes.put("rod", L2WeaponType.ROD); //Fishing Rods  
-		_weaponTypes.put("bigblunt", L2WeaponType.BIGBLUNT); //Two handed blunt  
+		_weaponTypes.put("bigsword", L2WeaponType.BIGSWORD); //Two-Handed Swords
+		_weaponTypes.put("pet", L2WeaponType.PET); //Pet Weapon
+		_weaponTypes.put("rod", L2WeaponType.ROD); //Fishing Rods
+		_weaponTypes.put("bigblunt", L2WeaponType.BIGBLUNT); //Two handed blunt
 		_weaponTypes.put("crossbow", L2WeaponType.CROSSBOW);
 		_weaponTypes.put("rapier", L2WeaponType.RAPIER);
 		_weaponTypes.put("ancient", L2WeaponType.ANCIENT_SWORD);
@@ -168,32 +171,32 @@ public class ItemTable
 	
 	/** Table of SQL request in order to obtain items from tables [etcitem], [armor], [weapon] */
 	private static final String[] SQL_ITEM_SELECTS = {
-			"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material,"
-					+ " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, depositable, handler, skill FROM etcitem",
-			
-			"SELECT item_id, name, bodypart, crystallizable, armor_type, weight,"
-					+ " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
-					+ " price, crystal_count, sellable, dropable, destroyable, tradeable, depositable, enchant4_skill, skill FROM armor",
-			
-			"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots,"
-					+ " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
-					+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count,"
-					+ " sellable, dropable, destroyable, tradeable, depositable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
-					+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM weapon" };
+		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material,"
+		+ " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, depositable, handler, skill FROM etcitem",
+		
+		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight,"
+		+ " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
+		+ " price, crystal_count, sellable, dropable, destroyable, tradeable, depositable, enchant4_skill, skill FROM armor",
+		
+		"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots,"
+		+ " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
+		+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count,"
+		+ " sellable, dropable, destroyable, tradeable, depositable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
+		+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM weapon" };
 	
 	private static final String[] SQL_CUSTOM_ITEM_SELECTS = {
-			"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material,"
-					+ " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, depositable, handler, skill FROM custom_etcitem",
-			
-			"SELECT item_id, name, bodypart, crystallizable, armor_type, weight,"
-					+ " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
-					+ " price, crystal_count, sellable, dropable, destroyable, tradeable, depositable, enchant4_skill, skill FROM custom_armor",
-			
-			"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots,"
-					+ " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
-					+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count,"
-					+ " sellable, dropable, destroyable, tradeable, depositable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
-					+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM custom_weapon" };
+		"SELECT item_id, name, crystallizable, item_type, weight, consume_type, material,"
+		+ " crystal_type, duration, time, price, crystal_count, sellable, dropable, destroyable, tradeable, depositable, handler, skill FROM custom_etcitem",
+		
+		"SELECT item_id, name, bodypart, crystallizable, armor_type, weight,"
+		+ " material, crystal_type, avoid_modify, duration, time, p_def, m_def, mp_bonus,"
+		+ " price, crystal_count, sellable, dropable, destroyable, tradeable, depositable, enchant4_skill, skill FROM custom_armor",
+		
+		"SELECT item_id, name, bodypart, crystallizable, weight, soulshots, spiritshots,"
+		+ " material, crystal_type, p_dam, rnd_dam, weaponType, critical, hit_modify, avoid_modify,"
+		+ " shield_def, shield_def_rate, atk_speed, mp_consume, m_dam, duration, time, price, crystal_count,"
+		+ " sellable, dropable, destroyable, tradeable, depositable, skill,enchant4_skill_id,enchant4_skill_lvl, onCast_skill_id, onCast_skill_lvl,"
+		+ " onCast_skill_chance, onCrit_skill_id, onCrit_skill_lvl, onCrit_skill_chance, change_weaponId FROM custom_weapon" };
 	
 	/**
 	 * Returns instance of ItemTable
@@ -342,7 +345,7 @@ public class ItemTable
 		{
 			_etcItems.put(item.getItemId(), item);
 		}
-		_log.info("ItemTable: Loaded " + _etcItems.size() + " Items.");
+		_log.info("ItemTable: Loaded " + _etcItems.size() + " EtcItems.");
 		
 		_weapons.clear();
 		for (L2Weapon weapon : SkillsEngine.getInstance().loadWeapons(weaponData))
@@ -489,7 +492,7 @@ public class ItemTable
 		
 		if (bodypart == L2Item.SLOT_NECK || bodypart == L2Item.SLOT_HAIR || bodypart == L2Item.SLOT_HAIR2
 				|| bodypart == L2Item.SLOT_HAIRALL || (bodypart & L2Item.SLOT_L_EAR) != 0 || (bodypart & L2Item.SLOT_L_FINGER) != 0
-				|| (bodypart & L2Item.SLOT_R_BRACELET) != 0 || (bodypart & L2Item.SLOT_L_BRACELET) != 0 
+				|| (bodypart & L2Item.SLOT_R_BRACELET) != 0 || (bodypart & L2Item.SLOT_L_BRACELET) != 0
 				|| (bodypart & L2Item.SLOT_BACK) != 0 )
 		{
 			item.set.set("type1", L2Item.TYPE1_WEAPON_RING_EARRING_NECKLACE);
@@ -585,7 +588,7 @@ public class ItemTable
 		else if (itemType.equals("potion"))
 			item.type = L2EtcItemType.POTION;
 		else if (itemType.equals("recipe"))
-			item.type = L2EtcItemType.RECEIPE;
+			item.type = L2EtcItemType.RECIPE;
 		else if (itemType.equals("scroll"))
 			item.type = L2EtcItemType.SCROLL;
 		else if (itemType.equals("seed"))
@@ -655,7 +658,7 @@ public class ItemTable
 		
 		return item;
 	}
-
+	
 	/*
 	private void fillEtcItemsTable()
 	{
@@ -698,7 +701,7 @@ public class ItemTable
 				_weapons.put(weapon.getItemId(), weapon);
 				}
 	}*/
-
+	
 	/**
 	 * Builds a variable in which all items are putting in in function of their ID.
 	 */
@@ -780,10 +783,10 @@ public class ItemTable
 	 * @param itemId : int Item Identifier of the item to be created
 	 * @param count : int Quantity of items to be created for stackable items
 	 * @param actor : L2PcInstance Player requesting the item creation
-	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
+	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the new item
 	 */
-	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, L2Object reference)
+	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
 	{
 		// Create and Init the L2ItemInstance corresponding to the Item Identifier
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
@@ -802,7 +805,7 @@ public class ItemTable
 					item.setItemLootShedule(itemLootShedule);
 				}
 			}
-			else if (!Config.AUTO_LOOT) // other mobs loot privilege
+			else if (!Config.AUTO_LOOT || (reference instanceof L2EventMonsterInstance && ((L2EventMonsterInstance)reference).eventDropOnGround()))
 			{
 				item.setOwnerId(actor.getObjectId());
 				itemLootShedule = ThreadPoolManager.getInstance().scheduleGeneral(new ResetOwner(item), 15000);
@@ -822,10 +825,13 @@ public class ItemTable
 		
 		if (Config.LOG_ITEMS && !process.equals("Reset"))
 		{
-			LogRecord record = new LogRecord(Level.INFO, "CREATE:" + process);
-			record.setLoggerName("item");
-			record.setParameters(new Object[] { item, actor, reference });
-			_logItems.log(record);
+			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || item.getItemId() == ADENA_ID)))
+			{
+				LogRecord record = new LogRecord(Level.INFO, "CREATE:" + process);
+				record.setLoggerName("item");
+				record.setParameters(new Object[] { item, actor, reference });
+				_logItems.log(record);
+			}
 		}
 		
 		if (actor != null)
@@ -833,10 +839,12 @@ public class ItemTable
 			if (actor.isGM())
 			{
 				String referenceName = "no-reference";
-				if (reference != null)
+				if (reference instanceof L2Object)
 				{
-					referenceName = (reference.getName() != null ? reference.getName() : "no-name");
+					referenceName = (((L2Object)reference).getName() != null?((L2Object)reference).getName():"no-name");
 				}
+				else if (reference instanceof String)
+					referenceName = (String)reference;
 				String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
 				if (Config.GMAUDIT)
 					GMAudit.auditGMAction(actor.getName()+" ["+actor.getObjectId()+"]", process + "(id: " + itemId + " count: " + count + " name: " + item.getItemName()
@@ -893,12 +901,13 @@ public class ItemTable
 	 * @param process : String Identifier of process triggering this action
 	 * @param itemId : int Item Identifier of the item to be created
 	 * @param actor : L2PcInstance Player requesting the item destroy
-	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
+	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
 	 */
-	public void destroyItem(String process, L2ItemInstance item, L2PcInstance actor, L2Object reference)
+	public void destroyItem(String process, L2ItemInstance item, L2PcInstance actor, Object reference)
 	{
 		synchronized (item)
 		{
+			long old = item.getCount();
 			item.setCount(0);
 			item.setOwnerId(0);
 			item.setLocation(ItemLocation.VOID);
@@ -909,10 +918,13 @@ public class ItemTable
 			
 			if (Config.LOG_ITEMS)
 			{
-				LogRecord record = new LogRecord(Level.INFO, "DELETE:" + process);
-				record.setLoggerName("item");
-				record.setParameters(new Object[] { item, actor, reference });
-				_logItems.log(record);
+				if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || item.getItemId() == ADENA_ID)))
+				{
+					LogRecord record = new LogRecord(Level.INFO, "DELETE:" + process);
+					record.setLoggerName("item");
+					record.setParameters(new Object[] { item, "PrevCount("+old+")", actor, reference });
+					_logItems.log(record);
+				}
 			}
 			
 			if (actor != null)
@@ -920,10 +932,12 @@ public class ItemTable
 				if (actor.isGM())
 				{
 					String referenceName = "no-reference";
-					if (reference != null)
+					if (reference instanceof L2Object)
 					{
-						referenceName = (reference.getName() != null ? reference.getName() : "no-name");
+						referenceName = (((L2Object)reference).getName() != null?((L2Object)reference).getName():"no-name");
 					}
+					else if (reference instanceof String)
+						referenceName = (String)reference;
 					String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
 					if (Config.GMAUDIT)
 						GMAudit.auditGMAction(actor.getName()+" ["+actor.getObjectId()+"]", process + "(id: " + item.getItemId() + " count: " + item.getCount()
@@ -960,9 +974,10 @@ public class ItemTable
 	public void reload()
 	{
 		load();
+		EnchantHPBonusData.getInstance().reload();
 	}
 	
-	protected class ResetOwner implements Runnable
+	protected static class ResetOwner implements Runnable
 	{
 		L2ItemInstance _item;
 		
@@ -977,17 +992,22 @@ public class ItemTable
 			_item.setItemLootShedule(null);
 		}
 	}
-
+	
 	public Collection <Integer> getAllArmorsId()
 	{
 		return _armors.keySet();
 	}
-
+	
 	public Collection <Integer> getAllWeaponsId()
 	{
 		return _weapons.keySet();
 	}
-
+	
+	public int getArraySize()
+	{
+		return _allTemplates.length;
+	}
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

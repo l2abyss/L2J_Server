@@ -19,7 +19,7 @@ import static com.l2jserver.gameserver.model.actor.L2Character.ZONE_PEACE;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.ExPostItemList;
+import com.l2jserver.gameserver.network.serverpackets.ExReplyPostItemList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
@@ -28,41 +28,41 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestPostItemList extends L2GameClientPacket
 {
 	private static final String _C__D0_65_REQUESTPOSTITEMLIST = "[C] D0:65 RequestPostItemList";
-
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger packet
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
 		if (!Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
 			return;
-
+		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (!activeChar.isInsideZone(ZONE_PEACE))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
 			return;
 		}
-
-		activeChar.sendPacket(new ExPostItemList(activeChar));
+		
+		activeChar.sendPacket(new ExReplyPostItemList(activeChar));
 	}
-
+	
 	@Override
 	public String getType()
 	{
 		return _C__D0_65_REQUESTPOSTITEMLIST;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
 	}
-} 
+}

@@ -29,6 +29,7 @@ import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -36,8 +37,8 @@ import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.Location;
-import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.util.Point3D;
 
@@ -104,7 +105,7 @@ public class GeoEngine extends GeoData
 		int gx = (x - L2World.MAP_MIN_X) >> 4;
 		int gy = (y - L2World.MAP_MIN_Y) >> 4;
 		return "bx: " + getBlock(gx) + " by: " + getBlock(gy) + " cx: " + getCell(gx) + " cy: " + getCell(gy) + "  region offset: "
-				+ getRegionOffset(gx, gy);
+		+ getRegionOffset(gx, gy);
 	}
 	
 	/**
@@ -230,7 +231,7 @@ public class GeoEngine extends GeoData
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			gm.sendMessage("GeoData bug save Failed!");
 		}
 	}
@@ -645,7 +646,7 @@ public class GeoEngine extends GeoData
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			throw new Error("Failed to Load geo_index File.");
 		}
 		String line;
@@ -663,7 +664,7 @@ public class GeoEngine extends GeoData
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			throw new Error("Failed to Read geo_index File.");
 		}
 		finally
@@ -684,7 +685,7 @@ public class GeoEngine extends GeoData
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			throw new Error("Failed to Load geo_bugs.txt File.");
 		}
 	}
@@ -756,8 +757,7 @@ public class GeoEngine extends GeoData
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-			_log.warning("Failed to Load GeoFile at block: " + block + "\n");
+			_log.log(Level.WARNING, "Failed to Load GeoFile at block: " + block, e);
 			return false;
 		}
 		finally
@@ -782,8 +782,8 @@ public class GeoEngine extends GeoData
 	private static short getRegionOffset(int x, int y)
 	{
 		int rx = x >> 11; // =/(256 * 8)
-		int ry = y >> 11;
-		return (short) (((rx + Config.WORLD_X_MIN) << 5) + (ry + Config.WORLD_Y_MIN));
+							int ry = y >> 11;
+				return (short) (((rx + Config.WORLD_X_MIN) << 5) + (ry + Config.WORLD_Y_MIN));
 	}
 	
 	/**
@@ -878,7 +878,7 @@ public class GeoEngine extends GeoData
 			return height;
 		}
 		else
-		//multilevel
+			//multilevel
 		{
 			cellX = getCell(geox);
 			cellY = getCell(geoy);
@@ -956,7 +956,7 @@ public class GeoEngine extends GeoData
 			return height;
 		}
 		else
-		//multilevel
+			//multilevel
 		{
 			cellX = getCell(geox);
 			cellY = getCell(geoy);
@@ -1037,7 +1037,7 @@ public class GeoEngine extends GeoData
 			temph = height;
 		}
 		else
-		//multilevel
+			//multilevel
 		{
 			cellX = getCell(geox);
 			cellY = getCell(geoy);
@@ -1139,7 +1139,7 @@ public class GeoEngine extends GeoData
 				return Double.MIN_VALUE;
 		}
 		else
-		//multilevel, type == 2
+			//multilevel, type == 2
 		{
 			cellX = getCell(x);
 			cellY = getCell(y);
@@ -1227,8 +1227,8 @@ public class GeoEngine extends GeoData
 				_log.warning("flatheight:" + height);
 			if (z > height)
 				return z+inc_z > height;
-			else
-				return z+inc_z < height;
+				else
+					return z+inc_z < height;
 		}
 		else if (type == 1) //complex
 		{
@@ -1251,7 +1251,7 @@ public class GeoEngine extends GeoData
 				return true;
 		}
 		else
-		//multilevel, type == 2
+			//multilevel, type == 2
 		{
 			cellX = getCell(x);
 			cellY = getCell(y);
@@ -1302,7 +1302,7 @@ public class GeoEngine extends GeoData
 			if (debug)
 				_log.warning("z:" + z + " x: " + cellX + " y:" + cellY + " la " + layers + " lo:" + lowerHeight + " up:" + upperHeight);
 			// Check if LOS goes under a layer/floor
-			// clearly under layer but not too much under 
+			// clearly under layer but not too much under
 			// lowerheight here only for geodata bug checking, layers very close? maybe could be removed
 			if ((z - upperHeight) < -10 && (z - upperHeight) > inc_z - 20 && (z - lowerHeight) > 40)
 			{
@@ -1323,7 +1323,7 @@ public class GeoEngine extends GeoData
 					// check one inc_x inc_y further, for the height there
 					if (z < nGetUpperHeight(x + inc_x, y + inc_y, lowerHeight))
 						return false; // a wall
-					return true; // we see over it, e.g. a fence 
+					return true; // we see over it, e.g. a fence
 				}
 				else
 					return true;
@@ -1384,7 +1384,7 @@ public class GeoEngine extends GeoData
 			NSWE = (short) (height & 0x0F);
 		}
 		else
-		//multilevel
+			//multilevel
 		{
 			cellX = getCell(x);
 			cellY = getCell(y);
@@ -1422,7 +1422,7 @@ public class GeoEngine extends GeoData
 		}
 		return NSWE;
 	}
-
+	
 	/**
 	 * @param x
 	 * @param y
@@ -1466,7 +1466,7 @@ public class GeoEngine extends GeoData
 			return geo.getShort(index);
 		}
 		else
-		//multilevel
+			//multilevel
 		{
 			cellX = getCell(x);
 			cellY = getCell(y);
@@ -1503,7 +1503,7 @@ public class GeoEngine extends GeoData
 			return result;
 		}
 	}
-
+	
 	/**
 	 * @param NSWE
 	 * @param x

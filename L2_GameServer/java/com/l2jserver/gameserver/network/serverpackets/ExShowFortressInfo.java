@@ -29,52 +29,52 @@ import com.l2jserver.gameserver.model.entity.Fort;
  */
 public class ExShowFortressInfo extends L2GameServerPacket
 {
-    //private static final Logger _log = Logger.getLogger(ExShowFortressInfo.class.getName());
+	//private static final Logger _log = Logger.getLogger(ExShowFortressInfo.class.getName());
 	
 	/**
-     * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[S] FE:15 ExShowFortressInfo";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-     */
-    @Override
-    protected void writeImpl()
-    {
-        writeC(0xfe);
-        writeH(0x15);
-        List<Fort> forts = FortManager.getInstance().getForts();
-        writeD(forts.size());
-        for (Fort fort : forts)
-        {
-        	L2Clan clan = fort.getOwnerClan();
-            writeD(fort.getFortId());
-            if (clan != null)
-            {
-            	writeS(clan.getName());
-            }
-            else
-            {
-                writeS("");
-            }
-            
-            if (fort.getSiege().getIsInProgress())
-            {
-                writeD(1);
-            }
-            else
-            {
-            	writeD(0);
-            }
-            
-            // Time of possession
-            writeD(fort.getOwnedTime());
-        }
-    }
-    
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[S] FE:15 ExShowFortressInfo";
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
+	 */
+	@Override
+	protected void writeImpl()
+	{
+		writeC(0xfe);
+		writeH(0x15);
+		List<Fort> forts = FortManager.getInstance().getForts();
+		writeD(forts.size());
+		for (Fort fort : forts)
+		{
+			L2Clan clan = fort.getOwnerClan();
+			writeD(fort.getFortId());
+			if (clan != null)
+			{
+				writeS(clan.getName());
+			}
+			else
+			{
+				writeS("");
+			}
+			
+			if (fort.getSiege().getIsInProgress())
+			{
+				writeD(1);
+			}
+			else
+			{
+				writeD(0);
+			}
+			
+			// Time of possession
+			writeD(fort.getOwnedTime());
+		}
+	}
+	
 }

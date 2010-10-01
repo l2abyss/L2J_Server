@@ -111,7 +111,7 @@ public class Hero
 		_completeHeroes = new FastMap<Integer, StatsSet>();
 		
 		_herofights = new FastMap<Integer, List<StatsSet>>();
-		_herocounts = new FastMap<Integer, StatsSet>();		
+		_herocounts = new FastMap<Integer, StatsSet>();
 		_herodiary = new FastMap<Integer, List<StatsSet>>();
 		_heroMessage = new FastMap<Integer, String>();
 		
@@ -243,7 +243,7 @@ public class Hero
 			_log.warning("Hero System: Couldnt load Heroes");
 			if (Config.DEBUG)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 		finally
@@ -284,7 +284,7 @@ public class Hero
 			message = rset.getString("message");
 			_heroMessage.put(charId, message);
 			rset.close();
-            statement.close();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -356,7 +356,7 @@ public class Hero
 		{
 			_log.warning("Hero System: Couldnt load Hero Diary for CharId: " + charId);
 			if (Config.DEBUG)
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 		}
 		finally
 		{
@@ -485,7 +485,7 @@ public class Hero
 			_herocountdata.set("draw", _draws);
 			_herocountdata.set("loss", _losses);
 			
-			_herocounts.put(charId, _herocountdata);			
+			_herocounts.put(charId, _herocountdata);
 			_herofights.put(charId, _fights);
 			
 			_log.info("Hero System: Loaded " + numberoffights + " fights for Hero: " + CharNameTable.getInstance().getNameById(charId));
@@ -494,7 +494,7 @@ public class Hero
 		{
 			_log.warning("Hero System: Couldnt load Hero fights history for CharId: " + charId);
 			if (Config.DEBUG)
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 		}
 		finally
 		{
@@ -528,6 +528,7 @@ public class Hero
 		_herodiary.clear();
 		_herofights.clear();
 		_herocounts.clear();
+		_heroMessage.clear();
 	}
 	
 	public void showHeroDiary(L2PcInstance activeChar, int heroclass, int charid, int page)
@@ -551,7 +552,7 @@ public class Hero
 					FastList<StatsSet> _list = FastList.newInstance();
 					_list.addAll(_mainlist);
 					Collections.reverse(_list);
-				    
+					
 					boolean color = true;
 					final StringBuilder fList = new StringBuilder(500);
 					int counter = 0;
@@ -798,7 +799,7 @@ public class Hero
 		heroes.clear();
 		
 		updateHeroes(false);
-
+		
 		for(Integer charId : _heroes.keySet())
 		{
 			L2PcInstance player = L2World.getInstance().getPlayer(charId);
@@ -823,6 +824,7 @@ public class Hero
 				setHeroGained(player.getCharId());
 				loadFights(player.getCharId());
 				loadDiary(player.getCharId());
+				_heroMessage.put(player.getCharId(), "");
 			}
 			else
 			{
@@ -830,6 +832,7 @@ public class Hero
 				setHeroGained(charId);
 				loadFights(charId);
 				loadDiary(charId);
+				_heroMessage.put(charId, "");
 				
 				Connection con = null;
 				
@@ -963,7 +966,7 @@ public class Hero
 			_log.warning("Hero System: Couldnt update Heroes");
 			if (Config.DEBUG)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 		finally
@@ -976,7 +979,7 @@ public class Hero
 	{
 		setDiaryData(charId, ACTION_HERO_GAINED, 0);
 	}
-		
+	
 	public void setRBkilled(int charId, int npcId)
 	{
 		setDiaryData(charId, ACTION_RAID_KILLED, npcId);
@@ -995,12 +998,12 @@ public class Hero
 			_diaryentry.set("date", date);
 			_diaryentry.set("action", template.getName() + " was defeated");
 			// Add to old list
-			_list.add(_diaryentry);		
+			_list.add(_diaryentry);
 			// Put new list into diary
 			_herodiary.put(charId, _list);
 		}
 	}
-
+	
 	public void setCastleTaken(int charId, int castleId)
 	{
 		setDiaryData(charId, ACTION_CASTLE_TAKEN, castleId);
@@ -1057,9 +1060,11 @@ public class Hero
 	 * @param charId character objid
 	 * @param message String to set
 	 */
-	public void setHeroMessage(int charId, String message)
+	public void setHeroMessage(L2PcInstance player, String message)
 	{
-		_heroMessage.put(charId, message);
+		_heroMessage.put(player.getCharId(), message);
+		if (player.isDebug())
+			_log.info("Hero message for player: "+player.getName()+":["+player.getCharId()+"] set to: ["+message+"]");
 	}
 	
 	/**
@@ -1103,7 +1108,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 		finally
 		{

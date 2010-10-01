@@ -34,9 +34,9 @@ public class LoginFail extends L2GameServerPacket
 	public static final int ACCESS_FAILED_TRY_LATER3 = 8;
 	public static final int ACCESS_FAILED_TRY_LATER4 = 9;
 	public static final int ACCESS_FAILED_TRY_LATER5 = 10;
-
+	
 	private int _reason;
-
+	
 	/**
 	 * @param _characters
 	 */
@@ -44,14 +44,14 @@ public class LoginFail extends L2GameServerPacket
 	{
 		_reason = reason;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x0a);
 		writeD(_reason);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

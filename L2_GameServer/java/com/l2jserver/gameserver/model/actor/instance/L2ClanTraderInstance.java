@@ -29,32 +29,32 @@ public final class L2ClanTraderInstance extends L2Npc
 		super(objectId, template);
 		setInstanceType(InstanceType.L2ClanTraderInstance);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
-
+		
 		if (command.equalsIgnoreCase("crp"))
 		{
 			if (player.getClan().getLevel() > 4)
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-2.htm");
 			else
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-1.htm");
-
+			
 			sendHtmlMessage(player, html);
 			return;
 		}
 		else if (command.startsWith("exchange"))
 		{
 			int itemId = Integer.parseInt(command.substring(9).trim());
-
+			
 			int reputation = 0;
 			int itemCount = 0;
-
+			
 			L2ItemInstance item = player.getInventory().getItemByItemId(itemId);
 			long playerItemCount = item == null ? 0 : item.getCount();
-
+			
 			switch (itemId)
 			{
 				case 9911:
@@ -70,63 +70,63 @@ public final class L2ClanTraderInstance extends L2Npc
 					itemCount = 100;
 					break;
 			}
-
+			
 			if (playerItemCount >= itemCount)
 			{
 				player.destroyItemByItemId("exchange", itemId, itemCount, player, true);
-
+				
 				player.getClan().addReputationScore(reputation, true);
 				player.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(player.getClan()));
-
+				
 				player.sendMessage("Your clan has added " + reputation + " points to its clan reputation score.");
 				/* TODO: fix the system message, I cant add the number to the system message
 				SystemMessage sm =  new SystemMessage(SystemMessageId.CLAN_ADDED_S1S_POINTS_TO_REPUTATION_SCORE);
 				sm.addItemNumber(reputation);
 				player.sendPacket(sm);*/
-
+				
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeSuccess.htm");
 			}
 			else
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeFailed.htm");
-
+			
 			sendHtmlMessage(player, html);
 			return;
 		}
 		else
 			super.onBypassFeedback(player, command);
 	}
-
+	
 	private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html)
 	{
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		String filename = "data/html/clantrader/" + getNpcId() + "-no.htm";
-
+		
 		if (player.isClanLeader())
 			filename = "data/html/clantrader/" + getNpcId() + ".htm";
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
 		String pom = "";
-
+		
 		if (val == 0)
 			pom = "" + npcId;
 		else
 			pom = npcId + "-" + val;
-
+		
 		return "data/html/clantrader/" + pom + ".htm";
 	}
 }

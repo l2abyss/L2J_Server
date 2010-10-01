@@ -16,13 +16,16 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.MultiSell;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2Multisell;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExHeroList;
@@ -33,8 +36,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.L2FastList;
 
-import javolution.util.FastMap;
-
 /**
  * Olympiad Npc's Instance
  *
@@ -43,22 +44,22 @@ import javolution.util.FastMap;
 public class L2OlympiadManagerInstance extends L2Npc
 {
 	private static Logger _logOlymp = Logger.getLogger(L2OlympiadManagerInstance.class.getName());
-
+	
 	private static final int GATE_PASS = Config.ALT_OLY_COMP_RITEM;
 	private static final String FEWER_THAN = "Fewer than " + String.valueOf(Config.ALT_OLY_REG_DISPLAY);
 	private static final String MORE_THAN = "More than " + String.valueOf(Config.ALT_OLY_REG_DISPLAY);
-
+	
 	public L2OlympiadManagerInstance (int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2OlympiadManagerInstance);
 	}
-
+	
 	@Override
 	public void onBypassFeedback (L2PcInstance player, String command)
 	{
 		int npcId = getNpcId();
-
+		
 		if (command.startsWith("OlympiadDesc"))
 		{
 			int val = Integer.parseInt(command.substring(13,14));
@@ -69,11 +70,11 @@ public class L2OlympiadManagerInstance extends L2Npc
 		{
 			if (!player.isNoble() || player.getClassId().level() < 3)
 				return;
-
+			
 			int passes;
 			int val = Integer.parseInt(command.substring(14));
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-
+			
 			switch(val)
 			{
 				case 1:
@@ -83,7 +84,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 					int classed = 0;
 					int nonClassed = 0;
 					int[] array = Olympiad.getInstance().getWaitingList();
-
+					
 					if (array != null)
 					{
 						classed = array[0];
@@ -134,10 +135,10 @@ public class L2OlympiadManagerInstance extends L2Npc
 					}
 					break;
 				case 7:
-					L2Multisell.getInstance().separateAndSend(102, player, getNpcId(), false, getCastle().getTaxRate());
+					MultiSell.getInstance().separateAndSend(102, player, this, false);
 					break;
 				case 8:
-					L2Multisell.getInstance().separateAndSend(103, player, getNpcId(), false, getCastle().getTaxRate());
+					MultiSell.getInstance().separateAndSend(103, player, this, false);
 					break;
 				case 9:
 					int point = Olympiad.getInstance().getLastNobleOlympiadPoints(player.getObjectId());
@@ -151,11 +152,11 @@ public class L2OlympiadManagerInstance extends L2Npc
 					if (passes > 0)
 					{
 						L2ItemInstance item = player.getInventory().addItem("Olympiad", GATE_PASS, passes, player, this);
-
+						
 						InventoryUpdate iu = new InventoryUpdate();
 						iu.addModifiedItem(item);
 						player.sendPacket(iu);
-
+						
 						SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_ITEM);
 						sm.addItemNumber(passes);
 						sm.addItemName(item);
@@ -164,46 +165,52 @@ public class L2OlympiadManagerInstance extends L2Npc
 					break;
 				default:
 					_logOlymp.warning("Olympiad System: Couldnt send packet for request " + val);
-				break;
+					break;
 			}
 		}
 		else if (command.startsWith("OlyBuff"))
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			String[] params = command.split(" ");
-
+			
 			if (params[1] == null)
 			{
 				_log.warning("Olympiad Buffer Warning: npcId = " + npcId + " has no buffGroup set in the bypass for the buff selected.");
 				return;
 			}
 			int buffGroup = Integer.parseInt(params[1]);
-
+			
 			int[] npcBuffGroupInfo = NpcBufferTable.getInstance().getSkillInfo(npcId, buffGroup);
-
+			
 			if (npcBuffGroupInfo == null)
 			{
 				_log.warning("Olympiad Buffer Warning: npcId = " + npcId + " Location: " + getX() + ", " + getY() + ", " + getZ() + " Player: " + player.getName() + " has tried to use skill group (" + buffGroup + ") not assigned to the NPC Buffer!");
 				return;
 			}
-
+			
 			int skillId = npcBuffGroupInfo[0];
 			int skillLevel = npcBuffGroupInfo[1];
-
+			
 			L2Skill skill = SkillTable.getInstance().getInfo(skillId,skillLevel);
-
+			
 			setTarget(player);
-
+			
 			if (player.olyBuff > 0)
 			{
 				if (skill != null)
 				{
+					player.olyBuff--;
 					broadcastPacket(new MagicSkillUse(this, player, skill.getId(), skill.getLevel(), 0, 0));
 					skill.getEffects(player, player);
-					player.olyBuff--;
+					L2Summon summon = player.getPet();
+					if (summon != null)
+					{
+						broadcastPacket(new MagicSkillUse(this, summon, skill.getId(), skill.getLevel(), 0, 0));
+						skill.getEffects(summon, summon);
+					}
 				}
 			}
-
+			
 			if (player.olyBuff > 0)
 			{
 				html.setFile(player.getHtmlPrefix(), player.olyBuff == 5 ? Olympiad.OLYMPIAD_HTML_PATH + "olympiad_buffs.htm" : Olympiad.OLYMPIAD_HTML_PATH + "olympiad_5buffs.htm");
@@ -221,19 +228,19 @@ public class L2OlympiadManagerInstance extends L2Npc
 		else if (command.startsWith("Olympiad"))
 		{
 			int val = Integer.parseInt(command.substring(9,10));
-
+			
 			NpcHtmlMessage reply = new NpcHtmlMessage(getObjectId());
-
+			
 			switch (val)
 			{
 				case 1:
 					FastMap<Integer, String> matches = Olympiad.getInstance().getMatchList();
 					reply.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "olympiad_observe1.htm");
-
+					
 					for (int i = 0; i < Olympiad.getStadiumCount(); i++)
 					{
 						int arenaID = i + 1;
-
+						
 						// &$906; -> \\&\\$906;
 						reply.replace("%title"+arenaID+"%", matches.containsKey(i) ? matches.get(i) : "\\&$906;");
 					}
@@ -247,7 +254,7 @@ public class L2OlympiadManagerInstance extends L2Npc
 					{
 						L2FastList<String> names = Olympiad.getInstance().getClassLeaderBoard(classId);
 						reply.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "olympiad_ranking.htm");
-
+						
 						int index = 1;
 						for (String name : names)
 						{
@@ -262,37 +269,37 @@ public class L2OlympiadManagerInstance extends L2Npc
 							reply.replace("%place"+index+"%", "");
 							reply.replace("%rank"+index+"%", "");
 						}
-
+						
 						reply.replace("%objectId%", String.valueOf(getObjectId()));
 						player.sendPacket(reply);
 					}
 					break;
-                case 3:
-                	int id = Integer.parseInt(command.substring(11));
-                	Olympiad.addSpectator(id, player, true);
-                	break;
-                case 4:
-                	player.sendPacket(new ExHeroList());
-                	break;
-                default:
-                	_logOlymp.warning("Olympiad System: Couldnt send packet for request " + val);
-                break;
+				case 3:
+					int id = Integer.parseInt(command.substring(11));
+					Olympiad.addSpectator(id, player, true);
+					break;
+				case 4:
+					player.sendPacket(new ExHeroList());
+					break;
+				default:
+					_logOlymp.warning("Olympiad System: Couldnt send packet for request " + val);
+					break;
 			}
 		}
 		else
 			super.onBypassFeedback(player, command);
 	}
-
+	
 	private void showChatWindow(L2PcInstance player, int val, String suffix)
 	{
 		String filename = Olympiad.OLYMPIAD_HTML_PATH;
-
+		
 		filename += "noble_desc" + val;
 		filename += (suffix != null)? suffix + ".htm" : ".htm";
-
+		
 		if (filename.equals(Olympiad.OLYMPIAD_HTML_PATH + "noble_desc0.htm"))
 			filename = Olympiad.OLYMPIAD_HTML_PATH + "noble_main.htm";
-
+		
 		showChatWindow(player, filename);
 	}
 }

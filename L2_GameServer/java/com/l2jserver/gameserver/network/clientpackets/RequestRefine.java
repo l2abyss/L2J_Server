@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.model.L2Augmentation;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExVariationResult;
@@ -36,7 +35,7 @@ public final class RequestRefine extends AbstractRefinePacket
 	private int _refinerItemObjId;
 	private int _gemStoneItemObjId;
 	private long _gemStoneCount;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -45,7 +44,7 @@ public final class RequestRefine extends AbstractRefinePacket
 		_gemStoneItemObjId = readD();
 		_gemStoneCount = readQ();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
 	 */
@@ -55,27 +54,27 @@ public final class RequestRefine extends AbstractRefinePacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		L2ItemInstance targetItem = (L2ItemInstance)L2World.getInstance().findObject(_targetItemObjId);
+		L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_targetItemObjId);
 		if (targetItem == null)
 			return;
-		L2ItemInstance refinerItem = (L2ItemInstance)L2World.getInstance().findObject(_refinerItemObjId);
+		L2ItemInstance refinerItem = activeChar.getInventory().getItemByObjectId(_refinerItemObjId);
 		if (refinerItem == null)
 			return;
-		L2ItemInstance gemStoneItem = (L2ItemInstance)L2World.getInstance().findObject(_gemStoneItemObjId);
+		L2ItemInstance gemStoneItem = activeChar.getInventory().getItemByObjectId(_gemStoneItemObjId);
 		if (gemStoneItem == null)
 			return;
-
+		
 		if (!isValid(activeChar, targetItem, refinerItem, gemStoneItem))
 		{
 			activeChar.sendPacket(new ExVariationResult(0,0,0));
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.AUGMENTATION_FAILED_DUE_TO_INAPPROPRIATE_CONDITIONS));
 			return;
 		}
-
+		
 		final LifeStone ls = getLifeStone(refinerItem.getItemId());
 		if (ls == null)
 			return;
-
+		
 		final int lifeStoneLevel = ls.getLevel();
 		final int lifeStoneGrade = ls.getGrade();
 		if (_gemStoneCount != getGemStoneCount(targetItem.getItem().getItemGrade(), lifeStoneGrade))
@@ -84,7 +83,7 @@ public final class RequestRefine extends AbstractRefinePacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.AUGMENTATION_FAILED_DUE_TO_INAPPROPRIATE_CONDITIONS));
 			return;
 		}
-
+		
 		// unequip item
 		if (targetItem.isEquipped())
 		{
@@ -95,31 +94,31 @@ public final class RequestRefine extends AbstractRefinePacket
 			activeChar.sendPacket(iu);
 			activeChar.broadcastUserInfo();
 		}
-
+		
 		// consume the life stone
 		if (!activeChar.destroyItem("RequestRefine", refinerItem, 1, null, false))
 			return;
-
+		
 		// consume the gemstones
 		if (!activeChar.destroyItem("RequestRefine", gemStoneItem, _gemStoneCount, null, false))
 			return;
-
+		
 		final L2Augmentation aug = AugmentationData.getInstance().generateRandomAugmentation(lifeStoneLevel, lifeStoneGrade, targetItem.getItem().getBodyPart());
 		targetItem.setAugmentation(aug);
-
+		
 		final int stat12 = 0x0000FFFF & aug.getAugmentationId();
 		final int stat34 = aug.getAugmentationId() >> 16;
 		activeChar.sendPacket(new ExVariationResult(stat12,stat34,1));
-
+		
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addModifiedItem(targetItem);
 		activeChar.sendPacket(iu);
-
+		
 		StatusUpdate su = new StatusUpdate(activeChar);
 		su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 		activeChar.sendPacket(su);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

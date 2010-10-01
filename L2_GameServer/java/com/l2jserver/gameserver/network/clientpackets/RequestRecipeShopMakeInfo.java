@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopItemInfo;
 
@@ -24,37 +25,40 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeShopItemInfo;
  */
 public final class RequestRecipeShopMakeInfo extends L2GameClientPacket
 {
-    private static final String _C__B5_RequestRecipeShopMakeInfo = "[C] b5 RequestRecipeShopMakeInfo";
-    //private static Logger _log = Logger.getLogger(RequestRecipeShopMakeInfo.class.getName());
-
-    private int _playerObjectId;
-    private int _recipeId;
-
-    @Override
+	private static final String _C__B5_RequestRecipeShopMakeInfo = "[C] b5 RequestRecipeShopMakeInfo";
+	//private static Logger _log = Logger.getLogger(RequestRecipeShopMakeInfo.class.getName());
+	
+	private int _playerObjectId;
+	private int _recipeId;
+	
+	@Override
 	protected void readImpl()
-    {
-        _playerObjectId = readD();
-        _recipeId = readD();
+	{
+		_playerObjectId = readD();
+		_recipeId = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
-        L2PcInstance player = getClient().getActiveChar();
-        if (player == null)
-        	return;
-
-
-        player.sendPacket(new RecipeShopItemInfo(_playerObjectId,_recipeId));
-
-    }
-
-
-    @Override
+		final L2PcInstance player = getClient().getActiveChar();
+		if (player == null)
+			return;
+		
+		final L2PcInstance shop = L2World.getInstance().getPlayer(_playerObjectId);
+		if (shop == null || shop.getPrivateStoreType() != 5)
+			return;
+		
+		player.sendPacket(new RecipeShopItemInfo(shop,_recipeId));
+		
+	}
+	
+	
+	@Override
 	public String getType()
-    {
-        return _C__B5_RequestRecipeShopMakeInfo;
-    }
-
-
+	{
+		return _C__B5_RequestRecipeShopMakeInfo;
+	}
+	
+	
 }

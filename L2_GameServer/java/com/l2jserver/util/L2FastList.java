@@ -19,24 +19,24 @@ import java.util.List;
 import javolution.util.FastList;
 
 /**
-*
-* A custom version of LinkedList with extension for iterating without using temporary collection<br>
-* It`s provide synchronization lock when iterating if needed<br>
-* <br>
-* @author  Julian Version 1.0.1 (2008-02-07)<br>
-* Changes:<br>
-*      1.0.0 - Initial version.<br>
-*      1.0.1 - Made forEachP() final.<br>
-*/
+ *
+ * A custom version of LinkedList with extension for iterating without using temporary collection<br>
+ * It`s provide synchronization lock when iterating if needed<br>
+ * <br>
+ * @author  Julian Version 1.0.1 (2008-02-07)<br>
+ * Changes:<br>
+ *      1.0.0 - Initial version.<br>
+ *      1.0.1 - Made forEachP() final.<br>
+ */
 public class L2FastList<T extends Object> extends FastList<T>
 {
 	static final long serialVersionUID = 1L;
 	
-    /**
-     * Public inner interface used by ForEach iterations<br>
-     *
-     * @author  Julian
-     */
+	/**
+	 * Public inner interface used by ForEach iterations<br>
+	 *
+	 * @author  Julian
+	 */
 	public interface I2ForEach<T> {
 		public boolean ForEach(T obj);
 	}
@@ -48,13 +48,13 @@ public class L2FastList<T extends Object> extends FastList<T>
 	public L2FastList(List<? extends T> list) {
 		super(list);
 	}
-     /**
-      * Public method that iterate entire collection.<br>
-      * <br>
-      * @param func - a class method that must be executed on every element of collection.<br>
-      * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
-      *             check method (I2ForEach.forEach())<br>
-      */
+	/**
+	 * Public method that iterate entire collection.<br>
+	 * <br>
+	 * @param func - a class method that must be executed on every element of collection.<br>
+	 * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
+	 *             check method (I2ForEach.forEach())<br>
+	 */
 	public boolean forEach(I2ForEach<T> func) {
 		for (T e: this)
 			if (!func.ForEach(e)) return false;

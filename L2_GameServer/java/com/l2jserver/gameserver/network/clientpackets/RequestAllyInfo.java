@@ -28,21 +28,21 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestAllyInfo extends L2GameClientPacket
 {
 	private static final String _C__8E_REQUESTALLYINFO = "[C] 8E RequestAllyInfo";
-
-
+	
+	
 	@Override
 	public void readImpl()
 	{
-
+		
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		SystemMessage sm;
 		if (activeChar.getAllyId() == 0)
 		{
@@ -50,13 +50,13 @@ public final class RequestAllyInfo extends L2GameClientPacket
 			sendPacket(sm);
 			return;
 		}
-
+		
 		sm = new SystemMessage(SystemMessageId.ALLIANCE_INFO_HEAD);
 		sendPacket(sm);
 		sm = new SystemMessage(SystemMessageId.ALLIANCE_NAME_S1);
 		sm.addString(activeChar.getClan().getAllyName());
 		sendPacket(sm);
-
+		
 		int clanCount = 0;
 		int totalMembers = 0;
 		int onlineMembers = 0;
@@ -64,7 +64,7 @@ public final class RequestAllyInfo extends L2GameClientPacket
 		{
 			if (clan.getAllyId() != activeChar.getAllyId())
 				continue;
-
+			
 			clanCount++;
 			totalMembers += clan.getMembersCount();
 			onlineMembers += clan.getOnlineMembersCount();
@@ -73,23 +73,23 @@ public final class RequestAllyInfo extends L2GameClientPacket
 		sm.addNumber(onlineMembers);
 		sm.addNumber(totalMembers);
 		sendPacket(sm);
-
+		
 		final L2Clan leaderClan = ClanTable.getInstance().getClan(activeChar.getAllyId());
 		sm = new SystemMessage(SystemMessageId.ALLIANCE_LEADER_S2_OF_S1);
 		sm.addString(leaderClan.getName());
 		sm.addString(leaderClan.getLeaderName());
 		sendPacket(sm);
-
+		
 		sm = new SystemMessage(SystemMessageId.ALLIANCE_CLAN_TOTAL_S1);
 		sm.addNumber(clanCount);
 		sendPacket(sm);
-
+		
 		sm = new SystemMessage(SystemMessageId.CLAN_INFO_HEAD);
 		for (L2Clan clan : ClanTable.getInstance().getClans())
 		{
 			if (clan.getAllyId() != activeChar.getAllyId())
 				continue;
-
+			
 			sendPacket(sm); // send head or separator
 			sm = new SystemMessage(SystemMessageId.CLAN_INFO_NAME);
 			sm.addString(clan.getName());
@@ -105,7 +105,7 @@ public final class RequestAllyInfo extends L2GameClientPacket
 		sm = new SystemMessage(SystemMessageId.CLAN_INFO_FOOT);
 		sendPacket(sm);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

@@ -22,7 +22,7 @@ public class PlayableStatus extends CharStatus
 	{
 		super(activeChar);
 	}
-
+	
 	@Override
 	public L2Playable getActiveChar()
 	{

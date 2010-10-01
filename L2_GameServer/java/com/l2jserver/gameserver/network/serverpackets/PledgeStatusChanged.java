@@ -29,33 +29,32 @@ import com.l2jserver.gameserver.model.L2Clan;
  */
 public final class PledgeStatusChanged extends L2GameServerPacket
 {
-	private static final String _S__CD_PLEDGESTATUS_CHANGED = "[S] cd PledgeStatusChanged";
 	private L2Clan _clan;
-
+	
 	public PledgeStatusChanged(L2Clan clan)
 	{
 		_clan = clan;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xcd);
+		writeC(0xCD);
 		writeD(_clan.getLeaderId());
 		writeD(_clan.getClanId());
-        writeD(0);
-        writeD(_clan.getLevel());
-        writeD(0);
-        writeD(0);
-        writeD(0);
+		writeD(_clan.getCrestId());
+		writeD(_clan.getAllyId());
+		writeD(_clan.getAllyCrestId());
+		writeD(0);
+		writeD(0);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
 	@Override
 	public String getType()
 	{
-		return _S__CD_PLEDGESTATUS_CHANGED;
+		return "[S] CD PledgeStatusChanged";
 	}
 }

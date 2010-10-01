@@ -22,10 +22,10 @@ import com.l2jserver.util.network.BaseRecievePacket;
  */
 public class ChangeAccessLevel extends BaseRecievePacket
 {
-
+	
 	private int _level;
 	private String _account;
-
+	
 	/**
 	 * @param decrypt
 	 */
@@ -35,7 +35,7 @@ public class ChangeAccessLevel extends BaseRecievePacket
 		_level = readD();
 		_account = readS();
 	}
-
+	
 	/**
 	 * @return Returns the account.
 	 */
@@ -43,7 +43,7 @@ public class ChangeAccessLevel extends BaseRecievePacket
 	{
 		return _account;
 	}
-
+	
 	/**
 	 * @return Returns the level.
 	 */
@@ -51,5 +51,5 @@ public class ChangeAccessLevel extends BaseRecievePacket
 	{
 		return _level;
 	}
-
+	
 }

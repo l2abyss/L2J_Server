@@ -57,7 +57,7 @@ public class TopBBSManager extends BaseBBSManager
 			if (content == null)
 			{
 				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/" + idp
-						+ ".htm' </center></body></html>";
+				+ ".htm' </center></body></html>";
 			}
 			separateAndSend(content, activeChar);
 		}

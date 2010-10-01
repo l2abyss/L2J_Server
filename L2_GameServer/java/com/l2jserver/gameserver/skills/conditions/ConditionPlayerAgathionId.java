@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.skills.Env;
 public class ConditionPlayerAgathionId extends Condition
 {
 	private final int _agathionId;
-
+	
 	/**
 	 * Instantiates a new condition player agathion id.
 	 *
@@ -33,7 +33,7 @@ public class ConditionPlayerAgathionId extends Condition
 	{
 		_agathionId = agathionId;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

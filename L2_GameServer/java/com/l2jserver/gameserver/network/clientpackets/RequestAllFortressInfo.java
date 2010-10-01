@@ -23,38 +23,38 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowFortressInfo;
  */
 public class RequestAllFortressInfo extends L2GameClientPacket
 {
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[C] D0:3D RequestAllFortressInfo";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-        // trigger packet
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-        L2GameClient client = this.getClient();
-        if (client != null)
-        {
-            client.sendPacket(new ExShowFortressInfo());
-        }
-    }
-
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[C] D0:3D RequestAllFortressInfo";
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		// trigger packet
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		L2GameClient client = this.getClient();
+		if (client != null)
+		{
+			client.sendPacket(new ExShowFortressInfo());
+		}
+	}
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

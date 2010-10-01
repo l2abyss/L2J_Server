@@ -30,8 +30,8 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 public class L2WeddingManagerInstance extends L2Npc
 {
 	/**
-	* @author evill33t & squeezed
-	*/
+	 * @author evill33t & squeezed
+	 */
 	public L2WeddingManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
@@ -71,7 +71,7 @@ public class L2WeddingManagerInstance extends L2Npc
 			L2PcInstance ptarget = L2World.getInstance().getPlayer(player.getPartnerId());
 			
 			// Is partner online?
-			if (ptarget == null || ptarget.isOnline() == 0)
+			if (ptarget == null || !ptarget.isOnline())
 			{
 				filename = "data/html/mods/Wedding_notfound.htm";
 				sendHtmlMessage(player, filename, replace);

@@ -9,7 +9,7 @@
  * Added copyright notice
  *
  *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -28,6 +28,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+import javolution.util.FastSet;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -36,10 +40,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2MinionInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
-import javolution.util.FastSet;
 
 /**
  * This class ...
@@ -243,7 +243,7 @@ public class MinionList
 		// Init the position of the Minion and add it in the world as a visible object
 		final int offset = 200;
 		final int minRadius = 30;
-
+		
 		int newX = Rnd.get(minRadius * 2, offset * 2); // x
 		int newY = Rnd.get(newX, offset * 2); // distance
 		newY = (int)Math.sqrt(newY*newY - newX*newX); // y
@@ -255,7 +255,7 @@ public class MinionList
 			newY = master.getY() + newY - offset;
 		else
 			newY = master.getY() - newY + minRadius;
-
+		
 		monster.spawnMe(newX, newY, master.getZ());
 		
 		if (Config.DEBUG)

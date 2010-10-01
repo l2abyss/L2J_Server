@@ -43,20 +43,20 @@ public class L2LandingZone extends L2ZoneType
 		if (character instanceof L2PcInstance)
 			character.setInsideZone(L2Character.ZONE_LANDING, false);
 	}
-
+	
 	/**
-     * @see com.l2jserver.gameserver.model.zone.L2ZoneType#onDieInside(com.l2jserver.gameserver.model.actor.L2Character)
-     */
-    @Override
-    public void onDieInside(L2Character character)
-    {  
-    }
-
+	 * @see com.l2jserver.gameserver.model.zone.L2ZoneType#onDieInside(com.l2jserver.gameserver.model.actor.L2Character)
+	 */
+	@Override
+	public void onDieInside(L2Character character)
+	{
+	}
+	
 	/**
-     * @see com.l2jserver.gameserver.model.zone.L2ZoneType#onReviveInside(com.l2jserver.gameserver.model.actor.L2Character)
-     */
-    @Override
-    public void onReviveInside(L2Character character)
-    {
-    }
+	 * @see com.l2jserver.gameserver.model.zone.L2ZoneType#onReviveInside(com.l2jserver.gameserver.model.actor.L2Character)
+	 */
+	@Override
+	public void onReviveInside(L2Character character)
+	{
+	}
 }

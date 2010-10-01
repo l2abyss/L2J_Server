@@ -21,34 +21,34 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeItemMakeInfo;
  */
 public final class RequestRecipeItemMakeInfo extends L2GameClientPacket
 {
-    private static final String _C__AE_REQUESTRECIPEITEMMAKEINFO = "[C] AE RequestRecipeItemMakeInfo";
+	private static final String _C__AE_REQUESTRECIPEITEMMAKEINFO = "[C] AE RequestRecipeItemMakeInfo";
 	//private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
-
+	
 	private int _id;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_id = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
-
+		
 		RecipeItemMakeInfo response = new RecipeItemMakeInfo(_id, player);
 		sendPacket(response);
 	}
-
-    /* (non-Javadoc)
-     * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-     */
-    @Override
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
+	 */
+	@Override
 	public String getType()
-    {
-        return _C__AE_REQUESTRECIPEITEMMAKEINFO;
-    }
+	{
+		return _C__AE_REQUESTRECIPEITEMMAKEINFO;
+	}
 }

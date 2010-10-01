@@ -20,9 +20,9 @@ import com.l2jserver.gameserver.skills.Env;
  * The Class ConditionPlayerMp.
  */
 public class ConditionPlayerMp extends Condition {
-
+	
 	private final int _mp;
-
+	
 	/**
 	 * Instantiates a new condition player mp.
 	 *
@@ -32,7 +32,7 @@ public class ConditionPlayerMp extends Condition {
 	{
 		_mp = mp;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

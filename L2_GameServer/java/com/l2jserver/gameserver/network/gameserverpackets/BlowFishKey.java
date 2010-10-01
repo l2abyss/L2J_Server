@@ -42,8 +42,8 @@ public class BlowFishKey extends BaseSendablePacket
 		try
 		{
 			Cipher rsaCipher = Cipher.getInstance("RSA/ECB/nopadding");
-	        rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
-	        encrypted = rsaCipher.doFinal(blowfishKey);
+			rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+			encrypted = rsaCipher.doFinal(blowfishKey);
 		}
 		catch(GeneralSecurityException e)
 		{
@@ -52,7 +52,7 @@ public class BlowFishKey extends BaseSendablePacket
 		writeD(encrypted.length);
 		writeB(encrypted);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
 	 */
@@ -61,5 +61,5 @@ public class BlowFishKey extends BaseSendablePacket
 	{
 		return getBytes();
 	}
-
+	
 }

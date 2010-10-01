@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,9 +33,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
 
-
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
-
 /**
  * This class ...
  * cd(dd)
@@ -43,11 +42,11 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 {
 	private static final String _C__B2_RequestRecipeShopListSet = "[C] b2 RequestRecipeShopListSet";
 	//private static Logger _log = Logger.getLogger(RequestRecipeShopListSet.class.getName());
-
+	
 	private static final int BATCH_LENGTH = 12; // length of the one item
-
+	
 	private Recipe[] _items = null;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -58,7 +57,7 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 		{
 			return;
 		}
-
+		
 		_items = new Recipe[count];
 		for (int i = 0; i < count ; i++)
 		{
@@ -72,51 +71,51 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			_items[i] = new Recipe(id, cost);
 		}
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
-
+		
 		if (_items == null)
 		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
 			player.broadcastUserInfo();
 			return;
 		}
-
+		
 		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		if (player.isInsideZone(L2Character.ZONE_NOSTORE))
 		{
 			player.sendPacket(new SystemMessage(SystemMessageId.NO_PRIVATE_WORKSHOP_HERE));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		L2ManufactureList createList = new L2ManufactureList();
-
+		
 		List<L2RecipeList> dwarfRecipes = Arrays.asList(player.getDwarvenRecipeBook());
 		List<L2RecipeList> commonRecipes = Arrays.asList(player.getCommonRecipeBook());
-
+		
 		for (Recipe i : _items)
 		{
 			L2RecipeList list = RecipeController.getInstance().getRecipeList(i.getRecipeId());
-
+			
 			if (!dwarfRecipes.contains(list) && !commonRecipes.contains(list))
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Player " + player.getName() + " of account " + player.getAccountName()
 						+ " tried to set recipe which he dont have.", Config.DEFAULT_PUNISH);
 				return;
 			}
-
+			
 			if (!i.addToList(createList))
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Character "
@@ -127,18 +126,18 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 				return;
 			}
 		}
-
+		
 		createList.setStoreName(player.getCreateList() != null ? player.getCreateList().getStoreName() : "");
 		player.setCreateList(createList);
-
+		
 		player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_MANUFACTURE);
 		player.sitDown();
 		player.broadcastUserInfo();
 		player.sendPacket(new RecipeShopMsg(player));
 		player.broadcastPacket(new RecipeShopMsg(player));
 	}
-
-	private class Recipe
+	
+	private static class Recipe
 	{
 		private final int _recipeId;
 		private final long _cost;
@@ -148,22 +147,22 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			_recipeId = id;
 			_cost = c;
 		}
-
+		
 		public boolean addToList(L2ManufactureList list)
 		{
 			if (_cost > MAX_ADENA)
 				return false;
-
+			
 			list.add(new L2ManufactureItem(_recipeId, _cost));
 			return true;
 		}
-
+		
 		public int getRecipeId()
 		{
 			return _recipeId;
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

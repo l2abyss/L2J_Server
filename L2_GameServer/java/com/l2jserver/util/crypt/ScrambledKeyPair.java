@@ -27,17 +27,17 @@ public class ScrambledKeyPair
 	private static Logger _log = Logger.getLogger(ScrambledKeyPair.class.getName());
 	public KeyPair _pair;
 	public byte[] _scrambledModulus;
-
+	
 	public ScrambledKeyPair(KeyPair pPair)
 	{
 		_pair = pPair;
 		_scrambledModulus = scrambleModulus(((RSAPublicKey) _pair.getPublic()).getModulus());
 	}
-
+	
 	private byte[] scrambleModulus(BigInteger modulus)
 	{
 		byte[] scrambledMod = modulus.toByteArray();
-
+		
 		if (scrambledMod.length == 0x81 && scrambledMod[0] == 0x00)
 		{
 			byte[] temp = new byte[0x80];
@@ -67,7 +67,7 @@ public class ScrambledKeyPair
 			scrambledMod[0x40 + i] = (byte) (scrambledMod[0x40 + i] ^ scrambledMod[i]);
 		}
 		_log.fine("Modulus was scrambled");
-
+		
 		return scrambledMod;
 	}
 }

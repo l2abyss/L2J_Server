@@ -42,23 +42,35 @@ import com.l2jserver.gameserver.templates.item.L2Item;
 public class EnchantHPBonusData
 {
 	protected static final Logger _log = Logger.getLogger(EnchantHPBonusData.class.getName());
-
+	
 	private final TIntObjectHashMap<Integer[]> _singleArmorHPBonus = new TIntObjectHashMap<Integer[]>();
 	private final TIntObjectHashMap<Integer[]> _fullArmorHPBonus = new TIntObjectHashMap<Integer[]>();
-
+	
 	public static final EnchantHPBonusData getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	private EnchantHPBonusData()
 	{
+		load();
+	}
+	
+	public void reload()
+	{
+		load();
+	}
+	
+	private void load()
+	{
+		_singleArmorHPBonus.clear();
+		_fullArmorHPBonus.clear();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
 		File file = new File(Config.DATAPACK_ROOT, "data/enchantHPBonus.xml");
 		Document doc = null;
-
+		
 		if (file.exists())
 		{
 			try
@@ -69,7 +81,7 @@ public class EnchantHPBonusData
 			{
 				_log.log(Level.WARNING, "Could not parse enchantHPBonus.xml file: " + e.getMessage(), e);
 			}
-
+			
 			for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
 			{
 				if ("list".equalsIgnoreCase(n.getNodeName()))
@@ -82,7 +94,7 @@ public class EnchantHPBonusData
 							Node att;
 							Integer grade;
 							boolean fullArmor;
-
+							
 							att = attrs.getNamedItem("grade");
 							if (att == null)
 							{
@@ -90,7 +102,7 @@ public class EnchantHPBonusData
 								continue;
 							}
 							grade = Integer.parseInt(att.getNodeValue());
-
+							
 							att = attrs.getNamedItem("fullArmor");
 							if (att == null)
 							{
@@ -98,7 +110,7 @@ public class EnchantHPBonusData
 								continue;
 							}
 							fullArmor = Boolean.valueOf(att.getNodeValue());
-
+							
 							att = attrs.getNamedItem("values");
 							if (att == null)
 							{
@@ -128,10 +140,10 @@ public class EnchantHPBonusData
 			}
 			if (_fullArmorHPBonus.isEmpty() && _singleArmorHPBonus.isEmpty())
 				return;
-
+			
 			Collection<Integer> itemIds = ItemTable.getInstance().getAllArmorsId();
 			int count = 0;
-
+			
 			for (Integer itemId: itemIds)
 			{
 				L2Item item = ItemTable.getInstance().getTemplate(itemId);
@@ -155,7 +167,7 @@ public class EnchantHPBonusData
 					}
 				}
 			}
-
+			
 			// shields in the weapons table
 			itemIds = ItemTable.getInstance().getAllWeaponsId();
 			for (Integer itemId: itemIds)
@@ -176,22 +188,22 @@ public class EnchantHPBonusData
 			_log.info("Enchant HP Bonus registered for " + count + " items!");
 		}
 	}
-
+	
 	public final int getHPBonus(L2ItemInstance item)
 	{
 		final Integer[] values;
-
+		
 		if (item.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)
 			values = _fullArmorHPBonus.get(item.getItem().getItemGradeSPlus());
 		else
 			values = _singleArmorHPBonus.get(item.getItem().getItemGradeSPlus());
-
+		
 		if (values == null || values.length == 0)
 			return 0;
-			
+		
 		return values[Math.min(item.getEnchantLevel(), values.length) - 1];
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

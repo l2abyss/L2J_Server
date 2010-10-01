@@ -19,6 +19,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.RecipeController;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2RecipeList;
@@ -26,8 +28,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2WarehouseItem;
-
-import javolution.util.FastList;
 
 /**
  * 0x42 WarehouseWithdrawalList  dh (h dddhh dhhh d)
@@ -195,11 +195,11 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 	}
 	
 	/**
-	  * This public method return the integer of the Sortorder by its name.
-	  * If you want to have another, add the Comparator and the Constant.
-	  * @param order
-	  * @return the integer of the sortorder or 1 as default value
-	  */
+	 * This public method return the integer of the Sortorder by its name.
+	 * If you want to have another, add the Comparator and the Constant.
+	 * @param order
+	 * @return the integer of the sortorder or 1 as default value
+	 */
 	public static byte getOrder(String order)
 	{
 		if (order == null)
@@ -272,7 +272,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 				return (order == A2Z ? Z2A : A2Z);
 			if (o2.getType2() == L2Item.TYPE2_MONEY && o1.getType2() != L2Item.TYPE2_MONEY)
 				return (order == A2Z ? A2Z : Z2A);
-			if ((o1.isEtcItem() && o1.getItemType() == L2EtcItemType.RECEIPE) && (o2.isEtcItem() && o2.getItemType() == L2EtcItemType.RECEIPE))
+			if ((o1.isEtcItem() && o1.getItemType() == L2EtcItemType.RECIPE) && (o2.isEtcItem() && o2.getItemType() == L2EtcItemType.RECIPE))
 			{
 				try
 				{
@@ -490,7 +490,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 		List<L2WarehouseItem> _list = new FastList<L2WarehouseItem>();
 		for (L2ItemInstance item : _items)
 		{
-			if (item.isEtcItem() && item.getEtcItem().getItemType() == L2EtcItemType.RECEIPE || item.getItem().getType2() == L2Item.TYPE2_MONEY)
+			if (item.isEtcItem() && item.getEtcItem().getItemType() == L2EtcItemType.RECIPE || item.getItem().getType2() == L2Item.TYPE2_MONEY)
 			{
 				if (_list.size() < MAX_SORT_LIST_ITEMS)
 					_list.add(new L2WarehouseItem(item));
@@ -652,7 +652,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			if (item.isEtcItem()
-					&& (item.getEtcItem().getItemType() != L2EtcItemType.MATERIAL && item.getEtcItem().getItemType() != L2EtcItemType.RECEIPE && item.getEtcItem().getItemType() != L2EtcItemType.SPELLBOOK
+					&& (item.getEtcItem().getItemType() != L2EtcItemType.MATERIAL && item.getEtcItem().getItemType() != L2EtcItemType.RECIPE && item.getEtcItem().getItemType() != L2EtcItemType.SPELLBOOK
 							&& item.getEtcItem().getItemType() != L2EtcItemType.SCROLL && item.getEtcItem().getItemType() != L2EtcItemType.SHOT) || item.getItem().getType2() == L2Item.TYPE2_MONEY)
 			{
 				if (_list.size() < MAX_SORT_LIST_ITEMS)
@@ -688,47 +688,43 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x42);
-		/* 0x01-Private Warehouse  
-		* 0x02-Clan Warehouse  
-		* 0x03-Castle Warehouse  
-		* 0x04-Warehouse */
+		/* 0x01-Private Warehouse
+		 * 0x02-Clan Warehouse
+		 * 0x03-Castle Warehouse
+		 * 0x04-Warehouse */
 		writeH(_whType);
 		writeQ(_playerAdena);
 		writeH(_objects.size());
 		
 		for (L2WarehouseItem item : _objects)
 		{
-			writeH(item.getItem().getType1()); // item type1 //unconfirmed, works
 			writeD(item.getObjectId());
-			writeD(item.getItemId()); //unconfirmed, works
-			writeQ(item.getCount()); //unconfirmed, works
-			writeH(item.getItem().getType2()); // item type2 //unconfirmed, works
-			writeH(item.getCustomType1()); // ?
-			writeD(item.getItem().getBodyPart()); // ?
-			writeH(item.getEnchantLevel()); // enchant level -confirmed
-			writeH(0x00); // ?
-			writeH(item.getCustomType2()); // ?
-			writeD(item.getObjectId()); // item id - confimed       
+			writeD(item.getItemId());
+			writeD(item.getLocationSlot());
+			writeQ(item.getCount());
+			writeH(item.getItem().getType2());
+			writeH(item.getCustomType1());
+			writeH(0x00); // Can't be equipped in WH
+			writeD(item.getItem().getBodyPart());
+			writeH(item.getEnchantLevel());
+			writeH(item.getCustomType2());
 			if (item.isAugmented())
-			{
-				writeD(0x0000FFFF & item.getAugmentationId());
-				writeD(item.getAugmentationId() >> 16);
-			}
+				writeD(item.getAugmentationId());
 			else
-				writeQ(0x00);
-			
+				writeD(0x00);
+			writeD(item.getMana());
+			writeD(item.getTime());
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
+			{
 				writeH(item.getElementDefAttr(i));
-			
-			writeD(item.getMana());
-			// T2
-			writeD(item.getTime());
-			
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			}
+			// Enchant Effects
+			writeH(0x00);
+			writeH(0x00);
+			writeH(0x00);
+			writeD(item.getObjectId());
 		}
 	}
 	

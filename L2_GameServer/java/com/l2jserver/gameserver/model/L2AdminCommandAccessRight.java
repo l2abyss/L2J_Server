@@ -25,7 +25,7 @@ public class L2AdminCommandAccessRight
 	private String _adminCommand = null;
 	/** The access levels which can use the admin command<br> */
 	private L2AccessLevel[] _accessLevels = null;
-
+	
 	/**
 	 * Initialized members
 	 * 
@@ -53,7 +53,7 @@ public class L2AdminCommandAccessRight
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns the admin command the access right belongs to<br><br>
 	 * 
@@ -63,7 +63,7 @@ public class L2AdminCommandAccessRight
 	{
 		return _adminCommand;
 	}
-
+	
 	/**
 	 * Checks if the given characterAccessLevel is allowed to use the admin command which belongs to this access right<br><br>
 	 * 

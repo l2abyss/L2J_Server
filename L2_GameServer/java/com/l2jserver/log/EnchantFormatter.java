@@ -35,15 +35,15 @@ public class EnchantFormatter extends Formatter
 	{
 		final Object[] params = record.getParameters();
 		final StringBuilder output = StringUtil.startAppend(30
-		        + record.getMessage().length()
-		        + (params == null ? 0 : params.length * 10), "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
+				+ record.getMessage().length()
+				+ (params == null ? 0 : params.length * 10), "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
 		for (Object p : params)
 		{
 			if (p == null)
 				continue;
-
+			
 			StringUtil.append(output, ", ");
-
+			
 			if (p instanceof L2PcInstance)
 			{
 				L2PcInstance player = (L2PcInstance)p;

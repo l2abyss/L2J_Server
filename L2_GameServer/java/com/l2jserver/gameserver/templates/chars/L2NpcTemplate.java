@@ -18,19 +18,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
+import com.l2jserver.gameserver.datatables.HerbDropTable;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2MinionData;
+import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2XmassTreeInstance;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.L2NpcAIData;
-import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.templates.StatsSet;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * This cl contains all generic data of a L2Spawn object.<BR><BR>
@@ -69,12 +69,10 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public final int lhand;
 	public final int armor;
 	public final int enchantEffect;
-	public final int absorbLevel;
-	public final AbsorbCrystalType absorbType;
 	public Race race;
 	public final String jClass;
-	public final boolean dropherb;
-	public boolean isQuestMonster; // doesn't include all mobs that are involved in 
+	public final int dropherbgroup;
+	public boolean isQuestMonster; // doesn't include all mobs that are involved in
 	// quests, just plain quest monsters for preventing champion spawn
 	public final float baseVitalityDivider;
 	
@@ -122,13 +120,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 	private boolean _hasgeneralskills;
 	
 	private L2NpcAIData _AIdataStatic = new L2NpcAIData();
-	
-	public static enum AbsorbCrystalType
-	{
-		LAST_HIT,
-		FULL_PARTY,
-		PARTY_ONE_RANDOM
-	}
 	
 	public static enum AIType
 	{
@@ -180,7 +171,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	private List<ClassId> _teachInfo;
 	private Map<Integer, L2Skill> _skills;
-	private Map<Stats, Double> _vulnerabilities;
+	//private Map<Stats, Double> _vulnerabilities;
 	// contains a list of quests for each event type (questStart, questAttack, questKill, etc)
 	private Map<Quest.QuestEventType, Quest[]> _questEvents;
 	
@@ -212,23 +203,21 @@ public final class L2NpcTemplate extends L2CharTemplate
 		rhand = set.getInteger("rhand");
 		lhand = set.getInteger("lhand");
 		armor = set.getInteger("armor");
-		enchantEffect = set.getInteger("enchant"); 
-		absorbLevel = set.getInteger("absorb_level", 0);
-		absorbType = AbsorbCrystalType.valueOf(set.getString("absorb_type"));
+		enchantEffect = set.getInteger("enchant");
 		race = null;
-		dropherb = set.getBool("drop_herbs", false);
+		int herbGroup = set.getInteger("dropHerbGroup");
+		if (herbGroup > 0 && HerbDropTable.getInstance().getHerbDroplist(herbGroup) == null)
+		{
+			_log.warning("Missing Herb Drop Group for npcId: " + npcId);
+			dropherbgroup = 0;
+		}
+		else
+			dropherbgroup = herbGroup;
+		
 		//_npcStatsSet = set;
 		_teachInfo = null;
 		jClass = set.getString("jClass");
-
-		// all NPCs has 20 resistance to all attributes
-		baseFireRes += 20;
-		baseWindRes += 20;
-		baseWaterRes += 20;
-		baseEarthRes += 20;
-		baseHolyRes += 20;
-		baseDarkRes += 20;
-
+		
 		// can be loaded from db
 		baseVitalityDivider = level > 0 && rewardExp > 0 ? baseHpMax * 9 * level * level /(100 * rewardExp) : 0;
 	}
@@ -303,7 +292,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_minions.add(minion);
 	}
 	
-	public void addVulnerability(Stats id, double vuln)
+	/*public void addVulnerability(Stats id, double vuln)
 	{
 		if (_vulnerabilities == null)
 			_vulnerabilities = new FastMap<Stats, Double>();
@@ -315,12 +304,12 @@ public final class L2NpcTemplate extends L2CharTemplate
 		if (_vulnerabilities == null || _vulnerabilities.get(id) == null)
 			return 1;
 		return _vulnerabilities.get(id);
-	}
+	}*/
 	
 	
 	public void addSkill(L2Skill skill)
 	{
-
+		
 		if (_skills == null)
 			_skills = new FastMap<Integer, L2Skill>();
 		
@@ -400,7 +389,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 				default :
 					addUniversalSkill(skill);
 					break;
-		
+					
 			}
 		}
 		
@@ -408,10 +397,10 @@ public final class L2NpcTemplate extends L2CharTemplate
 	}
 	
 	
-	public double removeVulnerability(Stats id)
+	/*public double removeVulnerability(Stats id)
 	{
 		return _vulnerabilities.remove(id);
-	}
+	}*/
 	
 	/**
 	 * Return the list of all possible UNCATEGORIZED drops of this L2NpcTemplate.<BR><BR>
@@ -469,70 +458,70 @@ public final class L2NpcTemplate extends L2CharTemplate
 	{
 		if (_questEvents == null)
 			_questEvents = new FastMap<Quest.QuestEventType, Quest[]>();
-		
-		if (_questEvents.get(EventType) == null)
-		{
-			_questEvents.put(EventType, new Quest[]
-			{
-				q
-			});
-		}
-		else
-		{
-			Quest[] _quests = _questEvents.get(EventType);
-			int len = _quests.length;
 			
-			// if only one registration per npc is allowed for this event type
-			// then only register this NPC if not already registered for the specified event.
-			// if a quest allows multiple registrations, then register regardless of count
-			// In all cases, check if this new registration is replacing an older copy of the SAME quest
-			// Finally, check quest class hierarchy: a parent class should never replace a child class.
-			// a child class should always replace a parent class.
-			if (!EventType.isMultipleRegistrationAllowed())
+			if (_questEvents.get(EventType) == null)
 			{
-				// if it is the same quest (i.e. reload) or the existing is a superclass of the new one, replace the existing.
-				if (_quests[0].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[0].getClass()))
-				{
-					_quests[0] = q;
-				}
-				else
-				{
-					_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \"" + EventType + "\" for NPC \"" + name + "\" and quest \"" + q.getName() + "\".");
-				}
+				_questEvents.put(EventType, new Quest[]
+				                                      {
+						q
+				                                      });
 			}
 			else
 			{
-				// be ready to add a new quest to a new copy of the list, with larger size than previously.
-				Quest[] tmp = new Quest[len + 1];
+				Quest[] _quests = _questEvents.get(EventType);
+				int len = _quests.length;
 				
-				// loop through the existing quests and copy them to the new list.  While doing so, also 
-				// check if this new quest happens to be just a replacement for a previously loaded quest.  
-				// Replace existing if the new quest is the same (reload) or a child of the existing quest.
-				// Do nothing if the new quest is a superclass of an existing quest.
-				// Add the new quest in the end of the list otherwise.
-				for (int i = 0; i < len; i++)
+				// if only one registration per npc is allowed for this event type
+				// then only register this NPC if not already registered for the specified event.
+				// if a quest allows multiple registrations, then register regardless of count
+				// In all cases, check if this new registration is replacing an older copy of the SAME quest
+				// Finally, check quest class hierarchy: a parent class should never replace a child class.
+				// a child class should always replace a parent class.
+				if (!EventType.isMultipleRegistrationAllowed())
 				{
-					if (_quests[i].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[i].getClass()))
+					// if it is the same quest (i.e. reload) or the existing is a superclass of the new one, replace the existing.
+					if (_quests[0].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[0].getClass()))
 					{
-						_quests[i] = q;
-						return;
+						_quests[0] = q;
 					}
-					else if (L2NpcTemplate.isAssignableTo(_quests[i], q.getClass()))
+					else
 					{
-						return;
+						_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \"" + EventType + "\" for NPC \"" + name + "\" and quest \"" + q.getName() + "\".");
 					}
-					tmp[i] = _quests[i];
 				}
-				tmp[len] = q;
-				_questEvents.put(EventType, tmp);
+				else
+				{
+					// be ready to add a new quest to a new copy of the list, with larger size than previously.
+					Quest[] tmp = new Quest[len + 1];
+					
+					// loop through the existing quests and copy them to the new list.  While doing so, also
+					// check if this new quest happens to be just a replacement for a previously loaded quest.
+					// Replace existing if the new quest is the same (reload) or a child of the existing quest.
+					// Do nothing if the new quest is a superclass of an existing quest.
+					// Add the new quest in the end of the list otherwise.
+					for (int i = 0; i < len; i++)
+					{
+						if (_quests[i].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[i].getClass()))
+						{
+							_quests[i] = q;
+							return;
+						}
+						else if (L2NpcTemplate.isAssignableTo(_quests[i], q.getClass()))
+						{
+							return;
+						}
+						tmp[i] = _quests[i];
+					}
+					tmp[len] = q;
+					_questEvents.put(EventType, tmp);
+				}
 			}
-		}
 	}
 	
 	/**
 	 * Checks if obj can be assigned to the Class represented by clazz.<br>
-	 * This is true if, and only if, obj is the same class represented by clazz, 
-	 * or a subclass of it or obj implements the interface represented by clazz. 
+	 * This is true if, and only if, obj is the same class represented by clazz,
+	 * or a subclass of it or obj implements the interface represented by clazz.
 	 * 
 	 * 
 	 * @param obj
@@ -679,7 +668,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_AIdataStatic = aidata;
 	}
 	//-----------------------------------------------------------------------
-
+	
 	public L2NpcAIData getAIDataStatic()
 	{
 		return _AIdataStatic;
@@ -716,7 +705,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_atkskills.add(skill);
 		_hasatkskills=true;
 	}
-
+	
 	public void addDebuffSkill(L2Skill skill)
 	{
 		if (_debuffskills == null)
@@ -865,7 +854,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	{
 		return _hasatkskills;
 	}
-
+	
 	public boolean hasDebuffSkill()
 	{
 		return _hasdebuffskills;

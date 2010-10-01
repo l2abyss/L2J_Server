@@ -33,7 +33,7 @@ public class EffectClanGate extends L2Effect
 	{
 		super(env, template);
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
@@ -51,10 +51,10 @@ public class EffectClanGate extends L2Effect
 				clan.broadcastToOtherOnlineMembers(msg, ((L2PcInstance) getEffected()));
 			}
 		}
-
+		
 		return true;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()
@@ -64,7 +64,7 @@ public class EffectClanGate extends L2Effect
 	{
 		return false;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onExit()
@@ -74,7 +74,7 @@ public class EffectClanGate extends L2Effect
 	{
 		getEffected().stopAbnormalEffect(AbnormalEffect.MAGIC_CIRCLE);
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()

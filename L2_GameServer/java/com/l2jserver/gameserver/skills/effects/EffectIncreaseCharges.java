@@ -34,7 +34,7 @@ public class EffectIncreaseCharges extends L2Effect
 	{
 		super(env, template);
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()
@@ -44,7 +44,7 @@ public class EffectIncreaseCharges extends L2Effect
 	{
 		return L2EffectType.INCREASE_CHARGES;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
@@ -54,14 +54,14 @@ public class EffectIncreaseCharges extends L2Effect
 	{
 		if (getEffected() == null)
 			return false;
-
+		
 		if (!(getEffected() instanceof L2PcInstance))
 			return false;
-
+		
 		((L2PcInstance)getEffected()).increaseCharges((int)calc(), getCount());
 		return true;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()

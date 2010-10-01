@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPutCommissionResultForVariationMake;
@@ -32,7 +31,7 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 	private int _refinerItemObjId;
 	private int _gemstoneItemObjId;
 	private long _gemStoneCount;
-
+	
 	/**
 	 * @param buf
 	 * @param client
@@ -45,7 +44,7 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		_gemstoneItemObjId = readD();
 		_gemStoneCount= readQ();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
 	 */
@@ -56,37 +55,37 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		L2ItemInstance targetItem = (L2ItemInstance)L2World.getInstance().findObject(_targetItemObjId);
+		L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_targetItemObjId);
 		if (targetItem == null)
 			return;
-		L2ItemInstance refinerItem = (L2ItemInstance)L2World.getInstance().findObject(_refinerItemObjId);
+		L2ItemInstance refinerItem = activeChar.getInventory().getItemByObjectId(_refinerItemObjId);
 		if (refinerItem == null)
 			return;
-		L2ItemInstance gemStoneItem = (L2ItemInstance)L2World.getInstance().findObject(_gemstoneItemObjId);
+		L2ItemInstance gemStoneItem = activeChar.getInventory().getItemByObjectId(_gemstoneItemObjId);
 		if (gemStoneItem == null)
 			return;
-
+		
 		// Make sure the item is a gemstone
 		if (!isValid(activeChar, targetItem, refinerItem, gemStoneItem))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
 		}
-
+		
 		// Check for gemstone count
 		final LifeStone ls = getLifeStone(refinerItem.getItemId());
 		if (ls == null)
 			return;
-
+		
 		if (_gemStoneCount != getGemStoneCount(targetItem.getItem().getItemGrade(), ls.getGrade()))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.GEMSTONE_QUANTITY_IS_INCORRECT));
 			return;
 		}
-
+		
 		activeChar.sendPacket(new ExPutCommissionResultForVariationMake(_gemstoneItemObjId, _gemStoneCount, gemStoneItem.getItemId()));
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

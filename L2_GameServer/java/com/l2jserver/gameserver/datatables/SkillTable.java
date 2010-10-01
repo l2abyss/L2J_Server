@@ -12,12 +12,12 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.skills.SkillsEngine;
-
 import gnu.trove.TIntArrayList;
 import gnu.trove.TIntIntHashMap;
 import gnu.trove.TIntObjectHashMap;
+
+import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.skills.SkillsEngine;
 
 /**
  * 
@@ -38,10 +38,19 @@ public class SkillTable
 		_skills = new TIntObjectHashMap<L2Skill>();
 		_skillMaxLevel = new TIntIntHashMap();
 		_enchantable = new TIntArrayList();
-		reload();
+		load();
 	}
 	
 	public void reload()
+	{
+		load();
+		
+		//reload some related too
+		SkillTreeTable.getInstance().reload();
+		SubPledgeSkillTree.getInstance().reload();
+	}
+	
+	private void load()
 	{
 		_skills.clear();
 		SkillsEngine.getInstance().loadAllSkills(_skills);
@@ -57,18 +66,18 @@ public class SkillTable
 					_enchantable.add(skillId);
 				continue;
 			}
-
+			
 			// only non-enchanted skills
 			final int maxLvl = _skillMaxLevel.get(skillId);
 			if (skillLvl > maxLvl)
 				_skillMaxLevel.put(skillId, skillLvl);
 		}
 		//SkillTreeTable.getInstance().reload();
-
+		
 		// Sorting for binarySearch
 		_enchantable.sort();
-
-		// Reloading as well FrequentSkill enumeration values 
+		
+		// Reloading as well FrequentSkill enumeration values
 		for (FrequentSkill sk : FrequentSkill.values())
 			sk._skill = getInfo(sk._id, sk._level);
 	}
@@ -104,13 +113,13 @@ public class SkillTable
 		final L2Skill result = _skills.get(getSkillHashCode(skillId, level));
 		if (result != null)
 			return result;
-
+		
 		// skill/level not found, fix for transformation scripts
 		final int maxLvl = _skillMaxLevel.get(skillId);
 		// requested level too high
 		if (maxLvl > 0 && level > maxLvl)
 			return _skills.get(getSkillHashCode(skillId, maxLvl));
-
+		
 		return null;
 	}
 	
@@ -118,12 +127,12 @@ public class SkillTable
 	{
 		return _skillMaxLevel.get(skillId);
 	}
-
+	
 	public final boolean isEnchantable(final int skillId)
 	{
 		return _enchantable.binarySearch(skillId) >= 0;
 	}
-
+	
 	/**
 	 * Returns an array with siege skills. If addNoble == true, will add also Advanced headquarters.
 	 */
@@ -133,7 +142,7 @@ public class SkillTable
 		int i = 0;
 		temp[i++] = _skills.get(SkillTable.getSkillHashCode(246, 1));
 		temp[i++] = _skills.get(SkillTable.getSkillHashCode(247, 1));
-
+		
 		if (addNoble)
 			temp[i++] = _skills.get(SkillTable.getSkillHashCode(326, 1));
 		if (hasCastle)

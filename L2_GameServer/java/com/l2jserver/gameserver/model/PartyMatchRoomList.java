@@ -35,7 +35,7 @@ public class PartyMatchRoomList
 	private PartyMatchRoomList()
 	{
 		_rooms = new FastMap<Integer, PartyMatchRoom>();
-	}	
+	}
 	
 	public synchronized void addPartyMatchRoom(int id, PartyMatchRoom room)
 	{
@@ -49,14 +49,14 @@ public class PartyMatchRoomList
 		{
 			if(_member == null)
 				continue;
-
+			
 			_member.sendPacket(new ExClosePartyRoom());
 			_member.sendPacket(new SystemMessage(SystemMessageId.PARTY_ROOM_DISBANDED));
 			
 			_member.setPartyRoom(0);
 			//_member.setPartyMatching(0);
 			_member.broadcastUserInfo();
-		}		
+		}
 		_rooms.remove(id);
 	}
 	
@@ -74,11 +74,11 @@ public class PartyMatchRoomList
 	{
 		return _rooms.size();
 	}
-
+	
 	public int getMaxId()
 	{
 		return _maxid;
-	}	
+	}
 	
 	public PartyMatchRoom getPlayerRoom(L2PcInstance player)
 	{
@@ -102,7 +102,7 @@ public class PartyMatchRoomList
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

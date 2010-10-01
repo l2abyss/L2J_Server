@@ -24,9 +24,9 @@ import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -216,7 +216,7 @@ public class EnchantGroupsTable
 	{
 		protected static final EnchantGroupsTable _instance = new EnchantGroupsTable();
 	}
-
+	
 	/**
 	 * @return L2EnchantSkillGroup
 	 */

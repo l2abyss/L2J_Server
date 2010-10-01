@@ -31,7 +31,7 @@ public class NpcBufferTable
 	
 	private TIntObjectHashMap<NpcBufferSkills> _buffers = new TIntObjectHashMap<NpcBufferSkills>();
 	
-	private class NpcBufferSkills
+	private static class NpcBufferSkills
 	{
 		private int _npcId = 0;
 		private TIntIntHashMap _skillId = new TIntIntHashMap();
@@ -45,7 +45,7 @@ public class NpcBufferTable
 		}
 		
 		public void addSkill(int skillId, int skillLevel, int skillFeeId, int skillFeeAmount,
-		        int buffGroup)
+				int buffGroup)
 		{
 			_skillId.put(buffGroup, skillId);
 			_skillLevels.put(buffGroup, skillLevel);
@@ -61,7 +61,7 @@ public class NpcBufferTable
 			Integer skillFeeAmount = _skillFeeAmounts.get(buffGroup);
 			
 			if (skillId == null || skillLevel == null || skillFeeId == null
-			        || skillFeeAmount == null)
+					|| skillFeeAmount == null)
 				return null;
 			
 			return new int[] { skillId, skillLevel, skillFeeId, skillFeeAmount };
@@ -73,7 +73,7 @@ public class NpcBufferTable
 			return _npcId;
 		}
 	}
-
+	
 	private NpcBufferTable()
 	{
 		Connection con = null;

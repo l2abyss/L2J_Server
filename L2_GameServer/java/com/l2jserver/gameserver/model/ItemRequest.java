@@ -23,14 +23,14 @@ public class ItemRequest
 	int _itemId;
 	long _count;
 	long _price;
-
+	
 	public ItemRequest(int objectId, long count, long price)
 	{
 		_objectId = objectId;
 		_count = count;
 		_price = price;
 	}
-
+	
 	public ItemRequest(int objectId, int itemId, long count, long price)
 	{
 		_objectId = objectId;
@@ -38,13 +38,13 @@ public class ItemRequest
 		_count = count;
 		_price = price;
 	}
-
+	
 	public int getObjectId(){return _objectId;}
 	public int getItemId(){return _itemId;}
 	public void setCount(long count){_count = count;}
 	public long getCount(){return _count;}
 	public long getPrice(){return _price;}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -53,7 +53,7 @@ public class ItemRequest
 	{
 		return _objectId;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

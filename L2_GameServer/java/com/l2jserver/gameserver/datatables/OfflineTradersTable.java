@@ -233,7 +233,9 @@ public class OfflineTradersTable
 				{
 					_log.log(Level.WARNING, "OfflineTradersTable[loadOffliners()]: Error loading trader: "+player,e);
 					if (player != null)
-						player.logout();
+					{
+						player.deleteMe();
+					}
 				}
 			}
 			rs.close();

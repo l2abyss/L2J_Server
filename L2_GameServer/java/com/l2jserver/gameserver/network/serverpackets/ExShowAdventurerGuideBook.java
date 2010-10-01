@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExShowAdventurerGuideBook extends L2GameServerPacket
 {
 	private static final String _S__FE_37_EXSHOWADVENTURERGUIDEBOOK = "[S] FE:38 ExShowAdventurerGuideBook";
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -31,7 +31,7 @@ public class ExShowAdventurerGuideBook extends L2GameServerPacket
 		writeC(0xFE);
 		writeH(0x38);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -40,5 +40,5 @@ public class ExShowAdventurerGuideBook extends L2GameServerPacket
 	{
 		return _S__FE_37_EXSHOWADVENTURERGUIDEBOOK;
 	}
-
+	
 }

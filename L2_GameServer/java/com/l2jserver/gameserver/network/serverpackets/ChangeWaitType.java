@@ -33,22 +33,22 @@ public class ChangeWaitType extends L2GameServerPacket
 	private int _charObjId;
 	private int _moveType;
 	private int _x, _y, _z;
-
-    public static final int WT_SITTING = 0;
-    public static final int WT_STANDING = 1;
-    public static final int WT_START_FAKEDEATH = 2;
-    public static final int WT_STOP_FAKEDEATH = 3;
-
+	
+	public static final int WT_SITTING = 0;
+	public static final int WT_STANDING = 1;
+	public static final int WT_START_FAKEDEATH = 2;
+	public static final int WT_STOP_FAKEDEATH = 3;
+	
 	public ChangeWaitType(L2Character character, int newMoveType)
 	{
 		_charObjId = character.getObjectId();
 		_moveType = newMoveType;
-
+		
 		_x = character.getX();
 		_y = character.getY();
 		_z = character.getZ();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -59,7 +59,7 @@ public class ChangeWaitType extends L2GameServerPacket
 		writeD(_y);
 		writeD(_z);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.taskmanager.Task;
 import com.l2jserver.gameserver.taskmanager.TaskManager;
-import com.l2jserver.gameserver.taskmanager.TaskTypes;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
+import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
 
 /**

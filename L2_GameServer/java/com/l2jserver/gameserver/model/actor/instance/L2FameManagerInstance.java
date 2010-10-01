@@ -36,7 +36,7 @@ public class L2FameManagerInstance extends L2Npc
 		super(objectId, template);
 		setInstanceType(InstanceType.L2FameManagerInstance);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
@@ -60,7 +60,7 @@ public class L2FameManagerInstance extends L2Npc
 			}
 			else
 				html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-lowfame.htm");
-
+			
 			sendHtmlMessage(player, html);
 			return;
 		}
@@ -83,29 +83,29 @@ public class L2FameManagerInstance extends L2Npc
 			}
 			else
 				html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-noclan.htm");
-
+			
 			sendHtmlMessage(player, html);
 			return;
 		}
 		else
 			super.onBypassFeedback(player, command);
 	}
-
+	
 	private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html)
 	{
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		String filename = "data/html/famemanager/"+getNpcId()+"-lowfame.htm";
-
+		
 		if (player.getFame() > 0)
 			filename = "data/html/famemanager/"+getNpcId()+".htm";
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));

@@ -30,7 +30,7 @@ public final class CreatureSay extends L2GameServerPacket
 	private int _charId = 0;
 	private String _text = null;
 	private int _msgId = 0;
-
+	
 	/**
 	 * @param _characters
 	 */
@@ -41,7 +41,7 @@ public final class CreatureSay extends L2GameServerPacket
 		_charName = charName;
 		_text = text;
 	}
-
+	
 	public CreatureSay(int objectId, int messageType, int charId, int msgId)
 	{
 		_objectId = objectId;
@@ -49,7 +49,7 @@ public final class CreatureSay extends L2GameServerPacket
 		_charId = charId;
 		_msgId = msgId;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -65,7 +65,7 @@ public final class CreatureSay extends L2GameServerPacket
 		else
 			writeD(_msgId);
 	}
-
+	
 	@Override
 	public final void runImpl()
 	{
@@ -75,7 +75,7 @@ public final class CreatureSay extends L2GameServerPacket
 			_pci.broadcastSnoop(_textType,_charName,_text);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

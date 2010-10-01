@@ -22,13 +22,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class SunSet extends L2GameServerPacket
 {
 	private static final String _S__29_SUNSET = "[S] 13 SunSet";
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x13);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

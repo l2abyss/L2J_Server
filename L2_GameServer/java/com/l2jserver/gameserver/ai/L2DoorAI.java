@@ -19,8 +19,8 @@ import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 
 /**
  * @author mkizub

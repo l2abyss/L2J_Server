@@ -38,7 +38,7 @@ public class MyTargetSelected extends L2GameServerPacket
 	private static final String _S__BF_MYTARGETSELECTED = "[S] b9 MyTargetSelected";
 	private int _objectId;
 	private int _color;
-
+	
 	/**
 	 * @param int objectId of the target
 	 * @param int level difference to the target. name color is calculated from that
@@ -48,7 +48,7 @@ public class MyTargetSelected extends L2GameServerPacket
 		_objectId = objectId;
 		_color = color;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -57,7 +57,7 @@ public class MyTargetSelected extends L2GameServerPacket
 		writeH(_color);
 		writeD(0x00);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -66,5 +66,5 @@ public class MyTargetSelected extends L2GameServerPacket
 	{
 		return _S__BF_MYTARGETSELECTED;
 	}
-
+	
 }

@@ -17,13 +17,13 @@ package com.l2jserver.gameserver;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
-
-import javolution.util.FastList;
 
 public class ItemsAutoDestroy
 {

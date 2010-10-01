@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.Config;
-
 import javolution.util.FastMap;
+
+import com.l2jserver.Config;
 
 /**
  *
@@ -38,7 +38,7 @@ public abstract class FloodProtectedListener extends Thread
 	private String _listenIp;
 	private int _port;
 	private ServerSocket _serverSocket;
-
+	
 	public FloodProtectedListener(String listenIp, int port) throws IOException
 	{
 		_port = port;
@@ -52,12 +52,12 @@ public abstract class FloodProtectedListener extends Thread
 			_serverSocket = new ServerSocket(_port, 50, InetAddress.getByName(_listenIp));
 		}
 	}
-
+	
 	@Override
 	public void run()
 	{
 		Socket connection = null;
-
+		
 		while (true)
 		{
 			try
@@ -112,13 +112,13 @@ public abstract class FloodProtectedListener extends Thread
 			}
 		}
 	}
-
+	
 	protected static class ForeignConnection
 	{
 		public int connectionNumber;
 		public long lastConnection;
 		public boolean isFlooding = false;
-
+		
 		/**
 		 * @param time
 		 */
@@ -128,9 +128,9 @@ public abstract class FloodProtectedListener extends Thread
 			connectionNumber = 1;
 		}
 	}
-
+	
 	public abstract void addClient(Socket s);
-
+	
 	public void removeFloodProtection(String ip)
 	{
 		if(!Config.FLOOD_PROTECTION)
@@ -149,7 +149,7 @@ public abstract class FloodProtectedListener extends Thread
 			_log.warning("Removing a flood protection for a GameServer that was not in the connection map??? :"+ip);
 		}
 	}
-
+	
 	public void close()
 	{
 		try

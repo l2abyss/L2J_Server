@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
@@ -34,8 +36,8 @@ import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.AutoChatHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.AutoSpawnHandler.AutoSpawnInstance;
+import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -45,13 +47,11 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.util.Broadcast;
 
-import javolution.util.FastMap;
-
 /**
  *  Seven Signs Engine
  *
  * 
- *  
+ * 
  *
  *  @author Tempy
  */
@@ -146,20 +146,20 @@ public class SevenSigns
 	private static Map<Integer, AutoSpawnInstance> _oratorSpawns;
 	private static Map<Integer, AutoSpawnInstance> _preacherSpawns;
 	private static Map<Integer, AutoSpawnInstance> _marketeerSpawns;
-
+	
 	private static final String LOAD_DATA =
 		"SELECT charId, cabal, seal, red_stones, green_stones, blue_stones, " +
 		"ancient_adena_amount, contribution_score FROM seven_signs";
-
+	
 	private static final String LOAD_STATUS = "SELECT * FROM seven_signs_status WHERE id=0";
-
+	
 	private static final String INSERT_PLAYER =
 		"INSERT INTO seven_signs (charId, cabal, seal) VALUES (?,?,?)";
-
-	private static final String UPDATE_PLAYER = 
+	
+	private static final String UPDATE_PLAYER =
 		"UPDATE seven_signs SET cabal=?, seal=?, red_stones=?, green_stones=?, blue_stones=?, " +
 		"ancient_adena_amount=?, contribution_score=? WHERE charId=?";
-
+	
 	private static final String UPDATE_STATUS =
 		"UPDATE seven_signs_status SET current_cycle=?, active_period=?, previous_winner=?, " +
 		"dawn_stone_score=?, dawn_festival_score=?, dusk_stone_score=?, dusk_festival_score=?, " +
@@ -167,7 +167,7 @@ public class SevenSigns
 		"strife_dawn_score=?, avarice_dusk_score=?, gnosis_dusk_score=?, strife_dusk_score=?, " +
 		"festival_cycle=?, accumulated_bonus0=?, accumulated_bonus1=?, accumulated_bonus2=?," +
 		"accumulated_bonus3=?, accumulated_bonus4=?, date=? WHERE id=0";
-
+	
 	private SevenSigns()
 	{
 		_signsPlayerData = new FastMap<Integer, StatsSet>();
@@ -222,7 +222,7 @@ public class SevenSigns
 		int numDays = (int) Math.floor((countDown - numHours) / 24);
 		
 		_log.info("SevenSigns: Next period begins in " + numDays + " days, " + numHours + " hours and " + numMins + " mins.");
-
+		
 	}
 	
 	private boolean isNextPeriodChangeInPast()
@@ -338,7 +338,7 @@ public class SevenSigns
 						
 						AutoSpawnHandler.getInstance().setSpawnActive(_crestofduskspawn, false);
 						break;
-					
+						
 					case CABAL_DUSK:
 						if (!AutoSpawnHandler.getInstance().getAutoSpawnInstance(_anakimSpawn.getObjectId(), true).isSpawnActive())
 							AutoSpawnHandler.getInstance().setSpawnActive(_anakimSpawn, true);
@@ -548,7 +548,7 @@ public class SevenSigns
 	}
 	
 	/**
-	 * returns true if the given date is in Seal Validation or in Quest Event Results period 
+	 * returns true if the given date is in Seal Validation or in Quest Event Results period
 	 * @param date
 	 */
 	public boolean isDateInSealValidPeriod(Calendar date)
@@ -598,10 +598,10 @@ public class SevenSigns
 				return 0;
 			case CABAL_DAWN:
 				return Math.round((float) (_dawnStoneScore / ((float) totalStoneScore == 0 ? 1 : totalStoneScore)) * 500)
-						+ _dawnFestivalScore;
+				+ _dawnFestivalScore;
 			case CABAL_DUSK:
 				return Math.round((float) (_duskStoneScore / ((float) totalStoneScore == 0 ? 1 : totalStoneScore)) * 500)
-						+ _duskFestivalScore;
+				+ _duskFestivalScore;
 		}
 		
 		return 0;
@@ -679,12 +679,12 @@ public class SevenSigns
 		final StatsSet currPlayer = _signsPlayerData.get(objectId);
 		if (currPlayer == null)
 			return 0;
-
+		
 		int stoneCount = 0;
 		stoneCount += currPlayer.getInteger("red_stones");
 		stoneCount += currPlayer.getInteger("green_stones");
 		stoneCount += currPlayer.getInteger("blue_stones");
-
+		
 		return stoneCount;
 	}
 	
@@ -693,7 +693,7 @@ public class SevenSigns
 		final StatsSet currPlayer = _signsPlayerData.get(objectId);
 		if (currPlayer == null)
 			return 0;
-
+		
 		return currPlayer.getInteger("contribution_score");
 	}
 	
@@ -702,7 +702,7 @@ public class SevenSigns
 		final StatsSet currPlayer = _signsPlayerData.get(objectId);
 		if (currPlayer == null)
 			return 0;
-
+		
 		return currPlayer.getInteger("ancient_adena_amount");
 	}
 	
@@ -711,7 +711,7 @@ public class SevenSigns
 		final StatsSet currPlayer = _signsPlayerData.get(objectId);
 		if (currPlayer == null)
 			return SEAL_NULL;
-
+		
 		return currPlayer.getInteger("seal");
 	}
 	
@@ -720,7 +720,7 @@ public class SevenSigns
 		final StatsSet currPlayer = _signsPlayerData.get(objectId);
 		if (currPlayer == null)
 			return CABAL_NULL;
-
+		
 		String playerCabal = currPlayer.getString("cabal");
 		if (playerCabal.equalsIgnoreCase("dawn"))
 			return CABAL_DAWN;
@@ -835,7 +835,7 @@ public class SevenSigns
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			statement = con.prepareStatement(UPDATE_PLAYER);
-
+			
 			for (StatsSet sevenDat : _signsPlayerData.values())
 			{
 				statement.setString(1, sevenDat.getString("cabal"));
@@ -861,19 +861,19 @@ public class SevenSigns
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public final void saveSevenSignsData(int objectId)
 	{
 		StatsSet sevenDat = _signsPlayerData.get(objectId);
 		if (sevenDat == null)
 			return;
-
+		
 		Connection con = null;
 		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-
+			
 			statement = con.prepareStatement(UPDATE_PLAYER);
 			statement.setString(1, sevenDat.getString("cabal"));
 			statement.setInt(2, sevenDat.getInteger("seal"));
@@ -895,7 +895,7 @@ public class SevenSigns
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public final void saveSevenSignsStatus()
 	{
 		Connection con = null;
@@ -903,7 +903,7 @@ public class SevenSigns
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-
+			
 			statement = con.prepareStatement(UPDATE_STATUS);
 			statement.setInt(1, _currentCycle);
 			statement.setInt(2, _activePeriod);
@@ -922,16 +922,16 @@ public class SevenSigns
 			statement.setInt(15, _signsDuskSealTotals.get(SEAL_GNOSIS));
 			statement.setInt(16, _signsDuskSealTotals.get(SEAL_STRIFE));
 			statement.setInt(17, SevenSignsFestival.getInstance().getCurrentFestivalCycle());
-
+			
 			for (int i = 0; i < SevenSignsFestival.FESTIVAL_COUNT; i++)
 				statement.setInt(18 + i, SevenSignsFestival.getInstance().getAccumulatedBonus(i));
-
+			
 			_lastSave = Calendar.getInstance();
 			statement.setLong(18 + SevenSignsFestival.FESTIVAL_COUNT, _lastSave.getTimeInMillis());
 			statement.execute();
 			statement.close();
 			if (Config.DEBUG)
-				_log.info("SevenSigns: Updated data in database.");				
+				_log.info("SevenSigns: Updated data in database.");
 		}
 		catch (SQLException e)
 		{
@@ -942,7 +942,7 @@ public class SevenSigns
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	/**
 	 * Used to reset the cabal details of all players, and update the database.<BR>
 	 * Primarily used when beginning a new cycle, and should otherwise never be called.
@@ -1040,7 +1040,7 @@ public class SevenSigns
 			_signsDawnSealTotals.put(chosenSeal, _signsDawnSealTotals.get(chosenSeal) + 1);
 		else
 			_signsDuskSealTotals.put(chosenSeal, _signsDuskSealTotals.get(chosenSeal) + 1);
-
+		
 		if (!Config.ALT_SEVENSIGNS_LAZY_UPDATE)
 			saveSevenSignsStatus();
 		
@@ -1095,7 +1095,7 @@ public class SevenSigns
 	public long addPlayerStoneContrib(int objectId, long blueCount, long greenCount, long redCount)
 	{
 		StatsSet currPlayer = _signsPlayerData.get(objectId);
-
+		
 		long contribScore = calcContributionScore(blueCount, greenCount, redCount);
 		long totalAncientAdena = currPlayer.getLong("ancient_adena_amount") + calcAncientAdenaReward(blueCount, greenCount, redCount);
 		long totalContribScore = currPlayer.getLong("contribution_score") + contribScore;
@@ -1119,13 +1119,13 @@ public class SevenSigns
 				_duskStoneScore += contribScore;
 				break;
 		}
-
+		
 		if (!Config.ALT_SEVENSIGNS_LAZY_UPDATE)
 		{
 			saveSevenSignsData(objectId);
 			saveSevenSignsStatus();
 		}
-
+		
 		return contribScore;
 	}
 	
@@ -1385,9 +1385,9 @@ public class SevenSigns
 			{
 				if (onlinePlayer == null)
 					continue;
-
+				
 				currPlayer = _signsPlayerData.get(onlinePlayer.getObjectId());
-
+				
 				if (isSealValidationPeriod() || isCompResultsPeriod())
 				{
 					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").equals(compWinner))
@@ -1429,7 +1429,7 @@ public class SevenSigns
 			switch (periodEnded)
 			{
 				case PERIOD_COMP_RECRUITING: // Initialization
-				
+					
 					// Start the Festival of Darkness cycle.
 					SevenSignsFestival.getInstance().startFestivalManager();
 					
@@ -1437,7 +1437,7 @@ public class SevenSigns
 					sendMessageToAll(SystemMessageId.QUEST_EVENT_PERIOD_BEGUN);
 					break;
 				case PERIOD_COMPETITION: // Results Calculation
-				
+					
 					// Send message that Competition has ended.
 					sendMessageToAll(SystemMessageId.QUEST_EVENT_PERIOD_ENDED);
 					
@@ -1462,10 +1462,10 @@ public class SevenSigns
 					_previousWinner = compWinner;
 					break;
 				case PERIOD_COMP_RESULTS: // Seal Validation
-				
+					
 					// Perform initial Seal Validation set up.
 					initializeSeals();
-					//Buff/Debuff members of the event when Seal of Strife captured. 
+					//Buff/Debuff members of the event when Seal of Strife captured.
 					giveCPMult(getSealOwner(SEAL_STRIFE));
 					// Send message that Seal Validation has begun.
 					sendMessageToAll(SystemMessageId.SEAL_VALIDATION_PERIOD_BEGUN);
@@ -1478,7 +1478,7 @@ public class SevenSigns
 					_log.info("SevenSigns: The " + getCabalName(_previousWinner) + " have won the competition with " + getCurrentScore(_previousWinner) + " points!");
 					break;
 				case PERIOD_SEAL_VALIDATION: // Reset for New Cycle
-				
+					
 					// Ensure a cycle restart when this period ends.
 					_activePeriod = PERIOD_COMP_RECRUITING;
 					
@@ -1569,12 +1569,12 @@ public class SevenSigns
 	public void giveCPMult(int StrifeOwner)
 	{
 		int cabal;
-		//Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife 
+		//Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
 		for (L2PcInstance character : L2World.getInstance().getAllPlayers().values())
 		{
 			if (character == null)
 				continue;
-
+			
 			cabal = getPlayerCabal(character.getObjectId());
 			if (cabal != SevenSigns.CABAL_NULL)
 				if (cabal == StrifeOwner)
@@ -1591,7 +1591,7 @@ public class SevenSigns
 		{
 			if (character == null)
 				continue;
-
+			
 			//Remove SevenSigns' buffs/debuffs.
 			character.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
 			character.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());

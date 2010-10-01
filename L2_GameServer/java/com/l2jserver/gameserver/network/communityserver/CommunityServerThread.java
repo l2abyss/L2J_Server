@@ -19,6 +19,11 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.netcon.BaseReadPacket;
+import org.netcon.BaseWritePacket;
+import org.netcon.NetConnection;
+import org.netcon.NetConnectionConfig;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.network.communityserver.readpackets.AuthResponse;
@@ -28,11 +33,6 @@ import com.l2jserver.gameserver.network.communityserver.readpackets.InitCS;
 import com.l2jserver.gameserver.network.communityserver.readpackets.RequestPlayerShowBoard;
 import com.l2jserver.gameserver.network.communityserver.readpackets.RequestPlayerShowMessage;
 import com.l2jserver.gameserver.network.communityserver.readpackets.RequestWorldInfo;
-
-import org.netcon.BaseReadPacket;
-import org.netcon.BaseWritePacket;
-import org.netcon.NetConnection;
-import org.netcon.NetConnectionConfig;
 
 /**
  * @authors  Forsaiken, Gigiikun
@@ -163,7 +163,7 @@ public final class CommunityServerThread extends NetConnection
 				_log.log(Level.INFO, "CommunityServerThread: Connection failed: " + e.getMessage(), e);
 				continue;
 			}
-
+			
 			
 			try
 			{

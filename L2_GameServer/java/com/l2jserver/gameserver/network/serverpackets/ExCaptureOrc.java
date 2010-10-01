@@ -21,12 +21,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExCaptureOrc extends L2GameServerPacket
 {
 	private static final String _S__FE_44_EXCAPTUREORC = "[S] FE:45 ExSearchOrc";
-
+	
 	private final static byte[] _test;
 	static
 	{
 		_test = new byte[]
-		{
+		                 {
 				(byte) 0xE4 ,(byte) 0xAB ,(byte) 0x8E ,(byte) 0xC5 ,(byte) 0xE9 ,(byte) 0xF9 ,(byte) 0x86 ,(byte) 0x7B,
 				(byte) 0x9E ,(byte) 0x5D ,(byte) 0x83 ,(byte) 0x14 ,(byte) 0x05 ,(byte) 0xD4 ,(byte) 0x48 ,(byte) 0x01,
 				(byte) 0xCD ,(byte) 0xA2 ,(byte) 0x8D ,(byte) 0x90 ,(byte) 0x62 ,(byte) 0x8C ,(byte) 0xDA ,(byte) 0x32,
@@ -35,9 +35,9 @@ public class ExCaptureOrc extends L2GameServerPacket
 				(byte) 0x98 ,(byte) 0x38 ,(byte) 0x1C ,(byte) 0xA5 ,(byte) 0x8E ,(byte) 0x45 ,(byte) 0x3F ,(byte) 0xF2,
 				(byte) 0x5E ,(byte) 0x1C ,(byte) 0x59 ,(byte) 0x8E ,(byte) 0x74 ,(byte) 0x01 ,(byte) 0x9E ,(byte) 0xC2,
 				(byte) 0x00 ,(byte) 0x95 ,(byte) 0xB0 ,(byte) 0x1D ,(byte) 0x87 ,(byte) 0xED ,(byte) 0x9C ,(byte) 0x8A
-		};
+		                 };
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
@@ -48,7 +48,7 @@ public class ExCaptureOrc extends L2GameServerPacket
 		writeH(0x45);
 		writeB(_test);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */

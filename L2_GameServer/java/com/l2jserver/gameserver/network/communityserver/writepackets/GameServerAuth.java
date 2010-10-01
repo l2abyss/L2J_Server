@@ -14,9 +14,9 @@
  */
 package com.l2jserver.gameserver.network.communityserver.writepackets;
 
-import com.l2jserver.Config;
-
 import org.netcon.BaseWritePacket;
+
+import com.l2jserver.Config;
 
 /**
  * @authors  Forsaiken, Gigiikun

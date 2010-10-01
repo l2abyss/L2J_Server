@@ -9,7 +9,7 @@
  * Added copyright notice
  *
  *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -24,12 +24,11 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.L2Multisell.MultiSellEntry;
-import com.l2jserver.gameserver.model.L2Multisell.MultiSellIngredient;
-import com.l2jserver.gameserver.model.L2Multisell.MultiSellListContainer;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import static com.l2jserver.gameserver.datatables.MultiSell.PAGE_SIZE;
 
+import com.l2jserver.gameserver.model.multisell.Entry;
+import com.l2jserver.gameserver.model.multisell.Ingredient;
+import com.l2jserver.gameserver.model.multisell.ListContainer;
 
 /**
  * This class ...
@@ -38,113 +37,141 @@ import com.l2jserver.gameserver.templates.item.L2Item;
  */
 public final class MultiSellList extends L2GameServerPacket
 {
-    private static final String _S__D0_MULTISELLLIST = "[S] d0 MultiSellList";
-
-    protected int _listId, _page, _finished;
-    protected MultiSellListContainer _list;
-
-    public MultiSellList(MultiSellListContainer list, int page, int finished)
-    {
-    	_list = list;
-    	_listId = list.getListId();
-    	_page = page;
-    	_finished = finished;
-    }
-
-    @Override
+	private static final String _S__D0_MULTISELLLIST = "[S] d0 MultiSellList";
+	
+	private int _size, _index;
+	private final ListContainer _list;
+	private final boolean _finished;
+	
+	public MultiSellList(ListContainer list, int index)
+	{
+		_list = list;
+		_index = index;
+		_size = list.getEntries().size() - index;
+		if (_size > PAGE_SIZE)
+		{
+			_finished = false;
+			_size = PAGE_SIZE;
+		}
+		else
+			_finished = true;
+	}
+	
+	@Override
 	protected void writeImpl()
-    {
-    	// [ddddd] [dchh] [hdhdh] [hhdh]
-
-        writeC(0xd0);
-        writeD(_listId);    // list id
-        writeD(_page);		// page
-        writeD(_finished);	// finished
-        writeD(0x28);	// size of pages
-        writeD(_list == null ? 0 : _list.getEntries().size()); //list length
-
-        if(_list != null)
-        {
-            for(MultiSellEntry ent : _list.getEntries())
-            {
-            	writeD(ent.getEntryId());
-            	writeC(ent.stackable());
-                writeH(0x00); // C6
-                writeD(0x00); // C6
-                writeD(0x00); // T1
-                writeH(65534); // T1
-                writeH(0x00); // T1
-                writeH(0x00); // T1
-                writeH(0x00); // T1
-                writeH(0x00); // T1
-                writeH(0x00); // T1
-                writeH(0x00); // T1
-                writeH(0x00); // T1
-            	writeH(ent.getProducts().size());
-            	writeH(ent.getIngredients().size());
-
-            	for(MultiSellIngredient i: ent.getProducts())
-            	{
-            		int item = i.getItemId();
-            		int bodyPart = 0;
-            		int type2 = 65535;
-	            	
-	            	if (item > 0)
-	            	{
-	            		L2Item template = ItemTable.getInstance().getTemplate(item);
-	            		if (template != null)
-	            		{
-	            			bodyPart = template.getBodyPart();
-	            			type2 = template.getType2();
-	            		}
-	            	}
-
-	            	writeD(item);
-	            	writeD(bodyPart);
-	            	writeH(type2);
-	            	writeQ(i.getItemCount());
-	        	    writeH(i.getEnchantmentLevel()); //enchtant lvl
-	            	writeD(i.getAugmentId()); // C6
-	            	writeD(0x00); // mana
-                    writeH(i.getElementId()); // T1 element id
-                    writeH(i.getElementVal()); // T1 element power
-                    writeH(i.getFireVal()); // T1 fire
-                    writeH(i.getWaterVal()); // T1 water
-                    writeH(i.getWindVal()); // T1 wind
-                    writeH(i.getEarthVal()); // T1 earth
-                    writeH(i.getHolyVal()); // T1 holy
-                    writeH(i.getDarkVal()); // T1 dark
-            	}
-
-                for(MultiSellIngredient i : ent.getIngredients())
-                {
-                	int item = i.getItemId();
-                	int typeE = 65535;
-                	if (item > 0)
-                		typeE = ItemTable.getInstance().getTemplate(item).getType2();
-                    writeD(item);      //ID
-                    writeH(typeE);
-                    writeQ(i.getItemCount());	//Count
-                    writeH(i.getEnchantmentLevel()); //Enchant Level
-                	writeD(i.getAugmentId()); // C6
-                	writeD(0x00); // C6
-                    writeH(i.getElementId()); // T1
-                    writeH(i.getElementVal()); // T1
-                    writeH(i.getFireVal()); // T1
-                    writeH(i.getWaterVal()); // T1
-                    writeH(i.getWindVal()); // T1
-                    writeH(i.getEarthVal()); // T1
-                    writeH(i.getHolyVal()); // T1
-                    writeH(i.getDarkVal()); // T1
-                }
-            }
-        }
-    }
-
-    @Override
-    public String getType()
-    {
-        return _S__D0_MULTISELLLIST;
-    }
-
+	{
+		writeC(0xd0);
+		writeD(_list.getListId());    // list id
+		writeD(1 + _index / PAGE_SIZE); // page started from 1
+		writeD(_finished ? 1 : 0);	// finished
+		writeD(PAGE_SIZE);	// size of pages
+		writeD(_size); //list length
+		
+		Entry ent;
+		while (_size-- > 0)
+		{
+			ent = _list.getEntries().get(_index++);
+			writeD(ent.getEntryId());
+			writeC(ent.isStackable() ? 1 : 0);
+			writeH(0x00); // C6
+			writeD(0x00); // C6
+			writeD(0x00); // T1
+			writeH(65534); // T1
+			writeH(0x00); // T1
+			writeH(0x00); // T1
+			writeH(0x00); // T1
+			writeH(0x00); // T1
+			writeH(0x00); // T1
+			writeH(0x00); // T1
+			writeH(0x00); // T1
+			
+			writeH(ent.getProducts().size());
+			writeH(ent.getIngredients().size());
+			
+			for(Ingredient ing: ent.getProducts())
+			{
+				writeD(ing.getItemId());
+				if (ing.getTemplate() != null)
+				{
+					writeD(ing.getTemplate().getBodyPart());
+					writeH(ing.getTemplate().getType2());
+				}
+				else
+				{
+					writeD(0);
+					writeH(65535);
+				}
+				writeQ(ing.getItemCount());
+				if (ing.getItemInfo() != null)
+				{
+					writeH(ing.getItemInfo().getEnchantLevel()); // enchant level
+					writeD(ing.getItemInfo().getAugmentId()); // augment id
+					writeD(0x00); // mana
+					writeH(ing.getItemInfo().getElementId()); // attack element
+					writeH(ing.getItemInfo().getElementPower()); //element power
+					writeH(ing.getItemInfo().getElementals()[0]); // fire
+					writeH(ing.getItemInfo().getElementals()[1]); // water
+					writeH(ing.getItemInfo().getElementals()[2]); // wind
+					writeH(ing.getItemInfo().getElementals()[3]); // earth
+					writeH(ing.getItemInfo().getElementals()[4]); // holy
+					writeH(ing.getItemInfo().getElementals()[5]); // dark
+				}
+				else
+				{
+					writeH(0x00); // enchant level
+					writeD(0x00); // augment id
+					writeD(0x00); // mana
+					writeH(0x00); // attack element
+					writeH(0x00); //element power
+					writeH(0x00); // fire
+					writeH(0x00); // water
+					writeH(0x00); // wind
+					writeH(0x00); // earth
+					writeH(0x00); // holy
+					writeH(0x00); // dark
+				}
+			}
+			
+			for(Ingredient ing : ent.getIngredients())
+			{
+				writeD(ing.getItemId());
+				writeH(ing.getTemplate() != null ? ing.getTemplate().getType2() : 65535);
+				writeQ(ing.getItemCount());
+				if (ing.getItemInfo() != null)
+				{
+					writeH(ing.getItemInfo().getEnchantLevel()); // enchant level
+					writeD(ing.getItemInfo().getAugmentId()); // augment id
+					writeD(0x00); // mana
+					writeH(ing.getItemInfo().getElementId()); // attack element
+					writeH(ing.getItemInfo().getElementPower()); //element power
+					writeH(ing.getItemInfo().getElementals()[0]); // fire
+					writeH(ing.getItemInfo().getElementals()[1]); // water
+					writeH(ing.getItemInfo().getElementals()[2]); // wind
+					writeH(ing.getItemInfo().getElementals()[3]); // earth
+					writeH(ing.getItemInfo().getElementals()[4]); // holy
+					writeH(ing.getItemInfo().getElementals()[5]); // dark
+				}
+				else
+				{
+					writeH(0x00); // enchant level
+					writeD(0x00); // augment id
+					writeD(0x00); // mana
+					writeH(0x00); // attack element
+					writeH(0x00); //element power
+					writeH(0x00); // fire
+					writeH(0x00); // water
+					writeH(0x00); // wind
+					writeH(0x00); // earth
+					writeH(0x00); // holy
+					writeH(0x00); // dark
+				}
+			}
+		}
+	}
+	
+	@Override
+	public String getType()
+	{
+		return _S__D0_MULTISELLLIST;
+	}
 }

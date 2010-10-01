@@ -16,19 +16,21 @@ package com.l2jserver.gameserver;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-import org.mmocore.network.ReceivablePacket;
+import javolution.util.FastList;
+import javolution.util.FastMap;
+import javolution.util.FastSet;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.util.StringUtil;
 
 /**
@@ -72,7 +74,7 @@ public class ThreadPoolManager
 	private ThreadPoolExecutor _generalPacketsThreadPool;
 	private ThreadPoolExecutor _ioPacketsThreadPool;
 	private ThreadPoolExecutor _generalThreadPool;
-
+	
 	
 	/** temp workaround for VM issue */
 	private static final long MAX_DELAY = Long.MAX_VALUE / 1000000 / 2;
@@ -92,6 +94,8 @@ public class ThreadPoolManager
 		_generalPacketsThreadPool = new ThreadPoolExecutor(Config.GENERAL_PACKET_THREAD_CORE_SIZE, Config.GENERAL_PACKET_THREAD_CORE_SIZE + 2, 15L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("Normal Packet Pool", Thread.NORM_PRIORITY + 1));
 		_generalThreadPool = new ThreadPoolExecutor(Config.GENERAL_THREAD_CORE_SIZE, Config.GENERAL_THREAD_CORE_SIZE + 2, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("General Pool", Thread.NORM_PRIORITY));
 		_aiScheduledThreadPool = new ScheduledThreadPoolExecutor(Config.AI_MAX_THREAD, new PriorityThreadFactory("AISTPool", Thread.NORM_PRIORITY));
+		
+		scheduleGeneralAtFixedRate(new PurgeTask(), 10*60*1000l, 5*60*1000l);
 	}
 	
 	public static long validateDelay(long delay)
@@ -130,7 +134,8 @@ public class ThreadPoolManager
 		}
 	}
 	
-	public boolean removeEffect(Runnable r)
+	@Deprecated
+	public boolean removeEffect(RunnableScheduledFuture<?> r)
 	{
 		return _effectsScheduledThreadPool.remove(r);
 	}
@@ -162,7 +167,8 @@ public class ThreadPoolManager
 		}
 	}
 	
-	public boolean removeGeneral(Runnable r)
+	@Deprecated
+	public boolean removeGeneral(RunnableScheduledFuture<?> r)
 	{
 		return _generalScheduledThreadPool.remove(r);
 	}
@@ -194,7 +200,7 @@ public class ThreadPoolManager
 		}
 	}
 	
-	public void executePacket(ReceivablePacket<L2GameClient> pkt)
+	public void executePacket(Runnable pkt)
 	{
 		_generalPacketsThreadPool.execute(pkt);
 	}
@@ -204,7 +210,7 @@ public class ThreadPoolManager
 		_generalPacketsThreadPool.execute(r);
 	}
 	
-	public void executeIOPacket(ReceivablePacket<L2GameClient> pkt)
+	public void executeIOPacket(Runnable pkt)
 	{
 		_ioPacketsThreadPool.execute(pkt);
 	}
@@ -273,11 +279,16 @@ public class ThreadPoolManager
 				" |- PoolSize:        " + _generalThreadPool.getPoolSize(),
 				" |- CompletedTasks:  " + _generalThreadPool.getCompletedTaskCount(),
 				" |- QueuedTasks:     " + _generalThreadPool.getQueue().size(),
+				" | -------",
+				" + Javolution stats:",
+				" |- FastList:        " + FastList.report(),
+				" |- FastMap:        " + FastMap.report(),
+				" |- FastSet:        " + FastSet.report(),
 				" | -------"
 		};
 	}
 	
-	private class PriorityThreadFactory implements ThreadFactory
+	private static class PriorityThreadFactory implements ThreadFactory
 	{
 		private int _prio;
 		private String _name;
@@ -325,7 +336,7 @@ public class ThreadPoolManager
 		}
 		catch (InterruptedException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 	}
 	
@@ -438,6 +449,20 @@ public class ThreadPoolManager
 		sb.append("Packet Tp stack traces printed.\r\n");
 		
 		return sb.toString();
+	}
+	
+	private class PurgeTask implements Runnable
+	{
+		/* (non-Javadoc)
+		 * @see java.lang.Runnable#run()
+		 */
+		@Override
+		public void run()
+		{
+			_effectsScheduledThreadPool.purge();
+			_generalScheduledThreadPool.purge();
+			_aiScheduledThreadPool.purge();
+		}
 	}
 	
 	@SuppressWarnings("synthetic-access")

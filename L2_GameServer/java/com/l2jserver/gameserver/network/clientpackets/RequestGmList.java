@@ -24,21 +24,21 @@ import com.l2jserver.gameserver.GmListTable;
 public final class RequestGmList extends L2GameClientPacket
 {
 	private static final String _C__81_REQUESTGMLIST = "[C] 81 RequestGmList";
-
+	
 	@Override
 	protected void readImpl()
 	{
-
+		
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		if (getClient().getActiveChar() == null)
-		    return;
+			return;
 		GmListTable.getInstance().sendListToPlayer(getClient().getActiveChar());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

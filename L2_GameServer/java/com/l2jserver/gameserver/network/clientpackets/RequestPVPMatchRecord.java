@@ -20,32 +20,32 @@ package com.l2jserver.gameserver.network.clientpackets;
  */
 public class RequestPVPMatchRecord extends L2GameClientPacket
 {
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[C] D0:4C RequestPVPMatchRecord";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-        // trigger, no data
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-        
-    }
-    
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[C] D0:4C RequestPVPMatchRecord";
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		// trigger, no data
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		
+	}
+	
 }

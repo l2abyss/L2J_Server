@@ -80,8 +80,8 @@ public final class UserInfo extends L2GameServerPacket
 	private int _walkSpd;
 	private int _relation;
 	private float _moveMultiplier;
-	private int _territoryId;
-	private boolean _isDisguised;
+	//private int _territoryId;
+	//private boolean _isDisguised;
 	private int _airShipHelm;
 	
 	/**
@@ -94,7 +94,7 @@ public final class UserInfo extends L2GameServerPacket
 		_moveMultiplier = _activeChar.getMovementSpeedMultiplier();
 		_runSpd = Math.round((_activeChar.getRunSpeed() / _moveMultiplier));
 		_walkSpd = (int) (_activeChar.getWalkSpeed() / _moveMultiplier);
-		_territoryId = TerritoryWarManager.getInstance().getRegisteredTerritoryId(character);
+		int _territoryId = TerritoryWarManager.getInstance().getRegisteredTerritoryId(character);
 		_relation = _activeChar.isClanLeader() ? 0x40 : 0;
 		if (_activeChar.getSiegeState() == 1)
 		{
@@ -104,7 +104,7 @@ public final class UserInfo extends L2GameServerPacket
 				_relation |= 0x1000;
 		}
 		if (_activeChar.getSiegeState() == 2) _relation |= 0x80;
-		_isDisguised = TerritoryWarManager.getInstance().isDisguised(character.getObjectId());
+		//_isDisguised = TerritoryWarManager.getInstance().isDisguised(character.getObjectId());
 		if (_activeChar.isInAirShip() && _activeChar.getAirShip().isCaptain(_activeChar))
 			_airShipHelm = _activeChar.getAirShip().getHelmItemId();
 		else
@@ -401,9 +401,9 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.isMinimapAllowed() ? 1: 0); // Minimap on Hellbound
 		writeD(_activeChar.getVitalityPoints());  // Vitality Points
 		writeD(_activeChar.getSpecialEffect());
-		writeD(_territoryId); // CT2.3
+		/*writeD(_territoryId); // CT2.3
 		writeD((_isDisguised ? 0x01: 0x00)); // CT2.3
-		writeD(_territoryId); // CT2.3
+		writeD(_territoryId); // CT2.3*/
 	}
 	
 	/* (non-Javadoc)

@@ -14,9 +14,11 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.List;
+
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.L2Summon;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  *
@@ -41,31 +43,46 @@ public final class RelationChanged extends L2GameServerPacket
 	public static final int RELATION_1SIDED_WAR   = 0x08000; // single fist
 	public static final int RELATION_ALLY_MEMBER  = 0x10000; // clan is in alliance
 	public static final int RELATION_TERRITORY_WAR= 0x80000; // show Territory War icon
-
-	private static final String _S__CE_RELATIONCHANGED = "[S] ce RelationChanged";
-
-	private int _objId, _relation, _autoAttackable, _karma, _pvpFlag;
-
+	
+	private static final String _S__CE_RELATIONCHANGED = "[S] CE RelationChanged";
+	
+	private static class Relation
+	{
+		int _objId, _relation, _autoAttackable, _karma, _pvpFlag;
+	}
+	
+	private Relation _singled;
+	private List<Relation> _multi;
+	
 	public RelationChanged(L2Playable activeChar, int relation, boolean autoattackable)
 	{
-		_objId = activeChar.getObjectId();
-		_relation = relation;
-		_autoAttackable = autoattackable ? 1 : 0;
-
-		if (activeChar instanceof L2PcInstance)
-		{
-			_karma = ((L2PcInstance)activeChar).getKarma();
-			_pvpFlag = ((L2PcInstance)activeChar).getPvpFlag();
-			_invisible = ((L2PcInstance)activeChar).getAppearance().getInvisible();
-		}
-		else if (activeChar instanceof L2Summon)
-		{
-			_karma =  ((L2Summon)activeChar).getOwner().getKarma();
-			_pvpFlag = ((L2Summon)activeChar).getOwner().getPvpFlag();
-			_invisible = ((L2Summon)activeChar).getOwner().getAppearance().getInvisible();
-		}
+		_singled = new Relation();
+		_singled._objId = activeChar.getObjectId();
+		_singled._relation = relation;
+		_singled._autoAttackable = autoattackable ? 1 : 0;
+		_singled._karma = activeChar.getKarma();
+		_singled._pvpFlag = activeChar.getPvpFlag();
+		_invisible = activeChar.getActingPlayer().getAppearance().getInvisible();
 	}
-
+	
+	public RelationChanged()
+	{
+		_multi = FastList.newInstance();
+	}
+	
+	public void addRelation(L2Playable activeChar, int relation, boolean autoattackable)
+	{
+		if (activeChar.getActingPlayer().getAppearance().getInvisible())
+			throw new IllegalArgumentException("Cannot add insivisble character to multi relation packet");
+		Relation r = new Relation();
+		r._objId = activeChar.getObjectId();
+		r._relation = relation;
+		r._autoAttackable = autoattackable ? 1 : 0;
+		r._karma = activeChar.getKarma();
+		r._pvpFlag = activeChar.getPvpFlag();
+		_multi.add(r);
+	}
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -73,14 +90,30 @@ public final class RelationChanged extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0xce);
-		writeD(1); // CT24 unknown
-		writeD(_objId);
-		writeD(_relation);
-		writeD(_autoAttackable);
-		writeD(_karma);
-		writeD(_pvpFlag);
+		if (_multi == null)
+		{
+			writeD(1);
+			writeRelation(_singled);
+		}
+		else
+		{
+			writeD(_multi.size());
+			for (Relation r : _multi)
+				writeRelation(r);
+			FastList.recycle((FastList<?>) _multi);
+		}
 	}
-
+	
+	private void writeRelation(Relation relation)
+	{
+		writeD(relation._objId);
+		writeD(relation._relation);
+		writeD(relation._autoAttackable);
+		writeD(relation._karma);
+		writeD(relation._pvpFlag);
+	}
+	
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -89,5 +122,5 @@ public final class RelationChanged extends L2GameServerPacket
 	{
 		return _S__CE_RELATIONCHANGED;
 	}
-
+	
 }

@@ -21,14 +21,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.entity.Auction;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
-
-import javolution.util.FastMap;
 
 /**
  *
@@ -69,8 +69,8 @@ public class ClanHallManager
 			_freeClanHall.clear();
 			load();
 		}
-	*/
-
+	 */
+	
 	/** Load All Clan Hall */
 	private final void load()
 	{
@@ -100,7 +100,7 @@ public class ClanHallManager
 				
 				ClanHall ch = new ClanHall(id, Name, ownerId, lease, Desc, Location, paidUntil, grade, paid);
 				_allClanHalls.put(id, ch);
-
+				
 				if (ownerId > 0)
 				{
 					final L2Clan owner = ClanTable.getInstance().getClan(ownerId);
@@ -114,12 +114,12 @@ public class ClanHallManager
 						ch.free();
 				}
 				_freeClanHall.put(id, ch);
-
+				
 				Auction auc = AuctionManager.getInstance().getAuction(id);
 				if (auc == null && lease > 0)
 					AuctionManager.getInstance().initNPC(id);
 			}
-
+			
 			statement.close();
 			_log.info("Loaded: " + getClanHalls().size() + " clan halls");
 			_log.info("Loaded: " + getFreeClanHalls().size() + " free clan halls");
@@ -207,7 +207,7 @@ public class ClanHallManager
 
 			return null;
 		}*/
-
+	
 	public final ClanHall getNearbyClanHall(int x, int y, int maxDist)
 	{
 		L2ClanHallZone zone = null;

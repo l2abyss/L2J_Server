@@ -21,33 +21,33 @@ package com.l2jserver.gameserver.network.clientpackets;
  */
 public final class AnswerJoinPartyRoom extends L2GameClientPacket
 {
-    private static final String _C__D0_15_ANSWERJOINPARTYROOM = "[C] D0:15 AnswerJoinPartyRoom";
-    @SuppressWarnings("unused")
+	private static final String _C__D0_15_ANSWERJOINPARTYROOM = "[C] D0:15 AnswerJoinPartyRoom";
+	@SuppressWarnings("unused")
 	private int _requesterID; // not tested, just guessed
-
-    @Override
+	
+	@Override
 	protected void readImpl()
-    {
-        _requesterID = readD();
-    }
-
-    /**
-     * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-        // TODO
-        //_log.info("C5:AnswerJoinPartyRoom: d: "+_requesterID);
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.BasePacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return _C__D0_15_ANSWERJOINPARTYROOM;
-    }
-
+	{
+		_requesterID = readD();
+	}
+	
+	/**
+	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		// TODO
+		//_log.info("C5:AnswerJoinPartyRoom: d: "+_requesterID);
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_15_ANSWERJOINPARTYROOM;
+	}
+	
 }

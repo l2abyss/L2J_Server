@@ -32,28 +32,28 @@ import com.l2jserver.util.Rnd;
 public class CharStatus
 {
 	protected static final Logger _log = Logger.getLogger(CharStatus.class.getName());
-
+	
 	private L2Character _activeChar;
-
+	
 	private double _currentHp = 0; //Current HP of the L2Character
 	private double _currentMp = 0; //Current MP of the L2Character
-
+	
 	/** Array containing all clients that need to be notified about hp/mp updates of the L2Character */
 	private Set<L2Character> _StatusListener;
-
+	
 	private Future<?> _regTask;
-
+	
 	protected byte _flagsRegenActive = 0;
-
+	
 	protected static final byte REGEN_FLAG_CP = 4;
 	private static final byte REGEN_FLAG_HP = 1;
 	private static final byte REGEN_FLAG_MP = 2;
-
+	
 	public CharStatus(L2Character activeChar)
 	{
 		_activeChar = activeChar;
 	}
-
+	
 	/**
 	 * Add the object to the list of L2Character that must be informed of HP/MP updates of this L2Character.<BR><BR>
 	 *
@@ -72,13 +72,13 @@ public class CharStatus
 	{
 		if (object == getActiveChar())
 			return;
-
+		
 		synchronized (getStatusListener())
 		{
 			getStatusListener().add(object);
 		}
 	}
-
+	
 	/**
 	 * Remove the object from the list of L2Character that must be informed of HP/MP updates of this L2Character.<BR><BR>
 	 *
@@ -100,7 +100,7 @@ public class CharStatus
 			getStatusListener().remove(object);
 		}
 	}
-
+	
 	/**
 	 * Return the list of L2Character that must be informed of HP/MP updates of this L2Character.<BR><BR>
 	 *
@@ -118,12 +118,12 @@ public class CharStatus
 			_StatusListener = new CopyOnWriteArraySet<L2Character>();
 		return _StatusListener;
 	}
-
+	
 	// place holder, only PcStatus has CP
 	public void reduceCp(int value)
 	{
 	}
-
+	
 	/**
 	 * Reduce the current HP of the L2Character and launch the doDie Task if necessary.<BR><BR>
 	 *
@@ -140,29 +140,29 @@ public class CharStatus
 	{
 		reduceHp(value, attacker, true, false, false);
 	}
-
+	
 	public void reduceHp(double value, L2Character attacker, boolean isHpConsumption)
 	{
 		reduceHp(value, attacker, true, false, isHpConsumption);
 	}
-
+	
 	public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHPConsumption)
 	{
 		if (getActiveChar().isDead())
 			return;
-
+		
 		// invul handling
 		if (getActiveChar().isInvul())
 		{
 			// other chars can't damage
 			if (attacker != getActiveChar())
 				return;
-
+			
 			// only DOT and HP consumption allowed for damage self
 			if (!isDOT && !isHPConsumption)
 				return;
 		}
-
+		
 		if (attacker != null)
 		{
 			final L2PcInstance attackerPlayer = attacker.getActingPlayer();
@@ -171,38 +171,35 @@ public class CharStatus
 					&& !attackerPlayer.getAccessLevel().canGiveDamage())
 				return;
 		}
-
+		
 		if (!isDOT && !isHPConsumption)
 		{
-			if (awake && getActiveChar().isSleeping())
-				getActiveChar().stopSleeping(null);
+			getActiveChar().stopEffectsOnDamage(awake);
 			if (getActiveChar().isStunned() && Rnd.get(10) == 0)
-				getActiveChar().stopStunning(null);
-			if (getActiveChar().isImmobileUntilAttacked())
-				getActiveChar().stopImmobileUntilAttacked(null);
+				getActiveChar().stopStunning(true);
 		}
-
+		
 		if (value > 0) // Reduce Hp if any, and Hp can't be negative
 			setCurrentHp(Math.max(getCurrentHp() - value, 0));
-
+		
 		if (getActiveChar().getCurrentHp() < 0.5
 				&& getActiveChar().isMortal()) // Die
 		{
 			getActiveChar().abortAttack();
 			getActiveChar().abortCast();
-
+			
 			if (Config.DEBUG)
 				_log.fine("char is dead.");
-
+			
 			getActiveChar().doDie(attacker);
 		}
 	}
-
+	
 	public void reduceMp(double value)
 	{
 		setCurrentMp(Math.max(getCurrentMp() - value, 0));
 	}
-
+	
 	/**
 	 * Start the HP/MP/CP Regeneration task.<BR><BR>
 	 *
@@ -217,15 +214,15 @@ public class CharStatus
 		{
 			if (Config.DEBUG)
 				_log.fine("HP/MP regen started");
-
+			
 			// Get the Regeneration periode
 			int period = Formulas.getRegeneratePeriod(getActiveChar());
-
+			
 			// Create the HP/MP/CP Regeneration task
 			_regTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new RegenTask(), period, period);
 		}
 	}
-
+	
 	/**
 	 * Stop the HP/MP/CP Regeneration task.<BR><BR>
 	 *
@@ -240,53 +237,53 @@ public class CharStatus
 		{
 			if (Config.DEBUG)
 				_log.fine("HP/MP regen stop");
-
+			
 			// Stop the HP/MP/CP Regeneration task
 			_regTask.cancel(false);
 			_regTask = null;
-
+			
 			// Set the RegenActive flag to false
 			_flagsRegenActive = 0;
 		}
 	}
-
+	
 	// place holder, only PcStatus has CP
 	public double getCurrentCp()
 	{
 		return 0;
 	}
-
+	
 	// place holder, only PcStatus has CP
 	public void setCurrentCp(double newCp)
 	{
 	}
-
+	
 	public final double getCurrentHp()
 	{
 		return _currentHp;
 	}
-
+	
 	public final void setCurrentHp(double newHp)
 	{
 		setCurrentHp(newHp, true);
 	}
-
+	
 	public void setCurrentHp(double newHp, boolean broadcastPacket)
 	{
 		// Get the Max HP of the L2Character
 		final double maxHp = getActiveChar().getStat().getMaxHp();
-
+		
 		synchronized (this)
 		{
 			if (getActiveChar().isDead())
 				return;
-
+			
 			if (newHp >= maxHp)
 			{
 				// Set the RegenActive flag to false
 				_currentHp = maxHp;
 				_flagsRegenActive &= ~REGEN_FLAG_HP;
-
+				
 				// Stop the HP/MP/CP Regeneration task
 				if (_flagsRegenActive == 0)
 					stopHpMpRegeneration();
@@ -296,49 +293,49 @@ public class CharStatus
 				// Set the RegenActive flag to true
 				_currentHp = newHp;
 				_flagsRegenActive |= REGEN_FLAG_HP;
-
+				
 				// Start the HP/MP/CP Regeneration task with Medium priority
 				startHpMpRegeneration();
 			}
 		}
-
+		
 		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
 		if (broadcastPacket)
 			getActiveChar().broadcastStatusUpdate();
 	}
-
+	
 	public final void setCurrentHpMp(double newHp, double newMp)
 	{
 		setCurrentHp(newHp, false);
 		setCurrentMp(newMp, true); //send the StatusUpdate only once
 	}
-
+	
 	public final double getCurrentMp()
 	{
 		return _currentMp;
 	}
-
+	
 	public final void setCurrentMp(double newMp)
 	{
 		setCurrentMp(newMp, true);
 	}
-
+	
 	public final void setCurrentMp(double newMp, boolean broadcastPacket)
 	{
 		// Get the Max MP of the L2Character
 		final int maxMp = getActiveChar().getStat().getMaxMp();
-
+		
 		synchronized (this)
 		{
 			if (getActiveChar().isDead())
 				return;
-
+			
 			if (newMp >= maxMp)
 			{
 				// Set the RegenActive flag to false
 				_currentMp = maxMp;
 				_flagsRegenActive &= ~REGEN_FLAG_MP;
-
+				
 				// Stop the HP/MP/CP Regeneration task
 				if (_flagsRegenActive == 0)
 					stopHpMpRegeneration();
@@ -348,31 +345,31 @@ public class CharStatus
 				// Set the RegenActive flag to true
 				_currentMp = newMp;
 				_flagsRegenActive |= REGEN_FLAG_MP;
-
+				
 				// Start the HP/MP/CP Regeneration task with Medium priority
 				startHpMpRegeneration();
 			}
 		}
-
+		
 		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
 		if (broadcastPacket)
 			getActiveChar().broadcastStatusUpdate();
 	}
-
+	
 	protected void doRegeneration()
 	{
 		final CharStat charstat = getActiveChar().getStat();
-
+		
 		// Modify the current HP of the L2Character and broadcast Server->Client packet StatusUpdate
 		if (getCurrentHp() < charstat.getMaxHp())
 			setCurrentHp(getCurrentHp()
 					+ Formulas.calcHpRegen(getActiveChar()), false);
-
+		
 		// Modify the current MP of the L2Character and broadcast Server->Client packet StatusUpdate
 		if (getCurrentMp() < charstat.getMaxMp())
 			setCurrentMp(getCurrentMp()
 					+ Formulas.calcMpRegen(getActiveChar()), false);
-
+		
 		if (!getActiveChar().isInActiveRegion())
 		{
 			// no broadcast necessary for characters that are in inactive regions.
@@ -384,7 +381,7 @@ public class CharStatus
 		else
 			getActiveChar().broadcastStatusUpdate(); //send the StatusUpdate packet
 	}
-
+	
 	/** Task of HP/MP regeneration */
 	class RegenTask implements Runnable
 	{
@@ -400,7 +397,7 @@ public class CharStatus
 			}
 		}
 	}
-
+	
 	public L2Character getActiveChar()
 	{
 		return _activeChar;

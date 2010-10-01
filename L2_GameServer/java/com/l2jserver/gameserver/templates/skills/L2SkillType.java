@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.skills.l2skills.L2SkillSignet;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSignetCasttime;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSpawn;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
+import com.l2jserver.gameserver.skills.l2skills.L2SkillSweeper;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillTeleport;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillTrap;
 import com.l2jserver.gameserver.templates.StatsSet;
@@ -92,10 +93,10 @@ public enum L2SkillType
 	
 	// sp
 	GIVE_SP,
-
+	
 	// vitality
 	GIVE_VITALITY,
-
+	
 	// Aggro
 	AGGDAMAGE,
 	AGGREDUCE,
@@ -173,10 +174,14 @@ public enum L2SkillType
 	SUMMON_FRIEND,
 	REFLECT,
 	SPOIL,
-	SWEEP,
+	SWEEP(L2SkillSweeper.class),
 	FAKE_DEATH,
 	UNDEAD_DEFENSE,
 	BEAST_FEED,
+	BEAST_RELEASE,
+	BEAST_RELEASE_ALL,
+	BEAST_SKILL,
+	BEAST_ACCOMPANY,
 	CHARGESOUL,
 	TRANSFORMDISPEL,
 	SUMMON_TRAP(L2SkillTrap.class),
@@ -192,10 +197,10 @@ public enum L2SkillType
 	COREDONE,
 	
 	CHANGE_APPEARANCE(L2SkillAppearance.class),
-
+	
 	// Refuel airship
 	REFUEL,
-
+	
 	// unimplemented
 	NOTDONE, BALLISTA;
 	

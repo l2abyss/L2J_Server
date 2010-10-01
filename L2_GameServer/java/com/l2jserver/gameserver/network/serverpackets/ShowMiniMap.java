@@ -28,14 +28,14 @@ public class ShowMiniMap extends L2GameServerPacket
 {
 	private static final String _S__A3_SHOWMINIMAP = "[S] a3 ShowMiniMap";
 	private int _mapId;
-
+	
 	/**
 	 */
 	public ShowMiniMap(int mapId)
 	{
 		_mapId = mapId;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -43,7 +43,7 @@ public class ShowMiniMap extends L2GameServerPacket
 		writeD(_mapId);
 		writeC(SevenSigns.getInstance().getCurrentPeriod());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

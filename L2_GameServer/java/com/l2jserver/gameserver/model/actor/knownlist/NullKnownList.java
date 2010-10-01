@@ -51,7 +51,7 @@ public class NullKnownList extends ObjectKnownList
 	public void removeAllKnownObjects()
 	{
 	}
-
+	
 	@Override
 	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{

@@ -22,7 +22,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExPlayScene extends L2GameServerPacket
 {
 	private static final String _S__FE_5B_EXSHOWSLIDESHOWKAMAEL = "[S] FE:5c ExPlayScene";
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -32,7 +32,7 @@ public class ExPlayScene extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x5c);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -41,5 +41,5 @@ public class ExPlayScene extends L2GameServerPacket
 	{
 		return _S__FE_5B_EXSHOWSLIDESHOWKAMAEL;
 	}
-
+	
 }

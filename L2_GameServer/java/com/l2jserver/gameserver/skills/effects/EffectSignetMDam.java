@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -41,8 +43,6 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.util.Point3D;
-
-import javolution.util.FastList;
 
 public class EffectSignetMDam extends L2Effect
 {
@@ -86,7 +86,7 @@ public class EffectSignetMDam extends L2Effect
 		int z = getEffector().getZ();
 		
 		if (getEffector() instanceof L2PcInstance
-		        && getSkill().getTargetType() == L2Skill.SkillTargetType.TARGET_GROUND)
+				&& getSkill().getTargetType() == L2Skill.SkillTargetType.TARGET_GROUND)
 		{
 			Point3D wordPosition = ((L2PcInstance) getEffector()).getCurrentSkillWorldPosition();
 			
@@ -144,8 +144,7 @@ public class EffectSignetMDam extends L2Effect
 			if (cha == null || cha == caster)
 				continue;
 			
-			if (cha instanceof L2Attackable
-			        || cha instanceof L2Playable)
+			if (cha instanceof L2Attackable || cha instanceof L2Playable)
 			{
 				if (cha.isAlikeDead())
 					continue;
@@ -160,12 +159,14 @@ public class EffectSignetMDam extends L2Effect
 				
 				if (cha instanceof L2Playable)
 				{
-					if (cha instanceof L2Summon && ((L2Summon)cha).getOwner() == caster){}
-					else
+					if (caster.canAttackCharacter(cha))
+					{
+						targets.add(cha);
 						caster.updatePvPStatus(cha);
+					}
 				}
-				
-				targets.add(cha);
+				else
+					targets.add(cha);
 			}
 		}
 		
@@ -184,7 +185,7 @@ public class EffectSignetMDam extends L2Effect
 				if (mdam > 0)
 				{
 					if (!target.isRaid()
-					        && Formulas.calcAtkBreak(target, mdam))
+							&& Formulas.calcAtkBreak(target, mdam))
 					{
 						target.breakAttack();
 						target.breakCast();

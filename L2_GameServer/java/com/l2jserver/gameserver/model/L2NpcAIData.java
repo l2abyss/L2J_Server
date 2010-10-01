@@ -208,8 +208,8 @@ public class L2NpcAIData
 		_baseShldDef = baseShldDef;
 		
 	}
-	*/
-
+	 */
+	
 	//--------------------------------------------------------------------------------------------------------------
 	//Data Recall....
 	//--------------------------------------------------------------------------------------------------------------
@@ -339,7 +339,7 @@ public class L2NpcAIData
 	
 	public AIType getAiType()
 	{
-		return _aiType;	
+		return _aiType;
 	}
 	
 	/*
@@ -357,5 +357,5 @@ public class L2NpcAIData
 		return _baseShldDef;
 		
 	}
-	*/
+	 */
 }

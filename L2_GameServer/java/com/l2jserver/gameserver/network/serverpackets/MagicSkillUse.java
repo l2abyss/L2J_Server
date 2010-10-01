@@ -37,7 +37,7 @@ public final class MagicSkillUse extends L2GameServerPacket
 	private int _reuseDelay;
 	private int _charObjId, _x, _y, _z;
 	//private int _flags;
-
+	
 	public MagicSkillUse(L2Character cha, L2Character target, int skillId, int skillLevel, int hitTime, int reuseDelay)
 	{
 		_charObjId = cha.getObjectId();
@@ -54,7 +54,7 @@ public final class MagicSkillUse extends L2GameServerPacket
 		_tz = target.getZ();
 		//_flags |= 0x20;
 	}
-
+	
 	public MagicSkillUse(L2Character cha, int skillId, int skillLevel, int hitTime, int reuseDelay)
 	{
 		_charObjId = cha.getObjectId();
@@ -71,7 +71,7 @@ public final class MagicSkillUse extends L2GameServerPacket
 		_tz = cha.getZ();
 		//_flags |= 0x20;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -90,7 +90,7 @@ public final class MagicSkillUse extends L2GameServerPacket
 		writeD(_ty);
 		writeD(_tz);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

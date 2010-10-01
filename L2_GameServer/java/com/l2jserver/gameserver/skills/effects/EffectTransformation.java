@@ -34,13 +34,13 @@ public class EffectTransformation extends L2Effect
 	{
 		super(env, template);
 	}
-
+	
 	// Special constructor to steal this effect
 	public EffectTransformation(Env env, L2Effect effect)
 	{
 		super(env, effect);
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()
@@ -50,7 +50,7 @@ public class EffectTransformation extends L2Effect
 	{
 		return L2EffectType.TRANSFORMATION;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
@@ -60,24 +60,24 @@ public class EffectTransformation extends L2Effect
 	{
 		if (!(getEffected() instanceof L2PcInstance))
 			return false;
-
+		
 		L2PcInstance trg = (L2PcInstance) getEffected();
 		if (trg == null)
 			return false;
-
+		
 		if (trg.isAlikeDead() || trg.isCursedWeaponEquipped())
 			return false;
-
+		
 		if (trg.getTransformation() != null)
 		{
 			trg.sendPacket(new SystemMessage(SystemMessageId.YOU_ALREADY_POLYMORPHED_AND_CANNOT_POLYMORPH_AGAIN));
 			return false;
 		}
-
+		
 		TransformationManager.getInstance().transformPlayer(getSkill().getTransformId(), trg);
 		return true;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()
@@ -87,10 +87,10 @@ public class EffectTransformation extends L2Effect
 	{
 		return false;
 	}
-
+	
 	@Override
 	public void onExit()
 	{
-		getEffected().stopTransformation(this);
+		getEffected().stopTransformation(false);
 	}
 }

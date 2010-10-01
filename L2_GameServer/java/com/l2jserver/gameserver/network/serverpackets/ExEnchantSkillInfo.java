@@ -14,27 +14,27 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
-import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
-
 import javolution.util.FastList;
+
+import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 
 public final class ExEnchantSkillInfo extends L2GameServerPacket
 {
 	private static final String _S__FE_18_EXENCHANTSKILLINFO = "[S] FE:2a ExEnchantSkillInfo";
 	private FastList<Integer> _routes; //skill lvls for each route
-
+	
 	private final int _id;
 	private final int _lvl;
 	private boolean _maxEnchanted = false;
-
+	
 	public ExEnchantSkillInfo(int id, int lvl)
 	{
 		_routes = new FastList<Integer>();
 		_id = id;
 		_lvl = lvl;
-
+		
 		L2EnchantSkillLearn enchantLearn = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_id);
 		// do we have this skill?
 		if (enchantLearn != null)
@@ -46,15 +46,15 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 				
 				// get detail for next level
 				EnchantSkillDetail esd = enchantLearn.getEnchantSkillDetail(_lvl);
-
+				
 				// if it exists add it
 				if (esd != null)
 				{
 					_routes.add(_lvl); // current enchant add firts
 				}
-
+				
 				int skillLvL = (_lvl % 100);
-
+				
 				for (int route : enchantLearn.getAllRoutes())
 				{
 					if ((route * 100 + skillLvL) == _lvl) // skip current
@@ -63,10 +63,10 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 					// lvl
 					_routes.add(route * 100 + skillLvL);
 				}
-
+				
 			}
 			else
-			// not already enchanted
+				// not already enchanted
 			{
 				for (int route : enchantLearn.getAllRoutes())
 				{
@@ -76,7 +76,7 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 			}
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -92,13 +92,13 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 		writeD(_maxEnchanted ? 0 : 1);
 		writeD(_lvl > 100 ? 1 : 0); // enchanted?
 		writeD(_routes.size());
-
+		
 		for (Integer level : _routes)
 		{
 			writeD(level);
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -109,5 +109,5 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 	{
 		return _S__FE_18_EXENCHANTSKILLINFO;
 	}
-
+	
 }

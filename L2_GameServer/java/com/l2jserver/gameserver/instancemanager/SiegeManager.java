@@ -357,7 +357,7 @@ public class SiegeManager
 	{
 		return _bloodAllianceReward;
 	}
-
+	
 	public final List<Siege> getSieges()
 	{
 		FastList<Siege> sieges = new FastList<Siege>();
@@ -366,7 +366,7 @@ public class SiegeManager
 		return sieges;
 	}
 	
-	public class SiegeSpawn
+	public static class SiegeSpawn
 	{
 		Location _location;
 		private int _npcId;

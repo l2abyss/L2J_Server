@@ -109,7 +109,7 @@ public final class RequestDropItem extends L2GameClientPacket
 		if (Config.JAIL_DISABLE_TRANSACTION && activeChar.isInJail())
 		{
 			activeChar.sendMessage("You cannot drop items in Jail.");
-			return;			
+			return;
 		}
 		
 		if (!activeChar.getAccessLevel().allowTransaction())
@@ -171,6 +171,12 @@ public final class RequestDropItem extends L2GameClientPacket
 			return;
 		}
 		
+		if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
+		{
+			activeChar.sendMessage("Cannot use this item.");
+			return;
+		}
+		
 		if (Config.DEBUG)
 			_log.fine("requested drop item " + _objectId + "(" + item.getCount() + ") at " + _x + "/" + _y + "/" + _z);
 		
@@ -202,7 +208,7 @@ public final class RequestDropItem extends L2GameClientPacket
 		{
 			String target = (activeChar.getTarget() != null ? activeChar.getTarget().getName() : "no-target");
 			GMAudit.auditGMAction(activeChar.getName()+" ["+activeChar.getObjectId()+"]",
-					"Drop", target, "(id: " + dropedItem.getItemId() + " name: " + dropedItem.getItemName() + " objId: " + dropedItem.getObjectId() 
+					"Drop", target, "(id: " + dropedItem.getItemId() + " name: " + dropedItem.getItemName() + " objId: " + dropedItem.getObjectId()
 					+ " x: " + activeChar.getX() + " y: " + activeChar.getY() + " z: " + activeChar.getZ() + ")");
 		}
 		

@@ -111,7 +111,7 @@ public class IPv4Filter implements IAcceptFilter, Runnable
 		
 		return true;
 	}
-
+	
 	@Override
 	public void run()
 	{

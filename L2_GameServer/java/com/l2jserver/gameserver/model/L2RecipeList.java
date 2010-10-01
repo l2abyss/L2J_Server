@@ -37,34 +37,34 @@ public class L2RecipeList
 	
 	/** The crafting level needed to use this L2RecipeList */
 	private int _level;
-
+	
 	/** The Identifier of the L2RecipeList */
 	private int _recipeId;
-
+	
 	/** The name of the L2RecipeList */
 	private String _recipeName;
-
+	
 	/** The crafting success rate when using the L2RecipeList */
 	private int _successRate;
-
+	
 	/** The Identifier of the Item crafted with this L2RecipeList */
 	private int _itemId;
-
+	
 	/** The quantity of Item crafted when using this L2RecipeList */
 	private int _count;
-
+	
 	/** The Identifier of the Rare Item crafted with this L2RecipeList */
 	private int _rareItemId;
-
+	
 	/** The quantity of Rare Item crafted when using this L2RecipeList */
 	private int _rareCount;
-
+	
 	/** The chance of Rare Item crafted when using this L2RecipeList */
 	private int _rarity;
-
+	
 	/** If this a common or a dwarven recipe */
 	private boolean _isDwarvenRecipe;
-
+	
 	/**
 	 * Constructor of L2RecipeList (create a new Recipe).<BR><BR>
 	 */
@@ -84,7 +84,7 @@ public class L2RecipeList
 		{
 			_rareItemId = set.getInteger("rareItemId");
 			_rareCount = set.getInteger("rareCount");
-			_rarity = set.getInteger("rarity");			
+			_rarity = set.getInteger("rarity");
 		}
 		_isDwarvenRecipe = set.getBool("isDwarvenRecipe");
 	}
@@ -140,7 +140,7 @@ public class L2RecipeList
 	{
 		return _level;
 	}
-
+	
 	/**
 	 * Return the Identifier of the L2RecipeList.<BR><BR>
 	 */
@@ -148,7 +148,7 @@ public class L2RecipeList
 	{
 		return _recipeId;
 	}
-
+	
 	/**
 	 * Return the name of the L2RecipeList.<BR><BR>
 	 */
@@ -156,7 +156,7 @@ public class L2RecipeList
 	{
 		return _recipeName;
 	}
-
+	
 	/**
 	 * Return the crafting success rate when using the L2RecipeList.<BR><BR>
 	 */
@@ -164,7 +164,7 @@ public class L2RecipeList
 	{
 		return _successRate;
 	}
-
+	
 	/**
 	 * Return rue if the Item crafted with this L2RecipeList is consumable (shot, arrow,...).<BR><BR>
 	 */
@@ -176,7 +176,7 @@ public class L2RecipeList
 				|| (_itemId >= 1341 && _itemId <= 1345) // Arrows
 		);
 	}
-
+	
 	/**
 	 * Return the Identifier of the Item crafted with this L2RecipeList.<BR><BR>
 	 */
@@ -184,7 +184,7 @@ public class L2RecipeList
 	{
 		return _itemId;
 	}
-
+	
 	/**
 	 * Return the quantity of Item crafted when using this L2RecipeList.<BR><BR>
 	 */
@@ -192,7 +192,7 @@ public class L2RecipeList
 	{
 		return _count;
 	}
-
+	
 	/**
 	 * Return the Identifier of the Rare Item crafted with this L2RecipeList.<BR><BR>
 	 */
@@ -200,7 +200,7 @@ public class L2RecipeList
 	{
 		return _rareItemId;
 	}
-
+	
 	/**
 	 * Return the quantity of Rare Item crafted when using this L2RecipeList.<BR><BR>
 	 */
@@ -208,7 +208,7 @@ public class L2RecipeList
 	{
 		return _rareCount;
 	}
-
+	
 	/**
 	 * Return the chance of Rare Item crafted when using this L2RecipeList.<BR><BR>
 	 */
@@ -216,7 +216,7 @@ public class L2RecipeList
 	{
 		return _rarity;
 	}
-
+	
 	/**
 	 * Return <B>true</B> if this a Dwarven recipe or <B>false</B> if its a Common recipe
 	 */
@@ -224,7 +224,7 @@ public class L2RecipeList
 	{
 		return _isDwarvenRecipe;
 	}
-
+	
 	/**
 	 * Return the table containing all L2RecipeInstance (1 line of the recipe : Item-Quantity needed) of the L2RecipeList.<BR><BR>
 	 */
@@ -232,7 +232,7 @@ public class L2RecipeList
 	{
 		return _recipes;
 	}
-
+	
 	/**
 	 * Return the table containing all L2RecipeStatInstance of the statUse parameter of the L2RecipeList.<BR><BR>
 	 */
@@ -240,7 +240,7 @@ public class L2RecipeList
 	{
 		return _statUse;
 	}
-
+	
 	/**
 	 * Return the table containing all L2RecipeStatInstance of the AltStatChange parameter of the L2RecipeList.<BR><BR>
 	 */

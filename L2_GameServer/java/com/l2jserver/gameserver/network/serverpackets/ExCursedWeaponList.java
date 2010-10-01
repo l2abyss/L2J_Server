@@ -25,12 +25,12 @@ public class ExCursedWeaponList extends L2GameServerPacket
 {
 	private static final String _S__FE_45_EXCURSEDWEAPONLIST = "[S] FE:46 ExCursedWeaponList";
 	private List<Integer> _cursedWeaponIds;
-
+	
 	public ExCursedWeaponList(List<Integer> cursedWeaponIds)
 	{
 		_cursedWeaponIds = cursedWeaponIds;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -39,14 +39,14 @@ public class ExCursedWeaponList extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x46);
-
+		
 		writeD(_cursedWeaponIds.size());
 		for (int i : _cursedWeaponIds)
 		{
 			writeD(i);
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -55,5 +55,5 @@ public class ExCursedWeaponList extends L2GameServerPacket
 	{
 		return _S__FE_45_EXCURSEDWEAPONLIST;
 	}
-
+	
 }

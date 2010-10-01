@@ -19,29 +19,29 @@ import com.l2jserver.gameserver.model.VehiclePathPoint;
 public class ExAirShipTeleportList extends L2GameServerPacket
 {
 	private static final String _S__FE_9A_EXAIRSHIPTELEPORTLIST = "[S] FE:9A ExAirShipTeleportList";
-
+	
 	private int _dockId;
 	private VehiclePathPoint[][] _teleports;
 	private int[] _fuelConsumption;
-
+	
 	public ExAirShipTeleportList(int dockId, VehiclePathPoint[][] teleports, int[] fuelConsumption)
 	{
 		_dockId = dockId;
 		_teleports = teleports;
 		_fuelConsumption = fuelConsumption;
 	}
-
+	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x9a);
-
+		
 		writeD(_dockId);
 		if (_teleports != null)
 		{
 			writeD(_teleports.length);
-
+			
 			VehiclePathPoint[] path;
 			VehiclePathPoint dst;
 			for (int i = 0; i < _teleports.length; i++)
@@ -58,7 +58,7 @@ public class ExAirShipTeleportList extends L2GameServerPacket
 		else
 			writeD(0);
 	}
-
+	
 	@Override
 	public String getType()
 	{

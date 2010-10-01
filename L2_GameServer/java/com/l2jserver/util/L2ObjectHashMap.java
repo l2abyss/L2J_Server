@@ -44,12 +44,12 @@ import com.l2jserver.gameserver.model.L2Object;
  * @param <T> type of values stored in this hashtable
  */
 public final class L2ObjectHashMap<T extends L2Object>
-	extends L2ObjectMap<T>
+extends L2ObjectMap<T>
 {
-
+	
 	private static final boolean TRACE = false;
 	private static final boolean DEBUG = false;
-
+	
 	private final static int[] PRIMES = {
 		5, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293,
 		353, 431, 521, 631, 761, 919, 1103, 1327, 1597, 1931, 2333, 2801,
@@ -58,12 +58,12 @@ public final class L2ObjectHashMap<T extends L2Object>
 		108631, 130363, 156437, 187751, 225307, 270371, 324449, 389357,
 		467237, 560689, 672827, 807403, 968897, 1162687, 1395263, 1674319,
 		2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369
-		};
-
+	};
+	
 	private T[] _table;
 	private int[] _keys;
 	private int _count;
-
+	
 	private static int getPrime(int min)
 	{
 		for (int i=0; i < PRIMES.length; i++)
@@ -73,7 +73,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 		}
 		throw new OutOfMemoryError();
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public L2ObjectHashMap()
 	{
@@ -82,28 +82,28 @@ public final class L2ObjectHashMap<T extends L2Object>
 		_keys = new int[size];
 		if (DEBUG) check();
 	}
-
+	
 	/* (non-Javadoc)
-     * @see com.l2jserver.util.L2ObjectMap#size()
-     */
+	 * @see com.l2jserver.util.L2ObjectMap#size()
+	 */
 	@Override
 	public int size()
 	{
 		return _count;
 	}
-
+	
 	/* (non-Javadoc)
-     * @see com.l2jserver.util.L2ObjectMap#isEmpty()
-     */
+	 * @see com.l2jserver.util.L2ObjectMap#isEmpty()
+	 */
 	@Override
 	public boolean isEmpty()
 	{
 		return _count == 0;
 	}
-
+	
 	/* (non-Javadoc)
-     * @see com.l2jserver.util.L2ObjectMap#clear()
-     */
+	 * @see com.l2jserver.util.L2ObjectMap#clear()
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public synchronized void clear()
@@ -114,7 +114,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 		_count = 0;
 		if (DEBUG) check();
 	}
-
+	
 	private void check()
 	{
 		if (DEBUG)
@@ -133,10 +133,10 @@ public final class L2ObjectHashMap<T extends L2Object>
 			assert cnt == _count;
 		}
 	}
-
+	
 	/* (non-Javadoc)
-     * @see com.l2jserver.util.L2ObjectMap#put(T)
-     */
+	 * @see com.l2jserver.util.L2ObjectMap#put(T)
+	 */
 	@Override
 	public synchronized void put(T obj)
 	{
@@ -172,7 +172,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 				if (_table[pos] == obj)
 					return;
 				// this should never happen
-				 assert obj.getObjectId() != _table[pos].getObjectId();
+				assert obj.getObjectId() != _table[pos].getObjectId();
 				// if there was no collisions at this slot, and we found a free
 				// slot previously - use found slot
 				if (slot >= 0 && _keys[pos] > 0)
@@ -185,7 +185,7 @@ public final class L2ObjectHashMap<T extends L2Object>
 					return;
 				}
 			}
-
+			
 			// set collision bit
 			_keys[pos] |= 0x80000000;
 			// calculate next slot
@@ -194,10 +194,10 @@ public final class L2ObjectHashMap<T extends L2Object>
 		if (DEBUG) check();
 		throw new IllegalStateException();
 	}
-
+	
 	/* (non-Javadoc)
-     * @see com.l2jserver.util.L2ObjectMap#remove(T)
-     */
+	 * @see com.l2jserver.util.L2ObjectMap#remove(T)
+	 */
 	@Override
 	public synchronized void remove(T obj)
 	{
@@ -230,10 +230,10 @@ public final class L2ObjectHashMap<T extends L2Object>
 		if (DEBUG) check();
 		throw new IllegalStateException();
 	}
-
+	
 	/* (non-Javadoc)
-     * @see com.l2jserver.util.L2ObjectMap#get(int)
-     */
+	 * @see com.l2jserver.util.L2ObjectMap#get(int)
+	 */
 	@Override
 	public T get(int id)
 	{
@@ -267,69 +267,69 @@ public final class L2ObjectHashMap<T extends L2Object>
 		} while (++ntry < size);
 		return null;
 	}
-
+	
 	/* (non-Javadoc)
-     * @see com.l2jserver.util.L2ObjectMap#contains(T)
-     */
+	 * @see com.l2jserver.util.L2ObjectMap#contains(T)
+	 */
 	@Override
 	public boolean contains(T obj)
 	{
 		return get(obj.getObjectId()) != null;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private /*already synchronized in put()*/ void expand()
 	{
 		int newSize = getPrime(_table.length+1);
 		L2Object[] newTable = new L2Object[newSize];
 		int[] newKeys = new int[newSize];
-
+		
 		// over all old entries
-	next_entry:
-		for (int i=0; i < _table.length; i++)
-		{
-			L2Object obj = _table[i];
-			if (obj == null)
-				continue;
-			final int hashcode = _keys[i] & 0x7FFFFFFF;
-			assert hashcode == obj.getObjectId();
-			int seed = hashcode;
-			int incr = 1 + (((seed >> 5) + 1) % (newSize - 1));
-			int ntry = 0;
-			do
+		next_entry:
+			for (int i=0; i < _table.length; i++)
 			{
-				int pos = (seed % newSize) & 0x7FFFFFFF;
-				if (newTable[pos] == null)
+				L2Object obj = _table[i];
+				if (obj == null)
+					continue;
+				final int hashcode = _keys[i] & 0x7FFFFFFF;
+				assert hashcode == obj.getObjectId();
+				int seed = hashcode;
+				int incr = 1 + (((seed >> 5) + 1) % (newSize - 1));
+				int ntry = 0;
+				do
 				{
-					assert newKeys[pos] == 0 && hashcode != 0;
-					// found an empty slot without previous collisions,
-					// but use previously found slot
-					newKeys[pos] = hashcode;
-					newTable[pos] = obj;
-					if (TRACE) System.err.println("ht: move obj id="+hashcode+" from slot="+i+" to slot="+pos);
-					continue next_entry;
-				}
-				// set collision bit
-				newKeys[pos] |= 0x80000000;
-				// calculate next slot
-				seed += incr;
-			} while (++ntry < newSize);
-			throw new IllegalStateException();
-		}
+					int pos = (seed % newSize) & 0x7FFFFFFF;
+					if (newTable[pos] == null)
+					{
+						assert newKeys[pos] == 0 && hashcode != 0;
+						// found an empty slot without previous collisions,
+						// but use previously found slot
+						newKeys[pos] = hashcode;
+						newTable[pos] = obj;
+						if (TRACE) System.err.println("ht: move obj id="+hashcode+" from slot="+i+" to slot="+pos);
+						continue next_entry;
+					}
+					// set collision bit
+					newKeys[pos] |= 0x80000000;
+					// calculate next slot
+					seed += incr;
+				} while (++ntry < newSize);
+				throw new IllegalStateException();
+			}
 		_table = (T[])newTable;
 		_keys = newKeys;
 		if (DEBUG) check();
 	}
-
+	
 	/* (non-Javadoc)
-     * @see com.l2jserver.util.L2ObjectMap#iterator()
-     */
+	 * @see com.l2jserver.util.L2ObjectMap#iterator()
+	 */
 	@Override
 	public Iterator<T> iterator()
 	{
 		return new Itr(_table);
 	}
-
+	
 	class Itr implements Iterator<T>
 	{
 		private final T[] _array;

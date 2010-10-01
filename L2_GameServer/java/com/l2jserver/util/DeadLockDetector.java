@@ -11,7 +11,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.l2jserver.util;
 
 import java.lang.management.LockInfo;
@@ -34,18 +34,18 @@ import com.l2jserver.gameserver.Shutdown;
 public class DeadLockDetector extends Thread
 {
 	private static Logger _log = Logger.getLogger(DeadLockDetector.class.getName());
-
+	
 	private static final int _sleepTime = Config.DEADLOCK_CHECK_INTERVAL*1000;
-
+	
 	private final ThreadMXBean tmx;
-
+	
 	public DeadLockDetector()
 	{
 		super("DeadLockDetector");
 		tmx = ManagementFactory.getThreadMXBean();
 	}
-
-	@Override 
+	
+	@Override
 	public final void run()
 	{
 		boolean deadlock = false;
@@ -54,7 +54,7 @@ public class DeadLockDetector extends Thread
 			try
 			{
 				long[] ids = tmx.findDeadlockedThreads();
-
+				
 				if(ids != null)
 				{
 					deadlock = true;
@@ -64,7 +64,7 @@ public class DeadLockDetector extends Thread
 					{
 						info += ti.toString();
 					}
-
+					
 					for(ThreadInfo ti : tis)
 					{
 						LockInfo[] locks = ti.getLockedSynchronizers();
@@ -73,7 +73,7 @@ public class DeadLockDetector extends Thread
 						{
 							continue;
 						}
-
+						
 						ThreadInfo dl = ti;
 						info += "Java-level deadlock:\n";
 						info += "\t"+dl.getThreadName()+" is waiting to lock "+dl.getLockInfo().toString()+" which is held by "+dl.getLockOwnerName()+"\n";
@@ -83,7 +83,7 @@ public class DeadLockDetector extends Thread
 						}
 					}
 					_log.warning(info);
-
+					
 					if(Config.RESTART_ON_DEADLOCK)
 					{
 						Announcements an = Announcements.getInstance();
@@ -92,7 +92,7 @@ public class DeadLockDetector extends Thread
 					}
 					
 				}
-				Thread.sleep(_sleepTime); 
+				Thread.sleep(_sleepTime);
 			}
 			catch(Exception e)
 			{

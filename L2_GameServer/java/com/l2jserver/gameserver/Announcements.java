@@ -25,6 +25,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -36,8 +38,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.script.DateRange;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.util.StringUtil;
-
-import javolution.util.FastList;
 
 /**
  * This class ...

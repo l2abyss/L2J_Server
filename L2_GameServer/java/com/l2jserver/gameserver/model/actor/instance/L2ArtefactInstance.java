@@ -52,7 +52,7 @@ public final class L2ArtefactInstance extends L2Npc
 		super(objectId, template);
 		setInstanceType(InstanceType.L2ArtefactInstance);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.model.actor.L2Npc#onSpawn()
 	 */
@@ -62,7 +62,7 @@ public final class L2ArtefactInstance extends L2Npc
 		super.onSpawn();
 		getCastle().registerArtefact(this);
 	}
-
+	
 	/**
 	 * Return False.<BR>
 	 * <BR>
@@ -72,24 +72,24 @@ public final class L2ArtefactInstance extends L2Npc
 	{
 		return false;
 	}
-
+	
 	@Override
 	public boolean isAttackable()
 	{
 		return false;
 	}
-
+	
 	@Override
 	public void onForcedAttack(L2PcInstance player)
 	{
 		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill)
 	{}
-
+	
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{}

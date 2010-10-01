@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GmListTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -31,9 +34,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.StringUtil;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * Petition Manager
@@ -123,7 +123,7 @@ public final class PetitionManager
 			setState(endState);
 			_endTime = System.currentTimeMillis();
 			
-			if (getResponder() != null && getResponder().isOnline() == 1)
+			if (getResponder() != null && getResponder().isOnline())
 			{
 				if (endState == PetitionState.Responder_Reject)
 				{
@@ -147,7 +147,7 @@ public final class PetitionManager
 			}
 			
 			// End petition consultation and inform them, if they are still online.
-			if (getPetitioner() != null && getPetitioner().isOnline() == 1)
+			if (getPetitioner() != null && getPetitioner().isOnline())
 				getPetitioner().sendPacket(new SystemMessage(SystemMessageId.THIS_END_THE_PETITION_PLEASE_PROVIDE_FEEDBACK));
 			
 			getCompletedPetitions().put(getId(), this);
@@ -197,7 +197,7 @@ public final class PetitionManager
 		
 		public void sendPetitionerPacket(L2GameServerPacket responsePacket)
 		{
-			if (getPetitioner() == null || getPetitioner().isOnline() == 0)
+			if (getPetitioner() == null || !getPetitioner().isOnline())
 			{
 				// Allows petitioners to see the results of their petition when
 				// they log back into the game.
@@ -211,7 +211,7 @@ public final class PetitionManager
 		
 		public void sendResponderPacket(L2GameServerPacket responsePacket)
 		{
-			if (getResponder() == null || getResponder().isOnline() == 0)
+			if (getResponder() == null || !getResponder().isOnline())
 			{
 				endPetitionConsultation(PetitionState.Responder_Missing);
 				return;
@@ -519,7 +519,7 @@ public final class PetitionManager
 				continue;
 			
 			StringUtil.append(htmlContent,"<tr><td width=\"270\"><table width=\"270\" cellpadding=\"2\" bgcolor=",(color ? "131210" : "444444" ),"><tr><td width=\"130\">",dateFormat.format(new Date(currPetition.getSubmitTime())));
-			StringUtil.append(htmlContent,"</td><td width=\"140\" align=right><font color=\"",(currPetition.getPetitioner().isOnline() == 1 ? "00FF00" : "999999"),"\">",currPetition.getPetitioner().getName(),"</font></td></tr>");
+			StringUtil.append(htmlContent,"</td><td width=\"140\" align=right><font color=\"",(currPetition.getPetitioner().isOnline() ? "00FF00" : "999999"),"\">",currPetition.getPetitioner().getName(),"</font></td></tr>");
 			StringUtil.append(htmlContent,"<tr><td width=\"130\">");
 			if (currPetition.getState() != PetitionState.In_Process)
 			{
@@ -528,7 +528,7 @@ public final class PetitionManager
 						+ "<td><button value=\"Reject\" action=\"bypass -h admin_reject_petition ", String.valueOf(currPetition.getId()), "\" width=\"50\" height=\"21\" back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>");
 			}
 			else
-				htmlContent.append("<font color=\""+(currPetition.getResponder().isOnline() == 1 ? "00FF00" : "999999")+"\">"+currPetition.getResponder().getName()+"</font>");
+				htmlContent.append("<font color=\""+(currPetition.getResponder().isOnline() ? "00FF00" : "999999")+"\">"+currPetition.getResponder().getName()+"</font>");
 			StringUtil.append(htmlContent,"</td>",currPetition.getTypeAsString(),"<td width=\"140\" align=right>",currPetition.getTypeAsString(),"</td></tr></table></td></tr>");
 			color = !color;
 			petcount++;
@@ -567,19 +567,19 @@ public final class PetitionManager
 		
 		if (!isValidPetition(petitionId))
 			return;
-
+		
 		Petition currPetition = getPendingPetitions().get(petitionId);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(0);
 		html.setFile(activeChar.getHtmlPrefix(), "data/html/admin/petition.htm");
 		html.replace("%petition%", String.valueOf(currPetition.getId()));
 		html.replace("%time%", dateFormat.format(new Date(currPetition.getSubmitTime())));
 		html.replace("%type%", currPetition.getTypeAsString());
 		html.replace("%petitioner%", currPetition.getPetitioner().getName());
-		html.replace("%online%", (currPetition.getPetitioner().isOnline() == 1 ? "00FF00" : "999999"));
+		html.replace("%online%", (currPetition.getPetitioner().isOnline() ? "00FF00" : "999999"));
 		html.replace("%text%", currPetition.getContent());
-
+		
 		activeChar.sendPacket(html);
 	}
 	

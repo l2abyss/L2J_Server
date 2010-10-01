@@ -34,7 +34,7 @@ public class MoveToPawn extends L2GameServerPacket
 	private int _targetId;
 	private int _distance;
 	private int _x, _y, _z,_tx,_ty,_tz;
-
+	
 	public MoveToPawn(L2Character cha, L2Character target, int distance)
 	{
 		_charObjId = cha.getObjectId();
@@ -47,16 +47,16 @@ public class MoveToPawn extends L2GameServerPacket
 		_ty = target.getY();
 		_tz = target.getZ();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x72);
-
+		
 		writeD(_charObjId);
 		writeD(_targetId);
 		writeD(_distance);
-
+		
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
@@ -64,7 +64,7 @@ public class MoveToPawn extends L2GameServerPacket
 		writeD(_ty);
 		writeD(_tz);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

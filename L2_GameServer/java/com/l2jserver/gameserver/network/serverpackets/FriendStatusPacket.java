@@ -20,11 +20,11 @@ import com.l2jserver.gameserver.model.L2World;
  * <BR>
  * Inform player about friend online status change
  * <BR>
- * Format: cdSd<BR> 
+ * Format: cdSd<BR>
  * d: Online/Offline<BR>
  * S: Friend Name  <BR>
  * d: Player Object ID <BR>
- *  
+ * 
  * @author JIV
  * 
  */
@@ -34,7 +34,7 @@ public class FriendStatusPacket extends L2GameServerPacket
 	private boolean  _online;
 	private int _objid;
 	private String _name;
-
+	
 	public FriendStatusPacket(int objId)
 	{
 		_objid = objId;
@@ -48,7 +48,7 @@ public class FriendStatusPacket extends L2GameServerPacket
 		writeC(0x77);
 		writeD(_online ? 1 : 0);
 		writeS(_name);
-		writeD(_objid); 
+		writeD(_objid);
 	}
 	
 	/*

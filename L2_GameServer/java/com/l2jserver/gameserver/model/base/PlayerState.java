@@ -16,12 +16,12 @@ package com.l2jserver.gameserver.model.base;
 
 public enum PlayerState
 {
-	 RESTING,
-	 MOVING,
-	 RUNNING,
-	 FLYING,
-	 BEHIND,
-	 FRONT,
-	 CHAOTIC,
-	 OLYMPIAD 
+	RESTING,
+	MOVING,
+	RUNNING,
+	FLYING,
+	BEHIND,
+	FRONT,
+	CHAOTIC,
+	OLYMPIAD
 }

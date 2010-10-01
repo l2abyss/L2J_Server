@@ -29,13 +29,13 @@ public final class L2EnchantSkillLearn
 	private final int _id;
 	private final int _baseLvl;
 	private final TIntIntHashMap _enchantRoutes = new TIntIntHashMap();
-
+	
 	public L2EnchantSkillLearn(int id, int baseLvl)
 	{
 		_id = id;
 		_baseLvl = baseLvl;
 	}
-
+	
 	public void addNewEnchantRoute(int route, int group)
 	{
 		_enchantRoutes.put(route, group);
@@ -47,7 +47,7 @@ public final class L2EnchantSkillLearn
 	{
 		return _id;
 	}
-
+	
 	/**
 	 * @return Returns the minLevel.
 	 */

@@ -50,7 +50,7 @@ public class PartyMatchRoom
 		_maxmem = maxmem;
 		_members.add(owner);
 	}
-
+	
 	public List<L2PcInstance> getPartyMembers()
 	{
 		return _members;
@@ -123,12 +123,12 @@ public class PartyMatchRoom
 	{
 		return _minlvl;
 	}
-
+	
 	public int getMaxLvl()
 	{
 		return _maxlvl;
 	}
-
+	
 	public int getLocation()
 	{
 		return _location;
@@ -138,34 +138,34 @@ public class PartyMatchRoom
 	{
 		return _members.size();
 	}
-
+	
 	public int getMaxMembers()
 	{
 		return _maxmem;
 	}
-
+	
 	public String getTitle()
 	{
 		return _title;
 	}
-
+	
 	public L2PcInstance getOwner()
 	{
 		return _members.get(0);
 	}
-
+	
 	/* SET  */
-
+	
 	public void setMinLvl(int minlvl)
 	{
 		_minlvl = minlvl;
 	}
-
+	
 	public void setMaxLvl(int maxlvl)
 	{
 		_maxlvl = maxlvl;
 	}
-
+	
 	public void setLocation(int loc)
 	{
 		_location = loc;
@@ -175,12 +175,12 @@ public class PartyMatchRoom
 	{
 		_loot = loot;
 	}
-
+	
 	public void setMaxMembers(int maxmem)
 	{
 		_maxmem = maxmem;
 	}
-
+	
 	public void setTitle(String title)
 	{
 		_title = title;

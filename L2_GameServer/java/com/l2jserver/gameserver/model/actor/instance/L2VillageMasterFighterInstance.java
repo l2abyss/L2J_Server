@@ -25,22 +25,22 @@ public final class L2VillageMasterFighterInstance extends L2VillageMasterInstanc
 	{
 		super(objectId, template);
 	}
-
+	
 	@Override
 	protected final boolean checkVillageMasterRace(PlayerClass pclass)
 	{
 		if (pclass == null)
 			return false;
-
+		
 		return pclass.isOfRace(Race.Human) || pclass.isOfRace(Race.Elf);
 	}
-
+	
 	@Override
 	protected final boolean checkVillageMasterTeachType(PlayerClass pclass)
 	{
 		if (pclass == null)
 			return false;
-
+		
 		return pclass.isOfType(ClassType.Fighter);
 	}
 }

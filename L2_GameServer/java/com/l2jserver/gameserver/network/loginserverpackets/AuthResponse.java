@@ -23,10 +23,10 @@ import com.l2jserver.util.network.BaseRecievePacket;
  */
 public class AuthResponse extends BaseRecievePacket
 {
-
+	
 	private int _serverId;
 	private String _serverName;
-
+	
 	/**
 	 * @param decrypt
 	 */
@@ -36,7 +36,7 @@ public class AuthResponse extends BaseRecievePacket
 		_serverId = readC();
 		_serverName = readS();
 	}
-
+	
 	/**
 	 * @return Returns the serverId.
 	 */
@@ -44,7 +44,7 @@ public class AuthResponse extends BaseRecievePacket
 	{
 		return _serverId;
 	}
-
+	
 	/**
 	 * @return Returns the serverName.
 	 */
@@ -52,5 +52,5 @@ public class AuthResponse extends BaseRecievePacket
 	{
 		return _serverName;
 	}
-
+	
 }

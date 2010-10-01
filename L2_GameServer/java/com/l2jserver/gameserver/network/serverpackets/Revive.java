@@ -28,19 +28,19 @@ public final class Revive extends L2GameServerPacket
 {
 	private static final String _S__0C_REVIVE = "[S] 01 Revive";
 	private int _objectId;
-
+	
 	public Revive(L2Object obj)
 	{
 		_objectId = obj.getObjectId();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x01);
 		writeD(_objectId);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -49,5 +49,5 @@ public final class Revive extends L2GameServerPacket
 	{
 		return _S__0C_REVIVE;
 	}
-
+	
 }

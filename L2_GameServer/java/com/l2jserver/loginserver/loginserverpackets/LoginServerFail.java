@@ -22,7 +22,7 @@ import com.l2jserver.util.network.BaseSendablePacket;
  */
 public class LoginServerFail extends BaseSendablePacket
 {
-
+	
 	/**
 	 * @param reason
 	 */
@@ -31,13 +31,13 @@ public class LoginServerFail extends BaseSendablePacket
 		writeC(0x01);
 		writeC(reason);
 	}
-
+	
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-
+	
 	public static final int REASON_IP_BANNED = 1;
 	public static final int REASON_IP_RESERVED = 2;
 	public static final int REASON_WRONG_HEXID = 3;
@@ -45,5 +45,5 @@ public class LoginServerFail extends BaseSendablePacket
 	public static final int REASON_NO_FREE_ID = 5;
 	public static final int NOT_AUTHED = 6;
 	public static final int REASON_ALREADY_LOGGED8IN = 7;
-
+	
 }

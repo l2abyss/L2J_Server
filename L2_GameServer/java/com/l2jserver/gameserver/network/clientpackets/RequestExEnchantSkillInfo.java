@@ -32,17 +32,17 @@ import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfo;
 public final class RequestExEnchantSkillInfo extends L2GameClientPacket
 {
 	private static final String _C__D0_0E_REQUESTEXENCHANTSKILLINFO = "[C] D0:0E RequestExEnchantSkillInfo";
-
-    private int _skillId;
+	
+	private int _skillId;
 	private int _skillLvl;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_skillId = readD();
 		_skillLvl = readD();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
 	 */
@@ -50,37 +50,37 @@ public final class RequestExEnchantSkillInfo extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-
-        if (activeChar == null)
-            return;
-
-        if (activeChar.getLevel() < 76)
-            return;
-
-       /* L2Npc trainer = activeChar.getLastFolkNPC();
+		
+		if (activeChar == null)
+			return;
+		
+		if (activeChar.getLevel() < 76)
+			return;
+		
+		/* L2Npc trainer = activeChar.getLastFolkNPC();
         if (!(trainer instanceof L2NpcInstance))
         	return;
 
         if (!trainer.canInteract(activeChar) && !activeChar.isGM())
             return;*/
-
-        L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);
-        
-        if (skill == null || skill.getId() != _skillId)
-        {
-            return;
-        }
-
-        if ( EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId) == null)
-        	return;
-        
-        int playerSkillLvl = activeChar.getSkillLevel(_skillId);
-        if (playerSkillLvl == -1 || playerSkillLvl != _skillLvl)
-        	return;
-        
-        activeChar.sendPacket(new ExEnchantSkillInfo(_skillId, _skillLvl));
+		
+		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);
+		
+		if (skill == null || skill.getId() != _skillId)
+		{
+			return;
+		}
+		
+		if ( EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId) == null)
+			return;
+		
+		int playerSkillLvl = activeChar.getSkillLevel(_skillId);
+		if (playerSkillLvl == -1 || playerSkillLvl != _skillLvl)
+			return;
+		
+		activeChar.sendPacket(new ExEnchantSkillInfo(_skillId, _skillLvl));
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -89,5 +89,5 @@ public final class RequestExEnchantSkillInfo extends L2GameClientPacket
 	{
 		return _C__D0_0E_REQUESTEXENCHANTSKILLINFO;
 	}
-
+	
 }

@@ -58,9 +58,9 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 			player.sendMessage("You give items to pet too fast.");
 			return;
 		}
-
+		
 		if (player.getActiveEnchantItem() != null)
-        	return;
+			return;
 		// Alt game - Karma punishment
 		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && player.getKarma() > 0)
 			return;
@@ -114,7 +114,7 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 			pet.getOwner().sendPacket(new SystemMessage(SystemMessageId.UNABLE_TO_PLACE_ITEM_YOUR_PET_IS_TOO_ENCUMBERED));
 			return;
 		}
-				
+		
 		if (player.transferItem("Transfer", _objectId, _amount, pet.getInventory(), pet) == null)
 		{
 			_log.warning("Invalid item transfer request: " + pet.getName() + "(pet) --> " + player.getName());

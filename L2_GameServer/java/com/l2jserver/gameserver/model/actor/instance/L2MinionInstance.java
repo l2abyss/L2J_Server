@@ -29,10 +29,10 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 public class L2MinionInstance extends L2MonsterInstance
 {
 	//private static Logger _log = Logger.getLogger(L2RaidMinionInstance.class.getName());
-
+	
 	/** The master L2Character whose depends this L2MinionInstance on */
 	private L2MonsterInstance _master;
-
+	
 	/**
 	 * Constructor of L2MinionInstance (use L2Character and L2NpcInstance constructor).<BR><BR>
 	 *
@@ -49,7 +49,7 @@ public class L2MinionInstance extends L2MonsterInstance
 		super(objectId, template);
 		setInstanceType(InstanceType.L2MinionInstance);
 	}
-
+	
 	/**
 	 * Return the master of this L2MinionInstance.<BR><BR>
 	 */
@@ -57,7 +57,7 @@ public class L2MinionInstance extends L2MonsterInstance
 	{
 		return _master;
 	}
-
+	
 	@Override
 	public void onSpawn()
 	{
@@ -78,7 +78,7 @@ public class L2MinionInstance extends L2MonsterInstance
 			((L2AttackableAI) getAI()).stopAITask();
 		super.onSpawn();
 	}
-
+	
 	/**
 	 * Set the master of this L2MinionInstance.<BR><BR>
 	 *
@@ -89,12 +89,12 @@ public class L2MinionInstance extends L2MonsterInstance
 	{
 		_master = leader;
 	}
-
+	
 	/**
-	* Manages the doDie event for this L2MinionInstance.<BR><BR>
-	*
-	* @param killer The L2Character that killed this L2MinionInstance.<BR><BR>
-	*/
+	 * Manages the doDie event for this L2MinionInstance.<BR><BR>
+	 *
+	 * @param killer The L2Character that killed this L2MinionInstance.<BR><BR>
+	 */
 	@Override
 	public boolean doDie(L2Character killer)
 	{
@@ -104,10 +104,13 @@ public class L2MinionInstance extends L2MonsterInstance
 			getLeader().notifyMinionDied(this);
 		return true;
 	}
-
+	
 	@Override
-	public float getVitalityPoints(int damage)
+	public boolean giveRaidCurse()
 	{
-		return 0;
+		if (getLeader() != null)
+			return getLeader().giveRaidCurse();
+		else
+			return true;
 	}
 }

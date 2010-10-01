@@ -22,26 +22,26 @@ package com.l2jserver.gameserver.network.clientpackets;
  */
 public class RequestPledgeExtendedInfo extends L2GameClientPacket
 {
-
-    @SuppressWarnings("unused")
-    private String _name;
-
+	
+	@SuppressWarnings("unused")
+	private String _name;
+	
 	@Override
-    protected void readImpl()
-    {
-    	_name = readS();
-    }
-
-    @Override
-    protected void runImpl()
-    {
-        // TODO this
-    }
-
-    @Override
-    public String getType()
-    {
-        return "[C] 0x67 RequestPledgeExtendedInfo";
-    }
-
+	protected void readImpl()
+	{
+		_name = readS();
+	}
+	
+	@Override
+	protected void runImpl()
+	{
+		// TODO this
+	}
+	
+	@Override
+	public String getType()
+	{
+		return "[C] 0x67 RequestPledgeExtendedInfo";
+	}
+	
 }

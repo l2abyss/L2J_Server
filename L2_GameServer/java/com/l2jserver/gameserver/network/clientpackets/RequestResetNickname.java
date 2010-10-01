@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class RequestResetNickname extends L2GameClientPacket
 {
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
 	 */
@@ -31,7 +31,7 @@ public class RequestResetNickname extends L2GameClientPacket
 	{
 		// nothing (trigger)
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
 	 */
@@ -41,12 +41,12 @@ public class RequestResetNickname extends L2GameClientPacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		activeChar.getAppearance().setTitleColor(0xFFFF77);
 		activeChar.setTitle("");
 		activeChar.broadcastUserInfo();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
 	 */

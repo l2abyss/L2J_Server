@@ -20,17 +20,17 @@
 
 	version 0.1.1, 2005-06-07
 	version 0.1, 2005-03-16
-*/
+ */
 
 package com.l2jserver.gameserver;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.model.L2Territory;
 import com.l2jserver.util.lib.SqlUtils;
-
-import javolution.util.FastMap;
 
 public class Territory
 {

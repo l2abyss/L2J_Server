@@ -21,7 +21,7 @@ public class ExAirShipStopMove extends L2GameServerPacket
 {
 	
 	private static final String _S__FE_66_EXAIRSHIPSTOPMOVE = "[S] FE:66 ExAirShipStopMove";
-
+	
 	private final int _playerId, _airShipId, _x, _y, _z;
 	
 	public ExAirShipStopMove (L2PcInstance player, L2AirShipInstance ship, int x, int y, int z)
@@ -32,23 +32,23 @@ public class ExAirShipStopMove extends L2GameServerPacket
 		_y = y;
 		_z = z;
 	}
-
+	
 	@Override
-    protected void writeImpl()
-    {
-	    writeC(0xfe);
-	    writeH(0x66);
-	    
-	    writeD(_airShipId);
-	    writeD(_playerId);	    
-	    writeD(_x);
-	    writeD(_y);
-	    writeD(_z);
+	protected void writeImpl()
+	{
+		writeC(0xfe);
+		writeH(0x66);
+		
+		writeD(_airShipId);
+		writeD(_playerId);
+		writeD(_x);
+		writeD(_y);
+		writeD(_z);
 	}
-
+	
 	@Override
-    public String getType()
-    {
-	    return _S__FE_66_EXAIRSHIPSTOPMOVE;
-    }
+	public String getType()
+	{
+		return _S__FE_66_EXAIRSHIPSTOPMOVE;
+	}
 }

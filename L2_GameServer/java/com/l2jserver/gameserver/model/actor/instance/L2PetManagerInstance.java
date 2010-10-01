@@ -32,7 +32,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		super(objectID, template);
 		setInstanceType(InstanceType.L2PetManagerInstance);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
@@ -42,10 +42,10 @@ public class L2PetManagerInstance extends L2MerchantInstance
 			pom = "" + npcId;
 		else
 			pom = npcId + "-" + val;
-
+		
 		return "data/html/petmanager/" + pom + ".htm";
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
@@ -54,7 +54,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		L2Summon summon = player.getPet();
 		if (getNpcId() == 36478 && summon != null)
 			filename = "data/html/petmanager/restore-unsummonpet.htm";
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
 		html.setFile(player.getHtmlPrefix(), filename);
 		if (Config.ALLOW_RENTPET && Config.LIST_PET_RENT_NPC.contains(getNpcId()))
@@ -63,7 +63,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
@@ -153,7 +153,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		else
 			super.onBypassFeedback(player, command);
 	}
-
+	
 	public final void exchange(L2PcInstance player, int itemIdtake, int itemIdgive)
 	{
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());

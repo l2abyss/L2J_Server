@@ -21,8 +21,8 @@ import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.taskmanager.Task;
 import com.l2jserver.gameserver.taskmanager.TaskManager;
-import com.l2jserver.gameserver.taskmanager.TaskTypes;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
+import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
 
 /**
@@ -56,7 +56,7 @@ public class TaskSevenSignsUpdate extends Task
 		try
 		{
 			SevenSigns.getInstance().saveSevenSignsStatus();
-
+			
 			if (!SevenSigns.getInstance().isSealValidationPeriod())
 				SevenSignsFestival.getInstance().saveFestivalData(false);
 			

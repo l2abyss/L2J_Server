@@ -24,7 +24,7 @@ public class ConditionPlayerSex extends Condition
 {
 	//male 0 fmale 1
 	private final int _sex;
-
+	
 	/**
 	 * Instantiates a new condition player sex.
 	 *
@@ -34,7 +34,7 @@ public class ConditionPlayerSex extends Condition
 	{
 		_sex = sex;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

@@ -35,7 +35,7 @@ public class L2SkillCreateItem extends L2Skill
 	private final int[] _createItemId;
 	private final int _createItemCount;
 	private final int _randomCount;
-
+	
 	public L2SkillCreateItem(StatsSet set)
 	{
 		super(set);
@@ -43,7 +43,7 @@ public class L2SkillCreateItem extends L2Skill
 		_createItemCount = set.getInteger("create_item_count", 0);
 		_randomCount = set.getInteger("random_count", 1);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.model.L2Skill#useSkill(com.l2jserver.gameserver.model.actor.L2Character, com.l2jserver.gameserver.model.L2Object[])
 	 */
@@ -62,7 +62,7 @@ public class L2SkillCreateItem extends L2Skill
 				player.sendPacket(sm);
 				return;
 			}
-
+			
 			int count = _createItemCount + Rnd.nextInt(_randomCount);
 			int rndid = Rnd.nextInt(_createItemId.length);
 			if (activeChar instanceof L2PcInstance)

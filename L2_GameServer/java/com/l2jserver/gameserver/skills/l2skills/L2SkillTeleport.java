@@ -34,11 +34,11 @@ public class L2SkillTeleport extends L2Skill
 {
 	private final String _recallType;
 	private final Location _loc;
-
+	
 	public L2SkillTeleport(StatsSet set)
 	{
 		super(set);
-
+		
 		_recallType = set.getString("recallType", "");
 		String coords = set.getString("teleCoords", null);
 		if (coords != null)
@@ -51,7 +51,7 @@ public class L2SkillTeleport extends L2Skill
 		else
 			_loc = null;
 	}
-
+	
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
@@ -63,32 +63,32 @@ public class L2SkillTeleport extends L2Skill
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-
+			
 			if (activeChar.isAfraid())
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-
+			
 			if (((L2PcInstance)activeChar).isCombatFlagEquipped())
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-
+			
 			if (((L2PcInstance) activeChar).isInOlympiadMode())
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
 				return;
 			}
-
+			
 			if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION));
 				return;
 			}
 		}
-
+		
 		try
 		{
 			for (L2Character target: (L2Character[]) targets)
@@ -96,39 +96,39 @@ public class L2SkillTeleport extends L2Skill
 				if (target instanceof L2PcInstance)
 				{
 					L2PcInstance targetChar = (L2PcInstance) target;
-
+					
 					// Check to see if the current player target is in a festival.
 					if (targetChar.isFestivalParticipant())
 					{
 						targetChar.sendMessage("You may not use an escape skill in a festival.");
 						continue;
 					}
-
+					
 					// Check to see if player is in jail
 					if (targetChar.isInJail())
 					{
 						targetChar.sendMessage("You can not escape from jail.");
 						continue;
 					}
-
+					
 					// Check to see if player is in a duel
 					if (targetChar.isInDuel())
 					{
 						targetChar.sendMessage("You cannot use escape skills during a duel.");
 						continue;
 					}
-
+					
 					if (targetChar != activeChar)
 					{
 						if (!TvTEvent.onEscapeUse(targetChar.getObjectId()))
 							continue;
-
+						
 						if (targetChar.isInOlympiadMode())
 							continue;
-
+						
 						if (GrandBossManager.getInstance().getZone(targetChar) != null)
 							continue;
-
+						
 						if (targetChar.isCombatFlagEquipped())
 							continue;
 					}

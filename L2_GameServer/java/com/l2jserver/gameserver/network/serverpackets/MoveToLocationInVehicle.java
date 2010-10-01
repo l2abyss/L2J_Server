@@ -39,7 +39,7 @@ public class MoveToLocationInVehicle extends L2GameServerPacket
 		_destination = destination;
 		_origin = origin;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -47,8 +47,8 @@ public class MoveToLocationInVehicle extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0x7e);
-        writeD(_charObjId);
-        writeD(_boatId);
+		writeD(_charObjId);
+		writeD(_boatId);
 		writeD(_destination.getX());
 		writeD(_destination.getY());
 		writeD(_destination.getZ());
@@ -56,7 +56,7 @@ public class MoveToLocationInVehicle extends L2GameServerPacket
 		writeD(_origin.getY());
 		writeD(_origin.getZ());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

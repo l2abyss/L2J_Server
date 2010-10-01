@@ -26,13 +26,13 @@ public final class RequestDeleteBookMarkSlot extends L2GameClientPacket
 	private static final String _C__51_REQUESTDELETEBOOKMARKSLOT = "[C] 51 RequestDeleteBookMarkSlot";
 	
 	private int id;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		id = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -42,8 +42,8 @@ public final class RequestDeleteBookMarkSlot extends L2GameClientPacket
 		
 		activeChar.teleportBookmarkDelete(id);
 	}
-
-
+	
+	
 	@Override
 	public String getType()
 	{

@@ -20,7 +20,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.serverpackets.PartyMemberPosition;
 
 
 /**
@@ -31,14 +30,14 @@ import com.l2jserver.gameserver.network.serverpackets.PartyMemberPosition;
 public final class CannotMoveAnymore extends L2GameClientPacket
 {
 	private static final String _C__36_STOPMOVE = "[C] 36 CannotMoveAnymore";
-
+	
 	private static Logger _log = Logger.getLogger(CannotMoveAnymore.class.getName());
-
+	
 	private int _x;
 	private int _y;
 	private int _z;
 	private int _heading;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -47,14 +46,14 @@ public final class CannotMoveAnymore extends L2GameClientPacket
 		_z = readD();
 		_heading = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
-
+		
 		if (Config.DEBUG)
 			_log.fine("client: x:" + _x + " y:" + _y + " z:" + _z
 					+ " server x:" + player.getX() + " y:" + player.getY()
@@ -64,11 +63,11 @@ public final class CannotMoveAnymore extends L2GameClientPacket
 			player.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED_BLOCKED,
 					new L2CharPosition(_x, _y, _z, _heading));
 		}
-		if (player.getParty() != null)
+		/*if (player.getParty() != null)
 		{
 			player.getParty().broadcastToPartyMembers(player, new PartyMemberPosition(player));
-		}
-
+		}*/
+		
 		// player.stopMove();
 		//
 		// if (Config.DEBUG)
@@ -83,7 +82,7 @@ public final class CannotMoveAnymore extends L2GameClientPacket
 		// getClient().getActiveChar().sendPacket(sr);
 		// getClient().getActiveChar().broadcastPacket(sr);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 *

@@ -26,7 +26,6 @@ import java.util.zip.ZipFile;
 
 import javax.script.ScriptContext;
 
-
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
@@ -92,12 +91,12 @@ public class FaenorScriptEngine extends ScriptEngine
 			}
 			catch (ZipException e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 				continue;
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 				continue;
 			}
 			
@@ -166,7 +165,7 @@ public class FaenorScriptEngine extends ScriptEngine
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 	}
 	

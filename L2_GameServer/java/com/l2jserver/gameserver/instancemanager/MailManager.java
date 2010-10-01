@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -41,19 +42,19 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class MailManager
 {
 	private static Logger _log = Logger.getLogger(MailManager.class.getName());
-
+	
 	private Map<Integer, Message> _messages = new FastMap<Integer, Message>().shared();
-
+	
 	public static MailManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	private MailManager()
 	{
 		load();
 	}
-
+	
 	private void load()
 	{
 		int readed = 0;
@@ -63,23 +64,23 @@ public class MailManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-
+			
 			stmt1 = con.prepareStatement("SELECT * FROM messages ORDER BY expiration");
 			stmt2 = con.prepareStatement("SELECT * FROM attachments WHERE messageId = ?");
-
+			
 			ResultSet rset1 = stmt1.executeQuery();
 			while (rset1.next())
 			{
-
+				
 				Message msg = new Message(rset1);
-
+				
 				int msgId = msg.getId();
 				_messages.put(msgId, msg);
-
+				
 				readed++;
-
+				
 				long expiration = msg.getExpiration();
-
+				
 				if (expiration < System.currentTimeMillis())
 					ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msgId), 10000);
 				else
@@ -98,12 +99,12 @@ public class MailManager
 		}
 		_log.info("Mail Manager: Successfully loaded " + readed + " messages.");
 	}
-
+	
 	public final Message getMessage(int msgId)
 	{
 		return _messages.get(msgId);
 	}
-
+	
 	public final boolean hasUnreadPost(L2PcInstance player)
 	{
 		final int objectId = player.getObjectId();
@@ -116,7 +117,7 @@ public class MailManager
 		}
 		return false;
 	}
-
+	
 	public final int getInboxSize(int objectId)
 	{
 		int size = 0;
@@ -129,7 +130,7 @@ public class MailManager
 		}
 		return size;
 	}
-
+	
 	public final int getOutboxSize(int objectId)
 	{
 		int size = 0;
@@ -142,7 +143,7 @@ public class MailManager
 		}
 		return size;
 	}
-
+	
 	public final List<Message> getInbox(int objectId)
 	{
 		List<Message> inbox = FastList.newInstance();
@@ -155,7 +156,7 @@ public class MailManager
 		}
 		return inbox;
 	}
-
+	
 	public final List<Message> getOutbox(int objectId)
 	{
 		List<Message> outbox = FastList.newInstance();
@@ -168,11 +169,11 @@ public class MailManager
 		}
 		return outbox;
 	}
-
+	
 	public void sendMessage(Message msg)
 	{
 		_messages.put(msg.getId(), msg);
-
+		
 		Connection con = null;
 		PreparedStatement stmt = null;
 		try
@@ -190,29 +191,29 @@ public class MailManager
 		{
 			L2DatabaseFactory.close(con);
 		}
-
+		
 		final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
 		if (receiver != null)
 			receiver.sendPacket(ExNoticePostArrived.valueOf(true));
-
+		
 		ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msg.getId()), msg.getExpiration() - System.currentTimeMillis());
 	}
-
+	
 	class MessageDeletionTask implements Runnable
 	{
 		final int _msgId;
-
+		
 		public MessageDeletionTask(int msgId)
 		{
 			_msgId = msgId;
 		}
-
+		
 		public void run()
 		{
 			final Message msg = getMessage(_msgId);
 			if (msg == null)
 				return;
-
+			
 			if (msg.hasAttachments())
 			{
 				try
@@ -225,10 +226,10 @@ public class MailManager
 					}
 					else
 						msg.getAttachments().returnToWh(null);
-
+					
 					msg.getAttachments().deleteMe();
 					msg.removeAttachments();
-
+					
 					final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
 					if (receiver != null)
 					{
@@ -245,7 +246,7 @@ public class MailManager
 			deleteMessageInDb(msg.getId());
 		}
 	}
-
+	
 	public final void markAsReadInDb(int msgId)
 	{
 		Connection con = null;
@@ -267,7 +268,7 @@ public class MailManager
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public final void markAsDeletedBySenderInDb(int msgId)
 	{
 		Connection con = null;
@@ -275,11 +276,11 @@ public class MailManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-
+			
 			stmt = con.prepareStatement("UPDATE messages SET isDeletedBySender = 'true' WHERE messageId = ?");
-
+			
 			stmt.setInt(1, msgId);
-
+			
 			stmt.execute();
 			stmt.close();
 		}
@@ -292,7 +293,7 @@ public class MailManager
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public final void markAsDeletedByReceiverInDb(int msgId)
 	{
 		Connection con = null;
@@ -300,11 +301,11 @@ public class MailManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-
+			
 			stmt = con.prepareStatement("UPDATE messages SET isDeletedByReceiver = 'true' WHERE messageId = ?");
-
+			
 			stmt.setInt(1, msgId);
-
+			
 			stmt.execute();
 			stmt.close();
 		}
@@ -317,7 +318,7 @@ public class MailManager
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public final void removeAttachmentsInDb(int msgId)
 	{
 		Connection con = null;
@@ -325,11 +326,11 @@ public class MailManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-
+			
 			stmt = con.prepareStatement("UPDATE messages SET hasAttachments = 'false' WHERE messageId = ?");
-
+			
 			stmt.setInt(1, msgId);
-
+			
 			stmt.execute();
 			stmt.close();
 		}
@@ -342,7 +343,7 @@ public class MailManager
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public final void deleteMessageInDb(int msgId)
 	{
 		Connection con = null;
@@ -350,11 +351,11 @@ public class MailManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-
+			
 			stmt = con.prepareStatement("DELETE FROM messages WHERE messageId = ?");
-
+			
 			stmt.setInt(1, msgId);
-
+			
 			stmt.execute();
 			stmt.close();
 		}
@@ -366,11 +367,11 @@ public class MailManager
 		{
 			L2DatabaseFactory.close(con);
 		}
-
+		
 		_messages.remove(msgId);
 		IdFactory.getInstance().releaseId(msgId);
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

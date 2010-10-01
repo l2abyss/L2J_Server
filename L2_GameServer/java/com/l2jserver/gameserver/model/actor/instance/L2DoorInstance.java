@@ -19,6 +19,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
@@ -45,8 +47,6 @@ import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
-
-import javolution.util.FastList;
 
 /**
  * This class ...
@@ -83,6 +83,7 @@ public class L2DoorInstance extends L2Character
 	private boolean _isCommanderDoor;
 	private boolean _unlockable;
 	private boolean _isAttackableDoor = false;
+	private boolean _isWall = false; // is castle wall ?
 	private boolean _ShowHp = false;
 	
 	private ClanHall _clanHall;
@@ -211,10 +212,10 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	@Override
-    public void initKnownList()
-    {
+	public void initKnownList()
+	{
 		setKnownList(new DoorKnownList(this));
-    }
+	}
 	
 	@Override
 	public final DoorStat getStat()
@@ -291,22 +292,22 @@ public class L2DoorInstance extends L2Character
 	{
 		return _isCommanderDoor;
 	}
-
+	
 	public boolean getIsAttackableDoor()
 	{
 		return _isAttackableDoor;
 	}
-
+	
 	public boolean getIsShowHp()
 	{
 		return _ShowHp;
 	}
-
+	
 	public void setIsAttackableDoor(boolean val)
 	{
 		_isAttackableDoor = val;
 	}
-
+	
 	public void setIsShowHp(boolean val)
 	{
 		_ShowHp = val;
@@ -395,10 +396,10 @@ public class L2DoorInstance extends L2Character
 		// Doors can`t be attacked by NPCs
 		if (!(attacker instanceof L2Playable))
 			return false;
-
+		
 		if (getClanHall() != null)
 			return false;
-
+		
 		// Attackable  only during siege by everyone (not owner)
 		boolean isCastle = (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getZone().isActive());
 		boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getZone().isActive() && !getIsCommanderDoor());
@@ -635,8 +636,39 @@ public class L2DoorInstance extends L2Character
 		return _D;
 	}
 	
+	/**
+	 * Set this door as a castle wall, can be damaged by siege golem only.
+	 */
+	public void setIsWall(boolean b)
+	{
+		_isWall = b;
+	}
+	
+	/**
+	 * @return true if door is a castle wall and can be damaged by siege golem only.
+	 */
+	public boolean isWall()
+	{
+		return _isWall;
+	}
+	
 	@Override
-	public boolean doDie(L2Character killer) 
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	{
+		if (_isWall && !(attacker instanceof L2SiegeSummonInstance))
+			return;
+		
+		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
+	}
+	
+	@Override
+	public void reduceCurrentHpByDOT(double i, L2Character attacker, L2Skill skill)
+	{
+		// doors can't be damaged by DOTs
+	}
+	
+	@Override
+	public boolean doDie(L2Character killer)
 	{
 		if (!super.doDie(killer))
 			return false;
@@ -649,9 +681,9 @@ public class L2DoorInstance extends L2Character
 		return true;
 	}
 	
-    @Override
-    public void sendInfo(L2PcInstance activeChar)
-    {
-    	activeChar.sendPacket(new StaticObject(this, false));
-    }
+	@Override
+	public void sendInfo(L2PcInstance activeChar)
+	{
+		activeChar.sendPacket(new StaticObject(this, false));
+	}
 }

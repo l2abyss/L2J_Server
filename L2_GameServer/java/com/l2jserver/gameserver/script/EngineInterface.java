@@ -36,36 +36,36 @@ import com.l2jserver.gameserver.model.L2World;
  */
 public interface EngineInterface
 {
-    //*  keep the references of Singletons to prevent garbage collection
-    public CharNameTable charNametable = CharNameTable.getInstance();
-
-    public IdFactory idFactory = IdFactory.getInstance();
-    public ItemTable itemTable = ItemTable.getInstance();
-
-    public SkillTable skillTable = SkillTable.getInstance();
-
-    public RecipeController recipeController = RecipeController.getInstance();
-
-    public SkillTreeTable skillTreeTable = SkillTreeTable.getInstance();
-    public CharTemplateTable charTemplates = CharTemplateTable.getInstance();
-    public ClanTable clanTable = ClanTable.getInstance();
-
-    public NpcTable npcTable = NpcTable.getInstance();
-
-    public TeleportLocationTable teleTable = TeleportLocationTable.getInstance();
-    public LevelUpData levelUpData = LevelUpData.getInstance();
-    public L2World world = L2World.getInstance();
-    public SpawnTable spawnTable = SpawnTable.getInstance();
-    public GameTimeController gameTimeController = GameTimeController.getInstance();
-    public Announcements announcements = Announcements.getInstance();
-    public MapRegionTable mapRegions = MapRegionTable.getInstance();
-
-
-
-    //public ArrayList getAllPlayers();
-    //public Player getPlayer(String characterName);
-    public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states);
-    public void addEventDrop(int[] items, int[] count, double chance, DateRange range);
-    public void onPlayerLogin(String[] message, DateRange range);
-
+	//*  keep the references of Singletons to prevent garbage collection
+	public CharNameTable charNametable = CharNameTable.getInstance();
+	
+	public IdFactory idFactory = IdFactory.getInstance();
+	public ItemTable itemTable = ItemTable.getInstance();
+	
+	public SkillTable skillTable = SkillTable.getInstance();
+	
+	public RecipeController recipeController = RecipeController.getInstance();
+	
+	public SkillTreeTable skillTreeTable = SkillTreeTable.getInstance();
+	public CharTemplateTable charTemplates = CharTemplateTable.getInstance();
+	public ClanTable clanTable = ClanTable.getInstance();
+	
+	public NpcTable npcTable = NpcTable.getInstance();
+	
+	public TeleportLocationTable teleTable = TeleportLocationTable.getInstance();
+	public LevelUpData levelUpData = LevelUpData.getInstance();
+	public L2World world = L2World.getInstance();
+	public SpawnTable spawnTable = SpawnTable.getInstance();
+	public GameTimeController gameTimeController = GameTimeController.getInstance();
+	public Announcements announcements = Announcements.getInstance();
+	public MapRegionTable mapRegions = MapRegionTable.getInstance();
+	
+	
+	
+	//public ArrayList getAllPlayers();
+	//public Player getPlayer(String characterName);
+	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states);
+	public void addEventDrop(int[] items, int[] count, double chance, DateRange range);
+	public void onPlayerLogin(String[] message, DateRange range);
+	
 }

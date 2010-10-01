@@ -28,8 +28,8 @@ public class L2TeleportLocation
 	private int _price;
 	private boolean _forNoble;
 	private int _itemId;
-
-
+	
+	
 	/**
 	 * @param id
 	 */
@@ -37,7 +37,7 @@ public class L2TeleportLocation
 	{
 		_teleId = id;
 	}
-
+	
 	/**
 	 * @param locX
 	 */
@@ -45,7 +45,7 @@ public class L2TeleportLocation
 	{
 		_locX = locX;
 	}
-
+	
 	/**
 	 * @param locY
 	 */
@@ -53,7 +53,7 @@ public class L2TeleportLocation
 	{
 		_locY = locY;
 	}
-
+	
 	/**
 	 * @param locZ
 	 */
@@ -61,7 +61,7 @@ public class L2TeleportLocation
 	{
 		_locZ = locZ;
 	}
-
+	
 	/**
 	 * @param price
 	 */
@@ -69,7 +69,7 @@ public class L2TeleportLocation
 	{
 		_price = price;
 	}
-
+	
 	/**
 	 * @param val
 	 */
@@ -77,7 +77,7 @@ public class L2TeleportLocation
 	{
 		_forNoble = val;
 	}
-
+	
 	/**
 	 * @param val
 	 */
@@ -85,7 +85,7 @@ public class L2TeleportLocation
 	{
 		_itemId = val;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -93,7 +93,7 @@ public class L2TeleportLocation
 	{
 		return _teleId;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -101,7 +101,7 @@ public class L2TeleportLocation
 	{
 		return _locX;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -109,7 +109,7 @@ public class L2TeleportLocation
 	{
 		return _locY;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -117,7 +117,7 @@ public class L2TeleportLocation
 	{
 		return _locZ;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -125,7 +125,7 @@ public class L2TeleportLocation
 	{
 		return _price;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -133,7 +133,7 @@ public class L2TeleportLocation
 	{
 		return _forNoble;
 	}
-
+	
 	/**
 	 * @return
 	 */

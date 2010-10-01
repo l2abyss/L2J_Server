@@ -33,12 +33,12 @@ public final class DoorStatusUpdate extends L2GameServerPacket
 {
 	private static final String _S__61_DOORSTATUSUPDATE = "[S] 4d DoorStatusUpdate";
 	private L2DoorInstance _door;
-
+	
 	public DoorStatusUpdate(L2DoorInstance door)
 	{
 		_door=door;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -51,7 +51,7 @@ public final class DoorStatusUpdate extends L2GameServerPacket
 		writeD((int)_door.getCurrentHp());
 		writeD(_door.getMaxVisibleHp());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

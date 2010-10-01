@@ -29,12 +29,12 @@ public class ExNoticePostSent extends L2GameServerPacket
 	}
 	
 	boolean _showAnim;
-
+	
 	public ExNoticePostSent(boolean showAnimation)
 	{
 		_showAnim = showAnimation;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -45,7 +45,7 @@ public class ExNoticePostSent extends L2GameServerPacket
 		writeH(0xb4);
 		writeD(_showAnim ? 0x01 : 0x00);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

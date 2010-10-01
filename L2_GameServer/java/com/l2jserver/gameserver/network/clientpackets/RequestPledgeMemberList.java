@@ -27,19 +27,19 @@ public final class RequestPledgeMemberList extends L2GameClientPacket
 {
 	private static final String _C__3C_REQUESTPLEDGEMEMBERLIST = "[C] 3C RequestPledgeMemberList";
 	//private static Logger _log = Logger.getLogger(RequestPledgeMemberList.class.getName());
-
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null) return;
-
+		
 		L2Clan clan = activeChar.getClan();
 		if (clan != null)
 		{
@@ -47,7 +47,7 @@ public final class RequestPledgeMemberList extends L2GameClientPacket
 			activeChar.sendPacket(pm);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

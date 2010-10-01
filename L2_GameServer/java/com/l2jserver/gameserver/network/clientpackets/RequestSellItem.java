@@ -213,7 +213,7 @@ public final class RequestSellItem extends L2GameClientPacket
 		player.sendPacket(new ExBuySellListPacket(player, list, taxRate, true));
 	}
 	
-	private class Item
+	private static class Item
 	{
 		private final int _objectId;
 		private final int _itemId;

@@ -33,7 +33,7 @@ public final class TeleportToLocation extends L2GameServerPacket
 	private int _y;
 	private int _z;
 	private int _heading;
-
+	
 	public TeleportToLocation(L2Object obj, int x, int y, int z, int heading)
 	{
 		_targetObjId = obj.getObjectId();
@@ -42,7 +42,7 @@ public final class TeleportToLocation extends L2GameServerPacket
 		_z = z;
 		_heading = heading;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -54,7 +54,7 @@ public final class TeleportToLocation extends L2GameServerPacket
 		writeD(0x00); // isValidation ??
 		writeD(_heading); // nYaw
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

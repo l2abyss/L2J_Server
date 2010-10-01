@@ -44,18 +44,18 @@ import javax.swing.text.PlainDocument;
 public class JIPTextField extends JPanel implements FocusListener
 {
 	/**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = 1L;
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTextField[] _textFields;
 	private List<FocusListener> _focusListeners;
-
+	
 	public JIPTextField(String textIp)
 	{
 		super.addFocusListener(this);
-
+		
 		initIPTextField(textIp);
-
+		
 		for (int i = 0; i < _textFields.length; i++)
 		{
 			_textFields[i].addFocusListener(this);
@@ -66,16 +66,16 @@ public class JIPTextField extends JPanel implements FocusListener
 	{
 		this("...");
 	}
-
-	/**
-     * @param value
-     */
-    public JIPTextField(Inet4Address value)
-    {
-	    this(value.getHostAddress());
-    }
 	
-
+	/**
+	 * @param value
+	 */
+	public JIPTextField(Inet4Address value)
+	{
+		this(value.getHostAddress());
+	}
+	
+	
 	private void initIPTextField(String textIp)
 	{
 		final ActionListener nextfocusaction = new ActionListener()
@@ -88,7 +88,7 @@ public class JIPTextField extends JPanel implements FocusListener
 		
 		this.setLayout(new GridBagLayout());
 		_textFields = new JTextField[4];
-
+		
 		GridBagConstraints cons = new GridBagConstraints();
 		cons.anchor = GridBagConstraints.PAGE_START;
 		cons.fill = GridBagConstraints.HORIZONTAL;
@@ -122,7 +122,7 @@ public class JIPTextField extends JPanel implements FocusListener
 			cons.gridx++;
 		}
 	}
-
+	
 	@Override
 	public void addFocusListener(FocusListener fl)
 	{
@@ -130,13 +130,13 @@ public class JIPTextField extends JPanel implements FocusListener
 		{
 			_focusListeners = new LinkedList<FocusListener>();
 		}
-
+		
 		if (fl != null && !_focusListeners.contains(fl))
 		{
 			_focusListeners.add(fl);
 		}
 	}
-
+	
 	@Override
 	public void removeFocusListener(FocusListener fl)
 	{
@@ -145,7 +145,7 @@ public class JIPTextField extends JPanel implements FocusListener
 			_focusListeners.remove(fl);
 		}
 	}
-
+	
 	public String getText()
 	{
 		String str = "";
@@ -166,14 +166,14 @@ public class JIPTextField extends JPanel implements FocusListener
 		}
 		return str;
 	}
-
+	
 	public void setText(String str)
 	{
 		try
 		{
 			// make sure string is not null; throw a NullPointerException otherwise
 			str.length();
-
+			
 			InetAddress ip = InetAddress.getByName(str);
 			byte b[] = ip.getAddress();
 			for (int i = 0; i < 4; i++)
@@ -201,7 +201,7 @@ public class JIPTextField extends JPanel implements FocusListener
 			_textFields[i].setText("");
 		}
 	}
-
+	
 	@Override
 	public void setEnabled(boolean enabled)
 	{
@@ -213,7 +213,7 @@ public class JIPTextField extends JPanel implements FocusListener
 			}
 		}
 	}
-
+	
 	public boolean isEmpty()
 	{
 		for (int i = 0; i < 4; i++)
@@ -225,7 +225,7 @@ public class JIPTextField extends JPanel implements FocusListener
 		}
 		return true;
 	}
-
+	
 	public boolean isCorrect()
 	{
 		for (int i = 0; i < 4; i++)
@@ -237,8 +237,8 @@ public class JIPTextField extends JPanel implements FocusListener
 		}
 		return true;
 	}
-
-
+	
+	
 	public void focusGained(FocusEvent event)
 	{
 		if (_focusListeners != null)
@@ -249,7 +249,7 @@ public class JIPTextField extends JPanel implements FocusListener
 			}
 		}
 	}
-
+	
 	public void focusLost(FocusEvent event)
 	{
 		if (isCorrect() || isEmpty())
@@ -263,15 +263,15 @@ public class JIPTextField extends JPanel implements FocusListener
 			}
 		}
 	}
-
+	
 	public class MaxLengthDocument extends PlainDocument
 	{
 		
 		/**
-         * Comment for <code>serialVersionUID</code>
-         */
-        private static final long serialVersionUID = 1L;
-        
+		 * Comment for <code>serialVersionUID</code>
+		 */
+		private static final long serialVersionUID = 1L;
+		
 		private int _max;
 		private JTextField _next;
 		
@@ -313,21 +313,21 @@ public class JIPTextField extends JPanel implements FocusListener
 				super.insertString(offset, str, a);
 			}
 		}
-
+		
 		/**
-         * @param next The next to set.
-         */
-        public void setNext(JTextField next)
-        {
-	        _next = next;
-        }
-
+		 * @param next The next to set.
+		 */
+		public void setNext(JTextField next)
+		{
+			_next = next;
+		}
+		
 		/**
-         * @return Returns the next.
-         */
-        public JTextField getNext()
-        {
-	        return _next;
-        }
+		 * @return Returns the next.
+		 */
+		public JTextField getNext()
+		{
+			return _next;
+		}
 	}
 }

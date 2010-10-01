@@ -38,7 +38,7 @@ public final class RequestSkillList extends L2GameClientPacket
 		L2PcInstance cha = getClient().getActiveChar();
 		
 		if (cha != null)
-			cha.sendSkillList(); 
+			cha.sendSkillList();
 	}
 	
 	/* (non-Javadoc)
@@ -49,7 +49,7 @@ public final class RequestSkillList extends L2GameClientPacket
 	{
 		return _C__3F_REQUESTSKILLLIST;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

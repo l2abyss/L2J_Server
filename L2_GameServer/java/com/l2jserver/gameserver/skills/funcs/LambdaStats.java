@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.skills.Env;
  */
 public final class LambdaStats extends Lambda
 {
-
+	
 	public enum StatsType
 	{
 		PLAYER_LEVEL,
@@ -30,9 +30,9 @@ public final class LambdaStats extends Lambda
 		PLAYER_MAX_HP,
 		PLAYER_MAX_MP
 	}
-
+	
 	private final StatsType _stat;
-
+	
 	public LambdaStats(StatsType stat)
 	{
 		_stat = stat;
@@ -41,28 +41,28 @@ public final class LambdaStats extends Lambda
 	public double calc(Env env) {
 		switch (_stat)
 		{
-		case PLAYER_LEVEL:
-			if (env.player == null)
-				return 1;
-			return env.player.getLevel();
-		case CUBIC_LEVEL:
-			if(env.cubic == null)
-				return 1;
-			return env.cubic.getOwner().getLevel();
-		case TARGET_LEVEL:
-			if (env.target == null)
-				return 1;
-			return env.target.getLevel();
-		case PLAYER_MAX_HP:
-			if (env.player == null)
-				return 1;
-			return env.player.getMaxHp();
-		case PLAYER_MAX_MP:
-			if (env.player == null)
-				return 1;
-			return env.player.getMaxMp();
+			case PLAYER_LEVEL:
+				if (env.player == null)
+					return 1;
+				return env.player.getLevel();
+			case CUBIC_LEVEL:
+				if(env.cubic == null)
+					return 1;
+				return env.cubic.getOwner().getLevel();
+			case TARGET_LEVEL:
+				if (env.target == null)
+					return 1;
+				return env.target.getLevel();
+			case PLAYER_MAX_HP:
+				if (env.player == null)
+					return 1;
+				return env.player.getMaxHp();
+			case PLAYER_MAX_MP:
+				if (env.player == null)
+					return 1;
+				return env.player.getMaxMp();
 		}
 		return 0;
 	}
-
+	
 }

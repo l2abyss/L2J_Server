@@ -25,12 +25,12 @@ public final class PartySmallWindowDelete extends L2GameServerPacket
 {
 	private static final String _S__66_PARTYSMALLWINDOWDELETE = "[S] 51 PartySmallWindowDelete";
 	private L2PcInstance _member;
-
+	
 	public PartySmallWindowDelete(L2PcInstance member)
 	{
 		_member = member;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -38,7 +38,7 @@ public final class PartySmallWindowDelete extends L2GameServerPacket
 		writeD(_member.getObjectId());
 		writeS(_member.getName());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

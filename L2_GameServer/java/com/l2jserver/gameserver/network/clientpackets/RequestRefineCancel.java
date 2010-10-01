@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExVariationCancelResult;
@@ -33,13 +32,13 @@ public final class RequestRefineCancel extends L2GameClientPacket
 {
 	private static final String _C__D0_2E_REQUESTREFINECANCEL = "[C] D0:2E RequestRefineCancel";
 	private int _targetItemObjId;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_targetItemObjId = readD();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
 	 */
@@ -49,8 +48,8 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
-		L2ItemInstance targetItem = (L2ItemInstance)L2World.getInstance().findObject(_targetItemObjId);
+		
+		L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_targetItemObjId);
 		if (targetItem == null)
 		{
 			activeChar.sendPacket(new ExVariationCancelResult(0));
@@ -68,7 +67,7 @@ public final class RequestRefineCancel extends L2GameClientPacket
 			activeChar.sendPacket(new ExVariationCancelResult(0));
 			return;
 		}
-
+		
 		// get the price
 		int price = 0;
 		switch (targetItem.getItem().getCrystalType())
@@ -102,31 +101,36 @@ public final class RequestRefineCancel extends L2GameClientPacket
 			case L2Item.CRYSTAL_S84:
 				price = 920000;
 				break;
-			// any other item type is not augmentable
+				// any other item type is not augmentable
 			default:
 				activeChar.sendPacket(new ExVariationCancelResult(0));
 				return;
 		}
-
+		
 		// try to reduce the players adena
-		if (!activeChar.reduceAdena("RequestRefineCancel", price, null, true)) return;
-
+		if (!activeChar.reduceAdena("RequestRefineCancel", price, null, true))
+		{
+			activeChar.sendPacket(new ExVariationCancelResult(0));
+			activeChar.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
+			return;
+		}
+		
 		// unequip item
 		if (targetItem.isEquipped())
 			activeChar.disarmWeapons();
-
+		
 		// remove the augmentation
 		targetItem.removeAugmentation();
-
+		
 		// send ExVariationCancelResult
 		activeChar.sendPacket(new ExVariationCancelResult(1));
-
+		
 		// send inventory update
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addModifiedItem(targetItem);
 		activeChar.sendPacket(iu);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

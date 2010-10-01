@@ -15,6 +15,8 @@
 package com.l2jserver.gameserver.model;
 
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.util.Rnd;
@@ -26,6 +28,7 @@ import com.l2jserver.util.Rnd;
  */
 public final class ChanceCondition
 {
+	protected static final Logger _log = Logger.getLogger(ChanceCondition.class.getName());
 	public static final int EVT_HIT = 1;
 	public static final int EVT_CRIT = 2;
 	public static final int EVT_CAST = 4;
@@ -43,7 +46,7 @@ public final class ChanceCondition
 	public static final int EVT_ON_START = 16384;
 	public static final int EVT_ON_ACTION_TIME = 32768;
 	public static final int EVT_ON_EXIT = 65536;
-
+	
 	public static enum TriggerType
 	{
 		// You hit an enemy
@@ -80,53 +83,56 @@ public final class ChanceCondition
 		ON_ACTION_TIME(32768),
 		// Effect only - on exit
 		ON_EXIT(65536);
-
+		
 		private final int _mask;
-
+		
 		private TriggerType(int mask)
 		{
 			_mask = mask;
 		}
-
+		
 		public final boolean check(int event)
 		{
 			return (_mask & event) != 0; // Trigger (sub-)type contains event (sub-)type
 		}
 	}
-
+	
 	private final TriggerType _triggerType;
 	private final int _chance;
+	private final int _mindmg;
 	private final byte[] _elements;
 	private final boolean _pvpOnly;
-
-	private ChanceCondition(TriggerType trigger, int chance, byte[] elements, boolean pvpOnly)
+	
+	private ChanceCondition(TriggerType trigger, int chance, int mindmg, byte[] elements, boolean pvpOnly)
 	{
 		_triggerType = trigger;
 		_chance = chance;
+		_mindmg = mindmg;
 		_elements = elements;
 		_pvpOnly = pvpOnly;
 	}
-
+	
 	public static ChanceCondition parse(StatsSet set)
 	{
 		try
 		{
 			TriggerType trigger = set.getEnum("chanceType", TriggerType.class, null);
 			int chance = set.getInteger("activationChance", -1);
+			int mindmg = set.getInteger("activationMinDamage", -1);
 			String elements = set.getString("activationElements", null);
 			boolean pvpOnly = set.getBool("pvpChanceOnly", false);
-
+			
 			if (trigger != null)
-				return new ChanceCondition(trigger, chance, parseElements(elements), pvpOnly);
+				return new ChanceCondition(trigger, chance, mindmg, parseElements(elements), pvpOnly);
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 		return null;
 	}
-
-	public static ChanceCondition parse(String chanceType, int chance, String elements, boolean pvpOnly)
+	
+	public static ChanceCondition parse(String chanceType, int chance, int mindmg, String elements, boolean pvpOnly)
 	{
 		try
 		{
@@ -136,41 +142,46 @@ public final class ChanceCondition
 			TriggerType trigger = Enum.valueOf(TriggerType.class, chanceType);
 			
 			if (trigger != null)
-				return new ChanceCondition(trigger, chance, parseElements(elements), pvpOnly);
+				return new ChanceCondition(trigger, chance, mindmg, parseElements(elements), pvpOnly);
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 		
 		return null;
 	}
-
+	
 	public static final byte[] parseElements(String list)
 	{
 		if (list == null)
 			return null;
-
+		
 		String[] valuesSplit = list.split(",");
 		byte[] elements = new byte[valuesSplit.length];
 		for (int i = 0; i < valuesSplit.length; i++)
 			elements[i] = Byte.parseByte(valuesSplit[i]);
-
+		
 		Arrays.sort(elements);
 		return elements;
 	}
-
-	public boolean trigger(int event, byte element, boolean playable)
+	
+	public boolean trigger(int event, int damage, byte element, boolean playable)
 	{
 		if (_pvpOnly && !playable)
 			return false;
-
+		
 		if (_elements != null && Arrays.binarySearch(_elements, element) < 0)
 			return false;
-
+		
+		// if the skill has "activationMinDamage" setted to higher than -1(default)
+		// and if "activationMinDamage" is still higher than the recieved damage, the skill wont trigger
+		if (_mindmg > -1 && _mindmg > damage)
+			return false;
+		
 		return _triggerType.check(event) && (_chance < 0 || Rnd.get(100) < _chance);
 	}
-
+	
 	@Override
 	public String toString()
 	{

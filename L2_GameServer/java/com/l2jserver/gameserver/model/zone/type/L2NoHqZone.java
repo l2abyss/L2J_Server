@@ -29,26 +29,26 @@ public class L2NoHqZone extends L2ZoneType
 	{
 		super(id);
 	}
-
+	
 	@Override
 	protected void onEnter(final L2Character character)
 	{
 		if (character instanceof L2PcInstance)
 			character.setInsideZone(L2Character.ZONE_NOHQ, true);
 	}
-
+	
 	@Override
 	protected void onExit(final L2Character character)
 	{
 		if (character instanceof L2PcInstance)
 			character.setInsideZone(L2Character.ZONE_NOHQ, false);
 	}
-
+	
 	@Override
 	public void onDieInside(final L2Character character)
 	{
 	}
-
+	
 	@Override
 	public void onReviveInside(final L2Character character)
 	{

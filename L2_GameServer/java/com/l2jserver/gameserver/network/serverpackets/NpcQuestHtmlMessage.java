@@ -129,7 +129,7 @@ import com.l2jserver.gameserver.network.clientpackets.RequestBypassToServer;
  */
 public final class NpcQuestHtmlMessage extends L2GameServerPacket
 {
-
+	
 	private static Logger _log = Logger.getLogger(RequestBypassToServer.class.getName());
 	private int _npcObjId;
 	private String _html;
@@ -146,17 +146,17 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 		_npcObjId = npcObjId;
 		_questId = questId;
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
 		if (Config.BYPASS_VALIDATION)
 			buildBypassCache(getClient().getActiveChar());
 	}
-
+	
 	public void setHtml(String text)
 	{
-        if(text.length() > 8192)
+		if(text.length() > 8192)
 		{
 			_log.warning("Html is too long! this will crash the client!");
 			_html = "<html><body>Html was too long</body></html>";
@@ -164,52 +164,52 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 		}
 		_html = text; // html code must not exceed 8192 bytes
 	}
-
+	
 	public boolean setFile(String path)
 	{
-        String content = HtmCache.getInstance().getHtm(getClient().getActiveChar().getHtmlPrefix(), path);
-
+		String content = HtmCache.getInstance().getHtm(getClient().getActiveChar().getHtmlPrefix(), path);
+		
 		if (content == null)
 		{
 			setHtml("<html><body>My Text is missing:<br>"+path+"</body></html>");
 			_log.warning("missing html page "+path);
 			return false;
 		}
-
-        setHtml(content);
-        return true;
+		
+		setHtml(content);
+		return true;
 	}
-
+	
 	public void replace(String pattern, String value)
 	{
 		_html = _html.replaceAll(pattern, value);
 	}
-
+	
 	private final void buildBypassCache(L2PcInstance activeChar)
 	{
-        if (activeChar == null)
-            return;
-
-        activeChar.clearBypass();
+		if (activeChar == null)
+			return;
+		
+		activeChar.clearBypass();
 		int len = _html.length();
 		for(int i=0; i<len; i++)
 		{
 			int start = _html.indexOf("bypass -h", i);
 			int finish = _html.indexOf("\"", start);
-
+			
 			if(start < 0 || finish < 0)
 				break;
-
+			
 			start += 10;
 			i = finish;
 			int finish2 = _html.indexOf("$",start);
 			if (finish2 < finish && finish2 > 0)
-                activeChar.addBypass2(_html.substring(start, finish2).trim());
+				activeChar.addBypass2(_html.substring(start, finish2).trim());
 			else
-                activeChar.addBypass(_html.substring(start, finish).trim());
+				activeChar.addBypass(_html.substring(start, finish).trim());
 		}
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -219,7 +219,7 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 		writeS(_html);
 		writeD(_questId);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -228,5 +228,5 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 	{
 		return "[S] FE:8D NpcQuestHtmlMessage";
 	}
-
+	
 }

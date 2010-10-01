@@ -34,27 +34,27 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 	//private static Logger _log = Logger.getLogger(RequestExAskJoinMPCC.class.getName());
 	private static final String _C__D0_0D_REQUESTEXASKJOINMPCC = "[C] D0:0D RequestExAskJoinMPCC";
 	private String _name;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_name = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if(activeChar == null)
 			return;
-
+		
 		L2PcInstance player = L2World.getInstance().getPlayer(_name);
 		if(player == null)
 			return;
 		// invite yourself? ;)
 		if(activeChar.isInParty() && player.isInParty() && activeChar.getParty().equals(player.getParty()))
 			return;
-
+		
 		SystemMessage sm;
 		//activeChar is in a Party?
 		if (activeChar.isInParty())
@@ -88,7 +88,7 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 					{
 						activeChar.sendMessage("Your target has no Party.");
 					}
-
+					
 				}
 				else if (activeParty.isInCommandChannel() && !activeParty.getCommandChannel().getChannelLeader().equals(activeChar))
 				{
@@ -127,14 +127,14 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 				activeChar.sendPacket(sm);
 			}
 		}
-
-
+		
+		
 	}
-
+	
 	private void askJoinMPCC(L2PcInstance requestor, L2PcInstance target)
 	{
 		boolean hasRight = false;
-		if (requestor.getClan() != null && requestor.getClan().getLeaderId() == requestor.getObjectId() 
+		if (requestor.getClan() != null && requestor.getClan().getLeaderId() == requestor.getObjectId()
 				&& requestor.getClan().getLevel() >= 5) // Clanleader of lvl5 Clan or higher
 			hasRight = true;
 		else if (requestor.getInventory().getItemByItemId(8871) != null) // 8871 Strategy Guide. Should destroyed after sucessfull invite?
@@ -165,17 +165,17 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 			target.getParty().getLeader().sendPacket(sm);
 			target.getParty().getLeader().sendPacket(new ExAskJoinMPCC(requestor.getName()));
 			
-		    requestor.sendMessage("You invited "+target.getName()+" to your Command Channel.");
+			requestor.sendMessage("You invited "+target.getName()+" to your Command Channel.");
 		}
 		else
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
 			sm.addString(target.getName());
-		    requestor.sendPacket(sm);
-
+			requestor.sendPacket(sm);
+			
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -184,5 +184,5 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 	{
 		return _C__D0_0D_REQUESTEXASKJOINMPCC;
 	}
-
+	
 }

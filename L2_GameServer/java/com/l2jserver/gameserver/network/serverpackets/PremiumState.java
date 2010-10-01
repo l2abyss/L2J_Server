@@ -29,7 +29,7 @@ public class PremiumState extends L2GameServerPacket
 		_objectId = objectId;
 		_state = state;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */

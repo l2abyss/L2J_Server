@@ -27,14 +27,14 @@ public class L2SkillMount extends L2Skill
 {
 	private int _npcId;
 	private int _itemId;
-
+	
 	public L2SkillMount(StatsSet set)
 	{
 		super(set);
 		_npcId = set.getInteger("npcId", 0);
 		_itemId = set.getInteger("itemId", 0);
 	}
-
+	
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
@@ -45,7 +45,7 @@ public class L2SkillMount extends L2Skill
 			return;
 		
 		L2PcInstance activePlayer = (L2PcInstance)caster;
-
+		
 		if (!activePlayer.getFloodProtectors().getItemPetSummon().tryPerformAction("mount"))
 			return;
 		
@@ -70,7 +70,7 @@ public class L2SkillMount extends L2Skill
 			activePlayer.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
 			return;
 		}
-
+		
 		if (activePlayer.getPet() != null || activePlayer.isMounted())
 		{
 			activePlayer.sendPacket(new SystemMessage(SystemMessageId.YOU_ALREADY_HAVE_A_PET));

@@ -99,6 +99,18 @@ public final class CharacterCreate extends L2GameClientPacket
 			return;
 		}
 		
+		if(Config.FORBIDDEN_NAMES.length > 1)
+		{
+			for(String st : Config.FORBIDDEN_NAMES)
+			{
+				if(_name.toLowerCase().contains(st.toLowerCase()))
+				{
+					sendPacket(new CharCreateFail(CharCreateFail.REASON_INCORRECT_NAME));
+					return;
+				}
+			}
+		}
+		
 		// Last Verified: May 30, 2009 - Gracia Final
 		if (!Util.isAlphaNumeric(_name) || !isValidName(_name))
 		{
@@ -182,9 +194,9 @@ public final class CharacterCreate extends L2GameClientPacket
 		sendPacket(cco);
 		
 		initNewChar(getClient(), newChar);
-
-    	LogRecord record = new LogRecord(Level.INFO, "Created new character");
-    	record.setParameters(new Object[]{newChar, this.getClient()});
+		
+		LogRecord record = new LogRecord(Level.INFO, "Created new character");
+		record.setParameters(new Object[]{newChar, this.getClient()});
 		_logAccounting.log(record);
 	}
 	
@@ -223,10 +235,10 @@ public final class CharacterCreate extends L2GameClientPacket
 		
 		newChar.setXYZInvisible(template.spawnX, template.spawnY, template.spawnZ);
 		newChar.setTitle("");
-
+		
 		if (Config.ENABLE_VITALITY)
 			newChar.setVitalityPoints(Math.min(Config.STARTING_VITALITY_POINTS, PcStat.MAX_VITALITY_POINTS), true);
-
+		
 		if (Config.STARTING_LEVEL > 1)
 		{
 			newChar.getStat().addLevel((byte)(Config.STARTING_LEVEL - 1));
@@ -235,7 +247,7 @@ public final class CharacterCreate extends L2GameClientPacket
 		{
 			newChar.getStat().addSp(Config.STARTING_SP);
 		}
-
+		
 		L2ShortCut shortcut;
 		// add attack shortcut
 		shortcut = new L2ShortCut(0, 0, 3, 2, 0, 1);
@@ -286,11 +298,12 @@ public final class CharacterCreate extends L2GameClientPacket
 			if (Config.DEBUG)
 				_log.fine("Adding starter skill:" + skill.getId() + " / " + skill.getLevel());
 		}
-
+		
 		if (!Config.DISABLE_TUTORIAL)
 			startTutorialQuest(newChar);
-
-		newChar.logout();
+		
+		newChar.setOnlineStatus(true);
+		newChar.deleteMe();
 		
 		CharSelectionInfo cl = new CharSelectionInfo(client.getAccountName(), client.getSessionId().playOkID1);
 		client.getConnection().sendPacket(cl);

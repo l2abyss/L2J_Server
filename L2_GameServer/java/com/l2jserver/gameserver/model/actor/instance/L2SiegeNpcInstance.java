@@ -30,13 +30,13 @@ public class L2SiegeNpcInstance extends L2NpcInstance
 		super(objectID, template);
 		setInstanceType(InstanceType.L2SiegeNpcInstance);
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		showSiegeInfoWindow(player);
 	}
-
+	
 	/**
 	 * If siege is in progress shows the Busy HTML<BR>
 	 * else Shows the SiegeInfo window
@@ -56,12 +56,12 @@ public class L2SiegeNpcInstance extends L2NpcInstance
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
 	}
-
+	
 	private boolean validateCondition(L2PcInstance player)
 	{
 		if (getCastle().getSiege().getIsInProgress())
 			return false;       // Busy because of siege
-
+		
 		return true;
 	}
 }

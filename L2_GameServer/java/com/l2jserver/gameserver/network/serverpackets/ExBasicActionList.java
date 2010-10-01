@@ -23,49 +23,41 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class ExBasicActionList extends L2GameServerPacket
 {
 	private static final String _S__FE_5E_EXBASICACTIONLIST = "[S] FE:5F ExBasicActionList";
+	
 	private static final int[] _actionsOnTransform = { 2, 3, 4, 5, 6, 7, 8, 9, 11, 40, 50, 55, 56, 63, 64, 65 };
 	private static final int[] _defaultActionList;
 	
-	private int[] _actionIds;
-	
 	static
 	{
-		int count1 = 71; // 0 <-> (count1 - 1)
-		int count2 = 89; // 1000 <-> (1000 + count2 - 1) //Update by rocknow
-		int[] actionIds = new int[count1 + count2];
+		int count1 = 74; // 0 <-> (count1 - 1)
+		int count2 = 99; // 1000 <-> (1000 + count2 - 1) //Update by rocknow
+		int count3 = 16; // 5000 <-> (5000 + count3 - 1) //Update by rocknow
+		_defaultActionList = new int[count1 + count2 + count3];
+		int i;
 		
-		int index = 0;
-		for (int i = 0; i < count1; i++)
-		{
-			actionIds[index++] = i;
-		}
-		for (int i = 0; i < count2; i++)
-		{
-			actionIds[index++] = 1000 + i;
-		}
-		_defaultActionList = actionIds;
+		for (i = count1; i-- > 0;)
+			_defaultActionList[i] = i;
+		
+		for (i = count2; i-- > 0;)
+			_defaultActionList[count1 + i] = 1000 + i;
+		
+		for (i = count3; i-- > 0;)
+			_defaultActionList[count1 + count2 + i] = 5000 + i;
 	}
 	
-	public static int[] getDefaultActionList()
+	private final static ExBasicActionList STATIC_PACKET_TRANSFORMED = new ExBasicActionList(_actionsOnTransform);
+	private final static ExBasicActionList STATIC_PACKET = new ExBasicActionList(_defaultActionList);
+	
+	public final static ExBasicActionList getStaticPacket(final L2PcInstance player)
 	{
-		return _defaultActionList;
+		return player.isTransformed() ? STATIC_PACKET_TRANSFORMED : STATIC_PACKET;
 	}
 	
-	public static int[] getTransformActionList()
-	{
-		return _actionsOnTransform;
-	}
+	private final int[] _actionIds;
 	
-	public ExBasicActionList(L2PcInstance player)
+	private ExBasicActionList(final int[] actionIds)
 	{
-		if (player.isTransformed())
-		{
-			_actionIds = getTransformActionList();
-		}
-		else
-		{
-			_actionIds = getDefaultActionList();
-		}
+		_actionIds = actionIds;
 	}
 	
 	/**

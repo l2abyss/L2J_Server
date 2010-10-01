@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
@@ -90,7 +91,7 @@ public final class Say2 extends L2GameClientPacket
 		"MPCC_ROOM"
 	};
 	
-	private static final String[] WALKER_COMMAND_LIST = { "USESKILL", "USEITEM", "BUYITEM", "SELLITEM", "SAVEITEM", "LOADITEM", "MSG", "SET", "DELAY", "LABEL", "JMP", "CALL",
+	private static final String[] WALKER_COMMAND_LIST = { "USESKILL", "USEITEM", "BUYITEM", "SELLITEM", "SAVEITEM", "LOADITEM", "MSG", "DELAY", "LABEL", "JMP", "CALL",
 		"RETURN", "MOVETO", "NPCSEL", "NPCDLG", "DLGSEL", "CHARSTATUS", "POSOUTRANGE", "POSINRANGE", "GOHOME", "SAY", "EXIT", "PAUSE", "STRINDLG", "STRNOTINDLG", "CHANGEWAITTYPE",
 		"FORCEATTACK", "ISMEMBER", "REQUESTJOINPARTY", "REQUESTOUTPARTY", "QUITPARTY", "MEMBERSTATUS", "CHARBUFFS", "ITEMCOUNT", "FOLLOWTELEPORT" };
 	
@@ -111,7 +112,7 @@ public final class Say2 extends L2GameClientPacket
 	{
 		if (Config.DEBUG)
 			_log.info("Say2: Msg Type = '" + _type + "' Text = '" + _text + "'.");
-
+		
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
@@ -119,12 +120,16 @@ public final class Say2 extends L2GameClientPacket
 		if (_type < 0 || _type >= CHAT_NAMES.length)
 		{
 			_log.warning("Say2: Invalid type: " +_type + " Player : " + activeChar.getName() + " text: " + String.valueOf(_text));
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			activeChar.logout();
 			return;
 		}
 		
 		if (_text.isEmpty())
 		{
 			_log.warning(activeChar.getName() + ": sending empty text. Possible packet hack!");
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			activeChar.logout();
 			return;
 		}
 		
@@ -141,13 +146,13 @@ public final class Say2 extends L2GameClientPacket
 			Util.handleIllegalPlayerAction(activeChar, "Client Emulator Detect: Player " + activeChar.getName() + " using l2walker.", Config.DEFAULT_PUNISH);
 			return;
 		}
-
+		
 		if (activeChar.isCursedWeaponEquipped() && (_type == TRADE || _type == SHOUT))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.SHOUT_AND_TRADE_CHAT_CANNOT_BE_USED_WHILE_POSSESSING_CURSED_WEAPON));
 			return;
 		}
-
+		
 		if (activeChar.isChatBanned())
 		{
 			if (_type == ALL || _type == SHOUT || _type == TRADE || _type == HERO_VOICE)
@@ -156,7 +161,7 @@ public final class Say2 extends L2GameClientPacket
 				return;
 			}
 		}
-
+		
 		if (activeChar.isInJail() && Config.JAIL_DISABLE_CHAT)
 		{
 			if (_type == TELL || _type == SHOUT || _type == TRADE || _type == HERO_VOICE)
@@ -165,24 +170,24 @@ public final class Say2 extends L2GameClientPacket
 				return;
 			}
 		}
-
+		
 		if (_type == PETITION_PLAYER && activeChar.isGM())
 			_type = PETITION_GM;
-
+		
 		if (Config.LOG_CHAT)
 		{
 			LogRecord record = new LogRecord(Level.INFO, _text);
 			record.setLoggerName("chat");
-
+			
 			if (_type == TELL)
 				record.setParameters(new Object[]{CHAT_NAMES[_type], "[" + activeChar.getName() + " to "+_target+"]"});
 			else
 				record.setParameters(new Object[]{CHAT_NAMES[_type], "[" + activeChar.getName() + "]"});
-
+			
 			_logChat.log(record);
 		}
 		
-
+		
 		if (_text.indexOf(8) >= 0)
 			if (!parseAndPublishItem(activeChar))
 				return;
@@ -190,7 +195,7 @@ public final class Say2 extends L2GameClientPacket
 		// Say Filter implementation
 		if (Config.USE_SAY_FILTER)
 			checkText();
-
+		
 		IChatHandler handler = ChatHandler.getInstance().getChatHandler(_type);
 		if (handler != null)
 			handler.handleChat(_type, activeChar, _target, _text);
@@ -253,7 +258,7 @@ public final class Say2 extends L2GameClientPacket
 		}
 		return true;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

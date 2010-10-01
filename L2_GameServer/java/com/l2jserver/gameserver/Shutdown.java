@@ -25,6 +25,7 @@ import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
+import com.l2jserver.gameserver.instancemanager.ItemAuctionManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
@@ -32,9 +33,11 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
+import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.gameserverpackets.ServerStatus;
+import com.l2jserver.gameserver.network.serverpackets.ServerClose;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
 
@@ -214,7 +217,7 @@ public class Shutdown extends Thread
 			{
 				_log.log(Level.WARNING, "Error saving offline shops.",t);
 			}
-				
+			
 			try
 			{
 				disconnectAllCharacters();
@@ -505,7 +508,7 @@ public class Shutdown extends Thread
 			case GM_RESTART:
 				_log.info("GM restart received. Restarting NOW!");
 				break;
-			
+				
 		}
 		
 		/*if (Config.ACTIVATE_POSITION_RECORDER)
@@ -527,6 +530,7 @@ public class Shutdown extends Thread
 		_log.info("TradeController saving data.. This action may take some minutes! Please wait until completed!");
 		TradeController.getInstance().dataCountStore();
 		_log.info("TradeController: All count Item Saved");
+		ItemAuctionManager.getInstance().shutdown();
 		Olympiad.getInstance().saveOlympiadStatus();
 		_log.info("Olympiad System: Data saved!!");
 		Hero.getInstance().shutdown();
@@ -573,13 +577,23 @@ public class Shutdown extends Thread
 		{
 			for (L2PcInstance player : pls)
 			{
+				if (player == null)
+					continue;
 				//Logout Character
 				try
 				{
-					player.logout(false);
+					L2GameClient client = player.getClient();
+					if (client != null && !client.isDetached())
+					{
+						client.close(ServerClose.STATIC_PACKET);
+						client.setActiveChar(null);
+						player.setClient(null);
+					}
+					player.deleteMe();
 				}
 				catch (Throwable t)
 				{
+					_log.log(Level.WARNING, "Failed logour char "+player, t);
 				}
 			}
 		}

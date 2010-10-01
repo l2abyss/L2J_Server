@@ -19,6 +19,7 @@ import java.util.concurrent.Future;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -35,10 +36,10 @@ public class L2DamageZone extends L2ZoneType
 	private int _damageHPPerSec;
 	private int _damageMPPerSec;
 	private Future<?> _task;
-
+	
 	private int _castleId;
 	private Castle _castle;
-
+	
 	public L2DamageZone(int id)
 	{
 		super(id);
@@ -46,10 +47,12 @@ public class L2DamageZone extends L2ZoneType
 		// Setup default damage
 		_damageHPPerSec = 200;
 		_damageMPPerSec = 0;
-
+		
 		// no castle by default
 		_castleId = 0;
 		_castle = null;
+		
+		setTargetType(InstanceType.L2Playable); // default only playabale
 	}
 	
 	@Override
@@ -120,15 +123,15 @@ public class L2DamageZone extends L2ZoneType
 			_task = null;
 		}
 	}
-
+	
 	private Castle getCastle()
 	{
 		if (_castleId > 0 &&_castle == null)
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
-
+		
 		return _castle;
 	}
-
+	
 	class ApplyDamage implements Runnable
 	{
 		private final L2DamageZone _dmgZone;
@@ -143,7 +146,7 @@ public class L2DamageZone extends L2ZoneType
 		public void run()
 		{
 			boolean siege = false;
-
+			
 			if (_castle != null)
 			{
 				siege = _castle.getSiege().getIsInProgress();
@@ -154,7 +157,7 @@ public class L2DamageZone extends L2ZoneType
 					return;
 				}
 			}
-
+			
 			for (L2Character temp : _dmgZone.getCharacterList())
 			{
 				if (temp != null && !temp.isDead())
@@ -166,7 +169,7 @@ public class L2DamageZone extends L2ZoneType
 						if (player != null && player.isInSiege() && player.getSiegeState() == 2)
 							continue;
 					}
-
+					
 					if (getHPDamagePerSecond() != 0)
 						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond(), null, null);
 					if (getMPDamagePerSecond() != 0)

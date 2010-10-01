@@ -42,18 +42,18 @@ public final class L2Armor extends L2Item
 	private L2Skill _enchant4Skill = null; // skill that activates when armor is enchanted +4
 	// private final String[] _skill;
 	private SkillHolder[] _skillHolder;
-
-    /**
-     * Constructor for Armor.<BR><BR>
-     * <U><I>Variables filled :</I></U><BR>
-     * <LI>_avoidModifier</LI>
-     * <LI>_pDef & _mDef</LI>
-     * <LI>_mpBonus & _hpBonus</LI>
-     * <LI>enchant4Skill</LI>
-     * @param type : L2ArmorType designating the type of armor
-     * @param set : StatsSet designating the set of couples (key,value) caracterizing the armor
-     * @see L2Item constructor
-     */
+	
+	/**
+	 * Constructor for Armor.<BR><BR>
+	 * <U><I>Variables filled :</I></U><BR>
+	 * <LI>_avoidModifier</LI>
+	 * <LI>_pDef & _mDef</LI>
+	 * <LI>_mpBonus & _hpBonus</LI>
+	 * <LI>enchant4Skill</LI>
+	 * @param type : L2ArmorType designating the type of armor
+	 * @param set : StatsSet designating the set of couples (key,value) caracterizing the armor
+	 * @see L2Item constructor
+	 */
 	public L2Armor(L2ArmorType type, StatsSet set)
 	{
 		super(type, set);
@@ -62,7 +62,7 @@ public final class L2Armor extends L2Item
 		_mDef          = set.getInteger("m_def");
 		_mpBonus       = set.getInteger("mp_bonus", 0);
 		_hpBonus       = set.getInteger("hp_bonus", 0);
-
+		
 		String[] skill = set.getString("enchant4_skill").split("-");
 		if (skill != null && skill.length == 2)
 		{
@@ -71,7 +71,7 @@ public final class L2Armor extends L2Item
 			if (skill_Id > 0 && skillLvl > 0)
 				_enchant4Skill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
 		}
-
+		
 		String[] skills = set.getString("skill").split(";");
 		_skillHolder = new SkillHolder[skills.length];
 		byte iterator = 0;
@@ -105,7 +105,7 @@ public final class L2Armor extends L2Item
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns the type of the armor.
 	 * @return L2ArmorType
@@ -115,7 +115,7 @@ public final class L2Armor extends L2Item
 	{
 		return (L2ArmorType)super._type;
 	}
-
+	
 	/**
 	 * Returns the ID of the item after applying the mask.
 	 * @return int : ID of the item
@@ -125,7 +125,7 @@ public final class L2Armor extends L2Item
 	{
 		return getItemType().mask();
 	}
-
+	
 	/**
 	 * Returns the magical defense of the armor
 	 * @return int : value of the magic defense
@@ -134,7 +134,7 @@ public final class L2Armor extends L2Item
 	{
 		return _mDef;
 	}
-
+	
 	/**
 	 * Returns the physical defense of the armor
 	 * @return int : value of the physical defense
@@ -143,7 +143,7 @@ public final class L2Armor extends L2Item
 	{
 		return _pDef;
 	}
-
+	
 	/**
 	 * Returns avoid modifier given by the armor
 	 * @return int : avoid modifier
@@ -152,7 +152,7 @@ public final class L2Armor extends L2Item
 	{
 		return _avoidModifier;
 	}
-
+	
 	/**
 	 * Returns magical bonus given by the armor
 	 * @return int : value of the magical bonus
@@ -161,7 +161,7 @@ public final class L2Armor extends L2Item
 	{
 		return _mpBonus;
 	}
-
+	
 	/**
 	 * Returns physical bonus given by the armor
 	 * @return int : value of the physical bonus
@@ -172,14 +172,14 @@ public final class L2Armor extends L2Item
 	}
 	
 	/**
-	* Returns skill that player get when has equiped armor +4  or more
-	* @return
-	*/
+	 * Returns skill that player get when has equiped armor +4  or more
+	 * @return
+	 */
 	public L2Skill getEnchant4Skill()
 	{
 		return _enchant4Skill;
 	}
-
+	
 	/**
 	 * Returns passive skill linked to that armor
 	 * @return
@@ -188,7 +188,7 @@ public final class L2Armor extends L2Item
 	{
 		return _skillHolder;
 	}
-
+	
 	/**
 	 * Returns array of Func objects containing the list of functions used by the armor
 	 * @param instance : L2ItemInstance pointing out the armor
@@ -197,25 +197,25 @@ public final class L2Armor extends L2Item
 	 */
 	@Override
 	public Func[] getStatFuncs(L2ItemInstance instance, L2Character player)
-    {
+	{
 		if (_funcTemplates == null || _funcTemplates.length == 0)
 			return _emptyFunctionSet;
 		
-    	ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
-    	
-    	Env env = new Env();
-    	env.player = player;
-    	env.item = instance;
-    	
-    	Func f;
-    	
-    	for (FuncTemplate t : _funcTemplates) {
-		    	
-		    	f = t.getFunc(env, instance);
-		    	if (f != null)
-			    	funcs.add(f);
-    	}
-    	
-    	return funcs.toArray(new Func[funcs.size()]);
-    }
+		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
+		
+		Env env = new Env();
+		env.player = player;
+		env.item = instance;
+		
+		Func f;
+		
+		for (FuncTemplate t : _funcTemplates) {
+			
+			f = t.getFunc(env, instance);
+			if (f != null)
+				funcs.add(f);
+		}
+		
+		return funcs.toArray(new Func[funcs.size()]);
+	}
 }

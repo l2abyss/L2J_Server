@@ -16,8 +16,6 @@ package com.l2jserver.gameserver.taskmanager.tasks;
 
 import java.util.Calendar;
 import java.util.Map;
-
-
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -26,29 +24,29 @@ import com.l2jserver.gameserver.instancemanager.RaidBossPointsManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.taskmanager.Task;
 import com.l2jserver.gameserver.taskmanager.TaskManager;
-import com.l2jserver.gameserver.taskmanager.TaskTypes;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
+import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
 public class TaskRaidPointsReset extends Task
 {
 	private static final Logger _log	= Logger.getLogger(TaskRaidPointsReset.class.getName());
 	public static final	String	NAME	= "raid_points_reset";
-
+	
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
-
+	
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
 		Calendar cal = Calendar.getInstance();
-
+		
 		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
 		{
 			// reward clan reputation points
-			Map<Integer, Integer> rankList = RaidBossPointsManager.getRankList();
+			Map<Integer, Integer> rankList = RaidBossPointsManager.getInstance().getRankList();
 			for (L2Clan c : ClanTable.getInstance().getClans())
 			{
 				for (Map.Entry<Integer, Integer> entry : rankList.entrySet())
@@ -99,12 +97,12 @@ public class TaskRaidPointsReset extends Task
 					}
 				}
 			}
-
-			RaidBossPointsManager.cleanUp();
+			
+			RaidBossPointsManager.getInstance().cleanUp();
 			_log.info("Raid Points Reset Global Task: launched.");
 		}
 	}
-
+	
 	@Override
 	public void initializate()
 	{

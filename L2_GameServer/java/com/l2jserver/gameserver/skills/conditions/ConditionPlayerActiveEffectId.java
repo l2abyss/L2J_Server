@@ -58,7 +58,7 @@ public class ConditionPlayerActiveEffectId extends Condition
 		final L2Effect e = env.player.getFirstEffect(_effectId);
 		if (e != null && (_effectLvl == -1 || _effectLvl <= e.getSkill().getLevel()))
 			return true;
-
+		
 		return false;
 	}
 }

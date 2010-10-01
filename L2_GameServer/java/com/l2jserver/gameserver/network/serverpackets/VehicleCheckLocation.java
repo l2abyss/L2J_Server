@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 public class VehicleCheckLocation extends L2GameServerPacket
 {
 	private L2Character _boat;
-    
+	
 	/**
 	 * @param instance
 	 */
@@ -31,7 +31,7 @@ public class VehicleCheckLocation extends L2GameServerPacket
 	{
 		_boat = boat;
 	}
-
+	
 	@Override
 	protected
 	void writeImpl()
@@ -43,7 +43,7 @@ public class VehicleCheckLocation extends L2GameServerPacket
 		writeD(_boat.getZ());
 		writeD(_boat.getHeading());
 	}
-
+	
 	@Override
 	public String getType()
 	{

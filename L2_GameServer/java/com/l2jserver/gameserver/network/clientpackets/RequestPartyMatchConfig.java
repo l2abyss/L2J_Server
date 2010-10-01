@@ -34,10 +34,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestPartyMatchConfig extends L2GameClientPacket
 {
 	private static final String _C__7F_REQUESTPARTYMATCHCONFIG = "[C] 7F RequestPartyMatchConfig";
-
+	
 	private int _auto, _loc, _lvl;
-
-
+	
+	
 	@Override
 	protected void readImpl()
 	{
@@ -45,15 +45,15 @@ public final class RequestPartyMatchConfig extends L2GameClientPacket
 		_loc = readD();		// Location
 		_lvl = readD();		// my level
 	}
-
- 	@Override
- 	protected void runImpl()
- 	{
+	
+	@Override
+	protected void runImpl()
+	{
 		L2PcInstance _activeChar = getClient().getActiveChar();
- 
+		
 		if (_activeChar == null)
 			return;
-
+		
 		if( !_activeChar.isInPartyMatchRoom() && _activeChar.getParty() != null && _activeChar.getParty().getLeader() != _activeChar)
 		{
 			_activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_VIEW_PARTY_ROOMS));
@@ -74,7 +74,7 @@ public final class RequestPartyMatchConfig extends L2GameClientPacket
 			
 			_activeChar.sendPacket(new PartyMatchDetail(_activeChar,_room));
 			_activeChar.sendPacket(new ExPartyRoomMember(_activeChar, _room, 2));
-
+			
 			_activeChar.setPartyRoom(_room.getId());
 			//_activeChar.setPartyMatching(1);
 			_activeChar.broadcastUserInfo();
@@ -83,14 +83,14 @@ public final class RequestPartyMatchConfig extends L2GameClientPacket
 		{
 			// Add to waiting list
 			PartyMatchWaitingList.getInstance().addPlayer(_activeChar);
-
+			
 			// Send Room list
 			ListPartyWating matchList = new ListPartyWating(_activeChar,_auto,_loc,_lvl);
 			
 			_activeChar.sendPacket(matchList);
 		}
- 	}
-
+	}
+	
 	@Override
 	public String getType()
 	{

@@ -18,7 +18,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class SpecialCamera extends L2GameServerPacket
 {
 	private static final String _S__C7_SPECIALCAMERA = "[S] d6 SpecialCamera";
-
+	
 	private final int _id;
 	private final int _dist;
 	private final int _yaw;
@@ -29,7 +29,7 @@ public class SpecialCamera extends L2GameServerPacket
 	private final int _rise;
 	private final int _widescreen;
 	private final int _unknown;
-
+	
 	public SpecialCamera(int id, int dist, int yaw, int pitch, int time, int duration)
 	{
 		_id = id;
@@ -43,7 +43,7 @@ public class SpecialCamera extends L2GameServerPacket
 		_widescreen = 0;
 		_unknown = 0;
 	}
-
+	
 	public SpecialCamera(int id, int dist, int yaw, int pitch, int time, int duration, int turn, int rise, int widescreen, int unk)
 	{
 		_id = id;
@@ -57,7 +57,7 @@ public class SpecialCamera extends L2GameServerPacket
 		_widescreen = widescreen;
 		_unknown = unk;
 	}
-
+	
 	@Override
 	public void writeImpl()
 	{
@@ -73,7 +73,7 @@ public class SpecialCamera extends L2GameServerPacket
 		writeD(_widescreen);
 		writeD(_unknown);
 	}
-
+	
 	@Override
 	public String getType()
 	{

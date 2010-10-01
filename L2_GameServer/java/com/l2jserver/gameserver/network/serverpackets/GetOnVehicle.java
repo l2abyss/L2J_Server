@@ -25,7 +25,7 @@ public class GetOnVehicle extends L2GameServerPacket
 	private int _charObjId;
 	private int _boatObjId;
 	private Point3D _pos;
-
+	
 	/**
 	 * @param activeChar
 	 * @param boat
@@ -39,7 +39,7 @@ public class GetOnVehicle extends L2GameServerPacket
 		_boatObjId = boatObjId;
 		_pos = pos;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -49,12 +49,12 @@ public class GetOnVehicle extends L2GameServerPacket
 		writeC(0x6e);
 		writeD(_charObjId);
 		writeD(_boatObjId);
-        writeD(_pos.getX());
-        writeD(_pos.getY());
-        writeD(_pos.getZ());
-
+		writeD(_pos.getX());
+		writeD(_pos.getY());
+		writeD(_pos.getZ());
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

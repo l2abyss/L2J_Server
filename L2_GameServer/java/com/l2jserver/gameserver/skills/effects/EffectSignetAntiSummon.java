@@ -71,6 +71,8 @@ public class EffectSignetAntiSummon extends L2Effect
 			return true; // do nothing first time
 		int mpConsume = getSkill().getMpConsume();
 		
+		L2PcInstance caster = (L2PcInstance) getEffector();
+		
 		for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(getSkill().getSkillRadius()))
 		{
 			if (cha == null)
@@ -78,25 +80,27 @@ public class EffectSignetAntiSummon extends L2Effect
 			
 			if (cha instanceof L2Playable)
 			{
-				L2PcInstance owner = null;
-				
-				if (cha instanceof L2Summon)
-					owner = ((L2Summon) cha).getOwner();
-				else
-					owner = (L2PcInstance) cha;
-				
-				if (owner != null && owner.getPet() != null)
+				if (caster.canAttackCharacter(cha))
 				{
-					if (mpConsume > getEffector().getCurrentMp())
-					{
-						getEffector().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
-						return false;
-					}
+					L2PcInstance owner = null;
+					if (cha instanceof L2Summon)
+						owner = ((L2Summon) cha).getOwner();
 					else
-						getEffector().reduceCurrentMp(mpConsume);
+						owner = (L2PcInstance) cha;
 					
-					owner.getPet().unSummon(owner);
-					owner.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, getEffector());
+					if (owner != null && owner.getPet() != null)
+					{
+						if (mpConsume > getEffector().getCurrentMp())
+						{
+							getEffector().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
+							return false;
+						}
+						else
+							getEffector().reduceCurrentMp(mpConsume);
+						
+						owner.getPet().unSummon(owner);
+						owner.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, getEffector());
+					}
 				}
 			}
 		}

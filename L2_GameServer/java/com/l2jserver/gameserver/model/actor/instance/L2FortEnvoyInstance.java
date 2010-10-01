@@ -29,38 +29,38 @@ public class L2FortEnvoyInstance extends L2Npc
 		super(objectID, template);
 		setInstanceType(InstanceType.L2FortEnvoyInstance);
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-
+		
 		String filename;
-
+		
 		if (!player.isClanLeader() || player.getClan() == null || getFort().getFortId() != player.getClan().getHasFort())
 			filename = "data/html/fortress/envoy-noclan.htm";
 		else if (getFort().getFortState() == 0)
 			filename = "data/html/fortress/envoy.htm";
-		else 
+		else
 			filename = "data/html/fortress/envoy-no.htm";
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%castleName%", String.valueOf(CastleManager.getInstance().getCastleById(getFort().getCastleIdFromEnvoy(getNpcId())).getName()));
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
-
+		
 		String par = "";
 		if (st.countTokens() >= 1)
 			par = st.nextToken();
-
+		
 		if (actualCommand.equalsIgnoreCase("select"))
 		{
 			int val = 0;
@@ -70,7 +70,7 @@ public class L2FortEnvoyInstance extends L2Npc
 			}
 			catch (IndexOutOfBoundsException ioobe){}
 			catch (NumberFormatException nfe){}
-
+			
 			int castleId = 0;
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			if (val == 2)

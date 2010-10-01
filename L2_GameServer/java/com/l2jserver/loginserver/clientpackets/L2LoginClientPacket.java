@@ -17,7 +17,6 @@ package com.l2jserver.loginserver.clientpackets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import org.mmocore.network.ReceivablePacket;
 
 import com.l2jserver.loginserver.L2LoginClient;
@@ -29,7 +28,7 @@ import com.l2jserver.loginserver.L2LoginClient;
 public abstract class L2LoginClientPacket extends ReceivablePacket<L2LoginClient>
 {
 	private static Logger _log = Logger.getLogger(L2LoginClientPacket.class.getName());
-
+	
 	/**
 	 * @see com.l2jserver.mmocore.network.ReceivablePacket#read()
 	 */
@@ -46,6 +45,6 @@ public abstract class L2LoginClientPacket extends ReceivablePacket<L2LoginClient
 			return false;
 		}
 	}
-
+	
 	protected abstract boolean readImpl();
 }

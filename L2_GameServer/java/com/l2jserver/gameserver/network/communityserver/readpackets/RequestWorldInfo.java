@@ -126,7 +126,7 @@ public final class RequestWorldInfo extends BaseReadPacket
 				{
 					L2DatabaseFactory.close(con);
 				}
-
+				
 				// Castles data
 				j++;
 				_cst.sendPacket(new InitWorldInfo(null, null, InitWorldInfo.TYPE_CASTLE, j), false);

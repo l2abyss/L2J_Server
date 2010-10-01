@@ -31,7 +31,7 @@ public class ExReplyDominionInfo extends L2GameServerPacket
 	 */
 	// private static Logger _log = Logger.getLogger(ExReplyDominionInfo.class.getName());
 	private int _warTime = (int) (TerritoryWarManager.getInstance().getTWStartTimeInMillis() / 1000);
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
@@ -53,7 +53,7 @@ public class ExReplyDominionInfo extends L2GameServerPacket
 			writeD(_warTime);
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

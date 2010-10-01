@@ -83,7 +83,11 @@ public final class FloodProtectors
 	 * Character Select protector
 	 */
 	private final FloodProtectorAction _characterSelect;
-
+	/**
+	 * Item Auction
+	 */
+	private final FloodProtectorAction _itemAuction;
+	
 	/**
 	 * Creates new instance of FloodProtectors.
 	 * 
@@ -108,6 +112,7 @@ public final class FloodProtectors
 		_manor = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_MANOR);
 		_sendMail = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_SENDMAIL);
 		_characterSelect = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_CHARACTER_SELECT);
+		_itemAuction = new FloodProtectorAction(client, Config.FLOOD_PROTECTOR_ITEM_AUCTION);
 	}
 	
 	/**
@@ -199,7 +204,7 @@ public final class FloodProtectors
 	{
 		return _serverBypass;
 	}
-
+	
 	/**
 	 * Returns {@link #_multisell}.
 	 * 
@@ -209,7 +214,7 @@ public final class FloodProtectors
 	{
 		return _multiSell;
 	}
-
+	
 	/**
 	 * Returns {@link #_transaction}.
 	 * 
@@ -219,7 +224,7 @@ public final class FloodProtectors
 	{
 		return _transaction;
 	}
-
+	
 	/**
 	 * Returns {@link #_manufacture}.
 	 * 
@@ -229,7 +234,7 @@ public final class FloodProtectors
 	{
 		return _manufacture;
 	}
-
+	
 	/**
 	 * Returns {@link #_manor}.
 	 * 
@@ -239,7 +244,7 @@ public final class FloodProtectors
 	{
 		return _manor;
 	}
-
+	
 	/**
 	 * Returns {@link #_sendMail}.
 	 * 
@@ -249,7 +254,7 @@ public final class FloodProtectors
 	{
 		return _sendMail;
 	}
-
+	
 	/**
 	 * Returns {@link #_characterSelect}.
 	 * 
@@ -258,5 +263,15 @@ public final class FloodProtectors
 	public FloodProtectorAction getCharacterSelect()
 	{
 		return _characterSelect;
+	}
+	
+	/**
+	 * Returns {@link #_itemAuction}.
+	 * 
+	 * @return {@link #_itemAuction}
+	 */
+	public FloodProtectorAction getItemAuction()
+	{
+		return _itemAuction;
 	}
 }

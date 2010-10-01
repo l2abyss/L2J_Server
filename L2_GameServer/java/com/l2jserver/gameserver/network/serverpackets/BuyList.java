@@ -15,12 +15,10 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.L2TradeList.L2TradeItem;
-import com.l2jserver.gameserver.templates.item.L2Item;
 
 
 /**
@@ -64,80 +62,62 @@ public final class BuyList extends L2GameServerPacket
 	private Collection<L2TradeItem> _list;
 	private long _money;
 	private double _taxRate = 0;
-
-	public BuyList(L2TradeList list, long currentMoney)
+	
+	public BuyList(L2TradeList list, long currentMoney, double taxRate)
 	{
 		_listId = list.getListId();
 		_list = list.getItems();
 		_money = currentMoney;
-	}
-
-	public BuyList(L2TradeList list, long currentMoney, double taxRate)
-	{
-		_listId = list.getListId();
-        _list = list.getItems();
-		_money = currentMoney;
 		_taxRate = taxRate;
 	}
-
-	public BuyList(List<L2TradeItem> lst, int listId, long currentMoney)
-	{
-		_listId = listId;
-		_list = lst;
-		_money = currentMoney;
-	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0x07);
+		writeC(0xFE);
+		writeH(0xB7);
+		writeD(0x00);
 		writeQ(_money);		// current money
 		writeD(_listId);
-
+		
 		writeH(_list.size());
-
+		
 		for (L2TradeItem item : _list)
 		{
 			if (item.getCurrentCount() > 0 || !item.hasLimitedStock())
-            {
-				writeH(item.getTemplate().getType1()); // item type1
-				writeD(0x00); //objectId
+			{
 				writeD(item.getItemId());
-				writeQ(item.getCurrentCount() <0 ? 0 : item.getCurrentCount());
-				writeH(item.getTemplate().getType2());	// item type2
-				writeH(0x00);	// ?
-
-				if (item.getTemplate().getType1() != L2Item.TYPE1_ITEM_QUESTITEM_ADENA)
+				writeD(item.getItemId());
+				writeD(0);
+				writeQ(item.getCurrentCount() < 0 ? 0 : item.getCurrentCount());
+				writeH(item.getTemplate().getType2());
+				writeH(item.getTemplate().getType1());	// Custom Type 1
+				writeH(0x00);	// isEquipped
+				writeD(item.getTemplate().getBodyPart());	// Body Part
+				writeH(0x00);	// Enchant
+				writeH(0x00);	// Custom Type
+				writeD(0x00);	// Augment
+				writeD(-1);		// Mana
+				writeD(-9999);	// Time
+				writeH(0x00);	// Element Type
+				writeH(0x00);	// Element Power
+				for (byte i = 0; i < 6; i++)
 				{
-					writeD(item.getTemplate().getBodyPart());
-					writeH(0x00); // item enchant level
-					writeH(0x00); // ?
 					writeH(0x00);
 				}
+				// Enchant Effects
+				writeH(0x00);
+				writeH(0x00);
+				writeH(0x00);
+				
+				if (item.getItemId() >= 3960 && item.getItemId() <= 4026)// Config.RATE_SIEGE_GUARDS_PRICE-//'
+					writeQ((long) (item.getPrice() * Config.RATE_SIEGE_GUARDS_PRICE * (1 + _taxRate)));
 				else
-				{
-					writeD(0x00);
-					writeH(0x00);
-					writeH(0x00);
-					writeH(0x00);
-				}
-
-	            if (item.getItemId() >= 3960 && item.getItemId() <= 4026)//Config.RATE_SIEGE_GUARDS_PRICE-//'
-	                writeQ((long) (item.getPrice() * Config.RATE_SIEGE_GUARDS_PRICE * (1 + _taxRate)));
-	            else
-	                writeQ((long) (item.getPrice() * (1 + _taxRate)));
-                
-                // T1
-				for (byte i = 0; i < 8; i++)
-					writeH(0x00);
-
-				writeH(0x00); // Enchant effect 1
-				writeH(0x00); // Enchant effect 2
-				writeH(0x00); // Enchant effect 3 
+					writeQ((long) (item.getPrice() * (1 + _taxRate)));
 			}
 		}
 	}
-    
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

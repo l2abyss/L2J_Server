@@ -24,7 +24,7 @@ public class VehicleDeparture extends L2GameServerPacket
 {
 	// Store parameters because they can be changed during broadcast
 	private final int _objId, _x, _y, _z, _moveSpeed, _rotationSpeed;
-
+	
 	/**
 	 * @param _boat
 	 */
@@ -37,7 +37,7 @@ public class VehicleDeparture extends L2GameServerPacket
 		_moveSpeed = (int)boat.getStat().getMoveSpeed();
 		_rotationSpeed = boat.getStat().getRotationSpeed();
 	}
-
+	
 	@Override
 	protected
 	void writeImpl()
@@ -49,9 +49,9 @@ public class VehicleDeparture extends L2GameServerPacket
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-
+		
 	}
-
+	
 	@Override
 	public String getType()
 	{

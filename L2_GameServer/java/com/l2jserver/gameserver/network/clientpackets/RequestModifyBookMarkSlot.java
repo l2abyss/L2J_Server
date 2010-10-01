@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class RequestModifyBookMarkSlot extends L2GameClientPacket
 {
 	private static final String _C__51_REQUESTMODIFYBOOKMARKSLOT = "[C] 51 RequestModifyBookMarkSlot";
-
+	
 	private int id,icon;
 	private String name,tag;
 	
@@ -45,8 +45,8 @@ public final class RequestModifyBookMarkSlot extends L2GameClientPacket
 			return;
 		activeChar.teleportBookmarkModify(id, icon, tag, name);
 	}
-
-
+	
+	
 	@Override
 	public String getType()
 	{

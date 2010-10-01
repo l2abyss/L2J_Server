@@ -24,16 +24,16 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class SnoopQuit extends L2GameClientPacket
 {
 	private static final String _C__AB_SNOOPQUIT = "[C] AB SnoopQuit";
-
+	
 	private int _snoopID;
-
-
+	
+	
 	@Override
 	protected void readImpl()
 	{
 		_snoopID = readD();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -48,12 +48,12 @@ public final class SnoopQuit extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		player.removeSnooper(activeChar);
 		activeChar.removeSnooped(player);
-
+		
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -64,5 +64,5 @@ public final class SnoopQuit extends L2GameClientPacket
 	{
 		return _C__AB_SNOOPQUIT;
 	}
-
+	
 }

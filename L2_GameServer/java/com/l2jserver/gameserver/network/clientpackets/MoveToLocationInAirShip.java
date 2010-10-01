@@ -30,13 +30,13 @@ import com.l2jserver.util.Point3D;
 public class MoveToLocationInAirShip extends L2GameClientPacket
 {
 	private static final String _C__D0_20_MOVETOLOCATIONINAIRSHIP = "[C] D0:20 MoveToLocationInAirShip";
-
+	
 	private int _shipId;
 	private final Point3D _pos = new Point3D(0,0,0);
 	private final Point3D _origin_pos = new Point3D(0,0,0);
-
+	
 	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -51,15 +51,15 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 		_z = readD();
 		_origin_pos.setXYZ(_x, _y, _z);
 	}
-
-
+	
+	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (activeChar.isAttackingNow()
 				&& activeChar.getActiveWeaponItem() != null
 				&& (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
@@ -67,31 +67,31 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		if (activeChar.isSitting() || activeChar.isMovementDisabled())
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		if (!activeChar.isInAirShip())
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		final L2AirShipInstance airShip = activeChar.getAirShip();
 		if (airShip.getObjectId() != _shipId)
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		activeChar.setVehicle(airShip);
 		activeChar.setInVehiclePosition(_pos);
 		activeChar.broadcastPacket(new ExMoveToLocationInAirShip(activeChar));
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

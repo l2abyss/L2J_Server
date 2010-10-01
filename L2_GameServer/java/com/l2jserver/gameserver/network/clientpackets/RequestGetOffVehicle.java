@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
 public final class RequestGetOffVehicle extends L2GameClientPacket
 {
 	private int _boatId, _x, _y, _z;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -34,7 +34,7 @@ public final class RequestGetOffVehicle extends L2GameClientPacket
 		_y = readD();
 		_z = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -46,19 +46,19 @@ public final class RequestGetOffVehicle extends L2GameClientPacket
 				|| activeChar.getBoat().isMoving()
 				|| !activeChar.isInsideRadius(_x, _y, _z, 1000, true, false))
 		{
-			sendPacket(ActionFailed.STATIC_PACKET);	
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		activeChar.broadcastPacket(new StopMoveInVehicle(activeChar, _boatId));
 		activeChar.setVehicle(null);
 		activeChar.setInVehiclePosition(null);
-		sendPacket(ActionFailed.STATIC_PACKET);	
+		sendPacket(ActionFailed.STATIC_PACKET);
 		activeChar.broadcastPacket(new GetOffVehicle(activeChar.getObjectId(), _boatId, _x, _y, _z));
 		activeChar.setXYZ(_x, _y, _z + 50);
 		activeChar.revalidateZone(true);
 	}
-
+	
 	@Override
 	public String getType()
 	{

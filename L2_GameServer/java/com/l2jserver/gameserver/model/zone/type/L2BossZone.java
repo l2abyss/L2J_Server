@@ -16,6 +16,8 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import java.util.Map;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.GameServer;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
@@ -26,8 +28,6 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.util.L2FastList;
-
-import javolution.util.FastMap;
 
 /**
  * @author DaRkRaGe
@@ -44,8 +44,8 @@ public class L2BossZone extends L2ZoneType
 	// <player objectId, expiration time in milliseconds>
 	private FastMap<Integer, Long> _playerAllowedReEntryTimes;
 	
-	// track the players admitted to the zone who should be allowed back in 
-	// after reboot/server downtime (outside of their control), within 30 
+	// track the players admitted to the zone who should be allowed back in
+	// after reboot/server downtime (outside of their control), within 30
 	// of server restart
 	private L2FastList<Integer> _playersAllowed;
 	private int[] _oustLoc = { 0, 0, 0 };
@@ -114,11 +114,11 @@ public class L2BossZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				final L2PcInstance player = (L2PcInstance)character;
-
+				
 				player.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 				if (player.isGM())
 					return;
-				// if player has been (previously) cleared by npc/ai for entry and the zone is 
+				// if player has been (previously) cleared by npc/ai for entry and the zone is
 				// set to receive players (aka not waiting for boss to respawn)
 				if (_playersAllowed.contains(player.getObjectId()))
 				{
@@ -154,8 +154,8 @@ public class L2BossZone extends L2ZoneType
 				if (player != null)
 				{
 					if (_playersAllowed.contains(player.getObjectId()) || player.isGM())
-							return;
-
+						return;
+					
 					// remove summon and teleport out owner
 					// who attempt "illegal" (re-)entry
 					if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
@@ -183,7 +183,7 @@ public class L2BossZone extends L2ZoneType
 				// time so that
 				// decisions can be made later about allowing or not the player
 				// to log into the zone
-				if (player.isOnline() == 0 && _playersAllowed.contains(player.getObjectId()))
+				if (!player.isOnline() && _playersAllowed.contains(player.getObjectId()))
 				{
 					// mark the time that the player left the zone
 					_playerAllowedReEntryTimes.put(player.getObjectId(), System.currentTimeMillis() + _timeInvade);
@@ -298,7 +298,7 @@ public class L2BossZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				L2PcInstance player = (L2PcInstance) character;
-				if (player.isOnline() == 1)
+				if (player.isOnline())
 					player.teleToLocation(x, y, z);
 			}
 		}
@@ -322,7 +322,7 @@ public class L2BossZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				L2PcInstance player = (L2PcInstance) character;
-				if (player.isOnline() == 1)
+				if (player.isOnline())
 				{
 					if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
 						player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
@@ -339,8 +339,8 @@ public class L2BossZone extends L2ZoneType
 	 * This function is to be used by external sources, such as quests and AI
 	 * in order to allow a player for entry into the zone for some time.  Naturally
 	 * if the player does not enter within the allowed time, he/she will be
-	 * teleported out again... 
-	 * @param player: reference to the player we wish to allow 
+	 * teleported out again...
+	 * @param player: reference to the player we wish to allow
 	 * @param durationInSec: amount of time in seconds during which entry is valid.
 	 */
 	public void allowPlayerEntry(L2PcInstance player, int durationInSec)
@@ -385,7 +385,7 @@ public class L2BossZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				L2PcInstance player = (L2PcInstance) character;
-				if (player.isOnline() == 1)
+				if (player.isOnline())
 					npcKnownPlayers.put(player.getObjectId(), player);
 			}
 		}

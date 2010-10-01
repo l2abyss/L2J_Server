@@ -24,13 +24,13 @@ public class L2ManorManagerInstance extends L2MerchantInstance
 		super(objectId, template);
 		setInstanceType(InstanceType.L2ManorManagerInstance);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
 		return "data/html/manormanager/manager.htm";
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
@@ -39,7 +39,7 @@ public class L2ManorManagerInstance extends L2MerchantInstance
 			showChatWindow(player, "data/html/npcdefault.htm");
 			return;
 		}
-
+		
 		if (!player.isGM()
 				&& getCastle() != null
 				&& getCastle().getCastleId() > 0

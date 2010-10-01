@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.skills.Env;
 public class ConditionPlayerClassIdRestriction extends Condition
 {
 	private final ArrayList<Integer> _classIds;
-
+	
 	/**
 	 * Instantiates a new condition player class id restriction.
 	 *
@@ -35,7 +35,7 @@ public class ConditionPlayerClassIdRestriction extends Condition
 	{
 		_classIds = classId;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

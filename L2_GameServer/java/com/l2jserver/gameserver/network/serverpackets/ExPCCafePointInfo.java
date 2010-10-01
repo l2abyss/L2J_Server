@@ -22,7 +22,7 @@ public class ExPCCafePointInfo extends L2GameServerPacket
 {
 	private static final String _S__FE_31_EXPCCAFEPOINTINFO = "[S] FE:32 ExPCCafePointInfo";
 	private int _unk1, _unk2, _unk3, _unk4, _unk5 = 0;
-
+	
 	public ExPCCafePointInfo(int val1, int val2, int val3, int val4, int val5)
 	{
 		_unk1 = val1;
@@ -31,7 +31,7 @@ public class ExPCCafePointInfo extends L2GameServerPacket
 		_unk4 = val4;
 		_unk5 = val5;
 	}
-
+	
 	@Override
 	protected void writeImpl()
 	{
@@ -43,7 +43,7 @@ public class ExPCCafePointInfo extends L2GameServerPacket
 		writeD(_unk4); // period hours left
 		writeC(_unk5); // points inc display color(0=yellow,1=cyan-blue,2=red,all other black)
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -52,5 +52,5 @@ public class ExPCCafePointInfo extends L2GameServerPacket
 	{
 		return _S__FE_31_EXPCCAFEPOINTINFO;
 	}
-
+	
 }

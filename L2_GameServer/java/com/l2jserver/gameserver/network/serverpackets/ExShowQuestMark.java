@@ -21,12 +21,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExShowQuestMark extends L2GameServerPacket
 {
 	private int _questId;
-
+	
 	public ExShowQuestMark(int questId)
 	{
 		_questId = questId;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
@@ -35,7 +35,7 @@ public class ExShowQuestMark extends L2GameServerPacket
 	{
 		return "[S] FE:21 ExShowQuestMark";
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
@@ -46,5 +46,5 @@ public class ExShowQuestMark extends L2GameServerPacket
 		writeH(0x21);
 		writeD(_questId);
 	}
-
+	
 }

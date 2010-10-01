@@ -24,34 +24,34 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowFortressMapInfo;
  */
 public class RequestFortressMapInfo extends L2GameClientPacket
 {
-    private int _fortressId;
-    
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[C] D0:4B RequestFortressMapInfo";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-        _fortressId = readD();
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-        Fort fort = FortManager.getInstance().getFortById(_fortressId);
-        sendPacket(new ExShowFortressMapInfo(fort));
-    }
-    
+	private int _fortressId;
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[C] D0:4B RequestFortressMapInfo";
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		_fortressId = readD();
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		Fort fort = FortManager.getInstance().getFortById(_fortressId);
+		sendPacket(new ExShowFortressMapInfo(fort));
+	}
+	
 }

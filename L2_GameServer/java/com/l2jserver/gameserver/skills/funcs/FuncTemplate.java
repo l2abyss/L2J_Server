@@ -16,6 +16,8 @@ package com.l2jserver.gameserver.skills.funcs;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.Stats;
@@ -26,6 +28,8 @@ import com.l2jserver.gameserver.skills.conditions.Condition;
  */
 public final class FuncTemplate
 {
+	protected static final Logger _log = Logger.getLogger(FuncTemplate.class.getName());
+	
 	public Condition attachCond;
 	public Condition applayCond;
 	public final Class<?> func;
@@ -52,13 +56,13 @@ public final class FuncTemplate
 		try
 		{
 			constructor = func.getConstructor(
-				new Class[]
-				{
-						Stats.class, // stats to update
-						Integer.TYPE, // order of execution
-						Object.class, // owner
-						Lambda.class // value for function
-				});
+					new Class[]
+					          {
+							Stats.class, // stats to update
+							Integer.TYPE, // order of execution
+							Object.class, // owner
+							Lambda.class // value for function
+					          });
 		}
 		catch (NoSuchMethodException e)
 		{
@@ -79,17 +83,17 @@ public final class FuncTemplate
 		}
 		catch (IllegalAccessException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			return null;
 		}
 		catch (InstantiationException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			return null;
 		}
 		catch (InvocationTargetException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			return null;
 		}
 		

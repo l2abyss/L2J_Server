@@ -21,11 +21,11 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -50,7 +50,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 {
 	private static final Logger _log = Logger.getLogger(RequestExEnchantSkillUntrain.class.getName());
 	private static final Logger _logEnchant = Logger.getLogger("enchant");
-
+	
 	private int _skillId;
 	private int _skillLvl;
 	
@@ -71,24 +71,24 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		if (player == null)
 			return;
 		
-        if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
-        {
-        	player.sendPacket(SystemMessageId.YOU_CANNOT_USE_SKILL_ENCHANT_IN_THIS_CLASS);
-            return;
-        }
-        
-        if (player.getLevel() < 76) 
-        {
-        	player.sendPacket(SystemMessageId.YOU_CANNOT_USE_SKILL_ENCHANT_ON_THIS_LEVEL);
-            return;
-        }
-        
-        if (!player.isAllowedToEnchantSkills())
-        {
-        	player.sendPacket(SystemMessageId.YOU_CANNOT_USE_SKILL_ENCHANT_ATTACKING_TRANSFORMED_BOAT);
-        	return;
-        }
-
+		if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
+		{
+			player.sendPacket(SystemMessageId.YOU_CANNOT_USE_SKILL_ENCHANT_IN_THIS_CLASS);
+			return;
+		}
+		
+		if (player.getLevel() < 76)
+		{
+			player.sendPacket(SystemMessageId.YOU_CANNOT_USE_SKILL_ENCHANT_ON_THIS_LEVEL);
+			return;
+		}
+		
+		if (!player.isAllowedToEnchantSkills())
+		{
+			player.sendPacket(SystemMessageId.YOU_CANNOT_USE_SKILL_ENCHANT_ATTACKING_TRANSFORMED_BOAT);
+			return;
+		}
+		
 		L2EnchantSkillLearn s = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
 			return;
@@ -136,7 +136,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		}
 		
 		check &= player.destroyItemByItemId("Consume", 57, requireditems, player, true);
-
+		
 		
 		if (!check)
 		{
@@ -148,12 +148,12 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		
 		if (Config.LOG_SKILL_ENCHANTS)
 		{
-	        LogRecord record = new LogRecord(Level.INFO, "Untrain");
+			LogRecord record = new LogRecord(Level.INFO, "Untrain");
 			record.setParameters(new Object[]{player, skill, spb});
 			record.setLoggerName("skill");
 			_logEnchant.log(record);
 		}
-
+		
 		player.addSkill(skill, true);
 		player.sendPacket(ExEnchantSkillResult.valueOf(true));
 		
@@ -178,8 +178,8 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 			player.sendPacket(sm);
 		}
 		player.sendSkillList();
-        player.sendPacket(new ExEnchantSkillInfo(_skillId, player.getSkillLevel(_skillId)));
-        player.sendPacket(new ExEnchantSkillInfoDetail(2, _skillId, player.getSkillLevel(_skillId)-1, player));
+		player.sendPacket(new ExEnchantSkillInfo(_skillId, player.getSkillLevel(_skillId)));
+		player.sendPacket(new ExEnchantSkillInfoDetail(2, _skillId, player.getSkillLevel(_skillId)-1, player));
 		this.updateSkillShortcuts(player);
 	}
 	

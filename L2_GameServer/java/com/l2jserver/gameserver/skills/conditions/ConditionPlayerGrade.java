@@ -38,9 +38,9 @@ public final class ConditionPlayerGrade extends Condition
 	public final static int COND_S_GRADE = 0x0020;
 	public final static int COND_S80_GRADE = 0x0040;
 	public final static int COND_S84_GRADE = 0x0080;
-
+	
 	private final int _value;
-
+	
 	/**
 	 * Instantiates a new condition player grade.
 	 *
@@ -50,19 +50,19 @@ public final class ConditionPlayerGrade extends Condition
 	{
 		_value = value;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (env.player instanceof L2PcInstance) 
+		if (env.player instanceof L2PcInstance)
 		{
 			byte expIndex = (byte)((L2PcInstance)env.player).getExpertiseIndex();
-
+			
 			return _value == expIndex;
 		}
-		return false;	
+		return false;
 	}
 }

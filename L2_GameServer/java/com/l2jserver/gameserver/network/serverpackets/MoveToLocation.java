@@ -29,7 +29,7 @@ public final class MoveToLocation extends L2GameServerPacket
 {
 	private static final String _S__01_CHARMOVETOLOCATION = "[S] 2f MoveToLocation";
 	private int _charObjId, _x, _y, _z, _xDst, _yDst, _zDst;
-
+	
 	public MoveToLocation(L2Character cha)
 	{
 		_charObjId = cha.getObjectId();
@@ -40,23 +40,23 @@ public final class MoveToLocation extends L2GameServerPacket
 		_yDst = cha.getYdestination();
 		_zDst = cha.getZdestination();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x2f);
-
+		
 		writeD(_charObjId);
-
+		
 		writeD(_xDst);
 		writeD(_yDst);
 		writeD(_zDst);
-
+		
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -65,5 +65,5 @@ public final class MoveToLocation extends L2GameServerPacket
 	{
 		return _S__01_CHARMOVETOLOCATION;
 	}
-
+	
 }

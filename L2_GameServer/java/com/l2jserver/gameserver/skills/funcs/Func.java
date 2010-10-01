@@ -31,10 +31,10 @@ import com.l2jserver.gameserver.skills.conditions.Condition;
  */
 
 public abstract class Func {
-
+	
 	/** Statistics, that is affected by this function (See L2Character.CALCULATOR_XXX constants) */
 	public final Stats stat;
-
+	
 	/**
 	 * Order of functions calculation.
 	 * Functions with lower order are executed first.
@@ -45,17 +45,17 @@ public abstract class Func {
 	 * (non-linear functions).
 	 */
 	public final int order;
-
+	
 	/**
 	 *  Owner can be an armor, weapon, skill, system event, quest, etc
 	 *  Used to remove all functions added by this owner.
 	 */
 	public final Object funcOwner;
-
+	
 	/** Function may be disabled by attached condition. */
 	public Condition cond;
-
-
+	
+	
 	/**
 	 * Constructor of Func.<BR><BR>
 	 */
@@ -65,8 +65,8 @@ public abstract class Func {
 		order = pOrder;
 		funcOwner = owner;
 	}
-
-
+	
+	
 	/**
 	 * Add a condition to the Func.<BR><BR>
 	 */
@@ -74,11 +74,11 @@ public abstract class Func {
 	{
 		cond = pCond;
 	}
-
-
+	
+	
 	/**
 	 * Run the mathematic function of the Func.<BR><BR>
 	 */
 	public abstract void calc(Env env);
-
+	
 }

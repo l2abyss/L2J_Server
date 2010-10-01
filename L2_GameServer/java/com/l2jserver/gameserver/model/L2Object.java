@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 
@@ -81,6 +82,7 @@ public abstract class L2Object
 		L2StaticObjectInstance(L2Character),
 		L2DoorInstance(L2Character),
 		L2NpcWalkerInstance(L2Npc),
+		L2TerrainObjectInstance(L2Npc),
 		L2EffectPointInstance(L2Npc),
 		// Summons, Pets, Decoys and Traps
 		L2SummonInstance(L2Summon),
@@ -109,6 +111,7 @@ public abstract class L2Object
 		L2FlyMonsterInstance(L2MonsterInstance),
 		L2FlyMinionInstance(L2MinionInstance),
 		L2FlyRaidBossInstance(L2RaidBossInstance),
+		L2FlyTerrainObjectInstance(L2Npc),
 		// Sepulchers
 		L2SepulcherNpcInstance(L2NpcInstance),
 		L2SepulcherMonsterInstance(L2MonsterInstance),
@@ -179,7 +182,8 @@ public abstract class L2Object
 		L2ClassMasterInstance(L2NpcInstance),
 		L2NpcBufferInstance(L2Npc),
 		L2TvTEventNpcInstance(L2Npc),
-		L2WeddingManagerInstance(L2Npc);
+		L2WeddingManagerInstance(L2Npc),
+		L2EventMobInstance(L2Npc);
 		
 		private final InstanceType _parent;
 		private final long _typeL;
@@ -271,7 +275,7 @@ public abstract class L2Object
 		IActionHandler handler = ActionHandler.getInstance().getActionHandler(getInstanceType());
 		if (handler != null)
 			handler.action(player, this, interact);
-
+		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
@@ -280,7 +284,7 @@ public abstract class L2Object
 		IActionHandler handler = ActionHandler.getInstance().getActionShiftHandler(getInstanceType());
 		if (handler != null)
 			handler.action(player, this, true);
-
+		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
@@ -344,9 +348,31 @@ public abstract class L2Object
 		if (this instanceof L2PcInstance)
 		{
 			if (_instanceId > 0 && oldI != null)
+			{
 				oldI.removePlayer(getObjectId());
+				if (oldI.isShowTimer())
+				{
+					int startTime = (int) ((System.currentTimeMillis() - oldI.getInstanceStartTime()) / 1000);
+					int endTime = (int) ((oldI.getInstanceEndTime() - oldI.getInstanceStartTime()) / 1000);
+					if (oldI.isTimerIncrease())
+						sendPacket(new ExSendUIEvent(this, true, true, startTime, endTime, oldI.getTimerText()));
+					else
+						sendPacket(new ExSendUIEvent(this, true, false, endTime - startTime, 0, oldI.getTimerText()));
+				}
+			}
 			if (instanceId > 0)
+			{
 				newI.addPlayer(getObjectId());
+				if (newI.isShowTimer())
+				{
+					int startTime = (int) ((System.currentTimeMillis() - newI.getInstanceStartTime()) / 1000);
+					int endTime = (int) ((newI.getInstanceEndTime() - newI.getInstanceStartTime()) / 1000);
+					if (newI.isTimerIncrease())
+						sendPacket(new ExSendUIEvent(this, false, true, startTime, endTime, newI.getTimerText()));
+					else
+						sendPacket(new ExSendUIEvent(this, false, false, endTime - startTime, 0, newI.getTimerText()));
+				}
+			}
 			
 			if (((L2PcInstance)this).getPet() != null)
 				((L2PcInstance)this).getPet().setInstanceId(instanceId);

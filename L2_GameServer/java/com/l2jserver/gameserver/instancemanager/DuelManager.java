@@ -16,12 +16,12 @@ package com.l2jserver.gameserver.instancemanager;
 
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Duel;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-
-import javolution.util.FastList;
 
 public class DuelManager
 {

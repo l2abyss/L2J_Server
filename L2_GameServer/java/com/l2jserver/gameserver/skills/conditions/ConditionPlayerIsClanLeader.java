@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.skills.Env;
 public class ConditionPlayerIsClanLeader extends Condition
 {
 	private final boolean _val;
-
+	
 	/**
 	 * Instantiates a new condition player is clan leader.
 	 *
@@ -33,7 +33,7 @@ public class ConditionPlayerIsClanLeader extends Condition
 	{
 		_val = val;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

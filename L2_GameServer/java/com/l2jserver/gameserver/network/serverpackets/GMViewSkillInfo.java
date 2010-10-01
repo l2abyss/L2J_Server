@@ -24,7 +24,7 @@ public class GMViewSkillInfo extends L2GameServerPacket
 	private static final String _S__91_GMViewSkillInfo = "[S] 97 GMViewSkillInfo";
 	private L2PcInstance _activeChar;
 	private L2Skill[] _skills;
-
+	
 	public GMViewSkillInfo (L2PcInstance cha)
 	{
 		_activeChar = cha;
@@ -32,18 +32,18 @@ public class GMViewSkillInfo extends L2GameServerPacket
 		if (_skills.length == 0)
 			_skills = new L2Skill[0];
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x97);
 		writeS(_activeChar.getName());
 		writeD(_skills.length);
-
+		
 		boolean isDisabled = false;
 		if (_activeChar.getClan() != null)
 			isDisabled = _activeChar.getClan().getReputationScore() < 0;
-
+		
 		for (L2Skill skill: _skills)
 		{
 			writeD(skill.isPassive() ? 1 : 0);
@@ -53,7 +53,7 @@ public class GMViewSkillInfo extends L2GameServerPacket
 			writeC(SkillTable.getInstance().isEnchantable(skill.getId()) ? 1 : 0);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

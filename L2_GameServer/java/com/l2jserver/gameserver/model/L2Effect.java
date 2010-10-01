@@ -36,6 +36,11 @@ import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.skills.Env;
+import com.l2jserver.gameserver.skills.effects.EffectBuff;
+import com.l2jserver.gameserver.skills.effects.EffectChanceSkillTrigger;
+import com.l2jserver.gameserver.skills.effects.EffectHealOverTime;
+import com.l2jserver.gameserver.skills.effects.EffectNoblesseBless;
+import com.l2jserver.gameserver.skills.effects.EffectSilentMove;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.skills.funcs.Lambda;
@@ -174,12 +179,12 @@ public abstract class L2Effect
 		_count = template.counter;
 		_totalCount = _count;
 		
-		// Support for retail herbs duration when _effected has a Summon 
+		// Support for retail herbs duration when _effected has a Summon
 		int temp = template.period;
 		
 		if ((_skill.getId() > 2277 && _skill.getId() < 2286) || (_skill.getId() >= 2512 && _skill.getId() <= 2514))
 		{
-			if (_effected instanceof L2SummonInstance || 
+			if (_effected instanceof L2SummonInstance ||
 					(_effected instanceof L2PcInstance && ((L2PcInstance) _effected).getPet() instanceof L2SummonInstance))
 			{
 				temp /= 2;
@@ -202,7 +207,7 @@ public abstract class L2Effect
 		_effectSkillType = template.effectType;
 		
 		/*
-		 * Commented out by DrHouse: 
+		 * Commented out by DrHouse:
 		 * scheduleEffect can call onStart before effect is completly
 		 * initialized on constructor (child classes constructor)
 		 */
@@ -240,7 +245,7 @@ public abstract class L2Effect
 		_icon = _template.icon;
 		
 		/*
-		 * Commented out by DrHouse: 
+		 * Commented out by DrHouse:
 		 * scheduleEffect can call onStart before effect is completly
 		 * initialized on constructor (child classes constructor)
 		 */
@@ -321,7 +326,7 @@ public abstract class L2Effect
 			_startConditionsCorrect = onStart();
 		else
 			onExit();
-
+		
 		return _startConditionsCorrect;
 	}
 	
@@ -354,12 +359,12 @@ public abstract class L2Effect
 	{
 		return _isSelfEffect;
 	}
-
+	
 	public void setSelfEffect()
 	{
 		_isSelfEffect = true;
 	}
-
+	
 	public boolean isHerbEffect()
 	{
 		if (getSkill().getName().contains("Herb"))
@@ -434,7 +439,7 @@ public abstract class L2Effect
 		{
 			// Cancel the task
 			_currentFuture.cancel(false);
-			ThreadPoolManager.getInstance().removeEffect(_currentTask);
+			//ThreadPoolManager.getInstance().removeEffect(_currentTask);
 			
 			_currentFuture = null;
 			_currentTask = null;
@@ -681,5 +686,27 @@ public abstract class L2Effect
 	public L2SkillType getSkillType()
 	{
 		return _effectSkillType;
+	}
+	
+	public boolean canBeStolen()
+	{
+		if(!(this instanceof EffectBuff || this instanceof EffectHealOverTime || this instanceof EffectSilentMove || this instanceof EffectNoblesseBless || this instanceof EffectChanceSkillTrigger)
+				|| this.getEffectType() == L2EffectType.TRANSFORMATION
+				|| this.getSkill().isPassive()
+				|| this.getSkill().isToggle()
+				|| this.getSkill().isDebuff()
+				|| this.getSkill().isHeroSkill()
+				|| this.getSkill().isGMSkill()
+				|| (this.getSkill().isPotion() && (this.getSkill().getId() != 2274 && this.getSkill().getId() != 2341)) // Hardcode for now :<
+				|| this.isHerbEffect()
+				|| !this.getSkill().canBeDispeled())
+			return false;
+		return true;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "L2Effect [_skill=" + _skill + ", _state=" + _state + ", _period=" + _period + "]";
 	}
 }

@@ -27,7 +27,7 @@ public class ExFishingStart extends L2GameServerPacket
 	private L2Character _activeChar;
 	private int _x,_y,_z, _fishType;
 	private boolean _isNightLure;
-
+	
 	public ExFishingStart(L2Character character, int fishType, int x, int y,int z, boolean isNightLure)
 	{
 		_activeChar = character;
@@ -37,7 +37,7 @@ public class ExFishingStart extends L2GameServerPacket
 		_z = z;
 		_isNightLure = isNightLure;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -54,7 +54,7 @@ public class ExFishingStart extends L2GameServerPacket
 		writeC(_isNightLure ? 0x01 : 0x00); // night lure
 		writeC(0x00); //show fish rank result button
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -63,5 +63,5 @@ public class ExFishingStart extends L2GameServerPacket
 	{
 		return _S__FE_13_EXFISHINGSTART;
 	}
-
+	
 }

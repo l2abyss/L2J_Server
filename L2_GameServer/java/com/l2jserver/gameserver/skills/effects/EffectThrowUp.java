@@ -21,8 +21,8 @@ import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.network.serverpackets.FlyToLocation;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.network.serverpackets.FlyToLocation.FlyType;
+import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
@@ -80,7 +80,7 @@ public class EffectThrowUp extends L2Effect
 		offset += Math.abs(dz);
 		if (offset < 5)
 			offset = 5;
-
+		
 		// If no distance
 		if (distance < 1)
 			return false;
@@ -122,7 +122,7 @@ public class EffectThrowUp extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().stopStunning(this);
+		getEffected().stopStunning(false);
 		getEffected().setXYZ(_x, _y, _z);
 		getEffected().broadcastPacket(new ValidateLocation(getEffected()));
 	}

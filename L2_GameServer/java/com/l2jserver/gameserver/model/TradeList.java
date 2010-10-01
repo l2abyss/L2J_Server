@@ -41,11 +41,13 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class TradeList
 {
-	public class TradeItem
+	public static class TradeItem
 	{
 		private int _objectId;
 		private final L2Item _item;
+		private int _location;
 		private int _enchant;
+		private int _type1;
 		private int _type2;
 		private long _count;
 		private long _storeCount;
@@ -58,7 +60,9 @@ public class TradeList
 		{
 			_objectId = item.getObjectId();
 			_item = item.getItem();
+			_location = item.getLocationSlot();
 			_enchant = item.getEnchantLevel();
+			_type1 = item.getCustomType1();
 			_type2 = item.getCustomType2();
 			_count = count;
 			_price = price;
@@ -72,7 +76,9 @@ public class TradeList
 		{
 			_objectId = 0;
 			_item = item;
+			_location = 0;
 			_enchant = 0;
+			_type1 = 0;
 			_type2 = 0;
 			_count = count;
 			_storeCount = count;
@@ -85,8 +91,10 @@ public class TradeList
 		{
 			_objectId = item.getObjectId();
 			_item = item.getItem();
+			_location = item.getLocationSlot();
 			_enchant = item.getEnchant();
-			_type2 = 0;
+			_type1 = item.getCustomType1();
+			_type2 = item.getCustomType2();
 			_count = count;
 			_storeCount = count;
 			_price = price;
@@ -111,6 +119,11 @@ public class TradeList
 			return _item;
 		}
 		
+		public int getLocationSlot()
+		{
+			return _location;
+		}
+		
 		public void setEnchant(int enchant)
 		{
 			_enchant = enchant;
@@ -119,6 +132,11 @@ public class TradeList
 		public int getEnchant()
 		{
 			return _enchant;
+		}
+		
+		public int getCustomType1()
+		{
+			return _type1;
 		}
 		
 		public int getCustomType2()
@@ -342,6 +360,11 @@ public class TradeList
 		if (!(item.isTradeable() || (getOwner().isGM() && Config.GM_TRADE_RESTRICTED_ITEMS)) || item.getItemType() == L2EtcItemType.QUEST)
 			return null;
 		
+		if (!getOwner().getInventory().canManipulateWithItemId(item.getItemId()))
+		{
+			return null;
+		}
+		
 		if (count <= 0 || count > item.getCount())
 			return null;
 		
@@ -498,7 +521,7 @@ public class TradeList
 	{
 		if (_confirmed)
 			return true; // Already confirmed
-			
+		
 		// If Partner has already confirmed this trade, proceed exchange
 		if (_partner != null)
 		{
@@ -729,6 +752,11 @@ public class TradeList
 			return 1;
 		}
 		
+		if (!_owner.isOnline() || !player.isOnline())
+		{
+			return 1;
+		}
+		
 		int slots = 0;
 		int weight = 0;
 		long totalPrice = 0;
@@ -825,10 +853,14 @@ public class TradeList
 		final InventoryUpdate playerIU = new InventoryUpdate();
 		
 		final L2ItemInstance adenaItem = playerInventory.getAdenaInstance();
-		playerInventory.reduceAdena("PrivateStore", totalPrice, player, _owner);
+		if (!playerInventory.reduceAdena("PrivateStore", totalPrice, player, _owner))
+		{
+			player.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			return 1;
+		}
 		playerIU.addItem(adenaItem);
 		ownerInventory.addAdena("PrivateStore", totalPrice, _owner, player);
-		ownerIU.addItem(ownerInventory.getAdenaInstance());
+		//ownerIU.addItem(ownerInventory.getAdenaInstance());
 		
 		boolean ok = true;
 		
@@ -913,6 +945,11 @@ public class TradeList
 	{
 		if (_locked)
 			return false;
+		
+		if (!_owner.isOnline() || !player.isOnline())
+		{
+			return false;
+		}
 		
 		boolean ok = false;
 		

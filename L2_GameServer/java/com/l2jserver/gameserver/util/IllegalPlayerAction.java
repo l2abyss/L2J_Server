@@ -76,9 +76,9 @@ public final class IllegalPlayerAction implements Runnable
 		LogRecord record = new LogRecord(Level.INFO, "AUDIT:" + _message);
 		record.setLoggerName("audit");
 		record.setParameters(new Object[]
-		{
-			_actor, _punishment
-		});
+		                                {
+				_actor, _punishment
+		                                });
 		_logAudit.log(record);
 		
 		GmListTable.broadcastMessageToGMs(_message);
@@ -95,7 +95,7 @@ public final class IllegalPlayerAction implements Runnable
 				break;
 			case PUNISH_JAIL:
 				_actor.setPunishLevel(L2PcInstance.PunishLevel.JAIL, Config.DEFAULT_PUNISH_PARAM);
-                break;
+				break;
 		}
 	}
 }

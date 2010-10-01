@@ -40,7 +40,7 @@ public class L2WaterZone extends L2ZoneType
 		{
 			if (((L2PcInstance) character).isTransformed() && !((L2PcInstance) character).isCursedWeaponEquipped())
 			{
-				character.stopTransformation(null);
+				character.stopTransformation(true);
 				//((L2PcInstance) character).untransform();
 			}
 			// TODO: update to only send speed status when that packet is known
@@ -77,7 +77,7 @@ public class L2WaterZone extends L2ZoneType
 		{
 			((L2PcInstance)character).sendMessage("You exited water!");
 		}*/
-
+		
 		// TODO: update to only send speed status when that packet is known
 		if (character instanceof L2PcInstance)
 		{

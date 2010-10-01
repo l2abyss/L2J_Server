@@ -37,15 +37,15 @@ import com.l2jserver.loginserver.LoginController;
 public class LoginStatusThread extends Thread
 {
 	private static final Logger _log = Logger.getLogger(LoginStatusThread.class.getName());
-
+	
 	private Socket                  _cSocket;
-
+	
 	private PrintWriter             _print;
 	private BufferedReader          _read;
-
-
+	
+	
 	private boolean _redirectLogger;
-
+	
 	private void telnetOutput(int type, String text) {
 		if ( type == 1 ) System.out.println("TELNET | "+text);
 		else if ( type == 2 ) System.out.print("TELNET | "+text);
@@ -53,29 +53,29 @@ public class LoginStatusThread extends Thread
 		else if ( type == 4 ) System.out.println(text);
 		else System.out.println("TELNET | "+text);
 	}
-
+	
 	private boolean isValidIP(Socket client) {
 		boolean result = false;
 		InetAddress ClientIP = client.getInetAddress();
-
+		
 		// convert IP to String, and compare with list
 		String clientStringIP = ClientIP.getHostAddress();
-
+		
 		telnetOutput(1, "Connection from: "+clientStringIP);
-
+		
 		// read and loop thru list of IPs, compare with newIP
 		if ( Config.DEVELOPER ) telnetOutput(2, "");
-
+		
 		InputStream telnetIS = null;
 		try {
 			Properties telnetSettings = new Properties();
 			telnetIS = new FileInputStream(new File(Config.TELNET_FILE));
 			telnetSettings.load(telnetIS);
-
+			
 			String HostList = telnetSettings.getProperty("ListOfHosts", "127.0.0.1,localhost,::1");
-
+			
 			if ( Config.DEVELOPER ) telnetOutput(3, "Comparing ip to list...");
-
+			
 			// compare
 			String ipToCompare = null;
 			for (String ip:HostList.split(",")) {
@@ -100,55 +100,55 @@ public class LoginStatusThread extends Thread
 			{
 			}
 		}
-
+		
 		if ( Config.DEVELOPER ) telnetOutput(4, "Allow IP: "+result);
 		return result;
 	}
-
+	
 	public LoginStatusThread(Socket client, int uptime, String StatusPW) throws IOException
 	{
-        _cSocket = client;
-
-        _print = new PrintWriter(_cSocket.getOutputStream());
-        _read  = new BufferedReader(new InputStreamReader(_cSocket.getInputStream()));
-
-        if ( isValidIP(client) ) {
-            telnetOutput(1, client.getInetAddress().getHostAddress()+" accepted.");
-            _print.println("Welcome To The L2J Telnet Session.");
-            _print.println("Please Insert Your Password!");
-            _print.print("Password: ");
-            _print.flush();
-            String tmpLine = _read.readLine();
-            if ( tmpLine == null )  {
-                _print.println("Error.");
-                _print.println("Disconnected...");
-                _print.flush();
-                _cSocket.close();
-            }
-            else {
-                if (tmpLine.compareTo(StatusPW) != 0)
-                {
-                    _print.println("Incorrect Password!");
-                    _print.println("Disconnected...");
-                    _print.flush();
-                    _cSocket.close();
-                }
-                else
-                {
-                    _print.println("Password Correct!");
-                    _print.println("[L2J Login Server]");
-                    _print.print("");
-                    _print.flush();
-                    start();
-                }
-            }
-        }
-        else {
-            telnetOutput(5, "Connection attempt from "+ client.getInetAddress().getHostAddress() +" rejected.");
-            _cSocket.close();
-        }
-    }
-
+		_cSocket = client;
+		
+		_print = new PrintWriter(_cSocket.getOutputStream());
+		_read  = new BufferedReader(new InputStreamReader(_cSocket.getInputStream()));
+		
+		if ( isValidIP(client) ) {
+			telnetOutput(1, client.getInetAddress().getHostAddress()+" accepted.");
+			_print.println("Welcome To The L2J Telnet Session.");
+			_print.println("Please Insert Your Password!");
+			_print.print("Password: ");
+			_print.flush();
+			String tmpLine = _read.readLine();
+			if ( tmpLine == null )  {
+				_print.println("Error.");
+				_print.println("Disconnected...");
+				_print.flush();
+				_cSocket.close();
+			}
+			else {
+				if (tmpLine.compareTo(StatusPW) != 0)
+				{
+					_print.println("Incorrect Password!");
+					_print.println("Disconnected...");
+					_print.flush();
+					_cSocket.close();
+				}
+				else
+				{
+					_print.println("Password Correct!");
+					_print.println("[L2J Login Server]");
+					_print.print("");
+					_print.flush();
+					start();
+				}
+			}
+		}
+		else {
+			telnetOutput(5, "Connection attempt from "+ client.getInetAddress().getHostAddress() +" rejected.");
+			_cSocket.close();
+		}
+	}
+	
 	@Override
 	public void run()
 	{
@@ -237,8 +237,8 @@ public class LoginStatusThread extends Thread
 			e.printStackTrace();
 		}
 	}
-
-
+	
+	
 	public void printToTelnet(String msg)
 	{
 		synchronized(_print)
@@ -247,7 +247,7 @@ public class LoginStatusThread extends Thread
 			_print.flush();
 		}
 	}
-
+	
 	/**
 	 * @return Returns the redirectLogger.
 	 */

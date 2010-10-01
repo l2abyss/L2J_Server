@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.skills.Env;
  */
 public final class LambdaCalc extends Lambda
 {
-
+	
 	public Func[] funcs;
 	public LambdaCalc()
 	{
@@ -49,5 +49,5 @@ public final class LambdaCalc extends Lambda
 		tmp[len] = f;
 		funcs = tmp;
 	}
-
+	
 }

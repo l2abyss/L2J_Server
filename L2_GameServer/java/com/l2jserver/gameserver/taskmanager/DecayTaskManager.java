@@ -16,15 +16,16 @@ package com.l2jserver.gameserver.taskmanager;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.model.actor.L2Character;
-
 import javolution.util.FastMap;
+
+import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.model.actor.L2Attackable;
+import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
  * @author la2 Lets drink to code!
@@ -89,9 +90,12 @@ public class DecayTaskManager
 					L2Character actor = e.getKey();
 					Long next = e.getValue();
 					if (next == null)
-						 continue;
+						continue;
 					if (actor.isRaid() && !actor.isRaidMinion())
 						delay = RAID_BOSS_DECAY_TIME;
+					else if (actor instanceof L2Attackable &&
+							(((L2Attackable)actor).isSpoil() || ((L2Attackable)actor).isSeeded()))
+						delay = ATTACKABLE_DECAY_TIME * 2;
 					else
 						delay = ATTACKABLE_DECAY_TIME;
 					if ((current - next) > delay)
@@ -121,7 +125,7 @@ public class DecayTaskManager
 		for (L2Character actor : _decayTasks.keySet())
 		{
 			ret += "Class/Name: " + actor.getClass().getSimpleName() + "/" + actor.getName() + " decay timer: "
-					+ (current - _decayTasks.get(actor)) + "\r\n";
+			+ (current - _decayTasks.get(actor)) + "\r\n";
 		}
 		
 		return ret;

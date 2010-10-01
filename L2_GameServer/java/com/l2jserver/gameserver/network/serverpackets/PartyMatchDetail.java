@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class PartyMatchDetail extends L2GameServerPacket
 {
 	private PartyMatchRoom _room;
-
+	
 	/**
 	 * @param allPlayers
 	 */
@@ -31,7 +31,7 @@ public class PartyMatchDetail extends L2GameServerPacket
 	{
 		_room = room;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -44,7 +44,7 @@ public class PartyMatchDetail extends L2GameServerPacket
 		writeD(_room.getLocation());	//	Room Location
 		writeS(_room.getTitle());		//	Room title
 	}
-
+	
 	@Override
 	public String getType()
 	{

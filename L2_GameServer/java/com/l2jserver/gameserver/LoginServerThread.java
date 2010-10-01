@@ -40,8 +40,8 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
-import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.gameserverpackets.AuthRequest;
 import com.l2jserver.gameserver.network.gameserverpackets.BlowFishKey;
 import com.l2jserver.gameserver.network.gameserverpackets.ChangeAccessLevel;
@@ -57,6 +57,7 @@ import com.l2jserver.gameserver.network.loginserverpackets.LoginServerFail;
 import com.l2jserver.gameserver.network.loginserverpackets.PlayerAuthResponse;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.network.serverpackets.LoginFail;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Util;
 import com.l2jserver.util.crypt.NewCrypt;
 import com.l2jserver.util.network.BaseSendablePacket;
@@ -65,9 +66,9 @@ public class LoginServerThread extends Thread
 {
 	protected static final Logger _log = Logger.getLogger(LoginServerThread.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
-
+	
 	/** {@see com.l2jserver.loginserver.LoginServer#PROTOCOL_REV } */
-	private static final int REVISION = 0x0103;
+	private static final int REVISION = 0x0104;
 	private RSAPublicKey _publicKey;
 	private String _hostname;
 	private int _port;
@@ -97,8 +98,8 @@ public class LoginServerThread extends Thread
 	private Map<String, L2GameClient> _accountsInGameServer;
 	private int _status;
 	private String _serverName;
-	private String _gameExternalHost;
-	private String _gameInternalHost;
+	private String[] _subnets;
+	private String[] _hosts;
 	
 	private LoginServerThread()
 	{
@@ -118,8 +119,8 @@ public class LoginServerThread extends Thread
 		}
 		_acceptAlternate = Config.ACCEPT_ALTERNATE_ID;
 		_reserveHost = Config.RESERVE_HOST_ON_LOGIN;
-		_gameExternalHost = Config.EXTERNAL_HOSTNAME;
-		_gameInternalHost = Config.INTERNAL_HOSTNAME;
+		_subnets = Config.GAME_SERVER_SUBNETS;
+		_hosts = Config.GAME_SERVER_HOSTS;
 		_waitingClients = new FastList<WaitingClient>();
 		_accountsInGameServer = new FastMap<String, L2GameClient>().shared();
 		_maxPlayer = Config.MAXIMUM_ONLINE_USERS;
@@ -196,7 +197,7 @@ public class LoginServerThread extends Thread
 					int packetType = decrypt[0] & 0xff;
 					switch (packetType)
 					{
-						case 00:
+						case 0x00:
 							InitLS init = new InitLS(decrypt);
 							if (Config.DEBUG)
 								_log.info("Init received");
@@ -230,17 +231,17 @@ public class LoginServerThread extends Thread
 							_blowfish = new NewCrypt(_blowfishKey);
 							if (Config.DEBUG)
 								_log.info("Changed blowfish key");
-							AuthRequest ar = new AuthRequest(_requestID, _acceptAlternate, _hexID, _gameExternalHost, _gameInternalHost, _gamePort, _reserveHost, _maxPlayer);
+							AuthRequest ar = new AuthRequest(_requestID, _acceptAlternate, _hexID, _gamePort, _reserveHost, _maxPlayer, _subnets, _hosts);
 							sendPacket(ar);
 							if (Config.DEBUG)
 								_log.info("Sent AuthRequest to login");
 							break;
-						case 01:
+						case 0x01:
 							LoginServerFail lsf = new LoginServerFail(decrypt);
 							_log.info("Damn! Registeration Failed: " + lsf.getReasonString());
 							// login will close the connection here
 							break;
-						case 02:
+						case 0x02:
 							AuthResponse aresp = new AuthResponse(decrypt);
 							_serverID = aresp.getServerId();
 							_serverName = aresp.getServerName();
@@ -255,22 +256,7 @@ public class LoginServerThread extends Thread
 							{
 								st.addAttribute(ServerStatus.SERVER_LIST_SQUARE_BRACKET, ServerStatus.OFF);
 							}
-							if (Config.SERVER_LIST_CLOCK)
-							{
-								st.addAttribute(ServerStatus.SERVER_LIST_CLOCK, ServerStatus.ON);
-							}
-							else
-							{
-								st.addAttribute(ServerStatus.SERVER_LIST_CLOCK, ServerStatus.OFF);
-							}
-							if (Config.SERVER_LIST_TESTSERVER)
-							{
-								st.addAttribute(ServerStatus.TEST_SERVER, ServerStatus.ON);
-							}
-							else
-							{
-								st.addAttribute(ServerStatus.TEST_SERVER, ServerStatus.OFF);
-							}
+							st.addAttribute(ServerStatus.SERVER_TYPE, Config.SERVER_LIST_TYPE);
 							if (Config.SERVER_GMONLY)
 							{
 								st.addAttribute(ServerStatus.SERVER_LIST_STATUS, ServerStatus.STATUS_GM_ONLY);
@@ -278,6 +264,18 @@ public class LoginServerThread extends Thread
 							else
 							{
 								st.addAttribute(ServerStatus.SERVER_LIST_STATUS, ServerStatus.STATUS_AUTO);
+							}
+							if (Config.SERVER_LIST_AGE == 15)
+							{
+								st.addAttribute(ServerStatus.SERVER_AGE, ServerStatus.SERVER_AGE_15);
+							}
+							else if (Config.SERVER_LIST_AGE == 18)
+							{
+								st.addAttribute(ServerStatus.SERVER_AGE, ServerStatus.SERVER_AGE_18);
+							}
+							else
+							{
+								st.addAttribute(ServerStatus.SERVER_AGE, ServerStatus.SERVER_AGE_ALL);
 							}
 							sendPacket(st);
 							if (L2World.getInstance().getAllPlayersCount() > 0)
@@ -293,7 +291,7 @@ public class LoginServerThread extends Thread
 								sendPacket(pig);
 							}
 							break;
-						case 03:
+						case 0x03:
 							PlayerAuthResponse par = new PlayerAuthResponse(decrypt);
 							String account = par.getAccount();
 							WaitingClient wcToRemove = null;
@@ -332,7 +330,7 @@ public class LoginServerThread extends Thread
 								_waitingClients.remove(wcToRemove);
 							}
 							break;
-						case 04:
+						case 0x04:
 							KickPlayer kp = new KickPlayer(decrypt);
 							doKickPlayer(kp.getAccount());
 							break;
@@ -342,7 +340,7 @@ public class LoginServerThread extends Thread
 			catch (UnknownHostException e)
 			{
 				if (Config.DEBUG)
-					e.printStackTrace();
+					_log.log(Level.WARNING, "", e);
 			}
 			catch (IOException e)
 			{
@@ -390,7 +388,7 @@ public class LoginServerThread extends Thread
 		{
 			_log.warning("Error while sending player auth request");
 			if (Config.DEBUG)
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 		}
 	}
 	
@@ -422,7 +420,7 @@ public class LoginServerThread extends Thread
 		{
 			_log.warning("Error while sending logout packet to login");
 			if (Config.DEBUG)
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 		}
 		finally
 		{
@@ -445,7 +443,7 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 		}
 	}
 	
@@ -459,7 +457,7 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 		}
 	}
 	
@@ -470,31 +468,18 @@ public class LoginServerThread extends Thread
 	
 	public void doKickPlayer(String account)
 	{
-		if (_accountsInGameServer.get(account) != null)
+		L2GameClient client = _accountsInGameServer.get(account);
+		if (client != null)
 		{
-			L2GameClient client = _accountsInGameServer.get(account);
-	    	LogRecord record = new LogRecord(Level.WARNING, "Kicked by login");
-	    	record.setParameters(new Object[]{client});
+			LogRecord record = new LogRecord(Level.WARNING, "Kicked by login");
+			record.setParameters(new Object[]{client});
 			_logAccounting.log(record);
-			final L2PcInstance player = client.getActiveChar();
-			if (player != null)
-			{
-				player.sendPacket(SystemMessageId.ANOTHER_LOGIN_WITH_ACCOUNT);
-				ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
-				{
-					public void run()
-					{
-						player.logout(false);
-					}
-				} , 400);
-			}
-			else
-				client.closeNow();
-			LoginServerThread.getInstance().sendLogout(account);
+			client.setAditionalClosePacket(new SystemMessage(SystemMessageId.ANOTHER_LOGIN_WITH_ACCOUNT));
+			client.closeNow();
 		}
 	}
 	
-
+	
 	
 	/**
 	 * @param sl
@@ -549,7 +534,25 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
+		}
+	}
+	
+	/**
+	 * Send Server Type Config to LS
+	 */
+	public void sendServerType()
+	{
+		ServerStatus ss = new ServerStatus();
+		ss.addAttribute(ServerStatus.SERVER_TYPE, Config.SERVER_LIST_TYPE);
+		try
+		{
+			sendPacket(ss);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "", e);
 		}
 	}
 	
@@ -559,14 +562,6 @@ public class LoginServerThread extends Thread
 	public String getStatusString()
 	{
 		return ServerStatus.STATUS_STRING[_status];
-	}
-	
-	/**
-	 * @return
-	 */
-	public boolean isClockShown()
-	{
-		return Config.SERVER_LIST_CLOCK;
 	}
 	
 	/**
@@ -640,7 +635,7 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
-	private class WaitingClient
+	private static class WaitingClient
 	{
 		public int timestamp;
 		public String account;

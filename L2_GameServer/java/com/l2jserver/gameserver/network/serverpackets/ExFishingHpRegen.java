@@ -33,7 +33,7 @@ public class ExFishingHpRegen extends L2GameServerPacket
 	private static final String _S__FE_16_EXFISHINGHPREGEN = "[S] FE:28 ExFishingHPRegen";
 	private L2Character _activeChar;
 	private int _time, _fishHP, _hpMode, _anim, _goodUse, _penalty, _hpBarColor;
-
+	
 	public ExFishingHpRegen(L2Character character, int time, int fishHP, int HPmode, int GoodUse, int anim, int penalty, int hpBarColor)
 	{
 		_activeChar = character;
@@ -45,7 +45,7 @@ public class ExFishingHpRegen extends L2GameServerPacket
 		_penalty = penalty;
 		_hpBarColor = hpBarColor;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -54,7 +54,7 @@ public class ExFishingHpRegen extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x28);
-
+		
 		writeD(_activeChar.getObjectId());
 		writeD(_time);
 		writeD(_fishHP);
@@ -63,9 +63,9 @@ public class ExFishingHpRegen extends L2GameServerPacket
 		writeC(_anim); // Anim: 0 = none, 1 = reeling, 2 = pumping
 		writeD(_penalty); // Penalty
 		writeC(_hpBarColor); // 0 = normal hp bar, 1 = purple hp bar
-
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -74,5 +74,5 @@ public class ExFishingHpRegen extends L2GameServerPacket
 	{
 		return _S__FE_16_EXFISHINGHPREGEN;
 	}
-
+	
 }

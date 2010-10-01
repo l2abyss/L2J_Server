@@ -79,33 +79,35 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 		
 		boolean updated = false;
 		int crestLargeId = -1;
-		if ((_length == 0 || _data == null) && clan.getCrestLargeId() != 0)
+		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
 		{
-			crestLargeId = 0;
-			
-			activeChar.sendMessage("The insignia has been removed.");
-			
-			updated = true;
-		}
-		else if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
-		{
-			if (clan.getHasCastle() == 0 && clan.getHasHideout() == 0)
+			if (_length == 0 || _data == null)
 			{
-				activeChar.sendMessage("Only a clan that owns a clan hall or a castle can get their emblem displayed on clan related items"); //there is a system message for that but didnt found the id
-				return;
+				if (clan.getCrestLargeId() == 0)
+					return;
+				
+				crestLargeId = 0;
+				activeChar.sendMessage("The insignia has been removed.");
+				updated = true;
 			}
-			
-			crestLargeId = IdFactory.getInstance().getNextId();
-			
-			if (!CrestCache.getInstance().savePledgeCrestLarge(crestLargeId, _data))
+			else
 			{
-				_log.log(Level.INFO, "Error saving large crest for clan " + clan.getName() + " [" + clan.getClanId() + "]");
-				return;
+				if (clan.getHasCastle() == 0 && clan.getHasHideout() == 0)
+				{
+					activeChar.sendMessage("Only a clan that owns a clan hall or a castle can get their emblem displayed on clan related items"); //there is a system message for that but didnt found the id
+					return;
+				}
+				
+				crestLargeId = IdFactory.getInstance().getNextId();
+				if (!CrestCache.getInstance().savePledgeCrestLarge(crestLargeId, _data))
+				{
+					_log.log(Level.INFO, "Error saving large crest for clan " + clan.getName() + " [" + clan.getClanId() + "]");
+					return;
+				}
+				
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_EMBLEM_WAS_SUCCESSFULLY_REGISTERED));
+				updated = true;
 			}
-			
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_EMBLEM_WAS_SUCCESSFULLY_REGISTERED));
-			
-			updated = true;
 		}
 		
 		if (updated && crestLargeId != -1)

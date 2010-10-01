@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.communitybbs.Manager.PostBBSManager;
-
-import javolution.util.FastList;
 
 /**
  * @author Maktakien
@@ -34,7 +34,7 @@ import javolution.util.FastList;
 public class Post
 {
 	private static Logger _log = Logger.getLogger(Post.class.getName());
-	public class CPost
+	public static class CPost
 	{
 		public int postId;
 		public String postOwner;
@@ -52,18 +52,18 @@ public class Post
 	//public enum ConstructorType {REPLY, CREATE };
 	public Post(String _PostOwner,int _PostOwnerID,long date,int tid,int _PostForumID,String txt)
 	{
-			_post = new FastList<CPost>();
-			CPost cp = new CPost();
-			cp.postId = 0;
-			cp.postOwner = _PostOwner;
-			cp.postOwnerId = _PostOwnerID;
-			cp.postDate = date;
-			cp.postTopicId = tid;
-			cp.postForumId = _PostForumID;
-			cp.postTxt = txt;
-			_post.add(cp);
-			insertindb(cp);
-
+		_post = new FastList<CPost>();
+		CPost cp = new CPost();
+		cp.postId = 0;
+		cp.postOwner = _PostOwner;
+		cp.postOwnerId = _PostOwnerID;
+		cp.postDate = date;
+		cp.postTopicId = tid;
+		cp.postForumId = _PostForumID;
+		cp.postTxt = txt;
+		_post.add(cp);
+		insertindb(cp);
+		
 	}
 	public void insertindb(CPost cp)
 	{
@@ -90,14 +90,14 @@ public class Post
 		{
 			L2DatabaseFactory.close(con);
 		}
-
+		
 	}
 	public Post(Topic t)
 	{
 		_post = new FastList<CPost>();
 		load(t);
 	}
-
+	
 	public CPost getCPost(int id)
 	{
 		int i = 0;

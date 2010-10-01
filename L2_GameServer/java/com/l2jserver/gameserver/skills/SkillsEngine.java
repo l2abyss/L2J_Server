@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Item;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -30,8 +32,6 @@ import com.l2jserver.gameserver.templates.item.L2EtcItem;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
-
-import javolution.util.FastList;
 
 /**
  * @author mkizub

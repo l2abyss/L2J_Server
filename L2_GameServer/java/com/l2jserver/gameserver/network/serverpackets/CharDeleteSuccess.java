@@ -23,13 +23,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class CharDeleteSuccess extends L2GameServerPacket
 {
 	private static final String _S__33_CHARDELETEOK = "[S] 1d CharDeleteOk";
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x1d);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

@@ -46,7 +46,7 @@ public class ExMPCCShowPartyMemberInfo extends L2GameServerPacket
 			writeD(pc.getClassId().getId()); // Classid
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -55,5 +55,5 @@ public class ExMPCCShowPartyMemberInfo extends L2GameServerPacket
 	{
 		return _S__FE_4A_EXMPCCSHOWPARTYMEMBERINFO;
 	}
-
+	
 }

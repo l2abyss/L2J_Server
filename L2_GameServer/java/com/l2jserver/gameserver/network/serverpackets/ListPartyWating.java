@@ -38,13 +38,13 @@ public class ListPartyWating extends L2GameServerPacket
 		_lim = limit;
 		_rooms = new FastList<PartyMatchRoom>();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		for(PartyMatchRoom room : PartyMatchRoomList.getInstance().getRooms())
 		{
-			if (room.getMembers() < 1 || room.getOwner() == null || room.getOwner().isOnline() == 0 || room.getOwner().getPartyRoom() != room.getId())
+			if (room.getMembers() < 1 || room.getOwner() == null || !room.getOwner().isOnline() || room.getOwner().getPartyRoom() != room.getId())
 			{
 				PartyMatchRoomList.getInstance().deleteRoom(room.getId());
 				continue;
@@ -57,13 +57,13 @@ public class ListPartyWating extends L2GameServerPacket
 		}
 		int count = 0;
 		int size = _rooms.size();
-
+		
 		writeC(0x9c);
 		if (size > 0)
 			writeD(1);
 		else
 			writeD(0);
-
+		
 		writeD(_rooms.size());
 		while(size > count)
 		{
@@ -78,7 +78,7 @@ public class ListPartyWating extends L2GameServerPacket
 			count++;
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

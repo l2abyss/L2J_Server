@@ -64,46 +64,42 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 	{
 		writeC(0x42);
 		/* 0x01-Private Warehouse
-		* 0x02-Clan Warehouse
-		* 0x03-Castle Warehouse
-		* 0x04-Warehouse */
+		 * 0x02-Clan Warehouse
+		 * 0x03-Castle Warehouse
+		 * 0x04-Warehouse */
 		writeH(_whType);
 		writeQ(_playerAdena);
 		writeH(_items.length);
 		
 		for (L2ItemInstance item : _items)
 		{
-			writeH(item.getItem().getType1());
 			writeD(item.getObjectId());
 			writeD(item.getItemId());
+			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());
 			writeH(item.getCustomType1());
+			writeH(item.isEquipped() ? 0x01 : 0x00);
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getEnchantLevel());
-			writeH(0x00);
 			writeH(item.getCustomType2());
-			writeD(item.getObjectId());
 			if (item.isAugmented())
-			{
-				writeD(0x0000FFFF & item.getAugmentation().getAugmentationId());
-				writeD(item.getAugmentation().getAugmentationId() >> 16);
-			}
+				writeD(item.getAugmentation().getAugmentationId());
 			else
-				writeQ(0x00);
-			
+				writeD(0x00);
+			writeD(item.getMana());
+			writeD(item.isTimeLimitedItem() ? (int) (item.getRemainingTime() / 1000) : -9999);
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
+			{
 				writeH(item.getElementDefAttr(i));
-			
-			writeD(item.getMana());
-			// T2
-			writeD(item.isTimeLimitedItem() ? (int) (item.getRemainingTime()/1000) : -1);
-
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			}
+			// Enchant Effects
+			writeH(0x00);
+			writeH(0x00);
+			writeH(0x00);
+			writeD(item.getObjectId());
 		}
 	}
 	

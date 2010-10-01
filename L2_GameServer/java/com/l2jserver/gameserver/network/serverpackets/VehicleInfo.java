@@ -24,7 +24,7 @@ public class VehicleInfo  extends L2GameServerPacket
 {
 	// Store some parameters here because they can be changed during broadcast
 	private final int _objId, _x, _y, _z, _heading;
-
+	
 	public VehicleInfo(L2BoatInstance boat)
 	{
 		_objId = boat.getObjectId();
@@ -33,7 +33,7 @@ public class VehicleInfo  extends L2GameServerPacket
 		_z = boat.getZ();
 		_heading = boat.getHeading();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -44,10 +44,10 @@ public class VehicleInfo  extends L2GameServerPacket
 		writeD(_objId);
 		writeD(_x);
 		writeD(_y);
-        writeD(_z);
-        writeD(_heading);
+		writeD(_z);
+		writeD(_heading);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

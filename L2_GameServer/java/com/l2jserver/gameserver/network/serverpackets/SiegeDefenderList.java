@@ -53,12 +53,12 @@ public final class SiegeDefenderList extends L2GameServerPacket
 	private static final String _S__CA_SiegeDefenderList = "[S] cb SiegeDefenderList";
 	//private static Logger _log = Logger.getLogger(SiegeDefenderList.class.getName());
 	private Castle _castle;
-
+	
 	public SiegeDefenderList(Castle castle)
 	{
 		_castle = castle;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -71,7 +71,7 @@ public final class SiegeDefenderList extends L2GameServerPacket
 		if (size > 0)
 		{
 			L2Clan clan;
-
+			
 			writeD(size);
 			writeD(size);
 			// Listing the Lord and the approved clans
@@ -79,7 +79,7 @@ public final class SiegeDefenderList extends L2GameServerPacket
 			{
 				clan = ClanTable.getInstance().getClan(siegeclan.getClanId());
 				if (clan == null) continue;
-
+				
 				writeD(clan.getClanId());
 				writeS(clan.getName());
 				writeS(clan.getLeaderName());
@@ -98,7 +98,7 @@ public final class SiegeDefenderList extends L2GameServerPacket
 						break;
 					default:
 						writeD(0x00);
-					break;
+						break;
 				}
 				writeD(clan.getAllyId());
 				writeS(clan.getAllyName());
@@ -126,7 +126,7 @@ public final class SiegeDefenderList extends L2GameServerPacket
 			writeD(0x00);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -135,5 +135,5 @@ public final class SiegeDefenderList extends L2GameServerPacket
 	{
 		return _S__CA_SiegeDefenderList;
 	}
-
+	
 }

@@ -17,7 +17,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-
 import org.mmocore.network.IAcceptFilter;
 import org.mmocore.network.IClientFactory;
 import org.mmocore.network.IMMOExecutor;
@@ -32,7 +31,7 @@ import com.l2jserver.util.IPv4Filter;
  * @author KenM
  */
 public class SelectorHelper implements IMMOExecutor<L2LoginClient>,
-        IClientFactory<L2LoginClient>, IAcceptFilter
+IClientFactory<L2LoginClient>, IAcceptFilter
 {
 	private ThreadPoolExecutor _generalPacketsThreadPool;
 	private IPv4Filter _ipv4filter;

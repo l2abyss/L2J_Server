@@ -28,7 +28,7 @@ public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 {
 	private static final String _C__D0_0E_REQUESTEXASKJOINMPCC = "[C] D0:0E RequestExAcceptJoinMPCC";
 	private int _response;
-
+	
 	/**
 	 * @param buf
 	 * @param client
@@ -38,7 +38,7 @@ public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 	{
 		_response = readD();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
 	 */
@@ -46,15 +46,15 @@ public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-        if(player != null)
-        {
-	    	L2PcInstance requestor = player.getActiveRequester();
-	    	SystemMessage sm;
+		if(player != null)
+		{
+			L2PcInstance requestor = player.getActiveRequester();
+			SystemMessage sm;
 			if (requestor == null)
-			    return;
-
+				return;
+			
 			if (_response == 1)
-	        {
+			{
 				boolean newCc = false;
 				if(!requestor.getParty().isInCommandChannel())
 				{
@@ -71,16 +71,16 @@ public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 				}
 			}
 			else
-	        {
+			{
 				requestor.sendMessage("The player declined to join your Command Channel.");
 			}
-
+			
 			player.setActiveRequester(null);
 			requestor.onTransactionResponse();
-        }
-
+		}
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -89,5 +89,5 @@ public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 	{
 		return _C__D0_0E_REQUESTEXASKJOINMPCC;
 	}
-
+	
 }

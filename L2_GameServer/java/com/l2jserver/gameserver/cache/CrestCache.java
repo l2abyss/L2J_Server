@@ -25,13 +25,13 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Clan;
-
-import javolution.util.FastMap;
 
 /**
  * @author Layane
@@ -176,7 +176,6 @@ public class CrestCache
 				}
 				
 				clan.setCrestId(newId);
-				clan.setHasCrest(true);
 			}
 			else
 			{
@@ -346,7 +345,7 @@ public class CrestCache
 		}
 	}
 	
-	class BmpFilter implements FileFilter
+	private static class BmpFilter implements FileFilter
 	{
 		public boolean accept(File file)
 		{
@@ -354,7 +353,7 @@ public class CrestCache
 		}
 	}
 	
-	class OldPledgeFilter implements FileFilter
+	private static class OldPledgeFilter implements FileFilter
 	{
 		public boolean accept(File file)
 		{

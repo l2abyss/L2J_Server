@@ -139,12 +139,12 @@ public class GeoData
 	{
 		return 15;
 	}
-
+	
 	public short getHeightAndNSWE(int x, int y, int z)
 	{
 		return (short)((z << 1) | 15);
 	}
-
+	
 	/**
 	 * @param x
 	 * @param y

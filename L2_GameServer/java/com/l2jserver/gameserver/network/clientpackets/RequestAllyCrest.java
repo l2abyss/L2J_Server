@@ -30,7 +30,7 @@ public final class RequestAllyCrest extends L2GameClientPacket
 {
 	private static final String _C__88_REQUESTALLYCREST = "[C] 88 RequestAllyCrest";
 	private static Logger _log = Logger.getLogger(RequestAllyCrest.class.getName());
-
+	
 	private int _crestId;
 	/**
 	 * packet type id 0x88 format: cd
@@ -42,14 +42,14 @@ public final class RequestAllyCrest extends L2GameClientPacket
 	{
 		_crestId = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		if (Config.DEBUG) _log.fine("allycrestid " + _crestId + " requested");
-
-        byte[] data = CrestCache.getInstance().getAllyCrest(_crestId);
-
+		
+		byte[] data = CrestCache.getInstance().getAllyCrest(_crestId);
+		
 		if (data != null)
 		{
 			AllyCrest ac = new AllyCrest(_crestId,data);
@@ -60,7 +60,7 @@ public final class RequestAllyCrest extends L2GameClientPacket
 			if (Config.DEBUG) _log.fine("allycrest is missing:" + _crestId);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
@@ -69,7 +69,7 @@ public final class RequestAllyCrest extends L2GameClientPacket
 	{
 		return _C__88_REQUESTALLYCREST;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

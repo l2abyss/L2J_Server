@@ -38,8 +38,8 @@ public class MagicSkillLaunched extends L2GameServerPacket
 	private int _numberOfTargets;
 	private L2Object[] _targets;
 	private int _singleTargetId;
-
-
+	
+	
 	public MagicSkillLaunched(L2Character cha, int skillId, int skillLevel, L2Object[] targets)
 	{
 		_charObjId = cha.getObjectId();
@@ -59,7 +59,7 @@ public class MagicSkillLaunched extends L2GameServerPacket
 		}
 		_singleTargetId = 0;
 	}
-
+	
 	public MagicSkillLaunched(L2Character cha, int skillId, int skillLevel)
 	{
 		_charObjId = cha.getObjectId();
@@ -68,7 +68,7 @@ public class MagicSkillLaunched extends L2GameServerPacket
 		_numberOfTargets = 1;
 		_singleTargetId = cha.getTargetId();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -78,15 +78,15 @@ public class MagicSkillLaunched extends L2GameServerPacket
 		writeD(_skillLevel);
 		writeD(_numberOfTargets); // also failed or not?
 		if (_singleTargetId != 0 || _numberOfTargets == 0)
-        {
+		{
 			writeD(_singleTargetId);
-        }
+		}
 		else for(L2Object target : _targets)
 		{
-            writeD(target.getObjectId());
+			writeD(target.getObjectId());
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -95,5 +95,5 @@ public class MagicSkillLaunched extends L2GameServerPacket
 	{
 		return _S__8E_MAGICSKILLLAUNCHED;
 	}
-
+	
 }

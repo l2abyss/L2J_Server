@@ -26,7 +26,7 @@ import com.l2jserver.Config;
 public final class SubClass
 {
 	private static final byte _maxLevel = Config.MAX_SUBCLASS_LEVEL < Experience.MAX_LEVEL ? Config.MAX_SUBCLASS_LEVEL : Experience.MAX_LEVEL - 1;
-
+	
 	private PlayerClass _class;
 	private long _exp = Experience.LEVEL[40];
 	private int _sp = 0;

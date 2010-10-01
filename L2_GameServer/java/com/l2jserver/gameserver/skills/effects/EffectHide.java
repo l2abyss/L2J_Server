@@ -30,17 +30,17 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
  * @author ZaKaX - nBd
  */
 public class EffectHide extends L2Effect
-{	
+{
 	public EffectHide(Env env, EffectTemplate template)
 	{
 		super(env, template);
 	}
-
+	
 	public EffectHide(Env env, L2Effect effect)
 	{
 		super(env, effect);
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()
@@ -50,7 +50,7 @@ public class EffectHide extends L2Effect
 	{
 		return L2EffectType.HIDE;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
@@ -63,11 +63,11 @@ public class EffectHide extends L2Effect
 			L2PcInstance activeChar = ((L2PcInstance) getEffected());
 			activeChar.getAppearance().setInvisible();
 			activeChar.startAbnormalEffect(AbnormalEffect.STEALTH);
-
+			
 			if (activeChar.getAI().getNextIntention() != null
 					&& activeChar.getAI().getNextIntention().getCtrlIntention() == CtrlIntention.AI_INTENTION_ATTACK)
 				activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-
+			
 			L2GameServerPacket del = new DeleteObject(activeChar);
 			for (L2Character target : activeChar.getKnownList().getKnownCharacters())
 			{
@@ -80,7 +80,7 @@ public class EffectHide extends L2Effect
 						target.abortCast();
 						target.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 					}
-
+					
 					if (target instanceof L2PcInstance)
 						target.sendPacket(del);
 				}
@@ -91,7 +91,7 @@ public class EffectHide extends L2Effect
 		}
 		return true;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onExit()
@@ -106,7 +106,7 @@ public class EffectHide extends L2Effect
 			activeChar.stopAbnormalEffect(AbnormalEffect.STEALTH);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()

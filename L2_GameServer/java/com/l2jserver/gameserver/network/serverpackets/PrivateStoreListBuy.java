@@ -51,27 +51,33 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 		{
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
-			writeH(item.getEnchant());
-			writeQ(item.getCount()); //give max possible sell amount
-			
-			writeQ(item.getItem().getReferencePrice());
-			writeH(0);
-			
-			writeD(item.getItem().getBodyPart());
+			writeD(item.getLocationSlot());
+			writeQ(item.getCount());
 			writeH(item.getItem().getType2());
-			writeQ(item.getPrice());//buyers price
-			
-			writeQ(item.getStoreCount()); // maximum possible tradecount
-			
-			// T1
+			writeH(item.getCustomType1());
+			writeH(0x00);
+			writeD(item.getItem().getBodyPart());
+			writeH(item.getEnchant());
+			writeH(item.getCustomType2());
+			// Player cannot sell/buy augmented, shadow or time-limited items
+			// probably so hardcode values here
+			writeD(0x00);	// Augment
+			writeD(-1);		// Mana
+			writeD(-9999);	// Time
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
+			{
 				writeH(item.getElementDefAttr(i));
-			
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			}
+			// Enchant Effects
+			writeH(0x00);
+			writeH(0x00);
+			writeH(0x00);
+			writeD(item.getObjectId());
+			writeQ(item.getPrice());
+			writeQ(item.getItem().getReferencePrice() * 2);
+			writeQ(item.getStoreCount());
 		}
 	}
 	

@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.model.actor.L2Summon;
-
 import javolution.util.FastList;
 import javolution.util.FastMap;
+
+import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.model.actor.L2Summon;
 
 public class PetSkillsTable
 {
@@ -161,7 +161,7 @@ public class PetSkillsTable
 		return skillIds;
 	}
 	
-	public final class L2PetSkillLearn
+	public static final class L2PetSkillLearn
 	{
 		private final int _id;
 		private final int _level;

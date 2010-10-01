@@ -27,44 +27,44 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeReceiveWarList;
  */
 public final class RequestPledgeWarList extends L2GameClientPacket
 {
-    protected static final Logger _log = Logger.getLogger(RequestPledgeWarList.class.getName());
-    private static final String _C__D0_1E_REQUESTPLEDGEWARLIST = "[C] D0:1E RequestPledgeWarList";
-    @SuppressWarnings("unused")
-    private int _unk1;
-    private int _tab;
-
-
-    @Override
+	protected static final Logger _log = Logger.getLogger(RequestPledgeWarList.class.getName());
+	private static final String _C__D0_1E_REQUESTPLEDGEWARLIST = "[C] D0:1E RequestPledgeWarList";
+	@SuppressWarnings("unused")
+	private int _unk1;
+	private int _tab;
+	
+	
+	@Override
 	protected void readImpl()
-    {
-        _unk1 = readD();
-        _tab = readD();
-    }
-
-    /**
-     * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-     */
-    @Override
+	{
+		_unk1 = readD();
+		_tab = readD();
+	}
+	
+	/**
+	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
+	 */
+	@Override
 	protected void runImpl()
-    {
-        //_log.info("C5: RequestPledgeWarList d:"+_unk1);
-        //_log.info("C5: RequestPledgeWarList d:"+_tab);
-        L2PcInstance activeChar = getClient().getActiveChar();
-        if(activeChar == null)
-        	return;
-        if (activeChar.getClan() == null) return;
-
-        //do we need powers to do that??
-        activeChar.sendPacket(new PledgeReceiveWarList(activeChar.getClan(),_tab));
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.BasePacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return _C__D0_1E_REQUESTPLEDGEWARLIST;
-    }
-
+	{
+		//_log.info("C5: RequestPledgeWarList d:"+_unk1);
+		//_log.info("C5: RequestPledgeWarList d:"+_tab);
+		L2PcInstance activeChar = getClient().getActiveChar();
+		if(activeChar == null)
+			return;
+		if (activeChar.getClan() == null) return;
+		
+		//do we need powers to do that??
+		activeChar.sendPacket(new PledgeReceiveWarList(activeChar.getClan(),_tab));
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_1E_REQUESTPLEDGEWARLIST;
+	}
+	
 }

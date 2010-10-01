@@ -22,16 +22,16 @@ package com.l2jserver.gameserver.network.serverpackets;
 public final class KeyPacket extends L2GameServerPacket
 {
 	private static final String _S__01_KEYPACKET = "[S] 2e KeyPacket";
-
+	
 	private byte[] _key;
 	private int _id;
-
+	
 	public KeyPacket(byte[] key, int id)
 	{
 		_key = key;
 		_id = id;
 	}
-
+	
 	@Override
 	public void writeImpl()
 	{
@@ -46,7 +46,7 @@ public final class KeyPacket extends L2GameServerPacket
 		writeC(0x01);
 		writeD(0x00); // obfuscation key
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.L2GameServerPacket#getType()
 	 */
@@ -55,5 +55,5 @@ public final class KeyPacket extends L2GameServerPacket
 	{
 		return _S__01_KEYPACKET;
 	}
-
+	
 }

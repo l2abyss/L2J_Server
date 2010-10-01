@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -24,7 +25,6 @@ public final class RequestEvaluate extends L2GameClientPacket
 {
 	private static final String _C__B9_REQUESTEVALUATE = "[C] B9 RequestEvaluate";
 	
-	@SuppressWarnings("unused")
 	private int _targetId;
 	
 	@Override
@@ -40,18 +40,21 @@ public final class RequestEvaluate extends L2GameClientPacket
 		if (activeChar == null)
 			return;
 		
-		L2PcInstance target = (L2PcInstance) activeChar.getTarget();
-		if (target == null)
+		L2Object object = activeChar.getTarget();
+		
+		if (!(object instanceof L2PcInstance))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.SELECT_TARGET));
+			if (object == null)
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.SELECT_TARGET));
+			else
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 			return;
 		}
 		
-		if (!(activeChar.getTarget() instanceof L2PcInstance))
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+		L2PcInstance target = (L2PcInstance) object;
+		
+		if (target.getObjectId() != _targetId)
 			return;
-		}
 		
 		if (activeChar.getLevel() < 10)
 		{
@@ -59,7 +62,7 @@ public final class RequestEvaluate extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getTarget() == activeChar)
+		if (target == activeChar)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_RECOMMEND_YOURSELF));
 			return;

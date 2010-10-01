@@ -18,6 +18,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
@@ -28,20 +30,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.loginserver.gameserverpackets.ServerStatus;
-import com.l2jserver.util.Rnd;
 
 import javolution.io.UTF8StreamReader;
 import javolution.util.FastMap;
 import javolution.xml.stream.XMLStreamConstants;
 import javolution.xml.stream.XMLStreamException;
 import javolution.xml.stream.XMLStreamReaderImpl;
+
+import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.loginserver.gameserverpackets.ServerStatus;
+import com.l2jserver.util.IPSubnet;
+import com.l2jserver.util.Rnd;
 
 /**
  *
@@ -289,15 +293,13 @@ public class GameServerTable
 		private int _status;
 		
 		// network
-		private String _internalIp;
-		private String _externalIp;
-		private String _externalHost;
+		private ArrayList<GameServerAddress> _addrs = new ArrayList<GameServerAddress>(5);
 		private int _port;
 		
 		// config
 		private boolean _isPvp = true;
-		private boolean _isTestServer;
-		private boolean _isShowingClock;
+		private int _serverType;
+		private int _ageLimit;
 		private boolean _isShowingBrackets;
 		private int _maxPlayers;
 		
@@ -366,34 +368,17 @@ public class GameServerTable
 			return _gst.getPlayerCount();
 		}
 		
-		public void setInternalIp(String internalIp)
-		{
-			_internalIp = internalIp;
-		}
-		
-		public String getInternalHost()
-		{
-			return _internalIp;
-		}
-		
-		public void setExternalIp(String externalIp)
-		{
-			_externalIp = externalIp;
-		}
-		
-		public String getExternalIp()
-		{
-			return _externalIp;
-		}
-		
-		public void setExternalHost(String externalHost)
-		{
-			_externalHost = externalHost;
-		}
-		
 		public String getExternalHost()
 		{
-			return _externalHost;
+			try
+			{
+				return getServerAddress(InetAddress.getByName("0.0.0.0"));
+			}
+			catch (Exception e)
+			{
+				
+			}
+			return null;
 		}
 		
 		public int getPort()
@@ -421,24 +406,24 @@ public class GameServerTable
 			return _isPvp;
 		}
 		
-		public void setTestServer(boolean val)
+		public void setAgeLimit(int val)
 		{
-			_isTestServer = val;
+			_ageLimit = val;
 		}
 		
-		public boolean isTestServer()
+		public int getAgeLimit()
 		{
-			return _isTestServer;
+			return _ageLimit;
 		}
 		
-		public void setShowingClock(boolean clock)
+		public void setServerType(int val)
 		{
-			_isShowingClock = clock;
+			_serverType = val;
 		}
 		
-		public boolean isShowingClock()
+		public int getServerType()
 		{
-			return _isShowingClock;
+			return _serverType;
 		}
 		
 		public void setShowingBrackets(boolean val)
@@ -457,6 +442,57 @@ public class GameServerTable
 			setPort(0);
 			setGameServerThread(null);
 			setStatus(ServerStatus.STATUS_DOWN);
+		}
+		
+		public void addServerAddress(String subnet, String addr) throws UnknownHostException
+		{
+			_addrs.add(new GameServerAddress(subnet, addr));
+		}
+		
+		public String getServerAddress(InetAddress addr)
+		{
+			for (GameServerAddress a : _addrs)
+			{
+				if (a.equals(addr))
+					return a.getServerAddress();
+			}
+			return null; // should not happens
+		}
+		
+		public String[] getServerAddresses()
+		{
+			String[] result = new String[_addrs.size()];
+			for (int i = 0; i < result.length; i++)
+				result[i] = _addrs.get(i).toString();
+			
+			return result;
+		}
+		
+		public void clearServerAddresses()
+		{
+			_addrs.clear();
+		}
+		
+		private class GameServerAddress extends IPSubnet
+		{
+			private String _serverAddress;
+			
+			public GameServerAddress(String subnet, String address) throws UnknownHostException
+			{
+				super(subnet);
+				_serverAddress = address;
+			}
+			
+			public String getServerAddress()
+			{
+				return _serverAddress;
+			}
+			
+			@Override
+			public String toString()
+			{
+				return _serverAddress + super.toString();
+			}
 		}
 	}
 }

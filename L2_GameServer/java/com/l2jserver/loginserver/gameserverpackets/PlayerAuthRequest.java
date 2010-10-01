@@ -23,11 +23,11 @@ import com.l2jserver.util.network.BaseRecievePacket;
  */
 public class PlayerAuthRequest extends BaseRecievePacket
 {
-
+	
 	private String _account;
 	private SessionKey _sessionKey;
-
-
+	
+	
 	/**
 	 * @param decrypt
 	 */
@@ -41,7 +41,7 @@ public class PlayerAuthRequest extends BaseRecievePacket
 		int loginKey2 = readD();
 		_sessionKey = new SessionKey(loginKey1, loginKey2, playKey1, playKey2);
 	}
-
+	
 	/**
 	 * @return Returns the account.
 	 */
@@ -49,7 +49,7 @@ public class PlayerAuthRequest extends BaseRecievePacket
 	{
 		return _account;
 	}
-
+	
 	/**
 	 * @return Returns the key.
 	 */
@@ -57,5 +57,5 @@ public class PlayerAuthRequest extends BaseRecievePacket
 	{
 		return _sessionKey;
 	}
-
+	
 }

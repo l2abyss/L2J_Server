@@ -16,9 +16,9 @@ package com.l2jserver.gameserver.model.entity;
 
 import java.util.Map;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
 import javolution.util.FastMap;
+
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author FBIagent

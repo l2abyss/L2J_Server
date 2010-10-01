@@ -76,7 +76,7 @@ public class Universe implements java.io.Serializable
 	}
 	
 	@SuppressWarnings("unused")
-	private class Position implements Comparable<Position>, java.io.Serializable
+	private static class Position implements Comparable<Position>, java.io.Serializable
 	{
 		/**
 		 * Comment for <code>serialVersionUID</code>
@@ -129,7 +129,7 @@ public class Universe implements java.io.Serializable
 	}
 	
 	@SuppressWarnings("unused")
-	private class Coord implements Comparable<Position>, java.io.Serializable
+	private static class Coord implements Comparable<Position>, java.io.Serializable
 	{
 		/**
 		 * Comment for <code>serialVersionUID</code>
@@ -299,7 +299,7 @@ public class Universe implements java.io.Serializable
 		}
 	}
 	
-	public class UniverseFilter implements FilenameFilter
+	public static class UniverseFilter implements FilenameFilter
 	{
 		String _ext = "";
 		
@@ -337,7 +337,7 @@ public class Universe implements java.io.Serializable
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 		_log.info("Total: " + total);
 	}
@@ -489,7 +489,7 @@ public class Universe implements java.io.Serializable
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 		finally
 		{

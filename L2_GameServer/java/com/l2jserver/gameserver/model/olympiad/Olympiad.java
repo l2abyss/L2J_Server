@@ -37,6 +37,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
@@ -53,8 +55,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.util.L2FastList;
 
-import javolution.util.FastMap;
-
 public class Olympiad
 {
 	protected static final Logger _log = Logger.getLogger(Olympiad.class.getName());
@@ -69,48 +69,48 @@ public class Olympiad
 	private static final String OLYMPIAD_DATA_FILE = "config/olympiad.properties";
 	public static final String OLYMPIAD_HTML_PATH = "data/html/olympiad/";
 	private static final String OLYMPIAD_LOAD_DATA = "SELECT current_cycle, period, olympiad_end, validation_end, "
-			+ "next_weekly_change FROM olympiad_data WHERE id = 0";
+		+ "next_weekly_change FROM olympiad_data WHERE id = 0";
 	private static final String OLYMPIAD_SAVE_DATA = "INSERT INTO olympiad_data (id, current_cycle, "
-			+ "period, olympiad_end, validation_end, next_weekly_change) VALUES (0,?,?,?,?,?) "
-			+ "ON DUPLICATE KEY UPDATE current_cycle=?, period=?, olympiad_end=?, "
-			+ "validation_end=?, next_weekly_change=?";
+		+ "period, olympiad_end, validation_end, next_weekly_change) VALUES (0,?,?,?,?,?) "
+		+ "ON DUPLICATE KEY UPDATE current_cycle=?, period=?, olympiad_end=?, "
+		+ "validation_end=?, next_weekly_change=?";
 	private static final String OLYMPIAD_LOAD_NOBLES = "SELECT olympiad_nobles.charId, olympiad_nobles.class_id, "
-			+ "characters.char_name, olympiad_nobles.olympiad_points, olympiad_nobles.competitions_done, "
-			+ "olympiad_nobles.competitions_won, olympiad_nobles.competitions_lost, olympiad_nobles.competitions_drawn "
-			+ "FROM olympiad_nobles, characters WHERE characters.charId = olympiad_nobles.charId";
+		+ "characters.char_name, olympiad_nobles.olympiad_points, olympiad_nobles.competitions_done, "
+		+ "olympiad_nobles.competitions_won, olympiad_nobles.competitions_lost, olympiad_nobles.competitions_drawn "
+		+ "FROM olympiad_nobles, characters WHERE characters.charId = olympiad_nobles.charId";
 	private static final String OLYMPIAD_SAVE_NOBLES = "INSERT INTO olympiad_nobles "
-			+ "(`charId`,`class_id`,`olympiad_points`,`competitions_done`,`competitions_won`,`competitions_lost`,"
-			+ "`competitions_drawn`) VALUES (?,?,?,?,?,?,?)";
+		+ "(`charId`,`class_id`,`olympiad_points`,`competitions_done`,`competitions_won`,`competitions_lost`,"
+		+ "`competitions_drawn`) VALUES (?,?,?,?,?,?,?)";
 	private static final String OLYMPIAD_UPDATE_NOBLES = "UPDATE olympiad_nobles SET "
-			+ "olympiad_points = ?, competitions_done = ?, competitions_won = ?, competitions_lost = ?, competitions_drawn = ? WHERE charId = ?";
+		+ "olympiad_points = ?, competitions_done = ?, competitions_won = ?, competitions_lost = ?, competitions_drawn = ? WHERE charId = ?";
 	private static final String OLYMPIAD_GET_HEROS = "SELECT olympiad_nobles.charId, characters.char_name "
-			+ "FROM olympiad_nobles, characters WHERE characters.charId = olympiad_nobles.charId "
-			+ "AND olympiad_nobles.class_id = ? AND olympiad_nobles.competitions_done >= 9 AND olympiad_nobles.competitions_won > 0 "
-			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC";
+		+ "FROM olympiad_nobles, characters WHERE characters.charId = olympiad_nobles.charId "
+		+ "AND olympiad_nobles.class_id = ? AND olympiad_nobles.competitions_done >= 9 AND olympiad_nobles.competitions_won > 0 "
+		+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC";
 	private static final String GET_ALL_CLASSIFIED_NOBLESS = "SELECT charId from olympiad_nobles_eom "
-			+ "WHERE competitions_done >= 9 ORDER BY olympiad_points DESC, competitions_done DESC, competitions_won DESC";
+		+ "WHERE competitions_done >= 9 ORDER BY olympiad_points DESC, competitions_done DESC, competitions_won DESC";
 	private static final String GET_EACH_CLASS_LEADER = "SELECT characters.char_name from olympiad_nobles_eom, characters "
-			+ "WHERE characters.charId = olympiad_nobles_eom.charId AND olympiad_nobles_eom.class_id = ? "
-			+ "AND olympiad_nobles_eom.competitions_done >= 9 "
-			+ "ORDER BY olympiad_nobles_eom.olympiad_points DESC, olympiad_nobles_eom.competitions_done DESC, olympiad_nobles_eom.competitions_won DESC LIMIT 10";
+		+ "WHERE characters.charId = olympiad_nobles_eom.charId AND olympiad_nobles_eom.class_id = ? "
+		+ "AND olympiad_nobles_eom.competitions_done >= 9 "
+		+ "ORDER BY olympiad_nobles_eom.olympiad_points DESC, olympiad_nobles_eom.competitions_done DESC, olympiad_nobles_eom.competitions_won DESC LIMIT 10";
 	private static final String GET_EACH_CLASS_LEADER_CURRENT = "SELECT characters.char_name from olympiad_nobles, characters "
-			+ "WHERE characters.charId = olympiad_nobles.charId AND olympiad_nobles.class_id = ? "
-			+ "AND olympiad_nobles.competitions_done >= 9 "
-			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC LIMIT 10";	
+		+ "WHERE characters.charId = olympiad_nobles.charId AND olympiad_nobles.class_id = ? "
+		+ "AND olympiad_nobles.competitions_done >= 9 "
+		+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC LIMIT 10";
 	private static final String GET_EACH_CLASS_LEADER_SOULHOUND = "SELECT characters.char_name from olympiad_nobles_eom, characters "
-			+ "WHERE characters.charId = olympiad_nobles_eom.charId AND (olympiad_nobles_eom.class_id = ? OR olympiad_nobles_eom.class_id = 133) "
-			+ "AND olympiad_nobles_eom.competitions_done >= 9 "
-			+ "ORDER BY olympiad_nobles_eom.olympiad_points DESC, olympiad_nobles_eom.competitions_done DESC, olympiad_nobles_eom.competitions_won DESC LIMIT 10";
+		+ "WHERE characters.charId = olympiad_nobles_eom.charId AND (olympiad_nobles_eom.class_id = ? OR olympiad_nobles_eom.class_id = 133) "
+		+ "AND olympiad_nobles_eom.competitions_done >= 9 "
+		+ "ORDER BY olympiad_nobles_eom.olympiad_points DESC, olympiad_nobles_eom.competitions_done DESC, olympiad_nobles_eom.competitions_won DESC LIMIT 10";
 	private static final String GET_EACH_CLASS_LEADER_CURRENT_SOULHOUND = "SELECT characters.char_name from olympiad_nobles, characters "
-			+ "WHERE characters.charId = olympiad_nobles.charId AND (olympiad_nobles.class_id = ? OR olympiad_nobles.class_id = 133) "
-			+ "AND olympiad_nobles.competitions_done >= 9 "
-			+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC LIMIT 10";
-
+		+ "WHERE characters.charId = olympiad_nobles.charId AND (olympiad_nobles.class_id = ? OR olympiad_nobles.class_id = 133) "
+		+ "AND olympiad_nobles.competitions_done >= 9 "
+		+ "ORDER BY olympiad_nobles.olympiad_points DESC, olympiad_nobles.competitions_done DESC, olympiad_nobles.competitions_won DESC LIMIT 10";
+	
 	private static final String OLYMPIAD_DELETE_ALL = "TRUNCATE olympiad_nobles";
 	private static final String OLYMPIAD_MONTH_CLEAR = "TRUNCATE olympiad_nobles_eom";
 	private static final String OLYMPIAD_MONTH_CREATE = "INSERT INTO olympiad_nobles_eom SELECT * FROM olympiad_nobles";
 	private static final int[] HERO_IDS = { 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,
-			104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 131, 132, 133, 134 };
+		104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 131, 132, 133, 134 };
 	
 	private static final int COMP_START = Config.ALT_OLY_START_TIME; // 6PM
 	private static final int COMP_MIN = Config.ALT_OLY_MIN; // 00 mins
@@ -180,7 +180,7 @@ public class Olympiad
 		_nobles = new FastMap<Integer, StatsSet>();
 		
 		Connection con = null;
-
+		
 		boolean loaded = false;
 		try
 		{
@@ -209,11 +209,11 @@ public class Olympiad
 		{
 			L2DatabaseFactory.close(con);
 		}
-
+		
 		if (!loaded)
 		{
 			_log.log(Level.INFO, "Olympiad System: failed to load data from database, trying to load from file.");
-
+			
 			Properties OlympiadProperties = new Properties();
 			InputStream is = null;
 			try
@@ -234,7 +234,7 @@ public class Olympiad
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "", e);
 				}
 			}
 			
@@ -463,7 +463,7 @@ public class Olympiad
 		 * noble.sendMessage("Cant Register whilst competition is under way");
 		 * return false; }
 		 */
-
+		
 		if (!_inCompPeriod)
 		{
 			sm = new SystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_IS_NOT_CURRENTLY_IN_PROGRESS);
@@ -495,7 +495,7 @@ public class Olympiad
 			noble.sendPacket(sm);
 			return false;
 		}
-		if (noble.getInventoryLimit() * 0.8 <= noble.getInventory().getSize())
+		if (!noble.isInventoryUnder80(true))
 		{
 			sm = new SystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_INVENTORY_SLOT_EXCEEDS_80_PERCENT);
 			sm.addPcName(noble);
@@ -675,7 +675,7 @@ public class Olympiad
 		 * noble.sendMessage("Cant Unregister whilst competition is under way");
 		 * return false; }
 		 */
-
+		
 		if (!_inCompPeriod)
 		{
 			sm = new SystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_IS_NOT_CURRENTLY_IN_PROGRESS);
@@ -1135,7 +1135,7 @@ public class Olympiad
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(OLYMPIAD_SAVE_DATA);
-
+			
 			statement.setInt(1, _currentCycle);
 			statement.setInt(2, _period);
 			statement.setLong(3, _olympiadEnd);
@@ -1146,7 +1146,7 @@ public class Olympiad
 			statement.setLong(8, _olympiadEnd);
 			statement.setLong(9, _validationEnd);
 			statement.setLong(10, _nextWeeklyChange);
-
+			
 			statement.execute();
 			statement.close();
 		}
@@ -1158,7 +1158,7 @@ public class Olympiad
 		{
 			L2DatabaseFactory.close(con);
 		}
-/*		Properties OlympiadProperties = new Properties();
+		/*		Properties OlympiadProperties = new Properties();
 		FileOutputStream fos = null;
 		try
 		{
@@ -1217,12 +1217,12 @@ public class Olympiad
 	{
 		if (_period != 1)
 			return;
-
+		
 		LogRecord record;
 		if (_nobles != null)
 		{
 			_logResults.info("Noble,charid,classid,compDone,points");
-
+			
 			for (Integer nobleId : _nobles.keySet())
 			{
 				StatsSet nobleInfo = _nobles.get(nobleId);
@@ -1297,7 +1297,7 @@ public class Olympiad
 					hero.set(CLASS_ID, winner.getInteger(CLASS_ID));
 					hero.set(CHAR_ID, winner.getInteger(CHAR_ID));
 					hero.set(CHAR_NAME, winner.getString(CHAR_NAME));
-
+					
 					record = new LogRecord(Level.INFO, "Hero "+hero.getString(CHAR_NAME));
 					record.setParameters(new Object[]{hero.getInteger(CHAR_ID), hero.getInteger(CLASS_ID)});
 					_logResults.log(record);
@@ -1339,7 +1339,7 @@ public class Olympiad
 					hero.set(CLASS_ID, winner.getInteger(CLASS_ID));
 					hero.set(CHAR_ID, winner.getInteger(CHAR_ID));
 					hero.set(CHAR_NAME, winner.getString(CHAR_NAME));
-
+					
 					record = new LogRecord(Level.INFO, "Hero "+hero.getString(CHAR_NAME));
 					record.setParameters(new Object[]{hero.getInteger(CHAR_ID), hero.getInteger(CLASS_ID)});
 					_logResults.log(record);
@@ -1393,7 +1393,7 @@ public class Olympiad
 			{
 				names.add(rset.getString(CHAR_NAME));
 			}
-
+			
 			statement.close();
 			rset.close();
 			
@@ -1444,7 +1444,7 @@ public class Olympiad
 			default:
 				points += Config.ALT_OLY_RANK5_POINTS;
 		}
-
+		
 		if (clear)
 		{
 			noble.set(POINTS, 0);
@@ -1582,7 +1582,7 @@ public class Olympiad
 	{
 		NpcHtmlMessage message = new NpcHtmlMessage(0);
 		message.setFile(player.getHtmlPrefix(), Olympiad.OLYMPIAD_HTML_PATH + "olympiad_observe2.htm");
-
+		
 		FastMap<Integer, String> matches = getInstance().getMatchList();
 		for (int i = 0; i < Olympiad.getStadiumCount(); i++)
 		{
@@ -1599,9 +1599,9 @@ public class Olympiad
 			}
 			message.replace("%state"+ arenaId +"%", state);
 			message.replace("%players"+ arenaId +"%", players);
-        }
-
-        player.sendPacket(message);
+		}
+		
+		player.sendPacket(message);
 	}
 	
 	private static void handleSpectatorEnter(int gameId, L2PcInstance player)
@@ -1627,7 +1627,7 @@ public class Olympiad
 	{
 		if (!player.inObserverMode())
 			return;
-
+		
 		String[] commands = command.split(" ");
 		int id = Integer.parseInt(commands[1]);
 		int arena = getSpectatorArena(player);
@@ -1639,7 +1639,7 @@ public class Olympiad
 		else
 			return;
 		Olympiad.addSpectator(id, player, false);
-
+		
 		handleSpectatorEnter(id, player);
 	}
 	

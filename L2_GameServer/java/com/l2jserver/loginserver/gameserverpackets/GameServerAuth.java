@@ -41,9 +41,8 @@ public class GameServerAuth extends BaseRecievePacket
 	private boolean _acceptAlternativeId;
 	private int _maxPlayers;
 	private int _port;
-	private String _externalHost;
-	private String _internalHost;
-
+	private String[] _hosts;
+	
 	/**
 	 * @param decrypt
 	 */
@@ -53,14 +52,16 @@ public class GameServerAuth extends BaseRecievePacket
 		_desiredId = readC();
 		_acceptAlternativeId = (readC() == 0 ? false : true);
 		_hostReserved = (readC() == 0 ? false : true);
-		_externalHost = readS();
-		_internalHost = readS();
 		_port = readH();
 		_maxPlayers = readD();
 		int size = readD();
 		_hexId = readB(size);
+		size = 2 * readD();
+		_hosts = new String[size];
+		for (int i = 0; i < size; i++)
+			_hosts[i] = readS();
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -68,22 +69,22 @@ public class GameServerAuth extends BaseRecievePacket
 	{
 		return _hexId;
 	}
-
+	
 	public boolean getHostReserved()
 	{
 		return _hostReserved;
 	}
-
+	
 	public int getDesiredID()
 	{
 		return _desiredId;
 	}
-
+	
 	public boolean acceptAlternateID()
 	{
 		return _acceptAlternativeId;
 	}
-
+	
 	/**
 	 * @return Returns the max players.
 	 */
@@ -91,23 +92,12 @@ public class GameServerAuth extends BaseRecievePacket
 	{
 		return _maxPlayers;
 	}
-
-	/**
-	 * @return Returns the externalHost.
-	 */
-	public String getExternalHost()
+	
+	public String[] getHosts()
 	{
-		return _externalHost;
+		return _hosts;
 	}
-
-	/**
-	 * @return Returns the internalHost.
-	 */
-	public String getInternalHost()
-	{
-		return _internalHost;
-	}
-
+	
 	/**
 	 * @return Returns the port.
 	 */

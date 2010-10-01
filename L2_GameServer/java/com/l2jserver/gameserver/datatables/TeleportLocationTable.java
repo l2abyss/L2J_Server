@@ -85,7 +85,7 @@ public class TeleportLocationTable
 		}
 		finally
 		{
-				L2DatabaseFactory.close(con);
+			L2DatabaseFactory.close(con);
 		}
 		
 		if (Config.CUSTOM_TELEPORT_TABLE)

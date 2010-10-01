@@ -70,8 +70,8 @@ public class L2PlayerAI extends L2PlayableAI
 		 if (Config.DEBUG)
 		 _log.warning("L2PlayerAI: changeIntention -> " + intention + " " + arg0 + " " + arg1);
 		 */
-
-		// do nothing unless CAST intention 
+		
+		// do nothing unless CAST intention
 		// however, forget interrupted actions when starting to use an offensive skill
 		if (intention != AI_INTENTION_CAST || (arg0 != null && ((L2Skill) arg0).isOffensive()))
 		{
@@ -244,7 +244,7 @@ public class L2PlayerAI extends L2PlayableAI
 		}
 		if (maybeMoveToPawn(target, _actor.getPhysicalAttackRange()))
 			return;
-
+		
 		_accessor.doAttack(target);
 	}
 	
@@ -283,7 +283,7 @@ public class L2PlayerAI extends L2PlayableAI
 		
 		if (_skill.getHitTime() > 50)
 			clientStopMoving(null);
-
+		
 		L2Object oldTarget = _actor.getTarget();
 		if (oldTarget != null && target != null && oldTarget != target)
 		{
@@ -335,7 +335,7 @@ public class L2PlayerAI extends L2PlayableAI
 		 if (Config.DEBUG)
 		 _log.warning("L2PlayerAI: onEvtThink -> Check intention");
 		 */
-
+		
 		_thinking = true;
 		try
 		{

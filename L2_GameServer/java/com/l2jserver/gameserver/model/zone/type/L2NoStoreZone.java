@@ -29,7 +29,7 @@ public class L2NoStoreZone extends L2ZoneType
 	{
 		super(id);
 	}
-
+	
 	@Override
 	protected void onEnter(final L2Character character)
 	{
@@ -38,7 +38,7 @@ public class L2NoStoreZone extends L2ZoneType
 			character.setInsideZone(L2Character.ZONE_NOSTORE, true);
 		}
 	}
-
+	
 	@Override
 	protected void onExit(final L2Character character)
 	{
@@ -47,12 +47,12 @@ public class L2NoStoreZone extends L2ZoneType
 			character.setInsideZone(L2Character.ZONE_NOSTORE, false);
 		}
 	}
-
+	
 	@Override
 	public void onDieInside(final L2Character character)
 	{
 	}
-
+	
 	@Override
 	public void onReviveInside(final L2Character character)
 	{

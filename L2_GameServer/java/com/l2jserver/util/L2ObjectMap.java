@@ -9,7 +9,7 @@
  * Added copyright notice
  *
  *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -38,31 +38,31 @@ import com.l2jserver.gameserver.model.L2Object;
 
 public abstract class L2ObjectMap<T extends L2Object> implements Iterable<T>
 {
-
-    public abstract int size();
-
-    public abstract boolean isEmpty();
-
-    public abstract void clear();
-
-    public abstract void put(T obj);
-
-    public abstract void remove(T obj);
-
-    public abstract T get(int id);
-
-    public abstract boolean contains(T obj);
-
-    public abstract Iterator<T> iterator();
-
-    public static L2ObjectMap<L2Object> createL2ObjectMap()
-    {
-        switch (Config.MAP_TYPE)
-        {
-            case WorldObjectMap:
-                return new WorldObjectMap<L2Object>();
-            default:
-                return new WorldObjectTree<L2Object>();
-        }
-    }
+	
+	public abstract int size();
+	
+	public abstract boolean isEmpty();
+	
+	public abstract void clear();
+	
+	public abstract void put(T obj);
+	
+	public abstract void remove(T obj);
+	
+	public abstract T get(int id);
+	
+	public abstract boolean contains(T obj);
+	
+	public abstract Iterator<T> iterator();
+	
+	public static L2ObjectMap<L2Object> createL2ObjectMap()
+	{
+		switch (Config.MAP_TYPE)
+		{
+			case WorldObjectMap:
+				return new WorldObjectMap<L2Object>();
+			default:
+				return new WorldObjectTree<L2Object>();
+		}
+	}
 }

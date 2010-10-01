@@ -17,12 +17,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
-import javolution.util.FastList;
 
 /**
  * This class ...
@@ -37,7 +37,7 @@ public class SellList extends L2GameServerPacket
 	private final L2MerchantInstance _lease;
 	private long _money;
 	private List<L2ItemInstance> _selllist = new FastList<L2ItemInstance>();
-
+	
 	public SellList(L2PcInstance player)
 	{
 		_activeChar = player;
@@ -45,7 +45,7 @@ public class SellList extends L2GameServerPacket
 		_money = _activeChar.getAdena();
 		doLease();
 	}
-
+	
 	public SellList(L2PcInstance player, L2MerchantInstance lease)
 	{
 		_activeChar = player;
@@ -53,7 +53,7 @@ public class SellList extends L2GameServerPacket
 		_money = _activeChar.getAdena();
 		doLease();
 	}
-
+	
 	private void doLease()
 	{
 		if (_lease == null)
@@ -61,9 +61,9 @@ public class SellList extends L2GameServerPacket
 			for (L2ItemInstance item : _activeChar.getInventory().getItems())
 			{
 				if (!item.isEquipped() &&														// Not equipped
-                        item.isSellable() &&													// Item is sellable
-                        (_activeChar.getPet() == null ||										// Pet not summoned or
-                        item.getObjectId() != _activeChar.getPet().getControlObjectId()))			// Pet is summoned and not the item that summoned the pet
+						item.isSellable() &&													// Item is sellable
+						(_activeChar.getPet() == null ||										// Pet not summoned or
+								item.getObjectId() != _activeChar.getPet().getControlObjectId()))			// Pet is summoned and not the item that summoned the pet
 				{
 					_selllist.add(item);
 					if (Config.DEBUG)
@@ -72,7 +72,7 @@ public class SellList extends L2GameServerPacket
 			}
 		}
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -80,7 +80,7 @@ public class SellList extends L2GameServerPacket
 		writeQ(_money);
 		writeD(_lease == null ? 0x00 : 1000000 + _lease.getTemplate().npcId);
 		writeH(_selllist.size());
-
+		
 		for (L2ItemInstance item : _selllist)
 		{
 			writeH(item.getItem().getType1());
@@ -94,19 +94,19 @@ public class SellList extends L2GameServerPacket
 			writeH(0x00);
 			writeH(item.getCustomType2());
 			writeQ(item.getItem().getReferencePrice()/2);
-
+			
 			// T1
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 				writeH(item.getElementDefAttr(i));
-
+			
 			writeH(0x00); // Enchant effect 1
 			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			writeH(0x00); // Enchant effect 3
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

@@ -29,7 +29,7 @@ public class SessionKey
 	public int playOkID2;
 	public int loginOkID1;
 	public int loginOkID2;
-
+	
 	public SessionKey(int loginOK1, int loginOK2, int playOK1, int playOK2)
 	{
 		playOkID1 = playOK1;
@@ -37,19 +37,19 @@ public class SessionKey
 		loginOkID1 = loginOK1;
 		loginOkID2 = loginOK2;
 	}
-
+	
 	@Override
 	public String toString()
 	{
 		return "PlayOk: " + playOkID1 + " " + playOkID2 + " LoginOk:" + loginOkID1 + " "
 		+ loginOkID2;
 	}
-
+	
 	public boolean checkLoginPair(int loginOk1, int loginOk2)
 	{
 		return loginOkID1 == loginOk1 && loginOkID2 == loginOk2;
 	}
-
+	
 	/**
 	 * <p>Returns true if keys are equal.</p>
 	 * <p>Only checks the PlayOk part of the session key if server doesnt show the licence when player logs in.</p>

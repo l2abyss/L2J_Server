@@ -25,43 +25,43 @@ public class L2SkillLearnSkill extends L2Skill
 {
 	private final int[] _learnSkillId;
 	private final int[] _learnSkillLvl;
-
+	
 	public L2SkillLearnSkill(StatsSet set)
 	{
 		super(set);
-
+		
 		String[] ar = set.getString("learnSkillId", "0").split(",");
 		int[] ar2 = new int[ar.length];
-
+		
 		for (int i = 0; i < ar.length; i++)
 			ar2[i] = Integer.parseInt(ar[i]);
-
+		
 		_learnSkillId = ar2;
-
+		
 		ar = set.getString("learnSkillLvl", "1").split(",");
 		ar2 = new int[_learnSkillId.length];
-
+		
 		for (int i = 0; i < _learnSkillId.length; i++)
 			ar2[i] = 1;
-
+		
 		for (int i = 0; i < ar.length; i++)
 			ar2[i] = Integer.parseInt(ar[i]);
-
+		
 		_learnSkillLvl = ar2;
 	}
-
+	
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
 		if (!(activeChar instanceof L2PcInstance))
 			return;
-
+		
 		final L2PcInstance player = ((L2PcInstance)activeChar);
 		L2Skill newSkill;
-
+		
 		for (int i = 0; i < _learnSkillId.length; i++)
 		{
-			if (player.getSkillLevel(_learnSkillId[i]) < 0 && _learnSkillId[i] != 0)
+			if (player.getSkillLevel(_learnSkillId[i]) < _learnSkillLvl[i] && _learnSkillId[i] != 0)
 			{
 				newSkill = SkillTable.getInstance().getInfo(_learnSkillId[i], _learnSkillLvl[i]);
 				if (newSkill != null)

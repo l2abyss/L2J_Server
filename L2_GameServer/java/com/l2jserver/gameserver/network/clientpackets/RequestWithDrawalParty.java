@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -30,29 +31,31 @@ import com.l2jserver.gameserver.network.serverpackets.PartyMatchDetail;
  */
 public final class RequestWithDrawalParty extends L2GameClientPacket
 {
-	private static final String _C__2B_REQUESTWITHDRAWALPARTY = "[C] 2B RequestWithDrawalParty";
+	private static final String _C__2B_REQUESTWITHDRAWALPARTY = "[C] 44 RequestWithDrawalParty";
 	//private static Logger _log = Logger.getLogger(RequestWithDrawalParty.class.getName());
-
+	
 	@Override
 	protected void readImpl()
 	{
 		//trigger
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
-
-		if (player.isInParty())
+		
+		L2Party party = player.getParty();
+		
+		if (party != null)
 		{
-			if (player.getParty().isInDimensionalRift() && !player.getParty().getDimensionalRift().getRevivedAtWaitingRoom().contains(player))
+			if (party.isInDimensionalRift() && !party.getDimensionalRift().getRevivedAtWaitingRoom().contains(player))
 				player.sendMessage("You can't exit party when you are in Dimensional Rift.");
 			else
-			{				
-				player.getParty().removePartyMember(player);
+			{
+				party.removePartyMember(player);
 				
 				if(player.isInPartyMatchRoom())
 				{
@@ -72,7 +75,7 @@ public final class RequestWithDrawalParty extends L2GameClientPacket
 			}
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

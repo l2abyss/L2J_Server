@@ -36,22 +36,22 @@ public final class L2CastleTeleporterInstance extends L2Npc
 	public static final Logger _log = Logger.getLogger(L2CastleTeleporterInstance.class.getName());
 	
 	private boolean _currentTask = false;
-
+	
 	/**
-	* @param template
-	*/
+	 * @param template
+	 */
 	public L2CastleTeleporterInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2CastleTeleporterInstance);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
-
+		
 		if (actualCommand.equalsIgnoreCase("tele"))
 		{
 			int delay;
@@ -75,7 +75,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 		else
 			super.onBypassFeedback(player, command);
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
@@ -95,12 +95,12 @@ public final class L2CastleTeleporterInstance extends L2Npc
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}
-
+	
 	void oustAllPlayers()
 	{
 		getCastle().oustAllPlayers();
 	}
-
+	
 	class oustAllPlayers implements Runnable
 	{
 		public void run()
@@ -127,12 +127,12 @@ public final class L2CastleTeleporterInstance extends L2Npc
 			}
 		}
 	}
-
+	
 	public boolean getTask()
 	{
 		return _currentTask;
 	}
-
+	
 	public void setTask(boolean state)
 	{
 		_currentTask = state;

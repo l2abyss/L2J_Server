@@ -25,22 +25,21 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2MinionData;
+import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.base.ClassId;
-import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.skills.BaseStats;
-import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * This class ...
@@ -80,8 +79,7 @@ public class NpcTable
 								"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 								"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk",
 								"pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "enchant", "walkspd", "runspd",
-								"isUndead", "absorb_level", "absorb_type",
-								"drop_herbs" }) + " FROM npc");
+								"isUndead", "dropHerbGroup" }) + " FROM npc");
 				ResultSet npcdata = statement.executeQuery();
 				
 				fillNpcTable(npcdata, false);
@@ -102,8 +100,7 @@ public class NpcTable
 									"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 									"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp",
 									"patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "enchant", "walkspd",
-									"runspd", "isUndead", "absorb_level", "absorb_type",
-									"drop_herbs" }) + " FROM custom_npc");
+									"runspd", "isUndead", "dropHerbGroup" }) + " FROM custom_npc");
 					ResultSet npcdata = statement.executeQuery();
 					
 					fillNpcTable(npcdata, true);
@@ -115,7 +112,7 @@ public class NpcTable
 					_log.log(Level.SEVERE, "NPCTable: Error creating custom NPC table.", e);
 				}
 			}
-
+			
 			try
 			{
 				PreparedStatement statement = con.prepareStatement("SELECT npcid, skillid, level FROM npcskills");
@@ -204,7 +201,7 @@ public class NpcTable
 					_log.log(Level.SEVERE, "Custom NPCTable: Error reading NPC skills table.", e);
 				}
 			}
-
+			
 			try
 			{
 				PreparedStatement statement2 = con.prepareStatement("SELECT "
@@ -255,7 +252,7 @@ public class NpcTable
 				{
 					PreparedStatement statement2 = con.prepareStatement("SELECT "
 							+ L2DatabaseFactory.getInstance().safetyString(new String[] { "mobId", "itemId", "min", "max", "category",
-									"chance" }) + " FROM custom_droplist ORDER BY mobId, chance DESC");
+							"chance" }) + " FROM custom_droplist ORDER BY mobId, chance DESC");
 					ResultSet dropData = statement2.executeQuery();
 					L2DropData dropDat = null;
 					L2NpcTemplate npcDat = null;
@@ -363,9 +360,9 @@ public class NpcTable
 			//-------------------------------------------------------------------
 			//NPC AI Attributes & Data ...
 			
-			try 
+			try
 			{
-				PreparedStatement statement10 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"npc_id", "primary_attack","skill_chance","canMove","soulshot","spiritshot","sschance","spschance","minrangeskill","minrangechance","maxrangeskill","maxrangechance","ischaos","clan","clan_range","enemyClan","enemyRange","ai_type","dodge"}) + " FROM npcAIData ORDER BY npc_id");
+				PreparedStatement statement10 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"npc_id", "primary_attack","skill_chance","canMove","soulshot","spiritshot","sschance","spschance","minrangeskill","minrangechance","maxrangeskill","maxrangechance","ischaos","clan","clan_range","enemyClan","enemyRange","ai_type","dodge"}) + " FROM npcaidata ORDER BY npc_id");
 				ResultSet NpcAIDataTable = statement10.executeQuery();
 				L2NpcAIData npcAIDat = null;
 				L2NpcTemplate npcDat = null;
@@ -412,8 +409,8 @@ public class NpcTable
 				NpcAIDataTable.close();
 				statement10.close();
 				_log.info("NPC AI Data Table: Loaded " + cont + " AI Data.");
-			} 
-			catch (Exception e) 
+			}
+			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "NPCTable: Error reading NPC AI Data: " + e.getMessage(), e);
 			}
@@ -422,7 +419,7 @@ public class NpcTable
 			{
 				try
 				{
-					PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] { "npc_id", "primary_attack", "skill_chance", "canMove", "soulshot", "spiritshot", "sschance", "spschance", "minrangeskill", "minrangechance", "maxrangeskill", "maxrangechance", "ischaos", "clan", "clan_range", "enemyClan", "enemyRange", "ai_type", "dodge" }) + " FROM custom_npcAIData ORDER BY npc_id");
+					PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] { "npc_id", "primary_attack", "skill_chance", "canMove", "soulshot", "spiritshot", "sschance", "spschance", "minrangeskill", "minrangechance", "maxrangeskill", "maxrangechance", "ischaos", "clan", "clan_range", "enemyClan", "enemyRange", "ai_type", "dodge" }) + " FROM custom_npcaidata ORDER BY npc_id");
 					ResultSet NpcAIDataTable = statement.executeQuery();
 					L2NpcAIData npcAIDat = null;
 					L2NpcTemplate npcDat = null;
@@ -474,6 +471,121 @@ public class NpcTable
 					_log.log(Level.SEVERE, "NPCTable: Error reading NPC Custom AI Data: " + e.getMessage(), e);
 				}
 			}
+			
+			try
+			{
+				PreparedStatement statement10 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"npc_id", "elemAtkType","elemAtkValue","fireDefValue","waterDefValue","earthDefValue","windDefValue","holyDefValue","darkDefValue"}) + " FROM npc_elementals ORDER BY npc_id");
+				ResultSet NpcElementals = statement10.executeQuery();
+				L2NpcTemplate npcDat = null;
+				int cont=0;
+				while (NpcElementals.next())
+				{
+					int npc_id = NpcElementals.getInt("npc_id");
+					npcDat = _npcs.get(npc_id);
+					if (npcDat == null)
+					{
+						_log.severe("NPCElementals: Elementals Error with id : " + npc_id);
+						continue;
+					}
+					switch(NpcElementals.getByte("elemAtkType"))
+					{
+						case Elementals.FIRE:
+							npcDat.baseFire = NpcElementals.getInt("elemAtkValue");
+							break;
+						case Elementals.WATER:
+							npcDat.baseWater = NpcElementals.getInt("elemAtkValue");
+							break;
+						case Elementals.EARTH:
+							npcDat.baseEarth = NpcElementals.getInt("elemAtkValue");
+							break;
+						case Elementals.WIND:
+							npcDat.baseWind = NpcElementals.getInt("elemAtkValue");
+							break;
+						case Elementals.HOLY:
+							npcDat.baseHoly = NpcElementals.getInt("elemAtkValue");
+							break;
+						case Elementals.DARK:
+							npcDat.baseDark = NpcElementals.getInt("elemAtkValue");
+							break;
+						default:
+							_log.severe("NPCElementals: Elementals Error with id : " + npc_id + "; unknown elementType: " + NpcElementals.getByte("elemAtkType"));
+							continue;
+					}
+					npcDat.baseFireRes = NpcElementals.getInt("fireDefValue");
+					npcDat.baseWaterRes = NpcElementals.getInt("waterDefValue");
+					npcDat.baseEarthRes = NpcElementals.getInt("earthDefValue");
+					npcDat.baseWindRes = NpcElementals.getInt("windDefValue");
+					npcDat.baseHolyRes = NpcElementals.getInt("holyDefValue");
+					npcDat.baseDarkRes = NpcElementals.getInt("darkDefValue");
+					cont++;
+				}
+				NpcElementals.close();
+				statement10.close();
+				_log.info("NPC Elementals Data Table: Loaded " + cont + " elementals Data.");
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "NPCTable: Error reading NPC Elementals Data: " + e.getMessage(), e);
+			}
+			
+			if (Config.CUSTOM_NPC_TABLE)
+			{
+				try
+				{
+					PreparedStatement statement10 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"npc_id", "elemAtkType","elemAtkValue","fireDefValue","waterDefValue","earthDefValue","windDefValue","holyDefValue","darkDefValue"}) + " FROM custom_npc_elementals ORDER BY npc_id");
+					ResultSet NpcElementals = statement10.executeQuery();
+					L2NpcTemplate npcDat = null;
+					int cont=0;
+					while (NpcElementals.next())
+					{
+						int npc_id = NpcElementals.getInt("npc_id");
+						npcDat = _npcs.get(npc_id);
+						if (npcDat == null)
+						{
+							_log.severe("NPCElementals: custom Elementals Error with id : " + npc_id);
+							continue;
+						}
+						switch(NpcElementals.getByte("elemAtkType"))
+						{
+							case Elementals.FIRE:
+								npcDat.baseFire = NpcElementals.getInt("elemAtkValue");
+								break;
+							case Elementals.WATER:
+								npcDat.baseWater = NpcElementals.getInt("elemAtkValue");
+								break;
+							case Elementals.EARTH:
+								npcDat.baseEarth = NpcElementals.getInt("elemAtkValue");
+								break;
+							case Elementals.WIND:
+								npcDat.baseWind = NpcElementals.getInt("elemAtkValue");
+								break;
+							case Elementals.HOLY:
+								npcDat.baseHoly = NpcElementals.getInt("elemAtkValue");
+								break;
+							case Elementals.DARK:
+								npcDat.baseDark = NpcElementals.getInt("elemAtkValue");
+								break;
+							default:
+								_log.severe("NPCElementals: custom Elementals Error with id : " + npc_id + "; unknown elementType: " + NpcElementals.getByte("elemAtkType"));
+								continue;
+						}
+						npcDat.baseFireRes = NpcElementals.getInt("fireDefValue");
+						npcDat.baseWaterRes = NpcElementals.getInt("waterDefValue");
+						npcDat.baseEarthRes = NpcElementals.getInt("earthDefValue");
+						npcDat.baseWindRes = NpcElementals.getInt("windDefValue");
+						npcDat.baseHolyRes = NpcElementals.getInt("holyDefValue");
+						npcDat.baseDarkRes = NpcElementals.getInt("darkDefValue");
+						cont++;
+					}
+					NpcElementals.close();
+					statement10.close();
+					_log.info("NPC Elementals Data Table: Loaded " + cont + " custom elementals Data.");
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.SEVERE, "NPCTable: Error reading NPC Custom Elementals Data: " + e.getMessage(), e);
+				}
+			}
 		}
 		finally
 		{
@@ -520,7 +632,7 @@ public class NpcTable
 			npcDat.set("rhand", NpcData.getInt("rhand"));
 			npcDat.set("lhand", NpcData.getInt("lhand"));
 			npcDat.set("armor", NpcData.getInt("armor"));
-			npcDat.set("enchant", NpcData.getInt("enchant")); 
+			npcDat.set("enchant", NpcData.getInt("enchant"));
 			npcDat.set("baseWalkSpd", NpcData.getInt("walkspd"));
 			npcDat.set("baseRunSpd", NpcData.getInt("runspd"));
 			
@@ -544,16 +656,21 @@ public class NpcTable
 			
 			npcDat.set("isUndead", NpcData.getString("isUndead"));
 			
-			npcDat.set("absorb_level", NpcData.getString("absorb_level"));
-			npcDat.set("absorb_type", NpcData.getString("absorb_type"));
+			npcDat.set("dropHerbGroup", NpcData.getInt("dropHerbGroup"));
 			
-			npcDat.set("drop_herbs", Boolean.valueOf(NpcData.getString("drop_herbs")));
+			// Default element resists
+			npcDat.set("baseFireRes", 20);
+			npcDat.set("baseWindRes", 20);
+			npcDat.set("baseWaterRes", 20);
+			npcDat.set("baseEarthRes", 20);
+			npcDat.set("baseHolyRes", 20);
+			npcDat.set("baseDarkRes", 20);
 			
 			L2NpcTemplate template = new L2NpcTemplate(npcDat);
-			template.addVulnerability(Stats.BOW_WPN_VULN, 1);
+			/*template.addVulnerability(Stats.BOW_WPN_VULN, 1);
 			template.addVulnerability(Stats.CROSSBOW_WPN_VULN, 1);
 			template.addVulnerability(Stats.BLUNT_WPN_VULN, 1);
-			template.addVulnerability(Stats.DAGGER_WPN_VULN, 1);
+			template.addVulnerability(Stats.DAGGER_WPN_VULN, 1);*/
 			
 			_npcs.put(id, template);
 			count++;
@@ -600,8 +717,8 @@ public class NpcTable
 							"serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange",
 							"hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk",
 							"mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "enchant", "walkspd", "runspd",
-							"isUndead", "absorb_level", "absorb_type", "drop_herbs" })
-					+ " FROM npc WHERE id=?");
+							"isUndead", "dropHerbGroup" })
+							+ " FROM npc WHERE id=?");
 			st.setInt(1, id);
 			ResultSet rs = st.executeQuery();
 			fillNpcTable(rs, false);
@@ -612,8 +729,7 @@ public class NpcTable
 								"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 								"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk",
 								"pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "armor", "enchant", "walkspd", "runspd",
-								"isUndead", "absorb_level", "absorb_type",
-								"drop_herbs" }) + " FROM custom_npc WHERE id=?");
+								"isUndead", "dropHerbGroup" }) + " FROM custom_npc WHERE id=?");
 				st.setInt(1, id);
 				rs = st.executeQuery();
 				fillNpcTable(rs, true);
@@ -720,7 +836,7 @@ public class NpcTable
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public void replaceTemplate(L2NpcTemplate npc)
 	{
 		_npcs.put(npc.npcId, npc);

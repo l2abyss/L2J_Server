@@ -17,28 +17,26 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.L2Object;
 
 /**
- * sample
- * 0000: 1e  9b da 12 40                                     ....@
  *
- * format  d
+ * format  cdd
  *
  * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
  */
 public final class DeleteObject extends L2GameServerPacket
 {
-	private static final String _S__1E_DELETEOBJECT = "[S] 08 DeleteObject";
+	private static final String _S__08_DELETEOBJECT = "[S] 08 DeleteObject";
 	private final int _objectId;
-
+	
 	public DeleteObject(L2Object obj)
 	{
 		_objectId = obj.getObjectId();
 	}
-
+	
 	public DeleteObject(int objectId)
 	{
 		_objectId = objectId;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -46,13 +44,13 @@ public final class DeleteObject extends L2GameServerPacket
 		writeD(_objectId);
 		writeD(0x00); //c2
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
 	@Override
 	public String getType()
 	{
-		return _S__1E_DELETEOBJECT;
+		return _S__08_DELETEOBJECT;
 	}
 }

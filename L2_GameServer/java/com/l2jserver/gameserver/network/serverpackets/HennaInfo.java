@@ -20,15 +20,15 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class HennaInfo extends L2GameServerPacket
 {
 	private static final String _S__E4_HennaInfo = "[S] e5 HennaInfo";
-
+	
 	private final L2PcInstance _activeChar;
 	private final L2HennaInstance[] _hennas = new L2HennaInstance[3];
 	private int _count;
-
+	
 	public HennaInfo(L2PcInstance player)
 	{
 		_activeChar = player;
-
+		
 		int j = 0;
 		for (int i = 0; i < 3; i++)
 		{
@@ -38,7 +38,7 @@ public final class HennaInfo extends L2GameServerPacket
 		}
 		_count = j;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -57,7 +57,7 @@ public final class HennaInfo extends L2GameServerPacket
 			writeD(_hennas[i].getSymbolId());
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

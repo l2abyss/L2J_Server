@@ -18,6 +18,7 @@ package com.l2jserver.gameserver.skills.effects;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2EffectPointInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
@@ -64,22 +65,26 @@ public class EffectSignetNoise extends L2Effect
 	{
 		if (getCount() == getTotalCount() - 1)
 			return true; // do nothing first time
-			
+		
+		L2PcInstance caster = (L2PcInstance) getEffector();
+		
 		for (L2Character target : _actor.getKnownList().getKnownCharactersInRadius(getSkill().getSkillRadius()))
 		{
-			if (target == null)
+			if (target == null || target == caster)
 				continue;
 			
-			L2Effect[] effects = target.getAllEffects();
-			if (effects != null)
+			if (caster.canAttackCharacter(target))
 			{
-				for (L2Effect effect : effects)
+				L2Effect[] effects = target.getAllEffects();
+				if (effects != null)
 				{
-					if (effect.getSkill().isDance())
-						effect.exit();
+					for (L2Effect effect : effects)
+					{
+						if (effect.getSkill().isDance())
+							effect.exit();
+					}
 				}
 			}
-			// there doesn't seem to be a visible effect?
 		}
 		return true;
 	}

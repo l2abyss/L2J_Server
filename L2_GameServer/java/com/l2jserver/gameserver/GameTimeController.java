@@ -16,6 +16,7 @@ package com.l2jserver.gameserver;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -160,7 +161,7 @@ public class GameTimeController
 					
 					if (oldTicks != _gameTicks)
 						moveObjects(); // Runs possibly too often
-						
+					
 					runtime = (System.currentTimeMillis() - _gameStartTime) - runtime;
 					
 					// calculate sleep time... time needed to next tick minus time it takes to call moveObjects()
@@ -176,11 +177,11 @@ public class GameTimeController
 					if (_interruptRequest)
 						return;
 					
-					ie.printStackTrace();
+					_log.log(Level.WARNING, "", ie);
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.log(Level.WARNING, "", e);
 				}
 			}
 		}
@@ -189,7 +190,7 @@ public class GameTimeController
 	/**
 	 * Update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED.<BR><BR>
 	 */
-	class MovingObjectArrived implements Runnable
+	private static class MovingObjectArrived implements Runnable
 	{
 		private final L2Character _ended;
 		
@@ -211,7 +212,7 @@ public class GameTimeController
 			}
 			catch (NullPointerException e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 	}

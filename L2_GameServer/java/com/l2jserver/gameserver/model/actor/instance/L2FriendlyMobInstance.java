@@ -33,27 +33,27 @@ public class L2FriendlyMobInstance extends L2Attackable
 		super(objectId, template);
 		setInstanceType(InstanceType.L2FriendlyMobInstance);
 	}
-
-    @Override
-	public final FriendlyMobKnownList getKnownList()
-    {
-    	return (FriendlyMobKnownList)super.getKnownList();
-    }
-    
+	
 	@Override
-    public void initKnownList()
-    {
+	public final FriendlyMobKnownList getKnownList()
+	{
+		return (FriendlyMobKnownList)super.getKnownList();
+	}
+	
+	@Override
+	public void initKnownList()
+	{
 		setKnownList(new FriendlyMobKnownList(this));
-    }
-
+	}
+	
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		if (attacker instanceof L2PcInstance)
 			return ((L2PcInstance)attacker).getKarma() > 0;
-		return false;
+			return false;
 	}
-
+	
 	@Override
 	public boolean isAggressive()
 	{

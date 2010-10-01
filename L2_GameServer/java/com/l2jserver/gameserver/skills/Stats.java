@@ -44,14 +44,14 @@ public enum Stats
 	MAGIC_DEFENCE("mDef"),
 	POWER_ATTACK("pAtk"),
 	MAGIC_ATTACK("mAtk"),
-    PHYSICAL_SKILL_POWER("physicalSkillPower"),
+	PHYSICAL_SKILL_POWER("physicalSkillPower"),
 	POWER_ATTACK_SPEED("pAtkSpd"),
 	MAGIC_ATTACK_SPEED("mAtkSpd"), // how fast a spell is casted (including animation)
 	MAGIC_REUSE_RATE("mReuse"), // how fast spells becomes ready to reuse
 	SHIELD_DEFENCE("sDef"),
 	CRITICAL_DAMAGE("cAtk"),
 	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, crit power and crit damage SA
-									// it was totally bad since now...
+	// it was totally bad since now...
 	PVP_PHYSICAL_DMG("pvpPhysDmg"),
 	PVP_MAGICAL_DMG("pvpMagicalDmg"),
 	PVP_PHYS_SKILL_DMG("pvpPhysSkillsDmg"),
@@ -59,6 +59,12 @@ public enum Stats
 	PVP_PHYSICAL_DEF("pvpPhysDef"),
 	PVP_MAGICAL_DEF("pvpMagicalDef"),
 	PVP_PHYS_SKILL_DEF("pvpPhysSkillsDef"),
+	
+	PVE_PHYSICAL_DMG("pvePhysDmg"),
+	PVE_PHYS_SKILL_DMG("pvePhysSkillsDmg"),
+	PVE_BOW_DMG("pveBowDmg"),
+	PVE_BOW_SKILL_DMG("pveBowSkillsDmg"),
+	PVE_MAGICAL_DMG("pveMagicalDmg"),
 	
 	// Atk & Def rates
 	EVASION_RATE("rEvas"),
@@ -235,7 +241,7 @@ public enum Stats
 	
 	//Skill mastery
 	SKILL_MASTERY			("skillMastery"),
-
+	
 	// vitality
 	VITALITY_CONSUME_RATE("vitalityConsumeRate");
 	

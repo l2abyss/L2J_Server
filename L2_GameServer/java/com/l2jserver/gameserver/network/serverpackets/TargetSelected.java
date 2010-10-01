@@ -31,8 +31,8 @@ public final class TargetSelected extends L2GameServerPacket
 	private int _x;
 	private int _y;
 	private int _z;
-
-
+	
+	
 	/**
 	 * @param _characters
 	 */
@@ -44,7 +44,7 @@ public final class TargetSelected extends L2GameServerPacket
 		_y = y;
 		_z = z;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -56,7 +56,7 @@ public final class TargetSelected extends L2GameServerPacket
 		writeD(_z);
 		writeD(0x00);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

@@ -45,7 +45,7 @@ public class ExEnchantSkillResult extends L2GameServerPacket
 	{
 		return "[S] FE:A7 ExEnchantSkillResult";
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
@@ -56,5 +56,5 @@ public class ExEnchantSkillResult extends L2GameServerPacket
 		writeH(0xa7);
 		writeD(_enchanted ? 1 : 0);
 	}
-
+	
 }

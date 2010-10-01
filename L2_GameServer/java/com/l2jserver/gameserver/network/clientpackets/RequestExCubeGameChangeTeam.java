@@ -37,10 +37,10 @@ public final class RequestExCubeGameChangeTeam extends L2GameClientPacket
 		_arena = readD();
 		_team = readD();
 	}
-
+	
 	@Override
 	public void runImpl()
-	{	
+	{
 		switch (_team)
 		{
 			case 0:
@@ -55,7 +55,7 @@ public final class RequestExCubeGameChangeTeam extends L2GameClientPacket
 				break;
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

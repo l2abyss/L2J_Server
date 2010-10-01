@@ -19,10 +19,10 @@ import java.util.logging.LogRecord;
 
 public class ErrorFilter implements Filter
 {
-
+	
 	public boolean isLoggable(LogRecord record)
 	{
 		return record.getThrown() != null;
 	}
-
+	
 }

@@ -159,7 +159,7 @@ public class L2PetInstance extends L2Summon
 						SystemMessage sm = new SystemMessage(SystemMessageId.PET_TOOK_S1_BECAUSE_HE_WAS_HUNGRY);
 						sm.addItemName(food.getItemId());
 						getOwner().sendPacket(sm);
-						handler.useItem(L2PetInstance.this, food);
+						handler.useItem(L2PetInstance.this, food, false);
 					}
 				}
 				else
@@ -465,7 +465,7 @@ public class L2PetInstance extends L2Summon
 			{
 				getOwner().sendPacket(ActionFailed.STATIC_PACKET);
 				return;
-			}		
+			}
 			if ( !_inventory.validateCapacity(target))
 			{
 				getOwner().sendPacket(new SystemMessage(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS));
@@ -509,7 +509,7 @@ public class L2PetInstance extends L2Summon
 			target.pickupMe(this);
 			
 			if(Config.SAVE_DROPPED_ITEM) // item must be removed from ItemsOnGroundManager if is active
-			ItemsOnGroundManager.getInstance().removeObject(target);
+				ItemsOnGroundManager.getInstance().removeObject(target);
 		}
 		
 		// Herbs
@@ -519,20 +519,20 @@ public class L2PetInstance extends L2Summon
 			if (handler == null)
 				_log.fine("No item handler registered for item ID " + target.getItemId() + ".");
 			else
-				handler.useItem(this, target);
+				handler.useItem(this, target, false);
 			
 			ItemTable.getInstance().destroyItem("Consume", target, getOwner(), null);
 			
 			broadcastStatusUpdate();
 			
 			
-			// Commented out and moved below synchronized block by DrHouse. 
+			// Commented out and moved below synchronized block by DrHouse.
 			// It seems that pets get full effect of herbs when picking them up by themselves
 			/*
 			SystemMessage smsg = new SystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
             smsg.addItemName(target.getItemId());
             getOwner().sendPacket(smsg);
-			return; 
+			return;
 			 */
 		}
 		else
@@ -654,7 +654,6 @@ public class L2PetInstance extends L2Summon
 			else petIU.addNewItem(newItem);
 			((PetInventory)target).getOwner().getOwner().sendPacket(petIU);
 		}
-		getInventory().refreshWeight();
 		return newItem;
 	}
 	
@@ -861,7 +860,7 @@ public class L2PetInstance extends L2Summon
 			pet.setWeapon(rset.getInt("weapon"));
 			pet.setArmor(rset.getInt("armor"));
 			pet.setJewel(rset.getInt("jewel"));
-			if (rset.getDouble("curHp") < 0.5) 
+			if (rset.getDouble("curHp") < 0.5)
 			{
 				pet.setIsDead(true);
 				pet.stopHpMpRegeneration();
@@ -1195,7 +1194,7 @@ public class L2PetInstance extends L2Summon
 	public void setName(String name)
 	{
 		L2ItemInstance controlItem = getControlItem();
-		if (getControlItem().getCustomType2() == (name == null ? 1 : 0 )) 
+		if (getControlItem().getCustomType2() == (name == null ? 1 : 0 ))
 		{
 			// name not set yet
 			controlItem.setCustomType2(name != null ? 1 : 0 );

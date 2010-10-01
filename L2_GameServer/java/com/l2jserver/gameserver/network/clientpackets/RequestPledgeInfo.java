@@ -32,23 +32,23 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeInfo;
 public final class RequestPledgeInfo extends L2GameClientPacket
 {
 	private static final String _C__66_REQUESTPLEDGEINFO = "[C] 66 RequestPledgeInfo";
-
+	
 	private static Logger _log = Logger.getLogger(RequestPledgeInfo.class.getName());
-
+	
 	private int _clanId;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_clanId = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		if (Config.DEBUG)
 			_log.log(Level.FINE, "Info for clan " + _clanId + " requested");
-
+		
 		L2PcInstance activeChar = getClient().getActiveChar();
 		
 		if (activeChar == null)
@@ -61,12 +61,12 @@ public final class RequestPledgeInfo extends L2GameClientPacket
 				_log.warning("Clan data for clanId " + _clanId + " is missing for player "+activeChar.getName());
 			return; // we have no clan data ?!? should not happen
 		}
-
+		
 		PledgeInfo pc = new PledgeInfo(clan);
 		activeChar.sendPacket(pc);
 		
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -77,7 +77,7 @@ public final class RequestPledgeInfo extends L2GameClientPacket
 	{
 		return _C__66_REQUESTPLEDGEINFO;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

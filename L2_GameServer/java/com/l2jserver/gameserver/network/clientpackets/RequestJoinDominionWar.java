@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
@@ -30,11 +30,11 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 {
 	private static final String _C__57_RequestJoinDominionWar = "[C] 57 RequestJoinDominionWar";
 	// private static Logger _log = Logger.getLogger(RequestJoinDominionWar.class.getName());
-
+	
 	private int _territoryId;
 	private int _isClan;
 	private int _isJoining;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -42,7 +42,7 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 		_isClan = readD();
 		_isJoining = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -116,7 +116,7 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 		}
 		activeChar.sendPacket(new ExShowDominionRegistry(castleId, activeChar));
 	}
-
+	
 	@Override
 	public String getType()
 	{

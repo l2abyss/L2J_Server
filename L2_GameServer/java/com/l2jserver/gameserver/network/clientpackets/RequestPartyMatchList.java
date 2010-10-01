@@ -39,7 +39,7 @@ public class RequestPartyMatchList extends L2GameClientPacket
 	private int _lvlmax;
 	private int _loot;
 	private String _roomtitle;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -50,15 +50,15 @@ public class RequestPartyMatchList extends L2GameClientPacket
 		_loot = readD();
 		_roomtitle = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance _activeChar = getClient().getActiveChar();
-
+		
 		if (_activeChar == null)
 			return;
-
+		
 		if (_roomid  > 0)
 		{
 			PartyMatchRoom _room = PartyMatchRoomList.getInstance().getRoom(_roomid);
@@ -70,12 +70,12 @@ public class RequestPartyMatchList extends L2GameClientPacket
 				_room.setMaxLvl(_lvlmax);
 				_room.setLootType(_loot);
 				_room.setTitle(_roomtitle);
-
+				
 				for(L2PcInstance _member : _room.getPartyMembers())
 				{
 					if(_member == null)
 						continue;
-
+					
 					_member.sendPacket(new PartyMatchDetail(_activeChar, _room));
 					_member.sendPacket(new SystemMessage(SystemMessageId.PARTY_ROOM_REVISED));
 				}
@@ -118,7 +118,7 @@ public class RequestPartyMatchList extends L2GameClientPacket
 			_activeChar.broadcastUserInfo();
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

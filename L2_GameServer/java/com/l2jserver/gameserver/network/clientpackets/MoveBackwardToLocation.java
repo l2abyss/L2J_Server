@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.PartyMemberPosition;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -89,8 +88,8 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 			return;
 		// Correcting targetZ from floor level to head level (?)
 		// Client is giving floor level as targetZ but that floor level doesn't
-		// match our current geodata and teleport coords as good as head level! 
-		// L2J uses floor, not head level as char coordinates. This is some 
+		// match our current geodata and teleport coords as good as head level!
+		// L2J uses floor, not head level as char coordinates. This is some
 		// sort of incompatibility fix.
 		// Validate position packets sends head level.
 		_targetZ += activeChar.getTemplate().collisionHeight;
@@ -98,7 +97,7 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 		_curX = activeChar.getX();
 		_curY = activeChar.getY();
 		_curZ = activeChar.getZ();
-
+		
 		if (activeChar.getTeleMode() > 0)
 		{
 			if (activeChar.getTeleMode() == 1)
@@ -124,8 +123,8 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 			}
 			activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(_targetX, _targetY, _targetZ, 0));
 			
-			if (activeChar.getParty() != null)
-				activeChar.getParty().broadcastToPartyMembers(activeChar, new PartyMemberPosition(activeChar));
+			/*if (activeChar.getParty() != null)
+				activeChar.getParty().broadcastToPartyMembers(activeChar, new PartyMemberPosition(activeChar));*/
 		}
 	}
 	

@@ -59,7 +59,7 @@ public class L2OlympiadStadiumZone extends L2ZoneType
 		{
 			((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 		}
-
+		
 		if (character instanceof L2Playable)
 		{
 			final L2PcInstance player = character.getActingPlayer();

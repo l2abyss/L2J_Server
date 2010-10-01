@@ -24,9 +24,9 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 // handled by scripted AI.
 public class L2FeedableBeastInstance extends L2MonsterInstance
 {
-    public L2FeedableBeastInstance(int objectId, L2NpcTemplate template)
-    {
-        super(objectId, template);
-        setInstanceType(InstanceType.L2FeedableBeastInstance);
-    }
+	public L2FeedableBeastInstance(int objectId, L2NpcTemplate template)
+	{
+		super(objectId, template);
+		setInstanceType(InstanceType.L2FeedableBeastInstance);
+	}
 }

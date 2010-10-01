@@ -29,9 +29,9 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 {
 	private final TreeMap<Integer, T> _objectMap = new TreeMap<Integer,T>();
 	private final ReentrantReadWriteLock _rwl = new ReentrantReadWriteLock();
-    private final Lock _r = _rwl.readLock();
-    private final Lock _w = _rwl.writeLock();
-
+	private final Lock _r = _rwl.readLock();
+	private final Lock _w = _rwl.writeLock();
+	
 	/**
 	 * @see com.l2jserver.util.L2ObjectMap#size()
 	 */
@@ -44,7 +44,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 		}
 		finally { _r.unlock(); }
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.L2ObjectMap#isEmpty()
 	 */
@@ -57,7 +57,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 		}
 		finally { _r.unlock(); }
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.L2ObjectMap#clear()
 	 */
@@ -70,7 +70,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 		}
 		finally { _w.unlock(); }
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.L2ObjectMap#put(T)
 	 */
@@ -85,7 +85,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 			finally { _w.unlock(); }
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.L2ObjectMap#remove(T)
 	 */
@@ -100,7 +100,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 			finally { _w.unlock(); }
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.L2ObjectMap#get(int)
 	 */
@@ -113,7 +113,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 		}
 		finally { _r.unlock(); }
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.L2ObjectMap#contains(T)
 	 */
@@ -127,7 +127,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 		}
 		finally { _r.unlock(); }
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.L2ObjectMap#iterator()
 	 */
@@ -140,5 +140,5 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 		}
 		finally { _r.unlock(); }
 	}
-
+	
 }

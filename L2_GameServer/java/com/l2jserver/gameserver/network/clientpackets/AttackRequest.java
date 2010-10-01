@@ -29,16 +29,16 @@ public final class AttackRequest extends L2GameClientPacket
 	// cddddc
 	private int _objectId;
 	@SuppressWarnings("unused")
-    private int _originX;
+	private int _originX;
 	@SuppressWarnings("unused")
-    private int _originY;
+	private int _originY;
 	@SuppressWarnings("unused")
-    private int _originZ;
+	private int _originZ;
 	@SuppressWarnings("unused")
-    private int _attackId;
-
+	private int _attackId;
+	
 	private static final String _C__0A_ATTACKREQUEST = "[C] 0A AttackRequest";
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -48,7 +48,7 @@ public final class AttackRequest extends L2GameClientPacket
 		_originZ  = readD();
 		_attackId  = readC(); 	 // 0 for simple click   1 for shift-click
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -62,19 +62,19 @@ public final class AttackRequest extends L2GameClientPacket
 			target = L2World.getInstance().findObject(_objectId);
 		if (target == null)
 			return;
-
+		
 		// Players can't attack objects in the other instances
 		// except from multiverse
 		if (target.getInstanceId() != activeChar.getInstanceId()
 				&& activeChar.getInstanceId() != -1)
 			return;
-
+		
 		// Only GMs can directly attack invisible characters
 		if (target instanceof L2PcInstance
 				&& ((L2PcInstance)target).getAppearance().getInvisible()
 				&& !activeChar.isGM())
 			return;
-
+		
 		if (activeChar.getTarget() != target)
 		{
 			target.onAction(activeChar);
@@ -95,7 +95,7 @@ public final class AttackRequest extends L2GameClientPacket
 			}
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
@@ -103,5 +103,5 @@ public final class AttackRequest extends L2GameClientPacket
 	public String getType()
 	{
 		return _C__0A_ATTACKREQUEST;
-	}	
+	}
 }

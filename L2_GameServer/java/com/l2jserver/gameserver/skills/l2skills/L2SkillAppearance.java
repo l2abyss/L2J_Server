@@ -23,21 +23,21 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.templates.StatsSet;
 
 
-public class L2SkillAppearance extends L2Skill 
+public class L2SkillAppearance extends L2Skill
 {
 	private final int _faceId;
 	private final int _hairColorId;
 	private final int _hairStyleId;
-
-    public L2SkillAppearance(StatsSet set)
+	
+	public L2SkillAppearance(StatsSet set)
 	{
 		super(set);
-
+		
 		_faceId = set.getInteger("faceId", -1);
 		_hairColorId = set.getInteger("hairColorId", -1);
 		_hairStyleId = set.getInteger("hairStyleId", -1);
 	}
-
+	
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
@@ -54,7 +54,7 @@ public class L2SkillAppearance extends L2Skill
 						targetPlayer.getAppearance().setHairColor(_hairColorId);
 					if (_hairStyleId >= 0)
 						targetPlayer.getAppearance().setHairStyle(_hairStyleId);
-
+					
 					targetPlayer.broadcastUserInfo();
 				}
 			}

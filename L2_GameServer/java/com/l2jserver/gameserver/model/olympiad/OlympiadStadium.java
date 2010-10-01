@@ -98,13 +98,13 @@ class OlympiadStadium
 			_log.log(Level.WARNING, "", e);
 		}
 	}
-
+	
 	protected void addSpectator(int id, L2PcInstance spec, boolean storeCoords)
 	{
 		spec.enterOlympiadObserverMode(getCoordinates()[0] + 1200, getCoordinates()[1], getCoordinates()[2], id, storeCoords);
 		_spectators.add(spec);
 	}
-
+	
 	protected List<L2PcInstance> getSpectators()
 	{
 		return _spectators;

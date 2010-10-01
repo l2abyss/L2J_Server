@@ -18,14 +18,11 @@ import java.nio.BufferUnderflowException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import org.mmocore.network.ReceivablePacket;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
@@ -34,10 +31,10 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  */
 public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 {
-	private static final Logger _log = Logger.getLogger(L2GameClientPacket.class.getName());
-
+	protected static final Logger _log = Logger.getLogger(L2GameClientPacket.class.getName());
+	
 	@Override
-	protected boolean read()
+	public boolean read()
 	{
 		//_log.info(this.getType());
 		try
@@ -50,56 +47,28 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed reading: " + getType() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + e.getMessage(), e);
 			
 			if (e instanceof BufferUnderflowException) // only one allowed per client per minute
-			{
-				if (GameTimeController.getGameTicks() - getClient().underflowReadStartTick > 600)
-				{
-					getClient().underflowReadStartTick = GameTimeController.getGameTicks();
-					getClient().underflowReadsInMin = 1;
-				}
-				else if (++getClient().underflowReadsInMin > 1)
-				{
-					getClient().closeNow();
-					_log.severe("Client " + getClient().toString() + " - Disconnected: Too many buffer underflow exceptions");
-				}
-			}
+				getClient().onBufferUnderflow();
 		}
 		return false;
 	}
-
+	
 	protected abstract void readImpl();
-
+	
 	@Override
 	public void run()
 	{
 		try
 		{
-			// flood protection
-			if (GameTimeController.getGameTicks() - getClient().packetsSentStartTick > 10)
-			{
-				getClient().packetsSentStartTick = GameTimeController.getGameTicks();
-				getClient().packetsSentInSec = 0;
-			}
-			else
-			{
-				getClient().packetsSentInSec++;
-				if (getClient().packetsSentInSec > 12) 
-				{
-					if (getClient().packetsSentInSec < 100)
-						sendPacket(ActionFailed.STATIC_PACKET); 
-					return;
-				}
-			}
-			
 			runImpl();
 			
 			/* Removes onspawn protection - player has faster computer than average
 			 * Since GE: True for all packets
-			 * except RequestItemList and UseItem (in case the item is a Scroll of Escape (736) 
+			 * except RequestItemList and UseItem (in case the item is a Scroll of Escape (736)
 			 */
-			L2PcInstance actor = getClient().getActiveChar();
-			if(actor != null && (actor.isSpawnProtected() || actor.isInvul()))
+			if (triggersOnActionRequest())
 			{
-				if (triggersOnActionRequest())
+				final L2PcInstance actor = getClient().getActiveChar();
+				if(actor != null && (actor.isSpawnProtected() || actor.isInvul()))
 				{
 					actor.onActionRequest();
 					if (Config.DEBUG)
@@ -107,13 +76,13 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 				}
 			}
 			
-			cleanUp();	
+			cleanUp();
 		}
 		catch (Throwable t)
 		{
 			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed running: " + getType() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + t.getMessage(), t);
 			// in case of EnterWorld error kick player from game
-			if (this instanceof EnterWorld) 
+			if (this instanceof EnterWorld)
 				getClient().closeNow();
 		}
 	}

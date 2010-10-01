@@ -23,7 +23,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.CharSelected;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 
@@ -38,10 +37,10 @@ public class CharacterSelect extends L2GameClientPacket
 	private static final String _C__0D_CHARACTERSELECT = "[C] 0D CharacterSelect";
 	private static final Logger _log = Logger.getLogger(CharacterSelect.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
-
+	
 	// cd
 	private int _charSlot;
-
+	
 	@SuppressWarnings("unused")
 	private int _unk1; 	// new in C4
 	@SuppressWarnings("unused")
@@ -50,9 +49,9 @@ public class CharacterSelect extends L2GameClientPacket
 	private int _unk3;	// new in C4
 	@SuppressWarnings("unused")
 	private int _unk4;	// new in C4
-
+	
 	@Override
-    protected void readImpl()
+	protected void readImpl()
 	{
 		_charSlot = readD();
 		_unk1 = readH();
@@ -60,13 +59,13 @@ public class CharacterSelect extends L2GameClientPacket
 		_unk3 = readD();
 		_unk4 = readD();
 	}
-
+	
 	@Override
-    protected void runImpl()
+	protected void runImpl()
 	{
 		if (!getClient().getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterSelect"))
 			return;
-
+		
 		// we should always be abble to acquire the lock
 		// but if we cant lock then nothing should be done (ie repeated packet)
 		if (this.getClient().getActiveCharLock().tryLock())
@@ -86,11 +85,8 @@ public class CharacterSelect extends L2GameClientPacket
 					//load up character from disk
 					L2PcInstance cha = getClient().loadCharFromDisk(_charSlot);
 					if (cha == null)
-					{
-						_log.severe("Character could not be loaded (slot:"+_charSlot+")");
-						sendPacket(ActionFailed.STATIC_PACKET);
-						return;
-					}
+						return; // handled in L2GameClient
+					
 					if (cha.getAccessLevel().getLevel() < 0)
 					{
 						cha.logout();
@@ -101,9 +97,9 @@ public class CharacterSelect extends L2GameClientPacket
 					
 					cha.setClient(this.getClient());
 					getClient().setActiveChar(cha);
-                    
-                    sendPacket(new SSQInfo());
-                    
+					
+					sendPacket(new SSQInfo());
+					
 					this.getClient().setState(GameClientState.IN_GAME);
 					CharSelected cs = new CharSelected(cha, getClient().getSessionId().playOkID1);
 					sendPacket(cs);
@@ -113,19 +109,19 @@ public class CharacterSelect extends L2GameClientPacket
 			{
 				this.getClient().getActiveCharLock().unlock();
 			}
-
+			
 			LogRecord record = new LogRecord(Level.INFO, "Logged in");
-	    	record.setParameters(new Object[]{this.getClient()});
+			record.setParameters(new Object[]{this.getClient()});
 			_logAccounting.log(record);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
 	@Override
-    public String getType()
+	public String getType()
 	{
 		return _C__0D_CHARACTERSELECT;
-	}	
+	}
 }

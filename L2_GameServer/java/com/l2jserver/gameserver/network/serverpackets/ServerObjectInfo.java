@@ -30,15 +30,15 @@ public final class ServerObjectInfo extends L2GameServerPacket
 	private boolean _isAttackable;
 	private double _collisionHeight, _collisionRadius;
 	private String _name;
-
+	
 	public ServerObjectInfo(L2Npc activeChar, L2Character actor)
 	{
 		_activeChar = activeChar;
 		_idTemplate = _activeChar.getTemplate().idTemplate;
 		_isAttackable = _activeChar.isAutoAttackable(actor);
 		_collisionHeight = _activeChar.getCollisionHeight();
-        _collisionRadius = _activeChar.getCollisionRadius();
-        _x = _activeChar.getX();
+		_collisionRadius = _activeChar.getCollisionRadius();
+		_x = _activeChar.getX();
 		_y = _activeChar.getY();
 		_z = _activeChar.getZ();
 		_heading = _activeChar.getHeading();
@@ -69,7 +69,7 @@ public final class ServerObjectInfo extends L2GameServerPacket
 		writeD(0x01); // object type
 		writeD(0x00); // special effects
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */

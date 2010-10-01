@@ -30,7 +30,7 @@ public class KickPlayer extends BaseSendablePacket
 		writeC(0x04);
 		writeS(account);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.loginserver.serverpackets.ServerBasePacket#getContent()
 	 */
@@ -39,5 +39,5 @@ public class KickPlayer extends BaseSendablePacket
 	{
 		return getBytes();
 	}
-
+	
 }

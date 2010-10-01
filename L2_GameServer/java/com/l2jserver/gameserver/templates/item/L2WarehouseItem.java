@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
  * Use to sort L2ItemInstance of :
  * <LI>L2Armor</LI>
  * <LI>L2EtcItem</LI>
- * <LI>L2Weapon</LI> 
+ * <LI>L2Weapon</LI>
  * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
 public class L2WarehouseItem
@@ -30,6 +30,7 @@ public class L2WarehouseItem
 	private int _object;
 	private long _count;
 	private int _owner;
+	private int _locationSlot;
 	private int _enchant;
 	private int _grade;
 	private boolean _isAugmented;
@@ -42,7 +43,7 @@ public class L2WarehouseItem
 	private int _elemAtkPower = 0;
 	private int[] _elemDefAttr =
 	{
-		0, 0, 0, 0, 0, 0
+			0, 0, 0, 0, 0, 0
 	};
 	private int _time;
 	
@@ -52,6 +53,7 @@ public class L2WarehouseItem
 		_object = item.getObjectId();
 		_count = item.getCount();
 		_owner = item.getOwnerId();
+		_locationSlot = item.getLocationSlot();
 		_enchant = item.getEnchantLevel();
 		_customType1 = item.getCustomType1();
 		_customType2 = item.getCustomType2();
@@ -73,9 +75,9 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	* Returns the item.
-	* @return L2Item
-	*/
+	 * Returns the item.
+	 * @return L2Item
+	 */
 	public L2Item getItem()
 	{
 		return _item;
@@ -97,6 +99,15 @@ public class L2WarehouseItem
 	public final int getOwnerId()
 	{
 		return _owner;
+	}
+	
+	/**
+	 * Returns the LocationSlot
+	 * @return int
+	 */
+	public final int getLocationSlot()
+	{
+		return _locationSlot;
 	}
 	
 	/**

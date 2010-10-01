@@ -21,14 +21,14 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExPutCommissionResultForVariationMake extends L2GameServerPacket
 {
 	private static final String _S__FE_54_EXCONFIRMVARIATIONGEMSTONE = "[S] FE:55 ExPutCommissionResultForVariationMake";
-
+	
 	private int _gemstoneObjId;
 	private int _itemId;
 	private long _gemstoneCount;
 	private int _unk1;
 	private int _unk2;
 	private int _unk3;
-
+	
 	public ExPutCommissionResultForVariationMake(int gemstoneObjId, long count, int itemId)
 	{
 		_gemstoneObjId = gemstoneObjId;
@@ -39,7 +39,7 @@ public class ExPutCommissionResultForVariationMake extends L2GameServerPacket
 		_unk3 = 1;
 		
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -48,14 +48,14 @@ public class ExPutCommissionResultForVariationMake extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x55);
-        writeD(_gemstoneObjId);
-        writeD(_itemId);
-        writeQ(_gemstoneCount);
-        writeD(_unk1);
-        writeD(_unk2);
-        writeD(_unk3);
+		writeD(_gemstoneObjId);
+		writeD(_itemId);
+		writeQ(_gemstoneCount);
+		writeD(_unk1);
+		writeD(_unk2);
+		writeD(_unk3);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -64,5 +64,5 @@ public class ExPutCommissionResultForVariationMake extends L2GameServerPacket
 	{
 		return _S__FE_54_EXCONFIRMVARIATIONGEMSTONE;
 	}
-
+	
 }

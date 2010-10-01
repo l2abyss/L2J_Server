@@ -23,36 +23,36 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowAgitInfo;
  */
 public class RequestAllAgitInfo extends L2GameClientPacket
 {
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[C] D0:41 RequestAllAgitInfo";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-        
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-        L2GameClient client = this.getClient();
-        if (client != null)
-        {
-            client.sendPacket(new ExShowAgitInfo());
-        }
-    }
-    
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[C] D0:41 RequestAllAgitInfo";
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		L2GameClient client = this.getClient();
+		if (client != null)
+		{
+			client.sendPacket(new ExShowAgitInfo());
+		}
+	}
+	
 }

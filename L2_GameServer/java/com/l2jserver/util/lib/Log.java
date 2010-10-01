@@ -18,7 +18,7 @@
 	http://balancer.ru
 
 	version 0.1, 2005-06-06
-*/
+ */
 
 package com.l2jserver.util.lib;
 
@@ -41,7 +41,7 @@ public class Log
 		 * Logger _log = logs.get(cat); if(_log == null) { _log =
 		 * Logger.getLogger(cat); logs.put(cat, _log); }
 		 */
-
+		
 		String date = (new SimpleDateFormat("yy.MM.dd H:mm:ss")).format(new Date());
 		String curr = (new SimpleDateFormat("yyyy-MM-dd-")).format(new Date());
 		new File("log/game").mkdirs();

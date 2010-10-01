@@ -30,29 +30,29 @@ public final class RequestFriendInvite extends L2GameClientPacket
 {
 	private static final String _C__5E_REQUESTFRIENDINVITE = "[C] 5E RequestFriendInvite";
 	//private static Logger _log = Logger.getLogger(RequestFriendInvite.class.getName());
-
+	
 	private String _name;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_name = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-
+		
 		if (activeChar == null)
 			return;
-
+		
 		final L2PcInstance friend = L2World.getInstance().getPlayer(_name);
-
+		
 		SystemMessage sm;
-
+		
 		// can't use friend invite for locating invisible characters
-		if (friend == null || friend.isOnline() == 0 || friend.getAppearance().getInvisible())
+		if (friend == null || !friend.isOnline() || friend.getAppearance().getInvisible())
 		{
 			//Target is not found in the game.
 			activeChar.sendPacket(SystemMessageId.THE_USER_YOU_REQUESTED_IS_NOT_IN_GAME);
@@ -103,7 +103,7 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		
 		activeChar.sendPacket(sm);
 	}
-
+	
 	@Override
 	public String getType()
 	{

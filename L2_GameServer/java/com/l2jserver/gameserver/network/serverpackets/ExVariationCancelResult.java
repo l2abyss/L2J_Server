@@ -21,16 +21,14 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExVariationCancelResult extends L2GameServerPacket
 {
 	private static final String _S__FE_57_EXVARIATIONCANCELRESULT = "[S] FE:58 ExVariationCancelResult";
-
-	private int _closeWindow;
-	private int _unk1;
-
+	
+	private int _result;
+	
 	public ExVariationCancelResult(int result)
 	{
-		_closeWindow = 1;
-		_unk1 = result;
+		_result = result;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -39,10 +37,9 @@ public class ExVariationCancelResult extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x58);
-		writeD(_closeWindow);
-		writeD(_unk1);
+		writeD(_result);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -51,5 +48,5 @@ public class ExVariationCancelResult extends L2GameServerPacket
 	{
 		return _S__FE_57_EXVARIATIONCANCELRESULT;
 	}
-
+	
 }

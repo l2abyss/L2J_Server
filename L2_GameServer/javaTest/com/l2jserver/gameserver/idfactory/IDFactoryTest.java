@@ -27,13 +27,12 @@ import java.util.Vector;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.l2jserver.Config;
-import com.l2jserver.Server;
-import com.l2jserver.Config.IdFactoryType;
-import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.util.Rnd;
-
 import junit.framework.TestCase;
+
+import com.l2jserver.Config;
+import com.l2jserver.Config.IdFactoryType;
+import com.l2jserver.Server;
+import com.l2jserver.util.Rnd;
 
 /**
  * This class ...
@@ -44,29 +43,29 @@ import junit.framework.TestCase;
 public class IDFactoryTest extends TestCase
 {
 	private static final boolean _debug = false;
-
+	
 	// Compaction, BitSet, Stack, (null to use config)
 	private static final IdFactoryType FORCED_TYPE = IdFactoryType.Stack;
-
+	
 	protected IdFactory _idFactory;
 	protected AtomicInteger _count = new AtomicInteger(0), _adds = new AtomicInteger(0), _removes = new AtomicInteger(0);
-
+	
 	protected static final int REQUESTER_THREADS              = 50;
 	protected static final int REQUESTER_THREAD_REQUESTS      = 1000;
 	protected static final int REQUESTER_THREAD_RANDOM_DELAY  = 30;
 	protected static final int RELEASER_THREADS               = 50;
 	protected static final int RELEASER_THREAD_RELEASES       = 1000;
 	protected static final int RELEASER_THREAD_RANDOM_DELAY   = 35;
-
+	
 	private static final long F_SLEEP_INTERVAL = 100;
-
+	
 	CountDownLatch _latch = new CountDownLatch(REQUESTER_THREADS + RELEASER_THREADS);
 	protected static Vector<Integer> _map = new Vector<Integer>();
-
+	
 	public static void main(String[] args)
 	{
 	}
-
+	
 	/**
 	 * Constructor for IDFactoryTest.
 	 * @param arg0
@@ -80,7 +79,7 @@ public class IDFactoryTest extends TestCase
 			Config.IDFACTORY_TYPE = FORCED_TYPE;
 		_idFactory = IdFactory.getInstance();
 	}
-
+	
 	/*
 	 * @see TestCase#setUp()
 	 */
@@ -98,7 +97,7 @@ public class IDFactoryTest extends TestCase
 
         System.out.println("Size: "+approximateSize+"Mb.");*/
 	}
-
+	
 	/*
 	 * @see TestCase#tearDown()
 	 */
@@ -108,7 +107,7 @@ public class IDFactoryTest extends TestCase
 		super.tearDown();
 		_idFactory = null;
 	}
-
+	
 	/*
 	 * Test method for 'com.l2jserver.gameserver.idfactory.IdFactory.getNextId()'
 	 */
@@ -137,7 +136,7 @@ public class IDFactoryTest extends TestCase
 		System.out.println("Used ID's: "+(IdFactory.FREE_OBJECT_ID_SIZE - _idFactory.size()));
 		System.out.println("Count: "+_count.get());
 	}
-
+	
 	public class RequestID implements Runnable
 	{
 		long _time1;
@@ -175,8 +174,8 @@ public class IDFactoryTest extends TestCase
 			_latch.countDown();
 		}
 	}
-
-
+	
+	
 	public class ReleaseID implements Runnable
 	{
 		AtomicInteger _myCount = new AtomicInteger(100);
@@ -195,22 +194,22 @@ public class IDFactoryTest extends TestCase
 						continue;
 					}
 					//if (size > 0)
-						//{
-						int pos     = Rnd.nextInt(size);
-						int id      = _map.get(pos);
-						_time1 = System.nanoTime();
-						_idFactory.releaseId(id);
-						_time2 = System.nanoTime() - _time1;
-						_map.remove(pos);
-						_count.decrementAndGet();
-						_myCount.decrementAndGet();
-						_removes.incrementAndGet();
-						if (_debug) System.out.println("Released ID "+id);
-						if (Rnd.nextInt(10) == 0)
-						{
-							System.out.println("Total ID releases: "+_removes.get()+". "+_time2+"ns");
-						}
-						//}
+					//{
+					int pos     = Rnd.nextInt(size);
+					int id      = _map.get(pos);
+					_time1 = System.nanoTime();
+					_idFactory.releaseId(id);
+					_time2 = System.nanoTime() - _time1;
+					_map.remove(pos);
+					_count.decrementAndGet();
+					_myCount.decrementAndGet();
+					_removes.incrementAndGet();
+					if (_debug) System.out.println("Released ID "+id);
+					if (Rnd.nextInt(10) == 0)
+					{
+						System.out.println("Total ID releases: "+_removes.get()+". "+_time2+"ns");
+					}
+					//}
 				}
 				try
 				{
@@ -218,31 +217,31 @@ public class IDFactoryTest extends TestCase
 				}
 				catch (InterruptedException e)
 				{
-
+					
 				}
 			}
 			if (_debug) System.out.println(getName()+ " count is "+_myCount.get()+"/100.");
-
+			
 			_latch.countDown();
 		}
 	}
-
+	
 	@SuppressWarnings("unused")
 	private static long getMemoryUse(){
 		putOutTheGarbage();
 		long totalMemory = Runtime.getRuntime().totalMemory();
-
+		
 		putOutTheGarbage();
 		long freeMemory = Runtime.getRuntime().freeMemory();
-
+		
 		return (totalMemory - freeMemory);
 	}
-
+	
 	private static void putOutTheGarbage() {
 		collectGarbage();
 		collectGarbage();
 	}
-
+	
 	private static void collectGarbage() {
 		try {
 			System.gc();
@@ -254,5 +253,5 @@ public class IDFactoryTest extends TestCase
 			ex.printStackTrace();
 		}
 	}
-
+	
 }

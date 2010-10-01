@@ -35,7 +35,7 @@ public final class RequestBBSwrite extends L2GameClientPacket
 	private String _arg3;
 	private String _arg4;
 	private String _arg5;
-
+	
 	@Override
 	protected final void readImpl()
 	{
@@ -46,24 +46,24 @@ public final class RequestBBSwrite extends L2GameClientPacket
 		_arg4 = readS();
 		_arg5 = readS();
 	}
-
+	
 	@Override
 	protected final void runImpl()
 	{
 		if (Config.ENABLE_COMMUNITY_BOARD)
 		{
 			L2PcInstance activeChar = getClient().getActiveChar();
-
+			
 			if (activeChar == null)
 				return;
-
+			
 			if (!CommunityServerThread.getInstance().sendPacket(new RequestCommunityBoardWrite(activeChar.getObjectId(), _url,_arg1,_arg2, _arg3, _arg4, _arg5)))
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.CB_OFFLINE));
 		}
 		else
 			CommunityBoard.getInstance().handleWriteCommands(getClient(),_url,_arg1,_arg2, _arg3, _arg4, _arg5);
 	}
-
+	
 	@Override
 	public final String getType()
 	{

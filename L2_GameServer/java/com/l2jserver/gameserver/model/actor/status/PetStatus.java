@@ -23,26 +23,26 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class PetStatus extends SummonStatus
 {
 	private int _currentFed               = 0; //Current Fed of the L2PetInstance
-
+	
 	public PetStatus(L2PetInstance activeChar)
 	{
 		super(activeChar);
 	}
-
+	
 	@Override
 	public final void reduceHp(double value, L2Character attacker)
 	{
 		reduceHp(value, attacker, true, false, false);
 	}
-
+	
 	@Override
 	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
 	{
 		if (getActiveChar().isDead())
 			return;
-
+		
 		super.reduceHp(value, attacker, awake, isDOT, isHpConsumption);
-
+		
 		if (attacker != null)
 		{
 			if (!isDOT && getActiveChar().getOwner() != null)
@@ -55,17 +55,17 @@ public class PetStatus extends SummonStatus
 			getActiveChar().getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, attacker);
 		}
 	}
-
+	
 	public int getCurrentFed()
 	{
 		return _currentFed;
 	}
-
+	
 	public void setCurrentFed(int value)
 	{
 		_currentFed = value;
 	}
-
+	
 	@Override
 	public L2PetInstance getActiveChar()
 	{

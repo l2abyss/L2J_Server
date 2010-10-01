@@ -38,13 +38,12 @@ public final class TradeOtherAdd extends L2GameServerPacket
 		writeC(0x1b);
 		
 		writeH(1); // item count
-		
-		writeH(_item.getItem().getType1()); // item type1
+		writeH(0);
 		writeD(_item.getObjectId());
 		writeD(_item.getItem().getItemId());
 		writeQ(_item.getCount());
 		writeH(_item.getItem().getType2()); // item type2
-		writeH(0x00); // ?
+		writeH(_item.getCustomType1());
 		
 		writeD(_item.getItem().getBodyPart()); // rev 415  slot    0006-lr.ear  0008-neck  0030-lr.finger  0040-head  0080-??  0100-l.hand  0200-gloves  0400-chest  0800-pants  1000-feet  2000-??  4000-r.hand  8000-r.hand
 		writeH(_item.getEnchant()); // enchant level
@@ -59,7 +58,7 @@ public final class TradeOtherAdd extends L2GameServerPacket
 		
 		writeH(0x00); // Enchant effect 1
 		writeH(0x00); // Enchant effect 2
-		writeH(0x00); // Enchant effect 3 
+		writeH(0x00); // Enchant effect 3
 	}
 	
 	/* (non-Javadoc)

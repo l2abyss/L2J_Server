@@ -22,12 +22,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.communitybbs.Manager.TopicBBSManager;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 public class Forum
 {
@@ -212,8 +212,8 @@ public class Forum
 	}
 	
 	/**
-	* @return
-	*/
+	 * @return
+	 */
 	public int getID()
 	{
 		return _forumId;

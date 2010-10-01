@@ -22,9 +22,9 @@ import com.l2jserver.gameserver.skills.Env;
  */
 public class ConditionPlayerSouls extends Condition
 {
-
+	
 	private final int _souls;
-
+	
 	/**
 	 * Instantiates a new condition player souls.
 	 *
@@ -34,7 +34,7 @@ public class ConditionPlayerSouls extends Condition
 	{
 		_souls = souls;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

@@ -7,16 +7,16 @@ import java.util.logging.LogManager;
  *
  */
 public class L2LogManager extends LogManager {
-
+	
 	public L2LogManager() {
 		super();
 	}
-
+	
 	@Override
 	public void reset() {
 		// do nothing
 	}
-
+	
 	public void doReset() {
 		super.reset();
 	}

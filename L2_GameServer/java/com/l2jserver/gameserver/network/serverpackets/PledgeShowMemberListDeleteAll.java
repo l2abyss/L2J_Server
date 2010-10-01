@@ -22,18 +22,18 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class PledgeShowMemberListDeleteAll extends L2GameServerPacket
 {
 	private static final String _S__9B_PLEDGESHOWMEMBERLISTDELETEALL = "[S] 88 PledgeShowMemberListDeleteAll";
-
+	
 	public PledgeShowMemberListDeleteAll()
 	{
-
+		
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x88);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

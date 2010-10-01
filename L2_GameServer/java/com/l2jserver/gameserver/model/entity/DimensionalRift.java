@@ -33,8 +33,8 @@ import com.l2jserver.gameserver.network.serverpackets.Earthquake;
 import com.l2jserver.util.Rnd;
 
 /**
-* Thanks to L2Fortress and balancer.ru - kombat
-*/
+ * Thanks to L2Fortress and balancer.ru - kombat
+ */
 public class DimensionalRift
 {
 	protected byte _type;

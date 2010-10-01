@@ -19,10 +19,10 @@ import java.util.logging.LogRecord;
 
 public class ChatFilter implements Filter
 {
-
+	
 	public boolean isLoggable(LogRecord record)
 	{
 		return "chat".equals(record.getLoggerName());
 	}
-
+	
 }

@@ -16,9 +16,9 @@ package com.l2jserver.loginserver.gameserverpackets;
 
 import java.util.List;
 
-import com.l2jserver.util.network.BaseRecievePacket;
-
 import javolution.util.FastList;
+
+import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author -Wooden-
@@ -27,7 +27,7 @@ import javolution.util.FastList;
 public class PlayerInGame extends BaseRecievePacket
 {
 	private List<String> _accounts;
-
+	
 	/**
 	 * @param decrypt
 	 */
@@ -41,7 +41,7 @@ public class PlayerInGame extends BaseRecievePacket
 			_accounts.add(readS());
 		}
 	}
-
+	
 	/**
 	 * @return Returns the accounts.
 	 */
@@ -49,5 +49,5 @@ public class PlayerInGame extends BaseRecievePacket
 	{
 		return _accounts;
 	}
-
+	
 }

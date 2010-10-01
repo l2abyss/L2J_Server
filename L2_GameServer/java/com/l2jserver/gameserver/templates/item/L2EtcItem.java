@@ -29,7 +29,7 @@ public final class L2EtcItem  extends L2Item
 	private final String _handler;
 	private SkillHolder[] _skillHolder;
 	private int _sharedReuseGroup;
-
+	
 	/**
 	 * Constructor for EtcItem.
 	 * @see L2Item constructor
@@ -50,7 +50,7 @@ public final class L2EtcItem  extends L2Item
 			
 			if(info == null || info.length != 2)
 				continue;
-
+			
 			int id = 0;
 			int level = 0;
 			
@@ -77,7 +77,7 @@ public final class L2EtcItem  extends L2Item
 		_handler = set.getString("handler");
 		_sharedReuseGroup = set.getInteger("shared_reuse_group", -1);
 	}
-
+	
 	/**
 	 * Returns the type of Etc Item
 	 * @return L2EtcItemType
@@ -87,17 +87,17 @@ public final class L2EtcItem  extends L2Item
 	{
 		return (L2EtcItemType)super._type;
 	}
-
-    /**
-     * Returns if the item is consumable
-     * @return boolean
-     */
-    @Override
+	
+	/**
+	 * Returns if the item is consumable
+	 * @return boolean
+	 */
+	@Override
 	public final boolean isConsumable()
-    {
-        return ((getItemType() == L2EtcItemType.SHOT) || (getItemType() == L2EtcItemType.POTION)); // || (type == L2EtcItemType.SCROLL));
-    }
-
+	{
+		return ((getItemType() == L2EtcItemType.SHOT) || (getItemType() == L2EtcItemType.POTION)); // || (type == L2EtcItemType.SCROLL));
+	}
+	
 	/**
 	 * Returns the ID of the Etc item after applying the mask.
 	 * @return int : ID of the EtcItem
@@ -107,7 +107,7 @@ public final class L2EtcItem  extends L2Item
 	{
 		return getItemType().mask();
 	}
-
+	
 	/**
 	 * Returns skills linked to that EtcItem
 	 * @return
@@ -121,7 +121,7 @@ public final class L2EtcItem  extends L2Item
 	{
 		return _handler;
 	}
-
+	
 	public int getSharedReuseGroup()
 	{
 		return _sharedReuseGroup;

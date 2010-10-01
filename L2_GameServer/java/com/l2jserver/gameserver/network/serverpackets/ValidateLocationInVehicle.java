@@ -24,12 +24,12 @@ import com.l2jserver.util.Point3D;
 public class ValidateLocationInVehicle extends L2GameServerPacket
 {
 	private static final String _S__80_ValidateLocationInVehicle = "[S] 80 ValidateLocationInVehicle";
-
+	
 	private int _charObjId;
 	private int _boatObjId;
 	private int _heading;
 	private Point3D _pos;
-
+	
 	/**
 	 * 0x80 ValidateLocationInVehicle         hdd
 	 * @param _characters
@@ -41,7 +41,7 @@ public class ValidateLocationInVehicle extends L2GameServerPacket
 		_heading = player.getHeading();
 		_pos = player.getInVehiclePosition();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -53,7 +53,7 @@ public class ValidateLocationInVehicle extends L2GameServerPacket
 		writeD(_pos.getZ());
 		writeD(_heading);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

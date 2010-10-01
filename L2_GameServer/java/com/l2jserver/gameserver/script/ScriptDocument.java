@@ -16,6 +16,8 @@ package com.l2jserver.gameserver.script;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,53 +32,54 @@ import org.xml.sax.SAXException;
  */
 public class ScriptDocument
 {
-    private Document _document;
-    private String _name;
-
-    public ScriptDocument(String name, InputStream input)
-    {
-        _name = name;
-
-        DocumentBuilderFactory factory =
-            DocumentBuilderFactory.newInstance();
-        try {
-           DocumentBuilder builder = factory.newDocumentBuilder();
-           _document = builder.parse( input );
-
-        } catch (SAXException sxe) {
-           // Error generated during parsing)
-           Exception  x = sxe;
-           if (sxe.getException() != null)
-               x = sxe.getException();
-           x.printStackTrace();
-
-        } catch (ParserConfigurationException pce) {
-            // Parser with specified options can't be built
-            pce.printStackTrace();
-
-        } catch (IOException ioe) {
-           // I/O error
-           ioe.printStackTrace();
-        }
-    }
-
-    public Document getDocument()
-    {
-        return _document;
-    }
-
-    /**
-     * @return Returns the _name.
-     */
-    public String getName()
-    {
-        return _name;
-    }
-
-    @Override
+	protected static final Logger _log = Logger.getLogger(ScriptDocument.class.getName());
+	private Document _document;
+	private String _name;
+	
+	public ScriptDocument(String name, InputStream input)
+	{
+		_name = name;
+		
+		DocumentBuilderFactory factory =
+			DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			_document = builder.parse( input );
+			
+		} catch (SAXException sxe) {
+			// Error generated during parsing)
+			Exception  x = sxe;
+			if (sxe.getException() != null)
+				x = sxe.getException();
+			x.printStackTrace();
+			
+		} catch (ParserConfigurationException pce) {
+			// Parser with specified options can't be built
+			_log.log(Level.WARNING, "", pce);
+			
+		} catch (IOException ioe) {
+			// I/O error
+			_log.log(Level.WARNING, "", ioe);
+		}
+	}
+	
+	public Document getDocument()
+	{
+		return _document;
+	}
+	
+	/**
+	 * @return Returns the _name.
+	 */
+	public String getName()
+	{
+		return _name;
+	}
+	
+	@Override
 	public String toString()
-    {
-        return _name;
-    }
-
+	{
+		return _name;
+	}
+	
 }

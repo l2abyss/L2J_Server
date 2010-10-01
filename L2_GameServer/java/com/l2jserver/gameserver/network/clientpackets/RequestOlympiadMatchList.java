@@ -27,14 +27,14 @@ import com.l2jserver.gameserver.model.olympiad.Olympiad;
 public final class RequestOlympiadMatchList extends L2GameClientPacket
 {
 	private static final String _C__D0_13_REQUESTOLYMPIADMATCHLIST = "[C] D0:13 RequestOlympiadMatchList";
-
-
+	
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger packet
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -43,7 +43,7 @@ public final class RequestOlympiadMatchList extends L2GameClientPacket
 			return;
 		if (activeChar.inObserverMode()) Olympiad.sendMatchList(activeChar);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -52,5 +52,5 @@ public final class RequestOlympiadMatchList extends L2GameClientPacket
 	{
 		return _C__D0_13_REQUESTOLYMPIADMATCHLIST;
 	}
-
+	
 }

@@ -70,7 +70,7 @@ public class L2NoLandingZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.zone.L2ZoneType#setParameter(java.lang.String, java.lang.String)
 	 */

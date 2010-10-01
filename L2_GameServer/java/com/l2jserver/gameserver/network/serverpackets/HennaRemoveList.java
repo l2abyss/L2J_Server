@@ -20,14 +20,14 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class HennaRemoveList extends L2GameServerPacket
 {
 	private static final String _S__E2_HennaRemoveList = "[S] ee HennaRemoveList";
-
+	
 	private L2PcInstance _player;
-
+	
 	public HennaRemoveList(L2PcInstance player)
 	{
 		_player = player;
 	}
-
+	
 	private final int getHennaUsedSlots()
 	{
 		int _slots = 0;
@@ -46,10 +46,10 @@ public class HennaRemoveList extends L2GameServerPacket
 				_slots = 0;
 				break;
 		}
-
+		
 		return _slots;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -57,7 +57,7 @@ public class HennaRemoveList extends L2GameServerPacket
 		writeQ(_player.getAdena());
 		writeD(0x00);
 		writeD(getHennaUsedSlots());
-
+		
 		for (int i = 1; i <= 3; i++)
 		{
 			L2HennaInstance henna = _player.getHenna(i);
@@ -73,7 +73,7 @@ public class HennaRemoveList extends L2GameServerPacket
 			}
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

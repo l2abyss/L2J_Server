@@ -17,11 +17,11 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.ItemInfo;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-
-import javolution.util.FastList;
 
 /**
  *
@@ -52,9 +52,9 @@ public class InventoryUpdate extends L2GameServerPacket
 {
 	private static final Logger _log = Logger.getLogger(InventoryUpdate.class.getName());
 	private static final String _S__37_INVENTORYUPDATE = "[S] 21 InventoryUpdate";
-
+	
 	private List<ItemInfo> _items;
-
+	
 	public InventoryUpdate()
 	{
 		_items = new FastList<ItemInfo>();
@@ -63,7 +63,7 @@ public class InventoryUpdate extends L2GameServerPacket
 			showDebug();
 		}
 	}
-
+	
 	/**
 	 * @param items
 	 */
@@ -75,31 +75,31 @@ public class InventoryUpdate extends L2GameServerPacket
 			showDebug();
 		}
 	}
-
+	
 	public void addItem(L2ItemInstance item)
 	{
 		if (item != null)
 			_items.add(new ItemInfo(item));
 	}
-
+	
 	public void addNewItem(L2ItemInstance item)
 	{
 		if (item != null)
 			_items.add(new ItemInfo(item, 1));
 	}
-
+	
 	public void addModifiedItem(L2ItemInstance item)
 	{
 		if (item != null)
 			_items.add(new ItemInfo(item, 2));
 	}
-
+	
 	public void addRemovedItem(L2ItemInstance item)
 	{
 		if (item != null)
 			_items.add(new ItemInfo(item, 3));
 	}
-
+	
 	public void addItems(List<L2ItemInstance> items)
 	{
 		if (items != null)
@@ -107,7 +107,7 @@ public class InventoryUpdate extends L2GameServerPacket
 				if (item != null)
 					_items.add(new ItemInfo(item));
 	}
-
+	
 	private void showDebug()
 	{
 		for (ItemInfo item : _items)
@@ -115,7 +115,7 @@ public class InventoryUpdate extends L2GameServerPacket
 			_log.fine("oid:" + Integer.toHexString(item.getObjectId()) + " item:" + item.getItem().getName() + " last change:" + item.getChange());
 		}
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -125,8 +125,6 @@ public class InventoryUpdate extends L2GameServerPacket
 		for (ItemInfo item : _items)
 		{
 			writeH(item.getChange()); // Update type : 01-add, 02-modify, 03-remove
-			writeH(item.getItem().getType1()); // Item Type 1 : 00-weapon/ring/earring/necklace, 01-armor/shield, 04-item/questitem/adena
-
 			writeD(item.getObjectId()); // ObjectId
 			writeD(item.getItem().getItemId()); // ItemId
 			writeD(item.getLocation()); // T1
@@ -139,23 +137,22 @@ public class InventoryUpdate extends L2GameServerPacket
 			writeH(item.getCustomType2()); // Pet name exists or not shown in control item
 			writeD(item.getAugmentationBonus());
 			writeD(item.getMana());
-
-			// T1
+			writeD(item.getTime());
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
+			{
 				writeH(item.getElementDefAttr(i));
-			// T2
-			writeD(item.getTime());
-
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			}
+			// Enchant Effects
+			writeH(0x00);
+			writeH(0x00);
+			writeH(0x00);
 		}
 		_items.clear();
 		_items = null;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

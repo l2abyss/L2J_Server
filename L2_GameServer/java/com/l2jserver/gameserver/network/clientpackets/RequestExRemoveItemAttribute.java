@@ -14,10 +14,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.ExShowBaseAttributeCancelWindow;
+import com.l2jserver.gameserver.network.serverpackets.ExBaseAttributeCancelResult;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
@@ -27,70 +28,83 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 public class RequestExRemoveItemAttribute extends L2GameClientPacket
 {
 	private static String _C__D0_23_REQUESTEXREMOVEITEMATTRIBUTE = "[C] D0:23 RequestExRemoveItemAttribute";
-
+	
 	private int _objectId;
 	private long _price;
-
+	private byte _element;
+	
 	public RequestExRemoveItemAttribute()
 	{
 	}
-
+	
 	@Override
 	public void readImpl()
 	{
 		_objectId = readD();
+		_element = (byte) readD();
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_objectId);
-
+		
 		if (targetItem == null)
 			return;
-
-		if (targetItem.getElementals() == null)
+		
+		if (targetItem.getElementals() == null || targetItem.getElemental(_element) == null)
 			return;
-
+		
 		if (activeChar.reduceAdena("RemoveElement", getPrice(targetItem), activeChar, true))
 		{
 			if (targetItem.isEquipped())
-				targetItem.getElementals().removeBonus(activeChar);
-			targetItem.clearElementAttr();
+				targetItem.getElemental(_element).removeBonus(activeChar);
+			targetItem.clearElementAttr(_element);
 			activeChar.sendPacket(new UserInfo(activeChar));
-
+			
 			InventoryUpdate iu = new InventoryUpdate();
 			iu.addModifiedItem(targetItem);
 			activeChar.sendPacket(iu);
-
+			SystemMessage sm;
+			byte realElement = targetItem.isArmor() ? Elementals.getOppositeElement(_element) : _element;
 			if (targetItem.getEnchantLevel() > 0)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
+				if (targetItem.isArmor())
+					sm = new SystemMessage(SystemMessageId.S1_S2_S3_ATTRIBUTE_REMOVED_RESISTANCE_TO_S4_DECREASED);
+				else
+					sm = new SystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
 				sm.addNumber(targetItem.getEnchantLevel());
 				sm.addItemName(targetItem);
-				activeChar.sendPacket(sm);
+				sm.addElemntal(realElement);
+				if (targetItem.isArmor())
+					sm.addElemntal(Elementals.getOppositeElement(realElement));
 			}
 			else
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_ELEMENTAL_POWER_REMOVED);
+				if (targetItem.isArmor())
+					sm = new SystemMessage(SystemMessageId.S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED);
+				else
+					sm = new SystemMessage(SystemMessageId.S1_ELEMENTAL_POWER_REMOVED);
 				sm.addItemName(targetItem);
-				activeChar.sendPacket(sm);
+				sm.addElemntal(realElement);
+				if (targetItem.isArmor())
+					sm.addElemntal(Elementals.getOppositeElement(realElement));
 			}
-
-			activeChar.sendPacket(new ExShowBaseAttributeCancelWindow(activeChar));
+			activeChar.sendPacket(sm);
+			activeChar.sendPacket(new ExBaseAttributeCancelResult(targetItem.getObjectId(), _element));
 			return;
 		}
 		else
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_HAVE_ENOUGH_FUNDS_TO_CANCEL_ATTRIBUTE));
 			return;
 		}
 	}
-
+	
 	private long getPrice(L2ItemInstance item)
 	{
 		switch(item.getItem().getCrystalType())
@@ -114,10 +128,10 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 					_price = 160000;
 				break;
 		}
-
+		
 		return _price;
 	}
-
+	
 	@Override
 	public String getType()
 	{

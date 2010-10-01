@@ -41,15 +41,15 @@ public final class SkillList extends L2GameServerPacket
 {
 	private static final String _S__6D_SKILLLIST = "[S] 5f SkillList";
 	private List<Skill> _skills;
-
-	class Skill
+	
+	static class Skill
 	{
 		public int id;
 		public int level;
 		public boolean passive;
 		public boolean disabled;
 		public boolean enchanted;
-
+		
 		Skill(int pId, int pLevel, boolean pPassive, boolean pDisabled, boolean pEnchanted)
 		{
 			id = pId;
@@ -59,23 +59,23 @@ public final class SkillList extends L2GameServerPacket
 			enchanted = pEnchanted;
 		}
 	}
-
+	
 	public SkillList()
 	{
 		_skills = new FastList<Skill>();
 	}
-
+	
 	public void addSkill(int id, int level, boolean passive, boolean disabled, boolean enchanted)
 	{
 		_skills.add(new Skill(id, level, passive, disabled, enchanted));
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x5f);
 		writeD(_skills.size());
-
+		
 		for (Skill temp : _skills)
 		{
 			writeD(temp.passive ? 1 : 0);
@@ -85,7 +85,7 @@ public final class SkillList extends L2GameServerPacket
 			writeC(temp.enchanted ? 1 : 0);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

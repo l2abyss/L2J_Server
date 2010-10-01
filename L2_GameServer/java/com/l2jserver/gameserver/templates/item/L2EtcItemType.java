@@ -25,7 +25,7 @@ public enum L2EtcItemType
 	MATERIAL(3, "Material"),
 	PET_COLLAR(4, "PetCollar"),
 	POTION(5, "Potion"),
-	RECEIPE(6, "Receipe"),
+	RECIPE(6, "Recipe"),
 	SCROLL(7, "Scroll"),
 	QUEST(8, "Quest"),
 	MONEY(9, "Money"),

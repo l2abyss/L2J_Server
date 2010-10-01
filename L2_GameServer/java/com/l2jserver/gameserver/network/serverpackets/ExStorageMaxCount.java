@@ -42,7 +42,8 @@ public class ExStorageMaxCount extends L2GameServerPacket
 	private int _receipeD;
 	private int _recipe;
 	private int _inventoryExtraSlots;
-
+	private int _inventoryQuestItems;
+	
 	public ExStorageMaxCount(L2PcInstance character)
 	{
 		_activeChar = character;
@@ -54,8 +55,9 @@ public class ExStorageMaxCount extends L2GameServerPacket
 		_receipeD = _activeChar.getDwarfRecipeLimit();
 		_recipe = _activeChar.getCommonRecipeLimit();
 		_inventoryExtraSlots = (int) _activeChar.getStat().calcStat(Stats.INV_LIM, 0, null, null);
+		_inventoryQuestItems = Config.INVENTORY_MAXIMUM_QUEST_ITEMS;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -64,7 +66,7 @@ public class ExStorageMaxCount extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x2f);
-
+		
 		writeD(_inventory);
 		writeD(_warehouse);
 		writeD(_clan);
@@ -72,9 +74,10 @@ public class ExStorageMaxCount extends L2GameServerPacket
 		writeD(_privateBuy);
 		writeD(_receipeD);
 		writeD(_recipe);
-		writeD(_inventoryExtraSlots); //belt inventory slots increase count
+		writeD(_inventoryExtraSlots); // Belt inventory slots increase count
+		writeD(_inventoryQuestItems);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

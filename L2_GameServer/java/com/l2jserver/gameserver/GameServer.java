@@ -52,11 +52,13 @@ import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
 import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.datatables.HennaTreeTable;
+import com.l2jserver.gameserver.datatables.HerbDropTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.LevelUpData;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
+import com.l2jserver.gameserver.datatables.MultiSell;
 import com.l2jserver.gameserver.datatables.NobleSkillTable;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
@@ -70,6 +72,7 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreeTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.StaticObjects;
+import com.l2jserver.gameserver.datatables.SubPledgeSkillTree;
 import com.l2jserver.gameserver.datatables.SummonItemsData;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
 import com.l2jserver.gameserver.datatables.UITable;
@@ -97,6 +100,7 @@ import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.HellboundManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.ItemAuctionManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
@@ -111,7 +115,6 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.AutoChatHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
 import com.l2jserver.gameserver.model.L2Manor;
-import com.l2jserver.gameserver.model.L2Multisell;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
@@ -143,6 +146,7 @@ public class GameServer
 	private static final Logger _log = Logger.getLogger(GameServer.class.getName());
 	
 	private final SelectorThread<L2GameClient> _selectorThread;
+	private final L2GamePacketHandler _gamePacketHandler;
 	private final DeadLockDetector _deadDetectThread;
 	private final IdFactory _idFactory;
 	public static GameServer gameServer;
@@ -158,6 +162,11 @@ public class GameServer
 	public SelectorThread<L2GameClient> getSelectorThread()
 	{
 		return _selectorThread;
+	}
+	
+	public L2GamePacketHandler getL2GamePacketHandler()
+	{
+		return _gamePacketHandler;
 	}
 	
 	public DeadLockDetector getDeadLockDetectorThread()
@@ -216,6 +225,7 @@ public class GameServer
 		HeroSkillTable.getInstance();
 		ResidentialSkillTable.getInstance();
 		SkillSpellbookTable.getInstance();
+		SubPledgeSkillTree.getInstance();
 		
 		printSection("Items");
 		ItemTable.getInstance();
@@ -225,7 +235,7 @@ public class GameServer
 		EnchantHPBonusData.getInstance();
 		MerchantPriceConfigTable.getInstance().loadInstances();
 		TradeController.getInstance();
-		L2Multisell.getInstance();
+		MultiSell.getInstance();
 		RecipeController.getInstance();
 		ArmorSetsTable.getInstance();
 		FishTable.getInstance();
@@ -238,6 +248,7 @@ public class GameServer
 		AccessLevels.getInstance();
 		AdminCommandAccessRights.getInstance();
 		GmListTable.getInstance();
+		RaidBossPointsManager.getInstance();
 		PetDataTable.getInstance().loadPetsData();
 		
 		printSection("Clans");
@@ -251,11 +262,13 @@ public class GameServer
 			PathFinding.getInstance();
 		
 		printSection("NPCs");
+		HerbDropTable.getInstance();
 		NpcTable.getInstance();
 		NpcWalkerRoutesTable.getInstance();
 		ZoneManager.getInstance();
 		DoorTable.getInstance();
 		StaticObjects.getInstance();
+		ItemAuctionManager.getInstance();
 		CastleManager.getInstance().loadInstances();
 		FortManager.getInstance().loadInstances();
 		NpcBufferTable.getInstance();
@@ -263,7 +276,6 @@ public class GameServer
 		RaidBossSpawnManager.getInstance();
 		DayNightSpawnManager.getInstance().trim().notifyChangeMode();
 		GrandBossManager.getInstance().initZones();
-		RaidBossPointsManager.init();
 		FourSepulchersManager.getInstance().init();
 		DimensionalRiftManager.getInstance();
 		EventDroplist.getInstance();
@@ -341,7 +353,7 @@ public class GameServer
 		}
 		QuestManager.getInstance().report();
 		TransformationManager.getInstance().report();
-
+		
 		if (Config.SAVE_DROPPED_ITEM)
 			ItemsOnGroundManager.getInstance();
 		
@@ -377,10 +389,10 @@ public class GameServer
 		CastleManager.getInstance().activateInstances();
 		FortManager.getInstance().activateInstances();
 		HellboundManager.getInstance();
-
+		
 		if (Config.ALLOW_MAIL)
 			MailManager.getInstance();
-
+		
 		//Universe.getInstance();
 		
 		if (Config.ACCEPT_GEOEDITOR_CONN)
@@ -404,7 +416,7 @@ public class GameServer
 		KnownListUpdateTaskManager.getInstance();
 		
 		if ((Config.OFFLINE_TRADE_ENABLE || Config.OFFLINE_CRAFT_ENABLE) && Config.RESTORE_OFFLINERS)
-			OfflineTradersTable.restoreOfflineTraders(); 
+			OfflineTradersTable.restoreOfflineTraders();
 		
 		if (Config.DEADLOCK_DETECTOR)
 		{
@@ -433,8 +445,8 @@ public class GameServer
 		sc.SLEEP_TIME = Config.MMO_SELECTOR_SLEEP_TIME;
 		sc.HELPER_BUFFER_COUNT = Config.MMO_HELPER_BUFFER_COUNT;
 		
-		final L2GamePacketHandler gph = new L2GamePacketHandler();
-		_selectorThread = new SelectorThread<L2GameClient>(sc, gph, gph, gph, new IPv4Filter());
+		_gamePacketHandler = new L2GamePacketHandler();
+		_selectorThread = new SelectorThread<L2GameClient>(sc, _gamePacketHandler, _gamePacketHandler, _gamePacketHandler, new IPv4Filter());
 		
 		InetAddress bindAddress = null;
 		if (!Config.GAMESERVER_HOSTNAME.equals("*"))

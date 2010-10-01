@@ -49,14 +49,14 @@ public final class RequestOustFromPartyRoom extends L2GameClientPacket
 		L2PcInstance member = L2World.getInstance().getPlayer(_charid);
 		if (member == null)
 			return;
-
+		
 		PartyMatchRoom _room = PartyMatchRoomList.getInstance().getPlayerRoom(member);
 		if (_room == null)
 			return;
 		
 		if (_room.getOwner() != activeChar)
 			return;
-
+		
 		if (activeChar.isInParty() && member.isInParty() && activeChar.getParty().getPartyLeaderOID() == member.getParty().getPartyLeaderOID())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISMISS_PARTY_MEMBER));

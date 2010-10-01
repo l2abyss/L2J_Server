@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.skills.Env;
 public class ConditionPlayerInstanceId extends Condition
 {
 	private final ArrayList<Integer> _instanceIds;
-
+	
 	/**
 	 * Instantiates a new condition player instance id.
 	 *
@@ -37,7 +37,7 @@ public class ConditionPlayerInstanceId extends Condition
 	{
 		_instanceIds = instanceIds;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
@@ -46,15 +46,15 @@ public class ConditionPlayerInstanceId extends Condition
 	{
 		if (!(env.player instanceof L2PcInstance))
 			return false;
-
+		
 		final int instanceId = env.player.getInstanceId();
 		if (instanceId <= 0)
 			return false; // player not in instance
-
+		
 		final InstanceWorld world = InstanceManager.getInstance().getPlayerWorld((L2PcInstance)env.player);
 		if (world == null || world.instanceId != instanceId)
 			return false; // player in the different instance
-
+		
 		return _instanceIds.contains(world.templateId);
 	}
 }

@@ -31,16 +31,16 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 	private boolean _init = false;
 	private ClanHall _clanHall = null;
 	private boolean _hasEvolve = false;
-
+	
 	// list of clan halls with evolve function, should be sorted
 	private static final int[] CH_WITH_EVOLVE = {36, 37, 38, 39, 40, 41, 51, 52, 53, 54, 55, 56, 57};
-
+	
 	public L2ClanHallDoormenInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
 		setInstanceType(InstanceType.L2ClanHallDoormenInstance);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
@@ -83,14 +83,14 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 		}
 		super.onBypassFeedback(player, command);
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-
+		
 		if (getClanHall() != null)
 		{
 			L2Clan owner = ClanTable.getInstance().getClan(getClanHall().getOwnerId());
@@ -124,11 +124,11 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 		}
 		else
 			return;
-
+		
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	protected final void openDoors(L2PcInstance player, String command)
 	{
@@ -138,7 +138,7 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	protected final void closeDoors(L2PcInstance player, String command)
 	{
@@ -148,7 +148,7 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}
-
+	
 	private final ClanHall getClanHall()
 	{
 		if (!_init)
@@ -160,13 +160,13 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 					_clanHall = ClanHallManager.getInstance().getNearbyClanHall(getX(), getY(), 500);
 					if (_clanHall != null)
 						_hasEvolve = Arrays.binarySearch(CH_WITH_EVOLVE, _clanHall.getId()) >= 0;
-					_init = true;
+						_init = true;
 				}
 			}
 		}
 		return _clanHall;
 	}
-
+	
 	@Override
 	protected final boolean isOwnerClan(L2PcInstance player)
 	{

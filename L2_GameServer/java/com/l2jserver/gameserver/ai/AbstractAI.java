@@ -215,7 +215,7 @@ abstract class AbstractAI implements Ctrl
 		 if (Config.DEBUG)
 		 _log.warning("AbstractAI: changeIntention -> " + intention + " " + arg0 + " " + arg1);
 		 */
-
+		
 		_intention = intention;
 		_intentionArg0 = arg0;
 		_intentionArg1 = arg1;
@@ -280,14 +280,14 @@ abstract class AbstractAI implements Ctrl
 			_ai.setIntention(_intent, _arg0, null);
 		}
 	}
-	*/
+	 */
 	public final void setIntention(CtrlIntention intention, Object arg0, Object arg1)
 	{
 		/*
 		 if (Config.DEBUG)
 		 _log.warning("AbstractAI: setIntention -> " + intention + " " + arg0 + " " + arg1);
 		 */
-
+		
 		// Stop the follow mode if necessary
 		if (intention != AI_INTENTION_FOLLOW && intention != AI_INTENTION_ATTACK)
 			stopFollow();
@@ -383,7 +383,7 @@ abstract class AbstractAI implements Ctrl
 			_ai.notifyEvent(_evt, _arg0, _arg1);
 		}
 	}
-	*/
+	 */
 	/**
 	 * Launch the L2CharacterAI onEvt method corresponding to the Event.<BR><BR>
 	 *
@@ -406,7 +406,7 @@ abstract class AbstractAI implements Ctrl
 		 if (Config.DEBUG)
 		 _log.warning("AbstractAI: notifyEvent -> " + evt + " " + arg0 + " " + arg1);
 		 */
-
+		
 		switch (evt)
 		{
 			case EVT_THINK:
@@ -440,7 +440,7 @@ abstract class AbstractAI implements Ctrl
 				onEvtEvaded((L2Character) arg0);
 				break;
 			case EVT_READY_TO_ACT:
-				if (!_actor.isCastingNow() && !_actor.isCastingSimultaneouslyNow()) 
+				if (!_actor.isCastingNow() && !_actor.isCastingSimultaneouslyNow())
 					onEvtReadyToAct();
 				break;
 			case EVT_USER_CMD:
@@ -514,7 +514,7 @@ abstract class AbstractAI implements Ctrl
 	protected abstract void onEvtMuted(L2Character attacker);
 	
 	protected abstract void onEvtEvaded(L2Character attacker);
-
+	
 	protected abstract void onEvtReadyToAct();
 	
 	protected abstract void onEvtUserCmd(Object arg0, Object arg1);
@@ -561,7 +561,7 @@ abstract class AbstractAI implements Ctrl
 			if (offset < 10)
 				offset = 10;
 			
-			// prevent possible extra calls to this function (there is none?), 
+			// prevent possible extra calls to this function (there is none?),
 			// also don't send movetopawn packets too often
 			boolean sendPacket = true;
 			if (_clientMoving && _target == pawn)
@@ -660,7 +660,7 @@ abstract class AbstractAI implements Ctrl
 		 if (Config.DEBUG)
 		 _log.warning("clientStopMoving();");
 		 */
-
+		
 		// Stop movement of the L2Character
 		if (_actor.isMoving())
 			_accessor.stopMove(pos);

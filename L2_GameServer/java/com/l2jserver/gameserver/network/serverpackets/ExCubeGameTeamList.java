@@ -46,7 +46,7 @@ public class ExCubeGameTeamList extends L2GameServerPacket
 	
 	// Common Values
 	int _roomNumber;
-
+	
 	/**
 	 * 
 	 * Show Minigame Waiting List to Player
@@ -61,7 +61,7 @@ public class ExCubeGameTeamList extends L2GameServerPacket
 		_bluePlayers = bluePlayers;
 		_roomNumber = roomNumber - 1;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -88,7 +88,7 @@ public class ExCubeGameTeamList extends L2GameServerPacket
 			writeS(player.getName());
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -97,5 +97,5 @@ public class ExCubeGameTeamList extends L2GameServerPacket
 	{
 		return _S__FE_97_00_EXCUBEGAMETEAMLIST;
 	}
-
+	
 }

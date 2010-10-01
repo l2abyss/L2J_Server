@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.L2ItemInstance;
+
 /**
  * Format: (ch)ddd
  *
@@ -21,16 +23,22 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExPutItemResultForVariationCancel extends L2GameServerPacket
 {
 	private static final String _S__FE_56_EXCONFIRMCANCELITEM = "[S] FE:57 ExPutItemResultForVariationCancel";
-
+	
 	private int _itemObjId;
+	private int _itemId;
+	private int _itemAug1;
+	private int _itemAug2;
 	private int _price;
-
-	public ExPutItemResultForVariationCancel(int itemObjId, int price)
+	
+	public ExPutItemResultForVariationCancel(L2ItemInstance item, int price)
 	{
-		_itemObjId = itemObjId;
+		_itemObjId = item.getObjectId();
+		_itemId = item.getItemId();
 		_price = price;
+		_itemAug1 = ((short)item.getAugmentation().getAugmentationId());
+		_itemAug2 = item.getAugmentation().getAugmentationId() >> 16;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -39,14 +47,14 @@ public class ExPutItemResultForVariationCancel extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x57);
-		writeD(0x40A97712);
 		writeD(_itemObjId);
-		writeD(0x27);
-		writeD(0x2006);
+		writeD(_itemId);
+		writeD(_itemAug1);
+		writeD(_itemAug2);
 		writeQ(_price);
 		writeD(0x01);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -55,5 +63,5 @@ public class ExPutItemResultForVariationCancel extends L2GameServerPacket
 	{
 		return _S__FE_56_EXCONFIRMCANCELITEM;
 	}
-
+	
 }

@@ -37,9 +37,10 @@ import com.l2jserver.util.Rnd;
 public class L2RaidBossInstance extends L2MonsterInstance
 {
 	private static final int RAIDBOSS_MAINTENANCE_INTERVAL = 30000; // 30 sec
-
+	
 	private RaidBossSpawnManager.StatusEnum _raidStatus;
-
+	private boolean _useRaidCurse = true;
+	
 	/**
 	 * Constructor of L2RaidBossInstance (use L2Character and L2NpcInstance constructor).<BR><BR>
 	 *
@@ -57,32 +58,32 @@ public class L2RaidBossInstance extends L2MonsterInstance
 		setInstanceType(InstanceType.L2RaidBossInstance);
 		setIsRaid(true);
 	}
-
+	
 	@Override
 	public void onSpawn()
 	{
 		setIsNoRndWalk(true);
 		super.onSpawn();
 	}
-
+	
 	@Override
 	protected int getMaintenanceInterval()
 	{
 		return RAIDBOSS_MAINTENANCE_INTERVAL;
 	}
-
+	
 	@Override
 	public boolean doDie(L2Character killer)
 	{
 		if (!super.doDie(killer))
 			return false;
-
+		
 		L2PcInstance player = null;
 		if (killer instanceof L2PcInstance)
 			player = (L2PcInstance) killer;
 		else if (killer instanceof L2Summon)
 			player = ((L2Summon) killer).getOwner();
-
+		
 		if (player != null)
 		{
 			broadcastPacket(new SystemMessage(SystemMessageId.RAID_WAS_SUCCESSFUL));
@@ -90,23 +91,23 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			{
 				for (L2PcInstance member : player.getParty().getPartyMembers())
 				{
-					RaidBossPointsManager.addPoints(member, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
+					RaidBossPointsManager.getInstance().addPoints(member, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
 					if(member.isNoble())
 						Hero.getInstance().setRBkilled(member.getObjectId(), this.getNpcId());
 				}
 			}
 			else
 			{
-				RaidBossPointsManager.addPoints(player, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
+				RaidBossPointsManager.getInstance().addPoints(player, this.getNpcId(), (this.getLevel() / 2) + Rnd.get(-5, 5));
 				if(player.isNoble())
 					Hero.getInstance().setRBkilled(player.getObjectId(), this.getNpcId());
 			}
 		}
-
+		
 		RaidBossSpawnManager.getInstance().updateStatus(this, true);
 		return true;
 	}
-
+	
 	/**
 	 * Spawn all minions at a regular interval Also if boss is too far from home
 	 * location at the time of this check, teleport it home
@@ -117,71 +118,85 @@ public class L2RaidBossInstance extends L2MonsterInstance
 	{
 		if (_minionList != null)
 			_minionList.spawnMinions();
-
+		
 		_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new Runnable() {
 			public void run()
 			{
 				checkAndReturnToSpawn();
-
+				
 				if (_minionList != null)
 					_minionList.maintainMinions();
 			}
 		}, 60000, getMaintenanceInterval()+Rnd.get(5000));
 	}
-
+	
 	protected void checkAndReturnToSpawn()
 	{
 		if (isDead() || isMovementDisabled())
 			return;
-
+		
 		// Gordon does not have permanent spawn
 		if (getNpcId() == 29095)
 			return;
-
+		
 		final L2Spawn spawn = getSpawn();
 		if (spawn == null)
 			return;
-
+		
 		final int spawnX = spawn.getLocx();
 		final int spawnY = spawn.getLocy();
 		final int spawnZ = spawn.getLocz();
-
+		
 		if (!isInCombat() && !isMovementDisabled())
 		{
 			if (!isInsideRadius(spawnX, spawnY, spawnZ, Math.max(Config.MAX_DRIFT_RANGE, 200), true, false))
 				teleToLocation(spawnX, spawnY, spawnZ, false);
 		}
 	}
-
+	
 	/**
-     * Reduce the current HP of the L2Attackable, update its _aggroList and launch the doDie Task if necessary.<BR><BR>
-     *
-     */
+	 * Reduce the current HP of the L2Attackable, update its _aggroList and launch the doDie Task if necessary.<BR><BR>
+	 *
+	 */
 	@Override
-    public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
-    {
-    	super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
-    }
-
-    public void setRaidStatus (RaidBossSpawnManager.StatusEnum status)
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	{
+		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
+	}
+	
+	public void setRaidStatus (RaidBossSpawnManager.StatusEnum status)
 	{
 		_raidStatus = status;
 	}
-
+	
 	public RaidBossSpawnManager.StatusEnum getRaidStatus()
 	{
 		return _raidStatus;
 	}
-
+	
 	@Override
 	public float getVitalityPoints(int damage)
 	{
 		return - super.getVitalityPoints(damage) / 100;
 	}
-
+	
 	@Override
 	public boolean useVitalityRate()
 	{
 		return false;
+	}
+	
+	public void setUseRaidCurse(boolean val)
+	{
+		_useRaidCurse = val;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.actor.L2Character#giveRaidCurse()
+	 */
+	@Override
+	public boolean giveRaidCurse()
+	{
+		return _useRaidCurse;
 	}
 }

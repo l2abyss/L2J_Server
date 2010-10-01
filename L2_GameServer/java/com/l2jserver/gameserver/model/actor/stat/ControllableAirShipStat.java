@@ -22,13 +22,13 @@ public class ControllableAirShipStat extends VehicleStat
 	{
 		super(activeChar);
 	}
-
+	
 	@Override
 	public L2ControllableAirShipInstance getActiveChar()
 	{
 		return (L2ControllableAirShipInstance)super.getActiveChar();
 	}
-
+	
 	@Override
 	public float getMoveSpeed()
 	{

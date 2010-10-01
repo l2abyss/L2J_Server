@@ -26,8 +26,8 @@ public class ObservationMode extends L2GameServerPacket
 	// ddSS
 	private static final String _S__DF_OBSERVMODE = "[S] eb ObservationMode";
 	private int _x, _y, _z;
-
-
+	
+	
 	/**
 	 * @param _characters
 	 */
@@ -37,8 +37,8 @@ public class ObservationMode extends L2GameServerPacket
 		_y = y;
 		_z = z;
 	}
-
-
+	
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -50,7 +50,7 @@ public class ObservationMode extends L2GameServerPacket
 		writeC( 0xc0);
 		writeC( 0x00);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

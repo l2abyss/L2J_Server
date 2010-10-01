@@ -29,7 +29,7 @@ public final class RequestHennaRemove extends L2GameClientPacket
 	private static final String _C__BC_RequestHennaRemove = "[C] bc RequestHennaRemove";
 	private int _symbolId;
 	// format  cd
-
+	
 	/**
 	 * packet type id 0xbb
 	 * format:		cd
@@ -40,17 +40,17 @@ public final class RequestHennaRemove extends L2GameClientPacket
 	{
 		_symbolId = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("HennaRemove"))
 			return;
-
+		
 		for (int i = 1; i <= 3; i++)
 		{
 			L2HennaInstance henna = activeChar.getHenna(i);
@@ -63,7 +63,7 @@ public final class RequestHennaRemove extends L2GameClientPacket
 			}
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

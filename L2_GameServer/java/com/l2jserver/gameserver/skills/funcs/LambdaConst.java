@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.skills.Env;
  */
 public final class LambdaConst extends Lambda
 {
-
+	
 	private final double _value;
 	public LambdaConst(double value)
 	{
@@ -32,5 +32,5 @@ public final class LambdaConst extends Lambda
 	{
 		return _value;
 	}
-
+	
 }

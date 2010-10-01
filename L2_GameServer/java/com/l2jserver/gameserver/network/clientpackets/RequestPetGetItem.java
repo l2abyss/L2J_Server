@@ -32,28 +32,28 @@ public final class RequestPetGetItem extends L2GameClientPacket
 {
 	//private static Logger _log = Logger.getLogger(RequestPetGetItem.class.getName());
 	private static final String _C__8f_REQUESTPETGETITEM= "[C] 8F RequestPetGetItem";
-
+	
 	private int _objectId;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2World world = L2World.getInstance();
 		L2ItemInstance item = (L2ItemInstance)world.findObject(_objectId);
 		if (item == null || getClient().getActiveChar() == null)
-		    return;
+			return;
 		
-		int castleId = MercTicketManager.getInstance().getTicketCastleId(item.getItemId());		
+		int castleId = MercTicketManager.getInstance().getTicketCastleId(item.getItemId());
 		if (castleId > 0) {
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
-		}			
+		}
 		
 		if(getClient().getActiveChar().getPet() instanceof L2SummonInstance)
 		{
@@ -73,11 +73,11 @@ public final class RequestPetGetItem extends L2GameClientPacket
 		}
 		pet.getAI().setIntention(CtrlIntention.AI_INTENTION_PICK_UP, item);
 	}
-
+	
 	@Override
 	public String getType()
 	{
 		return _C__8f_REQUESTPETGETITEM;
 	}
-
+	
 }

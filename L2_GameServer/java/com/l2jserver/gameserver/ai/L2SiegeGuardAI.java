@@ -32,10 +32,10 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -427,7 +427,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			if (npc.getAI() != null) // TODO: possibly check not needed
 			{
 				if (!npc.isDead() && Math.abs(target.getZ() - npc.getZ()) < 600
-				//&& _actor.getAttackByList().contains(getAttackTarget())
+						//&& _actor.getAttackByList().contains(getAttackTarget())
 						&& (npc.getAI()._intention == CtrlIntention.AI_INTENTION_IDLE || npc.getAI()._intention == CtrlIntention.AI_INTENTION_ACTIVE)
 						//limiting aggro for siege guards
 						&& target.isInsideRadius(npc, 1500, true, false) && GeoData.getInstance().canSeeTarget(npc, target))
@@ -583,7 +583,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 					setIntention(AI_INTENTION_IDLE, null, null);
 				}
 				else
-				// Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)
+					// Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)
 				{
 					// Temporary hack for preventing guards jumping off towers,
 					// before replacing this with effective geodata checks and AI modification

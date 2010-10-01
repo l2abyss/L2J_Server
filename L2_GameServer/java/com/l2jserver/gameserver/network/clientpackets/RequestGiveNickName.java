@@ -32,24 +32,24 @@ public class RequestGiveNickName extends L2GameClientPacket
 {
 	private static final String _C__55_REQUESTGIVENICKNAME = "[C] 55 RequestGiveNickName";
 	static Logger _log = Logger.getLogger(RequestGiveNickName.class.getName());
-
+	
 	private String _target;
 	private String _title;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_target = readS();
 		_title  = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
-
+			return;
+		
 		// Noblesse can bestow a title to themselves
 		if (activeChar.isNoble() && _target.matches(activeChar.getName()))
 		{
@@ -64,32 +64,32 @@ public class RequestGiveNickName extends L2GameClientPacket
 			if (activeChar.getClan().getLevel() < 3)
 			{
 				SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_LVL_3_NEEDED_TO_ENDOWE_TITLE);
-                activeChar.sendPacket(sm);
-                sm = null;
+				activeChar.sendPacket(sm);
+				sm = null;
 				return;
 			}
-
+			
 			L2ClanMember member1 = activeChar.getClan().getClanMember(_target);
-            if (member1 != null)
-            {
-                L2PcInstance member = member1.getPlayerInstance();
-                if (member != null)
-                {
-        			//is target from the same clan?
-    				member.setTitle(_title);
-    				SystemMessage sm = new SystemMessage(SystemMessageId.TITLE_CHANGED);
-    				member.sendPacket(sm);
+			if (member1 != null)
+			{
+				L2PcInstance member = member1.getPlayerInstance();
+				if (member != null)
+				{
+					//is target from the same clan?
+					member.setTitle(_title);
+					SystemMessage sm = new SystemMessage(SystemMessageId.TITLE_CHANGED);
+					member.sendPacket(sm);
 					member.broadcastTitleInfo();
 					sm = null;
-                }
-                else
-                    activeChar.sendMessage("Target needs to be online to get a title");
+				}
+				else
+					activeChar.sendMessage("Target needs to be online to get a title");
 			}
-            else
-                activeChar.sendMessage("Target does not belong to your clan");
+			else
+				activeChar.sendMessage("Target does not belong to your clan");
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

@@ -30,7 +30,7 @@ public class ChangeAccessLevel extends BaseSendablePacket
 		writeD(access);
 		writeS(player);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
 	 */
@@ -39,5 +39,5 @@ public class ChangeAccessLevel extends BaseSendablePacket
 	{
 		return getBytes();
 	}
-
+	
 }

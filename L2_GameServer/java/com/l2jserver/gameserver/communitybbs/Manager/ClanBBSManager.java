@@ -348,16 +348,16 @@ public class ClanBBSManager extends BaseBBSManager
 						 html.append("</tr>");*/
 						"<tr><td height=7></td></tr>" + "<tr>" + "<td fixWIDTH=100 align=left>ALLIANCE</td>"
 						+ "<td fixWIDTH=195 align=left height=16>", (cl.getAllyName() != null) ? cl.getAllyName() : "", "</td>" + "</tr>"
-						+ "</table>" + "</td>" + "<td fixWIDTH=5></td>"
-						+ "</tr>"
-						+ "<tr><td height=10></td></tr>"
-						+ "</table>"
-						+
-						//TODO: the BB for clan :)
-						//html.append("<table border=0 cellspacing=0 cellpadding=0 width=610  bgcolor=333333>");
-						"<img src=\"L2UI.squareblank\" width=\"1\" height=\"5\">"
-						+ "<img src=\"L2UI.squaregray\" width=\"610\" height=\"1\">" + "<br>" + "</center>" + "<br> <br>" + "</body>"
-						+ "</html>");
+								+ "</table>" + "</td>" + "<td fixWIDTH=5></td>"
+								+ "</tr>"
+								+ "<tr><td height=10></td></tr>"
+								+ "</table>"
+								+
+								//TODO: the BB for clan :)
+								//html.append("<table border=0 cellspacing=0 cellpadding=0 width=610  bgcolor=333333>");
+								"<img src=\"L2UI.squareblank\" width=\"1\" height=\"5\">"
+								+ "<img src=\"L2UI.squaregray\" width=\"610\" height=\"1\">" + "<br>" + "</center>" + "<br> <br>" + "</body>"
+								+ "</html>");
 				separateAndSend(html, activeChar);
 			}
 		}

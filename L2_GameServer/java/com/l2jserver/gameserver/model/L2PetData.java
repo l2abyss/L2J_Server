@@ -45,7 +45,7 @@ public class L2PetData
 	public static final String OWNER_EXP_TAKEN = "owner_exp_taken";
 	public static final String PET_SOUL_SHOT = "soul_shot";
 	public static final String PET_SPIRIT_SHOT = "spirit_shot";
-
+	
 	private int _petId;
 	private int _petLevel;
 	private float _ownerExpTaken;
@@ -74,7 +74,7 @@ public class L2PetData
 	private int _petRegenMP;
 	private short _petSoulShot;
 	private short _petSpiritShot;
-
+	
 	public void setStat(String stat, int value)
 	{
 		//      if (stat.equalsIgnoreCase(PET_EXP)) { this.setPetExp(value); }
@@ -183,263 +183,263 @@ public class L2PetData
 			setOwnerExpTaken(value);
 		}
 	}
-
+	
 	//  ID
 	public int getPetID()
 	{
 		return _petId;
 	}
-
+	
 	public void setPetID(int pPetID)
 	{
 		_petId = pPetID;
 	}
-
+	
 	//  Level
 	public int getPetLevel()
 	{
 		return _petLevel;
 	}
-
+	
 	public void setPetLevel(int pPetLevel)
 	{
 		_petLevel = pPetLevel;
 	}
-
+	
 	//  Exp
 	//    public int getPetExp() { return petExp; }
 	//    public void setPetExp(int petExp) { this.petExp = petExp; }
-
+	
 	//  Max Exp
 	public long getPetMaxExp()
 	{
 		return _petMaxExp;
 	}
-
+	
 	public void setPetMaxExp(long pPetMaxExp)
 	{
 		_petMaxExp = pPetMaxExp;
 	}
-
+	
 	public float getOwnerExpTaken()
 	{
 		return _ownerExpTaken;
 	}
-
+	
 	public void setOwnerExpTaken(float pOwnerExpTaken)
 	{
 		_ownerExpTaken = pOwnerExpTaken;
 	}
-
+	
 	//  HP
 	//    public int getPetHP() { return petHP; }
 	//    public void setPetHP(int petHP) { this.petHP = petHP; }
-
+	
 	//  Max HP
 	public int getPetMaxHP()
 	{
 		return _petMaxHP;
 	}
-
+	
 	public void setPetMaxHP(int pPetMaxHP)
 	{
 		_petMaxHP = pPetMaxHP;
 	}
-
+	
 	//  Mp
 	//    public int getPetMP() { return petMP; }
 	//    public void setPetMP(int petMP) { this.petMP = petMP; }
-
+	
 	//  Max Mp
 	public int getPetMaxMP()
 	{
 		return _petMaxMP;
 	}
-
+	
 	public void setPetMaxMP(int pPetMaxMP)
 	{
 		_petMaxMP = pPetMaxMP;
 	}
-
+	
 	//  PAtk
 	public int getPetPAtk()
 	{
 		return _petPAtk;
 	}
-
+	
 	public void setPetPAtk(int pPetPAtk)
 	{
 		_petPAtk = pPetPAtk;
 	}
-
+	
 	//  PDef
 	public int getPetPDef()
 	{
 		return _petPDef;
 	}
-
+	
 	public void setPetPDef(int pPetPDef)
 	{
 		_petPDef = pPetPDef;
 	}
-
+	
 	//  MAtk
 	public int getPetMAtk()
 	{
 		return _petMAtk;
 	}
-
+	
 	public void setPetMAtk(int pPetMAtk)
 	{
 		_petMAtk = pPetMAtk;
 	}
-
+	
 	//  MDef
 	public int getPetMDef()
 	{
 		return _petMDef;
 	}
-
+	
 	public void setPetMDef(int pPetMDef)
 	{
 		_petMDef = pPetMDef;
 	}
-
+	
 	//  Accuracy
 	public int getPetAccuracy()
 	{
 		return _petAccuracy;
 	}
-
+	
 	public void setPetAccuracy(int pPetAccuracy)
 	{
 		_petAccuracy = pPetAccuracy;
 	}
-
+	
 	//  Evasion
 	public int getPetEvasion()
 	{
 		return _petEvasion;
 	}
-
+	
 	public void setPetEvasion(int pPetEvasion)
 	{
 		_petEvasion = pPetEvasion;
 	}
-
+	
 	//  Critical
 	public int getPetCritical()
 	{
 		return _petCritical;
 	}
-
+	
 	public void setPetCritical(int pPetCritical)
 	{
 		_petCritical = pPetCritical;
 	}
-
+	
 	//  Speed
 	public int getPetSpeed()
 	{
 		return _petSpeed;
 	}
-
+	
 	public void setPetSpeed(int pPetSpeed)
 	{
 		_petSpeed = pPetSpeed;
 	}
-
+	
 	//  Atk Speed
 	public int getPetAtkSpeed()
 	{
 		return _petAtkSpeed;
 	}
-
+	
 	public void setPetAtkSpeed(int pPetAtkSpeed)
 	{
 		_petAtkSpeed = pPetAtkSpeed;
 	}
-
+	
 	//  Cast Speed
 	public int getPetCastSpeed()
 	{
 		return _petCastSpeed;
 	}
-
+	
 	public void setPetCastSpeed(int pPetCastSpeed)
 	{
 		_petCastSpeed = pPetCastSpeed;
 	}
-
+	
 	//  Feed
 	//    public int getPetFeed(){ return petFeed; }
 	//    public void setPetFeed(int petFeed) { this.petFeed = petFeed; }
-
+	
 	//  MaxFeed
 	public int getPetMaxFeed()
 	{
 		return _petMaxFeed;
 	}
-
+	
 	public void setPetMaxFeed(int pPetMaxFeed)
 	{
 		_petMaxFeed = pPetMaxFeed;
 	}
-
+	
 	//  Normal Feed
 	public int getPetFeedNormal()
 	{
 		return _petFeedNormal;
 	}
-
+	
 	public void setPetFeedNormal(int pPetFeedNormal)
 	{
 		_petFeedNormal = pPetFeedNormal;
 	}
-
+	
 	//  Battle Feed
 	public int getPetFeedBattle()
 	{
 		return _petFeedBattle;
 	}
-
+	
 	public void setPetFeedBattle(int pPetFeedBattle)
 	{
 		_petFeedBattle = pPetFeedBattle;
 	}
-
+	
 	//  Load
 	//    public int getPetLoad() { return petLoad; }
 	//    public void setPetLoad(int petLoad) { this.petLoad = petLoad; }
-
+	
 	//  Max Load
 	public int getPetMaxLoad()
 	{
 		return _petMaxLoad;
 	}
-
+	
 	public void setPetMaxLoad(int pPetMaxLoad)
 	{
 		_petMaxLoad = pPetMaxLoad;
 	}
-
+	
 	//  Regen HP
 	public int getPetRegenHP()
 	{
 		return _petRegenHP;
 	}
-
+	
 	public void setPetRegenHP(int pPetRegenHP)
 	{
 		_petRegenHP = pPetRegenHP;
 	}
-
+	
 	//  Regen MP
 	public int getPetRegenMP()
 	{
 		return _petRegenMP;
 	}
-
+	
 	public void setPetRegenMP(int pPetRegenMP)
 	{
 		_petRegenMP = pPetRegenMP;
@@ -473,7 +473,7 @@ public class L2PetData
 	{
 		_petSpiritShot = spiritShot;
 	}
-
+	
 	@Override
 	public String toString()
 	{

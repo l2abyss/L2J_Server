@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -40,8 +42,6 @@ import com.l2jserver.loginserver.serverpackets.LoginFail.LoginFailReason;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.crypt.ScrambledKeyPair;
 import com.l2jserver.util.lib.Log;
-
-import javolution.util.FastMap;
 
 /**
  * This class ...
@@ -392,7 +392,7 @@ public class LoginController
 		if (gsi != null && gsi.isAuthed())
 		{
 			boolean loginOk = (gsi.getCurrentPlayerCount() < gsi.getMaxPlayers() && gsi.getStatus() != ServerStatus.STATUS_GM_ONLY)
-					|| access > 0;
+			|| access > 0;
 			
 			if (loginOk && client.getLastServer() != serverId)
 			{
@@ -454,7 +454,7 @@ public class LoginController
 		}
 	}
 	
-	public void setAccountLastTracert(String account, String pcIp, 
+	public void setAccountLastTracert(String account, String pcIp,
 			String hop1, String hop2, String hop3, String hop4)
 	{
 		Connection con = null;
@@ -612,15 +612,15 @@ public class LoginController
 					}
 					if (Config.LOG_LOGIN_CONTROLLER)
 						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : ErrCreatingACC", "loginlog");
-
+					
 					_log.warning("Invalid username creation/use attempt: " + user);
 					return false;
 				}
-				else 
+				else
 				{
 					if (Config.LOG_LOGIN_CONTROLLER)
 						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : AccountMissing", "loginlog");
-
+					
 					_log.warning("Account missing for user " + user);
 					FailedLoginAttempt failedAttempt = _hackProtection.get(address);
 					int failedCount;
@@ -651,7 +651,7 @@ public class LoginController
 				{
 					if (Config.LOG_LOGIN_CONTROLLER)
 						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : AccountBanned", "loginlog");
-				
+					
 					client.setAccessLevel(access);
 					return false;
 				}
@@ -807,7 +807,7 @@ public class LoginController
 				_lastAttempTime = System.currentTimeMillis();
 			}
 			else
-			//trying the same password is not brute force
+				//trying the same password is not brute force
 			{
 				_lastAttempTime = System.currentTimeMillis();
 			}

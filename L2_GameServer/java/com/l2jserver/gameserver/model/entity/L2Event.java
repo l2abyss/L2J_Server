@@ -141,28 +141,28 @@ public class L2Event
 			
 			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream("data/events/" + eventName)));
 			BufferedReader inbr = new BufferedReader(new InputStreamReader(in));
-
-                        final StringBuilder replyMSG = new StringBuilder();
-                        StringUtil.append(replyMSG,
-                                "<html><body>" +
-                                "<center><font color=\"LEVEL\">",
-                                eventName,
-                                "</font><font color=\"FF0000\"> bY ",
-                                inbr.readLine(),
-                                "</font></center><br>" +
-                                "<br>",
-                                inbr.readLine()
-                                );
-
-                        if (L2Event.participatingPlayers.contains(player.getName())) {
+			
+			final StringBuilder replyMSG = new StringBuilder();
+			StringUtil.append(replyMSG,
+					"<html><body>" +
+					"<center><font color=\"LEVEL\">",
+					eventName,
+					"</font><font color=\"FF0000\"> bY ",
+					inbr.readLine(),
+					"</font></center><br>" +
+					"<br>",
+					inbr.readLine()
+			);
+			
+			if (L2Event.participatingPlayers.contains(player.getName())) {
 				replyMSG.append("<br><center>You are already in the event players list !!</center></body></html>");
-                        } else {
-                            StringUtil.append(replyMSG,
-                                    "<br><center><button value=\"Participate !! \" action=\"bypass -h npc_",
-                                    String.valueOf(objectid),
-                                    "_event_participate\" width=90 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>"
-                                    );
-                        }
+			} else {
+				StringUtil.append(replyMSG,
+						"<br><center><button value=\"Participate !! \" action=\"bypass -h npc_",
+						String.valueOf(objectid),
+						"_event_participate\" width=90 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></center></body></html>"
+				);
+			}
 			
 			adminReply.setHtml(replyMSG.toString());
 			player.sendPacket(adminReply);

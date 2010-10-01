@@ -147,7 +147,7 @@ public class L2SiegeZone extends L2ZoneType
 				}
 			}
 		}
-
+		
 		if (character instanceof L2SiegeSummonInstance)
 		{
 			((L2SiegeSummonInstance) character).unSummon(((L2SiegeSummonInstance) character).getOwner());
@@ -166,7 +166,7 @@ public class L2SiegeZone extends L2ZoneType
 				final L2Effect e = character.getFirstEffect(5660);
 				if (e != null)
 					lvl = Math.min(lvl + e.getLevel(), 5);
-
+				
 				final L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);
 				if (skill != null)
 					skill.getEffects(character, character);
@@ -216,7 +216,7 @@ public class L2SiegeZone extends L2ZoneType
 			}
 		}
 	}
-
+	
 	
 	/**
 	 * Sends a message to all players in this zone

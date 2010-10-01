@@ -32,7 +32,7 @@ public class ValidateLocation extends L2GameServerPacket
 	private static final String _S__76_SETTOLOCATION = "[S] 79 ValidateLocation";
 	private int _charObjId;
 	private int _x, _y, _z, _heading;
-
+	
 	public ValidateLocation(L2Character cha)
 	{
 		_charObjId = cha.getObjectId();
@@ -41,19 +41,19 @@ public class ValidateLocation extends L2GameServerPacket
 		_z = cha.getZ();
 		_heading = cha.getHeading();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x79);
-
+		
 		writeD(_charObjId);
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
 		writeD(_heading);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

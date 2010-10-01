@@ -357,17 +357,17 @@ public class RegionBBSManager extends BaseBBSManager
 					+ colSpacer + tdOpen + "Party XP Rate: x", String.valueOf(Config.RATE_XP * Config.RATE_PARTY_XP), tdClose + colSpacer
 					+ tdOpen + "XP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_XP), tdClose + trClose + trOpen + tdOpen
 					+ "SP Rate: x", String.valueOf(Config.RATE_SP), tdClose + colSpacer + tdOpen + "Party SP Rate: x", String.valueOf(Config.RATE_SP
-					* Config.RATE_PARTY_SP), tdClose + colSpacer + tdOpen + "SP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_SP), tdClose
-					+ trClose + trOpen + tdOpen + "Drop Rate: ", String.valueOf(Config.RATE_DROP_ITEMS), tdClose + colSpacer + tdOpen
-					+ "Spoil Rate: ", String.valueOf(Config.RATE_DROP_SPOIL), tdClose + colSpacer + tdOpen + "Adena Rate: ", String.valueOf(Config.RATE_DROP_ITEMS_ID.get(57)), tdClose
-					+ trClose
-					+ "</table>"
-					+ "<table>"
-					+ trOpen
-					+ "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>"
-					+ trClose
-					+ trOpen + tdOpen, String.valueOf(L2World.getInstance().getAllVisibleObjectsCount()), " Object count</td>" + trClose
-					+ trOpen + tdOpen, String.valueOf(getOnlineCount("gm")), " Player(s) Online</td>" + trClose + "</table>");
+							* Config.RATE_PARTY_SP), tdClose + colSpacer + tdOpen + "SP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_SP), tdClose
+							+ trClose + trOpen + tdOpen + "Drop Rate: ", String.valueOf(Config.RATE_DROP_ITEMS), tdClose + colSpacer + tdOpen
+							+ "Spoil Rate: ", String.valueOf(Config.RATE_DROP_SPOIL), tdClose + colSpacer + tdOpen + "Adena Rate: ", String.valueOf(Config.RATE_DROP_ITEMS_ID.get(57)), tdClose
+							+ trClose
+							+ "</table>"
+							+ "<table>"
+							+ trOpen
+							+ "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>"
+							+ trClose
+							+ trOpen + tdOpen, String.valueOf(L2World.getInstance().getAllVisibleObjectsCount()), " Object count</td>" + trClose
+							+ trOpen + tdOpen, String.valueOf(getOnlineCount("gm")), " Player(s) Online</td>" + trClose + "</table>");
 			
 			int cell = 0;
 			if (Config.BBS_SHOW_PLAYERLIST)
@@ -468,7 +468,7 @@ public class RegionBBSManager extends BaseBBSManager
 				{
 					if ((player == null) || (player.getAppearance().getInvisible()))
 						continue; // Go to next
-						
+					
 					cell++;
 					
 					if (cell == 1)

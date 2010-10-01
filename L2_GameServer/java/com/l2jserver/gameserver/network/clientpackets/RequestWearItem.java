@@ -97,7 +97,7 @@ public final class RequestWearItem extends L2GameClientPacket
 			_count = 0;
 		if (_count > 100)
 			_count = 0; // prevent too long lists
-			
+		
 		// Create _items table that will contain all ItemID to Wear
 		_items = new int[_count];
 		
@@ -129,7 +129,7 @@ public final class RequestWearItem extends L2GameClientPacket
 		L2Object target = player.getTarget();
 		if (!player.isGM() && (target == null // No target (ie GM Shop)
 				|| !(target instanceof L2MerchantInstance || target instanceof L2MercManagerInstance) // Target not a merchant and not mercmanager
-		|| !player.isInsideRadius(target, L2Npc.INTERACTION_DISTANCE, false, false) // Distance is too far
+				|| !player.isInsideRadius(target, L2Npc.INTERACTION_DISTANCE, false, false) // Distance is too far
 		))
 			return;
 		

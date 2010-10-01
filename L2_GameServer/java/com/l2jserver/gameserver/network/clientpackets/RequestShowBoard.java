@@ -30,10 +30,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestShowBoard extends L2GameClientPacket
 {
 	private static final String _C__57_REQUESTSHOWBOARD = "[C] 57 RequestShowBoard";
-
+	
 	@SuppressWarnings("unused")
-    private int _unknown;
-
+	private int _unknown;
+	
 	/**
 	 * packet type id 0x57
 	 *
@@ -50,17 +50,17 @@ public final class RequestShowBoard extends L2GameClientPacket
 	{
 		_unknown = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		if (Config.ENABLE_COMMUNITY_BOARD)
 		{
 			L2PcInstance activeChar = getClient().getActiveChar();
-
+			
 			if (activeChar == null)
 				return;
-
+			
 			if (CommunityServerThread.getInstance().isAuthed())
 				CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), "_bbshome"), true);
 			else
@@ -69,13 +69,13 @@ public final class RequestShowBoard extends L2GameClientPacket
 		else
 			CommunityBoard.getInstance().handleCommands(getClient(), Config.BBS_DEFAULT);
 	}
-
+	
 	@Override
 	public final String getType()
 	{
 		return _C__57_REQUESTSHOWBOARD;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

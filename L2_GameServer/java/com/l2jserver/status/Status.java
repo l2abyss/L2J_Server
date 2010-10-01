@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.Server;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
 
 public class Status extends Thread
 {

@@ -15,6 +15,8 @@
 package com.l2jserver.gameserver;
 
 import java.lang.reflect.Constructor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -25,6 +27,8 @@ import com.l2jserver.util.Rnd;
 
 public class MonsterRace
 {
+	protected static final Logger _log = Logger.getLogger(MonsterRace.class.getName());
+	
 	private L2Npc[] _monsters;
 	private Constructor<?> _constructor;
 	private int[][] _speeds;
@@ -72,7 +76,7 @@ public class MonsterRace
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 			}
 			//_log.info("Monster "+i+" is id: "+(id+random));
 		}

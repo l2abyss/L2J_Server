@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -23,33 +22,29 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class RecipeShopItemInfo  extends L2GameServerPacket
 {
-
+	
 	private static final String _S__DA_RecipeShopItemInfo = "[S] e0 RecipeShopItemInfo";
-	private int _shopId;
+	private L2PcInstance _player;
 	private int _recipeId;
-
-
-	public RecipeShopItemInfo(int shopId, int recipeId)
+	
+	
+	public RecipeShopItemInfo(L2PcInstance player, int recipeId)
 	{
-		_shopId = shopId;
+		_player = player;
 		_recipeId = recipeId;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
-        if (!(L2World.getInstance().findObject(_shopId) instanceof L2PcInstance))
-            return;
-
-		L2PcInstance manufacturer = (L2PcInstance)L2World.getInstance().findObject(_shopId);
 		writeC(0xe0);
-		writeD(_shopId);
+		writeD(_player.getObjectId());
 		writeD(_recipeId);
-		writeD(manufacturer != null ? (int)manufacturer.getCurrentMp() : 0);
-		writeD(manufacturer != null ? (int)manufacturer.getMaxMp() : 0);
+		writeD((int)_player.getCurrentMp());
+		writeD(_player.getMaxMp());
 		writeD(0xffffffff);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

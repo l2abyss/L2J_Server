@@ -32,53 +32,53 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestRejectPostAttachment extends L2GameClientPacket
 {
 	private static final String _C__D0_6B_REQUESTREJECTPOSTATTACHMENT = "[C] D0:6B RequestRejectPostAttachment";
-
+	
 	private int _msgId;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_msgId = readD();
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
 		if (!Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
 			return;
-
+		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("rejectattach"))
 			return;
-
+		
 		if (!activeChar.isInsideZone(ZONE_PEACE))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
 			return;
 		}
-
+		
 		Message msg = MailManager.getInstance().getMessage(_msgId);
 		if (msg == null)
 			return;
-
+		
 		if (msg.getReceiverId() != activeChar.getObjectId())
 		{
 			Util.handleIllegalPlayerAction(activeChar,
 					"Player "+activeChar.getName()+" tried to reject not own attachment!", Config.DEFAULT_PUNISH);
 			return;
 		}
-
+		
 		if (!msg.hasAttachments() || msg.isFourStars())
 			return;
-
+		
 		MailManager.getInstance().sendMessage(new Message(msg));
-
+		
 		activeChar.sendPacket(new SystemMessage(SystemMessageId.MAIL_SUCCESSFULLY_RETURNED));
 		activeChar.sendPacket(new ExChangePostState(true, _msgId, Message.REJECTED));
-
+		
 		final L2PcInstance sender = L2World.getInstance().getPlayer(msg.getSenderId());
 		if (sender != null)
 		{
@@ -87,7 +87,7 @@ public final class RequestRejectPostAttachment extends L2GameClientPacket
 			sender.sendPacket(sm);
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

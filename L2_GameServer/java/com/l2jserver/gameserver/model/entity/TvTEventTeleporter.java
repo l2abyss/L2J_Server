@@ -67,14 +67,14 @@ public class TvTEventTeleporter implements Runnable
 		
 		if (summon != null)
 			summon.unSummon(_playerInstance);
-
+		
 		if (Config.TVT_EVENT_EFFECTS_REMOVAL == 0
 				|| (Config.TVT_EVENT_EFFECTS_REMOVAL == 1 && (_playerInstance.getTeam() == 0 || (_playerInstance.isInDuel() && _playerInstance.getDuelState() != Duel.DUELSTATE_INTERRUPTED))))
 			_playerInstance.stopAllEffectsExceptThoseThatLastThroughDeath();
-
+		
 		if (_playerInstance.isInDuel())
 			_playerInstance.setDuelState(Duel.DUELSTATE_INTERRUPTED);
-
+		
 		int TvTInstance = TvTEvent.getTvTEventInstance();
 		if (TvTInstance != 0)
 		{
@@ -91,9 +91,9 @@ public class TvTEventTeleporter implements Runnable
 		{
 			_playerInstance.setInstanceId(0);
 		}
-
+		
 		_playerInstance.doRevive();
-
+		
 		_playerInstance.teleToLocation( _coordinates[ 0 ] + Rnd.get(101)-50, _coordinates[ 1 ] + Rnd.get(101)-50, _coordinates[ 2 ], false );
 		
 		if (TvTEvent.isStarted() && !_adminRemove)
@@ -104,7 +104,7 @@ public class TvTEventTeleporter implements Runnable
 		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());
 		_playerInstance.setCurrentHp(_playerInstance.getMaxHp());
 		_playerInstance.setCurrentMp(_playerInstance.getMaxMp());
-
+		
 		_playerInstance.broadcastStatusUpdate();
 		_playerInstance.broadcastUserInfo();
 	}

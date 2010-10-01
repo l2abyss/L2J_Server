@@ -24,11 +24,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.Config;
-import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.entity.Instance;
-
 import javolution.io.UTF8StreamReader;
 import javolution.util.FastList;
 import javolution.util.FastMap;
@@ -36,8 +31,13 @@ import javolution.xml.stream.XMLStreamConstants;
 import javolution.xml.stream.XMLStreamException;
 import javolution.xml.stream.XMLStreamReaderImpl;
 
+import com.l2jserver.Config;
+import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.entity.Instance;
 
-/** 
+
+/**
  * @author evill33t, GodKratos
  * 
  */
@@ -64,14 +64,14 @@ public class InstanceManager
 			return _playerInstanceTimes.get(playerObjId).get(id);
 		return -1;
 	}
-
+	
 	public Map<Integer,Long> getAllInstanceTimes(int playerObjId)
 	{
 		if (!_playerInstanceTimes.containsKey(playerObjId))
 			restoreInstanceTimes(playerObjId);
 		return _playerInstanceTimes.get(playerObjId);
 	}
-
+	
 	public void setInstanceTime(int playerObjId, int id, long time)
 	{
 		if (!_playerInstanceTimes.containsKey(playerObjId))
@@ -93,7 +93,7 @@ public class InstanceManager
 		catch (Exception e) { _log.log(Level.WARNING, "Could not insert character instance time data: "+ e.getMessage(), e); }
 		finally { L2DatabaseFactory.close(con); }
 	}
-
+	
 	public void deleteInstanceTime(int playerObjId, int id)
 	{
 		Connection con = null;
@@ -111,7 +111,7 @@ public class InstanceManager
 		catch (Exception e) { _log.log(Level.WARNING, "Could not delete character instance time data: "+ e.getMessage(), e); }
 		finally { L2DatabaseFactory.close(con); }
 	}
-
+	
 	public void restoreInstanceTimes(int playerObjId)
 	{
 		if (_playerInstanceTimes.containsKey(playerObjId))
@@ -124,7 +124,7 @@ public class InstanceManager
 			PreparedStatement statement = con.prepareStatement(RESTORE_INSTANCE_TIMES);
 			statement.setInt(1, playerObjId);
 			ResultSet rset = statement.executeQuery();
-
+			
 			while (rset.next())
 			{
 				int id = rset.getInt("instanceId");
@@ -134,7 +134,7 @@ public class InstanceManager
 				else
 					_playerInstanceTimes.get(playerObjId).put(id, time);
 			}
-
+			
 			rset.close();
 			statement.close();
 		}
@@ -147,7 +147,7 @@ public class InstanceManager
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	public String getInstanceIdName(int id)
 	{
 		if (_instanceIdNames.containsKey(id))
@@ -195,8 +195,8 @@ public class InstanceManager
 			}
 		}
 	}
-
-	public class InstanceWorld
+	
+	public static class InstanceWorld
 	{
 		public int instanceId;
 		public int templateId = -1;

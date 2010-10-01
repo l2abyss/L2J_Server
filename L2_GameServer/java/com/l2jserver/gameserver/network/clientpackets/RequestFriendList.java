@@ -29,13 +29,13 @@ public final class RequestFriendList extends L2GameClientPacket
 {
 	//private static Logger _log = Logger.getLogger(RequestFriendList.class.getName());
 	private static final String _C__60_REQUESTFRIENDLIST = "[C] 60 RequestFriendList";
-
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -59,8 +59,8 @@ public final class RequestFriendList extends L2GameClientPacket
 				continue;
 			
 			friend = L2World.getInstance().getPlayer(friendName);
-						
-			if (friend == null || friend.isOnline() == 0)
+			
+			if (friend == null || !friend.isOnline())
 			{
 				// (Currently: Offline)
 				sm = new SystemMessage(SystemMessageId.S1_OFFLINE);
@@ -79,7 +79,7 @@ public final class RequestFriendList extends L2GameClientPacket
 		// =========================
 		activeChar.sendPacket(SystemMessageId.FRIEND_LIST_FOOTER);
 	}
-
+	
 	@Override
 	public String getType()
 	{

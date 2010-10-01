@@ -34,12 +34,12 @@ public class PledgeInfo extends L2GameServerPacket
 {
 	private static final String _S__9C_PLEDGEINFO = "[S] 89 PledgeInfo";
 	private L2Clan _clan;
-
+	
 	public PledgeInfo(L2Clan clan)
 	{
 		_clan = clan;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -48,7 +48,7 @@ public class PledgeInfo extends L2GameServerPacket
 		writeS(_clan.getName());
 		writeS(_clan.getAllyName());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -57,5 +57,5 @@ public class PledgeInfo extends L2GameServerPacket
 	{
 		return _S__9C_PLEDGEINFO;
 	}
-
+	
 }

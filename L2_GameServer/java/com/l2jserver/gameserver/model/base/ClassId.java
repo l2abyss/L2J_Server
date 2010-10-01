@@ -136,7 +136,7 @@ public enum ClassId
 	 * <END>
 	 * Of Dummy entries
 	 */
-
+	
 	/*
 	 * Now the bad boys! new class ids :)) (3rd classes)
 	 */
@@ -193,7 +193,7 @@ public enum ClassId
 	maleSoulhound(0x84, false, Race.Kamael, maleSoulbreaker),
 	femaleSoulhound(0x85, false, Race.Kamael, femaleSoulbreaker),
 	trickster(0x86, false, Race.Kamael, arbalester),
-	inspector(0x87, false, Race.Kamael, null), //Hidden subclass, no first class which it comes from
+	inspector(0x87, false, Race.Kamael, warder), //DS: yes, both male/female inspectors use skills from warder
 	judicator(0x88, false, Race.Kamael, inspector);
 	
 	/** The Identifier of the Class */
@@ -234,7 +234,7 @@ public enum ClassId
 		this._race = pRace;
 		this._parent = pParent;
 	}
-
+	
 	/**
 	 * Return the Identifier of the Class.<BR><BR>
 	 */
@@ -304,12 +304,9 @@ public enum ClassId
 	 */
 	public final int level()
 	{
-		if (_id != 0x87 && _parent == null)
+		if (_parent == null)
 			return 0;
-		if (_id == 0x87)
-			return 2;
-		if (_id == 0x88)
-			return 3;
+		
 		return 1 + _parent.level();
 	}
 	

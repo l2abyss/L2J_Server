@@ -50,8 +50,8 @@ import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 /**
-* Thanks to L2Fortress and balancer.ru - kombat
-*/
+ * Thanks to L2Fortress and balancer.ru - kombat
+ */
 public class DimensionalRiftManager
 {
 	
@@ -296,7 +296,7 @@ public class DimensionalRiftManager
 			player.sendPacket(html);
 			return;
 		}
-				
+		
 		// max parties inside is rooms count - 1
 		if (!isAllowedEnter(type))
 		{
@@ -399,7 +399,7 @@ public class DimensionalRiftManager
 		d.setSpawnTimer(null);
 	}
 	
-	public class DimensionalRiftRoom
+	public static class DimensionalRiftRoom
 	{
 		protected final byte _type;
 		protected final byte _room;
@@ -480,11 +480,10 @@ public class DimensionalRiftManager
 				spawn.stopRespawn();
 				if (spawn.getLastSpawn() != null)
 					spawn.getLastSpawn().deleteMe();
-				spawn.decreaseCount(null);
 			}
 			return this;
 		}
-
+		
 		/**
 		 * @return the _partyInside
 		 */
@@ -492,7 +491,7 @@ public class DimensionalRiftManager
 		{
 			return _partyInside;
 		}
-
+		
 		public void setPartyInside(boolean partyInside)
 		{
 			_partyInside = partyInside;

@@ -31,7 +31,7 @@ public class ExShowScreenMessage extends L2GameServerPacket
 	private boolean _effect;
 	private String _text;
 	private int _time;
-
+	
 	public ExShowScreenMessage (String text, int time)
 	{
 		_type = 1;
@@ -46,7 +46,7 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_size = 0;
 		_effect = false;
 	}
-
+	
 	public ExShowScreenMessage (int type, int messageId, int position, int unk1, int size, int unk2, int unk3,boolean showEffect, int time,int unk4, String text)
 	{
 		_type = type;
@@ -67,7 +67,7 @@ public class ExShowScreenMessage extends L2GameServerPacket
 	{
 		return "[S]FE:39 ExShowScreenMessage";
 	}
-
+	
 	@Override
 	protected void writeImpl()
 	{
@@ -79,10 +79,11 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		writeD(_unk1); // ?
 		writeD(_size); // font size 0 - normal, 1 - small
 		writeD(_unk2); // ?
-		writeD(_unk3); // ? 
+		writeD(_unk3); // ?
 		writeD(_effect == true ? 1 : 0); // upper effect (0 - disabled, 1 enabled) - _position must be 2 (center) otherwise no effect
 		writeD(_time); // time
 		writeD(_unk4); // ?
+		writeD(0x00); //TODO: npcString
 		writeS(_text); // your text (_type must be 1, otherwise no effect)
 	}
 }

@@ -22,20 +22,20 @@ package com.l2jserver.gameserver.network.clientpackets;
 public final class RequestChangeBookMarkSlot extends L2GameClientPacket
 {
 	private static final String _C__51_REQUESTCHANGEBOOKMARKSLOT = "[C] 51 RequestChangeBookMarkSlot";
-
+	
 	@Override
 	protected void readImpl()
 	{
 		//There is nothing to read.
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		
 	}
-
-
+	
+	
 	@Override
 	public String getType()
 	{

@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.skills.conditions;
 
+import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.skills.Env;
 
 
@@ -21,19 +22,19 @@ import com.l2jserver.gameserver.skills.Env;
  * The Class ConditionTargetNpcType.
  */
 public class ConditionTargetNpcType extends Condition {
-
-	private final String[] _npcType;
-
+	
+	private final InstanceType[] _npcType;
+	
 	/**
 	 * Instantiates a new condition target npc type.
 	 *
 	 * @param type the type
 	 */
-	public ConditionTargetNpcType(String[] type)
+	public ConditionTargetNpcType(InstanceType[] type)
 	{
 		_npcType = type;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
@@ -41,13 +42,7 @@ public class ConditionTargetNpcType extends Condition {
 	public boolean testImpl(Env env) {
 		if (env.target == null)
 			return false;
-		boolean mt;
-		for (int i = 0; i < _npcType.length;i++)
-		{
-			mt = (env.target.getClass().getName().endsWith(_npcType[i] + "Instance"));
-			if (mt)
-				return true;
-		}
-		return false;
+		
+		return env.target.getInstanceType().isTypes(_npcType);
 	}
 }

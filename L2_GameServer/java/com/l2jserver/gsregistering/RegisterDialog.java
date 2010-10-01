@@ -115,88 +115,88 @@ public class RegisterDialog extends JDialog implements ActionListener
 	{
 		private final int _id;
 		private final String _name;
-
+		
 		public ComboServer(int id, String name)
 		{
 			_id = id;
 			_name = name;
 		}
-
+		
 		/**
-         * @return Returns the id.
-         */
-        public int getId()
-        {
-	        return _id;
-        }
-
+		 * @return Returns the id.
+		 */
+		public int getId()
+		{
+			return _id;
+		}
+		
 		/**
-         * @return Returns the name.
-         */
-        public String getName()
-        {
-	        return _name;
-        }
-
+		 * @return Returns the name.
+		 */
+		public String getName()
+		{
+			return _name;
+		}
+		
 		@Override
-        public String toString()
-        {
-	        return this.getName();
-        }
+		public String toString()
+		{
+			return this.getName();
+		}
 	}
-
+	
 	/**
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    @Override
-    public void actionPerformed(ActionEvent e)
-    {
-	    String cmd = e.getActionCommand();
-	    
-	    if (cmd.equals("save"))
-	    {
-	    	ComboServer server = (ComboServer) _combo.getSelectedItem();
-	    	int gsId = server.getId();
-	    	
-	    	JFileChooser fc = new JFileChooser();
-	    	//fc.setS
-	    	fc.setDialogTitle(_bundle.getString("hexidDest"));
-	        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	    	fc.setFileFilter
-	    	(
-	    		new FileFilter()
-	    		{
-
-					@Override
-                    public boolean accept(File f)
-                    {
-	                    return f.isDirectory();
-                    }
-
-					@Override
-                    public String getDescription()
-                    {
-	                    return null;
-                    }
-	    			
-	    		}
-	    	);
-	    	fc.showOpenDialog(this);
-	    	
-	    	try
-            {
-	            GUserInterface.registerGameServer(gsId, fc.getSelectedFile().getAbsolutePath());
-	            _owner.refreshAsync();
-	            this.setVisible(false);
-            }
-            catch (IOException e1)
-            {
-	            _owner.showError(_bundle.getString("ioErrorRegister"), e1);
-            }
-	    }
-	    else if (cmd.equals("cancel"))
-	    {
-	    	this.setVisible(false);
-	    }
-    }
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		String cmd = e.getActionCommand();
+		
+		if (cmd.equals("save"))
+		{
+			ComboServer server = (ComboServer) _combo.getSelectedItem();
+			int gsId = server.getId();
+			
+			JFileChooser fc = new JFileChooser();
+			//fc.setS
+			fc.setDialogTitle(_bundle.getString("hexidDest"));
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			fc.setFileFilter
+			(
+					new FileFilter()
+					{
+						
+						@Override
+						public boolean accept(File f)
+						{
+							return f.isDirectory();
+						}
+						
+						@Override
+						public String getDescription()
+						{
+							return null;
+						}
+						
+					}
+			);
+			fc.showOpenDialog(this);
+			
+			try
+			{
+				GUserInterface.registerGameServer(gsId, fc.getSelectedFile().getAbsolutePath());
+				_owner.refreshAsync();
+				this.setVisible(false);
+			}
+			catch (IOException e1)
+			{
+				_owner.showError(_bundle.getString("ioErrorRegister"), e1);
+			}
+		}
+		else if (cmd.equals("cancel"))
+		{
+			this.setVisible(false);
+		}
+	}
 }

@@ -132,7 +132,7 @@ public class RecipeController
 			player.sendPacket(response);
 			return;
 		}
-
+		
 		player.sendPacket(new SystemMessage(SystemMessageId.CANT_ALTER_RECIPEBOOK_WHILE_CRAFTING));
 	}
 	
@@ -382,7 +382,7 @@ public class RecipeController
 		}
 	}
 	
-	private class RecipeItemMaker implements Runnable
+	private static class RecipeItemMaker implements Runnable
 	{
 		protected boolean _isValid;
 		protected List<TempItem> _items = null;
@@ -526,7 +526,7 @@ public class RecipeController
 				return;
 			}
 			
-			if (_player.isOnline() == 0 || _target.isOnline() == 0)
+			if (!_player.isOnline() || !_target.isOnline())
 			{
 				_log.warning("player or target is not online, aborting " + _target + _player);
 				abort();
@@ -563,7 +563,7 @@ public class RecipeController
 				{
 					// divided by RATE_CONSUMABLES_COST to remove craft time increase on higher consumables rates
 					_delay = (int) (Config.ALT_GAME_CREATION_SPEED * _player.getMReuseRate(_skill) * GameTimeController.TICKS_PER_SECOND / Config.RATE_CONSUMABLE_COST)
-							* GameTimeController.MILLIS_IN_TICK;
+					* GameTimeController.MILLIS_IN_TICK;
 					
 					// FIXME: please fix this packet to show crafting animation (somebody)
 					MagicSkillUse msk = new MagicSkillUse(_player, _skillId, _skillLevel, _delay, 0);
@@ -631,7 +631,7 @@ public class RecipeController
 					msg.addItemName(_recipeList.getItemId());
 					msg.addItemNumber(_price);
 					_player.sendPacket(msg);
-
+					
 					msg = new SystemMessage(SystemMessageId.C1_FAILED_TO_CREATE_S2_FOR_S3_ADENA);
 					msg.addString(_player.getName());
 					msg.addItemName(_recipeList.getItemId());
@@ -655,7 +655,7 @@ public class RecipeController
 			if (_target == _player)
 				_target.sendPacket(new RecipeItemMakeInfo(_recipeList.getId(), _target, success));
 			else
-				_target.sendPacket(new RecipeShopItemInfo(_player.getObjectId(), _recipeList.getId()));
+				_target.sendPacket(new RecipeShopItemInfo(_player, _recipeList.getId()));
 		}
 		
 		private void updateCurLoad()
@@ -729,7 +729,7 @@ public class RecipeController
 				_creationPasses = 1;
 		}
 		
-		// StatUse 
+		// StatUse
 		private boolean calculateStatUse(boolean isWait, boolean isReduce)
 		{
 			boolean ret = true;
@@ -738,7 +738,7 @@ public class RecipeController
 				double modifiedValue = statUse.getValue() / _creationPasses;
 				if (statUse.getType() == L2RecipeStatInstance.StatType.HP)
 				{
-					// we do not want to kill the player, so its CurrentHP must be greater than the reduce value 
+					// we do not want to kill the player, so its CurrentHP must be greater than the reduce value
 					if (_player.getCurrentHp() <= modifiedValue)
 					{
 						// rest (wait for HP)
@@ -748,7 +748,7 @@ public class RecipeController
 							ThreadPoolManager.getInstance().scheduleGeneral(this, 100 + _delay);
 						}
 						else
-						// no rest - report no hp
+							// no rest - report no hp
 						{
 							_target.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_HP));
 							abort();
@@ -769,7 +769,7 @@ public class RecipeController
 							ThreadPoolManager.getInstance().scheduleGeneral(this, 100 + _delay);
 						}
 						else
-						// no rest - report no mana
+							// no rest - report no mana
 						{
 							_target.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_MP));
 							abort();
@@ -813,7 +813,7 @@ public class RecipeController
 						sm.addItemName(recipe.getItemId());
 						sm.addItemNumber(quantity - itemQuantityAmount);
 						_target.sendPacket(sm);
-
+						
 						abort();
 						return null;
 					}
@@ -953,7 +953,7 @@ public class RecipeController
 					sm.addItemName(itemId);
 					sm.addItemNumber(_price);
 					_player.sendPacket(sm);
-
+					
 					sm = new SystemMessage(SystemMessageId.C1_CREATED_S2_FOR_S3_ADENA);
 					sm.addString(_player.getName());
 					sm.addItemName(itemId);
@@ -968,7 +968,7 @@ public class RecipeController
 					sm.addItemName(itemId);
 					sm.addItemNumber(_price);
 					_player.sendPacket(sm);
-
+					
 					sm = new SystemMessage(SystemMessageId.C1_CREATED_S2_S3_S_FOR_S4_ADENA);
 					sm.addString(_player.getName());
 					sm.addNumber(itemCount);
@@ -977,7 +977,7 @@ public class RecipeController
 					_target.sendPacket(sm);
 				}
 			}
-
+			
 			if (itemCount > 1)
 			{
 				sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
@@ -991,7 +991,7 @@ public class RecipeController
 				sm.addItemName(itemId);
 				_target.sendPacket(sm);
 			}
-
+			
 			if (Config.ALT_GAME_CREATION)
 			{
 				int recipeLevel = _recipeList.getLevel();
@@ -1030,7 +1030,7 @@ public class RecipeController
 				
 				_player.addExpAndSp((int) _player.calcStat(Stats.EXPSP_RATE, _exp * Config.ALT_GAME_CREATION_XP_RATE
 						* Config.ALT_GAME_CREATION_SPEED, null, null), (int) _player.calcStat(Stats.EXPSP_RATE, _sp
-						* Config.ALT_GAME_CREATION_SP_RATE * Config.ALT_GAME_CREATION_SPEED, null, null));
+								* Config.ALT_GAME_CREATION_SP_RATE * Config.ALT_GAME_CREATION_SPEED, null, null));
 			}
 			updateMakeInfo(true); // success
 		}

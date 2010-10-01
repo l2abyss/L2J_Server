@@ -25,9 +25,9 @@ import com.l2jserver.gameserver.skills.Env;
  * @author Kerberos
  */
 public class ConditionPlayerInvSize extends Condition {
-
+	
 	private final int _size;
-
+	
 	/**
 	 * Instantiates a new condition player inv size.
 	 *
@@ -37,7 +37,7 @@ public class ConditionPlayerInvSize extends Condition {
 	{
 		_size = size;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
@@ -45,7 +45,7 @@ public class ConditionPlayerInvSize extends Condition {
 	public boolean testImpl(Env env)
 	{
 		if (env.player instanceof L2PcInstance)
-			return env.player.getInventory().getSize() <= (((L2PcInstance) env.player).getInventoryLimit()-_size);
+			return ((L2PcInstance)env.player).getInventory().getSize(false) <= (((L2PcInstance) env.player).getInventoryLimit()-_size);
 		return true;
 	}
 }

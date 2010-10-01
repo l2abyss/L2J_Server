@@ -29,13 +29,13 @@ public class FuncEnchantHp extends Func
 	{
 		super(pStat, pOrder, owner);
 	}
-
+	
 	@Override
 	public void calc(Env env)
 	{
-		if (cond != null && !cond.test(env)) 
+		if (cond != null && !cond.test(env))
 			return;
-
+		
 		final L2ItemInstance item = (L2ItemInstance) funcOwner;
 		if (item.getEnchantLevel() > 0)
 			env.value += EnchantHPBonusData.getInstance().getHPBonus(item);

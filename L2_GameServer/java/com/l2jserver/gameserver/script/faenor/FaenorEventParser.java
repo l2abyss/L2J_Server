@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 import javax.script.ScriptContext;
 
-
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.ThreadPoolManager;

@@ -28,7 +28,7 @@ public abstract class Condition implements ConditionListener
 	private int _msgId;
 	private boolean _addName = false;
 	private boolean _result;
-
+	
 	/**
 	 * Sets the message.
 	 *
@@ -38,7 +38,7 @@ public abstract class Condition implements ConditionListener
 	{
 		_msg = msg;
 	}
-
+	
 	/**
 	 * Gets the message.
 	 *
@@ -48,7 +48,7 @@ public abstract class Condition implements ConditionListener
 	{
 		return _msg;
 	}
-
+	
 	/**
 	 * Sets the message id.
 	 *
@@ -58,7 +58,7 @@ public abstract class Condition implements ConditionListener
 	{
 		_msgId = msgId;
 	}
-
+	
 	/**
 	 * Gets the message id.
 	 *
@@ -68,7 +68,7 @@ public abstract class Condition implements ConditionListener
 	{
 		return _msgId;
 	}
-
+	
 	/**
 	 * Adds the name.
 	 */
@@ -76,7 +76,7 @@ public abstract class Condition implements ConditionListener
 	{
 		_addName = true;
 	}
-
+	
 	/**
 	 * Checks if is adds the name.
 	 *
@@ -86,7 +86,7 @@ public abstract class Condition implements ConditionListener
 	{
 		return _addName;
 	}
-
+	
 	/**
 	 * Sets the listener.
 	 *
@@ -97,7 +97,7 @@ public abstract class Condition implements ConditionListener
 		_listener = listener;
 		notifyChanged();
 	}
-
+	
 	/**
 	 * Gets the listener.
 	 *
@@ -107,7 +107,7 @@ public abstract class Condition implements ConditionListener
 	{
 		return _listener;
 	}
-
+	
 	/**
 	 * Test.
 	 *
@@ -124,7 +124,7 @@ public abstract class Condition implements ConditionListener
 		}
 		return res;
 	}
-
+	
 	/**
 	 * Test impl.
 	 *
@@ -132,7 +132,7 @@ public abstract class Condition implements ConditionListener
 	 * @return true, if successful
 	 */
 	abstract boolean testImpl(Env env);
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.ConditionListener#notifyChanged()
 	 */

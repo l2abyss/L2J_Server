@@ -16,9 +16,11 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.Config;
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 
 
 /**
@@ -64,29 +66,32 @@ public final class ItemList extends L2GameServerPacket
 {
 	private static Logger _log = Logger.getLogger(ItemList.class.getName());
 	private static final String _S__11_ITEMLIST = "[S] 11 ItemList";
+	
+	private PcInventory _inventory;
 	private L2ItemInstance[] _items;
 	private boolean _showWindow;
+	private int length;
+	private FastList<L2ItemInstance> questItems;
 	
 	public ItemList(L2PcInstance cha, boolean showWindow)
 	{
+		_inventory = cha.getInventory();
 		_items = cha.getInventory().getItems();
 		_showWindow = showWindow;
-		if (Config.DEBUG)
+		questItems = FastList.newInstance();
+		for (int i = 0; i < _items.length; i++)
 		{
-			showDebug();
+			if (_items[i] != null && _items[i].isQuestItem())
+			{
+				questItems.add(_items[i]); // add to questinv
+				_items[i] = null; // remove from list
+			}
+			else
+				length++; // increase size
 		}
 	}
 	
-	public ItemList(L2ItemInstance[] items, boolean showWindow)
-	{
-		_items = items;
-		_showWindow = showWindow;
-		if (Config.DEBUG)
-		{
-			showDebug();
-		}
-	}
-	
+	@SuppressWarnings("unused")
 	private void showDebug()
 	{
 		for (L2ItemInstance temp : _items)
@@ -101,15 +106,13 @@ public final class ItemList extends L2GameServerPacket
 		writeC(0x11);
 		writeH(_showWindow ? 0x01 : 0x00);
 		
-		int count = _items.length;
-		writeH(count);
+		//int count = _items.length;
+		writeH(length);
 		
 		for (L2ItemInstance temp : _items)
 		{
 			if (temp == null || temp.getItem() == null)
 				continue;
-			
-			writeH(temp.getItem().getType1()); // item type1
 			
 			writeD(temp.getObjectId());
 			writeD(temp.getItemId());
@@ -122,27 +125,32 @@ public final class ItemList extends L2GameServerPacket
 			writeH(temp.getEnchantLevel()); // enchant level
 			//race tickets
 			writeH(temp.getCustomType2()); // item type3
-			
 			if (temp.isAugmented())
 				writeD(temp.getAugmentation().getAugmentationId());
 			else
 				writeD(0x00);
-			
 			writeD(temp.getMana());
-			
-			// T1
+			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime() / 1000) : -9999);
 			writeH(temp.getAttackElementType());
 			writeH(temp.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
 				writeH(temp.getElementDefAttr(i));
 			}
-			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime()/1000) : -1);
-
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			// Enchant Effects
+			writeH(0x00);
+			writeH(0x00);
+			writeH(0x00);
 		}
+		if (_inventory.hasInventoryBlock())
+		{
+			writeH(_inventory.getBlockItems().length);
+			writeC(_inventory.getBlockMode());
+			for(int i : _inventory.getBlockItems())
+				writeD(i);
+		}
+		else
+			writeH(0x00);
 	}
 	
 	/* (non-Javadoc)
@@ -152,5 +160,11 @@ public final class ItemList extends L2GameServerPacket
 	public String getType()
 	{
 		return _S__11_ITEMLIST;
+	}
+	
+	@Override
+	public void runImpl()
+	{
+		getClient().sendPacket(new ExQuestItemList(questItems, getClient().getActiveChar().getInventory()));
 	}
 }

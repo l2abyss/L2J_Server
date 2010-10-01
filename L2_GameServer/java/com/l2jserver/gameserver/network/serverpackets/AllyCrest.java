@@ -36,14 +36,14 @@ public class AllyCrest extends L2GameServerPacket
 	private int _crestId;
 	private int _crestSize;
 	private byte[] _data;
-
+	
 	public AllyCrest(int crestId,byte[] data)
 	{
 		_crestId = crestId;
-        _data = data;
-        _crestSize = _data.length;
+		_data = data;
+		_crestSize = _data.length;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -52,7 +52,7 @@ public class AllyCrest extends L2GameServerPacket
 		writeD(_crestSize);
 		writeB(_data);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

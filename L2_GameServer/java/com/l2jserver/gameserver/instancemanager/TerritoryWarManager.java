@@ -28,6 +28,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
@@ -51,18 +54,11 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.CharInfo;
-import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.L2Properties;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 public class TerritoryWarManager implements Siegable
 {
@@ -110,7 +106,7 @@ public class TerritoryWarManager implements Siegable
 	private TerritoryWarManager()
 	{
 		_log.info("Initializing TerritoryWarManager");
-
+		
 		// init lists
 		_registeredClans = new FastMap<Integer, FastList<L2Clan>>();
 		_registeredMercenaries = new FastMap<Integer, FastList<Integer>>();
@@ -119,7 +115,7 @@ public class TerritoryWarManager implements Siegable
 		_clanFlags = new FastMap<L2Clan, L2SiegeFlagInstance>();
 		_disguisedPlayers = new FastList<Integer>();
 		TERRITORY_ITEM_IDS = new FastMap<Integer,Integer>();
-
+		
 		// Constant data
 		TERRITORY_ITEM_IDS.put(81, 13757);
 		TERRITORY_ITEM_IDS.put(82, 13758);
@@ -164,7 +160,7 @@ public class TerritoryWarManager implements Siegable
 				&& _territoryList.get((player.getSiegeSide() - 80)).getFortId() == fieldId)
 			return true;
 		return false;
-
+		
 	}
 	
 	/**
@@ -304,7 +300,7 @@ public class TerritoryWarManager implements Siegable
 			changeRegistration(castleId, clan.getClanId(), true);
 		}
 	}
-
+	
 	public void removeMerc(int castleId, L2PcInstance player)
 	{
 		if (player == null)
@@ -670,7 +666,7 @@ public class TerritoryWarManager implements Siegable
 			L2DatabaseFactory.close(con);
 		}
 	}
-
+	
 	private final void load()
 	{
 		InputStream is = null;
@@ -837,7 +833,7 @@ public class TerritoryWarManager implements Siegable
 		_isTWInProgress = true;
 		if (!updatePlayerTWStateFlags(false))
 			return;
-
+		
 		// teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town); // Teleport to the closest town
 		for(Territory t : _territoryList.values())
 		{
@@ -875,7 +871,7 @@ public class TerritoryWarManager implements Siegable
 			t.getQuestDone()[1] = 0; // captured wards
 		}
 		_participantPoints.clear();
-
+		
 		if (RETURN_WARDS_WHEN_TW_STARTS)
 			for(TerritoryWard ward : _territoryWards)
 				if (ward.getOwnerCastleId() != ward.getTerritoryId() - 80)
@@ -884,7 +880,7 @@ public class TerritoryWarManager implements Siegable
 					ward.setNpc(addTerritoryWard(ward.getTerritoryId(), ward.getTerritoryId() - 80, ward.getOwnerCastleId(), false));
 					ward.setOwnerCastleId(ward.getTerritoryId() - 80);
 				}
-
+		
 		SystemMessage sm = new SystemMessage(SystemMessageId.TERRITORY_WAR_HAS_BEGUN);
 		Announcements.getInstance().announceToAll(sm);
 	}
@@ -899,7 +895,7 @@ public class TerritoryWarManager implements Siegable
 		}
 		if (!updatePlayerTWStateFlags(true))
 			return;
-
+		
 		if (_territoryWards != null)
 		{
 			for(TerritoryWard twWard : _territoryWards)
@@ -911,7 +907,7 @@ public class TerritoryWarManager implements Siegable
 		{
 			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
 			Fort fort = FortManager.getInstance().getFortById(t.getFortId());
-
+			
 			if (castle != null)
 			{
 				castle.spawnDoor();
@@ -922,7 +918,7 @@ public class TerritoryWarManager implements Siegable
 			}
 			else
 				_log.warning("TerritoryWarManager: Castle missing! CastleId: " + t.getCastleId());
-
+			
 			if (fort != null)
 			{
 				t.changeNPCsSpawn(1, false);
@@ -959,7 +955,7 @@ public class TerritoryWarManager implements Siegable
 		SystemMessage sm = new SystemMessage(SystemMessageId.TERRITORY_WAR_HAS_ENDED);
 		Announcements.getInstance().announceToAll(sm);
 	}
-
+	
 	private boolean updatePlayerTWStateFlags(boolean clear)
 	{
 		Quest twQuest = QuestManager.getInstance().getQuest(qn);
@@ -990,16 +986,7 @@ public class TerritoryWarManager implements Siegable
 						}
 						player.setSiegeSide(80 + castleId);
 					}
-					player.sendPacket(new UserInfo(player));
-					player.sendPacket(new ExBrExtraUserInfo(player));
-					for (L2PcInstance knownPlayer : player.getKnownList().getKnownPlayers().values())
-					{
-						if (knownPlayer == null)
-							continue;
-						knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-						if (player.getPet() != null)
-							knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-					}
+					player.broadcastUserInfo();
 				}
 		for(int castleId : _registeredMercenaries.keySet())
 			for(int objId : _registeredMercenaries.get(castleId))
@@ -1021,16 +1008,7 @@ public class TerritoryWarManager implements Siegable
 					}
 					player.setSiegeSide(80 + castleId);
 				}
-				player.sendPacket(new UserInfo(player));
-				player.sendPacket(new ExBrExtraUserInfo(player));
-				for (L2PcInstance knownPlayer : player.getKnownList().getKnownPlayers().values())
-				{
-					if (knownPlayer == null)
-						continue;
-					knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-					if (player.getPet() != null)
-						knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-				}
+				player.broadcastUserInfo();
 			}
 		for(Territory terr : _territoryList.values())
 			if (terr.getOwnerClan() != null)
@@ -1054,17 +1032,7 @@ public class TerritoryWarManager implements Siegable
 						}
 						player.setSiegeSide(80 + terr.getCastleId());
 					}
-					player.sendPacket(new UserInfo(player));
-					player.sendPacket(new ExBrExtraUserInfo(player));
-					for (L2PcInstance knownPlayer : player.getKnownList().getKnownPlayers().values())
-					{
-						if (knownPlayer == null)
-							continue;
-						knownPlayer.sendPacket(new CharInfo(player));
-						knownPlayer.sendPacket(new RelationChanged(player, player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-						if (player.getPet() != null)
-							knownPlayer.sendPacket(new RelationChanged(player.getPet(), player.getRelation(knownPlayer), player.isAutoAttackable(knownPlayer)));
-					}
+					player.broadcastUserInfo();
 				}
 		twQuest.setOnEnterWorld(_isTWInProgress);
 		return true;
@@ -1075,7 +1043,7 @@ public class TerritoryWarManager implements Siegable
 		public RewardOnlineParticipants()
 		{
 		}
-
+		
 		public void run()
 		{
 			if (isTWInProgress())
@@ -1088,13 +1056,13 @@ public class TerritoryWarManager implements Siegable
 				_scheduledRewardOnlineTask.cancel(false);
 		}
 	}
-
+	
 	private class ScheduleStartTWTask implements Runnable
 	{
 		public ScheduleStartTWTask()
 		{
 		}
-
+		
 		public void run()
 		{
 			_scheduledStartTWTask.cancel(false);
@@ -1170,7 +1138,7 @@ public class TerritoryWarManager implements Siegable
 		public ScheduleEndTWTask()
 		{
 		}
-
+		
 		public void run()
 		{
 			try
@@ -1231,7 +1199,7 @@ public class TerritoryWarManager implements Siegable
 		public closeTerritoryChannelTask()
 		{
 		}
-
+		
 		public void run()
 		{
 			_isTWChannelOpen = false;
@@ -1274,7 +1242,7 @@ public class TerritoryWarManager implements Siegable
 	}
 	// =========================================================
 	// Property - Public
-	public class TerritoryNPCSpawn
+	public static class TerritoryNPCSpawn
 	{
 		private Location _location;
 		private int _npcId;
@@ -1481,7 +1449,7 @@ public class TerritoryWarManager implements Siegable
 	{
 		protected static final TerritoryWarManager _instance = new TerritoryWarManager();
 	}
-
+	
 	//TODO implement these
 	
 	/* (non-Javadoc)
@@ -1493,7 +1461,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#endSiege()
 	 */
@@ -1503,7 +1471,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClan(int)
 	 */
@@ -1512,7 +1480,7 @@ public class TerritoryWarManager implements Siegable
 	{
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClan(com.l2jserver.gameserver.model.L2Clan)
 	 */
@@ -1522,7 +1490,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClans()
 	 */
@@ -1532,7 +1500,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackersInZone()
 	 */
@@ -1542,7 +1510,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#checkIsAttacker(com.l2jserver.gameserver.model.L2Clan)
 	 */
@@ -1552,7 +1520,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(int)
 	 */
@@ -1562,7 +1530,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(com.l2jserver.gameserver.model.L2Clan)
 	 */
@@ -1572,7 +1540,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClans()
 	 */
@@ -1582,7 +1550,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#checkIsDefender(com.l2jserver.gameserver.model.L2Clan)
 	 */
@@ -1592,7 +1560,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFlag(com.l2jserver.gameserver.model.L2Clan)
 	 */
@@ -1602,7 +1570,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getSiegeDate()
 	 */
@@ -1612,7 +1580,7 @@ public class TerritoryWarManager implements Siegable
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#giveFame()
 	 */
@@ -1621,7 +1589,7 @@ public class TerritoryWarManager implements Siegable
 	{
 		return true;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameFrequency()
 	 */
@@ -1630,7 +1598,7 @@ public class TerritoryWarManager implements Siegable
 	{
 		return Config.CASTLE_ZONE_FAME_TASK_FREQUENCY;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameAmount()
 	 */

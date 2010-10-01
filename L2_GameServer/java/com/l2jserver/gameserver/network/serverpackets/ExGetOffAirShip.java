@@ -19,9 +19,9 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 public class ExGetOffAirShip extends L2GameServerPacket
 {
 	private static final String _S__FE_63_EXGETOFFAIRSHIP = "[S] FE:63 ExGetOffAirShip";
-
+	
 	private final int _playerId, _airShipId, _x, _y, _z;
-
+	
 	public ExGetOffAirShip(L2Character player, L2Character ship, int x, int y, int z)
 	{
 		_playerId = player.getObjectId();
@@ -30,20 +30,20 @@ public class ExGetOffAirShip extends L2GameServerPacket
 		_y = y;
 		_z = z;
 	}
-
+	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x64);
-
+		
 		writeD(_playerId);
 		writeD(_airShipId);
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
 	}
-
+	
 	@Override
 	public String getType()
 	{

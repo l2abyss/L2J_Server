@@ -35,10 +35,11 @@
 
 	<path id="classpath">
 		<fileset dir="${lib}">
-			<include name="c3p0-0.9.1.2.jar" />
+			<include name="c3p0-0.9.2-pre1.jar" />
 			<include name="jython.jar" />
 			<include name="jython-engine.jar" />
 			<include name="javolution-5.5.1.jar" />
+			<include name="mchange-commons-0.2.jar" />
 			<include name="mmocore.jar" />
 			<include name="trove-2.1.0.jar" />
 			<include name="netcon.jar" />
@@ -67,16 +68,28 @@
 
 	<target name="jar" depends="compile" description="Create the jar file">
 		<jar destfile="${build}/l2jserver.jar">
-			<fileset dir="${build.classes}" >
-				<exclude name="**/loginserver/**"/>
-				<exclude name="**/accountmanager/**"/>
-				<exclude name="**/gsregistering/**"/>
+			<fileset dir="${build.classes}">
+				<exclude name="**/loginserver/**" />
+				<exclude name="**/accountmanager/**" />
+				<exclude name="**/gsregistering/**" />
 			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+			</manifest>
 		</jar>
 		<jar destfile="${build}/l2jlogin.jar">
-			<fileset dir="${build.classes}" >
-				<exclude name="**/gameserver/**"/>
+			<fileset dir="${build.classes}">
+				<exclude name="**/gameserver/**" />
 			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+			</manifest>
 		</jar>
 		<copy todir="${build.dist.login}">
 			<fileset dir="${build}">
@@ -90,7 +103,17 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="jar">
+	<target name="jarsrc" depends="jar">
+		<mkdir dir="${build.dist.libs}" />
+		<jar destfile="${build.dist.libs}/l2jserver-src.jar">
+			<fileset dir="${src}" >
+				<exclude name="/config/**" />
+				<exclude name="**.cfg" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="dist" depends="jarsrc">
 		<copy todir="${build.dist.login}">
 			<fileset dir="${src}">
 				<include name="log.cfg" />
@@ -159,7 +182,8 @@
 		<copy todir="${build.dist.game}/config">
 			<fileset dir="java/config">
 				<include name="*.properties" />
-				<include name="chatfilter.txt" />
+				<include name="*.xml" />
+				<include name="*.txt" />
 				<exclude name="loginserver.properties" />
 			</fileset>
 		</copy>

@@ -16,10 +16,10 @@ package com.l2jserver.gameserver.communitybbs.Manager;
 
 import java.util.List;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
-
-import javolution.util.FastList;
 
 public abstract class BaseBBSManager
 {

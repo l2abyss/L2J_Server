@@ -19,13 +19,13 @@ import java.util.logging.Logger;
 public class HellboundManager
 {
 	private static final Logger _log = Logger.getLogger(HellboundManager.class.getName());
-
+	
 	private HellboundManager()
 	{
 		_log.info(getClass().getSimpleName()+": Initializing");
 		init();
 	}
-
+	
 	private void init()
 	{
 		_log.info(getClass().getSimpleName()+": Mode: dummy");
@@ -34,7 +34,7 @@ public class HellboundManager
 		else
 			_log.info(getClass().getSimpleName()+": State: unlocked");
 	}
-
+	
 	/**
 	 * Returns true if Hellbound is locked
 	 */
@@ -42,12 +42,12 @@ public class HellboundManager
 	{
 		return false;
 	}
-
+	
 	public static final HellboundManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

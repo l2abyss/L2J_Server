@@ -27,13 +27,13 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 	protected static final int COND_ALL_FALSE = 0;
 	protected static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;
 	protected static final int COND_OWNER = 2;
-
+	
 	public L2CastleBlacksmithInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2CastleBlacksmithInstance);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
@@ -46,7 +46,7 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 			player.sendPacket(html);
 			return;
 		}
-
+		
 		int condition = validateCondition(player);
 		if (condition <= COND_ALL_FALSE)
 			return;
@@ -70,7 +70,7 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 				super.onBypassFeedback(player, command);
 		}
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player, int val)
 	{
@@ -83,9 +83,9 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 			player.sendPacket(html);
 			return;
 		}
-
+		
 		String filename = "data/html/castleblacksmith/castleblacksmith-no.htm";
-
+		
 		int condition = validateCondition(player);
 		if (condition > COND_ALL_FALSE)
 		{
@@ -99,7 +99,7 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 					filename = "data/html/castleblacksmith/castleblacksmith-" + val + ".htm";
 			}
 		}
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
@@ -107,12 +107,12 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 		html.replace("%castleid%", Integer.toString(getCastle().getCastleId()));
 		player.sendPacket(html);
 	}
-
+	
 	protected int validateCondition(L2PcInstance player)
 	{
 		if (player.isGM())
 			return COND_OWNER;
-
+		
 		if (getCastle() != null && getCastle().getCastleId() > 0)
 		{
 			if (player.getClan() != null)
@@ -124,7 +124,7 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 					return COND_OWNER;                                  // Owner
 			}
 		}
-
+		
 		return COND_ALL_FALSE;
 	}
 }

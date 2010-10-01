@@ -31,7 +31,7 @@ public final class AuthLogin extends L2GameClientPacket
 {
 	private static final String _C__08_AUTHLOGIN = "[C] 08 AuthLogin";
 	private static Logger _log = Logger.getLogger(AuthLogin.class.getName());
-
+	
 	// loginName + keys must match what the loginserver used.
 	private String _loginName;
 	/*private final long _key1;
@@ -42,7 +42,7 @@ public final class AuthLogin extends L2GameClientPacket
 	private int _playKey2;
 	private int _loginKey1;
 	private int _loginKey2;
-
+	
 	/**
 	 * @param decrypt
 	 */
@@ -55,7 +55,7 @@ public final class AuthLogin extends L2GameClientPacket
 		_loginKey1 = readD();
 		_loginKey2 = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -66,9 +66,9 @@ public final class AuthLogin extends L2GameClientPacket
 			_log.info("user:" + _loginName);
 			_log.info("key:" + key);
 		}
-
+		
 		L2GameClient client = getClient();
-
+		
 		// avoid potential exploits
 		if (client.getAccountName() == null)
 		{
@@ -77,8 +77,8 @@ public final class AuthLogin extends L2GameClientPacket
 			LoginServerThread.getInstance().addWaitingClientAndSendRequest(_loginName, client, key);
 		}
 	}
-
-
+	
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

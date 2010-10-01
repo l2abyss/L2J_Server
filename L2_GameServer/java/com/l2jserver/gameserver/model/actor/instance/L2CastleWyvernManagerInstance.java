@@ -22,7 +22,7 @@ public class L2CastleWyvernManagerInstance extends L2WyvernManagerInstance
 	{
 		super(objectId, template);
 	}
-
+	
 	@Override
 	public final boolean isOwnerClan(L2PcInstance player)
 	{
@@ -33,7 +33,7 @@ public class L2CastleWyvernManagerInstance extends L2WyvernManagerInstance
 		}
 		return false;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.model.actor.instance.L2WyvernManagerInstance#isInSiege(com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
 	 */

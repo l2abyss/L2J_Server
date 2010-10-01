@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2AdminCommandAccessRight;
-
-import javolution.util.FastMap;
 
 /**
  * @author FBIagent<br>

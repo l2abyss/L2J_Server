@@ -26,29 +26,29 @@ public final class PledgeShowMemberListAdd extends L2GameServerPacket
 {
 	private static final String _S__55_PLEDGESHOWMEMBERLISTADD = "[S] 5c PledgeShowMemberListAdd";
 	private String _name;
-    private int _lvl;
-    private int _classId;
-    private int _isOnline;
-    private int _pledgeType;
-
+	private int _lvl;
+	private int _classId;
+	private int _isOnline;
+	private int _pledgeType;
+	
 	public PledgeShowMemberListAdd(L2PcInstance player)
 	{
-        _name = player.getName();
-        _lvl = player.getLevel();
-        _classId = player.getClassId().getId();
-        _isOnline = (player.isOnline() == 1 ? player.getObjectId() : 0);
-        _pledgeType = player.getPledgeType();
+		_name = player.getName();
+		_lvl = player.getLevel();
+		_classId = player.getClassId().getId();
+		_isOnline = (player.isOnline() ? player.getObjectId() : 0);
+		_pledgeType = player.getPledgeType();
 	}
-
+	
 	public PledgeShowMemberListAdd(L2ClanMember cm)
 	{
-	    _name = cm.getName();
-	    _lvl = cm.getLevel();
-	    _classId = cm.getClassId();
-	    _isOnline = (cm.isOnline() ? cm.getObjectId() : 0);
-	    _pledgeType = cm.getPledgeType();
+		_name = cm.getName();
+		_lvl = cm.getLevel();
+		_classId = cm.getClassId();
+		_isOnline = (cm.isOnline() ? cm.getObjectId() : 0);
+		_pledgeType = cm.getPledgeType();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -61,7 +61,7 @@ public final class PledgeShowMemberListAdd extends L2GameServerPacket
 		writeD(_isOnline); // 1=online 0=offline
 		writeD(_pledgeType);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -70,5 +70,5 @@ public final class PledgeShowMemberListAdd extends L2GameServerPacket
 	{
 		return _S__55_PLEDGESHOWMEMBERLISTADD;
 	}
-
+	
 }

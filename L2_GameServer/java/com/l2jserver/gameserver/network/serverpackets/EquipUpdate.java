@@ -56,17 +56,17 @@ public final class EquipUpdate extends L2GameServerPacket
 {
 	private static final String _S__5E_EQUIPUPDATE = "[S] 4b EquipUpdate";
 	private static Logger _log = Logger.getLogger(EquipUpdate.class.getName());
-
+	
 	private L2ItemInstance _item;
 	private int _change;
-
-
+	
+	
 	public EquipUpdate(L2ItemInstance item, int change)
 	{
 		_item = item;
 		_change = change;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -125,11 +125,11 @@ public final class EquipUpdate extends L2GameServerPacket
 				bodypart = 0x10;
 				break;
 		}
-
+		
 		if (Config.DEBUG) _log.fine("body:" +bodypart);
 		writeD(bodypart);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

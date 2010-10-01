@@ -57,12 +57,12 @@ public class EffectTemplate
 	public final L2SkillType effectType; // to handle resistences etc...
 	
 	public final int triggeredId;
-    public final int triggeredLevel;
-    public final ChanceCondition chanceCondition;
+	public final int triggeredLevel;
+	public final ChanceCondition chanceCondition;
 	
-	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda, 
-			int pCounter, int pPeriod, AbnormalEffect pAbnormalEffect, AbnormalEffect pSpecialEffect, 
-			AbnormalEffect pEventEffect, String pStackType, float pStackOrder, boolean showicon, 
+	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda,
+			int pCounter, int pPeriod, AbnormalEffect pAbnormalEffect, AbnormalEffect pSpecialEffect,
+			AbnormalEffect pEventEffect, String pStackType, float pStackOrder, boolean showicon,
 			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
 	{
 		attachCond = pAttachCond;
@@ -81,9 +81,9 @@ public class EffectTemplate
 		effectType = eType;
 		
 		triggeredId = trigId;
-	    triggeredLevel = trigLvl;
-	    chanceCondition = chanceCond;
-	    
+		triggeredLevel = trigLvl;
+		chanceCondition = chanceCond;
+		
 		try
 		{
 			_func = Class.forName("com.l2jserver.gameserver.skills.effects.Effect" + func);
@@ -113,12 +113,12 @@ public class EffectTemplate
 		}
 		catch (IllegalAccessException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			return null;
 		}
 		catch (InstantiationException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			return null;
 		}
 		catch (InvocationTargetException e)
@@ -143,7 +143,7 @@ public class EffectTemplate
 		try
 		{
 			func = Class.forName("com.l2jserver.gameserver.skills.effects.Effect"
-			        + stolen.getEffectTemplate().funcName);
+					+ stolen.getEffectTemplate().funcName);
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -166,12 +166,12 @@ public class EffectTemplate
 		}
 		catch (IllegalAccessException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			return null;
 		}
 		catch (InstantiationException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			return null;
 		}
 		catch (InvocationTargetException e)

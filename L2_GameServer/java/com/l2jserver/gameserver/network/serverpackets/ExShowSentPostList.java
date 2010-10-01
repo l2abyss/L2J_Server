@@ -27,14 +27,14 @@ import com.l2jserver.gameserver.model.entity.Message;
 public class ExShowSentPostList extends L2GameServerPacket
 {
 	private static final String _S__FE_AC_EXSHOWSENTPOSTLIST = "[S] FE:AC ExShowSentPostList";
-
+	
 	private List<Message> _outbox;
-
+	
 	public ExShowSentPostList(int objectId)
 	{
 		_outbox = MailManager.getInstance().getOutbox(objectId);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -67,7 +67,7 @@ public class ExShowSentPostList extends L2GameServerPacket
 		_outbox = null;
 		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

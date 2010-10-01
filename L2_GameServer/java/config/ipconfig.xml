@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Put old contents of ExternalHostname here, used by default -->
+<gameserver address="127.0.0.1">
+	<!-- Localhost access -->
+	<define subnet="127.0.0.0/8" address="127.0.0.1" />
+	<!-- LAN's, put old contents of InternalHostname here -->
+	<define subnet="10.0.0.0/8" address="10.0.0.0" />
+	<define subnet="172.16.0.0/19" address="172.16.0.0" />
+	<define subnet="192.168.0.0/16" address="192.168.0.0" />
+</gameserver>

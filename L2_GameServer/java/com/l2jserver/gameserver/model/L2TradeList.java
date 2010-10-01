@@ -25,12 +25,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.templates.item.L2Item;
-
-import javolution.util.FastMap;
 
 /**
  * This class ...
@@ -168,7 +168,7 @@ public class L2TradeList
 	    }
 		return false;
 	}*/
-
+	
 	public boolean containsItemId(int itemId)
 	{
 		return _items.containsKey(itemId);

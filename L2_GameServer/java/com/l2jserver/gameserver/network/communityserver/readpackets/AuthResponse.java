@@ -16,9 +16,9 @@ package com.l2jserver.gameserver.network.communityserver.readpackets;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
-
 import org.netcon.BaseReadPacket;
+
+import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 
 /**
  * @authors  Forsaiken, Gigiikun

@@ -24,17 +24,17 @@ import com.l2jserver.gameserver.templates.item.L2Item;
 public class PetInventory extends Inventory
 {
 	private final L2PetInstance _owner;
-
+	
 	public PetInventory(L2PetInstance owner)
-    {
+	{
 		_owner = owner;
 	}
-
+	
 	@Override
 	public L2PetInstance getOwner()
-    {
-        return _owner;
-    }
+	{
+		return _owner;
+	}
 	
 	@Override
 	public int getOwnerId()
@@ -45,33 +45,33 @@ public class PetInventory extends Inventory
 		{
 			id = _owner.getOwner().getObjectId();
 		}
-		catch (NullPointerException e) 
+		catch (NullPointerException e)
 		{
 			return 0;
 		}
 		return id;
 	}
-
+	
 	/**
 	 * Refresh the weight of equipment loaded
 	 */
 	@Override
-	public void refreshWeight()
+	protected void refreshWeight()
 	{
 		super.refreshWeight();
 		getOwner().updateAndBroadcastStatus(1);
 	}
 	
-    public boolean validateCapacity(L2ItemInstance item)
-    {
-        int slots = 0;
-
-        if (!(item.isStackable() && getItemByItemId(item.getItemId()) != null) && item.getItemType() != L2EtcItemType.HERB)
-        	slots++;
-
-        return validateCapacity(slots);
-    }
-    
+	public boolean validateCapacity(L2ItemInstance item)
+	{
+		int slots = 0;
+		
+		if (!(item.isStackable() && getItemByItemId(item.getItemId()) != null) && item.getItemType() != L2EtcItemType.HERB)
+			slots++;
+		
+		return validateCapacity(slots);
+	}
+	
 	@Override
 	public boolean validateCapacity(int slots)
 	{
@@ -82,8 +82,8 @@ public class PetInventory extends Inventory
 	{
 		int weight = 0;
 		L2Item template = ItemTable.getInstance().getTemplate(item.getItemId());
-        if (template == null) return false;
-        weight += count * template.getWeight();
+		if (template == null) return false;
+		weight += count * template.getWeight();
 		return validateWeight(weight);
 	}
 	
@@ -95,13 +95,13 @@ public class PetInventory extends Inventory
 	
 	@Override
 	protected ItemLocation getBaseLocation()
-    {
-        return ItemLocation.PET;
-    }
-
+	{
+		return ItemLocation.PET;
+	}
+	
 	@Override
 	protected ItemLocation getEquipLocation()
-    {
-        return ItemLocation.PET_EQUIP;
-    }
+	{
+		return ItemLocation.PET_EQUIP;
+	}
 }

@@ -29,17 +29,18 @@ public class RequestDispel extends L2GameClientPacket
 {
 	private int _skillId;
 	private int _skillLevel;
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
 	 */
 	@Override
 	protected void readImpl()
 	{
+		readD(); // player objid, not needed
 		_skillId = readD();
 		_skillLevel = readD();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
 	 */
@@ -49,7 +50,7 @@ public class RequestDispel extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLevel);
 		if (skill != null && (!skill.isDance() || Config.DANCE_CANCEL_BUFF) && !skill.isDebuff() && skill.canBeDispeled())
 		{
@@ -60,7 +61,7 @@ public class RequestDispel extends L2GameClientPacket
 			}
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
 	 */

@@ -41,29 +41,29 @@ public final class RequestSendFriendMsg extends L2GameClientPacket
 {
 	private static final String _C__CC_REQUESTSENDMSG = "[C] CC RequestSendMsg";
 	private static Logger _logChat = Logger.getLogger("chat");
-
+	
 	private String _message;
 	private String _reciever;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_message = readS();
 		_reciever = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		if (_message == null
 				|| _message.isEmpty()
 				|| _message.length() > 300)
 			return;
-
+		
 		final L2PcInstance targetPlayer = L2World.getInstance().getPlayer(_reciever);
 		if (targetPlayer == null
 				|| !targetPlayer.getFriendList().contains(activeChar.getObjectId()))
@@ -71,19 +71,19 @@ public final class RequestSendFriendMsg extends L2GameClientPacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME));
 			return;
 		}
-
+		
 		if (Config.LOG_CHAT)
 		{
 			LogRecord record = new LogRecord(Level.INFO, _message);
 			record.setLoggerName("chat");
 			record.setParameters(new Object[]{"PRIV_MSG", "[" + activeChar.getName() + " to "+ _reciever +"]"});
-
+			
 			_logChat.log(record);
 		}
-
+		
 		targetPlayer.sendPacket(new L2FriendSay(activeChar.getName(), _reciever, _message));
 	}
-
+	
 	@Override
 	public String getType()
 	{

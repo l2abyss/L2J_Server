@@ -16,6 +16,9 @@ package com.l2jserver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +38,7 @@ public class L2DatabaseFactory
 	// =========================================================
 	// Data Field
 	private static L2DatabaseFactory _instance;
+	private static ScheduledExecutorService _executor;
 	private ProviderType _providerType;
 	private ComboPooledDataSource _source;
 	
@@ -221,6 +225,8 @@ public class L2DatabaseFactory
 				con = _source.getConnection();
 				if (Server.serverMode == Server.MODE_GAMESERVER)
 					ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), 60000);
+				else
+					getExecutor().schedule(new ConnectionCloser(con, new RuntimeException()), 60, TimeUnit.SECONDS);
 			}
 			catch (SQLException e)
 			{
@@ -230,7 +236,7 @@ public class L2DatabaseFactory
 		return con;
 	}
 	
-	private class ConnectionCloser implements Runnable
+	private static class ConnectionCloser implements Runnable
 	{
 		private Connection c ;
 		private RuntimeException exp;
@@ -255,7 +261,7 @@ public class L2DatabaseFactory
 			}
 			catch (SQLException e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 			}
 			
 		}
@@ -274,6 +280,19 @@ public class L2DatabaseFactory
 		{
 			_log.log(Level.WARNING, "Failed to close database connection!", e);
 		}
+	}
+	
+	private static ScheduledExecutorService getExecutor()
+	{
+		if (_executor == null)
+		{
+			synchronized (L2DatabaseFactory.class)
+			{
+				if (_executor == null)
+					_executor = Executors.newSingleThreadScheduledExecutor();
+			}
+		}
+		return _executor;
 	}
 	
 	public int getBusyConnectionCount() throws SQLException

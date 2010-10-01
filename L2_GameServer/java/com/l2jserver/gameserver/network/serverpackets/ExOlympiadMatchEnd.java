@@ -31,7 +31,7 @@ public class ExOlympiadMatchEnd extends L2GameServerPacket
 		writeC(0xFE);
 		writeH(0x2D);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

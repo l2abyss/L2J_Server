@@ -37,7 +37,7 @@ public class ExShowDominionRegistry extends L2GameServerPacket
 	private int _isClanRegistered = 0x00;
 	private int _warTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
 	private int _currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
-
+	
 	public ExShowDominionRegistry(int castleId, L2PcInstance player)
 	{
 		_castleId = castleId;
@@ -54,7 +54,7 @@ public class ExShowDominionRegistry extends L2GameServerPacket
 		}
 		_warTime = (int) (TerritoryWarManager.getInstance().getTWStartTimeInMillis() / 1000);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
@@ -63,7 +63,7 @@ public class ExShowDominionRegistry extends L2GameServerPacket
 	{
 		return "[S] FE:90 ExShowDominionRegistry";
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */

@@ -57,7 +57,7 @@ public class EffectParalyze extends L2Effect
 	public void onExit()
 	{
 		getEffected().stopAbnormalEffect(AbnormalEffect.HOLD_1);
-		getEffected().stopParalyze(this);
+		getEffected().stopParalyze(false);
 	}
 	
 	/**

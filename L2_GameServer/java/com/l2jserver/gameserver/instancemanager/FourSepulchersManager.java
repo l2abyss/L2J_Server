@@ -195,32 +195,32 @@ public class FourSepulchersManager
 		// if current time >= time of entry beginning and if current time < time
 		// of entry beginning + time of entry end
 		if (currentTime >= _coolDownTimeEnd && currentTime < _entryTimeEnd) // entry
-		// time
-		// check
+			// time
+			// check
 		{
 			clean();
 			_changeEntryTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChangeEntryTime(), 0);
 			_log.info("FourSepulchersManager: Beginning in Entry time");
 		}
 		else if (currentTime >= _entryTimeEnd && currentTime < _warmUpTimeEnd) // warmup
-		// time
-		// check
+			// time
+			// check
 		{
 			clean();
 			_changeWarmUpTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChangeWarmUpTime(), 0);
 			_log.info("FourSepulchersManager: Beginning in WarmUp time");
 		}
 		else if (currentTime >= _warmUpTimeEnd && currentTime < _attackTimeEnd) // attack
-		// time
-		// check
+			// time
+			// check
 		{
 			clean();
 			_changeAttackTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChangeAttackTime(), 0);
 			_log.info("FourSepulchersManager: Beginning in Attack time");
 		}
 		else
-		// else cooldown time and without cleanup because it's already
-		// implemented
+			// else cooldown time and without cleanup because it's already
+			// implemented
 		{
 			_changeCoolDownTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChangeCoolDownTime(), 0);
 			_log.info("FourSepulchersManager: Beginning in Cooldown time");
@@ -235,9 +235,9 @@ public class FourSepulchersManager
 			tmp.set(Calendar.HOUR, Calendar.getInstance().get(Calendar.HOUR) - 1);
 		tmp.set(Calendar.MINUTE, _newCycleMin);
 		_coolDownTimeEnd = tmp.getTimeInMillis();
-		_entryTimeEnd = _coolDownTimeEnd + Config.FS_TIME_ENTRY * 60000;
-		_warmUpTimeEnd = _entryTimeEnd + Config.FS_TIME_WARMUP * 60000;
-		_attackTimeEnd = _warmUpTimeEnd + Config.FS_TIME_ATTACK * 60000;
+		_entryTimeEnd = _coolDownTimeEnd + Config.FS_TIME_ENTRY * 60000l;
+		_warmUpTimeEnd = _entryTimeEnd + Config.FS_TIME_WARMUP * 60000l;
+		_attackTimeEnd = _warmUpTimeEnd + Config.FS_TIME_ATTACK * 60000l;
 	}
 	
 	public void clean()
@@ -891,7 +891,7 @@ public class FourSepulchersManager
 			case 31923:
 			case 31924:
 				break;
-			// ID not ok
+				// ID not ok
 			default:
 				if (!player.isGM())
 				{
@@ -1234,7 +1234,7 @@ public class FourSepulchersManager
 				case 31484:
 					_viscountMobs.put(npcId, mobs);
 					break;
-				
+					
 				case 31472:
 				case 31477:
 				case 31482:
@@ -1530,7 +1530,7 @@ public class FourSepulchersManager
 		{
 			if (min < 5)
 				return; // do not shout when < 5 minutes
-				
+			
 			min = minuteSelect(min);
 			
 			String msg = min + " minute(s) have passed."; // now this is a
@@ -1631,7 +1631,7 @@ public class FourSepulchersManager
 			if (_firstTimeRun)
 				interval = _entryTimeEnd - Calendar.getInstance().getTimeInMillis();
 			else
-				interval = Config.FS_TIME_ENTRY * 60000; // else use stupid
+				interval = Config.FS_TIME_ENTRY * 60000l; // else use stupid
 			// method
 			
 			// launching saying process...
@@ -1664,7 +1664,7 @@ public class FourSepulchersManager
 			if (_firstTimeRun)
 				interval = _warmUpTimeEnd - Calendar.getInstance().getTimeInMillis();
 			else
-				interval = Config.FS_TIME_WARMUP * 60000;
+				interval = Config.FS_TIME_WARMUP * 60000l;
 			_changeAttackTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChangeAttackTime(), interval);
 			
 			if (_changeWarmUpTimeTask != null)
@@ -1724,7 +1724,7 @@ public class FourSepulchersManager
 			if (_firstTimeRun)
 				interval = _attackTimeEnd - Calendar.getInstance().getTimeInMillis();
 			else
-				interval = Config.FS_TIME_ATTACK * 60000;
+				interval = Config.FS_TIME_ATTACK * 60000l;
 			_changeCoolDownTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChangeCoolDownTime(), interval);
 			
 			if (_changeAttackTimeTask != null)

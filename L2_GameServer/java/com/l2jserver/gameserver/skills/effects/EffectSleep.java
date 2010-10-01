@@ -58,7 +58,7 @@ public class EffectSleep extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().stopSleeping(this);
+		getEffected().stopSleeping(false);
 	}
 	
 	/**

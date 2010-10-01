@@ -60,7 +60,7 @@ public class L2SkillSiegeFlag extends L2Skill
 		
 		if (!checkIfOkToPlaceFlag(player, true, _isOutpost))
 			return;
-
+		
 		// Territory War
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
@@ -201,7 +201,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			player.sendMessage(text);
 		return false;
 	}
-
+	
 	/**
 	 * Return true if character clan place a flag<BR><BR>
 	 *

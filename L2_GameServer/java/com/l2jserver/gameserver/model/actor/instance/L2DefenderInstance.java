@@ -39,13 +39,13 @@ public class L2DefenderInstance extends L2Attackable
 {
 	private Castle _castle = null; // the castle which the instance should defend
 	private Fort _fort = null; // the fortress which the instance should defend
-
+	
 	public L2DefenderInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2DefenderInstance);
 	}
-
+	
 	@Override
 	public DefenderKnownList getKnownList()
 	{
@@ -57,7 +57,7 @@ public class L2DefenderInstance extends L2Attackable
 	{
 		setKnownList(new DefenderKnownList(this));
 	}
-
+	
 	@Override
 	public L2CharacterAI getAI()
 	{
@@ -76,7 +76,7 @@ public class L2DefenderInstance extends L2Attackable
 		}
 		return ai;
 	}
-
+	
 	/**
 	 * Return True if a siege is in progress and the L2Character attacker isn't a Defender.<BR><BR>
 	 *
@@ -89,15 +89,15 @@ public class L2DefenderInstance extends L2Attackable
 		// Attackable during siege by all except defenders
 		if (!(attacker instanceof L2Playable))
 			return false;
-
+		
 		L2PcInstance player = attacker.getActingPlayer();
-
+		
 		// Check if siege is in progress
 		if ((_fort != null && _fort.getZone().isActive())
 				|| (_castle != null && _castle.getZone().isActive()))
 		{
 			int activeSiegeId = (_fort != null ? _fort.getFortId() : (_castle != null ? _castle.getCastleId() : 0));
-
+			
 			// Check if player is an enemy of this defender npc
 			if (player != null && ((player.getSiegeState() == 2 && !player.isRegisteredOnThisSiegeField(activeSiegeId))
 					|| (player.getSiegeState() == 1 && !TerritoryWarManager.getInstance().isAllyField(player, activeSiegeId))
@@ -108,13 +108,13 @@ public class L2DefenderInstance extends L2Attackable
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean hasRandomAnimation()
 	{
 		return false;
 	}
-
+	
 	/**
 	 * This method forces guard to return to home location previously set
 	 *
@@ -129,30 +129,30 @@ public class L2DefenderInstance extends L2Attackable
 		if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 40, false))
 		{
 			if (Config.DEBUG) _log.info(getObjectId()+": moving home");
-			setisReturningToSpawnPoint(true);	
+			setisReturningToSpawnPoint(true);
 			clearAggroList();
 			
 			if (hasAI())
 				getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
 		}
 	}
-
+	
 	@Override
 	public void onSpawn()
 	{
 		super.onSpawn();
-
+		
 		_fort = FortManager.getInstance().getFort(getX(), getY(), getZ());
 		_castle = CastleManager.getInstance().getCastle(getX(), getY(), getZ());
 		if (_fort == null && _castle == null)
 			_log.warning("L2DefenderInstance spawned outside of Fortress or Castle Zone! NpcId: "+getNpcId()+ " x="+getX()+ " y="+getY()+ " z="+getZ());
 	}
-
+	
 	/**
-	* Custom onAction behaviour. Note that super() is not called because guards need
-	* extra check to see if a player should interact or ATTACK them when clicked.
-	* 
-	*/
+	 * Custom onAction behaviour. Note that super() is not called because guards need
+	 * extra check to see if a player should interact or ATTACK them when clicked.
+	 * 
+	 */
 	@Override
 	public void onAction(L2PcInstance player, boolean interact)
 	{
@@ -161,25 +161,25 @@ public class L2DefenderInstance extends L2Attackable
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
 		{
 			if (Config.DEBUG) _log.info("new target selected:"+getObjectId());
-
+			
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-
+			
 			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
 			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
 			player.sendPacket(my);
-
+			
 			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
 			StatusUpdate su = new StatusUpdate(this);
 			su.addAttribute(StatusUpdate.CUR_HP, (int)getStatus().getCurrentHp() );
 			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp() );
 			player.sendPacket(su);
-
+			
 			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
 			player.sendPacket(new ValidateLocation(this));
 		}
@@ -204,13 +204,13 @@ public class L2DefenderInstance extends L2Attackable
 		//Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	@Override
 	public void addDamageHate(L2Character attacker, int damage, int aggro)
 	{
 		if (attacker == null)
 			return;
-
+		
 		if (!(attacker instanceof L2DefenderInstance))
 		{
 			if (damage == 0 && aggro <= 1 && attacker instanceof L2Playable)

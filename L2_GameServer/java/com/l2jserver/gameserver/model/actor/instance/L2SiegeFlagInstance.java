@@ -36,13 +36,13 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2SiegeFlagInstance extends L2Npc
 {
-    private L2Clan _clan;
-    private L2PcInstance _player;
-    private Siegable _siege;
-    private final boolean _isAdvanced;
-    private boolean _canTalk;
-
-    public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template, boolean advanced, boolean outPost)
+	private L2Clan _clan;
+	private L2PcInstance _player;
+	private Siegable _siege;
+	private final boolean _isAdvanced;
+	private boolean _canTalk;
+	
+	public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template, boolean advanced, boolean outPost)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2SiegeFlagInstance);
@@ -88,74 +88,74 @@ public class L2SiegeFlagInstance extends L2Npc
 		_isAdvanced = advanced;
 		getStatus();
 		setIsInvul(false);
-    }
-    
-    /**
-     * Use L2SiegeFlagInstance(L2PcInstance, int, L2NpcTemplate, boolean) instead
-     */
-    @Deprecated
-    public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template)
+	}
+	
+	/**
+	 * Use L2SiegeFlagInstance(L2PcInstance, int, L2NpcTemplate, boolean) instead
+	 */
+	@Deprecated
+	public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		_isAdvanced = false;
 	}
-
-    @Override
+	
+	@Override
 	public boolean isAttackable()
-    {
-        return !isInvul();
-    }
-
+	{
+		return !isInvul();
+	}
+	
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return !isInvul();
 	}
-
-    @Override
+	
+	@Override
 	public boolean doDie(L2Character killer)
-    {
-    	if (!super.doDie(killer))
-    		return false;
-    	if (_siege != null && _clan != null)
-    	{
-        	L2SiegeClan sc = _siege.getAttackerClan(_clan);
-            if (sc != null)
-            	sc.removeFlag(this);
-    	}
-    	else if (_clan != null)
-    		TerritoryWarManager.getInstance().removeClanFlag(_clan);
-        return true;
-    }
-
-    @Override
+	{
+		if (!super.doDie(killer))
+			return false;
+		if (_siege != null && _clan != null)
+		{
+			L2SiegeClan sc = _siege.getAttackerClan(_clan);
+			if (sc != null)
+				sc.removeFlag(this);
+		}
+		else if (_clan != null)
+			TerritoryWarManager.getInstance().removeClanFlag(_clan);
+		return true;
+	}
+	
+	@Override
 	public void onForcedAttack(L2PcInstance player)
 	{
 		onAction(player);
 	}
-
+	
 	@Override
 	public void onAction(L2PcInstance player, boolean interact)
 	{
 		if (player == null || !canTarget(player))
 			return;
-
-			// Check if the L2PcInstance already target the L2NpcInstance
+		
+		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
 		{
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-
+			
 			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
 			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
 			player.sendPacket(my);
-
+			
 			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
 			StatusUpdate su = new StatusUpdate(this);
 			su.addAttribute(StatusUpdate.CUR_HP, (int)getStatus().getCurrentHp() );
 			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp() );
 			player.sendPacket(su);
-
+			
 			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
 			player.sendPacket(new ValidateLocation(this));
 		}
@@ -188,34 +188,34 @@ public class L2SiegeFlagInstance extends L2Npc
 		setStatus(new SiegeFlagStatus(this));
 	}
 	
-    @Override
+	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill)
-    {
-    	super.reduceCurrentHp(damage, attacker, skill);
-    	if(canTalk())
-    	{
-    		if (getCastle() != null && getCastle().getSiege().getIsInProgress())
-    		{
-    			if (_clan != null)
-    			{
-    				// send warning to owners of headquarters that theirs base is under attack
-    				_clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
-    	    		setCanTalk(false);
-    				ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
-    			}
-    		}
-    		else if (getFort() != null && getFort().getSiege().getIsInProgress())
-    		{
-    			if (_clan != null)
-    			{
-    				// send warning to owners of headquarters that theirs base is under attack
-    				_clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
-    	    		setCanTalk(false);
-    				ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
-    			}
-    		}
-    	}
-    }
+	{
+		super.reduceCurrentHp(damage, attacker, skill);
+		if(canTalk())
+		{
+			if (getCastle() != null && getCastle().getSiege().getIsInProgress())
+			{
+				if (_clan != null)
+				{
+					// send warning to owners of headquarters that theirs base is under attack
+					_clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
+					setCanTalk(false);
+					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
+				}
+			}
+			else if (getFort() != null && getFort().getSiege().getIsInProgress())
+			{
+				if (_clan != null)
+				{
+					// send warning to owners of headquarters that theirs base is under attack
+					_clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
+					setCanTalk(false);
+					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
+				}
+			}
+		}
+	}
 	private class ScheduleTalkTask implements Runnable
 	{
 		

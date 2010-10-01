@@ -34,22 +34,22 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 		super(objectId, template);
 		setInstanceType(InstanceType.L2DungeonGatekeeperInstance);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-
+		
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
-
+		
 		String filename = SevenSigns.SEVEN_SIGNS_HTML_PATH;
 		int sealAvariceOwner = SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_AVARICE);
 		int sealGnosisOwner = SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_GNOSIS);
 		int playerCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
 		boolean isSealValidationPeriod = SevenSigns.getInstance().isSealValidationPeriod();
 		int compWinner = SevenSigns.getInstance().getCabalHighestScore();
-
+		
 		if (actualCommand.startsWith("necro"))
 		{
 			boolean canPort = true;
@@ -75,7 +75,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 				if (playerCabal == SevenSigns.CABAL_NULL)
 					canPort = false;
 			}
-
+			
 			if (!canPort)
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -114,7 +114,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 				if (playerCabal == SevenSigns.CABAL_NULL)
 					canPort = false;
 			}
-
+			
 			if (!canPort)
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -140,7 +140,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 		else
 			super.onBypassFeedback(player, command);
 	}
-
+	
 	private void doTeleport(L2PcInstance player, int val)
 	{
 		L2TeleportLocation list = TeleportLocationTable.getInstance().getTemplate(val);
@@ -148,15 +148,15 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 		{
 			if (player.isAlikeDead())
 				return;
-
+			
 			player.teleToLocation(list.getLocX(), list.getLocY(), list.getLocZ(), true);
 		}
 		else
 			_log.warning("No teleport destination with id:" + val);
-
+		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
@@ -165,7 +165,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			pom = "" + npcId;
 		else
 			pom = npcId + "-" + val;
-
+		
 		return "data/html/teleporter/" + pom + ".htm";
 	}
 }

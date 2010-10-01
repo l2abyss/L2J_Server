@@ -31,15 +31,15 @@ public final class ProtocolVersion extends L2GameClientPacket
 	private static final String _C__00_PROTOCOLVERSION = "[C] 00 ProtocolVersion";
 	private static final Logger _log = Logger.getLogger(ProtocolVersion.class.getName());
 	private static final Logger _logAccounting = Logger.getLogger("accounting");
-
+	
 	private int _version;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_version  = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -64,13 +64,13 @@ public final class ProtocolVersion extends L2GameClientPacket
 		{
 			if (Config.DEBUG)
 				_log.fine("Client Protocol Revision is ok: "+_version);
-
+			
 			KeyPacket pk = new KeyPacket(getClient().enableCrypt(),1);
 			getClient().sendPacket(pk);
 			getClient().setProtocolOk(true);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

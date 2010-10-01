@@ -43,19 +43,19 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	private final JFrame _frame;
-
+	
 	
 	JTableModel _dtm;
 	JProgressBar _progressBar;
-
+	
 	public JTable _gsTable;
 	
 	public GUserInterface(ResourceBundle bundle)
 	{
 		super(bundle);
-
+		
 		_frame = new JFrame();
 		getFrame().setTitle(getBundle().getString("toolName"));
 		getFrame().setSize(600, 400);
@@ -99,7 +99,7 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		
 		String name = getBundle().getString("gsName");
 		String action = getBundle().getString("gsAction");
-
+		
 		_dtm = new JTableModel(new Object[] { "ID", name, action });
 		_gsTable = new JTable(_dtm);
 		_gsTable.addMouseListener(new JTableButtonMouseListener(_gsTable));
@@ -126,7 +126,7 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		getFrame().add(layer, cons);
 		
 		
-		// maximize, doesn't seem really needed 
+		// maximize, doesn't seem really needed
 		//getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
 		/*
 		// Work-around JVM maximize issue on linux
@@ -137,7 +137,7 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		   Dimension screenSize = toolkit.getScreenSize();
 		   getFrame().setSize(screenSize);
 		}
-		*/
+		 */
 		this.refreshAsync();
 	}
 	
@@ -146,67 +146,67 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		Runnable r = new Runnable()
 		{
 			@Override
-            public void run()
-            {
+			public void run()
+			{
 				GUserInterface.this.refreshServers();
-            }
+			}
 		};
 		Thread t = new Thread(r, "LoaderThread");
 		t.start();
 	}
 	
 	@Override
-    public void load()
-    {
+	public void load()
+	{
 		
 		SwingUtilities.invokeLater
 		(
 				new Runnable()
 				{
 					@Override
-                    public void run()
-                    {
+					public void run()
+					{
 						_progressBar.setVisible(true);
-                    }
+					}
 				}
 		);
-	    
-	    super.load();
-	    
-	    SwingUtilities.invokeLater
+		
+		super.load();
+		
+		SwingUtilities.invokeLater
 		(
 				new Runnable()
 				{
 					@Override
-                    public void run()
-                    {
+					public void run()
+					{
 						_progressBar.setVisible(false);
-                    }
+					}
 				}
 		);
-    }
-
-
+	}
+	
+	
 	/**
-     * @see com.l2jserver.gsregistering.BaseGameServerRegister#showError(java.lang.String, java.lang.String, java.lang.Throwable)
-     */
-    @Override
-    public void showError(String msg, Throwable t)
-    {
-    	String title;
-    	if (this.getBundle() != null)
-    	{
-    		title = this.getBundle().getString("error");
-    		msg += '\n'+this.getBundle().getString("reason")+' '+t.getLocalizedMessage();
-    	}
-    	else
-    	{
-    		title = "Error";
-    		msg += "\nCause: "+t.getLocalizedMessage();
-    	}
-	    JOptionPane.showMessageDialog(this.getFrame(), msg, title, JOptionPane.ERROR_MESSAGE);
-    }
-
+	 * @see com.l2jserver.gsregistering.BaseGameServerRegister#showError(java.lang.String, java.lang.String, java.lang.Throwable)
+	 */
+	@Override
+	public void showError(String msg, Throwable t)
+	{
+		String title;
+		if (this.getBundle() != null)
+		{
+			title = this.getBundle().getString("error");
+			msg += '\n'+this.getBundle().getString("reason")+' '+t.getLocalizedMessage();
+		}
+		else
+		{
+			title = "Error";
+			msg += "\nCause: "+t.getLocalizedMessage();
+		}
+		JOptionPane.showMessageDialog(this.getFrame(), msg, title, JOptionPane.ERROR_MESSAGE);
+	}
+	
 	protected void refreshServers()
 	{
 		if (!this.isLoaded())
@@ -227,8 +227,8 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 							int size = GameServerTable.getInstance().getServerNames().size();
 							if (size == 0)
 							{
-						    	String title = getBundle().getString("error");
-								String msg = getBundle().getString("noServerNames"); 
+								String title = getBundle().getString("error");
+								String msg = getBundle().getString("noServerNames");
 								JOptionPane.showMessageDialog(getFrame(), msg, title, JOptionPane.ERROR_MESSAGE);
 								System.exit(1);
 							}
@@ -272,9 +272,9 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 			);
 		}
 	}
-
 	
-
+	
+	
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -302,29 +302,29 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 			if (choice == JOptionPane.YES_OPTION)
 			{
 				try
-                {
-	                BaseGameServerRegister.unregisterAllGameServers();
-	                this.refreshAsync();
-                }
-                catch (SQLException e1)
-                {
-                	GUserInterface.this.showError(getBundle().getString("errorUnregister"), e1);
-                }
+				{
+					BaseGameServerRegister.unregisterAllGameServers();
+					this.refreshAsync();
+				}
+				catch (SQLException e1)
+				{
+					GUserInterface.this.showError(getBundle().getString("errorUnregister"), e1);
+				}
 			}
 		}
 	}
-
+	
 	/**
-     * @return Returns the frame.
-     */
-    public JFrame getFrame()
-    {
-	    return _frame;
-    }
-
+	 * @return Returns the frame.
+	 */
+	public JFrame getFrame()
+	{
+		return _frame;
+	}
+	
 	class ButtonCellRenderer implements TableCellRenderer
 	{
-
+		
 		/* (non-Javadoc)
 		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 		 */
@@ -354,59 +354,59 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		}
 		
 		private void forwardEvent(MouseEvent e)
-	    {
-	        TableColumnModel columnModel = _table.getColumnModel();
-	        int column = columnModel.getColumnIndexAtX(e.getX());
-	        int row    = e.getY() / _table.getRowHeight();
-	        Object value;
-
-	        if (row >= _table.getRowCount() || row < 0 || column >= _table.getColumnCount() || column < 0)
-	        {
-	            return;
-	        }
-
-	        value = _table.getValueAt(row, column);
-	        
-	        if (value instanceof JButton)
-	        {
-	            final JButton b = (JButton) value;
-	            if (e.getID() == MouseEvent.MOUSE_PRESSED)
-	            {
-	            	b.getModel().setPressed(true);
+		{
+			TableColumnModel columnModel = _table.getColumnModel();
+			int column = columnModel.getColumnIndexAtX(e.getX());
+			int row    = e.getY() / _table.getRowHeight();
+			Object value;
+			
+			if (row >= _table.getRowCount() || row < 0 || column >= _table.getColumnCount() || column < 0)
+			{
+				return;
+			}
+			
+			value = _table.getValueAt(row, column);
+			
+			if (value instanceof JButton)
+			{
+				final JButton b = (JButton) value;
+				if (e.getID() == MouseEvent.MOUSE_PRESSED)
+				{
+					b.getModel().setPressed(true);
 					b.getModel().setArmed(true);
 					_table.repaint();
-	            }
-	            else if (e.getID() == MouseEvent.MOUSE_RELEASED)
-	            {
-	            	b.doClick();
-	            }
-	        }
-	    }
-
-	    public void mouseEntered(MouseEvent e)
-	    {
-	        forwardEvent(e);
-	    }
-
-	    public void mouseExited(MouseEvent e)
-	    {
-	        forwardEvent(e);
-	    }
-
-	    public void mousePressed(MouseEvent e)
-	    {
-	        forwardEvent(e);
-	    }
-
-	    public void mouseClicked(MouseEvent e)
-	    {
-	    	forwardEvent(e);
-	    }
-	    
-	    public void mouseReleased(MouseEvent e)
-	    {
-	    	forwardEvent(e);
-	    }
+				}
+				else if (e.getID() == MouseEvent.MOUSE_RELEASED)
+				{
+					b.doClick();
+				}
+			}
+		}
+		
+		public void mouseEntered(MouseEvent e)
+		{
+			forwardEvent(e);
+		}
+		
+		public void mouseExited(MouseEvent e)
+		{
+			forwardEvent(e);
+		}
+		
+		public void mousePressed(MouseEvent e)
+		{
+			forwardEvent(e);
+		}
+		
+		public void mouseClicked(MouseEvent e)
+		{
+			forwardEvent(e);
+		}
+		
+		public void mouseReleased(MouseEvent e)
+		{
+			forwardEvent(e);
+		}
 	}
 	
 	@SuppressWarnings("serial")

@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class GetOffVehicle extends L2GameServerPacket
 {
 	private int _charObjId, _boatObjId, _x, _y, _z;
-
+	
 	/**
 	 * @param activeChar
 	 * @param boat
@@ -37,7 +37,7 @@ public class GetOffVehicle extends L2GameServerPacket
 		_y = y;
 		_z = z;
 	}
-
+	
 	@Override
 	protected void writeImpl()
 	{
@@ -48,7 +48,7 @@ public class GetOffVehicle extends L2GameServerPacket
 		writeD(_y);
 		writeD(_z);
 	}
-
+	
 	@Override
 	public String getType()
 	{

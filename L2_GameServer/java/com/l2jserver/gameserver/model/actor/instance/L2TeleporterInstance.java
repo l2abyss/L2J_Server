@@ -44,7 +44,7 @@ public final class L2TeleporterInstance extends L2Npc
 	private static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;
 	private static final int COND_OWNER = 2;
 	private static final int COND_REGULAR = 3;
-
+	
 	/**
 	 * @param template
 	 */
@@ -53,21 +53,33 @@ public final class L2TeleporterInstance extends L2Npc
 		super(objectId, template);
 		setInstanceType(InstanceType.L2TeleporterInstance);
 	}
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-
+		
 		int condition = validateCondition(player);
-
+		
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
-
-		if (actualCommand.equalsIgnoreCase("goto"))
+		
+		if (player.getFirstEffect(6201) != null || player.getFirstEffect(6202) != null || player.getFirstEffect(6203) != null )
+		{
+			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			
+			String filename = "data/html/teleporter/epictransformed.htm";
+			
+			html.setFile(player.getHtmlPrefix(), filename);
+			html.replace("%objectId%", String.valueOf(getObjectId()));
+			html.replace("%npcname%", getName());
+			player.sendPacket(html);
+			return;
+		}
+		else if (actualCommand.equalsIgnoreCase("goto"))
 		{
 			int npcId = getNpcId();
-
+			
 			switch (npcId)
 			{
 				case 32534: // Seed of Infinity
@@ -79,10 +91,10 @@ public final class L2TeleporterInstance extends L2Npc
 					}
 					break;
 			}
-
+			
 			if (st.countTokens() <= 0)
 				return;
-
+			
 			int whereTo = Integer.parseInt(st.nextToken());
 			if (condition == COND_REGULAR)
 			{
@@ -94,7 +106,7 @@ public final class L2TeleporterInstance extends L2Npc
 				int minPrivilegeLevel = 0; // NOTE: Replace 0 with highest level when privilege level is implemented
 				if (st.countTokens() >= 1)
 					minPrivilegeLevel = Integer.parseInt(st.nextToken());
-
+				
 				if (10 >= minPrivilegeLevel) // NOTE: Replace 10 with privilege level of player
 					doTeleport(player, whereTo);
 				else
@@ -127,10 +139,10 @@ public final class L2TeleporterInstance extends L2Npc
 			}
 			showChatWindow(player, val);
 		}
-
+		
 		super.onBypassFeedback(player, command);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
@@ -139,49 +151,49 @@ public final class L2TeleporterInstance extends L2Npc
 			pom = "" + npcId;
 		else
 			pom = npcId + "-" + val;
-
+		
 		return "data/html/teleporter/" + pom + ".htm";
 	}
-
+	
 	private void showNewbieHtml(L2PcInstance player)
 	{
 		if (player == null)
 			return;
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-
+		
 		String filename = "data/html/teleporter/free/" + getTemplate().npcId + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
 			filename = "data/html/teleporter/" + getTemplate().npcId + "-1.htm";
-
+		
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);
 	}
-
+	
 	private void showHalfPriceHtml(L2PcInstance player)
 	{
 		if (player == null)
 			return;
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-
+		
 		String filename = "data/html/teleporter/half/" + getNpcId() + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
 			filename = "data/html/teleporter/" + getNpcId() + "-1.htm";
-
+		
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
 		String filename = "data/html/teleporter/castleteleporter-no.htm";
-
+		
 		int condition = validateCondition(player);
 		if (condition == COND_REGULAR)
 		{
@@ -197,14 +209,14 @@ public final class L2TeleporterInstance extends L2Npc
 				filename = getHtmlPath(getNpcId(), 0); // Owner message window
 			}
 		}
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);
 	}
-
+	
 	private void doTeleport(L2PcInstance player, int val)
 	{
 		L2TeleportLocation list = TeleportLocationTable.getInstance().getTemplate(val);
@@ -244,10 +256,10 @@ public final class L2TeleporterInstance extends L2Npc
 			}
 			else if (player.isAlikeDead())
 				return;
-
+			
 			Calendar cal = Calendar.getInstance();
 			int price = list.getPrice();
-
+			
 			if (player.getLevel() < 41)
 				price = 0;
 			else if (!list.getIsForNoble())
@@ -255,7 +267,7 @@ public final class L2TeleporterInstance extends L2Npc
 				if (cal.get(Calendar.HOUR_OF_DAY) >= 20 && cal.get(Calendar.HOUR_OF_DAY) <= 23 && (cal.get(Calendar.DAY_OF_WEEK) == 1 || cal.get(Calendar.DAY_OF_WEEK) == 7))
 					price /= 2;
 			}
-
+			
 			if (Config.ALT_GAME_FREE_TELEPORT || player.destroyItemByItemId("Teleport "+(list.getIsForNoble() ? " nobless" : ""), list.getItemId(), price, this, true))
 			{
 				if (Config.DEBUG)
@@ -266,10 +278,10 @@ public final class L2TeleporterInstance extends L2Npc
 		}
 		else
 			_log.warning("No teleport destination with id:" + val);
-
+		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	private int validateCondition(L2PcInstance player)
 	{
 		if (CastleManager.getInstance().getCastleIndex(this) < 0) // Teleporter isn't on castle ground
@@ -281,7 +293,7 @@ public final class L2TeleporterInstance extends L2Npc
 			if (getCastle().getOwnerId() == player.getClanId()) // Clan owns castle
 				return COND_OWNER; // Owner
 		}
-
+		
 		return COND_ALL_FALSE;
 	}
 }

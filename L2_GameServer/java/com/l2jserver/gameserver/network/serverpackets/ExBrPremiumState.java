@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * format: dc
@@ -22,16 +21,16 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ExBrPremiumState extends L2GameServerPacket
 {
-	private static final String _S__FE_BC_EXBRPREMIUMSTATE = "[S] FE:BC ExBrPremiumState";
-	private L2PcInstance _activeChar;
+	private static final String _S__FE_BC_EXBRPREMIUMSTATE = "[S] FE:CD ExBrPremiumState";
+	private int _objId;
 	private int _state;
 	
-	public ExBrPremiumState(L2PcInstance activeChar, int state)
+	public ExBrPremiumState(int id, int state)
 	{
-		_activeChar = activeChar;
+		_objId = id;
 		_state = state;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -39,8 +38,8 @@ public class ExBrPremiumState extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xfe);
-		writeH(0xbc);
-		writeD(_activeChar.getObjectId());
+		writeH(0xcd);
+		writeD(_objId);
 		writeC(_state);
 	}
 	

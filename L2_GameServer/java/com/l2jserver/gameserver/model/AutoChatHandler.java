@@ -23,20 +23,20 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * Auto Chat Handler
@@ -50,7 +50,7 @@ public class AutoChatHandler implements SpawnListener
 {
 	protected static final Logger _log = Logger.getLogger(AutoChatHandler.class.getName());
 	
-	private static final long DEFAULT_CHAT_DELAY = 30000; // 30 secs by default
+	private static final long DEFAULT_CHAT_DELAY = 60000; // 60 secs by default
 	
 	protected Map<Integer, AutoChatInstance> _registeredChats;
 	
@@ -806,16 +806,15 @@ public class AutoChatHandler implements SpawnListener
 						if (text == null)
 							return;
 						
-						if (text.contains("%player_cabal_loser%") || text.contains("%player_cabal_winner%")
-								|| text.contains("%player_random%"))
-							return;
-						
-						CreatureSay cs = new CreatureSay(chatNpc.getObjectId(), Say2.ALL, creatureName, text);
-						
-						for (L2PcInstance nearbyPlayer : nearbyPlayers)
-							nearbyPlayer.sendPacket(cs);
-						for (L2PcInstance nearbyGM : nearbyGMs)
-							nearbyGM.sendPacket(cs);
+						if (!text.contains("%player_"))
+						{
+							CreatureSay cs = new CreatureSay(chatNpc.getObjectId(), Say2.ALL, creatureName, text);
+							
+							for (L2PcInstance nearbyPlayer : nearbyPlayers)
+								nearbyPlayer.sendPacket(cs);
+							for (L2PcInstance nearbyGM : nearbyGMs)
+								nearbyGM.sendPacket(cs);
+						}
 						
 						if (Config.DEBUG)
 							_log.fine("AutoChatHandler: Chat propogation for object ID " + chatNpc.getObjectId() + " (" + creatureName

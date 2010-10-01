@@ -76,31 +76,33 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		}
 		boolean updated = false;
 		int crestId = -1;
-		if ((_length == 0 || _data.length == 0) && clan.getCrestId() != 0)
+		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
 		{
-			crestId = 0;
-			
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED));
-			
-			updated = true;
-		}
-		else if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
-		{
-			if (clan.getLevel() < 3)
+			if (_length == 0 || _data.length == 0)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST));
-				return;
+				if (clan.getCrestId() == 0)
+					return;
+				
+				crestId = 0;
+				activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED));
+				updated = true;
 			}
-			
-			crestId = IdFactory.getInstance().getNextId();
-			
-			if (!CrestCache.getInstance().savePledgeCrest(crestId, _data))
+			else
 			{
-				_log.log(Level.INFO, "Error saving crest for clan " + clan.getName() + " [" + clan.getClanId() + "]");
-				return;
+				if (clan.getLevel() < 3)
+				{
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST));
+					return;
+				}
+				
+				crestId = IdFactory.getInstance().getNextId();
+				if (!CrestCache.getInstance().savePledgeCrest(crestId, _data))
+				{
+					_log.log(Level.INFO, "Error saving crest for clan " + clan.getName() + " [" + clan.getClanId() + "]");
+					return;
+				}
+				updated = true;
 			}
-			
-			updated = true;
 		}
 		if (updated && crestId != -1)
 		{

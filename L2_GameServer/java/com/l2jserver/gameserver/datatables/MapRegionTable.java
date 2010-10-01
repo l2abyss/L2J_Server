@@ -230,7 +230,7 @@ public class MapRegionTable
 	 * @param townId
 	 * @return String
 	 */
-	public String getClosestTownName(int townId)	
+	public String getClosestTownName(int townId)
 	{
 		String nearestTown = null;
 		switch (townId)
@@ -475,7 +475,7 @@ public class MapRegionTable
 			L2ArenaZone arena = ZoneManager.getInstance().getArena(player);
 			if (arena != null)
 				return arena.getSpawnLoc();
-
+			
 			//Checking if needed to be respawned in "far" town from the castle;
 			castle = CastleManager.getInstance().getCastle(player);
 			if (castle != null)
@@ -495,7 +495,7 @@ public class MapRegionTable
 				Instance inst = InstanceManager.getInstance().getInstance(player.getInstanceId());
 				if (inst != null)
 				{
-					coord = inst.getSpawnLoc(); 
+					coord = inst.getSpawnLoc();
 					if (coord[0] != 0 && coord[1] != 0 && coord[2] != 0)
 						return new Location(coord[0], coord[1], coord[2]);
 				}

@@ -67,8 +67,8 @@ public class GrandBossManager
 	 * NOTE: The current version does NOT spawn the Grand Bosses,
 	 * it just stores and retrieves the values on reboot/startup,
 	 * for AI scripts to utilize as needed.
-	*/
-
+	 */
+	
 	/**
 	 * DELETE FROM grandboss_list
 	 */
@@ -171,7 +171,7 @@ public class GrandBossManager
 	/*
 	 * Zone Functions
 	 */
-
+	
 	public void initZones()
 	{
 		Connection con = null;
@@ -290,7 +290,7 @@ public class GrandBossManager
 	/*
 	 * The rest
 	 */
-
+	
 	public int getBossStatus(int bossId)
 	{
 		return _bossStatus.get(bossId);
@@ -306,7 +306,7 @@ public class GrandBossManager
 	/*
 	 * Adds a L2GrandBossInstance to the list of bosses.
 	 */
-
+	
 	public void addBoss(L2GrandBossInstance boss)
 	{
 		if (boss != null)

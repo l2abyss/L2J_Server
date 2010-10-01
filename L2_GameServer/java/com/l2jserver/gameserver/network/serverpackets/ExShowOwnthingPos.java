@@ -27,11 +27,11 @@ import com.l2jserver.gameserver.model.TerritoryWard;
 public class ExShowOwnthingPos extends L2GameServerPacket
 {
 	private static final String _S__FE_93_EXSHOWOWNTHINGPOS = "[S] FE:93 ExShowOwnthingPos";
-
+	
 	public ExShowOwnthingPos()
 	{
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -40,7 +40,7 @@ public class ExShowOwnthingPos extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x93);
-
+		
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
 			FastList<TerritoryWard> territoryWardList = TerritoryWarManager.getInstance().getAllTerritoryWards();
@@ -48,7 +48,7 @@ public class ExShowOwnthingPos extends L2GameServerPacket
 			for(TerritoryWard ward : territoryWardList)
 			{
 				writeD(ward.getTerritoryId());
-
+				
 				if (ward.getNpc() != null)
 				{
 					writeD(ward.getNpc().getX());
@@ -75,7 +75,7 @@ public class ExShowOwnthingPos extends L2GameServerPacket
 			writeD(0);
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

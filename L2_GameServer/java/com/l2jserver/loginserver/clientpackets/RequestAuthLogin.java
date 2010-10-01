@@ -21,17 +21,17 @@ import java.util.logging.Logger;
 import javax.crypto.Cipher;
 
 import com.l2jserver.Config;
+import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
 import com.l2jserver.loginserver.HackingException;
 import com.l2jserver.loginserver.L2LoginClient;
-import com.l2jserver.loginserver.LoginController;
-import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
 import com.l2jserver.loginserver.L2LoginClient.LoginClientState;
+import com.l2jserver.loginserver.LoginController;
 import com.l2jserver.loginserver.LoginController.AuthLoginResult;
 import com.l2jserver.loginserver.serverpackets.AccountKicked;
-import com.l2jserver.loginserver.serverpackets.LoginOk;
-import com.l2jserver.loginserver.serverpackets.ServerList;
 import com.l2jserver.loginserver.serverpackets.AccountKicked.AccountKickedReason;
 import com.l2jserver.loginserver.serverpackets.LoginFail.LoginFailReason;
+import com.l2jserver.loginserver.serverpackets.LoginOk;
+import com.l2jserver.loginserver.serverpackets.ServerList;
 
 
 /**
@@ -42,13 +42,13 @@ import com.l2jserver.loginserver.serverpackets.LoginFail.LoginFailReason;
 public class RequestAuthLogin extends L2LoginClientPacket
 {
 	private static Logger _log = Logger.getLogger(RequestAuthLogin.class.getName());
-
+	
 	private byte[] _raw = new byte[128];
-
+	
 	private String _user;
 	private String _password;
 	private int _ncotp;
-
+	
 	/**
 	 * @return
 	 */
@@ -56,7 +56,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 	{
 		return _password;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -64,12 +64,12 @@ public class RequestAuthLogin extends L2LoginClientPacket
 	{
 		return _user;
 	}
-
+	
 	public int getOneTimePassword()
 	{
 		return _ncotp;
 	}
-
+	
 	@Override
 	public boolean readImpl()
 	{
@@ -83,7 +83,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 			return false;
 		}
 	}
-
+	
 	@Override
 	public void run()
 	{
@@ -99,7 +99,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 			e.printStackTrace();
 			return;
 		}
-
+		
 		_user = new String(decrypted, 0x5E, 14 ).trim();
 		_user = _user.toLowerCase();
 		_password = new String(decrypted, 0x6C, 16).trim();
@@ -107,13 +107,13 @@ public class RequestAuthLogin extends L2LoginClientPacket
 		_ncotp |= decrypted[0x7d] << 8;
 		_ncotp |= decrypted[0x7e] << 16;
 		_ncotp |= decrypted[0x7f] << 24;
-
+		
 		LoginController lc = LoginController.getInstance();
 		L2LoginClient client = getClient();
 		try
 		{
 			AuthLoginResult result = lc.tryAuthLogin(_user, _password, getClient());
-
+			
 			switch (result)
 			{
 				case AUTH_SUCCESS:
@@ -151,7 +151,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 					if ((gsi = lc.getAccountOnGameServer(_user)) != null)
 					{
 						client.close(LoginFailReason.REASON_ACCOUNT_IN_USE);
-
+						
 						// kick from there
 						if (gsi.isAuthed())
 						{

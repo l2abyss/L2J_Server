@@ -24,7 +24,7 @@ public class BinaryNodeHeap
 {
 	private final GeoNode[] _list;
 	private int _size;
-
+	
 	public BinaryNodeHeap(int size)
 	{
 		_list = new GeoNode[size+1];
@@ -42,7 +42,7 @@ public class BinaryNodeHeap
 				GeoNode temp = _list[p2];
 				_list[p2] = _list[pos];
 				_list[pos] = temp;
-		        pos = p2;
+				pos = p2;
 			}
 			else
 				break;
@@ -66,15 +66,15 @@ public class BinaryNodeHeap
 			{
 				if (_list[cpos].getCost() >= _list[dblcpos].getCost())
 					pos = dblcpos;
-			    if (_list[pos].getCost() >= _list[dblcpos+1].getCost())
-			    	pos = dblcpos+1;
+				if (_list[pos].getCost() >= _list[dblcpos+1].getCost())
+					pos = dblcpos+1;
 			}
 			else if (dblcpos <= _size)
 			{
 				if (_list[cpos].getCost() >= _list[dblcpos].getCost())
 					pos = dblcpos;
 			}
-
+			
 			if (cpos != pos)
 			{
 				temp = _list[cpos];

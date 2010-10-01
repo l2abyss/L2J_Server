@@ -30,36 +30,36 @@ public class BypassUserCmd extends L2GameClientPacket
 {
 	private static final String _C__B3_BYPASSUSERCMD = "[C] b3 BypassUserCmd";
 	static Logger _log = Logger.getLogger(BypassUserCmd.class.getName());
-
+	
 	private int _command;
-
-
+	
+	
 	@Override
 	protected void readImpl()
 	{
 		_command = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
-        L2PcInstance player = getClient().getActiveChar();
-        if (player == null)
-            return;
-
-        IUserCommandHandler handler = UserCommandHandler.getInstance().getUserCommandHandler(_command);
-
-        if (handler == null)
-        {
-            if (player.isGM())
-                player.sendMessage("User commandID "+_command+" not implemented yet.");
-        }
-        else
-        {
-            handler.useUserCommand(_command, getClient().getActiveChar());
-        }
+		L2PcInstance player = getClient().getActiveChar();
+		if (player == null)
+			return;
+		
+		IUserCommandHandler handler = UserCommandHandler.getInstance().getUserCommandHandler(_command);
+		
+		if (handler == null)
+		{
+			if (player.isGM())
+				player.sendMessage("User commandID "+_command+" not implemented yet.");
+		}
+		else
+		{
+			handler.useUserCommand(_command, getClient().getActiveChar());
+		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

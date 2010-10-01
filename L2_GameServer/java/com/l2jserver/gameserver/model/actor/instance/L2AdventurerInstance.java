@@ -29,17 +29,17 @@ public class L2AdventurerInstance extends L2NpcInstance
 		super(objectId, template);
 		setInstanceType(InstanceType.L2AdventurerInstance);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
 		String pom = "";
-
+		
 		if (val == 0)
 			pom = "" + npcId;
 		else
 			pom = npcId + "-" + val;
-
+		
 		return "data/html/adventurer_guildsman/" + pom + ".htm";
 	}
 }

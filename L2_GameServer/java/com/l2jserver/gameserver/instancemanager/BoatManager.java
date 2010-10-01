@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.instancemanager;
 import java.util.Collection;
 import java.util.Map;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2World;
@@ -27,51 +29,49 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 
-import javolution.util.FastMap;
-
 public class BoatManager
 {
 	private Map<Integer, L2BoatInstance> _boats = new FastMap<Integer, L2BoatInstance>();
 	private boolean[] _docksBusy = new boolean[3];
-
+	
 	public static final int TALKING_ISLAND = 1;
 	public static final int GLUDIN_HARBOR = 2;
 	public static final int RUNE_HARBOR = 3;
-
+	
 	public static final BoatManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	private BoatManager()
 	{
 		for (int i = 0; i < _docksBusy.length; i++)
 			_docksBusy[i] = false;
 	}
-
+	
 	public L2BoatInstance getNewBoat(int boatId, int x, int y, int z, int heading)
 	{
 		if (!Config.ALLOW_BOAT)
 			return null;
-
+		
 		StatsSet npcDat = new StatsSet();
 		npcDat.set("npcId", boatId);
 		npcDat.set("level", 0);
 		npcDat.set("jClass", "boat");
-
+		
 		npcDat.set("baseSTR", 0);
 		npcDat.set("baseCON", 0);
 		npcDat.set("baseDEX", 0);
 		npcDat.set("baseINT", 0);
 		npcDat.set("baseWIT", 0);
 		npcDat.set("baseMEN", 0);
-
+		
 		npcDat.set("baseShldDef", 0);
 		npcDat.set("baseShldRate", 0);
 		npcDat.set("baseAccCombat", 38);
 		npcDat.set("baseEvasRate", 38);
 		npcDat.set("baseCritRate", 38);
-
+		
 		// npcDat.set("name", "");
 		npcDat.set("collision_radius", 0);
 		npcDat.set("collision_height", 0);
@@ -105,7 +105,7 @@ public class BoatManager
 		boat.spawnMe();
 		return boat;
 	}
-
+	
 	/**
 	 * @param boatId
 	 * @return
@@ -114,7 +114,7 @@ public class BoatManager
 	{
 		return _boats.get(boatId);
 	}
-
+	
 	/**
 	 * Lock/unlock dock so only one ship can be docked
 	 * @param h Dock Id
@@ -129,7 +129,7 @@ public class BoatManager
 		catch (ArrayIndexOutOfBoundsException e)
 		{}
 	}
-
+	
 	/**
 	 * Check if dock is busy
 	 * @param h Dock Id
@@ -146,9 +146,9 @@ public class BoatManager
 			return false;
 		}
 	}
-
+	
 	/**
-	 * Broadcast one packet in both path points 
+	 * Broadcast one packet in both path points
 	 */
 	public void broadcastPacket(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket packet)
 	{
@@ -158,7 +158,7 @@ public class BoatManager
 		{
 			if (player == null)
 				continue;
-
+			
 			dx = (double)player.getX() - point1.x;
 			dy = (double)player.getY() - point1.y;
 			if (Math.sqrt(dx*dx + dy*dy) < Config.BOAT_BROADCAST_RADIUS)
@@ -172,7 +172,7 @@ public class BoatManager
 			}
 		}
 	}
-
+	
 	/**
 	 * Broadcast several packets in both path points
 	 */
@@ -201,7 +201,7 @@ public class BoatManager
 			}
 		}
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

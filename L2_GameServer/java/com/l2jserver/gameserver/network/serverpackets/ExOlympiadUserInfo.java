@@ -29,8 +29,8 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 	// chcdSddddd
 	private static final String _S__FE_29_OLYMPIADUSERINFO = "[S] FE:7A ExOlympiadUserInfo";
 	private L2PcInstance _player;
-
-
+	
+	
 	/**
 	 * @param _player
 	 * @param _side (1 = right, 2 = left)
@@ -39,8 +39,8 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 	{
 		_player = player;
 	}
-
-
+	
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -55,7 +55,7 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 		writeD((int)_player.getCurrentCp());
 		writeD(_player.getMaxCp());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

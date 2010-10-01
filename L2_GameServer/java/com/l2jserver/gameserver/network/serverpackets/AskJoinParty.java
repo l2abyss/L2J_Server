@@ -34,10 +34,10 @@ public class AskJoinParty extends L2GameServerPacket
 {
 	private static final String _S__4B_ASKJOINPARTY_0X4B = "[S] 39 AskJoinParty";
 	//private static Logger _log = Logger.getLogger(AskJoinParty.class.getName());
-
+	
 	private String _requestorName;
 	private int _itemDistribution;
-
+	
 	/**
 	 * @param int objectId of the target
 	 * @param int
@@ -47,7 +47,7 @@ public class AskJoinParty extends L2GameServerPacket
 		_requestorName = requestorName;
 		_itemDistribution = itemDistribution;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -55,7 +55,7 @@ public class AskJoinParty extends L2GameServerPacket
 		writeS(_requestorName);
 		writeD(_itemDistribution);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -64,5 +64,5 @@ public class AskJoinParty extends L2GameServerPacket
 	{
 		return _S__4B_ASKJOINPARTY_0X4B;
 	}
-
+	
 }

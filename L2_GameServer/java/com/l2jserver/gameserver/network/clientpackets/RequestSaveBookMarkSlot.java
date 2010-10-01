@@ -27,7 +27,7 @@ public final class RequestSaveBookMarkSlot extends L2GameClientPacket
 	
 	private int icon;
 	private String name,tag;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -35,7 +35,7 @@ public final class RequestSaveBookMarkSlot extends L2GameClientPacket
 		icon = readD();
 		tag = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
@@ -44,8 +44,8 @@ public final class RequestSaveBookMarkSlot extends L2GameClientPacket
 			return;
 		activeChar.teleportBookmarkAdd(activeChar.getX(), activeChar.getY(), activeChar.getZ(), icon, tag, name);
 	}
-
-
+	
+	
 	@Override
 	public String getType()
 	{

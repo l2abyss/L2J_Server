@@ -14,6 +14,11 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
@@ -24,8 +29,6 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.skills.effects.EffectChanceSkillTrigger;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
-import javolution.util.FastMap;
-
 /**
  * CT2.3: Added support for allowing effect as a chance skill trigger (DrHouse)
  *
@@ -33,23 +36,24 @@ import javolution.util.FastMap;
  */
 public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceCondition>
 {
+	protected static final Logger _log = Logger.getLogger(ChanceSkillList.class.getName());
 	private static final long serialVersionUID = 1L;
-
+	
 	private final L2Character _owner;
-
+	
 	public ChanceSkillList(L2Character owner)
 	{
 		super();
 		shared();
 		_owner = owner;
 	}
-
+	
 	public L2Character getOwner()
 	{
 		return _owner;
 	}
-
-	public void onHit(L2Character target, boolean ownerWasHit, boolean wasCrit)
+	
+	public void onHit(L2Character target, int damage, boolean ownerWasHit, boolean wasCrit)
 	{
 		int event;
 		if (ownerWasHit)
@@ -64,15 +68,15 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			if (wasCrit)
 				event |= ChanceCondition.EVT_CRIT;
 		}
-
-		onEvent(event, target, Elementals.NONE);
+		
+		onEvent(event, damage, target, Elementals.NONE);
 	}
-
+	
 	public void onEvadedHit(L2Character attacker)
 	{
-		onEvent(ChanceCondition.EVT_EVADED_HIT, attacker, Elementals.NONE);
+		onEvent(ChanceCondition.EVT_EVADED_HIT, 0, attacker, Elementals.NONE);
 	}
-
+	
 	public void onSkillHit(L2Character target, boolean ownerWasHit, boolean wasMagic, boolean wasOffensive, byte element)
 	{
 		int event;
@@ -95,34 +99,34 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			event |= wasMagic ? ChanceCondition.EVT_MAGIC : ChanceCondition.EVT_PHYSICAL;
 			event |= wasOffensive ? ChanceCondition.EVT_MAGIC_OFFENSIVE : ChanceCondition.EVT_MAGIC_GOOD;
 		}
-
-		onEvent(event, target, element);
+		
+		onEvent(event, 0, target, element);
 	}
-
+	
 	public void onStart(byte element)
 	{
-		onEvent(ChanceCondition.EVT_ON_START, _owner, element);
+		onEvent(ChanceCondition.EVT_ON_START, 0, _owner, element);
 	}
-
+	
 	public void onActionTime(byte element)
 	{
-		onEvent(ChanceCondition.EVT_ON_ACTION_TIME, _owner, element);
+		onEvent(ChanceCondition.EVT_ON_ACTION_TIME, 0, _owner, element);
 	}
-
+	
 	public void onExit(byte element)
 	{
-		onEvent(ChanceCondition.EVT_ON_EXIT, _owner, element);
+		onEvent(ChanceCondition.EVT_ON_EXIT, 0, _owner, element);
 	}
-
-	public void onEvent(int event, L2Character target, byte element)
+	
+	public void onEvent(int event, int damage, L2Character target, byte element)
 	{
 		if (_owner.isDead())
 			return;
-
+		
 		final boolean playable = target instanceof L2Playable;
 		for (FastMap.Entry<IChanceSkillTrigger, ChanceCondition> e = head(), end = tail(); (e = e.getNext()) != end;)
 		{
-			if (e.getValue() != null && e.getValue().trigger(event, element, playable))
+			if (e.getValue() != null && e.getValue().trigger(event, damage, element, playable))
 			{
 				if (e.getKey() instanceof L2Skill)
 					makeCast((L2Skill)e.getKey(), target);
@@ -131,7 +135,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			}
 		}
 	}
-
+	
 	private void makeCast(L2Skill skill, L2Character target)
 	{
 		try
@@ -143,26 +147,26 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 					skill = SkillTable.getInstance().getInfo(skill.getTriggeredChanceId(), skill.getTriggeredChanceLevel());
 					if(skill == null || skill.getSkillType() == L2SkillType.NOTDONE)
 						return;
-				} 
-
+				}
+				
 				if (_owner.isSkillDisabled(skill))
 					return;
-
+				
 				if (skill.getReuseDelay() > 0)
 					_owner.disableSkill(skill, skill.getReuseDelay());
-
+				
 				L2Object[] targets = skill.getTargetList(_owner, false, target);
-
+				
 				if (targets.length == 0)
 					return;
-
+				
 				L2Character firstTarget = (L2Character)targets[0];
-
+				
 				ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
-
+				
 				_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
 				_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
-
+				
 				// Launch the magic skill and calculate its effects
 				// TODO: once core will support all possible effects, use effects (not handler)
 				if (handler != null)
@@ -170,45 +174,45 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				else
 					skill.useSkill(_owner, targets);
 			}
-        }
+		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 	}
-
+	
 	private void makeCast(EffectChanceSkillTrigger effect, L2Character target)
 	{
 		try
 		{
 			if (effect == null || !effect.triggersChanceSkill())
 				return;
-
+			
 			L2Skill triggered = SkillTable.getInstance().getInfo(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
 			if (triggered == null)
 				return;
 			L2Character caster = triggered.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ? _owner : effect.getEffector();
-
+			
 			if (caster == null
 					|| triggered.getSkillType() == L2SkillType.NOTDONE
 					|| caster.isSkillDisabled(triggered))
 				return;
-
+			
 			if (triggered.getReuseDelay() > 0)
 				caster.disableSkill(triggered, triggered.getReuseDelay());
-
+			
 			L2Object[] targets = triggered.getTargetList(caster, false, target);
-
+			
 			if (targets.length == 0)
 				return;
-
+			
 			L2Character firstTarget = (L2Character)targets[0];
-
+			
 			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(triggered.getSkillType());
-
+			
 			_owner.broadcastPacket(new MagicSkillLaunched(_owner, triggered.getDisplayId(), triggered.getLevel(), targets));
 			_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, triggered.getDisplayId(), triggered.getLevel(), 0, 0));
-
+			
 			// Launch the magic skill and calculate its effects
 			// TODO: once core will support all possible effects, use effects (not handler)
 			if (handler != null)
@@ -218,7 +222,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 	}
 }

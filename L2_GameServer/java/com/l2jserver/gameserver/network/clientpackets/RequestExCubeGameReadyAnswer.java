@@ -37,7 +37,7 @@ public final class RequestExCubeGameReadyAnswer extends L2GameClientPacket
 		_arena = readD();
 		_answer = readD();
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
@@ -54,7 +54,7 @@ public final class RequestExCubeGameReadyAnswer extends L2GameClientPacket
 				break;
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

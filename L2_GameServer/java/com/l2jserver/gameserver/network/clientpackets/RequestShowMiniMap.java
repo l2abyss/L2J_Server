@@ -12,11 +12,11 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
- package com.l2jserver.gameserver.network.clientpackets;
+package com.l2jserver.gameserver.network.clientpackets;
 
- import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ShowMiniMap;
- /**
+/**
  * sample
 
  * format
@@ -27,23 +27,23 @@ import com.l2jserver.gameserver.network.serverpackets.ShowMiniMap;
 public final class RequestShowMiniMap extends L2GameClientPacket
 {
 	private static final String _C__cd_REQUESTSHOWMINIMAP = "[C] cd RequestShowMiniMap";
-
-
+	
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger
 	}
-
+	
 	@Override
 	protected final void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
+			return;
 		activeChar.sendPacket(new ShowMiniMap(1665));
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
@@ -52,7 +52,7 @@ public final class RequestShowMiniMap extends L2GameClientPacket
 	{
 		return _C__cd_REQUESTSHOWMINIMAP;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

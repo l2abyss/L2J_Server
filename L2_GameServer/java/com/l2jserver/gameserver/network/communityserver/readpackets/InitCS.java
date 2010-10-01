@@ -19,22 +19,25 @@ import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
+
+import org.netcon.BaseReadPacket;
+import org.netcon.crypt.NewCrypt;
 
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.BlowFishKey;
 import com.l2jserver.gameserver.network.communityserver.writepackets.GameServerAuth;
 import com.l2jserver.util.Rnd;
 
-import org.netcon.BaseReadPacket;
-import org.netcon.crypt.NewCrypt;
-
 /**
  * @authors  Forsaiken, Gigiikun
  */
 public final class InitCS extends BaseReadPacket
 {
+	protected static final Logger _log = Logger.getLogger(InitCS.class.getName());
 	private final CommunityServerThread _cst;
 	
 	public InitCS(final byte[] data, final CommunityServerThread cst)
@@ -69,7 +72,7 @@ public final class InitCS extends BaseReadPacket
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 	}
 }

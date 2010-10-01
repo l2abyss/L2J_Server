@@ -25,7 +25,7 @@ public class EffectAbortCast extends L2Effect
 	{
 		super(env, template);
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()
@@ -35,7 +35,7 @@ public class EffectAbortCast extends L2Effect
 	{
 		return L2EffectType.ABORT_CAST;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
@@ -45,14 +45,14 @@ public class EffectAbortCast extends L2Effect
 	{
 		if (getEffected() == null || getEffected() == getEffector())
 			return false;
-
+		
 		if (getEffected().isRaid())
 			return false;
-
+		
 		getEffected().breakCast();
 		return true;
 	}
-
+	
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()

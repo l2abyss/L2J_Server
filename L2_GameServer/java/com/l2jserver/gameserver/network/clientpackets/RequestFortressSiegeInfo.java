@@ -25,44 +25,44 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowFortressSiegeInfo;
  */
 public class RequestFortressSiegeInfo extends L2GameClientPacket
 {
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-     */
-    @Override
-    public String getType()
-    {
-        return "[C] D0:42 RequestFortressSiegeInfo";
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-     */
-    @Override
-    protected void readImpl()
-    {
-        // trigger
-    }
-
-    /**
-     * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-     */
-    @Override
-    protected void runImpl()
-    {
-        L2GameClient client = this.getClient();
-        if (client != null)
-        {
-        	for (Fort fort : FortManager.getInstance().getForts())
-        	{
-        		if (fort != null && fort.getSiege().getIsInProgress())
-        		{
-        			client.sendPacket(new ExShowFortressSiegeInfo(fort));
-        		}
-        	}
-        }
-    }
-
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return "[C] D0:42 RequestFortressSiegeInfo";
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
+	 */
+	@Override
+	protected void readImpl()
+	{
+		// trigger
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
+	 */
+	@Override
+	protected void runImpl()
+	{
+		L2GameClient client = this.getClient();
+		if (client != null)
+		{
+			for (Fort fort : FortManager.getInstance().getForts())
+			{
+				if (fort != null && fort.getSiege().getIsInProgress())
+				{
+					client.sendPacket(new ExShowFortressSiegeInfo(fort));
+				}
+			}
+		}
+	}
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

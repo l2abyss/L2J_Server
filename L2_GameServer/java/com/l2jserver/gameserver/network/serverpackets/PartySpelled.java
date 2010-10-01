@@ -16,11 +16,11 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
-
-import javolution.util.FastList;
 
 /**
  * This class ...
@@ -29,57 +29,57 @@ import javolution.util.FastList;
  */
 public class PartySpelled extends L2GameServerPacket
 {
-    private static final String _S__EE_PartySpelled = "[S] f4 PartySpelled";
-    private List<Effect> _effects;
-    private L2Character _activeChar;
-
-    private class Effect
-    {
-    	protected int _skillId;
-    	protected int _dat;
-    	protected int _duration;
-
-        public Effect(int pSkillId, int pDat, int pDuration)
-        {
-            _skillId = pSkillId;
-            _dat = pDat;
-            _duration = pDuration;
-        }
-    }
-
-    public PartySpelled(L2Character cha)
-    {
-        _effects = new FastList<Effect>();
-        _activeChar = cha;
-    }
-
-    @Override
+	private static final String _S__EE_PartySpelled = "[S] f4 PartySpelled";
+	private List<Effect> _effects;
+	private L2Character _activeChar;
+	
+	private static class Effect
+	{
+		protected int _skillId;
+		protected int _dat;
+		protected int _duration;
+		
+		public Effect(int pSkillId, int pDat, int pDuration)
+		{
+			_skillId = pSkillId;
+			_dat = pDat;
+			_duration = pDuration;
+		}
+	}
+	
+	public PartySpelled(L2Character cha)
+	{
+		_effects = new FastList<Effect>();
+		_activeChar = cha;
+	}
+	
+	@Override
 	protected final void writeImpl()
-    {
-        writeC(0xf4);
-        writeD(_activeChar instanceof L2SummonInstance ? 2 : _activeChar instanceof L2PetInstance ? 1 : 0);
-        writeD(_activeChar.getObjectId());
-        writeD(_effects.size());
-        for (Effect temp : _effects)
-        {
-            writeD(temp._skillId);
-            writeH(temp._dat);
-            writeD(temp._duration / 1000);
-        }
-
-    }
-
-    public void addPartySpelledEffect(int skillId, int dat, int duration)
-    {
-        _effects.add(new Effect(skillId, dat, duration));
-    }
-
-    /* (non-Javadoc)
-     * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-     */
-    @Override
+	{
+		writeC(0xf4);
+		writeD(_activeChar instanceof L2SummonInstance ? 2 : _activeChar instanceof L2PetInstance ? 1 : 0);
+		writeD(_activeChar.getObjectId());
+		writeD(_effects.size());
+		for (Effect temp : _effects)
+		{
+			writeD(temp._skillId);
+			writeH(temp._dat);
+			writeD(temp._duration / 1000);
+		}
+		
+	}
+	
+	public void addPartySpelledEffect(int skillId, int dat, int duration)
+	{
+		_effects.add(new Effect(skillId, dat, duration));
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	 */
+	@Override
 	public String getType()
-    {
-        return _S__EE_PartySpelled;
-    }
+	{
+		return _S__EE_PartySpelled;
+	}
 }

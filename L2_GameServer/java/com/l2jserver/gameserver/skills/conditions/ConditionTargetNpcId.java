@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.skills.Env;
 public class ConditionTargetNpcId extends Condition
 {
 	private final ArrayList<Integer> _npcIds;
-
+	
 	/**
 	 * Instantiates a new condition target npc id.
 	 *
@@ -37,7 +37,7 @@ public class ConditionTargetNpcId extends Condition
 	{
 		_npcIds = npcIds;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
@@ -46,10 +46,10 @@ public class ConditionTargetNpcId extends Condition
 	{
 		if (env.target instanceof L2Npc)
 			return _npcIds.contains(((L2Npc)env.target).getNpcId());
-
+		
 		if (env.target instanceof L2DoorInstance)
 			return _npcIds.contains(((L2DoorInstance)env.target).getDoorId());
-
+		
 		return false;
 	}
 }

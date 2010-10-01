@@ -95,7 +95,7 @@ public class KnownListUpdateTaskManager
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				_log.log(Level.WARNING, "", e);
 			}
 		}
 	}
@@ -111,11 +111,11 @@ public class KnownListUpdateTaskManager
 				{
 					if (object == null || !object.isVisible())
 						continue; // skip dying objects
-
+					
 					// Some mobs need faster knownlist update
 					final boolean aggro = (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance)
-							|| (object instanceof L2Attackable && ((L2Attackable)object).getEnemyClan() != null);
-
+					|| (object instanceof L2Attackable && ((L2Attackable)object).getEnemyClan() != null);
+					
 					if (forgetObjects)
 					{
 						object.getKnownList().forgetObjects(aggro || fullUpdate);

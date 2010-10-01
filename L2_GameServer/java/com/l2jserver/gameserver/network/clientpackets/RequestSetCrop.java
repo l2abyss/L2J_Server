@@ -14,6 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
+import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +30,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2CastleChamberlainInstance
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.util.Util;
-
-
-import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 /**
  * Format: (ch) dd [dddc]
@@ -48,12 +47,12 @@ import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA
 public class RequestSetCrop extends L2GameClientPacket {
 	private static final String _C__D0_0B_REQUESTSETCROP = "[C] D0:0B RequestSetCrop";
 	//private static Logger _log = Logger.getLogger(RequestSetCrop.class.getName());
-
+	
 	private static final int BATCH_LENGTH = 21; // length of the one item
-
+	
 	private int _manorId;
 	private Crop[] _items = null;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -65,7 +64,7 @@ public class RequestSetCrop extends L2GameClientPacket {
 		{
 			return;
 		}
-
+		
 		_items = new Crop[count];
 		for (int i = 0; i < count; i++)
 		{
@@ -81,39 +80,39 @@ public class RequestSetCrop extends L2GameClientPacket {
 			_items[i] = new Crop(itemId, sales, price, type);
 		}
 	}
-
+	
 	@Override
-    protected void runImpl()
+	protected void runImpl()
 	{
 		if (_items == null)
 			return;
-
+		
 		L2PcInstance player = getClient().getActiveChar();
 		// check player privileges
 		if (player == null
 				|| player.getClan() == null
 				|| (player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == 0)
 			return;
-
+		
 		// check castle owner
 		Castle currentCastle = CastleManager.getInstance().getCastleById(_manorId);
 		if (currentCastle.getOwnerId() != player.getClanId())
 			return;
-
+		
 		L2Object manager = player.getTarget();
-
+		
 		if (!(manager instanceof L2CastleChamberlainInstance))
 			manager = player.getLastFolkNPC();
 		
 		if (!(manager instanceof L2CastleChamberlainInstance))
 			return;
-
+		
 		if (((L2CastleChamberlainInstance)manager).getCastle() != currentCastle)
 			return;
-
+		
 		if (!player.isInsideRadius(manager, INTERACTION_DISTANCE, true, false))
 			return;
-
+		
 		List<CropProcure> crops = new ArrayList<CropProcure>(_items.length);
 		for (Crop i : _items)
 		{
@@ -129,13 +128,13 @@ public class RequestSetCrop extends L2GameClientPacket {
 			}
 			crops.add(s);
 		}
-
+		
 		currentCastle.setCropProcure(crops, CastleManorManager.PERIOD_NEXT);
 		if (Config.ALT_MANOR_SAVE_ALL_ACTIONS)
 			currentCastle.saveCropData(CastleManorManager.PERIOD_NEXT);
 	}
-
-	private class Crop
+	
+	private static class Crop
 	{
 		private final int _itemId;
 		private final long _sales;
@@ -149,16 +148,16 @@ public class RequestSetCrop extends L2GameClientPacket {
 			_price = p;
 			_type = t;
 		}
-
+		
 		public CropProcure getCrop()
 		{
 			if (_sales != 0 && (MAX_ADENA / _sales) < _price)
 				return null;
-
+			
 			return CastleManorManager.getInstance().getNewCropProcure(_itemId, _sales, _type, _price, _sales);
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

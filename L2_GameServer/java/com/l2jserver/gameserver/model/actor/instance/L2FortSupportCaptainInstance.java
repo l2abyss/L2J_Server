@@ -16,7 +16,12 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
+import com.l2jserver.gameserver.datatables.SubPledgeSkillTree;
+import com.l2jserver.gameserver.datatables.SubPledgeSkillTree.SubUnitSkill;
+import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
+import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -24,16 +29,16 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
- * @author Vice 
+ * @author Vice
  */
-public class L2FortSupportCaptainInstance extends L2MerchantInstance
+public class L2FortSupportCaptainInstance extends L2MerchantInstance implements L2SquadTrainer
 {
 	public L2FortSupportCaptainInstance(int objectID, L2NpcTemplate template)
 	{
 		super(objectID, template);
 		setInstanceType(InstanceType.L2FortSupportCaptainInstance);
 	}
-
+	
 	private final static int[] TalismanIds =
 	{
 		9914,9915,9917,9918,9919,9920,9921,9922,9923,9924,
@@ -43,21 +48,21 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 		9957,9958,9959,9960,9961,9962,9963,9964,9965,9966,
 		10141,10142,10158
 	};
-
+	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		// BypassValidation Exploit plug.
 		if (player.getLastFolkNPC().getObjectId() != getObjectId())
 			return;
-
+		
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
-
+		
 		String par = "";
 		if (st.countTokens() >= 1)
 			par = st.nextToken();
-
+		
 		if (actualCommand.equalsIgnoreCase("Chat"))
 		{
 			int val = 0;
@@ -67,22 +72,22 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 			}
 			catch (IndexOutOfBoundsException ioobe){}
 			catch (NumberFormatException nfe){}
-
+			
 			showMessageWindow(player, val);
 		}
 		else if (actualCommand.equalsIgnoreCase("ExchangeKE"))
 		{
 			int item = TalismanIds[Rnd.get(TalismanIds.length)];
-
+			
 			if (player.destroyItemByItemId("FortSupportUnit", 9912, 10, this, false))
 			{
 				SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 				msg.addItemName(9912);
 				msg.addNumber(10);
 				player.sendPacket(msg);
-
+				
 				player.addItem("FortSupportUnit", item, 1, player, true);
-
+				
 				String filename = "data/html/fortress/supportunit-talisman.htm";
 				showChatWindow(player, filename);
 			}
@@ -92,10 +97,36 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 				showChatWindow(player, filename);
 			}
 		}
+		else if (command.equals("subskills"))
+		{
+			if (player.getClan() != null)
+			{
+				if (player.isClanLeader())
+				{
+					AcquireSkillList skilllist = new AcquireSkillList(SkillType.SubUnit);
+					SubUnitSkill[] array = SubPledgeSkillTree.getInstance().getAvailableSkills(player.getClan());
+					if (array.length == 0)
+					{
+						player.sendPacket(SystemMessageId.NO_MORE_SKILLS_TO_LEARN);
+						return;
+					}
+					for (SubUnitSkill sus : array)
+					{
+						skilllist.addSkill(sus.getSkill().getId(), sus.getSkill().getLevel(), sus.getSkill().getLevel(), sus.getReputation(), 0);
+					}
+					player.sendPacket(skilllist);
+				}
+				else
+				{
+					String filename = "data/html/fortress/supportunit-nosquad.htm";
+					showChatWindow(player, filename);
+				}
+			}
+		}
 		else
 			super.onBypassFeedback(player, command);
 	}
-
+	
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
@@ -107,35 +138,44 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance
 			player.sendPacket(html);
 			return;
 		}
-
+		
 		showMessageWindow(player, 0);
 	}
-
+	
 	private void showMessageWindow(L2PcInstance player, int val)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-
+		
 		String filename;
-
+		
 		if (val == 0)
 			filename = "data/html/fortress/supportunit.htm";
 		else
 			filename = "data/html/fortress/supportunit-" + val + ".htm";
-
+		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcId%", String.valueOf(getNpcId()));
-		if (getFort().getOwnerClan() != null) 
+		if (getFort().getOwnerClan() != null)
 			html.replace("%clanname%", getFort().getOwnerClan().getName());
 		else
 			html.replace("%clanname%", "NPC");
 		player.sendPacket(html);
 	}
-
+	
 	@Override
 	public boolean hasRandomAnimation()
 	{
 		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.actor.L2SquadTrainer#showSubUnitSkillList(com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
+	 */
+	@Override
+	public void showSubUnitSkillList(L2PcInstance player)
+	{
+		onBypassFeedback(player, "subskills");
 	}
 }

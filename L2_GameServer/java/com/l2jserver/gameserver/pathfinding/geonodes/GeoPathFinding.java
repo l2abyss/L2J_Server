@@ -30,6 +30,9 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.model.L2World;
@@ -38,9 +41,6 @@ import com.l2jserver.gameserver.pathfinding.AbstractNode;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
 import com.l2jserver.gameserver.pathfinding.utils.FastNodeList;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  *
@@ -94,12 +94,12 @@ public class GeoPathFinding extends PathFinding
 		Location temp = GeoData.getInstance().moveCheck(x, y, z, start.getLoc().getX(), start.getLoc().getY(), start.getLoc().getZ(), instanceId);
 		if ((temp.getX() != start.getLoc().getX()) || (temp.getY() != start.getLoc().getY()))
 			return null; //   cannot reach closest...
-			
+		
 		// TODO: Find closest path node around target, now only checks if final location can be reached
 		temp = GeoData.getInstance().moveCheck(tx, ty, tz, end.getLoc().getX(), end.getLoc().getY(), end.getLoc().getZ(), instanceId);
 		if ((temp.getX() != end.getLoc().getX()) || (temp.getY() != end.getLoc().getY()))
 			return null; //   cannot reach closest...
-			
+		
 		//return searchAStar(start, end);
 		return searchByClosest2(start, end);
 	}
@@ -123,7 +123,7 @@ public class GeoPathFinding extends PathFinding
 		to_visit.add(start);
 		int targetX = end.getLoc().getNodeX();
 		int targetY = end.getLoc().getNodeY();
-
+		
 		int dx, dy;
 		boolean added;
 		int i = 0;
@@ -177,7 +177,7 @@ public class GeoPathFinding extends PathFinding
 		//No Path found
 		return null;
 	}
-
+	
 	public List<AbstractNodeLoc> constructPath2(AbstractNode node)
 	{
 		LinkedList<AbstractNodeLoc> path = new LinkedList<AbstractNodeLoc>();
@@ -185,13 +185,13 @@ public class GeoPathFinding extends PathFinding
 		int previousDirectionY = -1000;
 		int directionX;
 		int directionY;
-
+		
 		while (node.getParent() != null)
 		{
 			// only add a new route point if moving direction changes
 			directionX = node.getLoc().getNodeX() - node.getParent().getLoc().getNodeX();
 			directionY = node.getLoc().getNodeY() - node.getParent().getLoc().getNodeY();
-
+			
 			if (directionX != previousDirectionX || directionY != previousDirectionY)
 			{
 				previousDirectionX = directionX;
@@ -202,7 +202,7 @@ public class GeoPathFinding extends PathFinding
 		}
 		return path;
 	}
-
+	
 	public GeoNode[] readNeighbors(GeoNode n, int idx)
 	{
 		int node_x = n.getLoc().getNodeX();
@@ -367,7 +367,7 @@ public class GeoPathFinding extends PathFinding
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			throw new Error("Failed to Load pn_index File.");
 		}
 		String line;
@@ -385,7 +385,7 @@ public class GeoPathFinding extends PathFinding
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 			throw new Error("Failed to Read pn_index File.");
 		}
 		finally

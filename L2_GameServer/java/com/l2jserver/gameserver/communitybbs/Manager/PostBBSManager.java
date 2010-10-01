@@ -20,15 +20,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.communitybbs.BB.Forum;
 import com.l2jserver.gameserver.communitybbs.BB.Post;
-import com.l2jserver.gameserver.communitybbs.BB.Topic;
 import com.l2jserver.gameserver.communitybbs.BB.Post.CPost;
+import com.l2jserver.gameserver.communitybbs.BB.Topic;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 import com.l2jserver.util.StringUtil;
-
-import javolution.util.FastMap;
 
 public class PostBBSManager extends BaseBBSManager
 {

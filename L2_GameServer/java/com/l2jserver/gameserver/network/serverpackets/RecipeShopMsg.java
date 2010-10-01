@@ -25,12 +25,12 @@ public class RecipeShopMsg extends L2GameServerPacket
 {
 	private static final String _S__DB_RecipeShopMsg = "[S] e1 RecipeShopMsg";
 	private L2PcInstance _activeChar;
-
+	
 	public RecipeShopMsg(L2PcInstance player)
 	{
 		_activeChar = player;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -38,7 +38,7 @@ public class RecipeShopMsg extends L2GameServerPacket
 		writeD(_activeChar.getObjectId());
 		writeS(_activeChar.getCreateList().getStoreName());//_activeChar.getTradeList().getSellStoreName());
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

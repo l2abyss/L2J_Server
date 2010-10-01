@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPutItemResultForVariationCancel;
@@ -31,8 +30,8 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestConfirmCancelItem extends L2GameClientPacket
 {
 	private static final String _C__D0_2D_REQUESTCONFIRMCANCELITEM = "[C] D0:2D RequestConfirmCancelItem";
-	private int _itemId;
-
+	private int _objectId;
+	
 	/**
 	 * @param buf
 	 * @param client
@@ -40,9 +39,9 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_itemId = readD();
+		_objectId = readD();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
 	 */
@@ -50,28 +49,30 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		final L2ItemInstance item = (L2ItemInstance)L2World.getInstance().findObject(_itemId);
-		if (activeChar == null || item == null)
+		if (activeChar == null)
 			return;
-
+		final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
+		if (item == null)
+			return;
+		
 		if (item.getOwnerId() != activeChar.getObjectId())
 		{
 			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to destroy augment on item that doesn't own.",Config.DEFAULT_PUNISH);
 			return;
 		}
-
+		
 		if (!item.isAugmented())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.AUGMENTATION_REMOVAL_CAN_ONLY_BE_DONE_ON_AN_AUGMENTED_ITEM));
 			return;
 		}
-
+		
 		if (item.isPvp())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
 		}
-
+		
 		int price=0;
 		switch (item.getItem().getCrystalType())
 		{
@@ -104,14 +105,15 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 			case L2Item.CRYSTAL_S84:
 				price = 920000;
 				break;
-			// any other item type is not augmentable
+				//TODO: S84 TOP price 3.2M
+				// any other item type is not augmentable
 			default:
 				return;
 		}
-
-		activeChar.sendPacket(new ExPutItemResultForVariationCancel(_itemId, price));
+		
+		activeChar.sendPacket(new ExPutItemResultForVariationCancel(item, price));
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

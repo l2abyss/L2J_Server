@@ -40,20 +40,20 @@ import com.l2jserver.gameserver.model.L2ArmorSet;
 public class ArmorSetsTable
 {
 	private static Logger _log = Logger.getLogger(ArmorSetsTable.class.getName());
-
+	
 	private TIntObjectHashMap<L2ArmorSet> _armorSets;
-
+	
 	public static ArmorSetsTable getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	private ArmorSetsTable()
 	{
 		_armorSets = new TIntObjectHashMap<L2ArmorSet>();
 		loadData();
 	}
-
+	
 	private void loadData()
 	{
 		Connection con = null;
@@ -63,7 +63,7 @@ public class ArmorSetsTable
 			con = L2DatabaseFactory.getInstance().getConnection();
 			statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM armorsets");
 			ResultSet rset = statement.executeQuery();
-
+			
 			while (rset.next())
 			{
 				int chest = rset.getInt("chest");
@@ -130,17 +130,17 @@ public class ArmorSetsTable
 			}
 		}
 	}
-
+	
 	public boolean setExists(int chestId)
 	{
 		return _armorSets.containsKey(chestId);
 	}
-
+	
 	public L2ArmorSet getSet(int chestId)
 	{
 		return _armorSets.get(chestId);
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

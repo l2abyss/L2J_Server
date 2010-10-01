@@ -25,12 +25,12 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 {
 	private static final String _S__A1_PLEDGESHOWINFOUPDATE = "[S] 8e PledgeShowInfoUpdate";
 	private L2Clan _clan;
-
+	
 	public PledgeShowInfoUpdate(L2Clan clan)
 	{
 		_clan = clan;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -52,7 +52,7 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 		writeD(_clan.getAllyCrestId()); //c5
 		writeD(_clan.isAtWar() ? 1 : 0); //c5
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -61,5 +61,5 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 	{
 		return _S__A1_PLEDGESHOWINFOUPDATE;
 	}
-
+	
 }

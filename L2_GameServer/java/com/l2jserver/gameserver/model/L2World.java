@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GmListTable;
 import com.l2jserver.gameserver.datatables.CharNameTable;
@@ -27,9 +30,6 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.util.Point3D;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * This class ...
@@ -39,7 +39,7 @@ import javolution.util.FastMap;
 public final class L2World
 {
 	private static Logger _log = Logger.getLogger(L2World.class.getName());
-
+	
 	/**
 	 * Gracia border
 	 * Flying objects not allowed to the east of it.
@@ -47,12 +47,12 @@ public final class L2World
 	public static final int GRACIA_MAX_X = -166168;
 	public static final int GRACIA_MAX_Z = 6105;
 	public static final int GRACIA_MIN_Z = -895;
-
+	
 	/*
-	* biteshift, defines number of regions
-	* note, shifting by 15 will result in regions corresponding to map tiles
-	* shifting by 12 divides one tile to 8x8 regions
-	*/
+	 * biteshift, defines number of regions
+	 * note, shifting by 15 will result in regions corresponding to map tiles
+	 * shifting by 12 divides one tile to 8x8 regions
+	 */
 	public static final int SHIFT_BY = 12;
 	
 	/** Map dimensions */
@@ -60,10 +60,10 @@ public final class L2World
 	public static final int MAP_MAX_X = (Config.WORLD_X_MAX - 19) << 15;
 	public static final int MAP_MIN_Y = (Config.WORLD_Y_MIN - 18) << 15;
 	public static final int MAP_MAX_Y = (Config.WORLD_Y_MAX - 17) << 15;
-
+	
 	public static final int WORLD_SIZE_X = Config.WORLD_X_MAX - Config.WORLD_X_MIN + 1;
 	public static final int WORLD_SIZE_Y = Config.WORLD_Y_MAX - Config.WORLD_Y_MIN + 1;
-
+	
 	/** calculated offset used so top left region is 0,0 */
 	public static final int OFFSET_X = Math.abs(MAP_MIN_X >> SHIFT_BY);
 	public static final int OFFSET_Y = Math.abs(MAP_MIN_Y >> SHIFT_BY);
@@ -204,7 +204,7 @@ public final class L2World
 	 * 
 	 * -- do not use that fucntion, its unsafe!
 	 * 
-	 * @deprecated 
+	 * @deprecated
 	 */
 	@Deprecated
 	public final Map<Integer, L2Object> getAllVisibleObjects()
@@ -266,7 +266,7 @@ public final class L2World
 	{
 		return _allPlayers.get(Integer.valueOf(playerObjId));
 	}
-
+	
 	/**
 	 * Return the pet instance from the given ownerId.<BR><BR>
 	 *
@@ -374,7 +374,7 @@ public final class L2World
 		{
 			if (visible == null)
 				continue;
-
+			
 			// Add the object in L2ObjectHashSet(L2Object) _knownObjects of the visible L2Character according to conditions :
 			//   - L2Character is visible
 			//   - object is not already known
@@ -390,7 +390,7 @@ public final class L2World
 	
 	/**
 	 * Add the L2PcInstance to _allPlayers of L2World.<BR><BR>
-	 *  
+	 * 
 	 */
 	public void addToAllPlayers(L2PcInstance cha)
 	{
@@ -572,7 +572,7 @@ public final class L2World
 				{
 					if (_object == null || _object.equals(object))
 						continue; // skip our own character
-						
+					
 					int x1 = _object.getX();
 					int y1 = _object.getY();
 					
@@ -626,7 +626,7 @@ public final class L2World
 				{
 					if (_object == null || _object.equals(object))
 						continue; // skip our own character
-						
+					
 					int x1 = _object.getX();
 					int y1 = _object.getY();
 					int z1 = _object.getZ();
@@ -680,10 +680,10 @@ public final class L2World
 				{
 					if (_object == null || _object.equals(object))
 						continue; // skip our own character
-						
+					
 					if (!_object.isVisible()) // GM invisible is different than this...
 						continue; // skip dying objects
-						
+					
 					result.add(_object);
 				}
 			}

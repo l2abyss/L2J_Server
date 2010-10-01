@@ -61,7 +61,7 @@ public class ExBrBroadcastEventState extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0xfe);
-		writeH(0xbd);
+		writeH(0xce);
 		writeD(_eventId);
 		writeD(_eventState);
 		writeD(_param0);
@@ -79,6 +79,6 @@ public class ExBrBroadcastEventState extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return "[S] FE:BD ExBrBroadcastEventState";
+		return "[S] FE:CE ExBrBroadcastEventState".intern();
 	}
 }

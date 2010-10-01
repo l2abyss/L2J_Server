@@ -108,37 +108,37 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	}
 	
 	/**
-		 * Return True if the target is autoattackable (depends on the actor type).<BR><BR>
-		 *
-		 * <B><U> Actor is a L2GuardInstance</U> :</B><BR><BR>
-		 * <li>The target isn't a Folk or a Door</li>
-		 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
-		 * <li>The target is in the actor Aggro range and is at the same height</li>
-		 * <li>The L2PcInstance target has karma (=PK)</li>
-		 * <li>The L2MonsterInstance target is aggressive</li><BR><BR>
-		 *
-		 * <B><U> Actor is a L2SiegeGuardInstance</U> :</B><BR><BR>
-		 * <li>The target isn't a Folk or a Door</li>
-		 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
-		 * <li>The target is in the actor Aggro range and is at the same height</li>
-		 * <li>A siege is in progress</li>
-		 * <li>The L2PcInstance target isn't a Defender</li><BR><BR>
-		 *
-		 * <B><U> Actor is a L2FriendlyMobInstance</U> :</B><BR><BR>
-		 * <li>The target isn't a Folk, a Door or another L2Npc</li>
-		 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
-		 * <li>The target is in the actor Aggro range and is at the same height</li>
-		 * <li>The L2PcInstance target has karma (=PK)</li><BR><BR>
-		 *
-		 * <B><U> Actor is a L2MonsterInstance</U> :</B><BR><BR>
-		 * <li>The target isn't a Folk, a Door or another L2Npc</li>
-		 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
-		 * <li>The target is in the actor Aggro range and is at the same height</li>
-		 * <li>The actor is Aggressive</li><BR><BR>
-		 *
-		 * @param target The targeted L2Object
-		 *
-		 */
+	 * Return True if the target is autoattackable (depends on the actor type).<BR><BR>
+	 *
+	 * <B><U> Actor is a L2GuardInstance</U> :</B><BR><BR>
+	 * <li>The target isn't a Folk or a Door</li>
+	 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
+	 * <li>The target is in the actor Aggro range and is at the same height</li>
+	 * <li>The L2PcInstance target has karma (=PK)</li>
+	 * <li>The L2MonsterInstance target is aggressive</li><BR><BR>
+	 *
+	 * <B><U> Actor is a L2SiegeGuardInstance</U> :</B><BR><BR>
+	 * <li>The target isn't a Folk or a Door</li>
+	 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
+	 * <li>The target is in the actor Aggro range and is at the same height</li>
+	 * <li>A siege is in progress</li>
+	 * <li>The L2PcInstance target isn't a Defender</li><BR><BR>
+	 *
+	 * <B><U> Actor is a L2FriendlyMobInstance</U> :</B><BR><BR>
+	 * <li>The target isn't a Folk, a Door or another L2Npc</li>
+	 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
+	 * <li>The target is in the actor Aggro range and is at the same height</li>
+	 * <li>The L2PcInstance target has karma (=PK)</li><BR><BR>
+	 *
+	 * <B><U> Actor is a L2MonsterInstance</U> :</B><BR><BR>
+	 * <li>The target isn't a Folk, a Door or another L2Npc</li>
+	 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
+	 * <li>The target is in the actor Aggro range and is at the same height</li>
+	 * <li>The actor is Aggressive</li><BR><BR>
+	 *
+	 * @param target The targeted L2Object
+	 *
+	 */
 	private boolean autoAttackCondition(L2Character target)
 	{
 		if (target == null || _actor == null)
@@ -242,7 +242,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		else if (_actor instanceof L2FriendlyMobInstance)
 		{ // the actor is a L2FriendlyMobInstance
-		
+			
 			// Check if the target isn't another L2Npc
 			if (target instanceof L2Npc)
 				return false;
@@ -531,7 +531,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				offset = 500; // for Raids - need correction
 			else
 				offset = 200; // for normal minions - need correction :)
-				
+			
 			if (((L2MinionInstance) _actor).getLeader().isRunning())
 				_actor.setRunning();
 			else
@@ -728,8 +728,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		/*
 		if(_actor.getTarget() == null || this.getAttackTarget() == null || this.getAttackTarget().isDead() || ctarget == _actor)
 			AggroReconsider();
-		*/
-
+		 */
+		
 		//----------------------------------------------------------------
 		
 		//------------------------------------------------------------------------------
@@ -758,7 +758,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		//------------------------------------------------------
 		// In case many mobs are trying to hit from same place, move a bit,
 		// circling around the target
-		if (!_actor.isMovementDisabled() && Rnd.nextInt(100) <= 33) // check it once per 3 seconds
+		// Note from Gnacik:
+		// On l2js because of that sometimes mobs don't attack player only running
+		// around player without any sense, so decrease chance for now
+		if (!_actor.isMovementDisabled() && Rnd.nextInt(100) <= 5)
 		{
 			int combinedCollision = _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius;
 			int collision = _actor.getTemplate().collisionRadius;
@@ -804,7 +807,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					posY=((L2Attackable)_actor).getSpawn().getLocy()-Rnd.get(100);
 
 					setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX, posY, posZ, 0));
-					*/
+					 */
 					if (Rnd.get(1) > 0)
 						posX = posX + Rnd.get(100);
 					else
@@ -1025,7 +1028,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		setTimepass(0);
 		//--------------------------------------------------------------------------------
-		//Skill Use 
+		//Skill Use
 		if (_skillrender.hasSkill())
 		{
 			if (Rnd.get(100) <= ((L2Npc) _actor).getSkillChance())
@@ -1127,7 +1130,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 								if (cast(sk))
 									return;
 				}
-					break;
+				break;
 			}
 		}
 		
@@ -1544,7 +1547,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				else if (canAOE(sk))
 				{
 					if ((sk.getTargetType() == SkillTargetType.TARGET_AURA || sk.getTargetType() == SkillTargetType.TARGET_BEHIND_AURA || sk.getTargetType() == SkillTargetType.TARGET_FRONT_AURA) && GeoData.getInstance().canSeeTarget(_actor, attackTarget))
-
+						
 					{
 						clientStopMoving(null);
 						//L2Object target = attackTarget;
@@ -1637,7 +1640,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				
 			}
-				break;
+			break;
 		}
 		
 		return false;
@@ -1807,7 +1810,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 				}
 
-				*/
+				 */
 			}
 			//timepass = timepass + 1;
 			if (_actor.isMovementDisabled())

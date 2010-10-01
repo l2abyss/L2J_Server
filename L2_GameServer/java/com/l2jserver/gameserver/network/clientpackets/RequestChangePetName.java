@@ -29,26 +29,26 @@ public final class RequestChangePetName extends L2GameClientPacket
 {
 	private static final String REQUESTCHANGEPETNAME__C__89 = "[C] 89 RequestChangePetName";
 	//private static Logger _log = Logger.getLogger(RequestChangePetName.class.getName());
-
+	
 	private String _name;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_name = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2Character activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		final L2Summon pet = activeChar.getPet();
 		if (pet == null)
 			return;
-
+		
 		if (pet.getName() != null)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.NAMING_YOU_CANNOT_SET_NAME_OF_THE_PET));
@@ -70,11 +70,11 @@ public final class RequestChangePetName extends L2GameClientPacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.NAMING_PETNAME_CONTAINS_INVALID_CHARS));
 			return;
 		}
-
+		
 		pet.setName(_name);
 		pet.updateAndBroadcastStatus(1);
 	}
-
+	
 	@Override
 	public String getType()
 	{

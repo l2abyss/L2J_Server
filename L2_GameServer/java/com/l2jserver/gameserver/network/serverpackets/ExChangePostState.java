@@ -20,25 +20,25 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExChangePostState extends L2GameServerPacket
 {
 	private static final String _S__FE_B3_EXCHANGEPOSTSTATE = "[S] B3 ExChangePostState";
-
+	
 	private boolean _receivedBoard;
 	private int[] _changedMsgIds;
 	private int _changeId;
-
+	
 	public ExChangePostState(boolean receivedBoard, int[] changedMsgIds, int changeId)
 	{
 		_receivedBoard = receivedBoard;
 		_changedMsgIds = changedMsgIds;
 		_changeId = changeId;
 	}
-
+	
 	public ExChangePostState(boolean receivedBoard, int changedMsgId, int changeId)
 	{
 		_receivedBoard = receivedBoard;
 		_changedMsgIds = new int[]{changedMsgId};
 		_changeId = changeId;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -55,7 +55,7 @@ public class ExChangePostState extends L2GameServerPacket
 			writeD(_changeId); // state
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

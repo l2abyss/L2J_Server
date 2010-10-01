@@ -6,7 +6,7 @@
  * $Revision: $
  *
  *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -36,13 +36,13 @@ import com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket;
  */
 public interface CustomPacketHandlerInterface
 {
-
-    /**
-     * interface for a custom packethandler to ckeck received packets
-     * PacketHandler will take care of the packet if this function returns null.
-     * @param data the packet
-     * @param client the ClientThread
-     * @return a ClientBasePacket if the packet has been processed, null otherwise
-     */
-    public L2GameClientPacket handlePacket(ByteBuffer data, L2GameClient client);
+	
+	/**
+	 * interface for a custom packethandler to ckeck received packets
+	 * PacketHandler will take care of the packet if this function returns null.
+	 * @param data the packet
+	 * @param client the ClientThread
+	 * @return a ClientBasePacket if the packet has been processed, null otherwise
+	 */
+	public L2GameClientPacket handlePacket(ByteBuffer data, L2GameClient client);
 }

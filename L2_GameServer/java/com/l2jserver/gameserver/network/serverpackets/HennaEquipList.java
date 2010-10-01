@@ -20,16 +20,16 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class HennaEquipList extends L2GameServerPacket
 {
 	private static final String _S__E2_HennaEquipList = "[S] ee HennaEquipList";
-
+	
 	private L2PcInstance _player;
 	private L2HennaInstance[] _hennaEquipList;
-
+	
 	public HennaEquipList(L2PcInstance player,L2HennaInstance[] hennaEquipList)
 	{
 		_player = player;
 		_hennaEquipList = hennaEquipList;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -37,7 +37,7 @@ public class HennaEquipList extends L2GameServerPacket
 		writeQ(_player.getAdena()); //activeChar current amount of adena
 		writeD(3); //available equip slot
 		writeD(_hennaEquipList.length);
-
+		
 		for (L2HennaInstance temp: _hennaEquipList)
 		{
 			// Player must have at least one dye in inventory
@@ -60,7 +60,7 @@ public class HennaEquipList extends L2GameServerPacket
 			}
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

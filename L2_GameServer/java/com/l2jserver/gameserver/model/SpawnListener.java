@@ -9,7 +9,7 @@
  * Added copyright notice
  *
  *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -34,5 +34,5 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 
 public interface SpawnListener
 {
-    public void npcSpawned(L2Npc npc);
+	public void npcSpawned(L2Npc npc);
 }

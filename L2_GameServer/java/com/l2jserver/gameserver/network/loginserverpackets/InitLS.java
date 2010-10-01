@@ -21,12 +21,12 @@ public class InitLS extends BaseRecievePacket
 {
 	private int _rev;
 	private byte[] _key;
-
+	
 	public int getRevision()
 	{
 		return _rev;
 	}
-
+	
 	public byte[] getRSAKey()
 	{
 		return _key;
@@ -41,5 +41,5 @@ public class InitLS extends BaseRecievePacket
 		int size = readD();
 		_key = readB(size);
 	}
-
+	
 }

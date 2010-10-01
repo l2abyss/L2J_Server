@@ -24,12 +24,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
-
-import javolution.util.FastList;
 
 /**
  * This class SQL Account Manager

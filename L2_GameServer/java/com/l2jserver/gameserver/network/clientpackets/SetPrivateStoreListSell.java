@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -26,8 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.PrivateStoreMsgSell;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
-
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 /**
  * This class ...
@@ -149,7 +149,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 			player.broadcastPacket(new PrivateStoreMsgSell(player));
 	}
 	
-	private class Item
+	private static class Item
 	{
 		private final int _itemId;
 		private final long _count;

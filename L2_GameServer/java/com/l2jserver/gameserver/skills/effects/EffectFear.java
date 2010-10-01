@@ -20,8 +20,8 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.Location;
-import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
@@ -66,21 +66,32 @@ public class EffectFear extends L2Effect
 	public boolean onStart()
 	{
 		// Fear skills cannot be used l2pcinstance to l2pcinstance. Heroic
-		// Dread, Curse: Fear, Fear, Horror, Sword Symphony, Word of Fear and
+		// Dread, Curse: Fear, Fear, Horror, Sword Symphony, Word of Fear, Hell Scream and
 		// Mass Curse Fear are the exceptions.
 		if (getEffected() instanceof L2PcInstance
-		        && getEffector() instanceof L2PcInstance
-		        && getSkill().getId() != 1376 && getSkill().getId() != 1169
-		        && getSkill().getId() != 65 && getSkill().getId() != 1092
-		        && getSkill().getId() != 98 && getSkill().getId() != 1272
-		        && getSkill().getId() != 1381)
-			return false;
+				&& getEffector() instanceof L2PcInstance)
+		{
+			switch (getSkill().getId())
+			{
+				case 1376:
+				case 1169:
+				case 65:
+				case 1092:
+				case 98:
+				case 1272:
+				case 1381:
+				case 763:
+					break;
+				default:
+					return false;
+			}
+		}
 		
 		if (getEffected() instanceof L2NpcInstance
-		        || getEffected() instanceof L2DefenderInstance
-		        || getEffected() instanceof L2FortCommanderInstance
-		        || getEffected() instanceof L2SiegeFlagInstance
-		        || getEffected() instanceof L2SiegeSummonInstance)
+				|| getEffected() instanceof L2DefenderInstance
+				|| getEffected() instanceof L2FortCommanderInstance
+				|| getEffected() instanceof L2SiegeFlagInstance
+				|| getEffected() instanceof L2SiegeSummonInstance)
 			return false;
 		
 		if (!getEffected().isAfraid())
@@ -104,7 +115,7 @@ public class EffectFear extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().stopFear(this);
+		getEffected().stopFear(false);
 	}
 	
 	/**

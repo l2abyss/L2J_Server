@@ -25,13 +25,13 @@ public class L2SymbolMakerInstance extends L2Npc
 		super(objectID, template);
 		setInstanceType(InstanceType.L2SymbolMakerInstance);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
 		return "data/html/symbolmaker/SymbolMaker.htm";
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.model.L2Object#isAttackable()
 	 */

@@ -19,9 +19,9 @@ import com.l2jserver.util.network.BaseRecievePacket;
 
 public class KickPlayer extends BaseRecievePacket
 {
-
+	
 	private String _account;
-
+	
 	/**
 	 * @param decrypt
 	 */
@@ -30,7 +30,7 @@ public class KickPlayer extends BaseRecievePacket
 		super(decrypt);
 		_account = readS();
 	}
-
+	
 	/**
 	 * @return Returns the account.
 	 */
@@ -38,5 +38,5 @@ public class KickPlayer extends BaseRecievePacket
 	{
 		return _account;
 	}
-
+	
 }

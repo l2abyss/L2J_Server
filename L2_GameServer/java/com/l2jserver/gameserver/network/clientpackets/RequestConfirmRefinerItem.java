@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPutIntensiveResultForVariationMake;
@@ -28,17 +27,17 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class RequestConfirmRefinerItem extends AbstractRefinePacket
 {
 	private static final String _C__D0_2A_REQUESTCONFIRMREFINERITEM = "[C] D0:2A RequestConfirmRefinerItem";
-
+	
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_targetItemObjId = readD();
 		_refinerItemObjId = readD();
 	}
-
+	
 	@Override
 	protected
 	void runImpl()
@@ -46,30 +45,30 @@ public class RequestConfirmRefinerItem extends AbstractRefinePacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
-		final L2ItemInstance targetItem = (L2ItemInstance)L2World.getInstance().findObject(_targetItemObjId);
+		
+		final L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_targetItemObjId);
 		if (targetItem == null)
 			return;
-
-		final L2ItemInstance refinerItem = (L2ItemInstance)L2World.getInstance().findObject(_refinerItemObjId);
+		
+		final L2ItemInstance refinerItem = activeChar.getInventory().getItemByObjectId(_refinerItemObjId);
 		if (refinerItem == null)
 			return;
-
+		
 		if (!isValid(activeChar, targetItem, refinerItem))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
 		}
-
+		
 		final int refinerItemId = refinerItem.getItem().getItemId();
 		final int grade = targetItem.getItem().getItemGrade();
 		final LifeStone ls = getLifeStone(refinerItemId);
 		final int gemStoneId = getGemStoneId(grade);
 		final int gemStoneCount = getGemStoneCount(grade, ls.getGrade());
-
+		
 		activeChar.sendPacket(new ExPutIntensiveResultForVariationMake(_refinerItemObjId, refinerItemId, gemStoneId, gemStoneCount));
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -78,5 +77,5 @@ public class RequestConfirmRefinerItem extends AbstractRefinePacket
 	{
 		return _C__D0_2A_REQUESTCONFIRMREFINERITEM;
 	}
-
+	
 }

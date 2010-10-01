@@ -14,6 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
+import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -31,9 +34,6 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
-import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
-
 /**
  * Format: (ch) d [dddd]
  * d: size
@@ -49,11 +49,11 @@ import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA
 public class RequestProcureCropList extends L2GameClientPacket
 {
 	private static final String _C__D0_09_REQUESTPROCURECROPLIST = "[C] D0:09 RequestProcureCropList";
-
+	
 	private static final int BATCH_LENGTH = 20; // length of the one item
-
+	
 	private Crop[] _items = null;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -64,7 +64,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 		{
 			return;
 		}
-
+		
 		_items = new Crop[count];
 		for (int i = 0; i < count; i++)
 		{
@@ -80,80 +80,80 @@ public class RequestProcureCropList extends L2GameClientPacket
 			_items[i] = new Crop(objId, itemId, manorId, cnt);
 		}
 	}
-
+	
 	@Override
-    protected void runImpl()
+	protected void runImpl()
 	{
 		if (_items == null)
 			return;
-
+		
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
-
+		
 		L2Object manager = player.getTarget();
-
+		
 		if (!(manager instanceof L2ManorManagerInstance))
 			manager = player.getLastFolkNPC();
-
+		
 		if (!(manager instanceof L2ManorManagerInstance))
 			return;
-
+		
 		if (!player.isInsideRadius(manager, INTERACTION_DISTANCE, false, false))
 			return;
-
+		
 		if (_items == null)
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		int castleId = ((L2ManorManagerInstance)manager).getCastle().getCastleId();
-
+		
 		// Calculate summary values
 		int slots = 0;
 		int weight = 0;
-
+		
 		for (Crop i : _items)
 		{
 			if (!i.getCrop())
 				continue;
-
+			
 			L2Item template = ItemTable.getInstance().getTemplate(i.getReward());
 			weight += i.getCount() * template.getWeight();
-
+			
 			if (!template.isStackable())
 				slots += i.getCount();
 			else if (player.getInventory().getItemByItemId(i.getItemId()) == null)
 				slots++;
 		}
-
+		
 		if (!player.getInventory().validateWeight(weight))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
 			return;
 		}
-
+		
 		if (!player.getInventory().validateCapacity(slots))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.SLOTS_FULL));
 			return;
 		}
-
+		
 		// Proceed the purchase
 		InventoryUpdate playerIU = new InventoryUpdate();
-
+		
 		for (Crop i : _items)
 		{
 			if (i.getReward() == 0)
 				continue;
-
+			
 			long fee = i.getFee(castleId); // fee for selling to other manors
-
+			
 			long rewardPrice = ItemTable.getInstance().getTemplate(i.getReward()).getReferencePrice();
 			if (rewardPrice == 0)
 				continue;
-
+			
 			long rewardItemCount = i.getPrice() / rewardPrice;
 			if (rewardItemCount < 1)
 			{
@@ -163,7 +163,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 				player.sendPacket(sm);
 				continue;
 			}
-
+			
 			if (player.getInventory().getAdena() < fee)
 			{
 				SystemMessage sm = new SystemMessage(SystemMessageId.FAILED_IN_TRADING_S2_OF_CROP_S1);
@@ -174,76 +174,76 @@ public class RequestProcureCropList extends L2GameClientPacket
 				player.sendPacket(sm);
 				continue;
 			}
-
+			
 			// Add item to Inventory and adjust update packet
 			L2ItemInstance itemDel = null;
 			L2ItemInstance itemAdd = null;
-
+			
 			// check if player have correct items count
 			L2ItemInstance item = player.getInventory().getItemByObjectId(i.getObjectId());
 			if (item == null || item.getCount() < i.getCount())
 				continue;
-
+			
 			itemDel = player.getInventory().destroyItem("Manor", i.getObjectId(), i.getCount(), player, manager);
 			if (itemDel == null)
 				continue;
-
+			
 			if (fee > 0)
 				player.getInventory().reduceAdena("Manor", fee, player, manager);
-
+			
 			i.setCrop();
-
+			
 			itemAdd = player.getInventory().addItem("Manor", i.getReward(), rewardItemCount, player, manager);
 			if (itemAdd == null)
 				continue;
-
+			
 			playerIU.addRemovedItem(itemDel);
 			if (itemAdd.getCount() > rewardItemCount)
 				playerIU.addModifiedItem(itemAdd);
 			else
 				playerIU.addNewItem(itemAdd);
-
+			
 			// Send System Messages
 			SystemMessage sm = new SystemMessage(
 					SystemMessageId.TRADED_S2_OF_CROP_S1);
 			sm.addItemName(i.getItemId());
 			sm.addItemNumber(i.getCount());
 			player.sendPacket(sm);
-
+			
 			if (fee > 0)
 			{
 				sm = new SystemMessage(SystemMessageId.S1_ADENA_HAS_BEEN_WITHDRAWN_TO_PAY_FOR_PURCHASING_FEES);
 				sm.addItemNumber(fee);
 				player.sendPacket(sm);
 			}
-
+			
 			sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 			sm.addItemName(i.getItemId());
 			sm.addItemNumber(i.getCount());
 			player.sendPacket(sm);
-
+			
 			if (fee > 0)
 			{
 				sm = new SystemMessage(SystemMessageId.DISAPPEARED_ADENA);
 				sm.addItemNumber(fee);
 				player.sendPacket(sm);
 			}
-
+			
 			sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
 			sm.addItemName(itemAdd);
 			sm.addItemNumber(rewardItemCount);
 			player.sendPacket(sm);
 		}
-
+		
 		// Send update packets
 		player.sendPacket(playerIU);
-
+		
 		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
 	}
-
-	private class Crop
+	
+	private static class Crop
 	{
 		private final int _objectId;
 		private final int _itemId;
@@ -259,40 +259,40 @@ public class RequestProcureCropList extends L2GameClientPacket
 			_manorId = m;
 			_count = num;
 		}
-
+		
 		public int getObjectId()
 		{
 			return _objectId;
 		}
-
+		
 		public int getItemId()
 		{
 			return _itemId;
 		}
-
+		
 		public long getCount()
 		{
 			return _count;
 		}
-
+		
 		public int getReward()
 		{
 			return _reward;
 		}
-
+		
 		public long getPrice()
 		{
 			return _crop.getPrice() * _count;
 		}
-
+		
 		public long getFee(int castleId)
 		{
 			if (_manorId == castleId)
 				return 0;
-
+			
 			return (getPrice() /100) * 5; // 5% fee for selling to other manor
 		}
-
+		
 		public boolean getCrop()
 		{
 			try
@@ -305,17 +305,17 @@ public class RequestProcureCropList extends L2GameClientPacket
 			}
 			if (_crop == null || _crop.getId() == 0 || _crop.getPrice() == 0 || _count == 0)
 				return false;
-
+			
 			if (_count > _crop.getAmount())
 				return false;
-
+			
 			if ((MAX_ADENA / _count) < _crop.getPrice())
 				return false;
-
-			_reward = L2Manor.getInstance().getRewardItem(_itemId, _crop.getReward()); 
+			
+			_reward = L2Manor.getInstance().getRewardItem(_itemId, _crop.getReward());
 			return true;
 		}
-
+		
 		public void setCrop()
 		{
 			_crop.setAmount(_crop.getAmount() - _count);
@@ -323,7 +323,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 				CastleManager.getInstance().getCastleById(_manorId).updateCrop(_itemId, _crop.getAmount(), CastleManorManager.PERIOD_CURRENT);
 		}
 	}
-
+	
 	@Override
 	public String getType()
 	{

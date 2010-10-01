@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.FishData;
-
-import javolution.util.FastList;
 
 /**
  * @author -Nemesiss-

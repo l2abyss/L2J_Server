@@ -25,23 +25,23 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class PcPosition extends CharPosition
 {
-    // =========================================================
-    // Constructor
-    public PcPosition(L2PcInstance activeObject)
-    {
-        super(activeObject);
-    }
-    
-    @Override
+	// =========================================================
+	// Constructor
+	public PcPosition(L2PcInstance activeObject)
+	{
+		super(activeObject);
+	}
+	
+	@Override
 	public L2PcInstance getActiveObject()
-    {
-    	return ((L2PcInstance)super.getActiveObject());
-    }
-    
-    @Override
-    protected void badCoords()
-    {
-    	getActiveObject().teleToLocation(0,0,0, false);
-        getActiveObject().sendMessage("Error with your coords, Please ask a GM for help!");
-    }
+	{
+		return ((L2PcInstance)super.getActiveObject());
+	}
+	
+	@Override
+	protected void badCoords()
+	{
+		getActiveObject().teleToLocation(0,0,0, false);
+		getActiveObject().sendMessage("Error with your coords, Please ask a GM for help!");
+	}
 }

@@ -29,10 +29,10 @@ import com.l2jserver.util.Point3D;
 public final class RequestGetOnVehicle extends L2GameClientPacket
 {
 	private static final String _C__5C_GETONVEHICLE = "[C] 5C GetOnVehicle";
-
+	
 	private int _boatId;
 	private Point3D _pos;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -43,14 +43,14 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
 		z = readD();
 		_pos = new Point3D(x, y, z);
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-
+		
 		L2BoatInstance boat;
 		if (activeChar.isInBoat())
 		{
@@ -72,16 +72,16 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
 				return;
 			}
 		}
-
-
+		
+		
 		activeChar.setInVehiclePosition(_pos);
 		activeChar.setVehicle(boat);
 		activeChar.broadcastPacket(new GetOnVehicle(activeChar.getObjectId(), boat.getObjectId(), _pos));
-
+		
 		activeChar.setXYZ(boat.getX(), boat.getY(), boat.getZ());
 		activeChar.revalidateZone(true);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

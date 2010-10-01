@@ -49,7 +49,7 @@ public final class WorldInfo extends BaseWritePacket
 				// this should never happen
 				super.writeC(0x00);
 			}
-
+			
 			case TYPE_UPDATE_PLAYER_DATA:
 			{
 				super.writeC(0x01);
@@ -60,23 +60,23 @@ public final class WorldInfo extends BaseWritePacket
 				super.writeD(player.getLevel());
 				super.writeD(player.getClanId());
 				super.writeD(player.getAccessLevel().getLevel());
-				super.writeC(player.isOnline());
+				super.writeC(player.isOnlineInt());
 				List<Integer> list = player.getFriendList();
 				super.writeD(list.size());
 				for (int j : list)
 					super.writeD(j);
 				break;
 			}
-
+			
 			case TYPE_UPDATE_PLAYER_STATUS:
 			{
 				super.writeC(0x01);
 				super.writeC(0x01);
 				super.writeD(player.getObjectId());
-				super.writeC(player.isOnline());
+				super.writeC(player.isOnlineInt());
 				break;
 			}
-
+			
 			case TYPE_UPDATE_CLAN_DATA:
 			{
 				super.writeC(0x02);

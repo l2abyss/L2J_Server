@@ -2,7 +2,7 @@
  * $Header: /cvsroot/l2j/L2_Gameserver/java/net/sf/l2j/gameserver/model/L2StaticObjectInstance.java,v 1.3.2.2.2.2 2005/02/04 13:05:27 maximas Exp $
  *
  *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -38,186 +38,186 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 public class L2StaticObjectInstance extends L2Character
 {
 	protected static final Logger log = Logger.getLogger(L2StaticObjectInstance.class.getName());
-
-    /** The interaction distance of the L2StaticObjectInstance */
-    public static final int INTERACTION_DISTANCE = 150;
-
-    private int _staticObjectId;
-    private int _meshIndex = 0;     // 0 - static objects, alternate static objects
-    private int _type = -1;         // 0 - map signs, 1 - throne , 2 - arena signs
-    private ShowTownMap _map;
-
-    /** This class may be created only by L2Character and only for AI */
-    public class AIAccessor extends L2Character.AIAccessor
-    {
-        protected AIAccessor() {}
-        @Override
+	
+	/** The interaction distance of the L2StaticObjectInstance */
+	public static final int INTERACTION_DISTANCE = 150;
+	
+	private int _staticObjectId;
+	private int _meshIndex = 0;     // 0 - static objects, alternate static objects
+	private int _type = -1;         // 0 - map signs, 1 - throne , 2 - arena signs
+	private ShowTownMap _map;
+	
+	/** This class may be created only by L2Character and only for AI */
+	public class AIAccessor extends L2Character.AIAccessor
+	{
+		protected AIAccessor() {}
+		@Override
 		public L2StaticObjectInstance getActor() { return L2StaticObjectInstance.this; }
-        @Override
-        public void moveTo(int x, int y, int z, int offset) {}
-        @Override
-        public void moveTo(int x, int y, int z) {}
-        @Override
-        public void stopMove(L2CharPosition pos) {}
-        @Override
-        public void doAttack(L2Character target) {}
-        @Override
-        public void doCast(L2Skill skill) {}
-    }
-
-    @Override
-	public L2CharacterAI getAI() 
-    {
-    	return null;
-    }
-    /**
-     * @return Returns the StaticObjectId.
-     */
-    public int getStaticObjectId()
-    {
-        return _staticObjectId;
-    }
-
-    /**
-     */
-    public L2StaticObjectInstance(int objectId,L2CharTemplate template, int staticId)
-    {
-    	super(objectId, template);
-    	setInstanceType(InstanceType.L2StaticObjectInstance);
-    	_staticObjectId = staticId;
-    }
-
-    @Override
-	public final StaticObjectKnownList getKnownList()
-    {
-    	return (StaticObjectKnownList)super.getKnownList();
-    }
-    
+		@Override
+		public void moveTo(int x, int y, int z, int offset) {}
+		@Override
+		public void moveTo(int x, int y, int z) {}
+		@Override
+		public void stopMove(L2CharPosition pos) {}
+		@Override
+		public void doAttack(L2Character target) {}
+		@Override
+		public void doCast(L2Skill skill) {}
+	}
+	
 	@Override
-    public void initKnownList()
-    {
+	public L2CharacterAI getAI()
+	{
+		return null;
+	}
+	/**
+	 * @return Returns the StaticObjectId.
+	 */
+	public int getStaticObjectId()
+	{
+		return _staticObjectId;
+	}
+	
+	/**
+	 */
+	public L2StaticObjectInstance(int objectId,L2CharTemplate template, int staticId)
+	{
+		super(objectId, template);
+		setInstanceType(InstanceType.L2StaticObjectInstance);
+		_staticObjectId = staticId;
+	}
+	
+	@Override
+	public final StaticObjectKnownList getKnownList()
+	{
+		return (StaticObjectKnownList)super.getKnownList();
+	}
+	
+	@Override
+	public void initKnownList()
+	{
 		setKnownList(new StaticObjectKnownList(this));
-    }
-
-    @Override
+	}
+	
+	@Override
 	public final StaticObjStat getStat()
-    {
-    	return (StaticObjStat)super.getStat();
-    }
+	{
+		return (StaticObjStat)super.getStat();
+	}
 	
 	@Override
 	public void initCharStat()
 	{
 		setStat(new StaticObjStat(this));
 	}
-
-    @Override
+	
+	@Override
 	public final StaticObjStatus getStatus()
-    {
-    	return (StaticObjStatus)super.getStatus();
-    }
+	{
+		return (StaticObjStatus)super.getStatus();
+	}
 	
 	@Override
 	public void initCharStatus()
 	{
 		setStatus(new StaticObjStatus(this));
 	}
-
-    public int getType()
-    {
-        return _type;
-    }
-
-    public void setType(int type)
-    {
-        _type = type;
-    }
-
-    public void setMap(String texture, int x, int y)
-    {
-    	_map = new ShowTownMap("town_map."+texture, x, y);
-    }
-
-    public ShowTownMap getMap()
-    {
-    	return _map;
-    }
-
-    @Override
+	
+	public int getType()
+	{
+		return _type;
+	}
+	
+	public void setType(int type)
+	{
+		_type = type;
+	}
+	
+	public void setMap(String texture, int x, int y)
+	{
+		_map = new ShowTownMap("town_map."+texture, x, y);
+	}
+	
+	public ShowTownMap getMap()
+	{
+		return _map;
+	}
+	
+	@Override
 	public final int getLevel()
-    {
-        return 1;
-    }
-
-    /**
-     * Return null.<BR><BR>
-     */
-    @Override
+	{
+		return 1;
+	}
+	
+	/**
+	 * Return null.<BR><BR>
+	 */
+	@Override
 	public L2ItemInstance getActiveWeaponInstance()
-    {
-        return null;
-    }
-
-    @Override
+	{
+		return null;
+	}
+	
+	@Override
 	public L2Weapon getActiveWeaponItem()
-    {
-        return null;
-    }
-
-    @Override
+	{
+		return null;
+	}
+	
+	@Override
 	public L2ItemInstance getSecondaryWeaponInstance()
-    {
-        return null;
-    }
-
-    @Override
-    public L2Weapon getSecondaryWeaponItem()
-    {
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.l2jserver.gameserver.model.L2Object#isAttackable()
-     */
-    @Override
-    public boolean isAutoAttackable(L2Character attacker)
-    {
-        return false;
-    }
-
-    /**
-     * Set the meshIndex of the object<BR><BR>
-     * 
-     * <B><U> Values </U> :</B><BR><BR>
-     * <li> default textures : 0</li>
-     * <li> alternate textures : 1 </li><BR><BR>
-     * @param meshIndex
-     */
-    public void setMeshIndex (int meshIndex)
-    {
-    	_meshIndex = meshIndex;
-    	this.broadcastPacket(new StaticObject(this));
-    }
-
-    /**
-     * Return the meshIndex of the object.<BR><BR>
-     *
-     * <B><U> Values </U> :</B><BR><BR>
-     * <li> default textures : 0</li>
-     * <li> alternate textures : 1 </li><BR><BR>
-     *
-     */
-    public int getMeshIndex()
-    {
-    	return _meshIndex;
-    }
-
+	{
+		return null;
+	}
+	
+	@Override
+	public L2Weapon getSecondaryWeaponItem()
+	{
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Object#isAttackable()
+	 */
+	@Override
+	public boolean isAutoAttackable(L2Character attacker)
+	{
+		return false;
+	}
+	
+	/**
+	 * Set the meshIndex of the object<BR><BR>
+	 * 
+	 * <B><U> Values </U> :</B><BR><BR>
+	 * <li> default textures : 0</li>
+	 * <li> alternate textures : 1 </li><BR><BR>
+	 * @param meshIndex
+	 */
+	public void setMeshIndex (int meshIndex)
+	{
+		_meshIndex = meshIndex;
+		this.broadcastPacket(new StaticObject(this));
+	}
+	
+	/**
+	 * Return the meshIndex of the object.<BR><BR>
+	 *
+	 * <B><U> Values </U> :</B><BR><BR>
+	 * <li> default textures : 0</li>
+	 * <li> alternate textures : 1 </li><BR><BR>
+	 *
+	 */
+	public int getMeshIndex()
+	{
+		return _meshIndex;
+	}
+	
 	@Override
 	public void updateAbnormalEffect() {}
 	
-    @Override
-    public void sendInfo(L2PcInstance activeChar)
-    {
-    	activeChar.sendPacket(new StaticObject(this));
-    }
+	@Override
+	public void sendInfo(L2PcInstance activeChar)
+	{
+		activeChar.sendPacket(new StaticObject(this));
+	}
 }

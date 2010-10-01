@@ -35,7 +35,7 @@ public final class RequestHennaEquip extends L2GameClientPacket
 	private static final String _C__BC_RequestHennaEquip = "[C] bc RequestHennaEquip";
 	private int _symbolId;
 	// format  cd
-
+	
 	/**
 	 * packet type id 0xbb
 	 * format:		cd
@@ -46,27 +46,27 @@ public final class RequestHennaEquip extends L2GameClientPacket
 	{
 		_symbolId = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
-
+			return;
+		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("HennaEquip"))
 			return;
-
+		
 		L2Henna template = HennaTable.getInstance().getTemplate(_symbolId);
 		if (template == null)
 			return;
-
+		
 		L2HennaInstance henna = new L2HennaInstance(template);
 		long _count = 0;
-
+		
 		/**
-		 *  Prevents henna drawing exploit: 
-		 * 1) talk to L2SymbolMakerInstance 
+		 *  Prevents henna drawing exploit:
+		 * 1) talk to L2SymbolMakerInstance
 		 * 2) RequestHennaList
 		 * 3) Don't close the window and go to a GrandMaster and change your subclass
 		 * 4) Get SymbolMaker range again and press draw
@@ -75,7 +75,7 @@ public final class RequestHennaEquip extends L2GameClientPacket
 		boolean cheater = true;
 		for (L2HennaInstance h : HennaTreeTable.getInstance().getAvailableHenna(activeChar.getClassId()))
 		{
-			if (h.getSymbolId() == henna.getSymbolId()) 
+			if (h.getSymbolId() == henna.getSymbolId())
 			{
 				cheater = false;
 				break;
@@ -86,23 +86,23 @@ public final class RequestHennaEquip extends L2GameClientPacket
 			_count = activeChar.getInventory().getItemByItemId(henna.getItemIdDye()).getCount();
 		}
 		catch(Exception e){}
-
+		
 		if (activeChar.getHennaEmptySlots() == 0)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.SYMBOLS_FULL));
 			return;
 		}
-
+		
 		if (!cheater && (_count >= henna.getAmountDyeRequire()) && (activeChar.getAdena() >= henna.getPrice()) && activeChar.addHenna(henna))
 		{
 			activeChar.destroyItemByItemId("Henna", henna.getItemIdDye(), henna.getAmountDyeRequire(), activeChar, true);
-
+			
 			activeChar.getInventory().reduceAdena("Henna", henna.getPrice(), activeChar, activeChar.getLastFolkNPC());
-
+			
 			InventoryUpdate iu = new InventoryUpdate();
 			iu.addModifiedItem(activeChar.getInventory().getAdenaInstance());
 			activeChar.sendPacket(iu);
-
+			
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.SYMBOL_ADDED));
 		}
 		else
@@ -112,7 +112,7 @@ public final class RequestHennaEquip extends L2GameClientPacket
 				Util.handleIllegalPlayerAction(activeChar,"Exploit attempt: Character "+activeChar.getName()+" of account "+activeChar.getAccountName()+" tryed to add a forbidden henna.",Config.DEFAULT_PUNISH);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

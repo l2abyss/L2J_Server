@@ -443,7 +443,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			if (npc.getAI() != null) // TODO: possibly check not needed
 			{
 				if (!npc.isDead() && Math.abs(target.getZ() - npc.getZ()) < 600
-				//&& _actor.getAttackByList().contains(getAttackTarget())
+						//&& _actor.getAttackByList().contains(getAttackTarget())
 						&& (npc.getAI()._intention == CtrlIntention.AI_INTENTION_IDLE || npc.getAI()._intention == CtrlIntention.AI_INTENTION_ACTIVE)
 						//limiting aggro for siege guards
 						&& target.isInsideRadius(npc, 1500, true, false) && GeoData.getInstance().canSeeTarget(npc, target))
@@ -603,7 +603,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 					setIntention(AI_INTENTION_IDLE, null, null);
 				}
 				else
-				// Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)
+					// Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)
 				{
 					// Temporary hack for preventing guards jumping off towers,
 					// before replacing this with effective geodata checks and AI modification

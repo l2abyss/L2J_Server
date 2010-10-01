@@ -94,7 +94,7 @@ public final class RequestShortCutReg extends L2GameClientPacket
 	{
 		return _C__33_REQUESTSHORTCUTREG;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
@@ -36,8 +38,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-
-import javolution.util.FastMap;
 
 
 public class Auction
@@ -71,7 +71,7 @@ public class Auction
 		ClanHall
 	}
 	
-	public class Bidder
+	public static class Bidder
 	{
 		private String _name;  //TODO replace with objid
 		private String _clanName;
@@ -310,11 +310,11 @@ public class Auction
 	{
 		if (penalty)
 			quantity *= 0.9; //take 10% tax fee if needed
-
+		
 		// avoid overflow on return
 		final long limit = MAX_ADENA - ClanTable.getInstance().getClanByName(Clan).getWarehouse().getAdena();
 		quantity = Math.min(quantity, limit);
-
+		
 		ClanTable.getInstance().getClanByName(Clan).getWarehouse().addItem("Outbidded", ADENA_ID, quantity, null, null);
 	}
 	

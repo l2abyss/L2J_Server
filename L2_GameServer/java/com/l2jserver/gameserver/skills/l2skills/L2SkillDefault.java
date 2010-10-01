@@ -21,16 +21,16 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.templates.StatsSet;
 
 public class L2SkillDefault extends L2Skill {
-
+	
 	public L2SkillDefault(StatsSet set) {
 		super(set);
 	}
-
+	
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
 		caster.sendPacket(ActionFailed.STATIC_PACKET);
 		caster.sendMessage("Skill not implemented. Skill ID: " + getId() + " " + getSkillType());
 	}
-
+	
 }

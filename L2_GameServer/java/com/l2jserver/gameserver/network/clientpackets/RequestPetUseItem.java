@@ -33,9 +33,9 @@ public final class RequestPetUseItem extends L2GameClientPacket
 {
 	private static Logger _log = Logger.getLogger(RequestPetUseItem.class.getName());
 	private static final String _C__8A_REQUESTPETUSEITEM = "[C] 8a RequestPetUseItem";
-
+	
 	private int _objectId;
-
+	
 	@Override
 	protected void readImpl()
 	{
@@ -44,48 +44,48 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		//readQ();
 		//readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
-
+			return;
+		
 		L2PetInstance pet = (L2PetInstance)activeChar.getPet();
 		if (pet == null)
 			return;
-
+		
 		if (!getClient().getFloodProtectors().getUseItem().tryPerformAction("pet use item"))
 			return;
-
+		
 		L2ItemInstance item = pet.getInventory().getItemByObjectId(_objectId);
-        if (item == null)
-            return;
-
-        if (item.isWear())
-            return;
-
+		if (item == null)
+			return;
+		
+		if (item.isWear())
+			return;
+		
 		int itemId = item.getItemId();
-
+		
 		if (activeChar.isAlikeDead() || pet.isDead())
-        {
+		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addItemName(item);
 			activeChar.sendPacket(sm);
 			sm = null;
 			return;
 		}
-
+		
 		if (Config.DEBUG)
 			_log.finest(activeChar.getObjectId()+": pet use item " + _objectId);
-
+		
 		if (!item.isEquipped())
 		{
 			if (!item.getItem().checkCondition(pet, pet, true))
 				return;
 		}
-
+		
 		//check if the item matches the pet
 		if (item.isEquipable())
 		{
@@ -98,45 +98,45 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				}
 			}
 			if (PetDataTable.isWolf(pet.getNpcId()) && // wolf
-                    item.getItem().isForWolf())
+					item.getItem().isForWolf())
 			{
 				useItem(pet, item, activeChar);
 				return;
 			}
-            else if (PetDataTable.isEvolvedWolf(pet.getNpcId()) && // evolved wolf
-                    (item.getItem().isForEvolvedWolf()||item.getItem().isForWolf()))
-            {
-                useItem(pet, item, activeChar);
-                return;
-            }
+			else if (PetDataTable.isEvolvedWolf(pet.getNpcId()) && // evolved wolf
+					(item.getItem().isForEvolvedWolf()||item.getItem().isForWolf()))
+			{
+				useItem(pet, item, activeChar);
+				return;
+			}
 			else if (PetDataTable.isHatchling(pet.getNpcId()) && // hatchlings
-                        item.getItem().isForHatchling())
+					item.getItem().isForHatchling())
 			{
 				useItem(pet, item, activeChar);
 				return;
 			}
-            else if (PetDataTable.isStrider(pet.getNpcId()) && // striders
-                    item.getItem().isForStrider())
-            {
-                useItem(pet, item, activeChar);
-                return;
-            }
-            else if (PetDataTable.isBaby(pet.getNpcId()) && // baby pets (buffalo, cougar, kookaboora)
-                    item.getItem().isForBabyPet())
-            {
-                useItem(pet, item, activeChar);
-                return;
-            }
-            else if (PetDataTable.isImprovedBaby(pet.getNpcId()) && // Improved baby pets (buffalo, cougar, kookaboora)
-                    item.getItem().isForBabyPet())
-            {
-                useItem(pet, item, activeChar);
-                return;
-            }
+			else if (PetDataTable.isStrider(pet.getNpcId()) && // striders
+					item.getItem().isForStrider())
+			{
+				useItem(pet, item, activeChar);
+				return;
+			}
+			else if (PetDataTable.isBaby(pet.getNpcId()) && // baby pets (buffalo, cougar, kookaboora)
+					item.getItem().isForBabyPet())
+			{
+				useItem(pet, item, activeChar);
+				return;
+			}
+			else if (PetDataTable.isImprovedBaby(pet.getNpcId()) && // Improved baby pets (buffalo, cougar, kookaboora)
+					item.getItem().isForBabyPet())
+			{
+				useItem(pet, item, activeChar);
+				return;
+			}
 			else
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
-                return;
+				return;
 			}
 		}
 		else if (PetDataTable.isPetFood(itemId))
@@ -147,10 +147,10 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				return;
 			}
 			else if (PetDataTable.isEvolvedWolf(pet.getNpcId()) && PetDataTable.isEvolvedWolfFood(itemId))
-            {
-            	useItem(pet, item, activeChar);
-                return;
-            }
+			{
+				useItem(pet, item, activeChar);
+				return;
+			}
 			else if (PetDataTable.isSinEater(pet.getNpcId()) && PetDataTable.isSinEaterFood(itemId))
 			{
 				useItem(pet, item, activeChar);
@@ -187,16 +187,16 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				return;
 			}
 		}
-
-	    IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
-	    if (handler != null)
+		
+		IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+		if (handler != null)
 			useItem(pet, item, activeChar);
 		else
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
-
+		
 		return;
 	}
-
+	
 	private synchronized void useItem(L2PetInstance pet, L2ItemInstance item, L2PcInstance activeChar)
 	{
 		if (item.isEquipable())
@@ -233,7 +233,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 						break;
 				}
 			}
-
+			
 			activeChar.sendPacket(new PetItemList(pet));
 			pet.updateAndBroadcastStatus(1);
 		}
@@ -242,14 +242,14 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
 			if (handler != null)
 			{
-				handler.useItem(pet, item);
+				handler.useItem(pet, item, false);
 				pet.updateAndBroadcastStatus(1);
 			}
 			else
 				_log.warning("no itemhandler registered for itemId:" + item.getItemId());
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

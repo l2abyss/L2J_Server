@@ -31,7 +31,7 @@ public class PetItemList extends L2GameServerPacket
 	private static Logger _log = Logger.getLogger(PetItemList.class.getName());
 	private static final String _S__cb_PETITEMLIST = "[S] b3 PetItemList";
 	private L2PetInstance _activeChar;
-
+	
 	public PetItemList(L2PetInstance character)
 	{
 		_activeChar = character;
@@ -45,42 +45,47 @@ public class PetItemList extends L2GameServerPacket
 			}
 		}
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xb3);
-
+		
 		L2ItemInstance[] items = _activeChar.getInventory().getItems();
 		int count = items.length;
 		writeH(count);
-
+		
 		for (L2ItemInstance temp : items)
 		{
-			writeH(temp.getItem().getType1()); // item type1
 			writeD(temp.getObjectId());
 			writeD(temp.getItemId());
+			writeD(temp.getLocationSlot());
 			writeQ(temp.getCount());
-			writeH(temp.getItem().getType2());	// item type2
-			writeH(0x00);	// ?
+			writeH(temp.getItem().getType2());
+			writeH(temp.getCustomType1());
 			writeH(temp.isEquipped() ? 0x01 : 0x00);
-			writeD(temp.getItem().getBodyPart());	// rev 415  slot    0006-lr.ear  0008-neck  0030-lr.finger  0040-head  0080-??  0100-l.hand  0200-gloves  0400-chest  0800-pants  1000-feet  2000-??  4000-r.hand  8000-r.hand
-			writeH(temp.getEnchantLevel());	// enchant level
-			writeH(0x00);	// ?
-
+			writeD(temp.getItem().getBodyPart());
+			writeH(temp.getEnchantLevel());
+			writeH(temp.getCustomType2());
+			if (temp.isAugmented())
+				writeD(temp.getAugmentation().getAugmentationId());
+			else
+				writeD(0x00);
+			writeD(temp.getMana());
+			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime() / 1000) : -9999);
 			writeH(temp.getAttackElementType());
 			writeH(temp.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
 			{
 				writeH(temp.getElementDefAttr(i));
 			}
-
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3 
+			// Enchant Effects
+			writeH(0x00);
+			writeH(0x00);
+			writeH(0x00);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

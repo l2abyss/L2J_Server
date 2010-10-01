@@ -29,30 +29,30 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class PcRefund extends ItemContainer
 {
 	private L2PcInstance _owner;
-
+	
 	public PcRefund(L2PcInstance owner)
 	{
 		_owner = owner;
 	}
-
+	
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "Refund";
 	}
-
+	
 	@Override
 	public L2PcInstance getOwner()
 	{
 		return _owner;
 	}
-
+	
 	@Override
 	public ItemLocation getBaseLocation()
 	{
 		return ItemLocation.REFUND;
 	}
-
+	
 	@Override
 	protected void addItem(L2ItemInstance item)
 	{
@@ -78,12 +78,12 @@ public class PcRefund extends ItemContainer
 			_log.log(Level.SEVERE, "addItem()", e);
 		}
 	}
-
+	
 	@Override
 	public void refreshWeight()
 	{
 	}
-
+	
 	@Override
 	public void deleteMe()
 	{
@@ -104,7 +104,7 @@ public class PcRefund extends ItemContainer
 		}
 		_items.clear();
 	}
-
+	
 	@Override
 	public void restore()
 	{

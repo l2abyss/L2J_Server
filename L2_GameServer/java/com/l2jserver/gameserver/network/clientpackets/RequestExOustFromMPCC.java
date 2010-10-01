@@ -30,13 +30,13 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 	//private static Logger _log = Logger.getLogger(RequestExOustFromMPCC.class.getName());
 	private static final String _C__D0_0F_REQUESTEXOUSTFROMMPCC = "[C] D0:0F RequestExOustFromMPCC";
 	private String _name;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_name = readS();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
 	 */
@@ -45,7 +45,7 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 	{
 		L2PcInstance target = L2World.getInstance().getPlayer(_name);
 		L2PcInstance activeChar = getClient().getActiveChar();
-
+		
 		if (target != null && target.isInParty() && activeChar.isInParty() && activeChar.getParty().isInCommandChannel()
 				&& target.getParty().isInCommandChannel()
 				&& activeChar.getParty().getCommandChannel().getChannelLeader().equals(activeChar))
@@ -54,7 +54,7 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 				return;
 			
 			target.getParty().getCommandChannel().removeParty(target.getParty());
-
+			
 			SystemMessage sm = new SystemMessage(SystemMessageId.DISMISSED_FROM_COMMAND_CHANNEL);
 			target.getParty().broadcastToPartyMembers(sm);
 			
@@ -71,7 +71,7 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_CANT_FOUND));
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -80,5 +80,5 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 	{
 		return _C__D0_0F_REQUESTEXOUSTFROMMPCC;
 	}
-
+	
 }

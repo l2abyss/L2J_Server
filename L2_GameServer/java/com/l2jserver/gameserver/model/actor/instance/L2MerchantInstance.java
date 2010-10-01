@@ -20,6 +20,7 @@ import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable.MerchantPriceConfig;
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.BuyList;
 import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
@@ -31,7 +32,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 public class L2MerchantInstance extends L2NpcInstance
 {
 	private MerchantPriceConfig _mpc;
-
+	
 	/**
 	 * @param template
 	 */
@@ -40,25 +41,25 @@ public class L2MerchantInstance extends L2NpcInstance
 		super(objectId, template);
 		setInstanceType(InstanceType.L2MerchantInstance);
 	}
-
+	
 	@Override
 	public void onSpawn()
 	{
 		super.onSpawn();
 		_mpc = MerchantPriceConfigTable.getInstance().getMerchantPriceConfig(this);
 	}
-
+	
 	@Override
 	public String getHtmlPath(int npcId, int val)
 	{
 		String pom = "";
-
+		
 		if (val == 0) pom = "" + npcId;
 		else pom = npcId + "-" + val;
-
+		
 		return "data/html/merchant/" + pom + ".htm";
 	}
-
+	
 	/**
 	 * @return Returns the mpc.
 	 */
@@ -66,28 +67,31 @@ public class L2MerchantInstance extends L2NpcInstance
 	{
 		return _mpc;
 	}
-
+	
 	public final void showBuyWindow(L2PcInstance player, int val)
 	{
 		double taxRate = 0;
-
+		
 		taxRate = getMpc().getTotalTaxRate();
-
+		
 		player.tempInventoryDisable();
-
+		
 		if (Config.DEBUG)
 			_log.fine("Showing buylist");
-
+		
 		L2TradeList list = TradeController.getInstance().getBuyList(val);
-
+		
 		if (list != null && list.getNpcId().equals(String.valueOf(getNpcId())))
+		{
+			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
 			player.sendPacket(new ExBuySellListPacket(player, list, taxRate, false));
+		}
 		else
 		{
 			_log.warning("possible client hacker: "+player.getName()+" attempting to buy from GM shop! < Ban him!");
 			_log.warning("buylist id:" + val);
 		}
-
+		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 }

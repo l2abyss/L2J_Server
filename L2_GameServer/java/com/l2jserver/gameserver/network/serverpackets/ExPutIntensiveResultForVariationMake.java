@@ -21,13 +21,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class ExPutIntensiveResultForVariationMake extends L2GameServerPacket
 {
 	private static final String _S__FE_53_EXCONFIRMVARIATIONREFINER = "[S] FE:54 ExPutIntensiveResultForVariationMake";
-
+	
 	private int _refinerItemObjId;
 	private int _lifestoneItemId;
 	private int _gemstoneItemId;
 	private int _gemstoneCount;
 	private int _unk2;
-
+	
 	public ExPutIntensiveResultForVariationMake(int refinerItemObjId, int lifeStoneId, int gemstoneItemId, int gemstoneCount)
 	{
 		_refinerItemObjId = refinerItemObjId;
@@ -36,7 +36,7 @@ public class ExPutIntensiveResultForVariationMake extends L2GameServerPacket
 		_gemstoneCount = gemstoneCount;
 		_unk2 = 1;
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
@@ -51,7 +51,7 @@ public class ExPutIntensiveResultForVariationMake extends L2GameServerPacket
 		writeQ(_gemstoneCount);
 		writeD(_unk2);
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -60,5 +60,5 @@ public class ExPutIntensiveResultForVariationMake extends L2GameServerPacket
 	{
 		return _S__FE_53_EXCONFIRMVARIATIONREFINER;
 	}
-
+	
 }

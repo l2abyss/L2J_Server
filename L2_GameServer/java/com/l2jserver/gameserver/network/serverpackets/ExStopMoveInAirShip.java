@@ -14,41 +14,47 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 /**
- * @authos kerberos
+ * @author kerberos
+ * JIV update 27.8.10
  *
  */
 public class ExStopMoveInAirShip extends L2GameServerPacket
 {
-	private L2Character _activeChar;
-    private int _shipObjId;
-
-    public ExStopMoveInAirShip(L2Character player, int shipObjId)
-    {
-    	_activeChar = player;
-    	_shipObjId = shipObjId;
-    }
-
-    @Override
+	private L2PcInstance _activeChar;
+	private int _shipObjId;
+	private int x, y, z, h;
+	
+	public ExStopMoveInAirShip(L2PcInstance player, int shipObjId)
+	{
+		_activeChar = player;
+		_shipObjId = shipObjId;
+		x = player.getInVehiclePosition().getX();
+		y = player.getInVehiclePosition().getY();
+		z = player.getInVehiclePosition().getZ();
+		h = player.getHeading();
+	}
+	
+	@Override
 	protected final void writeImpl()
-    {
-        writeC(0xfe);
-        writeH(0x6e);
-        writeD(_activeChar.getObjectId());
-        writeD(_shipObjId);
-        writeD(_activeChar.getX());
-        writeD(_activeChar.getY());
-        writeD(_activeChar.getZ());
-        writeD(_activeChar.getHeading());
-    }
-
-    /* (non-Javadoc)
-     * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-     */
-    @Override
+	{
+		writeC(0xfe);
+		writeH(0x6e);
+		writeD(_activeChar.getObjectId());
+		writeD(_shipObjId);
+		writeD(x);
+		writeD(y);
+		writeD(z);
+		writeD(h);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	 */
+	@Override
 	public String getType()
-    {
-        return "[S] FE:6e ExStopMoveAirShip";
-    }
+	{
+		return "[S] FE:6e ExStopMoveAirShip".intern();
+	}
 }

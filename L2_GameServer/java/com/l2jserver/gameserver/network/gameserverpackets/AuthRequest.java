@@ -34,25 +34,27 @@ public class AuthRequest extends BaseSendablePacket
 	 * @param id
 	 * @param acceptAlternate
 	 * @param hexid
-	 * @param externalHost
-	 * @param internalHost
 	 * @param reserveHost
 	 * @param maxplayer
 	 */
-	public AuthRequest(int id, boolean acceptAlternate, byte[] hexid, String externalHost,String internalHost, int port, boolean reserveHost, int maxplayer)
+	public AuthRequest(int id, boolean acceptAlternate, byte[] hexid, int port, boolean reserveHost, int maxplayer, String[] subnets, String[] hosts)
 	{
 		writeC(0x01);
 		writeC(id);
 		writeC(acceptAlternate? 0x01 : 0x00);
 		writeC(reserveHost? 0x01 : 0x00);
-		writeS(externalHost);
-		writeS(internalHost);
 		writeH(port);
 		writeD(maxplayer);
 		writeD(hexid.length);
 		writeB(hexid);
+		writeD(subnets.length);
+		for (int i = 0; i < subnets.length; i++)
+		{
+			writeS(subnets[i]);
+			writeS(hosts[i]);
+		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
 	 */
@@ -61,5 +63,5 @@ public class AuthRequest extends BaseSendablePacket
 	{
 		return getBytes();
 	}
-
+	
 }

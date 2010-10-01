@@ -240,14 +240,14 @@ public final class RequestBuyItem extends L2GameClientPacket
 				slots++;
 		}
 		
-		if (weight > Integer.MAX_VALUE || weight < 0 || !player.getInventory().validateWeight((int) weight))
+		if (!player.isGM() && (weight > Integer.MAX_VALUE || weight < 0 || !player.getInventory().validateWeight((int) weight)))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
-		if (slots > Integer.MAX_VALUE || slots < 0 || !player.getInventory().validateCapacity((int) slots))
+		if (!player.isGM() && (slots > Integer.MAX_VALUE || slots < 0 || !player.getInventory().validateCapacity((int) slots)))
 		{
 			sendPacket(new SystemMessage(SystemMessageId.SLOTS_FULL));
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -291,7 +291,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		player.sendPacket(new ExBuySellListPacket(player, list, castleTaxRate + baseTaxRate, true));
 	}
 	
-	private class Item
+	private static class Item
 	{
 		private final int _itemId;
 		private final long _count;

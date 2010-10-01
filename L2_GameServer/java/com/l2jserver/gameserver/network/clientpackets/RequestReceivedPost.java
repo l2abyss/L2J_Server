@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExChangePostState;
-import com.l2jserver.gameserver.network.serverpackets.ExShowReceivedPost;
+import com.l2jserver.gameserver.network.serverpackets.ExReplyReceivedPost;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
@@ -32,53 +32,53 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestReceivedPost extends L2GameClientPacket
 {
 	private static final String _C__D0_69_REQUESTRECEIVEDPOST = "[C] D0:69 RequestReceivedPost";
-
+	
 	private int _msgId;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_msgId = readD();
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null || !Config.ALLOW_MAIL)
 			return;
-
-		if (!activeChar.isInsideZone(ZONE_PEACE))
+		
+		final Message msg = MailManager.getInstance().getMessage(_msgId);
+		if (msg == null)
+			return;
+		
+		if (!activeChar.isInsideZone(ZONE_PEACE) && msg.hasAttachments())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
 			return;
 		}
-
-		final Message msg = MailManager.getInstance().getMessage(_msgId);
-		if (msg == null)
-			return;
-
+		
 		if (msg.getReceiverId() != activeChar.getObjectId())
 		{
 			Util.handleIllegalPlayerAction(activeChar,
 					"Player "+activeChar.getName()+" tried to receive not own post!", Config.DEFAULT_PUNISH);
 			return;
 		}
-
+		
 		if (msg.isDeletedByReceiver())
 			return;
-
-		activeChar.sendPacket(new ExShowReceivedPost(msg));
+		
+		activeChar.sendPacket(new ExReplyReceivedPost(msg));
 		activeChar.sendPacket(new ExChangePostState(true, _msgId, Message.READED));
 		msg.markAsRead();
 	}
-
+	
 	@Override
 	public String getType()
 	{
 		return _C__D0_69_REQUESTRECEIVEDPOST;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{

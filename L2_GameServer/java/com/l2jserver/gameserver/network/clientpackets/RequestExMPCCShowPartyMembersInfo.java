@@ -26,14 +26,14 @@ public final class RequestExMPCCShowPartyMembersInfo extends L2GameClientPacket
 {
 	private static final String _C__D0_2D_REQUESTMPCCSHOWPARTYMEMBERINFO = "[C] D0:2D RequestExMPCCShowPartyMembersInfo";
 	private int _partyLeaderId;
-
-
+	
+	
 	@Override
 	protected void readImpl()
 	{
 		_partyLeaderId = readD();
 	}
-
+	
 	/**
 	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
 	 */
@@ -42,12 +42,12 @@ public final class RequestExMPCCShowPartyMembersInfo extends L2GameClientPacket
 	{
 		L2PcInstance player = L2World.getInstance().getPlayer(_partyLeaderId);
 		if (player != null && player.getParty() != null)
-        {
+		{
 			getClient().getActiveChar().sendPacket(new ExMPCCShowPartyMemberInfo(player.getParty()));
-	        
-        }
+			
+		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -56,5 +56,5 @@ public final class RequestExMPCCShowPartyMembersInfo extends L2GameClientPacket
 	{
 		return _C__D0_2D_REQUESTMPCCSHOWPARTYMEMBERINFO;
 	}
-
+	
 }

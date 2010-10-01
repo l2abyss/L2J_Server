@@ -18,12 +18,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.olympiad.Olympiad.COMP_TYPE;
 import com.l2jserver.util.L2FastList;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastMap;
 
 /**
  * 
@@ -35,28 +35,28 @@ class OlympiadManager implements Runnable
 	private Map<Integer, OlympiadGame> _olympiadInstances;
 	
 	protected static final OlympiadStadium[] STADIUMS = {
-			new OlympiadStadium(-88000, -252637, -3331, 17100001, 17100002),
-			new OlympiadStadium(-83760, -252637, -3331, 17100003, 17100004),
-			new OlympiadStadium(-79600, -252637, -3331, 17100005, 17100006),
-			new OlympiadStadium(-75648, -252637, -3331, 17100007, 17100008),
-			new OlympiadStadium(-88000, -249762, -3331, 17100009, 17100010),
-			new OlympiadStadium(-83760, -249762, -3331, 17100011, 17100012),
-			new OlympiadStadium(-79600, -249762, -3331, 17100013, 17100014),
-			new OlympiadStadium(-75648, -249762, -3331, 17100015, 17100016),
-			new OlympiadStadium(-88000, -246951, -3331, 17100017, 17100018),
-			new OlympiadStadium(-83760, -246951, -3331, 17100019, 17100020),
-			new OlympiadStadium(-79600, -246951, -3331, 17100021, 17100022),
-			new OlympiadStadium(-75648, -246951, -3331, 17100023, 17100024),
-			new OlympiadStadium(-88000, -244290, -3331, 17100025, 17100026),
-			new OlympiadStadium(-83760, -244290, -3331, 17100027, 17100028),
-			new OlympiadStadium(-79600, -244290, -3331, 17100029, 17100030),
-			new OlympiadStadium(-75648, -244290, -3331, 17100031, 17100032),
-			new OlympiadStadium(-88000, -241490, -3331, 17100033, 17100034),
-			new OlympiadStadium(-83760, -241490, -3331, 17100035, 17100036),
-			new OlympiadStadium(-79600, -241490, -3331, 17100037, 17100038),
-			new OlympiadStadium(-75648, -241490, -3331, 17100039, 17100040),
-			new OlympiadStadium(-88000, -238825, -3331, 17100041, 17100042),
-			new OlympiadStadium(-83760, -238825, -3331, 17100043, 17100044)
+		new OlympiadStadium(-88000, -252637, -3331, 17100001, 17100002),
+		new OlympiadStadium(-83760, -252637, -3331, 17100003, 17100004),
+		new OlympiadStadium(-79600, -252637, -3331, 17100005, 17100006),
+		new OlympiadStadium(-75648, -252637, -3331, 17100007, 17100008),
+		new OlympiadStadium(-88000, -249762, -3331, 17100009, 17100010),
+		new OlympiadStadium(-83760, -249762, -3331, 17100011, 17100012),
+		new OlympiadStadium(-79600, -249762, -3331, 17100013, 17100014),
+		new OlympiadStadium(-75648, -249762, -3331, 17100015, 17100016),
+		new OlympiadStadium(-88000, -246951, -3331, 17100017, 17100018),
+		new OlympiadStadium(-83760, -246951, -3331, 17100019, 17100020),
+		new OlympiadStadium(-79600, -246951, -3331, 17100021, 17100022),
+		new OlympiadStadium(-75648, -246951, -3331, 17100023, 17100024),
+		new OlympiadStadium(-88000, -244290, -3331, 17100025, 17100026),
+		new OlympiadStadium(-83760, -244290, -3331, 17100027, 17100028),
+		new OlympiadStadium(-79600, -244290, -3331, 17100029, 17100030),
+		new OlympiadStadium(-75648, -244290, -3331, 17100031, 17100032),
+		new OlympiadStadium(-88000, -241490, -3331, 17100033, 17100034),
+		new OlympiadStadium(-83760, -241490, -3331, 17100035, 17100036),
+		new OlympiadStadium(-79600, -241490, -3331, 17100037, 17100038),
+		new OlympiadStadium(-75648, -241490, -3331, 17100039, 17100040),
+		new OlympiadStadium(-88000, -238825, -3331, 17100041, 17100042),
+		new OlympiadStadium(-83760, -238825, -3331, 17100043, 17100044)
 	};
 	
 	private OlympiadManager()
@@ -263,7 +263,7 @@ class OlympiadManager implements Runnable
 				catch (InterruptedException e)
 				{
 				}*/
-
+				
 				// Start games
 				_gamesQueueSize = _gamesQueue.size();
 				for (int i = 0; i < _gamesQueueSize; i++)

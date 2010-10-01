@@ -195,14 +195,15 @@ public final class L2ScriptEngineManager
 				_log.info("Handlers loaded, all other scripts skipped");
 				return;
 			}
-			catch(ScriptException se) {
-				se.printStackTrace();
+			catch(ScriptException se)
+			{
+				_log.log(Level.WARNING, "", se);
 			}
 		}
 		
 		if (Config.ALT_DEV_NO_QUESTS)
 			return;
-
+		
 		if (list.isFile())
 		{
 			LineNumberReader lnr = new LineNumberReader(new InputStreamReader(new FileInputStream(list)));
@@ -308,12 +309,12 @@ public final class L2ScriptEngineManager
 					catch (FileNotFoundException e)
 					{
 						// should never happen
-						e.printStackTrace();
+						_log.log(Level.WARNING, "", e);
 					}
 					catch (ScriptException e)
 					{
 						this.reportScriptFileError(file, e);
-						//e.printStackTrace();
+						//_log.log(Level.WARNING, "", e);
 					}
 				}
 			}
@@ -572,7 +573,7 @@ public final class L2ScriptEngineManager
 				
 				fos = new FileOutputStream(file);
 				String errorHeader = "Error on: " + file.getCanonicalPath() + "\r\nLine: " + e.getLineNumber() + " - Column: "
-						+ e.getColumnNumber() + "\r\n\r\n";
+				+ e.getColumnNumber() + "\r\n\r\n";
 				fos.write(errorHeader.getBytes());
 				fos.write(e.getMessage().getBytes());
 				_log.warning("Failed executing script: " + script.getAbsolutePath() + ". See " + file.getName() + " for details.");

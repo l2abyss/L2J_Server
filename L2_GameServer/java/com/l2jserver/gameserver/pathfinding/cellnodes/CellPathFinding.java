@@ -48,10 +48,10 @@ public class CellPathFinding extends PathFinding
 	private int _postFilterPlayableUses = 0;
 	private int _postFilterPasses = 0;
 	private long _postFilterElapsed = 0;
-
+	
 	private FastList<L2ItemInstance> _debugItems = null;
-
-
+	
+	
 	public static CellPathFinding getInstance()
 	{
 		return SingletonHolder._instance;
@@ -62,9 +62,9 @@ public class CellPathFinding extends PathFinding
 		try
 		{
 			String[] array = Config.PATHFIND_BUFFERS.split(";");
-
+			
 			_allBuffers = new BufferInfo[array.length];
-
+			
 			String buf;
 			String[] args;
 			for (int i = 0; i < array.length; i++)
@@ -73,7 +73,7 @@ public class CellPathFinding extends PathFinding
 				args = buf.split("x");
 				if (args.length != 2)
 					throw new Exception("Invalid buffer definition: " + buf);
-
+				
 				_allBuffers[i] = new BufferInfo(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
 			}
 		}
@@ -83,7 +83,7 @@ public class CellPathFinding extends PathFinding
 			throw new Error("CellPathFinding: load aborted");
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#PathNodesExist(short)
 	 */
@@ -100,145 +100,145 @@ public class CellPathFinding extends PathFinding
 	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean playable)
 	{
 		int gx = (x - L2World.MAP_MIN_X) >> 4;
-		int gy = (y - L2World.MAP_MIN_Y) >> 4;
-		if (!GeoData.getInstance().hasGeo(x, y))
-			return null;
-		short gz = GeoData.getInstance().getHeight(x, y, z);
-		int gtx = (tx - L2World.MAP_MIN_X) >> 4;
-		int gty = (ty - L2World.MAP_MIN_Y) >> 4;
-		if (!GeoData.getInstance().hasGeo(tx, ty))
-			return null;
-		short gtz = GeoData.getInstance().getHeight(tx, ty, tz);
-		CellNodeBuffer buffer = alloc(64 + 2*Math.max(Math.abs(gx - gtx), Math.abs(gy - gty)), playable);
-		if (buffer == null)
-			return null;
-
-		boolean debug = playable && Config.DEBUG_PATH;
-
-		if (debug)
-		{
-			if (_debugItems == null)
-				_debugItems = new FastList<L2ItemInstance>();
-			else
-			{
-				for (L2ItemInstance item : _debugItems)
-				{
-					if (item == null)
-						continue;
-					item.decayMe();
-				}
-
-				_debugItems.clear();
-			}
-		}
-
-		FastList<AbstractNodeLoc> path = null;
-		try
-		{
-			CellNode result = buffer.findPath(gx, gy, gz, gtx, gty, gtz);
-
+			int gy = (y - L2World.MAP_MIN_Y) >> 4;
+			if (!GeoData.getInstance().hasGeo(x, y))
+				return null;
+			short gz = GeoData.getInstance().getHeight(x, y, z);
+			int gtx = (tx - L2World.MAP_MIN_X) >> 4;
+			int gty = (ty - L2World.MAP_MIN_Y) >> 4;
+			if (!GeoData.getInstance().hasGeo(tx, ty))
+				return null;
+			short gtz = GeoData.getInstance().getHeight(tx, ty, tz);
+			CellNodeBuffer buffer = alloc(64 + 2*Math.max(Math.abs(gx - gtx), Math.abs(gy - gty)), playable);
+			if (buffer == null)
+				return null;
+			
+			boolean debug = playable && Config.DEBUG_PATH;
+			
 			if (debug)
 			{
-				for (CellNode n : buffer.debugPath())
-				{
-					if (n.getCost() < 0) // calculated path
-						dropDebugItem(1831, (int)(-n.getCost() * 10), n.getLoc());
-					else // known nodes
-						dropDebugItem(57, (int)(n.getCost() * 10), n.getLoc());
-				}
-			}
-
-			if (result == null)
-			{
-				_findFails++;
-				return null;
-			}
-
-			path = constructPath(result);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
-		finally
-		{
-			buffer.free();
-		}
-
-		if (path.size() < 3 || Config.MAX_POSTFILTER_PASSES <= 0)
-		{
-			_findSuccess++;
-			return path;
-		}
-
-		long timeStamp = System.currentTimeMillis();
-		_postFilterUses++;
-		if (playable)
-			_postFilterPlayableUses++;
-
-		int currentX, currentY, currentZ;
-		ListIterator<AbstractNodeLoc> middlePoint, endPoint;
-		AbstractNodeLoc locMiddle, locEnd;
-		boolean remove;
-		int pass = 0;
-		do
-		{
-			pass++;
-			_postFilterPasses++;
-
-			remove = false;
-			middlePoint = path.listIterator();
-			endPoint = path.listIterator(1);
-			locEnd = null;
-			currentX = x;
-			currentY = y;
-			currentZ = z;
-
-			while (endPoint.hasNext())
-			{
-				locEnd = endPoint.next();
-				locMiddle = middlePoint.next();
-				if (GeoData.getInstance().canMoveFromToTarget(currentX, currentY, currentZ, locEnd.getX(), locEnd.getY(), locEnd.getZ(), instanceId))
-				{
-					middlePoint.remove();
-					remove = true;
-					if (debug)
-						dropDebugItem(735,1,locMiddle);
-				}
+				if (_debugItems == null)
+					_debugItems = new FastList<L2ItemInstance>();
 				else
 				{
-					currentX = locMiddle.getX();
-					currentY = locMiddle.getY();
-					currentZ = locMiddle.getZ();
+					for (L2ItemInstance item : _debugItems)
+					{
+						if (item == null)
+							continue;
+						item.decayMe();
+					}
+					
+					_debugItems.clear();
 				}
 			}
-		}
-		// only one postfilter pass for AI
-		while (playable && remove && path.size() > 2 && pass < Config.MAX_POSTFILTER_PASSES);
-
-		if (debug)
-		{
-			middlePoint = path.listIterator();
-			while (middlePoint.hasNext())
+			
+			FastList<AbstractNodeLoc> path = null;
+			try
 			{
-				locMiddle = middlePoint.next();
-				dropDebugItem(65, 1, locMiddle);
+				CellNode result = buffer.findPath(gx, gy, gz, gtx, gty, gtz);
+				
+				if (debug)
+				{
+					for (CellNode n : buffer.debugPath())
+					{
+						if (n.getCost() < 0) // calculated path
+							dropDebugItem(1831, (int)(-n.getCost() * 10), n.getLoc());
+						else // known nodes
+							dropDebugItem(57, (int)(n.getCost() * 10), n.getLoc());
+					}
+				}
+				
+				if (result == null)
+				{
+					_findFails++;
+					return null;
+				}
+				
+				path = constructPath(result);
 			}
-		}
-
-		_findSuccess++;
-		_postFilterElapsed += System.currentTimeMillis() - timeStamp;
-		return path;
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "", e);
+				return null;
+			}
+			finally
+			{
+				buffer.free();
+			}
+			
+			if (path.size() < 3 || Config.MAX_POSTFILTER_PASSES <= 0)
+			{
+				_findSuccess++;
+				return path;
+			}
+			
+			long timeStamp = System.currentTimeMillis();
+			_postFilterUses++;
+			if (playable)
+				_postFilterPlayableUses++;
+			
+			int currentX, currentY, currentZ;
+			ListIterator<AbstractNodeLoc> middlePoint, endPoint;
+			AbstractNodeLoc locMiddle, locEnd;
+			boolean remove;
+			int pass = 0;
+			do
+			{
+				pass++;
+				_postFilterPasses++;
+				
+				remove = false;
+				middlePoint = path.listIterator();
+				endPoint = path.listIterator(1);
+				locEnd = null;
+				currentX = x;
+				currentY = y;
+				currentZ = z;
+				
+				while (endPoint.hasNext())
+				{
+					locEnd = endPoint.next();
+					locMiddle = middlePoint.next();
+					if (GeoData.getInstance().canMoveFromToTarget(currentX, currentY, currentZ, locEnd.getX(), locEnd.getY(), locEnd.getZ(), instanceId))
+					{
+						middlePoint.remove();
+						remove = true;
+						if (debug)
+							dropDebugItem(735,1,locMiddle);
+					}
+					else
+					{
+						currentX = locMiddle.getX();
+						currentY = locMiddle.getY();
+						currentZ = locMiddle.getZ();
+					}
+				}
+			}
+			// only one postfilter pass for AI
+			while (playable && remove && path.size() > 2 && pass < Config.MAX_POSTFILTER_PASSES);
+			
+			if (debug)
+			{
+				middlePoint = path.listIterator();
+				while (middlePoint.hasNext())
+				{
+					locMiddle = middlePoint.next();
+					dropDebugItem(65, 1, locMiddle);
+				}
+			}
+			
+			_findSuccess++;
+			_postFilterElapsed += System.currentTimeMillis() - timeStamp;
+			return path;
 	}
-
+	
 	private FastList<AbstractNodeLoc> constructPath(AbstractNode node)
 	{
 		FastList<AbstractNodeLoc> path = new FastList<AbstractNodeLoc>();
 		int previousDirectionX = Integer.MIN_VALUE;
 		int previousDirectionY = Integer.MIN_VALUE;
 		int directionX, directionY;
-
+		
 		while (node.getParent() != null)
 		{
 			if (!Config.ADVANCED_DIAGONAL_STRATEGY && node.getParent().getParent() != null)
@@ -261,23 +261,23 @@ public class CellPathFinding extends PathFinding
 				directionX = node.getLoc().getNodeX() - node.getParent().getLoc().getNodeX();
 				directionY = node.getLoc().getNodeY() - node.getParent().getLoc().getNodeY();
 			}
-
+			
 			// only add a new route point if moving direction changes
 			if (directionX != previousDirectionX || directionY != previousDirectionY)
 			{
 				previousDirectionX = directionX;
 				previousDirectionY = directionY;
-
+				
 				path.addFirst(node.getLoc());
 				node.setLoc(null);
 			}
-
+			
 			node = node.getParent();
 		}
-
+		
 		return path;
 	}
-
+	
 	private final CellNodeBuffer alloc(int size, boolean playable)
 	{
 		CellNodeBuffer current = null;
@@ -299,7 +299,7 @@ public class CellPathFinding extends PathFinding
 				}
 				if (current != null)
 					break;
-
+				
 				// not found, allocate temporary buffer
 				current = new CellNodeBuffer(i.mapSize);
 				current.lock();
@@ -320,10 +320,10 @@ public class CellPathFinding extends PathFinding
 				}
 			}
 		}
-
+		
 		return current;
 	}
-
+	
 	private final void dropDebugItem(int itemId, int num, AbstractNodeLoc loc)
 	{
 		final L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
@@ -331,7 +331,7 @@ public class CellPathFinding extends PathFinding
 		item.spawnMe(loc.getX(), loc.getY(), loc.getZ());
 		_debugItems.add(item);
 	}
-
+	
 	private static final class BufferInfo
 	{
 		final int mapSize;
@@ -342,14 +342,14 @@ public class CellPathFinding extends PathFinding
 		int overflows = 0;
 		int playableOverflows = 0;
 		long elapsed = 0;
-
+		
 		public BufferInfo(int size, int cnt)
 		{
 			mapSize = size;
 			count = cnt;
 			bufs = new ArrayList<CellNodeBuffer>(count);
 		}
-
+		
 		@Override
 		public String toString()
 		{
@@ -360,22 +360,22 @@ public class CellPathFinding extends PathFinding
 					" uses:", String.valueOf(uses), "/", String.valueOf(playableUses));
 			if (uses > 0)
 				StringUtil.append(stat, " total/avg(ms):",
-						String.valueOf(elapsed), "/", String.format("%1.2f", (double)elapsed/uses));				
-
+						String.valueOf(elapsed), "/", String.format("%1.2f", (double)elapsed/uses));
+			
 			StringUtil.append(stat, " ovf:", String.valueOf(overflows), "/",
 					String.valueOf(playableOverflows));
-
+			
 			return stat.toString();
 		}
 	}
-
+	
 	@Override
 	public String[] getStat()
 	{
 		final String[] result = new String[_allBuffers.length + 1];
 		for (int i = 0; i < _allBuffers.length; i++)
 			result[i] = _allBuffers[i].toString();
-
+		
 		final StringBuilder stat = new StringBuilder(100);
 		StringUtil.append(stat,
 				"LOS postfilter uses:", String.valueOf(_postFilterUses),
@@ -389,10 +389,10 @@ public class CellPathFinding extends PathFinding
 		StringUtil.append(stat, "Pathfind success/fail:", String.valueOf(_findSuccess),
 				"/", String.valueOf(_findFails));
 		result[result.length - 1] = stat.toString();
-
+		
 		return result;
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

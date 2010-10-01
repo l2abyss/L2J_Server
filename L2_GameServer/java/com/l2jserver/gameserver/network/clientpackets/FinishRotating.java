@@ -25,25 +25,25 @@ import com.l2jserver.gameserver.network.serverpackets.StopRotation;
 public final class FinishRotating extends L2GameClientPacket
 {
 	private static final String _C__4B_FINISHROTATING = "[C] 4B FinishRotating";
-
+	
 	private int _degree;
 	@SuppressWarnings("unused")
-    private int _unknown;
-
+	private int _unknown;
+	
 	@Override
 	protected void readImpl()
 	{
 		_degree = readD();
 		_unknown = readD();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
-		    return;
-
+			return;
+		
 		StopRotation sr;
 		if (activeChar.isInAirShip() && activeChar.getAirShip().isCaptain(activeChar))
 		{
@@ -57,7 +57,7 @@ public final class FinishRotating extends L2GameClientPacket
 			activeChar.broadcastPacket(sr);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */

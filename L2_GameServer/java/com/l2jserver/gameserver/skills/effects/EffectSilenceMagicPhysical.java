@@ -65,7 +65,7 @@ public class EffectSilenceMagicPhysical extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().stopMuted(this);
-		getEffected().stopPsychicalMuted(this);
+		getEffected().stopMuted(false);
+		getEffected().stopPsychicalMuted(false);
 	}
 }

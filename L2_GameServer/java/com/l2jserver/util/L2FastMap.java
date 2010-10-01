@@ -39,15 +39,15 @@ public class L2FastMap<K extends Object, V extends Object> extends HashMap<K,V>
 	public interface I2ForEach<K,V> {
 		public boolean forEach(K key, V val);
 	}
-
+	
 	public interface I2ForEachKey<K> {
 		public boolean forEach(K key);
 	}
-
+	
 	public interface I2ForEachValue<V> {
 		public boolean forEach(V val);
 	}
-
+	
 	/**
 	 * Public method that iterate entire collection.<br>
 	 * <br>
@@ -60,13 +60,13 @@ public class L2FastMap<K extends Object, V extends Object> extends HashMap<K,V>
 			if (!func.forEach(e.getKey(),e.getValue())) return false;
 		return true;
 	}
-
+	
 	public boolean ForEachKey(I2ForEachKey<K> func) {
 		for (K k: this.keySet())
 			if (!func.forEach(k)) return false;
 		return true;
 	}
-
+	
 	public boolean ForEachValue(I2ForEachValue<V> func) {
 		for (V v: this.values())
 			if (!func.forEach(v)) return false;

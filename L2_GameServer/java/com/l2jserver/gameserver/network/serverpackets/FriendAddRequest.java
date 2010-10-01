@@ -33,9 +33,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class FriendAddRequest extends L2GameServerPacket
 {
 	private static final String _S__7d_ASKJoinFriend_0X7d = "[S] 83 FriendAddRequest";
-
+	
 	private String _requestorName;
-
+	
 	/**
 	 * @param int objectId of the target
 	 * @param int
@@ -44,7 +44,7 @@ public class FriendAddRequest extends L2GameServerPacket
 	{
 		_requestorName = requestorName;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -52,7 +52,7 @@ public class FriendAddRequest extends L2GameServerPacket
 		writeS(_requestorName);
 		writeD(0);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -61,5 +61,5 @@ public class FriendAddRequest extends L2GameServerPacket
 	{
 		return _S__7d_ASKJoinFriend_0X7d;
 	}
-
+	
 }

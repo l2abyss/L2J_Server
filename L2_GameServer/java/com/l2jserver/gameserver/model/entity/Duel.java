@@ -18,6 +18,8 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
@@ -34,8 +36,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-
-import javolution.util.FastList;
 
 public class Duel
 {
@@ -106,7 +106,7 @@ public class Duel
 	// ===============================================================
 	// Nested Class
 	
-	public class PlayerCondition
+	public static class PlayerCondition
 	{
 		private L2PcInstance _player;
 		private double _hp;
@@ -213,7 +213,7 @@ public class Duel
 		}
 	}
 	
-	public class ScheduleStartDuelTask implements Runnable
+	public static class ScheduleStartDuelTask implements Runnable
 	{
 		private Duel _duel;
 		
@@ -253,7 +253,7 @@ public class Duel
 		}
 	}
 	
-	public class ScheduleEndDuelTask implements Runnable
+	public static class ScheduleEndDuelTask implements Runnable
 	{
 		private Duel _duel;
 		private DuelResultEnum _result;
@@ -409,10 +409,10 @@ public class Duel
 			broadcastToTeam2(ready);
 			broadcastToTeam1(start);
 			broadcastToTeam2(start);
-
+			
 			broadcastToTeam1(new ExDuelUpdateUserInfo(_playerB));
 			broadcastToTeam2(new ExDuelUpdateUserInfo(_playerA));
-
+			
 			_playerA.broadcastUserInfo();
 			_playerB.broadcastUserInfo();
 		}
@@ -960,7 +960,7 @@ public class Duel
 			_playerB = null;
 		}
 		else
-		// teleport the player back & delete his PlayerCondition record
+			// teleport the player back & delete his PlayerCondition record
 		{
 			for (FastList.Node<PlayerCondition> e = _playerConditions.head(), end = _playerConditions.tail(); (e = e.getNext()) != end;)
 			{

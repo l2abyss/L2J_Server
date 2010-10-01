@@ -22,12 +22,12 @@ import java.io.LineNumberReader;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.templates.item.L2Item;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * Service class for manor
@@ -289,7 +289,7 @@ public class L2Manor
 		return 0;
 	}
 	
-	private class SeedData
+	private static class SeedData
 	{
 		private int _id;
 		private int _level; // seed level

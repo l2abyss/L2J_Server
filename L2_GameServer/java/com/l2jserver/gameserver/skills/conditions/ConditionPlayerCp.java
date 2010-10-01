@@ -21,9 +21,9 @@ import com.l2jserver.gameserver.skills.Env;
  */
 public class ConditionPlayerCp extends Condition
 {
-
+	
 	private final int _cp;
-
+	
 	/**
 	 * Instantiates a new condition player cp.
 	 *
@@ -33,7 +33,7 @@ public class ConditionPlayerCp extends Condition
 	{
 		_cp = cp;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

@@ -43,12 +43,12 @@ public class ExHeroList extends L2GameServerPacket
 {
 	private static final String _S__FE_23_EXHEROLIST = "[S] FE:79 ExHeroList";
 	private Map<Integer, StatsSet> _heroList;
-
+	
 	public ExHeroList()
 	{
 		_heroList = Hero.getInstance().getHeroes();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -58,10 +58,10 @@ public class ExHeroList extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x79);
 		writeD(_heroList.size());
-
+		
 		for(Integer heroId : _heroList.keySet())
 		{
-            StatsSet hero = _heroList.get(heroId);
+			StatsSet hero = _heroList.get(heroId);
 			writeS(hero.getString(Olympiad.CHAR_NAME));
 			writeD(hero.getInteger(Olympiad.CLASS_ID));
 			writeS(hero.getString(Hero.CLAN_NAME, ""));
@@ -70,9 +70,9 @@ public class ExHeroList extends L2GameServerPacket
 			writeD(hero.getInteger(Hero.ALLY_CREST, 0));
 			writeD(hero.getInteger(Hero.COUNT));
 		}
-
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -81,5 +81,5 @@ public class ExHeroList extends L2GameServerPacket
 	{
 		return _S__FE_23_EXHEROLIST;
 	}
-
+	
 }

@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -36,9 +39,6 @@ import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 public class ClanHall
 {
@@ -585,29 +585,38 @@ public class ClanHall
 		{
 			try
 			{
+				long _time = System.currentTimeMillis();
+				
 				if (_isFree)
 					return;
+				
+				if(_paidUntil > _time)
+				{
+					ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), _paidUntil - _time);
+					return;
+				}
+				
 				L2Clan Clan = ClanTable.getInstance().getClan(getOwnerId());
 				if (ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().getAdena() >= getLease())
 				{
 					if (_paidUntil != 0)
 					{
-						while (_paidUntil <= System.currentTimeMillis())
+						while (_paidUntil <= _time)
 							_paidUntil += _chRate;
 					}
 					else
-						_paidUntil = System.currentTimeMillis() + _chRate;
+						_paidUntil = _time + _chRate;
 					ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_rental_fee", 57, getLease(), null, null);
 					if (Config.DEBUG)
 						_log.warning("deducted " + getLease() + " adena from " + getName() + " owner's cwh for ClanHall _paidUntil: " + _paidUntil);
-					ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), _paidUntil - System.currentTimeMillis());
+					ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), _paidUntil - _time);
 					_paid = true;
 					updateDb();
 				}
 				else
 				{
 					_paid = false;
-					if (System.currentTimeMillis() > _paidUntil + _chRate)
+					if (_time > _paidUntil + _chRate)
 					{
 						if (ClanHallManager.getInstance().loaded())
 						{
@@ -624,12 +633,10 @@ public class ClanHall
 						SystemMessage sm = new SystemMessage(SystemMessageId.PAYMENT_FOR_YOUR_CLAN_HALL_HAS_NOT_BEEN_MADE_PLEASE_MAKE_PAYMENT_TO_YOUR_CLAN_WAREHOUSE_BY_S1_TOMORROW);
 						sm.addNumber(getLease());
 						Clan.broadcastToOnlineMembers(sm);
-						if (System.currentTimeMillis() + (1000 * 60 * 60 * 24) <= _paidUntil + _chRate)
-							ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), System.currentTimeMillis()
-									+ (1000 * 60 * 60 * 24));
+						if (_time + (1000 * 60 * 60 * 24) <= _paidUntil + _chRate)
+							ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), _time + (1000 * 60 * 60 * 24));
 						else
-							ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), (_paidUntil + _chRate)
-									- System.currentTimeMillis());
+							ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), (_paidUntil + _chRate) - _time);
 						
 					}
 				}

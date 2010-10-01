@@ -14,12 +14,12 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
 
 /**
  * A castle teleporter zone
@@ -122,7 +122,7 @@ public class L2CastleTeleportZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				L2PcInstance player = (L2PcInstance) character;
-				if (player.isOnline() == 1)
+				if (player.isOnline())
 					player.teleToLocation(Rnd.get(_spawnLoc[0], _spawnLoc[1]), Rnd.get(_spawnLoc[2], _spawnLoc[3]), _spawnLoc[4]);
 			}
 		}

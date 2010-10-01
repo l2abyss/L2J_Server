@@ -23,7 +23,7 @@ public class ExMoveToLocationInAirShip extends L2GameServerPacket
 	private int _airShipId;
 	private Point3D _destination;
 	private int _heading;
-
+	
 	/**
 	 * @param actor
 	 * @param destination
@@ -36,7 +36,7 @@ public class ExMoveToLocationInAirShip extends L2GameServerPacket
 		_destination = player.getInVehiclePosition();
 		_heading = player.getHeading();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -45,14 +45,14 @@ public class ExMoveToLocationInAirShip extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x6D);
-        writeD(_charObjId);
-        writeD(_airShipId);
+		writeD(_charObjId);
+		writeD(_airShipId);
 		writeD(_destination.getX());
 		writeD(_destination.getY());
 		writeD(_destination.getZ());
 		writeD(_heading);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */

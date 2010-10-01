@@ -77,7 +77,7 @@ public final class StatusUpdate extends L2GameServerPacket
 	private int _maxHp = -1;
 	private ArrayList<Attribute> _attributes;
 	
-	class Attribute
+	static class Attribute
 	{
 		/** id values
 		 * 09 - current health
@@ -154,9 +154,9 @@ public final class StatusUpdate extends L2GameServerPacket
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
-	 @Override
-	 public String getType()
-	 {
-		 return _S__1A_STATUSUPDATE;
-	 }
+	@Override
+	public String getType()
+	{
+		return _S__1A_STATUSUPDATE;
+	}
 }

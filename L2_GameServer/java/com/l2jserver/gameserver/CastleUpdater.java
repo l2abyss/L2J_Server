@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -66,7 +67,7 @@ public class CastleUpdater implements Runnable
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.log(Level.WARNING, "", e);
 		}
 	}
 }

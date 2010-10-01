@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.BaseStats;
+import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
@@ -36,12 +37,12 @@ import com.l2jserver.gameserver.templates.item.L2WeaponType;
 public class L2SkillChargeDmg extends L2Skill
 {
 	private static final Logger _logDamage = Logger.getLogger("damage");
-
+	
 	public L2SkillChargeDmg(StatsSet set)
 	{
 		super(set);
 	}
-
+	
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
@@ -49,7 +50,7 @@ public class L2SkillChargeDmg extends L2Skill
 		{
 			return;
 		}
-
+		
 		double modifier = 0;
 		if (caster instanceof L2PcInstance)
 		{
@@ -60,12 +61,12 @@ public class L2SkillChargeDmg extends L2Skill
 		boolean soul = (weapon != null
 				&& weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT
 				&& weapon.getItemType() != L2WeaponType.DAGGER );
-
+		
 		for (L2Character target: (L2Character[]) targets)
 		{
 			if (target.isAlikeDead())
 				continue;
-
+			
 			//	Calculate skill evasion
 			boolean skillIsEvaded = Formulas.calcPhysicalSkillEvasion(target, this);
 			if(skillIsEvaded)
@@ -82,11 +83,11 @@ public class L2SkillChargeDmg extends L2Skill
 					sm.addString(caster.getName());
 					((L2PcInstance) target).sendPacket(sm);
 				}
-
-				//no futher calculations needed. 
+				
+				//no futher calculations needed.
 				continue;
 			}
-
+			
 			// TODO: should we use dual or not?
 			// because if so, damage are lowered but we don't do anything special with dual then
 			// like in doAttackHitByDual which in fact does the calcPhysDam call twice
@@ -99,29 +100,62 @@ public class L2SkillChargeDmg extends L2Skill
 			double damage = Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
 			if (crit)
 				damage *= 2;
-
+			
 			if (damage > 0)
 			{
+				byte reflect = Formulas.calcSkillReflect(target, this);
+				if (hasEffects())
+				{
+					if ((reflect & Formulas.SKILL_REFLECT_SUCCEED) != 0)
+					{
+						caster.stopSkillEffects(getId());
+						getEffects(target, caster);
+						SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+						sm.addSkillName(this);
+						caster.sendPacket(sm);
+					}
+					else
+					{
+						// activate attacked effects, if any
+						target.stopSkillEffects(getId());
+						if (Formulas.calcSkillSuccess(caster, target, this, shld, false, false, true))
+						{
+							getEffects(caster, target, new Env(shld, false, false, false));
+							
+							SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+							sm.addSkillName(this);
+							target.sendPacket(sm);
+						}
+						else
+						{
+							SystemMessage sm = new SystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
+							sm.addCharName(target);
+							sm.addSkillName(this);
+							caster.sendPacket(sm);
+						}
+					}
+				}
+				
 				double finalDamage = damage*modifier;
-
+				
 				if (Config.LOG_GAME_DAMAGE
 						&& caster instanceof L2Playable
 						&& damage > Config.LOG_GAME_DAMAGE_THRESHOLD)
 				{
-            		LogRecord record = new LogRecord(Level.INFO, "");
-            		record.setParameters(new Object[]{caster, " did damage ", (int)damage, this, " to ", target});
-            		record.setLoggerName("pdam");
-            		_logDamage.log(record);
+					LogRecord record = new LogRecord(Level.INFO, "");
+					record.setParameters(new Object[]{caster, " did damage ", (int)damage, this, " to ", target});
+					record.setLoggerName("pdam");
+					_logDamage.log(record);
 				}
-
+				
 				target.reduceCurrentHp(finalDamage, caster, this);
-
+				
 				// vengeance reflected damage
-				if ((Formulas.calcSkillReflect(target, this) & Formulas.SKILL_REFLECT_VENGEANCE) != 0)
+				if ((reflect & Formulas.SKILL_REFLECT_VENGEANCE) != 0)
 					caster.reduceCurrentHp(damage, target, this);
-
+				
 				caster.sendDamageMessage(target, (int)finalDamage, false, crit, false);
-
+				
 			}
 			else
 			{
@@ -130,14 +164,18 @@ public class L2SkillChargeDmg extends L2Skill
 		}
 		if (soul && weapon!= null)
 			weapon.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
+		
 		// effect self :]
-		L2Effect seffect = caster.getFirstEffect(getId());
-		if (seffect != null && seffect.isSelfEffect())
+		if (hasSelfEffects())
 		{
-			//Replace old effect with new one.
-			seffect.exit();
+			L2Effect effect = caster.getFirstEffect(getId());
+			if (effect != null && effect.isSelfEffect())
+			{
+				//Replace old effect with new one.
+				effect.exit();
+			}
+			// cast self effect if any
+			getEffectsSelf(caster);
 		}
-		// cast self effect if any
-		getEffectsSelf(caster);
 	}
 }

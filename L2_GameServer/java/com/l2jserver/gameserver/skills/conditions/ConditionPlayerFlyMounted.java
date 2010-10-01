@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.skills.Env;
  * @author kerberos
  */
 public class ConditionPlayerFlyMounted extends Condition {
-
+	
 	private boolean _val;
 	
 	/**
@@ -35,7 +35,7 @@ public class ConditionPlayerFlyMounted extends Condition {
 	{
 		_val = val;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */

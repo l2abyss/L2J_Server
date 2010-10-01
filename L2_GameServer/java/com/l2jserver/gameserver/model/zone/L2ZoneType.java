@@ -18,14 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * Abstract base class for any zone type
@@ -36,14 +37,14 @@ import javolution.util.FastMap;
 public abstract class L2ZoneType
 {
 	protected static final Logger _log = Logger.getLogger(L2ZoneType.class.getName());
-
+	
 	private final int _id;
 	protected List<L2ZoneForm> _zone;
 	protected FastMap<Integer, L2Character> _characterList;
 	protected FastMap<Integer, Integer> _zones;
 	
 	/** Parameters to affect specific characters */
-	private boolean _checkAffected;
+	private boolean _checkAffected = false;
 	
 	private int _minLvl;
 	private int _maxLvl;
@@ -51,14 +52,13 @@ public abstract class L2ZoneType
 	private int[] _class;
 	private char _classType;
 	private Map<Quest.QuestEventType, FastList<Quest>> _questEvents;
+	private InstanceType _target = InstanceType.L2Character; // default all chars
 	
 	protected L2ZoneType(int id)
 	{
 		_id = id;
 		_characterList = new FastMap<Integer, L2Character>().shared();
 		_zones = new FastMap<Integer, Integer>().shared();
-		
-		_checkAffected = false;
 		
 		_minLvl = 0;
 		_maxLvl = 0xFF;
@@ -152,6 +152,10 @@ public abstract class L2ZoneType
 				_classType = 2;
 			}
 		}
+		else if (name.equals("targetClass"))
+		{
+			_target = Enum.valueOf(InstanceType.class, value);
+		}
 		else
 			_log.info(getClass().getSimpleName()+": Unknown parameter - "+name+" in zone: "+getId());
 	}
@@ -165,6 +169,10 @@ public abstract class L2ZoneType
 	{
 		// Check lvl
 		if (character.getLevel() < _minLvl || character.getLevel() > _maxLvl)
+			return false;
+		
+		// check obj class
+		if (!character.isInstanceType(_target))
 			return false;
 		
 		if (character instanceof L2PcInstance)
@@ -391,7 +399,7 @@ public abstract class L2ZoneType
 	{
 		return _characterList;
 	}
-
+	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
 	{
 		if (_questEvents == null)
@@ -403,14 +411,14 @@ public abstract class L2ZoneType
 			questByEvents.add(q);
 		_questEvents.put(EventType, questByEvents);
 	}
-
+	
 	public FastList<Quest> getQuestByEvent(Quest.QuestEventType EventType)
 	{
 		if (_questEvents == null)
 			return null;
 		return _questEvents.get(EventType);
 	}
-
+	
 	/**
 	 * Broadcasts packet to all players inside the zone
 	 */
@@ -418,11 +426,28 @@ public abstract class L2ZoneType
 	{
 		if (_characterList.isEmpty())
 			return;
-
+		
 		for (L2Character character : _characterList.values())
 		{
 			if (character instanceof L2PcInstance)
 				character.sendPacket(packet);
 		}
+	}
+	
+	public InstanceType getTargetType()
+	{
+		return _target;
+	}
+	
+	public void setTargetType(InstanceType type)
+	{
+		_target = type;
+		_checkAffected = true;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName()+"["+ _id + "]";
 	}
 }

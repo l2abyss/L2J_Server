@@ -33,56 +33,56 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  * @version $Revision: 1.3.4.2 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestFriendDel extends L2GameClientPacket{
-
+	
 	private static final String _C__61_REQUESTFRIENDDEL = "[C] 61 RequestFriendDel";
 	private static Logger _log = Logger.getLogger(RequestFriendDel.class.getName());
-
+	
 	private String _name;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_name = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		SystemMessage sm;
-
+		
 		L2PcInstance activeChar = getClient().getActiveChar();
-        if (activeChar == null)
-            return;
-
-        int id = CharNameTable.getInstance().getIdByName(_name);
-        
-        if (id == -1)
-        {
-		    sm = new SystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
-		    sm.addString(_name);
-		    activeChar.sendPacket(sm);
-        	return;
-        }
-        
-        if (!activeChar.getFriendList().contains(id))
-        {
-		    sm = new SystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
-		    sm.addString(_name);
-		    activeChar.sendPacket(sm);
-        	return;
-        }
-        
+		if (activeChar == null)
+			return;
+		
+		int id = CharNameTable.getInstance().getIdByName(_name);
+		
+		if (id == -1)
+		{
+			sm = new SystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
+			sm.addString(_name);
+			activeChar.sendPacket(sm);
+			return;
+		}
+		
+		if (!activeChar.getFriendList().contains(id))
+		{
+			sm = new SystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
+			sm.addString(_name);
+			activeChar.sendPacket(sm);
+			return;
+		}
+		
 		Connection con = null;
 		
-        try
-        {
-		    con = L2DatabaseFactory.getInstance().getConnection();
-		    PreparedStatement statement;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement;
 			statement = con.prepareStatement("DELETE FROM character_friends WHERE (charId=? AND friendId=?) OR (charId=? AND friendId=?)");
 			statement.setInt(1, activeChar.getObjectId());
 			statement.setInt(2, id);
 			statement.setInt(3, id);
-            statement.setInt(4, activeChar.getObjectId());
+			statement.setInt(4, activeChar.getObjectId());
 			statement.execute();
 			statement.close();
 			
@@ -91,28 +91,28 @@ public final class RequestFriendDel extends L2GameClientPacket{
 			sm.addString(_name);
 			activeChar.sendPacket(sm);
 			
-		    activeChar.getFriendList().remove(new Integer(id));
-		    activeChar.sendPacket(new FriendPacket(false, id));
-		    
-		    L2PcInstance player = L2World.getInstance().getPlayer(_name);
-		    if (player != null)
-		    {
-		    	player.getFriendList().remove(Integer.valueOf(activeChar.getObjectId()));
-		    	player.sendPacket(new FriendPacket(false, activeChar.getObjectId()));
-		    }
+			activeChar.getFriendList().remove(new Integer(id));
+			activeChar.sendPacket(new FriendPacket(false, id));
+			
+			L2PcInstance player = L2World.getInstance().getPlayer(_name);
+			if (player != null)
+			{
+				player.getFriendList().remove(Integer.valueOf(activeChar.getObjectId()));
+				player.sendPacket(new FriendPacket(false, activeChar.getObjectId()));
+			}
 		}
 		catch (Exception e)
 		{
-		    _log.log(Level.WARNING, "could not del friend objectid: ", e);
+			_log.log(Level.WARNING, "could not del friend objectid: ", e);
 		}
 		finally
 		{
 			L2DatabaseFactory.close(con);
 		}
-
+		
 	}
-
-
+	
+	
 	@Override
 	public String getType()
 	{

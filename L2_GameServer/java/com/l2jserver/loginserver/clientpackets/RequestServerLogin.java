@@ -17,9 +17,9 @@ package com.l2jserver.loginserver.clientpackets;
 import com.l2jserver.Config;
 import com.l2jserver.loginserver.LoginController;
 import com.l2jserver.loginserver.SessionKey;
-import com.l2jserver.loginserver.serverpackets.PlayOk;
 import com.l2jserver.loginserver.serverpackets.LoginFail.LoginFailReason;
 import com.l2jserver.loginserver.serverpackets.PlayFail.PlayFailReason;
+import com.l2jserver.loginserver.serverpackets.PlayOk;
 
 /**
  * Fromat is ddc
@@ -32,7 +32,7 @@ public class RequestServerLogin extends L2LoginClientPacket
 	private int _skey1;
 	private int _skey2;
 	private int _serverId;
-
+	
 	/**
 	 * @return
 	 */
@@ -40,7 +40,7 @@ public class RequestServerLogin extends L2LoginClientPacket
 	{
 		return _skey1;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -48,7 +48,7 @@ public class RequestServerLogin extends L2LoginClientPacket
 	{
 		return _skey2;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -56,7 +56,7 @@ public class RequestServerLogin extends L2LoginClientPacket
 	{
 		return _serverId;
 	}
-
+	
 	@Override
 	public boolean readImpl()
 	{
@@ -72,7 +72,7 @@ public class RequestServerLogin extends L2LoginClientPacket
 			return false;
 		}
 	}
-
+	
 	/**
 	 * @see com.l2jserver.mmocore.network.ReceivablePacket#run()
 	 */
@@ -80,7 +80,7 @@ public class RequestServerLogin extends L2LoginClientPacket
 	public void run()
 	{
 		SessionKey sk = getClient().getSessionKey();
-
+		
 		// if we didnt showed the license we cant check these values
 		if (!Config.SHOW_LICENCE || sk.checkLoginPair(_skey1, _skey2))
 		{
@@ -91,7 +91,7 @@ public class RequestServerLogin extends L2LoginClientPacket
 			}
 			else
 			{
-				getClient().close(PlayFailReason.REASON_TOO_MANY_PLAYERS);
+				getClient().close(PlayFailReason.REASON_SERVER_OVERLOADED);
 			}
 		}
 		else

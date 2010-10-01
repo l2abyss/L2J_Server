@@ -23,8 +23,8 @@ import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.taskmanager.Task;
 import com.l2jserver.gameserver.taskmanager.TaskManager;
-import com.l2jserver.gameserver.taskmanager.TaskTypes;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
+import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
 
 /**

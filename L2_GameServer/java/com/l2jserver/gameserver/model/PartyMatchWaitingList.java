@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model;
 import java.util.List;
 
 import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -26,7 +27,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class PartyMatchWaitingList
 {
 	private List<L2PcInstance> _members;
-
+	
 	private PartyMatchWaitingList()
 	{
 		_members = new FastList<L2PcInstance>();
@@ -45,7 +46,7 @@ public class PartyMatchWaitingList
 		if (_members.contains(player))
 			_members.remove(player);
 	}
-
+	
 	public List<L2PcInstance> getPlayers()
 	{
 		return _members;
@@ -60,5 +61,5 @@ public class PartyMatchWaitingList
 	private static class SingletonHolder
 	{
 		protected static final PartyMatchWaitingList _instance = new PartyMatchWaitingList();
-	}	
+	}
 }

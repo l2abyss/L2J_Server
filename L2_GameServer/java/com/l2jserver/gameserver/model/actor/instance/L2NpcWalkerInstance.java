@@ -48,26 +48,26 @@ public class L2NpcWalkerInstance extends L2Npc
 		setInstanceType(InstanceType.L2NpcWalkerInstance);
 		setAI(new L2NpcWalkerAI(new L2NpcWalkerAIAccessor()));
 	}
-
+	
 	/**
 	 * AI can't be deattached, npc must move always with the same AI instance.
 	 * @param newAI AI to set for this L2NpcWalkerInstance
 	 */
 	@Override
-    public void setAI(L2CharacterAI newAI)
+	public void setAI(L2CharacterAI newAI)
 	{
 		if(!(_ai instanceof L2NpcWalkerAI))
 			_ai = newAI;
 	}
-
+	
 	@Override
-    public void onSpawn()
+	public void onSpawn()
 	{
 		getAI().setHomeX(getX());
 		getAI().setHomeY(getY());
 		getAI().setHomeZ(getZ());
 	}
-
+	
 	/**
 	 * Sends a chat to all _knowObjects
 	 * @param chat message to say
@@ -75,14 +75,14 @@ public class L2NpcWalkerInstance extends L2Npc
 	public void broadcastChat(String chat)
 	{
 		Map<Integer, L2PcInstance> _knownPlayers = getKnownList().getKnownPlayers();
-
+		
 		if(_knownPlayers == null)
 		{
 			if(Config.DEVELOPER)
 				_log.info("broadcastChat _players == null");
 			return;
 		}
-
+		
 		//we send message to known players only!
 		if(!_knownPlayers.isEmpty())
 		{
@@ -90,7 +90,7 @@ public class L2NpcWalkerInstance extends L2Npc
 			Broadcast.toKnownPlayers(this, cs);
 		}
 	}
-
+	
 	/**
 	 * NPCs are immortal
 	 * @param i ignore it
@@ -98,33 +98,33 @@ public class L2NpcWalkerInstance extends L2Npc
 	 * @param awake  ignore it
 	 */
 	@Override
-    public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{}
-
+	
 	/**
 	 * NPCs are immortal
 	 * @param killer ignore it
 	 * @return false
 	 */
 	@Override
-    public boolean doDie(L2Character killer)
+	public boolean doDie(L2Character killer)
 	{
 		return false;
 	}
-
+	
 	@Override
-    public L2NpcWalkerAI getAI()
+	public L2NpcWalkerAI getAI()
 	{
 		return (L2NpcWalkerAI)_ai;
 	}
-
+	
 	protected class L2NpcWalkerAIAccessor extends L2Character.AIAccessor
 	{
 		/**
 		 * AI can't be deattached.
 		 */
 		@Override
-        public void detachAI()
+		public void detachAI()
 		{}
 	}
 }

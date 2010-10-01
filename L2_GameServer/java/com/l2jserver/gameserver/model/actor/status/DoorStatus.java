@@ -22,7 +22,7 @@ public class DoorStatus extends CharStatus
 	{
 		super(activeChar);
 	}
-
+	
 	@Override
 	public L2DoorInstance getActiveChar()
 	{

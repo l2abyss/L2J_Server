@@ -18,12 +18,12 @@ public final class TutorialShowQuestionMark extends L2GameServerPacket
 {
 	private static final String _S__A7_TUTORIALSHOWQUESTIONMARK = "[S] a7 TutorialShowQuestionMark";
 	private int _markId;
-
+	
 	public TutorialShowQuestionMark(int blink)
 	{
-		_markId = blink; 
+		_markId = blink;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
 	 */
@@ -32,9 +32,9 @@ public final class TutorialShowQuestionMark extends L2GameServerPacket
 	{
 		writeC(0xa7);
 		writeD(_markId);
-
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
@@ -43,5 +43,5 @@ public final class TutorialShowQuestionMark extends L2GameServerPacket
 	{
 		return _S__A7_TUTORIALSHOWQUESTIONMARK;
 	}
-
+	
 }

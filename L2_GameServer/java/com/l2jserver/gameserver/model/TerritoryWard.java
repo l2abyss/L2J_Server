@@ -27,12 +27,12 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class TerritoryWard
 {
 	//private static final Logger _log = Logger.getLogger(CombatFlag.class.getName());
-
+	
 	protected L2PcInstance _player = null;
 	public int playerId = 0;
 	private L2ItemInstance _item = null;
 	private L2Npc _npc = null;
-
+	
 	private Location _location;
 	
 	private int _itemId;
@@ -53,7 +53,7 @@ public class TerritoryWard
 		_ownerCastleId = castleId;
 		_npc = npc;
 	}
-
+	
 	public int getTerritoryId()
 	{
 		return _territoryId;
@@ -92,7 +92,7 @@ public class TerritoryWard
 		// Init the dropped L2WardInstance and add it in the world as a visible object at the position where Pc was last
 		_npc = TerritoryWarManager.getInstance().spawnNPC(36491 + _territoryId, _location);
 	}
-
+	
 	public synchronized void unSpawnMe()
 	{
 		if ( _player != null )
@@ -117,12 +117,12 @@ public class TerritoryWard
 			spawnMe();
 			return false;
 		}
-
+		
 		// Player holding it data
 		_player = player;
 		playerId = _player.getObjectId();
 		_npc = null;
-
+		
 		// Equip with the weapon
 		if (item == null)
 			_item = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
@@ -132,7 +132,7 @@ public class TerritoryWard
 		SystemMessage sm = new SystemMessage(SystemMessageId.S1_EQUIPPED);
 		sm.addItemName(_item);
 		_player.sendPacket(sm);
-
+		
 		// Refresh inventory
 		if (!Config.FORCE_INVENTORY_UPDATE)
 		{
@@ -149,7 +149,7 @@ public class TerritoryWard
 		TerritoryWarManager.getInstance().giveTWPoint(player, _territoryId, 5);
 		return true;
 	}
-
+	
 	public void dropIt()
 	{
 		// Reset player stats

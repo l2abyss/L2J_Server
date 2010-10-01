@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.model.L2NpcWalkerNode;
  * 
  * @author Rayan RPG for L2Emu Project
  * 
- * @since 927 
+ * @since 927
  *
  */
 public class NpcWalkerRoutesTable

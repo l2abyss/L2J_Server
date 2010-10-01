@@ -32,19 +32,19 @@ public final class RestartResponse extends L2GameServerPacket
 	}
 	
 	private boolean _result;
-
+	
 	public RestartResponse(boolean result)
 	{
 		_result = result;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x71);
 		writeD(_result ? 1 : 0);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

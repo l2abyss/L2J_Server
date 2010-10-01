@@ -66,7 +66,7 @@ public class EffectDamOverTime extends L2Effect
 				
 				damage = getEffected().getCurrentHp() - 1;
 			}
-		}	
+		}
 		getEffected().reduceCurrentHpByDOT(damage, getEffector(), getSkill());
 		
 		return true;

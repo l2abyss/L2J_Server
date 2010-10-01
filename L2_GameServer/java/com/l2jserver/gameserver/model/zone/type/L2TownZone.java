@@ -37,8 +37,8 @@ public class L2TownZone extends L2SpawnZone
 		
 		_taxById = 0;
 		
-		// Default peace zone
-		_isPeaceZone = true;
+		// Default not peace zone
+		_isPeaceZone = false;
 	}
 	
 	@Override

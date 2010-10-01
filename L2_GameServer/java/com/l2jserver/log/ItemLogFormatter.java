@@ -37,7 +37,7 @@ public class ItemLogFormatter extends Formatter
 	{
 		final Object[] params = record.getParameters();
 		final StringBuilder output = StringUtil.startAppend(30 + record.getMessage().length()
-		        + params.length * 50, "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
+				+ params.length * 50, "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
 		
 		for (Object p : record.getParameters())
 		{

@@ -27,14 +27,14 @@ import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 public class CharSelectInfoPackage
 {
 	private String _name;
-    private int _objectId = 0;
+	private int _objectId = 0;
 	private int _charId = 0x00030b7a;
 	private long _exp =0;
 	private int _sp =0;
 	private int _clanId=0;
 	private int _race=0;
 	private int _classId=0;
-    private int _baseClassId=0;
+	private int _baseClassId=0;
 	private long _deleteTimer=0L;
 	private long _lastAccess=0L;
 	private int _face=0;
@@ -47,44 +47,44 @@ public class CharSelectInfoPackage
 	private int _maxMp=0;
 	private double _currentMp=0;
 	private int[][] _paperdoll;
-    private int _karma=0;
-    private int _pkKills=0;
-    private int _pvpKills=0;
-    private int _augmentationId=0;
-    private int _transformId = 0;
-    private int _x = 0;
-    private int _y = 0;
-    private int _z = 0;
-
-
-    /**
-     * @param int1
-     */
-    public CharSelectInfoPackage(int objectId, String name)
-    {
-        setObjectId(objectId);
-        _name = name;
-        _paperdoll = PcInventory.restoreVisibleInventory(objectId);
-    }
-
-    public int getObjectId()
-    {
-        return _objectId;
-    }
-
-    public void setObjectId(int objectId)
-    {
-        _objectId = objectId;
-    }
-
-    public int getCharId()
-    {
-        return _charId;
-    }
-    public void setCharId(int charId)
-    {
-        _charId = charId;
-    }
+	private int _karma=0;
+	private int _pkKills=0;
+	private int _pvpKills=0;
+	private int _augmentationId=0;
+	private int _transformId = 0;
+	private int _x = 0;
+	private int _y = 0;
+	private int _z = 0;
+	
+	
+	/**
+	 * @param int1
+	 */
+	public CharSelectInfoPackage(int objectId, String name)
+	{
+		setObjectId(objectId);
+		_name = name;
+		_paperdoll = PcInventory.restoreVisibleInventory(objectId);
+	}
+	
+	public int getObjectId()
+	{
+		return _objectId;
+	}
+	
+	public void setObjectId(int objectId)
+	{
+		_objectId = objectId;
+	}
+	
+	public int getCharId()
+	{
+		return _charId;
+	}
+	public void setCharId(int charId)
+	{
+		_charId = charId;
+	}
 	public int getClanId()
 	{
 		return _clanId;
@@ -97,18 +97,18 @@ public class CharSelectInfoPackage
 	{
 		return _classId;
 	}
-    public int getBaseClassId()
-    {
-        return _baseClassId;
-    }
+	public int getBaseClassId()
+	{
+		return _baseClassId;
+	}
 	public void setClassId(int classId)
 	{
 		_classId = classId;
 	}
-    public void setBaseClassId(int baseClassId)
-    {
-        _baseClassId = baseClassId;
-    }
+	public void setBaseClassId(int baseClassId)
+	{
+		_baseClassId = baseClassId;
+	}
 	public double getCurrentHp()
 	{
 		return _currentHp;
@@ -241,70 +241,70 @@ public class CharSelectInfoPackage
 	{
 		if (_paperdoll[Inventory.PAPERDOLL_RHAND][2] > 0)
 			return _paperdoll[Inventory.PAPERDOLL_RHAND][2];
-        return _paperdoll[Inventory.PAPERDOLL_LRHAND][2];
+		return _paperdoll[Inventory.PAPERDOLL_LRHAND][2];
 	}
-    public void setKarma(int k)
-    {
-        _karma = k;
-    }
-    public int getKarma()
-    {
-        return _karma;
-    }
-    public void setAugmentationId(int augmentationId)
-    {
-    	_augmentationId = augmentationId;
-    }
-    public int getAugmentationId()
-    {
-    	return _augmentationId;
-    }
-    public void setPkKills(int PkKills)
-    {
-        _pkKills = PkKills;
-    } 
-    public int getPkKills()
-    {
-        return _pkKills;
-    }
-    public void setPvPKills(int PvPKills)
-    {
-        _pvpKills = PvPKills;
-    } 
-    public int getPvPKills()
-    {
-        return _pvpKills;
-    }
-    public int getTransformId() 
-    { 
-        return _transformId; 
-    } 
-    public void setTransformId(int id) 
-    { 
-        _transformId = id; 
-    }
-    public int getX()
-    {
-    	return _x;
-    }
-    public int getY()
-    {
-    	return _y;
-    }
-    public int getZ()
-    {
-    	return _z;
-    }
-    public void setX(int x)
-    {
-    	_x = x;
-    }
-    public void setY(int y)
-    {
-    	_y = y;
-    }
-    public void setZ(int z)
-    {
-    	_z = z;
-    }
+	public void setKarma(int k)
+	{
+		_karma = k;
+	}
+	public int getKarma()
+	{
+		return _karma;
+	}
+	public void setAugmentationId(int augmentationId)
+	{
+		_augmentationId = augmentationId;
+	}
+	public int getAugmentationId()
+	{
+		return _augmentationId;
+	}
+	public void setPkKills(int PkKills)
+	{
+		_pkKills = PkKills;
+	}
+	public int getPkKills()
+	{
+		return _pkKills;
+	}
+	public void setPvPKills(int PvPKills)
+	{
+		_pvpKills = PvPKills;
+	}
+	public int getPvPKills()
+	{
+		return _pvpKills;
+	}
+	public int getTransformId()
+	{
+		return _transformId;
+	}
+	public void setTransformId(int id)
+	{
+		_transformId = id;
+	}
+	public int getX()
+	{
+		return _x;
+	}
+	public int getY()
+	{
+		return _y;
+	}
+	public int getZ()
+	{
+		return _z;
+	}
+	public void setX(int x)
+	{
+		_x = x;
+	}
+	public void setY(int y)
+	{
+		_y = y;
+	}
+	public void setZ(int z)
+	{
+		_z = z;
+	}
 }

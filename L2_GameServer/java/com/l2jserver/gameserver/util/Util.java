@@ -9,7 +9,7 @@
  * Added copyright notice
  *
  *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -150,12 +150,12 @@ public final class Util
 	}
 	
 	/**
-	* Capitalizes the first letter of every "word" in a string.<BR>
-	* (Based on ucwords() function of PHP)
-	*
-	* @param String str
-	* @return String containing the modified string.
-	*/
+	 * Capitalizes the first letter of every "word" in a string.<BR>
+	 * (Based on ucwords() function of PHP)
+	 *
+	 * @param String str
+	 * @return String containing the modified string.
+	 */
 	public static String capitalizeWords(String str)
 	{
 		char[] charArray = str.toCharArray();
@@ -186,7 +186,7 @@ public final class Util
 			return false;
 		if (range == -1)
 			return true; // not limited
-			
+		
 		int rad = 0;
 		if (obj1 instanceof L2Character)
 			rad += ((L2Character) obj1).getTemplate().collisionRadius;
@@ -212,7 +212,7 @@ public final class Util
 	}
 	
 	/*
-	 *  Checks if object is within short (sqrt(int.max_value)) radius, 
+	 *  Checks if object is within short (sqrt(int.max_value)) radius,
 	 *  not using collisionRadius. Faster calculation than checkIfInRange
 	 *  if distance is short and collisionRadius isn't needed.
 	 *  Not for long distance checks (potential teleports, far away castles etc)
@@ -223,7 +223,7 @@ public final class Util
 			return false;
 		if (radius == -1)
 			return true; // not limited
-			
+		
 		int dx = obj1.getX() - obj2.getX();
 		int dy = obj1.getY() - obj2.getY();
 		
@@ -340,11 +340,27 @@ public final class Util
 		return s;
 	}
 	
-	public static boolean contains(int[] array, int object)
+	public static <T> boolean contains(T[] array, T obj)
 	{
-		for(int i : array)
-			if (i == object)
+		for (int i = 0; i < array.length; i++)
+		{
+			if (array[i] == obj)
+			{
 				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean contains(int[] array, int obj)
+	{
+		for (int i = 0; i < array.length; i++)
+		{
+			if (array[i] == obj)
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 }

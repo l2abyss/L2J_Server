@@ -43,30 +43,30 @@ import javolution.util.FastList;
 public final class AcquireSkillList extends L2GameServerPacket
 {
 	//private static Logger _log = Logger.getLogger(AquireSkillList.class.getName());
-    public enum SkillType
-    {
-    	Usual, // 0
-    	Fishing, // 1
-    	Clan, // 2
-    	unk3,
-    	unk4,
-    	unk5,
-    	Special // 6
-    }
-
+	public enum SkillType
+	{
+		Usual, // 0
+		Fishing, // 1
+		Clan, // 2
+		SubUnit, //3
+		unk4,
+		unk5,
+		Special // 6
+	}
+	
 	private static final String _S__A3_AQUIRESKILLLIST = "[S] 90 AquireSkillList";
-
+	
 	private List<Skill> _skills;
-	private SkillType _fishingSkills;
-
-	private class Skill
+	private SkillType _skillType;
+	
+	private static class Skill
 	{
 		public int id;
 		public int nextLevel;
 		public int maxLevel;
 		public int spCost;
 		public int requirements;
-
+		
 		public Skill(int pId, int pNextLevel, int pMaxLevel, int pSpCost, int pRequirements)
 		{
 			id = pId;
@@ -76,25 +76,26 @@ public final class AcquireSkillList extends L2GameServerPacket
 			requirements = pRequirements;
 		}
 	}
-
+	
 	public AcquireSkillList(SkillType type)
 	{
-		_skills = new FastList<Skill>();
-		_fishingSkills = type;
+		_skillType = type;
 	}
-
+	
 	public void addSkill(int id, int nextLevel, int maxLevel, int spCost, int requirements)
 	{
+		if (_skills == null)
+			_skills = new FastList<Skill>();
 		_skills.add(new Skill(id, nextLevel, maxLevel, spCost, requirements));
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x90);
-        writeD(_fishingSkills.ordinal());   //c4 : C5 : 0: usuall  1: fishing 2: clans
+		writeD(_skillType.ordinal());
 		writeD(_skills.size());
-
+		
 		for (Skill temp : _skills)
 		{
 			writeD(temp.id);
@@ -102,9 +103,11 @@ public final class AcquireSkillList extends L2GameServerPacket
 			writeD(temp.maxLevel);
 			writeD(temp.spCost);
 			writeD(temp.requirements);
+			if (_skillType == SkillType.SubUnit)
+				writeD(0); //?
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

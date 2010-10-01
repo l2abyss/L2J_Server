@@ -24,6 +24,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
@@ -35,9 +38,6 @@ import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 /**
  * Auto Spawn Handler
@@ -611,7 +611,7 @@ public class AutoSpawnHandler
 	 *
 	 * @author Tempy
 	 */
-	public class AutoSpawnInstance
+	public static class AutoSpawnInstance
 	{
 		protected int _objectId;
 		

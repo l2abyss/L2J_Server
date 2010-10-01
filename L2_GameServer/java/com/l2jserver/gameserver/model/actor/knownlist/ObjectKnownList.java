@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -25,74 +27,72 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Util;
 
-import javolution.util.FastMap;
-
 public class ObjectKnownList
 {
 	private L2Object _activeObject;
 	private Map<Integer, L2Object> _knownObjects;
-
+	
 	public ObjectKnownList(L2Object activeObject)
 	{
 		_activeObject = activeObject;
 	}
-
+	
 	public boolean addKnownObject(L2Object object)
 	{
 		if (object == null)
 			return false;
-
+		
 		// Instance -1 is for GMs that can see everything on all instances
 		if(getActiveObject().getInstanceId() != -1
 				&& (object.getInstanceId() != getActiveObject().getInstanceId()))
 			return false;
-
+		
 		// Check if the object is an L2PcInstance in ghost mode
 		if(object instanceof L2PcInstance
 				&& ((L2PcInstance)object).getAppearance().isGhost())
 			return false;
-
+		
 		// Check if already know object
 		if (knowsObject(object))
 			return false;
-
+		
 		// Check if object is not inside distance to watch object
 		if (!Util.checkIfInShortRadius(getDistanceToWatchObject(object), getActiveObject(), object, true))
 			return false;
-
+		
 		return (getKnownObjects().put(object.getObjectId(), object) == null);
 	}
-
+	
 	public final boolean knowsObject(L2Object object)
 	{
 		if (object == null)
 			return false;
-
+		
 		return getActiveObject() == object || getKnownObjects().containsKey(object.getObjectId());
 	}
-
+	
 	/** Remove all L2Object from _knownObjects */
 	public void removeAllKnownObjects()
 	{
 		getKnownObjects().clear();
 	}
-
+	
 	public final boolean removeKnownObject(L2Object object)
 	{
 		return removeKnownObject(object, false);
 	}
-
+	
 	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{
 		if (object == null)
 			return false;
-
+		
 		if (forget) // on forget objects removed from list by iterator
 			return true;
-
+		
 		return getKnownObjects().remove(object.getObjectId()) != null;
 	}
-
+	
 	// used only in Config.MOVE_BASED_KNOWNLIST and does not support guards seeing
 	// moving monsters
 	public final void findObjects()
@@ -100,7 +100,7 @@ public class ObjectKnownList
 		final L2WorldRegion region = getActiveObject().getWorldRegion();
 		if (region == null)
 			return;
-
+		
 		if (getActiveObject() instanceof L2Playable)
 		{
 			for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
@@ -143,7 +143,7 @@ public class ObjectKnownList
 			}
 		}
 	}
-
+	
 	// Remove invisible and too far L2Object from _knowObject and if necessary from _knownPlayers of the L2Character
 	public void forgetObjects(boolean fullCheck)
 	{
@@ -163,13 +163,13 @@ public class ObjectKnownList
 						oIter.remove();
 						continue;
 					}
-
+					
 					if (!fullCheck && !(object instanceof L2Playable))
 						continue;
-
+					
 					// Remove all objects invisible or too far
 					if (!object.isVisible()
-					        || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
+							|| !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
 					{
 						oIter.remove();
 						removeKnownObject(object, true);
@@ -178,22 +178,22 @@ public class ObjectKnownList
 			}
 		}
 	}
-
+	
 	public L2Object getActiveObject()
 	{
 		return _activeObject;
 	}
-
+	
 	public int getDistanceToForgetObject(L2Object object)
 	{
 		return 0;
 	}
-
+	
 	public int getDistanceToWatchObject(L2Object object)
 	{
 		return 0;
 	}
-
+	
 	/** Return the _knownObjects containing all L2Object known by the L2Character. */
 	public final Map<Integer, L2Object> getKnownObjects()
 	{

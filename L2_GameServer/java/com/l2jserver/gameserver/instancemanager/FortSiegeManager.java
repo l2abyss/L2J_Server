@@ -26,6 +26,9 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -40,9 +43,6 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 public class FortSiegeManager
 {
@@ -402,7 +402,7 @@ public class FortSiegeManager
 		}
 	}
 	
-	public class SiegeSpawn
+	public static class SiegeSpawn
 	{
 		Location _location;
 		private int _npcId;

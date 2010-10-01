@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.templates.L2HelperBuff;
 import com.l2jserver.gameserver.templates.StatsSet;
-
-import javolution.util.FastList;
 
 /**
  * This class represents the Newbie Helper Buff list

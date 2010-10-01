@@ -24,13 +24,13 @@ public final class L2VillageMasterDwarfInstance extends L2VillageMasterInstance
 	{
 		super(objectId, template);
 	}
-
+	
 	@Override
 	protected final boolean checkVillageMasterRace(PlayerClass pclass)
 	{
 		if (pclass == null)
 			return false;
-
+		
 		return pclass.isOfRace(Race.Dwarf);
 	}
 }

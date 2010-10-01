@@ -25,18 +25,18 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class PartySmallWindowAdd extends L2GameServerPacket
 {
 	private static final String _S__64_PARTYSMALLWINDOWADD = "[S] 4f PartySmallWindowAdd";
-
+	
 	private final L2PcInstance _member;
 	private final int _leaderId;
 	private final int _distribution;
-
+	
 	public PartySmallWindowAdd(L2PcInstance member, L2Party party)
 	{
 		_member = member;
 		_leaderId = party.getPartyLeaderOID();
 		_distribution = party.getLootDistribution();
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -56,7 +56,7 @@ public final class PartySmallWindowAdd extends L2GameServerPacket
 		writeD(0);//writeD(0x01); ??
 		writeD(0);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

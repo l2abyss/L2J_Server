@@ -31,7 +31,7 @@ public class PcKnownList extends PlayableKnownList
 	{
 		super(activeChar);
 	}
-
+	
 	/**
 	 * Add a visible L2Object to L2PcInstance _knownObjects and _knownPlayer (if necessary) and send Server-Client Packets needed to inform the L2PcInstance of its state and actions in progress.<BR><BR>
 	 *
@@ -63,7 +63,7 @@ public class PcKnownList extends PlayableKnownList
 	{
 		if (!super.addKnownObject(object))
 			return false;
-
+		
 		if (object.getPoly().isMorphed()
 				&& object.getPoly().getPolyType().equals("item"))
 		{
@@ -75,7 +75,7 @@ public class PcKnownList extends PlayableKnownList
 		else
 		{
 			object.sendInfo(getActiveChar());
-
+			
 			if (object instanceof L2Character)
 			{
 				// Update the state of the L2Character object client side by sending Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance
@@ -84,10 +84,10 @@ public class PcKnownList extends PlayableKnownList
 					obj.getAI().describeStateToPlayer(getActiveChar());
 			}
 		}
-
+		
 		return true;
 	}
-
+	
 	/**
 	 * Remove a L2Object from L2PcInstance _knownObjects and _knownPlayer (if necessary) and send Server-Client Packet DeleteObject to the L2PcInstance.<BR><BR>
 	 *
@@ -99,7 +99,7 @@ public class PcKnownList extends PlayableKnownList
 	{
 		if (!super.removeKnownObject(object, forget))
 			return false;
-
+		
 		if (object instanceof L2AirShipInstance)
 		{
 			if (((L2AirShipInstance)object).getCaptainId() != 0
@@ -108,28 +108,28 @@ public class PcKnownList extends PlayableKnownList
 			if (((L2AirShipInstance)object).getHelmObjectId() != 0)
 				getActiveChar().sendPacket(new DeleteObject(((L2AirShipInstance)object).getHelmObjectId()));
 		}
-
-			// Send Server-Client Packet DeleteObject to the L2PcInstance
-			getActiveChar().sendPacket(new DeleteObject(object));
-
+		
+		// Send Server-Client Packet DeleteObject to the L2PcInstance
+		getActiveChar().sendPacket(new DeleteObject(object));
+		
 		if (Config.CHECK_KNOWN && object instanceof L2Npc && getActiveChar().isGM())
 			getActiveChar().sendMessage("Removed NPC: "+((L2Npc)object).getName());
-
+		
 		return true;
 	}
-
+	
 	@Override
 	public final L2PcInstance getActiveChar()
 	{
 		return (L2PcInstance)super.getActiveChar();
 	}
-
+	
 	@Override
 	public int getDistanceToForgetObject(L2Object object)
 	{
 		if (object instanceof L2Vehicle)
 			return 10000;
-
+		
 		// when knownlist grows, the distance to forget should be at least
 		// the same as the previous watch range, or it becomes possible that
 		// extra charinfo packets are being sent (watch-forget-watch-forget)
@@ -143,13 +143,13 @@ public class PcKnownList extends PlayableKnownList
 		else
 			return 2310;
 	}
-
+	
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
 		if (object instanceof L2Vehicle)
 			return 8000;
-
+		
 		final int knownlistSize = getKnownObjects().size();
 		if (knownlistSize <= 25)
 			return 3400; // empty field

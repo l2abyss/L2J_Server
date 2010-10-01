@@ -73,7 +73,7 @@ public final class FloodProtectorAction
 		_client = client;
 		_config = config;
 	}
-
+	
 	/**
 	 * Checks whether the request is flood protected or not.
 	 * 
@@ -133,7 +133,7 @@ public final class FloodProtectorAction
 		
 		return true;
 	}
-
+	
 	/**
 	 * Kick player from game (close network connection).
 	 */
@@ -143,13 +143,13 @@ public final class FloodProtectorAction
 			_client.getActiveChar().logout(false);
 		else
 			_client.closeNow();
-
+		
 		if (_log.isLoggable(Level.WARNING))
 		{
 			log("kicked for flooding");
 		}
 	}
-
+	
 	/**
 	 * Bans char account and logs out the char.
 	 */
@@ -158,12 +158,12 @@ public final class FloodProtectorAction
 		if (_client.getActiveChar() != null)
 		{
 			_client.getActiveChar().setPunishLevel(L2PcInstance.PunishLevel.ACC, _config.PUNISHMENT_TIME);
-
+			
 			if (_log.isLoggable(Level.WARNING))
 			{
 				log(" banned for flooding ", _config.PUNISHMENT_TIME <= 0 ? "forever" : "for " + _config.PUNISHMENT_TIME + " mins");
 			}
-
+			
 			_client.getActiveChar().logout();
 		}
 		else
@@ -187,7 +187,7 @@ public final class FloodProtectorAction
 		else
 			log(" unable to jail: no active player");
 	}
-
+	
 	private void log(String... lines)
 	{
 		final StringBuilder output = StringUtil.startAppend(100, _config.FLOOD_PROTECTOR_TYPE, ": ");
@@ -200,7 +200,7 @@ public final class FloodProtectorAction
 		catch (Exception e)
 		{
 		}
-
+		
 		switch (_client.getState())
 		{
 			case IN_GAME:
@@ -219,7 +219,7 @@ public final class FloodProtectorAction
 			default:
 				throw new IllegalStateException("Missing state on switch");
 		}
-
+		
 		StringUtil.append(output, lines);
 		_log.warning(output.toString());
 	}

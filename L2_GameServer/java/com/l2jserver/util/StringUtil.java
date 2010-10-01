@@ -19,6 +19,8 @@
  */
 package com.l2jserver.util;
 
+import javolution.text.TextBuilder;
+
 /**
  * String utilities optimized for the best performance.
  * 
@@ -215,14 +217,16 @@ public final class StringUtil
 	 */
 	public static String concat(final String... strings)
 	{
-		final StringBuilder sbString = new StringBuilder(getLength(strings));
+		final TextBuilder sbString = TextBuilder.newInstance();
 		
 		for (final String string : strings)
 		{
 			sbString.append(string);
 		}
 		
-		return sbString.toString();
+		String result = sbString.toString();
+		TextBuilder.recycle(sbString);
+		return result;
 	}
 	
 	/**

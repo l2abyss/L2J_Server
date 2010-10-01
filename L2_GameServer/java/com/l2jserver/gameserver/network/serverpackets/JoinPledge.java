@@ -22,22 +22,22 @@ package com.l2jserver.gameserver.network.serverpackets;
 public final class JoinPledge extends L2GameServerPacket
 {
 	private static final String _S__45_JOINPLEDGE = "[S] 2d JoinPledge";
-
+	
 	private int _pledgeId;
-
+	
 	public JoinPledge(int pledgeId)
 	{
 		_pledgeId = pledgeId;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x2d);
-
+		
 		writeD(_pledgeId);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */
@@ -46,5 +46,5 @@ public final class JoinPledge extends L2GameServerPacket
 	{
 		return _S__45_JOINPLEDGE;
 	}
-
+	
 }

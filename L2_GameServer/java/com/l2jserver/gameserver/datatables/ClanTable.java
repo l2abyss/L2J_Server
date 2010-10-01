@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -45,8 +47,6 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListUpdate
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.util.Util;
-
-import javolution.util.FastMap;
 
 /**
  * This class ...
@@ -110,6 +110,7 @@ public class ClanTable
 			L2DatabaseFactory.close(con);
 		}
 		
+		allianceCheck();
 		restorewars();
 	}
 	
@@ -483,6 +484,28 @@ public class ClanTable
 		finally
 		{
 			L2DatabaseFactory.close(con);
+		}
+	}
+	
+	/**
+	 * Check for nonexistent alliances
+	 */
+	private void allianceCheck()
+	{
+		for (L2Clan clan : _clans.values())
+		{
+			int allyId = clan.getAllyId();
+			if (allyId != 0 && clan.getClanId() != allyId)
+			{
+				if (!_clans.containsKey(allyId))
+				{
+					clan.setAllyId(0);
+					clan.setAllyName(null);
+					clan.changeAllyCrest(0, true);
+					clan.updateClanInDB();
+					_log.info(getClass().getSimpleName()+": Removed alliance from clan: "+clan);
+				}
+			}
 		}
 	}
 	

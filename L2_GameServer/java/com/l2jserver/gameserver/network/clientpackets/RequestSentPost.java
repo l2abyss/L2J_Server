@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.ExShowSentPost;
+import com.l2jserver.gameserver.network.serverpackets.ExReplySentPost;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
@@ -31,54 +31,54 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestSentPost extends L2GameClientPacket
 {
 	private static final String _C__D0_6E_REQUESTSENTPOST = "[C] D0:6E RequestSentPost";
-
+	
 	private int _msgId;
-
+	
 	@Override
 	protected void readImpl()
 	{
 		_msgId = readD();
 	}
-
+	
 	@Override
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null || !Config.ALLOW_MAIL)
 			return;
-
-		if (!activeChar.isInsideZone(ZONE_PEACE))
+		
+		Message msg = MailManager.getInstance().getMessage(_msgId);
+		if (msg == null)
+			return;
+		
+		if (!activeChar.isInsideZone(ZONE_PEACE) && msg.hasAttachments())
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
 			return;
 		}
-
-		Message msg = MailManager.getInstance().getMessage(_msgId);
-		if (msg == null)
-			return;
-
+		
 		if (msg.getSenderId() != activeChar.getObjectId())
 		{
 			Util.handleIllegalPlayerAction(activeChar,
 					"Player "+activeChar.getName()+" tried to read not own post!", Config.DEFAULT_PUNISH);
 			return;
 		}
-
+		
 		if (msg.isDeletedBySender())
 			return;
-
-		activeChar.sendPacket(new ExShowSentPost(msg));
+		
+		activeChar.sendPacket(new ExReplySentPost(msg));
 	}
-
+	
 	@Override
 	public String getType()
 	{
 		return _C__D0_6E_REQUESTSENTPOST;
 	}
-
+	
 	@Override
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
 	}
-} 
+}

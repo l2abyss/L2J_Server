@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.BuyList;
 import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -44,25 +45,25 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 		super(objectId, template, owner, skill);
 		setInstanceType(InstanceType.L2MerchantSummonInstance);
 	}
-
+	
 	@Override
 	public boolean hasAI()
 	{
 		return false;
 	}
-
+	
 	@Override
 	public L2CharacterAI getAI()
 	{
 		return null;
 	}
-
+	
 	@Override
 	public void deleteMe(L2PcInstance owner)
 	{
-
+		
 	}
-
+	
 	@Override
 	public void unSummon(L2PcInstance owner)
 	{
@@ -77,73 +78,73 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 			setTarget(null);
 		}
 	}
-
+	
 	@Override
 	public void setFollowStatus(boolean state)
 	{
-
+		
 	}
-
+	
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return false;
 	}
-
+	
 	@Override
 	public boolean isInvul()
 	{
 		return true;
 	}
-
+	
 	@Override
 	public L2Party getParty()
 	{
 		return null;
 	}
-
+	
 	@Override
 	public boolean isInParty()
 	{
 		return false;
 	}
-
+	
 	@Override
 	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
-
+		
 	}
-
+	
 	@Override
 	public void doCast(L2Skill skill)
 	{
-
+		
 	}
-
+	
 	@Override
 	public boolean isInCombat()
 	{
 		return false;
 	}
-
+	
 	@Override
 	public final void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
 	{
-
+		
 	}
-
+	
 	@Override
 	public void reduceCurrentHp(double i, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
-
+		
 	}
-
+	
 	@Override
 	public void updateAndBroadcastStatus(int val)
 	{
-
+		
 	}
-
+	
 	@Override
 	public void onAction(L2PcInstance player, boolean interact)
 	{
@@ -152,17 +153,17 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-
+		
 		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
 		{
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-
+			
 			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
 			final MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
 			player.sendPacket(my);
-
+			
 			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
 			player.sendPacket(new ValidateLocation(this));
 		}
@@ -180,17 +181,17 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		final StringTokenizer st = new StringTokenizer(command, " ");
 		final String actualCommand = st.nextToken(); // Get actual command
-
+		
 		if (actualCommand.equalsIgnoreCase("Buy"))
 		{
 			if (st.countTokens() < 1)
 				return;
-
+			
 			final int val = Integer.parseInt(st.nextToken());
 			showBuyWindow(player, val);
 		}
@@ -199,51 +200,52 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 			showSellWindow(player);
 		}
 	}
-
+	
 	protected final void showBuyWindow(L2PcInstance player, int val)
 	{
 		double taxRate = 50;
-
+		
 		player.tempInventoryDisable();
-
+		
 		if (Config.DEBUG)
 			_log.fine("Showing buylist");
-
+		
 		L2TradeList list = TradeController.getInstance().getBuyList(val);
-
+		
 		if (list != null && list.getNpcId().equals(String.valueOf(getNpcId())))
 		{
+			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
 			player.sendPacket(new ExBuySellListPacket(player, list, taxRate, false));
 		}
 		else
-        {
+		{
 			_log.warning("possible client hacker: "+player.getName()+" attempting to buy from GM shop! < Ban him!");
 			_log.warning("buylist id:" + val);
-        }
-
+		}
+		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	protected final void showSellWindow(L2PcInstance player)
 	{
 		if (Config.DEBUG)
 			_log.fine("Showing selllist");
-
+		
 		player.sendPacket(new SellList(player));
-
+		
 		if (Config.DEBUG)
 			_log.fine("Showing sell window");
-
+		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
-
+	
 	private void showMessageWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		final String filename = "data/html/merchant/"+getNpcId()+".htm";
 		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
-		html.replace("%objectId%", String.valueOf(getObjectId()));       
+		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
 	}
 }

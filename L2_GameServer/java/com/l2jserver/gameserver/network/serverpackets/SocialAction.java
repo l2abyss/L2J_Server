@@ -26,7 +26,7 @@ public class SocialAction extends L2GameServerPacket
 	private static final String _S__3D_SOCIALACTION = "[S] 27 SocialAction";
 	private int _charObjId;
 	private int _actionId;
-
+	
 	/**
 	 * 0x3d SocialAction         dd
 	 * @param _characters
@@ -36,7 +36,7 @@ public class SocialAction extends L2GameServerPacket
 		_charObjId = playerId;
 		_actionId = actionId;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -44,7 +44,7 @@ public class SocialAction extends L2GameServerPacket
 		writeD(_charObjId);
 		writeD(_actionId);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

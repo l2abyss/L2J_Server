@@ -51,13 +51,13 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null || !(player.getPet() instanceof L2PetInstance))
 			return;
-
+		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("getfrompet"))
 		{
 			player.sendMessage("You get items from pet too fast.");
 			return;
 		}
-
+		
 		L2PetInstance pet = (L2PetInstance) player.getPet();
 		if (player.getActiveEnchantItem() != null)
 			return;

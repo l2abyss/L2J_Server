@@ -9,7 +9,7 @@
  * Added copyright notice
  *
  *
-* This program is free software: you can redistribute it and/or modify it under
+ * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
  * version.
@@ -222,7 +222,7 @@ public final class Broadcast
 		// synchronized (L2World.getInstance().getAllPlayers())
 		{
 			for (L2PcInstance onlinePlayer : pls)
-				if (onlinePlayer.isOnline() == 1)
+				if (onlinePlayer != null && onlinePlayer.isOnline())
 					onlinePlayer.sendPacket(mov);
 		}
 	}
@@ -240,7 +240,7 @@ public final class Broadcast
 		{
 			for (L2PcInstance onlinePlayer : pls)
 			{
-				if (onlinePlayer.isOnline() == 1 && onlinePlayer.getInstanceId() == instanceId)
+				if (onlinePlayer != null && onlinePlayer.isOnline() && onlinePlayer.getInstanceId() == instanceId)
 					onlinePlayer.sendPacket(mov);
 			}
 		}

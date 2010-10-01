@@ -21,21 +21,21 @@ import com.l2jserver.util.StringUtil;
 public class ShowBoard extends L2GameServerPacket
 {
 	private static final String _S__6E_SHOWBOARD = "[S] 7b ShowBoard";
-
+	
 	private StringBuilder _htmlCode;
-
+	
 	public ShowBoard(String htmlCode, String id)
 	{
 		_htmlCode = StringUtil.startAppend(500, id, "\u0008", htmlCode);
 	}
-
+	
 	public ShowBoard(List<String> arg)
 	{
 		_htmlCode = StringUtil.startAppend(500, "1002\u0008");
 		for (String str : arg)
 			StringUtil.append(_htmlCode, str, " \u0008");
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -54,7 +54,7 @@ public class ShowBoard extends L2GameServerPacket
 		else
 			writeS("<html><body>Html is too long!</body></html>");
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

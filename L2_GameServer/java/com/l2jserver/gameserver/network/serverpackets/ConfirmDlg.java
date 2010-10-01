@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import javolution.util.FastList;
+
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -24,8 +26,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
-import javolution.util.FastList;
-
 /**
  * @author kombat
  * Format: cd d[d s/d/dd/ddd]
@@ -34,22 +34,22 @@ public class ConfirmDlg extends L2GameServerPacket
 {
 	private static final String _S__ED_CONFIRMDLG = "[S] f3 ConfirmDlg";
 	private int _messageId;
-
+	
 	private int _skillLvL = 1;
-
+	
 	private static final int TYPE_ZONE_NAME = 7;
 	private static final int TYPE_SKILL_NAME = 4;
 	private static final int TYPE_ITEM_NAME = 3;
 	private static final int TYPE_NPC_NAME = 2;
 	private static final int TYPE_NUMBER = 1;
 	private static final int TYPE_TEXT = 0;
-
+	
 	private final FastList<CnfDlgData> _info = new FastList<CnfDlgData>();
 	
 	private int _time = 0;
 	private int _requesterId = 0;
 	
-	protected class CnfDlgData
+	protected static class CnfDlgData
 	{
 		protected final int type;
 		protected final Object value;
@@ -60,24 +60,24 @@ public class ConfirmDlg extends L2GameServerPacket
 			value = val;
 		}
 	}
-
+	
 	public ConfirmDlg(int messageId)
 	{
 		_messageId = messageId;
 	}
-
+	
 	public ConfirmDlg addString(String text)
 	{
 		_info.add(new CnfDlgData(TYPE_TEXT, text));
 		return this;
 	}
-
+	
 	public ConfirmDlg addNumber(int number)
 	{
 		_info.add(new CnfDlgData(TYPE_NUMBER, number));
 		return this;
 	}
-
+	
 	public ConfirmDlg addCharName(L2Character cha)
 	{
 		if (cha instanceof L2Npc)
@@ -88,101 +88,101 @@ public class ConfirmDlg extends L2GameServerPacket
 			return addNpcName((L2Summon)cha);
 		return addString(cha.getName());
 	}
-
+	
 	public ConfirmDlg addPcName(L2PcInstance pc)
 	{
 		return addString(pc.getAppearance().getVisibleName());
 	}
-
+	
 	public ConfirmDlg addNpcName(L2Npc npc)
 	{
 		return addNpcName(npc.getTemplate());
 	}
-
+	
 	public ConfirmDlg addNpcName(L2Summon npc)
 	{
 		return addNpcName(npc.getNpcId());
 	}
-
+	
 	public ConfirmDlg addNpcName(L2NpcTemplate tpl)
 	{
 		if (tpl.isCustom())
 			return addString(tpl.name);
 		return addNpcName(tpl.npcId);
 	}
-
+	
 	public ConfirmDlg addNpcName(int id)
 	{
 		_info.add(new CnfDlgData(TYPE_NPC_NAME, id));
 		return this;
 	}
-
+	
 	public ConfirmDlg addItemName(L2ItemInstance item)
 	{
 		return addItemName(item.getItem().getItemId());
 	}
-
+	
 	public ConfirmDlg addItemName(L2Item item)
 	{
 		// TODO: template id for items
 		return addItemName(item.getItemId());
 	}
-
+	
 	public ConfirmDlg addItemName(int id)
 	{
 		_info.add(new CnfDlgData(TYPE_ITEM_NAME, id));
 		return this;
 	}
-
+	
 	public ConfirmDlg addZoneName(int x, int y, int z)
 	{
 		Integer[] coord = {x, y, z};
 		_info.add(new CnfDlgData(TYPE_ZONE_NAME, coord));
 		return this;
 	}
-
+	
 	public ConfirmDlg addSkillName(L2Effect effect)
 	{
 		return addSkillName(effect.getSkill());
 	}
-
+	
 	public ConfirmDlg addSkillName(L2Skill skill)
 	{
 		if (skill.getId() != skill.getDisplayId()) //custom skill -  need nameId or smth like this.
 			return addString(skill.getName());
 		return addSkillName(skill.getId(), skill.getLevel());
 	}
-
+	
 	public ConfirmDlg addSkillName(int id)
 	{
 		return addSkillName(id, 1);
 	}
-
+	
 	public ConfirmDlg addSkillName(int id, int lvl)
 	{
 		_info.add(new CnfDlgData(TYPE_SKILL_NAME, id));
 		_skillLvL = lvl;
 		return this;
 	}
-
+	
 	public ConfirmDlg addTime(int time)
 	{
 		_time = time;
 		return this;
 	}
-
+	
 	public ConfirmDlg addRequesterId(int id)
 	{
 		_requesterId = id;
 		return this;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xf3);
 		writeD(_messageId);
-
+		
 		if (_info.isEmpty())
 		{
 			writeD(0x00);
@@ -196,7 +196,7 @@ public class ConfirmDlg extends L2GameServerPacket
 			for (CnfDlgData data : _info)
 			{
 				writeD(data.type);
-
+				
 				switch (data.type)
 				{
 					case TYPE_TEXT:
@@ -225,7 +225,7 @@ public class ConfirmDlg extends L2GameServerPacket
 				writeD(_requesterId);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
 	 */

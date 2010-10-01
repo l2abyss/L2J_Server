@@ -26,76 +26,76 @@ import javax.script.ScriptException;
  */
 public abstract class ManagedScript
 {
-    private File _scriptFile;
-    private long _lastLoadTime;
-    private boolean _isActive;
-    
-    public ManagedScript()
-    {
-        _scriptFile = L2ScriptEngineManager.getInstance().getCurrentLoadingScript();
-        this.setLastLoadTime(System.currentTimeMillis());
-    }
-    
-    /**
-     * Attempts to reload this script and to refresh the necessary bindings with it ScriptControler.<BR>
-     * Subclasses of this class should override this method to properly refresh their bindings when necessary.
-     * 
-     * @return true if and only if the scrip was reloaded, false otherwise.
-     */
-    public boolean reload()
-    {
-        try
-        {
-            L2ScriptEngineManager.getInstance().executeScript(getScriptFile());
-            return true;
-        }
-        catch (FileNotFoundException e)
-        {
-            return false;
-        }
-        catch (ScriptException e)
-        {
-            return false;
-        }
-    }
-    
-    public abstract boolean unload();
-    
-    public void setActive(boolean status)
-    {
-        _isActive = status;
-    }
-    
-    public boolean isActive()
-    {
-        return _isActive;
-    }
-
-    /**
-     * @return Returns the scriptFile.
-     */
-    public File getScriptFile()
-    {
-        return _scriptFile;
-    }
-
-    /**
-     * @param lastLoadTime The lastLoadTime to set.
-     */
-    protected void setLastLoadTime(long lastLoadTime)
-    {
-        _lastLoadTime = lastLoadTime;
-    }
-
-    /**
-     * @return Returns the lastLoadTime.
-     */
-    protected long getLastLoadTime()
-    {
-        return _lastLoadTime;
-    }
-    
-    public abstract String getScriptName();
-    
-    public abstract ScriptManager<?> getScriptManager();
+	private File _scriptFile;
+	private long _lastLoadTime;
+	private boolean _isActive;
+	
+	public ManagedScript()
+	{
+		_scriptFile = L2ScriptEngineManager.getInstance().getCurrentLoadingScript();
+		this.setLastLoadTime(System.currentTimeMillis());
+	}
+	
+	/**
+	 * Attempts to reload this script and to refresh the necessary bindings with it ScriptControler.<BR>
+	 * Subclasses of this class should override this method to properly refresh their bindings when necessary.
+	 * 
+	 * @return true if and only if the scrip was reloaded, false otherwise.
+	 */
+	public boolean reload()
+	{
+		try
+		{
+			L2ScriptEngineManager.getInstance().executeScript(getScriptFile());
+			return true;
+		}
+		catch (FileNotFoundException e)
+		{
+			return false;
+		}
+		catch (ScriptException e)
+		{
+			return false;
+		}
+	}
+	
+	public abstract boolean unload();
+	
+	public void setActive(boolean status)
+	{
+		_isActive = status;
+	}
+	
+	public boolean isActive()
+	{
+		return _isActive;
+	}
+	
+	/**
+	 * @return Returns the scriptFile.
+	 */
+	public File getScriptFile()
+	{
+		return _scriptFile;
+	}
+	
+	/**
+	 * @param lastLoadTime The lastLoadTime to set.
+	 */
+	protected void setLastLoadTime(long lastLoadTime)
+	{
+		_lastLoadTime = lastLoadTime;
+	}
+	
+	/**
+	 * @return Returns the lastLoadTime.
+	 */
+	protected long getLastLoadTime()
+	{
+		return _lastLoadTime;
+	}
+	
+	public abstract String getScriptName();
+	
+	public abstract ScriptManager<?> getScriptManager();
 }

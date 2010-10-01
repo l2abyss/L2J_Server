@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.Territory;
@@ -30,8 +32,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
-
-import javolution.util.FastList;
 
 /**
  * This class manages the spawn and respawn of a group of L2NpcInstance that are in the same are and have the same type.
@@ -552,10 +552,10 @@ public class L2Spawn
 					&& !getTemplate().isQuestMonster
 					&& !mob.isRaid()
 					&& !mob.isRaidMinion()
-					&& Config.L2JMOD_CHAMPION_FREQUENCY > 0 
-					&& mob.getLevel()>=Config.L2JMOD_CHAMP_MIN_LVL 
+					&& Config.L2JMOD_CHAMPION_FREQUENCY > 0
+					&& mob.getLevel()>=Config.L2JMOD_CHAMP_MIN_LVL
 					&& mob.getLevel()<=Config.L2JMOD_CHAMP_MAX_LVL
-					&& (Config.L2JMOD_CHAMPION_ENABLE_IN_INSTANCES || getInstanceId() == 0) 
+					&& (Config.L2JMOD_CHAMPION_ENABLE_IN_INSTANCES || getInstanceId() == 0)
 			)
 			{
 				int random = Rnd.get(100);
@@ -613,7 +613,7 @@ public class L2Spawn
 	/**
 	 * @param i delay in seconds
 	 */
-	 public void setRespawnDelay(int i)
+	public void setRespawnDelay(int i)
 	{
 		if (i < 0)
 			_log.warning("respawn delay is negative for spawnId:"+_id);
@@ -623,36 +623,36 @@ public class L2Spawn
 		
 		_respawnDelay = i * 1000;
 	}
-	 
-	 public L2Npc getLastSpawn()
-	 {
-		 return _lastSpawn;
-	 }
-	 
-	 /**
-	  * @param oldNpc
-	  */
-	 public void respawnNpc(L2Npc oldNpc)
-	 {
-		 if (_doRespawn)
-		 {
-			 oldNpc.refreshID();
-			 /*L2NpcInstance instance = */initializeNpcInstance(oldNpc);
-		 }
-	 }
-	 
-	 public L2NpcTemplate getTemplate()
-	 {
-		 return _template;
-	 }
-	 
-	 public int getInstanceId()
-	 {
-		 return _instanceId;
-	 }
-	 
-	 public void setInstanceId(int instanceId)
-	 {
-		 _instanceId = instanceId;
-	 }
+	
+	public L2Npc getLastSpawn()
+	{
+		return _lastSpawn;
+	}
+	
+	/**
+	 * @param oldNpc
+	 */
+	public void respawnNpc(L2Npc oldNpc)
+	{
+		if (_doRespawn)
+		{
+			oldNpc.refreshID();
+			/*L2NpcInstance instance = */initializeNpcInstance(oldNpc);
+		}
+	}
+	
+	public L2NpcTemplate getTemplate()
+	{
+		return _template;
+	}
+	
+	public int getInstanceId()
+	{
+		return _instanceId;
+	}
+	
+	public void setInstanceId(int instanceId)
+	{
+		_instanceId = instanceId;
+	}
 }

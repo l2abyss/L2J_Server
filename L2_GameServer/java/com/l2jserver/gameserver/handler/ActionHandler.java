@@ -24,28 +24,28 @@ public class ActionHandler
 {
 	private Map<InstanceType, IActionHandler> _actions;
 	private Map<InstanceType, IActionHandler> _actionsShift;
-
+	
 	public static ActionHandler getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	private ActionHandler()
 	{
 		_actions = new FastMap<InstanceType, IActionHandler>();
 		_actionsShift = new FastMap<InstanceType, IActionHandler>();
 	}
-
+	
 	public void registerActionHandler(IActionHandler handler)
 	{
 		_actions.put(handler.getInstanceType(), handler);
 	}
-
+	
 	public void registerActionShiftHandler(IActionHandler handler)
 	{
 		_actionsShift.put(handler.getInstanceType(), handler);
 	}
-
+	
 	public IActionHandler getActionHandler(InstanceType iType)
 	{
 		IActionHandler result = null;
@@ -57,7 +57,7 @@ public class ActionHandler
 		}
 		return result;
 	}
-
+	
 	public IActionHandler getActionShiftHandler(InstanceType iType)
 	{
 		IActionHandler result = null;
@@ -69,17 +69,17 @@ public class ActionHandler
 		}
 		return result;
 	}
-
+	
 	public int size()
 	{
 		return _actions.size();
 	}
-
+	
 	public int sizeShift()
 	{
 		return _actionsShift.size();
 	}
-
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
