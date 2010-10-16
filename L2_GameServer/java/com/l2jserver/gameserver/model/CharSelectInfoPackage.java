@@ -55,6 +55,7 @@ public class CharSelectInfoPackage
 	private int _x = 0;
 	private int _y = 0;
 	private int _z = 0;
+	private String _htmlPrefix = null;
 	
 	
 	/**
@@ -306,5 +307,13 @@ public class CharSelectInfoPackage
 	public void setZ(int z)
 	{
 		_z = z;
+	}
+	public String getHtmlPrefix()
+	{
+		return _htmlPrefix;
+	}
+	public void setHtmlPrefix(String s)
+	{
+		_htmlPrefix = s;
 	}
 }

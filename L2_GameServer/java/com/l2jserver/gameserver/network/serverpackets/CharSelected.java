@@ -36,6 +36,7 @@ public class CharSelected extends L2GameServerPacket
 		_sessionId = sessionId;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected final void writeImpl()
 	{

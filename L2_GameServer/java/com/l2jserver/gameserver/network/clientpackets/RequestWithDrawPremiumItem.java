@@ -51,7 +51,7 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		if (_itemcount <= 0)
 			return;
 		
-		if (activeChar.getCharId() != _charId)
+		if (activeChar.getObjectId() != _charId)
 		{
 			Util.handleIllegalPlayerAction(activeChar, "[RequestWithDrawPremiumItem] Incorrect owner, Player: " + activeChar.getName(), Config.DEFAULT_PUNISH);
 			return;

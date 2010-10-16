@@ -43,6 +43,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ChairSit;
 import com.l2jserver.gameserver.network.serverpackets.ExAskCoupleAction;
+import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopManageList;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -98,10 +99,11 @@ public final class RequestActionUse extends L2GameClientPacket
 		// don't allow to do some action if player is transformed
 		if (activeChar.isTransformed())
 		{
-			int[] notAllowedActions = {0, 10, 28, 37, 51, 61};
-			if (Arrays.binarySearch(notAllowedActions,_actionId) >= 0)
+			int[] allowedActions = activeChar.isTransformed() ? ExBasicActionList._actionsOnTransform : ExBasicActionList._defaultActionList;
+			if (!(Arrays.binarySearch(allowedActions, _actionId) >= 0))
 			{
 				getClient().sendPacket(ActionFailed.STATIC_PACKET);
+				_log.info("Player "+activeChar+" used action which he does not have! id = "+ _actionId + " transform: "+activeChar.getTransformation());
 				return;
 			}
 		}
@@ -631,11 +633,15 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			case 1089: // TODO Deinonychus - Tail Strike
 				break;
-			case 1090: // TODO Guardian's Strider - Strider Bite
+			case 1090: // Guardian's Strider - Strider Bite
+				if(activeChar.isRidingStrider())
+					useSkill(6205);
 				break;
-			case 1091: // TODO Guardian's Strider - Strider Fear
+			case 1091: // Guardian's Strider - Strider Fear
+				useSkill(6206);
 				break;
-			case 1092: // TODO Guardian's Strider - Strider Dash
+			case 1092: // Guardian's Strider - Strider Dash
+				useSkill(6207);
 				break;
 			case 5000: // TODO Baby Rudolph - Reindeer Scratch
 				break;

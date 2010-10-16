@@ -72,7 +72,8 @@ public final class RequestDropItem extends L2GameClientPacket
 				|| _count == 0
 				|| !activeChar.validateItemManipulation(_objectId, "drop")
 				|| (!Config.ALLOW_DISCARDITEM && !activeChar.isGM())
-				|| (!item.isDropable() && !(activeChar.isGM() && Config.GM_TRADE_RESTRICTED_ITEMS)))
+				|| (!item.isDropable() && !(activeChar.isGM() && Config.GM_TRADE_RESTRICTED_ITEMS))
+				|| (item.getItemType() == L2EtcItemType.PET_COLLAR && activeChar.havePetInvItems()))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 			return;

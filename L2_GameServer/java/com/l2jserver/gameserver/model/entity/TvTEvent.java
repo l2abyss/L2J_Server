@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
+import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -92,6 +93,7 @@ public class TvTEvent
 	 */
 	public static void init()
 	{
+		AntiFeedManager.getInstance().registerEvent(AntiFeedManager.TVT_ID);
 		_teams[0] = new TvTEventTeam(Config.TVT_EVENT_TEAM_1_NAME, Config.TVT_EVENT_TEAM_1_COORDINATES);
 		_teams[1] = new TvTEventTeam(Config.TVT_EVENT_TEAM_2_NAME, Config.TVT_EVENT_TEAM_2_COORDINATES);
 	}
@@ -214,6 +216,7 @@ public class TvTEvent
 			_teams[1].cleanMe();
 			// Unspawn the event NPC
 			unSpawnNpc();
+			AntiFeedManager.getInstance().clear(AntiFeedManager.TVT_ID);
 			return false;
 		}
 		
@@ -398,6 +401,7 @@ public class TvTEvent
 		_teams[1].cleanMe();
 		// Set state INACTIVE
 		setState(EventState.INACTIVE);
+		AntiFeedManager.getInstance().clear(AntiFeedManager.TVT_ID);
 	}
 	
 	/**
@@ -646,6 +650,16 @@ public class TvTEvent
 					npcHtmlMessage.replace("%max%", String.valueOf(Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS));
 				}
 			}
+			else if (Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP > 0
+					&& !AntiFeedManager.getInstance().tryAddPlayer(AntiFeedManager.TVT_ID, playerInstance, Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP))
+			{
+				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"IPRestriction.htm");
+				if (htmContent != null)
+				{
+					npcHtmlMessage.setHtml(htmContent);
+					npcHtmlMessage.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(playerInstance, Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP)));
+				}
+			}
 			else if (!payParticipationFee(playerInstance))
 			{
 				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"ParticipationFee.htm");
@@ -665,6 +679,8 @@ public class TvTEvent
 		else if (command.equals("tvt_event_remove_participation"))
 		{
 			removeParticipant(playerInstance.getObjectId());
+			if (Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP > 0)
+				AntiFeedManager.getInstance().removePlayer(AntiFeedManager.TVT_ID, playerInstance);
 			
 			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
 			

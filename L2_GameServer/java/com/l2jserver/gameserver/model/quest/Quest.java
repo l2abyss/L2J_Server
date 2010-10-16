@@ -1624,9 +1624,9 @@ public class Quest extends ManagedScript
 		
 		if (content == null)
 		{
-			content = HtmCache.getInstance().getHtm(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
+			content = HtmCache.getInstance().getHtm(prefix, "data/scripts/quests/Q" + getName() + "/" + fileName);
 			if (content == null)
-				content = HtmCache.getInstance().getHtmForce(prefix, "data/scripts/quests/Q" + getName() + "/" + fileName);
+				content = HtmCache.getInstance().getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);				
 		}
 		
 		return content;

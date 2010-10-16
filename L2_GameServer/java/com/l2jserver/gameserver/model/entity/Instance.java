@@ -258,7 +258,9 @@ public class Instance
 		newdoor.setOpen(open);
 		newdoor.getPosition().setXYZInvisible(temp.getX(), temp.getY(), temp.getZ());
 		newdoor.spawnMe(newdoor.getX(), newdoor.getY(), newdoor.getZ());
-		
+		newdoor.setEmitter(temp.getEmitter());
+		newdoor.setTargetable(temp.getTargetable());
+		newdoor.setMeshIndex(temp.getMeshIndex());
 		_doors.add(newdoor);
 	}
 	

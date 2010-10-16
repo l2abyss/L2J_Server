@@ -379,8 +379,15 @@ public abstract class L2Summon extends L2Playable
 				party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
 			}
 			
-			store();
-			giveAllToOwner();
+			if(getInventory() != null && getInventory().getSize() > 0)
+			{
+				getOwner().setPetInvItems(true);
+				getOwner().sendPacket(SystemMessageId.ITEMS_IN_PET_INVENTORY);
+			}
+			else
+				getOwner().setPetInvItems(false);
+			
+			store();			
 			owner.setPet(null);
 			
 			// Stop AI tasks
@@ -462,10 +469,6 @@ public abstract class L2Summon extends L2Playable
 	}
 	
 	protected void doPickupItem(L2Object object)
-	{
-	}
-	
-	public void giveAllToOwner()
 	{
 	}
 	
@@ -907,5 +910,11 @@ public abstract class L2Summon extends L2Playable
 	public String toString()
 	{
 		return super.toString()+" Owner: "+getOwner();
+	}
+	
+	@Override
+	public boolean isUndead()
+	{
+		return getTemplate().isUndead();
 	}
 }

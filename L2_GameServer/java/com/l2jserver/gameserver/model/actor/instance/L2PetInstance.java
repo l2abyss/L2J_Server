@@ -657,34 +657,6 @@ public class L2PetInstance extends L2Summon
 		return newItem;
 	}
 	
-	@Override
-	public void giveAllToOwner()
-	{
-		try
-		{
-			Inventory petInventory = getInventory();
-			for (L2ItemInstance giveit: petInventory.getItems())
-			{
-				if (((giveit.getItem().getWeight() * giveit.getCount())
-						+ getOwner().getInventory().getTotalWeight())
-						< getOwner().getMaxLoad())
-				{
-					// If the owner can carry it give it to them
-					giveItemToOwner(giveit);
-				}
-				else
-				{
-					// If they can't carry it, chuck it on the floor :)
-					dropItemHere(giveit);
-				}
-			}
-		}
-		catch(Exception e)
-		{
-			_logPet.log(Level.WARNING, "Give all items error: " + e.getMessage(), e);
-		}
-	}
-	
 	public void giveItemToOwner(L2ItemInstance item)
 	{
 		try

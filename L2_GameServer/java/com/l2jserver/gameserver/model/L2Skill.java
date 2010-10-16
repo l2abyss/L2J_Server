@@ -2052,7 +2052,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 			case TARGET_CORPSE_MOB:
 			{
-				if (!(target instanceof L2Attackable) || !target.isDead())
+				final boolean isSummon = target instanceof L2SummonInstance;
+				if (!(isSummon || target instanceof L2Attackable) || !target.isDead())
 				{
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
@@ -2061,8 +2062,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				// Corpse mob only available for half time
 				switch (getSkillType())
 				{
-					case DRAIN:
 					case SUMMON:
+					{
+						if (isSummon && ((L2SummonInstance)target).getOwner() != null
+								&& ((L2SummonInstance)target).getOwner().getObjectId() == activeChar.getObjectId())
+							return _emptyTargetList;
+					}
+					case DRAIN:
 					{
 						if (DecayTaskManager.getInstance().getTasks().containsKey(target)
 								&& (System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(target)) > DecayTaskManager.ATTACKABLE_DECAY_TIME / 2)

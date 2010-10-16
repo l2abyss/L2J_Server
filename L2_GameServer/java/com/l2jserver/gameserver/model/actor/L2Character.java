@@ -2439,7 +2439,7 @@ public abstract class L2Character extends L2Object
 	public boolean isInvul(){return _isInvul  || _isTeleporting;}
 	public void setIsMortal(boolean b) { _isMortal = b; }
 	public boolean isMortal(){ return _isMortal; }
-	public boolean isUndead() { return _template.isUndead; }
+	public boolean isUndead() { return false; }
 	
 	public final boolean isFlying() { return _isFlying; }
 	public final void setIsFlying(boolean mode) { _isFlying = mode; }

@@ -196,4 +196,10 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		return true;
 	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName()+" [_id=" + _id + ", _graphicalId=" + _graphicalId + ", _collisionRadius=" + _collisionRadius + ", _collisionHeight=" + _collisionHeight + ", _isStance=" + _isStance + "]";
+	}
 }

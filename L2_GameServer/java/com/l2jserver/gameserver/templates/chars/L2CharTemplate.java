@@ -86,9 +86,7 @@ public class L2CharTemplate
 	public double baseHolyRes;
 	public double baseDarkRes;
 	public final double baseCritVuln;
-	
-	public final boolean isUndead;
-	
+		
 	//C4 Stats
 	public final int baseMpConsumeRate;
 	public final int baseHpConsumeRate;
@@ -170,8 +168,6 @@ public class L2CharTemplate
 		baseHolyRes = set.getInteger("baseHolyRes", 0);
 		baseDarkRes = set.getInteger("baseDarkRes", 0);
 		baseCritVuln = set.getInteger("baseCritVuln", 1);
-		
-		isUndead = (set.getInteger("isUndead", 0) == 1);
 		
 		//C4 Stats
 		baseMpConsumeRate = set.getInteger("baseMpConsumeRate", 0);

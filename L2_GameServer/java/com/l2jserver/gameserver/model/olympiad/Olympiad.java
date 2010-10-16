@@ -43,6 +43,7 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
@@ -165,6 +166,7 @@ public class Olympiad
 	private Olympiad()
 	{
 		load();
+		AntiFeedManager.getInstance().registerEvent(AntiFeedManager.OLYMPIAD_ID);
 		
 		if (_period == 0)
 			init();
@@ -513,6 +515,15 @@ public class Olympiad
 			noble.sendMessage("You can't join olympiad while participating on TvT Event.");
 			return false;
 		}
+		if (Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP > 0
+				&& !AntiFeedManager.getInstance().tryAddPlayer(AntiFeedManager.OLYMPIAD_ID, noble, Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP))
+		{
+			NpcHtmlMessage message = new NpcHtmlMessage(0);
+			message.setFile(noble.getHtmlPrefix(), "data/html/mods/OlympiadIPRestriction.htm");
+			message.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(noble, Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP)));
+			noble.sendPacket(message);
+			return false;
+		}
 		/** End Olympiad Restrictions */
 		
 		if (_classBasedRegisters.containsKey(noble.getClassId().getId()))
@@ -648,6 +659,7 @@ public class Olympiad
 	{
 		_nonClassBasedRegisters.clear();
 		_classBasedRegisters.clear();
+		AntiFeedManager.getInstance().clear(AntiFeedManager.OLYMPIAD_ID);
 	}
 	
 	public boolean isRegistered(L2PcInstance noble)
@@ -720,6 +732,9 @@ public class Olympiad
 			_classBasedRegisters.remove(noble.getClassId().getId());
 			_classBasedRegisters.put(noble.getClassId().getId(), classed);
 		}
+		
+		if (Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP > 0)
+			AntiFeedManager.getInstance().removePlayer(AntiFeedManager.OLYMPIAD_ID, noble);
 		
 		sm = new SystemMessage(SystemMessageId.YOU_HAVE_BEEN_DELETED_FROM_THE_WAITING_LIST_OF_A_GAME);
 		noble.sendPacket(sm);

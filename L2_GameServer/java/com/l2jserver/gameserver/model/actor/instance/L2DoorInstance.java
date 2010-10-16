@@ -43,6 +43,7 @@ import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.DoorStatusUpdate;
+import com.l2jserver.gameserver.network.serverpackets.OnEventTrigger;
 import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
@@ -85,6 +86,9 @@ public class L2DoorInstance extends L2Character
 	private boolean _isAttackableDoor = false;
 	private boolean _isWall = false; // is castle wall ?
 	private boolean _ShowHp = false;
+	private int _meshindex = 1;
+	private int _emitter = 0;
+	private boolean _targetable = true;
 	
 	private ClanHall _clanHall;
 	
@@ -497,7 +501,9 @@ public class L2DoorInstance extends L2Character
 		
 		StaticObject su = new StaticObject(this, false);
 		DoorStatusUpdate dsu = new DoorStatusUpdate(this);
-		
+		OnEventTrigger oe = null;
+		if (_emitter > 0)
+			oe = new OnEventTrigger(this, getOpen());
 		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : knownPlayers)
@@ -507,6 +513,8 @@ public class L2DoorInstance extends L2Character
 				
 				player.sendPacket(su);
 				player.sendPacket(dsu);
+				if (oe != null)
+					player.sendPacket(oe);
 			}
 		}
 	}
@@ -652,6 +660,36 @@ public class L2DoorInstance extends L2Character
 		return _isWall;
 	}
 	
+	public void setMeshIndex(int mesh)
+	{
+		_meshindex = mesh;
+	}
+	
+	public int getMeshIndex()
+	{
+		return _meshindex;
+	}
+	
+	public void setEmitter(int emitter)
+	{
+		_emitter = emitter;
+	}
+	
+	public int getEmitter()
+	{
+		return _emitter;
+	}
+	
+	public void setTargetable(boolean targetable)
+	{
+		_targetable = targetable;
+	}
+	
+	public boolean getTargetable()
+	{
+		return _targetable;
+	}
+	
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
@@ -684,6 +722,9 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
+		if (_emitter > 0)
+			activeChar.sendPacket(new OnEventTrigger(this, getOpen()));
+		
 		activeChar.sendPacket(new StaticObject(this, false));
 	}
 }

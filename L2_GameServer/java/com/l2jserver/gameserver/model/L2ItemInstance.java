@@ -48,6 +48,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.templates.item.L2Armor;
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
+import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.util.GMAudit;
@@ -768,7 +769,8 @@ public final class L2ItemInstance extends L2Object
 				&& (allowAdena || getItemId() != 57) // Not adena
 				&& (player.getCurrentSkill() == null || player.getCurrentSkill().getSkill().getItemConsumeId() != getItemId())
 				&& (!player.isCastingSimultaneouslyNow() || player.getLastSimultaneousSkillCast() == null || player.getLastSimultaneousSkillCast().getItemConsumeId() != getItemId())
-				&& (allowNonTradeable || isTradeable())
+				&& (allowNonTradeable || isTradeable()
+				&& (!(getItem().getItemType() == L2EtcItemType.PET_COLLAR && player.havePetInvItems())))
 		);
 	}
 	

@@ -200,6 +200,8 @@ public enum L2SkillType
 	
 	// Refuel airship
 	REFUEL,
+	// Nornil's Power (Nornil's Garden instance)
+	NORNILS_POWER,
 	
 	// unimplemented
 	NOTDONE, BALLISTA;

@@ -310,9 +310,6 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 		// rods
 		if (item.getItem().getItemType() == L2WeaponType.ROD)
 			return false;
-		// apprentice and travelers weapons
-		if (item.getItemId() >= 7816 && item.getItemId() <= 7831)
-			return false;
 		// bracelets
 		if (item.getItem().getBodyPart() == L2Item.SLOT_L_BRACELET)
 			return false;
@@ -320,6 +317,9 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 			return false;
 		if (item.getItem().getBodyPart() == L2Item.SLOT_BACK)
 			return false;
+		// blacklist check
+		if (Arrays.binarySearch(Config.ENCHANT_BLACKLIST, item.getItemId()) >= 0)
+			return false;		
 		// only items in inventory and equipped can be enchanted
 		if (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY
 				&& item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL)

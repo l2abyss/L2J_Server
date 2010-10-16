@@ -21,9 +21,12 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
+import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
+import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
 import com.l2jserver.gameserver.network.serverpackets.CharSelected;
+import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 
 
@@ -76,6 +79,20 @@ public class CharacterSelect extends L2GameClientPacket
 				// but if not then this is repeated packet and nothing should be done here
 				if (this.getClient().getActiveChar() == null)
 				{
+					if (Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP > 0
+							&& !AntiFeedManager.getInstance().tryAddClient(AntiFeedManager.GAME_ID, getClient(), Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP))
+					{
+						final CharSelectInfoPackage info = getClient().getCharSelection(_charSlot);
+						if (info == null)
+							return;
+
+						final NpcHtmlMessage msg = new NpcHtmlMessage(0);
+						msg.setFile(info.getHtmlPrefix(), "data/html/mods/IPRestriction.htm");
+						msg.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(getClient(), Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP)));
+						getClient().sendPacket(msg);
+						return;
+					}
+
 					// The L2PcInstance must be created here, so that it can be attached to the L2GameClient
 					if (Config.DEBUG)
 					{

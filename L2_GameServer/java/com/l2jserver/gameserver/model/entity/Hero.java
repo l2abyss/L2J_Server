@@ -821,10 +821,10 @@ public class Hero
 				player.broadcastUserInfo();
 				
 				// Set Gained hero and reload data
-				setHeroGained(player.getCharId());
-				loadFights(player.getCharId());
-				loadDiary(player.getCharId());
-				_heroMessage.put(player.getCharId(), "");
+				setHeroGained(player.getObjectId());
+				loadFights(player.getObjectId());
+				loadDiary(player.getObjectId());
+				_heroMessage.put(player.getObjectId(), "");
 			}
 			else
 			{
@@ -1062,9 +1062,9 @@ public class Hero
 	 */
 	public void setHeroMessage(L2PcInstance player, String message)
 	{
-		_heroMessage.put(player.getCharId(), message);
+		_heroMessage.put(player.getObjectId(), message);
 		if (player.isDebug())
-			_log.info("Hero message for player: "+player.getName()+":["+player.getCharId()+"] set to: ["+message+"]");
+			_log.info("Hero message for player: "+player.getName()+":["+player.getObjectId()+"] set to: ["+message+"]");
 	}
 	
 	/**

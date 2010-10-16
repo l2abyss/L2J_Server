@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
+import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -43,7 +43,7 @@ public abstract class L2Decoy extends L2Character
 	public void onSpawn()
 	{
 		super.onSpawn();
-		this.getOwner().sendPacket(new AbstractNpcInfo.DecoyInfo(this));
+		this.getOwner().sendPacket(new CharInfo(this));
 	}
 	
 	@Override
@@ -53,7 +53,10 @@ public abstract class L2Decoy extends L2Character
 		//synchronized (getKnownList().getKnownPlayers())
 		{
 			for (L2PcInstance player : plrs)
-				player.sendPacket(new AbstractNpcInfo.DecoyInfo(this));
+			{
+				if (player != null)
+					player.sendPacket(new CharInfo(this));
+			}
 		}
 	}
 	
@@ -149,6 +152,6 @@ public abstract class L2Decoy extends L2Character
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
-		activeChar.sendPacket(new AbstractNpcInfo.DecoyInfo(this));
+		activeChar.sendPacket(new CharInfo(this));
 	}
 }

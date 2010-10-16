@@ -665,7 +665,7 @@ public class L2Npc extends L2Character
 	@Override
 	public boolean isUndead()
 	{
-		return getTemplate().isUndead;
+		return getTemplate().isUndead();
 	}
 	
 	/**

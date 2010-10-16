@@ -148,12 +148,17 @@ public class DoorTable
 			int hp = Integer.parseInt(st.nextToken());
 			int pdef = Integer.parseInt(st.nextToken());
 			int mdef = Integer.parseInt(st.nextToken());
+			int emitter = Integer.parseInt(st.nextToken());
 			boolean unlockable = false;
 			if (st.hasMoreTokens())
 				unlockable = Boolean.parseBoolean(st.nextToken());
 			boolean startOpen = false;
 			if (st.hasMoreTokens())
 				startOpen = Boolean.parseBoolean(st.nextToken());
+			boolean targetable = true;
+			if (st.hasMoreTokens())
+				targetable = Boolean.parseBoolean(st.nextToken());
+
 			if (rangeXMin > rangeXMax)
 				_log.severe("Error in door data, XMin > XMax, ID:" + id);
 			if (rangeYMin > rangeYMax)
@@ -217,6 +222,8 @@ public class DoorTable
 			door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
 			door.setXYZInvisible(x, y, z);
 			door.setMapRegion(MapRegionTable.getInstance().getMapRegion(x, y));
+			door.setEmitter(emitter);
+			door.setTargetable(targetable);
 			
 			if (commanderDoor)
 				door.setIsCommanderDoor(startOpen);

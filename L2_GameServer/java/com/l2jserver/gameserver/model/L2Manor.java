@@ -14,16 +14,17 @@
  */
 package com.l2jserver.gameserver.model;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.LineNumberReader;
-import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
@@ -183,7 +184,7 @@ public class L2Manor
 		return -1;
 	}
 	
-	public synchronized int getRewardItem(int cropId, int type)
+	public int getRewardItem(int cropId, int type)
 	{
 		for (SeedData seed : _seeds.values())
 		{
@@ -198,7 +199,7 @@ public class L2Manor
 		return -1;
 	}
 	
-	public synchronized int getRewardItemBySeed(int seedId, int type)
+	public int getRewardItemBySeed(int seedId, int type)
 	{
 		SeedData seed = _seeds.get(seedId);
 		
@@ -298,7 +299,7 @@ public class L2Manor
 		private int _type1;
 		private int _type2;
 		private int _manorId; // id of manor (castle id) where seed can be farmed
-		private int _isAlternative;
+		private boolean _isAlternative;
 		private int _limitSeeds;
 		private int _limitCrops;
 		
@@ -309,7 +310,7 @@ public class L2Manor
 			this._mature = mature;
 		}
 		
-		public void setData(int id, int t1, int t2, int manorId, int isAlt, int lim1, int lim2)
+		public void setData(int id, int t1, int t2, int manorId, boolean isAlt, int lim1, int lim2)
 		{
 			this._id = id;
 			_type1 = t1;
@@ -352,7 +353,7 @@ public class L2Manor
 		
 		public boolean isAlternative()
 		{
-			return (_isAlternative == 1);
+			return _isAlternative;
 		}
 		
 		public int getSeedLimit()
@@ -364,73 +365,104 @@ public class L2Manor
 		{
 			return _limitCrops * Config.RATE_DROP_MANOR;
 		}
+
+		@Override
+		public String toString()
+		{
+			return "SeedData [_id=" + _id + ", _level=" + _level + ", _crop=" + _crop + ", _mature=" + _mature + ", _type1=" + _type1 + ", _type2=" + _type2 + ", _manorId=" + _manorId + ", _isAlternative=" + _isAlternative + ", _limitSeeds=" + _limitSeeds + ", _limitCrops=" + _limitCrops + "]";
+		}
 	}
 	
 	private void parseData()
 	{
-		LineNumberReader lnr = null;
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setValidating(false);
+		factory.setIgnoringComments(true);
+		File file = new File(Config.DATAPACK_ROOT, "/data/seeds.xml");
+		Document doc = null;
+		
 		try
 		{
-			File seedData = new File(Config.DATAPACK_ROOT, "data/seeds.csv");
-			lnr = new LineNumberReader(new BufferedReader(new FileReader(seedData)));
-			
-			String line = null;
-			while ((line = lnr.readLine()) != null)
-			{
-				if (line.trim().length() == 0 || line.startsWith("#"))
-				{
-					continue;
-				}
-				SeedData seed = parseList(line);
-				_seeds.put(seed.getId(), seed);
-			}
-			
-			_log.info("ManorManager: Loaded " + _seeds.size() + " seeds");
-		}
-		catch (FileNotFoundException e)
-		{
-			_log.info("seeds.csv is missing in data folder");
+			doc = factory.newDocumentBuilder().parse(file);
 		}
 		catch (Exception e)
 		{
-			_log.info("error while loading seeds: " + e.getMessage());
+			_log.log(Level.WARNING, "Could not parse seeds.xml file: " + e.getMessage(), e);
 		}
-		finally
+		
+		doc.getDocumentElement().normalize();
+		
+		//list
+		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
 		{
-			try
+			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
-				lnr.close();
+				//castle
+				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+				{
+					if ("castle".equalsIgnoreCase(d.getNodeName()))
+					{
+						int castleId = Integer.parseInt(d.getAttributes().getNamedItem("id").getNodeValue());
+						//crop
+						for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
+						{
+							if ("crop".equalsIgnoreCase(c.getNodeName()))
+							{
+								int cropId = Integer.parseInt(c.getAttributes().getNamedItem("id").getNodeValue());
+								int seedId = 0;
+								int matureId = 0;
+								int type1R = 0;
+								int type2R = 0;
+								boolean isAlt = false;
+								int level = 0;
+								int limitSeeds = 0;
+								int limitCrops = 0;
+								
+								//attrib
+								for (Node a = c.getFirstChild(); a != null; a = a.getNextSibling())
+								{
+									if (a.getNodeName().equalsIgnoreCase("seed_id"))
+										seedId = Integer.parseInt(a.getAttributes().getNamedItem("val").getNodeValue());
+									else if (a.getNodeName().equalsIgnoreCase("mature_id"))
+										matureId = Integer.parseInt(a.getAttributes().getNamedItem("val").getNodeValue());
+									else if (a.getNodeName().equalsIgnoreCase("reward1"))
+										type1R = Integer.parseInt(a.getAttributes().getNamedItem("val").getNodeValue());
+									else if (a.getNodeName().equalsIgnoreCase("reward2"))
+										type2R = Integer.parseInt(a.getAttributes().getNamedItem("val").getNodeValue());
+									else if (a.getNodeName().equalsIgnoreCase("alternative"))
+										isAlt = Integer.parseInt(a.getAttributes().getNamedItem("val").getNodeValue()) == 1;
+									else if (a.getNodeName().equalsIgnoreCase("level"))
+										level = Integer.parseInt(a.getAttributes().getNamedItem("val").getNodeValue());
+									else if (a.getNodeName().equalsIgnoreCase("limit_seed"))
+										limitSeeds = Integer.parseInt(a.getAttributes().getNamedItem("val").getNodeValue());
+									else if (a.getNodeName().equalsIgnoreCase("limit_crops"))
+										limitCrops = Integer.parseInt(a.getAttributes().getNamedItem("val").getNodeValue());
+								}
+								
+								SeedData seed = new SeedData(level, cropId, matureId);
+								seed.setData(seedId, type1R, type2R, castleId, isAlt, limitSeeds, limitCrops);
+								_seeds.put(seed.getId(), seed);
+							}
+						}
+					}
+				}
 			}
-			catch (Exception e1)
-			{
-			}
+			_log.info(getClass().getSimpleName()+": Loaded "+_seeds.size()+ " Seeds.");
 		}
+
+
 	}
+
 	
-	private SeedData parseList(String line)
-	{
-		StringTokenizer st = new StringTokenizer(line, ";");
-		
-		int seedId = Integer.parseInt(st.nextToken()); // seed id
-		int level = Integer.parseInt(st.nextToken()); // seed level
-		int cropId = Integer.parseInt(st.nextToken()); // crop id
-		int matureId = Integer.parseInt(st.nextToken()); // mature crop id
-		int type1R = Integer.parseInt(st.nextToken()); // type I reward
-		int type2R = Integer.parseInt(st.nextToken()); // type II reward
-		int manorId = Integer.parseInt(st.nextToken()); // id of manor, where seed can be farmed
-		int isAlt = Integer.parseInt(st.nextToken()); // alternative seed
-		int limitSeeds = Integer.parseInt(st.nextToken()); // limit for seeds
-		int limitCrops = Integer.parseInt(st.nextToken()); // limit for crops
-		
-		SeedData seed = new SeedData(level, cropId, matureId);
-		seed.setData(seedId, type1R, type2R, manorId, isAlt, limitSeeds, limitCrops);
-		
-		return seed;
-	}
 	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final L2Manor _instance = new L2Manor();
+	}
+	
+	public static void main(String[] arg)
+	{
+		L2Manor.getInstance();
 	}
 }

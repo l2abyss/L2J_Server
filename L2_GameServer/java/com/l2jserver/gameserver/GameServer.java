@@ -85,6 +85,7 @@ import com.l2jserver.gameserver.handler.UserCommandHandler;
 import com.l2jserver.gameserver.handler.VoicedCommandHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
+import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.AuctionManager;
 import com.l2jserver.gameserver.instancemanager.BoatManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -384,7 +385,8 @@ public class GameServer
 			CoupleManager.getInstance();
 		
 		TaskManager.getInstance();
-		
+
+		AntiFeedManager.getInstance().registerEvent(AntiFeedManager.GAME_ID);
 		MerchantPriceConfigTable.getInstance().updateReferences();
 		CastleManager.getInstance().activateInstances();
 		FortManager.getInstance().activateInstances();

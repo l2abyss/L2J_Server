@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
+import com.l2jserver.gameserver.model.actor.L2Decoy;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
@@ -55,6 +56,7 @@ public class CharInfo extends L2GameServerPacket
 	private static final String _S__03_CHARINFO = "[S] 31 CharInfo";
 	private L2PcInstance _activeChar;
 	private Inventory _inv;
+	private int _objId;
 	private int _x, _y, _z, _heading;
 	private int _mAtkSpd, _pAtkSpd;
 	
@@ -78,6 +80,7 @@ public class CharInfo extends L2GameServerPacket
 	public CharInfo(L2PcInstance cha)
 	{
 		_activeChar = cha;
+		_objId = cha.getObjectId();
 		_inv = cha.getInventory();
 		if (_activeChar.getVehicle() != null && _activeChar.getInVehiclePosition() != null)
 		{
@@ -110,6 +113,18 @@ public class CharInfo extends L2GameServerPacket
 		//_isDisguised = TerritoryWarManager.getInstance().isDisguised(cha.getObjectId());
 	}
 	
+	public CharInfo(L2Decoy decoy)
+	{
+		this(decoy.getActingPlayer()); // init
+		_vehicleId = 0;
+		_airShipHelm = 0;
+		_objId = decoy.getObjectId();
+		_x = decoy.getX();
+		_y = decoy.getY();
+		_z = decoy.getZ();
+		_heading = decoy.getHeading();
+	}
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -129,7 +144,7 @@ public class CharInfo extends L2GameServerPacket
 			if (template != null)
 			{
 				writeC(0x0c);
-				writeD(_activeChar.getObjectId());
+				writeD(_objId);
 				writeD(_activeChar.getPoly().getPolyId()+1000000);  // npctype id
 				writeD(_activeChar.getKarma() > 0 ? 1 : 0);
 				writeD(_x);
@@ -220,7 +235,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_y);
 			writeD(_z);
 			writeD(_vehicleId);
-			writeD(_activeChar.getObjectId());
+			writeD(_objId);
 			writeS(_activeChar.getAppearance().getVisibleName());
 			writeD(_activeChar.getRace().ordinal());
 			writeD(_activeChar.getAppearance().getSex() ? 1 : 0);
@@ -449,9 +464,6 @@ public class CharInfo extends L2GameServerPacket
 			
 			// T2.3
 			writeD(_activeChar.getSpecialEffect());
-			/*writeD(_territoryId); // territory Id
-			writeD((_isDisguised ? 0x01: 0x00)); // is Disguised
-			writeD(_territoryId); // territory Id*/
 		}
 	}
 	

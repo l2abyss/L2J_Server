@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -666,6 +668,7 @@ public final class Config
 	public static int TVT_EVENT_EFFECTS_REMOVAL;
 	public static TIntIntHashMap TVT_EVENT_FIGHTER_BUFFS;
 	public static TIntIntHashMap TVT_EVENT_MAGE_BUFFS;
+	public static int TVT_EVENT_MAX_PARTICIPANTS_PER_IP;
 	public static boolean TVT_ALLOW_VOICED_COMMAND;
 	public static boolean L2JMOD_ALLOW_WEDDING;
 	public static int L2JMOD_WEDDING_PRICE;
@@ -709,6 +712,9 @@ public final class Config
 	public static boolean L2JMOD_MULTILANG_VOICED_ALLOW;
 	public static boolean L2WALKER_PROTECTION;
 	public static boolean L2JMOD_DEBUG_VOICE_COMMAND;
+	public static int L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP;
+	public static int L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP;
+	public static TIntIntHashMap L2JMOD_DUALBOX_CHECK_WHITELIST;
 	
 	//--------------------------------------------------
 	// NPC Settings
@@ -947,6 +953,7 @@ public final class Config
 	public static int ENCHANT_MAX_JEWELRY;
 	public static int ENCHANT_SAFE_MAX;
 	public static int ENCHANT_SAFE_MAX_FULL;
+	public static int[] ENCHANT_BLACKLIST;
 	public static int AUGMENTATION_NG_SKILL_CHANCE;
 	public static int AUGMENTATION_NG_GLOW_CHANCE;
 	public static int AUGMENTATION_MID_SKILL_CHANCE;
@@ -1504,7 +1511,7 @@ public final class Config
 					MAX_MCRIT_RATE = Integer.parseInt(Character.getProperty("MaxMCritRate", "200"));
 					MAX_PATK_SPEED = Integer.parseInt(Character.getProperty("MaxPAtkSpeed", "1500"));
 					MAX_MATK_SPEED = Integer.parseInt(Character.getProperty("MaxMAtkSpeed", "1999"));
-					MAX_EVASION = Integer.parseInt(Character.getProperty("MaxEvasion", "200"));
+					MAX_EVASION = Integer.parseInt(Character.getProperty("MaxEvasion", "250"));
 					MAX_SUBCLASS = Byte.parseByte(Character.getProperty("MaxSubclass", "3"));
 					MAX_SUBCLASS_LEVEL = Byte.parseByte(Character.getProperty("MaxSubclassLevel", "80"));
 					MAX_PVTSTORESELL_SLOTS_DWARF = Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsDwarf", "4"));
@@ -1531,6 +1538,12 @@ public final class Config
 					ENCHANT_MAX_JEWELRY = Integer.parseInt(Character.getProperty("EnchantMaxJewelry", "0"));
 					ENCHANT_SAFE_MAX = Integer.parseInt(Character.getProperty("EnchantSafeMax", "3"));
 					ENCHANT_SAFE_MAX_FULL = Integer.parseInt(Character.getProperty("EnchantSafeMaxFull", "4"));
+					String[] notenchantable = Character.getProperty("EnchantBlackList","7816,7817,7818,7819,7820,7821,7822,7823,7824,7825,7826,7827,7828,7829,7830,7831,13293,13294,13296").split(",");
+					ENCHANT_BLACKLIST = new int[notenchantable.length];					
+					for (int i = 0; i < notenchantable.length; i++)
+						ENCHANT_BLACKLIST[i] = Integer.parseInt(notenchantable[i]);					
+					Arrays.sort(ENCHANT_BLACKLIST);
+					
 					AUGMENTATION_NG_SKILL_CHANCE = Integer.parseInt(Character.getProperty("AugmentationNGSkillChance", "15"));
 					AUGMENTATION_NG_GLOW_CHANCE = Integer.parseInt(Character.getProperty("AugmentationNGGlowChance", "0"));
 					AUGMENTATION_MID_SKILL_CHANCE = Integer.parseInt(Character.getProperty("AugmentationMidSkillChance", "30"));
@@ -2222,6 +2235,7 @@ public final class Config
 							TVT_EVENT_RESPAWN_TELEPORT_DELAY = Integer.parseInt(L2JModSettings.getProperty("TvTEventRespawnTeleportDelay", "20"));
 							TVT_EVENT_START_LEAVE_TELEPORT_DELAY = Integer.parseInt(L2JModSettings.getProperty("TvTEventStartLeaveTeleportDelay", "20"));
 							TVT_EVENT_EFFECTS_REMOVAL = Integer.parseInt(L2JModSettings.getProperty("TvTEventEffectsRemoval", "0"));
+							TVT_EVENT_MAX_PARTICIPANTS_PER_IP = Integer.parseInt(L2JModSettings.getProperty("TvTEventMaxParticipantsPerIP", "0"));
 							TVT_ALLOW_VOICED_COMMAND = Boolean.parseBoolean(L2JModSettings.getProperty("TvTAllowVoicedInfoCommand", "false"));
 							TVT_EVENT_TEAM_1_NAME = L2JModSettings.getProperty("TvTEventTeam1Name", "Team1");
 							propertySplit = L2JModSettings.getProperty("TvTEventTeam1Coordinates", "0,0,0").split(",");
@@ -2407,6 +2421,34 @@ public final class Config
 					
 					L2WALKER_PROTECTION = Boolean.parseBoolean(L2JModSettings.getProperty("L2WalkerProtection", "False"));
 					L2JMOD_DEBUG_VOICE_COMMAND = Boolean.parseBoolean(L2JModSettings.getProperty("DebugVoiceCommand", "False"));
+
+					L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP = Integer.parseInt(L2JModSettings.getProperty("DualboxCheckMaxPlayersPerIP", "0"));
+					L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP = Integer.parseInt(L2JModSettings.getProperty("DualboxCheckMaxOlympiadParticipantsPerIP", "0"));
+					String[] propertySplit = L2JModSettings.getProperty("DualboxCheckWhitelist", "127.0.0.1,0").split(";");
+					L2JMOD_DUALBOX_CHECK_WHITELIST = new TIntIntHashMap(propertySplit.length);
+					for (String entry : propertySplit)
+					{
+						String[] entrySplit = entry.split(",");
+						if (entrySplit.length != 2)
+							_log.warning(StringUtil.concat("DualboxCheck[Config.load()]: invalid config property -> DualboxCheckWhitelist \"", entry, "\""));
+						else
+						{
+							try
+							{
+								int num = Integer.parseInt(entrySplit[1]);
+								num = num == 0 ? -1 : num;
+								L2JMOD_DUALBOX_CHECK_WHITELIST.put(InetAddress.getByName(entrySplit[0]).hashCode(), num);
+							}
+							catch (UnknownHostException e)
+							{
+								_log.warning(StringUtil.concat("DualboxCheck[Config.load()]: invalid address -> DualboxCheckWhitelist \"", entrySplit[0], "\""));
+							}
+							catch (NumberFormatException e)
+							{
+								_log.warning(StringUtil.concat("DualboxCheck[Config.load()]: invalid number -> DualboxCheckWhitelist \"", entrySplit[1], "\""));
+							}
+						}
+					}
 				}
 				catch (Exception e)
 				{
@@ -2532,62 +2574,62 @@ public final class Config
 						Valakas_Wait_Time = 30;
 					Valakas_Wait_Time = Valakas_Wait_Time * 60000;
 					
-					Interval_Of_Antharas_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfAntharasSpawn", "192"));
+					Interval_Of_Antharas_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfAntharasSpawn", "264"));
 					if (Interval_Of_Antharas_Spawn < 1 || Interval_Of_Antharas_Spawn > 480)
 						Interval_Of_Antharas_Spawn = 192;
 					Interval_Of_Antharas_Spawn = Interval_Of_Antharas_Spawn * 3600000;
-					
-					Random_Of_Antharas_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfAntharasSpawn", "145"));
+
+					Random_Of_Antharas_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfAntharasSpawn", "72"));
 					if (Random_Of_Antharas_Spawn < 1 || Random_Of_Antharas_Spawn > 192)
 						Random_Of_Antharas_Spawn = 145;
 					Random_Of_Antharas_Spawn = Random_Of_Antharas_Spawn * 3600000;
 					
-					Interval_Of_Valakas_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfValakasSpawn", "192"));
+					Interval_Of_Valakas_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfValakasSpawn", "264"));
 					if (Interval_Of_Valakas_Spawn < 1 || Interval_Of_Valakas_Spawn > 480)
 						Interval_Of_Valakas_Spawn = 192;
 					Interval_Of_Valakas_Spawn = Interval_Of_Valakas_Spawn * 3600000;
 					
-					Random_Of_Valakas_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfValakasSpawn", "145"));
+					Random_Of_Valakas_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfValakasSpawn", "72"));
 					if (Random_Of_Valakas_Spawn < 1 || Random_Of_Valakas_Spawn > 192)
 						Random_Of_Valakas_Spawn = 145;
 					Random_Of_Valakas_Spawn = Random_Of_Valakas_Spawn * 3600000;
 					
-					Interval_Of_Baium_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfBaiumSpawn", "121"));
+					Interval_Of_Baium_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfBaiumSpawn", "168"));
 					if (Interval_Of_Baium_Spawn < 1 || Interval_Of_Baium_Spawn > 480)
 						Interval_Of_Baium_Spawn = 121;
 					Interval_Of_Baium_Spawn = Interval_Of_Baium_Spawn * 3600000;
 					
-					Random_Of_Baium_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfBaiumSpawn", "8"));
+					Random_Of_Baium_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfBaiumSpawn", "48"));
 					if (Random_Of_Baium_Spawn < 1 || Random_Of_Baium_Spawn > 192)
 						Random_Of_Baium_Spawn = 8;
 					Random_Of_Baium_Spawn = Random_Of_Baium_Spawn * 3600000;
 					
-					Interval_Of_Core_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfCoreSpawn", "27"));
+					Interval_Of_Core_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfCoreSpawn", "60"));
 					if (Interval_Of_Core_Spawn < 1 || Interval_Of_Core_Spawn > 480)
 						Interval_Of_Core_Spawn = 27;
 					Interval_Of_Core_Spawn = Interval_Of_Core_Spawn * 3600000;
 					
-					Random_Of_Core_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfCoreSpawn", "47"));
+					Random_Of_Core_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfCoreSpawn", "24"));
 					if (Random_Of_Core_Spawn < 1 || Random_Of_Core_Spawn > 192)
 						Random_Of_Core_Spawn = 47;
 					Random_Of_Core_Spawn = Random_Of_Core_Spawn * 3600000;
 					
-					Interval_Of_Orfen_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfOrfenSpawn", "28"));
+					Interval_Of_Orfen_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfOrfenSpawn", "48"));
 					if (Interval_Of_Orfen_Spawn < 1 || Interval_Of_Orfen_Spawn > 480)
 						Interval_Of_Orfen_Spawn = 28;
 					Interval_Of_Orfen_Spawn = Interval_Of_Orfen_Spawn * 3600000;
 					
-					Random_Of_Orfen_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfOrfenSpawn", "41"));
+					Random_Of_Orfen_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfOrfenSpawn", "20"));
 					if (Random_Of_Orfen_Spawn < 1 || Random_Of_Orfen_Spawn > 192)
 						Random_Of_Orfen_Spawn = 41;
 					Random_Of_Orfen_Spawn = Random_Of_Orfen_Spawn * 3600000;
 					
-					Interval_Of_QueenAnt_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfQueenAntSpawn", "19"));
+					Interval_Of_QueenAnt_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfQueenAntSpawn", "36"));
 					if (Interval_Of_QueenAnt_Spawn < 1 || Interval_Of_QueenAnt_Spawn > 480)
 						Interval_Of_QueenAnt_Spawn = 19;
 					Interval_Of_QueenAnt_Spawn = Interval_Of_QueenAnt_Spawn * 3600000;
 					
-					Random_Of_QueenAnt_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfQueenAntSpawn", "35"));
+					Random_Of_QueenAnt_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfQueenAntSpawn", "17"));
 					if (Random_Of_QueenAnt_Spawn < 1 || Random_Of_QueenAnt_Spawn > 192)
 						Random_Of_QueenAnt_Spawn = 35;
 					Random_Of_QueenAnt_Spawn = Random_Of_QueenAnt_Spawn * 3600000;
@@ -2602,7 +2644,7 @@ public final class Config
 						Random_Of_Zaken_Spawn = 35;
 					Random_Of_Zaken_Spawn = Random_Of_Zaken_Spawn * 3600000;
 					
-					Interval_Of_Frintezza_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfFrintezzaSpawn", "121"));
+					Interval_Of_Frintezza_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfFrintezzaSpawn", "48"));
 					if (Interval_Of_Frintezza_Spawn < 1 || Interval_Of_Frintezza_Spawn > 480)
 						Interval_Of_Frintezza_Spawn = 121;
 					Interval_Of_Frintezza_Spawn = Interval_Of_Frintezza_Spawn * 3600000;

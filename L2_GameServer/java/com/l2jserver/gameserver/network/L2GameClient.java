@@ -15,11 +15,11 @@
 package com.l2jserver.gameserver.network;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
@@ -28,8 +28,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
-import javolution.util.FastList;
 
 import org.mmocore.network.MMOClient;
 import org.mmocore.network.MMOConnection;
@@ -42,6 +40,7 @@ import com.l2jserver.gameserver.LoginServerThread.SessionKey;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
@@ -73,8 +72,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	public static enum GameClientState { CONNECTED, AUTHED, IN_GAME }
 	
 	private GameClientState _state;
-	
+
 	// Info
+	private final InetAddress _addr;
 	private String _accountName;
 	private SessionKey _sessionId;
 	private L2PcInstance _activeChar;
@@ -82,7 +82,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	
 	private boolean _isAuthedGG;
 	private long _connectionStartTime;
-	private List<Integer> _charSlotMapping = new FastList<Integer>();
+	private CharSelectInfoPackage[] _charSlotMapping = null;
 	
 	// floodprotectors
 	private final FloodProtectors _floodProtectors = new FloodProtectors(this);
@@ -127,6 +127,15 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		{
 			_autoSaveInDB = null;
 		}
+
+		try
+		{
+			_addr = con != null ? con.getInetAddress() : InetAddress.getLocalHost();
+		}
+		catch (UnknownHostException e)
+		{
+			throw new Error("Unable to determine localhost address.");
+		}
 	}
 	
 	public byte[] enableCrypt()
@@ -154,7 +163,16 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	{
 		return _stats;
 	}
-	
+
+	/**
+	 * Returns cached connection IP address, for checking detached clients.
+	 * For loaded offline traders returns localhost address.
+	 */
+	public InetAddress getConnectionAddress()
+	{
+		return _addr;
+	}
+
 	public long getConnectionStartTime()
 	{
 		return _connectionStartTime;
@@ -525,6 +543,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	public L2PcInstance loadCharFromDisk(int charslot)
 	{
 		final int objId = getObjectIdForSlot(charslot);
+		if (objId < 0)
+			return null;
+
 		L2PcInstance character = L2World.getInstance().getPlayer(objId);
 		if (character != null)
 		{
@@ -565,15 +586,16 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	 */
 	public void setCharSelection(CharSelectInfoPackage[] chars)
 	{
-		_charSlotMapping.clear();
-		
-		for (int i = 0; i < chars.length; i++)
-		{
-			int objectId = chars[i].getObjectId();
-			_charSlotMapping.add(Integer.valueOf(objectId));
-		}
+		_charSlotMapping = chars;
 	}
 	
+	public CharSelectInfoPackage getCharSelection(int charslot)
+	{
+		if (_charSlotMapping == null || charslot < 0 || charslot >= _charSlotMapping.length)
+			return null;
+		return _charSlotMapping[charslot];
+	}
+
 	public void close(L2GameServerPacket gsp)
 	{
 		if (getConnection() == null)
@@ -590,20 +612,20 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			return; // ofline shop
 		getConnection().close(gspArray);
 	}
-	
+
 	/**
 	 * @param charslot
 	 * @return
 	 */
 	private int getObjectIdForSlot(int charslot)
 	{
-		if (charslot < 0 || charslot >= _charSlotMapping.size())
+		final CharSelectInfoPackage info = getCharSelection(charslot);
+		if (info == null)
 		{
 			_log.warning(toString()+" tried to delete Character in slot "+charslot+" but no characters exits at that slot.");
 			return -1;
 		}
-		Integer objectId = _charSlotMapping.get(charslot);
-		return objectId.intValue();
+		return info.getObjectId();
 	}
 	
 	@Override
@@ -770,12 +792,14 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 								player.eventSitForced);
 						L2Event.connectionLossData.put(player.getName(), data);
 					}
+
 					// prevent closing again
 					player.setClient(null);
 					
 					if (player.isOnline())
 					{
 						player.deleteMe();
+						AntiFeedManager.getInstance().onDisconnect(L2GameClient.this);
 					}
 				}
 				L2GameClient.this.setActiveChar(null);

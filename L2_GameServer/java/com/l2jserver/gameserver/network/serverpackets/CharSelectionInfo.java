@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
+import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
@@ -53,7 +54,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 	{
 		_sessionId = sessionId;
 		_loginName = loginName;
-		_characterPackages = loadCharacterSelectInfo();
+		_characterPackages = loadCharacterSelectInfo(_loginName);
 		_activeId = -1;
 	}
 	
@@ -61,7 +62,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 	{
 		_sessionId = sessionId;
 		_loginName = loginName;
-		_characterPackages = loadCharacterSelectInfo();
+		_characterPackages = loadCharacterSelectInfo(_loginName);
 		_activeId = activeId;
 	}
 	
@@ -206,7 +207,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		}
 	}
 	
-	private CharSelectInfoPackage[] loadCharacterSelectInfo()
+	private static CharSelectInfoPackage[] loadCharacterSelectInfo(String loginName)
 	{
 		CharSelectInfoPackage charInfopackage;
 		List<CharSelectInfoPackage> characterList = new FastList<CharSelectInfoPackage>();
@@ -216,8 +217,8 @@ public class CharSelectionInfo extends L2GameServerPacket
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, base_class, transform_id FROM characters WHERE account_name=?");
-			statement.setString(1, _loginName);
+			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language FROM characters WHERE account_name=?");
+			statement.setString(1, loginName);
 			ResultSet charList = statement.executeQuery();
 			
 			while (charList.next())// fills the package
@@ -244,7 +245,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		return new CharSelectInfoPackage[0];
 	}
 	
-	private void loadCharacterSubclassInfo(CharSelectInfoPackage charInfopackage, int ObjectId, int activeClassId)
+	private static void loadCharacterSubclassInfo(CharSelectInfoPackage charInfopackage, int ObjectId, int activeClassId)
 	{
 		Connection con = null;
 		
@@ -279,7 +280,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 	}
 	
 	
-	private CharSelectInfoPackage restoreChar(ResultSet chardata) throws Exception
+	private static CharSelectInfoPackage restoreChar(ResultSet chardata) throws Exception
 	{
 		int objectId = chardata.getInt("charId");
 		String name = chardata.getString("char_name");
@@ -325,6 +326,15 @@ public class CharSelectionInfo extends L2GameServerPacket
 		charInfopackage.setX(chardata.getInt("x"));
 		charInfopackage.setY(chardata.getInt("y"));
 		charInfopackage.setZ(chardata.getInt("z"));
+
+		if (Config.L2JMOD_MULTILANG_ENABLE)
+		{
+			String lang = chardata.getString("language");
+			if (!Config.L2JMOD_MULTILANG_ALLOWED.contains(lang))
+				lang = Config.L2JMOD_MULTILANG_DEFAULT;
+			charInfopackage.setHtmlPrefix("data/lang/" + lang + "/");
+		}
+
 		// if is in subclass, load subclass exp, sp, lvl info
 		if(baseClassId != activeClassId)
 			loadCharacterSubclassInfo(charInfopackage, objectId, activeClassId);

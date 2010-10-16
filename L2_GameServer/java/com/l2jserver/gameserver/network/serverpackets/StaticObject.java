@@ -56,8 +56,8 @@ public class StaticObject extends L2GameServerPacket
 		_staticObjectId = door.getDoorId();
 		_objectId = door.getObjectId();
 		_type = 1;
-		_isTargetable = true;
-		_meshIndex = 1;
+		_isTargetable = door.getTargetable();
+		_meshIndex = door.getMeshIndex();
 		_isClosed = !door.getOpen();
 		_isEnemy = door.isEnemy();
 		_maxHp = door.getMaxVisibleHp();

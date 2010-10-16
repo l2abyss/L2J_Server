@@ -39,7 +39,7 @@ import com.l2jserver.gameserver.templates.StatsSet;
  * <li>npcId, type, name, sex</li>
  * <li>rewardExp, rewardSp</li>
  * <li>aggroRange, factionId, factionRange</li>
- * <li>rhand, lhand, armor</li>
+ * <li>rhand, lhand</li>
  * <li>isUndead</li>
  * <li>_drops</li>
  * <li>_minions</li>
@@ -67,7 +67,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public final int aggroRange;
 	public final int rhand;
 	public final int lhand;
-	public final int armor;
 	public final int enchantEffect;
 	public Race race;
 	public final String jClass;
@@ -202,7 +201,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 		aggroRange = set.getInteger("aggroRange");
 		rhand = set.getInteger("rhand");
 		lhand = set.getInteger("lhand");
-		armor = set.getInteger("armor");
 		enchantEffect = set.getInteger("enchant");
 		race = null;
 		int herbGroup = set.getInteger("dropHerbGroup");
@@ -956,5 +954,10 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public boolean isSpecialTree()
 	{
 		return npcId == L2XmassTreeInstance.SPECIAL_TREE_ID;
+	}
+	
+	public boolean isUndead()
+	{
+		return (race == Race.UNDEAD);
 	}
 }

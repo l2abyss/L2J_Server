@@ -249,24 +249,6 @@ public enum SystemMessageId
 	C1_GAVE_YOU_S2_DMG2(37),
 	
 	/**
-	 * ID: 38<br>
-	 * Message: The TGS2002 event begins!
-	 */
-	TGS2002_BEGINS(38),
-	
-	/**
-	 * ID: 39<br>
-	 * Message: The TGS2002 event is over. Thank you very much.
-	 */
-	TGS2002_ENDS(39),
-	
-	/**
-	 * ID: 40<br>
-	 * Message: This is the TGS demo: the character will immediately be restored.
-	 */
-	TGS_DEMO(40),
-	
-	/**
 	 * ID: 41<br>
 	 * Message: You carefully nock an arrow.
 	 */
@@ -1268,30 +1250,6 @@ public enum SystemMessageId
 	 * Message: $s2 of the clan $s1 requests declaration of war. Do you accept?
 	 */
 	S2_OF_THE_CLAN_S1_REQUESTS_WAR(207),
-	
-	/**
-	 * ID: 208<br>
-	 * Message: Please include file type when entering file path.
-	 */
-	INCLUDE_FILE_TYPE_WHEN_ENTERING_FILE_PATH(208),
-	
-	/**
-	 * ID: 209<br>
-	 * Message: The size of the image file is inappropriate. Please adjust to 16*12
-	 */
-	IMAGE_SIZE_INAPPROPRIATE(209),
-	
-	/**
-	 * ID: 210<br>
-	 * Message: Cannot find file. Please enter precise path.
-	 */
-	CANNOT_FIND_FILE_ENTER_PRECISE_PATH(210),
-	
-	/**
-	 * ID: 211<br>
-	 * Message: You may only register a 16 x 12 pixel, 256-color BMP.
-	 */
-	YOU_MAY_ONLY_REGISTER_A_16_BY_12_PIXEL_256_COLOR_BMP(211),
 	
 	/**
 	 * ID: 212<br>
@@ -2470,12 +2428,6 @@ public enum SystemMessageId
 	S1_DISARMED(417),
 	
 	/**
-	 * ID: 418<br>
-	 * Message: There is a significant difference between the item's price and its standard price. Please check again.
-	 */
-	PRICE_DIFFERECE(418),
-	
-	/**
 	 * ID: 419<br>
 	 * Message: $s1 minute(s) of usage time left.
 	 */
@@ -2518,131 +2470,10 @@ public enum SystemMessageId
 	CREATE_LVL_TOO_LOW_TO_REGISTER2(425),
 	
 	/**
-	 * ID: 426<br>
-	 * Message: Your account has been reported for intentionally not paying the cyber cafe fees.
-	 */
-	ACCOUNT_REPORTED_NOT_PAYING(426),
-	
-	/**
-	 * ID: 427<br>
-	 * Message: Please contact us.
-	 */
-	PLEASE_CONTACT_US(427),
-	
-	/**
-	 * ID: 428<br>
-	 * Message: In accordance with company policy, your account has been suspended due to  ...
-	 */
-	ILLEGAL_USE1(428),
-	
-	/**
-	 * ID: 429<br>
-	 * Message: In accordance with company policy, your account has been suspended due to  ...
-	 */
-	ILLEGAL_USE2(429),
-	
-	/**
-	 * ID: 430<br>
-	 * Message: (Doesn't need to translate.)
-	 */
-	NO_NEED_TO_TRANSLATE(430),
-	
-	/**
-	 * ID: 431<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE3(431),
-	
-	/**
-	 * ID: 432<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE4(432),
-	
-	/**
-	 * ID: 433<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE5(433),
-	
-	/**
-	 * ID: 434<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE6(434),
-	
-	/**
-	 * ID: 435<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE7(435),
-	
-	/**
-	 * ID: 436<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE8(436),
-	
-	/**
-	 * ID: 437<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE9(437),
-	
-	/**
-	 * ID: 438<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE10(438),
-	
-	/**
-	 * ID: 439<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE11(439),
-	
-	/**
-	 * ID: 440<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE12(440),
-	
-	/**
-	 * ID: 441<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE13(441),
-	
-	/**
-	 * ID: 442<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE14(442),
-	
-	/**
-	 * ID: 443<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE15(443),
-	
-	/**
-	 * ID: 444<br>
-	 * Message: Your account has been suspended ...
-	 */
-	ILLEGAL_USE16(444),
-	
-	/**
 	 * ID: 445<br>
 	 * Message: (Reference Number Regarding Membership Withdrawal Request: $s1)
 	 */
 	REFERENCE_MEMBERSHIP_WITHDRAWAL_S1(445),
-	
-	/**
-	 * ID: 446<br>
-	 * Message: For more information, please visit the Support Center on the PlayNC website
-	 * (http://www.plaync.com/us/support/).
-	 */
-	NCSOFT_SUPPOR(446),
 	
 	/**
 	 * ID: 447<br>
@@ -2687,12 +2518,6 @@ public enum SystemMessageId
 	ACCOUNT_INFORMATION_INCORRECT(453),
 	
 	/**
-	 * ID: 454<br>
-	 * Message: For more details, please contact our customer service center at http://support.plaync.com.
-	 */
-	DETAILS_NCSUPPORT(454),
-	
-	/**
 	 * ID: 455<br>
 	 * Message: Account is already in use. Unable to log in.
 	 */
@@ -2717,12 +2542,6 @@ public enum SystemMessageId
 	USAGE_TERM_EXPIRED(458),
 	
 	/**
-	 * ID: 459<br>
-	 * Message: PlayNC website (http://www.plaync.com/us/support/)
-	 */
-	PLAYNC_WEBSITE(459),
-	
-	/**
 	 * ID: 460<br>
 	 * Message: to reactivate your account.
 	 */
@@ -2739,12 +2558,6 @@ public enum SystemMessageId
 	 * Message: Please try again later.
 	 */
 	PLEASE_TRY_AGAIN_LATER(462),
-	
-	/**
-	 * ID: 463<br>
-	 * Message: .
-	 */
-	DOT2(463),
 	
 	/**
 	 * ID: 464<br>
@@ -3055,12 +2868,6 @@ public enum SystemMessageId
 	DO_YOU_WISH_TO_DISOLVE(514),
 	
 	/**
-	 * ID: 515<br>
-	 * Messages: Enter a file name for the alliance crest.
-	 */
-	ENTER_FILE_NAME_CREST(515),
-	
-	/**
 	 * ID: 516<br>
 	 * Message: $s1 has invited you to be their friend.
 	 */
@@ -3133,18 +2940,6 @@ public enum SystemMessageId
 	S2_ALLIANCE_LEADER_OF_S1_REQUESTED_ALLIANCE(527),
 	
 	/**
-	 * ID: 528<br>
-	 * Message: Unable to find file at target location.
-	 */
-	FILE_NOT_FOUND(528),
-	
-	/**
-	 * ID: 529<br>
-	 * Message: You may only register an 8 x 12 pixel, 256-color BMP.
-	 */
-	YOU_MAY_ONLY_REGISTER_AN_8_BY_12_PIXEL_256_COLOR_BMP(529),
-	
-	/**
 	 * ID: 530<br>
 	 * Message: The Spiritshot does not match the weapon's grade.
 	 */
@@ -3173,12 +2968,6 @@ public enum SystemMessageId
 	 * Message: Power of Mana disabled.
 	 */
 	DISABLED_SPIRITSHOT(534),
-	
-	/**
-	 * ID: 535<br>
-	 * Message: Enter a name for your pet.
-	 */
-	NAMING_NAME_PET(535),
 	
 	/**
 	 * ID: 536<br>
@@ -3379,24 +3168,6 @@ public enum SystemMessageId
 	CUBIC_SUMMONING_FAILED(568),
 	
 	/**
-	 * ID: 569<br>
-	 * Message: Caution -- this item's price greatly differs from non-player run shops. Do you wish to continue?
-	 */
-	GREATLY_DIFF_ITEM_PRICE(569),
-	
-	/**
-	 * ID: 570<br>
-	 * Message: How many $s1(s) do you want to purchase?
-	 */
-	HOW_MANY_S1_S_PURCHASE1(570),
-	
-	/**
-	 * ID: 571<br>
-	 * Message: How many $s1(s) do you want to purchase?
-	 */
-	HOW_MANY_S1_S_PURCHASE2(571),
-	
-	/**
 	 * ID: 572<br>
 	 * Message: Do you accept $c1's party invitation? (Item Distribution: Finders Keepers.)
 	 */
@@ -3485,12 +3256,6 @@ public enum SystemMessageId
 	 * Message: Pet items cannot be registered as shortcuts.
 	 */
 	PET_NO_SHORTCUT(586),
-	
-	/**
-	 * ID: 587<br>
-	 * Message: Irregular system speed.
-	 */
-	IRREGULAR_SYSTEM_SPEED(587),
 	
 	/**
 	 * ID: 588<br>
@@ -4114,12 +3879,6 @@ public enum SystemMessageId
 	NAMING_YOU_CANNOT_SET_NAME_OF_THE_PET(695),
 	
 	/**
-	 * ID: 696<br>
-	 * Message: Your account is restricted for not paying your PC room usage fees.
-	 */
-	ACCOUNT_RESTRICTED_NOT_PAYING(696),
-	
-	/**
 	 * ID: 697<br>
 	 * Message: The item enchant value is strange
 	 */
@@ -4429,13 +4188,6 @@ public enum SystemMessageId
 	CURRENTLY_NO_PETITION(746),
 	
 	/**
-	 * ID: 747<br>
-	 * Message: If you need help, please visit the Support Center on the PlayNC website
-	 * (http://www.plaync.com/us/support/).
-	 */
-	PLAYNC_SUPPORT_CENTER(747),
-	
-	/**
 	 * ID: 748<br>
 	 * Message: The distance is too far and so the casting has been stopped.
 	 */
@@ -4539,59 +4291,10 @@ public enum SystemMessageId
 	PLAYING_FOR_LONG_TIME(764),
 	
 	/**
-	 * ID: 765<br>
-	 * Message: GameGuard is already running. Please try running it again after rebooting.
-	 */
-	GG_ALREADY_RUNNING(765),
-	
-	/**
-	 * ID: 766<br>
-	 * Message: There is a GameGuard initialization error. Please try running it again after rebooting.
-	 */
-	GG_INITIALIZATION_ERROR(766),
-	
-	/**
-	 * ID: 767<br>
-	 * Message: The GameGuard file is damaged. Please reinstall GameGuard.
-	 */
-	GG_DAMAGED(767),
-	
-	/**
-	 * ID: 768<br>
-	 * Message: A Windows system file is damaged. Please reinstall Internet Explorer.
-	 */
-	WINDOWS_FILE_DAMAGED(768),
-	
-	/**
 	 * ID: 769<br>
 	 * Message: A hacking tool has been discovered. Please try again after closing unnecessary programs.
 	 */
 	HACKING_TOOL(769),
-	
-	/**
-	 * ID: 770<br>
-	 * Message: The GameGuard update was canceled. Please check your network connection status or firewall.
-	 */
-	GG_UPDATE_CANCELED1(770),
-	
-	/**
-	 * ID: 771<br>
-	 * Message: The GameGuard update was canceled. Please try running it again after
-	 * doing a virus scan or changing the settings in your PC management program.
-	 */
-	GG_UPDATE_CANCELED2(771),
-	
-	/**
-	 * ID: 772<br>
-	 * Message: There was a problem when running GameGuard.
-	 */
-	GG_PROBLEM(772),
-	
-	/**
-	 * ID: 773<br>
-	 * Message: The game or GameGuard files are damaged.
-	 */
-	GG_FILES_DAMAGED(773),
 	
 	/**
 	 * ID: 774<br>
