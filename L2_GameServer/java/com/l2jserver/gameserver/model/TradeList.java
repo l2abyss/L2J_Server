@@ -1020,6 +1020,11 @@ public class TradeList
 				if (oldItem == null)
 					continue;
 			}
+			if (oldItem.getItemId() != item.getItemId())
+			{
+				Util.handleIllegalPlayerAction(player, player+" is cheating with sell items", Config.DEFAULT_PUNISH);
+				return false;
+			}
 			
 			if (!oldItem.isTradeable())
 				continue;
