@@ -81,7 +81,6 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		System.err.println("MBTL: tx:"+_targetX+" ty:"+_targetY+" tz:"+_targetZ+" ox:"+_originX+" oy:"+_originY+" oz"+_originZ+" mt:"+_moveMovement);
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
