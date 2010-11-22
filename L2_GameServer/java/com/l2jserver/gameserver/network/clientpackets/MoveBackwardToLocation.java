@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -36,11 +37,8 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 	private int _targetX;
 	private int _targetY;
 	private int _targetZ;
-	@SuppressWarnings("unused")
 	private int _originX;
-	@SuppressWarnings("unused")
 	private int _originY;
-	@SuppressWarnings("unused")
 	private int _originZ;
 	private int _moveMovement;
 	
@@ -83,9 +81,17 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
+		System.err.println("MBTL: tx:"+_targetX+" ty:"+_targetY+" tz:"+_targetZ+" ox:"+_originX+" oy:"+_originY+" oz"+_originZ+" mt:"+_moveMovement);
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
+
+		if (_targetX == _originX && _targetY == _originY && _targetZ == _originZ)
+		{
+			activeChar.sendPacket(new StopMove(activeChar));
+			return;
+		}
+
 		// Correcting targetZ from floor level to head level (?)
 		// Client is giving floor level as targetZ but that floor level doesn't
 		// match our current geodata and teleport coords as good as head level!

@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExMoveToLocationInAirShip;
+import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.util.Point3D;
 
@@ -32,8 +33,12 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 	private static final String _C__D0_20_MOVETOLOCATIONINAIRSHIP = "[C] D0:20 MoveToLocationInAirShip";
 	
 	private int _shipId;
-	private final Point3D _pos = new Point3D(0,0,0);
-	private final Point3D _origin_pos = new Point3D(0,0,0);
+	private int _targetX;
+	private int _targetY;
+	private int _targetZ;
+	private int _originX;
+	private int _originY;
+	private int _originZ;
 	
 	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
 	
@@ -41,15 +46,12 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 	protected void readImpl()
 	{
 		_shipId = readD();
-		int _x, _y, _z;
-		_x = readD();
-		_y = readD();
-		_z = readD();
-		_pos.setXYZ(_x, _y, _z);
-		_x = readD();
-		_y = readD();
-		_z = readD();
-		_origin_pos.setXYZ(_x, _y, _z);
+		_targetX = readD();
+		_targetY = readD();
+		_targetZ = readD();
+		_originX = readD();
+		_originY = readD();
+		_originZ = readD();
 	}
 	
 	
@@ -60,6 +62,12 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 		if (activeChar == null)
 			return;
 		
+		if (_targetX == _originX && _targetY == _originY && _targetZ == _originZ)
+		{
+			activeChar.sendPacket(new StopMoveInVehicle(activeChar, _shipId));
+			return;
+		}
+
 		if (activeChar.isAttackingNow()
 				&& activeChar.getActiveWeaponItem() != null
 				&& (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
@@ -87,8 +95,7 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 			return;
 		}
 		
-		activeChar.setVehicle(airShip);
-		activeChar.setInVehiclePosition(_pos);
+		activeChar.setInVehiclePosition(new Point3D(_targetX, _targetY, _targetZ));
 		activeChar.broadcastPacket(new ExMoveToLocationInAirShip(activeChar));
 	}
 	
