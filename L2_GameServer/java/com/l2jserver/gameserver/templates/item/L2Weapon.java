@@ -49,6 +49,7 @@ import com.l2jserver.util.StringUtil;
 public final class L2Weapon extends L2Item
 {
 	private final L2WeaponType _type;
+	private final boolean _isMagicWeapon;
 	private final int _rndDam;
 	private final int _soulShotCount;
 	private final int _spiritShotCount;
@@ -87,6 +88,7 @@ public final class L2Weapon extends L2Item
 		_type = L2WeaponType.valueOf(set.getString("weapon_type", "none").toUpperCase());
 		_type1 = L2Item.TYPE1_WEAPON_RING_EARRING_NECKLACE;
 		_type2 = L2Item.TYPE2_WEAPON;
+		_isMagicWeapon = set.getBool("is_magic_weapon", false);
 		_soulShotCount = set.getInteger("soulshots", 0);
 		_spiritShotCount = set.getInteger("spiritshots", 0);
 		_rndDam = set.getInteger("random_damage", 0);
@@ -239,6 +241,15 @@ public final class L2Weapon extends L2Item
 	public int getItemMask()
 	{
 		return getItemType().mask();
+	}
+	
+	/**
+	 * Returns true if L2Weapon is magic type.
+	 * @return boolean
+	 */
+	public boolean isMagicWeapon()
+	{
+		return _isMagicWeapon;
 	}
 	
 	/**
