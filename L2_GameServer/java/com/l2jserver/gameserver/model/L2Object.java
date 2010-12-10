@@ -103,13 +103,11 @@ public abstract class L2Object
 		L2FriendlyMobInstance(L2Attackable),
 		L2PenaltyMonsterInstance(L2MonsterInstance),
 		L2RiftInvaderInstance(L2MonsterInstance),
-		L2MinionInstance(L2MonsterInstance),
 		L2RaidBossInstance(L2MonsterInstance),
 		L2GrandBossInstance(L2RaidBossInstance),
 		// FlyMobs
 		L2FlyNpcInstance(L2NpcInstance),
 		L2FlyMonsterInstance(L2MonsterInstance),
-		L2FlyMinionInstance(L2MinionInstance),
 		L2FlyRaidBossInstance(L2RaidBossInstance),
 		L2FlyTerrainObjectInstance(L2Npc),
 		// Sepulchers

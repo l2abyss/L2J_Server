@@ -78,7 +78,7 @@ public class NpcTable
 						+ L2DatabaseFactory.getInstance().safetyString(new String[] { "id", "idTemplate", "name", "serverSideName",
 								"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 								"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk",
-								"pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "enchant", "walkspd", "runspd",
+								"pdef", "matk", "mdef", "atkspd", "critical", "aggro", "matkspd", "rhand", "lhand", "enchant", "walkspd", "runspd",
 								"dropHerbGroup" }) + " FROM npc");
 				ResultSet npcdata = statement.executeQuery();
 				
@@ -99,7 +99,7 @@ public class NpcTable
 							+ L2DatabaseFactory.getInstance().safetyString(new String[] { "id", "idTemplate", "name", "serverSideName",
 									"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 									"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp",
-									"patk", "pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "enchant", "walkspd",
+									"patk", "pdef", "matk", "mdef", "atkspd", "critical", "aggro", "matkspd", "rhand", "lhand", "enchant", "walkspd",
 									"runspd", "dropHerbGroup" }) + " FROM custom_npc");
 					ResultSet npcdata = statement.executeQuery();
 					
@@ -362,7 +362,7 @@ public class NpcTable
 			
 			try
 			{
-				PreparedStatement statement10 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"npc_id", "primary_attack","skill_chance","canMove","soulshot","spiritshot","sschance","spschance","minrangeskill","minrangechance","maxrangeskill","maxrangechance","ischaos","clan","clan_range","enemyClan","enemyRange","ai_type","dodge"}) + " FROM npcaidata ORDER BY npc_id");
+				PreparedStatement statement10 = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"npc_id", "primary_attack","skill_chance","can_move","soulshot","spiritshot","sschance","spschance","minrangeskill","minrangechance","maxrangeskill","maxrangechance","ischaos","clan","clan_range","enemyClan","enemyRange","ai_type","dodge"}) + " FROM npcaidata ORDER BY npc_id");
 				ResultSet NpcAIDataTable = statement10.executeQuery();
 				L2NpcAIData npcAIDat = null;
 				L2NpcTemplate npcDat = null;
@@ -380,7 +380,7 @@ public class NpcTable
 					
 					npcAIDat.setPrimaryAttack(NpcAIDataTable.getInt("primary_attack"));
 					npcAIDat.setSkillChance(NpcAIDataTable.getInt("skill_chance"));
-					npcAIDat.setCanMove(NpcAIDataTable.getInt("canMove"));
+					npcAIDat.setCanMove(NpcAIDataTable.getInt("can_move"));
 					npcAIDat.setSoulShot(NpcAIDataTable.getInt("soulshot"));
 					npcAIDat.setSpiritShot(NpcAIDataTable.getInt("spiritshot"));
 					npcAIDat.setSoulShotChance(NpcAIDataTable.getInt("sschance"));
@@ -419,7 +419,7 @@ public class NpcTable
 			{
 				try
 				{
-					PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] { "npc_id", "primary_attack", "skill_chance", "canMove", "soulshot", "spiritshot", "sschance", "spschance", "minrangeskill", "minrangechance", "maxrangeskill", "maxrangechance", "ischaos", "clan", "clan_range", "enemyClan", "enemyRange", "ai_type", "dodge" }) + " FROM custom_npcaidata ORDER BY npc_id");
+					PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] { "npc_id", "primary_attack", "skill_chance", "can_move", "soulshot", "spiritshot", "sschance", "spschance", "minrangeskill", "minrangechance", "maxrangeskill", "maxrangechance", "ischaos", "clan", "clan_range", "enemyClan", "enemyRange", "ai_type", "dodge" }) + " FROM custom_npcaidata ORDER BY npc_id");
 					ResultSet NpcAIDataTable = statement.executeQuery();
 					L2NpcAIData npcAIDat = null;
 					L2NpcTemplate npcDat = null;
@@ -437,7 +437,7 @@ public class NpcTable
 						
 						npcAIDat.setPrimaryAttack(NpcAIDataTable.getInt("primary_attack"));
 						npcAIDat.setSkillChance(NpcAIDataTable.getInt("skill_chance"));
-						npcAIDat.setCanMove(NpcAIDataTable.getInt("canMove"));
+						npcAIDat.setCanMove(NpcAIDataTable.getInt("can_move"));
 						npcAIDat.setSoulShot(NpcAIDataTable.getInt("soulshot"));
 						npcAIDat.setSpiritShot(NpcAIDataTable.getInt("spiritshot"));
 						npcAIDat.setSoulShotChance(NpcAIDataTable.getInt("sschance"));
@@ -612,7 +612,7 @@ public class NpcTable
 			
 			npcDat.set("baseShldDef", 0);
 			npcDat.set("baseShldRate", 0);
-			npcDat.set("baseCritRate", 38);
+			npcDat.set("baseCritRate", NpcData.getInt("critical"));
 			
 			npcDat.set("name", NpcData.getString("name"));
 			npcDat.set("serverSideName", NpcData.getBoolean("serverSideName"));

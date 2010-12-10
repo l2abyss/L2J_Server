@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.actor.stat;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
@@ -39,11 +40,11 @@ public class PlayableStat extends CharStat
 	
 	public boolean addExp(long value)
 	{
-		if ((getExp() + value) < 0 || (value > 0 && getExp() == (getExpForLevel(Experience.MAX_LEVEL) - 1)))
+		if ((getExp() + value) < 0 || (value > 0 && getExp() == (getExpForLevel(getMaxLevel()) - 1)))
 			return true;
 		
-		if (getExp() + value >= getExpForLevel(Experience.MAX_LEVEL))
-			value = getExpForLevel(Experience.MAX_LEVEL) - 1 - getExp();
+		if (getExp() + value >= getExpForLevel(getMaxLevel()))
+			value = getExpForLevel(getMaxLevel()) - 1 - getExp();
 		
 		setExp(getExp() + value);
 		
@@ -51,12 +52,12 @@ public class PlayableStat extends CharStat
 		if (getActiveChar() instanceof L2PetInstance)
 		{
 			// get minimum level from L2NpcTemplate
-			minimumLevel = ((L2PetInstance)getActiveChar()).getTemplate().level;
+			minimumLevel = (byte)PetDataTable.getInstance().getPetMinLevel(((L2PetInstance)getActiveChar()).getTemplate().npcId);
 		}
 		
 		byte level = minimumLevel; // minimum level
 		
-		for (byte tmp = level; tmp <= Experience.MAX_LEVEL; tmp++)
+		for (byte tmp = level; tmp <= getMaxLevel(); tmp++)
 		{
 			if (getExp() >= getExpForLevel(tmp))
 				continue;
@@ -80,11 +81,11 @@ public class PlayableStat extends CharStat
 		if (getActiveChar() instanceof L2PetInstance)
 		{
 			// get minimum level from L2NpcTemplate
-			minimumLevel = ((L2PetInstance)getActiveChar()).getTemplate().level;
+			minimumLevel = (byte)PetDataTable.getInstance().getPetMinLevel(((L2PetInstance)getActiveChar()).getTemplate().npcId);
 		}
 		byte level = minimumLevel;
 		
-		for (byte tmp = level; tmp <= Experience.MAX_LEVEL; tmp++)
+		for (byte tmp = level; tmp <= getMaxLevel(); tmp++)
 		{
 			if (getExp() >= getExpForLevel(tmp))
 				continue;
@@ -118,10 +119,10 @@ public class PlayableStat extends CharStat
 	
 	public boolean addLevel(byte value)
 	{
-		if (getLevel() + value > Experience.MAX_LEVEL - 1)
+		if (getLevel() + value > getMaxLevel() - 1)
 		{
-			if (getLevel() < Experience.MAX_LEVEL - 1)
-				value = (byte)(Experience.MAX_LEVEL - 1 - getLevel());
+			if (getLevel() < getMaxLevel() - 1)
+				value = (byte)(getMaxLevel() - 1 - getLevel());
 			else
 				return false;
 		}
@@ -181,7 +182,6 @@ public class PlayableStat extends CharStat
 	public int getRunSpeed()
 	{
 		int val = super.getRunSpeed();
-		// TODO: base speed must be 80 (without buffs/passive skills) ;)
 		if (getActiveChar().isInsideZone(L2Character.ZONE_WATER))
 			val /= 2;
 		
@@ -197,5 +197,13 @@ public class PlayableStat extends CharStat
 	}
 	
 	@Override
-	public L2Playable getActiveChar() { return (L2Playable)super.getActiveChar(); }
+	public L2Playable getActiveChar()
+	{
+		return (L2Playable)super.getActiveChar();
+	}
+	
+	public int getMaxLevel()
+	{
+		return Experience.MAX_LEVEL;
+	}
 }

@@ -141,8 +141,7 @@ public class L2WarehouseItem
 	 * Returns the second type
 	 * @return int
 	 */
-	@SuppressWarnings({ "rawtypes" })
-	public final Enum getItemType()
+	public final L2ItemType getItemType()
 	{
 		return _item.getItemType();
 	}

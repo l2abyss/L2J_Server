@@ -1362,8 +1362,7 @@ public class L2CharacterAI extends AbstractAI
 		{
 			if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
 					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_MULTIFACE)
+					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA)
 			{
 				boolean cancast = true;
 				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
@@ -1420,8 +1419,7 @@ public class L2CharacterAI extends AbstractAI
 		{
 			if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
 					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_MULTIFACE)
+					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA)
 			{
 				boolean cancast = false;
 				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))

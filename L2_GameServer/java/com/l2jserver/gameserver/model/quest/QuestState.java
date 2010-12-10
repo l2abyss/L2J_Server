@@ -47,7 +47,6 @@ import com.l2jserver.gameserver.network.serverpackets.TutorialEnableClientEvent;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowQuestionMark;
 import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -607,18 +606,25 @@ public final class QuestState
 		{
 			if(_tmpItem.isEtcItem())
 			{
-				L2EtcItemType _type = _tmpItem.getEtcItem().getItemType();
-				
-				if (_type == L2EtcItemType.POTION)
-					count = (long) (count * Config.RATE_QUEST_REWARD_POTION);
-				else if (_type == L2EtcItemType.SCROLL)
-					count = (long) (count * Config.RATE_QUEST_REWARD_SCROLL);
-				else if (_type == L2EtcItemType.RECIPE)
-					count = (long) (count * Config.RATE_QUEST_REWARD_RECIPE);
-				else if (_type == L2EtcItemType.MATERIAL)
-					count = (long) (count * Config.RATE_QUEST_REWARD_MATERIAL);
-				else
-					count = (long) (count * Config.RATE_QUEST_REWARD);
+				switch (_tmpItem.getEtcItem().getItemType())
+				{
+					case POTION:
+						count = (long) (count * Config.RATE_QUEST_REWARD_POTION);
+						break;
+					case SCRL_ENCHANT_WP:
+					case SCRL_ENCHANT_AM:
+					case SCROLL:
+						count = (long) (count * Config.RATE_QUEST_REWARD_SCROLL);
+						break;
+					case RECIPE:
+						count = (long) (count * Config.RATE_QUEST_REWARD_RECIPE);
+						break;
+					case MATERIAL:
+						count = (long) (count * Config.RATE_QUEST_REWARD_MATERIAL);
+						break;
+					default:
+						count = (long) (count * Config.RATE_QUEST_REWARD);
+				}
 			}
 		}
 		else

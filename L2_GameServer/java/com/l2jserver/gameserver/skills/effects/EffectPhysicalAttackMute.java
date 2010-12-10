@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
@@ -70,5 +71,14 @@ public class EffectPhysicalAttackMute extends L2Effect
 	public void onExit()
 	{
 		getEffected().stopPhysicalAttackMuted(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_PSYCHICAL_ATTACK_MUTED;
 	}
 }

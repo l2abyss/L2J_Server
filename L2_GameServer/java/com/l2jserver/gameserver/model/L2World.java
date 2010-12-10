@@ -55,14 +55,13 @@ public final class L2World
 	 */
 	public static final int SHIFT_BY = 12;
 	
-	/** Map dimensions */
-	public static final int MAP_MIN_X = (Config.WORLD_X_MIN - 20) << 15;
-	public static final int MAP_MAX_X = (Config.WORLD_X_MAX - 19) << 15;
-	public static final int MAP_MIN_Y = (Config.WORLD_Y_MIN - 18) << 15;
-	public static final int MAP_MAX_Y = (Config.WORLD_Y_MAX - 17) << 15;
+	private static final int TILE_SIZE = 32768;
 	
-	public static final int WORLD_SIZE_X = Config.WORLD_X_MAX - Config.WORLD_X_MIN + 1;
-	public static final int WORLD_SIZE_Y = Config.WORLD_Y_MAX - Config.WORLD_Y_MIN + 1;
+	/** Map dimensions */
+	public static final int MAP_MIN_X = (Config.WORLD_X_MIN - 20) * TILE_SIZE;
+	public static final int MAP_MAX_X = (Config.WORLD_X_MAX - 19) * TILE_SIZE;
+	public static final int MAP_MIN_Y = (Config.WORLD_Y_MIN - 18) * TILE_SIZE;
+	public static final int MAP_MAX_Y = (Config.WORLD_Y_MAX - 17) * TILE_SIZE;
 	
 	/** calculated offset used so top left region is 0,0 */
 	public static final int OFFSET_X = Math.abs(MAP_MIN_X >> SHIFT_BY);
@@ -119,8 +118,7 @@ public final class L2World
 		
 		if (_allObjects.containsKey(object.getObjectId()))
 		{
-			if (Config.DEBUG)
-				_log.warning("[L2World] objectId " + object.getObjectId() + " already exist in OID map!");
+			_log.warning("[L2World] object: " + object + " already exist in OID map!");
 			return;
 		}
 		
@@ -572,7 +570,7 @@ public final class L2World
 				{
 					if (_object == null || _object.equals(object))
 						continue; // skip our own character
-					
+						
 					int x1 = _object.getX();
 					int y1 = _object.getY();
 					
@@ -626,7 +624,7 @@ public final class L2World
 				{
 					if (_object == null || _object.equals(object))
 						continue; // skip our own character
-					
+						
 					int x1 = _object.getX();
 					int y1 = _object.getY();
 					int z1 = _object.getZ();
@@ -680,10 +678,10 @@ public final class L2World
 				{
 					if (_object == null || _object.equals(object))
 						continue; // skip our own character
-					
+						
 					if (!_object.isVisible()) // GM invisible is different than this...
 						continue; // skip dying objects
-					
+						
 					result.add(_object);
 				}
 			}

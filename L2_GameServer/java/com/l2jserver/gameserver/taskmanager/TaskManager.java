@@ -35,6 +35,8 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskCleanUp;
+import com.l2jserver.gameserver.taskmanager.tasks.TaskDailyQuestClean;
+import com.l2jserver.gameserver.taskmanager.tasks.TaskGlobalVariablesSave;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskJython;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskOlympiadSave;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskRaidPointsReset;
@@ -169,12 +171,14 @@ public final class TaskManager
 		registerTask(new TaskCleanUp());
 		registerTask(new TaskScript());
 		registerTask(new TaskJython());
+		registerTask(new TaskGlobalVariablesSave());
 		registerTask(new TaskOlympiadSave());
 		registerTask(new TaskRaidPointsReset());
 		registerTask(new TaskRecom());
 		registerTask(new TaskRestart());
 		registerTask(new TaskSevenSignsUpdate());
 		registerTask(new TaskShutdown());
+		registerTask(new TaskDailyQuestClean());
 	}
 	
 	public void registerTask(Task task)

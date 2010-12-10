@@ -71,4 +71,5 @@ public class EffectPetrification extends L2Effect
 	{
 		return false;
 	}
+	
 }

@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
 
@@ -357,7 +356,7 @@ public class TradeList
 		
 		L2ItemInstance item = (L2ItemInstance) o;
 		
-		if (!(item.isTradeable() || (getOwner().isGM() && Config.GM_TRADE_RESTRICTED_ITEMS)) || item.getItemType() == L2EtcItemType.QUEST)
+		if (!(item.isTradeable() || (getOwner().isGM() && Config.GM_TRADE_RESTRICTED_ITEMS)) || item.isQuestItem())
 			return null;
 		
 		if (!getOwner().getInventory().canManipulateWithItemId(item.getItemId()))
@@ -416,7 +415,7 @@ public class TradeList
 			return null;
 		}
 		
-		if (!item.isTradeable() || item.getItemType() == L2EtcItemType.QUEST)
+		if (!item.isTradeable() || item.isQuestItem())
 			return null;
 		
 		if (!item.isStackable() && count > 1)

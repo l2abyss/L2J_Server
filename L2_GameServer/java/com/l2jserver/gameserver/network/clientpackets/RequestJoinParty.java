@@ -114,7 +114,12 @@ public final class RequestJoinParty extends L2GameClientPacket
 		}
 		
 		if (target.isInOlympiadMode() || requestor.isInOlympiadMode())
-			return;
+		{
+			if (target.isInOlympiadMode() != requestor.isInOlympiadMode()
+					|| target.getOlympiadGameId() != requestor.getOlympiadGameId()
+					|| target.getOlympiadSide() != requestor.getOlympiadSide())
+				return;
+		}
 		
 		SystemMessage info = new SystemMessage(SystemMessageId.C1_INVITED_TO_PARTY);
 		info.addCharName(target);

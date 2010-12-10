@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
@@ -246,7 +245,7 @@ public class L2SkillSummon extends L2Skill
 		if (!(summon instanceof L2MerchantSummonInstance))
 			activeChar.setPet(summon);
 		
-		L2World.getInstance().storeObject(summon);
+		//L2World.getInstance().storeObject(summon);
 		summon.spawnMe(activeChar.getX()+20, activeChar.getY()+20, activeChar.getZ());
 	}
 	

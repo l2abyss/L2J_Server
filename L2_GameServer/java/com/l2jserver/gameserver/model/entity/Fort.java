@@ -488,6 +488,7 @@ public class Fort
 			setBloodOathReward(0);
 			setSupplyLvL(0);
 			saveFortVariables();
+			removeAllFunctions();
 			if (updateDB)
 				updateOwnerInDB();
 		}
@@ -632,9 +633,9 @@ public class Fort
 				setOwnerClan(clan);
 				int runCount = getOwnedTime() / (Config.FS_UPDATE_FRQ * 60);
 				long initial = System.currentTimeMillis() - _lastOwnedTime.getTimeInMillis();
-				while (initial > (Config.FS_UPDATE_FRQ * 60000))
-					initial -= (Config.FS_UPDATE_FRQ * 60000);
-				initial = (Config.FS_UPDATE_FRQ * 60000) - initial;
+				while (initial > (Config.FS_UPDATE_FRQ * 60000l))
+					initial -= (Config.FS_UPDATE_FRQ * 60000l);
+				initial = (Config.FS_UPDATE_FRQ * 60000l) - initial;
 				if (Config.FS_MAX_OWN_TIME <= 0 || getOwnedTime() < Config.FS_MAX_OWN_TIME * 3600)
 				{
 					_FortUpdater[0] = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FortUpdater(this, clan, runCount, UpdaterType.PERIODIC_UPDATE), initial, Config.FS_UPDATE_FRQ * 60000l); // Schedule owner tasks to start running
@@ -708,6 +709,17 @@ public class Fort
 		finally
 		{
 			L2DatabaseFactory.close(con);
+		}
+	}
+	
+	/**
+	 * Remove all fort functions.
+	 */
+	private void removeAllFunctions()
+	{
+		for (int id : _function.keySet())
+		{
+			removeFunction(id);
 		}
 	}
 	

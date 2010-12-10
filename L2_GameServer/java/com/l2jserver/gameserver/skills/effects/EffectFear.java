@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.skills.effects;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.Location;
@@ -144,5 +145,14 @@ public class EffectFear extends L2Effect
 		
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX, posY, posZ, 0));
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_FEAR;
 	}
 }

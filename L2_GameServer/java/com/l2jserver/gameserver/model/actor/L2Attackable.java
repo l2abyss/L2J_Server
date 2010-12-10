@@ -42,11 +42,11 @@ import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Manor;
+import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2MinionInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -396,7 +396,45 @@ public class L2Attackable extends L2Npc
 		
 		return !target.isInvul();
 	}
-	
+
+	public void useMagic(L2Skill skill)
+	{
+		if (skill == null || isAlikeDead())
+			return;
+
+		if (skill.isPassive())
+			return;
+
+		if (isCastingNow())
+			return;
+
+		if (isSkillDisabled(skill))
+			return;
+
+		if (getCurrentMp() < getStat().getMpConsume(skill) + getStat().getMpInitialConsume(skill))
+			return;
+
+		if (getCurrentHp() <= skill.getHpConsume())
+			return;
+
+		if (skill.isMagic())
+		{
+			if (isMuted())
+				return;
+		}
+		else
+		{
+			if (isPhysicalMuted())
+				return;
+		}
+
+		L2Object target = skill.getFirstOfTargetList(this);
+		if (target == null)
+			return;
+
+		getAI().setIntention(CtrlIntention.AI_INTENTION_CAST, skill, target);
+	}
+
 	/**
 	 * Reduce the current HP of the L2Attackable.
 	 *
@@ -419,7 +457,7 @@ public class L2Attackable extends L2Npc
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
-		if (isRaid() && !(this instanceof L2MinionInstance) && attacker != null && attacker.getParty() != null
+		if (isRaid() && !isMinion() && attacker != null && attacker.getParty() != null
 				&& attacker.getParty().isInCommandChannel() && attacker.getParty().getCommandChannel().meetRaidWarCondition(this))
 		{
 			if (_firstCommandChannelAttacked == null) //looting right isn't set
@@ -455,18 +493,13 @@ public class L2Attackable extends L2Npc
 		if (this instanceof L2MonsterInstance)
 		{
 			L2MonsterInstance master = (L2MonsterInstance) this;
+
+			if (master.hasMinions())
+				master.getMinionList().onAssist(this, attacker);
 			
-			if (this instanceof L2MinionInstance)
-			{
-				master = ((L2MinionInstance)this).getLeader();
-				
-				if (master != null && !master.isInCombat() && !master.isDead())
-				{
-					master.notifyMinionAttacked(attacker, (L2MinionInstance) this);
-				}
-			}
-			else if (master.hasMinions())
-				master.callMinionsToAssist(attacker);
+			master = master.getLeader();				
+			if (master != null && master.hasMinions())
+				master.getMinionList().onAssist(this, attacker);
 		}
 		// Reduce the current HP of the L2Attackable and launch the doDie Task if necessary
 		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
@@ -593,7 +626,7 @@ public class L2Attackable extends L2Npc
 					// Prevent unwanted behavior
 					if (damage > 1)
 					{
-						if ((attacker instanceof L2SummonInstance) || ((attacker instanceof L2PetInstance) && ((L2PetInstance)attacker).getPetData().getOwnerExpTaken() > 0))
+						if ((attacker instanceof L2SummonInstance) || ((attacker instanceof L2PetInstance) && ((L2PetInstance)attacker).getPetLevelData().getOwnerExpTaken() > 0))
 							ddealer = ((L2Summon)attacker).getOwner();
 						else
 							ddealer = info.getAttacker();
@@ -2336,7 +2369,6 @@ public class L2Attackable extends L2Npc
 	 * Set this Npc as a Raid instance.<BR><BR>
 	 * @param isRaid
 	 */
-	@Override
 	public void setIsRaid(boolean isRaid)
 	{
 		_isRaid = isRaid;
@@ -2346,7 +2378,6 @@ public class L2Attackable extends L2Npc
 	 * Set this Npc as a Minion instance.<BR><BR>
 	 * @param val
 	 */
-	@Override
 	public void setIsRaidMinion(boolean val)
 	{
 		_isRaid = val;
@@ -2359,6 +2390,20 @@ public class L2Attackable extends L2Npc
 		return _isRaidMinion;
 	}
 	
+	@Override
+	public boolean isMinion()
+	{
+		return getLeader() != null;
+	}
+
+	/**
+	 * Return leader of this minion or null.
+	 */
+	public L2Attackable getLeader()
+	{
+		return null;
+	}
+
 	public void setChampion(boolean champ)
 	{
 		_champion = champ;

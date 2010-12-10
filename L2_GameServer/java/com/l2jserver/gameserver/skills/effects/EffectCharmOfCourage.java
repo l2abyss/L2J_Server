@@ -14,8 +14,10 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
@@ -49,7 +51,7 @@ public class EffectCharmOfCourage extends L2Effect
 	{
 		if (getEffected() instanceof L2PcInstance)
 		{
-			((L2PcInstance) getEffected()).setCharmOfCourage(true);
+			getEffected().broadcastPacket(new EtcStatusUpdate((L2PcInstance) getEffected()));
 			return true;
 		}
 		return false;
@@ -62,7 +64,10 @@ public class EffectCharmOfCourage extends L2Effect
 	@Override
 	public void onExit()
 	{
-		((L2PcInstance) getEffected()).setCharmOfCourage(false);
+		if (getEffected() instanceof L2PcInstance)
+		{
+			getEffected().broadcastPacket(new EtcStatusUpdate((L2PcInstance) getEffected()));
+		}
 	}
 	
 	/**
@@ -72,5 +77,14 @@ public class EffectCharmOfCourage extends L2Effect
 	public boolean onActionTime()
 	{
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE;
 	}
 }

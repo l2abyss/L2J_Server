@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
+@Deprecated
 public class RequestBuyProcure extends L2GameClientPacket {
 	private static final String _C__C3_REQUESTBUYPROCURE = "[C] C3 RequestBuyProcure";
 	

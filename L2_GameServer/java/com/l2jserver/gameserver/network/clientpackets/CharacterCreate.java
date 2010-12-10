@@ -278,7 +278,7 @@ public final class CharacterCreate extends L2GameClientPacket
 			
 			if (item.isEquipable() && ia.isEquipped())
 			{
-				newChar.getInventory().equipItemAndRecord(item);
+				newChar.getInventory().equipItem(item);
 			}
 		}
 		
@@ -302,7 +302,7 @@ public final class CharacterCreate extends L2GameClientPacket
 		if (!Config.DISABLE_TUTORIAL)
 			startTutorialQuest(newChar);
 		
-		newChar.setOnlineStatus(true);
+		newChar.setOnlineStatus(true, false);
 		newChar.deleteMe();
 		
 		CharSelectionInfo cl = new CharSelectionInfo(client.getAccountName(), client.getSessionId().playOkID1);

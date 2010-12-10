@@ -298,43 +298,6 @@ public abstract class ItemContainer
 	}
 	
 	/**
-	 * Adds Wear/Try On item to inventory<BR><BR>
-	 *
-	 * @param process : String Identifier of process triggering this action
-	 * @param itemId : int Item Identifier of the item to be added
-	 * @param actor : L2PcInstance Player requesting the item add
-	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
-	 * @return L2ItemInstance corresponding to the new weared item
-	 */
-	public L2ItemInstance addWearItem(String process, int itemId, L2PcInstance actor, Object reference)
-	{
-		// Surch the item in the inventory of the player
-		L2ItemInstance item = getItemByItemId(itemId);
-		
-		// There is such item already in inventory
-		if (item != null)
-			return item;
-		
-		// Create and Init the L2ItemInstance corresponding to the Item Identifier and quantity
-		// Add the L2ItemInstance object to _allObjects of L2world
-		item = ItemTable.getInstance().createItem(process, itemId, 1, actor, reference);
-		
-		// Set Item Properties
-		item.setWear(true); // "Try On" Item -> Don't save it in database
-		item.setOwnerId(getOwnerId());
-		item.setLocation(getBaseLocation());
-		item.setLastChange((L2ItemInstance.ADDED));
-		
-		// Add item in inventory and equip it if necessary (item location defined)
-		addItem(item);
-		
-		// Calculate the weight loaded by player
-		refreshWeight();
-		
-		return item;
-	}
-	
-	/**
 	 * Transfers item to another inventory
 	 * @param process : String Identifier of process triggering this action
 	 * @param itemId : int Item Identifier of the item to be transfered

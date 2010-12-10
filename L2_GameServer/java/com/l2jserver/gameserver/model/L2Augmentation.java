@@ -46,7 +46,7 @@ public final class L2Augmentation
 	
 	public L2Augmentation(int effects, int skill, int skillLevel)
 	{
-		this(effects, SkillTable.getInstance().getInfo(skill, skillLevel));
+		this(effects, skill != 0 ? SkillTable.getInstance().getInfo(skill, skillLevel) : null);
 	}
 	
 	// =========================================================
@@ -131,9 +131,9 @@ public final class L2Augmentation
 			player.addSkill(_skill);
 			if (_skill.isActive())
 			{
-				if (!player.getReuseTimeStamp().isEmpty() && player.getReuseTimeStamp().containsKey(_skill.getId()))
+				if (!player.getReuseTimeStamp().isEmpty() && player.getReuseTimeStamp().containsKey(_skill.getReuseHashCode()))
 				{
-					final long delay = player.getReuseTimeStamp().get(_skill.getId()).getRemaining();
+					final long delay = player.getReuseTimeStamp().get(_skill.getReuseHashCode()).getRemaining();
 					if (delay > 0)
 					{
 						player.disableSkill(_skill, delay);

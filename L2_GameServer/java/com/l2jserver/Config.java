@@ -80,6 +80,7 @@ public final class Config
 	public static final String OLYMPIAD_CONFIG_FILE = "./config/olympiad.properties";
 	public static final String COMMUNITY_CONFIGURATION_FILE = "./config/CommunityServer.properties";
 	public static final String GRANDBOSS_CONFIG_FILE = "./config/Grandboss.properties";
+	public static final String GRACIASEEDS_CONFIG_FILE = "./config/GraciaSeeds.properties";
 	public static final String CHAT_FILTER_FILE = "./config/chatfilter.txt";
 	
 	
@@ -204,7 +205,6 @@ public final class Config
 	public static int MAX_PETITIONS_PER_PLAYER;
 	public static int MAX_PETITIONS_PENDING;
 	public static boolean ALT_GAME_FREE_TELEPORT;
-	public static boolean ALT_RECOMMEND;
 	public static int DELETE_DAYS;
 	public static float ALT_GAME_EXPONENT_XP;
 	public static float ALT_GAME_EXPONENT_SP;
@@ -525,10 +525,11 @@ public final class Config
 	public static long ALT_OLY_VPERIOD;
 	public static int ALT_OLY_CLASSED;
 	public static int ALT_OLY_NONCLASSED;
+	public static int ALT_OLY_TEAMS;
 	public static int ALT_OLY_REG_DISPLAY;
-	public static int ALT_OLY_BATTLE_REWARD_ITEM;
-	public static int ALT_OLY_CLASSED_RITEM_C;
-	public static int ALT_OLY_NONCLASSED_RITEM_C;
+	public static int[][] ALT_OLY_CLASSED_REWARD;
+	public static int[][] ALT_OLY_NONCLASSED_REWARD;
+	public static int[][] ALT_OLY_TEAM_REWARD;
 	public static int ALT_OLY_COMP_RITEM;
 	public static int ALT_OLY_GP_PER_POINT;
 	public static int ALT_OLY_HERO_POINTS;
@@ -543,7 +544,7 @@ public final class Config
 	public static boolean ALT_OLY_ANNOUNCE_GAMES;
 	public static TIntArrayList LIST_OLY_RESTRICTED_ITEMS;
 	public static int ALT_OLY_ENCHANT_LIMIT;
-	public static byte ALT_OLY_WAIT_TIME;
+	public static int ALT_OLY_WAIT_TIME;
 	public static int ALT_MANOR_REFRESH_TIME;
 	public static int ALT_MANOR_REFRESH_MIN;
 	public static int ALT_MANOR_APPROVE_TIME;
@@ -594,6 +595,9 @@ public final class Config
 	public static boolean CUSTOM_DROPLIST_TABLE;
 	public static boolean CUSTOM_MERCHANT_TABLES;
 	public static boolean CUSTOM_NPCBUFFER_TABLES;
+	public static boolean ENABLE_BLOCK_CHECKER_EVENT;
+	public static int MIN_BLOCK_CHECKER_TEAM_MEMBERS;
+	public static boolean HBCE_FAIR_PLAY;
 	
 	
 	//--------------------------------------------------
@@ -944,7 +948,10 @@ public final class Config
 	public static int ENCHANT_CHANCE_WEAPON;
 	public static int ENCHANT_CHANCE_ARMOR;
 	public static int ENCHANT_CHANCE_JEWELRY;
-	public static int ENCHANT_CHANCE_ELEMENT;
+	public static int ENCHANT_CHANCE_ELEMENT_STONE;
+	public static int ENCHANT_CHANCE_ELEMENT_CRYSTAL;
+	public static int ENCHANT_CHANCE_ELEMENT_JEWEL;
+	public static int ENCHANT_CHANCE_ELEMENT_ENERGY;
 	public static int BLESSED_ENCHANT_CHANCE_WEAPON;
 	public static int BLESSED_ENCHANT_CHANCE_ARMOR;
 	public static int BLESSED_ENCHANT_CHANCE_JEWELRY;
@@ -1001,6 +1008,11 @@ public final class Config
 	public static int Random_Of_Zaken_Spawn;
 	public static int Interval_Of_Frintezza_Spawn;
 	public static int Random_Of_Frintezza_Spawn;
+	
+	// Gracia Seeds Settings
+	
+	public static int SOD_TIAT_KILL_COUNT;
+	public static long SOD_STAGE_2_LENGTH;
 	
 	//chatfilter
 	public static ArrayList<String>	FILTER_LIST;
@@ -1529,7 +1541,10 @@ public final class Config
 					ENCHANT_CHANCE_WEAPON = Integer.parseInt(Character.getProperty("EnchantChanceWeapon", "66"));
 					ENCHANT_CHANCE_ARMOR = Integer.parseInt(Character.getProperty("EnchantChanceArmor", "66"));
 					ENCHANT_CHANCE_JEWELRY = Integer.parseInt(Character.getProperty("EnchantChanceJewelry", "66"));
-					ENCHANT_CHANCE_ELEMENT = Integer.parseInt(Character.getProperty("EnchantChanceElement", "50"));
+					ENCHANT_CHANCE_ELEMENT_STONE = Integer.parseInt(Character.getProperty("EnchantChanceElementStone", "50"));
+					ENCHANT_CHANCE_ELEMENT_CRYSTAL = Integer.parseInt(Character.getProperty("EnchantChanceElementCrystal", "30"));
+					ENCHANT_CHANCE_ELEMENT_JEWEL = Integer.parseInt(Character.getProperty("EnchantChanceElementJewel", "20"));
+					ENCHANT_CHANCE_ELEMENT_ENERGY = Integer.parseInt(Character.getProperty("EnchantChanceElementEnergy", "10"));
 					BLESSED_ENCHANT_CHANCE_WEAPON = Integer.parseInt(Character.getProperty("BlessedEnchantChanceWeapon", "66"));
 					BLESSED_ENCHANT_CHANCE_ARMOR = Integer.parseInt(Character.getProperty("BlessedEnchantChanceArmor", "66"));
 					BLESSED_ENCHANT_CHANCE_JEWELRY = Integer.parseInt(Character.getProperty("BlessedEnchantChanceJewelry", "66"));
@@ -1633,7 +1648,6 @@ public final class Config
 					MAX_PETITIONS_PER_PLAYER = Integer.parseInt(Character.getProperty("MaxPetitionsPerPlayer", "5"));
 					MAX_PETITIONS_PENDING = Integer.parseInt(Character.getProperty("MaxPetitionsPending", "25"));
 					ALT_GAME_FREE_TELEPORT = Boolean.parseBoolean(Character.getProperty("AltFreeTeleporting", "False"));
-					ALT_RECOMMEND = Boolean.parseBoolean(Character.getProperty("AltRecommend", "False"));
 					DELETE_DAYS = Integer.parseInt(Character.getProperty("DeleteCharAfterDays", "7"));
 					ALT_GAME_EXPONENT_XP = Float.parseFloat(Character.getProperty("AltGameExponentXp", "0."));
 					ALT_GAME_EXPONENT_SP = Float.parseFloat(Character.getProperty("AltGameExponentSp", "0."));
@@ -1838,7 +1852,7 @@ public final class Config
 					GRIDS_ALWAYS_ON = Boolean.parseBoolean(General.getProperty("GridsAlwaysOn", "False"));
 					GRID_NEIGHBOR_TURNON_TIME = Integer.parseInt(General.getProperty("GridNeighborTurnOnTime", "1"));
 					GRID_NEIGHBOR_TURNOFF_TIME = Integer.parseInt(General.getProperty("GridNeighborTurnOffTime", "90"));
-					WORLD_X_MIN = Integer.parseInt(General.getProperty("WorldXMin", "11"));
+					WORLD_X_MIN = Integer.parseInt(General.getProperty("WorldXMin", "10"));
 					WORLD_X_MAX = Integer.parseInt(General.getProperty("WorldXMax", "26"));
 					WORLD_Y_MIN = Integer.parseInt(General.getProperty("WorldYMin", "10"));
 					WORLD_Y_MAX = Integer.parseInt(General.getProperty("WorldYMax", "26"));
@@ -1868,7 +1882,7 @@ public final class Config
 					ALLOW_REFUND = Boolean.parseBoolean(General.getProperty("AllowRefund", "True"));
 					ALLOW_MAIL = Boolean.parseBoolean(General.getProperty("AllowMail", "True"));
 					ALLOW_ATTACHMENTS = Boolean.parseBoolean(General.getProperty("AllowAttachments", "True"));
-					ALLOW_WEAR = Boolean.parseBoolean(General.getProperty("AllowWear", "False"));
+					ALLOW_WEAR = Boolean.parseBoolean(General.getProperty("AllowWear", "True"));
 					WEAR_DELAY = Integer.parseInt(General.getProperty("WearDelay", "5"));
 					WEAR_PRICE = Integer.parseInt(General.getProperty("WearPrice", "10"));
 					ALLOW_LOTTERY = Boolean.parseBoolean(General.getProperty("AllowLottery", "True"));
@@ -1952,6 +1966,13 @@ public final class Config
 					CUSTOM_DROPLIST_TABLE = Boolean.valueOf(General.getProperty("CustomDroplistTable", "false"));
 					CUSTOM_MERCHANT_TABLES = Boolean.valueOf(General.getProperty("CustomMerchantTables", "false"));
 					CUSTOM_NPCBUFFER_TABLES = Boolean.valueOf(General.getProperty("CustomNpcBufferTables", "false"));
+					ENABLE_BLOCK_CHECKER_EVENT = Boolean.valueOf(General.getProperty("EnableBlockCheckerEvent", "false"));
+					MIN_BLOCK_CHECKER_TEAM_MEMBERS = Integer.valueOf(General.getProperty("BlockCheckerMinTeamMembers", "2"));
+					if(MIN_BLOCK_CHECKER_TEAM_MEMBERS < 1)
+						MIN_BLOCK_CHECKER_TEAM_MEMBERS = 1;
+					else if(MIN_BLOCK_CHECKER_TEAM_MEMBERS > 6)
+						MIN_BLOCK_CHECKER_TEAM_MEMBERS = 6;
+					HBCE_FAIR_PLAY = Boolean.parseBoolean(General.getProperty("HBCEFairPlay", "false"));
 				}
 				catch (Exception e)
 				{
@@ -2513,10 +2534,11 @@ public final class Config
 					ALT_OLY_VPERIOD = Long.parseLong(olympiad.getProperty("AltOlyVPeriod","86400000"));
 					ALT_OLY_CLASSED = Integer.parseInt(olympiad.getProperty("AltOlyClassedParticipants","5"));
 					ALT_OLY_NONCLASSED = Integer.parseInt(olympiad.getProperty("AltOlyNonClassedParticipants","9"));
+					ALT_OLY_TEAMS = Integer.parseInt(olympiad.getProperty("AltOlyTeamsParticipants","4"));
 					ALT_OLY_REG_DISPLAY = Integer.parseInt(olympiad.getProperty("AltOlyRegistrationDisplayNumber","100"));
-					ALT_OLY_BATTLE_REWARD_ITEM = Integer.parseInt(olympiad.getProperty("AltOlyBattleRewItem","6651"));
-					ALT_OLY_CLASSED_RITEM_C = Integer.parseInt(olympiad.getProperty("AltOlyClassedRewItemCount","50"));
-					ALT_OLY_NONCLASSED_RITEM_C = Integer.parseInt(olympiad.getProperty("AltOlyNonClassedRewItemCount","40"));
+					ALT_OLY_CLASSED_REWARD = parseItemsList(olympiad.getProperty("AltOlyClassedReward","13722,50"));
+					ALT_OLY_NONCLASSED_REWARD = parseItemsList(olympiad.getProperty("AltOlyNonClassedReward","13722,40"));
+					ALT_OLY_TEAM_REWARD = parseItemsList(olympiad.getProperty("AltOlyTeamReward","13722,40"));
 					ALT_OLY_COMP_RITEM = Integer.parseInt(olympiad.getProperty("AltOlyCompRewItem","13722"));
 					ALT_OLY_GP_PER_POINT = Integer.parseInt(olympiad.getProperty("AltOlyGPPerPoint","1000"));
 					ALT_OLY_HERO_POINTS = Integer.parseInt(olympiad.getProperty("AltOlyHeroPoints","180"));
@@ -2536,8 +2558,7 @@ public final class Config
 						LIST_OLY_RESTRICTED_ITEMS.add(Integer.parseInt(id));
 					}
 					ALT_OLY_ENCHANT_LIMIT = Integer.parseInt(olympiad.getProperty("AltOlyEnchantLimit","-1"));
-					ALT_OLY_WAIT_TIME = Byte.parseByte(olympiad.getProperty("AltOlyWaitTime","120"));
-					if (ALT_OLY_WAIT_TIME != 120 && ALT_OLY_WAIT_TIME != 60 && ALT_OLY_WAIT_TIME != 30 && ALT_OLY_WAIT_TIME != 15 && ALT_OLY_WAIT_TIME != 5) ALT_OLY_WAIT_TIME = 120;
+					ALT_OLY_WAIT_TIME = Integer.parseInt(olympiad.getProperty("AltOlyWaitTime","120"));
 				}
 				catch (Exception e)
 				{
@@ -2659,6 +2680,24 @@ public final class Config
 				{
 					e.printStackTrace();
 					throw new Error("Failed to Load " + GRANDBOSS_CONFIG_FILE + " File.");
+				}
+				
+				// Gracia Seeds
+				try
+				{
+					L2Properties graciaseedsSettings = new L2Properties();
+					is = new FileInputStream(new File(GRACIASEEDS_CONFIG_FILE));
+					graciaseedsSettings.load(is);
+
+					// Seed of Destruction
+					SOD_TIAT_KILL_COUNT = Integer.parseInt(graciaseedsSettings.getProperty("TiatKillCountForNextState", "10"));
+					SOD_STAGE_2_LENGTH = Long.parseLong(graciaseedsSettings.getProperty("Stage2Length", "720")) * 60000;
+
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					throw new Error("Failed to Load " + GRACIASEEDS_CONFIG_FILE + " File.");
 				}
 				
 				try
@@ -2950,7 +2989,10 @@ public final class Config
 		else if (pName.equalsIgnoreCase("EnchantChanceWeapon")) ENCHANT_CHANCE_WEAPON = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantChanceArmor")) ENCHANT_CHANCE_ARMOR = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantChanceJewelry")) ENCHANT_CHANCE_JEWELRY = Integer.parseInt(pValue);
-		else if (pName.equalsIgnoreCase("EnchantChanceElement")) ENCHANT_CHANCE_ELEMENT = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("EnchantChanceElementStone")) ENCHANT_CHANCE_ELEMENT_STONE = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("EnchantChanceElementCrystal")) ENCHANT_CHANCE_ELEMENT_CRYSTAL = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("EnchantChanceElementJewel")) ENCHANT_CHANCE_ELEMENT_JEWEL = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("EnchantChanceElementEnergy")) ENCHANT_CHANCE_ELEMENT_ENERGY = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantMaxWeapon")) ENCHANT_MAX_WEAPON = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantMaxArmor")) ENCHANT_MAX_ARMOR = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantMaxJewelry")) ENCHANT_MAX_JEWELRY = Integer.parseInt(pValue);
@@ -3397,5 +3439,51 @@ public final class Config
 		for (String value : propertySplit)
 			ret.put(i++, Float.parseFloat(value));
 		return ret;
+	}
+
+	/**
+	 * itemId1,itemNumber1;itemId2,itemNumber2...
+	 * to the int[n][2] = [itemId1][itemNumber1],[itemId2][itemNumber2]...
+	 */
+	private static int[][] parseItemsList(String line)
+	{
+		final String[] propertySplit = line.split(";");
+		if (propertySplit.length == 0)
+			return null;
+
+		int i = 0;
+		String[] valueSplit;
+		final int[][] result = new int[propertySplit.length][];
+		for (String value : propertySplit)
+		{
+			valueSplit = value.split(",");
+			if (valueSplit.length != 2)
+			{
+				_log.warning(StringUtil.concat("parseItemsList[Config.load()]: invalid entry -> \"", valueSplit[0], "\", should be itemId,itemNumber"));
+				return null;
+			}
+
+			result[i] = new int[2];
+			try
+			{
+				result[i][0] = Integer.parseInt(valueSplit[0]);
+			}
+			catch (NumberFormatException e)
+			{
+				_log.warning(StringUtil.concat("parseItemsList[Config.load()]: invalid itemId -> \"", valueSplit[0], "\""));
+				return null;
+			}
+			try
+			{
+				result[i][1] = Integer.parseInt(valueSplit[1]);
+			}
+			catch (NumberFormatException e)
+			{
+				_log.warning(StringUtil.concat("parseItemsList[Config.load()]: invalid item number -> \"", valueSplit[1], "\""));
+				return null;
+			}
+			i++;
+		}
+		return result;
 	}
 }

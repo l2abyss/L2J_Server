@@ -7897,7 +7897,7 @@ public enum SystemMessageId
 	 * ID: 1368<br>
 	 * Message: You can not try those items on at the same time.
 	 */
-	CANNOT_TRY_ON_NOW(1368),
+	YOU_CAN_NOT_TRY_THOSE_ITEMS_ON_AT_THE_SAME_TIME(1368),
 	
 	/**
 	 * ID: 1369<br>
@@ -13217,75 +13217,75 @@ public enum SystemMessageId
 	
 	/**
 	 * ID: 2247<br>
-	 * Message: You cannot mount a steed while transformed.
+	 * Message: You cannot board an airship while transformed.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_TRANSFORMED(2247),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_TRANSFORMED(2247),
 	
 	/**
 	 * ID: 2248<br>
-	 * Message: You cannot mount a steed while petrified.
+	 * Message: You cannot board an airship while petrified.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_PETRIFIED(2248),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_PETRIFIED(2248),
 	
 	/**
 	 * ID: 2249<br>
-	 * Message: You cannot mount a steed while dead.
+	 * Message: You cannot board an airship while dead.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_DEAD(2249),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_DEAD(2249),
 	
 	/**
 	 * ID: 2250<br>
-	 * Message: You cannot mount a steed while fishing.
+	 * Message: You cannot board an airship while fishing.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_FISHING(2250),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_FISHING(2250),
 	
 	/**
 	 * ID: 2251<br>
-	 * Message: You cannot mount a steed while in battle.
+	 * Message: You cannot board an airship while in battle.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_BATTLE(2251),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_IN_BATTLE(2251),
 	
 	/**
 	 * ID: 2252<br>
-	 * Message: You cannot mount a steed while in a duel.
+	 * Message: You cannot board an airship while in a duel.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_IN_A_DUEL(2252),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_IN_A_DUEL(2252),
 	
 	/**
 	 * ID: 2253<br>
-	 * Message: You cannot mount a steed while in a duel.
+	 * Message: You cannot board an airship while sitting.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_SITTING(2253),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_SITTING(2253),
 	
 	/**
 	 * ID: 2254<br>
-	 * Message: You cannot mount a steed while casting.
+	 * Message: You cannot board an airship while casting.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_SKILL_CASTING(2254),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_CASTING(2254),
 	
 	/**
 	 * ID: 2255<br>
-	 * Message: You cannot mount a steed while a cursed weapon is equipped.
+	 * Message: You cannot board an airship when a cursed weapon is equipped.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_A_CURSED_WEAPON_IS_EQUIPPED(2255),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_A_CURSED_WEAPON_IS_EQUIPPED(2255),
 	
 	/**
 	 * ID: 2256<br>
-	 * Message: You cannot mount a steed while holding a flag.
+	 * Message: You cannot board an airship while holding a flag.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_HOLDING_A_FLAG(2256),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_HOLDING_A_FLAG(2256),
 	
 	/**
 	 * ID: 2257<br>
-	 * Message: You cannot mount a steed while a pet or a servitor is summoned.
+	 * Message: You cannot board an airship while a pet or a servitor is summoned.
 	 */
-	YOU_CANNOT_MOUNT_A_STEED_WHILE_A_PET_OR_A_SERVITOR_IS_SUMMONED(2257),
+	YOU_CANNOT_BOARD_AN_AIRSHIP_WHILE_A_PET_OR_A_SERVITOR_IS_SUMMONED(2257),
 	
 	/**
 	 * ID: 2258<br>
-	 * Message: You have already mounted another steed.
+	 * Message: You have already boarded another airship.
 	 */
-	YOU_HAVE_ALREADY_MOUNTED_ANOTHER_STEED(2258),
+	YOU_HAVE_ALREADY_BOARDED_ANOTHER_AIRSHIP(2258),
 	
 	/**
 	 * ID: 2259<br>
@@ -13596,6 +13596,21 @@ public enum SystemMessageId
 	TIME_LIMITED_ITEM_DELETED(2366),
 	
 	/**
+	 * 	2372	1	There is not much time remaining until the hunting helper pet leaves.
+	 */
+	THERE_NOT_MUCH_TIME_REMAINING_UNTIL_HELPER_LEAVES(2372),
+	
+	/**
+	 * 	2373	1	The hunting helper pet is now leaving.	0	B09B79			0	0	0	0	0		none
+	 */
+	THE_HELPER_PET_LEAVING(2373),
+	
+	/**
+	 * 	2375	1	The hunting helper pet cannot be returned because there is not much time remaining until it leaves.	0
+	 */
+	THE_HELPER_PET_CANNOT_BE_RETURNED(2375),
+	
+	/**
 	 * ID: 2376<br>
 	 * Message: You cannot receive a vitamin item during an exchange.
 	 */
@@ -13619,6 +13634,24 @@ public enum SystemMessageId
 	 */
 	YOU_HAVE_NO_OPEN_MY_TELEPORTS_SLOTS(2398),
 	
+	/**
+	 * ID: 2440<br>
+	 * Message: $c1 is already registered on the waiting list for the non-class-limited match event.
+	 */
+	C1_IS_ALREADY_REGISTERED_NON_CLASS_LIMITED_EVENT_TEAMS(2440),
+
+	/**
+	 * ID: 2441<br>
+	 * Message: Only a party leader can request a team match.
+	 */
+	ONLY_PARTY_LEADER_CAN_REQUEST_TEAM_MATCH(2441),
+
+	/**
+	 * ID: 2442<br>
+	 * Message: The request cannot be made because the requirements have not been made. To participate in a team match you must first form a 3-member party.
+	 */
+	PARTY_REQUIREMENTS_NOT_MET(2442),
+
 	/**
 	 * ID: 2936<br>
 	 * Message: The disguise scroll cannot be used because it is meant for use in a different territory.
@@ -13667,6 +13700,12 @@ public enum SystemMessageId
 	 */
 	TERRITORY_WAR_BEGINS_IN_1_MINUTE(2405),
 	
+	/**
+	 * ID: 2408<br>
+	 * Message: You have registered on the waiting list for the non-class-limited team match event.
+	 */
+	YOU_HAVE_REGISTERED_IN_A_WAITING_LIST_OF_TEAM_GAMES(2408),
+
 	/**
 	 * ID: 2409<br>
 	 * Message: The number of My Teleports slots has been increased.
@@ -13837,9 +13876,68 @@ public enum SystemMessageId
 	
 	/**
 	 * ID: 2727<br>
-	 * Message: You cannot mount because you do not meet the requirements.
+	 * Message: You cannot board because you do not meet the requirements.
 	 */
-	YOU_CANNOT_MOUNT_NOT_MEET_REQUEIREMENTS(2727),
+	YOU_CANNOT_BOARD_NOT_MEET_REQUEIREMENTS(2727),
+	
+	/**
+	 * ID: 2729<br>
+	 * Message: You cannot control the helm while transformed.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_TRANSFORMED(2729),
+	
+	/**
+	 * ID: 2730<br>
+	 * Message: You cannot control the helm while you are petrified.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_YOU_ARE_PETRIFIED(2730),
+	
+	/**
+	 * ID: 2731<br>
+	 * Message: You cannot control the helm when you are dead.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHEN_YOU_ARE_DEAD(2731),
+	
+	/**
+	 * ID: 2732<br>
+	 * Message: You cannot control the helm while fishing.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_FISHING(2732),
+	
+	/**
+	 * ID: 2733<br>
+	 * Message: You cannot control the helm while in a battle.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_BATTLE(2733),
+	
+	/**
+	 * ID: 2734<br>
+	 * Message: You cannot control the helm while in a duel.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_DUEL(2734),
+	/**
+	 * ID: 2735<br>
+	 * Message: You cannot control the helm while in a sitting position.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_SITTING_POSITION(2735),
+	
+	/**
+	 * ID: 2736<br>
+	 * Message: You cannot control the helm while using a skill.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_USING_A_SKILL(2736),
+	
+	/**
+	 * ID: 2737<br>
+	 * Message: You cannot control the helm while a cursed weapon is equipped.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_A_CURSED_WEAPON_IS_EQUIPPED(2737),
+	
+	/**
+	 * ID: 2738<br>
+	 * Message: You cannot control the helm while holding a flag.
+	 */
+	YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG(2738),
 	
 	/**
 	 * ID: 2750<br>
@@ -13912,6 +14010,12 @@ public enum SystemMessageId
 	 * Message: The airship's summon license has been entered. Your clan can now summon the airship.
 	 */
 	THE_AIRSHIP_SUMMON_LICENSE_ENTERED(2777),
+	
+	/**
+	 * ID: 2778<br>
+	 * Message: You cannot teleport while in possession of a ward.
+	 */
+	YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD(2778),
 	
 	/**
 	 * ID: 2795<br>
@@ -14275,6 +14379,12 @@ public enum SystemMessageId
 	UNREAD_MAIL(3064),
 	
 	/**
+	 * ID: 3065<br>
+	 * Message: Current location: Inside the Chamber of Delusion
+	 */
+	LOC_DELUSION_CHAMBER(3065),
+	
+	/**
 	 * ID: 3066<br>
 	 * Message: You cannot use the mail function outside the Peace Zone.
 	 */
@@ -14365,79 +14475,106 @@ public enum SystemMessageId
 	YOU_ARE_NO_LONGER_PROTECTED_FROM_AGGRESSIVE_MONSTERS(3108),
 	
 	/**
-	 * 3119	<BR>	The couple action was denied.
+	 * ID: 3119<br>
+	 * Message: The couple action was denied.
 	 */
 	COUPLE_ACTION_DENIED(3119),
 	
 	/**
-	 * 3120	<BR>	The request cannot be completed because the target does not meet location requirements.
+	 * ID: 3120<br>
+	 * Message: The request cannot be completed because the target does not meet location requirements.
 	 */
 	TARGET_DO_NOT_MEET_LOC_REQUIREMENTS(3120),
 	
 	/**
-	 * 3121	<BR>	The couple action was cancelled.
+	 * ID: 3121<br>
+	 * Message: The couple action was cancelled.
 	 */
 	COUPLE_ACTION_CANCELED(3121),
 	
 	/**
-	 * 3135	<BR>	"Requesting approval for changing party loot to ""$s1""."
+	 * ID: 3135<br>
+	 * Message: "Requesting approval for changing party loot to ""$s1""."
 	 */
 	REQUESTING_APPROVAL_CHANGE_PARTY_LOOT_S1(3135),
 	
 	/**
-	 * 3137	<BR>	Party loot change was cancelled.
+	 * ID: 3137<br>
+	 * Message: Party loot change was cancelled.
 	 */
 	PARTY_LOOT_CHANGE_CANCELLED(3137),
 	
 	/**
-	 * 3138	<BR>	"Party loot was changed to ""$s1""."
+	 * ID: 3138<br>
+	 * Message: "Party loot was changed to ""$s1""."
 	 */
 	PARTY_LOOT_CHANGED_S1(3138),
 	
 	/**
-	 * 3144	<BR>	"The $s2's attribute was successfully bestowed on $s1, and resistance to $s3 was increased."
+	 * ID: 3144<br>
+	 * Message: "The $s2's attribute was successfully bestowed on $s1, and resistance to $s3 was increased."
 	 */
 	THE_S2_ATTRIBUTE_WAS_SUCCESSFULLY_BESTOWED_ON_S1_RES_TO_S3_INCREASED(3144),
 	
 	/**
-	 * 3150	<BR>	You have requested a couple action with $c1.
+	 * ID: 3150<br>
+	 * Message: You have requested a couple action with $c1.
 	 */
 	YOU_HAVE_REQUESTED_COUPLE_ACTION_C1(3150),
 	
 	/**
-	 * 3152	<BR>	"$s1's $s2 attribute was removed, and resistance to $s3 was decreased."
+	 * ID: 3152<br>
+	 * Message:	"$s1's $s2 attribute was removed, and resistance to $s3 was decreased."
 	 */
 	S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED(3152),
 	
 	/**
-	 * 3156	<BR>	You do not have enough funds to cancel this attribute.
+	 * ID: 3156<br>
+	 * Message: You do not have enough funds to cancel this attribute.
 	 */
 	YOU_DO_NOT_HAVE_ENOUGH_FUNDS_TO_CANCEL_ATTRIBUTE(3156),
 	
 	/**
-	 * 3160	<BR>	"+$s1$s2's $s3 attribute was removed, so resistance to $s4 was decreased."
+	 * ID: 3160<br>
+	 * Message: "+$s1$s2's $s3 attribute was removed, so resistance to $s4 was decreased."
 	 */
 	S1_S2_S3_ATTRIBUTE_REMOVED_RESISTANCE_TO_S4_DECREASED(3160),
 	
 	/**
-	 * 	3163	<BR>	"The $s3's attribute was successfully bestowed on +$s1$s2, and resistance to $s4 was increased."
+	 * ID: 3163<br>
+	 * Message: "The $s3's attribute was successfully bestowed on +$s1$s2, and resistance to $s4 was increased."
 	 */
 	THE_S3_ATTRIBUTE_BESTOWED_ON_S1_S2_RESISTANCE_TO_S4_INCREASED(3163),
 	
 	/**
-	 * 3164	<BR>	$c1 is set to refuse couple actions and cannot be requested for a couple action.
+	 * ID: 3164<be>
+	 * Message: $c1 is set to refuse couple actions and cannot be requested for a couple action.
 	 */
 	C1_IS_SET_TO_REFUSE_COUPLE_ACTIONS(3164),
 	
 	/**
-	 * 3168	<BR>	$c1 is set to refuse party requests and cannot receive a party request.	0	B09B79			0	0	0	0	0		none
+	 * ID: 3168<br>
+	 * Message: $c1 is set to refuse party requests and cannot receive a party request.
 	 */
 	C1_IS_SET_TO_REFUSE_PARTY_REQUEST(3168),
 	
 	/**
-	 * 3169	<BR>	$c1 is set to refuse duel requests and cannot receive a duel request.
+	 * ID: 3169<br>
+	 * Message: $c1 is set to refuse duel requests and cannot receive a duel request.
 	 */
 	C1_IS_SET_TO_REFUSE_DUEL_REQUEST(3169),
+	
+	/**
+	 * ID: 3206<br>
+	 * Message: You currently do not have any Recommendations.
+	 */
+	YOU_CURRENTLY_DO_NOT_HAVE_ANY_RECOMMENDATIONS(3206),
+	
+	/**
+	 * ID: 3207<br>
+	 * Message: You obtained $s1 Recommendations
+	 */
+	YOU_OBTAINED_S1_RECOMMENDATIONS(3207),
 	
 	/**
 	 * ID: 6501<br>

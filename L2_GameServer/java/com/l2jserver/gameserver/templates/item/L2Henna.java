@@ -23,23 +23,20 @@ import com.l2jserver.gameserver.templates.StatsSet;
  */
 public class L2Henna
 {
-	public final int symbolId;
-	public final String symbolName;
-	public final int dye;
-	public final int price;
-	public final int amount;
-	public final int statINT;
-	public final int statSTR;
-	public final int statCON;
-	public final int statMEM;
-	public final int statDEX;
-	public final int statWIT;
+	private final int symbolId;
+	private final int dye;
+	private final int price;
+	private final int amount;
+	private final int statINT;
+	private final int statSTR;
+	private final int statCON;
+	private final int statMEM;
+	private final int statDEX;
+	private final int statWIT;
 	
 	public L2Henna(StatsSet set)
 	{
-		
 		symbolId = set.getInteger("symbol_id");
-		symbolName = ""; //set.getString("symbol_name");
 		dye = set.getInteger("dye");
 		price = set.getInteger("price");
 		amount = set.getInteger("amount");
@@ -49,7 +46,6 @@ public class L2Henna
 		statMEM = set.getInteger("stat_MEM");
 		statDEX = set.getInteger("stat_DEX");
 		statWIT = set.getInteger("stat_WIT");
-		
 	}
 	
 	public int getSymbolId()
@@ -128,7 +124,4 @@ public class L2Henna
 	{
 		return statWIT;
 	}
-	/**
-	 * @return
-	 */
 }

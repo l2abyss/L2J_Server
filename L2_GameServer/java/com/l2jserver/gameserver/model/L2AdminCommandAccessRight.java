@@ -25,6 +25,7 @@ public class L2AdminCommandAccessRight
 	private String _adminCommand = null;
 	/** The access levels which can use the admin command<br> */
 	private L2AccessLevel[] _accessLevels = null;
+	private boolean _requireConfirm;
 	
 	/**
 	 * Initialized members
@@ -32,9 +33,10 @@ public class L2AdminCommandAccessRight
 	 * @param adminCommand as String
 	 * @param accessLevels as String
 	 */
-	public L2AdminCommandAccessRight(String adminCommand, String accessLevels)
+	public L2AdminCommandAccessRight(String adminCommand, String accessLevels, boolean confirm)
 	{
 		_adminCommand = adminCommand;
+		_requireConfirm = confirm;
 		
 		String[] accessLevelsSplit = accessLevels.split(",");
 		int numLevels = accessLevelsSplit.length;
@@ -83,5 +85,10 @@ public class L2AdminCommandAccessRight
 		}
 		
 		return false;
+	}
+
+	public boolean getRequireConfirm()
+	{
+		return _requireConfirm;
 	}
 }

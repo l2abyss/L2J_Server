@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.actor;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -36,13 +37,6 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 
 public abstract class L2Playable extends L2Character
 {
-	
-	private boolean _isNoblesseBlessed = false; 	// for Noblesse Blessing skill, restores buffs after death
-	private boolean _getCharmOfLuck = false; 		// Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
-	private boolean _isPhoenixBlessed = false; 		// for Soul of The Phoenix or Salvation buffs
-	private boolean _isSilentMoving = false;		// Silent Move
-	private boolean _ProtectionBlessing = false;
-	
 	private L2Character _lockedTarget = null;
 	
 	/**
@@ -148,11 +142,14 @@ public abstract class L2Playable extends L2Character
 		
 		// Notify Quest of L2Playable's death
 		L2PcInstance actingPlayer = getActingPlayer();
-		for (QuestState qs : actingPlayer.getNotifyQuestOfDeath())
+		if (!actingPlayer.isNotifyQuestOfDeathEmpty())
 		{
-			qs.getQuest().notifyDeath((killer == null ? this : killer), this, qs);
+			for (QuestState qs : actingPlayer.getNotifyQuestOfDeath())
+			{
+				qs.getQuest().notifyDeath((killer == null ? this : killer), this, qs);
+			}
 		}
-		
+
 		if (killer != null)
 		{
 			L2PcInstance player = killer.getActingPlayer();
@@ -223,34 +220,24 @@ public abstract class L2Playable extends L2Character
 	
 	// Support for Noblesse Blessing skill, where buffs are retained
 	// after resurrect
-	public final boolean isNoblesseBlessed() { return _isNoblesseBlessed; }
-	public final void setIsNoblesseBlessed(boolean value) { _isNoblesseBlessed = value; }
-	
-	public final void startNoblesseBlessing()
+	public final boolean isNoblesseBlessed()
 	{
-		setIsNoblesseBlessed(true);
-		updateAbnormalEffect();
+		return _effects.isAffected(CharEffectList.EFFECT_FLAG_NOBLESS_BLESSING);
 	}
-	
+
 	public final void stopNoblesseBlessing(L2Effect effect)
 	{
 		if (effect == null)
 			stopEffects(L2EffectType.NOBLESSE_BLESSING);
 		else
 			removeEffect(effect);
-		
-		setIsNoblesseBlessed(false);
 		updateAbnormalEffect();
 	}
 	
 	// Support for Soul of the Phoenix and Salvation skills
-	public final boolean isPhoenixBlessed() { return _isPhoenixBlessed; }
-	public final void setIsPhoenixBlessed(boolean value) { _isPhoenixBlessed = value; }
-	
-	public final void startPhoenixBlessing()
+	public final boolean isPhoenixBlessed()
 	{
-		setIsPhoenixBlessed(true);
-		updateAbnormalEffect();
+		return _effects.isAffected(CharEffectList.EFFECT_FLAG_PHOENIX_BLESSING);
 	}
 	
 	public final void stopPhoenixBlessing(L2Effect effect)
@@ -260,16 +247,7 @@ public abstract class L2Playable extends L2Character
 		else
 			removeEffect(effect);
 		
-		setIsPhoenixBlessed(false);
 		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Set the Silent Moving mode Flag.<BR><BR>
-	 */
-	public void setSilentMoving(boolean flag)
-	{
-		_isSilentMoving = flag;
 	}
 	
 	/**
@@ -277,17 +255,15 @@ public abstract class L2Playable extends L2Character
 	 */
 	public boolean isSilentMoving()
 	{
-		return _isSilentMoving;
+		return _effects.isAffected(CharEffectList.EFFECT_FLAG_SILENT_MOVE);
 	}
 	
 	// for Newbie Protection Blessing skill, keeps you safe from an attack by a chaotic character >= 10 levels apart from you
-	public final boolean getProtectionBlessing() { return _ProtectionBlessing; }
-	public final void setProtectionBlessing(boolean value) { _ProtectionBlessing = value; }
-	public void startProtectionBlessing()
+	public final boolean getProtectionBlessing()
 	{
-		setProtectionBlessing(true);
-		updateAbnormalEffect();
+		return _effects.isAffected(CharEffectList.EFFECT_FLAG_PROTECTION_BLESSING);
 	}
+
 	/**
 	 * @param blessing
 	 */
@@ -298,18 +274,13 @@ public abstract class L2Playable extends L2Character
 		else
 			removeEffect(effect);
 		
-		setProtectionBlessing(false);
 		updateAbnormalEffect();
 	}
 	
 	//Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
-	public final boolean getCharmOfLuck() { return _getCharmOfLuck; }
-	public final void setCharmOfLuck(boolean value) { _getCharmOfLuck = value; }
-	
-	public final void startCharmOfLuck()
+	public final boolean getCharmOfLuck()
 	{
-		setCharmOfLuck(true);
-		updateAbnormalEffect();
+		return _effects.isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_LUCK);
 	}
 	
 	public final void stopCharmOfLuck(L2Effect effect)
@@ -319,7 +290,6 @@ public abstract class L2Playable extends L2Character
 		else
 			removeEffect(effect);
 		
-		setCharmOfLuck(false);
 		updateAbnormalEffect();
 	}
 	

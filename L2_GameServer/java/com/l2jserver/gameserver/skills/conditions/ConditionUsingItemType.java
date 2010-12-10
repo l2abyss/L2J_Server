@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.templates.item.L2Item;
  */
 public final class ConditionUsingItemType extends Condition
 {
+	private final boolean _armor;
 	private final int _mask;
 	
 	/**
@@ -38,6 +39,7 @@ public final class ConditionUsingItemType extends Condition
 	public ConditionUsingItemType(int mask)
 	{
 		_mask = mask;
+		_armor = (_mask & (L2ArmorType.MAGIC.mask() | L2ArmorType.LIGHT.mask() | L2ArmorType.HEAVY.mask())) != 0;
 	}
 	
 	/* (non-Javadoc)
@@ -51,7 +53,7 @@ public final class ConditionUsingItemType extends Condition
 		Inventory inv = ((L2PcInstance) env.player).getInventory();
 		
 		//If ConditionUsingItemType is one between Light, Heavy or Magic
-		if ((_mask & L2ArmorType.MAGIC.mask()) == L2ArmorType.MAGIC.mask() || (_mask & L2ArmorType.LIGHT.mask()) == L2ArmorType.LIGHT.mask() || (_mask & L2ArmorType.HEAVY.mask()) == L2ArmorType.HEAVY.mask())
+		if (_armor)
 		{
 			//Get the itemMask of the weared chest (if exists)
 			L2ItemInstance chest = inv.getPaperdollItem(Inventory.PAPERDOLL_CHEST);

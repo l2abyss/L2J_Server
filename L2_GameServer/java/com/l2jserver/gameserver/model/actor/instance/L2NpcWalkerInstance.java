@@ -14,16 +14,13 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.Map;
-
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2NpcWalkerAI;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
-import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
+import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Broadcast;
 
@@ -72,23 +69,14 @@ public class L2NpcWalkerInstance extends L2Npc
 	 * Sends a chat to all _knowObjects
 	 * @param chat message to say
 	 */
-	public void broadcastChat(String chat)
+	public void broadcastChat(String chat, int id)
 	{
-		Map<Integer, L2PcInstance> _knownPlayers = getKnownList().getKnownPlayers();
-		
-		if(_knownPlayers == null)
-		{
-			if(Config.DEVELOPER)
-				_log.info("broadcastChat _players == null");
-			return;
-		}
-		
-		//we send message to known players only!
-		if(!_knownPlayers.isEmpty())
-		{
-			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), chat);
-			Broadcast.toKnownPlayers(this, cs);
-		}
+		NpcSay cs;
+		if (id == 0)
+			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), chat);
+		else
+			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), id);
+		Broadcast.toKnownPlayers(this, cs);
 	}
 	
 	/**

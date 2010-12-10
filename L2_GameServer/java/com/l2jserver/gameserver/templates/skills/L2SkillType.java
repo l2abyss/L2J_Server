@@ -93,7 +93,8 @@ public enum L2SkillType
 	
 	// sp
 	GIVE_SP,
-	
+	// reco
+	GIVE_RECO,
 	// vitality
 	GIVE_VITALITY,
 	

@@ -44,16 +44,16 @@ public class L2HennaInstance
 	public L2HennaInstance(L2Henna template)
 	{
 		_template = template;
-		_symbolId = _template.symbolId;
-		_itemIdDye = _template.dye;
-		_amountDyeRequire = _template.amount;
-		_price = _template.price;
-		_statINT = _template.statINT;
-		_statSTR = _template.statSTR;
-		_statCON = _template.statCON;
-		_statMEM = _template.statMEM;
-		_statDEX = _template.statDEX;
-		_statWIT = _template.statWIT;
+		_symbolId = _template.getSymbolId();
+		_itemIdDye = _template.getDyeId();
+		_amountDyeRequire = _template.getAmountDyeRequire();
+		_price = _template.getPrice();
+		_statINT = _template.getStatINT();
+		_statSTR = _template.getStatSTR();
+		_statCON = _template.getStatCON();
+		_statMEM = _template.getStatMEM();
+		_statDEX = _template.getStatDEX();
+		_statWIT = _template.getStatWIT();
 	}
 	
 	public String getName(){

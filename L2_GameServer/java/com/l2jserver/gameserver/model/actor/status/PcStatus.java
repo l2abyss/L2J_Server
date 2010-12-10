@@ -54,11 +54,16 @@ public class PcStatus extends PlayableStatus
 	@Override
 	public final void reduceHp(double value, L2Character attacker)
 	{
-		reduceHp(value, attacker, true, false, false);
+		reduceHp(value, attacker, true, false, false, false);
 	}
 	
 	@Override
 	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHPConsumption)
+	{
+		reduceHp(value, attacker, awake, isDOT, isHPConsumption, false);
+	}
+
+	public final void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHPConsumption, boolean ignoreCP)
 	{
 		if (getActiveChar().isDead())
 			return;
@@ -129,7 +134,7 @@ public class PcStatus extends PlayableStatus
 				}
 			}
 			
-			if (attacker instanceof L2Playable)
+			if (!ignoreCP && attacker instanceof L2Playable)
 			{
 				if (getCurrentCp() >= value)
 				{

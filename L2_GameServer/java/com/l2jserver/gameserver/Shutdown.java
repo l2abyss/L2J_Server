@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
+import com.l2jserver.gameserver.instancemanager.GlobalVariablesManager;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.ItemAuctionManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
@@ -546,6 +547,9 @@ public class Shutdown extends Thread
 		
 		// Save all global (non-player specific) Quest data that needs to persist after reboot
 		QuestManager.getInstance().save();
+		
+		// Save all global variables data
+		GlobalVariablesManager.getInstance().saveVars();
 		
 		//Save items on ground before closing
 		if (Config.SAVE_DROPPED_ITEM)

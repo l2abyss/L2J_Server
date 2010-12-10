@@ -12,34 +12,29 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
-
-import javolution.util.FastList;
+package com.l2jserver.gameserver.model.olympiad;
 
 /**
+ * 
+ * @author DS
  *
- * @author -Nemesiss-
  */
-public class L2ExtractableItem
+public enum CompetitionType
 {
-	private final int _itemId;
-	private final L2ExtractableProductItem[] _products;
-	
-	public L2ExtractableItem(int itemid, FastList<L2ExtractableProductItem> products)
+	CLASSED("classed"),
+	NON_CLASSED("non-classed"),
+	TEAMS("teams");
+
+	private final String _name;
+
+	private CompetitionType(String name)
 	{
-		_itemId = itemid;
-		_products = new L2ExtractableProductItem[products.size()];
-		products.toArray(_products);
+		_name = name;
 	}
-	
-	public int getItemId()
+
+	@Override
+	public final String toString()
 	{
-		return _itemId;
+		return _name;
 	}
-	
-	public L2ExtractableProductItem[] getProductItemsArray()
-	{
-		return _products;
-	}
-	
 }

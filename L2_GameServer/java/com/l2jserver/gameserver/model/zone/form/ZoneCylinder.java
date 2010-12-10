@@ -101,4 +101,17 @@ public class ZoneCylinder extends L2ZoneForm
 	{
 		return _z2;
 	}
+
+	@Override
+	public void visualizeZone(int z)
+	{
+		int count = (int) (2 * Math.PI * _rad / STEP);
+		double angle = 2 * Math.PI / count;
+		for (int i = 0; i < count; i++)
+		{
+			int x = (int) (Math.cos(angle * i) * _rad);
+			int y = (int) (Math.sin(angle * i) * _rad);
+			dropDebugItem(57, 1, _x + x, _y + y, z);
+		}
+	}
 }

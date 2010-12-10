@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.network.serverpackets.FlyToLocation;
@@ -125,5 +126,14 @@ public class EffectThrowUp extends L2Effect
 		getEffected().stopStunning(false);
 		getEffected().setXYZ(_x, _y, _z);
 		getEffected().broadcastPacket(new ValidateLocation(getEffected()));
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_STUNNED;
 	}
 }

@@ -34,6 +34,7 @@ public class TerritoryWard
 	private L2Npc _npc = null;
 	
 	private Location _location;
+	private Location _oldLocation;
 	
 	private int _itemId;
 	private int _ownerCastleId;
@@ -84,6 +85,15 @@ public class TerritoryWard
 		return _player;
 	}
 	
+	public synchronized void spawnBack()
+	{
+		if ( _player != null )
+			dropIt();
+		
+		// Init the dropped L2WardInstance and add it in the world as a visible object at the position where last Pc got it
+		_npc = TerritoryWarManager.getInstance().spawnNPC(36491 + _territoryId, _oldLocation);
+	}
+	
 	public synchronized void spawnMe()
 	{
 		if ( _player != null )
@@ -121,6 +131,7 @@ public class TerritoryWard
 		// Player holding it data
 		_player = player;
 		playerId = _player.getObjectId();
+		_oldLocation = new Location(_npc.getX(),_npc.getY(),_npc.getZ(),_npc.getHeading());
 		_npc = null;
 		
 		// Equip with the weapon
@@ -128,7 +139,7 @@ public class TerritoryWard
 			_item = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
 		else
 			_item = item;
-		_player.getInventory().equipItemAndRecord(_item);
+		_player.getInventory().equipItem(_item);
 		SystemMessage sm = new SystemMessage(SystemMessageId.S1_EQUIPPED);
 		sm.addItemName(_item);
 		_player.sendPacket(sm);
@@ -155,7 +166,7 @@ public class TerritoryWard
 		// Reset player stats
 		_player.setCombatFlagEquipped(false);
 		int slot = _player.getInventory().getSlotFromItem(_item);
-		_player.getInventory().unEquipItemInBodySlotAndRecord(slot);
+		_player.getInventory().unEquipItemInBodySlot(slot);
 		_player.destroyItem("CombatFlag", _item, null, true);
 		_item = null;
 		_player.broadcastUserInfo();

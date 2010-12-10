@@ -125,23 +125,26 @@ public final class RequestSellItem extends L2GameClientPacket
 		}
 		
 		L2Object target = player.getTarget();
-		if (!player.isGM() && (target == null // No target (ie GM Shop)
-				|| !(target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance) // Target not a merchant
-				|| target.getInstanceId() != player.getInstanceId() || !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false))) // Distance is too far
+		L2Character merchant = null;
+		if (!player.isGM())
 		{
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
+			if(target == null 
+					|| (!player.isInsideRadius(target, INTERACTION_DISTANCE, true, false)) // Distance is too far)
+					|| (player.getInstanceId() != target.getInstanceId()))
+			{
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+			if((target instanceof L2MerchantInstance) || (target instanceof L2MerchantSummonInstance))
+				merchant = (L2Character)target;
+			else
+			{
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 		}
 		
-		L2Character merchant = null;
 		double taxRate = 0;
-		if (target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance)
-			merchant = (L2Character) target;
-		else if (!player.isGM())
-		{
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
 		
 		L2TradeList list = null;
 		if (merchant != null)
@@ -216,25 +219,17 @@ public final class RequestSellItem extends L2GameClientPacket
 	private static class Item
 	{
 		private final int _objectId;
-		private final int _itemId;
 		private final long _count;
 		
 		public Item(int objId, int id, long num)
 		{
 			_objectId = objId;
-			_itemId = id;
 			_count = num;
 		}
 		
 		public int getObjectId()
 		{
 			return _objectId;
-		}
-		
-		@SuppressWarnings("unused")
-		public int getItemId()
-		{
-			return _itemId;
 		}
 		
 		public long getCount()

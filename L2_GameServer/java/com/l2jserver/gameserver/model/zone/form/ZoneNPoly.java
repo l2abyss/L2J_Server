@@ -122,4 +122,25 @@ public class ZoneNPoly extends L2ZoneForm
 	{
 		return _z2;
 	}
+
+	@Override
+	public void visualizeZone(int z)
+	{
+		for (int i = 0; i < _x.length; i++)
+		{
+			int nextIndex = i + 1;
+			// ending point to first one
+			if (nextIndex == _x.length)
+				nextIndex = 0;
+			int vx = _x[nextIndex] - _x[i];
+			int vy = _y[nextIndex] - _y[i];
+			float lenght = (float) Math.sqrt(vx*vx + vy*vy);
+			lenght /= STEP;
+			for (int o = 1; o <= lenght; o++)
+			{
+				float k = o/lenght;
+				dropDebugItem(57, 1, (int) (_x[i] + k*vx), (int) (_y[i] + k*vy), z);
+			}
+		}
+	}
 }

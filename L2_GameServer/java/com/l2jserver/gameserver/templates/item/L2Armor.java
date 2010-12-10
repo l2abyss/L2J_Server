@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.templates.item;
 
 import java.util.ArrayList;
 
-import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -35,13 +34,10 @@ import com.l2jserver.util.StringUtil;
 public final class L2Armor extends L2Item
 {
 	private final int _avoidModifier;
-	private final int _pDef;
-	private final int _mDef;
-	private final int _mpBonus;
-	private final int _hpBonus;
-	private L2Skill _enchant4Skill = null; // skill that activates when armor is enchanted +4
+	private SkillHolder _enchant4Skill = null; // skill that activates when armor is enchanted +4
 	// private final String[] _skill;
 	private SkillHolder[] _skillHolder;
+	private L2ArmorType _type;
 	
 	/**
 	 * Constructor for Armor.<BR><BR>
@@ -54,54 +50,88 @@ public final class L2Armor extends L2Item
 	 * @param set : StatsSet designating the set of couples (key,value) caracterizing the armor
 	 * @see L2Item constructor
 	 */
-	public L2Armor(L2ArmorType type, StatsSet set)
+	public L2Armor(StatsSet set)
 	{
-		super(type, set);
-		_avoidModifier = set.getInteger("avoid_modify");
-		_pDef          = set.getInteger("p_def");
-		_mDef          = set.getInteger("m_def");
-		_mpBonus       = set.getInteger("mp_bonus", 0);
-		_hpBonus       = set.getInteger("hp_bonus", 0);
+		super(set);
+		_type = L2ArmorType.valueOf(set.getString("armor_type", "none").toUpperCase());
 		
-		String[] skill = set.getString("enchant4_skill").split("-");
-		if (skill != null && skill.length == 2)
+		int _bodyPart = getBodyPart();
+		if (_bodyPart == L2Item.SLOT_NECK || _bodyPart == L2Item.SLOT_HAIR || _bodyPart == L2Item.SLOT_HAIR2
+				|| _bodyPart == L2Item.SLOT_HAIRALL || (_bodyPart & L2Item.SLOT_L_EAR) != 0 || (_bodyPart & L2Item.SLOT_L_FINGER) != 0
+				|| (_bodyPart & L2Item.SLOT_R_BRACELET) != 0 || (_bodyPart & L2Item.SLOT_L_BRACELET) != 0
+				|| (_bodyPart & L2Item.SLOT_BACK) != 0 )
 		{
-			int skill_Id = Integer.parseInt(skill[0]);
-			int skillLvl = Integer.parseInt(skill[1]);
-			if (skill_Id > 0 && skillLvl > 0)
-				_enchant4Skill = SkillTable.getInstance().getInfo(skill_Id, skillLvl);
+			_type1 = L2Item.TYPE1_WEAPON_RING_EARRING_NECKLACE;
+			_type2 = L2Item.TYPE2_ACCESSORY;
+		}
+		else
+		{
+			if (_type == L2ArmorType.NONE && getBodyPart() == L2Item.SLOT_L_HAND) // retail define shield as NONE
+				_type = L2ArmorType.SHIELD;
+			_type1 = L2Item.TYPE1_SHIELD_ARMOR;
+			_type2 = L2Item.TYPE2_SHIELD_ARMOR;
 		}
 		
-		String[] skills = set.getString("skill").split(";");
-		_skillHolder = new SkillHolder[skills.length];
-		byte iterator = 0;
-		for(String st : skills)
+		_avoidModifier = set.getInteger("avoid_modify", 0);
+		
+		String skill = set.getString("enchant4_skill", null);
+		if (skill != null)
 		{
-			String[] info = st.split("-");
+			String[] info = skill.split("-");
 			
-			if(info == null || info.length != 2)
-				continue;
-			
-			int id = 0;
-			int level = 0;
-			
-			try
+			if (info != null && info.length == 2)
 			{
-				id = Integer.parseInt(info[0]);
-				level = Integer.parseInt(info[1]);
+				int id = 0;
+				int level = 0;
+				try
+				{
+					id = Integer.parseInt(info[0]);
+					level = Integer.parseInt(info[1]);
+				}
+				catch (Exception nfe)
+				{
+					// Incorrect syntax, dont add new skill
+					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in armor enchant skills! item ",this.toString()));
+				}
+				if (id > 0 && level > 0)
+					_enchant4Skill = new SkillHolder(id, level);
 			}
-			catch(Exception nfe)
+		}
+		
+		skill = set.getString("item_skill", null);
+		if (skill != null)
+		{
+			String[] skills = skill.split(";");
+			_skillHolder = new SkillHolder[skills.length];
+			byte iterator = 0;
+			for (String st : skills)
 			{
-				// Incorrect syntax, dont add new skill
-				_log.info(StringUtil.concat("> Couldnt parse " , st, " in armor skills!"));
-				continue;
-			}
-			
-			// If skill can exist, add it
-			if(id > 0 && level > 0)
-			{
-				_skillHolder[iterator] = new SkillHolder(id, level);
-				iterator++;
+				String[] info = st.split("-");
+				
+				if (info == null || info.length != 2)
+					continue;
+				
+				int id = 0;
+				int level = 0;
+				
+				try
+				{
+					id = Integer.parseInt(info[0]);
+					level = Integer.parseInt(info[1]);
+				}
+				catch (Exception nfe)
+				{
+					// Incorrect syntax, dont add new skill
+					_log.info(StringUtil.concat("> Couldnt parse ", st, " in armor skills! item ",this.toString()));
+					continue;
+				}
+				
+				// If skill can exist, add it
+				if (id > 0 && level > 0)
+				{
+					_skillHolder[iterator] = new SkillHolder(id, level);
+					iterator++;
+				}
 			}
 		}
 	}
@@ -113,7 +143,7 @@ public final class L2Armor extends L2Item
 	@Override
 	public L2ArmorType getItemType()
 	{
-		return (L2ArmorType)super._type;
+		return _type;
 	}
 	
 	/**
@@ -126,23 +156,6 @@ public final class L2Armor extends L2Item
 		return getItemType().mask();
 	}
 	
-	/**
-	 * Returns the magical defense of the armor
-	 * @return int : value of the magic defense
-	 */
-	public final int getMDef()
-	{
-		return _mDef;
-	}
-	
-	/**
-	 * Returns the physical defense of the armor
-	 * @return int : value of the physical defense
-	 */
-	public final int getPDef()
-	{
-		return _pDef;
-	}
 	
 	/**
 	 * Returns avoid modifier given by the armor
@@ -154,40 +167,26 @@ public final class L2Armor extends L2Item
 	}
 	
 	/**
-	 * Returns magical bonus given by the armor
-	 * @return int : value of the magical bonus
-	 */
-	public final int getMpBonus()
-	{
-		return _mpBonus;
-	}
-	
-	/**
-	 * Returns physical bonus given by the armor
-	 * @return int : value of the physical bonus
-	 */
-	public final int getHpBonus()
-	{
-		return _hpBonus;
-	}
-	
-	/**
 	 * Returns skill that player get when has equiped armor +4  or more
 	 * @return
 	 */
 	public L2Skill getEnchant4Skill()
 	{
-		return _enchant4Skill;
+		if (_enchant4Skill == null)
+			return null;
+		return _enchant4Skill.getSkill();
 	}
 	
 	/**
 	 * Returns passive skill linked to that armor
 	 * @return
 	 */
+	@Override
 	public SkillHolder[] getSkills()
 	{
 		return _skillHolder;
 	}
+	
 	
 	/**
 	 * Returns array of Func objects containing the list of functions used by the armor

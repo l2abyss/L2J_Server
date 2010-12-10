@@ -67,6 +67,9 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
+		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
+			return;
+
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;

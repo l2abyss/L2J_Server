@@ -40,7 +40,6 @@ import java.util.zip.GZIPInputStream;
 import javax.imageio.ImageIO;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.L2CharPosition;
 
 
 public class Universe implements java.io.Serializable
@@ -75,7 +74,6 @@ public class Universe implements java.io.Serializable
 		u.implode(false);
 	}
 	
-	@SuppressWarnings("unused")
 	private static class Position implements Comparable<Position>, java.io.Serializable
 	{
 		/**
@@ -86,28 +84,6 @@ public class Universe implements java.io.Serializable
 		protected int _flag;
 		protected int _y;
 		protected int _z;
-		
-		public Position(int x, int y, int z, int flag)
-		{
-			_x = x;
-			_y = y;
-			_z = z;
-			_flag = flag;
-		}
-		
-		public Position(L2CharPosition pos)
-		{
-			_x = pos.x;
-			_y = pos.y;
-			_z = pos.z;
-			_flag = 0;
-		}
-		
-		@Deprecated
-		public L2CharPosition l2CP()
-		{
-			return new L2CharPosition(_x, _y, _z, 0);
-		}
 		
 		public int compareTo(Position obj)
 		{
@@ -128,7 +104,6 @@ public class Universe implements java.io.Serializable
 		}
 	}
 	
-	@SuppressWarnings("unused")
 	private static class Coord implements Comparable<Position>, java.io.Serializable
 	{
 		/**
@@ -144,13 +119,6 @@ public class Universe implements java.io.Serializable
 			_x = x;
 			_y = y;
 			_z = z;
-		}
-		
-		public Coord(L2CharPosition pos)
-		{
-			_x = pos.x;
-			_y = pos.y;
-			_z = pos.z;
 		}
 		
 		public int compareTo(Position obj)

@@ -26,8 +26,6 @@ import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.BypassHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.handler.IBypassHandler;
-import com.l2jserver.gameserver.handler.IVoicedCommandHandler;
-import com.l2jserver.gameserver.handler.VoicedCommandHandler;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -36,11 +34,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.entity.L2Event;
-import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShowCommunityBoard;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.GMAudit;
@@ -105,18 +103,25 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					_log.warning("Character " + activeChar.getName() + " tried to use admin command " + command + ", without proper access level!");
 					return;
 				}
-				if (Config.GMAUDIT)
-					GMAudit.auditGMAction(activeChar.getName()+" ["+activeChar.getObjectId()+"]", _command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"));
 				
-				ach.useAdminCommand(_command, activeChar);
+				if (AdminCommandAccessRights.getInstance().requireConfirm(command))
+				{
+					activeChar.setAdminConfirmCmd(_command);
+					ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.S1);
+					dlg.addString("Are you sure you want execute command "+_command.substring(6)+" ?");
+					activeChar.sendPacket(dlg);
+				}
+				else
+				{
+					if (Config.GMAUDIT)
+						GMAudit.auditGMAction(activeChar.getName()+" ["+activeChar.getObjectId()+"]", _command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"));
+					
+					ach.useAdminCommand(_command, activeChar);
+				}
 			}
 			else if (_command.equals("come_here") && ( activeChar.isGM()))
 			{
 				comeHere(activeChar);
-			}
-			else if (_command.startsWith("player_help "))
-			{
-				playerHelp(activeChar, _command.substring(12));
 			}
 			else if (_command.startsWith("npc_"))
 			{
@@ -171,20 +176,6 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				if (manor != null)
 					manor.useBypass(_command, activeChar, null);
 			}
-			else if (_command.startsWith("bbs_"))
-			{
-				if (Config.ENABLE_COMMUNITY_BOARD)
-				{
-					if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), _command)))
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.CB_OFFLINE));
-				}
-				else
-					CommunityBoard.getInstance().handleCommands(getClient(), _command);
-			}
-			else if (_command.startsWith("_bbsloc"))
-			{
-				CommunityBoard.getInstance().handleCommands(getClient(), _command);
-			}
 			else if (_command.startsWith("_bbs"))
 			{
 				if (Config.ENABLE_COMMUNITY_BOARD)
@@ -220,10 +211,6 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				else
 					player.processQuestEvent(p.substring(0, idx), p.substring(idx).trim());
 			}
-			else if (_command.startsWith("OlympiadArenaChange"))
-			{
-				Olympiad.bypassChangeArena(_command, activeChar);
-			}
 			else if (_command.startsWith("_match"))
 			{
 				L2PcInstance player = getClient().getActiveChar();
@@ -254,32 +241,13 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					Hero.getInstance().showHeroDiary(player, heroclass, heroid, heropage);
 				}
 			}
-			else if (_command.startsWith("voice "))
+			else
 			{
-				// only voice commands allowed in bypass
-				if (_command.length() > 7
-						&& _command.charAt(6) == '.')
-				{
-					final String vc, vparams;
-					int endOfCommand = _command.indexOf(" ", 7);
-					if (endOfCommand > 0)
-					{
-						vc = _command.substring(7, endOfCommand).trim();
-						vparams = _command.substring(endOfCommand).trim();
-					}
-					else
-					{
-						vc = _command.substring(7).trim();
-						vparams = null;
-					}
-					
-					if (vc.length() > 0)
-					{
-						IVoicedCommandHandler vch = VoicedCommandHandler.getInstance().getVoicedCommandHandler(vc);
-						if (vch != null)
-							vch.useVoicedCommand(vc, activeChar, vparams);
-					}
-				}
+				final IBypassHandler handler = BypassHandler.getInstance().getBypassHandler(_command);
+				if (handler != null)
+					handler.useBypass(_command, activeChar, null);
+				else
+					_log.log(Level.WARNING, getClient()+" sent not handled RequestBypassToServer: ["+_command+"]");
 			}
 		}
 		catch (Exception e)
@@ -307,7 +275,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	/**
 	 * @param client
 	 */
-	private void comeHere(L2PcInstance activeChar)
+	private static void comeHere(L2PcInstance activeChar)
 	{
 		L2Object obj = activeChar.getTarget();
 		if (obj == null) return;
@@ -316,34 +284,6 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			L2Npc temp = (L2Npc) obj;
 			temp.setTarget(activeChar);
 			temp.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(activeChar.getX(),activeChar.getY(), activeChar.getZ(), 0 ));
-		}
-	}
-	
-	private void playerHelp(L2PcInstance activeChar, String path)
-	{
-		if (path.indexOf("..") != -1)
-			return;
-		
-		StringTokenizer st = new StringTokenizer(path);
-		String[] cmd = st.nextToken().split("#");
-		
-		if (cmd.length > 1)
-		{
-			int itemId = 0;
-			itemId = Integer.parseInt(cmd[1]);
-			String filename = "data/html/help/"+cmd[0];
-			NpcHtmlMessage html = new NpcHtmlMessage(1,itemId);
-			html.setFile(activeChar.getHtmlPrefix(), filename);
-			html.disableValidation();
-			activeChar.sendPacket(html);
-		}
-		else
-		{
-			String filename = "data/html/help/"+path;
-			NpcHtmlMessage html = new NpcHtmlMessage(1);
-			html.setFile(activeChar.getHtmlPrefix(), filename);
-			html.disableValidation();
-			activeChar.sendPacket(html);
 		}
 	}
 	

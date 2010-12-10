@@ -405,7 +405,15 @@ public class L2Spawn
 	{
 		return doSpawn(val);
 	}
-	
+
+	/**
+	 * Return true if respawn enabled
+	 */
+	public boolean isRespawnEnabled()
+	{
+		return _doRespawn;
+	}
+
 	/**
 	 * Set _doRespawn to False to stop respawn in thios L2Spawn.<BR><BR>
 	 */
@@ -452,9 +460,10 @@ public class L2Spawn
 		try
 		{
 			// Check if the L2Spawn is not a L2Pet or L2Minion or L2Decoy spawn
-			if (_template.type.equalsIgnoreCase("L2Pet") || _template.type.equalsIgnoreCase("L2Minion")
-					|| _template.type.equalsIgnoreCase("L2FlyMinion") || _template.type.equalsIgnoreCase("L2Decoy")
-					|| _template.type.equalsIgnoreCase("L2Trap") || _template.type.equalsIgnoreCase("L2EffectPoint"))
+			if (_template.type.equalsIgnoreCase("L2Pet")
+					|| _template.type.equalsIgnoreCase("L2Decoy")
+					|| _template.type.equalsIgnoreCase("L2Trap")
+					|| _template.type.equalsIgnoreCase("L2EffectPoint"))
 			{
 				_currentCount++;
 				
@@ -516,11 +525,7 @@ public class L2Spawn
 			else newlocz = getLocz();
 		}
 		
-		for(L2Effect f : mob.getAllEffects())
-		{
-			if(f != null)
-				mob.removeEffect(f);
-		}
+		mob.stopAllEffects();
 		
 		mob.setIsDead(false);
 		// Reset decay info
@@ -551,7 +556,7 @@ public class L2Spawn
 					mob instanceof L2MonsterInstance
 					&& !getTemplate().isQuestMonster
 					&& !mob.isRaid()
-					&& !mob.isRaidMinion()
+					&& !((L2MonsterInstance)mob).isRaidMinion()
 					&& Config.L2JMOD_CHAMPION_FREQUENCY > 0
 					&& mob.getLevel()>=Config.L2JMOD_CHAMP_MIN_LVL
 					&& mob.getLevel()<=Config.L2JMOD_CHAMP_MAX_LVL

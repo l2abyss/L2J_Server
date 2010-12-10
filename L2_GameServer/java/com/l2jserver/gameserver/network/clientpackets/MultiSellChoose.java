@@ -262,13 +262,6 @@ public class MultiSellChoose extends L2GameClientPacket
 								return;
 							}*/
 							
-							if (itemToTake.isWear())
-							{//Player trying to buy something from the Multisell store with an item that's just being used from the Wear option from merchants.
-								_log.severe("Character: " + player.getName() + " is trying to cheat in multisell, id:" + _listId + ":" + _entryId);
-								player.setMultiSell(null);
-								return;
-							}
-							
 							if (Config.ALT_BLACKSMITH_USE_RECIPES || !e.getMaintainIngredient())
 							{
 								// if it's a stackable item, just reduce the amount from the first (only) instance that is found in the inventory

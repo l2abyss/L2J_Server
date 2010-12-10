@@ -512,7 +512,7 @@ public class CharStat
 	}
 	
 	/** Return the PAtk Modifier against magic creatures */
-	public final double getPAtkMCreatures(L2Character target)
+	public final double getPAtkMagicCreatures(L2Character target)
 	{
 		return calcStat(Stats.PATK_MCREATURES, 1, target, null);
 	}
@@ -566,7 +566,13 @@ public class CharStat
 	{
 		return calcStat(Stats.PDEF_GIANTS, 1, target, null);
 	}
-	
+
+	/** Return the PDef Modifier against giants. */
+	public final double getPDefMagicCreatures(L2Character target)
+	{
+		return calcStat(Stats.PDEF_MCREATURES, 1, target, null);
+	}
+
 	/** Return the PDef (base+modifier) of the L2Character. */
 	public int getPDef(L2Character target)
 	{

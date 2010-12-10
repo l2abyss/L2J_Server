@@ -71,7 +71,7 @@ public class GMHennaInfo extends L2GameServerPacket
 		for (int i = 0; i < _count; i++)
 		{
 			writeD(_hennas[i].getSymbolId());
-			writeD(_hennas[i].getSymbolId());
+			writeD(0x01);
 		}
 	}
 	

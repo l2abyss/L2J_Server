@@ -21,17 +21,19 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Env;
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.skills.conditions.Condition;
+import com.l2jserver.gameserver.skills.conditions.ConditionPetType;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.templates.StatsSet;
@@ -57,11 +59,15 @@ public abstract class L2Item
 	public static final int TYPE2_QUEST = 3;
 	public static final int TYPE2_MONEY = 4;
 	public static final int TYPE2_OTHER = 5;
-	public static final int TYPE2_PET_WOLF = 6;
-	public static final int TYPE2_PET_HATCHLING = 7;
-	public static final int TYPE2_PET_STRIDER = 8;
-	public static final int TYPE2_PET_BABY = 9;
-	public static final int TYPE2_PET_EVOLVEDWOLF = 10;
+	
+	public static final int WOLF = 0x1;
+	public static final int HATCHLING = 0x2;
+	public static final int STRIDER = 0x4;
+	public static final int BABY = 0x8;
+	public static final int IMPROVED_BABY = 0x10;
+	public static final int GROWN_WOLF = 0x20;
+	public static final int ALL_WOLF = 0x21;
+	public static final int ALL_PET = 0x3F;
 	
 	public static final int SLOT_NONE = 0x0000;
 	public static final int SLOT_UNDERWEAR = 0x0001;
@@ -120,7 +126,11 @@ public abstract class L2Item
 	public static final int MATERIAL_SCALE_OF_DRAGON = 0x13; // ??
 	public static final int MATERIAL_DYESTUFF = 0x14; // ??
 	public static final int MATERIAL_COBWEB = 0x15; // ??
-	public static final int MATERIAL_SEED = 0x15; // ??
+	public static final int MATERIAL_SEED = 0x16; // ??
+	public static final int MATERIAL_FISH = 0x17; // ??
+	public static final int MATERIAL_RUNE_XP = 0x18; // ??
+	public static final int MATERIAL_RUNE_SP = 0x19; // ??
+	public static final int MATERIAL_RUNE_PENALTY = 0x20; // ??
 	
 	public static final int CRYSTAL_NONE = 0x00; // ??
 	public static final int CRYSTAL_D = 0x01; // ??
@@ -146,10 +156,8 @@ public abstract class L2Item
 	
 	private final int _itemId;
 	private final String _name;
-	private final int _type1; // needed for item list (inventory)
-	private final int _type2; // different lists for armor, weapon, etc
+	private final String _icon;
 	private final int _weight;
-	private final boolean _crystallizable;
 	private final boolean _stackable;
 	private final int _materialType;
 	private final int _crystalType; // default to none-grade
@@ -163,20 +171,19 @@ public abstract class L2Item
 	private final boolean _destroyable;
 	private final boolean _tradeable;
 	private final boolean _depositable;
-	
+	private final boolean _questItem;
 	private final boolean _common;
 	private final boolean _heroItem;
-	
 	private final boolean _pvpItem;
+	private final boolean _ex_immediate_effect;
+	private final L2ActionType _defaultAction;
 	
-	@SuppressWarnings({ "rawtypes" })
-	protected final Enum _type;
-	
+	protected int _type1; // needed for item list (inventory)
+	protected int _type2; // different lists for armor, weapon, etc	
 	protected Elementals[] _elementals = null;
 	protected FuncTemplate[] _funcTemplates;
 	protected EffectTemplate[] _effectTemplates;
-	protected L2Skill[] _skills;
-	protected List <Condition> _preConditions = new FastList<Condition>();
+	protected List <Condition> _preConditions;
 	
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
@@ -185,44 +192,54 @@ public abstract class L2Item
 	
 	/**
 	 * Constructor of the L2Item that fill class variables.<BR><BR>
-	 * <U><I>Variables filled :</I></U><BR>
-	 * <LI>type</LI>
-	 * <LI>_itemId</LI>
-	 * <LI>_name</LI>
-	 * <LI>_type1 & _type2</LI>
-	 * <LI>_weight</LI>
-	 * <LI>_crystallizable</LI>
-	 * <LI>_stackable</LI>
-	 * <LI>_materialType & _crystalType & _crystlaCount</LI>
-	 * <LI>_duration</LI>
-	 * <LI>_bodypart</LI>
-	 * <LI>_referencePrice</LI>
-	 * <LI>_sellable</LI>
-	 * @param type : Enum designating the type of the item
 	 * @param set : StatsSet corresponding to a set of couples (key,value) for description of the item
 	 */
-	protected L2Item(Enum<?> type, StatsSet set)
+	protected L2Item(StatsSet set)
 	{
-		_type = type;
 		_itemId = set.getInteger("item_id");
 		_name = set.getString("name");
-		_type1 = set.getInteger("type1"); // needed for item list (inventory)
-		_type2 = set.getInteger("type2"); // different lists for armor, weapon, etc
-		_weight = set.getInteger("weight");
-		_crystallizable = set.getBool("crystallizable");
-		_stackable = set.getBool("stackable", false);
-		_materialType = set.getInteger("material");
-		_crystalType = set.getInteger("crystal_type", CRYSTAL_NONE); // default to none-grade
-		_duration = set.getInteger("duration");
-		_time = set.getInteger("time");
-		_bodyPart = set.getInteger("bodypart");
-		_referencePrice = set.getInteger("price");
+		_icon = set.getString("icon", null);
+		_weight = set.getInteger("weight", 0);
+		_materialType = ItemTable._materials.get(set.getString("material", "steel")); // default is steel, yeah and what?
+		_duration = set.getInteger("duration", -1);
+		_time = set.getInteger("time", -1);
+		_bodyPart = ItemTable._slots.get(set.getString("bodypart", "none"));
+		_referencePrice = set.getInteger("price", 0);
+		_crystalType = ItemTable._crystalTypes.get(set.getString("crystal_type", "none")); // default to none-grade
 		_crystalCount = set.getInteger("crystal_count", 0);
-		_sellable = set.getBool("sellable", true);
-		_dropable = set.getBool("dropable", true);
-		_destroyable = set.getBool("destroyable", true);
-		_tradeable = set.getBool("tradeable", true);
-		_depositable = set.getBool("depositable", true);
+		
+		_stackable = set.getBool("is_stackable", false);
+		_sellable = set.getBool("is_sellable", true);
+		_dropable = set.getBool("is_dropable", true);
+		_destroyable = set.getBool("is_destroyable", true);
+		_tradeable = set.getBool("is_tradable", true);
+		_depositable = set.getBool("is_depositable", true);
+		_questItem = set.getBool("is_questitem", false);
+		
+		//_immediate_effect - herb
+		_ex_immediate_effect = set.getInteger("ex_immediate_effect", 0) > 0;
+		//used for custom type select
+		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
+		
+		//TODO cleanup + finish
+		String equip_condition = set.getString("equip_condition", null);
+		if (equip_condition != null)
+		{
+			//pet conditions
+			if (equip_condition.contains("all_wolf_group"))
+				attach(new ConditionPetType(ALL_WOLF));
+			else if (equip_condition.contains("hatchling_group"))
+				attach(new ConditionPetType(HATCHLING));
+			else if (equip_condition.contains("strider"))
+				attach(new ConditionPetType(STRIDER));
+			else if (equip_condition.contains("baby_pet_group"))
+				attach(new ConditionPetType(BABY));
+			else if (equip_condition.contains("grown_up_wolf_group"))
+				attach(new ConditionPetType(GROWN_WOLF));
+			else if (equip_condition.contains("item_equip_pet_group"))
+				attach(new ConditionPetType(ALL_PET));
+		}
+
 		
 		_common = (_itemId >= 12006 && _itemId <= 12361) || (_itemId >= 11605 && _itemId <= 12308);
 		_heroItem = (_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842;
@@ -234,11 +251,7 @@ public abstract class L2Item
 	 * Returns the itemType.
 	 * @return Enum
 	 */
-	@SuppressWarnings({ "rawtypes" })
-	public Enum getItemType()
-	{
-		return _type;
-	}
+	public abstract L2ItemType getItemType();
 	
 	/**
 	 * Returns the duration of the item
@@ -301,7 +314,7 @@ public abstract class L2Item
 	 */
 	public final boolean isCrystallizable()
 	{
-		return _crystallizable;
+		return _crystalType != L2Item.CRYSTAL_NONE && _crystalCount > 0;
 	}
 	
 	/**
@@ -454,8 +467,7 @@ public abstract class L2Item
 	public final int getBodyPart()
 	{
 		return _bodyPart;
-	}
-	
+	}	
 	/**
 	 * Returns the type 1 of the item
 	 * @return int
@@ -570,51 +582,6 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * Returns if item is for hatchling
-	 * @return boolean
-	 */
-	public boolean isForHatchling()
-	{
-		return (_type2 == TYPE2_PET_HATCHLING);
-	}
-	
-	/**
-	 * Returns if item is for strider
-	 * @return boolean
-	 */
-	public boolean isForStrider()
-	{
-		return (_type2 == TYPE2_PET_STRIDER);
-	}
-	
-	/**
-	 * Returns if item is for wolf
-	 * @return boolean
-	 */
-	public boolean isForWolf()
-	{
-		return (_type2 == TYPE2_PET_WOLF);
-	}
-	
-	/**
-	 * Returns if item is for Great wolf
-	 * @return boolean
-	 */
-	public boolean isForEvolvedWolf()
-	{
-		return (_type2 == TYPE2_PET_EVOLVEDWOLF);
-	}
-	
-	/**
-	 * Returns if item is for wolf
-	 * @return boolean
-	 */
-	public boolean isForBabyPet()
-	{
-		return (_type2 == TYPE2_PET_BABY);
-	}
-	
-	/**
 	 * Returns array of Func objects containing the list of functions used by the item
 	 * @param instance : L2ItemInstance pointing out the item
 	 * @param player : L2Character pointing out the player
@@ -658,7 +625,7 @@ public abstract class L2Item
 		if (_effectTemplates == null || _effectTemplates.length == 0)
 			return _emptyEffectSet;
 		
-		ArrayList<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplates.length);
+		FastList<L2Effect> effects = FastList.newInstance();
 		
 		Env env = new Env();
 		env.player = player;
@@ -681,7 +648,9 @@ public abstract class L2Item
 		if (effects.isEmpty())
 			return _emptyEffectSet;
 		
-		return effects.toArray(new L2Effect[effects.size()]);
+		L2Effect[] result = effects.toArray(new L2Effect[effects.size()]);
+		FastList.recycle(effects);
+		return result;
 	}
 	
 	/**
@@ -789,62 +758,39 @@ public abstract class L2Item
 		}
 	}
 	
-	/**
-	 * Add the L2Skill skill to the list of skills generated by the item
-	 * @param skill : L2Skill
-	 */
-	public void attach(L2Skill skill)
-	{
-		if (_skills == null)
-		{
-			_skills = new L2Skill[]
-			                      {
-					skill
-			                      };
-		}
-		else
-		{
-			int len = _skills.length;
-			L2Skill[] tmp = new L2Skill[len + 1];
-			// Definition : arraycopy(array source, begins copy at this position of source, array destination, begins copy at this position in dest,
-			//                        number of components to be copied)
-			System.arraycopy(_skills, 0, tmp, 0, len);
-			tmp[len] = skill;
-			_skills = tmp;
-		}
-	}
-	
 	public final void attach(Condition c)
 	{
+		if (_preConditions == null)
+			_preConditions = new FastList<Condition>();
 		if (!_preConditions.contains(c))
 			_preConditions.add(c);
 	}
 	
-	public final L2Skill[] getItemSkills()
-	{
-		return _skills;
-	}
+	public abstract SkillHolder[] getSkills();
 	
 	public boolean checkCondition(L2Character activeChar, L2Object target, boolean sendMessage)
 	{
 		if (activeChar.isGM() && !Config.GM_ITEM_RESTRICTION)
 			return true;
 		
+		if (_preConditions == null)
+			return true;
+		
 		Env env = new Env();
 		env.player = activeChar;
-		if (target instanceof L2Character) // TODO: object or char?
+		if (target instanceof L2Character)
 			env.target = (L2Character)target;
 		
 		for (Condition preCondition : _preConditions)
 		{
 			if (preCondition == null)
-				return true;
+				continue;
 			
 			if (!preCondition.test(env))
 			{
-				if (activeChar instanceof L2SummonInstance)
+				if (activeChar instanceof L2Summon)
 				{
-					((L2SummonInstance)activeChar).getOwner().sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
+					activeChar.getActingPlayer().sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
 					return false;
 				}
 				
@@ -861,7 +807,7 @@ public abstract class L2Item
 						SystemMessage sm = new SystemMessage(msgId);
 						if (preCondition.isAddName())
 							sm.addItemName(_itemId);
-						activeChar.sendPacket(sm);
+						activeChar.getActingPlayer().sendPacket(sm);
 					}
 				}
 				return false;
@@ -870,11 +816,16 @@ public abstract class L2Item
 		return true;
 	}
 	
-	public boolean isQuestItem()
+	public boolean isConditionAttached()
 	{
-		return getType2() == L2Item.TYPE2_QUEST;
+		return _preConditions != null && !_preConditions.isEmpty();
 	}
 	
+	public boolean isQuestItem()
+	{
+		return _questItem;
+	}
+
 	/**
 	 * Returns the name of the item
 	 * @return String
@@ -883,5 +834,30 @@ public abstract class L2Item
 	public String toString()
 	{
 		return _name+"("+_itemId+")";
+	}
+
+	/**
+	 * @return the _ex_immediate_effect
+	 */
+	public boolean is_ex_immediate_effect()
+	{
+		return _ex_immediate_effect;
+	}
+
+	/**
+	 * @return the _default_action
+	 */
+	public L2ActionType getDefaultAction()
+	{
+		return _defaultAction;
+	}
+
+	/**
+	 * Get the icon link in client files.<BR> Usable in HTML windows.
+	 * @return the _icon
+	 */
+	public String getIcon()
+	{
+		return _icon;
 	}
 }

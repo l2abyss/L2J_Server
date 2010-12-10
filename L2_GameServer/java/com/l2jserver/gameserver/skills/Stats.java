@@ -52,6 +52,8 @@ public enum Stats
 	CRITICAL_DAMAGE("cAtk"),
 	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, crit power and crit damage SA
 	// it was totally bad since now...
+	MAGIC_CRIT_DMG("mCritPower"),
+	
 	PVP_PHYSICAL_DMG("pvpPhysDmg"),
 	PVP_MAGICAL_DMG("pvpMagicalDmg"),
 	PVP_PHYS_SKILL_DMG("pvpPhysSkillsDmg"),
@@ -201,7 +203,7 @@ public enum Stats
 	PATK_MONSTERS("pAtk-monsters"),
 	PATK_DRAGONS("pAtk-dragons"),
 	PATK_GIANTS("pAtk-giants"),
-	PATK_MCREATURES("pAtk-mcreatures"),
+	PATK_MCREATURES("pAtk-magicCreature"),
 	
 	PDEF_PLANTS("pDef-plants"),
 	PDEF_INSECTS("pDef-insects"),
@@ -209,6 +211,7 @@ public enum Stats
 	PDEF_MONSTERS("pDef-monsters"),
 	PDEF_DRAGONS("pDef-dragons"),
 	PDEF_GIANTS("pDef-giants"),
+	PDEF_MCREATURES("pDef-magicCreature"),
 	
 	ATK_REUSE("atkReuse"),
 	P_REUSE("pReuse"),

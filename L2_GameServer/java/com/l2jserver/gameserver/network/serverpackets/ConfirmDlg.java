@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
@@ -49,7 +50,7 @@ public class ConfirmDlg extends L2GameServerPacket
 	private int _time = 0;
 	private int _requesterId = 0;
 	
-	protected static class CnfDlgData
+	private static class CnfDlgData
 	{
 		protected final int type;
 		protected final Object value;
@@ -64,6 +65,11 @@ public class ConfirmDlg extends L2GameServerPacket
 	public ConfirmDlg(int messageId)
 	{
 		_messageId = messageId;
+	}
+	
+	public ConfirmDlg(SystemMessageId messageId)
+	{
+		_messageId = messageId.getId();
 	}
 	
 	public ConfirmDlg addString(String text)

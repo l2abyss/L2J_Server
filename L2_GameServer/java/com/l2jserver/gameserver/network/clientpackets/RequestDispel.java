@@ -16,10 +16,9 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.templates.skills.L2EffectType;
 
 /**
  *
@@ -27,6 +26,7 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
  */
 public class RequestDispel extends L2GameClientPacket
 {
+	private int _objectId;
 	private int _skillId;
 	private int _skillLevel;
 	
@@ -36,7 +36,7 @@ public class RequestDispel extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		readD(); // player objid, not needed
+		_objectId = readD();
 		_skillId = readD();
 		_skillLevel = readD();
 	}
@@ -47,18 +47,29 @@ public class RequestDispel extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		if (_skillId <= 0 || _skillLevel <= 0)
+			return;
+
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
 		
 		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLevel);
-		if (skill != null && (!skill.isDance() || Config.DANCE_CANCEL_BUFF) && !skill.isDebuff() && skill.canBeDispeled())
+		if (skill == null)
+			return;
+		if (!skill.canBeDispeled() || skill.isStayAfterDeath() || skill.isDebuff())
+			return;
+		if (skill.getTransformId() > 0) // transformation
+			return;
+		if (skill.isDance() && !Config.DANCE_CANCEL_BUFF)
+			return;
+		if (activeChar.getObjectId() == _objectId)
+			activeChar.stopSkillEffects(_skillId);
+		else
 		{
-			for (L2Effect e : activeChar.getAllEffects())
-			{
-				if (e != null && e.getSkill() == skill && e.getEffectType() != L2EffectType.TRANSFORMATION)
-					e.exit();
-			}
+			final L2Summon pet = activeChar.getPet();
+			if (pet != null && pet.getObjectId() == _objectId)
+				pet.stopSkillEffects(_skillId);
 		}
 	}
 	

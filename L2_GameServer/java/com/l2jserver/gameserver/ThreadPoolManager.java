@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RunnableScheduledFuture;
@@ -68,6 +69,32 @@ public class ThreadPoolManager
 {
 	protected static final Logger _log = Logger.getLogger(ThreadPoolManager.class.getName());
 	
+	private static final class RunnableWrapper implements Runnable
+	{
+		private final Runnable _r;
+		
+		public RunnableWrapper(final Runnable r)
+		{
+			_r = r;
+		}
+		
+		@Override
+		public final void run()
+		{
+			try
+			{
+				_r.run();
+			}
+			catch (final Throwable e)
+			{
+				final Thread t = Thread.currentThread();
+				final UncaughtExceptionHandler h = t.getUncaughtExceptionHandler();
+				if (h != null)
+					h.uncaughtException(t, e);
+			}
+		}
+	}
+	
 	private ScheduledThreadPoolExecutor _effectsScheduledThreadPool;
 	private ScheduledThreadPoolExecutor _generalScheduledThreadPool;
 	private ScheduledThreadPoolExecutor _aiScheduledThreadPool;
@@ -112,7 +139,7 @@ public class ThreadPoolManager
 		try
 		{
 			delay = ThreadPoolManager.validateDelay(delay);
-			return _effectsScheduledThreadPool.schedule(r, delay, TimeUnit.MILLISECONDS);
+			return _effectsScheduledThreadPool.schedule(new RunnableWrapper(r), delay, TimeUnit.MILLISECONDS);
 		}
 		catch (RejectedExecutionException e)
 		{
@@ -126,7 +153,7 @@ public class ThreadPoolManager
 		{
 			delay = ThreadPoolManager.validateDelay(delay);
 			initial = ThreadPoolManager.validateDelay(initial);
-			return _effectsScheduledThreadPool.scheduleAtFixedRate(r, initial, delay, TimeUnit.MILLISECONDS);
+			return _effectsScheduledThreadPool.scheduleAtFixedRate(new RunnableWrapper(r), initial, delay, TimeUnit.MILLISECONDS);
 		}
 		catch (RejectedExecutionException e)
 		{
@@ -145,7 +172,7 @@ public class ThreadPoolManager
 		try
 		{
 			delay = ThreadPoolManager.validateDelay(delay);
-			return _generalScheduledThreadPool.schedule(r, delay, TimeUnit.MILLISECONDS);
+			return _generalScheduledThreadPool.schedule(new RunnableWrapper(r), delay, TimeUnit.MILLISECONDS);
 		}
 		catch (RejectedExecutionException e)
 		{
@@ -159,7 +186,7 @@ public class ThreadPoolManager
 		{
 			delay = ThreadPoolManager.validateDelay(delay);
 			initial = ThreadPoolManager.validateDelay(initial);
-			return _generalScheduledThreadPool.scheduleAtFixedRate(r, initial, delay, TimeUnit.MILLISECONDS);
+			return _generalScheduledThreadPool.scheduleAtFixedRate(new RunnableWrapper(r), initial, delay, TimeUnit.MILLISECONDS);
 		}
 		catch (RejectedExecutionException e)
 		{
@@ -178,7 +205,7 @@ public class ThreadPoolManager
 		try
 		{
 			delay = ThreadPoolManager.validateDelay(delay);
-			return _aiScheduledThreadPool.schedule(r, delay, TimeUnit.MILLISECONDS);
+			return _aiScheduledThreadPool.schedule(new RunnableWrapper(r), delay, TimeUnit.MILLISECONDS);
 		}
 		catch (RejectedExecutionException e)
 		{
@@ -192,7 +219,7 @@ public class ThreadPoolManager
 		{
 			delay = ThreadPoolManager.validateDelay(delay);
 			initial = ThreadPoolManager.validateDelay(initial);
-			return _aiScheduledThreadPool.scheduleAtFixedRate(r, initial, delay, TimeUnit.MILLISECONDS);
+			return _aiScheduledThreadPool.scheduleAtFixedRate(new RunnableWrapper(r), initial, delay, TimeUnit.MILLISECONDS);
 		}
 		catch (RejectedExecutionException e)
 		{
@@ -222,7 +249,7 @@ public class ThreadPoolManager
 	
 	public void executeAi(Runnable r)
 	{
-		_aiScheduledThreadPool.execute(r);
+		_aiScheduledThreadPool.execute(new RunnableWrapper(r));
 	}
 	
 	public String[] getStats()

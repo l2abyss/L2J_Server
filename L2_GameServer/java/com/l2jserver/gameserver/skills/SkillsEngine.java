@@ -18,20 +18,14 @@ import gnu.trove.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.Item;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.templates.item.L2Armor;
-import com.l2jserver.gameserver.templates.item.L2EtcItem;
-import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
 
 /**
  * @author mkizub
@@ -41,9 +35,7 @@ public class SkillsEngine
 	
 	protected static final Logger _log = Logger.getLogger(SkillsEngine.class.getName());
 	
-	private List<File> _armorFiles = new FastList<File>();
-	private List<File> _weaponFiles = new FastList<File>();
-	private List<File> _etcitemFiles = new FastList<File>();
+	private List<File> _itemFiles = new FastList<File>();
 	private List<File> _skillFiles = new FastList<File>();
 	
 	public static SkillsEngine getInstance()
@@ -53,9 +45,7 @@ public class SkillsEngine
 	
 	private SkillsEngine()
 	{
-		hashFiles("data/stats/etcitem", _etcitemFiles);
-		hashFiles("data/stats/armor", _armorFiles);
-		hashFiles("data/stats/weapon", _weaponFiles);
+		hashFiles("data/stats/items", _itemFiles);
 		hashFiles("data/stats/skills", _skillFiles);
 	}
 	
@@ -107,17 +97,23 @@ public class SkillsEngine
 		_log.info("SkillsEngine: Loaded " + count + " Skill templates from XML files.");
 	}
 	
-	public List<L2Armor> loadArmors(Map<Integer, Item> armorData)
+	/**
+	 * Return created items
+	 * @return List of {@link L2Item}
+	 */
+	public List<L2Item> loadItems()
 	{
-		List<L2Armor> list = new FastList<L2Armor>();
-		for (L2Item item : loadData(armorData, _armorFiles))
+		List<L2Item> list = new FastList<L2Item>();
+		for (File f : _itemFiles)
 		{
-			list.add((L2Armor) item);
+			DocumentItem document = new DocumentItem(f);
+			document.parse();
+			list.addAll(document.getItemList());
 		}
 		return list;
 	}
 	
-	public List<L2Weapon> loadWeapons(Map<Integer, Item> weaponData)
+	/*public List<L2Weapon> loadWeapons(Map<Integer, Item> weaponData)
 	{
 		List<L2Weapon> list = new FastList<L2Weapon>();
 		for (L2Item item : loadData(weaponData, _weaponFiles))
@@ -145,7 +141,7 @@ public class SkillsEngine
 		return list;
 	}
 	
-	public List<L2Item> loadData(Map<Integer, Item> itemData, List<File> files)
+	public List<L2Item> loadData(Map<Integer, ? extends Item> itemData, List<File> files)
 	{
 		List<L2Item> list = new FastList<L2Item>();
 		for (File f : files)
@@ -155,7 +151,7 @@ public class SkillsEngine
 			list.addAll(document.getItemList());
 		}
 		return list;
-	}
+	}*/
 	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder

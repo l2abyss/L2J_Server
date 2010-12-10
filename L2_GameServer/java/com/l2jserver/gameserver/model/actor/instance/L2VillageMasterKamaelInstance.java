@@ -46,6 +46,10 @@ public final class L2VillageMasterKamaelInstance extends L2VillageMasterInstance
 	@Override
 	protected final boolean checkQuests(L2PcInstance player)
 	{
+		// Noble players can add subbclasses without quests
+	 	if (player.isNoble())
+	 		return true;
+	 	
 		QuestState qs = player.getQuestState("234_FatesWhisper");
 		if (qs == null || !qs.isCompleted())
 			return false;

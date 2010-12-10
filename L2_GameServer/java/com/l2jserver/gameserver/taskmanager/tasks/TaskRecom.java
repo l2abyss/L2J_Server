@@ -14,13 +14,12 @@
  */
 package com.l2jserver.gameserver.taskmanager.tasks;
 
-import java.util.Collection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
-import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.taskmanager.Task;
 import com.l2jserver.gameserver.taskmanager.TaskManager;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
@@ -34,7 +33,7 @@ import com.l2jserver.gameserver.taskmanager.TaskTypes;
 public class TaskRecom extends Task
 {
 	private static final Logger _log = Logger.getLogger(TaskRecom.class.getName());
-	private static final String NAME = "sp_recommendations";
+	private static final String NAME = "recommendations";
 	
 	/**
 	 * 
@@ -53,17 +52,25 @@ public class TaskRecom extends Task
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		// synchronized (L2World.getInstance().getAllPlayers())
+		Connection con = null;
+		try
 		{
-			for (L2PcInstance player : pls)
-			{
-				player.restartRecom();
-				player.sendPacket(new UserInfo(player));
-				player.sendPacket(new ExBrExtraUserInfo(player));
-			}
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE character_reco_bonus SET rec_left=?, time_left=?, rec_have=GREATEST(rec_have-20,0)");
+			statement.setInt(1, 0);	// Rec left = 0
+			statement.setInt(2, 3600000); // Timer = 1 hour
+			statement.execute();
+			statement.close();
 		}
-		_log.config("Recommendation Global Task: launched.");
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Could not reset Recommendations System: " + e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
+		_log.config("Recommendations System reseted");
 	}
 	
 	/**
@@ -74,7 +81,7 @@ public class TaskRecom extends Task
 	public void initializate()
 	{
 		super.initializate();
-		TaskManager.addUniqueTask(NAME, TaskTypes.TYPE_GLOBAL_TASK, "1", "13:00:00", "");
+		TaskManager.addUniqueTask(NAME, TaskTypes.TYPE_GLOBAL_TASK, "1", "06:30:00", "");
 	}
 	
 }

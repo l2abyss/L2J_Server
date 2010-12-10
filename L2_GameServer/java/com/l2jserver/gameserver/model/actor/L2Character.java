@@ -64,7 +64,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2MinionInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.SkillDat;
@@ -151,23 +150,13 @@ public abstract class L2Character extends L2Object
 	private L2Skill _lastSkillCast;
 	private L2Skill _lastSimultaneousSkillCast;
 	
-	private boolean _isAfraid								= false; // Flee in a random direction
-	private boolean _isConfused								= false; // Attack anyone randomly
-	private boolean _isMuted								= false; // Cannot use magic
-	private boolean _isPhysicalMuted						= false; // Cannot use physical skills
-	private boolean _isPhysicalAttackMuted					= false; // Cannot use attack
 	private boolean _isDead									= false;
 	private boolean _isImmobilized							= false;
 	private boolean _isOverloaded							= false; // the char is carrying too much
 	private boolean _isParalyzed							= false;
-	private boolean _isDisarmed								= false;
 	private boolean _isPendingRevive						= false;
-	private boolean _isRooted								= false; // Cannot move until root timed out
 	private boolean _isRunning								= false;
 	private boolean _isNoRndWalk							= false; // Is no random walk
-	private boolean _isSleeping								= false; // Cannot move/attack until sleep timed out or monster is attacked
-	private boolean _isStunned								= false; // Cannot move/attack until stun timed out
-	private boolean _isBetrayed								= false; // Betrayed by own summon
 	protected boolean _showSummonAnimation					= false;
 	protected boolean _isTeleporting						= false;
 	protected boolean _isInvul								= false;
@@ -214,8 +203,10 @@ public abstract class L2Character extends L2Object
 	public static final byte ZONE_NOHQ = 17;
 	public static final byte ZONE_DANGERAREA = 18;
 	public static final byte ZONE_ALTERED = 19;
+	public static final byte ZONE_NOBOOKMARK = 20;
+	public static final byte ZONE_NOITEMDROP = 21;
 	
-	private final byte[] _zones = new byte[20];
+	private final byte[] _zones = new byte[22];
 	protected byte _zoneValidateCounter = 4;
 	
 	private L2Character _debugger = null;
@@ -596,13 +587,10 @@ public abstract class L2Character extends L2Object
 		// Go through the StatusListener
 		// Send the Server->Client packet StatusUpdate with current HP and MP
 		
-		synchronized (getStatus().getStatusListener())
+		for (L2Character temp : getStatus().getStatusListener())
 		{
-			for (L2Character temp : getStatus().getStatusListener())
-			{
-				if (temp != null)
-					temp.sendPacket(su);
-			}
+			if (temp != null)
+				temp.sendPacket(su);
 		}
 	}
 	
@@ -810,7 +798,7 @@ public abstract class L2Character extends L2Object
 		// Get the active weapon item corresponding to the active weapon instance (always equiped in the right hand)
 		L2Weapon weaponItem = getActiveWeaponItem();
 		
-		if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.ROD)
+		if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.FISHINGROD)
 		{
 			//	You can't make an attack with a fishing pole.
 			sendPacket(new SystemMessage(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE));
@@ -1524,6 +1512,43 @@ public abstract class L2Character extends L2Object
 		beginCast(skill, true);
 	}
 	
+	public void doCast(L2Skill skill, L2Character target, L2Object[] targets)
+	{
+		if (!checkDoCastConditions(skill))
+		{
+			setIsCastingNow(false);
+			return;
+		}
+		// Override casting type
+		if(skill.isSimultaneousCast())
+		{
+			doSimultaneousCast(skill, target, targets);
+			return;
+		}
+		
+		stopEffectsOnAction();
+		
+		// Recharge AutoSoulShot
+		// this method should not used with L2Playable
+		
+		beginCast(skill, false, target, targets);
+	}
+	
+	public void doSimultaneousCast(L2Skill skill, L2Character target, L2Object[] targets)
+	{
+		if (!checkDoCastConditions(skill))
+		{
+			setIsCastingSimultaneouslyNow(false);
+			return;
+		}
+		stopEffectsOnAction();
+		
+		// Recharge AutoSoulShot
+		// this method should not used with L2Playable
+		
+		beginCast(skill, true, target, targets);
+	}
+	
 	private void beginCast(L2Skill skill, boolean simultaneously)
 	{
 		if (!checkDoCastConditions(skill))
@@ -1538,6 +1563,9 @@ public abstract class L2Character extends L2Object
 			}
 			return;
 		}
+		// Override casting type
+		if(skill.isSimultaneousCast() && !simultaneously)
+			simultaneously = true;
 		
 		stopEffectsOnAction();
 		
@@ -1635,6 +1663,11 @@ public abstract class L2Character extends L2Object
 					target = (L2Character) getTarget();
 				}
 		}
+		beginCast(skill, simultaneously, target, targets);
+	}
+		
+	private void beginCast(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
+	{
 		
 		if (target == null)
 		{
@@ -1957,7 +1990,7 @@ public abstract class L2Character extends L2Object
 	 */
 	protected boolean checkDoCastConditions(L2Skill skill)
 	{
-		if (skill == null || isSkillDisabled(skill) || (skill.getFlyType() != null && isMovementDisabled()))
+		if (skill == null || isSkillDisabled(skill) || ((skill.getFlyRadius() > 0 || skill.getFlyType() != null) && isMovementDisabled()))
 		{
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -2183,7 +2216,7 @@ public abstract class L2Character extends L2Object
 		{
 			if(((L2Playable)this).isPhoenixBlessed())
 				((L2PcInstance)this).reviveRequest(((L2PcInstance)this),null,false);
-			else if (((L2PcInstance)this).getCharmOfCourage()
+			else if (isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE)
 					&& ((L2PcInstance)this).isInSiege())
 			{
 				((L2PcInstance)this).reviveRequest(((L2PcInstance)this),null,false);
@@ -2292,14 +2325,18 @@ public abstract class L2Character extends L2Object
 		return false;
 	}
 	
-	/**
-	 * Set this Npc as a Raid instance.<BR><BR>
-	 * @param isRaid
-	 */
-	public void setIsRaid(boolean isRaid)
+	/** Return True if the L2Character is minion. */
+	public boolean isMinion()
 	{
+		return false;
 	}
-	
+
+	/** Return True if the L2Character is minion of RaidBoss. */
+	public boolean isRaidMinion()
+	{
+		return false;
+	}
+
 	/** Return a list of L2Character that attacked. */
 	public final Set<L2Character> getAttackByList ()
 	{
@@ -2323,8 +2360,7 @@ public abstract class L2Character extends L2Object
 	public final boolean isNoRndWalk() { return _isNoRndWalk; }
 	public final void setIsNoRndWalk(boolean value) { _isNoRndWalk = value; }
 	
-	public final boolean isAfraid() { return _isAfraid; }
-	public final void setIsAfraid(boolean value) { _isAfraid = value; }
+	public final boolean isAfraid() { return isAffected(CharEffectList.EFFECT_FLAG_FEAR); }
 	
 	/** Return True if the L2Character can't use its skills (ex : stun, sleep...). */
 	public final boolean isAllSkillsDisabled() { return _allSkillsDisabled || isStunned() || isSleeping() || isParalyzed(); }
@@ -2334,8 +2370,7 @@ public abstract class L2Character extends L2Object
 	
 	public final Calculator[] getCalculators() { return _calculators; }
 	
-	public final boolean isConfused() { return _isConfused; }
-	public final void setIsConfused(boolean value) { _isConfused = value; }
+	public final boolean isConfused() { return isAffected(CharEffectList.EFFECT_FLAG_CONFUSED); }
 	
 	/** Return True if the L2Character is dead or use fake death.  */
 	public boolean isAlikeDead() { return _isDead; }
@@ -2347,14 +2382,11 @@ public abstract class L2Character extends L2Object
 	public boolean isImmobilized() { return _isImmobilized; }
 	public void setIsImmobilized(boolean value){ _isImmobilized = value; }
 	
-	public final boolean isMuted() { return _isMuted; }
-	public final void setIsMuted(boolean value) { _isMuted = value; }
+	public final boolean isMuted() { return isAffected(CharEffectList.EFFECT_FLAG_MUTED); }
 	
-	public final boolean isPhysicalMuted() { return _isPhysicalMuted; }
-	public final void setIsPhysicalMuted(boolean value) { _isPhysicalMuted = value; }
+	public final boolean isPhysicalMuted() { return isAffected(CharEffectList.EFFECT_FLAG_PSYCHICAL_MUTED); }
 	
-	public final boolean isPhysicalAttackMuted() { return _isPhysicalAttackMuted; }
-	public final void setIsPhysicalAttackMuted(boolean value) { _isPhysicalAttackMuted = value; }
+	public final boolean isPhysicalAttackMuted() { return isAffected(CharEffectList.EFFECT_FLAG_PSYCHICAL_ATTACK_MUTED); }
 	
 	/** Return True if the L2Character can't move (stun, root, sleep, overload, paralyzed). */
 	public boolean isMovementDisabled()
@@ -2377,8 +2409,7 @@ public abstract class L2Character extends L2Object
 	public final boolean isPendingRevive() { return isDead() && _isPendingRevive; }
 	public final void setIsPendingRevive(boolean value) { _isPendingRevive = value; }
 	
-	public final boolean isDisarmed() { return _isDisarmed; }
-	public final void setIsDisarmed(boolean value) { _isDisarmed = value; }
+	public final boolean isDisarmed() { return isAffected(CharEffectList.EFFECT_FLAG_DISARMED); }
 	
 	/**
 	 * Return the L2Summon of the L2Character.<BR><BR>
@@ -2387,8 +2418,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public L2Summon getPet() { return null; }
 	
-	public final boolean isRooted() { return _isRooted; }
-	public final void setIsRooted(boolean value) { _isRooted = value; }
+	public final boolean isRooted() { return isAffected(CharEffectList.EFFECT_FLAG_ROOTED); }
 	
 	/** Return True if the L2Character is running. */
 	public boolean isRunning() { return _isRunning; }
@@ -2424,14 +2454,11 @@ public abstract class L2Character extends L2Object
 	/** Set the L2Character movement type to run and send Server->Client packet ChangeMoveType to all others L2PcInstance. */
 	public final void setRunning() { if (!isRunning()) setIsRunning(true); }
 	
-	public final boolean isSleeping() { return _isSleeping; }
-	public final void setIsSleeping(boolean value) { _isSleeping = value; }
+	public final boolean isSleeping() { return isAffected(CharEffectList.EFFECT_FLAG_SLEEP); }
 	
-	public final boolean isStunned() { return _isStunned; }
-	public final void setIsStunned(boolean value) { _isStunned = value; }
+	public final boolean isStunned() { return isAffected(CharEffectList.EFFECT_FLAG_STUNNED); }
 	
-	public final boolean isBetrayed() { return _isBetrayed; }
-	public final void setIsBetrayed(boolean value) { _isBetrayed = value; }
+	public final boolean isBetrayed() { return isAffected(CharEffectList.EFFECT_FLAG_BETRAYED); }
 	
 	public final boolean isTeleporting() { return _isTeleporting; }
 	public void setIsTeleporting(boolean value) { _isTeleporting = value; }
@@ -2809,7 +2836,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startConfused()
 	{
-		setIsConfused(true);
 		getAI().notifyEvent(CtrlEvent.EVT_CONFUSED);
 		updateAbnormalEffect();
 	}
@@ -2836,7 +2862,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startFear()
 	{
-		setIsAfraid(true);
 		getAI().notifyEvent(CtrlEvent.EVT_AFRAID);
 		updateAbnormalEffect();
 	}
@@ -2846,7 +2871,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startMuted()
 	{
-		setIsMuted(true);
 		/* Aborts any casts if muted */
 		abortCast();
 		getAI().notifyEvent(CtrlEvent.EVT_MUTED);
@@ -2858,7 +2882,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startPsychicalMuted()
 	{
-		setIsPhysicalMuted(true);
 		getAI().notifyEvent(CtrlEvent.EVT_MUTED);
 		updateAbnormalEffect();
 	}
@@ -2868,7 +2891,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startRooted()
 	{
-		setIsRooted(true);
 		stopMove(null);
 		getAI().notifyEvent(CtrlEvent.EVT_ROOTED);
 		updateAbnormalEffect();
@@ -2879,7 +2901,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startSleeping()
 	{
-		setIsSleeping(true);
 		/* Aborts any attacks/casts if sleeped */
 		abortAttack();
 		abortCast();
@@ -2899,7 +2920,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startStunning()
 	{
-		setIsStunned(true);
 		/* Aborts any attacks/casts if stunned */
 		abortAttack();
 		abortCast();
@@ -2920,20 +2940,7 @@ public abstract class L2Character extends L2Object
 		getAI().notifyEvent(CtrlEvent.EVT_PARALYZED);
 		updateAbnormalEffect();
 	}
-	
-	public final void startBetray()
-	{
-		setIsBetrayed(true);
-		getAI().notifyEvent(CtrlEvent.EVT_BETRAYED);
-		updateAbnormalEffect();
-	}
-	
-	public final void stopBetray()
-	{
-		stopEffects(L2EffectType.BETRAY);
-		setIsBetrayed(false);
-		updateAbnormalEffect();
-	}
+
 	/**
 	 * Modify the abnormal effect map according to the mask.<BR><BR>
 	 */
@@ -2992,8 +2999,6 @@ public abstract class L2Character extends L2Object
 			stopEffects(L2EffectType.CONFUSION);
 		else
 			removeEffect(effect);
-		
-		setIsConfused(false);
 		if (!(this instanceof L2PcInstance))
 			getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
@@ -3114,8 +3119,6 @@ public abstract class L2Character extends L2Object
 	{
 		if (removeEffects)
 			stopEffects(L2EffectType.FEAR);
-		
-		setIsAfraid(false);
 		updateAbnormalEffect();
 	}
 	
@@ -3134,7 +3137,6 @@ public abstract class L2Character extends L2Object
 		if (removeEffects)
 			stopEffects(L2EffectType.MUTE);
 		
-		setIsMuted(false);
 		updateAbnormalEffect();
 	}
 	
@@ -3142,8 +3144,7 @@ public abstract class L2Character extends L2Object
 	{
 		if (removeEffects)
 			stopEffects(L2EffectType.PHYSICAL_MUTE);
-		
-		setIsPhysicalMuted(false);
+
 		updateAbnormalEffect();
 	}
 	
@@ -3162,7 +3163,6 @@ public abstract class L2Character extends L2Object
 		if (removeEffects)
 			stopEffects(L2EffectType.ROOT);
 		
-		setIsRooted(false);
 		if (!(this instanceof L2PcInstance))
 			getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
@@ -3183,7 +3183,6 @@ public abstract class L2Character extends L2Object
 		if (removeEffects)
 			stopEffects(L2EffectType.SLEEP);
 		
-		setIsSleeping(false);
 		if (!(this instanceof L2PcInstance))
 			getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
@@ -3204,7 +3203,6 @@ public abstract class L2Character extends L2Object
 		if (removeEffects)
 			stopEffects(L2EffectType.STUN);
 		
-		setIsStunned(false);
 		if (!(this instanceof L2PcInstance))
 			getAI().notifyEvent(CtrlEvent.EVT_THINK);
 		updateAbnormalEffect();
@@ -3782,7 +3780,7 @@ public abstract class L2Character extends L2Object
 		}
 	}
 	
-	private void broadcastModifiedStats(FastList<Stats> stats)
+	protected void broadcastModifiedStats(FastList<Stats> stats)
 	{
 		if (stats == null || stats.isEmpty()) return;
 		
@@ -4508,7 +4506,7 @@ public abstract class L2Character extends L2Object
 			// Path calculation
 			// Overrides previous movement check
 			if((this instanceof L2Playable && !isInVehicle)
-					|| this instanceof L2MinionInstance
+					|| this.isMinion()
 					|| this.isInCombat())
 			{
 				m.geoPath = PathFinding.getInstance().findPath(curX, curY, curZ, originalX, originalY, originalZ, getInstanceId(), this instanceof L2Playable);
@@ -4524,7 +4522,7 @@ public abstract class L2Character extends L2Object
 					// them to move along with their leader
 					if (this instanceof L2PcInstance
 							|| (!(this instanceof L2Playable)
-									&& !(this instanceof L2MinionInstance)
+									&& !this.isMinion()
 									&& Math.abs(z - curZ) > 140)
 									|| (this instanceof L2Summon && !((L2Summon)this).getFollowStatus()))
 					{
@@ -5031,13 +5029,13 @@ public abstract class L2Character extends L2Object
 	public abstract L2ItemInstance getSecondaryWeaponInstance();
 	
 	/**
-	 * Return the secondary weapon item (always equiped in the left hand).<BR><BR>
+	 * Return the secondary {@link L2Item} item (always equiped in the left hand).<BR><BR>
 	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 *
 	 */
-	public abstract L2Weapon getSecondaryWeaponItem();
+	public abstract L2Item getSecondaryWeaponItem();
 	
 	
 	/**
@@ -5086,19 +5084,10 @@ public abstract class L2Character extends L2Object
 			// ON_EVADED_HIT
 			if (target.getChanceSkills() != null)
 				target.getChanceSkills().onEvadedHit(this);
-			
-			if (target instanceof L2PcInstance)
-			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.C1_EVADED_C2_ATTACK);
-				sm.addPcName((L2PcInstance) target);
-				sm.addCharName(this);
-				target.sendPacket(sm);
-			}
-			if (this instanceof L2PcInstance)
-			{
-				sendPacket(new SystemMessage(SystemMessageId.C1_ATTACK_WENT_ASTRAY).addPcName((L2PcInstance)this));
-			}
 		}
+		
+		// Send message about damage/crit or miss
+		sendDamageMessage(target, damage, false, crit, miss);
 		
 		// If attack isn't aborted, send a message system (critical hit, missed...) to attacker/target if they are L2PcInstance
 		if (!isAttackAborted())
@@ -5125,8 +5114,6 @@ public abstract class L2Character extends L2Object
 					damage = 0; // prevents messing up drop calculation
 				}
 			}
-			
-			sendDamageMessage(target, damage, false, crit, miss);
 			
 			// If L2Character target is a L2PcInstance, send a system message
 			if (target instanceof L2PcInstance)
@@ -5411,6 +5398,11 @@ public abstract class L2Character extends L2Object
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
+		if(player.getBlockCheckerArena() != -1)
+		{
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 		// Notify AI with AI_INTENTION_ATTACK
 		player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
 	}
@@ -5536,10 +5528,10 @@ public abstract class L2Character extends L2Object
 	{
 		if (weapon == null || isTransformed()) return 0;
 		
-		int reuse = weapon.getAttackReuseDelay();
+		int reuse = weapon.getReuseDelay();
 		// only bows should continue for now
-		if (reuse == 0) return 0;
-		// else if (reuse < 10) reuse = 1500;
+		if (reuse == 0)
+			return 0;
 		
 		reuse *= getStat().getWeaponReuseModifier(target);
 		double atkSpd = getStat().getPAtkSpd();
@@ -5990,7 +5982,8 @@ public abstract class L2Character extends L2Object
 			level = 1;
 		
 		// Send a Server->Client packet MagicSkillLaunched to the L2Character AND to all L2PcInstance in the _KnownPlayers of the L2Character
-		if (!skill.isPotion()) broadcastPacket(new MagicSkillLaunched(this, magicId, level, targets));
+		if (!skill.isPotion())
+			broadcastPacket(new MagicSkillLaunched(this, magicId, level, targets));
 		
 		mut.phase = 2;
 		if (mut.hitTime == 0)
@@ -6744,16 +6737,19 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return a Random Damage in function of the weapon.<BR><BR>
+	 * Return a multiplier based on weapon random damage<BR><BR>
 	 */
-	public final int getRandomDamage(L2Character target)
+	public final double getRandomDamageMultiplier()
 	{
-		L2Weapon weaponItem = getActiveWeaponItem();
+		L2Weapon activeWeapon = getActiveWeaponItem();
+		int random;
 		
-		if (weaponItem == null)
-			return 5+(int)Math.sqrt(getLevel());
-		
-		return weaponItem.getRandomDamage();
+		if (activeWeapon != null)
+			random = activeWeapon.getRandomDamage();
+		else
+			random = 5+(int)Math.sqrt(getLevel());
+
+		return (1+((double)Rnd.get(0-random,random)/100));
 	}
 	
 	public int getAttackEndTime()
@@ -6804,14 +6800,14 @@ public abstract class L2Character extends L2Object
 	public double getPAtkMonsters(L2Character target) { return getStat().getPAtkMonsters(target); }
 	public double getPAtkPlants(L2Character target) { return getStat().getPAtkPlants(target); }
 	public double getPAtkGiants(L2Character target) { return getStat().getPAtkGiants(target); }
-	public double getPAtkMCreatures(L2Character target) { return getStat().getPAtkMCreatures(target); }
+	public double getPAtkMagicCreatures(L2Character target) { return getStat().getPAtkMagicCreatures(target); }
 	public double getPDefAnimals(L2Character target) { return getStat().getPDefAnimals(target); }
 	public double getPDefDragons(L2Character target) { return getStat().getPDefDragons(target); }
 	public double getPDefInsects(L2Character target) { return getStat().getPDefInsects(target); }
 	public double getPDefMonsters(L2Character target) { return getStat().getPDefMonsters(target); }
 	public double getPDefPlants(L2Character target) { return getStat().getPDefPlants(target); }
 	public double getPDefGiants(L2Character target) { return getStat().getPDefGiants(target); }
-	
+	public double getPDefMagicCreatures(L2Character target) { return getStat().getPDefMagicCreatures(target); }
 	/**
 	 * Return max visible HP for display purpose.
 	 * Calculated by applying non-visible HP limit
@@ -6913,7 +6909,6 @@ public abstract class L2Character extends L2Object
 	
 	public final void startPhysicalAttackMuted()
 	{
-		setIsPhysicalAttackMuted(true);
 		abortAttack();
 	}
 	
@@ -6923,8 +6918,6 @@ public abstract class L2Character extends L2Object
 			stopEffects(L2EffectType.PHYSICAL_ATTACK_MUTE);
 		else
 			removeEffect(effect);
-		
-		setIsPhysicalAttackMuted(false);
 	}
 	public void disableCoreAI(boolean val)
 	{
@@ -6960,25 +6953,23 @@ public abstract class L2Character extends L2Object
 			}
 		}
 	}
-	
-	public boolean isRaidMinion()
-	{
-		return false;
-	}
-	
-	/**
-	 * Set this Npc as a Minion instance.<BR><BR>
-	 * @param val
-	 */
-	public void setIsRaidMinion(boolean val)
-	{
-	}
-	
+
 	/**
 	 * @return true
 	 */
 	public boolean giveRaidCurse()
 	{
 		return true;
+	}
+	
+	/**
+	 * Check if target is affected with special buff
+	 * @see CharEffectList#isAffected(int)
+	 * @param flag int
+	 * @return boolean
+	 */
+	public boolean isAffected(int flag)
+	{
+		return _effects.isAffected(flag);
 	}
 }

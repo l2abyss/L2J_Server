@@ -201,7 +201,7 @@ public class InstanceManager
 		public int instanceId;
 		public int templateId = -1;
 		public FastList<Integer> allowed = new FastList<Integer>();
-		public int status;
+		public volatile int status;
 	}
 	
 	public void addWorld(InstanceWorld world)

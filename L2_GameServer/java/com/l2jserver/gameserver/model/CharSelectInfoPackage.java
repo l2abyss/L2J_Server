@@ -242,7 +242,7 @@ public class CharSelectInfoPackage
 	{
 		if (_paperdoll[Inventory.PAPERDOLL_RHAND][2] > 0)
 			return _paperdoll[Inventory.PAPERDOLL_RHAND][2];
-		return _paperdoll[Inventory.PAPERDOLL_LRHAND][2];
+		return _paperdoll[Inventory.PAPERDOLL_RHAND][2];
 	}
 	public void setKarma(int k)
 	{

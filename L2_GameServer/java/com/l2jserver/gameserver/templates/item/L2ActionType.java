@@ -12,23 +12,38 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.actor.instance;
+package com.l2jserver.gameserver.templates.item;
 
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-
-public final class L2FlyMinionInstance extends L2MinionInstance
+/**
+ * @author nBd
+ *
+ */
+public enum L2ActionType
 {
-	
-	public L2FlyMinionInstance(int objectId, L2NpcTemplate template)
-	{
-		super(objectId, template);
-		setInstanceType(InstanceType.L2FlyMinionInstance);
-	}
-	
-	@Override
-	public void onSpawn()
-	{
-		this.setIsFlying(true);
-		super.onSpawn();
-	}
+	calc,
+	call_skill,
+	capsule,
+	create_mpcc,
+	dice,
+	equip,
+	fishingshot,
+	harvest,
+	hide_name,
+	keep_exp,
+	nick_color,
+	none,
+	peel,
+	recipe,
+	seed,
+	show_adventurer_guide_book,
+	show_html,
+	show_ssq_status,
+	skill_maintain,
+	skill_reduce,
+	soulshot,
+	spiritshot,
+	start_quest,
+	summon_soulshot,
+	summon_spiritshot,
+	xmas_open,
 }

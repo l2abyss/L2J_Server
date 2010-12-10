@@ -638,8 +638,8 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xc1: // RequestObserverEndPacket
 						msg = new ObserverReturn();
 						break;
-					case 0xc2: // VoteSociality
-						msg = new RequestEvaluate();
+					case 0xc2:
+						// Unused (RequestEvaluate/VoteSociality)
 						break;
 					case 0xc3: // RequestHennaItemList
 						msg = new RequestHennaDrawList();
@@ -654,7 +654,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						msg = new DlgAnswer();
 						break;
 					case 0xc7: // RequestPreviewItem
-						msg = new RequestWearItem();
+						msg = new RequestPreviewItem();
 						break;
 					case 0xc8:
 						msg = new RequestSSQStatus();
@@ -675,7 +675,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						msg = new RequestDeleteMacro();
 						break;
 					case 0xcf: // RequestProcureCrop
-						msg = new RequestBuyProcure();
+						//msg = new RequestBuyProcure();
 						break;
 						
 					case 0xd0:
@@ -1071,6 +1071,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								break;
 							case 0x7e:
 								// RequestVoteNew
+								msg = new RequestVoteNew();
 								break;
 							case 0x7f:
 								// RequestBRGamePoint

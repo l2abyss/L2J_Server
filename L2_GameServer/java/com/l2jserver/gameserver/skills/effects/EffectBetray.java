@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.skills.effects;
 
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -55,9 +56,6 @@ public class EffectBetray extends L2Effect
 		{
 			L2PcInstance targetOwner = getEffected().getActingPlayer();
 			getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, targetOwner);
-			getEffected().setIsBetrayed(true);
-			if (targetOwner != null)
-				targetOwner.setIsBetrayed(true);
 			return true;
 		}
 		return false;
@@ -70,11 +68,7 @@ public class EffectBetray extends L2Effect
 	@Override
 	public void onExit()
 	{
-		getEffected().setIsBetrayed(false);
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-		L2PcInstance targetOwner = getEffected().getActingPlayer();
-		if (targetOwner != null)
-			targetOwner.setIsBetrayed(false);
 	}
 	
 	/**
@@ -85,5 +79,14 @@ public class EffectBetray extends L2Effect
 	public boolean onActionTime()
 	{
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_BETRAYED;
 	}
 }

@@ -887,17 +887,15 @@ public class Base64
 			ois = new java.io.ObjectInputStream(bais);
 			
 			obj = ois.readObject();
-		} // end try
+		}
 		catch (java.io.IOException e)
 		{
 			e.printStackTrace();
-			obj = null;
-		} // end catch
+		}
 		catch (java.lang.ClassNotFoundException e)
 		{
 			e.printStackTrace();
-			obj = null;
-		} // end catch
+		}
 		finally
 		{
 			try

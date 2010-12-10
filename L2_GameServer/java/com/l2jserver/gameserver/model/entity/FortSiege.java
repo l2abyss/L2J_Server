@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
@@ -47,11 +46,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
-import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public class FortSiege implements Siegable
@@ -411,24 +407,7 @@ public class FortSiege implements Siegable
 						member.startFameTask(Config.FORTRESS_ZONE_FAME_TASK_FREQUENCY * 1000, Config.FORTRESS_ZONE_FAME_AQUIRE_POINTS);
 					}
 				}
-				member.sendPacket(new UserInfo(member));
-				member.sendPacket(new ExBrExtraUserInfo(member));
-				Collection<L2PcInstance> plrs = member.getKnownList().getKnownPlayers().values();
-				//synchronized (member.getKnownList().getKnownPlayers())
-				{
-					for (L2PcInstance player : plrs)
-					{
-						try
-						{
-							player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
-							if (member.getPet() != null)
-								player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
-						}
-						catch (NullPointerException e)
-						{
-						}
-					}
-				}
+				member.broadcastUserInfo();
 			}
 		}
 	}
@@ -862,8 +841,14 @@ public class FortSiege implements Siegable
 			b = false;
 			player.sendPacket(new SystemMessage(SystemMessageId.CANT_REGISTER_TO_SIEGE_DUE_TO_CONTRACT));
 		}
+		else if (getFort().getTimeTillRebelArmy() > 0 && getFort().getTimeTillRebelArmy() <= 7200)
+		{
+			b = false;
+			player.sendMessage("You cannot register for the fortress siege 2 hours prior to rebel army attack.");
+		}
 		else if (getFort().getSiege().getAttackerClans().isEmpty() && player.getInventory().getAdena() < 250000)
 		{
+			b = false;
 			player.sendMessage("You need 250,000 adena to register"); // replace me with html
 		}
 		else

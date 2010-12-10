@@ -656,12 +656,28 @@ public class LoginController
 					return false;
 				}
 				// Check IP
-				if (userIP != null && !address.getHostAddress().equalsIgnoreCase(userIP))
+				if (userIP != null)
 				{
-					if (Config.LOG_LOGIN_CONTROLLER)
-						Log.add("'" + user + "' " + address.getHostAddress() + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
+					if(!isValidIPAddress(userIP))
+					{
+						// Address is not valid so it's a domain name, get IP
+						try
+						{
+							InetAddress addr = InetAddress.getByName(userIP);
+							userIP = addr.getHostAddress();
+						}
+						catch(Exception e)
+						{
+							return false;
+						}
+					}
+					if(!address.getHostAddress().equalsIgnoreCase(userIP))
+					{
+						if (Config.LOG_LOGIN_CONTROLLER)
+							Log.add("'" + user + "' " + address.getHostAddress() + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
 					
-					return false;
+						return false;
+					}
 				}
 				// check password hash
 				ok = true;
@@ -772,7 +788,22 @@ public class LoginController
 		
 		return ok;
 	}
-	
+
+	public boolean isValidIPAddress(String  ipAddress)
+	{
+		String[] parts = ipAddress.split("\\.");
+		if (parts.length != 4)
+			return false;
+
+		for (String s : parts)
+		{
+			int i = Integer.parseInt(s);
+			if ((i < 0) || (i > 255))
+				return false;
+		}
+		return true;
+	}
+
 	class FailedLoginAttempt
 	{
 		//private InetAddress _ipAddress;

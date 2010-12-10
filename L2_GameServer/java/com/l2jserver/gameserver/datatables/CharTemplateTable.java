@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,23 +27,25 @@ import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 
 /**
- * This class ...
+ * 
+ * @author Unknown, Forsaiken
  *
- * @version $Revision: 1.6.2.1.2.10 $ $Date: 2005/03/29 14:00:54 $
  */
-public class CharTemplateTable
+public final class CharTemplateTable
 {
-	private static final Logger LOG = Logger.getLogger(CharTemplateTable.class.getName());
+	private static final Logger _log = Logger.getLogger(CharTemplateTable.class.getName());
 	
-	private final TIntObjectHashMap<L2PcTemplate> _templates = new TIntObjectHashMap<L2PcTemplate>();
-	
-	public static CharTemplateTable getInstance()
+	public static final CharTemplateTable getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
+	private final L2PcTemplate[] _templates;
+	
 	private CharTemplateTable()
 	{
+		_templates = new L2PcTemplate[ClassId.values().length];
+		
 		Connection con = null;
 		
 		try
@@ -56,6 +56,7 @@ public class CharTemplateTable
 					+ " ORDER BY class_list.id");
 			ResultSet rset = statement.executeQuery();
 			
+			int count = 0;
 			while (rset.next())
 			{
 				StatsSet set = new StatsSet();
@@ -105,17 +106,18 @@ public class CharTemplateTable
 				set.set("collision_height_female", rset.getDouble("f_col_h"));
 				ct = new L2PcTemplate(set);
 				
-				_templates.put(ct.classId.getId(), ct);
+				_templates[ct.classId.getId()] = ct;
+				++count;
 			}
 			
 			rset.close();
 			statement.close();
 			
-			LOG.info("CharTemplateTable: Loaded " + _templates.size() + " Character Templates.");
+			_log.info("CharTemplateTable: Loaded " + count + " Character Templates.");
 		}
 		catch (SQLException e)
 		{
-			LOG.log(Level.SEVERE, "Failed loading char templates", e);
+			_log.log(Level.SEVERE, "Failed loading char templates", e);
 		}
 		finally
 		{
@@ -141,33 +143,34 @@ public class CharTemplateTable
 				{
 					if (classId == -1)
 					{
-						for (Object pct : _templates.getValues())
+						for (L2PcTemplate pct : _templates)
 						{
-							((L2PcTemplate) pct).addItem(itemId, amount, equipped);
+							if (pct != null)
+								pct.addItem(itemId, amount, equipped);
 						}
 					}
 					else
 					{
-						L2PcTemplate pct = _templates.get(classId);
+						L2PcTemplate pct = _templates[classId];
 						if (pct != null)
 						{
 							pct.addItem(itemId, amount, equipped);
 						}
 						else
 						{
-							LOG.warning("char_creation_items: Entry for undefined class, classId: " + classId);
+							_log.warning("char_creation_items: Entry for undefined class, classId: " + classId);
 						}
 					}
 				}
 				else
 				{
-					LOG.warning("char_creation_items: No data for itemId: " + itemId + " defined for classId " + classId);
+					_log.warning("char_creation_items: No data for itemId: " + itemId + " defined for classId " + classId);
 				}
 			}
 		}
 		catch (SQLException e)
 		{
-			LOG.log(Level.SEVERE, "Failed loading char creation items.", e);
+			_log.log(Level.SEVERE, "Failed loading char creation items.", e);
 		}
 		finally
 		{
@@ -182,12 +185,12 @@ public class CharTemplateTable
 	
 	public L2PcTemplate getTemplate(int classId)
 	{
-		return _templates.get(classId);
+		return _templates[classId];
 	}
 	
 	public final String getClassNameById(int classId)
 	{
-		L2PcTemplate pcTemplate = _templates.get(classId);
+		L2PcTemplate pcTemplate = getTemplate(classId);
 		if (pcTemplate == null)
 		{
 			throw new IllegalArgumentException("No template for classId: " + classId);

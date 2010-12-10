@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2DecoyInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -60,7 +59,7 @@ public class L2SkillDecoy extends L2Skill
 		Decoy.setCurrentMp(Decoy.getMaxMp());
 		Decoy.setHeading(activeChar.getHeading());
 		activeChar.setDecoy(Decoy);
-		L2World.getInstance().storeObject(Decoy);
+		//L2World.getInstance().storeObject(Decoy);
 		Decoy.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 	}
 	

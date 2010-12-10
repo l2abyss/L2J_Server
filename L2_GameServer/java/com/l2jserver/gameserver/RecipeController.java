@@ -830,10 +830,20 @@ public class RecipeController
 				for (TempItem tmp : materials)
 				{
 					inv.destroyItemByItemId("Manufacture", tmp.getItemId(), tmp.getQuantity(), _target, _player);
-					sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-					sm.addItemName(tmp.getItemId());
-					sm.addItemNumber(tmp.getQuantity());
-					_target.sendPacket(sm);
+					
+					if (tmp.getQuantity() > 1)
+					{
+						sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+						sm.addItemName(tmp.getItemId());
+						sm.addItemNumber(tmp.getQuantity());
+						_target.sendPacket(sm);
+					}
+					else 
+					{
+						sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
+						sm.addItemName(tmp.getItemId());
+						_target.sendPacket(sm);
+					}
 				}
 			}
 			return materials;
@@ -857,7 +867,6 @@ public class RecipeController
 		{ // no object id stored, this will be only "list" of items with it's owner
 			private int _itemId;
 			private int _quantity;
-			private int _ownerId;
 			private int _referencePrice;
 			private String _itemName;
 			
@@ -870,7 +879,6 @@ public class RecipeController
 				super();
 				_itemId = item.getItemId();
 				_quantity = quantity;
-				_ownerId = item.getOwnerId();
 				_itemName = item.getItem().getName();
 				_referencePrice = item.getReferencePrice();
 			}
@@ -902,15 +910,6 @@ public class RecipeController
 			public int getItemId()
 			{
 				return _itemId;
-			}
-			
-			/**
-			 * @return Returns the ownerId.
-			 */
-			@SuppressWarnings("unused")
-			public int getOwnerId()
-			{
-				return _ownerId;
 			}
 			
 			/**

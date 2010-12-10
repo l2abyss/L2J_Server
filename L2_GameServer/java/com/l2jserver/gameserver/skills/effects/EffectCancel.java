@@ -14,16 +14,18 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import java.util.logging.Logger;
+
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.util.Rnd;
+import com.l2jserver.util.StringUtil;
 
 /**
  * 
@@ -32,6 +34,8 @@ import com.l2jserver.util.Rnd;
  */
 public class EffectCancel extends L2Effect
 {
+	protected static final Logger _log = Logger.getLogger(EffectCancel.class.getName());
+	
 	public EffectCancel(Env env, EffectTemplate template)
 	{
 		super(env, template);
@@ -54,7 +58,7 @@ public class EffectCancel extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		return cancel(getEffector(), getEffected(), getSkill(), getEffectTemplate().effectType);
+		return cancel(getEffector(), getEffected(), this);
 	}
 	
 	/**
@@ -67,46 +71,81 @@ public class EffectCancel extends L2Effect
 		return false;
 	}
 	
-	private static boolean cancel(L2Character caster, L2Character target, L2Skill skill, L2SkillType effectType)
+	private static boolean cancel(L2Character caster, L2Character target, L2Effect effect)
 	{
 		if (!(target instanceof L2PcInstance)|| target.isDead())
 			return false;
 		
-		final int cancelLvl = skill.getMagicLevel();
-		int count = skill.getMaxNegatedEffects();
-		double baseRate = Formulas.calcSkillTypeProficiency(skill.getPower(), caster, target, effectType);
-		baseRate += Formulas.calcSkillTypeVulnerability(baseRate, caster, effectType);
-		
-		L2Effect effect;
+		final int cancelLvl = effect.getSkill().getMagicLevel();
+		int count = effect.getSkill().getMaxNegatedEffects();
+
+		double rate = effect.getEffectPower();
+		final double vulnModifier = Formulas.calcSkillTypeVulnerability(0, target, effect.getSkillType());
+		final double profModifier = Formulas.calcSkillTypeProficiency(0, caster, target, effect.getSkillType());
+		double res = vulnModifier + profModifier;
+		double resMod = 1;
+		if (res != 0)
+		{
+			if (res < 0)
+			{
+				resMod = 1 - 0.075 * res;
+				resMod = 1 / resMod;
+			}
+			else
+				resMod = 1 + 0.02 * res;
+			
+			rate *= resMod;
+		}
+
+		if (caster.isDebug())
+		{
+			final StringBuilder stat = new StringBuilder(100);
+			StringUtil.append(stat,
+					effect.getSkill().getName(),
+					" power:", String.valueOf((int)effect.getEffectPower()),
+					" lvl:", String.valueOf(cancelLvl),
+					" res:", String.format("%1.2f", resMod), "(",
+					String.format("%1.2f", profModifier), "/",
+					String.format("%1.2f", vulnModifier),
+					") total:", String.valueOf(rate)
+			);
+			final String result = stat.toString();
+			if (caster.isDebug())
+				caster.sendDebugMessage(result);
+			if (Config.DEVELOPER)
+				_log.info(result);
+		}
+
+		L2Effect eff;
 		int lastCanceledSkillId = 0;
 		final L2Effect[] effects = target.getAllEffects();
 		for (int i = effects.length; --i >= 0;)
 		{
-			effect = effects[i];
-			if (effect == null)
+			eff = effects[i];
+			if (eff == null)
 				continue;
 			
-			if (!effect.canBeStolen())
+			if (!eff.canBeStolen())
 			{
 				effects[i] = null;
 				continue;
 			}
 			
 			// first pass - dances/songs only
-			if (!effect.getSkill().isDance())
+			if (!eff.getSkill().isDance())
 				continue;
 			
-			if (effect.getSkill().getId() == lastCanceledSkillId)
+			if (eff.getSkill().getId() == lastCanceledSkillId)
 			{
-				effect.exit(); // this skill already canceled
+				eff.exit(); // this skill already canceled
 				continue;
 			}
 			
-			if (!calcCancelSuccess(effect, cancelLvl, (int)baseRate))
+			if (!calcCancelSuccess(eff, cancelLvl, (int)rate))
 				continue;
 			
-			lastCanceledSkillId = effect.getSkill().getId();
-			effect.exit();
+			lastCanceledSkillId = eff.getSkill().getId();
+			eff.exit();
 			count--;
 			
 			if (count == 0)
@@ -118,25 +157,25 @@ public class EffectCancel extends L2Effect
 			lastCanceledSkillId = 0;
 			for (int i = effects.length; --i >= 0;)
 			{
-				effect = effects[i];
-				if (effect == null)
+				eff = effects[i];
+				if (eff == null)
 					continue;
 				
 				// second pass - all except dances/songs
-				if (effect.getSkill().isDance())
+				if (eff.getSkill().isDance())
 					continue;
 				
-				if (effect.getSkill().getId() == lastCanceledSkillId)
+				if (eff.getSkill().getId() == lastCanceledSkillId)
 				{
-					effect.exit(); // this skill already canceled
+					eff.exit(); // this skill already canceled
 					continue;
 				}
 				
-				if (!calcCancelSuccess(effect, cancelLvl, (int)baseRate))
+				if (!calcCancelSuccess(eff, cancelLvl, (int)rate))
 					continue;
 				
-				lastCanceledSkillId = effect.getSkill().getId();
-				effect.exit();
+				lastCanceledSkillId = eff.getSkill().getId();
+				eff.exit();
 				count--;
 				
 				if (count == 0)
@@ -149,7 +188,7 @@ public class EffectCancel extends L2Effect
 	private static boolean calcCancelSuccess(L2Effect effect, int cancelLvl, int baseRate)
 	{
 		int rate = 2 * (cancelLvl - effect.getSkill().getMagicLevel());
-		rate += (effect.getPeriod() - effect.getTime()) / 1200;
+		rate += effect.getPeriod()/120;
 		rate += baseRate;
 		
 		if (rate < 25)

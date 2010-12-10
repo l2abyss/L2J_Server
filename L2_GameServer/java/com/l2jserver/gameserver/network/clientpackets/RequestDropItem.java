@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GmListTable;
 import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -73,12 +74,13 @@ public final class RequestDropItem extends L2GameClientPacket
 				|| !activeChar.validateItemManipulation(_objectId, "drop")
 				|| (!Config.ALLOW_DISCARDITEM && !activeChar.isGM())
 				|| (!item.isDropable() && !(activeChar.isGM() && Config.GM_TRADE_RESTRICTED_ITEMS))
-				|| (item.getItemType() == L2EtcItemType.PET_COLLAR && activeChar.havePetInvItems()))
+				|| (item.getItemType() == L2EtcItemType.PET_COLLAR && activeChar.havePetInvItems())
+				|| activeChar.isInsideZone(L2Character.ZONE_NOITEMDROP))
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 			return;
 		}
-		if (item.getItemType() == L2EtcItemType.QUEST && !(activeChar.isGM() && Config.GM_TRADE_RESTRICTED_ITEMS))
+		if (item.isQuestItem() && !(activeChar.isGM() && Config.GM_TRADE_RESTRICTED_ITEMS))
 		{
 			return;
 		}

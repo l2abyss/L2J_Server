@@ -49,6 +49,9 @@ public final class RequestExEnchantSkillInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
+		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
+			return;
+
 		L2PcInstance activeChar = getClient().getActiveChar();
 		
 		if (activeChar == null)

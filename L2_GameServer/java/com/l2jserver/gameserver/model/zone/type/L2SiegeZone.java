@@ -142,7 +142,7 @@ public class L2SiegeZone extends L2ZoneType
 				else
 				{
 					int slot = activeChar.getInventory().getSlotFromItem(activeChar.getInventory().getItemByItemId(9819));
-					activeChar.getInventory().unEquipItemInBodySlotAndRecord(slot);
+					activeChar.getInventory().unEquipItemInBodySlot(slot);
 					activeChar.destroyItem("CombatFlag", activeChar.getInventory().getItemByItemId(9819), null, true);
 				}
 			}

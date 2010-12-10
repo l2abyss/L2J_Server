@@ -48,7 +48,6 @@ public class GrandBossManager
 	/* =========================================================
 	 * This class handles all Grand Bosses:
 	 * <ul>
-	 * <li>22215-22217  Tyrannosaurus</li>
 	 * <li>25333-25338  Anakazel</li>
 	 * <li>29001        Queen Ant</li>
 	 * <li>29006        Core</li>
@@ -273,7 +272,7 @@ public class GrandBossManager
 		if (temp == null)
 			return false;
 		
-		return temp.getZoneName().equalsIgnoreCase(zoneType);
+		return temp.getName().equalsIgnoreCase(zoneType);
 	}
 	
 	public boolean checkIfInZone(L2PcInstance player)

@@ -1693,7 +1693,7 @@ public class L2Npc extends L2Character
 	@Override
 	public boolean isMovementDisabled()
 	{
-		return super.isMovementDisabled() || getCanMove() > 0 || getAiType().equals(AIType.CORPSE);
+		return super.isMovementDisabled() || getCanMove() == 0 || getAiType().equals(AIType.CORPSE);
 	}
 	
 	public AIType getAiType()
@@ -1714,5 +1714,10 @@ public class L2Npc extends L2Character
 	public int getDisplayEffect()
 	{
 		return _displayEffect;
+	}
+	
+	public int getColorEffect()
+	{
+		return 0;
 	}
 }

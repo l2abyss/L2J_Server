@@ -416,7 +416,7 @@ public class SQLAccountManager
 				
 				// recommends
 				statement.close();
-				statement = con.prepareStatement("DELETE FROM character_recommends WHERE charId=?;");
+				statement = con.prepareStatement("DELETE FROM character_reco_bonus WHERE charId=?;");
 				statement.setString(1, objIds.get(index));
 				statement.executeUpdate();
 				

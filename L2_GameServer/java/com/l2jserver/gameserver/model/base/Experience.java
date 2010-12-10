@@ -116,6 +116,7 @@ public class Experience
 	 *   ex: If you want a max at 85 & 100.00%, you have to put 86.<BR><BR>
 	 */
 	public final static byte MAX_LEVEL = 86;
+	public final static byte PET_MAX_LEVEL = 87;
 	
 	public final static byte MIN_NEWBIE_LEVEL = 6;
 	public final static byte MAX_NEWBIE_LEVEL = 39;

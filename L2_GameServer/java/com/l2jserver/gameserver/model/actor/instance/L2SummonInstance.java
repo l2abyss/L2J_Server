@@ -188,7 +188,7 @@ public class L2SummonInstance extends L2Summon
 		
 		if (_summonLifeTask != null)
 		{
-			_summonLifeTask.cancel(true);
+			_summonLifeTask.cancel(false);
 			_summonLifeTask = null;
 		}
 		return true;
@@ -295,7 +295,7 @@ public class L2SummonInstance extends L2Summon
 		
 		if (_summonLifeTask != null)
 		{
-			_summonLifeTask.cancel(true);
+			_summonLifeTask.cancel(false);
 			_summonLifeTask = null;
 		}
 		

@@ -241,7 +241,7 @@ public final class L2TeleporterInstance extends L2Npc
 			}
 			else if (player.isCombatFlagEquipped())
 			{
-				player.sendMessage("You can't port with a Combat Flag or Territory Ward!");
+				player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD));
 				return;
 			}
 			else if (list.getIsForNoble() && !player.isNoble())

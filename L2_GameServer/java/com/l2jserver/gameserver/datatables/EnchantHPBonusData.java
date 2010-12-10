@@ -43,8 +43,8 @@ public class EnchantHPBonusData
 {
 	protected static final Logger _log = Logger.getLogger(EnchantHPBonusData.class.getName());
 	
-	private final TIntObjectHashMap<Integer[]> _singleArmorHPBonus = new TIntObjectHashMap<Integer[]>();
-	private final TIntObjectHashMap<Integer[]> _fullArmorHPBonus = new TIntObjectHashMap<Integer[]>();
+	private final TIntObjectHashMap<Integer[]> _armorHPBonus = new TIntObjectHashMap<Integer[]>();
+	private static final float fullArmorModifier = 1.5f;
 	
 	public static final EnchantHPBonusData getInstance()
 	{
@@ -63,8 +63,7 @@ public class EnchantHPBonusData
 	
 	private void load()
 	{
-		_singleArmorHPBonus.clear();
-		_fullArmorHPBonus.clear();
+		_armorHPBonus.clear();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
@@ -77,7 +76,7 @@ public class EnchantHPBonusData
 			{
 				doc = factory.newDocumentBuilder().parse(file);
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Could not parse enchantHPBonus.xml file: " + e.getMessage(), e);
 			}
@@ -93,7 +92,6 @@ public class EnchantHPBonusData
 							NamedNodeMap attrs = d.getAttributes();
 							Node att;
 							Integer grade;
-							boolean fullArmor;
 							
 							att = attrs.getNamedItem("grade");
 							if (att == null)
@@ -103,53 +101,42 @@ public class EnchantHPBonusData
 							}
 							grade = Integer.parseInt(att.getNodeValue());
 							
-							att = attrs.getNamedItem("fullArmor");
-							if (att == null)
-							{
-								_log.severe("[EnchantHPBonusData] Missing fullArmor, skipping");
-								continue;
-							}
-							fullArmor = Boolean.valueOf(att.getNodeValue());
-							
 							att = attrs.getNamedItem("values");
 							if (att == null)
 							{
-								_log.severe("[EnchantHPBonusData] Missing bonus id: "+grade+", skipping");
+								_log.severe("[EnchantHPBonusData] Missing bonus id: " + grade + ", skipping");
 								continue;
 							}
 							StringTokenizer st = new StringTokenizer(att.getNodeValue(), ",");
 							int tokenCount = st.countTokens();
 							Integer[] bonus = new Integer[tokenCount];
-							for (int i=0; i<tokenCount; i++)
+							for (int i = 0; i < tokenCount; i++)
 							{
 								Integer value = Integer.decode(st.nextToken().trim());
 								if (value == null)
 								{
-									_log.severe("[EnchantHPBonusData] Bad Hp value!! grade: "+grade + " FullArmor? "+ fullArmor + " token: "+ i);
+									_log.severe("[EnchantHPBonusData] Bad Hp value!! grade: " + grade + " token: " + i);
 									value = 0;
 								}
 								bonus[i] = value;
 							}
-							if (fullArmor)
-								_fullArmorHPBonus.put(grade, bonus);
-							else
-								_singleArmorHPBonus.put(grade, bonus);
+							_armorHPBonus.put(grade, bonus);
 						}
 					}
 				}
 			}
-			if (_fullArmorHPBonus.isEmpty() && _singleArmorHPBonus.isEmpty())
+			if (_armorHPBonus.isEmpty())
 				return;
 			
 			Collection<Integer> itemIds = ItemTable.getInstance().getAllArmorsId();
 			int count = 0;
 			
-			for (Integer itemId: itemIds)
+			for (Integer itemId : itemIds)
 			{
 				L2Item item = ItemTable.getInstance().getTemplate(itemId);
 				if (item != null && item.getCrystalType() != L2Item.CRYSTAL_NONE)
 				{
-					switch(item.getBodyPart())
+					switch (item.getBodyPart())
 					{
 						case L2Item.SLOT_CHEST:
 						case L2Item.SLOT_FEET:
@@ -170,12 +157,12 @@ public class EnchantHPBonusData
 			
 			// shields in the weapons table
 			itemIds = ItemTable.getInstance().getAllWeaponsId();
-			for (Integer itemId: itemIds)
+			for (Integer itemId : itemIds)
 			{
 				L2Item item = ItemTable.getInstance().getTemplate(itemId);
 				if (item != null && item.getCrystalType() != L2Item.CRYSTAL_NONE)
 				{
-					switch(item.getBodyPart())
+					switch (item.getBodyPart())
 					{
 						case L2Item.SLOT_L_HAND:
 							count++;
@@ -191,17 +178,15 @@ public class EnchantHPBonusData
 	
 	public final int getHPBonus(L2ItemInstance item)
 	{
-		final Integer[] values;
-		
-		if (item.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)
-			values = _fullArmorHPBonus.get(item.getItem().getItemGradeSPlus());
-		else
-			values = _singleArmorHPBonus.get(item.getItem().getItemGradeSPlus());
+		final Integer[] values = _armorHPBonus.get(item.getItem().getItemGradeSPlus());
 		
 		if (values == null || values.length == 0)
 			return 0;
 		
-		return values[Math.min(item.getEnchantLevel(), values.length) - 1];
+		if (item.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)
+			return (int) (values[Math.min(item.getEnchantLevel(), values.length) - 1] * fullArmorModifier);
+		else
+			return values[Math.min(item.getEnchantLevel(), values.length) - 1];
 	}
 	
 	@SuppressWarnings("synthetic-access")

@@ -104,4 +104,27 @@ public class PetInventory extends Inventory
 	{
 		return ItemLocation.PET_EQUIP;
 	}
+	
+	@Override
+	public void restore()
+	{
+		super.restore();
+		// check for equiped items from other pets
+		for (L2ItemInstance item : _items)
+			if (item.isEquipped())
+			{
+				if (!item.getItem().checkCondition(getOwner(), getOwner(), false))
+				{
+					unEquipItemInSlot(item.getLocationSlot());
+				}
+			}
+	}
+	
+	public void transferItemsToOwner()
+	{
+		for (L2ItemInstance item : _items)
+		{
+			getOwner().transferItem("return", item.getObjectId(), item.getCount(), getOwner().getOwner().getInventory(), getOwner().getOwner(), getOwner());
+		}
+	}
 }

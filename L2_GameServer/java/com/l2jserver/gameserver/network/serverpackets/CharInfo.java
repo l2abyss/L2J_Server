@@ -261,8 +261,8 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_CHEST));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_LEGS));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_FEET));
-			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_BACK));
-			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_LRHAND));
+			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_CLOAK));
+			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_RHAND));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_HAIR));
 			writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_HAIR2));
 			// T1 new d's
@@ -294,8 +294,8 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_CHEST));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LEGS));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_FEET));
-			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_BACK));
-			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LRHAND));
+			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_CLOAK));
+			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HAIR));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HAIR2));
 			// T1 new h's

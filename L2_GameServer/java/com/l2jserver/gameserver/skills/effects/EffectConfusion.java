@@ -20,6 +20,7 @@ import java.util.List;
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -106,5 +107,14 @@ public class EffectConfusion extends L2Effect
 		getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
 		
 		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_CONFUSED;
 	}
 }

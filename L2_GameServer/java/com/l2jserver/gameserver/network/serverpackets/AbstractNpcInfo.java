@@ -192,7 +192,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_enchantEffect); // C4
 			writeD(_npc.isFlying() ? 1 : 0); // C6
 			writeD(0x00);
-			writeD(0x00);// CT1.5 Pet form and skills
+			writeD(_npc.getColorEffect());// CT1.5 Pet form and skills, Color effect
 			writeC(_npc.isHideName() ? 0x00 : 0x01);
 			writeC(_npc.isHideName() ? 0x00 : 0x01);
 			writeD(_npc.getSpecialEffect());
@@ -334,10 +334,6 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_collisionHeight = cha.getTemplate().fCollisionHeight;
 			_collisionRadius = cha.getTemplate().fCollisionRadius;
 			_invisible = cha.getOwner() != null ? cha.getOwner().getAppearance().getInvisible() : false;
-			
-			// few fields needing fix from AbstractNpcInfo
-			_runSpd = cha.getPetSpeed();
-			_walkSpd = cha.isMountable() ? 45 : 30;
 		}
 		
 		@Override

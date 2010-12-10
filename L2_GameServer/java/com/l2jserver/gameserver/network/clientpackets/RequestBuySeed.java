@@ -22,15 +22,12 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.SeedProduction;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2ManorManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
@@ -157,43 +154,37 @@ public class RequestBuySeed extends L2GameClientPacket
 			return;
 		}
 		
-		// Charge buyer
-		if ((totalPrice < 0) || !player.reduceAdena("Buy", totalPrice, manager, false))
+		// test adena
+		if (totalPrice < 0 || player.getAdena() < totalPrice)
 		{
 			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			return;
 		}
 		
-		// Adding to treasury for Manor Castle
-		castle.addToTreasuryNoTax(totalPrice);
 		
 		// Proceed the purchase
-		InventoryUpdate playerIU = new InventoryUpdate();
 		for (Seed i : _seeds)
 		{
-			i.updateProduction(castle);
+			// take adena and check seed amount once again
+			if (!player.reduceAdena("Buy", i.getPrice(), player, false) || !i.updateProduction(castle))
+			{
+				// failed buy, reduce total price
+				totalPrice -= i.getPrice();
+				continue;
+			}
 			
 			// Add item to Inventory and adjust update packet
-			L2ItemInstance item = player.getInventory().addItem("Buy", i.getSeedId(), i.getCount(), player, manager);
-			
-			if (item.getCount() > i.getCount())
-				playerIU.addModifiedItem(item);
-			else
-				playerIU.addNewItem(item);
-			
-			// Send Char Buy Messages
-			SystemMessage sm = null;
-			sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-			sm.addItemName(item);
-			sm.addItemNumber(i.getCount());
+			player.addItem("Buy", i.getSeedId(), i.getCount(), manager, true);
+		}
+		
+		// Adding to treasury for Manor Castle
+		if (totalPrice > 0)
+		{
+			castle.addToTreasuryNoTax(totalPrice);
+			SystemMessage sm = new SystemMessage(SystemMessageId.DISAPPEARED_ADENA);
+			sm.addItemNumber(totalPrice);
 			player.sendPacket(sm);
 		}
-		// Send update packets
-		player.sendPacket(playerIU);
-		
-		StatusUpdate su = new StatusUpdate(player);
-		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
-		player.sendPacket(su);
 	}
 	
 	private static class Seed
@@ -239,12 +230,19 @@ public class RequestBuySeed extends L2GameClientPacket
 			return true;
 		}
 		
-		public void updateProduction(Castle c)
+		public boolean updateProduction(Castle c)
 		{
-			_seed.setCanProduce(_seed.getCanProduce() - _count);
+			synchronized(_seed)
+			{
+				long amount = _seed.getCanProduce();
+				if (_count > amount)
+					return false; // not enough seeds
+				_seed.setCanProduce(amount - _count);
+			}
 			// Update Castle Seeds Amount
 			if (Config.ALT_MANOR_SAVE_ALL_ACTIONS)
 				c.updateSeed(_seedId, _seed.getCanProduce(), CastleManorManager.PERIOD_CURRENT);
+			return true;
 		}
 	}
 	

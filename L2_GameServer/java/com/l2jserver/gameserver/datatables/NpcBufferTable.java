@@ -33,7 +33,6 @@ public class NpcBufferTable
 	
 	private static class NpcBufferSkills
 	{
-		private int _npcId = 0;
 		private TIntIntHashMap _skillId = new TIntIntHashMap();
 		private TIntIntHashMap _skillLevels = new TIntIntHashMap();
 		private TIntIntHashMap _skillFeeIds = new TIntIntHashMap();
@@ -41,7 +40,6 @@ public class NpcBufferTable
 		
 		public NpcBufferSkills(int npcId)
 		{
-			_npcId = npcId;
 		}
 		
 		public void addSkill(int skillId, int skillLevel, int skillFeeId, int skillFeeAmount,
@@ -65,12 +63,6 @@ public class NpcBufferTable
 				return null;
 			
 			return new int[] { skillId, skillLevel, skillFeeId, skillFeeAmount };
-		}
-		
-		@SuppressWarnings("unused")
-		public int getNpcId()
-		{
-			return _npcId;
 		}
 	}
 	

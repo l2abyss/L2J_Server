@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Trap;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -92,7 +91,7 @@ public class L2SkillTrap extends L2SkillSummon
 		trap.setIsInvul(true);
 		trap.setHeading(activeChar.getHeading());
 		activeChar.setTrap(trap);
-		L2World.getInstance().storeObject(trap);
+		//L2World.getInstance().storeObject(trap);
 		trap.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 	}
 }

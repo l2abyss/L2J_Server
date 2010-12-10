@@ -1109,7 +1109,7 @@ public class Castle
 			_procureNext = crop;
 	}
 	
-	public synchronized SeedProduction getSeed(int seedId, int period)
+	public SeedProduction getSeed(int seedId, int period)
 	{
 		for (SeedProduction seed : getSeedProduction(period))
 		{
@@ -1121,7 +1121,7 @@ public class Castle
 		return null;
 	}
 	
-	public synchronized CropProcure getCrop(int cropId, int period)
+	public CropProcure getCrop(int cropId, int period)
 	{
 		for (CropProcure crop : getCropProcure(period))
 		{

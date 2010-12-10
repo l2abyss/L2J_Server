@@ -71,12 +71,14 @@ public class AdminCommandAccessRights
 			ResultSet rset = stmt.executeQuery();
 			String adminCommand = null;
 			String accessLevels = null;
+			boolean confirm = false;
 			
 			while (rset.next())
 			{
 				adminCommand = rset.getString("adminCommand");
 				accessLevels = rset.getString("accessLevels");
-				_adminCommandAccessRights.put(adminCommand, new L2AdminCommandAccessRight(adminCommand, accessLevels));
+				confirm = rset.getBoolean("confirmDlg");
+				_adminCommandAccessRights.put(adminCommand, new L2AdminCommandAccessRight(adminCommand, accessLevels, confirm));
 			}
 			rset.close();
 			stmt.close();
@@ -107,6 +109,17 @@ public class AdminCommandAccessRights
 		}
 		
 		return acar.hasAccess(accessLevel);
+	}
+	
+	public boolean requireConfirm(String command)
+	{
+		L2AdminCommandAccessRight acar = _adminCommandAccessRights.get(command);
+		if (acar == null)
+		{
+			_log.info("AdminCommandAccessRights: No rights defined for admin command " + command + ".");
+			return false;
+		}
+		return _adminCommandAccessRights.get(command).getRequireConfirm();
 	}
 	
 	public void reloadAdminCommandAccessRights()

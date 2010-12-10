@@ -32,7 +32,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -107,7 +107,6 @@ import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
@@ -382,44 +381,6 @@ abstract class DocumentBase
 				((L2Skill) template).attachSelf(lt);
 			else
 				((L2Skill) template).attach(lt);
-		}
-	}
-	
-	protected void attachSkill(Node n, Object template, Condition attachCond)
-	{
-		NamedNodeMap attrs = n.getAttributes();
-		int id = 0, lvl = 1;
-		if (attrs.getNamedItem("id") != null)
-		{
-			id = Integer.decode(getValue(attrs.getNamedItem("id").getNodeValue(), template));
-		}
-		if (attrs.getNamedItem("lvl") != null)
-		{
-			lvl = Integer.decode(getValue(attrs.getNamedItem("lvl").getNodeValue(), template));
-		}
-		L2Skill skill = SkillTable.getInstance().getInfo(id, lvl);
-		if (attrs.getNamedItem("chance") != null)
-		{
-			if (template instanceof L2Weapon || template instanceof L2Item)
-			{
-				skill.attach(new ConditionGameChance(Integer.decode(getValue(attrs.getNamedItem("chance").getNodeValue(), template))), true);
-			}
-			else
-			{
-				skill.attach(new ConditionGameChance(Integer.decode(getValue(attrs.getNamedItem("chance").getNodeValue(), template))), false);
-			}
-		}
-		if (template instanceof L2Weapon)
-		{
-			if (attrs.getNamedItem("onUse") != null
-					|| (attrs.getNamedItem("onCrit") == null && attrs.getNamedItem("onCast") == null))
-				((L2Weapon) template).attach(skill); // Attach as skill triggered on use
-			//if (attrs.getNamedItem("onCrit") != null) ((L2Weapon) template).attachOnCrit(skill); // Attach as skill triggered on critical hit
-			//if (attrs.getNamedItem("onCast") != null) ((L2Weapon) template).attachOnCast(skill); // Attach as skill triggered on cast
-		}
-		else if (template instanceof L2Item)
-		{
-			((L2Item) template).attach(skill); // Attach as skill triggered on use
 		}
 	}
 	
@@ -910,23 +871,16 @@ abstract class DocumentBase
 				StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
 				while (st.hasMoreTokens())
 				{
+					int old = mask;
 					String item = st.nextToken().trim();
-					for (L2WeaponType wt : L2WeaponType.values())
-					{
-						if (wt.toString().equals(item))
-						{
-							mask |= wt.mask();
-							break;
-						}
-					}
-					for (L2ArmorType at : L2ArmorType.values())
-					{
-						if (at.toString().equals(item))
-						{
-							mask |= at.mask();
-							break;
-						}
-					}
+					if (ItemTable._weaponTypes.containsKey(item))
+						mask |= ItemTable._weaponTypes.get(item).mask();
+					
+					if (ItemTable._armorTypes.containsKey(item))
+						mask |= ItemTable._armorTypes.get(item).mask();
+					
+					if (old == mask)
+						_log.info("[parseUsingCondition=\"kind\"] Unknown item type name: "+item);
 				}
 				cond = joinAnd(cond, new ConditionUsingItemType(mask));
 			}

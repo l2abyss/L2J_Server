@@ -53,7 +53,6 @@ import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.Shutdown;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.datatables.ExtractableItemsData;
 import com.l2jserver.gameserver.datatables.ExtractableSkillsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.MultiSell;
@@ -563,7 +562,7 @@ public class GameStatusThread extends Thread
 								itemType = Inventory.PAPERDOLL_UNDER;
 								break;
 							case 14:
-								itemType = Inventory.PAPERDOLL_BACK;
+								itemType = Inventory.PAPERDOLL_CLOAK;
 								break;
 							case 15:
 								itemType = Inventory.PAPERDOLL_BELT;
@@ -814,7 +813,6 @@ public class GameStatusThread extends Thread
 						else if(type.equals("extractables"))
 						{
 							_print.print("Reloading extractable items and skills... ");
-							ExtractableItemsData.getInstance().reload();
 							ExtractableSkillsData.getInstance().reload();
 							_print.print("done\n");
 						}
@@ -976,8 +974,8 @@ public class GameStatusThread extends Thread
 		} else
 		{
 			// for bows/crossbows and double handed weapons
-			parmorInstance = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
-			if (parmorInstance != null && parmorInstance.getLocationSlot() == Inventory.PAPERDOLL_LRHAND)
+			parmorInstance = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+			if (parmorInstance != null && parmorInstance.getLocationSlot() == Inventory.PAPERDOLL_RHAND)
 				itemInstance = parmorInstance;
 		}
 		
@@ -986,9 +984,9 @@ public class GameStatusThread extends Thread
 			curEnchant = itemInstance.getEnchantLevel();
 			
 			// set enchant value
-			activeChar.getInventory().unEquipItemInSlotAndRecord(armorType);
+			activeChar.getInventory().unEquipItemInSlot(armorType);
 			itemInstance.setEnchantLevel(ench);
-			activeChar.getInventory().equipItemAndRecord(itemInstance);
+			activeChar.getInventory().equipItem(itemInstance);
 			
 			// send packets
 			InventoryUpdate iu = new InventoryUpdate();
@@ -1149,8 +1147,11 @@ public class GameStatusThread extends Thread
 				else if (obj instanceof L2MonsterInstance)
 				{
 					monsterCount++;
-					minionCount += ((L2MonsterInstance)obj).getTotalSpawnedMinionsInstances();
-					minionsGroupCount += ((L2MonsterInstance)obj).getTotalSpawnedMinionsGroups();
+					if (((L2MonsterInstance)obj).hasMinions())
+					{
+						minionCount += ((L2MonsterInstance)obj).getMinionList().countSpawnedMinions();
+						minionsGroupCount += ((L2MonsterInstance)obj).getMinionList().lazyCountSpawnedMinionsGroups();
+					}
 				}
 				else if (obj instanceof L2Npc)
 					npcCount++;

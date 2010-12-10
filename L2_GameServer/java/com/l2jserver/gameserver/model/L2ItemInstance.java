@@ -50,6 +50,7 @@ import com.l2jserver.gameserver.templates.item.L2Armor;
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.templates.item.L2ItemType;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.util.GMAudit;
 
@@ -461,7 +462,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public boolean isEquipable()
 	{
-		return !(_item.getBodyPart() == 0 || _item instanceof L2EtcItem );
+		return !(_item.getBodyPart() == 0 || _item.getItemType() == L2EtcItemType.ARROW || _item.getItemType() == L2EtcItemType.BOLT || _item.getItemType() == L2EtcItemType.LURE );
 	}
 	
 	/**
@@ -516,22 +517,11 @@ public final class L2ItemInstance extends L2Object
 	{
 		return _dropTime;
 	}
-	
-	public boolean isWear()
-	{
-		return _wear;
-	}
-	
-	public void setWear(boolean newwear)
-	{
-		_wear=newwear;
-	}
 	/**
 	 * Returns the type of item
 	 * @return Enum
 	 */
-	@SuppressWarnings({ "rawtypes" })
-	public Enum getItemType()
+	public L2ItemType getItemType()
 	{
 		return _item.getItemType();
 	}
@@ -795,16 +785,6 @@ public final class L2ItemInstance extends L2Object
 		_storedInDb = false;
 	}
 	
-	/**
-	 * Returns the physical defense of the item
-	 * @return int
-	 */
-	public int getPDef()
-	{
-		if (_item instanceof L2Armor)
-			return ((L2Armor)_item).getPDef();
-		return 0;
-	}
 	
 	/**
 	 * Returns whether this item is augmented or not
@@ -1403,12 +1383,8 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public void updateDatabase(boolean force)
 	{
-		if (isWear()) //avoid saving weared items
-		{
-			return;
-		}
-		
 		_dbLock.lock();
+		
 		try
 		{
 			if (_existsInDb)

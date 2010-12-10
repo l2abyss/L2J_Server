@@ -17,8 +17,12 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
+import com.l2jserver.gameserver.handler.AdminCommandHandler;
+import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.util.GMAudit;
 
 
 /**
@@ -56,8 +60,29 @@ public final class DlgAnswer extends L2GameClientPacket
 			activeChar.reviveAnswer(_answer);
 		else if (_messageId==SystemMessageId.C1_WISHES_TO_SUMMON_YOU_FROM_S2_DO_YOU_ACCEPT.getId())
 			activeChar.teleportAnswer(_answer, _requesterId);
-		else if (_messageId == SystemMessageId.S1.getId() && Config.L2JMOD_ALLOW_WEDDING)
-			activeChar.engageAnswer(_answer);
+		else if (_messageId == SystemMessageId.S1.getId())
+		{
+			String _command = activeChar.getAdminConfirmCmd();
+			if (_command == null)
+			{
+				if (Config.L2JMOD_ALLOW_WEDDING)
+					activeChar.engageAnswer(_answer);
+			}
+			else
+			{
+				activeChar.setAdminConfirmCmd(null);
+				if (_answer == 0)
+					return;
+				String command = _command.split(" ")[0];
+				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(command);
+				if (AdminCommandAccessRights.getInstance().hasAccess(command, activeChar.getAccessLevel()))
+				{
+					if (Config.GMAUDIT)
+						GMAudit.auditGMAction(activeChar.getName()+" ["+activeChar.getObjectId()+"]", _command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"));
+					ach.useAdminCommand(_command, activeChar);
+				}
+			}
+		}
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_OPEN_THE_GATE.getId())
 			activeChar.gatesAnswer(_answer, 1);
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_CLOSE_THE_GATE.getId())

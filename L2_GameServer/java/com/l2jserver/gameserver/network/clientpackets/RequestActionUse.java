@@ -21,7 +21,8 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2SummonAI;
-import com.l2jserver.gameserver.datatables.PetSkillsTable;
+import com.l2jserver.gameserver.datatables.PetDataTable;
+import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -32,6 +33,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.actor.instance.L2BabyPetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
@@ -258,8 +260,10 @@ public final class RequestActionUse extends L2GameClientPacket
 						{
 							if (!pet.isHungry())
 								pet.unSummon(activeChar);
-							else
+							else if (((L2PetInstance) pet).getPetData().getFood().length > 0)
 								activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_RESTORE_HUNGRY_PETS));
+							else
+								activeChar.sendPacket(new SystemMessage(SystemMessageId.THE_HELPER_PET_CANNOT_BE_RETURNED));
 						}
 					}
 				}
@@ -405,13 +409,13 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 71:
 			case 72:
 			case 73:
-				useCoupleSocial(_actionId-55);
+				useCoupleSocial(_actionId - 55);
 				break;
 			case 1000: // Siege Golem - Siege Hammer
 				if (target instanceof L2DoorInstance)
 					useSkill(4079);
 				break;
-			case 1001: // Sin Eater - Ultimate Bombastic Buster
+			case 1001: // TODO Sin Eater - Ultimate Bombastic Buster
 				break;
 			case 1003: // Wind Hatchling/Strider - Wild Stun
 				useSkill(4710);
@@ -550,37 +554,37 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1060: //Nightshade - Guidance
 				useSkill(5654);
 				break;
-			case 1061: // Death blow
+			case 1061: // Wild Beast Fighter, White Weasel - Death blow
 				useSkill(5745);
 				break;
-			case 1062: // Double attack
+			case 1062: // Wild Beast Fighter - Double attack
 				useSkill(5746);
 				break;
-			case 1063: // Spin attack
+			case 1063: // Wild Beast Fighter - Spin attack
 				useSkill(5747);
 				break;
-			case 1064: // Meteor Shower
+			case 1064: // Wild Beast Fighter - Meteor Shower
 				useSkill(5748);
 				break;
-			case 1065: // Awakening
+			case 1065: // Fox Shaman, Wild Beast Fighter, White Weasel, Fairy Princess - Awakening
 				useSkill(5753);
 				break;
-			case 1066: // Thunder Bolt
+			case 1066: // Fox Shaman, Spirit Shaman - Thunder Bolt
 				useSkill(5749);
 				break;
-			case 1067: // Flash
+			case 1067: // Fox Shaman, Spirit Shaman - Flash
 				useSkill(5750);
 				break;
-			case 1068: // Lightning Wave
+			case 1068: // Fox Shaman, Spirit Shaman - Lightning Wave
 				useSkill(5751);
 				break;
-			case 1069: // Flare
+			case 1069: // Fox Shaman, Fairy Princess - Flare
 				useSkill(5752);
 				break;
-			case 1070: // Buff control
+			case 1070: // White Weasel, Fairy Princess, Improved Baby Buffalo, Improved Baby Kookaburra, Improved Baby Cougar, Spirit Shaman, Toy Knight, Turtle Ascetic - Buff control
 				useSkill(5771);
 				break;
-			case 1071: // Power Strike
+			case 1071: // Tigress - Power Strike
 				useSkill(5761);
 				break;
 			case 1072: // Toy Knight - Piercing attack
@@ -620,7 +624,9 @@ public final class RequestActionUse extends L2GameClientPacket
 				useSkill(6044);
 				break;
 			case 1084: // Switch State
-				useSkill(6054);
+				//useSkill(6054);
+				if (pet != null && pet instanceof L2BabyPetInstance)
+					((L2BabyPetInstance)pet).switchMode();
 				break;
 			case 1086: // Panther Cancel
 				useSkill(6094);
@@ -631,11 +637,11 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1088: // Panther Fatal Claw
 				useSkill(6096);
 				break;
-			case 1089: // TODO Deinonychus - Tail Strike
+			case 1089: // Deinonychus - Tail Strike
+				useSkill(6199);
 				break;
 			case 1090: // Guardian's Strider - Strider Bite
-				if(activeChar.isRidingStrider())
-					useSkill(6205);
+				useSkill(6205);
 				break;
 			case 1091: // Guardian's Strider - Strider Fear
 				useSkill(6206);
@@ -643,7 +649,71 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 1092: // Guardian's Strider - Strider Dash
 				useSkill(6207);
 				break;
-			case 5000: // TODO Baby Rudolph - Reindeer Scratch
+			case 1093: // Maguen - Maguen Strike
+				useSkill(6618);
+				break;
+			case 1094: // Maguen - Maguen Wind Walk
+				useSkill(6681);
+				break;
+			case 1095: // Elite Maguen - Maguen Power Strike
+				useSkill(6619);
+				break;
+			case 1096: // Elite Maguen - Elite Maguen Wind Walk
+				useSkill(6682);
+				break;
+			case 1097: // Maguen - Maguen Return
+				useSkill(6683);
+				break;
+			case 1098: // Elite Maguen - Maguen Party Return
+				useSkill(6684);
+				break;
+			case 5000: // Baby Rudolph - Reindeer Scratch
+				useSkill(23155);
+				break;
+			case 5001: // Deseloph, Hyum, Rekang, Lilias, Lapham, Mafum - Rosy Seduction
+				useSkill(23167);
+				break;
+			case 5002: // Deseloph, Hyum, Rekang, Lilias, Lapham, Mafum - Critical Seduction
+				useSkill(23168);
+				break;
+			case 5003: // Hyum, Lapham, Hyum, Lapham - Thunder Bolt
+				useSkill(5749);
+				break;
+			case 5004: // Hyum, Lapham, Hyum, Lapham - Flash
+				useSkill(5750);
+				break;
+			case 5005: // Hyum, Lapham, Hyum, Lapham - Lightning Wave
+				useSkill(5751);
+				break;
+			case 5006: // Deseloph, Hyum, Rekang, Lilias, Lapham, Mafum, Deseloph, Hyum, Rekang, Lilias, Lapham, Mafum - Buff Control
+				useSkill(5771);
+				break;
+			case 5007: // Deseloph, Lilias, Deseloph, Lilias - Piercing Attack
+				useSkill(6046);
+				break;
+			case 5008: // Deseloph, Lilias, Deseloph, Lilias - Spin Attack
+				useSkill(6047);
+				break;
+			case 5009: // Deseloph, Lilias, Deseloph, Lilias - Smash
+				useSkill(6048);
+				break;
+			case 5010: // Deseloph, Lilias, Deseloph, Lilias - Ignite
+				useSkill(6049);
+				break;
+			case 5011: // Rekang, Mafum, Rekang, Mafum - Power Smash
+				useSkill(6050);
+				break;
+			case 5012: // Rekang, Mafum, Rekang, Mafum - Energy Burst
+				useSkill(6051);
+				break;
+			case 5013: // Rekang, Mafum, Rekang, Mafum - Shockwave
+				useSkill(6052);
+				break;
+			case 5014: // Rekang, Mafum, Rekang, Mafum - Ignite
+				useSkill(6053);
+				break;
+			case 5015: // Deseloph, Hyum, Rekang, Lilias, Lapham, Mafum, Deseloph, Hyum, Rekang, Lilias, Lapham, Mafum - Switch Stance
+				useSkill(6054);
 				break;
 				// Social Packets
 			case 12: // Greeting
@@ -714,14 +784,24 @@ public final class RequestActionUse extends L2GameClientPacket
 		
 		if (activeSummon != null && !activeSummon.isBetrayed())
 		{
-			if (activeSummon instanceof L2PetInstance && (activeSummon.getLevel() - activeChar.getLevel() > 20))
+			int lvl = 0;
+			if (activeSummon instanceof L2PetInstance)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_TOO_HIGH_TO_CONTROL));
+				if (activeSummon.getLevel() - activeChar.getLevel() > 20)
+				{
+					activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_TOO_HIGH_TO_CONTROL));
+					return;
+				}
+				lvl = PetDataTable.getInstance().getPetData(activeSummon.getNpcId()).getAvailableLevel(skillId, activeSummon.getLevel());
+			}
+			else
+				lvl = SummonSkillsTable.getInstance().getAvailableLevel(activeSummon, skillId);
+			
+			if (lvl == 0)
+			{
+				_log.warning("Pet " + activeSummon +" does not have the skill id " + skillId + " assigned.");
 				return;
 			}
-			int lvl = PetSkillsTable.getInstance().getAvailableLevel(activeSummon, skillId);
-			if (lvl == 0)
-				return;
 			
 			L2Skill skill = SkillTable.getInstance().getInfo(skillId, lvl);
 			if (skill == null)

@@ -140,7 +140,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 			writeD(0x00);
 			writeD(0x00);
 			
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIRALL));
+			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIR));
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_REAR));
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LEAR));
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_NECK));
@@ -153,8 +153,8 @@ public class CharSelectionInfo extends L2GameServerPacket
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_CHEST));
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LEGS));
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_FEET));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_BACK));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LRHAND));
+			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_CLOAK));
+			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_RHAND));
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIR));
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIR2));
 			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_RBRACELET));
@@ -217,7 +217,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, rec_have, rec_left, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language FROM characters WHERE account_name=?");
+			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language FROM characters WHERE account_name=?");
 			statement.setString(1, loginName);
 			ResultSet charList = statement.executeQuery();
 			
@@ -342,7 +342,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		charInfopackage.setClassId(activeClassId);
 		
 		// Get the augmentation id for equipped weapon
-		int weaponObjId = charInfopackage.getPaperdollObjectId(Inventory.PAPERDOLL_LRHAND);
+		int weaponObjId = charInfopackage.getPaperdollObjectId(Inventory.PAPERDOLL_RHAND);
 		if (weaponObjId < 1)
 			weaponObjId = charInfopackage.getPaperdollObjectId(Inventory.PAPERDOLL_RHAND);
 		

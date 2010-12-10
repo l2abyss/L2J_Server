@@ -33,8 +33,7 @@ public class Item
 {
 	public int id;
 	
-	@SuppressWarnings({ "rawtypes" })
-	public Enum type;
+	public String type;
 	
 	public String name;
 	

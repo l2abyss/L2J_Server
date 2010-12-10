@@ -110,8 +110,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		int itemId = itemToRemove.getItemId();
 		
-		if (itemToRemove.isWear() || (!activeChar.isGM() && !itemToRemove.isDestroyable())
-				|| CursedWeaponsManager.getInstance().isCursed(itemId))
+		if ((!activeChar.isGM() && !itemToRemove.isDestroyable()) || CursedWeaponsManager.getInstance().isCursed(itemId))
 		{
 			if (itemToRemove.isHeroItem())
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.HERO_WEAPONS_CANT_DESTROYED));

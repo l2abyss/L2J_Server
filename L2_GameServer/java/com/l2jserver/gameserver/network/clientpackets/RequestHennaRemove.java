@@ -57,7 +57,10 @@ public final class RequestHennaRemove extends L2GameClientPacket
 			if (henna != null && henna.getSymbolId() == _symbolId)
 			{
 				if (activeChar.getAdena() >= (henna.getPrice() / 5))
+				{
 					activeChar.removeHenna(i);
+					break;
+				}
 				else
 					activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			}

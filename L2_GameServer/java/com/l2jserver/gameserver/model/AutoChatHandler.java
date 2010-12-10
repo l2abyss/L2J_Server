@@ -50,7 +50,7 @@ public class AutoChatHandler implements SpawnListener
 {
 	protected static final Logger _log = Logger.getLogger(AutoChatHandler.class.getName());
 	
-	private static final long DEFAULT_CHAT_DELAY = 60000; // 60 secs by default
+	private static final int DEFAULT_CHAT_DELAY = 60000; // 60 secs by default
 	
 	protected Map<Integer, AutoChatInstance> _registeredChats;
 	
@@ -183,7 +183,7 @@ public class AutoChatHandler implements SpawnListener
 		AutoChatInstance chatInst = null;
 		
 		if (chatDelay < 0)
-			chatDelay = DEFAULT_CHAT_DELAY;
+			chatDelay = DEFAULT_CHAT_DELAY + Rnd.nextInt(DEFAULT_CHAT_DELAY);
 		
 		if (_registeredChats.containsKey(npcId))
 			chatInst = _registeredChats.get(npcId);

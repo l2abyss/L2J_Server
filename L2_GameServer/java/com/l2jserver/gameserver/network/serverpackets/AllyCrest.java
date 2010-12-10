@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.cache.CrestCache;
+
 
 /**
  * <code>
@@ -34,14 +36,12 @@ public class AllyCrest extends L2GameServerPacket
 {
 	private static final String _S__AF_ALLYCREST = "[S] af AllyCrest";
 	private int _crestId;
-	private int _crestSize;
 	private byte[] _data;
 	
-	public AllyCrest(int crestId,byte[] data)
+	public AllyCrest(int crestId)
 	{
 		_crestId = crestId;
-		_data = data;
-		_crestSize = _data.length;
+		_data = CrestCache.getInstance().getAllyCrest(_crestId);
 	}
 	
 	@Override
@@ -49,8 +49,13 @@ public class AllyCrest extends L2GameServerPacket
 	{
 		writeC(0xaf);
 		writeD(_crestId);
-		writeD(_crestSize);
-		writeB(_data);
+		if (_data != null)
+		{
+			writeD(_data.length);
+			writeB(_data);
+		}
+		else
+			writeD(0);
 	}
 	
 	/* (non-Javadoc)

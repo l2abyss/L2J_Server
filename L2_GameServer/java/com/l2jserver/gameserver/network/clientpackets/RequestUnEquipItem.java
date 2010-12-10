@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.templates.item.L2EtcItem;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
 
@@ -61,13 +62,20 @@ public class RequestUnEquipItem extends L2GameClientPacket
 			return;
 		
 		L2ItemInstance item = activeChar.getInventory().getPaperdollItemByL2ItemId(_slot);
-		if (item == null || item.isWear())
+		if (item == null)
 		{
 			// Wear-items are not to be unequipped
 			return;
 		}
 		// Prevent of unequiping a cursed weapon
 		if (_slot == L2Item.SLOT_LR_HAND && (activeChar.isCursedWeaponEquipped() || activeChar.isCombatFlagEquipped()))
+		{
+			// Message ?
+			return;
+		}
+		
+		// arrows and bolts
+		if (_slot == L2Item.SLOT_L_HAND && item.getItem() instanceof L2EtcItem)
 		{
 			// Message ?
 			return;

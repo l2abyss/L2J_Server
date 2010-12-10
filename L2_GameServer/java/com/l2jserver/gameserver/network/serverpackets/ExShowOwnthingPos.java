@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.List;
 
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.TerritoryWard;
@@ -43,7 +43,7 @@ public class ExShowOwnthingPos extends L2GameServerPacket
 		
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
-			FastList<TerritoryWard> territoryWardList = TerritoryWarManager.getInstance().getAllTerritoryWards();
+			List<TerritoryWard> territoryWardList = TerritoryWarManager.getInstance().getAllTerritoryWards();
 			writeD(territoryWardList.size());
 			for(TerritoryWard ward : territoryWardList)
 			{
@@ -72,7 +72,7 @@ public class ExShowOwnthingPos extends L2GameServerPacket
 		else
 		{
 			writeD(0);
-			writeD(0);
+			//writeD(0);
 		}
 	}
 	

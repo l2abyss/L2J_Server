@@ -735,7 +735,7 @@ public class Hero
 						L2ItemInstance equippedItem = player.getInventory().getPaperdollItem(i);
 						if ((equippedItem != null) && equippedItem.isHeroItem())
 						{
-							player.getInventory().unEquipItemInSlotAndRecord(i);
+							player.getInventory().unEquipItemInSlot(i);
 						}
 					}
 					

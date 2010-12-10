@@ -19,16 +19,18 @@ package com.l2jserver.gameserver.templates.item;
  *
  */
 
-public enum L2ArmorType
+public enum L2ArmorType implements L2ItemType
 {
-	NONE(1, "None"),
-	LIGHT(2, "Light"),
-	HEAVY(3, "Heavy"),
-	MAGIC(4, "Magic"),
-	PET(5, "Pet"),
-	SIGIL(6, "Sigil");
+	NONE("None"),
+	LIGHT("Light"),
+	HEAVY("Heavy"),
+	MAGIC("Magic"),
+	SIGIL("Sigil"),
 	
-	final int _id;
+	//L2J CUSTOM
+	SHIELD("Shield");
+	
+	final int _mask;
 	final String _name;
 	
 	/**
@@ -36,9 +38,9 @@ public enum L2ArmorType
 	 * @param id : int designating the ID of the ArmorType
 	 * @param name : String designating the name of the ArmorType
 	 */
-	L2ArmorType(int id, String name)
+	L2ArmorType(String name)
 	{
-		_id = id;
+		_mask = 1 << (ordinal() + L2WeaponType.values().length);
 		_name = name;
 	}
 	
@@ -48,7 +50,7 @@ public enum L2ArmorType
 	 */
 	public int mask()
 	{
-		return 1 << (_id + 18);
+		return _mask;
 	}
 	
 	/**

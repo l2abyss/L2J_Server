@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -42,8 +41,8 @@ public class L2MonsterInstance extends L2Attackable
 	
 	private boolean _enableMinions = true;
 	
-	protected final MinionList _minionList;
-	protected MinionList _DynamicMinionList = null;
+	private L2MonsterInstance _master = null;
+	private MinionList _minionList = null;
 	
 	protected ScheduledFuture<?> _maintenanceTask = null;
 	
@@ -65,10 +64,6 @@ public class L2MonsterInstance extends L2Attackable
 		super(objectId, template);
 		setInstanceType(InstanceType.L2MonsterInstance);
 		setAutoAttackable(true);
-		if (getTemplate().getMinionData() != null)
-			_minionList  = new MinionList(this);
-		else
-			_minionList = null;
 	}
 	
 	@Override
@@ -104,25 +99,21 @@ public class L2MonsterInstance extends L2Attackable
 	@Override
 	public void onSpawn()
 	{
-		super.onSpawn();
-		
-		if (_minionList != null)
+		if (getLeader() != null)
 		{
-			try
-			{
-				for (L2MinionInstance minion : getSpawnedMinions())
-				{
-					if (minion == null) continue;
-					getSpawnedMinions().remove(minion);
-					minion.deleteMe();
-				}
-				_minionList.clearRespawnList();
-			}
-			catch ( NullPointerException e )
-			{
-			}
+			setIsNoRndWalk(true);
+			setIsRaidMinion(getLeader().isRaid());
+			getLeader().getMinionList().onMinionSpawn(this);
 		}
+
+		// delete spawned minions before dynamic minions spawned by script
+		if (hasMinions())
+			getMinionList().onMasterSpawn(); 
+
 		startMaintenanceTask();
+
+		// dynamic script-based minions spawned here, after all preparations.
+		super.onSpawn();
 	}
 	
 	protected int getMaintenanceInterval()
@@ -137,116 +128,18 @@ public class L2MonsterInstance extends L2Attackable
 	protected void startMaintenanceTask()
 	{
 		// maintenance task now used only for minions spawn
-		if (_minionList == null)
+		if (getTemplate().getMinionData() == null)
 			return;
-		
+
 		_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
 			public void run()
 			{
 				if (_enableMinions)
-					_minionList.spawnMinions();
+					getMinionList().spawnMinions();
 			}
 		}, getMaintenanceInterval() + Rnd.get(1000));
 	}
-	
-	public void callMinions()
-	{
-		if (_minionList != null)
-		{
-			for (L2MinionInstance minion : _minionList.getSpawnedMinions())
-			{
-				if (minion == null || minion.isDead() || minion.isMovementDisabled())
-					continue;
-				
-				// Get actual coords of the minion and check to see if it's too far away from this L2MonsterInstance
-				if (!isInsideRadius(minion, 200, false, false))
-				{
-					// Calculate a new random coord for the minion based on the master's coord
-					// but with minimum distance from master = 30
-					int minionX = Rnd.nextInt(340);
-					int minionY = Rnd.nextInt(340);
-					
-					if (minionX < 171)
-						minionX = getX() + minionX + 30;
-					else
-						minionX = getX() - minionX + 140;
-					
-					if (minionY < 171)
-						minionY = getY() + minionY + 30;
-					else
-						minionY = getY() - minionY + 140;
-					
-					// Move the minion to the new coords
-					if (!minion.isInCombat() && !minion.isDead() && !minion.isMovementDisabled())
-						minion.moveToLocation(minionX, minionY, getZ(), 0);
-				}
-			}
-		}
-		if (_DynamicMinionList != null)
-		{
-			for (L2MinionInstance minion : _DynamicMinionList.getSpawnedMinions())
-			{
-				if (minion == null || minion.isDead() || minion.isMovementDisabled())
-					continue;
-				
-				// Get actual coords of the minion and check to see if it's too far away from this L2MonsterInstance
-				if (!isInsideRadius(minion, 200, false, false))
-				{
-					// Calculate a new random coord for the minion based on the master's coord
-					// but with minimum distance from master = 30
-					int minionX = Rnd.nextInt(340);
-					int minionY = Rnd.nextInt(340);
-					
-					if (minionX < 171)
-						minionX = getX() + minionX + 30;
-					else
-						minionX = getX() - minionX + 140;
-					
-					if (minionY < 171)
-						minionY = getY() + minionY + 30;
-					else
-						minionY = getY() - minionY + 140;
-					
-					// Move the minion to the new coords
-					if (!minion.isInCombat() && !minion.isDead() && !minion.isMovementDisabled())
-						minion.moveToLocation(minionX, minionY, getZ(), 0);
-				}
-			}
-		}
-	}
-	
-	public void callMinionsToAssist(L2Character attacker)
-	{
-		if (_minionList != null)
-		{
-			for (L2MinionInstance minion : _minionList.getSpawnedMinions())
-			{
-				if (minion == null || attacker == null || minion.isDead() || minion.isInCombat())
-					continue;
-				
-				// Trigger the aggro condition of the minion
-				if (isRaid() && !isRaidMinion())
-					minion.addDamageHate(attacker, 0, 100);
-				else
-					minion.addDamageHate(attacker, 0, 1);
-			}
-		}
-		if (_DynamicMinionList != null)
-		{
-			for (L2MinionInstance minion : _DynamicMinionList.getSpawnedMinions())
-			{
-				if (minion == null || attacker == null || minion.isDead() || minion.isInCombat())
-					continue;
-				
-				// Trigger the aggro condition of the minion
-				if (isRaid() && !isRaidMinion())
-					minion.addDamageHate(attacker, 0, 100);
-				else
-					minion.addDamageHate(attacker, 0, 1);
-			}
-		}
-	}
-	
+
 	@Override
 	public boolean doDie(L2Character killer)
 	{
@@ -254,117 +147,52 @@ public class L2MonsterInstance extends L2Attackable
 			return false;
 		
 		if (_maintenanceTask != null)
-			_maintenanceTask.cancel(true); // doesn't do it?
-		
-		if (hasMinions() && isRaid())
-			deleteSpawnedMinions();
+			_maintenanceTask.cancel(false); // doesn't do it?
+
 		return true;
 	}
-	
-	public List<L2MinionInstance> getSpawnedMinions()
-	{
-		if (_minionList == null)
-			return null;
-		
-		return _minionList.getSpawnedMinions();
-	}
-	
-	public int getTotalSpawnedMinionsInstances()
-	{
-		if (_minionList == null)
-			return 0;
-		
-		return _minionList.countSpawnedMinions();
-	}
-	
-	public int getTotalSpawnedMinionsGroups()
-	{
-		if (_minionList == null)
-			return 0;
-		
-		return _minionList.lazyCountSpawnedMinionsGroups();
-	}
-	
-	public void notifyMinionDied(L2MinionInstance minion)
-	{
-		if (_DynamicMinionList != null)
-			_DynamicMinionList.removeSpawnedMinion(minion);
-		if (_minionList == null)
-			return;
-		
-		_minionList.moveMinionToRespawnList(minion);
-	}
-	
-	public void notifyMinionSpawned(L2MinionInstance minion)
-	{
-		if (_DynamicMinionList != null)
-			_DynamicMinionList.addSpawnedMinion(minion);
-		if (_minionList == null)
-			return;
-		
-		_minionList.addSpawnedMinion(minion);
-	}
-	
-	public void notifyMinionAttacked(L2Character attacker, L2MinionInstance minion)
-	{
-		addDamageHate(attacker, 0, 1);
-		callMinionsToAssist(attacker);
-	}
-	
-	public boolean hasMinions()
-	{
-		boolean ret = false;
-		if (_minionList == null)
-			ret = false;
-		else
-			ret = _minionList.hasMinions();
-		
-		if (_DynamicMinionList != null)
-			ret = ret || _DynamicMinionList.hasMinions();
-		return ret;
-	}
-	
+
 	@Override
 	public void deleteMe()
 	{
+		if (_maintenanceTask != null)
+			_maintenanceTask.cancel(false);
+
 		if (hasMinions())
-		{
-			if (_maintenanceTask != null)
-				_maintenanceTask.cancel(true);
-			
-			deleteSpawnedMinions();
-		}
+			getMinionList().onMasterDie(true);
+
+		if (getLeader() != null)
+			getLeader().getMinionList().onMinionDie(this, 0);
+
 		super.deleteMe();
 	}
 	
-	public void deleteSpawnedMinions()
+	@Override
+	public L2MonsterInstance getLeader()
 	{
-		if (_minionList == null)
-			return;
-		
-		for(L2MinionInstance minion : getSpawnedMinions())
-		{
-			if (minion == null)
-				continue;
-			minion.abortAttack();
-			minion.abortCast();
-			minion.deleteMe();
-			getSpawnedMinions().remove(minion);
-		}
-		_minionList.clearRespawnList();
+		return _master;
 	}
-	
-	
-	
+
+	public void setLeader(L2MonsterInstance leader)
+	{
+		_master = leader;
+	}
+
 	public void enableMinions(boolean b)
 	{
 		_enableMinions = b;
 	}
-	
-	public void enableDynamicMinions(boolean b)
+
+	public boolean hasMinions()
 	{
-		_enableMinions = b;
-		if (b && _minionList == null)
-			_DynamicMinionList  = new MinionList(this);
+		return _minionList != null;
+	}
+	
+	public MinionList getMinionList()
+	{
+		if (_minionList == null)
+			_minionList = new MinionList(this);
+
+		return _minionList;
 	}
 }

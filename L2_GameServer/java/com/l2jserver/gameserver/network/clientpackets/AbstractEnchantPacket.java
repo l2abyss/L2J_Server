@@ -305,10 +305,8 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 			return false;
 		if (item.isTimeLimitedItem())
 			return false;
-		if (item.isWear())
-			return false;
 		// rods
-		if (item.getItem().getItemType() == L2WeaponType.ROD)
+		if (item.getItem().getItemType() == L2WeaponType.FISHINGROD)
 			return false;
 		// bracelets
 		if (item.getItem().getBodyPart() == L2Item.SLOT_L_BRACELET)

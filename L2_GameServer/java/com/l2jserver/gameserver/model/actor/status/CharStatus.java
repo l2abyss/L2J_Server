@@ -15,10 +15,11 @@
 package com.l2jserver.gameserver.model.actor.status;
 
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javolution.util.FastSet;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -73,10 +74,7 @@ public class CharStatus
 		if (object == getActiveChar())
 			return;
 		
-		synchronized (getStatusListener())
-		{
-			getStatusListener().add(object);
-		}
+		getStatusListener().add(object);
 	}
 	
 	/**
@@ -95,10 +93,7 @@ public class CharStatus
 	 */
 	public final void removeStatusListener(L2Character object)
 	{
-		synchronized (getStatusListener())
-		{
-			getStatusListener().remove(object);
-		}
+		getStatusListener().remove(object);
 	}
 	
 	/**
@@ -115,7 +110,7 @@ public class CharStatus
 	public final Set<L2Character> getStatusListener()
 	{
 		if (_StatusListener == null)
-			_StatusListener = new CopyOnWriteArraySet<L2Character>();
+			_StatusListener = new FastSet<L2Character>().shared();
 		return _StatusListener;
 	}
 	

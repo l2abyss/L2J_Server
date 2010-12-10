@@ -20,6 +20,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.LoginServerThread.SessionKey;
 import com.l2jserver.gameserver.network.L2GameClient;
+import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 
 /**
@@ -59,15 +60,18 @@ public final class AuthLogin extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (!getClient().isProtocolOk()) return;
+		final L2GameClient client = getClient();		
+		if (_loginName.length() == 0 || !client.isProtocolOk())
+		{
+			client.close((L2GameServerPacket)null);
+			return;
+		}
 		SessionKey key = new SessionKey(_loginKey1, _loginKey2, _playKey1, _playKey2);
 		if (Config.DEBUG)
 		{
 			_log.info("user:" + _loginName);
 			_log.info("key:" + key);
 		}
-		
-		L2GameClient client = getClient();
 		
 		// avoid potential exploits
 		if (client.getAccountName() == null)

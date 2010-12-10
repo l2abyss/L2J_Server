@@ -201,10 +201,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	public void setActiveChar(L2PcInstance pActiveChar)
 	{
 		_activeChar = pActiveChar;
-		if (_activeChar != null)
+		//JIV remove - done on spawn
+		/*if (_activeChar != null)
 		{
 			L2World.getInstance().storeObject(getActiveChar());
-		}
+		}*/
 	}
 	
 	public ReentrantLock getActiveCharLock()
@@ -357,6 +358,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			if (player != null)
 			{
 				player.store();
+				player.storeRecommendations();
 				if (Config.UPDATE_ITEMS_ON_CHAR_STORE)
 				{
 					player.getInventory().updateDatabase();
@@ -514,9 +516,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			statement.execute();
 			statement.close();
 			
-			statement = con.prepareStatement("DELETE FROM character_recommends WHERE charId=? OR target_id=?");
+			statement = con.prepareStatement("DELETE FROM character_reco_bonus WHERE charId=?");
 			statement.setInt(1, objid);
-			statement.setInt(2, objid);
 			statement.execute();
 			statement.close();
 			
@@ -570,7 +571,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			
 			character.refreshOverloaded();
 			character.refreshExpertisePenalty();
-			character.setOnlineStatus(true);
+			character.setOnlineStatus(true, false);
 		}
 		else
 		{
@@ -650,6 +651,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 	}
 	
+	/**
+	 * Close client connection with {@link ServerClose} packet
+	 */
 	public void closeNow()
 	{
 		_isDetached = true; // prevents more packets execution

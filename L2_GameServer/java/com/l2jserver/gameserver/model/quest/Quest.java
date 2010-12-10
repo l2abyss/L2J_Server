@@ -38,10 +38,10 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Trap;
+import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.network.serverpackets.NpcQuestHtmlMessage;
 import com.l2jserver.gameserver.scripting.ManagedScript;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.util.MinionList;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
 
@@ -1731,10 +1732,15 @@ public class Quest extends ManagedScript
 		trap.setCurrentMp(trap.getMaxMp());
 		trap.setIsInvul(true);
 		trap.setHeading(heading);
-		L2World.getInstance().storeObject(trap);
+		//L2World.getInstance().storeObject(trap);
 		trap.spawnMe(x, y, z);
 		
 		return trap;
+	}
+	
+	public L2Npc addMinion(L2MonsterInstance master, int minionId)
+	{
+		return MinionList.spawnMinion(master, minionId);
 	}
 	
 	public int[] getRegisteredItemIds()

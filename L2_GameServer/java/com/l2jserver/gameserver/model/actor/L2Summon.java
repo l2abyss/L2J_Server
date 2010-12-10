@@ -39,7 +39,7 @@ import com.l2jserver.gameserver.model.actor.stat.SummonStat;
 import com.l2jserver.gameserver.model.actor.status.SummonStatus;
 import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
-import com.l2jserver.gameserver.model.olympiad.Olympiad;
+import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -68,6 +68,10 @@ public abstract class L2Summon extends L2Playable
 	
 	private int _chargedSoulShot;
 	private int _chargedSpiritShot;
+	
+	//  /!\ BLACK MAGIC /!\
+	// we dont have walk speed in pet data so for now use runspd / 3
+	public static final int WALK_SPEED_MULTIPLIER = 3;
 	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
@@ -403,7 +407,7 @@ public abstract class L2Summon extends L2Playable
 			for (int itemId : owner.getAutoSoulShot())
 			{
 				String handler = ((L2EtcItem)ItemTable.getInstance().getTemplate(itemId)).getHandlerName();
-				if (handler.contains("Beast"))
+				if (handler != null && handler.contains("Beast"))
 					owner.disableAutoShot(itemId);
 			}
 		}
@@ -746,7 +750,7 @@ public abstract class L2Summon extends L2Playable
 					((L2PcInstance)target).isInOlympiadMode() &&
 					((L2PcInstance)target).getOlympiadGameId() == getOwner().getOlympiadGameId())
 			{
-				Olympiad.getInstance().notifyCompetitorDamage(getOwner(), damage, getOwner().getOlympiadGameId());
+				OlympiadGameManager.getInstance().notifyCompetitorDamage(getOwner(), damage);
 			}
 			
 			final SystemMessage sm;
@@ -801,7 +805,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public boolean isInCombat()
 	{
-		return getOwner().isInCombat();
+		return getOwner() != null ? getOwner().isInCombat() : false;
 	}
 	
 	@Override
@@ -813,14 +817,18 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public final void broadcastPacket(L2GameServerPacket mov)
 	{
-		mov.setInvisible(getOwner().getAppearance().getInvisible());
+		if (getOwner() != null)
+			mov.setInvisible(getOwner().getAppearance().getInvisible());
+
 		super.broadcastPacket(mov);
 	}
 	
 	@Override
 	public final void broadcastPacket(L2GameServerPacket mov, int radiusInKnownlist)
 	{
-		mov.setInvisible(getOwner().getAppearance().getInvisible());
+		if (getOwner() != null)
+			mov.setInvisible(getOwner().getAppearance().getInvisible());
+
 		super.broadcastPacket(mov, radiusInKnownlist);
 	}
 	
@@ -872,12 +880,7 @@ public abstract class L2Summon extends L2Playable
 	{
 		return 0;
 	}
-	
-	public int getPetSpeed()
-	{
-		return getTemplate().baseRunSpd;
-	}
-	
+
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
@@ -909,7 +912,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public String toString()
 	{
-		return super.toString()+" Owner: "+getOwner();
+		return super.toString()+"("+getNpcId()+") Owner: "+getOwner();
 	}
 	
 	@Override

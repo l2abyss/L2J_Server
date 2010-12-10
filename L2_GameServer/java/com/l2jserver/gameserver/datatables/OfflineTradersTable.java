@@ -224,7 +224,7 @@ public class OfflineTradersTable
 					if (Config.OFFLINE_SET_NAME_COLOR)
 						player.getAppearance().setNameColor(Config.OFFLINE_NAME_COLOR);
 					player.setPrivateStoreType(type);
-					player.setOnlineStatus(true);
+					player.setOnlineStatus(true, true);
 					player.restoreEffects();
 					player.broadcastUserInfo();
 					nTraders++;

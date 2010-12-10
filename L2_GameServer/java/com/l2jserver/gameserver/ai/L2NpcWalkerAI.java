@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.ai;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -64,7 +63,10 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 		
 		// Here we need 1 second initial delay cause getActor().hasAI() will return null...
 		// Constructor of L2NpcWalkerAI is called faster then ai object is attached in L2NpcWalkerInstance
-		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(this, 1000, 1000);
+		if (_route != null)
+			ThreadPoolManager.getInstance().scheduleAiAtFixedRate(this, 1000, 1000);
+		else
+			_log.warning(getClass().getSimpleName()+": Missing route data! Npc: "+_actor);
 	}
 	
 	public void run()
@@ -113,17 +115,14 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 		
 		if (getActor().isInsideRadius(destinationX, destinationY, destinationZ, 5, false, false))
 		{
-			String chat = _route.get(_currentPos).getChatText();
-			if (chat != null && !chat.isEmpty())
+			int id = _route.get(_currentPos).getChatId();
+			String chat = null;
+			if (id == 0)
+				chat = _route.get(_currentPos).getChatText();
+			
+			if ((id > 0) || (chat != null && !chat.isEmpty()))
 			{
-				try
-				{
-					getActor().broadcastChat(chat);
-				}
-				catch (Exception e)
-				{
-					_log.log(Level.WARNING, "L2NpcWalkerAI.checkArrived() Error: " + e.getMessage(), e);
-				}
+				getActor().broadcastChat(chat, id);
 			}
 			
 			//time in millis

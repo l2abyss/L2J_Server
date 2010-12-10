@@ -15,11 +15,7 @@
 package com.l2jserver.gameserver.script.faenor;
 
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
-
-import javax.script.ScriptContext;
-import javax.script.ScriptException;
 
 import javolution.util.FastList;
 
@@ -28,10 +24,8 @@ import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
-import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.script.DateRange;
 import com.l2jserver.gameserver.script.EngineInterface;
-import com.l2jserver.gameserver.script.Expression;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
@@ -171,28 +165,6 @@ public class FaenorInterface implements EngineInterface
 	public void onPlayerLogin(String[] message, DateRange validDateRange)
 	{
 		Announcements.getInstance().addEventAnnouncement(validDateRange, message);
-	}
-	
-	public void addPetData(ScriptContext context, int petID, int levelStart, int levelEnd, Map<String, String> stats)
-	throws ScriptException
-	{
-		L2PetData[] petData = new L2PetData[levelEnd - levelStart + 1];
-		int value = 0;
-		for (int level = levelStart; level <= levelEnd; level++)
-		{
-			petData[level - 1] = new L2PetData();
-			petData[level - 1].setPetID(petID);
-			petData[level - 1].setPetLevel(level);
-			
-			context.setAttribute("level", new Double(level), ScriptContext.ENGINE_SCOPE);
-			for (String stat : stats.keySet())
-			{
-				value = ((Number) Expression.eval(context, "beanshell", stats.get(stat))).intValue();
-				petData[level - 1].setStat(stat, value);
-			}
-			context.removeAttribute("level", ScriptContext.ENGINE_SCOPE);
-		}
-		
 	}
 	
 	@SuppressWarnings("synthetic-access")

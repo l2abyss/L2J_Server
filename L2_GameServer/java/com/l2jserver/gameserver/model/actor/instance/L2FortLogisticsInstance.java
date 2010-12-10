@@ -18,7 +18,6 @@ import java.util.StringTokenizer;
 
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -159,7 +158,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 						box.setCurrentHp(box.getMaxHp());
 						box.setCurrentMp(box.getMaxMp());
 						box.setHeading(0);
-						L2World.getInstance().storeObject(box);
+						//L2World.getInstance().storeObject(box);
 						box.spawnMe(getX() - 23, getY() + 41, getZ());
 						
 						getFort().setSupplyLvL(0);

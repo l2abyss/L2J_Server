@@ -55,6 +55,8 @@ import com.l2jserver.gameserver.skills.conditions.ConditionUsingItemType;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
+import com.l2jserver.gameserver.templates.item.L2Armor;
+import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
@@ -183,7 +185,13 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			env.value *= BaseStats.STR.calcBonus(env.player) * env.player.getLevelMod();
+			if (env.player instanceof L2PetInstance)
+			{
+				if (env.player.getActiveWeaponInstance() != null)
+					env.value *= BaseStats.STR.calcBonus(env.player);
+			}
+			else
+				env.value *= BaseStats.STR.calcBonus(env.player) * env.player.getLevelMod();
 		}
 	}
 	
@@ -240,6 +248,12 @@ public final class Formulas
 					env.value -= 9;
 				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_NECK) != null)
 					env.value -= 13;
+			}
+			else if (env.player instanceof L2PetInstance)
+			{
+				if (env.player.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_NECK) != 0)
+					env.value *= BaseStats.MEN.calcBonus(env.player);
+				return;
 			}
 			env.value *= BaseStats.MEN.calcBonus(env.player) * env.player.getLevelMod();
 		}
@@ -455,19 +469,8 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			L2Character p = env.player;
-			if (p instanceof L2SummonInstance)
-				env.value = 40;
-			else if (p instanceof L2PcInstance)
-			{
-				if (p.getActiveWeaponInstance() == null)
-					env.value = 40;
-				else
-				{
-					env.value *= BaseStats.DEX.calcBonus(p);
-					env.value *= 10;
-				}
-			}
+			env.value *= BaseStats.DEX.calcBonus(env.player);
+			env.value *= 10;
 			env.baseValue = env.value;
 		}
 	}
@@ -901,8 +904,8 @@ public final class Formulas
 		std[Stats.MAGIC_ATTACK_SPEED.ordinal()] = new Calculator();
 		std[Stats.MAGIC_ATTACK_SPEED.ordinal()].addFunc(FuncMAtkSpeed.getInstance());
 		
-		std[Stats.MOVEMENT.ordinal()] = new Calculator();
-		std[Stats.MOVEMENT.ordinal()].addFunc(FuncMoveSpeed.getInstance());
+		std[Stats.RUN_SPEED.ordinal()] = new Calculator();
+		std[Stats.RUN_SPEED.ordinal()].addFunc(FuncMoveSpeed.getInstance());
 		
 		return std;
 	}
@@ -980,11 +983,17 @@ public final class Formulas
 		}
 		else if (cha instanceof L2PetInstance)
 		{
-			//cha.addStatFunc(FuncPAtkMod.getInstance());
+			cha.addStatFunc(FuncPAtkMod.getInstance());
 			//cha.addStatFunc(FuncMAtkMod.getInstance());
-			cha.addStatFunc(FuncPDefMod.getInstance());
+			//cha.addStatFunc(FuncPDefMod.getInstance());
 			cha.addStatFunc(FuncMDefMod.getInstance());
 			cha.addStatFunc(FuncAtkCritical.getInstance());
+			cha.addStatFunc(FuncMAtkCritical.getInstance());
+			cha.addStatFunc(FuncAtkAccuracy.getInstance());
+			cha.addStatFunc(FuncAtkEvasion.getInstance());
+			cha.addStatFunc(FuncMoveSpeed.getInstance());
+			cha.addStatFunc(FuncPAtkSpeed.getInstance());
+			cha.addStatFunc(FuncMAtkSpeed.getInstance());
 		}
 		else if (cha instanceof L2Summon)
 		{
@@ -994,6 +1003,7 @@ public final class Formulas
 			cha.addStatFunc(FuncMAtkCritical.getInstance());
 			cha.addStatFunc(FuncAtkAccuracy.getInstance());
 			cha.addStatFunc(FuncAtkEvasion.getInstance());
+			cha.addStatFunc(FuncMoveSpeed.getInstance());
 		}
 	}
 	
@@ -1089,7 +1099,7 @@ public final class Formulas
 			init *= cha.getLevelMod() * BaseStats.CON.calcBonus(cha);
 		}
 		else if (cha instanceof L2PetInstance)
-			init = ((L2PetInstance) cha).getPetData().getPetRegenHP() * Config.PET_HP_REGEN_MULTIPLIER;
+			init = ((L2PetInstance) cha).getPetLevelData().getPetRegenHP() * Config.PET_HP_REGEN_MULTIPLIER;
 		
 		if (init < 1)
 			init = 1;
@@ -1181,7 +1191,7 @@ public final class Formulas
 			init *= cha.getLevelMod() * BaseStats.MEN.calcBonus(cha);
 		}
 		else if (cha instanceof L2PetInstance)
-			init = ((L2PetInstance) cha).getPetData().getPetRegenMP() * Config.PET_MP_REGEN_MULTIPLIER;
+			init = ((L2PetInstance) cha).getPetLevelData().getPetRegenMP() * Config.PET_MP_REGEN_MULTIPLIER;
 		
 		if (init < 1)
 			init = 1;
@@ -1319,7 +1329,9 @@ public final class Formulas
 		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
 		damage = target.calcStat(Stats.DAGGER_WPN_VULN, damage, target, null);
 		damage *= 80 / defence;
-		damage += Rnd.get() * attacker.getRandomDamage(target);
+		
+		// Random weapon damage
+		damage *= attacker.getRandomDamageMultiplier();
 		
 		// Physical skill dmg boost
 		damage *= attacker.calcStat(Stats.PHYSICAL_SKILL_POWER, 1, null, null);
@@ -1456,18 +1468,18 @@ public final class Formulas
 				case BIGBLUNT:
 					stat = Stats.BIGBLUNT_WPN_VULN;
 					break;
-				case DUAL_DAGGER:
+				case DUALDAGGER:
 					stat = Stats.DUALDAGGER_WPN_VULN;
 					break;
 				case RAPIER:
 					stat = Stats.RAPIER_WPN_VULN;
 					break;
-				case ANCIENT_SWORD:
+				case ANCIENTSWORD:
 					stat = Stats.ANCIENT_WPN_VULN;
 					break;
-				case PET:
+				/*case PET:
 					stat = Stats.PET_WPN_VULN;
-					break;
+					break;*/
 			}
 		}
 		
@@ -1505,10 +1517,6 @@ public final class Formulas
 		else
 			damage = 70 * damage / defence;
 		
-		// In C5 summons make 10 % less dmg in PvP.
-		if (attacker instanceof L2Summon && target instanceof L2PcInstance)
-			damage *= 0.9;
-		
 		if (stat != null)
 		{
 			// get the vulnerability due to skills (buffs, passives, toggles, etc)
@@ -1520,7 +1528,10 @@ public final class Formulas
 			}*/
 		}
 		
-		damage += Rnd.nextDouble() * damage / 10;
+		// Weapon random damage
+		damage *= attacker.getRandomDamageMultiplier();
+		
+		//damage += Rnd.nextDouble() * damage / 10;
 		//		damage += _rnd.nextDouble()* attacker.getRandomDamage(target);
 		//		}
 		if (shld > 0 && Config.ALT_GAME_SHIELD_BLOCKS)
@@ -1552,7 +1563,7 @@ public final class Formulas
 					damage *= attacker.getPAtkGiants(target);
 					break;
 				case MAGICCREATURE:
-					damage *= attacker.getPAtkMCreatures(target);
+					damage *= attacker.getPAtkMagicCreatures(target);
 					break;
 				default:
 					// nothing
@@ -1626,8 +1637,7 @@ public final class Formulas
 		return damage;
 	}
 	
-	public static final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill,
-			byte shld, boolean ss, boolean bss, boolean mcrit)
+	public static final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean bss, boolean mcrit)
 	{
 		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
 		double mAtk = attacker.getMAtk(target, skill);
@@ -1662,15 +1672,12 @@ public final class Formulas
 				return 1;
 		}
 		
-		if (bss) mAtk *= 4;
-		else if (ss) mAtk *= 2;
+		if (bss)
+			mAtk *= 4;
+		else if (ss)
+			mAtk *= 2;
 		
 		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(attacker, target, isPvP);
-		
-		// In C5 summons make 10 % less dmg in PvP.
-		if(attacker instanceof L2Summon && target instanceof L2PcInstance) damage *= 0.9;
-		
-		//		if(attacker instanceof L2PcInstance && target instanceof L2PcInstance) damage *= 0.9; // PvP modifier (-10%)
 		
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(attacker, target, skill))
@@ -1720,9 +1727,13 @@ public final class Formulas
 				damage *= 2.5;
 			else
 				damage *= 3;
+			
+			damage *= attacker.calcStat(Stats.MAGIC_CRIT_DMG, 1, null, null);
 		}
 		
-		damage += Rnd.get() * attacker.getRandomDamage(target);
+		// Weapon random damage
+		damage *= attacker.getRandomDamageMultiplier();
+		
 		// Pvp bonuses for dmg
 		if(isPvP)
 		{
@@ -1731,9 +1742,6 @@ public final class Formulas
 			else
 				damage *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
 		}
-		//random magic damage
-		float rnd = Rnd.get(-20,20)/100+1;
-		damage *= rnd;
 		// CT2.3 general magic vuln
 		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
 		
@@ -1759,7 +1767,8 @@ public final class Formulas
 	
 	public static final double calcMagicDam(L2CubicInstance attacker, L2Character target, L2Skill skill, boolean mcrit, byte shld)
 	{
-		double mAtk = attacker.getMAtk();
+		// Current info include mAtk in the skill power.
+		// double mAtk = attacker.getMAtk();
 		double mDef = target.getMDef(attacker.getOwner(), skill);
 		
 		switch (shld)
@@ -1771,7 +1780,7 @@ public final class Formulas
 				return 1;
 		}
 		
-		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(target instanceof L2Playable);
+		double damage = 91 /* * Math.sqrt(mAtk)*/ / mDef * skill.getPower(target instanceof L2Playable);
 		L2PcInstance owner = attacker.getOwner();
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(owner, target, skill))
@@ -1810,7 +1819,8 @@ public final class Formulas
 				}
 			}
 		}
-		else if (mcrit) damage *= 3;
+		else if (mcrit)
+			damage *= 3;
 		
 		// CT2.3 general magic vuln
 		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
@@ -2099,8 +2109,8 @@ public final class Formulas
 		if (skill != null && skill.ignoreShield())
 			return 0;
 		
-		L2Weapon shld = target.getSecondaryWeaponItem();
-		if (shld == null || shld.getShieldDefRate() <= 0)
+		L2Item item = target.getSecondaryWeaponItem();
+		if (item == null || !(item instanceof L2Armor) || ((L2Armor)item).getItemType() == L2ArmorType.SIGIL)
 			return 0;
 		
 		double shldRate = target.calcStat(Stats.SHIELD_RATE, 0, attacker, null)
@@ -2289,6 +2299,9 @@ public final class Formulas
 				case BUFF:
 					multiplier = target.calcStat(Stats.BUFF_VULN, multiplier, target, null);
 					break;
+				case CANCEL:
+					multiplier = target.calcStat(Stats.CANCEL_VULN, multiplier, target, null);
+					break;
 				default:
 			}
 		}
@@ -2357,6 +2370,9 @@ public final class Formulas
 				case DEBUFF:
 				case WEAKNESS:
 					multiplier = attacker.calcStat(Stats.DEBUFF_PROF, multiplier, target, null);
+					break;
+				case CANCEL:
+					multiplier = attacker.calcStat(Stats.CANCEL_PROF, multiplier, target, null);
 					break;
 				default:
 					
@@ -2493,10 +2509,10 @@ public final class Formulas
 		int deltamod = calcLvlDependModifier(attacker, target, skill);
 		rate += deltamod;
 		
-		if (rate > 99)
-			rate = 99;
-		else if (rate < 1)
-			rate = 1;
+		if (rate > skill.getMaxChance())
+			rate = skill.getMaxChance();
+		else if (rate < skill.getMinChance())
+			rate = skill.getMinChance();
 		
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
@@ -2596,10 +2612,10 @@ public final class Formulas
 		int deltamod = calcLvlDependModifier(attacker, target, skill);
 		rate += deltamod;
 		
-		if (rate > 99)
-			rate = 99;
-		else if (rate < 1)
-			rate = 1;
+		if (rate > skill.getMaxChance())
+			rate = skill.getMaxChance();
+		else if (rate < skill.getMinChance())
+			rate = skill.getMinChance();
 		
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
@@ -2668,7 +2684,7 @@ public final class Formulas
 			if (shld == SHIELD_DEFENSE_SUCCEED)
 				mAtkModifier += target.getShldDef();
 			
-			mAtkModifier = Math.pow(attacker.getOwner().getMAtk(target, skill) / mAtkModifier, 0.2);
+			mAtkModifier = Math.pow(attacker.getMAtk() / mAtkModifier, 0.2);
 			
 			rate += (int) (mAtkModifier * 100) - 100;
 		}
@@ -2698,11 +2714,10 @@ public final class Formulas
 		int deltamod = calcLvlDependModifier(attacker.getOwner(), target, skill);
 		rate += deltamod;
 		
-		if (rate > 99)
-			rate = 99;
-		else
-			if (rate < 1)
-				rate = 1;
+		if (rate > skill.getMaxChance())
+			rate = skill.getMaxChance();
+		else if (rate < skill.getMinChance())
+			rate = skill.getMinChance();
 		
 		if (attacker.getOwner().isDebug() || Config.DEVELOPER)
 		{
@@ -2733,8 +2748,8 @@ public final class Formulas
 	{
 		// DS: remove skill magic level dependence from nukes
 		//int lvlDifference = (target.getLevel() - (skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()));
-		int lvlDifference = (target.getLevel() - attacker.getLevel());
-		double lvlModifier = Math.pow(1.3, lvlDifference) * 100;
+		int lvlDifference = (target.getLevel() - (skill.getSkillType() == L2SkillType.SPOIL ? skill.getMagicLevel() : attacker.getLevel()));
+		double lvlModifier = Math.pow(1.3, lvlDifference);
 		float targetModifier = 1;
 		if (target instanceof L2Attackable && !target.isRaid() && !target.isRaidMinion()
 				&& target.getLevel() >= Config.MIN_NPC_LVL_MAGIC_PENALTY && attacker.getActingPlayer() != null
@@ -2749,8 +2764,13 @@ public final class Formulas
 		// general magic resist
 		final double resModifier = target.calcStat(Stats.MAGIC_SUCCESS_RES, 1, null, skill);
 		final double failureModifier = attacker.calcStat(Stats.MAGIC_FAILURE_RATE, 1, target, skill);
-		int rate = Math.round((float)(lvlModifier * targetModifier * resModifier * failureModifier));
+		int rate = 100 - Math.round((float)(lvlModifier * targetModifier * resModifier * failureModifier));
 		
+		if (rate > skill.getMaxChance())
+			rate = skill.getMaxChance();
+		else if (rate < skill.getMinChance())
+			rate = skill.getMinChance();
+
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
@@ -2769,7 +2789,7 @@ public final class Formulas
 			if (Config.DEVELOPER)
 				_log.info(result);
 		}
-		return (Rnd.get(10000) > rate);
+		return (Rnd.get(100) < rate);
 	}
 	
 	public static double calcManaDam(L2Character attacker, L2Character target, L2Skill skill,

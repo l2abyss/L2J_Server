@@ -108,7 +108,7 @@ public class CursedWeapon
 				removeSkill();
 				
 				// Remove
-				_player.getInventory().unEquipItemInBodySlotAndRecord(L2Item.SLOT_LR_HAND);
+				_player.getInventory().unEquipItemInBodySlot(L2Item.SLOT_LR_HAND);
 				_player.store();
 				
 				// Destroy
@@ -438,7 +438,7 @@ public class CursedWeapon
 		// Equip with the weapon
 		_item = item;
 		//L2ItemInstance[] items =
-		_player.getInventory().equipItemAndRecord(_item);
+		_player.getInventory().equipItem(_item);
 		SystemMessage sm = new SystemMessage(SystemMessageId.S1_EQUIPPED);
 		sm.addItemName(_item);
 		_player.sendPacket(sm);
@@ -525,9 +525,6 @@ public class CursedWeapon
 			removeSkill();
 			
 			_player.abortAttack();
-			
-			// Unequip weapon
-			//_player.getInventory().unEquipItemInSlot(Inventory.PAPERDOLL_LRHAND);
 			
 			_player.broadcastUserInfo();
 		}

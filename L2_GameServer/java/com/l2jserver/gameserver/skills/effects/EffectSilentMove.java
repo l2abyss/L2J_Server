@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Env;
@@ -45,10 +44,6 @@ public class EffectSilentMove extends L2Effect
 	public boolean onStart()
 	{
 		super.onStart();
-		
-		L2Character effected = getEffected();
-		if (effected instanceof L2Playable)
-			((L2Playable) effected).setSilentMoving(true);
 		return true;
 	}
 	
@@ -60,10 +55,6 @@ public class EffectSilentMove extends L2Effect
 	public void onExit()
 	{
 		super.onExit();
-		
-		L2Character effected = getEffected();
-		if (effected instanceof L2Playable)
-			((L2Playable) effected).setSilentMoving(false);
 	}
 	
 	/**
@@ -100,5 +91,14 @@ public class EffectSilentMove extends L2Effect
 		
 		getEffected().reduceCurrentMp(manaDam);
 		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_SILENT_MOVE;
 	}
 }

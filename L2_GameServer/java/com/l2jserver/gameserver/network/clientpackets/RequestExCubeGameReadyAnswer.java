@@ -16,6 +16,9 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+
 /**
  * @author mrTJO
  * Format: chddd
@@ -34,20 +37,27 @@ public final class RequestExCubeGameReadyAnswer extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_arena = readD();
+		// client sends -1,0,1,2 for arena parameter
+		_arena = readD() + 1;
+		// client sends 1 if clicked confirm on not clicked, 0 if clicked cancel
 		_answer = readD();
 	}
 	
 	@Override
 	public void runImpl()
 	{
+		L2PcInstance player = getClient().getActiveChar();
+		
+		if(player == null) return;
+
 		switch (_answer)
 		{
 			case 0:
-				// Cancel
+				// Cancel - Answer No
 				break;
 			case 1:
 				// OK or Time Over
+				HandysBlockCheckerManager.getInstance().increaseArenaVotes(_arena);
 				break;
 			default:
 				_log.warning("Unknown Cube Game Answer ID: "+_answer);

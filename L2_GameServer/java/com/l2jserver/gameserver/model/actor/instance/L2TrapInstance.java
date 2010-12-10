@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Trap;
-import com.l2jserver.gameserver.model.olympiad.Olympiad;
+import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.TrapAction;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -139,7 +139,7 @@ public class L2TrapInstance extends L2Trap
 				((L2PcInstance)target).isInOlympiadMode() &&
 				((L2PcInstance)target).getOlympiadGameId() == _owner.getOlympiadGameId())
 		{
-			Olympiad.getInstance().notifyCompetitorDamage(getOwner(), damage, getOwner().getOlympiadGameId());
+			OlympiadGameManager.getInstance().notifyCompetitorDamage(getOwner(), damage);
 		}
 		
 		final SystemMessage sm;

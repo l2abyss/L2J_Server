@@ -53,8 +53,8 @@ public class PetInfo extends L2GameServerPacket
 		_mAtkSpd = _summon.getMAtkSpd();
 		_pAtkSpd = _summon.getPAtkSpd();
 		_multiplier = _summon.getMovementSpeedMultiplier();
-		_runSpd = _summon.getPetSpeed();
-		_walkSpd =  _summon.isMountable() ? 45 : 30;
+		_runSpd = _summon.getTemplate().baseRunSpd;
+		_walkSpd = _summon.getTemplate().baseWalkSpd;
 		_swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
 		_swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
 		_maxHp = _summon.getMaxVisibleHp();

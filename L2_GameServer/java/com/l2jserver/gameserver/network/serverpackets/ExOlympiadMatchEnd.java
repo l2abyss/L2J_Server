@@ -20,9 +20,10 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class ExOlympiadMatchEnd extends L2GameServerPacket
 {
-	public ExOlympiadMatchEnd()
+	public static final ExOlympiadMatchEnd STATIC_PACKET = new ExOlympiadMatchEnd();
+
+	private ExOlympiadMatchEnd()
 	{
-		
 	}
 	
 	@Override

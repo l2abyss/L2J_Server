@@ -32,9 +32,9 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.entity.TvTEventTeam;
-import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -369,25 +369,13 @@ public class L2CubicInstance
 			{
 				if (_owner.isOlympiadStart())
 				{
-					L2PcInstance[] players = Olympiad.getInstance().getPlayers(_owner.getOlympiadGameId());
-					if (players != null)
+					if (ownerTarget instanceof L2Playable)
 					{
-						if (_owner.getOlympiadSide() == 1)
-						{
-							if (ownerTarget == players[1])
-								_target = players[1];
-							else if (players[1].getPet() != null
-									&& ownerTarget == players[1].getPet())
-								_target = players[1].getPet();
-						}
-						else
-						{
-							if (ownerTarget == players[0])
-								_target = players[0];
-							else if (players[0].getPet() != null
-									&& ownerTarget == players[0].getPet())
-								_target = players[0].getPet();
-						}
+						final L2PcInstance targetPlayer = ownerTarget.getActingPlayer();
+						if (targetPlayer != null
+								&& targetPlayer.getOlympiadGameId() == _owner.getOlympiadGameId()
+								&& targetPlayer.getOlympiadSide() != _owner.getOlympiadSide())
+							_target = (L2Character)ownerTarget;
 					}
 				}
 				return;

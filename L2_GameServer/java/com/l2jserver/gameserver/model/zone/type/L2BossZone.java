@@ -20,6 +20,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.GameServer;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
+import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -34,7 +35,6 @@ import com.l2jserver.util.L2FastList;
  */
 public class L2BossZone extends L2ZoneType
 {
-	private String _zoneName;
 	private int _timeInvade;
 	private boolean _enabled = true; // default value, unless overridden by xml...
 	
@@ -57,17 +57,13 @@ public class L2BossZone extends L2ZoneType
 		_playerAllowedReEntryTimes = new FastMap<Integer, Long>();
 		_playersAllowed = new L2FastList<Integer>();
 		_oustLoc = new int[3];
+		GrandBossManager.getInstance().addZone(this);
 	}
 	
 	@Override
 	public void setParameter(String name, String value)
 	{
-		if (name.equals("name"))
-		{
-			_zoneName = value;
-		}
-		
-		else if (name.equals("InvadeTime"))
+		if (name.equals("InvadeTime"))
 		{
 			_timeInvade = Integer.parseInt(value);
 		}
@@ -239,11 +235,6 @@ public class L2BossZone extends L2ZoneType
 			oustAllPlayers();
 		
 		_enabled = flag;
-	}
-	
-	public String getZoneName()
-	{
-		return _zoneName;
 	}
 	
 	public int getTimeInvade()

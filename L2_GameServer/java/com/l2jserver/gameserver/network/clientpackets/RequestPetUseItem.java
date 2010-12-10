@@ -26,8 +26,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.item.L2ArmorType;
-import com.l2jserver.gameserver.templates.item.L2Item;
 
 public final class RequestPetUseItem extends L2GameClientPacket
 {
@@ -63,9 +61,6 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		if (item == null)
 			return;
 		
-		if (item.isWear())
-			return;
-		
 		int itemId = item.getItemId();
 		
 		if (activeChar.isAlikeDead() || pet.isDead())
@@ -83,104 +78,27 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		if (!item.isEquipped())
 		{
 			if (!item.getItem().checkCondition(pet, pet, true))
+			{
 				return;
+			}
 		}
 		
 		//check if the item matches the pet
 		if (item.isEquipable())
 		{
-			if (item.getItem().getBodyPart() == L2Item.SLOT_NECK)
-			{
-				if (item.getItem().getItemType() == L2ArmorType.PET)
-				{
-					useItem(pet, item, activeChar);
-					return;
-				}
-			}
-			if (PetDataTable.isWolf(pet.getNpcId()) && // wolf
-					item.getItem().isForWolf())
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isEvolvedWolf(pet.getNpcId()) && // evolved wolf
-					(item.getItem().isForEvolvedWolf()||item.getItem().isForWolf()))
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isHatchling(pet.getNpcId()) && // hatchlings
-					item.getItem().isForHatchling())
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isStrider(pet.getNpcId()) && // striders
-					item.getItem().isForStrider())
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isBaby(pet.getNpcId()) && // baby pets (buffalo, cougar, kookaboora)
-					item.getItem().isForBabyPet())
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isImprovedBaby(pet.getNpcId()) && // Improved baby pets (buffalo, cougar, kookaboora)
-					item.getItem().isForBabyPet())
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else
+			// all pet items have condition
+			if (!item.getItem().isConditionAttached())
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
 				return;
 			}
+			useItem(pet, item, activeChar);
+			return;
 		}
 		else if (PetDataTable.isPetFood(itemId))
 		{
-			if (PetDataTable.isWolf(pet.getNpcId()) && PetDataTable.isWolfFood(itemId))
-			{
+			if (pet.canEatFoodId(itemId))
 				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isEvolvedWolf(pet.getNpcId()) && PetDataTable.isEvolvedWolfFood(itemId))
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isSinEater(pet.getNpcId()) && PetDataTable.isSinEaterFood(itemId))
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isHatchling(pet.getNpcId()) && PetDataTable.isHatchlingFood(itemId))
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isStrider(pet.getNpcId()) && PetDataTable.isStriderFood(itemId))
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isWyvern(pet.getNpcId()) && PetDataTable.isWyvernFood(itemId))
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isBaby(pet.getNpcId()) && PetDataTable.isBabyFood(itemId))
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
-			else if (PetDataTable.isImprovedBaby(pet.getNpcId()) && PetDataTable.isImprovedBabyFood(itemId))
-			{
-				useItem(pet, item, activeChar);
-				return;
-			}
 			else
 			{
 				activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
@@ -197,41 +115,17 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		return;
 	}
 	
-	private synchronized void useItem(L2PetInstance pet, L2ItemInstance item, L2PcInstance activeChar)
+	private void useItem(L2PetInstance pet, L2ItemInstance item, L2PcInstance activeChar)
 	{
 		if (item.isEquipable())
 		{
 			if (item.isEquipped())
 			{
 				pet.getInventory().unEquipItemInSlot(item.getLocationSlot());
-				switch (item.getItem().getBodyPart())
-				{
-					case L2Item.SLOT_R_HAND:
-						pet.setWeapon(0);
-						break;
-					case L2Item.SLOT_CHEST:
-						pet.setArmor(0);
-						break;
-					case L2Item.SLOT_NECK:
-						pet.setJewel(0);
-						break;
-				}
 			}
 			else
 			{
 				pet.getInventory().equipItem(item);
-				switch (item.getItem().getBodyPart())
-				{
-					case L2Item.SLOT_R_HAND:
-						pet.setWeapon(item.getItemId());
-						break;
-					case L2Item.SLOT_CHEST:
-						pet.setArmor(item.getItemId());
-						break;
-					case L2Item.SLOT_NECK:
-						pet.setJewel(item.getItemId());
-						break;
-				}
 			}
 			
 			activeChar.sendPacket(new PetItemList(pet));

@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.olympiad.Participant;
 
 
 /**
@@ -29,31 +30,46 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 	// chcdSddddd
 	private static final String _S__FE_29_OLYMPIADUSERINFO = "[S] FE:7A ExOlympiadUserInfo";
 	private L2PcInstance _player;
+	private Participant _par = null;
 	
-	
-	/**
-	 * @param _player
-	 * @param _side (1 = right, 2 = left)
-	 */
 	public ExOlympiadUserInfo(L2PcInstance player)
 	{
 		_player = player;
 	}
 	
+	public ExOlympiadUserInfo(Participant par)
+	{
+		_par = par;
+		_player = par.player;
+	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x7a);
-		writeC(_player.getOlympiadSide());
-		writeD(_player.getObjectId());
-		writeS(_player.getName());
-		writeD(_player.getClassId().getId());
-		writeD((int)_player.getCurrentHp());
-		writeD(_player.getMaxVisibleHp());
-		writeD((int)_player.getCurrentCp());
-		writeD(_player.getMaxCp());
+		if (_player != null)
+		{
+			writeC(_player.getOlympiadSide());
+			writeD(_player.getObjectId());
+			writeS(_player.getName());
+			writeD(_player.getClassId().getId());
+			writeD((int)_player.getCurrentHp());
+			writeD(_player.getMaxVisibleHp());
+			writeD((int)_player.getCurrentCp());
+			writeD(_player.getMaxCp());
+		}
+		else
+		{
+			writeC(_par.side);
+			writeD(_par.objectId);
+			writeS(_par.name);
+			writeD(_par.baseClass);
+			writeD(0);
+			writeD(100);
+			writeD(0);
+			writeD(100);
+		}
 	}
 	
 	/* (non-Javadoc)

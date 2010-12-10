@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.network.serverpackets.KeyPacket;
+import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
  * This class ...
@@ -49,7 +50,7 @@ public final class ProtocolVersion extends L2GameClientPacket
 			if (Config.DEBUG)
 				_log.info("Ping received");
 			// this is just a ping attempt from the new C2 client
-			getClient().closeNow();
+			getClient().close((L2GameServerPacket)null);
 		}
 		else if (!Config.PROTOCOL_LIST.contains(_version))
 		{
@@ -57,8 +58,8 @@ public final class ProtocolVersion extends L2GameClientPacket
 			record.setParameters(new Object[]{_version, getClient()});
 			_logAccounting.log(record);
 			KeyPacket pk = new KeyPacket(getClient().enableCrypt(),0);
-			getClient().sendPacket(pk);
 			getClient().setProtocolOk(false);
+			getClient().close(pk);
 		}
 		else
 		{

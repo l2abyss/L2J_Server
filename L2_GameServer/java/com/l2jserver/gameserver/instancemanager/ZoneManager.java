@@ -21,6 +21,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +38,7 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
@@ -46,7 +49,6 @@ import com.l2jserver.gameserver.model.zone.form.ZoneCuboid;
 import com.l2jserver.gameserver.model.zone.form.ZoneCylinder;
 import com.l2jserver.gameserver.model.zone.form.ZoneNPoly;
 import com.l2jserver.gameserver.model.zone.type.L2ArenaZone;
-import com.l2jserver.gameserver.model.zone.type.L2BossZone;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 
 /**
@@ -61,6 +63,7 @@ public class ZoneManager
 	//private final FastMap<Integer, L2ZoneType> _zones = new FastMap<Integer, L2ZoneType>();
 	private final Map<Class<? extends L2ZoneType>, Map<Integer, ? extends L2ZoneType>> _classZones = new FastMap<Class<? extends L2ZoneType>, Map<Integer, ? extends L2ZoneType>>();
 	private int _lastDynamicId = 300000;
+	private List<L2ItemInstance> _debugItems;
 	
 	public static final ZoneManager getInstance()
 	{
@@ -143,6 +146,7 @@ public class ZoneManager
 			Document doc;
 			NamedNodeMap attrs;
 			Node attribute;
+			String zoneName;
 			int[][] coords;
 			int zoneId, minZ, maxZ;
 			String zoneType, zoneShape;
@@ -171,6 +175,12 @@ public class ZoneManager
 								else
 									zoneId = _lastDynamicId++;
 								
+								attribute = attrs.getNamedItem("name");
+								if (attribute != null)
+									zoneName = attribute.getNodeValue();
+								else
+									zoneName = null;
+
 								attribute = attrs.getNamedItem("minZ");
 								if (attribute != null)
 									minZ = Integer.parseInt(attribute.getNodeValue());
@@ -367,6 +377,9 @@ public class ZoneManager
 								if (checkId(zoneId))
 									_log.config("Caution: Zone (" + zoneId + ") from file: " + f.getName() + " overrides previos definition.");
 								
+								if (zoneName != null && !zoneName.isEmpty())
+									temp.setName(zoneName);
+								
 								addZone(zoneId, temp);
 								
 								// Register the zone into any world region it
@@ -392,10 +405,6 @@ public class ZoneManager
 										}
 									}
 								}
-								
-								// Special managers for granbosses...
-								if (temp instanceof L2BossZone)
-									GrandBossManager.getInstance().addZone((L2BossZone) temp);
 							}
 						}
 					}
@@ -651,6 +660,35 @@ public class ZoneManager
 		}
 		else
 			return zone;
+	}
+	
+	/**
+	 * General storage for debug items used for visualizing zones.
+	 * @return list of items
+	 */
+	public List<L2ItemInstance> getDebugItems()
+	{
+		if (_debugItems == null)
+			_debugItems = new FastList<L2ItemInstance>();
+		return _debugItems;
+	}
+	
+	/**
+	 * Remove all debug items from l2world
+	 */
+	public void clearDebugItems()
+	{
+		if (_debugItems != null)
+		{
+			Iterator<L2ItemInstance> it = _debugItems.iterator();
+			while (it.hasNext())
+			{
+				L2ItemInstance item = it.next();
+				if (item != null)
+					item.decayMe();
+				it.remove();
+			}
+		}
 	}
 	
 	@SuppressWarnings("synthetic-access")

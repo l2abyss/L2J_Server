@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.templates;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,10 +48,9 @@ public final class StatsSet  {
 	public void add(StatsSet newSet)
 	{
 		Map<String, Object> newMap  = newSet.getSet();
-		for (String key : newMap.keySet())
+		for (Entry<String, Object> entry : newMap.entrySet())
 		{
-			Object value    = newMap.get(key);
-			_set.put(key, value);
+			_set.put(entry.getKey(), entry.getValue());
 		}
 	}
 	
@@ -409,7 +409,7 @@ public final class StatsSet  {
 		try {
 			return Enum.valueOf(enumClass, String.valueOf(val));
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Enum value of type "+enumClass.getName()+"required, but found: "+val);
+			throw new IllegalArgumentException("Enum value of type "+enumClass.getName()+" required, but found: "+val);
 		}
 	}
 	

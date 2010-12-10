@@ -18,13 +18,12 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
+import com.l2jserver.gameserver.network.serverpackets.ExVoteSystemInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 
-public final class RequestEvaluate extends L2GameClientPacket
+public final class RequestVoteNew extends L2GameClientPacket
 {
-	private static final String _C__B9_REQUESTEVALUATE = "[C] B9 RequestEvaluate";
-	
 	private int _targetId;
 	
 	@Override
@@ -56,12 +55,6 @@ public final class RequestEvaluate extends L2GameClientPacket
 		if (target.getObjectId() != _targetId)
 			return;
 		
-		if (activeChar.getLevel() < 10)
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.ONLY_LEVEL_SUP_10_CAN_RECOMMEND));
-			return;
-		}
-		
 		if (target == activeChar)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_RECOMMEND_YOURSELF));
@@ -70,19 +63,13 @@ public final class RequestEvaluate extends L2GameClientPacket
 		
 		if (activeChar.getRecomLeft() <= 0)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.NO_MORE_RECOMMENDATIONS_TO_HAVE));
+			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CURRENTLY_DO_NOT_HAVE_ANY_RECOMMENDATIONS));
 			return;
 		}
 		
 		if (target.getRecomHave() >= 255)
 		{
 			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_NO_LONGER_RECEIVE_A_RECOMMENDATION));
-			return;
-		}
-		
-		if (!activeChar.canRecom(target))
-		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.THAT_CHARACTER_IS_RECOMMENDED));
 			return;
 		}
 		
@@ -102,6 +89,9 @@ public final class RequestEvaluate extends L2GameClientPacket
 		activeChar.sendPacket(new UserInfo(activeChar));
 		sendPacket(new ExBrExtraUserInfo(activeChar));
 		target.broadcastUserInfo();
+		
+		activeChar.sendPacket(new ExVoteSystemInfo(activeChar));
+		target.sendPacket(new ExVoteSystemInfo(target));
 	}
 	
 	/* (non-Javadoc)
@@ -110,6 +100,6 @@ public final class RequestEvaluate extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__B9_REQUESTEVALUATE;
+		return "[C] D0:7E RequestVoteNew";
 	}
 }

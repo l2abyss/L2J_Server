@@ -12,31 +12,14 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.util;
+package com.l2jserver.gameserver.templates.item;
 
-import java.util.Random;
-
-public class MTRandom
+/**
+ * Created for allow comparing different item types
+ * @author DS
+ *
+ */
+public interface L2ItemType
 {
-	private Random _random = new Random();
-	
-	public Random getSecureRandom()
-	{
-		return _random;
-	}
-	
-	public static final MTRandom getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	private MTRandom()
-	{
-	}
-	
-	@SuppressWarnings("synthetic-access")
-	private static class SingletonHolder
-	{
-		protected static final MTRandom _instance = new MTRandom();
-	}
+	public int mask();
 }

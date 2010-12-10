@@ -15,11 +15,12 @@
 package com.l2jserver.gameserver.skills;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -27,40 +28,24 @@ import org.w3c.dom.Node;
 import com.l2jserver.gameserver.Item;
 import com.l2jserver.gameserver.skills.conditions.Condition;
 import com.l2jserver.gameserver.templates.StatsSet;
-import com.l2jserver.gameserver.templates.item.L2Armor;
-import com.l2jserver.gameserver.templates.item.L2ArmorType;
-import com.l2jserver.gameserver.templates.item.L2EtcItem;
-import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 
 /**
- * @author mkizub
+ * @author mkizub, JIV
  */
 final class DocumentItem extends DocumentBase
 {
 	private Item _currentItem = null;
 	private List<L2Item> _itemsInFile = new FastList<L2Item>();
-	private Map<Integer, Item> _itemData = new FastMap<Integer, Item>();
 	
 	/**
-	 * @param armorData
 	 * @param f
 	 */
-	public DocumentItem(Map<Integer, Item> pItemData, File file)
+	public DocumentItem(File file)
 	{
 		super(file);
-		_itemData = pItemData;
 	}
-	
-	/**
-	 * @param item
-	 */
-	private void setCurrentItem(Item item)
-	{
-		_currentItem = item;
-	}
+
 	
 	@Override
 	protected StatsSet getStatsSet()
@@ -92,60 +77,59 @@ final class DocumentItem extends DocumentBase
 				{
 					if ("item".equalsIgnoreCase(d.getNodeName()))
 					{
-						setCurrentItem(new Item());
-						parseItem(d);
-						_itemsInFile.add(_currentItem.item);
-						resetTable();
+						try
+						{
+							_currentItem = new Item();
+							parseItem(d);
+							_itemsInFile.add(_currentItem.item);
+							resetTable();
+						}
+						catch (Exception e)
+						{
+							_log.log(Level.WARNING, "Cannot create item "+_currentItem.id, e);
+						}
 					}
 				}
-			}
-			else if ("item".equalsIgnoreCase(n.getNodeName()))
-			{
-				setCurrentItem(new Item());
-				parseItem(n);
-				_itemsInFile.add(_currentItem.item);
 			}
 		}
 	}
 	
-	protected void parseItem(Node n)
+	protected void parseItem(Node n) throws InvocationTargetException
 	{
 		int itemId = Integer.parseInt(n.getAttributes().getNamedItem("id").getNodeValue());
+		String className = n.getAttributes().getNamedItem("type").getNodeValue();
 		String itemName = n.getAttributes().getNamedItem("name").getNodeValue();
 		
 		_currentItem.id = itemId;
 		_currentItem.name = itemName;
-		
-		Item item;
-		if ((item = _itemData.get(_currentItem.id)) == null)
-		{
-			throw new IllegalStateException("No SQL data for Item ID: "+itemId+" - name: "+itemName);
-		}
-		_currentItem.set = item.set;
-		_currentItem.type = item.type;
+		_currentItem.type = className;
+		_currentItem.set = new StatsSet();
+		_currentItem.set.set("item_id", itemId);
+		_currentItem.set.set("name", itemName);
 		
 		Node first = n.getFirstChild();
 		for (n = first; n != null; n = n.getNextSibling())
 		{
-			if ("table".equalsIgnoreCase(n.getNodeName())) parseTable(n);
-		}
-		for (n = first; n != null; n = n.getNextSibling())
-		{
-			if ("set".equalsIgnoreCase(n.getNodeName()))
-				parseBeanSet(n, _itemData.get(_currentItem.id).set, 1);
-		}
-		for (n = first; n != null; n = n.getNextSibling())
-		{
-			if ("for".equalsIgnoreCase(n.getNodeName()))
+			if ("table".equalsIgnoreCase(n.getNodeName()))
+			{
+				if (_currentItem.item != null)
+					throw new IllegalStateException("Item created but table node found! Item "+itemId);
+				parseTable(n);
+			}
+			else if ("set".equalsIgnoreCase(n.getNodeName()))
+			{
+				if (_currentItem.item != null)
+					throw new IllegalStateException("Item created but set node found! Item "+itemId);
+				parseBeanSet(n, _currentItem.set, 1);
+			}
+			else if ("for".equalsIgnoreCase(n.getNodeName()))
 			{
 				makeItem();
 				parseTemplate(n, _currentItem.item);
 			}
-		}
-		for (n = first; n != null; n = n.getNextSibling())
-		{
-			if ("cond".equalsIgnoreCase(n.getNodeName()))
+			else if ("cond".equalsIgnoreCase(n.getNodeName()))
 			{
+				makeItem();
 				Condition condition = parseCondition(n.getFirstChild(), _currentItem.item );
 				Node msg = n.getAttributes().getNamedItem("msg");
 				Node msgId = n.getAttributes().getNamedItem("msgId");
@@ -161,25 +145,23 @@ final class DocumentItem extends DocumentBase
 				_currentItem.item.attach(condition);
 			}
 		}
-		for (n = first; n != null; n = n.getNextSibling())
-		{
-			if ("skill".equalsIgnoreCase(n.getNodeName()))
-			{
-				attachSkill(n, _currentItem.item, null);
-			}
-		}
+		//bah! in this point item doesn't have to be still created
+		makeItem();
 	}
 	
-	private void makeItem()
+	private void makeItem() throws InvocationTargetException
 	{
-		if (_currentItem.item != null) return;
-		if (_currentItem.type instanceof L2ArmorType) _currentItem.item = new L2Armor(
-				(L2ArmorType) _currentItem.type, _currentItem.set);
-		else if (_currentItem.type instanceof L2WeaponType) _currentItem.item = new L2Weapon(
-				(L2WeaponType) _currentItem.type, _currentItem.set);
-		else if (_currentItem.type instanceof L2EtcItemType) _currentItem.item = new L2EtcItem(
-				(L2EtcItemType) _currentItem.type, _currentItem.set);
-		else throw new Error("Unknown item type " + _currentItem.type);
+		if (_currentItem.item != null) 
+			return; // item is already created
+		try
+		{
+			Constructor<?> c = Class.forName("com.l2jserver.gameserver.templates.item.L2"+_currentItem.type).getConstructor(StatsSet.class);
+			_currentItem.item = (L2Item) c.newInstance(_currentItem.set);
+		}
+		catch (Exception e)
+		{
+			throw new InvocationTargetException(e);
+		}
 	}
 	
 	/**

@@ -66,13 +66,10 @@ public class L2SkillChangeWeapon extends L2Skill
 		
 		L2ItemInstance wpn = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
 		if (wpn == null)
-			wpn = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LRHAND);
+			wpn = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
 		
 		if (wpn != null)
 		{
-			if (wpn.isWear())
-				return;
-			
 			if (wpn.isAugmented())
 				return;
 			

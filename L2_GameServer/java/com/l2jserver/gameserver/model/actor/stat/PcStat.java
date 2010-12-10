@@ -15,16 +15,18 @@
 package com.l2jserver.gameserver.model.actor.stat;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.PetDataTable;
+import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.base.Experience;
+import com.l2jserver.gameserver.model.entity.RecoBonus;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExVitalityPointInfo;
+import com.l2jserver.gameserver.network.serverpackets.ExVoteSystemInfo;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
@@ -101,7 +103,7 @@ public class PcStat extends PlayableStat
 	@Override
 	public boolean addExpAndSp(long addToExp, int addToSp)
 	{
-		float ratioTakenByPet = 0;
+		float ratioTakenByPlayer = 0;
 		// Allowed to gain exp/sp?
 		L2PcInstance activeChar = getActiveChar();
 		if (!activeChar.getAccessLevel().canGainExp())
@@ -112,27 +114,33 @@ public class PcStat extends PlayableStat
 		if (activeChar.getPet() instanceof L2PetInstance)
 		{
 			L2PetInstance pet = (L2PetInstance) activeChar.getPet();
-			ratioTakenByPet = pet.getPetData().getOwnerExpTaken();
+			ratioTakenByPlayer = pet.getPetLevelData().getOwnerExpTaken() / 100f;
 			
 			// only give exp/sp to the pet by taking from the owner if the pet has a non-zero, positive ratio
 			// allow possible customizations that would have the pet earning more than 100% of the owner's exp/sp
-			if (ratioTakenByPet > 0 && !pet.isDead())
-				pet.addExpAndSp((long) (addToExp * ratioTakenByPet), (int) (addToSp * ratioTakenByPet));
+			if (ratioTakenByPlayer > 1)
+				ratioTakenByPlayer = 1;
+			if (!pet.isDead())
+				pet.addExpAndSp((long) (addToExp * (1 - ratioTakenByPlayer)), (int) (addToSp * (1 - ratioTakenByPlayer)));
 			// now adjust the max ratio to avoid the owner earning negative exp/sp
-			if (ratioTakenByPet > 1)
-				ratioTakenByPet = 1;
-			addToExp = (long) (addToExp * (1 - ratioTakenByPet));
-			addToSp = (int) (addToSp * (1 - ratioTakenByPet));
+			addToExp = (long) (addToExp * ratioTakenByPlayer);
+			addToSp = (int) (addToSp * ratioTakenByPlayer);
 		}
 		
 		if (!super.addExpAndSp(addToExp, addToSp))
 			return false;
 		
 		// Send a Server->Client System Message to the L2PcInstance
-		if ((int) addToExp == 0)
+		if (addToExp == 0 && addToSp != 0)
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_SP);
 			sm.addNumber(addToSp);
+			activeChar.sendPacket(sm);
+		}
+		else if (addToSp == 0 && addToExp != 0)
+		{
+			SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
+			sm.addNumber((int) addToExp);
 			activeChar.sendPacket(sm);
 		}
 		else
@@ -145,29 +153,35 @@ public class PcStat extends PlayableStat
 		return true;
 	}
 	
-	public boolean addExpAndSp(long addToExp, int addToSp, boolean useVitality)
+	public boolean addExpAndSp(long addToExp, int addToSp, boolean useBonuses)
 	{
-		if (useVitality && Config.ENABLE_VITALITY)
+		if (useBonuses)
 		{
-			switch (_vitalityLevel)
+			if (Config.ENABLE_VITALITY)
 			{
-				case 1:
-					addToExp *= Config.RATE_VITALITY_LEVEL_1;
-					addToSp *= Config.RATE_VITALITY_LEVEL_1;
-					break;
-				case 2:
-					addToExp *= Config.RATE_VITALITY_LEVEL_2;
-					addToSp *= Config.RATE_VITALITY_LEVEL_2;
-					break;
-				case 3:
-					addToExp *= Config.RATE_VITALITY_LEVEL_3;
-					addToSp *= Config.RATE_VITALITY_LEVEL_3;
-					break;
-				case 4:
-					addToExp *= Config.RATE_VITALITY_LEVEL_4;
-					addToSp *= Config.RATE_VITALITY_LEVEL_4;
-					break;
+				switch (_vitalityLevel)
+				{
+					case 1:
+						addToExp *= Config.RATE_VITALITY_LEVEL_1;
+						addToSp *= Config.RATE_VITALITY_LEVEL_1;
+						break;
+					case 2:
+						addToExp *= Config.RATE_VITALITY_LEVEL_2;
+						addToSp *= Config.RATE_VITALITY_LEVEL_2;
+						break;
+					case 3:
+						addToExp *= Config.RATE_VITALITY_LEVEL_3;
+						addToSp *= Config.RATE_VITALITY_LEVEL_3;
+						break;
+					case 4:
+						addToExp *= Config.RATE_VITALITY_LEVEL_4;
+						addToSp *= Config.RATE_VITALITY_LEVEL_4;
+						break;
+				}
 			}
+			// Apply recommendation bonus
+			addToExp *= RecoBonus.getRecoMultiplier(getActiveChar());
+			addToSp  *= RecoBonus.getRecoMultiplier(getActiveChar());
 		}
 		return addExpAndSp(addToExp, addToSp);
 	}
@@ -246,6 +260,7 @@ public class PcStat extends PlayableStat
 		// Send a Server->Client packet UserInfo to the L2PcInstance
 		getActiveChar().sendPacket(new UserInfo(getActiveChar()));
 		getActiveChar().sendPacket(new ExBrExtraUserInfo(getActiveChar()));
+		getActiveChar().sendPacket(new ExVoteSystemInfo(getActiveChar()));
 		
 		return levelIncreased;
 	}
@@ -399,7 +414,7 @@ public class PcStat extends PlayableStat
 		L2PcInstance player = getActiveChar();
 		if (player.isMounted())
 		{
-			int baseRunSpd = PetDataTable.getInstance().getPetData(player.getMountNpcId(), player.getMountLevel()).getPetSpeed();
+			int baseRunSpd = NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).baseRunSpd;
 			val = (int) Math.round(calcStat(Stats.RUN_SPEED, baseRunSpd, null, null));
 		}
 		else
@@ -454,7 +469,7 @@ public class PcStat extends PlayableStat
 			return 1;
 		
 		if (getActiveChar().isMounted())
-			return getRunSpeed() * 1f / PetDataTable.getInstance().getPetData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel()).getPetSpeed();
+			return getRunSpeed() * 1f / NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).baseRunSpd;
 		
 		return super.getMovementSpeedMultiplier();
 	}

@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.zone;
 
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -39,13 +38,13 @@ public abstract class L2ZoneType
 	protected static final Logger _log = Logger.getLogger(L2ZoneType.class.getName());
 	
 	private final int _id;
-	protected List<L2ZoneForm> _zone;
+	protected L2ZoneForm _zone;
 	protected FastMap<Integer, L2Character> _characterList;
-	protected FastMap<Integer, Integer> _zones;
 	
 	/** Parameters to affect specific characters */
 	private boolean _checkAffected = false;
 	
+	private String _name = null;
 	private int _minLvl;
 	private int _maxLvl;
 	private int[] _race;
@@ -58,7 +57,6 @@ public abstract class L2ZoneType
 	{
 		_id = id;
 		_characterList = new FastMap<Integer, L2Character>().shared();
-		_zones = new FastMap<Integer, Integer>().shared();
 		
 		_minLvl = 0;
 		_maxLvl = 0xFF;
@@ -86,8 +84,13 @@ public abstract class L2ZoneType
 	{
 		_checkAffected = true;
 		
+		// Zone name
+		if (name.equals("name"))
+		{
+			_name = value;
+		}
 		// Minimum level
-		if (name.equals("affectedLvlMin"))
+		else if (name.equals("affectedLvlMin"))
 		{
 			_minLvl = Integer.parseInt(value);
 		}
@@ -234,7 +237,9 @@ public abstract class L2ZoneType
 	 */
 	public void setZone(L2ZoneForm zone)
 	{
-		getZones().add(zone);
+		if (_zone != null)
+			throw new IllegalStateException("Zone already set");
+		_zone = zone;
 	}
 	
 	/**
@@ -244,20 +249,27 @@ public abstract class L2ZoneType
 	 */
 	public L2ZoneForm getZone()
 	{
-		for (L2ZoneForm zone : getZones())
-		{
-			return zone;
-		}
-		return null;
-	}
-	
-	public final List<L2ZoneForm> getZones()
-	{
-		if (_zone == null)
-			_zone = new FastList<L2ZoneForm>();
 		return _zone;
 	}
-	
+
+	/**
+	 * Set the zone name.
+	 * @param name
+	 */
+	public void setName(String name)
+	{
+		_name = name;
+	}
+
+	/**
+	 * Returns zone name
+	 * @return
+	 */
+	public String getName()
+	{
+		return _name;
+	}
+
 	/**
 	 * Checks if the given coordinates are within zone's plane
 	 * @param x
@@ -265,12 +277,7 @@ public abstract class L2ZoneType
 	 */
 	public boolean isInsideZone(int x, int y)
 	{
-		for (L2ZoneForm zone : getZones())
-		{
-			if (zone.isInsideZone(x, y, zone.getHighZ()))
-				return true;
-		}
-		return false;
+		return _zone.isInsideZone(x, y, _zone.getHighZ());
 	}
 	
 	/**
@@ -281,12 +288,7 @@ public abstract class L2ZoneType
 	 */
 	public boolean isInsideZone(int x, int y, int z)
 	{
-		for (L2ZoneForm zone : getZones())
-		{
-			if (zone.isInsideZone(x, y, z))
-				return true;
-		}
-		return false;
+		return _zone.isInsideZone(x, y, z);
 	}
 	
 	/**
@@ -429,7 +431,7 @@ public abstract class L2ZoneType
 		
 		for (L2Character character : _characterList.values())
 		{
-			if (character instanceof L2PcInstance)
+			if (character != null && character instanceof L2PcInstance)
 				character.sendPacket(packet);
 		}
 	}
@@ -449,5 +451,10 @@ public abstract class L2ZoneType
 	public String toString()
 	{
 		return getClass().getSimpleName()+"["+ _id + "]";
+	}
+	
+	public void visualizeZone(int z)
+	{
+		getZone().visualizeZone(z);
 	}
 }

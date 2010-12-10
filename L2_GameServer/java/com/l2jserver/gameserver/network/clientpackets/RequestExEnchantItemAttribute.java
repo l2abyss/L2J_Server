@@ -92,14 +92,8 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			return;
 		}
 		
-		if (item.isWear())
-		{
-			Util.handleIllegalPlayerAction(player, "Player "+player.getName()+" tried to enchant a weared Item", Config.DEFAULT_PUNISH);
-			return;
-		}
-		
 		//can't enchant rods, shadow items, adventurers', PvP items, hero items, cloaks, bracelets, underwear (e.g. shirt), belt, necklace, earring, ring
-		if (item.getItem().getItemType() == L2WeaponType.ROD || item.isShadowItem() || item.isPvp() || item.isHeroItem() || item.isTimeLimitedItem() ||
+		if (item.getItem().getItemType() == L2WeaponType.FISHINGROD || item.isShadowItem() || item.isPvp() || item.isHeroItem() || item.isTimeLimitedItem() ||
 				(item.getItemId() >= 7816 && item.getItemId() <= 7831) || (item.getItem().getItemType() == L2WeaponType.NONE) ||
 				item.getItem().getItemGradeSPlus() != L2Item.CRYSTAL_S || item.getItem().getBodyPart() == L2Item.SLOT_BACK ||
 				item.getItem().getBodyPart() == L2Item.SLOT_R_BRACELET || item.getItem().getBodyPart() == L2Item.SLOT_UNDERWEAR ||
@@ -187,8 +181,24 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			player.setActiveEnchantAttrItem(null);
 			return;
 		}
-		
-		if (Rnd.get(100) < Config.ENCHANT_CHANCE_ELEMENT)
+		boolean success = false;
+		switch(Elementals.getItemElemental(stoneId)._type)
+		{
+			case Stone:
+			case Roughore:
+				success = Rnd.get(100) < Config.ENCHANT_CHANCE_ELEMENT_STONE;
+				break;
+			case Crystal:
+				success = Rnd.get(100) < Config.ENCHANT_CHANCE_ELEMENT_CRYSTAL;
+				break;
+			case Jewel:
+				success = Rnd.get(100) < Config.ENCHANT_CHANCE_ELEMENT_JEWEL;
+				break;
+			case Energy:
+				success = Rnd.get(100) < Config.ENCHANT_CHANCE_ELEMENT_ENERGY;
+				break;
+		}
+		if (success)
 		{
 			byte realElement = item.isArmor() ? opositeElement : elementToAdd;
 			

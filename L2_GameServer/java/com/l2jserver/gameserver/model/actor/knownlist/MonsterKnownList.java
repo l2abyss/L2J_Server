@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.knownlist;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
@@ -34,11 +35,13 @@ public class MonsterKnownList extends AttackableKnownList
 		if (!super.addKnownObject(object))
 			return false;
 		
+		final L2CharacterAI ai = getActiveChar().getAI(); // force AI creation
+
 		// Set the L2MonsterInstance Intention to AI_INTENTION_ACTIVE if the state was AI_INTENTION_IDLE
 		if (object instanceof L2PcInstance
-				&& getActiveChar().hasAI()
-				&& getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-			getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+				&& ai != null
+				&& ai.getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+			ai.setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
 		
 		return true;
 	}

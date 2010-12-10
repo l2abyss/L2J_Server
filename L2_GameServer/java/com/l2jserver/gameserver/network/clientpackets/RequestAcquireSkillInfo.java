@@ -60,6 +60,9 @@ public class RequestAcquireSkillInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
+		if (_id <= 0 || _level <= 0) // minimal sanity check
+			return;
+
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		
 		if (activeChar == null)

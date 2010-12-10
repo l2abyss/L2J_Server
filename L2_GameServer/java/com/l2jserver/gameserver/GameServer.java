@@ -45,7 +45,6 @@ import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
-import com.l2jserver.gameserver.datatables.ExtractableItemsData;
 import com.l2jserver.gameserver.datatables.ExtractableSkillsData;
 import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.GMSkillTable;
@@ -65,7 +64,7 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.NpcWalkerRoutesTable;
 import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
-import com.l2jserver.gameserver.datatables.PetSkillsTable;
+import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
 import com.l2jserver.gameserver.datatables.SkillSpellbookTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -98,6 +97,8 @@ import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
+import com.l2jserver.gameserver.instancemanager.GlobalVariablesManager;
+import com.l2jserver.gameserver.instancemanager.GraciaSeedsManager;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.HellboundManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
@@ -215,22 +216,22 @@ public class GameServer
 		L2World.getInstance();
 		MapRegionTable.getInstance();
 		Announcements.getInstance();
+		GlobalVariablesManager.getInstance();
 		
 		printSection("Skills");
 		EnchantGroupsTable.getInstance();
 		SkillTable.getInstance();
 		SkillTreeTable.getInstance();
-		PetSkillsTable.getInstance();
 		NobleSkillTable.getInstance();
 		GMSkillTable.getInstance();
 		HeroSkillTable.getInstance();
 		ResidentialSkillTable.getInstance();
 		SkillSpellbookTable.getInstance();
 		SubPledgeSkillTree.getInstance();
+		SummonSkillsTable.getInstance();
 		
 		printSection("Items");
 		ItemTable.getInstance();
-		ExtractableItemsData.getInstance();
 		ExtractableSkillsData.getInstance();
 		SummonItemsData.getInstance();
 		EnchantHPBonusData.getInstance();
@@ -250,7 +251,7 @@ public class GameServer
 		AdminCommandAccessRights.getInstance();
 		GmListTable.getInstance();
 		RaidBossPointsManager.getInstance();
-		PetDataTable.getInstance().loadPetsData();
+		PetDataTable.getInstance();
 		
 		printSection("Clans");
 		ClanTable.getInstance();
@@ -313,6 +314,7 @@ public class GameServer
 		TransformationManager.getInstance();
 		BoatManager.getInstance();
 		AirShipManager.getInstance();
+		GraciaSeedsManager.getInstance();
 		
 		try
 		{

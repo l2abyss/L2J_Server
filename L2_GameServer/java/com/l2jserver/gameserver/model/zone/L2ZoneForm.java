@@ -14,6 +14,10 @@
  */
 package com.l2jserver.gameserver.model.zone;
 
+import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.L2ItemInstance;
+
 /**
  * Abstract base class for any zone form
  *
@@ -21,6 +25,8 @@ package com.l2jserver.gameserver.model.zone;
  */
 public abstract class L2ZoneForm
 {
+	protected static final int STEP = 10;
+	
 	public abstract boolean isInsideZone(int x, int y, int z);
 	
 	public abstract boolean intersectsRectangle(int x1, int x2, int y1, int y2);
@@ -38,4 +44,13 @@ public abstract class L2ZoneForm
 		return java.awt.geom.Line2D.linesIntersect(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2);
 	}
 	
+	public abstract void visualizeZone(int z);
+	
+	protected final void dropDebugItem(int itemId, int num, int x, int y, int z)
+	{
+		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
+		item.setCount(num);
+		item.spawnMe(x,y,z+5);
+		ZoneManager.getInstance().getDebugItems().add(item);
+	}
 }

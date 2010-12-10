@@ -229,7 +229,7 @@ public class CastleManager implements InstanceListManager
 					if (circlet != null)
 					{
 						if (circlet.isEquipped())
-							player.getInventory().unEquipItemInSlotAndRecord(circlet.getLocationSlot());
+							player.getInventory().unEquipItemInSlot(circlet.getLocationSlot());
 						player.destroyItemByItemId("CastleCircletRemoval", circletId, 1, player, true);
 					}
 					return;

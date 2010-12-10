@@ -22,10 +22,11 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.datatables.PetSkillsTable;
+import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.L2PetData.L2PetSkillLearn;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -43,6 +44,7 @@ import com.l2jserver.util.Rnd;
 public final class L2BabyPetInstance extends L2PetInstance
 {
 	private static final int BUFF_CONTROL = 5771;
+	private static final int AWAKENING = 5753;
 	
 	private FastList<SkillHolder> _buffs = null;
 	private SkillHolder _majorHeal = null;
@@ -51,7 +53,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 	
 	private Future<?> _castTask;
 	
-	private int _buffControlReuseHashcode = 0;
+	private boolean _bufferMode = true;
 	
 	public L2BabyPetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control)
 	{
@@ -71,19 +73,19 @@ public final class L2BabyPetInstance extends L2PetInstance
 		super.onSpawn();
 		
 		L2Skill skill;
-		for (int id : PetSkillsTable.getInstance().getAvailableSkills(this))
+		for (L2PetSkillLearn psl : PetDataTable.getInstance().getPetData(getNpcId()).getAvailableSkills())
 		{
+			int id = psl.getId();
 			double healPower = 0;
-			
-			skill = SkillTable.getInstance().getInfo(id, PetSkillsTable.getInstance().getAvailableLevel(L2BabyPetInstance.this, id));
+			int lvl = PetDataTable.getInstance().getPetData(getNpcId()).getAvailableLevel(id, getLevel());
+			if (lvl == 0) // not enough pet lvl
+				continue;
+			skill = SkillTable.getInstance().getInfo(id, lvl);
 			if (skill != null)
 			{
-				if (skill.getId() == BUFF_CONTROL)
-				{
-					_buffControlReuseHashcode = skill.getReuseHashCode();
+				if (skill.getId() == BUFF_CONTROL || skill.getId() == AWAKENING)
 					continue;
-				}
-				
+
 				switch (skill.getSkillType())
 				{
 					case HEAL:
@@ -159,6 +161,11 @@ public final class L2BabyPetInstance extends L2PetInstance
 			_castTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new CastTask(this), 3000, 1000);
 	}
 	
+	public void switchMode()
+	{
+		_bufferMode = !_bufferMode;
+	}
+	
 	private final void stopCastTask()
 	{
 		if (_castTask != null)
@@ -178,6 +185,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 		if (!previousFollowStatus && !isInsideRadius(getOwner(), skill.getCastRange(), true, true))
 			return;
 		
+		setTarget(getOwner());
 		useMagic(skill, false, false);
 		
 		SystemMessage msg = new SystemMessage(SystemMessageId.PET_USES_S1);
@@ -218,6 +226,8 @@ public final class L2BabyPetInstance extends L2PetInstance
 					&& !_baby.isCastingNow()
 					&& !_baby.isBetrayed()
 					&& !_baby.isMuted()
+					&& !_baby.isOutOfControl()
+					&& _bufferMode
 					&& _baby.getAI().getIntention() != CtrlIntention.AI_INTENTION_CAST)
 			{
 				L2Skill skill = null;
@@ -256,7 +266,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 					}
 				}
 				
-				if (!_baby.isSkillDisabled(_buffControlReuseHashcode)) // Buff Control is not active
+				if (_baby.getFirstEffect(BUFF_CONTROL) == null) // Buff Control is not active
 				{
 					// searching for usable buffs
 					if (_buffs != null && !_buffs.isEmpty())

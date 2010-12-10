@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.skills.effects;
 
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -50,9 +51,7 @@ public class EffectChameleonRest extends L2Effect
 	{
 		if (getEffected() instanceof L2PcInstance)
 		{
-			setChameleon(true);
-			((L2PcInstance) getEffected()).setSilentMoving(true);
-			((L2PcInstance) getEffected()).sitDown();
+			((L2PcInstance) getEffected()).sitDown(false);
 		}
 		else
 			getEffected().getAI().setIntention(CtrlIntention.AI_INTENTION_REST);
@@ -66,10 +65,6 @@ public class EffectChameleonRest extends L2Effect
 	@Override
 	public void onExit()
 	{
-		setChameleon(false);
-		if (getEffected() instanceof L2PcInstance)
-			((L2PcInstance) getEffected()).setSilentMoving(false);
-		
 		super.onExit();
 	}
 	
@@ -80,10 +75,8 @@ public class EffectChameleonRest extends L2Effect
 	@Override
 	public boolean onActionTime()
 	{
-		boolean retval = true;
-		
 		if (getEffected().isDead())
-			retval = false;
+			return false;
 		
 		// Only cont skills shouldn't end
 		if (getSkill().getSkillType() != L2SkillType.CONT)
@@ -92,7 +85,7 @@ public class EffectChameleonRest extends L2Effect
 		if (getEffected() instanceof L2PcInstance)
 		{
 			if (!((L2PcInstance) getEffected()).isSitting())
-				retval = false;
+				return false;
 		}
 		
 		double manaDam = calc();
@@ -103,21 +96,16 @@ public class EffectChameleonRest extends L2Effect
 			return false;
 		}
 		
-		if (!retval)
-			setChameleon(retval);
-		else
-			getEffected().reduceCurrentMp(manaDam);
-		
-		return retval;
+		getEffected().reduceCurrentMp(manaDam);
+		return true;
 	}
 	
-	/**
-	 * 
-	 * @param val
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
 	 */
-	private void setChameleon(boolean val)
+	@Override
+	public int getEffectFlags()
 	{
-		if (getEffected() instanceof L2PcInstance)
-			((L2PcInstance) getEffected()).setRelax(val);
+		return (CharEffectList.EFFECT_FLAG_SILENT_MOVE | CharEffectList.EFFECT_FLAG_RELAXING);
 	}
 }

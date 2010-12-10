@@ -251,8 +251,6 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			return false;
 		if (item.isTimeLimitedItem())
 			return false;
-		if (item.isWear())
-			return false;
 		if (item.isPvp())
 			return false;
 		if (item.getItem().getCrystalType() < L2Item.CRYSTAL_C)
@@ -272,8 +270,8 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		{
 			switch (((L2Weapon)item.getItem()).getItemType())
 			{
-				case NONE: //shields
-				case ROD:
+				case NONE:
+				case FISHINGROD:
 					return false;
 				default:
 					break;

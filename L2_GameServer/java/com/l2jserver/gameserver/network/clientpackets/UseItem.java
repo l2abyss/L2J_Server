@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.ShowCalculator;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.item.L2Armor;
 import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
@@ -114,11 +113,6 @@ public final class UseItem extends L2GameClientPacket
 		if (item == null)
 			return;
 		
-		if (item.isWear())
-		{
-			// No unequipping wear-items
-			return;
-		}
 		if (item.getItem().getType2() == L2Item.TYPE2_QUEST)
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_USE_QUEST_ITEMS);
@@ -126,6 +120,7 @@ public final class UseItem extends L2GameClientPacket
 			sm = null;
 			return;
 		}
+		
 		_itemId = item.getItemId();
 		/*
 		 * Alt game - Karma punishment // SOE
@@ -183,10 +178,6 @@ public final class UseItem extends L2GameClientPacket
 				return;
 		}
 		
-		// Items that cannot be used
-		if (_itemId == 57)
-			return;
-		
 		if (activeChar.isFishing() && (_itemId < 6535 || _itemId > 6540))
 		{
 			// You cannot do anything else while fishing
@@ -218,7 +209,7 @@ public final class UseItem extends L2GameClientPacket
 		}
 		
 		// Char cannot use pet items
-		if ((item.getItem() instanceof L2Armor && item.getItem().getItemType() == L2ArmorType.PET)
+		/*if ((item.getItem() instanceof L2Armor && item.getItem().getItemType() == L2ArmorType.PET)
 				|| (item.getItem() instanceof L2Weapon && item.getItem().getItemType() == L2WeaponType.PET) )
 		{
 			SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_EQUIP_PET_ITEM); // You cannot equip a pet item.
@@ -226,7 +217,7 @@ public final class UseItem extends L2GameClientPacket
 			getClient().getActiveChar().sendPacket(sm);
 			sm = null;
 			return;
-		}
+		}*/
 		
 		if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
 		{
@@ -240,7 +231,9 @@ public final class UseItem extends L2GameClientPacket
 		if (!item.isEquipped())
 		{
 			if (!item.getItem().checkCondition(activeChar, activeChar, true))
+			{
 				return;
+			}
 		}
 		
 		if (item.isEquipable())
@@ -312,7 +305,7 @@ public final class UseItem extends L2GameClientPacket
 								{
 									case RAPIER:
 									case CROSSBOW:
-									case ANCIENT_SWORD:
+									case ANCIENTSWORD:
 										activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
 										return;
 								}
@@ -373,7 +366,7 @@ public final class UseItem extends L2GameClientPacket
 			{
 				activeChar.sendPacket(new ShowCalculator(4393));
 			}
-			else if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.ROD)
+			else if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.FISHINGROD)
 					&& ((itemid >= 6519 && itemid <= 6527) || (itemid >= 7610 && itemid <= 7613) || (itemid >= 7807 && itemid <= 7809) || (itemid >= 8484 && itemid <= 8486) || (itemid >= 8505 && itemid <= 8513)))
 			{
 				activeChar.getInventory().setPaperdollItem(Inventory.PAPERDOLL_LHAND, item);

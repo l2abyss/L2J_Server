@@ -121,7 +121,7 @@ public final class Evolve
 		
 		player.sendPacket(new MagicSkillUse(npc, 2046, 1, 1000, 600000));
 		player.sendPacket(new SystemMessage(SystemMessageId.SUMMON_A_PET));
-		L2World.getInstance().storeObject(petSummon);
+		//L2World.getInstance().storeObject(petSummon);
 		petSummon.spawnMe(oldX, oldY, oldZ);
 		petSummon.startFeed();
 		item.setEnchantLevel(petSummon.getLevel());
@@ -189,7 +189,7 @@ public final class Evolve
 		
 		player.sendPacket(new MagicSkillUse(npc, 2046, 1, 1000, 600000));
 		player.sendPacket(new SystemMessage(SystemMessageId.SUMMON_A_PET));
-		L2World.getInstance().storeObject(petSummon);
+		//L2World.getInstance().storeObject(petSummon);
 		petSummon.spawnMe(player.getX(), player.getY(), player.getZ());
 		petSummon.startFeed();
 		addedItem.setEnchantLevel(petSummon.getLevel());

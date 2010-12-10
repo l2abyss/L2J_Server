@@ -82,7 +82,6 @@ public class HennaTable
 			int id = HennaData.getInt("symbol_id");
 			
 			hennaDat.set("symbol_id", id);
-			//hennaDat.set("symbol_name", HennaData.getString("symbol_name"));
 			hennaDat.set("dye", HennaData.getInt("dye_id"));
 			hennaDat.set("price", HennaData.getInt("price"));
 			//amount of dye required

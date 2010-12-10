@@ -142,4 +142,22 @@ public class ZoneCuboid extends L2ZoneForm
 	{
 		return _z2;
 	}
+	
+	@Override
+	public void visualizeZone(int z)
+	{
+		//x1->x2
+		for (int x = _x1; x < _x2; x = x + STEP)
+		{
+			dropDebugItem(57, 1, x, _y1, z);
+			dropDebugItem(57, 1, x, _y2, z);
+		}
+		//y1->y2
+		for (int y = _y1; y < _y2; y = y + STEP)
+		{
+			dropDebugItem(57, 1, _x1, y, z);
+			dropDebugItem(57, 1, _x2, y, z);
+		}
+	}
 }
+

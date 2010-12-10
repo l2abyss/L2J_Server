@@ -72,6 +72,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExNoticePostArrived;
 import com.l2jserver.gameserver.network.serverpackets.ExNotifyPremiumItem;
 import com.l2jserver.gameserver.network.serverpackets.ExShowScreenMessage;
 import com.l2jserver.gameserver.network.serverpackets.ExStorageMaxCount;
+import com.l2jserver.gameserver.network.serverpackets.ExVoteSystemInfo;
 import com.l2jserver.gameserver.network.serverpackets.FriendList;
 import com.l2jserver.gameserver.network.serverpackets.HennaInfo;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
@@ -294,6 +295,8 @@ public class EnterWorld extends L2GameClientPacket
 				activeChar.updateVitalityPoints(points, false, true);
 		}
 		
+		activeChar.checkRecoBonusTask();
+		
 		activeChar.broadcastUserInfo();
 		
 		// Send Macro List
@@ -418,6 +421,7 @@ public class EnterWorld extends L2GameClientPacket
 		activeChar.onPlayerEnter();
 		
 		sendPacket(new SkillCoolTime(activeChar));
+		sendPacket(new ExVoteSystemInfo(activeChar));
 		
 		for (L2ItemInstance i : activeChar.getInventory().getItems())
 		{
@@ -449,7 +453,7 @@ public class EnterWorld extends L2GameClientPacket
 			else
 			{
 				int slot = activeChar.getInventory().getSlotFromItem(activeChar.getInventory().getItemByItemId(9819));
-				activeChar.getInventory().unEquipItemInBodySlotAndRecord(slot);
+				activeChar.getInventory().unEquipItemInBodySlot(slot);
 				activeChar.destroyItem("CombatFlag", activeChar.getInventory().getItemByItemId(9819), null, true);
 			}
 		}

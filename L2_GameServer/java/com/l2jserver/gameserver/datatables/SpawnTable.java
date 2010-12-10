@@ -27,6 +27,7 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.model.L2Spawn;
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
@@ -364,24 +365,32 @@ public class SpawnTable
 	 * @param npcId : ID of the NPC to find.
 	 * @return
 	 */
-	public void findNPCInstances(L2PcInstance activeChar, int npcId, int teleportIndex)
+	public void findNPCInstances(L2PcInstance activeChar, int npcId, int teleportIndex, boolean showposition)
 	{
 		int index = 0;
 		for (L2Spawn spawn : _spawntable.values())
 		{
+			
 			if (npcId == spawn.getNpcid())
 			{
 				index++;
-				
+				L2Npc _npc = spawn.getLastSpawn();
 				if (teleportIndex > -1)
 				{
 					if (teleportIndex == index)
-						activeChar.teleToLocation(spawn.getLocx(), spawn.getLocy(), spawn.getLocz(), true);
+					{
+						if(showposition && _npc != null)
+							activeChar.teleToLocation(_npc.getX(), _npc.getY(), _npc.getZ(), true);
+						else
+							activeChar.teleToLocation(spawn.getLocx(), spawn.getLocy(), spawn.getLocz(), true);
+					}
 				}
 				else
 				{
-					activeChar.sendMessage(index + " - " + spawn.getTemplate().name + " (" + spawn.getId() + "): " + spawn.getLocx() + " "
-							+ spawn.getLocy() + " " + spawn.getLocz());
+					if(showposition && _npc != null)
+						activeChar.sendMessage(index + " - " + spawn.getTemplate().name + " (" + spawn.getId() + "): " + _npc.getX() + " "+ _npc.getY() + " " + _npc.getZ());
+					else
+						activeChar.sendMessage(index + " - " + spawn.getTemplate().name + " (" + spawn.getId() + "): " + spawn.getLocx() + " "+ spawn.getLocy() + " " + spawn.getLocz());
 				}
 			}
 		}

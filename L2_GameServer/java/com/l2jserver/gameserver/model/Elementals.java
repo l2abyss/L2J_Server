@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model;
 
+import gnu.trove.TIntObjectHashMap;
+
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Stats;
@@ -22,6 +24,14 @@ import com.l2jserver.gameserver.skills.funcs.LambdaConst;
 
 public final class Elementals
 {
+	private static final TIntObjectHashMap<ElementalItems> TABLE = new TIntObjectHashMap<ElementalItems>();
+	
+	static
+	{
+		for (ElementalItems item : ElementalItems.values())
+			TABLE.put(item._itemId, item);
+	}
+	
 	public final static byte NONE = -1;
 	public final static byte FIRE = 0;
 	public final static byte WATER = 1;
@@ -134,25 +144,22 @@ public final class Elementals
 	
 	public static byte getItemElement(int itemId)
 	{
-		for (ElementalItems item : ElementalItems.values())
-			if (item._itemId == itemId)
-				return item._element;
+		ElementalItems item = TABLE.get(itemId);
+		if (item != null)
+			return item._element;
 		return NONE;
 	}
 	
 	public static ElementalItems getItemElemental(int itemId)
 	{
-		for (ElementalItems item : ElementalItems.values())
-			if (item._itemId == itemId)
-				return item;
-		return null;
+		return TABLE.get(itemId);
 	}
 	
 	public static int getMaxElementLevel(int itemId)
 	{
-		for (ElementalItems item : ElementalItems.values())
-			if (item._itemId == itemId)
-				return item._type._maxLevel;
+		ElementalItems item = TABLE.get(itemId);
+		if (item != null)
+			return item._type._maxLevel;
 		return -1;
 	}
 	

@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.model.zone;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Location;
@@ -40,7 +39,7 @@ public abstract class L2SpawnZone extends L2ZoneType
 	public final void addSpawn(int x, int y, int z)
 	{
 		if (_spawnLocs == null)
-			_spawnLocs = new FastList<Location>();
+			_spawnLocs = new ArrayList<Location>();
 		
 		_spawnLocs.add(new Location(x, y, z));
 	}
@@ -48,12 +47,17 @@ public abstract class L2SpawnZone extends L2ZoneType
 	public final void addChaoticSpawn(int x, int y, int z)
 	{
 		if (_chaoticSpawnLocs == null)
-			_chaoticSpawnLocs = new FastList<Location>();
+			_chaoticSpawnLocs = new ArrayList<Location>();
 		
 		_chaoticSpawnLocs.add(new Location(x, y, z));
 	}
 	
-	public Location getSpawnLoc()
+	public final List<Location> getSpawns()
+	{
+		return _spawnLocs;
+	}
+
+	public final Location getSpawnLoc()
 	{
 		if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
 			return _spawnLocs.get(Rnd.get(_spawnLocs.size()));
@@ -61,7 +65,7 @@ public abstract class L2SpawnZone extends L2ZoneType
 			return _spawnLocs.get(0);
 	}
 	
-	public Location getChaoticSpawnLoc()
+	public final Location getChaoticSpawnLoc()
 	{
 		if (_chaoticSpawnLocs != null)
 			return _chaoticSpawnLocs.get(Rnd.get(_chaoticSpawnLocs.size()));

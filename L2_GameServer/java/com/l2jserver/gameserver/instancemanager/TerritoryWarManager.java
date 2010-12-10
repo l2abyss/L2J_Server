@@ -427,7 +427,7 @@ public class TerritoryWarManager implements Siegable
 		_clanFlags.remove(clan);
 	}
 	
-	public FastList<TerritoryWard> getAllTerritoryWards()
+	public List<TerritoryWard> getAllTerritoryWards()
 	{
 		return _territoryWards;
 	}
@@ -456,7 +456,7 @@ public class TerritoryWarManager implements Siegable
 		return null;
 	}
 	
-	public void dropCombatFlag(L2PcInstance player, boolean isKilled)
+	public void dropCombatFlag(L2PcInstance player, boolean isKilled, boolean isSpawnBack)
 	{
 		for(TerritoryWard twWard : _territoryWards)
 			if (twWard.playerId == player.getObjectId())
@@ -466,6 +466,8 @@ public class TerritoryWarManager implements Siegable
 				{
 					if (isKilled)
 						twWard.spawnMe();
+					else if (isSpawnBack)
+						twWard.spawnBack();
 					else
 						for(TerritoryNPCSpawn wardSpawn : _territoryList.get(twWard.getOwnerCastleId()).getOwnedWard())
 							if (wardSpawn.getNpcId() == twWard.getTerritoryId())
@@ -825,17 +827,33 @@ public class TerritoryWarManager implements Siegable
 	
 	private void startTerritoryWar()
 	{
-		if (_territoryList == null || _territoryList.size() < 2)
+		if (_territoryList == null)
 		{
-			// change next TW date
+			_log.warning("TerritoryWarManager: TerritoryList is NULL!");
 			return;
 		}
+		FastList<Territory> activeTerritoryList = new FastList<Territory>();
+		for(Territory t : _territoryList.values())
+		{
+			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
+			if (castle != null)
+			{
+				if (castle.getOwnerId() > 0)
+					activeTerritoryList.add(t);
+			}
+			else
+				_log.warning("TerritoryWarManager: Castle missing! CastleId: " + t.getCastleId());
+		}
+		
+		if (activeTerritoryList.size() < 2)
+			return;
+		
 		_isTWInProgress = true;
 		if (!updatePlayerTWStateFlags(false))
 			return;
 		
 		// teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town); // Teleport to the closest town
-		for(Territory t : _territoryList.values())
+		for(Territory t : activeTerritoryList)
 		{
 			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
 			Fort fort = FortManager.getInstance().getFortById(t.getFortId());
@@ -888,11 +906,27 @@ public class TerritoryWarManager implements Siegable
 	private void endTerritoryWar()
 	{
 		_isTWInProgress = false;
-		if (_territoryList == null || _territoryList.size() < 2)
+		if (_territoryList == null)
 		{
-			// change next TW date
+			_log.warning("TerritoryWarManager: TerritoryList is NULL!");
 			return;
 		}
+		FastList<Territory> activeTerritoryList = new FastList<Territory>();
+		for(Territory t : _territoryList.values())
+		{
+			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
+			if (castle != null)
+			{
+				if (castle.getOwnerId() > 0)
+					activeTerritoryList.add(t);
+			}
+			else
+				_log.warning("TerritoryWarManager: Castle missing! CastleId: " + t.getCastleId());
+		}
+		
+		if (activeTerritoryList.size() < 2)
+			return;
+		
 		if (!updatePlayerTWStateFlags(true))
 			return;
 		
@@ -903,7 +937,7 @@ public class TerritoryWarManager implements Siegable
 			_territoryWards.clear();
 		}
 		// teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town); // Teleport to the closest town
-		for(Territory t : _territoryList.values())
+		for(Territory t : activeTerritoryList)
 		{
 			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
 			Fort fort = FortManager.getInstance().getFortById(t.getFortId());

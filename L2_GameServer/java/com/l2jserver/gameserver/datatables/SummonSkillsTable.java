@@ -28,12 +28,12 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 
-public class PetSkillsTable
+public class SummonSkillsTable
 {
-	private static Logger _log = Logger.getLogger(PetSkillsTable.class.getName());
+	private static Logger _log = Logger.getLogger(SummonSkillsTable.class.getName());
 	private FastMap<Integer, Map<Integer, L2PetSkillLearn>> _skillTrees;
 	
-	public static PetSkillsTable getInstance()
+	public static SummonSkillsTable getInstance()
 	{
 		return SingletonHolder._instance;
 	}
@@ -44,7 +44,7 @@ public class PetSkillsTable
 		load();
 	}
 	
-	private PetSkillsTable()
+	private SummonSkillsTable()
 	{
 		_skillTrees = new FastMap<Integer, Map<Integer, L2PetSkillLearn>>();
 		load();
@@ -114,7 +114,10 @@ public class PetSkillsTable
 	{
 		int lvl = 0;
 		if (!_skillTrees.containsKey(cha.getNpcId()))
+		{
+			_log.warning("Pet id " + cha.getNpcId() + " does not have any skills assigned.");
 			return lvl;
+		}
 		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getNpcId()).values();
 		for (L2PetSkillLearn temp : skills)
 		{
@@ -150,7 +153,10 @@ public class PetSkillsTable
 	{
 		FastList<Integer> skillIds = new FastList<Integer>();
 		if (!_skillTrees.containsKey(cha.getNpcId()))
-			return null;
+		{
+			_log.warning("Pet id " + cha.getNpcId() + " does not have any skills assigned.");
+			return skillIds;
+		}
 		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getNpcId()).values();
 		for (L2PetSkillLearn temp : skills)
 		{
@@ -193,6 +199,6 @@ public class PetSkillsTable
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
-		protected static final PetSkillsTable _instance = new PetSkillsTable();
+		protected static final SummonSkillsTable _instance = new SummonSkillsTable();
 	}
 }

@@ -14,8 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.handler.BypassHandler;
+import com.l2jserver.gameserver.handler.IBypassHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.olympiad.Olympiad;
 
 /**
  * format ch
@@ -27,7 +28,7 @@ import com.l2jserver.gameserver.model.olympiad.Olympiad;
 public final class RequestOlympiadMatchList extends L2GameClientPacket
 {
 	private static final String _C__D0_13_REQUESTOLYMPIADMATCHLIST = "[C] D0:13 RequestOlympiadMatchList";
-	
+	private static final String COMMAND = "arenalist";
 	
 	@Override
 	protected void readImpl()
@@ -38,10 +39,13 @@ public final class RequestOlympiadMatchList extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null)
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null || !activeChar.inObserverMode())
 			return;
-		if (activeChar.inObserverMode()) Olympiad.sendMatchList(activeChar);
+
+		IBypassHandler handler = BypassHandler.getInstance().getBypassHandler(COMMAND);
+		if (handler != null)
+			handler.useBypass(COMMAND, activeChar, null);
 	}
 	
 	/* (non-Javadoc)
@@ -52,5 +56,4 @@ public final class RequestOlympiadMatchList extends L2GameClientPacket
 	{
 		return _C__D0_13_REQUESTOLYMPIADMATCHLIST;
 	}
-	
 }

@@ -707,7 +707,7 @@ public class L2Party
 				// Pets that leech xp from the owner (like babypets) do not get rewarded directly
 				if (member instanceof L2PetInstance)
 				{
-					if (((L2PetInstance)member).getPetData().getOwnerExpTaken() > 0)
+					if (((L2PetInstance)member).getPetLevelData().getOwnerExpTaken() > 0)
 						continue;
 					else // TODO: This is a temporary fix while correct pet xp in party is figured out
 						penalty = (float)0.85;

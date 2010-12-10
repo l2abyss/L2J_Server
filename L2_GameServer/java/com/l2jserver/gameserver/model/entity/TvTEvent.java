@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -40,7 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.olympiad.Olympiad;
+import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -181,6 +182,20 @@ public class TvTEvent
 		allParticipants.putAll(_teams[1].getParticipatedPlayers());
 		_teams[0].cleanMe();
 		_teams[1].cleanMe();
+
+		L2PcInstance player;
+		Iterator<L2PcInstance> iter;
+		if (needParticipationFee())
+		{
+			iter = allParticipants.values().iterator();
+			while (iter.hasNext())
+			{
+				player = iter.next();
+				if (!hasParticipationFee(player))
+					iter.remove();
+			}
+		}
+		
 		int balance[] = { 0, 0 }, priority = 0, highestLevelPlayerId;
 		L2PcInstance highestLevelPlayer;
 		// XXX: allParticipants should be sorted by level instead of using highestLevelPcInstanceOf for every fetch
@@ -218,6 +233,24 @@ public class TvTEvent
 			unSpawnNpc();
 			AntiFeedManager.getInstance().clear(AntiFeedManager.TVT_ID);
 			return false;
+		}
+		
+		if (needParticipationFee())
+		{
+			iter = _teams[0].getParticipatedPlayers().values().iterator();
+			while (iter.hasNext())
+			{
+				player = iter.next();
+				if (!payParticipationFee(player))
+					iter.remove();
+			}
+			iter = _teams[1].getParticipatedPlayers().values().iterator();
+			while (iter.hasNext())
+			{
+				player = iter.next();
+				if (!payParticipationFee(player))
+					iter.remove();
+			}
 		}
 		
 		if (Config.TVT_EVENT_IN_INSTANCE)
@@ -459,17 +492,19 @@ public class TvTEvent
 		return false;
 	}
 	
+	public static boolean needParticipationFee()
+	{
+		return Config.TVT_EVENT_PARTICIPATION_FEE[0] != 0 && Config.TVT_EVENT_PARTICIPATION_FEE[1] != 0;
+	}
+	
+	public static boolean hasParticipationFee(L2PcInstance playerInstance)
+	{
+		return playerInstance.getInventory().getInventoryItemCount(Config.TVT_EVENT_PARTICIPATION_FEE[0], -1) >= Config.TVT_EVENT_PARTICIPATION_FEE[1];
+	}
+	
 	public static boolean payParticipationFee(L2PcInstance playerInstance)
 	{
-		int itemId = Config.TVT_EVENT_PARTICIPATION_FEE[0];
-		int itemNum = Config.TVT_EVENT_PARTICIPATION_FEE[1];
-		if (itemId == 0 || itemNum == 0)
-			return true;
-		
-		if (playerInstance.getInventory().getInventoryItemCount(itemId, -1) < itemNum)
-			return false;
-		
-		return playerInstance.destroyItemByItemId("TvT Participation Fee", itemId, itemNum, _lastNpcSpawn, true);
+		return playerInstance.destroyItemByItemId("TvT Participation Fee", Config.TVT_EVENT_PARTICIPATION_FEE[0], Config.TVT_EVENT_PARTICIPATION_FEE[1], _lastNpcSpawn, true);
 	}
 	
 	public static String getParticipationFee()
@@ -619,7 +654,7 @@ public class TvTEvent
 				if (htmContent != null)
 					npcHtmlMessage.setHtml(htmContent);
 			}
-			else if (Olympiad.getInstance().isRegistered(playerInstance))
+			else if (OlympiadManager.getInstance().isRegistered(playerInstance))
 			{
 				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"Olympiad.htm");
 				if (htmContent != null)
@@ -660,7 +695,7 @@ public class TvTEvent
 					npcHtmlMessage.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(playerInstance, Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP)));
 				}
 			}
-			else if (!payParticipationFee(playerInstance))
+			else if (needParticipationFee() && !hasParticipationFee(playerInstance))
 			{
 				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath+"ParticipationFee.htm");
 				if (htmContent != null)

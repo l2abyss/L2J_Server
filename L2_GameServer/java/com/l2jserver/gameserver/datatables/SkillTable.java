@@ -12,6 +12,8 @@
  */
 package com.l2jserver.gameserver.datatables;
 
+import java.util.logging.Logger;
+
 import gnu.trove.TIntArrayList;
 import gnu.trove.TIntIntHashMap;
 import gnu.trove.TIntObjectHashMap;
@@ -24,6 +26,8 @@ import com.l2jserver.gameserver.skills.SkillsEngine;
  */
 public class SkillTable
 {
+	private static Logger _log = Logger.getLogger(SkillTable.class.getName());
+	
 	private final TIntObjectHashMap<L2Skill> _skills;
 	private final TIntIntHashMap _skillMaxLevel;
 	private final TIntArrayList _enchantable;
@@ -120,6 +124,7 @@ public class SkillTable
 		if (maxLvl > 0 && level > maxLvl)
 			return _skills.get(getSkillHashCode(skillId, maxLvl));
 		
+		_log.warning("No skill info found for skill id " + skillId + " and skill level " + level + ".");
 		return null;
 	}
 	

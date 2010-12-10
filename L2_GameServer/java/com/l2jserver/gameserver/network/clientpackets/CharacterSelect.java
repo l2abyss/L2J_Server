@@ -114,6 +114,7 @@ public class CharacterSelect extends L2GameClientPacket
 					
 					cha.setClient(this.getClient());
 					getClient().setActiveChar(cha);
+					cha.setOnlineStatus(true, true);
 					
 					sendPacket(new SSQInfo());
 					

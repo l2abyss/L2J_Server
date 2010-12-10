@@ -15,12 +15,15 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.l2jserver.gameserver.model.L2PremiumItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- ** @author Gnacik
+ * Structure:  "QdQdS"
+ * 
+ * @author Gnacik
  */
 public class ExGetPremiumItemList extends L2GameServerPacket
 {
@@ -28,13 +31,12 @@ public class ExGetPremiumItemList extends L2GameServerPacket
 	
 	private L2PcInstance _activeChar;
 	
-	private Map<Integer, L2PremiumItem> _list;
+	private Map<Integer, L2PremiumItem> _map;
 	
 	public ExGetPremiumItemList(L2PcInstance activeChar)
 	{
 		_activeChar = activeChar;
-		
-		_list = _activeChar.getPremiumItemList();
+		_map = _activeChar.getPremiumItemList();
 	}
 	
 	@Override
@@ -42,15 +44,13 @@ public class ExGetPremiumItemList extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x86);
-		if (!_list.isEmpty())
+		if (!_map.isEmpty())
 		{
-			writeD(_list.size());
-			
-			for (Integer num : _list.keySet())
+			writeD(_map.size());
+			for (Entry<Integer, L2PremiumItem> entry : _map.entrySet())
 			{
-				L2PremiumItem item = _list.get(num);
-				
-				writeD(num);
+				L2PremiumItem item = entry.getValue();
+				writeD(entry.getKey());
 				writeD(_activeChar.getObjectId());
 				writeD(item.getItemId());
 				writeQ(item.getCount());
@@ -58,6 +58,8 @@ public class ExGetPremiumItemList extends L2GameServerPacket
 				writeS(item.getSender());
 			}
 		}
+		else
+			writeD(0);
 	}
 	
 	@Override

@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -25,6 +26,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreeTable;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
@@ -53,6 +55,8 @@ import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
+import com.l2jserver.gameserver.templates.item.L2Armor;
+import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Util;
 
@@ -101,7 +105,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		TARGET_CORPSE,
 		TARGET_UNDEAD,
 		TARGET_AREA_UNDEAD,
-		TARGET_MULTIFACE,
 		TARGET_CORPSE_ALLY,
 		TARGET_CORPSE_CLAN,
 		TARGET_CORPSE_PLAYER,
@@ -197,6 +200,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _magicLevel;
 	private final int _levelDepend;
 	private final boolean _ignoreResists;
+	private final int _minChance;
+	private final int _maxChance;
 	
 	private final boolean _isNeutral;
 	// Effecting area of the skill, in radius.
@@ -284,6 +289,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	private final boolean _isClanSkill;
 	private final boolean _excludedFromCheck;
+	private final boolean _simultaneousCast;
 	
 	protected L2Skill(StatsSet set)
 	{
@@ -423,6 +429,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_magicLevel = set.getInteger("magicLvl", SkillTreeTable.getInstance().getMinSkillLevel(_id, _level));
 		_levelDepend = set.getInteger("lvlDepend", 0);
 		_ignoreResists = set.getBool("ignoreResists", false);
+		_minChance = set.getInteger("minChance", 1);
+		_maxChance = set.getInteger("maxChance", 99);
 		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
 		_skillType = set.getEnum("skillType", L2SkillType.class);
@@ -444,7 +452,30 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_conditionValue = set.getInteger("conditionValue", 0);
 		_overhit = set.getBool("overHit", false);
 		_isSuicideAttack = set.getBool("isSuicideAttack", false);
-		_weaponsAllowed = set.getInteger("weaponsAllowed", 0);
+		
+		String weaponsAllowedString = set.getString("weaponsAllowed", null);
+		if (weaponsAllowedString != null && !weaponsAllowedString.trim().isEmpty())
+		{
+			int mask = 0;
+			StringTokenizer st = new StringTokenizer(weaponsAllowedString, ",");
+			while (st.hasMoreTokens())
+			{
+				int old = mask;
+				String item = st.nextToken().trim();
+				if (ItemTable._weaponTypes.containsKey(item))
+					mask |= ItemTable._weaponTypes.get(item).mask();
+				
+				if (ItemTable._armorTypes.containsKey(item)) // for shield
+					mask |= ItemTable._armorTypes.get(item).mask();
+				
+				if (old == mask)
+					_log.info("[weaponsAllowed] Unknown item type name: "+item);
+			}
+			_weaponsAllowed = mask;
+		}
+		else
+			_weaponsAllowed = 0;
+		
 		_armorsAllowed = set.getInteger("armorsAllowed", 0);
 		
 		_minPledgeClass = set.getInteger("minPledgeClass", 0);
@@ -480,7 +511,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_aggroPoints = set.getInteger("aggroPoints", 0);
 		
 		_flyType = set.getString("flyType", null);
-		_flyRadius = set.getInteger("flyRadius", 200);
+		_flyRadius = set.getInteger("flyRadius", 0);
 		_flyCourse = set.getFloat("flyCourse", 0);
 		_canBeReflected = set.getBool("canBeReflected", true);
 		
@@ -489,6 +520,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_isClanSkill = set.getBool("isClanSkill", false);
 		_excludedFromCheck = set.getBool("excludedFromCheck", false);
 		_dependOnTargetBuff = set.getFloat("dependOnTargetBuff", 0);
+		_simultaneousCast = set.getBool("simultaneousCast", false);
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -638,6 +670,22 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean ignoreResists()
 	{
 		return _ignoreResists;
+	}
+	
+	/**
+	 * Return minimum skill/effect land rate (default is 1).
+	 */
+	public final int getMinChance()
+	{
+		return _minChance;
+	}
+	
+	/**
+	 * Return maximum skill/effect land rate (default is 99).
+	 */
+	public final int getMaxChance()
+	{
+		return _maxChance;
 	}
 	
 	/**
@@ -1217,11 +1265,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		if (activeChar.getActiveWeaponItem() != null)
 			mask |= activeChar.getActiveWeaponItem().getItemType().mask();
-		if (activeChar.getSecondaryWeaponItem() != null)
-			mask |= activeChar.getSecondaryWeaponItem().getItemType().mask();
+		if (activeChar.getSecondaryWeaponItem() != null && activeChar.getSecondaryWeaponItem() instanceof L2Armor)
+			mask |= ((L2ArmorType) activeChar.getSecondaryWeaponItem().getItemType()).mask();
 		
 		if ((mask & weaponsAllowed) != 0)
 			return true;
+		
 		
 		return false;
 	}
@@ -1572,40 +1621,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				
 				return targetList.toArray(new L2Character[targetList.size()]);
 			}
-			case TARGET_MULTIFACE:
-			{
-				if ((!(target instanceof L2Attackable) && !(target instanceof L2Playable)))
-				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-					return _emptyTargetList;
-				}
-				
-				if (!onlyFirst)
-					targetList.add(target);
-				else
-					return new L2Character[] {target};
-				
-				final int radius = getSkillRadius();
-				
-				final Collection<L2Character> objs = activeChar.getKnownList().getKnownCharactersInRadius(radius);
-				//synchronized (activeChar.getKnownList().getKnownObjects())
-				{
-					for (L2Character obj : objs)
-					{
-						if (obj instanceof L2Attackable && obj != target)
-							targetList.add(obj);
-						
-						if (targetList.isEmpty())
-						{
-							activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_CANT_FOUND));
-							return _emptyTargetList;
-						}
-					}
-				}
-				return targetList.toArray(new L2Character[targetList.size()]);
-				//TODO multiface targets all around right now.  need it to just get targets
-				//the character is facing.
-			}
 			case TARGET_PARTY:
 			{
 				if (onlyFirst)
@@ -1919,8 +1934,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				if (addSummon(activeChar, player, radius, false))
 					targetList.add(player.getPet());
 				
-				// if player in olympiad mode or not in clan and not in party
-				if (player.isInOlympiadMode() || !(hasClan || hasParty))
+				// if player in clan and not in party
+				if (!(hasClan || hasParty))
 					return targetList.toArray(new L2Character[targetList.size()]);
 				
 				// Get all visible objects in a spherical area near the L2Character
@@ -1931,7 +1946,18 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					{
 						if (obj == null)
 							continue;
-						
+
+						// olympiad mode - adding only own side
+						if (player.isInOlympiadMode())
+						{
+							if (!obj.isInOlympiadMode())
+								continue;
+							if (player.getOlympiadGameId() != obj.getOlympiadGameId())
+								continue;
+							if (player.getOlympiadSide() != obj.getOlympiadSide())
+								continue;
+						}
+
 						if (player.isInDuel())
 						{
 							if (player.getDuelId() != obj.getDuelId())
@@ -2346,9 +2372,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			return false;
 		
 		final L2PcInstance player = caster.getActingPlayer();
+		final L2PcInstance targetPlayer = target.getActingPlayer();
 		if (player != null)
 		{
-			final L2PcInstance targetPlayer = target.getActingPlayer();
 			if (targetPlayer != null)
 			{
 				if (targetPlayer == caster || targetPlayer == player)
@@ -2396,8 +2422,26 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		else
 		{
 			// source is not playable
-			if (!(target instanceof L2Playable))
-				return false;
+			if (caster instanceof L2Attackable)
+			{
+				// target is mob
+				if (targetPlayer == null)
+				{
+					if (target instanceof L2Attackable)
+					{
+						String casterEnemyClan = ((L2Attackable)caster).getEnemyClan();
+						if (casterEnemyClan == null || casterEnemyClan.isEmpty())
+							return false;
+
+						String targetClan = ((L2Attackable)target).getClan();
+						if (targetClan == null || targetClan.isEmpty())
+							return false;
+
+						if (!casterEnemyClan.equals(targetClan))
+							return false;
+					}
+				}
+			}
 		}
 		
 		if (geoEnabled && !GeoData.getInstance().canSeeTarget(caster, target))
@@ -2479,9 +2523,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 */
 	public final L2Effect[] getEffects(L2Character effector, L2Character effected, Env env)
 	{
-		if (isPassive()) return _emptyEffectSet;
-		
-		if (_effectTemplates == null)
+		if (!hasEffects() || isPassive())
 			return _emptyEffectSet;
 		
 		// doors and siege flags cannot receive any effects
@@ -2566,9 +2608,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 */
 	public final L2Effect[] getEffects(L2CubicInstance effector, L2Character effected, Env env)
 	{
-		if (isPassive()) return _emptyEffectSet;
-		
-		if (_effectTemplates == null)
+		if (!hasEffects() || isPassive())
 			return _emptyEffectSet;
 		
 		if (effector.getOwner() != effected)
@@ -2620,11 +2660,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public final L2Effect[] getEffectsSelf(L2Character effector)
 	{
-		if (isPassive()) return _emptyEffectSet;
+		if (!hasSelfEffects() || isPassive())
+			return _emptyEffectSet;
 		
-		if (_effectTemplatesSelf == null) return _emptyEffectSet;
-		
-		List<L2Effect> effects = new FastList<L2Effect>();
+		List<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplatesSelf.length);
 		
 		for (EffectTemplate et : _effectTemplatesSelf)
 		{
@@ -2804,5 +2843,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public float getDependOnTargetBuff()
 	{
 		return _dependOnTargetBuff;
+	}
+	
+	public boolean isSimultaneousCast()
+	{
+		return _simultaneousCast;
 	}
 }

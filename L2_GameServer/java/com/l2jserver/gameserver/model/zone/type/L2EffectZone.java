@@ -14,10 +14,11 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import gnu.trove.TIntIntHashMap;
-
 import java.util.Collection;
+import java.util.Map.Entry;
 import java.util.concurrent.Future;
+
+import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -45,7 +46,7 @@ public class L2EffectZone extends L2ZoneType
 	private boolean _bypassConditions;
 	private boolean _isShowDangerIcon;
 	private Future<?> _task;
-	private TIntIntHashMap _skills;
+	private FastMap<Integer, Integer> _skills;
 	
 	
 	
@@ -56,7 +57,6 @@ public class L2EffectZone extends L2ZoneType
 		_initialDelay = 0;
 		_reuse = 30000;
 		_enabled = true;
-		//_target = targetType.PLAYABLE;
 		setTargetType(InstanceType.L2Playable); // default only playabale
 		_bypassConditions = false;
 		_isShowDangerIcon = true;
@@ -87,17 +87,17 @@ public class L2EffectZone extends L2ZoneType
 		}
 		else if (name.equals("maxDynamicSkillCount"))
 		{
-			_skills = new TIntIntHashMap(Integer.parseInt(value));
+			_skills = new FastMap<Integer, Integer>(Integer.parseInt(value)).shared();
 		}
 		else if (name.equals("skillIdLvl"))
 		{
 			String[] propertySplit = value.split(";");
-			_skills = new TIntIntHashMap(propertySplit.length);
+			_skills = new FastMap<Integer, Integer>(propertySplit.length);
 			for (String skill : propertySplit)
 			{
 				String[] skillSplit = skill.split("-");
 				if (skillSplit.length != 2)
-					_log.warning(StringUtil.concat("[L2PoisonZone]: invalid config property -> skillsIdLvl \"", skill, "\""));
+					_log.warning(StringUtil.concat(getClass().getSimpleName()+": invalid config property -> skillsIdLvl \"", skill, "\""));
 				else
 				{
 					try
@@ -108,7 +108,7 @@ public class L2EffectZone extends L2ZoneType
 					{
 						if (!skill.isEmpty())
 						{
-							_log.warning(StringUtil.concat("[L2PoisonZone]: invalid config property -> skillsIdLvl \"", skillSplit[0], "\"", skillSplit[1]));
+							_log.warning(StringUtil.concat(getClass().getSimpleName()+": invalid config property -> skillsIdLvl \"", skillSplit[0], "\"", skillSplit[1]));
 						}
 					}
 				}
@@ -190,7 +190,13 @@ public class L2EffectZone extends L2ZoneType
 			return;
 		}
 		if (_skills == null)
-			_skills = new TIntIntHashMap(3);
+		{
+			synchronized(this)
+			{
+				if (_skills == null)
+					_skills = new FastMap<Integer, Integer>(3).shared();
+			}
+		}
 		_skills.put(skillId, skillLvL);
 		//_log.info("Zone: "+this+" adding skill: "+skillId+" lvl: "+skillLvL);
 	}
@@ -214,7 +220,7 @@ public class L2EffectZone extends L2ZoneType
 	
 	public int getSkillLevel(int skillId)
 	{
-		if (_skills == null)
+		if (_skills == null || !_skills.containsKey(skillId))
 			return 0;
 		else
 			return _skills.get(skillId);
@@ -230,12 +236,7 @@ public class L2EffectZone extends L2ZoneType
 		ApplySkill()
 		{
 			if (_skills == null)
-				throw new IllegalStateException();
-			/*if (_skills == null)
-			{
-				_skills = new TIntIntHashMap(1);
-				_skills.put(4070, 1);
-			}*/
+				throw new IllegalStateException("No skills defined.");
 		}
 		
 		public void run()
@@ -248,11 +249,12 @@ public class L2EffectZone extends L2ZoneType
 					{
 						if (Rnd.get(100) < getChance())
 						{
-							for (int skillId : _skills.keys())
+							for (Entry<Integer, Integer> e : _skills.entrySet())
 							{
-								if (_bypassConditions || getSkill(skillId, _skills.get(skillId)).checkCondition(temp, temp, false))
-									if (temp.getFirstEffect(skillId) == null)
-										getSkill(skillId, _skills.get(skillId)).getEffects(temp, temp);
+								L2Skill skill = getSkill(e.getKey(), e.getValue());
+								if (_bypassConditions || skill.checkCondition(temp, temp, false))
+									if (temp.getFirstEffect(e.getKey()) == null)
+										skill.getEffects(temp, temp);
 							}
 						}
 					}

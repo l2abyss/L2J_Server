@@ -102,20 +102,23 @@ public final class RequestBuyItem extends L2GameClientPacket
 		}
 		
 		L2Object target = player.getTarget();
-		if (!player.isGM() && (target == null // No target (ie GM Shop)
-				|| !(target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance) || player.getInstanceId() != target.getInstanceId() || !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false))) // Distance is too far
-		{
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-		
 		L2Character merchant = null;
-		if (target instanceof L2MerchantInstance || target instanceof L2MerchantSummonInstance)
-			merchant = (L2Character) target;
-		else if (!player.isGM())
+		if (!player.isGM())
 		{
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
+			if(target == null 
+					|| (!player.isInsideRadius(target, INTERACTION_DISTANCE, true, false)) // Distance is too far)
+					|| (player.getInstanceId() != target.getInstanceId()))
+			{
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+			if((target instanceof L2MerchantInstance) || (target instanceof L2MerchantSummonInstance))
+				merchant = (L2Character)target;
+			else
+			{
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 		}
 		
 		L2TradeList list = null;

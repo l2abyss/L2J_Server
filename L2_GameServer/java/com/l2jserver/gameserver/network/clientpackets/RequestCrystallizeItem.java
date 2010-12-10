@@ -95,7 +95,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		if (inventory != null)
 		{
 			L2ItemInstance item = inventory.getItemByObjectId(_objectId);
-			if (item == null || item.isWear())
+			if (item == null)
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
@@ -110,7 +110,6 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		
 		L2ItemInstance itemToRemove = activeChar.getInventory().getItemByObjectId(_objectId);
 		if (itemToRemove == null
-				|| itemToRemove.isWear()
 				|| itemToRemove.isShadowItem()
 				|| itemToRemove.isTimeLimitedItem())
 			return;

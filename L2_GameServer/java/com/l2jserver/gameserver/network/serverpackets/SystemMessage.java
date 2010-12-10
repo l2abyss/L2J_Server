@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.SystemMessageId2;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
@@ -66,6 +67,11 @@ public final class SystemMessage extends L2GameServerPacket
 	}
 	
 	public SystemMessage(SystemMessageId messageId)
+	{
+		_messageId = messageId.getId();
+	}
+	
+	public SystemMessage(SystemMessageId2 messageId)
 	{
 		_messageId = messageId.getId();
 	}

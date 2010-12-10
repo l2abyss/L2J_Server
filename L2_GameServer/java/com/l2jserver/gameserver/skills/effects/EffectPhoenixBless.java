@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.skills.Env;
@@ -47,12 +48,7 @@ public class EffectPhoenixBless extends L2Effect
 	@Override
 	public boolean onStart()
 	{
-		if (getEffected() instanceof L2Playable)
-		{
-			((L2Playable) getEffected()).startPhoenixBlessing();
-			return true;
-		}
-		return false;
+		return true;
 	}
 	
 	/**
@@ -62,7 +58,8 @@ public class EffectPhoenixBless extends L2Effect
 	@Override
 	public void onExit()
 	{
-		((L2Playable) getEffected()).stopPhoenixBlessing(this);
+		if (getEffected() instanceof L2Playable)
+			((L2Playable) getEffected()).stopPhoenixBlessing(this);
 	}
 	
 	/**
@@ -74,5 +71,14 @@ public class EffectPhoenixBless extends L2Effect
 	{
 		// just stop this effect
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_PHOENIX_BLESSING;
 	}
 }
