@@ -713,7 +713,7 @@ public class NpcTable
 					+ L2DatabaseFactory.getInstance().safetyString(new String[] { "id", "idTemplate", "name", "serverSideName", "title",
 							"serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type", "attackrange",
 							"hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk", "pdef", "matk",
-							"mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "enchant", "walkspd", "runspd",
+							"mdef", "atkspd", "critical", "aggro", "matkspd", "rhand", "lhand", "enchant", "walkspd", "runspd",
 							"dropHerbGroup" })
 							+ " FROM npc WHERE id=?");
 			st.setInt(1, id);
@@ -725,7 +725,7 @@ public class NpcTable
 						+ L2DatabaseFactory.getInstance().safetyString(new String[] { "id", "idTemplate", "name", "serverSideName",
 								"title", "serverSideTitle", "class", "collision_radius", "collision_height", "level", "sex", "type",
 								"attackrange", "hp", "mp", "hpreg", "mpreg", "str", "con", "dex", "int", "wit", "men", "exp", "sp", "patk",
-								"pdef", "matk", "mdef", "atkspd", "aggro", "matkspd", "rhand", "lhand", "enchant", "walkspd", "runspd",
+								"pdef", "matk", "mdef", "atkspd", "critical", "aggro", "matkspd", "rhand", "lhand", "enchant", "walkspd", "runspd",
 								"dropHerbGroup" }) + " FROM custom_npc WHERE id=?");
 				st.setInt(1, id);
 				rs = st.executeQuery();
