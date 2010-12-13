@@ -40,9 +40,6 @@ import com.l2jserver.util.Rnd;
  */
 abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 {
-	protected boolean _playerOneDefaulted;
-	protected boolean _playerTwoDefaulted;
-	
 	protected int _damageP1 = 0;
 	protected int _damageP2 = 0;
 	
@@ -150,7 +147,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 	@Override
 	protected final void removals()
 	{
-		if (isAborted())
+		if (_aborted)
 			return;
 
 		removals(_playerOne.player, true);
@@ -177,30 +174,44 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 	protected final void cleanEffects()
 	{
 		if (_playerOne.player != null
-				&& _playerOne.player.getOlympiadGameId() == getStadiumId())
+				&& !_playerOne.defaulted
+				&& !_playerOne.disconnected
+				&& _playerOne.player.getOlympiadGameId() == _stadiumID)
 			cleanEffects(_playerOne.player);
 
 		if (_playerTwo.player != null
-				&& _playerTwo.player.getOlympiadGameId() == getStadiumId())
+				&& !_playerTwo.defaulted
+				&& !_playerTwo.disconnected
+				&& _playerTwo.player.getOlympiadGameId() == _stadiumID)
 			cleanEffects(_playerTwo.player);
 	}
 
 	@Override
 	protected final void portPlayersBack()
 	{
-		portPlayerBack(_playerOne.player);
-		portPlayerBack(_playerTwo.player);
+		if (_playerOne.player != null
+				&& !_playerOne.defaulted
+				&& !_playerOne.disconnected)
+			portPlayerBack(_playerOne.player);
+		if (_playerTwo.player != null 
+				&& !_playerTwo.defaulted
+				&& !_playerTwo.disconnected)
+			portPlayerBack(_playerTwo.player);
 	}
 
 	@Override
 	protected final void playersStatusBack()
 	{
 		if (_playerOne.player != null
-				&& _playerOne.player.getOlympiadGameId() == getStadiumId())
+				&& !_playerOne.defaulted
+				&& !_playerOne.disconnected
+				&& _playerOne.player.getOlympiadGameId() == _stadiumID)
 			playerStatusBack(_playerOne.player);
 
 		if (_playerTwo.player != null
-				&& _playerTwo.player.getOlympiadGameId() == getStadiumId())
+				&& !_playerTwo.defaulted
+				&& !_playerTwo.disconnected
+				&& _playerTwo.player.getOlympiadGameId() == _stadiumID)
 			playerStatusBack(_playerTwo.player);
 	}
 
@@ -289,11 +300,11 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 		SystemMessage sm;
 		
 		// Check for if a player defaulted before battle started
-		if (_playerOneDefaulted || _playerTwoDefaulted)
+		if (_playerOne.defaulted || _playerTwo.defaulted)
 		{
 			try
 			{
-				if (_playerOneDefaulted)
+				if (_playerOne.defaulted)
 				{
 					try
 					{
@@ -313,7 +324,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 						_log.log(Level.WARNING, "Exception on validateWinner(): " + e.getMessage(), e);
 					}
 				}
-				if (_playerTwoDefaulted)
+				if (_playerTwo.defaulted)
 				{
 					try
 					{
@@ -553,7 +564,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 		reason = AbstractOlympiadGame.checkDefaulted(_playerOne.player);
 		if (reason != null)
 		{
-			_playerOneDefaulted = true;
+			_playerOne.defaulted = true;
 			if (_playerTwo.player != null)
 				_playerTwo.player.sendPacket(reason);
 		}
@@ -561,12 +572,12 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 		reason = AbstractOlympiadGame.checkDefaulted(_playerTwo.player);
 		if (reason != null)
 		{
-			_playerTwoDefaulted = true;
+			_playerTwo.defaulted = true;
 			if (_playerOne.player != null)
 				_playerOne.player.sendPacket(reason);
 		}
 
-		return _playerOneDefaulted || _playerTwoDefaulted;
+		return _playerOne.defaulted || _playerTwo.defaulted;
 	}
 
 	@Override

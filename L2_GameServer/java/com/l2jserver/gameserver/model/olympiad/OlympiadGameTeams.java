@@ -279,11 +279,17 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = 0; i < TEAM_SIZE; i++)
 		{
 			par = _teamOne[i];
-			if (par.player != null && par.player.getOlympiadGameId() == getStadiumId())
+			if (par.player != null
+					&& !par.defaulted
+					&& !par.disconnected
+					&& par.player.getOlympiadGameId() == _stadiumID)
 				cleanEffects(par.player);
 
 			par = _teamTwo[i];
-			if (par.player != null && par.player.getOlympiadGameId() == getStadiumId())
+			if (par.player != null
+					&& !par.defaulted
+					&& !par.disconnected
+					&& par.player.getOlympiadGameId() == _stadiumID)
 				cleanEffects(par.player);
 		}
 	}
@@ -291,10 +297,20 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	@Override
 	protected final void portPlayersBack()
 	{
+		Participant par;
 		for (int i = 0; i < TEAM_SIZE; i++)
 		{
-			portPlayerBack(_teamOne[i].player);
-			portPlayerBack(_teamTwo[i].player);
+			par = _teamOne[i];
+			if (par.player != null
+					&& !par.defaulted
+					&& !par.disconnected)
+				portPlayerBack(par.player);
+
+			par = _teamTwo[i];
+			if (par.player != null
+					&& !par.defaulted
+					&& !par.disconnected)
+				portPlayerBack(par.player);
 		}
 	}
 
@@ -305,11 +321,17 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = 0; i < TEAM_SIZE; i++)
 		{
 			par = _teamOne[i];
-			if (par.player != null && par.player.getOlympiadGameId() == getStadiumId())
+			if (par.player != null
+					&& !par.defaulted
+					&& !par.disconnected
+					&& par.player.getOlympiadGameId() == _stadiumID)
 				playerStatusBack(par.player);
 
 			par = _teamTwo[i];
-			if (par.player != null && par.player.getOlympiadGameId() == getStadiumId())
+			if (par.player != null
+					&& !par.defaulted
+					&& !par.disconnected
+					&& par.player.getOlympiadGameId() == _stadiumID)
 				playerStatusBack(par.player);
 		}
 	}
@@ -757,13 +779,16 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				reason = AbstractOlympiadGame.checkDefaulted(par.player);
 				if (reason != null)
 				{
-					_teamOneDefaulted = true;
-					for (Participant t : _teamTwo)
+					par.defaulted = true;
+					if (!_teamOneDefaulted)
 					{
-						if (t.player != null)
-							t.player.sendPacket(reason);
+						_teamOneDefaulted = true;
+						for (Participant t : _teamTwo)
+						{
+							if (t.player != null)
+								t.player.sendPacket(reason);
+						}
 					}
-					break;
 				}
 			}
 
@@ -775,13 +800,16 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				reason = AbstractOlympiadGame.checkDefaulted(par.player);
 				if (reason != null)
 				{
-					_teamTwoDefaulted = true;
-					for (Participant t : _teamOne)
+					par.defaulted = true;
+					if (!_teamTwoDefaulted)
 					{
-						if (t.player != null)
-							t.player.sendPacket(reason);
+						_teamTwoDefaulted = true;
+						for (Participant t : _teamOne)
+						{
+							if (t.player != null)
+								t.player.sendPacket(reason);
+						}
 					}
-					break;
 				}
 			}
 			

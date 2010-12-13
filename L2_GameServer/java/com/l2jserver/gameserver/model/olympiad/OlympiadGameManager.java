@@ -80,59 +80,62 @@ public class OlympiadGameManager implements Runnable
 			
 			if (readyClassed != null || readyNonClassed || readyTeams)
 			{
-				int startDelay = 0;
 				// set up the games queue
 				for (int i = 0; i < _tasks.length; i++)
 				{
 					task = _tasks[i];
-					if (!task.isRunning())
+					synchronized (task)
 					{
-						// Fair arena distribution
-						// 0,2,4,6,8.. arenas checked for classed or teams first
-						if ((readyClassed != null || readyTeams) && (i % 2) == 0)
+						if (!task.isRunning())
 						{
-							// 0,4,8.. arenas checked for teams first
-							if (readyTeams && (i % 4) == 0)
+							// Fair arena distribution
+							// 0,2,4,6,8.. arenas checked for classed or teams first
+							if ((readyClassed != null || readyTeams) && (i % 2) == 0)
 							{
-								newGame = OlympiadGameTeams.createGame(i, OlympiadManager.getInstance().getRegisteredTeamsBased());
+								// 0,4,8.. arenas checked for teams first
+								if (readyTeams && (i % 4) == 0)
+								{
+									newGame = OlympiadGameTeams.createGame(i, OlympiadManager.getInstance().getRegisteredTeamsBased());
+									if (newGame != null)
+									{
+										task.attachGame(newGame);
+										continue;
+									}
+									else
+										readyTeams = false;
+								}
+								// if no ready teams found check for classed
+								if (readyClassed != null)
+								{
+									newGame = OlympiadGameClassed.createGame(i, readyClassed);
+									if (newGame != null)
+									{
+										task.attachGame(newGame);
+										continue;
+									}
+									else
+										readyClassed = null;
+								}
+							}
+							// 1,3,5,7,9.. arenas used for non-classed
+							// also other arenas will be used for non-classed if no classed or teams available
+							if (readyNonClassed)
+							{
+								newGame = OlympiadGameNonClassed.createGame(i, OlympiadManager.getInstance().getRegisteredNonClassBased());
 								if (newGame != null)
 								{
-									task.attachGame(newGame, startDelay);
-									startDelay += 1000;
+									task.attachGame(newGame);
 									continue;
 								}
 								else
-									readyTeams = false;
-							}
-							// if no ready teams found check for classed
-							if (readyClassed != null)
-							{
-								newGame = OlympiadGameClassed.createGame(i, readyClassed);
-								if (newGame != null)
-								{
-									task.attachGame(newGame, startDelay);
-									startDelay += 1000;
-									continue;
-								}
-								else
-									readyClassed = null;
-							}
+									readyNonClassed = false;
+							}							
 						}
-						// 1,3,5,7,9.. arenas used for non-classed
-						// also other arenas will be used for non-classed if no classed or teams available
-						if (readyNonClassed)
-						{
-							newGame = OlympiadGameNonClassed.createGame(i, OlympiadManager.getInstance().getRegisteredNonClassBased());
-							if (newGame != null)
-							{
-								task.attachGame(newGame, startDelay);
-								startDelay += 1000;
-								continue;
-							}
-							else
-								readyNonClassed = false;
-						}							
 					}
+
+					// stop generating games if no more participants
+					if (readyClassed == null && !readyNonClassed && !readyTeams)
+						break;
 				}
 			}
 		}

@@ -19,13 +19,8 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.SpawnTable;
-import com.l2jserver.gameserver.model.L2Spawn;
-import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.clientpackets.Say2;
-import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
@@ -43,11 +38,10 @@ public final class OlympiadGameTask implements Runnable
 	public static final int[] BATTLE_START_TIME_SECOND = { 10, 5, 4, 3, 2, 1, 0 };
 	public static final int[] TELEPORT_TO_TOWN = { 40, 30, 20, 10, 5, 4, 3, 2, 1, 0 };
 
-	private static final int OLY_MANAGER = 31688;
-
 	private final L2OlympiadStadiumZone _zone;
 	private AbstractOlympiadGame _game;
 	private GameState _state = GameState.IDLE;
+	private boolean _needAnnounce = false;
 	private int _countDown = 0;
 
 	private static enum GameState
@@ -91,6 +85,17 @@ public final class OlympiadGameTask implements Runnable
 		return _state == GameState.TELEPORT_TO_TOWN;
 	}
 
+	public final boolean needAnnounce()
+	{
+		if (_needAnnounce)
+		{
+			_needAnnounce = false;
+			return true;
+		}
+		else
+			return false;
+	}
+
 	public final L2OlympiadStadiumZone getZone()
 	{
 		return _zone;
@@ -101,7 +106,7 @@ public final class OlympiadGameTask implements Runnable
 		return _game;
 	}
 
-	public final void attachGame(AbstractOlympiadGame game, int startDelay)
+	public final void attachGame(AbstractOlympiadGame game)
 	{
 		if (game!= null && _state != GameState.IDLE)
 		{
@@ -111,7 +116,8 @@ public final class OlympiadGameTask implements Runnable
 
 		_game = game;
 		_state = GameState.BEGIN;
-		ThreadPoolManager.getInstance().scheduleGeneral(this, startDelay);
+		_needAnnounce = false;
+		ThreadPoolManager.getInstance().executeTask(this);
 	}
 
 	public final void run()
@@ -310,36 +316,7 @@ public final class OlympiadGameTask implements Runnable
 				return false;
 
 			_game.removals();
-
-			if (Config.ALT_OLY_ANNOUNCE_GAMES)
-			{
-				L2Npc manager;
-				final String message;
-				final int arenaId = _game.getStadiumId() + 1;
-				switch (_game.getType())
-				{
-					case NON_CLASSED:
-						message = "Olympiad class-free individual match is going to begin in Arena " + arenaId + " in a moment.";
-						break;
-					case CLASSED:
-						message = "Olympiad class-specific individual match is going to begin in Arena " + arenaId + " in a moment.";
-						break;
-					default:
-						message = "Olympiad class-free team match is going to begin in Arena " + arenaId + " in a moment.";
-						break;
-				}
-				
-				for (L2Spawn spawn : SpawnTable.getInstance().getSpawnTable().values())
-				{
-					if (spawn != null && spawn.getNpcid() == OLY_MANAGER)
-					{
-						manager = spawn.getLastSpawn();
-						if (manager != null)
-							manager.broadcastPacket(new CreatureSay(manager.getObjectId(), Say2.SHOUT, manager.getName(), message));
-					}
-				}
-			}
-
+			_needAnnounce = true;
 			OlympiadGameManager.getInstance().startBattle(); // inform manager
 			return true;
 		}
@@ -469,6 +446,15 @@ public final class OlympiadGameTask implements Runnable
 		try
 		{
 			_game.clearPlayers();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, e.getMessage(), e);
+		}
+
+		try
+		{
+			_zone.closeDoors();
 		}
 		catch (Exception e)
 		{

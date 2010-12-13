@@ -144,7 +144,8 @@ public class Olympiad
 	protected ScheduledFuture<?> _scheduledOlympiadEnd;
 	protected ScheduledFuture<?> _scheduledWeeklyTask;
 	protected ScheduledFuture<?> _scheduledValdationTask;
-	protected ScheduledFuture<?> _gameManager;
+	protected ScheduledFuture<?> _gameManager = null;
+	protected ScheduledFuture<?> _gameAnnouncer = null;
 
 	public static Olympiad getInstance()
 	{
@@ -486,6 +487,8 @@ public class Olympiad
 				_logResults.info("Result,Player1,Player2,Player1 HP,Player2 HP,Player1 Damage,Player2 Damage,Points,Classed");
 				
 				_gameManager = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(OlympiadGameManager.getInstance(), 30000, 30000);
+				if (Config.ALT_OLY_ANNOUNCE_GAMES)
+					_gameAnnouncer = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new OlympiadAnnouncer(), 30000, 500);
 				
 				long regEnd = getMillisToCompEnd() - 600000;
 				if (regEnd > 0)
@@ -523,6 +526,12 @@ public class Olympiad
 						{
 							_gameManager.cancel(false);
 							_gameManager = null;
+						}
+
+						if (_gameAnnouncer != null)
+						{
+							_gameAnnouncer.cancel(false);
+							_gameAnnouncer = null;
 						}
 
 						saveOlympiadStatus();

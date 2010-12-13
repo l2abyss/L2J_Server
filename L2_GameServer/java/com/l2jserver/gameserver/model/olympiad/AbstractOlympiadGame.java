@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMode;
@@ -112,6 +113,10 @@ public abstract class AbstractOlympiadGame
 
 		if (player.getClient() == null || player.getClient().isDetached())
 			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_ENDS_THE_GAME);
+
+		// safety precautions
+		if (player.inObserverMode() || TvTEvent.isPlayerParticipant(player.getObjectId()))
+			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
 
 		SystemMessage sm;
 		if (player.isDead())
@@ -272,39 +277,6 @@ public abstract class AbstractOlympiadGame
 		}
 	}
 
-	protected static final void rewardParticipant(L2PcInstance player, int[][] reward)
-	{
-		if (player == null || !player.isOnline() || reward == null)
-			return;
-
-		try
-		{
-			SystemMessage sm;
-			L2ItemInstance item;
-			final InventoryUpdate iu = new InventoryUpdate();
-			for (int[] it : reward)
-			{
-				if (it == null || it.length != 2)
-					continue;
-
-				item = player.getInventory().addItem("Olympiad", it[0], it[1], player, null);
-				if (item == null)
-					continue;
-
-				iu.addModifiedItem(item);
-				sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
-				sm.addItemName(it[0]);
-				sm.addNumber(it[1]);
-				player.sendPacket(sm);
-			}
-			player.sendPacket(iu);			
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, e.getMessage(), e);
-		}
-	}
-
 	protected static final void cleanEffects(L2PcInstance player)
 	{
 		try
@@ -391,7 +363,7 @@ public abstract class AbstractOlympiadGame
 		}
 	}
 
-	protected void portPlayerBack(L2PcInstance player)
+	protected static final void portPlayerBack(L2PcInstance player)
 	{
 		if (player == null)
 			return;
@@ -401,6 +373,39 @@ public abstract class AbstractOlympiadGame
 
 		player.teleToLocation(player.getLastX(), player.getLastY(), player.getLastZ());
 		player.setLastCords(0, 0, 0);
+	}
+
+	public static final void rewardParticipant(L2PcInstance player, int[][] reward)
+	{
+		if (player == null || !player.isOnline() || reward == null)
+			return;
+
+		try
+		{
+			SystemMessage sm;
+			L2ItemInstance item;
+			final InventoryUpdate iu = new InventoryUpdate();
+			for (int[] it : reward)
+			{
+				if (it == null || it.length != 2)
+					continue;
+
+				item = player.getInventory().addItem("Olympiad", it[0], it[1], player, null);
+				if (item == null)
+					continue;
+
+				iu.addModifiedItem(item);
+				sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
+				sm.addItemName(it[0]);
+				sm.addNumber(it[1]);
+				player.sendPacket(sm);
+			}
+			player.sendPacket(iu);			
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, e.getMessage(), e);
+		}
 	}
 
 	public abstract CompetitionType getType();

@@ -31,6 +31,7 @@ public final class Participant
 	public final int side;
 	public final int baseClass;
 	public boolean disconnected = false;
+	public boolean defaulted = false;
 	public final StatsSet stats;
 
 	public Participant(L2PcInstance plr, int olympiadSide)
