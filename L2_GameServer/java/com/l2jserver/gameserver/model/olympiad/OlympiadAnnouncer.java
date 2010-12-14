@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
-import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
+import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 
 /**
  * 
@@ -56,32 +56,37 @@ public final class OlympiadAnnouncer implements Runnable
 			task = OlympiadGameManager.getInstance().getOlympiadTask(_currentStadium);
 			if (task != null && task.getGame() != null && task.needAnnounce())
 			{
-				String msg;
-				final int arenaId = task.getGame().getStadiumId() + 1;
+				int msg;
+				final String arenaId = String.valueOf(task.getGame().getStadiumId() + 1);
 				switch (task.getGame().getType())
 				{
 					case NON_CLASSED:
-						//msg = 1300166;
-						msg = "Olympiad class-free individual match is going to begin in Arena " + arenaId + " in a moment.";
+						// msg = "Olympiad class-free individual match is going to begin in Arena " + arenaId + " in a moment.";
+						msg = 1300166;
 						break;
 					case CLASSED:
-						//msg = 1300167;
-						msg = "Olympiad class-specific individual match is going to begin in Arena " + arenaId + " in a moment.";
+						// msg = "Olympiad class-specific individual match is going to begin in Arena " + arenaId + " in a moment.";
+						msg = 1300167;
 						break;
 					case TEAMS:
-						//msg = 1300132;
-						msg = "Olympiad class-free team match is going to begin in Arena " + arenaId + " in a moment.";
+						// msg = "Olympiad class-free team match is going to begin in Arena " + arenaId + " in a moment.";
+						msg = 1300132;
 						break;
 					default:
 						continue;
 				}
 
 				L2Npc manager;
+				NpcSay packet;
 				for (L2Spawn spawn : _managers)
 				{
 					manager = spawn.getLastSpawn();
 					if (manager != null)
-						manager.broadcastPacket(new CreatureSay(manager.getObjectId(), Say2.SHOUT, manager.getName(), msg));
+					{
+						packet = new NpcSay(manager.getObjectId(), Say2.SHOUT, manager.getNpcId(), msg);
+						packet.addStringParameter(arenaId);
+						manager.broadcastPacket(packet);
+					}
 				}
 				break;
 			}
