@@ -9135,27 +9135,27 @@ public enum SystemMessageId
 	
 	/**
 	 * ID: 1573<br>
-	 * Message: There are no clans that your clan has declared war against.
+	 * Message: All is well. There are no clans that have declared war against your clan.
 	 */
-	NO_WARS_AGAINST_CLANS(1573),
+	NO_WARS_AGAINST_YOU(1573),
 	
 	/**
 	 * ID: 1574<br>
-	 * Message: All is well. There are no clans that have declared war against your clan.
+	 * Message: Command Channels can only be formed by a party leader who is also the leader of a level 5 clan.
 	 */
-	NO_WARS_AGAINST_YOU(1574),
+	COMMAND_CHANNEL_ONLY_BY_LEVEL_5_CLAN_LEADER_PARTY_LEADER(1574),
 	
 	/**
 	 * ID: 1575<br>
-	 * Message: Command Channels can only be formed by a party leader who is also the leader of a level 5 clan.
+	 * Message: Your pet uses spiritshot.
 	 */
-	COMMAND_CHANNEL_ONLY_BY_LEVEL_5_CLAN_LEADER_PARTY_LEADER(1575),
+	PET_USE_SPIRITSHOT(1575),
 	
 	/**
 	 * ID: 1576<br>
-	 * Message: Pet uses the power of spirit.
+	 * Message: Your servitor uses spiritshot.
 	 */
-	PET_USE_THE_POWER_OF_SPIRIT(1576),
+	SERVITOR_USE_SPIRITSHOT(1576),
 	
 	/**
 	 * ID: 1577<br>
