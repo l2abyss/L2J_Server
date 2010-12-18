@@ -543,17 +543,22 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 
 					for (int i = 0 ; i < TEAM_SIZE; i++)
 					{
+						par = _teamTwo[i];
+						par.updateStat(COMP_LOST, 1);
+						points = pointsTeamTwo[i];
+						removePointsFromParticipant(par, points);
+					}
+
+					points = min / TEAM_SIZE;
+					for (int i = 0 ; i < TEAM_SIZE; i++)
+					{
 						par = _teamOne[i];
 						par.updateStat(COMP_WON, 1);
-						addPointsToParticipant(par, 0);
+						addPointsToParticipant(par, points);
 					}
 
 					for (int i = 0 ; i < TEAM_SIZE; i++)
-					{
-						par = _teamTwo[i];
-						par.updateStat(COMP_LOST, 1);
-						removePointsFromParticipant(par, pointsTeamTwo[i]);
-					}
+						rewardParticipant(_teamOne[i].player, getReward());
 				}
 				else if (tOneCrash && !tTwoCrash)
 				{
@@ -563,17 +568,22 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 
 					for (int i = 0 ; i < TEAM_SIZE; i++)
 					{
+						par = _teamOne[i];
+						par.updateStat(COMP_LOST, 1);
+						points = pointsTeamOne[i];
+						removePointsFromParticipant(par, points);
+					}
+					
+					points = min / TEAM_SIZE;
+					for (int i = 0 ; i < TEAM_SIZE; i++)
+					{
 						par = _teamTwo[i];
 						par.updateStat(COMP_WON, 1);
-						addPointsToParticipant(par, 0);
+						addPointsToParticipant(par, points);
 					}
 
 					for (int i = 0 ; i < TEAM_SIZE; i++)
-					{
-						par = _teamOne[i];
-						par.updateStat(COMP_LOST, 1);
-						removePointsFromParticipant(par, pointsTeamOne[i]);
-					}
+						rewardParticipant(_teamTwo[i].player, getReward());
 				}
 				else if (tOneCrash && tTwoCrash)
 				{

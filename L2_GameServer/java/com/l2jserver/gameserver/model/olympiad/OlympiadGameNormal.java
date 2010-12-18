@@ -365,11 +365,13 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 					stadium.broadcastPacket(sm);
 
 					_playerOne.updateStat(COMP_WON, 1);
-					addPointsToParticipant(_playerOne, 0);
+					addPointsToParticipant(_playerOne, pointDiff);
 
 					_playerTwo.updateStat(COMP_LOST, 1);
 					removePointsFromParticipant(_playerTwo, pointDiff);
 					
+					rewardParticipant(_playerOne.player, getReward());
+
 					if (Config.ALT_OLY_LOG_FIGHTS)
 					{
 						LogRecord record = new LogRecord(Level.INFO, _playerTwo.name+" crash");
@@ -384,11 +386,13 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 					stadium.broadcastPacket(sm);
 
 					_playerTwo.updateStat(COMP_WON, 1);
-					addPointsToParticipant(_playerTwo, 0);
+					addPointsToParticipant(_playerTwo, pointDiff);
 
 					_playerOne.updateStat(COMP_LOST, 1);
 					removePointsFromParticipant(_playerOne, pointDiff);
 					
+					rewardParticipant(_playerTwo.player, getReward());
+
 					if (Config.ALT_OLY_LOG_FIGHTS)
 					{
 						LogRecord record = new LogRecord(Level.INFO, _playerOne.name+" crash");
