@@ -298,4 +298,17 @@ public final class StringUtil
 		
 		return length;
 	}
+	
+	public static String getTraceString(StackTraceElement[] trace)
+	{
+		final TextBuilder sbString = TextBuilder.newInstance();
+		for (final StackTraceElement element : trace)
+		{
+			sbString.append(element.toString()).append("\n");
+		}
+		
+		String result = sbString.toString();
+		TextBuilder.recycle(sbString);
+		return result;
+	}
 }

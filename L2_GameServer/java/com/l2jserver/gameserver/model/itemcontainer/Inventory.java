@@ -42,6 +42,7 @@ import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
+import com.l2jserver.util.StringUtil;
 
 /**
  * This class manages inventory
@@ -1212,7 +1213,8 @@ public abstract class Inventory extends ItemContainer
 				pdollSlot = PAPERDOLL_BELT;
 				break;
 			default:
-				_log.info("Unhandler slot type: " + slot);
+				_log.info("Unhandled slot type: " + slot);
+				_log.info(StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
 		}
 		if (pdollSlot >= 0)
 		{
