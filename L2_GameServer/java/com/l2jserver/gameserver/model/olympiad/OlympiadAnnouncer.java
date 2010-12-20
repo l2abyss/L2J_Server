@@ -38,7 +38,7 @@ public final class OlympiadAnnouncer implements Runnable
 
 	public OlympiadAnnouncer()
 	{
-		for (L2Spawn spawn : SpawnTable.getInstance().getSpawnTable().values())
+		for (L2Spawn spawn : SpawnTable.getInstance().getSpawnTable())
 		{
 			if (spawn != null && spawn.getNpcid() == OLY_MANAGER)
 				_managers.add(spawn);

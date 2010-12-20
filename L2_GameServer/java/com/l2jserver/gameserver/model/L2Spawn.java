@@ -50,9 +50,6 @@ public class L2Spawn
 	/** The link on the L2NpcTemplate object containing generic and static properties of this spawn (ex : RewardExp, RewardSP, AggroRange...) */
 	private L2NpcTemplate _template;
 	
-	/** The Identifier of this spawn in the spawn table */
-	private int _id;
-	
 	// private String _location = DEFAULT_LOCATION;
 	
 	/** The identifier of the location area where L2NpcInstance can be spwaned */
@@ -186,14 +183,6 @@ public class L2Spawn
 	}
 	
 	/**
-	 * Return the Identifier of this L2Spwan (used as key in the SpawnTable).<BR><BR>
-	 */
-	public int getId()
-	{
-		return _id;
-	}
-	
-	/**
 	 * Return the Identifier of the location area where L2NpcInstance can be spwaned.<BR><BR>
 	 */
 	public int getLocation()
@@ -269,14 +258,6 @@ public class L2Spawn
 	public void setAmount(int amount)
 	{
 		_maximumCount = amount;
-	}
-	
-	/**
-	 * Set the Identifier of this L2Spwan (used as key in the SpawnTable).<BR><BR>
-	 */
-	public void setId(int id)
-	{
-		_id = id;
 	}
 	
 	/**
@@ -513,7 +494,7 @@ public class L2Spawn
 			// Set the calculated position of the L2NpcInstance
 			newlocx = p[0];
 			newlocy = p[1];
-			newlocz = GeoData.getInstance().getSpawnHeight(newlocx, newlocy, p[2], p[3],_id);
+			newlocz = GeoData.getInstance().getSpawnHeight(newlocx, newlocy, p[2], p[3],this);
 		}
 		else
 		{
@@ -521,7 +502,7 @@ public class L2Spawn
 			newlocx = getLocx();
 			newlocy = getLocy();
 			if (Config.GEODATA > 0)
-				newlocz = GeoData.getInstance().getSpawnHeight(newlocx,newlocy,getLocz(),getLocz(),_id);
+				newlocz = GeoData.getInstance().getSpawnHeight(newlocx,newlocy,getLocz(),getLocz(),this);
 			else newlocz = getLocz();
 		}
 		
@@ -621,7 +602,7 @@ public class L2Spawn
 	public void setRespawnDelay(int i)
 	{
 		if (i < 0)
-			_log.warning("respawn delay is negative for spawnId:"+_id);
+			_log.warning("respawn delay is negative for spawn:"+this);
 		
 		if (i < 10)
 			i = 10;
@@ -659,5 +640,14 @@ public class L2Spawn
 	public void setInstanceId(int instanceId)
 	{
 		_instanceId = instanceId;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "L2Spawn [_template=" + getNpcid() + ", _locX=" + _locX + ", _locY=" + _locY + ", _locZ=" + _locZ + ", _heading=" + _heading + "]";
 	}
 }

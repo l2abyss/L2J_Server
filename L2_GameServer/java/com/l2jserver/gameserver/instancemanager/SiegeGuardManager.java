@@ -212,7 +212,6 @@ public class SiegeGuardManager
 				if (template1 != null)
 				{
 					spawn1 = new L2Spawn(template1);
-					spawn1.setId(rs.getInt("id"));
 					spawn1.setAmount(1);
 					spawn1.setLocx(rs.getInt("x"));
 					spawn1.setLocy(rs.getInt("y"));

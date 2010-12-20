@@ -4139,7 +4139,7 @@ public abstract class L2Character extends L2Object
 		&& GameTimeController.getGameTicks() % 10 == 0 // once a second to reduce possible cpu load
 		&& GeoData.getInstance().hasGeo(xPrev, yPrev))
 		{
-			short geoHeight = GeoData.getInstance().getSpawnHeight(xPrev, yPrev, zPrev-30, zPrev+30, this.getObjectId());
+			short geoHeight = GeoData.getInstance().getSpawnHeight(xPrev, yPrev, zPrev-30, zPrev+30, null);
 			dz = m._zDestination - geoHeight;
 			// quite a big difference, compare to validatePosition packet
 			if (this instanceof L2PcInstance
