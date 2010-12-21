@@ -6102,7 +6102,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Set the L2PcInstance requester of a transaction (ex : FriendInvite, JoinAlly, JoinParty...).<BR><BR>
 	 */
-	public synchronized void setActiveRequester(L2PcInstance requester)
+	public void setActiveRequester(L2PcInstance requester)
 	{
 		_activeRequester = requester;
 	}
@@ -6110,11 +6110,12 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Return the L2PcInstance requester of a transaction (ex : FriendInvite, JoinAlly, JoinParty...).<BR><BR>
 	 */
-	public synchronized L2PcInstance getActiveRequester()
+	public L2PcInstance getActiveRequester()
 	{
-		if (_activeRequester != null)
+		L2PcInstance requester = _activeRequester;
+		if (requester != null)
 		{
-			if (_activeRequester.isRequestExpired() && _activeTradeList == null)
+			if (requester.isRequestExpired() && _activeTradeList == null)
 				_activeRequester = null;
 		}
 		return _activeRequester;
@@ -11760,6 +11761,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			// deals with sudden exit in the middle of transaction
 			setActiveRequester(null);
+			cancelActiveTrade();
 		}
 		
 		// If the L2PcInstance is a GM, remove it from the GM List
