@@ -1209,6 +1209,9 @@ public abstract class Inventory extends ItemContainer
 			case L2Item.SLOT_R_BRACELET:
 				pdollSlot = PAPERDOLL_RBRACELET;
 				break;
+			case L2Item.SLOT_DECO:
+				pdollSlot = PAPERDOLL_DECO1;
+				break;
 			case L2Item.SLOT_BELT:
 				pdollSlot = PAPERDOLL_BELT;
 				break;
