@@ -149,10 +149,26 @@ public class L2SkillChargeDmg extends L2Skill
 				}
 				
 				target.reduceCurrentHp(finalDamage, caster, this);
-				
+
 				// vengeance reflected damage
 				if ((reflect & Formulas.SKILL_REFLECT_VENGEANCE) != 0)
-					caster.reduceCurrentHp(damage, target, this);
+				{
+					if (target instanceof L2PcInstance)
+					{
+						SystemMessage sm = new SystemMessage(SystemMessageId.COUNTERED_C1_ATTACK);
+						sm.addCharName(caster);
+						target.sendPacket(sm);
+					}
+					if (caster instanceof L2PcInstance)
+					{
+						SystemMessage sm = new SystemMessage(SystemMessageId.C1_PERFORMING_COUNTERATTACK);
+						sm.addCharName(target);
+						caster.sendPacket(sm);
+					}
+					// Formula from Diego post, 700 from rpg tests
+					double vegdamage = (700 * target.getPAtk(caster) / caster.getPDef(target));
+					caster.reduceCurrentHp(vegdamage, target, this);
+				}
 				
 				caster.sendDamageMessage(target, (int)finalDamage, false, crit, false);
 				
