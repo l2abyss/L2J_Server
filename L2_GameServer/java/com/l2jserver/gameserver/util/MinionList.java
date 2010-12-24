@@ -180,7 +180,7 @@ public class MinionList
 
 		final int time = respawnTime < 0 ? _master.isRaid() ? (int)Config.RAID_MINION_RESPAWN_TIMER : 0 : respawnTime;
 		if (time > 0 && !_master.isAlikeDead())
-			ThreadPoolManager.getInstance().scheduleGeneral(new MinionRespawnTask(minion), respawnTime);
+			ThreadPoolManager.getInstance().scheduleGeneral(new MinionRespawnTask(minion), time);
 	}
 
 	/**
