@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.instancemanager.GraciaSeedsManager;
+
 /**
  * format: 0xfe cd(dddd)
  * FE - packet id
@@ -38,12 +40,18 @@ public class ExShowSeedMapInfo extends L2GameServerPacket
 		writeC(0xFE); // Id
 		writeH(0xa1); // SubId
 		
-		writeD(0); // seed count
-		// for (int i = 0; i < seedCount; i++)
-		writeD(0); // x coord
-		writeD(0); // y coord
-		writeD(0); // z coord
-		writeD(0); // sys msg id
+		writeD(2); // seed count
+		// Seed of Destruction
+		writeD(-246857); // x coord
+		writeD(251960); // y coord
+		writeD(4331); // z coord
+		writeD(2770 + GraciaSeedsManager.getInstance().getSoDState()); // sys msg id
+		// Seed of Infinity
+		writeD(-213770); // x coord
+		writeD(210760); // y coord
+		writeD(4400); // z coord
+		// Manager not implemented yet
+		writeD(2766); // sys msg id
 	}
 	
 	@Override
