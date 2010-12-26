@@ -16,6 +16,7 @@ package com.l2jserver.loginserver.clientpackets;
 
 import java.net.InetAddress;
 import java.security.GeneralSecurityException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
@@ -88,15 +89,16 @@ public class RequestAuthLogin extends L2LoginClientPacket
 	public void run()
 	{
 		byte[] decrypted = null;
+		L2LoginClient client = getClient();
 		try
 		{
 			Cipher rsaCipher = Cipher.getInstance("RSA/ECB/nopadding");
-			rsaCipher.init(Cipher.DECRYPT_MODE, getClient().getRSAPrivateKey());
+			rsaCipher.init(Cipher.DECRYPT_MODE, client.getRSAPrivateKey());
 			decrypted = rsaCipher.doFinal(_raw, 0x00, 0x80 );
 		}
 		catch (GeneralSecurityException e)
 		{
-			e.printStackTrace();
+			_log.log(Level.INFO, "" , e);
 			return;
 		}
 		
@@ -109,10 +111,9 @@ public class RequestAuthLogin extends L2LoginClientPacket
 		_ncotp |= decrypted[0x7f] << 24;
 		
 		LoginController lc = LoginController.getInstance();
-		L2LoginClient client = getClient();
 		try
 		{
-			AuthLoginResult result = lc.tryAuthLogin(_user, _password, getClient());
+			AuthLoginResult result = lc.tryAuthLogin(_user, _password, client);
 			
 			switch (result)
 			{

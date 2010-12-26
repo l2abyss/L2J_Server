@@ -205,14 +205,9 @@ public class LoginController
 				// account isnt on any GS verify LS itself
 				ret = AuthLoginResult.ALREADY_ON_LS;
 				
-				// dont allow 2 simultaneous login
-				synchronized (_loginServerClients)
+				if (_loginServerClients.putIfAbsent(account, client) == null)
 				{
-					if (!_loginServerClients.containsKey(account))
-					{
-						_loginServerClients.put(account, client);
-						ret = AuthLoginResult.AUTH_SUCCESS;
-					}
+					ret = AuthLoginResult.AUTH_SUCCESS;
 				}
 			}
 		}
@@ -890,15 +885,13 @@ public class LoginController
 		{
 			while (!isInterrupted())
 			{
-				synchronized (_loginServerClients)
+				for (L2LoginClient client : _loginServerClients.values())
 				{
-					for (FastMap.Entry<String, L2LoginClient> e = _loginServerClients.head(), end = _loginServerClients.tail(); (e = e.getNext()) != end;)
+					if (client == null)
+						continue;
+					if ((client.getConnectionStartTime() + LOGIN_TIMEOUT) < System.currentTimeMillis())
 					{
-						L2LoginClient client = e.getValue();
-						if ((client.getConnectionStartTime() + LOGIN_TIMEOUT) < System.currentTimeMillis())
-						{
-							client.close(LoginFailReason.REASON_ACCESS_FAILED);
-						}
+						client.close(LoginFailReason.REASON_ACCESS_FAILED);
 					}
 				}
 				
