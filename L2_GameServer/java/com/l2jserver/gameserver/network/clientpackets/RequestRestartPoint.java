@@ -66,7 +66,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			Location loc = null;
 			Castle castle = null;
 			Fort fort = null;
-			Boolean isInDefense = false;
+			boolean isInDefense = false;
 			int instanceId = 0;
 			
 			// force jail

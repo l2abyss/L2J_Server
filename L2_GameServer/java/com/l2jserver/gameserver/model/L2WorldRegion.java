@@ -54,7 +54,7 @@ public final class L2WorldRegion
 	
 	private List<L2WorldRegion> _surroundingRegions;
 	private int _tileX, _tileY;
-	private Boolean _active = false;
+	private boolean _active = false;
 	private ScheduledFuture<?> _neighborsTask = null;
 	private final FastList<L2ZoneType>			_zones;
 	
@@ -202,7 +202,7 @@ public final class L2WorldRegion
 		}
 	}
 	
-	private void switchAI(Boolean isOn)
+	private void switchAI(boolean isOn)
 	{
 		int c = 0;
 		if (!isOn)
@@ -270,14 +270,14 @@ public final class L2WorldRegion
 		
 	}
 	
-	public Boolean isActive()
+	public boolean isActive()
 	{
 		return _active;
 	}
 	
 	// check if all 9 neighbors (including self) are inactive or active but with no players.
 	// returns true if the above condition is met.
-	public Boolean areNeighborsEmpty()
+	public boolean areNeighborsEmpty()
 	{
 		// if this region is occupied, return false.
 		if (isActive() && !_allPlayable.isEmpty())

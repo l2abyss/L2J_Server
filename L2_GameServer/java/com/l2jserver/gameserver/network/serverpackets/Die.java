@@ -86,8 +86,8 @@ public class Die extends L2GameServerPacket
 		writeD(_canTeleport ? 0x01 : 0);                                                   // 6d 00 00 00 00 - to nearest village
 		if (_canTeleport && _clan != null)
 		{
-			Boolean isInCastleDefense = false;
-			Boolean isInFortDefense = false;
+			boolean isInCastleDefense = false;
+			boolean isInFortDefense = false;
 			
 			L2SiegeClan siegeClan = null;
 			Castle castle = CastleManager.getInstance().getCastle(_activeChar);

@@ -5477,10 +5477,10 @@ public abstract class L2Character extends L2Object
 	/**
 	 * return true if this character is inside an active grid.
 	 */
-	public Boolean isInActiveRegion()
+	public boolean isInActiveRegion()
 	{
 		L2WorldRegion region = getWorldRegion();
-		return  ((region !=null) && (region.isActive()));
+		return  ((region != null) && (region.isActive()));
 	}
 	
 	/**

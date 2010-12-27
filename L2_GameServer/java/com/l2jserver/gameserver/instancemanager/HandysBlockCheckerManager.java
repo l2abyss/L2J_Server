@@ -297,7 +297,7 @@ public final class HandysBlockCheckerManager
 	/**
 	 * Returns true if arena is holding an event at this momment
 	 * @param arenaId
-	 * @return Boolean
+	 * @return boolean
 	 */
 	public boolean arenaIsBeingUsed(int arenaId)
 	{

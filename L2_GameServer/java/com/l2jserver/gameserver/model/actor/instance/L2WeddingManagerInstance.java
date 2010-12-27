@@ -226,7 +226,7 @@ public class L2WeddingManagerInstance extends L2Npc
 	 * 
 	 * @param p1 L2PcInstance
 	 * @param p2 L2PcInstance
-	 * @return Boolean
+	 * @return boolean
 	 */
 	private boolean wearsFormalWear(L2PcInstance p1, L2PcInstance p2)
 	{

@@ -68,7 +68,7 @@ public final class QuestState
 	/** List of couples (variable for quest,value of the variable for quest) */
 	private Map<String, String> _vars;
 	
-	/** Boolean flag letting QuestStateManager know to exit quest when cleaning up */
+	/** boolean flag letting QuestStateManager know to exit quest when cleaning up */
 	private boolean _isExitQuestOnCleanUp = false;
 	
 	/**
