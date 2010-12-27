@@ -238,7 +238,7 @@ abstract class DocumentBase
 	protected void attachEffect(Node n, Object template, Condition attachCond)
 	{
 		NamedNodeMap attrs = n.getAttributes();
-		String name = attrs.getNamedItem("name").getNodeValue().intern();
+		String name = getValue(attrs.getNamedItem("name").getNodeValue().intern(), template);
 		
 		/**
 		 * Keep this values as default ones, DP needs it
