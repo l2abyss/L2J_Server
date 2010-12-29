@@ -141,8 +141,8 @@ public class SevenSigns
 	private static AutoSpawnInstance _spiritOutSpawn;
 	private static AutoSpawnInstance _lilithSpawn;
 	private static AutoSpawnInstance _anakimSpawn;
-	private static AutoSpawnInstance _crestofdawnspawn;
-	private static AutoSpawnInstance _crestofduskspawn;
+	private static Map<Integer, AutoSpawnInstance> _crestofdawnspawns;
+	private static Map<Integer, AutoSpawnInstance> _crestofduskspawns;
 	private static Map<Integer, AutoSpawnInstance> _oratorSpawns;
 	private static Map<Integer, AutoSpawnInstance> _preacherSpawns;
 	private static Map<Integer, AutoSpawnInstance> _marketeerSpawns;
@@ -269,8 +269,8 @@ public class SevenSigns
 		_spiritOutSpawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(SPIRIT_OUT_ID, false);
 		_lilithSpawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(LILITH_NPC_ID, false);
 		_anakimSpawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(ANAKIM_NPC_ID, false);
-		_crestofdawnspawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(CREST_OF_DAWN_ID, false);
-		_crestofduskspawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(CREST_OF_DUSK_ID, false);
+		_crestofdawnspawns = AutoSpawnHandler.getInstance().getAutoSpawnInstances(CREST_OF_DAWN_ID);
+		_crestofduskspawns = AutoSpawnHandler.getInstance().getAutoSpawnInstances(CREST_OF_DUSK_ID);
 		_oratorSpawns = AutoSpawnHandler.getInstance().getAutoSpawnInstances(ORATOR_NPC_ID);
 		_preacherSpawns = AutoSpawnHandler.getInstance().getAutoSpawnInstances(PREACHER_NPC_ID);
 		
@@ -333,10 +333,19 @@ public class SevenSigns
 							AutoSpawnHandler.getInstance().setSpawnActive(_lilithSpawn, true);
 						
 						AutoSpawnHandler.getInstance().setSpawnActive(_anakimSpawn, false);
-						if (!AutoSpawnHandler.getInstance().getAutoSpawnInstance(_crestofdawnspawn.getObjectId(), true).isSpawnActive())
-							AutoSpawnHandler.getInstance().setSpawnActive(_crestofdawnspawn, true);
 						
-						AutoSpawnHandler.getInstance().setSpawnActive(_crestofduskspawn, false);
+						for (AutoSpawnInstance dawnCrest : _crestofdawnspawns.values())
+						{
+							if(!AutoSpawnHandler.getInstance().getAutoSpawnInstance(dawnCrest.getObjectId(), true).isSpawnActive())
+							{
+								AutoSpawnHandler.getInstance().setSpawnActive(dawnCrest, true);
+							}
+						}
+						
+						for (AutoSpawnInstance duskCrest : _crestofduskspawns.values())
+						{
+							AutoSpawnHandler.getInstance().setSpawnActive(duskCrest, false);
+						}
 						break;
 						
 					case CABAL_DUSK:
@@ -344,10 +353,19 @@ public class SevenSigns
 							AutoSpawnHandler.getInstance().setSpawnActive(_anakimSpawn, true);
 						
 						AutoSpawnHandler.getInstance().setSpawnActive(_lilithSpawn, false);
-						if (!AutoSpawnHandler.getInstance().getAutoSpawnInstance(_crestofduskspawn.getObjectId(), true).isSpawnActive())
-							AutoSpawnHandler.getInstance().setSpawnActive(_crestofduskspawn, true);
 						
-						AutoSpawnHandler.getInstance().setSpawnActive(_crestofdawnspawn, false);
+						for (AutoSpawnInstance duskCrest : _crestofduskspawns.values())
+						{
+							if(!AutoSpawnHandler.getInstance().getAutoSpawnInstance(duskCrest.getObjectId(), true).isSpawnActive())
+							{
+								AutoSpawnHandler.getInstance().setSpawnActive(duskCrest, true);
+							}
+						}
+						
+						for (AutoSpawnInstance dawnCrest : _crestofdawnspawns.values())
+						{
+							AutoSpawnHandler.getInstance().setSpawnActive(dawnCrest, false);
+						}
 						break;
 				}
 			}
@@ -356,8 +374,14 @@ public class SevenSigns
 				AutoSpawnHandler.getInstance().setSpawnActive(_merchantSpawn, false);
 				AutoSpawnHandler.getInstance().setSpawnActive(_lilithSpawn, false);
 				AutoSpawnHandler.getInstance().setSpawnActive(_anakimSpawn, false);
-				AutoSpawnHandler.getInstance().setSpawnActive(_crestofdawnspawn, false);
-				AutoSpawnHandler.getInstance().setSpawnActive(_crestofduskspawn, false);
+				for (AutoSpawnInstance dawnCrest : _crestofdawnspawns.values())
+				{
+					AutoSpawnHandler.getInstance().setSpawnActive(dawnCrest, false);
+				}
+				for (AutoSpawnInstance duskCrest : _crestofduskspawns.values())
+				{
+					AutoSpawnHandler.getInstance().setSpawnActive(duskCrest, false);
+				}
 				AutoSpawnHandler.getInstance().setSpawnActive(_spiritInSpawn, false);
 				AutoSpawnHandler.getInstance().setSpawnActive(_spiritOutSpawn, false);
 			}
@@ -368,8 +392,14 @@ public class SevenSigns
 			AutoSpawnHandler.getInstance().setSpawnActive(_blacksmithSpawn, false);
 			AutoSpawnHandler.getInstance().setSpawnActive(_lilithSpawn, false);
 			AutoSpawnHandler.getInstance().setSpawnActive(_anakimSpawn, false);
-			AutoSpawnHandler.getInstance().setSpawnActive(_crestofdawnspawn, false);
-			AutoSpawnHandler.getInstance().setSpawnActive(_crestofduskspawn, false);
+			for (AutoSpawnInstance dawnCrest : _crestofdawnspawns.values())
+			{
+				AutoSpawnHandler.getInstance().setSpawnActive(dawnCrest, false);
+			}
+			for (AutoSpawnInstance duskCrest : _crestofduskspawns.values())
+			{
+				AutoSpawnHandler.getInstance().setSpawnActive(duskCrest, false);
+			}
 			AutoSpawnHandler.getInstance().setSpawnActive(_spiritInSpawn, false);
 			AutoSpawnHandler.getInstance().setSpawnActive(_spiritOutSpawn, false);
 			
