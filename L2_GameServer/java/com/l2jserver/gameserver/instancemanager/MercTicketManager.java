@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
+import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -81,15 +82,15 @@ public class MercTicketManager
 	
 	//TODO: not retail like: clan lvl 5 - 30 ticks max, lvl 7+ - 50 max
 	private static final int[] MERCS_MAX_PER_CASTLE = {
-		100, // Gludio
-		150, // Dion
-		200, // Giran
-		300, // Oren
-		400, // Aden
-		400, // Innadril
-		400, // Goddard
-		400, // Rune
-		400 // Schuttgart
+		Config.GLUDIO_MAX_MERCENARIES, //default 100
+		Config.DION_MAX_MERCENARIES,   //default 150
+		Config.GIRAN_MAX_MERCENARIES,  //default 200
+		Config.OREN_MAX_MERCENARIES,   //default 300
+		Config.ADEN_MAX_MERCENARIES,   //default 400
+		Config.INNADRIL_MAX_MERCENARIES, //default 400
+		Config.GODDARD_MAX_MERCENARIES,  //default 400
+		Config.RUNE_MAX_MERCENARIES,     //default 400
+		Config.SCHUTTGART_MAX_MERCENARIES //default 400
 	};
 	
 	private static final int[] ITEM_IDS = {
