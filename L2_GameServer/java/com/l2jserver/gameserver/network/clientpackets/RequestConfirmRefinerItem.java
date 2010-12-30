@@ -56,7 +56,7 @@ public class RequestConfirmRefinerItem extends AbstractRefinePacket
 		
 		if (!isValid(activeChar, targetItem, refinerItem))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
 		}
 		

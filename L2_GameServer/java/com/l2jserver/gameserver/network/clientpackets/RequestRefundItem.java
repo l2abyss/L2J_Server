@@ -193,21 +193,21 @@ public final class RequestRefundItem extends L2GameClientPacket
 		
 		if (weight > Integer.MAX_VALUE || weight < 0 || !player.getInventory().validateWeight((int) weight))
 		{
-			sendPacket(new SystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		if (slots > Integer.MAX_VALUE || slots < 0 || !player.getInventory().validateCapacity((int) slots))
 		{
-			sendPacket(new SystemMessage(SystemMessageId.SLOTS_FULL));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		if ((adena < 0) || !player.reduceAdena("Refund", adena, player.getLastFolkNPC(), false))
 		{
-			sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

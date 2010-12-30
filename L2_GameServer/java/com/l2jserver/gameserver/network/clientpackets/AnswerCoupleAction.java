@@ -77,7 +77,7 @@ public class AnswerCoupleAction extends L2GameClientPacket
 		}
 		else if (_answer == -1) // refused
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.C1_IS_SET_TO_REFUSE_COUPLE_ACTIONS);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_SET_TO_REFUSE_COUPLE_ACTIONS);
 			sm.addPcName(activeChar);
 			target.sendPacket(sm);
 		}

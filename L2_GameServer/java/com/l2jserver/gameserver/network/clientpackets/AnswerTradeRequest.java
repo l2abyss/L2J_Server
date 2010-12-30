@@ -48,7 +48,7 @@ public final class AnswerTradeRequest extends L2GameClientPacket
 		
 		if (!player.getAccessLevel().allowTransaction())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -58,7 +58,7 @@ public final class AnswerTradeRequest extends L2GameClientPacket
 		{
 			// Trade partner not found, cancel trade
 			player.sendPacket(new TradeDone(0));
-			SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
+			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 			player.sendPacket(msg);
 			player.setActiveRequester(null);
 			msg = null;
@@ -68,7 +68,7 @@ public final class AnswerTradeRequest extends L2GameClientPacket
 		{
 			// Trade partner not found, cancel trade
 			player.sendPacket(new TradeDone(0));
-			SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
+			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 			player.sendPacket(msg);
 			player.setActiveRequester(null);
 			msg = null;
@@ -79,7 +79,7 @@ public final class AnswerTradeRequest extends L2GameClientPacket
 			player.startTrade(partner);
 		else
 		{
-			SystemMessage msg = new SystemMessage(SystemMessageId.C1_DENIED_TRADE_REQUEST);
+			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_DENIED_TRADE_REQUEST);
 			msg.addString(player.getName());
 			partner.sendPacket(msg);
 			msg = null;

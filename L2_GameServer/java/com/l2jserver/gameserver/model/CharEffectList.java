@@ -772,11 +772,11 @@ public class CharEffectList
 			SystemMessage sm;
 			if (effect.getSkill().isToggle())
 			{
-				sm = new SystemMessage(SystemMessageId.S1_HAS_BEEN_ABORTED);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_BEEN_ABORTED);
 			}
 			else
 			{
-				sm = new SystemMessage(SystemMessageId.EFFECT_S1_DISAPPEARED);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.EFFECT_S1_DISAPPEARED);
 			}
 			sm.addSkillName(effect);
 			_owner.sendPacket(sm);

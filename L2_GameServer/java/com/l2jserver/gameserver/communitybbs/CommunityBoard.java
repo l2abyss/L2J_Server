@@ -47,7 +47,7 @@ public class CommunityBoard
 		{
 			default:
 			case 0: //disabled
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CB_OFFLINE));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
 				break;
 			case 1: // old
 				RegionBBSManager.getInstance().parsecmd(command, activeChar);

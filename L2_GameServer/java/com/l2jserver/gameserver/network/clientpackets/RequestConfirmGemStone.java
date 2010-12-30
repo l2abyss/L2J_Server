@@ -68,7 +68,7 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		// Make sure the item is a gemstone
 		if (!isValid(activeChar, targetItem, refinerItem, gemStoneItem))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
 		}
 		
@@ -79,7 +79,7 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		
 		if (_gemStoneCount != getGemStoneCount(targetItem.getItem().getItemGrade(), ls.getGrade()))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.GEMSTONE_QUANTITY_IS_INCORRECT));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.GEMSTONE_QUANTITY_IS_INCORRECT));
 			return;
 		}
 		

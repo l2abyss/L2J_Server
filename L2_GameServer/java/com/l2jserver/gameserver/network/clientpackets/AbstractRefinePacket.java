@@ -307,32 +307,32 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	{
 		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_A_PRIVATE_STORE_OR_PRIVATE_WORKSHOP_IS_IN_OPERATION));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_A_PRIVATE_STORE_OR_PRIVATE_WORKSHOP_IS_IN_OPERATION));
 			return false;
 		}
 		if (player.getActiveTradeList() != null)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_TRADING));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_TRADING));
 			return false;
 		}
 		if (player.isDead())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_DEAD));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_DEAD));
 			return false;
 		}
 		if (player.isParalyzed())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_PARALYZED));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_PARALYZED));
 			return false;
 		}
 		if (player.isFishing())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_FISHING));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_FISHING));
 			return false;
 		}
 		if (player.isSitting())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_SITTING_DOWN));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_SITTING_DOWN));
 			return false;
 		}
 		if (player.isCursedWeaponEquipped())

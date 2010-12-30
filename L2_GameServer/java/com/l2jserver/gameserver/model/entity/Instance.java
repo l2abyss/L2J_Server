@@ -590,7 +590,7 @@ public class Instance
 		{
 			timeLeft = remaining / 60000;
 			interval = 300000;
-			SystemMessage sm = new SystemMessage(SystemMessageId.DUNGEON_EXPIRES_IN_S1_MINUTES);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DUNGEON_EXPIRES_IN_S1_MINUTES);
 			sm.addString(Integer.toString(timeLeft));
 			Announcements.getInstance().announceToInstance(sm, getId());
 			remaining = remaining - 300000;
@@ -599,7 +599,7 @@ public class Instance
 		{
 			timeLeft = remaining / 60000;
 			interval = 60000;
-			SystemMessage sm = new SystemMessage(SystemMessageId.DUNGEON_EXPIRES_IN_S1_MINUTES);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DUNGEON_EXPIRES_IN_S1_MINUTES);
 			sm.addString(Integer.toString(timeLeft));
 			Announcements.getInstance().announceToInstance(sm, getId());
 			remaining = remaining - 60000;

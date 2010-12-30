@@ -105,7 +105,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 					return;
 				}
 				
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_EMBLEM_WAS_SUCCESSFULLY_REGISTERED));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_EMBLEM_WAS_SUCCESSFULLY_REGISTERED));
 				updated = true;
 			}
 		}

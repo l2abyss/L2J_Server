@@ -110,7 +110,7 @@ public class L2SkillSummon extends L2Skill
 					return false;
 				if (player.getPet() != null)
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ALREADY_HAVE_A_PET));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ALREADY_HAVE_A_PET));
 					return false;
 				}
 			}
@@ -197,7 +197,7 @@ public class L2SkillSummon extends L2Skill
 				if (activeChar.getCubics().size() > mastery) {
 					if (Config.DEBUG)
 						_log.fine("player can't summon any more cubics. ignore summon skill");
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.CUBIC_SUMMONING_FAILED));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CUBIC_SUMMONING_FAILED));
 					return;
 				}
 				activeChar.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _summonTotalLifeTime, false);

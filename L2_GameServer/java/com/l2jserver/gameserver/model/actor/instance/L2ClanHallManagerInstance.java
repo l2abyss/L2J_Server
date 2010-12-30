@@ -1394,7 +1394,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 		{
 			if (player.isCombatFlagEquipped())
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD));
 				return;
 			}
 			else if (player.destroyItemByItemId("Teleport", list.getItemId(), list.getPrice(), this, true))

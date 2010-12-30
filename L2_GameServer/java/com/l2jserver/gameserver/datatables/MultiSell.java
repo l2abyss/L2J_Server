@@ -121,24 +121,24 @@ public class MultiSell
 			case CLAN_REPUTATION:
 				if (player.getClan() == null)
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER));
 					break;
 				}
 				if (!player.isClanLeader())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED));
 					break;
 				}
 				if (player.getClan().getReputationScore() < amount)
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW));
 					break;
 				}
 				return true;
 			case FAME:
 				if (player.getFame() < amount)
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_FAME_POINTS));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_FAME_POINTS));
 					break;
 				}
 				return true;
@@ -152,7 +152,7 @@ public class MultiSell
 		{
 			case CLAN_REPUTATION:
 				player.getClan().takeReputationScore((int)amount, true);
-				SystemMessage smsg = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 				smsg.addItemNumber(amount);
 				player.sendPacket(smsg);
 				return true;

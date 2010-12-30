@@ -74,9 +74,9 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 			if (targetItem.getEnchantLevel() > 0)
 			{
 				if (targetItem.isArmor())
-					sm = new SystemMessage(SystemMessageId.S1_S2_S3_ATTRIBUTE_REMOVED_RESISTANCE_TO_S4_DECREASED);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_S3_ATTRIBUTE_REMOVED_RESISTANCE_TO_S4_DECREASED);
 				else
-					sm = new SystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
 				sm.addNumber(targetItem.getEnchantLevel());
 				sm.addItemName(targetItem);
 				sm.addElemntal(realElement);
@@ -86,9 +86,9 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 			else
 			{
 				if (targetItem.isArmor())
-					sm = new SystemMessage(SystemMessageId.S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED);
 				else
-					sm = new SystemMessage(SystemMessageId.S1_ELEMENTAL_POWER_REMOVED);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_ELEMENTAL_POWER_REMOVED);
 				sm.addItemName(targetItem);
 				sm.addElemntal(realElement);
 				if (targetItem.isArmor())
@@ -100,7 +100,7 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 		}
 		else
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_HAVE_ENOUGH_FUNDS_TO_CANCEL_ATTRIBUTE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DO_NOT_HAVE_ENOUGH_FUNDS_TO_CANCEL_ATTRIBUTE));
 			return;
 		}
 	}

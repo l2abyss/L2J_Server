@@ -57,12 +57,12 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			{
 				if (compWinner == SevenSigns.CABAL_DAWN && (playerCabal != SevenSigns.CABAL_DAWN || sealAvariceOwner != SevenSigns.CABAL_DAWN))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
 					canPort = false;
 				}
 				else if (compWinner == SevenSigns.CABAL_DUSK && (playerCabal != SevenSigns.CABAL_DUSK || sealAvariceOwner != SevenSigns.CABAL_DUSK))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
 					canPort = false;
 				}
 				else if (compWinner == SevenSigns.CABAL_NULL && playerCabal != SevenSigns.CABAL_NULL)
@@ -96,12 +96,12 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			{
 				if (compWinner == SevenSigns.CABAL_DAWN && (playerCabal != SevenSigns.CABAL_DAWN || sealGnosisOwner != SevenSigns.CABAL_DAWN))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
 					canPort = false;
 				}
 				else if (compWinner == SevenSigns.CABAL_DUSK && (playerCabal != SevenSigns.CABAL_DUSK || sealGnosisOwner != SevenSigns.CABAL_DUSK))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
 					canPort = false;
 				}
 				else if (compWinner == SevenSigns.CABAL_NULL && playerCabal != SevenSigns.CABAL_NULL)

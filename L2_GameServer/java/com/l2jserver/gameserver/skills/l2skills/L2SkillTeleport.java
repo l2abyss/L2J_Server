@@ -78,13 +78,13 @@ public class L2SkillTeleport extends L2Skill
 			
 			if (((L2PcInstance) activeChar).isInOlympiadMode())
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT));
 				return;
 			}
 			
 			if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION));
 				return;
 			}
 		}

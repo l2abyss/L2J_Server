@@ -52,7 +52,7 @@ public class L2CommandChannel
 		_partys.add(leader.getParty());
 		_channelLvl = leader.getParty().getLevel();
 		leader.getParty().setCommandChannel(this);
-		leader.getParty().broadcastToPartyMembers(new SystemMessage(SystemMessageId.COMMAND_CHANNEL_FORMED));
+		leader.getParty().broadcastToPartyMembers(SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_FORMED));
 		leader.getParty().broadcastToPartyMembers(new ExOpenMPCC());
 	}
 	
@@ -71,7 +71,7 @@ public class L2CommandChannel
 		if (party.getLevel() > _channelLvl)
 			_channelLvl = party.getLevel();
 		party.setCommandChannel(this);
-		party.broadcastToPartyMembers(new SystemMessage(SystemMessageId.JOINED_COMMAND_CHANNEL));
+		party.broadcastToPartyMembers(SystemMessage.getSystemMessage(SystemMessageId.JOINED_COMMAND_CHANNEL));
 		party.broadcastToPartyMembers(new ExOpenMPCC());
 	}
 	
@@ -95,7 +95,7 @@ public class L2CommandChannel
 		party.broadcastToPartyMembers(new ExCloseMPCC());
 		if(_partys.size() < 2)
 		{
-			broadcastToChannelMembers(new SystemMessage(SystemMessageId.COMMAND_CHANNEL_DISBANDED));
+			broadcastToChannelMembers(SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_DISBANDED));
 			disbandChannel();
 		}
 		else

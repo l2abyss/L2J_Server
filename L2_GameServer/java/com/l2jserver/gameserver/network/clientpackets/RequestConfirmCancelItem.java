@@ -63,13 +63,13 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 		
 		if (!item.isAugmented())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.AUGMENTATION_REMOVAL_CAN_ONLY_BE_DONE_ON_AN_AUGMENTED_ITEM));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.AUGMENTATION_REMOVAL_CAN_ONLY_BE_DONE_ON_AN_AUGMENTED_ITEM));
 			return;
 		}
 		
 		if (item.isPvp())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
 			return;
 		}
 		

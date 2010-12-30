@@ -175,7 +175,7 @@ public final class RequestActionUse extends L2GameClientPacket
 					
 					if (pet instanceof L2PetInstance && (pet.getLevel() - activeChar.getLevel() > 20))
 					{
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_TOO_HIGH_TO_CONTROL));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_TOO_HIGH_TO_CONTROL));
 						return;
 					}
 					
@@ -192,16 +192,16 @@ public final class RequestActionUse extends L2GameClientPacket
 					{
 						//
 						if (TerritoryWarManager.getInstance().isTWInProgress())
-							sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
+							sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
 						else
-							sendPacket(new SystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+							sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
 						sendPacket(ActionFailed.STATIC_PACKET);
 						return;
 					}
 					
 					if (!activeChar.getAccessLevel().allowPeaceAttack() && activeChar.isInsidePeaceZone(pet, target))
 					{
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
 						return;
 					}
 					if (pet.getNpcId() == 12564 || pet.getNpcId() == 12621)
@@ -213,7 +213,7 @@ public final class RequestActionUse extends L2GameClientPacket
 					
 					if (pet.isLockedTarget())
 					{
-						pet.getOwner().sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
+						pet.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
 						return;
 					}
 					
@@ -247,11 +247,11 @@ public final class RequestActionUse extends L2GameClientPacket
 					//returns pet to control item
 					if (pet.isDead())
 					{
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.DEAD_PET_CANNOT_BE_RETURNED));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DEAD_PET_CANNOT_BE_RETURNED));
 					}
 					else if (pet.isAttackingNow() || pet.isInCombat() || pet.isMovementDisabled() || pet.isBetrayed())
 					{
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
 					}
 					else
 					{
@@ -261,9 +261,9 @@ public final class RequestActionUse extends L2GameClientPacket
 							if (!pet.isHungry())
 								pet.unSummon(activeChar);
 							else if (((L2PetInstance) pet).getPetData().getFood().length > 0)
-								activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_RESTORE_HUNGRY_PETS));
+								activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_RESTORE_HUNGRY_PETS));
 							else
-								activeChar.sendPacket(new SystemMessage(SystemMessageId.THE_HELPER_PET_CANNOT_BE_RETURNED));
+								activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_HELPER_PET_CANNOT_BE_RETURNED));
 						}
 					}
 				}
@@ -305,7 +305,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				if( target != null && (target instanceof L2DoorInstance || target instanceof L2SiegeFlagInstance))
 					useSkill(4230);
 				else
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_TARGET));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INCORRECT_TARGET));
 				break;
 			case 42: // Kai the Cat - Self Damage Shield
 				useSkill(4378, activeChar);
@@ -353,10 +353,10 @@ public final class RequestActionUse extends L2GameClientPacket
 				{
 					if (pet.isBetrayed())
 					{
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_REFUSING_ORDER));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_REFUSING_ORDER));
 					}
 					else if (pet.isAttackingNow() || pet.isInCombat())
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE));
 					else
 						pet.unSummon(activeChar);
 				}
@@ -789,7 +789,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			{
 				if (activeSummon.getLevel() - activeChar.getLevel() > 20)
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.PET_TOO_HIGH_TO_CONTROL));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_TOO_HIGH_TO_CONTROL));
 					return;
 				}
 				lvl = PetDataTable.getInstance().getPetData(activeSummon.getNpcId()).getAvailableLevel(skillId, activeSummon.getLevel());
@@ -843,7 +843,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		
 		if (activeChar.isFishing())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3));
 			return;
 		}
 		
@@ -867,7 +867,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		L2PcInstance player = (L2PcInstance) target;
 		if (activeChar.isFishing() || player.isFishing())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3));
 			return;
 		}
 		
@@ -881,7 +881,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		if (activeChar.canMakeSocialAction() && player.canMakeSocialAction())
 		{
 			activeChar.setMultiSocialAction(id, player.getObjectId());
-			SystemMessage sm = new SystemMessage(SystemMessageId.YOU_HAVE_REQUESTED_COUPLE_ACTION_C1);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_REQUESTED_COUPLE_ACTION_C1);
 			sm.addPcName(player);
 			activeChar.sendPacket(sm);
 			player.sendPacket(new ExAskCoupleAction(activeChar.getObjectId(), id));

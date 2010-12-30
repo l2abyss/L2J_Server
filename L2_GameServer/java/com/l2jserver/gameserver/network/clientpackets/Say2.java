@@ -137,7 +137,7 @@ public final class Say2 extends L2GameClientPacket
 		// April 27, 2009 - Verified on Gracia P2 & Final official client as 105
 		if (_text.length() > 105 && !activeChar.isGM())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.DONT_SPAM));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DONT_SPAM));
 			return;
 		}
 		
@@ -149,7 +149,7 @@ public final class Say2 extends L2GameClientPacket
 		
 		if (activeChar.isCursedWeaponEquipped() && (_type == TRADE || _type == SHOUT))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.SHOUT_AND_TRADE_CHAT_CANNOT_BE_USED_WHILE_POSSESSING_CURSED_WEAPON));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SHOUT_AND_TRADE_CHAT_CANNOT_BE_USED_WHILE_POSSESSING_CURSED_WEAPON));
 			return;
 		}
 		
@@ -157,7 +157,7 @@ public final class Say2 extends L2GameClientPacket
 		{
 			if (_type == ALL || _type == SHOUT || _type == TRADE || _type == HERO_VOICE)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED));
 				return;
 			}
 		}

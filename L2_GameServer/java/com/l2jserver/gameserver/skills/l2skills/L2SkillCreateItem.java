@@ -57,7 +57,7 @@ public class L2SkillCreateItem extends L2Skill
 		{
 			if (_createItemId == null || _createItemCount == 0)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
 				sm.addSkillName(this);
 				player.sendPacket(sm);
 				return;

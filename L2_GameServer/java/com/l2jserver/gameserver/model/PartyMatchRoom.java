@@ -83,7 +83,7 @@ public class PartyMatchRoom
 	{
 		for(L2PcInstance _member : getPartyMembers())
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.C1_LEFT_PARTY_ROOM);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_LEFT_PARTY_ROOM);
 			sm.addCharName(player);
 			_member.sendPacket(sm);
 			_member.sendPacket(new ExManagePartyRoomMember(player, this, 2));

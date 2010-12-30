@@ -60,7 +60,7 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		
 		if (clan.getDissolvingExpiryTime() > System.currentTimeMillis())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_SET_CREST_WHILE_DISSOLUTION_IN_PROGRESS));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_SET_CREST_WHILE_DISSOLUTION_IN_PROGRESS));
 			return;
 		}
 		
@@ -84,14 +84,14 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 					return;
 				
 				crestId = 0;
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED));
 				updated = true;
 			}
 			else
 			{
 				if (clan.getLevel() < 3)
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST));
 					return;
 				}
 				

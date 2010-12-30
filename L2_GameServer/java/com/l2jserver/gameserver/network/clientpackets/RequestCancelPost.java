@@ -69,38 +69,38 @@ public final class RequestCancelPost extends L2GameClientPacket
 		
 		if (!activeChar.isInsideZone(ZONE_PEACE))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_CANCEL_NOT_IN_PEACE_ZONE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CANCEL_NOT_IN_PEACE_ZONE));
 			return;
 		}
 		
 		if (activeChar.getActiveTradeList() != null)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_CANCEL_DURING_EXCHANGE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CANCEL_DURING_EXCHANGE));
 			return;
 		}
 		
 		if (activeChar.isEnchanting())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_CANCEL_DURING_ENCHANT));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CANCEL_DURING_ENCHANT));
 			return;
 		}
 		
 		if (activeChar.getPrivateStoreType() > 0)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_CANCEL_PRIVATE_STORE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CANCEL_PRIVATE_STORE));
 			return;
 		}
 		
 		if (!msg.hasAttachments())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANT_CANCEL_RECEIVED_MAIL));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANT_CANCEL_RECEIVED_MAIL));
 			return;
 		}
 		
 		final ItemContainer attachments = msg.getAttachments();
 		if (attachments == null || attachments.getSize() == 0)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANT_CANCEL_RECEIVED_MAIL));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANT_CANCEL_RECEIVED_MAIL));
 			return;
 		}
 		
@@ -142,13 +142,13 @@ public final class RequestCancelPost extends L2GameClientPacket
 		
 		if (!activeChar.getInventory().validateCapacity(slots))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_CANCEL_INVENTORY_FULL));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CANCEL_INVENTORY_FULL));
 			return;
 		}
 		
 		if (!activeChar.getInventory().validateWeight(weight))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_CANCEL_INVENTORY_FULL));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CANCEL_INVENTORY_FULL));
 			return;
 		}
 		
@@ -171,7 +171,7 @@ public final class RequestCancelPost extends L2GameClientPacket
 				else
 					playerIU.addNewItem(newItem);
 			}
-			SystemMessage sm = new SystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
 			sm.addItemName(item.getItemId());
 			sm.addItemNumber(count);
 			activeChar.sendPacket(sm);
@@ -193,7 +193,7 @@ public final class RequestCancelPost extends L2GameClientPacket
 		final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
 		if (receiver != null)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANCELLED_MAIL);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANCELLED_MAIL);
 			sm.addCharName(activeChar);
 			receiver.sendPacket(sm);
 			receiver.sendPacket(new ExChangePostState(true, _msgId, Message.DELETED));
@@ -202,7 +202,7 @@ public final class RequestCancelPost extends L2GameClientPacket
 		MailManager.getInstance().deleteMessageInDb(_msgId);
 		
 		activeChar.sendPacket(new ExChangePostState(false, _msgId, Message.DELETED));
-		activeChar.sendPacket(new SystemMessage(SystemMessageId.MAIL_SUCCESSFULLY_CANCELLED));
+		activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAIL_SUCCESSFULLY_CANCELLED));
 	}
 	
 	@Override

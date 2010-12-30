@@ -131,7 +131,7 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 				character.setInsideZone(L2Character.ZONE_PVP, true);
 				if (character instanceof L2PcInstance)
 				{
-					character.sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+					character.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 					_task.getGame().sendOlympiadInfo(character);
 				}
 			}
@@ -183,7 +183,7 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 				character.setInsideZone(L2Character.ZONE_PVP, false);
 				if (character instanceof L2PcInstance)
 				{
-					character.sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+					character.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
 					character.sendPacket(ExOlympiadMatchEnd.STATIC_PACKET);
 				}
 			}
@@ -201,9 +201,9 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 		final boolean battleStarted = _task.isBattleStarted();
 		final SystemMessage sm;
 		if (battleStarted)
-			sm = new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE);
 		else
-			sm = new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE);
 
 		for (L2Character character : _characterList.values())
 		{

@@ -108,7 +108,7 @@ public class ClanBBSManager extends BaseBBSManager
 		{
 			if (cl.getLevel() < 2)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.NO_CB_IN_MY_CLAN));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_CB_IN_MY_CLAN));
 				parsecmd("_bbsclan_clanlist", activeChar);
 			}
 			else
@@ -298,7 +298,7 @@ public class ClanBBSManager extends BaseBBSManager
 		{
 			if (cl.getLevel() < 2)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.NO_CB_IN_MY_CLAN));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_CB_IN_MY_CLAN));
 				parsecmd("_bbsclan_clanlist", activeChar);
 			}
 			else

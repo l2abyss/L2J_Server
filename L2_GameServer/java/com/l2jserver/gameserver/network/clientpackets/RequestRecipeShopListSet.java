@@ -88,14 +88,14 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 		
 		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		if (player.isInsideZone(L2Character.ZONE_NOSTORE))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.NO_PRIVATE_WORKSHOP_HERE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_PRIVATE_WORKSHOP_HERE));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

@@ -53,7 +53,7 @@ public class EffectDamOverTime extends L2Effect
 		{
 			if (getSkill().isToggle())
 			{
-				getEffected().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_HP));
+				getEffected().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_HP));
 				return false;
 			}
 			

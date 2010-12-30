@@ -59,14 +59,14 @@ public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 				if(!requestor.getParty().isInCommandChannel())
 				{
 					new L2CommandChannel(requestor); // Create new CC
-					sm = new SystemMessage(SystemMessageId.COMMAND_CHANNEL_FORMED);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_FORMED);
 					requestor.sendPacket(sm);
 					newCc = true;
 				}
 				requestor.getParty().getCommandChannel().addParty(player.getParty());
 				if (!newCc)
 				{
-					sm = new SystemMessage(SystemMessageId.JOINED_COMMAND_CHANNEL);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.JOINED_COMMAND_CHANNEL);
 					player.sendPacket(sm);
 				}
 			}

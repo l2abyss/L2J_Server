@@ -76,7 +76,7 @@ public class CombatFlag
 	{
 		if (player.isMounted())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
 			return false;
 		}
 		
@@ -88,7 +88,7 @@ public class CombatFlag
 		// Equip with the weapon
 		_item = item;
 		_player.getInventory().equipItem(_item);
-		SystemMessage sm = new SystemMessage(SystemMessageId.S1_EQUIPPED);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_EQUIPPED);
 		sm.addItemName(_item);
 		_player.sendPacket(sm);
 		

@@ -92,7 +92,7 @@ public class EffectChameleonRest extends L2Effect
 		
 		if (manaDam > getEffected().getCurrentMp())
 		{
-			getEffected().sendPacket(new SystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
+			getEffected().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
 			return false;
 		}
 		

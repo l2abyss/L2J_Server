@@ -71,7 +71,7 @@ public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
 				if (supportTemplate == null || !supportTemplate.isValid(item))
 				{
 					// message may be custom
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 					activeChar.setActiveEnchantSupportItem(null);
 					activeChar.sendPacket(new ExPutEnchantSupportItemResult(0));
 					return;

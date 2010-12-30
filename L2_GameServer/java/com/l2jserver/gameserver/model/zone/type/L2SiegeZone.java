@@ -95,10 +95,10 @@ public class L2SiegeZone extends L2ZoneType
 					if (_siege.giveFame())
 						((L2PcInstance) character).startFameTask(_siege.getFameFrequency() * 1000, _siege.getFameAmount());
 				}
-				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
 				if (!Config.ALLOW_WYVERN_DURING_SIEGE && ((L2PcInstance) character).getMountType() == 2)
 				{
-					character.sendPacket(new SystemMessage(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN));
+					character.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN));
 					((L2PcInstance) character).enteredNoLanding(DISMOUNT_DELAY);
 				}
 			}
@@ -115,7 +115,7 @@ public class L2SiegeZone extends L2ZoneType
 		{
 			if (character instanceof L2PcInstance)
 			{
-				((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
 				if (((L2PcInstance) character).getMountType() == 2)
 				{
 					((L2PcInstance) character).exitedNoLanding();
@@ -201,7 +201,7 @@ public class L2SiegeZone extends L2ZoneType
 				
 				if (character instanceof L2PcInstance)
 				{
-					((L2PcInstance) character).sendPacket(new SystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+					((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
 					((L2PcInstance) character).stopFameTask();
 					if (((L2PcInstance) character).getMountType() == 2)
 					{

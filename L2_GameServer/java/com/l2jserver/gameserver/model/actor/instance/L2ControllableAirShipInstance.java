@@ -120,58 +120,58 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 				final int z = player.getInVehiclePosition().getZ() - 0x6b;
 				if (x * x + y * y + z * z > 2500)
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.CANT_CONTROL_TOO_FAR));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CONTROL_TOO_FAR));
 					return false;
 				}
 				//TODO: Missing message ID: 2739  Message: You cannot control the helm because you do not meet the requirements.
 				else if (player.getPvpFlag() != 0)
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_BATTLE));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_BATTLE));
 					return false;
 				}
 				else if (player.isSitting())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_SITTING_POSITION));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_SITTING_POSITION));
 					return false;
 				}
 				else if (player.isParalyzed())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_YOU_ARE_PETRIFIED));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_YOU_ARE_PETRIFIED));
 					return false;
 				}
 				else if (player.isCursedWeaponEquipped())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_A_CURSED_WEAPON_IS_EQUIPPED));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_A_CURSED_WEAPON_IS_EQUIPPED));
 					return false;
 				}
 				else if (player.isFishing())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_FISHING));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_FISHING));
 					return false;
 				}
 				else if (player.isDead())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHEN_YOU_ARE_DEAD));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHEN_YOU_ARE_DEAD));
 					return false;
 				}
 				else if (player.isCastingNow())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_USING_A_SKILL));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_USING_A_SKILL));
 					return false;
 				}
 				else if (player.isTransformed())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_TRANSFORMED));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_TRANSFORMED));
 					return false;
 				}
 				else if (player.isCombatFlagEquipped())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG));
 					return false;
 				}
 				else if (player.isInDuel())
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_DUEL));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_DUEL));
 					return false;
 				}
 				_captain = player;
@@ -203,9 +203,9 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 			_fuel = f;
 		
 		if (_fuel == 0 && old > 0)
-			broadcastToPassengers(new SystemMessage(SystemMessageId.THE_AIRSHIP_FUEL_RUN_OUT));
+			broadcastToPassengers(SystemMessage.getSystemMessage(SystemMessageId.THE_AIRSHIP_FUEL_RUN_OUT));
 		else if (_fuel < LOW_FUEL)
-			broadcastToPassengers(new SystemMessage(SystemMessageId.THE_AIRSHIP_FUEL_SOON_RUN_OUT));
+			broadcastToPassengers(SystemMessage.getSystemMessage(SystemMessageId.THE_AIRSHIP_FUEL_SOON_RUN_OUT));
 	}
 	
 	@Override

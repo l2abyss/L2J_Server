@@ -37,7 +37,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2BlockInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.network.SystemMessageId2;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 import com.l2jserver.gameserver.network.serverpackets.ExCubeGameChangePoints;
@@ -525,7 +525,7 @@ public final class BlockCheckerEngine
 		@Override
 		public void run()
 		{
-			_holder.broadCastPacketToTeam(new SystemMessage(SystemMessageId2.BLOCK_CHECKER_ENDS_5));
+			_holder.broadCastPacketToTeam(SystemMessage.getSystemMessage(SystemMessageId.BLOCK_CHECKER_ENDS_5));
 			ThreadPoolManager.getInstance().scheduleGeneral(new EndEvent(), 5000);
 		}
 	}
@@ -588,7 +588,7 @@ public final class BlockCheckerEngine
 			{
 				rewardAsWinner(true);
 				rewardAsLooser(false);
-				SystemMessage msg = new SystemMessage(SystemMessageId2.TEAM_C1_WON);
+				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.TEAM_C1_WON);
 				msg.addString("Red Team");
 				_holder.broadCastPacketToTeam(msg);
 			}
@@ -596,7 +596,7 @@ public final class BlockCheckerEngine
 			{
 				rewardAsWinner(false);
 				rewardAsLooser(true);
-				SystemMessage msg = new SystemMessage(SystemMessageId2.TEAM_C1_WON);
+				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.TEAM_C1_WON);
 				msg.addString("Blue Team");
 				_holder.broadCastPacketToTeam(msg);
 			}

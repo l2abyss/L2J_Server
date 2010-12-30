@@ -101,7 +101,7 @@ public class L2NpcInstance extends L2Npc
 			}
 			
 			if (counts == 0) // No more skills to learn, come back when you level.
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
 			else
 				player.sendPacket(asl);
 			
@@ -153,12 +153,12 @@ public class L2NpcInstance extends L2Npc
 			int minlevel = SkillTreeTable.getInstance().getMinLevelForNewSkill(player, classId);
 			if (minlevel > 0)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN);
 				sm.addNumber(minlevel);
 				player.sendPacket(sm);
 			}
 			else
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
 		}
 		else
 			player.sendPacket(asl);

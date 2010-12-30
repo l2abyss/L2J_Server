@@ -104,49 +104,49 @@ public class FortSiege implements Siegable
 				else if (_time == 600) // 10min remains
 				{
 					getFort().despawnSuspiciousMerchant();
-					sm = new SystemMessage(SystemMessageId.S1_MINUTES_UNTIL_THE_FORTRESS_BATTLE_STARTS);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_MINUTES_UNTIL_THE_FORTRESS_BATTLE_STARTS);
 					sm.addNumber(10);
 					announceToPlayer(sm);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(300), 300000); // Prepare task for 5 minutes left.
 				}
 				else if (_time == 300) // 5min remains
 				{
-					sm = new SystemMessage(SystemMessageId.S1_MINUTES_UNTIL_THE_FORTRESS_BATTLE_STARTS);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_MINUTES_UNTIL_THE_FORTRESS_BATTLE_STARTS);
 					sm.addNumber(5);
 					announceToPlayer(sm);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(60), 240000); // Prepare task for 1 minute left.
 				}
 				else if (_time == 60) // 1min remains
 				{
-					sm = new SystemMessage(SystemMessageId.S1_MINUTES_UNTIL_THE_FORTRESS_BATTLE_STARTS);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_MINUTES_UNTIL_THE_FORTRESS_BATTLE_STARTS);
 					sm.addNumber(1);
 					announceToPlayer(sm);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(30), 30000); // Prepare task for 30 seconds left.
 				}
 				else if (_time == 30) // 30seconds remains
 				{
-					sm = new SystemMessage(SystemMessageId.S1_SECONDS_UNTIL_THE_FORTRESS_BATTLE_STARTS);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_SECONDS_UNTIL_THE_FORTRESS_BATTLE_STARTS);
 					sm.addNumber(30);
 					announceToPlayer(sm);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(10), 20000); // Prepare task for 10 seconds left.
 				}
 				else if (_time == 10) // 10seconds remains
 				{
-					sm = new SystemMessage(SystemMessageId.S1_SECONDS_UNTIL_THE_FORTRESS_BATTLE_STARTS);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_SECONDS_UNTIL_THE_FORTRESS_BATTLE_STARTS);
 					sm.addNumber(10);
 					announceToPlayer(sm);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(5), 5000); // Prepare task for 5 seconds left.
 				}
 				else if (_time == 5) // 5seconds remains
 				{
-					sm = new SystemMessage(SystemMessageId.S1_SECONDS_UNTIL_THE_FORTRESS_BATTLE_STARTS);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_SECONDS_UNTIL_THE_FORTRESS_BATTLE_STARTS);
 					sm.addNumber(5);
 					announceToPlayer(sm);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(1), 4000); // Prepare task for 1 seconds left.
 				}
 				else if (_time == 1) // 1seconds remains
 				{
-					sm = new SystemMessage(SystemMessageId.S1_SECONDS_UNTIL_THE_FORTRESS_BATTLE_STARTS);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_SECONDS_UNTIL_THE_FORTRESS_BATTLE_STARTS);
 					sm.addNumber(1);
 					announceToPlayer(sm);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(0), 1000); // Prepare task start siege.
@@ -194,7 +194,7 @@ public class FortSiege implements Siegable
 			{
 				_siegeRestore = null;
 				FortSiege.this.resetSiege();
-				announceToPlayer(new SystemMessage(SystemMessageId.BARRACKS_FUNCTION_RESTORED));
+				announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.BARRACKS_FUNCTION_RESTORED));
 			}
 			catch (Exception e)
 			{
@@ -230,7 +230,7 @@ public class FortSiege implements Siegable
 		if (getIsInProgress())
 		{
 			_isInProgress = false; // Flag so that siege instance can be started
-			final SystemMessage sm = new SystemMessage(SystemMessageId.THE_FORTRESS_BATTLE_OF_S1_HAS_FINISHED);
+			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_FORTRESS_BATTLE_OF_S1_HAS_FINISHED);
 			sm.addFortId(getFort().getFortId());
 			announceToPlayer(sm);
 			
@@ -308,7 +308,7 @@ public class FortSiege implements Siegable
 			// Schedule a task to prepare auto siege end
 			_siegeEnd = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndSiegeTask(), FortSiegeManager.getInstance().getSiegeLength() * 60 * 1000l); // Prepare auto end task
 			
-			final SystemMessage sm = new SystemMessage(SystemMessageId.THE_FORTRESS_BATTLE_S1_HAS_BEGUN);
+			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_FORTRESS_BATTLE_S1_HAS_BEGUN);
 			sm.addFortId(getFort().getFortId());
 			announceToPlayer(sm);
 			saveFortSiege();
@@ -594,16 +594,16 @@ public class FortSiege implements Siegable
 						
 						door.openMe();
 					}
-					getFort().getSiege().announceToPlayer(new SystemMessage(SystemMessageId.ALL_BARRACKS_OCCUPIED));
+					getFort().getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.ALL_BARRACKS_OCCUPIED));
 				}
 				// schedule restoring doors/commanders respawn
 				else if (_siegeRestore == null)
 				{
-					getFort().getSiege().announceToPlayer(new SystemMessage(SystemMessageId.SEIZED_BARRACKS));
+					getFort().getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.SEIZED_BARRACKS));
 					_siegeRestore = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSiegeRestore(), FortSiegeManager.getInstance().getCountDownLength() * 60 * 1000l);
 				}
 				else
-					getFort().getSiege().announceToPlayer(new SystemMessage(SystemMessageId.SEIZED_BARRACKS));
+					getFort().getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.SEIZED_BARRACKS));
 			}
 			else
 				_log.warning("FortSiege.killedCommander(): killed commander, but commander not registered for fortress. NpcId: " + instance.getNpcId() + " FortId: " + getFort().getFortId());
@@ -770,7 +770,7 @@ public class FortSiege implements Siegable
 			setSiegeDateTime(false);
 		
 		if (getFort().getOwnerClan() != null)
-			getFort().getOwnerClan().broadcastToOnlineMembers(new SystemMessage(SystemMessageId.A_FORTRESS_IS_UNDER_ATTACK));
+			getFort().getOwnerClan().broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.A_FORTRESS_IS_UNDER_ATTACK));
 		
 		// Execute siege auto start
 		_siegeStartTask = ThreadPoolManager.getInstance().scheduleGeneral(new FortSiege.ScheduleStartSiegeTask(3600), 0);
@@ -829,17 +829,17 @@ public class FortSiege implements Siegable
 		else if ((player.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) != L2Clan.CP_CS_MANAGE_SIEGE)
 		{
 			b = false;
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 		}
 		else if (player.getClan() == getFort().getOwnerClan())
 		{
 			b = false;
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING));
 		}
 		else if (getFort().getOwnerClan() != null && player.getClan().getHasCastle() > 0 && player.getClan().getHasCastle() == getFort().getCastleId())
 		{
 			b = false;
-			player.sendPacket(new SystemMessage(SystemMessageId.CANT_REGISTER_TO_SIEGE_DUE_TO_CONTRACT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_REGISTER_TO_SIEGE_DUE_TO_CONTRACT));
 		}
 		else if (getFort().getTimeTillRebelArmy() > 0 && getFort().getTimeTillRebelArmy() <= 7200)
 		{
@@ -858,13 +858,13 @@ public class FortSiege implements Siegable
 				if (fort.getSiege().getAttackerClan(player.getClanId()) != null)
 				{
 					b = false;
-					player.sendPacket(new SystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
 					break;
 				}
 				if (fort.getOwnerClan() == player.getClan() && (fort.getSiege().getIsInProgress() || fort.getSiege()._siegeStartTask != null))
 				{
 					b = false;
-					player.sendPacket(new SystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
 					break;
 				}
 			}

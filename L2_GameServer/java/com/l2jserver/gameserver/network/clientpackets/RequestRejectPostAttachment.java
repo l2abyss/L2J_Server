@@ -56,7 +56,7 @@ public final class RequestRejectPostAttachment extends L2GameClientPacket
 		
 		if (!activeChar.isInsideZone(ZONE_PEACE))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
 			return;
 		}
 		
@@ -76,13 +76,13 @@ public final class RequestRejectPostAttachment extends L2GameClientPacket
 		
 		MailManager.getInstance().sendMessage(new Message(msg));
 		
-		activeChar.sendPacket(new SystemMessage(SystemMessageId.MAIL_SUCCESSFULLY_RETURNED));
+		activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAIL_SUCCESSFULLY_RETURNED));
 		activeChar.sendPacket(new ExChangePostState(true, _msgId, Message.REJECTED));
 		
 		final L2PcInstance sender = L2World.getInstance().getPlayer(msg.getSenderId());
 		if (sender != null)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_RETURNED_MAIL);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_RETURNED_MAIL);
 			sm.addCharName(activeChar);
 			sender.sendPacket(sm);
 		}

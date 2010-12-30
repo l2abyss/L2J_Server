@@ -80,7 +80,7 @@ public final class L2ClanTraderInstance extends L2Npc
 				
 				player.sendMessage("Your clan has added " + reputation + " points to its clan reputation score.");
 				/* TODO: fix the system message, I cant add the number to the system message
-				SystemMessage sm =  new SystemMessage(SystemMessageId.CLAN_ADDED_S1S_POINTS_TO_REPUTATION_SCORE);
+				SystemMessage sm =  SystemMessage.getSystemMessage(SystemMessageId.CLAN_ADDED_S1S_POINTS_TO_REPUTATION_SCORE);
 				sm.addItemNumber(reputation);
 				player.sendPacket(sm);*/
 				

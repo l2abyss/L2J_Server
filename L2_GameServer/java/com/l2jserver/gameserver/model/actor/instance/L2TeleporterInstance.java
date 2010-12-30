@@ -86,7 +86,7 @@ public final class L2TeleporterInstance extends L2Npc
 				case 32539:
 					if (player.isFlyingMounted())
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_ENTER_SEED_IN_FLYING_TRANSFORM));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_ENTER_SEED_IN_FLYING_TRANSFORM));
 						return;
 					}
 					break;
@@ -225,13 +225,13 @@ public final class L2TeleporterInstance extends L2Npc
 			//you cannot teleport to village that is in siege
 			if (SiegeManager.getInstance().getSiege(list.getLocX(), list.getLocY(), list.getLocZ()) != null)
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
 				return;
 			}
 			else if (TownManager.townHasCastleInSiege(list.getLocX(), list.getLocY())
 					&& isInsideZone(L2Character.ZONE_TOWN))
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE));
 				return;
 			}
 			else if (!Config.ALT_GAME_KARMA_PLAYER_CAN_USE_GK && player.getKarma() > 0) //karma
@@ -241,7 +241,7 @@ public final class L2TeleporterInstance extends L2Npc
 			}
 			else if (player.isCombatFlagEquipped())
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD));
 				return;
 			}
 			else if (list.getIsForNoble() && !player.isNoble())

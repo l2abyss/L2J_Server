@@ -537,7 +537,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				if (tTwoCrash && !tOneCrash)
 				{
-					sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
 					sm.addString(_teamOne[0].name);
 					stadium.broadcastPacket(sm);
 
@@ -562,7 +562,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				}
 				else if (tOneCrash && !tTwoCrash)
 				{
-					sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
 					sm.addString(_teamTwo[0].name);
 					stadium.broadcastPacket(sm);
 
@@ -587,7 +587,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				}
 				else if (tOneCrash && tTwoCrash)
 				{
-					stadium.broadcastPacket(new SystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE));
+					stadium.broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE));
 
 					for (int i = 0 ; i < TEAM_SIZE; i++)
 					{
@@ -655,7 +655,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			if ((teamTwoHp == 0 && teamOneHp != 0)
 					|| (_damageT1 > _damageT2 && teamTwoHp != 0 && teamOneHp != 0))
 			{
-				sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
 				sm.addString(_teamOne[0].name);
 				stadium.broadcastPacket(sm);
 
@@ -681,7 +681,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			else if ((teamOneHp == 0 && teamTwoHp != 0)
 					|| (_damageT2 > _damageT1 && teamOneHp != 0 && teamTwoHp != 0))
 			{
-				sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
 				sm.addString(_teamTwo[0].name);
 				stadium.broadcastPacket(sm);
 
@@ -706,7 +706,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			}
 			else
 			{
-				stadium.broadcastPacket(new SystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE));
+				stadium.broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE));
 
 				for (int i = 0 ; i < TEAM_SIZE; i++)
 				{

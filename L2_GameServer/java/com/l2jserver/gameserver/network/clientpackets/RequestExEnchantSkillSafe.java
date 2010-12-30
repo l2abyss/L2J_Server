@@ -122,13 +122,13 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 			L2ItemInstance spb = player.getInventory().getItemByItemId(reqItemId);
 			if (spb == null)// Haven't spellbook
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 				return;
 			}
 			
 			if (player.getInventory().getAdena() < requireditems)
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 				return;
 			}
 			
@@ -139,7 +139,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 			
 			if (!check)
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 				return;
 			}
 			
@@ -166,7 +166,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 				
 				player.sendPacket(ExEnchantSkillResult.valueOf(true));
 				
-				SystemMessage sm = new SystemMessage(SystemMessageId.YOU_HAVE_SUCCEEDED_IN_ENCHANTING_THE_SKILL_S1);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_SUCCEEDED_IN_ENCHANTING_THE_SKILL_S1);
 				sm.addSkillName(_skillId);
 				player.sendPacket(sm);
 			}
@@ -183,7 +183,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 					_logEnchant.log(record);
 				}
 				
-				SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_ENCHANT_FAILED_S1_LEVEL_WILL_REMAIN);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SKILL_ENCHANT_FAILED_S1_LEVEL_WILL_REMAIN);
 				sm.addSkillName(_skillId);
 				player.sendPacket(sm);
 				player.sendPacket(ExEnchantSkillResult.valueOf(false));
@@ -199,7 +199,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 		}
 		else
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ENOUGH_SP_TO_ENCHANT_THAT_SKILL);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ENOUGH_SP_TO_ENCHANT_THAT_SKILL);
 			player.sendPacket(sm);
 		}
 	}

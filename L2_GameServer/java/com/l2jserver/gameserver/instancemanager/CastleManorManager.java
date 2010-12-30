@@ -466,7 +466,7 @@ public class CastleManorManager
 			L2PcInstance clanLeader = null;
 			clanLeader = L2World.getInstance().getPlayer(clan.getLeader().getName());
 			if (clanLeader != null)
-				clanLeader.sendPacket(new SystemMessage(SystemMessageId.THE_MANOR_INFORMATION_HAS_BEEN_UPDATED));
+				clanLeader.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_MANOR_INFORMATION_HAS_BEEN_UPDATED));
 			
 			c.setNextPeriodApproved(false);
 		}
@@ -531,7 +531,7 @@ public class CastleManorManager
 				if (clan != null)
 					clanLeader = L2World.getInstance().getPlayer(clan.getLeaderId());
 				if (clanLeader != null)
-					clanLeader.sendPacket(new SystemMessage(SystemMessageId.THE_AMOUNT_IS_NOT_SUFFICIENT_AND_SO_THE_MANOR_IS_NOT_IN_OPERATION));
+					clanLeader.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_AMOUNT_IS_NOT_SUFFICIENT_AND_SO_THE_MANOR_IS_NOT_IN_OPERATION));
 			}
 		}
 	}

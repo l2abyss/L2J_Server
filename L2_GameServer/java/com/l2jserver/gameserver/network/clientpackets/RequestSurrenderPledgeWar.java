@@ -67,7 +67,7 @@ public final class RequestSurrenderPledgeWar extends L2GameClientPacket
 		}
 		
 		
-		SystemMessage msg = new SystemMessage(SystemMessageId.YOU_HAVE_SURRENDERED_TO_THE_S1_CLAN);
+		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_SURRENDERED_TO_THE_S1_CLAN);
 		msg.addString(_pledgeName);
 		_activeChar.sendPacket(msg);
 		msg = null;
@@ -83,7 +83,7 @@ public final class RequestSurrenderPledgeWar extends L2GameClientPacket
 
         if (leader.isTransactionInProgress())
         {
-            SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER);
+            SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_IS_BUSY_TRY_LATER);
             sm.addString(leader.getName());
             player.sendPacket(sm);
             return;

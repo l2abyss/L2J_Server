@@ -262,13 +262,13 @@ public final class ItemAuction
 		
 		if (newBid < getAuctionInitBid())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.BID_PRICE_MUST_BE_HIGHER));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BID_PRICE_MUST_BE_HIGHER));
 			return;
 		}
 		
 		if (newBid > 100000000000L)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.BID_CANT_EXCEED_100_BILLION));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BID_CANT_EXCEED_100_BILLION));
 			return;
 		}
 		
@@ -281,7 +281,7 @@ public final class ItemAuction
 		{
 			if (_highestBid != null && newBid < _highestBid.getLastBid())
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.BID_MUST_BE_HIGHER_THAN_CURRENT_BID));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BID_MUST_BE_HIGHER_THAN_CURRENT_BID));
 				return;
 			}
 			
@@ -290,7 +290,7 @@ public final class ItemAuction
 			{
 				if (!reduceItemCount(player, newBid))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_FOR_THIS_BID));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_FOR_THIS_BID));
 					return;
 				}
 				
@@ -303,19 +303,19 @@ public final class ItemAuction
 				{
 					if (newBid < bid.getLastBid()) // just another check
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.BID_MUST_BE_HIGHER_THAN_CURRENT_BID));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BID_MUST_BE_HIGHER_THAN_CURRENT_BID));
 						return;
 					}
 					
 					if (!reduceItemCount(player, newBid - bid.getLastBid()))
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_FOR_THIS_BID));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_FOR_THIS_BID));
 						return;
 					}
 				}
 				else if (!reduceItemCount(player, newBid))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_FOR_THIS_BID));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_FOR_THIS_BID));
 					return;
 				}
 				
@@ -325,7 +325,7 @@ public final class ItemAuction
 			onPlayerBid(player, bid);
 			updatePlayerBid(bid, false);
 			
-			player.sendPacket(new SystemMessage(SystemMessageId.SUBMITTED_A_BID).addItemNumber(newBid));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID).addItemNumber(newBid));
 			return;
 		}
 	}
@@ -340,7 +340,7 @@ public final class ItemAuction
 		{
 			final L2PcInstance old = _highestBid.getPlayer();
 			if (old != null)
-				old.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_BEEN_OUTBID));
+				old.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_BEEN_OUTBID));
 			
 			_highestBid = bid;
 		}
@@ -353,7 +353,7 @@ public final class ItemAuction
 				{
 					_auctionEndingExtendState = ItemAuctionExtendState.EXTEND_BY_5_MIN;
 					_endingTime += ENDING_TIME_EXTEND_5;
-					broadcastToAllBidders(new SystemMessage(SystemMessageId.BIDDER_EXISTS_AUCTION_TIME_EXTENDED_BY_5_MINUTES));
+					broadcastToAllBidders(SystemMessage.getSystemMessage(SystemMessageId.BIDDER_EXISTS_AUCTION_TIME_EXTENDED_BY_5_MINUTES));
 					break;
 				}
 				case EXTEND_BY_5_MIN:
@@ -362,7 +362,7 @@ public final class ItemAuction
 					{
 						_auctionEndingExtendState = ItemAuctionExtendState.EXTEND_BY_3_MIN;
 						_endingTime += ENDING_TIME_EXTEND_3;
-						broadcastToAllBidders(new SystemMessage(SystemMessageId.BIDDER_EXISTS_AUCTION_TIME_EXTENDED_BY_3_MINUTES));
+						broadcastToAllBidders(SystemMessage.getSystemMessage(SystemMessageId.BIDDER_EXISTS_AUCTION_TIME_EXTENDED_BY_3_MINUTES));
 					}
 					break;
 				}
@@ -464,7 +464,7 @@ public final class ItemAuction
 				if (getAuctionState() == ItemAuctionState.FINISHED)
 					return false;
 				
-				player.sendPacket(new SystemMessage(SystemMessageId.HIGHEST_BID_BUT_RESERVE_NOT_MET));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.HIGHEST_BID_BUT_RESERVE_NOT_MET));
 				return true;
 			}
 			
@@ -477,7 +477,7 @@ public final class ItemAuction
 			// delete bid from database if auction already finished
 			updatePlayerBid(bid, getAuctionState() == ItemAuctionState.FINISHED);
 			
-			player.sendPacket(new SystemMessage(SystemMessageId.CANCELED_BID));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANCELED_BID));
 		}
 		return true;
 	}
@@ -502,7 +502,7 @@ public final class ItemAuction
 	{
 		if (!player.reduceAdena("ItemAuction", count, player, true))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_FOR_THIS_BID));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_FOR_THIS_BID));
 			return false;
 		}
 		return true;

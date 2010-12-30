@@ -63,13 +63,13 @@ public final class RequestFriendList extends L2GameClientPacket
 			if (friend == null || !friend.isOnline())
 			{
 				// (Currently: Offline)
-				sm = new SystemMessage(SystemMessageId.S1_OFFLINE);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_OFFLINE);
 				sm.addString(friendName);
 			}
 			else
 			{
 				// (Currently: Online)
-				sm = new SystemMessage(SystemMessageId.S1_ONLINE);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_ONLINE);
 				sm.addString(friendName);
 			}
 			

@@ -54,7 +54,7 @@ public final class RequestReplyStopPledgeWar extends L2GameClientPacket
 		}
 		else
 		{
-			requestor.sendPacket(new SystemMessage(SystemMessageId.REQUEST_TO_END_WAR_HAS_BEEN_DENIED));
+			requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.REQUEST_TO_END_WAR_HAS_BEEN_DENIED));
 		}
 		
 		activeChar.setActiveRequester(null);

@@ -130,14 +130,14 @@ public final class PetitionManager
 				else
 				{
 					// Ending petition consultation with <Player>.
-					SystemMessage sm = new SystemMessage(SystemMessageId.PETITION_ENDED_WITH_C1);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PETITION_ENDED_WITH_C1);
 					sm.addString(getPetitioner().getName());
 					getResponder().sendPacket(sm);
 					
 					if (endState == PetitionState.Petitioner_Cancel)
 					{
 						// Receipt No. <ID> petition cancelled.
-						sm = new SystemMessage(SystemMessageId.RECENT_NO_S1_CANCELED);
+						sm = SystemMessage.getSystemMessage(SystemMessageId.RECENT_NO_S1_CANCELED);
 						sm.addNumber(getId());
 						getResponder().sendPacket(sm);
 					}
@@ -146,7 +146,7 @@ public final class PetitionManager
 			
 			// End petition consultation and inform them, if they are still online.
 			if (getPetitioner() != null && getPetitioner().isOnline())
-				getPetitioner().sendPacket(new SystemMessage(SystemMessageId.THIS_END_THE_PETITION_PLEASE_PROVIDE_FEEDBACK));
+				getPetitioner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_END_THE_PETITION_PLEASE_PROVIDE_FEEDBACK));
 			
 			getCompletedPetitions().put(getId(), this);
 			return (getPendingPetitions().remove(getId()) != null);
@@ -263,15 +263,15 @@ public final class PetitionManager
 		currPetition.setState(PetitionState.In_Process);
 		
 		// Petition application accepted. (Send to Petitioner)
-		currPetition.sendPetitionerPacket(new SystemMessage(SystemMessageId.PETITION_APP_ACCEPTED));
+		currPetition.sendPetitionerPacket(SystemMessage.getSystemMessage(SystemMessageId.PETITION_APP_ACCEPTED));
 		
 		// Petition application accepted. Reciept No. is <ID>
-		SystemMessage sm = new SystemMessage(SystemMessageId.PETITION_ACCEPTED_RECENT_NO_S1);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PETITION_ACCEPTED_RECENT_NO_S1);
 		sm.addNumber(currPetition.getId());
 		currPetition.sendResponderPacket(sm);
 		
 		// Petition consultation with <Player> underway.
-		sm = new SystemMessage(SystemMessageId.STARTING_PETITION_WITH_C1);
+		sm = SystemMessage.getSystemMessage(SystemMessageId.STARTING_PETITION_WITH_C1);
 		sm.addString(currPetition.getPetitioner().getName());
 		currPetition.sendResponderPacket(sm);
 		return true;

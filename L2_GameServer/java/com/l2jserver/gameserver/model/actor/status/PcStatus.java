@@ -152,7 +152,7 @@ public class PcStatus extends PlayableStatus
 			{
 				SystemMessage smsg;
 				// Send a System Message to the L2PcInstance
-				smsg = new SystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
+				smsg = SystemMessage.getSystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
 				smsg.addString(getActiveChar().getName());
 				smsg.addCharName(attacker);
 				smsg.addNumber(fullValue);
@@ -160,7 +160,7 @@ public class PcStatus extends PlayableStatus
 				
 				if (tDmg > 0)
 				{
-					smsg = new SystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
 					smsg.addString(getActiveChar().getPet().getName());
 					smsg.addCharName(attacker);
 					smsg.addNumber(tDmg);
@@ -168,7 +168,7 @@ public class PcStatus extends PlayableStatus
 					
 					if (attackerPlayer != null)
 					{
-						smsg = new SystemMessage(SystemMessageId.GIVEN_S1_DAMAGE_TO_YOUR_TARGET_AND_S2_DAMAGE_TO_SERVITOR);
+						smsg = SystemMessage.getSystemMessage(SystemMessageId.GIVEN_S1_DAMAGE_TO_YOUR_TARGET_AND_S2_DAMAGE_TO_SERVITOR);
 						smsg.addNumber(fullValue);
 						smsg.addNumber(tDmg);
 						attackerPlayer.sendPacket(smsg);

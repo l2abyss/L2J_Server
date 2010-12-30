@@ -170,7 +170,7 @@ public class L2RaceManagerInstance extends L2Npc
 	
 	public void makeAnnouncement(SystemMessageId type)
 	{
-		SystemMessage sm = new SystemMessage(type);
+		SystemMessage sm = SystemMessage.getSystemMessage(type);
 		switch (type.getId())
 		{
 			case 816: // SystemMessageId.MONSRACE_TICKETS_AVAILABLE_FOR_S1_RACE
@@ -266,12 +266,12 @@ public class L2RaceManagerInstance extends L2Npc
 	{
 		if (command.startsWith("BuyTicket") && _state != ACCEPTING_BETS)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.MONSRACE_TICKETS_NOT_AVAILABLE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MONSRACE_TICKETS_NOT_AVAILABLE));
 			command = "Chat 0";
 		}
 		if (command.startsWith("ShowOdds") && _state == ACCEPTING_BETS)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.MONSRACE_NO_PAYOUT_INFO));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MONSRACE_NO_PAYOUT_INFO));
 			command = "Chat 0";
 		}
 		
@@ -411,7 +411,7 @@ public class L2RaceManagerInstance extends L2Npc
 			if (!player.reduceAdena("Race", _cost[priceId - 1], this, true)) return;
 			player.setRace(0, 0);
 			player.setRace(1, 0);
-			sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_S2);
 			sm.addNumber(_raceNumber);
 			sm.addItemName(4443);
 			player.sendPacket(sm);

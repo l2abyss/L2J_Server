@@ -121,14 +121,14 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		{
 			if (spb == null) // Haven't spellbook
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 				return;
 			}
 		}
 		
 		if (player.getInventory().getAdena() < requireditems)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 			return;
 		}
 		
@@ -143,7 +143,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		
 		if (!check)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 			return;
 		}
 		
@@ -170,13 +170,13 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		
 		if (_skillLvl > 100)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.UNTRAIN_SUCCESSFUL_SKILL_S1_ENCHANT_LEVEL_DECREASED_BY_ONE);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.UNTRAIN_SUCCESSFUL_SKILL_S1_ENCHANT_LEVEL_DECREASED_BY_ONE);
 			sm.addSkillName(_skillId);
 			player.sendPacket(sm);
 		}
 		else
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.UNTRAIN_SUCCESSFUL_SKILL_S1_ENCHANT_LEVEL_RESETED);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.UNTRAIN_SUCCESSFUL_SKILL_S1_ENCHANT_LEVEL_RESETED);
 			sm.addSkillName(_skillId);
 			player.sendPacket(sm);
 		}

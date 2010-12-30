@@ -68,7 +68,7 @@ public final class RequestSurrenderPersonally extends L2GameClientPacket
 		
 		_activeChar.setWantsPeace(1);
 		_activeChar.deathPenalty(false, false, false);
-		SystemMessage msg = new SystemMessage(SystemMessageId.YOU_HAVE_PERSONALLY_SURRENDERED_TO_THE_S1_CLAN);
+		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_PERSONALLY_SURRENDERED_TO_THE_S1_CLAN);
 		msg.addString(_pledgeName);
 		_activeChar.sendPacket(msg);
 		msg = null;

@@ -1198,16 +1198,16 @@ public class SevenSigns
 		switch (getCurrentPeriod())
 		{
 			case PERIOD_COMP_RECRUITING:
-				sm = new SystemMessage(SystemMessageId.PREPARATIONS_PERIOD_BEGUN);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.PREPARATIONS_PERIOD_BEGUN);
 				break;
 			case PERIOD_COMPETITION:
-				sm = new SystemMessage(SystemMessageId.COMPETITION_PERIOD_BEGUN);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.COMPETITION_PERIOD_BEGUN);
 				break;
 			case PERIOD_COMP_RESULTS:
-				sm = new SystemMessage(SystemMessageId.RESULTS_PERIOD_BEGUN);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.RESULTS_PERIOD_BEGUN);
 				break;
 			case PERIOD_SEAL_VALIDATION:
-				sm = new SystemMessage(SystemMessageId.VALIDATION_PERIOD_BEGUN);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.VALIDATION_PERIOD_BEGUN);
 				break;
 		}
 		
@@ -1221,7 +1221,7 @@ public class SevenSigns
 	 */
 	public void sendMessageToAll(SystemMessageId sysMsgId)
 	{
-		SystemMessage sm = new SystemMessage(sysMsgId);
+		SystemMessage sm = SystemMessage.getSystemMessage(sysMsgId);
 		Broadcast.toAllOnlinePlayers(sm);
 	}
 	

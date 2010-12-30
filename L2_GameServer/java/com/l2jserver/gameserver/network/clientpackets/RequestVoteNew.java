@@ -44,9 +44,9 @@ public final class RequestVoteNew extends L2GameClientPacket
 		if (!(object instanceof L2PcInstance))
 		{
 			if (object == null)
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.SELECT_TARGET));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SELECT_TARGET));
 			else
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 			return;
 		}
 		
@@ -57,31 +57,31 @@ public final class RequestVoteNew extends L2GameClientPacket
 		
 		if (target == activeChar)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_RECOMMEND_YOURSELF));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_RECOMMEND_YOURSELF));
 			return;
 		}
 		
 		if (activeChar.getRecomLeft() <= 0)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_CURRENTLY_DO_NOT_HAVE_ANY_RECOMMENDATIONS));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CURRENTLY_DO_NOT_HAVE_ANY_RECOMMENDATIONS));
 			return;
 		}
 		
 		if (target.getRecomHave() >= 255)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOUR_TARGET_NO_LONGER_RECEIVE_A_RECOMMENDATION));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_TARGET_NO_LONGER_RECEIVE_A_RECOMMENDATION));
 			return;
 		}
 		
 		activeChar.giveRecom(target);
 		
 		SystemMessage sm = null;
-		sm = new SystemMessage(SystemMessageId.YOU_HAVE_RECOMMENDED_C1_YOU_HAVE_S2_RECOMMENDATIONS_LEFT);
+		sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_RECOMMENDED_C1_YOU_HAVE_S2_RECOMMENDATIONS_LEFT);
 		sm.addPcName(target);
 		sm.addNumber(activeChar.getRecomLeft());
 		activeChar.sendPacket(sm);
 		
-		sm = new SystemMessage(SystemMessageId.YOU_HAVE_BEEN_RECOMMENDED_BY_C1);
+		sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_BEEN_RECOMMENDED_BY_C1);
 		sm.addPcName(activeChar);
 		target.sendPacket(sm);
 		sm = null;

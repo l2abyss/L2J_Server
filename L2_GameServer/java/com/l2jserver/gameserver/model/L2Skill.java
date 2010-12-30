@@ -1246,7 +1246,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		}
 		else
 		{
-			SystemMessage message = new SystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			SystemMessage message = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			message.addSkillName(this);
 			activeChar.sendPacket(message);
 			
@@ -1308,7 +1308,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				int msgId = cond.getMessageId();
 				if (msgId != 0)
 				{
-					SystemMessage sm = new SystemMessage(msgId);
+					SystemMessage sm = SystemMessage.getSystemMessage(msgId);
 					if (cond.isAddName())
 						sm.addSkillName(_id);
 					activeChar.sendPacket(sm);
@@ -1398,7 +1398,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				// Check for null target or any other invalid target
 				if (target == null || target.isDead() || (target == activeChar && !canTargetSelf))
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
 				}
 				
@@ -1559,7 +1559,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				if (((target == null || target == activeChar || target.isAlikeDead()) && getCastRange() >= 0) ||
 						(!(target instanceof L2Attackable || target instanceof L2Playable)))
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
 				}
 				
@@ -1686,7 +1686,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				}
 				else
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
 				}
 			}
@@ -1722,7 +1722,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				}
 				else
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
 				}
 			}
@@ -2028,7 +2028,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 								if (targetPlayer.isInsideZone(L2Character.ZONE_SIEGE) && !targetPlayer.isInSiege())
 								{
 									condGood = false;
-									activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_BE_RESURRECTED_DURING_SIEGE));
+									activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_BE_RESURRECTED_DURING_SIEGE));
 								}
 								
 								if (targetPlayer.isFestivalParticipant()) // Check to see if the current player target is in a festival.
@@ -2039,9 +2039,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 								if (targetPlayer.isReviveRequested())
 								{
 									if (targetPlayer.isRevivingPet())
-										player.sendPacket(new SystemMessage(SystemMessageId.MASTER_CANNOT_RES)); // While a pet is attempting to resurrect, it cannot help in resurrecting its master.
+										player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MASTER_CANNOT_RES)); // While a pet is attempting to resurrect, it cannot help in resurrecting its master.
 									else
-										player.sendPacket(new SystemMessage(SystemMessageId.RES_HAS_ALREADY_BEEN_PROPOSED)); // Resurrection is already been proposed.
+										player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.RES_HAS_ALREADY_BEEN_PROPOSED)); // Resurrection is already been proposed.
 									condGood = false;
 								}
 							}
@@ -2052,9 +2052,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 									if (targetPet.getOwner().isReviveRequested())
 									{
 										if (targetPet.getOwner().isRevivingPet())
-											player.sendPacket(new SystemMessage(SystemMessageId.RES_HAS_ALREADY_BEEN_PROPOSED)); // Resurrection is already been proposed.
+											player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.RES_HAS_ALREADY_BEEN_PROPOSED)); // Resurrection is already been proposed.
 										else
-											player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_RES_PET2)); // A pet cannot be resurrected while it's owner is in the process of resurrecting.
+											player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_RES_PET2)); // A pet cannot be resurrected while it's owner is in the process of resurrecting.
 										condGood = false;
 									}
 								}
@@ -2073,7 +2073,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						}
 					}
 				}
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 				return _emptyTargetList;
 			}
 			case TARGET_CORPSE_MOB:
@@ -2081,7 +2081,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				final boolean isSummon = target instanceof L2SummonInstance;
 				if (!(isSummon || target instanceof L2Attackable) || !target.isDead())
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
 				}
 				
@@ -2099,7 +2099,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						if (DecayTaskManager.getInstance().getTasks().containsKey(target)
 								&& (System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(target)) > DecayTaskManager.ATTACKABLE_DECAY_TIME / 2)
 						{
-							activeChar.sendPacket(new SystemMessage(SystemMessageId.CORPSE_TOO_OLD_SKILL_NOT_USED));
+							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CORPSE_TOO_OLD_SKILL_NOT_USED));
 							return _emptyTargetList;
 						}
 					}
@@ -2118,7 +2118,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			{
 				if ((!(target instanceof L2Attackable)) || !target.isDead())
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
 				}
 				
@@ -2154,7 +2154,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			{
 				if (!(target instanceof L2DoorInstance) && !(target instanceof L2ChestInstance))
 				{
-					//activeChar.sendPacket(new SystemMessage(SystemMessage.TARGET_IS_INCORRECT));
+					//activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessage.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
 				}
 				
@@ -2172,7 +2172,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				{
 					if (!target.isUndead() || target.isDead())
 					{
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 						return _emptyTargetList;
 					}
 					
@@ -2185,7 +2185,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				}
 				else
 				{
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
 					return _emptyTargetList;
 				}
 			}
@@ -2574,7 +2574,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			// display fail message only for effects with icons
 			else if (et.icon && effector instanceof L2PcInstance)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
 				sm.addCharName(effected);
 				sm.addSkillName(this);
 				((L2PcInstance)effector).sendPacket(sm);

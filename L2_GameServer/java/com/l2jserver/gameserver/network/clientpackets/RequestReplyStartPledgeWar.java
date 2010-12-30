@@ -54,7 +54,7 @@ public final class RequestReplyStartPledgeWar extends L2GameClientPacket
 		}
 		else
 		{
-			requestor.sendPacket(new SystemMessage(SystemMessageId.WAR_PROCLAMATION_HAS_BEEN_REFUSED));
+			requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WAR_PROCLAMATION_HAS_BEEN_REFUSED));
 		}
 		activeChar.setActiveRequester(null);
 		requestor.onTransactionResponse();

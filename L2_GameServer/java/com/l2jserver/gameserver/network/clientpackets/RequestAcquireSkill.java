@@ -138,18 +138,18 @@ public class RequestAcquireSkill extends L2GameClientPacket
 						if (!player.destroyItemByItemId("Consume", costId, 1, trainer, false))
 						{
 							// Haven't spellbook
-							player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
 							showSkillList(trainer, player);
 							return;
 						}
 						
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
 						sm.addItemName(costId);
 						player.sendPacket(sm);
 					}
 					else
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
 						showSkillList(trainer, player);
 						return;
 					}
@@ -194,19 +194,19 @@ public class RequestAcquireSkill extends L2GameClientPacket
 						if (!player.destroyItemByItemId("Consume", spbId, 1, trainer, false))
 						{
 							// Haven't spellbook
-							player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
 							showSkillList(trainer, player);
 							return;
 						}
 						
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
 						sm.addItemName(spbId);
 						player.sendPacket(sm);
 					}
 				}
 				else
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
 					showSkillList(trainer, player);
 					return;
 				}
@@ -246,19 +246,19 @@ public class RequestAcquireSkill extends L2GameClientPacket
 					if (!player.destroyItemByItemId("Consume", costId, costCount, trainer, false))
 					{
 						// Haven't spellbook
-						player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
 						showSkillList(trainer, player);
 						return;
 					}
 					
-					SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 					sm.addItemName(costId);
 					sm.addItemNumber(costCount);
 					player.sendPacket(sm);
 				}
 				else
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
 					showSkillList(trainer, player);
 					return;
 				}
@@ -299,12 +299,12 @@ public class RequestAcquireSkill extends L2GameClientPacket
 						if (!player.destroyItemByItemId("Consume", itemId, itemCount, trainer, false))
 						{
 							// Haven't spellbook
-							player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
 							L2VillageMasterInstance.showPledgeSkillList(player);
 							return;
 						}
 						
-						SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(itemId);
 						sm.addItemNumber(itemCount);
 						player.sendPacket(sm);
@@ -312,7 +312,7 @@ public class RequestAcquireSkill extends L2GameClientPacket
 				}
 				else
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
 					L2VillageMasterInstance.showPledgeSkillList(player);
 					return;
 				}
@@ -323,7 +323,7 @@ public class RequestAcquireSkill extends L2GameClientPacket
 				if (Config.DEBUG)
 					_log.fine("Learned pledge skill " + _id + " for " + requiredSp + " SP.");
 				
-				SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+				SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 				cr.addNumber(repCost);
 				player.sendPacket(cr);
 				
@@ -368,25 +368,25 @@ public class RequestAcquireSkill extends L2GameClientPacket
 					
 					if (player.getClan().getReputationScore() < rep)
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
 						return;
 					}
 					
 					if (!player.destroyItemByItemId("SubSkills", id, count, trainer, false))
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
 						return;
 					}
 					else
 					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(id);
 						sm.addItemNumber(count);
 						player.sendPacket(sm);
 					}
 					
 					player.getClan().takeReputationScore(rep, true);
-					SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 					cr.addNumber(rep);
 					player.sendPacket(cr);
 					
@@ -446,19 +446,19 @@ public class RequestAcquireSkill extends L2GameClientPacket
 					if (!player.destroyItemByItemId("Consume", costId, costCount, trainer, false))
 					{
 						// Haven't spellbook
-						player.sendPacket(new SystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
 						showSkillList(trainer, player);
 						return;
 					}
 					
-					SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 					sm.addItemName(costId);
 					sm.addItemNumber(costCount);
 					player.sendPacket(sm);
 				}
 				else
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
 					showSkillList(trainer, player);
 					return;
 				}
@@ -482,7 +482,7 @@ public class RequestAcquireSkill extends L2GameClientPacket
 			su.addAttribute(StatusUpdate.SP, player.getSp());
 			player.sendPacket(su);
 			
-			SystemMessage sm = new SystemMessage(SystemMessageId.LEARNED_SKILL_S1);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.LEARNED_SKILL_S1);
 			sm.addSkillName(skill);
 			player.sendPacket(sm);
 			

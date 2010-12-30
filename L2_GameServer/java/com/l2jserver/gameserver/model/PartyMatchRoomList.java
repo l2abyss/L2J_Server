@@ -51,7 +51,7 @@ public class PartyMatchRoomList
 				continue;
 			
 			_member.sendPacket(new ExClosePartyRoom());
-			_member.sendPacket(new SystemMessage(SystemMessageId.PARTY_ROOM_DISBANDED));
+			_member.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PARTY_ROOM_DISBANDED));
 			
 			_member.setPartyRoom(0);
 			//_member.setPartyMatching(0);

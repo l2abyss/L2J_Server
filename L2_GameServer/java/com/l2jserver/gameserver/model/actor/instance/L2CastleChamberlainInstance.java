@@ -275,7 +275,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 							if (player.reduceAdena("Castle", amount, this, true))
 								getCastle().addToTreasuryNoTax(amount);
 							else
-								sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+								sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 						}
 					}
 					else if (val.equalsIgnoreCase("withdraw"))
@@ -1227,7 +1227,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					{
 						L2ItemInstance crown = player.getInventory().addItem("Castle Crown", 6841, 1, player, this);
 						
-						SystemMessage ms = new SystemMessage(SystemMessageId.EARNED_ITEM);
+						SystemMessage ms = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
 						ms.addItemName(crown);
 						player.sendPacket(ms);
 						

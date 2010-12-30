@@ -74,7 +74,7 @@ public class RequestExTryToPutEnchantTargetItem extends AbstractEnchantPacket
 			
 			if (!scrollTemplate.isValid(item) || !isEnchantable(item))
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
 				activeChar.setActiveEnchantItem(null);
 				activeChar.sendPacket(new ExPutEnchantTargetItemResult(0));
 				return;

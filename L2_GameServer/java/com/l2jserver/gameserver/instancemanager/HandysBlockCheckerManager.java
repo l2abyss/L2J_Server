@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.SystemMessageId2;
 import com.l2jserver.gameserver.network.serverpackets.ExCubeGameAddPlayer;
 import com.l2jserver.gameserver.network.serverpackets.ExCubeGameChangeTeam;
 import com.l2jserver.gameserver.network.serverpackets.ExCubeGameRemovePlayer;
@@ -161,7 +160,7 @@ public final class HandysBlockCheckerManager
 			{
 				if(_arenaPlayers[i].getAllPlayers().contains(player))
 				{
-					SystemMessage msg = new SystemMessage(SystemMessageId.C1_IS_ALREADY_REGISTERED_ON_THE_MATCH_WAITING_LIST);
+					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_ALREADY_REGISTERED_ON_THE_MATCH_WAITING_LIST);
 					msg.addCharName(player);
 					player.sendPacket(msg);
 					return false;
@@ -170,7 +169,7 @@ public final class HandysBlockCheckerManager
 				
 			if(player.isCursedWeaponEquipped())
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId2.CANNOT_REGISTER_PROCESSING_CURSED_WEAPON));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_REGISTER_PROCESSING_CURSED_WEAPON));
 				return false;
 			}
 			
@@ -183,24 +182,24 @@ public final class HandysBlockCheckerManager
 			if(OlympiadManager.getInstance().isRegistered(player))
 			{
 				OlympiadManager.getInstance().unRegisterNoble(player);
-				player.sendPacket(new SystemMessage(SystemMessageId2.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
 			}				
 			/*
 			if(UnderGroundColiseum.getInstance().isRegisteredPlayer(player))
 			{
 				UngerGroundColiseum.getInstance().removeParticipant(player);
-				player.sendPacket(new SystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
 			}
 			if(KrateiCubeManager.getInstance().isRegisteredPlayer(player))
 			{
 				KrateiCubeManager.getInstance().removeParticipant(player);
-				player.sendPacket(new SystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
 			}
 			*/
 			
 			if(_registrationPenalty.contains(player.getObjectId()))
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId2.CANNOT_REQUEST_REGISTRATION_10_SECS_AFTER));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_REQUEST_REGISTRATION_10_SECS_AFTER));
 				return false;
 			}
 			
@@ -469,7 +468,7 @@ public final class HandysBlockCheckerManager
 			int blueSize = _bluePlayers.size();
 			if(redSize > blueSize + 1)
 			{
-				broadCastPacketToTeam(new SystemMessage(SystemMessageId2.TEAM_ADJUSTED_BECAUSE_WRONG_POPULATION_RATIO));
+				broadCastPacketToTeam(SystemMessage.getSystemMessage(SystemMessageId.TEAM_ADJUSTED_BECAUSE_WRONG_POPULATION_RATIO));
 				int needed = redSize - (blueSize + 1);
 				for(int i = 0; i < needed+1; i++)
 				{
@@ -480,7 +479,7 @@ public final class HandysBlockCheckerManager
 			}
 			else if(blueSize > redSize + 1)
 			{
-				broadCastPacketToTeam(new SystemMessage(SystemMessageId2.TEAM_ADJUSTED_BECAUSE_WRONG_POPULATION_RATIO));
+				broadCastPacketToTeam(SystemMessage.getSystemMessage(SystemMessageId.TEAM_ADJUSTED_BECAUSE_WRONG_POPULATION_RATIO));
 				int needed = blueSize - (redSize + 1);
 				for(int i = 0; i < needed+1; i++)
 				{

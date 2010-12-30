@@ -477,7 +477,7 @@ public class LoginServerThread extends Thread
 			LogRecord record = new LogRecord(Level.WARNING, "Kicked by login");
 			record.setParameters(new Object[]{client});
 			_logAccounting.log(record);
-			client.setAditionalClosePacket(new SystemMessage(SystemMessageId.ANOTHER_LOGIN_WITH_ACCOUNT));
+			client.setAditionalClosePacket(SystemMessage.getSystemMessage(SystemMessageId.ANOTHER_LOGIN_WITH_ACCOUNT));
 			client.closeNow();
 		}
 	}

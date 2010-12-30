@@ -938,7 +938,7 @@ public class FourSepulchersManager
 				
 				if (player.getWeightPenalty() >= 3)
 				{
-					mem.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+					mem.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 					return;
 				}
 			}
@@ -966,7 +966,7 @@ public class FourSepulchersManager
 				
 				if (player.getWeightPenalty() >= 3)
 				{
-					mem.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+					mem.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 					return;
 				}
 			}
@@ -987,7 +987,7 @@ public class FourSepulchersManager
 			
 			if (player.getWeightPenalty() >= 3)
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 				return;
 			}
 		}

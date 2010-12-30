@@ -70,7 +70,7 @@ public class L2MotherTreeZone extends L2ZoneType
 			L2PcInstance player = (L2PcInstance) character;
 			player.setInsideZone(L2Character.ZONE_MOTHERTREE, true);
 			if (_enterMsg != 0)
-				player.sendPacket(new SystemMessage(_enterMsg));
+				player.sendPacket(SystemMessage.getSystemMessage(_enterMsg));
 		}
 	}
 	
@@ -82,7 +82,7 @@ public class L2MotherTreeZone extends L2ZoneType
 			L2PcInstance player = (L2PcInstance) character;
 			player.setInsideZone(L2Character.ZONE_MOTHERTREE, false);
 			if (_leaveMsg != 0)
-				player.sendPacket(new SystemMessage(_leaveMsg));
+				player.sendPacket(SystemMessage.getSystemMessage(_leaveMsg));
 		}
 	}
 	

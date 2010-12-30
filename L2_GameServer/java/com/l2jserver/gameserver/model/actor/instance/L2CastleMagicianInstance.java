@@ -108,7 +108,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 			
 			if (player.destroyItemByItemId("ExchangeKE", 9912, 10, this, false))
 			{
-				SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 				msg.addItemName(9912);
 				msg.addNumber(10);
 				player.sendPacket(msg);

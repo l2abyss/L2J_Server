@@ -721,6 +721,8 @@ public final class Config
 	public static List<String> L2JMOD_MULTILANG_ALLOWED = new ArrayList<String>();
 	public static String L2JMOD_MULTILANG_DEFAULT;
 	public static boolean L2JMOD_MULTILANG_VOICED_ALLOW;
+	public static boolean L2JMOD_MULTILANG_SM_ENABLE;
+	public static List<String> L2JMOD_MULTILANG_SM_ALLOWED = new ArrayList<String>();
 	public static boolean L2WALKER_PROTECTION;
 	public static boolean L2JMOD_DEBUG_VOICE_COMMAND;
 	public static int L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP;
@@ -2453,6 +2455,14 @@ public final class Config
 					if (!L2JMOD_MULTILANG_ALLOWED.contains(L2JMOD_MULTILANG_DEFAULT))
 						_log.warning("MultiLang[Config.load()]: default language: " + L2JMOD_MULTILANG_DEFAULT + " is not in allowed list !");
 					L2JMOD_MULTILANG_VOICED_ALLOW = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangVoiceCommand", "True"));
+					L2JMOD_MULTILANG_SM_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangSystemMessageEnable", "false"));
+					allowed = L2JModSettings.getProperty("MultiLangSystemMessageAllowed", "").split(";");
+					L2JMOD_MULTILANG_SM_ALLOWED = new ArrayList<String>(allowed.length);
+					for (String lang : allowed)
+					{
+						if (!lang.isEmpty())
+							L2JMOD_MULTILANG_SM_ALLOWED.add(lang);
+					}
 					
 					L2WALKER_PROTECTION = Boolean.parseBoolean(L2JModSettings.getProperty("L2WalkerProtection", "False"));
 					L2JMOD_DEBUG_VOICE_COMMAND = Boolean.parseBoolean(L2JModSettings.getProperty("DebugVoiceCommand", "False"));

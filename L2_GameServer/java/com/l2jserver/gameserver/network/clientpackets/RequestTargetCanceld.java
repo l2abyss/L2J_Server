@@ -45,7 +45,7 @@ public final class RequestTargetCanceld extends L2GameClientPacket
 		
 		if (activeChar.isLockedTarget())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.FAILED_DISABLE_TARGET));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_DISABLE_TARGET));
 			return;
 		}
 		

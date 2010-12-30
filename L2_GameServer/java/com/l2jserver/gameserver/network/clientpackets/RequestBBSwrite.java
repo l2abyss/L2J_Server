@@ -58,7 +58,7 @@ public final class RequestBBSwrite extends L2GameClientPacket
 				return;
 			
 			if (!CommunityServerThread.getInstance().sendPacket(new RequestCommunityBoardWrite(activeChar.getObjectId(), _url,_arg1,_arg2, _arg3, _arg4, _arg5)))
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CB_OFFLINE));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
 		}
 		else
 			CommunityBoard.getInstance().handleWriteCommands(getClient(),_url,_arg1,_arg2, _arg3, _arg4, _arg5);

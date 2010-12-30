@@ -55,7 +55,7 @@ public class L2FortBallistaInstance extends L2Npc
 				if (player.getClan() != null && player.getClan().getLevel() >= 5)
 				{
 					player.getClan().addReputationScore(Config.BALLISTA_POINTS, true);
-					player.sendPacket(new SystemMessage(SystemMessageId.BALLISTA_DESTROYED_CLAN_REPU_INCREASED));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BALLISTA_DESTROYED_CLAN_REPU_INCREASED));
 				}
 			}
 		}

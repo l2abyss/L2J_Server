@@ -112,7 +112,7 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 				{
 					if (fuelConsumption > ship.getFuel())
 					{
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.THE_AIRSHIP_CANNOT_TELEPORT));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_AIRSHIP_CANNOT_TELEPORT));
 						return;
 					}
 					ship.setFuel(ship.getFuel() - fuelConsumption);

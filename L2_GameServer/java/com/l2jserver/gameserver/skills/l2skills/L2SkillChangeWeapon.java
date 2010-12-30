@@ -109,13 +109,13 @@ public class L2SkillChangeWeapon extends L2Skill
 						SystemMessage sm = null;
 						if (item.getEnchantLevel() > 0)
 						{
-							sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+							sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
 							sm.addNumber(item.getEnchantLevel());
 							sm.addItemName(item);
 						}
 						else
 						{
-							sm = new SystemMessage(SystemMessageId.S1_DISARMED);
+							sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
 							sm.addItemName(item);
 						}
 						player.sendPacket(sm);
@@ -148,13 +148,13 @@ public class L2SkillChangeWeapon extends L2Skill
 				
 				if (newItem.getEnchantLevel() > 0)
 				{
-					msg = new SystemMessage(SystemMessageId.S1_S2_EQUIPPED);
+					msg = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_EQUIPPED);
 					msg.addNumber(newItem.getEnchantLevel());
 					msg.addItemName(newItem);
 				}
 				else
 				{
-					msg = new SystemMessage(SystemMessageId.S1_EQUIPPED);
+					msg = SystemMessage.getSystemMessage(SystemMessageId.S1_EQUIPPED);
 					msg.addItemName(newItem);
 				}
 				player.sendPacket(msg);

@@ -70,7 +70,7 @@ public final class AddTradeItem extends L2GameClientPacket
 			// Trade partner not found, cancel trade
 			if (partner != null)
 				_log.warning("Character:" + player.getName() + " requested invalid trade object: " + _objectId);
-			SystemMessage msg = new SystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
+			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 			player.sendPacket(msg);
 			player.cancelActiveTrade();
 			return;
@@ -78,7 +78,7 @@ public final class AddTradeItem extends L2GameClientPacket
 		
 		if (trade.isConfirmed() || partner.getActiveTradeList().isConfirmed())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_ADJUST_ITEMS_AFTER_TRADE_CONFIRMED));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_ADJUST_ITEMS_AFTER_TRADE_CONFIRMED));
 			return;
 		}
 		
@@ -91,7 +91,7 @@ public final class AddTradeItem extends L2GameClientPacket
 		
 		if (!player.validateItemManipulation(_objectId, "trade"))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.NOTHING_HAPPENED));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOTHING_HAPPENED));
 			return;
 		}
 		

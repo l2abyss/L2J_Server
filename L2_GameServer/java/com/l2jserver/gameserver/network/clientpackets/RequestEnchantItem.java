@@ -69,7 +69,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 		
 		if (activeChar.isProcessingTransaction() || activeChar.isInStoreMode())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_ENCHANT_WHILE_STORE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_ENCHANT_WHILE_STORE));
 			activeChar.setActiveEnchantItem(null);
 			return;
 		}
@@ -106,7 +106,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 		// first validation check
 		if (!scrollTemplate.isValid(item, supportTemplate) || !isEnchantable(item))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 			activeChar.setActiveEnchantItem(null);
 			activeChar.sendPacket(new EnchantResult(2, 0, 0));
 			return;
@@ -125,7 +125,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 		scroll = activeChar.getInventory().destroyItem("Enchant", scroll.getObjectId(), 1, activeChar, item);
 		if (scroll == null)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
 			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to enchant with a scroll he doesn't have", Config.DEFAULT_PUNISH);
 			activeChar.setActiveEnchantItem(null);
 			activeChar.sendPacket(new EnchantResult(2, 0, 0));
@@ -138,7 +138,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 			support = activeChar.getInventory().destroyItem("Enchant", support.getObjectId(), 1, activeChar, item);
 			if (support == null)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
 				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to enchant with a support item he doesn't have", Config.DEFAULT_PUNISH);
 				activeChar.setActiveEnchantItem(null);
 				activeChar.sendPacket(new EnchantResult(2, 0, 0));
@@ -158,7 +158,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 					|| !isEnchantable(item)
 					|| chance < 0)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
 				activeChar.setActiveEnchantItem(null);
 				activeChar.sendPacket(new EnchantResult(2, 0, 0));
 				return;
@@ -184,7 +184,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 				int maxEnchantAnnounce = item.isArmor() ? 0 : 15;
 				if (item.getEnchantLevel() == minEnchantAnnounce || item.getEnchantLevel() == maxEnchantAnnounce)
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.C1_SUCCESSFULY_ENCHANTED_A_S2_S3);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_SUCCESSFULY_ENCHANTED_A_S2_S3);
 					sm.addCharName(activeChar);
 					sm.addNumber(item.getEnchantLevel());
 					sm.addItemName(item);
@@ -229,14 +229,14 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 					{
 						if (item.getEnchantLevel() > 0)
 						{
-							SystemMessage sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
 							sm.addNumber(item.getEnchantLevel());
 							sm.addItemName(item);
 							activeChar.sendPacket(sm);
 						}
 						else
 						{
-							SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISARMED);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
 							sm.addItemName(item);
 							activeChar.sendPacket(sm);
 						}
@@ -253,7 +253,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 					if (scrollTemplate.isBlessed())
 					{
 						// blessed enchant - clear enchant value
-						activeChar.sendPacket(new SystemMessage(SystemMessageId.BLESSED_ENCHANT_FAILED));
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BLESSED_ENCHANT_FAILED));
 						
 						item.setEnchantLevel(0);
 						item.updateDatabase();
@@ -298,7 +298,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 						{
 							crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
 							
-							SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 							sm.addItemName(crystals);
 							sm.addItemNumber(count);
 							activeChar.sendPacket(sm);

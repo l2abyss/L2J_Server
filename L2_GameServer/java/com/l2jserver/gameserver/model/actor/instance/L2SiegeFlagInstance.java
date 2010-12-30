@@ -199,7 +199,7 @@ public class L2SiegeFlagInstance extends L2Npc
 				if (_clan != null)
 				{
 					// send warning to owners of headquarters that theirs base is under attack
-					_clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
+					_clan.broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
 					setCanTalk(false);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
 				}
@@ -209,7 +209,7 @@ public class L2SiegeFlagInstance extends L2Npc
 				if (_clan != null)
 				{
 					// send warning to owners of headquarters that theirs base is under attack
-					_clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
+					_clan.broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
 					setCanTalk(false);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
 				}

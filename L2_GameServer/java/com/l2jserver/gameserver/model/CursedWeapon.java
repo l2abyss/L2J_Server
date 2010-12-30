@@ -206,7 +206,7 @@ public class CursedWeapon
 		// Delete infos from table if any
 		CursedWeaponsManager.removeFromDb(_itemId);
 		
-		SystemMessage sm = new SystemMessage(SystemMessageId.S1_HAS_DISAPPEARED);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_DISAPPEARED);
 		sm.addItemName(_itemId);
 		CursedWeaponsManager.announce(sm);
 		
@@ -276,7 +276,7 @@ public class CursedWeapon
 			//_player.getInventory().getItemByItemId(_itemId).dropMe(_player, _player.getX(), _player.getY(), _player.getZ());
 		}
 		_isDropped = true;
-		SystemMessage sm = new SystemMessage(SystemMessageId.S2_WAS_DROPPED_IN_THE_S1_REGION);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_WAS_DROPPED_IN_THE_S1_REGION);
 		if (player != null)
 			sm.addZoneName(player.getX(), player.getY(), player.getZ()); // Region Name
 		else if (_player != null)
@@ -292,13 +292,13 @@ public class CursedWeapon
 		doTransform();
 		giveSkill();
 		
-		SystemMessage msg = new SystemMessage(SystemMessageId.S2_OWNER_HAS_LOGGED_INTO_THE_S1_REGION);
+		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_OWNER_HAS_LOGGED_INTO_THE_S1_REGION);
 		msg.addZoneName(_player.getX(), _player.getY(), _player.getZ());
 		msg.addItemName(_player.getCursedWeaponEquippedId());
 		CursedWeaponsManager.announce(msg);
 		
 		CursedWeapon cw = CursedWeaponsManager.getInstance().getCursedWeapon(_player.getCursedWeaponEquippedId());
-		SystemMessage msg2 = new SystemMessage(SystemMessageId.S2_MINUTE_OF_USAGE_TIME_ARE_LEFT_FOR_S1);
+		SystemMessage msg2 = SystemMessage.getSystemMessage(SystemMessageId.S2_MINUTE_OF_USAGE_TIME_ARE_LEFT_FOR_S1);
 		int timeLeft = (int)(cw.getTimeLeft()/60000);
 		msg2.addItemName(_player.getCursedWeaponEquippedId());
 		msg2.addNumber(timeLeft);
@@ -439,7 +439,7 @@ public class CursedWeapon
 		_item = item;
 		//L2ItemInstance[] items =
 		_player.getInventory().equipItem(_item);
-		SystemMessage sm = new SystemMessage(SystemMessageId.S1_EQUIPPED);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_EQUIPPED);
 		sm.addItemName(_item);
 		_player.sendPacket(sm);
 		
@@ -464,7 +464,7 @@ public class CursedWeapon
 		
 		_player.broadcastPacket(atk);
 		
-		sm = new SystemMessage(SystemMessageId.THE_OWNER_OF_S2_HAS_APPEARED_IN_THE_S1_REGION);
+		sm = SystemMessage.getSystemMessage(SystemMessageId.THE_OWNER_OF_S2_HAS_APPEARED_IN_THE_S1_REGION);
 		sm.addZoneName(_player.getX(), _player.getY(), _player.getZ()); // Region Name
 		sm.addItemName(_item);
 		CursedWeaponsManager.announce(sm);

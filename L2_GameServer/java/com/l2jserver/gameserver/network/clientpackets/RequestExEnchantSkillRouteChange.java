@@ -132,14 +132,14 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			{
 				if (spb == null)// Haven't spellbook
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_ITENS_NEEDED_TO_CHANGE_SKILL_ENCHANT_ROUTE));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_ITENS_NEEDED_TO_CHANGE_SKILL_ENCHANT_ROUTE));
 					return;
 				}
 			}
 			
 			if (player.getInventory().getAdena() < requireditems)
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 				return;
 			}
 			
@@ -154,7 +154,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			
 			if (!check)
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
 				return;
 			}
 			
@@ -194,13 +194,13 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			
 			if (levelPenalty == 0)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_ENCHANT_CHANGE_SUCCESSFUL_S1_LEVEL_WILL_REMAIN);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SKILL_ENCHANT_CHANGE_SUCCESSFUL_S1_LEVEL_WILL_REMAIN);
 				sm.addSkillName(_skillId);
 				player.sendPacket(sm);
 			}
 			else
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.SKILL_ENCHANT_CHANGE_SUCCESSFUL_S1_LEVEL_WAS_DECREASED_BY_S2);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SKILL_ENCHANT_CHANGE_SUCCESSFUL_S1_LEVEL_WAS_DECREASED_BY_S2);
 				sm.addSkillName(_skillId);
 				sm.addNumber(levelPenalty);
 				player.sendPacket(sm);
@@ -214,7 +214,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 		}
 		else
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.YOU_DONT_HAVE_ENOUGH_SP_TO_ENCHANT_THAT_SKILL);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ENOUGH_SP_TO_ENCHANT_THAT_SKILL);
 			player.sendPacket(sm);
 		}
 	}

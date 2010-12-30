@@ -439,7 +439,7 @@ public class Fort
 		//	if clan already have castle, don't store him in fortress
 		if (clan.getHasCastle() > 0)
 		{
-			getSiege().announceToPlayer(new SystemMessage(SystemMessageId.NPCS_RECAPTURED_FORTRESS));
+			getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.NPCS_RECAPTURED_FORTRESS));
 			return false;
 		}
 		else
@@ -948,7 +948,7 @@ public class Fort
 			{
 				clan.setHasFort(getFortId()); // Set has fort flag for new owner
 				SystemMessage sm;
-				sm = new SystemMessage(SystemMessageId.S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2);
 				sm.addString(clan.getName());
 				sm.addFortId(getFortId());
 				Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();

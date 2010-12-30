@@ -62,7 +62,7 @@ public final class RequestHennaRemove extends L2GameClientPacket
 					break;
 				}
 				else
-					activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 			}
 		}
 	}

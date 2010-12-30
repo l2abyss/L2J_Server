@@ -73,13 +73,13 @@ public class L2SkillChargeDmg extends L2Skill
 			{
 				if (caster instanceof L2PcInstance)
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.C1_DODGES_ATTACK);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DODGES_ATTACK);
 					sm.addString(target.getName());
 					((L2PcInstance) caster).sendPacket(sm);
 				}
 				if (target instanceof L2PcInstance)
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.AVOIDED_C1_ATTACK2);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.AVOIDED_C1_ATTACK2);
 					sm.addString(caster.getName());
 					((L2PcInstance) target).sendPacket(sm);
 				}
@@ -110,7 +110,7 @@ public class L2SkillChargeDmg extends L2Skill
 					{
 						caster.stopSkillEffects(getId());
 						getEffects(target, caster);
-						SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 						sm.addSkillName(this);
 						caster.sendPacket(sm);
 					}
@@ -122,13 +122,13 @@ public class L2SkillChargeDmg extends L2Skill
 						{
 							getEffects(caster, target, new Env(shld, false, false, false));
 							
-							SystemMessage sm = new SystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 							sm.addSkillName(this);
 							target.sendPacket(sm);
 						}
 						else
 						{
-							SystemMessage sm = new SystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
 							sm.addCharName(target);
 							sm.addSkillName(this);
 							caster.sendPacket(sm);
@@ -155,13 +155,13 @@ public class L2SkillChargeDmg extends L2Skill
 				{
 					if (target instanceof L2PcInstance)
 					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.COUNTERED_C1_ATTACK);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.COUNTERED_C1_ATTACK);
 						sm.addCharName(caster);
 						target.sendPacket(sm);
 					}
 					if (caster instanceof L2PcInstance)
 					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.C1_PERFORMING_COUNTERATTACK);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_PERFORMING_COUNTERATTACK);
 						sm.addCharName(target);
 						caster.sendPacket(sm);
 					}

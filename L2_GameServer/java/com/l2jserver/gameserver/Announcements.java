@@ -93,7 +93,7 @@ public class Announcements
 			
 			if (!validDateRange.isValid() || validDateRange.isWithinRange(currentDate))
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1);
 				for (int j = 0; j < msg.length; j++)
 				{
 					sm.addString(msg[j]);

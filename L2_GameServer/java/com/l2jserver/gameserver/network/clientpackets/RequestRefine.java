@@ -67,7 +67,7 @@ public final class RequestRefine extends AbstractRefinePacket
 		if (!isValid(activeChar, targetItem, refinerItem, gemStoneItem))
 		{
 			activeChar.sendPacket(new ExVariationResult(0,0,0));
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.AUGMENTATION_FAILED_DUE_TO_INAPPROPRIATE_CONDITIONS));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.AUGMENTATION_FAILED_DUE_TO_INAPPROPRIATE_CONDITIONS));
 			return;
 		}
 		
@@ -80,7 +80,7 @@ public final class RequestRefine extends AbstractRefinePacket
 		if (_gemStoneCount != getGemStoneCount(targetItem.getItem().getItemGrade(), lifeStoneGrade))
 		{
 			activeChar.sendPacket(new ExVariationResult(0,0,0));
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.AUGMENTATION_FAILED_DUE_TO_INAPPROPRIATE_CONDITIONS));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.AUGMENTATION_FAILED_DUE_TO_INAPPROPRIATE_CONDITIONS));
 			return;
 		}
 		

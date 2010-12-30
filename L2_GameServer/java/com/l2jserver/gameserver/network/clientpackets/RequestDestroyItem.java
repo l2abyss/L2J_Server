@@ -77,7 +77,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		if (activeChar.isProcessingTransaction() || activeChar.getPrivateStoreType() != 0)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
 			return;
 		}
 		
@@ -85,7 +85,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		// if we can't find the requested item, its actually a cheat
 		if (itemToRemove == null)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 			return;
 		}
 		
@@ -94,7 +94,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		{
 			if (activeChar.getCurrentSkill() != null && activeChar.getCurrentSkill().getSkill().getItemConsumeId() == itemToRemove.getItemId())
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 				return;
 			}
 		}
@@ -103,7 +103,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		{
 			if (activeChar.getLastSimultaneousSkillCast() != null && activeChar.getLastSimultaneousSkillCast().getItemConsumeId() == itemToRemove.getItemId())
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 				return;
 			}
 		}
@@ -113,9 +113,9 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		if ((!activeChar.isGM() && !itemToRemove.isDestroyable()) || CursedWeaponsManager.getInstance().isCursed(itemId))
 		{
 			if (itemToRemove.isHeroItem())
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.HERO_WEAPONS_CANT_DESTROYED));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.HERO_WEAPONS_CANT_DESTROYED));
 			else
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
 			return;
 		}
 		

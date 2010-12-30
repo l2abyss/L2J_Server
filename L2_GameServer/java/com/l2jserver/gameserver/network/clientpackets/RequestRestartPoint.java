@@ -201,7 +201,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(activeChar.getObjectId()))
 			return;
 		
-		//SystemMessage sm2 = new SystemMessage(SystemMessage.S1_S2);
+		//SystemMessage sm2 = SystemMessage.getSystemMessage(SystemMessage.S1_S2);
 		//sm2.addString("type:"+requestedPointType);
 		//activeChar.sendPacket(sm2);
 		

@@ -360,7 +360,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 			{
 				if (_pTwoCrash && !_pOneCrash)
 				{
-					sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
 					sm.addString(_playerOne.name);
 					stadium.broadcastPacket(sm);
 
@@ -381,7 +381,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 				}
 				else if (_pOneCrash && !_pTwoCrash)
 				{
-					sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
 					sm.addString(_playerTwo.name);
 					stadium.broadcastPacket(sm);
 
@@ -402,7 +402,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 				}
 				else if (_pOneCrash && _pTwoCrash)
 				{
-					stadium.broadcastPacket(new SystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE));
+					stadium.broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE));
 
 					_playerOne.updateStat(COMP_LOST, 1);
 					removePointsFromParticipant(_playerOne, pointDiff);
@@ -464,7 +464,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 			{
 				_playerOne.updateStat(COMP_DRAWN, 1);
 				_playerTwo.updateStat(COMP_DRAWN, 1);
-				sm = new SystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE);
 				stadium.broadcastPacket(sm);
 			}
 			else if (_playerTwo.player == null
@@ -472,7 +472,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 					|| (playerTwoHp == 0 && playerOneHp != 0)
 					|| (_damageP1 > _damageP2 && playerTwoHp != 0 && playerOneHp != 0))
 			{
-				sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
 				sm.addString(_playerOne.name);
 				stadium.broadcastPacket(sm);
 
@@ -493,7 +493,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 					|| (playerOneHp == 0 && playerTwoHp != 0)
 					|| (_damageP2 > _damageP1 && playerOneHp != 0 && playerTwoHp != 0))
 			{
-				sm = new SystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
 				sm.addString(_playerTwo.name);
 				stadium.broadcastPacket(sm);
 
@@ -514,7 +514,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 				// Save Fight Result
 				saveResults(_playerOne,_playerTwo,0,_startTime,_fightTime, getType());
 				
-				sm = new SystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE);
 				stadium.broadcastPacket(sm);
 
 				removePointsFromParticipant(_playerOne, Math.min(playerOnePoints / getDivider(), Config.ALT_OLY_MAX_POINTS));

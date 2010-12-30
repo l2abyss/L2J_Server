@@ -1003,7 +1003,7 @@ public class L2CharacterAI extends AbstractAI
 			{
 				if (!((L2PcInstance)_actor).getTransformation().canStartFollowToCast())
 				{
-					((L2PcInstance)_actor).sendPacket(new SystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED));
+					((L2PcInstance)_actor).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED));
 					((L2PcInstance)_actor).sendPacket(ActionFailed.STATIC_PACKET);
 					
 					return true;

@@ -51,7 +51,7 @@ public final class RequestJoinSiege extends L2GameClientPacket
 		
 		if ((activeChar.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) != L2Clan.CP_CS_MANAGE_SIEGE)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return;
 		}
 		
@@ -65,7 +65,7 @@ public final class RequestJoinSiege extends L2GameClientPacket
 		{
 			if (System.currentTimeMillis() < clan.getDissolvingExpiryTime())
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_PARTICIPATE_IN_SIEGE_WHILE_DISSOLUTION_IN_PROGRESS));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_PARTICIPATE_IN_SIEGE_WHILE_DISSOLUTION_IN_PROGRESS));
 				return;
 			}
 			if (_isAttacker == 1)

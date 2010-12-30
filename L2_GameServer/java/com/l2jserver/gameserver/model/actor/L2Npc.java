@@ -836,7 +836,7 @@ public class L2Npc extends L2Character
 		}
 		if (player.isLockedTarget() && player.getLockedTarget() != this)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
 		}
@@ -1213,7 +1213,7 @@ public class L2Npc extends L2Character
 						case SevenSigns.CABAL_DAWN:
 							if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
 							{
-								player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
 								player.sendPacket(ActionFailed.STATIC_PACKET);
 								return;
 							}
@@ -1221,13 +1221,13 @@ public class L2Npc extends L2Character
 						case SevenSigns.CABAL_DUSK:
 							if (playerCabal != compWinner || playerCabal != sealAvariceOwner)
 							{
-								player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
 								player.sendPacket(ActionFailed.STATIC_PACKET);
 								return;
 							}
 							break;
 						default:
-							player.sendPacket(new SystemMessage(SystemMessageId.QUEST_EVENT_PERIOD));
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.QUEST_EVENT_PERIOD));
 							return;
 					}
 				}
@@ -1241,7 +1241,7 @@ public class L2Npc extends L2Character
 						case SevenSigns.CABAL_DAWN:
 							if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
 							{
-								player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
 								player.sendPacket(ActionFailed.STATIC_PACKET);
 								return;
 							}
@@ -1249,13 +1249,13 @@ public class L2Npc extends L2Character
 						case SevenSigns.CABAL_DUSK:
 							if (playerCabal != compWinner || playerCabal != sealGnosisOwner)
 							{
-								player.sendPacket(new SystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
 								player.sendPacket(ActionFailed.STATIC_PACKET);
 								return;
 							}
 							break;
 						default:
-							player.sendPacket(new SystemMessage(SystemMessageId.QUEST_EVENT_PERIOD));
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.QUEST_EVENT_PERIOD));
 							return;
 					}
 				}

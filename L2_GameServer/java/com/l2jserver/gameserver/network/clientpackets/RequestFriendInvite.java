@@ -66,7 +66,7 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		}
 		else if (BlockList.isBlocked(activeChar, friend))
 		{
-			sm = new SystemMessage(SystemMessageId.BLOCKED_C1);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.BLOCKED_C1);
 			sm.addCharName(friend);
 			activeChar.sendPacket(sm);
 			return;
@@ -80,7 +80,7 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		if (activeChar.getFriendList().contains(friend.getObjectId()))
 		{
 			// Player already is in your friendlist
-			sm = new SystemMessage(SystemMessageId.S1_ALREADY_IN_FRIENDS_LIST);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_ALREADY_IN_FRIENDS_LIST);
 			sm.addString(_name);
 			activeChar.sendPacket(sm);
 			return;
@@ -90,14 +90,14 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		{
 			// requets to become friend
 			activeChar.onTransactionRequest(friend);
-			sm = new SystemMessage(SystemMessageId.YOU_REQUESTED_C1_TO_BE_FRIEND);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_REQUESTED_C1_TO_BE_FRIEND);
 			sm.addString(_name);
 			FriendAddRequest ajf = new FriendAddRequest(activeChar.getName());
 			friend.sendPacket(ajf);
 		}
 		else
 		{
-			sm = new SystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
 			sm.addString(_name);
 		}
 		

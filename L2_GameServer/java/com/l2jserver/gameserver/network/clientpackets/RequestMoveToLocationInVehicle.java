@@ -86,14 +86,14 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		
 		if (activeChar.getPet() != null)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.RELEASE_PET_ON_BOAT));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.RELEASE_PET_ON_BOAT));
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		if (activeChar.isTransformed())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_POLYMORPH_ON_BOAT));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_POLYMORPH_ON_BOAT));
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

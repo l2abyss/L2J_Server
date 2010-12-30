@@ -720,7 +720,7 @@ public class L2Attackable extends L2Npc
 								L2PcInstance player = (L2PcInstance)attacker;
 								if (isOverhit() && attacker == getOverhitAttacker())
 								{
-									player.sendPacket(new SystemMessage(SystemMessageId.OVER_HIT));
+									player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OVER_HIT));
 									exp += calculateOverhitExp(exp);
 								}
 							}
@@ -862,7 +862,7 @@ public class L2Attackable extends L2Npc
 							
 							if (isOverhit() && attacker == getOverhitAttacker())
 							{
-								player.sendPacket(new SystemMessage(SystemMessageId.OVER_HIT));
+								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OVER_HIT));
 								exp += calculateOverhitExp(exp);
 							}
 						}
@@ -1674,7 +1674,7 @@ public class L2Attackable extends L2Npc
 						if (isRaid() && !isRaidMinion())
 						{
 							SystemMessage sm;
-							sm = new SystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
+							sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
 							sm.addCharName(this);
 							sm.addItemName(item.getItemId());
 							sm.addItemNumber(item.getCount());

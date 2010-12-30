@@ -71,7 +71,7 @@ public class EffectSpoil extends L2Effect
 		
 		if (target.isSpoil())
 		{
-			getEffector().sendPacket(new SystemMessage(SystemMessageId.ALREADY_SPOILED));
+			getEffector().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_SPOILED));
 			return false;
 		}
 		
@@ -85,7 +85,7 @@ public class EffectSpoil extends L2Effect
 			{
 				target.setSpoil(true);
 				target.setIsSpoiledBy(getEffector().getObjectId());
-				getEffector().sendPacket(new SystemMessage(SystemMessageId.SPOIL_SUCCESS));
+				getEffector().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SPOIL_SUCCESS));
 			}
 			target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, getEffector());
 		}

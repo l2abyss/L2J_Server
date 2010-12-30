@@ -75,7 +75,7 @@ public class L2FameManagerInstance extends L2Npc
 					player.sendPacket(new UserInfo(player));
 					player.sendPacket(new ExBrExtraUserInfo(player));
 					player.getClan().addReputationScore(50, true);
-					player.sendPacket(new SystemMessage(SystemMessageId.ACQUIRED_50_CLAN_FAME_POINTS));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_50_CLAN_FAME_POINTS));
 					html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-5.htm");
 				}
 				else

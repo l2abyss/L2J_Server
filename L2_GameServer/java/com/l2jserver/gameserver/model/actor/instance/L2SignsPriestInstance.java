@@ -103,18 +103,18 @@ public class L2SignsPriestInstance extends L2Npc
 				case 2: // Purchase Record of the Seven Signs
 					if (!player.getInventory().validateCapacity(1))
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.SLOTS_FULL));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
 						break;
 					}
 					
 					if (!player.reduceAdena("SevenSigns", SevenSigns.RECORD_SEVEN_SIGNS_COST, this, true))
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
 						break;
 					}
 					player.getInventory().addItem("SevenSigns", SevenSigns.RECORD_SEVEN_SIGNS_ID, 1, player, this);
 					
-					sm = new SystemMessage(SystemMessageId.EARNED_ITEM);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
 					sm.addItemName(SevenSigns.RECORD_SEVEN_SIGNS_ID);
 					player.sendPacket(sm);
 					
@@ -227,21 +227,21 @@ public class L2SignsPriestInstance extends L2Npc
 					SevenSigns.getInstance().setPlayerInfo(player.getObjectId(), cabal, newSeal);
 					
 					if (cabal == SevenSigns.CABAL_DAWN)
-						player.sendPacket(new SystemMessage(SystemMessageId.SEVENSIGNS_PARTECIPATION_DAWN)); // Joined Dawn
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SEVENSIGNS_PARTECIPATION_DAWN)); // Joined Dawn
 					else
-						player.sendPacket(new SystemMessage(SystemMessageId.SEVENSIGNS_PARTECIPATION_DUSK)); // Joined Dusk
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SEVENSIGNS_PARTECIPATION_DUSK)); // Joined Dusk
 					
 					// Show a confirmation message to the user, indicating which seal they chose.
 					switch (newSeal)
 					{
 						case SevenSigns.SEAL_AVARICE:
-							player.sendPacket(new SystemMessage(SystemMessageId.FIGHT_FOR_AVARICE));
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FIGHT_FOR_AVARICE));
 							break;
 						case SevenSigns.SEAL_GNOSIS:
-							player.sendPacket(new SystemMessage(SystemMessageId.FIGHT_FOR_GNOSIS));
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FIGHT_FOR_GNOSIS));
 							break;
 						case SevenSigns.SEAL_STRIFE:
-							player.sendPacket(new SystemMessage(SystemMessageId.FIGHT_FOR_STRIFE));
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FIGHT_FOR_STRIFE));
 							break;
 					}
 					
@@ -320,7 +320,7 @@ public class L2SignsPriestInstance extends L2Npc
 						if (player.destroyItemByItemId("SevenSigns", SevenSigns.SEAL_STONE_RED_ID, redContrib, this, false))
 						{
 							contribStonesFound = true;
-							SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+							SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 							msg.addItemName(SevenSigns.SEAL_STONE_RED_ID);
 							msg.addItemNumber(redContrib);
 							player.sendPacket(msg);
@@ -331,7 +331,7 @@ public class L2SignsPriestInstance extends L2Npc
 						if (player.destroyItemByItemId("SevenSigns", SevenSigns.SEAL_STONE_GREEN_ID, greenContrib, this, false))
 						{
 							contribStonesFound = true;
-							SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+							SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 							msg.addItemName(SevenSigns.SEAL_STONE_GREEN_ID);
 							msg.addItemNumber(greenContrib);
 							player.sendPacket(msg);
@@ -342,7 +342,7 @@ public class L2SignsPriestInstance extends L2Npc
 						if (player.destroyItemByItemId("SevenSigns", SevenSigns.SEAL_STONE_BLUE_ID, blueContrib, this, false))
 						{
 							contribStonesFound = true;
-							SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+							SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 							msg.addItemName(SevenSigns.SEAL_STONE_BLUE_ID);
 							msg.addItemNumber(blueContrib);
 							player.sendPacket(msg);
@@ -359,7 +359,7 @@ public class L2SignsPriestInstance extends L2Npc
 					else
 					{
 						score = SevenSigns.getInstance().addPlayerStoneContrib(player.getObjectId(), blueContrib, greenContrib, redContrib);
-						sm = new SystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
+						sm = SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
 						sm.addItemNumber(score);
 						player.sendPacket(sm);
 						
@@ -385,7 +385,7 @@ public class L2SignsPriestInstance extends L2Npc
 					
 					if (contribScore == Config.ALT_MAXIMUM_PLAYER_CONTRIB)
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.CONTRIB_SCORE_EXCEEDED));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_EXCEEDED));
 						break;
 					}
 					else
@@ -441,7 +441,7 @@ public class L2SignsPriestInstance extends L2Npc
 									if (player.destroyItemByItemId("SevenSigns", SevenSigns.SEAL_STONE_RED_ID, redContribCount, this, false))
 									{
 										stonesFound = true;
-										SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+										SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 										msg.addItemName(SevenSigns.SEAL_STONE_RED_ID);
 										msg.addItemNumber(redContribCount);
 										player.sendPacket(msg);
@@ -452,7 +452,7 @@ public class L2SignsPriestInstance extends L2Npc
 									if (player.destroyItemByItemId("SevenSigns", SevenSigns.SEAL_STONE_GREEN_ID, greenContribCount, this, false))
 									{
 										stonesFound = true;
-										SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+										SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 										msg.addItemName(SevenSigns.SEAL_STONE_GREEN_ID);
 										msg.addItemNumber(greenContribCount);
 										player.sendPacket(msg);
@@ -463,7 +463,7 @@ public class L2SignsPriestInstance extends L2Npc
 									if (player.destroyItemByItemId("SevenSigns", SevenSigns.SEAL_STONE_BLUE_ID, blueContribCount, this, false))
 									{
 										stonesFound = true;
-										SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+										SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 										msg.addItemName(SevenSigns.SEAL_STONE_BLUE_ID);
 										msg.addItemNumber(blueContribCount);
 										player.sendPacket(msg);
@@ -480,7 +480,7 @@ public class L2SignsPriestInstance extends L2Npc
 								else
 								{
 									contribScore = SevenSigns.getInstance().addPlayerStoneContrib(player.getObjectId(), blueContribCount, greenContribCount, redContribCount);
-									sm = new SystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
+									sm = SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
 									sm.addItemNumber(contribScore);
 									player.sendPacket(sm);
 									

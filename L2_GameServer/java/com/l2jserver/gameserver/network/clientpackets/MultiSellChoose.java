@@ -157,13 +157,13 @@ public class MultiSellChoose extends L2GameClientPacket
 				
 				if (!inv.validateWeight(weight))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
 					return;
 				}
 				
 				if (!inv.validateCapacity(slots))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.SLOTS_FULL));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
 					return;
 				}
 				
@@ -185,7 +185,7 @@ public class MultiSellChoose extends L2GameClientPacket
 						{
 							if (ex.getItemCount() + e.getItemCount() > Integer.MAX_VALUE)
 							{
-								player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
+								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
 								return;
 							}
 							// two same ingredients, merge into one and replace old
@@ -208,7 +208,7 @@ public class MultiSellChoose extends L2GameClientPacket
 				{
 					if (e.getItemCount() * _amount > Integer.MAX_VALUE)
 					{
-						player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
 						return;
 					}
 					if (e.getItemId() < 0)
@@ -223,7 +223,7 @@ public class MultiSellChoose extends L2GameClientPacket
 						final long required = ((Config.ALT_BLACKSMITH_USE_RECIPES || !e.getMaintainIngredient()) ? (e.getItemCount() * _amount) : e.getItemCount());
 						if (inv.getInventoryItemCount(e.getItemId(), list.getMaintainEnchantment() ? e.getEnchantLevel() : -1, false) < required)
 						{
-							SystemMessage sm = new SystemMessage(SystemMessageId.S2_UNIT_OF_THE_ITEM_S1_REQUIRED);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_UNIT_OF_THE_ITEM_S1_REQUIRED);
 							sm.addItemName(e.getTemplate());
 							sm.addNumber((int)required);
 							player.sendPacket(sm);
@@ -402,7 +402,7 @@ public class MultiSellChoose extends L2GameClientPacket
 							
 							if (e.getItemCount() * _amount > 1)
 							{
-								sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
+								sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 								sm.addItemName(e.getItemId());
 								sm.addItemNumber(e.getItemCount() * _amount);
 								player.sendPacket(sm);
@@ -412,13 +412,13 @@ public class MultiSellChoose extends L2GameClientPacket
 							{
 								if (list.getMaintainEnchantment() && e.getEnchantLevel() > 0)
 								{
-									sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_S2);
+									sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_S2);
 									sm.addItemNumber(e.getEnchantLevel());
 									sm.addItemName(e.getItemId());
 								}
 								else
 								{
-									sm = new SystemMessage(SystemMessageId.EARNED_ITEM);
+									sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
 									sm.addItemName(e.getItemId());
 								}
 								player.sendPacket(sm);

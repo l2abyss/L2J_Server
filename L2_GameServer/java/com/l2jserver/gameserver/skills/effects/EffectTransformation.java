@@ -70,7 +70,7 @@ public class EffectTransformation extends L2Effect
 		
 		if (trg.getTransformation() != null)
 		{
-			trg.sendPacket(new SystemMessage(SystemMessageId.YOU_ALREADY_POLYMORPHED_AND_CANNOT_POLYMORPH_AGAIN));
+			trg.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ALREADY_POLYMORPHED_AND_CANNOT_POLYMORPH_AGAIN));
 			return false;
 		}
 		

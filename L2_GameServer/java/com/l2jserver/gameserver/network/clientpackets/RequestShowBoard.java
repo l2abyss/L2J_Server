@@ -64,7 +64,7 @@ public final class RequestShowBoard extends L2GameClientPacket
 			if (CommunityServerThread.getInstance().isAuthed())
 				CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), "_bbshome"), true);
 			else
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CB_OFFLINE));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
 		}
 		else
 			CommunityBoard.getInstance().handleCommands(getClient(), Config.BBS_DEFAULT);

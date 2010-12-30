@@ -397,7 +397,7 @@ public class Olympiad
 	{
 		public void run()
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.OLYMPIAD_PERIOD_S1_HAS_ENDED);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.OLYMPIAD_PERIOD_S1_HAS_ENDED);
 			sm.addNumber(_currentCycle);
 			
 			Announcements.getInstance().announceToAll(sm);
@@ -482,7 +482,7 @@ public class Olympiad
 				
 				_inCompPeriod = true;
 				
-				Announcements.getInstance().announceToAll(new SystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_HAS_STARTED));
+				Announcements.getInstance().announceToAll(SystemMessage.getSystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_HAS_STARTED));
 				_log.info("Olympiad System: Olympiad Game Started");
 				_logResults.info("Result,Player1,Player2,Player1 HP,Player2 HP,Player1 Damage,Player2 Damage,Points,Classed");
 				
@@ -496,7 +496,7 @@ public class Olympiad
 					ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
 						public void run()
 						{
-							Announcements.getInstance().announceToAll(new SystemMessage(SystemMessageId.OLYMPIAD_REGISTRATION_PERIOD_ENDED));
+							Announcements.getInstance().announceToAll(SystemMessage.getSystemMessage(SystemMessageId.OLYMPIAD_REGISTRATION_PERIOD_ENDED));
 						}
 					}, regEnd);
 				}
@@ -507,7 +507,7 @@ public class Olympiad
 						if (isOlympiadEnd())
 							return;
 						_inCompPeriod = false;
-						Announcements.getInstance().announceToAll(new SystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_HAS_ENDED));
+						Announcements.getInstance().announceToAll(SystemMessage.getSystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_HAS_ENDED));
 						_log.info("Olympiad System: Olympiad Game Ended");
 						
 						while (OlympiadGameManager.getInstance().isBattleStarted()) // cleared in game manager
@@ -572,7 +572,7 @@ public class Olympiad
 	
 	protected void setNewOlympiadEnd()
 	{
-		SystemMessage sm = new SystemMessage(SystemMessageId.OLYMPIAD_PERIOD_S1_HAS_STARTED);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.OLYMPIAD_PERIOD_S1_HAS_STARTED);
 		sm.addNumber(_currentCycle);
 		
 		Announcements.getInstance().announceToAll(sm);

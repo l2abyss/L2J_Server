@@ -89,14 +89,14 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 		
 		if (!item.isDropable() || !item.isDestroyable() || !item.isTradeable())
 		{
-			sendPacket(new SystemMessage(SystemMessageId.ITEM_NOT_FOR_PETS));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_NOT_FOR_PETS));
 			return;
 		}
 		
 		L2PetInstance pet = (L2PetInstance) player.getPet();
 		if (pet.isDead())
 		{
-			sendPacket(new SystemMessage(SystemMessageId.CANNOT_GIVE_ITEMS_TO_DEAD_PET));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_GIVE_ITEMS_TO_DEAD_PET));
 			return;
 		}
 		
@@ -106,12 +106,12 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 		}
 		if (!pet.getInventory().validateCapacity(item))
 		{
-			pet.getOwner().sendPacket(new SystemMessage(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS));
+			pet.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS));
 			return;
 		}
 		if (!pet.getInventory().validateWeight(item,_amount))
 		{
-			pet.getOwner().sendPacket(new SystemMessage(SystemMessageId.UNABLE_TO_PLACE_ITEM_YOUR_PET_IS_TOO_ENCUMBERED));
+			pet.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.UNABLE_TO_PLACE_ITEM_YOUR_PET_IS_TOO_ENCUMBERED));
 			return;
 		}
 		

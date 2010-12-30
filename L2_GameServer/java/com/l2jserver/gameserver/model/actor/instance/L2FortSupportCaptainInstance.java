@@ -81,7 +81,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 			
 			if (player.destroyItemByItemId("FortSupportUnit", 9912, 10, this, false))
 			{
-				SystemMessage msg = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 				msg.addItemName(9912);
 				msg.addNumber(10);
 				player.sendPacket(msg);

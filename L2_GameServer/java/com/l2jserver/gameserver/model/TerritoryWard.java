@@ -115,7 +115,7 @@ public class TerritoryWard
 	{
 		if (player.isMounted())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
 			player.destroyItem("CombatFlag", item, null, true);
 			spawnMe();
 			return false;
@@ -140,7 +140,7 @@ public class TerritoryWard
 		else
 			_item = item;
 		_player.getInventory().equipItem(_item);
-		SystemMessage sm = new SystemMessage(SystemMessageId.S1_EQUIPPED);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_EQUIPPED);
 		sm.addItemName(_item);
 		_player.sendPacket(sm);
 		
@@ -156,7 +156,7 @@ public class TerritoryWard
 		// Refresh player stats
 		_player.broadcastUserInfo();
 		_player.setCombatFlagEquipped(true);
-		_player.sendPacket(new SystemMessage(SystemMessageId.YOU_VE_ACQUIRED_THE_WARD));
+		_player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_VE_ACQUIRED_THE_WARD));
 		TerritoryWarManager.getInstance().giveTWPoint(player, _territoryId, 5);
 		return true;
 	}

@@ -80,7 +80,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							{
 								if (activeChar.getPet().getSoulShotsPerHit() > item.getCount())
 								{
-									activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET));
+									activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET));
 									return;
 								}
 							}
@@ -88,7 +88,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							{
 								if (activeChar.getPet().getSpiritShotsPerHit() > item.getCount())
 								{
-									activeChar.sendPacket(new SystemMessage(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET));
+									activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET));
 									return;
 								}
 							}
@@ -96,14 +96,14 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							activeChar.sendPacket(new ExAutoSoulShot(_itemId, _type));
 							
 							// start the auto soulshot use
-							SystemMessage sm = new SystemMessage(SystemMessageId.USE_OF_S1_WILL_BE_AUTO);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.USE_OF_S1_WILL_BE_AUTO);
 							sm.addItemName(item);// Update Message by rocknow
 							activeChar.sendPacket(sm);
 							
 							activeChar.rechargeAutoSoulShot(true, true, true);
 						}
 						else
-							activeChar.sendPacket(new SystemMessage(SystemMessageId.NO_SERVITOR_CANNOT_AUTOMATE_USE));
+							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_SERVITOR_CANNOT_AUTOMATE_USE));
 					}
 					else
 					{
@@ -116,16 +116,16 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 						else
 						{
 							if ((_itemId >= 2509 && _itemId <= 2514) || (_itemId >= 3947 && _itemId <= 3952) || _itemId == 5790 || (_itemId >= 22072 && _itemId <= 22081))
-								activeChar.sendPacket(new SystemMessage(SystemMessageId.SPIRITSHOTS_GRADE_MISMATCH));
+								activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SPIRITSHOTS_GRADE_MISMATCH));
 							else
-								activeChar.sendPacket(new SystemMessage(SystemMessageId.SOULSHOTS_GRADE_MISMATCH));
+								activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SOULSHOTS_GRADE_MISMATCH));
 							
 							activeChar.addAutoSoulShot(_itemId);
 							activeChar.sendPacket(new ExAutoSoulShot(_itemId, _type));
 						}
 						
 						// start the auto soulshot use
-						SystemMessage sm = new SystemMessage(SystemMessageId.USE_OF_S1_WILL_BE_AUTO);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.USE_OF_S1_WILL_BE_AUTO);
 						sm.addItemName(item);// Update Message by rocknow
 						activeChar.sendPacket(sm);
 						
@@ -139,7 +139,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 				activeChar.sendPacket(new ExAutoSoulShot(_itemId, _type));
 				
 				// cancel the auto soulshot use
-				SystemMessage sm = new SystemMessage(SystemMessageId.AUTO_USE_OF_S1_CANCELLED);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.AUTO_USE_OF_S1_CANCELLED);
 				sm.addItemName(item);// Update Message by rocknow
 				activeChar.sendPacket(sm);
 			}

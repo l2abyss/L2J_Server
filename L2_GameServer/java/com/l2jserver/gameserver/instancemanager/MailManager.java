@@ -222,7 +222,7 @@ public class MailManager
 					if (sender != null)
 					{
 						msg.getAttachments().returnToWh(sender.getWarehouse());
-						sender.sendPacket(new SystemMessage(SystemMessageId.MAIL_RETURNED));
+						sender.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAIL_RETURNED));
 					}
 					else
 						msg.getAttachments().returnToWh(null);
@@ -233,7 +233,7 @@ public class MailManager
 					final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
 					if (receiver != null)
 					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.MAIL_RETURNED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.MAIL_RETURNED);
 						sm.addString(msg.getReceiverName());
 						receiver.sendPacket(sm);
 					}

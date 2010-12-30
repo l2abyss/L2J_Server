@@ -155,34 +155,34 @@ public class ClanTable
 		
 		if (10 > player.getLevel())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_MEET_CRITERIA_IN_ORDER_TO_CREATE_A_CLAN));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DO_NOT_MEET_CRITERIA_IN_ORDER_TO_CREATE_A_CLAN));
 			return null;
 		}
 		if (0 != player.getClanId())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.FAILED_TO_CREATE_CLAN));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_CREATE_CLAN));
 			return null;
 		}
 		if (System.currentTimeMillis() < player.getClanCreateExpiryTime())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_MUST_WAIT_XX_DAYS_BEFORE_CREATING_A_NEW_CLAN));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_MUST_WAIT_XX_DAYS_BEFORE_CREATING_A_NEW_CLAN));
 			return null;
 		}
 		if (!Util.isAlphaNumeric(clanName) || 2 > clanName.length())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
 			return null;
 		}
 		if (16 < clanName.length())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_NAME_TOO_LONG));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_TOO_LONG));
 			return null;
 		}
 		
 		if (null != getClanByName(clanName))
 		{
 			// clan name is already taken
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_ALREADY_EXISTS);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_ALREADY_EXISTS);
 			sm.addString(clanName);
 			player.sendPacket(sm);
 			sm = null;
@@ -209,7 +209,7 @@ public class ClanTable
 		player.sendPacket(new UserInfo(player));
 		player.sendPacket(new ExBrExtraUserInfo(player));
 		player.sendPacket(new PledgeShowMemberListUpdate(player));
-		player.sendPacket(new SystemMessage(SystemMessageId.CLAN_CREATED));
+		player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_CREATED));
 		// notify CB server that a new Clan is created
 		CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, clan, WorldInfo.TYPE_UPDATE_CLAN_DATA));
 		return clan;
@@ -223,7 +223,7 @@ public class ClanTable
 			return;
 		}
 		
-		clan.broadcastToOnlineMembers(new SystemMessage(SystemMessageId.CLAN_HAS_DISPERSED));
+		clan.broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.CLAN_HAS_DISPERSED));
 		int castleId = clan.getHasCastle();
 		if (castleId == 0)
 		{
@@ -377,16 +377,16 @@ public class ClanTable
 		{
 			L2DatabaseFactory.close(con);
 		}
-		//SystemMessage msg = new SystemMessage(SystemMessageId.WAR_WITH_THE_S1_CLAN_HAS_BEGUN);
+		//SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.WAR_WITH_THE_S1_CLAN_HAS_BEGUN);
 		//
-		SystemMessage msg = new SystemMessage(SystemMessageId.CLAN_WAR_DECLARED_AGAINST_S1_IF_KILLED_LOSE_LOW_EXP);
+		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_WAR_DECLARED_AGAINST_S1_IF_KILLED_LOSE_LOW_EXP);
 		msg.addString(clan2.getName());
 		clan1.broadcastToOnlineMembers(msg);
-		//msg = new SystemMessage(SystemMessageId.WAR_WITH_THE_S1_CLAN_HAS_BEGUN);
+		//msg = SystemMessage.getSystemMessage(SystemMessageId.WAR_WITH_THE_S1_CLAN_HAS_BEGUN);
 		//msg.addString(clan1.getName());
 		//clan2.broadcastToOnlineMembers(msg);
 		// clan1 declared clan war.
-		msg = new SystemMessage(SystemMessageId.CLAN_S1_DECLARED_WAR);
+		msg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_DECLARED_WAR);
 		msg.addString(clan1.getName());
 		clan2.broadcastToOnlineMembers(msg);
 	}
@@ -433,14 +433,14 @@ public class ClanTable
 		{
 			L2DatabaseFactory.close(con);
 		}
-		//SystemMessage msg = new SystemMessage(SystemMessageId.WAR_WITH_THE_S1_CLAN_HAS_ENDED);
-		SystemMessage msg = new SystemMessage(SystemMessageId.WAR_AGAINST_S1_HAS_STOPPED);
+		//SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.WAR_WITH_THE_S1_CLAN_HAS_ENDED);
+		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.WAR_AGAINST_S1_HAS_STOPPED);
 		msg.addString(clan2.getName());
 		clan1.broadcastToOnlineMembers(msg);
-		msg = new SystemMessage(SystemMessageId.CLAN_S1_HAS_DECIDED_TO_STOP);
+		msg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_HAS_DECIDED_TO_STOP);
 		msg.addString(clan1.getName());
 		clan2.broadcastToOnlineMembers(msg);
-		//msg = new SystemMessage(SystemMessageId.WAR_WITH_THE_S1_CLAN_HAS_ENDED);
+		//msg = SystemMessage.getSystemMessage(SystemMessageId.WAR_WITH_THE_S1_CLAN_HAS_ENDED);
 		//msg.addString(clan1.getName());
 		//clan2.broadcastToOnlineMembers(msg);
 	}

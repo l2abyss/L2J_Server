@@ -120,7 +120,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 			if (warehouse instanceof ClanWarehouse && !player.isClanLeader())
 			{
 				// this msg is for depositing but maybe good to send some msg?
-				player.sendPacket(new SystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CAN_RETRIEVE_ITEMS_FROM_CLAN_WAREHOUSE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CAN_RETRIEVE_ITEMS_FROM_CLAN_WAREHOUSE));
 				return;
 			}
 		}
@@ -151,14 +151,14 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		// Item Max Limit Check
 		if (!player.getInventory().validateCapacity(slots))
 		{
-			sendPacket(new SystemMessage(SystemMessageId.SLOTS_FULL));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
 			return;
 		}
 		
 		// Weight limit Check
 		if (!player.getInventory().validateWeight(weight))
 		{
-			sendPacket(new SystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
 			return;
 		}
 		

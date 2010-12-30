@@ -122,13 +122,13 @@ public class RequestUnEquipItem extends L2GameClientPacket
 			SystemMessage sm = null;
 			if (unequiped[0].getEnchantLevel() > 0)
 			{
-				sm = new SystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
 				sm.addNumber(unequiped[0].getEnchantLevel());
 				sm.addItemName(unequiped[0]);
 			}
 			else
 			{
-				sm = new SystemMessage(SystemMessageId.S1_DISARMED);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
 				sm.addItemName(unequiped[0]);
 			}
 			activeChar.sendPacket(sm);

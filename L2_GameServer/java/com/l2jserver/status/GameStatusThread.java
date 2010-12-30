@@ -492,7 +492,7 @@ public class GameStatusThread extends Thread
 							InventoryUpdate iu = new InventoryUpdate();
 							iu.addItem(item);
 							player.sendPacket(iu);
-							SystemMessage sm = new SystemMessage(SystemMessageId.YOU_PICKED_UP_S1_S2);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_PICKED_UP_S1_S2);
 							sm.addItemName(itemId);
 							sm.addItemNumber(amount);
 							player.sendPacket(sm);

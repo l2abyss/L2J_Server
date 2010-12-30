@@ -55,27 +55,27 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				player.sendMessage(super.readS());
 				break;
 			case 236:
-				player.sendPacket(new SystemMessage(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED));
 				break;
 			case 1050:
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_CB_IN_MY_CLAN));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_CB_IN_MY_CLAN));
 				break;
 			case 1070:
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_READ_PERMISSION));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_READ_PERMISSION));
 				break;
 			case 1071:
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_WRITE_PERMISSION));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_WRITE_PERMISSION));
 				break;
 			case 1205:
-				player.sendPacket(new SystemMessage(SystemMessageId.MAILBOX_FULL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAILBOX_FULL));
 				break;
 			case 1206:
-				player.sendPacket(new SystemMessage(SystemMessageId.MEMOBOX_FULL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MEMOBOX_FULL));
 				break;
 			case 1227:
 				try
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.S1_UNREAD_MESSAGES);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_UNREAD_MESSAGES);
 					final int number = super.readD();
 					sm.addNumber(number);
 					player.sendPacket(sm);
@@ -88,7 +88,7 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 			case 1228:
 				try
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.C1_BLOCKED_YOU_CANNOT_MAIL);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_BLOCKED_YOU_CANNOT_MAIL);
 					final String name = super.readS();
 					sm.addString(name);
 					player.sendPacket(sm);
@@ -99,30 +99,30 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				}
 				break;
 			case 1229:
-				player.sendPacket(new SystemMessage(SystemMessageId.NO_MORE_MESSAGES_TODAY));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_MESSAGES_TODAY));
 				break;
 			case 1230:
-				player.sendPacket(new SystemMessage(SystemMessageId.ONLY_FIVE_RECIPIENTS));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_FIVE_RECIPIENTS));
 				break;
 			case 1231:
-				player.sendPacket(new SystemMessage(SystemMessageId.SENT_MAIL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SENT_MAIL));
 				break;
 			case 1232:
-				player.sendPacket(new SystemMessage(SystemMessageId.MESSAGE_NOT_SENT));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MESSAGE_NOT_SENT));
 				break;
 			case 1233:
-				player.sendPacket(new SystemMessage(SystemMessageId.NEW_MAIL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NEW_MAIL));
 				break;
 			case 1234:
-				player.sendPacket(new SystemMessage(SystemMessageId.MAIL_STORED_IN_MAILBOX));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAIL_STORED_IN_MAILBOX));
 				break;
 			case 1238:
-				player.sendPacket(new SystemMessage(SystemMessageId.TEMP_MAILBOX_FULL));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TEMP_MAILBOX_FULL));
 				break;
 			case 1370:
 				try
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.CANNOT_MAIL_GM_C1);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CANNOT_MAIL_GM_C1);
 					final String name = super.readS();
 					sm.addString(name);
 					player.sendPacket(sm);

@@ -133,19 +133,19 @@ public class PcStat extends PlayableStat
 		// Send a Server->Client System Message to the L2PcInstance
 		if (addToExp == 0 && addToSp != 0)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.ACQUIRED_S1_SP);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_SP);
 			sm.addNumber(addToSp);
 			activeChar.sendPacket(sm);
 		}
 		else if (addToSp == 0 && addToExp != 0)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
 			sm.addNumber((int) addToExp);
 			activeChar.sendPacket(sm);
 		}
 		else
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
 			sm.addNumber((int) addToExp);
 			sm.addNumber(addToSp);
 			activeChar.sendPacket(sm);
@@ -200,10 +200,10 @@ public class PcStat extends PlayableStat
 		if (sendMessage)
 		{
 			// Send a Server->Client System Message to the L2PcInstance
-			SystemMessage sm = new SystemMessage(SystemMessageId.EXP_DECREASED_BY_S1);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EXP_DECREASED_BY_S1);
 			sm.addNumber((int) addToExp);
 			getActiveChar().sendPacket(sm);
-			sm = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
 			sm.addNumber(addToSp);
 			getActiveChar().sendPacket(sm);
 		}
@@ -229,7 +229,7 @@ public class PcStat extends PlayableStat
 			
 			getActiveChar().setCurrentCp(getMaxCp());
 			getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
-			getActiveChar().sendPacket(new SystemMessage(SystemMessageId.YOU_INCREASED_YOUR_LEVEL));
+			getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_INCREASED_YOUR_LEVEL));
 			
 			L2ClassMasterInstance.showQuestionMark(getActiveChar());
 		}
@@ -501,13 +501,13 @@ public class PcStat extends PlayableStat
 		if (!quiet && level != _vitalityLevel)
 		{
 			if (level < _vitalityLevel)
-				getActiveChar().sendPacket(new SystemMessage(SystemMessageId.VITALITY_HAS_DECREASED));
+				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_HAS_DECREASED));
 			else
-				getActiveChar().sendPacket(new SystemMessage(SystemMessageId.VITALITY_HAS_INCREASED));
+				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_HAS_INCREASED));
 			if (level == 0)
-				getActiveChar().sendPacket(new SystemMessage(SystemMessageId.VITALITY_IS_EXHAUSTED));
+				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_IS_EXHAUSTED));
 			else if (level == 4)
-				getActiveChar().sendPacket(new SystemMessage(SystemMessageId.VITALITY_IS_AT_MAXIMUM));
+				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_IS_AT_MAXIMUM));
 		}
 		
 		_vitalityLevel = level;

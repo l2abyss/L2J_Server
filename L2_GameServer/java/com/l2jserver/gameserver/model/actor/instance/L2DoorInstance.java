@@ -715,7 +715,7 @@ public class L2DoorInstance extends L2Character
 		boolean isCastle = (getCastle() != null	&& getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress());
 		
 		if (isFort || isCastle)
-			broadcastPacket(new SystemMessage(SystemMessageId.CASTLE_GATE_BROKEN_DOWN));
+			broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.CASTLE_GATE_BROKEN_DOWN));
 		return true;
 	}
 	

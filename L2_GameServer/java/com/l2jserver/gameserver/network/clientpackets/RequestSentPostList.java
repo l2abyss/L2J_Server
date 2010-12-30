@@ -40,7 +40,7 @@ public final class RequestSentPostList extends L2GameClientPacket
 		
 		/*if (!activeChar.isInsideZone(ZONE_PEACE))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE));
 			return;
 		}*/
 		

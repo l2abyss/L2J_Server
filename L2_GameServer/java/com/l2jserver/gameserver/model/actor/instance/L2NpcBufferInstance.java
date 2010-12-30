@@ -147,7 +147,7 @@ public class L2NpcBufferInstance extends L2Npc
 					
 					if (itemInstance == null || (!itemInstance.isStackable() && player.getInventory().getInventoryItemCount(skillFeeId, -1) < skillFeeAmount))
 					{
-						SystemMessage sm = new SystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
 						player.sendPacket(sm);
 						continue;
 					}
@@ -156,7 +156,7 @@ public class L2NpcBufferInstance extends L2Npc
 					{
 						if (!player.destroyItemByItemId("Npc Buffer", skillFeeId, skillFeeAmount, player.getTarget(), true))
 						{
-							SystemMessage sm = new SystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
 							player.sendPacket(sm);
 							continue;
 						}

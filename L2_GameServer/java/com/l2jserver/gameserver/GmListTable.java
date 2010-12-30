@@ -126,17 +126,17 @@ public class GmListTable
 	{
 		if (isGmOnline(player.isGM()))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.GM_LIST));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.GM_LIST));
 			
 			for (String name : getAllGmNames(player.isGM()))
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.GM_C1);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.GM_C1);
 				sm.addString(name);
 				player.sendPacket(sm);
 			}
 		}
 		else
-			player.sendPacket(new SystemMessage(SystemMessageId.NO_GM_PROVIDING_SERVICE_NOW));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_GM_PROVIDING_SERVICE_NOW));
 	}
 	
 	public static void broadcastToGMs(L2GameServerPacket packet)

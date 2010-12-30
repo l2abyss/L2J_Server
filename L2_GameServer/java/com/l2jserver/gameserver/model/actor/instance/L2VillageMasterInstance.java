@@ -143,7 +143,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 				return;
 			
 			if (player.getClan() == null)
-				player.sendPacket(new SystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CREATE_ALLIANCE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CREATE_ALLIANCE));
 			else
 				player.getClan().createAlly(player, cmdParams);
 		}
@@ -183,7 +183,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			// Subclasses may not be changed while a skill is in use.
 			if (player.isCastingNow() || player.isAllSkillsDisabled())
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.SUBCLASS_NO_CHANGE_OR_CREATE_WHILE_SKILL_IN_USE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUBCLASS_NO_CHANGE_OR_CREATE_WHILE_SKILL_IN_USE));
 				return;
 			}
 			
@@ -398,7 +398,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 						
 						html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_AddOk.htm");
 						
-						player.sendPacket(new SystemMessage(SystemMessageId.ADD_NEW_SUBCLASS)); // Subclass added.
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ADD_NEW_SUBCLASS)); // Subclass added.
 					}
 					else
 						html.setFile(player.getHtmlPrefix(), getSubClassFail());
@@ -443,7 +443,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 					
 					player.setActiveClass(paramOne);
 					
-					player.sendPacket(new SystemMessage(SystemMessageId.SUBCLASS_TRANSFER_COMPLETED)); // Transfer completed.
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUBCLASS_TRANSFER_COMPLETED)); // Transfer completed.
 					return;
 				case 6: // Change/Cancel Subclass - Choice
 					// validity check
@@ -516,7 +516,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 						html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_ModifyOk.htm");
 						html.replace("%name%", CharTemplateTable.getInstance().getClassNameById(paramTwo));
 						
-						player.sendPacket(new SystemMessage(SystemMessageId.ADD_NEW_SUBCLASS)); // Subclass added.
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ADD_NEW_SUBCLASS)); // Subclass added.
 					}
 					else
 					{
@@ -754,24 +754,24 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	{
 		if (!player.isClanLeader())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return;
 		}
 		
 		final L2Clan clan = player.getClan();
 		if (clan.getAllyId() != 0)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISPERSE_THE_CLANS_IN_ALLY));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISPERSE_THE_CLANS_IN_ALLY));
 			return;
 		}
 		if (clan.isAtWar())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_WAR));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_WAR));
 			return;
 		}
 		if (clan.getHasCastle() !=0 || clan.getHasHideout() != 0 || clan.getHasFort() != 0)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_OWNING_CLAN_HALL_OR_CASTLE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_OWNING_CLAN_HALL_OR_CASTLE));
 			return;
 		}
 		
@@ -779,7 +779,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		{
 			if (SiegeManager.getInstance().checkIsRegistered(clan, castle.getCastleId()))
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE));
 				return;
 			}
 		}
@@ -787,19 +787,19 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		{
 			if (FortSiegeManager.getInstance().checkIsRegistered(clan, fort.getFortId()))
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE));
 				return;
 			}
 		}
 		
 		if (player.isInsideZone(L2PcInstance.ZONE_SIEGE))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE));
 			return;
 		}
 		if (clan.getDissolvingExpiryTime() > System.currentTimeMillis())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.DISSOLUTION_IN_PROGRESS));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DISSOLUTION_IN_PROGRESS));
 			return;
 		}
 		
@@ -816,7 +816,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	{
 		if (!player.isClanLeader())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return;
 		}
 		
@@ -829,7 +829,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	{
 		if (!player.isClanLeader())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return;
 		}
 		if (player.getName().equalsIgnoreCase(target))
@@ -851,7 +851,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		final L2ClanMember member = clan.getClanMember(target);
 		if (member == null)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_DOES_NOT_EXIST);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DOES_NOT_EXIST);
 			sm.addString(target);
 			player.sendPacket(sm);
 			sm = null;
@@ -859,7 +859,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		if (!member.isOnline())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.INVITED_USER_NOT_ONLINE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVITED_USER_NOT_ONLINE));
 			return;
 		}
 		clan.setNewLeader(member);
@@ -869,7 +869,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	{
 		if (!player.isClanLeader())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return;
 		}
 		
@@ -877,20 +877,20 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		if (clan.getLevel() < minClanLvl)
 		{
 			if (pledgeType == L2Clan.SUBUNIT_ACADEMY)
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_MEET_CRITERIA_IN_ORDER_TO_CREATE_A_CLAN_ACADEMY));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DO_NOT_MEET_CRITERIA_IN_ORDER_TO_CREATE_A_CLAN_ACADEMY));
 			else
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_DO_NOT_MEET_CRITERIA_IN_ORDER_TO_CREATE_A_MILITARY_UNIT));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DO_NOT_MEET_CRITERIA_IN_ORDER_TO_CREATE_A_MILITARY_UNIT));
 			
 			return;
 		}
 		if (!Util.isAlphaNumeric(clanName) || 2 > clanName.length())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
 			return;
 		}
 		if (clanName.length() > 16)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_NAME_TOO_LONG));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_TOO_LONG));
 			return;
 		}
 		
@@ -900,13 +900,13 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			{
 				if (pledgeType == L2Clan.SUBUNIT_ACADEMY)
 				{
-					SystemMessage sm = new SystemMessage(SystemMessageId.S1_ALREADY_EXISTS);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_ALREADY_EXISTS);
 					sm.addString(clanName);
 					player.sendPacket(sm);
 					sm = null;
 				}
 				else
-					player.sendPacket(new SystemMessage(SystemMessageId.ANOTHER_MILITARY_UNIT_IS_ALREADY_USING_THAT_NAME));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ANOTHER_MILITARY_UNIT_IS_ALREADY_USING_THAT_NAME));
 				
 				return;
 			}
@@ -917,9 +917,9 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			if (clan.getClanMember(leaderName) == null || clan.getClanMember(leaderName).getPledgeType() != 0)
 			{
 				if (pledgeType >= L2Clan.SUBUNIT_KNIGHT1)
-					player.sendPacket(new SystemMessage(SystemMessageId.CAPTAIN_OF_ORDER_OF_KNIGHTS_CANNOT_BE_APPOINTED));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAPTAIN_OF_ORDER_OF_KNIGHTS_CANNOT_BE_APPOINTED));
 				else if (pledgeType >= L2Clan.SUBUNIT_ROYAL1)
-					player.sendPacket(new SystemMessage(SystemMessageId.CAPTAIN_OF_ROYAL_GUARD_CANNOT_BE_APPOINTED));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAPTAIN_OF_ROYAL_GUARD_CANNOT_BE_APPOINTED));
 				
 				return;
 			}
@@ -933,21 +933,21 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		SystemMessage sm;
 		if (pledgeType == L2Clan.SUBUNIT_ACADEMY)
 		{
-			sm = new SystemMessage(SystemMessageId.THE_S1S_CLAN_ACADEMY_HAS_BEEN_CREATED);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.THE_S1S_CLAN_ACADEMY_HAS_BEEN_CREATED);
 			sm.addString(player.getClan().getName());
 		}
 		else if (pledgeType >= L2Clan.SUBUNIT_KNIGHT1)
 		{
-			sm = new SystemMessage(SystemMessageId.THE_KNIGHTS_OF_S1_HAVE_BEEN_CREATED);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.THE_KNIGHTS_OF_S1_HAVE_BEEN_CREATED);
 			sm.addString(player.getClan().getName());
 		}
 		else if (pledgeType >= L2Clan.SUBUNIT_ROYAL1)
 		{
-			sm = new SystemMessage(SystemMessageId.THE_ROYAL_GUARD_OF_S1_HAVE_BEEN_CREATED);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.THE_ROYAL_GUARD_OF_S1_HAVE_BEEN_CREATED);
 			sm.addString(player.getClan().getName());
 		}
 		else
-			sm = new SystemMessage(SystemMessageId.CLAN_CREATED);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_CREATED);
 		player.sendPacket(sm);
 		
 		if (pledgeType != L2Clan.SUBUNIT_ACADEMY)
@@ -967,7 +967,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	{
 		if (!player.isClanLeader())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return;
 		}
 		
@@ -981,12 +981,12 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		if (!Util.isAlphaNumeric(pledgeName) || 2 > pledgeName.length())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
 			return;
 		}
 		if (pledgeName.length() > 16)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_NAME_TOO_LONG));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_TOO_LONG));
 			return;
 		}
 		
@@ -1000,17 +1000,17 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	{
 		if (!player.isClanLeader())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return;
 		}
 		if (leaderName.length() > 16)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.NAMING_CHARNAME_UP_TO_16CHARS));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NAMING_CHARNAME_UP_TO_16CHARS));
 			return;
 		}
 		if (player.getName().equals(leaderName))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CAPTAIN_OF_ROYAL_GUARD_CANNOT_BE_APPOINTED));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAPTAIN_OF_ROYAL_GUARD_CANNOT_BE_APPOINTED));
 			return;
 		}
 		
@@ -1019,16 +1019,16 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		
 		if (null == subPledge || subPledge.getId() == L2Clan.SUBUNIT_ACADEMY)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
 			return;
 		}
 		if (clan.getClanMember(leaderName) == null
 				|| (clan.getClanMember(leaderName).getPledgeType() != 0))
 		{
 			if (subPledge.getId() >= L2Clan.SUBUNIT_KNIGHT1)
-				player.sendPacket(new SystemMessage(SystemMessageId.CAPTAIN_OF_ORDER_OF_KNIGHTS_CANNOT_BE_APPOINTED));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAPTAIN_OF_ORDER_OF_KNIGHTS_CANNOT_BE_APPOINTED));
 			else if (subPledge.getId() >= L2Clan.SUBUNIT_ROYAL1)
-				player.sendPacket(new SystemMessage(SystemMessageId.CAPTAIN_OF_ROYAL_GUARD_CANNOT_BE_APPOINTED));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAPTAIN_OF_ROYAL_GUARD_CANNOT_BE_APPOINTED));
 			
 			return;
 		}
@@ -1046,7 +1046,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		
 		clan.broadcastClanStatus();
-		SystemMessage sm = new SystemMessage(SystemMessageId.C1_HAS_BEEN_SELECTED_AS_CAPTAIN_OF_S2);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_BEEN_SELECTED_AS_CAPTAIN_OF_S2);
 		sm.addString(leaderName);
 		sm.addString(clanName);
 		clan.broadcastToOnlineMembers(sm);
@@ -1085,7 +1085,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		{
 			if (player.getClan().getLevel() < 8)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN);
 				if (player.getClan().getLevel() < 5)
 					sm.addNumber(5);
 				else

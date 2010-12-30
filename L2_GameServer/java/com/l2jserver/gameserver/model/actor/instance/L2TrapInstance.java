@@ -145,10 +145,10 @@ public class L2TrapInstance extends L2Trap
 		final SystemMessage sm;
 		
 		if (target.isInvul() && !(target instanceof L2NpcInstance))
-			sm = new SystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
 		else
 		{
-			sm = new SystemMessage(SystemMessageId.C1_GAVE_C2_DAMAGE_OF_S3);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_GAVE_C2_DAMAGE_OF_S3);
 			sm.addCharName(this);
 			sm.addCharName(target);
 			sm.addNumber(damage);

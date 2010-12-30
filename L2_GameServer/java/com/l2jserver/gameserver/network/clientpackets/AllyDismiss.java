@@ -49,34 +49,34 @@ public final class AllyDismiss extends L2GameClientPacket
 		}
 		if (player.getClan() == null)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER));
 			return;
 		}
 		L2Clan leaderClan = player.getClan();
 		if (leaderClan.getAllyId() == 0)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.NO_CURRENT_ALLIANCES));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_CURRENT_ALLIANCES));
 			return;
 		}
 		if (!player.isClanLeader() || leaderClan.getClanId() != leaderClan.getAllyId())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER));
 			return;
 		}
 		L2Clan clan = ClanTable.getInstance().getClanByName(_clanName);
 		if (clan == null)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CLAN_DOESNT_EXISTS));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_DOESNT_EXISTS));
 			return;
 		}
 		if (clan.getClanId() == leaderClan.getClanId())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.ALLIANCE_LEADER_CANT_WITHDRAW));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALLIANCE_LEADER_CANT_WITHDRAW));
 			return;
 		}
 		if (clan.getAllyId() != leaderClan.getAllyId())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.DIFFERENT_ALLIANCE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DIFFERENT_ALLIANCE));
 			return;
 		}
 		
@@ -92,7 +92,7 @@ public final class AllyDismiss extends L2GameClientPacket
 		// notify CB server about the change
 		CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, clan, WorldInfo.TYPE_UPDATE_CLAN_DATA));
 		
-		player.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXPELED_A_CLAN));
+		player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXPELED_A_CLAN));
 	}
 	
 	@Override

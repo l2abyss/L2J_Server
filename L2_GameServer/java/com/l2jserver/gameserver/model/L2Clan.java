@@ -295,7 +295,7 @@ public class L2Clan
 		
 		broadcastClanStatus();
 		
-		SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_LEADER_PRIVILEGES_HAVE_BEEN_TRANSFERRED_TO_C1);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_LEADER_PRIVILEGES_HAVE_BEEN_TRANSFERRED_TO_C1);
 		sm.addString(newLeader.getName());
 		broadcastToOnlineMembers(sm);
 		sm = null;
@@ -1200,7 +1200,7 @@ public class L2Clan
 				L2DatabaseFactory.close(con);
 			}
 			
-			SystemMessage sm = new SystemMessage(SystemMessageId.CLAN_SKILL_S1_ADDED);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_SKILL_S1_ADDED);
 			sm.addSkillName(newSkill.getId());
 			
 			for (L2ClanMember temp : _members.values())
@@ -1617,7 +1617,7 @@ public class L2Clan
 		if (pledgeType == 0)
 		{
 			if (pledgeType == L2Clan.SUBUNIT_ACADEMY)
-				player.sendPacket(new SystemMessage(SystemMessageId.CLAN_HAS_ALREADY_ESTABLISHED_A_CLAN_ACADEMY));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_HAS_ALREADY_ESTABLISHED_A_CLAN_ACADEMY));
 			else
 				player.sendMessage("You can't create any more sub-units of this type");
 			return null;
@@ -1632,7 +1632,7 @@ public class L2Clan
 		// Order of Knights 10000 points per each
 		if (pledgeType != -1 && ((getReputationScore() < 5000 && pledgeType < L2Clan.SUBUNIT_KNIGHT1) || (getReputationScore() < 10000 && pledgeType > L2Clan.SUBUNIT_ROYAL2)))
 		{
-			SystemMessage sp = new SystemMessage(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW);
+			SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW);
 			player.sendPacket(sp);
 			return null;
 		}
@@ -1908,7 +1908,7 @@ public class L2Clan
 	{
 		if (_reputationScore >= 0 && value < 0)
 		{
-			broadcastToOnlineMembers(new SystemMessage(SystemMessageId.REPUTATION_POINTS_0_OR_LOWER_CLAN_SKILLS_DEACTIVATED));
+			broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.REPUTATION_POINTS_0_OR_LOWER_CLAN_SKILLS_DEACTIVATED));
 			for (L2ClanMember member : _members.values())
 			{
 				if (member.isOnline() && member.getPlayerInstance() != null)
@@ -1919,7 +1919,7 @@ public class L2Clan
 		}
 		else if (_reputationScore < 0 && value >= 0)
 		{
-			broadcastToOnlineMembers(new SystemMessage(SystemMessageId.CLAN_SKILLS_WILL_BE_ACTIVATED_SINCE_REPUTATION_IS_0_OR_HIGHER));
+			broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.CLAN_SKILLS_WILL_BE_ACTIVATED_SINCE_REPUTATION_IS_0_OR_HIGHER));
 			for (L2ClanMember member : _members.values())
 			{
 				if (member.isOnline() && member.getPlayerInstance() != null)
@@ -2002,22 +2002,22 @@ public class L2Clan
 		}
 		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_JOIN_CLAN) != L2Clan.CP_CL_JOIN_CLAN)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return false;
 		}
 		if (target == null)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
 			return false;
 		}
 		if (activeChar.getObjectId() == target.getObjectId())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_INVITE_YOURSELF));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_INVITE_YOURSELF));
 			return false;
 		}
 		if (getCharPenaltyExpiryTime() > System.currentTimeMillis())
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.YOU_MUST_WAIT_BEFORE_ACCEPTING_A_NEW_MEMBER);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_MUST_WAIT_BEFORE_ACCEPTING_A_NEW_MEMBER);
 			sm.addString(target.getName());
 			activeChar.sendPacket(sm);
 			sm = null;
@@ -2025,7 +2025,7 @@ public class L2Clan
 		}
 		if (target.getClanId() != 0)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_WORKING_WITH_ANOTHER_CLAN);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_WORKING_WITH_ANOTHER_CLAN);
 			sm.addString(target.getName());
 			activeChar.sendPacket(sm);
 			sm = null;
@@ -2033,7 +2033,7 @@ public class L2Clan
 		}
 		if (target.getClanJoinExpiryTime() > System.currentTimeMillis())
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.C1_MUST_WAIT_BEFORE_JOINING_ANOTHER_CLAN);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_MUST_WAIT_BEFORE_JOINING_ANOTHER_CLAN);
 			sm.addString(target.getName());
 			activeChar.sendPacket(sm);
 			sm = null;
@@ -2041,25 +2041,25 @@ public class L2Clan
 		}
 		if ((target.getLevel() > 40 || target.getClassId().level() >= 2) && pledgeType == -1)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_DOESNOT_MEET_REQUIREMENTS_TO_JOIN_ACADEMY);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DOESNOT_MEET_REQUIREMENTS_TO_JOIN_ACADEMY);
 			sm.addString(target.getName());
 			activeChar.sendPacket(sm);
 			sm = null;
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.ACADEMY_REQUIREMENTS));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACADEMY_REQUIREMENTS));
 			return false;
 		}
 		if (getSubPledgeMembersCount(pledgeType) >= getMaxNrOfMembers(pledgeType))
 		{
 			if (pledgeType == 0)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_CLAN_IS_FULL);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CLAN_IS_FULL);
 				sm.addString(getName());
 				activeChar.sendPacket(sm);
 				sm = null;
 			}
 			else
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.SUBCLAN_IS_FULL));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUBCLAN_IS_FULL));
 			}
 			return false;
 		}
@@ -2081,7 +2081,7 @@ public class L2Clan
 		}
 		if (activeChar.getAllyId() == 0 || !activeChar.isClanLeader() || activeChar.getClanId() != activeChar.getAllyId())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER));
 			return false;
 		}
 		L2Clan leaderClan = activeChar.getClan();
@@ -2089,28 +2089,28 @@ public class L2Clan
 		{
 			if (leaderClan.getAllyPenaltyType() == PENALTY_TYPE_DISMISS_CLAN)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_INVITE_CLAN_WITHIN_1_DAY));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_INVITE_CLAN_WITHIN_1_DAY));
 				return false;
 			}
 		}
 		if (target == null)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
 			return false;
 		}
 		if (activeChar.getObjectId() == target.getObjectId())
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.CANNOT_INVITE_YOURSELF));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_INVITE_YOURSELF));
 			return false;
 		}
 		if (target.getClan() == null)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.TARGET_MUST_BE_IN_CLAN));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_MUST_BE_IN_CLAN));
 			return false;
 		}
 		if (!target.isClanLeader())
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_IS_NOT_A_CLAN_LEADER);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_IS_NOT_A_CLAN_LEADER);
 			sm.addString(target.getName());
 			activeChar.sendPacket(sm);
 			sm = null;
@@ -2119,7 +2119,7 @@ public class L2Clan
 		L2Clan targetClan = target.getClan();
 		if (target.getAllyId() != 0)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.S1_CLAN_ALREADY_MEMBER_OF_S2_ALLIANCE);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CLAN_ALREADY_MEMBER_OF_S2_ALLIANCE);
 			sm.addString(targetClan.getName());
 			sm.addString(targetClan.getAllyName());
 			activeChar.sendPacket(sm);
@@ -2130,7 +2130,7 @@ public class L2Clan
 		{
 			if (targetClan.getAllyPenaltyType() == PENALTY_TYPE_CLAN_LEAVED)
 			{
-				SystemMessage sm = new SystemMessage(SystemMessageId.S1_CANT_ENTER_ALLIANCE_WITHIN_1_DAY);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANT_ENTER_ALLIANCE_WITHIN_1_DAY);
 				sm.addString(target.getClan().getName());
 				sm.addString(target.getClan().getAllyName());
 				activeChar.sendPacket(sm);
@@ -2139,18 +2139,18 @@ public class L2Clan
 			}
 			if (targetClan.getAllyPenaltyType() == PENALTY_TYPE_CLAN_DISMISSED)
 			{
-				activeChar.sendPacket(new SystemMessage(SystemMessageId.CANT_ENTER_ALLIANCE_WITHIN_1_DAY));
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_ENTER_ALLIANCE_WITHIN_1_DAY));
 				return false;
 			}
 		}
 		if (activeChar.isInsideZone(L2Character.ZONE_SIEGE) && target.isInsideZone(L2Character.ZONE_SIEGE))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.OPPOSING_CLAN_IS_PARTICIPATING_IN_SIEGE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OPPOSING_CLAN_IS_PARTICIPATING_IN_SIEGE));
 			return false;
 		}
 		if (leaderClan.isAtWarWith(targetClan.getClanId()))
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.MAY_NOT_ALLY_CLAN_BATTLE));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAY_NOT_ALLY_CLAN_BATTLE));
 			return false;
 		}
 		
@@ -2164,7 +2164,7 @@ public class L2Clan
 		}
 		if (numOfClansInAlly >= Config.ALT_MAX_NUM_OF_CLANS_IN_ALLY)
 		{
-			activeChar.sendPacket(new SystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_THE_LIMIT));
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_THE_LIMIT));
 			return false;
 		}
 		
@@ -2217,45 +2217,45 @@ public class L2Clan
 		
 		if (!player.isClanLeader())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CREATE_ALLIANCE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CREATE_ALLIANCE));
 			return;
 		}
 		if (getAllyId() != 0)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.ALREADY_JOINED_ALLIANCE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_JOINED_ALLIANCE));
 			return;
 		}
 		if (getLevel() < 5)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.TO_CREATE_AN_ALLY_YOU_CLAN_MUST_BE_LEVEL_5_OR_HIGHER));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TO_CREATE_AN_ALLY_YOU_CLAN_MUST_BE_LEVEL_5_OR_HIGHER));
 			return;
 		}
 		if (getAllyPenaltyExpiryTime() > System.currentTimeMillis())
 		{
 			if (getAllyPenaltyType() == L2Clan.PENALTY_TYPE_DISSOLVE_ALLY)
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.CANT_CREATE_ALLIANCE_10_DAYS_DISOLUTION));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CREATE_ALLIANCE_10_DAYS_DISOLUTION));
 				return;
 			}
 		}
 		if (getDissolvingExpiryTime() > System.currentTimeMillis())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_MAY_NOT_CREATE_ALLY_WHILE_DISSOLVING));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_MAY_NOT_CREATE_ALLY_WHILE_DISSOLVING));
 			return;
 		}
 		if (!Util.isAlphaNumeric(allyName))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_ALLIANCE_NAME));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INCORRECT_ALLIANCE_NAME));
 			return;
 		}
 		if (allyName.length() > 16 || allyName.length() < 2)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.INCORRECT_ALLIANCE_NAME_LENGTH));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INCORRECT_ALLIANCE_NAME_LENGTH));
 			return;
 		}
 		if (ClanTable.getInstance().isAllyExists(allyName))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.ALLIANCE_ALREADY_EXISTS));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALLIANCE_ALREADY_EXISTS));
 			return;
 		}
 		
@@ -2277,21 +2277,21 @@ public class L2Clan
 	{
 		if (getAllyId() == 0)
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.NO_CURRENT_ALLIANCES));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_CURRENT_ALLIANCES));
 			return;
 		}
 		if (!player.isClanLeader() || getClanId() != getAllyId())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER));
 			return;
 		}
 		if (player.isInsideZone(L2Character.ZONE_SIEGE))
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_DISSOLVE_ALLY_WHILE_IN_SIEGE));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISSOLVE_ALLY_WHILE_IN_SIEGE));
 			return;
 		}
 		
-		broadcastToOnlineAllyMembers(new SystemMessage(SystemMessageId.ALLIANCE_DISOLVED));
+		broadcastToOnlineAllyMembers(SystemMessage.getSystemMessage(SystemMessageId.ALLIANCE_DISOLVED));
 		
 		long currentTime = System.currentTimeMillis();
 		for (L2Clan clan : ClanTable.getInstance().getClans())
@@ -2323,12 +2323,12 @@ public class L2Clan
 	{
 		if (!player.isClanLeader())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
 			return false;
 		}
 		if (System.currentTimeMillis() < getDissolvingExpiryTime())
 		{
-			player.sendPacket(new SystemMessage(SystemMessageId.CANNOT_RISE_LEVEL_WHILE_DISSOLUTION_IN_PROGRESS));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_RISE_LEVEL_WHILE_DISSOLUTION_IN_PROGRESS));
 			return false;
 		}
 		
@@ -2344,7 +2344,7 @@ public class L2Clan
 					if (player.reduceAdena("ClanLvl", 650000, player.getTarget(), true))
 					{
 						player.setSp(player.getSp() - 20000);
-						SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
+						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
 						sp.addNumber(20000);
 						player.sendPacket(sp);
 						sp = null;
@@ -2361,7 +2361,7 @@ public class L2Clan
 					if (player.reduceAdena("ClanLvl", 2500000, player.getTarget(), true))
 					{
 						player.setSp(player.getSp() - 100000);
-						SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
+						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
 						sp.addNumber(100000);
 						player.sendPacket(sp);
 						sp = null;
@@ -2379,11 +2379,11 @@ public class L2Clan
 					if (player.destroyItemByItemId("ClanLvl", 1419, 1, player.getTarget(), false))
 					{
 						player.setSp(player.getSp() - 350000);
-						SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
+						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
 						sp.addNumber(350000);
 						player.sendPacket(sp);
 						sp = null;
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
 						sm.addItemName(1419);
 						player.sendPacket(sm);
 						sm = null;
@@ -2401,11 +2401,11 @@ public class L2Clan
 					if (player.destroyItemByItemId("ClanLvl", 3874, 1, player.getTarget(), false))
 					{
 						player.setSp(player.getSp() - 1000000);
-						SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
+						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
 						sp.addNumber(1000000);
 						player.sendPacket(sp);
 						sp = null;
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
 						sm.addItemName(3874);
 						player.sendPacket(sm);
 						sm = null;
@@ -2423,11 +2423,11 @@ public class L2Clan
 					if (player.destroyItemByItemId("ClanLvl", 3870, 1, player.getTarget(), false))
 					{
 						player.setSp(player.getSp() - 2500000);
-						SystemMessage sp = new SystemMessage(SystemMessageId.SP_DECREASED_S1);
+						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
 						sp.addNumber(2500000);
 						player.sendPacket(sp);
 						sp = null;
-						SystemMessage sm = new SystemMessage(SystemMessageId.S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
 						sm.addItemName(3870);
 						player.sendPacket(sm);
 						sm = null;
@@ -2441,7 +2441,7 @@ public class L2Clan
 				if (getReputationScore() >= Config.CLAN_LEVEL_6_COST && getMembersCount() >= Config.CLAN_LEVEL_6_REQUIREMENT)
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_6_COST, true);
-					SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 					cr.addNumber(Config.CLAN_LEVEL_6_COST);
 					player.sendPacket(cr);
 					cr = null;
@@ -2454,7 +2454,7 @@ public class L2Clan
 				if (getReputationScore() >= Config.CLAN_LEVEL_7_COST && getMembersCount() >= Config.CLAN_LEVEL_7_REQUIREMENT)
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_7_COST, true);
-					SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 					cr.addNumber(Config.CLAN_LEVEL_7_COST);
 					player.sendPacket(cr);
 					cr = null;
@@ -2466,7 +2466,7 @@ public class L2Clan
 				if (getReputationScore() >= Config.CLAN_LEVEL_8_COST && getMembersCount() >= Config.CLAN_LEVEL_8_REQUIREMENT)
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_8_COST, true);
-					SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 					cr.addNumber(Config.CLAN_LEVEL_8_COST);
 					player.sendPacket(cr);
 					cr = null;
@@ -2481,11 +2481,11 @@ public class L2Clan
 					if (player.destroyItemByItemId("ClanLvl", 9910, 150, player.getTarget(), false))
 					{
 						setReputationScore(getReputationScore() - Config.CLAN_LEVEL_9_COST, true);
-						SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+						SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 						cr.addNumber(Config.CLAN_LEVEL_9_COST);
 						player.sendPacket(cr);
 						cr = null;
-						SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(9910);
 						sm.addItemNumber(150);
 						player.sendPacket(sm);
@@ -2501,11 +2501,11 @@ public class L2Clan
 					if (player.destroyItemByItemId("ClanLvl", 9911, 5, player.getTarget(), false))
 					{
 						setReputationScore(getReputationScore() - Config.CLAN_LEVEL_10_COST, true);
-						SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+						SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 						cr.addNumber(Config.CLAN_LEVEL_10_COST);
 						player.sendPacket(cr);
 						cr = null;
-						SystemMessage sm = new SystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(9911);
 						sm.addItemNumber(5);
 						player.sendPacket(sm);
@@ -2527,7 +2527,7 @@ public class L2Clan
 				if (hasTerritory && getReputationScore() >= Config.CLAN_LEVEL_11_COST && getMembersCount() >= Config.CLAN_LEVEL_11_REQUIREMENT)
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_11_COST, true);
-					SystemMessage cr = new SystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 					cr.addNumber(Config.CLAN_LEVEL_11_COST);
 					player.sendPacket(cr);
 					cr = null;
@@ -2540,7 +2540,7 @@ public class L2Clan
 		
 		if (!increaseClanLevel)
 		{
-			SystemMessage sm = new SystemMessage(SystemMessageId.FAILED_TO_INCREASE_CLAN_LEVEL);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_INCREASE_CLAN_LEVEL);
 			player.sendPacket(sm);
 			return false;
 		}
@@ -2586,7 +2586,7 @@ public class L2Clan
 			if (4 < level)
 			{
 				SiegeManager.getInstance().addSiegeSkills(leader);
-				leader.sendPacket(new SystemMessage(SystemMessageId.CLAN_CAN_ACCUMULATE_CLAN_REPUTATION_POINTS));
+				leader.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_CAN_ACCUMULATE_CLAN_REPUTATION_POINTS));
 			}
 			else if (5 > level)
 			{
@@ -2595,7 +2595,7 @@ public class L2Clan
 		}
 		
 		// notify all the members about it
-		broadcastToOnlineMembers(new SystemMessage(SystemMessageId.CLAN_LEVEL_INCREASED));
+		broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.CLAN_LEVEL_INCREASED));
 		broadcastToOnlineMembers(new PledgeShowInfoUpdate(this));
 		/*
 		 * Micht :

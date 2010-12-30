@@ -301,11 +301,11 @@ public class L2Party
 			}
 		}
 		
-		SystemMessage msg = new SystemMessage(SystemMessageId.YOU_JOINED_S1_PARTY);
+		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOU_JOINED_S1_PARTY);
 		msg.addString(getLeader().getName());
 		player.sendPacket(msg);
 		
-		msg = new SystemMessage(SystemMessageId.C1_JOINED_PARTY);
+		msg = SystemMessage.getSystemMessage(SystemMessageId.C1_JOINED_PARTY);
 		msg.addString(player.getName());
 		broadcastToPartyMembers(msg);
 		broadcastToPartyMembers(new PartySmallWindowAdd(player, this));
@@ -411,9 +411,9 @@ public class L2Party
 			
 			if (sendMessage)
 			{
-				msg = new SystemMessage(SystemMessageId.YOU_LEFT_PARTY);
+				msg = SystemMessage.getSystemMessage(SystemMessageId.YOU_LEFT_PARTY);
 				player.sendPacket(msg);
-				msg = new SystemMessage(SystemMessageId.C1_LEFT_PARTY);
+				msg = SystemMessage.getSystemMessage(SystemMessageId.C1_LEFT_PARTY);
 				msg.addString(player.getName());
 				broadcastToPartyMembers(msg);
 			}
@@ -439,7 +439,7 @@ public class L2Party
 			
 			if (isLeader && getPartyMembers().size() > 1)
 			{
-				msg = new SystemMessage(SystemMessageId.C1_HAS_BECOME_A_PARTY_LEADER);
+				msg = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_BECOME_A_PARTY_LEADER);
 				msg.addString(getLeader().getName());
 				broadcastToPartyMembers(msg);
 				broadcastToPartyMembersNewLeader();
@@ -496,7 +496,7 @@ public class L2Party
 			{
 				if (isLeader(player))
 				{
-					player.sendPacket(new SystemMessage(SystemMessageId.YOU_CANNOT_TRANSFER_RIGHTS_TO_YOURSELF));
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_TRANSFER_RIGHTS_TO_YOURSELF));
 				}
 				else
 				{
@@ -508,14 +508,14 @@ public class L2Party
 					getPartyMembers().set(p1,temp);
 					
 					
-					SystemMessage msg = new SystemMessage(SystemMessageId.C1_HAS_BECOME_A_PARTY_LEADER);
+					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_BECOME_A_PARTY_LEADER);
 					msg.addString(getLeader().getName());
 					broadcastToPartyMembers(msg);
 					broadcastToPartyMembersNewLeader();
 					if (isInCommandChannel() && temp.equals(_commandChannel.getChannelLeader()))
 					{
 						_commandChannel.setChannelLeader(getLeader());
-						msg = new SystemMessage(SystemMessageId.COMMAND_CHANNEL_LEADER_NOW_C1);
+						msg = SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_LEADER_NOW_C1);
 						msg.addString(_commandChannel.getChannelLeader().getName());
 						_commandChannel.broadcastToChannelMembers(msg);
 					}
@@ -528,7 +528,7 @@ public class L2Party
 			}
 			else
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.YOU_CAN_TRANSFER_RIGHTS_ONLY_TO_ANOTHER_PARTY_MEMBER));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CAN_TRANSFER_RIGHTS_ONLY_TO_ANOTHER_PARTY_MEMBER));
 			}
 		}
 		
@@ -568,7 +568,7 @@ public class L2Party
 		// Send messages to other party members about reward
 		if (item.getCount() > 1)
 		{
-			SystemMessage msg = new SystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
+			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
 			msg.addString(target.getName());
 			msg.addItemName(item);
 			msg.addItemNumber(item.getCount());
@@ -576,7 +576,7 @@ public class L2Party
 		}
 		else
 		{
-			SystemMessage msg = new SystemMessage(SystemMessageId.C1_OBTAINED_S2);
+			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S2);
 			msg.addString(target.getName());
 			msg.addItemName(item);
 			broadcastToPartyMembers(target, msg);
@@ -605,8 +605,8 @@ public class L2Party
 		// Send messages to other aprty members about reward
 		if (item.getCount() > 1)
 		{
-			SystemMessage msg = spoil ?  new SystemMessage(SystemMessageId.C1_SWEEPED_UP_S3_S2)
-			: new SystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
+			SystemMessage msg = spoil ?  SystemMessage.getSystemMessage(SystemMessageId.C1_SWEEPED_UP_S3_S2)
+			: SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
 			msg.addString(looter.getName());
 			msg.addItemName(item.getItemId());
 			msg.addItemNumber(item.getCount());
@@ -614,8 +614,8 @@ public class L2Party
 		}
 		else
 		{
-			SystemMessage msg = spoil ?  new SystemMessage(SystemMessageId.C1_SWEEPED_UP_S2)
-			: new SystemMessage(SystemMessageId.C1_OBTAINED_S2);
+			SystemMessage msg = spoil ?  SystemMessage.getSystemMessage(SystemMessageId.C1_SWEEPED_UP_S2)
+			: SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S2);
 			msg.addString(looter.getName());
 			msg.addItemName(item.getItemId());
 			broadcastToPartyMembers(looter, msg);
@@ -914,7 +914,7 @@ public class L2Party
 		_changeLootAnswers = FastList.newInstance();
 		_checkTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ChangeLootCheck(), additionalTime+1000, 5000);
 		broadcastToPartyMembers(getLeader(), new ExAskModifyPartyLooting(getLeader().getName(), type));
-		SystemMessage sm = new SystemMessage(SystemMessageId.REQUESTING_APPROVAL_CHANGE_PARTY_LOOT_S1);
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.REQUESTING_APPROVAL_CHANGE_PARTY_LOOT_S1);
 		sm.addSystemString(LOOT_SYSSTRINGS[type]);
 		getLeader().sendPacket(sm);
 	}
@@ -950,14 +950,14 @@ public class L2Party
 		{
 			broadcastToPartyMembers(new ExSetPartyLooting(1, _requestChangeLoot));
 			_itemDistribution = _requestChangeLoot;
-			SystemMessage sm = new SystemMessage(SystemMessageId.PARTY_LOOT_CHANGED_S1);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PARTY_LOOT_CHANGED_S1);
 			sm.addSystemString(LOOT_SYSSTRINGS[_requestChangeLoot]);
 			broadcastToPartyMembers(sm);
 		}
 		else
 		{
 			broadcastToPartyMembers(new ExSetPartyLooting(0, (byte) 0));
-			broadcastToPartyMembers(new SystemMessage(SystemMessageId.PARTY_LOOT_CHANGE_CANCELLED));
+			broadcastToPartyMembers(SystemMessage.getSystemMessage(SystemMessageId.PARTY_LOOT_CHANGE_CANCELLED));
 		}
 		_requestChangeLoot = -1;
 		FastList.recycle((FastList<?>) _changeLootAnswers);

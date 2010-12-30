@@ -328,7 +328,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		{
 			if (player.getWeightPenalty() >= 3 || (player.getInventoryLimit() * 0.8 <= player.getInventory().getSize(false)))
 			{
-				player.sendPacket(new SystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 				return false;
 			}
 		}

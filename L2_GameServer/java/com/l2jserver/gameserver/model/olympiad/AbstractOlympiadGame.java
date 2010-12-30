@@ -85,7 +85,7 @@ public abstract class AbstractOlympiadGame
 	protected final void addPointsToParticipant(Participant par, int points)
 	{
 		par.updateStat(POINTS, points);
-		final SystemMessage sm = new SystemMessage(SystemMessageId.C1_HAS_GAINED_S2_OLYMPIAD_POINTS);
+		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_GAINED_S2_OLYMPIAD_POINTS);
 		sm.addString(par.name);
 		sm.addNumber(points);
 		broadcastPacket(sm);
@@ -94,7 +94,7 @@ public abstract class AbstractOlympiadGame
 	protected final void removePointsFromParticipant(Participant par, int points)
 	{
 		par.updateStat(POINTS, -points);
-		final SystemMessage sm = new SystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
+		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
 		sm.addString(par.name);
 		sm.addNumber(points);
 		broadcastPacket(sm);
@@ -109,44 +109,44 @@ public abstract class AbstractOlympiadGame
 	protected static SystemMessage checkDefaulted(L2PcInstance player)
 	{
 		if (player == null || !player.isOnline())
-			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_ENDS_THE_GAME);
+			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_ENDS_THE_GAME);
 
 		if (player.getClient() == null || player.getClient().isDetached())
-			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_ENDS_THE_GAME);
+			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_ENDS_THE_GAME);
 
 		// safety precautions
 		if (player.inObserverMode() || TvTEvent.isPlayerParticipant(player.getObjectId()))
-			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
+			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
 
 		SystemMessage sm;
 		if (player.isDead())
 		{
-			sm = new SystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_OLYMPIAD_WHILE_DEAD);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_OLYMPIAD_WHILE_DEAD);
 			sm.addPcName(player);
 			player.sendPacket(sm);
-			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
+			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
 		}
 		if (player.isSubClassActive())
 		{
-			sm = new SystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_WHILE_CHANGED_TO_SUB_CLASS);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_WHILE_CHANGED_TO_SUB_CLASS);
 			sm.addPcName(player);
 			player.sendPacket(sm);
-			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
+			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
 		}
 		if (player.isCursedWeaponEquipped())
 		{
-			sm = new SystemMessage(SystemMessageId.C1_CANNOT_JOIN_OLYMPIAD_POSSESSING_S2);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_CANNOT_JOIN_OLYMPIAD_POSSESSING_S2);
 			sm.addPcName(player);
 			sm.addItemName(player.getCursedWeaponEquippedId());
 			player.sendPacket(sm);
-			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
+			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
 		}
 		if (!player.isInventoryUnder80(true))
 		{
-			sm = new SystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_INVENTORY_SLOT_EXCEEDS_80_PERCENT);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_INVENTORY_SLOT_EXCEEDS_80_PERCENT);
 			sm.addPcName(player);
 			player.sendPacket(sm);
-			return new SystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
+			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
 		}
 
 		return null;
@@ -395,7 +395,7 @@ public abstract class AbstractOlympiadGame
 					continue;
 
 				iu.addModifiedItem(item);
-				sm = new SystemMessage(SystemMessageId.EARNED_S2_S1_S);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 				sm.addItemName(it[0]);
 				sm.addNumber(it[1]);
 				player.sendPacket(sm);

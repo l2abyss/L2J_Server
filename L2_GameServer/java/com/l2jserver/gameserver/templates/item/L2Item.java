@@ -790,7 +790,7 @@ public abstract class L2Item
 			{
 				if (activeChar instanceof L2Summon)
 				{
-					activeChar.getActingPlayer().sendPacket(new SystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
+					activeChar.getActingPlayer().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
 					return false;
 				}
 				
@@ -804,7 +804,7 @@ public abstract class L2Item
 					}
 					else if (msgId !=0)
 					{
-						SystemMessage sm = new SystemMessage(msgId);
+						SystemMessage sm = SystemMessage.getSystemMessage(msgId);
 						if (preCondition.isAddName())
 							sm.addItemName(_itemId);
 						activeChar.getActingPlayer().sendPacket(sm);

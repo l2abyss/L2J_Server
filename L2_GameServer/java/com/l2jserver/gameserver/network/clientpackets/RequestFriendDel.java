@@ -58,7 +58,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
 		
 		if (id == -1)
 		{
-			sm = new SystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
 			sm.addString(_name);
 			activeChar.sendPacket(sm);
 			return;
@@ -66,7 +66,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
 		
 		if (!activeChar.getFriendList().contains(id))
 		{
-			sm = new SystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_NOT_ON_YOUR_FRIENDS_LIST);
 			sm.addString(_name);
 			activeChar.sendPacket(sm);
 			return;
@@ -87,7 +87,7 @@ public final class RequestFriendDel extends L2GameClientPacket{
 			statement.close();
 			
 			// Player deleted from your friendlist
-			sm = new SystemMessage(SystemMessageId.S1_HAS_BEEN_DELETED_FROM_YOUR_FRIENDS_LIST);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_BEEN_DELETED_FROM_YOUR_FRIENDS_LIST);
 			sm.addString(_name);
 			activeChar.sendPacket(sm);
 			
