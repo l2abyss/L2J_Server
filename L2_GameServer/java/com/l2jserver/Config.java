@@ -299,15 +299,6 @@ public final class Config
 	public static int CS_SUPPORT2_FEE;
 	public static int CS_SUPPORT3_FEE;
 	public static int CS_SUPPORT4_FEE;
-	public static int GLUDIO_MAX_MERCENARIES;
-	public static int DION_MAX_MERCENARIES;
-	public static int GIRAN_MAX_MERCENARIES;
-	public static int OREN_MAX_MERCENARIES;
-	public static int ADEN_MAX_MERCENARIES;
-	public static int INNADRIL_MAX_MERCENARIES;
-	public static int GODDARD_MAX_MERCENARIES;
-	public static int RUNE_MAX_MERCENARIES;
-	public static int SCHUTTGART_MAX_MERCENARIES;
 	public static List<String> CL_SET_SIEGE_TIME_LIST;
 	public static List<Integer> SIEGE_HOUR_LIST_MORNING;
 	public static List<Integer> SIEGE_HOUR_LIST_AFTERNOON;
@@ -1258,16 +1249,6 @@ public final class Config
 					CH_FRONT_FEE_RATIO = Long.parseLong(Feature.getProperty("ClanHallFrontPlatformFunctionFeeRatio", "259200000"));
 					CH_FRONT1_FEE = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl1", "1300"));
 					CH_FRONT2_FEE = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl2", "4000"));
-					
-					GLUDIO_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("GludioMaxMercenaries", "100"));
-					DION_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("DionMaxMercenaries", "150"));
-					GIRAN_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("GiranMaxMercenaries", "200"));
-					OREN_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("OrenMaxMercenaries", "300"));
-					ADEN_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("AdenMaxMercenaries", "400"));
-					INNADRIL_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("InnadrilMaxMercenaries", "400"));
-					GODDARD_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("GoddardMaxMercenaries", "400"));
-					RUNE_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("RuneMaxMercenaries", "400"));
-					SCHUTTGART_MAX_MERCENARIES = Integer.parseInt(Feature.getProperty("SchuttgartMaxMercenaries", "400"));
 					
 					CL_SET_SIEGE_TIME_LIST = new ArrayList<String>();
 					SIEGE_HOUR_LIST_MORNING = new ArrayList<Integer>();
