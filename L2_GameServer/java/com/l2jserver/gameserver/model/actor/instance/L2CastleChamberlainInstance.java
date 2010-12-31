@@ -1227,7 +1227,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 					{
 						L2ItemInstance crown = player.getInventory().addItem("Castle Crown", 6841, 1, player, this);
 						
-						SystemMessage ms = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
+						SystemMessage ms = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
 						ms.addItemName(crown);
 						player.sendPacket(ms);
 						

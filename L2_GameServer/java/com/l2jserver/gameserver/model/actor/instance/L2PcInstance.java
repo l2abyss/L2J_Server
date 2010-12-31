@@ -3294,7 +3294,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (sendMessage)
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ADENA);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			sm.addItemNumber(count);
 			sendPacket(sm);
 		}
@@ -3347,7 +3347,7 @@ public final class L2PcInstance extends L2Playable
 			
 			if (sendMessage)
 			{
-				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DISAPPEARED_ADENA);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED_ADENA);
 				sm.addItemNumber(count);
 				sendPacket(sm);
 			}
@@ -3576,7 +3576,7 @@ public final class L2PcInstance extends L2Playable
 				{
 					if (process.equalsIgnoreCase("sweep") || process.equalsIgnoreCase("Quest"))
 					{
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
+						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
 						sm.addItemName(itemId);
 						sendPacket(sm);
 					}
@@ -9293,7 +9293,6 @@ public final class L2PcInstance extends L2Playable
 		else if (fort.getFlagPole() != getTarget())
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.INCORRECT_TARGET);
-			sm.addSkillName(skill);
 		}
 		else if (!fort.getSiege().getIsInProgress())
 		{

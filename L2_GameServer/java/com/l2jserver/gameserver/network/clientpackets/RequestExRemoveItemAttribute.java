@@ -79,9 +79,11 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
 				sm.addNumber(targetItem.getEnchantLevel());
 				sm.addItemName(targetItem);
-				sm.addElemntal(realElement);
 				if (targetItem.isArmor())
+				{
+					sm.addElemntal(realElement);
 					sm.addElemntal(Elementals.getOppositeElement(realElement));
+				}
 			}
 			else
 			{
@@ -90,9 +92,11 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 				else
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_ELEMENTAL_POWER_REMOVED);
 				sm.addItemName(targetItem);
-				sm.addElemntal(realElement);
 				if (targetItem.isArmor())
+				{
+					sm.addElemntal(realElement);
 					sm.addElemntal(Elementals.getOppositeElement(realElement));
+				}
 			}
 			activeChar.sendPacket(sm);
 			activeChar.sendPacket(new ExBaseAttributeCancelResult(targetItem.getObjectId(), _element));

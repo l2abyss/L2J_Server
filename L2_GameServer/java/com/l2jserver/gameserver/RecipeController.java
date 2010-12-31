@@ -986,7 +986,7 @@ public class RecipeController
 			}
 			else
 			{
-				sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
 				sm.addItemName(itemId);
 				_target.sendPacket(sm);
 			}

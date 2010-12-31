@@ -340,7 +340,7 @@ public final class SystemMessageId
 	 * ID: 52<br>
 	 * Message: You have earned $s1 adena.
 	 */
-	public static final SystemMessageId EARNED_ADENA;
+	public static final SystemMessageId EARNED_S1_ADENA;
 	
 	/**
 	 * ID: 53<br>
@@ -352,7 +352,7 @@ public final class SystemMessageId
 	 * ID: 54<br>
 	 * Message: You have earned $s1.
 	 */
-	public static final SystemMessageId EARNED_ITEM;
+	public static final SystemMessageId EARNED_ITEM_S1;
 	
 	/**
 	 * ID: 55<br>
@@ -2785,19 +2785,19 @@ public final class SystemMessageId
 	 * ID: 497<br>
 	 * Message: Clan Name: $s1
 	 */
-	public static final SystemMessageId CLAN_INFO_NAME;
+	public static final SystemMessageId CLAN_INFO_NAME_S1;
 	
 	/**
 	 * ID: 498<br>
 	 * Message: Clan Leader: $s1
 	 */
-	public static final SystemMessageId CLAN_INFO_LEADER;
+	public static final SystemMessageId CLAN_INFO_LEADER_S1;
 	
 	/**
 	 * ID: 499<br>
 	 * Message: Clan Level: $s1
 	 */
-	public static final SystemMessageId CLAN_INFO_LEVEL;
+	public static final SystemMessageId CLAN_INFO_LEVEL_S1;
 	
 	/**
 	 * ID: 500<br>
@@ -3398,7 +3398,7 @@ public final class SystemMessageId
 	 * ID: 607<br>
 	 * Message: You do not have any further skills to learn. Come back when you have reached Level $s1.
 	 */
-	public static final SystemMessageId DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN;
+	public static final SystemMessageId DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1;
 	
 	/**
 	 * ID: 608<br>
@@ -3764,7 +3764,7 @@ public final class SystemMessageId
 	 * ID: 672<br>
 	 * Message: $s1 adena disappeared.
 	 */
-	public static final SystemMessageId DISAPPEARED_ADENA;
+	public static final SystemMessageId S1_DISAPPEARED_ADENA;
 	
 	/**
 	 * ID: 673<br>
@@ -14749,9 +14749,9 @@ public final class SystemMessageId
 		S1_EQUIPPED = new SystemMessageId(49);
 		TARGET_CANT_FOUND = new SystemMessageId(50);
 		CANNOT_USE_ON_YOURSELF = new SystemMessageId(51);
-		EARNED_ADENA = new SystemMessageId(52);
+		EARNED_S1_ADENA = new SystemMessageId(52);
 		EARNED_S2_S1_S = new SystemMessageId(53);
-		EARNED_ITEM = new SystemMessageId(54);
+		EARNED_ITEM_S1 = new SystemMessageId(54);
 		FAILED_TO_PICKUP_S1_ADENA = new SystemMessageId(55);
 		FAILED_TO_PICKUP_S1 = new SystemMessageId(56);
 		FAILED_TO_PICKUP_S2_S1_S = new SystemMessageId(57);
@@ -15154,9 +15154,9 @@ public final class SystemMessageId
 		ALLIANCE_LEADER_S2_OF_S1 = new SystemMessageId(494);
 		ALLIANCE_CLAN_TOTAL_S1 = new SystemMessageId(495);
 		CLAN_INFO_HEAD = new SystemMessageId(496);
-		CLAN_INFO_NAME = new SystemMessageId(497);
-		CLAN_INFO_LEADER = new SystemMessageId(498);
-		CLAN_INFO_LEVEL = new SystemMessageId(499);
+		CLAN_INFO_NAME_S1 = new SystemMessageId(497);
+		CLAN_INFO_LEADER_S1 = new SystemMessageId(498);
+		CLAN_INFO_LEVEL_S1 = new SystemMessageId(499);
 		CLAN_INFO_SEPARATOR = new SystemMessageId(500);
 		CLAN_INFO_FOOT = new SystemMessageId(501);
 		ALREADY_JOINED_ALLIANCE = new SystemMessageId(502);
@@ -15256,7 +15256,7 @@ public final class SystemMessageId
 		NOT_CALL_PET_FROM_THIS_LOCATION = new SystemMessageId(604);
 		MAY_REGISTER_UP_TO_64_PEOPLE = new SystemMessageId(605);
 		OTHER_PERSON_ALREADY_64_PEOPLE = new SystemMessageId(606);
-		DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN = new SystemMessageId(607);
+		DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1 = new SystemMessageId(607);
 		C1_SWEEPED_UP_S3_S2 = new SystemMessageId(608);
 		C1_SWEEPED_UP_S2 = new SystemMessageId(609);
 		SKILL_REMOVED_DUE_LACK_HP = new SystemMessageId(610);
@@ -15316,7 +15316,7 @@ public final class SystemMessageId
 		CANCELING_REGISTRATION = new SystemMessageId(669);
 		REFUSING_REGISTRATION = new SystemMessageId(670);
 		AGREEING_REGISTRATION = new SystemMessageId(671);
-		DISAPPEARED_ADENA = new SystemMessageId(672);
+		S1_DISAPPEARED_ADENA = new SystemMessageId(672);
 		AUCTION_ONLY_CLAN_LEVEL_2_HIGHER = new SystemMessageId(673);
 		NOT_SEVEN_DAYS_SINCE_CANCELING_AUCTION = new SystemMessageId(674);
 		NO_CLAN_HALLS_UP_FOR_AUCTION = new SystemMessageId(675);

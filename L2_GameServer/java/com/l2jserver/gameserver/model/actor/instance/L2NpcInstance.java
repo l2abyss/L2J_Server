@@ -153,7 +153,7 @@ public class L2NpcInstance extends L2Npc
 			int minlevel = SkillTreeTable.getInstance().getMinLevelForNewSkill(player, classId);
 			if (minlevel > 0)
 			{
-				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
 				sm.addNumber(minlevel);
 				player.sendPacket(sm);
 			}

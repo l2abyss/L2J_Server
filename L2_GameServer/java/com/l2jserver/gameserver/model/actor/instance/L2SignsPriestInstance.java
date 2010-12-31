@@ -114,7 +114,7 @@ public class L2SignsPriestInstance extends L2Npc
 					}
 					player.getInventory().addItem("SevenSigns", SevenSigns.RECORD_SEVEN_SIGNS_ID, 1, player, this);
 					
-					sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
+					sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
 					sm.addItemName(SevenSigns.RECORD_SEVEN_SIGNS_ID);
 					player.sendPacket(sm);
 					

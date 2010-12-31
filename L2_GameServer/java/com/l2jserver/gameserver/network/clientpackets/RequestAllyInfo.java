@@ -91,13 +91,13 @@ public final class RequestAllyInfo extends L2GameClientPacket
 				continue;
 			
 			sendPacket(sm); // send head or separator
-			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_NAME);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_NAME_S1);
 			sm.addString(clan.getName());
 			sendPacket(sm);
-			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_LEADER);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_LEADER_S1);
 			sm.addString(clan.getLeaderName());
 			sendPacket(sm);
-			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_LEVEL);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_LEVEL_S1);
 			sm.addNumber(clan.getLevel());
 			sendPacket(sm);
 			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_SEPARATOR);

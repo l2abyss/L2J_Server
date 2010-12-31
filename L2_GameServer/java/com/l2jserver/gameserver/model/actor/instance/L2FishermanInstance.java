@@ -74,7 +74,7 @@ public class L2FishermanInstance extends L2MerchantInstance
 			if (minlevel > 0)
 			{
 				// No more skills to learn, come back when you level.
-				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
 				sm.addNumber(minlevel);
 				player.sendPacket(sm);
 			}

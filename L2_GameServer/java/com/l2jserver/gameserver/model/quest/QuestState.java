@@ -641,7 +641,7 @@ public final class QuestState
 		// If item for reward is gold, send message of gold reward to client
 		if (itemId == 57)
 		{
-			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ADENA);
+			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);
 			getPlayer().sendPacket(smsg);
 		}
@@ -657,7 +657,7 @@ public final class QuestState
 			}
 			else
 			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
+				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
 				smsg.addItemName(item);
 				getPlayer().sendPacket(smsg);
 			}
@@ -700,7 +700,7 @@ public final class QuestState
 		// If item for reward is gold, send message of gold reward to client
 		if (itemId == 57)
 		{
-			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ADENA);
+			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);
 			getPlayer().sendPacket(smsg);
 		}
@@ -716,7 +716,7 @@ public final class QuestState
 			}
 			else
 			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
+				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
 				smsg.addItemName(item);
 				getPlayer().sendPacket(smsg);
 			}
@@ -753,7 +753,7 @@ public final class QuestState
 		// If item for reward is gold, send message of gold reward to client
 		if (itemId == 57)
 		{
-			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ADENA);
+			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);
 			getPlayer().sendPacket(smsg);
 		}
@@ -769,7 +769,7 @@ public final class QuestState
 			}
 			else
 			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM);
+				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
 				smsg.addItemName(item);
 				getPlayer().sendPacket(smsg);
 			}
