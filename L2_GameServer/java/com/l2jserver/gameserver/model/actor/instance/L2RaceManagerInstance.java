@@ -186,7 +186,8 @@ public class L2RaceManagerInstance extends L2Npc
 			case 820: // SystemMessageId.MONSRACE_S2_BEGINS_IN_S1_MINUTES
 			case 823: // SystemMessageId.MONSRACE_BEGINS_IN_S1_SECONDS
 				sm.addNumber(_minutes);
-				sm.addNumber(_raceNumber);
+				if (type.getId() == 820)
+					sm.addNumber(_raceNumber);
 				_minutes--;
 				break;
 			case 819: // SystemMessageId.MONSRACE_S1_TICKET_SALES_CLOSED

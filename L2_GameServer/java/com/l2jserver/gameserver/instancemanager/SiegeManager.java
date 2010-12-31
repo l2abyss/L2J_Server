@@ -271,7 +271,7 @@ public class SiegeManager
 				}
 				
 				MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId()] = Integer.parseInt(siegeSettings.getProperty(castle.getName() + "MaxMercenaries",
-						Integer.toString(MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId()])));
+						Integer.toString(MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId()])).trim());
 				
 				_controlTowerSpawnList.put(castle.getCastleId(), _controlTowersSpawns);
 				_artefactSpawnList.put(castle.getCastleId(), _artefactSpawns);
