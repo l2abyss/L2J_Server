@@ -359,7 +359,7 @@ public class L2SignsPriestInstance extends L2Npc
 					else
 					{
 						score = SevenSigns.getInstance().addPlayerStoneContrib(player.getObjectId(), blueContrib, greenContrib, redContrib);
-						sm = SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
+						sm = SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED_S1);
 						sm.addItemNumber(score);
 						player.sendPacket(sm);
 						
@@ -480,7 +480,7 @@ public class L2SignsPriestInstance extends L2Npc
 								else
 								{
 									contribScore = SevenSigns.getInstance().addPlayerStoneContrib(player.getObjectId(), blueContribCount, greenContribCount, redContribCount);
-									sm = SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED);
+									sm = SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED_S1);
 									sm.addItemNumber(contribScore);
 									player.sendPacket(sm);
 									

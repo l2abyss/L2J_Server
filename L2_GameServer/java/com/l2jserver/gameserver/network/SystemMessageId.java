@@ -7295,7 +7295,7 @@ public final class SystemMessageId
 	 * ID: 1267<br>
 	 * Message: Your contribution score is increased by $s1.
 	 */
-	public static final SystemMessageId CONTRIB_SCORE_INCREASED;
+	public static final SystemMessageId CONTRIB_SCORE_INCREASED_S1;
 	
 	/**
 	 * ID: 1268<br>
@@ -7387,7 +7387,7 @@ public final class SystemMessageId
 	 * ID: 1282<br>
 	 * Message: Your Karma has been changed to $s1
 	 */
-	public static final SystemMessageId YOUR_KARMA_HAS_BEEN_CHANGED_TO;
+	public static final SystemMessageId YOUR_KARMA_HAS_BEEN_CHANGED_TO_S1;
 	
 	/**
 	 * ID: 1283<br>
@@ -15898,7 +15898,7 @@ public final class SystemMessageId
 		STONE_CANNOT_ABSORB = new SystemMessageId(1264);
 		CANT_ABSORB_WITHOUT_STONE = new SystemMessageId(1265);
 		EXCHANGE_HAS_ENDED = new SystemMessageId(1266);
-		CONTRIB_SCORE_INCREASED = new SystemMessageId(1267);
+		CONTRIB_SCORE_INCREASED_S1 = new SystemMessageId(1267);
 		ADD_SUBCLASS_CONFIRM = new SystemMessageId(1268);
 		ADD_NEW_SUBCLASS = new SystemMessageId(1269);
 		SUBCLASS_TRANSFER_COMPLETED = new SystemMessageId(1270);
@@ -15913,7 +15913,7 @@ public final class SystemMessageId
 		CONTRIB_SCORE_EXCEEDED = new SystemMessageId(1279);
 		CRITICAL_HIT_MAGIC = new SystemMessageId(1280);
 		YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS = new SystemMessageId(1281);
-		YOUR_KARMA_HAS_BEEN_CHANGED_TO = new SystemMessageId(1282);
+		YOUR_KARMA_HAS_BEEN_CHANGED_TO_S1 = new SystemMessageId(1282);
 		MINIMUM_FRAME_ACTIVATED = new SystemMessageId(1283);
 		MINIMUM_FRAME_DEACTIVATED = new SystemMessageId(1284);
 		NO_INVENTORY_CANNOT_PURCHASE = new SystemMessageId(1285);
