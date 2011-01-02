@@ -682,7 +682,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		// Handle all L2Object of its Faction inside the Faction Range
 		
 		String faction_id = getActiveChar().getFactionId();
-		if (faction_id != null)
+		if (faction_id != null && !faction_id.isEmpty())
 		{
 			int factionRange = npc.getClanRange() + collision;
 			// Go through all L2Object that belong to its faction
@@ -698,6 +698,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						
 						//Handle SevenSigns mob Factions
 						final String npcfaction = called.getFactionId();
+						if (npcfaction == null || npcfaction.isEmpty())
+							continue;
+
 						boolean sevenSignFaction = false;
 						
 						// TODO: Unhardcode this by AI scripts (DrHouse)
@@ -711,7 +714,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						else if ("c_dungeon_nephi".equals(faction_id) && "c_dungeon_clan".equals(npcfaction))
 							sevenSignFaction = true;
 						
-						if (!faction_id.equals(npc.getFactionId()) && !sevenSignFaction)
+						if (!faction_id.equals(npcfaction) && !sevenSignFaction)
 							continue;
 						
 						// Check if the L2Object is inside the Faction Range of
