@@ -104,7 +104,7 @@ public class SubPledgeSkillTree
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
-		File file = new File(Config.DATAPACK_ROOT, "data/subpledgeskilltree.xml");
+		File file = new File(Config.DATAPACK_ROOT, "data/skillTrees/subpledgeskilltree.xml");
 		Document doc = null;
 		if (file.exists())
 		{
