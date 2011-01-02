@@ -35,7 +35,7 @@ public class TopBBSManager extends BaseBBSManager
 			String content = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/CommunityBoard/index.htm");
 			if (content == null)
 			{
-				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/index.htm' </center></body></html>";
+				content = "<html><body><br><br><center>404 :File not found: 'data/html/CommunityBoard/index.htm' </center></body></html>";
 			}
 			separateAndSend(content, activeChar);
 		}
@@ -44,7 +44,7 @@ public class TopBBSManager extends BaseBBSManager
 			String content = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/CommunityBoard/index.htm");
 			if (content == null)
 			{
-				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/index.htm' </center></body></html>";
+				content = "<html><body><br><br><center>404 :File not found: 'data/html/CommunityBoard/index.htm' </center></body></html>";
 			}
 			separateAndSend(content, activeChar);
 		}
@@ -56,7 +56,7 @@ public class TopBBSManager extends BaseBBSManager
 			String content = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/CommunityBoard/" + idp + ".htm");
 			if (content == null)
 			{
-				content = "<html><body><br><br><center>404 :File Not foud: 'data/html/CommunityBoard/" + idp
+				content = "<html><body><br><br><center>404 :File not found: 'data/html/CommunityBoard/" + idp
 				+ ".htm' </center></body></html>";
 			}
 			separateAndSend(content, activeChar);
