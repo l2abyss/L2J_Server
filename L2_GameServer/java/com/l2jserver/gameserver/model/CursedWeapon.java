@@ -362,9 +362,9 @@ public class CursedWeapon
 	
 	public void removeSkill()
 	{
-		_player.removeSkill(SkillTable.getInstance().getInfo(_skillId, _player.getSkillLevel(_skillId)), false);
-		_player.removeSkill(SkillTable.FrequentSkill.VOID_BURST.getSkill(), false);
-		_player.removeSkill(SkillTable.FrequentSkill.VOID_FLOW.getSkill(), false);
+		_player.removeSkill(_skillId);
+		_player.removeSkill(SkillTable.FrequentSkill.VOID_BURST.getSkill().getId());
+		_player.removeSkill(SkillTable.FrequentSkill.VOID_FLOW.getSkill().getId());
 		_player.untransform();
 		_player.sendSkillList();
 	}
