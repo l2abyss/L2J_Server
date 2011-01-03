@@ -234,7 +234,7 @@ public class MailManager
 					if (receiver != null)
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.MAIL_RETURNED);
-						sm.addString(msg.getReceiverName());
+						//sm.addString(msg.getReceiverName());
 						receiver.sendPacket(sm);
 					}
 				}

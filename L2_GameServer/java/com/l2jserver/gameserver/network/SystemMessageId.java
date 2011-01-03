@@ -13916,7 +13916,7 @@ public final class SystemMessageId
 	 * ID: 2720<br>
 	 * Message: Instant zone from here: $s1's entry has been restricted.
 	 */
-	public static final SystemMessageId INSTANT_ZONE_RESTRICTED;
+	public static final SystemMessageId INSTANT_ZONE_S1_RESTRICTED;
 	
 	/**
 	 * ID: 2721<br>
@@ -16986,7 +16986,7 @@ public final class SystemMessageId
 		LOC_IN_SEED_INFINITY_S1_S2_S3 = new SystemMessageId(2711);
 		LOC_OUT_SEED_INFINITY_S1_S2_S3 = new SystemMessageId(2712);
 		LOC_CLEFT_S1_S2_S3 = new SystemMessageId(2716);
-		INSTANT_ZONE_RESTRICTED = new SystemMessageId(2720);
+		INSTANT_ZONE_S1_RESTRICTED = new SystemMessageId(2720);
 		BOARD_OR_CANCEL_NOT_POSSIBLE_HERE = new SystemMessageId(2721);
 		ANOTHER_AIRSHIP_ALREADY_SUMMONED = new SystemMessageId(2722);
 		YOU_CANNOT_BOARD_NOT_MEET_REQUEIREMENTS = new SystemMessageId(2727);
