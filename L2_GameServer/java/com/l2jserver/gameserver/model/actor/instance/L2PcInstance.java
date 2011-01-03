@@ -8615,7 +8615,7 @@ public final class L2PcInstance extends L2Playable
 	 *
 	 */
 	@Override
-	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+	public boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
 		// Check if the skill is active
 		if (skill.isPassive())
@@ -8623,7 +8623,7 @@ public final class L2PcInstance extends L2Playable
 			// just ignore the passive skill request. why does the client send it anyway ??
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
+			return false;
 		}
 		
 		//************************************* Check Casting in Progress *******************************************
@@ -8636,7 +8636,7 @@ public final class L2PcInstance extends L2Playable
 			if (currentSkill != null && skill.getId() == currentSkill.getSkillId())
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 			
 			if (Config.DEBUG && getQueuedSkill() != null)
@@ -8645,7 +8645,7 @@ public final class L2PcInstance extends L2Playable
 			// Create a new SkillDat object and queue it in the player _queuedSkill
 			setQueuedSkill(skill, forceUse, dontMove);
 			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
+			return false;
 		}
 		setIsCastingNow(true);
 		// Create a new SkillDat object and set the player _currentSkill
@@ -8659,7 +8659,7 @@ public final class L2PcInstance extends L2Playable
 		if (!checkUseMagicConditions(skill, forceUse, dontMove))
 		{
 			setIsCastingNow(false);
-			return;
+			return false;
 		}
 		
 		// Check if the target is correct and Notify the AI with AI_INTENTION_CAST and target
@@ -8683,6 +8683,7 @@ public final class L2PcInstance extends L2Playable
 		
 		// Notify the AI with AI_INTENTION_CAST and target
 		getAI().setIntention(CtrlIntention.AI_INTENTION_CAST, skill, target);
+		return true;
 	}
 	
 	private boolean checkUseMagicConditions(L2Skill skill, boolean forceUse, boolean dontMove)

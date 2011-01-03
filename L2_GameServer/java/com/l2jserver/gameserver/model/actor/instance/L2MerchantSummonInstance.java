@@ -110,9 +110,9 @@ public class L2MerchantSummonInstance extends L2SummonInstance
 	}
 	
 	@Override
-	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+	public boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
-		
+		return false;
 	}
 	
 	@Override

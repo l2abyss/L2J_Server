@@ -318,5 +318,5 @@ public abstract class L2Playable extends L2Character
 	
 	public abstract byte getPvpFlag();
 	
-	public abstract void useMagic(L2Skill skill, boolean forceUse, boolean dontMove);
+	public abstract boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove);
 }

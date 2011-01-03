@@ -554,16 +554,16 @@ public abstract class L2Summon extends L2Playable
 	 *
 	 */
 	@Override
-	public void useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+	public boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
 		if (skill == null || isDead())
-			return;
+			return false;
 		
 		// Check if the skill is active
 		if (skill.isPassive())
 		{
 			// just ignore the passive skill request. why does the client send it anyway ??
-			return;
+			return false;
 		}
 		
 		//************************************* Check Casting in Progress *******************************************
@@ -571,7 +571,7 @@ public abstract class L2Summon extends L2Playable
 		// If a skill is currently being used
 		if (isCastingNow())
 		{
-			return;
+			return false;
 		}
 		
 		// Set current pet skill
@@ -607,7 +607,7 @@ public abstract class L2Summon extends L2Playable
 		{
 			if (getOwner() != null)
 				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_CANT_FOUND));
-			return;
+			return false;
 		}
 		
 		//************************************* Check skill availability *******************************************
@@ -617,7 +617,7 @@ public abstract class L2Summon extends L2Playable
 		{
 			if (getOwner() != null)
 				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING));
-			return;
+			return false;
 		}
 		
 		//************************************* Check Consumables *******************************************
@@ -628,7 +628,7 @@ public abstract class L2Summon extends L2Playable
 			// Send a System Message to the caster
 			if (getOwner() != null)
 				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
-			return;
+			return false;
 		}
 		
 		// Check if the summon has enough HP
@@ -637,7 +637,7 @@ public abstract class L2Summon extends L2Playable
 			// Send a System Message to the caster
 			if (getOwner() != null)
 				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_HP));
-			return;
+			return false;
 		}
 		
 		//************************************* Check Summon State *******************************************
@@ -651,13 +651,13 @@ public abstract class L2Summon extends L2Playable
 			{
 				// If summon or target is in a peace zone, send a system message TARGET_IN_PEACEZONE
 				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
-				return;
+				return false;
 			}
 			
 			if (getOwner() != null && getOwner().isInOlympiadMode() && !getOwner().isOlympiadStart()){
 				// if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 			
 			if (target.getActingPlayer() != null && this.getOwner().getSiegeState() > 0 && this.getOwner().isInsideZone(L2Character.ZONE_SIEGE)
@@ -670,14 +670,14 @@ public abstract class L2Summon extends L2Playable
 				else
 					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
 				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
+				return false;
 			}
 			
 			// Check if the target is attackable
 			if (target instanceof L2DoorInstance)
 			{
 				if(!((L2DoorInstance)target).isAttackable(getOwner()))
-					return;
+					return false;
 			}
 			else
 			{
@@ -685,7 +685,7 @@ public abstract class L2Summon extends L2Playable
 						&& getOwner() != null
 						&& (!getOwner().getAccessLevel().allowPeaceAttack()))
 				{
-					return;
+					return false;
 				}
 				
 				// Check if a Forced ATTACK is in progress on non-attackable target
@@ -698,12 +698,13 @@ public abstract class L2Summon extends L2Playable
 						skill.getTargetType() != SkillTargetType.TARGET_PARTY &&
 						skill.getTargetType() != SkillTargetType.TARGET_SELF)
 				{
-					return;
+					return false;
 				}
 			}
 		}
 		// Notify the AI with AI_INTENTION_CAST and target
 		getAI().setIntention(CtrlIntention.AI_INTENTION_CAST, skill, target);
+		return true;
 	}
 	
 	@Override
