@@ -1176,8 +1176,12 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	{
 		if (sk == null)
 			return false;
-
+		
 		final L2Attackable caster = getActiveChar();
+		
+		if (caster.isCastingNow() && !sk.isSimultaneousCast())
+			return false;
+		
 		if (sk.getMpConsume() >= caster.getCurrentMp() || caster.isSkillDisabled(sk) || (sk.isMagic() && caster.isMuted()) || (!sk.isMagic() && caster.isPhysicalMuted()))
 			return false;
 		if (getAttackTarget() == null)

@@ -80,6 +80,7 @@ public class ZoneManager
 		load();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void reload()
 	{
 		// int zoneCount = 0;
@@ -99,6 +100,12 @@ public class ZoneManager
 		_log.info("Removed zones in " + count + " regions.");
 		// Load the zones
 		load();
+		
+		for (L2Object o : L2World.getInstance().getAllVisibleObjects().values())
+		{ 
+			if (o instanceof L2Character)
+				((L2Character) o).revalidateZone(true);
+		}
 	}
 	
 	// =========================================================

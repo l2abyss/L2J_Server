@@ -64,6 +64,7 @@ import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.instancemanager.Manager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -233,30 +234,32 @@ public class GameStatusThread extends Thread
 				}
 				if (_usrCommand.equals("help")) {
 					_print.println("The following is a list of all available commands: ");
-					_print.println("help                - shows this help.");
-					_print.println("status              - displays basic server statistics.");
-					_print.println("performance         - shows server performance statistics.");
-					_print.println("forcegc             - forced garbage collection.");
-					_print.println("purge               - removes finished threads from thread pools.");
-					_print.println("memusage            - displays memory amounts in JVM.");
-					_print.println("announce <text>     - announces <text> in game.");
-					_print.println("msg <nick> <text>   - Sends a whisper to char <nick> with <text>.");
-					_print.println("gmchat <text>       - Sends a message to all GMs with <text>.");
-					_print.println("gmlist              - lists all gms online.");
-					_print.println("kick                - kick player <name> from server.");
-					_print.println("shutdown <time>     - shuts down server in <time> seconds.");
-					_print.println("restart <time>      - restarts down server in <time> seconds.");
-					_print.println("abort               - aborts shutdown/restart.");
+					_print.println("help                  - shows this help.");
+					_print.println("status                - displays basic server statistics.");
+					_print.println("gamestat privatestore - displays info about stores");
+					_print.println("performance           - shows server performance statistics.");
+					_print.println("forcegc               - forced garbage collection.");
+					_print.println("purge                 - removes finished threads from thread pools.");
+					_print.println("memusage              - displays memory amounts in JVM.");
+					_print.println("announce <text>       - announces <text> in game.");
+					_print.println("msg <nick> <text>     - Sends a whisper to char <nick> with <text>.");
+					_print.println("gmchat <text>         - Sends a message to all GMs with <text>.");
+					_print.println("gmlist                - lists all gms online.");
+					_print.println("kick                  - kick player <name> from server.");
+					_print.println("shutdown <time>       - shuts down server in <time> seconds.");
+					_print.println("restart <time>        - restarts down server in <time> seconds.");
+					_print.println("abort                 - aborts shutdown/restart.");
 					_print.println("give <player> <itemid> <amount>");
 					_print.println("enchant <player> <itemType> <enchant> (itemType: 1 - Helmet, 2 - Chest, 3 - Gloves, 4 - Feet, 5 - Legs, 6 - Right Hand, 7 - Left Hand, 8 - Left Ear, 9 - Right Ear , 10 - Left Finger, 11 - Right Finger, 12- Necklace, 13 - Underwear, 14 - Back, 15 - Belt, 0 - No Enchant)");
-					_print.println("extlist             - list all loaded extension classes");
-					_print.println("extreload <name>    - reload and initializes the named extension or all if used without argument");
-					_print.println("extinit <name>      - initilizes the named extension or all if used without argument");
-					_print.println("extunload <name>    - unload the named extension or all if used without argument");
-					_print.println("debug <cmd>         - executes the debug command (see 'help debug').");
+					_print.println("extlist               - list all loaded extension classes");
+					_print.println("extreload <name>      - reload and initializes the named extension or all if used without argument");
+					_print.println("extinit <name>        - initilizes the named extension or all if used without argument");
+					_print.println("extunload <name>      - unload the named extension or all if used without argument");
+					_print.println("debug <cmd>           - executes the debug command (see 'help debug').");
+					_print.println("reload <type>         - reload data");
 					_print.println("jail <player> [time]");
 					_print.println("unjail <player>");
-					_print.println("quit                - closes telnet session.");
+					_print.println("quit                  - closes telnet session.");
 				}
 				else if(_usrCommand.equals("help debug"))
 				{
@@ -754,50 +757,50 @@ public class GameStatusThread extends Thread
 						{
 							_print.print("Reloading multisell... ");
 							MultiSell.getInstance().reload();
-							_print.print("done\n");
+							_print.println("done");
 						}
 						else if(type.equals("skill"))
 						{
 							_print.print("Reloading skills... ");
 							SkillTable.getInstance().reload();
-							_print.print("done\n");
+							_print.println("done");
 						}
 						else if(type.equals("npc"))
 						{
 							_print.print("Reloading npc templates... ");
 							NpcTable.getInstance().reloadAllNpc();
 							QuestManager.getInstance().reloadAllQuests();
-							_print.print("done\n");
+							_print.println("done");
 						}
 						else if(type.equals("html"))
 						{
 							_print.print("Reloading html cache... ");
 							HtmCache.getInstance().reload();
-							_print.print("done\n");
+							_print.println("done");
 						}
 						else if(type.equals("item"))
 						{
 							_print.print("Reloading item templates... ");
 							ItemTable.getInstance().reload();
-							_print.print("done\n");
+							_print.println("done");
 						}
 						else if(type.equals("instancemanager"))
 						{
 							_print.print("Reloading instance managers... ");
 							Manager.reloadAll();
-							_print.print("done\n");
+							_print.println("done");
 						}
 						else if(type.equals("zone"))
 						{
 							_print.print("Reloading zone tables... ");
-							//TODO: ZONETODO reload zones using telnet ZoneManager.getInstance().reload();
-							_print.print("done\n");
+							ZoneManager.getInstance().reload();
+							_print.println("done");
 						}
 						else if(type.equals("teleports"))
 						{
 							_print.print("Reloading telport location table... ");
 							TeleportLocationTable.getInstance().reloadAll();
-							_print.print("done\n");
+							_print.println("done");
 						}
 						else if(type.equals("spawns"))
 						{
@@ -808,13 +811,13 @@ public class GameStatusThread extends Thread
 							NpcTable.getInstance().reloadAllNpc();
 							SpawnTable.getInstance().reloadAll();
 							RaidBossSpawnManager.getInstance().reloadBosses();
-							_print.print("done\n");
+							_print.println("done\n");
 						}
 						else if(type.equals("extractables"))
 						{
 							_print.print("Reloading extractable items and skills... ");
 							ExtractableSkillsData.getInstance().reload();
-							_print.print("done\n");
+							_print.println("done");
 						}
 						
 					}
