@@ -513,8 +513,6 @@ public final class L2PcInstance extends L2Playable
 	
 	public int _telemode = 0;
 	
-	public boolean _exploring = false;
-	
 	private boolean _inCrystallize;
 	private boolean _inCraftMode;
 	
