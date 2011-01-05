@@ -28,7 +28,6 @@ import java.util.List;
 
 import javolution.util.FastList;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Effect;
@@ -680,11 +679,6 @@ public class L2CharacterAI extends AbstractAI
 	@Override
 	protected void onEvtArrived()
 	{
-		// Launch an explore task if necessary
-		if (Config.ACTIVATE_POSITION_RECORDER && _accessor.getActor() instanceof L2PcInstance)
-		{
-			((L2PcInstance) _accessor.getActor()).explore();
-		}
 		_accessor.getActor().revalidateZone(true);
 		
 		if (_accessor.getActor().moveToNextRoutePoint())

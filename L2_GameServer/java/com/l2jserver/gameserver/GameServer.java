@@ -64,7 +64,6 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.NpcWalkerRoutesTable;
 import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
-import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
 import com.l2jserver.gameserver.datatables.SkillSpellbookTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -73,6 +72,7 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.StaticObjects;
 import com.l2jserver.gameserver.datatables.SubPledgeSkillTree;
 import com.l2jserver.gameserver.datatables.SummonItemsData;
+import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
 import com.l2jserver.gameserver.datatables.UITable;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
@@ -133,7 +133,6 @@ import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 import com.l2jserver.gameserver.taskmanager.AutoAnnounceTaskManager;
 import com.l2jserver.gameserver.taskmanager.KnownListUpdateTaskManager;
 import com.l2jserver.gameserver.taskmanager.TaskManager;
-import com.l2jserver.gameserver.util.DynamicExtension;
 import com.l2jserver.status.Status;
 import com.l2jserver.util.DeadLockDetector;
 import com.l2jserver.util.IPv4Filter;
@@ -397,24 +396,12 @@ public class GameServer
 		if (Config.ALLOW_MAIL)
 			MailManager.getInstance();
 		
-		//Universe.getInstance();
-		
 		if (Config.ACCEPT_GEOEDITOR_CONN)
 			GeoEditorListener.getInstance();
 		
 		Runtime.getRuntime().addShutdownHook(Shutdown.getInstance());
 		
 		_log.info("IdFactory: Free ObjectID's remaining: " + IdFactory.getInstance().size());
-		
-		// initialize the dynamic extension loader
-		try
-		{
-			DynamicExtension.getInstance();
-		}
-		catch (Exception ex)
-		{
-			_log.log(Level.WARNING, "DynamicExtension could not be loaded and initialized", ex);
-		}
 		
 		TvTManager.getInstance();
 		KnownListUpdateTaskManager.getInstance();

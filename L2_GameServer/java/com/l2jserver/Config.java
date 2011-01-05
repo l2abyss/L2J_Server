@@ -57,7 +57,6 @@ public final class Config
 	// L2J Property File Definitions
 	//--------------------------------------------------
 	public static final String CHARACTER_CONFIG_FILE = "./config/Character.properties";
-	public static final String EXTENSIONS_CONFIG_FILE = "./config/extensions.properties";
 	public static final String FEATURE_CONFIG_FILE = "./config/Feature.properties";
 	public static final String FORTSIEGE_CONFIGURATION_FILE = "./config/fortsiege.properties";
 	public static final String GENERAL_CONFIG_FILE = "./config/General.properties";
@@ -484,7 +483,6 @@ public final class Config
 	public static boolean MOVE_BASED_KNOWNLIST;
 	public static long KNOWNLIST_UPDATE_INTERVAL;
 	public static int ZONE_TOWN;
-	public static boolean ACTIVATE_POSITION_RECORDER;
 	public static String DEFAULT_GLOBAL_CHAT;
 	public static String DEFAULT_TRADE_CHAT;
 	public static boolean ALLOW_WAREHOUSE;
@@ -1872,7 +1870,6 @@ public final class Config
 					ENABLE_FALLING_DAMAGE = "auto".equalsIgnoreCase(str) ? GEODATA > 0 : Boolean.parseBoolean(str);
 					
 					ZONE_TOWN = Integer.parseInt(General.getProperty("ZoneTown", "0"));
-					ACTIVATE_POSITION_RECORDER = Boolean.parseBoolean(General.getProperty("ActivatePositionRecorder", "False"));
 					DEFAULT_GLOBAL_CHAT = General.getProperty("GlobalChat", "ON");
 					DEFAULT_TRADE_CHAT = General.getProperty("TradeChat", "ON");
 					ALLOW_WAREHOUSE = Boolean.parseBoolean(General.getProperty("AllowWarehouse", "True"));

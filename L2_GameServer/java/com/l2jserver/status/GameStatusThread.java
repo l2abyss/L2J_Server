@@ -86,7 +86,6 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.util.DynamicExtension;
 import com.l2jserver.gameserver.util.GMAudit;
 
 
@@ -251,10 +250,6 @@ public class GameStatusThread extends Thread
 					_print.println("abort                 - aborts shutdown/restart.");
 					_print.println("give <player> <itemid> <amount>");
 					_print.println("enchant <player> <itemType> <enchant> (itemType: 1 - Helmet, 2 - Chest, 3 - Gloves, 4 - Feet, 5 - Legs, 6 - Right Hand, 7 - Left Hand, 8 - Left Ear, 9 - Right Ear , 10 - Left Finger, 11 - Right Finger, 12- Necklace, 13 - Underwear, 14 - Back, 15 - Belt, 0 - No Enchant)");
-					_print.println("extlist               - list all loaded extension classes");
-					_print.println("extreload <name>      - reload and initializes the named extension or all if used without argument");
-					_print.println("extinit <name>        - initilizes the named extension or all if used without argument");
-					_print.println("extunload <name>      - unload the named extension or all if used without argument");
 					_print.println("debug <cmd>           - executes the debug command (see 'help debug').");
 					_print.println("reload <type>         - reload data");
 					_print.println("jail <player> [time]");
@@ -886,64 +881,6 @@ public class GameStatusThread extends Thread
 						}
 					}
 					catch(Exception e){}
-				}
-				else if (_usrCommand.startsWith("extreload")) {
-					String[] args = _usrCommand.split("\\s+");
-					if (args.length > 1) {
-						for (int i = 1; i < args.length; i++)
-							DynamicExtension.getInstance().reload(args[i]);
-					} else {
-						DynamicExtension.getInstance().reload();
-					}
-				}
-				else if (_usrCommand.startsWith("extinit")) {
-					String[] args = _usrCommand.split("\\s+");
-					if (args.length > 1) {
-						for (int i = 1; i < args.length; i++)
-							_print.print(DynamicExtension.getInstance().initExtension(args[i]) + "\r\n");
-					} else {
-						_print.print(DynamicExtension.getInstance().initExtensions());
-					}
-				}
-				else if (_usrCommand.startsWith("extunload")) {
-					String[] args = _usrCommand.split("\\s+");
-					if (args.length > 1) {
-						for (int i = 1; i < args.length; i++)
-							_print.print(DynamicExtension.getInstance().unloadExtension(args[i]) + "\r\n");
-					} else {
-						_print.print(DynamicExtension.getInstance().unloadExtensions());
-					}
-				}
-				else if (_usrCommand.startsWith("extlist")) {
-					for (String e : DynamicExtension.getInstance().getExtensions())
-						_print.print(e + "\r\n");
-				}
-				else if (_usrCommand.startsWith("get")) {
-					Object o = null;
-					try {
-						String[] args = _usrCommand.substring(3).split("\\s+");
-						if (args.length == 1)
-							o = DynamicExtension.getInstance().get(args[0], null);
-						else
-							o = DynamicExtension.getInstance().get(args[0], args[1]);
-					} catch (Exception ex) {
-						_print.print(ex.toString() + "\r\n");
-					}
-					if (o != null)
-						_print.print(o.toString() + "\r\n");
-				}
-				else if (_usrCommand.length() > 0) {
-					try {
-						String[] args = _usrCommand.split("\\s+");
-						if (args.length == 1)
-							DynamicExtension.getInstance().set(args[0], null, null);
-						else if (args.length == 2)
-							DynamicExtension.getInstance().set(args[0], null, args[1]);
-						else
-							DynamicExtension.getInstance().set(args[0], args[1], args[2]);
-					} catch (Exception ex) {
-						_print.print(ex.toString());
-					}
 				}
 				else if (_usrCommand.length() == 0) { /* Do Nothing Again - Same reason as the quit part */ }
 				_print.print("");
