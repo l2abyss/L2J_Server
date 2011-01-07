@@ -13676,7 +13676,7 @@ public final class SystemMessageId
 	 * ID: 2400<br>
 	 * Message: Instant Zone currently in use: $s1
 	 */
-	public static final SystemMessageId INSTANT_ZONE_CURRENTLY_INUSE;
+	public static final SystemMessageId INSTANT_ZONE_CURRENTLY_INUSE_S1;
 	
 	/**
 	 * ID: 2402<br>
@@ -16946,7 +16946,7 @@ public final class SystemMessageId
 		THE_DISGUISE_SCROLL_MEANT_FOR_DIFFERENT_TERRITORY = new SystemMessageId(2936);
 		TERRITORY_OWNING_CLAN_CANNOT_USE_DISGUISE_SCROLL = new SystemMessageId(2937);
 		TERRITORY_WAR_SCROLL_CAN_NOT_USED_NOW = new SystemMessageId(2955);
-		INSTANT_ZONE_CURRENTLY_INUSE = new SystemMessageId(2400);
+		INSTANT_ZONE_CURRENTLY_INUSE_S1 = new SystemMessageId(2400);
 		THE_TERRITORY_WAR_REGISTERING_PERIOD_ENDED = new SystemMessageId(2402);
 		TERRITORY_WAR_BEGINS_IN_10_MINUTES = new SystemMessageId(2403);
 		TERRITORY_WAR_BEGINS_IN_5_MINUTES = new SystemMessageId(2404);
