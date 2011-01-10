@@ -49,6 +49,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2RaidBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Util;
@@ -1093,7 +1094,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 								return;
 					}
 				}
-				if (npc.hasLSkill() && dist2 > 150 && Rnd.get(100) <= npc.getSSkillChance())
+				if (npc.hasLSkill() && dist2 > 150 && Rnd.get(100) <= npc.getLSkillChance())
 				{
 					lSkillRender();
 					if (_skillrender._Lrangeskills != null)
@@ -1809,7 +1810,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				//-------------------------------------------------------------
 				//Start ATK SKILL when nothing can be done
-				if (_skillrender.hasAtkSkill())
+				if (_skillrender.hasAtkSkill() && (npc.isMovementDisabled()
+						|| npc.getAiType() == AIType.MAGE || npc.getAiType() == AIType.HEALER))
 				{
 					for (L2Skill sk : _skillrender._atkskills)
 					{
