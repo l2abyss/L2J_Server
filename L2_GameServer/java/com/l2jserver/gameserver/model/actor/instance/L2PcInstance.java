@@ -151,6 +151,7 @@ import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Duel;
 import com.l2jserver.gameserver.model.entity.Fort;
+import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.entity.Siege;
@@ -1244,11 +1245,6 @@ public final class L2PcInstance extends L2Playable
 		// Create a L2Radar object
 		_radar = new L2Radar(this);
 		
-		// Retrieve from the database all skills of this L2PcInstance and add them to _skills
-		// Retrieve from the database all items of this L2PcInstance and add them to _inventory
-		getInventory().restore();
-		if (!Config.WAREHOUSE_CACHE)
-			getWarehouse();
 		startVitalityTask();
 	}
 	
@@ -7166,6 +7162,17 @@ public final class L2PcInstance extends L2Playable
 						player.setClanPrivileges(L2Clan.CP_ALL);
 						player.setPowerGrade(1);
 					}
+					int pledgeClass = 0;
+					
+					pledgeClass = player.getClan().getClanMember(objectId).calculatePledgeClass(player);
+					
+					if (player.isNoble() && pledgeClass < 5)
+						pledgeClass = 5;
+					
+					if (player.isHero() && pledgeClass < 8)
+						pledgeClass = 8;
+					
+					player.setPledgeClass(pledgeClass);
 				}
 				else
 				{
@@ -7261,6 +7268,16 @@ public final class L2PcInstance extends L2Playable
 			
 			rset.close();
 			statement.close();
+			
+			// Set Hero status if it applies
+			if (Hero.getInstance().getHeroes() != null && Hero.getInstance().getHeroes().containsKey(objectId))
+				player.setHero(true);
+			
+			// Retrieve from the database all skills of this L2PcInstance and add them to _skills
+			// Retrieve from the database all items of this L2PcInstance and add them to _inventory
+			player.getInventory().restore();
+			if (!Config.WAREHOUSE_CACHE)
+				player.getWarehouse();
 			
 			// Retrieve from the database all secondary data of this L2PcInstance
 			// and reward expertise/lucky skills if necessary.
