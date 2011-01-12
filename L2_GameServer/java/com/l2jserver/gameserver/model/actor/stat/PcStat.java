@@ -194,6 +194,7 @@ public class PcStat extends PlayableStat
 	
 	public boolean removeExpAndSp(long addToExp, int addToSp, boolean sendMessage)
 	{
+		int level = getLevel();
 		if (!super.removeExpAndSp(addToExp, addToSp))
 			return false;
 		
@@ -206,6 +207,8 @@ public class PcStat extends PlayableStat
 			sm = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
 			sm.addNumber(addToSp);
 			getActiveChar().sendPacket(sm);
+			if (getLevel()<level)
+				getActiveChar().broadcastStatusUpdate();
 		}
 		return true;
 	}

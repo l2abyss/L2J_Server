@@ -5368,7 +5368,8 @@ public final class L2PcInstance extends L2Playable
 						Announcements.getInstance().announceToAll(msg);
 				}
 			}
-			
+
+			broadcastStatusUpdate();
 			// Clear resurrect xp calculation
 			setExpBeforeDeath(0);
 			
