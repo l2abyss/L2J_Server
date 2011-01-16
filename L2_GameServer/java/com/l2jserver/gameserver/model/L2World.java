@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.util.Point3D;
+import com.l2jserver.util.StringUtil;
 
 /**
  * This class ...
@@ -119,6 +120,7 @@ public final class L2World
 		if (_allObjects.containsKey(object.getObjectId()))
 		{
 			_log.warning("[L2World] object: " + object + " already exist in OID map!");
+			_log.info(StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
 			return;
 		}
 		
