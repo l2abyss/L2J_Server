@@ -102,7 +102,8 @@ public class EffectHide extends L2Effect
 		if (getEffected() instanceof L2PcInstance)
 		{
 			L2PcInstance activeChar = ((L2PcInstance) getEffected());
-			activeChar.getAppearance().setVisible();
+			if (!activeChar.inObserverMode())
+				activeChar.getAppearance().setVisible();
 			activeChar.stopAbnormalEffect(AbnormalEffect.STEALTH);
 		}
 	}
