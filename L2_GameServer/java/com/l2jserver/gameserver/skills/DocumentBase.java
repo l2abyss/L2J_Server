@@ -91,6 +91,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionTargetClassIdRestrict
 import com.l2jserver.gameserver.skills.conditions.ConditionTargetLevel;
 import com.l2jserver.gameserver.skills.conditions.ConditionTargetNpcId;
 import com.l2jserver.gameserver.skills.conditions.ConditionTargetNpcType;
+import com.l2jserver.gameserver.skills.conditions.ConditionTargetPlayable;
 import com.l2jserver.gameserver.skills.conditions.ConditionTargetRace;
 import com.l2jserver.gameserver.skills.conditions.ConditionTargetRaceId;
 import com.l2jserver.gameserver.skills.conditions.ConditionTargetUsesWeaponKind;
@@ -727,6 +728,10 @@ abstract class DocumentBase
 			{
 				int lvl = Integer.decode(getValue(a.getNodeValue(), template));
 				cond = joinAnd(cond, new ConditionTargetLevel(lvl));
+			}
+			else if ("playable".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionTargetPlayable());
 			}
 			else if ("class_id_restriction".equalsIgnoreCase(a.getNodeName()))
 			{
