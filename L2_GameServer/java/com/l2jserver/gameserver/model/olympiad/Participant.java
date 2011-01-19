@@ -44,6 +44,16 @@ public final class Participant
 		stats = Olympiad.getNobleStats(objectId);
 	}
 
+	public Participant(int objId, int olympiadSide)
+	{
+		objectId = objId;
+		player = null;
+		name = "-";
+		side = olympiadSide;
+		baseClass = 0;
+		stats = null;
+	}
+
 	public final void updatePlayer()
 	{
 		if (player == null || !player.isOnline())

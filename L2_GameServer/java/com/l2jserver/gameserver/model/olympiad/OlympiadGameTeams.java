@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -34,9 +35,9 @@ import com.l2jserver.util.Rnd;
  * 
  * @author Pere, DS
  */
-class OlympiadGameTeams extends AbstractOlympiadGame
+public class OlympiadGameTeams extends AbstractOlympiadGame
 {
-	public static final int TEAM_SIZE = 3;
+	public static final int MAX_TEAM_SIZE = 3;
 
 	protected boolean _teamOneDefaulted;
 	protected boolean _teamTwoDefaulted;
@@ -44,28 +45,46 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	protected int _damageT1 = 0;
 	protected int _damageT2 = 0;
 
-	protected Participant[] _teamOne;
-	protected Participant[] _teamTwo;
+	protected final int _teamOneSize;
+	protected final int _teamTwoSize;
+	protected final Participant[] _teamOne;
+	protected final Participant[] _teamTwo;
 
-	private OlympiadGameTeams(int id, Participant[] teamOne, Participant[] teamTwo)
+	protected OlympiadGameTeams(int id, Participant[] teamOne, Participant[] teamTwo)
 	{
 		super(id);
 
-		_teamOne = teamOne;
-		_teamTwo = teamTwo;
+		_teamOneSize = Math.min(teamOne.length, MAX_TEAM_SIZE);
+		_teamTwoSize = Math.min(teamTwo.length, MAX_TEAM_SIZE);
+		_teamOne = new Participant[MAX_TEAM_SIZE];
+		_teamTwo = new Participant[MAX_TEAM_SIZE];
 
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = 0; i < MAX_TEAM_SIZE; i++)
 		{
-			par = _teamOne[i];
-			par.player.setOlympiadGameId(id);
+			if (i < _teamOneSize)
+			{
+				par = teamOne[i];
+				_teamOne[i] = par;
+				if (par.player != null)
+					par.player.setOlympiadGameId(id);
+			}
+			else
+				_teamOne[i] = new Participant(IdFactory.getInstance().getNextId(), 1);
 
-			par = _teamTwo[i];
-			par.player.setOlympiadGameId(id);
+			if (i < _teamTwoSize)
+			{
+				par = teamTwo[i];
+				_teamTwo[i] = par;
+				if (par.player != null)
+					par.player.setOlympiadGameId(id);
+			}
+			else
+				_teamTwo[i] = new Participant(IdFactory.getInstance().getNextId(), 2);
 		}
 	}
 	
-	protected static final OlympiadGameTeams createGame(int id, List<List<Integer>> list)
+	protected static final Participant[][] createListOfParticipants(List<List<Integer>> list)
 	{
 		if (list == null || list.isEmpty() || list.size() < 2)
 			return null;
@@ -73,14 +92,14 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		List<Integer> teamOne = null;
 		List<Integer> teamTwo = null;
 		L2PcInstance player;
-		List<L2PcInstance> teamOnePlayers = new ArrayList<L2PcInstance>(TEAM_SIZE);
-		List<L2PcInstance> teamTwoPlayers = new ArrayList<L2PcInstance>(TEAM_SIZE);
+		List<L2PcInstance> teamOnePlayers = new ArrayList<L2PcInstance>(MAX_TEAM_SIZE);
+		List<L2PcInstance> teamTwoPlayers = new ArrayList<L2PcInstance>(MAX_TEAM_SIZE);
 
 		while (list.size() > 1)
 		{
 			teamOne = list.remove(Rnd.nextInt(list.size()));
 
-			if ((teamOne == null || teamOne.size() != TEAM_SIZE))
+			if ((teamOne == null || teamOne.isEmpty()))
 				continue;
 
 			for (int objectId : teamOne)
@@ -97,7 +116,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				continue;
 
 			teamTwo = list.remove(Rnd.nextInt(list.size()));
-			if (teamTwo == null || teamTwo.size() != TEAM_SIZE)
+			if (teamTwo == null || teamTwo.isEmpty())
 			{
 				list.add(teamOne);
 				teamOnePlayers.clear();
@@ -121,35 +140,47 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				continue;
 			}
 
-			Participant[] t1 = new Participant[TEAM_SIZE];
-			Participant[] t2 = new Participant[TEAM_SIZE];
+			Participant[] t1 = new Participant[teamOnePlayers.size()];
+			Participant[] t2 = new Participant[teamTwoPlayers.size()];
+			Participant[][] result = new Participant[2][];
 
-			for (int i = 0; i < TEAM_SIZE; i++)
-			{
+			for (int i = 0; i < t1.length; i++)
 				t1[i] = new Participant(teamOnePlayers.get(i), 1);
-				t2[i] = new Participant(teamTwoPlayers.get(i), 2);
-			}
 
-			return new OlympiadGameTeams(id, t1, t2);
+			for (int i = 0; i < t2.length; i++)
+				t2[i] = new Participant(teamTwoPlayers.get(i), 2);
+
+			result[0] = t1;
+			result[1] = t2;
+			return result;
 		}
 
 		return null;
 	}
 
+	protected static OlympiadGameTeams createGame(int id, List<List<Integer>> list)
+	{
+		final Participant[][] teams = createListOfParticipants(list);
+		if (teams == null)
+			return null;
+
+		return new OlympiadGameTeams(id, teams[0], teams[1]);
+	}
+
 	@Override
-	public final CompetitionType getType()
+	public CompetitionType getType()
 	{
 		return CompetitionType.TEAMS;
 	}
 
 	@Override
-	protected final int getDivider()
+	protected int getDivider()
 	{
 		return 5;
 	}
 
 	@Override
-	protected final int[][] getReward()
+	protected int[][] getReward()
 	{
 		return Config.ALT_OLY_TEAM_REWARD;
 	}
@@ -157,9 +188,15 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	@Override
 	public final boolean containsParticipant(int playerId)
 	{
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamOneSize; --i >= 0;)
 		{
-			if (_teamOne[i].objectId == playerId || _teamTwo[i].objectId == playerId)
+			if (_teamOne[i].objectId == playerId)
+				return true;
+		}
+
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
+			if (_teamTwo[i].objectId == playerId)
 				return true;
 		}
 		return false;
@@ -168,42 +205,40 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	@Override
 	public final void sendOlympiadInfo(L2Character player)
 	{
-		for (int i = 0; i < TEAM_SIZE; i++)
-		{
+		for (int i = 0; i < MAX_TEAM_SIZE; i++)
 			player.sendPacket(new ExOlympiadUserInfo(_teamOne[i]));
-		}
-		for (int i = 0; i < TEAM_SIZE; i++)
-		{
+
+		for (int i = 0; i < MAX_TEAM_SIZE; i++)
 			player.sendPacket(new ExOlympiadUserInfo(_teamTwo[i]));
-		}
 	}
 
 	@Override
 	public final void broadcastOlympiadInfo(L2OlympiadStadiumZone stadium)
 	{
-		for (int i = 0; i < TEAM_SIZE; i++)
-		{
+		for (int i = 0; i < MAX_TEAM_SIZE; i++)
 			stadium.broadcastPacket(new ExOlympiadUserInfo(_teamOne[i]));
-		}
-		for (int i = 0; i < TEAM_SIZE; i++)
-		{
+
+		for (int i = 0; i < MAX_TEAM_SIZE; i++)
 			stadium.broadcastPacket(new ExOlympiadUserInfo(_teamTwo[i]));
-		}
 	}
 
 	@Override
 	protected final void broadcastPacket(L2GameServerPacket packet)
 	{
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = 0; i < _teamOneSize; i++)
 		{
 			par = _teamOne[i];
 			par.updatePlayer();
 			if (par.player != null)
 				par.player.sendPacket(packet);
+		}
 
+		for (int i = 0; i < _teamTwoSize; i++)
+		{
 			par = _teamTwo[i];
-			par.updatePlayer();
+			par.
+			updatePlayer();
 			if (par.player != null)
 				par.player.sendPacket(packet);
 		}
@@ -221,12 +256,12 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		boolean result = true;
 		try
 		{
-			final int offset = spawns.size() / 2;
-			for (int i = 0; i < TEAM_SIZE; i++)
-			{
+			for (int i = 0; i < _teamOneSize; i++)
 				result &= portPlayerToArena(_teamOne[i], spawns.get(i), _stadiumID);
+
+			final int offset = spawns.size() / 2;
+			for (int i = 0; i < _teamTwoSize; i++)
 				result &= portPlayerToArena(_teamTwo[i], spawns.get(i + offset), _stadiumID);
-			}
 		}
 		catch (Exception e)
 		{
@@ -239,11 +274,11 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	@Override
 	protected final void removals()
 	{
-		for (int i = 0; i < TEAM_SIZE; i++)
-		{
+		for (int i = _teamOneSize; --i >= 0;)
 			removals(_teamOne[i].player, false);
+
+		for (int i = _teamTwoSize; --i >= 0;)
 			removals(_teamTwo[i].player, false);
-		}
 	}
 
 	@Override
@@ -253,7 +288,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			return false;
 
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = 0; i < _teamOneSize; i++)
 		{
 			par = _teamOne[i];
 			if (par.player == null)
@@ -261,7 +296,10 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 
 			par.player.setIsOlympiadStart(true);
 			par.player.updateEffectIcons();
+		}
 
+		for (int i = 0; i < _teamTwoSize; i++)
+		{
 			par = _teamTwo[i];
 			if (par.player == null)
 				return false;
@@ -276,7 +314,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	protected final void cleanEffects()
 	{
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
 			if (par.player != null
@@ -284,7 +322,10 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 					&& !par.disconnected
 					&& par.player.getOlympiadGameId() == _stadiumID)
 				cleanEffects(par.player);
+		}
 
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
 			par = _teamTwo[i];
 			if (par.player != null
 					&& !par.defaulted
@@ -298,14 +339,17 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	protected final void portPlayersBack()
 	{
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
 			if (par.player != null
 					&& !par.defaulted
 					&& !par.disconnected)
 				portPlayerBack(par.player);
+		}
 
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
 			par = _teamTwo[i];
 			if (par.player != null
 					&& !par.defaulted
@@ -318,7 +362,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	protected final void playersStatusBack()
 	{
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
 			if (par.player != null
@@ -326,7 +370,10 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 					&& !par.disconnected
 					&& par.player.getOlympiadGameId() == _stadiumID)
 				playerStatusBack(par.player);
+		}
 
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
 			par = _teamTwo[i];
 			if (par.player != null
 					&& !par.defaulted
@@ -339,11 +386,19 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	@Override
 	protected final void clearPlayers()
 	{
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = 0; i < MAX_TEAM_SIZE; i++)
 		{
-			_teamOne[i].player = null;
+			if (i < _teamOneSize)
+				_teamOne[i].player = null;
+			else
+				IdFactory.getInstance().releaseId(_teamOne[i].objectId);
+
+			if (i < _teamTwoSize)
+				_teamTwo[i].player = null;
+			else
+				IdFactory.getInstance().releaseId(_teamTwo[i].objectId);
+
 			_teamOne[i] = null;
-			_teamTwo[i].player = null;
 			_teamTwo[i] = null;
 		}
 	}
@@ -352,7 +407,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	protected final void handleDisconnect(L2PcInstance player)
 	{
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
 			if (par.objectId == player.getObjectId())
@@ -360,7 +415,10 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				par.disconnected = true;
 				return;
 			}
+		}
 
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
 			par = _teamTwo[i];
 			if (par.objectId == player.getObjectId())
 			{
@@ -379,7 +437,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		boolean teamOneLost = true;
 		boolean teamTwoLost = true;
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
 			if (!par.disconnected)
@@ -387,7 +445,10 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				if (par.player != null && par.player.getOlympiadGameId() == _stadiumID)
 					teamOneLost &= par.player.isDead();
 			}
+		}
 
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
 			par = _teamTwo[i];
 			if (!par.disconnected)
 			{
@@ -434,7 +495,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				if (_teamOneDefaulted)
 				{
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					for (int i = _teamOneSize; --i >= 0;)
 					{
 						par = _teamOne[i];
 						removePointsFromParticipant(par, Math.min(par.stats.getInteger(POINTS) / 3, Config.ALT_OLY_MAX_POINTS));
@@ -443,7 +504,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				}
 				if (_teamTwoDefaulted)
 				{
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					for (int i = _teamTwoSize; --i >= 0;)
 					{
 						par = _teamTwo[i];
 						removePointsFromParticipant(par, Math.min(par.stats.getInteger(POINTS) / 3, Config.ALT_OLY_MAX_POINTS));
@@ -459,13 +520,13 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		}
 		
 		 // points to be dedicted in case of losing
-		final int[] pointsTeamOne = new int[TEAM_SIZE];
-		final int[] pointsTeamTwo = new int[TEAM_SIZE];
-		final int[] maxPointsTeamOne = new int[TEAM_SIZE];
-		final int[] maxPointsTeamTwo = new int[TEAM_SIZE];
+		final int[] pointsTeamOne = new int[_teamOneSize];
+		final int[] pointsTeamTwo = new int[_teamTwoSize];
+		final int[] maxPointsTeamOne = new int[_teamOneSize];
+		final int[] maxPointsTeamTwo = new int[_teamTwoSize];
 		int totalPointsTeamOne = 0;
 		int totalPointsTeamTwo = 0;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = 0; i < _teamOneSize; i++)
 		{
 			points = _teamOne[i].stats.getInteger(POINTS) / getDivider();
 			if (points <= 0)
@@ -476,7 +537,10 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			totalPointsTeamOne += points;
 			pointsTeamOne[i] = points;
 			maxPointsTeamOne[i] = points;
+		}
 
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
 			points = _teamTwo[i].stats.getInteger(POINTS) / getDivider();
 			if (points <= 0)
 				points = 1;
@@ -492,7 +556,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		int min = Math.min(totalPointsTeamOne, totalPointsTeamTwo);
 
 		// make sure all team members got same number of the points: round down to 3x
-		min = (min / TEAM_SIZE) * TEAM_SIZE;
+		min = (min / MAX_TEAM_SIZE) * MAX_TEAM_SIZE;
 
 		// calculating coefficients and trying to correct total number of points for each team
 		// due to rounding errors total points after correction will always be lower or equal
@@ -501,18 +565,22 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		final double dividerTwo = (double)totalPointsTeamTwo / min;
 		totalPointsTeamOne = min;
 		totalPointsTeamTwo = min;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = 0; i < _teamOneSize; i++)
 		{
 			points = Math.max((int)(pointsTeamOne[i] / dividerOne), 1);
 			pointsTeamOne[i] = points;
 			totalPointsTeamOne -= points;
+		}
+
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
 			points = Math.max((int)(pointsTeamTwo[i] / dividerTwo), 1);
 			pointsTeamTwo[i] = points;
 			totalPointsTeamTwo -= points;
 		}
 
 		// compensating remaining points, first team from begin to end, second from end to begin
-		for (int i = 0; totalPointsTeamOne > 0 && i < TEAM_SIZE; i++)
+		for (int i = 0; totalPointsTeamOne > 0 && i < _teamOneSize; i++)
 		{
 			if (pointsTeamOne[i] < maxPointsTeamOne[i])
 			{
@@ -521,7 +589,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			}
 		}
 
-		for (int i = TEAM_SIZE; totalPointsTeamTwo > 0 && --i >= 0;)
+		for (int i = _teamTwoSize; totalPointsTeamTwo > 0 && --i >= 0;)
 		{
 			if (pointsTeamTwo[i] < maxPointsTeamTwo[i])
 			{
@@ -541,7 +609,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 					sm.addString(_teamOne[0].name);
 					stadium.broadcastPacket(sm);
 
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					for (int i = 0; i < _teamTwoSize; i++)
 					{
 						par = _teamTwo[i];
 						par.updateStat(COMP_LOST, 1);
@@ -549,15 +617,15 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 						removePointsFromParticipant(par, points);
 					}
 
-					points = min / TEAM_SIZE;
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					points = min / MAX_TEAM_SIZE;
+					for (int i = 0; i < _teamOneSize; i++)
 					{
 						par = _teamOne[i];
 						par.updateStat(COMP_WON, 1);
 						addPointsToParticipant(par, points);
 					}
 
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					for (int i = 0; i < _teamOneSize; i++)
 						rewardParticipant(_teamOne[i].player, getReward());
 				}
 				else if (tOneCrash && !tTwoCrash)
@@ -566,7 +634,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 					sm.addString(_teamTwo[0].name);
 					stadium.broadcastPacket(sm);
 
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					for (int i = 0; i < _teamOneSize; i++)
 					{
 						par = _teamOne[i];
 						par.updateStat(COMP_LOST, 1);
@@ -574,29 +642,29 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 						removePointsFromParticipant(par, points);
 					}
 					
-					points = min / TEAM_SIZE;
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					points = min / MAX_TEAM_SIZE;
+					for (int i = 0; i < _teamTwoSize; i++)
 					{
 						par = _teamTwo[i];
 						par.updateStat(COMP_WON, 1);
 						addPointsToParticipant(par, points);
 					}
 
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					for (int i = 0; i < _teamTwoSize; i++)
 						rewardParticipant(_teamTwo[i].player, getReward());
 				}
 				else if (tOneCrash && tTwoCrash)
 				{
 					stadium.broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE));
 
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					for (int i = _teamOneSize; --i >= 0;)
 					{
 						par = _teamOne[i];
 						par.updateStat(COMP_LOST, 1);
 						removePointsFromParticipant(par, pointsTeamOne[i]);
 					}
 
-					for (int i = 0 ; i < TEAM_SIZE; i++)
+					for (int i = _teamTwoSize; --i >= 0;)
 					{
 						par = _teamTwo[i];
 						par.updateStat(COMP_LOST, 1);
@@ -604,12 +672,15 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 					}
 				}
 
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				for (int i = _teamOneSize; --i >= 0;)
 				{
 					par = _teamOne[i];
 					par.updateStat(COMP_DONE, 1);
 					par.updateNobleStats();
+				}
 
+				for (int i = _teamTwoSize; --i >= 0;)
+				{
 					par = _teamTwo[i];
 					par.updateStat(COMP_DONE, 1);
 					par.updateNobleStats();
@@ -627,7 +698,8 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			double hp;
 			double teamOneHp = 0;
 			double teamTwoHp = 0;
-			for (int i = 0 ; i < TEAM_SIZE; i++)
+
+			for (int i = _teamOneSize; --i >= 0;)
 			{
 				par = _teamOne[i];
 				if (!par.disconnected
@@ -639,7 +711,10 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 						teamOneHp += hp;
 				}
 				par.updatePlayer();
-				
+			}
+
+			for (int i = _teamTwoSize; --i >= 0;)
+			{
 				par = _teamTwo[i];
 				if (!par.disconnected
 						&& par.player != null
@@ -659,7 +734,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				sm.addString(_teamOne[0].name);
 				stadium.broadcastPacket(sm);
 
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				for (int i = 0; i < _teamTwoSize; i++)
 				{
 					par = _teamTwo[i];
 					par.updateStat(COMP_LOST, 1);
@@ -667,15 +742,15 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 					removePointsFromParticipant(par, points);
 				}
 
-				points = min / TEAM_SIZE;
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				points = min / MAX_TEAM_SIZE;
+				for (int i = 0; i < _teamOneSize; i++)
 				{
 					par = _teamOne[i];
 					par.updateStat(COMP_WON, 1);
 					addPointsToParticipant(par, points);
 				}
 
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				for (int i = 0; i < _teamOneSize; i++)
 					rewardParticipant(_teamOne[i].player, getReward());
 			}
 			else if ((teamOneHp == 0 && teamTwoHp != 0)
@@ -685,7 +760,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				sm.addString(_teamTwo[0].name);
 				stadium.broadcastPacket(sm);
 
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				for (int i = 0; i < _teamOneSize; i++)
 				{
 					par = _teamOne[i];
 					par.updateStat(COMP_LOST, 1);
@@ -693,22 +768,22 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 					removePointsFromParticipant(par, points);
 				}
 				
-				points = min / TEAM_SIZE;
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				points = min / MAX_TEAM_SIZE;
+				for (int i = 0; i < _teamTwoSize; i++)
 				{
 					par = _teamTwo[i];
 					par.updateStat(COMP_WON, 1);
 					addPointsToParticipant(par, points);
 				}
 
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				for (int i = 0; i < _teamTwoSize; i++)
 					rewardParticipant(_teamTwo[i].player, getReward());
 			}
 			else
 			{
 				stadium.broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE));
 
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				for (int i = 0; i < _teamOneSize; i++)
 				{
 					par = _teamOne[i];
 					par.updateStat(COMP_DRAWN, 1);
@@ -716,7 +791,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 					removePointsFromParticipant(par, points);
 				}
 
-				for (int i = 0 ; i < TEAM_SIZE; i++)
+				for (int i = 0; i < _teamTwoSize; i++)
 				{
 					par = _teamTwo[i];
 					par.updateStat(COMP_DRAWN, 1);
@@ -725,12 +800,15 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 				}
 			}
 			
-			for (int i = 0 ; i < TEAM_SIZE; i++)
+			for (int i = _teamOneSize; --i >= 0;)
 			{
 				par = _teamOne[i];
 				par.updateStat(COMP_DONE, 1);
 				par.updateNobleStats();
+			}
 
+			for (int i = _teamTwoSize; --i >= 0;)
+			{
 				par = _teamTwo[i];
 				par.updateStat(COMP_DONE, 1);
 				par.updateNobleStats();
@@ -746,7 +824,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 	protected final void addDamage(L2PcInstance player, int damage)
 	{
 		Participant par;
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
 			if (par.objectId == player.getObjectId())
@@ -757,7 +835,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			}
 		}
 
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamTwoSize; --i >= 0;)
 		{
 			par = _teamTwo[i];
 			if (par.objectId == player.getObjectId())
@@ -782,7 +860,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		{
 			SystemMessage reason = null;
 			Participant par;
-			for (int i = 0; i < TEAM_SIZE; i++)
+			for (int i = _teamOneSize; --i >= 0;)
 			{
 				par = _teamOne[i];
 				par.updatePlayer();
@@ -803,7 +881,7 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 			}
 
 			reason = null;
-			for (int i = 0; i < TEAM_SIZE; i++)
+			for (int i = _teamTwoSize; --i >= 0;)
 			{
 				par = _teamTwo[i];
 				par.updatePlayer();
@@ -839,20 +917,24 @@ class OlympiadGameTeams extends AbstractOlympiadGame
 		_damageT2 = 0;
 	}
 
-	private final boolean teamOneAllDisconnected()
+	protected final boolean teamOneAllDisconnected()
 	{
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamOneSize; --i >= 0;)
+		{
 			if (!_teamOne[i].disconnected)
 				return false;
+		}
 
 		return true;
 	}
 
-	private final boolean teamTwoAllDisconnected()
+	protected final boolean teamTwoAllDisconnected()
 	{
-		for (int i = 0; i < TEAM_SIZE; i++)
+		for (int i = _teamTwoSize; --i >= 0;)
+		{
 			if (!_teamTwo[i].disconnected)
 				return false;
+		}
 
 		return true;
 	}
