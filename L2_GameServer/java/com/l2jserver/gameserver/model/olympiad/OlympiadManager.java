@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
@@ -29,8 +32,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
-import com.l2jserver.util.L2FastList;
-import com.l2jserver.util.L2FastMap;
 
 /**
  * 
@@ -45,9 +46,9 @@ public class OlympiadManager
 
 	private OlympiadManager()
 	{
-		_nonClassBasedRegisters = new L2FastList<Integer>();
-		_classBasedRegisters = new L2FastMap<Integer, List<Integer>>();
-		_teamsBasedRegisters = new L2FastList<List<Integer>>();
+		_nonClassBasedRegisters = new FastList<Integer>().shared();
+		_classBasedRegisters = new FastMap<Integer, List<Integer>>().shared();
+		_teamsBasedRegisters = new FastList<List<Integer>>().shared();
 	}
 
 	public static final OlympiadManager getInstance()
@@ -78,7 +79,7 @@ public class OlympiadManager
 			if (classList.getValue() != null && classList.getValue().size() >= Config.ALT_OLY_CLASSED)
 			{
 				if (result == null)
-					result = new L2FastList<List<Integer>>();
+					result = new FastList<List<Integer>>();
 
 				result.add(classList.getValue());
 			}
@@ -234,7 +235,7 @@ public class OlympiadManager
 					classed.add(player.getObjectId());
 				else
 				{
-					classed = new L2FastList<Integer>();
+					classed = new FastList<Integer>().shared();
 					classed.add(player.getObjectId());
 					_classBasedRegisters.put(player.getBaseClass(), classed);
 				}
