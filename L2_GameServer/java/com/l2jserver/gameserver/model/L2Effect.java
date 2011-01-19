@@ -495,11 +495,6 @@ public abstract class L2Effect
 			}
 			case FINISHING:
 			{
-				// Cancel the effect in the the abnormal effect map of the L2Character
-				if (getInUse() || !(_count > 1 || _period > 0))
-					if (_startConditionsCorrect)
-						onExit();
-				
 				//If the time left is equal to zero, send the message
 				if (_count == 0 && _icon && getEffected() instanceof L2PcInstance)
 				{
@@ -514,6 +509,11 @@ public abstract class L2Effect
 				}
 				// Stop the task of the L2Effect, remove it and update client magic icon
 				stopEffectTask();
+				
+				// Cancel the effect in the the abnormal effect map of the L2Character
+				if (getInUse() || !(_count > 1 || _period > 0))
+					if (_startConditionsCorrect)
+						onExit();
 				
 				if (_skill.getAfterEffectId() > 0)
 				{
