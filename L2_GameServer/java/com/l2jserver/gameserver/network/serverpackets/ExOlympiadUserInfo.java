@@ -31,16 +31,48 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 	private static final String _S__FE_29_OLYMPIADUSERINFO = "[S] FE:7A ExOlympiadUserInfo";
 	private L2PcInstance _player;
 	private Participant _par = null;
+	private int _curHp;
+	private int _maxHp;
+	private int _curCp;
+	private int _maxCp;
 	
 	public ExOlympiadUserInfo(L2PcInstance player)
 	{
 		_player = player;
+		if (_player != null)
+		{
+			_curHp = (int)_player.getCurrentHp();
+			_maxHp = _player.getMaxVisibleHp();
+			_curCp = (int)_player.getCurrentCp();
+			_maxCp = _player.getMaxCp();
+		}
+		else
+		{
+			_curHp = 0;
+			_maxHp = 100;
+			_curCp = 0;
+			_maxCp = 100;
+		}
 	}
 	
 	public ExOlympiadUserInfo(Participant par)
 	{
 		_par = par;
 		_player = par.player;
+		if (_player != null)
+		{
+			_curHp = (int)_player.getCurrentHp();
+			_maxHp = _player.getMaxVisibleHp();
+			_curCp = (int)_player.getCurrentCp();
+			_maxCp = _player.getMaxCp();
+		}
+		else
+		{
+			_curHp = 0;
+			_maxHp = 100;
+			_curCp = 0;
+			_maxCp = 100;
+		}
 	}
 	
 	@Override
@@ -54,10 +86,6 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 			writeD(_player.getObjectId());
 			writeS(_player.getName());
 			writeD(_player.getClassId().getId());
-			writeD((int)_player.getCurrentHp());
-			writeD(_player.getMaxVisibleHp());
-			writeD((int)_player.getCurrentCp());
-			writeD(_player.getMaxCp());
 		}
 		else
 		{
@@ -65,11 +93,12 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 			writeD(_par.objectId);
 			writeS(_par.name);
 			writeD(_par.baseClass);
-			writeD(0);
-			writeD(100);
-			writeD(0);
-			writeD(100);
 		}
+
+		writeD(_curHp);
+		writeD(_maxHp);
+		writeD(_curCp);
+		writeD(_maxCp);
 	}
 	
 	/* (non-Javadoc)
