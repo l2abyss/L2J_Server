@@ -207,6 +207,36 @@ public class MinionList
 		}
 	}
 
+	/**
+	 * Called from onTeleported() of the master
+	 * Alive and able to move minions teleported to master.
+	 */
+	public void onMasterTeleported()
+	{
+		final int offset = 200;
+		final int minRadius = (int)_master.getCollisionRadius() + 30;
+		
+		for (L2MonsterInstance minion : _minionReferences)
+		{
+			if (minion != null && !minion.isDead() && !minion.isMovementDisabled())
+			{
+				int newX = Rnd.get(minRadius * 2, offset * 2); // x
+				int newY = Rnd.get(newX, offset * 2); // distance
+				newY = (int)Math.sqrt(newY*newY - newX*newX); // y
+				if (newX > offset + minRadius)
+					newX = _master.getX() + newX - offset;
+				else
+					newX = _master.getX() - newX + minRadius;
+				if (newY > offset + minRadius)
+					newY = _master.getY() + newY - offset;
+				else
+					newY = _master.getY() - newY + minRadius;
+
+				minion.teleToLocation(newX, newY, _master.getZ());
+			}
+		}
+	}
+
 	private final void spawnMinion(int minionId)
 	{
 		if (minionId == 0)

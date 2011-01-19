@@ -99,23 +99,35 @@ public class L2MonsterInstance extends L2Attackable
 	@Override
 	public void onSpawn()
 	{
-		if (getLeader() != null)
+		if (!isTeleporting())
 		{
-			setIsNoRndWalk(true);
-			setIsRaidMinion(getLeader().isRaid());
-			getLeader().getMinionList().onMinionSpawn(this);
+			if (getLeader() != null)
+			{
+				setIsNoRndWalk(true);
+				setIsRaidMinion(getLeader().isRaid());
+				getLeader().getMinionList().onMinionSpawn(this);
+			}
+
+			// delete spawned minions before dynamic minions spawned by script
+			if (hasMinions())
+				getMinionList().onMasterSpawn(); 
+
+			startMaintenanceTask();
 		}
-
-		// delete spawned minions before dynamic minions spawned by script
-		if (hasMinions())
-			getMinionList().onMasterSpawn(); 
-
-		startMaintenanceTask();
 
 		// dynamic script-based minions spawned here, after all preparations.
 		super.onSpawn();
 	}
 	
+	@Override
+	public void onTeleported()
+	{
+		super.onTeleported();
+
+		if (hasMinions())
+			getMinionList().onMasterTeleported();
+	}
+
 	protected int getMaintenanceInterval()
 	{
 		return MONSTER_MAINTENANCE_INTERVAL;
@@ -131,13 +143,16 @@ public class L2MonsterInstance extends L2Attackable
 		if (getTemplate().getMinionData() == null)
 			return;
 
-		_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
-			public void run()
-			{
-				if (_enableMinions)
-					getMinionList().spawnMinions();
-			}
-		}, getMaintenanceInterval() + Rnd.get(1000));
+		if (_maintenanceTask == null)
+		{
+			_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
+				public void run()
+				{
+					if (_enableMinions)
+						getMinionList().spawnMinions();
+				}
+			}, getMaintenanceInterval() + Rnd.get(1000));
+		}
 	}
 
 	@Override
@@ -147,7 +162,10 @@ public class L2MonsterInstance extends L2Attackable
 			return false;
 		
 		if (_maintenanceTask != null)
+		{
 			_maintenanceTask.cancel(false); // doesn't do it?
+			_maintenanceTask = null;
+		}
 
 		return true;
 	}
@@ -156,7 +174,10 @@ public class L2MonsterInstance extends L2Attackable
 	public void deleteMe()
 	{
 		if (_maintenanceTask != null)
+		{
 			_maintenanceTask.cancel(false);
+			_maintenanceTask = null;
+		}
 
 		if (hasMinions())
 			getMinionList().onMasterDie(true);
