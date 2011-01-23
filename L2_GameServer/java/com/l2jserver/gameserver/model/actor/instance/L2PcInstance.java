@@ -6774,7 +6774,7 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public boolean isInvul()
 	{
-		return _isInvul  || _isTeleporting || _teleportProtectEndTime > GameTimeController.getGameTicks();
+		return super.isInvul() || _teleportProtectEndTime > GameTimeController.getGameTicks();
 	}
 	
 	/**
@@ -10930,7 +10930,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (isGM())
 		{
-			if (_isInvul)
+			if (isInvul())
 				sendMessage("Entering world in Invulnerable mode.");
 			if (getAppearance().getInvisible())
 				sendMessage("Entering world in Invisible mode.");

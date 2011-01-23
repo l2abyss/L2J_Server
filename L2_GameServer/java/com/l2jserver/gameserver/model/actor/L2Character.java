@@ -159,7 +159,7 @@ public abstract class L2Character extends L2Object
 	private boolean _isNoRndWalk							= false; // Is no random walk
 	protected boolean _showSummonAnimation					= false;
 	protected boolean _isTeleporting						= false;
-	protected boolean _isInvul								= false;
+	private boolean _isInvul								= false;
 	private boolean _isMortal								= true; // Char will die when HP decreased to 0
 	private boolean _isFlying								= false;
 	
@@ -2403,7 +2403,7 @@ public abstract class L2Character extends L2Object
 	/** Set the overloaded status of the L2Character is overloaded (if True, the L2PcInstance can't take more item). */
 	public final void setIsOverloaded(boolean value) { _isOverloaded = value; }
 	
-	public final boolean isParalyzed() { return _isParalyzed; }
+	public final boolean isParalyzed() { return _isParalyzed || isAffected(CharEffectList.EFFECT_FLAG_PARALYZED); }
 	public final void setIsParalyzed(boolean value) { _isParalyzed = value; }
 	
 	public final boolean isPendingRevive() { return isDead() && _isPendingRevive; }
@@ -2463,7 +2463,7 @@ public abstract class L2Character extends L2Object
 	public final boolean isTeleporting() { return _isTeleporting; }
 	public void setIsTeleporting(boolean value) { _isTeleporting = value; }
 	public void setIsInvul(boolean b){_isInvul = b;}
-	public boolean isInvul(){return _isInvul  || _isTeleporting;}
+	public boolean isInvul(){return _isInvul  || _isTeleporting || isAffected(CharEffectList.EFFECT_FLAG_INVUL);}
 	public void setIsMortal(boolean b) { _isMortal = b; }
 	public boolean isMortal(){ return _isMortal; }
 	public boolean isUndead() { return false; }

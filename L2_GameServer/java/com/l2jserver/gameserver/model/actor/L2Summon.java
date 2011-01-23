@@ -510,7 +510,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public boolean isInvul()
 	{
-		return _isInvul  || _isTeleporting ||  getOwner().isSpawnProtected();
+		return super.isInvul() ||  getOwner().isSpawnProtected();
 	}
 	
 	/**

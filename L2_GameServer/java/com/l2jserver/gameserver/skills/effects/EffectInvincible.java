@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
@@ -38,17 +39,6 @@ public class EffectInvincible extends L2Effect
 	
 	/**
 	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
-	 */
-	@Override
-	public boolean onStart()
-	{
-		getEffected().setIsInvul(true);
-		return super.onStart();
-	}
-	
-	/**
-	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onActionTime()
 	 */
 	@Override
@@ -58,14 +48,12 @@ public class EffectInvincible extends L2Effect
 		return false;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.L2Effect#onExit()
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
 	 */
 	@Override
-	public void onExit()
+	public int getEffectFlags()
 	{
-		getEffected().setIsInvul(false);
-		super.onExit();
+		return CharEffectList.EFFECT_FLAG_INVUL;
 	}
 }

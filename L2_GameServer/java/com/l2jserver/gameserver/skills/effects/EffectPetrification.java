@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.skills.Env;
@@ -45,9 +46,7 @@ public class EffectPetrification extends L2Effect
 	public boolean onStart()
 	{
 		getEffected().startAbnormalEffect(AbnormalEffect.HOLD_2);
-		getEffected().startParalyze();
-		getEffected().setIsInvul(true);
-		return true;
+		return super.onStart();
 	}
 	
 	/**
@@ -58,8 +57,7 @@ public class EffectPetrification extends L2Effect
 	public void onExit()
 	{
 		getEffected().stopAbnormalEffect(AbnormalEffect.HOLD_2);
-		getEffected().stopParalyze(false);
-		getEffected().setIsInvul(false);
+		super.onExit();
 	}
 	
 	/**
@@ -71,5 +69,13 @@ public class EffectPetrification extends L2Effect
 	{
 		return false;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_PARALYZED | CharEffectList.EFFECT_FLAG_INVUL;
+	}
 }

@@ -63,6 +63,8 @@ public class CharEffectList
 	public static final int EFFECT_FLAG_SLEEP = 0x4000;
 	public static final int EFFECT_FLAG_STUNNED = 0x8000;
 	public static final int EFFECT_FLAG_BETRAYED = 0x10000;
+	public static final int EFFECT_FLAG_INVUL = 0x40000;
+	public static final int EFFECT_FLAG_PARALYZED = 0x80000;
 	
 	private FastList<L2Effect> _buffs;
 	private FastList<L2Effect> _debuffs;

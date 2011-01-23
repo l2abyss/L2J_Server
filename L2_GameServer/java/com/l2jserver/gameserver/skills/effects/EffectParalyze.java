@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.skills.effects;
 
+import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.skills.Env;
@@ -45,8 +46,7 @@ public class EffectParalyze extends L2Effect
 	public boolean onStart()
 	{
 		getEffected().startAbnormalEffect(AbnormalEffect.HOLD_1);
-		getEffected().startParalyze();
-		return true;
+		return super.onStart();
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class EffectParalyze extends L2Effect
 	public void onExit()
 	{
 		getEffected().stopAbnormalEffect(AbnormalEffect.HOLD_1);
-		getEffected().stopParalyze(false);
+		super.onExit();
 	}
 	
 	/**
@@ -68,5 +68,14 @@ public class EffectParalyze extends L2Effect
 	public boolean onActionTime()
 	{
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectFlags()
+	 */
+	@Override
+	public int getEffectFlags()
+	{
+		return CharEffectList.EFFECT_FLAG_PARALYZED;
 	}
 }
