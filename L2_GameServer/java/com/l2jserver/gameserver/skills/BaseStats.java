@@ -152,7 +152,7 @@ public enum BaseStats
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
-		final File file = new File(Config.DATAPACK_ROOT, "data/statBonus.xml");
+		final File file = new File(Config.DATAPACK_ROOT, "data/stats/statBonus.xml");
 		Document doc = null;
 		
 		if (file.exists())
