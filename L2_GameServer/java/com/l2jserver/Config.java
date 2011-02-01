@@ -521,6 +521,8 @@ public final class Config
 	public static long ALT_OLY_BATTLE;
 	public static long ALT_OLY_WPERIOD;
 	public static long ALT_OLY_VPERIOD;
+	public static int ALT_OLY_START_POINTS;
+	public static int ALT_OLY_WEEKLY_POINTS;
 	public static int ALT_OLY_CLASSED;
 	public static int ALT_OLY_NONCLASSED;
 	public static int ALT_OLY_TEAMS;
@@ -529,6 +531,7 @@ public final class Config
 	public static int[][] ALT_OLY_NONCLASSED_REWARD;
 	public static int[][] ALT_OLY_TEAM_REWARD;
 	public static int ALT_OLY_COMP_RITEM;
+	public static int ALT_OLY_MIN_MATCHES;
 	public static int ALT_OLY_GP_PER_POINT;
 	public static int ALT_OLY_HERO_POINTS;
 	public static int ALT_OLY_RANK1_POINTS;
@@ -2534,6 +2537,8 @@ public final class Config
 					ALT_OLY_BATTLE = Long.parseLong(olympiad.getProperty("AltOlyBattle","360000"));
 					ALT_OLY_WPERIOD = Long.parseLong(olympiad.getProperty("AltOlyWPeriod","604800000"));
 					ALT_OLY_VPERIOD = Long.parseLong(olympiad.getProperty("AltOlyVPeriod","86400000"));
+					ALT_OLY_START_POINTS = Integer.parseInt(olympiad.getProperty("AltOlyStartPoints","18"));
+					ALT_OLY_WEEKLY_POINTS = Integer.parseInt(olympiad.getProperty("AltOlyWeeklyPoints","3"));
 					ALT_OLY_CLASSED = Integer.parseInt(olympiad.getProperty("AltOlyClassedParticipants","5"));
 					ALT_OLY_NONCLASSED = Integer.parseInt(olympiad.getProperty("AltOlyNonClassedParticipants","9"));
 					ALT_OLY_TEAMS = Integer.parseInt(olympiad.getProperty("AltOlyTeamsParticipants","9"));
@@ -2542,6 +2547,7 @@ public final class Config
 					ALT_OLY_NONCLASSED_REWARD = parseItemsList(olympiad.getProperty("AltOlyNonClassedReward","13722,40"));
 					ALT_OLY_TEAM_REWARD = parseItemsList(olympiad.getProperty("AltOlyTeamReward","13722,85"));
 					ALT_OLY_COMP_RITEM = Integer.parseInt(olympiad.getProperty("AltOlyCompRewItem","13722"));
+					ALT_OLY_MIN_MATCHES = Integer.parseInt(olympiad.getProperty("AltOlyMinMatchesForPoints","9"));
 					ALT_OLY_GP_PER_POINT = Integer.parseInt(olympiad.getProperty("AltOlyGPPerPoint","1000"));
 					ALT_OLY_HERO_POINTS = Integer.parseInt(olympiad.getProperty("AltOlyHeroPoints","180"));
 					ALT_OLY_RANK1_POINTS = Integer.parseInt(olympiad.getProperty("AltOlyRank1Points","120"));
