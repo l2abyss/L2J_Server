@@ -2022,12 +2022,8 @@ public final class Formulas
 	{
 		int chance = (80 + (2 * (attacker.getAccuracy() - target.getEvasionRate(attacker))))*10;
 		
-		if(attacker.isBehindTarget())
-			chance *= 1.2;
-		else if(attacker.isInFrontOfTarget())
-			chance *= 1;
-		else
-			chance *= 1.1;
+		// Get additional bonus from the conditions when you are attacking
+		chance *= hitConditionBonus.getConditionBonus(attacker, target);
 		
 		chance = Math.max(chance, 200);
 		chance = Math.min(chance, 980);
