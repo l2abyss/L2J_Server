@@ -74,7 +74,7 @@ public class hitConditionBonus
 	static
 	{
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setValidating(false);
+		factory.setIgnoringElementContentWhitespace(true);
 		factory.setIgnoringComments(true);
 		final File file = new File(Config.DATAPACK_ROOT, "data/stats/hitConditionBonus.xml");
 		Document doc = null;
@@ -91,17 +91,18 @@ public class hitConditionBonus
 			}
 			
 			String name;
-			int bonus = 0;
 			for (Node list = doc.getFirstChild(); list != null; list = list.getNextSibling())
 			{
 				if ("hitConditionBonus".equalsIgnoreCase(list.getNodeName()) || "list".equalsIgnoreCase(list.getNodeName()))
 				{
 					for (Node cond = list.getFirstChild(); cond != null; cond = cond.getNextSibling())
 					{
+						int bonus = 0;
 						name = cond.getNodeName();
 						try
 						{
-							bonus = Integer.parseInt(cond.getAttributes().getNamedItem("val").getNodeValue());							
+							if (cond.hasAttributes())
+								bonus = Integer.parseInt(cond.getAttributes().getNamedItem("val").getNodeValue());							
 						}
 						catch (Exception e)
 						{
