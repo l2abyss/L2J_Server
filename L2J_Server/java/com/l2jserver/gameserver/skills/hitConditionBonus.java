@@ -46,7 +46,7 @@ public class hitConditionBonus
 	
 	protected static double getConditionBonus(L2Character attacker, L2Character target)
 	{
-		int mod = 100;
+		double mod = 100;
 		// Get high or low bonus
 		if (attacker.getZ() - target.getZ() > 50)
 			mod += hitConditionBonus.highBonus;
