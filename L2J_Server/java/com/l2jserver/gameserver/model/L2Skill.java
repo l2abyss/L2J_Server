@@ -1391,6 +1391,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					case BALANCE_LIFE:
 					case HPMPCPHEAL_PERCENT:
 					case HPMPHEAL_PERCENT:
+					case HPCPHEAL_PERCENT:	
 						canTargetSelf = true;
 						break;
 				}
