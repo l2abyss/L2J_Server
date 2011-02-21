@@ -864,7 +864,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				par = _teamOne[i];
 				par.updatePlayer();
-				reason = AbstractOlympiadGame.checkDefaulted(par.player);
+				reason = checkDefaulted(par.player);
 				if (reason != null)
 				{
 					par.defaulted = true;
@@ -885,7 +885,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				par = _teamTwo[i];
 				par.updatePlayer();
-				reason = AbstractOlympiadGame.checkDefaulted(par.player);
+				reason = checkDefaulted(par.player);
 				if (reason != null)
 				{
 					par.defaulted = true;

@@ -559,13 +559,13 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 	}
 
 	@Override
-	public final boolean checkDefaulted()
+	public boolean checkDefaulted()
 	{
 		SystemMessage reason;
 		_playerOne.updatePlayer();
 		_playerTwo.updatePlayer();
 		
-		reason = AbstractOlympiadGame.checkDefaulted(_playerOne.player);
+		reason = checkDefaulted(_playerOne.player);
 		if (reason != null)
 		{
 			_playerOne.defaulted = true;
@@ -573,7 +573,7 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 				_playerTwo.player.sendPacket(reason);
 		}
 
-		reason = AbstractOlympiadGame.checkDefaulted(_playerTwo.player);
+		reason = checkDefaulted(_playerTwo.player);
 		if (reason != null)
 		{
 			_playerTwo.defaulted = true;
