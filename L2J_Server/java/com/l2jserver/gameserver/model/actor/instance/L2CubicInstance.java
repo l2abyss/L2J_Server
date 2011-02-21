@@ -79,6 +79,8 @@ public class L2CubicInstance
 	protected int _matk;
 	protected int _activationtime;
 	protected int _activationchance;
+	protected int _maxcount;
+	protected int _currentcount;
 	protected boolean _active;
 	private boolean _givenByOther;
 	
@@ -88,13 +90,15 @@ public class L2CubicInstance
 	private Future<?> _actionTask;
 	
 	public L2CubicInstance(L2PcInstance owner, int id, int level, int mAtk, int activationtime,
-			int activationchance, int totallifetime, boolean givenByOther)
+			int activationchance, int maxcount, int totallifetime, boolean givenByOther)
 	{
 		_owner = owner;
 		_id = id;
 		_matk = mAtk;
 		_activationtime = activationtime * 1000;
 		_activationchance = activationchance;
+		_maxcount = maxcount;
+		_currentcount = 0;
 		_active = false;
 		_givenByOther = givenByOther;
 		
@@ -498,6 +502,12 @@ public class L2CubicInstance
 						return;
 					}
 				}
+				// The cubic has already reached its limit and it will stay idle until its lifetime ends.
+				if (_maxcount > -1 && _currentcount >= _maxcount)
+				{
+					stopAction();
+					return;
+				}
 				// Smart Cubic debuff cancel is 100%
 				boolean UseCubicCure = false;
 				L2Skill skill = null;
@@ -522,6 +532,9 @@ public class L2CubicInstance
 					// activation period
 					MagicSkillUse msu = new MagicSkillUse(_owner, _owner, SKILL_CUBIC_CURE, 1, 0, 0);
 					_owner.broadcastPacket(msu);
+					
+					// The cubic has done an action, increase the currentcount
+					_currentcount++;
 				}
 				else if (Rnd.get(1, 100) < _chance)
 				{
@@ -594,6 +607,9 @@ public class L2CubicInstance
 								if (Config.DEBUG)
 									_log.info("L2CubicInstance: Action.run(); other handler");
 							}
+							
+							// The cubic has done an action, increase the currentcount
+							_currentcount++;
 						}
 					}
 				}
