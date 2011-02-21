@@ -20,7 +20,6 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Trap;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -167,6 +166,20 @@ public class L2TrapInstance extends L2Trap
 			return false;
 		if (cha == _owner)
 			return true;
+
+		if (cha instanceof L2PcInstance)
+		{
+			// observers can't see trap
+			if (((L2PcInstance)cha).inObserverMode())
+				return false;
+
+			// olympiad competitors can't see trap
+			if (_owner.isInOlympiadMode()
+					&& ((L2PcInstance)cha).isInOlympiadMode()
+					&& ((L2PcInstance)cha).getOlympiadSide() != _owner.getOlympiadSide())
+				return false;
+		}
+
 		if (_isInArena)
 			return true;
 		
@@ -201,12 +214,26 @@ public class L2TrapInstance extends L2Trap
 	{
 		if (!L2Skill.checkForAreaOffensiveSkills(this, target, getSkill(), _isInArena))
 			return false;
-		
+
+		// observers
+		if (target instanceof L2PcInstance && ((L2PcInstance)target).inObserverMode())
+			return false;
+
+		// olympiad own team and their summons not attacked
+		if (_owner != null && _owner.isInOlympiadMode())
+		{
+			final L2PcInstance player = target.getActingPlayer();
+			if (player != null
+					&& player.isInOlympiadMode()
+					&& player.getOlympiadSide() == _owner.getOlympiadSide())
+				return false;
+		}
+
 		if (_isInArena)
 			return true;
 		
 		// trap owned by players not attack non-flagged players
-		if (_owner != null && target instanceof L2Playable)
+		if (_owner != null)
 		{
 			final L2PcInstance player = target.getActingPlayer();
 			if (player == null || (player.getPvpFlag() == 0 && player.getKarma() == 0))
