@@ -46,6 +46,7 @@ public class EffectPetrification extends L2Effect
 	public boolean onStart()
 	{
 		getEffected().startAbnormalEffect(AbnormalEffect.HOLD_2);
+		getEffected().startParalyze();
 		return super.onStart();
 	}
 	
@@ -57,6 +58,7 @@ public class EffectPetrification extends L2Effect
 	public void onExit()
 	{
 		getEffected().stopAbnormalEffect(AbnormalEffect.HOLD_2);
+		getEffected().stopParalyze(false);
 		super.onExit();
 	}
 	

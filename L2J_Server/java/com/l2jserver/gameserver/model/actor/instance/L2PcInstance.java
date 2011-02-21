@@ -9961,8 +9961,8 @@ public final class L2PcInstance extends L2Playable
 		
 		_observerMode = true;
 		setTarget(null);
-		stopMove(null);
 		setIsParalyzed(true);
+		startParalyze();
 		setIsInvul(true);
 		getAppearance().setInvisible();
 		//sendPacket(new GMHide(1));
@@ -10025,6 +10025,7 @@ public final class L2PcInstance extends L2Playable
 		getKnownList().removeAllKnownObjects(); // reinit knownlist
 		setXYZ(_lastX, _lastY, _lastZ);
 		setIsParalyzed(false);
+		stopParalyze(false);
 		//sendPacket(new GMHide(0));
 		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invis", getAccessLevel()))
 			getAppearance().setVisible();

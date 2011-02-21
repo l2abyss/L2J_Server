@@ -2932,13 +2932,11 @@ public abstract class L2Character extends L2Object
 	
 	public final void startParalyze()
 	{
-		setIsParalyzed(true);
 		/* Aborts any attacks/casts if paralyzed */
 		abortAttack();
 		abortCast();
 		stopMove(null);
 		getAI().notifyEvent(CtrlEvent.EVT_PARALYZED);
-		updateAbnormalEffect();
 	}
 
 	/**
@@ -3213,10 +3211,8 @@ public abstract class L2Character extends L2Object
 		if (removeEffects)
 			stopEffects(L2EffectType.PARALYZE);
 		
-		setIsParalyzed(false);
 		if (!(this instanceof L2PcInstance))
 			getAI().notifyEvent(CtrlEvent.EVT_THINK);
-		updateAbnormalEffect();
 	}
 	
 	/**
