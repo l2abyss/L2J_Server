@@ -35,6 +35,16 @@ public class EffectBuff extends L2Effect
 		super(env, effect);
 	}
 	
+	/**
+	 * 
+	 * @see com.l2jserver.gameserver.model.L2Effect#effectCanBeStolen()
+	 */
+	@Override
+	protected boolean effectCanBeStolen()
+	{
+		return true;
+	}
+
 	@Override
 	public L2EffectType getEffectType()
 	{

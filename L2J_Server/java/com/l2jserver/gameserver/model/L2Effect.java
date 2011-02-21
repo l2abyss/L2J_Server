@@ -35,11 +35,6 @@ import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.skills.effects.EffectBuff;
-import com.l2jserver.gameserver.skills.effects.EffectChanceSkillTrigger;
-import com.l2jserver.gameserver.skills.effects.EffectHealOverTime;
-import com.l2jserver.gameserver.skills.effects.EffectNoblesseBless;
-import com.l2jserver.gameserver.skills.effects.EffectSilentMove;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.skills.funcs.Lambda;
@@ -626,7 +621,7 @@ public abstract class L2Effect
 	
 	public boolean canBeStolen()
 	{
-		if(!(this instanceof EffectBuff || this instanceof EffectChanceSkillTrigger || this instanceof EffectHealOverTime || this instanceof EffectNoblesseBless || this instanceof EffectSilentMove)
+		if(!effectCanBeStolen()
 				|| this.getEffectType() == L2EffectType.TRANSFORMATION
 				|| this.getSkill().isPassive()
 				|| this.getSkill().isToggle()
@@ -639,7 +634,16 @@ public abstract class L2Effect
 			return false;
 		return true;
 	}
-	
+
+	/**
+	 * Return true if effect itself can be stolen
+	 * @return
+	 */
+	protected boolean effectCanBeStolen()
+	{
+		return false;
+	}
+
 	/**
 	 * Return bit flag for current effect
 	 * @return int flag

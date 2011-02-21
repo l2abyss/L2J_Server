@@ -28,6 +28,22 @@ public class EffectParalyze extends L2Effect
 		super(env, template);
 	}
 	
+	// Special constructor to steal this effect
+	public EffectParalyze(Env env, L2Effect effect)
+	{
+		super(env, effect);
+	}
+	
+	/**
+	 * 
+	 * @see com.l2jserver.gameserver.model.L2Effect#effectCanBeStolen()
+	 */
+	@Override
+	protected boolean effectCanBeStolen()
+	{
+		return true;
+	}
+
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()

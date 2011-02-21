@@ -47,6 +47,12 @@ public class EffectChanceSkillTrigger extends L2Effect implements IChanceSkillTr
 	}
 	
 	@Override
+	protected boolean effectCanBeStolen()
+	{
+		return true;
+	}
+
+	@Override
 	public L2EffectType getEffectType()
 	{
 		return L2EffectType.CHANCE_SKILL_TRIGGER;

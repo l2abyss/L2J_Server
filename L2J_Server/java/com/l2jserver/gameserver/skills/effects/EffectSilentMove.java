@@ -38,6 +38,16 @@ public class EffectSilentMove extends L2Effect
 	
 	/**
 	 * 
+	 * @see com.l2jserver.gameserver.model.L2Effect#effectCanBeStolen()
+	 */
+	@Override
+	protected boolean effectCanBeStolen()
+	{
+		return true;
+	}
+
+	/**
+	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#onStart()
 	 */
 	@Override

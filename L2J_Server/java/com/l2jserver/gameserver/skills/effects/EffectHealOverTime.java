@@ -34,6 +34,17 @@ public class EffectHealOverTime extends L2Effect
 	{
 		super(env, effect);
 	}
+
+	/**
+	 * 
+	 * @see com.l2jserver.gameserver.model.L2Effect#effectCanBeStolen()
+	 */
+	@Override
+	protected boolean effectCanBeStolen()
+	{
+		return true;
+	}
+
 	/**
 	 * 
 	 * @see com.l2jserver.gameserver.model.L2Effect#getEffectType()
