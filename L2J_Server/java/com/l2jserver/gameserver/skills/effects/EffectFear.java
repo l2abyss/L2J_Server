@@ -97,6 +97,9 @@ public class EffectFear extends L2Effect
 		
 		if (!getEffected().isAfraid())
 		{
+			if(getEffected().isCastingNow() && getEffected().canAbortCast())
+				getEffected().abortCast();
+
 			if (getEffected().getX() > getEffector().getX())
 				_dX = 1;
 			if (getEffected().getY() > getEffector().getY())
