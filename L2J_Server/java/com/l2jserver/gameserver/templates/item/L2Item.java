@@ -580,6 +580,16 @@ public abstract class L2Item
 		return _pvpItem;
 	}
 	
+	public boolean isPotion() 
+	{ 
+		return (getItemType() == L2EtcItemType.POTION);
+	}
+
+	public boolean isElixir() 
+	{ 
+		return (getItemType() == L2EtcItemType.ELIXIR);
+	}
+
 	/**
 	 * Returns array of Func objects containing the list of functions used by the item
 	 * @param instance : L2ItemInstance pointing out the item

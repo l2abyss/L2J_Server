@@ -203,7 +203,7 @@ public final class UseItem extends L2GameClientPacket
 				|| activeChar.isParalyzed()
 				|| activeChar.isAlikeDead()
 				|| activeChar.isAfraid()
-				|| activeChar.isCastingNow())
+				|| (activeChar.isCastingNow() && !(item.isPotion() || item.isElixir())))
 		{
 			return;
 		}

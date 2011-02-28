@@ -720,6 +720,16 @@ public final class L2ItemInstance extends L2Object
 		return _item.isConsumable();
 	}
 	
+	public boolean isPotion()
+	{
+		return _item.isPotion();
+	}
+
+	public boolean isElixir()
+	{
+		return _item.isElixir();
+	}
+
 	public boolean isHeroItem()
 	{
 		return _item.isHeroItem();
