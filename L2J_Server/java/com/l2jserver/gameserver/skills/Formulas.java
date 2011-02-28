@@ -1320,6 +1320,7 @@ public final class Formulas
 		damage *= calcElemental(attacker, target, skill);
 		damage += attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.5;
 		damage *= target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill);
+		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.5;
 		
 		// get the natural vulnerability for the template
 		/*if (target instanceof L2Npc)

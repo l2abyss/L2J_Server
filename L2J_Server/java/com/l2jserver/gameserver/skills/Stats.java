@@ -148,7 +148,8 @@ public enum Stats
 	DERANGEMENT_VULN("derangementVuln"),
 	DEBUFF_VULN("debuffVuln"),
 	BUFF_VULN("buffVuln"),
-	CRIT_VULN("critVuln"), // Resistence to Crit DMG.
+	CRIT_VULN("critVuln"), // Resistence to Crit DMG in percent.
+	CRIT_ADD_VULN("critAddVuln"), // Resistence to Crit DMG in value (ex: +100 will be 100 more crit dmg, NOT 100% more).
 	MAGIC_DAMAGE_VULN("magicDamVul"),
 	MAGIC_SUCCESS_RES("magicSuccRes"),
 	MAGIC_FAILURE_RATE("magicFailureRate"),
