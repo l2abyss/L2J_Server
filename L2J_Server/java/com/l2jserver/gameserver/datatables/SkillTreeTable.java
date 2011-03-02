@@ -461,7 +461,7 @@ public class SkillTreeTable
 		
 		for (L2SkillLearn temp : skills)
 		{
-			if (temp.isLearnedByNPC() && temp.getMinLevel() <= cha.getLevel())
+			if (!temp.isLearnedByFS() && temp.getMinLevel() <= cha.getLevel())
 			{
 				boolean knownSkill = false;
 				
