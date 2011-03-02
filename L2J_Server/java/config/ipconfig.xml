@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Externalhost here (Internet IP) or Localhost IP for local test -->
-<gameserver address="127.0.0.1">
+<gameserver address="127.0.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ipconfig.xsd">
 	<!-- Localhost here -->
 	<define subnet="127.0.0.0/8" address="127.0.0.1" />
 	<!-- Internalhosts here (LANs IPs) -->
