@@ -957,10 +957,15 @@ abstract class DocumentBase
 		String name = n.getAttributes().getNamedItem("name").getNodeValue().trim();
 		String value = n.getAttributes().getNamedItem("val").getNodeValue().trim();
 		char ch = value.length() == 0 ? ' ' : value.charAt(0);
-		if (ch == '#' || ch == '-' || Character.isDigit(ch)) set.set(name,
-				String.valueOf(getValue(value,
-						level)));
-		else set.set(name, value);
+		if (ch == '#' || ch == '-' || Character.isDigit(ch))
+			set.set(name, String.valueOf(getValue(value, level)));
+		else
+			set.set(name, value);
+	}
+	
+	protected void setExtractableSkillData(StatsSet set, String value)
+	{
+		set.set("capsuled_items_skill", value);
 	}
 	
 	protected Lambda getLambda(Node n, Object template)

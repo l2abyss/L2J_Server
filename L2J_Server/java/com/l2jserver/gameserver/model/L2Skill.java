@@ -291,6 +291,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _excludedFromCheck;
 	private final boolean _simultaneousCast;
 	
+	private L2ExtractableSkill _extractableItems;
+	
 	protected L2Skill(StatsSet set)
 	{
 		_id = set.getInteger("skill_id");
@@ -521,6 +523,15 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_excludedFromCheck = set.getBool("excludedFromCheck", false);
 		_dependOnTargetBuff = set.getFloat("dependOnTargetBuff", 0);
 		_simultaneousCast = set.getBool("simultaneousCast", false);
+		
+		String capsuled_items = set.getString("capsuled_items_skill", null);
+		if (capsuled_items != null)
+		{
+			if (capsuled_items.isEmpty())
+				_log.warning("Empty Extractable Item Skill data in Skill Id: " + _id);
+			
+			_extractableItems = parseExtractableSkill(_id, _level, capsuled_items, set.getBool("extractableSkillUseMsg", true));
+		}
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -2849,5 +2860,66 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean isSimultaneousCast()
 	{
 		return _simultaneousCast;
+	}
+	
+	/**
+	 * @param skillId
+	 * @param skillLvl
+	 * @param values
+	 * @return L2ExtractableSkill
+	 * @author Zoey76
+	 */
+	private L2ExtractableSkill parseExtractableSkill(int skillId, int skillLvl, String values, boolean useMsg)
+	{
+		String[] lineSplit = values.split(";");
+		
+		final FastList<L2ExtractableProductItem> product_temp = new FastList<L2ExtractableProductItem>();
+		
+		for (int i = 0; i <= (lineSplit.length-1); i++)
+		{
+			final String[] lineSplit2 = lineSplit[i].split(",");
+			
+			if (lineSplit2.length < 3)
+				_log.warning("Extractable skills data: Error in Skill Id: " + skillId + " Level: " + skillLvl + " -> wrong seperator!");
+			
+			int[] production = null;
+			int[] amount = null;
+			double chance = 0;
+			int prodId = 0;
+			int quantity = 0;
+			try
+			{
+				int k =0;
+				production = new int[(lineSplit2.length-1)/2];
+				amount = new int[(lineSplit2.length-1)/2];
+				for (int j = 0; j < (lineSplit2.length-1); j++)
+				{
+					prodId = Integer.parseInt(lineSplit2[j]);
+					quantity = Integer.parseInt(lineSplit2[j+=1]);
+					if ((prodId <= 0) || (quantity <= 0))
+						_log.warning("Extractable skills data: Error in Skill Id: " + skillId + " Level: " + skillLvl + " wrong production Id: " + prodId + " or wrond quantity: " + quantity + "!");
+					production[k] = prodId;
+					amount[k] = quantity;
+					k++;
+				}
+				chance = Double.parseDouble(lineSplit2[lineSplit2.length-1]);
+			}
+			catch (Exception e)
+			{
+				_log.warning("Extractable skills data: Error in Skill Id: " + skillId + " Level: " + skillLvl + " -> incomplete/invalid production data or wrong seperator!");
+			}
+			
+			product_temp.add(new L2ExtractableProductItem(production, amount, chance));
+		}
+		
+		if (product_temp.size()== 0)
+			_log.warning("Extractable skills data: Error in Skill Id: " + skillId + " Level: " + skillLvl + " -> There are no production items!");
+		
+		return new L2ExtractableSkill(SkillTable.getSkillHashCode(this), product_temp, useMsg);
+	}
+	
+	public L2ExtractableSkill getExtractableSkill()
+	{
+		return _extractableItems;
 	}
 }

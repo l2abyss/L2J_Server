@@ -15,16 +15,15 @@
 package com.l2jserver.gameserver.model;
 
 /**
- *
- * @author -Nemesiss-
+ * @author -Nemesiss-, Zoey76
  */
 public class L2ExtractableProductItem
 {
 	private final int[] _id;
 	private final int[] _ammount;
-	private final int _chance;
+	private final double _chance;
 	
-	public L2ExtractableProductItem(int[] id, int[] ammount, int chance)
+	public L2ExtractableProductItem(int[] id, int[] ammount, double chance)
 	{
 		_id = id;
 		_ammount = ammount;
@@ -41,7 +40,7 @@ public class L2ExtractableProductItem
 		return _ammount;
 	}
 	
-	public int getChance()
+	public double getChance()
 	{
 		return _chance;
 	}

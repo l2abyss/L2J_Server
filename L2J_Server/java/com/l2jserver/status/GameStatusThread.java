@@ -53,7 +53,6 @@ import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.Shutdown;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.datatables.ExtractableSkillsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.MultiSell;
 import com.l2jserver.gameserver.datatables.NpcTable;
@@ -808,13 +807,6 @@ public class GameStatusThread extends Thread
 							RaidBossSpawnManager.getInstance().reloadBosses();
 							_print.println("done\n");
 						}
-						else if(type.equals("extractables"))
-						{
-							_print.print("Reloading extractable items and skills... ");
-							ExtractableSkillsData.getInstance().reload();
-							_print.println("done");
-						}
-						
 					}
 					catch(Exception e){}
 				}

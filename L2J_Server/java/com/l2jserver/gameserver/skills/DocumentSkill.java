@@ -32,12 +32,9 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 /**
  * @author mkizub
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
  */
-class DocumentSkill extends DocumentBase {
-	
+class DocumentSkill extends DocumentBase
+{
 	public static class Skill
 	{
 		public int                  id;
@@ -201,7 +198,13 @@ class DocumentSkill extends DocumentBase {
 			for (n=first; n != null; n = n.getNextSibling())
 			{
 				if ("set".equalsIgnoreCase(n.getNodeName()))
-					parseBeanSet(n, _currentSkill.sets[i-1], i);
+				{
+					//Extractable item skills by Zoey76
+					if ("capsuled_items_skill".equalsIgnoreCase(n.getAttributes().getNamedItem("name").getNodeValue()))
+						setExtractableSkillData(_currentSkill.sets[i-1], getTableValue("#extractableItems", i));
+					else
+						parseBeanSet(n, _currentSkill.sets[i-1], i);
+				}
 			}
 		}
 		for (int i=0; i < enchantLevels1; i++)

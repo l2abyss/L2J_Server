@@ -16,16 +16,21 @@ package com.l2jserver.gameserver.model;
 
 import javolution.util.FastList;
 
+/**
+ * @author Zoey76
+ */
 public class L2ExtractableSkill
 {
 	private final int _hash;
 	private final L2ExtractableProductItem[] _product;
+	private final boolean _msg;
 	
-	public L2ExtractableSkill(int hash, FastList<L2ExtractableProductItem> products)
+	public L2ExtractableSkill(int hash, FastList<L2ExtractableProductItem> products, boolean msg)
 	{
 		_hash = hash;
 		_product = new L2ExtractableProductItem[products.size()];
 		products.toArray(_product);
+		_msg = msg;
 	}
 	
 	public int getSkillHash()
@@ -36,5 +41,10 @@ public class L2ExtractableSkill
 	public L2ExtractableProductItem[] getProductItemsArray()
 	{
 		return _product;
+	}
+	
+	public boolean useMessage()
+	{
+		return _msg;
 	}
 }

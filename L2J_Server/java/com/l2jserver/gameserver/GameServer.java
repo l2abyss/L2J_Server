@@ -45,7 +45,6 @@ import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
-import com.l2jserver.gameserver.datatables.ExtractableSkillsData;
 import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
@@ -231,7 +230,6 @@ public class GameServer
 		
 		printSection("Items");
 		ItemTable.getInstance();
-		ExtractableSkillsData.getInstance();
 		SummonItemsData.getInstance();
 		EnchantHPBonusData.getInstance();
 		MerchantPriceConfigTable.getInstance().loadInstances();
