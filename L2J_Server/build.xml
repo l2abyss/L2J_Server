@@ -183,6 +183,7 @@
 			<fileset dir="java/config">
 				<include name="*.properties" />
 				<include name="*.xml" />
+				<include name="*.xsd" />
 				<include name="*.txt" />
 				<exclude name="loginserver.properties" />
 			</fileset>
