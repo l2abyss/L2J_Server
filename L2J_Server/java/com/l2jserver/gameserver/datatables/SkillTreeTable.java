@@ -152,7 +152,7 @@ public class SkillTreeTable
 				int parentClassId;
 				L2SkillLearn skillLearn;
 				
-				PreparedStatement statement2 = con.prepareStatement("SELECT class_id, skill_id, level, name, sp, min_level, learned_by_npc, learned_by_fs FROM skill_trees where class_id=? ORDER BY skill_id, level");
+				PreparedStatement statement2 = con.prepareStatement("SELECT class_id, skill_id, level, name, sp, min_level, learned_by_npc, learned_by_fs, is_transfer, is_autoget FROM skill_trees where class_id=? ORDER BY skill_id, level");
 				while (classlist.next())
 				{
 					map = new FastMap<Integer, L2SkillLearn>();
@@ -180,11 +180,13 @@ public class SkillTreeTable
 						int cost = skilltree.getInt("sp");
 						boolean npc = skilltree.getBoolean("learned_by_npc");
 						boolean fs = skilltree.getBoolean("learned_by_fs");
+						boolean trans = skilltree.getBoolean("is_transfer");
+						boolean autoget = skilltree.getBoolean("is_autoget");
 						
 						if (prevSkillId != id)
 							prevSkillId = id;
 						
-						skillLearn = new L2SkillLearn(id, lvl, minLvl, name, cost, 0, 0, npc, fs);
+						skillLearn = new L2SkillLearn(id, lvl, minLvl, name, cost, 0, 0, npc, fs, trans, autoget);
 						map.put(SkillTable.getSkillHashCode(id, lvl), skillLearn);
 					}
 					
@@ -233,7 +235,7 @@ public class SkillTreeTable
 					if (prevSkillId != id)
 						prevSkillId = id;
 					
-					L2SkillLearn skill = new L2SkillLearn(id, lvl, minLvl, name, cost, costId, costCount, npc, fs);
+					L2SkillLearn skill = new L2SkillLearn(id, lvl, minLvl, name, cost, costId, costCount, npc, fs, false, false);
 					
 					if (isDwarven)
 						_expandDwarfCraftSkillTrees.add(skill);
@@ -339,7 +341,7 @@ public class SkillTreeTable
 					if (prevSkillId != id)
 						prevSkillId = id;
 					
-					L2SkillLearn skill = new L2SkillLearn(id, lvl, 0, name, 0, costId, costCount, npc, fs);
+					L2SkillLearn skill = new L2SkillLearn(id, lvl, 0, name, 0, costId, costCount, npc, fs, false, false);
 					
 					_specialSkillTrees.add(skill);
 				}
@@ -461,7 +463,8 @@ public class SkillTreeTable
 		
 		for (L2SkillLearn temp : skills)
 		{
-			if (!temp.isLearnedByFS() && temp.getMinLevel() <= cha.getLevel())
+			//Let's get all auto-get skills and all skill learn from npc, but transfer skills.
+			if ((temp.isAutoGetSkill() || (temp.isLearnedByNPC() && !temp.isTransferSkill())) && (temp.getMinLevel() <= cha.getLevel()))
 			{
 				boolean knownSkill = false;
 				

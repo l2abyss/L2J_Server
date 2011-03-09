@@ -22,15 +22,12 @@ import javolution.util.FastList;
 public class L2ExtractableSkill
 {
 	private final int _hash;
-	private final L2ExtractableProductItem[] _product;
-	private final boolean _msg;
+	private final FastList<L2ExtractableProductItem> _product;
 	
-	public L2ExtractableSkill(int hash, FastList<L2ExtractableProductItem> products, boolean msg)
+	public L2ExtractableSkill(int hash, FastList<L2ExtractableProductItem> products)
 	{
 		_hash = hash;
-		_product = new L2ExtractableProductItem[products.size()];
-		products.toArray(_product);
-		_msg = msg;
+		_product = products;
 	}
 	
 	public int getSkillHash()
@@ -38,13 +35,8 @@ public class L2ExtractableSkill
 		return _hash;
 	}
 	
-	public L2ExtractableProductItem[] getProductItemsArray()
+	public FastList<L2ExtractableProductItem> getProductItemsArray()
 	{
 		return _product;
-	}
-	
-	public boolean useMessage()
-	{
-		return _msg;
 	}
 }

@@ -291,7 +291,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _excludedFromCheck;
 	private final boolean _simultaneousCast;
 	
-	private L2ExtractableSkill _extractableItems;
+	private L2ExtractableSkill _extractableItems = null;;
 	
 	protected L2Skill(StatsSet set)
 	{
@@ -530,7 +530,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			if (capsuled_items.isEmpty())
 				_log.warning("Empty Extractable Item Skill data in Skill Id: " + _id);
 			
-			_extractableItems = parseExtractableSkill(_id, _level, capsuled_items, set.getBool("extractableSkillUseMsg", true));
+			_extractableItems = parseExtractableSkill(_id, _level, capsuled_items);
 		}
 	}
 	
@@ -2869,7 +2869,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * @return L2ExtractableSkill
 	 * @author Zoey76
 	 */
-	private L2ExtractableSkill parseExtractableSkill(int skillId, int skillLvl, String values, boolean useMsg)
+	private L2ExtractableSkill parseExtractableSkill(int skillId, int skillLvl, String values)
 	{
 		String[] lineSplit = values.split(";");
 		
@@ -2915,7 +2915,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (product_temp.size()== 0)
 			_log.warning("Extractable skills data: Error in Skill Id: " + skillId + " Level: " + skillLvl + " -> There are no production items!");
 		
-		return new L2ExtractableSkill(SkillTable.getSkillHashCode(this), product_temp, useMsg);
+		return new L2ExtractableSkill(SkillTable.getSkillHashCode(this), product_temp);
 	}
 	
 	public L2ExtractableSkill getExtractableSkill()

@@ -35,8 +35,10 @@ public final class L2SkillLearn
 	
 	private final boolean _learnedByNpc;
 	private final boolean _learnedByFs;
+	private final boolean _isTransfer;
+	private final boolean _isAutoGet;
 	
-	public L2SkillLearn(int id, int lvl, int minLvl, String name, int cost, int costid, int costcount, boolean npc, boolean fs)
+	public L2SkillLearn(int id, int lvl, int minLvl, String name, int cost, int costid, int costcount, boolean npc, boolean fs, boolean transfer, boolean autoget)
 	{
 		_id = id;
 		_level = lvl;
@@ -47,6 +49,8 @@ public final class L2SkillLearn
 		_costcount = costcount;
 		_learnedByNpc = npc;
 		_learnedByFs = fs;
+		_isTransfer = transfer;
+		_isAutoGet = autoget;
 	}
 	
 	/**
@@ -113,5 +117,15 @@ public final class L2SkillLearn
 	public boolean isLearnedByFS()
 	{
 		return _learnedByFs;
+	}
+	
+	public boolean isTransferSkill()
+	{
+		return _isTransfer;
+	}
+	
+	public boolean isAutoGetSkill()
+	{
+		return _isAutoGet;
 	}
 }
