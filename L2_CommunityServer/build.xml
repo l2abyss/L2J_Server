@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="L2_CommunityServer" default="dist" basedir=".">
+<project name="L2J_CommunityServer" default="dist" basedir=".">
     <property name="src" location="java"/>
     <property name="lib" location="lib"/>
     <property name="build" location="build"/>
@@ -100,7 +100,7 @@
 			</fileset>
         </copy>
 
-        <zip destfile="${build}/l2j-community.zip"
+        <zip destfile="${build}/L2J_CommunityServer.zip"
              basedir="${build.dist}" />
     </target>
     
