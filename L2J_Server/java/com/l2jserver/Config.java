@@ -2559,7 +2559,7 @@ public final class Config
 					ALT_OLY_LOG_FIGHTS = Boolean.parseBoolean(olympiad.getProperty("AltOlyLogFights","false"));
 					ALT_OLY_SHOW_MONTHLY_WINNERS = Boolean.parseBoolean(olympiad.getProperty("AltOlyShowMonthlyWinners","true"));
 					ALT_OLY_ANNOUNCE_GAMES = Boolean.parseBoolean(olympiad.getProperty("AltOlyAnnounceGames","true"));
-					String[] split = olympiad.getProperty("AltOlyRestrictedItems","0").split(",");
+					String[] split = olympiad.getProperty("AltOlyRestrictedItems","6611,6612,6613,6614,6615,6616,6617,6618,6619,6620,6621,9388,9389,9390,17049,17050,17051,17052,17053,17054,17055,17056,17057,17058,17059,17060,17061,20759,20775,20776,20777,20778,14774").split(",");
 					LIST_OLY_RESTRICTED_ITEMS = new TIntArrayList(split.length);
 					for (String id : split)
 					{
