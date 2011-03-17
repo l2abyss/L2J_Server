@@ -33,6 +33,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.skills.conditions.Condition;
+import com.l2jserver.gameserver.skills.conditions.ConditionLogicOr;
 import com.l2jserver.gameserver.skills.conditions.ConditionPetType;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
@@ -226,18 +227,24 @@ public abstract class L2Item
 		if (equip_condition != null)
 		{
 			//pet conditions
+			ConditionLogicOr cond = new ConditionLogicOr();
 			if (equip_condition.contains("all_wolf_group"))
-				attach(new ConditionPetType(ALL_WOLF));
-			else if (equip_condition.contains("hatchling_group"))
-				attach(new ConditionPetType(HATCHLING));
-			else if (equip_condition.contains("strider"))
-				attach(new ConditionPetType(STRIDER));
-			else if (equip_condition.contains("baby_pet_group"))
-				attach(new ConditionPetType(BABY));
-			else if (equip_condition.contains("grown_up_wolf_group"))
-				attach(new ConditionPetType(GROWN_WOLF));
-			else if (equip_condition.contains("item_equip_pet_group"))
-				attach(new ConditionPetType(ALL_PET));
+				cond.add(new ConditionPetType(ALL_WOLF));
+			if (equip_condition.contains("hatchling_group"))
+				cond.add(new ConditionPetType(HATCHLING));
+			if (equip_condition.contains("strider"))
+				cond.add(new ConditionPetType(STRIDER));
+			if (equip_condition.contains("baby_pet_group"))
+				cond.add(new ConditionPetType(BABY));
+			if (equip_condition.contains("upgrade_baby_pet_group"))
+				cond.add(new ConditionPetType(IMPROVED_BABY));
+			if (equip_condition.contains("grown_up_wolf_group"))
+				cond.add(new ConditionPetType(GROWN_WOLF));
+			if (equip_condition.contains("item_equip_pet_group"))
+				cond.add(new ConditionPetType(ALL_PET));
+			
+			if (cond.conditions.length > 0)
+				attach(cond);
 		}
 
 		
