@@ -40,6 +40,9 @@ public class L2DamageZone extends L2ZoneType
 	private int _castleId;
 	private Castle _castle;
 	
+	private int _startTask;
+	private int _reuseTask;
+	
 	public L2DamageZone(int id)
 	{
 		super(id);
@@ -47,6 +50,10 @@ public class L2DamageZone extends L2ZoneType
 		// Setup default damage
 		_damageHPPerSec = 200;
 		_damageMPPerSec = 0;
+		
+		// Setup default start / reuse time
+		_startTask = 10;
+		_reuseTask = 5000;
 		
 		// no castle by default
 		_castleId = 0;
@@ -70,6 +77,14 @@ public class L2DamageZone extends L2ZoneType
 		{
 			_castleId = Integer.parseInt(value);
 		}
+		else if (name.equalsIgnoreCase("initialDelay"))
+		{
+			_startTask = Integer.parseInt(value);
+		}
+		else if (name.equalsIgnoreCase("reuse"))
+		{
+			_reuseTask = Integer.parseInt(value);
+		}
 		else
 			super.setParameter(name, value);
 	}
@@ -86,7 +101,7 @@ public class L2DamageZone extends L2ZoneType
 			synchronized(this)
 			{
 				if (_task == null)
-					_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), 10, 3300);
+					_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), _startTask, _reuseTask);
 			}
 		}
 	}
