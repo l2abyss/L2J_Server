@@ -185,13 +185,15 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			if (env.player instanceof L2PetInstance)
+			if (env.player instanceof L2PcInstance)
 			{
-				if (env.player.getActiveWeaponInstance() != null)
-					env.value *= BaseStats.STR.calcBonus(env.player);
+				env.value *= BaseStats.STR.calcBonus(env.player) * env.player.getLevelMod();
 			}
 			else
-				env.value *= BaseStats.STR.calcBonus(env.player) * env.player.getLevelMod();
+			{
+				float level = env.player.getLevel();
+				env.value *= BaseStats.STR.calcBonus(env.player) * ((level + 89) / 100);
+			}
 		}
 	}
 	
@@ -212,9 +214,19 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
-			double intb = BaseStats.INT.calcBonus(env.player);
-			double lvlb = env.player.getLevelMod();
-			env.value *= (lvlb * lvlb) * (intb * intb);
+			if (env.player instanceof L2PcInstance)
+			{
+				double intb = BaseStats.INT.calcBonus(env.player);
+				double lvlb = env.player.getLevelMod();
+				env.value *= (lvlb * lvlb) * (intb * intb);
+			}
+			else
+			{
+				float level = env.player.getLevel();
+				double intb = BaseStats.INT.calcBonus(env.player);
+				float lvlb = ((level + 89) / 100);
+				env.value *= (lvlb * lvlb) * (intb * intb);
+			}
 		}
 	}
 	
@@ -235,6 +247,7 @@ public final class Formulas
 		@Override
 		public void calc(Env env)
 		{
+			float level = env.player.getLevel();
 			if (env.player instanceof L2PcInstance)
 			{
 				L2PcInstance p = (L2PcInstance) env.player;
@@ -248,14 +261,20 @@ public final class Formulas
 					env.value -= 9;
 				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_NECK) != null)
 					env.value -= 13;
+				env.value *= BaseStats.MEN.calcBonus(env.player) * env.player.getLevelMod();
 			}
 			else if (env.player instanceof L2PetInstance)
 			{
 				if (env.player.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_NECK) != 0)
+				{
 					env.value *= BaseStats.MEN.calcBonus(env.player);
-				return;
+					return;
+				}
 			}
-			env.value *= BaseStats.MEN.calcBonus(env.player) * env.player.getLevelMod();
+			else
+			{
+				env.value *= BaseStats.MEN.calcBonus(env.player) * ((level + 89) / 100);
+			}
 		}
 	}
 	
@@ -291,8 +310,13 @@ public final class Formulas
 					env.value -= 8;
 				if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_FEET) != null)
 					env.value -= 7;
+				env.value *= env.player.getLevelMod();
 			}
-			env.value *= env.player.getLevelMod();
+			else
+			{
+				float level = env.player.getLevel();
+				env.value *= ((level + 89) / 100);
+			}
 		}
 	}
 	
@@ -412,15 +436,27 @@ public final class Formulas
 		public void calc(Env env)
 		{
 			final int level = env.player.getLevel();
-			//[Square(DEX)]*6 + lvl + weapon hitbonus;
-			env.value += Math.sqrt(env.player.getDEX()) * 6;
-			env.value += level;
-			if (level > 77)
-				env.value += (level - 77);
-			if (level > 69)
-				env.value += (level - 69);
-			if (env.player instanceof L2Summon)
-				env.value += (level < 60) ? 4 : 5;
+			if (env.player instanceof L2PcInstance)
+			{
+				//[Square(DEX)]*6 + lvl + weapon hitbonus;
+				env.value += Math.sqrt(env.player.getDEX()) * 6;
+				env.value += level;
+				if (level > 77)
+					env.value += (level - 77) + 1;
+				if (level > 69)
+					env.value += (level - 69);
+				//if (env.player instanceof L2Summon)
+					//env.value += (level < 60) ? 4 : 5;
+			}
+			else
+			{
+				env.value += Math.sqrt(env.player.getDEX()) * 6;
+				env.value += level;
+				if (level > 77)
+					env.value += (level - 76);
+				if (level > 69)
+					env.value += (level - 69);
+			}
 		}
 	}
 	
@@ -442,13 +478,24 @@ public final class Formulas
 		public void calc(Env env)
 		{
 			final int level = env.player.getLevel();
-			//[Square(DEX)]*6 + lvl;
-			env.value += Math.sqrt(env.player.getDEX()) * 6;
-			env.value += level;
-			if (level > 77)
-				env.value += (level - 77);
-			if (level > 69)
-				env.value += (level - 69);
+			if (env.player instanceof L2PcInstance)
+			{
+				//[Square(DEX)]*6 + lvl;
+				env.value += Math.sqrt(env.player.getDEX()) * 6;
+				env.value += level;
+				if (level > 77)
+					env.value += (level - 77);
+				if (level > 69)
+					env.value += (level - 69);
+			}
+			else
+			{
+				//[Square(DEX)]*6 + lvl;
+				env.value += Math.sqrt(env.player.getDEX()) * 6;
+				env.value += level;
+				if (level > 69)
+					env.value += (level - 69) + 2;
+			}
 		}
 	}
 	
@@ -983,9 +1030,11 @@ public final class Formulas
 		}
 		else if (cha instanceof L2PetInstance)
 		{
+			cha.addStatFunc(FuncMaxHpMul.getInstance());
+			cha.addStatFunc(FuncMaxMpMul.getInstance());
 			cha.addStatFunc(FuncPAtkMod.getInstance());
-			//cha.addStatFunc(FuncMAtkMod.getInstance());
-			//cha.addStatFunc(FuncPDefMod.getInstance());
+			cha.addStatFunc(FuncMAtkMod.getInstance());
+			cha.addStatFunc(FuncPDefMod.getInstance());
 			cha.addStatFunc(FuncMDefMod.getInstance());
 			cha.addStatFunc(FuncAtkCritical.getInstance());
 			cha.addStatFunc(FuncMAtkCritical.getInstance());
@@ -999,11 +1048,19 @@ public final class Formulas
 		{
 			//cha.addStatFunc(FuncMultRegenResting.getInstance(Stats.REGENERATE_HP_RATE));
 			//cha.addStatFunc(FuncMultRegenResting.getInstance(Stats.REGENERATE_MP_RATE));
+			cha.addStatFunc(FuncMaxHpMul.getInstance());
+			cha.addStatFunc(FuncMaxMpMul.getInstance());
+			cha.addStatFunc(FuncPAtkMod.getInstance());
+			cha.addStatFunc(FuncMAtkMod.getInstance());
+			cha.addStatFunc(FuncPDefMod.getInstance());
+			cha.addStatFunc(FuncMDefMod.getInstance());
 			cha.addStatFunc(FuncAtkCritical.getInstance());
 			cha.addStatFunc(FuncMAtkCritical.getInstance());
 			cha.addStatFunc(FuncAtkAccuracy.getInstance());
 			cha.addStatFunc(FuncAtkEvasion.getInstance());
 			cha.addStatFunc(FuncMoveSpeed.getInstance());
+			cha.addStatFunc(FuncPAtkSpeed.getInstance());
+			cha.addStatFunc(FuncMAtkSpeed.getInstance());
 		}
 	}
 	

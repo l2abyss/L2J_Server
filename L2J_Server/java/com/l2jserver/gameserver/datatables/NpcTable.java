@@ -643,9 +643,9 @@ public class NpcTable
 			npcDat.safeSet("baseWIT", NpcData.getInt("wit"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
 			npcDat.safeSet("baseMEN", NpcData.getInt("men"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: "+NpcData.getInt("idTemplate"));
 			
-			npcDat.set("baseHpMax", NpcData.getInt("hp"));
+			npcDat.set("baseHpMax", NpcData.getDouble("hp"));
 			npcDat.set("baseCpMax", 0);
-			npcDat.set("baseMpMax", NpcData.getInt("mp"));
+			npcDat.set("baseMpMax", NpcData.getDouble("mp"));
 			npcDat.set("baseHpReg", NpcData.getFloat("hpreg") > 0 ? NpcData.getFloat("hpreg") : 1.5 + ((level - 1) / 10.0));
 			npcDat.set("baseMpReg", NpcData.getFloat("mpreg") > 0 ? NpcData.getFloat("mpreg") : 0.9 + 0.3 * ((level - 1) / 10.0));
 			npcDat.set("basePAtk", NpcData.getInt("patk"));
