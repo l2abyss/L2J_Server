@@ -1635,7 +1635,6 @@ public abstract class L2Character extends L2Object
 					case HEAL:
 					case COMBATPOINTHEAL:
 					case MANAHEAL:
-					case REFLECT:
 						doit = true;
 						break;
 				}

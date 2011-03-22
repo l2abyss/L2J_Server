@@ -1065,7 +1065,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case SLEEP:
 			case MDOT:
 			case MUTE:
-			case WEAKNESS:
 			case PARALYZE:
 			case CANCEL:
 			case MAGE_BANE:
@@ -1208,7 +1207,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case SOULSHOT:
 			case SPIRITSHOT:
 			case SPOIL:
-			case WEAKNESS:
 			case MANA_BY_LEVEL:
 			case SWEEP:
 			case PARALYZE:
@@ -1397,7 +1395,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					case MANAHEAL:
 					case NEGATE:
 					case CANCEL_DEBUFF:
-					case REFLECT:
 					case COMBATPOINTHEAL:
 					case BALANCE_LIFE:
 					case HPMPCPHEAL_PERCENT:

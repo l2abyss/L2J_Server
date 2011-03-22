@@ -71,7 +71,6 @@ public enum L2SkillType
 	CONFUSE_MOB_ONLY,
 	MUTE,
 	PARALYZE,
-	WEAKNESS,
 	DISARM,
 	
 	// hp, mp, cp
@@ -173,7 +172,6 @@ public enum L2SkillType
 	RECALL(L2SkillTeleport.class),
 	TELEPORT(L2SkillTeleport.class),
 	SUMMON_FRIEND,
-	REFLECT,
 	SPOIL,
 	SWEEP(L2SkillSweeper.class),
 	FAKE_DEATH,

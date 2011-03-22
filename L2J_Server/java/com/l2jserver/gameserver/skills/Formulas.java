@@ -2347,7 +2347,6 @@ public final class Formulas
 					multiplier = target.calcStat(Stats.CONFUSION_VULN, multiplier, target, null);
 					break;
 				case DEBUFF:
-				case WEAKNESS:
 					multiplier = target.calcStat(Stats.DEBUFF_VULN, multiplier, target, null);
 					break;
 				case BUFF:
@@ -2422,7 +2421,6 @@ public final class Formulas
 					multiplier = attacker.calcStat(Stats.CONFUSION_PROF, multiplier, target, null);
 					break;
 				case DEBUFF:
-				case WEAKNESS:
 					multiplier = attacker.calcStat(Stats.DEBUFF_PROF, multiplier, target, null);
 					break;
 				case CANCEL:
@@ -3056,7 +3054,6 @@ public final class Formulas
 		switch (skill.getSkillType())
 		{
 			case BUFF:
-			case REFLECT:
 			case HEAL_PERCENT:
 			case MANAHEAL_PERCENT:
 			case HOT:

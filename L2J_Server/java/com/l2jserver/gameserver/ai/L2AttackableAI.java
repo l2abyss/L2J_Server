@@ -1202,7 +1202,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			
 			case BUFF:
-			case REFLECT:
 			{
 				if (caster.getFirstEffect(sk) == null)
 				{
@@ -1383,7 +1382,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				break;
 			}
 			case DEBUFF:
-			case WEAKNESS:
 			case POISON:
 			case DOT:
 			case MDOT:

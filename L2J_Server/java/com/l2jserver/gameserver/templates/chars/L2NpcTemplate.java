@@ -317,7 +317,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 			switch(skill.getSkillType())
 			{
 				case BUFF:
-				case REFLECT:
 					addBuffSkill(skill);
 					break;
 				case HEAL:
@@ -331,7 +330,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 					addResSkill(skill);
 					break;
 				case DEBUFF:
-				case WEAKNESS:
 					addDebuffSkill(skill);
 					addCOTSkill(skill);
 					addRangeSkill(skill);

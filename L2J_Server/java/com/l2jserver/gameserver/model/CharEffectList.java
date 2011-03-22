@@ -355,7 +355,6 @@ public class CharEffectList
 					switch (e.getSkill().getSkillType())
 					{
 						case BUFF:
-						case REFLECT:
 						case HEAL_PERCENT:
 						case MANAHEAL_PERCENT:
 							buffCount++;
@@ -862,7 +861,6 @@ public class CharEffectList
 						switch (newSkill.getSkillType())
 						{
 							case BUFF:
-							case REFLECT:
 							case HEAL_PERCENT:
 							case MANAHEAL_PERCENT:
 								for (L2Effect e : _buffs)
@@ -873,7 +871,6 @@ public class CharEffectList
 									switch (e.getSkill().getSkillType())
 									{
 										case BUFF:
-										case REFLECT:
 										case HEAL_PERCENT:
 										case MANAHEAL_PERCENT:
 											e.exit();
