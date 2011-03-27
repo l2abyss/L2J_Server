@@ -108,7 +108,8 @@ public class Experience
 		11844000000L, //level 83
 		15472800000L, //level 84
 		19827360000L, //level 85
-		25314000000L
+		25314105600L, //level 86
+		32211728640L  //level 87
 	};
 	
 	/**
