@@ -41,16 +41,6 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 	protected static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;
 	protected static final int COND_OWNER = 2;
 	
-	private final static int[] TalismanIds =
-	{
-		9914,9915,9917,9918,9919,9920,9921,9922,9923,9924,
-		9926,9927,9928,9930,9931,9932,9933,9934,9935,9936,
-		9937,9938,9939,9940,9941,9942,9943,9944,9945,9946,
-		9947,9948,9949,9950,9951,9952,9953,9954,9955,9956,
-		9957,9958,9959,9960,9961,9962,9963,9964,9965,9966,
-		10141,10142,10158
-	};
-	
 	/**
 	 * @param template
 	 */
@@ -104,7 +94,273 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		else if (command.startsWith("ExchangeKE"))
 		{
 			String filename = null;
-			int item = TalismanIds[Rnd.get(TalismanIds.length)];
+			int i1;
+			int item;
+			int i0 = Rnd.get(100);
+			if (i0 < 5)
+			{
+				i1 = Rnd.get(25);
+				if (i0 < 5)
+				{
+					item = 9931;
+				}
+				else if (i1 <= 50)
+				{
+					item = 9932;
+				}
+				else if( i1 <= 75 )
+				{
+					item = 10416;
+				}
+				else
+				{
+					item = 10417;
+				}
+			}
+			else if (i0 <= 15)
+			{
+				i1 = Rnd.get(100);
+				if( i1 <= 20 )
+				{
+					item = 9917;
+				}
+				else if( i1 <= 40 )
+				{
+					item = 9918;
+				}
+				else if( i1 <= 60 )
+				{
+					item = 9928;
+				}
+				else if( i1 <= 80 )
+				{
+					item = 9929;
+				}
+				else
+				{
+					item = 9920;
+				}
+			}
+			else if( i0 <= 30 )
+			{
+				i1 = Rnd.get(100);
+				if( i1 <= 12 )
+				{
+					item = 9916;
+				}
+				else if( i1 <= 25 )
+				{
+					item = 9916;
+				}
+				else if( i1 <= 37 )
+				{
+					item = 9924;
+				}
+				else if( i1 <= 50 )
+				{
+					item = 9925;
+				}
+				else if( i1 <= 62 )
+				{
+					item = 9926;
+				}
+				else if( i1 <= 75 )
+				{
+					item = 9927;
+				}
+				else if( i1 <= 87 )
+				{
+					item = 10518;
+				}
+				else
+				{
+					item = 10424;
+				}
+			}
+			else
+			{
+				i1 = Rnd.get(46);
+				if( i1 == 0 )
+				{
+					item = 9914;
+				}
+				else if( i1 == 1 )
+				{
+					item = 9915;
+				}
+				else if( i1 == 2 )
+				{
+					item = 9920;
+				}
+				else if( i1 == 3 )
+				{
+					item = 9920;
+				}
+				else if( i1 == 4 )
+				{
+					item = 9921;
+				}
+				else if( i1 == 5 )
+				{
+					item = 9922;
+				}
+				else if( i1 == 6 )
+				{
+					item = 9933;
+				}
+				else if( i1 == 7 )
+				{
+					item = 9934;
+				}
+				else if( i1 == 8 )
+				{
+					item = 9935;
+				}
+				else if( i1 == 9 )
+				{
+					item = 9936;
+				}
+				else if( i1 == 10 )
+				{
+					item = 9937;
+				}
+				else if( i1 == 11 )
+				{
+					item = 9938;
+				}
+				else if( i1 == 12 )
+				{
+					item = 9939;
+				}
+				else if( i1 == 13 )
+				{
+					item = 9940;
+				}
+				else if( i1 == 14 )
+				{
+					item = 9941;
+				}
+				else if( i1 == 15 )
+				{
+					item = 9942;
+				}
+				else if( i1 == 16 )
+				{
+					item = 9943;
+				}
+				else if( i1 == 17 )
+				{
+					item = 9944;
+				}
+				else if( i1 == 18 )
+				{
+					item = 9945;
+				}
+				else if( i1 == 19 )
+				{
+					item = 9946;
+				}
+				else if( i1 == 20 )
+				{
+					item = 9947;
+				}
+				else if( i1 == 21 )
+				{
+					item = 9948;
+				}
+				else if( i1 == 22 )
+				{
+					item = 9949;
+				}
+				else if( i1 == 23 )
+				{
+					item = 9950;
+				}
+				else if( i1 == 25 )
+				{
+					item = 9952;
+				}
+				else if( i1 == 26 )
+				{
+					item = 9953;
+				}
+				else if( i1 == 27 )
+				{
+					item = 9954;
+				}
+				else if( i1 == 28 )
+				{
+					item = 9955;
+				}
+				else if( i1 == 29 )
+				{
+					item = 9956;
+				}
+				else if( i1 == 30 )
+				{
+					item = 9957;
+				}
+				else if( i1 == 31 )
+				{
+					item = 9958;
+				}
+				else if( i1 == 32 )
+				{
+					item = 9959;
+				}
+				else if( i1 == 33 )
+				{
+					item = 9960;
+				}
+				else if( i1 == 34 )
+				{
+					item = 9961;
+				}
+				else if( i1 == 35 )
+				{
+					item = 9962;
+				}
+				else if( i1 == 36 )
+				{
+					item = 9963;
+				}
+				else if( i1 == 37 )
+				{
+					item = 9964;
+				}
+				else if( i1 == 24 )
+				{
+					item = 9965;
+				}
+				else if( i1 == 38 )
+				{
+					item = 10418;
+				}
+				else if( i1 == 39 )
+				{
+					item = 10420;
+				}
+				else if( i1 == 40 )
+				{
+					item = 10519;
+				}
+				else if( i1 == 41 )
+				{
+					item = 10422;
+				}
+				else if( i1 == 42 )
+				{
+					item = 10423;
+				}
+				else if( i1 == 43 )
+				{
+					item = 10419;
+				}
+				else
+				{
+					item = 10421;
+				}
+			}
 			
 			if (player.destroyItemByItemId("ExchangeKE", 9912, 10, this, false))
 			{
