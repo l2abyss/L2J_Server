@@ -46,7 +46,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	protected static final class LifeStone
 	{
 		// lifestone level to player level table
-		private static final int[] LEVELS = {46, 49, 52, 55, 58, 61, 64, 67, 70, 76, 80, 82, 84};
+		private static final int[] LEVELS = {46, 49, 52, 55, 58, 61, 64, 67, 70, 76, 80, 82, 84, 85};
 		private final int _grade;
 		private final int _level;
 		
@@ -162,6 +162,18 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		_lifeStones.put(14167, new LifeStone(GRADE_MID, 12));
 		_lifeStones.put(14168, new LifeStone(GRADE_HIGH, 12));
 		_lifeStones.put(14169, new LifeStone(GRADE_TOP, 12));
+		
+		_lifeStones.put(16160, new LifeStone(GRADE_NONE, 13));
+		_lifeStones.put(16161, new LifeStone(GRADE_MID, 13));
+		_lifeStones.put(16162, new LifeStone(GRADE_HIGH, 13));
+		_lifeStones.put(16163, new LifeStone(GRADE_TOP, 13));
+		_lifeStones.put(16177, new LifeStone(GRADE_ACC, 13));
+		
+		_lifeStones.put(16164, new LifeStone(GRADE_NONE, 13));
+		_lifeStones.put(16165, new LifeStone(GRADE_MID, 13));
+		_lifeStones.put(16166, new LifeStone(GRADE_HIGH, 13));
+		_lifeStones.put(16167, new LifeStone(GRADE_TOP, 13));
+		_lifeStones.put(16178, new LifeStone(GRADE_ACC, 13));
 	}
 	
 	protected static final LifeStone getLifeStone(int itemId)
