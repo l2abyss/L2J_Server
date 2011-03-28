@@ -200,51 +200,74 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 	static
 	{
 		// itemId, (isWeapon, isBlessed, isCrystal, isSafe, grade, max enchant level, chance increase, allowed item IDs)
-		// allowed items list must be sorted by ascending order
+		// allowed items IDs must be sorted by ascending order
+		// Scrolls: Enchant Weapon
 		_scrolls.put(729, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_A, 0, 0, null));
-		_scrolls.put(730, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_A, 0, 0, null));
-		_scrolls.put(731, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_A, 0, 0, null));
-		_scrolls.put(732, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_A, 0, 0, null));
 		_scrolls.put(947, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_B, 0, 0, null));
-		_scrolls.put(948, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_B, 0, 0, null));
-		_scrolls.put(949, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_B, 0, 0, null));
-		_scrolls.put(950, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_B, 0, 0, null));
 		_scrolls.put(951, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_C, 0, 0, null));
-		_scrolls.put(952, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_C, 0, 0, null));
-		_scrolls.put(953, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_C, 0, 0, null));
-		_scrolls.put(954, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_C, 0, 0, null));
 		_scrolls.put(955, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_D, 0, 0, null));
-		_scrolls.put(956, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_D, 0, 0, null));
-		_scrolls.put(957, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_D, 0, 0, null));
-		_scrolls.put(958, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_D, 0, 0, null));
 		_scrolls.put(959, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_S, 0, 0, null));
+		// Scrolls: Enchant Armor
+		_scrolls.put(730, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_A, 0, 0, null));
+		_scrolls.put(948, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_B, 0, 0, null));
+		_scrolls.put(952, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_C, 0, 0, null));
+		_scrolls.put(956, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_D, 0, 0, null));
 		_scrolls.put(960, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_S, 0, 0, null));
-		_scrolls.put(961, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_S, 0, 0, null));
-		_scrolls.put(962, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_S, 0, 0, null));
+		
+		// Blessed Scrolls: Enchant Weapon
 		_scrolls.put(6569, new EnchantScroll(true, true, false, false, L2Item.CRYSTAL_A, 0, 0, null));
-		_scrolls.put(6570, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_A, 0, 0, null));
 		_scrolls.put(6571, new EnchantScroll(true, true, false, false, L2Item.CRYSTAL_B, 0, 0, null));
-		_scrolls.put(6572, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_B, 0, 0, null));
 		_scrolls.put(6573, new EnchantScroll(true, true, false, false, L2Item.CRYSTAL_C, 0, 0, null));
-		_scrolls.put(6574, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_C, 0, 0, null));
 		_scrolls.put(6575, new EnchantScroll(true, true, false, false, L2Item.CRYSTAL_D, 0, 0, null));
-		_scrolls.put(6576, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_D, 0, 0, null));
 		_scrolls.put(6577, new EnchantScroll(true, true, false, false, L2Item.CRYSTAL_S, 0, 0, null));
+		// Blessed Scrolls: Enchant Armor
+		_scrolls.put(6570, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_A, 0, 0, null));
+		_scrolls.put(6572, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_B, 0, 0, null));
+		_scrolls.put(6574, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_C, 0, 0, null));
+		_scrolls.put(6576, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_D, 0, 0, null));
 		_scrolls.put(6578, new EnchantScroll(false, true, false, false, L2Item.CRYSTAL_S, 0, 0, null));
+		
+		// Crystal Scrolls: Enchant Weapon
+		_scrolls.put(731, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_A, 0, 0, null));
+		_scrolls.put(949, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_B, 0, 0, null));
+		_scrolls.put(953, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_C, 0, 0, null));
+		_scrolls.put(957, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_D, 0, 0, null));
+		_scrolls.put(961, new EnchantScroll(true, false, true, false, L2Item.CRYSTAL_S, 0, 0, null));
+		// Crystal Scrolls: Enchant Armor
+		_scrolls.put(732, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_A, 0, 0, null));
+		_scrolls.put(950, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_B, 0, 0, null));
+		_scrolls.put(954, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_C, 0, 0, null));
+		_scrolls.put(958, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_D, 0, 0, null));
+		_scrolls.put(962, new EnchantScroll(false, false, true, false, L2Item.CRYSTAL_S, 0, 0, null));
+
+		// Weapon Enchant Scrolls
+		_scrolls.put(20517, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_S, 0, 10, null));
 		_scrolls.put(22006, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_D, 0, 10, null));
 		_scrolls.put(22007, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_C, 0, 10, null));
 		_scrolls.put(22008, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_B, 0, 10, null));
 		_scrolls.put(22009, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_A, 0, 10, null));
+		// Armor Enchant Scrolls
+		_scrolls.put(20518, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_S, 0, 10, null));
 		_scrolls.put(22010, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_D, 0, 10, null));
 		_scrolls.put(22011, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_C, 0, 10, null));
 		_scrolls.put(22012, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_B, 0, 10, null));
 		_scrolls.put(22013, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_A, 0, 10, null));
+		
+		// Ancient Weapon Enchant Crystal
+		_scrolls.put(20519, new EnchantScroll(true, false, false, true, L2Item.CRYSTAL_S, 16, 10, null));
 		_scrolls.put(22014, new EnchantScroll(true, false, false, true, L2Item.CRYSTAL_B, 16, 10, null));
 		_scrolls.put(22015, new EnchantScroll(true, false, false, true, L2Item.CRYSTAL_A, 16, 10, null));
+		// Ancient Armor Enchant Crystal
+		_scrolls.put(20520, new EnchantScroll(false, false, false, true, L2Item.CRYSTAL_S, 16, 10, null));
 		_scrolls.put(22016, new EnchantScroll(false, false, false, true, L2Item.CRYSTAL_B, 16, 10, null));
 		_scrolls.put(22017, new EnchantScroll(false, false, false, true, L2Item.CRYSTAL_A, 16, 10, null));
+
+		// Divine Weapon Enchant Crystal
+		_scrolls.put(20521, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_S, 0, 100, null));
 		_scrolls.put(22018, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_B, 0, 100, null));
 		_scrolls.put(22019, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_A, 0, 100, null));
+		// Divine Armor Enchant Crystal
+		_scrolls.put(20522, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_S, 0, 100, null));
 		_scrolls.put(22020, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_B, 0, 100, null));
 		_scrolls.put(22021, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_A, 0, 100, null));
 		
