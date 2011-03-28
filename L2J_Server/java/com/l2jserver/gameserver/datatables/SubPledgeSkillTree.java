@@ -104,7 +104,7 @@ public class SubPledgeSkillTree
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
-		File file = new File(Config.DATAPACK_ROOT, "data/skillTrees/subpledgeskilltree.xml");
+		File file = new File(Config.DATAPACK_ROOT, "data/skillTrees/subPledgeSkillTree.xml");
 		Document doc = null;
 		if (file.exists())
 		{
@@ -114,7 +114,7 @@ public class SubPledgeSkillTree
 			}
 			catch(Exception e)
 			{
-				_log.log(Level.WARNING, "Could not parse subpledgeskilltree.xml file: " + e.getMessage(), e);
+				_log.log(Level.WARNING, "Could not parse subPledgeSkillTree.xml file: " + e.getMessage(), e);
 			}
 			
 			for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
