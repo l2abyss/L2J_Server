@@ -65,6 +65,7 @@ public class CharEffectList
 	public static final int EFFECT_FLAG_BETRAYED = 0x10000;
 	public static final int EFFECT_FLAG_INVUL = 0x40000;
 	public static final int EFFECT_FLAG_PARALYZED = 0x80000;
+	public static final int EFFECT_FLAG_BLOCK_RESURRECTION = 0x100000;
 	
 	private FastList<L2Effect> _buffs;
 	private FastList<L2Effect> _debuffs;

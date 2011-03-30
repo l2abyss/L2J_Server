@@ -10981,6 +10981,9 @@ public final class L2PcInstance extends L2Playable
 	
 	public void reviveRequest(L2PcInstance Reviver, L2Skill skill, boolean Pet)
 	{
+		if (isResurrectionBlocked())
+			return;
+		
 		if (_reviveRequested == 1)
 		{
 			if (_revivePet == Pet)

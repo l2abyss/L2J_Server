@@ -1519,6 +1519,7 @@ public abstract class L2Character extends L2Object
 			setIsCastingNow(false);
 			return;
 		}
+		
 		// Override casting type
 		if(skill.isSimultaneousCast())
 		{
@@ -1680,6 +1681,27 @@ public abstract class L2Character extends L2Object
 				getAI().setIntention(AI_INTENTION_ACTIVE);
 			}
 			return;
+		}
+		
+		if (skill.getSkillType() == L2SkillType.RESURRECT)
+		{
+			if (isResurrectionBlocked() || target.isResurrectionBlocked())
+			{
+				sendPacket(SystemMessage.getSystemMessage(356)); // Reject resurrection
+				target.sendPacket(SystemMessage.getSystemMessage(356)); // Reject resurrection
+				
+				if (simultaneously)
+					setIsCastingSimultaneouslyNow(false);
+				else
+					setIsCastingNow(false);
+				
+				if (this instanceof L2PcInstance)
+				{
+					getAI().setIntention(AI_INTENTION_ACTIVE);
+					sendPacket(ActionFailed.STATIC_PACKET);
+				}
+				return;
+			}
 		}
 		
 		// Get the Identifier of the skill
@@ -2466,6 +2488,7 @@ public abstract class L2Character extends L2Object
 	public void setIsMortal(boolean b) { _isMortal = b; }
 	public boolean isMortal(){ return _isMortal; }
 	public boolean isUndead() { return false; }
+	public boolean isResurrectionBlocked() { return isAffected(CharEffectList.EFFECT_FLAG_BLOCK_RESURRECTION); }
 	
 	public final boolean isFlying() { return _isFlying; }
 	public final void setIsFlying(boolean mode) { _isFlying = mode; }
