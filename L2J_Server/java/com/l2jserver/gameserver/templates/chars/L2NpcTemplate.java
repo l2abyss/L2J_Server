@@ -358,9 +358,11 @@ public final class L2NpcTemplate extends L2CharTemplate
 				case BLOW:
 				case DRAIN:
 				case CHARGEDAM:
+				case FATAL:	
 				case DEATHLINK:
 				case CPDAM:
 				case MANADAM:
+				case CPDAMPERCENT:	
 					addAtkSkill(skill);
 					addUniversalSkill(skill);
 					addRangeSkill(skill);

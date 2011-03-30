@@ -1612,9 +1612,11 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			case BLOW:
 			case DRAIN:
 			case CHARGEDAM:
+			case FATAL:	
 			case DEATHLINK:
 			case CPDAM:
 			case MANADAM:
+			case CPDAMPERCENT:	
 			{
 				if (!canAura(sk))
 				{

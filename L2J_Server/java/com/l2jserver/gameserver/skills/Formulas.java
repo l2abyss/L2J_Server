@@ -2298,11 +2298,19 @@ public final class Formulas
 			// Finally, calculate skilltype vulnerabilities
 			L2SkillType type = skill.getSkillType();
 			
-			// For additional effects on PDAM and MDAM skills (like STUN, SHOCK, PARALYZE...)
+			// For additional effects (like STUN, SHOCK, PARALYZE...) on damage skills
 			switch (type)
 			{
 				case PDAM:
 				case MDAM:
+				case BLOW:
+				case DRAIN:
+				case CHARGEDAM:
+				case FATAL:	
+				case DEATHLINK:
+				case CPDAM:
+				case MANADAM:
+				case CPDAMPERCENT:
 					type = skill.getEffectType();
 			}
 			
@@ -2371,11 +2379,19 @@ public final class Formulas
 			// Calculate skilltype vulnerabilities
 			L2SkillType type = skill.getSkillType();
 			
-			// For additional effects on PDAM and MDAM skills (like STUN, SHOCK, PARALYZE...)
+			// For additional effects (like STUN, SHOCK, PARALYZE...) on damage skills
 			switch (type)
 			{
 				case PDAM:
 				case MDAM:
+				case BLOW:
+				case DRAIN:
+				case CHARGEDAM:
+				case FATAL:	
+				case DEATHLINK:
+				case CPDAM:
+				case MANADAM:
+				case CPDAMPERCENT:
 					type = skill.getEffectType();
 			}
 			
@@ -3065,10 +3081,15 @@ public final class Formulas
 				return SKILL_REFLECT_FAILED;
 				// these skill types can deal damage
 			case PDAM:
-			case BLOW:
 			case MDAM:
-			case DEATHLINK:
+			case BLOW:
+			case DRAIN:
 			case CHARGEDAM:
+			case FATAL:	
+			case DEATHLINK:
+			case CPDAM:
+			case MANADAM:
+			case CPDAMPERCENT:
 				final Stats stat = skill.isMagic() ? Stats.VENGEANCE_SKILL_MAGIC_DAMAGE : Stats.VENGEANCE_SKILL_PHYSICAL_DAMAGE;
 				final double venganceChance = target.getStat().calcStat(stat, 0, target, skill);
 				if (venganceChance > Rnd.get(100))
