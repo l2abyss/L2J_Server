@@ -17,9 +17,6 @@ package com.l2jserver.gameserver.instancemanager;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +34,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
-import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -114,8 +110,6 @@ public class ZoneManager
 	private final void load()
 	{
 		_log.info("Loading zones...");
-		Connection con = null;
-		PreparedStatement statement = null;
 		_classZones.clear();
 		
 		// Get the world regions
@@ -124,10 +118,6 @@ public class ZoneManager
 		// Load the zone xml
 		try
 		{
-			// Get a sql connection here
-			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT x,y FROM zone_vertices WHERE id=? ORDER BY 'order' ASC ");
-			
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setValidating(false);
 			factory.setIgnoringComments(true);
@@ -257,29 +247,6 @@ public class ZoneManager
 												point[0] = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
 												point[1] = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
 												rs.add(point);
-											}
-										}
-										
-										// does not try to load dynamic zoneId from sql
-										if (rs.size() == 0 && zoneId < 300000)
-										{
-											// loading from SQL
-											try
-											{
-												statement.setInt(1, zoneId);
-												ResultSet rset = statement.executeQuery();
-												while (rset.next())
-												{
-													point = new int[2];
-													point[0] = rset.getInt("x");
-													point[1] = rset.getInt("y");
-													rs.add(point);
-												}
-												rset.close();
-											}
-											finally
-											{
-												statement.clearParameters();
 											}
 										}
 										
@@ -422,10 +389,6 @@ public class ZoneManager
 		{
 			_log.log(Level.SEVERE, "Error while loading zones.", e);
 			return;
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		_log.info("Done: loaded " + _classZones.size() + " zone classes and "+getSize()+" zones.");
