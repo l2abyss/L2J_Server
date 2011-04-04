@@ -124,7 +124,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 					return false;
 				}
 				//TODO: Missing message ID: 2739  Message: You cannot control the helm because you do not meet the requirements.
-				else if (player.getPvpFlag() != 0)
+				else if (player.isInCombat())
 				{
 					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_BATTLE));
 					return false;
@@ -149,7 +149,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_FISHING));
 					return false;
 				}
-				else if (player.isDead())
+				else if (player.isDead() || player.isFakeDeath())
 				{
 					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHEN_YOU_ARE_DEAD));
 					return false;

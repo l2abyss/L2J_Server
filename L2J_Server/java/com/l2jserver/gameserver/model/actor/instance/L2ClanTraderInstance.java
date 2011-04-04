@@ -17,9 +17,11 @@ package com.l2jserver.gameserver.model.actor.instance;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public final class L2ClanTraderInstance extends L2Npc
@@ -78,11 +80,9 @@ public final class L2ClanTraderInstance extends L2Npc
 				player.getClan().addReputationScore(reputation, true);
 				player.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(player.getClan()));
 				
-				player.sendMessage("Your clan has added " + reputation + " points to its clan reputation score.");
-				/* TODO: fix the system message, I cant add the number to the system message
 				SystemMessage sm =  SystemMessage.getSystemMessage(SystemMessageId.CLAN_ADDED_S1S_POINTS_TO_REPUTATION_SCORE);
-				sm.addItemNumber(reputation);
-				player.sendPacket(sm);*/
+				sm.addNumber(reputation);
+				player.sendPacket(sm);
 				
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeSuccess.htm");
 			}
