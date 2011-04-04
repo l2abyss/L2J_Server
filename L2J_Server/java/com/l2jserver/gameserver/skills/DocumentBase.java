@@ -304,7 +304,7 @@ abstract class DocumentBase
 			String spc = attrs.getNamedItem("event").getNodeValue();
 			event = AbnormalEffect.getByName(spc);
 		}
-		float abnormalLvl = 0;
+		byte abnormalLvl = 0;
 		String abnormalType = "none";
 		if (attrs.getNamedItem("abnormalType") != null)
 		{
@@ -312,7 +312,7 @@ abstract class DocumentBase
 		}
 		if (attrs.getNamedItem("abnormalLvl") != null)
 		{
-			abnormalLvl = Float.parseFloat(getValue(attrs.getNamedItem("abnormalLvl").getNodeValue(), template));
+			abnormalLvl = Byte.parseByte(getValue(attrs.getNamedItem("abnormalLvl").getNodeValue(), template));
 		}
 		
 		double effectPower = -1;

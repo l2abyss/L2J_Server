@@ -135,7 +135,7 @@ public abstract class L2Effect
 	private final String _abnormalType;
 	
 	/** The position of the effect in the stack group */
-	private final float _abnormalLvl;
+	private final byte _abnormalLvl;
 	
 	private boolean _inUse = false;
 	private boolean _startConditionsCorrect = true;
@@ -308,7 +308,7 @@ public abstract class L2Effect
 		return _abnormalType;
 	}
 	
-	public float getAbnormalLvl()
+	public byte getAbnormalLvl()
 	{
 		return _abnormalLvl;
 	}
