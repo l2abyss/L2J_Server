@@ -49,8 +49,8 @@ public class EffectTemplate
 	public final AbnormalEffect specialEffect;
 	public final AbnormalEffect eventEffect;
 	public FuncTemplate[] funcTemplates;
-	public final String stackType;
-	public final float stackOrder;
+	public final String abnormalType;
+	public final float abnormalLvl;
 	public final boolean icon;
 	public final String funcName;
 	public final double effectPower; // to thandle chance
@@ -62,7 +62,7 @@ public class EffectTemplate
 	
 	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda,
 			int pCounter, int pPeriod, AbnormalEffect pAbnormalEffect, AbnormalEffect pSpecialEffect,
-			AbnormalEffect pEventEffect, String pStackType, float pStackOrder, boolean showicon,
+			AbnormalEffect pEventEffect, String pAbnormalType, float pAbnormalLvl, boolean showicon,
 			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
 	{
 		attachCond = pAttachCond;
@@ -73,8 +73,8 @@ public class EffectTemplate
 		abnormalEffect = pAbnormalEffect;
 		specialEffect = pSpecialEffect;
 		eventEffect = pEventEffect;
-		stackType = pStackType;
-		stackOrder = pStackOrder;
+		abnormalType = pAbnormalType;
+		abnormalLvl = pAbnormalLvl;
 		icon = showicon;
 		funcName = func;
 		effectPower = ePower;

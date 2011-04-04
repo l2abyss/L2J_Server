@@ -313,9 +313,9 @@ public final class L2BabyPetInstance extends L2PetInstance
 								{
 									// effect with same stacktype and greater or equal stackorder
 									if (skill.hasEffects()
-											&& !"none".equals(skill.getEffectTemplates()[0].stackType)
-											&& e.getStackType().equals(skill.getEffectTemplates()[0].stackType)
-											&& e.getStackOrder() >= skill.getEffectTemplates()[0].stackOrder)
+											&& !"none".equals(skill.getEffectTemplates()[0].abnormalType)
+											&& e.getAbnormalType().equals(skill.getEffectTemplates()[0].abnormalType)
+											&& e.getAbnormalLvl() >= skill.getEffectTemplates()[0].abnormalLvl)
 									{
 										iter.remove();
 									}

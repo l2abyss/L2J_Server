@@ -317,17 +317,17 @@ public class CharEffectList
 		if ( (_buffs == null || _buffs.isEmpty()) ||
 				checkSkill._effectTemplates == null ||
 				checkSkill._effectTemplates.length < 1 ||
-				checkSkill._effectTemplates[0].stackType == null ||
-				"none".equals(checkSkill._effectTemplates[0].stackType))
+				checkSkill._effectTemplates[0].abnormalType == null ||
+				"none".equals(checkSkill._effectTemplates[0].abnormalType))
 		{
 			return false;
 		}
 		
-		String stackType = checkSkill._effectTemplates[0].stackType;
+		String stackType = checkSkill._effectTemplates[0].abnormalType;
 		
 		for (L2Effect e : _buffs)
 		{
-			if (e.getStackType() != null && e.getStackType().equals(stackType))
+			if (e.getAbnormalType() != null && e.getAbnormalType().equals(stackType))
 			{
 				return true;
 			}
@@ -721,7 +721,7 @@ public class CharEffectList
 			effectList = _buffs;
 		}
 		
-		if ("none".equals(effect.getStackType()))
+		if ("none".equals(effect.getAbnormalType()))
 		{
 			// Remove Func added by this effect from the L2Character Calculator
 			_owner.removeStatsOwner(effect);
@@ -731,7 +731,7 @@ public class CharEffectList
 			if(_stackedEffects == null) return;
 			
 			// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
-			List<L2Effect> stackQueue = _stackedEffects.get(effect.getStackType());
+			List<L2Effect> stackQueue = _stackedEffects.get(effect.getAbnormalType());
 			
 			if (stackQueue == null || stackQueue.isEmpty()) return;
 			
@@ -761,10 +761,10 @@ public class CharEffectList
 					}
 				}
 				if (stackQueue.isEmpty())
-					_stackedEffects.remove(effect.getStackType());
+					_stackedEffects.remove(effect.getAbnormalType());
 				else
 					// Update the Stack Group table _stackedEffects of the L2Character
-					_stackedEffects.put(effect.getStackType(), stackQueue);
+					_stackedEffects.put(effect.getAbnormalType(), stackQueue);
 			}
 		}
 		
@@ -799,8 +799,8 @@ public class CharEffectList
 				if (e != null
 						&& e.getSkill().getId() == newEffect.getSkill().getId()
 						&& e.getEffectType() == newEffect.getEffectType()
-						&& e.getStackOrder() == newEffect.getStackOrder()
-						&& e.getStackType().equals(newEffect.getStackType()))
+						&& e.getAbnormalLvl() == newEffect.getAbnormalLvl()
+						&& e.getAbnormalType().equals(newEffect.getAbnormalType()))
 				{
 					// Started scheduled timer needs to be canceled.
 					newEffect.stopEffectTask();
@@ -818,8 +818,8 @@ public class CharEffectList
 				if (e != null
 						&& e.getSkill().getId() == newEffect.getSkill().getId()
 						&& e.getEffectType() == newEffect.getEffectType()
-						&& e.getStackOrder() == newEffect.getStackOrder()
-						&& e.getStackType().equals(newEffect.getStackType()))
+						&& e.getAbnormalLvl() == newEffect.getAbnormalLvl()
+						&& e.getAbnormalType().equals(newEffect.getAbnormalType()))
 				{
 					e.exit(); // exit this
 				}
@@ -924,7 +924,7 @@ public class CharEffectList
 		}
 		
 		// Check if a stack group is defined for this effect
-		if ("none".equals(newEffect.getStackType()))
+		if ("none".equals(newEffect.getAbnormalType()))
 		{
 			// Set this L2Effect to In Use
 			if (newEffect.setInUse(true))
@@ -940,7 +940,7 @@ public class CharEffectList
 		if (_stackedEffects == null) _stackedEffects = new FastMap<String, List<L2Effect>>();
 		
 		// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
-		stackQueue = _stackedEffects.get(newEffect.getStackType());
+		stackQueue = _stackedEffects.get(newEffect.getAbnormalType());
 		
 		if (stackQueue != null)
 		{
@@ -955,7 +955,7 @@ public class CharEffectList
 				
 				while (queueIterator.hasNext())
 				{
-					if (newEffect.getStackOrder() < queueIterator.next().getStackOrder())
+					if (newEffect.getAbnormalLvl() < queueIterator.next().getAbnormalLvl())
 						pos++;
 					else break;
 				}
@@ -987,7 +987,7 @@ public class CharEffectList
 		}
 		
 		// Update the Stack Group table _stackedEffects of the L2Character
-		_stackedEffects.put(newEffect.getStackType(), stackQueue);
+		_stackedEffects.put(newEffect.getAbnormalType(), stackQueue);
 		
 		// Get the first stacked effect of the Stack group selected
 		if (!stackQueue.isEmpty())

@@ -132,10 +132,10 @@ public abstract class L2Effect
 	private ScheduledFuture<?> _currentFuture;
 	
 	/** The Identifier of the stack group */
-	private final String _stackType;
+	private final String _abnormalType;
 	
 	/** The position of the effect in the stack group */
-	private final float _stackOrder;
+	private final float _abnormalLvl;
 	
 	private boolean _inUse = false;
 	private boolean _startConditionsCorrect = true;
@@ -182,8 +182,8 @@ public abstract class L2Effect
 		_abnormalEffect = template.abnormalEffect;
 		_specialEffect = template.specialEffect;
 		_eventEffect = template.eventEffect;
-		_stackType = template.stackType;
-		_stackOrder = template.stackOrder;
+		_abnormalType = template.abnormalType;
+		_abnormalLvl = template.abnormalLvl;
 		_periodStartTicks = GameTimeController.getGameTicks();
 		_periodFirstTime = 0;
 		_icon = template.icon;
@@ -224,8 +224,8 @@ public abstract class L2Effect
 		_abnormalEffect = _template.abnormalEffect;
 		_specialEffect = _template.specialEffect;
 		_eventEffect = _template.eventEffect;
-		_stackType = _template.stackType;
-		_stackOrder = _template.stackOrder;
+		_abnormalType = _template.abnormalType;
+		_abnormalLvl = _template.abnormalLvl;
 		_periodStartTicks = effect.getPeriodStartTicks();
 		_periodFirstTime = effect.getTime();
 		_icon = _template.icon;
@@ -303,14 +303,14 @@ public abstract class L2Effect
 		return _startConditionsCorrect;
 	}
 	
-	public String getStackType()
+	public String getAbnormalType()
 	{
-		return _stackType;
+		return _abnormalType;
 	}
 	
-	public float getStackOrder()
+	public float getAbnormalLvl()
 	{
-		return _stackOrder;
+		return _abnormalLvl;
 	}
 	
 	public final L2Skill getSkill()
