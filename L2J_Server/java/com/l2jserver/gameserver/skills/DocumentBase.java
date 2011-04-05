@@ -244,33 +244,33 @@ abstract class DocumentBase
 		/**
 		 * Keep this values as default ones, DP needs it
 		 */
-		int time = 1;
+		int abnormalTime = 1;
 		int count = 1;
 		
 		if (attrs.getNamedItem("count") != null)
 		{
 			count = Integer.decode(getValue(attrs.getNamedItem("count").getNodeValue(), template));
 		}
-		if (attrs.getNamedItem("time") != null)
+		if (attrs.getNamedItem("abnormalTime") != null)
 		{
-			time = Integer.decode(getValue(attrs.getNamedItem("time").getNodeValue(),template));
+			abnormalTime = Integer.decode(getValue(attrs.getNamedItem("abnormalTime").getNodeValue(),template));
 			if (Config.ENABLE_MODIFY_SKILL_DURATION)
 			{
 				if (Config.SKILL_DURATION_LIST.containsKey(((L2Skill) template).getId()))
 				{
 					if (((L2Skill) template).getLevel() < 100)
-						time = Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
+						abnormalTime = Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
 					else if ((((L2Skill) template).getLevel() >= 100) && (((L2Skill) template).getLevel() < 140))
-						time += Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
+						abnormalTime += Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
 					else if (((L2Skill) template).getLevel() > 140)
-						time = Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
+						abnormalTime = Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
 					if (Config.DEBUG)
-						_log.info("*** Skill " + ((L2Skill) template).getName() + " (" + ((L2Skill) template).getLevel() + ") changed duration to " + time + " seconds.");
+						_log.info("*** Skill " + ((L2Skill) template).getName() + " (" + ((L2Skill) template).getLevel() + ") changed duration to " + abnormalTime + " seconds.");
 				}
 			}
 		}
 		else if (((L2Skill) template).getBuffDuration() > 0)
-			time = ((L2Skill) template).getBuffDuration() / 1000 / count;
+			abnormalTime = ((L2Skill) template).getBuffDuration() / 1000 / count;
 		
 		boolean self = false;
 		if (attrs.getNamedItem("self") != null)
@@ -372,7 +372,7 @@ abstract class DocumentBase
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " "
 					+ activationChance);
 		
-		lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, time, abnormal, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance);
+		lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormal, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance);
 		parseTemplate(n, lt);
 		if (template instanceof L2Item)
 			((L2Item) template).attach(lt);

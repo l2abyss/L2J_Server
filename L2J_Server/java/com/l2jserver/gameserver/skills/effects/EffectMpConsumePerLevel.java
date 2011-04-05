@@ -50,7 +50,7 @@ public class EffectMpConsumePerLevel extends L2Effect
 		
 		double base = calc();
 		double consume = (getEffected().getLevel() - 1) / 7.5 * base
-		* getPeriod();
+		* getAbnormalTime();
 		
 		if (consume > getEffected().getCurrentMp())
 		{

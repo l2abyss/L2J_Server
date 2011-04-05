@@ -85,7 +85,7 @@ public abstract class L2Effect
 	private EffectState _state;
 	
 	// period, seconds
-	private final int _period;
+	private final int _abnormalTime;
 	private int _periodStartTicks;
 	private int _periodFirstTime;
 	
@@ -164,7 +164,7 @@ public abstract class L2Effect
 		_totalCount = _count;
 		
 		// Support for retail herbs duration when _effected has a Summon
-		int temp = template.period;
+		int temp = template.abnormalTime;
 		
 		if ((_skill.getId() > 2277 && _skill.getId() < 2286) || (_skill.getId() >= 2512 && _skill.getId() <= 2514))
 		{
@@ -178,7 +178,7 @@ public abstract class L2Effect
 		if (env.skillMastery)
 			temp *= 2;
 		
-		_period = temp;
+		_abnormalTime = temp;
 		_abnormalEffect = template.abnormalEffect;
 		_specialEffect = template.specialEffect;
 		_eventEffect = template.eventEffect;
@@ -220,7 +220,7 @@ public abstract class L2Effect
 		_funcTemplates = _template.funcTemplates;
 		_count = effect.getCount();
 		_totalCount = _template.counter;
-		_period = _template.period;
+		_abnormalTime = _template.abnormalTime;
 		_abnormalEffect = _template.abnormalEffect;
 		_specialEffect = _template.specialEffect;
 		_eventEffect = _template.eventEffect;
@@ -257,7 +257,7 @@ public abstract class L2Effect
 
 	public void setFirstTime(int newFirstTime)
 	{
-		_periodFirstTime = Math.min(newFirstTime, _period);
+		_periodFirstTime = Math.min(newFirstTime, _abnormalTime);
 		_periodStartTicks -= _periodFirstTime * GameTimeController.TICKS_PER_SECOND;
 	}
 
@@ -266,9 +266,9 @@ public abstract class L2Effect
 		return _icon;
 	}
 	
-	public int getPeriod()
+	public int getAbnormalTime()
 	{
-		return _period;
+		return _abnormalTime;
 	}
 	
 	public int getTime()
@@ -284,7 +284,7 @@ public abstract class L2Effect
 	{
 		if (_count == _totalCount)
 			return 0;
-		return (Math.abs(_count - _totalCount + 1) * _period) + getTime() + 1;
+		return (Math.abs(_count - _totalCount + 1) * _abnormalTime) + getTime() + 1;
 	}
 	
 	public boolean getInUse()
@@ -354,12 +354,12 @@ public abstract class L2Effect
 	
 	private final synchronized void startEffectTask()
 	{
-		if (_period > 0)
+		if (_abnormalTime > 0)
 		{
 			stopEffectTask();
-			final int initialDelay = Math.max((_period - _periodFirstTime) * 1000, 5);
+			final int initialDelay = Math.max((_abnormalTime - _periodFirstTime) * 1000, 5);
 			if (_count > 1)
-				_currentFuture = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new EffectTask(), initialDelay, _period * 1000);
+				_currentFuture = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new EffectTask(), initialDelay, _abnormalTime * 1000);
 			else
 				_currentFuture = ThreadPoolManager.getInstance().scheduleEffect(new EffectTask(), initialDelay);
 		}
@@ -463,7 +463,7 @@ public abstract class L2Effect
 					getEffected().sendPacket(smsg);
 				}
 
-				if (_period != 0)
+				if (_abnormalTime != 0)
 				{
 					startEffectTask();
 					return;
@@ -506,7 +506,7 @@ public abstract class L2Effect
 				stopEffectTask();
 				
 				// Cancel the effect in the the abnormal effect map of the L2Character
-				if (getInUse() || !(_count > 1 || _period > 0))
+				if (getInUse() || !(_count > 1 || _abnormalTime > 0))
 					if (_startConditionsCorrect)
 						onExit();
 				
@@ -564,8 +564,8 @@ public abstract class L2Effect
 		}
 		else if (future != null)
 			mi.addEffect(sk.getId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
-		else if (_period == -1)
-			mi.addEffect(sk.getId(), getLevel(), _period);
+		else if (_abnormalTime == -1)
+			mi.addEffect(sk.getId(), getLevel(), _abnormalTime);
 	}
 	
 	public final void addPartySpelledIcon(PartySpelled ps)
@@ -577,8 +577,8 @@ public abstract class L2Effect
 		final L2Skill sk = getSkill();
 		if (future != null)
 			ps.addPartySpelledEffect(sk.getId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
-		else if (_period == -1)
-			ps.addPartySpelledEffect(sk.getId(), getLevel(), _period);
+		else if (_abnormalTime == -1)
+			ps.addPartySpelledEffect(sk.getId(), getLevel(), _abnormalTime);
 	}
 	
 	public final void addOlympiadSpelledIcon(ExOlympiadSpelledInfo os)
@@ -590,8 +590,8 @@ public abstract class L2Effect
 		final L2Skill sk = getSkill();
 		if (future != null)
 			os.addEffect(sk.getId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
-		else if (_period == -1)
-			os.addEffect(sk.getId(), getLevel(), _period);
+		else if (_abnormalTime == -1)
+			os.addEffect(sk.getId(), getLevel(), _abnormalTime);
 	}
 	
 	public int getLevel()
@@ -656,7 +656,7 @@ public abstract class L2Effect
 	@Override
 	public String toString()
 	{
-		return "L2Effect [_skill=" + _skill + ", _state=" + _state + ", _period=" + _period + "]";
+		return "L2Effect [_skill=" + _skill + ", _state=" + _state + ", _period=" + _abnormalTime + "]";
 	}
 	
 	public boolean isSeflEffectType()

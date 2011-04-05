@@ -147,7 +147,7 @@ public class EffectCancelDebuff extends L2Effect
     private static boolean calcCancelSuccess(L2Effect effect, int cancelLvl, int baseRate)
     {
         int rate = 2 * (cancelLvl - effect.getSkill().getMagicLevel());
-        rate += (effect.getPeriod() - effect.getTime()) / 1200;
+        rate += (effect.getAbnormalTime() - effect.getTime()) / 1200;
         rate += baseRate;
        
         if (rate < 25)
