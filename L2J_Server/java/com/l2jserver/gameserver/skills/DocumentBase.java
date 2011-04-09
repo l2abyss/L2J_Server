@@ -72,6 +72,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionPlayerMp;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerPkCount;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerPledgeClass;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerRace;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerRangeFromNpc;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerServitorNpcId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSex;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSiegeSide;
@@ -697,6 +698,18 @@ abstract class DocumentBase
 					array.add(Integer.decode(getValue(item, null)));
 				}
 				cond = joinAnd(cond, new ConditionPlayerServitorNpcId(array));
+			}
+			else if ("npcIdRadius".equalsIgnoreCase(a.getNodeName()))
+			{
+				StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+				int npcId = 0;
+				int radius = 0;
+				if (st.countTokens() > 1)
+				{
+					npcId = Integer.decode(getValue(st.nextToken().trim(), null));
+					radius = Integer.decode(getValue(st.nextToken().trim(), null));
+				}
+				cond = joinAnd(cond, new ConditionPlayerRangeFromNpc(npcId, radius));
 			}
 		}
 		
