@@ -2772,7 +2772,6 @@ public final class L2PcInstance extends L2Playable
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
 	 * <li>Get the Level of the L2PcInstance </li>
-	 * <li>If L2PcInstance Level is 5, remove beginner Lucky skill </li>
 	 * <li>Add the Expertise skill corresponding to its Expertise level</li>
 	 * <li>Update the overloaded status of the L2PcInstance</li><BR><BR>
 	 *
@@ -2783,15 +2782,6 @@ public final class L2PcInstance extends L2Playable
 	{
 		// Get the Level of the L2PcInstance
 		int lvl = getLevel();
-		
-		// Remove beginner Lucky skill
-		if (lvl == 10)
-		{
-			L2Skill skill = SkillTable.FrequentSkill.LUCKY.getSkill();
-			skill = removeSkill(skill);
-			
-			if (Config.DEBUG && skill != null) _log.fine("removed skill 'Lucky' from "+getName());
-		}
 		
 		// Calculate the current higher Expertise of the L2PcInstance
 		for (int i=0; i < EXPERTISE_LEVELS.length; i++)
