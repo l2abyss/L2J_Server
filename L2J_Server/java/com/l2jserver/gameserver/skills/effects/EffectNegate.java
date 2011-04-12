@@ -52,6 +52,20 @@ public class EffectNegate extends L2Effect
 		{
 			getEffected().stopSkillEffects(negateSkillType, skill.getNegateLvl());
 		}
+		if (skill.getNegateAbnormals() != null)
+		{
+			for (L2Effect effect : getEffected().getAllEffects())
+			{
+				if (effect == null)
+					continue;
+				
+				for (String negateAbnormalType : skill.getNegateAbnormals().keySet())
+				{
+					if (negateAbnormalType.equalsIgnoreCase(effect.getAbnormalType()) && skill.getNegateAbnormals().get(negateAbnormalType) >= effect.getAbnormalLvl())
+						effect.exit();
+				}
+			}
+		}
 		return true;
 	}
 	

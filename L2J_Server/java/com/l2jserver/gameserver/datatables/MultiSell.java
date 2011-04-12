@@ -215,7 +215,7 @@ public class MultiSell
 			}
 		}
 		verify();
-		_log.config("MultiSell: Loaded " + _entries.size() + " lists.");
+		_log.log(Level.INFO, "MultiSell: Loaded " + _entries.size() + " lists.");
 	}
 	
 	private final ListContainer parseDocument(Document doc)
@@ -304,7 +304,7 @@ public class MultiSell
 		File dir = new File(Config.DATAPACK_ROOT, "data/" + dirname);
 		if (!dir.exists())
 		{
-			_log.config("Dir " + dir.getAbsolutePath() + " not exists");
+			_log.log(Level.WARNING, "Dir " + dir.getAbsolutePath() + " not exists");
 			return;
 		}
 		

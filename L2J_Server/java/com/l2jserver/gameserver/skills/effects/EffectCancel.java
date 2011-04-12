@@ -116,53 +116,44 @@ public class EffectCancel extends L2Effect
 				_log.info(result);
 		}
 
-		L2Effect eff;
-		int lastCanceledSkillId = 0;
 		final L2Effect[] effects = target.getAllEffects();
-		for (int i = effects.length; --i >= 0;)
-		{
-			eff = effects[i];
-			if (eff == null)
-				continue;
-			
-			if (!eff.canBeStolen())
-			{
-				effects[i] = null;
-				continue;
-			}
-			
-			// first pass - dances/songs only
-			if (!eff.getSkill().isDance())
-				continue;
-			
-			if (eff.getSkill().getId() == lastCanceledSkillId)
-			{
-				eff.exit(); // this skill already canceled
-				continue;
-			}
-			
-			if (!calcCancelSuccess(eff, cancelLvl, (int)rate))
-				continue;
-			
-			lastCanceledSkillId = eff.getSkill().getId();
-			eff.exit();
-			count--;
-			
-			if (count == 0)
-				break;
-		}
 		
-		if (count != 0)
+		if (effect.getSkill().getNegateAbnormals() != null) // Cancel for abnormals
 		{
-			lastCanceledSkillId = 0;
+			for (L2Effect eff : effects)
+			{
+				if (eff == null)
+					continue;
+				
+				for (String negateAbnormalType : effect.getSkill().getNegateAbnormals().keySet())
+				{
+					if (negateAbnormalType.equalsIgnoreCase(eff.getAbnormalType()) && effect.getSkill().getNegateAbnormals().get(negateAbnormalType) >= eff.getAbnormalLvl())
+					{
+						if (calcCancelSuccess(eff, cancelLvl, (int)rate))
+							eff.exit();
+					}
+				}
+			}
+		}
+		else
+		{
+			L2Effect eff;
+			int lastCanceledSkillId = 0;
+			
 			for (int i = effects.length; --i >= 0;)
 			{
 				eff = effects[i];
 				if (eff == null)
 					continue;
 				
-				// second pass - all except dances/songs
-				if (eff.getSkill().isDance())
+				if (!eff.canBeStolen())
+				{
+					effects[i] = null;
+					continue;
+				}
+				
+				// first pass - dances/songs only
+				if (!eff.getSkill().isDance())
 					continue;
 				
 				if (eff.getSkill().getId() == lastCanceledSkillId)
@@ -175,13 +166,46 @@ public class EffectCancel extends L2Effect
 					continue;
 				
 				lastCanceledSkillId = eff.getSkill().getId();
+				
 				eff.exit();
 				count--;
 				
 				if (count == 0)
 					break;
 			}
+			
+			if (count != 0)
+			{
+				lastCanceledSkillId = 0;
+				for (int i = effects.length; --i >= 0;)
+				{
+					eff = effects[i];
+					if (eff == null)
+						continue;
+					
+					// second pass - all except dances/songs
+					if (eff.getSkill().isDance())
+						continue;
+					
+					if (eff.getSkill().getId() == lastCanceledSkillId)
+					{
+						eff.exit(); // this skill already canceled
+						continue;
+					}
+					
+					if (!calcCancelSuccess(eff, cancelLvl, (int)rate))
+						continue;
+					
+					lastCanceledSkillId = eff.getSkill().getId();
+					eff.exit();
+					count--;
+					
+					if (count == 0)
+						break;
+				}
+			}
 		}
+		
 		return true;
 	}
 	
