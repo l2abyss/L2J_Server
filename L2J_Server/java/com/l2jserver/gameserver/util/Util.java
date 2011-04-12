@@ -32,11 +32,8 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * General Utility functions related to Gameserver
- *
- * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
 public final class Util
 {
@@ -105,11 +102,18 @@ public final class Util
 		return (int) (angleTarget * 182.044444444);
 	}
 	
+	/**
+	 * @return the distance between the two coordinates in 2D plane
+	 */
 	public static double calculateDistance(int x1, int y1, int x2, int y2)
 	{
 		return calculateDistance(x1, y1, 0, x2, y2, 0, false);
 	}
 	
+	/**
+	 * @param includeZAxis - if true, includes also the Z axis in the calculation
+	 * @return the distance between the two coordinates
+	 */
 	public static double calculateDistance(int x1, int y1, int z1, int x2, int y2, int z2, boolean includeZAxis)
 	{
 		double dx = (double) x1 - x2;
@@ -118,12 +122,16 @@ public final class Util
 		if (includeZAxis)
 		{
 			double dz = z1 - z2;
-			return Math.sqrt((dx * dx) + (dy * dy) + (dz * dz));
+			return Math.sqrt(dx * dx + dy * dy + dz * dz);
 		}
 		else
-			return Math.sqrt((dx * dx) + (dy * dy));
+			return Math.sqrt(dx * dx + dy * dy);
 	}
 	
+	/**
+	 * @param includeZAxis - if true, includes also the Z axis in the calculation
+	 * @return the distance between the two objects
+	 */
 	public static double calculateDistance(L2Object obj1, L2Object obj2, boolean includeZAxis)
 	{
 		if (obj1 == null || obj2 == null)
@@ -133,11 +141,10 @@ public final class Util
 	}
 	
 	/**
-	 * Capitalizes the first letter of a string, and returns the result.<BR>
 	 * (Based on ucfirst() function of PHP)
 	 *
-	 * @param String str
-	 * @return String containing the modified string.
+	 * @param str - the string whose first letter to capitalize
+	 * @return a string with the first letter of the {@code str} capitalized
 	 */
 	public static String capitalizeFirst(String str)
 	{
@@ -150,11 +157,10 @@ public final class Util
 	}
 	
 	/**
-	 * Capitalizes the first letter of every "word" in a string.<BR>
 	 * (Based on ucwords() function of PHP)
 	 *
-	 * @param String str
-	 * @return String containing the modified string.
+	 * @param str - the string to capitalize
+	 * @return a string with the first letter of every word in {@code str} capitalized
 	 */
 	public static String capitalizeWords(String str)
 	{
@@ -175,8 +181,8 @@ public final class Util
 		return result;
 	}
 	
-	/*
-	 *  Checks if object is within range, adding collisionRadius
+	/**
+	 * @return {@code true} if the two objects are within specified range between each other, {@code false} otherwise
 	 */
 	public static boolean checkIfInRange(int range, L2Object obj1, L2Object obj2, boolean includeZAxis)
 	{
@@ -186,7 +192,7 @@ public final class Util
 			return false;
 		if (range == -1)
 			return true; // not limited
-		
+			
 		int rad = 0;
 		if (obj1 instanceof L2Character)
 			rad += ((L2Character) obj1).getTemplate().collisionRadius;
@@ -211,11 +217,13 @@ public final class Util
 		}
 	}
 	
-	/*
-	 *  Checks if object is within short (sqrt(int.max_value)) radius,
-	 *  not using collisionRadius. Faster calculation than checkIfInRange
-	 *  if distance is short and collisionRadius isn't needed.
-	 *  Not for long distance checks (potential teleports, far away castles etc)
+	/**
+	 *  Checks if object is within short (sqrt(int.max_value)) radius, not using collisionRadius.
+	 *  Faster calculation than checkIfInRange if distance is short and collisionRadius isn't needed.
+	 *  Not for long distance checks (potential teleports, far away castles etc).
+	 * @param range - the maximum range between the two objects
+	 *  @param includeZAxis - if true, check also Z axis (3-dimensional check), otherwise only 2D
+	 * @return {@code true} if objects are within specified range between each other, {@code false} otherwise
 	 */
 	public static boolean checkIfInShortRadius(int radius, L2Object obj1, L2Object obj2, boolean includeZAxis)
 	{
@@ -223,7 +231,7 @@ public final class Util
 			return false;
 		if (radius == -1)
 			return true; // not limited
-		
+			
 		int dx = obj1.getX() - obj2.getX();
 		int dy = obj1.getY() - obj2.getY();
 		
@@ -233,29 +241,23 @@ public final class Util
 			return dx * dx + dy * dy + dz * dz <= radius * radius;
 		}
 		else
-		{
 			return dx * dx + dy * dy <= radius * radius;
-		}
 	}
 	
 	/**
-	 * Returns the number of "words" in a given string.
-	 *
-	 * @param String str
-	 * @return int numWords
+	 * @param str - the String to count
+	 * @return the number of "words" in a given string.
 	 */
 	public static int countWords(String str)
 	{
-		return str.trim().split(" ").length;
+		return str.trim().split("\\s+").length;
 	}
 	
 	/**
-	 * Returns a delimited string for an given array of string elements.<BR>
 	 * (Based on implode() in PHP)
-	 *
-	 * @param String[] strArray
-	 * @param String strDelim
-	 * @return String implodedString
+	 * @param strArray - an array of strings to concatenate
+	 * @param strDelim - the delimiter to put between the strings
+	 * @return a delimited string for a given array of string elements.
 	 */
 	public static String implodeString(String[] strArray, String strDelim)
 	{
@@ -268,12 +270,9 @@ public final class Util
 	}
 	
 	/**
-	 * Returns a delimited string for an given collection of string elements.<BR>
-	 * (Based on implode() in PHP)
-	 *
-	 * @param Collection&lt;String&gt; strCollection
-	 * @param String strDelim
-	 * @return String implodedString
+	 * @param strCollection - a collection of strings to concatenate
+	 * @param strDelim - the delimiter to put between the strings
+	 * @see #implodeString(String[] strArray, String strDelim)
 	 */
 	public static String implodeString(Collection<String> strCollection, String strDelim)
 	{
@@ -281,62 +280,51 @@ public final class Util
 	}
 	
 	/**
-	 * Returns the rounded value of val to specified number of digits
-	 * after the decimal point.<BR>
 	 * (Based on round() in PHP)
-	 *
-	 * @param float val
-	 * @param int numPlaces
-	 * @return float roundedVal
+	 * @param number - the number to round
+	 * @param numPlaces - how many digits after decimal point to leave intact
+	 * @return the value of {@code number} rounded to specified number of digits after the decimal point.
 	 */
-	public static float roundTo(float val, int numPlaces)
+	public static float roundTo(float number, int numPlaces)
 	{
 		if (numPlaces <= 1)
-			return Math.round(val);
+			return Math.round(number);
 		
 		float exponent = (float) Math.pow(10, numPlaces);
 		
-		return (Math.round(val * exponent) / exponent);
+		return Math.round(number * exponent) / exponent;
 	}
 	
+	/**
+	 * @param text - the text to check
+	 * @return {@code true} if {@code text} contains only numbers, {@code false} otherwise
+	 */
 	public static boolean isDigit(String text)
 	{
 		if (text == null)
 			return false;
-		boolean result = true;
-		char[] chars = text.toCharArray();
-		for (int i = 0; i < chars.length; i++)
-		{
-			if (!Character.isDigit(chars[i]))
-			{
-				result = false;
-				break;
-			}
-		}
-		return result;
-	}
-	
-	public static boolean isAlphaNumeric(String text)
-	{
-		if (text == null)
-			return false;
-		boolean result = true;
-		char[] chars = text.toCharArray();
-		for (int i = 0; i < chars.length; i++)
-		{
-			if (!Character.isLetterOrDigit(chars[i]))
-			{
-				result = false;
-				break;
-			}
-		}
-		return result;
+		return text.matches("[0-9]+");
 	}
 	
 	/**
-	 * Return amount of adena formatted with "," delimiter
-	 * @param amount
-	 * @return String formatted adena amount
+	 * @param text - the text to check
+	 * @return {@code true} if {@code text} contains only letters and/or numbers, {@code false} otherwise
+	 */
+	public static boolean isAlphaNumeric(String text)
+	{
+		if (text == null || text.isEmpty())
+			return false;
+		for (char c : text.toCharArray())
+			if (!Character.isLetterOrDigit(c))
+				return false;
+		return true;
+	}
+	
+	/**
+	 * Format the specified digit using the digit grouping symbol "," (comma).
+	 * For example, 123456789 becomes 123,456,789.
+	 * @param amount - the amount of adena
+	 * @return the formatted adena amount
 	 */
 	public static String formatAdena(long amount)
 	{
@@ -357,27 +345,29 @@ public final class Util
 		return s;
 	}
 	
+	/**
+	 * @param array - the array to look into
+	 * @param obj - the object to search for
+	 * @return {@code true} if the {@code array} contains the {@code obj}, {@code false} otherwise
+	 */
 	public static <T> boolean contains(T[] array, T obj)
 	{
-		for (int i = 0; i < array.length; i++)
-		{
-			if (array[i] == obj)
-			{
+		for (T element : array)
+			if (element == obj)
 				return true;
-			}
-		}
 		return false;
 	}
 	
+	/**
+	 * @param array - the array to look into
+	 * @param obj - the integer to search for
+	 * @return {@code true} if the {@code array} contains the {@code obj}, {@code false} otherwise
+	 */
 	public static boolean contains(int[] array, int obj)
 	{
-		for (int i = 0; i < array.length; i++)
-		{
-			if (array[i] == obj)
-			{
+		for (int element : array)
+			if (element == obj)
 				return true;
-			}
-		}
 		return false;
 	}
 }
