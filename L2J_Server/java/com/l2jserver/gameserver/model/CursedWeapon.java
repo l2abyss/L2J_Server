@@ -263,8 +263,10 @@ public class CursedWeapon
 			Earthquake eq = new Earthquake(player.getX(), player.getY(), player.getZ(), 14, 3);
 			Broadcast.toAllOnlinePlayers(packet);
 			Broadcast.toAllOnlinePlayers(eq);
-		} else
+		}
+		else
 		{
+			_item = _player.getInventory().getItemByItemId(_itemId);
 			_player.dropItem("DieDrop", _item, killer, true);
 			_player.setKarma(_playerKarma);
 			_player.setPkKills(_playerPkKills);
