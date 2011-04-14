@@ -36,7 +36,6 @@ public final class L2Armor extends L2Item
 	private final int _avoidModifier;
 	private SkillHolder _enchant4Skill = null; // skill that activates when armor is enchanted +4
 	// private final String[] _skill;
-	private SkillHolder[] _skillHolder;
 	private L2ArmorType _type;
 	
 	/**
@@ -96,44 +95,7 @@ public final class L2Armor extends L2Item
 				if (id > 0 && level > 0)
 					_enchant4Skill = new SkillHolder(id, level);
 			}
-		}
-		
-		skill = set.getString("item_skill", null);
-		if (skill != null)
-		{
-			String[] skills = skill.split(";");
-			_skillHolder = new SkillHolder[skills.length];
-			byte iterator = 0;
-			for (String st : skills)
-			{
-				String[] info = st.split("-");
-				
-				if (info == null || info.length != 2)
-					continue;
-				
-				int id = 0;
-				int level = 0;
-				
-				try
-				{
-					id = Integer.parseInt(info[0]);
-					level = Integer.parseInt(info[1]);
-				}
-				catch (Exception nfe)
-				{
-					// Incorrect syntax, dont add new skill
-					_log.info(StringUtil.concat("> Couldnt parse ", st, " in armor skills! item ",this.toString()));
-					continue;
-				}
-				
-				// If skill can exist, add it
-				if (id > 0 && level > 0)
-				{
-					_skillHolder[iterator] = new SkillHolder(id, level);
-					iterator++;
-				}
-			}
-		}
+		}	
 	}
 	
 	/**
@@ -176,17 +138,6 @@ public final class L2Armor extends L2Item
 			return null;
 		return _enchant4Skill.getSkill();
 	}
-	
-	/**
-	 * Returns passive skill linked to that armor
-	 * @return
-	 */
-	@Override
-	public SkillHolder[] getSkills()
-	{
-		return _skillHolder;
-	}
-	
 	
 	/**
 	 * Returns array of Func objects containing the list of functions used by the armor

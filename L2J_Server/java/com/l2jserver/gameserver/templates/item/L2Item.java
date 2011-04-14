@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
+import com.l2jserver.util.StringUtil;
 
 /**
  * This class contains all informations concerning the item (weapon, armor, etc).<BR>
@@ -185,6 +186,7 @@ public abstract class L2Item
 	protected FuncTemplate[] _funcTemplates;
 	protected EffectTemplate[] _effectTemplates;
 	protected List <Condition> _preConditions;
+	private SkillHolder[] _skillHolder;
 	
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
@@ -246,8 +248,52 @@ public abstract class L2Item
 			if (cond.conditions.length > 0)
 				attach(cond);
 		}
-
 		
+		String skills = set.getString("item_skill", null);
+		if (skills != null)
+		{
+			String[] skillsSplit = skills.split(";");
+			_skillHolder = new SkillHolder[skillsSplit.length];
+			int used = 0;
+			
+			for (int i = 0;i < skillsSplit.length;++ i)
+			{
+				try
+				{
+					String[] skillSplit = skillsSplit[i].split("-");
+					int id = Integer.parseInt(skillSplit[0]);
+					int level = Integer.parseInt(skillSplit[1]);
+					
+			        if (id == 0)
+			        {
+			        	_log.info(StringUtil.concat("Ignoring item_skill(", skillsSplit[i], ") for item ", toString(), ". Skill id is 0!"));
+			        	continue;
+			        }
+			        
+			        if (level == 0)
+			        {
+			        	_log.info(StringUtil.concat("Ignoring item_skill(", skillsSplit[i], ") for item ", toString(), ". Skill level is 0!"));
+			        	continue;
+			        }
+			        
+			        _skillHolder[used] = new SkillHolder(id, level);
+			        ++ used;
+				}
+				catch (Exception e)
+				{
+					_log.warning(StringUtil.concat("Failed to parse item_skill(", skillsSplit[i], ") for item ", toString(), "! Format: SkillId0-SkillLevel0[;SkillIdN-SkillLevelN]"));
+				}
+			}
+				
+			// this is only loading? just don't leave a null or use a collection?
+			if (used != _skillHolder.length)
+			{
+				SkillHolder[] skillHolder = new SkillHolder[used];
+				System.arraycopy(_skillHolder, 0, skillHolder, 0, used);
+				_skillHolder = skillHolder;
+			}
+		}
+
 		_common = (_itemId >= 11605 && _itemId <= 12361);
 		_heroItem = (_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842;
 		_pvpItem = (_itemId >= 10667 && _itemId <= 10835) || (_itemId >= 12852 && _itemId <= 12977) || (_itemId >= 14363 && _itemId <= 14525) || _itemId == 14528 || _itemId == 14529 || _itemId == 14558 || (_itemId >=15913 && _itemId <= 16024) || (_itemId >=16134 && _itemId <= 16147) || _itemId == 16149 || _itemId == 16151 || _itemId == 16153 || _itemId == 16155 || _itemId == 16157 || _itemId == 16159 || (_itemId >=16168 && _itemId <= 16176) || (_itemId >=16179 && _itemId <= 16220);
@@ -782,7 +828,18 @@ public abstract class L2Item
 			_preConditions.add(c);
 	}
 	
-	public abstract SkillHolder[] getSkills();
+	/**
+	 * Method to retrive skills linked to this item
+	 *
+	 * armor and weapon: passive skills
+	 * etcitem: skills used on item use <-- ???
+	 *
+	 * @return Skills linked to this item as SkillHolder[]
+	 */
+	public final SkillHolder[] getSkills()
+	{
+		return _skillHolder;
+	}
 	
 	public boolean checkCondition(L2Character activeChar, L2Object target, boolean sendMessage)
 	{
