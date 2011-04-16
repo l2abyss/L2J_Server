@@ -193,6 +193,7 @@ public enum Stats
 	VENGEANCE_SKILL_PHYSICAL_DAMAGE("vengeancePdam"),
 	ABSORB_DAMAGE_PERCENT("absorbDam"),
 	TRANSFER_DAMAGE_PERCENT("transDam"),
+	MANA_SHIELD_PERCENT("manaShield"),
 	ABSORB_MANA_DAMAGE_PERCENT("absorbDamMana"),
 	
 	MAX_LOAD("maxLoad"),

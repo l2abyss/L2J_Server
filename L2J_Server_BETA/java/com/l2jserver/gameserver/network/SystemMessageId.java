@@ -14669,6 +14669,18 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_OBTAINED_S1_RECOMMENDATIONS;
 	
 	/**
+	 * ID: 3255<br>
+	 * Message: Arcane Shield decreased your MP by $1 instead of HP.
+	 */
+	public static final SystemMessageId ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP;
+
+	/**
+	 * ID: 3256<br>
+	 * Message: MP became 0 and the Arcane Shield is disappearing.
+	 */
+	public static final SystemMessageId MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING;
+	
+	/**
 	 * ID: 6501<br>
 	 * Message: You cannot bookmark this location because you do not have a My Teleport Flag.
 	 */
@@ -17112,6 +17124,8 @@ public final class SystemMessageId
 		C1_IS_SET_TO_REFUSE_DUEL_REQUEST = new SystemMessageId(3169);
 		YOU_CURRENTLY_DO_NOT_HAVE_ANY_RECOMMENDATIONS = new SystemMessageId(3206);
 		YOU_OBTAINED_S1_RECOMMENDATIONS = new SystemMessageId(3207);
+		ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP = new SystemMessageId(3255);
+		MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING = new SystemMessageId(3256);
 		YOU_CANNOT_BOOKMARK_THIS_LOCATION_BECAUSE_YOU_DO_NOT_HAVE_A_MY_TELEPORT_FLAG = new SystemMessageId(6501);
 		THOMAS_D_TURKEY_APPEARED = new SystemMessageId(6503);
 		THOMAS_D_TURKEY_DEFETED = new SystemMessageId(6504);
