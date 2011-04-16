@@ -94,9 +94,11 @@ public class RequestAcquireSkill extends L2GameClientPacket
 		if (!Config.ALT_GAME_SKILL_LEARN)
 			player.setSkillLearningClassId(player.getClassId());
 		
-		// If current skill lvl + 1 is not equal to the skill lvl you wanna learn (eg: You have Aggression lvl 3 and the packet sends info that
-		// you want to learn Aggression lvl 5, thus skipping lvl 4.) or the packet sends the same level or lower (eg: Aggression lvl 3 and the
-		// packet sends info that you want to learn Aggression level 3).
+		/**
+		 *  If current skill lvl + 1 is not equal to the skill lvl you wanna learn (eg: You have Aggression lvl 3 and the packet sends info that
+		 *  you want to learn Aggression lvl 5, thus skipping lvl 4.) or the packet sends the same level or lower (eg: Aggression lvl 3 and the
+		 *  packet sends info that you want to learn Aggression level 3).
+		 */
 		if (Math.max(player.getSkillLevel(_id), 0) + 1 != _level && _skillType != 3)
 			return;
 		
