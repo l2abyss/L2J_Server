@@ -890,9 +890,15 @@ public class NpcTable
 	 * @param classType
 	 * @return
 	 */
-	public Set<Integer> getAllNpcOfClassType(String classType)
+	public L2NpcTemplate[] getAllNpcOfClassType(String classType)
 	{
-		return null;
+		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
+		
+		for (Object t : _npcs.getValues())
+			if (classType.equals(((L2NpcTemplate)t).type))
+				list.add((L2NpcTemplate) t);
+		
+		return list.toArray(new L2NpcTemplate[list.size()]);
 	}
 	
 	/**
