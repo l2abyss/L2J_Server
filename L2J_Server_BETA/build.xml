@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="L2J_Server" default="dist" basedir=".">
+<project name="L2J_Server_BETA" default="dist" basedir=".">
 	<description>
 		This script will build the L2J Server.
 
@@ -216,7 +216,7 @@
 				<include name="*.pn" />
 			</fileset>
 		</copy>
-		<zip destfile="${build}/L2J_Server.zip" basedir="${build.dist}" />
+		<zip destfile="${build}/L2J_Server_BETA.zip" basedir="${build.dist}" />
 	</target>
 
 	<target name="version" depends="init" description="Create l2j-version.properties file">
