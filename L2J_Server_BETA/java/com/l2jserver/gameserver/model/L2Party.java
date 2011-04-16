@@ -65,9 +65,9 @@ import com.l2jserver.util.Rnd;
 public class L2Party
 {
 	private static final Logger _log = Logger.getLogger(L2Party.class.getName());
-	private static final double[] BONUS_EXP_SP = {1, 1.30, 1.39, 1.50, 1.54, 1.58, 1.63, 1.67, 1.71};
+	private static final double[] BONUS_EXP_SP = { 1, 1.10, 1.20, 1.30, 1.40, 1.50, 2.0, 2.10, 2.12 };
 	//TODO: JIV - unhardcode to some SysString enum (sysstring-e.dat)
-	private static final int[] LOOT_SYSSTRINGS = {487, 488, 798, 799, 800};
+	private static final int[] LOOT_SYSSTRINGS = { 487, 488, 798, 799, 800 };
 	private static final int PARTY_POSITION_BROADCAST = 12000;
 	
 	public static final byte ITEM_LOOTER = 0;
