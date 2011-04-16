@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -23,6 +24,7 @@ import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -31,10 +33,12 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.ShowCalculator;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
+import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 
 /**
@@ -56,15 +60,20 @@ public final class UseItem extends L2GameClientPacket
 	{
 		L2ItemInstance item;
 		L2PcInstance activeChar;
-		public WeaponEquipTask(L2ItemInstance it, L2PcInstance character){
+		
+		public WeaponEquipTask(L2ItemInstance it, L2PcInstance character)
+		{
 			item = it;
 			activeChar = character;
 		}
+		
+		@Override
 		public void run()
 		{
 			//If character is still engaged in strike we should not change weapon
 			if (activeChar.isAttackingNow())
 				return;
+			
 			// Equip or unEquip
 			activeChar.useEquippableItem(item, false);
 		}
@@ -88,6 +97,9 @@ public final class UseItem extends L2GameClientPacket
 		if (!getClient().getFloodProtectors().getUseItem().tryPerformAction("use item"))
 			return;
 		
+		if (activeChar.getActiveTradeList() != null)
+			activeChar.cancelActiveTrade();
+		
 		if (activeChar.getPrivateStoreType() != 0)
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
@@ -95,20 +107,6 @@ public final class UseItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getActiveTradeList() != null)
-			activeChar.cancelActiveTrade();
-		
-		// cannot use items during Fear (possible more abnormal states?)
-		if (activeChar.isAfraid())
-		{
-			// no sysmsg
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-		
-		// NOTE: disabled due to deadlocks
-		// synchronized (activeChar.getInventory())
-		// 	{
 		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		if (item == null)
 			return;
@@ -121,69 +119,13 @@ public final class UseItem extends L2GameClientPacket
 			return;
 		}
 		
-		_itemId = item.getItemId();
-		/*
-		 * Alt game - Karma punishment // SOE
-		 * 736  	Scroll of Escape
-		 * 1538  	Blessed Scroll of Escape
-		 * 1829  	Scroll of Escape: Clan Hall
-		 * 1830  	Scroll of Escape: Castle
-		 * 3958  	L2Day - Blessed Scroll of Escape
-		 * 5858  	Blessed Scroll of Escape: Clan Hall
-		 * 5859  	Blessed Scroll of Escape: Castle
-		 * 6663  	Scroll of Escape: Orc Village
-		 * 6664  	Scroll of Escape: Silenos Village
-		 * 7117  	Scroll of Escape to Talking Island
-		 * 7118  	Scroll of Escape to Elven Village
-		 * 7119  	Scroll of Escape to Dark Elf Village
-		 * 7120  	Scroll of Escape to Orc Village
-		 * 7121  	Scroll of Escape to Dwarven Village
-		 * 7122  	Scroll of Escape to Gludin Village
-		 * 7123  	Scroll of Escape to the Town of Gludio
-		 * 7124  	Scroll of Escape to the Town of Dion
-		 * 7125  	Scroll of Escape to Floran
-		 * 7126  	Scroll of Escape to Giran Castle Town
-		 * 7127  	Scroll of Escape to Hardin's Private Academy
-		 * 7128  	Scroll of Escape to Heine
-		 * 7129  	Scroll of Escape to the Town of Oren
-		 * 7130  	Scroll of Escape to Ivory Tower
-		 * 7131  	Scroll of Escape to Hunters Village
-		 * 7132  	Scroll of Escape to Aden Castle Town
-		 * 7133  	Scroll of Escape to the Town of Goddard
-		 * 7134  	Scroll of Escape to the Rune Township
-		 * 7135  	Scroll of Escape to the Town of Schuttgart.
-		 * 7554  	Scroll of Escape to Talking Island
-		 * 7555  	Scroll of Escape to Elven Village
-		 * 7556  	Scroll of Escape to Dark Elf Village
-		 * 7557  	Scroll of Escape to Orc Village
-		 * 7558  	Scroll of Escape to Dwarven Village
-		 * 7559  	Scroll of Escape to Giran Castle Town
-		 * 7618  	Scroll of Escape - Ketra Orc Village
-		 * 7619  	Scroll of Escape - Varka Silenos Village
-		 * 10129    Scroll of Escape : Fortress
-		 * 10130    Blessed Scroll of Escape : Fortress
-		 */
-		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
+		// No UseItem is allowed while the player is in special conditions
+		if (activeChar.isStunned()
+				|| activeChar.isParalyzed()
+				|| activeChar.isSleeping()
+				|| activeChar.isAfraid()
+				|| activeChar.isAlikeDead())
 		{
-			switch (_itemId)
-			{
-				case 736: case 1538: case 1829: case 1830: case 3958: case 5858:
-				case 5859: case 6663: case 6664: case 7554: case 7555: case 7556:
-				case 7557: case 7558: case 7559: case 7618: case 7619: case 10129:
-				case 10130:
-					return;
-			}
-			
-			if (_itemId >= 7117 && _itemId <= 7135)
-				return;
-		}
-		
-		if (activeChar.isFishing() && (_itemId < 6535 || _itemId > 6540))
-		{
-			// You cannot do anything else while fishing
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3);
-			getClient().getActiveChar().sendPacket(sm);
-			sm = null;
 			return;
 		}
 		
@@ -197,27 +139,8 @@ public final class UseItem extends L2GameClientPacket
 			return;
 		}
 		
-		// No UseItem is allowed while the player is in special conditions
-		if (activeChar.isStunned()
-				|| activeChar.isSleeping()
-				|| activeChar.isParalyzed()
-				|| activeChar.isAlikeDead()
-				|| activeChar.isAfraid()
-				|| (activeChar.isCastingNow() && !(item.isPotion() || item.isElixir())))
-		{
+		if (!item.isEquipped() && !item.getItem().checkCondition(activeChar, activeChar, true))
 			return;
-		}
-		
-		// Char cannot use pet items
-		/*if ((item.getItem() instanceof L2Armor && item.getItem().getItemType() == L2ArmorType.PET)
-				|| (item.getItem() instanceof L2Weapon && item.getItem().getItemType() == L2WeaponType.PET) )
-		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_PET_ITEM); // You cannot equip a pet item.
-			sm.addItemName(item);
-			getClient().getActiveChar().sendPacket(sm);
-			sm = null;
-			return;
-		}*/
 		
 		if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
 		{
@@ -225,16 +148,34 @@ public final class UseItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (Config.DEBUG)
-			_log.finest(activeChar.getObjectId() + ": use item " + _objectId);
+		_itemId = item.getItemId();
 		
-		if (!item.isEquipped())
+		if (activeChar.isFishing() && (_itemId < 6535 || _itemId > 6540))
 		{
-			if (!item.getItem().checkCondition(activeChar, activeChar, true))
-			{
-				return;
-			}
+			// You cannot do anything else while fishing
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3);
+			getClient().getActiveChar().sendPacket(sm);
+			sm = null;
+			return;
 		}
+
+		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
+		{
+			SkillHolder[] sHolders = item.getItem().getSkills();
+			if (sHolders != null)
+			{
+				for (SkillHolder sHolder : sHolders)
+				{
+					L2Skill skill = sHolder.getSkill();
+					if (skill != null && (skill.getSkillType() == L2SkillType.TELEPORT || skill.getSkillType() == L2SkillType.RECALL))
+						return;
+				}
+			}
+
+		}
+		
+		if (Config.DEBUG)
+			_log.log(Level.INFO, activeChar.getObjectId() + ": use item " + _objectId);
 		
 		if (item.isEquipable())
 		{
@@ -244,6 +185,15 @@ public final class UseItem extends L2GameClientPacket
 				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT));
 				return;
 			}
+			
+			if (activeChar.isCursedWeaponEquipped() && _itemId == 6408) // Don't allow to put formal wear
+				return;
+				
+			// Equip or unEquip
+			if (FortSiegeManager.getInstance().isCombat(item.getItemId()))
+				return;	//no message
+			else if (activeChar.isCombatFlagEquipped())
+				return;
 			
 			switch (item.getItem().getBodyPart())
 			{
@@ -342,24 +292,19 @@ public final class UseItem extends L2GameClientPacket
 				}
 			}
 			
-			if (activeChar.isCursedWeaponEquipped() && _itemId == 6408) // Don't allow to put formal wear
-				return;
-			
 			if (activeChar.isAttackingNow())
 			{
 				ThreadPoolManager.getInstance().scheduleGeneral( new WeaponEquipTask(item,activeChar), (activeChar.getAttackEndTime()-GameTimeController.getGameTicks())*GameTimeController.MILLIS_IN_TICK);
 				return;
 			}
-			// Equip or unEquip
-			if (FortSiegeManager.getInstance().isCombat(item.getItemId()))
-				return;	//no message
-			else if (activeChar.isCombatFlagEquipped())
-				return;
 			
 			activeChar.useEquippableItem(item, true);
 		}
 		else
 		{
+			if(activeChar.isCastingNow() && !(item.isPotion() || item.isElixir()))
+				return;
+			
 			L2Weapon weaponItem = activeChar.getActiveWeaponItem();
 			int itemid = item.getItemId();
 			if (itemid == 4393)
@@ -372,23 +317,18 @@ public final class UseItem extends L2GameClientPacket
 				activeChar.getInventory().setPaperdollItem(Inventory.PAPERDOLL_LHAND, item);
 				activeChar.broadcastUserInfo();
 				// Send a Server->Client packet ItemList to this L2PcINstance to update left hand equipement
-				ItemList il = new ItemList(activeChar, false);
-				sendPacket(il);
+				sendPacket(new ItemList(activeChar, false));
 				return;
 			}
 			else
 			{
 				IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
-				if (handler == null)
-				{
-					if (Config.DEBUG)
-						_log.warning("No item handler registered for item ID " + item.getItemId() + ".");
-				}
-				else
+				if (handler != null)
 					handler.useItem(activeChar, item, _ctrlPressed);
+				else if (Config.DEBUG)
+					_log.log(Level.WARNING, "No item handler registered for item ID " + item.getItemId() + ".");
 			}
 		}
-		//		}
 	}
 	
 	@Override
