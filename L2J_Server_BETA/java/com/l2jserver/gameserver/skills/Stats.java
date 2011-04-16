@@ -194,6 +194,7 @@ public enum Stats
 	ABSORB_DAMAGE_PERCENT("absorbDam"),
 	TRANSFER_DAMAGE_PERCENT("transDam"),
 	MANA_SHIELD_PERCENT("manaShield"),
+	TRANSFER_DAMAGE_TO_PLAYER("transDamToPlayer"),
 	ABSORB_MANA_DAMAGE_PERCENT("absorbDamMana"),
 	
 	MAX_LOAD("maxLoad"),

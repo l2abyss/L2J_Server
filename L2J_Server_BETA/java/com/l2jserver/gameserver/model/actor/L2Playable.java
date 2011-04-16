@@ -313,6 +313,18 @@ public abstract class L2Playable extends L2Character
 	{
 		_lockedTarget = cha;
 	}
+
+	L2PcInstance transferDmgTo;
+		
+	public void setTransferDamageTo(L2PcInstance val)
+	{
+		transferDmgTo = val;
+	}
+	
+	public L2PcInstance getTransferingDamageTo()
+	{
+		return transferDmgTo;
+	}
 	
 	public abstract int getKarma();
 	
