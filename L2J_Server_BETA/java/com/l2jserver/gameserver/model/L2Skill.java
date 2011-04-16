@@ -200,6 +200,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	// base success chance
 	private final double _power;
 	private final double _pvpPower;
+	private final double _pvePower;
 	private final int _magicLevel;
 	private final int _levelDepend;
 	private final boolean _ignoreResists;
@@ -459,6 +460,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_targetType = set.getEnum("target", SkillTargetType.class);
 		_power = set.getFloat("power", 0.f);
 		_pvpPower = set.getFloat("pvpPower", (float)getPower());
+		_pvePower = set.getFloat("pvePower", (float)getPower());
 		_magicLevel = set.getInteger("magicLvl", SkillTreeTable.getInstance().getMinSkillLevel(_id, _level));
 		_levelDepend = set.getInteger("lvlDepend", 0);
 		_ignoreResists = set.getBool("ignoreResists", false);
@@ -632,16 +634,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	/**
 	 * Return the power of the skill.<BR><BR>
 	 */
-	public final double getPower(L2Character activeChar, L2Character target, boolean isPvP)
+	public final double getPower(L2Character activeChar, L2Character target, boolean isPvP, boolean isPvE)
 	{
 		if (activeChar == null)
-			return getPower(isPvP);
+			return getPower(isPvP, isPvE);
 		
 		switch (_skillType)
 		{
 			case DEATHLINK:
 			{
-				return getPower(isPvP) * Math.pow(1.7165 - activeChar.getCurrentHp() / activeChar.getMaxHp(), 2) * 0.577;
+				return getPower(isPvP, isPvE) * Math.pow(1.7165 - activeChar.getCurrentHp() / activeChar.getMaxHp(), 2) * 0.577;
 				/*
 				 * DrHouse:
 				 * Rolling back to old formula (look below) for DEATHLINK due to this one based on logarithm is not
@@ -654,10 +656,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 			case FATAL:
 			{
-				return getPower(isPvP)*3.5*(1-target.getCurrentHp()/target.getMaxHp());
+				return getPower(isPvP, isPvE)*3.5*(1-target.getCurrentHp()/target.getMaxHp());
 			}
 			default:
-				return getPower(isPvP);
+				return getPower(isPvP, isPvE);
 		}
 	}
 	
@@ -666,9 +668,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _power;
 	}
 	
-	public final double getPower(boolean isPvP)
+	public final double getPower(boolean isPvP, boolean isPvE)
 	{
-		return isPvP ? _pvpPower : _power;
+		return isPvE ? _pvePower : isPvP ? _pvpPower : _power;
 	}
 	
 	public final L2SkillType[] getNegateStats()

@@ -1340,7 +1340,8 @@ public final class Formulas
 	public static double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
 	{
 		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
-		double power = skill.getPower(isPvP);
+		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
+		double power = skill.getPower(isPvP, isPvE);
 		double damage = attacker.getPAtk(target);
 		damage+=calcValakasAttribute(attacker, target, skill);
 		double defence = target.getPDef(attacker);
@@ -1429,6 +1430,7 @@ public final class Formulas
 			byte shld, boolean crit, boolean dual, boolean ss)
 	{
 		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
+		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		damage+=calcValakasAttribute(attacker, target, skill);
@@ -1464,7 +1466,7 @@ public final class Formulas
 		if (ss) damage *= 2;
 		if (skill != null)
 		{
-			double skillpower = skill.getPower(attacker, target, isPvP);
+			double skillpower = skill.getPower(attacker, target, isPvP, isPvE);
 			float ssboost = skill.getSSBoost();
 			if (ssboost <= 0)
 				damage += skillpower;
@@ -1698,6 +1700,7 @@ public final class Formulas
 	public static final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean bss, boolean mcrit)
 	{
 		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
+		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
 		// AI SpiritShot
@@ -1735,7 +1738,7 @@ public final class Formulas
 		else if (ss)
 			mAtk *= 2;
 		
-		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(attacker, target, isPvP);
+		double damage = 91 * Math.sqrt(mAtk) / mDef * skill.getPower(attacker, target, isPvP, isPvE);
 		
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(attacker, target, skill))
@@ -1827,6 +1830,8 @@ public final class Formulas
 	{
 		// Current info include mAtk in the skill power.
 		// double mAtk = attacker.getMAtk();
+		final boolean isPvP = (target instanceof L2Playable);
+		final boolean isPvE = (target instanceof L2Attackable);
 		double mDef = target.getMDef(attacker.getOwner(), skill);
 		
 		switch (shld)
@@ -1838,7 +1843,7 @@ public final class Formulas
 				return 1;
 		}
 		
-		double damage = 91 /* * Math.sqrt(mAtk)*/ / mDef * skill.getPower(target instanceof L2Playable);
+		double damage = 91 /* * Math.sqrt(mAtk)*/ / mDef * skill.getPower(isPvP, isPvE);
 		L2PcInstance owner = attacker.getOwner();
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(owner, target, skill))
@@ -2611,12 +2616,13 @@ public final class Formulas
 	public static boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
 		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
+		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
 		if (skill.ignoreResists())
 		{
 			if (attacker.isDebug())
 				attacker.sendDebugMessage(skill.getName()+" ignoring resists");
 			
-			return (Rnd.get(100) < skill.getPower(isPvP));
+			return (Rnd.get(100) < skill.getPower(isPvP, isPvE));
 		}
 		
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
@@ -2627,7 +2633,7 @@ public final class Formulas
 			return false;
 		}
 		
-		int value = (int) skill.getPower(isPvP);
+		int value = (int) skill.getPower(isPvP, isPvE);
 		double statModifier = calcSkillStatModifier(skill, target);
 		
 		// Calculate BaseRate.
@@ -2715,6 +2721,8 @@ public final class Formulas
 	{
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 			return false;
+		final boolean isPvP = (target instanceof L2Playable);
+		final boolean isPvE = (target instanceof L2Attackable);
 		
 		L2SkillType type = skill.getSkillType();
 		
@@ -2740,7 +2748,7 @@ public final class Formulas
 		if (calcSkillReflect(target, skill) != SKILL_REFLECT_FAILED)
 			return false;
 		
-		int value = (int) skill.getPower(target instanceof L2Playable);
+		int value = (int) skill.getPower(isPvP, isPvE);
 		double statModifier = calcSkillStatModifier(skill, target);
 		int rate = (int) (value * statModifier);
 		
@@ -2878,11 +2886,12 @@ public final class Formulas
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
 		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
+		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
 		double mp = target.getMaxMp();
 		if (bss) mAtk *= 4;
 		else if (ss) mAtk *= 2;
 		
-		double damage = (Math.sqrt(mAtk) * skill.getPower(attacker, target, isPvP) * (mp/97)) / mDef;
+		double damage = (Math.sqrt(mAtk) * skill.getPower(attacker, target, isPvP, isPvE) * (mp/97)) / mDef;
 		damage *= (1 + calcSkillVulnerability(attacker, target, skill) / 100);
 		if (target instanceof L2Attackable)
 		{
