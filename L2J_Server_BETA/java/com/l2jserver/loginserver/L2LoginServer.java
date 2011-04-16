@@ -103,16 +103,7 @@ public class L2LoginServer
 		// Load Config
 		Config.load();
 		
-		// Prepare Database
-		try
-		{
-			L2DatabaseFactory.getInstance();
-		}
-		catch (SQLException e)
-		{
-			_log.log(Level.SEVERE, "FATAL: Failed initializing database. Reason: " + e.getMessage(), e);
-			System.exit(1);
-		}
+		L2DatabaseFactory.getInstance();
 		
 		try
 		{

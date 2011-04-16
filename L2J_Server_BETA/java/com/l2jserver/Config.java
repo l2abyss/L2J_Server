@@ -861,7 +861,6 @@ public final class Config
 	public static String DATABASE_LOGIN;
 	public static String DATABASE_PASSWORD;
 	public static int DATABASE_MAX_CONNECTIONS;
-	public static int DATABASE_MAX_IDLE_TIME;
 	public static int MAXIMUM_ONLINE_USERS;
 	public static String CNAME_TEMPLATE;
 	public static String PET_NAME_TEMPLATE;
@@ -1084,7 +1083,6 @@ public final class Config
 					DATABASE_LOGIN = serverSettings.getProperty("Login", "root");
 					DATABASE_PASSWORD = serverSettings.getProperty("Password", "");
 					DATABASE_MAX_CONNECTIONS = Integer.parseInt(serverSettings.getProperty("MaximumDbConnections", "10"));
-					DATABASE_MAX_IDLE_TIME = Integer.parseInt(serverSettings.getProperty("MaximumDbIdleTime", "0"));
 					
 					DATAPACK_ROOT = new File(serverSettings.getProperty("DatapackRoot", ".")).getCanonicalFile();
 					
@@ -2776,7 +2774,6 @@ public final class Config
 					DATABASE_LOGIN = serverSettings.getProperty("Login", "root");
 					DATABASE_PASSWORD = serverSettings.getProperty("Password", "");
 					DATABASE_MAX_CONNECTIONS = Integer.parseInt(serverSettings.getProperty("MaximumDbConnections", "10"));
-					DATABASE_MAX_IDLE_TIME = Integer.parseInt(serverSettings.getProperty("MaximumDbIdleTime", "0"));
 					
 					SHOW_LICENCE = Boolean.parseBoolean(serverSettings.getProperty("ShowLicence", "true"));
 					FORCE_GGAUTH = Boolean.parseBoolean(serverSettings.getProperty("ForceGGAuth", "False"));
