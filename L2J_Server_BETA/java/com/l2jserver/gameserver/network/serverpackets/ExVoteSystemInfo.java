@@ -34,7 +34,7 @@ public class ExVoteSystemInfo extends L2GameServerPacket
 		_recomLeft = player.getRecomLeft();
 		_recomHave = player.getRecomHave();
 		_bonusTime = player.getRecomBonusTime();
-		_bonusVal  = RecoBonus.getRecoBonus(player);
+		_bonusVal = RecoBonus.getRecoBonus(player);
 		_bonusType = player.getRecomBonusType();
 	}
 	
@@ -42,17 +42,17 @@ public class ExVoteSystemInfo extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0xC8);
+		writeH(0xC9);
 		writeD(_recomLeft);
 		writeD(_recomHave);
 		writeD(_bonusTime);
 		writeD(_bonusVal);
-		writeD(_bonusType);		
+		writeD(_bonusType);
 	}
 	
 	@Override
 	public String getType()
 	{
-		return "[S] FE:C8 ExVoteSystemInfo";
+		return "[S] FE:C9 ExVoteSystemInfo";
 	}
 }

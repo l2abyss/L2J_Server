@@ -1092,7 +1092,7 @@ public final class Config
 					MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "0"));
 					MAXIMUM_ONLINE_USERS = Integer.parseInt(serverSettings.getProperty("MaximumOnlineUsers", "100"));
 					
-					String[] protocols = serverSettings.getProperty("AllowedProtocolRevisions", "146;152").split(";");
+					String[] protocols = serverSettings.getProperty("AllowedProtocolRevisions", "267").split(";");
 					PROTOCOL_LIST = new TIntArrayList(protocols.length);
 					for (String protocol : protocols)
 					{

@@ -40,6 +40,7 @@ public final class NpcSay extends L2GameServerPacket
 		_objectId = objectId;
 		_textType = messageType;
 		_npcId = 1000000+npcId;
+		_npcString = -1;
 		_text = text;
 	}
 	
@@ -70,7 +71,7 @@ public final class NpcSay extends L2GameServerPacket
 		writeD(_textType);
 		writeD(_npcId);
 		writeD(_npcString);
-		if (_npcString == 0)
+		if (_npcString == -1)
 			writeS(_text);
 		else
 		{

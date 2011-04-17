@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.network.L2GameClient;
 
@@ -126,6 +127,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 			
 			writeD(charInfoPackage.getSp());
 			writeQ(charInfoPackage.getExp());
+			writeF((float)(charInfoPackage.getExp() - Experience.LEVEL[charInfoPackage.getLevel()]) / (Experience.LEVEL[charInfoPackage.getLevel() + 1] - Experience.LEVEL[charInfoPackage.getLevel()])); // High Five exp %
 			writeD(charInfoPackage.getLevel());
 			
 			writeD(charInfoPackage.getKarma()); // karma
@@ -188,8 +190,10 @@ public class CharSelectionInfo extends L2GameServerPacket
 				writeD(0x00); //c3 auto-select char
 			
 			writeC(charInfoPackage.getEnchantEffect() > 127 ? 127 : charInfoPackage.getEnchantEffect());
-			
-			writeD(charInfoPackage.getAugmentationId());
+			writeH(0);
+			writeH(0);
+			//writeD(charInfoPackage.getAugmentationId());
+
 			
 			//writeD(charInfoPackage.getTransformId()); // Used to display Transformations
 			writeD(0x00); // Currently on retail when you are on character select you don't see your transformation.
@@ -203,7 +207,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 			writeF(0); // cur Hp
 			
 			// High Five by Vistall:
-			//writeD(charInfoPackage.getVitalityPoints());
+			writeD(charInfoPackage.getVitalityPoints());	// H5 Vitality
 		}
 	}
 	
@@ -217,7 +221,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language FROM characters WHERE account_name=?");
+			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language, vitality_points FROM characters WHERE account_name=?");
 			statement.setString(1, loginName);
 			ResultSet charList = statement.executeQuery();
 			
@@ -316,6 +320,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		
 		charInfopackage.setExp(chardata.getLong("exp"));
 		charInfopackage.setSp(chardata.getInt("sp"));
+		charInfopackage.setVitalityPoints(chardata.getInt("vitality_points"));
 		charInfopackage.setClanId(chardata.getInt("clanid"));
 		
 		charInfopackage.setRace(chardata.getInt("race"));

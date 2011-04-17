@@ -60,6 +60,7 @@ public final class CreatureSay extends L2GameServerPacket
 			writeS(_charName);
 		else
 			writeD(_charId);
+		writeD(-1); // High Five NPCString ID
 		if (_text != null)
 			writeS(_text);
 		else
