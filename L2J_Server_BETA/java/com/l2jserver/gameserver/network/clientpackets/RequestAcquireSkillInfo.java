@@ -202,6 +202,20 @@ public class RequestAcquireSkillInfo extends L2GameClientPacket
 				return;
 			}
 		}
+		else if (_skillType == 5)
+		{
+			Quest[] qlst = trainer.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_LEARN);
+			if ((qlst != null) && qlst.length == 1)
+			{
+				if (!qlst[0].notifyAcquireSkillInfo(trainer, activeChar, skill))
+				{
+					qlst[0].notifyAcquireSkillList(trainer, activeChar);
+					return;
+				}
+			}
+			else
+				return;
+		}
 		else if (_skillType == 6)
 		{
 			int costid = 0;
