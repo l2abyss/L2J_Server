@@ -24,14 +24,20 @@ import java.util.logging.Logger;
 
 import com.jolbox.bonecp.BoneCPDataSource;
 import com.l2jserver.gameserver.ThreadPoolManager;
-
+/**
+ * 
+ * Updated to BoneCP by UnAfraid
+ * @author lord_rex
+ * 
+ */
 public class L2DatabaseFactory
 {
-	static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
+	private static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
 	
 	public static enum ProviderType
 	{
-		MySql, MsSql
+		MySql, 
+		MsSql
 	}
 	
 	// =========================================================
