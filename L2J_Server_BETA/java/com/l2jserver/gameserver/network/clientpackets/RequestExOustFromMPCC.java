@@ -48,7 +48,8 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 		
 		if (target != null && target.isInParty() && activeChar.isInParty() && activeChar.getParty().isInCommandChannel()
 				&& target.getParty().isInCommandChannel()
-				&& activeChar.getParty().getCommandChannel().getChannelLeader().equals(activeChar))
+				&& activeChar.getParty().getCommandChannel().getChannelLeader().equals(activeChar)
+				&& activeChar.getParty().getCommandChannel().equals(target.getParty().getCommandChannel()))
 		{
 			if (activeChar.equals(target))
 				return;
