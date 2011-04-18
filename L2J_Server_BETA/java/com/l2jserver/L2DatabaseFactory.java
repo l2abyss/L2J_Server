@@ -22,67 +22,78 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.jolbox.bonecp.BoneCPDataSource;
 import com.l2jserver.gameserver.ThreadPoolManager;
-/**
- * 
- * Updated to BoneCP by UnAfraid
- * @author lord_rex
- * 
- */
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 public class L2DatabaseFactory
 {
-	private static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
+	static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
 	
 	public static enum ProviderType
 	{
-		MySql, 
+		MySql,
 		MsSql
 	}
 	
 	// =========================================================
 	// Data Field
+	private static L2DatabaseFactory _instance;
 	private static ScheduledExecutorService _executor;
 	private ProviderType _providerType;
-	private BoneCPDataSource _source;
+	private ComboPooledDataSource _source;
 	
 	// =========================================================
 	// Constructor
-	public L2DatabaseFactory()
+	public L2DatabaseFactory() throws SQLException
 	{
-		_log.info("Initializing BoneCP [ version: databaseDriver -> " + Config.DATABASE_DRIVER + ", jdbcUrl -> " + Config.DATABASE_URL + ", maxConnectionsPerPartition -> " + Config.DATABASE_MAX_CONNECTIONS + ", username -> " + Config.DATABASE_LOGIN + ", password -> " + Config.DATABASE_PASSWORD + " ]");
 		try
 		{
-			_source = new BoneCPDataSource();
-			_source.getConfig().setDefaultAutoCommit(true);
+			if (Config.DATABASE_MAX_CONNECTIONS < 2)
+			{
+				Config.DATABASE_MAX_CONNECTIONS = 2;
+				_log.warning("A minimum of " + Config.DATABASE_MAX_CONNECTIONS + " db connections are required.");
+			}
 			
-			_source.getConfig().setPoolAvailabilityThreshold(10);
-			_source.getConfig().setMinConnectionsPerPartition(10);
-			_source.getConfig().setMaxConnectionsPerPartition(Config.DATABASE_MAX_CONNECTIONS);
+			_source = new ComboPooledDataSource();
+			_source.setAutoCommitOnClose(true);
 			
-			_source.setPartitionCount(3);
+			_source.setInitialPoolSize(10);
+			_source.setMinPoolSize(10);
+			_source.setMaxPoolSize(Math.max(10, Config.DATABASE_MAX_CONNECTIONS));
 			
 			_source.setAcquireRetryAttempts(0); // try to obtain connections indefinitely (0 = never quit)
-			_source.setAcquireRetryDelayInMs(500); // 500 miliseconds wait before try to acquire connection again
-			
+			_source.setAcquireRetryDelay(500); // 500 milliseconds wait before try to acquire connection again
+			_source.setCheckoutTimeout(0); // 0 = wait indefinitely for new connection
 			// if pool is exhausted
 			_source.setAcquireIncrement(5); // if pool is exhausted, get 5 more connections at a time
 			// cause there is a "long" delay on acquire connection
 			// so taking more than one connection at once will make connection pooling
 			// more effective.
 			
-			_source.setConnectionTimeoutInMs(0);
+			// this "connection_test_table" is automatically created if not already there
+			_source.setAutomaticTestTable("connection_test_table");
+			_source.setTestConnectionOnCheckin(false);
 			
-			// testing OnCheckin used with IdleConnectionTestPeriod is faster than testing on checkout
+			// testing OnCheckin used with IdleConnectionTestPeriod is faster than  testing on checkout
 			
-			_source.setIdleConnectionTestPeriodInMinutes(1); // test idle connection every 60 sec
-			_source.setIdleMaxAgeInSeconds(1800);
+			_source.setIdleConnectionTestPeriod(3600); // test idle connection every 60 sec
+			_source.setMaxIdleTime(Config.DATABASE_MAX_IDLE_TIME); // 0 = idle connections never expire
+			// *THANKS* to connection testing configured above
+			// but I prefer to disconnect all connections not used
+			// for more than 1 hour
 			
-			_source.setTransactionRecoveryEnabled(true);
+			// enables statement caching,  there is a "semi-bug" in c3p0 0.9.0 but in 0.9.0.2 and later it's fixed
+			_source.setMaxStatementsPerConnection(100);
 			
+			_source.setBreakAfterAcquireFailure(false); // never fail if any way possible
+			// setting this to true will make
+			// c3p0 "crash" and refuse to work
+			// till restart thus making acquire
+			// errors "FATAL" ... we don't want that
+			// it should be possible to recover
 			_source.setDriverClass(Config.DATABASE_DRIVER);
 			_source.setJdbcUrl(Config.DATABASE_URL);
-			_source.setUsername(Config.DATABASE_LOGIN);
+			_source.setUser(Config.DATABASE_LOGIN);
 			_source.setPassword(Config.DATABASE_PASSWORD);
 			
 			/* Test the connection */
@@ -96,11 +107,18 @@ public class L2DatabaseFactory
 			else
 				_providerType = ProviderType.MySql;
 		}
+		catch (SQLException x)
+		{
+			if (Config.DEBUG)
+				_log.fine("Database Connection FAILED");
+			// re-throw the exception
+			throw x;
+		}
 		catch (Exception e)
 		{
 			if (Config.DEBUG)
 				_log.fine("Database Connection FAILED");
-			throw new Error("L2DatabaseFactory: Failed to init database connections: " + e.getMessage(), e);
+			throw new SQLException("Could not init DB connection:" + e.getMessage());
 		}
 	}
 	
@@ -126,11 +144,18 @@ public class L2DatabaseFactory
 		try
 		{
 			_source.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.INFO, "", e);
+		}
+		try
+		{
 			_source = null;
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, e.getMessage(), e);
+			_log.log(Level.INFO, "", e);
 		}
 	}
 	
@@ -175,7 +200,21 @@ public class L2DatabaseFactory
 		return sbResult.toString();
 	}
 	
-	public Connection getConnection()
+	// =========================================================
+	// Property - Public
+	public static L2DatabaseFactory getInstance() throws SQLException
+	{
+		synchronized (L2DatabaseFactory.class)
+		{
+			if (_instance == null)
+			{
+				_instance = new L2DatabaseFactory();
+			}
+		}
+		return _instance;
+	}
+	
+	public Connection getConnection() //throws SQLException
 	{
 		Connection con = null;
 		
@@ -199,7 +238,7 @@ public class L2DatabaseFactory
 	
 	private static class ConnectionCloser implements Runnable
 	{
-		private Connection c;
+		private Connection c ;
 		private RuntimeException exp;
 		
 		public ConnectionCloser(Connection con, RuntimeException e)
@@ -207,7 +246,6 @@ public class L2DatabaseFactory
 			c = con;
 			exp = e;
 		}
-		
 		/* (non-Javadoc)
 		 * @see java.lang.Runnable#run()
 		 */
@@ -257,23 +295,18 @@ public class L2DatabaseFactory
 		return _executor;
 	}
 	
-	public int getBusyConnectionCount()
+	public int getBusyConnectionCount() throws SQLException
 	{
-		return _source.getTotalLeased();
+		return _source.getNumBusyConnectionsDefaultUser();
+	}
+	
+	public int getIdleConnectionCount() throws SQLException
+	{
+		return _source.getNumIdleConnectionsDefaultUser();
 	}
 	
 	public final ProviderType getProviderType()
 	{
 		return _providerType;
-	}
-	
-	private static final class SingletonHolder
-	{
-		private static final L2DatabaseFactory INSTANCE = new L2DatabaseFactory();
-	}
-	
-	public static L2DatabaseFactory getInstance()
-	{
-		return SingletonHolder.INSTANCE;
 	}
 }
