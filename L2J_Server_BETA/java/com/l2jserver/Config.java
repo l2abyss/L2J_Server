@@ -1570,7 +1570,7 @@ public final class Config
 					AUGMENTATION_BASESTAT_CHANCE = Integer.parseInt(Character.getProperty("AugmentationBaseStatChance", "1"));
 					AUGMENTATION_ACC_SKILL_CHANCE = Integer.parseInt(Character.getProperty("AugmentationAccSkillChance", "0"));
 					
-					String[] array = Character.getProperty("AugmentationBlackList", "6656,6657,6658,6659,6660,6661,6662,8191,10170,10314").split(",");
+					String[] array = Character.getProperty("AugmentationBlackList", "6656,6657,6658,6659,6660,6661,6662,8191,10170,10314,16025,16026").split(",");
 					AUGMENTATION_BLACKLIST = new int[array.length];
 					
 					for (int i = 0; i < array.length; i++)
