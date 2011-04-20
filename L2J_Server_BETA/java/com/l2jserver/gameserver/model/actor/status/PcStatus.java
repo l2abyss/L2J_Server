@@ -68,16 +68,8 @@ public class PcStatus extends PlayableStatus
 		if (getActiveChar().isDead())
 			return;
 		
-		if (getActiveChar().isInvul())
-		{
-			if (attacker == getActiveChar())
-			{
-				if (!isDOT && !isHPConsumption)
-					return;
-			}
-			else
-				return;
-		}
+		if (getActiveChar().isInvul() && !(isDOT || isHPConsumption))
+			return;
 		
 		if (!isHPConsumption)
 		{
