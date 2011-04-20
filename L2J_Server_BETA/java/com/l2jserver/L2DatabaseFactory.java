@@ -224,7 +224,7 @@ public class L2DatabaseFactory
 			{
 				con = _source.getConnection();
 				if (Server.serverMode == Server.MODE_GAMESERVER)
-					ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), 60000);
+					ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME);
 				else
 					getExecutor().schedule(new ConnectionCloser(con, new RuntimeException()), 60, TimeUnit.SECONDS);
 			}
