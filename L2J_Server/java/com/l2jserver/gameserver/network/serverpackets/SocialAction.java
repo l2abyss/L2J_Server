@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.actor.L2Character;
+
 /**
  * This class ...
  *
@@ -31,9 +33,9 @@ public class SocialAction extends L2GameServerPacket
 	 * 0x3d SocialAction         dd
 	 * @param _characters
 	 */
-	public SocialAction(int playerId, int actionId)
+	public SocialAction(L2Character cha, int actionId)
 	{
-		_charObjId = playerId;
+		_charObjId = cha.getObjectId();
 		_actionId = actionId;
 	}
 	

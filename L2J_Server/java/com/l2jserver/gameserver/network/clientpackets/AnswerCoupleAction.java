@@ -72,8 +72,8 @@ public class AnswerCoupleAction extends L2GameClientPacket
 			heading = Util.calculateHeadingFrom(target, activeChar);
 			target.setHeading(heading);
 			target.broadcastPacket(new ExRotation(target.getObjectId(), heading));
-			activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), _actionId));
-			target.broadcastPacket(new SocialAction(_charObjId, _actionId));
+			activeChar.broadcastPacket(new SocialAction(activeChar, _actionId));
+			target.broadcastPacket(new SocialAction(target, _actionId));
 		}
 		else if (_answer == -1) // refused
 		{

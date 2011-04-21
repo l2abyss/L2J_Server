@@ -303,7 +303,7 @@ public class L2Trap extends L2Character
 						_timeRemaining -= TICK;
 						if (_timeRemaining < _lifeTime - 15000)
 						{
-							SocialAction sa = new SocialAction(getObjectId(), 2);
+							SocialAction sa = new SocialAction(L2Trap.this, 2);
 							broadcastPacket(sa);
 						}
 						if (_timeRemaining < 0)

@@ -411,7 +411,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 				if (item != null && item.getCount() >= 1)
 				{
 					owner.destroyItem("BeastMob", item, 1, _tamedBeast, true);
-					_tamedBeast.broadcastPacket(new SocialAction(_tamedBeast.getObjectId(), 3));
+					_tamedBeast.broadcastPacket(new SocialAction(_tamedBeast, 3));
 				}
 				else
 					_tamedBeast.deleteMe();
