@@ -10792,7 +10792,7 @@ public final class L2PcInstance extends L2Playable
 			_shortCuts.restore();
 			sendPacket(new ShortCutInit(this));
 			
-			broadcastPacket(new SocialAction(getObjectId(), SocialAction.LEVEL_UP));
+			broadcastPacket(new SocialAction(this, SocialAction.LEVEL_UP));
 			sendPacket(new SkillCoolTime(this));
 			sendPacket(new ExStorageMaxCount(this));
 			
