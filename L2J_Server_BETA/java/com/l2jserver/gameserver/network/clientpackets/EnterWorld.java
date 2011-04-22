@@ -67,6 +67,8 @@ import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 import com.l2jserver.gameserver.network.serverpackets.ExBirthdayPopup;
 import com.l2jserver.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
+import com.l2jserver.gameserver.network.serverpackets.ExNavitAdventPointInfoPacket;
+import com.l2jserver.gameserver.network.serverpackets.ExNavitAdventTimeChange;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostArrived;
 import com.l2jserver.gameserver.network.serverpackets.ExNotifyPremiumItem;
 import com.l2jserver.gameserver.network.serverpackets.ExShowScreenMessage;
@@ -415,6 +417,8 @@ public class EnterWorld extends L2GameClientPacket
 		
 		sendPacket(new SkillCoolTime(activeChar));
 		sendPacket(new ExVoteSystemInfo(activeChar));
+		sendPacket(new ExNavitAdventPointInfoPacket(0));
+		sendPacket(new ExNavitAdventTimeChange(-1)); // only set pause state...
 		
 		for (L2ItemInstance i : activeChar.getInventory().getItems())
 		{
