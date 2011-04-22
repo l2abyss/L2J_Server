@@ -1,17 +1,11 @@
-##############################################
-#               L2j geodata                  #
-#                                            #
-#       All files are integral part          # 
-#          part of l2j server.               #
-#                                            #
-#                                            #
-#         To make geodata  working           #
-#          unpack all files into             #
-#        /gameserver/data/geodata            #
-#                 folder                     #
-#                                            #
-#       Current link to geodata files:       #
-#     http://svn.l2jfree.com/svn/geodata     #
-#                                            #
-##############################################
-
+#####################################################
+# L2J GeoData                                       #
+#####################################################
+#                                                   #
+# GeoData files should be unpacked inside:          #
+# gameserver/data/geodata/                          #
+#                                                   #
+# More Info at:                                     #
+# http://www.l2jserver.com/forum/viewforum.php?f=89 #
+#                                                   #
+#####################################################
