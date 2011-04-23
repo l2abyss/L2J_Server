@@ -22,24 +22,25 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class ExNavitAdventEffect extends L2GameServerPacket
 {
-       private int _timeToLeft;
-      
-       public ExNavitAdventEffect(int timeToLeft)
-       {
-               _timeToLeft = timeToLeft;
-       }
-      
-       @Override
-       protected void writeImpl()
-       {
-               writeC(0xFE);
-               writeH(0xE0);
-               writeD(_timeToLeft);
-       }
-      
-       @Override
-       public String getType()
-       {
-               return "[S] FE:E0 ExNavitAdventEffect";
-       }
+	private static final String _S__FE_E0_EXNAVITADVENTEFFECT = "[S] FE:E0 ExNavitAdventEffect";
+	private final int _timeLeft;
+	
+	public ExNavitAdventEffect(int timeLeft)
+	{
+		_timeLeft = timeLeft;
+	}
+	
+	@Override
+	protected void writeImpl()
+	{
+		writeC(0xFE);
+		writeH(0xE0);
+		writeD(_timeLeft);
+	}
+	
+	@Override
+	public String getType()
+	{
+		return _S__FE_E0_EXNAVITADVENTEFFECT;
+	}
 }

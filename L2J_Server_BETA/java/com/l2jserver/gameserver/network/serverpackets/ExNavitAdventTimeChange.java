@@ -23,32 +23,28 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class ExNavitAdventTimeChange extends L2GameServerPacket
 {
-       private boolean _paused;
-       private int _time = 0;
-      
-       public ExNavitAdventTimeChange(int time)
-       {
-               if( time >= 0 )
-               {
-                       _time = time > 16000 ? 16000 : time;
-                       _paused = false;
-               }
-               else
-                       _paused = true;
-       }
-      
-       @Override
-       protected void writeImpl()
-       {
-               writeC(0xFE);
-               writeH(0xE1);
-               writeC(_paused ? 0x00 : 0x01);
-               writeD(_time); // time in ms (16000 = 4mins = state quit)
-       }
-      
-       @Override
-       public String getType()
-       {
-               return "[S] FE:E1 ExNavitAdventTimeChange";
-       }
+	private static final String _S__FE_E1_EXNAVITADVENTTIMECHANGE = "[S] FE:E1 ExNavitAdventTimeChange";
+	private final boolean _paused;
+	private final int _time;
+	
+	public ExNavitAdventTimeChange(int time)
+	{
+		_time = time > 240000 ? 240000 : time;
+		_paused = _time < 1;
+	}
+	
+	@Override
+	protected void writeImpl()
+	{
+		writeC(0xFE);
+		writeH(0xE1);
+		writeC(_paused ? 0x00 : 0x01);
+		writeD(_time); // time in ms (16000 = 4mins = state quit)
+	}
+	
+	@Override
+	public String getType()
+	{
+		return _S__FE_E1_EXNAVITADVENTTIMECHANGE;
+	}
 }

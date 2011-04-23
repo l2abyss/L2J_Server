@@ -22,24 +22,25 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class ExNavitAdventPointInfoPacket extends L2GameServerPacket
 {
-       private int _points = 0;
-      
-       public ExNavitAdventPointInfoPacket(int points)
-       {
-               _points = points;
-       }
-      
-       @Override
-       protected void writeImpl()
-       {
-               writeC(0xFE);
-               writeH(0xDF);
-               writeD(_points); // 72 = 1%
-       }
-      
-       @Override
-       public String getType()
-       {
-               return "[S] FE:DF ExNavitAdventPointInfoPacket";
-       }
+	private static final String _S__FE_DF_EXNAVITADVENTPOINTINFOPACKET = "[S] FE:DF ExNavitAdventPointInfoPacket";
+	private final int _points;
+	
+	public ExNavitAdventPointInfoPacket(int points)
+	{
+		_points = points;
+	}
+	
+	@Override
+	protected void writeImpl()
+	{
+		writeC(0xFE);
+		writeH(0xDF);
+		writeD(_points); // 72 = 1%
+	}
+	
+	@Override
+	public String getType()
+	{
+		return _S__FE_DF_EXNAVITADVENTPOINTINFOPACKET;
+	}
 }
