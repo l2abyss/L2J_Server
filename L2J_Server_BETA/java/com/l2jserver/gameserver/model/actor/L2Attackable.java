@@ -595,18 +595,12 @@ public class L2Attackable extends L2Npc
 			if (getAggroList().isEmpty())
 				return;
 			
-			// Manage Base, Quests and Sweep drops of the L2Attackable
-			doItemDrop(lastAttacker);
-			
-			// Manage drop of Special Events created by GM for a defined period
-			doEventDrop(lastAttacker);
-			
-			if (!getMustRewardExpSP())
-				return;
-			
 			int damage;
 			L2Character attacker, ddealer;
 			RewardInfo reward;
+			
+			L2PcInstance maxDealer = null;
+			int maxDamage = 0;
 			
 			// While Interating over This Map Removing Object is Not Allowed
 			//synchronized (getAggroList())
@@ -644,9 +638,25 @@ public class L2Attackable extends L2Npc
 							reward.addDamage(damage);
 						
 						rewards.put(ddealer, reward);
+						
+						if (ddealer.getActingPlayer() != null && reward._dmg > maxDamage)
+						{ 
+							maxDealer = ddealer.getActingPlayer();
+							maxDamage = reward._dmg;
+						}
 					}
 				}
 			}
+			
+			// Manage Base, Quests and Sweep drops of the L2Attackable
+			doItemDrop(maxDealer != null && maxDealer.isOnline() == true ? maxDealer : lastAttacker);
+
+			// Manage drop of Special Events created by GM for a defined period
+			doEventDrop(lastAttacker);
+
+			if (!getMustRewardExpSP())
+				return;
+		 	
 			if (!rewards.isEmpty())
 			{
 				L2Party attackerParty;
@@ -1575,9 +1585,9 @@ public class L2Attackable extends L2Npc
 		return null;
 	}
 	
-	public void doItemDrop(L2Character lastAttacker)
+	public void doItemDrop(L2Character mainDamageDealer)
 	{
-		doItemDrop(getTemplate(),lastAttacker);
+		doItemDrop(getTemplate(),mainDamageDealer);
 	}
 	
 	/**
@@ -1599,12 +1609,12 @@ public class L2Attackable extends L2Npc
 	 *
 	 * @param lastAttacker The L2Character that has killed the L2Attackable
 	 */
-	public void doItemDrop(L2NpcTemplate npcTemplate, L2Character lastAttacker)
+	public void doItemDrop(L2NpcTemplate npcTemplate, L2Character mainDamageDealer)
 	{
-		if (lastAttacker == null)
+		if (mainDamageDealer == null)
 			return;
 		
-		L2PcInstance player = lastAttacker.getActingPlayer();
+		L2PcInstance player = mainDamageDealer.getActingPlayer();
 		
 		// Don't drop anything if the last attacker or owner isn't L2PcInstance
 		if (player == null)
@@ -1780,7 +1790,7 @@ public class L2Attackable extends L2Npc
 	/**
 	 * Drop reward item.
 	 */
-	public L2ItemInstance dropItem(L2PcInstance lastAttacker, RewardItem item)
+	public L2ItemInstance dropItem(L2PcInstance mainDamageDealer, RewardItem item)
 	{
 		int randDropLim = 70;
 		
@@ -1790,12 +1800,13 @@ public class L2Attackable extends L2Npc
 			// Randomize drop position
 			int newX = getX() + Rnd.get(randDropLim * 2 + 1) - randDropLim;
 			int newY = getY() + Rnd.get(randDropLim * 2 + 1) - randDropLim;
-			int newZ = Math.max(getZ(), lastAttacker.getZ()) + 20; // TODO: temp hack, do somethign nicer when we have geodatas
+			int newZ = Math.max(getZ(), mainDamageDealer.getZ()) + 20; // TODO: temp hack, do somethign nicer when we have geodatas
 			
 			if (ItemTable.getInstance().getTemplate(item.getItemId()) != null)
 			{
 				// Init the dropped L2ItemInstance and add it in the world as a visible object at the position where mob was last
-				ditem = ItemTable.getInstance().createItem("Loot", item.getItemId(), item.getCount(), lastAttacker, this);
+				ditem = ItemTable.getInstance().createItem("Loot", item.getItemId(), item.getCount(), mainDamageDealer, this);
+				ditem.getDropProtection().protect(mainDamageDealer);
 				ditem.dropMe(this, newX, newY, newZ);
 				
 				// Add drop to auto destroy item task
