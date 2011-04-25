@@ -402,6 +402,7 @@ public class RequestAcquireSkill extends L2GameClientPacket
 				break;
 			}
 			case 4:
+			case 5:
 			{
 				requiredSp = 0;
 				Quest[] qlst = trainer.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_LEARN);
