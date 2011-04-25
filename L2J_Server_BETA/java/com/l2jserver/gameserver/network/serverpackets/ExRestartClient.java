@@ -27,8 +27,7 @@ public class ExRestartClient extends L2GameServerPacket
 	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
 	 */
 	@Override
-	protected
-	void writeImpl()
+	protected void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x48);

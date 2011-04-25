@@ -22,8 +22,8 @@ public class ExAskModifyPartyLooting extends L2GameServerPacket
 {
 	private static final String TYPE = "[S] FE:BE ExAskModifyPartyLooting";
 	
-	private String _requestor;
-	private byte _mode;
+	private final String _requestor;
+	private final byte _mode;
 	
 	public ExAskModifyPartyLooting(String name, byte mode)
 	{
@@ -35,7 +35,7 @@ public class ExAskModifyPartyLooting extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0xBE);
+		writeH(0xBF);
 		writeS(_requestor);
 		writeD(_mode);
 	}

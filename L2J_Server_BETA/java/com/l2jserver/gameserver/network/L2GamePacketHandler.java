@@ -42,6 +42,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 	private static final Logger _log = Logger.getLogger(L2GamePacketHandler.class.getName());
 	
 	// implementation
+	@Override
 	public ReceivablePacket<L2GameClient> handlePacket(ByteBuffer buf, L2GameClient client)
 	{
 		if (client.dropPacket())
@@ -1073,29 +1074,59 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								// RequestVoteNew
 								msg = new RequestVoteNew();
 								break;
-							case 0x7f:
-								// RequestBRGamePoint
-								break;
-							case 0x80:
-								// RequestBRProductList
-								break;
-							case 0x81:
-								// RequestBRProductInfo
-								break;
-							case 0x82:
-								// RequestBRBuyProduct
-								break;
-							case 0x83:
-								// RequestBRRecentProductList
-								break;
 							case 0x84:
-								// BrMinigameLoadScores
+								// RequestExAddPostFriendForPostBox
 								break;
 							case 0x85:
-								// BrMinigameInsertScore
+								// RequestExDeletePostFriendForPostBox
 								break;
 							case 0x86:
+								// RequestExShowPostFriendListForPostBox
+								break;
+							case 0x87:
+								// RequestExFriendListForPostBox
+								break;
+							case 0x88:
+								// - 
+								break;
+							case 0x89:
+								// RequestBRGamePoint
+								break;
+							case 0x8A:
+								// RequestBRProductList
+								break;
+							case 0x8B:
+								// RequestBRProductInfo
+								break;
+							case 0x8C:
+								// RequestBRBuyProduct
+								break;
+							case 0x8D:
+								// RequestBRRecentProductList
+								break;
+							case 0x8E:
+								// BrMinigameLoadScores
+								break;
+							case 0x8F:
+								// BrMinigameInsertScore
+								break;
+							case 0x90:
 								// BrLectureMark
+								break;
+							case 0x91:
+								// RequestGoodsInventoryInfo 
+								break;
+							case 0x92:
+								// RequestUseGoodsInventoryItem 
+								break;
+							case 0x93:
+								// RequestEx2ndPasswordCheck 
+								break;
+							case 0x94:
+								// RequestEx2ndPasswordVerify  
+								break;
+							case 0x95:
+								// RequestEx2ndPasswordReq 
 								break;
 							default:
 								this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
@@ -1141,11 +1172,13 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 	}
 	
 	// impl
+	@Override
 	public L2GameClient create(MMOConnection<L2GameClient> con)
 	{
 		return new L2GameClient(con);
 	}
 	
+	@Override
 	public void execute(ReceivablePacket<L2GameClient> rp)
 	{
 		rp.getClient().execute(rp);

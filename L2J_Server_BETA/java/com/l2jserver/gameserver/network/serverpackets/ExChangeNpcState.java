@@ -28,14 +28,14 @@ public class ExChangeNpcState extends L2GameServerPacket
 	
 	private static final String _S__FE_BD__EXCHANGENPCSTATE = "[S] FE:BD ExChangeNpcState";
 	
-	private int _objId;
-	private int _state;
+	private final int _objId;
+	private final int _state;
 	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0xBD);
+		writeH(0xB9);
 		writeD(_objId);
 		writeD(_state);
 	}
