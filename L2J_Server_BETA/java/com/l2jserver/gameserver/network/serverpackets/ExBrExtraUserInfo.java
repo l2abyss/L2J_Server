@@ -50,6 +50,6 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return "[S] FE:CF ExBrExtraUSerInfo".intern();
+		return "[S] FE:DA ExBrExtraUSerInfo".intern();
 	}
 }

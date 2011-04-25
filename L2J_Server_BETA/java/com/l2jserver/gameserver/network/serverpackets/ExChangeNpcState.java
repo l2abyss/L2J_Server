@@ -26,7 +26,7 @@ public class ExChangeNpcState extends L2GameServerPacket
 		_state = state;
 	}
 	
-	private static final String _S__FE_BD__EXCHANGENPCSTATE = "[S] FE:BD ExChangeNpcState";
+	private static final String _S__FE_BE__EXCHANGENPCSTATE = "[S] FE:BE ExChangeNpcState";
 	
 	private final int _objId;
 	private final int _state;
@@ -35,7 +35,7 @@ public class ExChangeNpcState extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0xB9);
+		writeH(0xBE);
 		writeD(_objId);
 		writeD(_state);
 	}
@@ -43,7 +43,7 @@ public class ExChangeNpcState extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__FE_BD__EXCHANGENPCSTATE;
+		return _S__FE_BE__EXCHANGENPCSTATE;
 	}
 	
 }

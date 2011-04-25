@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class ExAskModifyPartyLooting extends L2GameServerPacket
 {
-	private static final String TYPE = "[S] FE:BE ExAskModifyPartyLooting";
+	private static final String _S__FE_BF_EXASKMODIFYPARTYLOOTING = "[S] FE:BF ExAskModifyPartyLooting";
 	
 	private final String _requestor;
 	private final byte _mode;
@@ -43,7 +43,7 @@ public class ExAskModifyPartyLooting extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return TYPE;
+		return _S__FE_BF_EXASKMODIFYPARTYLOOTING;
 	}
 	
 }
