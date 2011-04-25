@@ -99,7 +99,7 @@ public class RequestAcquireSkill extends L2GameClientPacket
 		 *  you want to learn Aggression lvl 5, thus skipping lvl 4.) or the packet sends the same level or lower (eg: Aggression lvl 3 and the
 		 *  packet sends info that you want to learn Aggression level 3).
 		 */
-		if (Math.max(player.getSkillLevel(_id), 0) + 1 != _level && _skillType != 3)
+		if (Math.max(player.getSkillLevel(_id), 0) + 1 != _level && !(_skillType == 3 || _skillType == 4))
 			return;
 		
 		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
@@ -402,6 +402,7 @@ public class RequestAcquireSkill extends L2GameClientPacket
 				break;
 			}
 			case 4:
+			case 5:
 			{
 				requiredSp = 0;
 				Quest[] qlst = trainer.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_LEARN);

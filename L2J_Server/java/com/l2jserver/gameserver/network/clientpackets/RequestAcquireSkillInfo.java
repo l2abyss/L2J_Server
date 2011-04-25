@@ -186,7 +186,7 @@ public class RequestAcquireSkillInfo extends L2GameClientPacket
 				sendPacket(asi);
 			}
 		}
-		else if (_skillType == 4)
+		else if (_skillType == 4 || _skillType == 5)
 		{
 			Quest[] qlst = trainer.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_LEARN);
 			if ((qlst != null) && qlst.length == 1)
