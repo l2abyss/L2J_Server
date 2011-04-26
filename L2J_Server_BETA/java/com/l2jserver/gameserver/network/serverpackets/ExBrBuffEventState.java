@@ -40,7 +40,7 @@ public class ExBrBuffEventState extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return "[S] FE:D8 ExBrBuffEventState";
+		return "[S] FE:DB ExBrBuffEventState";
 	}
 	
 	/* (non-Javadoc)
@@ -50,7 +50,7 @@ public class ExBrBuffEventState extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0xD8);
+		writeH(0xDB);
 		writeD(_type);
 		writeD(_value);
 		writeD(_state);

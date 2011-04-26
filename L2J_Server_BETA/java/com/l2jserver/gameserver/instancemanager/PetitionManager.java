@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
+import com.l2jserver.gameserver.network.serverpackets.PetitionVotePacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.StringUtil;
 
@@ -144,9 +145,12 @@ public final class PetitionManager
 				}
 			}
 			
-			// End petition consultation and inform them, if they are still online.
+			// End petition consultation and inform them, if they are still online. And if petitioner is online, enable Evaluation button
 			if (getPetitioner() != null && getPetitioner().isOnline())
+			{
 				getPetitioner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_END_THE_PETITION_PLEASE_PROVIDE_FEEDBACK));
+				getPetitioner().sendPacket(new PetitionVotePacket());
+			}
 			
 			getCompletedPetitions().put(getId(), this);
 			return (getPendingPetitions().remove(getId()) != null);
@@ -274,6 +278,9 @@ public final class PetitionManager
 		sm = SystemMessage.getSystemMessage(SystemMessageId.STARTING_PETITION_WITH_C1);
 		sm.addString(currPetition.getPetitioner().getName());
 		currPetition.sendResponderPacket(sm);
+		
+		// Set responder name on petitioner instance
+		currPetition.getPetitioner().setLastPetitionGmName(currPetition.getResponder().getName());
 		return true;
 	}
 	

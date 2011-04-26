@@ -1023,6 +1023,10 @@ public final class L2PcInstance extends L2Playable
 			return _target;
 		}
 	}
+	
+	// Save responder name for log it
+	private String _lastPetitionGmName = null;
+
 	/**
 	 * Create a new L2PcInstance and add it in the characters table of the database.<BR><BR>
 	 *
@@ -15099,5 +15103,15 @@ public final class L2PcInstance extends L2Playable
 	{
 		// Maintain = 1
 		return 0;
+	}
+	
+	public void setLastPetitionGmName(String gmName)
+	{
+		_lastPetitionGmName = gmName;
+	}
+	
+	public String getLastPetitionGmName()
+	{
+		return _lastPetitionGmName;
 	}
 }

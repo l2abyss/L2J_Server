@@ -661,7 +661,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						msg = new RequestSSQStatus();
 						break;
 					case 0xc9:
-						// PetitionVote
+						msg = new RequestPetitionFeedback();
 						break;
 					case 0xcb:
 						msg = new GameGuardReply();
