@@ -33,7 +33,6 @@ import com.l2jserver.util.StringUtil;
  */
 public final class L2Armor extends L2Item
 {
-	private final int _avoidModifier;
 	private SkillHolder _enchant4Skill = null; // skill that activates when armor is enchanted +4
 	// private final String[] _skill;
 	private L2ArmorType _type;
@@ -70,8 +69,6 @@ public final class L2Armor extends L2Item
 			_type1 = L2Item.TYPE1_SHIELD_ARMOR;
 			_type2 = L2Item.TYPE2_SHIELD_ARMOR;
 		}
-		
-		_avoidModifier = set.getInteger("avoid_modify", 0);
 		
 		String skill = set.getString("enchant4_skill", null);
 		if (skill != null)
@@ -116,16 +113,6 @@ public final class L2Armor extends L2Item
 	public final int getItemMask()
 	{
 		return getItemType().mask();
-	}
-	
-	
-	/**
-	 * Returns avoid modifier given by the armor
-	 * @return int : avoid modifier
-	 */
-	public final int getAvoidModifier()
-	{
-		return _avoidModifier;
 	}
 	
 	/**
