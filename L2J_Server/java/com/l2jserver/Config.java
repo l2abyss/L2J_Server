@@ -978,7 +978,6 @@ public final class Config
 	public static double CP_REGEN_MULTIPLIER;
 	public static boolean IS_TELNET_ENABLED;
 	public static boolean SHOW_LICENCE;
-	public static boolean FORCE_GGAUTH;
 	public static boolean ACCEPT_NEW_GAMESERVER;
 	public static int SERVER_ID;
 	public static byte[] HEX_ID;
@@ -2757,19 +2756,13 @@ public final class Config
 					PORT_LOGIN = Integer.parseInt(serverSettings.getProperty("LoginserverPort", "2106"));
 					
 					DEBUG = Boolean.parseBoolean(serverSettings.getProperty("Debug", "false"));
-					PACKET_HANDLER_DEBUG = Boolean.parseBoolean(serverSettings.getProperty("PacketHandlerDebug", "false"));
-					DEVELOPER = Boolean.parseBoolean(serverSettings.getProperty("Developer", "false"));
 					
 					ACCEPT_NEW_GAMESERVER = Boolean.parseBoolean(serverSettings.getProperty("AcceptNewGameServer","True"));
-					REQUEST_ID = Integer.parseInt(serverSettings.getProperty("RequestServerID","0"));
-					ACCEPT_ALTERNATE_ID = Boolean.parseBoolean(serverSettings.getProperty("AcceptAlternateID","True"));
 					
 					LOGIN_TRY_BEFORE_BAN = Integer.parseInt(serverSettings.getProperty("LoginTryBeforeBan", "10"));
 					LOGIN_BLOCK_AFTER_BAN = Integer.parseInt(serverSettings.getProperty("LoginBlockAfterBan", "600"));
 					
 					LOG_LOGIN_CONTROLLER = Boolean.parseBoolean(serverSettings.getProperty("LogLoginController", "true"));
-					
-					DATAPACK_ROOT = new File(serverSettings.getProperty("DatapackRoot", ".")).getCanonicalFile(); //FIXME: in login?
 					
 					DATABASE_DRIVER = serverSettings.getProperty("Driver", "com.mysql.jdbc.Driver");
 					DATABASE_URL = serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jdb");
@@ -2779,7 +2772,6 @@ public final class Config
 					DATABASE_MAX_IDLE_TIME = Integer.parseInt(serverSettings.getProperty("MaximumDbIdleTime", "0"));
 					
 					SHOW_LICENCE = Boolean.parseBoolean(serverSettings.getProperty("ShowLicence", "true"));
-					FORCE_GGAUTH = Boolean.parseBoolean(serverSettings.getProperty("ForceGGAuth", "False"));
 					
 					AUTO_CREATE_ACCOUNTS = Boolean.parseBoolean(serverSettings.getProperty("AutoCreateAccounts","True"));
 					
