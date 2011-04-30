@@ -1754,6 +1754,7 @@ public abstract class L2Character extends L2Object
 						case BUFF:
 						case MANAHEAL:
 						case MANARECHARGE:
+						case MANA_BY_LEVEL:
 						case RESURRECT:
 						case RECALL:
 							weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
