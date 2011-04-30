@@ -83,7 +83,7 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		writeD(_effect == true ? 1 : 0); // upper effect (0 - disabled, 1 enabled) - _position must be 2 (center) otherwise no effect
 		writeD(_time); // time
 		writeD(_unk4); // ?
-		writeD(0x00); //TODO: npcString
+		writeD(-1); //TODO: npcString
 		writeS(_text); // your text (_type must be 1, otherwise no effect)
 	}
 }

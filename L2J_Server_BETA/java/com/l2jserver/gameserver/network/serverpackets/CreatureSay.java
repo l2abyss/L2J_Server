@@ -29,7 +29,7 @@ public final class CreatureSay extends L2GameServerPacket
 	private String _charName = null;
 	private int _charId = 0;
 	private String _text = null;
-	private int _msgId = 0;
+	private int _msgId = -1;
 	
 	/**
 	 * @param _characters
@@ -60,11 +60,9 @@ public final class CreatureSay extends L2GameServerPacket
 			writeS(_charName);
 		else
 			writeD(_charId);
-		writeD(-1); // High Five NPCString ID
+		writeD(_msgId); // High Five NPCString ID
 		if (_text != null)
 			writeS(_text);
-		else
-			writeD(_msgId);
 	}
 	
 	@Override
