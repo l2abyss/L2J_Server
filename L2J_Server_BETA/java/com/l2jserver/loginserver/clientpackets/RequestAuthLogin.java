@@ -119,6 +119,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 			{
 				case AUTH_SUCCESS:
 					client.setAccount(_user);
+					lc.getCharactersOnAccount(_user);
 					client.setState(LoginClientState.AUTHED_LOGIN);
 					client.setSessionKey(lc.assignSessionKeyToClient(_user, client));
 					if (Config.SHOW_LICENCE)

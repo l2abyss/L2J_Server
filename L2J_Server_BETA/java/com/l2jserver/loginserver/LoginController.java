@@ -366,6 +366,16 @@ public class LoginController
 		return total;
 	}
 	
+	public void getCharactersOnAccount(String account)
+	{
+		Collection<GameServerInfo> serverList = GameServerTable.getInstance().getRegisteredGameServers().values();
+		for (GameServerInfo gsi : serverList)
+		{
+			if (gsi.isAuthed())
+				gsi.getGameServerThread().requestCharacters(account);
+		}
+	}
+	
 	public int getMaxAllowedOnlinePlayers(int id)
 	{
 		GameServerInfo gsi = GameServerTable.getInstance().getRegisteredGameServerById(id);
@@ -483,6 +493,16 @@ public class LoginController
 			{
 			}
 		}
+	}
+	
+	public void setCharactersOnServer(String account, int charsNum, long[] timeToDel, int serverId)
+	{
+		L2LoginClient client = _loginServerClients.get(account);
+		if (charsNum > 0)
+			client.setCharsOnServ(serverId, charsNum);
+		
+		if (timeToDel.length > 0)
+			client.serCharsWaitingDelOnServ(serverId, timeToDel);
 	}
 	
 	public boolean isGM(String user)

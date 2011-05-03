@@ -43,7 +43,7 @@ import com.l2jserver.status.Status;
  */
 public class L2LoginServer
 {
-	public static final int PROTOCOL_REV = 0x0104;
+	public static final int PROTOCOL_REV = 0x0105;
 	
 	private static L2LoginServer _instance;
 	private Logger _log = Logger.getLogger(L2LoginServer.class.getName());

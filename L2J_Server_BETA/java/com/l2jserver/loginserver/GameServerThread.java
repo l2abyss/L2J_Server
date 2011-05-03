@@ -38,12 +38,14 @@ import com.l2jserver.loginserver.gameserverpackets.PlayerAuthRequest;
 import com.l2jserver.loginserver.gameserverpackets.PlayerInGame;
 import com.l2jserver.loginserver.gameserverpackets.PlayerLogout;
 import com.l2jserver.loginserver.gameserverpackets.PlayerTracert;
+import com.l2jserver.loginserver.gameserverpackets.ReplyCharacters;
 import com.l2jserver.loginserver.gameserverpackets.ServerStatus;
 import com.l2jserver.loginserver.loginserverpackets.AuthResponse;
 import com.l2jserver.loginserver.loginserverpackets.InitLS;
 import com.l2jserver.loginserver.loginserverpackets.KickPlayer;
 import com.l2jserver.loginserver.loginserverpackets.LoginServerFail;
 import com.l2jserver.loginserver.loginserverpackets.PlayerAuthResponse;
+import com.l2jserver.loginserver.loginserverpackets.RequestCharacters;
 import com.l2jserver.util.Util;
 import com.l2jserver.util.crypt.NewCrypt;
 import com.l2jserver.util.network.BaseSendablePacket;
@@ -142,29 +144,32 @@ public class GameServerThread extends Thread
 				int packetType = data[0] & 0xff;
 				switch (packetType)
 				{
-					case 00:
+					case 0x00:
 						onReceiveBlowfishKey(data);
 						break;
-					case 01:
+					case 0x01:
 						onGameServerAuth(data);
 						break;
-					case 02:
+					case 0x02:
 						onReceivePlayerInGame(data);
 						break;
-					case 03:
+					case 0x03:
 						onReceivePlayerLogOut(data);
 						break;
-					case 04:
+					case 0x04:
 						onReceiveChangeAccessLevel(data);
 						break;
-					case 05:
+					case 0x05:
 						onReceivePlayerAuthRequest(data);
 						break;
-					case 06:
+					case 0x06:
 						onReceiveServerStatus(data);
 						break;
-					case 07:
+					case 0x07:
 						onReceivePlayerTracert(data);
+						break;
+					case 0x08:
+						onReceivePlayerOnServer(data);
 						break;
 					default:
 						_log.warning("Unknown Opcode ("+Integer.toHexString(packetType).toUpperCase()+") from GameServer, closing connection.");
@@ -355,6 +360,20 @@ public class GameServerThread extends Thread
 			{
 				_log.info("Saved "+plt.getAccount()+" last tracert");
 			}
+		}
+		else
+		{
+			forceClose(LoginServerFail.NOT_AUTHED);
+		}
+	}
+	
+	private void onReceivePlayerOnServer(byte[] data)
+	{
+		if (isAuthed())
+		{
+			ReplyCharacters rec = new ReplyCharacters(data);
+			LoginController.getInstance().setCharactersOnServer(rec.getAccountName(),
+					rec.getCharsOnServer(), rec.getTimeToDelForChars(), getServerId());
 		}
 		else
 		{
@@ -651,6 +670,19 @@ public class GameServerThread extends Thread
 		try
 		{
 			sendPacket(kp);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void requestCharacters(String account)
+	{
+		RequestCharacters rc = new RequestCharacters(account);
+		try
+		{
+			sendPacket(rc);
 		}
 		catch (IOException e)
 		{

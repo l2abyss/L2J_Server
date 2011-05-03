@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.security.interfaces.RSAPrivateKey;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.mmocore.network.MMOClient;
@@ -58,6 +60,8 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	private SessionKey _sessionKey;
 	private int _sessionId;
 	private boolean _joinedGS;
+	private Map<Integer, Integer> _charsOnServers;
+	private Map<Integer, long[]> _charsToDelete;
 	
 	private long _connectionStartTime;
 	
@@ -229,6 +233,30 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	public void close(L2LoginServerPacket lsp)
 	{
 		getConnection().close(lsp);
+	}
+	
+	public void setCharsOnServ(int servId, int chars)
+	{
+		if (_charsOnServers == null)
+			_charsOnServers = new HashMap<Integer, Integer>();
+		_charsOnServers.put(servId, chars);
+	}
+	
+	public Map<Integer, Integer> getCharsOnServ()
+	{
+		return _charsOnServers;
+	}
+	
+	public void serCharsWaitingDelOnServ(int servId, long[] charsToDel)
+	{
+		if (_charsToDelete == null)
+			_charsToDelete = new HashMap<Integer, long[]>();
+		_charsToDelete.put(servId, charsToDel);
+	}
+	
+	public Map<Integer, long[]> getCharsWaitingDelOnServ()
+	{
+		return _charsToDelete;
 	}
 	
 	@Override

@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.l2jserver.loginserver.GameServerTable;
 import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
@@ -53,6 +54,8 @@ public final class ServerList extends L2LoginServerPacket
 {
 	private List<ServerData> _servers;
 	private int _lastServer;
+	private Map<Integer, Integer> _charsOnServers;
+	private Map<Integer, long[]> _charsToDelete;
 	
 	class ServerData
 	{
@@ -103,6 +106,8 @@ public final class ServerList extends L2LoginServerPacket
 		_lastServer = client.getLastServer();
 		for (GameServerInfo gsi : GameServerTable.getInstance().getRegisteredGameServers().values())
 			_servers.add(new ServerData(client, gsi));
+		_charsOnServers = client.getCharsOnServ();
+		_charsToDelete = client.getCharsWaitingDelOnServ();
 	}
 	
 	@Override
@@ -129,5 +134,27 @@ public final class ServerList extends L2LoginServerPacket
 			writeD(server._serverType); // 1: Normal, 2: Relax, 4: Public Test, 8: No Label, 16: Character Creation Restricted, 32: Event, 64: Free
 			writeC(server._brackets ? 0x01 : 0x00);
 		}
+		writeH(0x00); // unknown
+		if (_charsOnServers != null)
+		{
+			writeC(_charsOnServers.size());
+			for (int servId : _charsOnServers.keySet())
+			{
+				writeC(servId);
+				writeC(_charsOnServers.get(servId));
+				if (_charsToDelete == null || !_charsToDelete.containsKey(servId))
+					writeC(0x00);
+				else
+				{
+					writeC(_charsToDelete.get(servId).length);
+					for (long deleteTime : _charsToDelete.get(servId))
+					{
+						writeD((int)((deleteTime-System.currentTimeMillis())/1000));
+					}
+				}
+			}
+		}
+		else
+			writeC(0x00);
 	}
 }
