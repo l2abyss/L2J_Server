@@ -1351,8 +1351,9 @@ public final class Formulas
 				return 1;
 		}
 		
-		double power =  skill.getPower();
-		//TODO: target instanceof L2Playable && skill.getPvpPower() != 0 ? skill.getPvpPower() : skill.getPower();
+		boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2PcInstance);
+		boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
+		double power =  skill.getPower(isPvP, isPvE);
 		double damage = 0;
 		double proximityBonus = 1;
 		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
@@ -1371,7 +1372,7 @@ public final class Formulas
 			proximityBonus = 1.2; // +20% crit dmg when back stabbed
 		else if (isInFrontOf(attacker, target))
 			proximityBonus = 1.1; // +10% crit dmg when side stabbed
-		
+			
 		damage += Formulas.calcValakasAttribute(attacker, target, skill);
 		
 		double element = calcElemental(attacker, target, skill);
@@ -1379,18 +1380,14 @@ public final class Formulas
 		// SSBoost > 0 have different calculation
 		if (skill.getSSBoost() > 0)
 			damage += 70. * graciaPhysSkillBonus * (attacker.getPAtk(target) + power) / defence * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill))
-			* (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * ssboost * proximityBonus * element * pvpBonus
-			+ (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70 / defence * graciaPhysSkillBonus);
+					* (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * ssboost * proximityBonus * element * pvpBonus
+					+ (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70 / defence * graciaPhysSkillBonus);
 		else
 			damage += 70. * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost)) / defence * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill))
-			* (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * element * pvpBonus
-			+ (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70 / defence * graciaPhysSkillBonus);
-		
-		// get the natural vulnerability for the template
-		/*if (target instanceof L2Npc)
-		{
-			damage *= ((L2Npc) target).getTemplate().getVulnerability(Stats.DAGGER_WPN_VULN);
-		}*/
+					* (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * element * pvpBonus
+					+ (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70 / defence * graciaPhysSkillBonus);
+
+		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.1;
 		
 		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
 		damage = target.calcStat(Stats.DAGGER_WPN_VULN, damage, target, null);
