@@ -205,6 +205,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _ignoreResists;
 	private final int _minChance;
 	private final int _maxChance;
+	private final int _blowChance;
 	
 	private final boolean _isNeutral;
 	// Effecting area of the skill, in radius.
@@ -524,6 +525,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_numSouls = set.getInteger("num_souls", 0);
 		_soulMaxConsume = set.getInteger("soulMaxConsumeCount", 0);
 		_soulConsume = set.getInteger("soulConsumeCount", 0);
+		_blowChance = set.getInteger("blowChance", 0);
 		_expNeeded = set.getInteger("expNeeded", 0);
 		_critChance = set.getInteger("critChance", 0);
 		
@@ -2858,6 +2860,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public String getAttributeName()
 	{
 		return _attribute;
+	}
+
+	/**
+	 * @return the _blowChance
+	 */
+	public int getBlowChance()
+	{
+		return _blowChance;
 	}
 	
 	public boolean ignoreShield()
