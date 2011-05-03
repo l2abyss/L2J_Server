@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.skills;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -1336,85 +1337,82 @@ public final class Formulas
 		
 		return 1.5; // If all is true, then modifer will be 50% more
 	}
-	/** Calculate blow damage based on cAtk */
+	
 	public static double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
 	{
-		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
-		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
-		double power = skill.getPower(isPvP, isPvE);
-		double damage = attacker.getPAtk(target);
-		damage+=calcValakasAttribute(attacker, target, skill);
 		double defence = target.getPDef(attacker);
-		if (attacker instanceof L2Npc)
-		{
-			if(((L2Npc)attacker)._soulshotcharged)
-			{
-				ss = true;
-			}
-			else
-				ss = false;
-			((L2Npc)attacker)._soulshotcharged = false;
-		}
 		
-		// Def bonusses in PvP fight
-		if(isPvP)
-			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
-		
-		if(ss)
-			damage *= 2.;
 		switch(shld)
 		{
-			case SHIELD_DEFENSE_SUCCEED:
+			case Formulas.SHIELD_DEFENSE_SUCCEED:
 				defence += target.getShldDef();
 				break;
-			case SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
+			case Formulas.SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
 				return 1;
 		}
 		
-		if(ss && skill.getSSBoost()>0)
-			power *= skill.getSSBoost();
+		double power =  skill.getPower();
+		//TODO: target instanceof L2Playable && skill.getPvpPower() != 0 ? skill.getPvpPower() : skill.getPower();
+		double damage = 0;
+		double proximityBonus = 1;
+		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
+		double ssboost = ss ? (skill.getSSBoost() > 0 ? skill.getSSBoost() : 2.04) : 1; // 104% bonus with SS
+		double pvpBonus = 1;
 		
-		damage = attacker.calcStat(Stats.CRITICAL_DAMAGE, (damage+power), target, skill);
-		damage *= calcElemental(attacker, target, skill);
-		damage += attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.5;
-		damage *= target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, skill);
-		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.5;
+		if ((attacker instanceof L2Playable) && (target instanceof L2Playable))
+		{
+			// Dmg bonusses in PvP fight
+			pvpBonus *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
+			// Def bonusses in PvP fight
+			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
+		}
+		
+		if (isBehind(attacker, target))
+			proximityBonus = 1.2; // +20% crit dmg when back stabbed
+		else if (isInFrontOf(attacker, target))
+			proximityBonus = 1.1; // +10% crit dmg when side stabbed
+		
+		damage += Formulas.calcValakasAttribute(attacker, target, skill);
+		
+		double element = calcElemental(attacker, target, skill);
+		
+		// SSBoost > 0 have different calculation
+		if (skill.getSSBoost() > 0)
+			damage += 70. * graciaPhysSkillBonus * (attacker.getPAtk(target) + power) / defence * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill))
+			* (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * ssboost * proximityBonus * element * pvpBonus
+			+ (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70 / defence * graciaPhysSkillBonus);
+		else
+			damage += 70. * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost)) / defence * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill))
+			* (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * element * pvpBonus
+			+ (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70 / defence * graciaPhysSkillBonus);
 		
 		// get the natural vulnerability for the template
 		/*if (target instanceof L2Npc)
 		{
 			damage *= ((L2Npc) target).getTemplate().getVulnerability(Stats.DAGGER_WPN_VULN);
 		}*/
+		
 		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
 		damage = target.calcStat(Stats.DAGGER_WPN_VULN, damage, target, null);
-		damage *= 80 / defence;
-		
 		// Random weapon damage
 		damage *= attacker.getRandomDamageMultiplier();
 		
-		// Physical skill dmg boost
-		damage *= attacker.calcStat(Stats.PHYSICAL_SKILL_POWER, 1, null, null);
-		
-		// Dmg bonusses in PvP fight
-		if(isPvP)
-			damage *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
-		else if (target instanceof L2Attackable)
+		if (target instanceof L2Attackable && !target.isRaid() && !target.isRaidMinion() && target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY && attacker.getActingPlayer() != null
+				&& (target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2)
 		{
-			damage *= attacker.calcStat(Stats.PVE_PHYS_SKILL_DMG, 1, null, null);
-			if (!target.isRaid() && !target.isRaidMinion()
-					&& target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY && attacker.getActingPlayer() != null
-					&& (target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2)
-			{
-				int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 1;
-				if (lvlDiff > Config.NPC_SKILL_DMG_PENALTY.size())
-					damage *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size());
-				else
-					damage *= Config.NPC_SKILL_DMG_PENALTY.get(lvlDiff);
-			}
+			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 1;
+			if (lvlDiff > Config.NPC_SKILL_DMG_PENALTY.size())
+				damage *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size());
+			else
+				damage *= Config.NPC_SKILL_DMG_PENALTY.get(lvlDiff);
+			
 		}
 		
+		//TODO: Formulas.calcStunBreak(target, damage);
+
 		return damage < 1 ? 1. : damage;
 	}
+	
 	/** Calculated damage caused by ATTACK of attacker on target,
 	 * called separatly for each weapon, if dual-weapon is used.
 	 *
@@ -3126,5 +3124,88 @@ public final class Formulas
 			return 0;
 		final double damage = cha.calcStat(Stats.FALL, fallHeight * cha.getMaxHp() / 1000, null, null);
 		return damage;
+	}
+	
+	private static double FRONT_MAX_ANGLE = 100;
+	private static double BACK_MAX_ANGLE = 40;
+	
+	/**
+	 * Calculates blow success depending on base chance and relative position of attacker and target
+	 * @param activeChar Target that is performing skill
+	 * @param target Target of this skill
+	 * @param skill Skill which will be used to get base value of blowChance and crit condition
+	 * @return Success of blow
+	 */
+	public static boolean calcBlowSuccess(L2Character activeChar, L2Character target, L2Skill skill)
+	{
+		int blowChance = skill.getBlowChance();
+		
+		// Skill is blow and it has 0% to make dmg... thats just wrong
+		if (blowChance == 0)
+		{
+			_log.log(Level.WARNING, "Skill " + skill.getId() + " - " + skill.getName() + " has 0 blow land chance, yet its a blow skill!");
+			//TODO: return false;
+			//lets add 20 for now, till all skills are corrected
+			blowChance = 20;
+		}
+		
+		if (isBehind(target, activeChar))
+			blowChance *= 2; //double chance from behind
+		else if (isInFrontOf(target, activeChar))
+		{
+			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
+				return false;
+
+			//base chance from front	
+		}
+		else
+			blowChance *= 1.5; //50% better chance from side
+		
+		return activeChar.calcStat(Stats.BLOW_RATE, blowChance * (1.0 + (activeChar.getDEX()) / 100.), target, null) > Rnd.get(100);
+	}
+	
+	/**
+	 * Those are altered formulas for blow lands
+	 * Return True if the target is IN FRONT of the L2Character.<BR><BR>
+	 */
+	public static boolean isInFrontOf(L2Character target, L2Character attacker)
+	{
+		if (target == null)
+			return false;
+		
+		double angleChar, angleTarget, angleDiff;
+		angleTarget = Util.calculateAngleFrom(target, attacker);
+		angleChar = Util.convertHeadingToDegree(target.getHeading());
+		angleDiff = angleChar - angleTarget;
+		if (angleDiff <= -360 + FRONT_MAX_ANGLE)
+			angleDiff += 360;
+		if (angleDiff >= 360 - FRONT_MAX_ANGLE)
+			angleDiff -= 360;
+		if (Math.abs(angleDiff) <= FRONT_MAX_ANGLE)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Those are altered formulas for blow lands
+	 * Return True if the L2Character is behind the target and can't be seen.<BR><BR>
+	 */
+	public static boolean isBehind(L2Character target, L2Character attacker)
+	{
+		if (target == null)
+			return false;
+		
+		double angleChar, angleTarget, angleDiff;
+		L2Character target1 = target;
+		angleChar = Util.calculateAngleFrom(attacker, target1);
+		angleTarget = Util.convertHeadingToDegree(target1.getHeading());
+		angleDiff = angleChar - angleTarget;
+		if (angleDiff <= -360 + BACK_MAX_ANGLE)
+			angleDiff += 360;
+		if (angleDiff >= 360 - BACK_MAX_ANGLE)
+			angleDiff -= 360;
+		if (Math.abs(angleDiff) <= BACK_MAX_ANGLE)
+			return true;
+		return false;
 	}
 }
