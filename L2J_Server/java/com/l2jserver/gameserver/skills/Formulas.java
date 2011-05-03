@@ -1342,7 +1342,7 @@ public final class Formulas
 	{
 		double defence = target.getPDef(attacker);
 		
-		switch (shld)
+		switch(shld)
 		{
 			case Formulas.SHIELD_DEFENSE_SUCCEED:
 				defence += target.getShldDef();
@@ -1385,13 +1385,8 @@ public final class Formulas
 			damage += 70. * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost)) / defence * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill))
 					* (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * element * pvpBonus
 					+ (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70 / defence * graciaPhysSkillBonus);
-		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.5;
-		
-		// get the natural vulnerability for the template
-		/*if (target instanceof L2Npc)
-		{
-			damage *= ((L2Npc) target).getTemplate().getVulnerability(Stats.DAGGER_WPN_VULN);
-		}*/
+
+		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.1;
 		
 		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
 		damage = target.calcStat(Stats.DAGGER_WPN_VULN, damage, target, null);
