@@ -69,21 +69,21 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				event |= ChanceCondition.EVT_CRIT;
 		}
 		
-		onEvent(event, damage, target, Elementals.NONE);
+		onEvent(event, damage, target, null, Elementals.NONE);
 	}
 	
 	public void onEvadedHit(L2Character attacker)
 	{
-		onEvent(ChanceCondition.EVT_EVADED_HIT, 0, attacker, Elementals.NONE);
+		onEvent(ChanceCondition.EVT_EVADED_HIT, 0, attacker, null, Elementals.NONE);
 	}
 	
-	public void onSkillHit(L2Character target, boolean ownerWasHit, boolean wasMagic, boolean wasOffensive, byte element)
+	public void onSkillHit(L2Character target, L2Skill skill, boolean ownerWasHit)
 	{
 		int event;
 		if (ownerWasHit)
 		{
 			event = ChanceCondition.EVT_HIT_BY_SKILL;
-			if (wasOffensive)
+			if (skill.isOffensive())
 			{
 				event |= ChanceCondition.EVT_HIT_BY_OFFENSIVE_SKILL;
 				event |= ChanceCondition.EVT_ATTACKED;
@@ -96,29 +96,29 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		else
 		{
 			event = ChanceCondition.EVT_CAST;
-			event |= wasMagic ? ChanceCondition.EVT_MAGIC : ChanceCondition.EVT_PHYSICAL;
-			event |= wasOffensive ? ChanceCondition.EVT_MAGIC_OFFENSIVE : ChanceCondition.EVT_MAGIC_GOOD;
+			event |= skill.isMagic() ? ChanceCondition.EVT_MAGIC : ChanceCondition.EVT_PHYSICAL;
+			event |= skill.isOffensive() ? ChanceCondition.EVT_MAGIC_OFFENSIVE : ChanceCondition.EVT_MAGIC_GOOD;
 		}
 		
-		onEvent(event, 0, target, element);
+		onEvent(event, 0, target, skill, skill.getElement());
 	}
 	
 	public void onStart(byte element)
 	{
-		onEvent(ChanceCondition.EVT_ON_START, 0, _owner, element);
+		onEvent(ChanceCondition.EVT_ON_START, 0, _owner, null, element);
 	}
 	
 	public void onActionTime(byte element)
 	{
-		onEvent(ChanceCondition.EVT_ON_ACTION_TIME, 0, _owner, element);
+		onEvent(ChanceCondition.EVT_ON_ACTION_TIME, 0, _owner, null, element);
 	}
 	
 	public void onExit(byte element)
 	{
-		onEvent(ChanceCondition.EVT_ON_EXIT, 0, _owner, element);
+		onEvent(ChanceCondition.EVT_ON_EXIT, 0, _owner, null, element);
 	}
 	
-	public void onEvent(int event, int damage, L2Character target, byte element)
+	public void onEvent(int event, int damage, L2Character target, L2Skill skill, byte element)
 	{
 		if (_owner.isDead())
 			return;
@@ -126,7 +126,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		final boolean playable = target instanceof L2Playable;
 		for (FastMap.Entry<IChanceSkillTrigger, ChanceCondition> e = head(), end = tail(); (e = e.getNext()) != end;)
 		{
-			if (e.getValue() != null && e.getValue().trigger(event, damage, element, playable))
+			if (e.getValue() != null && e.getValue().trigger(event, damage, element, playable, skill))
 			{
 				if (e.getKey() instanceof L2Skill)
 					makeCast((L2Skill)e.getKey(), target);
