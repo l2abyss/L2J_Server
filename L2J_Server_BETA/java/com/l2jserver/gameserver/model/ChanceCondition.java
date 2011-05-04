@@ -101,15 +101,17 @@ public final class ChanceCondition
 	private final int _chance;
 	private final int _mindmg;
 	private final byte[] _elements;
+	private final int[] _activationSkills;
 	private final boolean _pvpOnly;
 	
-	private ChanceCondition(TriggerType trigger, int chance, int mindmg, byte[] elements, boolean pvpOnly)
+	private ChanceCondition(TriggerType trigger, int chance, int mindmg, byte[] elements, int[] activationSkills, boolean pvpOnly)
 	{
 		_triggerType = trigger;
 		_chance = chance;
 		_mindmg = mindmg;
 		_elements = elements;
 		_pvpOnly = pvpOnly;
+		_activationSkills = activationSkills;
 	}
 	
 	public static ChanceCondition parse(StatsSet set)
@@ -120,10 +122,11 @@ public final class ChanceCondition
 			int chance = set.getInteger("activationChance", -1);
 			int mindmg = set.getInteger("activationMinDamage", -1);
 			String elements = set.getString("activationElements", null);
+			String activationSkills = set.getString("activationSkills", null);
 			boolean pvpOnly = set.getBool("pvpChanceOnly", false);
 			
 			if (trigger != null)
-				return new ChanceCondition(trigger, chance, mindmg, parseElements(elements), pvpOnly);
+				return new ChanceCondition(trigger, chance, mindmg, parseElements(elements), parseActivationSkills(activationSkills), pvpOnly);
 		}
 		catch (Exception e)
 		{
@@ -132,7 +135,7 @@ public final class ChanceCondition
 		return null;
 	}
 	
-	public static ChanceCondition parse(String chanceType, int chance, int mindmg, String elements, boolean pvpOnly)
+	public static ChanceCondition parse(String chanceType, int chance, int mindmg, String elements, String activationSkills, boolean pvpOnly)
 	{
 		try
 		{
@@ -142,7 +145,7 @@ public final class ChanceCondition
 			TriggerType trigger = Enum.valueOf(TriggerType.class, chanceType);
 			
 			if (trigger != null)
-				return new ChanceCondition(trigger, chance, mindmg, parseElements(elements), pvpOnly);
+				return new ChanceCondition(trigger, chance, mindmg, parseElements(elements), parseActivationSkills(activationSkills), pvpOnly);
 		}
 		catch (Exception e)
 		{
@@ -166,12 +169,28 @@ public final class ChanceCondition
 		return elements;
 	}
 	
-	public boolean trigger(int event, int damage, byte element, boolean playable)
+	public static final int[] parseActivationSkills(String list)
+	{
+		if (list == null)
+			return null;
+		
+		String[] valuesSplit = list.split(",");
+		int[] skillIds = new int[valuesSplit.length];
+		for (int i = 0; i < valuesSplit.length; i++)
+			skillIds[i] = Integer.parseInt(valuesSplit[i]);
+		
+		return skillIds;
+	}
+	
+	public boolean trigger(int event, int damage, byte element, boolean playable, L2Skill skill)
 	{
 		if (_pvpOnly && !playable)
 			return false;
 		
 		if (_elements != null && Arrays.binarySearch(_elements, element) < 0)
+			return false;
+		
+		if (_activationSkills != null && skill != null && Arrays.binarySearch(_activationSkills, skill.getId()) < 0)
 			return false;
 		
 		// if the skill has "activationMinDamage" setted to higher than -1(default)
