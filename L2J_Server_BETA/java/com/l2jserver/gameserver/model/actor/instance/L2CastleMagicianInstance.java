@@ -94,271 +94,208 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		else if (command.startsWith("ExchangeKE"))
 		{
 			String filename = null;
-			int i1;
 			int item;
 			int i0 = Rnd.get(100);
 			if (i0 < 5)
 			{
-				i1 = Rnd.get(25);
-				if (i0 < 5)
-				{
-					item = 9931;
-				}
+				int i1 = Rnd.get(100);
+				if (i1 < 5)
+					item = 9931; // Red Talisman of Meditation
 				else if (i1 <= 50)
-				{
-					item = 9932;
-				}
+					item = 9932; // Blue Talisman - Divine Protection
 				else if( i1 <= 75 )
-				{
-					item = 10416;
-				}
+					item = 10416; // Blue Talisman - Explosion
 				else
-				{
-					item = 10417;
-				}
+					item = 10417; // Blue Talisman - Magic Explosion
 			}
 			else if (i0 <= 15)
 			{
-				i1 = Rnd.get(100);
-				if( i1 <= 20 )
+				switch (Rnd.get(5))
 				{
-					item = 9917;
-				}
-				else if( i1 <= 40 )
-				{
-					item = 9918;
-				}
-				else if( i1 <= 60 )
-				{
-					item = 9928;
-				}
-				else if( i1 <= 80 )
-				{
-					item = 9929;
-				}
-				else
-				{
-					item = 9920;
+					case 1: // Red Talisman of Minimum Clarity
+						item = 9917;
+						break;
+					case 2: // Red Talisman of Maximum Clarity
+						item = 9918;
+						break;
+					case 3: // Red Talisman of Mental Regeneration
+						item = 9928;
+						break;
+					case 4: // Blue Talisman of Protection
+						item = 9929;
+						break;
+					default: // Blue Talisman of Invisibility
+						item = 9920; 
+						
 				}
 			}
 			else if( i0 <= 30 )
-			{
-				i1 = Rnd.get(100);
-				if( i1 <= 12 )
+			{	
+				switch (Rnd.get(8))
 				{
-					item = 9916;
-				}
-				else if( i1 <= 25 )
-				{
-					item = 9916;
-				}
-				else if( i1 <= 37 )
-				{
-					item = 9924;
-				}
-				else if( i1 <= 50 )
-				{
-					item = 9925;
-				}
-				else if( i1 <= 62 )
-				{
-					item = 9926;
-				}
-				else if( i1 <= 75 )
-				{
-					item = 9927;
-				}
-				else if( i1 <= 87 )
-				{
-					item = 10518;
-				}
-				else
-				{
-					item = 10424;
+					case 1: // Blue Talisman of Defense
+						item = 9916;
+						break;
+					case 2: // Blue Talisman of Defense
+						item = 9916;
+						break;
+					case 3: // Blue Talisman of Healing
+						item = 9924;
+						break;
+					case 4: // Red Talisman of Recovery
+						item = 9925;
+						break;
+					case 5: // Blue Talisman of Defense
+						item = 9926;
+						break;
+					case 6: // Blue Talisman of Magic Defense
+						item = 9927;
+						break;
+					case 7: // Red Talisman - Life Force
+						item = 10518;
+						break;
+					default: // Blue Talisman - Greater Healing
+						item = 10424;
 				}
 			}
 			else
 			{
-				i1 = Rnd.get(46);
-				if( i1 == 0 )
+				switch(Rnd.get(46))
 				{
-					item = 9914;
-				}
-				else if( i1 == 1 )
-				{
-					item = 9915;
-				}
-				else if( i1 == 2 )
-				{
-					item = 9920;
-				}
-				else if( i1 == 3 )
-				{
-					item = 9920;
-				}
-				else if( i1 == 4 )
-				{
-					item = 9921;
-				}
-				else if( i1 == 5 )
-				{
-					item = 9922;
-				}
-				else if( i1 == 6 )
-				{
-					item = 9933;
-				}
-				else if( i1 == 7 )
-				{
-					item = 9934;
-				}
-				else if( i1 == 8 )
-				{
-					item = 9935;
-				}
-				else if( i1 == 9 )
-				{
-					item = 9936;
-				}
-				else if( i1 == 10 )
-				{
-					item = 9937;
-				}
-				else if( i1 == 11 )
-				{
-					item = 9938;
-				}
-				else if( i1 == 12 )
-				{
-					item = 9939;
-				}
-				else if( i1 == 13 )
-				{
-					item = 9940;
-				}
-				else if( i1 == 14 )
-				{
-					item = 9941;
-				}
-				else if( i1 == 15 )
-				{
-					item = 9942;
-				}
-				else if( i1 == 16 )
-				{
-					item = 9943;
-				}
-				else if( i1 == 17 )
-				{
-					item = 9944;
-				}
-				else if( i1 == 18 )
-				{
-					item = 9945;
-				}
-				else if( i1 == 19 )
-				{
-					item = 9946;
-				}
-				else if( i1 == 20 )
-				{
-					item = 9947;
-				}
-				else if( i1 == 21 )
-				{
-					item = 9948;
-				}
-				else if( i1 == 22 )
-				{
-					item = 9949;
-				}
-				else if( i1 == 23 )
-				{
-					item = 9950;
-				}
-				else if( i1 == 25 )
-				{
-					item = 9952;
-				}
-				else if( i1 == 26 )
-				{
-					item = 9953;
-				}
-				else if( i1 == 27 )
-				{
-					item = 9954;
-				}
-				else if( i1 == 28 )
-				{
-					item = 9955;
-				}
-				else if( i1 == 29 )
-				{
-					item = 9956;
-				}
-				else if( i1 == 30 )
-				{
-					item = 9957;
-				}
-				else if( i1 == 31 )
-				{
-					item = 9958;
-				}
-				else if( i1 == 32 )
-				{
-					item = 9959;
-				}
-				else if( i1 == 33 )
-				{
-					item = 9960;
-				}
-				else if( i1 == 34 )
-				{
-					item = 9961;
-				}
-				else if( i1 == 35 )
-				{
-					item = 9962;
-				}
-				else if( i1 == 36 )
-				{
-					item = 9963;
-				}
-				else if( i1 == 37 )
-				{
-					item = 9964;
-				}
-				else if( i1 == 24 )
-				{
-					item = 9965;
-				}
-				else if( i1 == 38 )
-				{
-					item = 10418;
-				}
-				else if( i1 == 39 )
-				{
-					item = 10420;
-				}
-				else if( i1 == 40 )
-				{
-					item = 10519;
-				}
-				else if( i1 == 41 )
-				{
-					item = 10422;
-				}
-				else if( i1 == 42 )
-				{
-					item = 10423;
-				}
-				else if( i1 == 43 )
-				{
-					item = 10419;
-				}
-				else
-				{
-					item = 10421;
+					case 0: // Blue Talisman of Power
+						item = 9914;
+						break;
+					case 1: // Blue Talisman of Wild Magic
+						item = 9915;
+						break;
+					case 2: // Blue Talisman of Invisibility
+						item = 9920;
+						break;
+					case 3: // Blue Talisman of Invisibility
+						item = 9920;
+						break;
+					case 4: // Blue Talisman - Shield Protection
+						item = 9921;
+						break;
+					case 5: // Black Talisman - Mending
+						item = 9922;
+						break;
+					case 6: // Yellow Talisman of Power
+						item = 9933;
+						break;
+					case 7: // Yellow Talisman of Violent Haste
+						item = 9934;
+						break;
+					case 8: // Yellow Talisman of Arcane Defense
+						item = 9935;
+						break;
+					case 9: // Yellow Talisman of Arcane Power
+						item = 9936;
+						break;
+					case 10: // Yellow Talisman of Arcane Haste
+						item = 9937;
+						break;
+					case 11: // Yellow Talisman of Accuracy
+						item = 9938;
+						break;
+					case 12: // Yellow Talisman of Defense
+						item = 9939;
+						break;
+					case 13: // Yellow Talisman of Alacrity
+						item = 9940;
+						break;
+					case 14: // Yellow Talisman of Speed
+						item = 9941;
+						break;
+					case 15: // Yellow Talisman of Critical Reduction
+						item = 9942;
+						break;
+					case 16: // Yellow Talisman of Critical Damage
+						item = 9943;
+						break;
+					case 17: // Yellow Talisman of Critical Dodging
+						item = 9944;
+						break;
+					case 18: // Yellow Talisman of Evasion
+						item = 9945;
+						break;
+					case 19: // Yellow Talisman of Healing
+						item = 9946;
+						break;
+					case 20: // Yellow Talisman of CP Regeneration
+						item = 9947;
+						break;
+					case 21: // Yellow Talisman of Physical Regeneration
+						item = 9948;
+						break;
+					case 22: // Yellow Talisman of Mental Regeneration
+						item = 9949;
+						break;
+					case 23: // Grey Talisman of Weight Training
+						item = 9950;
+						break;
+					case 24: // White Talisman of Protection
+						item = 9965;
+						break;
+					case 25: // Orange Talisman - Hot Springs CP Potion
+						item = 9952;
+						break;
+					case 26: // Orange Talisman - Elixir of Life
+						item = 9953;
+						break;
+					case 27: // Orange Talisman - Elixir of Mental Strength
+						item = 9954;
+						break;
+					case 28: // Black Talisman - Vocalization
+						item = 9955;
+						break;
+					case 29: // Black Talisman - Arcane Freedom
+						item = 9956;
+						break;
+					case 30: // Black Talisman - Physical Freedom
+						item = 9957;
+						break;
+					case 31: // Black Talisman - Rescue
+						item = 9958;
+						break;
+					case 32: // Black Talisman - Free Speech
+						item = 9959;
+						break;
+					case 33: // White Talisman of Bravery
+						item = 9960;
+						break;
+					case 34: // White Talisman of Motion
+						item = 9961;
+						break;
+					case 35: // White Talisman of Grounding
+						item = 9962;
+						break;
+					case 36: // White Talisman of Attention
+						item = 9963;
+						break;
+					case 37: // White Talisman of Bandages
+						item = 9964;
+						break;
+					case 38: // White Talisman - Storm
+						item = 10418;
+						break;
+					case 39: // White Talisman - Water
+						item = 10420;
+						break;
+					case 40: // White Talisman -  Earth
+						item = 10519;
+						break;
+					case 41: // White Talisman - Light
+						item = 10422;
+						break;
+					case 42: // Blue Talisman - Self-Destruction
+						item = 10423;
+						break;
+					case 43: // White Talisman - Darkness
+						item = 10419;
+						break;
+					default: // White Talisman - Fire
+						item = 10421;
 				}
 			}
 			
