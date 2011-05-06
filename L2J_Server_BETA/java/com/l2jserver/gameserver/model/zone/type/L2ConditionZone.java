@@ -50,14 +50,10 @@ public class L2ConditionZone extends L2SpawnZone
 			if (NO_BOOKMARK)
 			{
 				character.setInsideZone(L2Character.ZONE_NOBOOKMARK, true);
-				if (character.isGM())
-					character.sendMessage("Entered on No Bookmark zone");
 			}
 			if (NO_ITEM_DROP)
 			{
 				character.setInsideZone(L2Character.ZONE_NOITEMDROP, true);
-				if (character.isGM())
-					character.sendMessage("Entered on No Item Drop zone");
 			}
 		}
 	}
@@ -71,14 +67,10 @@ public class L2ConditionZone extends L2SpawnZone
 			if (NO_BOOKMARK)
 			{
 				character.setInsideZone(L2Character.ZONE_NOBOOKMARK, false);
-				if (character.isGM())
-					character.sendMessage("Leaved No Bookmark zone");
 			}
 			if (NO_ITEM_DROP)
 			{
 				character.setInsideZone(L2Character.ZONE_NOITEMDROP, false);
-				if (character.isGM())
-					character.sendMessage("Leaved No Item Drop zone");
 			}
 		}
 	}
