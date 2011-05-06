@@ -36,6 +36,7 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskCleanUp;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskDailyQuestClean;
+import com.l2jserver.gameserver.taskmanager.tasks.TaskDailySkillReuseClean;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskGlobalVariablesSave;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskJython;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskOlympiadSave;
@@ -179,6 +180,7 @@ public final class TaskManager
 		registerTask(new TaskSevenSignsUpdate());
 		registerTask(new TaskShutdown());
 		registerTask(new TaskDailyQuestClean());
+		registerTask(new TaskDailySkillReuseClean());
 	}
 	
 	public void registerTask(Task task)
