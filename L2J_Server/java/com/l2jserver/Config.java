@@ -269,7 +269,7 @@ public final class Config
 	public static long CH_FRONT_FEE_RATIO;
 	public static int CH_FRONT1_FEE;
 	public static int CH_FRONT2_FEE;
-	
+	public static boolean CH_BUFF_FREE;
 	
 	//--------------------------------------------------
 	// Castle Settings
@@ -1250,6 +1250,7 @@ public final class Config
 					CH_FRONT_FEE_RATIO = Long.parseLong(Feature.getProperty("ClanHallFrontPlatformFunctionFeeRatio", "259200000"));
 					CH_FRONT1_FEE = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl1", "1300"));
 					CH_FRONT2_FEE = Integer.parseInt(Feature.getProperty("ClanHallFrontPlatformFunctionFeeLvl2", "4000"));
+					CH_BUFF_FREE = Boolean.parseBoolean(Feature.getProperty("AltClanHallMpBuffFree", "False"));
 					
 					CL_SET_SIEGE_TIME_LIST = new ArrayList<String>();
 					SIEGE_HOUR_LIST_MORNING = new ArrayList<Integer>();

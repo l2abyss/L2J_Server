@@ -1268,27 +1268,33 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 						if (st.countTokens() >= 1) skill_lvl = Integer.parseInt(st.nextToken());
 						skill = SkillTable.getInstance().getInfo(skill_id,skill_lvl);
 						if (skill.getSkillType() == L2SkillType.SUMMON)
+						{
 							player.doSimultaneousCast(skill);
+						}
 						else
 						{
-							if (!((skill.getMpConsume() + skill.getMpInitialConsume()) > this.getCurrentMp()))
-								this.doCast(skill);
+							final int mpCost = skill.getMpConsume() + skill.getMpInitialConsume();
+							//If Clan Hall Buff are free or current MP is greater than MP cost, the skill should be casted.
+							if ((getCurrentMp() >= mpCost) || Config.CH_BUFF_FREE)
+							{
+								doCast(skill);
+							}
 							else
 							{
 								NpcHtmlMessage html = new NpcHtmlMessage(1);
 								html.setFile(player.getHtmlPrefix(), "data/html/clanHallManager/support-no_mana.htm");
-								html.replace("%mp%", String.valueOf((int)getCurrentMp()));
+								html.replace("%mp%", String.valueOf((int) getCurrentMp()));
 								sendHtmlMessage(player, html);
 								return;
 							}
 						}
-						if (getClanHall().getFunction(ClanHall.FUNC_SUPPORT)== null)
+						if (getClanHall().getFunction(ClanHall.FUNC_SUPPORT) == null)
 							return;
 						NpcHtmlMessage html = new NpcHtmlMessage(1);
 						if(getClanHall().getFunction(ClanHall.FUNC_SUPPORT).getLvl() == 0)
 							return;
 						html.setFile(player.getHtmlPrefix(), "data/html/clanHallManager/support-done.htm");
-						html.replace("%mp%", String.valueOf((int)getCurrentMp()));
+						html.replace("%mp%", String.valueOf((int) getCurrentMp()));
 						sendHtmlMessage(player, html);
 					}
 					catch (Exception e)
