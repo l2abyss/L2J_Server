@@ -67,8 +67,6 @@ public class Siege implements Siegable
 	public static final byte ATTACKER = 1;
 	public static final byte DEFENDER_NOT_APPROWED = 2;
 	
-	private static final int BLOOD_ALLIANCE = 9911;
-	
 	public static enum TeleportWhoType
 	{
 		All,
@@ -264,11 +262,13 @@ public class Siege implements Siegable
 				{
 					// Owner is unchanged
 					final int num = SiegeManager.getInstance().getBloodAllianceReward();
+					int count = getCastle().getBloodAlliance();
 					if (num > 0)
-						clan.getWarehouse().addItem("DefendSuccess", BLOOD_ALLIANCE, num, null, null);
+						getCastle().setBloodAlliance(count + num);
 				}
 				else
 				{
+					getCastle().setBloodAlliance(0);
 					for (L2ClanMember member : clan.getMembers())
 					{
 						if (member != null)

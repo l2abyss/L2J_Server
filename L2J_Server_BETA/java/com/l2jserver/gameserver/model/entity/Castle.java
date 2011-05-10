@@ -100,6 +100,7 @@ public class Castle
 	private TIntIntHashMap _engrave = new TIntIntHashMap(1);
 	private Map<Integer, CastleFunction> _function;
 	private FastList<L2Skill> _residentialSkills = new FastList<L2Skill>();
+	private int _bloodAlliance = 0;
 	
 	/** Castle Functions */
 	public static final int FUNC_TELEPORT = 1;
@@ -357,7 +358,7 @@ public class Castle
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Update castle set treasury = ? where id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE castle SET treasury = ? WHERE id = ?");
 			statement.setLong(1, getTreasury());
 			statement.setInt(2, getCastleId());
 			statement.execute();
@@ -697,6 +698,8 @@ public class Castle
 				_treasury = rs.getLong("treasury");
 				
 				_showNpcCrest = rs.getBoolean("showNpcCrest");
+				
+				_bloodAlliance = rs.getInt("bloodAlliance");
 			}
 			rs.close();
 			statement.close();
@@ -1581,6 +1584,34 @@ public class Castle
 		{
 			saveCropData();
 			saveSeedData();
+		}
+	}
+	
+	public int getBloodAlliance()
+	{
+		return _bloodAlliance;
+	}
+	
+	public void setBloodAlliance(int count)
+	{
+		_bloodAlliance = count;
+		
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("Update castle set bloodAlliance = ? where id = ?");
+			statement.setInt(1, _bloodAlliance);
+			statement.setInt(2, getCastleId());
+			statement.execute();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
 		}
 	}
 }
