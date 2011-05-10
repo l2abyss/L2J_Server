@@ -60,6 +60,7 @@ import com.l2jserver.gameserver.communitybbs.Manager.RegionBBSManager;
 import com.l2jserver.gameserver.datatables.AccessLevels;
 import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.datatables.CharNameTable;
+import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
@@ -4199,7 +4200,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			case SUMMON:
 			{
-				if (!((L2SkillSummon)skill).isCubic() && (getPet() != null || isMounted()))
+				if (!((L2SkillSummon)skill).isCubic() && (getPet() != null || isMounted() || CharSummonTable.getInstance().getPets().contains(getObjectId()) || CharSummonTable.getInstance().getPets().contains(getObjectId())))
 				{
 					if (Config.DEBUG)
 						_log.fine("player has a pet already. ignore summon skill");
@@ -10733,6 +10734,9 @@ public final class L2PcInstance extends L2Playable
 			_charges.set(0);
 			stopChargeTask();
 			
+			if (getPet() instanceof L2SummonInstance)
+				getPet().unSummon(this);
+			
 			if (classIndex == 0)
 			{
 				setClassTemplate(getBaseClass());
@@ -10766,11 +10770,7 @@ public final class L2PcInstance extends L2Playable
 			 * 7. Reset HP/MP/CP stats and send Server->Client character status packet to reflect changes.
 			 * 8. Restore shortcut data related to this class.
 			 * 9. Resend a class change animation effect to broadcast to all nearby players.
-			 * 10.Unsummon any active servitor from the player.
 			 */
-			
-			if (getPet() instanceof L2SummonInstance)
-				getPet().unSummon(this);
 			
 			for (L2Skill oldSkill : getAllSkills())
 				super.removeSkill(oldSkill);
@@ -11099,7 +11099,14 @@ public final class L2PcInstance extends L2Playable
 	public void onActionRequest()
 	{
 		if (isSpawnProtected())
+		{
 			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NO_LONGER_PROTECTED_FROM_AGGRESSIVE_MONSTERS));
+			
+			if (Config.RESTORE_SERVITOR_ON_RECONNECT && getPet() == null && CharSummonTable.getInstance().getServitors().containsKey(getObjectId()))
+				CharSummonTable.getInstance().restoreServitor(this);
+			if (Config.RESTORE_PET_ON_RECONNECT && getPet() == null && CharSummonTable.getInstance().getPets().containsKey(getObjectId()))
+				CharSummonTable.getInstance().restorePet(this);
+		}
 		if (isTeleportProtected())
 			sendMessage("Teleport spawn protection ended.");
 		setProtection(false);
@@ -11739,6 +11746,9 @@ public final class L2PcInstance extends L2Playable
 		{
 			try
 			{
+				
+				getPet().setRestoreSummon(true);
+				
 				getPet().unSummon(this);
 				// dead pet wasnt unsummoned, broadcast npcinfo changes (pet will be without owner name - means owner offline)
 				if (getPet() != null)

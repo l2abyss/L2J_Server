@@ -116,6 +116,7 @@ public final class Config
 	public static int PLAYER_FAKEDEATH_UP_PROTECTION;
 	public static boolean STORE_SKILL_COOLTIME;
 	public static boolean SUBCLASS_STORE_SKILL_COOLTIME;
+	public static boolean SUMMON_STORE_SKILL_COOLTIME;
 	public static boolean ALT_GAME_SHIELD_BLOCKS;
 	public static int ALT_PERFECT_SHLD_BLOCK;
 	public static boolean ALLOW_CLASS_MASTERS;
@@ -129,6 +130,8 @@ public final class Config
 	public static boolean ALT_GAME_SKILL_LEARN;
 	public static boolean ALT_GAME_SUBCLASS_WITHOUT_QUESTS;
 	public static boolean ALT_GAME_SUBCLASS_EVERYWHERE;
+	public static boolean RESTORE_SERVITOR_ON_RECONNECT;
+	public static boolean RESTORE_PET_ON_RECONNECT;
 	public static int MAX_RUN_SPEED;
 	public static int MAX_PCRIT_RATE;
 	public static int MAX_MCRIT_RATE;
@@ -1504,6 +1507,7 @@ public final class Config
 					PLAYER_FAKEDEATH_UP_PROTECTION = Integer.parseInt(Character.getProperty("PlayerFakeDeathUpProtection", "0"));
 					STORE_SKILL_COOLTIME = Boolean.parseBoolean(Character.getProperty("StoreSkillCooltime", "true"));
 					SUBCLASS_STORE_SKILL_COOLTIME = Boolean.parseBoolean(Character.getProperty("SubclassStoreSkillCooltime", "false"));
+					SUMMON_STORE_SKILL_COOLTIME = Boolean.parseBoolean(Character.getProperty("SummonStoreSkillCooltime", "True"));
 					ALT_GAME_SHIELD_BLOCKS = Boolean.parseBoolean(Character.getProperty("AltShieldBlocks", "false"));
 					ALT_PERFECT_SHLD_BLOCK = Integer.parseInt(Character.getProperty("AltPerfectShieldBlockRate", "10"));
 					ALLOW_CLASS_MASTERS = Boolean.parseBoolean(Character.getProperty("AllowClassMasters", "False"));
@@ -1517,7 +1521,9 @@ public final class Config
 					DIVINE_SP_BOOK_NEEDED = Boolean.parseBoolean(Character.getProperty("DivineInspirationSpBookNeeded", "true"));
 					ALT_GAME_SKILL_LEARN = Boolean.parseBoolean(Character.getProperty("AltGameSkillLearn", "false"));
 					ALT_GAME_SUBCLASS_WITHOUT_QUESTS = Boolean.parseBoolean(Character.getProperty("AltSubClassWithoutQuests", "False"));
-					ALT_GAME_SUBCLASS_EVERYWHERE = Boolean.parseBoolean(Character.getProperty("AltSubclassEverywhere", "False"));
+					ALT_GAME_SUBCLASS_EVERYWHERE = Boolean.parseBoolean(Character.getProperty("AltSubclassEverywhere", "True"));
+					RESTORE_SERVITOR_ON_RECONNECT = Boolean.parseBoolean(Character.getProperty("RestoreServitorOnReconnect", "true"));
+					RESTORE_PET_ON_RECONNECT = Boolean.parseBoolean(Character.getProperty("RestorePetOnReconnect", "False"));
 					ENABLE_VITALITY = Boolean.parseBoolean(Character.getProperty("EnableVitality", "True"));
 					RECOVER_VITALITY_ON_RECONNECT = Boolean.parseBoolean(Character.getProperty("RecoverVitalityOnReconnect", "True"));
 					STARTING_VITALITY_POINTS = Integer.parseInt(Character.getProperty("StartingVitalityPoints", "20000"));

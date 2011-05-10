@@ -300,4 +300,14 @@ public class L2SkillSummon extends L2Skill
 	{
 		return _itemConsumeTime;
 	}
+	
+	public final int getNpcId()
+	{
+		return _npcId;
+	}
+	
+	public final float getExpPenalty()
+	{
+		return _expPenalty;
+	}
 }

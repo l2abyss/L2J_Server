@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,14 +28,18 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SummonEffectsTable;
+import com.l2jserver.gameserver.datatables.SummonEffectsTable.SummonEffect;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
+import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2PetData;
@@ -54,9 +59,11 @@ import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
@@ -74,6 +81,10 @@ public class L2PetInstance extends L2Summon
 {
 	protected static final Logger _logPet = Logger.getLogger(L2PetInstance.class.getName());
 	
+	private static final String ADD_SKILL_SAVE = "INSERT INTO character_pet_skills_save (petObjItemId,skill_id,skill_level,effect_count,effect_cur_time,buff_index) VALUES (?,?,?,?,?,?)";
+	private static final String RESTORE_SKILL_SAVE = "SELECT petObjItemId,skill_id,skill_level,effect_count,effect_cur_time,buff_index FROM character_pet_skills_save WHERE petObjItemId=? ORDER BY buff_index ASC";
+	private static final String DELETE_SKILL_SAVE = "DELETE FROM character_pet_skills_save WHERE petObjItemId=?";
+
 	private int _curFed;
 	private PetInventory _inventory;
 	private final int _controlObjectId;
@@ -855,6 +866,12 @@ public class L2PetInstance extends L2Summon
 	}
 	
 	@Override
+	public void setRestoreSummon(boolean val)
+	{
+		_restoreSummon = val;
+	}
+	
+	@Override
 	public void store()
 	{
 		if (getControlObjectId() == 0)
@@ -863,12 +880,15 @@ public class L2PetInstance extends L2Summon
 			return;
 		}
 		
+		if (!Config.RESTORE_PET_ON_RECONNECT)
+			_restoreSummon = false;
+		
 		String req;
 		if (!isRespawned())
-			req = "INSERT INTO pets (name,level,curHp,curMp,exp,sp,fed,item_obj_id) "+
-			"VALUES (?,?,?,?,?,?,?,?)";
+			req = "INSERT INTO pets (name,level,curHp,curMp,exp,sp,fed,ownerId,restore,item_obj_id) "+
+			"VALUES (?,?,?,?,?,?,?,?,?,?)";
 		else
-			req = "UPDATE pets SET name=?,level=?,curHp=?,curMp=?,exp=?,sp=?,fed=? "+
+			req = "UPDATE pets SET name=?,level=?,curHp=?,curMp=?,exp=?,sp=?,fed=?,ownerId=?,restore=? "+
 			"WHERE item_obj_id = ?";
 		Connection con = null;
 		try
@@ -882,10 +902,18 @@ public class L2PetInstance extends L2Summon
 			statement.setLong(5, getStat().getExp());
 			statement.setInt(6, getStat().getSp());
 			statement.setInt(7, getCurrentFed());
-			statement.setInt(8, getControlObjectId());
+			statement.setInt(8, getOwner().getObjectId());
+			statement.setString(9, String.valueOf(_restoreSummon)); // True restores pet on login
+			statement.setInt(10, getControlObjectId());
+			
 			statement.executeUpdate();
 			statement.close();
 			_respawned = true;
+			
+			if (_restoreSummon)
+				CharSummonTable.getInstance().getPets().put(getOwner().getObjectId(), getControlObjectId());
+			else
+				CharSummonTable.getInstance().getPets().remove(getOwner().getObjectId());
 		}
 		catch (Exception e)
 		{
@@ -901,6 +929,159 @@ public class L2PetInstance extends L2Summon
 		{
 			itemInst.setEnchantLevel(getStat().getLevel());
 			itemInst.updateDatabase();
+		}
+	}
+	
+	@Override
+	public void storeEffect(boolean storeEffects)
+	{
+		if (!Config.SUMMON_STORE_SKILL_COOLTIME)
+			return;
+		
+		// Clear list for overwrite
+		if (SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
+			SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).clear();
+		
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			
+			// Delete all current stored effects for summon to avoid dupe
+			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE);
+			
+			statement.setInt(1, getControlObjectId());
+			statement.execute();
+			statement.close();
+			
+			int buff_index = 0;
+			
+			final List<Integer> storedSkills = new FastList<Integer>();
+			
+			//Store all effect data along with calculated remaining
+			statement = con.prepareStatement(ADD_SKILL_SAVE);
+			
+			if (storeEffects)
+			{
+				for (L2Effect effect : getAllEffects())
+				{
+					if (effect == null)
+						continue;
+					
+					switch (effect.getEffectType())
+					{
+						case HEAL_OVER_TIME:
+						case COMBAT_POINT_HEAL_OVER_TIME:
+							// TODO: Fix me.
+						case HIDE:
+							continue;
+					}
+					
+					L2Skill skill = effect.getSkill();
+					if (storedSkills.contains(skill.getReuseHashCode()))
+						continue;
+					
+					storedSkills.add(skill.getReuseHashCode());
+					
+					if (!effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
+					{
+						statement.setInt(1, getControlObjectId());
+						statement.setInt(2, skill.getId());
+						statement.setInt(3, skill.getLevel());
+						statement.setInt(4, effect.getCount());
+						statement.setInt(5, effect.getTime());
+						statement.setInt(6, ++buff_index);
+						statement.execute();
+						
+						if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
+							SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
+
+						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getCount(), effect.getTime()));
+					}
+				}
+				statement.close();
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not store pet effect data: ", e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
+	}
+	
+	@Override
+	public void restoreEffects()
+	{
+		Connection con = null;
+		PreparedStatement statement = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+
+			if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
+			{
+				statement = con.prepareStatement(RESTORE_SKILL_SAVE);
+				statement.setInt(1, getControlObjectId());
+				ResultSet rset = statement.executeQuery();
+				
+				while (rset.next())
+				{
+					int effectCount = rset.getInt("effect_count");
+					int effectCurTime = rset.getInt("effect_cur_time");
+					
+					final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
+					if (skill == null)
+						continue;
+					
+					if (skill.hasEffects())
+					{
+						if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
+							SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
+						
+						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effectCount, effectCurTime));
+					}
+				}
+				
+				rset.close();
+				statement.close();
+			}
+			statement = con.prepareStatement(DELETE_SKILL_SAVE);
+			statement.setInt(1, getControlObjectId());
+			statement.executeUpdate();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not restore " + this + " active effect data: " + e.getMessage(), e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+			
+			if (SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()) == null)
+				return;
+
+			for (SummonEffect se : SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()))
+			{
+				Env env = new Env();
+				env.player = this;
+				env.target = this;
+				env.skill = se.getSkill();
+				L2Effect ef;
+				for (EffectTemplate et : se.getSkill().getEffectTemplates())
+				{
+					ef = et.getEffect(env);
+					if (ef != null)
+					{
+						ef.setCount(se.getEffectCount());
+						ef.setFirstTime(se.getEffectCurTime());
+						ef.scheduleEffect();
+					}
+				}
+			}
 		}
 	}
 	

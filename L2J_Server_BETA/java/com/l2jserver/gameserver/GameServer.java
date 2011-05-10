@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.datatables.ArmorSetsTable;
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.datatables.CharNameTable;
+import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
@@ -249,6 +250,7 @@ public class GameServer
 		GmListTable.getInstance();
 		RaidBossPointsManager.getInstance();
 		PetDataTable.getInstance();
+		CharSummonTable.getInstance().init();
 		
 		printSection("Clans");
 		ClanTable.getInstance();

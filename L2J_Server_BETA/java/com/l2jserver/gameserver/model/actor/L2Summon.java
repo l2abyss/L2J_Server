@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor;
 
 import java.util.Collection;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2SummonAI;
@@ -73,6 +74,8 @@ public abstract class L2Summon extends L2Playable
 	// we dont have walk speed in pet data so for now use runspd / 3
 	public static final int WALK_SPEED_MULTIPLIER = 3;
 	
+	public boolean _restoreSummon = true;
+	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
 		protected AIAccessor() {}
@@ -105,6 +108,9 @@ public abstract class L2Summon extends L2Playable
 		super.onSpawn();
 		if (!(this instanceof L2MerchantSummonInstance))
 		{
+			if (Config.SUMMON_STORE_SKILL_COOLTIME)
+				restoreEffects();
+			
 			this.setFollowStatus(true);
 			updateAndBroadcastStatus(0);
 			getOwner().sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
@@ -118,7 +124,7 @@ public abstract class L2Summon extends L2Playable
 		}
 		setShowSummonAnimation(false); // addVisibleObject created the info packets with summon animation
 		// if someone comes into range now, the animation shouldnt show any more
-		
+		_restoreSummon = false;
 	}
 	
 	@Override
@@ -296,6 +302,12 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public boolean doDie(L2Character killer)
 	{
+		if (isNoblesseBlessed())
+		{
+			stopNoblesseBlessing(null);
+			storeEffect(true);
+		}
+		
 		if (!super.doDie(killer))
 			return false;
 		if (this instanceof L2MerchantSummonInstance)
@@ -391,7 +403,8 @@ public abstract class L2Summon extends L2Playable
 			else
 				getOwner().setPetInvItems(false);
 			
-			store();			
+			store();
+			storeEffect(true);
 			owner.setPet(null);
 			
 			// Stop AI tasks
@@ -476,7 +489,19 @@ public abstract class L2Summon extends L2Playable
 	{
 	}
 	
+	public void setRestoreSummon(boolean val)
+	{
+	}
+	
 	public void store()
+	{
+	}
+	
+	public void storeEffect(boolean storeEffects)
+	{
+	}
+	
+	public void restoreEffects()
 	{
 	}
 	
