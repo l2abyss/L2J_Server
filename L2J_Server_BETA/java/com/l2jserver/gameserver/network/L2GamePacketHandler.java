@@ -562,7 +562,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						//msg = new RequestPackageSendableItemList();
 						break;
 					case 0xa8:
-						// msg = new RequestPackageSend();
+						//msg = new RequestPackageSend();
 						break;
 					case 0xa9:
 						msg = new RequestBlock();
@@ -1075,19 +1075,19 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								msg = new RequestVoteNew();
 								break;
 							case 0x84:
-								// RequestExAddPostFriendForPostBox
+								msg = new RequestExAddContactToContactList();
 								break;
 							case 0x85:
-								// RequestExDeletePostFriendForPostBox
+								msg = new RequestExDeleteContactFromContactList();
 								break;
 							case 0x86:
-								// RequestExShowPostFriendListForPostBox
+								msg = new RequestExShowContactList();
 								break;
 							case 0x87:
-								// RequestExFriendListForPostBox
+								msg = new RequestExFriendListExtended();
 								break;
 							case 0x88:
-								// - 
+								//msg = new RequestExOlympiadMatchListRefresh();
 								break;
 							case 0x89:
 								// RequestBRGamePoint

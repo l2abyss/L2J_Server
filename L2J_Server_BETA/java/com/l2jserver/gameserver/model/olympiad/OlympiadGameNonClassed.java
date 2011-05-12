@@ -23,7 +23,7 @@ import com.l2jserver.Config;
  * @author DS
  *
  */
-class OlympiadGameNonClassed extends OlympiadGameNormal
+public class OlympiadGameNonClassed extends OlympiadGameNormal
 {
 	private OlympiadGameNonClassed(int id, Participant[] opponents)
 	{

@@ -24,7 +24,7 @@ import com.l2jserver.util.Rnd;
  * @author DS
  *
  */
-class OlympiadGameClassed extends OlympiadGameNormal
+public class OlympiadGameClassed extends OlympiadGameNormal
 {
 	private OlympiadGameClassed(int id, Participant[] opponents)
 	{

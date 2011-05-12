@@ -390,10 +390,18 @@ public class SQLAccountManager
 				statement.setString(1, objIds.get(index));
 				statement.executeUpdate();
 				
+				// contacts
+				statement.close();
+				statement = con.prepareStatement("DELETE FROM character_contacts WHERE charId=? OR contactId=?;");
+				statement.setString(1, objIds.get(index));
+				statement.setString(2, objIds.get(index));
+				statement.executeUpdate();
+				
 				// friends
 				statement.close();
-				statement = con.prepareStatement("DELETE FROM character_friends WHERE charId=?;");
+				statement = con.prepareStatement("DELETE FROM character_friends WHERE charId=? OR friendId=?;");
 				statement.setString(1, objIds.get(index));
+				statement.setString(2, objIds.get(index));
 				statement.executeUpdate();
 				
 				// merchant_lease

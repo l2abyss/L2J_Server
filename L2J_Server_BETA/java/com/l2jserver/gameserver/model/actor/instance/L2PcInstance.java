@@ -98,6 +98,7 @@ import com.l2jserver.gameserver.model.FishData;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
+import com.l2jserver.gameserver.model.L2ContactList;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2Fishing;
@@ -452,6 +453,8 @@ public final class L2PcInstance extends L2Playable
 	private int _lastCompassZone; // the last compass zone update send to the client
 	
 	private boolean _isIn7sDungeon = false;
+	
+	private final L2ContactList _contactList = new L2ContactList(this);
 	
 	private int _bookmarkslot = 0; // The Teleport Bookmark Slot
 	
@@ -15123,5 +15126,10 @@ public final class L2PcInstance extends L2Playable
 	public String getLastPetitionGmName()
 	{
 		return _lastPetitionGmName;
+	}
+	
+	public L2ContactList getContactList()
+	{
+		return _contactList;
 	}
 }

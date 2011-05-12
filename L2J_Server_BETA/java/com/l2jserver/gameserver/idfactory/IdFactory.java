@@ -39,6 +39,8 @@ public abstract class IdFactory
 		"UPDATE items                 SET owner_id = ?    WHERE owner_id = ?",
 		"UPDATE items                 SET object_id = ?   WHERE object_id = ?",
 		"UPDATE character_quests      SET charId = ?     WHERE charId = ?",
+		"UPDATE character_contacts     SET charId = ?     WHERE charId = ?",
+		"UPDATE character_contacts     SET friendId = ?   WHERE contactId = ?",
 		"UPDATE character_friends     SET charId = ?     WHERE charId = ?",
 		"UPDATE character_friends     SET friendId = ?   WHERE friendId = ?",
 		"UPDATE character_hennas      SET charId = ? WHERE charId = ?",
@@ -75,6 +77,8 @@ public abstract class IdFactory
 		"SELECT owner_id    FROM items                 WHERE object_id >= ?   AND object_id < ?",
 		"SELECT object_id   FROM items                 WHERE object_id >= ?   AND object_id < ?",
 		"SELECT charId     FROM character_quests      WHERE charId >= ?     AND charId < ?",
+		"SELECT charId     FROM character_contacts    WHERE charId >= ?     AND charId < ?",
+		"SELECT contactId  FROM character_contacts    WHERE contactId >= ?  AND contactId < ?",
 		"SELECT charId     FROM character_friends     WHERE charId >= ?     AND charId < ?",
 		"SELECT charId     FROM character_friends     WHERE friendId >= ?   AND friendId < ?",
 		"SELECT charId     FROM character_hennas      WHERE charId >= ? AND charId < ?",
@@ -199,6 +203,8 @@ public abstract class IdFactory
 			// stmt.executeUpdate("DELETE FROM characters WHERE characters.account_name NOT IN (SELECT login FROM accounts);");
 			
 			// If the character does not exist...
+			cleanCount += stmt.executeUpdate("DELETE FROM character_contacts WHERE character_contacts.charId NOT IN (SELECT charId FROM characters);");
+			cleanCount += stmt.executeUpdate("DELETE FROM character_contacts WHERE character_contacts.contactId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_friends WHERE character_friends.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_friends WHERE character_friends.friendId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_hennas WHERE character_hennas.charId NOT IN (SELECT charId FROM characters);");

@@ -14669,6 +14669,48 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_OBTAINED_S1_RECOMMENDATIONS;
 	
 	/**
+	 * ID: 3214<br>
+	 * Message: $s1 was successfully added to your Contact List.
+	 */
+	public static final SystemMessageId S1_SUCCESSFULLY_ADDED_TO_CONTACT_LIST;
+	
+	/**
+	 * ID: 3215<br>
+	 * Message: The name $s1% doesn't exist. Please try another name.
+	 */
+	public static final SystemMessageId NAME_S1_NOT_EXIST_TRY_ANOTHER_NAME;
+	
+	/**
+	 * ID: 3216<br>
+	 * Message: The name already exists on the added list.
+	 */
+	public static final SystemMessageId NAME_ALREADY_EXIST_ON_CONTACT_LIST;
+	
+	/**
+	 * ID: 3217<br>
+	 * Message: The name is not currently registered.
+	 */
+	public static final SystemMessageId NAME_NOT_REGISTERED_ON_CONTACT_LIST;
+	
+	/**
+	 * ID: 3219<br>
+	 * Message: $s1 was successfully deleted from your Contact List.
+	 */
+	public static final SystemMessageId S1_SUCCESFULLY_DELETED_FROM_CONTACT_LIST;
+	
+	/**
+	 * ID: 3221<br>
+	 * Message: You cannot add your own name.
+	 */
+	public static final SystemMessageId CANNOT_ADD_YOUR_NAME_ON_CONTACT_LIST;
+	
+	/**
+	 * ID: 3222<br>
+	 * Message: The maximum number of names (100) has been reached. You cannot register any more.
+	 */
+	public static final SystemMessageId CONTACT_LIST_LIMIT_REACHED;
+	
+	/**
 	 * ID: 3255<br>
 	 * Message: Arcane Shield decreased your MP by $1 instead of HP.
 	 */
@@ -17124,6 +17166,13 @@ public final class SystemMessageId
 		C1_IS_SET_TO_REFUSE_DUEL_REQUEST = new SystemMessageId(3169);
 		YOU_CURRENTLY_DO_NOT_HAVE_ANY_RECOMMENDATIONS = new SystemMessageId(3206);
 		YOU_OBTAINED_S1_RECOMMENDATIONS = new SystemMessageId(3207);
+		S1_SUCCESSFULLY_ADDED_TO_CONTACT_LIST = new SystemMessageId(3214);
+		NAME_S1_NOT_EXIST_TRY_ANOTHER_NAME = new SystemMessageId(3215);
+		NAME_ALREADY_EXIST_ON_CONTACT_LIST = new SystemMessageId(3216);
+		NAME_NOT_REGISTERED_ON_CONTACT_LIST = new SystemMessageId(3217);
+		S1_SUCCESFULLY_DELETED_FROM_CONTACT_LIST = new SystemMessageId(3219);
+		CANNOT_ADD_YOUR_NAME_ON_CONTACT_LIST = new SystemMessageId(3221);
+		CONTACT_LIST_LIMIT_REACHED = new SystemMessageId(3222);
 		ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP = new SystemMessageId(3255);
 		MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING = new SystemMessageId(3256);
 		YOU_CANNOT_BOOKMARK_THIS_LOCATION_BECAUSE_YOU_DO_NOT_HAVE_A_MY_TELEPORT_FLAG = new SystemMessageId(6501);
