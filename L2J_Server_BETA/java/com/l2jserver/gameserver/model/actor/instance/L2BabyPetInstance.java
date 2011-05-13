@@ -73,10 +73,10 @@ public final class L2BabyPetInstance extends L2PetInstance
 		super.onSpawn();
 		
 		L2Skill skill;
+		double healPower = 0;
 		for (L2PetSkillLearn psl : PetDataTable.getInstance().getPetData(getNpcId()).getAvailableSkills())
 		{
 			int id = psl.getId();
-			double healPower = 0;
 			int lvl = PetDataTable.getInstance().getPetData(getNpcId()).getAvailableLevel(id, getLevel());
 			if (lvl == 0) // not enough pet lvl
 				continue;
@@ -235,15 +235,17 @@ public final class L2BabyPetInstance extends L2PetInstance
 				
 				if (_majorHeal != null)
 				{
-					// if the owner's HP is more than 80%, do nothing.
-					// if the owner's HP is very low (less than 20%) have a high chance for strong heal
-					// otherwise, have a low chance for weak heal
-					final double hpPercent = owner.getCurrentHp()/owner.getMaxHp();
-					if (hpPercent < 0.15)
+					/**
+					 * If the owner's HP is more than 80% for Baby Pets and 70% for Improved Baby pets, do nothing.
+					 * If the owner's HP is very low, under 15% for Baby pets and under 30% for Improved Baby Pets, have 75% chances of using a strong heal.
+					 * Otherwise, have 25% chances for weak heal.
+					 */ 
+					final double hpPercent = owner.getCurrentHp() / owner.getMaxHp();
+					final boolean isImprovedBaby = PetDataTable.isImprovedBaby(getNpcId());
+					if ((isImprovedBaby && hpPercent < 0.3) || (!isImprovedBaby && hpPercent < 0.15))
 					{
 						skill = _majorHeal.getSkill();
-						if (!_baby.isSkillDisabled(skill)
-								&& Rnd.get(100) <= 75)
+						if (!_baby.isSkillDisabled(skill) && Rnd.get(100) <= 75)
 						{
 							if (_baby.getCurrentMp() >= skill.getMpConsume())
 							{
@@ -252,11 +254,11 @@ public final class L2BabyPetInstance extends L2PetInstance
 							}
 						}
 					}
-					if (hpPercent < 0.8)
+					else if ((_majorHeal.getSkill() != _minorHeal.getSkill()) && ((isImprovedBaby && hpPercent <  0.7) || (!isImprovedBaby && hpPercent < 0.8)))
 					{
+						//Cast _minorHeal only if it's different than _majorHeal, then pet has two heals available.
 						skill = _minorHeal.getSkill();
-						if (!_baby.isSkillDisabled(skill)
-								&& Rnd.get(100) <= 25)
+						if (!_baby.isSkillDisabled(skill) && Rnd.get(100) <= 25)
 						{
 							if (_baby.getCurrentMp() >= skill.getMpConsume())
 							{
@@ -339,7 +341,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 				// buffs/heal not casted, trying recharge, if exist
 				if (_recharge != null
 						&& owner.isInCombat() // recharge casted only if owner in combat stance
-						&& owner.getCurrentMp()/owner.getMaxMp() < 0.7
+						&& owner.getCurrentMp()/owner.getMaxMp() < 0.6
 						&& Rnd.get(100) <= 60)
 				{
 					skill = _recharge.getSkill();
