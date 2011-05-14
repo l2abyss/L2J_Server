@@ -493,18 +493,6 @@ public abstract class L2Summon extends L2Playable
 	{
 	}
 	
-	public void store()
-	{
-	}
-	
-	public void storeEffect(boolean storeEffects)
-	{
-	}
-	
-	public void restoreEffects()
-	{
-	}
-	
 	@Override
 	public L2ItemInstance getActiveWeaponInstance()
 	{

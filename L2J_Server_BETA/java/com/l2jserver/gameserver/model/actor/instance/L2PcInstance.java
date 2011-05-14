@@ -527,11 +527,11 @@ public final class L2PcInstance extends L2Playable
 	private int _transformationId = 0;
 	
 	/** The table containing all L2RecipeList of the L2PcInstance */
-	private Map<Integer, L2RecipeList> _dwarvenRecipeBook = new FastMap<Integer, L2RecipeList>();
-	private Map<Integer, L2RecipeList> _commonRecipeBook = new FastMap<Integer, L2RecipeList>();
+	private final Map<Integer, L2RecipeList> _dwarvenRecipeBook = new FastMap<Integer, L2RecipeList>();
+	private final Map<Integer, L2RecipeList> _commonRecipeBook = new FastMap<Integer, L2RecipeList>();
 	
 	/** Premium Items */
-	private Map<Integer, L2PremiumItem> _premiumItems = new FastMap<Integer, L2PremiumItem>();
+	private final Map<Integer, L2PremiumItem> _premiumItems = new FastMap<Integer, L2PremiumItem>();
 	
 	/** True if the L2PcInstance is sitting */
 	private boolean _waitTypeSitting;
@@ -543,7 +543,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _observerMode = false;
 	
 	/** Stored from last ValidatePosition **/
-	private Point3D _lastServerPosition = new Point3D(0, 0, 0);
+	private final Point3D _lastServerPosition = new Point3D(0, 0, 0);
 	
 	/** The number of recommendation obtained by the L2PcInstance */
 	private int _recomHave; // how much I was recommended by others
@@ -556,7 +556,7 @@ public final class L2PcInstance extends L2Playable
 	/** Recommendation Two Hours bonus **/
 	private boolean _recoTwoHoursGiven = false;
 	
-	private PcInventory _inventory = new PcInventory(this);
+	private final PcInventory _inventory = new PcInventory(this);
 	private PcWarehouse _warehouse;
 	private PcRefund _refund;
 	
@@ -585,16 +585,16 @@ public final class L2PcInstance extends L2Playable
 	private int _questNpcObject = 0;
 	
 	/** The table containing all Quests began by the L2PcInstance */
-	private Map<String, QuestState> _quests = new FastMap<String, QuestState>();
+	private final Map<String, QuestState> _quests = new FastMap<String, QuestState>();
 	
 	/** The list containing all shortCuts of this L2PcInstance */
-	private ShortCuts _shortCuts = new ShortCuts(this);
+	private final ShortCuts _shortCuts = new ShortCuts(this);
 	
 	/** The list containing all macroses of this L2PcInstance */
-	private MacroList _macroses = new MacroList(this);
+	private final MacroList _macroses = new MacroList(this);
 	
-	private List<L2PcInstance> _snoopListener = new FastList<L2PcInstance>();
-	private List<L2PcInstance> _snoopedPlayer = new FastList<L2PcInstance>();
+	private final List<L2PcInstance> _snoopListener = new FastList<L2PcInstance>();
+	private final List<L2PcInstance> _snoopedPlayer = new FastList<L2PcInstance>();
 	
 	private ClassId _skillLearningClassId;
 	
@@ -660,7 +660,7 @@ public final class L2PcInstance extends L2Playable
 	private int _deathPenaltyBuffLevel = 0;
 	
 	// charges
-	private AtomicInteger _charges = new AtomicInteger();
+	private final AtomicInteger _charges = new AtomicInteger();
 	private ScheduledFuture<?> _chargeTask = null;
 	
 	// Absorbed Souls
@@ -685,7 +685,7 @@ public final class L2PcInstance extends L2Playable
 	// there can only be one active party request at once
 	private L2PcInstance _activeRequester;
 	private long _requestExpireTime = 0;
-	private L2Request _request = new L2Request(this);
+	private final L2Request _request = new L2Request(this);
 	private L2ItemInstance _arrowItem;
 	private L2ItemInstance _boltItem;
 	
@@ -741,10 +741,10 @@ public final class L2PcInstance extends L2Playable
 	private byte _handysBlockCheckerEventArena = -1;
 	
 	/** new loto ticket **/
-	private int _loto[] = new int[5];
+	private final int _loto[] = new int[5];
 	//public static int _loto_nums[] = {0,1,2,3,4,5,6,7,8,9,};
 	/** new race ticket **/
-	private int _race[] = new int[2];
+	private final int _race[] = new int[2];
 	
 	private final BlockList _blockList = new BlockList(this);
 	
@@ -766,8 +766,8 @@ public final class L2PcInstance extends L2Playable
 	private ScheduledFuture<?> _taskWater;
 	
 	/** Bypass validations */
-	private List<String> _validBypass = new FastList<String>();
-	private List<String> _validBypass2 = new FastList<String>();
+	private final List<String> _validBypass = new FastList<String>();
+	private final List<String> _validBypass2 = new FastList<String>();
 	
 	private Forum _forumMail;
 	private Forum _forumMemo;
@@ -900,11 +900,11 @@ public final class L2PcInstance extends L2Playable
 	
 	private class HerbTask implements Runnable
 	{
-		private String _process;
-		private int _itemId;
-		private long _count;
-		private L2Object _reference;
-		private boolean _sendMessage;
+		private final String _process;
+		private final int _itemId;
+		private final long _count;
+		private final L2Object _reference;
+		private final boolean _sendMessage;
 		
 		HerbTask(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 		{
@@ -955,9 +955,9 @@ public final class L2PcInstance extends L2Playable
 	/** Skill casting information (used to queue when several skills are cast in a short time) **/
 	public static class SkillDat
 	{
-		private L2Skill _skill;
-		private boolean _ctrlPressed;
-		private boolean _shiftPressed;
+		private final L2Skill _skill;
+		private final boolean _ctrlPressed;
+		private final boolean _shiftPressed;
 		
 		protected SkillDat(L2Skill skill, boolean ctrlPressed, boolean shiftPressed)
 		{
@@ -988,7 +988,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	//summon friend
-	private SummonRequest _summonRequest = new SummonRequest();
+	private final SummonRequest _summonRequest = new SummonRequest();
 	
 	private static class SummonRequest
 	{
@@ -1013,7 +1013,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	// open/close gates
-	private GatesRequest _gatesRequest = new GatesRequest();
+	private final GatesRequest _gatesRequest = new GatesRequest();
 	
 	private static class GatesRequest
 	{
@@ -7634,6 +7634,7 @@ public final class L2PcInstance extends L2Playable
 		SevenSigns.getInstance().saveSevenSignsData(getObjectId());
 	}
 	
+	@Override
 	public void store()
 	{
 		store(true);
@@ -7765,7 +7766,8 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private void storeEffect(boolean storeEffects)
+	@Override
+	public void storeEffect(boolean storeEffects)
 	{
 		if (!Config.STORE_SKILL_COOLTIME)
 			return;
@@ -8127,6 +8129,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Retrieve from the database all skill effects of this L2PcInstance and add them to the player.<BR><BR>
 	 */
+	@Override
 	public void restoreEffects()
 	{
 		Connection con = null;
@@ -13041,7 +13044,7 @@ public final class L2PcInstance extends L2Playable
 			addSkill(SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel()), false);
 	}
 	
-	private FastMap<Integer, TimeStamp> _reuseTimeStamps = new FastMap<Integer, TimeStamp>().shared();
+	private final FastMap<Integer, TimeStamp> _reuseTimeStamps = new FastMap<Integer, TimeStamp>().shared();
 	private boolean _canFeed;
 	private int _eventEffectId = 0;
 	private boolean _isInSiege;
@@ -14374,7 +14377,7 @@ public final class L2PcInstance extends L2Playable
 	 * list of character friends
 	 * 
 	 */
-	private List<Integer> _friendList = new FastList<Integer>();
+	private final List<Integer> _friendList = new FastList<Integer>();
 	
 	public List<Integer> getFriendList()
 	{

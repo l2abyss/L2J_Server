@@ -92,6 +92,18 @@ public abstract class L2Playable extends L2Character
 		setStatus(new PlayableStatus(this));
 	}
 	
+	public void store()
+	{
+	}
+	
+	public void storeEffect(boolean storeEffects)
+	{
+	}
+	
+	public void restoreEffects()
+	{
+	}
+	
 	@Override
 	public boolean doDie(L2Character killer)
 	{
