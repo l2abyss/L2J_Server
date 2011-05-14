@@ -47,7 +47,7 @@ public class CharSummonTable
 	
 	private static final String INIT_SUMMONS = "SELECT ownerId, summonSkillId FROM character_summons";
 	private static final String INIT_PET = "SELECT ownerId, item_obj_id FROM pets WHERE restore = 'true'";
-
+	
 	private static final String SAVE_SUMMON = "REPLACE INTO character_summons (ownerId,summonSkillId,curHp,curMp,time) VALUES (?,?,?,?,?)";
 	private static final String LOAD_SUMMON = "SELECT curHp, curMp, time FROM character_summons WHERE ownerId = ? AND summonSkillId = ?";
 	private static final String REMOVE_SUMMON = "DELETE FROM character_summons WHERE ownerId = ?";
@@ -115,7 +115,6 @@ public class CharSummonTable
 				rset.close();
 				statement.close();
 			}
-			
 			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Error while loading saved summons", e);
@@ -147,8 +146,8 @@ public class CharSummonTable
 			
 			statement.setInt(1, summon.getOwner().getObjectId());
 			statement.setInt(2, summon.getReferenceSkill());
-			statement.setDouble(3, summon.getCurrentHp());
-			statement.setDouble(4, summon.getCurrentMp());
+			statement.setInt(3, (int) Math.round(summon.getCurrentHp()));
+			statement.setInt(4, (int) Math.round(summon.getCurrentMp()));
 			statement.setInt(5, summon.getTimeRemaining());
 			
 			statement.execute();

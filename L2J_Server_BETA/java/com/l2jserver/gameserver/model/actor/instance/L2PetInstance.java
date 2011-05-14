@@ -839,10 +839,10 @@ public class L2PetInstance extends L2Summon
 			pet.getStat().setExp(exp);
 			pet.getStat().setSp(rset.getInt("sp"));
 			
-			pet.getStatus().setCurrentHp(rset.getDouble("curHp"));
-			pet.getStatus().setCurrentMp(rset.getDouble("curMp"));
+			pet.getStatus().setCurrentHp(rset.getInt("curHp"));
+			pet.getStatus().setCurrentMp(rset.getInt("curMp"));
 			pet.getStatus().setCurrentCp(pet.getMaxCp());
-			if (rset.getDouble("curHp") < 0.5)
+			if (rset.getDouble("curHp") < 1)
 			{
 				pet.setIsDead(true);
 				pet.stopHpMpRegeneration();
