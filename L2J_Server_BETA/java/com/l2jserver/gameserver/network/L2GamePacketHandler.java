@@ -559,10 +559,10 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						// RequestSkillCoolTime
 						break;
 					case 0xa7:
-						//msg = new RequestPackageSendableItemList();
+						msg = new RequestPackageSendableItemList();
 						break;
 					case 0xa8:
-						//msg = new RequestPackageSend();
+						msg = new RequestPackageSend();
 						break;
 					case 0xa9:
 						msg = new RequestBlock();

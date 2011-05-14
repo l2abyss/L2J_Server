@@ -32,7 +32,7 @@ public final class TradeStart extends L2GameServerPacket
 	public TradeStart(L2PcInstance player)
 	{
 		_activeChar = player;
-		_itemList = _activeChar.getInventory().getAvailableItems(true, (_activeChar.isGM() && Config.GM_TRADE_RESTRICTED_ITEMS));
+		_itemList = _activeChar.getInventory().getAvailableItems(true, (_activeChar.isGM() && Config.GM_TRADE_RESTRICTED_ITEMS), false);
 	}
 	
 	@Override

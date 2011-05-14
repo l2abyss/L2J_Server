@@ -14,12 +14,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.ClanWarehouse;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.ItemHolder;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
@@ -42,11 +41,10 @@ import com.l2jserver.gameserver.util.Util;
 public final class SendWareHouseWithDrawList extends L2GameClientPacket
 {
 	private static final String _C__32_SENDWAREHOUSEWITHDRAWLIST = "[C] 32 SendWareHouseWithDrawList";
-	private static Logger _log = Logger.getLogger(SendWareHouseWithDrawList.class.getName());
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
 	
-	private WarehouseItem _items[] = null;
+	private ItemHolder _items[] = null;
 	
 	@Override
 	protected void readImpl()
@@ -59,7 +57,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 			return;
 		}
 		
-		_items = new WarehouseItem[count];
+		_items = new ItemHolder[count];
 		for (int i=0; i < count; i++)
 		{
 			int objId = readD();
@@ -69,7 +67,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 				_items = null;
 				return;
 			}
-			_items[i] = new WarehouseItem(objId, cnt);
+			_items[i] = new ItemHolder(objId, cnt);
 		}
 	}
 	
@@ -128,7 +126,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		int weight = 0;
 		int slots = 0;
 		
-		for (WarehouseItem i : _items)
+		for (ItemHolder i : _items)
 		{
 			// Calculate needed slots
 			L2ItemInstance item = warehouse.getItemByObjectId(i.getObjectId());
@@ -164,7 +162,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		
 		// Proceed to the transfer
 		InventoryUpdate playerIU = Config.FORCE_INVENTORY_UPDATE ? null : new InventoryUpdate();
-		for (WarehouseItem i : _items)
+		for (ItemHolder i : _items)
 		{
 			L2ItemInstance oldItem = warehouse.getItemByObjectId(i.getObjectId());
 			if (oldItem == null || oldItem.getCount() < i.getCount())
@@ -198,28 +196,6 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
-	}
-	
-	private static class WarehouseItem
-	{
-		private final int _objectId;
-		private final long _count;
-		
-		public WarehouseItem(int id, long num)
-		{
-			_objectId = id;
-			_count = num;
-		}
-		
-		public int getObjectId()
-		{
-			return _objectId;
-		}
-		
-		public long getCount()
-		{
-			return _count;
-		}
 	}
 	
 	/* (non-Javadoc)

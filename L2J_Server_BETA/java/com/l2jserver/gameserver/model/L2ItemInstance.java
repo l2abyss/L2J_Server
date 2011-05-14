@@ -67,7 +67,8 @@ public final class L2ItemInstance extends L2Object
 	private static final Logger _logItems = Logger.getLogger("item");
 	
 	/** Enumeration of locations for item */
-	public static enum ItemLocation {
+	public static enum ItemLocation 
+	{
 		VOID,
 		INVENTORY,
 		PAPERDOLL,
@@ -77,7 +78,8 @@ public final class L2ItemInstance extends L2Object
 		PET_EQUIP,
 		LEASE,
 		REFUND,
-		MAIL
+		MAIL,
+		FREIGHT
 	}
 	
 	/** ID of the owner */
@@ -482,7 +484,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public int getLocationSlot()
 	{
-		assert _loc == ItemLocation.PAPERDOLL || _loc == ItemLocation.PET_EQUIP || _loc == ItemLocation.INVENTORY || _loc == ItemLocation.MAIL;
+		assert _loc == ItemLocation.PAPERDOLL || _loc == ItemLocation.PET_EQUIP || _loc == ItemLocation.INVENTORY || _loc == ItemLocation.MAIL || _loc == ItemLocation.FREIGHT;
 		return _locData;
 	}
 	
@@ -1152,6 +1154,7 @@ public final class L2ItemInstance extends L2Object
 			_shadowItem = item;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -1518,6 +1521,7 @@ public final class L2ItemInstance extends L2Object
 			_itm = item;
 		}
 		
+		@Override
 		public final void run()
 		{
 			assert _itm.getPosition().getWorldRegion() == null;
@@ -1849,6 +1853,7 @@ public final class L2ItemInstance extends L2Object
 			_limitedItem = item;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -1922,5 +1927,10 @@ public final class L2ItemInstance extends L2Object
 	public boolean isQuestItem()
 	{
 		return getItem().isQuestItem();
+	}
+	
+	public boolean isFreightable()
+	{
+		return getItem().isFreightable();
 	}
 }

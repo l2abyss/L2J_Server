@@ -29,15 +29,22 @@ public class PcWarehouse extends Warehouse
 	}
 	
 	@Override
-	public String getName() { return "Warehouse"; }
+	public String getName()
+	{
+		return "Warehouse";
+	}
 	
 	@Override
-	public L2PcInstance getOwner() { return _owner; }
+	public L2PcInstance getOwner()
+	{
+		return _owner;
+	}
+	
 	@Override
-	public ItemLocation getBaseLocation() { return ItemLocation.WAREHOUSE; }
-	public String getLocationId() { return "0"; }
-	public int getLocationId(boolean dummy) { return 0; }
-	public void setLocationId(L2PcInstance dummy) {}
+	public ItemLocation getBaseLocation()
+	{
+		return ItemLocation.WAREHOUSE;
+	}
 	
 	@Override
 	public boolean validateCapacity(int slots)

@@ -160,6 +160,7 @@ import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
+import com.l2jserver.gameserver.model.itemcontainer.PcFreight;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcRefund;
 import com.l2jserver.gameserver.model.itemcontainer.PcWarehouse;
@@ -557,6 +558,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _recoTwoHoursGiven = false;
 	
 	private final PcInventory _inventory = new PcInventory(this);
+	private PcFreight _freight = new PcFreight(this);
 	private PcWarehouse _warehouse;
 	private PcRefund _refund;
 	
@@ -3181,6 +3183,14 @@ public final class L2PcInstance extends L2Playable
 			_warehouse.deleteMe();
 		_warehouse = null;
 	}
+	
+	/** 
+	 * Return the PcFreight object of the L2PcInstance.<BR><BR> 
+	 */ 
+	public PcFreight getFreight() 
+	{ 
+		return _freight; 
+	} 
 	
 	/**
 	 * Returns true if refund list is not empty
@@ -7302,6 +7312,7 @@ public final class L2PcInstance extends L2Playable
 			// Retrieve from the database all skills of this L2PcInstance and add them to _skills
 			// Retrieve from the database all items of this L2PcInstance and add them to _inventory
 			player.getInventory().restore();
+			player.getFreight().restore(); 
 			if (!Config.WAREHOUSE_CACHE)
 				player.getWarehouse();
 			
@@ -11878,6 +11889,16 @@ public final class L2PcInstance extends L2Playable
 		}
 		if (Config.WAREHOUSE_CACHE)
 			WarehouseCacheManager.getInstance().remCacheTask(this);
+		
+		try 
+		{ 
+			getFreight().deleteMe(); 
+		} 
+		catch (Exception e) 
+	 	{ 
+			_log.log(Level.SEVERE, "deleteMe()", e); 
+	 	} 
+
 		
 		try
 		{

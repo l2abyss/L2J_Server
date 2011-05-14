@@ -30,7 +30,7 @@ public class ExReplyPostItemList extends L2GameServerPacket
 	public ExReplyPostItemList(L2PcInstance activeChar)
 	{
 		_activeChar = activeChar;
-		_itemList = _activeChar.getInventory().getAvailableItems(true, false);
+		_itemList = _activeChar.getInventory().getAvailableItems(true, false, false);
 	}
 	
 	/* (non-Javadoc)

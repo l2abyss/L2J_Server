@@ -174,6 +174,7 @@ public abstract class L2Item
 	private final boolean _tradeable;
 	private final boolean _depositable;
 	private final boolean _questItem;
+	private final boolean _freightable;
 	private final boolean _common;
 	private final boolean _heroItem;
 	private final boolean _pvpItem;
@@ -218,6 +219,7 @@ public abstract class L2Item
 		_tradeable = set.getBool("is_tradable", true);
 		_depositable = set.getBool("is_depositable", true);
 		_questItem = set.getBool("is_questitem", false);
+		_freightable = set.getBool("is_freightable", false);
 		
 		//_immediate_effect - herb
 		_ex_immediate_effect = set.getInteger("ex_immediate_effect", 0) > 0;
@@ -897,6 +899,11 @@ public abstract class L2Item
 	public boolean isQuestItem()
 	{
 		return _questItem;
+	}
+	
+	public boolean isFreightable()
+	{
+		return _freightable;
 	}
 
 	/**

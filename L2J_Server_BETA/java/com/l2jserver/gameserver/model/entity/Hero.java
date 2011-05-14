@@ -739,7 +739,7 @@ public class Hero
 						}
 					}
 					
-					for (L2ItemInstance item : player.getInventory().getAvailableItems(false, false))
+					for (L2ItemInstance item : player.getInventory().getAvailableItems(false, false, false))
 					{
 						if ((item != null) && item.isHeroItem())
 						{
