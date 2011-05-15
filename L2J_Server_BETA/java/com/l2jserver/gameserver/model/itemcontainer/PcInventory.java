@@ -236,16 +236,15 @@ public class PcInventory extends Inventory
 	 * Returns the list of items in inventory available for transaction
 	 * @return L2ItemInstance : items in inventory
 	 */
-	public L2ItemInstance[] getAvailableItems(boolean allowAdena, boolean allowNonTradeable, boolean dimensional)
+	public L2ItemInstance[] getAvailableItems(boolean allowAdena, boolean allowNonTradeable, boolean feightable)
 	{
 		FastList<L2ItemInstance> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
 			if (item == null)
 				continue;
-			else if (dimensional) 
-				if (item.getLocation() == ItemLocation.INVENTORY && item.isFreightable())
-					list.add(item);
+			else if (feightable && item.getLocation() == ItemLocation.INVENTORY && item.isFreightable())
+				list.add(item);
 			else if (item.isAvailable(getOwner(), allowAdena, allowNonTradeable) && canManipulateWithItemId(item.getItemId()))
 				list.add(item);
 		}
