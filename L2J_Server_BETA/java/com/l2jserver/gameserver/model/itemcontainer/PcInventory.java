@@ -241,11 +241,14 @@ public class PcInventory extends Inventory
 		FastList<L2ItemInstance> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
-			if (item == null)
+			if (item == null || !item.isAvailable(getOwner(), allowAdena, allowNonTradeable) || !canManipulateWithItemId(item.getItemId()))
 				continue;
-			else if (feightable && item.getLocation() == ItemLocation.INVENTORY && item.isFreightable())
-				list.add(item);
-			else if (item.isAvailable(getOwner(), allowAdena, allowNonTradeable) && canManipulateWithItemId(item.getItemId()))
+			else if (feightable)
+			{
+				if (item.getLocation() == ItemLocation.INVENTORY && item.isFreightable())
+					list.add(item);
+			}
+			else
 				list.add(item);
 		}
 		
