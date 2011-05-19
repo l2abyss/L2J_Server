@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -265,6 +264,7 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.PlayerEventStatus;
 import com.l2jserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
@@ -558,7 +558,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _recoTwoHoursGiven = false;
 	
 	private final PcInventory _inventory = new PcInventory(this);
-	private PcFreight _freight = new PcFreight(this);
+	private final PcFreight _freight = new PcFreight(this);
 	private PcWarehouse _warehouse;
 	private PcRefund _refund;
 	
@@ -729,16 +729,7 @@ public final class L2PcInstance extends L2Playable
 	public final ReentrantLock soulShotLock = new ReentrantLock();
 	
 	/** Event parameters */
-	public int eventX;
-	public int eventY;
-	public int eventZ;
-	public int eventkarma;
-	public int eventpvpkills;
-	public int eventpkkills;
-	public String eventTitle;
-	public LinkedList<String> kills = new LinkedList<String>();
-	public boolean eventSitForced = false;
-	public boolean atEvent = false;
+	private PlayerEventStatus eventStatus = null;
 	
 	private byte _handysBlockCheckerEventArena = -1;
 	
@@ -3142,9 +3133,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void standUp()
 	{
-		if (L2Event.active && eventSitForced)
+		if (L2Event.isParticipant(this) && getEventStatus().eventSitForced)
 		{
-			sendMessage("A dark force beyond your mortal understanding makes your knees to shake when you try to stand up ...");
+			sendMessage("A dark force beyond your mortal understanding makes your knees to shake when you try to stand up...");
 		}
 		else if (_waitTypeSitting && !isInStoreMode() && !isAlikeDead())
 		{
@@ -5369,10 +5360,8 @@ public final class L2PcInstance extends L2Playable
 			
 			TvTEvent.onKill(killer, this);
 			
-			if (atEvent && pk != null)
-			{
-				pk.kills.add(getName());
-			}
+			if (L2Event.isParticipant(pk) && pk != null)
+				pk.getEventStatus().kills.add(this);
 			
 			//announce pvp/pk
 			if (Config.ANNOUNCE_PK_PVP && pk != null && !pk.isGM())
@@ -5525,7 +5514,7 @@ public final class L2PcInstance extends L2Playable
 	
 	private void onDieDropItem(L2Character killer)
 	{
-		if (atEvent || killer == null)
+		if (L2Event.isParticipant(this) || killer == null)
 			return;
 		
 		L2PcInstance pk = killer.getActingPlayer();
@@ -5920,7 +5909,7 @@ public final class L2PcInstance extends L2Playable
 		
 		// Calculate the Experience loss
 		long lostExp = 0;
-		if (!atEvent)
+		if (!L2Event.isParticipant(this))
 			if (lvl < Experience.MAX_LEVEL)
 				lostExp = Math.round((getStat().getExpForLevel(lvl+1) - getStat().getExpForLevel(lvl)) * percentLost /100);
 			else
@@ -15155,5 +15144,20 @@ public final class L2PcInstance extends L2Playable
 	public L2ContactList getContactList()
 	{
 		return _contactList;
+	}
+	
+	public void setEventStatus()
+	{
+		eventStatus = new PlayerEventStatus(this);
+	}
+	
+	public void setEventStatus(PlayerEventStatus pes)
+	{
+		eventStatus = pes;
+	}
+	
+	public PlayerEventStatus getEventStatus()
+	{
+		return eventStatus;
 	}
 }

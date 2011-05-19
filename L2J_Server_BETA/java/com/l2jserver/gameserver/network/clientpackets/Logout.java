@@ -22,6 +22,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -76,7 +77,7 @@ public final class Logout extends L2GameClientPacket
 			return;
 		}
 		
-		if(player.atEvent)
+		if(L2Event.isParticipant(player))
 		{
 			player.sendMessage("A superior power doesn't allow you to leave the event");
 			player.sendPacket(ActionFailed.STATIC_PACKET);

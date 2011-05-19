@@ -102,7 +102,7 @@ public class EnterWorld extends L2GameClientPacket
 	
 	private static Logger _log = Logger.getLogger(EnterWorld.class.getName());
 	
-	private int[][] tracert = new int[5][4];
+	private final int[][] tracert = new int[5][4];
 	
 	public TaskPriority getPriority()
 	{
@@ -336,10 +336,8 @@ public class EnterWorld extends L2GameClientPacket
 		
 		activeChar.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 		
-		if (L2Event.active && L2Event.connectionLossData.containsKey(activeChar.getName()) && L2Event.isOnEvent(activeChar))
-			L2Event.restoreChar(activeChar);
-		else if (L2Event.connectionLossData.containsKey(activeChar.getName()))
-			L2Event.restoreAndTeleChar(activeChar);
+		if (L2Event.isParticipant(activeChar))
+			L2Event.restorePlayerEventStatus(activeChar);
 		
 		// Wedding Checks
 		if (Config.L2JMOD_ALLOW_WEDDING)

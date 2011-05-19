@@ -52,7 +52,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
 import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.EventData;
 
 /**
  * Represents a client connected on Game Server
@@ -78,10 +77,10 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	private String _accountName;
 	private SessionKey _sessionId;
 	private L2PcInstance _activeChar;
-	private ReentrantLock _activeCharLock = new ReentrantLock();
+	private final ReentrantLock _activeCharLock = new ReentrantLock();
 	
 	private boolean _isAuthedGG;
-	private long _connectionStartTime;
+	private final long _connectionStartTime;
 	private CharSelectInfoPackage[] _charSlotMapping = null;
 	
 	// floodprotectors
@@ -94,16 +93,16 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	private L2GameServerPacket _aditionalClosePacket;
 	
 	// Crypt
-	private GameCrypt _crypt;
+	private final GameCrypt _crypt;
 	
-	private ClientStats _stats;
+	private final ClientStats _stats;
 	
 	private boolean _isDetached = false;
 	
 	private boolean _protocol;
 	
 	private final ArrayBlockingQueue<ReceivablePacket<L2GameClient>> _packetQueue;
-	private ReentrantLock _queueLock = new ReentrantLock();
+	private final ReentrantLock _queueLock = new ReentrantLock();
 	
 	private int[][] trace;
 	
@@ -796,11 +795,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 					}
 					
 					// we store all data from players who are disconnected while in an event in order to restore it in the next login
-					if (player.atEvent)
+					if (L2Event.isParticipant(player))
 					{
-						EventData data = new EventData(player.eventX, player.eventY, player.eventZ, player.eventkarma, player.eventpvpkills, player.eventpkkills, player.eventTitle, player.kills,
-								player.eventSitForced);
-						L2Event.connectionLossData.put(player.getName(), data);
+						L2Event.savePlayerEventStatus(player);
 					}
 
 					// prevent closing again

@@ -33,7 +33,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
-import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShowCommunityBoard;
@@ -138,9 +137,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				{
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 					
-					if (_command.substring(endOfId+1).startsWith("event_participate"))
-						L2Event.inscribePlayer(activeChar);
-					else if (object instanceof L2Npc && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
+					if (object instanceof L2Npc && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 						((L2Npc)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
 					
 					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
