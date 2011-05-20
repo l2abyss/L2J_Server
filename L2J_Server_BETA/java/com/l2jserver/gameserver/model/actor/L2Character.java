@@ -3036,7 +3036,7 @@ public abstract class L2Character extends L2Object
 	 * @param effectId The L2Skill Identifier of the L2Effect to remove from _effects
 	 *
 	 */
-	public final void stopSkillEffects(int skillId)
+	public void stopSkillEffects(int skillId)
 	{
 		_effects.stopSkillEffects(skillId);
 	}

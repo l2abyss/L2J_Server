@@ -255,6 +255,17 @@ public class L2SummonInstance extends L2Summon
 	}
 	
 	@Override
+	public final void stopSkillEffects(int skillId)
+	{
+		super.stopSkillEffects(skillId);
+		for (SummonEffect effect : SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()))
+		{
+			if (effect.getSkill().getId() == skillId)
+				SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).remove(effect);
+		}
+	}
+	
+	@Override
 	public void store()
 	{
 		if (_referenceSkill == 0 || isDead())
