@@ -11752,7 +11752,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			try
 			{
-				
 				getPet().setRestoreSummon(true);
 				
 				getPet().unSummon(this);
