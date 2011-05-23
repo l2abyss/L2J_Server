@@ -725,12 +725,16 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 						{
 							player.leaveParty();
 							
-							player.getPet().setRestoreSummon(true);
-							
-							player.getPet().unSummon(player);
-							// dead pet wasnt unsummoned, broadcast npcinfo changes (pet will be without owner name - means owner offline)
+							// If the L2PcInstance has Pet, unsummon it
 							if (player.getPet() != null)
-								player.getPet().broadcastNpcInfo(0);
+							{
+								player.getPet().setRestoreSummon(true);
+								
+								player.getPet().unSummon(player);
+								// dead pet wasnt unsummoned, broadcast npcinfo changes (pet will be without owner name - means owner offline)
+								if (player.getPet() != null)
+									player.getPet().broadcastNpcInfo(0);
+							}
 							
 							if (Config.OFFLINE_SET_NAME_COLOR)
 							{
