@@ -108,7 +108,7 @@ public abstract class L2Summon extends L2Playable
 		super.onSpawn();
 		if (!(this instanceof L2MerchantSummonInstance))
 		{
-			if (Config.SUMMON_STORE_SKILL_COOLTIME)
+			if (Config.SUMMON_STORE_SKILL_COOLTIME && !isTeleporting())
 				restoreEffects();
 			
 			this.setFollowStatus(true);
