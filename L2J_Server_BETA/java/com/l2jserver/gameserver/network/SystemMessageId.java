@@ -3798,7 +3798,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 678<br>
-	 * Message: You have submitted a bid in the auction of .
+	 * Message: You have submitted a bid for the auction of $s1.
 	 */
 	public static final SystemMessageId SUBMITTED_A_BID;
 	
