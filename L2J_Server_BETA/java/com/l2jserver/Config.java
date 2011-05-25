@@ -880,6 +880,8 @@ public final class Config
 	public static boolean RESERVE_HOST_ON_LOGIN = false;
 	public static TIntArrayList PROTOCOL_LIST;
 	public static boolean LOG_LOGIN_CONTROLLER;
+	public static boolean LOGIN_SERVER_SCHEDULE_RESTART; 
+	public static long LOGIN_SERVER_SCHEDULE_RESTART_TIME;
 	
 	//--------------------------------------------------
 	// CommunityServer Settings
@@ -2795,6 +2797,9 @@ public final class Config
 					LOGIN_BLOCK_AFTER_BAN = Integer.parseInt(serverSettings.getProperty("LoginBlockAfterBan", "600"));
 					
 					LOG_LOGIN_CONTROLLER = Boolean.parseBoolean(serverSettings.getProperty("LogLoginController", "true"));
+					
+					LOGIN_SERVER_SCHEDULE_RESTART = Boolean.parseBoolean(serverSettings.getProperty("LoginRestartSchedule", "False")); 
+					LOGIN_SERVER_SCHEDULE_RESTART_TIME = Long.parseLong(serverSettings.getProperty("LoginRestartTime", "24")); 
 					
 					DATABASE_DRIVER = serverSettings.getProperty("Driver", "com.mysql.jdbc.Driver");
 					DATABASE_URL = serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jdb");
