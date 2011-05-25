@@ -522,6 +522,7 @@ public final class Config
 	public static int NAME_PER_ROW_COMMUNITYBOARD;
 	public static boolean USE_SAY_FILTER;
 	public static String CHAT_FILTER_CHARS;
+	public static int[] BAN_CHAT_CHANNELS;
 	public static int ALT_OLY_START_TIME;
 	public static int ALT_OLY_MIN;
 	public static long ALT_OLY_CPERIOD;
@@ -1922,6 +1923,18 @@ public final class Config
 					NAME_PER_ROW_COMMUNITYBOARD = Integer.parseInt(General.getProperty("NamePerRowOnCommunityBoard", "5"));
 					USE_SAY_FILTER = Boolean.parseBoolean(General.getProperty("UseChatFilter", "false"));
 					CHAT_FILTER_CHARS = General.getProperty("ChatFilterChars", "^_^");
+					String[] propertySplit4 = General.getProperty("BanChatChannels", "0;1;8;17").trim().split(";");
+					BAN_CHAT_CHANNELS = new int[propertySplit4.length];
+					try
+					{
+						int i = 0;
+						for (String chatId : propertySplit4)
+							BAN_CHAT_CHANNELS[i++] = Integer.parseInt(chatId);
+					}
+					catch (NumberFormatException nfe)
+					{
+						_log.log(Level.WARNING, nfe.getMessage(), nfe);
+					}
 					ALT_MANOR_REFRESH_TIME = Integer.parseInt(General.getProperty("AltManorRefreshTime","20"));
 					ALT_MANOR_REFRESH_MIN = Integer.parseInt(General.getProperty("AltManorRefreshMin","00"));
 					ALT_MANOR_APPROVE_TIME = Integer.parseInt(General.getProperty("AltManorApproveTime","6"));
