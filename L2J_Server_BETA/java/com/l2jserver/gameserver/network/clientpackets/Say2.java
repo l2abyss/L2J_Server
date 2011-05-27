@@ -153,12 +153,15 @@ public final class Say2 extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isChatBanned())
+		if (activeChar.isChatBanned() && !_text.startsWith("."))
 		{
-			if (_type == ALL || _type == SHOUT || _type == TRADE || _type == HERO_VOICE)
+			for (int chatId : Config.BAN_CHAT_CHANNELS)
 			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED));
-				return;
+				if (_type == chatId)
+				{
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED));
+					return;
+				}
 			}
 		}
 		
