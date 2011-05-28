@@ -618,15 +618,15 @@ public final class BlockCheckerEngine
 			FastMap<L2PcInstance, Integer> tempPoints = isRed? _redTeamPoints : _blueTeamPoints;
 			
 			// Main give
-			for(L2PcInstance pc : tempPoints.keySet())
+			for(Entry<L2PcInstance, Integer> points : tempPoints.entrySet())
 			{
-				if(pc == null)
+				if(points.getKey() == null)
 					continue;
 				
-				if(tempPoints.get(pc) >= 10)
-					pc.addItem("Block Checker", 13067, 2, pc, true);
+				if(points.getValue() >= 10)
+					points.getKey().addItem("Block Checker", 13067, 2, points.getKey(), true);
 				else
-					tempPoints.remove(pc);
+					tempPoints.remove(points.getKey());
 			}
 			
 			int first = 0, second = 0;

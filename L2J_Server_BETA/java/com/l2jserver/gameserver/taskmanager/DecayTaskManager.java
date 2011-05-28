@@ -117,18 +117,26 @@ public class DecayTaskManager
 	@Override
 	public String toString()
 	{
-		String ret = "============= DecayTask Manager Report ============\r\n";
-		ret += "Tasks count: " + _decayTasks.size() + "\r\n";
-		ret += "Tasks dump:\r\n";
+		StringBuilder ret = new StringBuilder();
+		ret.append("============= DecayTask Manager Report ============\r\n");
+		ret.append("Tasks count: ");
+		ret.append(_decayTasks.size());
+		ret.append("\r\n");
+		ret.append("Tasks dump:\r\n");
 		
 		Long current = System.currentTimeMillis();
 		for (L2Character actor : _decayTasks.keySet())
 		{
-			ret += "Class/Name: " + actor.getClass().getSimpleName() + "/" + actor.getName() + " decay timer: "
-			+ (current - _decayTasks.get(actor)) + "\r\n";
+			ret.append("Class/Name: ");
+			ret.append(actor.getClass().getSimpleName());
+			ret.append("/");
+			ret.append(actor.getName());
+			ret.append(" decay timer: ");
+			ret.append(current - _decayTasks.get(actor));
+			ret.append("\r\n");
 		}
 		
-		return ret;
+		return ret.toString();
 	}
 	
 	/**

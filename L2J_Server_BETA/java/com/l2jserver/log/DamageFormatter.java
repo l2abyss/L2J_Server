@@ -41,37 +41,42 @@ public class DamageFormatter extends Formatter
 				+ (params == null ? 0 : params.length * 10), "[",
 				dateFmt.format(new Date(record.getMillis())), "] '---': ",
 				record.getMessage());
-		for (Object p : params)
+		
+		if (params != null)
 		{
-			if (p == null)
-				continue;
-			
-			if (p instanceof L2Character)
+			for (Object p : params)
 			{
-				if (p instanceof L2Attackable && ((L2Attackable)p).isRaid())
-					StringUtil.append(output, "RaidBoss ");
+				if (p == null)
+					continue;
 				
-				StringUtil.append(output, ((L2Character)p).getName(),
-						"(", String.valueOf(((L2Character)p).getObjectId()), ") ");
-				StringUtil.append(output, String.valueOf(((L2Character)p).getLevel()),
-				" lvl");
-				
-				if (p instanceof L2Summon)
+				if (p instanceof L2Character)
 				{
-					L2PcInstance owner = ((L2Summon)p).getOwner();
-					if (owner != null)
-						StringUtil.append(output, " Owner:", owner.getName(),
-								"(", String.valueOf(owner.getObjectId()), ")");
+					if (p instanceof L2Attackable && ((L2Attackable)p).isRaid())
+						StringUtil.append(output, "RaidBoss ");
+					
+					StringUtil.append(output, ((L2Character)p).getName(),
+							"(", String.valueOf(((L2Character)p).getObjectId()), ") ");
+					StringUtil.append(output, String.valueOf(((L2Character)p).getLevel()),
+					" lvl");
+					
+					if (p instanceof L2Summon)
+					{
+						L2PcInstance owner = ((L2Summon)p).getOwner();
+						if (owner != null)
+							StringUtil.append(output, " Owner:", owner.getName(),
+									"(", String.valueOf(owner.getObjectId()), ")");
+					}
 				}
+				else if (p instanceof L2Skill)
+				{
+					StringUtil.append(output, " with skill ",((L2Skill)p).getName(),
+							"(", String.valueOf(((L2Skill)p).getId()), ")");
+				}
+				else
+					StringUtil.append(output, p.toString());
 			}
-			else if (p instanceof L2Skill)
-			{
-				StringUtil.append(output, " with skill ",((L2Skill)p).getName(),
-						"(", String.valueOf(((L2Skill)p).getId()), ")");
-			}
-			else
-				StringUtil.append(output, p.toString());
 		}
+
 		output.append(CRLF);
 		return output.toString();
 	}

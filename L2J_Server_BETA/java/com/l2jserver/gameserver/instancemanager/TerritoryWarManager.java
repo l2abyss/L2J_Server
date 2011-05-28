@@ -651,10 +651,10 @@ public class TerritoryWarManager implements Siegable
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			statement = con.prepareStatement("UPDATE territories SET ownedWardIds=? WHERE territoryId=?");
-			String wardList = "";
+			StringBuilder wardList = new StringBuilder();
 			for (int i : ter.getOwnedWardIds())
-				wardList += (i + ";");
-			statement.setString(1, wardList);
+				wardList.append(i + ";");
+			statement.setString(1, wardList.toString());
 			statement.setInt(2, ter.getTerritoryId());
 			statement.execute();
 			statement.close();

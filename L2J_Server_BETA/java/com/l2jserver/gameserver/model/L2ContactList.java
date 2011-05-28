@@ -76,7 +76,7 @@ public class L2ContactList
 			{
 				contactId = rset.getInt(1);
 				contactName = CharNameTable.getInstance().getNameById(contactId);
-				if (contactName == null || contactName == activeChar.getName() || contactId == activeChar.getObjectId())
+				if (contactName == null || contactName.equals(activeChar.getName()) || contactId == activeChar.getObjectId())
 					continue;
 				
 				_contacts.add(contactName);
@@ -105,7 +105,7 @@ public class L2ContactList
 			activeChar.sendPacket(SystemMessageId.NAME_ALREADY_EXIST_ON_CONTACT_LIST);
 			return false;
 		}
-		else if (activeChar.getName() == name)
+		else if (activeChar.getName().equals(name))
 		{
 			activeChar.sendPacket(SystemMessageId.CANNOT_ADD_YOUR_NAME_ON_CONTACT_LIST);
 			return false;

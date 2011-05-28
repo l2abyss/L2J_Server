@@ -209,9 +209,11 @@ public final class FloodProtectorAction
 					StringUtil.append(output, _client.getActiveChar().getName());
 					StringUtil.append(output, "(", String.valueOf(_client.getActiveChar().getObjectId()),") ");
 				}
+				break;
 			case AUTHED:
 				if (_client.getAccountName() != null)
 					StringUtil.append(output, _client.getAccountName()," ");
+				break;
 			case CONNECTED:
 				if (address != null)
 					StringUtil.append(output, address);

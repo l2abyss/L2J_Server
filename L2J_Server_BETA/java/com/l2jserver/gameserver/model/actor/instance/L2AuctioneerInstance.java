@@ -276,13 +276,21 @@ public final class L2AuctioneerInstance extends L2Npc
 				if (Config.DEBUG)
 					_log.warning("cmd list: auction test started");
 				
-				String items = "";
-				items += "<table width=280 border=0><tr>";
+				StringBuilder items = new StringBuilder();
+				items.append("<table width=280 border=0><tr>");
 				for (int j = 1; j <= npage; j++)
-					items+= "<td><center><a action=\"bypass -h npc_"+getObjectId()+"_list "+j+"\"> Page "+j+" </a></center></td>";
+				{
+					items.append("<td><center><a action=\"bypass -h npc_");
+					items.append(getObjectId());
+					items.append("_list ");
+					items.append(j);
+					items.append("\"> Page ");
+					items.append(j);
+					items.append(" </a></center></td>");
+				}
 				
-				items += "</tr></table>" +
-				"<table width=280 border=0>";
+				items.append("</tr></table>");
+				items.append("<table width=280 border=0>");
 				
 				for (Auction a : auctions)
 				{
@@ -299,21 +307,32 @@ public final class L2AuctioneerInstance extends L2Npc
 					else
 						i++;
 					
-					items += "<tr>" +
-					"<td>"+ClanHallManager.getInstance().getClanHallById(a.getItemId()).getLocation()+"</td>" +
-					"<td><a action=\"bypass -h npc_"+getObjectId()+"_bidding "+a.getId()+"\">"+a.getItemName()+"</a></td>" +
-					"<td>"+format.format(a.getEndDate())+"</td>" +
-					"<td>"+a.getStartingBid()+"</td>" +
-					"</tr>";
+					items.append("<tr>");
+					items.append("<td>");
+					items.append(ClanHallManager.getInstance().getClanHallById(a.getItemId()).getLocation());
+					items.append("</td>");
+					items.append("<td><a action=\"bypass -h npc_");
+					items.append(getObjectId());
+					items.append("_bidding ");
+					items.append(a.getId());
+					items.append("\">");
+					items.append(a.getItemName());
+					items.append("</a></td>");
+					items.append("<td>"+format.format(a.getEndDate()));
+					items.append("</td>");
+					items.append("<td>");
+					items.append(a.getStartingBid());
+					items.append("</td>");
+					items.append("</tr>");
 				}
 				
-				items += "</table>";
+				items.append("</table>");
 				String filename = "data/html/auction/AgitAuctionList.htm";
 				
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
 				html.setFile(player.getHtmlPrefix(), filename);
 				html.replace("%AGIT_LINK_BACK%", "bypass -h npc_"+getObjectId()+"_start");
-				html.replace("%itemsField%", items);
+				html.replace("%itemsField%", items.toString());
 				player.sendPacket(html);
 				return;
 			}

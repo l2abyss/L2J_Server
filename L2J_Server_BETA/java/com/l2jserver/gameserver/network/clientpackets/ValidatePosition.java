@@ -88,7 +88,7 @@ public class ValidatePosition extends L2GameClientPacket
 			{
 				dx = _x - activeChar.getInVehiclePosition().getX();
 				dy = _y - activeChar.getInVehiclePosition().getY();
-				dz = _z - activeChar.getInVehiclePosition().getZ();
+				//dz = _z - activeChar.getInVehiclePosition().getZ();
 				diffSq = (dx*dx + dy*dy);
 				if (diffSq > 250000)
 					sendPacket(new GetOnVehicle(activeChar.getObjectId(), _data, activeChar.getInVehiclePosition()));

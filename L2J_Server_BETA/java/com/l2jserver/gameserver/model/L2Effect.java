@@ -470,6 +470,7 @@ public abstract class L2Effect
 				}
 				// effects not having count or period should start
 				_startConditionsCorrect = onStart();
+				break;
 			}
 			case ACTING:
 			{
@@ -487,6 +488,7 @@ public abstract class L2Effect
 					}
 				}
 				_state = EffectState.FINISHING;
+				break;
 			}
 			case FINISHING:
 			{

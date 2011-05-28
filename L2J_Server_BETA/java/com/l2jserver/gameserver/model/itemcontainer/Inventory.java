@@ -827,7 +827,7 @@ public abstract class Inventory extends ItemContainer
 	 * Returns the item in the paperdoll slot
 	 * @return L2ItemInstance
 	 */
-	public L2ItemInstance getPaperdollItem(int slot)
+	public synchronized L2ItemInstance getPaperdollItem(int slot)
 	{
 		return _paperdoll[slot];
 	}
@@ -905,7 +905,7 @@ public abstract class Inventory extends ItemContainer
 	 * @param slot : int designating the slot
 	 * @return int designating the ID of the item
 	 */
-	public int getPaperdollItemId(int slot)
+	public synchronized int getPaperdollItemId(int slot)
 	{
 		L2ItemInstance item = _paperdoll[slot];
 		if (item != null)
@@ -913,7 +913,7 @@ public abstract class Inventory extends ItemContainer
 		return 0;
 	}
 	
-	public int getPaperdollAugmentationId(int slot)
+	public synchronized int getPaperdollAugmentationId(int slot)
 	{
 		L2ItemInstance item = _paperdoll[slot];
 		if (item != null)
@@ -931,7 +931,7 @@ public abstract class Inventory extends ItemContainer
 	 * @param slot : int pointing out the slot
 	 * @return int designating the objectID
 	 */
-	public int getPaperdollObjectId(int slot)
+	public synchronized int getPaperdollObjectId(int slot)
 	{
 		L2ItemInstance item = _paperdoll[slot];
 		if (item != null)

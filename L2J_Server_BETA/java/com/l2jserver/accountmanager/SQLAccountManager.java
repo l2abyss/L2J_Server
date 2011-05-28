@@ -115,7 +115,7 @@ public class SQLAccountManager
 				// Delete
 				System.out.print("Do you really want to delete this account ? Y/N : ");
 				String yesno = _in.readLine();
-				if (yesno.equalsIgnoreCase("Y"))
+				if (yesno != null && yesno.equalsIgnoreCase("Y"))
 					deleteAccount(_uname.trim());
 				else
 					System.out.println("Deletion cancelled");

@@ -165,7 +165,7 @@ public final class Util
 	public static String capitalizeWords(String str)
 	{
 		char[] charArray = str.toCharArray();
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		
 		// Capitalize the first letter in the given string!
 		charArray[0] = Character.toUpperCase(charArray[0]);
@@ -175,10 +175,10 @@ public final class Util
 			if (Character.isWhitespace(charArray[i]))
 				charArray[i + 1] = Character.toUpperCase(charArray[i + 1]);
 			
-			result += Character.toString(charArray[i]);
+			result.append(charArray[i]);
 		}
 		
-		return result;
+		return result.toString();
 	}
 	
 	/**
@@ -261,12 +261,15 @@ public final class Util
 	 */
 	public static String implodeString(String[] strArray, String strDelim)
 	{
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		
 		for (String strValue : strArray)
-			result += strValue + strDelim;
+		{
+			result.append(strValue);
+			result.append(strDelim);
+		}
 		
-		return result;
+		return result.toString();
 	}
 	
 	/**

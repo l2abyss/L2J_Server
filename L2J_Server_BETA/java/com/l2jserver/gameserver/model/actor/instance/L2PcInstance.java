@@ -15083,7 +15083,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			if (L2PcInstance.this == null)
 			{
-				stopRecoGiveTask();
+				//stopRecoGiveTask(); why is this here? it will lead to NPE
 				return;
 			}
 			int reco_to_give;

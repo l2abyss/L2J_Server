@@ -48,6 +48,7 @@ public final class WorldInfo extends BaseWritePacket
 			{
 				// this should never happen
 				super.writeC(0x00);
+				break;
 			}
 			
 			case TYPE_UPDATE_PLAYER_DATA:

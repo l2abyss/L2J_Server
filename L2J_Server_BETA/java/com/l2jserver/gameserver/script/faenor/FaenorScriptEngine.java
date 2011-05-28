@@ -212,13 +212,14 @@ public class FaenorScriptEngine extends ScriptEngine
 		if (_scripts.isEmpty())
 			return "No Packages Loaded.";
 		
-		String out = "Script Packages currently loaded:\n";
+		StringBuilder out = new StringBuilder();
+		out.append("Script Packages currently loaded:\n");
 		
 		for (ScriptDocument script : _scripts)
 		{
-			out += script;
+			out.append(script);
 		}
-		return out;
+		return out.toString();
 	}
 	
 	@SuppressWarnings("synthetic-access")

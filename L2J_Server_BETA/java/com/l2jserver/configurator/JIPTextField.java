@@ -148,23 +148,18 @@ public class JIPTextField extends JPanel implements FocusListener
 	
 	public String getText()
 	{
-		String str = "";
+		StringBuilder str = new StringBuilder();
 		for (int i = 0; i < 4; i++)
 		{
 			if (_textFields[i].getText().length() == 0)
-			{
-				str += "0";
-			}
+				str.append("0");
 			else
-			{
-				str += _textFields[i].getText();
-			}
+				str.append(_textFields[i].getText());
+			
 			if (i < 3)
-			{
-				str += ".";
-			}
+				str.append(".");
 		}
-		return str;
+		return str.toString();
 	}
 	
 	public void setText(String str)

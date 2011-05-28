@@ -59,10 +59,11 @@ public class DeadLockDetector extends Thread
 				{
 					deadlock = true;
 					ThreadInfo[] tis = tmx.getThreadInfo(ids,true,true);
-					String info = "DeadLock Found!\n";
+					StringBuilder info = new StringBuilder();
+					info.append("DeadLock Found!\n");
 					for(ThreadInfo ti : tis)
 					{
-						info += ti.toString();
+						info.append(ti.toString());
 					}
 					
 					for(ThreadInfo ti : tis)
@@ -75,14 +76,26 @@ public class DeadLockDetector extends Thread
 						}
 						
 						ThreadInfo dl = ti;
-						info += "Java-level deadlock:\n";
-						info += "\t"+dl.getThreadName()+" is waiting to lock "+dl.getLockInfo().toString()+" which is held by "+dl.getLockOwnerName()+"\n";
+						info.append("Java-level deadlock:\n");
+						info.append("\t");
+						info.append(dl.getThreadName());
+						info.append(" is waiting to lock ");
+						info.append(dl.getLockInfo().toString());
+						info.append(" which is held by ");
+						info.append(dl.getLockOwnerName());
+						info.append("\n");
 						while((dl = tmx.getThreadInfo(new long[]{dl.getLockOwnerId()},true,true)[0]).getThreadId() != ti.getThreadId())
 						{
-							info += "\t"+dl.getThreadName()+" is waiting to lock "+dl.getLockInfo().toString()+" which is held by "+dl.getLockOwnerName()+"\n";
+							info.append("\t");
+							info.append(dl.getThreadName());
+							info.append(" is waiting to lock ");
+							info.append(dl.getLockInfo().toString());
+							info.append(" which is held by ");
+							info.append(dl.getLockOwnerName());
+							info.append("\n");
 						}
 					}
-					_log.warning(info);
+					_log.warning(info.toString());
 					
 					if(Config.RESTART_ON_DEADLOCK)
 					{
