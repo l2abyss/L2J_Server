@@ -68,6 +68,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionPlayerIsClanLeader;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerIsHero;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerLandingZone;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerLevel;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerLevelRange;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerMp;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerPkCount;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerPledgeClass;
@@ -459,6 +460,17 @@ abstract class DocumentBase
 			{
 				int lvl = Integer.decode(getValue(a.getNodeValue(), template));
 				cond = joinAnd(cond, new ConditionPlayerLevel(lvl));
+			}
+			else if ("levelRange".equalsIgnoreCase(a.getNodeName()))
+			{
+				String[] range = getValue(a.getNodeValue(), template).split(";");
+				if (range.length == 2)
+				{
+					int[] lvlRange = new int[2];
+					lvlRange[0] = Integer.decode(getValue(a.getNodeValue(), template).split(";")[0]);
+					lvlRange[1] = Integer.decode(getValue(a.getNodeValue(), template).split(";")[1]);
+					cond = joinAnd(cond, new ConditionPlayerLevelRange(lvlRange));
+				}
 			}
 			else if ("resting".equalsIgnoreCase(a.getNodeName()))
 			{
