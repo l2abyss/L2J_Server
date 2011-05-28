@@ -23,9 +23,7 @@ import java.util.NoSuchElementException;
  */
 public enum Stats
 {
-	//
 	// Base stats, for each in Calculator a slot is allocated
-	//
 	
 	// HP & MP
 	MAX_HP("maxHp"),
@@ -38,37 +36,41 @@ public enum Stats
 	HEAL_EFFECTIVNESS("gainHp"),
 	HEAL_PROFICIENCY("giveHp"),
 	HEAL_STATIC_BONUS("bonusHp"),
+	LIMIT_HP("limitHp"), // non-displayed hp limit
 	
-	// Atk & Def
+	// ATTACK & DEFENCE
 	POWER_DEFENCE("pDef"),
 	MAGIC_DEFENCE("mDef"),
 	POWER_ATTACK("pAtk"),
 	MAGIC_ATTACK("mAtk"),
 	PHYSICAL_SKILL_POWER("physicalSkillPower"),
 	POWER_ATTACK_SPEED("pAtkSpd"),
-	MAGIC_ATTACK_SPEED("mAtkSpd"), // how fast a spell is casted (including animation)
-	MAGIC_REUSE_RATE("mReuse"), // how fast spells becomes ready to reuse
+	MAGIC_ATTACK_SPEED("mAtkSpd"), // how fast a magic spell is casted (including animation)
+	ATK_REUSE("atkReuse"), // make bows hit simple hits way slower and will not affect skills
+	P_REUSE("pReuse"),
+	MAGIC_REUSE_RATE("mReuse"), // how fast a magic spell becomes ready to reuse
 	SHIELD_DEFENCE("sDef"),
 	CRITICAL_DAMAGE("cAtk"),
 	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, crit power and crit damage SA
 	// it was totally bad since now...
 	MAGIC_CRIT_DMG("mCritPower"),
 	
+	// PVP BONUS
 	PVP_PHYSICAL_DMG("pvpPhysDmg"),
 	PVP_MAGICAL_DMG("pvpMagicalDmg"),
 	PVP_PHYS_SKILL_DMG("pvpPhysSkillsDmg"),
-	
 	PVP_PHYSICAL_DEF("pvpPhysDef"),
 	PVP_MAGICAL_DEF("pvpMagicalDef"),
 	PVP_PHYS_SKILL_DEF("pvpPhysSkillsDef"),
 	
+	// PVE BONUS
 	PVE_PHYSICAL_DMG("pvePhysDmg"),
 	PVE_PHYS_SKILL_DMG("pvePhysSkillsDmg"),
 	PVE_BOW_DMG("pveBowDmg"),
 	PVE_BOW_SKILL_DMG("pveBowSkillsDmg"),
 	PVE_MAGICAL_DMG("pveMagicalDmg"),
 	
-	// Atk & Def rates
+	// ATTACK & DEFENCE RATES
 	EVASION_RATE("rEvas"),
 	P_SKILL_EVASION("pSkillEvas"),
 	CRIT_DAMAGE_EVASION("critDamEvas"),
@@ -79,22 +81,19 @@ public enum Stats
 	MCRITICAL_RATE("mCritRate"),
 	EXPSP_RATE("rExp"),
 	ATTACK_CANCEL("cancel"),
+	MAGIC_FAILURE_RATE("magicFailureRate"),	
 	
-	// Accuracy and range
+	// ACCURACY & RANGE
 	ACCURACY_COMBAT("accCombat"),
 	POWER_ATTACK_RANGE("pAtkRange"),
 	MAGIC_ATTACK_RANGE("mAtkRange"),
 	POWER_ATTACK_ANGLE("pAtkAngle"),
 	ATTACK_COUNT_MAX("atkCountMax"),
-	// Run speed,
-	// walk & escape speed are calculated proportionally,
-	// magic speed is a buff
+	// Run speed, walk & escape speed are calculated proportionally, magic speed is a buff
 	RUN_SPEED("runSpd"),
 	WALK_SPEED("walkSpd"),
 	
-	//
-	// Player-only stats
-	//
+	// BASIC STATS
 	STAT_STR("STR"),
 	STAT_CON("CON"),
 	STAT_DEX("DEX"),
@@ -102,15 +101,11 @@ public enum Stats
 	STAT_WIT("WIT"),
 	STAT_MEN("MEN"),
 	
-	//
 	// Special stats, share one slot in Calculator
-	//
 	
-	// stats of various abilities
+	// VARIOUS
 	BREATH("breath"),
 	FALL("fall"),
-	LIMIT_HP("limitHp"), // non-displayed hp limit
-	//
 	AGGRESSION("aggression"), // locks a mob on tank caster
 	BLEED("bleed"), // by daggers, like poison
 	POISON("poison"), // by magic, hp dmg over time
@@ -120,8 +115,8 @@ public enum Stats
 	CONFUSION("confusion"), // mob changes target, opposite to aggression/hate
 	SLEEP("sleep"), // sleep (don't move/ATTACK) until attacked
 	VALAKAS("valakas"),
-	VALAKAS_RES("valakasRes"),
-	//
+
+	// VULNERABILITIES
 	AGGRESSION_VULN("aggressionVuln"),
 	BLEED_VULN("bleedVuln"),
 	POISON_VULN("poisonVuln"),
@@ -131,19 +126,6 @@ public enum Stats
 	SLEEP_VULN("sleepVuln"),
 	CONFUSION_VULN("confusionVuln"),
 	MOVEMENT_VULN("movementVuln"),
-	FIRE_RES("fireRes"),
-	WIND_RES("windRes"),
-	WATER_RES("waterRes"),
-	EARTH_RES("earthRes"),
-	HOLY_RES("holyRes"),
-	DARK_RES("darkRes"),
-	//Skills Power
-	FIRE_POWER("firePower"),
-	WATER_POWER("waterPower"),
-	WIND_POWER("windPower"),
-	EARTH_POWER("earthPower"),
-	HOLY_POWER("holyPower"),
-	DARK_POWER("darkPower"),
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
 	DERANGEMENT_VULN("derangementVuln"),
 	DEBUFF_VULN("debuffVuln"),
@@ -151,9 +133,26 @@ public enum Stats
 	CRIT_VULN("critVuln"), // Resistence to Crit DMG in percent.
 	CRIT_ADD_VULN("critAddVuln"), // Resistence to Crit DMG in value (ex: +100 will be 100 more crit dmg, NOT 100% more).
 	MAGIC_DAMAGE_VULN("magicDamVul"),
-	MAGIC_SUCCESS_RES("magicSuccRes"),
-	MAGIC_FAILURE_RATE("magicFailureRate"),
 	
+	// RESISTANCES
+	FIRE_RES("fireRes"),
+	WIND_RES("windRes"),
+	WATER_RES("waterRes"),
+	EARTH_RES("earthRes"),
+	HOLY_RES("holyRes"),
+	DARK_RES("darkRes"),
+	VALAKAS_RES("valakasRes"),
+	MAGIC_SUCCESS_RES("magicSuccRes"),
+	
+	// ELEMENT POWER
+	FIRE_POWER("firePower"),
+	WATER_POWER("waterPower"),
+	WIND_POWER("windPower"),
+	EARTH_POWER("earthPower"),
+	HOLY_POWER("holyPower"),
+	DARK_POWER("darkPower"),
+
+	// PROFICIENCY
 	AGGRESSION_PROF("aggressionProf"),
 	BLEED_PROF("bleedProf"),
 	POISON_PROF("poisonProf"),
@@ -168,6 +167,7 @@ public enum Stats
 	DEBUFF_PROF("debuffProf"),
 	CRIT_PROF("critProf"),
 	
+	// WEAPONS VULNERABILITIES
 	NONE_WPN_VULN("noneWpnVuln"), // Shields!!!
 	SWORD_WPN_VULN("swordWpnVuln"),
 	BLUNT_WPN_VULN("bluntWpnVuln"),
@@ -216,10 +216,7 @@ public enum Stats
 	PDEF_GIANTS("pDef-giants"),
 	PDEF_MCREATURES("pDef-magicCreature"),
 	
-	ATK_REUSE("atkReuse"),
-	P_REUSE("pReuse"),
-	
-	//ExSkill :)
+	// ExSkill
 	INV_LIM("inventoryLimit"),
 	WH_LIM("whLimit"),
 	FREIGHT_LIM("FreightLimit"),
@@ -228,7 +225,7 @@ public enum Stats
 	REC_D_LIM("DwarfRecipeLimit"),
 	REC_C_LIM("CommonRecipeLimit"),
 	
-	//C4 Stats
+	// C4 Stats
 	PHYSICAL_MP_CONSUME_RATE("PhysicalMpConsumeRate"),
 	MAGICAL_MP_CONSUME_RATE("MagicalMpConsumeRate"),
 	DANCE_MP_CONSUME_RATE("DanceMpConsumeRate"),
@@ -237,18 +234,18 @@ public enum Stats
 	MP_CONSUME("MpConsume"),
 	SOULSHOT_COUNT("soulShotCount"),
 	
-	//T1 stats
+	// T1 stats
 	transformId("transformId"),
 	TALISMAN_SLOTS("talisman"),
 	CLOAK_SLOT("cloak"),
 	
-	//Shield Stats
+	// Shield Stats
 	SHIELD_DEFENCE_ANGLE("shieldDefAngle"),
 	
-	//Skill mastery
+	// Skill mastery
 	SKILL_MASTERY			("skillMastery"),
 	
-	// vitality
+	// Vitality
 	VITALITY_CONSUME_RATE("vitalityConsumeRate");
 	
 	public static final int NUM_STATS = values().length;
