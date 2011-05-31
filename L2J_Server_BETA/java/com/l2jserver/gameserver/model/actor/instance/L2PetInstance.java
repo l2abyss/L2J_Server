@@ -875,10 +875,14 @@ public class L2PetInstance extends L2Summon
 	public final void stopSkillEffects(int skillId)
 	{
 		super.stopSkillEffects(skillId);
-		for (SummonEffect effect : SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()))
+		List<SummonEffect> effects = SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId());
+		if (effects != null && !effects.isEmpty())
 		{
-			if (effect.getSkill().getId() == skillId)
-				SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).remove(effect);
+			for (SummonEffect effect : effects)
+			{
+				if (effect.getSkill().getId() == skillId)
+					SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).remove(effect);
+			}
 		}
 	}
 	

@@ -258,10 +258,14 @@ public class L2SummonInstance extends L2Summon
 	public final void stopSkillEffects(int skillId)
 	{
 		super.stopSkillEffects(skillId);
-		for (SummonEffect effect : SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()))
+		List<SummonEffect> effects = SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill());
+		if (effects != null && !effects.isEmpty())
 		{
-			if (effect.getSkill().getId() == skillId)
-				SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).remove(effect);
+			for (SummonEffect effect : effects)
+			{
+				if (effect.getSkill().getId() == skillId)
+					SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).remove(effect);
+			}
 		}
 	}
 	
