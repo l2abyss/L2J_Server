@@ -19,6 +19,7 @@ import java.util.List;
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Trap;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
@@ -33,7 +34,7 @@ public class L2TrapInstance extends L2Trap
 	private L2PcInstance _owner;
 	private int _level;
 	private boolean _isInArena = false;
-	private List<Integer> _playersWhoDetectedMe = new FastList<Integer>();
+	private final List<Integer> _playersWhoDetectedMe = new FastList<Integer>();
 	
 	/**
 	 * @param objectId
@@ -234,9 +235,11 @@ public class L2TrapInstance extends L2Trap
 		
 		// trap owned by players not attack non-flagged players
 		if (_owner != null)
-		{
+		{	
 			final L2PcInstance player = target.getActingPlayer();
-			if (player == null || (player.getPvpFlag() == 0 && player.getKarma() == 0))
+			if (target instanceof L2Attackable)
+				return true;
+			else if (player == null || (player.getPvpFlag() == 0 && player.getKarma() == 0))
 				return false;
 		}
 		

@@ -2470,26 +2470,19 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		}
 		else
 		{
-			// source is not playable
-			if (caster instanceof L2Attackable)
+			// target is mob
+			if (targetPlayer == null && target instanceof L2Attackable && caster instanceof L2Attackable)
 			{
-				// target is mob
-				if (targetPlayer == null)
-				{
-					if (target instanceof L2Attackable)
-					{
-						String casterEnemyClan = ((L2Attackable)caster).getEnemyClan();
-						if (casterEnemyClan == null || casterEnemyClan.isEmpty())
-							return false;
+				String casterEnemyClan = ((L2Attackable)caster).getEnemyClan();
+				if (casterEnemyClan == null || casterEnemyClan.isEmpty())
+					return false;
 
-						String targetClan = ((L2Attackable)target).getClan();
-						if (targetClan == null || targetClan.isEmpty())
-							return false;
+				String targetClan = ((L2Attackable)target).getClan();
+				if (targetClan == null || targetClan.isEmpty())
+					return false;
 
-						if (!casterEnemyClan.equals(targetClan))
-							return false;
-					}
-				}
+				if (!casterEnemyClan.equals(targetClan))
+					return false;
 			}
 		}
 		
