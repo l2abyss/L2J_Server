@@ -15,6 +15,7 @@
 
 package com.l2jserver.gameserver;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -424,6 +425,7 @@ public class GameServer
 		long freeMem = (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory() + Runtime.getRuntime().freeMemory()) / 1048576;
 		long totalMem = Runtime.getRuntime().maxMemory() / 1048576;
 		_log.info("GameServer Started, free memory " + freeMem + " Mb of " + totalMem + " Mb");
+		Toolkit.getDefaultToolkit().beep();
 		
 		_loginThread = LoginServerThread.getInstance();
 		_loginThread.start();

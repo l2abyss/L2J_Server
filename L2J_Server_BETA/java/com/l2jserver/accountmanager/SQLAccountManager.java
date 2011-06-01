@@ -449,6 +449,12 @@ public class SQLAccountManager
 				// TODO: delete pets, olympiad/noble/hero stuff
 			}
 			
+			// characters
+			statement.close();
+			statement = con.prepareStatement("DELETE FROM account_gsdata WHERE account_name=?;");
+			statement.setString(1, account);
+			statement.executeUpdate();
+			
 			// Delete Account
 			statement.close();
 			statement = con.prepareStatement("DELETE FROM accounts WHERE login=?;");

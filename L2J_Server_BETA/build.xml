@@ -43,6 +43,9 @@
 			<include name="mmocore.jar" />
 			<include name="trove-2.1.0.jar" />
 			<include name="netcon.jar" />
+			<include name="mail.jar" />
+			<include name="mailapi.jar" />
+			<include name="smtp.jar" />
 		</fileset>
 	</path>
 
@@ -186,6 +189,7 @@
 				<include name="*.xsd" />
 				<include name="*.txt" />
 				<exclude name="loginserver.properties" />
+				<exclude name="email.properties" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.login}/config">
@@ -193,6 +197,7 @@
 				<include name="loginserver.properties" />
 				<include name="mmo.properties" />
 				<include name="telnet.properties" />
+				<include name="email.properties" />
 			</fileset>
 		</copy>
 		<mkdir dir="${build.dist.game}/data" />

@@ -69,6 +69,12 @@ public class CharacterSelect extends L2GameClientPacket
 		if (!getClient().getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterSelect"))
 			return;
 		
+		if (Config.SECOND_AUTH_ENABLED && !getClient().getSecondaryAuth().isAuthed())
+		{
+			getClient().getSecondaryAuth().openDialog();
+			return;
+		}
+		
 		// we should always be abble to acquire the lock
 		// but if we cant lock then nothing should be done (ie repeated packet)
 		if (this.getClient().getActiveCharLock().tryLock())

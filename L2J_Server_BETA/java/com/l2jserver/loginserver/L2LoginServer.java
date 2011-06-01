@@ -35,6 +35,9 @@ import org.mmocore.network.SelectorThread;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
+import com.l2jserver.loginserver.mail.MailSystem;
+import com.l2jserver.loginserver.network.L2LoginClient;
+import com.l2jserver.loginserver.network.L2LoginPacketHandler;
 import com.l2jserver.status.Status;
 
 /**
@@ -43,10 +46,10 @@ import com.l2jserver.status.Status;
  */
 public class L2LoginServer
 {
-	public static final int PROTOCOL_REV = 0x0105;
+	public static final int PROTOCOL_REV = 0x0106;
 	
 	private static L2LoginServer _instance;
-	private Logger _log = Logger.getLogger(L2LoginServer.class.getName());
+	private final Logger _log = Logger.getLogger(L2LoginServer.class.getName());
 	private GameServerListener _gameServerListener;
 	private SelectorThread<L2LoginClient> _selectorThread;
 	private Status _statusServer;
@@ -142,6 +145,11 @@ public class L2LoginServer
 		
 		loadBanFile();
 		
+		if (Config.EMAIL_SYS_ENABLED)
+		{
+			MailSystem.getInstance();
+		}
+		
 		InetAddress bindAddress = null;
 		if (!Config.LOGIN_BIND_ADDRESS.equals("*"))
 		{
@@ -212,6 +220,7 @@ public class L2LoginServer
 			System.exit(1);
 		}
 		_selectorThread.start();
+		
 		_log.info("Login Server ready on " + (bindAddress == null ? "*" : bindAddress.getHostAddress()) + ":" + Config.PORT_LOGIN);
 	}
 	

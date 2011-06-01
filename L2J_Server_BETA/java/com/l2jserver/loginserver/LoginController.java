@@ -37,8 +37,9 @@ import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
-import com.l2jserver.loginserver.gameserverpackets.ServerStatus;
-import com.l2jserver.loginserver.serverpackets.LoginFail.LoginFailReason;
+import com.l2jserver.loginserver.network.L2LoginClient;
+import com.l2jserver.loginserver.network.gameserverpackets.ServerStatus;
+import com.l2jserver.loginserver.network.serverpackets.LoginFail.LoginFailReason;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.crypt.ScrambledKeyPair;
 import com.l2jserver.util.lib.Log;
@@ -60,16 +61,22 @@ public class LoginController
 	/** Authed Clients on LoginServer*/
 	protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>().shared();
 	
-	private Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>().shared();
+	private final Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>().shared();
 	
-	private Map<InetAddress, FailedLoginAttempt> _hackProtection;
+	private final Map<InetAddress, FailedLoginAttempt> _hackProtection;
 	
 	protected ScrambledKeyPair[] _keyPairs;
 	
-	private Thread _purge;
+	private final Thread _purge;
 	
 	protected byte[][] _blowfishKeys;
 	private static final int BLOWFISH_KEYS = 20;
+	
+	private static final String ACCESS_LEVEL_SELECT = "SELECT IF(? > value OR value IS NULL, accessLevel, -100) AS accessLevel " +
+			"FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
+	
+	private static final String USER_INFO_SELECT = "SELECT password, IF(? > value OR value IS NULL, accessLevel, -100) AS accessLevel, lastServer, userIp " +
+			"FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
 	
 	public static void load() throws GeneralSecurityException
 	{
@@ -513,8 +520,9 @@ public class LoginController
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT accessLevel FROM accounts WHERE login=?");
-			statement.setString(1, user);
+			statement = con.prepareStatement(ACCESS_LEVEL_SELECT);
+			statement.setString(1, Long.toString(System.currentTimeMillis()));
+			statement.setString(2, user);
 			ResultSet rset = statement.executeQuery();
 			if (rset.next())
 			{
@@ -585,8 +593,9 @@ public class LoginController
 			String userIP = null;
 			
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT password, accessLevel, lastServer, userIP FROM accounts WHERE login=?");
-			statement.setString(1, user);
+			PreparedStatement statement = con.prepareStatement(USER_INFO_SELECT);
+			statement.setString(1, Long.toString(System.currentTimeMillis()));
+			statement.setString(2, user);
 			ResultSet rset = statement.executeQuery();
 			if (rset.next())
 			{
@@ -771,8 +780,9 @@ public class LoginController
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT accessLevel FROM accounts WHERE login=?");
-			statement.setString(1, user);
+			PreparedStatement statement = con.prepareStatement(ACCESS_LEVEL_SELECT);
+			statement.setString(1, Long.toString(System.currentTimeMillis()));
+			statement.setString(2, user);
 			ResultSet rset = statement.executeQuery();
 			if (rset.next())
 			{
@@ -873,9 +883,9 @@ public class LoginController
 	
 	class BanInfo
 	{
-		private InetAddress _ipAddress;
+		private final InetAddress _ipAddress;
 		// Expiration
-		private long _expiration;
+		private final long _expiration;
 		
 		public BanInfo(InetAddress ipAddress, long expiration)
 		{

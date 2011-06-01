@@ -43,7 +43,7 @@ import javolution.xml.stream.XMLStreamException;
 import javolution.xml.stream.XMLStreamReaderImpl;
 
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.loginserver.gameserverpackets.ServerStatus;
+import com.l2jserver.loginserver.network.gameserverpackets.ServerStatus;
 import com.l2jserver.util.IPSubnet;
 import com.l2jserver.util.Rnd;
 
@@ -116,7 +116,7 @@ public class GameServerTable
 		InputStream in = null;
 		try
 		{
-			in = new FileInputStream("servername.xml");
+			in = new FileInputStream("data/servername.xml");
 			XMLStreamReaderImpl xpp = new XMLStreamReaderImpl();
 			xpp.setInput(new UTF8StreamReader().setInput(in));
 			for (int e = xpp.getEventType(); e != XMLStreamConstants.END_DOCUMENT; e = xpp.next())

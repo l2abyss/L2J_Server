@@ -23,7 +23,8 @@ import org.mmocore.network.IMMOExecutor;
 import org.mmocore.network.MMOConnection;
 import org.mmocore.network.ReceivablePacket;
 
-import com.l2jserver.loginserver.serverpackets.Init;
+import com.l2jserver.loginserver.network.L2LoginClient;
+import com.l2jserver.loginserver.network.serverpackets.Init;
 import com.l2jserver.util.IPv4Filter;
 
 /**

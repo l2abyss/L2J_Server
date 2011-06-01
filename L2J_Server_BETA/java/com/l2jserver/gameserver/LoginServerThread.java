@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
@@ -56,7 +57,9 @@ import com.l2jserver.gameserver.network.gameserverpackets.PlayerInGame;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerLogout;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerTracert;
 import com.l2jserver.gameserver.network.gameserverpackets.ReplyCharacters;
+import com.l2jserver.gameserver.network.gameserverpackets.SendMail;
 import com.l2jserver.gameserver.network.gameserverpackets.ServerStatus;
+import com.l2jserver.gameserver.network.gameserverpackets.TempBan;
 import com.l2jserver.gameserver.network.loginserverpackets.AuthResponse;
 import com.l2jserver.gameserver.network.loginserverpackets.InitLS;
 import com.l2jserver.gameserver.network.loginserverpackets.KickPlayer;
@@ -76,7 +79,7 @@ public class LoginServerThread extends Thread
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
 	/** {@see com.l2jserver.loginserver.LoginServer#PROTOCOL_REV } */
-	private static final int REVISION = 0x0105;
+	private static final int REVISION = 0x0106;
 	private RSAPublicKey _publicKey;
 	private String _hostname;
 	private int _port;
@@ -354,6 +357,10 @@ public class LoginServerThread extends Thread
 				if (Config.DEBUG)
 					_log.log(Level.WARNING, "", e);
 			}
+			catch (SocketException e)
+			{
+				_log.warning("LoginServer not avaible, trying to reconnect...");
+			}
 			catch (IOException e)
 			{
 				_log.log(Level.WARNING, "Disconnected from Login, Trying to reconnect: " + e.getMessage(), e);
@@ -468,6 +475,34 @@ public class LoginServerThread extends Thread
 		try
 		{
 			sendPacket(ptc);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "", e);
+		}
+	}
+	
+	public void sendMail(String account, String mailId, String... args)
+	{
+		SendMail sem = new SendMail(account, mailId, args);
+		try
+		{
+			sendPacket(sem);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "", e);
+		}
+	}
+	
+	public void sendTempBan(String account, String ip, long time)
+	{
+		TempBan tbn = new TempBan(account, ip, time);
+		try
+		{
+			sendPacket(tbn);
 		}
 		catch (IOException e)
 		{

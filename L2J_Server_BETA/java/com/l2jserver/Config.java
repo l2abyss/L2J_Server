@@ -81,6 +81,8 @@ public final class Config
 	public static final String GRANDBOSS_CONFIG_FILE = "./config/Grandboss.properties";
 	public static final String GRACIASEEDS_CONFIG_FILE = "./config/GraciaSeeds.properties";
 	public static final String CHAT_FILTER_FILE = "./config/chatfilter.txt";
+	public static final String SECURITY_CONFIG_FILE = "./config/security.properties";
+	public static final String EMAIL_CONFIG_FILE = "./config/email.properties";
 	
 	
 	//--------------------------------------------------
@@ -420,7 +422,6 @@ public final class Config
 	public static boolean PACKET_HANDLER_DEBUG;
 	public static boolean DEVELOPER;
 	public static boolean ACCEPT_GEOEDITOR_CONN;
-	public static boolean TEST_SERVER;
 	public static boolean ALT_DEV_NO_HANDLERS;
 	public static boolean ALT_DEV_NO_QUESTS;
 	public static boolean ALT_DEV_NO_SPAWNS;
@@ -1027,6 +1028,28 @@ public final class Config
 	
 	//chatfilter
 	public static ArrayList<String>	FILTER_LIST;
+	
+	// Security
+	public static boolean SECOND_AUTH_ENABLED;
+	public static int SECOND_AUTH_MAX_ATTEMPTS;
+	public static long SECOND_AUTH_BAN_TIME;
+	public static String SECOND_AUTH_REC_LINK;
+	
+	public static String EMAIL_SERVERINFO_NAME;
+	public static String EMAIL_SERVERINFO_ADDRESS;
+	
+	// Email
+	public static boolean EMAIL_SYS_ENABLED;
+	public static String EMAIL_SYS_HOST;
+	public static int EMAIL_SYS_PORT;
+	public static boolean EMAIL_SYS_SMTP_AUTH;
+	public static String EMAIL_SYS_FACTORY;
+	public static boolean EMAIL_SYS_FACTORY_CALLBACK;
+	public static String EMAIL_SYS_USERNAME;
+	public static String EMAIL_SYS_PASSWORD;
+	public static String EMAIL_SYS_ADDRESS;
+	
+	
 	
 	/**
 	 * This class initializes all global variables for configuration.<br>
@@ -1809,7 +1832,6 @@ public final class Config
 					PACKET_HANDLER_DEBUG = Boolean.parseBoolean(General.getProperty("PacketHandlerDebug", "false"));
 					DEVELOPER = Boolean.parseBoolean(General.getProperty("Developer", "false"));
 					ACCEPT_GEOEDITOR_CONN = Boolean.parseBoolean(General.getProperty("AcceptGeoeditorConn", "false"));
-					TEST_SERVER = Boolean.parseBoolean(General.getProperty("TestServer", "false"));
 					ALT_DEV_NO_HANDLERS = Boolean.parseBoolean(General.getProperty("AltDevNoHandlers", "False"));
 					ALT_DEV_NO_QUESTS = Boolean.parseBoolean(General.getProperty("AltDevNoQuests", "False"));
 					ALT_DEV_NO_SPAWNS = Boolean.parseBoolean(General.getProperty("AltDevNoSpawns", "False"));
@@ -2773,6 +2795,25 @@ public final class Config
 					e.printStackTrace();
 					throw new Error("Failed to Load " + CHAT_FILTER_FILE + " File.");
 				}
+				
+				// Security
+				try
+				{
+					L2Properties securitySettings = new L2Properties();
+					is = new FileInputStream(new File(SECURITY_CONFIG_FILE));
+					securitySettings.load(is);
+
+					// Second Auth Settings
+					SECOND_AUTH_ENABLED = Boolean.parseBoolean(securitySettings.getProperty("SecondAuthEnabled", "false"));
+					SECOND_AUTH_MAX_ATTEMPTS = Integer.parseInt(securitySettings.getProperty("SecondAuthMaxAttempts", "5"));
+					SECOND_AUTH_BAN_TIME = Integer.parseInt(securitySettings.getProperty("SecondAuthBanTime", "480"));
+					SECOND_AUTH_REC_LINK = securitySettings.getProperty("SecondAuthRecoveryLink", "5");
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					throw new Error("Failed to Load " + SECURITY_CONFIG_FILE + " File.");
+				}
 			}
 			finally
 			{
@@ -2867,6 +2908,32 @@ public final class Config
 				{
 					e.printStackTrace();
 					throw new Error("Failed to Load "+TELNET_FILE+" File.");
+				}
+				
+				// Email
+				try
+				{
+					L2Properties emailSettings = new L2Properties();
+					is = new FileInputStream(new File(EMAIL_CONFIG_FILE));
+					emailSettings.load(is);
+					
+					EMAIL_SERVERINFO_NAME = emailSettings.getProperty("ServerInfoName", "Unconfigured L2J Server");
+					EMAIL_SERVERINFO_ADDRESS = emailSettings.getProperty("ServerInfoAddress", "info@myl2jserver.com");
+					
+					EMAIL_SYS_ENABLED = Boolean.parseBoolean(emailSettings.getProperty("EmailSystemEnabled", "false"));
+					EMAIL_SYS_HOST = emailSettings.getProperty("SmtpServerHost", "smtp.gmail.com");
+					EMAIL_SYS_PORT = Integer.parseInt(emailSettings.getProperty("SmtpServerPort", "465"));
+					EMAIL_SYS_SMTP_AUTH = Boolean.parseBoolean(emailSettings.getProperty("SmtpAuthRequired", "true"));
+					EMAIL_SYS_FACTORY = emailSettings.getProperty("SmtpFactory", "javax.net.ssl.SSLSocketFactory");
+					EMAIL_SYS_FACTORY_CALLBACK = Boolean.parseBoolean(emailSettings.getProperty("SmtpFactoryCallback", "false"));
+					EMAIL_SYS_USERNAME = emailSettings.getProperty("SmtpUsername", "user@gmail.com");
+					EMAIL_SYS_PASSWORD = emailSettings.getProperty("SmtpPassword", "password");
+					EMAIL_SYS_ADDRESS = emailSettings.getProperty("EmailSystemAddress", "noreply@myl2jserver.com");
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+					throw new Error("Failed to Load " + EMAIL_CONFIG_FILE + " File.");
 				}
 			}
 			finally
@@ -3394,9 +3461,9 @@ public final class Config
 	
 	public static class ClassMasterSettings
 	{
-		private TIntObjectHashMap<TIntIntHashMap> _claimItems;
-		private TIntObjectHashMap<TIntIntHashMap> _rewardItems;
-		private TIntObjectHashMap<Boolean> _allowedClassChange;
+		private final TIntObjectHashMap<TIntIntHashMap> _claimItems;
+		private final TIntObjectHashMap<TIntIntHashMap> _rewardItems;
+		private final TIntObjectHashMap<Boolean> _allowedClassChange;
 		
 		public ClassMasterSettings(String _configLine)
 		{
