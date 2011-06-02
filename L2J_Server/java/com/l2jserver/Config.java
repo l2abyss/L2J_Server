@@ -1080,7 +1080,7 @@ public final class Config
 					ACCEPT_ALTERNATE_ID = Boolean.parseBoolean(serverSettings.getProperty("AcceptAlternateID","True"));
 					
 					DATABASE_DRIVER = serverSettings.getProperty("Driver", "com.mysql.jdbc.Driver");
-					DATABASE_URL = serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jdb");
+					DATABASE_URL = serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jgs");
 					DATABASE_LOGIN = serverSettings.getProperty("Login", "root");
 					DATABASE_PASSWORD = serverSettings.getProperty("Password", "");
 					DATABASE_MAX_CONNECTIONS = Integer.parseInt(serverSettings.getProperty("MaximumDbConnections", "10"));
@@ -2783,7 +2783,7 @@ public final class Config
 					LOG_LOGIN_CONTROLLER = Boolean.parseBoolean(serverSettings.getProperty("LogLoginController", "true"));
 					
 					DATABASE_DRIVER = serverSettings.getProperty("Driver", "com.mysql.jdbc.Driver");
-					DATABASE_URL = serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jdb");
+					DATABASE_URL = serverSettings.getProperty("URL", "jdbc:mysql://localhost/l2jls");
 					DATABASE_LOGIN = serverSettings.getProperty("Login", "root");
 					DATABASE_PASSWORD = serverSettings.getProperty("Password", "");
 					DATABASE_MAX_CONNECTIONS = Integer.parseInt(serverSettings.getProperty("MaximumDbConnections", "10"));
