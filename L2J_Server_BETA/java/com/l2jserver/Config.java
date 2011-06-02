@@ -140,6 +140,8 @@ public final class Config
 	public static int MAX_PATK_SPEED;
 	public static int MAX_MATK_SPEED;
 	public static int MAX_EVASION;
+	public static int MIN_DEBUFF_CHANCE;
+	public static int MAX_DEBUFF_CHANCE;
 	public static byte MAX_SUBCLASS;
 	public static byte MAX_SUBCLASS_LEVEL;
 	public static int MAX_PVTSTORESELL_SLOTS_DWARF;
@@ -1561,6 +1563,8 @@ public final class Config
 					MAX_PATK_SPEED = Integer.parseInt(Character.getProperty("MaxPAtkSpeed", "1500"));
 					MAX_MATK_SPEED = Integer.parseInt(Character.getProperty("MaxMAtkSpeed", "1999"));
 					MAX_EVASION = Integer.parseInt(Character.getProperty("MaxEvasion", "250"));
+					MIN_DEBUFF_CHANCE = Integer.parseInt(Character.getProperty("MinDebuffChance", "10"));
+					MAX_DEBUFF_CHANCE = Integer.parseInt(Character.getProperty("MaxDebuffChance", "90"));
 					MAX_SUBCLASS = Byte.parseByte(Character.getProperty("MaxSubclass", "3"));
 					MAX_SUBCLASS_LEVEL = Byte.parseByte(Character.getProperty("MaxSubclassLevel", "80"));
 					MAX_PVTSTORESELL_SLOTS_DWARF = Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsDwarf", "4"));
