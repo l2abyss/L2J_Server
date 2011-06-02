@@ -465,8 +465,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_magicLevel = set.getInteger("magicLvl", SkillTreeTable.getInstance().getMinSkillLevel(_id, _level));
 		_levelDepend = set.getInteger("lvlDepend", 0);
 		_ignoreResists = set.getBool("ignoreResists", false);
-		_minChance = set.getInteger("minChance", 1);
-		_maxChance = set.getInteger("maxChance", 99);
+		_minChance = set.getInteger("minChance", 10);
+		_maxChance = set.getInteger("maxChance", 90);
 		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
 		_skillType = set.getEnum("skillType", L2SkillType.class);
