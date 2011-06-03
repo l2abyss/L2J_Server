@@ -184,9 +184,9 @@ public class EnchantHPBonusData
 			return 0;
 		
 		if (item.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)
-			return (int) (values[Math.min(item.getEnchantLevel(), values.length) - 1] * fullArmorModifier);
+			return (int) (values[Math.min(item.getOlyEnchantLevel(), values.length) - 1] * fullArmorModifier);
 		else
-			return values[Math.min(item.getEnchantLevel(), values.length) - 1];
+			return values[Math.min(item.getOlyEnchantLevel(), values.length) - 1];
 	}
 	
 	@SuppressWarnings("synthetic-access")

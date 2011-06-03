@@ -1933,4 +1933,18 @@ public final class L2ItemInstance extends L2Object
 	{
 		return getItem().isFreightable();
 	}
+	
+	public int getOlyEnchantLevel()
+	{
+		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		int enchant = getEnchantLevel();
+		
+		if(player == null)
+			return enchant;
+		
+		if (player.isInOlympiadMode() && Config.ALT_OLY_ENCHANT_LIMIT >= 0 && enchant > Config.ALT_OLY_ENCHANT_LIMIT)
+				enchant = Config.ALT_OLY_ENCHANT_LIMIT;
+		
+		return enchant;
+	}
 }
