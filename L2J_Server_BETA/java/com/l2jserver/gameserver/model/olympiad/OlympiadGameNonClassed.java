@@ -39,7 +39,7 @@ public class OlympiadGameNonClassed extends OlympiadGameNormal
 	@Override
 	protected final int getDivider()
 	{
-		return 5;
+		return Config.ALT_OLY_DIVIDER_NON_CLASSED;
 	}
 
 	@Override
