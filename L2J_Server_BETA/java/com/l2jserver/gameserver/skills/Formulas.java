@@ -1904,7 +1904,7 @@ public final class Formulas
 	}
 	
 	/** Returns true in case of critical hit */
-	public static final boolean calcCrit(double rate, L2Character target)
+	public static final boolean calcCrit(double rate, boolean skill, L2Character target)
 	{
 		final boolean success = rate > Rnd.get(1000);
 		
@@ -1914,8 +1914,11 @@ public final class Formulas
 			if (target == null)
 				return true; // no effect
 			
-			// little weird, but remember what CRIT_DAMAGE_EVASION > 1 increase chances to _evade_ crit hits
-			return Rnd.get((int)target.getStat().calcStat(Stats.CRIT_DAMAGE_EVASION, 100, null, null)) < 100;
+			if (skill) //skills are excluded from crit dmg evasion
+				return success;
+			else
+				// little weird, but remember what CRIT_DAMAGE_EVASION > 1 increase chances to _evade_ crit hits
+				return Rnd.get((int)target.getStat().calcStat(Stats.CRIT_DAMAGE_EVASION, 100, null, null)) < 100;
 		}
 		return success;
 	}

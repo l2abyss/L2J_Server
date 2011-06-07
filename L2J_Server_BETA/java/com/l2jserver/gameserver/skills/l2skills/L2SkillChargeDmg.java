@@ -95,7 +95,7 @@ public class L2SkillChargeDmg extends L2Skill
 			byte shld = Formulas.calcShldUse(caster, target, this);
 			boolean crit = false;
 			if (this.getBaseCritRate() > 0)
-				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), target);
+				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), true, target);
 			// damage calculation, crit is static 2x
 			double damage = Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
 			if (crit)

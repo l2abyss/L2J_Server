@@ -1081,7 +1081,7 @@ public abstract class L2Character extends L2Object
 			shld1 = Formulas.calcShldUse(this, target);
 			
 			// Calculate if hit is critical
-			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null), target);
+			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null), false, target);
 			
 			// Calculate physical damages
 			damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
@@ -1166,7 +1166,7 @@ public abstract class L2Character extends L2Object
 			shld1 = Formulas.calcShldUse(this, target);
 			
 			// Calculate if hit is critical
-			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null), target);
+			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null), false, target);
 			
 			// Calculate physical damages
 			damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
@@ -1244,7 +1244,7 @@ public abstract class L2Character extends L2Object
 			shld1 = Formulas.calcShldUse(this, target);
 			
 			// Calculate if hit 1 is critical
-			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null), target);
+			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null), false, target);
 			
 			// Calculate physical damages of hit 1
 			damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, true, attack.soulshot);
@@ -1258,7 +1258,7 @@ public abstract class L2Character extends L2Object
 			shld2 = Formulas.calcShldUse(this, target);
 			
 			// Calculate if hit 2 is critical
-			crit2 = Formulas.calcCrit(getStat().getCriticalHit(target, null), target);
+			crit2 = Formulas.calcCrit(getStat().getCriticalHit(target, null), false, target);
 			
 			// Calculate physical damages of hit 2
 			damage2 = (int)Formulas.calcPhysDam(this, target, null, shld2, crit2, true, attack.soulshot);
@@ -1457,7 +1457,7 @@ public abstract class L2Character extends L2Object
 			shld1 = Formulas.calcShldUse(this, target);
 			
 			// Calculate if hit is critical
-			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null), target);
+			crit1 = Formulas.calcCrit(getStat().getCriticalHit(target, null), false, target);
 			
 			// Calculate physical damages
 			damage1 = (int)Formulas.calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
