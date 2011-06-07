@@ -80,7 +80,12 @@ public class EffectHealOverTime extends L2Effect
 			return false;
 		
 		double hp = getEffected().getCurrentHp();
-		double maxhp = getEffected().getMaxHp();
+		double maxhp = getEffected().getMaxRecoverableHp();
+		
+		// Not needed to set the HP and send update packet if player is already at max HP
+		if (hp >= maxhp)
+			return true;
+		
 		hp += calc();
 		if (hp > maxhp)
 			hp = maxhp;

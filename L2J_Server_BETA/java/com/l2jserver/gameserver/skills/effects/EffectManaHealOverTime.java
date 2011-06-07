@@ -64,7 +64,12 @@ public class EffectManaHealOverTime extends L2Effect
 			return false;
 		
 		double mp = getEffected().getCurrentMp();
-		double maxmp = getEffected().getMaxMp();
+		double maxmp = getEffected().getMaxRecoverableMp();
+		
+		// Not needed to set the MP and send update packet if player is already at max MP
+		if (mp >= maxmp)
+			return true;
+		
 		mp += calc();
 		if (mp > maxmp)
 			mp = maxmp;

@@ -6808,10 +6808,13 @@ public abstract class L2Character extends L2Object
 	public int getINT() { return getStat().getINT(); }
 	public final int getMagicalAttackRange(L2Skill skill) { return getStat().getMagicalAttackRange(skill); }
 	public final int getMaxCp() { return getStat().getMaxCp(); }
+	public final int getMaxRecoverableCp() { return getStat().getMaxRecoverableCp(); }
 	public int getMAtk(L2Character target, L2Skill skill) { return getStat().getMAtk(target, skill); }
 	public int getMAtkSpd() { return getStat().getMAtkSpd(); }
 	public int getMaxMp() { return getStat().getMaxMp(); }
+	public int getMaxRecoverableMp() { return getStat().getMaxRecoverableMp(); }
 	public int getMaxHp() { return getStat().getMaxHp(); }
+	public int getMaxRecoverableHp() { return getStat().getMaxRecoverableHp(); }
 	public final int getMCriticalHit(L2Character target, L2Skill skill) { return getStat().getMCriticalHit(target, skill); }
 	public int getMDef(L2Character target, L2Skill skill) { return getStat().getMDef(target, skill); }
 	public int getMEN() { return getStat().getMEN(); }

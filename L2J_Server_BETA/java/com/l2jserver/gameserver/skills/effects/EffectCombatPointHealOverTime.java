@@ -64,7 +64,12 @@ public class EffectCombatPointHealOverTime extends L2Effect
 			return false;
 		
 		double cp = getEffected().getCurrentCp();
-		double maxcp = getEffected().getMaxCp();
+		double maxcp = getEffected().getMaxRecoverableCp();
+		
+		// Not needed to set the CP and send update packet if player is already at max CP
+		if (cp >= maxcp)
+			return true;
+		
 		cp += calc();
 		if (cp > maxcp)
 			cp = maxcp;

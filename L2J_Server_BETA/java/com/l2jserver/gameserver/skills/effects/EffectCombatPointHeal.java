@@ -58,8 +58,8 @@ public class EffectCombatPointHeal extends L2Effect
 		
 		double cp = calc();
 		
-		if ((target.getCurrentCp() + cp) > target.getMaxCp())
-			cp = target.getMaxCp() - target.getCurrentCp();
+		if ((target.getCurrentCp() + cp) > target.getMaxRecoverableCp())
+			cp = target.getMaxRecoverableCp() - target.getCurrentCp();
 		target.setCurrentCp(cp + target.getCurrentCp());
 		
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CP_WILL_BE_RESTORED);

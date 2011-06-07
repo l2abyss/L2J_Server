@@ -29,6 +29,9 @@ public enum Stats
 	MAX_HP("maxHp"),
 	MAX_MP("maxMp"),
 	MAX_CP("maxCp"),
+	MAX_RECOVERABLE_HP("maxRecoverableHp"), // The maximum HP that is able to be recovered trough heals
+	MAX_RECOVERABLE_MP("maxRecoverableMp"),
+	MAX_RECOVERABLE_CP("maxRecoverableCp"),
 	REGENERATE_HP_RATE("regHp"),
 	REGENERATE_CP_RATE("regCp"),
 	REGENERATE_MP_RATE("regMp"),

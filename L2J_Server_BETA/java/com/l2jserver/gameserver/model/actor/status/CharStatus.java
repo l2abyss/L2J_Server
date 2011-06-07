@@ -348,12 +348,12 @@ public class CharStatus
 		final CharStat charstat = getActiveChar().getStat();
 		
 		// Modify the current HP of the L2Character and broadcast Server->Client packet StatusUpdate
-		if (getCurrentHp() < charstat.getMaxHp())
+		if (getCurrentHp() < charstat.getMaxRecoverableHp())
 			setCurrentHp(getCurrentHp()
 					+ Formulas.calcHpRegen(getActiveChar()), false);
 		
 		// Modify the current MP of the L2Character and broadcast Server->Client packet StatusUpdate
-		if (getCurrentMp() < charstat.getMaxMp())
+		if (getCurrentMp() < charstat.getMaxRecoverableMp())
 			setCurrentMp(getCurrentMp()
 					+ Formulas.calcMpRegen(getActiveChar()), false);
 		
@@ -361,7 +361,7 @@ public class CharStatus
 		{
 			// no broadcast necessary for characters that are in inactive regions.
 			// stop regeneration for characters who are filled up and in an inactive region.
-			if ((getCurrentHp() == charstat.getMaxHp())
+			if ((getCurrentHp() == charstat.getMaxRecoverableHp())
 					&& (getCurrentMp() == charstat.getMaxMp()))
 				stopHpMpRegeneration();
 		}

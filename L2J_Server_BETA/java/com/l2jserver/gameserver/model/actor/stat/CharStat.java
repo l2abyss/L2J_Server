@@ -260,6 +260,14 @@ public class CharStat
 		return (int) calcStat(Stats.MAX_CP, _activeChar.getTemplate().baseCpMax, null, null);
 	}
 	
+	public int getMaxRecoverableCp()
+	{
+		if (_activeChar == null)
+			return 1;
+		
+		return (int) calcStat(Stats.MAX_RECOVERABLE_CP, getMaxCp(), null, null);
+	}
+	
 	public int getMaxHp()
 	{
 		if (_activeChar == null)
@@ -276,12 +284,28 @@ public class CharStat
 		return (int) calcStat(Stats.MAX_HP, _activeChar.getTemplate().baseHpMax, null, null);
 	}
 	
+	public int getMaxRecoverableHp()
+	{
+		if (_activeChar == null)
+			return 1;
+		
+		return (int) calcStat(Stats.MAX_RECOVERABLE_HP, getMaxVisibleHp(), null, null);
+	}
+	
 	public int getMaxMp()
 	{
 		if (_activeChar == null)
 			return 1;
 		
 		return (int) calcStat(Stats.MAX_MP, _activeChar.getTemplate().baseMpMax, null, null);
+	}
+	
+	public int getMaxRecoverableMp()
+	{
+		if (_activeChar == null)
+			return 1;
+		
+		return (int) calcStat(Stats.MAX_RECOVERABLE_MP, getMaxMp(), null, null);
 	}
 	
 	/**
