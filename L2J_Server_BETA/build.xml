@@ -35,17 +35,7 @@
 
 	<path id="classpath">
 		<fileset dir="${lib}">
-			<include name="c3p0-0.9.2-pre1.jar" />
-			<include name="jython.jar" />
-			<include name="jython-engine.jar" />
-			<include name="javolution-5.5.1.jar" />
-			<include name="mchange-commons-0.2.jar" />
-			<include name="mmocore.jar" />
-			<include name="trove-2.1.0.jar" />
-			<include name="netcon.jar" />
-			<include name="mail.jar" />
-			<include name="mailapi.jar" />
-			<include name="smtp.jar" />
+			<include name="*.jar" />
 		</fileset>
 	</path>
 
