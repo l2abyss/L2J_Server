@@ -2470,18 +2470,7 @@ public final class Formulas
 		else
 			attackerMod = attacker.getLevel();
 		
-		final int delta = attackerMod - target.getLevel();
-		int deltamod = delta / 5;
-		deltamod = deltamod * 5;
-		if (deltamod != delta)
-		{
-			if (delta < 0)
-				deltamod -= 5;
-			else
-				deltamod += 5;
-		}
-		
-		return deltamod;
+		return skill.getLevelDepend() * (attackerMod - target.getLevel());
 	}
 	
 	public static int calcElementModifier(L2Character attacker, L2Character target, L2Skill skill)
