@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -296,7 +295,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _excludedFromCheck;
 	private final boolean _simultaneousCast;
 	
-	private L2ExtractableSkill _extractableItems = null;;
+	private L2ExtractableSkill _extractableItems = null;
 	
 	protected L2Skill(StatsSet set)
 	{
@@ -462,7 +461,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_power = set.getFloat("power", 0.f);
 		_pvpPower = set.getFloat("pvpPower", (float)getPower());
 		_pvePower = set.getFloat("pvePower", (float)getPower());
-		_magicLevel = set.getInteger("magicLvl", SkillTreeTable.getInstance().getMinSkillLevel(_id, _level));
+		_magicLevel = set.getInteger("magicLvl", 0);
 		_levelDepend = set.getInteger("lvlDepend", 0);
 		_ignoreResists = set.getBool("ignoreResists", false);
 		_minChance = set.getInteger("minChance", Config.MIN_DEBUFF_CHANCE);

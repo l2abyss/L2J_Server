@@ -16,13 +16,16 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
-import com.l2jserver.gameserver.datatables.SubPledgeSkillTree;
-import com.l2jserver.gameserver.datatables.SubPledgeSkillTree.SubUnitSkill;
+import javolution.util.FastList;
+
+import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
+import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -103,18 +106,28 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 			{
 				if (player.isClanLeader())
 				{
-					AcquireSkillList skilllist = new AcquireSkillList(SkillType.SubUnit);
-					SubUnitSkill[] array = SubPledgeSkillTree.getInstance().getAvailableSkills(player.getClan());
-					if (array.length == 0)
+					final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
+					final AcquireSkillList asl = new AcquireSkillList(SkillType.SubPledge);
+					
+					int count = 0;
+					for (L2SkillLearn s: skills)
 					{
-						player.sendPacket(SystemMessageId.NO_MORE_SKILLS_TO_LEARN);
-						return;
+						final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+						if (sk != null)
+						{
+							asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), s.getLevelUpSp(), 0);
+							count++;
+						}
 					}
-					for (SubUnitSkill sus : array)
+					//TODO: Missing some system message?
+					if (count == 0)
 					{
-						skilllist.addSkill(sus.getSkill().getId(), sus.getSkill().getLevel(), sus.getSkill().getLevel(), sus.getReputation(), 0);
+						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
 					}
-					player.sendPacket(skilllist);
+					else
+					{
+						player.sendPacket(asl);
+					}
 				}
 				else
 				{
@@ -144,8 +157,6 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 	
 	private void showMessageWindow(L2PcInstance player, int val)
 	{
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-		
 		String filename;
 		
 		if (val == 0)
@@ -170,9 +181,6 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2SquadTrainer#showSubUnitSkillList(com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
-	 */
 	@Override
 	public void showSubUnitSkillList(L2PcInstance player)
 	{

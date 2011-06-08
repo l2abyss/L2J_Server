@@ -25,7 +25,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
@@ -44,7 +44,6 @@ import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 import com.l2jserver.gameserver.templates.chars.L2PcTemplate.PcTemplateItem;
 import com.l2jserver.gameserver.util.Util;
-
 
 @SuppressWarnings("unused")
 public final class CharacterCreate extends L2GameClientPacket
@@ -282,21 +281,21 @@ public final class CharacterCreate extends L2GameClientPacket
 			}
 		}
 		
-		for (L2SkillLearn skill : SkillTreeTable.getInstance().getAvailableSkills(newChar, newChar.getClassId()))
+		for (L2SkillLearn skill : SkillTreesData.getInstance().getAvailableSkills(newChar, newChar.getClassId(), false, true))
 		{
-			newChar.addSkill(SkillTable.getInstance().getInfo(skill.getId(), skill.getLevel()), true);
-			if (skill.getId() == 1001 || skill.getId() == 1177)
+			newChar.addSkill(SkillTable.getInstance().getInfo(skill.getSkillId(), skill.getSkillLevel()), true);
+			if (skill.getSkillId() == 1001 || skill.getSkillId() == 1177)
 			{
-				shortcut = new L2ShortCut(1, 0, 2, skill.getId(), skill.getLevel(), 1);
+				shortcut = new L2ShortCut(1, 0, 2, skill.getSkillId(), skill.getSkillLevel(), 1);
 				newChar.registerShortCut(shortcut);
 			}
-			if (skill.getId() == 1216)
+			if (skill.getSkillId() == 1216)
 			{
-				shortcut = new L2ShortCut(10, 0, 2, skill.getId(), skill.getLevel(), 1);
+				shortcut = new L2ShortCut(10, 0, 2, skill.getSkillId(), skill.getSkillLevel(), 1);
 				newChar.registerShortCut(shortcut);
 			}
 			if (Config.DEBUG)
-				_log.fine("Adding starter skill:" + skill.getId() + " / " + skill.getLevel());
+				_log.fine("Adding starter skill:" + skill.getSkillId() + " / " + skill.getSkillLevel());
 		}
 		
 		if (!Config.DISABLE_TUTORIAL)
@@ -323,11 +322,6 @@ public final class CharacterCreate extends L2GameClientPacket
 			q.newQuestState(player).setState(State.STARTED);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

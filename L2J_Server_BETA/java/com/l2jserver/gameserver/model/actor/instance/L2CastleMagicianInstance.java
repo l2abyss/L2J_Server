@@ -14,11 +14,13 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
-import com.l2jserver.gameserver.datatables.SubPledgeSkillTree;
-import com.l2jserver.gameserver.datatables.SubPledgeSkillTree.SubUnitSkill;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
@@ -343,16 +345,16 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 			{
 				if (player.isClanLeader())
 				{
-					AcquireSkillList skilllist = new AcquireSkillList(SkillType.SubUnit);
-					SubUnitSkill[] array = SubPledgeSkillTree.getInstance().getAvailableSkills(player.getClan());
-					if (array.length == 0)
+					AcquireSkillList skilllist = new AcquireSkillList(SkillType.SubClass);
+					FastList<L2SkillLearn> list = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
+					if (list.isEmpty())
 					{
 						player.sendPacket(SystemMessageId.NO_MORE_SKILLS_TO_LEARN);
 						return;
 					}
-					for (SubUnitSkill sus : array)
+					for (L2SkillLearn skillLearn : list)
 					{
-						skilllist.addSkill(sus.getSkill().getId(), sus.getSkill().getLevel(), sus.getSkill().getLevel(), sus.getReputation(), 0);
+						skilllist.addSkill(skillLearn.getSkillId(), skillLearn.getSkillLevel(), skillLearn.getSkillLevel(), skillLearn.getLevelUpSp(), 0);
 					}
 					player.sendPacket(skilllist);
 				}

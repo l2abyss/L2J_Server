@@ -19,13 +19,10 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
 
-
 /**
  * The Class ConditionPlayerGrade.
- *
  * @author Gigiikun
  */
-
 public final class ConditionPlayerGrade extends Condition
 {
 	protected static final Logger _log = Logger.getLogger(ConditionPlayerGrade.class.getName());
@@ -43,7 +40,6 @@ public final class ConditionPlayerGrade extends Condition
 	
 	/**
 	 * Instantiates a new condition player grade.
-	 *
 	 * @param value the value
 	 */
 	public ConditionPlayerGrade(int value)
@@ -51,7 +47,7 @@ public final class ConditionPlayerGrade extends Condition
 		_value = value;
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override
@@ -59,7 +55,7 @@ public final class ConditionPlayerGrade extends Condition
 	{
 		if (env.player instanceof L2PcInstance)
 		{
-			byte expIndex = (byte)((L2PcInstance)env.player).getExpertiseIndex();
+			final byte expIndex = (byte) ((L2PcInstance) env.player).getExpertiseLevel();
 			
 			return _value == expIndex;
 		}

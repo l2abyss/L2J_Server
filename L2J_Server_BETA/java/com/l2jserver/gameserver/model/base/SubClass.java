@@ -80,6 +80,10 @@ public final class SubClass
 		return _level;
 	}
 	
+	/**
+	 * First Sub-Class is index 1.
+	 * @return int _classIndex
+	 */
 	public int getClassIndex()
 	{
 		return _classIndex;

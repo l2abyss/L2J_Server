@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.datatables.LevelUpData;
 import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -46,7 +46,7 @@ public interface EngineInterface
 	
 	public RecipeController recipeController = RecipeController.getInstance();
 	
-	public SkillTreeTable skillTreeTable = SkillTreeTable.getInstance();
+	public SkillTreesData skillTreeTable = SkillTreesData.getInstance();
 	public CharTemplateTable charTemplates = CharTemplateTable.getInstance();
 	public ClanTable clanTable = ClanTable.getInstance();
 	

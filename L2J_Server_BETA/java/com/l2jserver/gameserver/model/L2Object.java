@@ -167,6 +167,7 @@ public abstract class L2Object
 		L2TeleporterInstance(L2Npc),
 		L2TownPetInstance(L2Npc),
 		L2TrainerInstance(L2NpcInstance),
+		L2TrainerHealersInstance(L2TrainerInstance),
 		L2TransformManagerInstance(L2MerchantInstance),
 		L2VillageMasterInstance(L2NpcInstance),
 		L2WyvernManagerInstance(L2NpcInstance),

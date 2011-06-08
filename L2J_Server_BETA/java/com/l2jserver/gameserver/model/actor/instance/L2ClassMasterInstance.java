@@ -102,7 +102,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		}
 		else if(command.startsWith("learn_skills"))
 		{
-			player.giveAvailableSkills();
+			player.giveAvailableSkills(Config.AUTO_LEARN_FS_SKILLS, true);
 		}
 		else if(command.startsWith("increase_clan_level"))
 		{

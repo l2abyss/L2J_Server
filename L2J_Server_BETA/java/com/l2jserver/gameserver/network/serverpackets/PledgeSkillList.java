@@ -19,27 +19,27 @@ import com.l2jserver.gameserver.model.L2Skill;
 
 /**
  * Format: (ch) dd[dd][ddd]
- *
  * @author  -Wooden-
  */
 public class PledgeSkillList extends L2GameServerPacket
 {
-	private static final String _S__FE_39_PLEDGESKILLLIST = "[S] FE:3a PledgeSkillList";
+	private static final String _S__FE_39_PLEDGESKILLLIST = "[S] FE:3A PledgeSkillList";
 	private L2Skill[] _skills;
 	private SubPledgeSkill[] _subSkills;
 	
 	public static class SubPledgeSkill
 	{
+		int _subType;
+		int _skillId;
+		int _skillLvl;
+		
 		public SubPledgeSkill(int subType, int skillId, int skillLvl)
 		{
 			super();
-			this.subType = subType;
-			this.skillId = skillId;
-			this.skillLvl = skillLvl;
+			_subType = subType;
+			_skillId = skillId;
+			_skillLvl = skillLvl;
 		}
-		int subType;
-		int skillId;
-		int skillLvl;
 	}
 	
 	public PledgeSkillList(L2Clan clan)
@@ -48,32 +48,26 @@ public class PledgeSkillList extends L2GameServerPacket
 		_subSkills = clan.getAllSubSkills();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x3a);
+		writeC(0xfE);
+		writeH(0x3A);
 		writeD(_skills.length);
-		writeD(_subSkills.length); // squad skill lenght
-		for(L2Skill sk : _skills)
+		writeD(_subSkills.length); //Squad skill length
+		for (L2Skill sk : _skills)
 		{
 			writeD(sk.getId());
 			writeD(sk.getLevel());
 		}
-		for(SubPledgeSkill sk : _subSkills)
+		for (SubPledgeSkill sk : _subSkills)
 		{
-			writeD(sk.subType); // clan Sub-unit types
-			writeD(sk.skillId);
-			writeD(sk.skillLvl);
+			writeD(sk._subType); //Clan Sub-unit types
+			writeD(sk._skillId);
+			writeD(sk._skillLvl);
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

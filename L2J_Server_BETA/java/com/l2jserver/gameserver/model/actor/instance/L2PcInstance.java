@@ -72,7 +72,7 @@ import com.l2jserver.gameserver.datatables.NobleSkillTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
@@ -325,21 +325,6 @@ public final class L2PcInstance extends L2Playable
 	public static final int STORE_PRIVATE_BUY = 3;
 	public static final int STORE_PRIVATE_MANUFACTURE = 5;
 	public static final int STORE_PRIVATE_PACKAGE_SELL = 8;
-	
-	/** The table containing all minimum level needed for each Expertise (None, D, C, B, A, S, S80, S84)*/
-	private static final int[] EXPERTISE_LEVELS =
-	{
-		SkillTreeTable.getInstance().getExpertiseLevel(0), //NONE
-		SkillTreeTable.getInstance().getExpertiseLevel(1), //D
-		SkillTreeTable.getInstance().getExpertiseLevel(2), //C
-		SkillTreeTable.getInstance().getExpertiseLevel(3), //B
-		SkillTreeTable.getInstance().getExpertiseLevel(4), //A
-		SkillTreeTable.getInstance().getExpertiseLevel(5), //S
-		SkillTreeTable.getInstance().getExpertiseLevel(6), //S80
-		SkillTreeTable.getInstance().getExpertiseLevel(7)  //S84
-	};
-	
-	private static final int[] COMMON_CRAFT_LEVELS = { 5, 20, 28, 36, 43, 49, 55, 62, 70 };
 	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
@@ -598,8 +583,6 @@ public final class L2PcInstance extends L2Playable
 	private final List<L2PcInstance> _snoopListener = new FastList<L2PcInstance>();
 	private final List<L2PcInstance> _snoopedPlayer = new FastList<L2PcInstance>();
 	
-	private ClassId _skillLearningClassId;
-	
 	// hennas
 	private final L2HennaInstance[] _henna = new L2HennaInstance[3];
 	private int _hennaSTR;
@@ -708,8 +691,6 @@ public final class L2PcInstance extends L2Playable
 	
 	//private byte _updateKnownCounter = 0;
 	
-	/** The current higher Expertise of the L2PcInstance (None=0, D=1, C=2, B=3, A=4, S=5, S80=6, S84=7)*/
-	private int _expertiseIndex; // index in EXPERTISE_LEVELS
 	private int _expertiseArmorPenalty = 0;
 	private int _expertiseWeaponPenalty = 0;
 	
@@ -1367,7 +1348,6 @@ public final class L2PcInstance extends L2Playable
 	{
 		_newbie = newbieRewards;
 	}
-	
 	
 	public void setBaseClass(int baseClass)
 	{
@@ -2338,7 +2318,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				int crystaltype = item.getItem().getCrystalType();
 				
-				if (crystaltype > getExpertiseIndex())
+				if (crystaltype > getExpertiseLevel())
 				{
 					if (item.isWeapon() && crystaltype > weaponPenalty)
 						weaponPenalty = crystaltype;
@@ -2351,7 +2331,7 @@ public final class L2PcInstance extends L2Playable
 		boolean changed = false;
 		
 		// calc armor penalty
-		armorPenalty = armorPenalty - getExpertiseIndex();
+		armorPenalty = armorPenalty - getExpertiseLevel();
 		
 		if (armorPenalty < 0)
 			armorPenalty = 0;
@@ -2371,7 +2351,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// calc weapon penalty
-		weaponPenalty = weaponPenalty - getExpertiseIndex();
+		weaponPenalty = weaponPenalty - getExpertiseLevel();
 		if (weaponPenalty < 0)
 			weaponPenalty = 0;
 		else if (weaponPenalty > 4)
@@ -2617,8 +2597,9 @@ public final class L2PcInstance extends L2Playable
 			if (getClan() != null)
 				getClan().broadcastToOnlineMembers(new PledgeShowMemberListUpdate(this));
 			
-			if (Config.AUTO_LEARN_SKILLS)
-				rewardSkills();
+			//Add AutoGet skills and normal skills and/or learnByFS depending on configurations.
+			rewardSkills();
+			
 			if (!isGM() && Config.DECREASE_SKILL_LEVEL)
 				checkPlayerSkills();
 		}
@@ -2772,78 +2753,26 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Give Expertise skill of this level and remove beginner Lucky skill.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Get the Level of the L2PcInstance </li>
-	 * <li>Add the Expertise skill corresponding to its Expertise level</li>
-	 * <li>Update the overloaded status of the L2PcInstance</li><BR><BR>
-	 *
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T give other free skills (SP needed = 0)</B></FONT><BR><BR>
-	 *
+	 * This method reward all AutoGet skills and Normal skills if Auto-Learn configuration is true.<br>
 	 */
 	public void rewardSkills()
 	{
-		// Get the Level of the L2PcInstance
-		int lvl = getLevel();
-		
-		// Calculate the current higher Expertise of the L2PcInstance
-		for (int i=0; i < EXPERTISE_LEVELS.length; i++)
+		//Give all normal skills if activated Auto-Learn is activated, included AutoGet skills.
+		if (Config.AUTO_LEARN_SKILLS)
 		{
-			if (lvl >= EXPERTISE_LEVELS[i])
-				setExpertiseIndex(i);
-		}
-		
-		// Add the Expertise skill corresponding to its Expertise level
-		if (getExpertiseIndex() > 0)
-		{
-			L2Skill skill = SkillTable.getInstance().getInfo(239, getExpertiseIndex());
-			addSkill(skill, true);
-			
-			if (Config.DEBUG) _log.fine("awarded "+getName()+" with new expertise.");
-			
+			giveAvailableSkills(Config.AUTO_LEARN_FS_SKILLS, true);
 		}
 		else
 		{
-			if (Config.DEBUG) _log.fine("No skills awarded at lvl: "+lvl);
+			giveAvailableAutoGetSkills();
 		}
 		
-		//Active skill dwarven craft
-		
-		if (getSkillLevel(1321) < 1 && getClassId().equalsOrChildOf(ClassId.dwarvenFighter))
-		{
-			L2Skill skill = SkillTable.FrequentSkill.DWARVEN_CRAFT.getSkill();
-			addSkill(skill, true);
-		}
-		
-		//Active skill common craft
-		if (getSkillLevel(1322) < 1)
-		{
-			L2Skill skill = SkillTable.FrequentSkill.COMMON_CRAFT.getSkill();
-			addSkill(skill, true);
-		}
-		
-		for(int i = 0; i < COMMON_CRAFT_LEVELS.length; i++)
-		{
-			if(lvl >= COMMON_CRAFT_LEVELS[i] && getSkillLevel(1320) < (i+1))
-			{
-				L2Skill skill = SkillTable.getInstance().getInfo(1320, (i+1));
-				addSkill(skill, true);
-			}
-		}
-		
-		// Auto-Learn skills if activated
-		if (Config.AUTO_LEARN_SKILLS)
-		{
-			giveAvailableSkills();
-		}
 		checkItemRestriction();
 		sendSkillList();
 	}
 	
 	/**
-	 * Regive all skills which aren't saved to database, like Noble, Hero, Clan Skills<BR><BR>
-	 *
+	 * Re-give all skills which aren't saved to database, like Noble, Hero, Clan Skills.<br>
 	 */
 	public void regiveTemporarySkills()
 	{
@@ -2879,21 +2808,24 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Give all available skills to the player.<br><br>
-	 *
+	 * Give all available skills to the player.<br>
+	 * @param includedByFs
+	 * @param includeAutoGet
+	 * @return skillCounter, the amount of new skills added.
 	 */
-	public int giveAvailableSkills()
+	public int giveAvailableSkills(boolean includedByFs, boolean includeAutoGet)
 	{
 		int unLearnable = 0;
 		int skillCounter = 0;
 		
 		// Get available skills
-		L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSkills(this, getClassId());
-		while (skills.length > unLearnable)
+		FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
+		
+		while (skills.size() > unLearnable)
 		{
 			for (L2SkillLearn s: skills)
 			{
-				L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
+				L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
 				if (sk == null || (sk.getId() == L2Skill.SKILL_DIVINE_INSPIRATION && !Config.AUTO_LEARN_DIVINE_INSPIRATION && !isGM()))
 				{
 					unLearnable++;
@@ -2901,7 +2833,9 @@ public final class L2PcInstance extends L2Playable
 				}
 				
 				if (getSkillLevel(sk.getId()) == -1)
+				{
 					skillCounter++;
+				}
 				
 				// fix when learning toggle skills
 				if (sk.isToggle())
@@ -2914,16 +2848,40 @@ public final class L2PcInstance extends L2Playable
 						sk.getEffects(this, this);
 					}
 				}
-				
 				addSkill(sk, true);
 			}
 			
-			// Get new available skills
-			skills = SkillTreeTable.getInstance().getAvailableSkills(this, getClassId());
+			//Get new available skills, some skills depend of previous skills to be available.
+			skills = SkillTreesData.getInstance().getAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
 		}
 		
 		sendMessage("You have learned " + skillCounter + " new skills.");
 		return skillCounter;
+	}
+	
+	/**
+	 * Give all available AutoGet skills to the player.<br>
+	 */
+	public void giveAvailableAutoGetSkills()
+	{
+		// Get available skills
+		final FastList<L2SkillLearn> autoGetSkills = SkillTreesData.getInstance().getAvailableAutoGetSkills(this);
+		
+		if ((autoGetSkills != null) && !autoGetSkills.isEmpty())
+		{
+			for (L2SkillLearn s: autoGetSkills)
+			{
+				final L2Skill skill = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+				if (skill != null)
+				{
+					addSkill(skill, true);
+				}
+				else
+				{
+					_log.warning("Skipped null autoGet Skill for player:" + getName() + "[" + getObjectId() + "]");
+				}
+			}
+		}
 	}
 	
 	/** Set the Experience value of the L2PcInstance. */
@@ -5452,24 +5410,19 @@ public final class L2PcInstance extends L2Playable
 							}
 						}
 					}
-					if (Config.ALT_GAME_DELEVEL)
+					//If player is Lucky shouldn't get penalized.
+					if (Config.ALT_GAME_DELEVEL && !isLucky())
 					{
 						// Reduce the Experience of the L2PcInstance in function of the calculated Death Penalty
 						// NOTE: deathPenalty +- Exp will update karma
 						// Penalty is lower if the player is at war with the pk (war has to be declared)
-						if (getSkillLevel(L2Skill.SKILL_LUCKY) < 0 || getStat().getLevel() > 9)
-						{
-							boolean siege_npc = false;
-							if (killer instanceof L2DefenderInstance || killer instanceof L2FortCommanderInstance)
-								siege_npc = true;
-							deathPenalty(pk != null && getClan() != null && getClan().isAtWarWith(pk.getClanId()), pk != null, siege_npc);
-						}
-						
+						final boolean siegeNpc = (killer instanceof L2DefenderInstance) || (killer instanceof L2FortCommanderInstance);
+						final boolean atWar = (pk != null) && (getClan() != null) && (getClan().isAtWarWith(pk.getClanId()));
+						deathPenalty(atWar, (pk != null), siegeNpc);
 					}
-					else
+					else if (!(isInsideZone(ZONE_PVP) && !isInSiege()) || (pk == null))
 					{
-						if (!(isInsideZone(ZONE_PVP) && !isInSiege()) || pk == null)
-							onDieUpdateKarma(); // Update karma if delevel is not allowed
+						onDieUpdateKarma(); // Update karma if delevel is not allowed
 					}
 				}
 			}
@@ -5835,6 +5788,15 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
+	 * TODO: Unhardcode by implementing Lucky effect (Support for effects on passive skills required).
+	 * @return Returns {@code true} if player has Lucky skill and is level 9 or less.
+	 */
+	public boolean isLucky()
+	{
+		return ((getLevel() <= 9) && (getKnownSkill(194) != null));
+	}
+	
+	/**
 	 * Restore the specified % of experience this L2PcInstance has
 	 * lost and sends a Server->Client StatusUpdate packet.<BR><BR>
 	 */
@@ -5968,31 +5930,11 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Manage the increase level task of a L2PcInstance (Max MP, Max MP, Recommandation, Expertise and beginner skills...).<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Send a Server->Client System Message to the L2PcInstance : YOU_INCREASED_YOUR_LEVEL </li>
-	 * <li>Send a Server->Client packet StatusUpdate to the L2PcInstance with new LEVEL, MAX_HP and MAX_MP </li>
-	 * <li>Set the current HP and MP of the L2PcInstance, Launch/Stop a HP/MP/CP Regeneration Task and send StatusUpdate packet to all other L2PcInstance to inform (exclusive broadcast)</li>
-	 * <li>Recalculate the party level</li>
-	 * <li>Recalculate the number of Recommandation that the L2PcInstance can give</li>
-	 * <li>Give Expertise skill of this level and remove beginner Lucky skill</li><BR><BR>
-	 *
-	 */
-	public void increaseLevel()
-	{
-		// Set the current HP and MP of the L2Character, Launch/Stop a HP/MP/CP Regeneration Task and send StatusUpdate packet to all other L2PcInstance to inform (exclusive broadcast)
-		setCurrentHpMp(getMaxHp(),getMaxMp());
-		setCurrentCp(getMaxCp());
-	}
-	
-	/**
 	 * Stop the HP/MP/CP Regeneration task.<BR><BR>
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
 	 * <li>Set the RegenActive flag to False </li>
 	 * <li>Stop the HP/MP/CP Regeneration task </li><BR><BR>
-	 *
 	 */
 	public void stopAllTimers()
 	{
@@ -6317,22 +6259,6 @@ public final class L2PcInstance extends L2Playable
 	public int getPrivateStoreType()
 	{
 		return _privatestore;
-	}
-	
-	/**
-	 * Set the _skillLearningClassId object of the L2PcInstance.<BR><BR>
-	 */
-	public void setSkillLearningClassId(ClassId classId)
-	{
-		_skillLearningClassId = classId;
-	}
-	
-	/**
-	 * Return the _skillLearningClassId object of the L2PcInstance.<BR><BR>
-	 */
-	public ClassId getSkillLearningClassId()
-	{
-		return _skillLearningClassId;
 	}
 	
 	/**
@@ -7934,8 +7860,10 @@ public final class L2PcInstance extends L2Playable
 		L2Skill oldSkill = super.addSkill(newSkill);
 		
 		// Add or update a L2PcInstance skill in the character_skills table of the database
-		if (store) storeSkill(newSkill, oldSkill, -1);
-		
+		if (store)
+		{
+			storeSkill(newSkill, oldSkill, -1);
+		}
 		return oldSkill;
 	}
 	
@@ -7981,7 +7909,6 @@ public final class L2PcInstance extends L2Playable
 		L2Skill oldSkill = super.removeSkill(skill);
 		
 		Connection con = null;
-		
 		try
 		{
 			// Remove or update a L2PcInstance skill from the character_skills table of the database
@@ -8021,8 +7948,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Add or update a L2PcInstance skill in the character_skills table of the database.
-	 * <BR><BR>
+	 * Add or update a L2PcInstance skill in the character_skills table of the database.<br>
 	 * If newClassIndex > -1, the skill will be stored with that class index, not the current one.
 	 */
 	private void storeSkill(L2Skill newSkill, L2Skill oldSkill, int newClassIndex)
@@ -8033,7 +7959,6 @@ public final class L2PcInstance extends L2Playable
 			classIndex = newClassIndex;
 		
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -8075,51 +8000,50 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Retrieve from the database all skills of this L2PcInstance and add them to _skills.<BR><BR>
+	 * Retrieve from the database all skills of this L2PcInstance and add them to _skills.
 	 */
 	private void restoreSkills()
 	{
 		Connection con = null;
-		
 		try
 		{
 			// Retrieve all skills of this L2PcInstance from the database
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(RESTORE_SKILLS_FOR_CHAR);
+			final PreparedStatement statement = con.prepareStatement(RESTORE_SKILLS_FOR_CHAR);
 			
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, getClassIndex());
-			ResultSet rset = statement.executeQuery();
+			final ResultSet rset = statement.executeQuery();
 			
 			// Go though the recordset of this SQL query
 			while (rset.next())
 			{
-				int id = rset.getInt("skill_id");
-				int level = rset.getInt("skill_level");
-				
-				if (id > 9000 && id < 9007)
-					continue; // fake skills for base stats
+				final int id = rset.getInt("skill_id");
+				final int level = rset.getInt("skill_level");
 				
 				// Create a L2Skill object for each record
-				L2Skill skill = SkillTable.getInstance().getInfo(id, level);
+				final L2Skill skill = SkillTable.getInstance().getInfo(id, level);
+				
+				if (skill == null)
+				{
+					_log.warning("Skipped null skill Id: " + id + " Level: " + level + " while restoring player skills for playerObjId: " + getObjectId());
+					continue;
+				}
 				
 				// Add the L2Skill object to the L2Character _skills and its Func objects to the calculator set of the L2Character
 				super.addSkill(skill);
 				
 				if (Config.SKILL_CHECK_ENABLE && (!isGM() || Config.SKILL_CHECK_GM))
 				{
-					if (!SkillTreeTable.getInstance().isSkillAllowed(this, skill))
+					if (!SkillTreesData.getInstance().isSkillAllowed(this, skill))
 					{
-						Util.handleIllegalPlayerAction(this, "Player " + getName() +
-								" has invalid skill " + skill.getName() +
-								" ("+skill.getId() + "/" + skill.getLevel() + "), class:" +
-								getTemplate().className, 1);
+						Util.handleIllegalPlayerAction(this, "Player " + getName() + " has invalid skill " + skill.getName() +
+								" ("+skill.getId() + "/" + skill.getLevel() + "), class:" + getTemplate().className, 1);
 						if (Config.SKILL_CHECK_REMOVE)
 							removeSkill(skill);
 					}
 				}
 			}
-			
 			rset.close();
 			statement.close();
 		}
@@ -8134,7 +8058,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Retrieve from the database all skill effects of this L2PcInstance and add them to the player.<BR><BR>
+	 * Retrieve from the database all skill effects of this L2PcInstance and add them to the player.
 	 */
 	@Override
 	public void restoreEffects()
@@ -10532,20 +10456,16 @@ public final class L2PcInstance extends L2Playable
 			if (Config.DEBUG)
 				_log.info(getName() + " added class ID " + classId + " as a sub class at index " + classIndex + ".");
 			
-			ClassId subTemplate = ClassId.values()[classId];
-			Collection<L2SkillLearn> skillTree = SkillTreeTable.getInstance().getAllowedSkills(subTemplate);
+			final ClassId subTemplate = ClassId.values()[classId];
+			final FastMap<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(subTemplate);
+			final FastMap<Integer, L2Skill> prevSkillList = new FastMap<Integer, L2Skill>();
 			
-			if (skillTree == null)
-				return true;
-			
-			Map<Integer, L2Skill> prevSkillList = new FastMap<Integer, L2Skill>();
-			
-			for (L2SkillLearn skillInfo : skillTree)
+			for (L2SkillLearn skillInfo : skillTree.values())
 			{
-				if (skillInfo.getMinLevel() <= 40)
+				if (skillInfo.getGetLevel() <= 40)
 				{
-					L2Skill prevSkill = prevSkillList.get(skillInfo.getId());
-					L2Skill newSkill = SkillTable.getInstance().getInfo(skillInfo.getId(), skillInfo.getLevel());
+					L2Skill prevSkill = prevSkillList.get(skillInfo.getSkillId());
+					L2Skill newSkill = SkillTable.getInstance().getInfo(skillInfo.getSkillId(), skillInfo.getSkillLevel());
 					
 					if (prevSkill != null && (prevSkill.getLevel() > newSkill.getLevel()))
 						continue;
@@ -11132,19 +11052,15 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * @param expertiseIndex The expertiseIndex to set.
+	 * Expertise of the L2PcInstance (None=0, D=1, C=2, B=3, A=4, S=5, S80=6, S84=7)
+	 * @return int Expertise skill level.
 	 */
-	public void setExpertiseIndex(int expertiseIndex)
+	public int getExpertiseLevel()
 	{
-		_expertiseIndex = expertiseIndex;
-	}
-	
-	/**
-	 * @return Returns the expertiseIndex.
-	 */
-	public int getExpertiseIndex()
-	{
-		return _expertiseIndex;
+		int level = getSkillLevel(239);
+		if (level < 0)
+			level = 0;
+		return level;
 	}
 	
 	@Override
@@ -13009,6 +12925,7 @@ public final class L2PcInstance extends L2Playable
 				&& !(killer instanceof L2PcInstance) && !(this.isGM())
 				&& !(this.getCharmOfLuck() && killer.isRaid())
 				&& !isPhoenixBlessed()
+				&& !isLucky()
 				&& !(TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
 				&& !(this.isInsideZone(L2Character.ZONE_PVP)||this.isInsideZone(L2Character.ZONE_SIEGE)))
 			
@@ -14775,7 +14692,7 @@ public final class L2PcInstance extends L2Playable
 			int level = getSkillLevel(id);
 			if (level >= 100) // enchanted skill
 				level = SkillTable.getInstance().getMaxLevel(id);
-			L2SkillLearn learn = SkillTreeTable.getInstance().getSkillLearnBySkillIdLevel(getClassId(), id, level);
+			final L2SkillLearn learn = SkillTreesData.getInstance().getClassSkill(id, level, getClassId());
 			// not found - not a learn skill?
 			if (learn == null)
 			{
@@ -14784,7 +14701,7 @@ public final class L2PcInstance extends L2Playable
 			else
 			{
 				// player level is too low for such skill level
-				if (getLevel() < (learn.getMinLevel() - 9))
+				if (getLevel() < (learn.getGetLevel() - 9))
 					deacreaseSkillLevel(id);
 			}
 		}
@@ -14793,12 +14710,14 @@ public final class L2PcInstance extends L2Playable
 	private void deacreaseSkillLevel(int id)
 	{
 		int nextLevel = -1;
-		for (L2SkillLearn sl : SkillTreeTable.getInstance().getAllowedSkills(getClassId()))
+		final FastMap<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(getClassId());
+		
+		for (L2SkillLearn sl : skillTree.values())
 		{
-			if (sl.getId() == id && nextLevel < sl.getLevel() && getLevel() >= (sl.getMinLevel() - 9))
+			if (sl.getSkillId() == id && nextLevel < sl.getSkillLevel() && getLevel() >= (sl.getGetLevel() - 9))
 			{
 				// next possible skill level
-				nextLevel = sl.getLevel();
+				nextLevel = sl.getSkillLevel();
 			}
 		}
 		

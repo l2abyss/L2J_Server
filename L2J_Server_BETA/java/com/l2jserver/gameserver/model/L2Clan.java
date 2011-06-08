@@ -2737,20 +2737,19 @@ public class L2Clan
 	}
 	
 	/**
-	 * Check if clan learn this squad skill
-	 * @param skill
-	 * @param clan
-	 * @return true if can be added
+	 * Check if this clan can learn the skill for the given skill ID, level.
+	 * @param skillId
+	 * @param skillLevel
+	 * @return {@code true} if skill can be learned.
 	 */
-	public boolean isLearnableSubSkill(L2Skill skill)
+	public boolean isLearnableSubSkill(int skillId, int skillLevel)
 	{
-		int id = skill.getId();
-		L2Skill current = _subPledgeSkills.get(id);
+		L2Skill current = _subPledgeSkills.get(skillId);
 		// is next level?
-		if (current != null && current.getLevel() + 1 == skill.getLevel())
+		if ((current != null) && ((current.getLevel() + 1) == skillLevel))
 			return true;
 		// is first level?
-		if (current == null && skill.getLevel() == 1)
+		if ((current == null) && (skillLevel == 1))
 			return true;
 		// other subpledges
 		for (SubPledge subunit : _subPledges.values())
@@ -2758,18 +2757,18 @@ public class L2Clan
 			//disable academy
 			if (subunit._id == -1)
 				continue;
-			current = subunit._subPledgeSkills.get(id);
+			current = subunit._subPledgeSkills.get(skillId);
 			// is next level?
-			if (current != null && current.getLevel() + 1 == skill.getLevel())
+			if ((current != null) && ((current.getLevel() + 1) == skillLevel))
 				return true;
 			// is first level?
-			if (current == null && skill.getLevel() == 1)
+			if ((current == null) && (skillLevel == 1))
 				return true;
 		}
 		return false;
 	}
 	
-	public boolean isLearnableSubSkill(L2Skill skill, int subType)
+	public boolean isLearnableSubPledgeSkill(L2Skill skill, int subType)
 	{
 		//academy
 		if (subType == -1)
@@ -2786,10 +2785,10 @@ public class L2Clan
 			current = _subPledges.get(subType)._subPledgeSkills.get(id);
 		}
 		// is next level?
-		if (current != null && current.getLevel() + 1 == skill.getLevel())
+		if ((current != null) && (current.getLevel() + 1) == skill.getLevel())
 			return true;
 		// is first level?
-		if (current == null && skill.getLevel() == 1)
+		if ((current == null) && (skill.getLevel() == 1))
 			return true;
 		
 		return false;
