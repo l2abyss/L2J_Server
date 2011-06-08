@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
  
 import java.util.List;
 
+import com.l2jserver.gameserver.model.olympiad.AbstractOlympiadGame;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameClassed;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameNonClassed;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
@@ -60,20 +61,24 @@ public class ExOlympiadMatchList extends L2GameServerPacket
 		
 		for (OlympiadGameTask curGame : _games)
 		{
-			writeD(curGame.getGame().getStadiumId()); // Stadium Id (Arena 1 = 0)
-			
-			if (curGame.getGame() instanceof OlympiadGameNonClassed)
-				writeD(1);
-			else if (curGame.getGame() instanceof OlympiadGameClassed)
-				writeD(2);
-			else if (curGame.getGame() instanceof OlympiadGameTeams)
-				writeD(-1);
-			else
-				writeD(0);
-			
-			writeD(curGame.isRunning() ? 0x02 : 0x01); // (1 = Standby, 2 = Playing)
-			writeS(curGame.getGame().getPlayerNames()[0]); // Player 1 Name
-			writeS(curGame.getGame().getPlayerNames()[1]); // Player 2 Name
+			AbstractOlympiadGame game = curGame.getGame();
+			if (game != null)
+			{
+				writeD(game.getStadiumId()); // Stadium Id (Arena 1 = 0)
+				
+				if (game instanceof OlympiadGameNonClassed)
+					writeD(1);
+				else if (game instanceof OlympiadGameClassed)
+					writeD(2);
+				else if (game instanceof OlympiadGameTeams)
+					writeD(-1);
+				else
+					writeD(0);
+				
+				writeD(curGame.isRunning() ? 0x02 : 0x01); // (1 = Standby, 2 = Playing)
+				writeS(game.getPlayerNames()[0]); // Player 1 Name
+				writeS(game.getPlayerNames()[1]); // Player 2 Name
+			}
 		}
 	}
 	
