@@ -733,6 +733,7 @@ public final class Config
 	public static boolean L2JMOD_DEBUG_VOICE_COMMAND;
 	public static int L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP;
 	public static int L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP;
+	public static int L2JMOD_DUALBOX_CHECK_MAX_L2EVENT_PARTICIPANTS_PER_IP;
 	public static TIntIntHashMap L2JMOD_DUALBOX_CHECK_WHITELIST;
 	
 	//--------------------------------------------------
@@ -2526,6 +2527,7 @@ public final class Config
 
 					L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP = Integer.parseInt(L2JModSettings.getProperty("DualboxCheckMaxPlayersPerIP", "0"));
 					L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP = Integer.parseInt(L2JModSettings.getProperty("DualboxCheckMaxOlympiadParticipantsPerIP", "0"));
+					L2JMOD_DUALBOX_CHECK_MAX_L2EVENT_PARTICIPANTS_PER_IP = Integer.parseInt(L2JModSettings.getProperty("DualboxCheckMaxL2EventParticipantsPerIP", "0"));
 					String[] propertySplit = L2JModSettings.getProperty("DualboxCheckWhitelist", "127.0.0.1,0").split(";");
 					L2JMOD_DUALBOX_CHECK_WHITELIST = new TIntIntHashMap(propertySplit.length);
 					for (String entry : propertySplit)
