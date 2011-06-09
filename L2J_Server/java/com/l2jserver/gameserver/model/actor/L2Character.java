@@ -1739,7 +1739,7 @@ public abstract class L2Character extends L2Object
 		L2ItemInstance weaponInst = getActiveWeaponInstance();
 		if (weaponInst != null)
 		{
-			if (skill.isMagic() && !effectWhileCasting && skill.getTargetType() != SkillTargetType.TARGET_SELF)
+			if (skill.isMagic() && !effectWhileCasting)
 			{
 				if ((weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
 						|| (weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT))
