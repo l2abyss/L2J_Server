@@ -1017,19 +1017,20 @@ public final class SkillTreesData
 	public int getMinLevelForNewSkill(L2PcInstance player, FastMap<Integer, L2SkillLearn> skillTree)
 	{
 		int minLevel = 0;
-		if (skillTree.size() < 1)
+		if (skillTree.isEmpty())
 		{
 			_log.warning(getClass().getSimpleName() + ": SkillTree is not defined for getMinLevelForNewSkill!");
-			return minLevel;
 		}
-		
-		for (L2SkillLearn s : skillTree.values())
+		else
 		{
-			if (player.getLevel() >= s.getGetLevel())
+			for (L2SkillLearn s : skillTree.values())
 			{
-				if ((minLevel == 0) || (s.getGetLevel() < minLevel))
+				if (s.isLearnedByNpc() && (player.getLevel() < s.getGetLevel()))
 				{
-					minLevel = s.getGetLevel();
+					if ((minLevel == 0) || (minLevel > s.getGetLevel()))
+					{
+						minLevel = s.getGetLevel();
+					}
 				}
 			}
 		}
