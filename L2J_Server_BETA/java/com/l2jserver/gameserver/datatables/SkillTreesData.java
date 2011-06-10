@@ -738,7 +738,7 @@ public final class SkillTreesData
 		
 		for (L2SkillLearn temp : skills.values())
 		{
-			if ((player.getLevel() >= temp.getGetLevel()) && ((temp.getRaces() != null) || Util.contains(temp.getRaces(), player.getRace().ordinal())))
+			if ((player.getLevel() >= temp.getGetLevel()) && ((temp.getRaces() == null) || Util.contains(temp.getRaces(), player.getRace().ordinal())))
 			{
 				boolean knownSkill = false;
 				
