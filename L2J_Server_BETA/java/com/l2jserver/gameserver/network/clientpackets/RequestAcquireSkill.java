@@ -130,7 +130,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				if (trainer instanceof L2TransformManagerInstance)
 				{
 					//Hack check.
-					if (L2TransformManagerInstance.canTransform(activeChar))
+					if (!L2TransformManagerInstance.canTransform(activeChar))
 					{
 						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_COMPLETED_QUEST_FOR_SKILL_ACQUISITION));
 						Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " without required quests!", 0);

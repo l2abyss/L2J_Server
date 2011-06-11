@@ -60,9 +60,16 @@ public final class L2SkillLearn
 			int i = 0;
 			for (String itemIdCount : items)
 			{
-				_itemsIdCount[i][0] = Integer.parseInt(itemIdCount.split(",")[0]);//Id
-				_itemsIdCount[i][1] = Integer.parseInt(itemIdCount.split(",")[1]);//Count
-				i++;
+				try
+				{
+					_itemsIdCount[i][0] = Integer.parseInt(itemIdCount.split(",")[0]);//Id
+					_itemsIdCount[i][1] = Integer.parseInt(itemIdCount.split(",")[1]);//Count
+					i++;
+				}
+				catch (Exception e)
+				{
+					_log.severe(getClass().getSimpleName() + ": Malformed itemsIdCount for Learn Skill Id " + _skillId + " and level " + _skillLvl + "!");
+				}
 			}
 		}
 		else
@@ -111,9 +118,16 @@ public final class L2SkillLearn
 			int i = 0;
 			for (String subLvlNum : subLvLNumList)
 			{
-				_subClassLvlNumber[i][0] = Integer.parseInt(subLvlNum.split(",")[0]);
-				_subClassLvlNumber[i][1] = Integer.parseInt(subLvlNum.split(",")[1]);
-				i++;
+				try
+				{
+					_subClassLvlNumber[i][0] = Integer.parseInt(subLvlNum.split(",")[0]);
+					_subClassLvlNumber[i][1] = Integer.parseInt(subLvlNum.split(",")[1]);
+					i++;
+				}
+				catch (Exception e)
+				{
+					_log.severe(getClass().getSimpleName() + ": Malformed subClassLvlNumber for Learn Skill Id " + _skillId + " and level " + _skillLvl + "!");
+				}
 			}
 		}
 		else

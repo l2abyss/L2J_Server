@@ -227,8 +227,12 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 	 */
 	public static boolean canTransform(L2PcInstance player)
 	{
-		QuestState st = player.getQuestState("136_MoreThanMeetsTheEye");
-		if (Config.ALLOW_TRANSFORM_WITHOUT_QUEST || ((st != null) && st.isCompleted()))
+		if (Config.ALLOW_TRANSFORM_WITHOUT_QUEST)
+		{
+			return true;
+		}
+		final QuestState st = player.getQuestState("136_MoreThanMeetsTheEye");
+		if ((st != null) && st.isCompleted())
 		{
 			return true;
 		}
