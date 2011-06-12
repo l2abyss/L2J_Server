@@ -2281,9 +2281,6 @@ public final class Formulas
 					case MOVEMENT:
 						multiplier = target.getTemplate().baseMovementVuln;
 						break;
-					case CONFUSION:
-						multiplier = target.getTemplate().baseConfusionVuln;
-						break;
 					case SLEEP:
 						multiplier = target.getTemplate().baseSleepVuln;
 						break;
@@ -2343,11 +2340,9 @@ public final class Formulas
 				case BETRAY:
 				case AGGDEBUFF:
 				case ERASE:
-					multiplier = target.calcStat(Stats.DERANGEMENT_VULN, multiplier, target, null);
-					break;
 				case CONFUSION:
 				case CONFUSE_MOB_ONLY:
-					multiplier = target.calcStat(Stats.CONFUSION_VULN, multiplier, target, null);
+					multiplier = target.calcStat(Stats.DERANGEMENT_VULN, multiplier, target, null);
 					break;
 				case DEBUFF:
 					multiplier = target.calcStat(Stats.DEBUFF_VULN, multiplier, target, null);
@@ -2425,11 +2420,9 @@ public final class Formulas
 				case BETRAY:
 				case AGGDEBUFF:
 				case ERASE:
-					multiplier = attacker.calcStat(Stats.DERANGEMENT_PROF, multiplier, target, null);
-					break;
 				case CONFUSION:
 				case CONFUSE_MOB_ONLY:
-					multiplier = attacker.calcStat(Stats.CONFUSION_PROF, multiplier, target, null);
+					multiplier = attacker.calcStat(Stats.DERANGEMENT_PROF, multiplier, target, null);
 					break;
 				case DEBUFF:
 					multiplier = attacker.calcStat(Stats.DEBUFF_PROF, multiplier, target, null);
