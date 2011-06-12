@@ -127,7 +127,6 @@ public enum Stats
 	PARALYZE_VULN("paralyzeVuln"),
 	ROOT_VULN("rootVuln"),
 	SLEEP_VULN("sleepVuln"),
-	CONFUSION_VULN("confusionVuln"),
 	MOVEMENT_VULN("movementVuln"),
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
 	DERANGEMENT_VULN("derangementVuln"),
@@ -163,7 +162,6 @@ public enum Stats
 	PARALYZE_PROF("paralyzeProf"),
 	ROOT_PROF("rootProf"),
 	SLEEP_PROF("sleepProf"),
-	CONFUSION_PROF("confusionProf"),
 	PROF("movementProf"),
 	CANCEL_PROF("cancelProf"),
 	DERANGEMENT_PROF("derangementProf"),

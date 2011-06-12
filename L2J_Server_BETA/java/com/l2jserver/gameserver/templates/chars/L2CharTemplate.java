@@ -71,7 +71,6 @@ public class L2CharTemplate
 	public final double baseStunVuln;
 	public final double baseRootVuln;
 	public final double baseMovementVuln;
-	public final double baseConfusionVuln;
 	public final double baseSleepVuln;
 	public int baseFire;
 	public int baseWind;
@@ -159,7 +158,6 @@ public class L2CharTemplate
 		baseStunVuln = set.getInteger("baseStunVuln", 0);
 		baseRootVuln = set.getInteger("baseRootVuln", 0);
 		baseMovementVuln = set.getInteger("baseMovementVuln", 0);
-		baseConfusionVuln = set.getInteger("baseConfusionVuln", 0);
 		baseSleepVuln = set.getInteger("baseSleepVuln", 0);
 		baseFireRes = set.getInteger("baseFireRes", 0);
 		baseWindRes = set.getInteger("baseWindRes", 0);
