@@ -146,7 +146,7 @@ public class MailManager
 	
 	public final List<Message> getInbox(int objectId)
 	{
-		List<Message> inbox = FastList.newInstance();
+		List<Message> inbox = new FastList<Message>();
 		for (Message msg : _messages.values())
 		{
 			if (msg != null
@@ -159,7 +159,7 @@ public class MailManager
 	
 	public final List<Message> getOutbox(int objectId)
 	{
-		List<Message> outbox = FastList.newInstance();
+		List<Message> outbox = new FastList<Message>();
 		for (Message msg : _messages.values())
 		{
 			if (msg != null

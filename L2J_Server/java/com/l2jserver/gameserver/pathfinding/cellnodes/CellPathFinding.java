@@ -100,136 +100,137 @@ public class CellPathFinding extends PathFinding
 	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean playable)
 	{
 		int gx = (x - L2World.MAP_MIN_X) >> 4;
-			int gy = (y - L2World.MAP_MIN_Y) >> 4;
-			if (!GeoData.getInstance().hasGeo(x, y))
-				return null;
-			short gz = GeoData.getInstance().getHeight(x, y, z);
-			int gtx = (tx - L2World.MAP_MIN_X) >> 4;
-			int gty = (ty - L2World.MAP_MIN_Y) >> 4;
-			if (!GeoData.getInstance().hasGeo(tx, ty))
-				return null;
-			short gtz = GeoData.getInstance().getHeight(tx, ty, tz);
-			CellNodeBuffer buffer = alloc(64 + 2*Math.max(Math.abs(gx - gtx), Math.abs(gy - gty)), playable);
-			if (buffer == null)
-				return null;
-			
-			boolean debug = playable && Config.DEBUG_PATH;
+		int gy = (y - L2World.MAP_MIN_Y) >> 4;
+		if (!GeoData.getInstance().hasGeo(x, y))
+			return null;
+		short gz = GeoData.getInstance().getHeight(x, y, z);
+		int gtx = (tx - L2World.MAP_MIN_X) >> 4;
+		int gty = (ty - L2World.MAP_MIN_Y) >> 4;
+		if (!GeoData.getInstance().hasGeo(tx, ty))
+			return null;
+		short gtz = GeoData.getInstance().getHeight(tx, ty, tz);
+		CellNodeBuffer buffer = alloc(64 + 2 * Math.max(Math.abs(gx - gtx), Math.abs(gy - gty)), playable);
+		if (buffer == null)
+			return null;
+		
+		boolean debug = playable && Config.DEBUG_PATH;
+		
+		if (debug)
+		{
+			if (_debugItems == null)
+				_debugItems = new FastList<L2ItemInstance>();
+			else
+			{
+				for (L2ItemInstance item : _debugItems)
+				{
+					if (item == null)
+						continue;
+					item.decayMe();
+				}
+				
+				_debugItems.clear();
+			}
+		}
+		
+		FastList<AbstractNodeLoc> path = null;
+		try
+		{
+			CellNode result = buffer.findPath(gx, gy, gz, gtx, gty, gtz);
 			
 			if (debug)
 			{
-				if (_debugItems == null)
-					_debugItems = new FastList<L2ItemInstance>();
+				for (CellNode n : buffer.debugPath())
+				{
+					if (n.getCost() < 0) // calculated path
+						dropDebugItem(1831, (int) (-n.getCost() * 10), n.getLoc());
+					else
+						// known nodes
+						dropDebugItem(57, (int) (n.getCost() * 10), n.getLoc());
+				}
+			}
+			
+			if (result == null)
+			{
+				_findFails++;
+				return null;
+			}
+			
+			path = constructPath(result);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "", e);
+			return null;
+		}
+		finally
+		{
+			buffer.free();
+		}
+		
+		if (path.size() < 3 || Config.MAX_POSTFILTER_PASSES <= 0)
+		{
+			_findSuccess++;
+			return path;
+		}
+		
+		long timeStamp = System.currentTimeMillis();
+		_postFilterUses++;
+		if (playable)
+			_postFilterPlayableUses++;
+		
+		int currentX, currentY, currentZ;
+		ListIterator<AbstractNodeLoc> middlePoint, endPoint;
+		AbstractNodeLoc locMiddle, locEnd;
+		boolean remove;
+		int pass = 0;
+		do
+		{
+			pass++;
+			_postFilterPasses++;
+			
+			remove = false;
+			middlePoint = path.listIterator();
+			endPoint = path.listIterator(1);
+			locEnd = null;
+			currentX = x;
+			currentY = y;
+			currentZ = z;
+			
+			while (endPoint.hasNext())
+			{
+				locEnd = endPoint.next();
+				locMiddle = middlePoint.next();
+				if (GeoData.getInstance().canMoveFromToTarget(currentX, currentY, currentZ, locEnd.getX(), locEnd.getY(), locEnd.getZ(), instanceId))
+				{
+					middlePoint.remove();
+					remove = true;
+					if (debug)
+						dropDebugItem(735, 1, locMiddle);
+				}
 				else
 				{
-					for (L2ItemInstance item : _debugItems)
-					{
-						if (item == null)
-							continue;
-						item.decayMe();
-					}
-					
-					_debugItems.clear();
+					currentX = locMiddle.getX();
+					currentY = locMiddle.getY();
+					currentZ = locMiddle.getZ();
 				}
 			}
-			
-			FastList<AbstractNodeLoc> path = null;
-			try
+		}
+		// only one postfilter pass for AI
+		while (playable && remove && path.size() > 2 && pass < Config.MAX_POSTFILTER_PASSES);
+		
+		if (debug)
+		{
+			middlePoint = path.listIterator();
+			while (middlePoint.hasNext())
 			{
-				CellNode result = buffer.findPath(gx, gy, gz, gtx, gty, gtz);
-				
-				if (debug)
-				{
-					for (CellNode n : buffer.debugPath())
-					{
-						if (n.getCost() < 0) // calculated path
-							dropDebugItem(1831, (int)(-n.getCost() * 10), n.getLoc());
-						else // known nodes
-							dropDebugItem(57, (int)(n.getCost() * 10), n.getLoc());
-					}
-				}
-				
-				if (result == null)
-				{
-					_findFails++;
-					return null;
-				}
-				
-				path = constructPath(result);
+				locMiddle = middlePoint.next();
+				dropDebugItem(65, 1, locMiddle);
 			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "", e);
-				return null;
-			}
-			finally
-			{
-				buffer.free();
-			}
-			
-			if (path.size() < 3 || Config.MAX_POSTFILTER_PASSES <= 0)
-			{
-				_findSuccess++;
-				return path;
-			}
-			
-			long timeStamp = System.currentTimeMillis();
-			_postFilterUses++;
-			if (playable)
-				_postFilterPlayableUses++;
-			
-			int currentX, currentY, currentZ;
-			ListIterator<AbstractNodeLoc> middlePoint, endPoint;
-			AbstractNodeLoc locMiddle, locEnd;
-			boolean remove;
-			int pass = 0;
-			do
-			{
-				pass++;
-				_postFilterPasses++;
-				
-				remove = false;
-				middlePoint = path.listIterator();
-				endPoint = path.listIterator(1);
-				locEnd = null;
-				currentX = x;
-				currentY = y;
-				currentZ = z;
-				
-				while (endPoint.hasNext())
-				{
-					locEnd = endPoint.next();
-					locMiddle = middlePoint.next();
-					if (GeoData.getInstance().canMoveFromToTarget(currentX, currentY, currentZ, locEnd.getX(), locEnd.getY(), locEnd.getZ(), instanceId))
-					{
-						middlePoint.remove();
-						remove = true;
-						if (debug)
-							dropDebugItem(735,1,locMiddle);
-					}
-					else
-					{
-						currentX = locMiddle.getX();
-						currentY = locMiddle.getY();
-						currentZ = locMiddle.getZ();
-					}
-				}
-			}
-			// only one postfilter pass for AI
-			while (playable && remove && path.size() > 2 && pass < Config.MAX_POSTFILTER_PASSES);
-			
-			if (debug)
-			{
-				middlePoint = path.listIterator();
-				while (middlePoint.hasNext())
-				{
-					locMiddle = middlePoint.next();
-					dropDebugItem(65, 1, locMiddle);
-				}
-			}
-			
-			_findSuccess++;
-			_postFilterElapsed += System.currentTimeMillis() - timeStamp;
-			return path;
+		}
+		
+		_findSuccess++;
+		_postFilterElapsed += System.currentTimeMillis() - timeStamp;
+		return path;
 	}
 	
 	private FastList<AbstractNodeLoc> constructPath(AbstractNode node)

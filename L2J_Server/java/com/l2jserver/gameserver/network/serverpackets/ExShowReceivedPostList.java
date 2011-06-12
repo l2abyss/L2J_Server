@@ -16,8 +16,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import javolution.util.FastList;
-
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.entity.Message;
 
@@ -66,8 +64,6 @@ public class ExShowReceivedPostList extends L2GameServerPacket
 		{
 			writeD(0x00);
 		}
-		FastList.recycle((FastList<Message>) _inbox);
-		_inbox = null;
 	}
 	
 	/* (non-Javadoc)
