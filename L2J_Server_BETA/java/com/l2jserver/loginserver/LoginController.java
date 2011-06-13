@@ -505,6 +505,10 @@ public class LoginController
 	public void setCharactersOnServer(String account, int charsNum, long[] timeToDel, int serverId)
 	{
 		L2LoginClient client = _loginServerClients.get(account);
+		
+		if (client == null)
+			return;
+		
 		if (charsNum > 0)
 			client.setCharsOnServ(serverId, charsNum);
 		
