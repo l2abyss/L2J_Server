@@ -361,20 +361,31 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				{
 					for (int i = 1; i <= Config.MAX_SUBCLASS; i++)
 					{
-						String qvar = st.getGlobalQuestVar(varName + i);
-						if (!qvar.isEmpty() && !qvar.endsWith(";") && !qvar.equals("0"))
+						final String itemOID = st.getGlobalQuestVar(varName + i);
+						if (!itemOID.isEmpty() && !itemOID.endsWith(";") && !itemOID.equals("0"))
 						{
-							int itemObjId = Integer.parseInt(qvar);
-							L2ItemInstance Item = activeChar.getInventory().getItemByObjectId(itemObjId);
-							if ((Item != null) && Util.contains(L2TransformManagerInstance._itemsIds, Item.getItemId()))
+							if (Util.isDigit(itemOID))
 							{
-								if (checkPlayerSkill(activeChar, trainer, s))
+								int itemObjId = Integer.parseInt(itemOID);
+								final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(itemObjId);
+								if ((item != null) && Util.contains(L2TransformManagerInstance._itemsIds, item.getItemId()))
 								{
-									giveSkill(activeChar, trainer, 0, skill);
-									//Logging the given skill.
-									st.saveGlobalQuestVar(varName + i, skill.getId() + ";");
+									if (checkPlayerSkill(activeChar, trainer, s))
+									{
+										giveSkill(activeChar, trainer, 0, skill);
+										//Logging the given skill.
+										st.saveGlobalQuestVar(varName + i, skill.getId() + ";");
+									}
+									return;
 								}
-								return;
+								else
+								{
+									_log.warning("Inexistent item for object Id " + itemObjId + ", for Sub-Class skill Id: " + _id + " level: " + _level + " for player " + activeChar.getName() + "!");
+								}
+							}
+							else
+							{
+								_log.warning("Invalid item object Id for Sub-Class skill Id: " + _id + " level: " + _level + " for player " + activeChar.getName() + "!");
 							}
 						}
 					}
@@ -440,9 +451,18 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					}
 					else
 					{
-						final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-						sm.addItemName(itemId);
-						sm.addItemNumber(itemCount);
+						SystemMessage sm;
+						if (itemCount > 1)
+						{
+							sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+							sm.addItemName(itemId);
+							sm.addItemNumber(itemCount);
+						}
+						else
+						{
+							sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
+							sm.addItemName(itemId);
+						}
 						player.sendPacket(sm);
 					}
 				}
