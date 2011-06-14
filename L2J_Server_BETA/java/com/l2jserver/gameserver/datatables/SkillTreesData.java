@@ -860,9 +860,11 @@ public final class SkillTreesData
 		{
 			if (player.getLevel() >= temp.getGetLevel())
 			{
+				int[][] subClassConds = null;
 				for (SubClass subClass : player.getSubClasses().values())
 				{
-					if ((temp.getSubClassConditions() != null) && (subClass.getClassIndex() == temp.getSubClassConditions()[subClass.getClassIndex() - 1][1]) && (temp.getSubClassConditions()[subClass.getClassIndex() - 1][0] <= subClass.getLevel()))
+					subClassConds = temp.getSubClassConditions();
+					if ((subClassConds != null) && (subClass.getClassIndex() <= subClassConds.length) && (subClass.getClassIndex() == subClassConds[subClass.getClassIndex() - 1][1]) && (subClassConds[subClass.getClassIndex() - 1][0] <= subClass.getLevel()))
 					{
 						boolean knownSkill = false;
 						
