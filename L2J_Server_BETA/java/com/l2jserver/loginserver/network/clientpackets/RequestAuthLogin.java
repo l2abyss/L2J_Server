@@ -29,10 +29,10 @@ import com.l2jserver.loginserver.LoginController.AuthLoginResult;
 import com.l2jserver.loginserver.network.L2LoginClient;
 import com.l2jserver.loginserver.network.L2LoginClient.LoginClientState;
 import com.l2jserver.loginserver.network.serverpackets.AccountKicked;
-import com.l2jserver.loginserver.network.serverpackets.LoginOk;
-import com.l2jserver.loginserver.network.serverpackets.ServerList;
 import com.l2jserver.loginserver.network.serverpackets.AccountKicked.AccountKickedReason;
 import com.l2jserver.loginserver.network.serverpackets.LoginFail.LoginFailReason;
+import com.l2jserver.loginserver.network.serverpackets.LoginOk;
+import com.l2jserver.loginserver.network.serverpackets.ServerList;
 
 
 /**
@@ -44,7 +44,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 {
 	private static Logger _log = Logger.getLogger(RequestAuthLogin.class.getName());
 	
-	private byte[] _raw = new byte[128];
+	private final byte[] _raw = new byte[128];
 	
 	private String _user;
 	private String _password;
@@ -119,9 +119,9 @@ public class RequestAuthLogin extends L2LoginClientPacket
 			{
 				case AUTH_SUCCESS:
 					client.setAccount(_user);
-					lc.getCharactersOnAccount(_user);
 					client.setState(LoginClientState.AUTHED_LOGIN);
 					client.setSessionKey(lc.assignSessionKeyToClient(_user, client));
+					lc.getCharactersOnAccount(_user);
 					if (Config.SHOW_LICENCE)
 					{
 						client.sendPacket(new LoginOk(getClient().getSessionKey()));

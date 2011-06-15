@@ -72,9 +72,6 @@ public class LoginController
 	protected byte[][] _blowfishKeys;
 	private static final int BLOWFISH_KEYS = 20;
 	
-	private static final String ACCESS_LEVEL_SELECT = "SELECT IF(? > value OR value IS NULL, accessLevel, -100) AS accessLevel " +
-			"FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
-	
 	private static final String USER_INFO_SELECT = "SELECT password, IF(? > value OR value IS NULL, accessLevel, -100) AS accessLevel, lastServer, userIp " +
 			"FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
 	
@@ -178,11 +175,6 @@ public class LoginController
 		if (account == null)
 			return;
 		_loginServerClients.remove(account);
-	}
-	
-	public boolean isAccountInLoginServer(String account)
-	{
-		return _loginServerClients.containsKey(account);
 	}
 	
 	public L2LoginClient getAuthedClient(String account)
@@ -321,16 +313,6 @@ public class LoginController
 		return null;
 	}
 	
-	public int getOnlinePlayerCount(int serverId)
-	{
-		GameServerInfo gsi = GameServerTable.getInstance().getRegisteredGameServerById(serverId);
-		if (gsi != null && gsi.isAuthed())
-		{
-			return gsi.getCurrentPlayerCount();
-		}
-		return 0;
-	}
-	
 	public boolean isAccountInAnyGameServer(String account)
 	{
 		Collection<GameServerInfo> serverList = GameServerTable.getInstance().getRegisteredGameServers().values();
@@ -359,20 +341,6 @@ public class LoginController
 		return null;
 	}
 	
-	public int getTotalOnlinePlayerCount()
-	{
-		int total = 0;
-		Collection<GameServerInfo> serverList = GameServerTable.getInstance().getRegisteredGameServers().values();
-		for (GameServerInfo gsi : serverList)
-		{
-			if (gsi.isAuthed())
-			{
-				total += gsi.getCurrentPlayerCount();
-			}
-		}
-		return total;
-	}
-	
 	public void getCharactersOnAccount(String account)
 	{
 		Collection<GameServerInfo> serverList = GameServerTable.getInstance().getRegisteredGameServers().values();
@@ -381,16 +349,6 @@ public class LoginController
 			if (gsi.isAuthed())
 				gsi.getGameServerThread().requestCharacters(account);
 		}
-	}
-	
-	public int getMaxAllowedOnlinePlayers(int id)
-	{
-		GameServerInfo gsi = GameServerTable.getInstance().getRegisteredGameServerById(id);
-		if (gsi != null)
-		{
-			return gsi.getMaxPlayers();
-		}
-		return 0;
 	}
 	
 	/**
@@ -514,47 +472,6 @@ public class LoginController
 		
 		if (timeToDel.length > 0)
 			client.serCharsWaitingDelOnServ(serverId, timeToDel);
-	}
-	
-	public boolean isGM(String user)
-	{
-		boolean ok = false;
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement(ACCESS_LEVEL_SELECT);
-			statement.setString(1, Long.toString(System.currentTimeMillis()));
-			statement.setString(2, user);
-			ResultSet rset = statement.executeQuery();
-			if (rset.next())
-			{
-				int accessLevel = rset.getInt(1);
-				if (accessLevel > 0)
-				{
-					ok = true;
-				}
-			}
-			rset.close();
-			statement.close();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Could not check gm state:" + e.getMessage(), e);
-			ok = false;
-		}
-		finally
-		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
-		}
-		return ok;
 	}
 	
 	/**
@@ -771,48 +688,6 @@ public class LoginController
 			_hackProtection.remove(address);
 			if (Config.LOG_LOGIN_CONTROLLER)
 				Log.add("'" + user + "' " + address.getHostAddress() + " - OK : LoginOk", "loginlog");
-		}
-		
-		return ok;
-	}
-	
-	public boolean loginBanned(String user)
-	{
-		boolean ok = false;
-		
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(ACCESS_LEVEL_SELECT);
-			statement.setString(1, Long.toString(System.currentTimeMillis()));
-			statement.setString(2, user);
-			ResultSet rset = statement.executeQuery();
-			if (rset.next())
-			{
-				int accessLevel = rset.getInt(1);
-				if (accessLevel < 0)
-					ok = true;
-			}
-			rset.close();
-			statement.close();
-		}
-		catch (Exception e)
-		{
-			// digest algo not found ??
-			// out of bounds should not be possible
-			_log.log(Level.WARNING, "Could not check ban state:" + e.getMessage(), e);
-			ok = false;
-		}
-		finally
-		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
 		}
 		
 		return ok;
