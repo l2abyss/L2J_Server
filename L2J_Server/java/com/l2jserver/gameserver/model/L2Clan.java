@@ -2017,10 +2017,7 @@ public class L2Clan
 		}
 		if (getCharPenaltyExpiryTime() > System.currentTimeMillis())
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_MUST_WAIT_BEFORE_ACCEPTING_A_NEW_MEMBER);
-			sm.addString(target.getName());
-			activeChar.sendPacket(sm);
-			sm = null;
+			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_MUST_WAIT_BEFORE_ACCEPTING_A_NEW_MEMBER));
 			return false;
 		}
 		if (target.getClanId() != 0)
