@@ -1420,7 +1420,7 @@ public class SevenSigns
 				
 				if (isSealValidationPeriod() || isCompResultsPeriod())
 				{
-					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").equals(compWinner))
+					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && (currPlayer == null || !currPlayer.getString("cabal").equals(compWinner)))
 					{
 						onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 						onlinePlayer.setIsIn7sDungeon(false);
@@ -1429,7 +1429,7 @@ public class SevenSigns
 				}
 				else
 				{
-					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && !currPlayer.getString("cabal").isEmpty())
+					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && (currPlayer == null || !currPlayer.getString("cabal").isEmpty()))
 					{
 						onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
 						onlinePlayer.setIsIn7sDungeon(false);
