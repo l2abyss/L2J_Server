@@ -28,6 +28,7 @@ import java.util.List;
 
 import javolution.util.FastList;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Effect;
@@ -1100,6 +1101,11 @@ public class L2CharacterAI extends AbstractAI
 		if (target == null)
 		{
 			// Set the Intention of this AbstractAI to AI_INTENTION_ACTIVE
+			setIntention(AI_INTENTION_ACTIVE);
+			return true;
+		}
+		if (_actor != null && _skill != null && _skill.isOffensive() && _skill.getSkillRadius() > 0 && Config.GEODATA > 0 && !GeoData.getInstance().canSeeTarget(_actor, target))
+		{
 			setIntention(AI_INTENTION_ACTIVE);
 			return true;
 		}
