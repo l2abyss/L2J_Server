@@ -41,15 +41,16 @@ import com.l2jserver.gameserver.network.L2GameClient;
 public class CharSelectionInfo extends L2GameServerPacket
 {
 	// d SdSddddddddddffddddddddddddddddddddddddddddddddddddddddddddddffd
-	private static final String _S__1F_CHARSELECTINFO = "[S] 09 CharSelectInfo";
+	private static final String _S__09_CHARSELECTINFO = "[S] 09 CharSelectInfo";
 	private static Logger _log = Logger.getLogger(CharSelectionInfo.class.getName());
 	private String _loginName;
 	private int _sessionId, _activeId;
 	private CharSelectInfoPackage[] _characterPackages;
-	
-	
+
 	/**
-	 * @param _characters
+	 * Constructor for CharSelectionInfo.
+	 * @param loginName
+	 * @param sessionId
 	 */
 	public CharSelectionInfo(String loginName, int sessionId)
 	{
@@ -217,7 +218,6 @@ public class CharSelectionInfo extends L2GameServerPacket
 		List<CharSelectInfoPackage> characterList = new FastList<CharSelectInfoPackage>();
 		
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -245,14 +245,12 @@ public class CharSelectionInfo extends L2GameServerPacket
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		return new CharSelectInfoPackage[0];
 	}
 	
 	private static void loadCharacterSubclassInfo(CharSelectInfoPackage charInfopackage, int ObjectId, int activeClassId)
 	{
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -280,9 +278,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		{
 			try { L2DatabaseFactory.close(con); } catch (Exception e) {}
 		}
-		
 	}
-	
 	
 	private static CharSelectInfoPackage restoreChar(ResultSet chardata) throws Exception
 	{
@@ -305,6 +301,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		}
 		
 		CharSelectInfoPackage charInfopackage = new CharSelectInfoPackage(objectId, name);
+		charInfopackage.setAccessLevel(chardata.getByte("accesslevel"));
 		charInfopackage.setLevel(chardata.getInt("level"));
 		charInfopackage.setMaxHp(chardata.getInt("maxhp"));
 		charInfopackage.setCurrentHp(chardata.getDouble("curhp"));
@@ -415,6 +412,6 @@ public class CharSelectionInfo extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__1F_CHARSELECTINFO;
+		return _S__09_CHARSELECTINFO;
 	}
 }

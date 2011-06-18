@@ -456,12 +456,13 @@ public abstract class L2Character extends L2Object
 	
 	public void onTeleported()
 	{
-		if (!isTeleporting())
-			return;
-		spawnMe(getPosition().getX(), getPosition().getY(), getPosition().getZ());
-		
-		setIsTeleporting(false);
-		
+		synchronized(this)
+		{
+			if (!isTeleporting())
+				return;
+			spawnMe(getPosition().getX(), getPosition().getY(), getPosition().getZ());
+			setIsTeleporting(false);
+		}
 		if (_isPendingRevive)
 			doRevive();
 	}

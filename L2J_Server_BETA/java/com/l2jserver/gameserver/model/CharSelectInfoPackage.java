@@ -18,7 +18,7 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 
 /**
- * Used to Store data sent to Client for Character
+ * Used to Store data sent to Client for Character.<br>
  * Selection screen.
  *
  * @version $Revision: 1.2.2.2.2.4 $ $Date: 2005/03/27 15:29:33 $
@@ -56,9 +56,12 @@ public class CharSelectInfoPackage
 	private int _z = 0;
 	private String _htmlPrefix = null;
 	private int _vitalityPoints = 0;
+	private byte _accessLevel = 0;
 	
 	/**
-	 * @param int1
+	 * Constructor for CharSelectInfoPackage.
+	 * @param objectId character object Id.
+	 * @param name the character's name.
 	 */
 	public CharSelectInfoPackage(int objectId, String name)
 	{
@@ -67,6 +70,9 @@ public class CharSelectInfoPackage
 		_paperdoll = PcInventory.restoreVisibleInventory(objectId);
 	}
 	
+	/**
+	 * @return the character object Id.
+	 */
 	public int getObjectId()
 	{
 		return _objectId;
@@ -75,6 +81,22 @@ public class CharSelectInfoPackage
 	public void setObjectId(int objectId)
 	{
 		_objectId = objectId;
+	}
+	
+	/**
+	 * @return the character's access level.
+	 */
+	public byte getAccessLevel()
+	{
+		return _accessLevel;
+	}
+	
+	/**
+	 * @param level the character's access level to be set.
+	 */
+	public void setAccessLevel(byte level)
+	{
+		_accessLevel = level;
 	}
 	
 	public int getCharId()
