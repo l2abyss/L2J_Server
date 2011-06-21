@@ -236,11 +236,11 @@ public class L2SummonInstance extends L2Summon
 		if(petLevel >= 70)
 			skillLevel += (petLevel-65)/10;
 		
-		// adjust the level for servitors less than lv 10
+		// Adjust the level for servitors less than level 1.
 		if (skillLevel < 1)
 			skillLevel = 1;
 		
-		L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
+		final L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
 		
 		if (skillToCast != null)
 			super.doCast(skillToCast);
@@ -258,13 +258,20 @@ public class L2SummonInstance extends L2Summon
 	public final void stopSkillEffects(int skillId)
 	{
 		super.stopSkillEffects(skillId);
-		List<SummonEffect> effects = SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill());
-		if (effects != null && !effects.isEmpty())
+		final TIntObjectHashMap<List<SummonEffect>> servitorEffects = SummonEffectsTable.getInstance().getServitorEffects(getOwner());
+		if (servitorEffects != null)
 		{
-			for (SummonEffect effect : effects)
+			final List<SummonEffect> effects = servitorEffects.get(getReferenceSkill());
+			if ((effects != null) && !effects.isEmpty())
 			{
-				if (effect.getSkill().getId() == skillId)
-					SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).remove(effect);
+				for (SummonEffect effect : effects)
+				{
+					final L2Skill skill = effect.getSkill();
+					if ((skill != null) && (skill.getId() == skillId))
+					{
+						effects.remove(effect);
+					}
+				}
 			}
 		}
 	}

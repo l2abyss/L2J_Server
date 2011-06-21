@@ -33,6 +33,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrainerHealersInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TransformManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2VillageMasterInstance;
+import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillDone;
@@ -284,7 +285,6 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 						}
 						
 						rep = s.getLevelUpSp();
-						
 						if (clan.getReputationScore() < rep)
 						{
 							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
@@ -319,9 +319,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 						}
 						
 						clan.addNewSkill(skill, _subType);
-						
 						clan.broadcastToOnlineMembers(new PledgeSkillList(clan));
-						
 						activeChar.sendPacket(new AcquireSkillDone());
 						
 						((L2SquadTrainer) trainer).showSubUnitSkillList(activeChar);
@@ -354,7 +352,16 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				QuestState st = activeChar.getQuestState("SubClassSkills");
 				if (st == null)
 				{
-					st = QuestManager.getInstance().getQuest("SubClassSkills").newQuestState(activeChar);
+					final Quest subClassSkilllsQuest = QuestManager.getInstance().getQuest("SubClassSkills");
+					if (subClassSkilllsQuest != null)
+					{
+						st = subClassSkilllsQuest.newQuestState(activeChar);
+					}
+					else
+					{
+						_log.warning("Null SubClassSkills quest, for Sub-Class skill Id: " + _id + " level: " + _level + " for player " + activeChar.getName() + "!");
+						return;
+					}
 				}
 				
 				for (String varName : L2TransformManagerInstance._questVarNames)
@@ -366,7 +373,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 						{
 							if (Util.isDigit(itemOID))
 							{
-								int itemObjId = Integer.parseInt(itemOID);
+								final int itemObjId = Integer.parseInt(itemOID);
 								final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(itemObjId);
 								if ((item != null) && Util.contains(L2TransformManagerInstance._itemsIds, item.getItemId()))
 								{

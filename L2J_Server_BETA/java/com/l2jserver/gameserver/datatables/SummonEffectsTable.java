@@ -34,7 +34,7 @@ public class SummonEffectsTable
 	 * 			key: servitorSkillId, value: Effects list
 	 */
 	private TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> _servitorEffects = new TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>>();
-
+	
 	public TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> getServitorEffectsOwner()
 	{
 		return _servitorEffects;
@@ -42,9 +42,13 @@ public class SummonEffectsTable
 	
 	public TIntObjectHashMap<List<SummonEffect>> getServitorEffects(L2PcInstance owner)
 	{
-		return _servitorEffects.get(owner.getObjectId()).get(owner.getClassIndex());
+		final TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>> servitorMap = _servitorEffects.get(owner.getObjectId());
+		if (servitorMap == null)
+		{
+			return null;
+		}
+		return servitorMap.get(owner.getClassIndex());
 	}
-	
 	
 	/** Pets **/
 	private TIntObjectHashMap<List<SummonEffect>> _petEffects = new TIntObjectHashMap<List<SummonEffect>>(); // key: petItemObjectId, value: Effects list
@@ -52,13 +56,6 @@ public class SummonEffectsTable
 	public TIntObjectHashMap<List<SummonEffect>> getPetEffects()
 	{
 		return _petEffects;
-	}
-	
-	
-	/** Common **/
-	public static SummonEffectsTable getInstance()
-	{
-		return SingletonHolder._instance;
 	}
 	
 	public class SummonEffect
@@ -88,6 +85,12 @@ public class SummonEffectsTable
 		{
 			return _effectCurTime;
 		}
+	}
+	
+	/** Common **/
+	public static SummonEffectsTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	@SuppressWarnings("synthetic-access")

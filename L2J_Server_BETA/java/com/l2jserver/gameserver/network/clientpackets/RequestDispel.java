@@ -21,11 +21,11 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public class RequestDispel extends L2GameClientPacket
 {
+	private static final String _C_D0_4B_REQUESTDISPEL = "[C] D0:4B RequestDispel";
 	private int _objectId;
 	private int _skillId;
 	private int _skillLevel;
@@ -47,29 +47,43 @@ public class RequestDispel extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (_skillId <= 0 || _skillLevel <= 0)
+		if ((_skillId <= 0) || (_skillLevel <= 0))
+		{
 			return;
-
+		}
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
-		
-		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLevel);
+		}
+		final L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLevel);
 		if (skill == null)
+		{
 			return;
+		}
 		if (!skill.canBeDispeled() || skill.isStayAfterDeath() || skill.isDebuff())
+		{
 			return;
-		if (skill.getTransformId() > 0) // transformation
+		}
+		if (skill.getTransformId() > 0)
+		{
 			return;
+		}
 		if (skill.isDance() && !Config.DANCE_CANCEL_BUFF)
+		{
 			return;
+		}
 		if (activeChar.getObjectId() == _objectId)
+		{
 			activeChar.stopSkillEffects(_skillId);
+		}
 		else
 		{
 			final L2Summon pet = activeChar.getPet();
-			if (pet != null && pet.getObjectId() == _objectId)
+			if ((pet != null) && (pet.getObjectId() == _objectId))
+			{
 				pet.stopSkillEffects(_skillId);
+			}
 		}
 	}
 	
@@ -79,6 +93,6 @@ public class RequestDispel extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] D0:4E RequestDispel";
+		return _C_D0_4B_REQUESTDISPEL;
 	}
 }
