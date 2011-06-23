@@ -23,6 +23,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ExPartyRoomMember extends L2GameServerPacket
 {
+	private static final String _S__FE_08_EXPARTYROOMMEMBER = "[S] FE:08 ExPartyRoomMember";
+	
 	private final PartyMatchRoom _room;
 	private final int _mode;
 	
@@ -55,12 +57,13 @@ public class ExPartyRoomMember extends L2GameServerPacket
 				else
 					writeD(0);
 			}
+			writeD(0x00);
 		}
 	}
 	
 	@Override
 	public String getType()
 	{
-		return "[S] FE:08 ExPartyRoomMember";
+		return _S__FE_08_EXPARTYROOMMEMBER;
 	}
 }
