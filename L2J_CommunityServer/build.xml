@@ -29,12 +29,7 @@
     
     
     <target name="compile" depends="init">
-        <javac destdir="${build.classes}"
-               optimize="on"
-               debug="on"
-               source="1.6"
-               target="1.6"
-               nowarn="off">
+        <javac destdir="${build.classes}" debug="true" includeantruntime="false" source="1.6" target="1.6">
             <src path="${src}"/>
             <classpath refid="classpath"/>   
         </javac>
