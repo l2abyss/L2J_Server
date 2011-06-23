@@ -15,14 +15,13 @@
 package com.l2jserver.accountmanager;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Locale;
 
 import javolution.util.FastList;
 
@@ -30,6 +29,8 @@ import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
+import com.l2jserver.ngl.ConsoleLocalizator;
+import com.l2jserver.ngl.LocaleCodes;
 
 /**
  * This class SQL Account Manager
@@ -43,25 +44,34 @@ public class SQLAccountManager
 	private static String _pass = "";
 	private static String _level = "";
 	private static String _mode = "";
+	private static ConsoleLocalizator cl;
 	
 	public static void main(String[] args) throws SQLException, IOException, NoSuchAlgorithmException
 	{
 		Server.serverMode = Server.MODE_LOGINSERVER;
 		Config.load();
+		if (args.length > 0)
+		{
+			if (LocaleCodes.getInstance().getLanguage(args[0]) != null)
+				cl = new ConsoleLocalizator("accountmanager", "SQLAccountManager", LocaleCodes.getInstance().getLanguage(args[0]));
+			else
+				cl = new ConsoleLocalizator("accountmanager", "SQLAccountManager", args[0]);
+		}
+		else
+			cl = new ConsoleLocalizator("accountmanager", "SQLAccountManager", Locale.getDefault());
+		
 		while (true)
 		{
-			System.out.println("Please choose an option:");
-			System.out.println("");
-			System.out.println("1 - Create new account or update existing one (change pass and access level).");
-			System.out.println("2 - Change access level.");
-			System.out.println("3 - Delete existing account.");
-			System.out.println("4 - List accounts & access levels.");
-			System.out.println("5 - Exit.");
-			LineNumberReader _in = new LineNumberReader(new InputStreamReader(System.in));
+			cl.println("functChooser");
+			cl.println();
+			cl.println("functCreateAccount");
+			cl.println("functAccessLevel");
+			cl.println("functDeleteAccount");
+			cl.println("functListAccount");
+			cl.println("functExit");
 			while (!(_mode.equals("1") || _mode.equals("2") || _mode.equals("3") || _mode.equals("4") || _mode.equals("5")))
 			{
-				System.out.print("Your choice: ");
-				_mode = _in.readLine();
+				_mode = cl.inputString("inputChoice");
 			}
 			
 			if (_mode.equals("1") || _mode.equals("2") || _mode.equals("3"))
@@ -70,32 +80,28 @@ public class SQLAccountManager
 				{
 					while (_uname.trim().length() == 0)
 					{
-						System.out.print("Username: ");
-						_uname = _in.readLine().toLowerCase();
+						_uname = cl.inputString("inputUsername").toLowerCase();
 					}
 				}
 				else if (_mode.equals("3"))
 				{
 					while (_uname.trim().length() == 0)
 					{
-						System.out.print("Account name: ");
-						_uname = _in.readLine().toLowerCase();
+						_uname = cl.inputString("inputUsername").toLowerCase();
 					}
 				}
 				if (_mode.equals("1"))
 				{
 					while (_pass.trim().length() == 0)
 					{
-						System.out.print("Password: ");
-						_pass = _in.readLine();
+						_pass = cl.inputString("inputPassword");
 					}
 				}
 				if (_mode.equals("1") || _mode.equals("2"))
 				{
 					while (_level.trim().length() == 0)
 					{
-						System.out.print("Access level: ");
-						_level = _in.readLine();
+						_level = cl.inputString("inputAccessLevel");
 					}
 				}
 			}
@@ -113,30 +119,28 @@ public class SQLAccountManager
 			else if (_mode.equals("3"))
 			{
 				// Delete
-				System.out.print("Do you really want to delete this account ? Y/N : ");
-				String yesno = _in.readLine();
-				if (yesno != null && yesno.equalsIgnoreCase("Y"))
+				String yesno = cl.inputString("functDeleteAccountConfirm");
+				if (yesno != null && yesno.equalsIgnoreCase(cl.getString("yesChar")))
 					deleteAccount(_uname.trim());
 				else
-					System.out.println("Deletion cancelled");
+					cl.println("functDeleteAccountCancel");
 			}
 			else if (_mode.equals("4"))
 			{
 				// List
 				_mode = "";
-				System.out.println("");
-				System.out.println("Please choose a listing mode:");
-				System.out.println("");
-				System.out.println("1 - Banned accounts only (accessLevel < 0)");
-				System.out.println("2 - GM/privileged accounts (accessLevel > 0)");
-				System.out.println("3 - Regular accounts only (accessLevel = 0)");
-				System.out.println("4 - List all");
+				cl.println();
+				cl.println("functListAccountChooser");
+				cl.println();
+				cl.println("functListAccountBanned");
+				cl.println("functListAccountPrivileged");
+				cl.println("functListAccountRegular");
+				cl.println("functListAccountAll");
 				while (!(_mode.equals("1") || _mode.equals("2") || _mode.equals("3") || _mode.equals("4")))
 				{
-					System.out.print("Your choice: ");
-					_mode = _in.readLine();
+					_mode = cl.inputString("inputChoice");
 				}
-				System.out.println("");
+				cl.println();
 				printAccInfo(_mode);
 			}
 			else if (_mode.equals("5"))
@@ -148,7 +152,7 @@ public class SQLAccountManager
 			_pass = "";
 			_level = "";
 			_mode = "";
-			System.out.println();
+			cl.println();
 		}
 	}
 	
@@ -176,7 +180,7 @@ public class SQLAccountManager
 		rset.close();
 		statement.close();
 		L2DatabaseFactory.close(con);
-		System.out.println("Displayed accounts: " + count + ".");
+		cl.println("functListAccountDisplayed", count);
 	}
 	
 	private static void addOrUpdateAccount(String account, String password, String level) throws IOException, SQLException, NoSuchAlgorithmException
@@ -210,7 +214,7 @@ public class SQLAccountManager
 		ResultSet rset = statement.executeQuery();
 		if (!rset.next())
 		{
-			System.out.println("False");
+			cl.println("falseString");
 		}
 		else if (rset.getInt(1) > 0)
 		{
@@ -222,12 +226,12 @@ public class SQLAccountManager
 			statement.setString(2, account);
 			statement.executeUpdate();
 			
-			System.out.println("Account " + account + " has been updated.");
+			cl.println("functAccessLevelUpdated", account);
 		}
 		else
 		{
 			// Not Exist
-			System.out.println("Account " + account + " does not exist.");
+			cl.println("functAccessLevelNotExist", account);
 		}
 		rset.close();
 		statement.close();
@@ -245,7 +249,7 @@ public class SQLAccountManager
 		ResultSet rset = statement.executeQuery();
 		if (!rset.next())
 		{
-			System.out.println("False");
+			cl.println("falseString");
 			rset.close();
 		}
 		else if (rset.getInt(1) > 0)
@@ -273,7 +277,7 @@ public class SQLAccountManager
 			
 			for (int index = 0; index < objIds.size(); index++)
 			{
-				System.out.println("Deleting character " + charNames.get(index) + ".");
+				cl.println("functDeleteAccountChar", charNames.get(index));
 				
 				// Check If clan leader Remove Clan and remove all from it
 				statement.close();
@@ -295,7 +299,7 @@ public class SQLAccountManager
 					
 					String clanName = rcln.getString("clan_name");
 					
-					System.out.println("Deleting clan " + clanName + ".");
+					cl.println("functDeleteAccountClan", clanName);
 					
 					// Delete Clan Wars
 					statement.close();
@@ -462,12 +466,12 @@ public class SQLAccountManager
 			statement.setString(1, account);
 			statement.executeUpdate();
 			
-			System.out.println("Account " + account + " has been deleted.");
+			cl.println("functDeleteAccountComplete", account);
 		}
 		else
 		{
 			// Not Exist
-			System.out.println("Account " + account + " does not exist.");
+			cl.println("functDeleteAccountNotExist", account);
 		}
 		
 		// Close Connection
