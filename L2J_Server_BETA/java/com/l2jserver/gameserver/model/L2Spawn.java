@@ -158,20 +158,9 @@ public class L2Spawn
 		if (_template == null)
 			return;
 		
-		// The Name of the L2NpcInstance type managed by this L2Spawn
-		String implementationName = _template.type; // implementing class name
-		
-		if (mobTemplate.npcId == 30995)
-			implementationName = "L2RaceManager";
-		
-		// if (mobTemplate.npcId == 8050)
-		
-		if ((mobTemplate.npcId >= 31046)&&(mobTemplate.npcId <= 31053))
-			implementationName = "L2SymbolMaker";
-		
 		// Create the generic constructor of L2NpcInstance managed by this L2Spawn
 		Class<?>[] parameters = {int.class, Class.forName("com.l2jserver.gameserver.templates.chars.L2NpcTemplate")};
-		_constructor = Class.forName("com.l2jserver.gameserver.model.actor.instance." + implementationName + "Instance").getConstructor(parameters);
+		_constructor = Class.forName("com.l2jserver.gameserver.model.actor.instance." + _template.type + "Instance").getConstructor(parameters);
 	}
 	
 	/**
