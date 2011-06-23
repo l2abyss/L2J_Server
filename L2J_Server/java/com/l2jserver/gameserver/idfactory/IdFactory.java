@@ -111,7 +111,10 @@ public abstract class IdFactory
 	protected IdFactory()
 	{
 		setAllCharacterOffline();
-		cleanUpDB();
+		
+		if (Config.DATABASE_CLEAN_UP)
+			cleanUpDB();
+		
 		cleanUpTimeStamps();
 	}
 	

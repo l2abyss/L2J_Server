@@ -441,6 +441,8 @@ public final class Config
 	public static int AUTODESTROY_ITEM_AFTER;
 	public static int HERB_AUTO_DESTROY_TIME;
 	public static TIntArrayList LIST_PROTECTED_ITEMS;
+	public static boolean DATABASE_CLEAN_UP;
+	public static long CONNECTION_CLOSE_TIME;
 	public static int CHAR_STORE_INTERVAL;
 	public static boolean LAZY_ITEMS_UPDATE;
 	public static boolean UPDATE_ITEMS_ON_CHAR_STORE;
@@ -1829,6 +1831,8 @@ public final class Config
 					{
 						LIST_PROTECTED_ITEMS.add(Integer.parseInt(id));
 					}
+					DATABASE_CLEAN_UP = Boolean.parseBoolean(General.getProperty("DatabaseCleanUp", "true"));
+					CONNECTION_CLOSE_TIME = Long.parseLong(General.getProperty("ConnectionCloseTime", "60000"));
 					CHAR_STORE_INTERVAL = Integer.parseInt(General.getProperty("CharacterDataStoreInterval", "15"));
 					LAZY_ITEMS_UPDATE = Boolean.parseBoolean(General.getProperty("LazyItemsUpdate", "false"));
 					UPDATE_ITEMS_ON_CHAR_STORE = Boolean.parseBoolean(General.getProperty("UpdateItemsOnCharStore", "false"));
