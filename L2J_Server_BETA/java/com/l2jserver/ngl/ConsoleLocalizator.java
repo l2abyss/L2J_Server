@@ -32,28 +32,106 @@ import com.sun.jna.ptr.IntByReference;
  */
 public class ConsoleLocalizator extends LocalizationParser
 {
-	private static WinConsole _wcon = Platform.isWindows() ? WinConsole.INSTANCE : null;
-	private static Pointer _stdout = _wcon != null ? _wcon.GetStdHandle(-11) : null;
+	private WinConsole _wcon;
+	private Pointer _stdout;
 	private static PrintStream _out;
 	
 	Scanner _scn = new Scanner(System.in);
 	String _baseName = "NGLConsole";
 	
+	/**
+	 * Load ConsoleLocalizator by using Default Locale
+	 * 
+	 * @param dir
+	 * @param baseName
+	 */
 	public ConsoleLocalizator(String dir, String baseName)
 	{
 		this(dir, baseName, Locale.getDefault());
 	}
 	
+	/**
+	 * Load ConsoleLocalizator by using a specified Locale
+	 * 
+	 * @param dir
+	 * @param baseName
+	 * @param locale
+	 */
 	public ConsoleLocalizator(String dir, String baseName, Locale locale)
 	{
 		super(dir, baseName, locale);
+		loadConsole();
 	}
 	
+	/**
+	 * Load ConsoleLocalizator by using a custom xml file
+	 * ../languages/<dir>/<baseName>_<locale>.xml
+	 * 
+	 * @param dir
+	 * @param baseName
+	 * @param locale
+	 */
 	public ConsoleLocalizator(String dir, String baseName, String locale)
 	{
 		super(dir, baseName, locale);
+		loadConsole();
 	}
 	
+	/**
+	 * Choose the appropriate output stream for console
+	 */
+	private void loadConsole()
+	{
+		if (Platform.isWindows())
+		{
+			try
+			{
+				_wcon = WinConsole.INSTANCE;
+				
+				if (_wcon.GetConsoleOutputCP() != 0)
+				{
+					// Set Console Output to UTF8
+					_wcon.SetConsoleOutputCP(CodePage.CP_UTF8);
+					
+					// Set Output to STDOUT
+					_stdout = _wcon.GetStdHandle(-11);
+				}
+				else
+				{
+					// Not running from windows console
+					_wcon = null;
+				}
+			}
+			catch (Exception e)
+			{
+				// Missing function in Kernel32
+				_wcon = null;
+			}
+		}
+		
+		if (_wcon == null) // Not running windows console
+		{
+			try
+			{
+				// UTF-8 Print Stream
+				_out = new PrintStream(System.out, true, "UTF-8");
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				// UTF-8 Not Supported
+				_out = new PrintStream(System.out, true);
+				directPrint("Your system doesn't support UTF-8 encoding\n");
+			}
+		}
+	}
+	
+	/**
+	 * Get string from translation, add arguments
+	 * and write it to console.
+	 * 
+	 * @param id
+	 * @param args
+	 */
 	public void print(String id, Object... args)
 	{
 		String msg = getStringFromId(id);
@@ -64,11 +142,22 @@ public class ConsoleLocalizator extends LocalizationParser
 		directPrint(msg);
 	}
 	
+	/**
+	 * Write a new line
+	 */
 	public void println()
 	{
 		directPrint("\n");
 	}
 	
+	/**
+	 * Get string from translation, add arguments
+	 * and write it to console with a newline at the
+	 * end of string.
+	 * 
+	 * @param id
+	 * @param args
+	 */
 	public void println(String id, Object... args)
 	{
 		String msg = getStringFromId(id);
@@ -79,6 +168,15 @@ public class ConsoleLocalizator extends LocalizationParser
 		directPrint(msg);
 	}
 	
+	/**
+	 * Get string from translation, add arguments
+	 * and write it to console.
+	 * Wait for an input and return in form of string.
+	 * 
+	 * @param id
+	 * @param args
+	 * @return Input String
+	 */
 	public String inputString(String id, Object... args)
 	{
 		print(id, args);
@@ -87,6 +185,14 @@ public class ConsoleLocalizator extends LocalizationParser
 		return ret;
 	}
 	
+	/**
+	 * Read string from translation file and append
+	 * arguments.
+	 * 
+	 * @param id
+	 * @param args
+	 * @return
+	 */
 	public String getString(String id, Object... args)
 	{
 		String msg = getStringFromId(id);
@@ -96,38 +202,32 @@ public class ConsoleLocalizator extends LocalizationParser
 			return formatText(msg, args);
 	}
 	
+	/**
+	 * Append arguments to specified string.
+	 * 
+	 * @param text
+	 * @param args
+	 * @return
+	 */
 	private String formatText(String text, Object... args)
 	{
 		Formatter form = new Formatter();
 		return form.format(text, args).toString();
 	}
 	
-	private static void directPrint(String message)
+	/**
+	 * Write the text into console by using UTF-8
+	 * PrintStream under UNIX environment, and 
+	 * Kernel32.dll under Windows.
+	 * 
+	 * @param message
+	 */
+	private void directPrint(String message)
 	{
 		if (_wcon == null)
 			_out.print(message);
 		else
 			_wcon.WriteConsoleW(_stdout, message.toCharArray(),
 					message.length(), new IntByReference(), null);
-	}
-	
-	static
-	{
-		if (_wcon != null && _wcon.GetConsoleOutputCP() != 0)
-		{
-			_wcon.SetConsoleOutputCP(CodePage.CP_UTF8);
-		}
-		else
-		{
-			try
-			{
-				_out = _wcon == null ? new PrintStream(System.out, true, "UTF-8") : null;
-			}
-			catch (UnsupportedEncodingException e)
-			{
-				_out = _wcon == null ? new PrintStream(System.out, true) : null;
-				directPrint("Unsupported Encoding\n");
-			}
-		}
 	}
 }

@@ -54,6 +54,7 @@ public class LocalizationParser
         	sb.append(country);
         if (variant != "")
         	sb.append('_'+variant);
+        // Java 7 Function 
         /*if (script != "")
     		sb.append('_'+script);*/
         
@@ -68,6 +69,12 @@ public class LocalizationParser
 		File xml = getTranslationFile(locale);
         parseXml(xml);
 	}
+	
+	/**
+	 * Parse translation xml
+	 * 
+	 * @param xml
+	 */
 	private void parseXml(File xml)
 	{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -106,6 +113,12 @@ public class LocalizationParser
 		}
 	}
 	
+	/**
+	 * Search the translation file
+	 * 
+	 * @param language
+	 * @return
+	 */
 	private File getTranslationFile(String language)
 	{
 		File xml = null;
@@ -120,6 +133,12 @@ public class LocalizationParser
 		return xml;
 	}
 	
+	/**
+	 * Return string from specified id
+	 * 
+	 * @param id
+	 * @return
+	 */
 	protected String getStringFromId(String id)
 	{
 		return _msgMap.get(id);

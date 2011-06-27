@@ -15,8 +15,9 @@
 package com.l2jserver.util.osnative;
 
 /**
+ * This class contains console code pages
+ * 
  * @author mrTJO
- *
  */
 public final class CodePage
 {
