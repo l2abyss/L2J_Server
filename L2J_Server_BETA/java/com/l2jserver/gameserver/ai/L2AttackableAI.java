@@ -1699,14 +1699,32 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		double dist = 0;
 		double dist2 = 0;
 		int range = 0;
+		if (_attackTarget == null && getTarget() == null && getCastTarget() == null)
+		{
+			notifyEvent(CtrlEvent.EVT_CANCEL);
+			return;
+		}
+		
 		try
 		{
-			if (npc.getTarget() == null)
-				npc.setTarget(getAttackTarget());
-			dist = Math.sqrt(npc.getPlanDistanceSq(getAttackTarget().getX(), getAttackTarget().getY()));
+			L2Character _attackTargetCpy = _attackTarget;
+			if (npc.getTarget() == null && _attackTargetCpy != null)
+				npc.setTarget(_attackTargetCpy);
+			else if (_attackTargetCpy == null && getTarget() != null)
+			{
+				_attackTargetCpy = (L2Character) getTarget();
+				setAttackTarget(_attackTargetCpy);
+			}
+			else
+			{
+				notifyEvent(CtrlEvent.EVT_CANCEL);
+				return;
+			}
+			
+			dist = Math.sqrt(npc.getPlanDistanceSq(_attackTargetCpy.getX(), _attackTargetCpy.getY()));
 			dist2 = dist - npc.getTemplate().collisionRadius;
-			range = npc.getPhysicalAttackRange() + npc.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius;
-			if (getAttackTarget().isMoving())
+			range = npc.getPhysicalAttackRange() + npc.getTemplate().collisionRadius + _attackTargetCpy.getTemplate().collisionRadius;
+			if (_attackTargetCpy.isMoving())
 			{
 				dist = dist - 30;
 				if (npc.isMoving())
@@ -1719,17 +1737,17 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				//-------------------------------------------------------------
 				//Try to stop the target or disable the target as priority
 				int random = Rnd.get(100);
-				if (_skillrender.hasImmobiliseSkill() && !getAttackTarget().isImmobilized() && random < 2)
+				if (_skillrender.hasImmobiliseSkill() && !_attackTargetCpy.isImmobilized() && random < 2)
 				{
 					for (L2Skill sk : _skillrender._immobiliseskills)
 					{
-						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
+						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + _attackTargetCpy.getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
 						{
 							continue;
 						}
 						if (!GeoData.getInstance().canSeeTarget(npc, getAttackTarget()))
 							continue;
-						if (getAttackTarget().getFirstEffect(sk) == null)
+						if (_attackTargetCpy.getFirstEffect(sk) == null)
 						{
 							clientStopMoving(null);
 							//L2Object target = getAttackTarget();
@@ -1746,13 +1764,13 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					for (L2Skill sk : _skillrender._cotskills)
 					{
-						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
+						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + _attackTargetCpy.getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
 						{
 							continue;
 						}
 						if (!GeoData.getInstance().canSeeTarget(npc, getAttackTarget()))
 							continue;
-						if (getAttackTarget().getFirstEffect(sk) == null)
+						if (_attackTargetCpy.getFirstEffect(sk) == null)
 						{
 							clientStopMoving(null);
 							//L2Object target = getAttackTarget();
@@ -1768,13 +1786,13 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					for (L2Skill sk : _skillrender._debuffskills)
 					{
-						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
+						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + _attackTargetCpy.getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
 						{
 							continue;
 						}
 						if (!GeoData.getInstance().canSeeTarget(npc, getAttackTarget()))
 							continue;
-						if (getAttackTarget().getFirstEffect(sk) == null)
+						if (_attackTargetCpy.getFirstEffect(sk) == null)
 						{
 							clientStopMoving(null);
 							//L2Object target = getAttackTarget();
@@ -1791,13 +1809,13 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					for (L2Skill sk : _skillrender._negativeskills)
 					{
-						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
+						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + _attackTargetCpy.getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
 						{
 							continue;
 						}
 						if (!GeoData.getInstance().canSeeTarget(npc, getAttackTarget()))
 							continue;
-						if (getAttackTarget().getFirstEffect(L2EffectType.BUFF) != null)
+						if (_attackTargetCpy.getFirstEffect(L2EffectType.BUFF) != null)
 						{
 							clientStopMoving(null);
 							//L2Object target = getAttackTarget();
@@ -1815,7 +1833,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					for (L2Skill sk : _skillrender._atkskills)
 					{
-						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
+						if (sk.getMpConsume() >= npc.getCurrentMp() || npc.isSkillDisabled(sk) || (sk.getCastRange() + npc.getTemplate().collisionRadius + _attackTargetCpy.getTemplate().collisionRadius <= dist2 && !canAura(sk)) || (sk.isMagic() && npc.isMuted()) || (!sk.isMagic() && npc.isPhysicalMuted()))
 						{
 							continue;
 						}
@@ -1838,7 +1856,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						if(sk.getMpConsume()>=_actor.getCurrentMp()
 								|| _actor.isSkillDisabled(sk.getId())
-								||(sk.getCastRange()+ _actor.getTemplate().collisionRadius + getAttackTarget().getTemplate().collisionRadius <= dist2 && !canAura(sk))
+								||(sk.getCastRange()+ _actor.getTemplate().collisionRadius + _attackTargetCpy.getTemplate().collisionRadius <= dist2 && !canAura(sk))
 								||(sk.isMagic()&&_actor.isMuted())
 								||(!sk.isMagic()&&_actor.isPhysicalMuted()))
 						{
@@ -1874,7 +1892,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			
 			if (dist > range || !GeoData.getInstance().canSeeTarget(npc, getAttackTarget()))
 			{
-				if (getAttackTarget().isMoving())
+				if (_attackTargetCpy.isMoving())
 					range -= 100;
 				if (range < 5)
 					range = 5;
