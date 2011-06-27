@@ -1106,8 +1106,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case MUTE:
 			case PARALYZE:
 			case CANCEL:
-			case MAGE_BANE:
-			case WARRIOR_BANE:
 			case BETRAY:
 			case DISARM:
 			case AGGDAMAGE:
@@ -1251,8 +1249,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case DRAIN_SOUL:
 			case AGGREDUCE:
 			case CANCEL:
-			case MAGE_BANE:
-			case WARRIOR_BANE:
 			case AGGREMOVE:
 			case AGGREDUCE_CHAR:
 			case BETRAY:
