@@ -58,18 +58,17 @@ public class HennaTreeTable
 			PreparedStatement statement = con.prepareStatement("SELECT class_name, id, parent_id FROM class_list ORDER BY id");
 			ResultSet classlist = statement.executeQuery();
 			List<L2HennaInstance> list;
-			statement.close();
 			//int parentClassId;
 			//L2Henna henna;
-			statement = con.prepareStatement("SELECT class_id, symbol_id FROM henna_trees where class_id=? ORDER BY symbol_id");
+			PreparedStatement statement2 = con.prepareStatement("SELECT class_id, symbol_id FROM henna_trees where class_id=? ORDER BY symbol_id");
 			while (classlist.next())
 			{
 				list = new FastList<L2HennaInstance>();
 				classId = classlist.getInt("id");
 				
-				statement.setInt(1, classId);
-				ResultSet hennatree = statement.executeQuery();
-				statement.clearParameters();
+				statement2.setInt(1, classId);
+				ResultSet hennatree = statement2.executeQuery();
+				statement2.clearParameters();
 				while (hennatree.next())
 				{
 					int id = hennatree.getInt("symbol_id");
@@ -78,6 +77,7 @@ public class HennaTreeTable
 					if (template == null)
 					{
 						hennatree.close();
+						statement2.close();
 						classlist.close();
 						statement.close();
 						return;
@@ -104,6 +104,7 @@ public class HennaTreeTable
 			
 			classlist.close();
 			statement.close();
+			statement2.close();
 			
 			_log.info("HennaTreeTable: Loaded " + count + " Henna Tree Templates.");
 		}
