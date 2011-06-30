@@ -267,12 +267,10 @@ public class CastleManager implements InstanceListManager
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("SELECT id FROM castle ORDER BY id");
-			rs = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement("SELECT id FROM castle ORDER BY id");
+			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
 			{

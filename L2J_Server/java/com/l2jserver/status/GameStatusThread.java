@@ -87,46 +87,53 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.util.GMAudit;
 
-
 public class GameStatusThread extends Thread
 {
 	//private static final Logger _log = Logger.getLogger(AdminTeleport.class.getName());
 	
-	private Socket                  _cSocket;
+	private Socket _cSocket;
 	
-	private PrintWriter             _print;
-	private BufferedReader          _read;
+	private PrintWriter _print;
+	private BufferedReader _read;
 	
-	private int                     _uptime;
+	private int _uptime;
 	
 	private void telnetOutput(int type, String text)
 	{
 		if (Config.DEVELOPER)
 		{
-			if ( type == 1 ) System.out.println("TELNET | "+text);
-			else if ( type == 2 ) System.out.print("TELNET | "+text);
-			else if ( type == 3 ) System.out.print(text);
-			else if ( type == 4 ) System.out.println(text);
-			else System.out.println("TELNET | "+text);
+			if (type == 1)
+				System.out.println("TELNET | " + text);
+			else if (type == 2)
+				System.out.print("TELNET | " + text);
+			else if (type == 3)
+				System.out.print(text);
+			else if (type == 4)
+				System.out.println(text);
+			else
+				System.out.println("TELNET | " + text);
 		}
 		else
 		{
 			//only print output if the message is rejected
-			if ( type == 5 ) System.out.println("TELNET | "+text);
+			if (type == 5)
+				System.out.println("TELNET | " + text);
 		}
 	}
 	
-	private boolean isValidIP(Socket client) {
+	private boolean isValidIP(Socket client)
+	{
 		boolean result = false;
 		InetAddress ClientIP = client.getInetAddress();
 		
 		// convert IP to String, and compare with list
 		String clientStringIP = ClientIP.getHostAddress();
 		
-		telnetOutput(1, "Connection from: "+clientStringIP);
+		telnetOutput(1, "Connection from: " + clientStringIP);
 		
 		// read and loop thru list of IPs, compare with newIP
-		if ( Config.DEVELOPER ) telnetOutput(2, "");
+		if (Config.DEVELOPER)
+			telnetOutput(2, "");
 		
 		InputStream telnetIS = null;
 		try
@@ -137,23 +144,28 @@ public class GameStatusThread extends Thread
 			
 			String HostList = telnetSettings.getProperty("ListOfHosts", "127.0.0.1,localhost,::1");
 			
-			if ( Config.DEVELOPER ) telnetOutput(3, "Comparing ip to list...");
+			if (Config.DEVELOPER)
+				telnetOutput(3, "Comparing ip to list...");
 			
 			// compare
 			String ipToCompare = null;
-			for (String ip:HostList.split(","))
+			for (String ip : HostList.split(","))
 			{
-				if ( !result )
+				if (!result)
 				{
 					ipToCompare = InetAddress.getByName(ip).getHostAddress();
-					if ( clientStringIP.equals(ipToCompare) ) result = true;
-					if ( Config.DEVELOPER ) telnetOutput(3, clientStringIP + " = " + ipToCompare + "("+ip+") = " + result);
+					if (clientStringIP.equals(ipToCompare))
+						result = true;
+					if (Config.DEVELOPER)
+						telnetOutput(3, clientStringIP + " = " + ipToCompare + "(" + ip + ") = " + result);
 				}
 			}
 		}
-		catch ( IOException e) {
-			if ( Config.DEVELOPER ) telnetOutput(4, "");
-			telnetOutput(1, "Error: "+e);
+		catch (IOException e)
+		{
+			if (Config.DEVELOPER)
+				telnetOutput(4, "");
+			telnetOutput(1, "Error: " + e);
 		}
 		finally
 		{
@@ -166,7 +178,8 @@ public class GameStatusThread extends Thread
 			}
 		}
 		
-		if ( Config.DEVELOPER ) telnetOutput(4, "Allow IP: "+result);
+		if (Config.DEVELOPER)
+			telnetOutput(4, "Allow IP: " + result);
 		return result;
 	}
 	
@@ -177,22 +190,25 @@ public class GameStatusThread extends Thread
 		_uptime = uptime;
 		
 		_print = new PrintWriter(_cSocket.getOutputStream());
-		_read  = new BufferedReader(new InputStreamReader(_cSocket.getInputStream()));
+		_read = new BufferedReader(new InputStreamReader(_cSocket.getInputStream()));
 		
-		if ( isValidIP(client) ) {
-			telnetOutput(1, client.getInetAddress().getHostAddress()+" accepted.");
+		if (isValidIP(client))
+		{
+			telnetOutput(1, client.getInetAddress().getHostAddress() + " accepted.");
 			_print.println("Welcome To The L2J Telnet Session.");
 			_print.println("Please Insert Your Password!");
 			_print.print("Password: ");
 			_print.flush();
 			String tmpLine = _read.readLine();
-			if ( tmpLine == null )  {
+			if (tmpLine == null)
+			{
 				_print.println("Error.");
 				_print.println("Disconnected...");
 				_print.flush();
 				_cSocket.close();
 			}
-			else {
+			else
+			{
 				if (tmpLine.compareTo(StatusPW) != 0)
 				{
 					_print.println("Incorrect Password!");
@@ -210,8 +226,9 @@ public class GameStatusThread extends Thread
 				}
 			}
 		}
-		else {
-			telnetOutput(5, "Connection attempt from "+ client.getInetAddress().getHostAddress() +" rejected.");
+		else
+		{
+			telnetOutput(5, "Connection attempt from " + client.getInetAddress().getHostAddress() + " rejected.");
 			_cSocket.close();
 		}
 	}
@@ -225,12 +242,13 @@ public class GameStatusThread extends Thread
 			while (_usrCommand.compareTo("quit") != 0 && _usrCommand.compareTo("exit") != 0)
 			{
 				_usrCommand = _read.readLine();
-				if(_usrCommand == null)
+				if (_usrCommand == null)
 				{
 					_cSocket.close();
 					break;
 				}
-				if (_usrCommand.equals("help")) {
+				if (_usrCommand.equals("help"))
+				{
 					_print.println("The following is a list of all available commands: ");
 					_print.println("help                  - shows this help.");
 					_print.println("status                - displays basic server statistics.");
@@ -255,7 +273,7 @@ public class GameStatusThread extends Thread
 					_print.println("unjail <player>");
 					_print.println("quit                  - closes telnet session.");
 				}
-				else if(_usrCommand.equals("help debug"))
+				else if (_usrCommand.equals("help debug"))
 				{
 					_print.println("The following is a list of all available debug commands: ");
 					_print.println("full                - Dumps complete debug information to an file (recommended)");
@@ -273,7 +291,7 @@ public class GameStatusThread extends Thread
 				{
 					System.gc();
 					StringBuilder sb = new StringBuilder();
-					sb.append("RAM Used: "+((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576)); // 1024 * 1024 = 1048576
+					sb.append("RAM Used: " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576)); // 1024 * 1024 = 1048576
 					_print.println(sb.toString());
 				}
 				else if (_usrCommand.equals("performance"))
@@ -315,17 +333,12 @@ public class GameStatusThread extends Thread
 					
 					_print.println("+----");// ...
 					_print.println("| Allowed Memory:" + df2.format(max));
-					_print.println("|    |= Allocated Memory:" + df2.format(allocated)
-							+ df.format(allocated / max * 100));
-					_print.println("|    |= Non-Allocated Memory:" + df2.format(nonAllocated)
-							+ df.format(nonAllocated / max * 100));
+					_print.println("|    |= Allocated Memory:" + df2.format(allocated) + df.format(allocated / max * 100));
+					_print.println("|    |= Non-Allocated Memory:" + df2.format(nonAllocated) + df.format(nonAllocated / max * 100));
 					_print.println("| Allocated Memory:" + df2.format(allocated));
-					_print.println("|    |= Used Memory:" + df2.format(used)
-							+ df.format(used / max * 100));
-					_print.println("|    |= Unused (cached) Memory:" + df2.format(cached)
-							+ df.format(cached / max * 100));
-					_print.println("| Useable Memory:" + df2.format(useable)
-							+ df.format(useable / max * 100)); // ...
+					_print.println("|    |= Used Memory:" + df2.format(used) + df.format(used / max * 100));
+					_print.println("|    |= Unused (cached) Memory:" + df2.format(cached) + df.format(cached / max * 100));
+					_print.println("| Useable Memory:" + df2.format(useable) + df.format(useable / max * 100)); // ...
 					_print.println("+----");
 				}
 				else if (_usrCommand.startsWith("announce"))
@@ -348,10 +361,10 @@ public class GameStatusThread extends Thread
 						String val = _usrCommand.substring(4);
 						StringTokenizer st = new StringTokenizer(val);
 						String name = st.nextToken();
-						String message = val.substring(name.length()+1);
+						String message = val.substring(name.length() + 1);
 						L2PcInstance reciever = L2World.getInstance().getPlayer(name);
 						CreatureSay cs = new CreatureSay(0, Say2.TELL, "Telnet Priv", message);
-						if(reciever != null)
+						if (reciever != null)
 						{
 							reciever.sendPacket(cs);
 							_print.println("Telnet Priv->" + name + ": " + message);
@@ -391,37 +404,38 @@ public class GameStatusThread extends Thread
 						gmList = gmList + ", " + player;
 						igm++;
 					}
-					_print.println("There are currently " + igm +" GM(s) online...");
-					if (!gmList.isEmpty()) _print.println(gmList);
+					_print.println("There are currently " + igm + " GM(s) online...");
+					if (!gmList.isEmpty())
+						_print.println(gmList);
 				}
 				/*else if (_usrCommand.startsWith("unblock"))
-                {
-                    try
-                    {
-                        _usrCommand = _usrCommand.substring(8);
-                        if (LoginServer.getInstance().unblockIp(_usrCommand))
-                        {
-                            _log.warning("IP removed via TELNET by host: " + _csocket.getInetAddress().getHostAddress());
-                            _print.println("The IP " + _usrCommand + " has been removed from the hack protection list!");
-                        }
-                        else
-                        {
-                            _print.println("IP not found in hack protection list...");
-                        }
-                        //TODO: with packet
-                    }
-                    catch (StringIndexOutOfBoundsException e)
-                    {
-                        _print.println("Please Enter the IP to Unblock!");
-                    }
-                }*/
+				{
+				    try
+				    {
+				        _usrCommand = _usrCommand.substring(8);
+				        if (LoginServer.getInstance().unblockIp(_usrCommand))
+				        {
+				            _log.warning("IP removed via TELNET by host: " + _csocket.getInetAddress().getHostAddress());
+				            _print.println("The IP " + _usrCommand + " has been removed from the hack protection list!");
+				        }
+				        else
+				        {
+				            _print.println("IP not found in hack protection list...");
+				        }
+				        //TODO: with packet
+				    }
+				    catch (StringIndexOutOfBoundsException e)
+				    {
+				        _print.println("Please Enter the IP to Unblock!");
+				    }
+				}*/
 				else if (_usrCommand.startsWith("kick"))
 				{
 					try
 					{
 						_usrCommand = _usrCommand.substring(5);
 						L2PcInstance player = L2World.getInstance().getPlayer(_usrCommand);
-						if(player != null)
+						if (player != null)
 						{
 							player.sendMessage("You are kicked by gm");
 							player.logout();
@@ -446,7 +460,8 @@ public class GameStatusThread extends Thread
 					{
 						_print.println("Please Enter * amount of seconds to shutdown!");
 					}
-					catch (Exception NumberFormatException) {
+					catch (Exception NumberFormatException)
+					{
 						_print.println("Numbers Only!");
 					}
 				}
@@ -463,7 +478,8 @@ public class GameStatusThread extends Thread
 					{
 						_print.println("Please Enter * amount of seconds to restart!");
 					}
-					catch (Exception NumberFormatException) {
+					catch (Exception NumberFormatException)
+					{
 						_print.println("Numbers Only!");
 					}
 				}
@@ -472,7 +488,9 @@ public class GameStatusThread extends Thread
 					Shutdown.getInstance().telnetAbort(_cSocket.getInetAddress().getHostAddress());
 					_print.println("OK! - Shutdown/Restart Aborted.");
 				}
-				else if (_usrCommand.equals("quit")) { /* Do Nothing :p - Just here to save us from the "Command Not Understood" Text */ }
+				else if (_usrCommand.equals("quit"))
+				{ /* Do Nothing :p - Just here to save us from the "Command Not Understood" Text */
+				}
 				else if (_usrCommand.startsWith("give"))
 				{
 					StringTokenizer st = new StringTokenizer(_usrCommand.substring(5));
@@ -483,7 +501,7 @@ public class GameStatusThread extends Thread
 						int itemId = Integer.parseInt(st.nextToken());
 						int amount = Integer.parseInt(st.nextToken());
 						
-						if(player != null)
+						if (player != null)
 						{
 							L2ItemInstance item = player.getInventory().addItem("Status-Give", itemId, amount, null, null);
 							InventoryUpdate iu = new InventoryUpdate();
@@ -494,14 +512,14 @@ public class GameStatusThread extends Thread
 							sm.addItemNumber(amount);
 							player.sendPacket(sm);
 							_print.println("ok");
-							GMAudit.auditGMAction("Telnet Admin", "Give Item", player.getName(), "item: "+itemId+" amount: "+amount);
+							GMAudit.auditGMAction("Telnet Admin", "Give Item", player.getName(), "item: " + itemId + " amount: " + amount);
 						}
 						else
 						{
 							_print.println("Player not found");
 						}
 					}
-					catch(Exception e)
+					catch (Exception e)
 					{
 						
 					}
@@ -517,7 +535,7 @@ public class GameStatusThread extends Thread
 						itemType = Integer.parseInt(st.nextToken());
 						enchant = Integer.parseInt(st.nextToken());
 						
-						switch(itemType)
+						switch (itemType)
 						{
 							case 1:
 								itemType = Inventory.PAPERDOLL_HEAD;
@@ -575,15 +593,16 @@ public class GameStatusThread extends Thread
 						
 						boolean success = false;
 						
-						if(player != null && itemType > 0)
+						if (player != null && itemType > 0)
 						{
 							success = setEnchant(player, enchant, itemType);
-							if (success)_print.println("Item enchanted successfully.");
+							if (success)
+								_print.println("Item enchanted successfully.");
 						}
 						else if (!success)
 							_print.println("Item failed to enchant.");
 					}
-					catch(Exception e)
+					catch (Exception e)
 					{
 						
 					}
@@ -599,22 +618,31 @@ public class GameStatusThread extends Thread
 						try
 						{
 							delay = Integer.parseInt(st.nextToken());
-						} catch (NumberFormatException nfe) {
-						} catch (NoSuchElementException nsee) {}
+						}
+						catch (NumberFormatException nfe)
+						{
+						}
+						catch (NoSuchElementException nsee)
+						{
+						}
 						//L2PcInstance playerObj = L2World.getInstance().getPlayer(player);
 						
 						if (playerObj != null)
 						{
 							playerObj.setPunishLevel(L2PcInstance.PunishLevel.JAIL, delay);
-							_print.println("Character "+playerObj.getName()+" jailed for "+(delay>0 ? delay+" minutes." : "ever!"));
-						} else
+							_print.println("Character " + playerObj.getName() + " jailed for " + (delay > 0 ? delay + " minutes." : "ever!"));
+						}
+						else
 							jailOfflinePlayer(playerName, delay);
-					} catch (NoSuchElementException nsee)
+					}
+					catch (NoSuchElementException nsee)
 					{
 						_print.println("Specify a character name.");
-					} catch(Exception e)
+					}
+					catch (Exception e)
 					{
-						if (Config.DEBUG) e.printStackTrace();
+						if (Config.DEBUG)
+							e.printStackTrace();
 					}
 				}
 				else if (_usrCommand.startsWith("unjail"))
@@ -628,15 +656,19 @@ public class GameStatusThread extends Thread
 						if (playerObj != null)
 						{
 							playerObj.setPunishLevel(L2PcInstance.PunishLevel.NONE, 0);
-							_print.println("Character "+playerObj.getName()+" removed from jail");
-						} else
+							_print.println("Character " + playerObj.getName() + " removed from jail");
+						}
+						else
 							unjailOfflinePlayer(playerName);
-					} catch (NoSuchElementException nsee)
+					}
+					catch (NoSuchElementException nsee)
 					{
 						_print.println("Specify a character name.");
-					} catch(Exception e)
+					}
+					catch (Exception e)
 					{
-						if (Config.DEBUG) e.printStackTrace();
+						if (Config.DEBUG)
+							e.printStackTrace();
 					}
 				}
 				else if (_usrCommand.startsWith("debug") && _usrCommand.length() > 6)
@@ -648,78 +680,80 @@ public class GameStatusThread extends Thread
 					{
 						String dbg = st.nextToken();
 						
-						if(dbg.equals("decay"))
+						if (dbg.equals("decay"))
 						{
 							_print.print(DecayTaskManager.getInstance().toString());
 						}
-						else if(dbg.equals("ai"))
+						else if (dbg.equals("ai"))
 						{
 							/*
-                			_print.println("AITaskManagerStats");
-                			for(String line : AITaskManager.getInstance().getStats())
-                			{
-                				_print.println(line);
-                			}
+							_print.println("AITaskManagerStats");
+							for(String line : AITaskManager.getInstance().getStats())
+							{
+								_print.println(line);
+							}
 							 */
 						}
-						else if(dbg.equals("aiflush"))
+						else if (dbg.equals("aiflush"))
 						{
 							//AITaskManager.getInstance().flush();
 						}
-						else if(dbg.equals("PacketTP"))
+						else if (dbg.equals("PacketTP"))
 						{
 							String str = ThreadPoolManager.getInstance().getPacketStats();
 							_print.println(str);
 							int i = 0;
-							File f = new File("./log/StackTrace-PacketTP-"+i+".txt");
-							while(f.exists())
+							File f = new File("./log/StackTrace-PacketTP-" + i + ".txt");
+							while (f.exists())
 							{
 								i++;
-								f = new File("./log/StackTrace-PacketTP-"+i+".txt");
+								f = new File("./log/StackTrace-PacketTP-" + i + ".txt");
 							}
 							f.getParentFile().mkdirs();
 							fos = new FileOutputStream(f);
 							out = new OutputStreamWriter(fos, "UTF-8");
 							out.write(str);
 						}
-						else if(dbg.equals("IOPacketTP"))
+						else if (dbg.equals("IOPacketTP"))
 						{
 							String str = ThreadPoolManager.getInstance().getIOPacketStats();
 							_print.println(str);
 							int i = 0;
-							File f = new File("./log/StackTrace-IOPacketTP-"+i+".txt");
-							while(f.exists())
+							File f = new File("./log/StackTrace-IOPacketTP-" + i + ".txt");
+							while (f.exists())
 							{
 								i++;
-								f = new File("./log/StackTrace-IOPacketTP-"+i+".txt");
+								f = new File("./log/StackTrace-IOPacketTP-" + i + ".txt");
 							}
 							f.getParentFile().mkdirs();
 							fos = new FileOutputStream(f);
 							out = new OutputStreamWriter(fos, "UTF-8");
 							out.write(str);
 						}
-						else if(dbg.equals("GeneralTP"))
+						else if (dbg.equals("GeneralTP"))
 						{
 							String str = ThreadPoolManager.getInstance().getGeneralStats();
 							_print.println(str);
 							int i = 0;
-							File f = new File("./log/StackTrace-GeneralTP-"+i+".txt");
-							while(f.exists())
+							File f = new File("./log/StackTrace-GeneralTP-" + i + ".txt");
+							while (f.exists())
 							{
 								i++;
-								f = new File("./log/StackTrace-GeneralTP-"+i+".txt");
+								f = new File("./log/StackTrace-GeneralTP-" + i + ".txt");
 							}
 							f.getParentFile().mkdirs();
 							fos = new FileOutputStream(f);
 							out = new OutputStreamWriter(fos, "UTF-8");
 							out.write(str);
 						}
-						else if(dbg.equals("full"))
+						else if (dbg.equals("full"))
 						{
 							this.debugAll();
 						}
 					}
-					catch(Exception e){}
+					catch (Exception e)
+					{
+					}
 					finally
 					{
 						try
@@ -747,56 +781,56 @@ public class GameStatusThread extends Thread
 					{
 						String type = st.nextToken();
 						
-						if(type.equals("multisell"))
+						if (type.equals("multisell"))
 						{
 							_print.print("Reloading multisell... ");
 							MultiSell.getInstance().reload();
 							_print.println("done");
 						}
-						else if(type.equals("skill"))
+						else if (type.equals("skill"))
 						{
 							_print.print("Reloading skills... ");
 							SkillTable.getInstance().reload();
 							_print.println("done");
 						}
-						else if(type.equals("npc"))
+						else if (type.equals("npc"))
 						{
 							_print.print("Reloading npc templates... ");
 							NpcTable.getInstance().reloadAllNpc();
 							QuestManager.getInstance().reloadAllQuests();
 							_print.println("done");
 						}
-						else if(type.equals("html"))
+						else if (type.equals("html"))
 						{
 							_print.print("Reloading html cache... ");
 							HtmCache.getInstance().reload();
 							_print.println("done");
 						}
-						else if(type.equals("item"))
+						else if (type.equals("item"))
 						{
 							_print.print("Reloading item templates... ");
 							ItemTable.getInstance().reload();
 							_print.println("done");
 						}
-						else if(type.equals("instancemanager"))
+						else if (type.equals("instancemanager"))
 						{
 							_print.print("Reloading instance managers... ");
 							Manager.reloadAll();
 							_print.println("done");
 						}
-						else if(type.equals("zone"))
+						else if (type.equals("zone"))
 						{
 							_print.print("Reloading zone tables... ");
 							ZoneManager.getInstance().reload();
 							_print.println("done");
 						}
-						else if(type.equals("teleports"))
+						else if (type.equals("teleports"))
 						{
 							_print.print("Reloading telport location table... ");
 							TeleportLocationTable.getInstance().reloadAll();
 							_print.println("done");
 						}
-						else if(type.equals("spawns"))
+						else if (type.equals("spawns"))
 						{
 							_print.print("Reloading spawns... ");
 							RaidBossSpawnManager.getInstance().cleanUp();
@@ -808,7 +842,9 @@ public class GameStatusThread extends Thread
 							_print.println("done\n");
 						}
 					}
-					catch(Exception e){}
+					catch (Exception e)
+					{
+					}
 				}
 				else if (_usrCommand.startsWith("gamestat"))
 				{
@@ -818,7 +854,7 @@ public class GameStatusThread extends Thread
 						String type = st.nextToken();
 						
 						// name;type;x;y;itemId:enchant:price...
-						if(type.equals("privatestore"))
+						if (type.equals("privatestore"))
 						{
 							Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
 							//synchronized (L2World.getInstance().getAllPlayers())
@@ -836,16 +872,9 @@ public class GameStatusThread extends Thread
 										list = player.getSellList();
 										for (TradeItem item : list.getItems())
 										{
-											content += item.getItem().getItemId()
-											+ ":"
-											+ item.getEnchant()
-											+ ":"
-											+ item.getPrice()
-											+ ":";
+											content += item.getItem().getItemId() + ":" + item.getEnchant() + ":" + item.getPrice() + ":";
 										}
-										content = player.getName() + ";"
-										+ "sell;" + player.getX() + ";"
-										+ player.getY() + ";" + content;
+										content = player.getName() + ";" + "sell;" + player.getX() + ";" + player.getY() + ";" + content;
 										_print.println(content);
 										continue;
 									}
@@ -854,16 +883,9 @@ public class GameStatusThread extends Thread
 										list = player.getBuyList();
 										for (TradeItem item : list.getItems())
 										{
-											content += item.getItem().getItemId()
-											+ ":"
-											+ item.getEnchant()
-											+ ":"
-											+ item.getPrice()
-											+ ":";
+											content += item.getItem().getItemId() + ":" + item.getEnchant() + ":" + item.getPrice() + ":";
 										}
-										content = player.getName() + ";"
-										+ "buy;" + player.getX() + ";"
-										+ player.getY() + ";" + content;
+										content = player.getName() + ";" + "buy;" + player.getX() + ";" + player.getY() + ";" + content;
 										_print.println(content);
 										continue;
 									}
@@ -872,19 +894,23 @@ public class GameStatusThread extends Thread
 							}
 						}
 					}
-					catch(Exception e){}
+					catch (Exception e)
+					{
+					}
 				}
-				else if (_usrCommand.length() == 0) { /* Do Nothing Again - Same reason as the quit part */ }
+				else if (_usrCommand.length() == 0)
+				{ /* Do Nothing Again - Same reason as the quit part */
+				}
 				_print.print("");
 				_print.flush();
 			}
-			if(!_cSocket.isClosed())
+			if (!_cSocket.isClosed())
 			{
 				_print.println("Bye Bye!");
 				_print.flush();
 				_cSocket.close();
 			}
-			telnetOutput(1, "Connection from "+_cSocket.getInetAddress().getHostAddress()+" was closed by client.");
+			telnetOutput(1, "Connection from " + _cSocket.getInetAddress().getHostAddress() + " was closed by client.");
 		}
 		catch (IOException e)
 		{
@@ -903,7 +929,8 @@ public class GameStatusThread extends Thread
 		if (parmorInstance != null && parmorInstance.getLocationSlot() == armorType)
 		{
 			itemInstance = parmorInstance;
-		} else
+		}
+		else
 		{
 			// for bows/crossbows and double handed weapons
 			parmorInstance = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
@@ -929,10 +956,8 @@ public class GameStatusThread extends Thread
 			activeChar.broadcastPacket(new ExBrExtraUserInfo(activeChar));
 			
 			// informations
-			activeChar.sendMessage("Changed enchantment of " + activeChar.getName() + "'s "
-					+ itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
-			activeChar.sendMessage("Admin has changed the enchantment of your "
-					+ itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
+			activeChar.sendMessage("Changed enchantment of " + activeChar.getName() + "'s " + itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
+			activeChar.sendMessage("Admin has changed the enchantment of your " + itemInstance.getItem().getName() + " from " + curEnchant + " to " + ench + ".");
 			
 			// log
 			GMAudit.auditGMAction("TelnetAdministrator", "enchant", activeChar.getName(), itemInstance.getItem().getName() + "(" + itemInstance.getObjectId() + ")" + " from " + curEnchant + " to " + ench);
@@ -963,12 +988,13 @@ public class GameStatusThread extends Thread
 			if (count == 0)
 				_print.println("Character not found!");
 			else
-				_print.println("Character "+name+" jailed for "+(delay>0 ? delay+" minutes." : "ever!"));
+				_print.println("Character " + name + " jailed for " + (delay > 0 ? delay + " minutes." : "ever!"));
 		}
 		catch (SQLException se)
 		{
 			_print.println("SQLException while jailing player");
-			if (Config.DEBUG) se.printStackTrace();
+			if (Config.DEBUG)
+				se.printStackTrace();
 		}
 		finally
 		{
@@ -998,12 +1024,13 @@ public class GameStatusThread extends Thread
 			if (count == 0)
 				_print.println("Character not found!");
 			else
-				_print.println("Character "+name+" set free.");
+				_print.println("Character " + name + " set free.");
 		}
 		catch (SQLException se)
 		{
 			_print.println("SQLException while jailing player");
-			if (Config.DEBUG) se.printStackTrace();
+			if (Config.DEBUG)
+				se.printStackTrace();
 		}
 		finally
 		{
@@ -1018,19 +1045,19 @@ public class GameStatusThread extends Thread
 	
 	private String getUptime(int time)
 	{
-		int uptime = (int)System.currentTimeMillis() - time;
+		int uptime = (int) System.currentTimeMillis() - time;
 		uptime = uptime / 1000;
 		int h = uptime / 3600;
-		int m = (uptime-(h*3600))/60;
-		int s = ((uptime-(h*3600))-(m*60));
+		int m = (uptime - (h * 3600)) / 60;
+		int s = ((uptime - (h * 3600)) - (m * 60));
 		return h + "hrs " + m + "mins " + s + "secs";
 	}
 	
 	private String gameTime()
 	{
 		int t = GameTimeController.getInstance().getGameTime();
-		int h = t/60;
-		int m = t%60;
+		int h = t / 60;
+		int m = t % 60;
 		SimpleDateFormat format = new SimpleDateFormat("H:mm");
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, h);
@@ -1047,31 +1074,31 @@ public class GameStatusThread extends Thread
 		playerCount = L2World.getInstance().getAllPlayersCount();
 		objectCount = L2World.getInstance().getAllVisibleObjectsCount();
 		
-		int itemCount=0;
-		int itemVoidCount=0;
-		int monsterCount=0;
+		int itemCount = 0;
+		int itemVoidCount = 0;
+		int monsterCount = 0;
 		int minionCount = 0;
 		int minionsGroupCount = 0;
-		int npcCount=0;
-		int charCount=0;
-		int pcCount=0;
-		int detachedCount=0;
-		int doorCount=0;
-		int summonCount=0;
-		int AICount=0;
+		int npcCount = 0;
+		int charCount = 0;
+		int pcCount = 0;
+		int detachedCount = 0;
+		int doorCount = 0;
+		int summonCount = 0;
+		int AICount = 0;
 		
 		Collection<L2Object> objs = L2World.getInstance().getAllVisibleObjects().values();
 		//synchronized (L2World.getInstance().getAllVisibleObjects())
 		{
 			for (L2Object obj : objs)
 			{
-				if(obj == null)
+				if (obj == null)
 					continue;
 				if (obj instanceof L2Character)
-					if (((L2Character)obj).hasAI())
+					if (((L2Character) obj).hasAI())
 						AICount++;
 				if (obj instanceof L2ItemInstance)
-					if (((L2ItemInstance)obj).getLocation() == L2ItemInstance.ItemLocation.VOID)
+					if (((L2ItemInstance) obj).getLocation() == L2ItemInstance.ItemLocation.VOID)
 						itemVoidCount++;
 					else
 						itemCount++;
@@ -1079,10 +1106,10 @@ public class GameStatusThread extends Thread
 				else if (obj instanceof L2MonsterInstance)
 				{
 					monsterCount++;
-					if (((L2MonsterInstance)obj).hasMinions())
+					if (((L2MonsterInstance) obj).hasMinions())
 					{
-						minionCount += ((L2MonsterInstance)obj).getMinionList().countSpawnedMinions();
-						minionsGroupCount += ((L2MonsterInstance)obj).getMinionList().lazyCountSpawnedMinionsGroups();
+						minionCount += ((L2MonsterInstance) obj).getMinionList().countSpawnedMinions();
+						minionsGroupCount += ((L2MonsterInstance) obj).getMinionList().lazyCountSpawnedMinionsGroups();
 					}
 				}
 				else if (obj instanceof L2Npc)
@@ -1090,8 +1117,7 @@ public class GameStatusThread extends Thread
 				else if (obj instanceof L2PcInstance)
 				{
 					pcCount++;
-					if (((L2PcInstance)obj).getClient() != null
-							&& ((L2PcInstance)obj).getClient().isDetached())
+					if (((L2PcInstance) obj).getClient() != null && ((L2PcInstance) obj).getClient().isDetached())
 						detachedCount++;
 				}
 				else if (obj instanceof L2Summon)
@@ -1122,7 +1148,7 @@ public class GameStatusThread extends Thread
 		sb.append("\r\n  ---> Server Uptime: " + getUptime(_uptime));
 		sb.append("\r\n  --->      GM Count: " + getOnlineGMS());
 		sb.append("\r\n  --->       Threads: " + Thread.activeCount());
-		sb.append("\r\n  RAM Used: "+((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/1048576)); // 1024 * 1024 = 1048576
+		sb.append("\r\n  RAM Used: " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576)); // 1024 * 1024 = 1048576
 		sb.append("\r\n");
 		
 		return sb.toString();
@@ -1134,36 +1160,34 @@ public class GameStatusThread extends Thread
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 		
-		
 		StringBuilder sb = new StringBuilder();
 		sb.append(sdf.format(cal.getTime()));
-		sb.append("\n\nL2J Server Version: "+Config.SERVER_VERSION);
-		sb.append("\nDP Revision: "+Config.DATAPACK_VERSION);
+		sb.append("\n\nL2J Server Version: " + Config.SERVER_VERSION);
+		sb.append("\nDP Revision: " + Config.DATAPACK_VERSION);
 		sb.append("\n\n");
 		sb.append(this.getServerStatus());
 		sb.append("\n\n");
 		sb.append("\n## Java Platform Information ##");
-		sb.append("\nJava Runtime Name: "+System.getProperty("java.runtime.name"));
-		sb.append("\nJava Version: "+System.getProperty("java.version"));
-		sb.append("\nJava Class Version: "+System.getProperty("java.class.version"));
+		sb.append("\nJava Runtime Name: " + System.getProperty("java.runtime.name"));
+		sb.append("\nJava Version: " + System.getProperty("java.version"));
+		sb.append("\nJava Class Version: " + System.getProperty("java.class.version"));
 		sb.append('\n');
 		sb.append("\n## Virtual Machine Information ##");
-		sb.append("\nVM Name: "+System.getProperty("java.vm.name"));
-		sb.append("\nVM Version: "+System.getProperty("java.vm.version"));
-		sb.append("\nVM Vendor: "+System.getProperty("java.vm.vendor"));
-		sb.append("\nVM Info: "+System.getProperty("java.vm.info"));
+		sb.append("\nVM Name: " + System.getProperty("java.vm.name"));
+		sb.append("\nVM Version: " + System.getProperty("java.vm.version"));
+		sb.append("\nVM Vendor: " + System.getProperty("java.vm.vendor"));
+		sb.append("\nVM Info: " + System.getProperty("java.vm.info"));
 		sb.append('\n');
 		sb.append("\n## OS Information ##");
-		sb.append("\nName: "+System.getProperty("os.name"));
-		sb.append("\nArchiteture: "+System.getProperty("os.arch"));
-		sb.append("\nVersion: "+System.getProperty("os.version"));
+		sb.append("\nName: " + System.getProperty("os.name"));
+		sb.append("\nArchiteture: " + System.getProperty("os.arch"));
+		sb.append("\nVersion: " + System.getProperty("os.version"));
 		sb.append('\n');
 		sb.append("\n## Runtime Information ##");
-		sb.append("\nCPU Count: "+Runtime.getRuntime().availableProcessors());
-		sb.append("\nCurrent Free Heap Size: "+(Runtime.getRuntime().freeMemory() / 1024 / 1024)+" mb");
-		sb.append("\nCurrent Heap Size: "+(Runtime.getRuntime().totalMemory() / 1024 / 1024)+" mb");
-		sb.append("\nMaximum Heap Size: "+(Runtime.getRuntime().maxMemory() / 1024 / 1024)+" mb");
-		
+		sb.append("\nCPU Count: " + Runtime.getRuntime().availableProcessors());
+		sb.append("\nCurrent Free Heap Size: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " mb");
+		sb.append("\nCurrent Heap Size: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " mb");
+		sb.append("\nMaximum Heap Size: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " mb");
 		
 		sb.append('\n');
 		sb.append("\n## Class Path Information ##\n");
@@ -1180,31 +1204,28 @@ public class GameStatusThread extends Thread
 		Map<Thread, StackTraceElement[]> allThread = Thread.getAllStackTraces();
 		
 		FastTable<Entry<Thread, StackTraceElement[]>> entries = new FastTable<Entry<Thread, StackTraceElement[]>>();
-		entries.setValueComparator
-		(
-				new FastComparator<Entry<Thread, StackTraceElement[]>>()
-				{
-					
-					@Override
-					public boolean areEqual(Entry<Thread, StackTraceElement[]> e1, Entry<Thread, StackTraceElement[]> e2)
-					{
-						return e1.getKey().getName().equals(e2.getKey().getName());
-					}
-					
-					@Override
-					public int compare(Entry<Thread, StackTraceElement[]> e1, Entry<Thread, StackTraceElement[]> e2)
-					{
-						return e1.getKey().getName().compareTo(e2.getKey().getName());
-					}
-					
-					@Override
-					public int hashCodeOf(Entry<Thread, StackTraceElement[]> e)
-					{
-						return e.hashCode();
-					}
-					
-				}
-		);
+		entries.setValueComparator(new FastComparator<Entry<Thread, StackTraceElement[]>>()
+		{
+			
+			@Override
+			public boolean areEqual(Entry<Thread, StackTraceElement[]> e1, Entry<Thread, StackTraceElement[]> e2)
+			{
+				return e1.getKey().getName().equals(e2.getKey().getName());
+			}
+			
+			@Override
+			public int compare(Entry<Thread, StackTraceElement[]> e1, Entry<Thread, StackTraceElement[]> e2)
+			{
+				return e1.getKey().getName().compareTo(e2.getKey().getName());
+			}
+			
+			@Override
+			public int hashCodeOf(Entry<Thread, StackTraceElement[]> e)
+			{
+				return e.hashCode();
+			}
+			
+		});
 		entries.addAll(allThread.entrySet());
 		entries.sort();
 		for (Entry<Thread, StackTraceElement[]> entry : entries)
@@ -1212,9 +1233,9 @@ public class GameStatusThread extends Thread
 			StackTraceElement[] stes = entry.getValue();
 			Thread t = entry.getKey();
 			sb.append("--------------\n");
-			sb.append(t.toString()+" ("+t.getId()+")\n");
-			sb.append("State: "+t.getState()+'\n');
-			sb.append("isAlive: "+t.isAlive()+" | isDaemon: "+t.isDaemon()+" | isInterrupted: "+t.isInterrupted()+'\n');
+			sb.append(t.toString() + " (" + t.getId() + ")\n");
+			sb.append("State: " + t.getState() + '\n');
+			sb.append("isAlive: " + t.isAlive() + " | isDaemon: " + t.isDaemon() + " | isInterrupted: " + t.isInterrupted() + '\n');
 			sb.append('\n');
 			for (StackTraceElement ste : stes)
 			{
@@ -1234,13 +1255,12 @@ public class GameStatusThread extends Thread
 			sb.append('\n');
 		}
 		
-		
 		int i = 0;
-		File f = new File("./log/Debug-"+i+".txt");
-		while(f.exists())
+		File f = new File("./log/Debug-" + i + ".txt");
+		while (f.exists())
 		{
 			i++;
-			f = new File("./log/Debug-"+i+".txt");
+			f = new File("./log/Debug-" + i + ".txt");
 		}
 		f.getParentFile().mkdirs();
 		FileOutputStream fos = new FileOutputStream(f);
@@ -1250,7 +1270,7 @@ public class GameStatusThread extends Thread
 		out.close();
 		fos.close();
 		
-		_print.println("Debug output saved to log/"+f.getName());
+		_print.println("Debug output saved to log/" + f.getName());
 		_print.flush();
 	}
 	

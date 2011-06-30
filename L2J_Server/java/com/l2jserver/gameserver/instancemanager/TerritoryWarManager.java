@@ -620,10 +620,10 @@ public class TerritoryWarManager implements Siegable
 	private void changeRegistration(int castleId, int objId, boolean delete)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement;
 			if (delete)
 				statement = con.prepareStatement("DELETE FROM territory_registrations WHERE castleId=? and registeredId=?");
 			else
@@ -646,11 +646,10 @@ public class TerritoryWarManager implements Siegable
 	private void updateTerritoryData(Territory ter)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("UPDATE territories SET ownedWardIds=? WHERE territoryId=?");
+			PreparedStatement statement = con.prepareStatement("UPDATE territories SET ownedWardIds=? WHERE territoryId=?");
 			String wardList = "";
 			for (int i : ter.getOwnedWardIds())
 				wardList += (i + ";");

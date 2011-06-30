@@ -510,19 +510,19 @@ public class FourSepulchersManager
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement statement1 = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
-			statement1.setInt(1, 1);
-			ResultSet rset1 = statement1.executeQuery();
-			
-			PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist Where key_npc_id = ? and spawntype = ? ORDER BY id");
+			PreparedStatement statement = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
+			statement.setInt(1, 1);
+			ResultSet rset1 = statement.executeQuery();
+			statement.close();
+			statement = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist Where key_npc_id = ? and spawntype = ? ORDER BY id");
 			while (rset1.next())
 			{
 				int keyNpcId = rset1.getInt("key_npc_id");
 				
-				statement2.setInt(1, keyNpcId);
-				statement2.setInt(2, 1);
-				ResultSet rset2 = statement2.executeQuery();
-				statement2.clearParameters();
+				statement.setInt(1, keyNpcId);
+				statement.setInt(2, 1);
+				ResultSet rset2 = statement.executeQuery();
+				statement.clearParameters();
 				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -556,8 +556,7 @@ public class FourSepulchersManager
 			}
 			
 			rset1.close();
-			statement1.close();
-			statement2.close();
+			statement.close();
 			
 			_log.info("FourSepulchersManager: loaded " + loaded + " Physical type monsters spawns.");
 		}
@@ -584,19 +583,19 @@ public class FourSepulchersManager
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement statement1 = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
-			statement1.setInt(1, 2);
-			ResultSet rset1 = statement1.executeQuery();
-			
-			PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? AND spawntype = ? ORDER BY id");
+			PreparedStatement statement = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
+			statement.setInt(1, 2);
+			ResultSet rset1 = statement.executeQuery();
+			statement.close();
+			statement = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? AND spawntype = ? ORDER BY id");
 			while (rset1.next())
 			{
 				int keyNpcId = rset1.getInt("key_npc_id");
 				
-				statement2.setInt(1, keyNpcId);
-				statement2.setInt(2, 2);
-				ResultSet rset2 = statement2.executeQuery();
-				statement2.clearParameters();
+				statement.setInt(1, keyNpcId);
+				statement.setInt(2, 2);
+				ResultSet rset2 = statement.executeQuery();
+				statement.clearParameters();
 				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -630,8 +629,7 @@ public class FourSepulchersManager
 			}
 			
 			rset1.close();
-			statement1.close();
-			statement2.close();
+			statement.close();
 			
 			_log.info("FourSepulchersManager: loaded " + loaded + " Magical type monsters spawns.");
 		}
@@ -658,19 +656,19 @@ public class FourSepulchersManager
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement statement1 = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
-			statement1.setInt(1, 5);
-			ResultSet rset1 = statement1.executeQuery();
-			
-			PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? AND spawntype = ? ORDER BY id");
+			PreparedStatement statement = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
+			statement.setInt(1, 5);
+			ResultSet rset1 = statement.executeQuery();
+			statement.close();
+			statement = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? AND spawntype = ? ORDER BY id");
 			while (rset1.next())
 			{
 				int keyNpcId = rset1.getInt("key_npc_id");
 				
-				statement2.setInt(1, keyNpcId);
-				statement2.setInt(2, 5);
-				ResultSet rset2 = statement2.executeQuery();
-				statement2.clearParameters();
+				statement.setInt(1, keyNpcId);
+				statement.setInt(2, 5);
+				ResultSet rset2 = statement.executeQuery();
+				statement.clearParameters();
 				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -705,8 +703,7 @@ public class FourSepulchersManager
 			}
 			
 			rset1.close();
-			statement1.close();
-			statement2.close();
+			statement.close();
 			
 			_log.info("FourSepulchersManager: loaded " + loaded + " Church of duke monsters spawns.");
 		}
@@ -733,19 +730,19 @@ public class FourSepulchersManager
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement statement1 = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
-			statement1.setInt(1, 6);
-			ResultSet rset1 = statement1.executeQuery();
-			
-			PreparedStatement statement2 = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? and spawntype = ? ORDER BY id");
+			PreparedStatement statement = con.prepareStatement("SELECT Distinct key_npc_id FROM four_sepulchers_spawnlist Where spawntype = ? ORDER BY key_npc_id");
+			statement.setInt(1, 6);
+			ResultSet rset1 = statement.executeQuery();
+			statement.close();
+			statement = con.prepareStatement("SELECT id, count, npc_templateid, locx, locy, locz, heading, respawn_delay, key_npc_id FROM four_sepulchers_spawnlist WHERE key_npc_id = ? and spawntype = ? ORDER BY id");
 			while (rset1.next())
 			{
 				int keyNpcId = rset1.getInt("key_npc_id");
 				
-				statement2.setInt(1, keyNpcId);
-				statement2.setInt(2, 6);
-				ResultSet rset2 = statement2.executeQuery();
-				statement2.clearParameters();
+				statement.setInt(1, keyNpcId);
+				statement.setInt(2, 6);
+				ResultSet rset2 = statement.executeQuery();
+				statement.clearParameters();
 				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -779,8 +776,7 @@ public class FourSepulchersManager
 			}
 			
 			rset1.close();
-			statement1.close();
-			statement2.close();
+			statement.close();
 			
 			_log.info("FourSepulchersManager: loaded " + loaded + " Emperor's grave NPC spawns.");
 		}

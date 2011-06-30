@@ -59,10 +59,10 @@ public class HerbDropTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement2 = con.prepareStatement("SELECT "
+			PreparedStatement statement = con.prepareStatement("SELECT "
 					+ L2DatabaseFactory.getInstance().safetyString(new String[] { "groupId", "itemId", "min", "max", "category", "chance" })
 					+ " FROM herb_droplist_groups ORDER BY groupId, chance DESC");
-			ResultSet dropData = statement2.executeQuery();
+			ResultSet dropData = statement.executeQuery();
 			L2DropData dropDat = null;
 			
 			while (dropData.next())
@@ -111,7 +111,7 @@ public class HerbDropTable
 			}
 			
 			dropData.close();
-			statement2.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{

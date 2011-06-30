@@ -66,14 +66,15 @@ public class SummonSkillsTable
 				Map<Integer, L2PetSkillLearn> map;
 				L2PetSkillLearn skillLearn;
 				
-				PreparedStatement statement2 = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl");
+				statement.close();
+				statement = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl");
 				while (petlist.next())
 				{
 					map = new FastMap<Integer, L2PetSkillLearn>();
 					npcId = petlist.getInt("id");
-					statement2.setInt(1, npcId);
-					ResultSet skilltree = statement2.executeQuery();
-					statement2.clearParameters();
+					statement.setInt(1, npcId);
+					ResultSet skilltree = statement.executeQuery();
+					statement.clearParameters();
 					
 					while (skilltree.next())
 					{
@@ -90,7 +91,6 @@ public class SummonSkillsTable
 					count += map.size();
 					_log.fine("PetSkillsTable: skill tree for pet " + npcId + " has " + map.size() + " skills");
 				}
-				statement2.close();
 				petlist.close();
 				statement.close();
 			}

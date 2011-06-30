@@ -272,6 +272,7 @@ public class CursedWeaponsManager
 						_log.info("PROBLEM : Player " + playerId + " owns the cursed weapon " + itemId + " but he shouldn't.");
 						
 						// Delete the item
+						statement.close();
 						statement = con.prepareStatement("DELETE FROM items WHERE owner_id=? AND item_id=?");
 						statement.setInt(1, playerId);
 						statement.setInt(2, itemId);

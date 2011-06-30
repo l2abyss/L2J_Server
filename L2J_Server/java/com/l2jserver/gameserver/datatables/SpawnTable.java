@@ -67,8 +67,7 @@ public class SpawnTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM spawnlist");
+			PreparedStatement statement = con.prepareStatement("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM spawnlist");
 			ResultSet rset = statement.executeQuery();
 			
 			L2Spawn spawnDat;
@@ -146,8 +145,7 @@ public class SpawnTable
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement;
-				statement = con.prepareStatement("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM custom_spawnlist");
+				PreparedStatement statement = con.prepareStatement("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM custom_spawnlist");
 				ResultSet rset = statement.executeQuery();
 				
 				L2Spawn spawnDat;
@@ -233,13 +231,13 @@ public class SpawnTable
 		
 		if (storeInDb)
 		{
-			Connection con = null;
 			String spawnTable;
 			if (spawn.isCustom() && Config.CUSTOM_SPAWNLIST_TABLE)
 				spawnTable = "custom_spawnlist";
 			else
 				spawnTable = "spawnlist";
 			
+			Connection con = null;
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();

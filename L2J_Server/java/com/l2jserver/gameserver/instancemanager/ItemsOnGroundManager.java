@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -104,23 +103,23 @@ public class ItemsOnGroundManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			Statement s = con.createStatement();
-			ResultSet result;
+			PreparedStatement statement = con.prepareStatement("SELECT object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable FROM itemsonground");
+			ResultSet rset;
 			int count = 0;
-			result = s.executeQuery("select object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable from itemsonground");
-			while (result.next())
+			rset = statement.executeQuery();
+			while (rset.next())
 			{
-				item = new L2ItemInstance(result.getInt(1), result.getInt(2));
+				item = new L2ItemInstance(rset.getInt(1), rset.getInt(2));
 				L2World.getInstance().storeObject(item);
-				if (item.isStackable() && result.getInt(3) > 1) //this check and..
-					item.setCount(result.getInt(3));
-				if (result.getInt(4) > 0) // this, are really necessary?
-					item.setEnchantLevel(result.getInt(4));
-				item.getPosition().setWorldPosition(result.getInt(5), result.getInt(6), result.getInt(7));
+				if (item.isStackable() && rset.getInt(3) > 1) //this check and..
+					item.setCount(rset.getInt(3));
+				if (rset.getInt(4) > 0) // this, are really necessary?
+					item.setEnchantLevel(rset.getInt(4));
+				item.getPosition().setWorldPosition(rset.getInt(5), rset.getInt(6), rset.getInt(7));
 				item.getPosition().setWorldRegion(L2World.getInstance().getRegion(item.getPosition().getWorldPosition()));
 				item.getPosition().getWorldRegion().addVisibleObject(item);
-				item.setDropTime(result.getLong(8));
-				item.setProtected(result.getLong(8) == -1);
+				item.setDropTime(rset.getLong(8));
+				item.setProtected(rset.getLong(8) == -1);
 				item.setIsVisible(true);
 				L2World.getInstance().addVisibleObject(item, item.getPosition().getWorldRegion());
 				_items.add(item);
@@ -128,7 +127,7 @@ public class ItemsOnGroundManager
 				// add to ItemsAutoDestroy only items not protected
 				if (!Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
 				{
-					if (result.getLong(8) > -1)
+					if (rset.getLong(8) > -1)
 					{
 						if ((Config.AUTODESTROY_ITEM_AFTER > 0 && item.getItemType() != L2EtcItemType.HERB)
 								|| (Config.HERB_AUTO_DESTROY_TIME > 0 && item.getItemType() == L2EtcItemType.HERB))
@@ -136,8 +135,8 @@ public class ItemsOnGroundManager
 					}
 				}
 			}
-			result.close();
-			s.close();
+			rset.close();
+			statement.close();
 			if (count > 0)
 				_log.info("ItemsOnGroundManager: restored " + count + " items.");
 			else
@@ -182,13 +181,13 @@ public class ItemsOnGroundManager
 	
 	public void emptyTable()
 	{
-		Connection conn = null;
+		Connection con = null;
 		try
 		{
-			conn = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement del = conn.prepareStatement("delete from itemsonground");
-			del.execute();
-			del.close();
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM itemsonground");
+			statement.execute();
+			statement.close();
 		}
 		catch (Exception e1)
 		{
@@ -196,7 +195,7 @@ public class ItemsOnGroundManager
 		}
 		finally
 		{
-			L2DatabaseFactory.close(conn);
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -218,12 +217,10 @@ public class ItemsOnGroundManager
 			}
 			
 			Connection con = null;
-			PreparedStatement statement = null;
-			
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				statement = con.prepareStatement("INSERT INTO itemsonground(object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable) VALUES(?,?,?,?,?,?,?,?,?)");
+				PreparedStatement statement = con.prepareStatement("INSERT INTO itemsonground(object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable) VALUES(?,?,?,?,?,?,?,?,?)");
 				
 				for (L2ItemInstance item : _items)
 				{
@@ -242,15 +239,8 @@ public class ItemsOnGroundManager
 						statement.setInt(5, item.getX());
 						statement.setInt(6, item.getY());
 						statement.setInt(7, item.getZ());
-						
-						if (item.isProtected())
-							statement.setLong(8, -1); //item will be protected
-						else
-							statement.setLong(8, item.getDropTime()); //item will be added to ItemsAutoDestroy
-						if (item.isEquipable())
-							statement.setLong(9, 1); //set equip-able
-						else
-							statement.setLong(9, 0);
+						statement.setLong(8, (item.isProtected() ? -1 : item.getDropTime())); //item is protected or AutoDestroyed
+						statement.setLong(9, (item.isEquipable() ? 1 : 0)); //set equip-able
 						statement.execute();
 						statement.clearParameters();
 					}

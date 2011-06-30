@@ -143,25 +143,28 @@ public class SkillTreeTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement;
+			ResultSet rset;
 			try
 			{
-				PreparedStatement statement = con.prepareStatement("SELECT * FROM class_list ORDER BY id");
-				ResultSet classlist = statement.executeQuery();
+				statement = con.prepareStatement("SELECT * FROM class_list ORDER BY id");
+				rset = statement.executeQuery();
 				
 				Map<Integer, L2SkillLearn> map;
 				int parentClassId;
 				L2SkillLearn skillLearn;
 				
-				PreparedStatement statement2 = con.prepareStatement("SELECT class_id, skill_id, level, name, sp, min_level, learned_by_npc, learned_by_fs, is_transfer, is_autoget FROM skill_trees where class_id=? ORDER BY skill_id, level");
-				while (classlist.next())
+				statement.close();
+				statement = con.prepareStatement("SELECT class_id, skill_id, level, name, sp, min_level, learned_by_npc, learned_by_fs, is_transfer, is_autoget FROM skill_trees where class_id=? ORDER BY skill_id, level");
+				while (rset.next())
 				{
 					map = new FastMap<Integer, L2SkillLearn>();
-					parentClassId = classlist.getInt("parent_id");
-					classId = classlist.getInt("id");
+					parentClassId = rset.getInt("parent_id");
+					classId = rset.getInt("id");
 					
-					statement2.setInt(1, classId);
-					ResultSet skilltree = statement2.executeQuery();
-					statement2.clearParameters();
+					statement.setInt(1, classId);
+					ResultSet skilltree = statement.executeQuery();
+					statement.clearParameters();
 					
 					if (parentClassId != -1)
 					{
@@ -197,9 +200,8 @@ public class SkillTreeTable
 					_log.fine("SkillTreeTable: skill tree for class " + classId + " has " + map.size() + " skills");
 				}
 				
-				classlist.close();
+				rset.close();
 				statement.close();
-				statement2.close();
 			}
 			catch (Exception e)
 			{
@@ -214,23 +216,23 @@ public class SkillTreeTable
 				_fishingSkillTrees = new FastList<L2SkillLearn>();
 				_expandDwarfCraftSkillTrees = new FastList<L2SkillLearn>();
 				
-				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, sp, min_level, costid, cost, is_for_dwarf, learned_by_npc, learned_by_fs FROM fishing_skill_trees ORDER BY skill_id, level");
-				ResultSet skilltree2 = statement.executeQuery();
+				statement = con.prepareStatement("SELECT skill_id, level, name, sp, min_level, costid, cost, is_for_dwarf, learned_by_npc, learned_by_fs FROM fishing_skill_trees ORDER BY skill_id, level");
+				rset = statement.executeQuery();
 				
 				int prevSkillId = -1;
 				
-				while (skilltree2.next())
+				while (rset.next())
 				{
-					int id = skilltree2.getInt("skill_id");
-					int lvl = skilltree2.getInt("level");
-					String name = skilltree2.getString("name");
-					int minLvl = skilltree2.getInt("min_level");
-					int cost = skilltree2.getInt("sp");
-					int costId = skilltree2.getInt("costid");
-					int costCount = skilltree2.getInt("cost");
-					boolean isDwarven = skilltree2.getBoolean("is_for_dwarf");
-					boolean npc = skilltree2.getBoolean("learned_by_npc");
-					boolean fs = skilltree2.getBoolean("learned_by_fs");
+					int id = rset.getInt("skill_id");
+					int lvl = rset.getInt("level");
+					String name = rset.getString("name");
+					int minLvl = rset.getInt("min_level");
+					int cost = rset.getInt("sp");
+					int costId = rset.getInt("costid");
+					int costCount = rset.getInt("cost");
+					boolean isDwarven = rset.getBoolean("is_for_dwarf");
+					boolean npc = rset.getBoolean("learned_by_npc");
+					boolean fs = rset.getBoolean("learned_by_fs");
 					
 					if (prevSkillId != id)
 						prevSkillId = id;
@@ -243,7 +245,7 @@ public class SkillTreeTable
 						_fishingSkillTrees.add(skill);
 				}
 				
-				skilltree2.close();
+				rset.close();
 				statement.close();
 			}
 			catch (Exception e)
@@ -255,20 +257,20 @@ public class SkillTreeTable
 			{
 				_pledgeSkillTrees = new FastList<L2PledgeSkillLearn>();
 				
-				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, clan_lvl, repCost, itemId, itemCount FROM pledge_skill_trees ORDER BY skill_id, level");
-				ResultSet skilltree4 = statement.executeQuery();
+				statement = con.prepareStatement("SELECT skill_id, level, name, clan_lvl, repCost, itemId, itemCount FROM pledge_skill_trees ORDER BY skill_id, level");
+				rset = statement.executeQuery();
 				
 				int prevSkillId = -1;
 				
-				while (skilltree4.next())
+				while (rset.next())
 				{
-					int id = skilltree4.getInt("skill_id");
-					int lvl = skilltree4.getInt("level");
-					String name = skilltree4.getString("name");
-					int baseLvl = skilltree4.getInt("clan_lvl");
-					int sp = skilltree4.getInt("repCost");
-					int itemId = skilltree4.getInt("itemId");
-					int itemCount = skilltree4.getInt("itemCount");
+					int id = rset.getInt("skill_id");
+					int lvl = rset.getInt("level");
+					String name = rset.getString("name");
+					int baseLvl = rset.getInt("clan_lvl");
+					int sp = rset.getInt("repCost");
+					int itemId = rset.getInt("itemId");
+					int itemCount = rset.getInt("itemCount");
 					
 					if (prevSkillId != id)
 						prevSkillId = id;
@@ -278,7 +280,7 @@ public class SkillTreeTable
 					_pledgeSkillTrees.add(skill);
 				}
 				
-				skilltree4.close();
+				rset.close();
 				statement.close();
 			}
 			catch (Exception e)
@@ -289,20 +291,20 @@ public class SkillTreeTable
 			{
 				_TransformSkillTrees = new FastList<L2TransformSkillLearn>();
 				
-				PreparedStatement statement = con.prepareStatement("SELECT race_id, skill_id, item_id, level, name, sp, min_level FROM transform_skill_trees ORDER BY race_id, skill_id, level");
-				ResultSet skilltree5 = statement.executeQuery();
+				statement = con.prepareStatement("SELECT race_id, skill_id, item_id, level, name, sp, min_level FROM transform_skill_trees ORDER BY race_id, skill_id, level");
+				rset = statement.executeQuery();
 				
 				int prevSkillId = -1;
 				
-				while (skilltree5.next())
+				while (rset.next())
 				{
-					int race_id = skilltree5.getInt("race_id");
-					int skill_id = skilltree5.getInt("skill_id");
-					int item_id = skilltree5.getInt("item_id");
-					int level = skilltree5.getInt("level");
-					String name = skilltree5.getString("name");
-					int sp = skilltree5.getInt("sp");
-					int min_level = skilltree5.getInt("min_level");
+					int race_id = rset.getInt("race_id");
+					int skill_id = rset.getInt("skill_id");
+					int item_id = rset.getInt("item_id");
+					int level = rset.getInt("level");
+					String name = rset.getString("name");
+					int sp = rset.getInt("sp");
+					int min_level = rset.getInt("min_level");
 					
 					if (prevSkillId != skill_id)
 						prevSkillId = skill_id;
@@ -312,7 +314,7 @@ public class SkillTreeTable
 					_TransformSkillTrees.add(skill);
 				}
 				
-				skilltree5.close();
+				rset.close();
 				statement.close();
 			}
 			catch (Exception e)
@@ -323,20 +325,20 @@ public class SkillTreeTable
 			{
 				_specialSkillTrees = new FastList<L2SkillLearn>();
 				
-				PreparedStatement statement = con.prepareStatement("SELECT skill_id, level, name, costid, cost, learned_by_npc, learned_by_fs FROM special_skill_trees ORDER BY skill_id, level");
-				ResultSet skilltree6 = statement.executeQuery();
+				statement = con.prepareStatement("SELECT skill_id, level, name, costid, cost, learned_by_npc, learned_by_fs FROM special_skill_trees ORDER BY skill_id, level");
+				rset = statement.executeQuery();
 				
 				int prevSkillId = -1;
 				
-				while (skilltree6.next())
+				while (rset.next())
 				{
-					int id = skilltree6.getInt("skill_id");
-					int lvl = skilltree6.getInt("level");
-					String name = skilltree6.getString("name");
-					int costId = skilltree6.getInt("costid");
-					int costCount = skilltree6.getInt("cost");
-					boolean npc = skilltree6.getBoolean("learned_by_npc");
-					boolean fs = skilltree6.getBoolean("learned_by_fs");
+					int id = rset.getInt("skill_id");
+					int lvl = rset.getInt("level");
+					String name = rset.getString("name");
+					int costId = rset.getInt("costid");
+					int costCount = rset.getInt("cost");
+					boolean npc = rset.getBoolean("learned_by_npc");
+					boolean fs = rset.getBoolean("learned_by_fs");
 					
 					if (prevSkillId != id)
 						prevSkillId = id;
@@ -346,7 +348,7 @@ public class SkillTreeTable
 					_specialSkillTrees.add(skill);
 				}
 				
-				skilltree6.close();
+				rset.close();
 				statement.close();
 			}
 			catch (Exception e)
@@ -356,7 +358,7 @@ public class SkillTreeTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error while skill tables ", e);
+			_log.log(Level.SEVERE, "Error while loading skill tables ", e);
 		}
 		finally
 		{

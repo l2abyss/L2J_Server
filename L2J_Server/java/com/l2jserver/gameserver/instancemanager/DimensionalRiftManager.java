@@ -83,8 +83,8 @@ public class DimensionalRiftManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement s = con.prepareStatement("SELECT * FROM dimensional_rift");
-			ResultSet rs = s.executeQuery();
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM dimensional_rift");
+			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
 			{
@@ -110,7 +110,8 @@ public class DimensionalRiftManager
 				_rooms.get(type).put(room_id, new DimensionalRiftRoom(type, room_id, xMin, xMax, yMin, yMax, z1, z2, xT, yT, zT, isBossRoom));
 			}
 			
-			s.close();
+			rs.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{

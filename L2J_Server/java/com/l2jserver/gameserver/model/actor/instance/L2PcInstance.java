@@ -7697,26 +7697,26 @@ public final class L2PcInstance extends L2Playable
 	
 	private void storeCharSub()
 	{
+		if (getTotalSubClasses() <= 0)
+			return;
+			
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_SUBCLASS);
 			
-			if (getTotalSubClasses() > 0)
+			for (SubClass subClass : getSubClasses().values())
 			{
-				for (SubClass subClass : getSubClasses().values())
-				{
-					statement.setLong(1, subClass.getExp());
-					statement.setInt(2, subClass.getSp());
-					statement.setInt(3, subClass.getLevel());
-					statement.setInt(4, subClass.getClassId());
-					statement.setInt(5, getObjectId());
-					statement.setInt(6, subClass.getClassIndex());
-					
-					statement.execute();
-				}
+				statement.setLong(1, subClass.getExp());
+				statement.setInt(2, subClass.getSp());
+				statement.setInt(3, subClass.getLevel());
+				statement.setInt(4, subClass.getClassId());
+				statement.setInt(5, getObjectId());
+				statement.setInt(6, subClass.getClassIndex());
+				
+				statement.execute();
+				statement.clearParameters();
 			}
 			statement.close();
 		}
@@ -7936,30 +7936,30 @@ public final class L2PcInstance extends L2Playable
 		// Remove a skill from the L2Character and its Func objects from calculator set of the L2Character
 		L2Skill oldSkill = super.removeSkill(skill);
 		
-		Connection con = null;
-		
-		try
+		if (oldSkill != null)
 		{
-			// Remove or update a L2PcInstance skill from the character_skills table of the database
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_FROM_CHAR);
+			Connection con = null;
 			
-			if (oldSkill != null)
+			try
 			{
+				// Remove or update a L2PcInstance skill from the character_skills table of the database
+				con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement(DELETE_SKILL_FROM_CHAR);
+				
 				statement.setInt(1, oldSkill.getId());
 				statement.setInt(2, getObjectId());
 				statement.setInt(3, getClassIndex());
 				statement.execute();
+				statement.close();
 			}
-			statement.close();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Error could not delete skill: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Error could not delete skill: " + e.getMessage(), e);
+			}
+			finally
+			{
+				L2DatabaseFactory.close(con);
+			}
 		}
 		
 		if (this.transformId() > 0 || this.isCursedWeaponEquipped())

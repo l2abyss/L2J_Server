@@ -760,14 +760,11 @@ public class SevenSigns
 	protected void restoreSevenSignsData()
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet rset = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement(LOAD_DATA);
-			rset = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement(LOAD_DATA);
+			ResultSet rset = statement.executeQuery();
 			
 			StatsSet sevenDat = null;
 			int charObjId;
@@ -822,6 +819,7 @@ public class SevenSigns
 				
 				_lastSave.setTimeInMillis(rset.getLong("date"));
 			}
+			rset.close();
 			statement.close();
 		}
 		catch (SQLException e)
@@ -847,16 +845,14 @@ public class SevenSigns
 	 */
 	public void saveSevenSignsData()
 	{
-		Connection con = null;
-		PreparedStatement statement = null;
-		
 		if (Config.DEBUG)
 			_log.info("SevenSigns: Saving data to disk.");
 		
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement(UPDATE_PLAYER);
+			PreparedStatement statement = con.prepareStatement(UPDATE_PLAYER);
 			
 			for (StatsSet sevenDat : _signsPlayerData.values())
 			{
@@ -869,6 +865,7 @@ public class SevenSigns
 				statement.setDouble(7, sevenDat.getDouble("contribution_score"));
 				statement.setInt(8, sevenDat.getInteger("charId"));
 				statement.execute();
+				statement.clearParameters();
 				if (Config.DEBUG)
 					_log.info("SevenSigns: Updated data in database for char ID " + sevenDat.getInteger("charId") + " (" + sevenDat.getString("cabal") + ")");
 			}
@@ -891,12 +888,11 @@ public class SevenSigns
 			return;
 		
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement(UPDATE_PLAYER);
+			PreparedStatement statement = con.prepareStatement(UPDATE_PLAYER);
 			statement.setString(1, sevenDat.getString("cabal"));
 			statement.setInt(2, sevenDat.getInteger("seal"));
 			statement.setInt(3, sevenDat.getInteger("red_stones"));
@@ -921,12 +917,11 @@ public class SevenSigns
 	public final void saveSevenSignsStatus()
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement(UPDATE_STATUS);
+			PreparedStatement statement = con.prepareStatement(UPDATE_STATUS);
 			statement.setInt(1, _currentCycle);
 			statement.setInt(2, _activePeriod);
 			statement.setInt(3, _previousWinner);
@@ -1004,8 +999,6 @@ public class SevenSigns
 	 */
 	public int setPlayerInfo(int objectId, int chosenCabal, int chosenSeal)
 	{
-		Connection con = null;
-		PreparedStatement statement = null;
 		StatsSet currPlayerData = _signsPlayerData.get(objectId);
 		
 		if (currPlayerData != null)
@@ -1032,15 +1025,15 @@ public class SevenSigns
 			_signsPlayerData.put(objectId, currPlayerData);
 			
 			// Update data in database, as we have a new player signing up.
+			Connection con = null;
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				statement = con.prepareStatement(INSERT_PLAYER);
+				PreparedStatement statement = con.prepareStatement(INSERT_PLAYER);
 				statement.setInt(1, objectId);
 				statement.setString(2, getCabalShortName(chosenCabal));
 				statement.setInt(3, chosenSeal);
 				statement.execute();
-				
 				statement.close();
 				
 				if (Config.DEBUG)

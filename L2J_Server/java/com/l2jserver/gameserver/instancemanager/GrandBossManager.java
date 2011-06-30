@@ -337,11 +337,11 @@ public class GrandBossManager
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement deleteStatement = con.prepareStatement(DELETE_GRAND_BOSS_LIST);
-			deleteStatement.executeUpdate();
-			deleteStatement.close();
+			PreparedStatement statement = con.prepareStatement(DELETE_GRAND_BOSS_LIST);
+			statement.executeUpdate();
+			statement.close();
 			
-			PreparedStatement insertStatement = con.prepareStatement(INSERT_GRAND_BOSS_LIST);
+			statement = con.prepareStatement(INSERT_GRAND_BOSS_LIST);
 			for (L2BossZone zone : _zones)
 			{
 				if (zone == null)
@@ -352,34 +352,34 @@ public class GrandBossManager
 					continue;
 				for (Integer player : list)
 				{
-					insertStatement.setInt(1, player);
-					insertStatement.setInt(2, id);
-					insertStatement.executeUpdate();
-					insertStatement.clearParameters();
+					statement.setInt(1, player);
+					statement.setInt(2, id);
+					statement.executeUpdate();
+					statement.clearParameters();
 				}
 			}
-			insertStatement.close();
+			statement.close();
 			
-			PreparedStatement updateStatement1 = con.prepareStatement(UPDATE_GRAND_BOSS_DATA2);
-			PreparedStatement updateStatement2 = con.prepareStatement(UPDATE_GRAND_BOSS_DATA);
 			for (Integer bossId : _storedInfo.keys())
 			{
 				L2GrandBossInstance boss = _bosses.get(bossId);
 				StatsSet info = _storedInfo.get(bossId);
 				if (boss == null || info == null)
 				{
-					updateStatement1.setInt(1, _bossStatus.get(bossId));
-					updateStatement1.setInt(2, bossId);
-					updateStatement1.executeUpdate();
-					updateStatement1.clearParameters();
+					statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA2);
+					statement.setInt(1, _bossStatus.get(bossId));
+					statement.setInt(2, bossId);
+					statement.executeUpdate();
+					statement.clearParameters();
 				}
 				else
 				{
-					updateStatement2.setInt(1, boss.getX());
-					updateStatement2.setInt(2, boss.getY());
-					updateStatement2.setInt(3, boss.getZ());
-					updateStatement2.setInt(4, boss.getHeading());
-					updateStatement2.setLong(5, info.getLong("respawn_time"));
+					statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA);
+					statement.setInt(1, boss.getX());
+					statement.setInt(2, boss.getY());
+					statement.setInt(3, boss.getZ());
+					statement.setInt(4, boss.getHeading());
+					statement.setLong(5, info.getLong("respawn_time"));
 					double hp = boss.getCurrentHp();
 					double mp = boss.getCurrentMp();
 					if (boss.isDead())
@@ -387,16 +387,15 @@ public class GrandBossManager
 						hp = boss.getMaxHp();
 						mp = boss.getMaxMp();
 					}
-					updateStatement2.setDouble(6, hp);
-					updateStatement2.setDouble(7, mp);
-					updateStatement2.setInt(8, _bossStatus.get(bossId));
-					updateStatement2.setInt(9, bossId);
-					updateStatement2.executeUpdate();
-					updateStatement2.clearParameters();
+					statement.setDouble(6, hp);
+					statement.setDouble(7, mp);
+					statement.setInt(8, _bossStatus.get(bossId));
+					statement.setInt(9, bossId);
+					statement.executeUpdate();
+					statement.clearParameters();
 				}
 			}
-			updateStatement1.close();
-			updateStatement2.close();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -411,10 +410,10 @@ public class GrandBossManager
 	private void updateDb(int bossId, boolean statusOnly)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = null;
 			L2GrandBossInstance boss = _bosses.get(bossId);
 			StatsSet info = _storedInfo.get(bossId);
 			
