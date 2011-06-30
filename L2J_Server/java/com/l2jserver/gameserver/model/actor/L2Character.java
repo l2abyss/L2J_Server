@@ -2289,15 +2289,19 @@ public abstract class L2Character extends L2Object
 			}
 			if(restorefull)
 			{
-				_status.setCurrentCp(getCurrentCp()); //this is not confirmed, so just trigger regeneration
-				_status.setCurrentHp(getMaxHp()); //confirmed
-				_status.setCurrentMp(getMaxMp()); //and also confirmed
+				_status.setCurrentCp(getCurrentCp());	// this is not confirmed, so just trigger regeneration
+				_status.setCurrentHp(getMaxHp());		// confirmed
+				_status.setCurrentMp(getMaxMp());		// and also confirmed
 			}
 			else
-				_status.setCurrentHp(getMaxHp() * Config.RESPAWN_RESTORE_HP);
-			//_status.setCurrentCp(getMaxCp() * Config.RESPAWN_RESTORE_CP);
-			//_Status.setCurrentMp(getMaxMp() * Config.RESPAWN_RESTORE_MP);
-			
+			{
+				if (Config.RESPAWN_RESTORE_CP > 0 && getCurrentCp() < getMaxCp() * Config.RESPAWN_RESTORE_CP)
+					_status.setCurrentCp(getMaxCp() * Config.RESPAWN_RESTORE_CP);
+				if (Config.RESPAWN_RESTORE_HP > 0 && getCurrentHp() < getMaxHp() * Config.RESPAWN_RESTORE_HP)
+					_status.setCurrentHp(getMaxHp() * Config.RESPAWN_RESTORE_HP);
+				if (Config.RESPAWN_RESTORE_MP > 0 && getCurrentMp() < getMaxMp() * Config.RESPAWN_RESTORE_MP)
+					_status.setCurrentMp(getMaxMp() * Config.RESPAWN_RESTORE_MP);
+			}
 			// Start broadcast status
 			broadcastPacket(new Revive(this));
 			if (getWorldRegion() != null)
