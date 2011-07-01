@@ -116,20 +116,13 @@ public class Hero
 		_heroMessage = new FastMap<Integer, String>();
 		
 		Connection con = null;
-		Connection con2 = null;
-		
-		PreparedStatement statement;
-		PreparedStatement statement2;
-		
-		ResultSet rset;
-		ResultSet rset2;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			con2 = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement(GET_HEROES);
-			rset = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement(GET_HEROES);
+			ResultSet rset = statement.executeQuery();
+			PreparedStatement statement2 = con.prepareStatement(GET_CLAN_ALLY);
+			ResultSet rset2 = null;
 			
 			while (rset.next())
 			{
@@ -144,7 +137,6 @@ public class Hero
 				loadDiary(charId);
 				loadMessage(charId);
 				
-				statement2 = con2.prepareStatement(GET_CLAN_ALLY);
 				statement2.setInt(1, charId);
 				rset2 = statement2.executeQuery();
 				
@@ -177,7 +169,7 @@ public class Hero
 				}
 				
 				rset2.close();
-				statement2.close();
+				statement2.clearParameters();
 				
 				_heroes.put(charId, hero);
 			}
@@ -197,7 +189,6 @@ public class Hero
 				hero.set(COUNT, rset.getInt(COUNT));
 				hero.set(PLAYED, rset.getInt(PLAYED));
 				
-				statement2 = con2.prepareStatement(GET_CLAN_ALLY);
 				statement2.setInt(1, charId);
 				rset2 = statement2.executeQuery();
 				
@@ -230,11 +221,12 @@ public class Hero
 				}
 				
 				rset2.close();
-				statement2.close();
+				statement2.clearParameters();
 				
 				_completeHeroes.put(charId, hero);
 			}
 			
+			statement2.close();
 			rset.close();
 			statement.close();
 		}
@@ -249,7 +241,6 @@ public class Hero
 		finally
 		{
 			L2DatabaseFactory.close(con);
-			L2DatabaseFactory.close(con2);
 		}
 		
 		_log.info("Hero System: Loaded " + _heroes.size() + " Heroes.");
@@ -302,14 +293,12 @@ public class Hero
 		
 		int diaryentries = 0;
 		Connection con = null;
-		PreparedStatement statement;
-		ResultSet rset;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT * FROM  heroes_diary WHERE charId=? ORDER BY time ASC");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM  heroes_diary WHERE charId=? ORDER BY time ASC");
 			statement.setInt(1, charId);
-			rset = statement.executeQuery();
+			ResultSet rset = statement.executeQuery();
 			
 			while (rset.next())
 			{
@@ -383,16 +372,14 @@ public class Hero
 		int _draws = 0;
 		
 		Connection con = null;
-		PreparedStatement statement;
-		ResultSet rset;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT * FROM olympiad_fights WHERE (charOneId=? OR charTwoId=?) AND start<? ORDER BY start ASC");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM olympiad_fights WHERE (charOneId=? OR charTwoId=?) AND start<? ORDER BY start ASC");
 			statement.setInt(1, charId);
 			statement.setInt(2, charId);
 			statement.setLong(3, from);
-			rset = statement.executeQuery();
+			ResultSet rset = statement.executeQuery();
 			
 			while (rset.next())
 			{
@@ -835,7 +822,6 @@ public class Hero
 				_heroMessage.put(charId, "");
 				
 				Connection con = null;
-				
 				try
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
@@ -883,16 +869,15 @@ public class Hero
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement;
 			if (setDefault)
 			{
-				PreparedStatement statement = con.prepareStatement(UPDATE_ALL);
+				statement = con.prepareStatement(UPDATE_ALL);
 				statement.execute();
 				statement.close();
 			}
 			else
 			{
-				PreparedStatement statement;
-				
 				for (Integer heroId : _heroes.keySet())
 				{
 					StatsSet hero = _heroes.get(heroId);
@@ -905,16 +890,16 @@ public class Hero
 						statement.setInt(3, hero.getInteger(COUNT));
 						statement.setInt(4, hero.getInteger(PLAYED));
 						statement.execute();
+						statement.close();
 						
-						Connection con2 = L2DatabaseFactory.getInstance().getConnection();
-						PreparedStatement statement2 = con2.prepareStatement(GET_CLAN_ALLY);
-						statement2.setInt(1, heroId);
-						ResultSet rset2 = statement2.executeQuery();
+						statement = con.prepareStatement(GET_CLAN_ALLY);
+						statement.setInt(1, heroId);
+						ResultSet rset = statement.executeQuery();
 						
-						if (rset2.next())
+						if (rset.next())
 						{
-							int clanId = rset2.getInt("clanid");
-							int allyId = rset2.getInt("allyId");
+							int clanId = rset.getInt("clanid");
+							int allyId = rset.getInt("allyId");
 							
 							String clanName = "";
 							String allyName = "";
@@ -939,9 +924,8 @@ public class Hero
 							hero.set(ALLY_NAME, allyName);
 						}
 						
-						rset2.close();
-						statement2.close();
-						con2.close();
+						rset.close();
+						statement.close();
 						
 						_heroes.remove(heroId);
 						_heroes.put(heroId, hero);
@@ -955,9 +939,8 @@ public class Hero
 						statement.setInt(2, hero.getInteger(PLAYED));
 						statement.setInt(3, heroId);
 						statement.execute();
+						statement.close();
 					}
-					
-					statement.close();
 				}
 			}
 		}
@@ -1075,6 +1058,7 @@ public class Hero
 	{
 		if (_heroMessage.get(charId) == null)
 			return;
+		
 		Connection con = null;
 		try
 		{
