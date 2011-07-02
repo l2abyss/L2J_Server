@@ -98,7 +98,6 @@ public class SevenSigns
 	public static final int MAMMON_MERCHANT_ID = 31113;
 	public static final int MAMMON_BLACKSMITH_ID = 31126;
 	public static final int MAMMON_MARKETEER_ID = 31092;
-	public static final int SPIRIT_OUT_ID = 31112;
 	public static final int LILITH_NPC_ID = 25283;
 	public static final int ANAKIM_NPC_ID = 25286;
 	public static final int CREST_OF_DAWN_ID = 31170;
@@ -136,7 +135,6 @@ public class SevenSigns
 	
 	private static AutoSpawnInstance _merchantSpawn;
 	private static AutoSpawnInstance _blacksmithSpawn;
-	private static AutoSpawnInstance _spiritOutSpawn;
 	private static AutoSpawnInstance _lilithSpawn;
 	private static AutoSpawnInstance _anakimSpawn;
 	private static Map<Integer, AutoSpawnInstance> _crestofdawnspawns;
@@ -263,7 +261,6 @@ public class SevenSigns
 		_merchantSpawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(MAMMON_MERCHANT_ID, false);
 		_blacksmithSpawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(MAMMON_BLACKSMITH_ID, false);
 		_marketeerSpawns = AutoSpawnHandler.getInstance().getAutoSpawnInstances(MAMMON_MARKETEER_ID);
-		_spiritOutSpawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(SPIRIT_OUT_ID, false);
 		_lilithSpawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(LILITH_NPC_ID, false);
 		_anakimSpawn = AutoSpawnHandler.getInstance().getAutoSpawnInstance(ANAKIM_NPC_ID, false);
 		_crestofdawnspawns = AutoSpawnHandler.getInstance().getAutoSpawnInstances(CREST_OF_DAWN_ID);
@@ -317,9 +314,6 @@ public class SevenSigns
 				if (!AutoSpawnHandler.getInstance().getAutoSpawnInstance(_merchantSpawn.getObjectId(), true).isSpawnActive())
 					AutoSpawnHandler.getInstance().setSpawnActive(_merchantSpawn, true);
 				
-				if (!AutoSpawnHandler.getInstance().getAutoSpawnInstance(_spiritOutSpawn.getObjectId(), true).isSpawnActive())
-					AutoSpawnHandler.getInstance().setSpawnActive(_spiritOutSpawn, true);
-
 				switch (getCabalHighestScore())
 				{
 					case CABAL_DAWN:
@@ -376,7 +370,6 @@ public class SevenSigns
 				{
 					AutoSpawnHandler.getInstance().setSpawnActive(duskCrest, false);
 				}
-				AutoSpawnHandler.getInstance().setSpawnActive(_spiritOutSpawn, false);
 			}
 		}
 		else
@@ -393,8 +386,6 @@ public class SevenSigns
 			{
 				AutoSpawnHandler.getInstance().setSpawnActive(duskCrest, false);
 			}
-			AutoSpawnHandler.getInstance().setSpawnActive(_spiritOutSpawn, false);
-			
 			for (AutoSpawnInstance spawnInst : _oratorSpawns.values())
 				AutoSpawnHandler.getInstance().setSpawnActive(spawnInst, false);
 			
