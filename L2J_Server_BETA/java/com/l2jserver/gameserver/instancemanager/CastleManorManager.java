@@ -206,7 +206,6 @@ public class CastleManorManager
 	private void load()
 	{
 		Connection con = null;
-		ResultSet rs;
 		try
 		{
 			// Get Connection
@@ -222,7 +221,7 @@ public class CastleManorManager
 				
 				// restore seed production info
 				statementProduction.setInt(1, castle.getCastleId());
-				rs = statementProduction.executeQuery();
+				ResultSet rs = statementProduction.executeQuery();
 				statementProduction.clearParameters();
 				while (rs.next())
 				{

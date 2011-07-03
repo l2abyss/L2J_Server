@@ -102,13 +102,12 @@ public class AuctionManager
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT id FROM auction ORDER BY id");
-			rs = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement("SELECT id FROM auction ORDER BY id");
+			ResultSet rs = statement.executeQuery();
 			while (rs.next())
 				_auctions.add(new Auction(rs.getInt("id")));
+			rs.close();
 			statement.close();
 			_log.info("Loaded: " + getAuctions().size() + " auction(s)");
 		}
@@ -116,7 +115,6 @@ public class AuctionManager
 		{
 			_log.log(Level.WARNING, "Exception: AuctionManager.load(): " + e.getMessage(), e);
 		}
-		
 		finally
 		{
 			L2DatabaseFactory.close(con);
@@ -151,7 +149,6 @@ public class AuctionManager
 	/** Init Clan NPC aution */
 	public void initNPC(int id)
 	{
-		Connection con = null;
 		int i;
 		for (i = 0; i < ItemInitDataId.length; i++)
 		{
@@ -163,6 +160,8 @@ public class AuctionManager
 			_log.warning("Clan Hall auction not found for Id :" + id);
 			return;
 		}
+		
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();

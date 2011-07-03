@@ -165,18 +165,17 @@ public class FortManager implements InstanceListManager
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("SELECT id FROM fort ORDER BY id");
-			rs = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement("SELECT id FROM fort ORDER BY id");
+			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
 			{
 				getForts().add(new Fort(rs.getInt("id")));
 			}
 			
+			rs.close();
 			statement.close();
 			
 			_log.info("Loaded: " + getForts().size() + " fortress");

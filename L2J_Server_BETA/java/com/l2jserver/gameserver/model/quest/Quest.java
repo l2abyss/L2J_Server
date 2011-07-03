@@ -867,12 +867,11 @@ public class Quest extends ManagedScript
 		{
 			// Get list of quests owned by the player from database
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
 			
 			PreparedStatement invalidQuestData = con.prepareStatement("DELETE FROM character_quests WHERE charId=? and name=?");
 			PreparedStatement invalidQuestDataVar = con.prepareStatement("delete FROM character_quests WHERE charId=? and name=? and var=?");
 			
-			statement = con.prepareStatement("SELECT name,value FROM character_quests WHERE charId=? AND var=?");
+			PreparedStatement statement = con.prepareStatement("SELECT name,value FROM character_quests WHERE charId=? AND var=?");
 			statement.setInt(1, player.getObjectId());
 			statement.setString(2, "<state>");
 			ResultSet rs = statement.executeQuery();

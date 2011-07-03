@@ -75,13 +75,11 @@ public class RaidBossSpawnManager
 		_spawns = new FastMap<Integer, L2Spawn>();
 		
 		Connection con = null;
-		PreparedStatement statement = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("SELECT * FROM raidboss_spawnlist ORDER BY boss_id");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM raidboss_spawnlist ORDER BY boss_id");
 			ResultSet rset = statement.executeQuery();
 			
 			L2Spawn spawnDat;
@@ -267,12 +265,10 @@ public class RaidBossSpawnManager
 		if (storeInDb)
 		{
 			Connection con = null;
-			PreparedStatement statement = null;
-			
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				statement = con.prepareStatement("INSERT INTO raidboss_spawnlist (boss_id,amount,loc_x,loc_y,loc_z,heading,respawn_time,currentHp,currentMp) VALUES(?,?,?,?,?,?,?,?,?)");
+				PreparedStatement statement = con.prepareStatement("INSERT INTO raidboss_spawnlist (boss_id,amount,loc_x,loc_y,loc_z,heading,respawn_time,currentHp,currentMp) VALUES(?,?,?,?,?,?,?,?,?)");
 				statement.setInt(1, spawnDat.getNpcid());
 				statement.setInt(2, spawnDat.getAmount());
 				statement.setInt(3, spawnDat.getLocx());
@@ -325,12 +321,10 @@ public class RaidBossSpawnManager
 		if (updateDb)
 		{
 			Connection con = null;
-			PreparedStatement statement = null;
-			
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				statement = con.prepareStatement("DELETE FROM raidboss_spawnlist WHERE boss_id=?");
+				PreparedStatement statement = con.prepareStatement("DELETE FROM raidboss_spawnlist WHERE boss_id=?");
 				statement.setInt(1, bossId);
 				statement.execute();
 				statement.close();
@@ -350,11 +344,10 @@ public class RaidBossSpawnManager
 	private void updateDb()
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("UPDATE raidboss_spawnlist SET respawn_time = ?, currentHP = ?, currentMP = ? WHERE boss_id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE raidboss_spawnlist SET respawn_time = ?, currentHP = ?, currentMP = ? WHERE boss_id = ?");
 			
 			for (Integer bossId : _storedInfo.keySet())
 			{

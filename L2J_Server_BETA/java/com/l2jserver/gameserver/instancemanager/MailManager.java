@@ -57,18 +57,16 @@ public class MailManager
 	
 	private void load()
 	{
-		int readed = 0;
+		int count = 0;
 		Connection con = null;
-		PreparedStatement stmt1 = null;
-		PreparedStatement stmt2 = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			stmt1 = con.prepareStatement("SELECT * FROM messages ORDER BY expiration");
-			stmt2 = con.prepareStatement("SELECT * FROM attachments WHERE messageId = ?");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM messages ORDER BY expiration");
+			// stmt2 = con.prepareStatement("SELECT * FROM attachments WHERE messageId = ?");
 			
-			ResultSet rset1 = stmt1.executeQuery();
+			ResultSet rset1 = statement.executeQuery();
 			while (rset1.next())
 			{
 				
@@ -77,7 +75,7 @@ public class MailManager
 				int msgId = msg.getId();
 				_messages.put(msgId, msg);
 				
-				readed++;
+				count++;
 				
 				long expiration = msg.getExpiration();
 				
@@ -86,8 +84,8 @@ public class MailManager
 				else
 					ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msgId), expiration - System.currentTimeMillis());
 			}
-			stmt1.close();
-			stmt2.close();
+			rset1.close();
+			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -97,7 +95,7 @@ public class MailManager
 		{
 			L2DatabaseFactory.close(con);
 		}
-		_log.info("Mail Manager: Successfully loaded " + readed + " messages.");
+		_log.info("Mail Manager: Successfully loaded " + count + " messages.");
 	}
 	
 	public final Message getMessage(int msgId)

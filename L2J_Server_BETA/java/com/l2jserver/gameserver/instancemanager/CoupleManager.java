@@ -66,19 +66,17 @@ public class CoupleManager
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
-			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("Select id from mods_wedding order by id");
-			rs = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement("Select id from mods_wedding order by id");
+			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
 			{
 				getCouples().add(new Couple(rs.getInt("id")));
 			}
 			
+			rs.close();
 			statement.close();
 			
 			_log.info("Loaded: " + getCouples().size() + " couples(s)");

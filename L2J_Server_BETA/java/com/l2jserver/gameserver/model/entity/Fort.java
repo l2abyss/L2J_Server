@@ -688,6 +688,7 @@ public class Fort
 			{
 				_function.put(rs.getInt("type"), new FortFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
 			}
+			rs.close();
 			statement.close();
 		}
 		catch (Exception e)

@@ -187,6 +187,7 @@ public class Auction
 				_sellerName = rs.getString("sellerName");
 				_startingBid = rs.getLong("startingBid");
 			}
+			rs.close();
 			statement.close();
 			loadBid();
 		}
@@ -229,7 +230,7 @@ public class Auction
 				}
 				_bidders.put(rs.getInt("bidderId"), new Bidder(rs.getString("bidderName"), rs.getString("clan_name"), rs.getLong("maxBid"), rs.getLong("time_bid")));
 			}
-			
+			rs.close();
 			statement.close();
 		}
 		catch (Exception e)

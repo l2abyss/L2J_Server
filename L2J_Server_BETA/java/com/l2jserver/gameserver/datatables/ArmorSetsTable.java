@@ -57,11 +57,10 @@ public class ArmorSetsTable
 	private void loadData()
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM armorsets");
+			PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM armorsets");
 			ResultSet rset = statement.executeQuery();
 			
 			while (rset.next())
@@ -82,6 +81,9 @@ public class ArmorSetsTable
 				int mw_shield = rset.getInt("mw_shield");
 				_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skills, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
 			}
+			
+			rset.close();
+			statement.close();
 			_log.info("ArmorSetsTable: Loaded " + _armorSets.size() + " armor sets.");
 		}
 		catch (Exception e)
@@ -92,13 +94,14 @@ public class ArmorSetsTable
 		{
 			L2DatabaseFactory.close(con);
 		}
+		
 		if (Config.CUSTOM_ARMORSETS_TABLE)
 		{
 			try
 			{
 				int cSets = _armorSets.size();
 				con = L2DatabaseFactory.getInstance().getConnection();
-				statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM custom_armorsets");
+				PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM custom_armorsets");
 				ResultSet rset = statement.executeQuery();
 				while (rset.next())
 				{
@@ -118,6 +121,9 @@ public class ArmorSetsTable
 					int mw_shield = rset.getInt("mw_shield");
 					_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skills, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
 				}
+				
+				rset.close();
+				statement.close();
 				_log.info("ArmorSetsTable: Loaded " + (_armorSets.size() - cSets) + " Custom armor sets.");
 			}
 			catch (Exception e)

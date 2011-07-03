@@ -227,6 +227,7 @@ public class SiegeGuardManager
 					_log.warning("Missing npc data in npc table for id: " + rs.getInt("npcId"));
 				}
 			}
+			rs.close();
 			statement.close();
 		}
 		catch (Exception e)
@@ -255,10 +256,7 @@ public class SiegeGuardManager
 			statement.setInt(4, y);
 			statement.setInt(5, z);
 			statement.setInt(6, heading);
-			if (isHire == 1)
-				statement.setInt(7, 0);
-			else
-				statement.setInt(7, 600);
+			statement.setInt(7, (isHire == 1 ? 0 : 600));
 			statement.setInt(8, isHire);
 			statement.execute();
 			statement.close();

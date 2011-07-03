@@ -80,8 +80,7 @@ public class InstanceManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = null;
-			statement = con.prepareStatement(ADD_INSTANCE_TIME);
+			PreparedStatement statement = con.prepareStatement(ADD_INSTANCE_TIME);
 			statement.setInt(1, playerObjId);
 			statement.setInt(2, id);
 			statement.setLong(3, time);
@@ -90,8 +89,14 @@ public class InstanceManager
 			statement.close();
 			_playerInstanceTimes.get(playerObjId).put(id, time);
 		}
-		catch (Exception e) { _log.log(Level.WARNING, "Could not insert character instance time data: "+ e.getMessage(), e); }
-		finally { L2DatabaseFactory.close(con); }
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not insert character instance time data: "+ e.getMessage(), e); 
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
 	}
 	
 	public void deleteInstanceTime(int playerObjId, int id)
@@ -100,16 +105,21 @@ public class InstanceManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = null;
-			statement = con.prepareStatement(DELETE_INSTANCE_TIME);
+			PreparedStatement statement = con.prepareStatement(DELETE_INSTANCE_TIME);
 			statement.setInt(1, playerObjId);
 			statement.setInt(2, id);
 			statement.execute();
 			statement.close();
 			_playerInstanceTimes.get(playerObjId).remove(id);
 		}
-		catch (Exception e) { _log.log(Level.WARNING, "Could not delete character instance time data: "+ e.getMessage(), e); }
-		finally { L2DatabaseFactory.close(con); }
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not delete character instance time data: "+ e.getMessage(), e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
 	}
 	
 	public void restoreInstanceTimes(int playerObjId)

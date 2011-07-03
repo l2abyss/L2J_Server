@@ -150,12 +150,9 @@ public class MercTicketManager
 		// load merc tickets into the world
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
-			
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT * FROM castle_siege_guards Where isHired = 1");
-			rs = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM castle_siege_guards Where isHired = 1");
+			ResultSet rs = statement.executeQuery();
 			
 			int npcId;
 			int itemId;
@@ -201,6 +198,7 @@ public class MercTicketManager
 						break;
 					}
 			}
+			rs.close();
 			statement.close();
 			
 			_log.info("Loaded: " + getDroppedTickets().size() + " Mercenary Tickets");

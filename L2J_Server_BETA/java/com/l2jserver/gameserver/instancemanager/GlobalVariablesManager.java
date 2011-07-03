@@ -43,15 +43,13 @@ public class GlobalVariablesManager
 	private final void loadVars()
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet rset;
-		String var, value;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement(LOAD_VAR);
-
-			rset = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement(LOAD_VAR);
+			ResultSet rset = statement.executeQuery();
+			
+			String var, value;
 			while (rset.next())
 			{
 				var = rset.getString(1);
@@ -59,6 +57,7 @@ public class GlobalVariablesManager
 				
 				_variablesMap.put(var, value);
 			}
+			
 			rset.close();
 			statement.close();
 		}

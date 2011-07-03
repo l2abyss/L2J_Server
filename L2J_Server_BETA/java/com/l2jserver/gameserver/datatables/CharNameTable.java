@@ -100,12 +100,12 @@ public class CharNameTable
 		
 		int id = -1;
 		int accessLevel = 0;
+		
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT charId,accesslevel FROM characters WHERE char_name=?");
+			PreparedStatement statement = con.prepareStatement("SELECT charId,accesslevel FROM characters WHERE char_name=?");
 			statement.setString(1, name);
 			ResultSet rset = statement.executeQuery();
 			while (rset.next())
@@ -124,6 +124,7 @@ public class CharNameTable
 		{
 			L2DatabaseFactory.close(con);
 		}
+		
 		if (id > 0)
 		{
 			_chars.put(id, name);

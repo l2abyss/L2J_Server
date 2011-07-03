@@ -67,8 +67,12 @@ public final class ItemAuctionManager
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT auctionId FROM item_auction ORDER BY auctionId DESC LIMIT 0, 1");
 			ResultSet rset = statement.executeQuery();
+			
 			if (rset.next())
 				_auctionIds.set(rset.getInt(1) + 1);
+			
+			rset.close();
+			statement.close();
 		}
 		catch (final SQLException e)
 		{
