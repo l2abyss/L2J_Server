@@ -39,7 +39,6 @@ import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.util.L2FastList;
 
 /**
- *
  * @author DaRkRaGe
  * Revised by Emperorc
  */
@@ -120,7 +119,6 @@ public class GrandBossManager
 			
 			PreparedStatement statement = con.prepareStatement("SELECT * from grandboss_data ORDER BY boss_id");
 			ResultSet rset = statement.executeQuery();
-			
 			while (rset.next())
 			{
 				//Read all info from DB, and store it for AI to read and decide what to do
@@ -147,7 +145,6 @@ public class GrandBossManager
 				
 				info = null;
 			}
-			
 			_log.info("GrandBossManager: Loaded " + _storedInfo.size() + " Instances");
 			
 			rset.close();
@@ -167,10 +164,9 @@ public class GrandBossManager
 		}
 	}
 	
-	/*
+	/**
 	 * Zone Functions
 	 */
-	
 	public void initZones()
 	{
 		Connection con = null;
@@ -286,10 +282,6 @@ public class GrandBossManager
 		return true;
 	}
 	
-	/*
-	 * The rest
-	 */
-	
 	public int getBossStatus(int bossId)
 	{
 		return _bossStatus.get(bossId);
@@ -302,10 +294,9 @@ public class GrandBossManager
 		updateDb(bossId, true);
 	}
 	
-	/*
+	/**
 	 * Adds a L2GrandBossInstance to the list of bosses.
 	 */
-	
 	public void addBoss(L2GrandBossInstance boss)
 	{
 		if (boss != null)
@@ -362,15 +353,13 @@ public class GrandBossManager
 			
 			for (Integer bossId : _storedInfo.keys())
 			{
-				L2GrandBossInstance boss = _bosses.get(bossId);
+				final L2GrandBossInstance boss = _bosses.get(bossId);
 				StatsSet info = _storedInfo.get(bossId);
 				if (boss == null || info == null)
 				{
 					statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA2);
 					statement.setInt(1, _bossStatus.get(bossId));
 					statement.setInt(2, bossId);
-					statement.executeUpdate();
-					statement.clearParameters();
 				}
 				else
 				{
@@ -391,11 +380,11 @@ public class GrandBossManager
 					statement.setDouble(7, mp);
 					statement.setInt(8, _bossStatus.get(bossId));
 					statement.setInt(9, bossId);
-					statement.executeUpdate();
-					statement.clearParameters();
 				}
+				statement.executeUpdate();
+				statement.clearParameters();
+				statement.close();
 			}
-			statement.close();
 		}
 		catch (SQLException e)
 		{
