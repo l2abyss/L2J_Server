@@ -104,8 +104,9 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 					{
 						int itemId = -1;
 						int itemCount = -1;
+						final int levelUpSp = s.getLevelUpSp();
 						
-						final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, 0, SkillType.ClassTransform);
+						final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.ClassTransform);
 						if (s.getItemsIdCount() != null)
 						{
 							for (int[] itemIdCount : s.getItemsIdCount())
@@ -164,8 +165,9 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 				{
 					int itemId = -1;
 					int itemCount = -1;
+					final int levelUpSp = s.getLevelUpSp();
 					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, 0, SkillType.Fishing);
+					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.Fishing);
 					for (int[] itemIdCount : s.getItemsIdCount())
 					{
 						itemId = itemIdCount[0];
@@ -190,9 +192,9 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 				final L2SkillLearn s = SkillTreesData.getInstance().getPledgeSkill(_id, _level);
 				if (s != null)
 				{
-					final int requiredRep = s.getLevelUpSp();
 					int itemId = -1;
 					int itemCount = -1;
+					final int requiredRep = s.getLevelUpSp();
 					
 					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, requiredRep, SkillType.Pledge);
 					
@@ -227,9 +229,9 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 					{
 						int itemId = -1;
 						int itemCount = -1;
+						final int levelUpSp = s.getLevelUpSp();
 						
-						final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, s.getLevelUpSp(), SkillType.SubPledge);
-						
+						final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.SubPledge);
 						for (int[] itemIdCount : s.getItemsIdCount())
 						{
 							itemId = itemIdCount[0];
@@ -253,9 +255,9 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 				{
 					int itemId = -1;
 					int itemCount = -1;
+					final int levelUpSp = s.getLevelUpSp();
 					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, 0, SkillType.SubClass);
-					
+					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.SubClass);
 					for (int[] itemIdCount : s.getItemsIdCount())
 					{
 						itemId = itemIdCount[0];
@@ -277,9 +279,9 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 				{
 					int itemId = -1;
 					int itemCount = -1;
+					final int levelUpSp = s.getLevelUpSp();
 					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, 0, SkillType.Collect);
-					
+					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.Collect);
 					for (int[] itemIdCount : s.getItemsIdCount())
 					{
 						itemId = itemIdCount[0];
@@ -301,9 +303,9 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 				{
 					int itemId = -1;
 					int itemCount = -1;
+					final int levelUpSp = s.getLevelUpSp();
 					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, 0, SkillType.Transfer);
-					
+					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.Transfer);
 					for (int[] itemIdCount : s.getItemsIdCount())
 					{
 						itemId = itemIdCount[0];

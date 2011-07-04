@@ -88,7 +88,6 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		}
 		
 		final L2Npc trainer = activeChar.getLastFolkNPC();
-		
 		if (!(trainer instanceof L2NpcInstance))
 		{
 			return;
@@ -100,7 +99,6 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		}
 		
 		final SkillType skillType = SkillType.values()[_skillType];
-		
 		if ((activeChar.getSkillLevel(_id) >= _level) && (skillType != SkillType.SubPledge))
 		{
 			//Already knows the skill with this level
@@ -108,9 +106,9 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		}
 		
 		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
-		
 		if (skill == null)
 		{
+			_log.warning("Player " + activeChar.getName() + " is trying to learn a null skill id: " + _id + " level: " + _level + "!");
 			return;
 		}
 		
@@ -138,10 +136,9 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 						return;
 					}
 					
-					final L2SkillLearn s = SkillTreesData.getInstance().getTransformSkill(_id, _level);
-					
 					//Required skills:
-					if ((s.getPreReqSkillIdLvl() != null) && (activeChar.getKnownSkill(s.getPreReqSkillIdLvl()[0]) == null))
+					final L2SkillLearn s = SkillTreesData.getInstance().getTransformSkill(_id, _level);
+					if ((s != null) && (s.getPreReqSkillIdLvl() != null) && (activeChar.getKnownSkill(s.getPreReqSkillIdLvl()[0]) == null))
 					{
 						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_MUST_LEARN_ONYX_BEAST_SKILL));
 						return;
@@ -149,30 +146,16 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					
 					if (checkPlayerSkill(activeChar, trainer, s))
 					{
-						giveSkill(activeChar, trainer, 0, skill);
+						giveSkill(activeChar, trainer, skill);
 					}
 					break;
 				}
 				else
 				{
 					final L2SkillLearn s = SkillTreesData.getInstance().getClassSkill(_id, _level, activeChar.getClassId());
-					if (s != null)
+					if (checkPlayerSkill(activeChar, trainer, s))
 					{
-						int levelUpSp = s.getLevelUpSp();
-						
-						if (activeChar.getSp() >= levelUpSp)
-						{
-							if (checkPlayerSkill(activeChar, trainer, s))
-							{
-								giveSkill(activeChar, trainer, levelUpSp, skill);
-							}
-						}
-						else
-						{
-							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
-							showSkillList(trainer, activeChar);
-							return;
-						}
+						giveSkill(activeChar, trainer, skill);
 					}
 				}
 				break;
@@ -182,7 +165,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				final L2SkillLearn s = SkillTreesData.getInstance().getFishingSkill(_id, _level);
 				if (checkPlayerSkill(activeChar, trainer, s))
 				{
-					giveSkill(activeChar, trainer, 0, skill);
+					giveSkill(activeChar, trainer, skill);
 				}
 				break;
 			}
@@ -261,7 +244,6 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				
 				final L2Clan clan = activeChar.getClan();
-				
 				if ((clan.getHasFort() == 0) && (clan.getHasCastle() == 0))
 				{
 					return;
@@ -333,7 +315,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				final L2SkillLearn s = SkillTreesData.getInstance().getTransferSkill(_id, _level, activeChar.getClassId());
 				if (checkPlayerSkill(activeChar, trainer, s))
 				{
-					giveSkill(activeChar, trainer, 0, skill);
+					giveSkill(activeChar, trainer, skill);
 				}
 				break;
 			}
@@ -348,7 +330,6 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				
 				final L2SkillLearn s = SkillTreesData.getInstance().getSubClassSkill(_id, _level);
-				
 				QuestState st = activeChar.getQuestState("SubClassSkills");
 				if (st == null)
 				{
@@ -379,7 +360,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 								{
 									if (checkPlayerSkill(activeChar, trainer, s))
 									{
-										giveSkill(activeChar, trainer, 0, skill);
+										giveSkill(activeChar, trainer, skill);
 										//Logging the given skill.
 										st.saveGlobalQuestVar(varName + i, skill.getId() + ";");
 									}
@@ -392,7 +373,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 							}
 							else
 							{
-								_log.warning("Invalid item object Id for Sub-Class skill Id: " + _id + " level: " + _level + " for player " + activeChar.getName() + "!");
+								_log.warning("Invalid item object Id " + itemOID + ", for Sub-Class skill Id: " + _id + " level: " + _level + " for player " + activeChar.getName() + "!");
 							}
 						}
 					}
@@ -404,7 +385,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				final L2SkillLearn s = SkillTreesData.getInstance().getCollectSkill(_id, _level);
 				if (checkPlayerSkill(activeChar, trainer, s))
 				{
-					giveSkill(activeChar, trainer, 0, skill);
+					giveSkill(activeChar, trainer, skill);
 				}
 				break;
 			}
@@ -417,87 +398,85 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 	
 	/**
 	 * Perform a simple check for current player and skill.<br>
-	 * Used for skills that require items, not Sp.
+	 * Takes the needed SP if the skill require it and all requirements are meet.<br>
+	 * Consume required items if the skill require it and all requirements are meet.<br>
 	 * @param player the skill learning player.
 	 * @param trainer the skills teaching Npc.
 	 * @param s the skill to be learn.
 	 */
 	private boolean checkPlayerSkill(L2PcInstance player, L2Npc trainer, L2SkillLearn s)
 	{
-		if ((s.getSkillId() == _id) && (s.getSkillLevel() == _level))
+		if (s != null)
 		{
-			//Hack check.
-			if (s.getGetLevel() > player.getLevel())
+			if ((s.getSkillId() == _id) && (s.getSkillLevel() == _level))
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_MEET_SKILL_LEVEL_REQUIREMENTS));
-				Util.handleIllegalPlayerAction(player, "Player " + player.getName() + ", level " + player.getLevel() + " is requesting skill Id: " + _id + " level " + _level + " without having minimum required level, " + s.getGetLevel() + "!", 0);
-				return false;
-			}
-			
-			int itemId = -1;
-			int itemCount = -1;
-			
-			if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == L2Skill.SKILL_DIVINE_INSPIRATION))
-			{
-				return true;
-			}
-			
-			if (s.getItemsIdCount() != null)
-			{
-				for (int[] itemIdCount : s.getItemsIdCount())
+				//Hack check.
+				if (s.getGetLevel() > player.getLevel())
 				{
-					itemId = itemIdCount[0];
-					itemCount = itemIdCount[1];
-					
-					if (!player.destroyItemByItemId("Consume", itemId, itemCount, trainer, false))
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_MEET_SKILL_LEVEL_REQUIREMENTS));
+					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + ", level " + player.getLevel() + " is requesting skill Id: " + _id + " level " + _level + " without having minimum required level, " + s.getGetLevel() + "!", 0);
+					return false;
+				}
+				
+				//First it checks that the skill require SP and the player has enough SP to learn it.
+				final int levelUpSp = s.getLevelUpSp();
+				if ((levelUpSp > 0) && (levelUpSp > player.getSp()))
+				{
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
+					showSkillList(trainer, player);
+					return false;
+				}
+				
+				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == L2Skill.SKILL_DIVINE_INSPIRATION))
+				{
+					return true;
+				}
+				
+				if (s.getItemsIdCount() != null)
+				{
+					//Then checks that the player has all the items
+					for (int[] itemIdCount : s.getItemsIdCount())
 					{
-						//Player doesn't have required item.
-						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-						showSkillList(trainer, player);
-						return false;
+						final L2ItemInstance[] reqItems = player.getInventory().getAllItemsByItemId(itemIdCount[0]);
+						if ((reqItems == null) || (reqItems.length < itemIdCount[1]))
+						{
+							//Player doesn't have required item.
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+							showSkillList(trainer, player);
+							return false;
+						}
 					}
-					else
+					//If the player has all required items, they are consumed.
+					for (int[] itemIdCount : s.getItemsIdCount())
 					{
-						SystemMessage sm;
-						if (itemCount > 1)
+						if (!player.destroyItemByItemId("SkillLearn", itemIdCount[0], itemIdCount[1], trainer, true))
 						{
-							sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-							sm.addItemName(itemId);
-							sm.addItemNumber(itemCount);
+							Util.handleIllegalPlayerAction(player, "Somehow player " + player.getName() + ", level " + player.getLevel() + " lose required item Id: " + itemIdCount[0] + " to learn skill while learning skill Id: " + _id + " level " + _level + "!", 0);
 						}
-						else
-						{
-							sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
-							sm.addItemName(itemId);
-						}
-						player.sendPacket(sm);
 					}
 				}
+				//If the player has SP and all required items then consume SP.
+				if (levelUpSp > 0)
+				{
+					player.setSp(player.getSp() - levelUpSp);
+					final StatusUpdate su = new StatusUpdate(player);
+					su.addAttribute(StatusUpdate.SP, player.getSp());
+					player.sendPacket(su);
+				}
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}
 	
 	/**
-	 * Takes the needed SP if the skill require it, add the skill to the player and makes proper updates.
-	 * @param player
-	 * @param trainer
-	 * @param levelUpSp
-	 * @param skill
+	 * Add the skill to the player and makes proper updates.
+	 * @param player the player acquiring a skill.
+	 * @param trainer the Npc teaching a skill.
+	 * @param skill the skill to be learn.
 	 */
-	private void giveSkill(L2PcInstance player, L2Npc trainer, int levelUpSp, L2Skill skill)
+	private void giveSkill(L2PcInstance player, L2Npc trainer, L2Skill skill)
 	{
-		//Remove Sp from player if it's needed.
-		if (levelUpSp > 0)
-		{
-			player.setSp(player.getSp() - levelUpSp);
-			
-			final StatusUpdate su = new StatusUpdate(player);
-			su.addAttribute(StatusUpdate.SP, player.getSp());
-			player.sendPacket(su);
-		}
-		
 		//Send message.
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.LEARNED_SKILL_S1);
 		sm.addSkillName(skill);
@@ -520,7 +499,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 	
 	/**
 	 * Updates the shortcut bars with the new acquired skill.
-	 * @param player
+	 * @param player the player that needs a shortcut update.
 	 */
 	private void updateShortCuts(L2PcInstance player)
 	{
