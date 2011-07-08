@@ -94,7 +94,6 @@
 		</jar>
 		<jar destfile="${build}/l2jlogin.jar">
 			<fileset dir="${build.classes}">
-				<exclude name="**/configurator/**" />
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/gameserver/**" />
 			</fileset>

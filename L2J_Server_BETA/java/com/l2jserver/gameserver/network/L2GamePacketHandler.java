@@ -109,30 +109,18 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 							case 0x36:
 								msg = new RequestGotoLobby();
 								break;
-								/*
-								 * case 0x3d:
-								 *
-								 *  msg = new RequestAllFortressInfo();
-								 *  break;
-								 */
 							case 0x5a:
 								msg = new RequestExCubeGameChangeTeam();
 								break;
-							//case 0xad:
 							case 0x93:
 								msg = new RequestEx2ndPasswordCheck();
 								break;
-							//case 0xae:
 							case 0x94:
 								msg = new RequestEx2ndPasswordVerify();
 								break;
-							//case 0xaf:
 							case 0x95:
 								msg = new RequestEx2ndPasswordReq();
 								break;
-							/*case 0xb0:
-								msg = new RequestCharacterNameCreatable();
-								break;*/
 							default:
 								printDebugDoubleOpcode(opcode, id2, buf, state, client);
 						}

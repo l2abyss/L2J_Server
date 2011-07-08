@@ -63,6 +63,9 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		getFrame().setLayout(new GridBagLayout());
 		GridBagConstraints cons = new GridBagConstraints();
 		
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		getFrame().setIconImage(ImagesTable.getImage("l2j.png").getImage());
+		
 		JMenuBar menubar = new JMenuBar();
 		getFrame().setJMenuBar(menubar);
 		

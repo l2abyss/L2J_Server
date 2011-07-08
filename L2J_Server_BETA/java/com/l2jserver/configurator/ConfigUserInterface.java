@@ -120,6 +120,9 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 		this.setSize(750, 500);
 		this.setLayout(new GridBagLayout());
 		
+		setDefaultLookAndFeelDecorated(true);
+		setIconImage(ImagesTable.getImage("l2j.png").getImage());
+		
 		GridBagConstraints cons = new GridBagConstraints();
 		cons.fill = GridBagConstraints.HORIZONTAL;
 		cons.gridx = 0;
