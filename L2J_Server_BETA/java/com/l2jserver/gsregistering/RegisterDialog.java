@@ -43,11 +43,9 @@ public class RegisterDialog extends JDialog implements ActionListener
 {
 	
 	private ResourceBundle _bundle;
-	@SuppressWarnings("rawtypes")
 	private final JComboBox _combo;
 	private final GUserInterface _owner;
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public RegisterDialog(final GUserInterface owner)
 	{
 		super(owner.getFrame(), true);
