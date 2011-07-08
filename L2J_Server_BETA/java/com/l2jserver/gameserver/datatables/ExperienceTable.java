@@ -53,7 +53,7 @@ public class ExperienceTable
 	
 	private void loadTable()
 	{
-		File xml = new File(Config.DATAPACK_ROOT, "data/experience.xml");
+		File xml = new File(Config.DATAPACK_ROOT, "data/stats/experience.xml");
 		Document doc = null;
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
