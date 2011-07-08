@@ -56,7 +56,7 @@ public class CharSelectInfoPackage
 	private int _z = 0;
 	private String _htmlPrefix = null;
 	private int _vitalityPoints = 0;
-	private byte _accessLevel = 0;
+	private int _accessLevel = 0;
 	
 	/**
 	 * Constructor for CharSelectInfoPackage.
@@ -86,7 +86,7 @@ public class CharSelectInfoPackage
 	/**
 	 * @return the character's access level.
 	 */
-	public byte getAccessLevel()
+	public int getAccessLevel()
 	{
 		return _accessLevel;
 	}
@@ -94,7 +94,7 @@ public class CharSelectInfoPackage
 	/**
 	 * @param level the character's access level to be set.
 	 */
-	public void setAccessLevel(byte level)
+	public void setAccessLevel(int level)
 	{
 		_accessLevel = level;
 	}

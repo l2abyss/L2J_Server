@@ -302,7 +302,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		}
 		
 		CharSelectInfoPackage charInfopackage = new CharSelectInfoPackage(objectId, name);
-		charInfopackage.setAccessLevel(chardata.getByte("accesslevel"));
+		charInfopackage.setAccessLevel(chardata.getInt("accesslevel"));
 		charInfopackage.setLevel(chardata.getInt("level"));
 		charInfopackage.setMaxHp(chardata.getInt("maxhp"));
 		charInfopackage.setCurrentHp(chardata.getDouble("curhp"));
