@@ -20,6 +20,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2SummonAI;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
@@ -38,7 +39,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.SummonKnownList;
 import com.l2jserver.gameserver.model.actor.stat.SummonStat;
 import com.l2jserver.gameserver.model.actor.status.SummonStatus;
-import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -222,20 +222,20 @@ public abstract class L2Summon extends L2Playable
 	
 	public long getExpForThisLevel()
 	{
-		if(getLevel() >= Experience.LEVEL.length)
+		if(getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 		{
 			return 0;
 		}
-		return Experience.LEVEL[getLevel()];
+		return ExperienceTable.getInstance().getExpForLevel(getLevel());
 	}
 	
 	public long getExpForNextLevel()
 	{
-		if(getLevel() >= Experience.LEVEL.length - 1)
+		if(getLevel() >= ExperienceTable.getInstance().getMaxPetLevel() - 1)
 		{
 			return 0;
 		}
-		return Experience.LEVEL[getLevel()+1];
+		return ExperienceTable.getInstance().getExpForLevel(getLevel()+1);
 	}
 	
 	@Override

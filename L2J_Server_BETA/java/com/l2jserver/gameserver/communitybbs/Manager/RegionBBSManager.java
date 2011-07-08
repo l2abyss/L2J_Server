@@ -26,10 +26,10 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameServer;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -131,9 +131,9 @@ public class RegionBBSManager extends BaseBBSManager
 			{
 				long nextLevelExp = 0;
 				long nextLevelExpNeeded = 0;
-				if (player.getLevel() < (Experience.MAX_LEVEL - 1))
+				if (player.getLevel() < (ExperienceTable.getInstance().getMaxLevel() - 1))
 				{
-					nextLevelExp = Experience.LEVEL[player.getLevel() + 1];
+					nextLevelExp = ExperienceTable.getInstance().getExpForLevel(player.getLevel() + 1);
 					nextLevelExpNeeded = nextLevelExp - player.getExp();
 				}
 				

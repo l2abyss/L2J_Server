@@ -61,7 +61,7 @@ public class MailSystem
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
-		File file = new File("data/mail/MailList.xml");
+		File file = new File(Config.DATAPACK_ROOT, "data/mail/MailList.xml");
 		Document doc = null;
 		if (file.exists())
 		{
@@ -85,7 +85,7 @@ public class MailSystem
 					
 					try
 					{
-						FileInputStream fis = new FileInputStream("data/mail/"+maFile);
+						FileInputStream fis = new FileInputStream(new File(Config.DATAPACK_ROOT, "data/mail/"+maFile));
 						BufferedInputStream bis = new BufferedInputStream(fis);
 						int bytes = bis.available();
 						byte[] raw = new byte[bytes];

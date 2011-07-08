@@ -144,6 +144,7 @@ public final class Config
 	public static int MIN_DEBUFF_CHANCE;
 	public static int MAX_DEBUFF_CHANCE;
 	public static byte MAX_SUBCLASS;
+	public static byte BASE_SUBCLASS_LEVEL;
 	public static byte MAX_SUBCLASS_LEVEL;
 	public static int MAX_PVTSTORESELL_SLOTS_DWARF;
 	public static int MAX_PVTSTORESELL_SLOTS_OTHER;
@@ -1571,6 +1572,7 @@ public final class Config
 					MIN_DEBUFF_CHANCE = Integer.parseInt(Character.getProperty("MinDebuffChance", "10"));
 					MAX_DEBUFF_CHANCE = Integer.parseInt(Character.getProperty("MaxDebuffChance", "90"));
 					MAX_SUBCLASS = Byte.parseByte(Character.getProperty("MaxSubclass", "3"));
+					BASE_SUBCLASS_LEVEL = Byte.parseByte(Character.getProperty("BaseSubclassLevel", "40"));
 					MAX_SUBCLASS_LEVEL = Byte.parseByte(Character.getProperty("MaxSubclassLevel", "80"));
 					MAX_PVTSTORESELL_SLOTS_DWARF = Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsDwarf", "4"));
 					MAX_PVTSTORESELL_SLOTS_OTHER = Integer.parseInt(Character.getProperty("MaxPvtStoreSellSlotsOther", "3"));
@@ -2854,6 +2856,8 @@ public final class Config
 					
 					LOGIN_BIND_ADDRESS = serverSettings.getProperty("LoginserverHostname", "*");
 					PORT_LOGIN = Integer.parseInt(serverSettings.getProperty("LoginserverPort", "2106"));
+					
+					DATAPACK_ROOT = new File(serverSettings.getProperty("DatapackRoot", ".")).getCanonicalFile();
 					
 					DEBUG = Boolean.parseBoolean(serverSettings.getProperty("Debug", "false"));
 					

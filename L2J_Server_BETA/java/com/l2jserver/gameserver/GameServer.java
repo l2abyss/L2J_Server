@@ -47,6 +47,7 @@ import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
@@ -236,6 +237,7 @@ public class GameServer
 		FishTable.getInstance();
 		
 		printSection("Characters");
+		ExperienceTable.getInstance();
 		CharTemplateTable.getInstance();
 		CharNameTable.getInstance();
 		LevelUpData.getInstance();
@@ -312,7 +314,7 @@ public class GameServer
 		try
 		{
 			_log.info("Loading Server Scripts");
-			File scripts = new File(Config.DATAPACK_ROOT + "/data/scripts.cfg");
+			File scripts = new File(Config.DATAPACK_ROOT, "data/scripts.cfg");
 			if(!Config.ALT_DEV_NO_HANDLERS || !Config.ALT_DEV_NO_QUESTS)
 				L2ScriptEngineManager.getInstance().executeScriptList(scripts);
 		}

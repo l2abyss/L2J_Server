@@ -63,6 +63,7 @@ import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
@@ -145,7 +146,6 @@ import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.actor.status.PcStatus;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.ClassLevel;
-import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.model.base.PlayerClass;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.base.SubClass;
@@ -5879,10 +5879,10 @@ public final class L2PcInstance extends L2Playable
 		// Calculate the Experience loss
 		long lostExp = 0;
 		if (!L2Event.isParticipant(this))
-			if (lvl < Experience.MAX_LEVEL)
+			if (lvl < ExperienceTable.getInstance().getMaxLevel())
 				lostExp = Math.round((getStat().getExpForLevel(lvl+1) - getStat().getExpForLevel(lvl)) * percentLost /100);
 			else
-				lostExp = Math.round((getStat().getExpForLevel(Experience.MAX_LEVEL) - getStat().getExpForLevel(Experience.MAX_LEVEL - 1)) * percentLost /100);
+				lostExp = Math.round((getStat().getExpForLevel(ExperienceTable.getInstance().getMaxLevel()) - getStat().getExpForLevel(ExperienceTable.getInstance().getMaxLevel() - 1)) * percentLost /100);
 		
 		// Get the Experience before applying penalty
 		setExpBeforeDeath(getExp());

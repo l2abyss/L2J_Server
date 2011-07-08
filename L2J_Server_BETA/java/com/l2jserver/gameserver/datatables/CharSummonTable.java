@@ -33,7 +33,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
-import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -214,14 +213,14 @@ public class CharSummonTable
 				summon.setTitle(activeChar.getName());
 				summon.setExpPenalty(skill.getExpPenalty());
 				
-				if (summon.getLevel() >= Experience.PET_MAX_LEVEL)
+				if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 				{
-					summon.getStat().setExp(Experience.LEVEL[Experience.PET_MAX_LEVEL - 1]);
-					_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above 86. Please rectify.");
+					summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));
+					_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above "+ExperienceTable.getInstance().getMaxPetLevel()+". Please rectify.");
 				}
 				else
 				{
-					summon.getStat().setExp(Experience.LEVEL[(summon.getLevel() % Experience.PET_MAX_LEVEL)]);
+					summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(summon.getLevel() % ExperienceTable.getInstance().getMaxPetLevel()));
 				}
 				summon.setCurrentHp(curHp);
 				summon.setCurrentMp(curMp);

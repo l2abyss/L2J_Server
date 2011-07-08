@@ -26,10 +26,10 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.network.L2GameClient;
 
@@ -128,7 +128,8 @@ public class CharSelectionInfo extends L2GameServerPacket
 			
 			writeD(charInfoPackage.getSp());
 			writeQ(charInfoPackage.getExp());
-			writeF((float)(charInfoPackage.getExp() - Experience.LEVEL[charInfoPackage.getLevel()]) / (Experience.LEVEL[charInfoPackage.getLevel() + 1] - Experience.LEVEL[charInfoPackage.getLevel()])); // High Five exp %
+			writeF((float)(charInfoPackage.getExp() - ExperienceTable.getInstance().getExpForLevel(charInfoPackage.getLevel())) /
+					(ExperienceTable.getInstance().getExpForLevel(charInfoPackage.getLevel() + 1) - ExperienceTable.getInstance().getExpForLevel(charInfoPackage.getLevel()))); // High Five exp %
 			writeD(charInfoPackage.getLevel());
 			
 			writeD(charInfoPackage.getKarma()); // karma

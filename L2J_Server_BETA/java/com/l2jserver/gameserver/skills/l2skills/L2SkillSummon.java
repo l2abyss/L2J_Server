@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.skills.l2skills;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
@@ -25,7 +26,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
-import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
@@ -232,15 +232,17 @@ public class L2SkillSummon extends L2Skill
 		summon.setName(summonTemplate.name);
 		summon.setTitle(activeChar.getName());
 		summon.setExpPenalty(_expPenalty);
-		if (summon.getLevel() >= Experience.LEVEL.length)
+		
+		if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 		{
-			summon.getStat().setExp(Experience.LEVEL[Experience.LEVEL.length - 1]);
-			_log.warning("Summon ("+summon.getName()+") NpcID: "+summon.getNpcId()+" has a level above 75. Please rectify.");
+			summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));
+			_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above "+ExperienceTable.getInstance().getMaxPetLevel()+". Please rectify.");
 		}
 		else
 		{
-			summon.getStat().setExp(Experience.LEVEL[(summon.getLevel() % Experience.LEVEL.length)]);
+			summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(summon.getLevel() % ExperienceTable.getInstance().getMaxPetLevel()));
 		}
+		
 		summon.setCurrentHp(summon.getMaxHp());
 		summon.setCurrentMp(summon.getMaxMp());
 		summon.setHeading(activeChar.getHeading());

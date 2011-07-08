@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.base;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 
 /**
  * Character Sub-Class Definition
@@ -25,12 +26,12 @@ import com.l2jserver.Config;
  */
 public final class SubClass
 {
-	private static final byte _maxLevel = Config.MAX_SUBCLASS_LEVEL < Experience.MAX_LEVEL ? Config.MAX_SUBCLASS_LEVEL : Experience.MAX_LEVEL - 1;
+	private static final byte _maxLevel = Config.MAX_SUBCLASS_LEVEL < ExperienceTable.getInstance().getMaxLevel() ? Config.MAX_SUBCLASS_LEVEL : (byte)(ExperienceTable.getInstance().getMaxLevel() - 1);
 	
 	private PlayerClass _class;
-	private long _exp = Experience.LEVEL[40];
+	private long _exp = ExperienceTable.getInstance().getExpForLevel(Config.BASE_SUBCLASS_LEVEL);
 	private int _sp = 0;
-	private byte _level = 40;
+	private byte _level = Config.BASE_SUBCLASS_LEVEL;
 	private int _classIndex = 1;
 	
 	public SubClass(int classId, long exp, int sp, byte level, int classIndex)
@@ -96,8 +97,8 @@ public final class SubClass
 	
 	public void setExp(long expValue)
 	{
-		if (expValue > (Experience.LEVEL[_maxLevel + 1] - 1))
-			expValue = (Experience.LEVEL[_maxLevel + 1] - 1);
+		if (expValue > (ExperienceTable.getInstance().getExpForLevel(_maxLevel + 1) - 1))
+			expValue = ExperienceTable.getInstance().getExpForLevel(_maxLevel + 1) - 1;
 		
 		_exp = expValue;
 	}
@@ -116,8 +117,8 @@ public final class SubClass
 	{
 		if (levelValue > _maxLevel)
 			levelValue = _maxLevel;
-		else if (levelValue < 40)
-			levelValue = 40;
+		else if (levelValue < Config.BASE_SUBCLASS_LEVEL)
+			levelValue = Config.BASE_SUBCLASS_LEVEL;
 		
 		_level = levelValue;
 	}
@@ -128,15 +129,15 @@ public final class SubClass
 			return;
 		
 		_level++;
-		setExp(Experience.LEVEL[getLevel()]);
+		setExp(ExperienceTable.getInstance().getExpForLevel(getLevel()));
 	}
 	
 	public void decLevel()
 	{
-		if (getLevel() == 40)
+		if (getLevel() == Config.BASE_SUBCLASS_LEVEL)
 			return;
 		
 		_level--;
-		setExp(Experience.LEVEL[getLevel()]);
+		setExp(ExperienceTable.getInstance().getExpForLevel(getLevel()));
 	}
 }
