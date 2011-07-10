@@ -135,7 +135,8 @@ public final class Say2 extends L2GameClientPacket
 		
 		// Even though the client can handle more characters than it's current limit allows, an overflow (critical error) happens if you pass a huge (1000+) message.
 		// April 27, 2009 - Verified on Gracia P2 & Final official client as 105
-		if (_text.length() > 105 && !activeChar.isGM())
+		// Allow higher limit if player shift some item (text is longer then)
+		if (!activeChar.isGM() && ((_text.indexOf(8) >= 0 && _text.length() > 500) || (_text.indexOf(8) < 0 && _text.length() > 105)))
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DONT_SPAM));
 			return;
