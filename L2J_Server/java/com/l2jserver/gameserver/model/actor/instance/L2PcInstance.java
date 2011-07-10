@@ -11154,8 +11154,14 @@ public final class L2PcInstance extends L2Playable
 			return;
 		if (teleport)
 		{
-			if (_teleportWatchdog == null && Config.TELEPORT_WATCHDOG_TIMEOUT > 0)
-				_teleportWatchdog = ThreadPoolManager.getInstance().scheduleGeneral(new TeleportWatchdog(), Config.TELEPORT_WATCHDOG_TIMEOUT * 1000);
+			if ((_teleportWatchdog == null) && (Config.TELEPORT_WATCHDOG_TIMEOUT > 0))
+			{
+				synchronized(this)
+				{
+					if (_teleportWatchdog == null)
+						_teleportWatchdog = ThreadPoolManager.getInstance().scheduleGeneral(new TeleportWatchdog(), Config.TELEPORT_WATCHDOG_TIMEOUT * 1000);
+				}
+			}
 		}
 		else
 		{
@@ -11674,7 +11680,10 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// Remove from world regions zones
-		L2WorldRegion oldRegion = getWorldRegion();
+		final L2WorldRegion oldRegion = getWorldRegion();
+		
+		if (oldRegion != null)
+			oldRegion.removeFromZones(this);
 		
 		// Remove the L2PcInstance from the world
 		try
@@ -11686,18 +11695,17 @@ public final class L2PcInstance extends L2Playable
 			_log.log(Level.SEVERE, "deleteMe()", e);
 		}
 		
-		if (oldRegion != null)
-			oldRegion.removeFromZones(this);
-		
 		// If a Party is in progress, leave it (and festival party)
 		if (isInParty())
+		{
 			try
-		{
+			{
 				leaveParty();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "deleteMe()", e);
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "deleteMe()", e);
+			}
 		}
 		
 		if (OlympiadManager.getInstance().isRegistered(this) || getOlympiadGameId() != -1) // handle removal from olympiad game

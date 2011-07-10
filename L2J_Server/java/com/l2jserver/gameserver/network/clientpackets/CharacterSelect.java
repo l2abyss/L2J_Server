@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -24,11 +23,12 @@ import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
 import com.l2jserver.gameserver.network.serverpackets.CharSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
-
+import com.l2jserver.gameserver.network.serverpackets.ServerClose;
 
 /**
  * This class ...
@@ -66,30 +66,36 @@ public class CharacterSelect extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (!getClient().getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterSelect"))
+		final L2GameClient client = getClient();
+		if (!client.getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterSelect"))
 			return;
 		
-		// we should always be abble to acquire the lock
-		// but if we cant lock then nothing should be done (ie repeated packet)
-		if (this.getClient().getActiveCharLock().tryLock())
+		// We should always be able to acquire the lock
+		// But if we can't lock then nothing should be done (i.e. repeated packet)
+		if (client.getActiveCharLock().tryLock())
 		{
 			try
 			{
 				// should always be null
 				// but if not then this is repeated packet and nothing should be done here
-				if (this.getClient().getActiveChar() == null)
+				if (client.getActiveChar() == null)
 				{
-					if (Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP > 0
-							&& !AntiFeedManager.getInstance().tryAddClient(AntiFeedManager.GAME_ID, getClient(), Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP))
+					final CharSelectInfoPackage info = client.getCharSelection(_charSlot);
+					if (info == null)
+						return;
+					
+					//Selected character is banned.
+					if (info.getAccessLevel() < 0)
 					{
-						final CharSelectInfoPackage info = getClient().getCharSelection(_charSlot);
-						if (info == null)
-							return;
-
+						client.close(ServerClose.STATIC_PACKET);
+						return;
+					}
+					if ((Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP > 0) && !AntiFeedManager.getInstance().tryAddClient(AntiFeedManager.GAME_ID, client, Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP))
+					{
 						final NpcHtmlMessage msg = new NpcHtmlMessage(0);
 						msg.setFile(info.getHtmlPrefix(), "data/html/mods/IPRestriction.htm");
-						msg.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(getClient(), Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP)));
-						getClient().sendPacket(msg);
+						msg.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(client, Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP)));
+						client.sendPacket(msg);
 						return;
 					}
 
@@ -100,41 +106,35 @@ public class CharacterSelect extends L2GameClientPacket
 					}
 					
 					//load up character from disk
-					L2PcInstance cha = getClient().loadCharFromDisk(_charSlot);
+					final L2PcInstance cha = client.loadCharFromDisk(_charSlot);
 					if (cha == null)
 						return; // handled in L2GameClient
 					
-					if (cha.getAccessLevel().getLevel() < 0)
-					{
-						cha.logout();
-						return;
-					}
-					
 					CharNameTable.getInstance().addName(cha);
 					
-					cha.setClient(this.getClient());
-					getClient().setActiveChar(cha);
+					cha.setClient(client);
+					client.setActiveChar(cha);
 					cha.setOnlineStatus(true, true);
 					
 					sendPacket(new SSQInfo());
 					
-					this.getClient().setState(GameClientState.IN_GAME);
-					CharSelected cs = new CharSelected(cha, getClient().getSessionId().playOkID1);
+					client.setState(GameClientState.IN_GAME);
+					CharSelected cs = new CharSelected(cha, client.getSessionId().playOkID1);
 					sendPacket(cs);
 				}
 			}
 			finally
 			{
-				this.getClient().getActiveCharLock().unlock();
+				client.getActiveCharLock().unlock();
 			}
 			
 			LogRecord record = new LogRecord(Level.INFO, "Logged in");
-			record.setParameters(new Object[]{this.getClient()});
+			record.setParameters(new Object[]{ client });
 			_logAccounting.log(record);
 		}
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
 	 */
 	@Override
