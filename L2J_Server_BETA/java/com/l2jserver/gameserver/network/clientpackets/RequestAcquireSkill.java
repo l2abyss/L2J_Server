@@ -435,10 +435,11 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				if (s.getItemsIdCount() != null)
 				{
 					//Then checks that the player has all the items
+					long reqItemCount = 0;
 					for (int[] itemIdCount : s.getItemsIdCount())
 					{
-						final L2ItemInstance[] reqItems = player.getInventory().getAllItemsByItemId(itemIdCount[0]);
-						if ((reqItems == null) || (reqItems.length < itemIdCount[1]))
+						reqItemCount = player.getInventory().getInventoryItemCount(itemIdCount[0], -1);
+						if (reqItemCount < itemIdCount[1])
 						{
 							//Player doesn't have required item.
 							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
