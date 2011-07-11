@@ -872,7 +872,6 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		
 		final L2Clan clan = player.getClan();
-		
 		final L2ClanMember member = clan.getClanMember(target);
 		if (member == null)
 		{
@@ -885,6 +884,12 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		if (!member.isOnline())
 		{
 			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVITED_USER_NOT_ONLINE));
+			return;
+		}
+		//To avoid clans with null clan leader, academy members shouldn't be eligible for clan leader.
+		if (member.getPlayerInstance().isAcademyMember())
+		{
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.RIGHT_CANT_TRANSFERRED_TO_ACADEMY_MEMBER));
 			return;
 		}
 		clan.setNewLeader(member);
