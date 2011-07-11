@@ -47,6 +47,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TeleporterInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2TrainerHealersInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrainerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2WarehouseInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.NpcKnownList;
@@ -1629,6 +1630,8 @@ public class L2Npc extends L2Character
 		
 		if (this instanceof L2WarehouseInstance)
 			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/warehouse/" + npcId + "-noteach.htm");
+		else if (this instanceof L2TrainerHealersInstance)
+			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/trainer/skilltransfer/" + npcId + "-noteach.htm");
 		else if (this instanceof L2TrainerInstance)
 			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/trainer/" + npcId + "-noteach.htm");
 		
