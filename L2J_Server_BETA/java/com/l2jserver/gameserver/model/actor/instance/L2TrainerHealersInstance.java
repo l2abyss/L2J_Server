@@ -82,7 +82,8 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 		{
 			if (!getTemplate().canTeach(player.getClassId()))
 			{
-				showNoTeachHtml(player);
+				html.setFile(player.getHtmlPrefix(), "data/html/trainer/skilltransfer/cleanse-no.htm");
+				player.sendPacket(html);
 				return;
 			}
 			else if ((player.getLevel() < 76) || (player.getClassId().level() < 3))
