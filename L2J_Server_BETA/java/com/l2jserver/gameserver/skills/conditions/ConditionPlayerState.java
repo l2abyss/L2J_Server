@@ -14,26 +14,24 @@
  */
 package com.l2jserver.gameserver.skills.conditions;
 
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.PlayerState;
 import com.l2jserver.gameserver.skills.Env;
 
 /**
  * The Class ConditionPlayerState.
- *
  * @author mkizub
  */
 public class ConditionPlayerState extends Condition
 {
-	
 	private final PlayerState _check;
 	private final boolean _required;
 	
 	/**
 	 * Instantiates a new condition player state.
-	 *
-	 * @param check the check
-	 * @param required the required
+	 * @param check the player state to be verified.
+	 * @param required the required value.
 	 */
 	public ConditionPlayerState(PlayerState check, boolean required)
 	{
@@ -41,38 +39,53 @@ public class ConditionPlayerState extends Condition
 		_required = required;
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override
 	public boolean testImpl(Env env)
 	{
-		L2PcInstance player;
+		final L2Character character = env.player;
+		L2PcInstance player = null;
 		switch (_check)
 		{
 			case RESTING:
-				if (env.player instanceof L2PcInstance)
-					return ((L2PcInstance) env.player).isSitting() == _required;
+				player = character.getActingPlayer();
+				if (player != null)
+				{
+					return (player.isSitting() == _required);
+				}
 				return !_required;
 			case MOVING:
-				return env.player.isMoving() == _required;
+				return character.isMoving() == _required;
 			case RUNNING:
-				return env.player.isMoving() == _required && env.player.isRunning() == _required;
+				return character.isRunning() == _required;
+			case STANDING:
+				player = character.getActingPlayer();
+				if (player != null)
+				{
+					return (_required != (player.isSitting() || player.isMoving()));
+				}
+				return (_required != character.isMoving());
 			case FLYING:
-				return env.player.isFlying() == _required;
+				return (character.isFlying() == _required);
 			case BEHIND:
-				return env.player.isBehindTarget() == _required;
+				return (character.isBehindTarget() == _required);
 			case FRONT:
-				return env.player.isInFrontOfTarget() == _required;
+				return (character.isInFrontOfTarget() == _required);
 			case CHAOTIC:
-				player = env.player.getActingPlayer();
+				player = character.getActingPlayer();
 				if (player != null)
-					return player.getKarma() > 0 == _required;
-					return !_required;
+				{
+					return ((player.getKarma() > 0) == _required);
+				}
+				return !_required;
 			case OLYMPIAD:
-				player = env.player.getActingPlayer();
+				player = character.getActingPlayer();
 				if (player != null)
-					return player.isInOlympiadMode() == _required;
+				{
+					return (player.isInOlympiadMode() == _required);
+				}
 				return !_required;
 		}
 		return !_required;
