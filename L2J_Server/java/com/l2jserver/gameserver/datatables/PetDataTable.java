@@ -56,7 +56,7 @@ public class PetDataTable
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
-		File file = new File(Config.DATAPACK_ROOT, "data/PetData.xml");
+		File file = new File(Config.DATAPACK_ROOT, "data/stats/npc/PetData.xml");
 		Document doc = null;
 		if (file.exists())
 		{
