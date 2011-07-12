@@ -124,5 +124,4 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 	{
 		return _C__D0_11_REQUESTEXSETPLEDGECRESTLARGE;
 	}
-	
 }

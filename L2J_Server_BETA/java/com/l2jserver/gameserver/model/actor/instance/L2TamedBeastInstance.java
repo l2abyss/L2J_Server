@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
 // While a tamed beast behaves a lot like a pet (ingame) and does have

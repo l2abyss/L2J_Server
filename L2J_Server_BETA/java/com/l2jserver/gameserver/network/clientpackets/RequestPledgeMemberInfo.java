@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeReceiveMemberInfo;
 public final class RequestPledgeMemberInfo extends L2GameClientPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestPledgeMemberInfo.class.getName());
-	private static final String _C__D0_1D_REQUESTPLEDGEMEMBERINFO = "[C] D0:1D RequestPledgeMemberInfo";
+	private static final String _C__D0_16_REQUESTPLEDGEMEMBERINFO = "[C] D0:16 RequestPledgeMemberInfo";
 	@SuppressWarnings("unused")
 	private int _unk1;
 	private String _player;
@@ -69,7 +69,7 @@ public final class RequestPledgeMemberInfo extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_1D_REQUESTPLEDGEMEMBERINFO;
+		return _C__D0_16_REQUESTPLEDGEMEMBERINFO;
 	}
 	
 }

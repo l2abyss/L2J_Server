@@ -23,16 +23,8 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowAgitInfo;
  */
 public class RequestAllAgitInfo extends L2GameClientPacket
 {
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:41 RequestAllAgitInfo";
-	}
-	
+	private static final String _C__D0_3E_REQUESTALLAGITINFO = "[C] D0:3E RequestAllAgitInfo";
+		
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
 	 */
@@ -54,5 +46,13 @@ public class RequestAllAgitInfo extends L2GameClientPacket
 			client.sendPacket(new ExShowAgitInfo());
 		}
 	}
-	
+
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_3E_REQUESTALLAGITINFO;
+	}
 }

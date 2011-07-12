@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 {
-	private static final String _C__D0_0E_REQUESTEXASKJOINMPCC = "[C] D0:0E RequestExAcceptJoinMPCC";
+	private static final String _C__D0_07_REQUESTEXASKJOINMPCC = "[C] D0:07 RequestExAcceptJoinMPCC";
 	private int _response;
 	
 	/**
@@ -87,7 +87,7 @@ public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_0E_REQUESTEXASKJOINMPCC;
+		return _C__D0_07_REQUESTEXASKJOINMPCC;
 	}
 	
 }

@@ -24,16 +24,8 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowFortressMapInfo;
  */
 public class RequestFortressMapInfo extends L2GameClientPacket
 {
+	private static final String _C_D0_48_REQUESTFORTRESSMAPINFO = "[C] D0:48 RequestFortressMapInfo";
 	private int _fortressId;
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:4B RequestFortressMapInfo";
-	}
 	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
@@ -54,4 +46,12 @@ public class RequestFortressMapInfo extends L2GameClientPacket
 		sendPacket(new ExShowFortressMapInfo(fort));
 	}
 	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C_D0_48_REQUESTFORTRESSMAPINFO;
+	}
 }

@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.util.Util;
 /**
  * @author Migi, DS
  */
-public final class RequestCancelPost extends L2GameClientPacket
+public final class RequestCancelPostAttachment extends L2GameClientPacket
 {
 	private static final String _C__D0_6F_REQUESTCANCELPOSTATTACHMENT = "[C] D0:6F RequestCancelPostAttachment";
 	

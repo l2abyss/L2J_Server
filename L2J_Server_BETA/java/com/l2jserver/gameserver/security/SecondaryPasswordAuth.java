@@ -23,7 +23,6 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.LoginServerThread;
@@ -32,6 +31,7 @@ import com.l2jserver.gameserver.network.serverpackets.Ex2ndPasswordAck;
 import com.l2jserver.gameserver.network.serverpackets.Ex2ndPasswordCheck;
 import com.l2jserver.gameserver.network.serverpackets.Ex2ndPasswordVerify;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.Base64;
 
 /**
  * 

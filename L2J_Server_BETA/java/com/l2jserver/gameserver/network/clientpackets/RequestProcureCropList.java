@@ -45,7 +45,7 @@ import com.l2jserver.gameserver.templates.item.L2Item;
  */
 public class RequestProcureCropList extends L2GameClientPacket
 {
-	private static final String _C__D0_09_REQUESTPROCURECROPLIST = "[C] D0:09 RequestProcureCropList";
+	private static final String _C__D0_02_REQUESTPROCURECROPLIST = "[C] D0:02 RequestProcureCropList";
 	
 	private static final int BATCH_LENGTH = 20; // length of the one item
 	
@@ -274,6 +274,6 @@ public class RequestProcureCropList extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_09_REQUESTPROCURECROPLIST;
+		return _C__D0_02_REQUESTPROCURECROPLIST;
 	}
 }

@@ -24,6 +24,8 @@ import com.l2jserver.gameserver.network.serverpackets.ExNeedToChangeName;
  */
 public class RequestExChangeName extends L2GameClientPacket
 {
+	private static final String _C__D0_3B_REQUESTEXCHANGENAME = "[C] D0:3B RequestExChangeName";
+	
 	private String _newName;
 	private int _type;
 	private int _charSlot;
@@ -55,7 +57,7 @@ public class RequestExChangeName extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] D0:3B RequestExChangeName".intern();
+		return _C__D0_3B_REQUESTEXCHANGENAME;
 	}
 	
 }

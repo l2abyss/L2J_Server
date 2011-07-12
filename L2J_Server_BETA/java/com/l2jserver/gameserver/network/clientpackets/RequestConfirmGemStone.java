@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestConfirmGemStone extends AbstractRefinePacket
 {
-	private static final String _C__D0_2B_REQUESTCONFIRMGEMSTONE = "[C] D0:2B RequestConfirmGemStone";
+	private static final String _C__D0_28_REQUESTCONFIRMGEMSTONE = "[C] D0:28 RequestConfirmGemStone";
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
 	private int _gemstoneItemObjId;
@@ -92,6 +92,6 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_2B_REQUESTCONFIRMGEMSTONE;
+		return _C__D0_28_REQUESTCONFIRMGEMSTONE;
 	}
 }

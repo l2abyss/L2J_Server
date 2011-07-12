@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.CursedWeapon;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.network.serverpackets.ExCursedWeaponLocation;
 import com.l2jserver.gameserver.network.serverpackets.ExCursedWeaponLocation.CursedWeaponInfo;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * Format: (ch)
@@ -31,7 +31,7 @@ import com.l2jserver.util.Point3D;
  */
 public final class RequestCursedWeaponLocation extends L2GameClientPacket
 {
-	private static final String _C__D0_23_REQUESTCURSEDWEAPONLOCATION = "[C] D0:23 RequestCursedWeaponLocation";
+	private static final String _C__D0_2B_REQUESTCURSEDWEAPONLOCATION = "[C] D0:2B RequestCursedWeaponLocation";
 	
 	@Override
 	protected void readImpl()
@@ -71,7 +71,7 @@ public final class RequestCursedWeaponLocation extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_23_REQUESTCURSEDWEAPONLOCATION;
+		return _C__D0_2B_REQUESTCURSEDWEAPONLOCATION;
 	}
 	
 	@Override

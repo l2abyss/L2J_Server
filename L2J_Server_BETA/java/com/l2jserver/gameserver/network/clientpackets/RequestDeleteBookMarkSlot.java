@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RequestDeleteBookMarkSlot extends L2GameClientPacket
 {
-	private static final String _C__51_REQUESTDELETEBOOKMARKSLOT = "[C] 51 RequestDeleteBookMarkSlot";
+	private static final String _C__D0_51_03_REQUESTDELETEBOOKMARKSLOT = "[C] D0:51:03 RequestDeleteBookMarkSlot";
 	
 	private int id;
 	
@@ -47,6 +47,6 @@ public final class RequestDeleteBookMarkSlot extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__51_REQUESTDELETEBOOKMARKSLOT;
+		return _C__D0_51_03_REQUESTDELETEBOOKMARKSLOT;
 	}
 }

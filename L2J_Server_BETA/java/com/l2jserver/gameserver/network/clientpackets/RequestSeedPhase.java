@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowSeedMapInfo;
  */
 public class RequestSeedPhase extends L2GameClientPacket
 {
-	private static final String _C__REQUESTSEEDPHASE = "[C] RequestSeedPhase";
+	private static final String _C__D0_63_REQUESTSEEDPHASE = "[C] D0:63 RequestSeedPhase";
 	
 	@Override
 	protected void readImpl()
@@ -49,6 +49,6 @@ public class RequestSeedPhase extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__REQUESTSEEDPHASE;
+		return _C__D0_63_REQUESTSEEDPHASE;
 	}
 }

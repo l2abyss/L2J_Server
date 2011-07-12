@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.MoveToLocationInVehicle;
 import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 
 public final class RequestMoveToLocationInVehicle extends L2GameClientPacket

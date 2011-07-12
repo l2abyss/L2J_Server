@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeReceiveWarList;
 public final class RequestPledgeWarList extends L2GameClientPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestPledgeWarList.class.getName());
-	private static final String _C__D0_1E_REQUESTPLEDGEWARLIST = "[C] D0:1E RequestPledgeWarList";
+	private static final String _C__D0_17_REQUESTPLEDGEWARLIST = "[C] D0:17 RequestPledgeWarList";
 	@SuppressWarnings("unused")
 	private int _unk1;
 	private int _tab;
@@ -64,7 +64,7 @@ public final class RequestPledgeWarList extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_1E_REQUESTPLEDGEWARLIST;
+		return _C__D0_17_REQUESTPLEDGEWARLIST;
 	}
 	
 }

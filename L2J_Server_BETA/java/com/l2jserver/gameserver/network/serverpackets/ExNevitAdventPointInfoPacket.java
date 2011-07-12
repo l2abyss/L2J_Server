@@ -18,29 +18,29 @@ package com.l2jserver.gameserver.network.serverpackets;
  * @author mochitto
  *
  * Format: (ch)d
- * d: time to left effect in seconds
+ * d: points - max 7200 is 100%
  */
-public class ExNavitAdventEffect extends L2GameServerPacket
+public class ExNevitAdventPointInfoPacket extends L2GameServerPacket
 {
-	private static final String _S__FE_E0_EXNAVITADVENTEFFECT = "[S] FE:E0 ExNavitAdventEffect";
-	private final int _timeLeft;
+	private static final String _S__FE_DF_EXNAVITADVENTPOINTINFOPACKET = "[S] FE:DF ExNavitAdventPointInfoPacket";
+	private final int _points;
 	
-	public ExNavitAdventEffect(int timeLeft)
+	public ExNevitAdventPointInfoPacket(int points)
 	{
-		_timeLeft = timeLeft;
+		_points = points;
 	}
 	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0xE0);
-		writeD(_timeLeft);
+		writeH(0xDF);
+		writeD(_points); // 72 = 1%
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _S__FE_E0_EXNAVITADVENTEFFECT;
+		return _S__FE_DF_EXNAVITADVENTPOINTINFOPACKET;
 	}
 }

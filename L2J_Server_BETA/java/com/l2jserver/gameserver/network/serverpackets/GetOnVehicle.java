@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * @author Maktakien

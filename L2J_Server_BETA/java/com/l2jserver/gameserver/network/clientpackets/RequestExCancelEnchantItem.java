@@ -23,14 +23,7 @@ import com.l2jserver.gameserver.network.serverpackets.EnchantResult;
  */
 public class RequestExCancelEnchantItem extends L2GameClientPacket
 {
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:4E RequestExCancelEnchantItem";
-	}
+	private static final String _C__D0_4E_REQUESTEXCANCELENCHANTITEM = "[C] D0:4E RequestExCancelEnchantItem";
 	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
@@ -53,5 +46,14 @@ public class RequestExCancelEnchantItem extends L2GameClientPacket
 			activeChar.sendPacket(new EnchantResult(2, 0, 0));
 			activeChar.setActiveEnchantItem(null);
 		}
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_4E_REQUESTEXCANCELENCHANTITEM;
 	}
 }

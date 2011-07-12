@@ -37,7 +37,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * This class ...

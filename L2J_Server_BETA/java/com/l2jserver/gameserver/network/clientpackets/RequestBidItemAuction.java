@@ -25,6 +25,8 @@ import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
  */
 public final class RequestBidItemAuction extends L2GameClientPacket
 {
+	private static final String _C__D0_39_REQUESTBIDITEMAUCTION = "[C] D0:39 RequestBidItemAuction";
+	
 	private int _instanceId;
 	private long _bid;
 	
@@ -64,6 +66,6 @@ public final class RequestBidItemAuction extends L2GameClientPacket
 	@Override
 	public final String getType()
 	{
-		return "[C] D0:39 RequestBidItemAuction";
+		return _C__D0_39_REQUESTBIDITEMAUCTION;
 	}
 }

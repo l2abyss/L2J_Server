@@ -20,7 +20,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 
 public class ObjectPosition

@@ -41,7 +41,7 @@ import com.l2jserver.gameserver.skills.l2skills.L2SkillSignetCasttime;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 public class EffectSignetMDam extends L2Effect
 {

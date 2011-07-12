@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExListPartyMatchingWaiting
  */
 public class RequestListPartyMatchingWaitingRoom extends L2GameClientPacket
 {
+	private static final String _C__D0_31_REQUESTLISTPARTYMATCHINGWAITINGROOM = "[C] D0:31 RequestListPartyMatchingWaitingRoom";
 	private static int _page;
 	private static int _minlvl;
 	private static int _maxlvl;
@@ -52,7 +53,7 @@ public class RequestListPartyMatchingWaitingRoom extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] D0:31 RequestListPartyMatchingWaitingRoom";
+		return _C__D0_31_REQUESTLISTPARTYMATCHINGWAITINGROOM;
 	}
 	
 }

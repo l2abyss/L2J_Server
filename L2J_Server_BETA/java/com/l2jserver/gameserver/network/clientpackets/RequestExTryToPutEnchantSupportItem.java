@@ -26,18 +26,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
 {
+	private static final String _C__D0_4D_REQUESTEXTRYTOPUTENCHANTSUPPORTITEM = "[C] D0:4D RequestExTryToPutEnchantSupportItem";
 	
 	private int _supportObjectId;
 	private int _enchantObjectId;
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:50 RequestExTryToPutEnchantSupportItem".intern();
-	}
 	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
@@ -81,5 +73,13 @@ public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
 			}
 		}
 	}
-	
+
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_4D_REQUESTEXTRYTOPUTENCHANTSUPPORTITEM;
+	}
 }

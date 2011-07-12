@@ -25,18 +25,10 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class SetPrivateStoreWholeMsg extends L2GameClientPacket
 {
+	private static final String _C_D0_4A_SETPRIVATESTOREWHOLEMSG = "[C] D0:4A SetPrivateStoreWholeMsg";
 	private static final int MAX_MSG_LENGTH = 29;
 	
 	private String _msg;
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:4D SetPrivateStoreWholeMsg";
-	}
 	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
@@ -66,5 +58,13 @@ public class SetPrivateStoreWholeMsg extends L2GameClientPacket
 		player.getSellList().setTitle(_msg);
 		sendPacket(new ExPrivateStoreSetWholeMsg(player));
 	}
-	
+
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C_D0_4A_SETPRIVATESTOREWHOLEMSG;
+	}
 }

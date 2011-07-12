@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class RequestAskJoinPartyRoom extends L2GameClientPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestAskJoinPartyRoom.class.getName());
-	private static final String _C__D0_14_REQUESTASKJOINPARTYROOM = "[C] D0:14 RequestAskJoinPartyRoom";
+	private static final String _C__D0_2F_REQUESTASKJOINPARTYROOM = "[C] D0:2F RequestAskJoinPartyRoom";
 	private String _player; // not tested, just guessed
 	
 	
@@ -45,7 +45,7 @@ public class RequestAskJoinPartyRoom extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_14_REQUESTASKJOINPARTYROOM;
+		return _C__D0_2F_REQUESTASKJOINPARTYROOM;
 	}
 	
 }

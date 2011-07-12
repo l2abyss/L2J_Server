@@ -31,20 +31,13 @@ import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
  */
 public class RequestSaveKeyMapping extends L2GameClientPacket
 {
+	private static String _C__D0_22_REQUESTSAVEKEYMAPPING = "[C] D0:22 RequestSaveKeyMapping";
+	
 	int _tabNum;
 	
 	Map<Integer, List<ActionKey>> _keyMap = new FastMap<Integer, List<ActionKey>>();
 	Map<Integer, List<Integer>> _catMap = new FastMap<Integer, List<Integer>>();
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:22 RequestSaveKeyMapping";
-	}
-	
+		
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
 	 */
@@ -128,5 +121,15 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 			return;
 		if (Config.STORE_UI_SETTINGS)
 			player.getUISettings().storeAll(_catMap, _keyMap);
+	}
+	
+
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_22_REQUESTSAVEKEYMAPPING;
 	}
 }

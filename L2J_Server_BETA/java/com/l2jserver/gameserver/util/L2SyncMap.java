@@ -12,12 +12,13 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.util;
+package com.l2jserver.gameserver.util;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.L2FastMap.I2ForEach;
 import com.l2jserver.util.L2FastMap.I2ForEachKey;
 import com.l2jserver.util.L2FastMap.I2ForEachValue;

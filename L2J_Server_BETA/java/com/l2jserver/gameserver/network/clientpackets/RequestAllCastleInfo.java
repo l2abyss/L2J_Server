@@ -23,16 +23,8 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowCastleInfo;
  */
 public class RequestAllCastleInfo extends L2GameClientPacket
 {
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:3F RequestAllCastleInfo";
-	}
-	
+	private static final String _C__D0_3C_REQUESTALLCASTLEINFO = "[C] D0:3C RequestAllCastleInfo";
+		
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
 	 */
@@ -59,5 +51,14 @@ public class RequestAllCastleInfo extends L2GameClientPacket
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
+	}
+
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_3C_REQUESTALLCASTLEINFO;
 	}
 }

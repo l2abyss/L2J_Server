@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.model.entity.Hero;
  */
 public final class RequestWriteHeroWords extends L2GameClientPacket
 {
-	private static final String _C__FE_0C_REQUESTWRITEHEROWORDS = "[C] D0:0C RequestWriteHeroWords";
+	private static final String _C__FE_05_REQUESTWRITEHEROWORDS = "[C] D0:05 RequestWriteHeroWords";
 	
 	private String _heroWords;
 	
@@ -57,6 +57,6 @@ public final class RequestWriteHeroWords extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__FE_0C_REQUESTWRITEHEROWORDS;
+		return _C__FE_05_REQUESTWRITEHEROWORDS;
 	}
 }

@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.instancemanager.DuelManager;
  */
 public final class RequestDuelSurrender extends L2GameClientPacket
 {
-	private static final String _C__D0_30_REQUESTDUELSURRENDER = "[C] D0:30 RequestDuelSurrender";
+	private static final String _C__D0_45_REQUESTDUELSURRENDER = "[C] D0:45 RequestDuelSurrender";
 	
 	@Override
 	protected void readImpl()
@@ -46,7 +46,7 @@ public final class RequestDuelSurrender extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_30_REQUESTDUELSURRENDER;
+		return _C__D0_45_REQUESTDUELSURRENDER;
 	}
 	
 }

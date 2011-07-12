@@ -24,15 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExUISetting;
  */
 public class RequestKeyMapping extends L2GameClientPacket
 {
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:21 RequestKeyMapping";
-	}
+	private static String _C__D0_21_REQUESTKEYMAPPING = "[C] D0:21 RequestKeyMapping";
 	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
@@ -61,5 +53,14 @@ public class RequestKeyMapping extends L2GameClientPacket
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
+	}
+	
+	/**
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_21_REQUESTKEYMAPPING;
 	}
 }

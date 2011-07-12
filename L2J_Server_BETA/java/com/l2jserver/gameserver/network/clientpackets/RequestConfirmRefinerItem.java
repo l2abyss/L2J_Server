@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class RequestConfirmRefinerItem extends AbstractRefinePacket
 {
-	private static final String _C__D0_2A_REQUESTCONFIRMREFINERITEM = "[C] D0:2A RequestConfirmRefinerItem";
+	private static final String _C__D0_27_REQUESTCONFIRMREFINERITEM = "[C] D0:27 RequestConfirmRefinerItem";
 	
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
@@ -75,7 +75,7 @@ public class RequestConfirmRefinerItem extends AbstractRefinePacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_2A_REQUESTCONFIRMREFINERITEM;
+		return _C__D0_27_REQUESTCONFIRMREFINERITEM;
 	}
 	
 }

@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Logger;
 
-import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.GmListTable;
@@ -67,8 +66,8 @@ import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 import com.l2jserver.gameserver.network.serverpackets.ExBirthdayPopup;
 import com.l2jserver.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
-import com.l2jserver.gameserver.network.serverpackets.ExNavitAdventPointInfoPacket;
-import com.l2jserver.gameserver.network.serverpackets.ExNavitAdventTimeChange;
+import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventPointInfoPacket;
+import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventTimeChange;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostArrived;
 import com.l2jserver.gameserver.network.serverpackets.ExNotifyPremiumItem;
 import com.l2jserver.gameserver.network.serverpackets.ExShowContactList;
@@ -87,6 +86,7 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.util.Base64;
 
 
 /**
@@ -416,8 +416,8 @@ public class EnterWorld extends L2GameClientPacket
 		
 		sendPacket(new SkillCoolTime(activeChar));
 		sendPacket(new ExVoteSystemInfo(activeChar));
-		sendPacket(new ExNavitAdventPointInfoPacket(0));
-		sendPacket(new ExNavitAdventTimeChange(-1)); // only set pause state...
+		sendPacket(new ExNevitAdventPointInfoPacket(0));
+		sendPacket(new ExNevitAdventTimeChange(-1)); // only set pause state...
 		sendPacket(new ExShowContactList(activeChar));
 		
 		for (L2ItemInstance i : activeChar.getInventory().getItems())

@@ -40,7 +40,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Broadcast;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
 

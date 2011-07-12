@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestDuelAnswerStart extends L2GameClientPacket
 {
-	private static final String _C__D0_28_REQUESTDUELANSWERSTART = "[C] D0:28 RequestDuelAnswerStart";
+	private static final String _C__D0_1C_REQUESTDUELANSWERSTART = "[C] D0:1C RequestDuelAnswerStart";
 	private int _partyDuel;
 	@SuppressWarnings("unused")
 	private int _unk1;
@@ -117,7 +117,7 @@ public final class RequestDuelAnswerStart extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_28_REQUESTDUELANSWERSTART;
+		return _C__D0_1C_REQUESTDUELANSWERSTART;
 	}
 	
 }

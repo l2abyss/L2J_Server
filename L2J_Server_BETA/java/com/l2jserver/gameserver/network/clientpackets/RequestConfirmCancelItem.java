@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestConfirmCancelItem extends L2GameClientPacket
 {
-	private static final String _C__D0_2D_REQUESTCONFIRMCANCELITEM = "[C] D0:2D RequestConfirmCancelItem";
+	private static final String _C__D0_42_REQUESTCONFIRMCANCELITEM = "[C] D0:42 RequestConfirmCancelItem";
 	private int _objectId;
 	
 	/**
@@ -120,6 +120,6 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_2D_REQUESTCONFIRMCANCELITEM;
+		return _C__D0_42_REQUESTCONFIRMCANCELITEM;
 	}
 }

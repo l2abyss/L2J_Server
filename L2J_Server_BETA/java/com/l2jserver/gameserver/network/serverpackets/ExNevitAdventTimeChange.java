@@ -21,13 +21,13 @@ package com.l2jserver.gameserver.network.serverpackets;
  * c: state 0 - pause 1 - started
  * d: left time in ms max is 16000 its 4m and state is automatically changed to quit
  */
-public class ExNavitAdventTimeChange extends L2GameServerPacket
+public class ExNevitAdventTimeChange extends L2GameServerPacket
 {
 	private static final String _S__FE_E1_EXNAVITADVENTTIMECHANGE = "[S] FE:E1 ExNavitAdventTimeChange";
 	private final boolean _paused;
 	private final int _time;
 	
-	public ExNavitAdventTimeChange(int time)
+	public ExNevitAdventTimeChange(int time)
 	{
 		_time = time > 240000 ? 240000 : time;
 		_paused = _time < 1;

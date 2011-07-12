@@ -1,11 +1,11 @@
 /*
- * $Header: WorldObjectMap.java, 22/07/2005 14:15:11 luisantonioa Exp $
+ * $Header: WorldObjectSet.java, 22/07/2005 14:11:29 luisantonioa Exp $
  *
  * $Author: luisantonioa $
- * $Date: 22/07/2005 14:15:11 $
+ * $Date: 22/07/2005 14:11:29 $
  * $Revision: 1 $
- * $Log: WorldObjectMap.java,v $
- * Revision 1  22/07/2005 14:15:11  luisantonioa
+ * $Log: WorldObjectSet.java,v $
+ * Revision 1  22/07/2005 14:11:29  luisantonioa
  * Added copyright notice
  *
  *
@@ -22,7 +22,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.util;
+package com.l2jserver.gameserver.util;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -37,12 +37,17 @@ import com.l2jserver.gameserver.model.L2Object;
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
 
-public class WorldObjectMap<T extends L2Object> extends L2ObjectMap<T>
+public class WorldObjectSet<T extends L2Object> extends L2ObjectSet<T>
 {
-	Map<Integer, T> _objectMap = new FastMap<Integer, T>().shared();
+	private Map<Integer, T> _objectMap;
+	
+	public WorldObjectSet()
+	{
+		_objectMap = new FastMap<Integer, T>().shared();
+	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#size()
+	 * @see com.l2jserver.util.L2ObjectSet#size()
 	 */
 	@Override
 	public int size()
@@ -51,7 +56,7 @@ public class WorldObjectMap<T extends L2Object> extends L2ObjectMap<T>
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#isEmpty()
+	 * @see com.l2jserver.util.L2ObjectSet#isEmpty()
 	 */
 	@Override
 	public boolean isEmpty()
@@ -60,7 +65,7 @@ public class WorldObjectMap<T extends L2Object> extends L2ObjectMap<T>
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#clear()
+	 * @see com.l2jserver.util.L2ObjectSet#clear()
 	 */
 	@Override
 	public void clear()
@@ -69,47 +74,34 @@ public class WorldObjectMap<T extends L2Object> extends L2ObjectMap<T>
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#put(T)
+	 * @see com.l2jserver.util.L2ObjectSet#put(T)
 	 */
 	@Override
 	public void put(T obj)
 	{
-		if (obj != null)
-			_objectMap.put(obj.getObjectId(), obj);
+		_objectMap.put(obj.getObjectId(), obj);
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#remove(T)
+	 * @see com.l2jserver.util.L2ObjectSet#remove(T)
 	 */
 	@Override
 	public void remove(T obj)
 	{
-		if (obj != null)
-			_objectMap.remove(obj.getObjectId());
+		_objectMap.remove(obj.getObjectId());
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#get(int)
-	 */
-	@Override
-	public T get(int id)
-	{
-		return _objectMap.get(id);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#contains(T)
+	 * @see com.l2jserver.util.L2ObjectSet#contains(T)
 	 */
 	@Override
 	public boolean contains(T obj)
 	{
-		if (obj == null)
-			return false;
-		return _objectMap.get(obj.getObjectId()) != null;
+		return _objectMap.containsKey(obj.getObjectId());
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#iterator()
+	 * @see com.l2jserver.util.L2ObjectSet#iterator()
 	 */
 	@Override
 	public Iterator<T> iterator()

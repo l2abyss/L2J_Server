@@ -30,6 +30,8 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
  */
 public final class RequestSaveInventoryOrder extends L2GameClientPacket
 {
+	private static final String _C__D0_24_REQUESTSAVEINVENTORYORDER = "[C] D0:24 RequestSaveInventoryOrder";
+	
 	private List<InventoryOrder> _order;
 	
 	/** client limit */
@@ -72,16 +74,7 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 			}
 		}
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:49 RequestSaveInventoryOrder";
-	}
-	
+		
 	private static class InventoryOrder
 	{
 		int order;
@@ -102,5 +95,14 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
+	}
+
+	/**
+	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 */
+	@Override
+	public String getType()
+	{
+		return _C__D0_24_REQUESTSAVEINVENTORYORDER;
 	}
 }

@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class AnswerPartyLootModification extends L2GameClientPacket
 {
-	private static final String TYPE = "[C] D0:79 AnswerPartyLootModification";
+	private static final String _C__D0_79_ANSWERPARTYLOOTMODIFICATION = "[C] D0:79 AnswerPartyLootModification";
 	
 	public int _answer;
 	
@@ -47,7 +47,7 @@ public class AnswerPartyLootModification extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return TYPE;
+		return _C__D0_79_ANSWERPARTYLOOTMODIFICATION;
 	}
 	
 }

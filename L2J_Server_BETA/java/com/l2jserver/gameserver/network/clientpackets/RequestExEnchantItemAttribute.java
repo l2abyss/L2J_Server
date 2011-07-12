@@ -32,7 +32,7 @@ import com.l2jserver.util.Rnd;
 
 public class RequestExEnchantItemAttribute extends L2GameClientPacket
 {
-	private static final String D0_35_REQUEST_EX_ENCHANT_ITEM_ATTRIBUTE = "[C] D0:35 RequestExEnchantItemAttribute";
+	private static final String _C__D0_35_REQUESTEXENCHANTITEMATTRIBUTE = "[C] D0:35 RequestExEnchantItemAttribute";
 	
 	private int _objectId;
 	
@@ -279,6 +279,6 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return D0_35_REQUEST_EX_ENCHANT_ITEM_ATTRIBUTE;
+		return _C__D0_35_REQUESTEXENCHANTITEMATTRIBUTE;
 	}
 }

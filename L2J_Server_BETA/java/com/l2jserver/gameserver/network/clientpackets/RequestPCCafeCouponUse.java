@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public final class RequestPCCafeCouponUse extends L2GameClientPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestPCCafeCouponUse.class.getName());
-	private static final String _C__D0_20_REQUESTPCCAFECOUPONUSE = "[C] D0:?? RequestPCCafeCouponUse";
+	private static final String _C__D0_19_REQUESTPCCAFECOUPONUSE = "[C] D0:19 RequestPCCafeCouponUse";
 	private String _str;
 	
 	@Override
@@ -42,7 +42,7 @@ public final class RequestPCCafeCouponUse extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__D0_20_REQUESTPCCAFECOUPONUSE;
+		return _C__D0_19_REQUESTPCCAFECOUPONUSE;
 	}
 	
 }

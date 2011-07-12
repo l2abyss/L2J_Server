@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 {
 	private static final String _C__D0_12_REQUESTSETPLEADGEACADEMYMASTER = "[C] D0:12 RequestPledgeSetAcademyMaster";
+	
 	private String _currPlayerName;
 	private int _set; // 1 set, 0 delete
 	private String _targetPlayerName;
@@ -131,6 +132,4 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 	{
 		return _C__D0_12_REQUESTSETPLEADGEACADEMYMASTER;
 	}
-	
-	
 }

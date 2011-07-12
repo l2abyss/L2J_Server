@@ -1,4 +1,14 @@
 /*
+ * $Header: WorldObjectMap.java, 22/07/2005 14:15:11 luisantonioa Exp $
+ *
+ * $Author: luisantonioa $
+ * $Date: 22/07/2005 14:15:11 $
+ * $Revision: 1 $
+ * $Log: WorldObjectMap.java,v $
+ * Revision 1  22/07/2005 14:15:11  luisantonioa
+ * Added copyright notice
+ *
+ *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -12,133 +22,99 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.util;
+package com.l2jserver.gameserver.util;
 
 import java.util.Iterator;
-import java.util.TreeMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Map;
+
+import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.L2Object;
 
 /**
+ * This class ...
  *
- * @author  dishkols
+ * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
-public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
+
+public class WorldObjectMap<T extends L2Object> extends L2ObjectMap<T>
 {
-	private final TreeMap<Integer, T> _objectMap = new TreeMap<Integer,T>();
-	private final ReentrantReadWriteLock _rwl = new ReentrantReadWriteLock();
-	private final Lock _r = _rwl.readLock();
-	private final Lock _w = _rwl.writeLock();
+	Map<Integer, T> _objectMap = new FastMap<Integer, T>().shared();
 	
-	/**
+	/* (non-Javadoc)
 	 * @see com.l2jserver.util.L2ObjectMap#size()
 	 */
 	@Override
 	public int size()
 	{
-		_r.lock();
-		try {
-			return _objectMap.size();
-		}
-		finally { _r.unlock(); }
+		return _objectMap.size();
 	}
 	
-	/**
+	/* (non-Javadoc)
 	 * @see com.l2jserver.util.L2ObjectMap#isEmpty()
 	 */
 	@Override
 	public boolean isEmpty()
 	{
-		_r.lock();
-		try {
-			return _objectMap.isEmpty();
-		}
-		finally { _r.unlock(); }
+		return _objectMap.isEmpty();
 	}
 	
-	/**
+	/* (non-Javadoc)
 	 * @see com.l2jserver.util.L2ObjectMap#clear()
 	 */
 	@Override
 	public void clear()
 	{
-		_w.lock();
-		try {
-			_objectMap.clear();
-		}
-		finally { _w.unlock(); }
+		_objectMap.clear();
 	}
 	
-	/**
+	/* (non-Javadoc)
 	 * @see com.l2jserver.util.L2ObjectMap#put(T)
 	 */
 	@Override
 	public void put(T obj)
 	{
-		if ( obj != null) {
-			_w.lock();
-			try {
-				_objectMap.put(obj.getObjectId(),obj);
-			}
-			finally { _w.unlock(); }
-		}
+		if (obj != null)
+			_objectMap.put(obj.getObjectId(), obj);
 	}
 	
-	/**
+	/* (non-Javadoc)
 	 * @see com.l2jserver.util.L2ObjectMap#remove(T)
 	 */
 	@Override
 	public void remove(T obj)
 	{
-		if (obj != null) {
-			_w.lock();
-			try {
-				_objectMap.remove(obj.getObjectId());
-			}
-			finally { _w.unlock(); }
-		}
+		if (obj != null)
+			_objectMap.remove(obj.getObjectId());
 	}
 	
-	/**
+	/* (non-Javadoc)
 	 * @see com.l2jserver.util.L2ObjectMap#get(int)
 	 */
 	@Override
 	public T get(int id)
 	{
-		_r.lock();
-		try {
-			return _objectMap.get(id);
-		}
-		finally { _r.unlock(); }
+		return _objectMap.get(id);
 	}
 	
-	/**
+	/* (non-Javadoc)
 	 * @see com.l2jserver.util.L2ObjectMap#contains(T)
 	 */
 	@Override
 	public boolean contains(T obj)
 	{
-		if (obj == null) return false;
-		_r.lock();
-		try {
-			return _objectMap.containsValue(obj);
-		}
-		finally { _r.unlock(); }
+		if (obj == null)
+			return false;
+		return _objectMap.get(obj.getObjectId()) != null;
 	}
 	
-	/**
+	/* (non-Javadoc)
 	 * @see com.l2jserver.util.L2ObjectMap#iterator()
 	 */
 	@Override
 	public Iterator<T> iterator()
 	{
-		_r.lock();
-		try {
-			return _objectMap.values().iterator();
-		}
-		finally { _r.unlock(); }
+		return _objectMap.values().iterator();
 	}
 	
 }

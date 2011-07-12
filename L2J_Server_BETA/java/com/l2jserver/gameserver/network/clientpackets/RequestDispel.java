@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class RequestDispel extends L2GameClientPacket
 {
 	private static final String _C_D0_4B_REQUESTDISPEL = "[C] D0:4B RequestDispel";
+	
 	private int _objectId;
 	private int _skillId;
 	private int _skillLevel;

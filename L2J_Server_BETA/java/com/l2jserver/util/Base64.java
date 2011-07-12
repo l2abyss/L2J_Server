@@ -12,13 +12,12 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver;
+package com.l2jserver.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.l2jserver.util.StringUtil;
 
 /**
  * Encodes and decodes to and from Base64 notation.

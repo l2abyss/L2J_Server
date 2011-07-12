@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class AnswerCoupleAction extends L2GameClientPacket
 {
-	private static final String _S__3D_SOCIALACTION = "[C] D0:7A AnswerCoupleAction";
+	private static final String _S__D0_7A_ANSWERCOUPLEACTION = "[C] D0:7A AnswerCoupleAction";
 	
 	private int _charObjId;
 	private int _actionId;
@@ -86,7 +86,7 @@ public class AnswerCoupleAction extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _S__3D_SOCIALACTION;
+		return _S__D0_7A_ANSWERCOUPLEACTION;
 	}
 	
 }

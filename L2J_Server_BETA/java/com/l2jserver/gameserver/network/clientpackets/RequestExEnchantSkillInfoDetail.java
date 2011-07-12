@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfoDetail;
  */
 public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 {
+	private static final String _C_D0_46_REQUESTEXENCHANTSKILLINFO = "[C] D0:46 RequestExEnchantSkillInfoDetail";
 	protected static final Logger _log = Logger.getLogger(RequestExEnchantSkillInfoDetail.class.getName());
 	
 	private int _type;
@@ -109,7 +110,7 @@ public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] D0:46 RequestExEnchantSkillInfo";
+		return _C_D0_46_REQUESTEXENCHANTSKILLINFO;
 	}
 	
 }

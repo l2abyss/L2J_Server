@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExGetOnAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExMoveToLocationAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExStopMoveAirShip;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * Flying airships. Very similar to Maktakien boats (see L2BoatInstance) but these do fly :P

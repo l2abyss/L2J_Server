@@ -24,6 +24,8 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 
 public final class RequestVoteNew extends L2GameClientPacket
 {
+	private static final String _C__D0_7E_REQUESTVOTENEW = "[C] D0:7E RequestVoteNew";
+	
 	private int _targetId;
 	
 	@Override
@@ -100,6 +102,6 @@ public final class RequestVoteNew extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] D0:7E RequestVoteNew";
+		return _C__D0_7E_REQUESTVOTENEW;
 	}
 }

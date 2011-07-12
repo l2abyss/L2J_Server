@@ -25,12 +25,12 @@ import java.util.Locale;
 
 import javolution.util.FastList;
 
-import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
 import com.l2jserver.ngl.ConsoleLocalizator;
 import com.l2jserver.ngl.LocaleCodes;
+import com.l2jserver.util.Base64;
 
 /**
  * This class SQL Account Manager

@@ -33,13 +33,13 @@ import javax.crypto.Cipher;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
 import com.l2jserver.loginserver.network.L2LoginClient;
 import com.l2jserver.loginserver.network.gameserverpackets.ServerStatus;
 import com.l2jserver.loginserver.network.serverpackets.LoginFail.LoginFailReason;
+import com.l2jserver.util.Base64;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.crypt.ScrambledKeyPair;
 import com.l2jserver.util.lib.Log;

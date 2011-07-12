@@ -45,7 +45,7 @@ import com.l2jserver.gameserver.util.Util;
  *
  */
 public class RequestSetCrop extends L2GameClientPacket {
-	private static final String _C__D0_0B_REQUESTSETCROP = "[C] D0:0B RequestSetCrop";
+	private static final String _C__D0_04_REQUESTSETCROP = "[C] D0:04 RequestSetCrop";
 	//private static Logger _log = Logger.getLogger(RequestSetCrop.class.getName());
 	
 	private static final int BATCH_LENGTH = 21; // length of the one item
@@ -161,6 +161,6 @@ public class RequestSetCrop extends L2GameClientPacket {
 	@Override
 	public String getType()
 	{
-		return _C__D0_0B_REQUESTSETCROP;
+		return _C__D0_04_REQUESTSETCROP;
 	}
 }

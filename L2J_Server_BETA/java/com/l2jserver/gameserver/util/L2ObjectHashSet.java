@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.util;
+package com.l2jserver.gameserver.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -43,8 +43,8 @@ import com.l2jserver.gameserver.model.L2Object;
  *
  * @param <T> type of values stored in this hashtable
  */
-public final class L2ObjectHashMap<T extends L2Object>
-extends L2ObjectMap<T>
+public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
+implements Iterable<T>
 {
 	
 	private static final boolean TRACE = false;
@@ -61,7 +61,7 @@ extends L2ObjectMap<T>
 	};
 	
 	private T[] _table;
-	private int[] _keys;
+	private int[] _collisions;
 	private int _count;
 	
 	private static int getPrime(int min)
@@ -75,16 +75,16 @@ extends L2ObjectMap<T>
 	}
 	
 	@SuppressWarnings("unchecked")
-	public L2ObjectHashMap()
+	public L2ObjectHashSet()
 	{
 		int size = PRIMES[0];
 		_table = (T[])new L2Object[size];
-		_keys = new int[size];
+		_collisions = new int[(size+31)>>5];
 		if (DEBUG) check();
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#size()
+	 * @see com.l2jserver.util.L2ObjectSet#size()
 	 */
 	@Override
 	public int size()
@@ -93,7 +93,7 @@ extends L2ObjectMap<T>
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#isEmpty()
+	 * @see com.l2jserver.util.L2ObjectSet#isEmpty()
 	 */
 	@Override
 	public boolean isEmpty()
@@ -102,7 +102,7 @@ extends L2ObjectMap<T>
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#clear()
+	 * @see com.l2jserver.util.L2ObjectSet#clear()
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -110,7 +110,7 @@ extends L2ObjectMap<T>
 	{
 		int size = PRIMES[0];
 		_table = (T[])new L2Object[size];
-		_keys = new int[size];
+		_collisions = new int[(size+31)>>5];
 		_count = 0;
 		if (DEBUG) check();
 	}
@@ -120,26 +120,27 @@ extends L2ObjectMap<T>
 		if (DEBUG)
 		{
 			int cnt = 0;
+			assert _collisions.length == ((_table.length+31)>>5);
 			for (int i=0; i < _table.length; i++)
 			{
 				L2Object obj = _table[i];
-				if (obj == null) {
-					assert _keys[i] == 0 || _keys[i] == 0x80000000;
-				} else {
+				if (obj != null)
 					cnt++;
-					assert obj.getObjectId() == (_keys[i] & 0x7FFFFFFF);
-				}
 			}
 			assert cnt == _count;
 		}
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#put(T)
+	 * @see com.l2jserver.util.L2ObjectSet#put(T)
 	 */
 	@Override
 	public synchronized void put(T obj)
 	{
+		if (obj == null)
+			return;
+		if (contains(obj))
+			return;
 		if (_count >= _table.length/2)
 			expand();
 		final int hashcode = obj.getObjectId();
@@ -155,10 +156,10 @@ extends L2ObjectMap<T>
 			{
 				if (slot < 0)
 					slot = pos;
-				if (_keys[pos] >= 0) {
+				if ((_collisions[pos>>5] & (1<<(pos&31))) == 0)
+				{
 					// found an empty slot without previous collisions,
 					// but use previously found slot
-					_keys[slot] = hashcode;
 					_table[slot] = obj;
 					_count++;
 					if (TRACE) System.err.println("ht: put obj id="+hashcode+" at slot="+slot);
@@ -175,9 +176,8 @@ extends L2ObjectMap<T>
 				assert obj.getObjectId() != _table[pos].getObjectId();
 				// if there was no collisions at this slot, and we found a free
 				// slot previously - use found slot
-				if (slot >= 0 && _keys[pos] > 0)
+				if (slot >= 0 && (_collisions[pos>>5] & (1<<(pos&31))) == 0)
 				{
-					_keys[slot] |= hashcode; // preserve collision bit
 					_table[slot] = obj;
 					_count++;
 					if (TRACE) System.err.println("ht: put obj id="+hashcode+" at slot="+slot);
@@ -187,7 +187,7 @@ extends L2ObjectMap<T>
 			}
 			
 			// set collision bit
-			_keys[pos] |= 0x80000000;
+			_collisions[pos>>5] |= 1<<(pos&31);
 			// calculate next slot
 			seed += incr;
 		} while (++ntry < _table.length);
@@ -196,11 +196,15 @@ extends L2ObjectMap<T>
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#remove(T)
+	 * @see com.l2jserver.util.L2ObjectSet#remove(T)
 	 */
 	@Override
 	public synchronized void remove(T obj)
 	{
+		if (obj == null)
+			return;
+		if (!contains(obj))
+			return;
 		int hashcode = obj.getObjectId();
 		assert hashcode > 0;
 		int seed = hashcode;
@@ -212,7 +216,6 @@ extends L2ObjectMap<T>
 			if (_table[pos] == obj)
 			{
 				// found the object
-				_keys[pos] &= 0x80000000; // preserve collision bit
 				_table[pos] = null;
 				_count--;
 				if (TRACE) System.err.println("ht: remove obj id="+hashcode+" from slot="+pos);
@@ -220,7 +223,7 @@ extends L2ObjectMap<T>
 				return;
 			}
 			// check for collision (if we previously deleted element)
-			if (_table[pos] == null && _keys[pos] >= 0) {
+			if (_table[pos] == null && (_collisions[pos>>5] & (1<<(pos&31))) == 0) {
 				if (DEBUG) check();
 				return; //throw new IllegalArgumentException();
 			}
@@ -232,49 +235,40 @@ extends L2ObjectMap<T>
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#get(int)
+	 * @see com.l2jserver.util.L2ObjectSet#contains(T)
 	 */
 	@Override
-	public T get(int id)
+	public boolean contains(T obj)
 	{
 		final int size = _table.length;
-		if (id <= 0)
-			return null;
 		if (size <= 11)
 		{
 			// for small tables linear check is fast
 			for (int i=0; i < size; i++)
 			{
-				if ((_keys[i]&0x7FFFFFFF) == id)
-					return _table[i];
+				if (_table[i] == obj)
+					return true;
 			}
-			return null;
+			return false;
 		}
-		int seed = id;
+		int hashcode = obj.getObjectId();
+		assert hashcode > 0;
+		int seed = hashcode;
 		int incr = 1 + (((seed >> 5) + 1) % (size - 1));
 		int ntry = 0;
 		do
 		{
 			int pos = (seed % size) & 0x7FFFFFFF;
-			if ((_keys[pos]&0x7FFFFFFF) == id)
-				return _table[pos];
+			if (_table[pos] == obj)
+				return true;
 			// check for collision (if we previously deleted element)
-			if (_table[pos] == null && _keys[pos] >= 0) {
-				return null;
+			if (_table[pos] == null && (_collisions[pos>>5] & (1<<(pos&31))) == 0) {
+				return false;
 			}
 			// calculate next slot
 			seed += incr;
 		} while (++ntry < size);
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#contains(T)
-	 */
-	@Override
-	public boolean contains(T obj)
-	{
-		return get(obj.getObjectId()) != null;
+		return false;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -282,7 +276,7 @@ extends L2ObjectMap<T>
 	{
 		int newSize = getPrime(_table.length+1);
 		L2Object[] newTable = new L2Object[newSize];
-		int[] newKeys = new int[newSize];
+		int[] newCollisions = new int[(newSize+31)>>5];
 		
 		// over all old entries
 		next_entry:
@@ -291,8 +285,7 @@ extends L2ObjectMap<T>
 				L2Object obj = _table[i];
 				if (obj == null)
 					continue;
-				final int hashcode = _keys[i] & 0x7FFFFFFF;
-				assert hashcode == obj.getObjectId();
+				final int hashcode = obj.getObjectId();
 				int seed = hashcode;
 				int incr = 1 + (((seed >> 5) + 1) % (newSize - 1));
 				int ntry = 0;
@@ -301,28 +294,26 @@ extends L2ObjectMap<T>
 					int pos = (seed % newSize) & 0x7FFFFFFF;
 					if (newTable[pos] == null)
 					{
-						assert newKeys[pos] == 0 && hashcode != 0;
 						// found an empty slot without previous collisions,
 						// but use previously found slot
-						newKeys[pos] = hashcode;
 						newTable[pos] = obj;
 						if (TRACE) System.err.println("ht: move obj id="+hashcode+" from slot="+i+" to slot="+pos);
 						continue next_entry;
 					}
 					// set collision bit
-					newKeys[pos] |= 0x80000000;
+					newCollisions[pos>>5] |= 1<<(pos&31);
 					// calculate next slot
 					seed += incr;
 				} while (++ntry < newSize);
 				throw new IllegalStateException();
 			}
 		_table = (T[])newTable;
-		_keys = newKeys;
+		_collisions = newCollisions;
 		if (DEBUG) check();
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#iterator()
+	 * @see com.l2jserver.util.L2ObjectSet#iterator()
 	 */
 	@Override
 	public Iterator<T> iterator()
@@ -369,7 +360,7 @@ extends L2ObjectMap<T>
 		{
 			if (_lastRet == null)
 				throw new IllegalStateException();
-			L2ObjectHashMap.this.remove(_lastRet);
+			L2ObjectHashSet.this.remove(_lastRet);
 		}
 	}
 }

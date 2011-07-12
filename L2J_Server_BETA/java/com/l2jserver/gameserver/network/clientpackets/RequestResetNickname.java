@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class RequestResetNickname extends L2GameClientPacket
 {
+	private static final String _C__D0_50_REQUESTRESETNICKNAME = "[C] D0:50 RequestResetNickname";
 	
 	/**
 	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
@@ -53,6 +54,6 @@ public class RequestResetNickname extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] D0:53 RequestResetNickname";
+		return _C__D0_50_REQUESTRESETNICKNAME;
 	}
 }

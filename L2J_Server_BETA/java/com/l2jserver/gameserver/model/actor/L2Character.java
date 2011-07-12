@@ -115,8 +115,8 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 /**
  * Mother class of all character objects of the world (PC, NPC...)<BR><BR>

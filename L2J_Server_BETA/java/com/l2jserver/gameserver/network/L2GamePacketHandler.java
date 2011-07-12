@@ -730,7 +730,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 							case 0x0b:
 								msg = new RequestWithdrawPartyRoom();
 								break;
-							case 0x0c: // RequestHandOverPartyMaster
+							case 0x0c:
 								msg = new RequestChangePartyLeader();
 								break;
 							case 0x0d:
@@ -841,13 +841,13 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 							case 0x31:
 								msg = new RequestListPartyMatchingWaitingRoom();
 								break;
-							case 0x32: // test me
+							case 0x32:
 								msg = new RequestExEnchantSkillSafe();
 								break;
-							case 0x33: // test me
+							case 0x33:
 								msg = new RequestExEnchantSkillUntrain();
 								break;
-							case 0x34: // test me
+							case 0x34:
 								msg = new RequestExEnchantSkillRouteChange();
 								break;
 							case 0x35:
@@ -980,7 +980,6 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								// NotifyStartMiniGame
 								break;
 							case 0x57:
-								// RequestJoinDominionWar
 								msg = new RequestJoinDominionWar();
 								break;
 							case 0x58:
@@ -1032,7 +1031,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								msg = new RequestSentPost();
 								break;
 							case 0x6f:
-								msg = new RequestCancelPost();
+								msg = new RequestCancelPostAttachment();
 								break;
 							case 0x70:
 								// RequestShowNewUserPetition
