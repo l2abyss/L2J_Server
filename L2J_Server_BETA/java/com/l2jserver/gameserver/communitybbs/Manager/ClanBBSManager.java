@@ -23,16 +23,12 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.StringUtil;
 
-
 public class ClanBBSManager extends BaseBBSManager
 {
 	private ClanBBSManager()
 	{
 	}
 	
-	/**
-	 * @return
-	 */
 	public static ClanBBSManager getInstance()
 	{
 		return SingletonHolder._instance;
@@ -82,28 +78,29 @@ public class ClanBBSManager extends BaseBBSManager
 		}
 		else if (command.startsWith("_bbsclan_clannotice_edit;"))
 		{
-			clanNotice(activeChar, activeChar.getClan().getClanId());
+			clanNotice(activeChar, activeChar.getClanId());
 		}
 		else if (command.startsWith("_bbsclan_clannotice_enable"))
 		{
-			activeChar.getClan().setNoticeEnabled(true);
-			clanNotice(activeChar, activeChar.getClan().getClanId());
+			if (activeChar.getClan() != null)
+				activeChar.getClan().setNoticeEnabled(true);
+			clanNotice(activeChar, activeChar.getClanId());
 		}
 		else if (command.startsWith("_bbsclan_clannotice_disable"))
 		{
-			activeChar.getClan().setNoticeEnabled(false);
-			clanNotice(activeChar, activeChar.getClan().getClanId());
+			if (activeChar.getClan() != null)
+				activeChar.getClan().setNoticeEnabled(false);
+			clanNotice(activeChar, activeChar.getClanId());
 		}
 		else
 		{
 			separateAndSend("<html><body><br><br><center>Command : " + command + " needs core development</center><br><br></body></html>", activeChar);
-			
 		}
 	}
 	
 	private void clanNotice(L2PcInstance activeChar, int clanId)
 	{
-		L2Clan cl = ClanTable.getInstance().getClan(clanId);
+		final L2Clan cl = ClanTable.getInstance().getClan(clanId);
 		if (cl != null)
 		{
 			if (cl.getLevel() < 2)
@@ -169,9 +166,10 @@ public class ClanBBSManager extends BaseBBSManager
 			}
 		}
 	}
-	
+
 	/**
 	 * @param activeChar
+	 * @param index
 	 */
 	private void clanlist(L2PcInstance activeChar, int index)
 	{
@@ -372,5 +370,4 @@ public class ClanBBSManager extends BaseBBSManager
 			parsecmd("_bbsclan_clanhome;" + activeChar.getClan().getClanId(), activeChar);
 		}
 	}
-	
 }
