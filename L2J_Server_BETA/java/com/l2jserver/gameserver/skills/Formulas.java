@@ -2347,6 +2347,7 @@ public final class Formulas
 				case FEAR:
 				case BETRAY:
 				case AGGDEBUFF:
+				case AGGREDUCE_CHAR:
 				case ERASE:
 				case CONFUSION:
 				case CONFUSE_MOB_ONLY:
@@ -2427,6 +2428,7 @@ public final class Formulas
 				case FEAR:
 				case BETRAY:
 				case AGGDEBUFF:
+				case AGGREDUCE_CHAR:
 				case ERASE:
 				case CONFUSION:
 				case CONFUSE_MOB_ONLY:
