@@ -4634,6 +4634,7 @@ public final class L2PcInstance extends L2Playable
 			_log.fine("pickup pos: "+ target.getX() + " "+target.getY()+ " "+target.getZ() );
 		sendPacket(sm);
 		
+		SystemMessage smsg = null;
 		synchronized (target)
 		{
 			// Check if the target to pick up is visible
@@ -4643,11 +4644,11 @@ public final class L2PcInstance extends L2Playable
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-
+			
 			if (!target.getDropProtection().tryPickUp(this))
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
+				smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
 				smsg.addItemName(target);
 				sendPacket(smsg);
 				return;
@@ -4663,7 +4664,7 @@ public final class L2PcInstance extends L2Playable
 			if (isInvul() && !isGM())
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
+				smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
 				smsg.addItemName(target);
 				sendPacket(smsg);
 				return;
@@ -4671,28 +4672,24 @@ public final class L2PcInstance extends L2Playable
 			
 			if (target.getOwnerId() != 0 && target.getOwnerId() != getObjectId() && !isInLooterParty(target.getOwnerId()))
 			{
-				sendPacket(ActionFailed.STATIC_PACKET);
-				
 				if (target.getItemId() == 57)
 				{
-					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
 					smsg.addItemNumber(target.getCount());
-					sendPacket(smsg);
 				}
 				else if (target.getCount() > 1)
 				{
-					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S2_S1_S);
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S2_S1_S);
 					smsg.addItemName(target);
 					smsg.addItemNumber(target.getCount());
-					sendPacket(smsg);
 				}
 				else
 				{
-					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
 					smsg.addItemName(target);
-					sendPacket(smsg);
 				}
-				
+				sendPacket(ActionFailed.STATIC_PACKET);
+				sendPacket(smsg);
 				return;
 			}
 			
@@ -4711,7 +4708,6 @@ public final class L2PcInstance extends L2Playable
 			target.pickupMe(this);
 			if(Config.SAVE_DROPPED_ITEM) // item must be removed from ItemsOnGroundManager if is active
 				ItemsOnGroundManager.getInstance().removeObject(target);
-			
 		}
 		
 		//Auto use herbs - pick up
@@ -4740,18 +4736,18 @@ public final class L2PcInstance extends L2Playable
 			{
 				if (target.getEnchantLevel() > 0)
 				{
-					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.ANNOUNCEMENT_C1_PICKED_UP_S2_S3);
-					msg.addPcName(this);
-					msg.addNumber(target.getEnchantLevel());
-					msg.addItemName(target.getItemId());
-					broadcastPacket(msg, 1400);
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.ANNOUNCEMENT_C1_PICKED_UP_S2_S3);
+					smsg.addPcName(this);
+					smsg.addNumber(target.getEnchantLevel());
+					smsg.addItemName(target.getItemId());
+					broadcastPacket(smsg, 1400);
 				}
 				else
 				{
-					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.ANNOUNCEMENT_C1_PICKED_UP_S2);
-					msg.addPcName(this);
-					msg.addItemName(target.getItemId());
-					broadcastPacket(msg, 1400);
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.ANNOUNCEMENT_C1_PICKED_UP_S2);
+					smsg.addPcName(this);
+					smsg.addItemName(target.getItemId());
+					broadcastPacket(smsg, 1400);
 				}
 			}
 			
@@ -4763,8 +4759,20 @@ public final class L2PcInstance extends L2Playable
 				addAdena("Pickup", target.getCount(), null, true);
 				ItemTable.getInstance().destroyItem("Pickup", target, this, null);
 			}
-			// Target is regular item
-			else addItem("Pickup", target, null, true);
+			else
+			{
+				addItem("Pickup", target, null, true);
+				//Auto-Equip arrows/bolts if player has a bow/crossbow and player picks up arrows/bolts.
+				final L2EtcItemType itemType = target.getEtcItem().getItemType();
+				if (itemType == L2EtcItemType.ARROW)
+				{
+					checkAndEquipArrows();
+				}
+				else if (itemType == L2EtcItemType.BOLT)
+				{
+					checkAndEquipBolts();
+				}
+			}
 		}
 	}
 	
