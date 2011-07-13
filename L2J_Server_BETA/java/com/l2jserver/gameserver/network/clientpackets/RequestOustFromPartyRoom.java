@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 /**
  * format (ch) d
  * @author -Wooden-
- *
  */
 public final class RequestOustFromPartyRoom extends L2GameClientPacket
 {
@@ -75,5 +74,4 @@ public final class RequestOustFromPartyRoom extends L2GameClientPacket
 	{
 		return _C__D0_09_REQUESTOUSTFROMPARTYROOM;
 	}
-	
 }

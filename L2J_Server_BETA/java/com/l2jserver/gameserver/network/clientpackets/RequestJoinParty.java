@@ -39,7 +39,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestJoinParty extends L2GameClientPacket
 {
-	private static final String _C__29_REQUESTJOINPARTY = "[C] 29 RequestJoinParty";
+	private static final String _C__42_REQUESTJOINPARTY = "[C] 42 RequestJoinParty";
 	private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
 	
 	private String _name;
@@ -223,12 +223,9 @@ public final class RequestJoinParty extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__29_REQUESTJOINPARTY;
+		return _C__42_REQUESTJOINPARTY;
 	}
 }

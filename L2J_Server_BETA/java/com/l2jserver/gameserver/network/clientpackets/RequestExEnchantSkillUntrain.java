@@ -36,7 +36,6 @@ import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 
-
 /**
  * Format (ch) dd
  * c: (id) 0xD0
@@ -44,7 +43,6 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
  * d: skill id
  * d: skill lvl
  * @author -Wooden-
- *
  */
 public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 {
@@ -62,9 +60,6 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		_skillLvl = readD();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -203,13 +198,9 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C__D0_33_REQUESTEXENCHANTSKILLUNTRAIN;
 	}
-	
 }

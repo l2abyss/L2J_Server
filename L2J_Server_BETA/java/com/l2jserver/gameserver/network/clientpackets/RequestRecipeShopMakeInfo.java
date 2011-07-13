@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeShopItemInfo;
  */
 public final class RequestRecipeShopMakeInfo extends L2GameClientPacket
 {
-	private static final String _C__B5_RequestRecipeShopMakeInfo = "[C] b5 RequestRecipeShopMakeInfo";
+	private static final String _C__B5_RequestRecipeShopMakeInfo = "[C] B5 RequestRecipeShopMakeInfo";
 	//private static Logger _log = Logger.getLogger(RequestRecipeShopMakeInfo.class.getName());
 	
 	private int _playerObjectId;
@@ -53,12 +53,9 @@ public final class RequestRecipeShopMakeInfo extends L2GameClientPacket
 		
 	}
 	
-	
 	@Override
 	public String getType()
 	{
 		return _C__B5_RequestRecipeShopMakeInfo;
 	}
-	
-	
 }

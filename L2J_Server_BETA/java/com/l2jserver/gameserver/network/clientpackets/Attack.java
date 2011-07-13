@@ -20,13 +20,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
 /**
- * This class ...
- *
- * @version $Revision: 1.7.2.1.2.2 $ $Date: 2005/03/27 15:29:30 $
+ * TODO: This class is a copy of AttackRequest, we should get proper structure for both.
  */
-public final class AttackRequest extends L2GameClientPacket
+public final class Attack extends L2GameClientPacket
 {
-	private static final String _C__32_ATTACKREQUEST = "[C] 32 AttackRequest";
+	private static final String _C__01_ATTACK = "[C] 01 Attack";
 	
 	// cddddc
 	private int _objectId;
@@ -99,6 +97,6 @@ public final class AttackRequest extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__32_ATTACKREQUEST;
+		return _C__01_ATTACK;
 	}
 }

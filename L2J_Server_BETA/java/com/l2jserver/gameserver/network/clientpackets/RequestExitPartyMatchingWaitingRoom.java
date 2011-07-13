@@ -18,9 +18,7 @@ import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * 
  * @author Gnacik
- *
  */
 public final class RequestExitPartyMatchingWaitingRoom extends L2GameClientPacket
 {
@@ -47,5 +45,4 @@ public final class RequestExitPartyMatchingWaitingRoom extends L2GameClientPacke
 	{
 		return _C__D0_25_REQUESTEXITPARTYMATCHINGWAITINGROOM;
 	}
-	
 }

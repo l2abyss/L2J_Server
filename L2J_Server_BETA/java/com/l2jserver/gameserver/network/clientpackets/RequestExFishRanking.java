@@ -20,7 +20,6 @@ import java.util.logging.Logger;
  * Format: (ch)
  * just a trigger
  * @author  -Wooden-
- *
  */
 public final class RequestExFishRanking extends L2GameClientPacket
 {
@@ -33,22 +32,15 @@ public final class RequestExFishRanking extends L2GameClientPacket
 		// trigger
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
 		_log.info("C5: RequestExFishRanking");
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C__D0_18_REQUESTEXFISHRANKING;
 	}
-	
 }

@@ -48,8 +48,8 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
  */
 public final class UseItem extends L2GameClientPacket
 {
+	private static final String _C__19_USEITEM = "[C] 19 UseItem";
 	private static Logger _log = Logger.getLogger(UseItem.class.getName());
-	private static final String _C__14_USEITEM = "[C] 14 UseItem";
 	
 	private int _objectId;
 	private boolean _ctrlPressed;
@@ -334,7 +334,7 @@ public final class UseItem extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__14_USEITEM;
+		return _C__19_USEITEM;
 	}
 	
 	@Override

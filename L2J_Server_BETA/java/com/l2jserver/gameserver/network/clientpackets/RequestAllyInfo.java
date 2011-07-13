@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestAllyInfo extends L2GameClientPacket
 {
-	private static final String _C__8E_REQUESTALLYINFO = "[C] 8E RequestAllyInfo";
+	private static final String _C__2E_REQUESTALLYINFO = "[C] 2E RequestAllyInfo";
 	
 	
 	@Override
@@ -106,12 +106,9 @@ public final class RequestAllyInfo extends L2GameClientPacket
 		sendPacket(sm);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__8E_REQUESTALLYINFO;
+		return _C__2E_REQUESTALLYINFO;
 	}
 }

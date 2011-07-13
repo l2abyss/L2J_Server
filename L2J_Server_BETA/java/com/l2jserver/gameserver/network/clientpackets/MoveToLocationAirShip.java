@@ -27,11 +27,11 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public class MoveToLocationAirShip extends L2GameClientPacket
 {
+	private static final String _C__D0_38_MOVETOLOCATIONAIRSHIP = "[C] D0:38 MoveToLocationAirShip";
+	
 	public static final int MIN_Z = -895;
 	public static final int MAX_Z = 6105;
 	public static final int STEP = 300;
-	
-	private static final String _C__D0_38_MOVETOLOCATIONAIRSHIP = "[C] D0:38 MoveToLocationAirShip";
 	
 	private int _command;
 	private int _param1;
@@ -123,9 +123,6 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -26,15 +26,9 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestHennaRemove extends L2GameClientPacket
 {
-	private static final String _C__BC_RequestHennaRemove = "[C] bc RequestHennaRemove";
+	private static final String _C__72_REQUESTHENNAREMOVE = "[C] 72 RequestHennaRemove";
 	private int _symbolId;
-	// format  cd
 	
-	/**
-	 * packet type id 0xbb
-	 * format:		cd
-	 * @param decrypt
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -67,12 +61,9 @@ public final class RequestHennaRemove extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__BC_RequestHennaRemove;
+		return _C__72_REQUESTHENNAREMOVE;
 	}
 }

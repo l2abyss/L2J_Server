@@ -41,7 +41,6 @@ import com.l2jserver.gameserver.templates.item.L2Item;
  * d  count
  * ]
  * @author l3x
- *
  */
 public class RequestProcureCropList extends L2GameClientPacket
 {

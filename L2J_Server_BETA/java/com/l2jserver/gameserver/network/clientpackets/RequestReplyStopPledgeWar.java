@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestReplyStopPledgeWar extends L2GameClientPacket
 {
-	private static final String _C__50_REQUESTREPLYSTOPPLEDGEWAR = "[C] 50 RequestReplyStopPledgeWar";
+	private static final String _C__06_REQUESTREPLYSTOPPLEDGEWAR = "[C] 06 RequestReplyStopPledgeWar";
 	//private static Logger _log = Logger.getLogger(RequestReplyStopPledgeWar.class.getName());
 	
 	private int _answer;
@@ -61,12 +61,9 @@ public final class RequestReplyStopPledgeWar extends L2GameClientPacket
 		requestor.onTransactionResponse();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__50_REQUESTREPLYSTOPPLEDGEWAR;
+		return _C__06_REQUESTREPLYSTOPPLEDGEWAR;
 	}
 }

@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * 
  * @author JIV
  */
 public class RequestPartyLootModification extends L2GameClientPacket
@@ -52,5 +51,4 @@ public class RequestPartyLootModification extends L2GameClientPacket
 	{
 		return _C__D0_78_REQUESTPARTYLOOTMODIFICATION;
 	}
-	
 }

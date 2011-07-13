@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.util.Point3D;
 
-
 public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 {
 	private static final String _C__75_MOVETOLOCATIONINVEHICLE = "[C] 75 RequestMoveToLocationInVehicle";
@@ -53,12 +52,8 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		_originZ = readD();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
-	protected
-	void runImpl()
+	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
@@ -125,9 +120,6 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		activeChar.broadcastPacket(new MoveToLocationInVehicle(activeChar, pos, originPos));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

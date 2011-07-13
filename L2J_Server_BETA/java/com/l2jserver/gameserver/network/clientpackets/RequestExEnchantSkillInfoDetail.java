@@ -21,12 +21,9 @@ import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfoDetail;
 
-
 /**
  * Format (ch) ddd c: (id) 0xD0 h: (subid) 0x31 d: type d: skill id d: skill lvl
- * 
  * @author -Wooden-
- * 
  */
 public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 {
@@ -45,11 +42,6 @@ public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 		_skillLvl = readD();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -102,15 +94,9 @@ public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 		activeChar.sendPacket(esd);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C_D0_46_REQUESTEXENCHANTSKILLINFO;
 	}
-	
 }

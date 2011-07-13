@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.StopRotation;
  */
 public final class FinishRotating extends L2GameClientPacket
 {
-	private static final String _C__4B_FINISHROTATING = "[C] 4B FinishRotating";
+	private static final String _C__5C_FINISHROTATING = "[C] 5C FinishRotating";
 	
 	private int _degree;
 	@SuppressWarnings("unused")
@@ -58,12 +58,9 @@ public final class FinishRotating extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__4B_FINISHROTATING;
+		return _C__5C_FINISHROTATING;
 	}
 }

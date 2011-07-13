@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.serverpackets.QuestList;
 
-
 /**
  * This class ...
  *
@@ -31,11 +30,10 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
  */
 public final class RequestQuestAbort extends L2GameClientPacket
 {
-	private static final String _C__64_REQUESTQUESTABORT = "[C] 64 RequestQuestAbort";
+	private static final String _C__63_REQUESTQUESTABORT = "[C] 63 RequestQuestAbort";
 	private static Logger _log = Logger.getLogger(RequestQuestAbort.class.getName());
 	
 	private int _questId;
-	
 	
 	@Override
 	protected void readImpl()
@@ -72,12 +70,9 @@ public final class RequestQuestAbort extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__64_REQUESTQUESTABORT;
+		return _C__63_REQUESTQUESTABORT;
 	}
 }

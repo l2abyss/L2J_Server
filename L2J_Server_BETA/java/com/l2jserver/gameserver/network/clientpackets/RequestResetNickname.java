@@ -17,25 +17,18 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
  * @author  KenM
  */
 public class RequestResetNickname extends L2GameClientPacket
 {
 	private static final String _C__D0_50_REQUESTRESETNICKNAME = "[C] D0:50 RequestResetNickname";
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
 		// nothing (trigger)
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -48,9 +41,6 @@ public class RequestResetNickname extends L2GameClientPacket
 		activeChar.broadcastUserInfo();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

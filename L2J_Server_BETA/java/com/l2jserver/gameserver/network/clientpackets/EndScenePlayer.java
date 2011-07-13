@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * 
  * @author JIV
  */
 public final class EndScenePlayer extends L2GameClientPacket
@@ -55,9 +54,6 @@ public final class EndScenePlayer extends L2GameClientPacket
 		activeChar.setIsTeleporting(false, false);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

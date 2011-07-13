@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.model.entity.ActionKey;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
 
 /**
- *
  * @author mrTJO
  */
 public class RequestSaveKeyMapping extends L2GameClientPacket
@@ -37,10 +36,7 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 	
 	Map<Integer, List<ActionKey>> _keyMap = new FastMap<Integer, List<ActionKey>>();
 	Map<Integer, List<Integer>> _catMap = new FastMap<Integer, List<Integer>>();
-		
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
+	
 	@Override
 	protected void readImpl()
 	{
@@ -107,9 +103,6 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -123,10 +116,6 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 			player.getUISettings().storeAll(_catMap, _keyMap);
 	}
 	
-
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -88,7 +88,6 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Base64;
 
-
 /**
  * Enter World Packet Handler<p>
  * <p>
@@ -98,7 +97,7 @@ import com.l2jserver.util.Base64;
  */
 public class EnterWorld extends L2GameClientPacket
 {
-	private static final String _C__03_ENTERWORLD = "[C] 03 EnterWorld";
+	private static final String _C__11_ENTERWORLD = "[C] 11 EnterWorld";
 	
 	private static Logger _log = Logger.getLogger(EnterWorld.class.getName());
 	
@@ -620,13 +619,10 @@ public class EnterWorld extends L2GameClientPacket
 			qs.getQuest().notifyEvent("UC", null, player);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__03_ENTERWORLD;
+		return _C__11_ENTERWORLD;
 	}
 	
 	@Override

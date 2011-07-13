@@ -96,9 +96,6 @@ public final class RequestVoteNew extends L2GameClientPacket
 		target.sendPacket(new ExVoteSystemInfo(target));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

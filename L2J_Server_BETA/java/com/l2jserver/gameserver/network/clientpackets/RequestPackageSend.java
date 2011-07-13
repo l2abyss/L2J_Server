@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class RequestPackageSend extends L2GameClientPacket
 {
-	private final String _C_9F_REQUESTPACKAGESEND = "[C] 9F RequestPackageSend";
+	private final String _C_A8_REQUESTPACKAGESEND = "[C] A8 RequestPackageSend";
 	private ItemHolder _items[] = null;
 	private int _objectId;
 	private int _count;
@@ -189,6 +189,6 @@ public class RequestPackageSend extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C_9F_REQUESTPACKAGESEND;
+		return _C_A8_REQUESTPACKAGESEND;
 	}
 }

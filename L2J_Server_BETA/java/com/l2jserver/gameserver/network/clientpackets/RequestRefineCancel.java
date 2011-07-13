@@ -39,9 +39,6 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		_targetItemObjId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -131,9 +128,6 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		activeChar.sendPacket(iu);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

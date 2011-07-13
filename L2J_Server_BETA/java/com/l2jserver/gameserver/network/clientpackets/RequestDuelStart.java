@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExDuelAskStart;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
 /**
  * Format:(ch) Sd
  * @author  -Wooden-
@@ -43,9 +42,6 @@ public final class RequestDuelStart extends L2GameClientPacket
 		_partyDuel = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -177,13 +173,9 @@ public final class RequestDuelStart extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C__D0_1B_REQUESTDUELSTART;
 	}
-	
 }

@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.LoginServerThread.SessionKey;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
-
 /**
  * This class ...
  *
@@ -30,7 +29,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  */
 public final class AuthLogin extends L2GameClientPacket
 {
-	private static final String _C__08_AUTHLOGIN = "[C] 08 AuthLogin";
+	private static final String _C__2B_AUTHLOGIN = "[C] 2B AuthLogin";
 	private static Logger _log = Logger.getLogger(AuthLogin.class.getName());
 	
 	// loginName + keys must match what the loginserver used.
@@ -82,13 +81,9 @@ public final class AuthLogin extends L2GameClientPacket
 		}
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__08_AUTHLOGIN;
+		return _C__2B_AUTHLOGIN;
 	}
 }

@@ -43,7 +43,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestBuyItem extends L2GameClientPacket
 {
-	private static final String _C__1F_REQUESTBUYITEM = "[C] 1F RequestBuyItem";
+	private static final String _C__40_REQUESTBUYITEM = "[C] 40 RequestBuyItem";
 	private static Logger _log = Logger.getLogger(RequestBuyItem.class.getName());
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
@@ -316,12 +316,9 @@ public final class RequestBuyItem extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__1F_REQUESTBUYITEM;
+		return _C__40_REQUESTBUYITEM;
 	}
 }

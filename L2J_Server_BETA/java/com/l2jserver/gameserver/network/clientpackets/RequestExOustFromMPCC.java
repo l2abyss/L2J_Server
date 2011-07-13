@@ -20,10 +20,8 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * @author -Wooden-
- *
  * D0 0F 00 5A 00 77 00 65 00 72 00 67 00 00 00
- *
+ * @author -Wooden-
  */
 public final class RequestExOustFromMPCC extends L2GameClientPacket
 {
@@ -37,9 +35,6 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 		_name = readS();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -73,13 +68,9 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C__D0_08_REQUESTEXOUSTFROMMPCC;
 	}
-	
 }

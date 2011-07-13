@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.PackageSendableList;
 public class RequestPackageSendableItemList extends L2GameClientPacket
 {
 	
-	private static final String _C_9E_REQUESTPACKAGESENDABLEITEMLIST = "[C] 9E RequestPackageSendableItemList";
+	private static final String _C_A7_REQUESTPACKAGESENDABLEITEMLIST = "[C] A7 RequestPackageSendableItemList";
 	private int _objectID;
 	
 	@Override
@@ -44,6 +44,6 @@ public class RequestPackageSendableItemList extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C_9E_REQUESTPACKAGESENDABLEITEMLIST;
+		return _C_A7_REQUESTPACKAGESENDABLEITEMLIST;
 	}
 }

@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- *
  * @author  KenM
  */
 public class SetPrivateStoreWholeMsg extends L2GameClientPacket
@@ -30,18 +29,12 @@ public class SetPrivateStoreWholeMsg extends L2GameClientPacket
 	
 	private String _msg;
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
 		_msg = readS();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -58,10 +51,7 @@ public class SetPrivateStoreWholeMsg extends L2GameClientPacket
 		player.getSellList().setTitle(_msg);
 		sendPacket(new ExPrivateStoreSetWholeMsg(player));
 	}
-
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{

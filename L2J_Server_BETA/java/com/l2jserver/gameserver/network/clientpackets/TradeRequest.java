@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class TradeRequest extends L2GameClientPacket
 {
-	private static final String TRADEREQUEST__C__15 = "[C] 15 TradeRequest";
+	private static final String _C__1A_TRADEREQUEST = "[C] 15 TradeRequest";
 	private static Logger _log = Logger.getLogger(TradeRequest.class.getName());
 	
 	private int _objectId;
@@ -152,6 +152,6 @@ public final class TradeRequest extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return TRADEREQUEST__C__15;
+		return _C__1A_TRADEREQUEST;
 	}
 }

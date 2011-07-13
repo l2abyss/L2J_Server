@@ -99,9 +99,6 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 		activeChar.broadcastPacket(new ExMoveToLocationInAirShip(activeChar));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

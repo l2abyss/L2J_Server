@@ -36,7 +36,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestPrivateStoreBuy extends L2GameClientPacket
 {
-	private static final String _C__79_REQUESTPRIVATESTOREBUY = "[C] 79 RequestPrivateStoreBuy";
+	private static final String _C__83_REQUESTPRIVATESTOREBUY = "[C] 83 RequestPrivateStoreBuy";
 	private static Logger _log = Logger.getLogger(RequestPrivateStoreBuy.class.getName());
 	
 	private static final int BATCH_LENGTH = 20; // length of the one item
@@ -180,12 +180,9 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__79_REQUESTPRIVATESTOREBUY;
+		return _C__83_REQUESTPRIVATESTOREBUY;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#cleanUp()
-	 */
 	@Override
 	protected void cleanUp()
 	{

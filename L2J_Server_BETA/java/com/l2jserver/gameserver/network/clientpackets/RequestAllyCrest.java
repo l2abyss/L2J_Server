@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.network.serverpackets.AllyCrest;
 
-
 /**
  * This class ...
  *
@@ -24,14 +23,10 @@ import com.l2jserver.gameserver.network.serverpackets.AllyCrest;
  */
 public final class RequestAllyCrest extends L2GameClientPacket
 {
-	private static final String _C__88_REQUESTALLYCREST = "[C] 88 RequestAllyCrest";
+	private static final String _C__92_REQUESTALLYCREST = "[C] 92 RequestAllyCrest";
 	
 	private int _crestId;
-	/**
-	 * packet type id 0x88 format: cd
-	 *
-	 * @param rawPacket
-	 */
+	
 	@Override
 	protected void readImpl()
 	{
@@ -44,13 +39,10 @@ public final class RequestAllyCrest extends L2GameClientPacket
 		sendPacket(new AllyCrest(_crestId));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__88_REQUESTALLYCREST;
+		return _C__92_REQUESTALLYCREST;
 	}
 	
 	@Override

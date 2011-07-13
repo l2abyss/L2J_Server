@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeInfo;
  */
 public final class RequestPledgeInfo extends L2GameClientPacket
 {
-	private static final String _C__66_REQUESTPLEDGEINFO = "[C] 66 RequestPledgeInfo";
+	private static final String _C__65_REQUESTPLEDGEINFO = "[C] 65 RequestPledgeInfo";
 	
 	private static Logger _log = Logger.getLogger(RequestPledgeInfo.class.getName());
 	
@@ -67,15 +67,10 @@ public final class RequestPledgeInfo extends L2GameClientPacket
 		
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__66_REQUESTPLEDGEINFO;
+		return _C__65_REQUESTPLEDGEINFO;
 	}
 	
 	@Override

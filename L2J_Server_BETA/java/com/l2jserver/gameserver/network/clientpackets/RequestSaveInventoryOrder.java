@@ -22,10 +22,8 @@ import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 
-
 /**
  * Format:(ch) d[dd]
- * 
  * @author -Wooden-
  */
 public final class RequestSaveInventoryOrder extends L2GameClientPacket
@@ -37,9 +35,6 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 	/** client limit */
 	private static final int LIMIT  = 125;
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -54,9 +49,6 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -81,9 +73,6 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 		
 		int objectID;
 		
-		/**
-		 * 
-		 */
 		public InventoryOrder(int id, int ord)
 		{
 			objectID = id;
@@ -96,10 +85,7 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 	{
 		return false;
 	}
-
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{

@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
 
-
 /**
  * This class ...
  *
@@ -38,7 +37,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestCrystallizeItem extends L2GameClientPacket
 {
-	private static final String _C__72_REQUESTDCRYSTALLIZEITEM = "[C] 72 RequestCrystallizeItem";
+	private static final String _C__2F_REQUESTDCRYSTALLIZEITEM = "[C] 2F RequestCrystallizeItem";
 	
 	private static Logger _log = Logger.getLogger(RequestCrystallizeItem.class.getName());
 	
@@ -222,14 +221,9 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		activeChar.setInCrystallize(false);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__72_REQUESTDCRYSTALLIZEITEM;
+		return _C__2F_REQUESTDCRYSTALLIZEITEM;
 	}
 }

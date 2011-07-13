@@ -36,7 +36,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class SetPrivateStoreListSell extends L2GameClientPacket
 {
-	private static final String _C__74_SETPRIVATESTORELISTSELL = "[C] 74 SetPrivateStoreListSell";
+	private static final String _C__31_SETPRIVATESTORELISTSELL = "[C] 31 SetPrivateStoreListSell";
 	
 	private static final int BATCH_LENGTH = 20; // length of the one item
 	
@@ -180,6 +180,6 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__74_SETPRIVATESTORELISTSELL;
+		return _C__31_SETPRIVATESTORELISTSELL;
 	}
 }

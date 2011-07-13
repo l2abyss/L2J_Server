@@ -28,7 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 
-
 /**
  * This class ...
  *
@@ -36,7 +35,7 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
  */
 public final class Logout extends L2GameClientPacket
 {
-	private static final String _C__09_LOGOUT = "[C] 09 Logout";
+	private static final String _C__00_LOGOUT = "[C] 00 Logout";
 	private static final Logger _log = Logger.getLogger(Logout.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
@@ -49,7 +48,7 @@ public final class Logout extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		// Dont allow leaving if player is fighting
+		// Don't allow leaving if player is fighting
 		final L2PcInstance player = getClient().getActiveChar();
 		
 		if (player == null)
@@ -111,12 +110,9 @@ public final class Logout extends L2GameClientPacket
 		player.logout();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__09_LOGOUT;
+		return _C__00_LOGOUT;
 	}
 }

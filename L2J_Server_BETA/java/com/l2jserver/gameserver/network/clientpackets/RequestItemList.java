@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.network.serverpackets.ItemList;
  */
 public final class RequestItemList extends L2GameClientPacket
 {
-	private static final String _C__0F_REQUESTITEMLIST = "[C] 0F RequestItemList";
+	private static final String _C__14_REQUESTITEMLIST = "[C] 14 RequestItemList";
 	
 	@Override
 	protected void readImpl()
@@ -41,13 +41,10 @@ public final class RequestItemList extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__0F_REQUESTITEMLIST;
+		return _C__14_REQUESTITEMLIST;
 	}
 	
 	@Override

@@ -45,9 +45,6 @@ public final class RequestRefine extends AbstractRefinePacket
 		_gemStoneCount = readQ();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -119,9 +116,6 @@ public final class RequestRefine extends AbstractRefinePacket
 		activeChar.sendPacket(su);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

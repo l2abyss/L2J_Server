@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.network.serverpackets.TradeOwnAdd;
  */
 public final class AddTradeItem extends L2GameClientPacket
 {
-	private static final String _C__16_ADDTRADEITEM = "[C] 16 AddTradeItem";
+	private static final String _C__1B_ADDTRADEITEM = "[C] 1B AddTradeItem";
 	private static final Logger _log = Logger.getLogger(AddTradeItem.class.getName());
 	
 	private int _tradeId;
@@ -103,12 +103,9 @@ public final class AddTradeItem extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__16_ADDTRADEITEM;
+		return _C__1B_ADDTRADEITEM;
 	}
 }

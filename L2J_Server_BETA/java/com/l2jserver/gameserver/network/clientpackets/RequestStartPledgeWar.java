@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public final class RequestStartPledgeWar extends L2GameClientPacket
 {
-	private static final String _C__4D_REQUESTSTARTPLEDGEWAR = "[C] 4D RequestStartPledgewar";
+	private static final String _C__03_REQUESTSTARTPLEDGEWAR = "[C] 03 RequestStartPledgewar";
 	//private static Logger _log = Logger.getLogger(RequestStartPledgeWar.class.getName());
 	
 	private String _pledgeName;
@@ -147,6 +147,6 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__4D_REQUESTSTARTPLEDGEWAR;
+		return _C__03_REQUESTSTARTPLEDGEWAR;
 	}
 }

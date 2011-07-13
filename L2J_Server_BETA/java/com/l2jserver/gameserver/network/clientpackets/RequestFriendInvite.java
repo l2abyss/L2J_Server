@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestFriendInvite extends L2GameClientPacket
 {
-	private static final String _C__5E_REQUESTFRIENDINVITE = "[C] 5E RequestFriendInvite";
+	private static final String _C__77_REQUESTFRIENDINVITE = "[C] 77 RequestFriendInvite";
 	//private static Logger _log = Logger.getLogger(RequestFriendInvite.class.getName());
 	
 	private String _name;
@@ -107,6 +107,6 @@ public final class RequestFriendInvite extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__5E_REQUESTFRIENDINVITE;
+		return _C__77_REQUESTFRIENDINVITE;
 	}
 }

@@ -28,11 +28,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  * <li>d: type</li>
  * </ul></p>
  * @author -Wooden-, TempyIncursion
- *
  */
 public final class RequestPetition extends L2GameClientPacket
 {
-	private static final String _C__7F_RequestPetition = "[C] 7F RequestPetition";
+	private static final String _C__89_RequestPetition = "[C] 89 RequestPetition";
 	//private static Logger _log = Logger.getLogger(RequestPetition.class.getName());
 	
 	private String _content;
@@ -110,12 +109,9 @@ public final class RequestPetition extends L2GameClientPacket
 		sm = null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__7F_RequestPetition;
+		return _C__89_RequestPetition;
 	}
 }

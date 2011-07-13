@@ -20,14 +20,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.HennaItemRemoveInfo;
 import com.l2jserver.gameserver.templates.item.L2Henna;
 
-/**
- * This class ...
- *
- * @version $Revision$ $Date$
- */
+
 public final class RequestHennaItemRemoveInfo extends L2GameClientPacket
 {
-	private static final String _C__BB_RequestHennaItemRemoveInfo = "[C] 71 RequestHennaItemRemoveInfo";
+	private static final String _C__71_REQUESTHENNAITEMREMOVEINFO = "[C] 71 RequestHennaItemRemoveInfo";
 	
 	private int _symbolId;
 	// format  cd
@@ -53,12 +49,9 @@ public final class RequestHennaItemRemoveInfo extends L2GameClientPacket
 		activeChar.sendPacket(new HennaItemRemoveInfo(henna, activeChar));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__BB_RequestHennaItemRemoveInfo;
+		return _C__71_REQUESTHENNAITEMREMOVEINFO;
 	}
 }

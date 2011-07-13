@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * This class ...
  *
@@ -29,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class CannotMoveAnymore extends L2GameClientPacket
 {
-	private static final String _C__36_STOPMOVE = "[C] 36 CannotMoveAnymore";
+	private static final String _C__47_STOPMOVE = "[C] 47 CannotMoveAnymore";
 	
 	private static Logger _log = Logger.getLogger(CannotMoveAnymore.class.getName());
 	
@@ -83,14 +82,9 @@ public final class CannotMoveAnymore extends L2GameClientPacket
 		// getClient().getActiveChar().broadcastPacket(sr);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__36_STOPMOVE;
+		return _C__47_STOPMOVE;
 	}
 }

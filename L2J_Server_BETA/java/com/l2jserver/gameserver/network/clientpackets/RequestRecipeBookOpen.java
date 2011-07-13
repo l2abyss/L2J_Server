@@ -19,10 +19,9 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.RecipeController;
 
-
 public final class RequestRecipeBookOpen extends L2GameClientPacket
 {
-	private static final String _C__AC_REQUESTRECIPEBOOKOPEN = "[C] AC RequestRecipeBookOpen";
+	private static final String _C__B5_REQUESTRECIPEBOOKOPEN = "[C] B5 RequestRecipeBookOpen";
 	private static Logger _log = Logger.getLogger(RequestRecipeBookOpen.class.getName());
 	
 	private boolean _isDwarvenCraft;
@@ -52,12 +51,9 @@ public final class RequestRecipeBookOpen extends L2GameClientPacket
 		RecipeController.getInstance().requestBookOpen(getClient().getActiveChar(), _isDwarvenCraft);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__AC_REQUESTRECIPEBOOKOPEN;
+		return _C__B5_REQUESTRECIPEBOOKOPEN;
 	}
 }

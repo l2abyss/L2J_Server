@@ -175,13 +175,9 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C__D0_06_REQUESTEXASKJOINMPCC;
 	}
-	
 }

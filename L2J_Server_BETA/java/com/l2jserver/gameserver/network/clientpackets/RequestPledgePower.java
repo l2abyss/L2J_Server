@@ -14,17 +14,14 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ManagePledgePower;
 
-
 public final class RequestPledgePower extends L2GameClientPacket
 {
-	static Logger _log = Logger.getLogger(ManagePledgePower.class.getName());
-	private static final String _C__C0_REQUESTPLEDGEPOWER = "[C] C0 RequestPledgePower";
+	private static final String _C__CC_REQUESTPLEDGEPOWER = "[C] CC RequestPledgePower";
+	
 	private int _rank;
 	private int _action;
 	private int _privs;
@@ -72,12 +69,9 @@ public final class RequestPledgePower extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__C0_REQUESTPLEDGEPOWER;
+		return _C__CC_REQUESTPLEDGEPOWER;
 	}
 }

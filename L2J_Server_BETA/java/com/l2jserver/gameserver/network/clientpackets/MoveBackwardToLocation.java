@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class MoveBackwardToLocation extends L2GameClientPacket
 {
+	private static final String _C__0F_MOVEBACKWARDTOLOC = "[C] 0F MoveBackwardToLoc";
 	//private static Logger _log = Logger.getLogger(MoveBackwardToLocation.class.getName());
 	// cdddddd
 	private int _targetX;
@@ -52,8 +53,6 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 	{
 		return TaskPriority.PR_HIGH;
 	}
-	
-	private static final String _C__01_MOVEBACKWARDTOLOC = "[C] 01 MoveBackwardToLoc";
 	
 	@Override
 	protected void readImpl()
@@ -133,12 +132,9 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__01_MOVEBACKWARDTOLOC;
+		return _C__0F_MOVEBACKWARDTOLOC;
 	}
 }

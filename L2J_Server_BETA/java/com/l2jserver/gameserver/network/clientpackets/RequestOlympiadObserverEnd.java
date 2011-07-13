@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  * c: (id) 0xD0
  * h: (subid) 0x12
  * @author -Wooden-
- *
  */
 public final class RequestOlympiadObserverEnd extends L2GameClientPacket
 {
@@ -34,10 +33,6 @@ public final class RequestOlympiadObserverEnd extends L2GameClientPacket
 		// trigger
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
-	
 	@Override
 	protected void runImpl()
 	{
@@ -47,14 +42,9 @@ public final class RequestOlympiadObserverEnd extends L2GameClientPacket
 		if (activeChar.inObserverMode()) activeChar.leaveOlympiadObserverMode();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
-	
 	@Override
 	public String getType()
 	{
 		return _C__D0_29_REQUESTOLYMPIADOBSERVEREND;
 	}
-	
 }

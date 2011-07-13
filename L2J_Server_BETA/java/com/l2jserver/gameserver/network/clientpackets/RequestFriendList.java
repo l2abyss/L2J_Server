@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestFriendList extends L2GameClientPacket
 {
 	//private static Logger _log = Logger.getLogger(RequestFriendList.class.getName());
-	private static final String _C__60_REQUESTFRIENDLIST = "[C] 60 RequestFriendList";
+	private static final String _C__79_REQUESTFRIENDLIST = "[C] 79 RequestFriendList";
 	
 	@Override
 	protected void readImpl()
@@ -83,6 +83,6 @@ public final class RequestFriendList extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__60_REQUESTFRIENDLIST;
+		return _C__79_REQUESTFRIENDLIST;
 	}
 }

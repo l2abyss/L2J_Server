@@ -34,9 +34,6 @@ public final class RequestExMPCCShowPartyMembersInfo extends L2GameClientPacket
 		_partyLeaderId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -48,13 +45,9 @@ public final class RequestExMPCCShowPartyMembersInfo extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C__D0_2D_REQUESTMPCCSHOWPARTYMEMBERINFO;
 	}
-	
 }

@@ -41,9 +41,9 @@ import com.l2jserver.gameserver.util.Util;
  * d - price
  * ]
  * @author l3x
- *
  */
-public class RequestSetSeed extends L2GameClientPacket {
+public class RequestSetSeed extends L2GameClientPacket
+{
 	private static final String _C__D0_03_REQUESTSETSEED = "[C] D0:03 RequestSetSeed";
 	//private static Logger _log = Logger.getLogger(RequestSetSeed.class.getName());
 	
@@ -52,10 +52,6 @@ public class RequestSetSeed extends L2GameClientPacket {
 	private int _manorId;
 	private Seed _items[] = null;
 	
-	/**
-	 * @param buf
-	 * @param client
-	 */
 	@Override
 	protected void readImpl()
 	{

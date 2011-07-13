@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.network.serverpackets.NewCharacterSuccess;
 import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 
-
 /**
  * This class ...
  *
@@ -30,7 +29,7 @@ import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
  */
 public final class NewCharacter extends L2GameClientPacket
 {
-	private static final String _C__0E_NEWCHARACTER = "[C] 0E NewCharacter";
+	private static final String _C__13_NEWCHARACTER = "[C] 13 NewCharacter";
 	private static Logger _log = Logger.getLogger(NewCharacter.class.getName());
 	
 	@Override
@@ -85,12 +84,9 @@ public final class NewCharacter extends L2GameClientPacket
 		sendPacket(ct);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__0E_NEWCHARACTER;
+		return _C__13_NEWCHARACTER;
 	}
 }

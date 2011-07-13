@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- ** @author Gnacik
+ * @author Gnacik
  */
 public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 {
@@ -73,7 +73,6 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		}
 		
 		L2PremiumItem _item = activeChar.getPremiumItemList().get(_itemNum);
-		
 		if (_item == null)
 			return;
 		if (_item.getCount() < _itemcount)
@@ -103,5 +102,4 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 	{
 		return _C__D0_52_REQUESTWITHDRAWPREMIUMITEM;
 	}
-	
 }

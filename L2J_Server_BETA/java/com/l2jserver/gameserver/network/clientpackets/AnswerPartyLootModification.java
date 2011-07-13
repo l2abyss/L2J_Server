@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author JIV
- *
  */
 public class AnswerPartyLootModification extends L2GameClientPacket
 {
@@ -49,5 +48,4 @@ public class AnswerPartyLootModification extends L2GameClientPacket
 	{
 		return _C__D0_79_ANSWERPARTYLOOTMODIFICATION;
 	}
-	
 }

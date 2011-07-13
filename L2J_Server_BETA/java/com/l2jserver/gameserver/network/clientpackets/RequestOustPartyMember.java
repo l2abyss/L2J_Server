@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RequestOustPartyMember extends L2GameClientPacket
 {
-	private static final String _C__2C_REQUESTOUSTPARTYMEMBER = "[C] 2C RequestOustPartyMember";
+	private static final String _C__45_REQUESTOUSTPARTYMEMBER = "[C] 45 RequestOustPartyMember";
 	//private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
 	
 	private String _name;
@@ -53,6 +53,6 @@ public final class RequestOustPartyMember extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__2C_REQUESTOUSTPARTYMEMBER;
+		return _C__45_REQUESTOUSTPARTYMEMBER;
 	}
 }

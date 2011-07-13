@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowDominionRegistry;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- *
  * @author Gigiikun
  */
 public final class RequestJoinDominionWar extends L2GameClientPacket

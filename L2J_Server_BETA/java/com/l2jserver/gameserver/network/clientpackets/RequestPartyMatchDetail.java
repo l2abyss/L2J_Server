@@ -27,9 +27,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 /**
  * @author Gnacik
  */
-
 public final class RequestPartyMatchDetail extends L2GameClientPacket
 {
+	private static final String _C__81_REQUESTPARTYMATCHDETAIL = "[C] 81 RequestPartyMatchDetail";
+	
 	private int _roomid;
 	@SuppressWarnings("unused")
 	private int _unk1;
@@ -98,6 +99,6 @@ public final class RequestPartyMatchDetail extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] 81 RequestPartyMatchDetail";
+		return _C__81_REQUESTPARTYMATCHDETAIL;
 	}
 }

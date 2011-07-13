@@ -26,11 +26,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Client packet for setting/deleting clan crest.
- *
  */
 public final class RequestSetPledgeCrest extends L2GameClientPacket
 {
-	private static final String _C__53_REQUESTSETPLEDGECREST = "[C] 53 RequestSetPledgeCrest";
+	private static final String _C__09_REQUESTSETPLEDGECREST = "[C] 09 RequestSetPledgeCrest";
 	static Logger _log = Logger.getLogger(RequestSetPledgeCrest.class.getName());
 	
 	private int _length;
@@ -110,12 +109,9 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__53_REQUESTSETPLEDGECREST;
+		return _C__09_REQUESTSETPLEDGECREST;
 	}
 }

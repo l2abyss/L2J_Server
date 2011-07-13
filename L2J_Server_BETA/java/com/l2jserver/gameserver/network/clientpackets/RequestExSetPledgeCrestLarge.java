@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  * d data size
  * b raw data (picture i think ;) )
  * @author -Wooden-
- *
  */
 public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 {
@@ -52,9 +51,6 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 		readB(_data);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -116,9 +112,6 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

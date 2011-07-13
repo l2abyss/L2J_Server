@@ -20,10 +20,11 @@ import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * @author Maktakien
- *
  */
 public final class CannotMoveAnymoreInVehicle extends L2GameClientPacket
 {
+	private static final String _C__76_CANNOTMOVEANYMOREINVEHICLE = "[C] 76 CannotMoveAnymoreInVehicle";
+	
 	private int _x;
 	private int _y;
 	private int _z;
@@ -63,7 +64,6 @@ public final class CannotMoveAnymoreInVehicle extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] 5D CannotMoveAnymoreInVehicle";
+		return _C__76_CANNOTMOVEANYMOREINVEHICLE;
 	}
-	
 }

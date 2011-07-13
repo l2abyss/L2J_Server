@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestWithdrawalPledge extends L2GameClientPacket
 {
-	private static final String _C__26_REQUESTWITHDRAWALPLEDGE = "[C] 26 RequestWithdrawalPledge";
+	private static final String _C__28_REQUESTWITHDRAWALPLEDGE = "[C] 28 RequestWithdrawalPledge";
 	//static Logger _log = Logger.getLogger(RequestWithdrawalPledge.class.getName());
 	
 	@Override
@@ -77,12 +77,9 @@ public final class RequestWithdrawalPledge extends L2GameClientPacket
 		activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_MUST_WAIT_BEFORE_JOINING_ANOTHER_CLAN));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__26_REQUESTWITHDRAWALPLEDGE;
+		return _C__28_REQUESTWITHDRAWALPLEDGE;
 	}
 }

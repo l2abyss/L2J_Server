@@ -28,9 +28,9 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 /**
  * author: Gnacik
  */
-
 public class RequestPartyMatchList extends L2GameClientPacket
 {
+	private static final String _C__80_REQUESTPARTYMATCHLIST = "[C] 80 RequestPartyMatchList";
 	private static final Logger _log = Logger.getLogger(RequestPartyMatchList.class.getName());
 	
 	private int _roomid;
@@ -122,6 +122,6 @@ public class RequestPartyMatchList extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] 80 RequestPartyMatchList";
+		return _C__80_REQUESTPARTYMATCHLIST;
 	}
 }

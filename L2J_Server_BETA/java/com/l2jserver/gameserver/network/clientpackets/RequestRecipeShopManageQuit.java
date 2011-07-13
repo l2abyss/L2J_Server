@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RequestRecipeShopManageQuit extends L2GameClientPacket
 {
-	private static final String _C__B3_RequestRecipeShopManageQuit = "[C] b2 RequestRecipeShopManageQuit";
+	private static final String _C__BC_RequestRecipeShopManageQuit = "[C] BC2 RequestRecipeShopManageQuit";
 	//private static Logger _log = Logger.getLogger(RequestRecipeShopManageQuit.class.getName());
 	
 	@Override
@@ -47,6 +47,6 @@ public final class RequestRecipeShopManageQuit extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__B3_RequestRecipeShopManageQuit;
+		return _C__BC_RequestRecipeShopManageQuit;
 	}
 }

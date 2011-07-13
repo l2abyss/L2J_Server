@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
  * @author  KenM, Gnacik
  */
 public class RequestChangeNicknameColor extends L2GameClientPacket
@@ -42,9 +41,6 @@ public class RequestChangeNicknameColor extends L2GameClientPacket
 	private int _colorNum, _itemObjectId;
 	private String _title;
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -53,9 +49,6 @@ public class RequestChangeNicknameColor extends L2GameClientPacket
 		_itemObjectId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -80,9 +73,6 @@ public class RequestChangeNicknameColor extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

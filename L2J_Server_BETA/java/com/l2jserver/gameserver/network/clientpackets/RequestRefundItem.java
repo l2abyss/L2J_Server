@@ -229,9 +229,6 @@ public final class RequestRefundItem extends L2GameClientPacket
 		player.sendPacket(new ExBuySellListPacket(player, list, taxRate, true));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

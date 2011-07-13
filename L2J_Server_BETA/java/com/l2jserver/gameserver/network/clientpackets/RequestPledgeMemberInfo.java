@@ -21,11 +21,9 @@ import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.PledgeReceiveMemberInfo;
 
-
 /**
  * Format: (ch) dS
  * @author  -Wooden-
- *
  */
 public final class RequestPledgeMemberInfo extends L2GameClientPacket
 {
@@ -42,9 +40,6 @@ public final class RequestPledgeMemberInfo extends L2GameClientPacket
 		_player = readS();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -63,13 +58,9 @@ public final class RequestPledgeMemberInfo extends L2GameClientPacket
 		activeChar.sendPacket(new PledgeReceiveMemberInfo(member));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C__D0_16_REQUESTPLEDGEMEMBERINFO;
 	}
-	
 }

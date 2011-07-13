@@ -25,9 +25,8 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeShopSellList;
  */
 public final class RequestRecipeShopManagePrev extends L2GameClientPacket
 {
-	private static final String _C__B7_RequestRecipeShopPrev = "[C] b7 RequestRecipeShopPrev";
+	private static final String _C__C0_RequestRecipeShopPrev = "[C] C0 RequestRecipeShopPrev";
 	//private static Logger _log = Logger.getLogger(RequestPrivateStoreManage.class.getName());
-	
 	
 	@Override
 	protected void readImpl()
@@ -55,12 +54,9 @@ public final class RequestRecipeShopManagePrev extends L2GameClientPacket
 		player.sendPacket(new RecipeShopSellList(player,target));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__B7_RequestRecipeShopPrev;
+		return _C__C0_RequestRecipeShopPrev;
 	}
 }

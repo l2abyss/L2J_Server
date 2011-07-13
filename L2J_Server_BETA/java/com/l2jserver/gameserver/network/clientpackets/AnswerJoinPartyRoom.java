@@ -16,8 +16,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 /**
  * Format: (ch) d
- * @author  -Wooden-
- *
+ * @author -Wooden-
  */
 public final class AnswerJoinPartyRoom extends L2GameClientPacket
 {
@@ -49,5 +48,4 @@ public final class AnswerJoinPartyRoom extends L2GameClientPacket
 	{
 		return _C__D0_30_ANSWERJOINPARTYROOM;
 	}
-	
 }

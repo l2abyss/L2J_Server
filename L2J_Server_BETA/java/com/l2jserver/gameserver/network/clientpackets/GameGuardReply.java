@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.network.L2GameClient;
 
-
 /**
  * Format: c dddd
  *
@@ -31,7 +30,7 @@ import com.l2jserver.gameserver.network.L2GameClient;
 public class GameGuardReply extends L2GameClientPacket
 {
 	protected static final Logger _log = Logger.getLogger(GameGuardReply.class.getName());
-	private static final String _C__CA_GAMEGUARDREPLY = "[C] CA GameGuardReply";
+	private static final String _C__CB_GAMEGUARDREPLY = "[C] CB GameGuardReply";
 	
 	private static final byte[] VALID =
 	{
@@ -72,7 +71,7 @@ public class GameGuardReply extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__CA_GAMEGUARDREPLY;
+		return _C__CB_GAMEGUARDREPLY;
 	}
 	
 	@Override

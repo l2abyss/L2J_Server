@@ -34,38 +34,34 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.util.Util;
 
 /**
+ * packet type id 0x1e
+ *
+ * sample
+ *
+ * 1e
+ * 00 00 00 00		// list id
+ * 02 00 00 00		// number of items
+ *
+ * 71 72 00 10		// object id
+ * ea 05 00 00		// item id
+ * 01 00 00 00		// item count
+ *
+ * 76 4b 00 10		// object id
+ * 2e 0a 00 00		// item id
+ * 01 00 00 00		// item count
+ *
+ * format:		cdd (ddd)
  * RequestSellItem client packet class.
  */
 public final class RequestSellItem extends L2GameClientPacket
 {
-	private static final String _C__1E_REQUESTSELLITEM = "[C] 1E RequestSellItem";
+	private static final String _C__37_REQUESTSELLITEM = "[C] 37 RequestSellItem";
 	//private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
 	
 	private static final int BATCH_LENGTH = 16; // length of the one item
 	
 	private int _listId;
 	private Item[] _items = null;
-	
-	/**
-	 * packet type id 0x1e
-	 *
-	 * sample
-	 *
-	 * 1e
-	 * 00 00 00 00		// list id
-	 * 02 00 00 00		// number of items
-	 *
-	 * 71 72 00 10		// object id
-	 * ea 05 00 00		// item id
-	 * 01 00 00 00		// item count
-	 *
-	 * 76 4b 00 10		// object id
-	 * 2e 0a 00 00		// item id
-	 * 01 00 00 00		// item count
-	 *
-	 * format:		cdd (ddd)
-	 * @param decrypt
-	 */
 	
 	@Override
 	protected void readImpl()
@@ -238,12 +234,9 @@ public final class RequestSellItem extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__1E_REQUESTSELLITEM;
+		return _C__37_REQUESTSELLITEM;
 	}
 }

@@ -32,15 +32,9 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestHennaEquip extends L2GameClientPacket
 {
-	private static final String _C__BC_RequestHennaEquip = "[C] bc RequestHennaEquip";
+	private static final String _C__6F_REQUESTHENNAEQUIP = "[C] 6F RequestHennaEquip";
 	private int _symbolId;
-	// format  cd
 	
-	/**
-	 * packet type id 0xbb
-	 * format:		cd
-	 * @param decrypt
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -113,12 +107,9 @@ public final class RequestHennaEquip extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__BC_RequestHennaEquip;
+		return _C__6F_REQUESTHENNAEQUIP;
 	}
 }

@@ -20,25 +20,18 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ExShowFortressSiegeInfo;
 
 /**
- *
  * @author  KenM
  */
 public class RequestFortressSiegeInfo extends L2GameClientPacket
 {
 	private static final String _C__D0_3F_REQUESTFORTRESSSIEGEINFO = "[C] D0:3F RequestFortressSiegeInfo";
-		
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -60,10 +53,7 @@ public class RequestFortressSiegeInfo extends L2GameClientPacket
 	{
 		return false;
 	}
-
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{

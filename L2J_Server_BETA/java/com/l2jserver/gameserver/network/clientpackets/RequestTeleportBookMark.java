@@ -41,7 +41,6 @@ public final class RequestTeleportBookMark extends L2GameClientPacket
 		activeChar.teleportBookmarkGo(id);
 	}
 	
-	
 	@Override
 	public String getType()
 	{

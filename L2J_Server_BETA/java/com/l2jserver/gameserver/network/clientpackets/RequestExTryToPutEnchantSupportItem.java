@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExPutEnchantSupportItemRes
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- *
  * @author  KenM
  */
 public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
@@ -31,9 +30,6 @@ public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
 	private int _supportObjectId;
 	private int _enchantObjectId;
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -41,9 +37,6 @@ public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
 		_enchantObjectId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -73,10 +66,7 @@ public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
 			}
 		}
 	}
-
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{

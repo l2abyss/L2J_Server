@@ -40,7 +40,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class SendWareHouseWithDrawList extends L2GameClientPacket
 {
-	private static final String _C__32_SENDWAREHOUSEWITHDRAWLIST = "[C] 32 SendWareHouseWithDrawList";
+	private static final String _C__32_SENDWAREHOUSEWITHDRAWLIST = "[C] 3C SendWareHouseWithDrawList";
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
 	

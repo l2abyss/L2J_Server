@@ -30,8 +30,8 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
  */
 public final class RequestPetGetItem extends L2GameClientPacket
 {
+	private static final String _C__98_REQUESTPETGETITEM = "[C] 98 RequestPetGetItem";
 	//private static Logger _log = Logger.getLogger(RequestPetGetItem.class.getName());
-	private static final String _C__8f_REQUESTPETGETITEM= "[C] 8F RequestPetGetItem";
 	
 	private int _objectId;
 	
@@ -77,7 +77,6 @@ public final class RequestPetGetItem extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__8f_REQUESTPETGETITEM;
+		return _C__98_REQUESTPETGETITEM;
 	}
-	
 }

@@ -22,29 +22,24 @@ import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShowCommunityBoard;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
+
 /**
- * This class ...
+ * packet type id 0x57
  *
- * @version $Revision: 1.2.4.2 $ $Date: 2005/03/27 15:29:30 $
+ * sample
+ *
+ * 57
+ * 01 00 00 00		// unknown (always 1?)
+ *
+ * format:		cd
  */
 public final class RequestShowBoard extends L2GameClientPacket
 {
-	private static final String _C__57_REQUESTSHOWBOARD = "[C] 57 RequestShowBoard";
+	private static final String _C__5E_REQUESTSHOWBOARD = "[C] 5E RequestShowBoard";
 	
 	@SuppressWarnings("unused")
 	private int _unknown;
 	
-	/**
-	 * packet type id 0x57
-	 *
-	 * sample
-	 *
-	 * 57
-	 * 01 00 00 00		// unknown (always 1?)
-	 *
-	 * format:		cd
-	 * @param decrypt
-	 */
 	@Override
 	protected final void readImpl()
 	{
@@ -73,7 +68,7 @@ public final class RequestShowBoard extends L2GameClientPacket
 	@Override
 	public final String getType()
 	{
-		return _C__57_REQUESTSHOWBOARD;
+		return _C__5E_REQUESTSHOWBOARD;
 	}
 	
 	@Override

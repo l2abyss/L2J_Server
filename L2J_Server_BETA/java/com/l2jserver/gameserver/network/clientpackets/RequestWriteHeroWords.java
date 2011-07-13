@@ -23,18 +23,13 @@ import com.l2jserver.gameserver.model.entity.Hero;
  * h (subid) 0x0C
  * S the hero's words :)
  * @author -Wooden-
- *
  */
 public final class RequestWriteHeroWords extends L2GameClientPacket
 {
-	private static final String _C__FE_05_REQUESTWRITEHEROWORDS = "[C] D0:05 RequestWriteHeroWords";
+	private static final String _C__D0_05_REQUESTWRITEHEROWORDS = "[C] D0:05 RequestWriteHeroWords";
 	
 	private String _heroWords;
 	
-	/**
-	 * @param buf
-	 * @param client
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -57,6 +52,6 @@ public final class RequestWriteHeroWords extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__FE_05_REQUESTWRITEHEROWORDS;
+		return _C__D0_05_REQUESTWRITEHEROWORDS;
 	}
 }

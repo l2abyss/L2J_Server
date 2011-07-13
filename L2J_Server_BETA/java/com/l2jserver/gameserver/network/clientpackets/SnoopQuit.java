@@ -19,11 +19,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author -Wooden-
- *
  */
 public final class SnoopQuit extends L2GameClientPacket
 {
-	private static final String _C__AB_SNOOPQUIT = "[C] AB SnoopQuit";
+	private static final String _C__B4_SNOOPQUIT = "[C] B4 SnoopQuit";
 	
 	private int _snoopID;
 	
@@ -34,11 +33,6 @@ public final class SnoopQuit extends L2GameClientPacket
 		_snoopID = readD();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -54,15 +48,9 @@ public final class SnoopQuit extends L2GameClientPacket
 		
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__AB_SNOOPQUIT;
+		return _C__B4_SNOOPQUIT;
 	}
-	
 }

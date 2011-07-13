@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.GMAudit;
 import com.l2jserver.gameserver.util.Util;
 
-
 /**
  * This class ...
  *
@@ -38,7 +37,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestDropItem extends L2GameClientPacket
 {
-	private static final String _C__12_REQUESTDROPITEM = "[C] 12 RequestDropItem";
+	private static final String _C__17_REQUESTDROPITEM = "[C] 17 RequestDropItem";
 	private static Logger _log = Logger.getLogger(RequestDropItem.class.getName());
 	
 	private int _objectId;
@@ -223,13 +222,10 @@ public final class RequestDropItem extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__12_REQUESTDROPITEM;
+		return _C__17_REQUESTDROPITEM;
 	}
 	
 	@Override

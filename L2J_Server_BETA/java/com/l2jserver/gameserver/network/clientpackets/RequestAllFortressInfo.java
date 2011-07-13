@@ -18,25 +18,18 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ExShowFortressInfo;
 
 /**
- *
  * @author  KenM
  */
 public class RequestAllFortressInfo extends L2GameClientPacket
 {
 	private static final String _C__D0_3D_REQUESTALLFORTRESSINFO = "[C] D0:3D RequestAllFortressInfo";
-		
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
+	
 	@Override
 	protected void readImpl()
 	{
 		// trigger packet
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -52,10 +45,7 @@ public class RequestAllFortressInfo extends L2GameClientPacket
 	{
 		return false;
 	}
-
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{

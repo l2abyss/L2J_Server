@@ -18,9 +18,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExNeedToChangeName;
 
 /**
  * Reply for {@link ExNeedToChangeName}
- * 
  * @author JIV
- *
  */
 public class RequestExChangeName extends L2GameClientPacket
 {
@@ -30,9 +28,6 @@ public class RequestExChangeName extends L2GameClientPacket
 	private int _type;
 	private int _charSlot;
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -41,9 +36,6 @@ public class RequestExChangeName extends L2GameClientPacket
 		_charSlot = readD();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -51,13 +43,9 @@ public class RequestExChangeName extends L2GameClientPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _C__D0_3B_REQUESTEXCHANGENAME;
 	}
-	
 }

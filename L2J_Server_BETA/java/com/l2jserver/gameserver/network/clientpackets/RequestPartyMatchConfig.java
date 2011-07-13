@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  *
  * @version $Revision: 1.1.4.2 $ $Date: 2005/03/27 15:29:30 $
  */
-
 public final class RequestPartyMatchConfig extends L2GameClientPacket
 {
 	private static final String _C__7F_REQUESTPARTYMATCHCONFIG = "[C] 7F RequestPartyMatchConfig";

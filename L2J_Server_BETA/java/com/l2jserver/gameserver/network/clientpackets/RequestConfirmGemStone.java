@@ -32,10 +32,6 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 	private int _gemstoneItemObjId;
 	private long _gemStoneCount;
 	
-	/**
-	 * @param buf
-	 * @param client
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -45,9 +41,6 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		_gemStoneCount= readQ();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected
 	void runImpl()
@@ -86,9 +79,6 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		activeChar.sendPacket(new ExPutCommissionResultForVariationMake(_gemstoneItemObjId, _gemStoneCount, gemStoneItem.getItemId()));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

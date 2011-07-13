@@ -37,7 +37,7 @@ import com.l2jserver.gameserver.network.serverpackets.ServerClose;
  */
 public class CharacterSelect extends L2GameClientPacket
 {
-	private static final String _C__0D_CHARACTERSELECT = "[C] 0D CharacterSelect";
+	private static final String _C__12_CHARACTERSELECT = "[C] 12 CharacterSelect";
 	private static final Logger _log = Logger.getLogger(CharacterSelect.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
@@ -140,12 +140,9 @@ public class CharacterSelect extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__0D_CHARACTERSELECT;
+		return _C__12_CHARACTERSELECT;
 	}
 }

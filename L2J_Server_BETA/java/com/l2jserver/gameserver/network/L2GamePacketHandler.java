@@ -137,7 +137,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						msg = new Logout();
 						break;
 					case 0x01:
-						msg = new AttackRequest();
+						msg = new Attack();
 						break;
 					case 0x03:
 						msg = new RequestStartPledgeWar();
@@ -411,7 +411,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0x67:
 						msg = new RequestPledgeCrest();
 						break;
-					case 0x6b:
+					case 0x6b: //RequestSendL2FriendSay
 						msg = new RequestSendFriendMsg();
 						break;
 					case 0x6c:
@@ -477,7 +477,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0x81:
 						msg = new RequestPartyMatchDetail();
 						break;
-					case 0x83:
+					case 0x83: //SendPrivateStoreBuyList
 						msg = new RequestPrivateStoreBuy();
 						break;
 					case 0x85:
@@ -543,7 +543,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0x99:
 						msg = new RequestPrivateStoreManageBuy();
 						break;
-					case 0x9a:
+					case 0x9a: // SetPrivateStoreList
 						msg = new SetPrivateStoreListBuy ();
 						break;
 					case 0x9c:
@@ -573,16 +573,16 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xaa:
 						msg = new RequestSiegeInfo();
 						break;
-					case 0xab:
+					case 0xab: // RequestCastleSiegeAttackerList
 						msg = new RequestSiegeAttackerList();
 						break;
 					case 0xac:
 						msg = new RequestSiegeDefenderList();
 						break;
-					case 0xad:
+					case 0xad: //RequestJoinCastleSiege
 						msg = new RequestJoinSiege();
 						break;
-					case 0xae:
+					case 0xae: //RequestConfirmCastleSiegeWaitingList
 						msg = new RequestConfirmSiegeWaitingList();
 						break;
 					case 0xaf:
@@ -633,7 +633,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xbe:
 						msg = new RequestRecipeShopMakeInfo();
 						break;
-					case 0xbf:
+					case 0xbf: // RequestRecipeShopMakeDo
 						msg = new RequestRecipeShopMakeItem();
 						break;
 					case 0xc0: // RequestRecipeShopSellList
@@ -1073,7 +1073,6 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								// RequestAddExpandQuestAlarm
 								break;
 							case 0x7e:
-								// RequestVoteNew
 								msg = new RequestVoteNew();
 								break;
 							case 0x84:

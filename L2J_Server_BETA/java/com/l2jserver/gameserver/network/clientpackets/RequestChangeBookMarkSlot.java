@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-
 /**
  *  @author ShanSoft
  *  Packets Structure: chddd

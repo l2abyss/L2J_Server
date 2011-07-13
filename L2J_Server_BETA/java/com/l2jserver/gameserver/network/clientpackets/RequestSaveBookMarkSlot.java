@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  *  @author ShanSoft
  *  @structure chdSdS
@@ -44,7 +43,6 @@ public final class RequestSaveBookMarkSlot extends L2GameClientPacket
 			return;
 		activeChar.teleportBookmarkAdd(activeChar.getX(), activeChar.getY(), activeChar.getZ(), icon, tag, name);
 	}
-	
 	
 	@Override
 	public String getType()

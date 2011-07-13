@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestRecipeShopMakeItem extends L2GameClientPacket
 {
-	private static final String _C__AF_REQUESTRECIPESHOPMAKEITEM = "[C] B6 RequestRecipeShopMakeItem";
+	private static final String _C__BF_REQUESTRECIPESHOPMAKEITEM = "[C] BF RequestRecipeShopMakeItem";
 	//private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
 	
 	private int _id;
@@ -80,7 +80,6 @@ public final class RequestRecipeShopMakeItem extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__AF_REQUESTRECIPESHOPMAKEITEM;
+		return _C__BF_REQUESTRECIPESHOPMAKEITEM;
 	}
-	
 }

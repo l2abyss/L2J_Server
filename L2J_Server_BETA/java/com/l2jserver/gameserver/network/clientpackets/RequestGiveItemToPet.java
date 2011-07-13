@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
 /**
  * This class ...
  *
@@ -31,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestGiveItemToPet extends L2GameClientPacket
 {
-	private static final String REQUESTCIVEITEMTOPET__C__8B = "[C] 8B RequestGiveItemToPet";
+	private static final String __C__95_REQUESTCIVEITEMTOPET = "[C] 95 RequestGiveItemToPet";
 	
 	private static Logger _log = Logger.getLogger(RequestGetItemFromPet.class.getName());
 	
@@ -124,6 +123,6 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return REQUESTCIVEITEMTOPET__C__8B;
+		return __C__95_REQUESTCIVEITEMTOPET;
 	}
 }

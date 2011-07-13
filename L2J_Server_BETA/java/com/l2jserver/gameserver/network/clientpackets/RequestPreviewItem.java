@@ -50,6 +50,8 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestPreviewItem extends L2GameClientPacket
 {
+	private static final String _C__C7_REQUESTPREVIEWITEM = "[C] C7 RequestPreviewItem";
+	
 	protected static final Logger _log = Logger.getLogger(RequestPreviewItem.class.getName());
 	
 	private L2PcInstance _activeChar;
@@ -229,12 +231,9 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return "[C] C7 RequestPreviewItem".intern();
+		return _C__C7_REQUESTPREVIEWITEM;
 	}
 }

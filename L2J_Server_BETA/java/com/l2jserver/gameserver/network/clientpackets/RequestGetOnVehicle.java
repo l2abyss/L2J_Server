@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.util.Point3D;
  */
 public final class RequestGetOnVehicle extends L2GameClientPacket
 {
-	private static final String _C__5C_GETONVEHICLE = "[C] 5C GetOnVehicle";
+	private static final String _C__53_GETONVEHICLE = "[C] 53 GetOnVehicle";
 	
 	private int _boatId;
 	private Point3D _pos;
@@ -82,12 +82,9 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
 		activeChar.revalidateZone(true);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__5C_GETONVEHICLE;
+		return _C__53_GETONVEHICLE;
 	}
 }

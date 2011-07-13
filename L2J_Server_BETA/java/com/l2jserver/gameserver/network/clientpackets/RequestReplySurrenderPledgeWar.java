@@ -19,7 +19,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public final class RequestReplySurrenderPledgeWar extends L2GameClientPacket
 {
-	private static final String _C__52_REQUESTREPLYSURRENDERPLEDGEWAR = "[C] 52 RequestReplySurrenderPledgeWar";
+	private static final String _C__08_REQUESTREPLYSURRENDERPLEDGEWAR = "[C] 08 RequestReplySurrenderPledgeWar";
 	//private static Logger _log = Logger.getLogger(RequestReplySurrenderPledgeWar.class.getName());
 	
 	private int _answer;
@@ -48,6 +48,7 @@ public final class RequestReplySurrenderPledgeWar extends L2GameClientPacket
 		}
 		else
 		{
+			//TODO: is there something missing?
 		}
 		
 		activeChar.onTransactionRequest(null);
@@ -56,6 +57,6 @@ public final class RequestReplySurrenderPledgeWar extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__52_REQUESTREPLYSURRENDERPLEDGEWAR;
+		return _C__08_REQUESTREPLYSURRENDERPLEDGEWAR;
 	}
 }

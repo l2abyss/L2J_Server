@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
-
 /**
  * This class ...
  *
@@ -33,7 +32,7 @@ import com.l2jserver.gameserver.templates.item.L2Item;
  */
 public class RequestUnEquipItem extends L2GameClientPacket
 {
-	private static final String _C__11_REQUESTUNEQUIPITEM = "[C] 11 RequestUnequipItem";
+	private static final String _C__16_REQUESTUNEQUIPITEM = "[C] 16 RequestUnequipItem";
 	private static Logger _log = Logger.getLogger(RequestUnEquipItem.class.getName());
 	
 	// cd
@@ -136,12 +135,9 @@ public class RequestUnEquipItem extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__11_REQUESTUNEQUIPITEM;
+		return _C__16_REQUESTUNEQUIPITEM;
 	}
 }

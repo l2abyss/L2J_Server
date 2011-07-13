@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
-
 /**
  * This class ...
  *
@@ -40,7 +39,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestDestroyItem extends L2GameClientPacket
 {
-	private static final String _C__59_REQUESTDESTROYITEM = "[C] 59 RequestDestroyItem";
+	private static final String _C__60_REQUESTDESTROYITEM = "[C] 60 RequestDestroyItem";
 	private static Logger _log = Logger.getLogger(RequestDestroyItem.class.getName());
 	
 	private int _objectId;
@@ -199,12 +198,9 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		activeChar.sendPacket(su);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__59_REQUESTDESTROYITEM;
+		return _C__60_REQUESTDESTROYITEM;
 	}
 }

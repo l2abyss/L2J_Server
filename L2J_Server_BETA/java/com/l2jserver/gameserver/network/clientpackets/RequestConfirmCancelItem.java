@@ -42,9 +42,6 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 		_objectId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -114,9 +111,6 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 		activeChar.sendPacket(new ExPutItemResultForVariationCancel(item, price));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class RequestRecipeShopMessageSet extends L2GameClientPacket
 {
-	private static final String _C__B1_RequestRecipeShopMessageSet = "[C] b1 RequestRecipeShopMessageSet";
+	private static final String _C__BA_RequestRecipeShopMessageSet = "[C] BA RequestRecipeShopMessageSet";
 	//private static Logger _log = Logger.getLogger(RequestRecipeShopMessageSet.class.getName());
 	
 	private static final int MAX_MSG_LENGTH = 29;
@@ -58,6 +58,6 @@ public class RequestRecipeShopMessageSet extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__B1_RequestRecipeShopMessageSet;
+		return _C__BA_RequestRecipeShopMessageSet;
 	}
 }

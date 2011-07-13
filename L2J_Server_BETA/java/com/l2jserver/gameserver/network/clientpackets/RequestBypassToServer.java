@@ -42,7 +42,6 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.GMAudit;
 
-
 /**
  * This class ...
  *
@@ -270,7 +269,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	}
 	
 	/**
-	 * @param client
+	 * @param activeChar
 	 */
 	private static void comeHere(L2PcInstance activeChar)
 	{
@@ -284,9 +283,6 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

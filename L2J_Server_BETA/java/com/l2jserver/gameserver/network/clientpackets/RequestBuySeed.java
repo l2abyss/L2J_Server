@@ -45,12 +45,9 @@ import com.l2jserver.gameserver.util.Util;
  * @param decrypt
  * @author l3x
  */
-
-
-
 public class RequestBuySeed extends L2GameClientPacket
 {
-	private static final String _C__C4_REQUESTBUYSEED = "[C] C4 RequestBuySeed";
+	private static final String _C__C5_REQUESTBUYSEED = "[C] C5 RequestBuySeed";
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
 	
@@ -249,6 +246,6 @@ public class RequestBuySeed extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__C4_REQUESTBUYSEED;
+		return _C__C5_REQUESTBUYSEED;
 	}
 }

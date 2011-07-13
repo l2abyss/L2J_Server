@@ -62,9 +62,6 @@ public final class RequestConfirmTargetItem extends AbstractRefinePacket
 		activeChar.sendPacket(new ExPutItemResultForVariationMake(_itemObjId, item.getItemId()));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

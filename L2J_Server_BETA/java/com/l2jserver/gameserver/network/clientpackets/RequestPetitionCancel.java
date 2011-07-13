@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestPetitionCancel extends L2GameClientPacket
 {
-	private static final String _C__80_REQUEST_PETITIONCANCEL = "[C] 80 RequestPetitionCancel";
+	private static final String _C__8A_REQUEST_PETITIONCANCEL = "[C] 8A RequestPetitionCancel";
 	
 	//private int _unknown;
 	
@@ -85,13 +85,9 @@ public final class RequestPetitionCancel extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__80_REQUEST_PETITIONCANCEL;
+		return _C__8A_REQUEST_PETITIONCANCEL;
 	}
-	
 }

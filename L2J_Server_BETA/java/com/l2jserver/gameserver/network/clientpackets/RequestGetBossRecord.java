@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExGetBossRecord;
 /**
  * Format: (ch) d
  * @author  -Wooden-
- *
  */
 public class RequestGetBossRecord extends L2GameClientPacket
 {
@@ -38,9 +37,6 @@ public class RequestGetBossRecord extends L2GameClientPacket
 		_bossId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -62,9 +58,6 @@ public class RequestGetBossRecord extends L2GameClientPacket
 		activeChar.sendPacket(new ExGetBossRecord(ranking, points, list));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

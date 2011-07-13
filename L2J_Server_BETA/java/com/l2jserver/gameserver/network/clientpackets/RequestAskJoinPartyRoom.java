@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 /**
  * Format: (ch) S
  * @author  -Wooden-
- *
  */
 public class RequestAskJoinPartyRoom extends L2GameClientPacket
 {

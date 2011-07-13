@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class Say2 extends L2GameClientPacket
 {
-	private static final String _C__38_SAY2 = "[C] 38 Say2";
+	private static final String _C__49_SAY2 = "[C] 49 Say2";
 	private static Logger _log = Logger.getLogger(Say2.class.getName());
 	private static Logger _logChat = Logger.getLogger("chat");
 	
@@ -263,13 +263,10 @@ public final class Say2 extends L2GameClientPacket
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__38_SAY2;
+		return _C__49_SAY2;
 	}
 	
 	@Override

@@ -24,10 +24,9 @@ import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.SpawnItem;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 
-
 public class RequestRecordInfo extends L2GameClientPacket
 {
-	private static final String _0__CF_REQUEST_RECORD_INFO = "[0] CF RequestRecordInfo";
+	private static final String _C__6E_REQUEST_RECORD_INFO = "[C] 6E RequestRecordInfo";
 	
 	/** urgent messages, execute immediatly */
 	public TaskPriority getPriority() { return TaskPriority.PR_NORMAL; }
@@ -79,6 +78,6 @@ public class RequestRecordInfo extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _0__CF_REQUEST_RECORD_INFO;
+		return _C__6E_REQUEST_RECORD_INFO;
 	}
 }

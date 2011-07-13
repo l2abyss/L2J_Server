@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.GMAudit;
 
-
 /**
  * This class handles all GM commands triggered by //command
  *
@@ -31,8 +30,9 @@ import com.l2jserver.gameserver.util.GMAudit;
  */
 public final class SendBypassBuildCmd extends L2GameClientPacket
 {
+	private static final String _C__74_SENDBYPASSBUILDCMD = "[C] 74 SendBypassBuildCmd";
 	private static Logger _log = Logger.getLogger(SendBypassBuildCmd.class.getName());
-	private static final String _C__5B_SENDBYPASSBUILDCMD = "[C] 5b SendBypassBuildCmd";
+
 	public final static int GM_MESSAGE = 9;
 	public final static int ANNOUNCEMENT = 10;
 	
@@ -79,12 +79,9 @@ public final class SendBypassBuildCmd extends L2GameClientPacket
 		ach.useAdminCommand("admin_" + _command, activeChar);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__5B_SENDBYPASSBUILDCMD;
+		return _C__74_SENDBYPASSBUILDCMD;
 	}
 }

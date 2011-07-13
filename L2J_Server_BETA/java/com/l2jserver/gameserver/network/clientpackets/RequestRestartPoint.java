@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 
-
 /**
  * This class ...
  *
@@ -39,7 +38,7 @@ import com.l2jserver.gameserver.model.entity.TvTEvent;
  */
 public final class RequestRestartPoint extends L2GameClientPacket
 {
-	private static final String _C__6d_REQUESTRESTARTPOINT = "[C] 6d RequestRestartPoint";
+	private static final String _C__7D_REQUESTRESTARTPOINT = "[C] 7D RequestRestartPoint";
 	private static Logger _log = Logger.getLogger(RequestRestartPoint.class.getName());
 	
 	protected int     _requestedPointType;
@@ -233,12 +232,9 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		new DeathTask(activeChar).run();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__6d_REQUESTRESTARTPOINT;
+		return _C__7D_REQUESTRESTARTPOINT;
 	}
 }

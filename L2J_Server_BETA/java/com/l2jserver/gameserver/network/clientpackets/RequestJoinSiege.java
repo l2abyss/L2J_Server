@@ -23,12 +23,11 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- *
  * @author KenM
  */
 public final class RequestJoinSiege extends L2GameClientPacket
 {
-	private static final String _C__A4_RequestJoinSiege = "[C] a4 RequestJoinSiege";
+	private static final String _C__AD_RequestJoinSiege = "[C] AD RequestJoinSiege";
 	//private static Logger _log = Logger.getLogger(RequestJoinSiege.class.getName());
 	
 	private int _castleId;
@@ -81,6 +80,6 @@ public final class RequestJoinSiege extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__A4_RequestJoinSiege;
+		return _C__AD_RequestJoinSiege;
 	}
 }
