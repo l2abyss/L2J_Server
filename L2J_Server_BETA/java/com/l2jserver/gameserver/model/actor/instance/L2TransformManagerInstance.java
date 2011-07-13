@@ -34,12 +34,14 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 
 /**
+ * This class manage the Transformation Master:<br>
+ * Sub-Class Certification system, skill learning and certification cancelling.<br>
+ * Transformation skill learning and transformation buying.
  * @author Zoey76
  */
 public final class L2TransformManagerInstance extends L2MerchantInstance
 {
 	private static final int feeDeleteSubClassSkills = 10000000;
-	
 	private static final String htmlFolder = "data/html/masterTransformation/";
 	
 	public static final String[] _questVarNames =
@@ -50,7 +52,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		"ClassAbility80-"
 	};
 	
-	public static final int[] _itemsIds = { 10280, 10281, 10282, 10283, 10284, 10285, 10286, 10287, 10288, 10289, 10290, 10291, 10292, 10293, 10294, 10612 };
+	private static final int[] _itemsIds = { 10280, 10281, 10282, 10283, 10284, 10285, 10286, 10287, 10288, 10289, 10290, 10291, 10292, 10293, 10294, 10612 };
 	
 	public L2TransformManagerInstance(int objectId, L2NpcTemplate template)
 	{
@@ -151,7 +153,6 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 				}
 				
 				int activeCertifications = 0;
-				
 				for (String varName : _questVarNames)
 				{
 					for (int i = 1; i <= Config.MAX_SUBCLASS; i++)
@@ -229,6 +230,18 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 					html.setFile(player.getHtmlPrefix(), htmlFolder + "master_transformation009no.htm");
 					player.sendSkillList();
 				}
+				
+				//Let's consume all certification books, even those not present in database.
+				L2ItemInstance itemInstance = null;
+				for (int itemId : _itemsIds)
+				{
+					itemInstance = player.getInventory().getItemByItemId(itemId);
+					if (itemInstance != null)
+					{
+						_log.warning(L2TransformManagerInstance.class.getName() + ": player " + player + " had 'extra' certification skill books while cancelling sub-class certifications!");
+						player.destroyItem("CancelCertificationExtraBooks", itemInstance, this, false);
+					}
+				}
 			}
 			player.sendPacket(html);
 			return;
@@ -238,9 +251,8 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 	
 	//Transformations:
 	/**
-	 * Returns true if the player meets the required conditions to learn a transformation.
-	 * @param player
-	 * @return boolean
+	 * @param player the player to verify.
+	 * @return {code true} if {code player} meets the required conditions to learn a transformation.
 	 */
 	public static boolean canTransform(L2PcInstance player)
 	{

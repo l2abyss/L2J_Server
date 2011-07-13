@@ -356,15 +356,18 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 							{
 								final int itemObjId = Integer.parseInt(itemOID);
 								final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(itemObjId);
-								if ((item != null) && Util.contains(L2TransformManagerInstance._itemsIds, item.getItemId()))
+								if (item != null)
 								{
-									if (checkPlayerSkill(activeChar, trainer, s))
+									if (Util.contains(s.getItemsIdCount()[0], item.getItemId()))
 									{
-										giveSkill(activeChar, trainer, skill);
-										//Logging the given skill.
-										st.saveGlobalQuestVar(varName + i, skill.getId() + ";");
+										if (checkPlayerSkill(activeChar, trainer, s))
+										{
+											giveSkill(activeChar, trainer, skill);
+											//Logging the given skill.
+											st.saveGlobalQuestVar(varName + i, skill.getId() + ";");
+										}
+										return;
 									}
-									return;
 								}
 								else
 								{
@@ -377,6 +380,10 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 							}
 						}
 					}
+				
+					//Player doesn't have required item.
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+					showSkillList(trainer, activeChar);
 				}
 				break;
 			}
