@@ -60,7 +60,7 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar file">
-		<jar destfile="${build}/l2jserver.jar">
+		<jar destfile="${build.dist.game}/l2jserver.jar">
 			<fileset dir="${build.classes}">
 				<exclude name="**/loginserver/**" />
 				<exclude name="**/accountmanager/**" />
@@ -73,7 +73,7 @@
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 			</manifest>
 		</jar>
-		<jar destfile="${build}/l2jlogin.jar">
+		<jar destfile="${build.dist.login}/l2jlogin.jar">
 			<fileset dir="${build.classes}">
 				<exclude name="**/gameserver/**" />
 			</fileset>
@@ -84,16 +84,6 @@
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 			</manifest>
 		</jar>
-		<copy todir="${build.dist.login}">
-			<fileset dir="${build}">
-				<include name="l2jlogin.jar" />
-			</fileset>
-		</copy>
-		<copy todir="${build.dist.game}">
-			<fileset dir="${build}">
-				<include name="l2jserver.jar" />
-			</fileset>
-		</copy>
 	</target>
 
 	<target name="jarsrc" depends="jar">
