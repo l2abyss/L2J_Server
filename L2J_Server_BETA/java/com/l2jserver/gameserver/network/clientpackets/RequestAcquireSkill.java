@@ -380,11 +380,11 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 							}
 						}
 					}
-				
-					//Player doesn't have required item.
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-					showSkillList(trainer, activeChar);
 				}
+				
+				//Player doesn't have required item.
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+				showSkillList(trainer, activeChar);
 				break;
 			}
 			case Collect:
