@@ -24,7 +24,6 @@ package com.l2jserver.gameserver.model.base;
  * <li>parent : The parent ClassId or null if this class is the root</li><BR><BR>
  *
  * @version $Revision: 1.4.4.4 $ $Date: 2005/03/27 15:29:33 $
- *
  */
 public enum ClassId
 {
@@ -169,7 +168,7 @@ public enum ClassId
 	shillienSaint(0x70, true, Race.DarkElf, shillenElder),
 	
 	titan(0x71, false, Race.Orc, destroyer),
-	grandKhauatari(0x72, false, Race.Orc, tyrant),
+	grandKhavatari(0x72, false, Race.Orc, tyrant),
 	dominator(0x73, true, Race.Orc, overlord),
 	doomcryer(0x74, true, Race.Orc, warcryer),
 	
@@ -212,31 +211,40 @@ public enum ClassId
 	private final ClassId _parent;
 	
 	/**
-	 * Constructor of ClassId.<BR><BR>
+	 * Class constructor.
+	 * @param pId the class Id.
+	 * @param pIsMage {code true} if the class is mage class.
+	 * @param pRace the race related to the class.
+	 * @param pParent the parent class Id.
 	 */
 	private ClassId(int pId, boolean pIsMage, Race pRace, ClassId pParent)
 	{
-		this._id = pId;
-		this._isMage = pIsMage;
-		this._isSummoner = false;
-		this._race = pRace;
-		this._parent = pParent;
+		_id = pId;
+		_isMage = pIsMage;
+		_isSummoner = false;
+		_race = pRace;
+		_parent = pParent;
 	}
 	
 	/**
-	 * Constructor of ClassId.<BR><BR>
+	 * Class constructor.
+	 * @param pId the class Id.
+	 * @param pIsMage {code true} if the class is mage class.
+	 * @param pIsSummoner {code true} if the class is summoner class.
+	 * @param pRace the race related to the class.
+	 * @param pParent the parent class Id.
 	 */
 	private ClassId(int pId, boolean pIsMage, boolean pIsSummoner, Race pRace, ClassId pParent)
 	{
-		this._id = pId;
-		this._isMage = pIsMage;
-		this._isSummoner = pIsSummoner;
-		this._race = pRace;
-		this._parent = pParent;
+		_id = pId;
+		_isMage = pIsMage;
+		_isSummoner = pIsSummoner;
+		_race = pRace;
+		_parent = pParent;
 	}
 	
 	/**
-	 * Return the Identifier of the Class.<BR><BR>
+	 * @return the Id of the Class.
 	 */
 	public final int getId()
 	{
@@ -244,7 +252,7 @@ public enum ClassId
 	}
 	
 	/**
-	 * Return True if the class is a mage class.<BR><BR>
+	 * @return {code true} if the class is a mage class.
 	 */
 	public final boolean isMage()
 	{
@@ -252,7 +260,7 @@ public enum ClassId
 	}
 	
 	/**
-	 * Return True if the class is a summoner class.<BR><BR>
+	 * @return {code true} if the class is a summoner class.
 	 */
 	public final boolean isSummoner()
 	{
@@ -260,7 +268,7 @@ public enum ClassId
 	}
 	
 	/**
-	 * Return the Race object of the class.<BR><BR>
+	 * @return the Race object of the class.
 	 */
 	public final Race getRace()
 	{
@@ -268,10 +276,8 @@ public enum ClassId
 	}
 	
 	/**
-	 * Return True if this Class is a child of the selected ClassId.<BR><BR>
-	 *
-	 * @param cid The parent ClassId to check
-	 *
+	 * @param cid the parent ClassId to check.
+	 * @return {code true} if this Class is a child of the selected ClassId.
 	 */
 	public final boolean childOf(ClassId cid)
 	{
@@ -286,10 +292,8 @@ public enum ClassId
 	}
 	
 	/**
-	 * Return True if this Class is equal to the selected ClassId or a child of the selected ClassId.<BR><BR>
-	 *
-	 * @param cid The parent ClassId to check
-	 *
+	 * @param cid the parent ClassId to check.
+	 * @return {code true} if this Class is equal to the selected ClassId or a child of the selected ClassId.
 	 */
 	public final boolean equalsOrChildOf(ClassId cid)
 	{
@@ -297,10 +301,7 @@ public enum ClassId
 	}
 	
 	/**
-	 * Return the child level of this Class (0=root, 1=child leve 1...).<BR><BR>
-	 *
-	 * @param cid The parent ClassId to check
-	 *
+	 * @return the child level of this Class (0=root, 1=child leve 1...)
 	 */
 	public final int level()
 	{
@@ -311,12 +312,10 @@ public enum ClassId
 	}
 	
 	/**
-	 * Return its parent ClassId<BR><BR>
-	 *
+	 * @return its parent Class Id
 	 */
 	public final ClassId getParent()
 	{
 		return _parent;
 	}
-	
 }
