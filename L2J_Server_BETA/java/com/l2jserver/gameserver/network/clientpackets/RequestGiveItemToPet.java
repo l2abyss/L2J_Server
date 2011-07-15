@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestGiveItemToPet extends L2GameClientPacket
 {
-	private static final String __C__95_REQUESTCIVEITEMTOPET = "[C] 95 RequestGiveItemToPet";
+	private static final String _C__95_REQUESTCIVEITEMTOPET = "[C] 95 RequestGiveItemToPet";
 	
 	private static Logger _log = Logger.getLogger(RequestGetItemFromPet.class.getName());
 	
@@ -72,8 +72,7 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 		
 		// Exploit Fix for Hero weapons Uses pet Inventory to buy New One.
 		// [L2JOneo]
-		L2ItemInstance item = player.getInventory().getItemByObjectId(_objectId);
-		
+		final L2ItemInstance item = player.getInventory().getItemByObjectId(_objectId);
 		if (item == null)
 			return;
 		
@@ -92,7 +91,7 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 			return;
 		}
 		
-		L2PetInstance pet = (L2PetInstance) player.getPet();
+		final L2PetInstance pet = (L2PetInstance) player.getPet();
 		if (pet.isDead())
 		{
 			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_GIVE_ITEMS_TO_DEAD_PET));
@@ -123,6 +122,6 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return __C__95_REQUESTCIVEITEMTOPET;
+		return _C__95_REQUESTCIVEITEMTOPET;
 	}
 }

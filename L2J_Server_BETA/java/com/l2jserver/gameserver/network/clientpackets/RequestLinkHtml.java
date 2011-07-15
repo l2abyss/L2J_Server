@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 public final class RequestLinkHtml extends L2GameClientPacket
 {
 	private static Logger _log = Logger.getLogger(RequestLinkHtml.class.getName());
-	private static final String __C__22_REQUESTLINKHTML = "[C] 22 RequestLinkHtml";
+	private static final String _C__22_REQUESTLINKHTML = "[C] 22 RequestLinkHtml";
 	private String _link;
 	
 	@Override
@@ -67,6 +67,6 @@ public final class RequestLinkHtml extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return __C__22_REQUESTLINKHTML;
+		return _C__22_REQUESTLINKHTML;
 	}
 }

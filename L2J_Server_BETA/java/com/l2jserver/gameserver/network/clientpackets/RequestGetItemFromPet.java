@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestGetItemFromPet extends L2GameClientPacket
 {
-	private static final String __C__2C_REQUESTGETITEMFROMPET = "[C] 2C RequestGetItemFromPet";
+	private static final String _C__2C_REQUESTGETITEMFROMPET = "[C] 2C RequestGetItemFromPet";
 	private static Logger _log = Logger.getLogger(RequestGetItemFromPet.class.getName());
 	
 	private int _objectId;
@@ -77,6 +77,6 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return __C__2C_REQUESTGETITEMFROMPET;
+		return _C__2C_REQUESTGETITEMFROMPET;
 	}
 }
