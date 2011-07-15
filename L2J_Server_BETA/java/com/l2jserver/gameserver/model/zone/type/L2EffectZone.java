@@ -239,6 +239,7 @@ public class L2EffectZone extends L2ZoneType
 				throw new IllegalStateException("No skills defined.");
 		}
 		
+		@Override
 		public void run()
 		{
 			if (isEnabled())
@@ -252,7 +253,7 @@ public class L2EffectZone extends L2ZoneType
 							for (Entry<Integer, Integer> e : _skills.entrySet())
 							{
 								L2Skill skill = getSkill(e.getKey(), e.getValue());
-								if (_bypassConditions || skill.checkCondition(temp, temp, false))
+								if (_bypassConditions || skill != null && skill.checkCondition(temp, temp, false))
 									if (temp.getFirstEffect(e.getKey()) == null)
 										skill.getEffects(temp, temp);
 							}
