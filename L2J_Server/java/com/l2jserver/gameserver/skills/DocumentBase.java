@@ -451,10 +451,21 @@ abstract class DocumentBase
 		for (int i = 0; i < attrs.getLength(); i++)
 		{
 			Node a = attrs.item(i);
-			if ("race".equalsIgnoreCase(a.getNodeName()))
+			if ("races".equalsIgnoreCase(a.getNodeName()))
 			{
-				Race race = Race.valueOf(a.getNodeValue());
-				cond = joinAnd(cond, new ConditionPlayerRace(race));
+				final String[] races = a.getNodeValue().split(",");
+				Race race = null;
+				for (String raceName : races)
+				{
+					if (raceName != null)
+					{
+						race = Race.valueOf(raceName);
+						if (race != null)
+						{
+							cond = joinAnd(cond, new ConditionPlayerRace(race));
+						}
+					}
+				}
 			}
 			else if ("level".equalsIgnoreCase(a.getNodeName()))
 			{
