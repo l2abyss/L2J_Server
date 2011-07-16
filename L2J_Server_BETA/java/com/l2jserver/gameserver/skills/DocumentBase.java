@@ -835,10 +835,21 @@ abstract class DocumentBase
 				cond = joinAnd(cond, new ConditionTargetRaceId(array));
 			}
 			// used for pc race
-			else if ("race".equalsIgnoreCase(a.getNodeName()))
+			else if ("races".equalsIgnoreCase(a.getNodeName()))
 			{
-				Race race = Race.valueOf(a.getNodeValue());
-				cond = joinAnd(cond, new ConditionTargetRace(race));
+				final String[] races = a.getNodeValue().split(",");
+				Race race = null;
+				for (String raceName : races)
+				{
+					if (raceName != null)
+					{
+						race = Race.valueOf(raceName);
+						if (race != null)
+						{
+							cond = joinAnd(cond, new ConditionTargetRace(race));
+						}
+					}
+				}
 			}
 			else if ("using".equalsIgnoreCase(a.getNodeName()))
 			{
