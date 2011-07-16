@@ -255,6 +255,7 @@ import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.item.L2Armor;
 import com.l2jserver.gameserver.templates.item.L2ArmorType;
+import com.l2jserver.gameserver.templates.item.L2EtcItem;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Henna;
 import com.l2jserver.gameserver.templates.item.L2Item;
@@ -4763,14 +4764,18 @@ public final class L2PcInstance extends L2Playable
 			{
 				addItem("Pickup", target, null, true);
 				//Auto-Equip arrows/bolts if player has a bow/crossbow and player picks up arrows/bolts.
-				final L2EtcItemType itemType = target.getEtcItem().getItemType();
-				if (itemType == L2EtcItemType.ARROW)
+				final L2EtcItem etcItem = target.getEtcItem();
+				if (etcItem != null)
 				{
-					checkAndEquipArrows();
-				}
-				else if (itemType == L2EtcItemType.BOLT)
-				{
-					checkAndEquipBolts();
+					final L2EtcItemType itemType = etcItem.getItemType();
+					if (itemType == L2EtcItemType.ARROW)
+					{
+						checkAndEquipArrows();
+					}
+					else if (itemType == L2EtcItemType.BOLT)
+					{
+						checkAndEquipBolts();
+					}
 				}
 			}
 		}
