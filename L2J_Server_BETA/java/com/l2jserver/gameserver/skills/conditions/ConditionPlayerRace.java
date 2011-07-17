@@ -17,35 +17,30 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.skills.Env;
+import com.l2jserver.gameserver.util.Util;
 
 /**
  * The Class ConditionPlayerRace.
- *
- * @author mkizub
+ * @author mkizub, Zoey76
  */
 public class ConditionPlayerRace extends Condition
 {
-	
-	private final Race _race;
+	private final Race[] _races;
 	
 	/**
 	 * Instantiates a new condition player race.
-	 *
-	 * @param race the race
+	 * @param races the list containing the allowed races.
 	 */
-	public ConditionPlayerRace(Race race)
+	public ConditionPlayerRace(Race[] races)
 	{
-		_race = race;
+		_races = races;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{
 		if (!(env.player instanceof L2PcInstance))
 			return false;
-		return ((L2PcInstance) env.player).getRace() == _race;
+		return Util.contains(_races, env.player.getActingPlayer().getRace());
 	}
 }

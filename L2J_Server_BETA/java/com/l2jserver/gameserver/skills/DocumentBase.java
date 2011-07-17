@@ -453,19 +453,16 @@ abstract class DocumentBase
 			Node a = attrs.item(i);
 			if ("races".equalsIgnoreCase(a.getNodeName()))
 			{
-				final String[] races = a.getNodeValue().split(",");
-				Race race = null;
-				for (String raceName : races)
+				final String[] racesVal = a.getNodeValue().split(",");
+				final Race[] races = new Race[racesVal.length];
+				for (int r = 0; r < racesVal.length; r++)
 				{
-					if (raceName != null)
+					if (racesVal[r] != null)
 					{
-						race = Race.valueOf(raceName);
-						if (race != null)
-						{
-							cond = joinAnd(cond, new ConditionPlayerRace(race));
-						}
+						races[r] = Race.valueOf(racesVal[r]);
 					}
 				}
+				cond = joinAnd(cond, new ConditionPlayerRace(races));
 			}
 			else if ("level".equalsIgnoreCase(a.getNodeName()))
 			{
@@ -837,19 +834,16 @@ abstract class DocumentBase
 			// used for pc race
 			else if ("races".equalsIgnoreCase(a.getNodeName()))
 			{
-				final String[] races = a.getNodeValue().split(",");
-				Race race = null;
-				for (String raceName : races)
+				final String[] racesVal = a.getNodeValue().split(",");
+				final Race[] races = new Race[racesVal.length];
+				for (int r = 0; r < racesVal.length; r++)
 				{
-					if (raceName != null)
+					if (racesVal[r] != null)
 					{
-						race = Race.valueOf(raceName);
-						if (race != null)
-						{
-							cond = joinAnd(cond, new ConditionTargetRace(race));
-						}
+						races[r] = Race.valueOf(racesVal[r]);
 					}
 				}
+				cond = joinAnd(cond, new ConditionTargetRace(races));
 			}
 			else if ("using".equalsIgnoreCase(a.getNodeName()))
 			{
