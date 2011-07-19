@@ -132,7 +132,11 @@ public class PetDataTable
 											NamedNodeMap attrs = bean.getAttributes();
 											String type = attrs.getNamedItem("name").getNodeValue();
 											String value = attrs.getNamedItem("val").getNodeValue();
-											if ("exp".equals(type))
+											if ("max_meal".equals(type))
+											{
+												stat.setPetMaxFeed(Integer.parseInt(value));
+											}
+											else if ("exp".equals(type))
 											{
 												stat.setPetMaxExp(Long.parseLong(value));
 											}
@@ -148,9 +152,37 @@ public class PetDataTable
 											{
 												stat.setPetFeedNormal(Integer.parseInt(value));
 											}
-											else if ("max_meal".equals(type))
+											else if ("org_pattack".equals(type))
 											{
-												stat.setPetMaxFeed(Integer.parseInt(value));
+												stat.setPetPAtk(Float.parseFloat(value));
+											}
+											else if ("org_pdefend".equals(type))
+											{
+												stat.setPetPDef(Float.parseFloat(value));
+											}
+											else if ("org_mattack".equals(type))
+											{
+												stat.setPetMAtk(Float.parseFloat(value));
+											}
+											else if ("org_mdefend".equals(type))
+											{
+												stat.setPetMDef(Float.parseFloat(value));
+											}
+											else if ("org_hp".equals(type))
+											{
+												stat.setPetMaxHP(Float.parseFloat(value));
+											}
+											else if ("org_mp".equals(type))
+											{
+												stat.setPetMaxMP(Float.parseFloat(value));
+											}
+											else if ("org_hp_regen".equals(type))
+											{
+												stat.setPetRegenHP(Float.parseFloat(value));
+											}
+											else if ("org_mp_regen".equals(type))
+											{
+												stat.setPetRegenMP(Float.parseFloat(value));
 											}
 											else if ("soulshot_count".equals(type))
 											{
@@ -159,38 +191,6 @@ public class PetDataTable
 											else if ("spiritshot_count".equals(type))
 											{
 												stat.setPetSpiritShot((short) Integer.parseInt(value));
-											}
-											else if ("hp".equals(type))
-											{
-												stat.setPetMaxHP(Integer.parseInt(value));
-											}
-											else if ("mp".equals(type))
-											{
-												stat.setPetMaxMP(Integer.parseInt(value));
-											}
-											else if ("pdef".equals(type))
-											{
-												stat.setPetPDef(Integer.parseInt(value));
-											}
-											else if ("mdef".equals(type))
-											{
-												stat.setPetMDef(Integer.parseInt(value));
-											}
-											else if ("patk".equals(type))
-											{
-												stat.setPetPAtk(Integer.parseInt(value));
-											}
-											else if ("matk".equals(type))
-											{
-												stat.setPetMAtk(Integer.parseInt(value));
-											}
-											else if ("hpreg".equals(type))
-											{
-												stat.setPetRegenHP(Integer.parseInt(value));
-											}
-											else if ("mpreg".equals(type))
-											{
-												stat.setPetRegenMP(Integer.parseInt(value));
 											}
 										}
 									}

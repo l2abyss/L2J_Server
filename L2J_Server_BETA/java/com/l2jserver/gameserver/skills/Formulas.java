@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.actor.instance.L2BabyPetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -264,13 +265,17 @@ public final class Formulas
 					env.value -= 13;
 				env.value *= BaseStats.MEN.calcBonus(env.player) * env.player.getLevelMod();
 			}
-			else if (env.player instanceof L2PetInstance)
+			else if ((env.player instanceof L2PetInstance) || (env.player instanceof L2BabyPetInstance))
 			{
 				if (env.player.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_NECK) != 0)
 				{
-					env.value *= BaseStats.MEN.calcBonus(env.player);
-					return;
+					env.value -= 13;
+					env.value *= BaseStats.MEN.calcBonus(env.player) * ((level + 89) / 100);
 				}
+				else
+				{
+					env.value *= BaseStats.MEN.calcBonus(env.player) * ((level + 89) / 100);
+				}					
 			}
 			else
 			{
@@ -1030,6 +1035,22 @@ public final class Formulas
 			cha.addStatFunc(FuncHennaWIT.getInstance());
 		}
 		else if (cha instanceof L2PetInstance)
+		{
+			cha.addStatFunc(FuncMaxHpMul.getInstance());
+			cha.addStatFunc(FuncMaxMpMul.getInstance());
+			cha.addStatFunc(FuncPAtkMod.getInstance());
+			cha.addStatFunc(FuncMAtkMod.getInstance());
+			cha.addStatFunc(FuncPDefMod.getInstance());
+			cha.addStatFunc(FuncMDefMod.getInstance());
+			cha.addStatFunc(FuncAtkCritical.getInstance());
+			cha.addStatFunc(FuncMAtkCritical.getInstance());
+			cha.addStatFunc(FuncAtkAccuracy.getInstance());
+			cha.addStatFunc(FuncAtkEvasion.getInstance());
+			cha.addStatFunc(FuncMoveSpeed.getInstance());
+			cha.addStatFunc(FuncPAtkSpeed.getInstance());
+			cha.addStatFunc(FuncMAtkSpeed.getInstance());
+		}
+		else if (cha instanceof L2BabyPetInstance)
 		{
 			cha.addStatFunc(FuncMaxHpMul.getInstance());
 			cha.addStatFunc(FuncMaxMpMul.getInstance());

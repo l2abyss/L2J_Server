@@ -23,17 +23,17 @@ public class L2PetLevelData
 {
 	private int _ownerExpTaken;
 	private long _petMaxExp;
-	private int _petMaxHP;
-	private int _petMaxMP;
-	private int _petPAtk;
-	private int _petPDef;
-	private int _petMAtk;
-	private int _petMDef;
+	private float _petMaxHP;
+	private float _petMaxMP;
+	private float _petPAtk;
+	private float _petPDef;
+	private float _petMAtk;
+	private float _petMDef;
 	private int _petMaxFeed;
 	private int _petFeedBattle;
 	private int _petFeedNormal;
-	private int _petRegenHP;
-	private int _petRegenMP;
+	private float _petRegenHP;
+	private float _petRegenMP;
 	private short _petSoulShot;
 	private short _petSpiritShot;
 	
@@ -59,67 +59,67 @@ public class L2PetLevelData
 	}
 	
 	//  Max HP
-	public int getPetMaxHP()
+	public float getPetMaxHP()
 	{
 		return _petMaxHP;
 	}
 	
-	public void setPetMaxHP(int pPetMaxHP)
+	public void setPetMaxHP(float pPetMaxHP)
 	{
 		_petMaxHP = pPetMaxHP;
 	}
 	
 	//  Max Mp
-	public int getPetMaxMP()
+	public float getPetMaxMP()
 	{
 		return _petMaxMP;
 	}
 	
-	public void setPetMaxMP(int pPetMaxMP)
+	public void setPetMaxMP(float pPetMaxMP)
 	{
 		_petMaxMP = pPetMaxMP;
 	}
 	
 	//  PAtk
-	public int getPetPAtk()
+	public float getPetPAtk()
 	{
 		return _petPAtk;
 	}
 	
-	public void setPetPAtk(int pPetPAtk)
+	public void setPetPAtk(float pPetPAtk)
 	{
 		_petPAtk = pPetPAtk;
 	}
 	
 	//  PDef
-	public int getPetPDef()
+	public float getPetPDef()
 	{
 		return _petPDef;
 	}
 	
-	public void setPetPDef(int pPetPDef)
+	public void setPetPDef(float pPetPDef)
 	{
 		_petPDef = pPetPDef;
 	}
 	
 	//  MAtk
-	public int getPetMAtk()
+	public float getPetMAtk()
 	{
 		return _petMAtk;
 	}
 	
-	public void setPetMAtk(int pPetMAtk)
+	public void setPetMAtk(float pPetMAtk)
 	{
 		_petMAtk = pPetMAtk;
 	}
 	
 	//  MDef
-	public int getPetMDef()
+	public float getPetMDef()
 	{
 		return _petMDef;
 	}
 	
-	public void setPetMDef(int pPetMDef)
+	public void setPetMDef(float pPetMDef)
 	{
 		_petMDef = pPetMDef;
 	}
@@ -158,23 +158,23 @@ public class L2PetLevelData
 	}
 	
 	//  Regen HP
-	public int getPetRegenHP()
+	public float getPetRegenHP()
 	{
 		return _petRegenHP;
 	}
 	
-	public void setPetRegenHP(int pPetRegenHP)
+	public void setPetRegenHP(float pPetRegenHP)
 	{
 		_petRegenHP = pPetRegenHP;
 	}
 	
 	//  Regen MP
-	public int getPetRegenMP()
+	public float getPetRegenMP()
 	{
 		return _petRegenMP;
 	}
 	
-	public void setPetRegenMP(int pPetRegenMP)
+	public void setPetRegenMP(float pPetRegenMP)
 	{
 		_petRegenMP = pPetRegenMP;
 	}
