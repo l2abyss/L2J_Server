@@ -1347,12 +1347,12 @@ public class L2CharacterAI extends AbstractAI
 		}
 	}
 	
-	
 	public boolean canAura(L2Skill sk)
 	{
 		if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
 				|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-				|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA)
+				|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
+				|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
 		{
 			for(L2Object target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 			{
@@ -1362,13 +1362,15 @@ public class L2CharacterAI extends AbstractAI
 		}
 		return false;
 	}
+	
 	public boolean canAOE(L2Skill sk)
 	{
 		if(sk.getSkillType() != L2SkillType.NEGATE || sk.getSkillType() != L2SkillType.CANCEL)
 		{
 			if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
 					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA)
+					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
+					|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
 			{
 				boolean cancast = true;
 				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
@@ -1425,7 +1427,8 @@ public class L2CharacterAI extends AbstractAI
 		{
 			if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
 					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA)
+					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
+					|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
 			{
 				boolean cancast = false;
 				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))

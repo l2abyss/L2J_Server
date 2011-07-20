@@ -1602,6 +1602,7 @@ public abstract class L2Character extends L2Object
 				target = getPet();
 				break;
 			case TARGET_AURA:
+			case TARGET_AURA_CORPSE_MOB:
 			case TARGET_FRONT_AURA:
 			case TARGET_BEHIND_AURA:
 			case TARGET_GROUND:
@@ -5911,6 +5912,7 @@ public abstract class L2Character extends L2Object
 				case TARGET_AURA:
 				case TARGET_FRONT_AURA:
 				case TARGET_BEHIND_AURA:
+				case TARGET_AURA_CORPSE_MOB:
 					break;
 				default:
 					abortCast();

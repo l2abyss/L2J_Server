@@ -607,6 +607,7 @@ public abstract class L2Summon extends L2Playable
 			case TARGET_FRONT_AURA:
 			case TARGET_BEHIND_AURA:
 			case TARGET_SELF:
+			case TARGET_AURA_CORPSE_MOB:
 				target = this;
 				break;
 			default:

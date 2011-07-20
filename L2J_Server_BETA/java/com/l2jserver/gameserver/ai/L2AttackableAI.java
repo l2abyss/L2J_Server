@@ -1398,7 +1398,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else if (canAOE(sk))
 				{
-					if (sk.getTargetType() == SkillTargetType.TARGET_AURA || sk.getTargetType() == SkillTargetType.TARGET_BEHIND_AURA || sk.getTargetType() == SkillTargetType.TARGET_FRONT_AURA)
+					if (sk.getTargetType() == SkillTargetType.TARGET_AURA || sk.getTargetType() == SkillTargetType.TARGET_BEHIND_AURA || sk.getTargetType() == SkillTargetType.TARGET_FRONT_AURA  || (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
 					{
 						clientStopMoving(null);
 						//L2Object target = attackTarget;

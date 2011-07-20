@@ -45,6 +45,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.network.SystemMessageId;
+//TODO: import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.BaseStats;
 import com.l2jserver.gameserver.skills.Env;
@@ -101,6 +102,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		TARGET_FRONT_AREA,
 		TARGET_BEHIND_AREA,
 		TARGET_AURA,
+		TARGET_AURA_CORPSE_MOB,
 		TARGET_FRONT_AURA,
 		TARGET_BEHIND_AURA,
 		TARGET_CORPSE,
@@ -2193,6 +2195,35 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				if (targetList.isEmpty())
 					return _emptyTargetList;
 				return targetList.toArray(new L2Character[targetList.size()]);
+			}
+			case TARGET_AURA_CORPSE_MOB:
+			{
+				final Collection<L2Character> characters = activeChar.getKnownList().getKnownCharactersInRadius(getSkillRadius());
+				L2Attackable corpseMob;
+				int spoilerId;
+				for (L2Character character : characters)
+				{
+					if ((character instanceof L2Attackable) && character.isDead())
+					{
+						if (getSkillType() == L2SkillType.SWEEP)
+						{
+							corpseMob = (L2Attackable) character;
+							//If target is not spoiled, ignore it.
+							if (!corpseMob.isSpoil())
+							{
+								continue;
+							}
+							spoilerId = corpseMob.getIsSpoiledBy();
+							//If target is not spoiled by the caster or a party member, ignore it.
+							if ((activeChar.getObjectId() != spoilerId) && (activeChar.getActingPlayer() != null) && !activeChar.getActingPlayer().isInLooterParty(spoilerId))
+							{
+								continue;
+							}
+						}
+						targetList.add(character);
+					}
+				}
+				return (targetList.isEmpty() ? _emptyTargetList : targetList.toArray(new L2Character[targetList.size()]));
 			}
 			case TARGET_UNLOCKABLE:
 			{
