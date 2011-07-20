@@ -324,13 +324,10 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		int newJobLevel = currentClassId.level() + 1;
 		
 		// Weight/Inventory check
-		if(!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty())
+		if(!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty() && !player.isInventoryUnder80(false))
 		{
-			if (player.getWeightPenalty() >= 3 || (player.getInventoryLimit() * 0.8 <= player.getInventory().getSize(false)))
-			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
-				return false;
-			}
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+			return false;
 		}
 		
 		// check if player have all required items for class transfer
