@@ -41,10 +41,7 @@ import com.l2jserver.loginserver.mail.MailSystem.MailContent;
 public class BaseMail implements Runnable
 {
 	private final static Logger _log = Logger.getLogger(BaseMail.class.getName());
-	
-	private static final String QUERY_SEL_MAIL = "SELECT value FROM account_data " +
-	"WHERE account_name=? AND var='email_addr'";
-	
+		
 	private final Properties _mailProp = new Properties();
 	private final SmtpAuthenticator _authenticator;
 	private MimeMessage _messageMime = null;
@@ -131,12 +128,12 @@ public class BaseMail implements Runnable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(QUERY_SEL_MAIL);
+			PreparedStatement statement = con.prepareStatement(Config.EMAIL_SYS_SELECTQUERY);
 			statement.setString(1, username);
 			ResultSet rset = statement.executeQuery();
 			if (rset.next())
 			{
-				String mail = rset.getString("value");
+				String mail = rset.getString(Config.EMAIL_SYS_DBFIELD);
 				return mail;
 			}
 			rset.close();
