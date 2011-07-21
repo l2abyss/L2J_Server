@@ -137,6 +137,9 @@ public class CharSummonTable
 	
 	public void saveSummon(L2SummonInstance summon)
 	{
+		if (summon == null || summon.getTimeRemaining() <= 0)
+			return;
+		
 		Connection con = null;
 		try
 		{
