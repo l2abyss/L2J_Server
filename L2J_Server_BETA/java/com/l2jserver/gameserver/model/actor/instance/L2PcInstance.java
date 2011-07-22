@@ -5806,7 +5806,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isLucky()
 	{
-		return ((getLevel() <= 9) && (getKnownSkill(194) != null));
+		return ((getLevel() <= 9) && (getKnownSkill(L2Skill.SKILL_LUCKY) != null));
 	}
 	
 	/**
@@ -9032,35 +9032,6 @@ public final class L2PcInstance extends L2Playable
 				// Send a Server->Client packet ActionFailed to the L2PcInstance
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return false;
-			}
-		}
-		
-		// Check if the skill is Sweep type and if conditions not apply
-		if (sklType == L2SkillType.SWEEP && target instanceof L2Attackable)
-		{
-			int spoilerId = ((L2Attackable) target).getIsSpoiledBy();
-			
-			if (((L2Attackable) target).isDead())
-			{
-				if (!((L2Attackable) target).isSpoil())
-				{
-					// Send a System Message to the L2PcInstance
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SWEEPER_FAILED_TARGET_NOT_SPOILED));
-					
-					// Send a Server->Client packet ActionFailed to the L2PcInstance
-					sendPacket(ActionFailed.STATIC_PACKET);
-					return false;
-				}
-				
-				if (getObjectId() != spoilerId && !isInLooterParty(spoilerId))
-				{
-					// Send a System Message to the L2PcInstance
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SWEEP_NOT_ALLOWED));
-					
-					// Send a Server->Client packet ActionFailed to the L2PcInstance
-					sendPacket(ActionFailed.STATIC_PACKET);
-					return false;
-				}
 			}
 		}
 		

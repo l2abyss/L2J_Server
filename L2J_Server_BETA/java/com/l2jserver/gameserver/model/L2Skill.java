@@ -45,7 +45,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.network.SystemMessageId;
-//TODO: import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.BaseStats;
 import com.l2jserver.gameserver.skills.Env;
@@ -54,7 +53,6 @@ import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.skills.conditions.Condition;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
-import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.item.L2Armor;
@@ -2142,10 +2140,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					}
 					case DRAIN:
 					{
-						if (DecayTaskManager.getInstance().getTasks().containsKey(target)
-								&& (System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(target)) > DecayTaskManager.ATTACKABLE_DECAY_TIME / 2)
+						if (((L2Attackable) target).checkCorpseTime(activeChar.getActingPlayer(), (Config.NPC_DECAY_TIME / 2), true))
 						{
-							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CORPSE_TOO_OLD_SKILL_NOT_USED));
 							return _emptyTargetList;
 						}
 					}
@@ -2198,28 +2194,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 			case TARGET_AURA_CORPSE_MOB:
 			{
-				final Collection<L2Character> characters = activeChar.getKnownList().getKnownCharactersInRadius(getSkillRadius());
-				L2Attackable corpseMob;
-				int spoilerId;
-				for (L2Character character : characters)
+				for (L2Character character : activeChar.getKnownList().getKnownCharactersInRadius(getSkillRadius()))
 				{
 					if ((character instanceof L2Attackable) && character.isDead())
 					{
-						if (getSkillType() == L2SkillType.SWEEP)
-						{
-							corpseMob = (L2Attackable) character;
-							//If target is not spoiled, ignore it.
-							if (!corpseMob.isSpoil())
-							{
-								continue;
-							}
-							spoilerId = corpseMob.getIsSpoiledBy();
-							//If target is not spoiled by the caster or a party member, ignore it.
-							if ((activeChar.getObjectId() != spoilerId) && (activeChar.getActingPlayer() != null) && !activeChar.getActingPlayer().isInLooterParty(spoilerId))
-							{
-								continue;
-							}
-						}
 						targetList.add(character);
 					}
 				}

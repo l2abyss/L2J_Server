@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionMinDistance;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerActiveEffectId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerActiveSkillId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerAgathionId;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerCanSweep;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerCharges;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerClassIdRestriction;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerCloakStatus;
@@ -738,6 +739,10 @@ abstract class DocumentBase
 					radius = Integer.decode(getValue(st.nextToken().trim(), null));
 				}
 				cond = joinAnd(cond, new ConditionPlayerRangeFromNpc(npcId, radius));
+			}
+			else if ("canSweep".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanSweep(Boolean.valueOf(a.getNodeValue())));
 			}
 		}
 		

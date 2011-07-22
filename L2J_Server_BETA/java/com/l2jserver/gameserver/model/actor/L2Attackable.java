@@ -60,8 +60,10 @@ import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
+import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -1880,6 +1882,22 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
+	 * @return a copy of dummy items for the spoil loot.
+	 */
+	public FastList<L2Item> getSpoilLootItems()
+	{
+		final FastList<L2Item> lootItems = new FastList<L2Item>();
+		if (isSweepActive())
+		{
+			for (RewardItem item : _sweepItems)
+			{
+				lootItems.add(ItemTable.getInstance().createDummyItem(item.getItemId()).getItem());
+			}
+		}
+		return lootItems;
+	}
+	
+	/**
 	 * Return table containing all L2ItemInstance that can be spoiled.
 	 */
 	public synchronized RewardItem[] takeSweep()
@@ -1900,10 +1918,45 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
+	 * @param target the spoiled monster.
+	 * @param sendMessage if {@code true} will send a message of corpse too old.
+	 * @return {@code true} if the corpse isn't too old.
+	 */
+	public boolean checkCorpseTime(L2PcInstance attacker, int time, boolean sendMessage)
+	{
+		if (DecayTaskManager.getInstance().getTasks().containsKey(this) && ((System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(this)) > time))
+		{
+			if (sendMessage && (attacker != null))
+			{
+				attacker.sendPacket(SystemMessageId.CORPSE_TOO_OLD_SKILL_NOT_USED);
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * @param sweeper the player to validate.
+	 * @param sendMessage sendMessage if {@code true} will send a message of sweep not allowed.
+	 * @return {@code true} if is the spoiler or is in the spoiler party.
+	 */
+	public boolean checkSpoilOwner(L2PcInstance sweeper, boolean sendMessage)
+	{
+		if ((sweeper.getObjectId() != getIsSpoiledBy()) && !sweeper.isInLooterParty(getIsSpoiledBy()))
+		{
+			if (sendMessage)
+			{
+				sweeper.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SWEEP_NOT_ALLOWED));
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	/**
 	 * Set the over-hit flag on the L2Attackable.
 	 *
 	 * @param status The status of the over-hit flag
-	 *
 	 */
 	public void overhitEnabled(boolean status)
 	{
@@ -1915,7 +1968,6 @@ public class L2Attackable extends L2Npc
 	 *
 	 * @param attacker The L2Character who hit on the L2Attackable using the over-hit enabled skill
 	 * @param damage The ammount of damage done by the over-hit enabled skill on the L2Attackable
-	 *
 	 */
 	public void setOverhitValues(L2Character attacker, double damage)
 	{
