@@ -69,7 +69,9 @@ public enum AbnormalEffect
 	S_STIGMA_SHILIEN("stigmashilien", 0x000100),
 	S_STAKATOROOT("stakatoroot", 0x000200),
 	S_FREEZING("freezing", 0x000400),
-	S_VESPER("vesper", 0x000800),
+	S_VESPER_S("vesper_s", 0x000800),
+	S_VESPER_C("vesper_c", 0x001000),
+	S_VESPER_D("vesper_d", 0x002000),
 	
 	// event effects
 	E_AFRO_1("afrobaguette1", 0x000001),
