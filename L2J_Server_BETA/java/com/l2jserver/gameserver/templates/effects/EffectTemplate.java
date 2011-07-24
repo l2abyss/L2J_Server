@@ -46,7 +46,7 @@ public class EffectTemplate
 	public final int counter;
 	public final int abnormalTime; // in seconds
 	public final AbnormalEffect abnormalEffect;
-	public final AbnormalEffect specialEffect;
+	public final AbnormalEffect[] specialEffect;
 	public final AbnormalEffect eventEffect;
 	public FuncTemplate[] funcTemplates;
 	public final String abnormalType;
@@ -61,7 +61,7 @@ public class EffectTemplate
 	public final ChanceCondition chanceCondition;
 	
 	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda,
-			int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect pSpecialEffect,
+			int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect,
 			AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon,
 			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
 	{

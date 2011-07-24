@@ -295,11 +295,15 @@ abstract class DocumentBase
 			String abn = attrs.getNamedItem("abnormal").getNodeValue();
 			abnormal = AbnormalEffect.getByName(abn);
 		}
-		AbnormalEffect special = AbnormalEffect.NULL;
+		AbnormalEffect[] special = null;
 		if (attrs.getNamedItem("special") != null)
 		{
-			String spc = attrs.getNamedItem("special").getNodeValue();
-			special = AbnormalEffect.getByName(spc);
+			final String[] specials = attrs.getNamedItem("special").getNodeValue().split(",");
+			special = new AbnormalEffect[specials.length];
+			for (int s = 0; s < specials.length; s++)
+			{
+				special[s] = AbnormalEffect.getByName(specials[s]);
+			}
 		}
 		AbnormalEffect event = AbnormalEffect.NULL;
 		if (attrs.getNamedItem("event") != null)

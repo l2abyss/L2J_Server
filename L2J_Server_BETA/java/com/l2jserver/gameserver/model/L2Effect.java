@@ -102,7 +102,7 @@ public abstract class L2Effect
 	// abnormal effect mask
 	private AbnormalEffect _abnormalEffect;
 	// special effect mask
-	private AbnormalEffect _specialEffect;
+	private AbnormalEffect[] _specialEffect;
 	// event effect mask
 	private AbnormalEffect _eventEffect;
 	// show icon
@@ -425,7 +425,7 @@ public abstract class L2Effect
 	{
 		if (_abnormalEffect != AbnormalEffect.NULL)
 			getEffected().startAbnormalEffect(_abnormalEffect);
-		if (_specialEffect != AbnormalEffect.NULL)
+		if (_specialEffect != null)
 			getEffected().startSpecialEffect(_specialEffect);
 		if (_eventEffect != AbnormalEffect.NULL && getEffected() instanceof L2PcInstance)
 			getEffected().getActingPlayer().startEventEffect(_eventEffect);
@@ -439,7 +439,7 @@ public abstract class L2Effect
 	{
 		if (_abnormalEffect != AbnormalEffect.NULL)
 			getEffected().stopAbnormalEffect(_abnormalEffect);
-		if (_specialEffect != AbnormalEffect.NULL)
+		if (_specialEffect != null)
 			getEffected().stopSpecialEffect(_specialEffect);
 		if (_eventEffect != AbnormalEffect.NULL && getEffected() instanceof L2PcInstance)
 			getEffected().getActingPlayer().stopEventEffect(_eventEffect);
