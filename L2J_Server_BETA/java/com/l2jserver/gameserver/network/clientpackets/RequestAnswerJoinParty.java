@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -109,17 +110,16 @@ public final class RequestAnswerJoinParty extends L2GameClientPacket
 			
 			//activate garbage collection if there are no other members in party (happens when we were creating new one)
 			if (requestor.isInParty() && requestor.getParty().getMemberCount() == 1)
-				requestor.getParty().removePartyMember(requestor, false);
+				requestor.getParty().removePartyMember(requestor, messageType.None);
 		}
 		else // 0
 		{
-			requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PLAYER_DECLINED));
+			//requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PLAYER_DECLINED)); FIXME: Done in client?
 			
 			//activate garbage collection if there are no other members in party (happens when we were creating new one)
 			if (requestor.isInParty() && requestor.getParty().getMemberCount() == 1)
-				requestor.getParty().removePartyMember(requestor, false);
+				requestor.getParty().removePartyMember(requestor, messageType.None);
 		}
-		
 		
 		if (requestor.isInParty())
 			requestor.getParty().setPendingInvitation(false); // if party is null, there is no need of decreasing

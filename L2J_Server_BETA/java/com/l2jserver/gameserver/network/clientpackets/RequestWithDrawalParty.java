@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.L2Party;
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -53,7 +54,7 @@ public final class RequestWithDrawalParty extends L2GameClientPacket
 				player.sendMessage("You can't exit party when you are in Dimensional Rift.");
 			else
 			{
-				party.removePartyMember(player);
+				party.removePartyMember(player, messageType.Left);
 				
 				if(player.isInPartyMatchRoom())
 				{

@@ -194,6 +194,7 @@ public final class Config
 	public static boolean REMOVE_CASTLE_CIRCLETS;
 	public static int ALT_PARTY_RANGE;
 	public static int ALT_PARTY_RANGE2;
+	public static boolean ALT_LEAVE_PARTY_LEADER;
 	public static long STARTING_ADENA;
 	public static byte STARTING_LEVEL;
 	public static int STARTING_SP;
@@ -1666,6 +1667,7 @@ public final class Config
 					REMOVE_CASTLE_CIRCLETS = Boolean.parseBoolean(Character.getProperty("RemoveCastleCirclets", "true"));
 					ALT_PARTY_RANGE = Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
 					ALT_PARTY_RANGE2 = Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
+					ALT_LEAVE_PARTY_LEADER = Boolean.parseBoolean(Character.getProperty("AltLeavePartyLeader", "False"));
 					STARTING_ADENA = Long.parseLong(Character.getProperty("StartingAdena", "0"));
 					STARTING_LEVEL = Byte.parseByte(Character.getProperty("StartingLevel", "1"));
 					STARTING_SP = Integer.parseInt(Character.getProperty("StartingSP", "0"));
@@ -3227,6 +3229,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("AlternateClassMaster")) ALTERNATE_CLASS_MASTER = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AltPartyRange")) ALT_PARTY_RANGE = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("AltPartyRange2")) ALT_PARTY_RANGE2 = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("AltLeavePartyLeader")) ALT_LEAVE_PARTY_LEADER = Boolean.parseBoolean(pValue);
 		
 		else if (pName.equalsIgnoreCase("CraftingEnabled")) IS_CRAFTING_ENABLED = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("CraftMasterwork")) CRAFT_MASTERWORK = Boolean.parseBoolean(pValue);

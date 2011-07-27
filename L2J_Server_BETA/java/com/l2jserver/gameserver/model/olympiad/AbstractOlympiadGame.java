@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -240,7 +241,7 @@ public abstract class AbstractOlympiadGame
 			{
 				final L2Party party = player.getParty();
 				if (party != null)
-					party.removePartyMember(player);
+					party.removePartyMember(player, messageType.Expelled);
 			}
 			// Remove Agathion
 			if (player.getAgathionId() > 0)

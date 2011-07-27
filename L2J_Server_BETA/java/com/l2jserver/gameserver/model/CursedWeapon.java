@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.TransformationManager;
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -429,7 +430,7 @@ public class CursedWeapon
 		_player.setKarma(9999999);
 		_player.setPkKills(0);
 		if (_player.isInParty())
-			_player.getParty().removePartyMember(_player);
+			_player.getParty().removePartyMember(_player, messageType.Expelled);
 		
 		// Disable All Skills
 		// Do Transform

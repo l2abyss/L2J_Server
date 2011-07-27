@@ -109,6 +109,7 @@ import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2PetLevelData;
 import com.l2jserver.gameserver.model.L2PremiumItem;
@@ -6786,7 +6787,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (isInParty())
 		{
-			_party.removePartyMember(this);
+			_party.removePartyMember(this, messageType.Disconnected);
 			_party = null;
 		}
 	}
@@ -9944,7 +9945,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		if (getParty() != null)
-			getParty().removePartyMember(this);
+			getParty().removePartyMember(this, messageType.Expelled);
 		
 		_olympiadGameId = id;
 		if (isSitting())
