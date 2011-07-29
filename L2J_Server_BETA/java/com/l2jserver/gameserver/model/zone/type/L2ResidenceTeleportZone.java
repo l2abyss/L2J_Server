@@ -18,54 +18,25 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.zone.L2ZoneType;
-import com.l2jserver.util.Rnd;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
 /**
- * A castle teleporter zone
- * used for Mass Gatekeepers
- *
- * @author  Kerberos
+ * @author Nyaran (based on Kerberos work for custom L2CastleTeleportZone)
  */
-public class L2CastleTeleportZone extends L2ZoneType
+public class L2ResidenceTeleportZone extends L2ZoneRespawn
 {
-	private int[] _spawnLoc;
-	private int _castleId;
+	private int _residenceId;
 	
-	public L2CastleTeleportZone(int id)
+	public L2ResidenceTeleportZone(int id)
 	{
 		super(id);
-		
-		_spawnLoc = new int[5];
 	}
 	
 	@Override
 	public void setParameter(String name, String value)
 	{
-		if (name.equals("castleId"))
-		{
-			_castleId = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnMinX"))
-		{
-			_spawnLoc[0] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnMaxX"))
-		{
-			_spawnLoc[1] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnMinY"))
-		{
-			_spawnLoc[2] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnMaxY"))
-		{
-			_spawnLoc[3] = Integer.parseInt(value);
-		}
-		else if (name.equals("spawnZ"))
-		{
-			_spawnLoc[4] = Integer.parseInt(value);
-		}
+		if (name.equals("residenceId"))
+			_residenceId = Integer.parseInt(value);
 		else
 			super.setParameter(name, value);
 	}
@@ -123,22 +94,13 @@ public class L2CastleTeleportZone extends L2ZoneType
 			{
 				L2PcInstance player = (L2PcInstance) character;
 				if (player.isOnline())
-					player.teleToLocation(Rnd.get(_spawnLoc[0], _spawnLoc[1]), Rnd.get(_spawnLoc[2], _spawnLoc[3]), _spawnLoc[4]);
+					player.teleToLocation(getSpawnLoc(), 200);
 			}
 		}
 	}
 	
-	public int getCastleId()
+	public int getResidenceId()
 	{
-		return _castleId;
-	}
-	
-	/**
-	 * Get the spawn locations
-	 * @return
-	 */
-	public int[] getSpawn()
-	{
-		return _spawnLoc;
+		return _residenceId;
 	}
 }

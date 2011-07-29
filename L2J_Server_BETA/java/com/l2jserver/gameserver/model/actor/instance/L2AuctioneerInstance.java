@@ -25,9 +25,9 @@ import java.util.StringTokenizer;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.instancemanager.AuctionManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.entity.Auction;
@@ -590,7 +590,7 @@ public final class L2AuctioneerInstance extends L2Npc
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
 				html.setFile(player.getHtmlPrefix(), "data/html/auction/location.htm");
-				html.replace("%location%", MapRegionTable.getInstance().getClosestTownName(player));
+				html.replace("%location%", MapRegionManager.getInstance().getClosestTownName(player));
 				html.replace("%LOCATION%", getPictureName(player));
 				html.replace("%AGIT_LINK_BACK%", "bypass -h npc_"+getObjectId()+"_start");
 				player.sendPacket(html);
@@ -640,18 +640,18 @@ public final class L2AuctioneerInstance extends L2Npc
 	
 	private String getPictureName(L2PcInstance plyr)
 	{
-		int nearestTownId = MapRegionTable.getInstance().getMapRegion(plyr.getX(), plyr.getY());
+		int nearestTownId = MapRegionManager.getInstance().getMapRegion(plyr).getLocId();
 		String nearestTown;
 		
 		switch (nearestTownId)
 		{
-			case 5: nearestTown = "GLUDIO"; break;
-			case 6: nearestTown = "GLUDIN"; break;
-			case 7: nearestTown = "DION"; break;
-			case 8: nearestTown = "GIRAN"; break;
-			case 14: nearestTown = "RUNE"; break;
-			case 15: nearestTown = "GODARD"; break;
-			case 16: nearestTown = "SCHUTTGART"; break;
+			case 911: nearestTown = "GLUDIN"; break;
+			case 912: nearestTown = "GLUDIO"; break;
+			case 916: nearestTown = "DION"; break;
+			case 918: nearestTown = "GIRAN"; break;
+			case 1537: nearestTown = "RUNE"; break;
+			case 1538: nearestTown = "GODARD"; break;
+			case 1714: nearestTown = "SCHUTTGART"; break;
 			default: nearestTown = "ADEN"; break;
 		}
 		

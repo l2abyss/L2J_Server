@@ -22,13 +22,13 @@ import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.LevelUpData;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2World;
 
 /**
@@ -58,7 +58,7 @@ public interface EngineInterface
 	public SpawnTable spawnTable = SpawnTable.getInstance();
 	public GameTimeController gameTimeController = GameTimeController.getInstance();
 	public Announcements announcements = Announcements.getInstance();
-	public MapRegionTable mapRegions = MapRegionTable.getInstance();
+	public MapRegionManager mapRegions = MapRegionManager.getInstance();
 	
 	
 	

@@ -31,6 +31,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
@@ -221,7 +222,7 @@ public class DoorTable
 			door.setRange(rangeXMin, rangeYMin, rangeZMin, rangeXMax, rangeYMax, rangeZMax);
 			door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
 			door.setXYZInvisible(x, y, z);
-			door.setMapRegion(MapRegionTable.getInstance().getMapRegion(x, y));
+			door.setMapRegion(MapRegionManager.getInstance().getMapRegionId(x, y));
 			door.setEmitter(emitter);
 			door.setTargetable(targetable);
 			
@@ -232,7 +233,7 @@ public class DoorTable
 		}
 		catch (Exception e)
 		{
-			_log.severe("Error in door data at line: " + line);
+			_log.log(Level.SEVERE, "Error in door data at line: " + line, e);
 		}
 		return door;
 	}
@@ -299,7 +300,7 @@ public class DoorTable
 		if (instanceId > 0 && InstanceManager.getInstance().getInstance(instanceId) != null)
 			allDoors = InstanceManager.getInstance().getInstance(instanceId).getDoors();
 		else
-			allDoors = _regions.get(MapRegionTable.getInstance().getMapRegion(x, y));
+			allDoors = _regions.get(MapRegionManager.getInstance().getMapRegionId(x, y));
 		
 		if (allDoors == null)
 			return false;

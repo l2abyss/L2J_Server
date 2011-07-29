@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -109,13 +109,13 @@ public final class L2CastleTeleporterInstance extends L2Npc
 			{
 				NpcSay cs = new NpcSay(getObjectId(), 1, getNpcId(), 1000443); // The defenders of $s1 castle will be teleported to the inner castle.
 				cs.addStringParameter(getCastle().getName());
-				int region = MapRegionTable.getInstance().getMapRegion(getX(), getY());
+				int region = MapRegionManager.getInstance().getMapRegionId(getX(), getY());
 				Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
 				//synchronized (L2World.getInstance().getAllPlayers())
 				{
 					for (L2PcInstance player : pls)
 					{
-						if (region == MapRegionTable.getInstance().getMapRegion(player.getX(),player.getY()))
+						if (region == MapRegionManager.getInstance().getMapRegionId(player.getX(), player.getY()))
 							player.sendPacket(cs);
 					}
 				}

@@ -55,8 +55,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2ArtefactInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.zone.type.L2CastleTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
+import com.l2jserver.gameserver.model.zone.type.L2ResidenceTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
@@ -96,7 +96,7 @@ public class Castle
 	private boolean _showNpcCrest = false;
 	private L2SiegeZone _zone = null;
 	private L2CastleZone _castleZone = null;
-	private L2CastleTeleportZone _teleZone;
+	private L2ResidenceTeleportZone _teleZone;
 	private L2Clan _formerOwner = null;
 	private List<L2ArtefactInstance> _artefacts = new ArrayList<L2ArtefactInstance>(1);
 	private TIntIntHashMap _engrave = new TIntIntHashMap(1);
@@ -436,13 +436,13 @@ public class Castle
 		return _castleZone;
 	}
 	
-	public L2CastleTeleportZone getTeleZone()
+	public L2ResidenceTeleportZone getTeleZone()
 	{
 		if (_teleZone == null)
 		{
-			for (L2CastleTeleportZone zone : ZoneManager.getInstance().getAllZones(L2CastleTeleportZone.class))
+			for (L2ResidenceTeleportZone zone : ZoneManager.getInstance().getAllZones(L2ResidenceTeleportZone.class))
 			{
-				if (zone.getCastleId() == getCastleId())
+				if (zone.getResidenceId() == getCastleId())
 				{
 					_teleZone = zone;
 					break;

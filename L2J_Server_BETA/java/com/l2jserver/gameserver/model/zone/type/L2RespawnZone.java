@@ -14,51 +14,40 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
-import com.l2jserver.gameserver.model.L2Clan;
+import java.util.Map;
+
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
+import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
- * A castle zone
- *
- * @author  durgus
+ * @author Nyaran
  */
-public class L2FortZone extends L2ZoneRespawn
+public class L2RespawnZone extends L2ZoneType
 {
-	private int _fortId;
+	private Map<Race, String> _raceRespawnPoint = new FastMap<Race, String>();
 	
-	public L2FortZone(int id)
+	public L2RespawnZone(int id)
 	{
 		super(id);
 	}
 	
 	@Override
-	public void setParameter(String name, String value)
-	{
-		if (name.equals("fortId"))
-			_fortId = Integer.parseInt(value);
-		else
-			super.setParameter(name, value);
-	}
-	
-	@Override
 	protected void onEnter(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_FORT, true);
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_FORT, false);
 	}
 	
 	@Override
 	public void onDieInside(L2Character character)
 	{
-		
 	}
 	
 	@Override
@@ -66,30 +55,18 @@ public class L2FortZone extends L2ZoneRespawn
 	{
 	}
 	
-	public void updateZoneStatusForCharactersInside()
+	public void addRaceRespawnPoint(String race, String point)
 	{
+		_raceRespawnPoint.put(Race.valueOf(race), point);
 	}
 	
-	/**
-	 * Removes all foreigners from the fort
-	 * @param owningClan
-	 */
-	public void banishForeigners(L2Clan owningClan)
+	public Map<Race, String> getAll()
 	{
-		for (L2Character temp : _characterList.values())
-		{
-			if (!(temp instanceof L2PcInstance))
-				continue;
-			if (((L2PcInstance) temp).getClan() == owningClan)
-				continue;
-			
-			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.Fortress_banish);
-		}
-	}
+		return _raceRespawnPoint;
+	} 
 	
-	public int getFortId()
+	public String getRespawnPoint(L2PcInstance activeChar)
 	{
-		return _fortId;
+		return _raceRespawnPoint.get(activeChar.getRace());
 	}
-	
 }

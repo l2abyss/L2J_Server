@@ -40,13 +40,13 @@ import com.l2jserver.gameserver.ai.L2AttackableAI;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
-import com.l2jserver.gameserver.datatables.MapRegionTable.TeleportWhereType;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
 import com.l2jserver.gameserver.model.ChanceSkillList;
@@ -618,7 +618,7 @@ public abstract class L2Character extends L2Object
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
 	 */
-	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
+	public void teleToLocation(int x, int y, int z, int heading, int randomOffset)
 	{
 		// Stop movement
 		stopMove(null, false);
@@ -630,10 +630,10 @@ public abstract class L2Character extends L2Object
 		
 		getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 		
-		if (Config.OFFSET_ON_TELEPORT_ENABLED && allowRandomOffset)
+		if (Config.OFFSET_ON_TELEPORT_ENABLED && randomOffset > 0)
 		{
-			x += Rnd.get(-Config.MAX_OFFSET_ON_TELEPORT, Config.MAX_OFFSET_ON_TELEPORT);
-			y += Rnd.get(-Config.MAX_OFFSET_ON_TELEPORT, Config.MAX_OFFSET_ON_TELEPORT);
+			x += Rnd.get(-randomOffset, randomOffset);
+			y += Rnd.get(-randomOffset, randomOffset);
 		}
 		
 		z += 5;
@@ -662,11 +662,17 @@ public abstract class L2Character extends L2Object
 		revalidateZone(true);
 	}
 	
-	public void teleToLocation(int x, int y, int z) { teleToLocation(x, y, z, getHeading(), false); }
+	public void teleToLocation(int x, int y, int z)
+	{
+		teleToLocation(x, y, z, getHeading(), 0);
+	}
 	
-	public void teleToLocation(int x, int y, int z, boolean allowRandomOffset) { teleToLocation(x, y, z, getHeading(), allowRandomOffset); }
+	public void teleToLocation(int x, int y, int z, int randomOffset)
+	{
+		teleToLocation(x, y, z, getHeading(), randomOffset);
+	}
 	
-	public void teleToLocation(Location loc, boolean allowRandomOffset)
+	public void teleToLocation(Location loc, int randomOffset)
 	{
 		int x = loc.getX();
 		int y = loc.getY();
@@ -685,10 +691,37 @@ public abstract class L2Character extends L2Object
 			y = newCoords[1];
 			z = newCoords[2];
 		}
-		teleToLocation(x, y, z, getHeading(), allowRandomOffset);
+		teleToLocation(x, y, z, getHeading(), randomOffset);
 	}
 	
-	public void teleToLocation(TeleportWhereType teleportWhere) { teleToLocation(MapRegionTable.getInstance().getTeleToLocation(this, teleportWhere), true); }
+	public void teleToLocation(TeleportWhereType teleportWhere)
+	{
+		teleToLocation(MapRegionManager.getInstance().getTeleToLocation(this, teleportWhere), true);
+	}
+	
+	public void teleToLocation(Location loc, boolean allowRandomOffset)
+	{
+		if (allowRandomOffset)
+			teleToLocation(loc, Config.MAX_OFFSET_ON_TELEPORT);
+		else
+			teleToLocation(loc, 0);
+	}
+	
+	public void teleToLocation(int x, int y, int z, boolean allowRandomOffset)
+	{
+		if (allowRandomOffset)
+			teleToLocation(x, y, z, Config.MAX_OFFSET_ON_TELEPORT);
+		else
+			teleToLocation(x, y, z, 0);
+	}
+	
+	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
+	{
+		if (allowRandomOffset)
+			teleToLocation(x, y, z, heading, Config.MAX_OFFSET_ON_TELEPORT);
+		else
+			teleToLocation(x, y, z, heading, 0);
+	}
 	
 	// =========================================================
 	// Method - Private

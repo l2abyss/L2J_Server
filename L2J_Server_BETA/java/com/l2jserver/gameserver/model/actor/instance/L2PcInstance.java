@@ -68,7 +68,6 @@ import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NobleSkillTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
@@ -88,6 +87,7 @@ import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
@@ -10785,7 +10785,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			// if the rent of a wyvern expires while over a flying zone, tp to down before unmounting
 			if (checkLandingState() && getMountType()==2)
-				teleToLocation(MapRegionTable.TeleportWhereType.Town);
+				teleToLocation(MapRegionManager.TeleportWhereType.Town);
 			
 			if (this.dismount())  // this should always be true now, since we teleported already
 			{
@@ -10855,7 +10855,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			if (!isGM() && isIn7sDungeon() && SevenSigns.getInstance().getPlayerCabal(getObjectId()) != SevenSigns.getInstance().getCabalHighestScore())
 			{
-				teleToLocation(MapRegionTable.TeleportWhereType.Town);
+				teleToLocation(MapRegionManager.TeleportWhereType.Town);
 				setIsIn7sDungeon(false);
 				sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
 			}
@@ -10864,7 +10864,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			if (!isGM() && isIn7sDungeon() && SevenSigns.getInstance().getPlayerCabal(getObjectId()) == SevenSigns.CABAL_NULL)
 			{
-				teleToLocation(MapRegionTable.TeleportWhereType.Town);
+				teleToLocation(MapRegionManager.TeleportWhereType.Town);
 				setIsIn7sDungeon(false);
 				sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
 			}

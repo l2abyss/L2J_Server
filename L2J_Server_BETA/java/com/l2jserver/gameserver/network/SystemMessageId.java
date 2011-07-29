@@ -5157,7 +5157,7 @@ public final class SystemMessageId
 	 * ID: 913<br>
 	 * Message: Current location : $s1, $s2, $s3 (Near the Neutral Zone)
 	 */
-	public static final SystemMessageId LOC_NETRAL_ZONE_S1_S2_S3;
+	public static final SystemMessageId LOC_NEUTRAL_ZONE_S1_S2_S3;
 	
 	/**
 	 * ID: 914<br>
@@ -13390,7 +13390,7 @@ public final class SystemMessageId
 	 * ID: 2293<br>
 	 * Message: Current location: $s1, $s2, $s3 (inside the Steel Citadel)
 	 */
-	public static final SystemMessageId LOC_STEEL_CITADEL_S1_S2_S3;
+	public static final SystemMessageId LOC_IN_STEEL_CITADEL_S1_S2_S3;
 	
 	/**
 	 * ID: 2296<br>
@@ -13400,9 +13400,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2301<br>
-	 * Message: Current location: Steel Citadel Resistance
+	 * Message: Current location: Steel Citadel
 	 */
-	public static final SystemMessageId LOC_STEEL_CITADEL_RESISTANCE;
+	public static final SystemMessageId LOC_STEEL_CITADEL;
 	
 	/**
 	 * ID: 2302<br>
@@ -15599,7 +15599,7 @@ public final class SystemMessageId
 		LOC_TI_S1_S2_S3 = new SystemMessageId(910);
 		LOC_GLUDIN_S1_S2_S3 = new SystemMessageId(911);
 		LOC_GLUDIO_S1_S2_S3 = new SystemMessageId(912);
-		LOC_NETRAL_ZONE_S1_S2_S3 = new SystemMessageId(913);
+		LOC_NEUTRAL_ZONE_S1_S2_S3 = new SystemMessageId(913);
 		LOC_ELVEN_S1_S2_S3 = new SystemMessageId(914);
 		LOC_DARK_ELVEN_S1_S2_S3 = new SystemMessageId(915);
 		LOC_DION_S1_S2_S3 = new SystemMessageId(916);
@@ -16952,9 +16952,9 @@ public final class SystemMessageId
 		USE_SHORTCUT_CONFIRM = new SystemMessageId(2272);
 		SKILL_NOT_FOR_SUBCLASS = new SystemMessageId(2273);
 		NPCS_RECAPTURED_FORTRESS = new SystemMessageId(2276);
-		LOC_STEEL_CITADEL_S1_S2_S3 = new SystemMessageId(2293);
+		LOC_IN_STEEL_CITADEL_S1_S2_S3 = new SystemMessageId(2293);
 		GAINED_VITALITY_POINTS = new SystemMessageId(2296);
-		LOC_STEEL_CITADEL_RESISTANCE = new SystemMessageId(2301);
+		LOC_STEEL_CITADEL = new SystemMessageId(2301);
 		YOUR_VITAMIN_ITEM_HAS_ARRIVED = new SystemMessageId(2302);
 		S2_SECONDS_REMAINING_FOR_REUSE_S1 = new SystemMessageId(2303);
 		S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1 = new SystemMessageId(2304);

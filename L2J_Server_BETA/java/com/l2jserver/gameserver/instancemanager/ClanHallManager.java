@@ -26,6 +26,7 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.entity.Auction;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
@@ -195,17 +196,20 @@ public class ClanHallManager
 	}
 	
 	/** Get Clan Hall by x,y,z */
-	/*
-		public final ClanHall getClanHall(int x, int y, int z)
+	public final ClanHall getClanHall(int x, int y, int z)
+	{
+		for (ClanHall temp : getClanHalls().values())
 		{
-			for (Map.Entry<Integer, ClanHall> ch : _clanHall.entrySet())
-				if (ch.getValue().getZone().isInsideZone(x, y, z)) return ch.getValue();
-
-			for (Map.Entry<Integer, ClanHall> ch : _freeClanHall.entrySet())
-				if (ch.getValue().getZone().isInsideZone(x, y, z)) return ch.getValue();
-
-			return null;
-		}*/
+			if (temp.checkIfInZone(x, y, z))
+				return temp;
+		}
+		return null;
+	}
+	
+	public final ClanHall getClanHall(L2Object activeObject)
+	{
+		return getClanHall(activeObject.getX(), activeObject.getY(), activeObject.getZ());
+	}
 	
 	public final ClanHall getNearbyClanHall(int x, int y, int maxDist)
 	{

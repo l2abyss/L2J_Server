@@ -39,13 +39,14 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.form.ZoneCuboid;
 import com.l2jserver.gameserver.model.zone.form.ZoneCylinder;
 import com.l2jserver.gameserver.model.zone.form.ZoneNPoly;
 import com.l2jserver.gameserver.model.zone.type.L2ArenaZone;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
+import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
 
 /**
  * This class manages the zones
@@ -334,18 +335,38 @@ public class ZoneManager
 										
 										temp.setParameter(name, val);
 									}
-									else if ("spawn".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2SpawnZone)
+									else if ("spawn".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2ZoneRespawn)
 									{
 										attrs = cd.getAttributes();
 										int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
 										int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
 										int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
 										
-										Node val = attrs.getNamedItem("isChaotic");
-										if (val != null && Boolean.parseBoolean(val.getNodeValue()))
-											((L2SpawnZone) temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
+										Node val = attrs.getNamedItem("isOther");
+										boolean other = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										val = attrs.getNamedItem("isChaotic");
+										boolean chaotic = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										val = attrs.getNamedItem("isBanish");
+										boolean banish = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										if (other)
+											((L2ZoneRespawn) temp).addOtherSpawn(spawnX, spawnY, spawnZ);
+										else if (chaotic)
+											((L2ZoneRespawn) temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
+										else if (banish)
+											((L2ZoneRespawn) temp).addBanishSpawn(spawnX, spawnY, spawnZ);
 										else
-											((L2SpawnZone) temp).addSpawn(spawnX, spawnY, spawnZ);
+											((L2ZoneRespawn) temp).addSpawn(spawnX, spawnY, spawnZ);
+									}
+									else if ("race".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2RespawnZone)
+									{
+										attrs = cd.getAttributes();
+										String race = attrs.getNamedItem("name").getNodeValue();
+										String point = attrs.getNamedItem("point").getNodeValue();
+										
+										((L2RespawnZone) temp).addRaceRespawnPoint(race, point);
 									}
 								}
 								if (checkId(zoneId))

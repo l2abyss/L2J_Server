@@ -17,10 +17,10 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.Location;
@@ -85,7 +85,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Clanhall and he doesn't have Clanhall!");
 						return;
 					}
-					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.ClanHall);
+					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.ClanHall);
 					
 					if (ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan())!= null &&
 							ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()).getFunction(ClanHall.FUNC_RESTORE_EXP) != null)
@@ -101,10 +101,10 @@ public final class RequestRestartPoint extends L2GameClientPacket
 					{
 						// Siege in progress
 						if (castle.getSiege().checkIsDefender(activeChar.getClan()))
-							loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Castle);
+							loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
 						// Just in case you lost castle while being dead.. Port to nearest Town.
 						else if (castle.getSiege().checkIsAttacker(activeChar.getClan()))
-							loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Town);
+							loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Town);
 						else
 						{
 							_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Castle and he doesn't have Castle!");
@@ -116,7 +116,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 						if (activeChar.getClan() == null || activeChar.getClan().getHasCastle() == 0)
 							return;
 						else
-							loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Castle);
+							loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
 					}
 					if (CastleManager.getInstance().getCastleByOwner(activeChar.getClan())!= null &&
 							CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).getFunction(Castle.FUNC_RESTORE_EXP) != null)
@@ -133,7 +133,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Fortress and he doesn't have Fortress!");
 						return;
 					}
-					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Fortress);
+					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Fortress);
 					if (FortManager.getInstance().getFortByOwner(activeChar.getClan())!= null &&
 							FortManager.getInstance().getFortByOwner(activeChar.getClan()).getFunction(Fort.FUNC_RESTORE_EXP) != null)
 					{
@@ -157,7 +157,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Siege HQ and he doesn't have Siege HQ!");
 						return;
 					}
-					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.SiegeFlag);
+					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.SiegeFlag);
 					break;
 					
 				case 5: // Fixed or Player is a festival participant
@@ -177,7 +177,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 					break;
 					
 				default:
-					loc = MapRegionTable.getInstance().getTeleToLocation(activeChar, MapRegionTable.TeleportWhereType.Town);
+					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Town);
 					break;
 			}
 			

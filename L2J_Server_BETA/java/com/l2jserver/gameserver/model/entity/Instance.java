@@ -22,10 +22,10 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
@@ -206,7 +206,7 @@ public class Instance
 			if (getSpawnLoc()[0] != 0 && getSpawnLoc()[1] != 0 && getSpawnLoc()[2] != 0)
 				player.teleToLocation(getSpawnLoc()[0], getSpawnLoc()[1], getSpawnLoc()[2]);
 			else
-				player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+				player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 		}
 	}
 	
@@ -248,7 +248,7 @@ public class Instance
 		newdoor.setRange(temp.getXMin(), temp.getYMin(), temp.getZMin(), temp.getXMax(), temp.getYMax(), temp.getZMax());
 		try
 		{
-			newdoor.setMapRegion(MapRegionTable.getInstance().getMapRegion(temp.getX(), temp.getY()));
+			newdoor.setMapRegion(MapRegionManager.getInstance().getMapRegionId(temp));
 		}
 		catch (Exception e)
 		{

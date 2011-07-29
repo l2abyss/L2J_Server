@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2OlympiadManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchEnd;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadUserInfo;
@@ -39,7 +39,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  *
  * @author  durgus, DS
  */
-public class L2OlympiadStadiumZone extends L2SpawnZone
+public class L2OlympiadStadiumZone extends L2ZoneRespawn
 {
 	private final List<L2DoorInstance> _doors;
 	private final List<L2Spawn> _buffers;
@@ -255,7 +255,7 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 				if (summon != null)
 					summon.unSummon(_player);
 
-				_player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+				_player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 				_player = null;
 			}
 		}

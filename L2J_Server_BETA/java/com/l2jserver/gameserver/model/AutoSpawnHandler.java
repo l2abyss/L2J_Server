@@ -31,10 +31,10 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
@@ -531,7 +531,7 @@ public class AutoSpawnHandler
 					}
 				}
 				
-				String nearestTown = MapRegionTable.getInstance().getClosestTownName(npcInst);
+				String nearestTown = MapRegionManager.getInstance().getClosestTownName(npcInst);
 				
 				// Announce to all players that the spawn has taken place, with
 				// the nearest town location.

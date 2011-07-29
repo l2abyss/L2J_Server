@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  *
  * @author  durgus
  */
-public class L2ArenaZone extends L2SpawnZone
+public class L2ArenaZone extends L2ZoneType
 {
 	
 	public L2ArenaZone(int id)

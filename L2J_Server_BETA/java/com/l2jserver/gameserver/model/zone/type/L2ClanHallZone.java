@@ -14,12 +14,12 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.ClanHall;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
 
 /**
@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
  *
  * @author  durgus
  */
-public class L2ClanHallZone extends L2SpawnZone
+public class L2ClanHallZone extends L2ZoneRespawn
 {
 	private int _clanHallId;
 	
@@ -102,7 +102,7 @@ public class L2ClanHallZone extends L2SpawnZone
 			if (((L2PcInstance) temp).getClanId() == owningClanId)
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionTable.TeleportWhereType.Town);
+			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.ClanHall_banish);
 		}
 	}
 	

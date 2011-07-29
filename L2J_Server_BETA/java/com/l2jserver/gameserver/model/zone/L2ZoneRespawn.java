@@ -23,15 +23,17 @@ import com.l2jserver.util.Rnd;
 
 /**
  * Abstract zone with spawn locations
- * @author DS
- *
+ * @author DS, Nyaran (rework 10/07/2011)
+ * 
  */
-public abstract class L2SpawnZone extends L2ZoneType
+public abstract class L2ZoneRespawn extends L2ZoneType
 {
 	private List<Location> _spawnLocs = null;
+	private List<Location> _otherSpawnLocs = null;
 	private List<Location> _chaoticSpawnLocs = null;
+	private List<Location> _banishSpawnLocs = null;
 	
-	public L2SpawnZone(int id)
+	protected L2ZoneRespawn(int id)
 	{
 		super(id);
 	}
@@ -44,6 +46,14 @@ public abstract class L2SpawnZone extends L2ZoneType
 		_spawnLocs.add(new Location(x, y, z));
 	}
 	
+	public final void addOtherSpawn(int x, int y, int z)
+	{
+		if (_otherSpawnLocs == null)
+			_otherSpawnLocs = new ArrayList<Location>();
+		
+		_otherSpawnLocs.add(new Location(x, y, z));
+	}
+	
 	public final void addChaoticSpawn(int x, int y, int z)
 	{
 		if (_chaoticSpawnLocs == null)
@@ -52,11 +62,19 @@ public abstract class L2SpawnZone extends L2ZoneType
 		_chaoticSpawnLocs.add(new Location(x, y, z));
 	}
 	
+	public final void addBanishSpawn(int x, int y, int z)
+	{
+		if (_banishSpawnLocs == null)
+			_banishSpawnLocs = new ArrayList<Location>();
+		
+		_banishSpawnLocs.add(new Location(x, y, z));
+	}
+	
 	public final List<Location> getSpawns()
 	{
 		return _spawnLocs;
 	}
-
+	
 	public final Location getSpawnLoc()
 	{
 		if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
@@ -65,10 +83,41 @@ public abstract class L2SpawnZone extends L2ZoneType
 			return _spawnLocs.get(0);
 	}
 	
+	public final Location getOtherSpawnLoc()
+	{
+		if (_otherSpawnLocs != null)
+		{
+			if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
+				return _otherSpawnLocs.get(Rnd.get(_otherSpawnLocs.size()));
+			else
+				return _otherSpawnLocs.get(0);
+		}
+		else
+			return getSpawnLoc();
+	}
+	
 	public final Location getChaoticSpawnLoc()
 	{
 		if (_chaoticSpawnLocs != null)
-			return _chaoticSpawnLocs.get(Rnd.get(_chaoticSpawnLocs.size()));
+		{
+			if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
+				return _chaoticSpawnLocs.get(Rnd.get(_chaoticSpawnLocs.size()));
+			else
+				return _chaoticSpawnLocs.get(0);
+		}
+		else
+			return getSpawnLoc();
+	}
+	
+	public final Location getBanishSpawnLoc()
+	{
+		if (_banishSpawnLocs != null)
+		{
+			if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
+				return _banishSpawnLocs.get(Rnd.get(_banishSpawnLocs.size()));
+			else
+				return _banishSpawnLocs.get(0);
+		}
 		else
 			return getSpawnLoc();
 	}

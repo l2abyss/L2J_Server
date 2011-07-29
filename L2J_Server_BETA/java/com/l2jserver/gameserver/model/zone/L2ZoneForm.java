@@ -53,4 +53,6 @@ public abstract class L2ZoneForm
 		item.spawnMe(x,y,z+5);
 		ZoneManager.getInstance().getDebugItems().add(item);
 	}
+	
+	public abstract int[] getRandomPoint();
 }

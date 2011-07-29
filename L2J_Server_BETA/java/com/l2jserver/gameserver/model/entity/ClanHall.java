@@ -329,6 +329,14 @@ public class ClanHall
 		_zone = zone;
 	}
 	
+	/**
+	 * Return true if object is inside the zone
+	 */
+	public boolean checkIfInZone(int x, int y, int z)
+	{
+		return getZone().isInsideZone(x, y, z);
+	}
+	
 	/** Returns the zone of this clan hall */
 	public L2ClanHallZone getZone()
 	{

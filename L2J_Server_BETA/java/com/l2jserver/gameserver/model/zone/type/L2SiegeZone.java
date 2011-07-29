@@ -17,10 +17,10 @@ package com.l2jserver.gameserver.model.zone.type;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -281,7 +281,7 @@ public class L2SiegeZone extends L2ZoneType
 			if (((L2PcInstance) temp).getClan() == owningClan || ((L2PcInstance) temp).isGM())
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionTable.TeleportWhereType.Town);
+			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.Town);
 		}
 	}
 }
