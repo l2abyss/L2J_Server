@@ -42,8 +42,8 @@ import com.l2jserver.loginserver.GameServerTable;
 public class RegisterDialog extends JDialog implements ActionListener
 {
 	
-	private ResourceBundle _bundle;
-	private final JComboBox _combo;
+	private final ResourceBundle _bundle;
+	private final JComboBox<ComboServer> _combo;
 	private final GUserInterface _owner;
 	
 	public RegisterDialog(final GUserInterface owner)
@@ -65,7 +65,7 @@ public class RegisterDialog extends JDialog implements ActionListener
 		final JLabel label = new JLabel(_bundle.getString("serverName"));
 		this.add(label, cons);
 		
-		_combo = new JComboBox();
+		_combo = new JComboBox<ComboServer>();
 		_combo.setEditable(false);
 		for (Map.Entry<Integer, String> entry : GameServerTable.getInstance().getServerNames().entrySet())
 		{
