@@ -80,14 +80,18 @@ public class CharEffectList
 	private boolean _queuesInitialized = false;
 	private LinkedBlockingQueue<L2Effect> _addQueue;
 	private LinkedBlockingQueue<L2Effect> _removeQueue;
-	private AtomicBoolean queueLock = new AtomicBoolean();
+	private final AtomicBoolean queueLock = new AtomicBoolean();
 	private int _effectFlags;
 	
 	// only party icons need to be updated
 	private boolean _partyOnly = false;
 	
 	// Owner of this list
-	private L2Character _owner;
+	private final L2Character _owner;
+	
+	private L2Effect[] _effectCache;
+	private volatile boolean _rebuildCache = true;
+	private final Object _buildEffectLock = new Object();
 	
 	public CharEffectList(L2Character owner)
 	{
@@ -106,20 +110,28 @@ public class CharEffectList
 			return EMPTY_EFFECTS;
 		}
 		
-		// Create a copy of the effects
-		FastList<L2Effect> temp = FastList.newInstance();
-		
-		// Add all buffs and all debuffs
-		if (_buffs != null && !_buffs.isEmpty())
-			temp.addAll(_buffs);
-		if (_debuffs != null && !_debuffs.isEmpty())
-			temp.addAll(_debuffs);
-		
-		// Return all effects in an array
-		L2Effect[] tempArray = new L2Effect[temp.size()];
-		temp.toArray(tempArray);
-		FastList.recycle(temp);
-		return tempArray;
+		synchronized (_buildEffectLock)
+		{
+			// If we dont need to rebuild the cache, just return the current one.
+			if (!_rebuildCache)
+				return _effectCache;
+			
+			_rebuildCache = false;
+			
+			// Create a copy of the effects
+			FastList<L2Effect> temp = FastList.newInstance();
+			
+			// Add all buffs and all debuffs
+			if (_buffs != null && !_buffs.isEmpty())
+				temp.addAll(_buffs);
+			if (_debuffs != null && !_debuffs.isEmpty())
+				temp.addAll(_debuffs);
+			
+			// Return all effects in an array
+			L2Effect[] tempArray = new L2Effect[temp.size()];
+			temp.toArray(tempArray);
+			return (_effectCache = tempArray);
+		}
 	}
 	
 	/**
@@ -587,6 +599,9 @@ public class CharEffectList
 		
 		FastList<L2Effect> effectList;
 		
+		// array modified, then rebuild on next request
+		_rebuildCache = true;
+
 		if (effect.getSkill().isDebuff())
 		{
 			if (_debuffs == null)
@@ -670,6 +685,9 @@ public class CharEffectList
 		
 		L2Skill newSkill = newEffect.getSkill();
 		
+		// array modified, then rebuild on next request
+		_rebuildCache = true;
+
 		if (newSkill.isDebuff())
 		{
 			if (_debuffs == null) _debuffs = new FastList<L2Effect>().shared();
@@ -1145,36 +1163,19 @@ public class CharEffectList
 	 */
 	public void clear()
 	{
+		/*
+		 * Removed .clear() since nodes/entries and its references (Effects) should be
+		 * terminated by GC when Queue/Map/List object has no more reference.
+		 * This way we will save a little more CPU
+		 * [DrHouse]
+		 */
 		try
 		{
-			if (_addQueue != null)
-			{
-				_addQueue.clear();
-				_addQueue = null;
-			}
-			if (_removeQueue != null)
-			{
-				_removeQueue.clear();
-				_removeQueue = null;
-			}
-			_queuesInitialized = false;
-			
-			if (_buffs != null)
-			{
-				_buffs.clear();
-				_buffs = null;
-			}
-			if (_debuffs != null)
-			{
-				_debuffs.clear();
-				_debuffs = null;
-			}
-			
-			if (_stackedEffects != null)
-			{
-				_stackedEffects.clear();
-				_stackedEffects = null;
-			}
+			_addQueue = null;
+			_removeQueue = null;
+			_buffs = null;
+			_debuffs = null;
+			_stackedEffects = null;
 		}
 		catch (Exception e)
 		{
