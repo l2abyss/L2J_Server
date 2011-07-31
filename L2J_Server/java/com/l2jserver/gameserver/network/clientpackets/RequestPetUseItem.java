@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestPetUseItem extends L2GameClientPacket
 {
 	private static Logger _log = Logger.getLogger(RequestPetUseItem.class.getName());
-	private static final String _C__8A_REQUESTPETUSEITEM = "[C] 8a RequestPetUseItem";
+	private static final String _C__8A_REQUESTPETUSEITEM = "[C] 8A RequestPetUseItem";
 	
 	private int _objectId;
 	
@@ -38,7 +38,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 	protected void readImpl()
 	{
 		_objectId = readD();
-		// todo implement me properly
+		//TODO: implement me properly
 		//readQ();
 		//readD();
 	}
@@ -46,34 +46,41 @@ public final class RequestPetUseItem extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null)
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if ((activeChar == null) || (activeChar.getPet() == null) || !(activeChar.getPet() instanceof L2PetInstance))
+		{
 			return;
+		}
 		
-		L2PetInstance pet = (L2PetInstance)activeChar.getPet();
+		final L2PetInstance pet = (L2PetInstance) activeChar.getPet();
 		if (pet == null)
+		{
 			return;
+		}
 		
 		if (!getClient().getFloodProtectors().getUseItem().tryPerformAction("pet use item"))
+		{
 			return;
+		}
 		
-		L2ItemInstance item = pet.getInventory().getItemByObjectId(_objectId);
+		final L2ItemInstance item = pet.getInventory().getItemByObjectId(_objectId);
 		if (item == null)
+		{
 			return;
-		
-		int itemId = item.getItemId();
+		}
 		
 		if (activeChar.isAlikeDead() || pet.isDead())
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addItemName(item);
 			activeChar.sendPacket(sm);
-			sm = null;
 			return;
 		}
 		
 		if (Config.DEBUG)
-			_log.finest(activeChar.getObjectId()+": pet use item " + _objectId);
+		{
+			_log.finest(activeChar.getObjectId() + ": pet use item " + _objectId);
+		}
 		
 		if (!item.isEquipped())
 		{
@@ -89,28 +96,38 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			// all pet items have condition
 			if (!item.getItem().isConditionAttached())
 			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
+				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
 				return;
 			}
 			useItem(pet, item, activeChar);
 			return;
 		}
-		else if (PetDataTable.isPetFood(itemId))
+		else
 		{
-			if (pet.canEatFoodId(itemId))
-				useItem(pet, item, activeChar);
-			else
+			final int itemId = item.getItemId();
+			if (PetDataTable.isPetFood(itemId))
 			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
-				return;
+				if (pet.canEatFoodId(itemId))
+				{
+					useItem(pet, item, activeChar);
+				}
+				else
+				{
+					activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
+					return;
+				}
 			}
 		}
 		
-		IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+		final IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
 		if (handler != null)
+		{
 			useItem(pet, item, activeChar);
+		}
 		else
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
+		{
+			activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
+		}
 		
 		return;
 	}
@@ -133,14 +150,16 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		}
 		else
 		{
-			IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+			final IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
 			if (handler != null)
 			{
 				handler.useItem(pet, item, false);
 				pet.updateAndBroadcastStatus(1);
 			}
 			else
+			{
 				_log.warning("no itemhandler registered for itemId:" + item.getItemId());
+			}
 		}
 	}
 	
