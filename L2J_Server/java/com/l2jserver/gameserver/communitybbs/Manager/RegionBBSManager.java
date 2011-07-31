@@ -272,15 +272,14 @@ public class RegionBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	public synchronized void changeCommunityBoard()
+	public /*synchronized */ void changeCommunityBoard()
 	{
 		FastList<L2PcInstance> sortedPlayers = new FastList<L2PcInstance>();
-		//synchronized (L2World.getInstance().getAllPlayers())
-		{
-			sortedPlayers.addAll(L2World.getInstance().getAllPlayers().values());
-		}
+		sortedPlayers.addAll(L2World.getInstance().getAllPlayers().values());
 		
-		Collections.sort(sortedPlayers, new Comparator<L2PcInstance>() {
+		Collections.sort(sortedPlayers, new Comparator<L2PcInstance>() 
+		{
+			@Override
 			public int compare(L2PcInstance p1, L2PcInstance p2)
 			{
 				return p1.getName().compareToIgnoreCase(p2.getName());
