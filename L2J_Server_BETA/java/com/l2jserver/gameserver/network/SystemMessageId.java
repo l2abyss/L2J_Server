@@ -13999,7 +13999,7 @@ public final class SystemMessageId
 	 * ID: 2750<br>
 	 * Message: The $s1 ward has been destroyed! $c2 now has the territory ward.
 	 */
-	public static final SystemMessageId THE_S1_WARD_HAS_BEEN_DESTROYED;
+	public static final SystemMessageId THE_S1_WARD_HAS_BEEN_DESTROYED_C2_HAS_THE_WARD;
 	
 	/**
 	 * ID: 2751<br>
@@ -17054,7 +17054,7 @@ public final class SystemMessageId
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_USING_A_SKILL = new SystemMessageId(2736);
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_A_CURSED_WEAPON_IS_EQUIPPED = new SystemMessageId(2737);
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG = new SystemMessageId(2738);
-		THE_S1_WARD_HAS_BEEN_DESTROYED = new SystemMessageId(2750);
+		THE_S1_WARD_HAS_BEEN_DESTROYED_C2_HAS_THE_WARD = new SystemMessageId(2750);
 		THE_CHAR_THAT_ACQUIRED_S1_WARD_HAS_BEEN_KILLED = new SystemMessageId(2751);
 		CANT_CONTROL_TOO_FAR = new SystemMessageId(2762);
 		SEED_OF_INFINITY_STAGE_1_ATTACK_IN_PROGRESS = new SystemMessageId(2766);

@@ -110,7 +110,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 				((L2PcInstance)killer).addItem("Pickup", getNpcId() - 23012, 1, null, false);
 			else
 				TerritoryWarManager.getInstance().getTerritoryWard(getNpcId() - 36491).spawnMe();
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_S1_WARD_HAS_BEEN_DESTROYED);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_S1_WARD_HAS_BEEN_DESTROYED_C2_HAS_THE_WARD);
 			sm.addString(this.getName().replaceAll(" Ward", ""));
 			sm.addPcName((L2PcInstance)killer);
 			TerritoryWarManager.getInstance().announceToParticipants(sm, 0, 0);
