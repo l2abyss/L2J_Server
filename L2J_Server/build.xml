@@ -89,7 +89,7 @@
 	<target name="jarsrc" depends="jar">
 		<mkdir dir="${build.dist.libs}" />
 		<jar destfile="${build.dist.libs}/l2jserver-src.jar">
-			<fileset dir="${src}" >
+			<fileset dir="${src}">
 				<exclude name="/config/**" />
 				<exclude name="**.cfg" />
 			</fileset>
