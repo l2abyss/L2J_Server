@@ -40,20 +40,20 @@
 		</fileset>
 	</path>
 
-	  <pathconvert property="manifest.libs" pathsep=" ">
-	  	<mapper>
-	  		<chainedmapper>
-	  			<flattenmapper />
+	<pathconvert property="manifest.libs" pathsep=" ">
+		<mapper>
+			<chainedmapper>
+				<flattenmapper />
 				<globmapper from="*" to="../libs/*" />
-	  		</chainedmapper>
+			</chainedmapper>
 		</mapper>
-	  	<path>
+		<path>
 			<fileset dir="${lib}">
 				<include name="*.jar" />
 			</fileset>
-	  	</path>
-	  </pathconvert>
-	  	
+		</path>
+	</pathconvert>
+
 	<target name="verifyRequirements" description="Checks if the necessary requirements for building L2J are fulfilled">
 		<available classname="javax.script.ScriptContext" property="JDK7.present" />
 		<fail unless="JDK7.present" message="JDK 7 or greater is required." />
