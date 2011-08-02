@@ -109,13 +109,13 @@ public final class L2CastleTeleporterInstance extends L2Npc
 			{
 				NpcSay cs = new NpcSay(getObjectId(), 1, getNpcId(), 1000443); // The defenders of $s1 castle will be teleported to the inner castle.
 				cs.addStringParameter(getCastle().getName());
-				int region = MapRegionManager.getInstance().getMapRegionId(getX(), getY());
+				int region = MapRegionManager.getInstance().getMapRegionLocId(getX(), getY());
 				Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
 				//synchronized (L2World.getInstance().getAllPlayers())
 				{
 					for (L2PcInstance player : pls)
 					{
-						if (region == MapRegionManager.getInstance().getMapRegionId(player.getX(), player.getY()))
+						if (region == MapRegionManager.getInstance().getMapRegionLocId(player.getX(), player.getY()))
 							player.sendPacket(cs);
 					}
 				}

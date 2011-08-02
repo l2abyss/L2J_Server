@@ -60,7 +60,7 @@ public class L2RespawnZone extends L2ZoneType
 		_raceRespawnPoint.put(Race.valueOf(race), point);
 	}
 	
-	public Map<Race, String> getAll()
+	public Map<Race, String> getAllRespawnPoints()
 	{
 		return _raceRespawnPoint;
 	} 

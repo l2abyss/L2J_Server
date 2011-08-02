@@ -248,7 +248,7 @@ public class Instance
 		newdoor.setRange(temp.getXMin(), temp.getYMin(), temp.getZMin(), temp.getXMax(), temp.getYMax(), temp.getZMax());
 		try
 		{
-			newdoor.setMapRegion(MapRegionManager.getInstance().getMapRegionId(temp));
+			newdoor.setMapRegion(MapRegionManager.getInstance().getMapRegionLocId(temp));
 		}
 		catch (Exception e)
 		{

@@ -222,7 +222,7 @@ public class DoorTable
 			door.setRange(rangeXMin, rangeYMin, rangeZMin, rangeXMax, rangeYMax, rangeZMax);
 			door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
 			door.setXYZInvisible(x, y, z);
-			door.setMapRegion(MapRegionManager.getInstance().getMapRegionId(x, y));
+			door.setMapRegion(MapRegionManager.getInstance().getMapRegionLocId(x, y));
 			door.setEmitter(emitter);
 			door.setTargetable(targetable);
 			
@@ -300,7 +300,7 @@ public class DoorTable
 		if (instanceId > 0 && InstanceManager.getInstance().getInstance(instanceId) != null)
 			allDoors = InstanceManager.getInstance().getInstance(instanceId).getDoors();
 		else
-			allDoors = _regions.get(MapRegionManager.getInstance().getMapRegionId(x, y));
+			allDoors = _regions.get(MapRegionManager.getInstance().getMapRegionLocId(x, y));
 		
 		if (allDoors == null)
 			return false;

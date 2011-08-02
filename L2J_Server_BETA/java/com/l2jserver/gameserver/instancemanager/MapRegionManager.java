@@ -219,7 +219,7 @@ public class MapRegionManager
 		return null;
 	}
 	
-	public final int getMapRegionId(int locX, int locY)
+	public final int getMapRegionLocId(int locX, int locY)
 	{
 		L2MapRegion region = getMapRegion(locX, locY);
 		if (region != null)
@@ -235,9 +235,9 @@ public class MapRegionManager
 		return getMapRegion(obj.getX(), obj.getY());
 	}
 	
-	public final int getMapRegionId(L2Object obj)
+	public final int getMapRegionLocId(L2Object obj)
 	{
-		return getMapRegionId(obj.getX(), obj.getY());
+		return getMapRegionLocId(obj.getX(), obj.getY());
 	}
 	
 	public final int getMapRegionX(int posX)
