@@ -53,20 +53,19 @@ public class CombatFlag
 	
 	public synchronized void spawnMe()
 	{
-		L2ItemInstance i;
-		
 		// Init the dropped L2ItemInstance and add it in the world as a visible object at the position where mob was last
-		i = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
-		i.spawnMe(_location.getX(), _location.getY(),  _location.getZ());
+		L2ItemInstance i = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
+		i.dropMe(null, _location.getX(), _location.getY(),  _location.getZ());
 		itemInstance = i;
 	}
 	
 	public synchronized void unSpawnMe()
 	{
-		if ( _player != null )
+		if (_player != null)
+		{
 			dropIt();
-		
-		if ( itemInstance != null )
+		}
+		if (itemInstance != null)
 		{
 			itemInstance.decayMe();
 		}
