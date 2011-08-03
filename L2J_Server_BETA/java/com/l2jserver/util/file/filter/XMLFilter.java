@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileFilter;
 
 /**
+ * Specialized {@link FileFilter} class.<br>
+ * Accepts files ending with ".xml" only.
  * 
  * @author mrTJO
  */

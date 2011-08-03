@@ -28,13 +28,15 @@ import com.l2jserver.gameserver.Shutdown;
 
 
 /**
+ * Thread to check for deadlocked threads.
+ * 
  * @author -Nemesiss- L2M
- *
  */
 public class DeadLockDetector extends Thread
 {
 	private static Logger _log = Logger.getLogger(DeadLockDetector.class.getName());
-	
+
+	/** Interval to check for deadlocked threads */
 	private static final int _sleepTime = Config.DEADLOCK_CHECK_INTERVAL*1000;
 	
 	private final ThreadMXBean tmx;
