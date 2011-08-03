@@ -40,7 +40,7 @@
 	</path>
 
 	<target name="verifyRequirements" description="Checks if the necessary requirements for building L2J are fulfilled">
-		<available classname="javax.script.ScriptContext" property="JDK7.present" />
+		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
 		<fail unless="JDK7.present" message="JDK 7 or greater is required." />
 	</target>
 
