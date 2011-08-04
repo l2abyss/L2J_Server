@@ -19,12 +19,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -35,6 +33,7 @@ import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostArrived;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 
 /**
  * @author Migi, DS<br>
@@ -43,7 +42,7 @@ public class MailManager
 {
 	private static Logger _log = Logger.getLogger(MailManager.class.getName());
 	
-	private Map<Integer, Message> _messages = new FastMap<Integer, Message>().shared();
+	private L2TIntObjectHashMap<Message> _messages = new L2TIntObjectHashMap<Message>();
 	
 	public static MailManager getInstance()
 	{
@@ -103,10 +102,15 @@ public class MailManager
 		return _messages.get(msgId);
 	}
 	
+	public final Message[] getMessages()
+	{
+		return _messages.getValues(new Message[_messages.size()]);
+	}
+	
 	public final boolean hasUnreadPost(L2PcInstance player)
 	{
 		final int objectId = player.getObjectId();
-		for (Message msg : _messages.values())
+		for (Message msg : getMessages())
 		{
 			if (msg != null
 					&& msg.getReceiverId() == objectId
@@ -119,7 +123,7 @@ public class MailManager
 	public final int getInboxSize(int objectId)
 	{
 		int size = 0;
-		for (Message msg : _messages.values())
+		for (Message msg : getMessages())
 		{
 			if (msg != null
 					&& msg.getReceiverId() == objectId
@@ -132,7 +136,7 @@ public class MailManager
 	public final int getOutboxSize(int objectId)
 	{
 		int size = 0;
-		for (Message msg : _messages.values())
+		for (Message msg : getMessages())
 		{
 			if (msg != null
 					&& msg.getSenderId() == objectId
@@ -145,7 +149,7 @@ public class MailManager
 	public final List<Message> getInbox(int objectId)
 	{
 		List<Message> inbox = new FastList<Message>();
-		for (Message msg : _messages.values())
+		for (Message msg : getMessages())
 		{
 			if (msg != null
 					&& msg.getReceiverId() == objectId
@@ -158,7 +162,7 @@ public class MailManager
 	public final List<Message> getOutbox(int objectId)
 	{
 		List<Message> outbox = new FastList<Message>();
-		for (Message msg : _messages.values())
+		for (Message msg : getMessages())
 		{
 			if (msg != null
 					&& msg.getSenderId() == objectId
