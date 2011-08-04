@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.model.actor;
 
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import javolution.util.FastList;
@@ -2232,11 +2231,11 @@ public class L2Attackable extends L2Npc
 		_seedType = id;
 		int count = 1;
 		
-		Map<Integer, L2Skill> skills = getTemplate().getSkills();
+		int[] skillIds = getTemplate().getSkills().keys();
 		
-		if (skills != null)
+		if (skillIds != null)
 		{
-			for (int skillId : skills.keySet())
+			for (int skillId : skillIds)
 			{
 				switch (skillId)
 				{

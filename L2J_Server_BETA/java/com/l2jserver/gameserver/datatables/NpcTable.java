@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -690,7 +689,7 @@ public class NpcTable
 		{
 			// save a copy of the old data
 			L2NpcTemplate old = getTemplate(id);
-			Map<Integer, L2Skill> skills = new FastMap<Integer, L2Skill>();
+			TIntObjectHashMap<L2Skill> skills = new TIntObjectHashMap<L2Skill>();
 			
 			if (old.getSkills() != null)
 				skills.putAll(old.getSkills());
@@ -740,7 +739,7 @@ public class NpcTable
 			// restore additional data from saved copy
 			L2NpcTemplate created = getTemplate(id);
 			
-			for (L2Skill skill : skills.values())
+			for (L2Skill skill : skills.getValues(new L2Skill[skills.size()]))
 				created.addSkill(skill);
 			
 			if (classIds != null)

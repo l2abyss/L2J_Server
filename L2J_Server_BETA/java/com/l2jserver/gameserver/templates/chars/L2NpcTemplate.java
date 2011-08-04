@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.templates.chars;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -169,7 +171,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	private List<L2MinionData> _minions = null;
 	
 	private List<ClassId> _teachInfo;
-	private Map<Integer, L2Skill> _skills;
+	private TIntObjectHashMap<L2Skill> _skills;
 	//private Map<Stats, Double> _vulnerabilities;
 	// contains a list of quests for each event type (questStart, questAttack, questKill, etc)
 	private Map<Quest.QuestEventType, Quest[]> _questEvents;
@@ -309,7 +311,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	{
 		
 		if (_skills == null)
-			_skills = new FastMap<Integer, L2Skill>();
+			_skills = new TIntObjectHashMap<L2Skill>();
 		
 		if(!skill.isPassive())
 		{
@@ -447,9 +449,14 @@ public final class L2NpcTemplate extends L2CharTemplate
 		return _minions;
 	}
 	
-	public Map<Integer, L2Skill> getSkills()
+	public TIntObjectHashMap<L2Skill> getSkills()
 	{
 		return _skills;
+	}
+	
+	public L2Skill[] getSkillsArray()
+	{
+		return _skills.getValues(new L2Skill[_skills.size()]);
 	}
 	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)

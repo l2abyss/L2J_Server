@@ -115,6 +115,7 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -175,7 +176,7 @@ public abstract class L2Character extends L2Object
 	private Calculator[] _calculators;
 	
 	/** FastMap(Integer, L2Skill) containing all skills of the L2Character */
-	protected final Map<Integer, L2Skill> _skills;
+	protected final L2TIntObjectHashMap<L2Skill> _skills;
 	/** FastMap containing the active chance skills on this character */
 	private ChanceSkillList _chanceSkills;
 	
@@ -384,11 +385,12 @@ public abstract class L2Character extends L2Object
 			// Copy the skills of the L2NPCInstance from its template to the L2Character Instance
 			// The skills list can be affected by spell effects so it's necessary to make a copy
 			// to avoid that a spell affecting a L2NPCInstance, affects others L2NPCInstance of the same type too.
-			_skills = ((L2NpcTemplate)template).getSkills();
+			_skills = new L2TIntObjectHashMap<L2Skill>();
+			_skills.putAll(((L2NpcTemplate)template).getSkills());
 			if (_skills != null)
 			{
-				for(Map.Entry<Integer, L2Skill> skill : _skills.entrySet())
-					addStatFuncs(skill.getValue().getStatFuncs(null, this));
+				for(L2Skill skill : getAllSkills())
+					addStatFuncs(skill.getStatFuncs(null, this));
 			}
 		}
 		else
@@ -401,20 +403,18 @@ public abstract class L2Character extends L2Object
 				// Copy the skills of the L2Summon from its template to the L2Character Instance
 				// The skills list can be affected by spell effects so it's necessary to make a copy
 				// to avoid that a spell affecting a L2Summon, affects others L2Summon of the same type too.
-				if (((L2NpcTemplate) template).getSkills() == null)
-					_skills = new FastMap<Integer,L2Skill>().shared();
-				else
-					_skills = ((L2NpcTemplate)template).getSkills();
+				_skills = new L2TIntObjectHashMap<L2Skill>();
+				_skills.putAll(((L2NpcTemplate)template).getSkills());
 				if (_skills != null)
 				{
-					for(Map.Entry<Integer, L2Skill> skill : _skills.entrySet())
-						addStatFuncs(skill.getValue().getStatFuncs(null, this));
+					for(L2Skill skill : getAllSkills())
+						addStatFuncs(skill.getStatFuncs(null, this));
 				}
 			}
 			else
 			{
 				// Initialize the FastMap _skills to null
-				_skills = new FastMap<Integer,L2Skill>().shared();
+				_skills = new L2TIntObjectHashMap<L2Skill>();
 			}
 			
 			Formulas.addFuncsToNewCharacter(this);
@@ -5861,7 +5861,7 @@ public abstract class L2Character extends L2Object
 		if (_skills == null)
 			return new L2Skill[0];
 		
-		return _skills.values().toArray(new L2Skill[_skills.values().size()]);
+		return _skills.getValues(new L2Skill[_skills.size()]);
 	}
 	
 	public ChanceSkillList getChanceSkills()

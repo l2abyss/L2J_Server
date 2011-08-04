@@ -14680,7 +14680,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void checkPlayerSkills()
 	{
-		for (int id : _skills.keySet())
+		for (int id : _skills.keys())
 		{
 			int level = getSkillLevel(id);
 			if (level >= 100) // enchanted skill
