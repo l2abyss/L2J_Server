@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -29,6 +28,7 @@ import org.w3c.dom.Node;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 
 /**
  * Service class for manor
@@ -39,11 +39,11 @@ public class L2Manor
 {
 	private static Logger _log = Logger.getLogger(L2Manor.class.getName());
 	
-	private static FastMap<Integer, SeedData> _seeds;
+	private static L2TIntObjectHashMap<SeedData> _seeds;
 	
 	private L2Manor()
 	{
-		_seeds = new FastMap<Integer, SeedData>().shared();
+		_seeds = new L2TIntObjectHashMap<SeedData>();
 		parseData();
 	}
 	
@@ -52,11 +52,16 @@ public class L2Manor
 		return SingletonHolder._instance;
 	}
 	
+	public SeedData[] getSeedsDataArray()
+	{
+		return _seeds.getValues(new SeedData[_seeds.size()]);
+	}
+	
 	public FastList<Integer> getAllCrops()
 	{
 		FastList<Integer> crops = new FastList<Integer>();
 		
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (!crops.contains(seed.getCrop()) && seed.getCrop() != 0 && !crops.contains(seed.getCrop()))
 			{
@@ -83,7 +88,7 @@ public class L2Manor
 	
 	public int getSeedBasicPriceByCrop(int cropId)
 	{
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (seed.getCrop() == cropId)
 				return getSeedBasicPrice(seed.getId());
@@ -103,7 +108,7 @@ public class L2Manor
 	
 	public int getMatureCrop(int cropId)
 	{
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (seed.getCrop() == cropId)
 				return seed.getMature();
@@ -142,7 +147,7 @@ public class L2Manor
 	
 	public int getSeedLevelByCrop(int cropId)
 	{
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (seed.getCrop() == cropId)
 			{
@@ -165,7 +170,7 @@ public class L2Manor
 	
 	public boolean isAlternative(int seedId)
 	{
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (seed.getId() == seedId)
 			{
@@ -186,7 +191,7 @@ public class L2Manor
 	
 	public int getRewardItem(int cropId, int type)
 	{
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (seed.getCrop() == cropId)
 			{
@@ -220,7 +225,7 @@ public class L2Manor
 	{
 		FastList<Integer> crops = new FastList<Integer>();
 		
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (seed.getManorId() == castleId && !crops.contains(seed.getCrop()))
 			{
@@ -240,7 +245,7 @@ public class L2Manor
 	{
 		FastList<Integer> seedsID = new FastList<Integer>();
 		
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (seed.getManorId() == castleId && !seedsID.contains(seed.getId()))
 			{
@@ -280,7 +285,7 @@ public class L2Manor
 	
 	public int getCropPuchaseLimit(int cropId)
 	{
-		for (SeedData seed : _seeds.values())
+		for (SeedData seed : getSeedsDataArray())
 		{
 			if (seed.getCrop() == cropId)
 			{

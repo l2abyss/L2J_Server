@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
@@ -226,11 +225,6 @@ public class L2EffectZone extends L2ZoneType
 			return _skills.get(skillId);
 	}
 	
-	protected Collection<L2Character> getCharacterList()
-	{
-		return _characterList.values();
-	}
-	
 	class ApplySkill implements Runnable
 	{
 		ApplySkill()
@@ -244,7 +238,7 @@ public class L2EffectZone extends L2ZoneType
 		{
 			if (isEnabled())
 			{
-				for (L2Character temp : L2EffectZone.this.getCharacterList())
+				for (L2Character temp : getCharactersInsideArray())
 				{
 					if (temp != null && !temp.isDead())
 					{

@@ -98,7 +98,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	public final void broadcastStatusUpdate(L2PcInstance player)
 	{
 		final ExOlympiadUserInfo packet = new ExOlympiadUserInfo(player);
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character instanceof L2PcInstance)
 			{
@@ -111,7 +111,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 
 	public final void broadcastPacketToObservers(L2GameServerPacket packet)
 	{
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character instanceof L2PcInstance
 					&& ((L2PcInstance)character).inObserverMode())
@@ -205,7 +205,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 		else
 			sm = SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE);
 
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character == null)
 				continue;

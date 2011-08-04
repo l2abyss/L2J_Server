@@ -183,7 +183,7 @@ public class L2SiegeZone extends L2ZoneType
 	{
 		if (_isActiveSiege)
 		{
-			for (L2Character character : _characterList.values())
+			for (L2Character character : getCharactersInsideArray())
 			{
 				if (character != null)
 					onEnter(character);
@@ -191,7 +191,7 @@ public class L2SiegeZone extends L2ZoneType
 		}
 		else
 		{
-			for (L2Character character : _characterList.values())
+			for (L2Character character : getCharactersInsideArray())
 			{
 				if (character == null)
 					continue;
@@ -224,7 +224,7 @@ public class L2SiegeZone extends L2ZoneType
 	 */
 	public void announceToPlayers(String message)
 	{
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (temp instanceof L2PcInstance)
 				((L2PcInstance) temp).sendMessage(message);
@@ -239,7 +239,7 @@ public class L2SiegeZone extends L2ZoneType
 	{
 		FastList<L2PcInstance> players = new FastList<L2PcInstance>();
 		
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (temp instanceof L2PcInstance)
 				players.add((L2PcInstance) temp);
@@ -274,7 +274,7 @@ public class L2SiegeZone extends L2ZoneType
 	 */
 	public void banishForeigners(L2Clan owningClan)
 	{
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (!(temp instanceof L2PcInstance))
 				continue;

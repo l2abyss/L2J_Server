@@ -76,7 +76,7 @@ public class L2FortZone extends L2ZoneRespawn
 	 */
 	public void banishForeigners(L2Clan owningClan)
 	{
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (!(temp instanceof L2PcInstance))
 				continue;

@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.zone;
 
+import gnu.trove.TObjectProcedure;
+
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -26,6 +28,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
+import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 
 /**
  * Abstract base class for any zone type
@@ -39,7 +42,7 @@ public abstract class L2ZoneType
 	
 	private final int _id;
 	protected L2ZoneForm _zone;
-	protected FastMap<Integer, L2Character> _characterList;
+	protected L2TIntObjectHashMap<L2Character> _characterList;
 	
 	/** Parameters to affect specific characters */
 	private boolean _checkAffected = false;
@@ -56,7 +59,7 @@ public abstract class L2ZoneType
 	protected L2ZoneType(int id)
 	{
 		_id = id;
-		_characterList = new FastMap<Integer, L2Character>().shared();
+		_characterList = new L2TIntObjectHashMap<L2Character>();
 		
 		_minLvl = 0;
 		_maxLvl = 0xFF;
@@ -397,9 +400,14 @@ public abstract class L2ZoneType
 	
 	public abstract void onReviveInside(L2Character character);
 	
-	public FastMap<Integer, L2Character> getCharactersInside()
+	public L2TIntObjectHashMap<L2Character> getCharactersInside()
 	{
 		return _characterList;
+	}
+	
+	public L2Character[] getCharactersInsideArray()
+	{
+		return _characterList.getValues(new L2Character[_characterList.size()]);
 	}
 	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
@@ -429,10 +437,23 @@ public abstract class L2ZoneType
 		if (_characterList.isEmpty())
 			return;
 		
-		for (L2Character character : _characterList.values())
+		_characterList.forEachValue(new BroadcastPacket(packet));
+	}
+	
+	private final class BroadcastPacket implements TObjectProcedure<L2Character>
+	{
+		final L2GameServerPacket _packet;
+		private BroadcastPacket(L2GameServerPacket packet)
+		{
+			_packet = packet;
+		}
+		
+		@Override
+		public final boolean execute(final L2Character character)
 		{
 			if (character != null && character instanceof L2PcInstance)
-				character.sendPacket(packet);
+				character.sendPacket(_packet);
+			return true;
 		}
 	}
 	

@@ -71,7 +71,7 @@ public class L2ResidenceTeleportZone extends L2ZoneRespawn
 	{
 		FastList<L2PcInstance> players = new FastList<L2PcInstance>();
 		
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (temp instanceof L2PcInstance)
 				players.add((L2PcInstance) temp);
@@ -86,7 +86,7 @@ public class L2ResidenceTeleportZone extends L2ZoneRespawn
 			return;
 		if (_characterList.isEmpty())
 			return;
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character == null)
 				continue;

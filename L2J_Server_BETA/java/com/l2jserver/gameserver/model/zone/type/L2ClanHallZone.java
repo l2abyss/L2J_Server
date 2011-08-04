@@ -95,7 +95,7 @@ public class L2ClanHallZone extends L2ZoneRespawn
 	 */
 	public void banishForeigners(int owningClanId)
 	{
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (!(temp instanceof L2PcInstance))
 				continue;

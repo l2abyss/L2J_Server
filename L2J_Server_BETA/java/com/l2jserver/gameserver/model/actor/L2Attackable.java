@@ -61,6 +61,7 @@ import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2EtcItemType;
 import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -312,7 +313,7 @@ public class L2Attackable extends L2Npc
 	
 	private boolean _absorbed;
 	
-	private final FastMap<Integer, AbsorberInfo> _absorbersList = new FastMap<Integer, AbsorberInfo>().shared();
+	private final L2TIntObjectHashMap<AbsorberInfo> _absorbersList = new L2TIntObjectHashMap<AbsorberInfo>();
 	
 	private boolean _mustGiveExpSp;
 	
@@ -2054,7 +2055,7 @@ public class L2Attackable extends L2Npc
 		_absorbersList.clear();
 	}
 	
-	public FastMap<Integer, AbsorberInfo> getAbsorbersList()
+	public L2TIntObjectHashMap<AbsorberInfo> getAbsorbersList()
 	{
 		return _absorbersList;
 	}
