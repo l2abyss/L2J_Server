@@ -14,12 +14,13 @@
  */
 package com.l2jserver.gameserver;
 
+import gnu.trove.TObjectProcedure;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -1383,20 +1384,28 @@ public class SevenSigns
 	 */
 	protected void teleLosingCabalFromDungeons(String compWinner)
 	{
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		//synchronized (L2World.getInstance().getAllPlayers())
+		L2World.getInstance().forEachPlayer(new teleLosingCabalFromDungeons(compWinner));
+	}
+	
+	private final class teleLosingCabalFromDungeons implements TObjectProcedure<L2PcInstance>
+	{
+		private final String _cmpWinner;
+		
+		private teleLosingCabalFromDungeons(final String compWinner)
 		{
-			StatsSet currPlayer;
-			for (L2PcInstance onlinePlayer : pls)
+			_cmpWinner = compWinner;
+		}
+		
+		@Override
+		public final boolean execute(final L2PcInstance onlinePlayer)
+		{
+			if (onlinePlayer != null)
 			{
-				if (onlinePlayer == null)
-					continue;
-				
-				currPlayer = _signsPlayerData.get(onlinePlayer.getObjectId());
+				StatsSet currPlayer = _signsPlayerData.get(onlinePlayer.getObjectId());
 				
 				if (isSealValidationPeriod() || isCompResultsPeriod())
 				{
-					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && (currPlayer == null || !currPlayer.getString("cabal").equals(compWinner)))
+					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && (currPlayer == null || !currPlayer.getString("cabal").equals(_cmpWinner)))
 					{
 						onlinePlayer.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 						onlinePlayer.setIsIn7sDungeon(false);
@@ -1413,6 +1422,8 @@ public class SevenSigns
 					}
 				}
 			}
+			
+			return true;
 		}
 	}
 	
@@ -1574,33 +1585,53 @@ public class SevenSigns
 	
 	public void giveCPMult(int StrifeOwner)
 	{
-		int cabal;
-		//Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
-		for (L2PcInstance character : L2World.getInstance().getAllPlayers().values())
+		L2World.getInstance().forEachPlayer(new giveCPMult(StrifeOwner));
+	}
+	
+	private final class giveCPMult implements TObjectProcedure<L2PcInstance>
+	{
+		private final int _strifeOwner;
+		
+		private giveCPMult(int strifeOwner)
 		{
-			if (character == null)
-				continue;
+			_strifeOwner = strifeOwner;
+		}
+		@Override
+		public final boolean execute(final L2PcInstance character)
+		{
+			if (character != null)
+			{
+				//Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
+				int cabal = getPlayerCabal(character.getObjectId());
+				if (cabal != SevenSigns.CABAL_NULL)
+					if (cabal == _strifeOwner)
+						character.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+					else
+						//Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
+						character.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			}
 			
-			cabal = getPlayerCabal(character.getObjectId());
-			if (cabal != SevenSigns.CABAL_NULL)
-				if (cabal == StrifeOwner)
-					character.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-				else
-					//Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
-					character.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			return true;
 		}
 	}
 	
 	public void removeCPMult()
 	{
-		for (L2PcInstance character : L2World.getInstance().getAllPlayers().values())
+		L2World.getInstance().forEachPlayer(new removeCPMult());
+	}
+	
+	private final class removeCPMult implements TObjectProcedure<L2PcInstance>
+	{	
+		@Override
+		public final boolean execute(final L2PcInstance character)
 		{
-			if (character == null)
-				continue;
-			
-			//Remove SevenSigns' buffs/debuffs.
-			character.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-			character.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			if (character != null)
+			{
+				//Remove SevenSigns' buffs/debuffs.
+				character.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+				character.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			}
+			return true;
 		}
 	}
 	

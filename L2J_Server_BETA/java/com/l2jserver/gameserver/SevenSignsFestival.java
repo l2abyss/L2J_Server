@@ -14,12 +14,13 @@
  */
 package com.l2jserver.gameserver;
 
+import gnu.trove.TObjectProcedure;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -1251,23 +1252,7 @@ public class SevenSignsFestival implements SpawnListener
 		saveFestivalData(updateSettings);
 		
 		// Remove any unused blood offerings from online players.
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		//synchronized (L2World.getInstance().getAllPlayers())
-		{
-			for (L2PcInstance onlinePlayer : pls)
-			{
-				try
-				{
-					L2ItemInstance bloodOfferings = onlinePlayer.getInventory().getItemByItemId(FESTIVAL_OFFERING_ID);
-					
-					if (bloodOfferings != null)
-						onlinePlayer.destroyItem("SevenSigns", bloodOfferings, null, false);
-				}
-				catch (NullPointerException e)
-				{
-				}
-			}
-		}
+		L2World.getInstance().forEachPlayer(new ForEachPlayerRemoveUnusedBloodOfferings());
 		
 		_log.info("SevenSignsFestival: Reinitialized engine for next competition period.");
 	}
@@ -2447,6 +2432,25 @@ public class SevenSignsFestival implements SpawnListener
 				_npcId = spawnData[4];
 			else
 				_npcId = -1;
+		}
+	}
+	
+	private final class ForEachPlayerRemoveUnusedBloodOfferings implements TObjectProcedure<L2PcInstance>
+	{	
+		@Override
+		public final boolean execute(final L2PcInstance onlinePlayer)
+		{
+			try
+			{
+				L2ItemInstance bloodOfferings = onlinePlayer.getInventory().getItemByItemId(FESTIVAL_OFFERING_ID);
+				
+				if (bloodOfferings != null)
+					onlinePlayer.destroyItem("SevenSigns", bloodOfferings, null, false);
+			}
+			catch (NullPointerException e)
+			{
+			}
+			return true;
 		}
 	}
 	

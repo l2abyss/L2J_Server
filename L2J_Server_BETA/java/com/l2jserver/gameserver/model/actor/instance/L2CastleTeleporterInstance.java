@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.Collection;
+import gnu.trove.TObjectProcedure;
+
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -110,15 +111,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 				NpcSay cs = new NpcSay(getObjectId(), 1, getNpcId(), 1000443); // The defenders of $s1 castle will be teleported to the inner castle.
 				cs.addStringParameter(getCastle().getName());
 				int region = MapRegionManager.getInstance().getMapRegionLocId(getX(), getY());
-				Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-				//synchronized (L2World.getInstance().getAllPlayers())
-				{
-					for (L2PcInstance player : pls)
-					{
-						if (region == MapRegionManager.getInstance().getMapRegionLocId(player.getX(), player.getY()))
-							player.sendPacket(cs);
-					}
-				}
+				L2World.getInstance().forEachPlayer(new ForEachPlayerInRegionSendPacket(region, cs));
 				oustAllPlayers();
 				setTask(false);
 			}
@@ -126,6 +119,26 @@ public final class L2CastleTeleporterInstance extends L2Npc
 			{
 				_log.log(Level.WARNING, "" + e.getMessage(), e);
 			}
+		}
+	}
+	
+	private final class ForEachPlayerInRegionSendPacket implements TObjectProcedure<L2PcInstance>
+	{
+		int _region;
+		NpcSay _cs;
+		
+		private ForEachPlayerInRegionSendPacket(int region, NpcSay cs)
+		{
+			_region = region;
+			_cs = cs;
+		}
+		
+		@Override
+		public final boolean execute(final L2PcInstance player)
+		{
+			if (_region == MapRegionManager.getInstance().getMapRegionLocId(player.getX(), player.getY()))
+				player.sendPacket(_cs);
+			return true;
 		}
 	}
 	

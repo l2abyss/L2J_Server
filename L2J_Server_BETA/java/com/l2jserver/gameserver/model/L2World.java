@@ -14,14 +14,18 @@
  */
 package com.l2jserver.gameserver.model;
 
+import gnu.trove.TIntObjectHashMap;
+import gnu.trove.TObjectProcedure;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GmListTable;
@@ -75,13 +79,19 @@ public final class L2World
 	//private FastMap<String, L2PcInstance> _allGms;
 	
 	/** HashMap(Integer Player id, L2PcInstance) containing all the players in game */
-	private Map<Integer, L2PcInstance> _allPlayers;
+	private TIntObjectHashMap<L2PcInstance> _allPlayers;
+	private final Lock _apRL;
+	private final Lock _apWL;
 	
 	/** L2ObjectHashMap(L2Object) containing all visible objects */
-	private Map<Integer, L2Object> _allObjects;
+	private TIntObjectHashMap<L2Object> _allObjects;
+	private final Lock _aoRL;
+	private final Lock _aoWL;
 	
 	/** List with the pets instances and their owner id */
-	private Map<Integer, L2PetInstance> _petsInstance;
+	private TIntObjectHashMap<L2PetInstance> _petsInstance;
+	private final Lock _piRL;
+	private final Lock _piWL;
 	
 	private L2WorldRegion[][] _worldRegions;
 	
@@ -90,10 +100,20 @@ public final class L2World
 	 */
 	private L2World()
 	{
-		//_allGms	 = new FastMap<String, L2PcInstance>();
-		_allPlayers = new FastMap<Integer, L2PcInstance>().shared();
-		_petsInstance = new FastMap<Integer, L2PetInstance>().shared();
-		_allObjects = new FastMap<Integer, L2Object>().shared();
+		ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+		_apRL = lock.readLock();
+		_apWL = lock.writeLock();
+		_allPlayers = new TIntObjectHashMap<L2PcInstance>();
+		
+		lock = new ReentrantReadWriteLock();
+		_aoRL = lock.readLock();
+		_aoWL = lock.writeLock();
+		_allObjects = new TIntObjectHashMap<L2Object>();
+		
+		lock = new ReentrantReadWriteLock();
+		_piRL = lock.readLock();
+		_piWL = lock.writeLock();
+		_petsInstance = new TIntObjectHashMap<L2PetInstance>();
 		
 		initRegions();
 	}
@@ -115,24 +135,52 @@ public final class L2World
 	 */
 	public void storeObject(L2Object object)
 	{
-		assert !_allObjects.containsKey(object.getObjectId());
-		
-		if (_allObjects.containsKey(object.getObjectId()))
+		_aoWL.lock();
+		try
 		{
-			_log.warning("[L2World] object: " + object + " already exist in OID map!");
-			_log.info(StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
-			return;
+			_aoRL.lock();
+			try
+			{
+				assert !_allObjects.containsKey(object.getObjectId());
+				
+				if (_allObjects.containsKey(object.getObjectId()))
+				{
+					if (Config.DEBUG)
+					{
+						_log.warning("[L2World] object: " + object + " already exist in OID map!");
+						_log.info(StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
+						return;
+					}
+				}
+			}
+			finally
+			{
+				_aoRL.unlock();
+			}
+			
+			_allObjects.put(object.getObjectId(), object);
 		}
-		
-		_allObjects.put(object.getObjectId(), object);
+		finally
+		{
+			_aoWL.unlock();
+		}
 	}
 	
 	public long timeStoreObject(L2Object object)
 	{
-		long time = System.nanoTime();
-		_allObjects.put(object.getObjectId(), object);
-		time = System.nanoTime() - time;
-		return time;
+		_aoWL.lock();
+		
+		try
+		{
+			long time = System.nanoTime();
+			_allObjects.put(object.getObjectId(), object);
+			time = System.nanoTime() - time;
+			return time;
+		}
+		finally
+		{
+			_aoWL.unlock();
+		}
 	}
 	
 	/**
@@ -148,33 +196,69 @@ public final class L2World
 	 */
 	public void removeObject(L2Object object)
 	{
-		_allObjects.remove(Integer.valueOf(object.getObjectId())); // suggestion by whatev
-		//IdFactory.getInstance().releaseId(object.getObjectId());
+		_aoWL.lock();
+		
+		try
+		{
+			_allObjects.remove(object.getObjectId()); // suggestion by whatev
+			//IdFactory.getInstance().releaseId(object.getObjectId());
+		}
+		finally
+		{
+			_aoWL.unlock();
+		}
 	}
 	
 	public void removeObjects(List<L2Object> list)
 	{
-		for (L2Object o : list)
+		_aoWL.lock();
+		
+		try
 		{
-			if (o != null)
-				_allObjects.remove(Integer.valueOf(o.getObjectId())); // suggestion by whatev
+			for (L2Object o : list)
+			{
+				if (o != null)
+					_allObjects.remove(o.getObjectId()); // suggestion by whatev
+			}
+			//IdFactory.getInstance().releaseId(object.getObjectId());
 		}
-		//IdFactory.getInstance().releaseId(object.getObjectId());
+		finally
+		{
+			_aoWL.unlock();
+		}
 	}
 	
 	public void removeObjects(L2Object[] objects)
 	{
-		for (L2Object o : objects)
-			_allObjects.remove(Integer.valueOf(o.getObjectId())); // suggestion by whatev
-		//IdFactory.getInstance().releaseId(object.getObjectId());
+		_aoWL.lock();
+		
+		try
+		{
+			for (L2Object o : objects)
+				_allObjects.remove(o.getObjectId()); // suggestion by whatev
+			//IdFactory.getInstance().releaseId(object.getObjectId());
+		}
+		finally
+		{
+			_aoWL.unlock();
+		}
 	}
 	
 	public long timeRemoveObject(L2Object object)
 	{
-		long time = System.nanoTime();
-		_allObjects.remove(Integer.valueOf(object.getObjectId()));
-		time = System.nanoTime() - time;
-		return time;
+		_aoWL.lock();
+		
+		try
+		{
+			long time = System.nanoTime();
+			_allObjects.remove(object.getObjectId());
+			time = System.nanoTime() - time;
+			return time;
+		}
+		finally
+		{
+			_aoWL.unlock();
+		}
 	}
 	
 	/**
@@ -187,15 +271,33 @@ public final class L2World
 	 */
 	public L2Object findObject(int oID)
 	{
-		return _allObjects.get(Integer.valueOf(oID));
+		_aoRL.lock();
+		
+		try
+		{
+			return _allObjects.get(oID);
+		}
+		finally
+		{
+			_aoRL.unlock();
+		}
 	}
 	
 	public long timeFindObject(int objectID)
 	{
-		long time = System.nanoTime();
-		_allObjects.get(Integer.valueOf(objectID));
-		time = System.nanoTime() - time;
-		return time;
+		_aoRL.lock();
+		
+		try
+		{
+			long time = System.nanoTime();
+			_allObjects.get(objectID);
+			time = System.nanoTime() - time;
+			return time;
+		}
+		finally
+		{
+			_aoRL.unlock();
+		}
 	}
 	
 	/**
@@ -207,9 +309,46 @@ public final class L2World
 	 * @deprecated
 	 */
 	@Deprecated
-	public final Map<Integer, L2Object> getAllVisibleObjects()
+	public final TIntObjectHashMap<L2Object> getAllVisibleObjects()
 	{
-		return _allObjects;
+		_aoRL.lock();
+		
+		try
+		{
+			return _allObjects;
+		}
+		finally
+		{
+			_aoRL.unlock();
+		}
+	}
+	
+	public final L2Object[] getAllVisibleObjectsArray()
+	{
+		_aoRL.lock();
+		
+		try
+		{
+			return _allObjects.getValues(new L2Object[_allObjects.size()]);
+		}
+		finally
+		{
+			_aoRL.unlock();
+		}
+	}
+	
+	public final boolean forEachObject(final TObjectProcedure<L2Object> proc)
+	{
+		_aoRL.lock();
+		
+		try
+		{
+			return _allObjects.forEachValue(proc);
+		}
+		finally
+		{
+			_aoRL.unlock();
+		}
 	}
 	
 	/**
@@ -231,9 +370,46 @@ public final class L2World
 		return GmListTable.getInstance().getAllGms(true);
 	}
 	
-	public Map<Integer, L2PcInstance> getAllPlayers()
+	public TIntObjectHashMap<L2PcInstance> getAllPlayers()
 	{
-		return _allPlayers;
+		_apRL.lock();
+		
+		try
+		{
+			return _allPlayers;
+		}
+		finally
+		{
+			_apRL.unlock();
+		}
+	}
+	
+	public final L2PcInstance[] getAllPlayersArray()
+	{
+		_apRL.lock();
+		
+		try
+		{
+			return _allPlayers.getValues(new L2PcInstance[_allPlayers.size()]);
+		}
+		finally
+		{
+			_apRL.unlock();
+		}
+	}
+	
+	public final boolean forEachPlayer(final TObjectProcedure<L2PcInstance> proc)
+	{
+		_apRL.lock();
+		
+		try
+		{
+			return _allPlayers.forEachValue(proc);
+		}
+		finally
+		{
+			_apRL.unlock();
+		}
 	}
 	
 	/**
@@ -264,7 +440,16 @@ public final class L2World
 	 */
 	public L2PcInstance getPlayer(int playerObjId)
 	{
-		return _allPlayers.get(Integer.valueOf(playerObjId));
+		_apRL.lock();
+		
+		try
+		{
+			return _allPlayers.get(playerObjId);
+		}
+		finally
+		{
+			_apRL.unlock();
+		}
 	}
 	
 	/**
@@ -274,7 +459,16 @@ public final class L2World
 	 */
 	public L2PetInstance getPet(int ownerId)
 	{
-		return _petsInstance.get(Integer.valueOf(ownerId));
+		_piRL.lock();
+		
+		try
+		{
+			return _petsInstance.get(ownerId);
+		}
+		finally
+		{
+			_piRL.unlock();
+		}
 	}
 	
 	/**
@@ -285,7 +479,16 @@ public final class L2World
 	 */
 	public L2PetInstance addPet(int ownerId, L2PetInstance pet)
 	{
-		return _petsInstance.put(ownerId, pet);
+		_piWL.lock();
+		
+		try
+		{
+			return _petsInstance.put(ownerId, pet);
+		}
+		finally
+		{
+			_piWL.unlock();
+		}
 	}
 	
 	/**
@@ -295,7 +498,16 @@ public final class L2World
 	 */
 	public void removePet(int ownerId)
 	{
-		_petsInstance.remove(Integer.valueOf(ownerId));
+		_piWL.lock();
+		
+		try
+		{
+			_petsInstance.remove(ownerId);
+		}
+		finally
+		{
+			_piWL.unlock();
+		}
 	}
 	
 	/**
@@ -305,7 +517,16 @@ public final class L2World
 	 */
 	public void removePet(L2PetInstance pet)
 	{
-		_petsInstance.remove(Integer.valueOf(pet.getOwner().getObjectId()));
+		_piWL.lock();
+		
+		try
+		{
+			_petsInstance.remove(pet.getOwner().getObjectId());
+		}
+		finally
+		{
+			_piWL.unlock();
+		}
 	}
 	
 	/**
@@ -348,7 +569,7 @@ public final class L2World
 			
 			if (!player.isTeleporting())
 			{
-				L2PcInstance tmp = _allPlayers.get(Integer.valueOf(player.getObjectId()));
+				L2PcInstance tmp = getPlayer(player.getObjectId());
 				if (tmp != null)
 				{
 					_log.warning("Duplicate character!? Closing both characters (" + player.getName() + ")");
@@ -356,7 +577,7 @@ public final class L2World
 					tmp.logout();
 					return;
 				}
-				_allPlayers.put(player.getObjectId(), player);
+				addToAllPlayers(player);
 			}
 		}
 		
@@ -394,7 +615,16 @@ public final class L2World
 	 */
 	public void addToAllPlayers(L2PcInstance cha)
 	{
-		_allPlayers.put(cha.getObjectId(), cha);
+		_apWL.lock();
+		
+		try
+		{
+			_allPlayers.put(cha.getObjectId(), cha);
+		}
+		finally
+		{
+			_apWL.unlock();
+		}
 	}
 	
 	/**
@@ -406,7 +636,17 @@ public final class L2World
 	 */
 	public void removeFromAllPlayers(L2PcInstance cha)
 	{
-		_allPlayers.remove(Integer.valueOf(cha.getObjectId()));
+		_apWL.lock();
+		
+		try
+		{
+			_allPlayers.remove(cha.getObjectId());
+		}
+		finally
+		{
+			_apWL.unlock();
+		}
+
 	}
 	
 	/**

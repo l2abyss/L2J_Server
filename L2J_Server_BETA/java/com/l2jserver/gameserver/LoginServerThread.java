@@ -32,7 +32,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -292,10 +291,9 @@ public class LoginServerThread extends Thread
 							if (L2World.getInstance().getAllPlayersCount() > 0)
 							{
 								FastList<String> playerList = new FastList<String>();
-								Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
 								//synchronized (L2World.getInstance().getAllPlayers())
 								{
-									for (L2PcInstance player : pls)
+									for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 										playerList.add(player.getAccountName());
 								}
 								PlayerInGame pig = new PlayerInGame(playerList);

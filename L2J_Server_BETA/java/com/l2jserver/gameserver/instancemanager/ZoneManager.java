@@ -15,6 +15,8 @@
 
 package com.l2jserver.gameserver.instancemanager;
 
+import gnu.trove.TObjectProcedure;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -97,11 +99,18 @@ public class ZoneManager
 		_log.info("Removed zones in " + count + " regions.");
 		// Load the zones
 		load();
-		
-		for (L2Object o : L2World.getInstance().getAllVisibleObjects().values())
-		{ 
+		L2World.getInstance().forEachObject(new ForEachCharacterRevalidateZone());
+
+	}
+	
+	private final class ForEachCharacterRevalidateZone implements TObjectProcedure<L2Object>
+	{	
+		@Override
+		public final boolean execute(final L2Object o)
+		{
 			if (o instanceof L2Character)
 				((L2Character) o).revalidateZone(true);
+			return true;
 		}
 	}
 	

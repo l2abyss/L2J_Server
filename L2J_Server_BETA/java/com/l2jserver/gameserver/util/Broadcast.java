@@ -24,6 +24,8 @@
  */
 package com.l2jserver.gameserver.util;
 
+import gnu.trove.TObjectProcedure;
+
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -218,13 +220,7 @@ public final class Broadcast
 		if (Config.DEBUG)
 			_log.fine("Players to notify: " + L2World.getInstance().getAllPlayersCount() + " (with packet " + mov.getType() + ")");
 		
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		// synchronized (L2World.getInstance().getAllPlayers())
-		{
-			for (L2PcInstance onlinePlayer : pls)
-				if (onlinePlayer != null && onlinePlayer.isOnline())
-					onlinePlayer.sendPacket(mov);
-		}
+		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcast(mov));
 	}
 	
 	public static void announceToOnlinePlayers(String text)
@@ -235,14 +231,42 @@ public final class Broadcast
 	
 	public static void toPlayersInInstance(L2GameServerPacket mov, int instanceId)
 	{
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		//synchronized (character.getKnownList().getKnownPlayers())
+		L2World.getInstance().forEachPlayer(new ForEachPlayerInInstanceBroadcast(mov, instanceId));
+	}
+	
+	private static final class ForEachPlayerBroadcast implements TObjectProcedure<L2PcInstance>
+	{
+		L2GameServerPacket _packet;
+		private ForEachPlayerBroadcast(L2GameServerPacket packet)
 		{
-			for (L2PcInstance onlinePlayer : pls)
-			{
-				if (onlinePlayer != null && onlinePlayer.isOnline() && onlinePlayer.getInstanceId() == instanceId)
-					onlinePlayer.sendPacket(mov);
-			}
+			_packet = packet;
+		}
+		
+		@Override
+		public final boolean execute(final L2PcInstance onlinePlayer)
+		{
+			if (onlinePlayer != null && onlinePlayer.isOnline())
+				onlinePlayer.sendPacket(_packet);
+			return true;
+		}
+	}
+	
+	private static final class ForEachPlayerInInstanceBroadcast implements TObjectProcedure<L2PcInstance>
+	{
+		L2GameServerPacket _packet;
+		int _instanceId;
+		private ForEachPlayerInInstanceBroadcast(L2GameServerPacket packet, int instanceId)
+		{
+			_packet = packet;
+			_instanceId = instanceId;
+		}
+		
+		@Override
+		public final boolean execute(final L2PcInstance onlinePlayer)
+		{
+			if (onlinePlayer != null && onlinePlayer.isOnline() && onlinePlayer.getInstanceId() == _instanceId)
+				onlinePlayer.sendPacket(_packet);
+			return true;
 		}
 	}
 }

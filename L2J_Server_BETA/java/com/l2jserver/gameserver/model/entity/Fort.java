@@ -15,12 +15,12 @@
 package com.l2jserver.gameserver.model.entity;
 
 import gnu.trove.TIntIntHashMap;
+import gnu.trove.TObjectProcedure;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -965,11 +965,7 @@ public class Fort
 				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2);
 				sm.addString(clan.getName());
 				sm.addFortId(getFortId());
-				Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-				for (L2PcInstance player : pls)
-				{
-					player.sendPacket(sm);
-				}
+				L2World.getInstance().forEachPlayer(new ForEachPlayerSendMessage(sm));
 				clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 				clan.broadcastToOnlineMembers(new PlaySound(1, "Siege_Victory", 0, 0, 0, 0, 0));
 				if (_FortUpdater[0] != null)
@@ -1478,6 +1474,21 @@ public class Fort
 		{
 			for (L2Skill sk : _residentialSkills)
 				player.removeSkill(sk, false, true);
+		}
+	}
+	
+	private final class ForEachPlayerSendMessage implements TObjectProcedure<L2PcInstance>
+	{
+		SystemMessage _sm;
+		private ForEachPlayerSendMessage(SystemMessage sm)
+		{
+			_sm = sm;
+		}
+		@Override
+		public final boolean execute(final L2PcInstance character)
+		{
+			character.sendPacket(_sm);
+			return true;
 		}
 	}
 }

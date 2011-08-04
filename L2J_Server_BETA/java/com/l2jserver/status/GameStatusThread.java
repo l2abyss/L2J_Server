@@ -34,7 +34,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -856,10 +855,9 @@ public class GameStatusThread extends Thread
 						// name;type;x;y;itemId:enchant:price...
 						if (type.equals("privatestore"))
 						{
-							Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
 							//synchronized (L2World.getInstance().getAllPlayers())
 							{
-								for (L2PcInstance player : pls)
+								for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 								{
 									if (player.getPrivateStoreType() == 0)
 										continue;
@@ -1087,10 +1085,9 @@ public class GameStatusThread extends Thread
 		int summonCount = 0;
 		int AICount = 0;
 		
-		Collection<L2Object> objs = L2World.getInstance().getAllVisibleObjects().values();
 		//synchronized (L2World.getInstance().getAllVisibleObjects())
 		{
-			for (L2Object obj : objs)
+			for (L2Object obj : L2World.getInstance().getAllVisibleObjectsArray())
 			{
 				if (obj == null)
 					continue;

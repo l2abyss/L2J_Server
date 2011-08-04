@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver;
 
-import java.util.Collection;
+import gnu.trove.TObjectProcedure;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -576,13 +577,16 @@ public class Shutdown extends Thread
 	 */
 	private void disconnectAllCharacters()
 	{
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		//synchronized (L2World.getInstance().getAllPlayers())
+		L2World.getInstance().forEachPlayer(new disconnectAllCharacters());
+	}
+	
+	private final class disconnectAllCharacters implements TObjectProcedure<L2PcInstance>
+	{
+		@Override
+		public final boolean execute(final L2PcInstance player)
 		{
-			for (L2PcInstance player : pls)
+			if (player != null)
 			{
-				if (player == null)
-					continue;
 				//Logout Character
 				try
 				{
@@ -597,9 +601,10 @@ public class Shutdown extends Thread
 				}
 				catch (Throwable t)
 				{
-					_log.log(Level.WARNING, "Failed logour char "+player, t);
+					_log.log(Level.WARNING, "Failed logour char " + player, t);
 				}
 			}
+			return true;
 		}
 	}
 	

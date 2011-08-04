@@ -372,7 +372,7 @@ public class L2Event
 			_eventInfo = inbr.readLine();
 			
 			List<L2PcInstance> temp = new FastList<L2PcInstance>();
-			for (L2PcInstance player : L2World.getInstance().getAllPlayers().values())
+			for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 			{
 				if (!player.isOnline()) // Offline shops? 
 					continue;

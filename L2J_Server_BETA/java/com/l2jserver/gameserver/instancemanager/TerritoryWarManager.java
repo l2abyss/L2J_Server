@@ -1118,7 +1118,7 @@ public class TerritoryWarManager implements Siegable
 		{
 			if (isTWInProgress())
 			{
-				for(L2PcInstance player : L2World.getInstance().getAllPlayers().values())
+				for(L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 					if (player != null && player.getSiegeSide() > 0)
 						giveTWPoint(player, 1000, 6);
 			}

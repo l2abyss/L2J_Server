@@ -62,7 +62,7 @@ public class OfflineTradersTable
 			PreparedStatement stm_items = con.prepareStatement(SAVE_ITEMS);
 			
 			//TextBuilder items = TextBuilder.newInstance();
-			for (L2PcInstance pc : L2World.getInstance().getAllPlayers().values())
+			for (L2PcInstance pc : L2World.getInstance().getAllPlayersArray())
 			{
 				try
 				{
