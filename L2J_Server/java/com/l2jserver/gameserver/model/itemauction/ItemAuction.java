@@ -55,7 +55,7 @@ public final class ItemAuction
 	private volatile ItemAuctionExtendState _scheduledAuctionEndingExtendState;
 	private volatile ItemAuctionExtendState _auctionEndingExtendState;
 	
-	private ItemInfo _itemInfo;
+	private final ItemInfo _itemInfo;
 	
 	private ItemAuctionBid _highestBid;
 	private int _lastBidPlayerObjId;
@@ -325,7 +325,7 @@ public final class ItemAuction
 			onPlayerBid(player, bid);
 			updatePlayerBid(bid, false);
 			
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID).addItemNumber(newBid));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID_OF_S1).addItemNumber(newBid));
 			return;
 		}
 	}

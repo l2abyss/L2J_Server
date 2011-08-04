@@ -3798,9 +3798,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 678<br>
-	 * Message: You have submitted a bid in the auction of .
+	 * Message: You have submitted a bid in the auction of $s1.
 	 */
-	public static final SystemMessageId SUBMITTED_A_BID;
+	public static final SystemMessageId SUBMITTED_A_BID_OF_S1;
 	
 	/**
 	 * ID: 679<br>
@@ -15322,7 +15322,7 @@ public final class SystemMessageId
 		NO_CLAN_HALLS_UP_FOR_AUCTION = new SystemMessageId(675);
 		ALREADY_SUBMITTED_BID = new SystemMessageId(676);
 		BID_PRICE_MUST_BE_HIGHER = new SystemMessageId(677);
-		SUBMITTED_A_BID = new SystemMessageId(678);
+		SUBMITTED_A_BID_OF_S1 = new SystemMessageId(678);
 		CANCELED_BID = new SystemMessageId(679);
 		CANNOT_PARTICIPATE_IN_AN_AUCTION = new SystemMessageId(680);
 		SWEEP_NOT_ALLOWED = new SystemMessageId(683);
