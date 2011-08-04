@@ -18,16 +18,13 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 import javolution.util.WeakFastSet;
 
 import com.l2jserver.Config;
@@ -3568,7 +3565,7 @@ public abstract class L2Character extends L2Object
 	
 	
 	/** Table containing all skillId that are disabled */
-	protected Map<Integer, Long> _disabledSkills;
+	protected L2TIntObjectHashMap<Long> _disabledSkills;
 	private boolean _allSkillsDisabled;
 	
 	//	private int _flyingRunSpeed;
@@ -6336,7 +6333,7 @@ public abstract class L2Character extends L2Object
 		
 	}
 	
-	public Map<Integer, Long> getDisabledSkills()
+	public L2TIntObjectHashMap<Long> getDisabledSkills()
 	{
 		return _disabledSkills;
 	}
@@ -6369,7 +6366,7 @@ public abstract class L2Character extends L2Object
 			return;
 		
 		if (_disabledSkills == null)
-			_disabledSkills = Collections.synchronizedMap(new FastMap<Integer, Long>());
+			_disabledSkills = new L2TIntObjectHashMap<Long>();
 		
 		_disabledSkills.put(Integer.valueOf(skill.getReuseHashCode()), delay > 10 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
 	}
