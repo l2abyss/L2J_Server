@@ -82,7 +82,7 @@ public class L2DoorInstance extends L2Character
 	protected final String _name;
 	private boolean _open;
 	private boolean _isCommanderDoor;
-	private boolean _unlockable;
+	private final boolean _unlockable;
 	private boolean _isAttackableDoor = false;
 	private boolean _isWall = false; // is castle wall ?
 	private boolean _ShowHp = false;
@@ -152,6 +152,7 @@ public class L2DoorInstance extends L2Character
 	
 	class CloseTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try
@@ -170,6 +171,7 @@ public class L2DoorInstance extends L2Character
 	 */
 	class AutoOpenClose implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try
@@ -504,18 +506,16 @@ public class L2DoorInstance extends L2Character
 		OnEventTrigger oe = null;
 		if (_emitter > 0)
 			oe = new OnEventTrigger(this, getOpen());
-		//synchronized (getKnownList().getKnownPlayers())
+
+		for (L2PcInstance player : knownPlayers)
 		{
-			for (L2PcInstance player : knownPlayers)
-			{
-				if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
-					su = new StaticObject(this, true);
-				
-				player.sendPacket(su);
-				player.sendPacket(dsu);
-				if (oe != null)
-					player.sendPacket(oe);
-			}
+			if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
+				su = new StaticObject(this, true);
+			
+			player.sendPacket(su);
+			player.sendPacket(dsu);
+			if (oe != null)
+				player.sendPacket(oe);
 		}
 	}
 	
@@ -613,14 +613,12 @@ public class L2DoorInstance extends L2Character
 		FastList<L2DefenderInstance> result = new FastList<L2DefenderInstance>();
 		
 		Collection<L2Object> objs = getKnownList().getKnownObjects().values();
-		//synchronized (getKnownList().getKnownObjects())
+		for (L2Object obj : objs)
 		{
-			for (L2Object obj : objs)
-			{
-				if (obj instanceof L2DefenderInstance)
-					result.add((L2DefenderInstance) obj);
-			}
+			if (obj instanceof L2DefenderInstance)
+				result.add((L2DefenderInstance) obj);
 		}
+	
 		return result;
 	}
 	

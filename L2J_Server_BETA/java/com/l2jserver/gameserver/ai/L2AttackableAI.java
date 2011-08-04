@@ -82,7 +82,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	
 	private int timepass = 0;
 	private int chaostime = 0;
-	private L2NpcTemplate _skillrender;
+	private final L2NpcTemplate _skillrender;
 	int lastBuffTick;
 	
 	/**
@@ -100,6 +100,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		_globalAggro = -10; // 10 seconds timeout of ATTACK after respawn
 	}
 	
+	@Override
 	public void run()
 	{
 		// Launch actions corresponding to the Event Think
@@ -449,41 +450,40 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			// Get all visible objects inside its Aggro Range
 			Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
-			//synchronized (npc.getKnownList().getKnownObjects())
+			
+			for (L2Object obj : objs)
 			{
-				for (L2Object obj : objs)
+				if (!(obj instanceof L2Character))
+					continue;
+				L2Character target = (L2Character) obj;
+				
+				/*
+				 * Check to see if this is a festival mob spawn.
+				 * If it is, then check to see if the aggro trigger
+				 * is a festival participant...if so, move to attack it.
+				 */
+				if ((npc instanceof L2FestivalMonsterInstance) && obj instanceof L2PcInstance)
 				{
-					if (!(obj instanceof L2Character))
+					L2PcInstance targetPlayer = (L2PcInstance) obj;
+					
+					if (!(targetPlayer.isFestivalParticipant()))
 						continue;
-					L2Character target = (L2Character) obj;
+				}
+				
+				// TODO: The AI Script ought to handle aggro behaviors in onSee.  Once implemented, aggro behaviors ought
+				// to be removed from here.  (Fulminus)
+				// For each L2Character check if the target is autoattackable
+				if (autoAttackCondition(target)) // check aggression
+				{
+					// Get the hate level of the L2Attackable against this L2Character target contained in _aggroList
+					int hating = npc.getHating(target);
 					
-					/*
-					 * Check to see if this is a festival mob spawn.
-					 * If it is, then check to see if the aggro trigger
-					 * is a festival participant...if so, move to attack it.
-					 */
-					if ((npc instanceof L2FestivalMonsterInstance) && obj instanceof L2PcInstance)
-					{
-						L2PcInstance targetPlayer = (L2PcInstance) obj;
-						
-						if (!(targetPlayer.isFestivalParticipant()))
-							continue;
-					}
-					
-					// TODO: The AI Script ought to handle aggro behaviors in onSee.  Once implemented, aggro behaviors ought
-					// to be removed from here.  (Fulminus)
-					// For each L2Character check if the target is autoattackable
-					if (autoAttackCondition(target)) // check aggression
-					{
-						// Get the hate level of the L2Attackable against this L2Character target contained in _aggroList
-						int hating = npc.getHating(target);
-						
-						// Add the attacker to the L2Attackable _aggroList with 0 damage and 1 hate
-						if (hating == 0)
-							npc.addDamageHate(target, 0, 0);
-					}
+					// Add the attacker to the L2Attackable _aggroList with 0 damage and 1 hate
+					if (hating == 0)
+						npc.addDamageHate(target, 0, 0);
 				}
 			}
+			
 			
 			// Chose a target from its aggroList
 			L2Character hated;
@@ -688,7 +688,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			int factionRange = npc.getClanRange() + collision;
 			// Go through all L2Object that belong to its faction
 			Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
-			//synchronized (_actor.getKnownList().getKnownObjects())
+			
 			try
 			{
 				for (L2Object obj : objs)

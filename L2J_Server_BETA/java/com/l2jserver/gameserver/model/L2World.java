@@ -78,13 +78,13 @@ public final class L2World
 	//private FastMap<String, L2PcInstance> _allGms;
 	
 	/** HashMap(Integer Player id, L2PcInstance) containing all the players in game */
-	private L2TIntObjectHashMap<L2PcInstance> _allPlayers;
+	private final L2TIntObjectHashMap<L2PcInstance> _allPlayers;
 	
 	/** L2ObjectHashMap(L2Object) containing all visible objects */
-	private L2TIntObjectHashMap<L2Object> _allObjects;
+	private final L2TIntObjectHashMap<L2Object> _allObjects;
 	
 	/** List with the pets instances and their owner id */
-	private L2TIntObjectHashMap<L2PetInstance> _petsInstance;
+	private final L2TIntObjectHashMap<L2PetInstance> _petsInstance;
 	
 	private L2WorldRegion[][] _worldRegions;
 	
@@ -476,19 +476,13 @@ public final class L2World
 			// Go through all surrounding L2WorldRegion L2Characters
 			for (L2WorldRegion reg : oldRegion.getSurroundingRegions())
 			{
-				//synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+				Collection<L2Object> vObj = reg.getVisibleObjects().values();
+				for (L2Object obj : vObj)
 				{
-					Collection<L2Object> vObj = reg.getVisibleObjects().values();
-					//synchronized (reg.getVisibleObjects())
+					if (obj != null)
 					{
-						for (L2Object obj : vObj)
-						{
-							if (obj != null)
-							{
-								obj.getKnownList().removeKnownObject(object);
-								object.getKnownList().removeKnownObject(obj);
-							}
-						}
+						obj.getKnownList().removeKnownObject(object);
+						object.getKnownList().removeKnownObject(obj);
 					}
 				}
 			}
@@ -540,16 +534,13 @@ public final class L2World
 		{
 			// Go through visible objects of the selected region
 			Collection<L2Object> vObj = regi.getVisibleObjects().values();
-			//synchronized (regi.getVisibleObjects())
+			for (L2Object _object : vObj)
 			{
-				for (L2Object _object : vObj)
-				{
-					if (_object == null || _object.equals(object))
-						continue; // skip our own character
-					if (!_object.isVisible())
-						continue; // skip dying objects
-					result.add(_object);
-				}
+				if (_object == null || _object.equals(object))
+					continue; // skip our own character
+				else if (!_object.isVisible())
+					continue; // skip dying objects
+				result.add(_object);
 			}
 		}
 		
@@ -589,22 +580,19 @@ public final class L2World
 		{
 			// Go through visible objects of the selected region
 			Collection<L2Object> vObj = regi.getVisibleObjects().values();
-			//synchronized (regi.getVisibleObjects())
+			for (L2Object _object : vObj)
 			{
-				for (L2Object _object : vObj)
-				{
-					if (_object == null || _object.equals(object))
-						continue; // skip our own character
-						
-					int x1 = _object.getX();
-					int y1 = _object.getY();
+				if (_object == null || _object.equals(object))
+					continue; // skip our own character
 					
-					double dx = x1 - x;
-					double dy = y1 - y;
-					
-					if (dx * dx + dy * dy < sqRadius)
-						result.add(_object);
-				}
+				int x1 = _object.getX();
+				int y1 = _object.getY();
+				
+				double dx = x1 - x;
+				double dy = y1 - y;
+				
+				if (dx * dx + dy * dy < sqRadius)
+					result.add(_object);
 			}
 		}
 		
@@ -643,24 +631,21 @@ public final class L2World
 		for (L2WorldRegion regi : object.getWorldRegion().getSurroundingRegions())
 		{
 			Collection<L2Object> vObj = regi.getVisibleObjects().values();
-			//synchronized (regi.getVisibleObjects())
+			for (L2Object _object : vObj)
 			{
-				for (L2Object _object : vObj)
-				{
-					if (_object == null || _object.equals(object))
-						continue; // skip our own character
-						
-					int x1 = _object.getX();
-					int y1 = _object.getY();
-					int z1 = _object.getZ();
+				if (_object == null || _object.equals(object))
+					continue; // skip our own character
 					
-					long dx = x1 - x;
-					long dy = y1 - y;
-					long dz = z1 - z;
-					
-					if (dx * dx + dy * dy + dz * dz < sqRadius)
-						result.add(_object);
-				}
+				int x1 = _object.getX();
+				int y1 = _object.getY();
+				int z1 = _object.getZ();
+				
+				long dx = x1 - x;
+				long dy = y1 - y;
+				long dz = z1 - z;
+				
+				if (dx * dx + dy * dy + dz * dz < sqRadius)
+					result.add(_object);
 			}
 		}
 		
@@ -697,18 +682,15 @@ public final class L2World
 			Map<Integer, L2Playable> _allpls = regi.getVisiblePlayable();
 			Collection<L2Playable> _playables = _allpls.values();
 			// Go through visible object of the selected region
-			//synchronized (_allpls)
+			for (L2Playable _object : _playables)
 			{
-				for (L2Playable _object : _playables)
-				{
-					if (_object == null || _object.equals(object))
-						continue; // skip our own character
-						
-					if (!_object.isVisible()) // GM invisible is different than this...
-						continue; // skip dying objects
-						
-					result.add(_object);
-				}
+				if (_object == null || _object.equals(object))
+					continue; // skip our own character
+					
+				if (!_object.isVisible()) // GM invisible is different than this...
+					continue; // skip dying objects
+					
+				result.add(_object);
 			}
 		}
 		

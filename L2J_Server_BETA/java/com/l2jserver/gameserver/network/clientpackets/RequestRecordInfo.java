@@ -49,27 +49,24 @@ public class RequestRecordInfo extends L2GameClientPacket
 		_activeChar.sendPacket(new ExBrExtraUserInfo(_activeChar));
 		
 		Collection<L2Object> objs = _activeChar.getKnownList().getKnownObjects().values();
-		//synchronized (_activeChar.getKnownList().getKnownObjects())
+		for (L2Object object : objs)
 		{
-			for (L2Object object : objs)
+			if (object.getPoly().isMorphed()
+					&& object.getPoly().getPolyType().equals("item"))
+				_activeChar.sendPacket(new SpawnItem(object));
+			else
 			{
-				if (object.getPoly().isMorphed()
-						&& object.getPoly().getPolyType().equals("item"))
-					_activeChar.sendPacket(new SpawnItem(object));
-				else
+				object.sendInfo(_activeChar);
+				
+				if (object instanceof L2Character)
 				{
-					object.sendInfo(_activeChar);
-					
-					if (object instanceof L2Character)
-					{
-						// Update the state of the L2Character object client
-						// side by sending Server->Client packet
-						// MoveToPawn/CharMoveToLocation and AutoAttackStart to
-						// the L2PcInstance
-						L2Character obj = (L2Character) object;
-						if (obj.getAI() != null)
-							obj.getAI().describeStateToPlayer(_activeChar);
-					}
+					// Update the state of the L2Character object client
+					// side by sending Server->Client packet
+					// MoveToPawn/CharMoveToLocation and AutoAttackStart to
+					// the L2PcInstance
+					L2Character obj = (L2Character) object;
+					if (obj.getAI() != null)
+						obj.getAI().describeStateToPlayer(_activeChar);
 				}
 			}
 		}

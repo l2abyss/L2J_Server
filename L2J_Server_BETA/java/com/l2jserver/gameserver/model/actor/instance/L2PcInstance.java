@@ -679,10 +679,19 @@ public final class L2PcInstance extends L2Playable
 	
 	// Used for protection after teleport
 	private long _protectEndTime = 0;
-	public boolean isSpawnProtected() { return  _protectEndTime > GameTimeController.getGameTicks(); }
-	private long _teleportProtectEndTime = 0;
-	public boolean isTeleportProtected() { return  _teleportProtectEndTime > GameTimeController.getGameTicks(); }
 	
+	public boolean isSpawnProtected()
+	{
+		return _protectEndTime > GameTimeController.getGameTicks();
+	}
+	
+	private long _teleportProtectEndTime = 0;
+	
+	public boolean isTeleportProtected()
+	{
+		return _teleportProtectEndTime > GameTimeController.getGameTicks();
+	}
+
 	// protects a char from agro mobs when getting up from fake death
 	private long _recentFakeDeathEndTime = 0;
 	private boolean _isFakeDeath;
@@ -1814,7 +1823,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Return a list of QuestStates which registered for notify of death of this L2PcInstance.<BR><BR>
 	 */
-	public final List<QuestState> getNotifyQuestOfDeath ()
+	public final List<QuestState> getNotifyQuestOfDeath()
 	{
 		if (_notifyQuestOfDeathList == null)
 		{
@@ -1958,14 +1967,12 @@ public final class L2PcInstance extends L2Playable
 		if (getPet() != null) sendPacket(new RelationChanged(getPet(), getRelation(this), false));
 		
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		//synchronized (getKnownList().getKnownPlayers())
+		
+		for (L2PcInstance target : plrs)
 		{
-			for (L2PcInstance target : plrs)
-			{
-				target.sendPacket(new RelationChanged(this, getRelation(target), isAutoAttackable(target)));
-				if (getPet() != null)
-					target.sendPacket(new RelationChanged(getPet(), getRelation(target), isAutoAttackable(target)));
-			}
+			target.sendPacket(new RelationChanged(this, getRelation(target), isAutoAttackable(target)));
+			if (getPet() != null)
+				target.sendPacket(new RelationChanged(getPet(), getRelation(target), isAutoAttackable(target)));
 		}
 	}
 	
@@ -2199,16 +2206,14 @@ public final class L2PcInstance extends L2Playable
 		if (_karma == 0 && karma > 0)
 		{
 			Collection<L2Object> objs = getKnownList().getKnownObjects().values();
-			//synchronized (getKnownList().getKnownObjects())
+
+			for (L2Object object : objs)
 			{
-				for (L2Object object : objs)
-				{
-					if (!(object instanceof L2GuardInstance))
-						continue;
-					
-					if (((L2GuardInstance) object).getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-						((L2GuardInstance) object).getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
-				}
+				if (!(object instanceof L2GuardInstance))
+					continue;
+				
+				if (((L2GuardInstance) object).getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+					((L2GuardInstance) object).getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
 			}
 		}
 		else if (_karma > 0 && karma == 0)
@@ -4386,23 +4391,20 @@ public final class L2PcInstance extends L2Playable
 		mov.setInvisible(getAppearance().getInvisible());
 		
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		//synchronized (getKnownList().getKnownPlayers())
+		for (L2PcInstance player : plrs)
 		{
-			for (L2PcInstance player : plrs)
+			if (player == null)
+				continue;
+			player.sendPacket(mov);
+			if (mov instanceof CharInfo)
 			{
-				if (player == null)
-					continue;
-				player.sendPacket(mov);
-				if (mov instanceof CharInfo)
+				int relation = getRelation(player);
+				Integer oldrelation = getKnownList().getKnownRelations().get(player.getObjectId());
+				if (oldrelation != null && oldrelation != relation)
 				{
-					int relation = getRelation(player);
-					Integer oldrelation = getKnownList().getKnownRelations().get(player.getObjectId());
-					if (oldrelation != null && oldrelation != relation)
-					{
-						player.sendPacket(new RelationChanged(this, relation, isAutoAttackable(player)));
-						if (getPet() != null)
-							player.sendPacket(new RelationChanged(getPet(), relation, isAutoAttackable(player)));
-					}
+					player.sendPacket(new RelationChanged(this, relation, isAutoAttackable(player)));
+					if (getPet() != null)
+						player.sendPacket(new RelationChanged(getPet(), relation, isAutoAttackable(player)));
 				}
 			}
 		}
@@ -4417,28 +4419,25 @@ public final class L2PcInstance extends L2Playable
 		mov.setInvisible(getAppearance().getInvisible());
 		
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		//synchronized (getKnownList().getKnownPlayers())
+		for (L2PcInstance player : plrs)
 		{
-			for (L2PcInstance player : plrs)
+			if (player == null)
+				continue;
+			if (isInsideRadius(player, radiusInKnownlist, false, false))
 			{
-				if (player == null)
-					continue;
-				if (isInsideRadius(player, radiusInKnownlist, false, false))
+				player.sendPacket(mov);
+				if (mov instanceof CharInfo)
 				{
-					player.sendPacket(mov);
-					if (mov instanceof CharInfo)
+					int relation = getRelation(player);
+					Integer oldrelation = getKnownList().getKnownRelations().get(player.getObjectId());
+					if (oldrelation != null && oldrelation != relation)
 					{
-						int relation = getRelation(player);
-						Integer oldrelation = getKnownList().getKnownRelations().get(player.getObjectId());
-						if (oldrelation != null && oldrelation != relation)
-						{
-							player.sendPacket(new RelationChanged(this, relation, isAutoAttackable(player)));
-							if (getPet() != null)
-								player.sendPacket(new RelationChanged(getPet(), relation, isAutoAttackable(player)));
-						}
+						player.sendPacket(new RelationChanged(this, relation, isAutoAttackable(player)));
+						if (getPet() != null)
+							player.sendPacket(new RelationChanged(getPet(), relation, isAutoAttackable(player)));
 					}
 				}
-			}
+			}	
 		}
 	}
 	
@@ -6899,15 +6898,12 @@ public final class L2PcInstance extends L2Playable
 		sendPacket(new UserInfo(this));
 		sendPacket(new ExBrExtraUserInfo(this));
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		//synchronized (getKnownList().getKnownPlayers())
+		for (L2PcInstance player : plrs)
 		{
-			for (L2PcInstance player : plrs)
-			{
-				player.sendPacket(new RelationChanged(this, getRelation(player), isAutoAttackable(player)));
-				if (getPet() != null)
-					player.sendPacket(new RelationChanged(getPet(), getRelation(player), isAutoAttackable(player)));
-			}
-		}
+			player.sendPacket(new RelationChanged(this, getRelation(player), isAutoAttackable(player)));
+			if (getPet() != null)
+				player.sendPacket(new RelationChanged(getPet(), getRelation(player), isAutoAttackable(player)));
+		}	
 	}
 	
 	/**
@@ -6920,14 +6916,11 @@ public final class L2PcInstance extends L2Playable
 		sendPacket(su);
 		
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		//synchronized (getKnownList().getKnownPlayers())
+		for (L2PcInstance player : plrs)
 		{
-			for (L2PcInstance player : plrs)
-			{
-				player.sendPacket(new RelationChanged(this, getRelation(player), isAutoAttackable(player)));
-				if (getPet() != null)
-					player.sendPacket(new RelationChanged(getPet(), getRelation(player), isAutoAttackable(player)));
-			}
+			player.sendPacket(new RelationChanged(this, getRelation(player), isAutoAttackable(player)));
+			if (getPet() != null)
+				player.sendPacket(new RelationChanged(getPet(), getRelation(player), isAutoAttackable(player)));
 		}
 	}
 	

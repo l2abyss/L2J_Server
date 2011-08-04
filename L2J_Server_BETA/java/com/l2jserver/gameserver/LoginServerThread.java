@@ -80,9 +80,9 @@ public class LoginServerThread extends Thread
 	/** {@see com.l2jserver.loginserver.LoginServer#PROTOCOL_REV } */
 	private static final int REVISION = 0x0106;
 	private RSAPublicKey _publicKey;
-	private String _hostname;
-	private int _port;
-	private int _gamePort;
+	private final String _hostname;
+	private final int _port;
+	private final int _gamePort;
 	private Socket _loginSocket;
 	private InputStream _in;
 	private OutputStream _out;
@@ -99,17 +99,17 @@ public class LoginServerThread extends Thread
 	private NewCrypt _blowfish;
 	private byte[] _blowfishKey;
 	private byte[] _hexID;
-	private boolean _acceptAlternate;
+	private final boolean _acceptAlternate;
 	private int _requestID;
 	private int _serverID;
-	private boolean _reserveHost;
+	private final boolean _reserveHost;
 	private int _maxPlayer;
-	private List<WaitingClient> _waitingClients;
-	private Map<String, L2GameClient> _accountsInGameServer;
+	private final List<WaitingClient> _waitingClients;
+	private final Map<String, L2GameClient> _accountsInGameServer;
 	private int _status;
 	private String _serverName;
-	private String[] _subnets;
-	private String[] _hosts;
+	private final String[] _subnets;
+	private final String[] _hosts;
 	
 	private LoginServerThread()
 	{
@@ -291,10 +291,9 @@ public class LoginServerThread extends Thread
 							if (L2World.getInstance().getAllPlayersCount() > 0)
 							{
 								FastList<String> playerList = new FastList<String>();
-								//synchronized (L2World.getInstance().getAllPlayers())
+								for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 								{
-									for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
-										playerList.add(player.getAccountName());
+									playerList.add(player.getAccountName());
 								}
 								PlayerInGame pig = new PlayerInGame(playerList);
 								sendPacket(pig);

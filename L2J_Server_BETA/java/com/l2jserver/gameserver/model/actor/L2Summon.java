@@ -78,12 +78,22 @@ public abstract class L2Summon extends L2Playable
 	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
-		protected AIAccessor() {}
-		public L2Summon getSummon() { return L2Summon.this; }
-		public boolean isAutoFollow() {
+		protected AIAccessor()
+		{
+		}
+		
+		public L2Summon getSummon()
+		{
+			return L2Summon.this;
+		}
+		
+		public boolean isAutoFollow()
+		{
 			return L2Summon.this.getFollowStatus();
 		}
-		public void doPickupItem(L2Object object) {
+		
+		public void doPickupItem(L2Object object)
+		{
 			L2Summon.this.doPickupItem(object);
 		}
 	}
@@ -99,7 +109,7 @@ public abstract class L2Summon extends L2Playable
 		_owner = owner;
 		_ai = new L2SummonAI(new L2Summon.AIAccessor());
 		
-		setXYZInvisible(owner.getX()+20, owner.getY()+20, owner.getZ()+100);
+		setXYZInvisible(owner.getX() + 20, owner.getY() + 20, owner.getZ() + 100);
 	}
 	
 	@Override
@@ -130,7 +140,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public final SummonKnownList getKnownList()
 	{
-		return (SummonKnownList)super.getKnownList();
+		return (SummonKnownList) super.getKnownList();
 	}
 	
 	@Override
@@ -142,7 +152,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public SummonStat getStat()
 	{
-		return (SummonStat)super.getStat();
+		return (SummonStat) super.getStat();
 	}
 	
 	@Override
@@ -154,7 +164,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public SummonStatus getStatus()
 	{
-		return (SummonStatus)super.getStatus();
+		return (SummonStatus) super.getStatus();
 	}
 	
 	@Override
@@ -169,9 +179,10 @@ public abstract class L2Summon extends L2Playable
 		L2CharacterAI ai = _ai; // copy handle
 		if (ai == null)
 		{
-			synchronized(this)
+			synchronized (this)
 			{
-				if (_ai == null) _ai = new L2SummonAI(new L2Summon.AIAccessor());
+				if (_ai == null)
+					_ai = new L2SummonAI(new L2Summon.AIAccessor());
 				return _ai;
 			}
 		}
@@ -181,7 +192,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public L2NpcTemplate getTemplate()
 	{
-		return (L2NpcTemplate)super.getTemplate();
+		return (L2NpcTemplate) super.getTemplate();
 	}
 	
 	// this defines the action buttons, 1 for Summon, 2 for Pets
@@ -205,11 +216,8 @@ public abstract class L2Summon extends L2Playable
 	public void updateAbnormalEffect()
 	{
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-		//synchronized (getKnownList().getKnownPlayers())
-		{
-			for (L2PcInstance player : plrs)
-				player.sendPacket(new AbstractNpcInfo.SummonInfo(this, player,1));
-		}
+		for (L2PcInstance player : plrs)
+			player.sendPacket(new AbstractNpcInfo.SummonInfo(this, player, 1));
 	}
 	
 	/**
@@ -222,7 +230,7 @@ public abstract class L2Summon extends L2Playable
 	
 	public long getExpForThisLevel()
 	{
-		if(getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
+		if (getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 		{
 			return 0;
 		}
@@ -231,28 +239,28 @@ public abstract class L2Summon extends L2Playable
 	
 	public long getExpForNextLevel()
 	{
-		if(getLevel() >= ExperienceTable.getInstance().getMaxPetLevel() - 1)
+		if (getLevel() >= ExperienceTable.getInstance().getMaxPetLevel() - 1)
 		{
 			return 0;
 		}
-		return ExperienceTable.getInstance().getExpForLevel(getLevel()+1);
+		return ExperienceTable.getInstance().getExpForLevel(getLevel() + 1);
 	}
 	
 	@Override
 	public final int getKarma()
 	{
-		return getOwner()!= null ? getOwner().getKarma() : 0;
+		return getOwner() != null ? getOwner().getKarma() : 0;
 	}
 	
 	@Override
 	public final byte getPvpFlag()
 	{
-		return getOwner()!= null ? getOwner().getPvpFlag() : 0;
+		return getOwner() != null ? getOwner().getPvpFlag() : 0;
 	}
 	
 	public final int getTeam()
 	{
-		return getOwner()!= null ? getOwner().getTeam() : 0;
+		return getOwner() != null ? getOwner().getTeam() : 0;
 	}
 	
 	public final L2PcInstance getOwner()
@@ -274,14 +282,16 @@ public abstract class L2Summon extends L2Playable
 	{
 		if (getTemplate().getAIDataStatic().getSoulShot() > 0)
 			return (short) getTemplate().getAIDataStatic().getSoulShot();
-		else return 1;
+		else
+			return 1;
 	}
 	
 	public short getSpiritShotsPerHit()
 	{
 		if (getTemplate().getAIDataStatic().getSpiritShot() > 0)
 			return (short) getTemplate().getAIDataStatic().getSpiritShot();
-		else return 1;
+		else
+			return 1;
 	}
 	
 	public void setChargedSoulShot(int shotType)
@@ -388,14 +398,14 @@ public abstract class L2Summon extends L2Playable
 		if (isVisible() && !isDead())
 		{
 			getAI().stopFollow();
-			owner.sendPacket(new PetDelete(getSummonType(),getObjectId()));
+			owner.sendPacket(new PetDelete(getSummonType(), getObjectId()));
 			L2Party party;
 			if ((party = owner.getParty()) != null)
 			{
 				party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
 			}
 			
-			if(getInventory() != null && getInventory().getSize() > 0)
+			if (getInventory() != null && getInventory().getSize() > 0)
 			{
 				getOwner().setPetInvItems(true);
 				getOwner().sendPacket(SystemMessageId.ITEMS_IN_PET_INVENTORY);
@@ -414,12 +424,13 @@ public abstract class L2Summon extends L2Playable
 			stopAllEffects();
 			L2WorldRegion oldRegion = getWorldRegion();
 			decayMe();
-			if (oldRegion != null) oldRegion.removeFromZones(this);
+			if (oldRegion != null)
+				oldRegion.removeFromZones(this);
 			getKnownList().removeAllKnownObjects();
 			setTarget(null);
 			for (int itemId : owner.getAutoSoulShot())
 			{
-				String handler = ((L2EtcItem)ItemTable.getInstance().getTemplate(itemId)).getHandlerName();
+				String handler = ((L2EtcItem) ItemTable.getInstance().getTemplate(itemId)).getHandlerName();
 				if (handler != null && handler.contains("Beast"))
 					owner.disableAutoShot(itemId);
 			}
@@ -451,7 +462,6 @@ public abstract class L2Summon extends L2Playable
 	{
 		return _follow;
 	}
-	
 	
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
@@ -523,7 +533,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public boolean isInvul()
 	{
-		return super.isInvul() ||  getOwner().isSpawnProtected();
+		return super.isInvul() || getOwner().isSpawnProtected();
 	}
 	
 	/**
@@ -601,7 +611,7 @@ public abstract class L2Summon extends L2Playable
 			case TARGET_OWNER_PET:
 				target = getOwner();
 				break;
-				// PARTY, AURA, SELF should be cast even if no target has been found
+			// PARTY, AURA, SELF should be cast even if no target has been found
 			case TARGET_PARTY:
 			case TARGET_AURA:
 			case TARGET_FRONT_AURA:
@@ -659,24 +669,21 @@ public abstract class L2Summon extends L2Playable
 		// Check if this is offensive magic skill
 		if (skill.isOffensive())
 		{
-			if (isInsidePeaceZone(this, target)
-					&& getOwner() != null
-					&& (!getOwner().getAccessLevel().allowPeaceAttack()))
+			if (isInsidePeaceZone(this, target) && getOwner() != null && (!getOwner().getAccessLevel().allowPeaceAttack()))
 			{
 				// If summon or target is in a peace zone, send a system message TARGET_IN_PEACEZONE
 				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
 				return false;
 			}
 			
-			if (getOwner() != null && getOwner().isInOlympiadMode() && !getOwner().isOlympiadStart()){
+			if (getOwner() != null && getOwner().isInOlympiadMode() && !getOwner().isOlympiadStart())
+			{
 				// if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return false;
 			}
 			
-			if (target.getActingPlayer() != null && this.getOwner().getSiegeState() > 0 && this.getOwner().isInsideZone(L2Character.ZONE_SIEGE)
-					&& target.getActingPlayer().getSiegeState() == this.getOwner().getSiegeState()
-					&& target.getActingPlayer() != this.getOwner() && target.getActingPlayer().getSiegeSide() == this.getOwner().getSiegeSide())
+			if (target.getActingPlayer() != null && this.getOwner().getSiegeState() > 0 && this.getOwner().isInsideZone(L2Character.ZONE_SIEGE) && target.getActingPlayer().getSiegeState() == this.getOwner().getSiegeState() && target.getActingPlayer() != this.getOwner() && target.getActingPlayer().getSiegeSide() == this.getOwner().getSiegeSide())
 			{
 				//
 				if (TerritoryWarManager.getInstance().isTWInProgress())
@@ -690,27 +697,18 @@ public abstract class L2Summon extends L2Playable
 			// Check if the target is attackable
 			if (target instanceof L2DoorInstance)
 			{
-				if(!((L2DoorInstance)target).isAttackable(getOwner()))
+				if (!((L2DoorInstance) target).isAttackable(getOwner()))
 					return false;
 			}
 			else
 			{
-				if (!target.isAttackable()
-						&& getOwner() != null
-						&& (!getOwner().getAccessLevel().allowPeaceAttack()))
+				if (!target.isAttackable() && getOwner() != null && (!getOwner().getAccessLevel().allowPeaceAttack()))
 				{
 					return false;
 				}
 				
 				// Check if a Forced ATTACK is in progress on non-attackable target
-				if (!target.isAutoAttackable(this) && !forceUse &&
-						skill.getTargetType() != SkillTargetType.TARGET_AURA &&
-						skill.getTargetType() != SkillTargetType.TARGET_FRONT_AURA &&
-						skill.getTargetType() != SkillTargetType.TARGET_BEHIND_AURA &&
-						skill.getTargetType() != SkillTargetType.TARGET_CLAN &&
-						skill.getTargetType() != SkillTargetType.TARGET_ALLY &&
-						skill.getTargetType() != SkillTargetType.TARGET_PARTY &&
-						skill.getTargetType() != SkillTargetType.TARGET_SELF)
+				if (!target.isAutoAttackable(this) && !forceUse && skill.getTargetType() != SkillTargetType.TARGET_AURA && skill.getTargetType() != SkillTargetType.TARGET_FRONT_AURA && skill.getTargetType() != SkillTargetType.TARGET_BEHIND_AURA && skill.getTargetType() != SkillTargetType.TARGET_CLAN && skill.getTargetType() != SkillTargetType.TARGET_ALLY && skill.getTargetType() != SkillTargetType.TARGET_PARTY && skill.getTargetType() != SkillTargetType.TARGET_SELF)
 				{
 					return false;
 				}
@@ -760,10 +758,7 @@ public abstract class L2Summon extends L2Playable
 				else
 					getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_PET));
 			
-			if (getOwner().isInOlympiadMode() &&
-					target instanceof L2PcInstance &&
-					((L2PcInstance)target).isInOlympiadMode() &&
-					((L2PcInstance)target).getOlympiadGameId() == getOwner().getOlympiadGameId())
+			if (getOwner().isInOlympiadMode() && target instanceof L2PcInstance && ((L2PcInstance) target).isInOlympiadMode() && ((L2PcInstance) target).getOlympiadGameId() == getOwner().getOlympiadGameId())
 			{
 				OlympiadGameManager.getInstance().notifyCompetitorDamage(getOwner(), damage);
 			}
@@ -793,7 +788,7 @@ public abstract class L2Summon extends L2Playable
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
 			sm.addNpcName(this);
 			sm.addCharName(attacker);
-			sm.addNumber((int)damage);
+			sm.addNumber((int) damage);
 			getOwner().sendPacket(sm);
 		}
 	}
@@ -803,8 +798,7 @@ public abstract class L2Summon extends L2Playable
 	{
 		final L2PcInstance actingPlayer = getActingPlayer();
 		
-		if (!actingPlayer.checkPvpSkill(getTarget(), skill, true)
-				&& !actingPlayer.getAccessLevel().allowPeaceAttack())
+		if (!actingPlayer.checkPvpSkill(getTarget(), skill, true) && !actingPlayer.getAccessLevel().allowPeaceAttack())
 		{
 			// Send a System Message to the L2PcInstance
 			actingPlayer.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
@@ -834,7 +828,7 @@ public abstract class L2Summon extends L2Playable
 	{
 		if (getOwner() != null)
 			mov.setInvisible(getOwner().getAppearance().getInvisible());
-
+		
 		super.broadcastPacket(mov);
 	}
 	
@@ -843,7 +837,7 @@ public abstract class L2Summon extends L2Playable
 	{
 		if (getOwner() != null)
 			mov.setInvisible(getOwner().getAppearance().getInvisible());
-
+		
 		super.broadcastPacket(mov, radiusInKnownlist);
 	}
 	
@@ -852,7 +846,7 @@ public abstract class L2Summon extends L2Playable
 		if (getOwner() == null)
 			return;
 		
-		getOwner().sendPacket(new PetInfo(this,val));
+		getOwner().sendPacket(new PetInfo(this, val));
 		getOwner().sendPacket(new PetStatusUpdate(this));
 		if (isVisible())
 		{
@@ -873,13 +867,15 @@ public abstract class L2Summon extends L2Playable
 		{
 			if (player == null || (player == getOwner() && !(this instanceof L2MerchantSummonInstance)))
 				continue;
-			player.sendPacket(new AbstractNpcInfo.SummonInfo(this,player, val));
+			player.sendPacket(new AbstractNpcInfo.SummonInfo(this, player, val));
 		}
 	}
+	
 	public boolean isHungry()
 	{
 		return false;
 	}
+	
 	@Override
 	public final boolean isAttackingNow()
 	{
@@ -895,7 +891,7 @@ public abstract class L2Summon extends L2Playable
 	{
 		return 0;
 	}
-
+	
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
@@ -927,7 +923,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public String toString()
 	{
-		return super.toString()+"("+getNpcId()+") Owner: "+getOwner();
+		return super.toString() + "(" + getNpcId() + ") Owner: " + getOwner();
 	}
 	
 	@Override

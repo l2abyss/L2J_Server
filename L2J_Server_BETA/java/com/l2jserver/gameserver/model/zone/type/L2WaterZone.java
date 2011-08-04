@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 
-
 public class L2WaterZone extends L2ZoneType
 {
 	public L2WaterZone(int id)
@@ -50,33 +49,21 @@ public class L2WaterZone extends L2ZoneType
 		else if (character instanceof L2Npc)
 		{
 			Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-			//synchronized (character.getKnownList().getKnownPlayers())
+			
+			for (L2PcInstance player : plrs)
 			{
-				for (L2PcInstance player : plrs)
-				{
-					if (character.getRunSpeed() == 0)
-						player.sendPacket(new ServerObjectInfo((L2Npc)character, player));
-					else
-						player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) character, player));
-				}
+				if (character.getRunSpeed() == 0)
+					player.sendPacket(new ServerObjectInfo((L2Npc) character, player));
+				else
+					player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) character, player));
 			}
 		}
-		
-		/*
-		 * if (character instanceof L2PcInstance) {
-		 * ((L2PcInstance)character).sendMessage("You entered water!"); }
-		 */
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
 		character.setInsideZone(L2Character.ZONE_WATER, false);
-		
-		/*if (character instanceof L2PcInstance)
-		{
-			((L2PcInstance)character).sendMessage("You exited water!");
-		}*/
 		
 		// TODO: update to only send speed status when that packet is known
 		if (character instanceof L2PcInstance)
@@ -86,15 +73,12 @@ public class L2WaterZone extends L2ZoneType
 		else if (character instanceof L2Npc)
 		{
 			Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
-			//synchronized (character.getKnownList().getKnownPlayers())
+			for (L2PcInstance player : plrs)
 			{
-				for (L2PcInstance player : plrs)
-				{
-					if (character.getRunSpeed() == 0)
-						player.sendPacket(new ServerObjectInfo((L2Npc)character, player));
-					else
-						player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) character, player));
-				}
+				if (character.getRunSpeed() == 0)
+					player.sendPacket(new ServerObjectInfo((L2Npc) character, player));
+				else
+					player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) character, player));
 			}
 		}
 	}

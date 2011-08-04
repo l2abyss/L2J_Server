@@ -392,17 +392,18 @@ public final class L2Weapon extends L2Item
 		{
 			// Mobs in range 1000 see spell
 			Collection<L2Object> objs = caster.getKnownList().getKnownObjects().values();
-			//synchronized (caster.getKnownList().getKnownObjects())
+			for (L2Object spMob : objs)
 			{
-				for (L2Object spMob : objs)
+				if (spMob instanceof L2Npc)
 				{
-					if (spMob instanceof L2Npc)
+					L2Npc npcMob = (L2Npc) spMob;
+					
+					if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) != null)
 					{
-						L2Npc npcMob = (L2Npc) spMob;
-						
-						if (npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE) != null)
-							for (Quest quest : npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
-								quest.notifySkillSee(npcMob, (L2PcInstance) caster, _skillsOnCast.getSkill(), targets, false);
+						for (Quest quest : npcMob.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_SEE))
+						{
+							quest.notifySkillSee(npcMob, (L2PcInstance) caster, _skillsOnCast.getSkill(), targets, false);
+						}
 					}
 				}
 			}

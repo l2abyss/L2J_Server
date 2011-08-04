@@ -79,7 +79,6 @@ public class ZoneManager
 		load();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void reload()
 	{
 		// int zoneCount = 0;
