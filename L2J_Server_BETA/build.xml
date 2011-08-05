@@ -54,12 +54,22 @@
 		</path>
 	</pathconvert>
 
-	<target name="verifyRequirements" description="Checks if the necessary requirements for building L2J are fulfilled">
-		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
-		<fail unless="JDK7.present" message="JDK 7 or greater is required." />
+	<target name="checkAntVersion" description="Check if Ant 1.8.2 is present">
+		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
+			<condition>
+				<not>
+					<contains string="${ant.version}" substring="1.8.2"/>
+				</not>
+			</condition>
+		</fail>
 	</target>
 
-	<target name="init" depends="clean, verifyRequirements" description="Create the output directories.">
+	<target name="checkJavaVersion" description="Checks if Java JDK 7 is present">
+		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
+		<fail unless="JDK7.present" message="Java JDK 7 is required." />
+	</target>
+
+	<target name="init" depends="clean, checkAntVersion, checkJavaVersion" description="Create the output directories.">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.classes}" />
 	</target>
