@@ -66,7 +66,7 @@ public class Quest extends ManagedScript
 	/** HashMap containing events from String value of the event */
 	private static Map<String, Quest> _allEventsS = new FastMap<String, Quest>();
 	/** HashMap containing lists of timers from the name of the timer */
-	private Map<String, FastList<QuestTimer>> _allEventTimers = new FastMap<String, FastList<QuestTimer>>();
+	private final Map<String, FastList<QuestTimer>> _allEventTimers = new FastMap<String, FastList<QuestTimer>>();
 	
 	private final ReentrantReadWriteLock _rwLock = new ReentrantReadWriteLock();
 	
@@ -568,11 +568,11 @@ public class Quest extends ManagedScript
 	
 	public class TmpOnSkillSee implements Runnable
 	{
-		private L2Npc _npc;
-		private L2PcInstance _caster;
-		private L2Skill _skill;
-		private L2Object[] _targets;
-		private boolean _isPet;
+		private final L2Npc _npc;
+		private final L2PcInstance _caster;
+		private final L2Skill _skill;
+		private final L2Object[] _targets;
+		private final boolean _isPet;
 		
 		public TmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 		{
@@ -583,6 +583,7 @@ public class Quest extends ManagedScript
 			_isPet = isPet;
 		}
 		
+		@Override
 		public void run()
 		{
 			String res = null;
@@ -621,9 +622,9 @@ public class Quest extends ManagedScript
 	
 	public class TmpOnAggroEnter implements Runnable
 	{
-		private L2Npc _npc;
-		private L2PcInstance _pc;
-		private boolean _isPet;
+		private final L2Npc _npc;
+		private final L2PcInstance _pc;
+		private final boolean _isPet;
 		
 		public TmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isPet)
 		{
@@ -632,6 +633,7 @@ public class Quest extends ManagedScript
 			_isPet = isPet;
 		}
 		
+		@Override
 		public void run()
 		{
 			String res = null;
@@ -1290,9 +1292,18 @@ public class Quest extends ManagedScript
 	 * @param npcId
 	 * @return L2NpcTemplate : Start NPC
 	 */
+	public L2NpcTemplate[] addStartNpc(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.QUEST_START);
+		return value;
+	}
+	
 	public L2NpcTemplate addStartNpc(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.QUEST_START);
+		return addEventId(npcId, QuestEventType.QUEST_START);
 	}
 	
 	/**
@@ -1300,9 +1311,18 @@ public class Quest extends ManagedScript
 	 * @param npcId
 	 * @return L2NpcTemplate : Start NPC
 	 */
+	public L2NpcTemplate[] addFirstTalkId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_FIRST_TALK);
+		return value;
+	}
+	
 	public L2NpcTemplate addFirstTalkId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_FIRST_TALK);
+		return addEventId(npcId, QuestEventType.ON_FIRST_TALK);
 	}
 	
 	/**
@@ -1310,9 +1330,18 @@ public class Quest extends ManagedScript
 	 * @param npcId
 	 * @return L2NpcTemplate : NPC
 	 */
+	public L2NpcTemplate[] addAcquireSkillId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
+		return value;
+	}
+	
 	public L2NpcTemplate addAcquireSkillId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_SKILL_LEARN);
+		return addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
 	}
 	
 	/**
@@ -1320,9 +1349,18 @@ public class Quest extends ManagedScript
 	 * @param attackId
 	 * @return int : attackId
 	 */
-	public L2NpcTemplate addAttackId(int attackId)
+	public L2NpcTemplate[] addAttackId(int ...npcIds)
 	{
-		return addEventId(attackId, Quest.QuestEventType.ON_ATTACK);
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_ATTACK);
+		return value;
+	}
+	
+	public L2NpcTemplate addAttackId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_ATTACK);
 	}
 	
 	/**
@@ -1330,9 +1368,18 @@ public class Quest extends ManagedScript
 	 * @param killId
 	 * @return int : killId
 	 */
-	public L2NpcTemplate addKillId(int killId)
+	public L2NpcTemplate[] addKillId(int ...killIds)
 	{
-		return addEventId(killId, Quest.QuestEventType.ON_KILL);
+		L2NpcTemplate[] value = new L2NpcTemplate[killIds.length];
+		int i = 0;
+		for (int killId : killIds)
+			value[i++] = addEventId(killId, QuestEventType.ON_KILL);
+		return value;
+	}
+	
+	public L2NpcTemplate addKillId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_KILL);
 	}
 	
 	/**
@@ -1340,9 +1387,18 @@ public class Quest extends ManagedScript
 	 * @param talkId : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
-	public L2NpcTemplate addTalkId(int talkId)
+	public L2NpcTemplate[] addTalkId(int ...talkIds)
 	{
-		return addEventId(talkId, Quest.QuestEventType.ON_TALK);
+		L2NpcTemplate[] value = new L2NpcTemplate[talkIds.length];
+		int i = 0;
+		for (int talkId : talkIds)
+			value[i++] = addEventId(talkId, QuestEventType.ON_TALK);
+		return value;
+	}
+	
+	public L2NpcTemplate addTalkId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_TALK);
 	}
 	
 	/**
@@ -1350,38 +1406,85 @@ public class Quest extends ManagedScript
 	 * @param talkId : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
+	public L2NpcTemplate[] addSpawnId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_SPAWN);
+		return value;
+	}
+	
 	public L2NpcTemplate addSpawnId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_SPAWN);
+		return addEventId(npcId, QuestEventType.ON_SPAWN);
 	}
+	
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.<BR><BR>
 	 * @param talkId : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
+	public L2NpcTemplate[] addSkillSeeId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_SKILL_SEE);
+		return value;
+	}
+	
 	public L2NpcTemplate addSkillSeeId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_SKILL_SEE);
+		return addEventId(npcId, QuestEventType.ON_SKILL_SEE);
+	}
+	
+	public L2NpcTemplate[] addSpellFinishedId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
+		return value;
 	}
 	
 	public L2NpcTemplate addSpellFinishedId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_SPELL_FINISHED);
+		return addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
 	}
 	
-	public L2NpcTemplate addTrapActionId(int trapId)
+	public L2NpcTemplate[] addTrapActionId(int ...npcIds)
 	{
-		return addEventId(trapId, Quest.QuestEventType.ON_TRAP_ACTION);
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
+		return value;
 	}
+	
+	public L2NpcTemplate addTrapActionId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
+	}
+	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.<BR><BR>
 	 * @param talkId : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
+	public L2NpcTemplate[] addFactionCallId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_FACTION_CALL);
+		return value;
+	}
+	
 	public L2NpcTemplate addFactionCallId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_FACTION_CALL);
+		return addEventId(npcId, QuestEventType.ON_FACTION_CALL);
 	}
 	
 	/**
@@ -1389,9 +1492,43 @@ public class Quest extends ManagedScript
 	 * @param talkId : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
+	public L2NpcTemplate[] addAggroRangeEnterId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
+		return value;
+	}
+	
 	public L2NpcTemplate addAggroRangeEnterId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_AGGRO_RANGE_ENTER);
+		return addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
+	}
+	
+	public L2ZoneType[] addEnterZoneId(int ...zoneIds)
+	{
+		L2ZoneType[] value = new L2ZoneType[zoneIds.length];
+		int i = 0;
+		for (int zoneId : zoneIds)
+		{
+			try
+			{
+				L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
+				if (zone != null)
+				{
+					zone.addQuestEvent(Quest.QuestEventType.ON_ENTER_ZONE, this);
+				}
+				value[i++] = zone;
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
+				continue;
+			}
+		}
+		
+		return value;
 	}
 	
 	public L2ZoneType addEnterZoneId(int zoneId)
@@ -1410,6 +1547,31 @@ public class Quest extends ManagedScript
 			_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
 			return null;
 		}
+	}
+	
+	public L2ZoneType[] addExitZoneId(int ...zoneIds)
+	{
+		L2ZoneType[] value = new L2ZoneType[zoneIds.length];
+		int i = 0;
+		for (int zoneId : zoneIds)
+		{
+			try
+			{
+				L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
+				if (zone != null)
+				{
+					zone.addQuestEvent(Quest.QuestEventType.ON_EXIT_ZONE, this);
+				}
+				value[i++] = zone;
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
+				continue;
+			}
+		}
+		
+		return value;
 	}
 	
 	public L2ZoneType addExitZoneId(int zoneId)
