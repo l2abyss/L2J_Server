@@ -382,6 +382,15 @@ public class ItemTable
 			L2World.getInstance().removeObject(item);
 			IdFactory.getInstance().releaseId(item.getObjectId());
 			
+			if (L2World.getInstance().findObject(item.getObjectId()) != null)
+			{
+				_log.warning("Deleted item not removed from objects map lol? Removing again.");
+				L2World.getInstance().removeObject(item);
+				
+				if (L2World.getInstance().findObject(item.getObjectId()) != null)
+					_log.warning("LOL!?!?!? tried to remove it but still not removed? omg?");
+			}
+			
 			if (Config.LOG_ITEMS)
 			{
 				if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || item.getItemId() == ADENA_ID)))
