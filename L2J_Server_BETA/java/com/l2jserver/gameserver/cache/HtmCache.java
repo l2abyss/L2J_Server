@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.cache;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -33,7 +35,7 @@ public class HtmCache
 {
 	private static Logger _log = Logger.getLogger(HtmCache.class.getName());
 	
-	private final L2TIntObjectHashMap<String> _cache;
+	private final TIntObjectHashMap<String> _cache;
 	
 	private int _loadedFiles;
 	private long _bytesBuffLen;
@@ -45,7 +47,10 @@ public class HtmCache
 	
 	private HtmCache()
 	{
-		_cache = new L2TIntObjectHashMap<String>();
+		if (Config.LAZY_CACHE)
+			_cache = new L2TIntObjectHashMap<String>();
+		else
+			_cache = new TIntObjectHashMap<String>();
 		reload();
 	}
 	
