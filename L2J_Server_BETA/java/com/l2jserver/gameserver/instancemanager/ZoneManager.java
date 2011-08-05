@@ -49,6 +49,7 @@ import com.l2jserver.gameserver.model.zone.form.ZoneNPoly;
 import com.l2jserver.gameserver.model.zone.type.L2ArenaZone;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
+import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
  * This class manages the zones
@@ -138,14 +139,14 @@ public class ZoneManager
 				return;
 			}
 			
-			File[] files = dir.listFiles();
+			File[] files = dir.listFiles(new XMLFilter());
 			FastList<File> hash = new FastList<File>(files.length);
 			for (File f : files)
 			{
 				// default file first
 				if ("zone.xml".equalsIgnoreCase(f.getName()))
 					hash.addFirst(f);
-				else if (f.getName().endsWith(".xml"))
+				else
 					hash.add(f);
 			}
 			

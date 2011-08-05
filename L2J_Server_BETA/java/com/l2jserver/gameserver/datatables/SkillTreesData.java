@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
  * @author Zoey76
@@ -69,7 +70,7 @@ public final class SkillTreesData
 	/**
 	 * Parent class IDs are read from XML and stored in this map, to allow easy customization.
 	 */
-	private FastMap<ClassId, ClassId> _parentClassMap = new FastMap<ClassId, ClassId>();
+	private final FastMap<ClassId, ClassId> _parentClassMap = new FastMap<ClassId, ClassId>();
 	
 	private SkillTreesData()
 	{
@@ -138,13 +139,10 @@ public final class SkillTreesData
 	private boolean loadFiles()
 	{
 		File folder = new File(Config.DATAPACK_ROOT, "data/skillTrees/");
-		File[] listOfFiles = folder.listFiles();
+		File[] listOfFiles = folder.listFiles(new XMLFilter());
 		for (File f : listOfFiles)
 		{
-			if (f.getName().endsWith(".xml"))
-			{
-				loadSkillTree(f);
-			}
+			loadSkillTree(f);
 		}
 		return false;
 	}

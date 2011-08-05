@@ -32,9 +32,7 @@ public class XMLFilter implements FileFilter
 	@Override
 	public boolean accept(File pathname)
 	{
-		if (pathname.getName().endsWith(".xml"))
-			return true;
-		return false;
+		return pathname.getName().endsWith(".xml");
 	}
 	
 }
