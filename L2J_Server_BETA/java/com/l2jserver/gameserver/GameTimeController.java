@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver;
 
-import gnu.trove.TIntObjectIterator;
+import gnu.trove.TObjectProcedure;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -113,18 +113,20 @@ public class GameTimeController
 	protected void moveObjects()
 	{
 		// Go throw the table containing L2Character in movement
-		TIntObjectIterator<L2Character> it = _movingObjects.iterator();
-		while (it.hasNext())
+		_movingObjects.forEachValue(new MoveObjects());
+	}
+	
+	private final class MoveObjects implements TObjectProcedure<L2Character>
+	{	
+		@Override
+		public final boolean execute(final L2Character ch)
 		{
-			// If movement is finished, the L2Character is removed from
-			// movingObjects and added to the ArrayList ended
-			it.advance();
-			L2Character ch = it.value();
 			if (ch.updatePosition(_gameTicks))
 			{
-				it.remove();
 				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
+				_movingObjects.remove(ch.getObjectId());
 			}
+			return true;
 		}
 	}
 	
