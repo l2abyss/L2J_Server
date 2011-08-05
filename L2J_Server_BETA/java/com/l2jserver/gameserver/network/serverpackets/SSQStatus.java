@@ -84,7 +84,7 @@ public class SSQStatus extends L2GameServerPacket
 						writeD(SystemMessageId.INITIAL_PERIOD.getId());
 						break;
 					case SevenSigns.PERIOD_COMPETITION:
-						writeD(SystemMessageId.QUEST_EVENT_PERIOD.getId());
+						writeD(SystemMessageId.SSQ_COMPETITION_UNDERWAY.getId());
 						break;
 					case SevenSigns.PERIOD_COMP_RESULTS:
 						writeD(SystemMessageId.RESULTS_PERIOD.getId());
