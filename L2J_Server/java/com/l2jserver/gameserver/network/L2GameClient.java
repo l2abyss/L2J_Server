@@ -715,7 +715,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 							&& !player.isInJail()
 							&& player.getVehicle() == null)
 					{
-						if ((((player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL) || (player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY)) && Config.OFFLINE_TRADE_ENABLE) || (player.isInCraftMode() && Config.OFFLINE_CRAFT_ENABLE))
+						if ((((player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL) || (player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY)) && Config.OFFLINE_TRADE_ENABLE) || ((player.isInCraftMode() || (player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_MANUFACTURE)) && Config.OFFLINE_CRAFT_ENABLE))
 						{
 							player.leaveParty();
 							if (Config.OFFLINE_SET_NAME_COLOR)
