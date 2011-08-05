@@ -31,24 +31,14 @@ import javax.swing.table.TableColumnModel;
 import com.l2jserver.images.ImagesTable;
 import com.l2jserver.loginserver.GameServerTable;
 
-
 /**
  * @author KenM
- *
  */
 public class GUserInterface extends BaseGameServerRegister implements ActionListener
 {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	private final JFrame _frame;
-	
-	
-	JTableModel _dtm;
-	JProgressBar _progressBar;
+	private JTableModel _dtm;
+	private JProgressBar _progressBar;
 	
 	public JTable _gsTable;
 	
@@ -276,11 +266,6 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		}
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
@@ -325,12 +310,8 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		return _frame;
 	}
 	
-	class ButtonCellRenderer implements TableCellRenderer
+	private class ButtonCellRenderer implements TableCellRenderer
 	{
-		
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-		 */
 		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object value, boolean isSelected, boolean hasFocus, int row,
@@ -338,7 +319,6 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		{
 			return (Component) value;
 		}
-		
 	}
 	
 	/**
@@ -347,7 +327,7 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 	 *
 	 * @author  KenM
 	 */
-	class JTableButtonMouseListener implements MouseListener
+	private class JTableButtonMouseListener implements MouseListener
 	{
 		private final JTable _table;
 		
@@ -413,7 +393,7 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 	}
 	
 	@SuppressWarnings("serial")
-	class JTableModel extends DefaultTableModel
+	private class JTableModel extends DefaultTableModel
 	{
 		public JTableModel(Object[] columnNames)
 		{

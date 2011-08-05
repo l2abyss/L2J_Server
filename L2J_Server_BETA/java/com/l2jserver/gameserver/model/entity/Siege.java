@@ -1591,6 +1591,24 @@ public class Siege implements Siegable
 		return _controlTowerCount;
 	}
 	
+	/**
+	 * TODO: Use it.
+	 * @return the max count of control type towers.
+	 */
+	public int getControlTowerMaxCount()
+	{
+		return _controlTowerMaxCount;
+	}
+	
+	/**
+	 * TODO: Use it.
+	 * @return the max count of flame type towers.
+	 */
+	public int getFlameTowerMaxCount()
+	{
+		return _flameTowerMaxCount;
+	}
+	
 	public void disableTraps()
 	{
 		_flameTowerCount--;
