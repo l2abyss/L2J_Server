@@ -14,8 +14,6 @@
  */
 package com.l2jserver.status;
 
-import gnu.trove.TObjectProcedure;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,7 +64,6 @@ import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeList;
@@ -287,11 +284,6 @@ public class GameStatusThread extends Thread
 				else if (_usrCommand.equals("status"))
 				{
 					_print.print(this.getServerStatus());
-					_print.flush();
-				}
-				else if (_usrCommand.equals("cleanvoiditems"))
-				{
-					L2World.getInstance().forEachObject(new CleanVoidItems());
 					_print.flush();
 				}
 				else if (_usrCommand.equals("forcegc"))
@@ -1323,22 +1315,5 @@ public class GameStatusThread extends Thread
 			}
 		}
 		throw new IllegalStateException("Deadlocked Thread not found");
-	}
-	
-	private final class CleanVoidItems implements TObjectProcedure<L2Object>
-	{	
-		@Override
-		public final boolean execute(final L2Object obj)
-		{
-			L2ItemInstance item = null;
-			if (obj instanceof L2ItemInstance)
-				item = (L2ItemInstance) obj;
-			if (item != null && item.getLocation() == ItemLocation.VOID)
-			{
-				_print.println("Item: name="+item.getName()+" lastChange="+item.getLastChange()+" objId"+item.getObjectId()+";");
-				L2World.getInstance().removeObject(item);
-			}
-			return true;
-		}
 	}
 }
