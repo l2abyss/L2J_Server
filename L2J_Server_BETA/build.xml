@@ -41,17 +41,13 @@
 	</path>
 
 	<pathconvert property="manifest.libs" pathsep=" ">
+		<path refid="classpath"/>
 		<mapper>
 			<chainedmapper>
 				<flattenmapper />
 				<globmapper from="*" to="../libs/*" />
 			</chainedmapper>
 		</mapper>
-		<path>
-			<fileset dir="${lib}">
-				<include name="*.jar" />
-			</fileset>
-		</path>
 	</pathconvert>
 
 	<target name="checkAntVersion" description="Check if Ant 1.8.2 is present">
@@ -88,10 +84,12 @@
 				<exclude name="**/gameserver/**" />
 			</fileset>
 			<manifest>
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Main-Class" value="com.l2jserver.loginserver.L2LoginServer" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.game}/l2jserver.jar">
@@ -102,10 +100,12 @@
 				<exclude name="**/gsregistering/**" />
 			</fileset>
 			<manifest>
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Main-Class" value="com.l2jserver.gameserver.GameServer" />
 			</manifest>
 		</jar>
 		<!-- Tools -->
@@ -118,12 +118,12 @@
 				<exclude name="**/LauncherLS*" />
 			</fileset>
 			<manifest>
-				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherCS" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Implementation-Version" value="${l2j.revision}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherCS" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.tools}/dbinst_gs.jar">
@@ -135,12 +135,12 @@
 				<exclude name="**/LauncherLS*" />
 			</fileset>
 			<manifest>
-				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherGS" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Implementation-Version" value="${l2j.revision}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherGS" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.tools}/dbinst_ls.jar">
@@ -152,12 +152,12 @@
 				<exclude name="**/LauncherGS*" />
 			</fileset>
 			<manifest>
-				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherLS" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Implementation-Version" value="${l2j.revision}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherLS" />
 			</manifest>
 		</jar>
 	</target>
