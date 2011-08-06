@@ -8,7 +8,7 @@
 	<property name="build.dist.community" location="${build.dist}/community" />
 	<property name="build.dist.doc" location="${build.dist}/doc" />
 	<property name="build.dist.libs" location="${build.dist}/libs" />
-	
+
 	<path id="classpath">
 		<fileset dir="${lib}">
 			<include name="*.jar" />
@@ -19,7 +19,7 @@
 		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
 			<condition>
 				<not>
-					<contains string="${ant.version}" substring="1.8.2"/>
+					<contains string="${ant.version}" substring="1.8.2" />
 				</not>
 			</condition>
 		</fail>
