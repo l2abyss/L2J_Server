@@ -58,7 +58,7 @@
 		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
 			<condition>
 				<not>
-					<contains string="${ant.version}" substring="1.8.2"/>
+					<contains string="${ant.version}" substring="1.8.2" />
 				</not>
 			</condition>
 		</fail>
@@ -163,7 +163,7 @@
 	</target>
 
 	<target name="jarsrc" depends="jar">
-		<jar destfile="${build.dist.libs}/l2jserver-src.jar">
+		<jar destfile="${build.dist.doc}/l2jserver-src.jar">
 			<fileset dir="${src}">
 				<exclude name="/config/**" />
 				<exclude name="**.cfg" />
