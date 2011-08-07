@@ -244,7 +244,7 @@ public final class L2World
 		return GmListTable.getInstance().getAllGms(true);
 	}
 	
-	public TIntObjectHashMap<L2PcInstance> getAllPlayers()
+	public L2TIntObjectHashMap<L2PcInstance> getAllPlayers()
 	{
 		return _allPlayers;
 	}

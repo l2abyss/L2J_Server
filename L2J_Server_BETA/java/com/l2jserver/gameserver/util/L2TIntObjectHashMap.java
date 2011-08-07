@@ -35,6 +35,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 {
 	private final Lock _readLock;
 	private final Lock _writeLock;
+	private boolean _tempWritesLockDisable;
 
 	public L2TIntObjectHashMap()
 	{
@@ -42,6 +43,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 		_readLock = lock.readLock();
 		_writeLock = lock.writeLock();
+		_tempWritesLockDisable = false;
 	}
 	
 	 public V put(int key, V value)
@@ -57,16 +59,28 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		 }
 	 }
 	 
+	 /**
+	  * Unsynchronized operation, its free from any locks. <br>
+	  * Its useful while the readLock is taken by a thread (forEach operation for example) and you need to put
+	  * something in the map without causing a deadlock by taking the writeLock before the readLock is unlocked.
+	  */
+	 public V unsynchronizedPut(int key, V value)
+	 {
+		return super.put(key, value);
+	 }
+	 
 	 public V get(int key)
 	 {
-		 _readLock.lock();
+		 if (!_tempWritesLockDisable)
+			 _readLock.lock();
 		 try
 		 {
 			 return super.get(key);
 		 }
 		 finally
 		 {
-			 _readLock.unlock();
+			 if (!_tempWritesLockDisable)
+				 _readLock.unlock();
 		 }
 	 }
 	 
@@ -85,15 +99,27 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	 
 	 public V remove(int key)
 	 {
-		 _writeLock.lock();
+		 if (!_tempWritesLockDisable)
+			 _writeLock.lock();
 		 try
 		 {
 			 return super.remove(key);
 		 }
 		 finally
 		 {
-			 _writeLock.unlock();
+			 if (!_tempWritesLockDisable)
+				 _writeLock.unlock();
 		 }
+	 }
+	 
+	 /**
+	  * Unsynchronized operation, its free from any locks. <br>
+	  * Its useful while the readLock is taken by a thread (forEach operation for example) and you need to remove
+	  * something in the map without causing a deadlock by taking the writeLock before the readLock is unlocked.
+	  */
+	 public V unsynchronizedRemove(int key)
+	 {
+		return super.remove(key);
 	 }
 	 
 	 public boolean equals(Object other)
@@ -213,6 +239,26 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		 }
 	 }
 	 
+	 /**
+	  * A safe from deadlock loop. put and remove synchronizers are disabled while this loop is running.<br>
+	  * Keep in mind that this uses writeLock instead of readLock, and its intended only if you are trying to
+	  * put/remove something while looping the values of this map.
+	  */
+	 public boolean safeForEachKey(TIntProcedure procedure)
+	 {
+		 _writeLock.lock();
+		 try
+		 {
+			 _tempWritesLockDisable = true;
+			 return super.forEachKey(procedure);
+		 }
+		 finally
+		 {
+			 _tempWritesLockDisable = false;
+			 _writeLock.unlock();
+		 }
+	 }
+	 
 	 public boolean forEachValue(TObjectProcedure<V> arg0)
 	 {
 		 _readLock.lock();
@@ -226,6 +272,26 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		 }
 	 }
 	 
+	 /**
+	  * A safe from deadlock loop. put and remove synchronizers are disabled while this loop is running.<br>
+	  * Keep in mind that this uses writeLock instead of readLock, and its intended only if you are trying to
+	  * put/remove something while looping the values of this map.
+	  */
+	 public boolean safeForEachValue(TObjectProcedure<V> arg0)
+	 {
+		 _writeLock.lock();
+		 try
+		 {
+			 _tempWritesLockDisable = true;
+			 return super.forEachValue(arg0);
+		 }
+		 finally
+		 {
+			 _tempWritesLockDisable = false;
+			 _writeLock.unlock();
+		 }
+	 }
+	 
 	 public boolean forEachEntry(TIntObjectProcedure<V> arg0)
 	 {
 		 _readLock.lock();
@@ -236,6 +302,26 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		 finally
 		 {
 			 _readLock.unlock();
+		 }
+	 }
+	 
+	 /**
+	  * A safe from deadlock loop. put and remove synchronizers are disabled while this loop is running.<br>
+	  * Keep in mind that this uses writeLock instead of readLock, and its intended only if you are trying to
+	  * put/remove something while looping the values of this map.
+	  */
+	 public boolean safeForEachEntry(TIntObjectProcedure<V> arg0)
+	 {
+		 _writeLock.lock();
+		 try
+		 {
+			 _tempWritesLockDisable = true;
+			 return super.forEachEntry(arg0);
+		 }
+		 finally
+		 {
+			 _tempWritesLockDisable = false;
+			 _writeLock.unlock();
 		 }
 	 }
 	 

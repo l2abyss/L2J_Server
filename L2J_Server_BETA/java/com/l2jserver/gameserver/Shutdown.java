@@ -577,7 +577,7 @@ public class Shutdown extends Thread
 	 */
 	private void disconnectAllCharacters()
 	{
-		L2World.getInstance().forEachPlayer(new disconnectAllCharacters());
+		L2World.getInstance().getAllPlayers().safeForEachValue(new disconnectAllCharacters());
 	}
 	
 	private final class disconnectAllCharacters implements TObjectProcedure<L2PcInstance>
