@@ -386,7 +386,8 @@ public abstract class L2Character extends L2Object
 			// The skills list can be affected by spell effects so it's necessary to make a copy
 			// to avoid that a spell affecting a L2NPCInstance, affects others L2NPCInstance of the same type too.
 			_skills = new L2TIntObjectHashMap<L2Skill>();
-			_skills.putAll(((L2NpcTemplate) template).getSkills());
+			if (((L2NpcTemplate) template).getSkills() != null)
+				_skills.putAll(((L2NpcTemplate) template).getSkills());
 			if (_skills != null)
 			{
 				for (L2Skill skill : getAllSkills())
