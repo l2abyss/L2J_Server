@@ -15,21 +15,6 @@
 		</fileset>
 	</path>
 
-	<target name="checkAntVersion" description="Check if Ant 1.8.2 is present">
-		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
-			<condition>
-				<not>
-					<contains string="${ant.version}" substring="1.8.2" />
-				</not>
-			</condition>
-		</fail>
-	</target>
-
-	<target name="checkJavaVersion" description="Checks if Java JDK 7 is present">
-		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
-		<fail unless="JDK7.present" message="Java JDK 7 is required." />
-	</target>
-
 	<target name="init" depends="clean, checkAntVersion, checkJavaVersion" description="Create the output directories.">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.classes}" />
@@ -51,7 +36,8 @@
 	<target name="dist" depends="jar">
 		<copy todir="${build.dist.community}">
 			<fileset dir="dist">
-				<include name="startCommunityServer.*" />
+				<include name="*.bat" />
+				<include name="*.sh" />
 			</fileset>
 			<fileset dir="${src}">
 				<include name="log.cfg" />
@@ -64,13 +50,8 @@
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.doc}">
-			<fileset dir="${basedir}">
-				<include name="changes.txt" />
-				<include name="LICENSE.txt" />
-				<include name="README.txt" />
-			</fileset>
-			<fileset dir="${src}/../lib">
-				<include name="*LICENSE*" />
+			<fileset dir="doc">
+				<include name="*.txt" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.libs}">
@@ -83,7 +64,22 @@
 		<zip destfile="${build}/L2J_CommunityServer.zip" basedir="${build.dist}" />
 	</target>
 
-	<target name="clean">
+	<target name="clean" description="Remove the output directories">
 		<delete dir="${build}" />
+	</target>
+
+	<target name="checkAntVersion" description="Check if Ant 1.8.2 is present">
+		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
+			<condition>
+				<not>
+					<contains string="${ant.version}" substring="1.8.2" />
+				</not>
+			</condition>
+		</fail>
+	</target>
+
+	<target name="checkJavaVersion" description="Checks if Java JDK 7 is present">
+		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
+		<fail unless="JDK7.present" message="Java JDK 7 is required." />
 	</target>
 </project>

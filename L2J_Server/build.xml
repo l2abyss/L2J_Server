@@ -41,7 +41,7 @@
 	</path>
 
 	<pathconvert property="manifest.libs" pathsep=" ">
-		<path refid="classpath"/>
+		<path refid="classpath" />
 		<mapper>
 			<chainedmapper>
 				<flattenmapper />
@@ -49,21 +49,6 @@
 			</chainedmapper>
 		</mapper>
 	</pathconvert>
-
-	<target name="checkAntVersion" description="Check if Ant 1.8.2 is present">
-		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
-			<condition>
-				<not>
-					<contains string="${ant.version}" substring="1.8.2" />
-				</not>
-			</condition>
-		</fail>
-	</target>
-
-	<target name="checkJavaVersion" description="Checks if Java JDK 7 is present">
-		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
-		<fail unless="JDK7.present" message="Java JDK 7 is required." />
-	</target>
 
 	<target name="init" depends="clean, checkAntVersion, checkJavaVersion" description="Create the output directories.">
 		<mkdir dir="${build}" />
@@ -119,26 +104,20 @@
 
 	<target name="dist" depends="jarsrc">
 		<copy todir="${build.dist.doc}">
-			<fileset dir="${basedir}">
-				<include name="changes.txt" />
-				<include name="LICENSE.txt" />
-				<include name="README.txt" />
-			</fileset>
-			<fileset dir="lib">
-				<include name="*LICENSE*" />
+			<fileset dir="doc">
+				<include name="*.html" />
+				<include name="*.txt" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.game}">
 			<fileset dir="dist">
 				<include name="GameServer_loop.sh" />
+				<include name="L2JConfig.*" />
 				<include name="startGameServer.*" />
-				<include name="L2JConfig.exe" />
-				<include name="L2JConfig.sh" />
-				<include name="hibernate.cfg.xml" />
 			</fileset>
 			<fileset dir="${src}">
-				<include name="log.cfg" />
 				<include name="console.cfg" />
+				<include name="log.cfg" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.game}/config">
@@ -158,14 +137,14 @@
 		</copy>
 		<copy todir="${build.dist.game}/data/geodata">
 			<fileset dir="data/geodata">
-				<include name="*.txt" />
 				<include name="*.l2j" />
+				<include name="*.txt" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.game}/data/pathnode">
 			<fileset dir="data/pathnode">
-				<include name="*.txt" />
 				<include name="*.pn" />
+				<include name="*.txt" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.images}">
@@ -181,19 +160,17 @@
 		</copy>
 		<copy todir="${build.dist.login}">
 			<fileset dir="dist">
-				<include name="startAccountManager.*" />
-				<include name="startSQLAccountManager.*" />
-				<include name="LoginServer_loop.sh" />
-				<include name="startLoginServer.*" />
-				<include name="RegisterGameServer.*" />
 				<include name="GSRegister.exe" />
-				<include name="L2JConfig.exe" />
-				<include name="L2JConfig.sh" />
+				<include name="L2JConfig.*" />
+				<include name="LoginServer_loop.sh" />
+				<include name="RegisterGameServer.*" />
+				<include name="startLoginServer.*" />
+				<include name="startSQLAccountManager.*" />
 			</fileset>
 			<fileset dir="${src}">
-				<include name="log.cfg" />
 				<include name="banned_ip.cfg" />
 				<include name="console.cfg" />
+				<include name="log.cfg" />
 			</fileset>
 		</copy>
 		<copy todir="${build.dist.login}/config">
@@ -208,6 +185,25 @@
 		<fixcrlf srcdir="${build.dist.login}" eol="crlf" eof="remove" includes="**/*.bat" />
 		<fixcrlf srcdir="${build.dist.login}" eol="lf" eof="remove" includes="**/*.sh" />
 		<zip destfile="${build}/L2J_Server.zip" basedir="${build.dist}" />
+	</target>
+
+	<target name="clean" description="Remove the output directories">
+		<delete dir="${build}" />
+	</target>
+
+	<target name="checkAntVersion" description="Check if Ant 1.8.2 is present">
+		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
+			<condition>
+				<not>
+					<contains string="${ant.version}" substring="1.8.2" />
+				</not>
+			</condition>
+		</fail>
+	</target>
+
+	<target name="checkJavaVersion" description="Checks if Java JDK 7 is present">
+		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
+		<fail unless="JDK7.present" message="Java JDK 7 is required." />
 	</target>
 
 	<target name="version" depends="init" description="Create l2j-version.properties file">
@@ -232,9 +228,5 @@
 				</tokenfilter>
 			</filterchain>
 		</concat>
-	</target>
-
-	<target name="clean" description="Remove the output directories">
-		<delete dir="${build}" />
 	</target>
 </project>
