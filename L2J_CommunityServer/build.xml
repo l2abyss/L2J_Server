@@ -15,6 +15,16 @@
 		</fileset>
 	</path>
 
+	<pathconvert property="manifest.libs" pathsep=" ">
+		<path refid="classpath" />
+		<mapper>
+			<chainedmapper>
+				<flattenmapper />
+				<globmapper from="*.jar" to="../libs/*.jar" />
+			</chainedmapper>
+		</mapper>
+	</pathconvert>
+
 	<target name="init" depends="clean, checkAntVersion, checkJavaVersion" description="Create the output directories.">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.classes}" />
@@ -30,6 +40,13 @@
 	<target name="jar" depends="compile">
 		<jar destfile="${build.dist.community}/l2jcommunity.jar">
 			<fileset dir="${build.classes}" />
+			<manifest>
+				<attribute name="Class-Path" value="${manifest.libs}" />
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Main-Class" value="com.l2jserver.communityserver.L2CommunityServer" />
+			</manifest>
 		</jar>
 	</target>
 
