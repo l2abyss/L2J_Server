@@ -14,6 +14,10 @@
  */
 package com.l2jserver.gameserver;
 
+import gnu.trove.TIntObjectHashMap;
+import gnu.trove.TObjectProcedure;
+
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +25,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 
 /**
  * Removed TimerThread watcher [DrHouse]
@@ -40,7 +43,8 @@ public class GameTimeController
 	protected static boolean _isNight = false;
 	protected static boolean _interruptRequest = false;
 	
-	private static final L2TIntObjectHashMap<L2Character> _movingObjects = new L2TIntObjectHashMap<L2Character>();
+	private static final TIntObjectHashMap<L2Character> _movingObjects = new TIntObjectHashMap<L2Character>();
+	private static final ReentrantLock _lock = new ReentrantLock();
 	
 	protected static TimerThread _timer;
 	
@@ -93,7 +97,15 @@ public class GameTimeController
 		if (cha == null)
 			return;
 		
-		_movingObjects.putIfAbsent(cha.getObjectId(), cha);
+		_lock.lock();
+		try
+		{
+			_movingObjects.putIfAbsent(cha.getObjectId(), cha);
+		}
+		finally
+		{
+			_lock.unlock();
+		}
 	}
 	
 	/**
@@ -110,16 +122,29 @@ public class GameTimeController
 	 */
 	protected void moveObjects()
 	{
-		// Go throw the table containing L2Character in movement
-		for (Object obj : _movingObjects.getValues())
+		_lock.lock();
+		try
 		{
-			// If movement is finished, the L2Character is removed from
-			// movingObjects and added to the ArrayList ended
-			if (((L2Character) obj).updatePosition(_gameTicks))
+			_movingObjects.forEachValue(new MoveObjects());
+		}
+		finally
+		{
+			_lock.unlock();
+		}
+	}
+	
+	private final class MoveObjects implements TObjectProcedure<L2Character>
+	{
+		public final boolean execute(final L2Character ch)
+		{
+			if (ch.updatePosition(_gameTicks))
 			{
-				_movingObjects.remove(((L2Character) obj).getObjectId());
-				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(((L2Character) obj)));
+				// If movement is finished, the L2Character is removed from
+				// movingObjects and added to the ArrayList ended
+				_movingObjects.remove(ch.getObjectId());
+				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
 			}
+			return true;
 		}
 	}
 	
