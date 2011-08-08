@@ -142,6 +142,8 @@ public enum Stats
 	DARK_RES("darkRes"),
 	VALAKAS_RES("valakasRes"),
 	MAGIC_SUCCESS_RES("magicSuccRes"),
+	//BUFF_IMMUNITY("buffImmunity"), //TODO: Implement me
+	DEBUFF_IMMUNITY("debuffImmunity"),
 	
 	// ELEMENT POWER
 	FIRE_POWER("firePower"),

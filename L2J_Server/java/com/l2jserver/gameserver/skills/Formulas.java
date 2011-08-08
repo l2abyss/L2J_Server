@@ -2239,32 +2239,15 @@ public final class Formulas
 	public static boolean calcMagicAffected(L2Character actor, L2Character target, L2Skill skill)
 	{
 		// TODO: CHECK/FIX THIS FORMULA UP!!
-		L2SkillType type = skill.getSkillType();
 		double defence = 0;
 		if (skill.isActive() && skill.isOffensive() && !skill.isNeutral())
 			defence = target.getMDef(actor, skill);
 		
 		double attack = 2 * actor.getMAtk(target, skill) * (1 + calcSkillVulnerability(actor, target, skill) / 100);
 		double d = (attack - defence)/(attack + defence);
-		if (target.isRaid())
-		{
-			switch (type)
-			{
-				case CONFUSION:
-				case MUTE:
-				case PARALYZE:
-				case ROOT:
-				case FEAR:
-				case SLEEP:
-				case STUN:
-				case DEBUFF:
-				case AGGDEBUFF:
-					if ( d > 0 && Rnd.get(1000) == 1)
-						return true;
-					else
-						return false;
-			}
-		}
+
+		if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0 && skill.isDebuff() && !skill.ignoreResists())
+			return false;
 		
 		d += 0.5 * Rnd.nextGaussian();
 		return d > 0;
@@ -2518,6 +2501,10 @@ public final class Formulas
 	{
 		final L2SkillType type = effect.effectType;
 		final int value = (int)effect.effectPower;
+
+		if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0 && skill.isDebuff() && !skill.ignoreResists())
+			return false;
+		
 		if (type == null)
 		{
 			if (attacker.isDebug())
@@ -2629,6 +2616,8 @@ public final class Formulas
 			
 			return (Rnd.get(100) < skill.getPower(isPvP));
 		}
+		else if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0 && skill.isDebuff())
+			return false;
 		
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 		{
@@ -2727,25 +2716,8 @@ public final class Formulas
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 			return false;
 		
-		L2SkillType type = skill.getSkillType();
-		
-		// these skills should not work on RaidBoss
-		if (target.isRaid())
-		{
-			switch (type)
-			{
-				case CONFUSION:
-				case ROOT:
-				case STUN:
-				case MUTE:
-				case FEAR:
-				case DEBUFF:
-				case PARALYZE:
-				case SLEEP:
-				case AGGDEBUFF:
-					return false;
-			}
-		}
+		if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0 && skill.isDebuff() && !skill.ignoreResists())
+			return false;
 		
 		// if target reflect this skill then the effect will fail
 		if (calcSkillReflect(target, skill) != SKILL_REFLECT_FAILED)
