@@ -49,7 +49,7 @@ public class NpcTable
 {
 	private static Logger _log = Logger.getLogger(NpcTable.class.getName());
 	
-	private TIntObjectHashMap<L2NpcTemplate> _npcs;
+	private final TIntObjectHashMap<L2NpcTemplate> _npcs;
 	
 	public static NpcTable getInstance()
 	{
@@ -360,14 +360,14 @@ public class NpcTable
 			
 			try
 			{
-				statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] {"npc_id", "primary_attack","skill_chance","can_move","soulshot","spiritshot","sschance","spschance","minrangeskill","minrangechance","maxrangeskill","maxrangechance","ischaos","clan","clan_range","enemyClan","enemyRange","ai_type","dodge"}) + " FROM npcaidata ORDER BY npc_id");
+				statement = con.prepareStatement("SELECT * FROM npcaidata ORDER BY npcId");
 				ResultSet NpcAIDataTable = statement.executeQuery();
 				L2NpcAIData npcAIDat = null;
 				L2NpcTemplate npcDat = null;
 				int cont=0;
 				while (NpcAIDataTable.next())
 				{
-					int npc_id = NpcAIDataTable.getInt("npc_id");
+					int npc_id = NpcAIDataTable.getInt("npcId");
 					npcDat = _npcs.get(npc_id);
 					if (npcDat == null)
 					{
@@ -376,30 +376,29 @@ public class NpcTable
 					}
 					npcAIDat = new L2NpcAIData();
 					
-					npcAIDat.setPrimaryAttack(NpcAIDataTable.getInt("primary_attack"));
-					npcAIDat.setSkillChance(NpcAIDataTable.getInt("skill_chance"));
-					npcAIDat.setCanMove(NpcAIDataTable.getInt("can_move"));
+					npcAIDat.setMinSkillChance(NpcAIDataTable.getInt("minSkillChance"));
+					npcAIDat.setMaxSkillChance(NpcAIDataTable.getInt("maxSkillChance"));
+					npcAIDat.setPrimarySkillId(NpcAIDataTable.getInt("primarySkillId"));
+					npcAIDat.setCanMove(NpcAIDataTable.getInt("canMove"));
+					npcAIDat.setShortRangeSkill(NpcAIDataTable.getInt("minRangeSkill"));
+					npcAIDat.setShortRangeChance(NpcAIDataTable.getInt("minRangeChance"));
+					npcAIDat.setLongRangeSkill(NpcAIDataTable.getInt("maxRangeSkill"));
+					npcAIDat.setLongRangeChance(NpcAIDataTable.getInt("maxRangeChance"));
 					npcAIDat.setSoulShot(NpcAIDataTable.getInt("soulshot"));
 					npcAIDat.setSpiritShot(NpcAIDataTable.getInt("spiritshot"));
-					npcAIDat.setSoulShotChance(NpcAIDataTable.getInt("sschance"));
-					npcAIDat.setSpiritShotChance(NpcAIDataTable.getInt("spschance"));
-					npcAIDat.setIsChaos(NpcAIDataTable.getInt("ischaos"));
-					npcAIDat.setShortRangeSkill(NpcAIDataTable.getInt("minrangeskill"));
-					npcAIDat.setShortRangeChance(NpcAIDataTable.getInt("minrangechance"));
-					npcAIDat.setLongRangeSkill(NpcAIDataTable.getInt("maxrangeskill"));
-					npcAIDat.setLongRangeChance(NpcAIDataTable.getInt("maxrangechance"));
-					//npcAIDat.setSwitchRangeChance(NpcAIDataTable.getInt("rangeswitchchance"));
+					npcAIDat.setSpiritShotChance(NpcAIDataTable.getInt("spsChance"));
+					npcAIDat.setSoulShotChance(NpcAIDataTable.getInt("ssChance"));
+					npcAIDat.setIsChaos(NpcAIDataTable.getInt("isChaos"));
 					npcAIDat.setClan(NpcAIDataTable.getString("clan"));
-					npcAIDat.setClanRange(NpcAIDataTable.getInt("clan_range"));
+					npcAIDat.setClanRange(NpcAIDataTable.getInt("clanRange"));
 					npcAIDat.setEnemyClan(NpcAIDataTable.getString("enemyClan"));
 					npcAIDat.setEnemyRange(NpcAIDataTable.getInt("enemyRange"));
 					npcAIDat.setDodge(NpcAIDataTable.getInt("dodge"));
-					npcAIDat.setAi(NpcAIDataTable.getString("ai_type"));
+					npcAIDat.setAi(NpcAIDataTable.getString("aiType"));
+					//npcAIDat.setSwitchRangeChance(NpcAIDataTable.getInt("rangeswitchchance"));
 					//npcAIDat.setBaseShldRate(NpcAIDataTable.getInt("baseShldRate"));
 					//npcAIDat.setBaseShldDef(NpcAIDataTable.getInt("baseShldDef"));
 					
-					
-					//npcDat.addAIData(npcAIDat);
 					npcDat.setAIData(npcAIDat);
 					cont++;
 				}
@@ -417,14 +416,14 @@ public class NpcTable
 			{
 				try
 				{
-					statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[] { "npc_id", "primary_attack", "skill_chance", "can_move", "soulshot", "spiritshot", "sschance", "spschance", "minrangeskill", "minrangechance", "maxrangeskill", "maxrangechance", "ischaos", "clan", "clan_range", "enemyClan", "enemyRange", "ai_type", "dodge" }) + " FROM custom_npcaidata ORDER BY npc_id");
+					statement = con.prepareStatement("SELECT * FROM custom_npcaidata ORDER BY npcId");
 					ResultSet NpcAIDataTable = statement.executeQuery();
 					L2NpcAIData npcAIDat = null;
 					L2NpcTemplate npcDat = null;
 					int cont = 0;
 					while (NpcAIDataTable.next())
 					{
-						int npc_id = NpcAIDataTable.getInt("npc_id");
+						int npc_id = NpcAIDataTable.getInt("npcId");
 						npcDat = _npcs.get(npc_id);
 						if (npcDat == null)
 						{
@@ -433,29 +432,29 @@ public class NpcTable
 						}
 						npcAIDat = new L2NpcAIData();
 						
-						npcAIDat.setPrimaryAttack(NpcAIDataTable.getInt("primary_attack"));
-						npcAIDat.setSkillChance(NpcAIDataTable.getInt("skill_chance"));
-						npcAIDat.setCanMove(NpcAIDataTable.getInt("can_move"));
+						npcAIDat.setPrimarySkillId(NpcAIDataTable.getInt("primarySkillId"));
+						npcAIDat.setMinSkillChance(NpcAIDataTable.getInt("minSkillChance"));
+						npcAIDat.setMaxSkillChance(NpcAIDataTable.getInt("maxSkillChance"));
+						npcAIDat.setCanMove(NpcAIDataTable.getInt("canMove"));
 						npcAIDat.setSoulShot(NpcAIDataTable.getInt("soulshot"));
 						npcAIDat.setSpiritShot(NpcAIDataTable.getInt("spiritshot"));
-						npcAIDat.setSoulShotChance(NpcAIDataTable.getInt("sschance"));
-						npcAIDat.setSpiritShotChance(NpcAIDataTable.getInt("spschance"));
-						npcAIDat.setIsChaos(NpcAIDataTable.getInt("ischaos"));
-						npcAIDat.setShortRangeSkill(NpcAIDataTable.getInt("minrangeskill"));
-						npcAIDat.setShortRangeChance(NpcAIDataTable.getInt("minrangechance"));
-						npcAIDat.setLongRangeSkill(NpcAIDataTable.getInt("maxrangeskill"));
-						npcAIDat.setLongRangeChance(NpcAIDataTable.getInt("maxrangechance"));
-						//npcAIDat.setSwitchRangeChance(NpcAIDataTable.getInt("rangeswitchchance"));
+						npcAIDat.setSoulShotChance(NpcAIDataTable.getInt("ssChance"));
+						npcAIDat.setSpiritShotChance(NpcAIDataTable.getInt("spsChance"));
+						npcAIDat.setIsChaos(NpcAIDataTable.getInt("isChaos"));
+						npcAIDat.setShortRangeSkill(NpcAIDataTable.getInt("minRangeSkill"));
+						npcAIDat.setShortRangeChance(NpcAIDataTable.getInt("minRangeChance"));
+						npcAIDat.setLongRangeSkill(NpcAIDataTable.getInt("maxRangeSkill"));
+						npcAIDat.setLongRangeChance(NpcAIDataTable.getInt("maxRangeChance"));
 						npcAIDat.setClan(NpcAIDataTable.getString("clan"));
-						npcAIDat.setClanRange(NpcAIDataTable.getInt("clan_range"));
+						npcAIDat.setClanRange(NpcAIDataTable.getInt("clanRange"));
 						npcAIDat.setEnemyClan(NpcAIDataTable.getString("enemyClan"));
 						npcAIDat.setEnemyRange(NpcAIDataTable.getInt("enemyRange"));
 						npcAIDat.setDodge(NpcAIDataTable.getInt("dodge"));
-						npcAIDat.setAi(NpcAIDataTable.getString("ai_type"));
+						npcAIDat.setAi(NpcAIDataTable.getString("aiType"));
+						//npcAIDat.setSwitchRangeChance(NpcAIDataTable.getInt("rangeswitchchance"));
 						//npcAIDat.setBaseShldRate(NpcAIDataTable.getInt("baseShldRate"));
 						//npcAIDat.setBaseShldDef(NpcAIDataTable.getInt("baseShldDef"));
 						
-						//npcDat.addAIData(npcAIDat);
 						npcDat.setAIData(npcAIDat);
 						cont++;
 					}

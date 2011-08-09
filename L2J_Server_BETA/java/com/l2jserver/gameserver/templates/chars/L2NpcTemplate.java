@@ -98,6 +98,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public FastList<L2Skill> _Lrangeskills;
 	public FastList<L2Skill> _Srangeskills;
 	public FastList<L2Skill> _generalskills;
+	public FastList<L2Skill> _suesideskills;
 	
 	private boolean _hasbuffskills;
 	private boolean _hasnegativeskills;
@@ -119,6 +120,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	private boolean _hasLrangeskills;
 	private boolean _hasSrangeskills;
 	private boolean _hasgeneralskills;
+	private boolean _hassuesideskills;
 	
 	private L2NpcAIData _AIdataStatic = new L2NpcAIData();
 	
@@ -315,81 +317,87 @@ public final class L2NpcTemplate extends L2CharTemplate
 		
 		if(!skill.isPassive())
 		{
-			addGeneralSkill(skill);
-			switch(skill.getSkillType())
+			if (skill.isSuicideAttack())
 			{
-				case BUFF:
-					addBuffSkill(skill);
-					break;
-				case HEAL:
-				case HOT:
-				case HEAL_PERCENT:
-				case HEAL_STATIC:
-				case BALANCE_LIFE:
-					addHealSkill(skill);
-					break;
-				case RESURRECT:
-					addResSkill(skill);
-					break;
-				case DEBUFF:
-					addDebuffSkill(skill);
-					addCOTSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case ROOT:
-					addRootSkill(skill);
-					addImmobiliseSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case SLEEP:
-					addSleepSkill(skill);
-					addImmobiliseSkill(skill);
-					break;
-				case STUN:
-					addRootSkill(skill);
-					addImmobiliseSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case PARALYZE:
-					addParalyzeSkill(skill);
-					addImmobiliseSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case PDAM:
-				case MDAM:
-				case BLOW:
-				case DRAIN:
-				case CHARGEDAM:
-				case FATAL:	
-				case DEATHLINK:
-				case CPDAM:
-				case MANADAM:
-				case CPDAMPERCENT:	
-					addAtkSkill(skill);
-					addUniversalSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case POISON:
-				case DOT:
-				case MDOT:
-				case BLEED:
-					addDOTSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case MUTE:
-				case FEAR:
-					addCOTSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case CANCEL:
-				case NEGATE:
-					addNegativeSkill(skill);
-					addRangeSkill(skill);
-					break;
-				default :
-					addUniversalSkill(skill);
-					break;
-					
+				addSuesideSkill(skill);
+			}
+			else
+			{
+				addGeneralSkill(skill);
+				switch(skill.getSkillType())
+				{
+					case BUFF:
+						addBuffSkill(skill);
+						break;
+					case HEAL:
+					case HOT:
+					case HEAL_PERCENT:
+					case HEAL_STATIC:
+					case BALANCE_LIFE:
+						addHealSkill(skill);
+						break;
+					case RESURRECT:
+						addResSkill(skill);
+						break;
+					case DEBUFF:
+						addDebuffSkill(skill);
+						addCOTSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case ROOT:
+						addRootSkill(skill);
+						addImmobiliseSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case SLEEP:
+						addSleepSkill(skill);
+						addImmobiliseSkill(skill);
+						break;
+					case STUN:
+						addRootSkill(skill);
+						addImmobiliseSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case PARALYZE:
+						addParalyzeSkill(skill);
+						addImmobiliseSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case PDAM:
+					case MDAM:
+					case BLOW:
+					case DRAIN:
+					case CHARGEDAM:
+					case FATAL:	
+					case DEATHLINK:
+					case CPDAM:
+					case MANADAM:
+					case CPDAMPERCENT:	
+						addAtkSkill(skill);
+						addUniversalSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case POISON:
+					case DOT:
+					case MDOT:
+					case BLEED:
+						addDOTSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case MUTE:
+					case FEAR:
+						addCOTSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case CANCEL:
+					case NEGATE:
+						addNegativeSkill(skill);
+						addRangeSkill(skill);
+						break;
+					default :
+						addUniversalSkill(skill);
+						break;
+				}
 			}
 		}
 		
@@ -814,6 +822,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_manaskills.add(skill);
 		_hasmanaskills=true;
 	}
+	
 	public void addGeneralSkill(L2Skill skill)
 	{
 		if (_generalskills == null)
@@ -821,6 +830,16 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_generalskills.add(skill);
 		_hasgeneralskills=true;
 	}
+	
+	public void addSuesideSkill(L2Skill skill)
+	{
+		if (_suesideskills == null)
+			_suesideskills = new FastList<L2Skill>();
+		_suesideskills.add(skill);
+		
+		_hassuesideskills = true;
+	}
+	
 	
 	public void addRangeSkill(L2Skill skill)
 	{
@@ -966,5 +985,10 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public boolean isUndead()
 	{
 		return (race == Race.UNDEAD);
+	}
+	
+	public boolean hasSuesideSkill()
+	{
+		return _hassuesideskills;
 	}
 }

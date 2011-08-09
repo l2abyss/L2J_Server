@@ -33,14 +33,15 @@ public class L2NpcAIData
 {
 	
 	//Basic AI
-	private int _primary_attack;
-	private int _skill_chance;
+	private int _primarySkillId;
+	private int _minskillChance;
+	private int _maxskillChance;
 	private int _canMove;
 	private int _soulshot;
 	private int _spiritshot;
-	private int _soulshotchance;
-	private int _spiritshotchance;
-	private int _ischaos;
+	private int _soulshotChance;
+	private int _spiritshotChance;
+	private int _isChaos;
 	private String _clan = null;
 	private int _clanRange;
 	private String _enemyClan = null;
@@ -48,104 +49,84 @@ public class L2NpcAIData
 	//private int _baseShldRate;
 	//private int _baseShldDef;
 	private int _dodge;
-	private int _longrangeskill;
-	private int _shortrangeskill;
-	private int _longrangechance;
-	private int _shortrangechance;
-	private int _switchrangechance;
+	private int _longRangeSkill;
+	private int _shortRangeSkill;
+	private int _longRangeChance;
+	private int _shortRangeChance;
+	private int _switchRangeChance;
 	private AIType _aiType = AIType.FIGHTER;
 	
 	//--------------------------------------------------------------------------------------------------------------
 	//Setting....
 	//--------------------------------------------------------------------------------------------------------------
-	public void setPrimaryAttack(int primaryattack)
+	public void setPrimarySkillId(int primarySkillId)
 	{
-		
-		_primary_attack = primaryattack;
-		
+		_primarySkillId = primarySkillId;
 	}
 	
-	public void setSkillChance(int skill_chance)
+	public void setMinSkillChance(int skill_chance)
+	{	
+		_minskillChance = skill_chance;
+	}
+	
+	public void setMaxSkillChance(int skill_chance)
 	{
-		
-		_skill_chance = skill_chance;
-		
+		_maxskillChance = skill_chance;
 	}
 	
 	public void setCanMove(int canMove)
 	{
-		
-		_canMove = canMove;
-		
+		_canMove = canMove;	
 	}
 	
 	public void setSoulShot(int soulshot)
 	{
-		
-		_soulshot = soulshot;
-		
+		_soulshot = soulshot;	
 	}
 	
 	public void setSpiritShot(int spiritshot)
 	{
-		
 		_spiritshot = spiritshot;
-		
 	}
 	
 	public void setSoulShotChance(int soulshotchance)
 	{
-		
-		_soulshotchance = soulshotchance;
-		
+		_soulshotChance = soulshotchance;	
 	}
 	
 	public void setSpiritShotChance(int spiritshotchance)
 	{
-		
-		_spiritshotchance = spiritshotchance;
-		
+		_spiritshotChance = spiritshotchance;	
 	}
 	
 	public void setShortRangeSkill(int shortrangeskill)
 	{
-		
-		_shortrangeskill = shortrangeskill;
-		
+		_shortRangeSkill = shortrangeskill;
 	}
 	
 	public void setShortRangeChance(int shortrangechance)
 	{
-		
-		_shortrangechance = shortrangechance;
-		
+		_shortRangeChance = shortrangechance;
 	}
 	
 	public void setLongRangeSkill(int longrangeskill)
 	{
-		
-		_longrangeskill = longrangeskill;
-		
+		_longRangeSkill = longrangeskill;	
 	}
 	
 	public void setLongRangeChance(int longrangechance)
 	{
-		
-		_shortrangechance = longrangechance;
-		
+		_shortRangeChance = longrangechance;
 	}
 	
 	public void setSwitchRangeChance(int switchrangechance)
 	{
-		
-		_switchrangechance = switchrangechance;
-		
+		_switchRangeChance = switchrangechance;
 	}
 	
 	public void setIsChaos(int ischaos)
 	{
-		_ischaos = ischaos;
-		
+		_isChaos = ischaos;
 	}
 	
 	public void setClan(String clan)
@@ -167,9 +148,7 @@ public class L2NpcAIData
 	
 	public void setEnemyRange(int enemyRange)
 	{
-		
-		_enemyRange = enemyRange;
-		
+		_enemyRange = enemyRange;	
 	}
 	
 	public void setDodge(int dodge)
@@ -195,120 +174,93 @@ public class L2NpcAIData
 	
 	/*
 	
-	public void setBaseShldRate (int baseShldRate)
+	public void setBaseShldRate(int baseShldRate)
 	{
-		
-		_baseShldRate = baseShldRate;
-		
+		_baseShldRate = baseShldRate;	
 	}
 	
-	public void setBaseShldDef (int baseShldDef)
+	public void setBaseShldDef(int baseShldDef)
 	{
-		
-		_baseShldDef = baseShldDef;
-		
+		_baseShldDef = baseShldDef;	
 	}
 	 */
 	
 	//--------------------------------------------------------------------------------------------------------------
 	//Data Recall....
 	//--------------------------------------------------------------------------------------------------------------
-	public int getPrimaryAttack()
+	public int getPrimarySkillId()
 	{
-		
-		return _primary_attack;
-		
+		return _primarySkillId;
 	}
 	
-	public int getSkillChance()
+	public int getMinSkillChance()
 	{
-		
-		return _skill_chance;
-		
+		return _minskillChance;
+	}
+	
+	public int getMaxSkillChance()
+	{
+		return _maxskillChance;
 	}
 	
 	public int getCanMove()
 	{
-		
-		return _canMove;
-		
+		return _canMove;	
 	}
 	
 	public int getSoulShot()
 	{
-		
-		return _soulshot;
-		
+		return _soulshot;	
 	}
 	
 	public int getSpiritShot()
 	{
-		
-		return _spiritshot;
-		
+		return _spiritshot;	
 	}
 	
 	public int getSoulShotChance()
 	{
-		
-		return _soulshotchance;
-		
+		return _soulshotChance;	
 	}
 	
 	public int getSpiritShotChance()
 	{
-		
-		return _spiritshotchance;
-		
+		return _spiritshotChance;	
 	}
 	
 	public int getShortRangeSkill()
 	{
-		
-		return _shortrangeskill;
-		
+		return _shortRangeSkill;	
 	}
 	
 	public int getShortRangeChance()
 	{
-		
-		return _shortrangechance;
-		
+		return _shortRangeChance;	
 	}
 	
 	public int getLongRangeSkill()
 	{
-		
-		return _longrangeskill;
-		
+		return _longRangeSkill;	
 	}
 	
 	public int getLongRangeChance()
 	{
-		
-		return _longrangechance;
-		
+		return _longRangeChance;	
 	}
 	
 	public int getSwitchRangeChance()
 	{
-		
-		return _switchrangechance;
-		
+		return _switchRangeChance;	
 	}
 	
 	public int getIsChaos()
 	{
-		
-		return _ischaos;
-		
+		return _isChaos;	
 	}
 	
 	public String getClan()
 	{
-		
-		return _clan;
-		
+		return _clan;	
 	}
 	
 	public int getClanRange()
@@ -318,23 +270,17 @@ public class L2NpcAIData
 	
 	public String getEnemyClan()
 	{
-		
-		return _enemyClan;
-		
+		return _enemyClan;	
 	}
 	
 	public int getEnemyRange()
 	{
-		
-		return _enemyRange;
-		
+		return _enemyRange;	
 	}
 	
 	public int getDodge()
 	{
-		
-		return _dodge;
-		
+		return _dodge;	
 	}
 	
 	public AIType getAiType()
@@ -344,18 +290,14 @@ public class L2NpcAIData
 	
 	/*
 	
-	public int getBaseShldRate ()
+	public int getBaseShldRate()
 	{
-		
-		return _baseShldRate;
-		
+		return _baseShldRate;	
 	}
 	
-	public int getBaseShldDef ()
+	public int getBaseShldDef()
 	{
-		
-		return _baseShldDef;
-		
+		return _baseShldDef;	
 	}
 	 */
 }

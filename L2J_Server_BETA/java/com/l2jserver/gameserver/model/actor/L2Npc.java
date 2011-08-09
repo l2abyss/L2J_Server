@@ -242,18 +242,22 @@ public class L2Npc extends L2Character
 	}
 	
 	// GET THE PRIMARY ATTACK
-	public int getPrimaryAttack()
+	public int getPrimarySkillId()
 	{
 		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getPrimaryAttack();
-		
+		return AI.getPrimarySkillId();	
 	}
 	
-	public int getSkillChance()
+	public int getMinSkillChance()
 	{
 		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSkillChance();
-		
+		return AI.getMinSkillChance();
+	}
+	
+	public int getMaxSkillChance()
+	{
+		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		return AI.getMaxSkillChance();
 	}
 	
 	public int getCanMove()
@@ -266,35 +270,30 @@ public class L2Npc extends L2Character
 	{
 		L2NpcAIData AI = getTemplate().getAIDataStatic();
 		return AI.getIsChaos();
-		
 	}
 	
 	public int getCanDodge()
 	{
 		L2NpcAIData AI = getTemplate().getAIDataStatic();
 		return AI.getDodge();
-		
 	}
 	
 	public int getSSkillChance()
 	{
 		L2NpcAIData AI = getTemplate().getAIDataStatic();
 		return AI.getShortRangeChance();
-		
 	}
 	
 	public int getLSkillChance()
 	{
 		L2NpcAIData AI = getTemplate().getAIDataStatic();
 		return AI.getLongRangeChance();
-		
 	}
 	
 	public int getSwitchRangeChance()
 	{
 		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSwitchRangeChance();
-		
+		return AI.getSwitchRangeChance();	
 	}
 	
 	public boolean hasLSkill()
@@ -305,7 +304,6 @@ public class L2Npc extends L2Character
 			return false;
 		else
 			return true;
-		
 	}
 	
 	public boolean hasSSkill()
