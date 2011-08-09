@@ -13,6 +13,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -29,7 +32,8 @@ public final class CreatureSay extends L2GameServerPacket
 	private String _charName = null;
 	private int _charId = 0;
 	private String _text = null;
-	private int _msgId = -1;
+	private int _npcString = -1;
+	private List<String> _parameters;
 	
 	/**
 	 * @param _characters
@@ -42,12 +46,31 @@ public final class CreatureSay extends L2GameServerPacket
 		_text = text;
 	}
 	
-	public CreatureSay(int objectId, int messageType, int charId, int msgId)
+	public CreatureSay(int objectId, int messageType, int charId, int npcString)
 	{
 		_objectId = objectId;
 		_textType = messageType;
 		_charId = charId;
-		_msgId = msgId;
+		_npcString = npcString;
+	}
+	
+	public CreatureSay(int objectId, int messageType, String charName, int npcString)
+	{
+		_objectId = objectId;
+		_textType = messageType;
+		_charName = charName;
+		_npcString = npcString;
+	}
+	
+	/**
+	 * String parameter for argument S1,S2,.. in npcstring-e.dat
+	 * @param text
+	 */
+	public void addStringParameter(String text)
+	{
+		if (_parameters == null)
+			_parameters = new ArrayList<String>();
+		_parameters.add(text);
 	}
 	
 	@Override
@@ -60,9 +83,17 @@ public final class CreatureSay extends L2GameServerPacket
 			writeS(_charName);
 		else
 			writeD(_charId);
-		writeD(_msgId); // High Five NPCString ID
+		writeD(_npcString); // High Five NPCString ID
 		if (_text != null)
 			writeS(_text);
+		else
+		{
+			if (_parameters != null)
+			{
+				for (String s : _parameters)
+					writeS(s);
+			}
+		}
 	}
 	
 	@Override

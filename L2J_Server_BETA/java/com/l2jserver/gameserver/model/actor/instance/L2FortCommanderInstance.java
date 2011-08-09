@@ -114,24 +114,24 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			{
 				if (spawn2.getNpcId() == spawn.getNpcid())
 				{
-					String text = "";
+					int npcString = -1;
 					switch (spawn2.getId())
 					{
 						case 1:
-							text = "Attacking the enemy's reinforcements is necesary. Time to Die!";
+							npcString = 1300013;
 							break;
 						case 2:
 							if (attacker instanceof L2Summon)
 								attacker = ((L2Summon) attacker).getOwner();
-							text = "Everyone, concentrate your attacks on "+attacker.getName()+"! Show the enemy your resolve!";
+							npcString = 1300012;
 							break;
 						case 3:
-							text = "Spirit of Fire, unleash your power! Burn the enemy!!";
+							npcString = 1300014;
 							break;
 					}
-					if (!text.isEmpty())
+					if (npcString != -1)
 					{
-						broadcastPacket(new NpcSay(getObjectId(), 1, getNpcId(), text));
+						broadcastPacket(new NpcSay(getObjectId(), 1, getNpcId(), npcString));
 						setCanTalk(false);
 						ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 10000);
 					}

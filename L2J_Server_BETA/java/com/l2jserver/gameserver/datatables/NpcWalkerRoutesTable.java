@@ -95,9 +95,20 @@ public class NpcWalkerRoutesTable
 							int y = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
 							int z = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
 							int delay = Integer.parseInt(attrs.getNamedItem("delay").getNodeValue());
-							String chat = attrs.getNamedItem("string").getNodeValue();
+							String chatString = null;
+							int npcString = -1;
+							Node node = attrs.getNamedItem("string");
+							if (node != null)
+								chatString = node.getNodeValue();
+							else
+							{
+								node = attrs.getNamedItem("npcString");
+								if (node != null)
+									npcString = Integer.parseInt(node.getNodeValue());
+							}
+							
 							boolean running = Boolean.parseBoolean(attrs.getNamedItem("run").getNodeValue());
-							list.add(new L2NpcWalkerNode(id, chat, x, y, z, delay, running));
+							list.add(new L2NpcWalkerNode(id, npcString, chatString, x, y, z, delay, running));
 						}
 					}
 					_routes.put(npcId, list);

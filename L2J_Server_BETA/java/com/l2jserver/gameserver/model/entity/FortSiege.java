@@ -556,24 +556,24 @@ public class FortSiege implements Siegable
 				{
 					if (spawn2.getNpcId() == spawn.getNpcid())
 					{
-						int message = 0;
+						int npcString = -1;
 						switch (spawn2.getId())
 						{
 							case 1:
-								message = 1300004; // You may have broken our arrows, but you will never break our will! Archers, retreat!
+								npcString = 1300004; // You may have broken our arrows, but you will never break our will! Archers, retreat!
 								break;
 							case 2:
-								message = 1300006; // Aiieeee! Command Center! This is guard unit! We need backup right away!
+								npcString = 1300006; // Aiieeee! Command Center! This is guard unit! We need backup right away!
 								break;
 							case 3:
-								message = 1300005; // At last! The Magic Field that protects the fortress has weakened! Volunteers, stand back!
+								npcString = 1300005; // At last! The Magic Field that protects the fortress has weakened! Volunteers, stand back!
 								break;
 							case 4:
-								message = 1300020; // I feel so much grief that I can't even take care of myself. There isn't any reason for me to stay here any longer.
+								npcString = 1300020; // I feel so much grief that I can't even take care of myself. There isn't any reason for me to stay here any longer.
 								break;
 						}
-						if (message != 0)
-							instance.broadcastPacket(new NpcSay(instance.getObjectId(), 1, instance.getNpcId(), message));
+						if (npcString != -1)
+							instance.broadcastPacket(new NpcSay(instance.getObjectId(), 1, instance.getNpcId(), npcString));
 					}
 				}
 				_commanders.remove(spawn);

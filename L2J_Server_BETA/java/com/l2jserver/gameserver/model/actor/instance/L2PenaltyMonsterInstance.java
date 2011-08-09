@@ -44,7 +44,7 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 	{
 		if (Rnd.get(100) <= 80)
 		{
-			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), "mmm your bait was delicious");
+			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), 1010441);
 			this.broadcastPacket(cs);
 		}
 		_ptk = ptk;
@@ -61,7 +61,7 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 		
 		if (Rnd.get(100) <= 75)
 		{
-			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), "I will tell fishes not to take your bait");
+			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), 1010416);
 			this.broadcastPacket(cs);
 		}
 		return true;

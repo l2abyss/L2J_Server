@@ -56,21 +56,18 @@ public final class OlympiadAnnouncer implements Runnable
 			task = OlympiadGameManager.getInstance().getOlympiadTask(_currentStadium);
 			if (task != null && task.getGame() != null && task.needAnnounce())
 			{
-				int msg;
+				int npcString;
 				final String arenaId = String.valueOf(task.getGame().getStadiumId() + 1);
 				switch (task.getGame().getType())
 				{
 					case NON_CLASSED:
-						// msg = "Olympiad class-free individual match is going to begin in Arena " + arenaId + " in a moment.";
-						msg = 1300166;
+						npcString = 1300166; // "Olympiad class-free individual match is going to begin in Arena " + arenaId + " in a moment.";
 						break;
 					case CLASSED:
-						// msg = "Olympiad class-specific individual match is going to begin in Arena " + arenaId + " in a moment.";
-						msg = 1300167;
+						npcString = 1300167; // "Olympiad class-specific individual match is going to begin in Arena " + arenaId + " in a moment.";
 						break;
 					case TEAMS:
-						// msg = "Olympiad class-free team match is going to begin in Arena " + arenaId + " in a moment.";
-						msg = 1300132;
+						npcString = 1300132; // "Olympiad class-free team match is going to begin in Arena " + arenaId + " in a moment.";
 						break;
 					default:
 						continue;
@@ -83,7 +80,7 @@ public final class OlympiadAnnouncer implements Runnable
 					manager = spawn.getLastSpawn();
 					if (manager != null)
 					{
-						packet = new NpcSay(manager.getObjectId(), Say2.SHOUT, manager.getNpcId(), msg);
+						packet = new NpcSay(manager.getObjectId(), Say2.SHOUT, manager.getNpcId(), npcString);
 						packet.addStringParameter(arenaId);
 						manager.broadcastPacket(packet);
 					}

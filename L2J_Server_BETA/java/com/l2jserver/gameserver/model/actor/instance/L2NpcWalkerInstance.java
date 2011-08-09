@@ -69,13 +69,13 @@ public class L2NpcWalkerInstance extends L2Npc
 	 * Sends a chat to all _knowObjects
 	 * @param chat message to say
 	 */
-	public void broadcastChat(String chat, int id)
+	public void broadcastChat(String chat, int npcString)
 	{
 		NpcSay cs;
-		if (id == 0)
+		if (npcString == -1)
 			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), chat);
 		else
-			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), id);
+			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), npcString);
 		Broadcast.toKnownPlayers(this, cs);
 	}
 	

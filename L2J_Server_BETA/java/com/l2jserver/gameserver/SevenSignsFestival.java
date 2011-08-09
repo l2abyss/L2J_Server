@@ -1689,17 +1689,17 @@ public class SevenSignsFestival implements SpawnListener
 	 * Primarily used for Festival Guide and Witch related speech.
 	 *
 	 * @param senderName
-	 * @param message
+	 * @param npcString
 	 */
-	public void sendMessageToAll(String senderName, String message)
+	public void sendMessageToAll(String senderName, int npcString)
 	{
 		if (_dawnChatGuide == null || _duskChatGuide == null)
 			return;
 		
-		CreatureSay cs = new CreatureSay(_dawnChatGuide.getObjectId(), Say2.SHOUT, senderName, message);
+		CreatureSay cs = new CreatureSay(_dawnChatGuide.getObjectId(), Say2.SHOUT, senderName, npcString);
 		_dawnChatGuide.broadcastPacket(cs);
 		
-		cs = new CreatureSay(_duskChatGuide.getObjectId(), Say2.SHOUT, senderName, message);
+		cs = new CreatureSay(_duskChatGuide.getObjectId(), Say2.SHOUT, senderName, npcString);
 		_duskChatGuide.broadcastPacket(cs);
 	}
 	
@@ -1788,7 +1788,7 @@ public class SevenSignsFestival implements SpawnListener
 					_log.info("SevenSignsFestival: Festival manager initialized. Those wishing to participate have " + getMinsToNextFestival()
 							+ " minute(s) to sign up.");
 				
-				sendMessageToAll("Festival Guide", "The main event will start in " + getMinsToNextFestival() + " minutes. Please register now.");
+				sendMessageToAll("Festival Guide", 1000317);
 				
 				// Stand by until the allowed signup period has elapsed.
 				try
@@ -1856,7 +1856,7 @@ public class SevenSignsFestival implements SpawnListener
 				_festivalInitialized = true;
 				
 				setNextFestivalStart(Config.ALT_FESTIVAL_CYCLE_LENGTH);
-				sendMessageToAll("Festival Guide", "The main event is now starting.");
+				sendMessageToAll("Festival Guide", 1000318);
 				
 				if (Config.DEBUG)
 					_log.info("SevenSignsFestival: The current set of festivals will begin in " + (Config.ALT_FESTIVAL_FIRST_SPAWN / 60000)
@@ -1881,7 +1881,7 @@ public class SevenSignsFestival implements SpawnListener
 				for (L2DarknessFestival festivalInst : _festivalInstances.values())
 				{
 					festivalInst.festivalStart();
-					festivalInst.sendMessageToParticipants("The festival is about to begin!");
+					festivalInst.sendMessageToParticipants(1000318);
 				}
 				
 				if (Config.DEBUG)
@@ -1917,7 +1917,7 @@ public class SevenSignsFestival implements SpawnListener
 				{
 					festivalInst.spawnFestivalMonsters(FESTIVAL_DEFAULT_RESPAWN / 2, 2);
 					festivalInst.sendMessageToParticipants("The festival will end in "
-							+ ((Config.ALT_FESTIVAL_LENGTH - Config.ALT_FESTIVAL_SECOND_SPAWN) / 60000) + " minute(s).");
+							+ ((Config.ALT_FESTIVAL_LENGTH - Config.ALT_FESTIVAL_SECOND_SPAWN) / 60000) + " minute(s)."); //FIXME add support for 1000319 & 1000320
 				}
 				
 				elapsedTime += Config.ALT_FESTIVAL_SECOND_SPAWN - Config.ALT_FESTIVAL_FIRST_SWARM;
@@ -1950,7 +1950,7 @@ public class SevenSignsFestival implements SpawnListener
 				for (L2DarknessFestival festivalInst : _festivalInstances.values())
 				{
 					festivalInst.spawnFestivalMonsters(FESTIVAL_DEFAULT_RESPAWN, 3);
-					festivalInst.sendMessageToParticipants("The chests have spawned! Be quick, the festival will end soon.");
+					festivalInst.sendMessageToParticipants("The chests have spawned! Be quick, the festival will end soon."); //FIXME What is the correct npcString?
 				}
 				
 				elapsedTime += Config.ALT_FESTIVAL_CHEST_SPAWN - Config.ALT_FESTIVAL_SECOND_SWARM;
@@ -1979,7 +1979,7 @@ public class SevenSignsFestival implements SpawnListener
 				// Allow signups for the next festival cycle.
 				_festivalInitialized = false;
 				
-				sendMessageToAll("Festival Witch", "That will do! I'll move you to the outside soon.");
+				sendMessageToAll("Festival Witch", 1000380);
 				
 				if (Config.DEBUG)
 					_log.info("SevenSignsFestival: The next set of festivals begin in " + getMinsToNextFestival() + " minute(s).");
@@ -2160,7 +2160,7 @@ public class SevenSignsFestival implements SpawnListener
 			_witchInst.broadcastPacket(msu);
 			
 			// Send a message to all participants from the witch.
-			sendMessageToParticipants("The festival will begin in 2 minutes.");
+			sendMessageToParticipants(1000317);
 		}
 		
 		protected void festivalStart()
@@ -2312,10 +2312,16 @@ public class SevenSignsFestival implements SpawnListener
 			return true;
 		}
 		
-		public void sendMessageToParticipants(String message)
+		public void sendMessageToParticipants(int npcString)
 		{
 			if (_participants != null && !_participants.isEmpty())
-				_witchInst.broadcastPacket(new CreatureSay(_witchInst.getObjectId(), Say2.ALL, "Festival Witch", message));
+				_witchInst.broadcastPacket(new CreatureSay(_witchInst.getObjectId(), Say2.ALL, "Festival Witch", npcString));
+		}
+		
+		public void sendMessageToParticipants(String string)
+		{
+			if (_participants != null && !_participants.isEmpty())
+				_witchInst.broadcastPacket(new CreatureSay(_witchInst.getObjectId(), Say2.ALL, "Festival Witch", string));
 		}
 		
 		protected void festivalEnd()

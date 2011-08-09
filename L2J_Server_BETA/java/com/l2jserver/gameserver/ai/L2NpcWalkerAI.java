@@ -115,15 +115,13 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 		
 		if (getActor().isInsideRadius(destinationX, destinationY, destinationZ, 5, false, false))
 		{
-			int id = _route.get(_currentPos).getChatId();
+			int npcString = _route.get(_currentPos).getNpcString();
 			String chat = null;
-			if (id == 0)
+			if (npcString == -1)
 				chat = _route.get(_currentPos).getChatText();
 			
-			if ((id > 0) || (chat != null && !chat.isEmpty()))
-			{
-				getActor().broadcastChat(chat, id);
-			}
+			if ((npcString != -1) || (chat != null && !chat.isEmpty()))
+				getActor().broadcastChat(chat, npcString);
 			
 			//time in millis
 			long delay = _route.get(_currentPos).getDelay() * 1000;
