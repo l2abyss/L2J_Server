@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
 import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
+import com.l2jserver.gameserver.util.Util;
 
 import javolution.util.FastMap;
 
@@ -52,8 +53,6 @@ public class MapRegionManager
 {
 	protected static final Logger _log = Logger.getLogger(MapRegionManager.class.getName());
 	private static Map<String, L2MapRegion> _regions;
-	
-	private static final String FILE = "MapRegion.xml";
 	
 	public static enum TeleportWhereType
 	{
@@ -94,119 +93,124 @@ public class MapRegionManager
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
-		File file = new File(Config.DATAPACK_ROOT + "/data/" + FILE);
-		if (file.exists())
+		
+		for (File file : Util.getDatapackFiles("mapregion", ".xml"))
 		{
-			Document doc = factory.newDocumentBuilder().parse(file);
-			for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+			try
 			{
-				if ("list".equalsIgnoreCase(n.getNodeName()))
+				Document doc = factory.newDocumentBuilder().parse(file);
+				for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
 				{
-					for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+					if ("list".equalsIgnoreCase(n.getNodeName()))
 					{
-						if ("region".equalsIgnoreCase(d.getNodeName()))
+						for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 						{
-							NamedNodeMap attrs = d.getAttributes();
-							Node att;
-							String name = "";
-							String town = "";
-							int locId = -1;
-							int castle = -1;
-							int bbs = -1;
-							
-							att = attrs.getNamedItem("name");
-							if (att == null)
+							if ("region".equalsIgnoreCase(d.getNodeName()))
 							{
-								_log.severe("Missing name for MapRegion, skipping");
-								continue;
-							}
-							name = att.getNodeValue();
-							
-							att = attrs.getNamedItem("town");
-							if (att == null)
-							{
-								_log.severe("Missing town for MapRegion name: " + name + ", skipping");
-								continue;
-							}
-							town = att.getNodeValue();
-							
-							att = attrs.getNamedItem("locId");
-							if (att == null)
-							{
-								_log.severe("Missing locId for MapRegion name: " + name + ", skipping");
-								continue;
-							}
-							locId = Integer.parseInt(att.getNodeValue());
-							
-							att = attrs.getNamedItem("castle");
-							if (att == null)
-							{
-								_log.severe("Missing castle for MapRegion name: " + name + ", skipping");
-								continue;
-							}
-							castle = Integer.parseInt(att.getNodeValue());
-							
-							att = attrs.getNamedItem("bbs");
-							if (att == null)
-							{
-								_log.severe("Missing bbs for MapRegion name: " + name + ", skipping");
-								continue;
-							}
-							bbs = Integer.parseInt(att.getNodeValue());
-							
-							L2MapRegion region = new L2MapRegion(name, town, locId, castle, bbs);
-							for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
-							{
-								if ("respawnPoint".equalsIgnoreCase(c.getNodeName()))
+								NamedNodeMap attrs = d.getAttributes();
+								Node att;
+								String name = "";
+								String town = "";
+								int locId = -1;
+								int castle = -1;
+								int bbs = -1;
+								
+								att = attrs.getNamedItem("name");
+								if (att == null)
 								{
-									attrs = c.getAttributes();
-									int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
-									int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
-									int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
-									
-									Node val = attrs.getNamedItem("isOther");
-									boolean other = val != null && Boolean.parseBoolean(val.getNodeValue());
-									
-									val = attrs.getNamedItem("isChaotic");
-									boolean chaotic = val != null && Boolean.parseBoolean(val.getNodeValue());
-									
-									val = attrs.getNamedItem("isBanish");
-									boolean banish = val != null && Boolean.parseBoolean(val.getNodeValue());
-									
-									if (other)
-										region.addOtherSpawn(spawnX, spawnY, spawnZ);
-									else if (chaotic)
-										region.addChaoticSpawn(spawnX, spawnY, spawnZ);
-									else if (banish)
-										region.addBanishSpawn(spawnX, spawnY, spawnZ);
-									else
-										region.addSpawn(spawnX, spawnY, spawnZ);
+									_log.severe("Missing name for MapRegion, skipping");
+									continue;
 								}
-								else if ("map".equalsIgnoreCase(c.getNodeName()))
+								name = att.getNodeValue();
+								
+								att = attrs.getNamedItem("town");
+								if (att == null)
 								{
-									attrs = c.getAttributes();
-									int mapX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
-									int mapY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
-									
-									region.addMap(mapX, mapY);
+									_log.severe("Missing town for MapRegion name: " + name + ", skipping");
+									continue;
 								}
-								else if ("banned".equalsIgnoreCase(c.getNodeName()))
+								town = att.getNodeValue();
+								
+								att = attrs.getNamedItem("locId");
+								if (att == null)
 								{
-									attrs = c.getAttributes();
-									String race = attrs.getNamedItem("race").getNodeValue();
-									String point = attrs.getNamedItem("point").getNodeValue();
-									
-									region.addBannedRace(race, point);
+									_log.severe("Missing locId for MapRegion name: " + name + ", skipping");
+									continue;
 								}
+								locId = Integer.parseInt(att.getNodeValue());
+								
+								att = attrs.getNamedItem("castle");
+								if (att == null)
+								{
+									_log.severe("Missing castle for MapRegion name: " + name + ", skipping");
+									continue;
+								}
+								castle = Integer.parseInt(att.getNodeValue());
+								
+								att = attrs.getNamedItem("bbs");
+								if (att == null)
+								{
+									_log.severe("Missing bbs for MapRegion name: " + name + ", skipping");
+									continue;
+								}
+								bbs = Integer.parseInt(att.getNodeValue());
+								
+								L2MapRegion region = new L2MapRegion(name, town, locId, castle, bbs);
+								for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
+								{
+									if ("respawnPoint".equalsIgnoreCase(c.getNodeName()))
+									{
+										attrs = c.getAttributes();
+										int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
+										int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
+										int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
+										
+										Node val = attrs.getNamedItem("isOther");
+										boolean other = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										val = attrs.getNamedItem("isChaotic");
+										boolean chaotic = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										val = attrs.getNamedItem("isBanish");
+										boolean banish = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										if (other)
+											region.addOtherSpawn(spawnX, spawnY, spawnZ);
+										else if (chaotic)
+											region.addChaoticSpawn(spawnX, spawnY, spawnZ);
+										else if (banish)
+											region.addBanishSpawn(spawnX, spawnY, spawnZ);
+										else
+											region.addSpawn(spawnX, spawnY, spawnZ);
+									}
+									else if ("map".equalsIgnoreCase(c.getNodeName()))
+									{
+										attrs = c.getAttributes();
+										int mapX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
+										int mapY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
+										
+										region.addMap(mapX, mapY);
+									}
+									else if ("banned".equalsIgnoreCase(c.getNodeName()))
+									{
+										attrs = c.getAttributes();
+										String race = attrs.getNamedItem("race").getNodeValue();
+										String point = attrs.getNamedItem("point").getNodeValue();
+										
+										region.addBannedRace(race, point);
+									}
+								}
+								_regions.put(name, region);
 							}
-							_regions.put(name, region);
 						}
 					}
 				}
 			}
+			catch (Exception e)
+			{
+				_log.severe("MapRegion file (" + file.getAbsolutePath() + ") doesnt exists.");
+			}
 		}
-		else
-			_log.severe("MapRegion file (" + file.getAbsolutePath() + ") doesnt exists.");
 	}
 	
 	public final L2MapRegion getMapRegion(int locX, int locY)

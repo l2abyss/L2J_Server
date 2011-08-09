@@ -27,6 +27,7 @@ package com.l2jserver.gameserver.util;
 import java.io.File;
 import java.util.Collection;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -372,5 +373,16 @@ public final class Util
 			if (element == obj)
 				return true;
 		return false;
+	}
+
+	public static File[] getDatapackFiles(String dirname, String extention)
+	{
+		File dir = new File(Config.DATAPACK_ROOT, "data/" + dirname);
+		if (!dir.exists())
+			return null;
+
+		CustomFileNameFilter filter = new CustomFileNameFilter(extention);
+
+		return dir.listFiles(filter);
 	}
 }
