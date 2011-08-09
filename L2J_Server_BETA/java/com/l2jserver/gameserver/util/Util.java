@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.file.filter.ExtFilter;
 
 /**
  * General Utility functions related to Gameserver
@@ -381,8 +382,6 @@ public final class Util
 		if (!dir.exists())
 			return null;
 
-		CustomFileNameFilter filter = new CustomFileNameFilter(extention);
-
-		return dir.listFiles(filter);
+		return dir.listFiles(new ExtFilter(extention));
 	}
 }

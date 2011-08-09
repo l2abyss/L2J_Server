@@ -12,20 +12,26 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.util;
+package com.l2jserver.util.file.filter;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.FileFilter;
 
-public class CustomFileNameFilter implements FilenameFilter {
+/**
+ * @author lasarus
+ */
+public class ExtFilter implements FileFilter 
+{
 	String _ext;
 
-	public CustomFileNameFilter(String extention) {
+	public ExtFilter(String extention) 
+	{
 		_ext = extention;
 	}
 
 	@Override
-	public boolean accept(File dir, String name) {
-		return (name.endsWith(_ext));
+	public boolean accept(File pathname)
+	{
+		return pathname.getName().endsWith(_ext);
 	}
 }
