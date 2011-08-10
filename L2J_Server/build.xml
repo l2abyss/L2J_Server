@@ -195,7 +195,7 @@
 		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
 			<condition>
 				<not>
-					<contains string="${ant.version}" substring="1.8.2" />
+					<antversion atleast="1.8.2" />
 				</not>
 			</condition>
 		</fail>
