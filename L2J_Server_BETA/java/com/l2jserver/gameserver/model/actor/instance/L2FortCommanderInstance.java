@@ -133,7 +133,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 					if (npcString != null)
 					{
 						NpcSay ns = new NpcSay(getObjectId(), 1, getNpcId(), npcString);
-						if (npcString.getParamCount() == 0)
+						if (npcString.getParamCount() == 1)
 							ns.addStringParameter(attacker.getName());
 						
 						broadcastPacket(ns);
