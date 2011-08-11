@@ -14,6 +14,9 @@
  */
 package com.l2jserver.gameserver.model;
 
+import com.l2jserver.gameserver.network.NpcStringId;
+
+
 /**
  * 
  * @author Rayan RPG, JIV
@@ -24,14 +27,14 @@ public class L2NpcWalkerNode
 {
 	private int _routeId;
 	private String _chatString;
-	private int _npcString;
+	private NpcStringId _npcString;
 	private int _moveX;
 	private int _moveY;
 	private int _moveZ;
 	private int _delay;
 	private boolean _running;
 	
-	public L2NpcWalkerNode(int routeId, int npcString, String chatText, int moveX, int moveY, int moveZ, int delay, boolean running)
+	public L2NpcWalkerNode(int routeId, NpcStringId npcString, String chatText, int moveX, int moveY, int moveZ, int delay, boolean running)
 	{
 		super();
 		this._routeId = routeId;
@@ -51,7 +54,7 @@ public class L2NpcWalkerNode
 	
 	public String getChatText()
 	{
-		if (_npcString != -1)
+		if (_npcString != null)
 			throw new IllegalStateException("npcString is defined for walker route!");
 		return _chatString;
 	}
@@ -81,7 +84,7 @@ public class L2NpcWalkerNode
 		return _running;
 	}
 
-	public int getNpcString()
+	public NpcStringId getNpcString()
 	{
 		return _npcString;
 	}

@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -430,9 +431,9 @@ public class L2SepulcherNpcInstance extends L2Npc
 		}
 	}
 	
-	public void sayInShout(String msg)
+	public void sayInShout(NpcStringId msg)
 	{
-		if (msg == null || msg.isEmpty())
+		if (msg == null)
 			return;// wrong usage
 		
 		L2World.getInstance().forEachPlayer(new SayInShout(this, new CreatureSay(0, Say2.SHOUT, this.getName(), msg)));

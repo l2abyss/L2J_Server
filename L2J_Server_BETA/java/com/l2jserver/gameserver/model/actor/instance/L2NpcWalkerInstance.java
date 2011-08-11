@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.ai.L2NpcWalkerAI;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -69,10 +70,10 @@ public class L2NpcWalkerInstance extends L2Npc
 	 * Sends a chat to all _knowObjects
 	 * @param chat message to say
 	 */
-	public void broadcastChat(String chat, int npcString)
+	public void broadcastChat(String chat, NpcStringId npcString)
 	{
 		NpcSay cs;
-		if (npcString == -1)
+		if (npcString == null)
 			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), chat);
 		else
 			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), npcString);

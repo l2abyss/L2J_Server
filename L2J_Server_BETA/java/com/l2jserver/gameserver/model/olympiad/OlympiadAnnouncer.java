@@ -21,6 +21,7 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 
@@ -56,18 +57,18 @@ public final class OlympiadAnnouncer implements Runnable
 			task = OlympiadGameManager.getInstance().getOlympiadTask(_currentStadium);
 			if (task != null && task.getGame() != null && task.needAnnounce())
 			{
-				int npcString;
+				NpcStringId npcString;
 				final String arenaId = String.valueOf(task.getGame().getStadiumId() + 1);
 				switch (task.getGame().getType())
 				{
 					case NON_CLASSED:
-						npcString = 1300166; // "Olympiad class-free individual match is going to begin in Arena " + arenaId + " in a moment.";
+						npcString = NpcStringId.OLYMPIAD_CLASS_FREE_INDIVIDUAL_MATCH_IS_GOING_TO_BEGIN_IN_ARENA_S1_IN_A_MOMENT;
 						break;
 					case CLASSED:
-						npcString = 1300167; // "Olympiad class-specific individual match is going to begin in Arena " + arenaId + " in a moment.";
+						npcString = NpcStringId.OLYMPIAD_CLASS_INDIVIDUAL_MATCH_IS_GOING_TO_BEGIN_IN_ARENA_S1_IN_A_MOMENT;
 						break;
 					case TEAMS:
-						npcString = 1300132; // "Olympiad class-free team match is going to begin in Arena " + arenaId + " in a moment.";
+						npcString = NpcStringId.OLYMPIAD_CLASS_FREE_TEAM_MATCH_IS_GOING_TO_BEGIN_IN_ARENA_S1_IN_A_MOMENT;
 						break;
 					default:
 						continue;

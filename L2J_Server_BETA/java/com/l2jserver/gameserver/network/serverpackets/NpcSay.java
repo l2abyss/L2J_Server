@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.l2jserver.gameserver.network.NpcStringId;
+
 /**
  *
  * @author Kerberos
@@ -44,12 +46,12 @@ public final class NpcSay extends L2GameServerPacket
 		_text = text;
 	}
 	
-	public NpcSay(int objectId, int messageType, int npcId, int npcString)
+	public NpcSay(int objectId, int messageType, int npcId, NpcStringId npcString)
 	{
 		_objectId = objectId;
 		_textType = messageType;
 		_npcId = 1000000 + npcId;
-		_npcString = npcString;
+		_npcString = npcString.getId();
 	}
 	
 	/**

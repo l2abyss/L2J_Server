@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.NpcStringId;
+import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * This class ...
@@ -46,20 +48,28 @@ public final class CreatureSay extends L2GameServerPacket
 		_text = text;
 	}
 	
-	public CreatureSay(int objectId, int messageType, int charId, int npcString)
+	public CreatureSay(int objectId, int messageType, int charId, NpcStringId npcString)
 	{
 		_objectId = objectId;
 		_textType = messageType;
 		_charId = charId;
-		_npcString = npcString;
+		_npcString = npcString.getId();
 	}
 	
-	public CreatureSay(int objectId, int messageType, String charName, int npcString)
+	public CreatureSay(int objectId, int messageType, String charName, NpcStringId npcString)
 	{
 		_objectId = objectId;
 		_textType = messageType;
 		_charName = charName;
-		_npcString = npcString;
+		_npcString = npcString.getId();
+	}
+	
+	public CreatureSay(int objectId, int messageType, int charId, SystemMessageId sysString)
+	{
+		_objectId = objectId;
+		_textType = messageType;
+		_charId = charId;
+		_npcString = sysString.getId();
 	}
 	
 	/**
@@ -94,6 +104,7 @@ public final class CreatureSay extends L2GameServerPacket
 					writeS(s);
 			}
 		}
+
 	}
 	
 	@Override

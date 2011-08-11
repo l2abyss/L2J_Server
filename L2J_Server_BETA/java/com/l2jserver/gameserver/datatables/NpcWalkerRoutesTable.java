@@ -30,6 +30,7 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
+import com.l2jserver.gameserver.network.NpcStringId;
 
 /**
  * Main Table to Load Npc Walkers Routes and Chat SQL Table.<br>
@@ -96,7 +97,7 @@ public class NpcWalkerRoutesTable
 							int z = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
 							int delay = Integer.parseInt(attrs.getNamedItem("delay").getNodeValue());
 							String chatString = null;
-							int npcString = -1;
+							NpcStringId npcString = null;
 							Node node = attrs.getNamedItem("string");
 							if (node != null)
 								chatString = node.getNodeValue();
@@ -104,7 +105,27 @@ public class NpcWalkerRoutesTable
 							{
 								node = attrs.getNamedItem("npcString");
 								if (node != null)
-									npcString = Integer.parseInt(node.getNodeValue());
+								{
+									npcString = NpcStringId.getNpcStringId(node.getNodeValue());
+									if (npcString == null)
+									{
+										_log.log(Level.WARNING, "NpcWalkerRoutersTable: Unknown npcstring '" + node.getNodeValue() + ".");
+										continue;
+									}
+								}
+								else
+								{
+									node = attrs.getNamedItem("npcStringId");
+									if (node != null)
+									{
+										npcString = NpcStringId.getNpcStringId(Integer.parseInt(node.getNodeValue()));
+										if (npcString == null)
+										{
+											_log.log(Level.WARNING, "NpcWalkerRoutersTable: Unknown npcstring '" + node.getNodeValue() + ".");
+											continue;
+										}
+									}
+								}
 							}
 							
 							boolean running = Boolean.parseBoolean(attrs.getNamedItem("run").getNodeValue());

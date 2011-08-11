@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.l2jserver.gameserver.network.NpcStringId;
+
 /**
  * @author Kerberos
  *
@@ -53,7 +55,7 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_npcString = -1;
 	}
 	
-	public ExShowScreenMessage (int npcString, int position, int time) // For npcstring
+	public ExShowScreenMessage (NpcStringId npcString, int position, int time) // For npcstring
 	{
 		_type = 2;
 		_sysMessageId = -1;
@@ -66,21 +68,10 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_time = time;
 		_size = 0;
 		_effect = false;
-		_npcString = npcString;
+		_npcString = npcString.getId();
 	}
 	
-	/**
-	 * String parameter for argument S1,S2,.. in npcstring-e.dat
-	 * @param text
-	 */
-	public void addStringParameter(String text)
-	{
-		if (_parameters == null)
-			_parameters = new ArrayList<String>();
-		_parameters.add(text);
-	}
-	
-	/*public ExShowScreenMessage (int type, int messageId, int position, int unk1, int size, int unk2, int unk3,boolean showEffect, int time,boolean fade, String text, int npcString)
+	public ExShowScreenMessage (int type, int messageId, int position, int unk1, int size, int unk2, int unk3,boolean showEffect, int time,boolean fade, String text, NpcStringId npcString)
 	{
 		_type = type;
 		_sysMessageId = messageId;
@@ -93,8 +84,19 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_time = time;
 		_size = size;
 		_effect = showEffect;
-		_npcString = npcString;
-	}*/
+		_npcString = npcString.getId();
+	}
+	
+	/**
+	 * String parameter for argument S1,S2,.. in npcstring-e.dat
+	 * @param text
+	 */
+	public void addStringParameter(String text)
+	{
+		if (_parameters == null)
+			_parameters = new ArrayList<String>();
+		_parameters.add(text);
+	}
 	
 	@Override
 	public String getType()

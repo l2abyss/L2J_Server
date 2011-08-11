@@ -44,6 +44,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SepulcherMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SepulcherNpcInstance;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -1533,11 +1534,10 @@ public class FourSepulchersManager
 			
 			min = minuteSelect(min);
 			
-			String msg = min + " minute(s) have passed."; // now this is a
-			// proper message^^
+			NpcStringId msg = NpcStringId.MINUTES_HAVE_PASSED;
 			
 			if (min == 90)
-				msg = "Game over. The teleport will appear momentarily";
+				msg = NpcStringId.GAME_OVER_THE_TELEPORT_WILL_APPEAR_MOMENTARILY;
 			
 			for (L2Spawn temp : _managers)
 			{
@@ -1563,8 +1563,8 @@ public class FourSepulchersManager
 		
 		else if (_inEntryTime)
 		{
-			String msg1 = "You may now enter the Sepulcher";
-			String msg2 = "If you place your hand on the stone statue in front of each sepulcher," + " you will be able to enter";
+			NpcStringId msg1 = NpcStringId.YOU_MAY_NOW_ENTER_THE_SEPULCHER;
+			NpcStringId msg2 = NpcStringId.IF_YOU_PLACE_YOUR_HAND_ON_THE_STONE_STATUE_IN_FRONT_OF_EACH_SEPULCHER_YOU_WILL_BE_ABLE_TO_ENTER;
 			for (L2Spawn temp : _managers)
 			{
 				if (temp == null)
