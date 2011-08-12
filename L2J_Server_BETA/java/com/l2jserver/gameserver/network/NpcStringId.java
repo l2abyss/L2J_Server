@@ -21250,7 +21250,7 @@ public final class NpcStringId
 
 	/**
 	 * ID: 1900141<br>
-	 * Message: Lucky! If I eat too much adena, my wings disappear¦
+	 * Message: Lucky! If I eat too much adena, my wings disappear!
 	 */
 	public static final NpcStringId LUCKY_IF_I_EAT_TOO_MUCH_ADENA_MY_WINGS_DISAPPEAR;
 
@@ -21262,7 +21262,7 @@ public final class NpcStringId
 
 	/**
 	 * ID: 1900143<br>
-	 * Message: Grrrr... Yuck¦
+	 * Message: Grrrr... Yuck!
 	 */
 	public static final NpcStringId GRRRR_YUCK;
 
@@ -21454,7 +21454,7 @@ public final class NpcStringId
 
 	/**
 	 * ID: 1900175<br>
-	 * Message: Ugh I think this is it for me¦
+	 * Message: Ugh I think this is it for me!
 	 */
 	public static final NpcStringId UGH_I_THINK_THIS_IS_IT_FOR_ME;
 
