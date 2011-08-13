@@ -1686,11 +1686,10 @@ public class SevenSignsFestival implements SpawnListener
 	}
 	
 	/**
-	 * Used to send a "shout" message to all players currently present in an Oracle.
+	 * Used to send a "shout" message to all players currently present in an Oracle.<br>
 	 * Primarily used for Festival Guide and Witch related speech.
-	 *
 	 * @param senderName
-	 * @param message
+	 * @param npcString
 	 */
 	public void sendMessageToAll(String senderName, NpcStringId npcString)
 	{
@@ -1701,6 +1700,11 @@ public class SevenSignsFestival implements SpawnListener
 		sendMessageToAll(senderName, npcString, _duskChatGuide);
 	}
 	
+	/**
+	 * @param senderName
+	 * @param npcString
+	 * @param npc
+	 */
 	public void sendMessageToAll(String senderName, NpcStringId npcString, L2Npc npc)
 	{
 		CreatureSay cs = new CreatureSay(npc.getObjectId(), Say2.SHOUT, senderName, npcString);
@@ -1889,7 +1893,7 @@ public class SevenSignsFestival implements SpawnListener
 				for (L2DarknessFestival festivalInst : _festivalInstances.values())
 				{
 					festivalInst.festivalStart();
-					festivalInst.sendMessageToParticipants(NpcStringId.THE_MAIN_EVENT_IS_NOW_STARTING	);
+					festivalInst.sendMessageToParticipants(NpcStringId.THE_MAIN_EVENT_IS_NOW_STARTING);
 				}
 				
 				if (Config.DEBUG)

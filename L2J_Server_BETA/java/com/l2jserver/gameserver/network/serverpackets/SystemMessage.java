@@ -300,7 +300,7 @@ public final class SystemMessage extends L2GameServerPacket
 	 * @param type
 	 * @return
 	 */
-	public final SystemMessage addElemntal(final int type)
+	public final SystemMessage addElemental(final int type)
 	{
 		append(new SMParam(TYPE_ELEMENT_NAME, type));
 		return this;

@@ -211,9 +211,9 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 				else
 					sm = SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_POWER_S2_SUCCESSFULLY_ADDED_TO_S1);
 				sm.addItemName(item);
-				sm.addElemntal(realElement);
+				sm.addElemental(realElement);
 				if (item.isArmor())
-					sm.addElemntal(Elementals.getOppositeElement(realElement));
+					sm.addElemental(Elementals.getOppositeElement(realElement));
 			}
 			else
 			{
@@ -223,9 +223,9 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 					sm = SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_POWER_S3_SUCCESSFULLY_ADDED_TO_S1_S2);
 				sm.addNumber(item.getEnchantLevel());
 				sm.addItemName(item);
-				sm.addElemntal(realElement);
+				sm.addElemental(realElement);
 				if (item.isArmor())
-					sm.addElemntal(Elementals.getOppositeElement(realElement));
+					sm.addElemental(Elementals.getOppositeElement(realElement));
 			}
 			player.sendPacket(sm);
 			item.setElementAttr(elementToAdd, newPower);

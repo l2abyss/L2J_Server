@@ -56,8 +56,7 @@ import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 /**
- * This class manages AI of L2Attackable.<BR><BR>
- *
+ * This class manages AI of L2Attackable.
  */
 public class L2AttackableAI extends L2CharacterAI implements Runnable
 {
@@ -779,9 +778,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 
 		final int combinedCollision = collision + mostHate.getTemplate().collisionRadius;
 
-		if (_skillrender.hasSuesideSkill() && (int) ((npc.getCurrentHp() / npc.getMaxHp()) * 100) < 30)
+		if (_skillrender.hasSuicideSkill() && (int) ((npc.getCurrentHp() / npc.getMaxHp()) * 100) < 30)
 		{
-			L2Skill skill = _skillrender._suesideskills.get(Rnd.nextInt(_skillrender._suesideskills.size()));	
+			final L2Skill skill = _skillrender.getSuicideSkills().get(Rnd.nextInt(_skillrender.getSuicideSkills().size()));	
 			if (Util.checkIfInRange(skill.getSkillRadius(), getActiveChar(), mostHate, false) && Rnd.get(100) < Rnd.get(npc.getMinSkillChance(), npc.getMaxSkillChance()))
 			{
 				if (cast(skill))
@@ -790,7 +789,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else
 				{
-					for (L2Skill sk : _skillrender._suesideskills)
+					for (L2Skill sk : _skillrender.getSuicideSkills())
 					{
 						if (cast(sk))
 						{
@@ -1138,7 +1137,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 			}
 		}
-				
+		
 		//--------------------------------------------------------------------------------
 		// Starts Melee or Primary Skill
 		if (dist2 > range || !GeoData.getInstance().canSeeTarget(npc, mostHate))

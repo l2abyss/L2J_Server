@@ -98,7 +98,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public FastList<L2Skill> _Lrangeskills;
 	public FastList<L2Skill> _Srangeskills;
 	public FastList<L2Skill> _generalskills;
-	public FastList<L2Skill> _suesideskills;
+	private FastList<L2Skill> _suicideSkills;
 	
 	private boolean _hasbuffskills;
 	private boolean _hasnegativeskills;
@@ -120,7 +120,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	private boolean _hasLrangeskills;
 	private boolean _hasSrangeskills;
 	private boolean _hasgeneralskills;
-	private boolean _hassuesideskills;
+	private boolean _hasSuicideSkills;
 	
 	private L2NpcAIData _AIdataStatic = new L2NpcAIData();
 	
@@ -319,7 +319,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		{
 			if (skill.isSuicideAttack())
 			{
-				addSuesideSkill(skill);
+				addSuicideSkill(skill);
 			}
 			else
 			{
@@ -831,15 +831,14 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_hasgeneralskills=true;
 	}
 	
-	public void addSuesideSkill(L2Skill skill)
+	public void addSuicideSkill(L2Skill skill)
 	{
-		if (_suesideskills == null)
-			_suesideskills = new FastList<L2Skill>();
-		_suesideskills.add(skill);
+		if (_suicideSkills == null)
+			_suicideSkills = new FastList<L2Skill>();
+		_suicideSkills.add(skill);
 		
-		_hassuesideskills = true;
+		_hasSuicideSkills = true;
 	}
-	
 	
 	public void addRangeSkill(L2Skill skill)
 	{
@@ -987,8 +986,13 @@ public final class L2NpcTemplate extends L2CharTemplate
 		return (race == Race.UNDEAD);
 	}
 	
-	public boolean hasSuesideSkill()
+	public FastList<L2Skill> getSuicideSkills()
 	{
-		return _hassuesideskills;
+		return _suicideSkills;
+	}
+	
+	public boolean hasSuicideSkill()
+	{
+		return _hasSuicideSkills;
 	}
 }
