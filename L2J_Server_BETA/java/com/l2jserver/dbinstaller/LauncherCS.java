@@ -34,7 +34,7 @@ public class LauncherCS
 	public static void main(String[] args) throws IOException
 	{
 		String mode = "l2jcs";
-		String dir = "../cb_sql/";
+		String dir = "../sql/community/";
 		String cleanUp = "cs_cleanup.sql";
 		
 		try
