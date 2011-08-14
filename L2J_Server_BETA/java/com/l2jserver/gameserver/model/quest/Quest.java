@@ -75,6 +75,7 @@ public class Quest extends ManagedScript
 	private final String _descr;
 	private final byte _initialState = State.CREATED;
 	protected boolean _onEnterWorld = false;
+	private boolean _isCustom = false;
 	// NOTE: questItemIds will be overridden by child classes.  Ideally, it should be
 	// protected instead of public.  However, quest scripts written in Jython will
 	// have trouble with protected, as Jython only knows private and public...
@@ -110,7 +111,7 @@ public class Quest extends ManagedScript
 		
 		if (questId != 0)
 		{
-			QuestManager.getInstance().addQuest(Quest.this);
+			QuestManager.getInstance().addQuest(this);
 		}
 		else
 		{
@@ -1965,5 +1966,21 @@ public class Quest extends ManagedScript
 	public boolean getOnEnterWorld()
 	{
 		return _onEnterWorld;
+	}
+	
+	/**
+	 * @param val if true the quest script will be set as custom quest.
+	 */
+	public void setIsCustom(boolean val)
+	{
+		_isCustom = val;
+	}
+	
+	/**
+	 * @return true if the quest script is a custom quest.
+	 */
+	public boolean isCustomQuest()
+	{
+		return _isCustom;
 	}
 }
