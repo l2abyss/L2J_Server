@@ -1299,7 +1299,7 @@ public class L2Npc extends L2Character
 				if (player.isAcademyMember())
 					filename = (getHtmlPath(npcId, 1));
 				else
-					filename = (getHtmlPath(npcId, 0));
+					filename = (getHtmlPath(npcId, val));
 				break;
 			default:
 				if (npcId >= 31865 && npcId <= 31918)
