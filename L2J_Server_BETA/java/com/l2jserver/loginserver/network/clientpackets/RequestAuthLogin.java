@@ -34,7 +34,6 @@ import com.l2jserver.loginserver.network.serverpackets.LoginFail.LoginFailReason
 import com.l2jserver.loginserver.network.serverpackets.LoginOk;
 import com.l2jserver.loginserver.network.serverpackets.ServerList;
 
-
 /**
  * Format: x
  * 0 (a leading null)
@@ -89,32 +88,38 @@ public class RequestAuthLogin extends L2LoginClientPacket
 	public void run()
 	{
 		byte[] decrypted = null;
-		L2LoginClient client = getClient();
+		final L2LoginClient client = getClient();
 		try
 		{
-			Cipher rsaCipher = Cipher.getInstance("RSA/ECB/nopadding");
+			final Cipher rsaCipher = Cipher.getInstance("RSA/ECB/nopadding");
 			rsaCipher.init(Cipher.DECRYPT_MODE, client.getRSAPrivateKey());
-			decrypted = rsaCipher.doFinal(_raw, 0x00, 0x80 );
+			decrypted = rsaCipher.doFinal(_raw, 0x00, 0x80);
 		}
 		catch (GeneralSecurityException e)
 		{
-			_log.log(Level.INFO, "" , e);
+			_log.log(Level.INFO, "", e);
 			return;
 		}
 		
-		_user = new String(decrypted, 0x5E, 14 ).trim();
-		_user = _user.toLowerCase();
-		_password = new String(decrypted, 0x6C, 16).trim();
-		_ncotp = decrypted[0x7c];
-		_ncotp |= decrypted[0x7d] << 8;
-		_ncotp |= decrypted[0x7e] << 16;
-		_ncotp |= decrypted[0x7f] << 24;
+		try
+		{
+			_user = new String(decrypted, 0x5E, 14).trim().toLowerCase();
+			_password = new String(decrypted, 0x6C, 16).trim();
+			_ncotp = decrypted[0x7c];
+			_ncotp |= decrypted[0x7d] << 8;
+			_ncotp |= decrypted[0x7e] << 16;
+			_ncotp |= decrypted[0x7f] << 24;
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "", e);
+			return;
+		}
 		
-		LoginController lc = LoginController.getInstance();
+		final LoginController lc = LoginController.getInstance();
 		try
 		{
 			AuthLoginResult result = lc.tryAuthLogin(_user, _password, client);
-			
 			switch (result)
 			{
 				case AUTH_SUCCESS:
@@ -166,8 +171,8 @@ public class RequestAuthLogin extends L2LoginClientPacket
 		catch (HackingException e)
 		{
 			InetAddress address = getClient().getConnection().getInetAddress();
-			lc.addBanForAddress(address, Config.LOGIN_BLOCK_AFTER_BAN*1000);
-			_log.info("Banned ("+address+") for "+Config.LOGIN_BLOCK_AFTER_BAN+" seconds, due to "+e.getConnects()+" incorrect login attempts.");
+			lc.addBanForAddress(address, Config.LOGIN_BLOCK_AFTER_BAN * 1000);
+			_log.info("Banned (" + address + ") for " + Config.LOGIN_BLOCK_AFTER_BAN + " seconds, due to " + e.getConnects() + " incorrect login attempts.");
 		}
 	}
 }
