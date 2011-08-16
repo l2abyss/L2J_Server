@@ -55,6 +55,7 @@ public enum AbnormalEffect
 	REAL_TARGET("realtarget", 0x20000000),
 	DEATH_MARK("deathmark", 0x40000000),
 	SKULL_FEAR("skull_fear", 0x80000000),
+	ARCANE_SHIELD("arcane_shield", 0x8000),
 	//CONFUSED("confused", 0x0020),
 	
 	// special effects
@@ -81,7 +82,8 @@ public enum AbnormalEffect
 	E_HEADPHONE("headphone", 0x000010),
 	E_VESPER_1("vesper1", 0x000020),
 	E_VESPER_2("vesper2", 0x000040),
-	E_VESPER_3("vesper3", 0x000080);
+	E_VESPER_3("vesper3", 0x000080),
+	HUNTING_BONUS("hunting_bonus", 0x80000);
 	
 	private final int _mask;
 	private final String _name;
