@@ -6738,9 +6738,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1176<br>
-	 * Message: This is a quest event period.
+	 * Message: The SSQ Competition period is underway.
 	 */
-	public static final SystemMessageId QUEST_EVENT_PERIOD;
+	public static final SystemMessageId SSQ_COMPETITION_UNDERWAY;
 	
 	/**
 	 * ID: 1177<br>
@@ -15807,7 +15807,7 @@ public final class SystemMessageId
 		INNADRIL_BOAT_ARRIVE_10_MINUTES = new SystemMessageId(1173);
 		INNADRIL_BOAT_ARRIVE_5_MINUTES = new SystemMessageId(1174);
 		INNADRIL_BOAT_ARRIVE_1_MINUTE = new SystemMessageId(1175);
-		QUEST_EVENT_PERIOD = new SystemMessageId(1176);
+		SSQ_COMPETITION_UNDERWAY = new SystemMessageId(1176);
 		VALIDATION_PERIOD = new SystemMessageId(1177);
 		AVARICE_DESCRIPTION = new SystemMessageId(1178);
 		GNOSIS_DESCRIPTION = new SystemMessageId(1179);

@@ -22,12 +22,9 @@ import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.entity.Fort;
 
-
 /**
- *
- * Vice - 2008
  * Class managing periodical events with castle
- *
+ * @author Vice - 2008
  */
 public class FortUpdater implements Runnable
 {
@@ -91,5 +88,10 @@ public class FortUpdater implements Runnable
 		{
 			_log.log(Level.WARNING, "", e);
 		}
+	}
+	
+	public int getRunCount()
+	{
+		return _runCount;
 	}
 }
