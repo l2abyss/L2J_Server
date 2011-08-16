@@ -47,7 +47,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
 		
@@ -56,7 +56,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 			if (Config.DEBUG)
 				_log.fine("AutoSoulShot:" + _itemId);
 			
-			L2ItemInstance item = activeChar.getInventory().getItemByItemId(_itemId);
+			final L2ItemInstance item = activeChar.getInventory().getItemByItemId(_itemId);
 			if (item == null)
 				return;
 			
@@ -80,7 +80,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							{
 								if (activeChar.getPet().getSoulShotsPerHit() > item.getCount())
 								{
-									activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET));
+									activeChar.sendPacket(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET);
 									return;
 								}
 							}
@@ -88,7 +88,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							{
 								if (activeChar.getPet().getSpiritShotsPerHit() > item.getCount())
 								{
-									activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET));
+									activeChar.sendPacket(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET);
 									return;
 								}
 							}
@@ -103,7 +103,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							activeChar.rechargeAutoSoulShot(true, true, true);
 						}
 						else
-							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_SERVITOR_CANNOT_AUTOMATE_USE));
+							activeChar.sendPacket(SystemMessageId.NO_SERVITOR_CANNOT_AUTOMATE_USE);
 					}
 					else
 					{
@@ -116,9 +116,9 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 						else
 						{
 							if ((_itemId >= 2509 && _itemId <= 2514) || (_itemId >= 3947 && _itemId <= 3952) || _itemId == 5790 || (_itemId >= 22072 && _itemId <= 22081))
-								activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SPIRITSHOTS_GRADE_MISMATCH));
+								activeChar.sendPacket(SystemMessageId.SPIRITSHOTS_GRADE_MISMATCH);
 							else
-								activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SOULSHOTS_GRADE_MISMATCH));
+								activeChar.sendPacket(SystemMessageId.SOULSHOTS_GRADE_MISMATCH);
 							
 							activeChar.addAutoSoulShot(_itemId);
 							activeChar.sendPacket(new ExAutoSoulShot(_itemId, _type));

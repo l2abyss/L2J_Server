@@ -45,13 +45,13 @@ public final class RequestRecipeItemMakeSelf extends L2GameClientPacket
 		
 		if (activeChar.getPrivateStoreType() != 0)
 		{
-			activeChar.sendMessage("Cannot make items while trading");
+			activeChar.sendMessage("You cannot create items while trading.");
 			return;
 		}
 		
 		if (activeChar.isInCraftMode())
 		{
-			activeChar.sendMessage("Currently in Craft Mode");
+			activeChar.sendMessage("You are currently in Craft Mode.");
 			return;
 		}
 		

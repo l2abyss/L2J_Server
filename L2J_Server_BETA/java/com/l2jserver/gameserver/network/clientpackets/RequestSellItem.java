@@ -103,7 +103,7 @@ public final class RequestSellItem extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("buy"))
 		{
-			player.sendMessage("You buying too fast.");
+			player.sendMessage("You are buying too fast.");
 			return;
 		}
 		

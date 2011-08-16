@@ -15,10 +15,9 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.datatables.PetNameTable;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -28,7 +27,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestChangePetName extends L2GameClientPacket
 {
 	private static final String _C__93_REQUESTCHANGEPETNAME = "[C] 93 RequestChangePetName";
-	//private static Logger _log = Logger.getLogger(RequestChangePetName.class.getName());
 	
 	private String _name;
 	
@@ -41,33 +39,37 @@ public final class RequestChangePetName extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2Character activeChar = getClient().getActiveChar();
+		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		final L2Summon pet = activeChar.getPet();
 		if (pet == null)
+		{
 			return;
+		}
 		
 		if (pet.getName() != null)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NAMING_YOU_CANNOT_SET_NAME_OF_THE_PET));
+			activeChar.sendPacket(SystemMessageId.NAMING_YOU_CANNOT_SET_NAME_OF_THE_PET);
 			return;
 		}
 		else if (PetNameTable.getInstance().doesPetNameExist(_name, pet.getTemplate().npcId))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NAMING_ALREADY_IN_USE_BY_ANOTHER_PET));
+			activeChar.sendPacket(SystemMessageId.NAMING_ALREADY_IN_USE_BY_ANOTHER_PET);
 			return;
 		}
 		else if ((_name.length() < 3) || (_name.length() > 16))
 		{
-			//final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.NAMING_PETNAME_UP_TO_8CHARS);
+			//activeChar.sendPacket(SystemMessageId.NAMING_PETNAME_UP_TO_8CHARS);
 			activeChar.sendMessage("Your pet's name can be up to 16 characters in length.");
 			return;
 		}
 		else if (!PetNameTable.getInstance().isValidPetName(_name))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NAMING_PETNAME_CONTAINS_INVALID_CHARS));
+			activeChar.sendPacket(SystemMessageId.NAMING_PETNAME_CONTAINS_INVALID_CHARS);
 			return;
 		}
 		

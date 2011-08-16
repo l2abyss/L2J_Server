@@ -27,9 +27,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
-
 
 /**
  * This class ...
@@ -83,7 +81,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("withdraw"))
 		{
-			player.sendMessage("You withdrawing items too fast.");
+			player.sendMessage("You are withdrawing items too fast.");
 			return;
 		}
 		
@@ -99,7 +97,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		
 		if (!(warehouse instanceof PcWarehouse) && !player.getAccessLevel().allowTransaction())
 		{
-			player.sendMessage("Transactions are disable for your Access Level");
+			player.sendMessage("Transactions are disabled for your Access Level.");
 			return;
 		}
 		
@@ -117,8 +115,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		{
 			if (warehouse instanceof ClanWarehouse && !player.isClanLeader())
 			{
-				// this msg is for depositing but maybe good to send some msg?
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CAN_RETRIEVE_ITEMS_FROM_CLAN_WAREHOUSE));
+				player.sendPacket(SystemMessageId.ONLY_CLAN_LEADER_CAN_RETRIEVE_ITEMS_FROM_CLAN_WAREHOUSE);
 				return;
 			}
 		}
@@ -149,14 +146,14 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		// Item Max Limit Check
 		if (!player.getInventory().validateCapacity(slots))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
+			player.sendPacket(SystemMessageId.SLOTS_FULL);
 			return;
 		}
 		
 		// Weight limit Check
 		if (!player.getInventory().validateWeight(weight))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+			player.sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
 			return;
 		}
 		

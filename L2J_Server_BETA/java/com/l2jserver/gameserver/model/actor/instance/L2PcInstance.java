@@ -10232,7 +10232,7 @@ public final class L2PcInstance extends L2Playable
 		if (isInOlympiadMode()) { _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_PARTICIPATING_IN_THE_OLYMPIAD; return false; }
 		if (isCursedWeaponEquipped()) { _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_IN_A_CHAOTIC_STATE; return false; }
 		if (getPrivateStoreType() != STORE_PRIVATE_NONE) { _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_ENGAGED_IN_A_PRIVATE_STORE_OR_MANUFACTURE; return false; }
-		if (isMounted() || isInBoat()) { _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_RIDING_A_BOAT_WYVERN_OR_STRIDER; return false; }
+		if (isMounted() || isInBoat()) { _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_RIDING_A_BOAT_STEED_OR_STRIDER; return false; }
 		if (isFishing()) { _noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_FISHING; return false; }
 		if (isInsideZone(ZONE_PVP) || isInsideZone(ZONE_PEACE) || isInsideZone(ZONE_SIEGE))
 		{
@@ -12978,6 +12978,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _canFeed;
 	private int _eventEffectId = 0;
 	private boolean _isInSiege;
+	private boolean _isInHideoutSiege = false; //TODO: Implement it.
 	
 	public TimeStamp[] getReuseTimeStamps()
 	{
@@ -13691,6 +13692,16 @@ public final class L2PcInstance extends L2Playable
 	public boolean isInSiege()
 	{
 		return _isInSiege;
+	}
+	
+	public void setisInHideoutSiege(boolean isInHideoutSiege)
+	{
+		_isInHideoutSiege = isInHideoutSiege;
+	}
+	
+	public boolean isInHideoutSiege()
+	{
+		return _isInHideoutSiege;
 	}
 	
 	public FloodProtectors getFloodProtectors()

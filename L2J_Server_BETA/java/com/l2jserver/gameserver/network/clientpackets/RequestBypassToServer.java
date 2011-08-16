@@ -182,6 +182,16 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				else
 					CommunityBoard.getInstance().handleCommands(getClient(), _command);
 			}
+			else if (_command.startsWith("bbs"))
+			{
+				if (Config.ENABLE_COMMUNITY_BOARD)
+				{
+					if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), _command)))
+						activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
+				}
+				else
+					CommunityBoard.getInstance().handleCommands(getClient(), _command);
+			}
 			else if (_command.startsWith("_mail"))
 			{
 				if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), "_bbsmail")))

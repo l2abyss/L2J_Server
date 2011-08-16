@@ -47,7 +47,7 @@ public final class RequestBidItemAuction extends L2GameClientPacket
 		// can't use auction fp here
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("auction"))
 		{
-			activeChar.sendMessage("You bidding too fast.");
+			activeChar.sendMessage("You are bidding too fast.");
 			return;
 		}
 		

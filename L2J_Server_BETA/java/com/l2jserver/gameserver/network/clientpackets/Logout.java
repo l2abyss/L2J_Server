@@ -78,7 +78,7 @@ public final class Logout extends L2GameClientPacket
 		
 		if(L2Event.isParticipant(player))
 		{
-			player.sendMessage("A superior power doesn't allow you to leave the event");
+			player.sendMessage("A superior power doesn't allow you to leave the event.");
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -90,14 +90,14 @@ public final class Logout extends L2GameClientPacket
 		{
 			if (SevenSignsFestival.getInstance().isFestivalInitialized())
 			{
-				player.sendMessage("You cannot log out while you are a participant in a festival.");
+				player.sendMessage("You cannot log out while you are a participant in a Festival.");
 				player.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 			final L2Party playerParty = player.getParty();
 			
 			if (playerParty != null)
-				player.getParty().broadcastToPartyMembers(SystemMessage.sendString(player.getName() + " has been removed from the upcoming festival."));
+				player.getParty().broadcastToPartyMembers(SystemMessage.sendString(player.getName() + " has been removed from the upcoming Festival."));
 		}
 		
 		// Remove player from Boss Zone

@@ -40,7 +40,6 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
-
 /**
  * This class ...
  *
@@ -89,7 +88,7 @@ public final class UseItem extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
 		
@@ -102,20 +101,18 @@ public final class UseItem extends L2GameClientPacket
 		
 		if (activeChar.getPrivateStoreType() != 0)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
+			activeChar.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
-		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
+		final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		if (item == null)
 			return;
 		
 		if (item.getItem().getType2() == L2Item.TYPE2_QUEST)
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CANNOT_USE_QUEST_ITEMS);
-			activeChar.sendPacket(sm);
-			sm = null;
+			activeChar.sendPacket(SystemMessageId.CANNOT_USE_QUEST_ITEMS);
 			return;
 		}
 		
@@ -132,10 +129,9 @@ public final class UseItem extends L2GameClientPacket
 		// Char cannot use item when dead
 		if (activeChar.isDead())
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addItemName(item);
-			getClient().getActiveChar().sendPacket(sm);
-			sm = null;
+			activeChar.sendPacket(sm);
 			return;
 		}
 		
@@ -153,9 +149,7 @@ public final class UseItem extends L2GameClientPacket
 		if (activeChar.isFishing() && (_itemId < 6535 || _itemId > 6540))
 		{
 			// You cannot do anything else while fishing
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DO_WHILE_FISHING_3);
-			getClient().getActiveChar().sendPacket(sm);
-			sm = null;
+			activeChar.sendPacket(SystemMessageId.CANNOT_DO_WHILE_FISHING_3);
 			return;
 		}
 
@@ -182,13 +176,16 @@ public final class UseItem extends L2GameClientPacket
 			// Don't allow hero equipment and restricted items during Olympiad
 			if (activeChar.isInOlympiadMode() && (item.isHeroItem() || item.isOlyRestrictedItem()))
 			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT));
+				activeChar.sendPacket(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT);
 				return;
 			}
 			
-			if (activeChar.isCursedWeaponEquipped() && _itemId == 6408) // Don't allow to put formal wear
+			// Don't allow to put formal wear while a cursed weapon is equipped.
+			if (activeChar.isCursedWeaponEquipped() && _itemId == 6408)
+			{
 				return;
-				
+			}
+			
 			// Equip or unEquip
 			if (FortSiegeManager.getInstance().isCombat(item.getItemId()))
 				return;	//no message
@@ -204,27 +201,27 @@ public final class UseItem extends L2GameClientPacket
 					// prevent players to equip weapon while wearing combat flag
 					if (activeChar.getActiveWeaponItem() != null && activeChar.getActiveWeaponItem().getItemId() == 9819)
 					{
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
 					}
 					// Prevent player to remove the weapon on special conditions
 					if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
 					{
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_USE_ITEM_WHILE_USING_MAGIC));
+						activeChar.sendPacket(SystemMessageId.CANNOT_CHANGE_WEAPON_DURING_AN_ATTACK);
 						return;
 					}
 					if (activeChar.isMounted())
 					{
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
 					}
 					if (activeChar.isDisarmed())
 					{
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
 					}
 					
-					// Don't allow weapon/shield equipment if a cursed weapon is equiped
+					// Don't allow weapon/shield equipment if a cursed weapon is equipped.
 					if (activeChar.isCursedWeaponEquipped())
 						return;
 					
@@ -240,7 +237,7 @@ public final class UseItem extends L2GameClientPacket
 								switch (wpn.getItemType())
 								{
 									case NONE:
-										activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+										activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 										return;
 								}
 								break;
@@ -256,7 +253,7 @@ public final class UseItem extends L2GameClientPacket
 									case RAPIER:
 									case CROSSBOW:
 									case ANCIENTSWORD:
-										activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+										activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 										return;
 								}
 								break;
@@ -277,7 +274,7 @@ public final class UseItem extends L2GameClientPacket
 							(item.getItem().getItemType() == L2ArmorType.HEAVY
 									||item.getItem().getItemType() == L2ArmorType.MAGIC))
 					{
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
 					}
 					break;
@@ -286,7 +283,7 @@ public final class UseItem extends L2GameClientPacket
 				{
 					if (!item.isEquipped() && activeChar.getInventory().getMaxTalismanCount() == 0)
 					{
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
 					}
 				}
@@ -316,7 +313,7 @@ public final class UseItem extends L2GameClientPacket
 			{
 				activeChar.getInventory().setPaperdollItem(Inventory.PAPERDOLL_LHAND, item);
 				activeChar.broadcastUserInfo();
-				// Send a Server->Client packet ItemList to this L2PcINstance to update left hand equipement
+				// Send a Server->Client packet ItemList to this L2PcINstance to update left hand equipment.
 				sendPacket(new ItemList(activeChar, false));
 				return;
 			}

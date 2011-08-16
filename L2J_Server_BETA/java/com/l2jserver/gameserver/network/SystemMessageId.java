@@ -33,7 +33,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- *
  * @author  Noctarius & Nille02 & crion ^ Forsaiken
  */
 public final class SystemMessageId
@@ -651,9 +650,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 104<br>
-	 * Message: You may not equip items while casting or performing a skill.
+	 * Message: You cannot change weapons during an attack.
 	 */
-	public static final SystemMessageId CANNOT_USE_ITEM_WHILE_USING_MAGIC;
+	public static final SystemMessageId CANNOT_CHANGE_WEAPON_DURING_AN_ATTACK;
 	
 	/**
 	 * ID: 105<br>
@@ -6425,7 +6424,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1124<br>
-	 * Message: A recipe book may not be used while using a skill.
+	 * Message: Your recipe book may not be accessed while using a skill.
 	 */
 	public static final SystemMessageId NO_RECIPE_BOOK_WHILE_CASTING;
 	
@@ -11866,9 +11865,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2027<br>
-	 * Message: $c1 cannot duel because $c1 is currently riding a boat, wyvern, or strider.
+	 * Message: $c1 cannot duel because $c1 is currently riding a boat, steed, or strider.
 	 */
-	public static final SystemMessageId C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_RIDING_A_BOAT_WYVERN_OR_STRIDER;
+	public static final SystemMessageId C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_RIDING_A_BOAT_STEED_OR_STRIDER;
 	
 	/**
 	 * ID: 2028<br>
@@ -14430,7 +14429,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 3028<br>
-	 * Message: "You cannot use the skill enhancing function in this class. You can use the skill enhancing function under off-battle status, and cannot use the function while transforming, battling and on-board.
+	 * Message: You cannot use the skill enhancing function in this class. You can use the skill enhancing function under off-battle status, and cannot use the function while transforming, battling and on-board.
 	 */
 	public static final SystemMessageId YOU_CANNOT_USE_SKILL_ENCHANT_ATTACKING_TRANSFORMED_BOAT;
 	
@@ -14561,6 +14560,12 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_CANNOT_SEND_MAIL_TO_CHAR_BLOCK_YOU;
 	
 	/**
+	 * ID: 3094<br>
+	 * Message: A user currently participating in the Olympiad cannot send party and friend invitations.
+	 */
+	public static final SystemMessageId A_USER_CURRENTLY_PARTICIPATING_IN_THE_OLYMPIAD_CANNOT_SEND_PARTY_AND_FRIEND_INVITATIONS;
+	
+	/**
 	 * ID: 3108<br>
 	 * Message: You are no longer protected from aggressive monsters.
 	 */
@@ -14585,8 +14590,80 @@ public final class SystemMessageId
 	public static final SystemMessageId COUPLE_ACTION_CANCELED;
 	
 	/**
+	 * ID: 3122<br>
+	 * Message: The size of the uploaded crest or insignia does not meet the standard requirements.
+	 */
+	public static final SystemMessageId WRONG_SIZE_UPLOADED_CREST;
+	
+	/**
+	 * ID: 3123<br>
+	 * Message: $c1 is in Private Shop mode or in a battle and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_IN_PRIVATE_SHOP_MODE_OR_IN_A_BATTLE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3124<br>
+	 * Message: $c1 is fishing and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_FISHING_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3125<br>
+	 * Message: $c1 is in a battle and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_IN_A_BATTLE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3126<br>
+	 * Message: $c1 is already participating in a couple action and cannot be requested for another couple action.
+	 */
+	public static final SystemMessageId C1_IS_ALREADY_PARTICIPATING_IN_A_COUPLE_ACTION_AND_CANNOT_BE_REQUESTED_FOR_ANOTHER_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3127<br>
+	 * Message: $c1 is in a chaotic state and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_IN_A_CHAOTIC_STATE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3128<br>
+	 * Message: $c1 is participating in the Olympiad and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_PARTICIPATING_IN_THE_OLYMPIAD_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3129<br>
+	 * Message: $c1 is participating in a hideout siege and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_PARTICIPATING_IN_A_HIDEOUT_SIEGE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3130<br>
+	 * Message: $c1 is in a castle siege and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_IN_A_CASTLE_SIEGE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3131<br>
+	 * Message: $c1 is riding a ship, steed, or strider and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_RIDING_A_SHIP_STEED_OR_STRIDER_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3132<br>
+	 * Message: $c1 is currently teleporting and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_CURRENTLY_TELEPORTING_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
+	 * ID: 3133<br>
+	 * Message: $c1 is currently transforming and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_CURRENTLY_TRANSFORMING_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
 	 * ID: 3135<br>
-	 * Message: "Requesting approval for changing party loot to ""$s1""."
+	 * Message: Requesting approval for changing party loot to "$s1".
 	 */
 	public static final SystemMessageId REQUESTING_APPROVAL_CHANGE_PARTY_LOOT_S1;
 	
@@ -14595,16 +14672,22 @@ public final class SystemMessageId
 	 * Message: Party loot change was cancelled.
 	 */
 	public static final SystemMessageId PARTY_LOOT_CHANGE_CANCELLED;
-	
+
 	/**
 	 * ID: 3138<br>
-	 * Message: "Party loot was changed to ""$s1""."
+	 * Message: Party loot was changed to "$s1".
 	 */
 	public static final SystemMessageId PARTY_LOOT_CHANGED_S1;
 	
 	/**
+	 * ID: 3139<br>
+	 * Message: $c1 is currently dead and cannot be requested for a couple action.
+	 */
+	public static final SystemMessageId C1_IS_CURRENTLY_DEAD_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
+	
+	/**
 	 * ID: 3144<br>
-	 * Message: "The $s2's attribute was successfully bestowed on $s1, and resistance to $s3 was increased."
+	 * Message: The $s2's attribute was successfully bestowed on $s1, and resistance to $s3 was increased.
 	 */
 	public static final SystemMessageId THE_S2_ATTRIBUTE_WAS_SUCCESSFULLY_BESTOWED_ON_S1_RES_TO_S3_INCREASED;
 	
@@ -14616,7 +14699,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 3152<br>
-	 * Message:	"$s1's $s2 attribute was removed, and resistance to $s3 was decreased."
+	 * Message:	$s1's $s2 attribute was removed, and resistance to $s3 was decreased.
 	 */
 	public static final SystemMessageId S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED;
 	
@@ -14628,18 +14711,18 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 3160<br>
-	 * Message: "+$s1$s2's $s3 attribute was removed, so resistance to $s4 was decreased."
+	 * Message: +$s1$s2's $s3 attribute was removed, so resistance to $s4 was decreased.
 	 */
 	public static final SystemMessageId S1_S2_S3_ATTRIBUTE_REMOVED_RESISTANCE_TO_S4_DECREASED;
 	
 	/**
 	 * ID: 3163<br>
-	 * Message: "The $s3's attribute was successfully bestowed on +$s1$s2, and resistance to $s4 was increased."
+	 * Message: The $s3's attribute was successfully bestowed on +$s1$s2, and resistance to $s4 was increased.
 	 */
 	public static final SystemMessageId THE_S3_ATTRIBUTE_BESTOWED_ON_S1_S2_RESISTANCE_TO_S4_INCREASED;
 	
 	/**
-	 * ID: 3164<be>
+	 * ID: 3164<br>
 	 * Message: $c1 is set to refuse couple actions and cannot be requested for a couple action.
 	 */
 	public static final SystemMessageId C1_IS_SET_TO_REFUSE_COUPLE_ACTIONS;
@@ -14855,7 +14938,7 @@ public final class SystemMessageId
 		CANT_LOGOUT_WHILE_FIGHTING = new SystemMessageId(101);
 		CANT_RESTART_WHILE_FIGHTING = new SystemMessageId(102);
 		ID_LOGGED_IN = new SystemMessageId(103);
-		CANNOT_USE_ITEM_WHILE_USING_MAGIC = new SystemMessageId(104);
+		CANNOT_CHANGE_WEAPON_DURING_AN_ATTACK = new SystemMessageId(104);
 		C1_INVITED_TO_PARTY = new SystemMessageId(105);
 		YOU_JOINED_S1_PARTY = new SystemMessageId(106);
 		C1_JOINED_PARTY = new SystemMessageId(107);
@@ -16704,7 +16787,7 @@ public final class SystemMessageId
 		C1_CANNOT_DUEL_BECAUSE_C1_IS_PARTICIPATING_IN_THE_OLYMPIAD = new SystemMessageId(2024);
 		C1_CANNOT_DUEL_BECAUSE_C1_IS_PARTICIPATING_IN_A_CLAN_HALL_WAR = new SystemMessageId(2025);
 		C1_CANNOT_DUEL_BECAUSE_C1_IS_PARTICIPATING_IN_A_SIEGE_WAR = new SystemMessageId(2026);
-		C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_RIDING_A_BOAT_WYVERN_OR_STRIDER = new SystemMessageId(2027);
+		C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_RIDING_A_BOAT_STEED_OR_STRIDER = new SystemMessageId(2027);
 		C1_CANNOT_RECEIVE_A_DUEL_CHALLENGE_BECAUSE_C1_IS_TOO_FAR_AWAY = new SystemMessageId(2028);
 		C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_DURING_TELEPORT = new SystemMessageId(2029);
 		CURRENTLY_LOGGING_IN = new SystemMessageId(2030);
@@ -17148,13 +17231,27 @@ public final class SystemMessageId
 		CANNOT_RESET_SKILL_LINK_BECAUSE_NOT_ENOUGH_ADENA = new SystemMessageId(3080);
 		YOU_CANNOT_RECEIVE_CONDITION_OPPONENT_CANT_ACQUIRE_ADENA = new SystemMessageId(3081);
 		YOU_CANNOT_SEND_MAIL_TO_CHAR_BLOCK_YOU = new SystemMessageId(3082);
+		A_USER_CURRENTLY_PARTICIPATING_IN_THE_OLYMPIAD_CANNOT_SEND_PARTY_AND_FRIEND_INVITATIONS = new SystemMessageId(3094);
 		YOU_ARE_NO_LONGER_PROTECTED_FROM_AGGRESSIVE_MONSTERS = new SystemMessageId(3108);
 		COUPLE_ACTION_DENIED = new SystemMessageId(3119);
 		TARGET_DO_NOT_MEET_LOC_REQUIREMENTS = new SystemMessageId(3120);
 		COUPLE_ACTION_CANCELED = new SystemMessageId(3121);
+		WRONG_SIZE_UPLOADED_CREST = new SystemMessageId(3122);
+		C1_IS_IN_PRIVATE_SHOP_MODE_OR_IN_A_BATTLE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3123);
+		C1_IS_FISHING_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3124);
+		C1_IS_IN_A_BATTLE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3125);
+		C1_IS_ALREADY_PARTICIPATING_IN_A_COUPLE_ACTION_AND_CANNOT_BE_REQUESTED_FOR_ANOTHER_COUPLE_ACTION = new SystemMessageId(3126);
+		C1_IS_IN_A_CHAOTIC_STATE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3127);
+		C1_IS_PARTICIPATING_IN_THE_OLYMPIAD_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3128);
+		C1_IS_PARTICIPATING_IN_A_HIDEOUT_SIEGE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3129);
+		C1_IS_IN_A_CASTLE_SIEGE_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3130);
+		C1_IS_RIDING_A_SHIP_STEED_OR_STRIDER_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3131);
+		C1_IS_CURRENTLY_TELEPORTING_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3132);
+		C1_IS_CURRENTLY_TRANSFORMING_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3133);
 		REQUESTING_APPROVAL_CHANGE_PARTY_LOOT_S1 = new SystemMessageId(3135);
 		PARTY_LOOT_CHANGE_CANCELLED = new SystemMessageId(3137);
 		PARTY_LOOT_CHANGED_S1 = new SystemMessageId(3138);
+		C1_IS_CURRENTLY_DEAD_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3139);
 		THE_S2_ATTRIBUTE_WAS_SUCCESSFULLY_BESTOWED_ON_S1_RES_TO_S3_INCREASED = new SystemMessageId(3144);
 		YOU_HAVE_REQUESTED_COUPLE_ACTION_C1 = new SystemMessageId(3150);
 		S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED = new SystemMessageId(3152);

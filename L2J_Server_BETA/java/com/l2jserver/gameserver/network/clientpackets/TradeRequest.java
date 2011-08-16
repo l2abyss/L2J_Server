@@ -28,7 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- *
  * This class ...
  *
  * @version $Revision: 1.2.2.1.2.3 $ $Date: 2005/03/27 15:29:30 $
@@ -55,7 +54,7 @@ public final class TradeRequest extends L2GameClientPacket
 		
 		if (!player.getAccessLevel().allowTransaction())
 		{
-			player.sendMessage("Transactions are disable for your Access Level");
+			player.sendMessage("Transactions are disabled for your current Access Level.");
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -63,13 +62,13 @@ public final class TradeRequest extends L2GameClientPacket
 		L2Object target = L2World.getInstance().findObject(_objectId);
 		if (target == null || !player.getKnownList().knowsObject(target) || !(target instanceof L2PcInstance))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INCORRECT_TARGET));
+			player.sendPacket(SystemMessageId.INCORRECT_TARGET);
 			return;
 		}
 		
 		if (target.getObjectId() == player.getObjectId())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+			player.sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 			return;
 		}
 		
@@ -81,42 +80,49 @@ public final class TradeRequest extends L2GameClientPacket
 		
 		if (partner.isInOlympiadMode() || player.isInOlympiadMode())
 		{
-			player.sendMessage("You or your target cant request trade in Olympiad mode");
+			player.sendMessage("A user currently participating in the Olympiad cannot accept or request a trade.");
 			return;
 		}
 		
 		// Alt game - Karma punishment
-		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && (player.getKarma() > 0 || partner.getKarma() > 0))
+		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && (player.getKarma() > 0))
 		{
-			player.sendMessage("Chaotic players can't use Trade.");
+			player.sendMessage("You cannot trade while you are in a chaotic state.");
+			return;
+		}
+		
+		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && (partner.getKarma() > 0))
+		{
+			player.sendMessage("You cannot request a trade while your target is in a chaotic state.");
 			return;
 		}
 		
 		if (Config.JAIL_DISABLE_TRANSACTION && (player.isInJail() || partner.isInJail()))
 		{
-			player.sendMessage("You cannot trade in Jail.");
+			player.sendMessage("You cannot trade while you are in in Jail.");
 			return;
 		}
 		
 		if (player.getPrivateStoreType() != 0 || partner.getPrivateStoreType() != 0)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
+			player.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			return;
 		}
 		
 		if (player.isProcessingTransaction())
 		{
 			if (Config.DEBUG)
-				_log.fine("already trading with someone");
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_TRADING));
+				_log.fine("Already trading with someone else.");
+			player.sendPacket(SystemMessageId.ALREADY_TRADING);
 			return;
 		}
 		
+		SystemMessage sm;
 		if (partner.isProcessingRequest() || partner.isProcessingTransaction())
 		{
 			if (Config.DEBUG)
-				_log.info("transaction already in progress.");
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
+				_log.info("Transaction already in progress.");
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
 			sm.addString(partner.getName());
 			player.sendPacket(sm);
 			return;
@@ -124,13 +130,13 @@ public final class TradeRequest extends L2GameClientPacket
 		
 		if (partner.getTradeRefusal())
 		{
-			player.sendMessage("Target is in trade refusal mode");
+			player.sendMessage("That person is in trade refusal mode.");
 			return;
 		}
 		
 		if (BlockList.isBlocked(partner, player))
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_ADDED_YOU_TO_IGNORE_LIST);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_ADDED_YOU_TO_IGNORE_LIST);
 			sm.addCharName(partner);
 			player.sendPacket(sm);
 			return;
@@ -138,13 +144,13 @@ public final class TradeRequest extends L2GameClientPacket
 		
 		if (Util.calculateDistance(player, partner, true) > 150)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_TOO_FAR));
+			player.sendPacket(SystemMessageId.TARGET_TOO_FAR);
 			return;
 		}
 		
 		player.onTransactionRequest(partner);
 		partner.sendPacket(new SendTradeRequest(player.getObjectId()));
-		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.REQUEST_C1_FOR_TRADE);
+		sm = SystemMessage.getSystemMessage(SystemMessageId.REQUEST_C1_FOR_TRADE);
 		sm.addString(partner.getName());
 		player.sendPacket(sm);
 	}

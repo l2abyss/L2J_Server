@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -35,7 +34,6 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 	private static Logger _log = Logger.getLogger(RequestGetItemFromPet.class.getName());
 	
 	private int _objectId;
-	
 	private long _amount;
 	
 	@Override
@@ -48,53 +46,55 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance player = getClient().getActiveChar();
-		if (player == null || !(player.getPet() instanceof L2PetInstance))
+		final L2PcInstance player = getClient().getActiveChar();
+		if ((player == null) || !(player.getPet() instanceof L2PetInstance))
+		{
 			return;
+		}
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("giveitemtopet"))
 		{
-			player.sendMessage("You give items to pet too fast.");
+			player.sendMessage("You are giving items to pet too fast.");
 			return;
 		}
 		
 		if (player.getActiveEnchantItem() != null)
-			return;
-		// Alt game - Karma punishment
-		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && player.getKarma() > 0)
-			return;
-		
-		if (player.getPrivateStoreType() != 0)
 		{
-			player.sendMessage("Cannot exchange items while trading");
+			return;
+		}
+		// Alt game - Karma punishment
+		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && (player.getKarma() > 0))
+		{
 			return;
 		}
 		
-		// Exploit Fix for Hero weapons Uses pet Inventory to buy New One.
-		// [L2JOneo]
+		if (player.getPrivateStoreType() != 0)
+		{
+			player.sendMessage("You cannot exchange items while trading.");
+			return;
+		}
+		
 		final L2ItemInstance item = player.getInventory().getItemByObjectId(_objectId);
 		if (item == null)
-			return;
-		
-		if (item.isHeroItem())
 		{
-			player.sendMessage("Duo To Hero Weapons Protection u Canot Use Pet's Inventory");
 			return;
 		}
 		
 		if (item.isAugmented())
-			return;
-		
-		if (!item.isDropable() || !item.isDestroyable() || !item.isTradeable())
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_NOT_FOR_PETS));
+			return;
+		}
+		
+		if (item.isHeroItem() || !item.isDropable() || !item.isDestroyable() || !item.isTradeable())
+		{
+			player.sendPacket(SystemMessageId.ITEM_NOT_FOR_PETS);
 			return;
 		}
 		
 		final L2PetInstance pet = (L2PetInstance) player.getPet();
 		if (pet.isDead())
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_GIVE_ITEMS_TO_DEAD_PET));
+			player.sendPacket(SystemMessageId.CANNOT_GIVE_ITEMS_TO_DEAD_PET);
 			return;
 		}
 		
@@ -102,14 +102,16 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 		{
 			return;
 		}
+		
 		if (!pet.getInventory().validateCapacity(item))
 		{
-			pet.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS));
+			player.sendPacket(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS);
 			return;
 		}
-		if (!pet.getInventory().validateWeight(item,_amount))
+		
+		if (!pet.getInventory().validateWeight(item, _amount))
 		{
-			pet.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.UNABLE_TO_PLACE_ITEM_YOUR_PET_IS_TOO_ENCUMBERED));
+			player.sendPacket(SystemMessageId.UNABLE_TO_PLACE_ITEM_YOUR_PET_IS_TOO_ENCUMBERED);
 			return;
 		}
 		

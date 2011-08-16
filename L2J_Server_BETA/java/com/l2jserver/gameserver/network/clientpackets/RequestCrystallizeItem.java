@@ -64,7 +64,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("crystallize"))
 		{
-			activeChar.sendMessage("You crystallizing too fast.");
+			activeChar.sendMessage("You are crystallizing too fast.");
 			return;
 		}
 		
@@ -76,14 +76,14 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		
 		if (activeChar.getPrivateStoreType() != 0 || activeChar.isInCrystallize())
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
+			activeChar.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			return;
 		}
 		
 		int skillLevel = activeChar.getSkillLevel(L2Skill.SKILL_CRYSTALLIZE);
 		if (skillLevel <= 0)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRYSTALLIZE_LEVEL_TOO_LOW));
+			activeChar.sendPacket(SystemMessageId.CRYSTALLIZE_LEVEL_TOO_LOW);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			if (activeChar.getRace() != Race.Dwarf && activeChar.getClassId().ordinal() != 117 && activeChar.getClassId().ordinal() != 55)
 				_log.info("Player "+activeChar.getClient()+" used crystalize with classid: "+activeChar.getClassId().ordinal());
@@ -123,7 +123,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		
 		if (!activeChar.getInventory().canManipulateWithItemId(itemToRemove.getItemId()))
 		{
-			activeChar.sendMessage("Cannot use this item.");
+			activeChar.sendMessage("You cannot use this item.");
 			return;
 		}
 		
@@ -160,7 +160,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		
 		if (!canCrystallize)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRYSTALLIZE_LEVEL_TOO_LOW));
+			activeChar.sendPacket(SystemMessageId.CRYSTALLIZE_LEVEL_TOO_LOW);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -168,6 +168,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		activeChar.setInCrystallize(true);
 		
 		// unequip if needed
+		SystemMessage sm;
 		if (itemToRemove.isEquipped())
 		{
 			L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(itemToRemove.getLocationSlot());
@@ -176,19 +177,18 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 				iu.addModifiedItem(item);
 			activeChar.sendPacket(iu);
 			
-			SystemMessage msg;
 			if (itemToRemove.getEnchantLevel() > 0)
 			{
-				msg = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-				msg.addNumber(itemToRemove.getEnchantLevel());
-				msg.addItemName(itemToRemove);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+				sm.addNumber(itemToRemove.getEnchantLevel());
+				sm.addItemName(itemToRemove);
 			}
 			else
 			{
-				msg = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
-				msg.addItemName(itemToRemove);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
+				sm.addItemName(itemToRemove);
 			}
-			activeChar.sendPacket(msg);
+			activeChar.sendPacket(sm);
 		}
 		
 		// remove from inventory
@@ -203,7 +203,6 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		int crystalAmount = itemToRemove.getCrystalCount();
 		L2ItemInstance createditem = activeChar.getInventory().addItem("Crystalize", crystalId, crystalAmount, activeChar, activeChar);
 		
-		SystemMessage sm;
 		sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CRYSTALLIZED);
 		sm.addItemName(removedItem);
 		activeChar.sendPacket(sm);

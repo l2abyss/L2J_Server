@@ -92,7 +92,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
 		
 		if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
 		{
-			activeChar.sendMessage("Cannot use this item.");
+			activeChar.sendMessage("You cannot use this item.");
 			return;
 		}
 		
@@ -131,7 +131,6 @@ public class RequestUnEquipItem extends L2GameClientPacket
 				sm.addItemName(unequiped[0]);
 			}
 			activeChar.sendPacket(sm);
-			sm = null;
 		}
 	}
 	

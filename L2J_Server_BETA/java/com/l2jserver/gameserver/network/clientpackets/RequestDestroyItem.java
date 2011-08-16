@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -68,7 +67,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("destroy"))
 		{
-			activeChar.sendMessage("You destroying items too fast.");
+			activeChar.sendMessage("You are destroying items too fast.");
 			return;
 		}
 		
@@ -76,7 +75,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		if (activeChar.isProcessingTransaction() || activeChar.getPrivateStoreType() != 0)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE));
+			activeChar.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			return;
 		}
 		
@@ -84,7 +83,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		// if we can't find the requested item, its actually a cheat
 		if (itemToRemove == null)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+			activeChar.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM);
 			return;
 		}
 		
@@ -93,7 +92,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		{
 			if (activeChar.getCurrentSkill() != null && activeChar.getCurrentSkill().getSkill().getItemConsumeId() == itemToRemove.getItemId())
 			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+				activeChar.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM);
 				return;
 			}
 		}
@@ -102,7 +101,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		{
 			if (activeChar.getLastSimultaneousSkillCast() != null && activeChar.getLastSimultaneousSkillCast().getItemConsumeId() == itemToRemove.getItemId())
 			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+				activeChar.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM);
 				return;
 			}
 		}
@@ -112,9 +111,9 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		if ((!activeChar.isGM() && !itemToRemove.isDestroyable()) || CursedWeaponsManager.getInstance().isCursed(itemId))
 		{
 			if (itemToRemove.isHeroItem())
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.HERO_WEAPONS_CANT_DESTROYED));
+				activeChar.sendPacket(SystemMessageId.HERO_WEAPONS_CANT_DESTROYED);
 			else
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISCARD_THIS_ITEM));
+				activeChar.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM);
 			return;
 		}
 		
@@ -126,7 +125,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		if (!activeChar.getInventory().canManipulateWithItemId(itemToRemove.getItemId()))
 		{
-			activeChar.sendMessage("Cannot use this item.");
+			activeChar.sendMessage("You cannot use this item.");
 			return;
 		}
 		

@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -50,7 +49,7 @@ public final class TradeDone extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("trade"))
 		{
-			player.sendMessage("You trading too fast.");
+			player.sendMessage("You are trading too fast.");
 			return;
 		}
 		
@@ -70,7 +69,7 @@ public final class TradeDone extends L2GameClientPacket
 			{
 				// Trade partner not found, cancel trade
 				player.cancelActiveTrade();
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME));
+				player.sendPacket(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 				return;
 			}
 			
@@ -80,7 +79,7 @@ public final class TradeDone extends L2GameClientPacket
 			if (!player.getAccessLevel().allowTransaction())
 			{
 				player.cancelActiveTrade();
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+				player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 				return;
 			}
 			
