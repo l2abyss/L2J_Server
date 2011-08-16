@@ -706,6 +706,7 @@ public final class Config
 	public static boolean OFFLINE_TRADE_ENABLE;
 	public static boolean OFFLINE_CRAFT_ENABLE;
 	public static boolean OFFLINE_MODE_IN_PEACE_ZONE;
+	public static boolean OFFLINE_MODE_SET_INVULNERABLE;
 	public static boolean RESTORE_OFFLINERS;
 	public static int OFFLINE_MAX_DAYS;
 	public static boolean OFFLINE_DISCONNECT_FINISHED;
@@ -2493,6 +2494,7 @@ public final class Config
 					OFFLINE_TRADE_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineTradeEnable", "false"));
 					OFFLINE_CRAFT_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineCraftEnable", "false"));
 					OFFLINE_MODE_IN_PEACE_ZONE = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineModeInPaceZone", "False"));
+					OFFLINE_MODE_SET_INVULNERABLE = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineModeSetInvulnerable", "False"));
 					OFFLINE_SET_NAME_COLOR = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineSetNameColor", "false"));
 					OFFLINE_NAME_COLOR = Integer.decode("0x" + L2JModSettings.getProperty("OfflineNameColor", "808080"));
 					OFFLINE_FAME = Boolean.parseBoolean(L2JModSettings.getProperty("OfflineFame", "true"));
