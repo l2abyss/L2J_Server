@@ -147,94 +147,28 @@
 		</jar>
 	</target>
 
-	<target name="jarsrc" depends="jar">
-		<jar destfile="${build.dist.doc}/l2jserver-src.jar">
-			<fileset dir="${src}">
-				<exclude name="/config/**" />
-				<exclude name="**.cfg" />
-			</fileset>
-		</jar>
-	</target>
-
-	<target name="dist" depends="jarsrc">
+	<target name="dist" depends="jar">
 		<copy todir="${build.dist.doc}">
-			<fileset dir="doc">
-				<include name="*.html" />
-				<include name="*.txt" />
-			</fileset>
+			<fileset dir="dist/doc" />
 		</copy>
 		<copy todir="${build.dist.game}">
-			<fileset dir="dist">
-				<include name="GameServer_loop.sh" />
-				<include name="L2JConfig.*" />
-				<include name="startGameServer.*" />
-			</fileset>
-			<fileset dir="${src}">
-				<include name="console.cfg" />
-				<include name="log.cfg" />
-			</fileset>
-		</copy>
-		<copy todir="${build.dist.game}/config">
-			<fileset dir="${src}/config">
-				<include name="*.properties" />
-				<include name="*.xml" />
-				<include name="*.xsd" />
-				<include name="*.txt" />
-				<exclude name="loginserver.properties" />
-				<exclude name="email.properties" />
-			</fileset>
-		</copy>
-		<copy todir="${build.dist.game}/data">
-			<fileset dir="data">
-				<include name="*.csv" />
-				<include name="*.txt" />
-			</fileset>
-		</copy>
-		<copy todir="${build.dist.game}/data/geodata">
-			<fileset dir="data/geodata">
-				<include name="*.l2j" />
-				<include name="*.txt" />
-			</fileset>
-		</copy>
-		<copy todir="${build.dist.game}/data/pathnode">
-			<fileset dir="data/pathnode">
-				<include name="*.pn" />
-				<include name="*.txt" />
-			</fileset>
+			<fileset dir="dist/cfgs" />
+			<fileset dir="dist/configurators" />
+			<fileset dir="dist/game" />
 		</copy>
 		<copy todir="${build.dist.images}">
-			<fileset dir="images" />
+			<fileset dir="dist/images" />
 		</copy>
 		<copy todir="${build.dist.languages}">
-			<fileset dir="languages" />
+			<fileset dir="dist/languages" />
 		</copy>
 		<copy todir="${build.dist.libs}">
-			<fileset dir="lib">
-				<include name="*.jar" />
-			</fileset>
+			<fileset dir="lib" />
 		</copy>
 		<copy todir="${build.dist.login}">
-			<fileset dir="dist">
-				<include name="GSRegister.exe" />
-				<include name="L2JConfig.*" />
-				<include name="LoginServer_loop.sh" />
-				<include name="RegisterGameServer.*" />
-				<include name="startLoginServer.*" />
-				<include name="startSQLAccountManager.*" />
-			</fileset>
-			<fileset dir="${src}">
-				<include name="banned_ip.cfg" />
-				<include name="console.cfg" />
-				<include name="log.cfg" />
-			</fileset>
-		</copy>
-		<copy todir="${build.dist.login}/config">
-			<fileset dir="${src}/config">
-				<include name="email.properties" />
-				<include name="loginserver.properties" />
-				<include name="mmo.properties" />
-				<include name="telnet.properties" />
-			</fileset>
+			<fileset dir="dist/cfgs" />
+			<fileset dir="dist/configurators" />
+			<fileset dir="dist/login" />
 		</copy>
 		<fixcrlf srcdir="${build.dist.game}" eol="crlf" eof="remove" includes="**/*.bat" />
 		<fixcrlf srcdir="${build.dist.game}" eol="lf" eof="remove" includes="**/*.sh" />
