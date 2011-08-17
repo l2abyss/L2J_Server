@@ -55,6 +55,10 @@
 			<fileset dir="dist/cfgs" />
 			<fileset dir="dist/community" />
 		</copy>
+		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">
+			version=${l2jcs.revision}
+			builddate=${build.tstamp}
+		</concat>
 		<copy todir="${build.dist.doc}">
 			<fileset dir="dist/doc" />
 		</copy>
@@ -90,9 +94,5 @@
 			<format property="build.tstamp" pattern="dd/MM/yyyy HH:mm" />
 		</tstamp>
 		<exec dir="." executable="svnversion" outputproperty="l2jcs.revision" />
-		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">
-			version=${l2jcs.revision}
-			builddate=${build.tstamp}
-		</concat>
 	</target>
 </project>
