@@ -50,12 +50,12 @@
 		</mapper>
 	</pathconvert>
 
-	<target name="init" depends="clean, checkAntVersion, checkJavaVersion" description="Create the output directories.">
+	<target name="init" depends="clean, checkAntVersion, checkJavaVersion, getVersionAndDate" description="Create the output directories.">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.classes}" />
 	</target>
 
-	<target name="compile" depends="version" description="Compile the source.">
+	<target name="compile" depends="init" description="Compile the source.">
 		<javac destdir="${build.classes}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7">
 			<src path="${src}" />
 			<classpath refid="classpath" />
@@ -142,7 +142,7 @@
 		<fail unless="JDK7.present" message="Java JDK 7 is required." />
 	</target>
 
-	<target name="version" depends="init" description="Create l2j-version.properties file">
+	<target name="getVersionAndDate" description="Create l2j-version.properties file">
 		<tstamp>
 			<format property="build.tstamp" pattern="dd/MM/yyyy HH:mm" />
 		</tstamp>

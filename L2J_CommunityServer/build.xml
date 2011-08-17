@@ -25,7 +25,7 @@
 		</mapper>
 	</pathconvert>
 
-	<target name="init" depends="clean, checkAntVersion, checkJavaVersion" description="Create the output directories.">
+	<target name="init" depends="clean, checkAntVersion, checkJavaVersion, getVersionAndDate" description="Create the output directories.">
 		<mkdir dir="${build}" />
 		<mkdir dir="${build.classes}" />
 	</target>
@@ -52,29 +52,14 @@
 
 	<target name="dist" depends="jar">
 		<copy todir="${build.dist.community}">
-			<fileset dir="dist">
-				<include name="*.bat" />
-				<include name="*.sh" />
-			</fileset>
-			<fileset dir="${src}">
-				<include name="log.cfg" />
-				<include name="console.cfg" />
-			</fileset>
-		</copy>
-		<copy todir="${build.dist.community}/config">
-			<fileset dir="${src}/config">
-				<include name="*.properties" />
-			</fileset>
+			<fileset dir="dist/cfgs" />
+			<fileset dir="dist/community" />
 		</copy>
 		<copy todir="${build.dist.doc}">
-			<fileset dir="doc">
-				<include name="*.txt" />
-			</fileset>
+			<fileset dir="dist/doc" />
 		</copy>
 		<copy todir="${build.dist.libs}">
-			<fileset dir="lib">
-				<include name="*.jar" />
-			</fileset>
+			<fileset dir="lib" />
 		</copy>
 		<fixcrlf srcdir="${build.dist.community}" eol="crlf" eof="remove" includes="**/*.bat" />
 		<fixcrlf srcdir="${build.dist.community}" eol="lf" eof="remove" includes="**/*.sh" />
@@ -98,5 +83,16 @@
 	<target name="checkJavaVersion" description="Checks if Java JDK 7 is present">
 		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
 		<fail unless="JDK7.present" message="Java JDK 7 is required." />
+	</target>
+
+	<target name="getVersionAndDate" description="Create l2jcs-version.properties file">
+		<tstamp>
+			<format property="build.tstamp" pattern="dd/MM/yyyy HH:mm" />
+		</tstamp>
+		<exec dir="." executable="svnversion" outputproperty="l2jcs.revision" />
+		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">
+			version=${l2jcs.revision}
+			builddate=${build.tstamp}
+		</concat>
 	</target>
 </project>
