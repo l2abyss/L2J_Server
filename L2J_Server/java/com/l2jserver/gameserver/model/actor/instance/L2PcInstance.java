@@ -14267,7 +14267,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (isLocked())
 			return false;
-		if (isTransformed())
+		if (isTransformed() || isInStance())
 			return false;
 		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(this))
 			return false;
