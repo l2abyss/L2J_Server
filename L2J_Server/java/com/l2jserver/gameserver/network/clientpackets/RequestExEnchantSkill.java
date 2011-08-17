@@ -37,7 +37,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.util.Rnd;
 
-
 /**
  * Format (ch) dd
  * c: (id) 0xD0
@@ -45,11 +44,10 @@ import com.l2jserver.util.Rnd;
  * d: skill id
  * d: skill lvl
  * @author -Wooden-
- *
  */
 public final class RequestExEnchantSkill extends L2GameClientPacket
 {
-	private static final String _C__D0_07_REQUESTEXENCHANTSKILL = "[C] D0:07 RequestExEnchantSkill";
+	private static final String _C__D0_07_REQUESTEXENCHANTSKILL = "[C] D0:0F RequestExEnchantSkill";
 	private static final Logger _log = Logger.getLogger(RequestAcquireSkill.class.getName());
 	private static final Logger _logEnchant = Logger.getLogger("enchant");
 	
@@ -63,7 +61,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 		_skillLvl = readD();
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
 	 */
 	@Override
@@ -72,7 +70,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
 			return;
 
-		L2PcInstance player = getClient().getActiveChar();
+		final L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
 		
@@ -94,35 +92,35 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 			return;
 		}
 		
-		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);
+		final L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);
 		if (skill == null)
 		{
 			return;
 		}
 		
-		int costMultiplier = EnchantGroupsTable.NORMAL_ENCHANT_COST_MULTIPLIER;
-		int reqItemId = EnchantGroupsTable.NORMAL_ENCHANT_BOOK;
+		final int costMultiplier = EnchantGroupsTable.NORMAL_ENCHANT_COST_MULTIPLIER;
+		final int reqItemId = EnchantGroupsTable.NORMAL_ENCHANT_BOOK;
 		
-		L2EnchantSkillLearn s = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId);
+		final L2EnchantSkillLearn s = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
 		{
 			return;
 		}
-		EnchantSkillDetail esd = s.getEnchantSkillDetail(_skillLvl);
+		final EnchantSkillDetail esd = s.getEnchantSkillDetail(_skillLvl);
 		if (player.getSkillLevel(_skillId) != s.getMinSkillLevel(_skillLvl))
 		{
 			return;
 		}
 		
-		int requiredSp = esd.getSpCost() * costMultiplier;
-		int requireditems = (esd.getAdenaCost() * costMultiplier);
-		int rate = esd.getRate(player);
+		final int requiredSp = esd.getSpCost() * costMultiplier;
+		final int requireditems = (esd.getAdenaCost() * costMultiplier);
+		final int rate = esd.getRate(player);
 		
 		if (player.getSp() >= requiredSp)
 		{
 			// only first lvl requires book
-			boolean usesBook = _skillLvl % 100 == 1; // 101, 201, 301 ...
-			L2ItemInstance spb = player.getInventory().getItemByItemId(reqItemId);
+			final boolean usesBook = _skillLvl % 100 == 1; // 101, 201, 301 ...
+			final L2ItemInstance spb = player.getInventory().getItemByItemId(reqItemId);
 			
 			if (Config.ES_SP_BOOK_NEEDED && usesBook)
 			{
@@ -206,7 +204,6 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 			player.sendPacket(new ExEnchantSkillInfoDetail(0, _skillId, player.getSkillLevel(_skillId)+1, player));
 			
 			this.updateSkillShortcuts(player);
-			
 		}
 		else
 		{
@@ -231,7 +228,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see com.l2jserver.gameserver.BasePacket#getType()
 	 */
 	@Override
@@ -239,5 +236,4 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 	{
 		return _C__D0_07_REQUESTEXENCHANTSKILL;
 	}
-	
 }
