@@ -65,7 +65,7 @@ public class CharNameTable
 		}
 	}
 	
-	public final void addName(int objectId, String name)
+	private final void addName(int objectId, String name)
 	{
 		if (name != null)
 		{
