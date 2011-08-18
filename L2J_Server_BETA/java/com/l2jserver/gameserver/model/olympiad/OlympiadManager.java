@@ -476,6 +476,7 @@ public class OlympiadManager
 		{
 			NpcHtmlMessage message = new NpcHtmlMessage(0);
 			message.setFile(player.getHtmlPrefix(), "data/html/olympiad/noble_nopoints1.htm");
+			message.replace("%objectId%", String.valueOf(noble.getTargetId()));
 			player.sendPacket(message);
 			return false;
 		}
