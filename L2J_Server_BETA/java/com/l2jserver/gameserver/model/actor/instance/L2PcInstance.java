@@ -10882,6 +10882,9 @@ public final class L2PcInstance extends L2Playable
 		notifyFriends();
 		if (!isGM() && Config.DECREASE_SKILL_LEVEL)
 			checkPlayerSkills();
+		
+		if (Config.CACHE_CHAR_NAMES)
+			CharNameTable.getInstance().addName(getObjectId(), getName());
 	}
 	
 	public long getLastAccess()

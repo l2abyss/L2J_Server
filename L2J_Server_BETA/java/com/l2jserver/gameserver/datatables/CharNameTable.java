@@ -65,12 +65,12 @@ public class CharNameTable
 		}
 	}
 	
-	private final void addName(int objId, String name)
+	public final void addName(int objectId, String name)
 	{
 		if (name != null)
 		{
-			if (!name.equalsIgnoreCase(_chars.get(objId)))
-				_chars.put(objId, name);
+			if (!name.equals(_chars.get(objectId)))
+				_chars.put(objectId, name);
 		}
 	}
 	
