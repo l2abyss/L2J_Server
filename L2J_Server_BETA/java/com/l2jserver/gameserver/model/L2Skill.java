@@ -2426,7 +2426,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						&& player.getSiegeSide() == targetPlayer.getSiegeSide())
 					return false;
 				
-				if (target.isInsideZone(L2Character.ZONE_PEACE))
+				if (skill.isOffensive() && target.isInsideZone(L2Character.ZONE_PEACE))
 					return false;
 				
 				if (player.isInParty() && targetPlayer.isInParty())

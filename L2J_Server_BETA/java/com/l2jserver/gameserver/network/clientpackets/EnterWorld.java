@@ -183,7 +183,10 @@ public class EnterWorld extends L2GameClientPacket
 				GmListTable.getInstance().addGm(activeChar, true);
 			
 			if (Config.GM_GIVE_SPECIAL_SKILLS)
-				GMSkillTable.getInstance().addSkills(activeChar);
+				GMSkillTable.getInstance().addSkills(activeChar, false);
+			
+			if (Config.GM_GIVE_SPECIAL_AURA_SKILLS)
+				GMSkillTable.getInstance().addSkills(activeChar, true);
 		}
 		
 		// Set dead status if applies
