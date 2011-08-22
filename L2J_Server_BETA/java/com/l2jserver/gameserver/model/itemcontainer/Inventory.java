@@ -1272,9 +1272,9 @@ public abstract class Inventory extends ItemContainer
 		
 		int targetSlot = item.getItem().getBodyPart();
 		
-		//check if player wear formal
+		// Check if player is using Formal Wear and item isn't Wedding Bouquet.
 		L2ItemInstance formal = getPaperdollItem(PAPERDOLL_CHEST);
-		if (formal != null && formal.getItem().getBodyPart() == L2Item.SLOT_ALLDRESS)
+		if ((item.getItemId() != 21163) && (formal != null) && (formal.getItem().getBodyPart() == L2Item.SLOT_ALLDRESS))
 		{
 			switch (targetSlot)
 			{

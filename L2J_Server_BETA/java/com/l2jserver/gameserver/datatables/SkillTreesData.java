@@ -46,7 +46,7 @@ import com.l2jserver.util.file.filter.XMLFilter;
  */
 public final class SkillTreesData
 {
-	private static Logger _log = Logger.getLogger(SkillTreesData.class.getSimpleName());
+	private static final Logger _log = Logger.getLogger(SkillTreesData.class.getName());
 	
 	//ClassId, FastMap of Skill Hash Code, L2LearkSkill
 	private FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _classSkillTrees;

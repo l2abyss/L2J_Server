@@ -81,6 +81,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSiegeSide;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSouls;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerState;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSubclass;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerTransformationId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerTvTEvent;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerWeight;
 import com.l2jserver.gameserver.skills.conditions.ConditionSiegeZone;
@@ -534,6 +535,11 @@ abstract class DocumentBase
 			{
 				boolean val = Boolean.valueOf(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerIsHero(val));
+			}
+			else if ("transformationId".equalsIgnoreCase(a.getNodeName()))
+			{
+				int id = Integer.parseInt(a.getNodeValue());
+				cond = joinAnd(cond, new ConditionPlayerTransformationId(id));
 			}
 			else if ("hp".equalsIgnoreCase(a.getNodeName()))
 			{
