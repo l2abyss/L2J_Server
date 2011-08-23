@@ -1089,7 +1089,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	 */
 	public static final void showPledgeSkillList(L2PcInstance player)
 	{
-		if (player.getClan() == null || !player.isClanLeader())
+		if (!player.isClanLeader())
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(1);
 			html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/NotClanLeader.htm");
