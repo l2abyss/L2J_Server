@@ -7104,7 +7104,7 @@ public final class L2PcInstance extends L2Playable
 				}
 				
 				int clanId	= rset.getInt("clanid");
-				player.setPowerGrade((int)rset.getLong("power_grade"));
+				player.setPowerGrade(rset.getInt("power_grade"));
 				player.setPledgeType(rset.getInt("subpledge"));
 				//player.setApprentice(rset.getInt("apprentice"));
 				
@@ -7644,7 +7644,7 @@ public final class L2PcInstance extends L2Playable
 			statement.setLong(37, getPunishTimer());
 			statement.setInt(38, getNewbie());
 			statement.setInt(39, isNoble() ? 1 : 0);
-			statement.setLong(40, getPowerGrade());
+			statement.setInt(40, getPowerGrade());
 			statement.setInt(41, getPledgeType());
 			statement.setInt(42,getLvlJoinedAcademy());
 			statement.setLong(43,getApprentice());
@@ -12706,7 +12706,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * @return
+	 * @param power
 	 */
 	public void setPowerGrade(int power)
 	{
