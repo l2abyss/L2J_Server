@@ -156,7 +156,7 @@
 			<fileset dir="dist/configurators" />
 			<fileset dir="dist/game" />
 		</copy>
-		<concat destfile="${build.dist.game}/config/l2j-version.properties">version=${l2j.version} builddate=${build.tstamp}</concat>
+		<concat destfile="${build.dist.game}/config/l2j-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
 		<copy todir="${build.dist.images}">
 			<fileset dir="dist/images" />
 		</copy>
