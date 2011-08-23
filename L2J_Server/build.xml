@@ -97,7 +97,7 @@
 		<copy todir="${build.dist.doc}">
 			<fileset dir="dist/doc" />
 		</copy>
-		<concat destfile="${build.dist.doc}/Changelog.txt">${l2j.changelog}</concat>
+		<concat destfile="${build.dist.doc}/L2J_Server_CHANGELOG.txt">${l2j.changelog}</concat>
 		<copy todir="${build.dist.game}">
 			<fileset dir="dist/cfgs" />
 			<fileset dir="dist/configurators" />
