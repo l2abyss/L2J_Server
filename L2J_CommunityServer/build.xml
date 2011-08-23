@@ -55,7 +55,7 @@
 			<fileset dir="dist/cfgs" />
 			<fileset dir="dist/community" />
 		</copy>
-		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">version=${l2j.version} builddate=${build.tstamp}</concat>
+		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
 		<copy todir="${build.dist.doc}">
 			<fileset dir="dist/doc" />
 		</copy>
