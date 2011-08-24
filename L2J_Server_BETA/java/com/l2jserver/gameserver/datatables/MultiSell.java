@@ -187,7 +187,8 @@ public class MultiSell
 		int id = 0;
 		List<File> files = new FastList<File>();
 		hashFiles("data/multisell", files);
-		hashFiles("data/multisell/custom", files);
+		if (Config.CUSTOM_MULTISELL_LOAD)
+			hashFiles("data/multisell/custom", files);
 		
 		for (File f : files)
 		{

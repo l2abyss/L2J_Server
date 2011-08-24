@@ -35,8 +35,8 @@ public class SkillsEngine
 {
 	private static final Logger _log = Logger.getLogger(SkillsEngine.class.getName());
 	
-	private final List<File> _itemFiles = new FastList<>();
-	private final List<File> _skillFiles = new FastList<>();
+	private final List<File> _itemFiles = new FastList<File>();
+	private final List<File> _skillFiles = new FastList<File>();
 	
 	public static SkillsEngine getInstance()
 	{
@@ -46,9 +46,11 @@ public class SkillsEngine
 	private SkillsEngine()
 	{
 		hashFiles("data/stats/items", _itemFiles);
-		hashFiles("data/stats/items/custom", _itemFiles);
+		if (Config.CUSTOM_ITEMS_LOAD)
+			hashFiles("data/stats/items/custom", _itemFiles);
 		hashFiles("data/stats/skills", _skillFiles);
-		hashFiles("data/stats/skills/custom", _skillFiles);
+		if (Config.CUSTOM_SKILLS_LOAD)
+			hashFiles("data/stats/skills/custom", _skillFiles);
 	}
 	
 	private void hashFiles(String dirname, List<File> hash)

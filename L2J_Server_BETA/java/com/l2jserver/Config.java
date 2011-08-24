@@ -611,6 +611,9 @@ public final class Config
 	public static boolean CUSTOM_DROPLIST_TABLE;
 	public static boolean CUSTOM_MERCHANT_TABLES;
 	public static boolean CUSTOM_NPCBUFFER_TABLES;
+	public static boolean CUSTOM_SKILLS_LOAD;
+	public static boolean CUSTOM_ITEMS_LOAD;
+	public static boolean CUSTOM_MULTISELL_LOAD;
 	public static boolean ENABLE_BLOCK_CHECKER_EVENT;
 	public static int MIN_BLOCK_CHECKER_TEAM_MEMBERS;
 	public static boolean HBCE_FAIR_PLAY;
@@ -2037,6 +2040,9 @@ public final class Config
 					CUSTOM_DROPLIST_TABLE = Boolean.valueOf(General.getProperty("CustomDroplistTable", "false"));
 					CUSTOM_MERCHANT_TABLES = Boolean.valueOf(General.getProperty("CustomMerchantTables", "false"));
 					CUSTOM_NPCBUFFER_TABLES = Boolean.valueOf(General.getProperty("CustomNpcBufferTables", "false"));
+					CUSTOM_SKILLS_LOAD = Boolean.valueOf(General.getProperty("CustomSkillsLoad", "false"));
+					CUSTOM_ITEMS_LOAD = Boolean.valueOf(General.getProperty("CustomItemsLoad", "false"));
+					CUSTOM_MULTISELL_LOAD = Boolean.valueOf(General.getProperty("CustomMultisellLoad", "false"));
 					ENABLE_BLOCK_CHECKER_EVENT = Boolean.valueOf(General.getProperty("EnableBlockCheckerEvent", "false"));
 					MIN_BLOCK_CHECKER_TEAM_MEMBERS = Integer.valueOf(General.getProperty("BlockCheckerMinTeamMembers", "2"));
 					if(MIN_BLOCK_CHECKER_TEAM_MEMBERS < 1)
