@@ -1188,7 +1188,7 @@ public class L2Attackable extends L2Npc
 	private RewardItem calculateRewardItem(L2PcInstance lastAttacker, L2DropData drop, int levelModifier, boolean isSweep)
 	{
 		// Get default drop chance
-		float dropChance = drop.getChance();
+		double dropChance = drop.getChance();
 		
 		int deepBlueDrop = 1;
 		
@@ -1222,9 +1222,6 @@ public class L2Attackable extends L2Npc
 		
 		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion())
 			dropChance *= Config.L2JMOD_CHAMPION_REWARDS;
-		
-		// Round drop chance
-		dropChance = Math.round(dropChance);
 		
 		// Set our limits for chance of drop
 		if (dropChance < 1)
@@ -1321,9 +1318,6 @@ public class L2Attackable extends L2Npc
 		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion())
 			categoryDropChance *= Config.L2JMOD_CHAMPION_REWARDS;
 		
-		// Round drop chance
-		categoryDropChance = Math.round(categoryDropChance);
-		
 		// Set our limits for chance of drop
 		if (categoryDropChance < 1)
 			categoryDropChance = 1;
@@ -1348,7 +1342,7 @@ public class L2Attackable extends L2Npc
 			// At least 1 item will be dropped for sure.	So the chance will be adjusted to 100%
 			// if smaller.
 			
-			int dropChance = drop.getChance();
+			double dropChance = drop.getChance();
 			
 			if (Config.RATE_DROP_ITEMS_ID.get(drop.getItemId()) != 0)
 				dropChance *= Config.RATE_DROP_ITEMS_ID.get(drop.getItemId());
@@ -1373,7 +1367,7 @@ public class L2Attackable extends L2Npc
 			// Count and chance adjustment for high rate servers
 			if (dropChance > L2DropData.MAX_CHANCE && !Config.PRECISE_DROP_CALCULATION)
 			{
-				int multiplier = dropChance / L2DropData.MAX_CHANCE;
+				long multiplier = Math.round(dropChance / L2DropData.MAX_CHANCE);
 				
 				if (min < max)
 					itemCount += Rnd.get(min * multiplier, max * multiplier);
@@ -1475,9 +1469,6 @@ public class L2Attackable extends L2Npc
 				categoryDropChance *= Config.RATE_DROP_COMMON_HERBS;
 		}
 		
-		// Round drop chance
-		categoryDropChance = Math.round(categoryDropChance);
-		
 		// Set our limits for chance of drop
 		if (categoryDropChance < 1)
 			categoryDropChance = 1;
@@ -1502,7 +1493,7 @@ public class L2Attackable extends L2Npc
 			// At least 1 item will be dropped for sure.	So the chance will be adjusted to 100%
 			// if smaller.
 			
-			int dropChance = drop.getChance();
+			double dropChance = drop.getChance();
 			
 			switch (categoryDrops.getCategoryType())
 			{
@@ -1522,8 +1513,6 @@ public class L2Attackable extends L2Npc
 					dropChance *= Config.RATE_DROP_COMMON_HERBS;
 			}
 			
-			dropChance = Math.round(dropChance);
-			
 			if (dropChance < L2DropData.MAX_CHANCE)
 				dropChance = L2DropData.MAX_CHANCE;
 			
@@ -1537,7 +1526,7 @@ public class L2Attackable extends L2Npc
 			// Count and chance adjustment for high rate servers
 			if (dropChance > L2DropData.MAX_CHANCE && !Config.PRECISE_DROP_CALCULATION)
 			{
-				int multiplier = dropChance / L2DropData.MAX_CHANCE;
+				long multiplier = Math.round(dropChance / L2DropData.MAX_CHANCE);
 				
 				if (min < max)
 					itemCount += Rnd.get(min * multiplier, max * multiplier);

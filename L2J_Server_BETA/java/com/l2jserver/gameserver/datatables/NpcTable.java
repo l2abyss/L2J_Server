@@ -223,7 +223,7 @@ public class NpcTable
 					dropDat.setItemId(dropData.getInt("itemId"));
 					dropDat.setMinDrop(dropData.getInt("min"));
 					dropDat.setMaxDrop(dropData.getInt("max"));
-					dropDat.setChance(dropData.getInt("chance"));
+					dropDat.setChance(dropData.getDouble("chance"));
 					
 					int category = dropData.getInt("category");
 					
