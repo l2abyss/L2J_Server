@@ -158,6 +158,8 @@ public final class L2ItemInstance extends L2Object
 	
 	private ScheduledFuture<?> itemLootShedule = null;
 	public ScheduledFuture<?> _lifeTimeTask;
+	
+	private final DropProtection _dropProtection = new DropProtection();
 	/**
 	 * Constructor of the L2ItemInstance from the objectId and the itemId.
 	 * @param objectId : int designating the ID of the object in the world
@@ -1889,6 +1891,11 @@ public final class L2ItemInstance extends L2Object
 			activeChar.sendPacket(new DropItem(this, _dropperObjectId));
 		else
 			activeChar.sendPacket(new SpawnItem(this));
+	}
+	
+	public final DropProtection getDropProtection()
+	{
+		return _dropProtection;
 	}
 	
 	public boolean isPublished()

@@ -766,15 +766,22 @@ public class L2PetInstance extends L2Summon
 		}
 	}
 	
-	public void dropItemHere(L2ItemInstance dropit)
+	public void dropItemHere(L2ItemInstance dropit, boolean protect)
 	{
 		dropit = getInventory().dropItem("Drop", dropit.getObjectId(), dropit.getCount(), getOwner(), this);
 		
 		if (dropit != null)
 		{
+			if (protect)
+				dropit.getDropProtection().protect(getOwner());
 			_logPet.finer("Item id to drop: "+dropit.getItemId()+" amount: "+dropit.getCount());
 			dropit.dropMe(this, getX(), getY(), getZ()+100);
 		}
+	}
+	
+	public void dropItemHere(L2ItemInstance dropit)
+	{
+		dropItemHere(dropit, false);
 	}
 
 	/** @return Returns the mount able. */
