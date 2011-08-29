@@ -14,6 +14,7 @@
  */
 package com.l2jserver.loginserver;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -42,6 +43,7 @@ import javolution.xml.stream.XMLStreamConstants;
 import javolution.xml.stream.XMLStreamException;
 import javolution.xml.stream.XMLStreamReaderImpl;
 
+import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.loginserver.gameserverpackets.ServerStatus;
 import com.l2jserver.util.IPSubnet;
@@ -116,7 +118,7 @@ public class GameServerTable
 		InputStream in = null;
 		try
 		{
-			in = new FileInputStream("servername.xml");
+			in = new FileInputStream(new File(Config.DATAPACK_ROOT, "data/servername.xml"));in = new FileInputStream("data/servername.xml");
 			XMLStreamReaderImpl xpp = new XMLStreamReaderImpl();
 			xpp.setInput(new UTF8StreamReader().setInput(in));
 			for (int e = xpp.getEventType(); e != XMLStreamConstants.END_DOCUMENT; e = xpp.next())
