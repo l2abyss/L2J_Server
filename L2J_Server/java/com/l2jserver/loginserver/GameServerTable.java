@@ -118,7 +118,7 @@ public class GameServerTable
 		InputStream in = null;
 		try
 		{
-			in = new FileInputStream(new File(Config.DATAPACK_ROOT, "data/servername.xml"));in = new FileInputStream("data/servername.xml");
+			in = new FileInputStream(new File(Config.DATAPACK_ROOT, "data/servername.xml"));
 			XMLStreamReaderImpl xpp = new XMLStreamReaderImpl();
 			xpp.setInput(new UTF8StreamReader().setInput(in));
 			for (int e = xpp.getEventType(); e != XMLStreamConstants.END_DOCUMENT; e = xpp.next())
