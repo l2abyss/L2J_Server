@@ -273,6 +273,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	protected FuncTemplate[] _funcTemplates;
 	protected EffectTemplate[] _effectTemplates;
 	protected EffectTemplate[] _effectTemplatesSelf;
+	protected EffectTemplate[] _effectTemplatesPassive;
 	
 	protected ChanceCondition _chanceCondition = null;
 	
@@ -2542,9 +2543,19 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _effectTemplates;
 	}
 	
+	public EffectTemplate[] getEffectTemplatesPassive()
+	{
+		return _effectTemplatesPassive;
+	}
+	
 	public boolean hasSelfEffects()
 	{
 		return (_effectTemplatesSelf != null && _effectTemplatesSelf.length > 0);
+	}
+	
+	public boolean hasPassiveEffects()
+	{
+		return (_effectTemplatesPassive != null && _effectTemplatesPassive.length > 0);
 	}
 	
 	/**
@@ -2715,6 +2726,32 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return effects.toArray(new L2Effect[effects.size()]);
 	}
 	
+	public final L2Effect[] getEffectsPassive(L2Character effector)
+	{
+		if (!hasPassiveEffects())
+			return _emptyEffectSet;
+		
+		List<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplatesPassive.length);
+		
+		for (EffectTemplate et : _effectTemplatesPassive)
+		{
+			Env env = new Env();
+			env.player = effector;
+			env.target = effector;
+			env.skill = this;
+			L2Effect e = et.getEffect(env);
+			if (e != null)
+			{
+				e.setPassiveEffect();
+				e.scheduleEffect();
+				effects.add(e);
+			}
+		}
+		if (effects.isEmpty()) return _emptyEffectSet;
+		
+		return effects.toArray(new L2Effect[effects.size()]);
+	}
+	
 	public final void attach(FuncTemplate f)
 	{
 		if (_funcTemplates == null)
@@ -2760,6 +2797,22 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			System.arraycopy(_effectTemplatesSelf, 0, tmp, 0, len);
 			tmp[len] = effect;
 			_effectTemplatesSelf = tmp;
+		}
+	}
+	
+	public final void attachPassive(EffectTemplate effect)
+	{
+		if (_effectTemplatesPassive == null)
+		{
+			_effectTemplatesPassive = new EffectTemplate[] {effect};
+		}
+		else
+		{
+			int len = _effectTemplatesPassive.length;
+			EffectTemplate[] tmp = new EffectTemplate[len + 1];
+			System.arraycopy(_effectTemplatesPassive, 0, tmp, 0, len);
+			tmp[len] = effect;
+			_effectTemplatesPassive = tmp;
 		}
 	}
 	

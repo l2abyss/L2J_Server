@@ -69,6 +69,7 @@ public class CharEffectList
 	
 	private FastList<L2Effect> _buffs;
 	private FastList<L2Effect> _debuffs;
+	private FastList<L2Effect> _passives; // They bypass most of the actions, keep in mind that those arent included in getAllEffects()
 	
 	// The table containing the List of all stacked effect in progress for each Stack group Identifier
 	private Map<String, List<L2Effect>> _stackedEffects;
@@ -589,6 +590,16 @@ public class CharEffectList
 		if (effect == null)
 			return;
 		
+		if (effect.isPassiveEffect())
+		{
+			if (effect.setInUse(false))
+			{
+				// Remove Func added by this effect from the L2Character Calculator
+				_owner.removeStatsOwner(effect.getStatFuncs());
+				_passives.remove(effect);
+			}
+		}
+		
 		FastList<L2Effect> effectList;
 		
 		// array modified, then rebuild on next request
@@ -679,6 +690,38 @@ public class CharEffectList
 			return;
 		
 		L2Skill newSkill = newEffect.getSkill();
+		
+		// Passive effects are treated specially
+		if (newEffect.isPassiveEffect())
+		{
+			if (_passives == null)
+				_passives = new FastList<L2Effect>().shared();
+			
+			// Passive effects dont need stack type
+			if ("none".equals(newEffect.getAbnormalType()))
+			{
+				// Set this L2Effect to In Use
+				if (newEffect.setInUse(true))
+				{
+					for (L2Effect eff : _passives)
+					{
+						if (eff == null)
+							continue;
+						
+						// Check and remove if there is already such effect in order to prevent passive effects overstack.
+						if (eff.getEffectTemplate().equals(newEffect.getEffectTemplate()))
+							eff.exit();
+							
+					}
+					
+					// Add Funcs of this effect to the Calculator set of the L2Character
+					_owner.addStatFuncs(newEffect.getStatFuncs());
+					_passives.add(newEffect);
+				}
+			}
+			
+			return;
+		}
 		
 		// array modified, then rebuild on next request
 		_rebuildCache = true;
@@ -899,6 +942,24 @@ public class CharEffectList
 					// Add all Func objects corresponding to this stacked effect to the Calculator set of the L2Character
 					_owner.addStatFuncs(effectToAdd.getStatFuncs());
 			}
+		}
+	}
+	
+	/**
+	 * Remove all passive effects held by this <b>skillId</b>.
+	 */
+	public void removePassiveEffects(int skillId)
+	{
+		if (_passives == null)
+			return;
+		
+		for (L2Effect eff : _passives)
+		{
+			if (eff == null)
+				continue;
+			
+			if (eff.getSkill().getId() == skillId)
+				eff.exit();
 		}
 	}
 	

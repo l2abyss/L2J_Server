@@ -107,8 +107,10 @@ public abstract class L2Effect
 	private AbnormalEffect _eventEffect;
 	// show icon
 	private boolean _icon;
-	// is selfeffect ?
+	// is self effect?
 	private boolean _isSelfEffect = false;
+	// is passive effect?
+	private boolean _isPassiveEffect = false;
 
 	public boolean preventExitUpdate;
 	
@@ -336,6 +338,16 @@ public abstract class L2Effect
 	public void setSelfEffect()
 	{
 		_isSelfEffect = true;
+	}
+	
+	public boolean isPassiveEffect()
+	{
+		return _isPassiveEffect;
+	}
+	
+	public void setPassiveEffect()
+	{
+		_isPassiveEffect = true;
 	}
 	
 	public boolean isHerbEffect()

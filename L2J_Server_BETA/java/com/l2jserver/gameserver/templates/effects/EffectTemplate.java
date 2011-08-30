@@ -60,10 +60,12 @@ public class EffectTemplate
 	public final int triggeredLevel;
 	public final ChanceCondition chanceCondition;
 	
+	public final boolean passiveEffect;
+	
 	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda,
 			int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect,
 			AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon,
-			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
+			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond, boolean passiveEff)
 	{
 		attachCond = pAttachCond;
 		applayCond = pApplayCond;
@@ -83,6 +85,8 @@ public class EffectTemplate
 		triggeredId = trigId;
 		triggeredLevel = trigLvl;
 		chanceCondition = chanceCond;
+		
+		passiveEffect = passiveEff;
 		
 		try
 		{

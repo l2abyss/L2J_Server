@@ -5835,6 +5835,9 @@ public abstract class L2Character extends L2Object
 				addChanceTrigger(newSkill);
 			}
 			
+			// Add passive effects if there are any.
+			newSkill.getEffectsPassive(this);
+			
 			/*if (!newSkill.isChance() && newSkill.triggerAnotherSkill() )
 			{
 				L2Skill bestowed = SkillTable.getInstance().getInfo(newSkill.getTriggeredId(), newSkill.getTriggeredLevel());
@@ -5921,6 +5924,9 @@ public abstract class L2Character extends L2Object
 						abortCast();
 				}
 			}
+			
+			// Remove passive effects.
+			_effects.removePassiveEffects(skillId);
 			
 			if (cancelEffect || oldSkill.isToggle())
 			{
