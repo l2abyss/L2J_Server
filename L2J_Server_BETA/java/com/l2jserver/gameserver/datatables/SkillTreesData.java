@@ -49,15 +49,16 @@ public final class SkillTreesData
 	private static final Logger _log = Logger.getLogger(SkillTreesData.class.getName());
 	
 	//ClassId, FastMap of Skill Hash Code, L2LearkSkill
-	private FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _classSkillTrees;
-	private FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _transferSkillTrees;
+	private static final FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _classSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
+	private static final FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _transferSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
 	//Skill Hash Code, L2LearkSkill
-	private FastMap<Integer, L2SkillLearn> _collectSkillTree;
-	private FastMap<Integer, L2SkillLearn> _fishingSkillTree;
-	private FastMap<Integer, L2SkillLearn> _pledgeSkillTree;
-	private FastMap<Integer, L2SkillLearn> _subClassSkillTree;
-	private FastMap<Integer, L2SkillLearn> _subPledgeSkillTree;
-	private FastMap<Integer, L2SkillLearn> _transformSkillTree;
+	private static final FastMap<Integer, L2SkillLearn> _collectSkillTree = new FastMap<Integer, L2SkillLearn>();
+	private static final FastMap<Integer, L2SkillLearn> _fishingSkillTree = new FastMap<Integer, L2SkillLearn>();
+	private static final FastMap<Integer, L2SkillLearn> _pledgeSkillTree = new FastMap<Integer, L2SkillLearn>();
+	private static final FastMap<Integer, L2SkillLearn> _subClassSkillTree = new FastMap<Integer, L2SkillLearn>();
+	private static final FastMap<Integer, L2SkillLearn> _subPledgeSkillTree = new FastMap<Integer, L2SkillLearn>();
+	private static final FastMap<Integer, L2SkillLearn> _transformSkillTree = new FastMap<Integer, L2SkillLearn>();
+	private static final FastMap<Integer, L2SkillLearn> _commonSkillTree = new FastMap<Integer, L2SkillLearn>();
 	
 	//TODO: Unhardcode?
 	//Checker, sorted arrays of hash codes
@@ -70,7 +71,7 @@ public final class SkillTreesData
 	/**
 	 * Parent class IDs are read from XML and stored in this map, to allow easy customization.
 	 */
-	private final FastMap<ClassId, ClassId> _parentClassMap = new FastMap<ClassId, ClassId>();
+	private static final FastMap<ClassId, ClassId> _parentClassMap = new FastMap<ClassId, ClassId>();
 	
 	private SkillTreesData()
 	{
@@ -80,14 +81,14 @@ public final class SkillTreesData
 	public void load()
 	{
 		_loading = true;
-		_classSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
-		_collectSkillTree = new FastMap<Integer, L2SkillLearn>();
-		_fishingSkillTree = new FastMap<Integer, L2SkillLearn>();
-		_pledgeSkillTree = new FastMap<Integer, L2SkillLearn>();
-		_subClassSkillTree = new FastMap<Integer, L2SkillLearn>();
-		_subPledgeSkillTree = new FastMap<Integer, L2SkillLearn>();
-		_transferSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
-		_transformSkillTree = new FastMap<Integer, L2SkillLearn>();
+		_classSkillTrees.clear();
+		_collectSkillTree.clear();
+		_fishingSkillTree.clear();
+		_pledgeSkillTree.clear();
+		_subClassSkillTree.clear();
+		_subPledgeSkillTree.clear();
+		_transferSkillTrees.clear();
+		_transformSkillTree.clear();
 		
 		//Load files.
 		_loading = loadFiles();
@@ -130,6 +131,11 @@ public final class SkillTreesData
 		_log.info(getClass().getSimpleName() + ": Loaded " + _pledgeSkillTree.size() + " Pledge Skills, " + (_pledgeSkillTree.size() - residentialSkillCount) + " for Pledge and " + residentialSkillCount + " Residential.");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _subPledgeSkillTree.size() + " Sub-Pledge Skills.");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _transformSkillTree.size() + " Transform Skills.");
+		final int commonSkills = _commonSkillTree.size();
+		if (commonSkills > 0)
+		{
+			_log.info(getClass().getSimpleName() + ": Loaded " + commonSkills + " Common Skills to all classes.");
+		}
 	}
 	
 	/**
@@ -167,6 +173,7 @@ public final class SkillTreesData
 			catch (Exception e)
 			{
 				_log.warning(getClass().getSimpleName() + ": Could not parse " + file.getName() + " file: " + e.getMessage());
+				return;
 			}
 			
 			NamedNodeMap attributes;
@@ -182,8 +189,8 @@ public final class SkillTreesData
 				{
 					for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 					{
-						FastMap<Integer, L2SkillLearn> classSkillTree = new FastMap<Integer, L2SkillLearn>();
-						FastMap<Integer, L2SkillLearn> trasferSkillTree = new FastMap<Integer, L2SkillLearn>();
+						final FastMap<Integer, L2SkillLearn> classSkillTree = new FastMap<Integer, L2SkillLearn>();
+						final FastMap<Integer, L2SkillLearn> trasferSkillTree = new FastMap<Integer, L2SkillLearn>();
 						if ("skillTree".equalsIgnoreCase(d.getNodeName()))
 						{
 							attribute = d.getAttributes().getNamedItem("type");
@@ -197,18 +204,36 @@ public final class SkillTreesData
 							attribute = d.getAttributes().getNamedItem("classId");
 							if (attribute != null)
 							{
-								cId = Integer.parseInt(attribute.getNodeValue());
-								classId = ClassId.values()[cId];
+								try
+								{
+									cId = Integer.parseInt(attribute.getNodeValue());
+									if (cId != -1)
+									{
+										classId = ClassId.values()[cId];
+									}
+								}
+								catch (Exception e)
+								{
+									_log.warning(getClass().getSimpleName() + ": Invalid class Id " + attribute.getNodeValue() + " for Skill Tree type: " + type + "!");
+									continue;
+								}
 							}
 							
 							attribute = d.getAttributes().getNamedItem("parentClassId");
 							if (attribute != null)
 							{
-								parentClassId = Integer.parseInt(attribute.getNodeValue());
-								
-								if ((cId != parentClassId) && (parentClassId > -1))
+								try
 								{
-									_parentClassMap.putIfAbsent(classId, ClassId.values()[parentClassId]);
+									parentClassId = Integer.parseInt(attribute.getNodeValue());
+									if ((cId > -1) && (cId != parentClassId) && (parentClassId > -1))
+									{
+										_parentClassMap.putIfAbsent(classId, ClassId.values()[parentClassId]);
+									}
+								}
+								catch (Exception e)
+								{
+									_log.warning(getClass().getSimpleName() + ": Invalid parent class Id " + attribute.getNodeValue() + " for Skill Tree type: " + type + "!");
+									continue;
 								}
 							}
 							
@@ -324,39 +349,47 @@ public final class SkillTreesData
 									}
 									
 									final L2SkillLearn skillLearn = new L2SkillLearn(learnSkillSet);
+									final int skillHashCode = SkillTable.getSkillHashCode(skillId, skillLvl);
 									if (type.equals("classSkillTree"))
 									{
-										classSkillTree.put(SkillTable.getSkillHashCode(skillId, skillLvl), skillLearn);
+										if (cId != -1)
+										{
+											classSkillTree.put(skillHashCode, skillLearn);
+										}
+										else
+										{
+											_commonSkillTree.put(skillHashCode, skillLearn);
+										}
 									}
 									else if (type.equals("transferSkillTree"))
 									{
-										trasferSkillTree.put(SkillTable.getSkillHashCode(skillId, skillLvl), skillLearn);
+										trasferSkillTree.put(skillHashCode, skillLearn);
 									}
 									else
 									{
 										if (type.equals("collectSkillTree"))
 										{
-											_collectSkillTree.put(SkillTable.getSkillHashCode(skillId, skillLvl), skillLearn);
+											_collectSkillTree.put(skillHashCode, skillLearn);
 										}
 										else if (type.equals("fishingSkillTree"))
 										{
-											_fishingSkillTree.put(SkillTable.getSkillHashCode(skillId, skillLvl), skillLearn);
+											_fishingSkillTree.put(skillHashCode, skillLearn);
 										}
 										else if (type.equals("pledgeSkillTree"))
 										{
-											_pledgeSkillTree.put(SkillTable.getSkillHashCode(skillId, skillLvl), skillLearn);
+											_pledgeSkillTree.put(skillHashCode, skillLearn);
 										}
 										else if (type.equals("subClassSkillTree"))
 										{
-											_subClassSkillTree.put(SkillTable.getSkillHashCode(skillId, skillLvl), skillLearn);
+											_subClassSkillTree.put(skillHashCode, skillLearn);
 										}
 										else if (type.equals("subPledgeSkillTree"))
 										{
-											_subPledgeSkillTree.put(SkillTable.getSkillHashCode(skillId, skillLvl), skillLearn);
+											_subPledgeSkillTree.put(skillHashCode, skillLearn);
 										}
 										else if (type.equals("transformSkillTree"))
 										{
-											_transformSkillTree.put(SkillTable.getSkillHashCode(skillId, skillLvl), skillLearn);
+											_transformSkillTree.put(skillHashCode, skillLearn);
 										}
 									}
 								}
@@ -364,13 +397,16 @@ public final class SkillTreesData
 							
 							if (type.equals("classSkillTree"))
 							{
-								if (_classSkillTrees.get(classId) == null)
+								if (cId != -1)
 								{
-									_classSkillTrees.put(classId, classSkillTree);
-								}
-								else
-								{
-									_classSkillTrees.get(classId).putAll(classSkillTree);
+									if (_classSkillTrees.get(classId) == null)
+									{
+										_classSkillTrees.put(classId, classSkillTree);
+									}
+									else
+									{
+										_classSkillTrees.get(classId).putAll(classSkillTree);
+									}
 								}
 							}
 							else if (type.equals("transferSkillTree"))
@@ -391,15 +427,12 @@ public final class SkillTreesData
 	 */
 	private FastMap<ClassId, FastMap<Integer, L2SkillLearn>> getClassSkillTrees()
 	{
-		if (_classSkillTrees == null)
-		{
-			_classSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
-		}
 		return _classSkillTrees;
 	}
 	
 	/**
 	 * Method to get the complete skill tree for a given class id.<br>
+	 * Include all skills common to all classes.<br>
 	 * Includes all parent skill trees.
 	 * @param classId the class skill tree ID.
 	 * @return the complete Class Skill Tree including skill trees from parent class for a given {@code classId}.
@@ -407,7 +440,8 @@ public final class SkillTreesData
 	public FastMap<Integer, L2SkillLearn> getCompleteClassSkillTree(ClassId classId)
 	{
 		final FastMap<Integer, L2SkillLearn> skillTree = new FastMap<Integer, L2SkillLearn>();
-		
+		//Add all skills that belong to all classes.
+		skillTree.putAll(_commonSkillTree);
 		while ((classId != null) && (getClassSkillTrees().get(classId) != null))
 		{
 			skillTree.putAll(getClassSkillTrees().get(classId));
@@ -429,6 +463,14 @@ public final class SkillTreesData
 			return getTransferSkillTree(classId);
 		}
 		return _transferSkillTrees.get(classId);
+	}
+	
+	/**
+	 * @return the complete Common Skill Tree. 
+	 */
+	public FastMap<Integer, L2SkillLearn> getCommonSkillTree()
+	{
+		return _commonSkillTree;
 	}
 	
 	/**
@@ -499,7 +541,6 @@ public final class SkillTreesData
 		}
 		
 		final L2Skill[] oldSkills = player.getAllSkills();
-		
 		for (L2SkillLearn temp : skills.values())
 		{
 			if (((includeAutoGet && temp.isAutoGet()) || temp.isLearnedByNpc() || (includeByFs && temp.isLearnedByFS())) && (player.getLevel() >= temp.getGetLevel()))
@@ -542,11 +583,10 @@ public final class SkillTreesData
 		{
 			//The Skill Tree for this class is undefined, so we return an empty list.
 			_log.warning(getClass().getSimpleName() + ": Skill Tree for this classId(" + player.getClassId() + ") is not defined!");
-			return new FastList<L2SkillLearn>();
+			return result;
 		}
 		
 		final L2Skill[] oldSkills = player.getAllSkills();
-		
 		for (L2SkillLearn temp : skills.values())
 		{
 			if ((temp.getRaces() != null) && Util.contains(temp.getRaces(), 4) && !player.hasDwarvenCraft())
@@ -595,11 +635,10 @@ public final class SkillTreesData
 		{
 			//The Skill Tree for fishing skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": Skilltree for fishing is not defined !");
-			return new FastList<L2SkillLearn>();
+			return result;
 		}
 		
 		final L2Skill[] oldSkills = player.getAllSkills();
-		
 		for (L2SkillLearn temp : skills.values())
 		{
 			//If skill is Dwarven only and player is not Dwarven.
@@ -632,7 +671,6 @@ public final class SkillTreesData
 				}
 			}
 		}
-		
 		return result;
 	}
 	
@@ -652,11 +690,10 @@ public final class SkillTreesData
 		{
 			//The Skill Tree for Collecting skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": Skilltree for collecting skills is not defined !");
-			return new FastList<L2SkillLearn>();
+			return result;
 		}
 		
 		final L2Skill[] oldSkills = player.getAllSkills();
-		
 		for (L2SkillLearn temp : skills.values())
 		{
 			boolean knownSkill = false;
@@ -692,7 +729,6 @@ public final class SkillTreesData
 		final FastList<L2SkillLearn> result = new FastList<L2SkillLearn>();
 		
 		ClassId classId = player.getClassId();
-		
 		//If new classes are implemented over 3rd class, a different way should be implemented.
 		if (classId.level() == 3)
 		{
@@ -729,11 +765,10 @@ public final class SkillTreesData
 		{
 			//The Skill Tree for Transformation skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": No Transform skills defined!");
-			return new FastList<L2SkillLearn>();
+			return result;
 		}
 		
 		final L2Skill[] oldSkills = player.getAllSkills();
-		
 		for (L2SkillLearn temp : skills.values())
 		{
 			if ((player.getLevel() >= temp.getGetLevel()) && ((temp.getRaces() == null) || Util.contains(temp.getRaces(), player.getRace().ordinal())))
@@ -776,11 +811,10 @@ public final class SkillTreesData
 		{
 			//The Skill Tree for Pledge skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": No clan skills defined!");
-			return new FastList<L2SkillLearn>();
+			return result;
 		}
 		
-		L2Skill[] oldSkills = clan.getAllSkills();
-		
+		final L2Skill[] oldSkills = clan.getAllSkills();
 		for (L2SkillLearn temp : skills.values())
 		{
 			if (!temp.isResidencialSkill() && (clan.getLevel() >= temp.getGetLevel()))
@@ -823,7 +857,7 @@ public final class SkillTreesData
 		{
 			//The Skill Tree for Sub-Pledge skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": No sub-clan skills defined!");
-			return new FastList<L2SkillLearn>();
+			return result;
 		}
 		
 		for (L2SkillLearn temp : skills.values())
@@ -849,11 +883,10 @@ public final class SkillTreesData
 		{
 			//The Skill Tree for Sub-Class skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": No Sub-Class skills defined!");
-			return new FastList<L2SkillLearn>();
+			return result;
 		}
 		
 		final L2Skill[] oldSkills = player.getAllSkills();
-		
 		for (L2SkillLearn temp : skills.values())
 		{
 			if (player.getLevel() >= temp.getGetLevel())
@@ -904,7 +937,7 @@ public final class SkillTreesData
 		{
 			//The Skill Tree for Residential skills is undefined?
 			_log.warning(getClass().getSimpleName() + ": No residential skills defined!");
-			return new FastList<L2SkillLearn>();
+			return result;
 		}
 		
 		for (L2SkillLearn temp : skills.values())
@@ -1000,6 +1033,16 @@ public final class SkillTreesData
 	}
 	
 	/**
+	 * @param id the common skill Id.
+	 * @param lvl the common skill level.
+	 * @return the common skill from the Common Skill Tree for a given {@code id} and {@code lvl}.
+	 */
+	public L2SkillLearn getCommonSkill(int id, int lvl)
+	{
+		return _commonSkillTree.get(SkillTable.getSkillHashCode(id, lvl));
+	}
+	
+	/**
 	 * @param id the collect skill ID.
 	 * @param lvl the collect skill level.
 	 * @return the collect skill from the Collect Skill Tree for a given {@code id} and {@code lvl}.
@@ -1047,7 +1090,7 @@ public final class SkillTreesData
 		
 		//Class specific skills:
 		FastMap<Integer, L2SkillLearn> tempMap;
-		TIntObjectHashMap<int[]> result = new TIntObjectHashMap<int[]>(getClassSkillTrees().keySet().size());
+		_skillsByClassIdHashCodes = new TIntObjectHashMap<int[]>(getClassSkillTrees().keySet().size());
 		for (ClassId cls : getClassSkillTrees().keySet())
 		{
 			i = 0;
@@ -1057,14 +1100,14 @@ public final class SkillTreesData
 			{
 				array[i++] = h;
 			}
+			tempMap.clear();
 			Arrays.sort(array);
-			result.put(cls.ordinal(), array);
+			_skillsByClassIdHashCodes.put(cls.ordinal(), array);
 		}
-		_skillsByClassIdHashCodes = result;
 		
 		//Race specific skills from Fishing and Transformation skill trees.
-		final FastList<Integer> list = FastList.newInstance();
-		result = new TIntObjectHashMap<int[]>(Race.values().length);
+		final FastList<Integer> list = new FastList<Integer>();
+		_skillsByRaceHashCodes = new TIntObjectHashMap<int[]>(Race.values().length);
 		for (Race r : Race.values())
 		{
 			for (L2SkillLearn s : _fishingSkillTree.values())
@@ -1090,12 +1133,19 @@ public final class SkillTreesData
 				array[i++] = s;
 			}
 			Arrays.sort(array);
-			result.put(r.ordinal(), array);
+			_skillsByRaceHashCodes.put(r.ordinal(), array);
 			list.clear();
 		}
-		_skillsByRaceHashCodes = result;
 		
 		//Skills available for all classes and races
+		for (L2SkillLearn s : _commonSkillTree.values())
+		{
+			if (s.getRaces() == null)
+			{
+				list.add(SkillTable.getSkillHashCode(s.getSkillId(), s.getSkillLevel()));
+			}
+		}
+		
 		for (L2SkillLearn s : _fishingSkillTree.values())
 		{
 			if (s.getRaces() == null)
@@ -1125,12 +1175,10 @@ public final class SkillTreesData
 		}
 		Arrays.sort(array);
 		_allSkillsHashCodes = array;
-		
-		FastList.recycle(list);
 	}
 	
 	/**
-	 * Verify if the give skill is valid for the givem player.
+	 * Verify if the give skill is valid for the given player.<br>
 	 * GM's skills are excluded for GM players.
 	 * @param player the player to verify the skill.
 	 * @param skill the skill to be verified.
@@ -1177,7 +1225,6 @@ public final class SkillTreesData
 		{
 			return true;
 		}
-		
 		return false;
 	}
 	
