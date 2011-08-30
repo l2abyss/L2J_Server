@@ -1284,18 +1284,15 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public final boolean getWeaponDependancy(L2Character activeChar)
 	{
-		if(getWeaponDependancy(activeChar,false))
+		if(getWeaponDependancy(activeChar, false))
 		{
 			return true;
 		}
-		else
-		{
-			SystemMessage message = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-			message.addSkillName(this);
-			activeChar.sendPacket(message);
-			
-			return false;
-		}
+		
+		final SystemMessage message = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
+		message.addSkillName(this);
+		activeChar.sendPacket(message);
+		return false;
 	}
 	
 	public final boolean getWeaponDependancy(L2Character activeChar,boolean chance)
@@ -1725,14 +1722,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
 						// If a target is found, return it in a table else send a system message TARGET_IS_INCORRECT
 						return new L2Character[]{target};
 					}
-					else
-						return _emptyTargetList;
 				}
 				else
 				{
 					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-					return _emptyTargetList;
 				}
+				return _emptyTargetList;
 			}
 			case TARGET_PARTY_OTHER:
 			{
@@ -1750,25 +1745,21 @@ public abstract class L2Skill implements IChanceSkillTrigger
 								case 426:
 									if (!((L2PcInstance)target).isMageClass())
 										return new L2Character[]{target};
-									else
-										return _emptyTargetList;
+									return _emptyTargetList;
 								case 427:
 									if (((L2PcInstance)target).isMageClass())
 										return new L2Character[]{target};
-									else
-										return _emptyTargetList;
+									return _emptyTargetList;
 							}
 						}
 						return new L2Character[]{target};
 					}
-					else
-						return _emptyTargetList;
 				}
 				else
 				{
 					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-					return _emptyTargetList;
 				}
+				return _emptyTargetList;
 			}
 			case TARGET_CORPSE_ALLY:
 			case TARGET_ALLY:
@@ -2105,8 +2096,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 								targetList.add(target);
 								return targetList.toArray(new L2Object[targetList.size()]);
 							}
-							else
-								return new L2Character[] {target};
+							return new L2Character[] { target };
 						}
 					}
 				}
@@ -2145,9 +2135,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					targetList.add(target);
 					return targetList.toArray(new L2Object[targetList.size()]);
 				}
-				else
-					return new L2Character[] {target};
-				
+				return new L2Character[] { target };
 			}
 			case TARGET_AREA_CORPSE_MOB:
 			{
@@ -2207,8 +2195,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					targetList.add(target);
 					return targetList.toArray(new L2Object[targetList.size()]);
 				}
-				else return new L2Character[] {target};
-				
+				return new L2Character[] { target };
 			}
 			case TARGET_UNDEAD:
 			{
@@ -2217,21 +2204,22 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					if (!target.isUndead() || target.isDead())
 					{
 						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-						return _emptyTargetList;
 					}
-					
-					if (!onlyFirst)
-						targetList.add(target);
 					else
-						return new L2Character[] {target};
-					
-					return targetList.toArray(new L2Object[targetList.size()]);
+					{
+						if (!onlyFirst)
+							targetList.add(target);
+						else
+							return new L2Character[] {target};
+						
+						return targetList.toArray(new L2Object[targetList.size()]);
+					}
 				}
 				else
 				{
 					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
-					return _emptyTargetList;
 				}
+				return _emptyTargetList;
 			}
 			case TARGET_AREA_UNDEAD:
 			{
@@ -2389,8 +2377,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		if (targets.length == 0)
 			return null;
-		else
-			return targets[0];
+		return targets[0];
 	}
 	
 	/*

@@ -167,10 +167,7 @@ public class Siege implements Siegable
 						_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartSiegeTask(_castleInst), regTimeRemaining);
 						return;
 					}
-					else
-					{
-						endTimeRegistration(true);
-					}
+					endTimeRegistration(true);
 				}
 				
 				long timeRemaining = getSiegeDate().getTimeInMillis() - Calendar.getInstance().getTimeInMillis();

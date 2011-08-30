@@ -1937,9 +1937,9 @@ public final class Formulas
 			
 			if (skill) //skills are excluded from crit dmg evasion
 				return success;
-			else
-				// little weird, but remember what CRIT_DAMAGE_EVASION > 1 increase chances to _evade_ crit hits
-				return Rnd.get((int)target.getStat().calcStat(Stats.CRIT_DAMAGE_EVASION, 100, null, null)) < 100;
+			
+			// little weird, but remember what CRIT_DAMAGE_EVASION > 1 increase chances to _evade_ crit hits
+			return Rnd.get((int)target.getStat().calcStat(Stats.CRIT_DAMAGE_EVASION, 100, null, null)) < 100;
 		}
 		return success;
 	}
@@ -2086,8 +2086,9 @@ public final class Formulas
 	{
 		// measured Oct 2006 by Tank6585, formula by Sami
 		// attack speed 312 equals 1500 ms delay... (or 300 + 40 ms delay?)
-		if(rate < 2) return 2700;
-		else return (int)(470000/rate);
+		if(rate < 2)
+			return 2700;
+		return (int) (470000 / rate);
 	}
 	
 	/** Calculate delay (in milliseconds) for skills cast */

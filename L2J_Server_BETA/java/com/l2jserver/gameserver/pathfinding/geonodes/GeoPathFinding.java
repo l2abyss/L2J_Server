@@ -43,7 +43,6 @@ import com.l2jserver.gameserver.pathfinding.PathFinding;
 import com.l2jserver.gameserver.pathfinding.utils.FastNodeList;
 
 /**
- *
  * @author -Nemesiss-
  */
 public class GeoPathFinding extends PathFinding
@@ -57,18 +56,12 @@ public class GeoPathFinding extends PathFinding
 		return SingletonHolder._instance;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#PathNodesExist(short)
-	 */
 	@Override
 	public boolean pathNodesExist(short regionoffset)
 	{
 		return _pathNodesIndex.containsKey(regionoffset);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#FindPath(int, int, short, int, int, short)
-	 */
 	@Override
 	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean playable)
 	{
@@ -141,36 +134,34 @@ public class GeoPathFinding extends PathFinding
 			}
 			if (node.equals(end)) //path found!
 				return constructPath2(node);
-			else
+			
+			i++;
+			visited.add(node);
+			node.attachNeighbors();
+			GeoNode[] neighbors = node.getNeighbors();
+			if (neighbors == null)
+				continue;
+			for (GeoNode n : neighbors)
 			{
-				i++;
-				visited.add(node);
-				node.attachNeighbors();
-				GeoNode[] neighbors = node.getNeighbors();
-				if (neighbors == null)
-					continue;
-				for (GeoNode n : neighbors)
+				if (!visited.containsRev(n) && !to_visit.contains(n))
 				{
-					if (!visited.containsRev(n) && !to_visit.contains(n))
+					added = false;
+					n.setParent(node);
+					dx = targetX - n.getLoc().getNodeX();
+					dy = targetY - n.getLoc().getNodeY();
+					n.setCost(dx * dx + dy * dy);
+					for (int index = 0; index < to_visit.size(); index++)
 					{
-						added = false;
-						n.setParent(node);
-						dx = targetX - n.getLoc().getNodeX();
-						dy = targetY - n.getLoc().getNodeY();
-						n.setCost(dx * dx + dy * dy);
-						for (int index = 0; index < to_visit.size(); index++)
+						// supposed to find it quite early..
+						if (to_visit.get(index).getCost() > n.getCost())
 						{
-							// supposed to find it quite early..
-							if (to_visit.get(index).getCost() > n.getCost())
-							{
-								to_visit.add(index, n);
-								added = true;
-								break;
-							}
+							to_visit.add(index, n);
+							added = true;
+							break;
 						}
-						if (!added)
-							to_visit.addLast(n);
 					}
+					if (!added)
+						to_visit.addLast(n);
 				}
 			}
 		}

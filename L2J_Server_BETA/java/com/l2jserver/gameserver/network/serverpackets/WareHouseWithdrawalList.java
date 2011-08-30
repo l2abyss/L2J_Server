@@ -51,9 +51,8 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 			_log.warning("error while sending withdraw request to: " + _activeChar.getName());
 			return;
 		}
-		else
-			_items = _activeChar.getActiveWarehouse().getItems();
 		
+		_items = _activeChar.getActiveWarehouse().getItems();
 		if (Config.DEBUG)
 			for (L2ItemInstance item : _items)
 				_log.fine("item:" + item.getItem().getName() + " type1:" + item.getItem().getType1() + " type2:" + item.getItem().getType2());

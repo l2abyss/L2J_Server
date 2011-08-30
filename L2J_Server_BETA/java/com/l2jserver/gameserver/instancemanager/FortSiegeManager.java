@@ -257,18 +257,14 @@ public class FortSiegeManager
 		{
 			return _commanderSpawnList.get(_fortId);
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	public final FastList<CombatFlag> getFlagList(int _fortId)
 	{
 		if (_flagList.containsKey(_fortId))
 			return _flagList.get(_fortId);
-		else
-			return null;
+		return null;
 	}
 	
 	public final int getAttackerMaxClans()

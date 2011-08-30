@@ -60,7 +60,6 @@ import com.l2jserver.util.Rnd;
  */
 public class L2AttackableAI extends L2CharacterAI implements Runnable
 {
-	
 	//protected static final Logger _log = Logger.getLogger(L2AttackableAI.class.getName());
 	
 	private static final int RANDOM_WALK_RATE = 30; // confirmed
@@ -250,8 +249,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			// Check if the L2PcInstance target has karma (=PK)
 			if (target instanceof L2PcInstance && ((L2PcInstance) target).getKarma() > 0)
 				return GeoData.getInstance().canSeeTarget(me, target); // Los Check
-			else
-				return false;
+			return false;
 		}
 		else
 		{
@@ -269,8 +267,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						return GeoData.getInstance().canSeeTarget(getActiveChar(), target);
 					}
-					else
-						return false;
+					return false;
 				}
 				if (getActiveChar().getIsChaos() > 0 && me.isInsideRadius(target, getActiveChar().getIsChaos(), false, false))
 				{
@@ -787,14 +784,12 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					return;
 				}
-				else
+				
+				for (L2Skill sk : _skillrender.getSuicideSkills())
 				{
-					for (L2Skill sk : _skillrender.getSuicideSkills())
+					if (cast(sk))
 					{
-						if (cast(sk))
-						{
-							return;
-						}
+						return;
 					}
 				}
 			}
@@ -1145,7 +1140,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			if (npc.isMovementDisabled())
 			{
 				targetReconsider();
-				return;
 			}
 			else
 			{
@@ -1154,14 +1148,12 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if (range < 5)
 					range = 5;
 				moveToPawn(getAttackTarget(), range);
-				return;
+				
 			}
-		}
-		else
-		{
-			melee(npc.getPrimarySkillId());
+			return;
 		}
 		
+		melee(npc.getPrimarySkillId());
 	}
 	
 	private void melee(int type)
@@ -1674,18 +1666,16 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						caster.doCast(sk);
 						return true;
 					}
-					else
+					
+					L2Character target = skillTargetReconsider(sk);
+					if (target != null)
 					{
-						L2Character target = skillTargetReconsider(sk);
-						if (target != null)
-						{
-							clientStopMoving(null);
-							L2Object targets = attackTarget;
-							caster.setTarget(target);
-							caster.doCast(sk);
-							caster.setTarget(targets);
-							return true;
-						}
+						clientStopMoving(null);
+						L2Object targets = attackTarget;
+						caster.setTarget(target);
+						caster.doCast(sk);
+						caster.setTarget(targets);
+						return true;
 					}
 				}
 				else
@@ -1707,18 +1697,16 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						caster.doCast(sk);
 						return true;
 					}
-					else
+					
+					L2Character target = skillTargetReconsider(sk);
+					if (target != null)
 					{
-						L2Character target = skillTargetReconsider(sk);
-						if (target != null)
-						{
-							clientStopMoving(null);
-							L2Object targets = attackTarget;
-							caster.setTarget(target);
-							caster.doCast(sk);
-							caster.setTarget(targets);
-							return true;
-						}
+						clientStopMoving(null);
+						L2Object targets = attackTarget;
+						caster.setTarget(target);
+						caster.doCast(sk);
+						caster.setTarget(targets);
+						return true;
 					}
 				}
 				else
@@ -2052,7 +2040,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 				}
 			}
-			return null;
 		}
 		else
 		{
@@ -2098,8 +2085,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 				}
 			}
-			return null;
 		}
+		return null;
 	}
 	
 	private L2Character skillTargetReconsider(L2Skill sk)
@@ -2170,15 +2157,14 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						if (((L2Attackable) obj).getFactionId() != null && ((L2Attackable) obj).getFactionId().equals(actor.getFactionId()))
 							continue;
-						else
-							return obj;
+						
+						return obj;
 					}
 				}
 				if (obj instanceof L2Summon)
 				{
 					return obj;
 				}
-				
 			}
 		}
 		return null;
@@ -2252,15 +2238,13 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						if (((L2Attackable) obj).getFactionId() != null && ((L2Attackable) obj).getFactionId().equals(actor.getFactionId()))
 							continue;
+						
+						if (MostHate != null)
+							actor.addDamageHate(obj, 0, actor.getHating(MostHate));
 						else
-						{
-							if (MostHate != null)
-								actor.addDamageHate(obj, 0, actor.getHating(MostHate));
-							else
-								actor.addDamageHate(obj, 0, 2000);
-							actor.setTarget(obj);
-							setAttackTarget(obj);
-						}
+							actor.addDamageHate(obj, 0, 2000);
+						actor.setTarget(obj);
+						setAttackTarget(obj);
 					}
 				}
 				else if (obj instanceof L2Summon)
@@ -2354,15 +2338,13 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						if (((L2Attackable) obj).getFactionId() != null && ((L2Attackable) obj).getFactionId().equals(actor.getFactionId()))
 							continue;
+						
+						if (MostHate != null)
+							actor.addDamageHate(obj, 0, actor.getHating(MostHate));
 						else
-						{
-							if (MostHate != null)
-								actor.addDamageHate(obj, 0, actor.getHating(MostHate));
-							else
-								actor.addDamageHate(obj, 0, 2000);
-							actor.setTarget(obj);
-							setAttackTarget(obj);
-						}
+							actor.addDamageHate(obj, 0, 2000);
+						actor.setTarget(obj);
+						setAttackTarget(obj);
 					}
 				}
 				else if (obj instanceof L2Summon)

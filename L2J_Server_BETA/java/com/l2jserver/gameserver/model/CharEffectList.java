@@ -155,8 +155,8 @@ public class CharEffectList
 				{
 					if (e.getInUse())
 						return e;
-					else
-						effectNotInUse = e;
+					
+					effectNotInUse = e;
 				}
 			}
 		}
@@ -171,8 +171,8 @@ public class CharEffectList
 				{
 					if (e.getInUse())
 						return e;
-					else
-						effectNotInUse = e;
+					
+					effectNotInUse = e;
 				}
 			}
 		}
@@ -201,8 +201,8 @@ public class CharEffectList
 					{
 						if (e.getInUse())
 							return e;
-						else
-							effectNotInUse = e;
+						
+						effectNotInUse = e;
 					}
 				}
 			}
@@ -220,13 +220,12 @@ public class CharEffectList
 					{
 						if (e.getInUse())
 							return e;
-						else
-							effectNotInUse = e;
+						
+						effectNotInUse = e;
 					}
 				}
 			}
 		}
-		
 		return effectNotInUse;
 	}
 	
@@ -250,8 +249,8 @@ public class CharEffectList
 				{
 					if (e.getInUse())
 						return e;
-					else
-						effectNotInUse = e;
+					
+					effectNotInUse = e;
 				}
 			}
 		}
@@ -266,12 +265,11 @@ public class CharEffectList
 				{
 					if (e.getInUse())
 						return e;
-					else
-						effectNotInUse = e;
+					
+					effectNotInUse = e;
 				}
 			}
 		}
-		
 		return effectNotInUse;
 	}
 	

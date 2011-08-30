@@ -86,9 +86,8 @@ public class EffectSignet extends L2Effect
 			getEffector().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
 			return false;
 		}
-		else
-			getEffector().reduceCurrentMp(mpConsume);
 		
+		getEffector().reduceCurrentMp(mpConsume);
 		FastList<L2Character> targets = FastList.newInstance();
 		for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(getSkill().getSkillRadius()))
 		{

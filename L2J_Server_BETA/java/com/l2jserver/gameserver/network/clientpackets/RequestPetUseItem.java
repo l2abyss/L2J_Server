@@ -102,20 +102,18 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			useItem(pet, item, activeChar);
 			return;
 		}
-		else
+		
+		final int itemId = item.getItemId();
+		if (PetDataTable.isPetFood(itemId))
 		{
-			final int itemId = item.getItemId();
-			if (PetDataTable.isPetFood(itemId))
+			if (pet.canEatFoodId(itemId))
 			{
-				if (pet.canEatFoodId(itemId))
-				{
-					useItem(pet, item, activeChar);
-				}
-				else
-				{
-					activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
-					return;
-				}
+				useItem(pet, item, activeChar);
+			}
+			else
+			{
+				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
+				return;
 			}
 		}
 		
@@ -128,7 +126,6 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		{
 			activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
 		}
-		
 		return;
 	}
 	

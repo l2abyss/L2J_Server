@@ -1002,16 +1002,14 @@ public class L2Attackable extends L2Npc
 				((L2AttackableAI) getAI()).setGlobalAggro(-25);
 				return;
 			}
-			else
+			
+			for (L2Character aggroed : getAggroList().keySet())
 			{
-				for (L2Character aggroed : getAggroList().keySet())
-				{
-					AggroInfo ai = getAggroList().get(aggroed);
-					
-					if (ai == null)
-						return;
-					ai.addHate(-amount);
-				}
+				AggroInfo ai = getAggroList().get(aggroed);
+				
+				if (ai == null)
+					return;
+				ai.addHate(-amount);
 			}
 			
 			amount = getHating(mostHated);

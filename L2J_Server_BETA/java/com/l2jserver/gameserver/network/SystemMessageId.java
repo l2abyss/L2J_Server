@@ -17501,10 +17501,7 @@ public final class SystemMessageId
 		{
 			return builders.get(0);
 		}
-		else
-		{
-			return new BuilderContainer(builders.toArray(new Builder[builders.size()]));
-		}
+		return new BuilderContainer(builders.toArray(new Builder[builders.size()]));
 	}
 	
 	private final int _id;

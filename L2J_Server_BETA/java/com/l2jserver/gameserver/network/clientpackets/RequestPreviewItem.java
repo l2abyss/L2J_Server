@@ -204,9 +204,8 @@ public final class RequestPreviewItem extends L2GameClientPacket
 				_activeChar.sendPacket(SystemMessageId.YOU_CAN_NOT_TRY_THOSE_ITEMS_ON_AT_THE_SAME_TIME);
 				return;
 			}
-			else
-				_item_list.put(slot, itemId);
 			
+			_item_list.put(slot, itemId);
 			totalPrice += Config.WEAR_PRICE;
 			if (totalPrice > PcInventory.MAX_ADENA)
 			{

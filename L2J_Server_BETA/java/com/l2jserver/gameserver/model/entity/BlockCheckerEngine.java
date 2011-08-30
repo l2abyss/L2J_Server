@@ -188,8 +188,7 @@ public final class BlockCheckerEngine
 		{
 			return _redTeamPoints.get(player);
 		}
-		else
-			return _blueTeamPoints.get(player);
+		return _blueTeamPoints.get(player);
 	}
 	
 	/**

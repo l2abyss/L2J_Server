@@ -24,9 +24,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * 
  * @author DS
- * 
  */
 public final class OlympiadGameTask implements Runnable
 {
@@ -92,8 +90,7 @@ public final class OlympiadGameTask implements Runnable
 			_needAnnounce = false;
 			return true;
 		}
-		else
-			return false;
+		return false;
 	}
 
 	public final L2OlympiadStadiumZone getZone()

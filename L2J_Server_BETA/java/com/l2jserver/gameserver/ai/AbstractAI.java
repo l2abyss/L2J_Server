@@ -46,7 +46,6 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
  *
  * AbastractAI :<BR><BR>
  * <li>L2CharacterAI</li><BR><BR>
- *
  */
 abstract class AbstractAI implements Ctrl
 {
@@ -895,7 +894,6 @@ abstract class AbstractAI implements Ctrl
 	{
 		if (_actor == null)
 			return "Actor: null";
-		else
-			return "Actor: "+_actor;
+		return "Actor: " + _actor;
 	}
 }

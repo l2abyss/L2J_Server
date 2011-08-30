@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author Kerberos
- *
  */
 public final class L2CastleTeleporterInstance extends L2Npc
 {
@@ -40,6 +39,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 	private boolean _currentTask = false;
 	
 	/**
+	 * @param objectId
 	 * @param template
 	 */
 	public L2CastleTeleporterInstance(int objectId, L2NpcTemplate template)
@@ -74,8 +74,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 			player.sendPacket(html);
 			return;
 		}
-		else
-			super.onBypassFeedback(player, command);
+		super.onBypassFeedback(player, command);
 	}
 	
 	@Override

@@ -324,8 +324,7 @@ public class TvTEvent
 				rewardTeam(_teams[1]);
 				return "TvT Event: Event has ended with both teams tying.";
 			}
-			else
-				return "TvT Event: Event has ended with both teams tying.";
+			return "TvT Event: Event has ended with both teams tying.";
 		}
 		
 		// Set state REWARDING so nobody can point anymore

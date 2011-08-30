@@ -786,8 +786,7 @@ public class Duel
 		{
 			if (_surrenderRequest == 1)
 				return DuelResultEnum.Team1Surrender;
-			else
-				return DuelResultEnum.Team2Surrender;
+			return DuelResultEnum.Team2Surrender;
 		}
 		// duel timed out
 		else if (getRemainingTime() <= 0)

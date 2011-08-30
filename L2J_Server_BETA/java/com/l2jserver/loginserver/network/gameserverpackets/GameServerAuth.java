@@ -110,10 +110,7 @@ public class GameServerAuth extends BaseRecievePacket
 						_server.forceClose(LoginServerFail.REASON_ALREADY_LOGGED8IN);
 						return false;
 					}
-					else
-					{
-						_server.attachGameServerInfo(gsi, _port, _hosts, _maxPlayers);
-					}
+					_server.attachGameServerInfo(gsi, _port, _hosts, _maxPlayers);
 				}
 			}
 			else

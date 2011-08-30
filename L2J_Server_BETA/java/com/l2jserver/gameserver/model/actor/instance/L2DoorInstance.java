@@ -416,8 +416,7 @@ public class L2DoorInstance extends L2Character
 		{
 			if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, activeSiegeId))
 				return false;
-			else
-				return true;
+			return true;
 		}
 		else if (isFort)
 		{

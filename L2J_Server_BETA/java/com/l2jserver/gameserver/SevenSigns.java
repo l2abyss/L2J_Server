@@ -50,10 +50,6 @@ import com.l2jserver.gameserver.util.Broadcast;
 
 /**
  *  Seven Signs Engine
- *
- * 
- * 
- *
  *  @author Tempy
  */
 public class SevenSigns
@@ -247,8 +243,7 @@ public class SevenSigns
 		// because of previous "date" column usage, check only if it already contains usable data for us
 		if (_lastSave.getTimeInMillis() > 7 && _lastSave.before(lastPeriodChange))
 			return true;
-		else
-			return false;
+		return false;
 	}
 	
 	/**

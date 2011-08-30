@@ -915,13 +915,10 @@ public abstract class Inventory extends ItemContainer
 	
 	public synchronized int getPaperdollAugmentationId(int slot)
 	{
-		L2ItemInstance item = _paperdoll[slot];
-		if (item != null)
+		final L2ItemInstance item = _paperdoll[slot];
+		if ((item != null) && (item.getAugmentation() != null))
 		{
-			if (item.getAugmentation() != null)
-				return item.getAugmentation().getAugmentationId();
-			else
-				return 0;
+			return item.getAugmentation().getAugmentationId();
 		}
 		return 0;
 	}

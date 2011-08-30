@@ -28,11 +28,8 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2RaidBossInstance;
 
 /**
- *
- * @version $Revision: $ $Date: $
  * @author  godson
  */
-
 public class DayNightSpawnManager
 {
 	
@@ -241,9 +238,8 @@ public class DayNightSpawnManager
 			
 			return raidboss;
 		}
-		else
-			_bosses.put(spawnDat, null);
 		
+		_bosses.put(spawnDat, null);
 		return null;
 	}
 	

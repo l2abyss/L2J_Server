@@ -153,9 +153,8 @@ public class EffectSignetMDam extends L2Effect
 					caster.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP));
 					return false;
 				}
-				else
-					caster.reduceCurrentMp(mpConsume);
 				
+				caster.reduceCurrentMp(mpConsume);
 				if (cha instanceof L2Playable)
 				{
 					if (caster.canAttackCharacter(cha))

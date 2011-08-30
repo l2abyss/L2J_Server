@@ -34,11 +34,8 @@ public abstract class PathFinding
 			//Higher Memory Usage, Smaller Cpu Usage
 			return GeoPathFinding.getInstance();
 		}
-		else
-			// Cell pathfinding, calculated directly from geodata files
-		{
-			return CellPathFinding.getInstance();
-		}
+		// Cell pathfinding, calculated directly from geodata files
+		return CellPathFinding.getInstance();
 	}
 	
 	public abstract boolean pathNodesExist(short regionoffset);

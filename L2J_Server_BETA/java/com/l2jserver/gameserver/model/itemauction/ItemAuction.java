@@ -442,8 +442,7 @@ public final class ItemAuction
 			case FINISHED:
 				if (_startingTime < System.currentTimeMillis() - TimeUnit.MILLISECONDS.convert(Config.ALT_ITEM_AUCTION_EXPIRED_AFTER, TimeUnit.DAYS))
 					return false;
-				else
-					break;
+				break;
 		}
 		
 		final int playerObjId = player.getObjectId();

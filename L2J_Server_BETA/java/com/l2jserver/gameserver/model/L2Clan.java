@@ -1701,48 +1701,46 @@ public class L2Clan
 			player.sendPacket(sp);
 			return null;
 		}
-		else
+		
+		Connection con = null;
+		try
 		{
-			Connection con = null;
-			try
+			con = L2DatabaseFactory.getInstance().getConnection();
+			final PreparedStatement statement = con.prepareStatement("INSERT INTO clan_subpledges (clan_id,sub_pledge_id,name,leader_id) values (?,?,?,?)");
+			statement.setInt(1, getClanId());
+			statement.setInt(2, pledgeType);
+			statement.setString(3, subPledgeName);
+			if (pledgeType != -1)
+				statement.setInt(4, leaderId);
+			else
+				statement.setInt(4, 0);
+			statement.execute();
+			statement.close();
+			
+			subPledge = new SubPledge(pledgeType, subPledgeName, leaderId);
+			_subPledges.put(pledgeType, subPledge);
+			
+			if (pledgeType != -1)
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				final PreparedStatement statement = con.prepareStatement("INSERT INTO clan_subpledges (clan_id,sub_pledge_id,name,leader_id) values (?,?,?,?)");
-				statement.setInt(1, getClanId());
-				statement.setInt(2, pledgeType);
-				statement.setString(3, subPledgeName);
-				if (pledgeType != -1)
-					statement.setInt(4, leaderId);
+				// Royal Guard 5000 points per each
+				// Order of Knights 10000 points per each
+				if (pledgeType < L2Clan.SUBUNIT_KNIGHT1)
+					setReputationScore(getReputationScore() - Config.ROYAL_GUARD_COST, true);
 				else
-					statement.setInt(4, 0);
-				statement.execute();
-				statement.close();
-				
-				subPledge = new SubPledge(pledgeType, subPledgeName, leaderId);
-				_subPledges.put(pledgeType, subPledge);
-				
-				if (pledgeType != -1)
-				{
-					// Royal Guard 5000 points per each
-					// Order of Knights 10000 points per each
-					if (pledgeType < L2Clan.SUBUNIT_KNIGHT1)
-						setReputationScore(getReputationScore() - Config.ROYAL_GUARD_COST, true);
-					else
-						setReputationScore(getReputationScore() - Config.KNIGHT_UNIT_COST, true);
-					//TODO: clan lvl9 or more can reinforce knights cheaper if first knight unit already created, use Config.KNIGHT_REINFORCE_COST
-				}
-				
-				if (Config.DEBUG)
-					_log.fine("New sub_clan saved in db: " + getClanId() + "; " + pledgeType);
+					setReputationScore(getReputationScore() - Config.KNIGHT_UNIT_COST, true);
+				//TODO: clan lvl9 or more can reinforce knights cheaper if first knight unit already created, use Config.KNIGHT_REINFORCE_COST
 			}
-			catch (Exception e)
-			{
-				_log.log(Level.SEVERE, "Error saving sub clan data: " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
-			}
+			
+			if (Config.DEBUG)
+				_log.fine("New sub_clan saved in db: " + getClanId() + "; " + pledgeType);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Error saving sub clan data: " + e.getMessage(), e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
 		}
 		broadcastToOnlineMembers(new PledgeShowInfoUpdate(_leader.getClan()));
 		broadcastToOnlineMembers(new PledgeReceiveSubPledgeCreated(subPledge, _leader.getClan()));
@@ -1857,8 +1855,7 @@ public class L2Clan
 	{
 		if (_privs.get(rank) != null)
 			return _privs.get(rank).getPrivs();
-		else
-			return CP_NOTHING;
+		return CP_NOTHING;
 	}
 	
 	public void setRankPrivs(int rank, int privs)

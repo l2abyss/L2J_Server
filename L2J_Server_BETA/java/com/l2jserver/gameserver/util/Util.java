@@ -126,8 +126,7 @@ public final class Util
 			double dz = z1 - z2;
 			return Math.sqrt(dx * dx + dy * dy + dz * dz);
 		}
-		else
-			return Math.sqrt(dx * dx + dy * dy);
+		return Math.sqrt(dx * dx + dy * dy);
 	}
 	
 	/**
@@ -211,12 +210,8 @@ public final class Util
 			
 			return d <= range * range + 2 * range * rad + rad * rad;
 		}
-		else
-		{
-			double d = dx * dx + dy * dy;
-			
-			return d <= range * range + 2 * range * rad + rad * rad;
-		}
+		double d = dx * dx + dy * dy;
+		return d <= range * range + 2 * range * rad + rad * rad;
 	}
 	
 	/**
@@ -242,8 +237,7 @@ public final class Util
 			int dz = obj1.getZ() - obj2.getZ();
 			return dx * dx + dy * dy + dz * dz <= radius * radius;
 		}
-		else
-			return dx * dx + dy * dy <= radius * radius;
+		return dx * dx + dy * dy <= radius * radius;
 	}
 	
 	/**

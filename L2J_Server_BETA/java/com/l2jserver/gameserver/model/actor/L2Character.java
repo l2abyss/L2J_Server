@@ -2136,17 +2136,15 @@ public abstract class L2Character extends L2Object
 					sm.addItemName(skill.getItemConsumeId());
 					sm.addNumber(skill.getItemConsume());
 					sendPacket(sm);
-					return false;
 				}
 				else
 				{
 					// Send a System Message to the caster
 					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL));
-					return false;
 				}
+				return false;
 			}
 		}
-		
 		return true;
 	}
 	
@@ -4710,8 +4708,7 @@ public abstract class L2Character extends L2Object
 					{
 						if (gtx == _move.geoPathGtx && gty == _move.geoPathGty)
 							return;
-						else
-							_move.onGeodataPathIndex = -1; // Set not on geodata path
+						_move.onGeodataPathIndex = -1; // Set not on geodata path
 					}
 					catch (NullPointerException e)
 					{
@@ -4767,14 +4764,12 @@ public abstract class L2Character extends L2Object
 							getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 							return;
 						}
-						else
-						{
-							m.disregardingGeodata = true;
-							x = originalX;
-							y = originalY;
-							z = originalZ;
-							distance = originalDistance;
-						}
+						
+						m.disregardingGeodata = true;
+						x = originalX;
+						y = originalY;
+						z = originalZ;
+						distance = originalDistance;
 					}
 					else
 					{
@@ -5101,21 +5096,22 @@ public abstract class L2Character extends L2Object
 		double dx = x - getX();
 		double dy = y - getY();
 		double dz = z - getZ();
-		
+		boolean isInsideRadius = false;
 		if (strictCheck)
 		{
 			if (checkZ)
-				return (dx * dx + dy * dy + dz * dz) < radius * radius;
+				isInsideRadius = (dx * dx + dy * dy + dz * dz) < radius * radius;
 			else
-				return (dx * dx + dy * dy) < radius * radius;
+				isInsideRadius = (dx * dx + dy * dy) < radius * radius;
 		}
 		else
 		{
 			if (checkZ)
-				return (dx * dx + dy * dy + dz * dz) <= radius * radius;
+				isInsideRadius = (dx * dx + dy * dy + dz * dz) <= radius * radius;
 			else
-				return (dx * dx + dy * dy) <= radius * radius;
+				isInsideRadius = (dx * dx + dy * dy) <= radius * radius;
 		}
+		return isInsideRadius;
 	}
 	
 	//	/**
@@ -6446,12 +6442,10 @@ public abstract class L2Character extends L2Object
 			setIsCastingSimultaneouslyNow(false);
 			return;
 		}
-		else
-		{
-			_skillCast = null;
-			setIsCastingNow(false);
-			_castInterruptTime = 0;
-		}
+		
+		_skillCast = null;
+		setIsCastingNow(false);
+		_castInterruptTime = 0;
 		
 		final L2Skill skill = mut.skill;
 		final L2Object target = mut.targets.length > 0 ? mut.targets[0] : null;
@@ -6932,8 +6926,7 @@ public abstract class L2Character extends L2Object
 		L2Object target = getTarget();
 		if (target instanceof L2Character)
 			return isInFrontOf((L2Character) target);
-		else
-			return false;
+		return false;
 	}
 	
 	/**

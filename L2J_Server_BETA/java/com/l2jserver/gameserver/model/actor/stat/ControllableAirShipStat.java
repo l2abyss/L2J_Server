@@ -34,7 +34,6 @@ public class ControllableAirShipStat extends VehicleStat
 	{
 		if (getActiveChar().isInDock() || getActiveChar().getFuel() > 0)
 			return super.getMoveSpeed();
-		else
-			return super.getMoveSpeed() * 0.05f;
+		return super.getMoveSpeed() * 0.05f;
 	}
 }

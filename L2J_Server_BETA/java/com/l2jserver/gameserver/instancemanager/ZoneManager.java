@@ -656,10 +656,8 @@ public class ZoneManager
 					zone = temp;
 				}
 			}
-			return zone;
 		}
-		else
-			return zone;
+		return zone;
 	}
 	
 	/**

@@ -44,7 +44,6 @@ import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
-
 public class CursedWeapon
 {
 	private static final Logger _log = Logger.getLogger(CursedWeaponsManager.class.getName());
@@ -674,13 +673,11 @@ public class CursedWeapon
 	}
 	public int getLevel()
 	{
-		if (_nbKills > _stageKills*_skillMaxLevel)
+		if (_nbKills > _stageKills * _skillMaxLevel)
 		{
 			return _skillMaxLevel;
-		} else
-		{
-			return (_nbKills / _stageKills);
-		}
+		} 
+		return (_nbKills / _stageKills);
 	}
 	public long getTimeLeft()
 	{

@@ -176,13 +176,12 @@ public class L2SignsPriestInstance extends L2Npc
 					if (fee)
 					{
 						showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_no.htm");
-						break;
 					}
 					else
 					{
 						showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn.htm");
-						break;
 					}
+					break;
 				case 3: // Join Cabal Intro 1
 				case 8: // Festival of Darkness Intro - SevenSigns x [0]1
 					showChatWindow(player, val, SevenSigns.getCabalShortName(cabal), false);
@@ -386,7 +385,6 @@ public class L2SignsPriestInstance extends L2Npc
 					if (contribScore == Config.ALT_MAXIMUM_PLAYER_CONTRIB)
 					{
 						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_EXCEEDED));
-						break;
 					}
 					else
 					{

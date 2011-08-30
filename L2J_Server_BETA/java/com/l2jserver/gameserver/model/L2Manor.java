@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
  * Service class for manor
  * @author l3x
  */
-
 public class L2Manor
 {
 	private static Logger _log = Logger.getLogger(L2Manor.class.getName());
@@ -74,16 +73,12 @@ public class L2Manor
 	
 	public int getSeedBasicPrice(int seedId)
 	{
-		L2Item seedItem = ItemTable.getInstance().getTemplate(seedId);
-		
+		final L2Item seedItem = ItemTable.getInstance().getTemplate(seedId);
 		if (seedItem != null)
 		{
 			return seedItem.getReferencePrice();
 		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	}
 	
 	public int getSeedBasicPriceByCrop(int cropId)
@@ -98,12 +93,10 @@ public class L2Manor
 	
 	public int getCropBasicPrice(int cropId)
 	{
-		L2Item cropItem = ItemTable.getInstance().getTemplate(cropId);
-		
+		final L2Item cropItem = ItemTable.getInstance().getTemplate(cropId);
 		if (cropItem != null)
 			return cropItem.getReferencePrice();
-		else
-			return 0;
+		return 0;
 	}
 	
 	public int getMatureCrop(int cropId)

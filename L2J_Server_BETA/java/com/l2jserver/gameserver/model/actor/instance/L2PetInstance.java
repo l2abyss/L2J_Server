@@ -70,7 +70,6 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
-
 /**
  *
  * This class ...
@@ -238,8 +237,7 @@ public class L2PetInstance extends L2Summon
 			// if pet is attacking
 			if (isAttackingNow())
 				return getPetLevelData().getPetFeedBattle();
-			else
-				return getPetLevelData().getPetFeedNormal();
+			return getPetLevelData().getPetFeedNormal();
 		}
 	}
 	

@@ -27,7 +27,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
 /**
- * 
  * @author mrTJO
  */
 public class ConsoleLocalizator extends LocalizationParser
@@ -198,8 +197,7 @@ public class ConsoleLocalizator extends LocalizationParser
 		String msg = getStringFromId(id);
 		if (msg == null)
 			return formatText("Untranslated id: %s", id);
-		else
-			return formatText(msg, args);
+		return formatText(msg, args);
 	}
 	
 	/**

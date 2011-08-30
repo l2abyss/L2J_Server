@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
 
 /**
- *
  * @author  Steuf
  */
 public class ClanHallManager
@@ -109,8 +108,7 @@ public class ClanHallManager
 						owner.setHasHideout(id);
 						continue;
 					}
-					else
-						ch.free();
+					ch.free();
 				}
 				_freeClanHall.put(id, ch);
 				

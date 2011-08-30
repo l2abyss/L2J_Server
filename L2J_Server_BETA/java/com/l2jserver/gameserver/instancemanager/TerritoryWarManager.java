@@ -173,8 +173,10 @@ public class TerritoryWarManager implements Siegable
 	{
 		if (clan == null)
 			return false;
-		else if (clan.getHasCastle() > 0)
-			return (castleId == -1 ? true:(clan.getHasCastle() == castleId));
+		
+		if (clan.getHasCastle() > 0)
+			return (castleId == -1 ? true : (clan.getHasCastle() == castleId));
+		
 		if (castleId == -1)
 		{
 			for(int cId:_registeredClans.keySet())
@@ -182,8 +184,7 @@ public class TerritoryWarManager implements Siegable
 					return true;
 			return false;
 		}
-		else
-			return _registeredClans.get(castleId).contains(clan);
+		return _registeredClans.get(castleId).contains(clan);
 	}
 	
 	/**
@@ -199,8 +200,7 @@ public class TerritoryWarManager implements Siegable
 					return true;
 			return false;
 		}
-		else
-			return _registeredMercenaries.get(castleId).contains(objId);
+		return _registeredMercenaries.get(castleId).contains(objId);
 	}
 	
 	public Territory getTerritory(int castleId)
@@ -644,14 +644,13 @@ public class TerritoryWarManager implements Siegable
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Territory War Manager: " + e.getMessage(), e);
-				return null;
 			}
 		}
 		else
 		{
 			_log.warning("Territory War Manager: Data missing in NPC table for ID: " + npcId + ".");
-			return null;
 		}
+		return null;
 	}
 	
 	private void changeRegistration(int castleId, int objId, boolean delete)

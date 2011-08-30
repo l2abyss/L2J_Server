@@ -101,8 +101,7 @@ public class OlympiadGameManager implements Runnable
 										task.attachGame(newGame);
 										continue;
 									}
-									else
-										readyTeams = false;
+									readyTeams = false;
 								}
 								// if no ready teams found check for classed
 								if (readyClassed != null)
@@ -113,8 +112,7 @@ public class OlympiadGameManager implements Runnable
 										task.attachGame(newGame);
 										continue;
 									}
-									else
-										readyClassed = null;
+									readyClassed = null;
 								}
 							}
 							// 1,3,5,7,9.. arenas used for non-classed
@@ -127,9 +125,8 @@ public class OlympiadGameManager implements Runnable
 									task.attachGame(newGame);
 									continue;
 								}
-								else
-									readyNonClassed = false;
-							}							
+								readyNonClassed = false;
+							}
 						}
 					}
 

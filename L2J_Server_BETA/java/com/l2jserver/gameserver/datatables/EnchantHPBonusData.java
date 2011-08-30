@@ -36,7 +36,6 @@ import com.l2jserver.gameserver.skills.funcs.LambdaConst;
 import com.l2jserver.gameserver.templates.item.L2Item;
 
 /**
- *
  * @author  MrPoke
  */
 public class EnchantHPBonusData
@@ -185,8 +184,8 @@ public class EnchantHPBonusData
 		
 		if (item.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)
 			return (int) (values[Math.min(item.getOlyEnchantLevel(), values.length) - 1] * fullArmorModifier);
-		else
-			return values[Math.min(item.getOlyEnchantLevel(), values.length) - 1];
+		
+		return values[Math.min(item.getOlyEnchantLevel(), values.length) - 1];
 	}
 	
 	@SuppressWarnings("synthetic-access")

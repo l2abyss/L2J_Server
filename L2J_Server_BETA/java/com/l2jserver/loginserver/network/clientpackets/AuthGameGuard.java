@@ -71,10 +71,7 @@ public class AuthGameGuard extends L2LoginClientPacket
 			_data4 = readD();
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 	
 	/**

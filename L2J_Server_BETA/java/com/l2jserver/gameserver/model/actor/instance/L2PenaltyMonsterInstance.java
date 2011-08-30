@@ -37,8 +37,7 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 	{
 		if (_ptk != null)
 			return _ptk; //always attack only one person
-		else
-			return super.getMostHated();
+		return super.getMostHated();
 	}
 	
 	public void setPlayerToKill(L2PcInstance ptk)

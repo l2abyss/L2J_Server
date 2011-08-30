@@ -115,8 +115,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 					{
 						if (activeChar.getClan() == null || activeChar.getClan().getHasCastle() == 0)
 							return;
-						else
-							loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
+						loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
 					}
 					if (CastleManager.getInstance().getCastleByOwner(activeChar.getClan())!= null &&
 							CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).getFunction(Castle.FUNC_RESTORE_EXP) != null)

@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Base64;
 
 /**
- * 
  * @author mrTJO
  */
 public class SecondaryPasswordAuth
@@ -227,7 +226,6 @@ public class SecondaryPasswordAuth
 			{
 				_activeClient.sendPacket(new Ex2ndPasswordVerify(Ex2ndPasswordVerify.PASSWORD_WRONG, _wrongAttempts));
 				insertWrongAttempt(_wrongAttempts);
-				return false;
 			}
 			else
 			{
@@ -240,8 +238,8 @@ public class SecondaryPasswordAuth
 						_wrongAttempts+" times in row.");
 				insertWrongAttempt(0);
 				_activeClient.close(new Ex2ndPasswordVerify(Ex2ndPasswordVerify.PASSWORD_BAN, Config.SECOND_AUTH_MAX_ATTEMPTS));
-				return false;
 			}
+			return false;
 		}
 		if (!skipAuth)
 		{

@@ -47,7 +47,6 @@ import javolution.util.FastMap;
 
 /**
  * @author Nyaran
- *
  */
 public class MapRegionManager
 {
@@ -304,8 +303,7 @@ public class MapRegionManager
 						{
 							if (player.getKarma() > 0)
 								return zone.getChaoticSpawnLoc();
-							else
-								return zone.getSpawnLoc();
+							return zone.getSpawnLoc();
 						}
 					}
 				}
@@ -327,8 +325,7 @@ public class MapRegionManager
 					{
 						if (player.getKarma() > 0)
 							return castle.getCastleZone().getChaoticSpawnLoc();
-						else
-							return castle.getCastleZone().getSpawnLoc();
+						return castle.getCastleZone().getSpawnLoc();
 					}
 				}
 				
@@ -349,8 +346,7 @@ public class MapRegionManager
 					{
 						if (player.getKarma() > 0)
 							return fort.getFortZone().getChaoticSpawnLoc();
-						else
-							return fort.getFortZone().getSpawnLoc();
+						return fort.getFortZone().getSpawnLoc();
 					}
 				}
 				
@@ -422,15 +418,13 @@ public class MapRegionManager
 					L2RespawnZone zone = ZoneManager.getInstance().getZone(player, L2RespawnZone.class);
 					if (zone != null)
 						return getRestartRegion(activeChar, zone.getRespawnPoint((L2PcInstance) activeChar)).getChaoticSpawnLoc();
-					else
-						return getMapRegion(activeChar).getChaoticSpawnLoc();
+					return getMapRegion(activeChar).getChaoticSpawnLoc();
 				}
 				catch (Exception e)
 				{
 					if (player.isFlyingMounted()) // prevent flying players to teleport outside of gracia
 						return _regions.get("union_base_of_kserth").getChaoticSpawnLoc();
-					else
-						return _regions.get("talking_island_town").getChaoticSpawnLoc();
+					return _regions.get("talking_island_town").getChaoticSpawnLoc();
 				}
 			}
 			
@@ -465,8 +459,7 @@ public class MapRegionManager
 			L2RespawnZone zone = ZoneManager.getInstance().getZone(activeChar, L2RespawnZone.class);
 			if (zone != null)
 				return getRestartRegion(activeChar, zone.getRespawnPoint((L2PcInstance) activeChar)).getSpawnLoc();
-			else
-				return getMapRegion(activeChar).getSpawnLoc();
+			return getMapRegion(activeChar).getSpawnLoc();
 		}
 		catch (Exception e)
 		{

@@ -36,7 +36,6 @@ import com.l2jserver.gameserver.util.Util;
 
 /**
  * @author Advi
- *
  */
 public class TradeList
 {
@@ -295,8 +294,7 @@ public class TradeList
 				{
 					if (item.getCount() <= exclItem.getCount())
 						return null;
-					else
-						return new TradeItem(item, item.getCount() - exclItem.getCount(), item.getReferencePrice());
+					return new TradeItem(item, item.getCount() - exclItem.getCount(), item.getReferencePrice());
 				}
 			}
 		}
@@ -932,8 +930,7 @@ public class TradeList
 		player.sendPacket(playerIU);
 		if (ok)
 			return 0;
-		else
-			return 2;
+		return 2;
 	}
 	
 	/**

@@ -24,7 +24,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * Clan member class.
  */
@@ -308,26 +307,30 @@ public class L2ClanMember
 	
 	public int getRaceOrdinal()
 	{
-		if (_player != null) return _player.getRace().ordinal();
-		else return _raceOrdinal;
+		if (_player != null)
+			return _player.getRace().ordinal();
+		return _raceOrdinal;
 	}
 	
 	public boolean getSex()
 	{
-		if (_player != null) return _player.getAppearance().getSex();
-		else return _sex;
+		if (_player != null)
+			return _player.getAppearance().getSex();
+		return _sex;
 	}
 	
 	public int getSponsor()
 	{
-		if (_player != null) return _player.getSponsor();
-		else return _sponsor;
+		if (_player != null)
+			return _player.getSponsor();
+		return _sponsor;
 	}
 	
 	public int getApprentice()
 	{
-		if (_player != null) return _player.getApprentice();
-		else return _apprentice;
+		if (_player != null)
+			return _player.getApprentice();
+		return _apprentice;
 	}
 	
 	public String getApprenticeOrSponsorName()
@@ -341,14 +344,16 @@ public class L2ClanMember
 		if(_apprentice != 0)
 		{
 			L2ClanMember apprentice = _clan.getClanMember(_apprentice);
-			if(apprentice != null) return apprentice.getName();
-			else return "Error";
+			if(apprentice != null)
+				return apprentice.getName();
+			return "Error";
 		}
 		if(_sponsor != 0)
 		{
 			L2ClanMember sponsor = _clan.getClanMember(_sponsor);
-			if(sponsor != null) return sponsor.getName();
-			else return "Error";
+			if(sponsor != null) 
+				return sponsor.getName();
+			return "Error";
 		}
 		return "";
 	}

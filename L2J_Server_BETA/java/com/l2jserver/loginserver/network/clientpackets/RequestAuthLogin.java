@@ -78,10 +78,7 @@ public class RequestAuthLogin extends L2LoginClientPacket
 			readB(_raw);
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 	
 	@Override

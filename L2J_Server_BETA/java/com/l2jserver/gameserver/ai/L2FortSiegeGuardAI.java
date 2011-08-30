@@ -43,10 +43,8 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
-
 /**
- * This class manages AI of L2Attackable.<BR><BR>
- *
+ * This class manages AI of L2Attackable.
  */
 public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 {
@@ -847,9 +845,9 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				_globalAggro = -25;
 				return;
 			}
-			else
-				for (L2Character aggroed : me.getAggroList().keySet())
-					me.addDamageHate(aggroed, 0, aggro);
+			
+			for (L2Character aggroed : me.getAggroList().keySet())
+				me.addDamageHate(aggroed, 0, aggro);
 			
 			aggro = me.getHating(mostHated);
 			if (aggro <= 0)

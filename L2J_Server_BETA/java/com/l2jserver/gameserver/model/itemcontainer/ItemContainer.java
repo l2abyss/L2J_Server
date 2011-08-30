@@ -37,7 +37,6 @@ import com.l2jserver.gameserver.templates.item.L2Item;
 
 /**
  * @author Advi
- *
  */
 public abstract class ItemContainer
 {
@@ -413,8 +412,6 @@ public abstract class ItemContainer
 				}
 				
 				refreshWeight();
-				
-				return item;
 			}
 			else
 			{

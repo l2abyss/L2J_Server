@@ -725,7 +725,6 @@ public class FortSiege implements Siegable
 			clearSiegeClan(); // remove all clans
 			// spawn suspicious merchant immediately
 			ThreadPoolManager.getInstance().executeTask(new ScheduleSuspiciousMerchantSpawn());
-			return;
 		}
 		else
 		{

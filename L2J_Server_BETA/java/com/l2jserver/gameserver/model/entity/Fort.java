@@ -455,34 +455,32 @@ public class Fort
 			getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.NPCS_RECAPTURED_FORTRESS));
 			return false;
 		}
-		else
+		
+		// Give points to new owner
+		if (updateClansReputation)
+			updateClansReputation(clan, false);
+		
+		spawnSpecialEnvoys();
+		ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1 * 60 * 60 * 1000); // Prepare 1hr task for special envoys despawn
+		// if clan have already fortress, remove it
+		if (clan.getHasFort() > 0)
+			FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
+		
+		setBloodOathReward(0);
+		setSupplyLvL(0);
+		setOwnerClan(clan);
+		updateOwnerInDB(); // Update in database
+		saveFortVariables();
+		
+		if (getSiege().getIsInProgress()) // If siege in progress
+			getSiege().endSiege();
+		
+		for (L2PcInstance member : clan.getOnlineMembers(0))
 		{
-			// Give points to new owner
-			if (updateClansReputation)
-				updateClansReputation(clan, false);
-			
-			spawnSpecialEnvoys();
-			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1 * 60 * 60 * 1000); // Prepare 1hr task for special envoys despawn
-			// if clan have already fortress, remove it
-			if (clan.getHasFort() > 0)
-				FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
-			
-			setBloodOathReward(0);
-			setSupplyLvL(0);
-			setOwnerClan(clan);
-			updateOwnerInDB(); // Update in database
-			saveFortVariables();
-			
-			if (getSiege().getIsInProgress()) // If siege in progress
-				getSiege().endSiege();
-			
-			for (L2PcInstance member : clan.getOnlineMembers(0))
-			{
-				giveResidentialSkills(member);
-				member.sendSkillList();
-			}
-			return true;
+			giveResidentialSkills(member);
+			member.sendSkillList();
 		}
+		return true;
 	}
 	
 	public void removeOwner(boolean updateDB)

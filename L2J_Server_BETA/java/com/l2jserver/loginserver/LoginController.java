@@ -263,10 +263,7 @@ public class LoginController
 				_bannedIps.remove(address.getHostAddress());
 				return false;
 			}
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -559,7 +556,6 @@ public class LoginController
 						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : ErrCreatingACC", "loginlog");
 					
 					_log.warning("Invalid username creation/use attempt: " + user);
-					return false;
 				}
 				else
 				{
@@ -586,53 +582,51 @@ public class LoginController
 								+ failedCount + " invalid user name attempts");
 						this.addBanForAddress(address, Config.LOGIN_BLOCK_AFTER_BAN * 1000);
 					}
-					return false;
 				}
+				return false;
 			}
-			else
+			
+			// is this account banned?
+			if (access < 0)
 			{
-				// is this account banned?
-				if (access < 0)
+				if (Config.LOG_LOGIN_CONTROLLER)
+					Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : AccountBanned", "loginlog");
+				
+				client.setAccessLevel(access);
+				return false;
+			}
+			// Check IP
+			if (userIP != null)
+			{
+				if(!isValidIPAddress(userIP))
 				{
-					if (Config.LOG_LOGIN_CONTROLLER)
-						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : AccountBanned", "loginlog");
-					
-					client.setAccessLevel(access);
-					return false;
-				}
-				// Check IP
-				if (userIP != null)
-				{
-					if(!isValidIPAddress(userIP))
+					// Address is not valid so it's a domain name, get IP
+					try
 					{
-						// Address is not valid so it's a domain name, get IP
-						try
-						{
-							InetAddress addr = InetAddress.getByName(userIP);
-							userIP = addr.getHostAddress();
-						}
-						catch(Exception e)
-						{
-							return false;
-						}
+						InetAddress addr = InetAddress.getByName(userIP);
+						userIP = addr.getHostAddress();
 					}
-					if(!address.getHostAddress().equalsIgnoreCase(userIP))
+					catch(Exception e)
 					{
-						if (Config.LOG_LOGIN_CONTROLLER)
-							Log.add("'" + user + "' " + address.getHostAddress() + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
-					
 						return false;
 					}
 				}
-				// check password hash
-				ok = true;
-				for (int i = 0; i < expected.length; i++)
+				if(!address.getHostAddress().equalsIgnoreCase(userIP))
 				{
-					if (hash[i] != expected[i])
-					{
-						ok = false;
-						break;
-					}
+					if (Config.LOG_LOGIN_CONTROLLER)
+						Log.add("'" + user + "' " + address.getHostAddress() + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
+				
+					return false;
+				}
+			}
+			// check password hash
+			ok = true;
+			for (int i = 0; i < expected.length; i++)
+			{
+				if (hash[i] != expected[i])
+				{
+					ok = false;
+					break;
 				}
 			}
 			

@@ -21,10 +21,8 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 
 /**
- * 
  * @author DS
  * Credits to Diamond
- *
  */
 public class CellNodeBuffer
 {
@@ -273,8 +271,7 @@ public class CellNodeBuffer
 				newNode.setNext(node.getNext());
 				break;
 			}
-			else
-				node = node.getNext();
+			node = node.getNext();
 		}
 		if (count == MAX_ITERATIONS * 4)
 			System.err.println("Pathfinding: too long loop detected, cost:" + newNode.getCost());

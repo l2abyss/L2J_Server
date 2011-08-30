@@ -30,10 +30,8 @@ import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
 
-
 /**
  * another type of damage zone with skills
- *
  * @author  kerberos
  */
 public class L2EffectZone extends L2ZoneType
@@ -221,8 +219,7 @@ public class L2EffectZone extends L2ZoneType
 	{
 		if (_skills == null || !_skills.containsKey(skillId))
 			return 0;
-		else
-			return _skills.get(skillId);
+		return _skills.get(skillId);
 	}
 	
 	class ApplySkill implements Runnable
@@ -267,5 +264,4 @@ public class L2EffectZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
-	
 }

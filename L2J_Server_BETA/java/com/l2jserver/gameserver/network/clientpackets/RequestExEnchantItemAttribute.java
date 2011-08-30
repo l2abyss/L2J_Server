@@ -254,8 +254,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		
 		if (item.isWeapon())
 			return Elementals.WEAPON_VALUES[elementItem._type._maxLevel];
-		else
-			return Elementals.ARMOR_VALUES[elementItem._type._maxLevel];
+		return Elementals.ARMOR_VALUES[elementItem._type._maxLevel];
 	}
 	
 	public int getPowerToAdd(int stoneId, int oldValue, L2ItemInstance item)
@@ -266,13 +265,11 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			{
 				if (oldValue == 0)
 					return Elementals.FIRST_WEAPON_BONUS;
-				else
-					return Elementals.NEXT_WEAPON_BONUS;
+				return Elementals.NEXT_WEAPON_BONUS;
 			}
 			else if (item.isArmor())
 				return Elementals.ARMOR_BONUS;
 		}
-		
 		return 0;
 	}
 	

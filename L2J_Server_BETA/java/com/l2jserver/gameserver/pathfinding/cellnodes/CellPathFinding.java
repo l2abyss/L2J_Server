@@ -312,13 +312,11 @@ public class CellPathFinding extends PathFinding
 						i.playableUses++;
 					break;
 				}
-				else
-				{
-					i.overflows++;
-					if (playable)
-						i.playableOverflows++;
-					//System.err.println("Overflow, size requested: " + size + " playable:"+playable);
-				}
+
+				i.overflows++;
+				if (playable)
+					i.playableOverflows++;
+				//System.err.println("Overflow, size requested: " + size + " playable:"+playable);
 			}
 		}
 		

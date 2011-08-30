@@ -238,10 +238,10 @@ public class AutoChatHandler implements SpawnListener
 	{
 		if (!byObjectId)
 			return _registeredChats.get(id);
-		else
-			for (AutoChatInstance chatInst : _registeredChats.values())
-				if (chatInst.getChatDefinition(id) != null)
-					return chatInst;
+		
+		for (AutoChatInstance chatInst : _registeredChats.values())
+			if (chatInst.getChatDefinition(id) != null)
+				return chatInst;
 		
 		return null;
 	}
@@ -611,16 +611,16 @@ public class AutoChatHandler implements SpawnListener
 			{
 				if (_chatTexts != null)
 					return _chatTexts;
-				else
-					return _chatInstance.getDefaultTexts();
+				
+				return _chatInstance.getDefaultTexts();
 			}
 			
 			private long getChatDelay()
 			{
 				if (_chatDelay > 0)
 					return _chatDelay;
-				else
-					return _chatInstance.getDefaultDelay();
+				
+				return _chatInstance.getDefaultDelay();
 			}
 			
 			private boolean isActive()

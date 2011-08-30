@@ -169,8 +169,9 @@ public class L2Party
 			if (member.getInventory().validateCapacityByItemId(ItemId) &&
 					Util.checkIfInRange(Config.ALT_PARTY_RANGE2, target, member, true)) availableMembers.add(member);
 		}
-		if (!availableMembers.isEmpty()) return availableMembers.get(Rnd.get(availableMembers.size()));
-		else return null;
+		if (!availableMembers.isEmpty())
+			return availableMembers.get(Rnd.get(availableMembers.size()));
+		return null;
 	}
 	
 	/**
@@ -769,10 +770,9 @@ public class L2Party
 				{
 					if (((L2PetInstance)member).getPetLevelData().getOwnerExpTaken() > 0)
 						continue;
-					else // TODO: This is a temporary fix while correct pet xp in party is figured out
-						penalty = (float)0.85;
+					// TODO: This is a temporary fix while correct pet xp in party is figured out
+					penalty = (float) 0.85;
 				}
-				
 				
 				// Calculate and add the EXP and SP reward to the member
 				if (validMembers.contains(member))
@@ -903,10 +903,7 @@ public class L2Party
 			//not is a valid party
 			return getBaseExpSpBonus(membersCount);
 		}
-		else
-		{
-			return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_XP;
-		}
+		return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_XP;
 	}
 	
 	private double getSpBonus(int membersCount)
@@ -916,10 +913,7 @@ public class L2Party
 			//not is a valid party
 			return getBaseExpSpBonus(membersCount);
 		}
-		else
-		{
-			return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_SP;
-		}
+		return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_SP;
 	}
 	
 	public int getLevel() { return _partyLvl; }

@@ -57,7 +57,6 @@ import com.l2jserver.util.Util;
 
 /**
  * @author Luis Arias
- *
  */
 public class Quest extends ManagedScript
 {
@@ -514,8 +513,7 @@ public class Quest extends ManagedScript
 		if (res != null && res.length() > 0)
 			return showResult(player, res);
 		// else tell the player that
-		else
-			player.sendPacket(ActionFailed.STATIC_PACKET);
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 		// note: if the default html for this npc needs to be shown, onFirstTalk should
 		// call npc.showChatWindow(player) and then return null.
 		return true;
@@ -707,8 +705,7 @@ public class Quest extends ManagedScript
 	{
 		if (killer instanceof L2Npc)
 			return onAdvEvent("", (L2Npc) killer, qs.getPlayer());
-		else
-			return onAdvEvent("", null, qs.getPlayer());
+		return onAdvEvent("", null, qs.getPlayer());
 	}
 	
 	public String onAdvEvent(String event, L2Npc npc, L2PcInstance player)
@@ -1948,8 +1945,7 @@ public class Quest extends ManagedScript
 		_allEventTimers.clear();
 		if (removeFromList)
 			return QuestManager.getInstance().removeQuest(this);
-		else
-			return true;
+		return true;
 	}
 	
 	@Override
