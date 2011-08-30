@@ -124,6 +124,7 @@ public enum Stats
 	PARALYZE_VULN("paralyzeVuln"),
 	ROOT_VULN("rootVuln"),
 	SLEEP_VULN("sleepVuln"),
+	DAMAGE_ZONE_VULN("damageZoneVuln"),
 	MOVEMENT_VULN("movementVuln"),
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
 	DERANGEMENT_VULN("derangementVuln"),

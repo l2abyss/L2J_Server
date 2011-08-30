@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.skills.Stats;
 
 
 /**
@@ -185,10 +186,12 @@ public class L2DamageZone extends L2ZoneType
 							continue;
 					}
 					
+					double multiplier =  1 + (temp.calcStat(Stats.DAMAGE_ZONE_VULN, 0, null, null) / 100);
+					
 					if (getHPDamagePerSecond() != 0)
-						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond(), null, null);
+						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond() * multiplier, null, null);
 					if (getMPDamagePerSecond() != 0)
-						temp.reduceCurrentMp(_dmgZone.getMPDamagePerSecond());
+						temp.reduceCurrentMp(_dmgZone.getMPDamagePerSecond() * multiplier);
 				}
 			}
 		}
