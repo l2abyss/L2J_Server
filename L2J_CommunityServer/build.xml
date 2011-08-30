@@ -51,14 +51,10 @@
 	</target>
 
 	<target name="dist" depends="jar">
-		<copy todir="${build.dist.community}">
-			<fileset dir="dist/cfgs" />
-			<fileset dir="dist/community" />
+		<copy todir="${build.dist}">
+			<fileset dir="dist" />
 		</copy>
 		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
-		<copy todir="${build.dist.doc}">
-			<fileset dir="dist/doc" />
-		</copy>
 		<concat destfile="${build.dist.doc}/L2J_CommunityServer_CHANGELOG.txt">${l2j.changelog}</concat>
 		<copy todir="${build.dist.libs}">
 			<fileset dir="lib" />
