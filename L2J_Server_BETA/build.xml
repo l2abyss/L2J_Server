@@ -191,7 +191,7 @@
 			</condition>
 		</fail>
 		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
-		<fail unless="JDK7.present" message="Java JDK 7 is required." />
+		<fail unless="JDK7.present" message="Java 1.7 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
 	</target>
 
 	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version">
