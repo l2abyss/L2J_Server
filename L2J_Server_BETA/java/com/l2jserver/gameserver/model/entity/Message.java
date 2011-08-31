@@ -48,13 +48,22 @@ public class Message
 	private String _senderName = null;
 	private String _receiverName = null;
 	private final String _subject, _content;
-	private boolean _unread, _fourStars, _news;
+	private boolean _unread, _returned;
+	private int _sendBySystem;
 	private boolean _deletedBySender;
 	private boolean _deletedByReceiver;
 	private long _reqAdena;
 	private boolean _hasAttachments;
 	private Mail _attachments = null;
 	private ScheduledFuture<?> _unloadTask = null;
+	
+	public enum SendBySystem
+	{
+		PLAYER,
+		NEWS,
+		NONE,
+		ALEGRIA
+	}
 	
 	/*
 	 * Constructor for restoring from DB.
@@ -72,8 +81,8 @@ public class Message
 		_unread = rset.getBoolean("isUnread");
 		_deletedBySender = rset.getBoolean("isDeletedBySender");
 		_deletedByReceiver = rset.getBoolean("isDeletedByReceiver");
-		_fourStars = rset.getBoolean("isFourStars");
-		_news = rset.getBoolean("isNews");
+		_sendBySystem = rset.getInt("sendBySystem");
+		_returned = rset.getBoolean("isReturned");
 	}
 	
 	/*
@@ -95,6 +104,26 @@ public class Message
 	}
 	
 	/*
+	 * This constructor used for System Mails
+	 */
+	public Message(int receiverId, String subject, String content, SendBySystem sendBySystem)
+	{
+		_messageId = IdFactory.getInstance().getNextId();
+		_senderId = -1;
+		_receiverId = receiverId;
+		_subject = subject; 
+		_content = content;
+		_expiration = System.currentTimeMillis() + EXPIRATION * 3600000;
+		_reqAdena = 0;
+		_hasAttachments = false;
+		_unread = true;
+		_deletedBySender = true;
+		_deletedByReceiver = false;
+		_sendBySystem = sendBySystem.ordinal();
+		_returned = false;
+	}
+	
+	/*
 	 * This constructor used for auto-generation of the "return attachments" message
 	 */
 	public Message(Message msg)
@@ -108,7 +137,8 @@ public class Message
 		_unread = true;
 		_deletedBySender = true;
 		_deletedByReceiver = false;
-		_fourStars = true;
+		_sendBySystem = SendBySystem.NONE.ordinal();
+		_returned = true;
 		_reqAdena = 0;
 		_hasAttachments = true;
 		_attachments = msg.getAttachments();
@@ -119,7 +149,7 @@ public class Message
 	
 	public static final PreparedStatement getStatement(Message msg, Connection con) throws SQLException
 	{
-		PreparedStatement stmt = con.prepareStatement("INSERT INTO messages (messageId, senderId, receiverId, subject, content, expiration, reqAdena, hasAttachments, isUnread, isDeletedBySender, isDeletedByReceiver, isFourStars, isNews) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		PreparedStatement stmt = con.prepareStatement("INSERT INTO messages (messageId, senderId, receiverId, subject, content, expiration, reqAdena, hasAttachments, isUnread, isDeletedBySender, isDeletedByReceiver, sendBySystem, isReturned) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		
 		stmt.setInt(1, msg._messageId);
 		stmt.setInt(2, msg._senderId);
@@ -132,8 +162,8 @@ public class Message
 		stmt.setString(9, String.valueOf(msg._unread));
 		stmt.setString(10, String.valueOf(msg._deletedBySender));
 		stmt.setString(11, String.valueOf(msg._deletedByReceiver));
-		stmt.setString(12, String.valueOf(msg._fourStars));
-		stmt.setString(13, String.valueOf(msg._news));
+		stmt.setString(12, String.valueOf(msg._sendBySystem));
+		stmt.setString(13, String.valueOf(msg._returned));
 		
 		return stmt;
 	}
@@ -157,7 +187,7 @@ public class Message
 	{
 		if (_senderName == null)
 		{
-			if (_fourStars)
+			if (_sendBySystem != 0)
 				return "****";
 			
 			_senderName = CharNameTable.getInstance().getNameById(_senderId);
@@ -251,19 +281,19 @@ public class Message
 		}
 	}
 	
-	public final boolean isFourStars()
+	public final int getSendBySystem()
 	{
-		return _fourStars;
+		return _sendBySystem;
 	}
 	
-	public final boolean isNews()
+	public final boolean isReturned()
 	{
-		return _news;
+		return _returned;
 	}
 	
-	public final void setIsNews(boolean val)
+	public final void setIsReturned(boolean val)
 	{
-		_news = val;
+		_returned = val;
 	}
 	
 	public final long getReqAdena()

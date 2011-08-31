@@ -25,7 +25,9 @@
 package com.l2jserver.gameserver.util;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -377,5 +379,11 @@ public final class Util
 			return null;
 
 		return dir.listFiles(new ExtFilter(extention));
+	}
+	
+	public static String getDateString(Date date)
+	{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateFormat.format(date.getTime());
 	}
 }

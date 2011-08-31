@@ -64,7 +64,6 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
 import com.l2jserver.gameserver.network.serverpackets.Die;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
-import com.l2jserver.gameserver.network.serverpackets.ExBirthdayPopup;
 import com.l2jserver.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
 import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventPointInfoPacket;
 import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventTimeChange;
@@ -485,7 +484,7 @@ public class EnterWorld extends L2GameClientPacket
 		if (birthday == 0)
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_BIRTHDAY_GIFT_HAS_ARRIVED));
-			activeChar.sendPacket(new ExBirthdayPopup());
+			// activeChar.sendPacket(new ExBirthdayPopup()); Removed in H5?
 		}
 		else if (birthday != -1)
 		{

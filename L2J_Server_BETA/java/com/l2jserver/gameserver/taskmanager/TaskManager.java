@@ -34,6 +34,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.taskmanager.tasks.TaskBirthday;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskCleanUp;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskDailyQuestClean;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskDailySkillReuseClean;
@@ -181,6 +182,7 @@ public final class TaskManager
 		registerTask(new TaskShutdown());
 		registerTask(new TaskDailyQuestClean());
 		registerTask(new TaskDailySkillReuseClean());
+		registerTask(new TaskBirthday());
 	}
 	
 	public void registerTask(Task task)

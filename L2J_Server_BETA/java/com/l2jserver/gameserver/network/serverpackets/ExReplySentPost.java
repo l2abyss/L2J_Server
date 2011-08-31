@@ -91,7 +91,7 @@ public class ExReplySentPost extends L2GameServerPacket
 				writeD(item.getObjectId());
 			}
 			writeQ(_msg.getReqAdena());
-			writeD(_msg.isFourStars() ? 1 : 0);
+			writeD(_msg.getSendBySystem());
 		}
 		else
 			writeD(0x00);

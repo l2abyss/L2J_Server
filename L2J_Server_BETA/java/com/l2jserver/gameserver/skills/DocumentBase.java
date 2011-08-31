@@ -83,6 +83,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionPlayerState;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSubclass;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerTransformationId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerTvTEvent;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerVehicleMounted;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerWeight;
 import com.l2jserver.gameserver.skills.conditions.ConditionSiegeZone;
 import com.l2jserver.gameserver.skills.conditions.ConditionSkillStats;
@@ -658,6 +659,11 @@ abstract class DocumentBase
 			{
 				boolean val = Boolean.valueOf(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerFlyMounted(val));
+			}
+			else if ("vehicleMounted".equalsIgnoreCase(a.getNodeName()))
+			{
+				boolean val = Boolean.valueOf(a.getNodeValue());
+				cond = joinAnd(cond, new ConditionPlayerVehicleMounted(val));
 			}
 			else if ("landingZone".equalsIgnoreCase(a.getNodeName()))
 			{

@@ -177,6 +177,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _maxNegatedEffects; 	// maximum number of effects to negate
 	
 	private final boolean _stayAfterDeath; // skill should stay after death
+	private final boolean _stayOnSubclassChange; // skill should stay on subclass change
 	
 	// kill by damage over time
 	private final boolean _killByDOT;
@@ -399,6 +400,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_maxNegatedEffects = set.getInteger("maxNegated", 0);
 		
 		_stayAfterDeath = set.getBool("stayAfterDeath", false);
+		_stayOnSubclassChange = set.getBool("stayOnSubclassChange", true);
 		
 		_killByDOT = set.getBool("killByDOT", false);
 		_isNeutral = set.getBool("neutral",false);
@@ -1275,6 +1277,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean isStayAfterDeath()
 	{
 		return _stayAfterDeath;
+	}
+	
+	public final boolean isStayOnSubclassChange()
+	{
+		return _stayOnSubclassChange;
 	}
 	
 	//	int weapons[] = {L2Weapon.WEAPON_TYPE_ETC, L2Weapon.WEAPON_TYPE_BOW,

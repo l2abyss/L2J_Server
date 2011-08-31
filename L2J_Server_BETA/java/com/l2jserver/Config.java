@@ -614,6 +614,9 @@ public final class Config
 	public static boolean CUSTOM_SKILLS_LOAD;
 	public static boolean CUSTOM_ITEMS_LOAD;
 	public static boolean CUSTOM_MULTISELL_LOAD;
+	public static int ALT_BIRTHDAY_GIFT;
+	public static String ALT_BIRTHDAY_MAIL_SUBJECT;
+	public static String ALT_BIRTHDAY_MAIL_TEXT;
 	public static boolean ENABLE_BLOCK_CHECKER_EVENT;
 	public static int MIN_BLOCK_CHECKER_TEAM_MEMBERS;
 	public static boolean HBCE_FAIR_PLAY;
@@ -2043,6 +2046,9 @@ public final class Config
 					CUSTOM_SKILLS_LOAD = Boolean.valueOf(General.getProperty("CustomSkillsLoad", "false"));
 					CUSTOM_ITEMS_LOAD = Boolean.valueOf(General.getProperty("CustomItemsLoad", "false"));
 					CUSTOM_MULTISELL_LOAD = Boolean.valueOf(General.getProperty("CustomMultisellLoad", "false"));
+					ALT_BIRTHDAY_GIFT = Integer.parseInt(General.getProperty("AltBirthdayGift", "22187"));
+					ALT_BIRTHDAY_MAIL_SUBJECT = General.getProperty("AltBirthdayMailSubject", "Happy Birthday!");
+					ALT_BIRTHDAY_MAIL_TEXT = General.getProperty("AltBirthdayMailText", "Hello Adventurer!! Seeing as you're one year older now, I thought I would send you some birthday cheer :) Please find your birthday pack attached. May these gifts bring you joy and happiness on this very special day.\n\nSincerely, Alegria");
 					ENABLE_BLOCK_CHECKER_EVENT = Boolean.valueOf(General.getProperty("EnableBlockCheckerEvent", "false"));
 					MIN_BLOCK_CHECKER_TEAM_MEMBERS = Integer.valueOf(General.getProperty("BlockCheckerMinTeamMembers", "2"));
 					if(MIN_BLOCK_CHECKER_TEAM_MEMBERS < 1)

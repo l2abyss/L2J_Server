@@ -99,7 +99,7 @@ public class ExReplyReceivedPost extends L2GameServerPacket
 		
 		writeQ(_msg.getReqAdena());
 		writeD(_msg.hasAttachments() ? 1 : 0);
-		writeD(_msg.isFourStars() ? 1 : 0);
+		writeD(_msg.getSendBySystem());
 		
 		_msg = null;
 	}

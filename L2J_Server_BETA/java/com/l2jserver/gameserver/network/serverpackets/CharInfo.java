@@ -463,7 +463,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(0x01);
 			
 			// T2.3
-			writeD(_activeChar.getSpecialEffect());
+			writeD(4);
 		}
 	}
 	

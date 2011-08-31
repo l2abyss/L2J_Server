@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.network.NpcStringId;
+import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * @author Kerberos
@@ -69,6 +70,22 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_size = 0;
 		_effect = false;
 		_npcString = npcString.getId();
+	}
+	
+	public ExShowScreenMessage (SystemMessageId systemMsg, int position, int time) // For SystemMessage
+	{
+		_type = 2;
+		_sysMessageId = systemMsg.getId();
+		_unk1 = 0;
+		_unk2 = 0;
+		_unk3 = 0;
+		_fade = false;
+		_position = position;
+		_text = null;
+		_time = time;
+		_size = 0;
+		_effect = false;
+		_npcString = -1;
 	}
 	
 	public ExShowScreenMessage (int type, int messageId, int position, int unk1, int size, int unk2, int unk3,boolean showEffect, int time,boolean fade, String text, NpcStringId npcString)
