@@ -18,6 +18,7 @@ import java.util.Collection;
 
 import javolution.util.FastList;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -26,7 +27,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
@@ -34,8 +34,6 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
  */
 public final class L2TrainerHealersInstance extends L2TrainerInstance
 {
-	private static final int feeDeleteTransferSkills = 10000000;
-	
 	public L2TrainerHealersInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
@@ -61,8 +59,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		if (command.equals("SkillTransfer_Learn"))
 		{
 			if (!getTemplate().canTeach(player.getClassId()))
@@ -70,7 +67,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 				showNoTeachHtml(player);
 				return;
 			}
-			else if ((player.getLevel() < 76) || (player.getClassId().level() < 3))
+			if ((player.getLevel() < 76) || (player.getClassId().level() < 3))
 			{
 				html.setFile(player.getHtmlPrefix(), "data/html/trainer/skilltransfer/learn-lowlevel.htm");
 				player.sendPacket(html);
@@ -86,15 +83,15 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 				player.sendPacket(html);
 				return;
 			}
-			else if ((player.getLevel() < 76) || (player.getClassId().level() < 3))
+			if ((player.getLevel() < 76) || (player.getClassId().level() < 3))
 			{
 				html.setFile(player.getHtmlPrefix(), "data/html/trainer/skilltransfer/cleanse-no.htm");
 				player.sendPacket(html);
 				return;
 			}
-			else if (player.getAdena() < feeDeleteTransferSkills)
+			if (player.getAdena() < Config.FEE_DELETE_TRANSFER_SKILLS)
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_RESET_SKILL_LINK_BECAUSE_NOT_ENOUGH_ADENA));
+				player.sendPacket(SystemMessageId.CANNOT_RESET_SKILL_LINK_BECAUSE_NOT_ENOUGH_ADENA);
 				return;
 			}
 			
@@ -105,7 +102,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 				
 				for (L2SkillLearn s : skills)
 				{
-					L2Skill sk = player.getKnownSkill(s.getSkillId());
+					final L2Skill sk = player.getKnownSkill(s.getSkillId());
 					if (sk != null)
 					{
 						player.removeSkill(sk);
@@ -115,7 +112,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 						}
 						else
 						{
-							_log.warning(L2TrainerHealersInstance.class.getSimpleName() + ": Transfer skill Id: " + s.getSkillId() + " doesn't have required items defined!");
+							_log.warning(getClass().getSimpleName() + ": Transfer skill Id: " + s.getSkillId() + " doesn't have required items defined!");
 						}
 						hasSkills = true;
 					}
@@ -124,8 +121,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 				//Adena gets reduced once.
 				if (hasSkills)
 				{
-					player.reduceAdena("Cleanse", feeDeleteTransferSkills, this, true);
-					return;
+					player.reduceAdena("Cleanse", Config.FEE_DELETE_TRANSFER_SKILLS, this, true);
 				}
 			}
 			else
@@ -153,8 +149,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 		
 		for (L2SkillLearn s : skills)
 		{
-			L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
-			if (sk != null)
+			if (SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel()) != null)
 			{
 				count++;
 				asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), s.getLevelUpSp(), 0);
@@ -167,7 +162,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 		}
 		else
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
+			player.sendPacket(SystemMessageId.NO_MORE_SKILLS_TO_LEARN);
 		}
 	}
 	
@@ -185,7 +180,6 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 			default:
 				itemId = -1;
 		}
-		
 		return (player.getInventory().getInventoryItemCount(itemId, -1) > 0);
 	}
 }

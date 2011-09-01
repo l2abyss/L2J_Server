@@ -133,6 +133,8 @@ public final class Config
 	public static boolean ALT_GAME_SUBCLASS_WITHOUT_QUESTS;
 	public static boolean ALT_GAME_SUBCLASS_EVERYWHERE;
 	public static boolean ALLOW_TRANSFORM_WITHOUT_QUEST;
+	public static int FEE_DELETE_TRANSFER_SKILLS;
+	public static int FEE_DELETE_SUBCLASS_SKILLS;
 	public static boolean RESTORE_SERVITOR_ON_RECONNECT;
 	public static boolean RESTORE_PET_ON_RECONNECT;
 	public static int MAX_RUN_SPEED;
@@ -1575,6 +1577,8 @@ public final class Config
 					RESTORE_SERVITOR_ON_RECONNECT = Boolean.parseBoolean(Character.getProperty("RestoreServitorOnReconnect", "True"));
 					RESTORE_PET_ON_RECONNECT = Boolean.parseBoolean(Character.getProperty("RestorePetOnReconnect", "True"));
 					ALLOW_TRANSFORM_WITHOUT_QUEST = Boolean.parseBoolean(Character.getProperty("AltTransformationWithoutQuest", "False"));
+					FEE_DELETE_TRANSFER_SKILLS = Integer.parseInt(Character.getProperty("FeeDeleteTransferSkills", "10000000"));
+					FEE_DELETE_SUBCLASS_SKILLS = Integer.parseInt(Character.getProperty("FeeDeleteSubClassSkills", "10000000"));
 					ENABLE_VITALITY = Boolean.parseBoolean(Character.getProperty("EnableVitality", "True"));
 					RECOVER_VITALITY_ON_RECONNECT = Boolean.parseBoolean(Character.getProperty("RecoverVitalityOnReconnect", "True"));
 					STARTING_VITALITY_POINTS = Integer.parseInt(Character.getProperty("StartingVitalityPoints", "20000"));

@@ -41,7 +41,6 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class L2TransformManagerInstance extends L2MerchantInstance
 {
-	private static final int feeDeleteSubClassSkills = 10000000;
 	private static final String htmlFolder = "data/html/masterTransformation/";
 	
 	public static final String[] _questVarNames =
@@ -77,7 +76,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 			}
 			else
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), htmlFolder + "master_transformation003.htm");
 				player.sendPacket(html);
 			}
@@ -140,7 +139,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 			{
 				html.setFile(player.getHtmlPrefix(), htmlFolder + "master_transformation008.htm");
 			}
-			else if (player.getAdena() < feeDeleteSubClassSkills)
+			else if (player.getAdena() < Config.FEE_DELETE_SUBCLASS_SKILLS)
 			{
 				html.setFile(player.getHtmlPrefix(), htmlFolder + "master_transformation008no.htm");
 			}
@@ -226,7 +225,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 							}
 						}
 					}
-					st.takeItems(57, 10000000);
+					st.takeItems(57, Config.FEE_DELETE_SUBCLASS_SKILLS);
 					html.setFile(player.getHtmlPrefix(), htmlFolder + "master_transformation009no.htm");
 					player.sendSkillList();
 				}
@@ -238,7 +237,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 					itemInstance = player.getInventory().getItemByItemId(itemId);
 					if (itemInstance != null)
 					{
-						_log.warning(L2TransformManagerInstance.class.getName() + ": player " + player + " had 'extra' certification skill books while cancelling sub-class certifications!");
+						_log.warning(getClass().getName() + ": player " + player + " had 'extra' certification skill books while cancelling sub-class certifications!");
 						player.destroyItem("CancelCertificationExtraBooks", itemInstance, this, false);
 					}
 				}
@@ -280,8 +279,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		
 		for (L2SkillLearn s : skills)
 		{
-			final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
-			if (sk != null)
+			if (SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel()) != null)
 			{
 				counts++;
 				asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), s.getLevelUpSp(), 0);
@@ -294,13 +292,13 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 			if (minlevel > 0)
 			{
 				//No more skills to learn, come back when you level.
-				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
+				final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
 				sm.addNumber(minlevel);
 				player.sendPacket(sm);
 			}
 			else
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
+				player.sendPacket(SystemMessageId.NO_MORE_SKILLS_TO_LEARN);
 			}
 		}
 		else
