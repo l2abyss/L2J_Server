@@ -112,7 +112,14 @@ public class PetInfo extends L2GameServerPacket
 		writeC(_summon.isAlikeDead() ? 1 : 0);  // dead 1=true
 		writeC(_isSummoned ? 2 : _val); //  0=teleported  1=default   2=summoned
 		writeD(-1); // High Five NPCString ID
-		writeS(_summon.getTemplate().serverSideName ? _summon.getName() : ""); // Summon name.
+		if (_summon instanceof L2PetInstance)
+		{
+			writeS(_summon.getName()); // Pet name.
+		}
+		else
+		{
+			writeS(_summon.getTemplate().serverSideName ? _summon.getName() : ""); // Summon name.
+		}
 		writeD(-1); // High Five NPCString ID
 		writeS(_summon.getTitle()); // owner name
 		writeD(1);
