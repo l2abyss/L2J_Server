@@ -112,7 +112,7 @@ public class PetInfo extends L2GameServerPacket
 		writeC(_summon.isAlikeDead() ? 1 : 0);  // dead 1=true
 		writeC(_isSummoned ? 2 : _val); //  0=teleported  1=default   2=summoned
 		writeD(-1); // High Five NPCString ID
-		writeS(_summon.getName()); // summon name
+		writeS(_summon.getTemplate().serverSideName ? _summon.getName() : ""); // Summon name.
 		writeD(-1); // High Five NPCString ID
 		writeS(_summon.getTitle()); // owner name
 		writeD(1);
@@ -148,7 +148,6 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_summon.getMAtkSpd());//casting speed
 		
 		writeD(_summon.getAbnormalEffect());//c2  abnormal visual effect... bleed=1; poison=2; poison & bleed=3; flame=4;
-		int npcId = _summon.getTemplate().npcId;
 		writeH(_summon.isMountable() ? 1 : 0);//c2    ride button
 		
 		writeC(0); // c2
@@ -160,6 +159,7 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_summon.getSpiritShotsPerHit()); // How many spiritshots this servitor uses per hit
 		
 		int form = 0;
+		final int npcId = _summon.getNpcId();
 		if (npcId == 16041 || npcId == 16042)
 		{
 			if(_summon.getLevel() > 84)
@@ -182,13 +182,9 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_summon.getSpecialEffect());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__B2_PETINFO;
 	}
-	
 }
