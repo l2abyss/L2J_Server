@@ -19,10 +19,8 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.util.Rnd;
  
 /**
@@ -54,7 +52,7 @@ public class EffectCancelDebuff extends L2Effect
     @Override
     public boolean onStart()
     {
-        return cancel(getEffector(), getEffected(), getSkill(), getEffectTemplate().effectType);
+        return cancel(getEffector(), getEffected(), getSkill(), getEffectPower());
     }
    
     /**
@@ -67,15 +65,13 @@ public class EffectCancelDebuff extends L2Effect
         return false;
     }
    
-    private static boolean cancel(L2Character caster, L2Character target, L2Skill skill, L2SkillType effectType)
+    private static boolean cancel(L2Character caster, L2Character target, L2Skill skill, double baseRate)
     {
         if (!(target instanceof L2PcInstance)|| target.isDead())
             return false;
        
         final int cancelLvl = skill.getMagicLevel();
         int count = skill.getMaxNegatedEffects();
-        double baseRate = Formulas.calcSkillTypeProficiency(skill.getPower(), caster, target, effectType);
-        baseRate += Formulas.calcSkillTypeVulnerability(baseRate, caster, effectType);
        
         L2Effect effect;
         int lastCanceledSkillId = 0;

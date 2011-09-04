@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.skills.Formulas;
+import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.util.Rnd;
@@ -80,8 +80,8 @@ public class EffectCancel extends L2Effect
 		int count = effect.getSkill().getMaxNegatedEffects();
 
 		double rate = effect.getEffectPower();
-		final double vulnModifier = Formulas.calcSkillTypeVulnerability(0, target, effect.getSkillType());
-		final double profModifier = Formulas.calcSkillTypeProficiency(0, caster, target, effect.getSkillType());
+		final double vulnModifier = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
+		final double profModifier = caster.calcStat(Stats.CANCEL_PROF, 0, target, null);
 		double res = vulnModifier + profModifier;
 		double resMod = 1;
 		if (res != 0)

@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.L2Skill.SkillTraitType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -2301,155 +2302,151 @@ public final class Formulas
 			}
 			
 			// Finally, calculate skilltype vulnerabilities
-			L2SkillType type = skill.getSkillType();
-			
-			// For additional effects (like STUN, SHOCK, PARALYZE...) on damage skills
-			switch (type)
-			{
-				case PDAM:
-				case MDAM:
-				case BLOW:
-				case DRAIN:
-				case CHARGEDAM:
-				case FATAL:	
-				case DEATHLINK:
-				case CPDAM:
-				case MANADAM:
-				case CPDAMPERCENT:
-					type = skill.getEffectType();
-			}
-			
-			multiplier = calcSkillTypeVulnerability(multiplier, target, type);
+			multiplier = calcSkillTraitVulnerability(multiplier, target, skill);
 		}
 		return multiplier;
 	}
 	
-	public static double calcSkillTypeVulnerability(double multiplier, L2Character target, L2SkillType type)
+	public static double calcSkillTraitVulnerability(double multiplier, L2Character target, L2Skill skill)
 	{
-		if (type != null)
+		if (skill == null)
+			return multiplier;
+		
+		final SkillTraitType trait = skill.getTraitType();
+		// First check if skill have trait set
+		// If yes, use correct vuln
+		if (trait != null && trait != SkillTraitType.NONE)
 		{
-			switch (type)
+			switch (trait)
 			{
 				case BLEED:
 					multiplier = target.calcStat(Stats.BLEED_VULN, multiplier, target, null);
 					break;
-				case POISON:
-					multiplier = target.calcStat(Stats.POISON_VULN, multiplier, target, null);
+				case BOSS:
+					multiplier = target.calcStat(Stats.BOSS_VULN, multiplier, target, null);
 					break;
-				case STUN:
-					multiplier = target.calcStat(Stats.STUN_VULN, multiplier, target, null);
+				//case DEATH:
+				case DERANGEMENT:
+					multiplier = target.calcStat(Stats.DERANGEMENT_VULN, multiplier, target, null);
+					break;
+				//case ETC:
+				case GUST:
+					multiplier = target.calcStat(Stats.GUST_VULN, multiplier, target, null);
+					break;
+				case HOLD:
+					multiplier = target.calcStat(Stats.ROOT_VULN, multiplier, target, null);
 					break;
 				case PARALYZE:
 					multiplier = target.calcStat(Stats.PARALYZE_VULN, multiplier, target, null);
 					break;
-				case ROOT:
-					multiplier = target.calcStat(Stats.ROOT_VULN, multiplier, target, null);
+				case PHYSICAL_BLOCKADE:
+					multiplier = target.calcStat(Stats.PHYSICALBLOCKADE_VULN, multiplier, target, null);
+					break;
+				case POISON:
+					multiplier = target.calcStat(Stats.POISON_VULN, multiplier, target, null);
+					break;
+				case SHOCK:
+					multiplier = target.calcStat(Stats.STUN_VULN, multiplier, target, null);
 					break;
 				case SLEEP:
 					multiplier = target.calcStat(Stats.SLEEP_VULN, multiplier, target, null);
 					break;
-				case MUTE:
-				case FEAR:
-				case BETRAY:
-				case AGGDEBUFF:
-				case AGGREDUCE_CHAR:
-				case ERASE:
-				case CONFUSION:
-				case CONFUSE_MOB_ONLY:
-					multiplier = target.calcStat(Stats.DERANGEMENT_VULN, multiplier, target, null);
-					break;
-				case DEBUFF:
-					multiplier = target.calcStat(Stats.DEBUFF_VULN, multiplier, target, null);
-					break;
-				case BUFF:
-					multiplier = target.calcStat(Stats.BUFF_VULN, multiplier, target, null);
-					break;
-				case CANCEL:
-					multiplier = target.calcStat(Stats.CANCEL_VULN, multiplier, target, null);
-					break;
-				default:
+				//case VALAKAS:
 			}
 		}
-		
+		else
+		{
+			// Since not all traits are handled by skill parameter
+			// rest is checked by skilltype
+			final L2SkillType type = skill.getSkillType();
+			if (type != null)
+			{
+				switch (type)
+				{
+					case DEBUFF:
+						multiplier = target.calcStat(Stats.DEBUFF_VULN, multiplier, target, null);
+						break;
+					case BUFF:
+						multiplier = target.calcStat(Stats.BUFF_VULN, multiplier, target, null);
+						break;
+				}
+			}
+		}
 		return multiplier;
 	}
 	
 	public static double calcSkillProficiency(L2Skill skill, L2Character attacker, L2Character target)
 	{
-		double multiplier = 0; // initialize...
+		double multiplier = 0;
 		
 		if (skill != null)
-		{
-			// Calculate skilltype vulnerabilities
-			L2SkillType type = skill.getSkillType();
-			
-			// For additional effects (like STUN, SHOCK, PARALYZE...) on damage skills
-			switch (type)
-			{
-				case PDAM:
-				case MDAM:
-				case BLOW:
-				case DRAIN:
-				case CHARGEDAM:
-				case FATAL:	
-				case DEATHLINK:
-				case CPDAM:
-				case MANADAM:
-				case CPDAMPERCENT:
-					type = skill.getEffectType();
-			}
-			
-			multiplier = calcSkillTypeProficiency(multiplier, attacker, target, type);
+		{	
+			// Calculate trait-type vulnerabilities
+			multiplier = calcSkillTraitProficiency(multiplier, attacker, target, skill);
 		}
 		
 		return multiplier;
 	}
 	
-	public static double calcSkillTypeProficiency(double multiplier, L2Character attacker, L2Character target, L2SkillType type)
+	public static double calcSkillTraitProficiency(double multiplier, L2Character attacker, L2Character target, L2Skill skill)
 	{
-		if (type != null)
+		if (skill == null)
+			return multiplier;
+		
+		final SkillTraitType trait = skill.getTraitType();
+		// First check if skill have trait set
+		// If yes, use correct vuln
+		if (trait != null && trait != SkillTraitType.NONE)
 		{
-			switch (type)
+			switch (trait)
 			{
 				case BLEED:
 					multiplier = attacker.calcStat(Stats.BLEED_PROF, multiplier, target, null);
 					break;
-				case POISON:
-					multiplier = attacker.calcStat(Stats.POISON_PROF, multiplier, target, null);
+				//case BOSS:
+				//case DEATH:
+				case DERANGEMENT:
+					multiplier = attacker.calcStat(Stats.DERANGEMENT_PROF, multiplier, target, null);
 					break;
-				case STUN:
-					multiplier = attacker.calcStat(Stats.STUN_PROF, multiplier, target, null);
+				//case ETC:
+				//case GUST:
+				case HOLD:
+					multiplier = attacker.calcStat(Stats.ROOT_PROF, multiplier, target, null);
 					break;
 				case PARALYZE:
 					multiplier = attacker.calcStat(Stats.PARALYZE_PROF, multiplier, target, null);
 					break;
-				case ROOT:
-					multiplier = attacker.calcStat(Stats.ROOT_PROF, multiplier, target, null);
+				//case PHYSICAL_BLOCKADE:
+				case POISON:
+					multiplier = attacker.calcStat(Stats.POISON_PROF, multiplier, target, null);
+					break;
+				case SHOCK:
+					multiplier = attacker.calcStat(Stats.STUN_PROF, multiplier, target, null);
 					break;
 				case SLEEP:
 					multiplier = attacker.calcStat(Stats.SLEEP_PROF, multiplier, target, null);
 					break;
-				case MUTE:
-				case FEAR:
-				case BETRAY:
-				case AGGDEBUFF:
-				case AGGREDUCE_CHAR:
-				case ERASE:
-				case CONFUSION:
-				case CONFUSE_MOB_ONLY:
-					multiplier = attacker.calcStat(Stats.DERANGEMENT_PROF, multiplier, target, null);
-					break;
-				case DEBUFF:
-					multiplier = attacker.calcStat(Stats.DEBUFF_PROF, multiplier, target, null);
-					break;
-				case CANCEL:
-					multiplier = attacker.calcStat(Stats.CANCEL_PROF, multiplier, target, null);
-					break;
-				default:
-					
+				//case VALAKAS:
 			}
 		}
-		
+		else
+		{
+			// Since not all traits are handled by skill parameter
+			// rest is checked by skilltype
+			final L2SkillType type = skill.getSkillType();
+			if (type != null)
+			{
+				switch (type)
+				{
+					case DEBUFF:
+						multiplier = attacker.calcStat(Stats.DEBUFF_PROF, multiplier, target, null);
+						break;
+					case CANCEL:
+						multiplier = attacker.calcStat(Stats.CANCEL_PROF, multiplier, target, null);
+						break;
+				}
+			}
+		}
 		return multiplier;
 	}
 	
@@ -2549,8 +2546,8 @@ public final class Formulas
 		}
 		
 		// Resists
-		double vulnModifier = calcSkillTypeVulnerability(0, target, type);
-		double profModifier = calcSkillTypeProficiency(0, attacker, target, type);
+		double vulnModifier = calcSkillTraitVulnerability(0, target, skill);
+		double profModifier = calcSkillTraitProficiency(0, attacker, target, skill);
 		double res = vulnModifier + profModifier;
 		double resMod = 1;
 		if (res != 0)
