@@ -311,7 +311,7 @@ public class CharEffectList
 		int buffCount = 0;
 		for (L2Effect e : _buffs)
 		{
-			if (e != null && e.getShowIcon() && !e.getSkill().isDance() && !e.getSkill().is7Signs())
+			if (e != null && e.getShowIcon() && !e.getSkill().isDance() && !e.getSkill().isTriggeredSkill() && !e.getSkill().is7Signs())
 			{
 				switch (e.getSkill().getSkillType())
 				{
@@ -343,6 +343,29 @@ public class CharEffectList
 		}
 		
 		return danceCount;
+	}
+	
+	/**
+	 * Return the number of Activation Buffs in this CharEffectList
+	 * @return
+	 */
+	public int getActivationBuffCount()
+	{
+		if (_buffs == null) return 0;
+		int activationBuffCount = 0;
+		
+		//synchronized(_buffs)
+		{
+			if (_buffs.isEmpty())
+				return 0;
+			
+			for (L2Effect e : _buffs)
+			{
+				if (e != null && e.getSkill().isTriggeredSkill() && e.getInUse())
+					activationBuffCount++;
+			}
+		}
+		return activationBuffCount;
 	}
 	
 	/**
@@ -781,6 +804,24 @@ public class CharEffectList
 						}
 					}
 				}
+				else if (newSkill.isTriggeredSkill())
+				{
+					effectsToRemove = getActivationBuffCount() - Config.TRIGGERED_BUFFS_MAX_AMOUNT;
+					if (effectsToRemove >= 0)
+					{
+						for (L2Effect e : _buffs)
+						{
+							if (e == null || !e.getSkill().isTriggeredSkill())
+								continue;
+							
+							// get first dance
+							e.exit();
+							effectsToRemove--;
+							if (effectsToRemove < 0)
+								break;
+						}
+					}
+				}
 				else
 				{
 					effectsToRemove = getBuffCount() - _owner.getMaxBuffCount();
@@ -793,7 +834,7 @@ public class CharEffectList
 							case MANAHEAL_PERCENT:
 								for (L2Effect e : _buffs)
 								{
-									if (e == null || e.getSkill().isDance())
+									if (e == null || e.getSkill().isDance() || e.getSkill().isTriggeredSkill())
 										continue;
 									
 									switch (e.getSkill().getSkillType())
@@ -815,8 +856,8 @@ public class CharEffectList
 				}
 			}
 			
-			// Icons order: buffs, 7s, toggles, dances
-			if (newSkill.isDance())
+			// Icons order: buffs, 7s, toggles, dances, activation buffs
+			if (newSkill.isTriggeredSkill())
 				_buffs.addLast(newEffect);
 			else
 			{
@@ -833,6 +874,18 @@ public class CharEffectList
 						pos++;
 					}
 				}
+				else if (newSkill.isDance())
+				{
+					// dance skill - before all activation buffs
+					for (L2Effect e : _buffs)
+					{
+						if (e == null)
+							continue;
+						if (e.getSkill().isTriggeredSkill())
+							break;
+						pos++;
+					}
+				}
 				else
 				{
 					// normal buff - before toggles and 7s and dances
@@ -840,7 +893,7 @@ public class CharEffectList
 					{
 						if (e == null)
 							continue;
-						if (e.getSkill().isToggle() || e.getSkill().is7Signs() || e.getSkill().isDance())
+						if (e.getSkill().isToggle() || e.getSkill().is7Signs() || e.getSkill().isDance() || e.getSkill().isTriggeredSkill())
 							break;
 						pos++;
 					}

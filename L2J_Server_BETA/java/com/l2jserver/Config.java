@@ -108,6 +108,7 @@ public final class Config
 	public static boolean AUTO_LEARN_FS_SKILLS;
 	public static boolean AUTO_LOOT_HERBS;
 	public static byte BUFFS_MAX_AMOUNT;
+	public static byte TRIGGERED_BUFFS_MAX_AMOUNT;
 	public static byte DANCES_MAX_AMOUNT;
 	public static boolean DANCE_CANCEL_BUFF;
 	public static boolean DANCE_CONSUME_ADDITIONAL_MP;
@@ -1548,8 +1549,9 @@ public final class Config
 					AUTO_LEARN_SKILLS = Boolean.parseBoolean(Character.getProperty("AutoLearnSkills", "False"));
 					AUTO_LEARN_FS_SKILLS = Boolean.parseBoolean(Character.getProperty("AutoLearnForgottenScrollSkills", "False"));
 					AUTO_LOOT_HERBS = Boolean.parseBoolean(Character.getProperty("AutoLootHerbs", "false"));
-					BUFFS_MAX_AMOUNT = Byte.parseByte(Character.getProperty("maxbuffamount","20"));
-					DANCES_MAX_AMOUNT = Byte.parseByte(Character.getProperty("maxdanceamount","12"));
+					BUFFS_MAX_AMOUNT = Byte.parseByte(Character.getProperty("MaxBuffAmount","20"));
+					TRIGGERED_BUFFS_MAX_AMOUNT = Byte.parseByte(Character.getProperty("MaxTriggeredBuffAmount","24"));
+					DANCES_MAX_AMOUNT = Byte.parseByte(Character.getProperty("MaxDanceAmount","12"));
 					DANCE_CANCEL_BUFF = Boolean.parseBoolean(Character.getProperty("DanceCancelBuff", "false"));
 					DANCE_CONSUME_ADDITIONAL_MP = Boolean.parseBoolean(Character.getProperty("DanceConsumeAdditionalMP", "true"));
 					AUTO_LEARN_DIVINE_INSPIRATION = Boolean.parseBoolean(Character.getProperty("AutoLearnDivineInspiration", "false"));

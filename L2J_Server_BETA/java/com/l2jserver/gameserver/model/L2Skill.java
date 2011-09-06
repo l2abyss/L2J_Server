@@ -283,6 +283,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _lethalEffect1;     // percent of success for lethal 1st effect (hit cp to 1 or if mob hp to 50%) (only for PDAM skills)
 	private final int _lethalEffect2;     // percent of success for lethal 2nd effect (hit cp,hp to 1 or if mob hp to 1) (only for PDAM skills)
 	private final boolean _directHpDmg;  // If true then dmg is being make directly
+	private final boolean _isTriggeredSkill;      // If true the skill will take activation buff slot instead of a normal buff slot
 	private final boolean _isDance;      // If true then casting more dances will cost more MP
 	private final int _nextDanceCost;
 	private final float _sSBoost;	//If true skill will have SoulShot boost (power*2)
@@ -564,6 +565,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_lethalEffect2 = set.getInteger("lethal2",0);
 		
 		_directHpDmg  = set.getBool("dmgDirectlyToHp",false);
+		_isTriggeredSkill = set.getBool("isTriggeredSkill",false);
 		_isDance = set.getBool("isDance",false);
 		_nextDanceCost = set.getInteger("nextDanceCost", 0);
 		_sSBoost = set.getFloat("SSBoost", 0.f);
@@ -1066,6 +1068,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean isChance()
 	{
 		return _chanceCondition != null && isPassive();
+	}
+	
+	public final boolean isTriggeredSkill()
+	{
+		return _isTriggeredSkill;
 	}
 	
 	public final boolean isDance()
