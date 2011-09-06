@@ -349,7 +349,7 @@ public class CharEffectList
 	 * Return the number of Activation Buffs in this CharEffectList
 	 * @return
 	 */
-	public int getActivationBuffCount()
+	public int getTriggeredBuffCount()
 	{
 		if (_buffs == null) return 0;
 		int activationBuffCount = 0;
@@ -806,7 +806,7 @@ public class CharEffectList
 				}
 				else if (newSkill.isTriggeredSkill())
 				{
-					effectsToRemove = getActivationBuffCount() - Config.TRIGGERED_BUFFS_MAX_AMOUNT;
+					effectsToRemove = getTriggeredBuffCount() - Config.TRIGGERED_BUFFS_MAX_AMOUNT;
 					if (effectsToRemove >= 0)
 					{
 						for (L2Effect e : _buffs)
