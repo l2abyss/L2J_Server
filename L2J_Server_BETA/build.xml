@@ -152,9 +152,8 @@
 		</copy>
 		<concat destfile="${build.dist.doc}/L2J_Server_CHANGELOG.txt">${l2j.changelog}</concat>
 		<copy todir="${build.dist.game}">
-			<fileset dir="dist/cfgs" />
-			<fileset dir="dist/configurators" />
 			<fileset dir="dist/game" />
+			<fileset dir="misc" />
 		</copy>
 		<concat destfile="${build.dist.game}/config/l2j-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
 		<copy todir="${build.dist.images}">
@@ -167,9 +166,8 @@
 			<fileset dir="lib" />
 		</copy>
 		<copy todir="${build.dist.login}">
-			<fileset dir="dist/cfgs" />
-			<fileset dir="dist/configurators" />
 			<fileset dir="dist/login" />
+			<fileset dir="misc" />
 		</copy>
 		<fixcrlf srcdir="${build.dist.game}" eol="crlf" eof="remove" includes="**/*.bat" />
 		<fixcrlf srcdir="${build.dist.game}" eol="lf" eof="remove" includes="**/*.sh" />
