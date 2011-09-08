@@ -34,7 +34,7 @@ public class LauncherGS
 	public static void main(String[] args) throws IOException
 	{
 		String mode = "l2jgs";
-		String dir = "../sql/server/";
+		String dir = "../sql/game/";
 		String cleanUp = "gs_cleanup.sql";
 		
 		try
