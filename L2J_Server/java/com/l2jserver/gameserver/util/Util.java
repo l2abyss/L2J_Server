@@ -25,7 +25,8 @@
 package com.l2jserver.gameserver.util;
 
 import java.io.File;
-import java.util.Collection;
+
+import javolution.text.TextBuilder;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
@@ -141,27 +142,30 @@ public final class Util
 	}
 	
 	/**
-	 * (Based on ucfirst() function of PHP)
-	 *
+	 * 
 	 * @param str - the string whose first letter to capitalize
 	 * @return a string with the first letter of the {@code str} capitalized
 	 */
 	public static String capitalizeFirst(String str)
 	{
-		str = str.trim();
+		final char[] arr = str.toCharArray();
+		final char c = arr[0];
 		
-		if (str.length() > 0 && Character.isLetter(str.charAt(0)))
-			return str.substring(0, 1).toUpperCase() + str.substring(1);
+		if (Character.isLetter(c))
+			arr[0] = Character.toUpperCase(c);
 		
-		return str;
+		return arr.toString();
 	}
 	
 	/**
 	 * (Based on ucwords() function of PHP)
+	 * 
+	 * DrHouse: still functional but must be rewritten to avoid += to concat strings
 	 *
 	 * @param str - the string to capitalize
 	 * @return a string with the first letter of every word in {@code str} capitalized
 	 */
+	@Deprecated
 	public static String capitalizeWords(String str)
 	{
 		char[] charArray = str.toCharArray();
@@ -259,24 +263,19 @@ public final class Util
 	 * @param strDelim - the delimiter to put between the strings
 	 * @return a delimited string for a given array of string elements.
 	 */
-	public static String implodeString(String[] strArray, String strDelim)
+	public static String implodeString(Iterable<String> strArray, String strDelim)
 	{
-		String result = "";
+		final TextBuilder sbString = TextBuilder.newInstance();
 		
 		for (String strValue : strArray)
-			result += strValue + strDelim;
+		{
+			sbString.append(strValue);
+			sbString.append(strDelim);
+		}
 		
+		String result = sbString.toString();
+		TextBuilder.recycle(sbString);
 		return result;
-	}
-	
-	/**
-	 * @param strCollection - a collection of strings to concatenate
-	 * @param strDelim - the delimiter to put between the strings
-	 * @see #implodeString(String[] strArray, String strDelim)
-	 */
-	public static String implodeString(Collection<String> strCollection, String strDelim)
-	{
-		return implodeString(strCollection.toArray(new String[strCollection.size()]), strDelim);
 	}
 	
 	/**
@@ -296,15 +295,18 @@ public final class Util
 	}
 	
 	/**
-	 * @param text - the text to check
-	 * @return {@code true} if {@code text} contains only numbers, {@code false} otherwise
-	 */
-	public static boolean isDigit(String text)
-	{
-		if (text == null)
-			return false;
-		return text.matches("[0-9]+");
-	}
+     * @param text - the text to check
+     * @return {@code true} if {@code text} contains only numbers, {@code false} otherwise
+     */
+    public static boolean isDigit(String text)
+    {
+        if (text == null || text.isEmpty())
+            return false;
+        for (char c : text.toCharArray())
+            if (!Character.isDigit(c))
+                return false;
+        return true;
+    }
 	
 	/**
 	 * @param text - the text to check
