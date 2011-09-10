@@ -148,6 +148,9 @@ public final class Util
 	 */
 	public static String capitalizeFirst(String str)
 	{
+		if (str == null || str.isEmpty())
+			return str;
+		
 		final char[] arr = str.toCharArray();
 		final char c = arr[0];
 		
@@ -168,6 +171,9 @@ public final class Util
 	@Deprecated
 	public static String capitalizeWords(String str)
 	{
+		if (str == null || str.isEmpty())
+			return str;
+		
 		char[] charArray = str.toCharArray();
 		String result = "";
 		
