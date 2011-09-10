@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import javolution.util.FastList;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -92,8 +93,9 @@ public class MultiSell
 	 * 		* If false, then any level ingredient will be considered equal and product will always
 	 * 		  be at +0
 	 * 3) apply taxes: Uses the "taxIngredient" entry in order to add a certain amount of adena to the ingredients
+	 * 4) additional product and ingredient multipliers
 	 */
-	public final void separateAndSend(int listId, L2PcInstance player, L2Npc npc, boolean inventoryOnly)
+	public final void separateAndSend(int listId, L2PcInstance player, L2Npc npc, boolean inventoryOnly, double productMultiplier, double ingredientMultiplier)
 	{
 		ListContainer template = _entries.get(listId);
 		if (template == null)
@@ -103,6 +105,24 @@ public class MultiSell
 		}
 		
 		final PreparedListContainer list = new PreparedListContainer(template, inventoryOnly, player, npc);
+		
+		// Pass through this only when multipliers are different from 1
+		if (productMultiplier != 1 || ingredientMultiplier != 1)
+		{
+			for(Entry entry : list.getEntries())
+			{
+				for(Ingredient product : entry.getProducts())
+				{
+					//Math.max used here to avoid dropping count to 0
+					product.setItemCount((long) Math.max(product.getItemCount() * productMultiplier,1));
+				}
+				for(Ingredient ingredient : entry.getIngredients())
+				{
+					//Math.max used here to avoid dropping count to 0
+					ingredient.setItemCount((long) Math.max(ingredient.getItemCount() * ingredientMultiplier, 1));
+				}
+			}
+		}
 		int index = 0;
 		do
 		{
@@ -113,6 +133,10 @@ public class MultiSell
 		while (index < list.getEntries().size());
 		
 		player.setMultiSell(list);
+	}
+	public final void separateAndSend(int listId, L2PcInstance player, L2Npc npc, boolean inventoryOnly)
+	{
+		separateAndSend(listId,  player, npc, inventoryOnly, 1, 1);
 	}
 	
 	public static final boolean checkSpecialIngredient(int id, long amount, L2PcInstance player)
@@ -152,13 +176,13 @@ public class MultiSell
 		switch (id)
 		{
 			case CLAN_REPUTATION:
-				player.getClan().takeReputationScore((int)amount, true);
+				player.getClan().takeReputationScore((int) amount, true);
 				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
 				smsg.addItemNumber(amount);
 				player.sendPacket(smsg);
 				return true;
 			case FAME:
-				player.setFame(player.getFame() - (int)amount);
+				player.setFame(player.getFame() - (int) amount);
 				player.sendPacket(new UserInfo(player));
 				player.sendPacket(new ExBrExtraUserInfo(player));
 				return true;
@@ -171,10 +195,10 @@ public class MultiSell
 		switch (id)
 		{
 			case CLAN_REPUTATION:
-				player.getClan().addReputationScore((int)amount, true);
+				player.getClan().addReputationScore((int) amount, true);
 				break;
 			case FAME:
-				player.setFame((int)(player.getFame() + amount));
+				player.setFame((int) (player.getFame() + amount));
 				player.sendPacket(new UserInfo(player));
 				player.sendPacket(new ExBrExtraUserInfo(player));
 				break;
@@ -237,6 +261,39 @@ public class MultiSell
 				else
 					list.setApplyTaxes(Boolean.parseBoolean(attribute.getNodeValue()));
 				
+				attribute = n.getAttributes().getNamedItem("useRate");
+				if (attribute != null)
+				{
+					try
+					{
+						
+						list.setUseRate(Double.valueOf(attribute.getNodeValue()));
+						if(list.getUseRate() == 0.0)
+							throw new NumberFormatException("The value cannot be 0"); //threat 0 as invalid value
+					}
+					catch (NumberFormatException e)
+					{
+
+						try
+						{
+							list.setUseRate(Config.class.getField(attribute.getNodeValue()).getDouble(Config.class));
+						}
+						catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | DOMException e1)
+						{
+							_log.warning(e.getLocalizedMessage() + doc.getLocalName());
+							list.setUseRate(1.0);
+							e.printStackTrace();
+						}
+
+					}
+					catch (DOMException e) 
+					{
+						_log.warning(e.getLocalizedMessage() + doc.getLocalName());
+						e.printStackTrace();
+					}
+					
+				}
+				
 				attribute = n.getAttributes().getNamedItem("maintainEnchantment");
 				if (attribute == null)
 					list.setMaintainEnchantment(false);
@@ -247,14 +304,14 @@ public class MultiSell
 				{
 					if ("item".equalsIgnoreCase(d.getNodeName()))
 					{
-						Entry e = parseEntry(d, entryId++);
+						Entry e = parseEntry(d, entryId++, list);
 						list.getEntries().add(e);
 					}
 				}
 			}
 			else if ("item".equalsIgnoreCase(n.getNodeName()))
 			{
-				Entry e = parseEntry(n, entryId++);
+				Entry e = parseEntry(n, entryId++, list);
 				list.getEntries().add(e);
 			}
 		}
@@ -262,7 +319,7 @@ public class MultiSell
 		return list;
 	}
 	
-	private final Entry parseEntry(Node n, int entryId)
+	private final Entry parseEntry(Node n, int entryId, ListContainer list)
 	{
 		Node attribute;
 		Node first = n.getFirstChild();
@@ -293,7 +350,7 @@ public class MultiSell
 			else if ("production".equalsIgnoreCase(n.getNodeName()))
 			{
 				int id = Integer.parseInt(n.getAttributes().getNamedItem("id").getNodeValue());
-				long count = Long.parseLong(n.getAttributes().getNamedItem("count").getNodeValue());
+				long count = (long) (Long.parseLong(n.getAttributes().getNamedItem("count").getNodeValue()) * list.getUseRate());
 				
 				entry.addProduct(new Ingredient(id, count, false, false));
 			}
@@ -330,14 +387,12 @@ public class MultiSell
 				for (Ingredient ing : ent.getIngredients())
 				{
 					if (!verifyIngredient(ing))
-						_log.warning("[MultiSell] can't find ingredient with itemId: "
-								+ ing.getItemId() + " in list: " + list.getListId());
+						_log.warning("[MultiSell] can't find ingredient with itemId: " + ing.getItemId() + " in list: " + list.getListId());
 				}
 				for (Ingredient ing : ent.getProducts())
 				{
 					if (!verifyIngredient(ing))
-						_log.warning("[MultiSell] can't find product with itemId: "
-								+ ing.getItemId() + " in list: " + list.getListId());
+						_log.warning("[MultiSell] can't find product with itemId: " + ing.getItemId() + " in list: " + list.getListId());
 				}
 			}
 		}

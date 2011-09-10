@@ -183,7 +183,7 @@ public class MultiSellChoose extends L2GameClientPacket
 								return;
 							}
 							// two same ingredients, merge into one and replace old
-							final Ingredient ing = ex.clone();
+							final Ingredient ing = ex.getCopy();
 							ing.setItemCount(ex.getItemCount() + e.getItemCount());
 							ingredientsList.set(i, ing);
 							newIng = false;

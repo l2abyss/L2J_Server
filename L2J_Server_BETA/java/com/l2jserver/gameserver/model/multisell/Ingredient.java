@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
  * @author DS
  *
  */
-public class Ingredient implements Cloneable
+public class Ingredient
 {
 	private int _itemId;
 	private long _itemCount;
@@ -44,17 +44,12 @@ public class Ingredient implements Cloneable
 			_template = ItemTable.getInstance().getTemplate(_itemId);
 	}
 	
-	@Override
-	public final Ingredient clone()
+	/**
+	 * Returns a new Ingredient instance with the same values as this.
+	 */
+	public Ingredient getCopy()
 	{
-		try
-		{
-			return (Ingredient)super.clone();
-		}
-		catch (CloneNotSupportedException e)
-		{
-			return null; // should not happens
-		}
+		return new Ingredient(_itemId, _itemCount, _isTaxIngredient, _maintainIngredient);
 	}
 	
 	public final L2Item getTemplate()
