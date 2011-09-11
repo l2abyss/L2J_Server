@@ -1206,4 +1206,7 @@ public class FortSiege implements Siegable
 	{
 		return Config.FORTRESS_ZONE_FAME_AQUIRE_POINTS;
 	}
+	
+	@Override
+	public void updateSiege() { }
 }

@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Env;
@@ -191,6 +192,8 @@ public abstract class L2Item
 	
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
+	
+	private List<Quest> _questEvents = new FastList<Quest>();
 	
 	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
 	
@@ -939,5 +942,15 @@ public abstract class L2Item
 	public String getIcon()
 	{
 		return _icon;
+	}
+	
+	public void addQuestEvent(Quest q)
+	{
+		_questEvents.add(q);
+	}
+	
+	public List<Quest> getQuestEvents()
+	{
+		return _questEvents;
 	}
 }

@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.ClanHall;
+import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
 
@@ -43,7 +44,11 @@ public class L2ClanHallZone extends L2ZoneRespawn
 		{
 			_clanHallId = Integer.parseInt(value);
 			// Register self to the correct clan hall
-			ClanHallManager.getInstance().getClanHallById(_clanHallId).setZone(this);
+			ClanHall hall = ClanHallManager.getInstance().getClanHallById(_clanHallId);
+			if(hall == null)
+				_log.warning("L2ClanHallZone: Clan hall with id "+_clanHallId+" does not exist!");
+			else
+				hall.setZone(this);
 		}
 		else
 			super.setParameter(name, value);
@@ -57,7 +62,7 @@ public class L2ClanHallZone extends L2ZoneRespawn
 			// Set as in clan hall
 			character.setInsideZone(L2Character.ZONE_CLANHALL, true);
 			
-			ClanHall clanHall = ClanHallManager.getInstance().getClanHallById(_clanHallId);
+			AuctionableHall clanHall = ClanHallManager.getInstance().getAuctionableHallById(_clanHallId);
 			if (clanHall == null)
 				return;
 			

@@ -57,4 +57,6 @@ public interface Siegable
 	public boolean giveFame();
 	public int getFameFrequency();
 	public int getFameAmount();
+	
+	public void updateSiege();
 }

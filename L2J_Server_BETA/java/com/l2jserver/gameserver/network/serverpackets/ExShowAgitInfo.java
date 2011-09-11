@@ -18,7 +18,7 @@ import java.util.Map;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
-import com.l2jserver.gameserver.model.entity.ClanHall;
+import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
 
 
 /**
@@ -45,9 +45,9 @@ public class ExShowAgitInfo extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x16);
-		Map<Integer, ClanHall> clannhalls = ClanHallManager.getInstance().getAllClanHalls();
+		Map<Integer, AuctionableHall> clannhalls = ClanHallManager.getInstance().getAllAuctionableClanHalls();
 		writeD(clannhalls.size());
-		for (ClanHall ch : clannhalls.values())
+		for (AuctionableHall ch : clannhalls.values())
 		{
 			writeD(ch.getId());
 			writeS(ch.getOwnerId() <= 0 ? "" : ClanTable.getInstance().getClan(ch.getOwnerId()).getName()); // owner clan name

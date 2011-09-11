@@ -121,7 +121,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	 * @param target The targeted L2Object
 	 *
 	 */
-	private boolean autoAttackCondition(L2Character target)
+	protected boolean autoAttackCondition(L2Character target)
 	{
 		// Check if the target isn't another guard, folk or a door
 		if (target == null || target instanceof L2DefenderInstance || target instanceof L2NpcInstance || target instanceof L2DoorInstance
@@ -384,7 +384,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			
 			if (!(cha instanceof L2Npc))
 			{
-				if (_selfAnalysis.hasHealOrResurrect && cha instanceof L2PcInstance && ((L2Npc) _actor).getCastle().getSiege().checkIsDefender(((L2PcInstance) cha).getClan()))
+				if (_selfAnalysis.hasHealOrResurrect && cha instanceof L2PcInstance && (((L2Npc) _actor).getCastle().getSiege().checkIsDefender(((L2PcInstance) cha).getClan())))
 				{
 					// heal friends
 					if (!_actor.isAttackingDisabled() && cha.getCurrentHp() < cha.getMaxHp() * 0.6 && _actor.getCurrentHp() > _actor.getMaxHp() / 2 && _actor.getCurrentMp() > _actor.getMaxMp() / 2 && cha.isInCombat())
@@ -491,13 +491,16 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		}
 		
 		// never attack defenders
-		if (attackTarget instanceof L2PcInstance && sGuard.getCastle().getSiege().checkIsDefender(((L2PcInstance) attackTarget).getClan()))
+		if (attackTarget instanceof L2PcInstance) 
 		{
-			// Cancel the target
-			sGuard.stopHating(attackTarget);
-			_actor.setTarget(null);
-			setIntention(AI_INTENTION_IDLE, null, null);
-			return;
+			if(sGuard.getConquerableHall() == null && sGuard.getCastle().getSiege().checkIsDefender(((L2PcInstance) attackTarget).getClan()))
+			{	
+				// Cancel the target
+				sGuard.stopHating(attackTarget);
+				_actor.setTarget(null);
+				setIntention(AI_INTENTION_IDLE, null, null);
+				return;
+			}
 		}
 		
 		if (!GeoData.getInstance().canSeeTarget(_actor, attackTarget))

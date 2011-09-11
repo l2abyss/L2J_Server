@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
@@ -73,6 +74,8 @@ public class L2SiegeFlagInstance extends L2Npc
 		_siege = SiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
 		if (_siege == null)
 			_siege = FortSiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
+		if(_siege == null)
+			_siege = CHSiegeManager.getInstance().getSiege(player);
 		if (_clan == null || _siege == null)
 		{
 			throw new NullPointerException(getClass().getSimpleName()+": Initialization failed.");
@@ -192,17 +195,9 @@ public class L2SiegeFlagInstance extends L2Npc
 		super.reduceCurrentHp(damage, attacker, skill);
 		if(canTalk())
 		{
-			if (getCastle() != null && getCastle().getSiege().getIsInProgress())
-			{
-				if (_clan != null)
-				{
-					// send warning to owners of headquarters that theirs base is under attack
-					_clan.broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
-					setCanTalk(false);
-					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
-				}
-			}
-			else if (getFort() != null && getFort().getSiege().getIsInProgress())
+			if ((getCastle() != null && getCastle().getSiege().getIsInProgress())
+				|| (getFort() != null && getFort().getSiege().getIsInProgress())
+				|| (getConquerableHall() != null && getConquerableHall().isInSiege()))
 			{
 				if (_clan != null)
 				{

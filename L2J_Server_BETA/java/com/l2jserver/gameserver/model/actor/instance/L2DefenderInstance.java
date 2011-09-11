@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2FortSiegeGuardAI;
 import com.l2jserver.gameserver.ai.L2SiegeGuardAI;
+import com.l2jserver.gameserver.ai.L2SpecialSiegeGuardAI;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
@@ -29,6 +30,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.knownlist.DefenderKnownList;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
@@ -39,6 +41,7 @@ public class L2DefenderInstance extends L2Attackable
 {
 	private Castle _castle = null; // the castle which the instance should defend
 	private Fort _fort = null; // the fortress which the instance should defend
+	private SiegableHall _hall = null; // the siegable hall which the instance should defend
 	
 	public L2DefenderInstance(int objectId, L2NpcTemplate template)
 	{
@@ -67,10 +70,14 @@ public class L2DefenderInstance extends L2Attackable
 			synchronized(this)
 			{
 				if (_ai == null)
-					if (getCastle(10000) == null)
+				{
+					if (getConquerableHall() == null && getCastle(10000) == null)
 						_ai = new L2FortSiegeGuardAI(new AIAccessor());
-					else
+					else if(getCastle(10000) != null)
 						_ai = new L2SiegeGuardAI(new AIAccessor());
+					else
+						_ai = new L2SpecialSiegeGuardAI(new AIAccessor());
+				}	
 				return _ai;
 			}
 		}
@@ -94,9 +101,10 @@ public class L2DefenderInstance extends L2Attackable
 		
 		// Check if siege is in progress
 		if ((_fort != null && _fort.getZone().isActive())
-				|| (_castle != null && _castle.getZone().isActive()))
+				|| (_castle != null && _castle.getZone().isActive())
+				|| (_hall != null && _hall.getSiegeZone().isActive()))
 		{
-			int activeSiegeId = (_fort != null ? _fort.getFortId() : (_castle != null ? _castle.getCastleId() : 0));
+			int activeSiegeId = (_fort != null ? _fort.getFortId() : (_castle != null ? _castle.getCastleId() : (_hall != null? _hall.getId() : 0)));
 			
 			// Check if player is an enemy of this defender npc
 			if (player != null && ((player.getSiegeState() == 2 && !player.isRegisteredOnThisSiegeField(activeSiegeId))
@@ -144,8 +152,9 @@ public class L2DefenderInstance extends L2Attackable
 		
 		_fort = FortManager.getInstance().getFort(getX(), getY(), getZ());
 		_castle = CastleManager.getInstance().getCastle(getX(), getY(), getZ());
-		if (_fort == null && _castle == null)
-			_log.warning("L2DefenderInstance spawned outside of Fortress or Castle Zone! NpcId: "+getNpcId()+ " x="+getX()+ " y="+getY()+ " z="+getZ());
+		_hall = getConquerableHall();
+		if (_fort == null && _castle == null && _hall == null)
+			_log.warning("L2DefenderInstance spawned outside of Fortress, Castle or Siegable hall Zone! NpcId: "+getNpcId()+ " x="+getX()+ " y="+getY()+ " z="+getZ());
 	}
 	
 	/**
@@ -218,12 +227,15 @@ public class L2DefenderInstance extends L2Attackable
 				L2PcInstance player = attacker.getActingPlayer();
 				// Check if siege is in progress
 				if ((_fort != null && _fort.getZone().isActive())
-						|| (_castle != null && _castle.getZone().isActive()))
+						|| (_castle != null && _castle.getZone().isActive())
+						|| _hall != null && _hall.getSiegeZone().isActive())
 				{
-					int activeSiegeId = (_fort != null ? _fort.getFortId() : (_castle != null ? _castle.getCastleId() : 0));
+					int activeSiegeId = (_fort != null ? _fort.getFortId() : (_castle != null ? _castle.getCastleId() : (_hall != null? _hall.getId() : 0)));
 					if (player != null && ((player.getSiegeState() == 2 && player.isRegisteredOnThisSiegeField(activeSiegeId))
 							|| (player.getSiegeState() == 1 && TerritoryWarManager.getInstance().isAllyField(player, activeSiegeId))))
+					{
 						return;
+					}
 				}
 			}
 			super.addDamageHate(attacker, damage, aggro);

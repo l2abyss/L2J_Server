@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.actor.status.DoorStatus;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.DoorStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.OnEventTrigger;
@@ -390,6 +391,8 @@ public class L2DoorInstance extends L2Character
 			return true;
 		if (getFort() != null && getFort().getFortId() > 0 && getFort().getZone().isActive() && !getIsCommanderDoor())
 			return true;
+		if(getClanHall() != null && getClanHall().isSiegableHall() && ((SiegableHall)getClanHall()).getSiegeZone().isActive())
+			return true;
 		return false;
 	}
 	
@@ -403,14 +406,19 @@ public class L2DoorInstance extends L2Character
 		if (!(attacker instanceof L2Playable))
 			return false;
 		
-		if (getClanHall() != null)
-			return false;
+		L2PcInstance actingPlayer = attacker.getActingPlayer();
 		
+		if(getClanHall() != null)
+		{
+			if(!getClanHall().isSiegableHall())
+				return false;
+			return ((SiegableHall)getClanHall()).isInSiege()
+					&& ((SiegableHall)getClanHall()).getSiege().checkIsAttacker(actingPlayer.getClan());
+		}
 		// Attackable  only during siege by everyone (not owner)
 		boolean isCastle = (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getZone().isActive());
 		boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getZone().isActive() && !getIsCommanderDoor());
 		int activeSiegeId = (getFort() != null ? getFort().getFortId() : (getCastle() != null ? getCastle().getCastleId() : 0));
-		L2PcInstance actingPlayer = attacker.getActingPlayer();
 		
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
@@ -710,8 +718,9 @@ public class L2DoorInstance extends L2Character
 		
 		boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress()) && !getIsCommanderDoor();
 		boolean isCastle = (getCastle() != null	&& getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress());
+		boolean isHall = (getClanHall() != null && getClanHall().isSiegableHall() && ((SiegableHall)getClanHall()).isInSiege());
 		
-		if (isFort || isCastle)
+		if (isFort || isCastle || isHall)
 			broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.CASTLE_GATE_BROKEN_DOWN));
 		return true;
 	}

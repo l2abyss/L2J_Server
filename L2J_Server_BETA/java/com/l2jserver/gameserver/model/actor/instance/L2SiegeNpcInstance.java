@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -45,12 +46,18 @@ public class L2SiegeNpcInstance extends L2NpcInstance
 	public void showSiegeInfoWindow(L2PcInstance player)
 	{
 		if (validateCondition(player))
-			getCastle().getSiege().listRegisterClan(player);
+		{
+			SiegableHall hall = getConquerableHall();
+			if(hall != null)
+				hall.showSiegeInfo(player);
+			else
+				getCastle().getSiege().listRegisterClan(player);
+		}
 		else
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			html.setFile(player.getHtmlPrefix(), "data/html/siege/" + getNpcId() + "-busy.htm");
-			html.replace("%castlename%",getCastle().getName());
+			html.replace("%castlename%",getConquerableHall() != null? getConquerableHall().getName() : getCastle().getName());
 			html.replace("%objectId%",String.valueOf(getObjectId()));
 			player.sendPacket(html);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -59,6 +66,8 @@ public class L2SiegeNpcInstance extends L2NpcInstance
 	
 	private boolean validateCondition(L2PcInstance player)
 	{
+		if(getConquerableHall() != null && getConquerableHall().isInSiege())
+			return false;
 		if (getCastle().getSiege().getIsInProgress())
 			return false;       // Busy because of siege
 		

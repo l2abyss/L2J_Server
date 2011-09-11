@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.network.serverpackets.NpcQuestHtmlMessage;
 import com.l2jserver.gameserver.scripting.ManagedScript;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.MinionList;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
@@ -162,7 +163,8 @@ public class Quest extends ManagedScript
 		ON_SKILL_LEARN(false), // control the AcquireSkill dialog from quest script
 		ON_ENTER_ZONE(true), // on zone enter
 		ON_EXIT_ZONE(true), // on zone exit
-		ON_TRAP_ACTION(true); // on zone exit
+		ON_TRAP_ACTION(true), // on zone exit
+		ON_ITEM_USE(true);
 		
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
@@ -385,6 +387,20 @@ public class Quest extends ManagedScript
 			return showError(qs.getPlayer(), e);
 		}
 		return showResult(qs.getPlayer(), res);
+	}
+	
+	public final boolean notifyItemUse(L2Item item, L2PcInstance player)
+	{
+		String res = null;
+		try
+		{
+			res = onItemUse(item, player);
+		}
+		catch(Exception e)
+		{
+			return showError(player, e);
+		}
+		return showResult(player, res);
 	}
 	
 	public final boolean notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
@@ -750,6 +766,11 @@ public class Quest extends ManagedScript
 	}
 	
 	public String onAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
+	{
+		return null;
+	}
+	
+	public String onItemUse(L2Item item, L2PcInstance player)
 	{
 		return null;
 	}

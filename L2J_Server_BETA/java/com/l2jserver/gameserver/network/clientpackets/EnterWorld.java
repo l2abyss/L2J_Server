@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.communitybbs.Manager.RegionBBSManager;
 import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.CoupleManager;
@@ -49,13 +50,14 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Couple;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
+import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -203,7 +205,7 @@ public class EnterWorld extends L2GameClientPacket
 			
 			notifySponsorOrApprentice(activeChar);
 			
-			ClanHall clanHall = ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan());
+			AuctionableHall clanHall = ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan());
 			
 			if (clanHall != null)
 			{
@@ -244,6 +246,18 @@ public class EnterWorld extends L2GameClientPacket
 				{
 					activeChar.setSiegeState((byte)2);
 					activeChar.setSiegeSide(siege.getFort().getFortId());
+				}
+			}
+			
+			for(SiegableHall hall : CHSiegeManager.getInstance().getConquerableHalls().values())
+			{
+				if(!hall.isInSiege())
+					continue;
+				
+				if(hall.isRegistered(activeChar.getClan()))
+				{
+					activeChar.setSiegeState((byte)1);
+					activeChar.setSiegeSide(hall.getId());
 				}
 			}
 			
