@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2MapRegion;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
@@ -70,9 +69,9 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	private FastMap<Integer, L2SiegeClan> _attackers = new FastMap<Integer, L2SiegeClan>();
 	private FastList<L2Spawn> _guards;
 
-	protected SiegableHall _hall;
-	protected ScheduledFuture<?> _siegeTask;
-	protected boolean _missionAccomplished = false;
+	public SiegableHall _hall;
+	public ScheduledFuture<?> _siegeTask;
+	public boolean _missionAccomplished = false;
 	
 	public ClanHallSiegeEngine(int questId, String name, String descr, final int hallId)
 	{
@@ -287,33 +286,24 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		end.addString(_hall.getName());
 		Announcements.getInstance().announceToAll(end);
 
-		L2Clan winner = null;
-		if(_missionAccomplished)
+		L2Clan winner = getWinner();
+		SystemMessage finalMsg = null;
+		if(_missionAccomplished && winner != null)
 		{
-			winner = getWinner();
-			if(winner != null)
-			{
-				_hall.setOwner(winner);
-				winner.setHasHideout(_hall.getId());
-			}
-		}
-		_missionAccomplished = false;
-		
-		SystemMessage winnerMsg = null;
-		if(winner != null)
-		{
-			winnerMsg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_VICTORIOUS_OVER_S2_S_SIEGE);
-			winnerMsg.addString(winner.getName());
-			winnerMsg.addString(_hall.getName());
-			Announcements.getInstance().announceToAll(winnerMsg);
+			_hall.setOwner(winner);
+			winner.setHasHideout(_hall.getId());
+			finalMsg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_VICTORIOUS_OVER_S2_S_SIEGE);
+			finalMsg.addString(winner.getName());
+			finalMsg.addString(_hall.getName());
+			Announcements.getInstance().announceToAll(finalMsg);
 		}
 		else
 		{
-			winnerMsg = SystemMessage.getSystemMessage(SystemMessageId.SIEGE_S1_DRAW);
-			winnerMsg.addString(_hall.getName());
-			Announcements.getInstance().announceToAll(winnerMsg);
-
+			finalMsg = SystemMessage.getSystemMessage(SystemMessageId.SIEGE_S1_DRAW);
+			finalMsg.addString(_hall.getName());
+			Announcements.getInstance().announceToAll(finalMsg);
 		}
+		_missionAccomplished = false;
 		
 		_hall.updateSiegeZone(false);
 		_hall.updateNextSiege();
@@ -359,7 +349,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		for(L2PcInstance pc : list)
 		{
 			final L2Clan clan = pc.getClan();
-			if(clan != null && _hall.getAttackers().contains(clan))
+			if(clan != null && getAttackers().containsKey(clan.getClanId()))
 				attackers.add(pc);
 		}
 		
@@ -403,7 +393,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	@Override
 	public void startSiege()
 	{		
-		if(_hall.getAttackers().size() < 1 && _hall.getId() != 21) // Fortress of resistance dont have attacker list
+		if(getAttackers().size() < 1 && _hall.getId() != 21) // Fortress of resistance dont have attacker list
 		{
 			onSiegeEnds();
 			getAttackers().clear();
@@ -438,9 +428,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		}
 		
 		_hall.updateSiegeStatus(SiegeStatus.RUNNING);
-
-		onSiegeStarts();
-		
+		onSiegeStarts();		
 		_siegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new SiegeEnds(),_hall.getSiegeLenght());
 	}
 	
@@ -451,11 +439,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		_siegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new PrepareOwner(), _hall.getNextSiegeTime() - 3600000);
 		_log.config(_hall.getName()+" siege scheduled for: "+_hall.getSiegeDate().getTime().toString());
 	}
-	
-	public abstract L2Clan getWinner(); 
-	public void onSiegeStarts() {}
-	public void onSiegeEnds()  {}
-	
+		
 	public void cancelSiegeTask()
 	{
 		if(_siegeTask != null)
@@ -465,13 +449,17 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	public final void broadcastNpcSay(final L2Npc npc, final int type, final int messageId)
 	{
 		final NpcSay npcSay = new NpcSay(npc.getObjectId(), type, npc.getNpcId(), NpcStringId.getNpcStringId(messageId));
-		final L2MapRegion sourceRegion = MapRegionManager.getInstance().getMapRegion(npc.getX(), npc.getY());
+		int sourceRegion = MapRegionManager.getInstance().getMapRegion(npc.getX(), npc.getY()).getLocId();
 		L2PcInstance[] charsInside = (L2PcInstance[])L2World.getInstance().getAllPlayers().getValues();
 		
 		for(L2PcInstance pc : charsInside)
-			if(pc != null && MapRegionManager.getInstance().getMapRegion(pc.getX(), pc.getY()) == sourceRegion)
+			if(pc != null && MapRegionManager.getInstance().getMapRegion(pc.getX(), pc.getY()).getLocId() == sourceRegion)
 				pc.sendPacket(npcSay);
 	}
+	
+	public abstract L2Clan getWinner(); 
+	public void onSiegeStarts() {}
+	public void onSiegeEnds()  {}
 	
 	public class PrepareOwner implements Runnable
 	{
@@ -481,7 +469,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			if(_hall.getOwnerId() > 0)
 			{
 				final L2SiegeClan clan = new L2SiegeClan(_hall.getOwnerId(), SiegeClanType.ATTACKER);
-				_hall.getAttackers().add(clan);
+				getAttackers().put(clan.getClanId(), new L2SiegeClan(clan.getClanId(), SiegeClanType.ATTACKER));
 			}
 			
 			_hall.free();

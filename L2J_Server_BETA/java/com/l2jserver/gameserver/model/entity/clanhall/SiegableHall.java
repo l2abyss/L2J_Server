@@ -17,12 +17,10 @@ package com.l2jserver.gameserver.model.entity.clanhall;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.DoorTable;
@@ -191,16 +189,6 @@ public final class SiegableHall extends ClanHall
 		updateDb();
 	}
 	
-	public final FastMap<Integer, L2SiegeClan> getAttackersList()
-	{
-		return getSiege().getAttackers();
-	}
-	
-	public final Collection<L2SiegeClan> getAttackers()
-	{
-		return getSiege().getAttackers().values();
-	}
-	
 	public final void addAttacker(final L2Clan clan)
 	{
 		getSiege().getAttackers().put(clan.getClanId(), new L2SiegeClan(clan.getClanId(), SiegeClanType.ATTACKER));
@@ -217,11 +205,6 @@ public final class SiegableHall extends ClanHall
 			return false;
 		
 		return getSiege().checkIsAttacker(clan);
-	}
-	
-	public final void clearAttackers()
-	{
-		getSiege().getAttackers().clear();
 	}
 	
 	public final boolean isRegistering() 

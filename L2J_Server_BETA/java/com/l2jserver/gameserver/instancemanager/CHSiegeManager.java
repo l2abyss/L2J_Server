@@ -161,7 +161,7 @@ public final class CHSiegeManager
 			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
 		else if(isClanParticipating(clan))
 			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.APPLICATION_DENIED_BECAUSE_ALREADY_SUBMITTED_A_REQUEST_FOR_ANOTHER_SIEGE_BATTLE));
-		else if(hall.getAttackers().size() >= Config.CHS_MAX_ATTACKERS)
+		else if(hall.getSiege().getAttackers().size() >= Config.CHS_MAX_ATTACKERS)
 			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ATTACKER_SIDE_FULL));
 		else
 			hall.addAttacker(clan);

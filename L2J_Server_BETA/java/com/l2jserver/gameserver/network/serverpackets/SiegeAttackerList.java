@@ -20,11 +20,10 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.Collection;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.model.entity.ClanHall;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 /**
  * Populates the Siege Attacker List in the SiegeInfo Window<BR>
  * <BR>
@@ -56,14 +55,14 @@ public final class SiegeAttackerList extends L2GameServerPacket
 	private static final String _S__CA_SiegeAttackerList = "[S] ca SiegeAttackerList";
 	//private static Logger _log = Logger.getLogger(SiegeAttackerList.class.getName());
 	private Castle _castle;
-	private ClanHall _hall;
+	private SiegableHall _hall;
 	
 	public SiegeAttackerList(Castle castle)
 	{
 		_castle = castle;
 	}
 	
-	public SiegeAttackerList(ClanHall hall)
+	public SiegeAttackerList(SiegableHall hall)
 	{
 		_hall = hall;
 	}
@@ -114,7 +113,7 @@ public final class SiegeAttackerList extends L2GameServerPacket
 			writeD(0x00); //0
 			writeD(0x01); //1
 			writeD(0x00); //0
-			final Collection<L2SiegeClan> attackers = CHSiegeManager.getInstance().getSiegableHall(_hall.getId()).getAttackers();
+			final Collection<L2SiegeClan> attackers = _hall.getSiege().getAttackerClans();
 			final int size = attackers.size();
 			if (size > 0)
 			{
