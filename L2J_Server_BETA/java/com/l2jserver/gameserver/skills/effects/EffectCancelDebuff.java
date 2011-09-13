@@ -105,38 +105,6 @@ public class EffectCancelDebuff extends L2Effect
                 break;
         }
        
-        if (count != 0)
-        {
-            lastCanceledSkillId = 0;
-            for (int i = effects.length; --i >= 0;)
-            {
-                effect = effects[i];
-                if (effect == null)
-                    continue;
-               
-                if (!effect.getSkill().isDebuff() || !effect.getSkill().canBeDispeled())
-                {
-                    effects[i] = null;
-                    continue;
-                }
-               
-                if (effect.getSkill().getId() == lastCanceledSkillId)
-                {
-                    effect.exit(); // this skill already canceled
-                    continue;
-                }
-               
-                if (!calcCancelSuccess(effect, cancelLvl, (int)baseRate))
-                    continue;
-               
-                lastCanceledSkillId = effect.getSkill().getId();
-                effect.exit();
-                count--;
-               
-                if (count == 0)
-                    break;
-            }
-        }
         return true;
     }
    
@@ -146,10 +114,10 @@ public class EffectCancelDebuff extends L2Effect
         rate += (effect.getAbnormalTime() - effect.getTime()) / 1200;
         rate += baseRate;
        
-        if (rate < 25)
-            rate = 25;
-        else if (rate > 75)
-            rate = 75;
+        if (rate < effect.getSkill().getMinChance())
+            rate = effect.getSkill().getMinChance();
+        else if (rate > effect.getSkill().getMaxChance())
+            rate = effect.getSkill().getMaxChance();
        
         return Rnd.get(100) < rate;
     }

@@ -67,7 +67,7 @@ public class PcFreight extends ItemContainer
 		int size = 0;
 		for (L2ItemInstance item : _items)
 		{
-			if (item.getLocation() == ItemLocation.INVENTORY)
+			if (item.getLocation() == getBaseLocation())
 				size++;
 		}
 		return size;
