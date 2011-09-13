@@ -69,11 +69,11 @@
 				<exclude name="**/gameserver/**" />
 			</fileset>
 			<manifest>
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.loginserver.L2LoginServer" />
 			</manifest>
 		</jar>
@@ -85,11 +85,11 @@
 				<exclude name="**/gsregistering/**" />
 			</fileset>
 			<manifest>
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.gameserver.GameServer" />
 			</manifest>
 		</jar>
@@ -102,11 +102,11 @@
 				<exclude name="**/LauncherLS*" />
 			</fileset>
 			<manifest>
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherCS" />
 			</manifest>
 		</jar>
@@ -119,11 +119,11 @@
 				<exclude name="**/LauncherLS*" />
 			</fileset>
 			<manifest>
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherGS" />
 			</manifest>
 		</jar>
@@ -136,11 +136,11 @@
 				<exclude name="**/LauncherGS*" />
 			</fileset>
 			<manifest>
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherLS" />
 			</manifest>
 		</jar>
