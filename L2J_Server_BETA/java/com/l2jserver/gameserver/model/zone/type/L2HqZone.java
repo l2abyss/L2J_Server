@@ -19,29 +19,35 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
- * Zone where 'Build Headquarters' is not allowed.
+ * Zone where 'Build Headquarters' is allowed.
  * 
- * @author Gnat
+ * @author Gnacik
  */
-public class L2NoHqZone extends L2ZoneType
+public class L2HqZone extends L2ZoneType
 {
-	public L2NoHqZone(final int id)
+	public L2HqZone(final int id)
 	{
 		super(id);
+	}
+	
+	@Override
+	public void setParameter(String name, String value)
+	{
+		
 	}
 	
 	@Override
 	protected void onEnter(final L2Character character)
 	{
 		if (character instanceof L2PcInstance)
-			character.setInsideZone(L2Character.ZONE_NOHQ, true);
+			character.setInsideZone(L2Character.ZONE_HQ, true);
 	}
 	
 	@Override
 	protected void onExit(final L2Character character)
 	{
 		if (character instanceof L2PcInstance)
-			character.setInsideZone(L2Character.ZONE_NOHQ, false);
+			character.setInsideZone(L2Character.ZONE_HQ, false);
 	}
 	
 	@Override
