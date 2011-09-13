@@ -41,10 +41,11 @@
 		<jar destfile="${build.dist.community}/l2jcommunity.jar">
 			<fileset dir="${build.classes}" />
 			<manifest>
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.communityserver.L2CommunityServer" />
 			</manifest>
 		</jar>

@@ -68,11 +68,11 @@
 				<exclude name="**/gameserver/**" />
 			</fileset>
 			<manifest>
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.loginserver.L2LoginServer" />
 			</manifest>
 		</jar>
@@ -83,11 +83,11 @@
 				<exclude name="**/gsregistering/**" />
 			</fileset>
 			<manifest>
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.revision}" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.gameserver.GameServer" />
 			</manifest>
 		</jar>
@@ -139,7 +139,7 @@
 		<fail unless="JDK7.present" message="Java 1.7 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
 	</target>
 
-	<target name="getChangelogDateVersion" description="Get Changelog, Datem Version">
+	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version">
 		<exec dir="." executable="svn" outputproperty="l2j.changelog">
 			<arg value="log" />
 			<arg value="--stop-on-copy" />
