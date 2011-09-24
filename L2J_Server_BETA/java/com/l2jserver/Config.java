@@ -753,6 +753,7 @@ public final class Config
 	public static int L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP;
 	public static int L2JMOD_DUALBOX_CHECK_MAX_L2EVENT_PARTICIPANTS_PER_IP;
 	public static TIntIntHashMap L2JMOD_DUALBOX_CHECK_WHITELIST;
+	public static boolean L2JMOD_ALLOW_CHANGE_PASSWORD;
 	
 	//--------------------------------------------------
 	// NPC Settings
@@ -2610,6 +2611,7 @@ public final class Config
 							}
 						}
 					}
+					L2JMOD_ALLOW_CHANGE_PASSWORD = Boolean.parseBoolean(L2JModSettings.getProperty("AllowChangePassword", "False"));
 				}
 				catch (Exception e)
 				{

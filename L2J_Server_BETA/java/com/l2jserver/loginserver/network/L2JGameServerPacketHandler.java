@@ -18,7 +18,18 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.loginserver.GameServerThread;
-import com.l2jserver.loginserver.network.gameserverpackets.*;
+import com.l2jserver.loginserver.network.gameserverpackets.BlowFishKey;
+import com.l2jserver.loginserver.network.gameserverpackets.ChangeAccessLevel;
+import com.l2jserver.loginserver.network.gameserverpackets.ChangePassword;
+import com.l2jserver.loginserver.network.gameserverpackets.GameServerAuth;
+import com.l2jserver.loginserver.network.gameserverpackets.PlayerAuthRequest;
+import com.l2jserver.loginserver.network.gameserverpackets.PlayerInGame;
+import com.l2jserver.loginserver.network.gameserverpackets.PlayerLogout;
+import com.l2jserver.loginserver.network.gameserverpackets.PlayerTracert;
+import com.l2jserver.loginserver.network.gameserverpackets.ReplyCharacters;
+import com.l2jserver.loginserver.network.gameserverpackets.RequestSendMail;
+import com.l2jserver.loginserver.network.gameserverpackets.RequestTempBan;
+import com.l2jserver.loginserver.network.gameserverpackets.ServerStatus;
 import com.l2jserver.loginserver.network.loginserverpackets.LoginServerFail;
 import com.l2jserver.util.network.BaseRecievePacket;
 
@@ -92,6 +103,9 @@ public class L2JGameServerPacketHandler
 						break;
 					case 0x0A:
 						msg = new RequestTempBan(data);
+						break;
+					case 0x0B:
+						new ChangePassword(data);
 						break;
 					default:
 						_log.warning("Unknown Opcode ("+Integer.toHexString(opcode).toUpperCase()+") in state "+state.name()+" from GameServer, closing connection.");

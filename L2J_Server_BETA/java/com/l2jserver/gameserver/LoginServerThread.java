@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.gameserverpackets.AuthRequest;
 import com.l2jserver.gameserver.network.gameserverpackets.BlowFishKey;
 import com.l2jserver.gameserver.network.gameserverpackets.ChangeAccessLevel;
+import com.l2jserver.gameserver.network.gameserverpackets.ChangePassword;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerAuthRequest;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerInGame;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerLogout;
@@ -60,6 +61,7 @@ import com.l2jserver.gameserver.network.gameserverpackets.SendMail;
 import com.l2jserver.gameserver.network.gameserverpackets.ServerStatus;
 import com.l2jserver.gameserver.network.gameserverpackets.TempBan;
 import com.l2jserver.gameserver.network.loginserverpackets.AuthResponse;
+import com.l2jserver.gameserver.network.loginserverpackets.ChangePasswordResponse;
 import com.l2jserver.gameserver.network.loginserverpackets.InitLS;
 import com.l2jserver.gameserver.network.loginserverpackets.KickPlayer;
 import com.l2jserver.gameserver.network.loginserverpackets.LoginServerFail;
@@ -345,6 +347,9 @@ public class LoginServerThread extends Thread
 						case 0x05:
 							RequestCharacters rc = new RequestCharacters(decrypt);
 							getCharsOnServer(rc.getAccount());
+							break;
+						case 0x06:
+							new ChangePasswordResponse(decrypt);
 							break;
 					}
 				}
@@ -636,6 +641,20 @@ public class LoginServerThread extends Thread
 		try
 		{
 			sendPacket(ss);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "", e);
+		}
+	}
+	
+	public void sendChangePassword(String accountName, String charName, String oldpass, String newpass)
+	{
+		ChangePassword cp = new ChangePassword(accountName, charName, oldpass, newpass);
+		try
+		{
+			sendPacket(cp);
 		}
 		catch (IOException e)
 		{

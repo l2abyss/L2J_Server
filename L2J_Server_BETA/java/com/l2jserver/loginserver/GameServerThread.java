@@ -31,6 +31,7 @@ import com.l2jserver.Config;
 import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
 import com.l2jserver.loginserver.network.L2JGameServerPacketHandler;
 import com.l2jserver.loginserver.network.L2JGameServerPacketHandler.GameServerState;
+import com.l2jserver.loginserver.network.loginserverpackets.ChangePasswordResponse;
 import com.l2jserver.loginserver.network.loginserverpackets.InitLS;
 import com.l2jserver.loginserver.network.loginserverpackets.KickPlayer;
 import com.l2jserver.loginserver.network.loginserverpackets.LoginServerFail;
@@ -270,6 +271,11 @@ public class GameServerThread extends Thread
 	public void requestCharacters(String account)
 	{
 		sendPacket(new RequestCharacters(account));
+	}
+	
+	public void ChangePasswordResponse(byte successful, String characterName, String msgToSend)
+	{
+		sendPacket(new ChangePasswordResponse(successful, characterName, msgToSend));
 	}
 	
 	/**
