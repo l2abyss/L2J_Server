@@ -172,6 +172,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final SkillTraitType _traitType;
 	private final boolean _staticReuse;
 	private final boolean _staticHitTime;
+	private final boolean _staticDamage; // Damage dealing skills do static damage based on the power value.
 	private final int _mpConsume;
 	private final int _mpInitialConsume;
 	private final int _hpConsume;
@@ -331,6 +332,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_traitType = set.getEnum("trait", SkillTraitType.class, SkillTraitType.NONE);
 		_staticReuse = set.getBool("staticReuse", false);
 		_staticHitTime = set.getBool("staticHitTime", false);
+		_staticDamage = set.getBool("staticDamage", false);
 		_isPotion = set.getBool("isPotion", false);
 		_mpConsume = set.getInteger("mpConsume", 0);
 		_mpInitialConsume = set.getInteger("mpInitialConsume", 0);
@@ -978,6 +980,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean isStaticHitTime()
 	{
 		return _staticHitTime;
+	}
+	
+	public final boolean isStaticDamage()
+	{
+		return _staticDamage;
 	}
 	
 	/**
