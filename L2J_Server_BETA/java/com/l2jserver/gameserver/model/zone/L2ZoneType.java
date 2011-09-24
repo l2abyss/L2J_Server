@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 
+import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -48,6 +49,8 @@ public abstract class L2ZoneType
 	private boolean _checkAffected = false;
 	
 	private String _name = null;
+	private int _instanceId = -1;
+	private String _instanceTemplate = "";
 	private int _minLvl;
 	private int _maxLvl;
 	private int[] _race;
@@ -91,6 +94,15 @@ public abstract class L2ZoneType
 		if (name.equals("name"))
 		{
 			_name = value;
+		}
+		else if (name.equals("instanceId"))
+		{
+			_instanceId = Integer.parseInt(value);
+		}
+		else if (name.equals("instanceTemplate"))
+		{
+			_instanceTemplate = value;
+			_instanceId = InstanceManager.getInstance().createDynamicInstance(value);
 		}
 		// Minimum level
 		else if (name.equals("affectedLvlMin"))
@@ -272,6 +284,33 @@ public abstract class L2ZoneType
 	{
 		return _name;
 	}
+	
+	/**
+	 * Set the zone instanceId.
+	 * @param instanceId
+	 */
+	public void setInstanceId(int instanceId)
+	{
+		_instanceId = instanceId;
+	}
+
+	/**
+	 * Returns zone instanceId
+	 * @return
+	 */
+	public int getInstanceId()
+	{
+		return _instanceId;
+	}
+	
+	/**
+	 * Returns zone instanceTemplate
+	 * @return
+	 */
+	public String getInstanceTemplate()
+	{
+		return _instanceTemplate;
+	}
 
 	/**
 	 * Checks if the given coordinates are within zone's plane
@@ -284,7 +323,7 @@ public abstract class L2ZoneType
 	}
 	
 	/**
-	 * Checks if the given coordinates are within the zone
+	 * Checks if the given coordinates are within the zone, ignores instanceId check
 	 * @param x
 	 * @param y
 	 * @param z
@@ -295,13 +334,31 @@ public abstract class L2ZoneType
 	}
 	
 	/**
+	 * Checks if the given coordinates are within the zone and the instanceId used
+	 * matched the zone's instanceId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param instanceId
+	 */
+	public boolean isInsideZone(int x, int y, int z, int instanceId)
+	{
+		// It will check if coords are within the zone if the given instanceId or
+		// the zone's _instanceId are in the multiverse or they match
+		if (_instanceId == -1 || instanceId == -1 || _instanceId == instanceId)
+			return _zone.isInsideZone(x, y, z);
+		
+		return false;
+	}
+	
+	/**
 	 * Checks if the given object is inside the zone.
 	 *
 	 * @param object
 	 */
 	public boolean isInsideZone(L2Object object)
 	{
-		return isInsideZone(object.getX(), object.getY(), object.getZ());
+		return isInsideZone(object.getX(), object.getY(), object.getZ(), object.getInstanceId());
 	}
 	
 	public double getDistanceToZone(int x, int y)
@@ -324,7 +381,7 @@ public abstract class L2ZoneType
 		}
 		
 		// If the object is inside the zone...
-		if (isInsideZone(character.getX(), character.getY(), character.getZ()))
+		if (isInsideZone(character))
 		{
 			// Was the character not yet inside this zone?
 			if (!_characterList.containsKey(character.getObjectId()))

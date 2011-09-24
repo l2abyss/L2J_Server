@@ -9995,6 +9995,7 @@ public final class L2PcInstance extends L2Playable
 		_observerMode = false;
 		setTarget(null);
 		sendPacket(new ExOlympiadMode(0));
+		setInstanceId(0);
 		teleToLocation(_lastX, _lastY, _lastZ, true);
 		//sendPacket(new GMHide(0));
 		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invis", getAccessLevel()))

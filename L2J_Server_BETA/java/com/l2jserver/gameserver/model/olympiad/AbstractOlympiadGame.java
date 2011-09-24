@@ -26,9 +26,9 @@ import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Party;
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.Location;
-import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -171,7 +171,7 @@ public abstract class AbstractOlympiadGame
 			player.setIsOlympiadStart(false);
 			player.setOlympiadSide(par.side);
 			player.olyBuff = 5;
-			player.setInstanceId(0);
+			player.setInstanceId(OlympiadGameManager.getInstance().getOlympiadTask(id).getZone().getInstanceId());
 			player.teleToLocation(loc, false);
 			player.sendPacket(new ExOlympiadMode(2));
 		}
@@ -372,6 +372,7 @@ public abstract class AbstractOlympiadGame
 		if (player.getLastX() == 0 && player.getLastY() == 0)
 			return;
 
+		player.setInstanceId(0);
 		player.teleToLocation(player.getLastX(), player.getLastY(), player.getLastZ());
 		player.setLastCords(0, 0, 0);
 	}

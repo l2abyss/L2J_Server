@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -41,7 +42,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class L2OlympiadStadiumZone extends L2ZoneRespawn
 {
-	private final List<L2DoorInstance> _doors;
 	private final List<L2Spawn> _buffers;
 
 	OlympiadGameTask _task = null;
@@ -50,7 +50,6 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	{
 		super(id);
 		_buffers = new ArrayList<L2Spawn>(2);
-		_doors = new ArrayList<L2DoorInstance>(2);
 	}
 	
 	public final void registerTask(OlympiadGameTask task)
@@ -60,7 +59,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 
 	public final void openDoors()
 	{
-		for (L2DoorInstance door : _doors)
+		for (L2DoorInstance door : InstanceManager.getInstance().getInstance(getInstanceId()).getDoors())
 		{
 			if (door != null && !door.getOpen())
 				door.openMe();
@@ -69,7 +68,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 
 	public final void closeDoors()
 	{
-		for (L2DoorInstance door : _doors)
+		for (L2DoorInstance door : InstanceManager.getInstance().getInstance(getInstanceId()).getDoors())
 		{
 			if (door != null && door.getOpen())
 				door.closeMe();
@@ -157,18 +156,6 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 				character.deleteMe();
 			}
 		}
-		else if (character instanceof L2DoorInstance)
-		{
-			for (L2DoorInstance door: _doors)
-			{
-				if (door.getDoorId() == ((L2DoorInstance)character).getDoorId())
-				{
-					_doors.remove(door);
-					break;
-				}
-			}
-			_doors.add((L2DoorInstance)character);
-		}
 	}
 
 	@Override
@@ -188,9 +175,6 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 				}
 			}
 		}
-
-		if (character instanceof L2DoorInstance)
-			_doors.remove(character);
 	}
 	
 	public final void updateZoneStatusForCharactersInside()
@@ -256,6 +240,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 					summon.unSummon(_player);
 
 				_player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+				_player.setInstanceId(0);
 				_player = null;
 			}
 		}
