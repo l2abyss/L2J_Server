@@ -177,11 +177,7 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	public void runImpl()
 	{
 		if (Config.BYPASS_VALIDATION && _validate)
-			buildBypassCache(getClient().getActiveChar());
-		
-		if(Config.PLAYER_MOVEMENT_BLOCK_TIME > 0
-			&& !getClient().getActiveChar().isGM())
-			getClient().getActiveChar().updateNotMoveUntil();
+			buildBypassCache(getClient().getActiveChar());		
 	}
 	
 	public void setHtml(String text)
