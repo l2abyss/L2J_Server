@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -83,6 +84,16 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
+		
+		if(Config.PLAYER_MOVEMENT_BLOCK_TIME > 0
+			&& !activeChar.isGM()
+			&& activeChar.getNotMoveUntil() > System.currentTimeMillis())
+		{
+			getClient().sendPacket(SystemMessage.getSystemMessage(3226));
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
 
 		if (_targetX == _originX && _targetY == _originY && _targetZ == _originZ)
 		{

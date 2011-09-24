@@ -1330,10 +1330,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 			else if (actualCommand.equalsIgnoreCase("list_back"))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
-				if(getClanHall().getLease() > 0)
-					html.setFile(player.getHtmlPrefix(), "data/html/clanHallManager/chamberlain.htm");
-				else
-					html.setFile(player.getHtmlPrefix(), "data/html/clanHallManager/chamberlain-chs.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/clanHallManager/chamberlain.htm");
 				html.replace("%objectId%", String.valueOf(this.getObjectId()));
 				html.replace("%npcname%", this.getName());
 				sendHtmlMessage(player, html);

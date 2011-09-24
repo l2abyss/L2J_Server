@@ -81,7 +81,6 @@ public final class SiegableHall extends ClanHall
 			updateNextSiege();
 		else
 			_nextSiege.setTimeInMillis(nextSiege);
-		_log.config(getName()+" siege scheduled for: "+_nextSiege.getTime());		
 	}
 			
 	public List<String> getDoorDefault()

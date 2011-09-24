@@ -624,6 +624,7 @@ public final class Config
 	public static boolean ENABLE_BLOCK_CHECKER_EVENT;
 	public static int MIN_BLOCK_CHECKER_TEAM_MEMBERS;
 	public static boolean HBCE_FAIR_PLAY;
+	public static int PLAYER_MOVEMENT_BLOCK_TIME;
 	
 	
 	//--------------------------------------------------
@@ -1741,6 +1742,7 @@ public final class Config
 					STORE_RECIPE_SHOPLIST = Boolean.parseBoolean(Character.getProperty("StoreRecipeShopList", "False"));
 					STORE_UI_SETTINGS = Boolean.parseBoolean(Character.getProperty("StoreCharUiSettings", "False"));
 					FORBIDDEN_NAMES = Character.getProperty("ForbiddenNames", "").split(",");
+					PLAYER_MOVEMENT_BLOCK_TIME = Integer.parseInt(Character.getProperty("NpcTalkBlockingTime", "0")) * 1000;
 				}
 				catch (Exception e)
 				{

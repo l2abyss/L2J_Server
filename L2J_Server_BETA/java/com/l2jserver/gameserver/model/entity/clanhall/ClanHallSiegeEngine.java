@@ -38,7 +38,6 @@ import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Siegable;
@@ -81,11 +80,8 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		_hall = CHSiegeManager.getInstance().getSiegableHall(hallId);
 		_hall.setSiege(this);
 
-		long delay = _hall.getNextSiegeTime();
-		if(delay == -1)
-			_log.warning(_hall.getName()+": No date setted for siege!");
-		else
-			_siegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new PrepareOwner(), delay - System.currentTimeMillis() - 3600000);
+		_siegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new PrepareOwner(), _hall.getNextSiegeTime() - System.currentTimeMillis() - 3600000);
+		_log.config(_hall.getName()+" siege scheduled for: "+getSiegeDate().getTime());		
 		loadAttackers();
 	}
 	
@@ -325,9 +321,9 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		}
 		
 		// Update pvp flag for winners when siege zone becomes unactive
-		for(L2Character cha : (L2Character[])_hall.getSiegeZone().getCharactersInside().getValues())
-			if(cha != null && cha instanceof L2PcInstance)
-				((L2PcInstance)cha).startPvPFlag();
+		for(Object obj : _hall.getSiegeZone().getCharactersInside().getValues())
+			if(obj != null && obj instanceof L2PcInstance)
+				((L2PcInstance)obj).startPvPFlag();
 		
 		getAttackers().clear();
 		
@@ -450,7 +446,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	{
 		final NpcSay npcSay = new NpcSay(npc.getObjectId(), type, npc.getNpcId(), NpcStringId.getNpcStringId(messageId));
 		int sourceRegion = MapRegionManager.getInstance().getMapRegion(npc.getX(), npc.getY()).getLocId();
-		L2PcInstance[] charsInside = (L2PcInstance[])L2World.getInstance().getAllPlayers().getValues();
+		final L2PcInstance[] charsInside = L2World.getInstance().getAllPlayersArray();
 		
 		for(L2PcInstance pc : charsInside)
 			if(pc != null && MapRegionManager.getInstance().getMapRegion(pc.getX(), pc.getY()).getLocId() == sourceRegion)
@@ -478,12 +474,6 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			msg.addString(getName());
 			Announcements.getInstance().announceToAll(msg);
 			_hall.updateSiegeStatus(SiegeStatus.WAITING_BATTLE);
-			
-			if(_hall.getId() == 35)
-			{
-				_hall.getDoor(22170001).openMe();
-				_hall.getDoor(22170002).openMe();
-			}
 			
 			_siegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new SiegeStarts(), 3600000);
 		}
