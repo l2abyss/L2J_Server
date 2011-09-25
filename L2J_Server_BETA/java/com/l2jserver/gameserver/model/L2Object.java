@@ -165,6 +165,7 @@ public abstract class L2Object
 		L2RaceManagerInstance(L2Npc),
 		L2SymbolMakerInstance(L2Npc),
 		L2TeleporterInstance(L2Npc),
+		L2TotemInstance(L2NpcInstance),
 		L2TownPetInstance(L2Npc),
 		L2TrainerInstance(L2NpcInstance),
 		L2TrainerHealersInstance(L2TrainerInstance),

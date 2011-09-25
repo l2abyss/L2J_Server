@@ -27,29 +27,27 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
- * @author Drunkard Zabb0x
- * Lets drink2code!
+ * @author UnAfraid
+ *
  */
-public class L2XmassTreeInstance extends L2Npc
+public class L2TotemInstance extends L2Npc
 {
-	public static final int SPECIAL_TREE_ID = 13007;
 	private ScheduledFuture<?> _aiTask;
+	private final L2Skill _skill;
 	
-	private final class XmassAI implements Runnable
+	private class TotemAI implements Runnable
 	{
-		private final L2XmassTreeInstance _caster;
-		private final L2Skill _skill;
+		private final L2TotemInstance _caster;
 		
-		protected XmassAI(L2XmassTreeInstance caster, L2Skill skill)
+		protected TotemAI(L2TotemInstance caster)
 		{
 			_caster = caster;
-			_skill = skill;
 		}
 		
 		@Override
 		public void run()
 		{
-			if (_skill == null || _caster.isInsideZone(ZONE_PEACE))
+			if (_skill == null)
 			{
 				_caster._aiTask.cancel(false);
 				_caster._aiTask = null;
@@ -67,19 +65,19 @@ public class L2XmassTreeInstance extends L2Npc
 		}
 	}
 	
-	public L2XmassTreeInstance(int objectId, L2NpcTemplate template)
+	public L2TotemInstance(int objectId, L2NpcTemplate template, int skillId)
 	{
 		super(objectId, template);
-		setInstanceType(InstanceType.L2XmassTreeInstance);
-		if (template.npcId == SPECIAL_TREE_ID)
-			_aiTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new XmassAI(this,SkillTable.getInstance().getInfo(2139, 1)), 3000, 3000);
+		setInstanceType(InstanceType.L2TotemInstance);
+		_skill = SkillTable.getInstance().getInfo(skillId, 1);
+		_aiTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new TotemAI(this), 3000, 3000);
 	}
 	
 	@Override
 	public void deleteMe()
 	{
-		if (_aiTask != null) _aiTask.cancel(true);
-		
+		if (_aiTask != null)
+			_aiTask.cancel(true);
 		super.deleteMe();
 	}
 	

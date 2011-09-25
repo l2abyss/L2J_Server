@@ -63,6 +63,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionPlayerHasClanHall;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerHasFort;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerHasPet;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerHp;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerInsideZoneId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerInstanceId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerInvSize;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerIsClanLeader;
@@ -123,7 +124,7 @@ abstract class DocumentBase
 {
 	static Logger _log = Logger.getLogger(DocumentBase.class.getName());
 	
-	private File _file;
+	private final File _file;
 	protected Map<String, String[]> _tables;
 	
 	DocumentBase(File pFile)
@@ -768,6 +769,17 @@ abstract class DocumentBase
 			else if ("canSweep".equalsIgnoreCase(a.getNodeName()))
 			{
 				cond = joinAnd(cond, new ConditionPlayerCanSweep(Boolean.valueOf(a.getNodeValue())));
+			}
+			else if ("insideZoneId".equalsIgnoreCase(a.getNodeName()))
+			{
+				StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+				ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
+				while (st.hasMoreTokens())
+				{
+					String item = st.nextToken().trim();
+					array.add(Integer.decode(getValue(item, null)));
+				}
+				cond = joinAnd(cond, new ConditionPlayerInsideZoneId(array));
 			}
 		}
 		

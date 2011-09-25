@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2BirthdayCakeInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2TotemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2XmassTreeInstance;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -33,6 +34,7 @@ public class L2SkillSpawn extends L2Skill
 	private final int _despawnDelay;
 	private final boolean _summonSpawn;
 	private final boolean _randomOffset;
+	private final int _skillToCast;
 	
 	public L2SkillSpawn(StatsSet set)
 	{
@@ -41,6 +43,7 @@ public class L2SkillSpawn extends L2Skill
 		_despawnDelay = set.getInteger("despawnDelay", 0);
 		_summonSpawn = set.getBool("isSummonSpawn", false);
 		_randomOffset = set.getBool("randomOffset", true);
+		_skillToCast = set.getInteger("skillToCast", 0);
 	}
 	
 	@Override
@@ -53,7 +56,7 @@ public class L2SkillSpawn extends L2Skill
 		
 		if (_npcId == 0)
 		{
-			_log.warning("NPC ID not defined for skill ID:"+this.getId());
+			_log.warning("NPC ID not defined for skill ID:" + getId());
 			return;
 		}
 		
@@ -61,7 +64,7 @@ public class L2SkillSpawn extends L2Skill
 		final L2NpcTemplate template = NpcTable.getInstance().getTemplate(_npcId);
 		if (template == null)
 		{
-			_log.warning("Spawn of the nonexisting NPC ID:"+_npcId+", skill ID:"+this.getId());
+			_log.warning("Spawn of the nonexisting NPC ID:" + _npcId + ", skill ID:" + getId());
 			return;
 		}
 		
@@ -69,9 +72,13 @@ public class L2SkillSpawn extends L2Skill
 			npc = new L2XmassTreeInstance(IdFactory.getInstance().getNextId(), template);
 		else if (template.type.equalsIgnoreCase("L2BirthdayCake"))
 			npc = new L2BirthdayCakeInstance(IdFactory.getInstance().getNextId(), template, caster.getObjectId());
-		/* TODO
-		else if (template.type.equalsIgnoreCase("L2WeddingCake"))
-			npc = new L2WeddingCakeInstance(IdFactory.getInstance().getNextId(), template);*/
+		else if (template.type.equalsIgnoreCase("L2Totem"))
+			npc = new L2TotemInstance(IdFactory.getInstance().getNextId(), template, _skillToCast);
+		/*
+		 * TODO
+		 * else if (template.type.equalsIgnoreCase("L2WeddingCake"))
+		 * npc = new L2WeddingCakeInstance(IdFactory.getInstance().getNextId(), template);
+		 */
 		else
 			npc = new L2NpcInstance(IdFactory.getInstance().getNextId(), template);
 		
@@ -90,7 +97,7 @@ public class L2SkillSpawn extends L2Skill
 			x = caster.getX();
 			y = caster.getY();
 		}
-
+		
 		npc.spawnMe(x, y, caster.getZ() + 20);
 		if (_despawnDelay > 0)
 			npc.scheduleDespawn(_despawnDelay);
