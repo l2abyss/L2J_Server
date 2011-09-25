@@ -666,7 +666,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _messageRefusal = false;    // message refusal mode
 	
 	private boolean _silenceMode = false;     // silence mode
-	private TIntArrayList _silenceModeExcluded = new TIntArrayList();     // silence mode
+	private final TIntArrayList _silenceModeExcluded = new TIntArrayList();     // silence mode
 	private boolean _dietMode = false;          // ignore weight penalty
 	private boolean _tradeRefusal = false;       // Trade refusal
 	private boolean _exchangeRefusal = false;   // Exchange refusal
@@ -14472,6 +14472,8 @@ public final class L2PcInstance extends L2Playable
 	
 	/**
 	 * While at silenceMode, checks if this PC Instance blocks PMs for this user
+	 * @param objId 
+	 * @return 
 	 */
 	public boolean isSilenceMode(int objId)
 	{
