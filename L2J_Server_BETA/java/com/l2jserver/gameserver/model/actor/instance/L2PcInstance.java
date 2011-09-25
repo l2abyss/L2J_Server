@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import gnu.trove.TIntArrayList;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -664,6 +666,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _messageRefusal = false;    // message refusal mode
 	
 	private boolean _silenceMode = false;     // silence mode
+	private TIntArrayList _silenceModeExcluded = new TIntArrayList();     // silence mode
 	private boolean _dietMode = false;          // ignore weight penalty
 	private boolean _tradeRefusal = false;       // Trade refusal
 	private boolean _exchangeRefusal = false;   // Exchange refusal
@@ -14468,12 +14471,29 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
+	 * While at silenceMode, checks if this PC Instance blocks PMs for this user
+	 */
+	public boolean isSilenceMode(int objId)
+	{
+		if (Config.SILENCE_MODE_EXCLUDE && _silenceMode)
+			return !_silenceModeExcluded.contains(objId);
+		
+		return _silenceMode;
+	}
+	
+	/**
 	 * @param mode the _silenceMode to set
 	 */
 	public void setSilenceMode(boolean mode)
 	{
 		_silenceMode = mode;
+		_silenceModeExcluded.clear(); // Clear the excluded list on each setSilenceMode
 		sendPacket(new EtcStatusUpdate(this));
+	}
+	
+	public void addSilenceModeExcluded(int playerObjId)
+	{
+		_silenceModeExcluded.add(playerObjId);
 	}
 	
 	private void storeRecipeShopList()
