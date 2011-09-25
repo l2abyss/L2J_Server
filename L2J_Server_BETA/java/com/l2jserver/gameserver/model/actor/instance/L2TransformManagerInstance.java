@@ -225,7 +225,8 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 							}
 						}
 					}
-					st.takeItems(57, Config.FEE_DELETE_SUBCLASS_SKILLS);
+					
+					player.reduceAdena("Cleanse", Config.FEE_DELETE_SUBCLASS_SKILLS, this, true);
 					html.setFile(player.getHtmlPrefix(), htmlFolder + "master_transformation009no.htm");
 					player.sendSkillList();
 				}
@@ -320,8 +321,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		
 		for (L2SkillLearn s : subClassSkills)
 		{
-			final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
-			if (sk != null)
+			if (SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel()) != null)
 			{
 				count++;
 				asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), 0, 0);

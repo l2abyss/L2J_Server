@@ -234,6 +234,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					}
 					return;
 				}
+				break;
 			}
 			case SubPledge:
 			{

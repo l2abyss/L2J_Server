@@ -173,10 +173,13 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 		{
 			case cardinal:
 				itemId = 15307;
+				break;
 			case evaSaint:
 				itemId = 15308;
+				break;
 			case shillienSaint:
 				itemId = 15309;
+				break;
 			default:
 				itemId = -1;
 		}
