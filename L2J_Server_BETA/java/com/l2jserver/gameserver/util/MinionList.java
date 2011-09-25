@@ -57,7 +57,7 @@ public class MinionList
 	}
 
 	/**
-	 * Returns list of the spawned (alive) minions.
+	 * @return list of the spawned (alive) minions.
 	 */
 	public List<L2MonsterInstance> getSpawnedMinions()
 	{
@@ -148,6 +148,7 @@ public class MinionList
 	/**
 	 * Called on the minion spawn
 	 * and added them in the list of the spawned minions.
+	 * @param minion 
 	 */
 	public void onMinionSpawn(L2MonsterInstance minion)
 	{
@@ -168,6 +169,7 @@ public class MinionList
 	/**
 	 * Called on the minion death/delete.
 	 * Removed minion from the list of the spawned minions and reuse if possible.
+	 * @param minion 
 	 * @param respawnTime (ms) enable respawning of this minion while master is alive.
 	 * -1 - use default value: 0 (disable) for mobs and config value for raids. 
 	 */
@@ -186,6 +188,8 @@ public class MinionList
 	/**
 	 * Called if master/minion was attacked.
 	 * Master and all free minions receive aggro against attacker.
+	 * @param caller 
+	 * @param attacker 
 	 */
 	public void onAssist(L2Character caller, L2Character attacker)
 	{
@@ -298,10 +302,9 @@ public class MinionList
 	 * <li>Set the Minion HP, MP and Heading </li>
 	 * <li>Set the Minion leader to this RaidBoss </li>
 	 * <li>Init the position of the Minion and add it in the world as a visible object </li><BR><BR>
-	 *
 	 * @param master L2MonsterInstance used as master for this minion
-	 * @param minionid The L2NpcTemplate Identifier of the Minion to spawn
-	 *
+	 * @param minionId The L2NpcTemplate Identifier of the Minion to spawn
+	 * @return
 	 */
 	public static final L2MonsterInstance spawnMinion(L2MonsterInstance master, int minionId)
 	{

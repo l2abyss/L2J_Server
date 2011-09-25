@@ -139,7 +139,8 @@ public final class Formulas
 		static final FuncMultRegenResting[] _instancies = new FuncMultRegenResting[Stats.NUM_STATS];
 		
 		/**
-		 * Return the Func object corresponding to the state concerned.<BR><BR>
+		 * @param stat 
+		 * @return the Func object corresponding to the state concerned.
 		 */
 		static Func getInstance(Stats stat)
 		{
@@ -152,6 +153,7 @@ public final class Formulas
 		
 		/**
 		 * Constructor of the FuncMultRegenResting.<BR><BR>
+		 * @param pStat 
 		 */
 		private FuncMultRegenResting(Stats pStat)
 		{
@@ -898,6 +900,8 @@ public final class Formulas
 	
 	/**
 	 * Return the period between 2 regenerations task (3s for L2Character, 5 min for L2DoorInstance).<BR><BR>
+	 * @param cha 
+	 * @return 
 	 */
 	public static int getRegeneratePeriod(L2Character cha)
 	{
@@ -916,7 +920,7 @@ public final class Formulas
 	 * FuncAtkAccuracy -> Math.sqrt(_player.getDEX())*6+_player.getLevel()<BR><BR>
 	 *
 	 * To reduce cache memory use, L2NPCInstances who don't have skills share the same Calculator set called <B>NPC_STD_CALCULATOR</B>.<BR><BR>
-	 *
+	 * @return 
 	 */
 	public static Calculator[] getStdNPCCalculators()
 	{
@@ -1088,8 +1092,9 @@ public final class Formulas
 	}
 	
 	/**
-	 * Calculate the HP regen rate (base + modifiers).<BR>
-	 * <BR>
+	 * Calculate the HP regen rate (base + modifiers).
+	 * @param cha 
+	 * @return 
 	 */
 	public static final double calcHpRegen(L2Character cha)
 	{
@@ -1188,7 +1193,9 @@ public final class Formulas
 	}
 	
 	/**
-	 * Calculate the MP regen rate (base + modifiers).<BR><BR>
+	 * Calculate the MP regen rate (base + modifiers).
+	 * @param cha 
+	 * @return 
 	 */
 	public static final double calcMpRegen(L2Character cha)
 	{
@@ -1280,7 +1287,9 @@ public final class Formulas
 	}
 	
 	/**
-	 * Calculate the CP regen rate (base + modifiers).<BR><BR>
+	 * Calculate the CP regen rate (base + modifiers).
+	 * @param cha 
+	 * @return 
 	 */
 	public static final double calcCpRegen(L2Character cha)
 	{
@@ -1434,14 +1443,14 @@ public final class Formulas
 	
 	/** Calculated damage caused by ATTACK of attacker on target,
 	 * called separatly for each weapon, if dual-weapon is used.
-	 *
 	 * @param attacker player or NPC that makes ATTACK
 	 * @param target player or NPC, target of ATTACK
-	 * @param miss one of ATTACK_XXX constants
+	 * @param skill
+	 * @param shld
 	 * @param crit if the ATTACK have critical success
-	 * @param dual if dual weapon is used
+	 * @param dual  if dual weapon is used
 	 * @param ss if weapon item was charged by soulshot
-	 * @return damage points
+	 * @return
 	 */
 	public static final double calcPhysDam(L2Character attacker, L2Character target, L2Skill skill,
 			byte shld, boolean crit, boolean dual, boolean ss)
@@ -1925,7 +1934,13 @@ public final class Formulas
 		return damage;
 	}
 	
-	/** Returns true in case of critical hit */
+	/**
+	 * Returns true in case of critical hit 
+	 * @param rate 
+	 * @param skill 
+	 * @param target 
+	 * @return
+	 */
 	public static final boolean calcCrit(double rate, boolean skill, L2Character target)
 	{
 		final boolean success = rate > Rnd.get(1000);
@@ -1944,12 +1959,25 @@ public final class Formulas
 		}
 		return success;
 	}
-	/** Calculate value of blow success */
+	/**
+	 * Calculate value of blow success 
+	 * @param activeChar 
+	 * @param target 
+	 * @param chance 
+	 * @return
+	 */
 	public static final boolean calcBlow(L2Character activeChar, L2Character target, int chance)
 	{
 		return activeChar.calcStat(Stats.BLOW_RATE, chance*(1.0+(activeChar.getDEX()-20)/100), target, null)>Rnd.get(100);
 	}
-	/** Calculate value of lethal chance */
+	/**
+	 * Calculate value of lethal chance 
+	 * @param activeChar 
+	 * @param target 
+	 * @param baseLethal 
+	 * @param magiclvl 
+	 * @return
+	 */
 	public static final double calcLethal(L2Character activeChar, L2Character target, int baseLethal, int magiclvl)
 	{
 		double chance = 0;
@@ -2049,7 +2077,11 @@ public final class Formulas
 		return mRate > Rnd.get(1000);
 	}
 	
-	/** Returns true in case when ATTACK is canceled due to hit */
+	/**
+	 * @param target 
+	 * @param dmg 
+	 * @return true in case when ATTACK is canceled due to hit 
+	 */
 	public static final boolean calcAtkBreak(L2Character target, double dmg)
 	{
 		if (target.getFusionSkill() != null)
@@ -2082,7 +2114,13 @@ public final class Formulas
 		return Rnd.get(100) < rate;
 	}
 	
-	/** Calculate delay (in milliseconds) before next ATTACK */
+	/**
+	 * Calculate delay (in milliseconds) before next ATTACK 
+	 * @param attacker 
+	 * @param target 
+	 * @param rate 
+	 * @return
+	 */
 	public static final int calcPAtkSpd(L2Character attacker, L2Character target, double rate)
 	{
 		// measured Oct 2006 by Tank6585, formula by Sami
@@ -2092,16 +2130,26 @@ public final class Formulas
 		return (int) (470000 / rate);
 	}
 	
-	/** Calculate delay (in milliseconds) for skills cast */
+	/**
+	 * Calculate delay (in milliseconds) for skills cast 
+	 * @param attacker 
+	 * @param skill 
+	 * @param skillTime 
+	 * @return
+	 */
 	public static final int calcAtkSpd(L2Character attacker, L2Skill skill, double skillTime)
 	{
 		if (skill.isMagic()) return (int) (skillTime * 333 / attacker.getMAtkSpd());
 		return (int) (skillTime * 333 / attacker.getPAtkSpd());
 	}
 	
-	/** Returns true if hit missed (target evaded)
-	 *  Formula based on http://l2p.l2wh.com/nonskillattacks.html
-	 **/
+	/**
+	 * Returns true if hit missed (target evaded)
+	 * Formula based on http://l2p.l2wh.com/nonskillattacks.html
+	 * @param attacker 
+	 * @param target 
+	 * @return 
+	 */
 	public static boolean calcHitMiss(L2Character attacker, L2Character target)
 	{
 		int chance = (80 + (2 * (attacker.getAccuracy() - target.getEvasionRate(attacker))))*10;
@@ -2181,6 +2229,7 @@ public final class Formulas
 	 * 
 	 * @param attacker
 	 * @param target
+	 * @param skill 
 	 * @param sendSysMsg
 	 * @return
 	 */
@@ -3026,9 +3075,7 @@ public final class Formulas
 	 * MANAHEAL_PERCENT, HOT, CPHOT, MPHOT</U></li>
 	 * <li>vengEance reflect (100% damage reflected but damage is also dealt to actor). <U>This is only possible
 	 * for skills with skilltype PDAM, BLOW, CHARGEDAM, MDAM or DEATHLINK</U></li>
-     <br><br>
 	 * 
-     @param actor
 	 * @param target
 	 * @param skill
 	 * @return SKILL_REFLECTED_FAILED, SKILL_REFLECT_SUCCEED or SKILL_REFLECT_VENGEANCE
@@ -3141,7 +3188,9 @@ public final class Formulas
 	
 	/**
 	 * Those are altered formulas for blow lands
-	 * Return True if the target is IN FRONT of the L2Character.<BR><BR>
+	 * @param target 
+	 * @param attacker 
+	 * @return True if the target is IN FRONT of the L2Character.<
 	 */
 	public static boolean isInFrontOf(L2Character target, L2Character attacker)
 	{
@@ -3163,7 +3212,9 @@ public final class Formulas
 	
 	/**
 	 * Those are altered formulas for blow lands
-	 * Return True if the L2Character is behind the target and can't be seen.<BR><BR>
+	 * @param target 
+	 * @param attacker 
+	 * @return True if the L2Character is behind the target and can't be seen.
 	 */
 	public static boolean isBehind(L2Character target, L2Character attacker)
 	{

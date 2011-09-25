@@ -28,6 +28,8 @@ public class L2RecipeInstance
 	
 	/**
 	 * Constructor of L2RecipeInstance (create a new line in a RecipeList).<BR><BR>
+	 * @param itemId 
+	 * @param quantity 
 	 */
 	public L2RecipeInstance(int itemId, int quantity)
 	{
@@ -36,7 +38,7 @@ public class L2RecipeInstance
 	}
 	
 	/**
-	 * Return the Identifier of the L2RecipeInstance Item needed.<BR><BR>
+	 * @return the Identifier of the L2RecipeInstance Item needed.
 	 */
 	public int getItemId()
 	{
@@ -44,7 +46,7 @@ public class L2RecipeInstance
 	}
 	
 	/**
-	 * Return the Item quantity needed of the L2RecipeInstance.<BR><BR>
+	 * @return the Item quantity needed of the L2RecipeInstance.
 	 */
 	public int getQuantity()
 	{

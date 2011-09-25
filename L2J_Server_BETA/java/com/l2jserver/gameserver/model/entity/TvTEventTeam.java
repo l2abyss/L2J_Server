@@ -69,9 +69,8 @@ public class TvTEventTeam
 	}
 	
 	/**
-	 * Removes a player from the team<br><br>
-	 *
-	 * @param playerName as String<br>
+	 * Removes a player from the team
+	 * @param playerObjectId
 	 */
 	public void removePlayer(int playerObjectId)
 	{
@@ -100,10 +99,9 @@ public class TvTEventTeam
 	}
 	
 	/**
-	 * Is given player in this team?<br><br>
-	 *
-	 * @param playerName as String<br>
-	 * @return boolean: true if player is in this team, otherwise false<br>
+	 * Is given player in this team?
+	 * @param playerObjectId
+	 * @return boolean: true if player is in this team, otherwise false
 	 */
 	public boolean containsPlayer(int playerObjectId)
 	{

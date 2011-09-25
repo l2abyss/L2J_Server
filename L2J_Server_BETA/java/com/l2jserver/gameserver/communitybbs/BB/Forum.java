@@ -61,8 +61,8 @@ public class Forum
 	 * {@link com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager#
 	 * addForum(com.l2jserver.gameserver.communitybbs.BB.Forum)} to add forum
 	 * to the forums manager.
-	 *
-	 * @param i
+	 * @param Forumid
+	 * @param FParent
 	 */
 	public Forum(int Forumid, Forum FParent)
 	{
@@ -80,6 +80,7 @@ public class Forum
 	 * @param parent
 	 * @param type
 	 * @param perm
+	 * @param OwnerID 
 	 */
 	public Forum(String name, Forum parent, int type, int perm, int OwnerID)
 	{

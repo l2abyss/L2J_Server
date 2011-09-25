@@ -32,8 +32,11 @@ public class AuthRequest extends BaseSendablePacket
 	 * @param id
 	 * @param acceptAlternate
 	 * @param hexid
+	 * @param port 
 	 * @param reserveHost
 	 * @param maxplayer
+	 * @param subnets 
+	 * @param hosts 
 	 */
 	public AuthRequest(int id, boolean acceptAlternate, byte[] hexid, int port, boolean reserveHost, int maxplayer, String[] subnets, String[] hosts)
 	{

@@ -19,13 +19,14 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
 
+/**
+ * @author DS
+ */
 public abstract class L2VehicleAI extends L2CharacterAI
 {
 	/**
-	 * 
-	 * @author DS
 	 * Simple AI for vehicles
-	 * 
+	 * @param accessor 
 	 */
 	public L2VehicleAI(L2Vehicle.AIAccessor accessor)
 	{

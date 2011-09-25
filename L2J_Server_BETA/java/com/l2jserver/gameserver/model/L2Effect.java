@@ -149,8 +149,10 @@ public abstract class L2Effect
 	private L2SkillType _effectSkillType;
 	
 	/**
-	 * <font color="FF0000"><b>WARNING: scheduleEffect nolonger inside constructor</b></font><br>
+	 * <font color="FF0000"><b>WARNING: scheduleEffect no longer inside constructor</b></font><br>
 	 * So you must call it explicitly
+	 * @param env 
+	 * @param template 
 	 */
 	protected L2Effect(Env env, EffectTemplate template)
 	{
@@ -429,10 +431,15 @@ public abstract class L2Effect
 		}
 	}
 	
-	/** returns effect type */
+	/**
+	 * @return effect type
+	 */
 	public abstract L2EffectType getEffectType();
 	
-	/** Notify started */
+	/**
+	 * Notify started 
+	 * @return
+	 */
 	public boolean onStart()
 	{
 		if (_abnormalEffect != AbnormalEffect.NULL)
@@ -457,7 +464,9 @@ public abstract class L2Effect
 			getEffected().getActingPlayer().stopEventEffect(_eventEffect);
 	}
 	
-	/** Return true for continuation of this effect */
+	/**
+	 * @return true for continuation of this effect
+	 */
 	public abstract boolean onActionTime();
 	
 	public final void scheduleEffect()

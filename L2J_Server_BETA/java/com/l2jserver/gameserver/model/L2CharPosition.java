@@ -23,7 +23,11 @@ public final class L2CharPosition
 	public final int x, y, z, heading;
 	
 	/**
-	 * Constructor of L2CharPosition.<BR><BR>
+	 * Constructor of L2CharPosition.
+	 * @param pX 
+	 * @param pY 
+	 * @param pZ 
+	 * @param pHeading 
 	 */
 	public L2CharPosition(int pX, int pY, int pZ, int pHeading)
 	{

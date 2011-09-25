@@ -229,8 +229,8 @@ public class HtmCache
 	
 	/**
 	 * Check if an HTM exists and can be loaded
-	 * @param
-	 * path The path to the HTM
+	 * @param path The path to the HTM
+	 * @return 
 	 * */
 	public boolean isLoadable(String path)
 	{

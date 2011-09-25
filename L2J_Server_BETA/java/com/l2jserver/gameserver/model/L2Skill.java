@@ -634,7 +634,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return the target type of the skill : SELF, PARTY, CLAN, PET...<BR><BR>
-	 *
+	 * @return 
 	 */
 	public final SkillTargetType getTargetType()
 	{
@@ -665,7 +665,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return isPassive();
 	}
 	/**
-	 * Return the power of the skill.<BR><BR>
+	 * Return the power of the skill.
+	 * @param activeChar 
+	 * @param target 
+	 * @param isPvP 
+	 * @param isPvE 
+	 * @return 
 	 */
 	public final double getPower(L2Character activeChar, L2Character target, boolean isPvP, boolean isPvE)
 	{
@@ -748,6 +753,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return true if skill should ignore all resistances
+	 * @return 
 	 */
 	public final boolean ignoreResists()
 	{
@@ -756,6 +762,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return minimum skill/effect land rate (default is 1).
+	 * @return 
 	 */
 	public final int getMinChance()
 	{
@@ -764,6 +771,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return maximum skill/effect land rate (default is 99).
+	 * @return 
 	 */
 	public final int getMaxChance()
 	{
@@ -772,6 +780,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return true if skill effects should be removed on any action except movement
+	 * @return 
 	 */
 	public final boolean isRemovedOnAnyActionExceptMove()
 	{
@@ -780,6 +789,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return true if skill effects should be removed on damage
+	 * @return 
 	 */
 	public final boolean isRemovedOnDamage()
 	{
@@ -788,6 +798,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return the additional effect Id.<BR><BR>
+	 * @return 
 	 */
 	public final int getEffectId()
 	{
@@ -795,6 +806,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	/**
 	 * Return the additional effect level.<BR><BR>
+	 * @return 
 	 */
 	public final int getEffectLvl()
 	{
@@ -808,6 +820,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return the additional effect skill type (ex : STUN, PARALYZE,...).<BR><BR>
+	 * @return 
 	 */
 	public final L2SkillType getEffectType()
 	{
@@ -816,6 +829,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Return true if character should attack target after skill
+	 * @return 
 	 */
 	public final boolean nextActionIsAttack()
 	{
@@ -904,7 +918,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Return the skill type (ex : BLEED, SLEEP, WATER...).<BR><BR>
+	 * Return the skill type (ex : BLEED, SLEEP, WATER...).
+	 * @return 
 	 */
 	public final Stats getStat()
 	{
@@ -912,7 +927,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Return skill saveVs base stat (STR, INT ...).<BR><BR>
+	 * Return skill saveVs base stat (STR, INT ...).
+	 * @return 
 	 */
 	public final BaseStats getSaveVs()
 	{
@@ -1443,6 +1459,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * <li>ITEM</li><BR><BR>
 	 *
 	 * @param activeChar The L2Character who use the skill
+	 * @param onlyFirst 
+	 * @param target 
+	 * @return 
 	 *
 	 */
 	public final L2Object[] getTargetList(L2Character activeChar, boolean onlyFirst, L2Character target)
@@ -2593,7 +2612,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Env is used to pass parameters for secondary effects (shield and ss/bss/bsss)
-	 * 
+	 * @param effector 
+	 * @param effected 
+	 * @param env 
 	 * @return an array with the effects that have been added to effector
 	 */
 	public final L2Effect[] getEffects(L2Character effector, L2Character effected, Env env)
@@ -2663,7 +2684,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	/**
 	 * Warning: this method doesn't consider modifier (shield, ss, sps, bss) for secondary effects
-	 * 
+	 * @param effector 
+	 * @param effected 
+	 * @return 
 	 */
 	public final L2Effect[] getEffects(L2Character effector, L2Character effected)
 	{
@@ -2680,6 +2703,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * This new feature works following next rules:
 	 * <li> To enable feature, effectPower must be over -1 (check DocumentSkill#attachEffect for further information)</li>
 	 * <li> If main skill fails, secondary effect always fail</li>
+	 * @param effector 
+	 * @param effected 
+	 * @param env 
+	 * @return 
 	 */
 	public final L2Effect[] getEffects(L2CubicInstance effector, L2Character effected, Env env)
 	{

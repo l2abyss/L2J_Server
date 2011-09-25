@@ -295,7 +295,7 @@ public final class OlympiadGameTask implements Runnable
 
 	/**
 	 * Second stage: check for defaulted, port players to arena, announce game.
-	 * Returns true if no participants defaulted.
+	 * @return true if no participants defaulted.
 	 */
 	private final boolean startGame()
 	{
@@ -342,7 +342,7 @@ public final class OlympiadGameTask implements Runnable
 
 	/**
 	 * Fourth stage: last checks, remove buffers, start competition itself.
-	 * Returns true if all participants online and ready on the stadium.
+	 * @return true if all participants online and ready on the stadium.
 	 */
 	private final boolean startBattle()
 	{
@@ -369,6 +369,7 @@ public final class OlympiadGameTask implements Runnable
 
 	/**
 	 * Fifth stage: battle is running, returns true if winner found.
+	 * @return 
 	 */
 	private final boolean checkBattle()
 	{

@@ -35,7 +35,10 @@ public final class NpcSay extends L2GameServerPacket
 	private List<String> _parameters;
 	
 	/**
-	 * @param _characters
+	 * @param objectId
+	 * @param messageType
+	 * @param npcId
+	 * @param text
 	 */
 	public NpcSay(int objectId, int messageType, int npcId, String text)
 	{
@@ -81,8 +84,8 @@ public final class NpcSay extends L2GameServerPacket
 				writeS(s);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

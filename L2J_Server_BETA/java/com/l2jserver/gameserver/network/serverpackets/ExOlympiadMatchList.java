@@ -42,7 +42,7 @@ public class ExOlympiadMatchList extends L2GameServerPacket
 	private final List<OlympiadGameTask> _games;
 	
 	/**
-	 * @param games: competitions list
+	 * @param games competitions list
 	 */
 	public ExOlympiadMatchList(List<OlympiadGameTask> games)
 	{

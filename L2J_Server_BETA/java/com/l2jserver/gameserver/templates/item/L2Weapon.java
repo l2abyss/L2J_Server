@@ -77,8 +77,7 @@ public final class L2Weapon extends L2Item
 	 * <LI>_shieldDes & _shieldDefRate</LI>
 	 * <LI>_atkSpeed & _AtkReuse</LI>
 	 * <LI>_mpConsume</LI>
-	 * @param type : L2ArmorType designating the type of armor
-	 * @param set : StatsSet designating the set of couples (key,value) caracterizing the armor
+	 * @param set : StatsSet designating the set of couples (key,value) characterizing the armor
 	 * @see L2Item constructor
 	 */
 	public L2Weapon(StatsSet set)

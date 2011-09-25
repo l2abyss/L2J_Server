@@ -94,6 +94,12 @@ public class MultiSell
 	 * 		  be at +0
 	 * 3) apply taxes: Uses the "taxIngredient" entry in order to add a certain amount of adena to the ingredients
 	 * 4) additional product and ingredient multipliers
+	 * @param listId 
+	 * @param player 
+	 * @param npc 
+	 * @param inventoryOnly 
+	 * @param productMultiplier 
+	 * @param ingredientMultiplier 
 	 */
 	public final void separateAndSend(int listId, L2PcInstance player, L2Npc npc, boolean inventoryOnly, double productMultiplier, double ingredientMultiplier)
 	{

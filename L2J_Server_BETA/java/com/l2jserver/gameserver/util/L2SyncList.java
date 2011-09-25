@@ -31,6 +31,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * <br>
  * Note: Iterator returned does not support element removal!
  * @author  Julian
+ * @param <T> 
  */
 public class L2SyncList<T extends Object> implements List<T>
 {
@@ -232,6 +233,7 @@ public class L2SyncList<T extends Object> implements List<T>
 	
 	/**
 	 * <FONT color="#FF0000">WARNING: Unsupported</FONT>
+	 * @return 
 	 */
 	public ListIterator<T> listIterator() {
 		throw new UnsupportedOperationException();

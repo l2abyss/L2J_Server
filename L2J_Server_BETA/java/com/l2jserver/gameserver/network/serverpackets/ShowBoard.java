@@ -55,7 +55,7 @@ public class ShowBoard extends L2GameServerPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

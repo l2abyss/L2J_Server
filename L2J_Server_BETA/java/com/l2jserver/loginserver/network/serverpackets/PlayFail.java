@@ -85,7 +85,7 @@ public final class PlayFail extends L2LoginServerPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.mmocore.network.SendablePacket#write()
+	 * @see org.mmocore.network.SendablePacket#write()
 	 */
 	@Override
 	protected void write()

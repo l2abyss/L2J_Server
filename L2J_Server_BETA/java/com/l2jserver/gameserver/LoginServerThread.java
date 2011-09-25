@@ -79,7 +79,9 @@ public class LoginServerThread extends Thread
 	protected static final Logger _log = Logger.getLogger(LoginServerThread.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
-	/** {@see com.l2jserver.loginserver.LoginServer#PROTOCOL_REV } */
+	/**
+	 * @see com.l2jserver.loginserver.L2LoginServer#PROTOCOL_REV
+	 */
 	private static final int REVISION = 0x0106;
 	private RSAPublicKey _publicKey;
 	private final String _hostname;
@@ -614,7 +616,8 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
-	 * @param server_gm_only
+	 * @param id
+	 * @param value
 	 */
 	public void sendServerStatus(int id, int value)
 	{

@@ -45,7 +45,7 @@ public class Ingredient
 	}
 	
 	/**
-	 * Returns a new Ingredient instance with the same values as this.
+	 * @return a new Ingredient instance with the same values as this.
 	 */
 	public Ingredient getCopy()
 	{

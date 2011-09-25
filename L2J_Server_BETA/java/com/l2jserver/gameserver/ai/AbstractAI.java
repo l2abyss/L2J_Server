@@ -153,7 +153,7 @@ abstract class AbstractAI implements Ctrl
 	}
 	
 	/**
-	 * Return the L2Character managed by this Accessor AI.<BR><BR>
+	 * @return the L2Character managed by this Accessor AI.
 	 */
 	public L2Character getActor()
 	{
@@ -161,7 +161,7 @@ abstract class AbstractAI implements Ctrl
 	}
 	
 	/**
-	 * Return the current Intention.<BR><BR>
+	 * @return the current Intention.
 	 */
 	public CtrlIntention getIntention()
 	{
@@ -174,7 +174,7 @@ abstract class AbstractAI implements Ctrl
 	}
 	
 	/**
-	 * Return the current cast target.<BR><BR>
+	 * @return the current cast target.
 	 */
 	public L2Character getCastTarget()
 	{
@@ -187,7 +187,7 @@ abstract class AbstractAI implements Ctrl
 	}
 	
 	/**
-	 * Return current attack target.<BR><BR>
+	 * @return current attack target.
 	 */
 	public L2Character getAttackTarget()
 	{
@@ -550,7 +550,8 @@ abstract class AbstractAI implements Ctrl
 	 * Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn <I>(broadcast)</I>.<BR><BR>
 	 *
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : Low level function, used by AI subclasses</B></FONT><BR><BR>
-	 *
+	 * @param pawn 
+	 * @param offset 
 	 */
 	protected void moveToPawn(L2Object pawn, int offset)
 	{
@@ -622,7 +623,9 @@ abstract class AbstractAI implements Ctrl
 	 * Move the actor to Location (x,y,z) server side AND client side by sending Server->Client packet CharMoveToLocation <I>(broadcast)</I>.<BR><BR>
 	 *
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : Low level function, used by AI subclasses</B></FONT><BR><BR>
-	 *
+	 * @param x 
+	 * @param y 
+	 * @param z 
 	 */
 	protected void moveTo(int x, int y, int z)
 	{
@@ -651,7 +654,7 @@ abstract class AbstractAI implements Ctrl
 	 * Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation <I>(broadcast)</I>.<BR><BR>
 	 *
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : Low level function, used by AI subclasses</B></FONT><BR><BR>
-	 *
+	 * @param pos 
 	 */
 	protected void clientStopMoving(L2CharPosition pos)
 	{
@@ -838,7 +841,7 @@ abstract class AbstractAI implements Ctrl
 	 * Create and Launch an AI Follow Task to execute every 0.5s, following at specified range.<BR><BR>
 	 *
 	 * @param target The L2Character to follow
-	 *
+	 * @param range 
 	 */
 	public synchronized void startFollow(L2Character target, int range)
 	{

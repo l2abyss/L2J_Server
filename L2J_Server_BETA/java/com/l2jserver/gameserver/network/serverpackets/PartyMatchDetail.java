@@ -27,7 +27,8 @@ public class PartyMatchDetail extends L2GameServerPacket
 	private PartyMatchRoom _room;
 	
 	/**
-	 * @param allPlayers
+	 * @param player
+	 * @param room
 	 */
 	public PartyMatchDetail(L2PcInstance player, PartyMatchRoom room)
 	{

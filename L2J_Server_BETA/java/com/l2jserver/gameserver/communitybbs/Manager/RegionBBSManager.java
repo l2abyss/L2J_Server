@@ -166,6 +166,7 @@ public class RegionBBSManager extends BaseBBSManager
 	
 	/**
 	 * @param activeChar
+	 * @param page 
 	 */
 	private void showOldCommunity(L2PcInstance activeChar, int page)
 	{

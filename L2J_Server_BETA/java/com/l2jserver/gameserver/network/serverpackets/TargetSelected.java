@@ -32,9 +32,12 @@ public final class TargetSelected extends L2GameServerPacket
 	private int _y;
 	private int _z;
 	
-	
 	/**
-	 * @param _characters
+	 * @param objectId
+	 * @param targetId
+	 * @param x
+	 * @param y
+	 * @param z
 	 */
 	public TargetSelected(int objectId, int targetId, int x, int y, int z)
 	{
@@ -57,8 +60,8 @@ public final class TargetSelected extends L2GameServerPacket
 		writeD(0x00);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

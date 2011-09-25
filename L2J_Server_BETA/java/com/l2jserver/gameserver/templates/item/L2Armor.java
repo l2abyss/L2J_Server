@@ -44,7 +44,6 @@ public final class L2Armor extends L2Item
 	 * <LI>_pDef & _mDef</LI>
 	 * <LI>_mpBonus & _hpBonus</LI>
 	 * <LI>enchant4Skill</LI>
-	 * @param type : L2ArmorType designating the type of armor
 	 * @param set : StatsSet designating the set of couples (key,value) caracterizing the armor
 	 * @see L2Item constructor
 	 */
@@ -116,8 +115,7 @@ public final class L2Armor extends L2Item
 	}
 	
 	/**
-	 * Returns skill that player get when has equiped armor +4  or more
-	 * @return
+	 * @return skill that player get when has equipped armor +4  or more
 	 */
 	public L2Skill getEnchant4Skill()
 	{

@@ -55,7 +55,7 @@ public class SecondaryPasswordAuth
 	private static final String INSERT_ATTEMPT = "INSERT INTO account_gsdata VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value=?";
 	
 	/**
-	 * 
+	 * @param activeClient 
 	 */
 	public SecondaryPasswordAuth(L2GameClient activeClient)
 	{

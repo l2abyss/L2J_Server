@@ -42,7 +42,6 @@ import com.l2jserver.gameserver.util.Util;
  * d    // seed id
  * q    // count
  * ]
- * @param decrypt
  * @author l3x
  */
 public class RequestBuySeed extends L2GameClientPacket

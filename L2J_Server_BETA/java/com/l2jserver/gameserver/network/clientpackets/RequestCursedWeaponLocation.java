@@ -40,7 +40,7 @@ public final class RequestCursedWeaponLocation extends L2GameClientPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
 	 */
 	@Override
 	protected void runImpl()
@@ -66,7 +66,7 @@ public final class RequestCursedWeaponLocation extends L2GameClientPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
 	 */
 	@Override
 	public String getType()

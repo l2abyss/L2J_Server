@@ -32,7 +32,7 @@ public class ValidateLocationInVehicle extends L2GameServerPacket
 	
 	/**
 	 * 0x80 ValidateLocationInVehicle         hdd
-	 * @param _characters
+	 * @param player
 	 */
 	public ValidateLocationInVehicle(L2PcInstance player)
 	{
@@ -54,8 +54,8 @@ public class ValidateLocationInVehicle extends L2GameServerPacket
 		writeD(_heading);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

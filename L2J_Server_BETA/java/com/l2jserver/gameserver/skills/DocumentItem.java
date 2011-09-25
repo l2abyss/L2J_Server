@@ -39,7 +39,7 @@ final class DocumentItem extends DocumentBase
 	private List<L2Item> _itemsInFile = new FastList<L2Item>();
 	
 	/**
-	 * @param f
+	 * @param file
 	 */
 	public DocumentItem(File file)
 	{

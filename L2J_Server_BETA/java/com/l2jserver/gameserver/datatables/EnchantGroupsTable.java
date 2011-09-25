@@ -218,6 +218,7 @@ public class EnchantGroupsTable
 	}
 	
 	/**
+	 * @param id 
 	 * @return L2EnchantSkillGroup
 	 */
 	public L2EnchantSkillGroup getEnchantSkillGroupById(int id)

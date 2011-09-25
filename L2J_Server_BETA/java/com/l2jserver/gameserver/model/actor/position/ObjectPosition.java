@@ -52,6 +52,9 @@ public class ObjectPosition
 	 *
 	 * <B><U> Example of use </U> :</B><BR><BR>
 	 * <li> Update position during and after movement, or after teleport </li><BR>
+	 * @param x 
+	 * @param y 
+	 * @param z 
 	 */
 	public final void setXYZ(int x, int y, int z)
 	{
@@ -94,6 +97,9 @@ public class ObjectPosition
 	 * <B><U> Example of use </U> :</B><BR><BR>
 	 * <li> Create a Door</li>
 	 * <li> Restore L2PcInstance</li><BR>
+	 * @param x 
+	 * @param y 
+	 * @param z 
 	 */
 	public final void setXYZInvisible(int x, int y, int z)
 	{
@@ -139,15 +145,21 @@ public class ObjectPosition
 	public final int getHeading() { return _heading; }
 	public final void setHeading(int value) { _heading = value; }
 	
-	/** Return the x position of the L2Object. */
+	/**
+	 * @return the x position of the L2Object.
+	 */
 	public final int getX() { return getWorldPosition().getX(); }
 	public final void setX(int value) { getWorldPosition().setX(value); }
 	
-	/** Return the y position of the L2Object. */
+	/**
+	 * @return the y position of the L2Object.
+	 */
 	public final int getY() { return getWorldPosition().getY(); }
 	public final void setY(int value) { getWorldPosition().setY(value); }
 	
-	/** Return the z position of the L2Object. */
+	/**
+	 * @return the z position of the L2Object.
+	 */
 	public final int getZ() { return getWorldPosition().getZ(); }
 	public final void setZ(int value) { getWorldPosition().setZ(value); }
 	

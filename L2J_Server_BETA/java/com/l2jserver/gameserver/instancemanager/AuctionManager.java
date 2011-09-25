@@ -146,7 +146,10 @@ public class AuctionManager
 		return _auctions;
 	}
 	
-	/** Init Clan NPC aution */
+	/**
+	 * Init Clan NPC aution 
+	 * @param id
+	 */
 	public void initNPC(int id)
 	{
 		int i;

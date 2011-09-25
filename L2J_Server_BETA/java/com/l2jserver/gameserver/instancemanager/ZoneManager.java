@@ -65,6 +65,9 @@ public class ZoneManager
 	private int _lastDynamicId = 300000;
 	private List<L2ItemInstance> _debugItems;
 	
+	/**
+	 * @return
+	 */
 	public static final ZoneManager getInstance()
 	{
 		return SingletonHolder._instance;
@@ -446,7 +449,8 @@ public class ZoneManager
 	
 	/**
 	 * Add new zone
-	 *
+	 * @param <T> 
+	 * @param id 
 	 * @param zone
 	 */
 	@SuppressWarnings("unchecked")
@@ -511,6 +515,7 @@ public class ZoneManager
 	
 	/**
 	 * Get zone by ID and zone class
+	 * @param <T> 
 	 * @param id
 	 * @param zoneType
 	 * @return zone
@@ -533,11 +538,10 @@ public class ZoneManager
 	}
 	
 	/**
-	 * Returns zone from where the object is located by type
-	 *
+	 * @param <T> 
 	 * @param object
 	 * @param type
-	 * @return zone
+	 * @return zone from where the object is located by type
 	 */
 	public <T extends L2ZoneType> T getZone(L2Object object, Class<T> type)
 	{
@@ -586,13 +590,12 @@ public class ZoneManager
 	}
 	
 	/**
-	 * Returns zone from given coordinates
-	 * 
+	 * @param <T> 
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @param type
-	 * @return zone
+	 * @return zone from given coordinates
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends L2ZoneType> T getZone(int x, int y, int z, Class<T> type)

@@ -96,7 +96,8 @@ public class ForumsBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * @param string
+	 * 
+	 * @param Name
 	 * @return
 	 */
 	public Forum getForumByName(String Name)
@@ -114,7 +115,10 @@ public class ForumsBBSManager extends BaseBBSManager
 	
 	/**
 	 * @param name
-	 * @param forumByName
+	 * @param parent
+	 * @param type
+	 * @param perm
+	 * @param oid
 	 * @return
 	 */
 	public Forum createNewForum(String name, Forum parent, int type, int perm, int oid)

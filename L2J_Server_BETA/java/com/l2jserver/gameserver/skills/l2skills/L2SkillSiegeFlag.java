@@ -116,11 +116,10 @@ public class L2SkillSiegeFlag extends L2Skill
 	}
 	
 	/**
-	 * Return true if character clan place a flag<BR><BR>
-	 *
 	 * @param activeChar The L2Character of the character placing the flag
-	 * @param isCheckOnly if false, it will send a notification to the player telling him
-	 * why it failed
+	 * @param isCheckOnly if false, it will send a notification to the player telling him why it failed
+	 * @param isOutPost 
+	 * @return true if character clan place a flag
 	 */
 	public static boolean checkIfOkToPlaceFlag(L2Character activeChar, boolean isCheckOnly, boolean isOutPost)
 	{
@@ -251,12 +250,11 @@ public class L2SkillSiegeFlag extends L2Skill
 	}
 	
 	/**
-	 * Return true if character clan place a flag<BR><BR>
-	 *
-	 * @param activeChar The L2Character of the character placing the flag
-	 * @param isCheckOnly if false, it will send a notification to the player telling him
-	 * why it failed
 	 * TODO: Replace strings with system messages!
+	 * @param activeChar The L2Character of the character placing the flag
+	 * @param isCheckOnly if false, it will send a notification to the player telling him why it failed
+	 * @param isOutPost 
+	 * @return true if character clan place a flag
 	 */
 	public static boolean checkIfOkToPlaceHQ(L2Character activeChar, boolean isCheckOnly, boolean isOutPost)
 	{

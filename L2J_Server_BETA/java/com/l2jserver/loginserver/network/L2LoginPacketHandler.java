@@ -36,7 +36,7 @@ public final class L2LoginPacketHandler implements IPacketHandler<L2LoginClient>
 	protected static final Logger _log = Logger.getLogger(L2LoginPacketHandler.class.getName());
 	
 	/**
-	 * @see com.l2jserver.mmocore.network.IPacketHandler#handlePacket(java.nio.ByteBuffer, com.l2jserver.mmocore.interfaces.MMOClient)
+	 * @see org.mmocore.network.IPacketHandler#handlePacket(java.nio.ByteBuffer, org.mmocore.network.MMOClient)
 	 */
 	public ReceivablePacket<L2LoginClient> handlePacket(ByteBuffer buf, L2LoginClient client)
 	{

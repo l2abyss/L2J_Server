@@ -119,14 +119,13 @@ public class AntiFeedManager
 	}
 
 	/**
-	 * If number of all simultaneous connections from player's IP address lower than max
-	 * then increment connection count and return true.
-	 * Returns false if number of all simultaneous connections from player's IP address
-	 * higher than max.
+	 * 
 	 * @param eventId
 	 * @param player
 	 * @param max
-	 * @return
+	 * @return If number of all simultaneous connections from player's IP address lower than max
+	 * then increment connection count and return true.<br>
+	 * False if number of all simultaneous connections from player's IP address higher than max.
 	 */
 	public final boolean tryAddPlayer(int eventId, L2PcInstance player, int max)
 	{
@@ -134,14 +133,12 @@ public class AntiFeedManager
 	}
 
 	/**
-	 * If number of all simultaneous connections from player's IP address lower than max
-	 * then increment connection count and return true.
-	 * Returns false if number of all simultaneous connections from player's IP address
-	 * higher than max.
+	 * 
 	 * @param eventId
-	 * @param player
+	 * @param client
 	 * @param max
-	 * @return
+	 * @return If number of all simultaneous connections from player's IP address lower than max then increment connection count and return true.<br>
+	 * False if number of all simultaneous connections from player's IP address higher than max.
 	 */
 	public final boolean tryAddClient(int eventId, L2GameClient client, int max)
 	{
@@ -172,10 +169,9 @@ public class AntiFeedManager
 
 	/**
 	 * Decreasing number of active connection from player's IP address
-	 * Returns true if success and false if any problem detected.
 	 * @param eventId
 	 * @param player
-	 * @return
+	 * @return true if success and false if any problem detected.
 	 */
 	public final boolean removePlayer(int eventId, L2PcInstance player)
 	{
@@ -203,7 +199,7 @@ public class AntiFeedManager
 
 	/**
 	 * Remove player connection IP address from all registered events lists.
-	 * @param player
+	 * @param client
 	 */
 	public final void onDisconnect(L2GameClient client)
 	{
@@ -226,10 +222,9 @@ public class AntiFeedManager
 	}
 
 	/**
-	 * Returns maximum number of allowed connections (whitelist + max)
 	 * @param player
 	 * @param max
-	 * @return
+	 * @return maximum number of allowed connections (whitelist + max)
 	 */
 	public final int getLimit(L2PcInstance player, int max)
 	{
@@ -237,10 +232,9 @@ public class AntiFeedManager
 	}
 
 	/**
-	 * Returns maximum number of allowed connections (whitelist + max)
 	 * @param client
 	 * @param max
-	 * @return
+	 * @return maximum number of allowed connections (whitelist + max)
 	 */
 	public final int getLimit(L2GameClient client, int max)
 	{
@@ -257,8 +251,9 @@ public class AntiFeedManager
 		private int _num = 0;
 
 		/**
-		 * Returns true if successfully incremented number of connections
 		 * and false if maximum number is reached.
+		 * @param max 
+		 * @return true if successfully incremented number of connections
 		 */
 		public final synchronized boolean testAndIncrement(int max)
 		{
@@ -271,7 +266,7 @@ public class AntiFeedManager
 		}
 
 		/**
-		 * Returns true if all connections are removed
+		 * @return true if all connections are removed
 		 */
 		public final synchronized boolean testAndDecrement()
 		{

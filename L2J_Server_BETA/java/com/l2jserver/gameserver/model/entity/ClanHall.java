@@ -224,37 +224,49 @@ public abstract class ClanHall
 		}
 	}
 	
-	/** Return Id Of Clan hall */
+	/**
+	 * @return Id Of Clan hall
+	 */
 	public final int getId()
 	{
 		return _clanHallId;
 	}
 	
-	/** Return name */
+	/**
+	 * @return the Clan Hall name.
+	 */
 	public final String getName()
 	{
 		return _name;
 	}
 	
-	/** Return OwnerId */
+	/**
+	 * @return OwnerId
+	 */
 	public final int getOwnerId()
 	{
 		return _ownerId;
 	}
 	
-	/** Return Desc */
+	/**
+	 * @return Desc
+	 */
 	public final String getDesc()
 	{
 		return _desc;
 	}
 	
-	/** Return Location */
+	/**
+	 * @return Location
+	 */
 	public final String getLocation()
 	{
 		return _location;
 	}
 	
-	/** Return all DoorInstance */
+	/**
+	 * @return all DoorInstance
+	 */
 	public final List<L2DoorInstance> getDoors()
 	{
 		if (_doors == null)
@@ -262,7 +274,10 @@ public abstract class ClanHall
 		return _doors;
 	}
 	
-	/** Return Door */
+	/**
+	 * @param doorId 
+	 * @return Door
+	 */
 	public final L2DoorInstance getDoor(int doorId)
 	{
 		if (doorId <= 0)
@@ -275,7 +290,10 @@ public abstract class ClanHall
 		return null;
 	}
 	
-	/** Return function with id */
+	/**
+	 * @param type 
+	 * @return function with id
+	 */
 	public ClanHallFunction getFunction(int type)
 	{
 		if (_functions.get(type) != null)
@@ -293,14 +311,19 @@ public abstract class ClanHall
 	}
 	
 	/**
-	 * Return true if object is inside the zone
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @return true if object is inside the zone
 	 */
 	public boolean checkIfInZone(int x, int y, int z)
 	{
 		return getZone().isInsideZone(x, y, z);
 	}
 	
-	/** Returns the zone of this clan hall */
+	/**
+	 * @return the zone of this clan hall
+	 */
 	public L2ClanHallZone getZone()
 	{
 		return _zone;
@@ -317,7 +340,10 @@ public abstract class ClanHall
 		updateDb();
 	}
 	
-	/** Set owner if clan hall is free */
+	/**
+	 * Set owner if clan hall is free
+	 * @param clan 
+	 */
 	public void setOwner(L2Clan clan)
 	{
 		// Verify that this ClanHall is Free and Clan isn't null
@@ -331,7 +357,12 @@ public abstract class ClanHall
 		updateDb();
 	}
 		
-	/** Open or Close Door */
+	/**
+	 * Open or Close Door
+	 * @param activeChar 
+	 * @param doorId 
+	 * @param open
+	 */
 	public void openCloseDoor(L2PcInstance activeChar, int doorId, boolean open)
 	{
 		if (activeChar != null && activeChar.getClanId() == getOwnerId())
@@ -409,7 +440,10 @@ public abstract class ClanHall
 		}
 	}
 	
-	/** Remove function In List and in DB */
+	/**
+	 * Remove function In List and in DB
+	 * @param functionType
+	 */
 	public void removeFunction(int functionType)
 	{
 		_functions.remove(functionType);

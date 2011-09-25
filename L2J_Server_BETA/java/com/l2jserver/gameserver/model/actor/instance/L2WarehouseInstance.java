@@ -20,6 +20,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 public class L2WarehouseInstance extends L2NpcInstance
 {
 	/**
+	 * @param objectId 
 	 * @param template
 	 */
 	public L2WarehouseInstance(int objectId, L2NpcTemplate template)

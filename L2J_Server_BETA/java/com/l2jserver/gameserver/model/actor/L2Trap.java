@@ -48,6 +48,8 @@ public class L2Trap extends L2Character
 	/**
 	 * @param objectId
 	 * @param template
+	 * @param lifeTime 
+	 * @param skill 
 	 */
 	public L2Trap(int objectId, L2NpcTemplate template, int lifeTime, L2Skill skill)
 	{
@@ -135,10 +137,6 @@ public class L2Trap extends L2Character
 		return true;
 	}
 	
-	/**
-	 * 
-	 * @param owner
-	 */
 	@Override
 	public void deleteMe()
 	{
@@ -147,10 +145,6 @@ public class L2Trap extends L2Character
 		super.deleteMe();
 	}
 	
-	/**
-	 * 
-	 * @param owner
-	 */
 	public synchronized void unSummon()
 	{
 		if (isVisible() && !isDead())

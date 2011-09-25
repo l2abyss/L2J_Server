@@ -234,7 +234,7 @@ public class L2Clan
 	}
 	
 	/**
-	 * @param leaderId The leaderId to set.
+	 * @param leader the leader to set.
 	 */
 	public void setLeader(L2ClanMember leader)
 	{
@@ -1182,7 +1182,9 @@ public class L2Clan
 		}
 	}
 	
-	/** used to retrieve all skills */
+	/**
+	 * @return all the clan skills.
+	 */
 	public final L2Skill[] getAllSkills()
 	{
 		if (_skills == null)
@@ -1191,7 +1193,11 @@ public class L2Clan
 		return _skills.values().toArray(new L2Skill[_skills.values().size()]);
 	}
 	
-	/** used to add a skill to skill list of this L2Clan */
+	/** 
+	 * Used to add a skill to skill list of this L2Clan 
+	 * @param newSkill 
+	 * @return
+	 */
 	public L2Skill addSkill(L2Skill newSkill)
 	{
 		L2Skill oldSkill = null;
@@ -1210,7 +1216,12 @@ public class L2Clan
 		return addNewSkill(newSkill, -2);
 	}
 	
-	/** used to add a new skill to the list, send a packet to all online clan members, update their stats and store it in db*/
+	/**
+	 * Used to add a new skill to the list, send a packet to all online clan members, update their stats and store it in db
+	 * @param newSkill 
+	 * @param subType 
+	 * @return
+	 */
 	public L2Skill addNewSkill(L2Skill newSkill, int subType)
 	{
 		L2Skill oldSkill = null;
@@ -1641,7 +1652,11 @@ public class L2Clan
 		}
 	}
 	
-	/** used to retrieve subPledge by type */
+	/**
+	 * used to retrieve subPledge by type 
+	 * @param pledgeType 
+	 * @return
+	 */
 	public final SubPledge getSubPledge(int pledgeType)
 	{
 		if (_subPledges == null)
@@ -1650,7 +1665,11 @@ public class L2Clan
 		return _subPledges.get(pledgeType);
 	}
 	
-	/** used to retrieve subPledge by type */
+	/**
+	 * Used to retrieve subPledge by type 
+	 * @param pledgeName 
+	 * @return
+	 */
 	public final SubPledge getSubPledge(String pledgeName)
 	{
 		if (_subPledges == null)
@@ -1666,7 +1685,10 @@ public class L2Clan
 		return null;
 	}
 	
-	/** used to retrieve all subPledges */
+	/**
+	 * Used to retrieve all subPledges 
+	 * @return
+	 */
 	public final SubPledge[] getAllSubPledges()
 	{
 		if (_subPledges == null)
@@ -2706,6 +2728,7 @@ public class L2Clan
 	/**
 	 * Change the ally crest. If crest id is 0, crest is removed. New crest id is saved to database.
 	 * @param crestId if 0, crest is removed, else new crest id is set and saved to database
+	 * @param onlyThisClan 
 	 */
 	public void changeAllyCrest(int crestId, boolean onlyThisClan)
 	{

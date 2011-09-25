@@ -43,9 +43,7 @@ import com.l2jserver.util.network.BaseSendablePacket;
 /**
  * @author -Wooden-
  * @author KenM
- *
  */
-
 public class GameServerThread extends Thread
 {
 	protected static final Logger _log = Logger.getLogger(GameServerThread.class.getName());
@@ -168,7 +166,9 @@ public class GameServerThread extends Thread
 	 * <li>Updates the GameServerInfo values based on GameServerAuth packet</li>
 	 * <li><b>Sets the GameServerInfo as Authed</b></li>
 	 * @param gsi The GameServerInfo to be attached.
-	 * @param gameServerAuth The server info.
+	 * @param port
+	 * @param hosts
+	 * @param maxPlayers
 	 */
 	public void attachGameServerInfo(GameServerInfo gsi, int port, String[] hosts, int maxPlayers)
 	{
@@ -226,7 +226,6 @@ public class GameServerThread extends Thread
 	
 	/**
 	 * @param sl
-	 * @throws IOException
 	 */
 	public void sendPacket(BaseSendablePacket sl)
 	{
@@ -279,7 +278,7 @@ public class GameServerThread extends Thread
 	}
 	
 	/**
-	 * @param gameHost The gameHost to set.
+	 * @param hosts The gameHost to set.
 	 */
 	public void setGameHosts(String[] hosts)
 	{

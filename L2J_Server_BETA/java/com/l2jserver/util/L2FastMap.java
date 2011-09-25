@@ -18,15 +18,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * A custom version of HashMap with extension for iterating without using temporary collection<br>
  * <br>
  * @author  Julian Version 1.0.1 (2008-02-07)<br>
  * Changes:<br>
  *      1.0.0 - Initial version.<br>
  *      1.0.1 - Made forEachP() final.<br>
+ * @param <K> 
+ * @param <V> 
  */
-
 public class L2FastMap<K extends Object, V extends Object> extends HashMap<K,V>
 {
 	static final long serialVersionUID = 1L;
@@ -35,6 +35,8 @@ public class L2FastMap<K extends Object, V extends Object> extends HashMap<K,V>
 	 * Public inner interface used by ForEach iterations<br>
 	 *
 	 * @author  Julian
+	 * @param <K> 
+	 * @param <V> 
 	 */
 	public interface I2ForEach<K,V> {
 		public boolean forEach(K key, V val);

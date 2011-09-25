@@ -138,7 +138,10 @@ public class Auction
 		}
 	}
 	
-	/** Constructor */
+	/**
+	 * Constructor 
+	 * @param auctionId
+	 */
 	public Auction(int auctionId)
 	{
 		_id = auctionId;
@@ -287,7 +290,11 @@ public class Auction
 		}
 	}
 	
-	/** Set a bid */
+	/**
+	 * Set a bid 
+	 * @param bidder 
+	 * @param bid
+	 */
 	public synchronized void setBid(L2PcInstance bidder, long bid)
 	{
 		long requiredAdena = bid;
@@ -306,7 +313,12 @@ public class Auction
 			bidder.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BID_PRICE_MUST_BE_HIGHER));
 	}
 	
-	/** Return Item in WHC */
+	/**
+	 * Return Item in WHC 
+	 * @param Clan 
+	 * @param quantity 
+	 * @param penalty
+	 */
 	private void returnItem(String Clan, long quantity, boolean penalty)
 	{
 		if (penalty)
@@ -319,7 +331,12 @@ public class Auction
 		ClanTable.getInstance().getClanByName(Clan).getWarehouse().addItem("Outbidded", ADENA_ID, quantity, null, null);
 	}
 	
-	/** Take Item in WHC */
+	/**
+	 * Take Item in WHC 
+	 * @param bidder 
+	 * @param quantity 
+	 * @return
+	 */
 	private boolean takeItem(L2PcInstance bidder, long quantity)
 	{
 		if (bidder.getClan() != null && bidder.getClan().getWarehouse().getAdena() >= quantity)
@@ -331,7 +348,11 @@ public class Auction
 		return false;
 	}
 	
-	/** Update auction in DB */
+	/**
+	 * Update auction in DB 
+	 * @param bidder 
+	 * @param bid
+	 */
 	private void updateInDB(L2PcInstance bidder, long bid)
 	{
 		Connection con = null;
@@ -487,7 +508,10 @@ public class Auction
 		}
 	}
 	
-	/** Cancel bid */
+	/**
+	 * Cancel bid 
+	 * @param bidder
+	 */
 	public synchronized void cancelBid(int bidder)
 	{
 		Connection con = null;
@@ -561,7 +585,10 @@ public class Auction
 		}
 	}
 	
-	/** Get var auction */
+	/**
+	 * Get var auction 
+	 * @return
+	 */
 	public final int getId()
 	{
 		return _id;

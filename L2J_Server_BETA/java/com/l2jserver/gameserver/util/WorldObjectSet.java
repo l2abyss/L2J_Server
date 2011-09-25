@@ -35,8 +35,8 @@ import com.l2jserver.gameserver.model.L2Object;
  * This class ...
  *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
+ * @param <T> 
  */
-
 public class WorldObjectSet<T extends L2Object> extends L2ObjectSet<T>
 {
 	private Map<Integer, T> _objectMap;

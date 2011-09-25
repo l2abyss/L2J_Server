@@ -33,7 +33,7 @@ public class ConditionPlayerRangeFromNpc extends Condition
 	}
 	
 	@Override
-	boolean testImpl(Env env)
+	public boolean testImpl(Env env)
 	{
 		if (_npcId == 0 || _radius == 0)
 			return false;

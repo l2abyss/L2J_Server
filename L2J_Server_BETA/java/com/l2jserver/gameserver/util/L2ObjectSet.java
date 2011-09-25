@@ -35,8 +35,8 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
  * This class ...
  *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
+ * @param <T> 
  */
-
 public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 {
 	public static L2ObjectSet<L2Object> createL2ObjectSet()

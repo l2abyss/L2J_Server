@@ -86,7 +86,7 @@ public final class UserInfo extends L2GameServerPacket
 	private int _airShipHelm;
 	
 	/**
-	 * @param _characters
+	 * @param character
 	 */
 	public UserInfo(L2PcInstance character)
 	{
@@ -150,7 +150,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.getCurrentLoad());
 		writeD(_activeChar.getMaxLoad());
 		
-		writeD(_activeChar.getActiveWeaponItem() != null ? 40 : 20); // 20 no weapon, 40 weapon equippe
+		writeD(_activeChar.getActiveWeaponItem() != null ? 40 : 20); // 20 no weapon, 40 weapon equipped
 		
 		writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_UNDER));
 		writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_REAR));
@@ -269,7 +269,7 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeD(_activeChar.getMDef(null, null));
 		
-		writeD(_activeChar.getPvpFlag()); // 0-non-pvp  1-pvp = violett name
+		writeD(_activeChar.getPvpFlag()); // 0-non-pvp  1-pvp = violet name
 		writeD(_activeChar.getKarma());
 		
 		writeD(_runSpd);
@@ -409,8 +409,8 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_territoryId); // CT2.3*/
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

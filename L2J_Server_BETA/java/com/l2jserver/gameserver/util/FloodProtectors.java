@@ -91,8 +91,7 @@ public final class FloodProtectors
 	/**
 	 * Creates new instance of FloodProtectors.
 	 * 
-	 * @param player
-	 *            player for which the collection of flood protectors is being created.
+	 * @param client game client for which the collection of flood protectors is being created.
 	 */
 	public FloodProtectors(final L2GameClient client)
 	{
@@ -206,9 +205,7 @@ public final class FloodProtectors
 	}
 	
 	/**
-	 * Returns {@link #_multisell}.
-	 * 
-	 * @return {@link #_multisell}
+	 * @return {@link #_multiSell}
 	 */
 	public FloodProtectorAction getMultiSell()
 	{

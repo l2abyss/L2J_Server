@@ -33,6 +33,7 @@ public class PlayerAuthRequest extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
+	 * @param server 
 	 */
 	public PlayerAuthRequest(byte[] decrypt, GameServerThread server)
 	{

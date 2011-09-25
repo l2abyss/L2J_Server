@@ -31,7 +31,8 @@ public class SocialAction extends L2GameServerPacket
 	
 	/**
 	 * 0x3d SocialAction         dd
-	 * @param _characters
+	 * @param cha
+	 * @param actionId
 	 */
 	public SocialAction(L2Character cha, int actionId)
 	{
@@ -47,8 +48,8 @@ public class SocialAction extends L2GameServerPacket
 		writeD(_actionId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

@@ -24,19 +24,19 @@ public abstract class AbstractServerBasePacket extends L2GameServerPacket
 {
 	
 	/**
-	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#runImpl()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#runImpl()
 	 */
 	@Override
 	abstract public void runImpl();
 	
 	/**
-	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
 	@Override
 	abstract protected void writeImpl();
 	
 	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	abstract public String getType();

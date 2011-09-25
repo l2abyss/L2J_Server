@@ -28,7 +28,10 @@ public class RequestRecordInfo extends L2GameClientPacket
 {
 	private static final String _C__6E_REQUEST_RECORD_INFO = "[C] 6E RequestRecordInfo";
 	
-	/** urgent messages, execute immediatly */
+	/**
+	 * urgent messages, execute immediately 
+	 * @return
+	 */
 	public TaskPriority getPriority() { return TaskPriority.PR_NORMAL; }
 	
 	@Override

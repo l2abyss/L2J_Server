@@ -32,9 +32,7 @@ import com.l2jserver.gameserver.templates.skills.L2EffectType;
  * L2PlayableInstance :<BR><BR>
  * <li>L2PcInstance</li>
  * <li>L2Summon</li><BR><BR>
- *
  */
-
 public abstract class L2Playable extends L2Character
 {
 	private L2Character _lockedTarget = null;
@@ -251,7 +249,7 @@ public abstract class L2Playable extends L2Character
 	}
 	
 	/**
-	 * Return True if the Silent Moving mode is active.<BR><BR>
+	 * @return True if the Silent Moving mode is active.
 	 */
 	public boolean isSilentMoving()
 	{
@@ -265,7 +263,7 @@ public abstract class L2Playable extends L2Character
 	}
 
 	/**
-	 * @param blessing
+	 * @param effect
 	 */
 	public void stopProtectionBlessing(L2Effect effect)
 	{

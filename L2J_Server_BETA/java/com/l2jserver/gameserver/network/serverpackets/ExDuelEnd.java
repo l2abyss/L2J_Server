@@ -38,7 +38,7 @@ public class ExDuelEnd extends L2GameServerPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

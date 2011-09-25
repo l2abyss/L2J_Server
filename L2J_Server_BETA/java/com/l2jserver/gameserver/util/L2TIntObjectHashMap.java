@@ -68,6 +68,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	 * example) and you need to put
 	 * something in the map without causing a deadlock by taking the writeLock
 	 * before the readLock is unlocked.
+	 * @param key 
+	 * @param value 
+	 * @return 
 	 */
 	public V unsynchronizedPut(int key, V value)
 	{
@@ -126,6 +129,8 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	 * example) and you need to remove
 	 * something in the map without causing a deadlock by taking the writeLock
 	 * before the readLock is unlocked.
+	 * @param key 
+	 * @return 
 	 */
 	public V unsynchronizedRemove(int key)
 	{
@@ -264,6 +269,8 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	 * Keep in mind that this uses writeLock instead of readLock, and its
 	 * intended only if you are trying to
 	 * put/remove something while looping the values of this map.
+	 * @param procedure 
+	 * @return 
 	 */
 	public boolean safeForEachKey(TIntProcedure procedure)
 	{
@@ -300,6 +307,8 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	 * Keep in mind that this uses writeLock instead of readLock, and its
 	 * intended only if you are trying to
 	 * put/remove something while looping the values of this map.
+	 * @param arg0 
+	 * @return 
 	 */
 	public boolean safeForEachValue(TObjectProcedure<V> arg0)
 	{
@@ -336,6 +345,8 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	 * Keep in mind that this uses writeLock instead of readLock, and its
 	 * intended only if you are trying to
 	 * put/remove something while looping the values of this map.
+	 * @param arg0 
+	 * @return 
 	 */
 	public boolean safeForEachEntry(TIntObjectProcedure<V> arg0)
 	{

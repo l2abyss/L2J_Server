@@ -684,6 +684,9 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	 * (villagemaster race/type, is not contains in previous subclasses,
 	 * is contains in allowed subclasses)
 	 * Base class not added into allowed subclasses.
+	 * @param player 
+	 * @param classId 
+	 * @return 
 	 */
 	private final boolean isValidNewSubClass(L2PcInstance player, int classId)
 	{

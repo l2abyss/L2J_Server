@@ -559,6 +559,7 @@ public class SevenSigns
 	/**
 	 * returns true if the given date is in Seal Validation or in Quest Event Results period
 	 * @param date
+	 * @return 
 	 */
 	public boolean isDateInSealValidPeriod(Calendar date)
 	{
@@ -741,8 +742,6 @@ public class SevenSigns
 	
 	/**
 	 * Restores all Seven Signs data and settings, usually called at server startup.
-	 *
-	 * @throws Exception
 	 */
 	protected void restoreSevenSignsData()
 	{
@@ -822,13 +821,8 @@ public class SevenSigns
 	}
 	
 	/**
-	 * Saves all Seven Signs player data.
+	 * Saves all Seven Signs player data.<br>
 	 * Should be called on period change and shutdown only.
-	 * <BR>
-	 *
-	 * @param player
-	 * @param updateSettings
-	 * @throws Exception
 	 */
 	public void saveSevenSignsData()
 	{
@@ -973,16 +967,12 @@ public class SevenSigns
 	}
 	
 	/**
-	 * Used to specify cabal-related details for the specified player. This method
-	 * checks to see if the player has registered before and will update the database
-	 * if necessary.
-	 * <BR>
-	 * Returns the cabal ID the player has joined.
-	 *
-	 * @param player
+	 * Used to specify cabal-related details for the specified player.<br>
+	 * This method checks to see if the player has registered before and will update the database if necessary.
+	 * @param objectId
 	 * @param chosenCabal
 	 * @param chosenSeal
-	 * @return int cabal
+	 * @return the cabal ID the player has joined.
 	 */
 	public int setPlayerInfo(int objectId, int chosenCabal, int chosenSeal)
 	{
@@ -1053,10 +1043,9 @@ public class SevenSigns
 	 * Returns the amount of ancient adena the specified player can claim, if any.<BR>
 	 * If removeReward = True, all the ancient adena owed to them is removed, then
 	 * DB is updated.
-	 *
-	 * @param player
+	 * @param objectId
 	 * @param removeReward
-	 * @return int rewardAmount
+	 * @return
 	 */
 	public int getAncientAdenaReward(int objectId, boolean removeReward)
 	{
@@ -1084,15 +1073,14 @@ public class SevenSigns
 	/**
 	 * Used to add the specified player's seal stone contribution points
 	 * to the current total for their cabal. Returns the point score the
-	 * contribution was worth.
+	 * contribution was worth.<br>
 	 *
 	 * Each stone count <B>must be</B> broken down and specified by the stone's color.
-	 *
-	 * @param player
+	 * @param objectId
 	 * @param blueCount
 	 * @param greenCount
 	 * @param redCount
-	 * @return int contribScore
+	 * @return
 	 */
 	public long addPlayerStoneContrib(int objectId, long blueCount, long greenCount, long redCount)
 	{
@@ -1376,6 +1364,7 @@ public class SevenSigns
 	 * necropolises, who belong to the losing cabal.
 	 * <BR><BR>
 	 * Should only ever called at the beginning of Seal Validation.
+	 * @param compWinner 
 	 */
 	protected void teleLosingCabalFromDungeons(String compWinner)
 	{

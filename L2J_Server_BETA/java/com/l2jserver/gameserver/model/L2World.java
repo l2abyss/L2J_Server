@@ -101,7 +101,7 @@ public final class L2World
 	}
 	
 	/**
-	 * Return the current instance of L2World.<BR><BR>
+	 * @return the current instance of L2World.
 	 */
 	public static L2World getInstance()
 	{
@@ -114,6 +114,7 @@ public final class L2World
 	 * <B><U> Example of use </U> :</B><BR><BR>
 	 * <li> Withdraw an item from the warehouse, create an item</li>
 	 * <li> Spawn a L2Character (PC, NPC, Pet)</li><BR>
+	 * @param object 
 	 */
 	public void storeObject(L2Object object)
 	{
@@ -181,12 +182,11 @@ public final class L2World
 	}
 	
 	/**
-	 * Return the L2Object object that belongs to an ID or null if no object found.<BR><BR>
-	 *
 	 * <B><U> Example of use </U> :</B><BR><BR>
 	 * <li> Client packets : Action, AttackRequest, RequestJoinParty, RequestJoinPledge...</li><BR>
 	 *
 	 * @param oID Identifier of the L2Object
+	 * @return the L2Object object that belongs to an ID or null if no object found.
 	 */
 	public L2Object findObject(int oID)
 	{
@@ -203,11 +203,8 @@ public final class L2World
 	
 	/**
 	 * Added by Tempy - 08 Aug 05
-	 * Allows easy retrevial of all visible objects in world.
-	 * 
-	 * -- do not use that fucntion, its unsafe!
-	 * 
-	 * @deprecated
+	 * @return retrieval of all visible objects in world.
+	 * @deprecated do not use that function, its unsafe!
 	 */
 	@Deprecated
 	public final TIntObjectHashMap<L2Object> getAllVisibleObjects()
@@ -236,8 +233,7 @@ public final class L2World
 	}
 	
 	/**
-	 * Return a table containing all GMs.<BR><BR>
-	 * 
+	 * @return a table containing all GMs.
 	 */
 	public FastList<L2PcInstance> getAllGMs()
 	{
@@ -270,10 +266,9 @@ public final class L2World
 	}
 	
 	/**
-	 * Return the player instance corresponding to the given name.<BR><BR>
 	 * <B>If you have access to player objectId use {@link #getPlayer(int playerObjId)}</B>
-	 * <BR>
 	 * @param name Name of the player to get Instance
+	 * @return the player instance corresponding to the given name.
 	 */
 	public L2PcInstance getPlayer(String name)
 	{
@@ -281,9 +276,8 @@ public final class L2World
 	}
 	
 	/**
-	 * Return the player instance corresponding to the given object ID.<BR><BR>
-	 *
 	 * @param playerObjId Object ID of the player to get Instance
+	 * @return the player instance corresponding to the given object ID.
 	 */
 	public L2PcInstance getPlayer(int playerObjId)
 	{
@@ -291,9 +285,8 @@ public final class L2World
 	}
 	
 	/**
-	 * Return the pet instance from the given ownerId.<BR><BR>
-	 *
 	 * @param ownerId ID of the owner
+	 * @return the pet instance from the given ownerId.
 	 */
 	public L2PetInstance getPet(int ownerId)
 	{
@@ -305,6 +298,7 @@ public final class L2World
 	 *
 	 * @param ownerId ID of the owner
 	 * @param pet L2PetInstance of the pet
+	 * @return 
 	 */
 	public L2PetInstance addPet(int ownerId, L2PetInstance pet)
 	{
@@ -357,9 +351,7 @@ public final class L2World
 	 * <li> Apply Death Penalty of a L2PcInstance </li><BR><BR>
 	 *
 	 * @param object L2object to add in the world
-	 * @param newregion L2WorldRegion in wich the object will be add (not used)
-	 * @param dropper L2Character who has dropped the object (if necessary)
-	 *
+	 * @param newRegion L2WorldRegion in wich the object will be add (not used)
 	 */
 	public void addVisibleObject(L2Object object, L2WorldRegion newRegion)
 	{
@@ -413,7 +405,7 @@ public final class L2World
 	
 	/**
 	 * Add the L2PcInstance to _allPlayers of L2World.<BR><BR>
-	 * 
+	 * @param cha 
 	 */
 	public void addToAllPlayers(L2PcInstance cha)
 	{
@@ -424,8 +416,8 @@ public final class L2World
 	 * Remove the L2PcInstance from _allPlayers of L2World.<BR><BR>
 	 *
 	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> Remove a player fom the visible objects </li><BR>
-	 *
+	 * <li> Remove a player from the visible objects </li><BR>
+	 * @param cha 
 	 */
 	public void removeFromAllPlayers(L2PcInstance cha)
 	{
@@ -457,7 +449,7 @@ public final class L2World
 	 * <li> Decay a L2Character</li><BR><BR>
 	 *
 	 * @param object L2object to remove from the world
-	 * @param oldregion L2WorldRegion in wich the object was before removing
+	 * @param oldRegion L2WorldRegion in which the object was before removing
 	 *
 	 */
 	public void removeVisibleObject(L2Object object, L2WorldRegion oldRegion)
@@ -517,7 +509,7 @@ public final class L2World
 	 * <li> Find Close Objects for L2Character </li><BR>
 	 *
 	 * @param object L2object that determine the current L2WorldRegion
-	 *
+	 * @return 
 	 */
 	public List<L2Object> getVisibleObjects(L2Object object)
 	{
@@ -561,7 +553,7 @@ public final class L2World
 	 *
 	 * @param object L2object that determine the center of the circular area
 	 * @param radius Radius of the circular area
-	 *
+	 * @return 
 	 */
 	public List<L2Object> getVisibleObjects(L2Object object, int radius)
 	{
@@ -612,7 +604,7 @@ public final class L2World
 	 *
 	 * @param object L2object that determine the center of the circular area
 	 * @param radius Radius of the spheric area
-	 *
+	 * @return 
 	 */
 	public List<L2Object> getVisibleObjects3D(L2Object object, int radius)
 	{
@@ -653,8 +645,6 @@ public final class L2World
 	}
 	
 	/**
-	 * Return all visible players of the L2WorldRegion object's and of its surrounding L2WorldRegion.<BR><BR>
-	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * All visible object are identified in <B>_visibleObjects</B> of their current L2WorldRegion <BR>
 	 * All surrounding L2WorldRegion are identified in <B>_surroundingRegions</B> of the selected L2WorldRegion in order to scan a large area around a L2Object<BR><BR>
@@ -663,7 +653,7 @@ public final class L2World
 	 * <li> Find Close Objects for L2Character </li><BR>
 	 *
 	 * @param object L2object that determine the current L2WorldRegion
-	 *
+	 * @return all visible players of the L2WorldRegion object's and of its surrounding L2WorldRegion.
 	 */
 	public List<L2Playable> getVisiblePlayable(L2Object object)
 	{
@@ -702,9 +692,10 @@ public final class L2World
 	 *
 	 * <B><U> Example of use </U> :</B><BR><BR>
 	 * <li> Set position of a new L2Object (drop, spawn...) </li>
-	 * <li> Update position of a L2Object after a mouvement </li><BR>
+	 * <li> Update position of a L2Object after a movement </li><BR>
 	 *
-	 * @param Point3D point position of the object
+	 * @param point position of the object
+	 * @return 
 	 */
 	public L2WorldRegion getRegion(Point3D point)
 	{

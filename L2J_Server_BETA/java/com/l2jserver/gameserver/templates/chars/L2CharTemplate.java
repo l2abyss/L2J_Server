@@ -92,14 +92,14 @@ public class L2CharTemplate
 	
 	/**
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> :
-	 * For client info use {@link fCollisionRadius}
+	 * For client info use {@link #fCollisionRadius}
 	 * </B></FONT><BR><BR>
 	 */
 	public final int collisionRadius;
 	
 	/**
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> :
-	 * For client info use {@link fCollisionHeight}
+	 * For client info use {@link #fCollisionHeight}
 	 * </B></FONT><BR><BR>
 	 */
 	public final int collisionHeight;

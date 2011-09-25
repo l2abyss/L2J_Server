@@ -22,11 +22,15 @@ public class RadarControl extends L2GameServerPacket
 	private int _x;
 	private int _y;
 	private int _z;
+	
 	/**
 	 * 0xEB RadarControl         ddddd
-	 * @param _
+	 * @param showRadar
+	 * @param type
+	 * @param x
+	 * @param y
+	 * @param z
 	 */
-	
 	public RadarControl(int showRadar, int type, int x , int  y ,int z)
 	{
 		_showRadar = showRadar;         // showRader?? 0 = showradar; 1 = delete radar;
@@ -47,8 +51,8 @@ public class RadarControl extends L2GameServerPacket
 		writeD(_z);    //z
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

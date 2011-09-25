@@ -753,7 +753,7 @@ public final class SkillTreesData
 	
 	/**
 	 * Some transformations are not available for some races.
-	 * @param playerthe transformation skill learning player.
+	 * @param player the transformation skill learning player.
 	 * @return all the available Transformation skills for a given {@code player}.
 	 */
 	public FastList<L2SkillLearn> getAvailableTransformSkills(L2PcInstance player)

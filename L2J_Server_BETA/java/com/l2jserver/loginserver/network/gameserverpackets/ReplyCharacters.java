@@ -26,6 +26,7 @@ public class ReplyCharacters extends BaseRecievePacket
 {
 	/**
 	 * @param decrypt
+	 * @param server 
 	 */
 	public ReplyCharacters(byte[] decrypt, GameServerThread server)
 	{

@@ -93,6 +93,9 @@ public class L2SiegeFlagInstance extends L2Npc
 	
 	/**
 	 * Use L2SiegeFlagInstance(L2PcInstance, int, L2NpcTemplate, boolean) instead
+	 * @param player 
+	 * @param objectId 
+	 * @param template 
 	 */
 	@Deprecated
 	public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template)

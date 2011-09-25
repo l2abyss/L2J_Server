@@ -25,7 +25,7 @@ public class VehicleCheckLocation extends L2GameServerPacket
 	private L2Character _boat;
 	
 	/**
-	 * @param instance
+	 * @param boat
 	 */
 	public VehicleCheckLocation(L2Character boat)
 	{

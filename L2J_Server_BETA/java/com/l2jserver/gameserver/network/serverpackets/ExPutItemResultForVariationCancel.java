@@ -40,7 +40,7 @@ public class ExPutItemResultForVariationCancel extends L2GameServerPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()
@@ -56,7 +56,7 @@ public class ExPutItemResultForVariationCancel extends L2GameServerPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

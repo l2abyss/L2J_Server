@@ -36,6 +36,12 @@ public class ZoneNPoly extends L2ZoneForm
 	private int _minY = L2World.MAP_MAX_Y;
 	private int _maxY = L2World.MAP_MIN_Y;
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param z1
+	 * @param z2
+	 */
 	public ZoneNPoly(int[] x, int[] y, int z1, int z2)
 	{
 		_x = x;

@@ -33,7 +33,7 @@ public class GMViewCharacterInfo extends L2GameServerPacket
 	private L2PcInstance _activeChar;
 	
 	/**
-	 * @param _characters
+	 * @param character
 	 */
 	public GMViewCharacterInfo(L2PcInstance character)
 	{
@@ -269,8 +269,8 @@ public class GMViewCharacterInfo extends L2GameServerPacket
 		writeD(_activeChar.getVitalityPoints());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

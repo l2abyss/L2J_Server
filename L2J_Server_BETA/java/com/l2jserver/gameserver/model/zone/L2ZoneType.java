@@ -83,7 +83,7 @@ public abstract class L2ZoneType
 	
 	/**
 	 * Setup new parameters for this zone
-	 * @param type
+	 * @param name
 	 * @param value
 	 */
 	public void setParameter(String name, String value)
@@ -258,9 +258,8 @@ public abstract class L2ZoneType
 	}
 	
 	/**
-	 * Returns this zones zone form
-	 * @param zone
-	 * @return
+	 * Returns this zones zone form.
+	 * @return {@link #_zone}
 	 */
 	public L2ZoneForm getZone()
 	{
@@ -316,6 +315,7 @@ public abstract class L2ZoneType
 	 * Checks if the given coordinates are within zone's plane
 	 * @param x
 	 * @param y
+	 * @return 
 	 */
 	public boolean isInsideZone(int x, int y)
 	{
@@ -327,6 +327,7 @@ public abstract class L2ZoneType
 	 * @param x
 	 * @param y
 	 * @param z
+	 * @return 
 	 */
 	public boolean isInsideZone(int x, int y, int z)
 	{
@@ -340,6 +341,7 @@ public abstract class L2ZoneType
 	 * @param y
 	 * @param z
 	 * @param instanceId
+	 * @return 
 	 */
 	public boolean isInsideZone(int x, int y, int z, int instanceId)
 	{
@@ -355,6 +357,7 @@ public abstract class L2ZoneType
 	 * Checks if the given object is inside the zone.
 	 *
 	 * @param object
+	 * @return 
 	 */
 	public boolean isInsideZone(L2Object object)
 	{
@@ -488,6 +491,7 @@ public abstract class L2ZoneType
 	
 	/**
 	 * Broadcasts packet to all players inside the zone
+	 * @param packet 
 	 */
 	public void broadcastPacket(L2GameServerPacket packet)
 	{

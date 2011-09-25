@@ -350,6 +350,8 @@ public class LoginController
 	
 	/**
 	 *
+	 * @param client 
+	 * @param serverId 
 	 * @return
 	 */
 	public boolean isLoginPossible(L2LoginClient client, int serverId)
@@ -481,10 +483,10 @@ public class LoginController
 	}
 	
 	/**
-	 * user name is not case sensitive any more
+	 * User name is not case sensitive any more.
 	 * @param user
 	 * @param password
-	 * @param address
+	 * @param client
 	 * @return
 	 */
 	public boolean loginValid(String user, String password, L2LoginClient client)// throws HackingException

@@ -52,7 +52,7 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 	}
 	
 	/**
-	 * @see com.l2jserver.mmocore.network.SendablePacket#write()
+	 * @see org.mmocore.network.SendablePacket#write()
 	 */
 	@Override
 	protected void write()

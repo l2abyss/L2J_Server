@@ -154,8 +154,7 @@ public class L2AccessLevel
 	
 	/**
 	 * Retruns if the access level is allowed to use fixed res or not<br><br>
-	 * 
-	 * @return: true if the access level is allowed to use fixed res, otherwise false<br>
+	 * @return true if the access level is allowed to use fixed res, otherwise false<br>
 	 */
 	public boolean allowFixedRes()
 	{

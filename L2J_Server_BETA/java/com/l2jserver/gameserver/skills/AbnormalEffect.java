@@ -104,6 +104,10 @@ public enum AbnormalEffect
 		return _name;
 	}
 	
+	/**
+	 * @param name
+	 * @return
+	 */
 	public static AbnormalEffect getByName(String name)
 	{
 		for (AbnormalEffect eff : AbnormalEffect.values())

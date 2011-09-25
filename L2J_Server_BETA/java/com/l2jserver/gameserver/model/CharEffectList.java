@@ -231,7 +231,7 @@ public class CharEffectList
 	
 	/**
 	 * Returns the first effect matching the given skillId
-	 * @param index
+	 * @param skillId
 	 * @return
 	 */
 	public final L2Effect getFirstEffect(int skillId)
@@ -469,6 +469,7 @@ public class CharEffectList
 	/**
 	 * Exits all effects created by a specific skill type
 	 * @param skillType skill type
+	 * @param negateLvl 
 	 */
 	public final void stopSkillEffects(L2SkillType skillType, int negateLvl)
 	{
@@ -998,6 +999,7 @@ public class CharEffectList
 	
 	/**
 	 * Remove all passive effects held by this <b>skillId</b>.
+	 * @param skillId 
 	 */
 	public void removePassiveEffects(int skillId)
 	{

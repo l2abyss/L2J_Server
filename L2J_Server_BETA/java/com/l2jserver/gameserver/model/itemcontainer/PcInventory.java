@@ -88,6 +88,8 @@ public class PcInventory extends Inventory
 	
 	/**
 	 * Returns the list of items in inventory available for transaction
+	 * @param allowAdena 
+	 * @param allowAncientAdena 
 	 * @return L2ItemInstance : items in inventory
 	 */
 	public L2ItemInstance[] getUniqueItems(boolean allowAdena, boolean allowAncientAdena)
@@ -129,6 +131,8 @@ public class PcInventory extends Inventory
 	/**
 	 * Returns the list of items in inventory available for transaction
 	 * Allows an item to appear twice if and only if there is a difference in enchantment level.
+	 * @param allowAdena 
+	 * @param allowAncientAdena 
 	 * @return L2ItemInstance : items in inventory
 	 */
 	public L2ItemInstance[] getUniqueItemsByEnchantLevel(boolean allowAdena, boolean allowAncientAdena)
@@ -168,6 +172,8 @@ public class PcInventory extends Inventory
 	}
 	
 	/**
+	 * @param itemId 
+	 * @return 
 	 * @see com.l2jserver.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, boolean)
 	 */
 	public L2ItemInstance[] getAllItemsByItemId(int itemId)
@@ -200,6 +206,9 @@ public class PcInventory extends Inventory
 	}
 	
 	/**
+	 * @param itemId 
+	 * @param enchantment 
+	 * @return 
 	 * @see com.l2jserver.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, int, boolean)
 	 */
 	public L2ItemInstance[] getAllItemsByItemId(int itemId, int enchantment)
@@ -233,8 +242,10 @@ public class PcInventory extends Inventory
 	}
 	
 	/**
-	 * Returns the list of items in inventory available for transaction
-	 * @return L2ItemInstance : items in inventory
+	 * @param allowAdena 
+	 * @param allowNonTradeable 
+	 * @param feightable 
+	 * @return the list of items in inventory available for transaction
 	 */
 	public L2ItemInstance[] getAvailableItems(boolean allowAdena, boolean allowNonTradeable, boolean feightable)
 	{
@@ -298,6 +309,7 @@ public class PcInventory extends Inventory
 	
 	/**
 	 * Returns the list of items in inventory available for transaction adjusted by tradeList
+	 * @param tradeList 
 	 * @return L2ItemInstance : items in inventory
 	 */
 	public TradeList.TradeItem[] getAvailableItems(TradeList tradeList)
@@ -322,7 +334,6 @@ public class PcInventory extends Inventory
 	/**
 	 * Adjust TradeItem according his status in inventory
 	 * @param item : L2ItemInstance to be adjusten
-	 * @return TradeItem representing adjusted item
 	 */
 	public void adjustAvailableItem(TradeItem item)
 	{
@@ -473,10 +484,11 @@ public class PcInventory extends Inventory
 	
 	/**
 	 * Transfers item to another inventory and checks _adena and _ancientAdena
-	 * @param process : String Identifier of process triggering this action
-	 * @param itemId : int Item Identifier of the item to be transfered
-	 * @param count : int Quantity of items to be transfered
-	 * @param actor : L2PcInstance Player requesting the item transfer
+	 * @param process string Identifier of process triggering this action
+	 * @param objectId Item Identifier of the item to be transfered
+	 * @param count Quantity of items to be transfered
+	 * @param target the item container for the item to be transfered.
+	 * @param actor the player requesting the item transfer
 	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the new item or the updated item in inventory
 	 */

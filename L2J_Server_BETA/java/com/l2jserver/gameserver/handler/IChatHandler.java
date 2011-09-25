@@ -28,6 +28,7 @@ public interface IChatHandler
 	 * @param type
 	 * @param activeChar
 	 * @param target
+	 * @param text 
 	 */
 	public void handleChat(int type, L2PcInstance activeChar, String target, String text);
 	

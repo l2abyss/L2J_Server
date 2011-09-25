@@ -31,6 +31,7 @@ public class PlayerLogout extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
+	 * @param server 
 	 */
 	public PlayerLogout(byte[] decrypt, GameServerThread server)
 	{

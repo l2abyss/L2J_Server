@@ -155,6 +155,9 @@ public abstract class ItemContainer
 	}
 	
 	/**
+	 * @param itemId 
+	 * @param enchantLevel 
+	 * @return 
 	 * @see  com.l2jserver.gameserver.model.itemcontainer.ItemContainer#getInventoryItemCount(int, int, boolean)
 	 */
 	public long getInventoryItemCount(int itemId, int enchantLevel)
@@ -298,11 +301,12 @@ public abstract class ItemContainer
 	
 	/**
 	 * Transfers item to another inventory
-	 * @param process : String Identifier of process triggering this action
-	 * @param itemId : int Item Identifier of the item to be transfered
-	 * @param count : int Quantity of items to be transfered
-	 * @param actor : L2PcInstance Player requesting the item transfer
-	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
+	 * @param process string Identifier of process triggering this action
+	 * @param objectId Item Identifier of the item to be transfered
+	 * @param count Quantity of items to be transfered
+	 * @param target the item container where the item will be moved.
+	 * @param actor Player requesting the item transfer
+	 * @param reference Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the new item or the updated item in inventory
 	 */
 	public L2ItemInstance transferItem(String process, int objectId, long count, ItemContainer target, L2PcInstance actor, Object reference)
@@ -391,6 +395,7 @@ public abstract class ItemContainer
 	 * Destroy item from inventory and updates database
 	 * @param process : String Identifier of process triggering this action
 	 * @param item : L2ItemInstance to be destroyed
+	 * @param count 
 	 * @param actor : L2PcInstance Player requesting the item destroy
 	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the destroyed item or the updated item in inventory
@@ -486,6 +491,7 @@ public abstract class ItemContainer
 	
 	/**
 	 * Get warehouse adena
+	 * @return 
 	 */
 	public long getAdena()
 	{
@@ -518,6 +524,7 @@ public abstract class ItemContainer
 	/**
 	 * Removes item from inventory for further adjustments.
 	 * @param item : L2ItemInstance to be removed from inventory
+	 * @return 
 	 */
 	protected boolean removeItem(L2ItemInstance item)
 	{

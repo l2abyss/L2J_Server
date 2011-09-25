@@ -58,6 +58,9 @@ public abstract class Func {
 	
 	/**
 	 * Constructor of Func.<BR><BR>
+	 * @param pStat 
+	 * @param pOrder 
+	 * @param owner 
 	 */
 	public Func(Stats pStat, int pOrder, Object owner)
 	{
@@ -69,6 +72,7 @@ public abstract class Func {
 	
 	/**
 	 * Add a condition to the Func.<BR><BR>
+	 * @param pCond 
 	 */
 	public void setCondition(Condition pCond)
 	{
@@ -78,6 +82,7 @@ public abstract class Func {
 	
 	/**
 	 * Run the mathematic function of the Func.<BR><BR>
+	 * @param env 
 	 */
 	public abstract void calc(Env env);
 	

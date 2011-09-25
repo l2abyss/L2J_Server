@@ -241,6 +241,7 @@ public final class BlockCheckerEngine
 	/**
 	 * Will send all packets for the event members with 
 	 * the relation info
+	 * @param plr 
 	 */
 	private void broadcastRelationChanged(L2PcInstance plr)
 	{

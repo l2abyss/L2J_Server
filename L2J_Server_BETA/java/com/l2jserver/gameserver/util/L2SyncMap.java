@@ -32,7 +32,9 @@ import com.l2jserver.util.L2FastMap.I2ForEachValue;
  * <font color="red">WARNING!!! methods: keySet(), values() and entrySet() are removed!</font>
  * <br>
  * @author  Julian Version: 1.0.0 <2008-02-07> - Original release
- * @author  Julian Varsion: 1.0.1 <2008-06-17> - Changed underlayng map to L2FastMap
+ * @author  Julian Varsion: 1.0.1 <2008-06-17> - Changed underlying map to L2FastMap
+ * @param <K> 
+ * @param <V> 
  */
 public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 {
@@ -138,6 +140,7 @@ public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 	
 	/**
 	 * <font color="red">Unsupported operation!!!</font>
+	 * @return 
 	 * @deprecated
 	 * @throws UnsupportedOperationException
 	 */

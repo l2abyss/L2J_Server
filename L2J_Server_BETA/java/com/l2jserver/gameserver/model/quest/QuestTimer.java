@@ -101,6 +101,7 @@ public class QuestTimer
 	 * @param name : Name of the timer
 	 * @param npc : Npc instance attached to the desired timer (null if no npc attached)
 	 * @param player : Player instance attached to the desired timer (null if no player attached)
+	 * @return 
 	 */
 	public boolean isMatch(Quest quest, String name, L2Npc npc, L2PcInstance player)
 	{

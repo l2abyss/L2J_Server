@@ -49,6 +49,9 @@ public class L2BlockInstance extends L2MonsterInstance
 	/**
 	 * Will change the color of the block and update
 	 * the appearance in the known players clients
+	 * @param attacker 
+	 * @param holder 
+	 * @param team 
 	 */
 	public void changeColor(L2PcInstance attacker, ArenaParticipantsHolder holder, int team)
 	{

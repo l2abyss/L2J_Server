@@ -371,6 +371,8 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	 *   First smoothly prepare the beast for casting, by abandoning other actions
 	 *   Next, call super.doCast(skill) in order to actually cast the spell
 	 *   Finally, return to auto-following the owner.
+	 * @param skill 
+	 * @param target 
 	 *
 	 * @see com.l2jserver.gameserver.model.actor.L2Character#doCast(com.l2jserver.gameserver.model.L2Skill)
 	 */

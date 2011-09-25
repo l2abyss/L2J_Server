@@ -70,7 +70,7 @@ public class RequestConfirmRefinerItem extends AbstractRefinePacket
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
 	 */
 	@Override
 	public String getType()

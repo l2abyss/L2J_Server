@@ -168,8 +168,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	}
 	
 	/**
-	 * Returns cached connection IP address, for checking detached clients.
 	 * For loaded offline traders returns localhost address.
+	 * @return cached connection IP address, for checking detached clients.
 	 */
 	public InetAddress getConnectionAddress()
 	{
@@ -285,7 +285,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	
 	/**
 	 * Method to handle character deletion
-	 * 
+	 * @param charslot 
 	 * @return a byte:
 	 * <li>-1: Error: No char was found for such charslot, caught exception, etc...
 	 * <li> 0: character is not member of any clan, proceed with deletion
@@ -942,8 +942,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	}
 	
 	/**
-	 * Returns false if client can receive packets.
 	 * True if detached, or flood detected, or queue overflow detected and queue still not empty.
+	 * @return false if client can receive packets.
 	 */
 	public boolean dropPacket()
 	{
@@ -1006,6 +1006,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	
 	/**
 	 * Add packet to the queue and start worker thread if needed
+	 * @param packet 
 	 */
 	public void execute(ReceivablePacket<L2GameClient> packet)
 	{

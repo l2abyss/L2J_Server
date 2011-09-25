@@ -25,9 +25,7 @@ public class ExMoveToLocationInAirShip extends L2GameServerPacket
 	private int _heading;
 	
 	/**
-	 * @param actor
-	 * @param destination
-	 * @param origin
+	 * @param player
 	 */
 	public ExMoveToLocationInAirShip(L2PcInstance player)
 	{
@@ -53,8 +51,8 @@ public class ExMoveToLocationInAirShip extends L2GameServerPacket
 		writeD(_heading);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

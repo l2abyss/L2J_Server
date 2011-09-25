@@ -42,13 +42,16 @@ public final class AccountKicked extends L2LoginServerPacket
 	
 	private AccountKickedReason _reason;
 	
+	/**
+	 * @param reason
+	 */
 	public AccountKicked(AccountKickedReason reason)
 	{
 		_reason = reason;
 	}
 	
 	/**
-	 * @see com.l2jserver.mmocore.network.SendablePacket#write()
+	 * @see org.mmocore.network.SendablePacket#write()
 	 */
 	@Override
 	protected void write()

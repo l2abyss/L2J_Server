@@ -33,7 +33,7 @@ public class ExShowFortressSiegeInfo extends L2GameServerPacket
 	private int _csize2;
 	
 	/**
-	 * @param fortId
+	 * @param fort
 	 */
 	public ExShowFortressSiegeInfo(Fort fort)
 	{

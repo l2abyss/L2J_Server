@@ -32,10 +32,6 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 	private static final String _C__D0_42_REQUESTCONFIRMCANCELITEM = "[C] D0:42 RequestConfirmCancelItem";
 	private int _objectId;
 	
-	/**
-	 * @param buf
-	 * @param client
-	 */
 	@Override
 	protected void readImpl()
 	{

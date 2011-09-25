@@ -408,6 +408,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 	 * @param player the skill learning player.
 	 * @param trainer the skills teaching Npc.
 	 * @param s the skill to be learn.
+	 * @return 
 	 */
 	private boolean checkPlayerSkill(L2PcInstance player, L2Npc trainer, L2SkillLearn s)
 	{

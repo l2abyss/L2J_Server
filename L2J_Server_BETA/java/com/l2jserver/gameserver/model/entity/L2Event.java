@@ -155,6 +155,7 @@ public class L2Event
 	/**
 	 * Spawns an event participation NPC near the player.
 	 * The npc id used to spawning is L2Event._npcId
+	 * @param target 
 	 */
 	public static void spawnEventNpc(L2PcInstance target)
 	{
@@ -209,7 +210,7 @@ public class L2Event
 	}
 	
 	/**
-	 * 
+	 * @param player 
 	 * @return False: If player is null, his event status is null or the event state is off.
 	 * True: if the player is inside the _registeredPlayers list while the event state is STANDBY.
 	 * If the event state is ON, it will check if the player is inside in one of the teams.
@@ -240,6 +241,7 @@ public class L2Event
 	 * 
 	 * Adds the player to the list of participants.
 	 * If the event state is NOT STANDBY, the player wont be registered.
+	 * @param player 
 	 */
 	public static void registerPlayer(L2PcInstance player)
 	{
@@ -264,6 +266,7 @@ public class L2Event
 	 * 
 	 * Removes the player from the participating players and the teams and restores
 	 * his init stats before he registered at the event (loc, pvp, pk, title etc)
+	 * @param player 
 	 */
 	public static void removeAndResetPlayer(L2PcInstance player)
 	{
@@ -309,8 +312,8 @@ public class L2Event
 	}
 	
 	/**
-	 * 
 	 * The player's event status will be saved at _connectionLossData
+	 * @param player 
 	 */
 	public static void savePlayerEventStatus(L2PcInstance player)
 	{
@@ -318,9 +321,9 @@ public class L2Event
 	}
 	
 	/**
-	 * 
 	 * If _connectionLossData contains the player, it will restore the player's event status.
 	 * Also it will remove the player from the _connectionLossData.
+	 * @param player 
 	 */
 	public static void restorePlayerEventStatus(L2PcInstance player)
 	{

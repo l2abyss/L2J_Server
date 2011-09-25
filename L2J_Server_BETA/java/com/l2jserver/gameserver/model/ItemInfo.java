@@ -62,7 +62,7 @@ public class ItemInfo
 	
 	/**
 	 * Get all information from L2ItemInstance to generate ItemInfo.<BR><BR>
-	 *
+	 * @param item 
 	 */
 	public ItemInfo(L2ItemInstance item)
 	{

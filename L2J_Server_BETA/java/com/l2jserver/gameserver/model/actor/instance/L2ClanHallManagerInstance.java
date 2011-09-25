@@ -1394,7 +1394,9 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 		return COND_ALL_FALSE;
 	}
 	
-	/** Return the L2ClanHall this L2NpcInstance belongs to. */
+	/**
+	 * @return the L2ClanHall this L2NpcInstance belongs to.
+	 */
 	public final ClanHall getClanHall()
 	{
 		if (_clanHallId < 0)

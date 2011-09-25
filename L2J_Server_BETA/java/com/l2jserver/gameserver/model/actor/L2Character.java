@@ -248,7 +248,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Returns character inventory, default null, overridden in L2Playable types and in L2NPcInstance
+	 * @return character inventory, default null, overridden in L2Playable types and in L2NPcInstance
 	 */
 	public Inventory getInventory()
 	{
@@ -320,7 +320,6 @@ public abstract class L2Character extends L2Object
 	/**
 	 * This will untransform a player if they are an instance of L2Pcinstance
 	 * and if they are transformed.
-	 * @return untransform
 	 */
 	public void untransform()
 	{
@@ -488,7 +487,7 @@ public abstract class L2Character extends L2Object
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * L2PcInstance in the detection area of the L2Character are identified in <B>_knownPlayers</B>.
 	 * In order to inform other players of state modification on the L2Character, server just need to go through _knownPlayers to send Server->Client Packet<BR><BR>
-	 *
+	 * @param mov 
 	 */
 	public void broadcastPacket(L2GameServerPacket mov)
 	{
@@ -506,7 +505,8 @@ public abstract class L2Character extends L2Object
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * L2PcInstance in the detection area of the L2Character are identified in <B>_knownPlayers</B>.
 	 * In order to inform other players of state modification on the L2Character, server just need to go through _knownPlayers to send Server->Client Packet<BR><BR>
-	 *
+	 * @param mov 
+	 * @param radiusInKnownlist 
 	 */
 	public void broadcastPacket(L2GameServerPacket mov, int radiusInKnownlist)
 	{
@@ -519,8 +519,8 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Returns true if hp update should be done, false if not
-	 * @return boolean
+	 * @param barPixels 
+	 * @return true if hp update should be done, false if not
 	 */
 	protected boolean needHpUpdate(int barPixels)
 	{
@@ -596,6 +596,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
+	 * @param text 
 	 */
 	public void sendMessage(String text)
 	{
@@ -613,6 +614,11 @@ public abstract class L2Character extends L2Object
 	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @param heading 
+	 * @param randomOffset 
 	 */
 	public void teleToLocation(int x, int y, int z, int heading, int randomOffset)
 	{
@@ -1080,6 +1086,7 @@ public abstract class L2Character extends L2Object
 	 * @param attack Server->Client packet Attack in which the hit will be added
 	 * @param target The L2Character targeted
 	 * @param sAtk The Attack Speed of the attacker
+	 * @param reuse 
 	 *
 	 * @return True if the hit isn't missed
 	 *
@@ -1165,6 +1172,7 @@ public abstract class L2Character extends L2Object
 	 * @param attack Server->Client packet Attack in which the hit will be added
 	 * @param target The L2Character targeted
 	 * @param sAtk The Attack Speed of the attacker
+	 * @param reuse 
 	 *
 	 * @return True if the hit isn't missed
 	 *
@@ -1244,6 +1252,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param attack Server->Client packet Attack in which the hit will be added
 	 * @param target The L2Character targeted
+	 * @param sAtk 
 	 *
 	 * @return True if hit 1 or hit 2 isn't missed
 	 *
@@ -1333,9 +1342,10 @@ public abstract class L2Character extends L2Object
 	 * <li>If possible target isn't the L2Character targeted but is attackable, launch a simple attack against it </li><BR><BR>
 	 *
 	 * @param attack Server->Client packet Attack in which the hit will be added
+	 * @param target 
+	 * @param sAtk 
 	 *
 	 * @return True if one hit isn't missed
-	 *
 	 */
 	private boolean doAttackHitByPole(Attack attack, L2Character target, int sAtk)
 	{
@@ -1449,6 +1459,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param attack Server->Client packet Attack in which the hit will be added
 	 * @param target The L2Character targeted
+	 * @param sAtk 
 	 *
 	 * @return True if the hit isn't missed
 	 *
@@ -2186,7 +2197,7 @@ public abstract class L2Character extends L2Object
 	 * <li> L2PcInstance : Apply Death Penalty, Manage gain/loss Karma and Item Drop </li><BR><BR>
 	 *
 	 * @param killer The L2Character who killed it
-	 *
+	 * @return false if the player is already dead.
 	 */
 	public boolean doDie(L2Character killer)
 	{
@@ -2329,7 +2340,10 @@ public abstract class L2Character extends L2Object
 			setIsPendingRevive(true);
 	}
 	
-	/** Revives the L2Character using skill. */
+	/**
+	 * Revives the L2Character using skill. 
+	 * @param revivePower
+	 */
 	public void doRevive(double revivePower)
 	{
 		doRevive();
@@ -2338,7 +2352,7 @@ public abstract class L2Character extends L2Object
 	// =========================================================
 	// Property - Public
 	/**
-	 * Return the L2CharacterAI of the L2Character and if its null create a new one.
+	 * @return the L2CharacterAI of the L2Character and if its null create a new one.
 	 */
 	public L2CharacterAI getAI()
 	{
@@ -2363,31 +2377,41 @@ public abstract class L2Character extends L2Object
 		_ai = newAI;
 	}
 	
-	/** Return True if the L2Character has a L2CharacterAI. */
+	/**
+	 * @return True if the L2Character has a L2CharacterAI.
+	 */
 	public boolean hasAI()
 	{
 		return _ai != null;
 	}
 	
-	/** Return True if the L2Character is RaidBoss or his minion. */
+	/**
+	 * @return True if the L2Character is RaidBoss or his minion.
+	 */
 	public boolean isRaid()
 	{
 		return false;
 	}
 	
-	/** Return True if the L2Character is minion. */
+	/**
+	 * @return True if the L2Character is minion.
+	 */
 	public boolean isMinion()
 	{
 		return false;
 	}
 	
-	/** Return True if the L2Character is minion of RaidBoss. */
+	/**
+	 * @return True if the L2Character is minion of RaidBoss.
+	 */
 	public boolean isRaidMinion()
 	{
 		return false;
 	}
 	
-	/** Return a list of L2Character that attacked. */
+	/**
+	 * @return a list of L2Character that attacked.
+	 */
 	public final Set<L2Character> getAttackByList()
 	{
 		if (_attackByList != null)
@@ -2436,13 +2460,17 @@ public abstract class L2Character extends L2Object
 		return isAffected(CharEffectList.EFFECT_FLAG_FEAR);
 	}
 	
-	/** Return True if the L2Character can't use its skills (ex : stun, sleep...). */
+	/**
+	 * @return True if the L2Character can't use its skills (ex : stun, sleep...).
+	 */
 	public final boolean isAllSkillsDisabled()
 	{
 		return _allSkillsDisabled || isStunned() || isSleeping() || isParalyzed();
 	}
 	
-	/** Return True if the L2Character can't attack (stun, sleep, attackEndTime, fakeDeath, paralyse, attackMute). */
+	/**
+	 * @return True if the L2Character can't attack (stun, sleep, attackEndTime, fakeDeath, paralyze, attackMute).
+	 */
 	public boolean isAttackingDisabled()
 	{
 		return isFlying() || isStunned() || isSleeping() || _attackEndTime > GameTimeController.getGameTicks() || isAlikeDead() || isParalyzed() || isPhysicalAttackMuted() || isCoreAIDisabled();
@@ -2458,13 +2486,17 @@ public abstract class L2Character extends L2Object
 		return isAffected(CharEffectList.EFFECT_FLAG_CONFUSED);
 	}
 	
-	/** Return True if the L2Character is dead or use fake death.  */
+	/**
+	 * @return True if the L2Character is dead or use fake death.
+	 */
 	public boolean isAlikeDead()
 	{
 		return _isDead;
 	}
 	
-	/** Return True if the L2Character is dead. */
+	/**
+	 * @return True if the L2Character is dead.
+	 */
 	public final boolean isDead()
 	{
 		return _isDead;
@@ -2500,14 +2532,18 @@ public abstract class L2Character extends L2Object
 		return isAffected(CharEffectList.EFFECT_FLAG_PSYCHICAL_ATTACK_MUTED);
 	}
 	
-	/** Return True if the L2Character can't move (stun, root, sleep, overload, paralyzed). */
+	/**
+	 * @return True if the L2Character can't move (stun, root, sleep, overload, paralyzed).
+	 */
 	public boolean isMovementDisabled()
 	{
 		// check for isTeleporting to prevent teleport cheating (if appear packet not received)
 		return isStunned() || isRooted() || isSleeping() || isOverloaded() || isParalyzed() || isImmobilized() || isAlikeDead() || isTeleporting();
 	}
 	
-	/** Return True if the L2Character can not be controlled by the player (confused, afraid). */
+	/**
+	 * @return True if the L2Character can not be controlled by the player (confused, afraid).
+	 */
 	public final boolean isOutOfControl()
 	{
 		return isConfused() || isAfraid();
@@ -2518,7 +2554,10 @@ public abstract class L2Character extends L2Object
 		return _isOverloaded;
 	}
 	
-	/** Set the overloaded status of the L2Character is overloaded (if True, the L2PcInstance can't take more item). */
+	/**
+	 * Set the overloaded status of the L2Character is overloaded (if True, the L2PcInstance can't take more item). 
+	 * @param value
+	 */
 	public final void setIsOverloaded(boolean value)
 	{
 		_isOverloaded = value;
@@ -2550,9 +2589,9 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the L2Summon of the L2Character.<BR><BR>
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
+	 * @return the L2Summon of the L2Character.
 	 */
 	public L2Summon getPet()
 	{
@@ -2564,7 +2603,9 @@ public abstract class L2Character extends L2Object
 		return isAffected(CharEffectList.EFFECT_FLAG_ROOTED);
 	}
 	
-	/** Return True if the L2Character is running. */
+	/**
+	 * @return True if the L2Character is running.
+	 */
 	public boolean isRunning()
 	{
 		return _isRunning;
@@ -2752,19 +2793,25 @@ public abstract class L2Character extends L2Object
 	 *
 	 * <B><U> Assert </U> :</B><BR><BR>
 	 * <li> this instanceof L2Character</li><BR><BR
+	 * @param template 
 	 */
 	protected final void setTemplate(L2CharTemplate template)
 	{
 		_template = template;
 	}
 	
-	/** Return the Title of the L2Character. */
+	/**
+	 * @return the Title of the L2Character.
+	 */
 	public final String getTitle()
 	{
 		return _title;
 	}
 	
-	/** Set the Title of the L2Character. */
+	/**
+	 * Set the Title of the L2Character. 
+	 * @param value
+	 */
 	public final void setTitle(String value)
 	{
 		if (value == null)
@@ -2995,7 +3042,7 @@ public abstract class L2Character extends L2Object
 	 * <li>If this effect has higher priority in its Stack Group, add its Funcs to the Calculator set of the L2Character (remove previous stacked effect Funcs if necessary)</li>
 	 * <li>If this effect has NOT higher priority in its Stack Group, set the effect to Not In Use</li>
 	 * <li>Update active skills in progress icons on player client</li><BR>
-	 *
+	 * @param newEffect 
 	 */
 	public void addEffect(L2Effect newEffect)
 	{
@@ -3019,7 +3066,7 @@ public abstract class L2Character extends L2Object
 	 * <li>If the L2Effect belongs to a not empty Stack Group, replace theses Funcs by next stacked effect Funcs</li>
 	 * <li>Remove the L2Effect from _effects of the L2Character</li>
 	 * <li>Update active skills in progress icons on player client</li><BR>
-	 *
+	 * @param effect 
 	 */
 	public final void removeEffect(L2Effect effect)
 	{
@@ -3028,6 +3075,7 @@ public abstract class L2Character extends L2Object
 	
 	/**
 	 * Active abnormal effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.<BR><BR>
+	 * @param mask 
 	 */
 	public final void startAbnormalEffect(AbnormalEffect mask)
 	{
@@ -3037,6 +3085,7 @@ public abstract class L2Character extends L2Object
 	
 	/**
 	 * Active special effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.<BR><BR>
+	 * @param mask 
 	 */
 	public final void startSpecialEffect(AbnormalEffect[] mask)
 	{
@@ -3169,6 +3218,7 @@ public abstract class L2Character extends L2Object
 	
 	/**
 	 * Modify the abnormal effect map according to the mask.<BR><BR>
+	 * @param mask 
 	 */
 	public final void stopAbnormalEffect(AbnormalEffect mask)
 	{
@@ -3178,6 +3228,7 @@ public abstract class L2Character extends L2Object
 	
 	/**
 	 * Modify the special effect map according to the mask.<BR><BR>
+	 * @param mask 
 	 */
 	public final void stopSpecialEffect(AbnormalEffect[] mask)
 	{
@@ -3221,7 +3272,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Set the abnormal effect flag _confused to False </li>
 	 * <li>Notify the L2Character AI</li>
 	 * <li>Send Server->Client UserInfo/CharInfo packet</li><BR><BR>
-	 *
+	 * @param effect 
 	 */
 	public final void stopConfused(L2Effect effect)
 	{
@@ -3240,9 +3291,7 @@ public abstract class L2Character extends L2Object
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.
 	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.<BR><BR>
-	 *
-	 * @param effectId The L2Skill Identifier of the L2Effect to remove from _effects
-	 *
+	 * @param skillId the L2Skill Identifier of the L2Effect to remove from _effects
 	 */
 	public void stopSkillEffects(int skillId)
 	{
@@ -3257,7 +3306,7 @@ public abstract class L2Character extends L2Object
 	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.<BR><BR>
 	 *
 	 * @param skillType The L2SkillType of the L2Effect to remove from _effects
-	 *
+	 * @param negateLvl 
 	 */
 	public final void stopSkillEffects(L2SkillType skillType, int negateLvl)
 	{
@@ -3301,6 +3350,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Exits all buffs effects of the skills with "removedOnDamage" set.
 	 * Called on decreasing HP and mana burn.
+	 * @param awake 
 	 */
 	public final void stopEffectsOnDamage(boolean awake)
 	{
@@ -3314,7 +3364,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Delete a specified/all (if effect=null) Fake Death abnormal L2Effect from L2Character and update client magic icon </li>
 	 * <li>Set the abnormal effect flag _fake_death to False </li>
 	 * <li>Notify the L2Character AI</li><BR><BR>
-	 *
+	 * @param removeEffects 
 	 */
 	public final void stopFakeDeath(boolean removeEffects)
 	{
@@ -3343,7 +3393,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Set the abnormal effect flag _affraid to False </li>
 	 * <li>Notify the L2Character AI</li>
 	 * <li>Send Server->Client UserInfo/CharInfo packet</li><BR><BR>
-	 *
+	 * @param removeEffects 
 	 */
 	public final void stopFear(boolean removeEffects)
 	{
@@ -3360,7 +3410,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Set the abnormal effect flag _muted to False </li>
 	 * <li>Notify the L2Character AI</li>
 	 * <li>Send Server->Client UserInfo/CharInfo packet</li><BR><BR>
-	 *
+	 * @param removeEffects 
 	 */
 	public final void stopMuted(boolean removeEffects)
 	{
@@ -3386,7 +3436,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Set the abnormal effect flag _rooted to False </li>
 	 * <li>Notify the L2Character AI</li>
 	 * <li>Send Server->Client UserInfo/CharInfo packet</li><BR><BR>
-	 *
+	 * @param removeEffects 
 	 */
 	public final void stopRooting(boolean removeEffects)
 	{
@@ -3406,7 +3456,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Set the abnormal effect flag _sleeping to False </li>
 	 * <li>Notify the L2Character AI</li>
 	 * <li>Send Server->Client UserInfo/CharInfo packet</li><BR><BR>
-	 *
+	 * @param removeEffects 
 	 */
 	public final void stopSleeping(boolean removeEffects)
 	{
@@ -3426,7 +3476,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Set the abnormal effect flag _stuned to False </li>
 	 * <li>Notify the L2Character AI</li>
 	 * <li>Send Server->Client UserInfo/CharInfo packet</li><BR><BR>
-	 *
+	 * @param removeEffects 
 	 */
 	public final void stopStunning(boolean removeEffects)
 	{
@@ -3454,7 +3504,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Remove Transformation Effect</li>
 	 * <li>Notify the L2Character AI</li>
 	 * <li>Send Server->Client UserInfo/CharInfo packet</li><BR><BR>
-	 *
+	 * @param removeEffects 
 	 */
 	public final void stopTransformation(boolean removeEffects)
 	{
@@ -3517,14 +3567,13 @@ public abstract class L2Character extends L2Object
 	
 	// Property - Public
 	/**
-	 * Return a map of 16 bits (0x0000) containing all abnormal effect in progress for this L2Character.<BR><BR>
-	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * In Server->Client packet, each effect is represented by 1 bit of the map (ex : BLEEDING = 0x0001 (bit 1), SLEEP = 0x0080 (bit 8)...).
 	 * The map is calculated by applying a BINARY OR operation on each effect.<BR><BR>
 	 *
 	 * <B><U> Example of use </U> :</B><BR><BR>
 	 * <li> Server Packet : CharInfo, NpcInfo, NpcInfoPoly, UserInfo...</li><BR><BR>
+	 * @return a map of 16 bits (0x0000) containing all abnormal effect in progress for this L2Character.
 	 */
 	public int getAbnormalEffect()
 	{
@@ -3547,14 +3596,13 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return a map of 32 bits (0x00000000) containing all special effect in progress for this L2Character.<BR><BR>
-	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * In Server->Client packet, each effect is represented by 1 bit of the map (ex : INVULNERABLE = 0x0001 (bit 1), PINK_AFFRO = 0x0020 (bit 6)...).
 	 * The map is calculated by applying a BINARY OR operation on each effect.<BR><BR>
 	 *
 	 * <B><U> Example of use </U> :</B><BR><BR>
 	 * <li> Server Packet : CharInfo, UserInfo...</li><BR><BR>
+	 * @return a map of 32 bits (0x00000000) containing all special effect in progress for this L2Character.
 	 */
 	public int getSpecialEffect()
 	{
@@ -3640,7 +3688,7 @@ public abstract class L2Character extends L2Object
 		}
 		
 		/**
-		 * Return the L2Character managed by this Accessor AI.<BR><BR>
+		 * @return the L2Character managed by this Accessor AI.
 		 */
 		public L2Character getActor()
 		{
@@ -3649,6 +3697,10 @@ public abstract class L2Character extends L2Object
 		
 		/**
 		 * Accessor to L2Character moveToLocation() method with an interaction area.<BR><BR>
+		 * @param x 
+		 * @param y 
+		 * @param z 
+		 * @param offset 
 		 */
 		public void moveTo(int x, int y, int z, int offset)
 		{
@@ -3657,6 +3709,9 @@ public abstract class L2Character extends L2Object
 		
 		/**
 		 * Accessor to L2Character moveToLocation() method without interaction area.<BR><BR>
+		 * @param x 
+		 * @param y 
+		 * @param z 
 		 */
 		public void moveTo(int x, int y, int z)
 		{
@@ -3665,6 +3720,7 @@ public abstract class L2Character extends L2Object
 		
 		/**
 		 * Accessor to L2Character stopMove() method.<BR><BR>
+		 * @param pos 
 		 */
 		public void stopMove(L2CharPosition pos)
 		{
@@ -3673,6 +3729,7 @@ public abstract class L2Character extends L2Object
 		
 		/**
 		 * Accessor to L2Character doAttack() method.<BR><BR>
+		 * @param target 
 		 */
 		public void doAttack(L2Character target)
 		{
@@ -3681,6 +3738,7 @@ public abstract class L2Character extends L2Object
 		
 		/**
 		 * Accessor to L2Character doCast() method.<BR><BR>
+		 * @param skill 
 		 */
 		public void doCast(L2Skill skill)
 		{
@@ -3689,6 +3747,8 @@ public abstract class L2Character extends L2Object
 		
 		/**
 		 * Create a NotifyAITask.<BR><BR>
+		 * @param evt 
+		 * @return 
 		 */
 		public NotifyAITask newNotifyTask(CtrlEvent evt)
 		{
@@ -4109,7 +4169,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the orientation of the L2Character.<BR><BR>
+	 * @return the orientation of the L2Character.
 	 */
 	public final int getHeading()
 	{
@@ -4118,6 +4178,7 @@ public abstract class L2Character extends L2Object
 	
 	/**
 	 * Set the orientation of the L2Character.<BR><BR>
+	 * @param heading 
 	 */
 	public final void setHeading(int heading)
 	{
@@ -4135,7 +4196,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the Y destination of the L2Character or the Y position if not in movement.<BR><BR>
+	 * @return the Y destination of the L2Character or the Y position if not in movement.
 	 */
 	public final int getYdestination()
 	{
@@ -4148,7 +4209,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the Z destination of the L2Character or the Z position if not in movement.<BR><BR>
+	 * @return the Z destination of the L2Character or the Z position if not in movement.
 	 */
 	public final int getZdestination()
 	{
@@ -4161,7 +4222,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character is in combat.<BR><BR>
+	 * @return True if the L2Character is in combat.
 	 */
 	public boolean isInCombat()
 	{
@@ -4169,7 +4230,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character is moving.<BR><BR>
+	 * @return True if the L2Character is moving.
 	 */
 	public final boolean isMoving()
 	{
@@ -4177,7 +4238,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character is travelling a calculated path.<BR><BR>
+	 * @return True if the L2Character is travelling a calculated path.
 	 */
 	public final boolean isOnGeodataPath()
 	{
@@ -4192,7 +4253,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character is casting.<BR><BR>
+	 * @return True if the L2Character is casting.
 	 */
 	public final boolean isCastingNow()
 	{
@@ -4215,7 +4276,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the cast of the L2Character can be aborted.<BR><BR>
+	 * @return True if the cast of the L2Character can be aborted.
 	 */
 	public final boolean canAbortCast()
 	{
@@ -4228,7 +4289,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character is attacking.<BR><BR>
+	 * @return True if the L2Character is attacking.
 	 */
 	public boolean isAttackingNow()
 	{
@@ -4236,7 +4297,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character has aborted its attack.<BR><BR>
+	 * @return True if the L2Character has aborted its attack.
 	 */
 	public final boolean isAttackAborted()
 	{
@@ -4256,7 +4317,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Returns body part (paperdoll slot) we are targeting right now
+	 * @return body part (paperdoll slot) we are targeting right now
 	 */
 	public final int getAttackingBodyPart()
 	{
@@ -4458,7 +4519,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Remove object from _knownObjects and _knownPlayer* of all surrounding L2WorldRegion L2Characters </li><BR><BR>
 	 *
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T send Server->Client packet StopMove/StopRotation </B></FONT><BR><BR>
-	 *
+	 * @param pos 
 	 */
 	public void stopMove(L2CharPosition pos)
 	{
@@ -4535,7 +4596,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the identifier of the L2Object targeted or -1.<BR><BR>
+	 * @return the identifier of the L2Object targeted or -1.
 	 */
 	public final int getTargetId()
 	{
@@ -4548,7 +4609,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the L2Object targeted or null.<BR><BR>
+	 * @return the L2Object targeted or null.
 	 */
 	public final L2Object getTarget()
 	{
@@ -4980,6 +5041,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * @param x   X position of the target
 	 * @param y   Y position of the target
+	 * @param z 
 	 * @return the plan distance
 	 *
 	 * @deprecated use getPlanDistanceSq(int x, int y, int z)
@@ -5059,7 +5121,7 @@ public abstract class L2Character extends L2Object
 	 * @param strictCheck  true if (distance < radius), false if (distance <= radius)
 	 * @return true is the L2Character is inside the radius.
 	 *
-	 * @see com.l2jserver.gameserver.model.L2Character.isInsideRadius(int x, int y, int z, int radius, boolean checkZ, boolean strictCheck)
+	 * @see #isInsideRadius(int, int, int, int, boolean, boolean)
 	 */
 	public final boolean isInsideRadius(L2Object object, int radius, boolean checkZ, boolean strictCheck)
 	{
@@ -5201,11 +5263,9 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Retun True if arrows are available.<BR><BR>
-	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
-	 *
+	 * @return True if arrows are available.
 	 */
 	protected boolean checkAndEquipArrows()
 	{
@@ -5213,11 +5273,9 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Retun True if bolts are available.<BR><BR>
-	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
-	 *
+	 * @return True if bolts are available.
 	 */
 	protected boolean checkAndEquipBolts()
 	{
@@ -5230,7 +5288,8 @@ public abstract class L2Character extends L2Object
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li>
 	 * <li> L2PetInstance</li><BR><BR>
-	 *
+	 * @param addToExp 
+	 * @param addToSp 
 	 */
 	public void addExpAndSp(long addToExp, int addToSp)
 	{
@@ -5238,38 +5297,30 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the active weapon instance (always equiped in the right hand).<BR><BR>
-	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
-	 *
+	 * @return the active weapon instance (always equiped in the right hand).
 	 */
 	public abstract L2ItemInstance getActiveWeaponInstance();
 	
 	/**
-	 * Return the active weapon item (always equiped in the right hand).<BR><BR>
-	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
-	 *
+	 * @return the active weapon item (always equiped in the right hand).
 	 */
 	public abstract L2Weapon getActiveWeaponItem();
 	
 	/**
-	 * Return the secondary weapon instance (always equiped in the left hand).<BR><BR>
-	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
-	 *
+	 * @return the secondary weapon instance (always equiped in the left hand).
 	 */
 	public abstract L2ItemInstance getSecondaryWeaponInstance();
 	
 	/**
-	 * Return the secondary {@link L2Item} item (always equiped in the left hand).<BR><BR>
-	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
-	 *
+	 * @return the secondary {@link L2Item} item (always equiped in the left hand).
 	 */
 	public abstract L2Item getSecondaryWeaponItem();
 	
@@ -5567,7 +5618,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
-	 *
+	 * @param bolts 
 	 */
 	protected void reduceArrowCount(boolean bolts)
 	{
@@ -5640,7 +5691,8 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if inside peace zone.<BR><BR>
+	 * @param attacker 
+	 * @return True if inside peace zone.
 	 */
 	public boolean isInsidePeaceZone(L2PcInstance attacker)
 	{
@@ -5697,7 +5749,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * return true if this character is inside an active grid.
+	 * @return true if this character is inside an active grid.
 	 */
 	public boolean isInActiveRegion()
 	{
@@ -5706,7 +5758,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character has a Party in progress.<BR><BR>
+	 * @return True if the L2Character has a Party in progress.
 	 */
 	public boolean isInParty()
 	{
@@ -5714,7 +5766,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the L2Party object of the L2Character.<BR><BR>
+	 * @return the L2Party object of the L2Character.
 	 */
 	public L2Party getParty()
 	{
@@ -5722,7 +5774,9 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return the Attack Speed of the L2Character (delay (in milliseconds) before next attack).<BR><BR>
+	 * @param target 
+	 * @param weapon 
+	 * @return the Attack Speed of the L2Character (delay (in milliseconds) before next attack).
 	 */
 	public int calculateTimeBetweenAttacks(L2Character target, L2Weapon weapon)
 	{
@@ -5774,7 +5828,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character use a dual weapon.<BR><BR>
+	 * @return True if the L2Character use a dual weapon.
 	 */
 	public boolean isUsingDualWeapon()
 	{
@@ -6019,11 +6073,9 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return all skills own by the L2Character in a table of L2Skill.<BR><BR>
-	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * All skills own by a L2Character are identified in <B>_skills</B> the L2Character <BR><BR>
-	 *
+	 * @return all skills own by the L2Character in a table of L2Skill.
 	 */
 	public final L2Skill[] getAllSkills()
 	{
@@ -6056,10 +6108,8 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the skill is known by the L2Character.<BR><BR>
-	 *
 	 * @param skillId The identifier of the L2Skill to check the knowledge
-	 *
+	 * @return the skill from the known skill.
 	 */
 	public final L2Skill getKnownSkill(int skillId)
 	{
@@ -6096,9 +6146,7 @@ public abstract class L2Character extends L2Object
 	 * <li>Notify the AI of the L2Character with EVT_FINISH_CASTING</li><BR><BR>
 	 *
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : A magic skill casting MUST BE in progress</B></FONT><BR><BR>
-	 *
-	 * @param skill The L2Skill to use
-	 *
+	 * @param mut
 	 */
 	public void onMagicLaunchedTimer(MagicUseTask mut)
 	{
@@ -6505,9 +6553,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * All skills disabled are identified by their skillId in <B>_disabledSkills</B> of the L2Character <BR><BR>
-	 *
-	 * @param skillId The identifier of the L2Skill to enable
-	 *
+	 * @param skill the skill to enable.
 	 */
 	public void enableSkill(L2Skill skill)
 	{
@@ -6534,13 +6580,11 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Check if a skill is disabled.<BR><BR>
-	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * All skills disabled are identified by their reuse hashcodes in <B>_disabledSkills</B> of the L2Character <BR><BR>
 	 *
 	 * @param skill The L2Skill to check
-	 *
+	 * @return true if a skill is disabled.
 	 */
 	public boolean isSkillDisabled(L2Skill skill)
 	{
@@ -6551,13 +6595,11 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Check if a skill is disabled.<BR><BR>
-	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * All skills disabled are identified by their reuse hashcodes in <B>_disabledSkills</B> of the L2Character <BR><BR>
 	 *
 	 * @param reuseHashcode The reuse hashcode of the skillId/level to check
-	 *
+	 * @return true if a skill is disabled.
 	 */
 	public boolean isSkillDisabled(int reuseHashcode)
 	{
@@ -6843,7 +6885,8 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the L2Character is behind the target and can't be seen.<BR><BR>
+	 * @param target 
+	 * @return True if the L2Character is behind the target and can't be seen.
 	 */
 	public boolean isBehind(L2Object target)
 	{
@@ -6882,7 +6925,8 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return True if the target is facing the L2Character.<BR><BR>
+	 * @param target 
+	 * @return True if the target is facing the L2Character.
 	 */
 	public boolean isInFrontOf(L2Character target)
 	{
@@ -6902,7 +6946,11 @@ public abstract class L2Character extends L2Object
 		return false;
 	}
 	
-	/** Returns true if target is in front of L2Character (shield def etc) */
+	/**
+	 * @param target 
+	 * @param maxAngle 
+	 * @return true if target is in front of L2Character (shield def etc)
+	 */
 	public boolean isFacing(L2Object target, int maxAngle)
 	{
 		double angleChar, angleTarget, angleDiff, maxAngleDiff;
@@ -6930,7 +6978,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return 1.<BR><BR>
+	 * @return 1.
 	 */
 	public double getLevelMod()
 	{
@@ -6942,7 +6990,10 @@ public abstract class L2Character extends L2Object
 		_skillCast = newSkillCast;
 	}
 	
-	/** Sets _isCastingNow to true and _castInterruptTime is calculated from end time (ticks) */
+	/** 
+	 * Sets _isCastingNow to true and _castInterruptTime is calculated from end time (ticks) 
+	 * @param newSkillCastEndTick
+	 */
 	public final void forceIsCasting(int newSkillCastEndTick)
 	{
 		setIsCastingNow(true);
@@ -6958,7 +7009,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return a multiplier based on weapon random damage<BR><BR>
+	 * @return a multiplier based on weapon random damage
 	 */
 	public final double getRandomDamageMultiplier()
 	{
@@ -6980,6 +7031,7 @@ public abstract class L2Character extends L2Object
 	
 	/**
 	 * Not Implemented.<BR><BR>
+	 * @return 
 	 */
 	public abstract int getLevel();
 	
@@ -7180,9 +7232,9 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Return max visible HP for display purpose.
 	 * Calculated by applying non-visible HP limit
 	 * getMaxHp() = getMaxVisibleHp() * limitHp
+	 * @return max visible HP for display purpose.
 	 */
 	public int getMaxVisibleHp()
 	{
@@ -7341,7 +7393,11 @@ public abstract class L2Character extends L2Object
 	 * <li> L2PcInstance
 	 * <li> L2SummonInstance
 	 * <li> L2PetInstance</li><BR><BR>
-	 *
+	 * @param target 
+	 * @param damage 
+	 * @param mcrit 
+	 * @param pcrit 
+	 * @param miss 
 	 */
 	public void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
 	{

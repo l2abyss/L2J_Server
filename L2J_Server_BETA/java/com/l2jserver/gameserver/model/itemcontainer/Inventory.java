@@ -117,7 +117,10 @@ public abstract class Inventory extends ItemContainer
 		}
 		
 		/**
-		 * Add alteration in inventory when item equiped
+		 * Add alteration in inventory when item equipped
+		 * @param slot 
+		 * @param item 
+		 * @param inventory 
 		 */
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
@@ -126,7 +129,10 @@ public abstract class Inventory extends ItemContainer
 		}
 		
 		/**
-		 * Add alteration in inventory when item unequiped
+		 * Add alteration in inventory when item unequipped
+		 * @param slot 
+		 * @param item 
+		 * @param inventory 
 		 */
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
@@ -136,7 +142,7 @@ public abstract class Inventory extends ItemContainer
 		
 		/**
 		 * Returns alterations in inventory
-		 * @return L2ItemInstance[] : array of alterated items
+		 * @return L2ItemInstance[] : array of altered items
 		 */
 		public L2ItemInstance[] getChangedItems()
 		{
@@ -825,6 +831,7 @@ public abstract class Inventory extends ItemContainer
 	
 	/**
 	 * Returns the item in the paperdoll slot
+	 * @param slot 
 	 * @return L2ItemInstance
 	 */
 	public synchronized L2ItemInstance getPaperdollItem(int slot)
@@ -889,7 +896,7 @@ public abstract class Inventory extends ItemContainer
 	
 	/**
 	 * Returns the item in the paperdoll L2Item slot
-	 * @param L2Item slot identifier
+	 * @param slot identifier
 	 * @return L2ItemInstance
 	 */
 	public L2ItemInstance getPaperdollItemByL2ItemId(int slot)
@@ -937,8 +944,8 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Adds new inventory's paperdoll listener
-	 * @param PaperdollListener pointing out the listener
+	 * Adds new inventory's paperdoll listener.
+	 * @param listener the new listener
 	 */
 	public synchronized void addPaperdollListener(PaperdollListener listener)
 	{
@@ -947,8 +954,8 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Removes a paperdoll listener
-	 * @param PaperdollListener pointing out the listener to be deleted
+	 * Removes a paperdoll listener.
+	 * @param listener the listener to be deleted
 	 */
 	public synchronized void removePaperdollListener(PaperdollListener listener)
 	{

@@ -163,10 +163,8 @@ public final class L2ArmorSet
 	}
 	
 	/**
-	 * Checks if all parts of set are enchanted to +6 or more
-	 * 
 	 * @param player
-	 * @return
+	 * @return true if all parts of set are enchanted to +6 or more
 	 */
 	public boolean isEnchanted6(L2PcInstance player)
 	{

@@ -283,7 +283,11 @@ public class Fort
 		}
 	}
 	
-	/** Return function with id */
+	/**
+	 * Return function with id 
+	 * @param type 
+	 * @return
+	 */
 	public FortFunction getFunction(int type)
 	{
 		if (_function.get(type) != null)
@@ -338,7 +342,10 @@ public class Fort
 	}
 	
 	/**
-	 * Return true if object is inside the zone
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @return true if object is inside the zone
 	 */
 	public boolean checkIfInZone(int x, int y, int z)
 	{
@@ -379,7 +386,7 @@ public class Fort
 	
 	/**
 	 * Get the objects distance to this fort
-	 * @param object
+	 * @param obj
 	 * @return
 	 */
 	public double getDistance(L2Object obj)
@@ -421,7 +428,8 @@ public class Fort
 	/**
 	 * This method will set owner for Fort
 	 * @param clan
-	 * @param updateClanPoints
+	 * @param updateClansReputation
+	 * @return 
 	 */
 	public boolean setOwner(L2Clan clan, boolean updateClansReputation)
 	{
@@ -561,6 +569,7 @@ public class Fort
 	
 	/**
 	 * Show or hide flag inside flagpole<BR><BR>
+	 * @param val 
 	 */
 	public void setVisibleFlag(boolean val)
 	{
@@ -699,7 +708,10 @@ public class Fort
 		}
 	}
 	
-	/** Remove function In List and in DB */
+	/**
+	 * Remove function In List and in DB 
+	 * @param functionType
+	 */
 	public void removeFunction(int functionType)
 	{
 		_function.remove(functionType);
@@ -1126,12 +1138,13 @@ public class Fort
 	}
 	
 	/**
-	 * @param State.<BR>
-	 * 0 - not decided yet<BR>
-	 * 1 - independent<BR>
-	 * 2 - contracted with castle<BR><BR>
-	 * @param CastleId.<BR>
-	 * set Castle Id for contracted fort
+	 * @param state
+	 * <ul>
+	 * 	<li>0 - not decided yet</li>
+	 * 	<li>1 - independent</li>
+	 * 	<li>2 - contracted with castle</li>
+	 * </ul>
+	 * @param castleId set Castle Id for contracted fort
 	 */
 	public final void setFortState(int state, int castleId)
 	{

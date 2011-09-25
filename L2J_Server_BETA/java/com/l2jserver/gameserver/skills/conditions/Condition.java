@@ -131,7 +131,7 @@ public abstract class Condition implements ConditionListener
 	 * @param env the env
 	 * @return true, if successful
 	 */
-	abstract boolean testImpl(Env env);
+	public abstract boolean testImpl(Env env);
 	
 	/* (non-Javadoc)
 	 * @see com.l2jserver.gameserver.skills.conditions.ConditionListener#notifyChanged()

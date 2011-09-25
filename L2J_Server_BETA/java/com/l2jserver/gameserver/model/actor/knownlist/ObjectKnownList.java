@@ -177,7 +177,9 @@ public class ObjectKnownList
 		return 0;
 	}
 	
-	/** Return the _knownObjects containing all L2Object known by the L2Character. */
+	/**
+	 * @return the _knownObjects containing all L2Object known by the L2Character.
+	 */
 	public final Map<Integer, L2Object> getKnownObjects()
 	{
 		if (_knownObjects == null)

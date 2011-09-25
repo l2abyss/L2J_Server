@@ -39,7 +39,6 @@ public final class L2EtcItem  extends L2Item
 	/**
 	 * Constructor for EtcItem.
 	 * @see L2Item constructor
-	 * @param type : L2EtcItemType designating the type of object Etc
 	 * @param set : StatsSet designating the set of couples (key,value) for description of the Etc
 	 */
 	public L2EtcItem(StatsSet set)

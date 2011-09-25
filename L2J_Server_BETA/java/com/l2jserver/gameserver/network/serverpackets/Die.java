@@ -54,7 +54,7 @@ public class Die extends L2GameServerPacket
 	L2Character _activeChar;
 	
 	/**
-	 * @param _characters
+	 * @param cha
 	 */
 	public Die(L2Character cha)
 	{

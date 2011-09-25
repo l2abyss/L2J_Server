@@ -39,7 +39,7 @@ public class ConditionTargetAbnormal extends Condition
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override
-	boolean testImpl(Env env)
+	public boolean testImpl(Env env)
 	{
 		return (env.target.getAbnormalEffect() & _abnormalId) != 0;
 	}

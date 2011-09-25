@@ -69,6 +69,7 @@ public class L2NpcWalkerInstance extends L2Npc
 	/**
 	 * Sends a chat to all _knowObjects
 	 * @param chat message to say
+	 * @param npcString 
 	 */
 	public void broadcastChat(String chat, NpcStringId npcString)
 	{

@@ -614,13 +614,21 @@ public class Siege implements Siegable
 		loadSiegeClan();
 	}
 	
-	/** Return true if object is inside the zone */
+	/**
+	 * @param object 
+	 * @return true if object is inside the zone
+	 */
 	public boolean checkIfInZone(L2Object object)
 	{
 		return checkIfInZone(object.getX(), object.getY(), object.getZ());
 	}
 	
-	/** Return true if object is inside the zone */
+	/**
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @return true if object is inside the zone
+	 */
 	public boolean checkIfInZone(int x, int y, int z)
 	{
 		return (getIsInProgress() && (getCastle().checkIfInZone(x, y, z))); // Castle zone during siege
@@ -647,8 +655,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Return true if clan is defender waiting approval<BR><BR>
 	 * @param clan The L2Clan of the player
+	 * @return true if clan is defender waiting approval
 	 */
 	public boolean checkIsDefenderWaiting(L2Clan clan)
 	{
@@ -734,7 +742,9 @@ public class Siege implements Siegable
 		return players;
 	}
 	
-	/** Return list of L2PcInstance registered as defender but not owner in the zone. */
+	/**
+	 * @return list of L2PcInstance registered as defender but not owner in the zone.
+	 */
 	public List<L2PcInstance> getDefendersButNotOwnersInZone()
 	{
 		List<L2PcInstance> players = new FastList<L2PcInstance>();
@@ -756,13 +766,17 @@ public class Siege implements Siegable
 		return players;
 	}
 	
-	/** Return list of L2PcInstance in the zone. */
+	/**
+	 * @return list of L2PcInstance in the zone.
+	 */
 	public List<L2PcInstance> getPlayersInZone()
 	{
 		return getCastle().getZone().getAllPlayers();
 	}
 	
-	/** Return list of L2PcInstance owning the castle in the zone. */
+	/**
+	 * @return list of L2PcInstance owning the castle in the zone.
+	 */
 	public List<L2PcInstance> getOwnersInZone()
 	{
 		List<L2PcInstance> players = new FastList<L2PcInstance>();
@@ -784,7 +798,9 @@ public class Siege implements Siegable
 		return players;
 	}
 	
-	/** Return list of L2PcInstance not registered as attacker or defender in the zone. */
+	/**
+	 * @return list of L2PcInstance not registered as attacker or defender in the zone.
+	 */
 	public List<L2PcInstance> getSpectatorsInZone()
 	{
 		List<L2PcInstance> players = new FastList<L2PcInstance>();
@@ -800,7 +816,10 @@ public class Siege implements Siegable
 		return players;
 	}
 	
-	/** Control Tower was killed */
+	/**
+	 * Control Tower was killed 
+	 * @param ct
+	 */
 	public void killedCT(L2Npc ct)
 	{
 		_controlTowerCount--;
@@ -808,7 +827,10 @@ public class Siege implements Siegable
 			_controlTowerCount = 0;
 	}
 	
-	/** Remove the flag that was killed */
+	/**
+	 * Remove the flag that was killed 
+	 * @param flag
+	 */
 	public void killedFlag(L2Npc flag)
 	{
 		if (flag == null)
@@ -820,7 +842,10 @@ public class Siege implements Siegable
 		}
 	}
 	
-	/** Display list of registered clans */
+	/**
+	 * Display list of registered clans 
+	 * @param player
+	 */
 	public void listRegisterClan(L2PcInstance player)
 	{
 		player.sendPacket(new SiegeInfo(getCastle()));
@@ -904,7 +929,7 @@ public class Siege implements Siegable
 	
 	/**
 	 * Remove clan from siege<BR><BR>
-	 * @param player The L2PcInstance of player/clan being removed
+	 * @param clan clan being removed
 	 */
 	public void removeSiegeClan(L2Clan clan)
 	{
@@ -941,6 +966,8 @@ public class Siege implements Siegable
 	
 	/**
 	 * Teleport players
+	 * @param teleportWho 
+	 * @param teleportWhere 
 	 */
 	public void teleportPlayer(TeleportWhoType teleportWho, MapRegionManager.TeleportWhereType teleportWhere)
 	{
@@ -1009,9 +1036,9 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Return true if the player can register.<BR><BR>
 	 * @param player The L2PcInstance of the player trying to register
 	 * @param typeId -1 = owner 0 = defender, 1 = attacker, 2 = defender waiting
+	 * @return true if the player can register.
 	 */
 	private boolean checkIfCanRegister(L2PcInstance player, byte typeId)
 	{
@@ -1044,8 +1071,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Return true if the clan has already registered to a siege for the same day.<BR><BR>
 	 * @param clan The L2Clan of the player trying to register
+	 * @return true if the clan has already registered to a siege for the same day.
 	 */
 	public boolean checkIfAlreadyRegisteredForSameDay(L2Clan clan)
 	{
@@ -1068,7 +1095,6 @@ public class Siege implements Siegable
 	
 	/**
 	 * Return the correct siege date as Calendar.<BR><BR>
-	 * @param siegeDate The Calendar siege date and time
 	 */
 	public void correctSiegeDateTime()
 	{
@@ -1261,6 +1287,7 @@ public class Siege implements Siegable
 	 * Save registration to database.<BR><BR>
 	 * @param clan The L2Clan of player
 	 * @param typeId -1 = owner 0 = defender, 1 = attacker, 2 = defender waiting
+	 * @param isUpdateRegistration 
 	 */
 	private void saveSiegeClan(L2Clan clan, byte typeId, boolean isUpdateRegistration)
 	{
@@ -1348,7 +1375,10 @@ public class Siege implements Siegable
 		_isRegistrationOver = false; // Allow registration for next siege
 	}
 	
-	/** Spawn control tower. */
+	/**
+	 * Spawn control tower. 
+	 * @param Id
+	 */
 	private void spawnControlTower(int Id)
 	{
 		//Set control tower array size if one does not exist
@@ -1371,7 +1401,10 @@ public class Siege implements Siegable
 		}
 	}
 	
-	/** Spawn flame tower. */
+	/**
+	 * Spawn flame tower. 
+	 * @param Id
+	 */
 	private void spawnFlameTower(int Id)
 	{
 		//Set control tower array size if one does not exist

@@ -472,8 +472,8 @@ public class TvTEvent
 	 * 1. Get team id of the player<br>
 	 * 2. Remove player from it's team<br><br>
 	 *
-	 * @param playerName as String<br>
-	 * @return boolean: true if success, otherwise false<br>
+	 * @param playerObjectId
+	 * @return boolean: true if success, otherwise false
 	 */
 	public static boolean removeParticipant(int playerObjectId)
 	{
@@ -545,6 +545,7 @@ public class TvTEvent
 	
 	/**
 	 * Close doors specified in configs
+	 * @param doors 
 	 */
 	private static void closeDoors(List<Integer> doors)
 	{
@@ -561,6 +562,7 @@ public class TvTEvent
 	
 	/**
 	 * Open doors specified in configs
+	 * @param doors 
 	 */
 	private static void openDoors(List<Integer> doors)
 	{
@@ -726,9 +728,9 @@ public class TvTEvent
 	/**
 	 * Called on every onAction in L2PcIstance<br><br>
 	 *
-	 * @param playerName as String<br>
-	 * @param targetPlayerName as String<br>
-	 * @return boolean: true if player is allowed to target, otherwise false<br>
+	 * @param playerInstance
+	 * @param targetedPlayerObjectId
+	 * @return boolean: true if player is allowed to target, otherwise false
 	 */
 	public static boolean onAction(L2PcInstance playerInstance, int targetedPlayerObjectId)
 	{
@@ -761,8 +763,8 @@ public class TvTEvent
 	/**
 	 * Called on every scroll use<br><br>
 	 *
-	 * @param playerName as String<br>
-	 * @return boolean: true if player is allowed to use scroll, otherwise false<br>
+	 * @param playerObjectId
+	 * @return boolean: true if player is allowed to use scroll, otherwise false
 	 */
 	public static boolean onScrollUse(int playerObjectId)
 	{
@@ -776,10 +778,9 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Called on every potion use<br><br>
-	 *
-	 * @param playerName as String<br>
-	 * @return boolean: true if player is allowed to use potions, otherwise false<br>
+	 * Called on every potion use
+	 * @param playerObjectId
+	 * @return boolean: true if player is allowed to use potions, otherwise false
 	 */
 	public static boolean onPotionUse(int playerObjectId)
 	{
@@ -793,10 +794,9 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Called on every escape use(thanks to nbd)<br><br>
-	 *
-	 * @param playerName as String<br>
-	 * @return boolean: true if player is not in tvt event, otherwise false<br>
+	 * Called on every escape use(thanks to nbd)
+	 * @param playerObjectId
+	 * @return boolean: true if player is not in tvt event, otherwise false
 	 */
 	public static boolean onEscapeUse(int playerObjectId)
 	{
@@ -814,10 +814,9 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Called on every summon item use<br><br>
-	 *
-	 * @param playerName as String<br>
-	 * @return boolean: true if player is allowed to summon by item, otherwise false<br>
+	 * Called on every summon item use
+	 * @param playerObjectId
+	 * @return boolean: true if player is allowed to summon by item, otherwise false
 	 */
 	public static boolean onItemSummon(int playerObjectId)
 	{
@@ -902,9 +901,8 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Called on Appearing packet received (player finished teleporting)<br><br>
-	 * 
-	 * @param L2PcInstance playerInstance
+	 * Called on Appearing packet received (player finished teleporting)
+	 * @param playerInstance
 	 */
 	public static void onTeleported(L2PcInstance playerInstance)
 	{
@@ -937,8 +935,11 @@ public class TvTEvent
 		}
 	}
 	
-	/*
-	 * Return true if player valid for skill
+	/**
+	 * @param source 
+	 * @param target 
+	 * @param skill 
+	 * @return true if player valid for skill
 	 */
 	public static final boolean checkForTvTSkill(L2PcInstance source, L2PcInstance target, L2Skill skill)
 	{
@@ -1064,7 +1065,7 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Is TvTEvent rewadrding?<br><br>
+	 * Is TvTEvent rewarding?<br><br>
 	 *
 	 * @return boolean: true if event is currently rewarding, otherwise false<br>
 	 */
@@ -1081,10 +1082,9 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Returns the team id of a player, if player is not participant it returns -1<br><br>
-	 *
-	 * @param playerName as String<br>
-	 * @return byte: team name of the given playerName, if not in event -1<br>
+	 * Returns the team id of a player, if player is not participant it returns -1
+	 * @param playerObjectId
+	 * @return byte: team name of the given playerName, if not in event -1
 	 */
 	public static byte getParticipantTeamId(int playerObjectId)
 	{
@@ -1092,10 +1092,9 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Returns the team of a player, if player is not participant it returns null <br><br>
-	 *
-	 * @param player objectId as Integer<br>
-	 * @return TvTEventTeam: team of the given playerObjectId, if not in event null <br>
+	 * Returns the team of a player, if player is not participant it returns null
+	 * @param playerObjectId
+	 * @return TvTEventTeam: team of the given playerObjectId, if not in event null
 	 */
 	public static TvTEventTeam getParticipantTeam(int playerObjectId)
 	{
@@ -1103,10 +1102,9 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Returns the enemy team of a player, if player is not participant it returns null <br><br>
-	 *
-	 * @param player objectId as Integer<br>
-	 * @return TvTEventTeam: enemy team of the given playerObjectId, if not in event null <br>
+	 * Returns the enemy team of a player, if player is not participant it returns null
+	 * @param playerObjectId
+	 * @return TvTEventTeam: enemy team of the given playerObjectId, if not in event null
 	 */
 	public static TvTEventTeam getParticipantEnemyTeam(int playerObjectId)
 	{
@@ -1114,10 +1112,9 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Returns the team coordinates in which the player is in, if player is not in a team return null<br><br>
-	 *
-	 * @param playerName as String<br>
-	 * @return int[]: coordinates of teams, 2 elements, index 0 for team 1 and index 1 for team 2<br>
+	 * Returns the team coordinates in which the player is in, if player is not in a team return null
+	 * @param playerObjectId
+	 * @return int[]: coordinates of teams, 2 elements, index 0 for team 1 and index 1 for team 2
 	 */
 	public static int[] getParticipantTeamCoordinates(int playerObjectId)
 	{
@@ -1125,10 +1122,9 @@ public class TvTEvent
 	}
 	
 	/**
-	 * Is given player participant of the event?<br><br>
-	 *
-	 * @param playerName as String<br>
-	 * @return boolean: true if player is participant, ohterwise false<br>
+	 * Is given player participant of the event?
+	 * @param playerObjectId
+	 * @return boolean: true if player is participant, ohterwise false
 	 */
 	public static boolean isPlayerParticipant(int playerObjectId)
 	{

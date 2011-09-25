@@ -136,7 +136,7 @@ public class PostBBSManager extends BaseBBSManager
 	
 	/**
 	 * @param topic
-	 * @param forumByID
+	 * @param forum 
 	 * @param activeChar
 	 * @param idp
 	 */
@@ -157,11 +157,10 @@ public class PostBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * @param posttByTopic
-	 * @param forumByID
+	 * @param topic 
+	 * @param forum 
 	 * @param activeChar
 	 * @param ind
-	 * @param idf
 	 */
 	private void showPost(Topic topic, Forum forum, L2PcInstance activeChar, int ind)
 	{

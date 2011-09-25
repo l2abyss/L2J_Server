@@ -860,7 +860,11 @@ public class L2CubicInstance
 		}
 	}
 	
-	/** returns true if the target is inside of the owner's max Cubic range */
+	/**
+	 * @param owner 
+	 * @param target 
+	 * @return true if the target is inside of the owner's max Cubic range
+	 */
 	public boolean isInCubicRange(L2Character owner, L2Character target)
 	{
 		if (owner == null || target == null)

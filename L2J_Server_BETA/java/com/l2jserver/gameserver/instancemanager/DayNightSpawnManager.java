@@ -83,10 +83,10 @@ public class DayNightSpawnManager
 	
 	/**
 	 * Manage Spawn/Respawn
-	 * Arg 1 : List with spawns must be unspawned
-	 * Arg 2 : List with spawns must be spawned
-	 * Arg 3 : String for log info for unspawned L2NpcInstance
-	 * Arg 4 : String for log info for spawned L2NpcInstance
+	 * @param unSpawnCreatures List with spawns must be unspawned
+	 * @param spawnCreatures List with spawns must be spawned
+	 * @param UnspawnLogInfo String for log info for unspawned L2NpcInstance
+	 * @param SpawnLogInfo String for log info for spawned L2NpcInstance
 	 */
 	private void spawnCreatures(List<L2Spawn> unSpawnCreatures, List<L2Spawn> spawnCreatures, String UnspawnLogInfo,
 			String SpawnLogInfo)

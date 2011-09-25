@@ -40,6 +40,7 @@ import com.l2jserver.util.StringUtil;
 public final class L2ClassMasterInstance extends L2MerchantInstance
 {
 	/**
+	 * @param objectId 
 	 * @param template
 	 */
 	public L2ClassMasterInstance(int objectId, L2NpcTemplate template)
@@ -376,8 +377,8 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 	}
 	
 	/**
-	 * Returns minimum player level required for next class transfer
 	 * @param level - current skillId level (0 - start, 1 - first, etc)
+	 * @return minimum player level required for next class transfer
 	 */
 	private static final int getMinLevel(int level)
 	{

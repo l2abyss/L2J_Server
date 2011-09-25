@@ -75,7 +75,7 @@ public class CharInfo extends L2GameServerPacket
 	private int _vehicleId, _airShipHelm;
 	
 	/**
-	 * @param _characters
+	 * @param cha
 	 */
 	public CharInfo(L2PcInstance cha)
 	{

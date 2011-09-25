@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.model.L2Object;
 /**
  *
  * @author  dishkols
+ * @param <T> 
  */
 public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 {
@@ -72,7 +73,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.util.L2ObjectMap#put(T)
+	 * @see com.l2jserver.gameserver.util.L2ObjectMap#put(L2Object)
 	 */
 	@Override
 	public void put(T obj)
@@ -87,7 +88,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.util.L2ObjectMap#remove(T)
+	 * @see com.l2jserver.gameserver.util.L2ObjectMap#remove(L2Object)
 	 */
 	@Override
 	public void remove(T obj)
@@ -115,7 +116,7 @@ public class WorldObjectTree<T extends L2Object> extends L2ObjectMap<T>
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.util.L2ObjectMap#contains(T)
+	 * @see com.l2jserver.gameserver.util.L2ObjectMap#contains(L2Object)
 	 */
 	@Override
 	public boolean contains(T obj)

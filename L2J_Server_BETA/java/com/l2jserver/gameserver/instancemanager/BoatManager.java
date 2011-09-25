@@ -150,6 +150,9 @@ public class BoatManager
 	
 	/**
 	 * Broadcast one packet in both path points
+	 * @param point1 
+	 * @param point2 
+	 * @param packet 
 	 */
 	public void broadcastPacket(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket packet)
 	{
@@ -159,6 +162,9 @@ public class BoatManager
 	
 	/**
 	 * Broadcast several packets in both path points
+	 * @param point1 
+	 * @param point2 
+	 * @param packets 
 	 */
 	public void broadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket... packets)
 	{

@@ -74,10 +74,10 @@ public class Attack extends L2GameServerPacket
 	private Hit[] _hits;
 	
 	/**
-	 * @param attacker: the attacking L2Character<br>
-	 * @param target: the target L2Object<br>
-	 * @param useShots: true if soulshots used
-	 * @param ssGrade: the grade of the soulshots
+	 * @param attacker the attacking L2Character<br>
+	 * @param target the target L2Object<br>
+	 * @param useShots true if soulshots used
+	 * @param ssGrade the grade of the soulshots
 	 */
 	public Attack(L2Character attacker, L2Object target, boolean useShots, int ssGrade)
 	{
@@ -114,7 +114,7 @@ public class Attack extends L2GameServerPacket
 	}
 	
 	/**
-	 * Return True if the Server-Client packet Attack contains at least 1 hit.<BR><BR>
+	 * @return True if the Server-Client packet Attack contains at least 1 hit.
 	 */
 	public boolean hasHits()
 	{

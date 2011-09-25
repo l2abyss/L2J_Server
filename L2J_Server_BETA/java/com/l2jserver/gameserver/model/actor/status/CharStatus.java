@@ -125,11 +125,8 @@ public class CharStatus
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2Attackable : Set overhit values</li><BR>
 	 * <li> L2Npc : Update the attacker AggroInfo of the L2Attackable _aggroList and clear duel status of the attacking players</li><BR><BR>
-	 *
-	 * @param i The HP decrease value
-	 * @param attacker The L2Character who attacks
-	 * @param awake The awake state (If True : stop sleeping)
-	 *
+	 * @param value
+	 * @param attacker
 	 */
 	public void reduceHp(double value, L2Character attacker)
 	{

@@ -28,7 +28,11 @@ public class Earthquake extends L2GameServerPacket
 	private int _duration;
 	
 	/**
-	 * @param
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param intensity
+	 * @param duration
 	 */
 	public Earthquake(int x, int y, int z, int intensity, int duration)
 	{

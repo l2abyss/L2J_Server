@@ -699,8 +699,8 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns if item can be deposited in warehouse or freight
-	 * @return boolean
+	 * @param isPrivateWareHouse 
+	 * @return if item can be deposited in warehouse or freight
 	 */
 	public boolean isDepositable(boolean isPrivateWareHouse)
 	{
@@ -761,8 +761,10 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns if item is available for manipulation
-	 * @return boolean
+	 * @param player 
+	 * @param allowAdena 
+	 * @param allowNonTradeable 
+	 * @return if item is available for manipulation
 	 */
 	public boolean isAvailable(L2PcInstance player, boolean allowAdena, boolean allowNonTradeable)
 	{
@@ -790,8 +792,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Sets the level of enchantment of the item
-	 * @param int
+	 * @param enchantLevel the enchant value to set
 	 */
 	public void setEnchantLevel(int enchantLevel)
 	{
@@ -1197,7 +1198,7 @@ public final class L2ItemInstance extends L2Object
 	 * sends a inventory update
 	 * schedules a new consumption task if non is running
 	 * optionally one could force a new task
-	 * @param forces a new consumption task if item is equipped
+	 * @param resetConsumingMana if true forces a new consumption task if item is equipped
 	 */
 	public void decreaseMana(boolean resetConsumingMana)
 	{
@@ -1209,7 +1210,7 @@ public final class L2ItemInstance extends L2Object
 	 * sends a inventory update
 	 * schedules a new consumption task if non is running
 	 * optionally one could force a new task
-	 * @param forces a new consumption task if item is equipped
+	 * @param resetConsumingMana if forces a new consumption task if item is equipped
 	 * @param count how much mana decrease
 	 */
 	public void decreaseMana(boolean resetConsumingMana, int count)
@@ -1438,7 +1439,8 @@ public final class L2ItemInstance extends L2Object
 	
 	/**
 	 * Returns a L2ItemInstance stored in database from its objectID
-	 * @param objectId : int designating the objectID of the item
+	 * @param ownerId
+	 * @param rs 
 	 * @return L2ItemInstance
 	 */
 	public static L2ItemInstance restoreFromDb(int ownerId, ResultSet rs)

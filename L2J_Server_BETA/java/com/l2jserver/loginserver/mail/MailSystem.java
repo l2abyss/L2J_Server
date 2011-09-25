@@ -116,7 +116,8 @@ public class MailSystem
 		private final String _text;
 		
 		/**
-		 * 
+		 * @param subject 
+		 * @param text 
 		 */
 		public MailContent(String subject, String text)
 		{

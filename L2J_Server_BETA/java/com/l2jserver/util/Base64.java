@@ -317,6 +317,7 @@ public class Base64
 	 * 
 	 * @param serializableObject
 	 *            The object to encode
+	 * @param options 
 	 * @options Specified options
 	 * @return The Base64-encoded object
 	 * @see Base64#GZIP
@@ -406,6 +407,7 @@ public class Base64
 	 * 
 	 * @param source
 	 *            The data to convert
+	 * @return 
 	 * @since 1.4
 	 */
 	public static String encodeBytes(byte[] source)
@@ -434,6 +436,7 @@ public class Base64
 	 *            The data to convert
 	 * @param options
 	 *            Specified options
+	 * @return 
 	 * @see Base64#GZIP
 	 * @see Base64#DONT_BREAK_LINES
 	 * @since 2.0
@@ -452,6 +455,7 @@ public class Base64
 	 *            Offset in array where conversion should begin
 	 * @param len
 	 *            Length of data to convert
+	 * @return 
 	 * @since 1.4
 	 */
 	public static String encodeBytes(byte[] source, int off, int len)
@@ -482,10 +486,9 @@ public class Base64
 	 *            Offset in array where conversion should begin
 	 * @param len
 	 *            Length of data to convert
-	 * @param breakLines
-	 *            Break lines at 80 characters or less.
 	 * @param options
 	 *            Specified options
+	 * @return 
 	 * @see Base64#GZIP
 	 * @see Base64#DONT_BREAK_LINES
 	 * @since 2.0
@@ -919,7 +922,7 @@ public class Base64
 	/*  I N N E R C L A S S I N P U T S T R E A M */
 	
 	/**
-	 * A {@link Base64#InputStream} will read data from another
+	 * A {@link #InputStream} will read data from another
 	 * {@link java.io.InputStream}, given in the constructor, and encode/decode
 	 * to/from Base64 notation on the fly.
 	 * 
@@ -939,9 +942,9 @@ public class Base64
 		private boolean breakLines; // Break lines at less than 80 characters
 		
 		/**
-		 * Constructs a {@link Base64#InputStream} in DECODE mode.
+		 * Constructs a {@link #InputStream} in DECODE mode.
 		 * 
-		 * @param in
+		 * @param pIn
 		 *            the {@link java.io.InputStream} from which to read data.
 		 * @since 1.3
 		 */
@@ -951,7 +954,7 @@ public class Base64
 		} // end constructor
 		
 		/**
-		 * Constructs a {@link Base64#InputStream} in either ENCODE or DECODE
+		 * Constructs a {@link #InputStream} in either ENCODE or DECODE
 		 * mode.
 		 * <p>
 		 * Valid options:
@@ -966,7 +969,7 @@ public class Base64
 		 * Example: <code>new Base64.InputStream( in, Base64.DECODE )</code>
 		 * 
 		 * 
-		 * @param in
+		 * @param pIn
 		 *            the {@link java.io.InputStream} from which to read data.
 		 * @param options
 		 *            Specified options
@@ -1150,7 +1153,7 @@ public class Base64
 	/*  I N N E R C L A S S O U T P U T S T R E A M */
 	
 	/**
-	 * A {@link Base64#OutputStream} will write data to another
+	 * A {@link #OutputStream} will write data to another
 	 * {@link java.io.OutputStream}, given in the constructor, and encode/decode
 	 * to/from Base64 notation on the fly.
 	 * 
@@ -1171,9 +1174,9 @@ public class Base64
 		private boolean suspendEncoding;
 		
 		/**
-		 * Constructs a {@link Base64#OutputStream} in ENCODE mode.
+		 * Constructs a {@link #OutputStream} in ENCODE mode.
 		 * 
-		 * @param out
+		 * @param pOut
 		 *            the {@link java.io.OutputStream} to which data will be
 		 *            written.
 		 * @since 1.3
@@ -1184,7 +1187,7 @@ public class Base64
 		} // end constructor
 		
 		/**
-		 * Constructs a {@link Base64#OutputStream} in either ENCODE or DECODE
+		 * Constructs a {@link #OutputStream} in either ENCODE or DECODE
 		 * mode.
 		 * <p>
 		 * Valid options:
@@ -1198,7 +1201,7 @@ public class Base64
 		 * <p>
 		 * Example: <code>new Base64.OutputStream( out, Base64.ENCODE )</code>
 		 * 
-		 * @param out
+		 * @param pOut
 		 *            the {@link java.io.OutputStream} to which data will be
 		 *            written.
 		 * @param options
@@ -1315,6 +1318,7 @@ public class Base64
 		/**
 		 * Method added by PHIL. [Thanks, PHIL. -Rob] This pads the buffer
 		 * without closing the stream.
+		 * @throws java.io.IOException 
 		 */
 		public void flushBase64() throws java.io.IOException
 		{
@@ -1355,6 +1359,7 @@ public class Base64
 		/**
 		 * Suspends encoding of the stream. May be helpful if you need to embed
 		 * a piece of base640-encoded data in a stream.
+		 * @throws java.io.IOException 
 		 * 
 		 * @since 1.5.1
 		 */

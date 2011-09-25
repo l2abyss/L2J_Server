@@ -473,6 +473,8 @@ public final class Rnd
 	}
 	
 	/**
+	 * @param n 
+	 * @return 
 	 * @see com.l2jserver.util.Rnd#get(int n)
 	 */
 	public static final int nextInt(final int n)

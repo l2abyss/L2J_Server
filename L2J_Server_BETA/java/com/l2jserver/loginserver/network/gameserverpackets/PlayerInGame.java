@@ -31,6 +31,7 @@ public class PlayerInGame extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
+	 * @param server 
 	 */
 	public PlayerInGame(byte[] decrypt, GameServerThread server)
 	{

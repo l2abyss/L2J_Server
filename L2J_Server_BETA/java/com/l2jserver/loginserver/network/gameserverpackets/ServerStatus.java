@@ -66,6 +66,7 @@ public class ServerStatus extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
+	 * @param server 
 	 */
 	public ServerStatus(byte[] decrypt, GameServerThread server)
 	{

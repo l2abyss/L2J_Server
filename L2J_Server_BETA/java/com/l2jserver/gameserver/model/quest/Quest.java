@@ -232,10 +232,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add a timer to the quest, if it doesn't exist already
-	 * @param name: name of the timer (also passed back as "event" in onAdvEvent)
-	 * @param time: time in ms for when to fire the timer
-	 * @param npc:  npc associated with this timer (can be null)
-	 * @param player: player associated with this timer (can be null)
+	 * @param name name of the timer (also passed back as "event" in onAdvEvent)
+	 * @param time time in ms for when to fire the timer
+	 * @param npc  npc associated with this timer (can be null)
+	 * @param player player associated with this timer (can be null)
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player)
 	{
@@ -245,11 +245,11 @@ public class Quest extends ManagedScript
 	/**
 	 * Add a timer to the quest, if it doesn't exist already.  If the timer is repeatable,
 	 * it will auto-fire automatically, at a fixed rate, until explicitly canceled.
-	 * @param name: name of the timer (also passed back as "event" in onAdvEvent)
-	 * @param time: time in ms for when to fire the timer
-	 * @param npc:  npc associated with this timer (can be null)
-	 * @param player: player associated with this timer (can be null)
-	 * @param repeatable: indicates if the timer is repeatable or one-time.
+	 * @param name name of the timer (also passed back as "event" in onAdvEvent)
+	 * @param time time in ms for when to fire the timer
+	 * @param npc  npc associated with this timer (can be null)
+	 * @param player player associated with this timer (can be null)
+	 * @param repeating indicates if the timer is repeatable or one-time.
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player, boolean repeating)
 	{
@@ -419,9 +419,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Notify quest script when something happens with a trap
-	 * @param trap: the trap instance which triggers the notification
-	 * @param trigger: the character which makes effect on the trap
-	 * @param action: 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap
+	 * @param trap the trap instance which triggers the notification
+	 * @param trigger the character which makes effect on the trap
+	 * @param action 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap
+	 * @return 
 	 */
 	public final boolean notifyTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
 	{
@@ -846,8 +847,8 @@ public class Quest extends ManagedScript
 	 * <LI><U>"res" ends with string ".html" :</U> an HTML is opened in order to be shown in a dialog box</LI>
 	 * <LI><U>"res" starts with "<html>" :</U> the message hold in "res" is shown in a dialog box</LI>
 	 * <LI><U>otherwise :</U> the message held in "res" is shown in chat box</LI>
-	 * @param qs : QuestState
-	 * @param res : String pointing out the message to show at the player
+	 * @param player the player to show the result
+	 * @param res the message to show at the player
 	 * @return boolean
 	 */
 	public boolean showResult(L2PcInstance player, String res)
@@ -1308,7 +1309,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add the quest to the NPC's startQuest
-	 * @param npcId
+	 * @param npcIds
 	 * @return L2NpcTemplate : Start NPC
 	 */
 	public L2NpcTemplate[] addStartNpc(int ...npcIds)
@@ -1327,7 +1328,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add the quest to the NPC's first-talk (default action dialog)
-	 * @param npcId
+	 * @param npcIds
 	 * @return L2NpcTemplate : Start NPC
 	 */
 	public L2NpcTemplate[] addFirstTalkId(int ...npcIds)
@@ -1346,7 +1347,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add the NPC to the AcquireSkill dialog
-	 * @param npcId
+	 * @param npcIds
 	 * @return L2NpcTemplate : NPC
 	 */
 	public L2NpcTemplate[] addAcquireSkillId(int ...npcIds)
@@ -1365,7 +1366,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Attack Events.<BR><BR>
-	 * @param attackId
+	 * @param npcIds
 	 * @return int : attackId
 	 */
 	public L2NpcTemplate[] addAttackId(int ...npcIds)
@@ -1384,7 +1385,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Kill Events.<BR><BR>
-	 * @param killId
+	 * @param killIds
 	 * @return int : killId
 	 */
 	public L2NpcTemplate[] addKillId(int ...killIds)
@@ -1403,7 +1404,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Talk Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param talkIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
 	public L2NpcTemplate[] addTalkId(int ...talkIds)
@@ -1422,7 +1423,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Spawn Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param npcIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
 	public L2NpcTemplate[] addSpawnId(int ...npcIds)
@@ -1442,7 +1443,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param npcIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
 	public L2NpcTemplate[] addSkillSeeId(int ...npcIds)
@@ -1489,7 +1490,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param npcIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
 	public L2NpcTemplate[] addFactionCallId(int ...npcIds)
@@ -1508,7 +1509,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param npcIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
 	public L2NpcTemplate[] addAggroRangeEnterId(int ...npcIds)
@@ -1628,8 +1629,8 @@ public class Quest extends ManagedScript
 	 * Auxilary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
-	 * @param player: the instance of a player whose party is to be searched
-	 * @param value: the value of the "cond" variable that must be matched
+	 * @param player the instance of a player whose party is to be searched
+	 * @param value the value of the "cond" variable that must be matched
 	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified
 	 * 			condition, or null if no match.
 	 */
@@ -1642,9 +1643,9 @@ public class Quest extends ManagedScript
 	 * Auxilary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
-	 * @param player: the instance of a player whose party is to be searched
-	 * @param var/value: a tuple specifying a quest condition that must be satisfied for
-	 *     a party member to be considered.
+	 * @param player the instance of a player whose party is to be searched
+	 * @param var
+	 * @param value a tuple specifying a quest condition that must be satisfied for a party member to be considered.
 	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified
 	 * 				condition, or null if no match.  If the var is null, any random party
 	 * 				member is returned (i.e. no condition is applied).
@@ -1703,8 +1704,8 @@ public class Quest extends ManagedScript
 	 * Auxilary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
-	 * @param player: the instance of a player whose party is to be searched
-	 * @param state: the state in which the party member's queststate must be in order to be considered.
+	 * @param player the instance of a player whose party is to be searched
+	 * @param state the state in which the party member's queststate must be in order to be considered.
 	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified
 	 * 				condition, or null if no match.  If the var is null, any random party
 	 * 				member is returned (i.e. no condition is applied).
@@ -1755,6 +1756,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Show HTML file to client
+	 * @param player 
 	 * @param fileName
 	 * @return String : message sent to client
 	 */
@@ -1795,8 +1797,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Return HTML file contents
-	 * @param player
-	 * @param fileName
+	 * @param prefix player's language prefix.
+	 * @param fileName the html file to be get.
 	 * @return
 	 */
 	public String getHtm(String prefix, String fileName)
@@ -1816,7 +1818,9 @@ public class Quest extends ManagedScript
 	// Method - Public
 	/**
 	 * Add a temporary (quest) spawn
-	 * Return instance of newly spawned npc
+	 * @param npcId 
+	 * @param cha 
+	 * @return instance of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha)
 	{
@@ -1825,8 +1829,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add a temporary (quest) spawn
-	 * Return instance of newly spawned npc
-	 * with summon animation
+	 * @param npcId 
+	 * @param cha 
+	 * @param isSummonSpawn 
+	 * @return instance of newly spawned npc with summon animation
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha, boolean isSummonSpawn)
 	{

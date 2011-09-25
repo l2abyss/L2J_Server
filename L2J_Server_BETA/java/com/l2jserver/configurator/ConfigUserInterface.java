@@ -316,6 +316,7 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 	
 	/**
 	 * @param value
+	 * @return 
 	 */
 	private Object parseValue(String value)
 	{
@@ -743,10 +744,10 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 	}
 	
 	/**
+	 * @param keyName 
 	 * @return Returns the configuration setting name in a
 	 * human readable form.
 	 */
-	
 	public static String unCamelize(final String keyName) {
 		Pattern p = Pattern.compile("\\p{Lu}");
 		Matcher m = p.matcher(keyName);

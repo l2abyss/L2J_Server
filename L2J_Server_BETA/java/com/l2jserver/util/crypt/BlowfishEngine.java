@@ -273,7 +273,7 @@ public class BlowfishEngine
 	/**
 	 * initialise a Blowfish cipher.
 	 *
-	 * @param encryption
+	 * @param pEncrypting
 	 *            whether or not we are for encryption.
 	 * @param key
 	 *            the key used to set up the cipher.
@@ -337,6 +337,9 @@ public class BlowfishEngine
 	
 	/**
 	 * apply the encryption cycle to each value pair in the table.
+	 * @param xl 
+	 * @param xr 
+	 * @param table 
 	 */
 	private void processTable(int xl, int xr, int[] table)
 	{
@@ -423,6 +426,10 @@ public class BlowfishEngine
 	 * Encrypt the given input starting at the given offset and place the
 	 * result in the provided buffer starting at the given offset. The input
 	 * will be an exact multiple of our blocksize.
+	 * @param src 
+	 * @param srcIndex 
+	 * @param dst 
+	 * @param dstIndex 
 	 */
 	private void encryptBlock(byte[] src, int srcIndex, byte[] dst, int dstIndex)
 	{
@@ -443,6 +450,10 @@ public class BlowfishEngine
 	 * Decrypt the given input starting at the given offset and place the
 	 * result in the provided buffer starting at the given offset. The input
 	 * will be an exact multiple of our blocksize.
+	 * @param src 
+	 * @param srcIndex 
+	 * @param dst 
+	 * @param dstIndex 
 	 */
 	private void decryptBlock(byte[] src, int srcIndex, byte[] dst, int dstIndex)
 	{

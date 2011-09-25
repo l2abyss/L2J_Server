@@ -76,7 +76,7 @@ public class GeoData
 	 * @param y
 	 * @param zmin
 	 * @param zmax
-	 * @param spawnid
+	 * @param spawn
 	 * @return
 	 */
 	public short getSpawnHeight(int x, int y, int zmin, int zmax, L2Spawn spawn)
@@ -121,9 +121,9 @@ public class GeoData
 	}
 	
 	/**
-	 * @param cha
+	 * @param gm
 	 * @param target
-	 * @return True if cha can see target (LOS) and send usful info to PC
+	 * @return True if cha can see target (LOS) and send useful info to PC
 	 */
 	public boolean canSeeTargetDebug(L2PcInstance gm, L2Object target)
 	{

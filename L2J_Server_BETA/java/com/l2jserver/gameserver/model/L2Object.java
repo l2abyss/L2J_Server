@@ -566,6 +566,7 @@ public abstract class L2Object
 	 *
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * A L2Object is visble if <B>__IsVisible</B>=true and <B>_worldregion</B>!=null <BR><BR>
+	 * @return 
 	 */
 	public final boolean isVisible()
 	{
@@ -641,6 +642,7 @@ public abstract class L2Object
 	
 	/**
 	 * returns reference to region this object is in
+	 * @return 
 	 */
 	public L2WorldRegion getWorldRegion()
 	{
@@ -665,6 +667,7 @@ public abstract class L2Object
 	 * <li>L2Summon</li>
 	 * <li>L2Trap</li>
 	 * <li>L2ItemInstance</li>
+	 * @param activeChar 
 	 */
 	public void sendInfo(L2PcInstance activeChar)
 	{
@@ -682,6 +685,7 @@ public abstract class L2Object
 	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance</li><BR><BR>
+	 * @param mov 
 	 */
 	public void sendPacket(L2GameServerPacket mov)
 	{

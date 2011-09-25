@@ -331,8 +331,8 @@ public class L2BossZone extends L2ZoneType
 	 * in order to allow a player for entry into the zone for some time.  Naturally
 	 * if the player does not enter within the allowed time, he/she will be
 	 * teleported out again...
-	 * @param player: reference to the player we wish to allow
-	 * @param durationInSec: amount of time in seconds during which entry is valid.
+	 * @param player reference to the player we wish to allow
+	 * @param durationInSec amount of time in seconds during which entry is valid.
 	 */
 	public void allowPlayerEntry(L2PcInstance player, int durationInSec)
 	{

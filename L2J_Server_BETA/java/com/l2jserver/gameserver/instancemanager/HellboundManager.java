@@ -37,6 +37,7 @@ public class HellboundManager
 	
 	/**
 	 * Returns true if Hellbound is locked
+	 * @return 
 	 */
 	public boolean isLocked()
 	{

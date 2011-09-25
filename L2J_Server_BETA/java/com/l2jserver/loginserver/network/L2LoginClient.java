@@ -83,7 +83,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	}
 	
 	/**
-	 * @see com.l2jserver.mmocore.interfaces.MMOClient#decrypt(java.nio.ByteBuffer, int)
+	 * @see org.mmocore.network.MMOClient#decrypt(java.nio.ByteBuffer, int)
 	 */
 	@Override
 	public boolean decrypt(ByteBuffer buf, int size)
@@ -112,7 +112,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	}
 	
 	/**
-	 * @see com.l2jserver.mmocore.interfaces.MMOClient#encrypt(java.nio.ByteBuffer, int)
+	 * @see org.mmocore.network.MMOClient#encrypt(java.nio.ByteBuffer, int)
 	 */
 	@Override
 	public boolean encrypt(ByteBuffer buf, int size)

@@ -39,6 +39,7 @@ public class ListContainer
 	/**
 	 * This constructor used in PreparedListContainer only
 	 * ArrayList not created
+	 * @param listId 
 	 */
 	protected ListContainer(int listId)
 	{
@@ -85,8 +86,8 @@ public class ListContainer
 	 * 
 	 * 
 	 * <b>NOTE:</b> It affects only parser, it won't change values of already parsed multisell
-	 * since MultiSells' parseEntry method hnadles this feature
-	 * @param _useRate
+	 * since MultiSells' parseEntry method handles this feature
+	 * @param rate 
 	 * @see com.l2jserver.gameserver.datatables.MultiSell#parseEntry 
 	 */
 	public void setUseRate(double rate) 

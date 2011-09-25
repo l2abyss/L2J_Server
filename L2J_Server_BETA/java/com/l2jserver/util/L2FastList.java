@@ -27,6 +27,7 @@ import javolution.util.FastList;
  * Changes:<br>
  *      1.0.0 - Initial version.<br>
  *      1.0.1 - Made forEachP() final.<br>
+ * @param <T> 
  */
 public class L2FastList<T extends Object> extends FastList<T>
 {
@@ -36,6 +37,7 @@ public class L2FastList<T extends Object> extends FastList<T>
 	 * Public inner interface used by ForEach iterations<br>
 	 *
 	 * @author  Julian
+	 * @param <T> 
 	 */
 	public interface I2ForEach<T> {
 		public boolean ForEach(T obj);

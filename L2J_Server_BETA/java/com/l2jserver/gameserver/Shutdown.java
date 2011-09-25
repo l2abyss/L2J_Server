@@ -66,11 +66,9 @@ public class Shutdown extends Thread
 	private static final String[] MODE_TEXT = { "SIGTERM", "shutting down", "restarting", "aborting" };
 	
 	/**
-	 * This function starts a shutdown countdown from Telnet (Copied from Function startShutdown())
+	 * This function starts a shutdown count down from Telnet (Copied from Function startShutdown())
 	 *
-	 * @param ip IP Which Issued shutdown command
-	 * @param seconds seconds untill shutdown
-	 * @param restart true if the server will restart after shutdown
+	 * @param seconds seconds until shutdown
 	 */
 	private void SendServerQuit(int seconds)
 	{

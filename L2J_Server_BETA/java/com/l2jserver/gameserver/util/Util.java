@@ -1,26 +1,14 @@
 /*
- * $Header: Util.java, 21/10/2005 23:17:40 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 21/10/2005 23:17:40 $
- * $Revision: 1 $
- * $Log: Util.java,v $
- * Revision 1  21/10/2005 23:17:40  luisantonioa
- * Added copyright notice
- *
- *
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.util;
 
@@ -55,6 +43,9 @@ public final class Util
 	/**
 	 * Return degree value of object 2 to the horizontal line with object 1
 	 * being the origin
+	 * @param obj1 
+	 * @param obj2 
+	 * @return 
 	 */
 	public static double calculateAngleFrom(L2Object obj1, L2Object obj2)
 	{
@@ -62,8 +53,12 @@ public final class Util
 	}
 	
 	/**
-	 * Return degree value of object 2 to the horizontal line with object 1
-	 * being the origin
+	 * Return degree value of object 2 to the horizontal line with object 1 being the origin
+	 * @param obj1X 
+	 * @param obj1Y 
+	 * @param obj2X 
+	 * @param obj2Y 
+	 * @return 
 	 */
 	public final static double calculateAngleFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
 	{
@@ -108,6 +103,10 @@ public final class Util
 	}
 	
 	/**
+	 * @param x1 
+	 * @param y1 
+	 * @param x2 
+	 * @param y2 
 	 * @return the distance between the two coordinates in 2D plane
 	 */
 	public static double calculateDistance(int x1, int y1, int x2, int y2)
@@ -116,6 +115,12 @@ public final class Util
 	}
 	
 	/**
+	 * @param x1 
+	 * @param y1 
+	 * @param z1 
+	 * @param x2 
+	 * @param y2 
+	 * @param z2 
 	 * @param includeZAxis - if true, includes also the Z axis in the calculation
 	 * @return the distance between the two coordinates
 	 */
@@ -133,6 +138,8 @@ public final class Util
 	}
 	
 	/**
+	 * @param obj1 
+	 * @param obj2 
 	 * @param includeZAxis - if true, includes also the Z axis in the calculation
 	 * @return the distance between the two objects
 	 */
@@ -195,6 +202,10 @@ public final class Util
 	}
 	
 	/**
+	 * @param range 
+	 * @param obj1 
+	 * @param obj2 
+	 * @param includeZAxis 
 	 * @return {@code true} if the two objects are within specified range between each other, {@code false} otherwise
 	 */
 	public static boolean checkIfInRange(int range, L2Object obj1, L2Object obj2, boolean includeZAxis)
@@ -230,8 +241,10 @@ public final class Util
 	 *  Checks if object is within short (sqrt(int.max_value)) radius, not using collisionRadius.
 	 *  Faster calculation than checkIfInRange if distance is short and collisionRadius isn't needed.
 	 *  Not for long distance checks (potential teleports, far away castles etc).
-	 * @param range - the maximum range between the two objects
-	 *  @param includeZAxis - if true, check also Z axis (3-dimensional check), otherwise only 2D
+	 * @param radius
+	 * @param obj1
+	 * @param obj2
+	 * @param includeZAxis if true, check also Z axis (3-dimensional check), otherwise only 2D
 	 * @return {@code true} if objects are within specified range between each other, {@code false} otherwise
 	 */
 	public static boolean checkIfInShortRadius(int radius, L2Object obj1, L2Object obj2, boolean includeZAxis)
@@ -352,6 +365,7 @@ public final class Util
 	}
 	
 	/**
+	 * @param <T> 
 	 * @param array - the array to look into
 	 * @param obj - the object to search for
 	 * @return {@code true} if the {@code array} contains the {@code obj}, {@code false} otherwise

@@ -139,19 +139,25 @@ public final class ClanHallManager
 		return _allClanHalls;
 	}
 
-	/** Get Map with all FreeClanHalls */
+	/**
+	 * @return all FreeClanHalls
+	 */
 	public final Map<Integer, AuctionableHall> getFreeClanHalls()
 	{
 		return _freeClanHall;
 	}
 	
-	/** Get Map with all ClanHalls that have owner*/
+	/**
+	 * @return all ClanHalls that have owner
+	 */
 	public final Map<Integer, AuctionableHall> getClanHalls()
 	{
 		return _clanHall;
 	}
 	
-	/** Get Map with all ClanHalls*/
+	/**
+	 * @return all ClanHalls
+	 */
 	public final Map<Integer, AuctionableHall> getAllAuctionableClanHalls()
 	{
 		return _allAuctionableClanHalls;
@@ -162,7 +168,10 @@ public final class ClanHallManager
 		_allClanHalls.put(hall.getId(), hall);
 	}
 
-	/** Check is free ClanHall */
+	/**
+	 * @param chId 
+	 * @return true is free ClanHall
+	 */
 	public final boolean isFree(int chId)
 	{
 		if (_freeClanHall.containsKey(chId))
@@ -170,7 +179,10 @@ public final class ClanHallManager
 		return false;
 	}
 	
-	/** Free a ClanHall */
+	/**
+	 * Free a ClanHall 
+	 * @param chId
+	 */
 	public final synchronized void setFree(int chId)
 	{
 		_freeClanHall.put(chId, _clanHall.get(chId));
@@ -179,7 +191,11 @@ public final class ClanHallManager
 		_clanHall.remove(chId);
 	}
 	
-	/** Set ClanHallOwner */
+	/**
+	 * Set ClanHallOwner
+	 * @param chId 
+	 * @param clan
+	 */
 	public final synchronized void setOwner(int chId, L2Clan clan)
 	{
 		if (!_clanHall.containsKey(chId))
@@ -193,7 +209,10 @@ public final class ClanHallManager
 		_clanHall.get(chId).setOwner(clan);
 	}
 	
-	/** Get Clan Hall by Id */
+	/**
+	 * @param clanHallId 
+	 * @return Clan Hall by Id
+	 */
 	public final ClanHall getClanHallById(int clanHallId)
 	{
 		return _allClanHalls.get(clanHallId);
@@ -203,9 +222,13 @@ public final class ClanHallManager
 	{
 		return _allAuctionableClanHalls.get(clanHallId);
 	}
-
 	
-	/** Get Clan Hall by x,y,z */
+	/**
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @return Clan Hall by x,y,z 
+	 */
 	public final ClanHall getClanHall(int x, int y, int z)
 	{
 		for (ClanHall temp : getAllClanHalls().values())
@@ -252,7 +275,10 @@ public final class ClanHallManager
 		return null;
 	}
 	
-	/** Get Clan Hall by Owner */
+	/**
+	 * @param clan 
+	 * @return Clan Hall by Owner
+	 */
 	public final AuctionableHall getClanHallByOwner(L2Clan clan)
 	{
 		for (Map.Entry<Integer, AuctionableHall> ch : _clanHall.entrySet())

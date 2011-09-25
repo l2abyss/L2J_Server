@@ -35,7 +35,7 @@ public class L2CastleWyvernManagerInstance extends L2WyvernManagerInstance
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.model.actor.instance.L2WyvernManagerInstance#isInSiege(com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
+	 * @see com.l2jserver.gameserver.model.actor.instance.L2WyvernManagerInstance#isInSiege()
 	 */
 	@Override
 	public boolean isInSiege()

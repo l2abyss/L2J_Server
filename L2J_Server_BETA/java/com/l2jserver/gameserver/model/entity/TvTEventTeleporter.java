@@ -30,12 +30,11 @@ public class TvTEventTeleporter implements Runnable
 	private boolean _adminRemove = false;
 	
 	/**
-	 * Initialize the teleporter and start the delayed task<br><br>
-	 *
-	 * @param playerInstance as L2PcInstance<br>
-	 * @param coordinates as int[]<br>
-	 * @param fastShedule as boolean<br>
-	 * @param adminRemove as boolean<br>
+	 * Initialize the teleporter and start the delayed task.
+	 * @param playerInstance
+	 * @param coordinates
+	 * @param fastSchedule
+	 * @param adminRemove
 	 */
 	public TvTEventTeleporter(L2PcInstance playerInstance, int[] coordinates, boolean fastSchedule, boolean adminRemove)
 	{
@@ -56,7 +55,7 @@ public class TvTEventTeleporter implements Runnable
 	 * 4. Teleport the player<br>
 	 * 5. Broadcast status and user info<br><br>
 	 *
-	 * @see java.lang.Runnable#run()<br>
+	 * @see java.lang.Runnable#run()
 	 */
 	public void run()
 	{

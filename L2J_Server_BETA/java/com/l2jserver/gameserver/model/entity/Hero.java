@@ -1040,7 +1040,7 @@ public class Hero
 	
 	/**
 	 * Set new hero message for hero
-	 * @param charId character objid
+	 * @param player the player instance
 	 * @param message String to set
 	 */
 	public void setHeroMessage(L2PcInstance player, String message)

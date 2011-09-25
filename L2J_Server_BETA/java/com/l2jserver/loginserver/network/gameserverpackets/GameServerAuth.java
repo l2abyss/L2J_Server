@@ -55,6 +55,7 @@ public class GameServerAuth extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
+	 * @param server 
 	 */
 	public GameServerAuth(byte[] decrypt, GameServerThread server)
 	{

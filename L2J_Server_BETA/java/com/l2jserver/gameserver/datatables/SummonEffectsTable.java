@@ -87,7 +87,9 @@ public class SummonEffectsTable
 		}
 	}
 	
-	/** Common **/
+	/**
+	 * @return
+	 */
 	public static SummonEffectsTable getInstance()
 	{
 		return SingletonHolder._instance;

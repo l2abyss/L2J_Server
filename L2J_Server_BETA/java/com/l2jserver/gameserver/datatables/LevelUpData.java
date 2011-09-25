@@ -101,7 +101,7 @@ public class LevelUpData
 	}
 	
 	/**
-	 * @param template id
+	 * @param classId
 	 * @return
 	 */
 	public L2LvlupData getTemplate(int classId)

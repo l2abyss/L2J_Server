@@ -44,7 +44,9 @@ public class TradeController
 	private int _nextListId;
 	private Map<Integer, L2TradeList> _lists = new FastMap<Integer, L2TradeList>();
 	
-	/** Task launching the function for restore count of Item (Clan Hall) */
+	//**
+	// * Task launching the function for restore count of Item (Clan Hall) 
+	// */
 	/*public class RestoreCount implements Runnable
 	{
 		private int _timer;

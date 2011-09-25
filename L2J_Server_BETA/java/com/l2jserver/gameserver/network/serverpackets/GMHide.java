@@ -27,7 +27,7 @@ public class GMHide extends L2GameServerPacket
 	
 	
 	/**
-	 * @param _mode (0 = display windows, 1 = hide windows)
+	 * @param mode (0 = display windows, 1 = hide windows)
 	 */
 	public GMHide(int mode)
 	{
@@ -42,8 +42,8 @@ public class GMHide extends L2GameServerPacket
 		writeD(_mode);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see  com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

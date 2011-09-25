@@ -24,7 +24,7 @@ public class ShowPCCafeCouponShowUI extends L2GameServerPacket
 	private static final String _S__FE_43_SHOWPCCAFECOUPONSHOWUI = "[S] FE:44 ShowPCCafeCouponShowUI";
 	
 	/**
-	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()
@@ -34,7 +34,7 @@ public class ShowPCCafeCouponShowUI extends L2GameServerPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

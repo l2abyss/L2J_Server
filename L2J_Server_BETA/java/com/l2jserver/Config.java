@@ -1091,7 +1091,7 @@ public final class Config
 	/**
 	 * This class initializes all global variables for configuration.<br>
 	 * If the key doesn't appear in properties file, a default value is set by this class.
-	 * @see CONFIGURATION_FILE (properties file) for configuring your server.
+	 * {@link #CONFIGURATION_FILE} (properties file) for configuring your server.
 	 */
 	public static void load()
 	{
@@ -3048,7 +3048,6 @@ public final class Config
 	 * @param pName (String) : name of the parameter to change
 	 * @param pValue (String) : new value of the parameter
 	 * @return boolean : true if modification has been made
-	 * @link useAdminCommand
 	 */
 	public static boolean setParameterValue(String pName, String pValue)
 	{
@@ -3446,10 +3445,9 @@ public final class Config
 	
 	/**
 	 * Save hexadecimal ID of the server in the L2Properties file.
-	 * @param string (String) : hexadecimal ID of the server to store
-	 * @see HEXID_FILE
-	 * @see saveHexid(String string, String fileName)
-	 * @link LoginServerThread
+	 * {@link #HEXID_FILE}
+	 * @param serverId
+	 * @param string hexadecimal ID of the server to store
 	 */
 	public static void saveHexid(int serverId, String string)
 	{
@@ -3458,6 +3456,7 @@ public final class Config
 	
 	/**
 	 * Save hexadecimal ID of the server in the L2Properties file.
+	 * @param serverId 
 	 * @param hexId (String) : hexadecimal ID of the server to store
 	 * @param fileName (String) : name of the L2Properties file
 	 */
@@ -3484,6 +3483,7 @@ public final class Config
 	
 	/**
 	 * Loads flood protector configurations.
+	 * @param properties 
 	 */
 	private static void loadFloodProtectorConfigs(final L2Properties properties)
 	{
@@ -3653,6 +3653,8 @@ public final class Config
 	/**
 	 * itemId1,itemNumber1;itemId2,itemNumber2...
 	 * to the int[n][2] = [itemId1][itemNumber1],[itemId2][itemNumber2]...
+	 * @param line 
+	 * @return 
 	 */
 	private static int[][] parseItemsList(String line)
 	{

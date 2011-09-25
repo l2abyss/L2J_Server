@@ -146,8 +146,6 @@ public final class RequestJoinParty extends L2GameClientPacket
 	}
 	
 	/**
-	 * @param client
-	 * @param itemDistribution
 	 * @param target
 	 * @param requestor
 	 */
@@ -195,8 +193,6 @@ public final class RequestJoinParty extends L2GameClientPacket
 	
 	
 	/**
-	 * @param client
-	 * @param itemDistribution
 	 * @param target
 	 * @param requestor
 	 */

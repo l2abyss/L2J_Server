@@ -34,8 +34,10 @@ import com.l2jserver.util.network.BaseRecievePacket;
 public class BlowFishKey extends BaseRecievePacket
 {
 	protected static final Logger _log = Logger.getLogger(BlowFishKey.class.getName());
+	
 	/**
 	 * @param decrypt
+	 * @param server 
 	 */
 	public BlowFishKey(byte[] decrypt, GameServerThread server)
 	{

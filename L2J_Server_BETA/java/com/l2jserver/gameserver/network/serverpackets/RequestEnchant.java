@@ -24,7 +24,7 @@ public class RequestEnchant extends L2GameServerPacket
 	private static final String _S__FE_81_REQUESTENCHANT = "[S] FE:81 RequestEnchant";
 	
 	/**
-	 * 
+	 * @param value 
 	 */
 	public RequestEnchant(int value)
 	{

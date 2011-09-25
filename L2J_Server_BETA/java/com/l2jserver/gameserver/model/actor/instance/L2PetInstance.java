@@ -656,11 +656,12 @@ public class L2PetInstance extends L2Summon
 	
 	/**
 	 * Transfers item to another inventory
-	 * @param process : String Identifier of process triggering this action
-	 * @param itemId : int Item Identifier of the item to be transfered
-	 * @param count : int Quantity of items to be transfered
-	 * @param actor : L2PcInstance Player requesting the item transfer
-	 * @param reference : L2Object Object referencing current action like NPC selling item or previous item in transformation
+	 * @param process string identifier of process triggering this action
+	 * @param objectId Item Identifier of the item to be transfered
+	 * @param count Quantity of items to be transfered
+	 * @param target 
+	 * @param actor the player requesting the item transfer
+	 * @param reference Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the new item or the updated item in inventory
 	 */
 	public L2ItemInstance transferItem(String process, int objectId, long count, Inventory target, L2PcInstance actor, L2Object reference)
@@ -696,7 +697,8 @@ public class L2PetInstance extends L2Summon
 	
 	/**
 	 * Remove the Pet from DB and its associated item from the player inventory
-	 * @param owner The owner from whose invenory we should delete the item
+	 * @param owner The owner from whose inventory we should delete the item
+	 * @param evolve 
 	 */
 	public void destroyControlItem(L2PcInstance owner, boolean evolve)
 	{
@@ -1136,6 +1138,7 @@ public class L2PetInstance extends L2Summon
 	
 	/**
 	 * Restore the specified % of experience this L2PetInstance has lost.<BR><BR>
+	 * @param restorePercent 
 	 */
 	public void restoreExp(double restorePercent)
 	{

@@ -331,9 +331,8 @@ public class L2Attackable extends L2Npc
 	 * Call the L2Character constructor to set the _template of the L2Attackable (copy skills from template to object and link _calculators to NPC_STD_CALCULATOR)
 	 * Set the name of the L2Attackable
 	 * Create a RandomAnimation Task that will be launched after the calculated delay if the server allow it
-	 *
-	 * @param objectId Identifier of the object to initialized
-	 * @param L2NpcTemplate Template to apply to the NPC
+	 * @param objectId identifier of the object initialized.
+	 * @param template the template to apply to the NPC.
 	 */
 	public L2Attackable(int objectId, L2NpcTemplate template)
 	{
@@ -439,10 +438,11 @@ public class L2Attackable extends L2Npc
 	
 	/**
 	 * Reduce the current HP of the L2Attackable, update its _aggroList and launch the doDie Task if necessary.
-	 *
-	 * @param i The HP decrease value
+	 * @param damage The HP decrease value
 	 * @param attacker The L2Character who attacks
 	 * @param awake The awake state (If True : stop sleeping)
+	 * @param isDOT
+	 * @param skill
 	 */
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
@@ -903,7 +903,7 @@ public class L2Attackable extends L2Npc
 	 *
 	 * @param attacker The L2Character that gave damages to this L2Attackable
 	 * @param damage The number of damages given by the attacker L2Character
-	 *
+	 * @param skill 
 	 */
 	public void addDamage(L2Character attacker, int damage, L2Skill skill)
 	{
@@ -1043,6 +1043,7 @@ public class L2Attackable extends L2Npc
 	
 	/**
 	 * Clears _aggroList hate of the L2Character without removing from the list.
+	 * @param target 
 	 */
 	public void stopHating(L2Character target)
 	{
@@ -1054,7 +1055,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return the most hated L2Character of the L2Attackable _aggroList.
+	 * @return the most hated L2Character of the L2Attackable _aggroList.
 	 */
 	public L2Character getMostHated()
 	{
@@ -1064,7 +1065,7 @@ public class L2Attackable extends L2Npc
 		L2Character mostHated = null;
 		int maxHate = 0;
 		
-		// While Interating over This Map Removing Object is Not Allowed
+		// While Interacting over This Map Removing Object is Not Allowed
 		// Go through the aggroList of the L2Attackable
 		for (AggroInfo ai : getAggroList().values())
 		{
@@ -1082,7 +1083,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return the 2 most hated L2Character of the L2Attackable _aggroList.
+	 * @return the 2 most hated L2Character of the L2Attackable _aggroList.
 	 */
 	public List<L2Character> get2MostHated()
 	{
@@ -1136,9 +1137,8 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return the hate level of the L2Attackable against this L2Character contained in _aggroList.
-	 *
 	 * @param target The L2Character whose hate level must be returned
+	 * @return the hate level of the L2Attackable against this L2Character contained in _aggroList.
 	 */
 	public int getHating(final L2Character target)
 	{
@@ -1176,12 +1176,13 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Calculates quantity of items for specific drop acording to current situation
+	 * Calculates quantity of items for specific drop according to current situation
 	 *
 	 * @param drop The L2DropData count is being calculated for
 	 * @param lastAttacker The L2PcInstance that has killed the L2Attackable
-	 * @param deepBlueDrop Factor to divide the drop chance
 	 * @param levelModifier level modifier in %'s (will be subtracted from drop chance)
+	 * @param isSweep 
+	 * @return 
 	 */
 	private RewardItem calculateRewardItem(L2PcInstance lastAttacker, L2DropData drop, int levelModifier, boolean isSweep)
 	{
@@ -1276,10 +1277,10 @@ public class L2Attackable extends L2Npc
 	 * Calculates quantity of items for specific drop CATEGORY according to current situation
 	 * Only a max of ONE item from a category is allowed to be dropped.
 	 *
-	 * @param drop The L2DropData count is being calculated for
 	 * @param lastAttacker The L2PcInstance that has killed the L2Attackable
-	 * @param deepBlueDrop Factor to divide the drop chance
+	 * @param categoryDrops 
 	 * @param levelModifier level modifier in %'s (will be subtracted from drop chance)
+	 * @return 
 	 */
 	private RewardItem calculateCategorizedRewardItem(L2PcInstance lastAttacker, L2DropCategory categoryDrops, int levelModifier)
 	{
@@ -1412,6 +1413,7 @@ public class L2Attackable extends L2Npc
 	 * Calculates the level modifier for drop
 	 *
 	 * @param lastAttacker The L2PcInstance that has killed the L2Attackable
+	 * @return 
 	 */
 	private int calculateLevelModifierForDrop(L2PcInstance lastAttacker)
 	{
@@ -1581,8 +1583,8 @@ public class L2Attackable extends L2Npc
 	 * Create this or these L2ItemInstance corresponding to each Item Identifier dropped
 	 * If the autoLoot mode is actif and if the L2Character that has killed the L2Attackable is a L2PcInstance, Give the item(s) to the L2PcInstance that has killed the L2Attackable
 	 * If the autoLoot mode isn't actif or if the L2Character that has killed the L2Attackable is not a L2PcInstance, add this or these item(s) in the world as a visible object at the position where mob was last
-	 *
-	 * @param lastAttacker The L2Character that has killed the L2Attackable
+	 * @param npcTemplate
+	 * @param mainDamageDealer
 	 */
 	public void doItemDrop(L2NpcTemplate npcTemplate, L2Character mainDamageDealer)
 	{
@@ -1720,7 +1722,7 @@ public class L2Attackable extends L2Npc
 	 * Concept:
 	 * During a Special Event all L2Attackable can drop extra Items.
 	 * Those extra Items are defined in the table allNpcDateDrops of the EventDroplist.
-	 * Each Special Event has a start and end date to stop to drop extra Items automaticaly.
+	 * Each Special Event has a start and end date to stop to drop extra Items automatically.
 	 *
 	 * Actions: <I>If an extra drop must be generated</I>
 	 * Get an Item Identifier (random) from the DateDrop Item table of this Event
@@ -1762,6 +1764,9 @@ public class L2Attackable extends L2Npc
 	
 	/**
 	 * Drop reward item.
+	 * @param mainDamageDealer 
+	 * @param item 
+	 * @return 
 	 */
 	public L2ItemInstance dropItem(L2PcInstance mainDamageDealer, RewardItem item)
 	{
@@ -1773,7 +1778,7 @@ public class L2Attackable extends L2Npc
 			// Randomize drop position
 			int newX = getX() + Rnd.get(randDropLim * 2 + 1) - randDropLim;
 			int newY = getY() + Rnd.get(randDropLim * 2 + 1) - randDropLim;
-			int newZ = Math.max(getZ(), mainDamageDealer.getZ()) + 20; // TODO: temp hack, do somethign nicer when we have geodatas
+			int newZ = Math.max(getZ(), mainDamageDealer.getZ()) + 20; // TODO: temp hack, do something nicer when we have geodatas
 			
 			if (ItemTable.getInstance().getTemplate(item.getItemId()) != null)
 			{
@@ -1806,7 +1811,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return the active weapon of this L2Attackable (= null).
+	 * @return the active weapon of this L2Attackable (= null).
 	 */
 	public L2ItemInstance getActiveWeapon()
 	{
@@ -1814,7 +1819,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return True if the _aggroList of this L2Attackable is Empty.
+	 * @return True if the _aggroList of this L2Attackable is Empty.
 	 */
 	public boolean noTarget()
 	{
@@ -1822,9 +1827,8 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return True if the _aggroList of this L2Attackable contains the L2Character.
-	 *
 	 * @param player The L2Character searched in the _aggroList of the L2Attackable
+	 * @return True if the _aggroList of this L2Attackable contains the L2Character.
 	 */
 	public boolean containsTarget(L2Character player)
 	{
@@ -1845,7 +1849,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return True if a Dwarf use Sweep on the L2Attackable and if item can be spoiled.
+	 * @return True if a Dwarf use Sweep on the L2Attackable and if item can be spoiled.
 	 */
 	public boolean isSweepActive()
 	{
@@ -1869,7 +1873,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return table containing all L2ItemInstance that can be spoiled.
+	 * @return table containing all L2ItemInstance that can be spoiled.
 	 */
 	public synchronized RewardItem[] takeSweep()
 	{
@@ -1879,7 +1883,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return table containing all L2ItemInstance that can be harvested.
+	 * @return table containing all L2ItemInstance that can be harvested.
 	 */
 	public synchronized RewardItem[] takeHarvest()
 	{
@@ -1889,7 +1893,8 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * @param target the spoiled monster.
+	 * @param attacker the player to validate.
+	 * @param time the time to check.
 	 * @param sendMessage if {@code true} will send a message of corpse too old.
 	 * @return {@code true} if the corpse isn't too old.
 	 */
@@ -1980,7 +1985,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return True if the L2Attackable was hit by an over-hit enabled skill.
+	 * @return True if the L2Attackable was hit by an over-hit enabled skill.
 	 */
 	public boolean isOverhit()
 	{
@@ -1996,7 +2001,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return True if the L2Attackable had his soul absorbed.
+	 * @return True if the L2Attackable had his soul absorbed.
 	 */
 	public boolean isAbsorbed()
 	{
@@ -2014,6 +2019,7 @@ public class L2Attackable extends L2Npc
 	 * = 2 - "the crystal resonates because you got more than 1 crystal on you";
 	 * = 3 - "the crystal cannot absorb the soul because the mob level is too low";
 	 * = 4 - "the crystal successfuly absorbed the soul";
+	 * @param attacker 
 	 */
 	public void addAbsorber(L2PcInstance attacker)
 	{
@@ -2052,7 +2058,7 @@ public class L2Attackable extends L2Npc
 	 *
 	 * @param diff The difference of level between attacker (L2PcInstance, L2SummonInstance or L2Party) and the L2Attackable
 	 * @param damage The damages given by the attacker (L2PcInstance, L2SummonInstance or L2Party)
-	 *
+	 * @return 
 	 */
 	private int[] calculateExpAndSp(int diff, int damage)
 	{
@@ -2149,7 +2155,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return True if this L2NpcInstance has drops that can be sweeped.<BR><BR>
+	 * @return True if this L2NpcInstance has drops that can be sweeped.
 	 */
 	public boolean isSpoil()
 	{
@@ -2158,6 +2164,7 @@ public class L2Attackable extends L2Npc
 	
 	/**
 	 * Set the spoil state of this L2NpcInstance.<BR><BR>
+	 * @param isSpoil 
 	 */
 	public void setSpoil(boolean isSpoil)
 	{
@@ -2176,6 +2183,7 @@ public class L2Attackable extends L2Npc
 	
 	/**
 	 * Sets state of the mob to seeded. Paramets needed to be set before.
+	 * @param seeder 
 	 */
 	public void setSeeded(L2PcInstance seeder)
 	{
@@ -2432,7 +2440,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return leader of this minion or null.
+	 * @return leader of this minion or null.
 	 */
 	public L2Attackable getLeader()
 	{
