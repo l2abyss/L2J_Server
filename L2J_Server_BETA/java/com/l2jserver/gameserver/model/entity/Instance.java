@@ -4,7 +4,6 @@ import gnu.trove.TIntHashSet;
 import gnu.trove.TIntProcedure;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
@@ -380,7 +379,7 @@ public class Instance
 		_doors = null;
 	}
 	
-	public void loadInstanceTemplate(String filename) throws FileNotFoundException
+	public void loadInstanceTemplate(String filename)
 	{
 		Document doc = null;
 		File xml = new File(Config.DATAPACK_ROOT, "data/instances/" + filename);

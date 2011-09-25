@@ -15,8 +15,6 @@
 package com.l2jserver.dbinstaller;
 
 import java.awt.HeadlessException;
-import java.io.IOException;
-
 import javax.swing.UIManager;
 
 import com.l2jserver.dbinstaller.console.DBInstallerConsole;
@@ -31,7 +29,7 @@ import com.l2jserver.dbinstaller.gui.DBConfigGUI;
  */
 public class LauncherCS
 {
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args)
 	{
 		String mode = "l2jcs";
 		String dir = "../sql/community/";

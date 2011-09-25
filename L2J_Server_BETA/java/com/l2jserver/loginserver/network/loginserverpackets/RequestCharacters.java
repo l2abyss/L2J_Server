@@ -14,8 +14,6 @@
  */
 package com.l2jserver.loginserver.network.loginserverpackets;
 
-import java.io.IOException;
-
 import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
@@ -34,7 +32,7 @@ public class RequestCharacters extends BaseSendablePacket
 	 * @see com.l2jserver.util.network.BaseSendablePacket#getContent()
 	 */
 	@Override
-	public byte[] getContent() throws IOException
+	public byte[] getContent()
 	{
 		return getBytes();
 	}

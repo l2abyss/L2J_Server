@@ -88,7 +88,7 @@ public class MapRegionManager
 		}
 	}
 	
-	private static void load() throws Exception
+	private static void load()
 	{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setValidating(false);

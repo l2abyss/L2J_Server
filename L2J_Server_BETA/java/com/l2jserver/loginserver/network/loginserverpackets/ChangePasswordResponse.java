@@ -14,10 +14,7 @@
  */
 package com.l2jserver.loginserver.network.loginserverpackets;
 
-import java.io.IOException;
-
 import com.l2jserver.util.network.BaseSendablePacket;
-
 
 /**
  * @author Nik
@@ -33,9 +30,8 @@ public class ChangePasswordResponse extends BaseSendablePacket
 	}
 	
 	@Override
-	public byte[] getContent() throws IOException
+	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }
