@@ -245,7 +245,7 @@ public class GameTimeController
 		
 		public void run()
 		{
-			h = (getGameTime() / 60) % 24; // Time in hour
+			h = ((getGameTime() + 29) / 60) % 24; // Time in hour (+ 29 is to round 60)
 			tempIsNight = (h < 6);
 			
 			if (tempIsNight != _isNight)
