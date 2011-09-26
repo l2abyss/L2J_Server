@@ -45,15 +45,23 @@ public abstract class NetConnectionListener extends Thread
 		{
 			_ipBanns = new ArrayList<String>();
 			for (final String ip : _config.TCP_IP_BANN_LIST)
+			{
 				_ipBanns.add(ip);
+			}
 		}
 		else
+		{
 			_ipBanns = null;
+		}
 		
 		if (_config.TCP_FLOOD_PROTECTION_ENABLED)
+		{
 			_floodProtection = new HashMap<String, ForeignConnection>();
+		}
 		else
+		{
 			_floodProtection = null;
+		}
 		
 		if (_config.TCP_EXTERNAL_HOST_ADDRESS.equals("*"))
 		{
@@ -80,7 +88,9 @@ public abstract class NetConnectionListener extends Thread
 				_log.log(Level.INFO, "Received connection: " + connectionAddress);
 				
 				if (_config.TCP_IP_BANN_ENABLED && _ipBanns.contains(connectionAddress))
+				{
 					throw new IOException("IP: " + connectionAddress + " is on TCP_IP_BANN_LIST. Closing connection...");
+				}
 				
 				if (_config.TCP_FLOOD_PROTECTION_ENABLED)
 				{
@@ -89,10 +99,7 @@ public abstract class NetConnectionListener extends Thread
 					if (fConnection != null)
 					{
 						fConnection.connectionNumber += 1;
-						if ((fConnection.connectionNumber > _config.TCP_FAST_CONNECTION_LIMIT
-								&& (System.currentTimeMillis() - fConnection.lastConnection) < _config.TCP_NORMAL_CONNECTION_TIME)
-								|| (System.currentTimeMillis() - fConnection.lastConnection) < _config.TCP_FAST_CONNECTION_TIME
-								|| fConnection.connectionNumber > _config.TCP_MAX_CONNECTION_PER_IP)
+						if (((fConnection.connectionNumber > _config.TCP_FAST_CONNECTION_LIMIT) && ((System.currentTimeMillis() - fConnection.lastConnection) < _config.TCP_NORMAL_CONNECTION_TIME)) || ((System.currentTimeMillis() - fConnection.lastConnection) < _config.TCP_FAST_CONNECTION_TIME) || (fConnection.connectionNumber > _config.TCP_MAX_CONNECTION_PER_IP))
 						{
 							fConnection.lastConnection = System.currentTimeMillis();
 							fConnection.connectionNumber -= 1;
@@ -104,7 +111,9 @@ public abstract class NetConnectionListener extends Thread
 						fConnection.lastConnection = System.currentTimeMillis();
 						
 						if (fConnection.isFlooding)
+						{
 							fConnection.isFlooding = false;
+						}
 						
 						_log.log(Level.FINE, "IP: " + connectionAddress + " is no longer marked as Flooding.");
 					}
@@ -136,7 +145,9 @@ public abstract class NetConnectionListener extends Thread
 				try
 				{
 					if (isInterrupted())
+					{
 						close();
+					}
 				}
 				catch (IOException e1)
 				{
@@ -154,7 +165,9 @@ public abstract class NetConnectionListener extends Thread
 	public final void removeTCPNetConnection(final NetConnection connection) throws IOException
 	{
 		if (!_config.TCP_FLOOD_PROTECTION_ENABLED)
+		{
 			return;
+		}
 		
 		final String connectionAddress = connection.getConnectionAddress();
 		final ForeignConnection fConnection = _floodProtection.get(connectionAddress);
@@ -162,7 +175,9 @@ public abstract class NetConnectionListener extends Thread
 		{
 			fConnection.connectionNumber -= 1;
 			if (fConnection.connectionNumber == 0)
+			{
 				_floodProtection.remove(connectionAddress);
+			}
 		}
 	}
 	

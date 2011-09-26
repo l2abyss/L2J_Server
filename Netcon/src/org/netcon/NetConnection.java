@@ -52,7 +52,9 @@ public abstract class NetConnection extends Thread
 	public final void connect(final Socket remoteConnection) throws IOException
 	{
 		if (isConnected())
+		{
 			throw new IOException("TCP Connect: Allready connected.");
+		}
 		
 		_crypt = INITIAL_CRYPT;
 		
@@ -63,13 +65,15 @@ public abstract class NetConnection extends Thread
 	
 	public final boolean isConnected() throws IOException
 	{
-		return _tcpCon != null && _tcpCon.isConnected();
+		return (_tcpCon != null) && _tcpCon.isConnected();
 	}
 	
 	public final int getConnectionPort() throws IOException
 	{
 		if (!isConnected())
+		{
 			throw new IOException("TCP: Not connected.");
+		}
 		
 		return _tcpCon.getPort();
 	}
@@ -77,43 +81,49 @@ public abstract class NetConnection extends Thread
 	public final String getConnectionAddress() throws IOException
 	{
 		if (!isConnected())
+		{
 			throw new IOException("TCP: Not connected.");
-			
+		}
+		
 		return _tcpCon.getInetAddress().getHostAddress();
 	}
 	
 	protected final byte[] read() throws IOException
 	{
 		if (_tcpCon == null)
+		{
 			throw new IOException("TCP Read: Not initialized.");
+		}
 		
 		if (_tcpCon.isClosed())
+		{
 			throw new IOException("TCP Read: Connection closed.");
+		}
 		
 		final int lengthLo = _tcpIn.read();
 		final int lengthHi = _tcpIn.read();
-		final int length = lengthHi * 256 + lengthLo;
+		final int length = (lengthHi * 256) + lengthLo;
 		
 		if (lengthHi < 0)
+		{
 			throw new IOException("TCP Read: Failed reading.");
+		}
 		
 		final byte[] data = new byte[length - 2];
 		
 		int receivedBytes = 0;
 		int newBytes = 0;
-		int left = length - 2;
-		while ((newBytes != -1) && (receivedBytes < length - 2))
+		
+		while ((newBytes != -1) && (receivedBytes < (length - 2)))
 		{
-			if (receivedBytes == 0)
-				newBytes = this._tcpIn.read(data, 0, left);
-			else
-				newBytes = this._tcpIn.read(data, receivedBytes, left);
-			receivedBytes += newBytes;
-			left -= newBytes;
+			newBytes = _tcpIn.read(data, 0, length - 2);
+			receivedBytes = receivedBytes + newBytes;
 		}
 		
-		if (receivedBytes != length - 2)
+		if (receivedBytes != (length - 2))
+		{
 			throw new IOException("TCP Read: Incomplete Packet recived.");
+		}
 		
 		return decrypt(data);
 	}
@@ -121,10 +131,14 @@ public abstract class NetConnection extends Thread
 	protected final void write(final BaseWritePacket packet) throws IOException
 	{
 		if (_tcpCon == null)
+		{
 			throw new IOException("TCP Write: Not initialized.");
+		}
 		
 		if (_tcpCon.isClosed())
+		{
 			throw new IOException("TCP Write: Connection closed.");
+		}
 		
 		final byte[] data = crypt(packet.getContent());
 		final int len = data.length + 2;
@@ -132,7 +146,7 @@ public abstract class NetConnection extends Thread
 		synchronized (_tcpOut)
 		{
 			_tcpOut.write(len & 0xFF);
-			_tcpOut.write(len >> 8 & 0xFF);
+			_tcpOut.write((len >> 8) & 0xFF);
 			_tcpOut.write(data);
 			_tcpOut.flush();
 		}
@@ -143,7 +157,9 @@ public abstract class NetConnection extends Thread
 		try
 		{
 			if (packet != null)
+			{
 				write(packet);
+			}
 		}
 		finally
 		{
@@ -177,7 +193,9 @@ public abstract class NetConnection extends Thread
 		data = _crypt.decrypt(data);
 		
 		if (!NewCrypt.verifyChecksum(data))
+		{
 			throw new IOException("CRYPT: Incorrect packet checksum.");
+		}
 		
 		return data;
 	}
@@ -189,5 +207,6 @@ public abstract class NetConnection extends Thread
 		return _crypt.crypt(data);
 	}
 	
+	@Override
 	public abstract void run();
 }

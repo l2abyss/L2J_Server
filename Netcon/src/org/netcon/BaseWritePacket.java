@@ -1,97 +1,110 @@
-/*     */ package org.netcon;
-/*     */ 
-/*     */ import java.io.ByteArrayOutputStream;
-/*     */ import java.io.IOException;
-/*     */ 
-/*     */ public abstract class BaseWritePacket
-/*     */ {
-/*     */   private final ByteArrayOutputStream _bao;
-/*     */ 
-/*     */   protected BaseWritePacket()
-/*     */   {
-/*  26 */     this._bao = new ByteArrayOutputStream();
-/*     */   }
-/*     */ 
-/*     */   protected final void writeC(int value)
-/*     */   {
-/*  31 */     this._bao.write(value & 0xFF);
-/*     */   }
-/*     */ 
-/*     */   protected final void writeH(int value)
-/*     */   {
-/*  36 */     this._bao.write(value & 0xFF);
-/*  37 */     this._bao.write(value >> 8 & 0xFF);
-/*     */   }
-/*     */ 
-/*     */   protected final void writeD(int value)
-/*     */   {
-/*  42 */     this._bao.write(value & 0xFF);
-/*  43 */     this._bao.write(value >> 8 & 0xFF);
-/*  44 */     this._bao.write(value >> 16 & 0xFF);
-/*  45 */     this._bao.write(value >> 24 & 0xFF);
-/*     */   }
-/*     */ 
-/*     */   protected final void writeF(double org)
-/*     */   {
-/*  50 */     long value = Double.doubleToRawLongBits(org);
-/*  51 */     this._bao.write((int)(value & 0xFF));
-/*  52 */     this._bao.write((int)(value >> 8 & 0xFF));
-/*  53 */     this._bao.write((int)(value >> 16 & 0xFF));
-/*  54 */     this._bao.write((int)(value >> 24 & 0xFF));
-/*  55 */     this._bao.write((int)(value >> 32 & 0xFF));
-/*  56 */     this._bao.write((int)(value >> 40 & 0xFF));
-/*  57 */     this._bao.write((int)(value >> 48 & 0xFF));
-/*  58 */     this._bao.write((int)(value >> 56 & 0xFF));
-/*     */   }
-/*     */ 
-/*     */   protected final void writeS(String text)
-/*     */   {
-/*     */     try
-/*     */     {
-/*  65 */       if (text != null)
-/*     */       {
-/*  67 */         this._bao.write(text.getBytes("UTF-16LE"));
-/*     */       }
-/*     */     }
-/*     */     catch (Exception e)
-/*     */     {
-/*  72 */       e.printStackTrace();
-/*     */     }
-/*     */ 
-/*  75 */     this._bao.write(0);
-/*  76 */     this._bao.write(0);
-/*     */   }
-/*     */ 
-/*     */   protected final void writeB(byte[] array)
-/*     */   {
-/*     */     try
-/*     */     {
-/*  83 */       this._bao.write(array);
-/*     */     }
-/*     */     catch (IOException e)
-/*     */     {
-/*  87 */       e.printStackTrace();
-/*     */     }
-/*     */   }
-/*     */ 
-/*     */   public final byte[] getContent() throws IOException
-/*     */   {
-/*  93 */     writeD(0);
-/*     */ 
-/*  95 */     int padding = this._bao.size() % 8;
-/*  96 */     if (padding != 0)
-/*     */     {
-/*  98 */       for (int i = padding; i < 8; ++i)
-/*     */       {
-/* 100 */         writeC(0);
-/*     */       }
-/*     */     }
-/*     */ 
-/* 104 */     return this._bao.toByteArray();
-/*     */   }
-/*     */ }
-
-/* Location:           D:\_l2j\libs\netcon.jar
- * Qualified Name:     org.netcon.BaseWritePacket
- * JD-Core Version:    0.5.3
+/*
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.netcon;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+public abstract class BaseWritePacket
+{
+	private final ByteArrayOutputStream _bao;
+	
+	protected BaseWritePacket()
+	{
+		_bao = new ByteArrayOutputStream();
+	}
+	
+	protected final void writeC(final int value)
+	{
+		_bao.write(value & 0xFF);
+	}
+	
+	protected final void writeH(final int value)
+	{
+		_bao.write(value & 0xFF);
+		_bao.write((value >> 8) & 0xFF);
+	}
+	
+	protected final void writeD(final int value)
+	{
+		_bao.write(value & 0xFF);
+		_bao.write((value >> 8) & 0xFF);
+		_bao.write((value >> 16) & 0xFF);
+		_bao.write((value >> 24) & 0xFF);
+	}
+	
+	protected final void writeF(final double value)
+	{
+		writeQ(Double.doubleToRawLongBits(value));
+	}
+	
+	protected final void writeQ(final long value)
+	{
+		_bao.write((byte) (value & 0xFF));
+		_bao.write((byte) ((value >> 8) & 0xFF));
+		_bao.write((byte) ((value >> 16) & 0xFF));
+		_bao.write((byte) ((value >> 24) & 0xFF));
+		_bao.write((byte) ((value >> 32) & 0xFF));
+		_bao.write((byte) ((value >> 40) & 0xFF));
+		_bao.write((byte) ((value >> 48) & 0xFF));
+		_bao.write((byte) ((value >> 56) & 0xFF));
+	}
+	
+	protected final void writeS(final String text)
+	{
+		try
+		{
+			if (text != null)
+			{
+				_bao.write(text.getBytes("UTF-16LE"));
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		_bao.write(0);
+		_bao.write(0);
+	}
+	
+	protected final void writeB(final byte[] array)
+	{
+		try
+		{
+			_bao.write(array);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public final byte[] getContent() throws IOException
+	{
+		writeD(0x00);
+		
+		int padding = _bao.size() % 8;
+		if (padding != 0)
+		{
+			for (int i = padding; i < 8; i++)
+			{
+				writeC(0x00);
+			}
+		}
+		
+		return _bao.toByteArray();
+	}
+}

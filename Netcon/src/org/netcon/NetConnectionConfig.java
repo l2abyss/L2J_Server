@@ -21,50 +21,52 @@ import java.util.Properties;
 
 public final class NetConnectionConfig
 {
-	public NetConnectionConfig (final String configFilePath) throws Exception
+	public NetConnectionConfig(final String configFilePath) throws Exception
 	{
-		final Properties settings				= new Properties();
-		final InputStream is					= new FileInputStream(new File(configFilePath));
+		final Properties settings = new Properties();
+		final InputStream is = new FileInputStream(new File(configFilePath));
 		settings.load(is);
-        is.close();
-        
-        INITIAL_CRYPT							= settings.getProperty("InitialCrypt", "_;v.]05-31!|+-%xT!^[$\00");
-        
-        TCP_EXTERNAL_HOST_ADDRESS				= settings.getProperty("ExternalHostAddress", "*");
-        TCP_EXTERNAL_PORT						= Integer.parseInt(settings.getProperty("ExternalPort", "0"));
-        TCP_CONNECTION_QUEUE					= Integer.parseInt(settings.getProperty("ConnectionQueue", "50"));
-        
-        TCP_FLOOD_PROTECTION_ENABLED			= Boolean.parseBoolean(settings.getProperty("FloodProtectionEnabled", "False"));
-        TCP_FAST_CONNECTION_LIMIT				= Integer.parseInt(settings.getProperty("FastConnectionLimit", "15"));
-        TCP_FAST_CONNECTION_TIME				= Integer.parseInt(settings.getProperty("FastConnectionTime", "350"));
-        TCP_NORMAL_CONNECTION_TIME				= Integer.parseInt(settings.getProperty("NormalConnectionTime", "700"));
-        TCP_MAX_CONNECTION_PER_IP				= Integer.parseInt(settings.getProperty("MaxConnectionperIP", "50"));
-        TCP_IP_BANN_ENABLED						= Boolean.parseBoolean(settings.getProperty("IPBannEnabled", "False"));
-        TCP_IP_BANN_LIST						= settings.getProperty("IPBannList", "").split(":");
-        
-        TCP_SEND_BUFFER_SIZE					= Integer.parseInt(settings.getProperty("SendBufferSize", "8192"));
-        TCP_RECEIVE_BUFFER_SIZE					= Integer.parseInt(settings.getProperty("ReceiveBufferSize", "8192"));
-        
-        if (TCP_SEND_BUFFER_SIZE < 1024)
+		is.close();
+		
+		INITIAL_CRYPT = settings.getProperty("InitialCrypt", "_;v.]05-31!|+-%xT!^[$\00");
+		
+		TCP_EXTERNAL_HOST_ADDRESS = settings.getProperty("ExternalHostAddress", "*");
+		TCP_EXTERNAL_PORT = Integer.parseInt(settings.getProperty("ExternalPort", "0"));
+		TCP_CONNECTION_QUEUE = Integer.parseInt(settings.getProperty("ConnectionQueue", "50"));
+		
+		TCP_FLOOD_PROTECTION_ENABLED = Boolean.parseBoolean(settings.getProperty("FloodProtectionEnabled", "False"));
+		TCP_FAST_CONNECTION_LIMIT = Integer.parseInt(settings.getProperty("FastConnectionLimit", "15"));
+		TCP_FAST_CONNECTION_TIME = Integer.parseInt(settings.getProperty("FastConnectionTime", "350"));
+		TCP_NORMAL_CONNECTION_TIME = Integer.parseInt(settings.getProperty("NormalConnectionTime", "700"));
+		TCP_MAX_CONNECTION_PER_IP = Integer.parseInt(settings.getProperty("MaxConnectionperIP", "50"));
+		TCP_IP_BANN_ENABLED = Boolean.parseBoolean(settings.getProperty("IPBannEnabled", "False"));
+		TCP_IP_BANN_LIST = settings.getProperty("IPBannList", "").split(":");
+		
+		TCP_SEND_BUFFER_SIZE = Integer.parseInt(settings.getProperty("SendBufferSize", "8192"));
+		TCP_RECEIVE_BUFFER_SIZE = Integer.parseInt(settings.getProperty("ReceiveBufferSize", "8192"));
+		
+		if (TCP_SEND_BUFFER_SIZE < 1024)
+		{
 			throw new IllegalArgumentException("Init: TCP_SEND_BUFFER_SIZE < 1024");
+		}
 		
 		if (TCP_RECEIVE_BUFFER_SIZE < 1024)
+		{
 			throw new IllegalArgumentException("Init: TCP_RECEIVE_BUFFER_SIZE < 2048");
+		}
 	}
 	
-	
 	/**
-	 * ##################################################
-	 * Crypt
+	 * ##################################################<br>
+	 * Crypt<br>
 	 * ##################################################
 	 */
 	
 	public final String INITIAL_CRYPT;
 	
-	
 	/**
-	 * ##################################################
-	 * TCP Server start
+	 * ##################################################<br>
+	 * TCP Server start<br>
 	 * ##################################################
 	 */
 	
@@ -86,15 +88,14 @@ public final class NetConnectionConfig
 	/** TCP Max connection per IP 50 */
 	public final int TCP_MAX_CONNECTION_PER_IP;
 	
-	/** TCP IP ban default false*/
+	/** TCP IP ban default false */
 	public final boolean TCP_IP_BANN_ENABLED;
-	/** TCP IP ban list default empty*/
+	/** TCP IP ban list default empty */
 	public final String[] TCP_IP_BANN_LIST;
 	
-	
 	/**
-	 * ##################################################
-	 * TCP Client start
+	 * ##################################################<br>
+	 * TCP Client start<br>
 	 * ##################################################
 	 */
 	
