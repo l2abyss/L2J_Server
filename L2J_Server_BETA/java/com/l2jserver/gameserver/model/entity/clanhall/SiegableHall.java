@@ -206,6 +206,11 @@ public final class SiegableHall extends ClanHall
 		return getSiege().checkIsAttacker(clan);
 	}
 	
+	public SiegeStatus getSiegeStatus()
+	{
+		return _status;
+	}
+	
 	public final boolean isRegistering() 
 	{ 
 		return _status == SiegeStatus.REGISTERING; 
