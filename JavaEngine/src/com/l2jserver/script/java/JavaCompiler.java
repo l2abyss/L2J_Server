@@ -21,12 +21,6 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * JavaCompiler.java
- * @author A. Sundararajan
- */
-
 package com.l2jserver.script.java;
 
 import java.io.IOException;
@@ -39,91 +33,101 @@ import java.util.Map;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
 
 import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
 
 /**
  * Simple interface to Java compiler using JSR 199 Compiler API.
+ * @author A. Sundararajan
  */
-public class JavaCompiler {
-
-	private javax.tools.JavaCompiler tool;
-	private StandardJavaFileManager stdManager;
-
-	public JavaCompiler() {
+public class JavaCompiler
+{
+	
+	private final javax.tools.JavaCompiler tool;
+	
+	public JavaCompiler()
+	{
 		tool = new EclipseCompiler();
-		stdManager = tool.getStandardFileManager(null, null, null);
 	}
-
-	public Map<String, byte[]> compile(String source, String fileName) {
+	
+	public Map<String, byte[]> compile(String source, String fileName)
+	{
 		PrintWriter err = new PrintWriter(System.err);
 		return compile(source, fileName, err, null, null);
 	}
-
-	public Map<String, byte[]> compile(String fileName, String source, Writer err) {
+	
+	public Map<String, byte[]> compile(String fileName, String source, Writer err)
+	{
 		return compile(fileName, source, err, null, null);
 	}
-
-	public Map<String, byte[]> compile(String fileName, String source, Writer err, String sourcePath) {
+	
+	public Map<String, byte[]> compile(String fileName, String source, Writer err, String sourcePath)
+	{
 		return compile(fileName, source, err, sourcePath, null);
 	}
-
+	
 	/**
 	 * compile given String source and return bytecodes as a Map.
-	 *
 	 * @param fileName source fileName to be used for error messages etc.
 	 * @param source Java source as String
 	 * @param err error writer where diagnostic messages are written
 	 * @param sourcePath location of additional .java source files
 	 * @param classPath location of additional .class files
 	 */
-	public Map<String, byte[]> compile(String fileName, String source, Writer err, String sourcePath, String classPath) {
+	public Map<String, byte[]> compile(String fileName, String source, Writer err, String sourcePath, String classPath)
+	{
 		// to collect errors, warnings etc.
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
-
+		
 		// create a new memory JavaFileManager
 		MemoryJavaFileManager manager = new MemoryJavaFileManager();
-
+		
 		// prepare the compilation unit
 		List<JavaFileObject> compUnits = new ArrayList<JavaFileObject>(1);
 		compUnits.add(MemoryJavaFileManager.makeStringSource(fileName, source));
-
+		
 		// javac options
 		List<String> options = new ArrayList<String>();
 		options.add("-Xlint:all");
 		options.add("-g");
 		options.add("-deprecation");
-		options.add("-1.6");
-		if (sourcePath != null) {
+		options.add("-1.7");
+		if (sourcePath != null)
+		{
 			options.add("-sourcepath");
 			options.add(sourcePath);
 		}
-		if (classPath != null) {
+		if (classPath != null)
+		{
 			options.add("-classpath");
 			options.add(classPath);
 		}
-
+		
 		// create a compilation task
-		javax.tools.JavaCompiler.CompilationTask task = tool.getTask(err, manager, diagnostics, options, null, compUnits);
-
-		if (task.call() == false) {
+		CompilationTask task = tool.getTask(err, manager, diagnostics, options, null, compUnits);
+		
+		if (task.call() == false)
+		{
 			PrintWriter perr = new PrintWriter(err);
-			for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
+			for (Diagnostic<?> diagnostic : diagnostics.getDiagnostics())
+			{
 				perr.println(diagnostic.getMessage(Locale.getDefault()));
 			}
 			perr.flush();
 			return null;
 		}
-
+		
 		Map<String, byte[]> classBytes = manager.getClassBytes();
-		try {
+		try
+		{
 			manager.close();
 		}
-		catch (IOException exp) {
+		catch (IOException exp)
+		{
+			//
 		}
-
 		return classBytes;
 	}
 }

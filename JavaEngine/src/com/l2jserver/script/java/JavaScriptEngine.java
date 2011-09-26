@@ -21,12 +21,6 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * JavaScriptEngine.java
- * @author A. Sundararajan
- */
-
 package com.l2jserver.script.java;
 
 import java.io.IOException;
@@ -52,39 +46,49 @@ import javax.script.SimpleBindings;
 
 /**
  * This is script engine for Java programming language.
+ * @author A. Sundararajan
  */
-public class JavaScriptEngine extends AbstractScriptEngine implements Compilable {
-
+public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
+{
+	
 	// Java compiler
-	private JavaCompiler compiler;
-
-	public JavaScriptEngine() {
+	private final JavaCompiler compiler;
+	
+	public JavaScriptEngine()
+	{
 		compiler = new JavaCompiler();
 	}
-
+	
 	// my factory, may be null
 	private ScriptEngineFactory factory;
-
+	
 	// my implementation for CompiledScript
-	private static class JavaCompiledScript extends CompiledScript implements Serializable {
+	private static class JavaCompiledScript extends CompiledScript implements Serializable
+	{
 		private static final long serialVersionUID = 1L;
 		private final transient JavaScriptEngine _engine;
-		private transient Class _class;
+		private transient Class<?> _class;
 		private final Map<String, byte[]> _classBytes;
 		private final String _classPath;
-
-		JavaCompiledScript(JavaScriptEngine engine, Map<String, byte[]> classBytes, String classPath) {
+		
+		JavaCompiledScript(JavaScriptEngine engine, Map<String, byte[]> classBytes, String classPath)
+		{
 			_engine = engine;
 			_classBytes = classBytes;
 			_classPath = classPath;
 		}
-
-		public ScriptEngine getEngine() {
+		
+		@Override
+		public ScriptEngine getEngine()
+		{
 			return _engine;
 		}
-
-		public Object eval(ScriptContext ctx) throws ScriptException {
-			if (_class == null) {
+		
+		@Override
+		public Object eval(ScriptContext ctx) throws ScriptException
+		{
+			if (_class == null)
+			{
 				Map<String, byte[]> classBytesCopy = new HashMap<String, byte[]>();
 				classBytesCopy.putAll(_classBytes);
 				MemoryClassLoader loader = new MemoryClassLoader(classBytesCopy, _classPath, JavaScriptEngine.getParentLoader(ctx));
@@ -93,310 +97,419 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 			return JavaScriptEngine.evalClass(_class, ctx);
 		}
 	}
-
-	public CompiledScript compile(String script) throws ScriptException {
+	
+	@Override
+	public CompiledScript compile(String script) throws ScriptException
+	{
 		return compile(script, context);
 	}
-
-	public CompiledScript compile(Reader reader) throws ScriptException {
+	
+	@Override
+	public CompiledScript compile(Reader reader) throws ScriptException
+	{
 		return compile(readFully(reader));
 	}
-
-	public Object eval(String str, ScriptContext ctx) throws ScriptException {
-		Class clazz = parse(str, ctx);
+	
+	@Override
+	public Object eval(String str, ScriptContext ctx) throws ScriptException
+	{
+		Class<?> clazz = parse(str, ctx);
 		return evalClass(clazz, ctx);
 	}
-
-	public Object eval(Reader reader, ScriptContext ctx) throws ScriptException {
+	
+	@Override
+	public Object eval(Reader reader, ScriptContext ctx) throws ScriptException
+	{
 		return eval(readFully(reader), ctx);
 	}
-
-	public ScriptEngineFactory getFactory() {
-		synchronized (this) {
+	
+	@Override
+	public ScriptEngineFactory getFactory()
+	{
+		synchronized (this)
+		{
 			if (factory == null)
+			{
 				factory = new JavaScriptEngineFactory();
+			}
 		}
 		return factory;
 	}
-
-	public Bindings createBindings() {
+	
+	@Override
+	public Bindings createBindings()
+	{
 		return new SimpleBindings();
 	}
-
-	void setFactory(ScriptEngineFactory factory) {
+	
+	void setFactory(ScriptEngineFactory factory)
+	{
 		this.factory = factory;
 	}
-
+	
 	// Internals only below this point
-
-	private Class parse(String str, ScriptContext ctx) throws ScriptException {
+	
+	private Class<?> parse(String str, ScriptContext ctx) throws ScriptException
+	{
 		String fileName = getFileName(ctx);
 		String sourcePath = getSourcePath(ctx);
 		String classPath = getClassPath(ctx);
-
+		
 		Writer err = ctx.getErrorWriter();
 		if (err == null)
+		{
 			err = new StringWriter();
-
-		Map<String, byte[]> classBytes = compiler.compile(fileName, str, err, sourcePath, classPath);
-
-		if (classBytes == null) {
-			if (err instanceof StringWriter)
-				throw new ScriptException(((StringWriter) err).toString());
-			else
-				throw new ScriptException("compilation failed");
 		}
-
+		
+		Map<String, byte[]> classBytes = compiler.compile(fileName, str, err, sourcePath, classPath);
+		
+		if (classBytes == null)
+		{
+			if (err instanceof StringWriter)
+			{
+				throw new ScriptException(((StringWriter) err).toString());
+			}
+			else
+			{
+				throw new ScriptException("compilation failed");
+			}
+		}
+		
 		// create a ClassLoader to load classes from MemoryJavaFileManager
 		MemoryClassLoader loader = new MemoryClassLoader(classBytes, classPath, getParentLoader(ctx));
 		return parseMain(loader, ctx);
 	}
-
-	private static Class parseMain(MemoryClassLoader loader, ScriptContext ctx) throws ScriptException {
+	
+	private static Class<?> parseMain(MemoryClassLoader loader, ScriptContext ctx) throws ScriptException
+	{
 		String mainClassName = getMainClassName(ctx);
-		if (mainClassName != null) {
-			try {
-				Class clazz = loader.load(mainClassName);
+		if (mainClassName != null)
+		{
+			try
+			{
+				Class<?> clazz = loader.load(mainClassName);
 				Method mainMethod = findMainMethod(clazz);
-				if (mainMethod == null) {
+				if (mainMethod == null)
+				{
 					throw new ScriptException("no main method in " + mainClassName);
 				}
 				return clazz;
 			}
-			catch (ClassNotFoundException cnfe) {
+			catch (ClassNotFoundException cnfe)
+			{
 				cnfe.printStackTrace();
 				throw new ScriptException(cnfe);
 			}
 		}
-
+		
 		// no main class configured - load all compiled classes
-		Iterable<Class> classes;
-		try {
+		Iterable<Class<?>> classes;
+		try
+		{
 			classes = loader.loadAll();
 		}
-		catch (ClassNotFoundException exp) {
+		catch (ClassNotFoundException exp)
+		{
 			throw new ScriptException(exp);
 		}
-
+		
 		// search for class with main method
-		Class c = findMainClass(classes);
-		if (c != null) {
+		Class<?> c = findMainClass(classes);
+		if (c != null)
+		{
 			return c;
 		}
-		else {
+		else
+		{
 			// if class with "main" method, then
 			// return first class
-			Iterator<Class> itr = classes.iterator();
-			if (itr.hasNext()) {
+			Iterator<Class<?>> itr = classes.iterator();
+			if (itr.hasNext())
+			{
 				return itr.next();
 			}
-			else {
+			else
+			{
 				return null;
 			}
 		}
 	}
-
-	private JavaCompiledScript compile(String str, ScriptContext ctx) throws ScriptException {
+	
+	private JavaCompiledScript compile(String str, ScriptContext ctx) throws ScriptException
+	{
 		String fileName = getFileName(ctx);
 		String sourcePath = getSourcePath(ctx);
 		String classPath = getClassPath(ctx);
-
+		
 		Writer err = ctx.getErrorWriter();
 		if (err == null)
+		{
 			err = new StringWriter();
-
-		Map<String, byte[]> classBytes = compiler.compile(fileName, str, err, sourcePath, classPath);
-		if (classBytes == null) {
-			if (err instanceof StringWriter)
-				throw new ScriptException(((StringWriter) err).toString());
-			else
-				throw new ScriptException("compilation failed");
 		}
-
-		return new JavaCompiledScript(this, classBytes, classPath);
-	}
-
-	private static Class findMainClass(Iterable<Class> classes) {
-		// find a public class with public static main method
-		for (Class clazz : classes) {
-			int modifiers = clazz.getModifiers();
-			if (Modifier.isPublic(modifiers)) {
-				Method mainMethod = findMainMethod(clazz);
-				if (mainMethod != null)
-					return clazz;
+		
+		Map<String, byte[]> classBytes = compiler.compile(fileName, str, err, sourcePath, classPath);
+		if (classBytes == null)
+		{
+			if (err instanceof StringWriter)
+			{
+				throw new ScriptException(((StringWriter) err).toString());
+			}
+			else
+			{
+				throw new ScriptException("compilation failed");
 			}
 		}
-
+		
+		return new JavaCompiledScript(this, classBytes, classPath);
+	}
+	
+	private static Class<?> findMainClass(Iterable<Class<?>> classes)
+	{
+		// find a public class with public static main method
+		for (Class<?> clazz : classes)
+		{
+			int modifiers = clazz.getModifiers();
+			if (Modifier.isPublic(modifiers))
+			{
+				Method mainMethod = findMainMethod(clazz);
+				if (mainMethod != null)
+				{
+					return clazz;
+				}
+			}
+		}
+		
 		// okay, try to find package private class that
 		// has public static main method
-		for (Class clazz : classes) {
+		for (Class<?> clazz : classes)
+		{
 			Method mainMethod = findMainMethod(clazz);
 			if (mainMethod != null)
+			{
 				return clazz;
+			}
 		}
-
+		
 		// no main class found!
 		return null;
 	}
-
+	
 	// find public static void main(String[]) method, if any
-	private static Method findMainMethod(Class clazz) {
-		try {
-			Method mainMethod = clazz.getMethod("main", new Class[] { String[].class });
+	private static Method findMainMethod(Class<?> clazz)
+	{
+		try
+		{
+			Method mainMethod = clazz.getMethod("main", new Class[]
+			{
+				String[].class
+			});
 			int modifiers = mainMethod.getModifiers();
-			if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers)) {
+			if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers))
+			{
 				return mainMethod;
 			}
 		}
-		catch (NoSuchMethodException nsme) {
+		catch (NoSuchMethodException nsme)
+		{
 		}
 		return null;
 	}
-
+	
 	// find public static void setScriptContext(ScriptContext) method, if any
-	private static Method findSetScriptContextMethod(Class clazz) {
-		try {
-			Method setCtxMethod = clazz.getMethod("setScriptContext", new Class[] { ScriptContext.class });
+	private static Method findSetScriptContextMethod(Class<?> clazz)
+	{
+		try
+		{
+			Method setCtxMethod = clazz.getMethod("setScriptContext", new Class[]
+			{
+				ScriptContext.class
+			});
 			int modifiers = setCtxMethod.getModifiers();
-			if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers)) {
+			if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers))
+			{
 				return setCtxMethod;
 			}
 		}
-		catch (NoSuchMethodException nsme) {
+		catch (NoSuchMethodException nsme)
+		{
 		}
 		return null;
 	}
-
-	private static String getFileName(ScriptContext ctx) {
+	
+	private static String getFileName(ScriptContext ctx)
+	{
 		int scope = ctx.getAttributesScope("javax.script.filename");
 		if (scope != -1)
+		{
 			return ctx.getAttribute("javax.script.filename", scope).toString();
+		}
 		else
+		{
 			return "$unnamed.java";
+		}
 	}
-
+	
 	// for certain variables, we look for System properties. This is
 	// the prefix used for such System properties
 	private static final String SYSPROP_PREFIX = "com.sun.script.java.";
-
+	
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final String ARGUMENTS = "arguments";
-
-	private static String[] getArguments(ScriptContext ctx) {
+	
+	private static String[] getArguments(ScriptContext ctx)
+	{
 		int scope = ctx.getAttributesScope(ARGUMENTS);
-		if (scope != -1) {
+		if (scope != -1)
+		{
 			Object obj = ctx.getAttribute(ARGUMENTS, scope);
 			if (obj instanceof String[])
+			{
 				return (String[]) obj;
+			}
 		}
 		// return zero length array
 		return EMPTY_STRING_ARRAY;
 	}
-
+	
 	private static final String SOURCEPATH = "sourcepath";
-
-	private static String getSourcePath(ScriptContext ctx) {
+	
+	private static String getSourcePath(ScriptContext ctx)
+	{
 		int scope = ctx.getAttributesScope(SOURCEPATH);
 		if (scope != -1)
+		{
 			return ctx.getAttribute(SOURCEPATH).toString();
-
+		}
+		
 		// look for "com.sun.script.java.sourcepath"
 		return System.getProperty(SYSPROP_PREFIX + SOURCEPATH);
 	}
-
+	
 	private static final String CLASSPATH = "classpath";
-
-	private static String getClassPath(ScriptContext ctx) {
+	
+	private static String getClassPath(ScriptContext ctx)
+	{
 		int scope = ctx.getAttributesScope(CLASSPATH);
 		if (scope != -1)
+		{
 			return ctx.getAttribute(CLASSPATH).toString();
-
+		}
+		
 		// look for "com.sun.script.java.classpath"
 		String res = System.getProperty(SYSPROP_PREFIX + CLASSPATH);
 		if (res == null)
+		{
 			res = System.getProperty("java.class.path");
+		}
 		return res;
 	}
-
+	
 	private static final String MAINCLASS = "mainClass";
-
-	private static String getMainClassName(ScriptContext ctx) {
+	
+	private static String getMainClassName(ScriptContext ctx)
+	{
 		int scope = ctx.getAttributesScope(MAINCLASS);
 		if (scope != -1)
+		{
 			return ctx.getAttribute(MAINCLASS).toString();
-
+		}
+		
 		// look for "com.sun.script.java.mainClass"
 		return System.getProperty("com.sun.script.java.mainClass");
 	}
-
+	
 	private static final String PARENTLOADER = "parentLoader";
-
-	private static ClassLoader getParentLoader(ScriptContext ctx) {
+	
+	private static ClassLoader getParentLoader(ScriptContext ctx)
+	{
 		int scope = ctx.getAttributesScope(PARENTLOADER);
-		if (scope != -1) {
+		if (scope != -1)
+		{
 			Object loader = ctx.getAttribute(PARENTLOADER);
 			if (loader instanceof ClassLoader)
+			{
 				return (ClassLoader) loader;
+			}
 		}
 		return ClassLoader.getSystemClassLoader();
 	}
-
-	private static Object evalClass(Class clazz, ScriptContext ctx) throws ScriptException {
+	
+	private static Object evalClass(Class<?> clazz, ScriptContext ctx) throws ScriptException
+	{
 		// JSR-223 requirement
 		ctx.setAttribute("context", ctx, 100);
 		if (clazz == null)
+		{
 			return null;
-		try {
+		}
+		try
+		{
 			boolean isPublicClazz = Modifier.isPublic(clazz.getModifiers());
-
+			
 			// find the setScriptContext method
 			Method setCtxMethod = findSetScriptContextMethod(clazz);
 			// call setScriptContext and pass current ctx variable
-			if (setCtxMethod != null) {
-				if (!isPublicClazz) {
+			if (setCtxMethod != null)
+			{
+				if (!isPublicClazz)
+				{
 					// try to relax access
 					setCtxMethod.setAccessible(true);
 				}
-				setCtxMethod.invoke(null, new Object[] { ctx });
+				setCtxMethod.invoke(null, new Object[]
+				{
+					ctx
+				});
 			}
-
+			
 			// find the main method
 			Method mainMethod = findMainMethod(clazz);
-			if (mainMethod != null) {
-				if (!isPublicClazz) {
+			if (mainMethod != null)
+			{
+				if (!isPublicClazz)
+				{
 					// try to relax access
 					mainMethod.setAccessible(true);
 				}
-
+				
 				// get "command line" args for the main method
 				String args[] = getArguments(ctx);
-
+				
 				// call main method
-				mainMethod.invoke(null, new Object[] { args });
+				mainMethod.invoke(null, new Object[]
+				{
+					args
+				});
 			}
-
+			
 			// return main class as eval's result
 			return clazz;
 		}
-		catch (Exception exp) {
+		catch (Exception exp)
+		{
 			exp.printStackTrace();
 			throw new ScriptException(exp);
 		}
 	}
-
+	
 	// read a Reader fully and return the content as string
-	private String readFully(Reader reader) throws ScriptException {
-		char[] arr = new char[8*1024]; // 8K at a time
+	private String readFully(Reader reader) throws ScriptException
+	{
+		char[] arr = new char[8 * 1024]; // 8K at a time
 		StringBuilder buf = new StringBuilder();
 		int numChars;
-		try {
+		try
+		{
 			while ((numChars = reader.read(arr, 0, arr.length)) > 0)
+			{
 				buf.append(arr, 0, numChars);
+			}
 		}
-		catch (IOException exp) {
+		catch (IOException exp)
+		{
 			throw new ScriptException(exp);
 		}
 		return buf.toString();
 	}
-
+	
 }

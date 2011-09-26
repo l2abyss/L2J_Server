@@ -21,13 +21,6 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * JavaScriptEngineFactory.java
- * @author A. Sundararajan
- */
-
-
 package com.l2jserver.script.java;
 
 import java.util.ArrayList;
@@ -39,38 +32,54 @@ import javax.script.ScriptEngineFactory;
 
 /**
  * This is script engine factory for "Java" script engine.
+ * @author A. Sundararajan
  */
-public class JavaScriptEngineFactory implements ScriptEngineFactory {
-
-	public String getEngineName() {
+public class JavaScriptEngineFactory implements ScriptEngineFactory
+{
+	
+	@Override
+	public String getEngineName()
+	{
 		return "java";
 	}
-
-	public String getEngineVersion() {
-		return "1.6";
+	
+	@Override
+	public String getEngineVersion()
+	{
+		return "1.7";
 	}
-
-	public List<String> getExtensions() {
+	
+	@Override
+	public List<String> getExtensions()
+	{
 		return extensions;
 	}
-
-	public String getLanguageName() {
+	
+	@Override
+	public String getLanguageName()
+	{
 		return "java";
 	}
-
-	public String getLanguageVersion() {
-		return "1.6";
+	
+	@Override
+	public String getLanguageVersion()
+	{
+		return "1.7";
 	}
-
-	public String getMethodCallSyntax(String obj, String m, String... args) {
+	
+	@Override
+	public String getMethodCallSyntax(String obj, String m, String... args)
+	{
 		StringBuilder buf = new StringBuilder();
 		buf.append(obj);
 		buf.append(".");
 		buf.append(m);
 		buf.append("(");
-		if (args.length != 0) {
+		if (args.length != 0)
+		{
 			int i = 0;
-			for (; i < args.length - 1; i++) {
+			for (; i < (args.length - 1); i++)
+			{
 				buf.append(args[i] + ", ");
 			}
 			buf.append(args[i]);
@@ -78,67 +87,95 @@ public class JavaScriptEngineFactory implements ScriptEngineFactory {
 		buf.append(")");
 		return buf.toString();
 	}
-
-	public List<String> getMimeTypes() {
+	
+	@Override
+	public List<String> getMimeTypes()
+	{
 		return mimeTypes;
 	}
-
-	public List<String> getNames() {
+	
+	@Override
+	public List<String> getNames()
+	{
 		return names;
 	}
-
-	public String getOutputStatement(String toDisplay) {
+	
+	@Override
+	public String getOutputStatement(String toDisplay)
+	{
 		StringBuilder buf = new StringBuilder();
 		buf.append("System.out.print(\"");
 		int len = toDisplay.length();
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++)
+		{
 			char ch = toDisplay.charAt(i);
-			switch (ch) {
-			case 34: // '"'
-				buf.append("\\\"");
-				break;
-			case 92: // '\\'
-				buf.append("\\\\");
-				break;
-			default:
-				buf.append(ch);
-				break;
+			switch (ch)
+			{
+				case 34: // '"'
+					buf.append("\\\"");
+					break;
+				case 92: // '\\'
+					buf.append("\\\\");
+					break;
+				default:
+					buf.append(ch);
+					break;
 			}
 		}
 		buf.append("\");");
 		return buf.toString();
 	}
-
-	public String getParameter(String key) {
+	
+	@Override
+	public String getParameter(String key)
+	{
 		if (key.equals("javax.script.engine"))
+		{
 			return getEngineName();
+		}
 		if (key.equals("javax.script.engine_version"))
+		{
 			return getEngineVersion();
+		}
 		if (key.equals("javax.script.name"))
+		{
 			return getEngineName();
+		}
 		if (key.equals("javax.script.language"))
+		{
 			return getLanguageName();
+		}
 		if (key.equals("javax.script.language_version"))
+		{
 			return getLanguageVersion();
+		}
 		if (key.equals("THREADING"))
+		{
 			return "MULTITHREADED";
+		}
 		else
+		{
 			return null;
+		}
 	}
-
-	public String getProgram(String... statements) {
+	
+	@Override
+	public String getProgram(String... statements)
+	{
 		// we generate a Main class with main method
 		// that contains all the given statements
-
+		
 		StringBuilder buf = new StringBuilder();
 		buf.append("class ");
 		buf.append(getClassName());
 		buf.append(" {\n");
 		buf.append("    public static void main(String[] args) {\n");
-		if (statements.length != 0) {
-			for (int i = 0; i < statements.length; i++) {
+		if (statements.length != 0)
+		{
+			for (String statement : statements)
+			{
 				buf.append("        ");
-				buf.append(statements[i]);
+				buf.append(statement);
 				buf.append(";\n");
 			}
 		}
@@ -146,28 +183,33 @@ public class JavaScriptEngineFactory implements ScriptEngineFactory {
 		buf.append("}\n");
 		return buf.toString();
 	}
-
-	public ScriptEngine getScriptEngine() {
+	
+	@Override
+	public ScriptEngine getScriptEngine()
+	{
 		JavaScriptEngine engine = new JavaScriptEngine();
 		engine.setFactory(this);
 		return engine;
 	}
-
+	
 	// used to generate a unique class name in getProgram
-	private String getClassName() {
+	private String getClassName()
+	{
 		return "com_sun_script_java_Main$" + getNextClassNumber();
 	}
-
-	private static synchronized long getNextClassNumber() {
+	
+	private static synchronized long getNextClassNumber()
+	{
 		return nextClassNum++;
 	}
-
+	
 	private static long nextClassNum = 0L;
 	private static List<String> names;
 	private static List<String> extensions;
 	private static List<String> mimeTypes;
-
-	static {
+	
+	static
+	{
 		names = new ArrayList<String>(1);
 		names.add("java");
 		names = Collections.unmodifiableList(names);

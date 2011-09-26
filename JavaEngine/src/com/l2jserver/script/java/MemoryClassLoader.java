@@ -21,12 +21,6 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * MemoryClassLoader.java
- * @author A. Sundararajan
- */
-
 package com.l2jserver.script.java;
 
 import java.io.File;
@@ -40,68 +34,92 @@ import java.util.StringTokenizer;
 
 /**
  * ClassLoader that loads .class bytes from memory.
+ * @author A. Sundararajan
  */
-public final class MemoryClassLoader extends URLClassLoader {
-
-	private Map<String, byte[]> classBytes;
-
-	public MemoryClassLoader(Map<String, byte[]> classBytes, String classPath, ClassLoader parent) {
+public final class MemoryClassLoader extends URLClassLoader
+{
+	
+	private final Map<String, byte[]> classBytes;
+	
+	public MemoryClassLoader(Map<String, byte[]> classBytes, String classPath, ClassLoader parent)
+	{
 		super(toURLs(classPath), parent);
 		this.classBytes = classBytes;
 	}
-
-	public MemoryClassLoader(Map<String, byte[]> classBytes, String classPath) {
+	
+	public MemoryClassLoader(Map<String, byte[]> classBytes, String classPath)
+	{
 		this(classBytes, classPath, null);
 	}
-
-	public Class load(String className) throws ClassNotFoundException {
+	
+	public Class<?> load(String className) throws ClassNotFoundException
+	{
 		return loadClass(className);
 	}
-
-	public Iterable<Class> loadAll() throws ClassNotFoundException {
-		List<Class> classes = new ArrayList<Class>(classBytes.size());
-		for (String name : classBytes.keySet()) {
+	
+	public Iterable<Class<?>> loadAll() throws ClassNotFoundException
+	{
+		List<Class<?>> classes = new ArrayList<Class<?>>(classBytes.size());
+		for (String name : classBytes.keySet())
+		{
 			classes.add(loadClass(name));
 		}
 		return classes;
 	}
-
-	protected Class findClass(String className) throws ClassNotFoundException {
+	
+	@Override
+	protected Class<?> findClass(String className) throws ClassNotFoundException
+	{
 		byte buf[] = classBytes.get(className);
-		if (buf != null) {
+		if (buf != null)
+		{
 			// clear the bytes in map -- we don't need it anymore
 			classBytes.put(className, null);
 			return defineClass(className, buf, 0, buf.length);
 		}
-		else {
+		else
+		{
 			return super.findClass(className);
 		}
 	}
-
-	private static URL[] toURLs(String classPath) {
-		if (classPath == null) {
+	
+	private static URL[] toURLs(String classPath)
+	{
+		if (classPath == null)
+		{
 			return new URL[0];
 		}
-
+		
 		List<URL> list = new ArrayList<URL>();
 		StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
-		while (st.hasMoreTokens()) {
+		while (st.hasMoreTokens())
+		{
 			String token = st.nextToken();
 			File file = new File(token);
 			if (file.exists())
-				try {
+			{
+				try
+				{
 					list.add(file.toURI().toURL());
 				}
-				catch (MalformedURLException mue) {
+				catch (MalformedURLException mue)
+				{
+					//
 				}
+			}
 			else
-				try {
+			{
+				try
+				{
 					list.add(new URL(token));
 				}
-				catch (MalformedURLException mue) {
+				catch (MalformedURLException mue)
+				{
+					//
 				}
+			}
 		}
-
+		
 		URL res[] = new URL[list.size()];
 		list.toArray(res);
 		return res;

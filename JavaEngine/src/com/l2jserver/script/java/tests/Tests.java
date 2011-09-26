@@ -9,12 +9,13 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-public class Tests {
-
-	public static void main(String args[]) throws ScriptException, IOException {
+public class Tests
+{
+	public static void main(String args[]) throws ScriptException, IOException
+	{
 		ScriptEngineManager sem = new ScriptEngineManager();
 		ScriptEngine se = sem.getEngineByExtension("java");
-		se.getContext().setAttribute("classpath", "E:/shared/workspaces/workspace_c6/EclipseJavaScriptEngine/TestCode", 100);
+		se.getContext().setAttribute("classpath", "C:/TestCode", 100);
 		se.getContext().setAttribute("mainClass", "Test", 100);
 		se.getContext().setAttribute("javax.script.filename", "Test.java", 100);
 		

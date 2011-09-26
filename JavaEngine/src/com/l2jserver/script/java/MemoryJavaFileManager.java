@@ -21,12 +21,6 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * MemoryJavaFileManager.java
- * @author A. Sundararajan
- */
-
 package com.l2jserver.script.java;
 
 import java.io.ByteArrayOutputStream;
@@ -44,69 +38,90 @@ import java.util.Map;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
-import javax.tools.SimpleJavaFileObject;
 import javax.tools.JavaFileObject.Kind;
+import javax.tools.SimpleJavaFileObject;
 
 import org.eclipse.jdt.internal.compiler.tool.EclipseFileManager;
 
 /**
  * JavaFileManager that keeps compiled .class bytes in memory.
+ * @author A. Sundararajan
  */
-public final class MemoryJavaFileManager extends EclipseFileManager {
-
+public final class MemoryJavaFileManager extends EclipseFileManager
+{
+	
 	private static final String EXT = ".java";
 	private Map<String, byte[]> classBytes;
-
-	public MemoryJavaFileManager() {
+	
+	public MemoryJavaFileManager()
+	{
 		super(null, null);
 		classBytes = new HashMap<String, byte[]>();
 	}
-
-	public Map<String, byte[]> getClassBytes() {
+	
+	public Map<String, byte[]> getClassBytes()
+	{
 		return classBytes;
 	}
-
-	public void close() throws IOException {
+	
+	@Override
+	public void close() throws IOException
+	{
 		classBytes = new HashMap<String, byte[]>();
 	}
-
-	public void flush() throws IOException {
+	
+	@Override
+	public void flush() throws IOException
+	{
 	}
-
+	
 	/**
 	 * A file object used to represent Java source coming from a string.
 	 */
-	private static class StringInputBuffer extends SimpleJavaFileObject {
+	private static class StringInputBuffer extends SimpleJavaFileObject
+	{
 		final String code;
-
-		StringInputBuffer(String name, String code) {
+		
+		StringInputBuffer(String name, String code)
+		{
 			super(toURI(name), Kind.SOURCE);
 			this.code = code;
 		}
-
-		public CharBuffer getCharContent(boolean ignoreEncodingErrors) {
+		
+		@Override
+		public CharBuffer getCharContent(boolean ignoreEncodingErrors)
+		{
 			return CharBuffer.wrap(code);
 		}
-
-		public Reader openReader() {
+		
+		@SuppressWarnings("unused")
+		public Reader openReader()
+		{
 			return new StringReader(code);
 		}
 	}
-
+	
 	/**
 	 * A file object that stores Java bytecode into the classBytes map.
 	 */
-	private class ClassOutputBuffer extends SimpleJavaFileObject {
-		private String name;
-
-		ClassOutputBuffer(String name) {
+	private class ClassOutputBuffer extends SimpleJavaFileObject
+	{
+		private final String name;
+		
+		ClassOutputBuffer(String name)
+		{
 			super(toURI(name), Kind.CLASS);
 			this.name = name;
 		}
-
-		public OutputStream openOutputStream() {
-			return new FilterOutputStream(new ByteArrayOutputStream()) {
-				public void close() throws IOException {
+		
+		@Override
+		public OutputStream openOutputStream()
+		{
+			return new FilterOutputStream(new ByteArrayOutputStream())
+			{
+				@Override
+				public void close() throws IOException
+				{
 					out.close();
 					ByteArrayOutputStream bos = (ByteArrayOutputStream) out;
 					classBytes.put(name, bos.toByteArray());
@@ -114,35 +129,47 @@ public final class MemoryJavaFileManager extends EclipseFileManager {
 			};
 		}
 	}
-
-	public JavaFileObject getJavaFileForOutput(JavaFileManager.Location location, String className, Kind kind, FileObject sibling) throws IOException {
-		if (kind == Kind.CLASS) {
+	
+	@Override
+	public JavaFileObject getJavaFileForOutput(JavaFileManager.Location location, String className, Kind kind, FileObject sibling) throws IOException
+	{
+		if (kind == Kind.CLASS)
+		{
 			return new ClassOutputBuffer(className.replace('/', '.'));
 		}
-		else {
+		else
+		{
 			return super.getJavaFileForOutput(location, className, kind, sibling);
 		}
 	}
-
-	static JavaFileObject makeStringSource(String name, String code) {
+	
+	static JavaFileObject makeStringSource(String name, String code)
+	{
 		return new StringInputBuffer(name, code);
 	}
-
-	static URI toURI(String name) {
+	
+	static URI toURI(String name)
+	{
 		File file = new File(name);
-		if (file.exists()) {
+		if (file.exists())
+		{
 			return file.toURI();
 		}
-		else {
-			try {
+		else
+		{
+			try
+			{
 				final StringBuilder newUri = new StringBuilder();
 				newUri.append("file:///");
 				newUri.append(name.replace('.', '/'));
 				if (name.endsWith(EXT))
+				{
 					newUri.replace(newUri.length() - EXT.length(), newUri.length(), EXT);
+				}
 				return URI.create(newUri.toString());
 			}
-			catch (Exception exp) {
+			catch (Exception exp)
+			{
 				return URI.create("file:///com/sun/script/java/java_source");
 			}
 		}
