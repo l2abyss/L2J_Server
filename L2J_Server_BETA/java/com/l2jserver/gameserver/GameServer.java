@@ -78,6 +78,7 @@ import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.ChatHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
+import com.l2jserver.gameserver.handler.TargetHandler;
 import com.l2jserver.gameserver.handler.UserCommandHandler;
 import com.l2jserver.gameserver.handler.VoicedCommandHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -151,7 +152,7 @@ public class GameServer
 	private final DeadLockDetector _deadDetectThread;
 	private final IdFactory _idFactory;
 	public static GameServer gameServer;
-	private LoginServerThread _loginThread;
+	private final LoginServerThread _loginThread;
 	private static Status _statusServer;
 	public static final Calendar dateTimeServerStarted = Calendar.getInstance();
 	
@@ -218,6 +219,7 @@ public class GameServer
 		GlobalVariablesManager.getInstance();
 		
 		printSection("Skills");
+		TargetHandler.getInstance().executeScript();
 		EnchantGroupsTable.getInstance();
 		SkillTable.getInstance();
 		SkillTreesData.getInstance();
