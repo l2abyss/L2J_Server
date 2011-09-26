@@ -20,12 +20,6 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * JythonScriptEngineFactory.java
- * @author A. Sundararajan
- */
-
 package com.l2jserver.script.jython;
 
 import java.util.ArrayList;
@@ -35,37 +29,55 @@ import java.util.List;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
-public class JythonScriptEngineFactory implements ScriptEngineFactory {
-
-	public String getEngineName() {
+/**
+ * @author A. Sundararajan
+ */
+public class JythonScriptEngineFactory implements ScriptEngineFactory
+{
+	
+	@Override
+	public String getEngineName()
+	{
 		return "jython";
 	}
-
-	public String getEngineVersion() {
+	
+	@Override
+	public String getEngineVersion()
+	{
 		return "2.2.1";
 	}
-
-	public List<String> getExtensions() {
+	
+	@Override
+	public List<String> getExtensions()
+	{
 		return extensions;
 	}
-
-	public String getLanguageName() {
+	
+	@Override
+	public String getLanguageName()
+	{
 		return "python";
 	}
-
-	public String getLanguageVersion() {
+	
+	@Override
+	public String getLanguageVersion()
+	{
 		return "2.2.1";
 	}
-
-	public String getMethodCallSyntax(String obj, String m, String... args) {
+	
+	@Override
+	public String getMethodCallSyntax(String obj, String m, String... args)
+	{
 		StringBuilder buf = new StringBuilder();
 		buf.append(obj);
 		buf.append(".");
 		buf.append(m);
 		buf.append("(");
-		if (args.length != 0) {
+		if (args.length != 0)
+		{
 			int i = 0;
-			for (; i < args.length - 1; i++) {
+			for (; i < (args.length - 1); i++)
+			{
 				buf.append(args[i] + ", ");
 			}
 			buf.append(args[i]);
@@ -74,77 +86,107 @@ public class JythonScriptEngineFactory implements ScriptEngineFactory {
 		
 		return buf.toString();
 	}
-
-	public List<String> getMimeTypes() {
+	
+	@Override
+	public List<String> getMimeTypes()
+	{
 		return mimeTypes;
 	}
-
-	public List<String> getNames() {
+	
+	@Override
+	public List<String> getNames()
+	{
 		return names;
 	}
-
-	public String getOutputStatement(String toDisplay) {
+	
+	@Override
+	public String getOutputStatement(String toDisplay)
+	{
 		StringBuilder buf = new StringBuilder();
 		int len = toDisplay.length();
 		buf.append("print(\"");
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++)
+		{
 			char ch = toDisplay.charAt(i);
-			switch (ch) {
-			case 34: // '"'
-				buf.append("\\\"");
-				break;
-			case 92: // '\\'
-				buf.append("\\\\");
-				break;
-			default:
-				buf.append(ch);
-				break;
+			switch (ch)
+			{
+				case 34: // '"'
+					buf.append("\\\"");
+					break;
+				case 92: // '\\'
+					buf.append("\\\\");
+					break;
+				default:
+					buf.append(ch);
+					break;
 			}
 		}
 		buf.append("\")");
 		
 		return buf.toString();
 	}
-
-	public String getParameter(String key) {
+	
+	@Override
+	public String getParameter(String key)
+	{
 		if (key.equals(ScriptEngine.ENGINE))
+		{
 			return getEngineName();
+		}
 		if (key.equals(ScriptEngine.ENGINE_VERSION))
+		{
 			return getEngineVersion();
+		}
 		if (key.equals(ScriptEngine.NAME))
+		{
 			return getEngineName();
+		}
 		if (key.equals(ScriptEngine.LANGUAGE))
+		{
 			return getLanguageName();
+		}
 		if (key.equals(ScriptEngine.LANGUAGE_VERSION))
+		{
 			return getLanguageVersion();
+		}
 		if (key.equals("THREADING"))
+		{
 			return "MULTITHREADED";
+		}
 		else
+		{
 			return null;
+		}
 	}
-
-	public String getProgram(String... statements) {
+	
+	@Override
+	public String getProgram(String... statements)
+	{
 		StringBuilder buf = new StringBuilder();
-		for (int i = 0; i < statements.length; i++) {
+		for (String statement : statements)
+		{
 			buf.append("\t");
-			buf.append(statements[i]);
+			buf.append(statement);
 			buf.append("\n");
 		}
-
+		
 		return buf.toString();
 	}
-
-	public ScriptEngine getScriptEngine() {
+	
+	@Override
+	public ScriptEngine getScriptEngine()
+	{
 		JythonScriptEngine engine = new JythonScriptEngine();
 		engine.setFactory(this);
 		return engine;
 	}
-
+	
 	private static List<String> names;
 	private static List<String> extensions;
 	private static List<String> mimeTypes;
-
-	static {
+	
+	static
+	{
 		names = new ArrayList<String>(2);
 		names.add("jython");
 		names.add("python");

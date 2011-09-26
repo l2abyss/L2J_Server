@@ -20,12 +20,6 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-/*
- * JythonScope.java
- * @author A. Sundararajan
- */
-
 package com.l2jserver.script.jython;
 
 import java.util.List;
@@ -40,34 +34,46 @@ import org.python.core.PyList;
 import org.python.core.PyObject;
 import org.python.core.PyString;
 
-final class JythonScope extends PyObject {
-
-	private ScriptContext ctx;
-
-	JythonScope(ScriptEngine engine, ScriptContext ctx) {
+/**
+ * @author A. Sundararajan
+ */
+public final class JythonScope extends PyObject
+{
+	private static final long serialVersionUID = 1L;
+	private final ScriptContext ctx;
+	
+	JythonScope(ScriptEngine engine, ScriptContext ctx)
+	{
 		this.ctx = ctx;
-
+		
 		// global module's name is expected to be 'main'
 		__setitem__("__name__", new PyString("main"));
-
+		
 		// JSR-223 requirement: context is exposed as variable
 		__setitem__("context", Py.java2py(ctx));
-
+		
 		// expose current engine as another top-level variable
 		__setitem__("engine", Py.java2py(engine));
 	}
-
-	public synchronized PyObject invoke(String name) {
-		if (name.equals("keys")) {
+	
+	@Override
+	public synchronized PyObject invoke(String name)
+	{
+		if (name.equals("keys"))
+		{
 			// special case for "keys" so that dir() will
 			// work for the global "module"
 			PyList keys = new PyList();
-			synchronized (ctx) {
+			synchronized (ctx)
+			{
 				List<Integer> scopes = ctx.getScopes();
-				for (int scope : scopes) {
+				for (int scope : scopes)
+				{
 					Bindings b = ctx.getBindings(scope);
-					if (b != null) {
-						for (String key : b.keySet()) {
+					if (b != null)
+					{
+						for (String key : b.keySet())
+						{
 							keys.append(new PyString(key));
 						}
 					}
@@ -75,55 +81,80 @@ final class JythonScope extends PyObject {
 			}
 			return keys;
 		}
-		else {
+		else
+		{
 			return super.invoke(name);
 		}
 	}
-
-	public PyObject __findattr__(String key) {
+	
+	@Override
+	public PyObject __findattr__(String key)
+	{
 		return __finditem__(key);
 	}
-
-	public synchronized PyObject __finditem__(String key) {
-		synchronized (ctx) {
+	
+	@Override
+	public synchronized PyObject __finditem__(String key)
+	{
+		synchronized (ctx)
+		{
 			int scope = ctx.getAttributesScope(key);
 			if (scope == -1)
+			{
 				return null;
+			}
 			Object value = ctx.getAttribute(key, scope);
 			return JythonScriptEngine.java2py(value);
 		}
 	}
-
-	public void __setattr__(String key, PyObject value) {
+	
+	@Override
+	public void __setattr__(String key, PyObject value)
+	{
 		__setitem__(key, value);
 	}
-
-	public synchronized void __setitem__(String key, PyObject value) {
-		synchronized (ctx) {
+	
+	@Override
+	public synchronized void __setitem__(String key, PyObject value)
+	{
+		synchronized (ctx)
+		{
 			int scope = ctx.getAttributesScope(key);
 			if (scope == -1)
+			{
 				scope = ScriptContext.ENGINE_SCOPE;
+			}
 			Object obj = value;
 			if (!(obj instanceof PyClass))
+			{
 				obj = JythonScriptEngine.py2java(value);
+			}
 			ctx.setAttribute(key, obj, scope);
 		}
 	}
-
-	public void __delattr__(String key) {
+	
+	@Override
+	public void __delattr__(String key)
+	{
 		__delitem__(key);
 	}
-
-	public synchronized void __delitem__(String key) {
-		synchronized (ctx) {
+	
+	@Override
+	public synchronized void __delitem__(String key)
+	{
+		synchronized (ctx)
+		{
 			int scope = ctx.getAttributesScope(key);
 			if (scope != -1)
+			{
 				ctx.removeAttribute(key, scope);
+			}
 		}
 	}
-
-	public String toString() {
+	
+	@Override
+	public String toString()
+	{
 		return "<global scope at " + hashCode() + ">";
 	}
-
 }
