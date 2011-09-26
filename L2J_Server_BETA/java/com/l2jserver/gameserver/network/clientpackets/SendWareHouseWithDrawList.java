@@ -126,7 +126,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		for (ItemHolder i : _items)
 		{
 			// Calculate needed slots
-			L2ItemInstance item = warehouse.getItemByObjectId(i.getObjectId());
+			L2ItemInstance item = warehouse.getItemByObjectId(i.getId());
 			if (item == null || item.getCount() < i.getCount())
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Character "
@@ -161,13 +161,13 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		InventoryUpdate playerIU = Config.FORCE_INVENTORY_UPDATE ? null : new InventoryUpdate();
 		for (ItemHolder i : _items)
 		{
-			L2ItemInstance oldItem = warehouse.getItemByObjectId(i.getObjectId());
+			L2ItemInstance oldItem = warehouse.getItemByObjectId(i.getId());
 			if (oldItem == null || oldItem.getCount() < i.getCount())
 			{
 				_log.warning("Error withdrawing a warehouse object for char " + player.getName() + " (olditem == null)");
 				return;
 			}
-			final L2ItemInstance newItem = warehouse.transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), player.getInventory(), player, manager);
+			final L2ItemInstance newItem = warehouse.transferItem(warehouse.getName(), i.getId(), i.getCount(), player.getInventory(), player, manager);
 			if (newItem == null)
 			{
 				_log.warning("Error withdrawing a warehouse object for char " + player.getName() + " (newitem == null)");

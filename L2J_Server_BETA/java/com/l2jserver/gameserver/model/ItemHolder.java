@@ -15,25 +15,31 @@
 package com.l2jserver.gameserver.model;
 
 /**
+ * Holder for item id-count.
  * @author UnAfraid
- *
  */
 public final class ItemHolder
 {
-	private final int _objectId;
+	private final int _id;
 	private final long _count;
 	
-	public ItemHolder(int objectId, long count)
+	public ItemHolder(int id, long count)
 	{
-		_objectId = objectId;
+		_id = id;
 		_count = count;
 	}
 	
-	public int getObjectId()
+	/**
+	 * @return the item/object identifier.
+	 */
+	public int getId()
 	{
-		return _objectId;
+		return _id;
 	}
 	
+	/**
+	 * @return the item count.
+	 */
 	public long getCount()
 	{
 		return _count;
@@ -42,6 +48,6 @@ public final class ItemHolder
 	@Override
 	public String toString()
 	{
-		return "[" + getClass().getSimpleName() + "]: objectId: " + _objectId + " count: " + _count;
+		return getClass().getSimpleName() + ": Id: " + _id + " Count: " + _count;
 	}
 }

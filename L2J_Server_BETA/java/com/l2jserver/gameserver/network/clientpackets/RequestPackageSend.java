@@ -107,7 +107,7 @@ public class RequestPackageSend extends L2GameClientPacket
 		for (ItemHolder i : _items)
 		{
 			// Check validity of requested item
-			L2ItemInstance item = player.checkItemManipulation(i.getObjectId(), i.getCount(), "deposit");
+			L2ItemInstance item = player.checkItemManipulation(i.getId(), i.getCount(), "deposit");
 			if (item == null)
 			{
 				_log.log(Level.WARNING, "Error depositing a warehouse object for char " + player.getName() + " (validity check)");
@@ -149,14 +149,14 @@ public class RequestPackageSend extends L2GameClientPacket
 		for (ItemHolder i : _items)
 		{
 			// Check validity of requested item
-			L2ItemInstance oldItem = player.checkItemManipulation(i.getObjectId(), i.getCount(), "deposit");
+			L2ItemInstance oldItem = player.checkItemManipulation(i.getId(), i.getCount(), "deposit");
 			if (oldItem == null)
 			{
 				_log.log(Level.WARNING, "Error depositing a warehouse object for char " + player.getName() + " (olditem == null)");
 				return;
 			}
 			
-			L2ItemInstance newItem = player.getInventory().transferItem("Trade", i.getObjectId(), i.getCount(), warehouse, player, null);
+			L2ItemInstance newItem = player.getInventory().transferItem("Trade", i.getId(), i.getCount(), warehouse, player, null);
 			if (newItem == null)
 			{
 				_log.log(Level.WARNING, "Error depositing a warehouse object for char " + player.getName() + " (newitem == null)");
