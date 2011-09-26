@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.skills.conditions;
 
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.skills.effects.EffectFusion;
 
 /**
  * The Class ConditionForceBuff.
@@ -54,14 +53,14 @@ public final class ConditionForceBuff extends Condition
 		if (_forces[0] > 0)
 		{
 			L2Effect force = env.player.getFirstEffect(BATTLE_FORCE);
-			if (force == null || ((EffectFusion) force)._effect < _forces[0])
+			if (force == null || force.getForceEffect() < _forces[0])
 				return false;
 		}
 		
 		if (_forces[1] > 0)
 		{
 			L2Effect force = env.player.getFirstEffect(SPELL_FORCE);
-			if (force == null || ((EffectFusion) force)._effect < _forces[1])
+			if (force == null || force.getForceEffect() < _forces[1])
 				return false;
 		}
 		

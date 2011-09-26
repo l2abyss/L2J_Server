@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
-import com.l2jserver.gameserver.skills.effects.EffectChanceSkillTrigger;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 /**
@@ -130,8 +129,8 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			{
 				if (e.getKey() instanceof L2Skill)
 					makeCast((L2Skill)e.getKey(), target);
-				else if (e.getKey() instanceof EffectChanceSkillTrigger)
-					makeCast((EffectChanceSkillTrigger)e.getKey(), target);
+				else
+					makeCast((L2Effect)e.getKey(), target);
 			}
 		}
 	}
@@ -181,7 +180,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		}
 	}
 	
-	private void makeCast(EffectChanceSkillTrigger effect, L2Character target)
+	private void makeCast(L2Effect effect, L2Character target)
 	{
 		try
 		{

@@ -99,7 +99,6 @@ import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.skills.Calculator;
 import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.skills.effects.EffectChanceSkillTrigger;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillAgathion;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillMount;
@@ -6041,7 +6040,7 @@ public abstract class L2Character extends L2Object
 		_chanceSkills.put(trigger, trigger.getTriggeredChanceCondition());
 	}
 	
-	public void removeChanceEffect(EffectChanceSkillTrigger effect)
+	public void removeChanceEffect(IChanceSkillTrigger effect)
 	{
 		if (_chanceSkills == null)
 			return;

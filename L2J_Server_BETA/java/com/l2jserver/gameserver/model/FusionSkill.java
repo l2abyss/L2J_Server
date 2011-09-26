@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.skills.effects.EffectFusion;
 import com.l2jserver.gameserver.util.Util;
 
 
@@ -60,7 +59,7 @@ public final class FusionSkill
 		
 		L2Effect effect = _target.getFirstEffect(_fusionId);
 		if (effect != null)
-			((EffectFusion)effect).increaseEffect();
+			effect.increaseEffect();
 		else
 		{
 			L2Skill force = SkillTable.getInstance().getInfo(_fusionId, _fusionLevel);
@@ -77,7 +76,7 @@ public final class FusionSkill
 		_caster.setFusionSkill(null);
 		L2Effect effect = _target.getFirstEffect(_fusionId);
 		if (effect != null)
-			((EffectFusion)effect).decreaseForce();
+			effect.decreaseForce();
 		
 		_geoCheckTask.cancel(true);
 	}

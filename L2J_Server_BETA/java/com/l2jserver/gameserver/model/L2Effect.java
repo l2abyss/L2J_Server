@@ -47,7 +47,7 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
  *
  * @version $Revision: 1.1.2.1.2.12 $ $Date: 2005/04/11 10:06:07 $
  */
-public abstract class L2Effect
+public abstract class L2Effect implements IChanceSkillTrigger
 {
 	protected static final Logger _log = Logger.getLogger(L2Effect.class.getName());
 	
@@ -684,4 +684,14 @@ public abstract class L2Effect
 	{
 		return false;
 	}
+	
+	public void decreaseForce() { }
+	public void increaseEffect() { }
+	public int getForceEffect() { return 0; }
+	public boolean isBuffEffect() { return false; }
+	public boolean isDebuffEffect() { return false; }
+	public boolean triggersChanceSkill() { return false; }	
+	public int getTriggeredChanceId() { return 0; }
+	public int getTriggeredChanceLevel() { return 0; }
+	public ChanceCondition getTriggeredChanceCondition() { return null; }
 }

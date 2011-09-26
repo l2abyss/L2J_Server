@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.handler.EffectHandler;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
@@ -88,14 +89,13 @@ public class EffectTemplate
 		
 		passiveEffect = passiveEff;
 		
-		try
+		_func = EffectHandler.getInstance().getHandler(func);
+		if(func == null)
 		{
-			_func = Class.forName("com.l2jserver.gameserver.skills.effects.Effect" + func);
+			_log.warning("EffectTemplate: Requested Unexistent effect: "+func);
+			throw new RuntimeException();
 		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException(e);
-		}
+
 		try
 		{
 			_constructor = _func.getConstructor(Env.class, EffectTemplate.class);

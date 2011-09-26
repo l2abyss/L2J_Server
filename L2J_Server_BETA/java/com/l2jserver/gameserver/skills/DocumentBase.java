@@ -104,7 +104,6 @@ import com.l2jserver.gameserver.skills.conditions.ConditionTargetUsesWeaponKind;
 import com.l2jserver.gameserver.skills.conditions.ConditionUsingItemType;
 import com.l2jserver.gameserver.skills.conditions.ConditionUsingSkill;
 import com.l2jserver.gameserver.skills.conditions.ConditionWithSkill;
-import com.l2jserver.gameserver.skills.effects.EffectChanceSkillTrigger;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.skills.funcs.Lambda;
 import com.l2jserver.gameserver.skills.funcs.LambdaCalc;
@@ -353,7 +352,7 @@ abstract class DocumentBase
 		
 		EffectTemplate lt;
 		
-		final boolean isChanceSkillTrigger = (name == EffectChanceSkillTrigger.class.getName());
+		final boolean isChanceSkillTrigger = (name == "ChanceSkillTrigger");
 		int trigId = 0;
 		if (attrs.getNamedItem("triggeredId") != null)
 			trigId = Integer.parseInt(getValue(attrs.getNamedItem("triggeredId").getNodeValue(), template));

@@ -31,8 +31,6 @@ import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.skills.effects.EffectBuff;
-import com.l2jserver.gameserver.skills.effects.EffectDebuff;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.StringUtil;
 
@@ -63,10 +61,13 @@ public class L2NpcInstance extends L2Npc
 	@Override
 	public void addEffect(L2Effect newEffect)
 	{
-		if (newEffect instanceof EffectDebuff || newEffect instanceof EffectBuff)
-			super.addEffect(newEffect);
-		else if (newEffect != null)
-			newEffect.stopEffectTask();
+		if(newEffect != null)
+		{
+			if(newEffect.isBuffEffect() || newEffect.isDebuffEffect())
+				super.addEffect(newEffect);
+			else
+				newEffect.stopEffectTask();
+		}		
 	}
 	
 	public ClassId[] getClassesToTeach()
