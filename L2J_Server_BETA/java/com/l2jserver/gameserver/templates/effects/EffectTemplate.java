@@ -142,17 +142,11 @@ public class EffectTemplate
 	 */
 	public L2Effect getStolenEffect(Env env, L2Effect stolen)
 	{
-		Class<?> func;
+		Class<?> func = EffectHandler.getInstance().getHandler(funcName);
+		if(func == null)
+			throw new RuntimeException();
+		
 		Constructor<?> stolenCons;
-		try
-		{
-			func = Class.forName("com.l2jserver.gameserver.skills.effects.Effect"
-					+ stolen.getEffectTemplate().funcName);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException(e);
-		}
 		try
 		{
 			stolenCons = func.getConstructor(Env.class, L2Effect.class);
