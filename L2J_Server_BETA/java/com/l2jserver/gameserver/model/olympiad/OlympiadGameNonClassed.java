@@ -48,6 +48,12 @@ public class OlympiadGameNonClassed extends OlympiadGameNormal
 		return Config.ALT_OLY_NONCLASSED_REWARD;
 	}
 
+	@Override
+	protected final String getWeeklyMatchType()
+	{
+		return COMP_DONE_WEEK_NON_CLASSED;
+	}
+	
 	protected static final OlympiadGameNonClassed createGame(int id, List<Integer> list)
 	{
 		final Participant[] opponents = OlympiadGameNormal.createListOfParticipants(list);

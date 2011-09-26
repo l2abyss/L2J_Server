@@ -57,6 +57,10 @@ public abstract class AbstractOlympiadGame
 	protected static final String COMP_WON = "competitions_won";
 	protected static final String COMP_LOST = "competitions_lost";
 	protected static final String COMP_DRAWN = "competitions_drawn";
+	protected static final String COMP_DONE_WEEK = "competitions_done_week";
+	protected static final String COMP_DONE_WEEK_CLASSED = "competitions_done_week_classed";
+	protected static final String COMP_DONE_WEEK_NON_CLASSED = "competitions_done_week_non_classed";
+	protected static final String COMP_DONE_WEEK_TEAM = "competitions_done_week_team";
 
 	protected long _startTime = 0;
 	protected boolean _aborted = false;
@@ -453,4 +457,6 @@ public abstract class AbstractOlympiadGame
 	protected abstract int getDivider();
 
 	protected abstract int[][] getReward();
+	
+	protected abstract String getWeeklyMatchType();
 }

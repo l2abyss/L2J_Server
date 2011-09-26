@@ -34,9 +34,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
- * 
  * @author DS
- *
  */
 public class OlympiadManager
 {
@@ -208,27 +206,36 @@ public class OlympiadManager
 
 	public final boolean registerNoble(L2PcInstance player, CompetitionType type)
 	{
-		SystemMessage sm;
 		if (!Olympiad._inCompPeriod)
 		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_IS_NOT_CURRENTLY_IN_PROGRESS);
-			player.sendPacket(sm);
+			player.sendPacket(SystemMessageId.THE_OLYMPIAD_GAME_IS_NOT_CURRENTLY_IN_PROGRESS);
 			return false;
 		}
 		
 		if (Olympiad.getInstance().getMillisToCompEnd() < 600000)
 		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.GAME_REQUEST_CANNOT_BE_MADE);
-			player.sendPacket(sm);
+			player.sendPacket(SystemMessageId.GAME_REQUEST_CANNOT_BE_MADE);
 			return false;
 		}
 		
+		if (Olympiad.getInstance().getRemainingWeeklyMatches(player.getObjectId()) < 1)
+		{
+			player.sendPacket(SystemMessageId.MAX_OLY_WEEKLY_MATCHES_REACHED);
+			return false;
+		}
+
 		switch (type)
 		{
 			case CLASSED:
 			{
 				if (!checkNoble(player, player))
 					return false;
+				
+				if (Olympiad.getInstance().getRemainingWeeklyMatchesClassed(player.getObjectId()) < 1)
+				{
+					player.sendPacket(SystemMessageId.MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM);
+					return false;
+				}
 
 				List<Integer> classed = _classBasedRegisters.get(player.getBaseClass());
 				if (classed != null)
@@ -239,19 +246,23 @@ public class OlympiadManager
 					classed.add(player.getObjectId());
 					_classBasedRegisters.put(player.getBaseClass(), classed);
 				}
-
-				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_CLASSIFIED_GAMES);
-				player.sendPacket(sm);
+				
+				player.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_CLASSIFIED_GAMES);
 				break;
 			}
 			case NON_CLASSED:
 			{
 				if (!checkNoble(player, player))
 					return false;
+				
+				if (Olympiad.getInstance().getRemainingWeeklyMatchesNonClassed(player.getObjectId()) < 1)
+				{
+					player.sendPacket(SystemMessageId.MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM);
+					return false;
+				}
 
 				_nonClassBasedRegisters.add(player.getObjectId());
-				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_NO_CLASS_GAMES);
-				player.sendPacket(sm);
+				player.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_NO_CLASS_GAMES);
 				break;
 			}
 			case TEAMS:
@@ -259,14 +270,12 @@ public class OlympiadManager
 				final L2Party party = player.getParty();
 				if (party == null || party.getMemberCount() != 3)
 				{
-					sm = SystemMessage.getSystemMessage(SystemMessageId.PARTY_REQUIREMENTS_NOT_MET);
-					player.sendPacket(sm);
+					player.sendPacket(SystemMessageId.PARTY_REQUIREMENTS_NOT_MET);
 					return false;
 				}
 				if (!party.isLeader(player))
 				{
-					sm = SystemMessage.getSystemMessage(SystemMessageId.ONLY_PARTY_LEADER_CAN_REQUEST_TEAM_MATCH);
-					player.sendPacket(sm);
+					player.sendPacket(SystemMessageId.ONLY_PARTY_LEADER_CAN_REQUEST_TEAM_MATCH);
 					return false;
 				}
 
@@ -286,7 +295,13 @@ public class OlympiadManager
 
 								AntiFeedManager.getInstance().removePlayer(AntiFeedManager.OLYMPIAD_ID, unreg);		
 							}
-						}						
+						}
+						return false;
+					}
+					
+					if (Olympiad.getInstance().getRemainingWeeklyMatchesTeam(noble.getObjectId()) < 1)
+					{
+						player.sendPacket(SystemMessageId.MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM);
 						return false;
 					}
 					team.add(noble.getObjectId());
@@ -315,17 +330,15 @@ public class OlympiadManager
 	
 	public final boolean unRegisterNoble(L2PcInstance noble)
 	{
-		SystemMessage sm;
 		if (!Olympiad._inCompPeriod)
 		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.THE_OLYMPIAD_GAME_IS_NOT_CURRENTLY_IN_PROGRESS);
-			noble.sendPacket(sm);
+			noble.sendPacket(SystemMessageId.THE_OLYMPIAD_GAME_IS_NOT_CURRENTLY_IN_PROGRESS);
 			return false;
 		}
 		
 		if (!noble.isNoble())
 		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DOES_NOT_MEET_REQUIREMENTS_ONLY_NOBLESS_CAN_PARTICIPATE_IN_THE_OLYMPIAD);
+			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DOES_NOT_MEET_REQUIREMENTS_ONLY_NOBLESS_CAN_PARTICIPATE_IN_THE_OLYMPIAD);
 			sm.addString(noble.getName());
 			noble.sendPacket(sm);
 			return false;
@@ -333,22 +346,20 @@ public class OlympiadManager
 		
 		if (!isRegistered(noble, noble, false))
 		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_NOT_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_A_GAME);
-			noble.sendPacket(sm);
+			noble.sendPacket(SystemMessageId.YOU_HAVE_NOT_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_A_GAME);
 			return false;
 		}
 
 		if (isInCompetition(noble, noble, false))
 			return false;
-
-		sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_BEEN_DELETED_FROM_THE_WAITING_LIST_OF_A_GAME);
+		
 		Integer objId = Integer.valueOf(noble.getObjectId());
 		if (_nonClassBasedRegisters.remove(objId))
 		{
 			if (Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP > 0)
 				AntiFeedManager.getInstance().removePlayer(AntiFeedManager.OLYMPIAD_ID, noble);		
 
-			noble.sendPacket(sm);
+			noble.sendPacket(SystemMessageId.YOU_HAVE_BEEN_DELETED_FROM_THE_WAITING_LIST_OF_A_GAME);
 			return true;
 		}
 
@@ -361,7 +372,7 @@ public class OlympiadManager
 			if (Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP > 0)
 				AntiFeedManager.getInstance().removePlayer(AntiFeedManager.OLYMPIAD_ID, noble);		
 
-			noble.sendPacket(sm);
+			noble.sendPacket(SystemMessageId.YOU_HAVE_BEEN_DELETED_FROM_THE_WAITING_LIST_OF_A_GAME);
 			return true;
 		}
 
@@ -467,6 +478,10 @@ public class OlympiadManager
 			statDat.set(Olympiad.COMP_WON, 0);
 			statDat.set(Olympiad.COMP_LOST, 0);
 			statDat.set(Olympiad.COMP_DRAWN, 0);
+			statDat.set(Olympiad.COMP_DONE_WEEK, 0);
+			statDat.set(Olympiad.COMP_DONE_WEEK_CLASSED, 0);
+			statDat.set(Olympiad.COMP_DONE_WEEK_NON_CLASSED, 0);
+			statDat.set(Olympiad.COMP_DONE_WEEK_TEAM, 0);
 			statDat.set("to_save", true);
 			Olympiad.updateNobleStats(noble.getObjectId(), statDat);
 		}

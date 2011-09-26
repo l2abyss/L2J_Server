@@ -562,6 +562,10 @@ public final class Config
 	public static int ALT_OLY_MAX_POINTS;
 	public static int ALT_OLY_DIVIDER_CLASSED;
 	public static int ALT_OLY_DIVIDER_NON_CLASSED;
+	public static int ALT_OLY_MAX_WEEKLY_MATCHES;
+	public static int ALT_OLY_MAX_WEEKLY_MATCHES_NON_CLASSED;
+	public static int ALT_OLY_MAX_WEEKLY_MATCHES_CLASSED;
+	public static int ALT_OLY_MAX_WEEKLY_MATCHES_TEAM;
 	public static boolean ALT_OLY_LOG_FIGHTS;
 	public static boolean ALT_OLY_SHOW_MONTHLY_WINNERS;
 	public static boolean ALT_OLY_ANNOUNCE_GAMES;
@@ -2697,6 +2701,10 @@ public final class Config
 					ALT_OLY_MAX_POINTS = Integer.parseInt(olympiad.getProperty("AltOlyMaxPoints","10"));
 					ALT_OLY_DIVIDER_CLASSED = Integer.parseInt(olympiad.getProperty("AltOlyDividerClassed","5"));
 					ALT_OLY_DIVIDER_NON_CLASSED = Integer.parseInt(olympiad.getProperty("AltOlyDividerNonClassed","5"));
+					ALT_OLY_MAX_WEEKLY_MATCHES = Integer.parseInt(olympiad.getProperty("AltOlyMaxWeeklyMatches","70"));
+					ALT_OLY_MAX_WEEKLY_MATCHES_NON_CLASSED = Integer.parseInt(olympiad.getProperty("AltOlyMaxWeeklyMatchesNonClassed","60"));
+					ALT_OLY_MAX_WEEKLY_MATCHES_CLASSED = Integer.parseInt(olympiad.getProperty("AltOlyMaxWeeklyMatchesClassed","30"));
+					ALT_OLY_MAX_WEEKLY_MATCHES_TEAM = Integer.parseInt(olympiad.getProperty("AltOlyMaxWeeklyMatchesTeam","10"));
 					ALT_OLY_LOG_FIGHTS = Boolean.parseBoolean(olympiad.getProperty("AltOlyLogFights","false"));
 					ALT_OLY_SHOW_MONTHLY_WINNERS = Boolean.parseBoolean(olympiad.getProperty("AltOlyShowMonthlyWinners","true"));
 					ALT_OLY_ANNOUNCE_GAMES = Boolean.parseBoolean(olympiad.getProperty("AltOlyAnnounceGames","true"));

@@ -48,6 +48,12 @@ public class OlympiadGameClassed extends OlympiadGameNormal
 	{
 		return Config.ALT_OLY_CLASSED_REWARD;
 	}
+	
+	@Override
+	protected final String getWeeklyMatchType()
+	{
+		return COMP_DONE_WEEK_CLASSED;
+	}
 
 	protected static final OlympiadGameClassed createGame(int id, List<List<Integer>> classList)
 	{

@@ -14794,6 +14794,18 @@ public final class SystemMessageId
 	public static final SystemMessageId CONTACT_LIST_LIMIT_REACHED;
 	
 	/**
+	 * ID: 3224<br>
+	 * Message: The maximum matches you can participate in 1 week is 70.
+	 */
+	public static final SystemMessageId MAX_OLY_WEEKLY_MATCHES_REACHED;
+	
+	/***
+	 * ID: 3225
+	 * Message: The total number of matches that can be entered in 1 week is 60 class irrelevant individual matches, 30 specific matches, and 10 team matches.
+	 */
+	public static final SystemMessageId MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM;
+	
+	/**
 	 * ID: 3255<br>
 	 * Message: Arcane Shield decreased your MP by $1 instead of HP.
 	 */
@@ -14804,6 +14816,12 @@ public final class SystemMessageId
 	 * Message: MP became 0 and the Arcane Shield is disappearing.
 	 */
 	public static final SystemMessageId MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING;
+	
+	/**
+	 * ID: 3261<br>
+	 * Message: You have $s1 match(es) remaining that you can participate in this week ($s2 1 vs 1 Class matches, $s3 1 vs 1 matches, & $s4 3 vs 3 Team matches).
+	 */
+	public static final SystemMessageId YOU_HAVE_S1_MATCHES_REMAINING_THAT_YOU_CAN_PARTECIPATE_IN_THIS_WEEK_S2_CLASSED_S3_NON_CLASSED_S4_TEAM;
 	
 	/**
 	 * ID: 6501<br>
@@ -17270,8 +17288,11 @@ public final class SystemMessageId
 		S1_SUCCESFULLY_DELETED_FROM_CONTACT_LIST = new SystemMessageId(3219);
 		CANNOT_ADD_YOUR_NAME_ON_CONTACT_LIST = new SystemMessageId(3221);
 		CONTACT_LIST_LIMIT_REACHED = new SystemMessageId(3222);
+		MAX_OLY_WEEKLY_MATCHES_REACHED = new SystemMessageId(3224);
+		MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM = new SystemMessageId(3225);		
 		ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP = new SystemMessageId(3255);
 		MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING = new SystemMessageId(3256);
+		YOU_HAVE_S1_MATCHES_REMAINING_THAT_YOU_CAN_PARTECIPATE_IN_THIS_WEEK_S2_CLASSED_S3_NON_CLASSED_S4_TEAM = new SystemMessageId(3261);
 		YOU_CANNOT_BOOKMARK_THIS_LOCATION_BECAUSE_YOU_DO_NOT_HAVE_A_MY_TELEPORT_FLAG = new SystemMessageId(6501);
 		THOMAS_D_TURKEY_APPEARED = new SystemMessageId(6503);
 		THOMAS_D_TURKEY_DEFETED = new SystemMessageId(6504);
