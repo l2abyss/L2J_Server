@@ -368,7 +368,7 @@ public class L2ClanMember
 		L2Clan clan = player.getClan();
 		if (clan != null)
 		{
-			switch (player.getClan().getLevel())
+			switch (clan.getLevel())
 			{
 				case 4:
 					if (player.isClanLeader())

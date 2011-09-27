@@ -67,7 +67,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		}
 		else if (actualCommand.equalsIgnoreCase("rewards"))
 		{
-			if (player.getClan() != null && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan() && player.isClanLeader())
+			if (player.isClanLeader() && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan())
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-rewards.htm");

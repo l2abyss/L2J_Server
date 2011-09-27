@@ -166,7 +166,6 @@ public enum L2SkillType
 	CHARGEDAM(L2SkillChargeDmg.class),
 	MHOT,
 	DETECT_WEAKNESS,
-	LUCK,
 	RECALL(L2SkillTeleport.class),
 	TELEPORT(L2SkillTeleport.class),
 	SUMMON_FRIEND,

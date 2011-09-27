@@ -16,16 +16,8 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.5.4.8 $ $Date: 2005/04/02 15:57:52 $
- */
-public final class L2TrainerInstance extends L2NpcInstance
+public class L2TrainerInstance extends L2NpcInstance
 {
-	/**
-	 * @param template
-	 */
 	public L2TrainerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);

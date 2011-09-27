@@ -14,30 +14,33 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.List;
+import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 
 import javolution.util.FastList;
 
 /**
+ * Sample:
  * <code>
- * sample
- *
  * a4
  * 4d000000 01000000 98030000 			Attack Aura, level 1, sp cost
  * 01000000 							number of requirements
  * 05000000 47040000 0100000 000000000	   1 x spellbook advanced ATTACK                                                 .
  * </code>
- *
+ * <br>
  * format   dddd d (ddQd)
  *
- * @version $Revision: 1.3.2.1.2.4 $ $Date: 2005/03/27 15:29:39 $
+ * @version  1.5
  */
 public class AcquireSkillInfo extends L2GameServerPacket
 {
-	private static final String _S__A4_AQUIRESKILLINFO = "[S] 91 AcquireSkillInfo";
-	private List<Req> _reqs;
-	private int _id, _level, _spCost, _mode;
+	private static final String _S__91_ACQUIRESKILLINFO = "[S] 91 AcquireSkillInfo";
+	private FastList<Req> _reqs;
+	private int _id, _level, _spCost;
+	private SkillType _type;
 	
+	/**
+	 * Private class containing learning skill requisites.
+	 */
 	private static class Req
 	{
 		public int itemId;
@@ -54,13 +57,13 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		}
 	}
 	
-	public AcquireSkillInfo(int id, int level, int spCost, int mode)
+	public AcquireSkillInfo(int id, int level, int spCost, SkillType type)
 	{
 		_reqs = new FastList<Req>();
 		_id = id;
 		_level = level;
 		_spCost = spCost;
-		_mode = mode;
+		_type = type;
 	}
 	
 	public void addRequirement(int type, int id, int count, int unk)
@@ -75,7 +78,7 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		writeD(_id);
 		writeD(_level);
 		writeD(_spCost);
-		writeD(_mode); //c4
+		writeD(_type.ordinal());
 		
 		writeD(_reqs.size());
 		
@@ -88,13 +91,9 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _S__A4_AQUIRESKILLINFO;
+		return _S__91_ACQUIRESKILLINFO;
 	}
-	
 }

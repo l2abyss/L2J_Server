@@ -103,6 +103,7 @@ public final class Config
 	public static boolean ENABLE_MODIFY_SKILL_REUSE;
 	public static TIntIntHashMap SKILL_REUSE_LIST;
 	public static boolean AUTO_LEARN_SKILLS;
+	public static boolean AUTO_LEARN_FS_SKILLS;
 	public static boolean AUTO_LOOT_HERBS;
 	public static byte BUFFS_MAX_AMOUNT;
 	public static byte DANCES_MAX_AMOUNT;
@@ -123,15 +124,17 @@ public final class Config
 	public static boolean ALLOW_ENTIRE_TREE;
 	public static boolean ALTERNATE_CLASS_MASTER;
 	public static boolean LIFE_CRYSTAL_NEEDED;
-	public static boolean SP_BOOK_NEEDED;
 	public static boolean ES_SP_BOOK_NEEDED;
 	public static boolean DIVINE_SP_BOOK_NEEDED;
 	public static boolean ALT_GAME_SKILL_LEARN;
 	public static boolean ALT_GAME_SUBCLASS_WITHOUT_QUESTS;
 	public static boolean ALT_GAME_SUBCLASS_EVERYWHERE;
+	public static boolean ALLOW_TRANSFORM_WITHOUT_QUEST;
 	public static int MAX_RUN_SPEED;
 	public static int MAX_PCRIT_RATE;
 	public static int MAX_MCRIT_RATE;
+	public static int FEE_DELETE_TRANSFER_SKILLS;
+	public static int FEE_DELETE_SUBCLASS_SKILLS;
 	public static int MAX_PATK_SPEED;
 	public static int MAX_MATK_SPEED;
 	public static int MAX_EVASION;
@@ -1490,7 +1493,8 @@ public final class Config
 						}
 					}
 					
-					AUTO_LEARN_SKILLS = Boolean.parseBoolean(Character.getProperty("AutoLearnSkills", "false"));
+					AUTO_LEARN_SKILLS = Boolean.parseBoolean(Character.getProperty("AutoLearnSkills", "False"));
+					AUTO_LEARN_FS_SKILLS = Boolean.parseBoolean(Character.getProperty("AutoLearnForgottenScrollSkills", "False"));
 					AUTO_LOOT_HERBS = Boolean.parseBoolean(Character.getProperty("AutoLootHerbs", "false"));
 					BUFFS_MAX_AMOUNT = Byte.parseByte(Character.getProperty("maxbuffamount","20"));
 					DANCES_MAX_AMOUNT = Byte.parseByte(Character.getProperty("maxdanceamount","12"));
@@ -1512,7 +1516,6 @@ public final class Config
 					if (ALLOW_CLASS_MASTERS || ALTERNATE_CLASS_MASTER)
 						CLASS_MASTER_SETTINGS = new ClassMasterSettings(Character.getProperty("ConfigClassMaster"));
 					LIFE_CRYSTAL_NEEDED = Boolean.parseBoolean(Character.getProperty("LifeCrystalNeeded", "true"));
-					SP_BOOK_NEEDED = Boolean.parseBoolean(Character.getProperty("SpBookNeeded", "false"));
 					ES_SP_BOOK_NEEDED = Boolean.parseBoolean(Character.getProperty("EnchantSkillSpBookNeeded","true"));
 					DIVINE_SP_BOOK_NEEDED = Boolean.parseBoolean(Character.getProperty("DivineInspirationSpBookNeeded", "true"));
 					ALT_GAME_SKILL_LEARN = Boolean.parseBoolean(Character.getProperty("AltGameSkillLearn", "false"));
@@ -1520,6 +1523,7 @@ public final class Config
 					ALT_GAME_SUBCLASS_EVERYWHERE = Boolean.parseBoolean(Character.getProperty("AltSubclassEverywhere", "False"));
 					ENABLE_VITALITY = Boolean.parseBoolean(Character.getProperty("EnableVitality", "True"));
 					RECOVER_VITALITY_ON_RECONNECT = Boolean.parseBoolean(Character.getProperty("RecoverVitalityOnReconnect", "True"));
+					ALLOW_TRANSFORM_WITHOUT_QUEST = Boolean.parseBoolean(Character.getProperty("AltTransformationWithoutQuest", "False"));
 					STARTING_VITALITY_POINTS = Integer.parseInt(Character.getProperty("StartingVitalityPoints", "20000"));
 					MAX_RUN_SPEED = Integer.parseInt(Character.getProperty("MaxRunSpeed", "250"));
 					MAX_PCRIT_RATE = Integer.parseInt(Character.getProperty("MaxPCritRate", "500"));
@@ -1573,6 +1577,8 @@ public final class Config
 					AUGMENTATION_BASESTAT_CHANCE = Integer.parseInt(Character.getProperty("AugmentationBaseStatChance", "1"));
 					AUGMENTATION_ACC_SKILL_CHANCE = Integer.parseInt(Character.getProperty("AugmentationAccSkillChance", "0"));
 					
+					FEE_DELETE_TRANSFER_SKILLS = Integer.parseInt(Character.getProperty("FeeDeleteTransferSkills", "10000000"));
+					FEE_DELETE_SUBCLASS_SKILLS = Integer.parseInt(Character.getProperty("FeeDeleteSubClassSkills", "10000000"));
 					String[] array = Character.getProperty("AugmentationBlackList", "6656,6657,6658,6659,6660,6661,6662,8191,10170,10314,13740,13741,13742,13743,13744,13745,13746,13747,13748,14592,14593,14594,14595,14596,14597,14598,14599,14600,14664,14665,14666,14667,14668,14669,14670,14671,14672,14801,14802,14803,14804,14805,14806,14807,14808,14809,15282,15283,15284,15285,15286,15287,15288,15289,15290,15291,15292,15293,15294,15295,15296,15297,15298,15299,16025,16026").split(",");
 					AUGMENTATION_BLACKLIST = new int[array.length];
 					
@@ -3111,7 +3117,6 @@ public final class Config
 		else if (pName.equalsIgnoreCase("CraftingEnabled")) IS_CRAFTING_ENABLED = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("CraftMasterwork")) CRAFT_MASTERWORK = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("LifeCrystalNeeded")) LIFE_CRYSTAL_NEEDED = Boolean.parseBoolean(pValue);
-		else if (pName.equalsIgnoreCase("SpBookNeeded")) SP_BOOK_NEEDED = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AutoLoot")) AUTO_LOOT = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AutoLootRaids")) AUTO_LOOT_RAIDS = Boolean.parseBoolean(pValue);
 		else if (pName.equalsIgnoreCase("AutoLootHerbs")) AUTO_LOOT_HERBS = Boolean.parseBoolean(pValue);

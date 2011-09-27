@@ -63,13 +63,10 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.NpcWalkerRoutesTable;
 import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
-import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
-import com.l2jserver.gameserver.datatables.SkillSpellbookTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.StaticObjects;
-import com.l2jserver.gameserver.datatables.SubPledgeSkillTree;
 import com.l2jserver.gameserver.datatables.SummonItemsData;
 import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
@@ -219,13 +216,10 @@ public class GameServer
 		printSection("Skills");
 		EnchantGroupsTable.getInstance();
 		SkillTable.getInstance();
-		SkillTreeTable.getInstance();
+		SkillTreesData.getInstance();
 		NobleSkillTable.getInstance();
 		GMSkillTable.getInstance();
 		HeroSkillTable.getInstance();
-		ResidentialSkillTable.getInstance();
-		SkillSpellbookTable.getInstance();
-		SubPledgeSkillTree.getInstance();
 		SummonSkillsTable.getInstance();
 		
 		printSection("Items");
@@ -238,7 +232,6 @@ public class GameServer
 		RecipeController.getInstance();
 		ArmorSetsTable.getInstance();
 		FishTable.getInstance();
-		SkillSpellbookTable.getInstance();
 		
 		printSection("Characters");
 		CharTemplateTable.getInstance();

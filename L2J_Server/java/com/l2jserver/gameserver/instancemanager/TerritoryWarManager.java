@@ -37,10 +37,12 @@ import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
-import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
+import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.Location;
@@ -345,12 +347,26 @@ public class TerritoryWarManager implements Siegable
 				if (!isTWInProgress() && !SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS)
 					ret.decayMe();
 				if (terNew.getOwnerClan() != null && terNew.getOwnedWardIds().contains(newOwnerId + 80))
+				{
 					for(int wardId : terNew.getOwnedWardIds())
-						if (ResidentialSkillTable.getInstance().getSkills(wardId) != null)
-							for (L2Skill sk : ResidentialSkillTable.getInstance().getSkills(wardId))
+					{
+						final FastList<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(wardId);
+						for (L2SkillLearn s : residentialSkills)
+						{
+							final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+							if (sk != null)
+							{
 								for (L2PcInstance member : terNew.getOwnerClan().getOnlineMembers(0))
+								{
 									if (!member.isInOlympiadMode())
+									{
 										member.addSkill(sk, false);
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 			if (_territoryList.containsKey(oldOwnerId))
 			{
@@ -367,16 +383,37 @@ public class TerritoryWarManager implements Siegable
 				}
 				if (terOld.getOwnerClan() != null)
 				{
-					if (ResidentialSkillTable.getInstance().getSkills(territoryId) != null)
-						for (L2Skill sk : ResidentialSkillTable.getInstance().getSkills(territoryId))
+					final FastList<L2SkillLearn> territorySkills = SkillTreesData.getInstance().getAvailableResidentialSkills(territoryId);
+					for (L2SkillLearn s : territorySkills)
+					{
+						final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+						if (sk != null)
+						{
 							for (L2PcInstance member : terOld.getOwnerClan().getOnlineMembers(0))
+							{
 								member.removeSkill(sk, false);
+							}
+						}
+					}
+					
 					if (!terOld.getOwnedWardIds().isEmpty() && !terOld.getOwnedWardIds().contains(oldOwnerId + 80))
+					{
 						for(int wardId : terOld.getOwnedWardIds())
-							if (ResidentialSkillTable.getInstance().getSkills(wardId) != null)
-								for (L2Skill sk : ResidentialSkillTable.getInstance().getSkills(wardId))
+						{
+							final FastList<L2SkillLearn> wardSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(wardId);
+							for (L2SkillLearn s : wardSkills)
+							{
+								final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+								if (sk != null)
+								{
 									for (L2PcInstance member : terOld.getOwnerClan().getOnlineMembers(0))
+									{
 										member.removeSkill(sk, false);
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}

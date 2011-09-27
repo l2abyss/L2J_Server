@@ -38,7 +38,8 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
-import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
+import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.StaticObjects;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -46,6 +47,7 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
@@ -58,7 +60,6 @@ import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-
 
 public class Fort
 {
@@ -251,7 +252,19 @@ public class Fort
 		loadDoor();
 		loadFlagPoles();
 		_function = new FastMap<Integer, FortFunction>();
-		_residentialSkills = ResidentialSkillTable.getInstance().getSkills(fortId);
+		FastList<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(fortId);
+		for (L2SkillLearn s : residentialSkills)
+		{
+			L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+			if (sk != null)
+			{
+				_residentialSkills.add(sk);
+			}
+			else
+			{
+				_log.warning("Fort Id: " + fortId + " has a null residential skill Id: " + s.getSkillId() + " level: " + s.getSkillLevel() + "!");
+			}
+		}
 		if (getOwnerClan() != null)
 		{
 			setVisibleFlag(true);

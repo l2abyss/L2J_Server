@@ -48,10 +48,8 @@ public class SkillTable
 	public void reload()
 	{
 		load();
-		
-		//reload some related too
-		SkillTreeTable.getInstance().reload();
-		SubPledgeSkillTree.getInstance().reload();
+		//Reload Skill Tree as well.
+		SkillTreesData.getInstance().load();
 	}
 	
 	private void load()
@@ -76,7 +74,6 @@ public class SkillTable
 			if (skillLvl > maxLvl)
 				_skillMaxLevel.put(skillId, skillLvl);
 		}
-		//SkillTreeTable.getInstance().reload();
 		
 		// Sorting for binarySearch
 		_enchantable.sort();
@@ -168,7 +165,6 @@ public class SkillTable
 	 * Enum to hold some important references to frequently used (hardcoded) skills in core
 	 * 
 	 * @author DrHouse
-	 *
 	 */
 	public static enum FrequentSkill
 	{
@@ -176,9 +172,6 @@ public class SkillTable
 		RAID_CURSE2(4515, 1),
 		SEAL_OF_RULER(246, 1),
 		BUILD_HEADQUARTERS(247, 1),
-		LUCKY(194, 1),
-		DWARVEN_CRAFT(1321, 1),
-		COMMON_CRAFT(1322, 1),
 		WYVERN_BREATH(4289, 1),
 		STRIDER_SIEGE_ASSAULT(325, 1),
 		FAKE_PETRIFICATION(4616, 1),
@@ -206,6 +199,5 @@ public class SkillTable
 		{
 			return _skill;
 		}
-		
 	}
 }

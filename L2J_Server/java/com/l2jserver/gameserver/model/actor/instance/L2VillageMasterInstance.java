@@ -17,10 +17,12 @@ package com.l2jserver.gameserver.model.actor.instance;
 import java.util.Iterator;
 import java.util.Set;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
@@ -28,7 +30,7 @@ import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Clan.SubPledge;
 import com.l2jserver.gameserver.model.L2ClanMember;
-import com.l2jserver.gameserver.model.L2PledgeSkillLearn;
+import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.PlayerClass;
 import com.l2jserver.gameserver.model.base.Race;
@@ -38,6 +40,7 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
+import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
@@ -48,7 +51,6 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.StringUtil;
-
 
 /**
  * This class ...
@@ -539,8 +541,6 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		else
 		{
-			// this class dont know any other commands, let forward
-			// the command to the parent class
 			super.onBypassFeedback(player, command);
 		}
 	}
@@ -561,7 +561,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	
 	protected boolean checkQuests(L2PcInstance player)
 	{
-		// Noble players can add subbclasses without quests
+		// Noble players can add Sub-Classes without quests
 		if (player.isNoble())
 			return true;
 		
@@ -1059,7 +1059,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	 */
 	public static final void showPledgeSkillList(L2PcInstance player)
 	{
-		if (player.getClan() == null || !player.isClanLeader())
+		if (!player.isClanLeader())
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(1);
 			html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/NotClanLeader.htm");
@@ -1068,19 +1068,16 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			return;
 		}
 		
-		L2PledgeSkillLearn[] skills = SkillTreeTable.getInstance().getAvailablePledgeSkills(player);
-		AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Clan);
+		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailablePledgeSkills(player.getClan());
+		final AcquireSkillList asl = new AcquireSkillList(SkillType.Pledge);
 		int counts = 0;
 		
-		for (L2PledgeSkillLearn s: skills)
+		for (L2SkillLearn s: skills)
 		{
-			int cost = s.getRepCost();
-			int itemCount = s.getItemCount();
+			asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), s.getLevelUpSp(), s.getSocialClass());
 			counts++;
-			
-			asl.addSkill(s.getId(), s.getLevel(), s.getLevel(), cost, itemCount);
 		}
-		
+		//TODO: Missing some system message?
 		if (counts == 0)
 		{
 			if (player.getClan().getLevel() < 8)
@@ -1100,8 +1097,9 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			}
 		}
 		else
+		{
 			player.sendPacket(asl);
-		
+		}
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 }

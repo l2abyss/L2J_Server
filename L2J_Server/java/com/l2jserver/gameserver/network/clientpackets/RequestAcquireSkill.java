@@ -17,26 +17,27 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.SkillSpellbookTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
-import com.l2jserver.gameserver.datatables.SubPledgeSkillTree;
-import com.l2jserver.gameserver.datatables.SubPledgeSkillTree.SubUnitSkill;
-import com.l2jserver.gameserver.model.L2PledgeSkillLearn;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
+import com.l2jserver.gameserver.instancemanager.QuestManager;
+import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
-import com.l2jserver.gameserver.model.L2TransformSkillLearn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2FishermanInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2TrainerHealersInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TransformManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2VillageMasterInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillDone;
+import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.ExStorageMaxCount;
 import com.l2jserver.gameserver.network.serverpackets.PledgeSkillList;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
@@ -45,20 +46,18 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- * This class ...
- *
- * @version $Revision: 1.7.2.1.2.4 $ $Date: 2005/03/27 15:29:30 $
+ * @author Zoey76
  */
-public class RequestAcquireSkill extends L2GameClientPacket
+public final class RequestAcquireSkill extends L2GameClientPacket
 {
-	private static final String _C__6C_REQUESTAQUIRESKILL = "[C] 7C RequestAcquireSkill";
+	private static final String _C__7C_REQUESTACQUIRESKILL = "[C] 7C RequestAcquireSkill";
 	
 	private static Logger _log = Logger.getLogger(RequestAcquireSkill.class.getName());
 	
 	private int _id;
 	private int _level;
 	private int _skillType;
-	private int subType;
+	private int _subType;
 	
 	@Override
 	protected void readImpl()
@@ -66,449 +65,462 @@ public class RequestAcquireSkill extends L2GameClientPacket
 		_id = readD();
 		_level = readD();
 		_skillType = readD();
-		if (_skillType == 3)
-			subType = readD();
+		if (_skillType == SkillType.SubPledge.ordinal())
+		{
+			_subType = readD();
+		}
 	}
 	
 	@Override
 	protected void runImpl()
 	{
-		final L2PcInstance player = getClient().getActiveChar();
-		if (player == null)
-			return;
-		
-		if (_level < 1 || _level > 1000 || _id < 1 || _id > 32000)
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
 		{
-			Util.handleIllegalPlayerAction(player, "Wrong Packet Data in Aquired Skill", Config.DEFAULT_PUNISH);
-			_log.warning("Recived Wrong Packet Data in Aquired Skill - id: " + _id + " level: " + _level + " for "+player);
 			return;
 		}
 		
-		final L2Npc trainer = player.getLastFolkNPC();
+		if ((_level < 1) || (_level > 1000) || (_id < 1) || (_id > 32000))
+		{
+			Util.handleIllegalPlayerAction(activeChar, "Wrong Packet Data in Aquired Skill", Config.DEFAULT_PUNISH);
+			_log.warning("Recived Wrong Packet Data in Aquired Skill - id: " + _id + " level: " + _level + " for " + activeChar);
+			return;
+		}
+		
+		final L2Npc trainer = activeChar.getLastFolkNPC();
 		if (!(trainer instanceof L2NpcInstance))
+		{
 			return;
+		}
 		
-		if (!trainer.canInteract(player) && !player.isGM())
+		if (!trainer.canInteract(activeChar) && !activeChar.isGM())
+		{
 			return;
+		}
 		
-		if (!Config.ALT_GAME_SKILL_LEARN)
-			player.setSkillLearningClassId(player.getClassId());
-		
-		/**
-		 *  If current skill lvl + 1 is not equal to the skill lvl you wanna learn (eg: You have Aggression lvl 3 and the packet sends info that
-		 *  you want to learn Aggression lvl 5, thus skipping lvl 4.) or the packet sends the same level or lower (eg: Aggression lvl 3 and the
-		 *  packet sends info that you want to learn Aggression level 3).
-		 */
-		if (Math.max(player.getSkillLevel(_id), 0) + 1 != _level && !(_skillType == 3 || _skillType == 4))
+		final SkillType skillType = SkillType.values()[_skillType];
+		if ((activeChar.getSkillLevel(_id) >= _level) && (skillType != SkillType.SubPledge))
+		{
+			//Already knows the skill with this level
 			return;
+		}
 		
 		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
-		
-		int counts = 0;
-		int requiredSp = 10000000;
-		
-		switch (_skillType)
+		if (skill == null)
 		{
-			case 0:
+			_log.warning("Player " + activeChar.getName() + " is trying to learn a null skill id: " + _id + " level: " + _level + "!");
+			return;
+		}
+		
+		//Hack check. Doesn't apply to all Skill Types
+		if (((skillType != SkillType.Transfer) && ((_level > 1) && (activeChar.getKnownSkill(_id) == null))) || ((activeChar.getKnownSkill(_id) != null) && (activeChar.getKnownSkill(_id).getLevel() != (_level - 1))))
+		{
+			//The previous level skill has not been learned.
+			activeChar.sendPacket(SystemMessageId.PREVIOUS_LEVEL_SKILL_NOT_LEARNED);
+			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " without knowing it's previous level!", 0);
+			return;
+		}
+		
+		switch (skillType)
+		{
+			case ClassTransform:
 			{
-				if (trainer instanceof L2TransformManagerInstance) // transform skills
+				//If players is learning transformations:
+				if (trainer instanceof L2TransformManagerInstance)
 				{
-					int costId = 0;
-					
-					// Skill Learn bug Fix
-					L2TransformSkillLearn[] skillst = SkillTreeTable.getInstance().getAvailableTransformSkills(player);
-					for (L2TransformSkillLearn s : skillst)
+					//Hack check.
+					if (!L2TransformManagerInstance.canTransform(activeChar))
 					{
-						L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
-						if (sk == null || sk != skill)
-							continue;
-						
-						counts++;
-						costId = s.getItemId();
-						requiredSp = s.getSpCost();
-					}
-					
-					if (counts == 0)
-					{
-						player.sendMessage("You are trying to learn skill that u can't..");
-						Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_COMPLETED_QUEST_FOR_SKILL_ACQUISITION));
+						Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " without required quests!", 0);
 						return;
 					}
 					
-					if (player.getSp() >= requiredSp)
+					//Required skills:
+					final L2SkillLearn s = SkillTreesData.getInstance().getTransformSkill(_id, _level);
+					if ((s != null) && (s.getPreReqSkillIdLvl() != null) && (activeChar.getKnownSkill(s.getPreReqSkillIdLvl()[0]) == null))
 					{
-						if (!player.destroyItemByItemId("Consume", costId, 1, trainer, false))
-						{
-							// Haven't spellbook
-							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-							showSkillList(trainer, player);
-							return;
-						}
-						
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
-						sm.addItemName(costId);
-						player.sendPacket(sm);
-					}
-					else
-					{
-						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
-						showSkillList(trainer, player);
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_MUST_LEARN_ONYX_BEAST_SKILL));
 						return;
+					}
+					
+					if (checkPlayerSkill(activeChar, trainer, s))
+					{
+						giveSkill(activeChar, trainer, skill);
 					}
 					break;
 				}
-				
-				// normal skills
-				L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSkills(player, player.getSkillLearningClassId());
-				for (L2SkillLearn s : skills)
-				{
-					if (!s.isLearnedByNPC())
-						continue;
-					
-					L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
-					if (sk == null || sk != skill)
-						continue;
-					
-					counts++;
-					requiredSp = SkillTreeTable.getInstance().getSkillCost(player,skill);
-				}
-				
-				if (counts == 0 && !Config.ALT_GAME_SKILL_LEARN)
-				{
-					player.sendMessage("You are trying to learn skill that u can't..");
-					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
-					return;
-				}
-				
-				if (player.getSp() >= requiredSp)
-				{
-					int spbId = -1;
-					
-					// divine inspiration require book for each level
-					if (Config.DIVINE_SP_BOOK_NEEDED && skill.getId() == L2Skill.SKILL_DIVINE_INSPIRATION)
-						spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill, _level);
-					else if (Config.SP_BOOK_NEEDED && skill.getLevel() == 1)
-						spbId = SkillSpellbookTable.getInstance().getBookForSkill(skill);
-					
-					// spellbook required
-					if (spbId > -1)
-					{
-						if (!player.destroyItemByItemId("Consume", spbId, 1, trainer, false))
-						{
-							// Haven't spellbook
-							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-							showSkillList(trainer, player);
-							return;
-						}
-						
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
-						sm.addItemName(spbId);
-						player.sendPacket(sm);
-					}
-				}
 				else
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
-					showSkillList(trainer, player);
-					return;
+					final L2SkillLearn s = SkillTreesData.getInstance().getClassSkill(_id, _level, activeChar.getClassId());
+					if (checkPlayerSkill(activeChar, trainer, s))
+					{
+						giveSkill(activeChar, trainer, skill);
+					}
 				}
 				break;
 			}
-			case 1:
+			case Fishing:
 			{
-				int costId = 0;
-				int costCount = 0;
-				
-				// Skill Learn bug Fix
-				L2SkillLearn[] skillsc = SkillTreeTable.getInstance().getAvailableSkills(player);
-				for (L2SkillLearn s : skillsc)
+				final L2SkillLearn s = SkillTreesData.getInstance().getFishingSkill(_id, _level);
+				if (checkPlayerSkill(activeChar, trainer, s))
 				{
-					if (!s.isLearnedByNPC())
-						continue;
-					
-					L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
-					if (sk == null || sk != skill)
-						continue;
-					
-					counts++;
-					costId = s.getIdCost();
-					costCount = s.getCostCount();
-					requiredSp = s.getSpCost();
-				}
-				
-				if (counts == 0)
-				{
-					//player.sendMessage("You are trying to learn skill that u can't..");
-					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
-					return;
-				}
-				
-				if (player.getSp() >= requiredSp)
-				{
-					if (!player.destroyItemByItemId("Consume", costId, costCount, trainer, false))
-					{
-						// Haven't spellbook
-						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-						showSkillList(trainer, player);
-						return;
-					}
-					
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-					sm.addItemName(costId);
-					sm.addItemNumber(costCount);
-					player.sendPacket(sm);
-				}
-				else
-				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
-					showSkillList(trainer, player);
-					return;
+					giveSkill(activeChar, trainer, skill);
 				}
 				break;
 			}
-			case 2:
+			case Pledge:
 			{
-				int itemId = 0;
-				int itemCount = 0;
+				if (!activeChar.isClanLeader())
+				{
+					return;
+				}
+				
+				final L2Clan clan = activeChar.getClan();
+				
+				int itemId = -1;
+				int itemCount = -1;
 				int repCost = 100000000;
 				
-				// Skill Learn bug Fix
-				L2PledgeSkillLearn[] skills = SkillTreeTable.getInstance().getAvailablePledgeSkills(player);
-				for (L2PledgeSkillLearn s : skills)
+				final L2SkillLearn s = SkillTreesData.getInstance().getPledgeSkill(_id, _level);
+				if (s != null)
 				{
-					L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
-					if (sk == null || sk != skill)
-						continue;
+					repCost = s.getLevelUpSp();
 					
-					counts++;
-					itemId = s.getItemId();
-					itemCount = s.getItemCount();
-					repCost = s.getRepCost();
-					break;
-				}
-				
-				if (counts == 0)
-				{
-					//player.sendMessage("You are trying to learn skill that u can't..");
-					Util.handleIllegalPlayerAction(player, "Player " + player + " tried to learn clan skill that he can't!!!", Config.DEFAULT_PUNISH);
-					return;
-				}
-				
-				if (player.getClan().getReputationScore() >= repCost)
-				{
-					if (Config.LIFE_CRYSTAL_NEEDED)
+					if (clan.getReputationScore() >= repCost)
 					{
-						if (!player.destroyItemByItemId("Consume", itemId, itemCount, trainer, false))
+						if (Config.LIFE_CRYSTAL_NEEDED && (s.getItemsIdCount() != null))
 						{
-							// Haven't spellbook
-							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-							L2VillageMasterInstance.showPledgeSkillList(player);
-							return;
+							for (int[] itemIdCount : s.getItemsIdCount())
+							{
+								itemId = itemIdCount[0];
+								itemCount = itemIdCount[1];
+								
+								if ((itemId > 0) && (itemCount > 0))
+								{
+									if (!activeChar.destroyItemByItemId("Consume", itemId, itemCount, trainer, false))
+									{
+										//Doesn't have required item.
+										activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+										L2VillageMasterInstance.showPledgeSkillList(activeChar);
+										return;
+									}
+									
+									final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+									sm.addItemName(itemId);
+									sm.addItemNumber(itemCount);
+									activeChar.sendPacket(sm);
+								}
+							}
 						}
 						
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-						sm.addItemName(itemId);
-						sm.addItemNumber(itemCount);
-						player.sendPacket(sm);
-					}
-				}
-				else
-				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
-					L2VillageMasterInstance.showPledgeSkillList(player);
-					return;
-				}
-				
-				player.getClan().takeReputationScore(repCost, true);
-				player.getClan().addNewSkill(skill);
-				
-				if (Config.DEBUG)
-					_log.fine("Learned pledge skill " + _id + " for " + requiredSp + " SP.");
-				
-				SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-				cr.addNumber(repCost);
-				player.sendPacket(cr);
-				
-				player.sendPacket(new AcquireSkillDone());
-				
-				player.getClan().broadcastToOnlineMembers(new PledgeSkillList(player.getClan()));
-				
-				L2VillageMasterInstance.showPledgeSkillList(player); //Maybe we should add a check here...
-				return;
-			}
-			case 3:
-			{
-				if (!player.isClanLeader())
-					return;
-				if (player.getClan().getHasFort() == 0 && player.getClan().getHasCastle() == 0)
-					return;
-				if (trainer instanceof L2SquadTrainer)
-				{
-					int id = 0;
-					int count = 0;
-					int rep = 100000000;
-					boolean found = false;
-					for (SubUnitSkill sus: SubPledgeSkillTree.getInstance().getAvailableSkills(player.getClan()))
-					{
-						if (sus.getSkill() == skill)
-						{
-							id = sus.getItemId();
-							count = sus.getCount();
-							rep = sus.getReputation();
-							found = true;
-							break;
-						}
-					}
-					
-					// skill not available for clan !?
-					if (!found)
-						return;
-					
-					// check if subunit can accept skill
-					if (!player.getClan().isLearnableSubSkill(skill, subType))
-						return;
-					
-					if (player.getClan().getReputationScore() < rep)
-					{
-						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
-						return;
-					}
-					
-					if (!player.destroyItemByItemId("SubSkills", id, count, trainer, false))
-					{
-						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-						return;
+						clan.takeReputationScore(repCost, true);
+						
+						final SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+						cr.addNumber(repCost);
+						activeChar.sendPacket(cr);
+						
+						clan.addNewSkill(skill);
+						
+						clan.broadcastToOnlineMembers(new PledgeSkillList(clan));
+						
+						activeChar.sendPacket(new AcquireSkillDone());
+						
+						L2VillageMasterInstance.showPledgeSkillList(activeChar);
 					}
 					else
 					{
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-						sm.addItemName(id);
-						sm.addItemNumber(count);
-						player.sendPacket(sm);
+						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
+						L2VillageMasterInstance.showPledgeSkillList(activeChar);
 					}
-					
-					player.getClan().takeReputationScore(rep, true);
-					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-					cr.addNumber(rep);
-					player.sendPacket(cr);
-					
-					if (subType > -2)
-						player.getClan().addNewSkill(skill, subType);
-					
-					player.getClan().broadcastToOnlineMembers(new PledgeSkillList(player.getClan()));
-					
-					((L2SquadTrainer) trainer).showSubUnitSkillList(player);
+					return;
 				}
 				break;
 			}
-			case 4:
-			case 5:
+			case SubPledge:
 			{
-				requiredSp = 0;
-				Quest[] qlst = trainer.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_LEARN);
-				if ((qlst != null) && qlst.length == 1)
+				if (!activeChar.isClanLeader())
 				{
-					if (!qlst[0].notifyAcquireSkill(trainer, player, skill))
+					return;
+				}
+				
+				final L2Clan clan = activeChar.getClan();
+				if ((clan.getHasFort() == 0) && (clan.getHasCastle() == 0))
+				{
+					return;
+				}
+				
+				if (trainer instanceof L2SquadTrainer)
+				{
+					int itemId = -1;
+					int itemCount = -1;
+					int rep = 100000000;
+					
+					final L2SkillLearn s = SkillTreesData.getInstance().getSubPledgeSkill(_id, _level);
+					if (s != null)
 					{
-						qlst[0].notifyAcquireSkillList(trainer, player);
+						//Hack check. Check if SubPledge can accept the new skill:
+						if (!clan.isLearnableSubPledgeSkill(skill, _subType))
+						{
+							activeChar.sendPacket(SystemMessageId.SQUAD_SKILL_ALREADY_ACQUIRED);
+							Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " without knowing it's previous level!", 0);
+							return;
+						}
+						
+						rep = s.getLevelUpSp();
+						if (clan.getReputationScore() < rep)
+						{
+							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRE_SKILL_FAILED_BAD_CLAN_REP_SCORE));
+							return;
+						}
+						
+						for (int[] itemIdCount : s.getItemsIdCount())
+						{
+							itemId = itemIdCount[0];
+							itemCount = itemIdCount[1];
+							
+							if (!activeChar.destroyItemByItemId("SubSkills", itemId, itemCount, trainer, false))
+							{
+								activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+								return;
+							}
+							else
+							{
+								final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+								sm.addItemName(itemId);
+								sm.addItemNumber(itemCount);
+								activeChar.sendPacket(sm);
+							}
+						}
+						
+						if (rep > 0)
+						{
+							clan.takeReputationScore(rep, true);
+							final SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
+							cr.addNumber(rep);
+							activeChar.sendPacket(cr);
+						}
+						
+						clan.addNewSkill(skill, _subType);
+						clan.broadcastToOnlineMembers(new PledgeSkillList(clan));
+						activeChar.sendPacket(new AcquireSkillDone());
+						
+						((L2SquadTrainer) trainer).showSubUnitSkillList(activeChar);
 						return;
 					}
 				}
-				else
-					return;
 				break;
 			}
-			case 6:
+			case Transfer:
 			{
-				int costId = 0;
-				int costCount = 0;
-				
-				// Skill Learn bug Fix
-				L2SkillLearn[] skillsc = SkillTreeTable.getInstance().getAvailableSpecialSkills(player);
-				for (L2SkillLearn s : skillsc)
+				final L2SkillLearn s = SkillTreesData.getInstance().getTransferSkill(_id, _level, activeChar.getClassId());
+				if (checkPlayerSkill(activeChar, trainer, s))
 				{
-					L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
-					if (sk == null || sk != skill)
-						continue;
-					
-					counts++;
-					costId = s.getIdCost();
-					costCount = s.getCostCount();
-					requiredSp = s.getSpCost();
+					giveSkill(activeChar, trainer, skill);
 				}
-				
-				if (counts == 0)
+				break;
+			}
+			case SubClass:
+			{
+				//Hack check.
+				if (activeChar.isSubClassActive())
 				{
-					player.sendMessage("You are trying to learn skill that u can't..");
-					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to learn skill that he can't!!!", Config.DEFAULT_PUNISH);
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SKILL_NOT_FOR_SUBCLASS));
+					Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " while Sub-Class is active!", 0);
 					return;
 				}
 				
-				if (player.getSp() >= requiredSp)
+				final L2SkillLearn s = SkillTreesData.getInstance().getSubClassSkill(_id, _level);
+				QuestState st = activeChar.getQuestState("SubClassSkills");
+				if (st == null)
 				{
-					if (!player.destroyItemByItemId("Consume", costId, costCount, trainer, false))
+					final Quest subClassSkilllsQuest = QuestManager.getInstance().getQuest("SubClassSkills");
+					if (subClassSkilllsQuest != null)
 					{
-						// Haven't spellbook
-						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
-						showSkillList(trainer, player);
+						st = subClassSkilllsQuest.newQuestState(activeChar);
+					}
+					else
+					{
+						_log.warning("Null SubClassSkills quest, for Sub-Class skill Id: " + _id + " level: " + _level + " for player " + activeChar.getName() + "!");
 						return;
 					}
-					
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-					sm.addItemName(costId);
-					sm.addItemNumber(costCount);
-					player.sendPacket(sm);
 				}
-				else
+				
+				for (String varName : L2TransformManagerInstance._questVarNames)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
-					showSkillList(trainer, player);
-					return;
+					for (int i = 1; i <= Config.MAX_SUBCLASS; i++)
+					{
+						final String itemOID = st.getGlobalQuestVar(varName + i);
+						if (!itemOID.isEmpty() && !itemOID.endsWith(";") && !itemOID.equals("0"))
+						{
+							if (Util.isDigit(itemOID))
+							{
+								final int itemObjId = Integer.parseInt(itemOID);
+								final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(itemObjId);
+								if (item != null)
+								{
+									if (Util.contains(s.getItemsIdCount()[0], item.getItemId()))
+									{
+										if (checkPlayerSkill(activeChar, trainer, s))
+										{
+											giveSkill(activeChar, trainer, skill);
+											//Logging the given skill.
+											st.saveGlobalQuestVar(varName + i, skill.getId() + ";");
+										}
+										return;
+									}
+								}
+								else
+								{
+									_log.warning("Inexistent item for object Id " + itemObjId + ", for Sub-Class skill Id: " + _id + " level: " + _level + " for player " + activeChar.getName() + "!");
+								}
+							}
+							else
+							{
+								_log.warning("Invalid item object Id " + itemOID + ", for Sub-Class skill Id: " + _id + " level: " + _level + " for player " + activeChar.getName() + "!");
+							}
+						}
+					}
+				}
+				
+				//Player doesn't have required item.
+				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+				showSkillList(trainer, activeChar);
+				break;
+			}
+			case Collect:
+			{
+				final L2SkillLearn s = SkillTreesData.getInstance().getCollectSkill(_id, _level);
+				if (checkPlayerSkill(activeChar, trainer, s))
+				{
+					giveSkill(activeChar, trainer, skill);
 				}
 				break;
 			}
 			default:
 			{
-				_log.warning("Recived Wrong Packet Data in Aquired Skill - unk1:" + _skillType);
-				return;
+				_log.warning("Recived Wrong Packet Data in Aquired Skill, unknown skill type:" + _skillType);
 			}
-		}
-		
-		if (Config.DEBUG)
-			_log.fine("Learned skill " + _id + " for " + requiredSp + " SP.");
-		
-		if (_skillType != 3 && _skillType != 2)
-		{
-			player.setSp(player.getSp() - requiredSp);
-			
-			StatusUpdate su = new StatusUpdate(player);
-			su.addAttribute(StatusUpdate.SP, player.getSp());
-			player.sendPacket(su);
-			
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.LEARNED_SKILL_S1);
-			sm.addSkillName(skill);
-			player.sendPacket(sm);
-			
-			player.sendPacket(new AcquireSkillDone());
-			
-			player.addSkill(skill, true);
-			player.sendSkillList();
-			
-			updateShortCuts(player);
-			showSkillList(trainer, player);
 		}
 	}
 	
+	/**
+	 * Perform a simple check for current player and skill.<br>
+	 * Takes the needed SP if the skill require it and all requirements are meet.<br>
+	 * Consume required items if the skill require it and all requirements are meet.<br>
+	 * @param player the skill learning player.
+	 * @param trainer the skills teaching Npc.
+	 * @param s the skill to be learn.
+	 */
+	private boolean checkPlayerSkill(L2PcInstance player, L2Npc trainer, L2SkillLearn s)
+	{
+		if (s != null)
+		{
+			if ((s.getSkillId() == _id) && (s.getSkillLevel() == _level))
+			{
+				//Hack check.
+				if (s.getGetLevel() > player.getLevel())
+				{
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_MEET_SKILL_LEVEL_REQUIREMENTS));
+					Util.handleIllegalPlayerAction(player, "Player " + player.getName() + ", level " + player.getLevel() + " is requesting skill Id: " + _id + " level " + _level + " without having minimum required level, " + s.getGetLevel() + "!", 0);
+					return false;
+				}
+				
+				//First it checks that the skill require SP and the player has enough SP to learn it.
+				final int levelUpSp = s.getLevelUpSp();
+				if ((levelUpSp > 0) && (levelUpSp > player.getSp()))
+				{
+					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_SP_TO_LEARN_SKILL));
+					showSkillList(trainer, player);
+					return false;
+				}
+				
+				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == L2Skill.SKILL_DIVINE_INSPIRATION))
+				{
+					return true;
+				}
+				
+				if (s.getItemsIdCount() != null)
+				{
+					//Then checks that the player has all the items
+					long reqItemCount = 0;
+					for (int[] itemIdCount : s.getItemsIdCount())
+					{
+						
+						reqItemCount = player.getInventory().getInventoryItemCount(itemIdCount[0], -1);
+						if (reqItemCount < itemIdCount[1])
+						{
+							//Player doesn't have required item.
+							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
+							showSkillList(trainer, player);
+							return false;
+						}
+					}
+					//If the player has all required items, they are consumed.
+					for (int[] itemIdCount : s.getItemsIdCount())
+					{
+						if (!player.destroyItemByItemId("SkillLearn", itemIdCount[0], itemIdCount[1], trainer, true))
+						{
+							Util.handleIllegalPlayerAction(player, "Somehow player " + player.getName() + ", level " + player.getLevel() + " lose required item Id: " + itemIdCount[0] + " to learn skill while learning skill Id: " + _id + " level " + _level + "!", 0);
+						}
+					}
+				}
+				//If the player has SP and all required items then consume SP.
+				if (levelUpSp > 0)
+				{
+					player.setSp(player.getSp() - levelUpSp);
+					final StatusUpdate su = new StatusUpdate(player);
+					su.addAttribute(StatusUpdate.SP, player.getSp());
+					player.sendPacket(su);
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Add the skill to the player and makes proper updates.
+	 * @param player the player acquiring a skill.
+	 * @param trainer the Npc teaching a skill.
+	 * @param skill the skill to be learn.
+	 */
+	private void giveSkill(L2PcInstance player, L2Npc trainer, L2Skill skill)
+	{
+		//Send message.
+		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.LEARNED_SKILL_S1);
+		sm.addSkillName(skill);
+		player.sendPacket(sm);
+		
+		player.sendPacket(new AcquireSkillDone());
+		
+		player.addSkill(skill, true);
+		player.sendSkillList();
+		
+		updateShortCuts(player);
+		showSkillList(trainer, player);
+		
+		//If skill is expand type then sends packet:
+		if ((_id >= 1368) && (_id <= 1372))
+		{
+			player.sendPacket(new ExStorageMaxCount(player));
+		}
+	}
+	
+	/**
+	 * Updates the shortcut bars with the new acquired skill.
+	 * @param player the player that needs a shortcut update.
+	 */
 	private void updateShortCuts(L2PcInstance player)
 	{
-		// update all the shortcuts to this skill
+		//Update all the shortcuts for this skill
 		if (_level > 1)
 		{
-			L2ShortCut[] allShortCuts = player.getAllShortCuts();
+			final L2ShortCut[] allShortCuts = player.getAllShortCuts();
 			
 			for (L2ShortCut sc : allShortCuts)
 			{
-				if (sc.getId() == _id && sc.getType() == L2ShortCut.TYPE_SKILL)
+				if ((sc.getId() == _id) && (sc.getType() == L2ShortCut.TYPE_SKILL))
 				{
 					L2ShortCut newsc = new L2ShortCut(sc.getSlot(), sc.getPage(), sc.getType(), sc.getId(), _level, 1);
 					player.sendPacket(new ShortCutRegister(newsc));
@@ -518,33 +530,38 @@ public class RequestAcquireSkill extends L2GameClientPacket
 		}
 	}
 	
+	/**
+	 * Wrapper for returning the skill list to the player after it's done with current skill.
+	 * @param trainer the Npc which the {@code player} is interacting.
+	 * @param player the active character.
+	 */
 	private void showSkillList(L2Npc trainer, L2PcInstance player)
 	{
-		if (_skillType == 4)
+		if ((trainer instanceof L2TrainerHealersInstance) && (_skillType == SkillType.Transfer.ordinal()))
 		{
-			Quest[] qlst = trainer.getTemplate().getEventQuests(Quest.QuestEventType.ON_SKILL_LEARN);
-			qlst[0].notifyAcquireSkillList(trainer, player);
+			L2TrainerHealersInstance.showTransferSkillList(player);
 		}
 		else if (trainer instanceof L2FishermanInstance)
+		{
 			L2FishermanInstance.showFishSkillList(player);
-		else if (trainer instanceof L2TransformManagerInstance)
+		}
+		else if ((trainer instanceof L2TransformManagerInstance) && (_skillType == SkillType.ClassTransform.ordinal()))
+		{
 			L2TransformManagerInstance.showTransformSkillList(player);
+		}
+		else if ((trainer instanceof L2TransformManagerInstance) && (_skillType == SkillType.SubClass.ordinal()))
+		{
+			L2TransformManagerInstance.showSubClassSkillList(player);
+		}
 		else
-			L2NpcInstance.showSkillList(player, trainer, player.getSkillLearningClassId());
-		
-		// if skill is expand sendpacket :)
-		if (_id >= 1368 && _id <= 1372)
-			player.sendPacket(new ExStorageMaxCount(player));
+		{
+			L2NpcInstance.showSkillList(player, trainer, player.getClassId());
+		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__6C_REQUESTAQUIRESKILL;
+		return _C__7C_REQUESTACQUIRESKILL;
 	}
 }

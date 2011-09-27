@@ -13000,9 +13000,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2211<br>
-	 * Message: You have not acquired a good deed skill so you cannot acquire new skills.
+	 * Message: You must learn the Onyx Beast skill before you can acquire further skills.
 	 */
-	public static final SystemMessageId NOT_ACQUIRED_DEED_SKILL_CANNOT_ACQUIRE_SKILLS;
+	public static final SystemMessageId YOU_MUST_LEARN_ONYX_BEAST_SKILL;
 	
 	/**
 	 * ID: 2212<br>
@@ -13048,9 +13048,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2219<br>
-	 * Message: This lower clan skill has already been acquired.
+	 * Message: This squad skill has already been acquired.
 	 */
-	public static final SystemMessageId LOWER_CLAN_SKILL_ALREADY_ACQUIRED;
+	public static final SystemMessageId SQUAD_SKILL_ALREADY_ACQUIRED;
 	
 	/**
 	 * ID: 2220<br>
@@ -16834,7 +16834,7 @@ public final class SystemMessageId
 		YOU_DONT_MEET_SKILL_LEVEL_REQUIREMENTS = new SystemMessageId(2208);
 		AREA_WHERE_RADAR_CANNOT_BE_USED = new SystemMessageId(2209);
 		RETURN_TO_UNENCHANTED_CONDITION = new SystemMessageId(2210);
-		NOT_ACQUIRED_DEED_SKILL_CANNOT_ACQUIRE_SKILLS = new SystemMessageId(2211);
+		YOU_MUST_LEARN_ONYX_BEAST_SKILL = new SystemMessageId(2211);
 		NOT_COMPLETED_QUEST_FOR_SKILL_ACQUISITION = new SystemMessageId(2212);
 		CANT_BOARD_SHIP_POLYMORPHED = new SystemMessageId(2213);
 		CONFIRM_CHARACTER_CREATION = new SystemMessageId(2214);
@@ -16842,7 +16842,7 @@ public final class SystemMessageId
 		PLEASE_UPDATE_CPU_DRIVER = new SystemMessageId(2216);
 		BALLISTA_DESTROYED_CLAN_REPU_INCREASED = new SystemMessageId(2217);
 		MAIN_CLASS_SKILL_ONLY = new SystemMessageId(2218);
-		LOWER_CLAN_SKILL_ALREADY_ACQUIRED = new SystemMessageId(2219);
+		SQUAD_SKILL_ALREADY_ACQUIRED = new SystemMessageId(2219);
 		PREVIOUS_LEVEL_SKILL_NOT_LEARNED = new SystemMessageId(2220);
 		ACTIVATE_SELECTED_FUNTIONS_CONFIRM = new SystemMessageId(2221);
 		SCOUT_COSTS_150000_ADENA = new SystemMessageId(2222);

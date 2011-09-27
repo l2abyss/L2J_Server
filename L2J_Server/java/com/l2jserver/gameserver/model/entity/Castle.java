@@ -36,7 +36,8 @@ import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.ResidentialSkillTable;
+import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
@@ -49,6 +50,7 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2ArtefactInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -260,7 +262,19 @@ public class Castle
 		load();
 		loadDoor();
 		_function = new FastMap<Integer, CastleFunction>();
-		_residentialSkills = ResidentialSkillTable.getInstance().getSkills(castleId);
+		final FastList<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(castleId);
+		for (L2SkillLearn s : residentialSkills)
+		{
+			final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+			if (sk != null)
+			{
+				_residentialSkills.add(sk);
+			}
+			else
+			{
+				_log.warning("Castle Id: " + castleId + " has a null residential skill Id: " + s.getSkillId() + " level: " + s.getSkillLevel() + "!");
+			}
+		}
 		if (getOwnerId() != 0)
 		{
 			loadFunctions();
@@ -1528,17 +1542,33 @@ public class Castle
 	
 	public void giveResidentialSkills(L2PcInstance player)
 	{
-		if (_residentialSkills != null && !_residentialSkills.isEmpty())
+		if ((_residentialSkills != null) && !_residentialSkills.isEmpty())
 		{
 			for (L2Skill sk : _residentialSkills)
+			{
 				player.addSkill(sk, false);
+			}
 		}
 		Territory territory = TerritoryWarManager.getInstance().getTerritory(getCastleId());
 		if (territory != null && territory.getOwnedWardIds().contains(getCastleId() + 80))
+		{
 			for(int wardId : territory.getOwnedWardIds())
-				if (ResidentialSkillTable.getInstance().getSkills(wardId) != null)
-					for (L2Skill sk : ResidentialSkillTable.getInstance().getSkills(wardId))
+			{
+				final FastList<L2SkillLearn> territorySkills = SkillTreesData.getInstance().getAvailableResidentialSkills(wardId);
+				for (L2SkillLearn s : territorySkills)
+				{
+					final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+					if (sk != null)
+					{
 						player.addSkill(sk, false);
+					}
+					else
+					{
+						_log.warning("Trying to add a null skill for Territory Ward Id: " + wardId + ", skill Id: " + s.getSkillId() + " level: " + s.getSkillLevel() + "!");
+					}
+				}
+			}
+		}
 	}
 	
 	public void removeResidentialSkills(L2PcInstance player)
@@ -1546,13 +1576,29 @@ public class Castle
 		if (_residentialSkills != null && !_residentialSkills.isEmpty())
 		{
 			for (L2Skill sk : _residentialSkills)
+			{
 				player.removeSkill(sk, false, true);
+			}
 		}
 		if (TerritoryWarManager.getInstance().getTerritory(getCastleId()) != null)
+		{
 			for(int wardId : TerritoryWarManager.getInstance().getTerritory(getCastleId()).getOwnedWardIds())
-				if (ResidentialSkillTable.getInstance().getSkills(wardId) != null)
-					for (L2Skill sk : ResidentialSkillTable.getInstance().getSkills(wardId))
+			{
+				final FastList<L2SkillLearn> territorySkills = SkillTreesData.getInstance().getAvailableResidentialSkills(wardId);
+				for (L2SkillLearn s : territorySkills)
+				{
+					final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+					if (sk != null)
+					{
 						player.removeSkill(sk, false, true);
+					}
+					else
+					{
+						_log.warning("Trying to remove a null skill for Territory Ward Id: " + wardId + ", skill Id: " + s.getSkillId() + " level: " + s.getSkillLevel() + "!");
+					}
+				}
+			}
+		}
 	}
 	
 	/**

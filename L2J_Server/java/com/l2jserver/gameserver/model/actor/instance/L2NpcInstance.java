@@ -14,9 +14,12 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import javolution.util.FastList;
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTreeTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
@@ -25,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.status.FolkStatus;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.effects.EffectBuff;
@@ -72,40 +75,56 @@ public class L2NpcInstance extends L2Npc
 	}
 	
 	/**
-	 * this displays SkillList to the player.
-	 * @param player
+	 * Displays Skill Tree for a given player, npc and class Id.
+	 * @param player the active character.
+	 * @param npc the last folk.
+	 * @param classId player's active class id.
 	 */
 	public static void showSkillList(L2PcInstance player, L2Npc npc, ClassId classId)
 	{
 		if (Config.DEBUG)
-			_log.fine("SkillList activated on: "+npc.getObjectId());
-		
-		int npcId = npc.getTemplate().npcId;
-		
-		if (npcId == 32611)
 		{
-			L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSpecialSkills(player);
-			AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Special);
+			_log.fine("SkillList activated on: "+npc.getObjectId());
+		}
+		
+		final int npcId = npc.getTemplate().npcId;
+		
+		if (npcId == 32611) //Tolonis (Officer)
+		{
+			final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableCollectSkills(player);
+			final AcquireSkillList asl = new AcquireSkillList(SkillType.Collect);
 			
 			int counts = 0;
 			
 			for (L2SkillLearn s : skills)
 			{
-				L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
+				final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
 				
-				if (sk == null)
-					continue;
-				
-				counts++;
-				asl.addSkill(s.getId(), s.getLevel(), s.getLevel(), 0, 1);
+				if (sk != null)
+				{
+					counts++;
+					asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), 0, 1);
+				}
 			}
 			
 			if (counts == 0) // No more skills to learn, come back when you level.
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
+			{
+				final int minLevel = SkillTreesData.getInstance().getMinLevelForNewSkill(player, SkillTreesData.getInstance().getCollectSkillTree());
+				if (minLevel > 0)
+				{
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
+					sm.addNumber(minLevel);
+					player.sendPacket(sm);
+				}
+				else
+				{
+					player.sendPacket(SystemMessageId.NO_MORE_SKILLS_TO_LEARN);
+				}
+			}
 			else
+			{
 				player.sendPacket(asl);
-			
-			player.sendPacket(ActionFailed.STATIC_PACKET);
+			}
 			return;
 		}
 		
@@ -132,37 +151,50 @@ public class L2NpcInstance extends L2Npc
 			return;
 		}
 		
-		L2SkillLearn[] skills = SkillTreeTable.getInstance().getAvailableSkills(player, classId);
-		AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.Usual);
-		int counts = 0;
+		//Normal skills, No LearnedByFS, no AutoGet skills.
+		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSkills(player, classId, false, false);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.ClassTransform);
+		int count = 0;
 		
 		for (L2SkillLearn s: skills)
 		{
-			L2Skill sk = SkillTable.getInstance().getInfo(s.getId(), s.getLevel());
-			if (sk == null)
-				continue;
-			
-			int cost = SkillTreeTable.getInstance().getSkillCost(player, sk);
-			counts++;
-			
-			asl.addSkill(s.getId(), s.getLevel(), s.getLevel(), cost, 0);
+			final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+			if (sk != null)
+			{
+				asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), s.getLevelUpSp(), 0);
+				count++;
+			}
 		}
 		
-		if (counts == 0)
+		if (count == 0)
 		{
-			int minlevel = SkillTreeTable.getInstance().getMinLevelForNewSkill(player, classId);
-			if (minlevel > 0)
+			final FastMap<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(classId);
+			
+			final int minLevel = SkillTreesData.getInstance().getMinLevelForNewSkill(player, skillTree);
+			if (minLevel > 0)
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
-				sm.addNumber(minlevel);
+				sm.addNumber(minLevel);
 				player.sendPacket(sm);
 			}
 			else
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_SKILLS_TO_LEARN));
+			{
+				//TODO: Is this SysMsg really used here?
+				if (player.getClassId().level() == 1)
+				{
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.NO_SKILLS_TO_LEARN_RETURN_AFTER_S1_CLASS_CHANGE);
+					sm.addNumber(2);
+					player.sendPacket(sm);
+				}
+				else
+				{
+					player.sendPacket(SystemMessageId.NO_MORE_SKILLS_TO_LEARN);
+				}
+			}
 		}
 		else
+		{
 			player.sendPacket(asl);
-		
-		player.sendPacket(ActionFailed.STATIC_PACKET);
+		}
 	}
 }

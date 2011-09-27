@@ -44,12 +44,13 @@ public final class RequestPledgePower extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance player = getClient().getActiveChar();
-		if (player == null) return;
+		final L2PcInstance player = getClient().getActiveChar();
+		if (player == null)
+			return;
 		
 		if(_action == 2)
 		{
-			if(player.getClan() != null && player.isClanLeader())
+			if(player.isClanLeader())
 			{
 				if(_rank == 9)
 				{
@@ -67,8 +68,7 @@ public final class RequestPledgePower extends L2GameClientPacket
 			}
 		} else
 		{
-			ManagePledgePower mpp = new ManagePledgePower(getClient().getActiveChar().getClan(), _action, _rank);
-			player.sendPacket(mpp);
+			player.sendPacket(new ManagePledgePower(getClient().getActiveChar().getClan(), _action, _rank));
 		}
 	}
 	

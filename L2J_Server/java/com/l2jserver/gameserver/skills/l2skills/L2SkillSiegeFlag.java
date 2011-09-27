@@ -153,7 +153,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You can only place a flag during a siege.";
 		else if (castle.getSiege().getAttackerClan(player.getClan()) == null)
 			text = "You must be an attacker to place a flag.";
-		else if (player.getClan() == null || !player.isClanLeader())
+		else if (!player.isClanLeader())
 			text = "You must be a clan leader to place a flag.";
 		else if (castle.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= SiegeManager.getInstance().getFlagMaxCount())
 			text = "You have already placed the maximum number of flags possible.";
@@ -188,7 +188,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You can only place a flag during a siege.";
 		else if (fort.getSiege().getAttackerClan(player.getClan()) == null)
 			text = "You must be an attacker to place a flag.";
-		else if (player.getClan() == null || !player.isClanLeader())
+		else if (!player.isClanLeader())
 			text = "You must be a clan leader to place a flag.";
 		else if (fort.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= FortSiegeManager.getInstance().getFlagMaxCount())
 			text = "You have already placed the maximum number of flags possible.";
@@ -224,7 +224,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You must be on fort or castle ground to construct an outpost or flag.";
 		else if ((fort != null && !fort.getZone().isActive()) || (castle != null && !castle.getZone().isActive()))
 			text = "You can only construct an outpost or flag on siege field.";
-		else if (player.getClan() == null || !player.isClanLeader())
+		else if (!player.isClanLeader())
 			text = "You must be a clan leader to construct an outpost or flag.";
 		else if (TerritoryWarManager.getInstance().getHQForClan(player.getClan()) != null && isOutPost)
 			text = "You can have only one outpost.";
