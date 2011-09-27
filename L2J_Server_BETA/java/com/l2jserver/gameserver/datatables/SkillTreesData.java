@@ -18,6 +18,7 @@ import gnu.trove.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -48,10 +49,10 @@ public final class SkillTreesData
 {
 	private static final Logger _log = Logger.getLogger(SkillTreesData.class.getName());
 	
-	//ClassId, FastMap of Skill Hash Code, L2LearkSkill
+	// ClassId, FastMap of Skill Hash Code, L2LearkSkill
 	private static final FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _classSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
 	private static final FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _transferSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
-	//Skill Hash Code, L2LearkSkill
+	// Skill Hash Code, L2LearkSkill
 	private static final FastMap<Integer, L2SkillLearn> _collectSkillTree = new FastMap<Integer, L2SkillLearn>();
 	private static final FastMap<Integer, L2SkillLearn> _fishingSkillTree = new FastMap<Integer, L2SkillLearn>();
 	private static final FastMap<Integer, L2SkillLearn> _pledgeSkillTree = new FastMap<Integer, L2SkillLearn>();
@@ -60,11 +61,10 @@ public final class SkillTreesData
 	private static final FastMap<Integer, L2SkillLearn> _transformSkillTree = new FastMap<Integer, L2SkillLearn>();
 	private static final FastMap<Integer, L2SkillLearn> _commonSkillTree = new FastMap<Integer, L2SkillLearn>();
 	
-	//TODO: Unhardcode?
-	//Checker, sorted arrays of hash codes
-	private TIntObjectHashMap<int[]> _skillsByClassIdHashCodes; //Occupation skills
-	private TIntObjectHashMap<int[]> _skillsByRaceHashCodes; // race-specific transformations
-	private int[] _allSkillsHashCodes; // fishing, collection and all races transformations
+	// Checker, sorted arrays of hash codes
+	private TIntObjectHashMap<int[]> _skillsByClassIdHashCodes; // Occupation skills
+	private TIntObjectHashMap<int[]> _skillsByRaceHashCodes; // Race-specific Transformations
+	private int[] _allSkillsHashCodes; // Fishing, Collection, Transformations, Common Skills.
 	
 	private boolean _loading = true;
 	
@@ -90,8 +90,11 @@ public final class SkillTreesData
 		_transferSkillTrees.clear();
 		_transformSkillTree.clear();
 		
-		//Load files.
+		// Load files.
 		_loading = loadFiles();
+		
+		// Generate check arrays.
+		generateCheckArrays();
 		
 		int classSkillTreeCount = 0;
 		for (ClassId classId : _classSkillTrees.keySet())
@@ -159,266 +162,267 @@ public final class SkillTreesData
 	 */
 	private void loadSkillTree(File file)
 	{
+		if (!file.exists())
+		{
+			_log.warning(getClass().getSimpleName() + ": Could not parse " + file.getName() + " file doesn't exist");
+			return;
+		}
+		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setValidating(false);
 		dbf.setIgnoringComments(true);
 		Document doc = null;
-		
-		if (file.exists())
+		try
 		{
-			try
+			doc = dbf.newDocumentBuilder().parse(file);
+		}
+		catch (Exception e)
+		{
+			_log.warning(getClass().getSimpleName() + ": Could not parse " + file.getName() + " file: " + e.getMessage());
+			return;
+		}
+		
+		NamedNodeMap attributes;
+		Node attribute;
+		String type = null;
+		int cId = -1;
+		int parentClassId = -1;
+		ClassId classId = null;
+		
+		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		{
+			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
-				doc = dbf.newDocumentBuilder().parse(file);
-			}
-			catch (Exception e)
-			{
-				_log.warning(getClass().getSimpleName() + ": Could not parse " + file.getName() + " file: " + e.getMessage());
-				return;
-			}
-			
-			NamedNodeMap attributes;
-			Node attribute;
-			String type = null;
-			int cId = -1;
-			int parentClassId = -1;
-			ClassId classId = null;
-			
-			for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
-			{
-				if ("list".equalsIgnoreCase(n.getNodeName()))
+				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
-					for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+					final FastMap<Integer, L2SkillLearn> classSkillTree = new FastMap<Integer, L2SkillLearn>();
+					final FastMap<Integer, L2SkillLearn> trasferSkillTree = new FastMap<Integer, L2SkillLearn>();
+					if ("skillTree".equalsIgnoreCase(d.getNodeName()))
 					{
-						final FastMap<Integer, L2SkillLearn> classSkillTree = new FastMap<Integer, L2SkillLearn>();
-						final FastMap<Integer, L2SkillLearn> trasferSkillTree = new FastMap<Integer, L2SkillLearn>();
-						if ("skillTree".equalsIgnoreCase(d.getNodeName()))
+						attribute = d.getAttributes().getNamedItem("type");
+						if (attribute == null)
 						{
-							attribute = d.getAttributes().getNamedItem("type");
-							if (attribute == null)
+							_log.warning(getClass().getSimpleName() + ": Skill Tree without type!");
+							continue;
+						}
+						type = attribute.getNodeValue();
+						
+						attribute = d.getAttributes().getNamedItem("classId");
+						if (attribute != null)
+						{
+							try
 							{
-								_log.warning(getClass().getSimpleName() + ": Skill Tree without type!");
-								continue;
-							}
-							type = attribute.getNodeValue();
-							
-							attribute = d.getAttributes().getNamedItem("classId");
-							if (attribute != null)
-							{
-								try
-								{
-									cId = Integer.parseInt(attribute.getNodeValue());
-									if (cId != -1)
-									{
-										classId = ClassId.values()[cId];
-									}
-								}
-								catch (Exception e)
-								{
-									_log.warning(getClass().getSimpleName() + ": Invalid class Id " + attribute.getNodeValue() + " for Skill Tree type: " + type + "!");
-									continue;
-								}
-							}
-							
-							attribute = d.getAttributes().getNamedItem("parentClassId");
-							if (attribute != null)
-							{
-								try
-								{
-									parentClassId = Integer.parseInt(attribute.getNodeValue());
-									if ((cId > -1) && (cId != parentClassId) && (parentClassId > -1))
-									{
-										_parentClassMap.putIfAbsent(classId, ClassId.values()[parentClassId]);
-									}
-								}
-								catch (Exception e)
-								{
-									_log.warning(getClass().getSimpleName() + ": Invalid parent class Id " + attribute.getNodeValue() + " for Skill Tree type: " + type + "!");
-									continue;
-								}
-							}
-							
-							for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
-							{
-								if ("skill".equalsIgnoreCase(c.getNodeName()))
-								{
-									final StatsSet learnSkillSet = new StatsSet();
-									
-									int skillId;
-									int skillLvl;
-									
-									attributes = c.getAttributes();
-									
-									attribute = attributes.getNamedItem("skillName");
-									if (attribute == null)
-									{
-										_log.severe(getClass().getSimpleName() + ": Missing skillName, skipping!");
-										continue;
-									}
-									learnSkillSet.set("skillName", attribute.getNodeValue());
-									
-									attribute = attributes.getNamedItem("skillIdLvl");
-									if (attribute == null)
-									{
-										_log.severe(getClass().getSimpleName() + ": Missing skillIdLvl, skipping!");
-										continue;
-									}
-									
-									try
-									{
-										skillId = Integer.parseInt(attribute.getNodeValue().split(",")[0]);
-										skillLvl = Integer.parseInt(attribute.getNodeValue().split(",")[1]);
-										learnSkillSet.set("skillId", skillId);
-										learnSkillSet.set("skillLvl", skillLvl);
-									}
-									catch (Exception e)
-									{
-										_log.severe(getClass().getSimpleName() + ": Malformed skillIdLvl, skipping!");
-										continue;
-									}
-									
-									attribute = attributes.getNamedItem("getLevel");
-									if (attribute != null)
-									{
-										learnSkillSet.set("getLevel", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("autoGet");
-									if (attribute != null)
-									{
-										learnSkillSet.set("autoGet", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("levelUpSp");
-									if (attribute != null)
-									{
-										learnSkillSet.set("levelUpSp", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("itemsIdCount");
-									if (attribute != null)
-									{
-										learnSkillSet.set("itemsIdCount", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("race");
-									if (attribute != null)
-									{
-										learnSkillSet.set("race", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("preReqSkillIdLvl");
-									if (attribute != null)
-									{
-										learnSkillSet.set("preReqSkillIdLvl", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("socialClass");
-									if (attribute != null)
-									{
-										learnSkillSet.set("socialClass", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("subClassLvlNumber");
-									if (attribute != null)
-									{
-										learnSkillSet.set("subClassLvlNumber", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("residenceSkill");
-									if (attribute != null)
-									{
-										learnSkillSet.set("residenceSkill", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("residenceIds");
-									if (attribute != null)
-									{
-										learnSkillSet.set("residenceIds", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("learnedByNpc");
-									if (attribute != null)
-									{
-										learnSkillSet.set("learnedByNpc", attribute.getNodeValue());
-									}
-									
-									attribute = attributes.getNamedItem("learnedByFS");
-									if (attribute != null)
-									{
-										learnSkillSet.set("learnedByFS", attribute.getNodeValue());
-									}
-									
-									final L2SkillLearn skillLearn = new L2SkillLearn(learnSkillSet);
-									final int skillHashCode = SkillTable.getSkillHashCode(skillId, skillLvl);
-									if (type.equals("classSkillTree"))
-									{
-										if (cId != -1)
-										{
-											classSkillTree.put(skillHashCode, skillLearn);
-										}
-										else
-										{
-											_commonSkillTree.put(skillHashCode, skillLearn);
-										}
-									}
-									else if (type.equals("transferSkillTree"))
-									{
-										trasferSkillTree.put(skillHashCode, skillLearn);
-									}
-									else
-									{
-										if (type.equals("collectSkillTree"))
-										{
-											_collectSkillTree.put(skillHashCode, skillLearn);
-										}
-										else if (type.equals("fishingSkillTree"))
-										{
-											_fishingSkillTree.put(skillHashCode, skillLearn);
-										}
-										else if (type.equals("pledgeSkillTree"))
-										{
-											_pledgeSkillTree.put(skillHashCode, skillLearn);
-										}
-										else if (type.equals("subClassSkillTree"))
-										{
-											_subClassSkillTree.put(skillHashCode, skillLearn);
-										}
-										else if (type.equals("subPledgeSkillTree"))
-										{
-											_subPledgeSkillTree.put(skillHashCode, skillLearn);
-										}
-										else if (type.equals("transformSkillTree"))
-										{
-											_transformSkillTree.put(skillHashCode, skillLearn);
-										}
-									}
-								}
-							}
-							
-							if (type.equals("classSkillTree"))
-							{
+								cId = Integer.parseInt(attribute.getNodeValue());
 								if (cId != -1)
 								{
-									if (_classSkillTrees.get(classId) == null)
+									classId = ClassId.values()[cId];
+								}
+							}
+							catch (Exception e)
+							{
+								_log.warning(getClass().getSimpleName() + ": Invalid class Id " + attribute.getNodeValue() + " for Skill Tree type: " + type + "!");
+								continue;
+							}
+						}
+						
+						attribute = d.getAttributes().getNamedItem("parentClassId");
+						if (attribute != null)
+						{
+							try
+							{
+								parentClassId = Integer.parseInt(attribute.getNodeValue());
+								if ((cId > -1) && (cId != parentClassId) && (parentClassId > -1))
+								{
+									_parentClassMap.putIfAbsent(classId, ClassId.values()[parentClassId]);
+								}
+							}
+							catch (Exception e)
+							{
+								_log.warning(getClass().getSimpleName() + ": Invalid parent class Id " + attribute.getNodeValue() + " for Skill Tree type: " + type + "!");
+								continue;
+							}
+						}
+						
+						for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
+						{
+							if ("skill".equalsIgnoreCase(c.getNodeName()))
+							{
+								final StatsSet learnSkillSet = new StatsSet();
+								
+								int skillId;
+								int skillLvl;
+								
+								attributes = c.getAttributes();
+								
+								attribute = attributes.getNamedItem("skillName");
+								if (attribute == null)
+								{
+									_log.severe(getClass().getSimpleName() + ": Missing skillName, skipping!");
+									continue;
+								}
+								learnSkillSet.set("skillName", attribute.getNodeValue());
+								
+								attribute = attributes.getNamedItem("skillIdLvl");
+								if (attribute == null)
+								{
+									_log.severe(getClass().getSimpleName() + ": Missing skillIdLvl, skipping!");
+									continue;
+								}
+								
+								try
+								{
+									skillId = Integer.parseInt(attribute.getNodeValue().split(",")[0]);
+									skillLvl = Integer.parseInt(attribute.getNodeValue().split(",")[1]);
+									learnSkillSet.set("skillId", skillId);
+									learnSkillSet.set("skillLvl", skillLvl);
+								}
+								catch (Exception e)
+								{
+									_log.severe(getClass().getSimpleName() + ": Malformed skillIdLvl, skipping!");
+									continue;
+								}
+								
+								attribute = attributes.getNamedItem("getLevel");
+								if (attribute != null)
+								{
+									learnSkillSet.set("getLevel", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("autoGet");
+								if (attribute != null)
+								{
+									learnSkillSet.set("autoGet", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("levelUpSp");
+								if (attribute != null)
+								{
+									learnSkillSet.set("levelUpSp", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("itemsIdCount");
+								if (attribute != null)
+								{
+									learnSkillSet.set("itemsIdCount", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("race");
+								if (attribute != null)
+								{
+									learnSkillSet.set("race", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("preReqSkillIdLvl");
+								if (attribute != null)
+								{
+									learnSkillSet.set("preReqSkillIdLvl", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("socialClass");
+								if (attribute != null)
+								{
+									learnSkillSet.set("socialClass", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("subClassLvlNumber");
+								if (attribute != null)
+								{
+									learnSkillSet.set("subClassLvlNumber", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("residenceSkill");
+								if (attribute != null)
+								{
+									learnSkillSet.set("residenceSkill", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("residenceIds");
+								if (attribute != null)
+								{
+									learnSkillSet.set("residenceIds", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("learnedByNpc");
+								if (attribute != null)
+								{
+									learnSkillSet.set("learnedByNpc", attribute.getNodeValue());
+								}
+								
+								attribute = attributes.getNamedItem("learnedByFS");
+								if (attribute != null)
+								{
+									learnSkillSet.set("learnedByFS", attribute.getNodeValue());
+								}
+								
+								final L2SkillLearn skillLearn = new L2SkillLearn(learnSkillSet);
+								final int skillHashCode = SkillTable.getSkillHashCode(skillId, skillLvl);
+								if (type.equals("classSkillTree"))
+								{
+									if (cId != -1)
 									{
-										_classSkillTrees.put(classId, classSkillTree);
+										classSkillTree.put(skillHashCode, skillLearn);
 									}
 									else
 									{
-										_classSkillTrees.get(classId).putAll(classSkillTree);
+										_commonSkillTree.put(skillHashCode, skillLearn);
+									}
+								}
+								else if (type.equals("transferSkillTree"))
+								{
+									trasferSkillTree.put(skillHashCode, skillLearn);
+								}
+								else
+								{
+									if (type.equals("collectSkillTree"))
+									{
+										_collectSkillTree.put(skillHashCode, skillLearn);
+									}
+									else if (type.equals("fishingSkillTree"))
+									{
+										_fishingSkillTree.put(skillHashCode, skillLearn);
+									}
+									else if (type.equals("pledgeSkillTree"))
+									{
+										_pledgeSkillTree.put(skillHashCode, skillLearn);
+									}
+									else if (type.equals("subClassSkillTree"))
+									{
+										_subClassSkillTree.put(skillHashCode, skillLearn);
+									}
+									else if (type.equals("subPledgeSkillTree"))
+									{
+										_subPledgeSkillTree.put(skillHashCode, skillLearn);
+									}
+									else if (type.equals("transformSkillTree"))
+									{
+										_transformSkillTree.put(skillHashCode, skillLearn);
 									}
 								}
 							}
-							else if (type.equals("transferSkillTree"))
+						}
+						
+						if (type.equals("classSkillTree"))
+						{
+							if (cId != -1)
 							{
-								_transferSkillTrees.put(classId, trasferSkillTree);
+								if (_classSkillTrees.get(classId) == null)
+								{
+									_classSkillTrees.put(classId, classSkillTree);
+								}
+								else
+								{
+									_classSkillTrees.get(classId).putAll(classSkillTree);
+								}
 							}
+						}
+						else if (type.equals("transferSkillTree"))
+						{
+							_transferSkillTrees.put(classId, trasferSkillTree);
 						}
 					}
 				}
 			}
 		}
-		generateCheckArrays();
 	}
 	
 	/**
@@ -440,7 +444,7 @@ public final class SkillTreesData
 	public FastMap<Integer, L2SkillLearn> getCompleteClassSkillTree(ClassId classId)
 	{
 		final FastMap<Integer, L2SkillLearn> skillTree = new FastMap<Integer, L2SkillLearn>();
-		//Add all skills that belong to all classes.
+		// Add all skills that belong to all classes.
 		skillTree.putAll(_commonSkillTree);
 		while ((classId != null) && (getClassSkillTrees().get(classId) != null))
 		{
@@ -456,7 +460,7 @@ public final class SkillTreesData
 	 */
 	public FastMap<Integer, L2SkillLearn> getTransferSkillTree(ClassId classId)
 	{
-		//If new classes are implemented over 3rd class, we use a recursive call.
+		// If new classes are implemented over 3rd class, we use a recursive call.
 		if (classId.level() >= 3)
 		{
 			classId = classId.getParent();
@@ -466,7 +470,7 @@ public final class SkillTreesData
 	}
 	
 	/**
-	 * @return the complete Common Skill Tree. 
+	 * @return the complete Common Skill Tree.
 	 */
 	public FastMap<Integer, L2SkillLearn> getCommonSkillTree()
 	{
@@ -474,7 +478,7 @@ public final class SkillTreesData
 	}
 	
 	/**
-	 * @return the complete Collect Skill Tree. 
+	 * @return the complete Collect Skill Tree.
 	 */
 	public FastMap<Integer, L2SkillLearn> getCollectSkillTree()
 	{
@@ -482,7 +486,7 @@ public final class SkillTreesData
 	}
 	
 	/**
-	 * @return the complete Fishing Skill Tree. 
+	 * @return the complete Fishing Skill Tree.
 	 */
 	public FastMap<Integer, L2SkillLearn> getFishingSkillTree()
 	{
@@ -490,7 +494,7 @@ public final class SkillTreesData
 	}
 	
 	/**
-	 * @return the complete Pledge Skill Tree. 
+	 * @return the complete Pledge Skill Tree.
 	 */
 	public FastMap<Integer, L2SkillLearn> getPledgeSkillTree()
 	{
@@ -498,7 +502,7 @@ public final class SkillTreesData
 	}
 	
 	/**
-	 * @return the complete Sub-Class Skill Tree. 
+	 * @return the complete Sub-Class Skill Tree.
 	 */
 	public FastMap<Integer, L2SkillLearn> getSubClassSkillTree()
 	{
@@ -506,7 +510,7 @@ public final class SkillTreesData
 	}
 	
 	/**
-	 * @return the complete Sub-Pledge Skill Tree. 
+	 * @return the complete Sub-Pledge Skill Tree.
 	 */
 	public FastMap<Integer, L2SkillLearn> getSubPledgeSkillTree()
 	{
@@ -514,7 +518,7 @@ public final class SkillTreesData
 	}
 	
 	/**
-	 * @return the complete Transform Skill Tree. 
+	 * @return the complete Transform Skill Tree.
 	 */
 	public FastMap<Integer, L2SkillLearn> getTransformSkillTree()
 	{
@@ -535,7 +539,7 @@ public final class SkillTreesData
 		
 		if (skills.isEmpty())
 		{
-			//The Skill Tree for this class is undefined.
+			// The Skill Tree for this class is undefined.
 			_log.warning(getClass().getSimpleName() + ": Skilltree for class " + classId + " is not defined!");
 			return result;
 		}
@@ -553,7 +557,7 @@ public final class SkillTreesData
 					{
 						if (oldSkills[j].getLevel() == (temp.getSkillLevel() - 1))
 						{
-							//This is the next level of a known skill:
+							// This is the next level of a known skill:
 							result.add(temp);
 						}
 						knownSkill = true;
@@ -562,7 +566,7 @@ public final class SkillTreesData
 				
 				if (!knownSkill && (temp.getSkillLevel() == 1))
 				{
-					//This is a new skill:
+					// This is a new skill:
 					result.add(temp);
 				}
 			}
@@ -581,7 +585,7 @@ public final class SkillTreesData
 		
 		if (skills.size() < 1)
 		{
-			//The Skill Tree for this class is undefined, so we return an empty list.
+			// The Skill Tree for this class is undefined, so we return an empty list.
 			_log.warning(getClass().getSimpleName() + ": Skill Tree for this classId(" + player.getClassId() + ") is not defined!");
 			return result;
 		}
@@ -633,7 +637,7 @@ public final class SkillTreesData
 		
 		if (skills.size() < 1)
 		{
-			//The Skill Tree for fishing skills is undefined.
+			// The Skill Tree for fishing skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": Skilltree for fishing is not defined !");
 			return result;
 		}
@@ -641,7 +645,7 @@ public final class SkillTreesData
 		final L2Skill[] oldSkills = player.getAllSkills();
 		for (L2SkillLearn temp : skills.values())
 		{
-			//If skill is Dwarven only and player is not Dwarven.
+			// If skill is Dwarven only and player is not Dwarven.
 			if ((temp.getRaces() != null) && Util.contains(temp.getRaces(), 4) && !player.hasDwarvenCraft())
 			{
 				continue;
@@ -657,7 +661,7 @@ public final class SkillTreesData
 					{
 						if (oldSkills[j].getLevel() == (temp.getSkillLevel() - 1))
 						{
-							//This is the next level of a known skill:
+							// This is the next level of a known skill:
 							result.add(temp);
 						}
 						knownSkill = true;
@@ -666,7 +670,7 @@ public final class SkillTreesData
 				
 				if (!knownSkill && (temp.getSkillLevel() == 1))
 				{
-					//This is a new skill:
+					// This is a new skill:
 					result.add(temp);
 				}
 			}
@@ -688,7 +692,7 @@ public final class SkillTreesData
 		
 		if (skills.size() < 1)
 		{
-			//The Skill Tree for Collecting skills is undefined.
+			// The Skill Tree for Collecting skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": Skilltree for collecting skills is not defined !");
 			return result;
 		}
@@ -704,7 +708,7 @@ public final class SkillTreesData
 				{
 					if (oldSkills[j].getLevel() == (temp.getSkillLevel() - 1))
 					{
-						//This is the next level of a known skill:
+						// This is the next level of a known skill:
 						result.add(temp);
 					}
 					knownSkill = true;
@@ -713,7 +717,7 @@ public final class SkillTreesData
 			
 			if (!knownSkill && (temp.getSkillLevel() == 1))
 			{
-				//This is a new skill:
+				// This is a new skill:
 				result.add(temp);
 			}
 		}
@@ -729,7 +733,7 @@ public final class SkillTreesData
 		final FastList<L2SkillLearn> result = new FastList<L2SkillLearn>();
 		
 		ClassId classId = player.getClassId();
-		//If new classes are implemented over 3rd class, a different way should be implemented.
+		// If new classes are implemented over 3rd class, a different way should be implemented.
 		if (classId.level() == 3)
 		{
 			classId = classId.getParent();
@@ -742,7 +746,7 @@ public final class SkillTreesData
 		
 		for (L2SkillLearn temp : _transferSkillTrees.get(classId).values())
 		{
-			//If player doesn't know this transfer skill:
+			// If player doesn't know this transfer skill:
 			if (player.getKnownSkill(temp.getSkillId()) == null)
 			{
 				result.add(temp);
@@ -763,7 +767,7 @@ public final class SkillTreesData
 		
 		if (skills == null)
 		{
-			//The Skill Tree for Transformation skills is undefined.
+			// The Skill Tree for Transformation skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": No Transform skills defined!");
 			return result;
 		}
@@ -781,7 +785,7 @@ public final class SkillTreesData
 					{
 						if (oldSkills[j].getLevel() == (temp.getSkillLevel() - 1))
 						{
-							//This is the next level of a known skill:
+							// This is the next level of a known skill:
 							result.add(temp);
 						}
 						knownSkill = true;
@@ -790,7 +794,7 @@ public final class SkillTreesData
 				
 				if (!knownSkill && (temp.getSkillLevel() == 1))
 				{
-					//This is a new skill:
+					// This is a new skill:
 					result.add(temp);
 				}
 			}
@@ -809,7 +813,7 @@ public final class SkillTreesData
 		
 		if (skills == null)
 		{
-			//The Skill Tree for Pledge skills is undefined.
+			// The Skill Tree for Pledge skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": No clan skills defined!");
 			return result;
 		}
@@ -827,7 +831,7 @@ public final class SkillTreesData
 					{
 						if (oldSkills[j].getLevel() == (temp.getSkillLevel() - 1))
 						{
-							//This is the next level of a known skill:
+							// This is the next level of a known skill:
 							result.add(temp);
 						}
 						knownSkill = true;
@@ -836,7 +840,7 @@ public final class SkillTreesData
 				
 				if (!knownSkill && (temp.getSkillLevel() == 1))
 				{
-					//This is a new skill:
+					// This is a new skill:
 					result.add(temp);
 				}
 			}
@@ -855,7 +859,7 @@ public final class SkillTreesData
 		
 		if (skills == null)
 		{
-			//The Skill Tree for Sub-Pledge skills is undefined.
+			// The Skill Tree for Sub-Pledge skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": No sub-clan skills defined!");
 			return result;
 		}
@@ -881,7 +885,7 @@ public final class SkillTreesData
 		
 		if (skills == null)
 		{
-			//The Skill Tree for Sub-Class skills is undefined.
+			// The Skill Tree for Sub-Class skills is undefined.
 			_log.warning(getClass().getSimpleName() + ": No Sub-Class skills defined!");
 			return result;
 		}
@@ -905,7 +909,7 @@ public final class SkillTreesData
 							{
 								if (oldSkills[j].getLevel() == (temp.getSkillLevel() - 1))
 								{
-									//This is the next level of a known skill:
+									// This is the next level of a known skill:
 									result.add(temp);
 								}
 								knownSkill = true;
@@ -914,7 +918,7 @@ public final class SkillTreesData
 						
 						if (!knownSkill && (temp.getSkillLevel() == 1))
 						{
-							//This is a new skill:
+							// This is a new skill:
 							result.add(temp);
 						}
 					}
@@ -935,7 +939,7 @@ public final class SkillTreesData
 		
 		if (skills == null)
 		{
-			//The Skill Tree for Residential skills is undefined?
+			// The Skill Tree for Residential skills is undefined?
 			_log.warning(getClass().getSimpleName() + ": No residential skills defined!");
 			return result;
 		}
@@ -1088,10 +1092,11 @@ public final class SkillTreesData
 		int i;
 		int[] array;
 		
-		//Class specific skills:
+		// Class specific skills:
 		FastMap<Integer, L2SkillLearn> tempMap;
-		_skillsByClassIdHashCodes = new TIntObjectHashMap<int[]>(getClassSkillTrees().keySet().size());
-		for (ClassId cls : getClassSkillTrees().keySet())
+		final Set<ClassId> keySet = getClassSkillTrees().keySet();
+		_skillsByClassIdHashCodes = new TIntObjectHashMap<int[]>(keySet.size());
+		for (ClassId cls : keySet)
 		{
 			i = 0;
 			tempMap = getCompleteClassSkillTree(cls);
@@ -1105,7 +1110,7 @@ public final class SkillTreesData
 			_skillsByClassIdHashCodes.put(cls.ordinal(), array);
 		}
 		
-		//Race specific skills from Fishing and Transformation skill trees.
+		// Race specific skills from Fishing and Transformation skill trees.
 		final FastList<Integer> list = new FastList<Integer>();
 		_skillsByRaceHashCodes = new TIntObjectHashMap<int[]>(Race.values().length);
 		for (Race r : Race.values())
@@ -1137,7 +1142,7 @@ public final class SkillTreesData
 			list.clear();
 		}
 		
-		//Skills available for all classes and races
+		// Skills available for all classes and races
 		for (L2SkillLearn s : _commonSkillTree.values())
 		{
 			if (s.getRaces() == null)
@@ -1167,14 +1172,13 @@ public final class SkillTreesData
 			list.add(SkillTable.getSkillHashCode(s.getSkillId(), s.getSkillLevel()));
 		}
 		
-		i = 0;
-		array = new int[list.size()];
-		for (int s : list)
+		_allSkillsHashCodes = new int[list.size()];
+		int j = 0;
+		for (int hashcode : list)
 		{
-			array[i++] = s;
+			_allSkillsHashCodes[j++] = hashcode;
 		}
-		Arrays.sort(array);
-		_allSkillsHashCodes = array;
+		Arrays.sort(_allSkillsHashCodes);
 	}
 	
 	/**
@@ -1182,7 +1186,7 @@ public final class SkillTreesData
 	 * GM's skills are excluded for GM players.
 	 * @param player the player to verify the skill.
 	 * @param skill the skill to be verified.
-	 * @return {@code true} if the skill is allowed to the given player. 
+	 * @return {@code true} if the skill is allowed to the given player.
 	 */
 	public boolean isSkillAllowed(L2PcInstance player, L2Skill skill)
 	{
@@ -1196,7 +1200,7 @@ public final class SkillTreesData
 			return true;
 		}
 		
-		//Prevent accidental skill remove during reload
+		// Prevent accidental skill remove during reload
 		if (_loading)
 		{
 			return true;
@@ -1220,7 +1224,7 @@ public final class SkillTreesData
 			return true;
 		}
 		
-		//Exclude Transfer Skills from this check.
+		// Exclude Transfer Skills from this check.
 		if (getTransferSkill(skill.getId(), skill.getLevel(), player.getClassId()) != null)
 		{
 			return true;
