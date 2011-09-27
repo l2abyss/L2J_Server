@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="lib/javolution-5.5.1.jar" />
 	<classpathentry kind="lib" path="lib/jna.jar" />
 	<classpathentry kind="lib" path="lib/jython.jar" />
-	<classpathentry kind="lib" path="lib/jython-engine.jar" />
+	<classpathentry kind="lib" path="lib/jython-engine-2.2.1.jar" />
 	<classpathentry kind="lib" path="lib/mail.jar" />
 	<classpathentry kind="lib" path="lib/mailapi.jar" />
 	<classpathentry kind="lib" path="lib/mchange-commons-0.2.jar" />
