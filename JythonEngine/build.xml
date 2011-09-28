@@ -59,7 +59,7 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar file.">
-		<jar destfile="${build.dist}/jython-engine.jar">
+		<jar destfile="${build.dist}/jython-engine-2.2.1.jar">
 			<fileset dir="${build.classes}" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
