@@ -14,7 +14,10 @@
  */
 package com.l2jserver.gameserver.model.zone.form;
 
+import com.l2jserver.gameserver.GeoEngine;
+import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
+import com.l2jserver.util.Rnd;
 
 /**
  * A not so primitive npoly zone
@@ -28,13 +31,38 @@ public class ZoneNPoly extends L2ZoneForm
 	private int[] _y;
 	private int _z1;
 	private int _z2;
+	private int _minX = L2World.MAP_MAX_X;
+	private int _maxX = L2World.MAP_MIN_X;
+	private int _minY = L2World.MAP_MAX_Y;
+	private int _maxY = L2World.MAP_MIN_Y;
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param z1
+	 * @param z2
+	 */
 	public ZoneNPoly(int[] x, int[] y, int z1, int z2)
 	{
 		_x = x;
 		_y = y;
 		_z1 = z1;
 		_z2 = z2;
+		
+		for (int i = 0; i < x.length; i++)
+		{
+			if (x[i] < _minX)
+				_minX = x[i];
+			if (x[i] > _maxX)
+				_maxX = x[i];
+		}
+		for (int i = 0; i < y.length; i++)
+		{
+			if (y[i] < _minY)
+				_minY = y[i];
+			if (y[i] > _maxY)
+				_maxY = y[i];
+		}
 	}
 	
 	@Override
@@ -142,5 +170,24 @@ public class ZoneNPoly extends L2ZoneForm
 				dropDebugItem(57, 1, (int) (_x[i] + k*vx), (int) (_y[i] + k*vy), z);
 			}
 		}
+	}
+	
+	@Override
+	public int[] getRandomPoint()
+	{
+		int x, y;
+		
+		x = Rnd.get(_minX, _maxX);
+		y = Rnd.get(_minY, _maxY);
+		
+		int antiBlocker = 0;
+		while (!isInsideZone(x, y, getHighZ()) && antiBlocker < 1000)
+		{
+			x = Rnd.get(_minX, _maxX);
+			y = Rnd.get(_minY, _maxY);
+			antiBlocker++;
+		}
+		
+		return new int[] { x, y, GeoEngine.getInstance().getHeight(x, y, _z1) };
 	}
 }

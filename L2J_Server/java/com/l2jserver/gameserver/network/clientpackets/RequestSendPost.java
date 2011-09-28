@@ -122,7 +122,7 @@ public final class RequestSendPost extends L2GameClientPacket
 		
 		if (!activeChar.getAccessLevel().allowTransaction())
 		{
-			activeChar.sendMessage("Transactions are disable for your Access Level.");
+			activeChar.sendMessage("Transactions are disabled for your Access Level.");
 			return;
 		}
 		

@@ -21,6 +21,7 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 
@@ -56,21 +57,18 @@ public final class OlympiadAnnouncer implements Runnable
 			task = OlympiadGameManager.getInstance().getOlympiadTask(_currentStadium);
 			if (task != null && task.getGame() != null && task.needAnnounce())
 			{
-				int msg;
+				NpcStringId npcString;
 				final String arenaId = String.valueOf(task.getGame().getStadiumId() + 1);
 				switch (task.getGame().getType())
 				{
 					case NON_CLASSED:
-						// msg = "Olympiad class-free individual match is going to begin in Arena " + arenaId + " in a moment.";
-						msg = 1300166;
+						npcString = NpcStringId.OLYMPIAD_CLASS_FREE_INDIVIDUAL_MATCH_IS_GOING_TO_BEGIN_IN_ARENA_S1_IN_A_MOMENT;
 						break;
 					case CLASSED:
-						// msg = "Olympiad class-specific individual match is going to begin in Arena " + arenaId + " in a moment.";
-						msg = 1300167;
+						npcString = NpcStringId.OLYMPIAD_CLASS_INDIVIDUAL_MATCH_IS_GOING_TO_BEGIN_IN_ARENA_S1_IN_A_MOMENT;
 						break;
 					case TEAMS:
-						// msg = "Olympiad class-free team match is going to begin in Arena " + arenaId + " in a moment.";
-						msg = 1300132;
+						npcString = NpcStringId.OLYMPIAD_CLASS_FREE_TEAM_MATCH_IS_GOING_TO_BEGIN_IN_ARENA_S1_IN_A_MOMENT;
 						break;
 					default:
 						continue;
@@ -83,7 +81,7 @@ public final class OlympiadAnnouncer implements Runnable
 					manager = spawn.getLastSpawn();
 					if (manager != null)
 					{
-						packet = new NpcSay(manager.getObjectId(), Say2.SHOUT, manager.getNpcId(), msg);
+						packet = new NpcSay(manager.getObjectId(), Say2.SHOUT, manager.getNpcId(), npcString);
 						packet.addStringParameter(arenaId);
 						manager.broadcastPacket(packet);
 					}

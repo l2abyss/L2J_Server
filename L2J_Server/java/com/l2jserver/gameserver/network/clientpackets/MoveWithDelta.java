@@ -20,10 +20,11 @@ package com.l2jserver.gameserver.network.clientpackets;
  * d: dy
  * d: dz
  * @author  -Wooden-
- * 
  */
 public class MoveWithDelta extends L2GameClientPacket
 {
+	private static final String _C__52_MOVEWITHDELTA = "[C] 52 MoveWithDelta";
+	
 	@SuppressWarnings("unused")
 	private int _dx;
 	@SuppressWarnings("unused")
@@ -48,7 +49,6 @@ public class MoveWithDelta extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] 0x41 MoveWithDelta";
+		return _C__52_MOVEWITHDELTA;
 	}
-	
 }

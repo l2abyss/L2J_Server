@@ -24,14 +24,13 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.util.GMAudit;
 
-
 /**
  * @author Dezmond_snz
  * Format: cddd
  */
 public final class DlgAnswer extends L2GameClientPacket
 {
-	private static final String _C__C5_DLGANSWER = "[C] C5 DlgAnswer";
+	private static final String _C__C6_DLGANSWER = "[C] C6 DlgAnswer";
 	private static Logger _log = Logger.getLogger(DlgAnswer.class.getName());
 	
 	private int _messageId;
@@ -92,6 +91,6 @@ public final class DlgAnswer extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__C5_DLGANSWER;
+		return _C__C6_DLGANSWER;
 	}
 }

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.instancemanager.TownManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
@@ -23,6 +23,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ExPartyRoomMember extends L2GameServerPacket
 {
+	private static final String _S__FE_08_EXPARTYROOMMEMBER = "[S] FE:08 ExPartyRoomMember";
+	
 	private final PartyMatchRoom _room;
 	private final int _mode;
 	
@@ -45,7 +47,7 @@ public class ExPartyRoomMember extends L2GameServerPacket
 			writeS(_member.getName());
 			writeD(_member.getActiveClass());
 			writeD(_member.getLevel());
-			writeD(TownManager.getClosestLocation(_member));
+			writeD(MapRegionManager.getInstance().getMapRegion(_member).getBbs());
 			if (_room.getOwner().equals(_member))
 				writeD(1);
 			else
@@ -55,12 +57,13 @@ public class ExPartyRoomMember extends L2GameServerPacket
 				else
 					writeD(0);
 			}
+			writeD(0x00);
 		}
 	}
 	
 	@Override
 	public String getType()
 	{
-		return "[S] FE:08 ExPartyRoomMember";
+		return _S__FE_08_EXPARTYROOMMEMBER;
 	}
 }

@@ -289,25 +289,25 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 			{
 				String[] kv = line.split("=");
 				String key = kv[0].trim();
-				String value = "";
+				StringBuilder value = new StringBuilder();
 				if (kv.length > 1)
 				{
-					value = kv[1].trim();
+					value.append(kv[1].trim());
 				}
 				
 				if (line.indexOf('\\') >= 0)
 				{
 					while ((line = lnr.readLine()) != null && line.indexOf('\\') >= 0)
 					{
-						value += "\r\n"+line;
+						value.append("\r\n"+line);
 					}
-					value += "\r\n"+line;
+					value.append("\r\n"+line);
 				}
 				
 				String comments = commentBuffer.toString();
 				commentBuffer.setLength(0); //reset
 				
-				cf.addConfigProperty(key, parseValue(value), comments);
+				cf.addConfigProperty(key, parseValue(value.toString()), comments);
 			}
 		}
 		getConfigs().add(cf);
@@ -316,6 +316,7 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 	
 	/**
 	 * @param value
+	 * @return 
 	 */
 	private Object parseValue(String value)
 	{
@@ -743,10 +744,10 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 	}
 	
 	/**
+	 * @param keyName 
 	 * @return Returns the configuration setting name in a
 	 * human readable form.
 	 */
-	
 	public static String unCamelize(final String keyName) {
 		Pattern p = Pattern.compile("\\p{Lu}");
 		Matcher m = p.matcher(keyName);

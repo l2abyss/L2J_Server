@@ -28,7 +28,8 @@ public class CharSelected extends L2GameServerPacket
 	private int _sessionId;
 	
 	/**
-	 * @param _characters
+	 * @param cha
+	 * @param sessionId
 	 */
 	public CharSelected(L2PcInstance cha, int sessionId)
 	{

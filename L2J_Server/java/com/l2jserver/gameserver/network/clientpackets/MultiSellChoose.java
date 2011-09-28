@@ -40,7 +40,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class MultiSellChoose extends L2GameClientPacket
 {
-	private static final String _C__A7_MULTISELLCHOOSE = "[C] A7 MultiSellChoose";
+	private static final String _C__B0_MULTISELLCHOOSE = "[C] B0 MultiSellChoose";
 	private static Logger _log = Logger.getLogger(MultiSellChoose.class.getName());
 	private int _listId;
 	private int _entryId;
@@ -68,9 +68,6 @@ public class MultiSellChoose extends L2GameClientPacket
 	@SuppressWarnings("unused")
 	private int _unk11;*/
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -90,9 +87,6 @@ public class MultiSellChoose extends L2GameClientPacket
 		_unk11 = readH(); // elemental attributes*/
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	public void runImpl()
 	{
@@ -189,7 +183,7 @@ public class MultiSellChoose extends L2GameClientPacket
 								return;
 							}
 							// two same ingredients, merge into one and replace old
-							final Ingredient ing = ex.clone();
+							final Ingredient ing = ex.getCopy();
 							ing.setItemCount(ex.getItemCount() + e.getItemCount());
 							ingredientsList.set(i, ing);
 							newIng = false;
@@ -450,6 +444,6 @@ public class MultiSellChoose extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__A7_MULTISELLCHOOSE;
+		return _C__B0_MULTISELLCHOOSE;
 	}
 }

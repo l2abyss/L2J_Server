@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -30,7 +29,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class TradeDone extends L2GameClientPacket
 {
-	private static final String _C__17_TRADEDONE = "[C] 17 TradeDone";
+	private static final String _C__1C_TRADEDONE = "[C] 1C TradeDone";
 	private static Logger _log = Logger.getLogger(TradeDone.class.getName());
 	
 	private int _response;
@@ -50,7 +49,7 @@ public final class TradeDone extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("trade"))
 		{
-			player.sendMessage("You trading too fast.");
+			player.sendMessage("You are trading too fast.");
 			return;
 		}
 		
@@ -70,7 +69,7 @@ public final class TradeDone extends L2GameClientPacket
 			{
 				// Trade partner not found, cancel trade
 				player.cancelActiveTrade();
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME));
+				player.sendPacket(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 				return;
 			}
 			
@@ -80,7 +79,7 @@ public final class TradeDone extends L2GameClientPacket
 			if (!player.getAccessLevel().allowTransaction())
 			{
 				player.cancelActiveTrade();
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+				player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 				return;
 			}
 			
@@ -96,12 +95,9 @@ public final class TradeDone extends L2GameClientPacket
 			player.cancelActiveTrade();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__17_TRADEDONE;
+		return _C__1C_TRADEDONE;
 	}
 }

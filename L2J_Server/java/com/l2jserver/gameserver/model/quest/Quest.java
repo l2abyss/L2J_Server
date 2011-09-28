@@ -51,13 +51,13 @@ import com.l2jserver.gameserver.network.serverpackets.NpcQuestHtmlMessage;
 import com.l2jserver.gameserver.scripting.ManagedScript;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.MinionList;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
 
 /**
  * @author Luis Arias
- *
  */
 public class Quest extends ManagedScript
 {
@@ -66,7 +66,7 @@ public class Quest extends ManagedScript
 	/** HashMap containing events from String value of the event */
 	private static Map<String, Quest> _allEventsS = new FastMap<String, Quest>();
 	/** HashMap containing lists of timers from the name of the timer */
-	private Map<String, FastList<QuestTimer>> _allEventTimers = new FastMap<String, FastList<QuestTimer>>();
+	private final Map<String, FastList<QuestTimer>> _allEventTimers = new FastMap<String, FastList<QuestTimer>>();
 	
 	private final ReentrantReadWriteLock _rwLock = new ReentrantReadWriteLock();
 	
@@ -75,6 +75,7 @@ public class Quest extends ManagedScript
 	private final String _descr;
 	private final byte _initialState = State.CREATED;
 	protected boolean _onEnterWorld = false;
+	private boolean _isCustom = false;
 	// NOTE: questItemIds will be overridden by child classes.  Ideally, it should be
 	// protected instead of public.  However, quest scripts written in Jython will
 	// have trouble with protected, as Jython only knows private and public...
@@ -110,7 +111,7 @@ public class Quest extends ManagedScript
 		
 		if (questId != 0)
 		{
-			QuestManager.getInstance().addQuest(Quest.this);
+			QuestManager.getInstance().addQuest(this);
 		}
 		else
 		{
@@ -162,7 +163,8 @@ public class Quest extends ManagedScript
 		ON_SKILL_LEARN(false), // control the AcquireSkill dialog from quest script
 		ON_ENTER_ZONE(true), // on zone enter
 		ON_EXIT_ZONE(true), // on zone exit
-		ON_TRAP_ACTION(true); // on zone exit
+		ON_TRAP_ACTION(true), // on zone exit
+		ON_ITEM_USE(true);
 		
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
@@ -230,10 +232,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add a timer to the quest, if it doesn't exist already
-	 * @param name: name of the timer (also passed back as "event" in onAdvEvent)
-	 * @param time: time in ms for when to fire the timer
-	 * @param npc:  npc associated with this timer (can be null)
-	 * @param player: player associated with this timer (can be null)
+	 * @param name name of the timer (also passed back as "event" in onAdvEvent)
+	 * @param time time in ms for when to fire the timer
+	 * @param npc  npc associated with this timer (can be null)
+	 * @param player player associated with this timer (can be null)
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player)
 	{
@@ -243,11 +245,11 @@ public class Quest extends ManagedScript
 	/**
 	 * Add a timer to the quest, if it doesn't exist already.  If the timer is repeatable,
 	 * it will auto-fire automatically, at a fixed rate, until explicitly canceled.
-	 * @param name: name of the timer (also passed back as "event" in onAdvEvent)
-	 * @param time: time in ms for when to fire the timer
-	 * @param npc:  npc associated with this timer (can be null)
-	 * @param player: player associated with this timer (can be null)
-	 * @param repeatable: indicates if the timer is repeatable or one-time.
+	 * @param name name of the timer (also passed back as "event" in onAdvEvent)
+	 * @param time time in ms for when to fire the timer
+	 * @param npc  npc associated with this timer (can be null)
+	 * @param player player associated with this timer (can be null)
+	 * @param repeating indicates if the timer is repeatable or one-time.
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player, boolean repeating)
 	{
@@ -387,6 +389,20 @@ public class Quest extends ManagedScript
 		return showResult(qs.getPlayer(), res);
 	}
 	
+	public final boolean notifyItemUse(L2Item item, L2PcInstance player)
+	{
+		String res = null;
+		try
+		{
+			res = onItemUse(item, player);
+		}
+		catch(Exception e)
+		{
+			return showError(player, e);
+		}
+		return showResult(player, res);
+	}
+	
 	public final boolean notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
@@ -403,9 +419,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Notify quest script when something happens with a trap
-	 * @param trap: the trap instance which triggers the notification
-	 * @param trigger: the character which makes effect on the trap
-	 * @param action: 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap
+	 * @param trap the trap instance which triggers the notification
+	 * @param trigger the character which makes effect on the trap
+	 * @param action 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap
+	 * @return 
 	 */
 	public final boolean notifyTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
 	{
@@ -513,8 +530,7 @@ public class Quest extends ManagedScript
 		if (res != null && res.length() > 0)
 			return showResult(player, res);
 		// else tell the player that
-		else
-			player.sendPacket(ActionFailed.STATIC_PACKET);
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 		// note: if the default html for this npc needs to be shown, onFirstTalk should
 		// call npc.showChatWindow(player) and then return null.
 		return true;
@@ -568,11 +584,11 @@ public class Quest extends ManagedScript
 	
 	public class TmpOnSkillSee implements Runnable
 	{
-		private L2Npc _npc;
-		private L2PcInstance _caster;
-		private L2Skill _skill;
-		private L2Object[] _targets;
-		private boolean _isPet;
+		private final L2Npc _npc;
+		private final L2PcInstance _caster;
+		private final L2Skill _skill;
+		private final L2Object[] _targets;
+		private final boolean _isPet;
 		
 		public TmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 		{
@@ -583,6 +599,7 @@ public class Quest extends ManagedScript
 			_isPet = isPet;
 		}
 		
+		@Override
 		public void run()
 		{
 			String res = null;
@@ -621,9 +638,9 @@ public class Quest extends ManagedScript
 	
 	public class TmpOnAggroEnter implements Runnable
 	{
-		private L2Npc _npc;
-		private L2PcInstance _pc;
-		private boolean _isPet;
+		private final L2Npc _npc;
+		private final L2PcInstance _pc;
+		private final boolean _isPet;
 		
 		public TmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isPet)
 		{
@@ -632,6 +649,7 @@ public class Quest extends ManagedScript
 			_isPet = isPet;
 		}
 		
+		@Override
 		public void run()
 		{
 			String res = null;
@@ -704,8 +722,7 @@ public class Quest extends ManagedScript
 	{
 		if (killer instanceof L2Npc)
 			return onAdvEvent("", (L2Npc) killer, qs.getPlayer());
-		else
-			return onAdvEvent("", null, qs.getPlayer());
+		return onAdvEvent("", null, qs.getPlayer());
 	}
 	
 	public String onAdvEvent(String event, L2Npc npc, L2PcInstance player)
@@ -750,6 +767,11 @@ public class Quest extends ManagedScript
 	}
 	
 	public String onAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
+	{
+		return null;
+	}
+	
+	public String onItemUse(L2Item item, L2PcInstance player)
 	{
 		return null;
 	}
@@ -825,8 +847,8 @@ public class Quest extends ManagedScript
 	 * <LI><U>"res" ends with string ".html" :</U> an HTML is opened in order to be shown in a dialog box</LI>
 	 * <LI><U>"res" starts with "<html>" :</U> the message hold in "res" is shown in a dialog box</LI>
 	 * <LI><U>otherwise :</U> the message held in "res" is shown in chat box</LI>
-	 * @param qs : QuestState
-	 * @param res : String pointing out the message to show at the player
+	 * @param player the player to show the result
+	 * @param res the message to show at the player
 	 * @return boolean
 	 */
 	public boolean showResult(L2PcInstance player, String res)
@@ -1287,111 +1309,246 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add the quest to the NPC's startQuest
-	 * @param npcId
+	 * @param npcIds
 	 * @return L2NpcTemplate : Start NPC
 	 */
+	public L2NpcTemplate[] addStartNpc(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.QUEST_START);
+		return value;
+	}
+	
 	public L2NpcTemplate addStartNpc(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.QUEST_START);
+		return addEventId(npcId, QuestEventType.QUEST_START);
 	}
 	
 	/**
 	 * Add the quest to the NPC's first-talk (default action dialog)
-	 * @param npcId
+	 * @param npcIds
 	 * @return L2NpcTemplate : Start NPC
 	 */
+	public L2NpcTemplate[] addFirstTalkId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_FIRST_TALK);
+		return value;
+	}
+	
 	public L2NpcTemplate addFirstTalkId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_FIRST_TALK);
+		return addEventId(npcId, QuestEventType.ON_FIRST_TALK);
 	}
 	
 	/**
 	 * Add the NPC to the AcquireSkill dialog
-	 * @param npcId
+	 * @param npcIds
 	 * @return L2NpcTemplate : NPC
 	 */
+	public L2NpcTemplate[] addAcquireSkillId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
+		return value;
+	}
+	
 	public L2NpcTemplate addAcquireSkillId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_SKILL_LEARN);
+		return addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Attack Events.<BR><BR>
-	 * @param attackId
+	 * @param npcIds
 	 * @return int : attackId
 	 */
-	public L2NpcTemplate addAttackId(int attackId)
+	public L2NpcTemplate[] addAttackId(int ...npcIds)
 	{
-		return addEventId(attackId, Quest.QuestEventType.ON_ATTACK);
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_ATTACK);
+		return value;
+	}
+	
+	public L2NpcTemplate addAttackId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_ATTACK);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Kill Events.<BR><BR>
-	 * @param killId
+	 * @param killIds
 	 * @return int : killId
 	 */
-	public L2NpcTemplate addKillId(int killId)
+	public L2NpcTemplate[] addKillId(int ...killIds)
 	{
-		return addEventId(killId, Quest.QuestEventType.ON_KILL);
+		L2NpcTemplate[] value = new L2NpcTemplate[killIds.length];
+		int i = 0;
+		for (int killId : killIds)
+			value[i++] = addEventId(killId, QuestEventType.ON_KILL);
+		return value;
+	}
+	
+	public L2NpcTemplate addKillId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_KILL);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Talk Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param talkIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
-	public L2NpcTemplate addTalkId(int talkId)
+	public L2NpcTemplate[] addTalkId(int ...talkIds)
 	{
-		return addEventId(talkId, Quest.QuestEventType.ON_TALK);
+		L2NpcTemplate[] value = new L2NpcTemplate[talkIds.length];
+		int i = 0;
+		for (int talkId : talkIds)
+			value[i++] = addEventId(talkId, QuestEventType.ON_TALK);
+		return value;
+	}
+	
+	public L2NpcTemplate addTalkId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_TALK);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Spawn Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param npcIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
+	public L2NpcTemplate[] addSpawnId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_SPAWN);
+		return value;
+	}
+	
 	public L2NpcTemplate addSpawnId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_SPAWN);
+		return addEventId(npcId, QuestEventType.ON_SPAWN);
 	}
+	
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param npcIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
+	public L2NpcTemplate[] addSkillSeeId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_SKILL_SEE);
+		return value;
+	}
+	
 	public L2NpcTemplate addSkillSeeId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_SKILL_SEE);
+		return addEventId(npcId, QuestEventType.ON_SKILL_SEE);
+	}
+	
+	public L2NpcTemplate[] addSpellFinishedId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
+		return value;
 	}
 	
 	public L2NpcTemplate addSpellFinishedId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_SPELL_FINISHED);
+		return addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
 	}
 	
-	public L2NpcTemplate addTrapActionId(int trapId)
+	public L2NpcTemplate[] addTrapActionId(int ...npcIds)
 	{
-		return addEventId(trapId, Quest.QuestEventType.ON_TRAP_ACTION);
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
+		return value;
 	}
+	
+	public L2NpcTemplate addTrapActionId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
+	}
+	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param npcIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
+	public L2NpcTemplate[] addFactionCallId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_FACTION_CALL);
+		return value;
+	}
+	
 	public L2NpcTemplate addFactionCallId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_FACTION_CALL);
+		return addEventId(npcId, QuestEventType.ON_FACTION_CALL);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.<BR><BR>
-	 * @param talkId : ID of the NPC
+	 * @param npcIds : ID of the NPC
 	 * @return int : ID of the NPC
 	 */
+	public L2NpcTemplate[] addAggroRangeEnterId(int ...npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+			value[i++] = addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
+		return value;
+	}
+	
 	public L2NpcTemplate addAggroRangeEnterId(int npcId)
 	{
-		return addEventId(npcId, Quest.QuestEventType.ON_AGGRO_RANGE_ENTER);
+		return addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
+	}
+	
+	public L2ZoneType[] addEnterZoneId(int ...zoneIds)
+	{
+		L2ZoneType[] value = new L2ZoneType[zoneIds.length];
+		int i = 0;
+		for (int zoneId : zoneIds)
+		{
+			try
+			{
+				L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
+				if (zone != null)
+				{
+					zone.addQuestEvent(Quest.QuestEventType.ON_ENTER_ZONE, this);
+				}
+				value[i++] = zone;
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
+				continue;
+			}
+		}
+		
+		return value;
 	}
 	
 	public L2ZoneType addEnterZoneId(int zoneId)
@@ -1410,6 +1567,31 @@ public class Quest extends ManagedScript
 			_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
 			return null;
 		}
+	}
+	
+	public L2ZoneType[] addExitZoneId(int ...zoneIds)
+	{
+		L2ZoneType[] value = new L2ZoneType[zoneIds.length];
+		int i = 0;
+		for (int zoneId : zoneIds)
+		{
+			try
+			{
+				L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
+				if (zone != null)
+				{
+					zone.addQuestEvent(Quest.QuestEventType.ON_EXIT_ZONE, this);
+				}
+				value[i++] = zone;
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
+				continue;
+			}
+		}
+		
+		return value;
 	}
 	
 	public L2ZoneType addExitZoneId(int zoneId)
@@ -1447,8 +1629,8 @@ public class Quest extends ManagedScript
 	 * Auxilary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
-	 * @param player: the instance of a player whose party is to be searched
-	 * @param value: the value of the "cond" variable that must be matched
+	 * @param player the instance of a player whose party is to be searched
+	 * @param value the value of the "cond" variable that must be matched
 	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified
 	 * 			condition, or null if no match.
 	 */
@@ -1461,9 +1643,9 @@ public class Quest extends ManagedScript
 	 * Auxilary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
-	 * @param player: the instance of a player whose party is to be searched
-	 * @param var/value: a tuple specifying a quest condition that must be satisfied for
-	 *     a party member to be considered.
+	 * @param player the instance of a player whose party is to be searched
+	 * @param var
+	 * @param value a tuple specifying a quest condition that must be satisfied for a party member to be considered.
 	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified
 	 * 				condition, or null if no match.  If the var is null, any random party
 	 * 				member is returned (i.e. no condition is applied).
@@ -1522,8 +1704,8 @@ public class Quest extends ManagedScript
 	 * Auxilary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
-	 * @param player: the instance of a player whose party is to be searched
-	 * @param state: the state in which the party member's queststate must be in order to be considered.
+	 * @param player the instance of a player whose party is to be searched
+	 * @param state the state in which the party member's queststate must be in order to be considered.
 	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified
 	 * 				condition, or null if no match.  If the var is null, any random party
 	 * 				member is returned (i.e. no condition is applied).
@@ -1574,6 +1756,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Show HTML file to client
+	 * @param player 
 	 * @param fileName
 	 * @return String : message sent to client
 	 */
@@ -1614,8 +1797,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Return HTML file contents
-	 * @param player
-	 * @param fileName
+	 * @param prefix player's language prefix.
+	 * @param fileName the html file to be get.
 	 * @return
 	 */
 	public String getHtm(String prefix, String fileName)
@@ -1635,7 +1818,9 @@ public class Quest extends ManagedScript
 	// Method - Public
 	/**
 	 * Add a temporary (quest) spawn
-	 * Return instance of newly spawned npc
+	 * @param npcId 
+	 * @param cha 
+	 * @return instance of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha)
 	{
@@ -1644,8 +1829,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add a temporary (quest) spawn
-	 * Return instance of newly spawned npc
-	 * with summon animation
+	 * @param npcId 
+	 * @param cha 
+	 * @param isSummonSpawn 
+	 * @return instance of newly spawned npc with summon animation
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha, boolean isSummonSpawn)
 	{
@@ -1785,8 +1972,7 @@ public class Quest extends ManagedScript
 		_allEventTimers.clear();
 		if (removeFromList)
 			return QuestManager.getInstance().removeQuest(this);
-		else
-			return true;
+		return true;
 	}
 	
 	@Override
@@ -1803,5 +1989,21 @@ public class Quest extends ManagedScript
 	public boolean getOnEnterWorld()
 	{
 		return _onEnterWorld;
+	}
+	
+	/**
+	 * @param val if true the quest script will be set as custom quest.
+	 */
+	public void setIsCustom(boolean val)
+	{
+		_isCustom = val;
+	}
+	
+	/**
+	 * @return true if the quest script is a custom quest.
+	 */
+	public boolean isCustomQuest()
+	{
+		return _isCustom;
 	}
 }

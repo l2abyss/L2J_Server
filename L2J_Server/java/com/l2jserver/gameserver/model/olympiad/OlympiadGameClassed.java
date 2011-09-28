@@ -24,7 +24,7 @@ import com.l2jserver.util.Rnd;
  * @author DS
  *
  */
-class OlympiadGameClassed extends OlympiadGameNormal
+public class OlympiadGameClassed extends OlympiadGameNormal
 {
 	private OlympiadGameClassed(int id, Participant[] opponents)
 	{
@@ -40,13 +40,19 @@ class OlympiadGameClassed extends OlympiadGameNormal
 	@Override
 	protected final int getDivider()
 	{
-		return 3;
+		return Config.ALT_OLY_DIVIDER_CLASSED;
 	}
 
 	@Override
 	protected final int[][] getReward()
 	{
 		return Config.ALT_OLY_CLASSED_REWARD;
+	}
+	
+	@Override
+	protected final String getWeeklyMatchType()
+	{
+		return COMP_DONE_WEEK_CLASSED;
 	}
 
 	protected static final OlympiadGameClassed createGame(int id, List<List<Integer>> classList)

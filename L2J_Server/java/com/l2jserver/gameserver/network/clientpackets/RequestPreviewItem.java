@@ -36,7 +36,6 @@ import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ShopPreviewInfo;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.templates.item.L2Armor;
 import com.l2jserver.gameserver.templates.item.L2ArmorType;
@@ -50,6 +49,8 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestPreviewItem extends L2GameClientPacket
 {
+	private static final String _C__C7_REQUESTPREVIEWITEM = "[C] C7 RequestPreviewItem";
+	
 	protected static final Logger _log = Logger.getLogger(RequestPreviewItem.class.getName());
 	
 	private L2PcInstance _activeChar;
@@ -67,7 +68,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		{
 			try
 			{
-				_activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_LONGER_TRYING_ON));
+				_activeChar.sendPacket(SystemMessageId.NO_LONGER_TRYING_ON);
 				_activeChar.sendPacket(new UserInfo(_activeChar));
 			}
 			catch (Exception e)
@@ -112,7 +113,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("buy"))
 		{
-			_activeChar.sendMessage("You buying too fast.");
+			_activeChar.sendMessage("You are buying too fast.");
 			return;
 		}
 		
@@ -200,12 +201,11 @@ public final class RequestPreviewItem extends L2GameClientPacket
 			
 			if (_item_list.containsKey(slot))
 			{
-				_activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CAN_NOT_TRY_THOSE_ITEMS_ON_AT_THE_SAME_TIME));
+				_activeChar.sendPacket(SystemMessageId.YOU_CAN_NOT_TRY_THOSE_ITEMS_ON_AT_THE_SAME_TIME);
 				return;
 			}
-			else
-				_item_list.put(slot, itemId);
 			
+			_item_list.put(slot, itemId);
 			totalPrice += Config.WEAR_PRICE;
 			if (totalPrice > PcInventory.MAX_ADENA)
 			{
@@ -217,7 +217,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		// Charge buyer and add tax to castle treasury if not owned by npc clan because a Try On is not Free
 		if ((totalPrice < 0) || !_activeChar.reduceAdena("Wear", totalPrice, _activeChar.getLastFolkNPC(), true))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			_activeChar.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 			return;
 		}
 
@@ -229,12 +229,9 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return "[C] C7 RequestPreviewItem".intern();
+		return _C__C7_REQUESTPREVIEWITEM;
 	}
 }

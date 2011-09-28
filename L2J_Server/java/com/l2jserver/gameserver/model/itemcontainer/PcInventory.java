@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.itemcontainer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.logging.Level;
 
 import javolution.util.FastList;
@@ -30,6 +29,7 @@ import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.TradeList.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
@@ -88,6 +88,8 @@ public class PcInventory extends Inventory
 	
 	/**
 	 * Returns the list of items in inventory available for transaction
+	 * @param allowAdena 
+	 * @param allowAncientAdena 
 	 * @return L2ItemInstance : items in inventory
 	 */
 	public L2ItemInstance[] getUniqueItems(boolean allowAdena, boolean allowAncientAdena)
@@ -129,6 +131,8 @@ public class PcInventory extends Inventory
 	/**
 	 * Returns the list of items in inventory available for transaction
 	 * Allows an item to appear twice if and only if there is a difference in enchantment level.
+	 * @param allowAdena 
+	 * @param allowAncientAdena 
 	 * @return L2ItemInstance : items in inventory
 	 */
 	public L2ItemInstance[] getUniqueItemsByEnchantLevel(boolean allowAdena, boolean allowAncientAdena)
@@ -168,6 +172,8 @@ public class PcInventory extends Inventory
 	}
 	
 	/**
+	 * @param itemId 
+	 * @return 
 	 * @see com.l2jserver.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, boolean)
 	 */
 	public L2ItemInstance[] getAllItemsByItemId(int itemId)
@@ -200,6 +206,9 @@ public class PcInventory extends Inventory
 	}
 	
 	/**
+	 * @param itemId 
+	 * @param enchantment 
+	 * @return 
 	 * @see com.l2jserver.gameserver.model.itemcontainer.PcInventory#getAllItemsByItemId(int, int, boolean)
 	 */
 	public L2ItemInstance[] getAllItemsByItemId(int itemId, int enchantment)
@@ -233,15 +242,24 @@ public class PcInventory extends Inventory
 	}
 	
 	/**
-	 * Returns the list of items in inventory available for transaction
-	 * @return L2ItemInstance : items in inventory
+	 * @param allowAdena 
+	 * @param allowNonTradeable 
+	 * @param feightable 
+	 * @return the list of items in inventory available for transaction
 	 */
-	public L2ItemInstance[] getAvailableItems(boolean allowAdena, boolean allowNonTradeable)
+	public L2ItemInstance[] getAvailableItems(boolean allowAdena, boolean allowNonTradeable, boolean feightable)
 	{
 		FastList<L2ItemInstance> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
-			if (item != null && item.isAvailable(getOwner(), allowAdena, allowNonTradeable) && canManipulateWithItemId(item.getItemId()))
+			if (item == null || !item.isAvailable(getOwner(), allowAdena, allowNonTradeable) || !canManipulateWithItemId(item.getItemId()))
+				continue;
+			else if (feightable)
+			{
+				if (item.getLocation() == ItemLocation.INVENTORY && item.isFreightable())
+					list.add(item);
+			}
+			else
 				list.add(item);
 		}
 		
@@ -291,6 +309,7 @@ public class PcInventory extends Inventory
 	
 	/**
 	 * Returns the list of items in inventory available for transaction adjusted by tradeList
+	 * @param tradeList 
 	 * @return L2ItemInstance : items in inventory
 	 */
 	public TradeList.TradeItem[] getAvailableItems(TradeList tradeList)
@@ -315,7 +334,6 @@ public class PcInventory extends Inventory
 	/**
 	 * Adjust TradeItem according his status in inventory
 	 * @param item : L2ItemInstance to be adjusten
-	 * @return TradeItem representing adjusted item
 	 */
 	public void adjustAvailableItem(TradeItem item)
 	{
@@ -466,10 +484,11 @@ public class PcInventory extends Inventory
 	
 	/**
 	 * Transfers item to another inventory and checks _adena and _ancientAdena
-	 * @param process : String Identifier of process triggering this action
-	 * @param itemId : int Item Identifier of the item to be transfered
-	 * @param count : int Quantity of items to be transfered
-	 * @param actor : L2PcInstance Player requesting the item transfer
+	 * @param process string Identifier of process triggering this action
+	 * @param objectId Item Identifier of the item to be transfered
+	 * @param count Quantity of items to be transfered
+	 * @param target the item container for the item to be transfered.
+	 * @param actor the player requesting the item transfer
 	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @return L2ItemInstance corresponding to the new item or the updated item in inventory
 	 */
@@ -704,38 +723,70 @@ public class PcInventory extends Inventory
 		return paperdoll;
 	}
 	
+	/**
+	 * @param itemList the items that needs to be validated.
+	 * @param sendMessage if {@code true} will send a message of inventory full.
+	 * @param sendSkillMessage if {@code true} will send a message of skill not available.
+	 * @return {@code true} if the inventory isn't full after taking new items and items weight add to current load doesn't exceed max weight load.
+	 */
+	public boolean checkInventorySlotsAndWeight(FastList<L2Item> itemList, boolean sendMessage, boolean sendSkillMessage)
+	{
+		int lootWeight = 0;
+		int requiredSlots = 0;
+		if (itemList != null)
+		{
+			for (L2Item item : itemList)
+			{
+				//If the item is not stackable or is stackable and not present in inventory, will need a slot.
+				if (!item.isStackable() || (getInventoryItemCount(item.getItemId(), -1) <= 0))
+				{
+					requiredSlots++;
+				}
+				lootWeight += item.getWeight();
+			}
+		}
+		
+		boolean inventoryStatusOK = validateCapacity(requiredSlots) && validateWeight(lootWeight);
+		if (!inventoryStatusOK && sendMessage)
+		{
+			_owner.sendPacket(SystemMessageId.SLOTS_FULL);
+			if (sendSkillMessage)
+			{
+				_owner.sendPacket(SystemMessageId.WEIGHT_EXCEEDED_SKILL_UNAVAILABLE);
+			}
+		}
+		return inventoryStatusOK;
+	}
 	
+	/**
+	 * If the item is not stackable or is stackable and not present in inventory, will need a slot.
+	 * @param item the item to validate.
+	 * @return {@code true} if there is enough room to add the item inventory.
+	 */
 	public boolean validateCapacity(L2ItemInstance item)
 	{
 		int slots = 0;
-		
-		if (!(item.isStackable() && getItemByItemId(item.getItemId()) != null) && item.getItemType() != L2EtcItemType.HERB)
+		if (!item.isStackable() || (getInventoryItemCount(item.getItemId(), -1) <= 0) || (item.getItemType() != L2EtcItemType.HERB))
+		{
 			slots++;
-		
+		}
 		return validateCapacity(slots, item.isQuestItem());
 	}
 	
-	@Deprecated
-	public boolean validateCapacity(List<L2ItemInstance> items)
+	/**
+	 * If the item is not stackable or is stackable and not present in inventory, will need a slot.
+	 * @param itemId the item Id for the item to validate.
+	 * @return {@code true} if there is enough room to add the item inventory.
+	 */
+	public boolean validateCapacityByItemId(int itemId)
 	{
 		int slots = 0;
-		
-		for (L2ItemInstance item : items)
-			if (!(item.isStackable() && getItemByItemId(item.getItemId()) != null))
-				slots++;
-		
-		return validateCapacity(slots);
-	}
-	
-	public boolean validateCapacityByItemId(int ItemId)
-	{
-		int slots = 0;
-		L2Item item = ItemTable.getInstance().getTemplate(ItemId);
-		L2ItemInstance invItem = getItemByItemId(ItemId);
-		if (!(invItem != null && invItem.isStackable()))
+		final L2ItemInstance invItem = getItemByItemId(itemId);
+		if ((invItem == null) || !invItem.isStackable())
+		{
 			slots++;
-		
-		return validateCapacity(slots, item.isQuestItem());
+		}
+		return validateCapacity(slots, ItemTable.getInstance().getTemplate(itemId).isQuestItem());
 	}
 	
 	@Override
@@ -748,15 +799,17 @@ public class PcInventory extends Inventory
 	{
 		if (!questItem)
 			return (_items.size() - _questSlots + slots <= _owner.getInventoryLimit());
-		else
-			return _questSlots + slots <= _owner.getQuestInventoryLimit();
+		return _questSlots + slots <= _owner.getQuestInventoryLimit();
 	}
 	
 	@Override
 	public boolean validateWeight(int weight)
 	{
-		if (_owner.isGM() && _owner.getAccessLevel().allowTransaction())
-			return true; // disable weight check for GM
+		// Disable weight check for GMs.
+		if (_owner.isGM() && _owner.getDietMode() && _owner.getAccessLevel().allowTransaction())
+		{
+			return true;
+		}
 		return (_totalWeight + weight <= _owner.getMaxLoad());
 	}
 	
@@ -851,8 +904,7 @@ public class PcInventory extends Inventory
 	{
 		if (quest)
 			return _questSlots;
-		else
-			return getSize() - _questSlots;
+		return getSize() - _questSlots;
 	}
 	
 	@Override

@@ -95,7 +95,7 @@ public class L2DynamicZone extends L2ZoneType
 		_task = null;
 		
 		_region.removeZone(this);
-		for (L2Character member : _characterList.values())
+		for (L2Character member : getCharactersInsideArray())
 		{
 			try
 			{

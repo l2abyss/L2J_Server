@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * @author Maktakien
@@ -27,11 +27,9 @@ public class GetOnVehicle extends L2GameServerPacket
 	private Point3D _pos;
 	
 	/**
-	 * @param activeChar
-	 * @param boat
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param charObjId
+	 * @param boatObjId
+	 * @param pos
 	 */
 	public GetOnVehicle(int charObjId, int boatObjId, Point3D pos)
 	{
@@ -40,8 +38,8 @@ public class GetOnVehicle extends L2GameServerPacket
 		_pos = pos;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()
@@ -55,8 +53,8 @@ public class GetOnVehicle extends L2GameServerPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

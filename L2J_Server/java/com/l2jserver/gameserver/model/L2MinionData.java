@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model;
 
 import com.l2jserver.util.Rnd;
+
 /**
  * This class defines the spawn data of a Minion type
  * In a group mob, there are one master called RaidBoss and several slaves called Minions.
@@ -22,7 +23,6 @@ import com.l2jserver.util.Rnd;
  * <B><U> Data</U> :</B><BR><BR>
  * <li>_minionId : The Identifier of the L2Minion to spawn </li>
  * <li>_minionAmount :  The number of this Minion Type to spawn </li><BR><BR>
- *
  */
 public class L2MinionData
 {
@@ -39,8 +39,7 @@ public class L2MinionData
 	/**
 	 * Set the Identifier of the Minion to spawn.<BR><BR>
 	 *
-	 * @param if The L2Character Identifier to spawn
-	 *
+	 * @param id The L2Character Identifier to spawn
 	 */
 	public void setMinionId(int id)
 	{
@@ -48,7 +47,7 @@ public class L2MinionData
 	}
 	
 	/**
-	 * Return the Identifier of the Minion to spawn.<BR><BR>
+	 * @return the Identifier of the Minion to spawn.
 	 */
 	public int getMinionId()
 	{
@@ -89,7 +88,7 @@ public class L2MinionData
 	}
 	
 	/**
-	 * Return the amount of this Minion type to spawn.<BR><BR>
+	 * @return the amount of this Minion type to spawn.
 	 */
 	public int getAmount()
 	{
@@ -98,10 +97,7 @@ public class L2MinionData
 			_minionAmount = Rnd.get(_minionAmountMin, _minionAmountMax);
 			return _minionAmount;
 		}
-		else
-		{
-			return _minionAmountMin;
-		}
+		return _minionAmountMin;
 	}
 	
 }

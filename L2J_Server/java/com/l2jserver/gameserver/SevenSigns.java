@@ -14,12 +14,13 @@
  */
 package com.l2jserver.gameserver;
 
+import gnu.trove.TObjectProcedure;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -29,9 +30,9 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.AutoChatHandler;
@@ -49,10 +50,6 @@ import com.l2jserver.gameserver.util.Broadcast;
 
 /**
  *  Seven Signs Engine
- *
- * 
- * 
- *
  *  @author Tempy
  */
 public class SevenSigns
@@ -246,8 +243,7 @@ public class SevenSigns
 		// because of previous "date" column usage, check only if it already contains usable data for us
 		if (_lastSave.getTimeInMillis() > 7 && _lastSave.before(lastPeriodChange))
 			return true;
-		else
-			return false;
+		return false;
 	}
 	
 	/**
@@ -563,6 +559,7 @@ public class SevenSigns
 	/**
 	 * returns true if the given date is in Seal Validation or in Quest Event Results period
 	 * @param date
+	 * @return 
 	 */
 	public boolean isDateInSealValidPeriod(Calendar date)
 	{
@@ -745,8 +742,6 @@ public class SevenSigns
 	
 	/**
 	 * Restores all Seven Signs data and settings, usually called at server startup.
-	 *
-	 * @throws Exception
 	 */
 	protected void restoreSevenSignsData()
 	{
@@ -826,13 +821,8 @@ public class SevenSigns
 	}
 	
 	/**
-	 * Saves all Seven Signs player data.
+	 * Saves all Seven Signs player data.<br>
 	 * Should be called on period change and shutdown only.
-	 * <BR>
-	 *
-	 * @param player
-	 * @param updateSettings
-	 * @throws Exception
 	 */
 	public void saveSevenSignsData()
 	{
@@ -977,16 +967,12 @@ public class SevenSigns
 	}
 	
 	/**
-	 * Used to specify cabal-related details for the specified player. This method
-	 * checks to see if the player has registered before and will update the database
-	 * if necessary.
-	 * <BR>
-	 * Returns the cabal ID the player has joined.
-	 *
-	 * @param player
+	 * Used to specify cabal-related details for the specified player.<br>
+	 * This method checks to see if the player has registered before and will update the database if necessary.
+	 * @param objectId
 	 * @param chosenCabal
 	 * @param chosenSeal
-	 * @return int cabal
+	 * @return the cabal ID the player has joined.
 	 */
 	public int setPlayerInfo(int objectId, int chosenCabal, int chosenSeal)
 	{
@@ -1057,10 +1043,9 @@ public class SevenSigns
 	 * Returns the amount of ancient adena the specified player can claim, if any.<BR>
 	 * If removeReward = True, all the ancient adena owed to them is removed, then
 	 * DB is updated.
-	 *
-	 * @param player
+	 * @param objectId
 	 * @param removeReward
-	 * @return int rewardAmount
+	 * @return
 	 */
 	public int getAncientAdenaReward(int objectId, boolean removeReward)
 	{
@@ -1088,15 +1073,14 @@ public class SevenSigns
 	/**
 	 * Used to add the specified player's seal stone contribution points
 	 * to the current total for their cabal. Returns the point score the
-	 * contribution was worth.
+	 * contribution was worth.<br>
 	 *
 	 * Each stone count <B>must be</B> broken down and specified by the stone's color.
-	 *
-	 * @param player
+	 * @param objectId
 	 * @param blueCount
 	 * @param greenCount
 	 * @param redCount
-	 * @return int contribScore
+	 * @return
 	 */
 	public long addPlayerStoneContrib(int objectId, long blueCount, long greenCount, long redCount)
 	{
@@ -1380,25 +1364,34 @@ public class SevenSigns
 	 * necropolises, who belong to the losing cabal.
 	 * <BR><BR>
 	 * Should only ever called at the beginning of Seal Validation.
+	 * @param compWinner 
 	 */
 	protected void teleLosingCabalFromDungeons(String compWinner)
 	{
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		//synchronized (L2World.getInstance().getAllPlayers())
+		L2World.getInstance().forEachPlayer(new teleLosingCabalFromDungeons(compWinner));
+	}
+	
+	private final class teleLosingCabalFromDungeons implements TObjectProcedure<L2PcInstance>
+	{
+		private final String _cmpWinner;
+		
+		private teleLosingCabalFromDungeons(final String compWinner)
 		{
-			StatsSet currPlayer;
-			for (L2PcInstance onlinePlayer : pls)
+			_cmpWinner = compWinner;
+		}
+		
+		@Override
+		public final boolean execute(final L2PcInstance onlinePlayer)
+		{
+			if (onlinePlayer != null)
 			{
-				if (onlinePlayer == null)
-					continue;
-				
-				currPlayer = _signsPlayerData.get(onlinePlayer.getObjectId());
+				StatsSet currPlayer = _signsPlayerData.get(onlinePlayer.getObjectId());
 				
 				if (isSealValidationPeriod() || isCompResultsPeriod())
 				{
-					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && (currPlayer == null || !currPlayer.getString("cabal").equals(compWinner)))
+					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && (currPlayer == null || !currPlayer.getString("cabal").equals(_cmpWinner)))
 					{
-						onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+						onlinePlayer.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 						onlinePlayer.setIsIn7sDungeon(false);
 						onlinePlayer.sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
 					}
@@ -1407,12 +1400,14 @@ public class SevenSigns
 				{
 					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && (currPlayer == null || !currPlayer.getString("cabal").isEmpty()))
 					{
-						onlinePlayer.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+						onlinePlayer.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 						onlinePlayer.setIsIn7sDungeon(false);
 						onlinePlayer.sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
 					}
 				}
 			}
+			
+			return true;
 		}
 	}
 	
@@ -1574,33 +1569,53 @@ public class SevenSigns
 	
 	public void giveCPMult(int StrifeOwner)
 	{
-		int cabal;
-		//Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
-		for (L2PcInstance character : L2World.getInstance().getAllPlayers().values())
+		L2World.getInstance().forEachPlayer(new giveCPMult(StrifeOwner));
+	}
+	
+	private final class giveCPMult implements TObjectProcedure<L2PcInstance>
+	{
+		private final int _strifeOwner;
+		
+		private giveCPMult(int strifeOwner)
 		{
-			if (character == null)
-				continue;
+			_strifeOwner = strifeOwner;
+		}
+		@Override
+		public final boolean execute(final L2PcInstance character)
+		{
+			if (character != null)
+			{
+				//Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
+				int cabal = getPlayerCabal(character.getObjectId());
+				if (cabal != SevenSigns.CABAL_NULL)
+					if (cabal == _strifeOwner)
+						character.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+					else
+						//Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
+						character.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			}
 			
-			cabal = getPlayerCabal(character.getObjectId());
-			if (cabal != SevenSigns.CABAL_NULL)
-				if (cabal == StrifeOwner)
-					character.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-				else
-					//Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
-					character.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			return true;
 		}
 	}
 	
 	public void removeCPMult()
 	{
-		for (L2PcInstance character : L2World.getInstance().getAllPlayers().values())
+		L2World.getInstance().forEachPlayer(new removeCPMult());
+	}
+	
+	private final class removeCPMult implements TObjectProcedure<L2PcInstance>
+	{	
+		@Override
+		public final boolean execute(final L2PcInstance character)
 		{
-			if (character == null)
-				continue;
-			
-			//Remove SevenSigns' buffs/debuffs.
-			character.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-			character.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			if (character != null)
+			{
+				//Remove SevenSigns' buffs/debuffs.
+				character.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+				character.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			}
+			return true;
 		}
 	}
 	

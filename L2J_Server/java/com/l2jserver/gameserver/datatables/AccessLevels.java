@@ -189,6 +189,9 @@ public class AccessLevels
 		return accessLevel;
 	}
 	
+	/**
+	 * @param accessLevel
+	 */
 	public void addBanAccessLevel(int accessLevel)
 	{
 		synchronized (_accessLevels)

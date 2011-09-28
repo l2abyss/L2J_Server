@@ -23,12 +23,11 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowDominionRegistry;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- *
  * @author Gigiikun
  */
 public final class RequestJoinDominionWar extends L2GameClientPacket
 {
-	private static final String _C__57_RequestJoinDominionWar = "[C] 57 RequestJoinDominionWar";
+	private static final String _C__D0_57_REQUESTJOINDOMINIONWAR = "[C] D0:57 RequestJoinDominionWar";
 	// private static Logger _log = Logger.getLogger(RequestJoinDominionWar.class.getName());
 	
 	private int _territoryId;
@@ -120,6 +119,6 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__57_RequestJoinDominionWar;
+		return _C__D0_57_REQUESTJOINDOMINIONWAR;
 	}
 }

@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.gameserverpackets;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.logging.Level;
@@ -57,7 +56,7 @@ public class BlowFishKey extends BaseSendablePacket
 	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
 	 */
 	@Override
-	public byte[] getContent() throws IOException
+	public byte[] getContent()
 	{
 		return getBytes();
 	}

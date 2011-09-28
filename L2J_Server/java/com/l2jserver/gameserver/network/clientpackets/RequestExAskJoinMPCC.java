@@ -31,8 +31,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestExAskJoinMPCC extends L2GameClientPacket
 {
-	//private static Logger _log = Logger.getLogger(RequestExAskJoinMPCC.class.getName());
-	private static final String _C__D0_0D_REQUESTEXASKJOINMPCC = "[C] D0:0D RequestExAskJoinMPCC";
+	private static final String _C__D0_06_REQUESTEXASKJOINMPCC = "[C] D0:06 RequestExAskJoinMPCC";
 	private String _name;
 	
 	@Override
@@ -86,7 +85,7 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 					}
 					else
 					{
-						activeChar.sendMessage("Your target has no Party.");
+						activeChar.sendMessage(player.getName() + " doesn't have party and cannot be invited to Command Channel.");
 					}
 					
 				}
@@ -117,18 +116,15 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 					}
 					else
 					{
-						activeChar.sendMessage("Your target has no Party.");
+						activeChar.sendMessage(player.getName() + " doesn't have party and cannot be invited to Command Channel.");
 					}
 				}
 			}
 			else
 			{
-				sm = SystemMessage.getSystemMessage(SystemMessageId.CANNOT_INVITE_TO_COMMAND_CHANNEL);
-				activeChar.sendPacket(sm);
+				activeChar.sendPacket(SystemMessageId.CANNOT_INVITE_TO_COMMAND_CHANNEL);
 			}
 		}
-		
-		
 	}
 	
 	private void askJoinMPCC(L2PcInstance requestor, L2PcInstance target)
@@ -154,35 +150,31 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 		
 		if (!hasRight)
 		{
-			requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_ONLY_BY_LEVEL_5_CLAN_LEADER_PARTY_LEADER));
+			requestor.sendPacket(SystemMessageId.COMMAND_CHANNEL_ONLY_BY_LEVEL_5_CLAN_LEADER_PARTY_LEADER);
 			return;
 		}
+		SystemMessage sm;
 		if (!target.isProcessingRequest())
 		{
 			requestor.onTransactionRequest(target);
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_CONFIRM_FROM_C1);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_CONFIRM_FROM_C1);
 			sm.addString(requestor.getName());
 			target.getParty().getLeader().sendPacket(sm);
 			target.getParty().getLeader().sendPacket(new ExAskJoinMPCC(requestor.getName()));
 			
-			requestor.sendMessage("You invited "+target.getName()+" to your Command Channel.");
+			requestor.sendMessage("You invited " + target.getName() + " to your Command Channel.");
 		}
 		else
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
 			sm.addString(target.getName());
 			requestor.sendPacket(sm);
-			
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_0D_REQUESTEXASKJOINMPCC;
+		return _C__D0_06_REQUESTEXASKJOINMPCC;
 	}
-	
 }

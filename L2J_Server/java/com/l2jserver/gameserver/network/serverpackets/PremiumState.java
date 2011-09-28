@@ -21,8 +21,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class PremiumState extends L2GameServerPacket
 {
 	private static final String _S__FE_AA_EXGETBOOKMARKINFO = "[S] FE:AA PremiumState";
-	private int _objectId;
-	private int _state;
+	private final int _objectId;
+	private final int _state;
 	
 	public PremiumState(int objectId, int state)
 	{
@@ -31,19 +31,19 @@ public class PremiumState extends L2GameServerPacket
 	}
 	
 	/**
-	 * @see com.l2jserver.util.network.BaseSendablePacket.ServerBasePacket#writeImpl()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0xaa);
+		writeC(0xFE);
+		writeH(0xAA);
 		writeD(_objectId);
 		writeC(_state);
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

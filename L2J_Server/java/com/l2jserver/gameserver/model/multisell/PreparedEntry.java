@@ -60,12 +60,16 @@ public class PreparedEntry extends Entry
 					&& ing.isArmorOrWeapon())
 			{
 				info = new ItemInfo(item);
-				final Ingredient newIngredient = ing.clone();
+				final Ingredient newIngredient = ing.getCopy();
 				newIngredient.setItemInfo(info);
 				_ingredients.add(newIngredient);
 			}
 			else
-				_ingredients.add(ing);
+			{
+				final Ingredient newIngredient = ing.getCopy();
+				_ingredients.add(newIngredient);
+			}
+				
 		}
 		
 		// now add the adena, if any.
@@ -82,12 +86,15 @@ public class PreparedEntry extends Entry
 			
 			if (maintainEnchantment && ing.isArmorOrWeapon())
 			{
-				final Ingredient newProduct = ing.clone();
+				final Ingredient newProduct = ing.getCopy();
 				newProduct.setItemInfo(info);
 				_products.add(newProduct);
 			}
 			else
-				_products.add(ing);
+			{
+				final Ingredient newProduct = ing.getCopy();
+				_products.add(newProduct);
+			}
 		}
 	}
 	

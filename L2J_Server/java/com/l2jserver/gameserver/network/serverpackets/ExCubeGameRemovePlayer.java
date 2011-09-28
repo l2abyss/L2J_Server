@@ -33,8 +33,8 @@ public class ExCubeGameRemovePlayer extends L2GameServerPacket
 	/**
 	 * Remove Player from Minigame Waiting List
 	 * 
-	 * @param player: Player to Remove
-	 * @param isRedTeam: Is Player from Red Team?
+	 * @param player Player to Remove
+	 * @param isRedTeam Is Player from Red Team?
 	 */
 	public ExCubeGameRemovePlayer(L2PcInstance player, boolean isRedTeam)
 	{

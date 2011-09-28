@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author Gnacik
- * 
  */
 public class RequestDismissPartyRoom extends L2GameClientPacket
 {

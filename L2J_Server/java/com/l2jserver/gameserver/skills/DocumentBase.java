@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionMinDistance;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerActiveEffectId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerActiveSkillId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerAgathionId;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerCanSweep;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerCharges;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerClassIdRestriction;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerCloakStatus;
@@ -62,6 +63,7 @@ import com.l2jserver.gameserver.skills.conditions.ConditionPlayerHasClanHall;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerHasFort;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerHasPet;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerHp;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerInsideZoneId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerInstanceId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerInvSize;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerIsClanLeader;
@@ -80,7 +82,9 @@ import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSiegeSide;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSouls;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerState;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerSubclass;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerTransformationId;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerTvTEvent;
+import com.l2jserver.gameserver.skills.conditions.ConditionPlayerVehicleMounted;
 import com.l2jserver.gameserver.skills.conditions.ConditionPlayerWeight;
 import com.l2jserver.gameserver.skills.conditions.ConditionSiegeZone;
 import com.l2jserver.gameserver.skills.conditions.ConditionSkillStats;
@@ -100,7 +104,6 @@ import com.l2jserver.gameserver.skills.conditions.ConditionTargetUsesWeaponKind;
 import com.l2jserver.gameserver.skills.conditions.ConditionUsingItemType;
 import com.l2jserver.gameserver.skills.conditions.ConditionUsingSkill;
 import com.l2jserver.gameserver.skills.conditions.ConditionWithSkill;
-import com.l2jserver.gameserver.skills.effects.EffectChanceSkillTrigger;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.skills.funcs.Lambda;
 import com.l2jserver.gameserver.skills.funcs.LambdaCalc;
@@ -120,7 +123,7 @@ abstract class DocumentBase
 {
 	static Logger _log = Logger.getLogger(DocumentBase.class.getName());
 	
-	private File _file;
+	private final File _file;
 	protected Map<String, String[]> _tables;
 	
 	DocumentBase(File pFile)
@@ -274,6 +277,13 @@ abstract class DocumentBase
 		else if (((L2Skill) template).getBuffDuration() > 0)
 			abnormalTime = ((L2Skill) template).getBuffDuration() / 1000 / count;
 		
+		boolean passiveEffect = false;
+		if (attrs.getNamedItem("passive") != null)
+		{
+			if (Integer.decode(getValue(attrs.getNamedItem("passive").getNodeValue(),template)) == 1)
+				passiveEffect = true;
+		}
+		
 		boolean self = false;
 		if (attrs.getNamedItem("self") != null)
 		{
@@ -294,11 +304,15 @@ abstract class DocumentBase
 			String abn = attrs.getNamedItem("abnormal").getNodeValue();
 			abnormal = AbnormalEffect.getByName(abn);
 		}
-		AbnormalEffect special = AbnormalEffect.NULL;
+		AbnormalEffect[] special = null;
 		if (attrs.getNamedItem("special") != null)
 		{
-			String spc = attrs.getNamedItem("special").getNodeValue();
-			special = AbnormalEffect.getByName(spc);
+			final String[] specials = attrs.getNamedItem("special").getNodeValue().split(",");
+			special = new AbnormalEffect[specials.length];
+			for (int s = 0; s < specials.length; s++)
+			{
+				special[s] = AbnormalEffect.getByName(specials[s]);
+			}
 		}
 		AbnormalEffect event = AbnormalEffect.NULL;
 		if (attrs.getNamedItem("event") != null)
@@ -338,7 +352,7 @@ abstract class DocumentBase
 		
 		EffectTemplate lt;
 		
-		final boolean isChanceSkillTrigger = (name == EffectChanceSkillTrigger.class.getName());
+		final boolean isChanceSkillTrigger = (name == "ChanceSkillTrigger");
 		int trigId = 0;
 		if (attrs.getNamedItem("triggeredId") != null)
 			trigId = Integer.parseInt(getValue(attrs.getNamedItem("triggeredId").getNodeValue(), template));
@@ -377,7 +391,7 @@ abstract class DocumentBase
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " "
 					+ activationChance);
 		
-		lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormal, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance);
+		lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormal, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance, passiveEffect);
 		parseTemplate(n, lt);
 		if (template instanceof L2Item)
 			((L2Item) template).attach(lt);
@@ -385,6 +399,8 @@ abstract class DocumentBase
 		{
 			if (self)
 				((L2Skill) template).attachSelf(lt);
+			else if (passiveEffect)
+				((L2Skill) template).attachPassive(lt);
 			else
 				((L2Skill) template).attach(lt);
 		}
@@ -530,6 +546,11 @@ abstract class DocumentBase
 				boolean val = Boolean.valueOf(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerIsHero(val));
 			}
+			else if ("transformationId".equalsIgnoreCase(a.getNodeName()))
+			{
+				int id = Integer.parseInt(a.getNodeValue());
+				cond = joinAnd(cond, new ConditionPlayerTransformationId(id));
+			}
 			else if ("hp".equalsIgnoreCase(a.getNodeName()))
 			{
 				int hp = Integer.decode(getValue(a.getNodeValue(), null));
@@ -639,6 +660,11 @@ abstract class DocumentBase
 				boolean val = Boolean.valueOf(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerFlyMounted(val));
 			}
+			else if ("vehicleMounted".equalsIgnoreCase(a.getNodeName()))
+			{
+				boolean val = Boolean.valueOf(a.getNodeValue());
+				cond = joinAnd(cond, new ConditionPlayerVehicleMounted(val));
+			}
 			else if ("landingZone".equalsIgnoreCase(a.getNodeName()))
 			{
 				boolean val = Boolean.valueOf(a.getNodeValue());
@@ -738,6 +764,21 @@ abstract class DocumentBase
 					radius = Integer.decode(getValue(st.nextToken().trim(), null));
 				}
 				cond = joinAnd(cond, new ConditionPlayerRangeFromNpc(npcId, radius));
+			}
+			else if ("canSweep".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanSweep(Boolean.valueOf(a.getNodeValue())));
+			}
+			else if ("insideZoneId".equalsIgnoreCase(a.getNodeName()))
+			{
+				StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+				ArrayList<Integer> array = new ArrayList<Integer>(st.countTokens());
+				while (st.hasMoreTokens())
+				{
+					String item = st.nextToken().trim();
+					array.add(Integer.decode(getValue(item, null)));
+				}
+				cond = joinAnd(cond, new ConditionPlayerInsideZoneId(array));
 			}
 		}
 		

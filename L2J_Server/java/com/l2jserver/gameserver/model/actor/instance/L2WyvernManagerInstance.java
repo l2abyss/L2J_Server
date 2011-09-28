@@ -14,7 +14,10 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.entity.ClanHall;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -45,11 +48,21 @@ public class L2WyvernManagerInstance extends L2Npc
 	
 	public boolean isOwnerClan(L2PcInstance player)
 	{
-		return true;
+		L2Clan clan = player.getClan();
+		if(clan != null)
+		{
+			ClanHall hall = getConquerableHall();
+			if(hall != null)
+				return hall.getOwnerId() == clan.getClanId();
+		}
+		return false;
 	}
 	
 	public boolean isInSiege()
 	{
-		return false;
+		SiegableHall hall = getConquerableHall();
+		if(hall != null)
+			return hall.isInSiege();
+		return getCastle().getSiege().getIsInProgress();
 	}
 }

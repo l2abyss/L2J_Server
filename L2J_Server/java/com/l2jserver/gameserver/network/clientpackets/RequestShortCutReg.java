@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
  */
 public final class RequestShortCutReg extends L2GameClientPacket
 {
-	private static final String _C__33_REQUESTSHORTCUTREG = "[C] 33 RequestShortCutReg";
+	private static final String _C__3D_REQUESTSHORTCUTREG = "[C] 3D RequestShortCutReg";
 	
 	private int _type;
 	private int _id;
@@ -86,13 +86,10 @@ public final class RequestShortCutReg extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__33_REQUESTSHORTCUTREG;
+		return _C__3D_REQUESTSHORTCUTREG;
 	}
 	
 	@Override

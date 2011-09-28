@@ -46,6 +46,7 @@ public final class L2TeleporterInstance extends L2Npc
 	private static final int COND_REGULAR = 3;
 	
 	/**
+	 * @param objectId 
 	 * @param template
 	 */
 	public L2TeleporterInstance(int objectId, L2NpcTemplate template)

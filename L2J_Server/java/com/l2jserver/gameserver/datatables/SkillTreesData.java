@@ -40,6 +40,7 @@ import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
  * @author Zoey76
@@ -147,13 +148,10 @@ public final class SkillTreesData
 	private boolean loadFiles()
 	{
 		File folder = new File(Config.DATAPACK_ROOT, "data/skillTrees/");
-		File[] listOfFiles = folder.listFiles();
+		File[] listOfFiles = folder.listFiles(new XMLFilter());
 		for (File f : listOfFiles)
 		{
-			if (f.getName().endsWith(".xml"))
-			{
-				loadSkillTree(f);
-			}
+			loadSkillTree(f);
 		}
 		return false;
 	}
@@ -759,7 +757,7 @@ public final class SkillTreesData
 	
 	/**
 	 * Some transformations are not available for some races.
-	 * @param playerthe transformation skill learning player.
+	 * @param player the transformation skill learning player.
 	 * @return all the available Transformation skills for a given {@code player}.
 	 */
 	public FastList<L2SkillLearn> getAvailableTransformSkills(L2PcInstance player)

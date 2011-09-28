@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class Action extends L2GameClientPacket
 {
-	private static final String ACTION__C__04 = "[C] 04 Action";
+	private static final String __C__1F_ACTION = "[C] 1F Action";
 	private static final Logger _log = Logger.getLogger(Action.class.getName());
 	
 	// cddddc
@@ -139,12 +139,9 @@ public final class Action extends L2GameClientPacket
 			getClient().sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return ACTION__C__04;
+		return __C__1F_ACTION;
 	}
 }

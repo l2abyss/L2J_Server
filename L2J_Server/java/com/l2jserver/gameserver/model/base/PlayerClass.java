@@ -1,14 +1,4 @@
 /*
- * $Header: PlayerClass.java, 24/11/2005 12:56:01 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 24/11/2005 12:56:01 $
- * $Revision: 1 $
- * $Log: PlayerClass.java,v $
- * Revision 1  24/11/2005 12:56:01  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -45,11 +35,8 @@ import java.util.Set;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
- * This class ...
- *
- * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
+ * @author luisantonioa
  */
 public enum PlayerClass
 {
@@ -178,7 +165,7 @@ public enum PlayerClass
 	shillienSaint(DarkElf, Priest, Fourth),
 	
 	titan(Orc, Fighter, Fourth),
-	grandKhauatari(Orc, Fighter, Fourth),
+	grandKhavatari(Orc, Fighter, Fourth),
 	dominator(Orc, Mystic, Fourth),
 	doomcryer(Orc, Mystic, Fourth),
 	
@@ -321,7 +308,6 @@ public enum PlayerClass
 				}
 			}
 		}
-		
 		return allOf;
 	}
 	

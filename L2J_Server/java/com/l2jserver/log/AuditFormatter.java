@@ -37,12 +37,17 @@ public class AuditFormatter extends Formatter
 		final StringBuilder output = StringUtil.startAppend(30
 				+ record.getMessage().length()
 				+ (params == null ? 0 : params.length * 10), "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
-		for (Object p : params)
+		
+		if (params != null)
 		{
-			if (p == null)
-				continue;
-			StringUtil.append(output, ", ", p.toString());
+			for (Object p : params)
+			{
+				if (p == null)
+					continue;
+				StringUtil.append(output, ", ", p.toString());
+			}
 		}
+		
 		output.append(CRLF);
 		return output.toString();
 	}

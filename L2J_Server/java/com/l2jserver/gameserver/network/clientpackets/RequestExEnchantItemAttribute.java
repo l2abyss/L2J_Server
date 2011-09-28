@@ -32,7 +32,7 @@ import com.l2jserver.util.Rnd;
 
 public class RequestExEnchantItemAttribute extends L2GameClientPacket
 {
-	private static final String D0_35_REQUEST_EX_ENCHANT_ITEM_ATTRIBUTE = "[C] D0:35 RequestExEnchantItemAttribute";
+	private static final String _C__D0_35_REQUESTEXENCHANTITEMATTRIBUTE = "[C] D0:35 RequestExEnchantItemAttribute";
 	
 	private int _objectId;
 	
@@ -211,9 +211,9 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 				else
 					sm = SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_POWER_S2_SUCCESSFULLY_ADDED_TO_S1);
 				sm.addItemName(item);
-				sm.addElemntal(realElement);
+				sm.addElemental(realElement);
 				if (item.isArmor())
-					sm.addElemntal(Elementals.getOppositeElement(realElement));
+					sm.addElemental(Elementals.getOppositeElement(realElement));
 			}
 			else
 			{
@@ -223,9 +223,9 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 					sm = SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_POWER_S3_SUCCESSFULLY_ADDED_TO_S1_S2);
 				sm.addNumber(item.getEnchantLevel());
 				sm.addItemName(item);
-				sm.addElemntal(realElement);
+				sm.addElemental(realElement);
 				if (item.isArmor())
-					sm.addElemntal(Elementals.getOppositeElement(realElement));
+					sm.addElemental(Elementals.getOppositeElement(realElement));
 			}
 			player.sendPacket(sm);
 			item.setElementAttr(elementToAdd, newPower);
@@ -254,8 +254,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		
 		if (item.isWeapon())
 			return Elementals.WEAPON_VALUES[elementItem._type._maxLevel];
-		else
-			return Elementals.ARMOR_VALUES[elementItem._type._maxLevel];
+		return Elementals.ARMOR_VALUES[elementItem._type._maxLevel];
 	}
 	
 	public int getPowerToAdd(int stoneId, int oldValue, L2ItemInstance item)
@@ -266,19 +265,17 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			{
 				if (oldValue == 0)
 					return Elementals.FIRST_WEAPON_BONUS;
-				else
-					return Elementals.NEXT_WEAPON_BONUS;
+				return Elementals.NEXT_WEAPON_BONUS;
 			}
 			else if (item.isArmor())
 				return Elementals.ARMOR_BONUS;
 		}
-		
 		return 0;
 	}
 	
 	@Override
 	public String getType()
 	{
-		return D0_35_REQUEST_EX_ENCHANT_ITEM_ATTRIBUTE;
+		return _C__D0_35_REQUESTEXENCHANTITEMATTRIBUTE;
 	}
 }

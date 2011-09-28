@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestRefine extends AbstractRefinePacket
 {
-	private static final String _C__D0_2C_REQUESTREFINE = "[C] D0:2C RequestRefine";
+	private static final String _C__D0_41_REQUESTREFINE = "[C] D0:41 RequestRefine";
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
 	private int _gemStoneItemObjId;
@@ -45,9 +45,6 @@ public final class RequestRefine extends AbstractRefinePacket
 		_gemStoneCount = readQ();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -119,12 +116,9 @@ public final class RequestRefine extends AbstractRefinePacket
 		activeChar.sendPacket(su);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_2C_REQUESTREFINE;
+		return _C__D0_41_REQUESTREFINE;
 	}
 }

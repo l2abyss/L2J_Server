@@ -30,7 +30,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * This class ...
  *
@@ -186,8 +185,8 @@ public class CharNameTable
 	{
 		if (getNameById(objectId) != null)
 			return _accessLevels.get(objectId);
-		else
-			return 0;
+		
+		return 0;
 	}
 	
 	public synchronized boolean doesCharNameExist(String name)

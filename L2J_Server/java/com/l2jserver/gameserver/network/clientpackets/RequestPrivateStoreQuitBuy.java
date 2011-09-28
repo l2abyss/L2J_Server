@@ -23,8 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class RequestPrivateStoreQuitBuy extends L2GameClientPacket
 {
-	private static final String _C__93_REQUESTPRIVATESTOREQUITBUY = "[C] 93 RequestPrivateStoreQuitBuy";
-	
+	private static final String _C__9C_REQUESTPRIVATESTOREQUITBUY = "[C] 9C RequestPrivateStoreQuitBuy";
 	//private static Logger _log = Logger.getLogger(RequestPrivateStoreQuitBuy.class.getName());
 	
 	@Override
@@ -45,13 +44,10 @@ public class RequestPrivateStoreQuitBuy extends L2GameClientPacket
 		player.broadcastUserInfo();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__93_REQUESTPRIVATESTOREQUITBUY;
+		return _C__9C_REQUESTPRIVATESTOREQUITBUY;
 	}
 	
 	@Override

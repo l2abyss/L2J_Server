@@ -34,11 +34,13 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 
 /**
+ * This class manage the Transformation Master:<br>
+ * Sub-Class Certification system, skill learning and certification cancelling.<br>
+ * Transformation skill learning and transformation buying.
  * @author Zoey76
  */
 public final class L2TransformManagerInstance extends L2MerchantInstance
 {
-	
 	private static final String htmlFolder = "data/html/masterTransformation/";
 	
 	public static final String[] _questVarNames =
@@ -229,7 +231,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 					player.sendSkillList();
 				}
 				
-				//Let's consume all certification books, even those not present in datbase.
+				//Let's consume all certification books, even those not present in database.
 				L2ItemInstance itemInstance = null;
 				for (int itemId : _itemsIds)
 				{
@@ -249,9 +251,8 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 	
 	//Transformations:
 	/**
-	 * Returns true if the player meets the required conditions to learn a transformation.
-	 * @param player
-	 * @return boolean
+	 * @param player the player to verify.
+	 * @return {code true} if {code player} meets the required conditions to learn a transformation.
 	 */
 	public static boolean canTransform(L2PcInstance player)
 	{

@@ -31,7 +31,7 @@ public class L2DropData
 	private int _itemId;
 	private int _minDrop;
 	private int _maxDrop;
-	private int _chance;
+	private double _chance;
 	private String _questID = null;
 	private String[] _stateID = null;
 	
@@ -75,7 +75,7 @@ public class L2DropData
 	 * Returns the chance of having a drop
 	 * @return int
 	 */
-	public int getChance()
+	public double getChance()
 	{
 		return _chance;
 	}
@@ -102,7 +102,7 @@ public class L2DropData
 	 * Sets the chance of having the item for a drop
 	 * @param chance : int designating the chance
 	 */
-	public void setChance(int chance)
+	public void setChance(double chance)
 	{
 		_chance = chance;
 	}
@@ -135,7 +135,7 @@ public class L2DropData
 	
 	/**
 	 * Sets the questID
-	 * @param String designating the questID to set.
+	 * @param questID the quest Id to set.
 	 */
 	public void setQuestID(String questID)
 	{

@@ -55,7 +55,7 @@ public final class ItemAuction
 	private volatile ItemAuctionExtendState _scheduledAuctionEndingExtendState;
 	private volatile ItemAuctionExtendState _auctionEndingExtendState;
 	
-	private final ItemInfo _itemInfo;
+	private ItemInfo _itemInfo;
 	
 	private ItemAuctionBid _highestBid;
 	private int _lastBidPlayerObjId;
@@ -325,7 +325,7 @@ public final class ItemAuction
 			onPlayerBid(player, bid);
 			updatePlayerBid(bid, false);
 			
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID_OF_S1).addItemNumber(newBid));
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID).addItemNumber(newBid));
 			return;
 		}
 	}
@@ -442,8 +442,7 @@ public final class ItemAuction
 			case FINISHED:
 				if (_startingTime < System.currentTimeMillis() - TimeUnit.MILLISECONDS.convert(Config.ALT_ITEM_AUCTION_EXPIRED_AFTER, TimeUnit.DAYS))
 					return false;
-				else
-					break;
+				break;
 		}
 		
 		final int playerObjId = player.getObjectId();

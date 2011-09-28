@@ -39,6 +39,8 @@ public abstract class IdFactory
 		"UPDATE items                 SET owner_id = ?    WHERE owner_id = ?",
 		"UPDATE items                 SET object_id = ?   WHERE object_id = ?",
 		"UPDATE character_quests      SET charId = ?     WHERE charId = ?",
+		"UPDATE character_contacts     SET charId = ?     WHERE charId = ?",
+		"UPDATE character_contacts     SET friendId = ?   WHERE contactId = ?",
 		"UPDATE character_friends     SET charId = ?     WHERE charId = ?",
 		"UPDATE character_friends     SET friendId = ?   WHERE friendId = ?",
 		"UPDATE character_hennas      SET charId = ? WHERE charId = ?",
@@ -75,6 +77,8 @@ public abstract class IdFactory
 		"SELECT owner_id    FROM items                 WHERE object_id >= ?   AND object_id < ?",
 		"SELECT object_id   FROM items                 WHERE object_id >= ?   AND object_id < ?",
 		"SELECT charId     FROM character_quests      WHERE charId >= ?     AND charId < ?",
+		"SELECT charId     FROM character_contacts    WHERE charId >= ?     AND charId < ?",
+		"SELECT contactId  FROM character_contacts    WHERE contactId >= ?  AND contactId < ?",
 		"SELECT charId     FROM character_friends     WHERE charId >= ?     AND charId < ?",
 		"SELECT charId     FROM character_friends     WHERE friendId >= ?   AND friendId < ?",
 		"SELECT charId     FROM character_hennas      WHERE charId >= ? AND charId < ?",
@@ -199,6 +203,9 @@ public abstract class IdFactory
 			// stmt.executeUpdate("DELETE FROM characters WHERE characters.account_name NOT IN (SELECT login FROM accounts);");
 			
 			// If the character does not exist...
+			cleanCount += stmt.executeUpdate("DELETE FROM account_gsdata WHERE account_gsdata.account_name NOT IN (SELECT account_name FROM characters);");
+			cleanCount += stmt.executeUpdate("DELETE FROM character_contacts WHERE character_contacts.charId NOT IN (SELECT charId FROM characters);");
+			cleanCount += stmt.executeUpdate("DELETE FROM character_contacts WHERE character_contacts.contactId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_friends WHERE character_friends.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_friends WHERE character_friends.friendId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_hennas WHERE character_hennas.charId NOT IN (SELECT charId FROM characters);");
@@ -214,7 +221,8 @@ public abstract class IdFactory
 			cleanCount += stmt.executeUpdate("DELETE FROM character_instance_time WHERE character_instance_time.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_ui_actions WHERE character_ui_actions.charId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM character_ui_categories WHERE character_ui_categories.charId NOT IN (SELECT charId FROM characters);");
-			cleanCount += stmt.executeUpdate("DELETE FROM items WHERE items.owner_id NOT IN (SELECT charId FROM characters) AND items.owner_id NOT IN (SELECT clan_id FROM clan_data);");
+			cleanCount += stmt.executeUpdate("DELETE FROM items WHERE items.owner_id NOT IN (SELECT charId FROM characters) AND items.owner_id NOT IN (SELECT clan_id FROM clan_data) AND items.owner_id != -1;");
+			cleanCount += stmt.executeUpdate("DELETE FROM items WHERE items.owner_id = -1 AND loc LIKE 'MAIL' AND loc_data NOT IN (SELECT messageId FROM messages WHERE senderId = -1);");
 			cleanCount += stmt.executeUpdate("DELETE FROM item_auction_bid WHERE item_auction_bid.playerObjId NOT IN (SELECT charId FROM characters);");
 			cleanCount += stmt.executeUpdate("DELETE FROM item_attributes WHERE item_attributes.itemId NOT IN (SELECT object_id FROM items);");
 			cleanCount += stmt.executeUpdate("DELETE FROM item_elementals WHERE item_elementals.itemId NOT IN (SELECT object_id FROM items);");
@@ -308,8 +316,8 @@ public abstract class IdFactory
 	}
 	
 	/**
-	 * @param con
 	 * @return
+	 * @throws Exception 
 	 * @throws SQLException
 	 */
 	protected final int[] extractUsedObjectIDTable() throws Exception
@@ -396,8 +404,7 @@ public abstract class IdFactory
 	/**
 	 * return a used Object ID back to the pool
 	 * 
-	 * @param object
-	 *            ID
+	 * @param id
 	 */
 	public abstract void releaseId(int id);
 	

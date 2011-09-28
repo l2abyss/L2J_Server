@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import java.util.Collection;
 import java.util.concurrent.Future;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -116,11 +115,6 @@ public class L2DamageZone extends L2ZoneType
 		}
 	}
 	
-	protected Collection<L2Character> getCharacterList()
-	{
-		return _characterList.values();
-	}
-	
 	protected int getHPDamagePerSecond()
 	{
 		return _damageHPPerSec;
@@ -174,7 +168,7 @@ public class L2DamageZone extends L2ZoneType
 				}
 			}
 			
-			for (L2Character temp : _dmgZone.getCharacterList())
+			for (L2Character temp : _dmgZone.getCharactersInsideArray())
 			{
 				if (temp != null && !temp.isDead())
 				{

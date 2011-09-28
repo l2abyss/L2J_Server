@@ -17,10 +17,11 @@ package com.l2jserver.gameserver.model.zone.type;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -30,6 +31,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.Siegable;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -71,7 +73,11 @@ public class L2SiegeZone extends L2ZoneType
 			if (_siegableId != -1)
 				throw new IllegalArgumentException("Siege object already defined!");
 			_siegableId = Integer.parseInt(value);
-			//TODO clan hall siege
+			SiegableHall hall = CHSiegeManager.getInstance().getConquerableHalls().get(_siegableId);
+			if(hall == null)
+				_log.warning("L2SiegeZone: Siegable clan hall with id "+ value + " does not exist!");
+			else
+				hall.setSiegeZone(this);
 		}
 		else
 			super.setParameter(name, value);
@@ -92,7 +98,7 @@ public class L2SiegeZone extends L2ZoneType
 				if (((L2PcInstance) character).isRegisteredOnThisSiegeField(_siegableId))
 				{
 					((L2PcInstance) character).setIsInSiege(true); // in siege
-					if (_siege.giveFame())
+					if (_siege.giveFame() && _siege.getFameFrequency() > 0)
 						((L2PcInstance) character).startFameTask(_siege.getFameFrequency() * 1000, _siege.getFameAmount());
 				}
 				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
@@ -183,7 +189,7 @@ public class L2SiegeZone extends L2ZoneType
 	{
 		if (_isActiveSiege)
 		{
-			for (L2Character character : _characterList.values())
+			for (L2Character character : getCharactersInsideArray())
 			{
 				if (character != null)
 					onEnter(character);
@@ -191,7 +197,7 @@ public class L2SiegeZone extends L2ZoneType
 		}
 		else
 		{
-			for (L2Character character : _characterList.values())
+			for (L2Character character : getCharactersInsideArray())
 			{
 				if (character == null)
 					continue;
@@ -224,7 +230,7 @@ public class L2SiegeZone extends L2ZoneType
 	 */
 	public void announceToPlayers(String message)
 	{
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (temp instanceof L2PcInstance)
 				((L2PcInstance) temp).sendMessage(message);
@@ -239,7 +245,7 @@ public class L2SiegeZone extends L2ZoneType
 	{
 		FastList<L2PcInstance> players = new FastList<L2PcInstance>();
 		
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (temp instanceof L2PcInstance)
 				players.add((L2PcInstance) temp);
@@ -274,14 +280,14 @@ public class L2SiegeZone extends L2ZoneType
 	 */
 	public void banishForeigners(L2Clan owningClan)
 	{
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (!(temp instanceof L2PcInstance))
 				continue;
 			if (((L2PcInstance) temp).getClan() == owningClan || ((L2PcInstance) temp).isGM())
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionTable.TeleportWhereType.Town);
+			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.Town);
 		}
 	}
 }

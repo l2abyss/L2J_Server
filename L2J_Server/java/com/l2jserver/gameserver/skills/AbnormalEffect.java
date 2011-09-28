@@ -55,6 +55,7 @@ public enum AbnormalEffect
 	REAL_TARGET("realtarget", 0x20000000),
 	DEATH_MARK("deathmark", 0x40000000),
 	SKULL_FEAR("skull_fear", 0x80000000),
+	ARCANE_SHIELD("arcane_shield", 0x8000),
 	//CONFUSED("confused", 0x0020),
 	
 	// special effects
@@ -69,7 +70,9 @@ public enum AbnormalEffect
 	S_STIGMA_SHILIEN("stigmashilien", 0x000100),
 	S_STAKATOROOT("stakatoroot", 0x000200),
 	S_FREEZING("freezing", 0x000400),
-	S_VESPER("vesper", 0x000800),
+	S_VESPER_S("vesper_s", 0x000800),
+	S_VESPER_C("vesper_c", 0x001000),
+	S_VESPER_D("vesper_d", 0x002000),
 	
 	// event effects
 	E_AFRO_1("afrobaguette1", 0x000001),
@@ -79,7 +82,8 @@ public enum AbnormalEffect
 	E_HEADPHONE("headphone", 0x000010),
 	E_VESPER_1("vesper1", 0x000020),
 	E_VESPER_2("vesper2", 0x000040),
-	E_VESPER_3("vesper3", 0x000080);
+	E_VESPER_3("vesper3", 0x000080),
+	HUNTING_BONUS("hunting_bonus", 0x80000);
 	
 	private final int _mask;
 	private final String _name;
@@ -100,6 +104,10 @@ public enum AbnormalEffect
 		return _name;
 	}
 	
+	/**
+	 * @param name
+	 * @return
+	 */
 	public static AbnormalEffect getByName(String name)
 	{
 		for (AbnormalEffect eff : AbnormalEffect.values())

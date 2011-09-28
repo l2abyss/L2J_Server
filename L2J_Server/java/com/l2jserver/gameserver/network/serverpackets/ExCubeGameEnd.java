@@ -28,7 +28,7 @@ public class ExCubeGameEnd extends L2GameServerPacket
 	/**
 	 * Show Minigame Results
 	 * 
-	 * @param isRedTeamWin: Is Red Team Winner?
+	 * @param isRedTeamWin Is Red Team Winner?
 	 */
 	public ExCubeGameEnd(boolean isRedTeamWin)
 	{

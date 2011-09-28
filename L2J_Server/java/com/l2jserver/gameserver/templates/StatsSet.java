@@ -472,6 +472,9 @@ public final class StatsSet  {
 	 * 
 	 * @param name : String designating the key in the set
 	 * @param value : int corresponding to the value associated with the key
+	 * @param min 
+	 * @param max 
+	 * @param reference 
 	 */
 	public void safeSet(String name, int value, int min, int max, String reference)
 	{

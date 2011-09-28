@@ -92,7 +92,7 @@ public class EventDroplist
 	}
 	
 	/**
-	 * Return all DateDrop of EventDroplist allNpcDateDrops within the date range.<BR><BR>
+	 * @return all DateDrop of EventDroplist allNpcDateDrops within the date range.
 	 */
 	public List<DateDrop> getAllDrops()
 	{

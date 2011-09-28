@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public final class AllyDismiss extends L2GameClientPacket
 {
-	private static final String _C__85_ALLYDISMISS = "[C] 85 AllyDismiss";
+	private static final String _C__8F_ALLYDISMISS = "[C] 8F AllyDismiss";
 	
 	private String _clanName;
 	
@@ -98,6 +98,6 @@ public final class AllyDismiss extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__85_ALLYDISMISS;
+		return _C__8F_ALLYDISMISS;
 	}
 }

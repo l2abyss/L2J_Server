@@ -19,8 +19,8 @@ import java.util.Map;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.GameServer;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -142,7 +142,7 @@ public class L2BossZone extends L2ZoneType
 				if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
 					player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
 				else
-					player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+					player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 			}
 			else if (character instanceof L2Summon)
 			{
@@ -157,7 +157,7 @@ public class L2BossZone extends L2ZoneType
 					if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
 						player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
 					else
-						player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+						player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 				}
 				((L2Summon)character).unSummon(player);
 			}
@@ -197,7 +197,7 @@ public class L2BossZone extends L2ZoneType
 				{
 					_raidList.clear();
 					int count = 0;
-					for (L2Character obj : getCharactersInside().values())
+					for (L2Character obj : getCharactersInsideArray())
 					{
 						if (obj == null)
 							continue;
@@ -264,7 +264,7 @@ public class L2BossZone extends L2ZoneType
 			if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
 				player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
 			else
-				player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+				player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 			return false;
 		}
 	}
@@ -284,7 +284,7 @@ public class L2BossZone extends L2ZoneType
 		if (_characterList.isEmpty())
 			return;
 		
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character instanceof L2PcInstance)
 			{
@@ -308,7 +308,7 @@ public class L2BossZone extends L2ZoneType
 		if (_characterList.isEmpty())
 			return;
 		
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character instanceof L2PcInstance)
 			{
@@ -318,7 +318,7 @@ public class L2BossZone extends L2ZoneType
 					if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
 						player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
 					else
-						player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+						player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 				}
 			}
 		}
@@ -331,8 +331,8 @@ public class L2BossZone extends L2ZoneType
 	 * in order to allow a player for entry into the zone for some time.  Naturally
 	 * if the player does not enter within the allowed time, he/she will be
 	 * teleported out again...
-	 * @param player: reference to the player we wish to allow
-	 * @param durationInSec: amount of time in seconds during which entry is valid.
+	 * @param player reference to the player we wish to allow
+	 * @param durationInSec amount of time in seconds during which entry is valid.
 	 */
 	public void allowPlayerEntry(L2PcInstance player, int durationInSec)
 	{
@@ -369,7 +369,7 @@ public class L2BossZone extends L2ZoneType
 			return;
 		
 		Map<Integer, L2PcInstance> npcKnownPlayers = npc.getKnownList().getKnownPlayers();
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character == null)
 				continue;

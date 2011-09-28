@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RequestTeleportBookMark extends L2GameClientPacket
 {
-	private static final String _C__51_REQUESTTELEPORTBOOKMARK = "[C] 51 RequestTeleportBookMark";
+	private static final String _C__D0_51_04_REQUESTTELEPORTBOOKMARK = "[C] D0:51:04 RequestTeleportBookMark";
 	
 	private int id;
 	@Override
@@ -41,10 +41,9 @@ public final class RequestTeleportBookMark extends L2GameClientPacket
 		activeChar.teleportBookmarkGo(id);
 	}
 	
-	
 	@Override
 	public String getType()
 	{
-		return _C__51_REQUESTTELEPORTBOOKMARK;
+		return _C__D0_51_04_REQUESTTELEPORTBOOKMARK;
 	}
 }

@@ -125,11 +125,8 @@ public class CharStatus
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2Attackable : Set overhit values</li><BR>
 	 * <li> L2Npc : Update the attacker AggroInfo of the L2Attackable _aggroList and clear duel status of the attacking players</li><BR><BR>
-	 *
-	 * @param i The HP decrease value
-	 * @param attacker The L2Character who attacks
-	 * @param awake The awake state (If True : stop sleeping)
-	 *
+	 * @param value
+	 * @param attacker
 	 */
 	public void reduceHp(double value, L2Character attacker)
 	{
@@ -147,16 +144,8 @@ public class CharStatus
 			return;
 		
 		// invul handling
-		if (getActiveChar().isInvul())
-		{
-			// other chars can't damage
-			if (attacker != getActiveChar())
-				return;
-			
-			// only DOT and HP consumption allowed for damage self
-			if (!isDOT && !isHPConsumption)
-				return;
-		}
+        if (getActiveChar().isInvul() && !(isDOT || isHPConsumption)) 
+        	return; 
 		
 		if (attacker != null)
 		{
@@ -356,12 +345,12 @@ public class CharStatus
 		final CharStat charstat = getActiveChar().getStat();
 		
 		// Modify the current HP of the L2Character and broadcast Server->Client packet StatusUpdate
-		if (getCurrentHp() < charstat.getMaxHp())
+		if (getCurrentHp() < charstat.getMaxRecoverableHp())
 			setCurrentHp(getCurrentHp()
 					+ Formulas.calcHpRegen(getActiveChar()), false);
 		
 		// Modify the current MP of the L2Character and broadcast Server->Client packet StatusUpdate
-		if (getCurrentMp() < charstat.getMaxMp())
+		if (getCurrentMp() < charstat.getMaxRecoverableMp())
 			setCurrentMp(getCurrentMp()
 					+ Formulas.calcMpRegen(getActiveChar()), false);
 		
@@ -369,7 +358,7 @@ public class CharStatus
 		{
 			// no broadcast necessary for characters that are in inactive regions.
 			// stop regeneration for characters who are filled up and in an inactive region.
-			if ((getCurrentHp() == charstat.getMaxHp())
+			if ((getCurrentHp() == charstat.getMaxRecoverableHp())
 					&& (getCurrentMp() == charstat.getMaxMp()))
 				stopHpMpRegeneration();
 		}

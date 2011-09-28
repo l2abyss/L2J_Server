@@ -45,7 +45,7 @@ public class ConditionChangeWeapon extends Condition
 	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
 	 */
 	@Override
-	boolean testImpl(Env env)
+	public boolean testImpl(Env env)
 	{
 		if (!(env.player instanceof L2PcInstance))
 			return false;

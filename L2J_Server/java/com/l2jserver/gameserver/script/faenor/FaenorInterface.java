@@ -50,10 +50,8 @@ public class FaenorInterface implements EngineInterface
 	}
 	
 	/**
-	 *
 	 * Adds a new Quest Drop to an NPC
-	 *
-	 * @see com.l2jserver.gameserver.script.EngineInterface#addQuestDrop(int)
+	 * @see com.l2jserver.gameserver.script.EngineInterface#addQuestDrop(int, int, int, int, int, String, String[])
 	 */
 	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states)
 	{
@@ -73,10 +71,15 @@ public class FaenorInterface implements EngineInterface
 	}
 	
 	/**
-	 *
 	 * Adds a new Drop to an NPC
-	 *
-	 * @see com.l2jserver.gameserver.script.EngineInterface#addQuestDrop(int)
+	 * @param npcID 
+	 * @param itemID 
+	 * @param min 
+	 * @param max 
+	 * @param sweep 
+	 * @param chance 
+	 * @throws NullPointerException 
+	 * @see com.l2jserver.gameserver.script.EngineInterface#addQuestDrop(int, int, int, int, int, String, String[])
 	 */
 	public void addDrop(int npcID, int itemID, int min, int max, boolean sweep, int chance) throws NullPointerException
 	{
@@ -125,12 +128,10 @@ public class FaenorInterface implements EngineInterface
 	}
 	
 	/**
-	 * Adds a new drop to an NPC, in the specified category.  If the category does not exist,
-	 * it is created.
-	 *
+	 * Adds a new drop to an NPC, in the specified category.  If the category does not exist, it is created.
 	 * @param npc
 	 * @param drop
-	 * @param sweep
+	 * @param category
 	 */
 	public void addDrop(L2NpcTemplate npc, L2DropData drop, int category)
 	{

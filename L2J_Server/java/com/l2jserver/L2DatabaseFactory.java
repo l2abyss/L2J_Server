@@ -31,19 +31,14 @@ public class L2DatabaseFactory
 	
 	public static enum ProviderType
 	{
-		MySql,
-		MsSql
+		MySql, MsSql
 	}
 	
-	// =========================================================
-	// Data Field
 	private static L2DatabaseFactory _instance;
 	private static ScheduledExecutorService _executor;
 	private ProviderType _providerType;
 	private ComboPooledDataSource _source;
 	
-	// =========================================================
-	// Constructor
 	public L2DatabaseFactory() throws SQLException
 	{
 		try
@@ -74,7 +69,7 @@ public class L2DatabaseFactory
 			_source.setAutomaticTestTable("connection_test_table");
 			_source.setTestConnectionOnCheckin(false);
 			
-			// testing OnCheckin used with IdleConnectionTestPeriod is faster than  testing on checkout
+			// testing OnCheckin used with IdleConnectionTestPeriod is faster than testing on checkout
 			
 			_source.setIdleConnectionTestPeriod(3600); // test idle connection every 60 sec
 			_source.setMaxIdleTime(Config.DATABASE_MAX_IDLE_TIME); // 0 = idle connections never expire
@@ -82,7 +77,7 @@ public class L2DatabaseFactory
 			// but I prefer to disconnect all connections not used
 			// for more than 1 hour
 			
-			// enables statement caching,  there is a "semi-bug" in c3p0 0.9.0 but in 0.9.0.2 and later it's fixed
+			// enables statement caching, there is a "semi-bug" in c3p0 0.9.0 but in 0.9.0.2 and later it's fixed
 			_source.setMaxStatementsPerConnection(100);
 			
 			_source.setBreakAfterAcquireFailure(false); // never fail if any way possible
@@ -122,8 +117,6 @@ public class L2DatabaseFactory
 		}
 	}
 	
-	// =========================================================
-	// Method - Public
 	public final String prepQuerySelect(String[] fields, String tableName, String whereClause, boolean returnOnlyTopRecord)
 	{
 		String msSqlTop1 = "";
@@ -200,8 +193,6 @@ public class L2DatabaseFactory
 		return sbResult.toString();
 	}
 	
-	// =========================================================
-	// Property - Public
 	public static L2DatabaseFactory getInstance() throws SQLException
 	{
 		synchronized (L2DatabaseFactory.class)
@@ -214,7 +205,7 @@ public class L2DatabaseFactory
 		return _instance;
 	}
 	
-	public Connection getConnection() //throws SQLException
+	public Connection getConnection()
 	{
 		Connection con = null;
 		
@@ -238,17 +229,15 @@ public class L2DatabaseFactory
 	
 	private static class ConnectionCloser implements Runnable
 	{
-		private Connection c ;
-		private RuntimeException exp;
+		private final Connection c;
+		private final RuntimeException exp;
 		
 		public ConnectionCloser(Connection con, RuntimeException e)
 		{
 			c = con;
 			exp = e;
 		}
-		/* (non-Javadoc)
-		 * @see java.lang.Runnable#run()
-		 */
+		
 		@Override
 		public void run()
 		{
@@ -263,7 +252,6 @@ public class L2DatabaseFactory
 			{
 				_log.log(Level.WARNING, "", e);
 			}
-			
 		}
 	}
 	

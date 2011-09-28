@@ -309,9 +309,10 @@ public class SpawnTable
 	
 	/**
 	 * Get all the spawn of a NPC<BR><BR>
-	 *
-	 * @param npcId : ID of the NPC to find.
-	 * @return
+	 * @param activeChar
+	 * @param npcId
+	 * @param teleportIndex
+	 * @param showposition
 	 */
 	public void findNPCInstances(L2PcInstance activeChar, int npcId, int teleportIndex, boolean showposition)
 	{

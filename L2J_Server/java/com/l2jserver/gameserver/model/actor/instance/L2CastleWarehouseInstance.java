@@ -28,6 +28,7 @@ public class L2CastleWarehouseInstance extends L2WarehouseInstance
 	protected static final int COND_OWNER = 2;
 	
 	/**
+	 * @param objectId 
 	 * @param template
 	 */
 	public L2CastleWarehouseInstance(int objectId, L2NpcTemplate template)

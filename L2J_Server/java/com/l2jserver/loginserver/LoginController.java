@@ -33,12 +33,13 @@ import javax.crypto.Cipher;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
-import com.l2jserver.loginserver.gameserverpackets.ServerStatus;
-import com.l2jserver.loginserver.serverpackets.LoginFail.LoginFailReason;
+import com.l2jserver.loginserver.network.L2LoginClient;
+import com.l2jserver.loginserver.network.gameserverpackets.ServerStatus;
+import com.l2jserver.loginserver.network.serverpackets.LoginFail.LoginFailReason;
+import com.l2jserver.util.Base64;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.crypt.ScrambledKeyPair;
 import com.l2jserver.util.lib.Log;
@@ -60,16 +61,19 @@ public class LoginController
 	/** Authed Clients on LoginServer*/
 	protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>().shared();
 	
-	private Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>().shared();
+	private final Map<String, BanInfo> _bannedIps = new FastMap<String, BanInfo>().shared();
 	
-	private Map<InetAddress, FailedLoginAttempt> _hackProtection;
+	private final Map<InetAddress, FailedLoginAttempt> _hackProtection;
 	
 	protected ScrambledKeyPair[] _keyPairs;
 	
-	private Thread _purge;
+	private final Thread _purge;
 	
 	protected byte[][] _blowfishKeys;
 	private static final int BLOWFISH_KEYS = 20;
+	
+	private static final String USER_INFO_SELECT = "SELECT password, IF(? > value OR value IS NULL, accessLevel, -100) AS accessLevel, lastServer, userIp " +
+			"FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
 	
 	public static void load() throws GeneralSecurityException
 	{
@@ -173,11 +177,6 @@ public class LoginController
 		_loginServerClients.remove(account);
 	}
 	
-	public boolean isAccountInLoginServer(String account)
-	{
-		return _loginServerClients.containsKey(account);
-	}
-	
 	public L2LoginClient getAuthedClient(String account)
 	{
 		return _loginServerClients.get(account);
@@ -192,7 +191,7 @@ public class LoginController
 		AUTH_SUCCESS
 	}
 	
-	public AuthLoginResult tryAuthLogin(String account, String password, L2LoginClient client) throws HackingException
+	public AuthLoginResult tryAuthLogin(String account, String password, L2LoginClient client)
 	{
 		AuthLoginResult ret = AuthLoginResult.INVALID_PASSWORD;
 		// check auth
@@ -264,10 +263,7 @@ public class LoginController
 				_bannedIps.remove(address.getHostAddress());
 				return false;
 			}
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -314,16 +310,6 @@ public class LoginController
 		return null;
 	}
 	
-	public int getOnlinePlayerCount(int serverId)
-	{
-		GameServerInfo gsi = GameServerTable.getInstance().getRegisteredGameServerById(serverId);
-		if (gsi != null && gsi.isAuthed())
-		{
-			return gsi.getCurrentPlayerCount();
-		}
-		return 0;
-	}
-	
 	public boolean isAccountInAnyGameServer(String account)
 	{
 		Collection<GameServerInfo> serverList = GameServerTable.getInstance().getRegisteredGameServers().values();
@@ -352,32 +338,20 @@ public class LoginController
 		return null;
 	}
 	
-	public int getTotalOnlinePlayerCount()
+	public void getCharactersOnAccount(String account)
 	{
-		int total = 0;
 		Collection<GameServerInfo> serverList = GameServerTable.getInstance().getRegisteredGameServers().values();
 		for (GameServerInfo gsi : serverList)
 		{
 			if (gsi.isAuthed())
-			{
-				total += gsi.getCurrentPlayerCount();
-			}
+				gsi.getGameServerThread().requestCharacters(account);
 		}
-		return total;
-	}
-	
-	public int getMaxAllowedOnlinePlayers(int id)
-	{
-		GameServerInfo gsi = GameServerTable.getInstance().getRegisteredGameServerById(id);
-		if (gsi != null)
-		{
-			return gsi.getMaxPlayers();
-		}
-		return 0;
 	}
 	
 	/**
 	 *
+	 * @param client 
+	 * @param serverId 
 	 * @return
 	 */
 	public boolean isLoginPossible(L2LoginClient client, int serverId)
@@ -485,44 +459,18 @@ public class LoginController
 		}
 	}
 	
-	public boolean isGM(String user)
+	public void setCharactersOnServer(String account, int charsNum, long[] timeToDel, int serverId)
 	{
-		boolean ok = false;
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT accessLevel FROM accounts WHERE login=?");
-			statement.setString(1, user);
-			ResultSet rset = statement.executeQuery();
-			if (rset.next())
-			{
-				int accessLevel = rset.getInt(1);
-				if (accessLevel > 0)
-				{
-					ok = true;
-				}
-			}
-			rset.close();
-			statement.close();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Could not check gm state:" + e.getMessage(), e);
-			ok = false;
-		}
-		finally
-		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
-		}
-		return ok;
+		L2LoginClient client = _loginServerClients.get(account);
+		
+		if (client == null)
+			return;
+		
+		if (charsNum > 0)
+			client.setCharsOnServ(serverId, charsNum);
+		
+		if (timeToDel.length > 0)
+			client.serCharsWaitingDelOnServ(serverId, timeToDel);
 	}
 	
 	/**
@@ -535,10 +483,10 @@ public class LoginController
 	}
 	
 	/**
-	 * user name is not case sensitive any more
+	 * User name is not case sensitive any more.
 	 * @param user
 	 * @param password
-	 * @param address
+	 * @param client
 	 * @return
 	 */
 	public boolean loginValid(String user, String password, L2LoginClient client)// throws HackingException
@@ -565,8 +513,9 @@ public class LoginController
 			String userIP = null;
 			
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT password, accessLevel, lastServer, userIP FROM accounts WHERE login=?");
-			statement.setString(1, user);
+			PreparedStatement statement = con.prepareStatement(USER_INFO_SELECT);
+			statement.setString(1, Long.toString(System.currentTimeMillis()));
+			statement.setString(2, user);
 			ResultSet rset = statement.executeQuery();
 			if (rset.next())
 			{
@@ -609,7 +558,6 @@ public class LoginController
 						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : ErrCreatingACC", "loginlog");
 					
 					_log.warning("Invalid username creation/use attempt: " + user);
-					return false;
 				}
 				else
 				{
@@ -636,53 +584,51 @@ public class LoginController
 								+ failedCount + " invalid user name attempts");
 						this.addBanForAddress(address, Config.LOGIN_BLOCK_AFTER_BAN * 1000);
 					}
-					return false;
 				}
+				return false;
 			}
-			else
+			
+			// is this account banned?
+			if (access < 0)
 			{
-				// is this account banned?
-				if (access < 0)
+				if (Config.LOG_LOGIN_CONTROLLER)
+					Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : AccountBanned", "loginlog");
+				
+				client.setAccessLevel(access);
+				return false;
+			}
+			// Check IP
+			if (userIP != null)
+			{
+				if(!isValidIPAddress(userIP))
 				{
-					if (Config.LOG_LOGIN_CONTROLLER)
-						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : AccountBanned", "loginlog");
-					
-					client.setAccessLevel(access);
-					return false;
-				}
-				// Check IP
-				if (userIP != null)
-				{
-					if(!isValidIPAddress(userIP))
+					// Address is not valid so it's a domain name, get IP
+					try
 					{
-						// Address is not valid so it's a domain name, get IP
-						try
-						{
-							InetAddress addr = InetAddress.getByName(userIP);
-							userIP = addr.getHostAddress();
-						}
-						catch(Exception e)
-						{
-							return false;
-						}
+						InetAddress addr = InetAddress.getByName(userIP);
+						userIP = addr.getHostAddress();
 					}
-					if(!address.getHostAddress().equalsIgnoreCase(userIP))
+					catch(Exception e)
 					{
-						if (Config.LOG_LOGIN_CONTROLLER)
-							Log.add("'" + user + "' " + address.getHostAddress() + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
-					
 						return false;
 					}
 				}
-				// check password hash
-				ok = true;
-				for (int i = 0; i < expected.length; i++)
+				if(!address.getHostAddress().equalsIgnoreCase(userIP))
 				{
-					if (hash[i] != expected[i])
-					{
-						ok = false;
-						break;
-					}
+					if (Config.LOG_LOGIN_CONTROLLER)
+						Log.add("'" + user + "' " + address.getHostAddress() + "/" + userIP + " - ERR : INCORRECT IP", "loginlog");
+				
+					return false;
+				}
+			}
+			// check password hash
+			ok = true;
+			for (int i = 0; i < expected.length; i++)
+			{
+				if (hash[i] != expected[i])
+				{
+					ok = false;
+					break;
 				}
 			}
 			
@@ -738,47 +684,6 @@ public class LoginController
 			_hackProtection.remove(address);
 			if (Config.LOG_LOGIN_CONTROLLER)
 				Log.add("'" + user + "' " + address.getHostAddress() + " - OK : LoginOk", "loginlog");
-		}
-		
-		return ok;
-	}
-	
-	public boolean loginBanned(String user)
-	{
-		boolean ok = false;
-		
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT accessLevel FROM accounts WHERE login=?");
-			statement.setString(1, user);
-			ResultSet rset = statement.executeQuery();
-			if (rset.next())
-			{
-				int accessLevel = rset.getInt(1);
-				if (accessLevel < 0)
-					ok = true;
-			}
-			rset.close();
-			statement.close();
-		}
-		catch (Exception e)
-		{
-			// digest algo not found ??
-			// out of bounds should not be possible
-			_log.log(Level.WARNING, "Could not check ban state:" + e.getMessage(), e);
-			ok = false;
-		}
-		finally
-		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
 		}
 		
 		return ok;
@@ -853,9 +758,9 @@ public class LoginController
 	
 	class BanInfo
 	{
-		private InetAddress _ipAddress;
+		private final InetAddress _ipAddress;
 		// Expiration
-		private long _expiration;
+		private final long _expiration;
 		
 		public BanInfo(InetAddress ipAddress, long expiration)
 		{

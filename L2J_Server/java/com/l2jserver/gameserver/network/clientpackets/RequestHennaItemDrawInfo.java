@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.templates.item.L2Henna;
  */
 public final class RequestHennaItemDrawInfo extends L2GameClientPacket
 {
-	private static final String _C__BB_RequestHennaItemDrawInfo = "[C] bb RequestHennaItemDrawInfo";
+	private static final String _C__C4_REQUESTHENNAITEMDRAWINFO = "[C] C4 RequestHennaItemDrawInfo";
 	
 	private int _symbolId;
 	// format  cd
@@ -53,12 +53,9 @@ public final class RequestHennaItemDrawInfo extends L2GameClientPacket
 		activeChar.sendPacket(new HennaItemDrawInfo(henna, activeChar));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__BB_RequestHennaItemDrawInfo;
+		return _C__C4_REQUESTHENNAITEMDRAWINFO;
 	}
 }

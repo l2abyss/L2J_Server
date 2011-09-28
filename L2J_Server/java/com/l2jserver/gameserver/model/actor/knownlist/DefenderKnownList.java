@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 
 public class DefenderKnownList extends AttackableKnownList
 {
@@ -45,16 +46,18 @@ public class DefenderKnownList extends AttackableKnownList
 		
 		Castle castle = getActiveChar().getCastle();
 		Fort fortress = getActiveChar().getFort();
+		SiegableHall hall = getActiveChar().getConquerableHall();
 		// Check if siege is in progress
 		if ((fortress != null && fortress.getZone().isActive())
-				|| (castle != null && castle.getZone().isActive()))
+				|| (castle != null && castle.getZone().isActive())
+				|| (hall != null && hall.getSiegeZone().isActive()))
 		{
 			L2PcInstance player = null;
 			if (object instanceof L2PcInstance)
 				player = (L2PcInstance) object;
 			else if (object instanceof L2Summon)
 				player = ((L2Summon)object).getOwner();
-			int activeSiegeId = (fortress != null ? fortress.getFortId() : (castle != null ? castle.getCastleId() : 0));
+			int activeSiegeId = (fortress != null ? fortress.getFortId() : (castle != null ? castle.getCastleId() : hall != null? hall.getId() : 0));
 			
 			// Check if player is an enemy of this defender npc
 			if (player != null && ((player.getSiegeState() == 2 && !player.isRegisteredOnThisSiegeField(activeSiegeId))

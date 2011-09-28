@@ -41,7 +41,7 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  *
@@ -88,9 +88,6 @@ public class GeoEngine extends GeoData
 		return nGetHeight((x - L2World.MAP_MIN_X) >> 4, (y - L2World.MAP_MIN_Y) >> 4, z);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#getSpawnHeight(int, int, int, int, int)
-	 */
 	@Override
 	public short getSpawnHeight(int x, int y, int zmin, int zmax, L2Spawn spawn)
 	{
@@ -119,9 +116,7 @@ public class GeoEngine extends GeoData
 			return false;
 		if (cha.getZ() >= target.getZ())
 			return canSeeTarget(cha.getX(), cha.getY(), cha.getZ(), target.getX(), target.getY(), target.getZ());
-		else
-			return canSeeTarget(target.getX(), target.getY(), target.getZ(), cha.getX(), cha.getY(), cha.getZ());
-		
+		return canSeeTarget(target.getX(), target.getY(), target.getZ(), cha.getX(), cha.getY(), cha.getZ());
 	}
 	
 	/**
@@ -154,8 +149,7 @@ public class GeoEngine extends GeoData
 			z2 += 30; // well they don't move closer to balcony fence at the moment :(
 		if (cha.getZ() >= target.getZ())
 			return canSeeTarget(cha.getX(), cha.getY(), z, target.getX(), target.getY(), z2);
-		else
-			return canSeeTarget(target.getX(), target.getY(), z2, cha.getX(), cha.getY(), z);
+		return canSeeTarget(target.getX(), target.getY(), z2, cha.getX(), cha.getY(), z);
 	}
 	
 	/**
@@ -175,8 +169,7 @@ public class GeoEngine extends GeoData
 		
 		if (gm.getZ() >= target.getZ())
 			return canSeeDebug(gm, (gm.getX() - L2World.MAP_MIN_X) >> 4, (gm.getY() - L2World.MAP_MIN_Y) >> 4, z, (target.getX() - L2World.MAP_MIN_X) >> 4, (target.getY() - L2World.MAP_MIN_Y) >> 4, z2);
-		else
-			return canSeeDebug(gm, (target.getX() - L2World.MAP_MIN_X) >> 4, (target.getY() - L2World.MAP_MIN_Y) >> 4, z2, (gm.getX() - L2World.MAP_MIN_X) >> 4, (gm.getY() - L2World.MAP_MIN_Y) >> 4, z);
+		return canSeeDebug(gm, (target.getX() - L2World.MAP_MIN_X) >> 4, (target.getY() - L2World.MAP_MIN_Y) >> 4, z2, (gm.getX() - L2World.MAP_MIN_X) >> 4, (gm.getY() - L2World.MAP_MIN_Y) >> 4, z);
 	}
 	
 	/**
@@ -556,15 +549,15 @@ public class GeoEngine extends GeoData
 					tempz = nCanMoveNext(x, y, (int) z, next_x, next_y, tz);
 					if (tempz == Double.MIN_VALUE)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
-					else
-						z = tempz;
+					
+					z = tempz;
 					next_y += inc_y;
 					//_log.warning("2: next_x:"+next_x+" next_y"+next_y);
 					tempz = nCanMoveNext(next_x, y, (int) z, next_x, next_y, tz);
 					if (tempz == Double.MIN_VALUE)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
-					else
-						z = tempz;
+					
+					z = tempz;
 				}
 				else
 				{
@@ -574,8 +567,8 @@ public class GeoEngine extends GeoData
 					tempz = nCanMoveNext(x, y, (int) z, next_x, next_y, tz);
 					if (tempz == Double.MIN_VALUE)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
-					else
-						z = tempz;
+					
+					z = tempz;
 				}
 			}
 		}
@@ -595,15 +588,15 @@ public class GeoEngine extends GeoData
 					tempz = nCanMoveNext(x, y, (int) z, next_x, next_y, tz);
 					if (tempz == Double.MIN_VALUE)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
-					else
-						z = tempz;
+					
+					z = tempz;
 					next_x += inc_x;
 					//_log.warning("5: next_x:"+next_x+" next_y"+next_y);
 					tempz = nCanMoveNext(x, next_y, (int) z, next_x, next_y, tz);
 					if (tempz == Double.MIN_VALUE)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
-					else
-						z = tempz;
+
+					z = tempz;
 				}
 				else
 				{
@@ -613,23 +606,23 @@ public class GeoEngine extends GeoData
 					tempz = nCanMoveNext(x, y, (int) z, next_x, next_y, tz);
 					if (tempz == Double.MIN_VALUE)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
-					else
-						z = tempz;
+					
+					z = tempz;
 				}
 			}
 		}
 		if (z == startpoint.getZ()) // geodata hasn't modified Z in any coordinate, i.e. doesn't exist
 			return destiny;
-		else
-			return new Location(destiny.getX(), destiny.getY(), (int) z);
+		
+		return new Location(destiny.getX(), destiny.getY(), (int) z);
 	}
 	
 	private static byte sign(int x)
 	{
 		if (x >= 0)
 			return +1;
-		else
-			return -1;
+		
+		return -1;
 	}
 	
 	//GeoEngine
@@ -788,7 +781,7 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param pos
+	 * @param geo_pos 
 	 * @return Block Index: 0-255
 	 */
 	private static int getBlock(int geo_pos)
@@ -797,7 +790,7 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param pos
+	 * @param geo_pos 
 	 * @return Cell Index: 0-7
 	 */
 	private static int getCell(int geo_pos)
@@ -837,8 +830,8 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param x
-	 * @param y
+	 * @param geox 
+	 * @param geoy 
 	 * @param z
 	 * @return Nearest Z
 	 */
@@ -915,8 +908,8 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param x
-	 * @param y
+	 * @param geox 
+	 * @param geoy 
 	 * @param z
 	 * @return One layer higher Z than parameter Z
 	 */
@@ -994,11 +987,12 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param x
-	 * @param y
+	 * @param geox 
+	 * @param geoy 
 	 * @param zmin
 	 * @param zmax
-	 * @return Z betwen zmin and zmax
+	 * @param spawn 
+	 * @return Z between zmin and zmax
 	 */
 	private static short nGetSpawnHeight(int geox, int geoy, int zmin, int zmax, L2Spawn spawn)
 	{
@@ -1136,8 +1130,7 @@ public class GeoEngine extends GeoData
 			height = (short) (height >> 1); //height / 2
 			if (checkNSWE(NSWE, x, y, tx, ty))
 				return height;
-			else
-				return Double.MIN_VALUE;
+			return Double.MIN_VALUE;
 		}
 		else
 			//multilevel, type == 2
@@ -1180,8 +1173,7 @@ public class GeoEngine extends GeoData
 			}
 			if (checkNSWE(NSWE, x, y, tx, ty))
 				return tempz;
-			else
-				return Double.MIN_VALUE;
+			return Double.MIN_VALUE;
 		}
 	}
 	
@@ -1191,7 +1183,9 @@ public class GeoEngine extends GeoData
 	 * @param z
 	 * @param inc_x
 	 * @param inc_y
+	 * @param inc_z 
 	 * @param tz
+	 * @param debug 
 	 * @return True if Char can see target
 	 */
 	private static boolean nLOS(int x, int y, int z, int inc_x, int inc_y, double inc_z, int tz, boolean debug)
@@ -1228,8 +1222,7 @@ public class GeoEngine extends GeoData
 				_log.warning("flatheight:" + height);
 			if (z > height)
 				return z+inc_z > height;
-				else
-					return z+inc_z < height;
+			return z+inc_z < height;
 		}
 		else if (type == 1) //complex
 		{
@@ -1246,10 +1239,8 @@ public class GeoEngine extends GeoData
 					_log.warning("height:" + height + " z" + z);
 				if (z < nGetUpperHeight(x + inc_x, y + inc_y, height))
 					return false; // an obstacle high enough
-				return true;
 			}
-			else
-				return true;
+			return true;
 		}
 		else
 			//multilevel, type == 2
@@ -1291,11 +1282,9 @@ public class GeoEngine extends GeoData
 					NSWE = (short) (NSWE & 0x0F);
 					break;
 				}
-				else
-				{
-					highestlayer = false;
-					upperHeight = tempZ;
-				}
+				
+				highestlayer = false;
+				upperHeight = tempZ;
 				
 				temp_layers--;
 				index += 2;
@@ -1324,20 +1313,16 @@ public class GeoEngine extends GeoData
 					// check one inc_x inc_y further, for the height there
 					if (z < nGetUpperHeight(x + inc_x, y + inc_y, lowerHeight))
 						return false; // a wall
-					return true; // we see over it, e.g. a fence
 				}
-				else
-					return true;
+				return true;
 			}
 			if (!checkNSWE(NSWE, x, y, x + inc_x, y + inc_y))
 			{
 				// check one inc_x inc_y further, for the height there
 				if (z < nGetUpperHeight(x + inc_x, y + inc_y, lowerHeight))
 					return false; // we hit an obstacle high enough
-				return true;
 			}
-			else
-				return true;
+			return true;
 		}
 	}
 	

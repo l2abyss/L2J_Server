@@ -296,6 +296,7 @@ public class GrandBossManager
 	
 	/**
 	 * Adds a L2GrandBossInstance to the list of bosses.
+	 * @param boss 
 	 */
 	public void addBoss(L2GrandBossInstance boss)
 	{

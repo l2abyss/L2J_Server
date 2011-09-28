@@ -20,13 +20,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.RSAPublicKeySpec;
-import java.util.Collection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -37,6 +42,7 @@ import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
+import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
@@ -45,16 +51,22 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.gameserverpackets.AuthRequest;
 import com.l2jserver.gameserver.network.gameserverpackets.BlowFishKey;
 import com.l2jserver.gameserver.network.gameserverpackets.ChangeAccessLevel;
+import com.l2jserver.gameserver.network.gameserverpackets.ChangePassword;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerAuthRequest;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerInGame;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerLogout;
 import com.l2jserver.gameserver.network.gameserverpackets.PlayerTracert;
+import com.l2jserver.gameserver.network.gameserverpackets.ReplyCharacters;
+import com.l2jserver.gameserver.network.gameserverpackets.SendMail;
 import com.l2jserver.gameserver.network.gameserverpackets.ServerStatus;
+import com.l2jserver.gameserver.network.gameserverpackets.TempBan;
 import com.l2jserver.gameserver.network.loginserverpackets.AuthResponse;
+import com.l2jserver.gameserver.network.loginserverpackets.ChangePasswordResponse;
 import com.l2jserver.gameserver.network.loginserverpackets.InitLS;
 import com.l2jserver.gameserver.network.loginserverpackets.KickPlayer;
 import com.l2jserver.gameserver.network.loginserverpackets.LoginServerFail;
 import com.l2jserver.gameserver.network.loginserverpackets.PlayerAuthResponse;
+import com.l2jserver.gameserver.network.loginserverpackets.RequestCharacters;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.network.serverpackets.LoginFail;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -67,12 +79,14 @@ public class LoginServerThread extends Thread
 	protected static final Logger _log = Logger.getLogger(LoginServerThread.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
-	/** {@see com.l2jserver.loginserver.LoginServer#PROTOCOL_REV } */
-	private static final int REVISION = 0x0104;
+	/**
+	 * @see com.l2jserver.loginserver.L2LoginServer#PROTOCOL_REV
+	 */
+	private static final int REVISION = 0x0106;
 	private RSAPublicKey _publicKey;
-	private String _hostname;
-	private int _port;
-	private int _gamePort;
+	private final String _hostname;
+	private final int _port;
+	private final int _gamePort;
 	private Socket _loginSocket;
 	private InputStream _in;
 	private OutputStream _out;
@@ -89,17 +103,17 @@ public class LoginServerThread extends Thread
 	private NewCrypt _blowfish;
 	private byte[] _blowfishKey;
 	private byte[] _hexID;
-	private boolean _acceptAlternate;
+	private final boolean _acceptAlternate;
 	private int _requestID;
 	private int _serverID;
-	private boolean _reserveHost;
+	private final boolean _reserveHost;
 	private int _maxPlayer;
-	private List<WaitingClient> _waitingClients;
-	private Map<String, L2GameClient> _accountsInGameServer;
+	private final List<WaitingClient> _waitingClients;
+	private final Map<String, L2GameClient> _accountsInGameServer;
 	private int _status;
 	private String _serverName;
-	private String[] _subnets;
-	private String[] _hosts;
+	private final String[] _subnets;
+	private final String[] _hosts;
 	
 	private LoginServerThread()
 	{
@@ -281,11 +295,9 @@ public class LoginServerThread extends Thread
 							if (L2World.getInstance().getAllPlayersCount() > 0)
 							{
 								FastList<String> playerList = new FastList<String>();
-								Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-								//synchronized (L2World.getInstance().getAllPlayers())
+								for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 								{
-									for (L2PcInstance player : pls)
-										playerList.add(player.getAccountName());
+									playerList.add(player.getAccountName());
 								}
 								PlayerInGame pig = new PlayerInGame(playerList);
 								sendPacket(pig);
@@ -334,6 +346,13 @@ public class LoginServerThread extends Thread
 							KickPlayer kp = new KickPlayer(decrypt);
 							doKickPlayer(kp.getAccount());
 							break;
+						case 0x05:
+							RequestCharacters rc = new RequestCharacters(decrypt);
+							getCharsOnServer(rc.getAccount());
+							break;
+						case 0x06:
+							new ChangePasswordResponse(decrypt);
+							break;
 					}
 				}
 			}
@@ -341,6 +360,10 @@ public class LoginServerThread extends Thread
 			{
 				if (Config.DEBUG)
 					_log.log(Level.WARNING, "", e);
+			}
+			catch (SocketException e)
+			{
+				_log.warning("LoginServer not avaible, trying to reconnect...");
 			}
 			catch (IOException e)
 			{
@@ -464,6 +487,34 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	public void sendMail(String account, String mailId, String... args)
+	{
+		SendMail sem = new SendMail(account, mailId, args);
+		try
+		{
+			sendPacket(sem);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "", e);
+		}
+	}
+	
+	public void sendTempBan(String account, String ip, long time)
+	{
+		TempBan tbn = new TempBan(account, ip, time);
+		try
+		{
+			sendPacket(tbn);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "", e);
+		}
+	}
+	
 	private String hexToString(byte[] hex)
 	{
 		return new BigInteger(hex).toString(16);
@@ -482,7 +533,48 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
-	
+	private void getCharsOnServer(String account)
+	{
+		Connection con = null;
+		int chars = 0;
+		List<Long> charToDel = new ArrayList<Long>();
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT deletetime FROM characters WHERE account_name=?");
+			statement.setString(1, account);
+			ResultSet rset = statement.executeQuery();
+			while (rset.next())
+			{
+				chars++;
+				long delTime = rset.getLong("deletetime");
+				if (delTime != 0)
+					charToDel.add(delTime);
+			}
+			rset.close();
+			statement.close();
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.WARNING, "Exception: getCharsOnServer: " + e.getMessage(), e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
+		
+		ReplyCharacters rec = new ReplyCharacters(account, chars, charToDel);
+		try
+		{
+			sendPacket(rec);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "", e);
+		}
+		
+	}
 	
 	/**
 	 * @param sl
@@ -524,7 +616,8 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
-	 * @param server_gm_only
+	 * @param id
+	 * @param value
 	 */
 	public void sendServerStatus(int id, int value)
 	{
@@ -551,6 +644,20 @@ public class LoginServerThread extends Thread
 		try
 		{
 			sendPacket(ss);
+		}
+		catch (IOException e)
+		{
+			if (Config.DEBUG)
+				_log.log(Level.WARNING, "", e);
+		}
+	}
+	
+	public void sendChangePassword(String accountName, String charName, String oldpass, String newpass)
+	{
+		ChangePassword cp = new ChangePassword(accountName, charName, oldpass, newpass);
+		try
+		{
+			sendPacket(cp);
 		}
 		catch (IOException e)
 		{

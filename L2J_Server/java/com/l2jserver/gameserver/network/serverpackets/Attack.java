@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * sample
  * 06 8f19904b 2522d04b 00000000 80 950c0000 4af50000 08f2ffff 0000    - 0 damage (missed 0x80)
@@ -26,8 +25,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
  * format
  * dddc dddh (ddc)
- *
- * @version $Revision: 1.3.2.1.2.4 $ $Date: 2005/03/27 15:29:39 $
  */
 public class Attack extends L2GameServerPacket
 {
@@ -52,11 +49,11 @@ public class Attack extends L2GameServerPacket
 				return;
 			}
 			if (soulshot)
-				_flags = HITFLAG_USESS | Attack.this._ssGrade;
+				_flags = HITFLAG_USESS | _ssGrade;
 			if (crit)
 				_flags |= HITFLAG_CRIT;
 			// dirty fix for lags on olympiad
-			if (shld > 0 && !(target instanceof L2PcInstance && ((L2PcInstance)target).isInOlympiadMode()))
+			if (shld > 0 && !(target instanceof L2PcInstance && ((L2PcInstance) target).isInOlympiadMode()))
 				_flags |= HITFLAG_SHLD;
 			//			if (shld > 0)
 			//				_flags |= HITFLAG_SHLD;
@@ -77,10 +74,10 @@ public class Attack extends L2GameServerPacket
 	private Hit[] _hits;
 	
 	/**
-	 * @param attacker: the attacking L2Character<br>
-	 * @param target: the target L2Object<br>
-	 * @param useShots: true if soulshots used
-	 * @param ssGrade: the grade of the soulshots
+	 * @param attacker the attacking L2Character<br>
+	 * @param target the target L2Object<br>
+	 * @param useShots true if soulshots used
+	 * @param ssGrade the grade of the soulshots
 	 */
 	public Attack(L2Character attacker, L2Object target, boolean useShots, int ssGrade)
 	{
@@ -98,7 +95,7 @@ public class Attack extends L2GameServerPacket
 	
 	public Hit createHit(L2Object target, int damage, boolean miss, boolean crit, byte shld)
 	{
-		return new Hit( target, damage, miss, crit, shld );
+		return new Hit(target, damage, miss, crit, shld);
 	}
 	
 	public void hit(Hit... hits)
@@ -117,7 +114,7 @@ public class Attack extends L2GameServerPacket
 	}
 	
 	/**
-	 * Return True if the Server-Client packet Attack contains at least 1 hit.<BR><BR>
+	 * @return True if the Server-Client packet Attack contains at least 1 hit.
 	 */
 	public boolean hasHits()
 	{
@@ -140,14 +137,12 @@ public class Attack extends L2GameServerPacket
 		writeH(_hits.length - 1);
 		// prevent sending useless packet while there is only one target.
 		if (_hits.length > 1)
-		{
-			for (int i = 1; i < _hits.length; i++)
+			for (Hit hit : _hits)
 			{
-				writeD(_hits[i]._targetId);
-				writeD(_hits[i]._damage);
-				writeC(_hits[i]._flags);
+				writeD(hit._targetId);
+				writeD(hit._damage);
+				writeC(hit._flags);
 			}
-		}
 		
 		writeD(_tx);
 		writeD(_ty);

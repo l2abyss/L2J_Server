@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 /**
  * Format: (ch) Sd
  * @author  -Wooden-
- *
  */
 public final class RequestPledgeSetMemberPowerGrade extends L2GameClientPacket
 {
@@ -36,9 +35,6 @@ public final class RequestPledgeSetMemberPowerGrade extends L2GameClientPacket
 		_powerGrade = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -71,9 +67,6 @@ public final class RequestPledgeSetMemberPowerGrade extends L2GameClientPacket
 		clan.broadcastClanStatus();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -13,7 +13,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.NpcStringId;
+import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * This class ...
@@ -29,10 +34,14 @@ public final class CreatureSay extends L2GameServerPacket
 	private String _charName = null;
 	private int _charId = 0;
 	private String _text = null;
-	private int _msgId = 0;
+	private int _npcString = -1;
+	private List<String> _parameters;
 	
 	/**
-	 * @param _characters
+	 * @param objectId
+	 * @param messageType
+	 * @param charName
+	 * @param text
 	 */
 	public CreatureSay(int objectId, int messageType, String charName, String text)
 	{
@@ -42,12 +51,39 @@ public final class CreatureSay extends L2GameServerPacket
 		_text = text;
 	}
 	
-	public CreatureSay(int objectId, int messageType, int charId, int msgId)
+	public CreatureSay(int objectId, int messageType, int charId, NpcStringId npcString)
 	{
 		_objectId = objectId;
 		_textType = messageType;
 		_charId = charId;
-		_msgId = msgId;
+		_npcString = npcString.getId();
+	}
+	
+	public CreatureSay(int objectId, int messageType, String charName, NpcStringId npcString)
+	{
+		_objectId = objectId;
+		_textType = messageType;
+		_charName = charName;
+		_npcString = npcString.getId();
+	}
+	
+	public CreatureSay(int objectId, int messageType, int charId, SystemMessageId sysString)
+	{
+		_objectId = objectId;
+		_textType = messageType;
+		_charId = charId;
+		_npcString = sysString.getId();
+	}
+	
+	/**
+	 * String parameter for argument S1,S2,.. in npcstring-e.dat
+	 * @param text
+	 */
+	public void addStringParameter(String text)
+	{
+		if (_parameters == null)
+			_parameters = new ArrayList<String>();
+		_parameters.add(text);
 	}
 	
 	@Override
@@ -60,10 +96,18 @@ public final class CreatureSay extends L2GameServerPacket
 			writeS(_charName);
 		else
 			writeD(_charId);
+		writeD(_npcString); // High Five NPCString ID
 		if (_text != null)
 			writeS(_text);
 		else
-			writeD(_msgId);
+		{
+			if (_parameters != null)
+			{
+				for (String s : _parameters)
+					writeS(s);
+			}
+		}
+
 	}
 	
 	@Override

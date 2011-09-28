@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.Collection;
+import gnu.trove.TObjectProcedure;
+
 import java.util.concurrent.Future;
 
 import com.l2jserver.Config;
@@ -26,6 +27,7 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -429,20 +431,33 @@ public class L2SepulcherNpcInstance extends L2Npc
 		}
 	}
 	
-	public void sayInShout(String msg)
+	public void sayInShout(NpcStringId msg)
 	{
-		if (msg == null || msg.isEmpty())
+		if (msg == null)
 			return;// wrong usage
-		Collection<L2PcInstance> knownPlayers = L2World.getInstance().getAllPlayers().values();
-		if (knownPlayers == null || knownPlayers.isEmpty())
-			return;
-		CreatureSay sm = new CreatureSay(0, Say2.SHOUT, this.getName(), msg);
-		for (L2PcInstance player : knownPlayers)
+		
+		L2World.getInstance().forEachPlayer(new SayInShout(this, new CreatureSay(0, Say2.SHOUT, this.getName(), msg)));
+	}
+	
+	private final class SayInShout implements TObjectProcedure<L2PcInstance>
+	{
+		L2SepulcherNpcInstance _npc;
+		CreatureSay _sm;
+		
+		private SayInShout(L2SepulcherNpcInstance npc, CreatureSay sm)
 		{
-			if (player == null)
-				continue;
-			if (Util.checkIfInRange(15000, player, this, true))
-				player.sendPacket(sm);
+			_npc = npc;
+			_sm = sm;
+		}
+		@Override
+		public final boolean execute(final L2PcInstance player)
+		{
+			if (player != null)
+			{
+				if (Util.checkIfInRange(15000, player, _npc, true))
+					player.sendPacket(_sm);
+			}
+			return true;
 		}
 	}
 	

@@ -26,6 +26,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ListPartyWating extends L2GameServerPacket
 {
+	private static final String _S__9C_LISTPARTYWAITING = "[S] 9c ListPartyWating";
+	
 	private L2PcInstance _cha;
 	private int _loc;
 	private int _lim;
@@ -55,7 +57,6 @@ public class ListPartyWating extends L2GameServerPacket
 				continue;
 			_rooms.add(room);
 		}
-		int count = 0;
 		int size = _rooms.size();
 		
 		writeC(0x9c);
@@ -65,23 +66,35 @@ public class ListPartyWating extends L2GameServerPacket
 			writeD(0);
 		
 		writeD(_rooms.size());
-		while(size > count)
+		for (PartyMatchRoom room : _rooms)
 		{
-			writeD(_rooms.get(count).getId());
-			writeS(_rooms.get(count).getTitle());
-			writeD(_rooms.get(count).getLocation());
-			writeD(_rooms.get(count).getMinLvl());
-			writeD(_rooms.get(count).getMaxLvl());
-			writeD(_rooms.get(count).getMembers());
-			writeD(_rooms.get(count).getMaxMembers());
-			writeS(_rooms.get(count).getOwner().getName());
-			count++;
+			writeD(room.getId());
+			writeS(room.getTitle());
+			writeD(room.getLocation());
+			writeD(room.getMinLvl());
+			writeD(room.getMaxLvl());
+			writeD(room.getMaxMembers());
+			writeS(room.getOwner().getName());
+			writeD(room.getMembers());
+			for (L2PcInstance member : room.getPartyMembers())
+			{
+				if (member != null)
+				{
+					writeD(member.getClassId().getId());
+					writeS(member.getName());
+				}
+				else
+				{
+					writeD(0x00);
+					writeS("Not Found");
+				}
+			}
 		}
 	}
 	
 	@Override
 	public String getType()
 	{
-		return "[S] 9c ListPartyWating";
+		return _S__9C_LISTPARTYWAITING;
 	}
 }

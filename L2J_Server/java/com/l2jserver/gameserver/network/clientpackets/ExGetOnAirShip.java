@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Logger;
 
-
 /**
  * Format: (c) dddd
  * d: dx
@@ -28,6 +27,8 @@ import java.util.logging.Logger;
  */
 public class ExGetOnAirShip extends L2GameClientPacket
 {
+	private static final String _C__D0_36_EXGETONAIRSHIP = "[C] D0:36 ExGetOnAirShip";
+	
 	protected static final Logger _log = Logger.getLogger(ExGetOnAirShip.class.getName());
 	private int _x;
 	private int _y;
@@ -55,7 +56,6 @@ public class ExGetOnAirShip extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] 0xD0:0x36 ExGetOnAirShip";
+		return _C__D0_36_EXGETONAIRSHIP;
 	}
-	
 }

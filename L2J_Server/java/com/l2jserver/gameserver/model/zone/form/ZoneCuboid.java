@@ -14,7 +14,9 @@
  */
 package com.l2jserver.gameserver.model.zone.form;
 
+import com.l2jserver.gameserver.GeoEngine;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
+import com.l2jserver.util.Rnd;
 
 /**
  * A primitive rectangular zone
@@ -158,6 +160,15 @@ public class ZoneCuboid extends L2ZoneForm
 			dropDebugItem(57, 1, _x1, y, z);
 			dropDebugItem(57, 1, _x2, y, z);
 		}
+	}
+	
+	@Override
+	public int[] getRandomPoint()
+	{
+		int x = Rnd.get(_x1, _x2);
+		int y = Rnd.get(_y1, _y2);
+		
+		return new int[] { x, y, GeoEngine.getInstance().getHeight(x, y, _z1) };
 	}
 }
 

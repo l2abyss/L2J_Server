@@ -146,6 +146,7 @@ public final class SystemMessage extends L2GameServerPacket
 	
 	/**
 	 * Use SystemMessage.getSystemMessage(SystemMessageId smId) where possible instead
+	 * @param id 
 	 * @deprecated
 	 */
 	private SystemMessage(final int id)
@@ -204,8 +205,7 @@ public final class SystemMessage extends L2GameServerPacket
 		{
 			if (((L2Npc)cha).getTemplate().serverSideName)
 				return addString(((L2Npc)cha).getTemplate().name);
-			else
-				return addNpcName((L2Npc)cha);
+			return addNpcName((L2Npc)cha);
 		}
 		else if (cha instanceof L2PcInstance)
 		{
@@ -215,8 +215,7 @@ public final class SystemMessage extends L2GameServerPacket
 		{
 			if (((L2Summon)cha).getTemplate().serverSideName)
 				return addString(((L2Summon)cha).getTemplate().name);
-			else
-				return addNpcName((L2Summon)cha);
+			return addNpcName((L2Summon)cha);
 		}
 		return addString(cha.getName());
 	}
@@ -300,7 +299,7 @@ public final class SystemMessage extends L2GameServerPacket
 	 * @param type
 	 * @return
 	 */
-	public final SystemMessage addElemntal(final int type)
+	public final SystemMessage addElemental(final int type)
 	{
 		append(new SMParam(TYPE_ELEMENT_NAME, type));
 		return this;

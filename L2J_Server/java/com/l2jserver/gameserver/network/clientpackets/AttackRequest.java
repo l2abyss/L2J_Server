@@ -26,6 +26,8 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
  */
 public final class AttackRequest extends L2GameClientPacket
 {
+	private static final String _C__32_ATTACKREQUEST = "[C] 32 AttackRequest";
+	
 	// cddddc
 	private int _objectId;
 	@SuppressWarnings("unused")
@@ -36,8 +38,6 @@ public final class AttackRequest extends L2GameClientPacket
 	private int _originZ;
 	@SuppressWarnings("unused")
 	private int _attackId;
-	
-	private static final String _C__0A_ATTACKREQUEST = "[C] 0A AttackRequest";
 	
 	@Override
 	protected void readImpl()
@@ -96,12 +96,9 @@ public final class AttackRequest extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__0A_ATTACKREQUEST;
+		return _C__32_ATTACKREQUEST;
 	}
 }

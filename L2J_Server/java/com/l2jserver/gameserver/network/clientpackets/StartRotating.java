@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.StartRotation;
  */
 public final class StartRotating extends L2GameClientPacket
 {
-	private static final String _C__4A_STARTROTATING = "[C] 4A StartRotating";
+	private static final String _C__5B_STARTROTATING = "[C] 5B StartRotating";
 	
 	private int _degree;
 	private int _side;
@@ -56,12 +56,9 @@ public final class StartRotating extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__4A_STARTROTATING;
+		return _C__5B_STARTROTATING;
 	}
 }

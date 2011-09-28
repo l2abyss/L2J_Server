@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.L2FriendSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
 /**
  * Recieve Private (Friend) Message - 0xCC
  *
@@ -35,11 +34,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  * S: Receiving Player
  *
  * @author Tempy
- *
  */
 public final class RequestSendFriendMsg extends L2GameClientPacket
 {
-	private static final String _C__CC_REQUESTSENDMSG = "[C] CC RequestSendMsg";
+	private static final String _C__6B_REQUESTSENDMSG = "[C] 6B RequestSendFriendMsg";
 	private static Logger _logChat = Logger.getLogger("chat");
 	
 	private String _message;
@@ -87,6 +85,6 @@ public final class RequestSendFriendMsg extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__CC_REQUESTSENDMSG;
+		return _C__6B_REQUESTSENDMSG;
 	}
 }

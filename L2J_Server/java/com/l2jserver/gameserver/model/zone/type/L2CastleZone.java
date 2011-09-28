@@ -14,19 +14,19 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
 /**
  * A castle zone
  *
  * @author  durgus
  */
-public class L2CastleZone extends L2SpawnZone
+public class L2CastleZone extends L2ZoneRespawn
 {
 	private int _castleId;
 	private Castle _castle = null;
@@ -40,9 +40,7 @@ public class L2CastleZone extends L2SpawnZone
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("castleId"))
-		{
 			_castleId = Integer.parseInt(value);
-		}
 		else
 			super.setParameter(name, value);
 	}
@@ -51,18 +49,14 @@ public class L2CastleZone extends L2SpawnZone
 	protected void onEnter(L2Character character)
 	{
 		if (getCastle() != null)
-		{
 			character.setInsideZone(L2Character.ZONE_CASTLE, true);
-		}
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
 		if (getCastle() != null)
-		{
 			character.setInsideZone(L2Character.ZONE_CASTLE, false);
-		}
 	}
 	
 	@Override
@@ -81,14 +75,14 @@ public class L2CastleZone extends L2SpawnZone
 	 */
 	public void banishForeigners(int owningClanId)
 	{
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (!(temp instanceof L2PcInstance))
 				continue;
 			if (((L2PcInstance) temp).getClanId() == owningClanId)
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionTable.TeleportWhereType.Town);
+			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.Town);
 		}
 	}
 	

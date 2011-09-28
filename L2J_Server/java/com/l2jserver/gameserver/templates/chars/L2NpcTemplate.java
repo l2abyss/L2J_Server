@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.templates.chars;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -96,6 +98,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public FastList<L2Skill> _Lrangeskills;
 	public FastList<L2Skill> _Srangeskills;
 	public FastList<L2Skill> _generalskills;
+	private FastList<L2Skill> _suicideSkills;
 	
 	private boolean _hasbuffskills;
 	private boolean _hasnegativeskills;
@@ -117,6 +120,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	private boolean _hasLrangeskills;
 	private boolean _hasSrangeskills;
 	private boolean _hasgeneralskills;
+	private boolean _hasSuicideSkills;
 	
 	private L2NpcAIData _AIdataStatic = new L2NpcAIData();
 	
@@ -169,7 +173,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	private List<L2MinionData> _minions = null;
 	
 	private List<ClassId> _teachInfo;
-	private Map<Integer, L2Skill> _skills;
+	private TIntObjectHashMap<L2Skill> _skills;
 	//private Map<Stats, Double> _vulnerabilities;
 	// contains a list of quests for each event type (questStart, questAttack, questKill, etc)
 	private Map<Quest.QuestEventType, Quest[]> _questEvents;
@@ -309,85 +313,91 @@ public final class L2NpcTemplate extends L2CharTemplate
 	{
 		
 		if (_skills == null)
-			_skills = new FastMap<Integer, L2Skill>();
+			_skills = new TIntObjectHashMap<L2Skill>();
 		
 		if(!skill.isPassive())
 		{
-			addGeneralSkill(skill);
-			switch(skill.getSkillType())
+			if (skill.isSuicideAttack())
 			{
-				case BUFF:
-					addBuffSkill(skill);
-					break;
-				case HEAL:
-				case HOT:
-				case HEAL_PERCENT:
-				case HEAL_STATIC:
-				case BALANCE_LIFE:
-					addHealSkill(skill);
-					break;
-				case RESURRECT:
-					addResSkill(skill);
-					break;
-				case DEBUFF:
-					addDebuffSkill(skill);
-					addCOTSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case ROOT:
-					addRootSkill(skill);
-					addImmobiliseSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case SLEEP:
-					addSleepSkill(skill);
-					addImmobiliseSkill(skill);
-					break;
-				case STUN:
-					addRootSkill(skill);
-					addImmobiliseSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case PARALYZE:
-					addParalyzeSkill(skill);
-					addImmobiliseSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case PDAM:
-				case MDAM:
-				case BLOW:
-				case DRAIN:
-				case CHARGEDAM:
-				case FATAL:	
-				case DEATHLINK:
-				case CPDAM:
-				case MANADAM:
-				case CPDAMPERCENT:	
-					addAtkSkill(skill);
-					addUniversalSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case POISON:
-				case DOT:
-				case MDOT:
-				case BLEED:
-					addDOTSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case MUTE:
-				case FEAR:
-					addCOTSkill(skill);
-					addRangeSkill(skill);
-					break;
-				case CANCEL:
-				case NEGATE:
-					addNegativeSkill(skill);
-					addRangeSkill(skill);
-					break;
-				default :
-					addUniversalSkill(skill);
-					break;
-					
+				addSuicideSkill(skill);
+			}
+			else
+			{
+				addGeneralSkill(skill);
+				switch(skill.getSkillType())
+				{
+					case BUFF:
+						addBuffSkill(skill);
+						break;
+					case HEAL:
+					case HOT:
+					case HEAL_PERCENT:
+					case HEAL_STATIC:
+					case BALANCE_LIFE:
+						addHealSkill(skill);
+						break;
+					case RESURRECT:
+						addResSkill(skill);
+						break;
+					case DEBUFF:
+						addDebuffSkill(skill);
+						addCOTSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case ROOT:
+						addRootSkill(skill);
+						addImmobiliseSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case SLEEP:
+						addSleepSkill(skill);
+						addImmobiliseSkill(skill);
+						break;
+					case STUN:
+						addRootSkill(skill);
+						addImmobiliseSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case PARALYZE:
+						addParalyzeSkill(skill);
+						addImmobiliseSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case PDAM:
+					case MDAM:
+					case BLOW:
+					case DRAIN:
+					case CHARGEDAM:
+					case FATAL:	
+					case DEATHLINK:
+					case CPDAM:
+					case MANADAM:
+					case CPDAMPERCENT:	
+						addAtkSkill(skill);
+						addUniversalSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case POISON:
+					case DOT:
+					case MDOT:
+					case BLEED:
+						addDOTSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case MUTE:
+					case FEAR:
+						addCOTSkill(skill);
+						addRangeSkill(skill);
+						break;
+					case CANCEL:
+					case NEGATE:
+						addNegativeSkill(skill);
+						addRangeSkill(skill);
+						break;
+					default :
+						addUniversalSkill(skill);
+						break;
+				}
 			}
 		}
 		
@@ -401,7 +411,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	}*/
 	
 	/**
-	 * Return the list of all possible UNCATEGORIZED drops of this L2NpcTemplate.<BR><BR>
+	 * @return the list of all possible UNCATEGORIZED drops of this L2NpcTemplate.
 	 */
 	public FastList<L2DropCategory> getDropData()
 	{
@@ -409,8 +419,8 @@ public final class L2NpcTemplate extends L2CharTemplate
 	}
 	
 	/**
-	 * Return the list of all possible item drops of this L2NpcTemplate.<BR>
-	 * (ie full drops and part drops, mats, miscellaneous & UNCATEGORIZED)<BR><BR>
+	 * @return the list of all possible item drops of this L2NpcTemplate.<br>
+	 * (ie full drops and part drops, mats, miscellaneous & UNCATEGORIZED)
 	 */
 	public List<L2DropData> getAllDropData()
 	{
@@ -440,16 +450,21 @@ public final class L2NpcTemplate extends L2CharTemplate
 	}
 	
 	/**
-	 * Return the list of all Minions that must be spawn with the L2NpcInstance using this L2NpcTemplate.<BR><BR>
+	 * @return the list of all Minions that must be spawn with the L2NpcInstance using this L2NpcTemplate.
 	 */
 	public List<L2MinionData> getMinionData()
 	{
 		return _minions;
 	}
 	
-	public Map<Integer, L2Skill> getSkills()
+	public TIntObjectHashMap<L2Skill> getSkills()
 	{
 		return _skills;
+	}
+	
+	public L2Skill[] getSkillsArray()
+	{
+		return _skills.getValues(new L2Skill[_skills.size()]);
 	}
 	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
@@ -807,12 +822,22 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_manaskills.add(skill);
 		_hasmanaskills=true;
 	}
+	
 	public void addGeneralSkill(L2Skill skill)
 	{
 		if (_generalskills == null)
 			_generalskills = new FastList<L2Skill>();
 		_generalskills.add(skill);
 		_hasgeneralskills=true;
+	}
+	
+	public void addSuicideSkill(L2Skill skill)
+	{
+		if (_suicideSkills == null)
+			_suicideSkills = new FastList<L2Skill>();
+		_suicideSkills.add(skill);
+		
+		_hasSuicideSkills = true;
 	}
 	
 	public void addRangeSkill(L2Skill skill)
@@ -959,5 +984,15 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public boolean isUndead()
 	{
 		return (race == Race.UNDEAD);
+	}
+	
+	public FastList<L2Skill> getSuicideSkills()
+	{
+		return _suicideSkills;
+	}
+	
+	public boolean hasSuicideSkill()
+	{
+		return _hasSuicideSkills;
 	}
 }

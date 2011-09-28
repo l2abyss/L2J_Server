@@ -75,13 +75,14 @@ public class L2CabaleBufferInstance extends L2Npc
 	
 	private class CabalaAI implements Runnable
 	{
-		private L2CabaleBufferInstance _caster;
+		private final L2CabaleBufferInstance _caster;
 		
 		protected CabalaAI(L2CabaleBufferInstance caster)
 		{
 			_caster = caster;
 		}
 		
+		@Override
 		public void run()
 		{
 			boolean isBuffAWinner = false;
@@ -109,61 +110,58 @@ public class L2CabaleBufferInstance extends L2Npc
 			 *  - Mystics: +25% Magic Cancel Resist, +25% Effect Resistance<BR>
 			 */
 			Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-			//synchronized (getKnownList().getKnownPlayers())
+			for (L2PcInstance player : plrs)
 			{
-				for (L2PcInstance player : plrs)
+				if (player == null || player.isInvul())
+					continue;
+				
+				final int playerCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
+				
+				if (playerCabal == winningCabal
+						&& playerCabal != SevenSigns.CABAL_NULL
+						&& _caster.getNpcId() == SevenSigns.ORATOR_NPC_ID)
 				{
-					if (player == null || player.isInvul())
-						continue;
-					
-					final int playerCabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
-					
-					if (playerCabal == winningCabal
-							&& playerCabal != SevenSigns.CABAL_NULL
-							&& _caster.getNpcId() == SevenSigns.ORATOR_NPC_ID)
+					if (!player.isMageClass())
 					{
-						if (!player.isMageClass())
+						if (handleCast(player, 4364))
 						{
-							if (handleCast(player, 4364))
-							{
-								isBuffAWinner = true;
-								continue;
-							}
-						}
-						else
-						{
-							if (handleCast(player, 4365))
-							{
-								isBuffAWinner = true;
-								continue;
-							}
+							isBuffAWinner = true;
+							continue;
 						}
 					}
-					else if (playerCabal == losingCabal
-							&& playerCabal != SevenSigns.CABAL_NULL
-							&& _caster.getNpcId() == SevenSigns.PREACHER_NPC_ID)
+					else
 					{
-						if (!player.isMageClass())
+						if (handleCast(player, 4365))
 						{
-							if (handleCast(player, 4361))
-							{
-								isBuffALoser = true;
-								continue;
-							}
-						}
-						else
-						{
-							if (handleCast(player, 4362))
-							{
-								isBuffALoser = true;
-								continue;
-							}
+							isBuffAWinner = true;
+							continue;
 						}
 					}
-					
-					if (isBuffAWinner && isBuffALoser)
-						break;
 				}
+				else if (playerCabal == losingCabal
+						&& playerCabal != SevenSigns.CABAL_NULL
+						&& _caster.getNpcId() == SevenSigns.PREACHER_NPC_ID)
+				{
+					if (!player.isMageClass())
+					{
+						if (handleCast(player, 4361))
+						{
+							isBuffALoser = true;
+							continue;
+						}
+					}
+					else
+					{
+						if (handleCast(player, 4362))
+						{
+							isBuffALoser = true;
+							continue;
+						}
+					}
+				}
+				
+				if (isBuffAWinner && isBuffALoser)
+					break;
 			}
 		}
 		

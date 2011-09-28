@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.instancemanager.BoatManager;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
@@ -24,8 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.MoveToLocationInVehicle;
 import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
-import com.l2jserver.util.Point3D;
-
+import com.l2jserver.gameserver.util.Point3D;
 
 public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 {
@@ -53,16 +53,21 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		_originZ = readD();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
-	protected
-	void runImpl()
+	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
+		
+		if(Config.PLAYER_MOVEMENT_BLOCK_TIME > 0
+			&& !activeChar.isGM()
+			&& activeChar.getNotMoveUntil() > System.currentTimeMillis())
+		{
+			getClient().sendPacket(SystemMessage.getSystemMessage(3226));
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 		
 		if (_targetX == _originX && _targetY == _originY && _targetZ == _originZ)
 		{
@@ -125,9 +130,6 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		activeChar.broadcastPacket(new MoveToLocationInVehicle(activeChar, pos, originPos));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -147,6 +147,7 @@ public final class HandysBlockCheckerManager
 	 * arena manager) and send the needed server ->  client packets
 	 * @param player
 	 * @param arenaId
+	 * @return 
 	 */
 	public boolean addPlayerToArena(L2PcInstance player, int arenaId)
 	{
@@ -224,6 +225,7 @@ public final class HandysBlockCheckerManager
 	 * his team mates / enemy team mates
 	 * @param player
 	 * @param arenaId
+	 * @param team 
 	 */
 	public void removePlayer(L2PcInstance player, int arenaId, int team)
 	{
@@ -327,7 +329,7 @@ public final class HandysBlockCheckerManager
 	/**
 	 * Called when played logs out while participating
 	 * in Block Checker Event
-	 * @param L2PcInstance player
+	 * @param player
 	 */
 	public void onDisconnect(L2PcInstance player)
 	{

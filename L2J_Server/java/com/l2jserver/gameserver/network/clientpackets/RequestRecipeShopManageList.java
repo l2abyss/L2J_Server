@@ -26,9 +26,8 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeShopManageList;
  */
 public final class RequestRecipeShopManageList extends L2GameClientPacket
 {
-	private static final String _C__B0_RequestRecipeShopManageList = "[C] b0 RequestRecipeShopManageList";
+	private static final String _C__B9_RequestRecipeShopManageList = "[C] B9 RequestRecipeShopManageList";
 	//private static Logger _log = Logger.getLogger(RequestPrivateStoreManage.class.getName());
-	
 	
 	@Override
 	protected void readImpl()
@@ -85,7 +84,6 @@ public final class RequestRecipeShopManageList extends L2GameClientPacket
 			player.sendPacket(new PrivateSellListSell(client.getActiveChar()));
 			player.sendPacket(new UserInfo(player));
 			player.broadcastPacket(new UserInfo(player));
-
 		}
 
 		if (privatetype == 1)
@@ -94,20 +92,12 @@ public final class RequestRecipeShopManageList extends L2GameClientPacket
 			player.sendPacket(new PrivateSellListSell(client.getActiveChar()));
 			player.sendPacket(new ChangeWaitType (player,1));
 			player.broadcastPacket(new ChangeWaitType (player,1));
-
-
 		}*/
-		
-		
-		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__B0_RequestRecipeShopManageList;
+		return _C__B9_RequestRecipeShopManageList;
 	}
 }

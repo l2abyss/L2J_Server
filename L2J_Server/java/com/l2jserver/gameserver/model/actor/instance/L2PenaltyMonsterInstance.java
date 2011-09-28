@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -36,15 +37,14 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 	{
 		if (_ptk != null)
 			return _ptk; //always attack only one person
-		else
-			return super.getMostHated();
+		return super.getMostHated();
 	}
 	
 	public void setPlayerToKill(L2PcInstance ptk)
 	{
 		if (Rnd.get(100) <= 80)
 		{
-			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), "mmm your bait was delicious");
+			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), NpcStringId.YOUR_BAIT_WAS_TOO_DELICIOUS_NOW_I_WILL_KILL_YOU);
 			this.broadcastPacket(cs);
 		}
 		_ptk = ptk;
@@ -61,7 +61,7 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 		
 		if (Rnd.get(100) <= 75)
 		{
-			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), "I will tell fishes not to take your bait");
+			CreatureSay cs = new CreatureSay(getObjectId(), Say2.ALL, getName(), NpcStringId.I_WILL_TELL_FISH_NOT_TO_TAKE_YOUR_BAIT);
 			this.broadcastPacket(cs);
 		}
 		return true;

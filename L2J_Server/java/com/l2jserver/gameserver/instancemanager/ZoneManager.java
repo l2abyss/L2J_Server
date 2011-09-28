@@ -15,6 +15,8 @@
 
 package com.l2jserver.gameserver.instancemanager;
 
+import gnu.trove.TObjectProcedure;
+
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -39,13 +41,15 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.form.ZoneCuboid;
 import com.l2jserver.gameserver.model.zone.form.ZoneCylinder;
 import com.l2jserver.gameserver.model.zone.form.ZoneNPoly;
 import com.l2jserver.gameserver.model.zone.type.L2ArenaZone;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
+import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
+import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
  * This class manages the zones
@@ -61,6 +65,9 @@ public class ZoneManager
 	private int _lastDynamicId = 300000;
 	private List<L2ItemInstance> _debugItems;
 	
+	/**
+	 * @return
+	 */
 	public static final ZoneManager getInstance()
 	{
 		return SingletonHolder._instance;
@@ -76,7 +83,6 @@ public class ZoneManager
 		load();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void reload()
 	{
 		// int zoneCount = 0;
@@ -96,11 +102,18 @@ public class ZoneManager
 		_log.info("Removed zones in " + count + " regions.");
 		// Load the zones
 		load();
-		
-		for (L2Object o : L2World.getInstance().getAllVisibleObjects().values())
-		{ 
+		L2World.getInstance().forEachObject(new ForEachCharacterRevalidateZone());
+
+	}
+	
+	private final class ForEachCharacterRevalidateZone implements TObjectProcedure<L2Object>
+	{	
+		@Override
+		public final boolean execute(final L2Object o)
+		{
 			if (o instanceof L2Character)
 				((L2Character) o).revalidateZone(true);
+			return true;
 		}
 	}
 	
@@ -129,14 +142,14 @@ public class ZoneManager
 				return;
 			}
 			
-			File[] files = dir.listFiles();
+			File[] files = dir.listFiles(new XMLFilter());
 			FastList<File> hash = new FastList<File>(files.length);
 			for (File f : files)
 			{
 				// default file first
 				if ("zone.xml".equalsIgnoreCase(f.getName()))
 					hash.addFirst(f);
-				else if (f.getName().endsWith(".xml"))
+				else
 					hash.add(f);
 			}
 			
@@ -334,18 +347,38 @@ public class ZoneManager
 										
 										temp.setParameter(name, val);
 									}
-									else if ("spawn".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2SpawnZone)
+									else if ("spawn".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2ZoneRespawn)
 									{
 										attrs = cd.getAttributes();
 										int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
 										int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
 										int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
 										
-										Node val = attrs.getNamedItem("isChaotic");
-										if (val != null && Boolean.parseBoolean(val.getNodeValue()))
-											((L2SpawnZone) temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
+										Node val = attrs.getNamedItem("isOther");
+										boolean other = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										val = attrs.getNamedItem("isChaotic");
+										boolean chaotic = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										val = attrs.getNamedItem("isBanish");
+										boolean banish = val != null && Boolean.parseBoolean(val.getNodeValue());
+										
+										if (other)
+											((L2ZoneRespawn) temp).addOtherSpawn(spawnX, spawnY, spawnZ);
+										else if (chaotic)
+											((L2ZoneRespawn) temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
+										else if (banish)
+											((L2ZoneRespawn) temp).addBanishSpawn(spawnX, spawnY, spawnZ);
 										else
-											((L2SpawnZone) temp).addSpawn(spawnX, spawnY, spawnZ);
+											((L2ZoneRespawn) temp).addSpawn(spawnX, spawnY, spawnZ);
+									}
+									else if ("race".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2RespawnZone)
+									{
+										attrs = cd.getAttributes();
+										String race = attrs.getNamedItem("name").getNodeValue();
+										String point = attrs.getNamedItem("point").getNodeValue();
+										
+										((L2RespawnZone) temp).addRaceRespawnPoint(race, point);
 									}
 								}
 								if (checkId(zoneId))
@@ -416,7 +449,8 @@ public class ZoneManager
 	
 	/**
 	 * Add new zone
-	 *
+	 * @param <T> 
+	 * @param id 
 	 * @param zone
 	 */
 	@SuppressWarnings("unchecked")
@@ -481,6 +515,7 @@ public class ZoneManager
 	
 	/**
 	 * Get zone by ID and zone class
+	 * @param <T> 
 	 * @param id
 	 * @param zoneType
 	 * @return zone
@@ -503,11 +538,10 @@ public class ZoneManager
 	}
 	
 	/**
-	 * Returns zone from where the object is located by type
-	 *
+	 * @param <T> 
 	 * @param object
 	 * @param type
-	 * @return zone
+	 * @return zone from where the object is located by type
 	 */
 	public <T extends L2ZoneType> T getZone(L2Object object, Class<T> type)
 	{
@@ -556,13 +590,12 @@ public class ZoneManager
 	}
 	
 	/**
-	 * Returns zone from given coordinates
-	 * 
+	 * @param <T> 
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @param type
-	 * @return zone
+	 * @return zone from given coordinates
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends L2ZoneType> T getZone(int x, int y, int z, Class<T> type)
@@ -626,10 +659,8 @@ public class ZoneManager
 					zone = temp;
 				}
 			}
-			return zone;
 		}
-		else
-			return zone;
+		return zone;
 	}
 	
 	/**

@@ -55,8 +55,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2ArtefactInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.zone.type.L2CastleTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
+import com.l2jserver.gameserver.model.zone.type.L2ResidenceTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
@@ -96,12 +96,13 @@ public class Castle
 	private boolean _showNpcCrest = false;
 	private L2SiegeZone _zone = null;
 	private L2CastleZone _castleZone = null;
-	private L2CastleTeleportZone _teleZone;
+	private L2ResidenceTeleportZone _teleZone;
 	private L2Clan _formerOwner = null;
 	private List<L2ArtefactInstance> _artefacts = new ArrayList<L2ArtefactInstance>(1);
 	private TIntIntHashMap _engrave = new TIntIntHashMap(1);
 	private Map<Integer, CastleFunction> _function;
 	private FastList<L2Skill> _residentialSkills = new FastList<L2Skill>();
+	private int _bloodAlliance = 0;
 	
 	/** Castle Functions */
 	public static final int FUNC_TELEPORT = 1;
@@ -284,7 +285,11 @@ public class Castle
 	// =========================================================
 	// Method - Public
 	
-	/** Return function with id */
+	/**
+	 * Return function with id 
+	 * @param type 
+	 * @return
+	 */
 	public CastleFunction getFunction(int type)
 	{
 		if (_function.get(type) != null)
@@ -310,7 +315,10 @@ public class Castle
 	}
 	
 	// This method add to the treasury
-	/** Add amount to castle instance's treasury (warehouse). */
+	/**
+	 * Add amount to castle instance's treasury (warehouse). 
+	 * @param amount
+	 */
 	public void addToTreasury(long amount)
 	{
 		// check if owned
@@ -346,7 +354,11 @@ public class Castle
 		addToTreasuryNoTax(amount);
 	}
 	
-	/** Add amount to castle instance's treasury (warehouse), no tax paying. */
+	/**
+	 * Add amount to castle instance's treasury (warehouse), no tax paying. 
+	 * @param amount 
+	 * @return
+	 */
 	public boolean addToTreasuryNoTax(long amount)
 	{
 		if (getOwnerId() <= 0)
@@ -371,7 +383,7 @@ public class Castle
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Update castle set treasury = ? where id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE castle SET treasury = ? WHERE id = ?");
 			statement.setLong(1, getTreasury());
 			statement.setInt(2, getCastleId());
 			statement.execute();
@@ -397,6 +409,10 @@ public class Castle
 	
 	/**
 	 * Return true if object is inside the zone
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @return 
 	 */
 	public boolean checkIfInZone(int x, int y, int z)
 	{
@@ -435,13 +451,13 @@ public class Castle
 		return _castleZone;
 	}
 	
-	public L2CastleTeleportZone getTeleZone()
+	public L2ResidenceTeleportZone getTeleZone()
 	{
 		if (_teleZone == null)
 		{
-			for (L2CastleTeleportZone zone : ZoneManager.getInstance().getAllZones(L2CastleTeleportZone.class))
+			for (L2ResidenceTeleportZone zone : ZoneManager.getInstance().getAllZones(L2ResidenceTeleportZone.class))
 			{
-				if (zone.getCastleId() == getCastleId())
+				if (zone.getResidenceId() == getCastleId())
 				{
 					_teleZone = zone;
 					break;
@@ -645,6 +661,7 @@ public class Castle
 	
 	/**
 	 * Respawn all doors on castle grounds<BR><BR>
+	 * @param isDoorWeak 
 	 */
 	public void spawnDoor(boolean isDoorWeak)
 	{
@@ -711,6 +728,8 @@ public class Castle
 				_treasury = rs.getLong("treasury");
 				
 				_showNpcCrest = rs.getBoolean("showNpcCrest");
+				
+				_bloodAlliance = rs.getInt("bloodAlliance");
 			}
 			rs.close();
 			statement.close();
@@ -773,7 +792,10 @@ public class Castle
 		}
 	}
 	
-	/** Remove function In List and in DB */
+	/**
+	 * Remove function In List and in DB 
+	 * @param functionType
+	 */
 	public void removeFunction(int functionType)
 	{
 		_function.remove(functionType);
@@ -1200,7 +1222,8 @@ public class Castle
 			if (_production != null)
 			{
 				int count = 0;
-				String query = "INSERT INTO castle_manor_production VALUES ";
+				StringBuilder query = new StringBuilder();
+				query.append("INSERT INTO castle_manor_production VALUES ");
 				String values[] = new String[_production.size()];
 				for (SeedProduction s : _production)
 				{
@@ -1209,12 +1232,13 @@ public class Castle
 				}
 				if (values.length > 0)
 				{
-					query += values[0];
+					query.append(values[0]);
 					for (int i = 1; i < values.length; i++)
 					{
-						query += "," + values[i];
+						query.append(",");
+						query.append(values[i]);
 					}
-					statement = con.prepareStatement(query);
+					statement = con.prepareStatement(query.toString());
 					statement.execute();
 					statement.close();
 				}
@@ -1274,7 +1298,8 @@ public class Castle
 			if (prod != null)
 			{
 				int count = 0;
-				String query = "INSERT INTO castle_manor_production VALUES ";
+				StringBuilder query = new StringBuilder();
+				query.append("INSERT INTO castle_manor_production VALUES ");
 				String values[] = new String[prod.size()];
 				for (SeedProduction s : prod)
 				{
@@ -1283,12 +1308,13 @@ public class Castle
 				}
 				if (values.length > 0)
 				{
-					query += values[0];
+					query.append(values[0]);
 					for (int i = 1; i < values.length; i++)
 					{
-						query += "," + values[i];
+						query.append(",")
+						.append(values[i]);
 					}
-					statement = con.prepareStatement(query);
+					statement = con.prepareStatement(query.toString());
 					statement.execute();
 					statement.close();
 				}
@@ -1320,7 +1346,8 @@ public class Castle
 			if (_procure != null && _procure.size() > 0)
 			{
 				int count = 0;
-				String query = "INSERT INTO castle_manor_procure VALUES ";
+				StringBuilder query = new StringBuilder();
+				query.append("INSERT INTO castle_manor_procure VALUES ");
 				String values[] = new String[_procure.size()];
 				for (CropProcure cp : _procure)
 				{
@@ -1329,12 +1356,13 @@ public class Castle
 				}
 				if (values.length > 0)
 				{
-					query += values[0];
+					query.append(values[0]);
 					for (int i = 1; i < values.length; i++)
 					{
-						query += "," + values[i];
+						query.append(",");
+						query.append(values[i]);
 					}
-					statement = con.prepareStatement(query);
+					statement = con.prepareStatement(query.toString());
 					statement.execute();
 					statement.close();
 				}
@@ -1393,7 +1421,8 @@ public class Castle
 			if (proc != null && proc.size() > 0)
 			{
 				int count = 0;
-				String query = "INSERT INTO castle_manor_procure VALUES ";
+				StringBuilder query = new StringBuilder();
+				query.append("INSERT INTO castle_manor_procure VALUES ");
 				String values[] = new String[proc.size()];
 				
 				for (CropProcure cp : proc)
@@ -1403,12 +1432,13 @@ public class Castle
 				}
 				if (values.length > 0)
 				{
-					query += values[0];
+					query.append(values[0]);
 					for (int i = 1; i < values.length; i++)
 					{
-						query += "," + values[i];
+						query.append(",");
+						query.append(values[i]);
 					}
-					statement = con.prepareStatement(query);
+					statement = con.prepareStatement(query.toString());
 					statement.execute();
 					statement.close();
 				}
@@ -1627,6 +1657,34 @@ public class Castle
 		{
 			saveCropData();
 			saveSeedData();
+		}
+	}
+	
+	public int getBloodAlliance()
+	{
+		return _bloodAlliance;
+	}
+	
+	public void setBloodAlliance(int count)
+	{
+		_bloodAlliance = count;
+		
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("Update castle set bloodAlliance = ? where id = ?");
+			statement.setInt(1, _bloodAlliance);
+			statement.setInt(2, getCastleId());
+			statement.execute();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
 		}
 	}
 }

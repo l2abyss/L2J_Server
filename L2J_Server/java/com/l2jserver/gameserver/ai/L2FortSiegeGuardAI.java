@@ -43,10 +43,8 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
-
 /**
- * This class manages AI of L2Attackable.<BR><BR>
- *
+ * This class manages AI of L2Attackable.
  */
 public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 {
@@ -94,8 +92,6 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	}
 	
 	/**
-	 * Return True if the target is autoattackable (depends on the actor type).<BR><BR>
-	 *
 	 * <B><U> Actor is a L2GuardInstance</U> :</B><BR><BR>
 	 * <li>The target isn't a Folk or a Door</li>
 	 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
@@ -123,7 +119,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	 * <li>The actor is Aggressive</li><BR><BR>
 	 *
 	 * @param target The targeted L2Object
-	 *
+	 * @return True if the target is autoattackable (depends on the actor type).
 	 */
 	private boolean autoAttackCondition(L2Character target)
 	{
@@ -785,7 +781,6 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	 * <li>Add the target to the actor _aggroList or update hate if already present </li>
 	 * <li>Set the actor Intention to AI_INTENTION_ATTACK (if actor is L2GuardInstance check if it isn't too far from its home location)</li><BR><BR>
 	 *
-	 * @param attacker The L2Character that attacks
 	 * @param aggro The value of hate to add to the actor against the target
 	 *
 	 */
@@ -847,9 +842,9 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				_globalAggro = -25;
 				return;
 			}
-			else
-				for (L2Character aggroed : me.getAggroList().keySet())
-					me.addDamageHate(aggroed, 0, aggro);
+			
+			for (L2Character aggroed : me.getAggroList().keySet())
+				me.addDamageHate(aggroed, 0, aggro);
 			
 			aggro = me.getHating(mostHated);
 			if (aggro <= 0)

@@ -14,7 +14,9 @@
  */
 package com.l2jserver.gameserver.model.zone.form;
 
+import com.l2jserver.gameserver.GeoEngine;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
+import com.l2jserver.util.Rnd;
 
 /**
  * A primitive circular zone
@@ -113,5 +115,18 @@ public class ZoneCylinder extends L2ZoneForm
 			int y = (int) (Math.sin(angle * i) * _rad);
 			dropDebugItem(57, 1, _x + x, _y + y, z);
 		}
+	}
+	
+	@Override
+	public int[] getRandomPoint()
+	{
+		double x, y, q, r;
+		
+		q = Rnd.get() * 2 * Math.PI;
+		r = Math.sqrt(Rnd.get());
+		x = _rad * r * Math.cos(q) + _x;
+		y = _rad * r * Math.sin(q) + _y;
+		
+		return new int[] { (int) x, (int) y, GeoEngine.getInstance().getHeight((int) x, (int) y, _z1) };
 	}
 }

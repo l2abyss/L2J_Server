@@ -79,6 +79,9 @@ public class L2StaticObjectInstance extends L2Character
 	}
 	
 	/**
+	 * @param objectId 
+	 * @param template 
+	 * @param staticId 
 	 */
 	public L2StaticObjectInstance(int objectId,L2CharTemplate template, int staticId)
 	{
@@ -200,12 +203,10 @@ public class L2StaticObjectInstance extends L2Character
 	}
 	
 	/**
-	 * Return the meshIndex of the object.<BR><BR>
-	 *
 	 * <B><U> Values </U> :</B><BR><BR>
 	 * <li> default textures : 0</li>
 	 * <li> alternate textures : 1 </li><BR><BR>
-	 *
+	 * @return the meshIndex of the object.
 	 */
 	public int getMeshIndex()
 	{

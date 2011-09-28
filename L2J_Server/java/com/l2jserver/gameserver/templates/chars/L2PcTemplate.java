@@ -74,8 +74,10 @@ public class L2PcTemplate extends L2CharTemplate
 	}
 	
 	/**
-	 * Adds starter equipment
-	 * @param i
+	 * Adds starter equipment.
+	 * @param itemId
+	 * @param amount
+	 * @param equipped
 	 */
 	public void addItem(int itemId, int amount, boolean equipped)
 	{
@@ -100,6 +102,7 @@ public class L2PcTemplate extends L2CharTemplate
 		/**
 		 * @param amount
 		 * @param itemId
+		 * @param equipped 
 		 */
 		public PcTemplateItem(int itemId, int amount, boolean equipped)
 		{

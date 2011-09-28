@@ -26,10 +26,10 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameServer;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.base.Experience;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -45,10 +45,6 @@ public class RegionBBSManager extends BaseBBSManager
 	{
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.communitybbs.Manager.BaseBBSManager#parsecmd(java.lang.String, com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
-	 */
 	@Override
 	public void parsecmd(String command, L2PcInstance activeChar)
 	{
@@ -131,9 +127,9 @@ public class RegionBBSManager extends BaseBBSManager
 			{
 				long nextLevelExp = 0;
 				long nextLevelExpNeeded = 0;
-				if (player.getLevel() < (Experience.MAX_LEVEL - 1))
+				if (player.getLevel() < (ExperienceTable.getInstance().getMaxLevel() - 1))
 				{
-					nextLevelExp = Experience.LEVEL[player.getLevel() + 1];
+					nextLevelExp = ExperienceTable.getInstance().getExpForLevel(player.getLevel() + 1);
 					nextLevelExpNeeded = nextLevelExp - player.getExp();
 				}
 				
@@ -170,6 +166,7 @@ public class RegionBBSManager extends BaseBBSManager
 	
 	/**
 	 * @param activeChar
+	 * @param page 
 	 */
 	private void showOldCommunity(L2PcInstance activeChar, int page)
 	{
@@ -230,7 +227,7 @@ public class RegionBBSManager extends BaseBBSManager
 					_logChat.log(record);
 				}
 				CreatureSay cs = new CreatureSay(activeChar.getObjectId(), Say2.TELL, activeChar.getName(), ar3);
-				if (!receiver.isSilenceMode() && !BlockList.isBlocked(receiver, activeChar) )
+				if (!receiver.isSilenceMode(activeChar.getObjectId()) && !BlockList.isBlocked(receiver, activeChar) )
 				{
 					receiver.sendPacket(cs);
 					activeChar.sendPacket(new CreatureSay(activeChar.getObjectId(), Say2.TELL, "->" + receiver.getName(), ar3));
@@ -272,12 +269,11 @@ public class RegionBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	public /*synchronized */ void changeCommunityBoard()
+	public/*synchronized */void changeCommunityBoard()
 	{
 		FastList<L2PcInstance> sortedPlayers = new FastList<L2PcInstance>();
-		sortedPlayers.addAll(L2World.getInstance().getAllPlayers().values());
-		
-		Collections.sort(sortedPlayers, new Comparator<L2PcInstance>() 
+		Collections.addAll(sortedPlayers, L2World.getInstance().getAllPlayersArray());
+		Collections.sort(sortedPlayers, new Comparator<L2PcInstance>()
 		{
 			@Override
 			public int compare(L2PcInstance p1, L2PcInstance p2)
@@ -298,7 +294,7 @@ public class RegionBBSManager extends BaseBBSManager
 		_communityPages.clear();
 		writeCommunityPages();
 	}
-	
+
 	private void addOnlinePlayer(L2PcInstance player)
 	{
 		boolean added = false;
@@ -544,8 +540,8 @@ public class RegionBBSManager extends BaseBBSManager
 	{
 		if (type.equalsIgnoreCase("gm"))
 			return _onlineCountGm;
-		else
-			return _onlineCount;
+		
+		return _onlineCount;
 	}
 	
 	private FastList<L2PcInstance> getOnlinePlayers(int page)
@@ -557,8 +553,8 @@ public class RegionBBSManager extends BaseBBSManager
 	{
 		if (_communityPages.get(page) != null)
 			return _communityPages.get(page).get(type);
-		else
-			return null;
+		
+		return null;
 	}
 	
 	@SuppressWarnings("synthetic-access")

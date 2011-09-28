@@ -67,7 +67,7 @@ public class ItemHandler
 	
 	/**
 	 * Returns the handler of the item
-	 * @param itemId : int designating the itemID
+	 * @param item
 	 * @return IItemHandler
 	 */
 	public IItemHandler getItemHandler(L2EtcItem item)

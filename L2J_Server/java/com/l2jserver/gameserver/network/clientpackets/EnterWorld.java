@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Logger;
 
-import com.l2jserver.Base64;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.GmListTable;
@@ -28,8 +27,8 @@ import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.communitybbs.Manager.RegionBBSManager;
 import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.datatables.GMSkillTable;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.CoupleManager;
@@ -39,6 +38,7 @@ import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MailManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.PetitionManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
@@ -50,13 +50,14 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Couple;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
+import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -65,10 +66,12 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
 import com.l2jserver.gameserver.network.serverpackets.Die;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
-import com.l2jserver.gameserver.network.serverpackets.ExBirthdayPopup;
 import com.l2jserver.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
+import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventPointInfoPacket;
+import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventTimeChange;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostArrived;
 import com.l2jserver.gameserver.network.serverpackets.ExNotifyPremiumItem;
+import com.l2jserver.gameserver.network.serverpackets.ExShowContactList;
 import com.l2jserver.gameserver.network.serverpackets.ExShowScreenMessage;
 import com.l2jserver.gameserver.network.serverpackets.ExStorageMaxCount;
 import com.l2jserver.gameserver.network.serverpackets.ExVoteSystemInfo;
@@ -84,7 +87,7 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-
+import com.l2jserver.util.Base64;
 
 /**
  * Enter World Packet Handler<p>
@@ -95,11 +98,11 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class EnterWorld extends L2GameClientPacket
 {
-	private static final String _C__03_ENTERWORLD = "[C] 03 EnterWorld";
+	private static final String _C__11_ENTERWORLD = "[C] 11 EnterWorld";
 	
 	private static Logger _log = Logger.getLogger(EnterWorld.class.getName());
 	
-	private int[][] tracert = new int[5][4];
+	private final int[][] tracert = new int[5][4];
 	
 	public TaskPriority getPriority()
 	{
@@ -181,7 +184,10 @@ public class EnterWorld extends L2GameClientPacket
 				GmListTable.getInstance().addGm(activeChar, true);
 			
 			if (Config.GM_GIVE_SPECIAL_SKILLS)
-				GMSkillTable.getInstance().addSkills(activeChar);
+				GMSkillTable.getInstance().addSkills(activeChar, false);
+			
+			if (Config.GM_GIVE_SPECIAL_AURA_SKILLS)
+				GMSkillTable.getInstance().addSkills(activeChar, true);
 		}
 		
 		// Set dead status if applies
@@ -199,7 +205,7 @@ public class EnterWorld extends L2GameClientPacket
 			
 			notifySponsorOrApprentice(activeChar);
 			
-			ClanHall clanHall = ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan());
+			AuctionableHall clanHall = ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan());
 			
 			if (clanHall != null)
 			{
@@ -240,6 +246,18 @@ public class EnterWorld extends L2GameClientPacket
 				{
 					activeChar.setSiegeState((byte)2);
 					activeChar.setSiegeSide(siege.getFort().getFortId());
+				}
+			}
+			
+			for(SiegableHall hall : CHSiegeManager.getInstance().getConquerableHalls().values())
+			{
+				if(!hall.isInSiege())
+					continue;
+				
+				if(hall.isRegistered(activeChar.getClan()))
+				{
+					activeChar.setSiegeState((byte)1);
+					activeChar.setSiegeSide(hall.getId());
 				}
 			}
 			
@@ -333,10 +351,8 @@ public class EnterWorld extends L2GameClientPacket
 		
 		activeChar.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 		
-		if (L2Event.active && L2Event.connectionLossData.containsKey(activeChar.getName()) && L2Event.isOnEvent(activeChar))
-			L2Event.restoreChar(activeChar);
-		else if (L2Event.connectionLossData.containsKey(activeChar.getName()))
-			L2Event.restoreAndTeleChar(activeChar);
+		if (L2Event.isParticipant(activeChar))
+			L2Event.restorePlayerEventStatus(activeChar);
 		
 		// Wedding Checks
 		if (Config.L2JMOD_ALLOW_WEDDING)
@@ -415,6 +431,9 @@ public class EnterWorld extends L2GameClientPacket
 		
 		sendPacket(new SkillCoolTime(activeChar));
 		sendPacket(new ExVoteSystemInfo(activeChar));
+		sendPacket(new ExNevitAdventPointInfoPacket(0));
+		sendPacket(new ExNevitAdventTimeChange(-1)); // only set pause state...
+		sendPacket(new ExShowContactList(activeChar));
 		
 		for (L2ItemInstance i : activeChar.getInventory().getItems())
 		{
@@ -457,7 +476,7 @@ public class EnterWorld extends L2GameClientPacket
 				&& activeChar.isInsideZone(L2Character.ZONE_SIEGE)
 				// but non-participant or attacker
 				&& (!activeChar.isInSiege() || activeChar.getSiegeState() < 2))
-			activeChar.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+			activeChar.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 		
 		if (Config.ALLOW_MAIL)
 		{
@@ -479,7 +498,7 @@ public class EnterWorld extends L2GameClientPacket
 		if (birthday == 0)
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_BIRTHDAY_GIFT_HAS_ARRIVED));
-			activeChar.sendPacket(new ExBirthdayPopup());
+			// activeChar.sendPacket(new ExBirthdayPopup()); Removed in H5?
 		}
 		else if (birthday != -1)
 		{
@@ -493,7 +512,7 @@ public class EnterWorld extends L2GameClientPacket
 	}
 	
 	/**
-	 * @param activeChar
+	 * @param cha 
 	 */
 	private void engage(L2PcInstance cha)
 	{
@@ -518,7 +537,8 @@ public class EnterWorld extends L2GameClientPacket
 	}
 	
 	/**
-	 * @param activeChar partnerid
+	 * @param cha 
+	 * @param partnerId 
 	 */
 	private void notifyPartner(L2PcInstance cha, int partnerId)
 	{
@@ -593,7 +613,6 @@ public class EnterWorld extends L2GameClientPacket
 	/**
 	 * @param string
 	 * @return
-	 * @throws UnsupportedEncodingException
 	 */
 	private String getText(String string)
 	{
@@ -616,13 +635,10 @@ public class EnterWorld extends L2GameClientPacket
 			qs.getQuest().notifyEvent("UC", null, player);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__03_ENTERWORLD;
+		return _C__11_ENTERWORLD;
 	}
 	
 	@Override

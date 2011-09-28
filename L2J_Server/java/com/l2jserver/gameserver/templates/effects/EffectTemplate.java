@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.handler.EffectHandler;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
@@ -46,7 +47,7 @@ public class EffectTemplate
 	public final int counter;
 	public final int abnormalTime; // in seconds
 	public final AbnormalEffect abnormalEffect;
-	public final AbnormalEffect specialEffect;
+	public final AbnormalEffect[] specialEffect;
 	public final AbnormalEffect eventEffect;
 	public FuncTemplate[] funcTemplates;
 	public final String abnormalType;
@@ -60,10 +61,12 @@ public class EffectTemplate
 	public final int triggeredLevel;
 	public final ChanceCondition chanceCondition;
 	
+	public final boolean passiveEffect;
+	
 	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda,
-			int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect pSpecialEffect,
+			int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect,
 			AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon,
-			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
+			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond, boolean passiveEff)
 	{
 		attachCond = pAttachCond;
 		applayCond = pApplayCond;
@@ -84,14 +87,15 @@ public class EffectTemplate
 		triggeredLevel = trigLvl;
 		chanceCondition = chanceCond;
 		
-		try
+		passiveEffect = passiveEff;
+		
+		_func = EffectHandler.getInstance().getHandler(func);
+		if(func == null)
 		{
-			_func = Class.forName("com.l2jserver.gameserver.skills.effects.Effect" + func);
+			_log.warning("EffectTemplate: Requested Unexistent effect: "+func);
+			throw new RuntimeException();
 		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException(e);
-		}
+
 		try
 		{
 			_constructor = _func.getConstructor(Env.class, EffectTemplate.class);
@@ -138,17 +142,11 @@ public class EffectTemplate
 	 */
 	public L2Effect getStolenEffect(Env env, L2Effect stolen)
 	{
-		Class<?> func;
+		Class<?> func = EffectHandler.getInstance().getHandler(funcName);
+		if(func == null)
+			throw new RuntimeException();
+		
 		Constructor<?> stolenCons;
-		try
-		{
-			func = Class.forName("com.l2jserver.gameserver.skills.effects.Effect"
-					+ stolen.getEffectTemplate().funcName);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException(e);
-		}
 		try
 		{
 			stolenCons = func.getConstructor(Env.class, L2Effect.class);

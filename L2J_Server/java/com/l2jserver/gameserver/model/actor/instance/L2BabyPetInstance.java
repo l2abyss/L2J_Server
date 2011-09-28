@@ -112,6 +112,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 						break;
 					case MANAHEAL:
 					case MANARECHARGE:
+					case MANA_BY_LEVEL:
 						_recharge = new SkillHolder(skill);
 						break;
 				}

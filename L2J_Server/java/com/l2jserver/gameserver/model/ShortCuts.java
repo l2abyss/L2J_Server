@@ -117,6 +117,7 @@ public class ShortCuts
 	
 	/**
 	 * @param slot
+	 * @param page 
 	 */
 	public synchronized void deleteShortCut(int slot, int page)
 	{

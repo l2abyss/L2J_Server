@@ -25,7 +25,7 @@ public class ExPutEnchantTargetItemResult extends L2GameServerPacket
 	private int _result;
 	
 	/**
-	 * 
+	 * @param result 
 	 */
 	public ExPutEnchantTargetItemResult(int result)
 	{

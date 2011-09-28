@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
@@ -73,18 +74,18 @@ public class L2SiegeFlagInstance extends L2Npc
 		_siege = SiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
 		if (_siege == null)
 			_siege = FortSiegeManager.getInstance().getSiege(_player.getX(), _player.getY(), _player.getZ());
+		if(_siege == null)
+			_siege = CHSiegeManager.getInstance().getSiege(player);
 		if (_clan == null || _siege == null)
 		{
 			throw new NullPointerException(getClass().getSimpleName()+": Initialization failed.");
 		}
-		else
-		{
-			L2SiegeClan sc = _siege.getAttackerClan(_clan);
-			if (sc == null)
-				throw new NullPointerException(getClass().getSimpleName()+": Cannot find siege clan.");
-			else
-				sc.addFlag(this);
-		}
+		
+		L2SiegeClan sc = _siege.getAttackerClan(_clan);
+		if (sc == null)
+			throw new NullPointerException(getClass().getSimpleName()+": Cannot find siege clan.");
+		
+		sc.addFlag(this);
 		_isAdvanced = advanced;
 		getStatus();
 		setIsInvul(false);
@@ -92,6 +93,9 @@ public class L2SiegeFlagInstance extends L2Npc
 	
 	/**
 	 * Use L2SiegeFlagInstance(L2PcInstance, int, L2NpcTemplate, boolean) instead
+	 * @param player 
+	 * @param objectId 
+	 * @param template 
 	 */
 	@Deprecated
 	public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template)
@@ -194,17 +198,9 @@ public class L2SiegeFlagInstance extends L2Npc
 		super.reduceCurrentHp(damage, attacker, skill);
 		if(canTalk())
 		{
-			if (getCastle() != null && getCastle().getSiege().getIsInProgress())
-			{
-				if (_clan != null)
-				{
-					// send warning to owners of headquarters that theirs base is under attack
-					_clan.broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.BASE_UNDER_ATTACK));
-					setCanTalk(false);
-					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 20000);
-				}
-			}
-			else if (getFort() != null && getFort().getSiege().getIsInProgress())
+			if ((getCastle() != null && getCastle().getSiege().getIsInProgress())
+				|| (getFort() != null && getFort().getSiege().getIsInProgress())
+				|| (getConquerableHall() != null && getConquerableHall().isInSiege()))
 			{
 				if (_clan != null)
 				{

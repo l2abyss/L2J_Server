@@ -76,13 +76,11 @@ public final class ConditionSiegeZone extends Condition
 		{
 			if ((_value & COND_NOT_ZONE) != 0)
 				return true;
-			else
-				return false;
+			return false;
 		}
 		if (castle != null)
 			return checkIfOk(target, castle, _value);
-		else
-			return checkIfOk(target, fort, _value);
+		return checkIfOk(target, fort, _value);
 	}
 	
 	/**

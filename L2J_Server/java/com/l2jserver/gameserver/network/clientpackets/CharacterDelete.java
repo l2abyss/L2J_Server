@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.network.serverpackets.CharDeleteFail;
 import com.l2jserver.gameserver.network.serverpackets.CharDeleteSuccess;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 
-
 /**
  * This class ...
  *
@@ -84,9 +83,6 @@ public final class CharacterDelete extends L2GameClientPacket
 		getClient().setCharSelection(cl.getCharInfo());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

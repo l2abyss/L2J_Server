@@ -56,7 +56,7 @@ public class ScriptPackage
 	}
 	
 	/**
-	 * @param scriptFiles The scriptFiles to set.
+	 * @param pack 
 	 */
 	private void addFiles(ZipFile pack)
 	{
@@ -95,25 +95,30 @@ public class ScriptPackage
 		if (getScriptFiles().isEmpty() && getOtherFiles().isEmpty())
 			return "Empty Package.";
 		
-		String out = "Package Name: "+getName()+"\n";
+		StringBuilder out = new StringBuilder();
+		out.append("Package Name: ");
+		out.append(getName());
+		out.append("\n");
 		
 		if (!getScriptFiles().isEmpty())
 		{
-			out += "Xml Script Files...\n";
+			out.append("Xml Script Files...\n");
 			for (ScriptDocument script : getScriptFiles())
 			{
-				out += script.getName()+"\n";
+				out.append(script.getName());
+				out.append("\n");
 			}
 		}
 		
 		if (!getOtherFiles().isEmpty())
 		{
-			out += "Other Files...\n";
+			out.append("Other Files...\n");
 			for (String fileName : getOtherFiles())
 			{
-				out += fileName+"\n";
+				out.append(fileName);
+				out.append("\n");
 			}
 		}
-		return out;
+		return out.toString();
 	}
 }

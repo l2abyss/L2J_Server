@@ -4,7 +4,6 @@ import gnu.trove.TIntHashSet;
 import gnu.trove.TIntProcedure;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
@@ -22,10 +21,10 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
@@ -78,7 +77,7 @@ public class Instance
 	}
 	
 	/**
-	 *  Returns the ID of this instance.
+	 * @return the ID of this instance.
 	 */
 	public int getId()
 	{
@@ -86,7 +85,7 @@ public class Instance
 	}
 	
 	/**
-	 *  Returns the name of this instance
+	 * @return the name of this instance
 	 */
 	public String getName()
 	{
@@ -99,7 +98,7 @@ public class Instance
 	}
 	
 	/**
-	 * Returns whether summon friend type skills are allowed for this instance
+	 * @return whether summon friend type skills are allowed for this instance
 	 */
 	public boolean isSummonAllowed()
 	{
@@ -108,6 +107,7 @@ public class Instance
 	
 	/**
 	 * Sets the status for the instance for summon friend type skills
+	 * @param b 
 	 */
 	public void setAllowSummon(boolean b)
 	{
@@ -206,7 +206,7 @@ public class Instance
 			if (getSpawnLoc()[0] != 0 && getSpawnLoc()[1] != 0 && getSpawnLoc()[2] != 0)
 				player.teleToLocation(getSpawnLoc()[0], getSpawnLoc()[1], getSpawnLoc()[2]);
 			else
-				player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+				player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 		}
 	}
 	
@@ -248,7 +248,7 @@ public class Instance
 		newdoor.setRange(temp.getXMin(), temp.getYMin(), temp.getZMin(), temp.getXMax(), temp.getYMax(), temp.getZMax());
 		try
 		{
-			newdoor.setMapRegion(MapRegionTable.getInstance().getMapRegion(temp.getX(), temp.getY()));
+			newdoor.setMapRegion(MapRegionManager.getInstance().getMapRegionLocId(temp));
 		}
 		catch (Exception e)
 		{
@@ -325,6 +325,7 @@ public class Instance
 	
 	/**
 	 * Sets the spawn location for this instance to be used when leaving the instance
+	 * @param loc 
 	 */
 	public void setSpawnLoc(int[] loc)
 	{
@@ -380,7 +381,7 @@ public class Instance
 		_doors = null;
 	}
 	
-	public void loadInstanceTemplate(String filename) throws FileNotFoundException
+	public void loadInstanceTemplate(String filename)
 	{
 		Document doc = null;
 		File xml = new File(Config.DATAPACK_ROOT, "data/instances/" + filename);

@@ -43,7 +43,6 @@ public class NpcStat extends CharStat
 			return 1;
 		if (getActiveChar().isRunning())
 			return getRunSpeed() * 1f / getActiveChar().getTemplate().baseRunSpd;
-		else
-			return getWalkSpeed() * 1f / getActiveChar().getTemplate().baseWalkSpd;
+		return getWalkSpeed() * 1f / getActiveChar().getTemplate().baseWalkSpd;
 	}
 }

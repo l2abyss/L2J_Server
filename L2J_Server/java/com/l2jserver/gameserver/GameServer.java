@@ -15,6 +15,7 @@
 
 package com.l2jserver.gameserver;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,12 +40,14 @@ import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.datatables.ArmorSetsTable;
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.datatables.CharNameTable;
+import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
@@ -54,7 +57,6 @@ import com.l2jserver.gameserver.datatables.HerbDropTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.LevelUpData;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
 import com.l2jserver.gameserver.datatables.MultiSell;
 import com.l2jserver.gameserver.datatables.NobleSkillTable;
@@ -74,8 +76,10 @@ import com.l2jserver.gameserver.datatables.UITable;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.ChatHandler;
+import com.l2jserver.gameserver.handler.EffectHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
+import com.l2jserver.gameserver.handler.TargetHandler;
 import com.l2jserver.gameserver.handler.UserCommandHandler;
 import com.l2jserver.gameserver.handler.VoicedCommandHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -83,6 +87,7 @@ import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.AuctionManager;
 import com.l2jserver.gameserver.instancemanager.BoatManager;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
@@ -101,6 +106,7 @@ import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.ItemAuctionManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.MailManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
 import com.l2jserver.gameserver.instancemanager.PetitionManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
@@ -147,7 +153,7 @@ public class GameServer
 	private final DeadLockDetector _deadDetectThread;
 	private final IdFactory _idFactory;
 	public static GameServer gameServer;
-	private LoginServerThread _loginThread;
+	private final LoginServerThread _loginThread;
 	private static Status _statusServer;
 	public static final Calendar dateTimeServerStarted = Calendar.getInstance();
 	
@@ -209,11 +215,13 @@ public class GameServer
 		GameTimeController.getInstance();
 		InstanceManager.getInstance();
 		L2World.getInstance();
-		MapRegionTable.getInstance();
+		MapRegionManager.getInstance();
 		Announcements.getInstance();
 		GlobalVariablesManager.getInstance();
 		
 		printSection("Skills");
+		TargetHandler.getInstance().executeScript();
+		EffectHandler.getInstance().executeScript();
 		EnchantGroupsTable.getInstance();
 		SkillTable.getInstance();
 		SkillTreesData.getInstance();
@@ -234,6 +242,7 @@ public class GameServer
 		FishTable.getInstance();
 		
 		printSection("Characters");
+		ExperienceTable.getInstance();
 		CharTemplateTable.getInstance();
 		CharNameTable.getInstance();
 		LevelUpData.getInstance();
@@ -242,9 +251,11 @@ public class GameServer
 		GmListTable.getInstance();
 		RaidBossPointsManager.getInstance();
 		PetDataTable.getInstance();
+		CharSummonTable.getInstance().init();
 		
 		printSection("Clans");
 		ClanTable.getInstance();
+		CHSiegeManager.getInstance();
 		ClanHallManager.getInstance();
 		AuctionManager.getInstance();
 		
@@ -309,7 +320,7 @@ public class GameServer
 		try
 		{
 			_log.info("Loading Server Scripts");
-			File scripts = new File(Config.DATAPACK_ROOT + "/data/scripts.cfg");
+			File scripts = new File(Config.DATAPACK_ROOT, "data/scripts.cfg");
 			if(!Config.ALT_DEV_NO_HANDLERS || !Config.ALT_DEV_NO_QUESTS)
 				L2ScriptEngineManager.getInstance().executeScriptList(scripts);
 		}
@@ -415,6 +426,7 @@ public class GameServer
 		long freeMem = (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory() + Runtime.getRuntime().freeMemory()) / 1048576;
 		long totalMem = Runtime.getRuntime().maxMemory() / 1048576;
 		_log.info("GameServer Started, free memory " + freeMem + " Mb of " + totalMem + " Mb");
+		Toolkit.getDefaultToolkit().beep();
 		
 		_loginThread = LoginServerThread.getInstance();
 		_loginThread.start();

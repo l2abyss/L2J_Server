@@ -94,7 +94,6 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/foreman-expel.htm");
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
-					return;
 				}
 				else
 				{
@@ -102,8 +101,8 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/foreman-noprivs.htm");
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
-					return;
 				}
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("banish_foreigner"))
 			{
@@ -114,7 +113,6 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/foreman-expeled.htm");
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
-					return;
 				}
 				else
 				{
@@ -122,8 +120,8 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/foreman-noprivs.htm");
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
-					return;
 				}
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("receive_report"))
 			{
@@ -147,7 +145,6 @@ public class L2FortManagerInstance extends L2MerchantInstance
 						html.replace("%min%", String.valueOf(minutes));
 					}
 					player.sendPacket(html);
-					return;
 				}
 				else
 				{
@@ -175,8 +172,8 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					html.replace("%hr2%", String.valueOf(hour));
 					html.replace("%min2%", String.valueOf(minutes));
 					player.sendPacket(html);
-					return;
 				}
+				return;
 			}
 			else if (actualCommand.equalsIgnoreCase("operate_door")) // door
 				// control
@@ -194,7 +191,6 @@ public class L2FortManagerInstance extends L2MerchantInstance
 							html.setFile(player.getHtmlPrefix(), "data/html/fortress/foreman-opened.htm");
 							html.replace("%objectId%", String.valueOf(getObjectId()));
 							player.sendPacket(html);
-							return;
 						}
 						else
 						{
@@ -202,7 +198,6 @@ public class L2FortManagerInstance extends L2MerchantInstance
 							html.setFile(player.getHtmlPrefix(), "data/html/fortress/foreman-closed.htm");
 							html.replace("%objectId%", String.valueOf(getObjectId()));
 							player.sendPacket(html);
-							return;
 						}
 					}
 					else
@@ -212,7 +207,6 @@ public class L2FortManagerInstance extends L2MerchantInstance
 						html.replace("%objectId%", String.valueOf(getObjectId()));
 						html.replace("%npcname%", getName());
 						player.sendPacket(html);
-						return;
 					}
 				}
 				else
@@ -221,8 +215,8 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/foreman-noprivs.htm");
 					html.replace("%objectId%", String.valueOf(getObjectId()));
 					player.sendPacket(html);
-					return;
 				}
+				return;
 			}
 			else if(actualCommand.equalsIgnoreCase("manage_vault"))
 			{

@@ -24,8 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public final class AllyLeave extends L2GameClientPacket
 {
-	private static final String _C__84_ALLYLEAVE = "[C] 84 AllyLeave";
-	
+	private static final String _C__8E_ALLYLEAVE = "[C] 8E AllyLeave";
 	//private static Logger _log = Logger.getLogger(AllyLeave.class.getName());
 	
 	@Override
@@ -78,6 +77,6 @@ public final class AllyLeave extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__84_ALLYLEAVE;
+		return _C__8E_ALLYLEAVE;
 	}
 }

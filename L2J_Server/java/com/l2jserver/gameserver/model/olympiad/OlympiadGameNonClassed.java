@@ -23,7 +23,7 @@ import com.l2jserver.Config;
  * @author DS
  *
  */
-class OlympiadGameNonClassed extends OlympiadGameNormal
+public class OlympiadGameNonClassed extends OlympiadGameNormal
 {
 	private OlympiadGameNonClassed(int id, Participant[] opponents)
 	{
@@ -39,7 +39,7 @@ class OlympiadGameNonClassed extends OlympiadGameNormal
 	@Override
 	protected final int getDivider()
 	{
-		return 5;
+		return Config.ALT_OLY_DIVIDER_NON_CLASSED;
 	}
 
 	@Override
@@ -48,6 +48,12 @@ class OlympiadGameNonClassed extends OlympiadGameNormal
 		return Config.ALT_OLY_NONCLASSED_REWARD;
 	}
 
+	@Override
+	protected final String getWeeklyMatchType()
+	{
+		return COMP_DONE_WEEK_NON_CLASSED;
+	}
+	
 	protected static final OlympiadGameNonClassed createGame(int id, List<Integer> list)
 	{
 		final Participant[] opponents = OlympiadGameNormal.createListOfParticipants(list);

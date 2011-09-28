@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public final class RequestBlock extends L2GameClientPacket
 {
-	private static final String _C__A0_REQUESTBLOCK = "[C] A0 RequestBlock";
+	private static final String _C__A9_REQUESTBLOCK = "[C] A9 RequestBlock";
 	private static Logger _log = Logger.getLogger(L2PcInstance.class.getName());
 	
 	private final static int BLOCK = 0;
@@ -96,13 +96,13 @@ public final class RequestBlock extends L2GameClientPacket
 				BlockList.setBlockAll(activeChar, false);
 				break;
 			default:
-				_log.info("Unknown 0x0a block type: " + _type);
+				_log.info("Unknown 0xA9 block type: " + _type);
 		}
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _C__A0_REQUESTBLOCK;
+		return _C__A9_REQUESTBLOCK;
 	}
 }

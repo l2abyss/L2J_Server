@@ -38,7 +38,7 @@ public class LoginFail extends L2GameServerPacket
 	private int _reason;
 	
 	/**
-	 * @param _characters
+	 * @param reason
 	 */
 	public LoginFail(int reason)
 	{
@@ -52,8 +52,8 @@ public class LoginFail extends L2GameServerPacket
 		writeD(_reason);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

@@ -28,6 +28,7 @@ public class ShowCalculator extends L2GameServerPacket
 	private int _calculatorId;
 	
 	/**
+	 * @param calculatorId 
 	 */
 	public ShowCalculator(int calculatorId)
 	{

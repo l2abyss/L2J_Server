@@ -40,6 +40,8 @@ public class L2TrapInstance extends L2Trap
 	 * @param objectId
 	 * @param template
 	 * @param owner
+	 * @param lifeTime 
+	 * @param skill 
 	 */
 	public L2TrapInstance(int objectId, L2NpcTemplate template,
 			L2PcInstance owner, int lifeTime, L2Skill skill)

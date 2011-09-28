@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
  */
 public final class RequestPrivateStoreSell extends L2GameClientPacket
 {
-	private static final String _C__96_REQUESTPRIVATESTORESELL = "[C] 96 RequestPrivateStoreSell";
+	private static final String _C__9F_REQUESTPRIVATESTORESELL = "[C] 9F RequestPrivateStoreSell";
 	private static Logger _log = Logger.getLogger(RequestPrivateStoreSell.class.getName());
 	
 	private static final int BATCH_LENGTH = 28; // length of the one item
@@ -84,7 +84,7 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("privatestoresell"))
 		{
-			player.sendMessage("You selling items too fast");
+			player.sendMessage("You are selling items too fast.");
 			return;
 		}
 		
@@ -111,7 +111,7 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 		
 		if (!player.getAccessLevel().allowTransaction())
 		{
-			player.sendMessage("Transactions are disable for your Access Level");
+			player.sendMessage("Transactions are disabled for your Access Level.");
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -133,7 +133,7 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__96_REQUESTPRIVATESTORESELL;
+		return _C__9F_REQUESTPRIVATESTORESELL;
 	}
 	
 	@Override

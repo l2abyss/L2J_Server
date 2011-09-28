@@ -20,15 +20,13 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * @author -Wooden-
- *
  * D0 0F 00 5A 00 77 00 65 00 72 00 67 00 00 00
- *
+ * @author -Wooden-
  */
 public final class RequestExOustFromMPCC extends L2GameClientPacket
 {
 	//private static Logger _log = Logger.getLogger(RequestExOustFromMPCC.class.getName());
-	private static final String _C__D0_0F_REQUESTEXOUSTFROMMPCC = "[C] D0:0F RequestExOustFromMPCC";
+	private static final String _C__D0_08_REQUESTEXOUSTFROMMPCC = "[C] D0:08 RequestExOustFromMPCC";
 	private String _name;
 	
 	@Override
@@ -37,9 +35,6 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 		_name = readS();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -48,7 +43,8 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 		
 		if (target != null && target.isInParty() && activeChar.isInParty() && activeChar.getParty().isInCommandChannel()
 				&& target.getParty().isInCommandChannel()
-				&& activeChar.getParty().getCommandChannel().getChannelLeader().equals(activeChar))
+				&& activeChar.getParty().getCommandChannel().getChannelLeader().equals(activeChar)
+				&& activeChar.getParty().getCommandChannel().equals(target.getParty().getCommandChannel()))
 		{
 			if (activeChar.equals(target))
 				return;
@@ -72,13 +68,9 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_0F_REQUESTEXOUSTFROMMPCC;
+		return _C__D0_08_REQUESTEXOUSTFROMMPCC;
 	}
-	
 }

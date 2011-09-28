@@ -28,7 +28,7 @@ public final class AutoAttackStart extends L2GameServerPacket
 	private int _targetObjId;
 	
 	/**
-	 * @param _characters
+	 * @param targetId
 	 */
 	public AutoAttackStart(int targetId)
 	{

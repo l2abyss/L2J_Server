@@ -23,8 +23,8 @@ public class GetOffVehicle extends L2GameServerPacket
 	private int _charObjId, _boatObjId, _x, _y, _z;
 	
 	/**
-	 * @param activeChar
-	 * @param boat
+	 * @param charObjId
+	 * @param boatObjId
 	 * @param x
 	 * @param y
 	 * @param z

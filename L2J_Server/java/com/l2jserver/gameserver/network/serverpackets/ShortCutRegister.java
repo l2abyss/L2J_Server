@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.L2ShortCut;
+
 /**
  *
  *
@@ -42,11 +43,7 @@ public final class ShortCutRegister extends L2GameServerPacket
 	
 	/**
 	 * Register new skill shortcut
-	 * @param slot
-	 * @param type
-	 * @param typeId
-	 * @param level
-	 * @param dat2
+	 * @param shortcut
 	 */
 	public ShortCutRegister(L2ShortCut shortcut)
 	{
@@ -99,8 +96,8 @@ public final class ShortCutRegister extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

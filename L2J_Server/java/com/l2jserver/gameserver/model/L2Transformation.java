@@ -182,7 +182,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	}
 	
 	/**
-	 * Returns true if transformation can do melee attack
+	 * @return true if transformation can do melee attack
 	 */
 	public boolean canDoMeleeAttack()
 	{
@@ -190,7 +190,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	}
 	
 	/**
-	 * Returns true if transformation can start follow target when trying to cast an skill out of range
+	 * @return true if transformation can start follow target when trying to cast an skill out of range
 	 */
 	public boolean canStartFollowToCast()
 	{

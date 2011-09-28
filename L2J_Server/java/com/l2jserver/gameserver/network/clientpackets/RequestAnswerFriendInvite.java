@@ -25,19 +25,9 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.FriendPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-/**
- *  sample
- *  5F
- *  01 00 00 00
- *
- *  format  cdd
- *
- *
- * @version $Revision: 1.7.4.2 $ $Date: 2005/03/27 15:29:30 $
- */
 public final class RequestAnswerFriendInvite extends L2GameClientPacket
 {
-	private static final String _C__5F_REQUESTANSWERFRIENDINVITE = "[C] 5F RequestAnswerFriendInvite";
+	private static final String _C__78_REQUESTANSWERFRIENDINVITE = "[C] 78 RequestAnswerFriendInvite";
 	private static Logger _log = Logger.getLogger(RequestAnswerFriendInvite.class.getName());
 	
 	private int _response;
@@ -109,12 +99,9 @@ public final class RequestAnswerFriendInvite extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__5F_REQUESTANSWERFRIENDINVITE;
+		return _C__78_REQUESTANSWERFRIENDINVITE;
 	}
 }

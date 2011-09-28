@@ -166,15 +166,18 @@ public class TerritoryWarManager implements Siegable
 	}
 	
 	/**
-	 * Return true if the clan is registered<BR><BR>
+	 * @param castleId 
 	 * @param clan The L2Clan of the player
+	 * @return true if the clan is registered
 	 */
 	public final boolean checkIsRegistered(int castleId, L2Clan clan)
 	{
 		if (clan == null)
 			return false;
-		else if (clan.getHasCastle() > 0)
-			return (castleId == -1 ? true:(clan.getHasCastle() == castleId));
+		
+		if (clan.getHasCastle() > 0)
+			return (castleId == -1 ? true : (clan.getHasCastle() == castleId));
+		
 		if (castleId == -1)
 		{
 			for(int cId:_registeredClans.keySet())
@@ -182,13 +185,13 @@ public class TerritoryWarManager implements Siegable
 					return true;
 			return false;
 		}
-		else
-			return _registeredClans.get(castleId).contains(clan);
+		return _registeredClans.get(castleId).contains(clan);
 	}
 	
 	/**
-	 * Return true if the player is registered<BR><BR>
-	 * @param integer The objectId of the player
+	 * @param castleId
+	 * @param objId
+	 * @return true if the player is registered
 	 */
 	public final boolean checkIsRegistered(int castleId, int objId)
 	{
@@ -199,8 +202,7 @@ public class TerritoryWarManager implements Siegable
 					return true;
 			return false;
 		}
-		else
-			return _registeredMercenaries.get(castleId).contains(objId);
+		return _registeredMercenaries.get(castleId).contains(objId);
 	}
 	
 	public Territory getTerritory(int castleId)
@@ -644,14 +646,13 @@ public class TerritoryWarManager implements Siegable
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Territory War Manager: " + e.getMessage(), e);
-				return null;
 			}
 		}
 		else
 		{
 			_log.warning("Territory War Manager: Data missing in NPC table for ID: " + npcId + ".");
-			return null;
 		}
+		return null;
 	}
 	
 	private void changeRegistration(int castleId, int objId, boolean delete)
@@ -687,10 +688,10 @@ public class TerritoryWarManager implements Siegable
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE territories SET ownedWardIds=? WHERE territoryId=?");
-			String wardList = "";
+			StringBuilder wardList = new StringBuilder();
 			for (int i : ter.getOwnedWardIds())
-				wardList += (i + ";");
-			statement.setString(1, wardList);
+				wardList.append(i + ";");
+			statement.setString(1, wardList.toString());
 			statement.setInt(2, ter.getTerritoryId());
 			statement.execute();
 			statement.close();
@@ -1118,7 +1119,7 @@ public class TerritoryWarManager implements Siegable
 		{
 			if (isTWInProgress())
 			{
-				for(L2PcInstance player : L2World.getInstance().getAllPlayers().values())
+				for(L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 					if (player != null && player.getSiegeSide() > 0)
 						giveTWPoint(player, 1000, 6);
 			}
@@ -1677,4 +1678,7 @@ public class TerritoryWarManager implements Siegable
 	{
 		return Config.CASTLE_ZONE_FAME_AQUIRE_POINTS;
 	}
+	
+	@Override
+	public void updateSiege() { }
 }

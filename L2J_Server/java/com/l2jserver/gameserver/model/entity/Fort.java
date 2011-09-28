@@ -15,12 +15,12 @@
 package com.l2jserver.gameserver.model.entity;
 
 import gnu.trove.TIntIntHashMap;
+import gnu.trove.TObjectProcedure;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -283,7 +283,11 @@ public class Fort
 		}
 	}
 	
-	/** Return function with id */
+	/**
+	 * Return function with id 
+	 * @param type 
+	 * @return
+	 */
 	public FortFunction getFunction(int type)
 	{
 		if (_function.get(type) != null)
@@ -338,7 +342,10 @@ public class Fort
 	}
 	
 	/**
-	 * Return true if object is inside the zone
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @return true if object is inside the zone
 	 */
 	public boolean checkIfInZone(int x, int y, int z)
 	{
@@ -379,7 +386,7 @@ public class Fort
 	
 	/**
 	 * Get the objects distance to this fort
-	 * @param object
+	 * @param obj
 	 * @return
 	 */
 	public double getDistance(L2Object obj)
@@ -421,7 +428,8 @@ public class Fort
 	/**
 	 * This method will set owner for Fort
 	 * @param clan
-	 * @param updateClanPoints
+	 * @param updateClansReputation
+	 * @return 
 	 */
 	public boolean setOwner(L2Clan clan, boolean updateClansReputation)
 	{
@@ -455,34 +463,32 @@ public class Fort
 			getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.NPCS_RECAPTURED_FORTRESS));
 			return false;
 		}
-		else
+		
+		// Give points to new owner
+		if (updateClansReputation)
+			updateClansReputation(clan, false);
+		
+		spawnSpecialEnvoys();
+		ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1 * 60 * 60 * 1000); // Prepare 1hr task for special envoys despawn
+		// if clan have already fortress, remove it
+		if (clan.getHasFort() > 0)
+			FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
+		
+		setBloodOathReward(0);
+		setSupplyLvL(0);
+		setOwnerClan(clan);
+		updateOwnerInDB(); // Update in database
+		saveFortVariables();
+		
+		if (getSiege().getIsInProgress()) // If siege in progress
+			getSiege().endSiege();
+		
+		for (L2PcInstance member : clan.getOnlineMembers(0))
 		{
-			// Give points to new owner
-			if (updateClansReputation)
-				updateClansReputation(clan, false);
-			
-			spawnSpecialEnvoys();
-			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1 * 60 * 60 * 1000); // Prepare 1hr task for special envoys despawn
-			// if clan have already fortress, remove it
-			if (clan.getHasFort() > 0)
-				FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
-			
-			setBloodOathReward(0);
-			setSupplyLvL(0);
-			setOwnerClan(clan);
-			updateOwnerInDB(); // Update in database
-			saveFortVariables();
-			
-			if (getSiege().getIsInProgress()) // If siege in progress
-				getSiege().endSiege();
-			
-			for (L2PcInstance member : clan.getOnlineMembers(0))
-			{
-				giveResidentialSkills(member);
-				member.sendSkillList();
-			}
-			return true;
+			giveResidentialSkills(member);
+			member.sendSkillList();
 		}
+		return true;
 	}
 	
 	public void removeOwner(boolean updateDB)
@@ -563,6 +569,7 @@ public class Fort
 	
 	/**
 	 * Show or hide flag inside flagpole<BR><BR>
+	 * @param val 
 	 */
 	public void setVisibleFlag(boolean val)
 	{
@@ -688,6 +695,7 @@ public class Fort
 			{
 				_function.put(rs.getInt("type"), new FortFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
 			}
+			rs.close();
 			statement.close();
 		}
 		catch (Exception e)
@@ -700,7 +708,10 @@ public class Fort
 		}
 	}
 	
-	/** Remove function In List and in DB */
+	/**
+	 * Remove function In List and in DB 
+	 * @param functionType
+	 */
 	public void removeFunction(int functionType)
 	{
 		_function.remove(functionType);
@@ -964,11 +975,7 @@ public class Fort
 				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2);
 				sm.addString(clan.getName());
 				sm.addFortId(getFortId());
-				Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-				for (L2PcInstance player : pls)
-				{
-					player.sendPacket(sm);
-				}
+				L2World.getInstance().forEachPlayer(new ForEachPlayerSendMessage(sm));
 				clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 				clan.broadcastToOnlineMembers(new PlaySound(1, "Siege_Victory", 0, 0, 0, 0, 0));
 				if (_FortUpdater[0] != null)
@@ -1131,12 +1138,13 @@ public class Fort
 	}
 	
 	/**
-	 * @param State.<BR>
-	 * 0 - not decided yet<BR>
-	 * 1 - independent<BR>
-	 * 2 - contracted with castle<BR><BR>
-	 * @param CastleId.<BR>
-	 * set Castle Id for contracted fort
+	 * @param state
+	 * <ul>
+	 * 	<li>0 - not decided yet</li>
+	 * 	<li>1 - independent</li>
+	 * 	<li>2 - contracted with castle</li>
+	 * </ul>
+	 * @param castleId set Castle Id for contracted fort
 	 */
 	public final void setFortState(int state, int castleId)
 	{
@@ -1477,6 +1485,21 @@ public class Fort
 		{
 			for (L2Skill sk : _residentialSkills)
 				player.removeSkill(sk, false, true);
+		}
+	}
+	
+	private final class ForEachPlayerSendMessage implements TObjectProcedure<L2PcInstance>
+	{
+		SystemMessage _sm;
+		private ForEachPlayerSendMessage(SystemMessage sm)
+		{
+			_sm = sm;
+		}
+		@Override
+		public final boolean execute(final L2PcInstance character)
+		{
+			character.sendPacket(_sm);
+			return true;
 		}
 	}
 }

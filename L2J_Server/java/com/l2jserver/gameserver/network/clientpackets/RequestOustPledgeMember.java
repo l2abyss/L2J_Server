@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListDelete;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
 /**
  * This class ...
  *
@@ -32,7 +31,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestOustPledgeMember extends L2GameClientPacket
 {
-	private static final String _C__27_REQUESTOUSTPLEDGEMEMBER = "[C] 27 RequestOustPledgeMember";
+	private static final String _C__29_REQUESTOUSTPLEDGEMEMBER = "[C] 29 RequestOustPledgeMember";
 	static Logger _log = Logger.getLogger(RequestOustPledgeMember.class.getName());
 	
 	private String _target;
@@ -103,12 +102,9 @@ public final class RequestOustPledgeMember extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__27_REQUESTOUSTPLEDGEMEMBER;
+		return _C__29_REQUESTOUSTPLEDGEMEMBER;
 	}
 }

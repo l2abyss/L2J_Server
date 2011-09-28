@@ -50,6 +50,7 @@ public final class Calculator
 	
 	/**
 	 * Constructor of Calculator (Init value : Calculator c).<BR><BR>
+	 * @param c 
 	 */
 	public Calculator(Calculator c)
 	{
@@ -59,6 +60,9 @@ public final class Calculator
 	
 	/**
 	 * Check if 2 calculators are equals.<BR><BR>
+	 * @param c1 
+	 * @param c2 
+	 * @return 
 	 */
 	public static boolean equalsCals(Calculator c1, Calculator c2)
 	{
@@ -92,6 +96,7 @@ public final class Calculator
 	
 	/**
 	 * Return the number of Funcs in the Calculator.<BR><BR>
+	 * @return 
 	 */
 	public int size()
 	{
@@ -101,6 +106,7 @@ public final class Calculator
 	
 	/**
 	 * Add a Func to the Calculator.<BR><BR>
+	 * @param f 
 	 */
 	public synchronized void addFunc(Func f)
 	{
@@ -124,6 +130,7 @@ public final class Calculator
 	
 	/**
 	 * Remove a Func from the Calculator.<BR><BR>
+	 * @param f 
 	 */
 	public synchronized void removeFunc(Func f)
 	{
@@ -150,6 +157,8 @@ public final class Calculator
 	
 	/**
 	 * Remove each Func with the specified owner of the Calculator.<BR><BR>
+	 * @param owner 
+	 * @return 
 	 */
 	public synchronized FastList<Stats> removeOwner(Object owner)
 	{
@@ -170,6 +179,7 @@ public final class Calculator
 	
 	/**
 	 * Run each Func of the Calculator.<BR><BR>
+	 * @param env 
 	 */
 	public void calc(Env env)
 	{

@@ -51,7 +51,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 /**
  * This class manages AI of L2Character.<BR><BR>
@@ -1347,12 +1347,12 @@ public class L2CharacterAI extends AbstractAI
 		}
 	}
 	
-	
 	public boolean canAura(L2Skill sk)
 	{
 		if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
 				|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-				|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA)
+				|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
+				|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
 		{
 			for(L2Object target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 			{
@@ -1362,13 +1362,15 @@ public class L2CharacterAI extends AbstractAI
 		}
 		return false;
 	}
+	
 	public boolean canAOE(L2Skill sk)
 	{
 		if(sk.getSkillType() != L2SkillType.NEGATE || sk.getSkillType() != L2SkillType.CANCEL)
 		{
 			if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
 					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA)
+					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
+					|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
 			{
 				boolean cancast = true;
 				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
@@ -1425,7 +1427,8 @@ public class L2CharacterAI extends AbstractAI
 		{
 			if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
 					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA)
+					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
+					|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
 			{
 				boolean cancast = false;
 				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))

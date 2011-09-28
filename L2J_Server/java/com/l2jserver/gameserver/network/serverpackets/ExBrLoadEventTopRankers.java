@@ -42,8 +42,8 @@ public class ExBrLoadEventTopRankers extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0xbc);
+		writeC(0xFE);
+		writeH(0xBD);
 		writeD(_eventId);
 		writeD(_day);
 		writeD(_count);
@@ -58,6 +58,6 @@ public class ExBrLoadEventTopRankers extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return "[S] FE:BC ExBrLoadEventTopRankers".intern();
+		return "[S] FE:BD ExBrLoadEventTopRankers".intern();
 	}
 }

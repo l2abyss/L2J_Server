@@ -94,10 +94,10 @@ public class L2SkillChargeDmg extends L2Skill
 			//boolean dual  = caster.isUsingDualWeapon();
 			byte shld = Formulas.calcShldUse(caster, target, this);
 			boolean crit = false;
-			if (this.getBaseCritRate() > 0)
-				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), target);
+			if (getBaseCritRate() > 0 && !isStaticDamage())
+				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), true, target);
 			// damage calculation, crit is static 2x
-			double damage = Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
+			double damage = isStaticDamage() ? getPower() : Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
 			if (crit)
 				damage *= 2;
 			
@@ -136,7 +136,7 @@ public class L2SkillChargeDmg extends L2Skill
 					}
 				}
 				
-				double finalDamage = damage*modifier;
+				double finalDamage = isStaticDamage() ? damage : damage*modifier;
 				
 				if (Config.LOG_GAME_DAMAGE
 						&& caster instanceof L2Playable
@@ -166,7 +166,7 @@ public class L2SkillChargeDmg extends L2Skill
 						caster.sendPacket(sm);
 					}
 					// Formula from Diego post, 700 from rpg tests
-					double vegdamage = (700 * target.getPAtk(caster) / caster.getPDef(target));
+					double vegdamage = (700 * target.getPAtk(caster) / (double)caster.getPDef(target));
 					caster.reduceCurrentHp(vegdamage, target, this);
 				}
 				

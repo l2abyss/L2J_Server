@@ -56,7 +56,6 @@ public class PcKnownList extends PlayableKnownList
 	 * <li> Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance </li><BR><BR>
 	 *
 	 * @param object The L2Object to add to _knownObjects and _knownPlayer
-	 * @param dropper The L2Character who dropped the L2Object
 	 */
 	@Override
 	public boolean addKnownObject(L2Object object)
@@ -140,8 +139,7 @@ public class PcKnownList extends PlayableKnownList
 			return 3500;
 		if (knownlistSize <= 70)
 			return 2910;
-		else
-			return 2310;
+		return 2310;
 	}
 	
 	@Override
@@ -157,7 +155,6 @@ public class PcKnownList extends PlayableKnownList
 			return 2900;
 		if (knownlistSize <= 70)
 			return 2300;
-		else
-			return 1700; // Siege, TOI, city
+		return 1700; // Siege, TOI, city
 	}
 }

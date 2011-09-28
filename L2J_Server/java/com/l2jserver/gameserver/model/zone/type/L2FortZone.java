@@ -14,18 +14,18 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.datatables.MapRegionTable;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
 /**
  * A castle zone
  *
  * @author  durgus
  */
-public class L2FortZone extends L2SpawnZone
+public class L2FortZone extends L2ZoneRespawn
 {
 	private int _fortId;
 	
@@ -38,9 +38,7 @@ public class L2FortZone extends L2SpawnZone
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("fortId"))
-		{
 			_fortId = Integer.parseInt(value);
-		}
 		else
 			super.setParameter(name, value);
 	}
@@ -78,14 +76,14 @@ public class L2FortZone extends L2SpawnZone
 	 */
 	public void banishForeigners(L2Clan owningClan)
 	{
-		for (L2Character temp : _characterList.values())
+		for (L2Character temp : getCharactersInsideArray())
 		{
 			if (!(temp instanceof L2PcInstance))
 				continue;
 			if (((L2PcInstance) temp).getClan() == owningClan)
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionTable.TeleportWhereType.Town); // TODO: shouldnt be town, its outside of fort
+			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.Fortress_banish);
 		}
 	}
 	

@@ -14,17 +14,17 @@
  */
 package com.l2jserver.gameserver.cache;
 
+import gnu.trove.TIntObjectHashMap;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -35,7 +35,7 @@ public class HtmCache
 {
 	private static Logger _log = Logger.getLogger(HtmCache.class.getName());
 	
-	private final Map<Integer, String> _cache;
+	private final TIntObjectHashMap<String> _cache;
 	
 	private int _loadedFiles;
 	private long _bytesBuffLen;
@@ -48,9 +48,9 @@ public class HtmCache
 	private HtmCache()
 	{
 		if (Config.LAZY_CACHE)
-			_cache = new FastMap<Integer, String>().shared();
+			_cache = new L2TIntObjectHashMap<String>();
 		else
-			_cache = new FastMap<Integer, String>();
+			_cache = new TIntObjectHashMap<String>();
 		reload();
 	}
 	
@@ -229,8 +229,8 @@ public class HtmCache
 	
 	/**
 	 * Check if an HTM exists and can be loaded
-	 * @param
-	 * path The path to the HTM
+	 * @param path The path to the HTM
+	 * @return 
 	 * */
 	public boolean isLoadable(String path)
 	{

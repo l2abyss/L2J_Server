@@ -35,10 +35,10 @@ public class L2XmassTreeInstance extends L2Npc
 	public static final int SPECIAL_TREE_ID = 13007;
 	private ScheduledFuture<?> _aiTask;
 	
-	class XmassAI implements Runnable
+	private final class XmassAI implements Runnable
 	{
-		private L2XmassTreeInstance _caster;
-		private L2Skill _skill;
+		private final L2XmassTreeInstance _caster;
+		private final L2Skill _skill;
 		
 		protected XmassAI(L2XmassTreeInstance caster, L2Skill skill)
 		{
@@ -46,6 +46,7 @@ public class L2XmassTreeInstance extends L2Npc
 			_skill = skill;
 		}
 		
+		@Override
 		public void run()
 		{
 			if (_skill == null || _caster.isInsideZone(ZONE_PEACE))
@@ -54,10 +55,15 @@ public class L2XmassTreeInstance extends L2Npc
 				_caster._aiTask = null;
 				return;
 			}
-			Collection<L2PcInstance> plrs = getKnownList().getKnownPlayersInRadius(200);
+			
+			Collection<L2PcInstance> plrs = getKnownList().getKnownPlayersInRadius(_skill.getSkillRadius());
 			for (L2PcInstance player : plrs)
+			{
 				if (player.getFirstEffect(_skill.getId()) == null)
+				{
 					_skill.getEffects(player, player);
+				}
+			}
 		}
 	}
 	
@@ -83,18 +89,12 @@ public class L2XmassTreeInstance extends L2Npc
 		return 900;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.L2Object#isAttackable()
-	 */
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return false;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.model.actor.L2Npc#onAction(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, boolean)
-	 */
 	@Override
 	public void onAction(L2PcInstance player, boolean interact)
 	{

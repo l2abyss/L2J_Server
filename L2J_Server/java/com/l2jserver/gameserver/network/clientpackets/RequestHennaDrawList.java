@@ -20,13 +20,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.HennaEquipList;
 
 /**
- * RequestHennaList - 0xba
- *
  * @author Tempy
  */
 public final class RequestHennaDrawList extends L2GameClientPacket
 {
-	private static final String _C__BA_RequestHennaDrawList = "[C] ba RequestHennaDrawList";
+	private static final String _C__C3_REQUESTHENNADRAWLIST = "[C] C3 RequestHennaDrawList";
 	
 	// This is just a trigger packet...
 	@SuppressWarnings("unused")
@@ -49,12 +47,9 @@ public final class RequestHennaDrawList extends L2GameClientPacket
 		activeChar.sendPacket(new HennaEquipList(activeChar, henna));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__BA_RequestHennaDrawList;
+		return _C__C3_REQUESTHENNADRAWLIST;
 	}
 }

@@ -29,12 +29,12 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeGuardManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.CombatFlag;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
@@ -45,6 +45,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -294,7 +295,7 @@ public class FortSiege implements Siegable
 			
 			loadSiegeClan(); // Load siege clan from db
 			updatePlayerSiegeStateFlags(false);
-			teleportPlayer(FortSiege.TeleportWhoType.Attacker, MapRegionTable.TeleportWhereType.Town); // Teleport to the closest town
+			teleportPlayer(FortSiege.TeleportWhoType.Attacker, MapRegionManager.TeleportWhereType.Town); // Teleport to the closest town
 			
 			getFort().despawnNpcCommanders(); // Despawn NPC commanders
 			spawnCommanders(); // Spawn commanders
@@ -319,7 +320,7 @@ public class FortSiege implements Siegable
 	
 	/**
 	 * Announce to player.<BR><BR>
-	 * @param message The String of the message to send to player
+	 * @param sm the system message to send to player
 	 */
 	public void announceToPlayer(SystemMessage sm)
 	{
@@ -412,21 +413,29 @@ public class FortSiege implements Siegable
 		}
 	}
 	
-	/** Return true if object is inside the zone */
+	/**
+	 * @param object 
+	 * @return true if object is inside the zone 
+	 */
 	public boolean checkIfInZone(L2Object object)
 	{
 		return checkIfInZone(object.getX(), object.getY(), object.getZ());
 	}
 	
-	/** Return true if object is inside the zone */
+	/**
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @return true if object is inside the zone
+	 */
 	public boolean checkIfInZone(int x, int y, int z)
 	{
 		return (getIsInProgress() && (getFort().checkIfInZone(x, y, z))); // Fort zone during siege
 	}
 	
 	/**
-	 * Return true if clan is attacker<BR><BR>
 	 * @param clan The L2Clan of the player
+	 * @return true if clan is attacker
 	 */
 	public boolean checkIsAttacker(L2Clan clan)
 	{
@@ -434,8 +443,8 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Return true if clan is defender<BR><BR>
 	 * @param clan The L2Clan of the player
+	 * @return true if clan is defender
 	 */
 	public boolean checkIsDefender(L2Clan clan)
 	{
@@ -494,7 +503,9 @@ public class FortSiege implements Siegable
 		getFort().getSiegeDate().setTimeInMillis(0);
 	}
 	
-	/** Return list of L2PcInstance registered as attacker in the zone. */
+	/**
+	 * @return list of L2PcInstance registered as attacker in the zone.
+	 */
 	public List<L2PcInstance> getAttackersInZone()
 	{
 		List<L2PcInstance> players = new FastList<L2PcInstance>();
@@ -514,13 +525,17 @@ public class FortSiege implements Siegable
 		return players;
 	}
 	
-	/** Return list of L2PcInstance in the zone. */
+	/**
+	 * @return list of L2PcInstance in the zone.
+	 */
 	public List<L2PcInstance> getPlayersInZone()
 	{
 		return getFort().getZone().getAllPlayers();
 	}
 	
-	/** Return list of L2PcInstance owning the fort in the zone. */
+	/**
+	 * @return list of L2PcInstance owning the fort in the zone.
+	 */
 	public List<L2PcInstance> getOwnersInZone()
 	{
 		List<L2PcInstance> players = new FastList<L2PcInstance>();
@@ -543,7 +558,10 @@ public class FortSiege implements Siegable
 		return players;
 	}
 	
-	/** Commander was killed */
+	/**
+	 * Commander was killed 
+	 * @param instance
+	 */
 	public void killedCommander(L2FortCommanderInstance instance)
 	{
 		if (_commanders != null && getFort() != null && _commanders.size() != 0)
@@ -556,24 +574,24 @@ public class FortSiege implements Siegable
 				{
 					if (spawn2.getNpcId() == spawn.getNpcid())
 					{
-						int message = 0;
+						NpcStringId npcString = null;
 						switch (spawn2.getId())
 						{
 							case 1:
-								message = 1300004; // You may have broken our arrows, but you will never break our will! Archers, retreat!
+								npcString = NpcStringId.YOU_MAY_HAVE_BROKEN_OUR_ARROWS_BUT_YOU_WILL_NEVER_BREAK_OUR_WILL_ARCHERS_RETREAT;
 								break;
 							case 2:
-								message = 1300006; // Aiieeee! Command Center! This is guard unit! We need backup right away!
+								npcString = NpcStringId.AIIEEEE_COMMAND_CENTER_THIS_IS_GUARD_UNIT_WE_NEED_BACKUP_RIGHT_AWAY;
 								break;
 							case 3:
-								message = 1300005; // At last! The Magic Field that protects the fortress has weakened! Volunteers, stand back!
+								npcString = NpcStringId.AT_LAST_THE_MAGIC_FIELD_THAT_PROTECTS_THE_FORTRESS_HAS_WEAKENED_VOLUNTEERS_STAND_BACK;
 								break;
 							case 4:
-								message = 1300020; // I feel so much grief that I can't even take care of myself. There isn't any reason for me to stay here any longer.
+								npcString = NpcStringId.I_FEEL_SO_MUCH_GRIEF_THAT_I_CANT_EVEN_TAKE_CARE_OF_MYSELF_THERE_ISNT_ANY_REASON_FOR_ME_TO_STAY_HERE_ANY_LONGER;
 								break;
 						}
-						if (message != 0)
-							instance.broadcastPacket(new NpcSay(instance.getObjectId(), 1, instance.getNpcId(), message));
+						if (npcString != null)
+							instance.broadcastPacket(new NpcSay(instance.getObjectId(), 1, instance.getNpcId(), npcString));
 					}
 				}
 				_commanders.remove(spawn);
@@ -610,7 +628,10 @@ public class FortSiege implements Siegable
 		}
 	}
 	
-	/** Remove the flag that was killed */
+	/**
+	 * Remove the flag that was killed 
+	 * @param flag
+	 */
 	public void killedFlag(L2Npc flag)
 	{
 		if (flag == null)
@@ -626,6 +647,8 @@ public class FortSiege implements Siegable
 	/**
 	 * Register clan as attacker<BR><BR>
 	 * @param player The L2PcInstance of the player trying to register
+	 * @param force 
+	 * @return 
 	 */
 	public boolean registerAttacker(L2PcInstance player, boolean force)
 	{
@@ -696,7 +719,7 @@ public class FortSiege implements Siegable
 	
 	/**
 	 * Remove clan from siege<BR><BR>
-	 * @paramclan The clan being removed
+	 * @param clan The clan being removed
 	 */
 	public void removeSiegeClan(L2Clan clan)
 	{
@@ -724,7 +747,6 @@ public class FortSiege implements Siegable
 			clearSiegeClan(); // remove all clans
 			// spawn suspicious merchant immediately
 			ThreadPoolManager.getInstance().executeTask(new ScheduleSuspiciousMerchantSpawn());
-			return;
 		}
 		else
 		{
@@ -760,6 +782,7 @@ public class FortSiege implements Siegable
 	
 	/**
 	 * Start the auto tasks<BR><BR>
+	 * @param setTime 
 	 */
 	public void startAutoTask(boolean setTime)
 	{
@@ -778,8 +801,10 @@ public class FortSiege implements Siegable
 	
 	/**
 	 * Teleport players
+	 * @param teleportWho 
+	 * @param teleportWhere 
 	 */
-	public void teleportPlayer(TeleportWhoType teleportWho, MapRegionTable.TeleportWhereType teleportWhere)
+	public void teleportPlayer(TeleportWhoType teleportWho, MapRegionManager.TeleportWhereType teleportWhere)
 	{
 		List<L2PcInstance> players;
 		switch (teleportWho)
@@ -815,8 +840,8 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Return true if the player can register.<BR><BR>
 	 * @param player The L2PcInstance of the player trying to register
+	 * @return true if the player can register.
 	 */
 	public boolean checkIfCanRegister(L2PcInstance player)
 	{
@@ -873,8 +898,8 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Return true if the clan has already registered to a siege for the same day.<BR><BR>
 	 * @param clan The L2Clan of the player trying to register
+	 * @return true if the clan has already registered to a siege for the same day.
 	 */
 	public boolean checkIfAlreadyRegisteredForSameDay(L2Clan clan)
 	{
@@ -1002,7 +1027,6 @@ public class FortSiege implements Siegable
 	/**
 	 * Save registration to database.<BR><BR>
 	 * @param clan The L2Clan of player
-	 * @param typeId -1 = owner 0 = defender, 1 = attacker, 2 = defender waiting
 	 */
 	private void saveSiegeClan(L2Clan clan)
 	{
@@ -1206,4 +1230,7 @@ public class FortSiege implements Siegable
 	{
 		return Config.FORTRESS_ZONE_FAME_AQUIRE_POINTS;
 	}
+	
+	@Override
+	public void updateSiege() { }
 }

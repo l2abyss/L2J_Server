@@ -30,6 +30,7 @@ public class ShowMiniMap extends L2GameServerPacket
 	private int _mapId;
 	
 	/**
+	 * @param mapId 
 	 */
 	public ShowMiniMap(int mapId)
 	{

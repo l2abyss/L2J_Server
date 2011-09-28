@@ -15,8 +15,10 @@
 
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.serverpackets.SiegeAttackerList;
 
 /**
@@ -27,7 +29,7 @@ import com.l2jserver.gameserver.network.serverpackets.SiegeAttackerList;
 public final class RequestSiegeAttackerList extends L2GameClientPacket
 {
 	
-	private static final String _C__A2_RequestSiegeAttackerList = "[C] a2 RequestSiegeAttackerList";
+	private static final String _C__AB_RequestSiegeAttackerList = "[C] AB RequestSiegeAttackerList";
 	//private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
 	
 	private int _castleId;
@@ -42,15 +44,25 @@ public final class RequestSiegeAttackerList extends L2GameClientPacket
 	protected void runImpl()
 	{
 		Castle castle = CastleManager.getInstance().getCastleById(_castleId);
-		if (castle == null) return;
-		SiegeAttackerList sal = new SiegeAttackerList(castle);
-		sendPacket(sal);
+		if (castle != null)
+		{
+			SiegeAttackerList sal = new SiegeAttackerList(castle);
+			sendPacket(sal);
+		}
+		else
+		{
+			SiegableHall hall = CHSiegeManager.getInstance().getSiegableHall(_castleId);
+			if(hall != null)
+			{
+				SiegeAttackerList sal = new SiegeAttackerList(hall);
+				sendPacket(sal);
+			}
+		}
 	}
-	
 	
 	@Override
 	public String getType()
 	{
-		return _C__A2_RequestSiegeAttackerList;
+		return _C__AB_RequestSiegeAttackerList;
 	}
 }

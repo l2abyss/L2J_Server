@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
  * @author  KenM
  */
 public class TransformationManager
@@ -55,10 +54,7 @@ public class TransformationManager
 			trans.start();
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 	
 	public L2Transformation getTransformationById(int id)

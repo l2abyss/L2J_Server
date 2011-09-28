@@ -18,10 +18,10 @@ package com.l2jserver.gameserver.network.clientpackets;
  * Format: (c)
  * (no data, trigger)
  * @author  -Wooden-
- * 
  */
 public class RequestSiegeInfo extends L2GameClientPacket
 {
+	private static final String _C__58_REQUESTSIEGEINFO = "[C] 58 RequestSiegeInfo";
 	
 	@Override
 	protected void readImpl()
@@ -38,7 +38,6 @@ public class RequestSiegeInfo extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] 0x47 RequestSiegeInfo";
+		return _C__58_REQUESTSIEGEINFO;
 	}
-	
 }

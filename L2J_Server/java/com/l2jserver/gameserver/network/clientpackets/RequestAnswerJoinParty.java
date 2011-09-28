@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -22,19 +23,9 @@ import com.l2jserver.gameserver.network.serverpackets.ExManagePartyRoomMember;
 import com.l2jserver.gameserver.network.serverpackets.JoinParty;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-/**
- *  sample
- *  2a
- *  01 00 00 00
- *
- *  format  cdd
- *
- *
- * @version $Revision: 1.7.4.2 $ $Date: 2005/03/27 15:29:30 $
- */
 public final class RequestAnswerJoinParty extends L2GameClientPacket
 {
-	private static final String _C__2A_REQUESTANSWERPARTY = "[C] 2A RequestAnswerJoinParty";
+	private static final String _C__43_REQUESTANSWERPARTY = "[C] 43 RequestAnswerJoinParty";
 	//private static Logger _log = Logger.getLogger(RequestAnswerJoinParty.class.getName());
 	
 	private int _response;
@@ -119,17 +110,16 @@ public final class RequestAnswerJoinParty extends L2GameClientPacket
 			
 			//activate garbage collection if there are no other members in party (happens when we were creating new one)
 			if (requestor.isInParty() && requestor.getParty().getMemberCount() == 1)
-				requestor.getParty().removePartyMember(requestor, false);
+				requestor.getParty().removePartyMember(requestor, messageType.None);
 		}
 		else // 0
 		{
-			requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PLAYER_DECLINED));
+			//requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PLAYER_DECLINED)); FIXME: Done in client?
 			
 			//activate garbage collection if there are no other members in party (happens when we were creating new one)
 			if (requestor.isInParty() && requestor.getParty().getMemberCount() == 1)
-				requestor.getParty().removePartyMember(requestor, false);
+				requestor.getParty().removePartyMember(requestor, messageType.None);
 		}
-		
 		
 		if (requestor.isInParty())
 			requestor.getParty().setPendingInvitation(false); // if party is null, there is no need of decreasing
@@ -138,12 +128,9 @@ public final class RequestAnswerJoinParty extends L2GameClientPacket
 		requestor.onTransactionResponse();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__2A_REQUESTANSWERPARTY;
+		return _C__43_REQUESTANSWERPARTY;
 	}
 }

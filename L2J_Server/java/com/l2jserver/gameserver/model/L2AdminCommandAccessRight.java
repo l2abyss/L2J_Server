@@ -32,6 +32,7 @@ public class L2AdminCommandAccessRight
 	 * 
 	 * @param adminCommand as String
 	 * @param accessLevels as String
+	 * @param confirm 
 	 */
 	public L2AdminCommandAccessRight(String adminCommand, String accessLevels, boolean confirm)
 	{
@@ -69,7 +70,7 @@ public class L2AdminCommandAccessRight
 	/**
 	 * Checks if the given characterAccessLevel is allowed to use the admin command which belongs to this access right<br><br>
 	 * 
-	 * @param characterAccessLevel<br><br>
+	 * @param characterAccessLevel
 	 * 
 	 * @return boolean: true if characterAccessLevel is allowed to use the admin command which belongs to this access right, otherwise false<br>
 	 */

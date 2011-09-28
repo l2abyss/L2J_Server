@@ -726,7 +726,7 @@ public class Hero
 						}
 					}
 					
-					for (L2ItemInstance item : player.getInventory().getAvailableItems(false, false))
+					for (L2ItemInstance item : player.getInventory().getAvailableItems(false, false, false))
 					{
 						if ((item != null) && item.isHeroItem())
 						{
@@ -1040,7 +1040,7 @@ public class Hero
 	
 	/**
 	 * Set new hero message for hero
-	 * @param charId character objid
+	 * @param player the player instance
 	 * @param message String to set
 	 */
 	public void setHeroMessage(L2PcInstance player, String message)

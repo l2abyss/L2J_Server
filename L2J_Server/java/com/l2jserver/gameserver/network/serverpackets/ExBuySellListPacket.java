@@ -45,7 +45,7 @@ public class ExBuySellListPacket extends L2GameServerPacket
 				continue;
 			_buyList.add(item);
 		}
-		_sellList = player.getInventory().getAvailableItems(false, false);
+		_sellList = player.getInventory().getAvailableItems(false, false, false);
 		if (player.hasRefund())
 			_refundList = player.getRefund().getItems();
 		_done = done;

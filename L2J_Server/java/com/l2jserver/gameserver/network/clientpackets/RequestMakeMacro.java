@@ -23,37 +23,37 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
+/**
+ * packet type id 0xc1
+ *
+ * sample
+ *
+ * c1
+ * d // id
+ * S // macro name
+ * S // unknown  desc
+ * S // unknown  acronym
+ * c // icon
+ * c // count
+ *
+ * c // entry
+ * c // type
+ * d // skill id
+ * c // shortcut id
+ * S // command name
+ *
+ * format:		cdSSScc (ccdcS)
+ */
 public final class RequestMakeMacro extends L2GameClientPacket
 {
+	private static final String _C__CD_REQUESTMAKEMACRO = "[C] CD RequestMakeMacro";
+	
 	protected static final Logger _log = Logger.getLogger(RequestMakeMacro.class.getName());
 	private L2Macro _macro;
 	private int _commandsLenght = 0;
 	
-	private static final String _C__C1_REQUESTMAKEMACRO = "[C] C1 RequestMakeMacro";
 	private static final int MAX_MACRO_LENGTH = 12;
 	
-	/**
-	 * packet type id 0xc1
-	 *
-	 * sample
-	 *
-	 * c1
-	 * d // id
-	 * S // macro name
-	 * S // unknown  desc
-	 * S // unknown  acronym
-	 * c // icon
-	 * c // count
-	 *
-	 * c // entry
-	 * c // type
-	 * d // skill id
-	 * c // shortcut id
-	 * S // command name
-	 *
-	 * format:		cdSSScc (ccdcS)
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -117,12 +117,9 @@ public final class RequestMakeMacro extends L2GameClientPacket
 		player.registerMacro(_macro);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__C1_REQUESTMAKEMACRO;
+		return _C__CD_REQUESTMAKEMACRO;
 	}
 }

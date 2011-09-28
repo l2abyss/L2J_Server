@@ -34,7 +34,6 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -91,12 +90,12 @@ public class GameStatusThread extends Thread
 {
 	//private static final Logger _log = Logger.getLogger(AdminTeleport.class.getName());
 	
-	private Socket _cSocket;
+	private final Socket _cSocket;
 	
-	private PrintWriter _print;
-	private BufferedReader _read;
+	private final PrintWriter _print;
+	private final BufferedReader _read;
 	
-	private int _uptime;
+	private final int _uptime;
 	
 	private void telnetOutput(int type, String text)
 	{
@@ -856,43 +855,40 @@ public class GameStatusThread extends Thread
 						// name;type;x;y;itemId:enchant:price...
 						if (type.equals("privatestore"))
 						{
-							Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-							//synchronized (L2World.getInstance().getAllPlayers())
+							for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 							{
-								for (L2PcInstance player : pls)
+								if (player.getPrivateStoreType() == 0)
+									continue;
+								
+								TradeList list = null;
+								String content = "";
+								
+								if (player.getPrivateStoreType() == 1) // sell
 								{
-									if (player.getPrivateStoreType() == 0)
-										continue;
-									
-									TradeList list = null;
-									String content = "";
-									
-									if (player.getPrivateStoreType() == 1) // sell
+									list = player.getSellList();
+									for (TradeItem item : list.getItems())
 									{
-										list = player.getSellList();
-										for (TradeItem item : list.getItems())
-										{
-											content += item.getItem().getItemId() + ":" + item.getEnchant() + ":" + item.getPrice() + ":";
-										}
-										content = player.getName() + ";" + "sell;" + player.getX() + ";" + player.getY() + ";" + content;
-										_print.println(content);
-										continue;
+										content += item.getItem().getItemId() + ":" + item.getEnchant() + ":" + item.getPrice() + ":";
 									}
-									else if (player.getPrivateStoreType() == 3) // buy
-									{
-										list = player.getBuyList();
-										for (TradeItem item : list.getItems())
-										{
-											content += item.getItem().getItemId() + ":" + item.getEnchant() + ":" + item.getPrice() + ":";
-										}
-										content = player.getName() + ";" + "buy;" + player.getX() + ";" + player.getY() + ";" + content;
-										_print.println(content);
-										continue;
-									}
-									
+									content = player.getName() + ";" + "sell;" + player.getX() + ";" + player.getY() + ";" + content;
+									_print.println(content);
+									continue;
 								}
+								else if (player.getPrivateStoreType() == 3) // buy
+								{
+									list = player.getBuyList();
+									for (TradeItem item : list.getItems())
+									{
+										content += item.getItem().getItemId() + ":" + item.getEnchant() + ":" + item.getPrice() + ":";
+									}
+									content = player.getName() + ";" + "buy;" + player.getX() + ";" + player.getY() + ";" + content;
+									_print.println(content);
+									continue;
+								}
+								
 							}
 						}
+						
 					}
 					catch (Exception e)
 					{
@@ -1065,7 +1061,6 @@ public class GameStatusThread extends Thread
 		return format.format(cal.getTime());
 	}
 	
-	@SuppressWarnings("deprecation")
 	public String getServerStatus()
 	{
 		int playerCount = 0, objectCount = 0;
@@ -1087,47 +1082,44 @@ public class GameStatusThread extends Thread
 		int summonCount = 0;
 		int AICount = 0;
 		
-		Collection<L2Object> objs = L2World.getInstance().getAllVisibleObjects().values();
-		//synchronized (L2World.getInstance().getAllVisibleObjects())
+		for (L2Object obj : L2World.getInstance().getAllVisibleObjectsArray())
 		{
-			for (L2Object obj : objs)
+			if (obj == null)
+				continue;
+			if (obj instanceof L2Character)
+				if (((L2Character) obj).hasAI())
+					AICount++;
+			if (obj instanceof L2ItemInstance)
+				if (((L2ItemInstance) obj).getLocation() == L2ItemInstance.ItemLocation.VOID)
+					itemVoidCount++;
+				else
+					itemCount++;
+			
+			else if (obj instanceof L2MonsterInstance)
 			{
-				if (obj == null)
-					continue;
-				if (obj instanceof L2Character)
-					if (((L2Character) obj).hasAI())
-						AICount++;
-				if (obj instanceof L2ItemInstance)
-					if (((L2ItemInstance) obj).getLocation() == L2ItemInstance.ItemLocation.VOID)
-						itemVoidCount++;
-					else
-						itemCount++;
-				
-				else if (obj instanceof L2MonsterInstance)
+				monsterCount++;
+				if (((L2MonsterInstance) obj).hasMinions())
 				{
-					monsterCount++;
-					if (((L2MonsterInstance) obj).hasMinions())
-					{
-						minionCount += ((L2MonsterInstance) obj).getMinionList().countSpawnedMinions();
-						minionsGroupCount += ((L2MonsterInstance) obj).getMinionList().lazyCountSpawnedMinionsGroups();
-					}
+					minionCount += ((L2MonsterInstance) obj).getMinionList().countSpawnedMinions();
+					minionsGroupCount += ((L2MonsterInstance) obj).getMinionList().lazyCountSpawnedMinionsGroups();
 				}
-				else if (obj instanceof L2Npc)
-					npcCount++;
-				else if (obj instanceof L2PcInstance)
-				{
-					pcCount++;
-					if (((L2PcInstance) obj).getClient() != null && ((L2PcInstance) obj).getClient().isDetached())
-						detachedCount++;
-				}
-				else if (obj instanceof L2Summon)
-					summonCount++;
-				else if (obj instanceof L2DoorInstance)
-					doorCount++;
-				else if (obj instanceof L2Character)
-					charCount++;
 			}
+			else if (obj instanceof L2Npc)
+				npcCount++;
+			else if (obj instanceof L2PcInstance)
+			{
+				pcCount++;
+				if (((L2PcInstance) obj).getClient() != null && ((L2PcInstance) obj).getClient().isDetached())
+					detachedCount++;
+			}
+			else if (obj instanceof L2Summon)
+				summonCount++;
+			else if (obj instanceof L2DoorInstance)
+				doorCount++;
+			else if (obj instanceof L2Character)
+				charCount++;
 		}
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("Server Status: ");
 		sb.append("\r\n  --->  Player Count: " + playerCount + "/" + max);
@@ -1171,35 +1163,35 @@ public class GameStatusThread extends Thread
 		sb.append("\nJava Runtime Name: " + System.getProperty("java.runtime.name"));
 		sb.append("\nJava Version: " + System.getProperty("java.version"));
 		sb.append("\nJava Class Version: " + System.getProperty("java.class.version"));
-		sb.append('\n');
+		sb.append("\n");
 		sb.append("\n## Virtual Machine Information ##");
 		sb.append("\nVM Name: " + System.getProperty("java.vm.name"));
 		sb.append("\nVM Version: " + System.getProperty("java.vm.version"));
 		sb.append("\nVM Vendor: " + System.getProperty("java.vm.vendor"));
 		sb.append("\nVM Info: " + System.getProperty("java.vm.info"));
-		sb.append('\n');
+		sb.append("\n");
 		sb.append("\n## OS Information ##");
 		sb.append("\nName: " + System.getProperty("os.name"));
 		sb.append("\nArchiteture: " + System.getProperty("os.arch"));
 		sb.append("\nVersion: " + System.getProperty("os.version"));
-		sb.append('\n');
+		sb.append("\n");
 		sb.append("\n## Runtime Information ##");
 		sb.append("\nCPU Count: " + Runtime.getRuntime().availableProcessors());
 		sb.append("\nCurrent Free Heap Size: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " mb");
 		sb.append("\nCurrent Heap Size: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " mb");
 		sb.append("\nMaximum Heap Size: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " mb");
 		
-		sb.append('\n');
+		sb.append("\n");
 		sb.append("\n## Class Path Information ##\n");
 		String cp = System.getProperty("java.class.path");
 		String[] libs = cp.split(File.pathSeparator);
 		for (String lib : libs)
 		{
 			sb.append(lib);
-			sb.append('\n');
+			sb.append("\n");
 		}
 		
-		sb.append('\n');
+		sb.append("\n");
 		sb.append("## Threads Information ##\n");
 		Map<Thread, StackTraceElement[]> allThread = Thread.getAllStackTraces();
 		
@@ -1234,25 +1226,25 @@ public class GameStatusThread extends Thread
 			Thread t = entry.getKey();
 			sb.append("--------------\n");
 			sb.append(t.toString() + " (" + t.getId() + ")\n");
-			sb.append("State: " + t.getState() + '\n');
-			sb.append("isAlive: " + t.isAlive() + " | isDaemon: " + t.isDaemon() + " | isInterrupted: " + t.isInterrupted() + '\n');
-			sb.append('\n');
+			sb.append("State: " + t.getState() + "\n");
+			sb.append("isAlive: " + t.isAlive() + " | isDaemon: " + t.isDaemon() + " | isInterrupted: " + t.isInterrupted() + "\n");
+			sb.append("\n");
 			for (StackTraceElement ste : stes)
 			{
 				sb.append(ste.toString());
-				sb.append('\n');
+				sb.append("\n");
 			}
-			sb.append('\n');
+			sb.append("\n");
 		}
 		
-		sb.append('\n');
+		sb.append("\n");
 		this.checkForDeadlocks(sb);
 		
 		sb.append("\n\n## Thread Pool Manager Statistics ##\n");
 		for (String line : ThreadPoolManager.getInstance().getStats())
 		{
 			sb.append(line);
-			sb.append('\n');
+			sb.append("\n");
 		}
 		
 		int i = 0;
@@ -1293,7 +1285,7 @@ public class GameStatusThread extends Thread
 				for (StackTraceElement ste : thread.getStackTrace())
 				{
 					sb.append("\t" + ste);
-					sb.append('\n');
+					sb.append("\n");
 				}
 			}
 		}
@@ -1307,10 +1299,7 @@ public class GameStatusThread extends Thread
 		{
 			return mbean.findDeadlockedThreads();
 		}
-		else
-		{
-			return mbean.findMonitorDeadlockedThreads();
-		}
+		return mbean.findMonitorDeadlockedThreads();
 	}
 	
 	private Thread findMatchingThread(ThreadInfo inf)

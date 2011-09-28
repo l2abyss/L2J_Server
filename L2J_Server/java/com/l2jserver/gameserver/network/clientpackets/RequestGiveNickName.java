@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
 /**
  * This class ...
  *
@@ -30,7 +29,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class RequestGiveNickName extends L2GameClientPacket
 {
-	private static final String _C__55_REQUESTGIVENICKNAME = "[C] 55 RequestGiveNickName";
+	private static final String _C__0B_REQUESTGIVENICKNAME = "[C] 0B RequestGiveNickName";
 	static Logger _log = Logger.getLogger(RequestGiveNickName.class.getName());
 	
 	private String _target;
@@ -90,12 +89,9 @@ public class RequestGiveNickName extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__55_REQUESTGIVENICKNAME;
+		return _C__0B_REQUESTGIVENICKNAME;
 	}
 }

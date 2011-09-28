@@ -47,7 +47,7 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
  *
  * @version $Revision: 1.1.2.1.2.12 $ $Date: 2005/04/11 10:06:07 $
  */
-public abstract class L2Effect
+public abstract class L2Effect implements IChanceSkillTrigger
 {
 	protected static final Logger _log = Logger.getLogger(L2Effect.class.getName());
 	
@@ -102,13 +102,15 @@ public abstract class L2Effect
 	// abnormal effect mask
 	private AbnormalEffect _abnormalEffect;
 	// special effect mask
-	private AbnormalEffect _specialEffect;
+	private AbnormalEffect[] _specialEffect;
 	// event effect mask
 	private AbnormalEffect _eventEffect;
 	// show icon
 	private boolean _icon;
-	// is selfeffect ?
+	// is self effect?
 	private boolean _isSelfEffect = false;
+	// is passive effect?
+	private boolean _isPassiveEffect = false;
 
 	public boolean preventExitUpdate;
 	
@@ -147,8 +149,10 @@ public abstract class L2Effect
 	private L2SkillType _effectSkillType;
 	
 	/**
-	 * <font color="FF0000"><b>WARNING: scheduleEffect nolonger inside constructor</b></font><br>
+	 * <font color="FF0000"><b>WARNING: scheduleEffect no longer inside constructor</b></font><br>
 	 * So you must call it explicitly
+	 * @param env 
+	 * @param template 
 	 */
 	protected L2Effect(Env env, EffectTemplate template)
 	{
@@ -338,6 +342,16 @@ public abstract class L2Effect
 		_isSelfEffect = true;
 	}
 	
+	public boolean isPassiveEffect()
+	{
+		return _isPassiveEffect;
+	}
+	
+	public void setPassiveEffect()
+	{
+		_isPassiveEffect = true;
+	}
+	
 	public boolean isHerbEffect()
 	{
 		return _isHerbEffect;
@@ -417,15 +431,20 @@ public abstract class L2Effect
 		}
 	}
 	
-	/** returns effect type */
+	/**
+	 * @return effect type
+	 */
 	public abstract L2EffectType getEffectType();
 	
-	/** Notify started */
+	/**
+	 * Notify started 
+	 * @return
+	 */
 	public boolean onStart()
 	{
 		if (_abnormalEffect != AbnormalEffect.NULL)
 			getEffected().startAbnormalEffect(_abnormalEffect);
-		if (_specialEffect != AbnormalEffect.NULL)
+		if (_specialEffect != null)
 			getEffected().startSpecialEffect(_specialEffect);
 		if (_eventEffect != AbnormalEffect.NULL && getEffected() instanceof L2PcInstance)
 			getEffected().getActingPlayer().startEventEffect(_eventEffect);
@@ -439,13 +458,15 @@ public abstract class L2Effect
 	{
 		if (_abnormalEffect != AbnormalEffect.NULL)
 			getEffected().stopAbnormalEffect(_abnormalEffect);
-		if (_specialEffect != AbnormalEffect.NULL)
+		if (_specialEffect != null)
 			getEffected().stopSpecialEffect(_specialEffect);
 		if (_eventEffect != AbnormalEffect.NULL && getEffected() instanceof L2PcInstance)
 			getEffected().getActingPlayer().stopEventEffect(_eventEffect);
 	}
 	
-	/** Return true for continuation of this effect */
+	/**
+	 * @return true for continuation of this effect
+	 */
 	public abstract boolean onActionTime();
 	
 	public final void scheduleEffect()
@@ -663,4 +684,14 @@ public abstract class L2Effect
 	{
 		return false;
 	}
+	
+	public void decreaseForce() { }
+	public void increaseEffect() { }
+	public int getForceEffect() { return 0; }
+	public boolean isBuffEffect() { return false; }
+	public boolean isDebuffEffect() { return false; }
+	public boolean triggersChanceSkill() { return false; }	
+	public int getTriggeredChanceId() { return 0; }
+	public int getTriggeredChanceLevel() { return 0; }
+	public ChanceCondition getTriggeredChanceCondition() { return null; }
 }

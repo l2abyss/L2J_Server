@@ -31,8 +31,10 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.entity.ClanHall;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
@@ -88,14 +90,6 @@ public class DoorTable
 				L2DoorInstance door = parseList(line, false);
 				putDoor(door);
 				door.spawnMe(door.getX(), door.getY(), door.getZ());
-				ClanHall clanhall = ClanHallManager.getInstance().getNearbyClanHall(door.getX(), door.getY(), 500);
-				if (clanhall != null)
-				{
-					clanhall.getDoors().add(door);
-					door.setClanHall(clanhall);
-					if (Config.DEBUG)
-						_log.info("door " + door.getDoorName() + " attached to ch " + clanhall.getName());
-				}
 			}
 			
 			_log.info("DoorTable: Loaded " + _staticItems.size() + " Door Templates for " + _regions.size() + " regions.");
@@ -158,6 +152,9 @@ public class DoorTable
 			boolean targetable = true;
 			if (st.hasMoreTokens())
 				targetable = Boolean.parseBoolean(st.nextToken());
+			int hallId = 0;
+			if(st.hasMoreTokens())
+				hallId = Integer.parseInt(st.nextToken());
 
 			if (rangeXMin > rangeXMax)
 				_log.severe("Error in door data, XMin > XMax, ID:" + id);
@@ -221,9 +218,22 @@ public class DoorTable
 			door.setRange(rangeXMin, rangeYMin, rangeZMin, rangeXMax, rangeYMax, rangeZMax);
 			door.setCurrentHpMp(door.getMaxHp(), door.getMaxMp());
 			door.setXYZInvisible(x, y, z);
-			door.setMapRegion(MapRegionTable.getInstance().getMapRegion(x, y));
+			door.setMapRegion(MapRegionManager.getInstance().getMapRegionLocId(x, y));
 			door.setEmitter(emitter);
 			door.setTargetable(targetable);
+			
+			if(hallId > 0)
+			{
+				ClanHall hall = ClanHallManager.getAllClanHalls().get(hallId);
+				if(hall != null)
+				{
+					door.setClanHall(hall);
+					hall.getDoors().add(door);
+					
+					if(hall.isSiegableHall())
+						((SiegableHall)hall).getDoorDefault().add(line);
+				}
+			}
 			
 			if (commanderDoor)
 				door.setIsCommanderDoor(startOpen);
@@ -232,7 +242,7 @@ public class DoorTable
 		}
 		catch (Exception e)
 		{
-			_log.severe("Error in door data at line: " + line);
+			_log.log(Level.SEVERE, "Error in door data at line: " + line, e);
 		}
 		return door;
 	}
@@ -299,7 +309,7 @@ public class DoorTable
 		if (instanceId > 0 && InstanceManager.getInstance().getInstance(instanceId) != null)
 			allDoors = InstanceManager.getInstance().getInstance(instanceId).getDoors();
 		else
-			allDoors = _regions.get(MapRegionTable.getInstance().getMapRegion(x, y));
+			allDoors = _regions.get(MapRegionManager.getInstance().getMapRegionLocId(x, y));
 		
 		if (allDoors == null)
 			return false;

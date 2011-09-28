@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.ClanHall.ClanHallFunction;
+import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
 /**
  *
  * @author  Steuf
@@ -23,9 +24,9 @@ import com.l2jserver.gameserver.model.entity.ClanHall.ClanHallFunction;
 public class AgitDecoInfo extends L2GameServerPacket
 {
 	private static final String _S__F7_AGITDECOINFO = "[S] fd AgitDecoInfo";
-	private ClanHall _clanHall;
+	private AuctionableHall _clanHall;
 	private ClanHallFunction _function;
-	public AgitDecoInfo(ClanHall ClanHall){
+	public AgitDecoInfo(AuctionableHall ClanHall){
 		_clanHall = ClanHall;
 	}
 	/*

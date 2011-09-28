@@ -66,28 +66,25 @@ public class CompiledScriptCache implements Serializable
 			}
 			return csh.getCompiledScript();
 		}
-		else
+		
+		if (Config.DEBUG)
 		{
-			if (Config.DEBUG)
-			{
-				LOG.info("Compiling script: "+file);
-			}
-			Compilable eng = (Compilable) engine;
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-			
-			// TODO lock file
-			CompiledScript cs = eng.compile(reader);
-			if (cs instanceof Serializable)
-			{
-				synchronized (_compiledScriptCache)
-				{
-					_compiledScriptCache.put(relativeName, new CompiledScriptHolder(cs, file));
-					_modified = true;
-				}
-			}
-			
-			return cs;
+			LOG.info("Compiling script: "+file);
 		}
+		Compilable eng = (Compilable) engine;
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+		
+		// TODO lock file
+		CompiledScript cs = eng.compile(reader);
+		if (cs instanceof Serializable)
+		{
+			synchronized (_compiledScriptCache)
+			{
+				_compiledScriptCache.put(relativeName, new CompiledScriptHolder(cs, file));
+				_modified = true;
+			}
+		}
+		return cs;
 	}
 	
 	public boolean isModified()

@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.util.Util;
 
 public class ObjectKnownList
 {
-	private L2Object _activeObject;
+	private final L2Object _activeObject;
 	private Map<Integer, L2Object> _knownObjects;
 	
 	public ObjectKnownList(L2Object activeObject)
@@ -43,13 +43,11 @@ public class ObjectKnownList
 			return false;
 		
 		// Instance -1 is for GMs that can see everything on all instances
-		if(getActiveObject().getInstanceId() != -1
-				&& (object.getInstanceId() != getActiveObject().getInstanceId()))
+		if (getActiveObject().getInstanceId() != -1 && (object.getInstanceId() != getActiveObject().getInstanceId()))
 			return false;
 		
 		// Check if the object is an L2PcInstance in ghost mode
-		if(object instanceof L2PcInstance
-				&& ((L2PcInstance)object).getAppearance().isGhost())
+		if (object instanceof L2PcInstance && ((L2PcInstance) object).getAppearance().isGhost())
 			return false;
 		
 		// Check if already know object
@@ -106,19 +104,13 @@ public class ObjectKnownList
 			for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
 			{
 				Collection<L2Object> vObj = regi.getVisibleObjects().values();
-				//synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+				for (L2Object _object : vObj)
 				{
-					//synchronized (regi.getVisibleObjects())
+					if (_object != getActiveObject())
 					{
-						for (L2Object _object : vObj)
-						{
-							if (_object != getActiveObject())
-							{
-								addKnownObject(_object);
-								if (_object instanceof L2Character)
-									_object.getKnownList().addKnownObject(getActiveObject());
-							}
-						}
+						addKnownObject(_object);
+						if (_object instanceof L2Character)
+							_object.getKnownList().addKnownObject(getActiveObject());
 					}
 				}
 			}
@@ -130,13 +122,11 @@ public class ObjectKnownList
 				if (regi.isActive())
 				{
 					Collection<L2Playable> vPls = regi.getVisiblePlayable().values();
-					//synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+					for (L2Object _object : vPls)
 					{
-						//synchronized (regi.getVisiblePlayable())
+						if (_object != getActiveObject())
 						{
-							for (L2Object _object : vPls)
-								if (_object != getActiveObject())
-									addKnownObject(_object);
+							addKnownObject(_object);
 						}
 					}
 				}
@@ -147,34 +137,27 @@ public class ObjectKnownList
 	// Remove invisible and too far L2Object from _knowObject and if necessary from _knownPlayers of the L2Character
 	public void forgetObjects(boolean fullCheck)
 	{
-		//synchronized (KnownListUpdateTaskManager.getInstance().getSync())
+		// Go through knownObjects
+		final Collection<L2Object> objs = getKnownObjects().values();
+		final Iterator<L2Object> oIter = objs.iterator();
+		L2Object object;
+		while (oIter.hasNext())
 		{
-			// Go through knownObjects
-			final Collection<L2Object> objs = getKnownObjects().values();
-			final Iterator<L2Object> oIter = objs.iterator();
-			L2Object object;
-			//synchronized (getKnownObjects())
+			object = oIter.next();
+			if (object == null)
 			{
-				while (oIter.hasNext())
-				{
-					object = oIter.next();
-					if (object == null)
-					{
-						oIter.remove();
-						continue;
-					}
-					
-					if (!fullCheck && !(object instanceof L2Playable))
-						continue;
-					
-					// Remove all objects invisible or too far
-					if (!object.isVisible()
-							|| !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
-					{
-						oIter.remove();
-						removeKnownObject(object, true);
-					}
-				}
+				oIter.remove();
+				continue;
+			}
+			
+			if (!fullCheck && !(object instanceof L2Playable))
+				continue;
+			
+			// Remove all objects invisible or too far
+			if (!object.isVisible() || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
+			{
+				oIter.remove();
+				removeKnownObject(object, true);
 			}
 		}
 	}
@@ -194,7 +177,9 @@ public class ObjectKnownList
 		return 0;
 	}
 	
-	/** Return the _knownObjects containing all L2Object known by the L2Character. */
+	/**
+	 * @return the _knownObjects containing all L2Object known by the L2Character.
+	 */
 	public final Map<Integer, L2Object> getKnownObjects()
 	{
 		if (_knownObjects == null)

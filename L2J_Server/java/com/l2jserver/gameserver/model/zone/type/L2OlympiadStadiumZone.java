@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.MapRegionTable;
+import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
@@ -27,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2OlympiadManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchEnd;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadUserInfo;
@@ -39,9 +40,8 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  *
  * @author  durgus, DS
  */
-public class L2OlympiadStadiumZone extends L2SpawnZone
+public class L2OlympiadStadiumZone extends L2ZoneRespawn
 {
-	private final List<L2DoorInstance> _doors;
 	private final List<L2Spawn> _buffers;
 
 	OlympiadGameTask _task = null;
@@ -50,7 +50,6 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 	{
 		super(id);
 		_buffers = new ArrayList<L2Spawn>(2);
-		_doors = new ArrayList<L2DoorInstance>(2);
 	}
 	
 	public final void registerTask(OlympiadGameTask task)
@@ -60,7 +59,7 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 
 	public final void openDoors()
 	{
-		for (L2DoorInstance door : _doors)
+		for (L2DoorInstance door : InstanceManager.getInstance().getInstance(getInstanceId()).getDoors())
 		{
 			if (door != null && !door.getOpen())
 				door.openMe();
@@ -69,7 +68,7 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 
 	public final void closeDoors()
 	{
-		for (L2DoorInstance door : _doors)
+		for (L2DoorInstance door : InstanceManager.getInstance().getInstance(getInstanceId()).getDoors())
 		{
 			if (door != null && door.getOpen())
 				door.closeMe();
@@ -98,7 +97,7 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 	public final void broadcastStatusUpdate(L2PcInstance player)
 	{
 		final ExOlympiadUserInfo packet = new ExOlympiadUserInfo(player);
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character instanceof L2PcInstance)
 			{
@@ -111,7 +110,7 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 
 	public final void broadcastPacketToObservers(L2GameServerPacket packet)
 	{
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character instanceof L2PcInstance
 					&& ((L2PcInstance)character).inObserverMode())
@@ -157,18 +156,6 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 				character.deleteMe();
 			}
 		}
-		else if (character instanceof L2DoorInstance)
-		{
-			for (L2DoorInstance door: _doors)
-			{
-				if (door.getDoorId() == ((L2DoorInstance)character).getDoorId())
-				{
-					_doors.remove(door);
-					break;
-				}
-			}
-			_doors.add((L2DoorInstance)character);
-		}
 	}
 
 	@Override
@@ -188,9 +175,6 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 				}
 			}
 		}
-
-		if (character instanceof L2DoorInstance)
-			_doors.remove(character);
 	}
 	
 	public final void updateZoneStatusForCharactersInside()
@@ -205,7 +189,7 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 		else
 			sm = SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE);
 
-		for (L2Character character : _characterList.values())
+		for (L2Character character : getCharactersInsideArray())
 		{
 			if (character == null)
 				continue;
@@ -255,7 +239,8 @@ public class L2OlympiadStadiumZone extends L2SpawnZone
 				if (summon != null)
 					summon.unSummon(_player);
 
-				_player.teleToLocation(MapRegionTable.TeleportWhereType.Town);
+				_player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+				_player.setInstanceId(0);
 				_player = null;
 			}
 		}

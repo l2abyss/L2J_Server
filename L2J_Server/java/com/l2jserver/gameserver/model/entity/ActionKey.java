@@ -29,12 +29,12 @@ public class ActionKey
 	
 	/**
 	 * L2ActionKey Initialization
-	 * @param cat: Category ID
-	 * @param cmd: Command ID
-	 * @param key: User Defined Primary Key
-	 * @param tgKey1: 1st Toogled Key (eg. Alt, Ctrl or Shift)
-	 * @param tgKey2: 2nd Toogled Key (eg. Alt, Ctrl or Shift)
-	 * @param show: Show Action in UI
+	 * @param cat Category ID
+	 * @param cmd Command ID
+	 * @param key User Defined Primary Key
+	 * @param tgKey1 1st Toogled Key (eg. Alt, Ctrl or Shift)
+	 * @param tgKey2 2nd Toogled Key (eg. Alt, Ctrl or Shift)
+	 * @param show Show Action in UI
 	 */
 	public ActionKey(int cat, int cmd, int key, int tgKey1, int tgKey2, int show)
 	{

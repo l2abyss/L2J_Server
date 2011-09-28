@@ -28,7 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.GMViewSkillInfo;
 import com.l2jserver.gameserver.network.serverpackets.GMViewWarehouseWithdrawList;
 import com.l2jserver.gameserver.network.serverpackets.GmViewQuestInfo;
 
-
 /**
  * This class ...
  *
@@ -36,7 +35,7 @@ import com.l2jserver.gameserver.network.serverpackets.GmViewQuestInfo;
  */
 public final class RequestGMCommand extends L2GameClientPacket
 {
-	private static final String _C__6E_REQUESTGMCOMMAND = "[C] 6e RequestGMCommand";
+	private static final String _C__7E_REQUESTGMCOMMAND = "[C] 7E RequestGMCommand";
 	static Logger _log = Logger.getLogger(RequestGMCommand.class.getName());
 	
 	private String _targetName;
@@ -112,12 +111,9 @@ public final class RequestGMCommand extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__6E_REQUESTGMCOMMAND;
+		return _C__7E_REQUESTGMCOMMAND;
 	}
 }

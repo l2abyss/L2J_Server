@@ -39,8 +39,8 @@ public class FriendPacket extends L2GameServerPacket
 	private String _name;
 	
 	/**
-	 * 
 	 * @param action - true for adding, false for remove
+	 * @param objId 
 	 */
 	public FriendPacket(boolean action, int objId)
 	{

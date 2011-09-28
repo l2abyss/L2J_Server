@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * Format: (ch) dSdS
  * @author  -Wooden-
@@ -41,9 +40,6 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 		_selectedMember = readS();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -78,9 +74,6 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 		clan.broadcastClanStatus();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -40,14 +40,11 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
-
 /**
- * This class manages AI of L2Attackable.<BR><BR>
- *
+ * This class manages AI of L2Attackable.
  */
 public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 {
-	
 	//protected static final Logger _log = Logger.getLogger(L2SiegeGuardAI.class.getName());
 	
 	private static final int MAX_ATTACK_TIMEOUT = 300; // int ticks, i.e. 30 seconds
@@ -93,8 +90,6 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	}
 	
 	/**
-	 * Return True if the target is autoattackable (depends on the actor type).<BR><BR>
-	 *
 	 * <B><U> Actor is a L2GuardInstance</U> :</B><BR><BR>
 	 * <li>The target isn't a Folk or a Door</li>
 	 * <li>The target isn't dead, isn't invulnerable, isn't in silent moving mode AND too far (>100)</li>
@@ -122,9 +117,9 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	 * <li>The actor is Aggressive</li><BR><BR>
 	 *
 	 * @param target The targeted L2Object
-	 *
+	 * @return True if the target is autoattackable (depends on the actor type).
 	 */
-	private boolean autoAttackCondition(L2Character target)
+	protected boolean autoAttackCondition(L2Character target)
 	{
 		// Check if the target isn't another guard, folk or a door
 		if (target == null || target instanceof L2DefenderInstance || target instanceof L2NpcInstance || target instanceof L2DoorInstance
@@ -387,7 +382,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			
 			if (!(cha instanceof L2Npc))
 			{
-				if (_selfAnalysis.hasHealOrResurrect && cha instanceof L2PcInstance && ((L2Npc) _actor).getCastle().getSiege().checkIsDefender(((L2PcInstance) cha).getClan()))
+				if (_selfAnalysis.hasHealOrResurrect && cha instanceof L2PcInstance && (((L2Npc) _actor).getCastle().getSiege().checkIsDefender(((L2PcInstance) cha).getClan())))
 				{
 					// heal friends
 					if (!_actor.isAttackingDisabled() && cha.getCurrentHp() < cha.getMaxHp() * 0.6 && _actor.getCurrentHp() > _actor.getMaxHp() / 2 && _actor.getCurrentMp() > _actor.getMaxMp() / 2 && cha.isInCombat())
@@ -494,13 +489,16 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		}
 		
 		// never attack defenders
-		if (attackTarget instanceof L2PcInstance && sGuard.getCastle().getSiege().checkIsDefender(((L2PcInstance) attackTarget).getClan()))
+		if (attackTarget instanceof L2PcInstance) 
 		{
-			// Cancel the target
-			sGuard.stopHating(attackTarget);
-			_actor.setTarget(null);
-			setIntention(AI_INTENTION_IDLE, null, null);
-			return;
+			if(sGuard.getConquerableHall() == null && sGuard.getCastle().getSiege().checkIsDefender(((L2PcInstance) attackTarget).getClan()))
+			{	
+				// Cancel the target
+				sGuard.stopHating(attackTarget);
+				_actor.setTarget(null);
+				setIntention(AI_INTENTION_IDLE, null, null);
+				return;
+			}
 		}
 		
 		if (!GeoData.getInstance().canSeeTarget(_actor, attackTarget))
@@ -764,7 +762,6 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	 * <li>Add the target to the actor _aggroList or update hate if already present </li>
 	 * <li>Set the actor Intention to AI_INTENTION_ATTACK (if actor is L2GuardInstance check if it isn't too far from its home location)</li><BR><BR>
 	 *
-	 * @param attacker The L2Character that attacks
 	 * @param aggro The value of hate to add to the actor against the target
 	 *
 	 */
@@ -822,9 +819,9 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 				_globalAggro = -25;
 				return;
 			}
-			else
-				for (L2Character aggroed : me.getAggroList().keySet())
-					me.addDamageHate(aggroed, 0, aggro);
+			
+			for (L2Character aggroed : me.getAggroList().keySet())
+				me.addDamageHate(aggroed, 0, aggro);
 			
 			aggro = me.getHating(mostHated);
 			if (aggro <= 0)

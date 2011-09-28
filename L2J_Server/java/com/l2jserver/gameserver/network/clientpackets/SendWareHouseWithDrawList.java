@@ -14,12 +14,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.ClanWarehouse;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.ItemHolder;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
@@ -28,9 +27,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
-
 
 /**
  * This class ...
@@ -41,12 +38,11 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class SendWareHouseWithDrawList extends L2GameClientPacket
 {
-	private static final String _C__32_SENDWAREHOUSEWITHDRAWLIST = "[C] 32 SendWareHouseWithDrawList";
-	private static Logger _log = Logger.getLogger(SendWareHouseWithDrawList.class.getName());
+	private static final String _C__32_SENDWAREHOUSEWITHDRAWLIST = "[C] 3C SendWareHouseWithDrawList";
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
 	
-	private WarehouseItem _items[] = null;
+	private ItemHolder _items[] = null;
 	
 	@Override
 	protected void readImpl()
@@ -59,7 +55,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 			return;
 		}
 		
-		_items = new WarehouseItem[count];
+		_items = new ItemHolder[count];
 		for (int i=0; i < count; i++)
 		{
 			int objId = readD();
@@ -69,7 +65,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 				_items = null;
 				return;
 			}
-			_items[i] = new WarehouseItem(objId, cnt);
+			_items[i] = new ItemHolder(objId, cnt);
 		}
 	}
 	
@@ -85,7 +81,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("withdraw"))
 		{
-			player.sendMessage("You withdrawing items too fast.");
+			player.sendMessage("You are withdrawing items too fast.");
 			return;
 		}
 		
@@ -101,7 +97,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		
 		if (!(warehouse instanceof PcWarehouse) && !player.getAccessLevel().allowTransaction())
 		{
-			player.sendMessage("Transactions are disable for your Access Level");
+			player.sendMessage("Transactions are disabled for your Access Level.");
 			return;
 		}
 		
@@ -119,8 +115,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		{
 			if (warehouse instanceof ClanWarehouse && !player.isClanLeader())
 			{
-				// this msg is for depositing but maybe good to send some msg?
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_CLAN_LEADER_CAN_RETRIEVE_ITEMS_FROM_CLAN_WAREHOUSE));
+				player.sendPacket(SystemMessageId.ONLY_CLAN_LEADER_CAN_RETRIEVE_ITEMS_FROM_CLAN_WAREHOUSE);
 				return;
 			}
 		}
@@ -128,10 +123,10 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		int weight = 0;
 		int slots = 0;
 		
-		for (WarehouseItem i : _items)
+		for (ItemHolder i : _items)
 		{
 			// Calculate needed slots
-			L2ItemInstance item = warehouse.getItemByObjectId(i.getObjectId());
+			L2ItemInstance item = warehouse.getItemByObjectId(i.getId());
 			if (item == null || item.getCount() < i.getCount())
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Character "
@@ -151,28 +146,28 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		// Item Max Limit Check
 		if (!player.getInventory().validateCapacity(slots))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
+			player.sendPacket(SystemMessageId.SLOTS_FULL);
 			return;
 		}
 		
 		// Weight limit Check
 		if (!player.getInventory().validateWeight(weight))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+			player.sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
 			return;
 		}
 		
 		// Proceed to the transfer
 		InventoryUpdate playerIU = Config.FORCE_INVENTORY_UPDATE ? null : new InventoryUpdate();
-		for (WarehouseItem i : _items)
+		for (ItemHolder i : _items)
 		{
-			L2ItemInstance oldItem = warehouse.getItemByObjectId(i.getObjectId());
+			L2ItemInstance oldItem = warehouse.getItemByObjectId(i.getId());
 			if (oldItem == null || oldItem.getCount() < i.getCount())
 			{
 				_log.warning("Error withdrawing a warehouse object for char " + player.getName() + " (olditem == null)");
 				return;
 			}
-			final L2ItemInstance newItem = warehouse.transferItem(warehouse.getName(), i.getObjectId(), i.getCount(), player.getInventory(), player, manager);
+			final L2ItemInstance newItem = warehouse.transferItem(warehouse.getName(), i.getId(), i.getCount(), player.getInventory(), player, manager);
 			if (newItem == null)
 			{
 				_log.warning("Error withdrawing a warehouse object for char " + player.getName() + " (newitem == null)");
@@ -198,28 +193,6 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
-	}
-	
-	private static class WarehouseItem
-	{
-		private final int _objectId;
-		private final long _count;
-		
-		public WarehouseItem(int id, long num)
-		{
-			_objectId = id;
-			_count = num;
-		}
-		
-		public int getObjectId()
-		{
-			return _objectId;
-		}
-		
-		public long getCount()
-		{
-			return _count;
-		}
 	}
 	
 	/* (non-Javadoc)

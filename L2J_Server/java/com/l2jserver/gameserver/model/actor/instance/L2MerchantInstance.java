@@ -34,6 +34,7 @@ public class L2MerchantInstance extends L2NpcInstance
 	private MerchantPriceConfig _mpc;
 	
 	/**
+	 * @param objectId 
 	 * @param template
 	 */
 	public L2MerchantInstance(int objectId, L2NpcTemplate template)

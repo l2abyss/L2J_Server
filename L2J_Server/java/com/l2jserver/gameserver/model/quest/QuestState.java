@@ -82,7 +82,6 @@ public final class QuestState
 	 * @param quest : quest associated with the QuestState
 	 * @param player : L2PcInstance pointing out the player
 	 * @param state : state of the quest
-	 * @param completed : boolean for completion of the quest
 	 */
 	QuestState(Quest quest, L2PcInstance player, byte state)
 	{
@@ -280,7 +279,6 @@ public final class QuestState
 	 * @param old : int indicating the previously noted step
 	 *
 	 * For more info on the variable communicating the progress steps to the client, please see
-	 * @link com.l2jserver.loginserver.serverpacket.QuestList
 	 */
 	private void setCond(int cond, int old)
 	{
@@ -550,7 +548,7 @@ public final class QuestState
 	}
 	
 	/**
-	 * @param int : ID of the item you're looking for
+	 * @param itemId the item Id of the item you're looking for
 	 * @return true if item exists in player's inventory, false - if not
 	 */
 	public boolean hasQuestItems(int itemId)
@@ -782,11 +780,11 @@ public final class QuestState
 	
 	/**
 	 * Drop Quest item using Config.RATE_QUEST_DROP
-	 * @param itemId : int Item Identifier of the item to be dropped
-	 * @param count(minCount, maxCount) : long Quantity of items to be dropped
-	 * @param neededCount : Quantity of items needed for quest
-	 * @param dropChance : int Base chance of drop, same as in droplist
-	 * @param sound : boolean indicating whether to play sound
+	 * @param itemId int Item Identifier of the item to be dropped
+	 * @param count (minCount, maxCount) long Quantity of items to be dropped
+	 * @param neededCount Quantity of items needed for quest
+	 * @param dropChance int Base chance of drop, same as in droplist
+	 * @param sound boolean indicating whether to play sound
 	 * @return boolean indicating whether player has requested number of items
 	 */
 	public boolean dropQuestItems(int itemId, int count, long neededCount, int dropChance, boolean sound)
@@ -923,8 +921,8 @@ public final class QuestState
 	}
 	
 	/**
-	 * Return number of ticks from GameTimeController
-	 * @return int
+	 * @param loc 
+	 * @return number of ticks from GameTimeController
 	 */
 	public int getItemEquipped(int loc)
 	{
@@ -949,10 +947,6 @@ public final class QuestState
 		return _isExitQuestOnCleanUp;
 	}
 	
-	/**
-	 * Return the QuestTimer object with the specified name
-	 * @return QuestTimer<BR> Return null if name does not exist
-	 */
 	public void setIsExitQuestOnCleanUp(boolean isExitQuestOnCleanUp)
 	{
 		_isExitQuestOnCleanUp = isExitQuestOnCleanUp;
@@ -960,8 +954,8 @@ public final class QuestState
 	
 	/**
 	 * Start a timer for quest.<BR><BR>
-	 * @param name<BR> The name of the timer. Will also be the value for event of onEvent
-	 * @param time<BR> The milisecond value the timer will elapse
+	 * @param name The name of the timer. Will also be the value for event of onEvent
+	 * @param time The milisecond value the timer will elapse
 	 */
 	public void startQuestTimer(String name, long time)
 	{
@@ -985,6 +979,7 @@ public final class QuestState
 	
 	/**
 	 * Return the QuestTimer object with the specified name
+	 * @param name 
 	 * @return QuestTimer<BR> Return null if name does not exist
 	 */
 	public final QuestTimer getQuestTimer(String name)
@@ -994,7 +989,8 @@ public final class QuestState
 	
 	/**
 	 * Add spawn for player instance
-	 * Return object id of newly spawned npc
+	 * @param npcId 
+	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId)
 	{
@@ -1016,7 +1012,9 @@ public final class QuestState
 	 * Will despawn after the spawn length expires
 	 * Uses player's coords and heading.
 	 * Adds a little randomization in the x y coords
-	 * Return object id of newly spawned npc
+	 * @param npcId 
+	 * @param cha 
+	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha)
 	{
@@ -1031,7 +1029,12 @@ public final class QuestState
 	/**
 	 * Add spawn for player instance
 	 * Will despawn after the spawn length expires
-	 * Return object id of newly spawned npc
+	 * @param npcId 
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @param despawnDelay 
+	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int despawnDelay)
 	{
@@ -1042,7 +1045,11 @@ public final class QuestState
 	 * Add spawn for player instance
 	 * Inherits coords and heading from specified L2Character instance.
 	 * It could be either the player, or any killed/attacked mob
-	 * Return object id of newly spawned npc
+	 * @param npcId 
+	 * @param cha 
+	 * @param randomOffset 
+	 * @param despawnDelay 
+	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha, boolean randomOffset, int despawnDelay)
 	{
@@ -1051,7 +1058,14 @@ public final class QuestState
 	
 	/**
 	 * Add spawn for player instance
-	 * Return object id of newly spawned npc
+	 * @param npcId 
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @param heading 
+	 * @param randomOffset 
+	 * @param despawnDelay 
+	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay)
 	{
@@ -1060,7 +1074,15 @@ public final class QuestState
 	
 	/**
 	 * Add spawn for player instance
-	 * Return object id of newly spawned npc
+	 * @param npcId 
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @param heading 
+	 * @param randomOffset 
+	 * @param despawnDelay 
+	 * @param isSummonSpawn 
+	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
 	{

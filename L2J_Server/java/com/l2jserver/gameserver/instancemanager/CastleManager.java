@@ -276,7 +276,7 @@ public class CastleManager implements InstanceListManager
 			{
 				getCastles().add(new Castle(rs.getInt("id")));
 			}
-			
+			rs.close();
 			statement.close();
 			
 			_log.info("Loaded: " + getCastles().size() + " castles");

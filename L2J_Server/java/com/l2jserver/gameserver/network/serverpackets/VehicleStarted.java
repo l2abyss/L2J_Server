@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
  * @author Kerberos
- * 
  */
 public class VehicleStarted extends L2GameServerPacket
 {
@@ -26,7 +25,8 @@ public class VehicleStarted extends L2GameServerPacket
 	private int _state;
 	
 	/**
-	 * @param instance
+	 * @param boat
+	 * @param state
 	 */
 	public VehicleStarted(L2Character boat, int state)
 	{
@@ -34,10 +34,8 @@ public class VehicleStarted extends L2GameServerPacket
 		_state = state;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()
@@ -47,10 +45,8 @@ public class VehicleStarted extends L2GameServerPacket
 		writeD(_state);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

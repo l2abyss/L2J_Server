@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.GetOnVehicle;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 
-
 /**
  * This class ...
  *
@@ -32,10 +31,13 @@ import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
  */
 public class ValidatePosition extends L2GameClientPacket
 {
+	private static final String _C__59_VALIDATEPOSITION = "[C] 59 ValidatePosition";
 	private static Logger _log = Logger.getLogger(ValidatePosition.class.getName());
-	private static final String _C__48_VALIDATEPOSITION = "[C] 48 ValidatePosition";
 	
-	/** urgent messages, execute immediately */
+	/**
+	 * urgent messages, execute immediately 
+	 * @return
+	 */
 	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
 	
 	private int _x;
@@ -88,7 +90,7 @@ public class ValidatePosition extends L2GameClientPacket
 			{
 				dx = _x - activeChar.getInVehiclePosition().getX();
 				dy = _y - activeChar.getInVehiclePosition().getY();
-				dz = _z - activeChar.getInVehiclePosition().getZ();
+				//dz = _z - activeChar.getInVehiclePosition().getZ();
 				diffSq = (dx*dx + dy*dy);
 				if (diffSq > 250000)
 					sendPacket(new GetOnVehicle(activeChar.getObjectId(), _data, activeChar.getInVehiclePosition()));
@@ -194,12 +196,9 @@ public class ValidatePosition extends L2GameClientPacket
 		activeChar.setLastServerPosition(realX, realY, realZ);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__48_VALIDATEPOSITION;
+		return _C__59_VALIDATEPOSITION;
 	}
 }

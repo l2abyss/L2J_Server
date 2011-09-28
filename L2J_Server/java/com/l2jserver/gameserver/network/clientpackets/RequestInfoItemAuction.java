@@ -25,6 +25,8 @@ import com.l2jserver.gameserver.network.serverpackets.ExItemAuctionInfoPacket;
  */
 public final class RequestInfoItemAuction extends L2GameClientPacket
 {
+	private static final String _C__D0_3A_REQUESTINFOITEMAUCTION = "[C] D0:3A RequestInfoItemAuction";
+	
 	private int _instanceId;
 	
 	@Override
@@ -58,6 +60,6 @@ public final class RequestInfoItemAuction extends L2GameClientPacket
 	@Override
 	public final String getType()
 	{
-		return "[C] D0:3A RequestBidItemAuction";
+		return _C__D0_3A_REQUESTINFOITEMAUCTION;
 	}
 }

@@ -16,8 +16,10 @@ package com.l2jserver.gameserver.skills.l2skills;
 
 import java.util.logging.Level;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
@@ -30,6 +32,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.templates.StatsSet;
 
 public class L2SkillSiegeFlag extends L2Skill
@@ -95,10 +99,13 @@ public class L2SkillSiegeFlag extends L2Skill
 			flag.spawnMe(player.getX(), player.getY(), player.getZ() + 50);
 			Castle castle = CastleManager.getInstance().getCastle(activeChar);
 			Fort fort = FortManager.getInstance().getFort(activeChar);
+			SiegableHall hall = CHSiegeManager.getInstance().getNearbyClanHall(activeChar);
 			if (castle != null)
 				castle.getSiege().getFlag(player.getClan()).add(flag);
-			else
+			else if(fort != null)
 				fort.getSiege().getFlag(player.getClan()).add(flag);
+			else 
+				hall.getSiege().getFlag(player.getClan()).add(flag);
 			
 		}
 		catch (Exception e)
@@ -109,11 +116,10 @@ public class L2SkillSiegeFlag extends L2Skill
 	}
 	
 	/**
-	 * Return true if character clan place a flag<BR><BR>
-	 *
 	 * @param activeChar The L2Character of the character placing the flag
-	 * @param isCheckOnly if false, it will send a notification to the player telling him
-	 * why it failed
+	 * @param isCheckOnly if false, it will send a notification to the player telling him why it failed
+	 * @param isOutPost 
+	 * @return true if character clan place a flag
 	 */
 	public static boolean checkIfOkToPlaceFlag(L2Character activeChar, boolean isCheckOnly, boolean isOutPost)
 	{
@@ -123,13 +129,15 @@ public class L2SkillSiegeFlag extends L2Skill
 			return false;
 		Castle castle = CastleManager.getInstance().getCastle(activeChar);
 		Fort fort = FortManager.getInstance().getFort(activeChar);
+		SiegableHall hall = CHSiegeManager.getInstance().getNearbyClanHall(activeChar);
 		
-		if ((castle == null) && (fort == null))
+		if ((castle == null) && (fort == null) && (hall == null))
 			return false;
 		if (castle != null)
 			return checkIfOkToPlaceFlag(activeChar, castle, isCheckOnly);
-		else
+		else if(fort != null)
 			return checkIfOkToPlaceFlag(activeChar, fort, isCheckOnly);
+		return checkIfOkToPlaceFlag(activeChar, hall, isCheckOnly);
 	}
 	
 	/**
@@ -138,6 +146,7 @@ public class L2SkillSiegeFlag extends L2Skill
 	 * @param castle
 	 * @param isCheckOnly
 	 * @return
+	 * TODO: Replace strings with system messages!
 	 */
 	public static boolean checkIfOkToPlaceFlag(L2Character activeChar, Castle castle, boolean isCheckOnly)
 	{
@@ -157,8 +166,8 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You must be a clan leader to place a flag.";
 		else if (castle.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= SiegeManager.getInstance().getFlagMaxCount())
 			text = "You have already placed the maximum number of flags possible.";
-		else if (player.isInsideZone(L2Character.ZONE_NOHQ))
-			text = "You cannot place flag here.";
+		else if (!player.isInsideZone(L2Character.ZONE_HQ))
+			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
 		else
 			return true;
 		
@@ -173,6 +182,7 @@ public class L2SkillSiegeFlag extends L2Skill
 	 * @param fort
 	 * @param isCheckOnly
 	 * @return
+	 * TODO: Replace strings with system messages!
 	 */
 	public static boolean checkIfOkToPlaceFlag(L2Character activeChar, Fort fort, boolean isCheckOnly)
 	{
@@ -192,8 +202,8 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You must be a clan leader to place a flag.";
 		else if (fort.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= FortSiegeManager.getInstance().getFlagMaxCount())
 			text = "You have already placed the maximum number of flags possible.";
-		else if (player.isInsideZone(L2Character.ZONE_NOHQ))
-			text = "You cannot place flag here.";
+		else if (!player.isInsideZone(L2Character.ZONE_HQ))
+			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
 		else
 			return true;
 		
@@ -203,11 +213,48 @@ public class L2SkillSiegeFlag extends L2Skill
 	}
 	
 	/**
-	 * Return true if character clan place a flag<BR><BR>
-	 *
+	 * 
+	 * @param activeChar
+	 * @param hall
+	 * @param isCheckOnly
+	 * @return
+	 * TODO: Replace strings with system messages!
+	 */
+	public static boolean checkIfOkToPlaceFlag(L2Character activeChar, SiegableHall hall, boolean isCheckOnly)
+	{
+		if (!(activeChar instanceof L2PcInstance))
+			return false;
+		
+		String text = "";
+		L2PcInstance player = (L2PcInstance) activeChar;
+		final int hallId = hall.getId();
+		
+		if (hallId <= 0)
+			text = "You must be on Siegable clan hall ground to place a flag.";
+		else if (!hall.isInSiege())
+			text = "You can only place a flag during a siege.";
+		else if (player.getClan() == null || !player.isClanLeader())
+			text = "You must be a clan leader to place a flag.";
+		else if (!hall.isRegistered(player.getClan()))
+			text = "You must be an attacker to place a flag.";
+		else if (hall.getSiege().getAttackerClan(player.getClan()).getNumFlags() > Config.CHS_MAX_FLAGS_PER_CLAN)
+			text = "You have already placed the maximum number of flags possible.";
+		else if (!player.isInsideZone(L2Character.ZONE_HQ))
+			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
+		else
+			return true;
+		
+		if (!isCheckOnly)
+			player.sendMessage(text);
+		return false;
+	}
+	
+	/**
+	 * TODO: Replace strings with system messages!
 	 * @param activeChar The L2Character of the character placing the flag
-	 * @param isCheckOnly if false, it will send a notification to the player telling him
-	 * why it failed
+	 * @param isCheckOnly if false, it will send a notification to the player telling him why it failed
+	 * @param isOutPost 
+	 * @return true if character clan place a flag
 	 */
 	public static boolean checkIfOkToPlaceHQ(L2Character activeChar, boolean isCheckOnly, boolean isOutPost)
 	{
@@ -227,11 +274,11 @@ public class L2SkillSiegeFlag extends L2Skill
 		else if (!player.isClanLeader())
 			text = "You must be a clan leader to construct an outpost or flag.";
 		else if (TerritoryWarManager.getInstance().getHQForClan(player.getClan()) != null && isOutPost)
-			text = "You can have only one outpost.";
+			player.sendPacket(SystemMessageId.NOT_ANOTHER_HEADQUARTERS);
 		else if (TerritoryWarManager.getInstance().getFlagForClan(player.getClan()) != null && !isOutPost)
-			text = "You can have only one flag.";
-		else if (player.isInsideZone(L2Character.ZONE_NOHQ))
-			text = "You cannot construct outpost or flag here.";
+			player.sendPacket(SystemMessageId.A_FLAG_IS_ALREADY_BEING_DISPLAYED_ANOTHER_FLAG_CANNOT_BE_DISPLAYED);
+		else if (!player.isInsideZone(L2Character.ZONE_HQ))
+			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
 		else
 			return true;
 		

@@ -188,8 +188,7 @@ public final class BlockCheckerEngine
 		{
 			return _redTeamPoints.get(player);
 		}
-		else
-			return _blueTeamPoints.get(player);
+		return _blueTeamPoints.get(player);
 	}
 	
 	/**
@@ -242,6 +241,7 @@ public final class BlockCheckerEngine
 	/**
 	 * Will send all packets for the event members with 
 	 * the relation info
+	 * @param plr 
 	 */
 	private void broadcastRelationChanged(L2PcInstance plr)
 	{
@@ -618,15 +618,15 @@ public final class BlockCheckerEngine
 			FastMap<L2PcInstance, Integer> tempPoints = isRed? _redTeamPoints : _blueTeamPoints;
 			
 			// Main give
-			for(L2PcInstance pc : tempPoints.keySet())
+			for(Entry<L2PcInstance, Integer> points : tempPoints.entrySet())
 			{
-				if(pc == null)
+				if(points.getKey() == null)
 					continue;
 				
-				if(tempPoints.get(pc) >= 10)
-					pc.addItem("Block Checker", 13067, 2, pc, true);
+				if(points.getValue() >= 10)
+					points.getKey().addItem("Block Checker", 13067, 2, points.getKey(), true);
 				else
-					tempPoints.remove(pc);
+					tempPoints.remove(points.getKey());
 			}
 			
 			int first = 0, second = 0;

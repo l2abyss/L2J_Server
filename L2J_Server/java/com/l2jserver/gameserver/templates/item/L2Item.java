@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Env;
@@ -174,6 +175,7 @@ public abstract class L2Item
 	private final boolean _tradeable;
 	private final boolean _depositable;
 	private final boolean _questItem;
+	private final boolean _freightable;
 	private final boolean _common;
 	private final boolean _heroItem;
 	private final boolean _pvpItem;
@@ -190,6 +192,8 @@ public abstract class L2Item
 	
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
+	
+	private List<Quest> _questEvents = new FastList<Quest>();
 	
 	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
 	
@@ -218,6 +222,7 @@ public abstract class L2Item
 		_tradeable = set.getBool("is_tradable", true);
 		_depositable = set.getBool("is_depositable", true);
 		_questItem = set.getBool("is_questitem", false);
+		_freightable = set.getBool("is_freightable", false);
 		
 		//_immediate_effect - herb
 		_ex_immediate_effect = set.getInteger("ex_immediate_effect", 0) > 0;
@@ -425,8 +430,8 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * Returns the quantity of crystals for crystallization on specific enchant level
-	 * @return int
+	 * @param enchantLevel 
+	 * @return the quantity of crystals for crystallization on specific enchant level
 	 */
 	public final int getCrystalCount(int enchantLevel)
 	{
@@ -486,6 +491,7 @@ public abstract class L2Item
 	
 	/**
 	 * Sets the base elemental of the item
+	 * @param element 
 	 */
 	public void setElementals(Elementals element)
 	{
@@ -898,6 +904,11 @@ public abstract class L2Item
 	{
 		return _questItem;
 	}
+	
+	public boolean isFreightable()
+	{
+		return _freightable;
+	}
 
 	/**
 	 * Returns the name of the item
@@ -932,5 +943,15 @@ public abstract class L2Item
 	public String getIcon()
 	{
 		return _icon;
+	}
+	
+	public void addQuestEvent(Quest q)
+	{
+		_questEvents.add(q);
+	}
+	
+	public List<Quest> getQuestEvents()
+	{
+		return _questEvents;
 	}
 }

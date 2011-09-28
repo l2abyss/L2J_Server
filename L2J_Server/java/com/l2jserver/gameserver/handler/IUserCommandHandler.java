@@ -29,8 +29,8 @@ public interface IUserCommandHandler
 	public static Logger _log = Logger.getLogger(IUserCommandHandler.class.getName());
 	/**
 	 * this is the worker method that is called when someone uses an admin command.
+	 * @param id
 	 * @param activeChar
-	 * @param command
 	 * @return command success
 	 */
 	public boolean useUserCommand(int id, L2PcInstance activeChar);

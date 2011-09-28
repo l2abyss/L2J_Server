@@ -26,7 +26,7 @@ public class VehicleDeparture extends L2GameServerPacket
 	private final int _objId, _x, _y, _z, _moveSpeed, _rotationSpeed;
 	
 	/**
-	 * @param _boat
+	 * @param boat
 	 */
 	public VehicleDeparture(L2BoatInstance boat)
 	{

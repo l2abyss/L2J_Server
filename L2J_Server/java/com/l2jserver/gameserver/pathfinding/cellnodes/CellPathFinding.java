@@ -85,7 +85,7 @@ public class CellPathFinding extends PathFinding
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#PathNodesExist(short)
+	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#pathNodesExist(short)
 	 */
 	@Override
 	public boolean pathNodesExist(short regionoffset)
@@ -94,7 +94,7 @@ public class CellPathFinding extends PathFinding
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#FindPath(int, int, short, int, int, short)
+	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#findPath(int, int, int, int, int, int, int, boolean)
 	 */
 	@Override
 	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean playable)
@@ -312,13 +312,11 @@ public class CellPathFinding extends PathFinding
 						i.playableUses++;
 					break;
 				}
-				else
-				{
-					i.overflows++;
-					if (playable)
-						i.playableOverflows++;
-					//System.err.println("Overflow, size requested: " + size + " playable:"+playable);
-				}
+
+				i.overflows++;
+				if (playable)
+					i.playableOverflows++;
+				//System.err.println("Overflow, size requested: " + size + " playable:"+playable);
 			}
 		}
 		

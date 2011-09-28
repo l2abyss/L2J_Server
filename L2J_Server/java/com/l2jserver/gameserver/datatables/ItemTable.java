@@ -171,8 +171,7 @@ public class ItemTable
 	}
 	
 	/**
-	 * Returns a new object Item
-	 * @return
+	 * @return a new object Item
 	 */
 	public Item newItem()
 	{
@@ -212,6 +211,7 @@ public class ItemTable
 	
 	/**
 	 * Builds a variable in which all items are putting in in function of their ID.
+	 * @param size 
 	 */
 	private void buildFastLookupTable(int size)
 	{
@@ -247,8 +247,8 @@ public class ItemTable
 	{
 		if (id >= _allTemplates.length)
 			return null;
-		else
-			return _allTemplates[id];
+		
+		return _allTemplates[id];
 	}
 	
 	/**
@@ -362,12 +362,11 @@ public class ItemTable
 	 * <B><U> Actions</U> :</B><BR><BR>
 	 * <li>Sets L2ItemInstance parameters to be unusable </li>
 	 * <li>Removes the L2ItemInstance object to _allObjects of L2world </li>
-	 * <li>Logs Item delettion according to log settings</li><BR><BR>
-	 *
-	 * @param process : String Identifier of process triggering this action
-	 * @param itemId : int Item Identifier of the item to be created
-	 * @param actor : L2PcInstance Player requesting the item destroy
-	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
+	 * <li>Logs Item deletion according to log settings</li><BR><BR>
+	 * @param process a string identifier of process triggering this action.
+	 * @param item the item instance to be destroyed.
+	 * @param actor the player requesting the item destroy.
+	 * @param reference the object referencing current action like NPC selling item or previous item in transformation.
 	 */
 	public void destroyItem(String process, L2ItemInstance item, L2PcInstance actor, Object reference)
 	{

@@ -179,9 +179,8 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		);
 	}
 	
-	
 	/**
-	 * @see com.l2jserver.gsregistering.BaseGameServerRegister#showError(java.lang.String, java.lang.String, java.lang.Throwable)
+	 * @see com.l2jserver.gsregistering.BaseGameServerRegister#showError(String, Throwable)
 	 */
 	@Override
 	public void showError(String msg, Throwable t)

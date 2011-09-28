@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.TradeDone;
  */
 public final class AnswerTradeRequest extends L2GameClientPacket
 {
-	private static final String _C__40_ANSWERTRADEREQUEST = "[C] 40 AnswerTradeRequest";
+	private static final String _C__55_ANSWERTRADEREQUEST = "[C] 55 AnswerTradeRequest";
 	//private static Logger _log = Logger.getLogger(AnswerTradeRequest.class.getName());
 	
 	private int _response;
@@ -90,12 +90,9 @@ public final class AnswerTradeRequest extends L2GameClientPacket
 		partner.onTransactionResponse();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__40_ANSWERTRADEREQUEST;
+		return _C__55_ANSWERTRADEREQUEST;
 	}
 }

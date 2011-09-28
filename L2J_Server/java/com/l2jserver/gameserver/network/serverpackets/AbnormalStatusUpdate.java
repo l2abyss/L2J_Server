@@ -49,6 +49,11 @@ public class AbnormalStatusUpdate extends L2GameServerPacket
 		_effects = new FastList<Effect>();
 	}
 	
+	/**
+	 * @param skillId
+	 * @param level
+	 * @param duration
+	 */
 	public void addEffect(int skillId, int level, int duration)
 	{
 		if (skillId == 2031 ||skillId == 2032 ||skillId == 2037 || skillId == 26025 || skillId == 26026)

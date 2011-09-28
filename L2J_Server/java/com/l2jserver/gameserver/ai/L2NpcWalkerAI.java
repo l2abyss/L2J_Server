@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
+import com.l2jserver.gameserver.network.NpcStringId;
 
 public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 {
@@ -115,15 +116,13 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 		
 		if (getActor().isInsideRadius(destinationX, destinationY, destinationZ, 5, false, false))
 		{
-			int id = _route.get(_currentPos).getChatId();
+			NpcStringId npcString = _route.get(_currentPos).getNpcString();
 			String chat = null;
-			if (id == 0)
+			if (npcString == null)
 				chat = _route.get(_currentPos).getChatText();
 			
-			if ((id > 0) || (chat != null && !chat.isEmpty()))
-			{
-				getActor().broadcastChat(chat, id);
-			}
+			if ((npcString != null) || (chat != null && !chat.isEmpty()))
+				getActor().broadcastChat(chat, npcString);
 			
 			//time in millis
 			long delay = _route.get(_currentPos).getDelay() * 1000;

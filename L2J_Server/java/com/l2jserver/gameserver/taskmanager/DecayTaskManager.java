@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -34,14 +35,11 @@ public class DecayTaskManager
 {
 	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
 	
-	protected Map<L2Character, Long> _decayTasks = new FastMap<L2Character, Long>().shared();
-	
-	public static final int RAID_BOSS_DECAY_TIME = 30000;
-	public static final int ATTACKABLE_DECAY_TIME = 8500;
-	
+	protected final Map<L2Character, Long> _decayTasks = new FastMap<L2Character, Long>().shared();
+
 	private DecayTaskManager()
 	{
-		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new DecayScheduler(), 10000, 5000);
+		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new DecayScheduler(), 10000, Config.DECAY_TIME_TASK);
 	}
 	
 	public static DecayTaskManager getInstance()
@@ -79,25 +77,27 @@ public class DecayTaskManager
 		
 		public void run()
 		{
-			long current = System.currentTimeMillis();
-			int delay;
+			final long current = System.currentTimeMillis();
 			try
 			{
-				Iterator<Entry<L2Character, Long>> it = _decayTasks.entrySet().iterator();
+				final Iterator<Entry<L2Character, Long>> it = _decayTasks.entrySet().iterator();
+				Entry<L2Character, Long> e;
+				L2Character actor;
+				Long next;
+				int delay;
 				while (it.hasNext())
 				{
-					Entry<L2Character, Long> e = it.next();
-					L2Character actor = e.getKey();
-					Long next = e.getValue();
+					e = it.next();
+					actor = e.getKey();
+					next = e.getValue();
 					if (next == null)
 						continue;
 					if (actor.isRaid() && !actor.isRaidMinion())
-						delay = RAID_BOSS_DECAY_TIME;
-					else if (actor instanceof L2Attackable &&
-							(((L2Attackable)actor).isSpoil() || ((L2Attackable)actor).isSeeded()))
-						delay = ATTACKABLE_DECAY_TIME * 2;
+						delay = Config.RAID_BOSS_DECAY_TIME;
+					else if ((actor instanceof L2Attackable) && (((L2Attackable) actor).isSpoil() || ((L2Attackable) actor).isSeeded()))
+						delay = Config.SPOILED_DECAY_TIME;
 					else
-						delay = ATTACKABLE_DECAY_TIME;
+						delay = Config.NPC_DECAY_TIME;
 					if ((current - next) > delay)
 					{
 						actor.onDecay();
@@ -107,8 +107,7 @@ public class DecayTaskManager
 			}
 			catch (Exception e)
 			{
-				// TODO: Find out the reason for exception. Unless caught here,
-				// mob decay would stop.
+				// TODO: Find out the reason for exception. Unless caught here, mob decay would stop.
 				_log.log(Level.WARNING, "Error in DecayScheduler: " + e.getMessage(), e);
 			}
 		}
@@ -117,22 +116,31 @@ public class DecayTaskManager
 	@Override
 	public String toString()
 	{
-		String ret = "============= DecayTask Manager Report ============\r\n";
-		ret += "Tasks count: " + _decayTasks.size() + "\r\n";
-		ret += "Tasks dump:\r\n";
+		StringBuilder ret = new StringBuilder();
+		ret.append("============= DecayTask Manager Report ============\r\n");
+		ret.append("Tasks count: ");
+		ret.append(_decayTasks.size());
+		ret.append("\r\n");
+		ret.append("Tasks dump:\r\n");
 		
 		Long current = System.currentTimeMillis();
 		for (L2Character actor : _decayTasks.keySet())
 		{
-			ret += "Class/Name: " + actor.getClass().getSimpleName() + "/" + actor.getName() + " decay timer: "
-			+ (current - _decayTasks.get(actor)) + "\r\n";
+			ret.append("Class/Name: ");
+			ret.append(actor.getClass().getSimpleName());
+			ret.append("/");
+			ret.append(actor.getName());
+			ret.append(" decay timer: ");
+			ret.append(current - _decayTasks.get(actor));
+			ret.append("\r\n");
 		}
 		
-		return ret;
+		return ret.toString();
 	}
 	
 	/**
 	 * <u><b><font color="FF0000">Read only</font></b></u>
+	 * @return 
 	 */
 	public Map<L2Character, Long> getTasks()
 	{

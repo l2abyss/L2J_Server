@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
@@ -114,24 +115,28 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			{
 				if (spawn2.getNpcId() == spawn.getNpcid())
 				{
-					String text = "";
+					NpcStringId npcString = null;
 					switch (spawn2.getId())
 					{
 						case 1:
-							text = "Attacking the enemy's reinforcements is necesary. Time to Die!";
+							npcString = NpcStringId.ATTACKING_THE_ENEMYS_REINFORCEMENTS_IS_NECESSARY_TIME_TO_DIE;
 							break;
 						case 2:
 							if (attacker instanceof L2Summon)
 								attacker = ((L2Summon) attacker).getOwner();
-							text = "Everyone, concentrate your attacks on "+attacker.getName()+"! Show the enemy your resolve!";
+							npcString = NpcStringId.EVERYONE_CONCENTRATE_YOUR_ATTACKS_ON_S1_SHOW_THE_ENEMY_YOUR_RESOLVE;
 							break;
 						case 3:
-							text = "Spirit of Fire, unleash your power! Burn the enemy!!";
+							npcString = NpcStringId.SPIRIT_OF_FIRE_UNLEASH_YOUR_POWER_BURN_THE_ENEMY;
 							break;
 					}
-					if (!text.isEmpty())
+					if (npcString != null)
 					{
-						broadcastPacket(new NpcSay(getObjectId(), 1, getNpcId(), text));
+						NpcSay ns = new NpcSay(getObjectId(), 1, getNpcId(), npcString);
+						if (npcString.getParamCount() == 1)
+							ns.addStringParameter(attacker.getName());
+						
+						broadcastPacket(ns);
 						setCanTalk(false);
 						ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTalkTask(), 10000);
 					}

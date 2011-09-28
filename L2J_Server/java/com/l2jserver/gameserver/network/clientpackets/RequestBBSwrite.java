@@ -24,11 +24,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 /**
  * Format SSSSSS
  * @author -Wooden-
- *
  */
 public final class RequestBBSwrite extends L2GameClientPacket
 {
-	private static final String _C__22_REQUESTBBSWRITE = "[C] 22 RequestBBSwrite";
+	private static final String _C__24_REQUESTBBSWRITE = "[C] 24 RequestBBSwrite";
 	private String _url;
 	private String _arg1;
 	private String _arg2;
@@ -67,6 +66,6 @@ public final class RequestBBSwrite extends L2GameClientPacket
 	@Override
 	public final String getType()
 	{
-		return _C__22_REQUESTBBSWRITE;
+		return _C__24_REQUESTBBSWRITE;
 	}
 }

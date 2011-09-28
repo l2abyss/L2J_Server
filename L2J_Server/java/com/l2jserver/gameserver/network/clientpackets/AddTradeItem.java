@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TradeOtherAdd;
 import com.l2jserver.gameserver.network.serverpackets.TradeOwnAdd;
 
@@ -31,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.TradeOwnAdd;
  */
 public final class AddTradeItem extends L2GameClientPacket
 {
-	private static final String _C__16_ADDTRADEITEM = "[C] 16 AddTradeItem";
+	private static final String _C__1B_ADDTRADEITEM = "[C] 1B AddTradeItem";
 	private static final Logger _log = Logger.getLogger(AddTradeItem.class.getName());
 	
 	private int _tradeId;
@@ -70,28 +69,27 @@ public final class AddTradeItem extends L2GameClientPacket
 			// Trade partner not found, cancel trade
 			if (partner != null)
 				_log.warning("Character:" + player.getName() + " requested invalid trade object: " + _objectId);
-			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
-			player.sendPacket(msg);
+			player.sendPacket(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 			player.cancelActiveTrade();
 			return;
 		}
 		
 		if (trade.isConfirmed() || partner.getActiveTradeList().isConfirmed())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_ADJUST_ITEMS_AFTER_TRADE_CONFIRMED));
+			player.sendPacket(SystemMessageId.CANNOT_ADJUST_ITEMS_AFTER_TRADE_CONFIRMED);
 			return;
 		}
 		
 		if (!player.getAccessLevel().allowTransaction())
 		{
-			player.sendMessage("Transactions are disable for your Access Level");
+			player.sendMessage("Transactions are disabled for your Access Level.");
 			player.cancelActiveTrade();
 			return;
 		}
 		
 		if (!player.validateItemManipulation(_objectId, "trade"))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOTHING_HAPPENED));
+			player.sendPacket(SystemMessageId.NOTHING_HAPPENED);
 			return;
 		}
 		
@@ -103,12 +101,9 @@ public final class AddTradeItem extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__16_ADDTRADEITEM;
+		return _C__1B_ADDTRADEITEM;
 	}
 }

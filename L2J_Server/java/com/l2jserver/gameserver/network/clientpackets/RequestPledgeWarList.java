@@ -14,21 +14,16 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.PledgeReceiveWarList;
-
 
 /**
  * Format: (ch) dd
  * @author  -Wooden-
- *
  */
 public final class RequestPledgeWarList extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestPledgeWarList.class.getName());
-	private static final String _C__D0_1E_REQUESTPLEDGEWARLIST = "[C] D0:1E RequestPledgeWarList";
+	private static final String _C__D0_17_REQUESTPLEDGEWARLIST = "[C] D0:17 RequestPledgeWarList";
 	@SuppressWarnings("unused")
 	private int _unk1;
 	private int _tab;
@@ -41,9 +36,6 @@ public final class RequestPledgeWarList extends L2GameClientPacket
 		_tab = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -58,13 +50,9 @@ public final class RequestPledgeWarList extends L2GameClientPacket
 		activeChar.sendPacket(new PledgeReceiveWarList(activeChar.getClan(),_tab));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_1E_REQUESTPLEDGEWARLIST;
+		return _C__D0_17_REQUESTPLEDGEWARLIST;
 	}
-	
 }

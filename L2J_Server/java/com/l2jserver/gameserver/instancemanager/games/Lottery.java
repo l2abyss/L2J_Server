@@ -330,7 +330,7 @@ public class Lottery
 					{
 						int val = curenchant / 2;
 						
-						if (val != (double) curenchant / 2)
+						if (val != Math.round((double) curenchant / 2))
 							count++;
 						
 						int val2 = curtype2 / 2;
@@ -448,7 +448,7 @@ public class Lottery
 		while (enchant > 0)
 		{
 			int val = enchant / 2;
-			if (val != (double) enchant / 2)
+			if (val != Math.round((double) enchant / 2))
 			{
 				res[id++] = nr;
 			}
@@ -508,7 +508,7 @@ public class Lottery
 				for (int i = 1; i <= 16; i++)
 				{
 					int val = curenchant / 2;
-					if (val != (double) curenchant / 2)
+					if (val != Math.round((double) curenchant / 2))
 						count++;
 					int val2 = curtype2 / 2;
 					if (val2 != (double) curtype2 / 2)

@@ -84,8 +84,9 @@ public class FortSiegeManager
 	}
 	
 	/**
-	 * Return true if character summon<BR><BR>
 	 * @param activeChar The L2Character of the character can summon
+	 * @param isCheckOnly 
+	 * @return true if character summon
 	 */
 	public final boolean checkIfOkToSummon(L2Character activeChar, boolean isCheckOnly)
 	{
@@ -111,8 +112,9 @@ public class FortSiegeManager
 	}
 	
 	/**
-	 * Return true if the clan is registered or owner of a fort<BR><BR>
 	 * @param clan The L2Clan of the player
+	 * @param fortid 
+	 * @return true if the clan is registered or owner of a fort
 	 */
 	public final boolean checkIsRegistered(L2Clan clan, int fortid)
 	{
@@ -257,18 +259,14 @@ public class FortSiegeManager
 		{
 			return _commanderSpawnList.get(_fortId);
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	public final FastList<CombatFlag> getFlagList(int _fortId)
 	{
 		if (_flagList.containsKey(_fortId))
 			return _flagList.get(_fortId);
-		else
-			return null;
+		return null;
 	}
 	
 	public final int getAttackerMaxClans()

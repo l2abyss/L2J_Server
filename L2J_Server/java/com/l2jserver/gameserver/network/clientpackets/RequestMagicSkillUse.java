@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
-
 /**
  * This class ...
  *
@@ -31,7 +30,7 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
  */
 public final class RequestMagicSkillUse extends L2GameClientPacket
 {
-	private static final String _C__2F_REQUESTMAGICSKILLUSE = "[C] 2F RequestMagicSkillUse";
+	private static final String _C__39_REQUESTMAGICSKILLUSE = "[C] 39 RequestMagicSkillUse";
 	private static Logger _log = Logger.getLogger(RequestMagicSkillUse.class.getName());
 	
 	private int _magicId;
@@ -75,10 +74,13 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-			// _log.fine("	skill:"+skill.getName() + " level:"+skill.getLevel() + " passive:"+skill.isPassive());
-			// _log.fine("	range:"+skill.getCastRange()+" targettype:"+skill.getTargetType()+" optype:"+skill.getOperateType()+" power:"+skill.getPower());
-			// _log.fine("	reusedelay:"+skill.getReuseDelay()+" hittime:"+skill.getHitTime());
-			// _log.fine("	currentState:"+activeChar.getCurrentState());	//for debug
+			
+			if (Config.DEBUG)
+			{
+				_log.fine("	skill:"+skill.getName() + " level:"+skill.getLevel() + " passive:"+skill.isPassive());
+				_log.fine("	range:"+skill.getCastRange()+" targettype:"+skill.getTargetType()+" power:"+skill.getPower());
+				_log.fine("	reusedelay:"+skill.getReuseDelay()+" hittime:"+skill.getHitTime());
+			}
 			
 			// If Alternate rule Karma punishment is set to true, forbid skill Return to player with Karma
 			if (skill.getSkillType() == L2SkillType.RECALL && !Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
@@ -97,12 +99,9 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__2F_REQUESTMAGICSKILLUSE;
+		return _C__39_REQUESTMAGICSKILLUSE;
 	}
 }

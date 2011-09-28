@@ -24,9 +24,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * 
  * @author DS
- * 
  */
 public final class OlympiadGameTask implements Runnable
 {
@@ -92,8 +90,7 @@ public final class OlympiadGameTask implements Runnable
 			_needAnnounce = false;
 			return true;
 		}
-		else
-			return false;
+		return false;
 	}
 
 	public final L2OlympiadStadiumZone getZone()
@@ -298,7 +295,7 @@ public final class OlympiadGameTask implements Runnable
 
 	/**
 	 * Second stage: check for defaulted, port players to arena, announce game.
-	 * Returns true if no participants defaulted.
+	 * @return true if no participants defaulted.
 	 */
 	private final boolean startGame()
 	{
@@ -345,7 +342,7 @@ public final class OlympiadGameTask implements Runnable
 
 	/**
 	 * Fourth stage: last checks, remove buffers, start competition itself.
-	 * Returns true if all participants online and ready on the stadium.
+	 * @return true if all participants online and ready on the stadium.
 	 */
 	private final boolean startBattle()
 	{
@@ -372,6 +369,7 @@ public final class OlympiadGameTask implements Runnable
 
 	/**
 	 * Fifth stage: battle is running, returns true if winner found.
+	 * @return 
 	 */
 	private final boolean checkBattle()
 	{

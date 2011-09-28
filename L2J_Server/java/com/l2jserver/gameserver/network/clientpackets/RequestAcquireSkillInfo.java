@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType
  */
 public final class RequestAcquireSkillInfo extends L2GameClientPacket
 {
-	private static final String _C__6B_REQUESTACQUIRESKILLINFO = "[C] 6B RequestAcquireSkillInfo";
+	private static final String _C__73_REQUESTACQUIRESKILLINFO = "[C] 73 RequestAcquireSkillInfo";
 	private static final Logger _log = Logger.getLogger(RequestAcquireSkillInfo.class.getName());
 	
 	private int _id;
@@ -330,6 +330,6 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__6B_REQUESTACQUIRESKILLINFO;
+		return _C__73_REQUESTACQUIRESKILLINFO;
 	}
 }

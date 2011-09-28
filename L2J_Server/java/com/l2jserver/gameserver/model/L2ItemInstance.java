@@ -67,7 +67,8 @@ public final class L2ItemInstance extends L2Object
 	private static final Logger _logItems = Logger.getLogger("item");
 	
 	/** Enumeration of locations for item */
-	public static enum ItemLocation {
+	public static enum ItemLocation 
+	{
 		VOID,
 		INVENTORY,
 		PAPERDOLL,
@@ -77,7 +78,8 @@ public final class L2ItemInstance extends L2Object
 		PET_EQUIP,
 		LEASE,
 		REFUND,
-		MAIL
+		MAIL,
+		FREIGHT
 	}
 	
 	/** ID of the owner */
@@ -257,12 +259,14 @@ public final class L2ItemInstance extends L2Object
 		
 		if (!Config.DISABLE_TUTORIAL && (itemId == 57 || itemId == 6353))
 		{
+			//Note from UnAfraid:
+			//Unhardcode this?
 			L2PcInstance actor = player.getActingPlayer();
 			if (actor != null)
 			{
 				QuestState qs = actor.getQuestState("255_Tutorial");
-				if (qs != null)
-					qs.getQuest().notifyEvent("CE"+itemId+"",null, actor);
+				if (qs != null && qs.getQuest() != null)
+					qs.getQuest().notifyEvent("CE" + itemId, null, actor);
 			}
 		}
 		// outside of synchronized to avoid deadlocks
@@ -482,7 +486,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public int getLocationSlot()
 	{
-		assert _loc == ItemLocation.PAPERDOLL || _loc == ItemLocation.PET_EQUIP || _loc == ItemLocation.INVENTORY || _loc == ItemLocation.MAIL;
+		assert _loc == ItemLocation.PAPERDOLL || _loc == ItemLocation.PET_EQUIP || _loc == ItemLocation.INVENTORY || _loc == ItemLocation.MAIL || _loc == ItemLocation.FREIGHT;
 		return _locData;
 	}
 	
@@ -695,8 +699,8 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns if item can be deposited in warehouse or freight
-	 * @return boolean
+	 * @param isPrivateWareHouse 
+	 * @return if item can be deposited in warehouse or freight
 	 */
 	public boolean isDepositable(boolean isPrivateWareHouse)
 	{
@@ -757,8 +761,10 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns if item is available for manipulation
-	 * @return boolean
+	 * @param player 
+	 * @param allowAdena 
+	 * @param allowNonTradeable 
+	 * @return if item is available for manipulation
 	 */
 	public boolean isAvailable(L2PcInstance player, boolean allowAdena, boolean allowNonTradeable)
 	{
@@ -786,8 +792,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Sets the level of enchantment of the item
-	 * @param int
+	 * @param enchantLevel the enchant value to set
 	 */
 	public void setEnchantLevel(int enchantLevel)
 	{
@@ -1152,6 +1157,7 @@ public final class L2ItemInstance extends L2Object
 			_shadowItem = item;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -1192,7 +1198,7 @@ public final class L2ItemInstance extends L2Object
 	 * sends a inventory update
 	 * schedules a new consumption task if non is running
 	 * optionally one could force a new task
-	 * @param forces a new consumption task if item is equipped
+	 * @param resetConsumingMana if true forces a new consumption task if item is equipped
 	 */
 	public void decreaseMana(boolean resetConsumingMana)
 	{
@@ -1204,7 +1210,7 @@ public final class L2ItemInstance extends L2Object
 	 * sends a inventory update
 	 * schedules a new consumption task if non is running
 	 * optionally one could force a new task
-	 * @param forces a new consumption task if item is equipped
+	 * @param resetConsumingMana if forces a new consumption task if item is equipped
 	 * @param count how much mana decrease
 	 */
 	public void decreaseMana(boolean resetConsumingMana, int count)
@@ -1433,7 +1439,8 @@ public final class L2ItemInstance extends L2Object
 	
 	/**
 	 * Returns a L2ItemInstance stored in database from its objectID
-	 * @param objectId : int designating the objectID of the item
+	 * @param ownerId
+	 * @param rs 
 	 * @return L2ItemInstance
 	 */
 	public static L2ItemInstance restoreFromDb(int ownerId, ResultSet rs)
@@ -1518,6 +1525,7 @@ public final class L2ItemInstance extends L2Object
 			_itm = item;
 		}
 		
+		@Override
 		public final void run()
 		{
 			assert _itm.getPosition().getWorldRegion() == null;
@@ -1849,6 +1857,7 @@ public final class L2ItemInstance extends L2Object
 			_limitedItem = item;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -1922,5 +1931,24 @@ public final class L2ItemInstance extends L2Object
 	public boolean isQuestItem()
 	{
 		return getItem().isQuestItem();
+	}
+	
+	public boolean isFreightable()
+	{
+		return getItem().isFreightable();
+	}
+	
+	public int getOlyEnchantLevel()
+	{
+		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		int enchant = getEnchantLevel();
+		
+		if(player == null)
+			return enchant;
+		
+		if (player.isInOlympiadMode() && Config.ALT_OLY_ENCHANT_LIMIT >= 0 && enchant > Config.ALT_OLY_ENCHANT_LIMIT)
+				enchant = Config.ALT_OLY_ENCHANT_LIMIT;
+		
+		return enchant;
 	}
 }

@@ -32,7 +32,12 @@ public class Dice extends L2GameServerPacket
 	
 	/**
 	 * 0xd4 Dice         dddddd
-	 * @param _characters
+	 * @param charObjId
+	 * @param itemId
+	 * @param number
+	 * @param x
+	 * @param y
+	 * @param z
 	 */
 	public Dice(int charObjId, int itemId, int number, int x , int y , int z)
 	{

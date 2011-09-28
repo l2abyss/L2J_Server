@@ -65,9 +65,9 @@ import com.l2jserver.util.Rnd;
 public class L2Party
 {
 	private static final Logger _log = Logger.getLogger(L2Party.class.getName());
-	private static final double[] BONUS_EXP_SP = {1, 1.30, 1.39, 1.50, 1.54, 1.58, 1.63, 1.67, 1.71};
+	private static final double[] BONUS_EXP_SP = { 1, 1.10, 1.20, 1.30, 1.40, 1.50, 2.0, 2.10, 2.20 };
 	//TODO: JIV - unhardcode to some SysString enum (sysstring-e.dat)
-	private static final int[] LOOT_SYSSTRINGS = {487, 488, 798, 799, 800};
+	private static final int[] LOOT_SYSSTRINGS = { 487, 488, 798, 799, 800 };
 	private static final int PARTY_POSITION_BROADCAST = 12000;
 	
 	public static final byte ITEM_LOOTER = 0;
@@ -90,11 +90,23 @@ public class L2Party
 	private Future<?> _checkTask = null;
 	private Future<?> _positionBroadcastTask = null;
 	private PartyMemberPosition _positionPacket;
+	private boolean _disbanding = false;
+	
+	/**
+	 * The message type send to the party members.
+	 */
+	public enum messageType
+	{
+		Expelled,
+		Left,
+		None,
+		Disconnected
+	}
 	
 	/**
 	 * constructor ensures party has always one member - leader
 	 * @param leader
-	 * @param itemDistributionMode
+	 * @param itemDistribution
 	 */
 	public L2Party(L2PcInstance leader, int itemDistribution)
 	{
@@ -119,6 +131,7 @@ public class L2Party
 	/**
 	 * set invitation process flag and store time for expiration
 	 * happens when: player join party or player decline to join
+	 * @param val 
 	 */
 	public void setPendingInvitation(boolean val)
 	{
@@ -147,6 +160,8 @@ public class L2Party
 	
 	/**
 	 * get random member from party
+	 * @param ItemId 
+	 * @param target 
 	 * @return
 	 */
 	private L2PcInstance getCheckedRandomMember(int ItemId, L2Character target)
@@ -157,12 +172,15 @@ public class L2Party
 			if (member.getInventory().validateCapacityByItemId(ItemId) &&
 					Util.checkIfInRange(Config.ALT_PARTY_RANGE2, target, member, true)) availableMembers.add(member);
 		}
-		if (!availableMembers.isEmpty()) return availableMembers.get(Rnd.get(availableMembers.size()));
-		else return null;
+		if (!availableMembers.isEmpty())
+			return availableMembers.get(Rnd.get(availableMembers.size()));
+		return null;
 	}
 	
 	/**
 	 * get next item looter
+	 * @param ItemId 
+	 * @param target 
 	 * @return
 	 */
 	private L2PcInstance getCheckedNextLooter(int ItemId, L2Character target)
@@ -189,6 +207,10 @@ public class L2Party
 	
 	/**
 	 * get next item looter
+	 * @param player 
+	 * @param ItemId 
+	 * @param spoil 
+	 * @param target 
 	 * @return
 	 */
 	private L2PcInstance getActualLooter(L2PcInstance player, int ItemId, boolean spoil, L2Character target)
@@ -216,31 +238,41 @@ public class L2Party
 	}
 	
 	/**
-	 * true if player is party leader
-	 * @param player
-	 * @return
+	 * 
+	 * @param player the player to check.
+	 * @return {code true} if player is party leader.
 	 */
-	public boolean isLeader(L2PcInstance player) { return (getLeader().equals(player)); }
+	public boolean isLeader(L2PcInstance player)
+	{
+		return getLeader().equals(player);
+	}
 	
 	/**
-	 * Returns the Object ID for the party leader to be used as a unique identifier of this party
-	 * @return int
+	 * @return the Object ID for the party leader to be used as a unique identifier of this party-
 	 */
-	public int getPartyLeaderOID() { return getLeader().getObjectId(); }
+	public int getPartyLeaderOID()
+	{
+		return getLeader().getObjectId();
+	}
 	
 	/**
-	 * Broadcasts packet to every party member
-	 * @param msg
+	 * Broadcasts packet to all party member.
+	 * @param packet the packet to be broadcasted.
 	 */
-	public void broadcastToPartyMembers(L2GameServerPacket msg)
+	public void broadcastToPartyMembers(L2GameServerPacket packet)
 	{
 		for (L2PcInstance member : getPartyMembers())
 		{
 			if (member != null)
-				member.sendPacket(msg);
+			{
+				member.sendPacket(packet);
+			}
 		}
 	}
 	
+	/**
+	 * Broadcasts UI update and User Info for new party leader.
+	 */
 	public void broadcastToPartyMembersNewLeader()
 	{
 		for (L2PcInstance member : getPartyMembers())
@@ -266,6 +298,8 @@ public class L2Party
 	
 	/**
 	 * Send a Server->Client packet to all other L2PcInstance of the Party.<BR><BR>
+	 * @param player 
+	 * @param msg 
 	 */
 	public void broadcastToPartyMembers(L2PcInstance player, L2GameServerPacket msg)
 	{
@@ -358,49 +392,61 @@ public class L2Party
 	}
 	
 	/**
-	 * Remove player from party
-	 * Overloaded method that takes player's name as parameter
-	 * @param name
+	 * Removes a party member using its name.
+	 * @param name player the player to be removed from the party.
+	 * @param type the message type {@link messageType}.
 	 */
-	public void removePartyMember(String name)
+	public synchronized void removePartyMember(String name, messageType type)
 	{
-		L2PcInstance player = getPlayerByName(name);
-		
-		if (player != null)
-			removePartyMember(player);
+		removePartyMember(getPlayerByName(name), type);
 	}
 	
 	/**
-	 * Remove player from party
-	 * @param player
+	 * Removes a party member instance.
+	 * @param player the player to be removed from the party.
+	 * @param type the message type {@link messageType}.
 	 */
-	public void removePartyMember(L2PcInstance player)
-	{
-		removePartyMember(player, true);
-	}
-	
-	public synchronized void removePartyMember(L2PcInstance player, boolean sendMessage)
+	public synchronized void removePartyMember(L2PcInstance player, messageType type)
 	{
 		if (getPartyMembers().contains(player))
 		{
-			boolean isLeader = isLeader(player);
+			final boolean isLeader = isLeader(player);
+			if (!_disbanding)
+			{
+				if ((getPartyMembers().size() == 2) || isLeader && !Config.ALT_LEAVE_PARTY_LEADER && (type != messageType.Disconnected))
+				{
+					disbandParty();
+					return;
+				}
+			}
+			
 			getPartyMembers().remove(player);
 			recalculatePartyLevel();
 			
 			if (player.isFestivalParticipant())
+			{
 				SevenSignsFestival.getInstance().updateParticipants(player, this);
+			}
 			
 			if(player.isInDuel())
+			{
 				DuelManager.getInstance().onRemoveFromParty(player);
+			}
 			
 			try
 			{
 				if (player.getFusionSkill() != null)
+				{
 					player.abortCast();
+				}
 				
 				for (L2Character character : player.getKnownList().getKnownCharacters())
-					if (character.getFusionSkill() != null && character.getFusionSkill().getTarget() == player)
+				{
+					if ((character.getFusionSkill() != null) && (character.getFusionSkill().getTarget() == player))
+					{
 						character.abortCast();
+					}
+				}
 			}
 			catch (Exception e)
 			{
@@ -408,44 +454,49 @@ public class L2Party
 			}
 			
 			SystemMessage msg;
-			
-			if (sendMessage)
+			if (type == messageType.Expelled)
 			{
-				msg = SystemMessage.getSystemMessage(SystemMessageId.YOU_LEFT_PARTY);
-				player.sendPacket(msg);
+				player.sendPacket(SystemMessageId.HAVE_BEEN_EXPELLED_FROM_PARTY);
+				msg = SystemMessage.getSystemMessage(SystemMessageId.C1_WAS_EXPELLED_FROM_PARTY);
+				msg.addString(player.getName());
+				broadcastToPartyMembers(msg);
+			}
+			else if ((type == messageType.Left) || (type == messageType.Disconnected))
+			{
+				player.sendPacket(SystemMessageId.YOU_LEFT_PARTY);
 				msg = SystemMessage.getSystemMessage(SystemMessageId.C1_LEFT_PARTY);
 				msg.addString(player.getName());
 				broadcastToPartyMembers(msg);
 			}
 			
+			//UI update.
 			player.sendPacket(new PartySmallWindowDeleteAll());
 			player.setParty(null);
-			
 			broadcastToPartyMembers(new PartySmallWindowDelete(player));
-			L2Summon summon = player.getPet();
+			final L2Summon summon = player.getPet();
 			if (summon != null)
 			{
 				broadcastToPartyMembers(new ExPartyPetWindowDelete(summon));
 			}
 			
 			if (isInDimensionalRift())
+			{
 				_dr.partyMemberExited(player);
+			}
 			
 			// Close the CCInfoWindow
 			if (isInCommandChannel())
 			{
 				player.sendPacket(new ExCloseMPCC());
 			}
-			
-			if (isLeader && getPartyMembers().size() > 1)
+			if (isLeader && (getPartyMembers().size() > 1) && (Config.ALT_LEAVE_PARTY_LEADER || (type == messageType.Disconnected)))
 			{
 				msg = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_BECOME_A_PARTY_LEADER);
 				msg.addString(getLeader().getName());
 				broadcastToPartyMembers(msg);
 				broadcastToPartyMembersNewLeader();
 			}
-			
-			if (getPartyMembers().size() == 1)
+			else if (getPartyMembers().size() == 1)
 			{
 				if (isInCommandChannel())
 				{
@@ -459,12 +510,14 @@ public class L2Party
 						getCommandChannel().removeParty(this);
 					}
 				}
-				L2PcInstance leader = getLeader();
-				if (leader != null)
+				
+				if (getLeader() != null)
 				{
-					leader.setParty(null);
-					if (leader.isInDuel())
-						DuelManager.getInstance().onRemoveFromParty(leader);
+					getLeader().setParty(null);
+					if (getLeader().isInDuel())
+					{
+						DuelManager.getInstance().onRemoveFromParty(getLeader());
+					}
 				}
 				if (_checkTask != null)
 				{
@@ -477,7 +530,25 @@ public class L2Party
 					_positionBroadcastTask = null;
 				}
 				_members.clear();
-				
+			}
+		}
+	}
+	
+	/**
+	 * Disperse a party and sends a message to all its members.
+	 */
+	public void disbandParty()
+	{
+		_disbanding = true;
+		if (_members != null)
+		{
+			broadcastToPartyMembers(SystemMessage.getSystemMessage(SystemMessageId.PARTY_DISPERSED));
+			for (L2PcInstance member : _members)
+			{
+				if (member != null)
+				{
+					removePartyMember(member, messageType.None);
+				}
 			}
 		}
 	}
@@ -543,7 +614,8 @@ public class L2Party
 	{
 		for(L2PcInstance member : getPartyMembers())
 		{
-			if (member.getName().equalsIgnoreCase(name)) return member;
+			if (member.getName().equalsIgnoreCase(name))
+				return member;
 		}
 		return null;
 	}
@@ -587,6 +659,8 @@ public class L2Party
 	 * distribute item(s) to party members
 	 * @param player
 	 * @param item
+	 * @param spoil 
+	 * @param target 
 	 */
 	public void distributeItem(L2PcInstance player, L2Attackable.RewardItem item, boolean spoil, L2Attackable target)
 	{
@@ -624,7 +698,9 @@ public class L2Party
 	
 	/**
 	 * distribute adena to party members
+	 * @param player 
 	 * @param adena
+	 * @param target 
 	 */
 	public void distributeAdena(L2PcInstance player, long adena, L2Character target)
 	{
@@ -668,7 +744,9 @@ public class L2Party
 	 * @param xpReward The Experience reward to distribute
 	 * @param spReward The SP reward to distribute
 	 * @param rewardedMembers The list of L2PcInstance to reward
-	 *
+	 * @param topLvl 
+	 * @param partyDmg 
+	 * @param target 
 	 */
 	public void distributeXpAndSp(long xpReward, int spReward, List<L2Playable> rewardedMembers, int topLvl, int partyDmg, L2Attackable target)
 	{
@@ -709,10 +787,9 @@ public class L2Party
 				{
 					if (((L2PetInstance)member).getPetLevelData().getOwnerExpTaken() > 0)
 						continue;
-					else // TODO: This is a temporary fix while correct pet xp in party is figured out
-						penalty = (float)0.85;
+					// TODO: This is a temporary fix while correct pet xp in party is figured out
+					penalty = (float) 0.85;
 				}
-				
 				
 				// Calculate and add the EXP and SP reward to the member
 				if (validMembers.contains(member))
@@ -843,10 +920,7 @@ public class L2Party
 			//not is a valid party
 			return getBaseExpSpBonus(membersCount);
 		}
-		else
-		{
-			return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_XP;
-		}
+		return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_XP;
 	}
 	
 	private double getSpBonus(int membersCount)
@@ -856,10 +930,7 @@ public class L2Party
 			//not is a valid party
 			return getBaseExpSpBonus(membersCount);
 		}
-		else
-		{
-			return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_SP;
-		}
+		return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_SP;
 	}
 	
 	public int getLevel() { return _partyLvl; }

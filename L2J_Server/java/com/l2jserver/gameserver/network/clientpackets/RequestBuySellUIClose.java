@@ -37,9 +37,6 @@ public class RequestBuySellUIClose extends L2GameClientPacket
 		activeChar.sendPacket(new ItemList(activeChar, true));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

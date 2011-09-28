@@ -95,13 +95,14 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	}
 	
 	/**
-	 * @return A String with this packet name for debuging purposes
+	 * @return A String with this packet name for debugging purposes
 	 */
 	public abstract String getType();
 	
 	/**
-	 * Overriden with true value on some packets that should disable spawn protection
+	 * Overridden with true value on some packets that should disable spawn protection
 	 * (RequestItemList and UseItem only)
+	 * @return 
 	 */
 	protected boolean triggersOnActionRequest()
 	{

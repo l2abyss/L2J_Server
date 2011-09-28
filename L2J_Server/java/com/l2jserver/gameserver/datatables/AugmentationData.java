@@ -510,9 +510,8 @@ public class AugmentationData
 	
 	/**
 	 * Generate a new random augmentation
-	 * @param item
 	 * @param lifeStoneLevel
-	 * @param lifeSoneGrade
+	 * @param lifeStoneGrade
 	 * @param bodyPart
 	 * @return L2Augmentation
 	 */

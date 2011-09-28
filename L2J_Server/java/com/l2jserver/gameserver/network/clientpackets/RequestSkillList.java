@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RequestSkillList extends L2GameClientPacket
 {
-	private static final String _C__3F_REQUESTSKILLLIST = "[C] 3F RequestSkillList";
+	private static final String _C__50_REQUESTSKILLLIST = "[C] 50 RequestSkillList";
 	
 	@Override
 	protected void readImpl()
@@ -43,7 +43,7 @@ public final class RequestSkillList extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__3F_REQUESTSKILLLIST;
+		return _C__50_REQUESTSKILLLIST;
 	}
 	
 	@Override

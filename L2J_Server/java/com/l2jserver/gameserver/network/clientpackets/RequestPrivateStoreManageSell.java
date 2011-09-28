@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
  */
 public final class RequestPrivateStoreManageSell extends L2GameClientPacket
 {
-	private static final String _C__73_REQUESTPRIVATESTOREMANAGESELL = "[C] 73 RequestPrivateStoreManageSell";
+	private static final String _C__30_REQUESTPRIVATESTOREMANAGESELL = "[C] 30 RequestPrivateStoreManageSell";
 	
 	//private static Logger _log = Logger.getLogger(RequestPrivateStoreManage.class.getName());
 	
@@ -62,13 +62,10 @@ public final class RequestPrivateStoreManageSell extends L2GameClientPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__73_REQUESTPRIVATESTOREMANAGESELL;
+		return _C__30_REQUESTPRIVATESTOREMANAGESELL;
 	}
 	
 	@Override

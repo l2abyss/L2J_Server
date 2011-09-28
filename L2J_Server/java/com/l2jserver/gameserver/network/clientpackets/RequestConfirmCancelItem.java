@@ -29,22 +29,15 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestConfirmCancelItem extends L2GameClientPacket
 {
-	private static final String _C__D0_2D_REQUESTCONFIRMCANCELITEM = "[C] D0:2D RequestConfirmCancelItem";
+	private static final String _C__D0_42_REQUESTCONFIRMCANCELITEM = "[C] D0:42 RequestConfirmCancelItem";
 	private int _objectId;
 	
-	/**
-	 * @param buf
-	 * @param client
-	 */
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -114,12 +107,9 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 		activeChar.sendPacket(new ExPutItemResultForVariationCancel(item, price));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_2D_REQUESTCONFIRMCANCELITEM;
+		return _C__D0_42_REQUESTCONFIRMCANCELITEM;
 	}
 }

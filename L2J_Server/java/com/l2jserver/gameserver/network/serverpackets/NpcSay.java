@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.l2jserver.gameserver.network.NpcStringId;
+
 /**
  *
  * @author Kerberos
@@ -25,41 +27,46 @@ public final class NpcSay extends L2GameServerPacket
 {
 	// cddddS
 	private static final String _S__30_NPCSAY = "[S] 30 NpcSay";
-	private int _objectId;
-	private int _textType;
-	private int _npcId;
+	private final int _objectId;
+	private final int _textType;
+	private final int _npcId;
 	private String _text;
 	private int _npcString;
 	private List<String> _parameters;
 	
 	/**
-	 * @param _characters
+	 * @param objectId
+	 * @param messageType
+	 * @param npcId
+	 * @param text
 	 */
 	public NpcSay(int objectId, int messageType, int npcId, String text)
 	{
 		_objectId = objectId;
 		_textType = messageType;
-		_npcId = 1000000+npcId;
+		_npcId = 1000000 + npcId;
+		_npcString = -1;
 		_text = text;
 	}
 	
-	public NpcSay(int objectId, int messageType, int npcId, int npcString)
+	public NpcSay(int objectId, int messageType, int npcId, NpcStringId npcString)
 	{
 		_objectId = objectId;
 		_textType = messageType;
-		_npcId = 1000000+npcId;
-		_npcString = npcString;
+		_npcId = 1000000 + npcId;
+		_npcString = npcString.getId();
 	}
 	
 	/**
-	 * String parameter for argument S1,S2,.. in npcstring-e.dat
-	 * @param text
+	 * @param text - parameter for argument S1,S2 etc of an npcstring
+	 * @return this NpcSay packet object
 	 */
-	public void addStringParameter(String text)
+	public NpcSay addStringParameter(String text)
 	{
 		if (_parameters == null)
 			_parameters = new ArrayList<String>();
 		_parameters.add(text);
+		return this;
 	}
 	
 	@Override
@@ -70,20 +77,15 @@ public final class NpcSay extends L2GameServerPacket
 		writeD(_textType);
 		writeD(_npcId);
 		writeD(_npcString);
-		if (_npcString == 0)
+		if (_npcString == -1)
 			writeS(_text);
-		else
-		{
-			if (_parameters != null)
-			{
-				for (String s : _parameters)
-					writeS(s);
-			}
-		}
+		else if (_parameters != null)
+			for (String s : _parameters)
+				writeS(s);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

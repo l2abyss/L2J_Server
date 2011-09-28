@@ -37,7 +37,7 @@ import com.l2jserver.gameserver.network.serverpackets.ServerClose;
  */
 public class CharacterSelect extends L2GameClientPacket
 {
-	private static final String _C__0D_CHARACTERSELECT = "[C] 0D CharacterSelect";
+	private static final String _C__12_CHARACTERSELECT = "[C] 12 CharacterSelect";
 	private static final Logger _log = Logger.getLogger(CharacterSelect.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
@@ -69,6 +69,12 @@ public class CharacterSelect extends L2GameClientPacket
 		final L2GameClient client = getClient();
 		if (!client.getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterSelect"))
 			return;
+		
+		if (Config.SECOND_AUTH_ENABLED && !client.getSecondaryAuth().isAuthed())
+		{
+			client.getSecondaryAuth().openDialog();
+			return;
+		}
 		
 		// We should always be able to acquire the lock
 		// But if we can't lock then nothing should be done (i.e. repeated packet)
@@ -134,12 +140,9 @@ public class CharacterSelect extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__0D_CHARACTERSELECT;
+		return _C__12_CHARACTERSELECT;
 	}
 }

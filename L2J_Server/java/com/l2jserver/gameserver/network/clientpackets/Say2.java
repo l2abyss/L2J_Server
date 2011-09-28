@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class Say2 extends L2GameClientPacket
 {
-	private static final String _C__38_SAY2 = "[C] 38 Say2";
+	private static final String _C__49_SAY2 = "[C] 49 Say2";
 	private static Logger _log = Logger.getLogger(Say2.class.getName());
 	private static Logger _logChat = Logger.getLogger("chat");
 	
@@ -134,8 +134,8 @@ public final class Say2 extends L2GameClientPacket
 		}
 		
 		// Even though the client can handle more characters than it's current limit allows, an overflow (critical error) happens if you pass a huge (1000+) message.
-		// April 27, 2009 - Verified on Gracia P2 & Final official client as 105
-		// Allow higher limit if player shift some item (text is longer then)
+		// July 11, 2011 - Verified on High Five 4 official client as 105.
+		// Allow higher limit if player shift some item (text is longer then).
 		if (!activeChar.isGM() && ((_text.indexOf(8) >= 0 && _text.length() > 500) || (_text.indexOf(8) < 0 && _text.length() > 105)))
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DONT_SPAM));
@@ -154,12 +154,15 @@ public final class Say2 extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isChatBanned())
+		if (activeChar.isChatBanned() && !_text.startsWith("."))
 		{
-			if (_type == ALL || _type == SHOUT || _type == TRADE || _type == HERO_VOICE)
+			for (int chatId : Config.BAN_CHAT_CHANNELS)
 			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED));
-				return;
+				if (_type == chatId)
+				{
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED));
+					return;
+				}
 			}
 		}
 		
@@ -260,13 +263,10 @@ public final class Say2 extends L2GameClientPacket
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__38_SAY2;
+		return _C__49_SAY2;
 	}
 	
 	@Override

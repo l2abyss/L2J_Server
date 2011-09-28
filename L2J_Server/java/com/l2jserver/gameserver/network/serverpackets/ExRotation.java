@@ -16,13 +16,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * @author JIV
- *
  */
 public class ExRotation extends L2GameServerPacket
 {
-	private static final String _S__77_BEGINROTATION = "[S] FE:C0 ExRotation";
+	private static final String TYPE = "[S] FE:C1 ExRotation";
 	
-	private int _charObjId, _degree;
+	private final int _charObjId, _degree;
 	
 	public ExRotation(int charId, int degree)
 	{
@@ -34,7 +33,7 @@ public class ExRotation extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0xC0);
+		writeH(0xC1);
 		writeD(_charObjId);
 		writeD(_degree);
 	}
@@ -42,7 +41,6 @@ public class ExRotation extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__77_BEGINROTATION;
+		return TYPE;
 	}
-	
 }

@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.model.L2HennaInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -26,15 +25,9 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestHennaRemove extends L2GameClientPacket
 {
-	private static final String _C__BC_RequestHennaRemove = "[C] bc RequestHennaRemove";
+	private static final String _C__72_REQUESTHENNAREMOVE = "[C] 72 RequestHennaRemove";
 	private int _symbolId;
-	// format  cd
 	
-	/**
-	 * packet type id 0xbb
-	 * format:		cd
-	 * @param decrypt
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -59,20 +52,19 @@ public final class RequestHennaRemove extends L2GameClientPacket
 				if (activeChar.getAdena() >= (henna.getPrice() / 5))
 				{
 					activeChar.removeHenna(i);
-					break;
 				}
 				else
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+				{
+					activeChar.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
+				}
+				break;
 			}
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__BC_RequestHennaRemove;
+		return _C__72_REQUESTHENNAREMOVE;
 	}
 }

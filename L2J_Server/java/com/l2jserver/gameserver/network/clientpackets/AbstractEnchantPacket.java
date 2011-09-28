@@ -38,6 +38,13 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 		protected final int _chanceAdd;
 		protected final int[] _itemIds;
 		
+		/**
+		 * @param wep
+		 * @param type
+		 * @param level
+		 * @param chance
+		 * @param items
+		 */
 		public EnchantItem(boolean wep, int type, int level, int chance, int[] items)
 		{
 			_isWeapon = wep;
@@ -47,8 +54,9 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 			_itemIds = items;
 		}
 		
-		/*
-		 * Return true if support item can be used for this item
+		/**
+		 * @param enchantItem
+		 * @return true if support item can be used for this item
 		 */
 		public final boolean isValid(L2ItemInstance enchantItem)
 		{
@@ -95,8 +103,8 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 			return true;
 		}
 		
-		/*
-		 * return chance increase
+		/**
+		 * @return chance increase
 		 */
 		public final int getChanceAdd()
 		{
@@ -110,6 +118,16 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 		private final boolean _isCrystal;
 		private final boolean _isSafe;
 		
+		/**
+		 * @param wep
+		 * @param bless
+		 * @param crystal
+		 * @param safe
+		 * @param type
+		 * @param level
+		 * @param chance
+		 * @param items
+		 */
 		public EnchantScroll(boolean wep, boolean bless, boolean crystal, boolean safe, int type, int level, int chance, int[] items)
 		{
 			super(wep, type, level, chance, items);
@@ -119,30 +137,35 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 			_isSafe = safe;
 		}
 		
-		/*
-		 * Return true for blessed scrolls
+		/**
+		 * @return true for blessed scrolls
 		 */
 		public final boolean isBlessed()
 		{
 			return _isBlessed;
 		}
 		
-		/*
-		 * Return true for crystal scrolls
+		/**
+		 * @return true for crystal scrolls
 		 */
 		public final boolean isCrystal()
 		{
 			return _isCrystal;
 		}
 		
-		/*
-		 * Return true for safe-enchant scrolls (enchant level will remain on failure)
+		/**
+		 * @return true for safe-enchant scrolls (enchant level will remain on failure)
 		 */
 		public final boolean isSafe()
 		{
 			return _isSafe;
 		}
 		
+		/**
+		 * @param enchantItem
+		 * @param supportItem
+		 * @return
+		 */
 		public final boolean isValid(L2ItemInstance enchantItem, EnchantItem supportItem)
 		{
 			// blessed scrolls can't use support items
@@ -152,6 +175,11 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 			return isValid(enchantItem);
 		}
 		
+		/**
+		 * @param enchantItem
+		 * @param supportItem
+		 * @return
+		 */
 		public final int getChance(L2ItemInstance enchantItem, EnchantItem supportItem)
 		{
 			if (!isValid(enchantItem, supportItem))
@@ -298,7 +326,8 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 	}
 	
 	/**
-	 * Return enchant template for scroll
+	 * @param scroll 
+	 * @return enchant template for scroll
 	 */
 	protected static final EnchantScroll getEnchantScroll(L2ItemInstance scroll)
 	{
@@ -306,7 +335,8 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 	}
 	
 	/**
-	 * Return enchant template for support item
+	 * @param item 
+	 * @return enchant template for support item
 	 */
 	protected static final EnchantItem getSupportItem(L2ItemInstance item)
 	{
@@ -314,7 +344,8 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 	}
 	
 	/**
-	 * Return true if item can be enchanted
+	 * @param item 
+	 * @return true if item can be enchanted
 	 */
 	protected static final boolean isEnchantable(L2ItemInstance item)
 	{

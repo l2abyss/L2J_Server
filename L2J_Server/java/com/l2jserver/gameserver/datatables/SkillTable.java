@@ -136,7 +136,9 @@ public class SkillTable
 	}
 	
 	/**
-	 * Returns an array with siege skills. If addNoble == true, will add also Advanced headquarters.
+	 * @param addNoble 
+	 * @param hasCastle 
+	 * @return an array with siege skills. If addNoble == true, will add also Advanced headquarters.
 	 */
 	public L2Skill[] getSiegeSkills(boolean addNoble, boolean hasCastle)
 	{

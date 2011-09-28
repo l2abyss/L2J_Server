@@ -103,8 +103,7 @@ public class L2SkillDrain extends L2Skill
 			
 			boolean mcrit = Formulas.calcMCrit(activeChar.getMCriticalHit(target, this));
 			byte shld = Formulas.calcShldUse(activeChar, target, this);
-			int damage = (int)Formulas.calcMagicDam(
-					activeChar, target, this, shld, ss, bss, mcrit);
+			int damage = isStaticDamage() ? (int)getPower() : (int)Formulas.calcMagicDam(activeChar, target, this, shld, ss, bss, mcrit);
 			
 			int _drain = 0;
 			int _cp = (int)target.getCurrentCp();

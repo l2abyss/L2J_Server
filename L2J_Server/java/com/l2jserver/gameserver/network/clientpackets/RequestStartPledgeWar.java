@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.Collection;
+import gnu.trove.TObjectProcedure;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public final class RequestStartPledgeWar extends L2GameClientPacket
 {
-	private static final String _C__4D_REQUESTSTARTPLEDGEWAR = "[C] 4D RequestStartPledgewar";
+	private static final String _C__03_REQUESTSTARTPLEDGEWAR = "[C] 03 RequestStartPledgewar";
 	//private static Logger _log = Logger.getLogger(RequestStartPledgeWar.class.getName());
 	
 	private String _pledgeName;
@@ -135,18 +135,28 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 		//        leader.sendPacket(new StartPledgeWar(_clan.getName(),player.getName()));
 		
 		ClanTable.getInstance().storeclanswars(player.getClanId(), clan.getClanId());
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		//synchronized (L2World.getInstance().getAllPlayers())
+		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastUserInfo(clan));
+	}
+	
+	private final class ForEachPlayerBroadcastUserInfo implements TObjectProcedure<L2PcInstance>
+	{
+		L2Clan _cln;
+		private ForEachPlayerBroadcastUserInfo(L2Clan clan)
 		{
-			for (L2PcInstance cha : pls)
-				if (cha.getClan() == player.getClan() || cha.getClan() == clan)
-					cha.broadcastUserInfo();
+			_cln = clan;
+		}
+		@Override
+		public final boolean execute(final L2PcInstance cha)
+		{
+			if (cha.getClan() == player.getClan() || cha.getClan() == _cln)
+				cha.broadcastUserInfo();
+			return true;
 		}
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _C__4D_REQUESTSTARTPLEDGEWAR;
+		return _C__03_REQUESTSTARTPLEDGEWAR;
 	}
 }

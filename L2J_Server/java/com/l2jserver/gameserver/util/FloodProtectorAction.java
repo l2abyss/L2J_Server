@@ -61,11 +61,8 @@ public final class FloodProtectorAction
 	
 	/**
 	 * Creates new instance of FloodProtectorAction.
-	 * 
-	 * @param player
-	 *            player for which flood protection is being created
-	 * @param config
-	 *            flood protector configuration
+	 * @param client the game client for which flood protection is being created
+	 * @param config flood protector configuration
 	 */
 	public FloodProtectorAction(final L2GameClient client, final FloodProtectorConfig config)
 	{
@@ -209,9 +206,11 @@ public final class FloodProtectorAction
 					StringUtil.append(output, _client.getActiveChar().getName());
 					StringUtil.append(output, "(", String.valueOf(_client.getActiveChar().getObjectId()),") ");
 				}
+				break;
 			case AUTHED:
 				if (_client.getAccountName() != null)
 					StringUtil.append(output, _client.getAccountName()," ");
+				break;
 			case CONNECTED:
 				if (address != null)
 					StringUtil.append(output, address);

@@ -41,7 +41,11 @@ public final class StopMove extends L2GameServerPacket
 	}
 	
 	/**
-	 * @param _characters
+	 * @param objectId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
 	 */
 	public StopMove(int objectId, int x, int y, int z, int heading)
 	{
@@ -63,8 +67,8 @@ public final class StopMove extends L2GameServerPacket
 		writeD(_heading);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

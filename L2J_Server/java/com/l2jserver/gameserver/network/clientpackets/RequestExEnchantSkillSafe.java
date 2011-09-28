@@ -37,15 +37,13 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.util.Rnd;
 
-
 /**
  * Format (ch) dd c: (id) 0xD0 h: (subid) 0x32 d: skill id d: skill lvl
- * 
  * @author -Wooden-
- * 
  */
 public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 {
+	private static final String _C__D0_32_REQUESTEXENCHANTSKILLSAFE = "[C] D0:32 RequestExEnchantSkillSafe";
 	private static final Logger _log = Logger.getLogger(RequestExEnchantSkillSafe.class.getName());
 	private static final Logger _logEnchant = Logger.getLogger("enchant");
 	
@@ -59,11 +57,6 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 		_skillLvl = readD();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -220,15 +213,9 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return "[C] D0:32 RequestExEnchantSkillSafe";
+		return _C__D0_32_REQUESTEXENCHANTSKILLSAFE;
 	}
-	
 }

@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.network.serverpackets.SiegeDefenderList;
  */
 public final class RequestSiegeDefenderList extends L2GameClientPacket
 {
-	private static final String _C__a3_RequestSiegeDefenderList = "[C] a3 RequestSiegeDefenderList";
+	private static final String _C__AC_REQUESTSIEGEDEFENDERLIST = "[C] AC RequestSiegeDefenderList";
 	//private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
 	
 	private int _castleId;
@@ -50,6 +50,6 @@ public final class RequestSiegeDefenderList extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__a3_RequestSiegeDefenderList;
+		return _C__AC_REQUESTSIEGEDEFENDERLIST;
 	}
 }

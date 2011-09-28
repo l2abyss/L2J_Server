@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * @author Maktakien
@@ -27,8 +27,9 @@ public class MoveToLocationInVehicle extends L2GameServerPacket
 	private int _boatId;
 	private Point3D _destination;
 	private Point3D _origin;
+	
 	/**
-	 * @param actor
+	 * @param player
 	 * @param destination
 	 * @param origin
 	 */
@@ -40,8 +41,8 @@ public class MoveToLocationInVehicle extends L2GameServerPacket
 		_origin = origin;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
 	 */
 	@Override
 	protected void writeImpl()
@@ -57,8 +58,8 @@ public class MoveToLocationInVehicle extends L2GameServerPacket
 		writeD(_origin.getZ());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

@@ -302,22 +302,20 @@ public class L2ControllableMobAI extends L2AttackableAI
 				String faction_id = ((L2Npc) _actor).getFactionId();
 				
 				Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
-				//synchronized (_actor.getKnownList().getKnownObjects())
+
+				for (L2Object obj : objs)
 				{
-					for (L2Object obj : objs)
+					if (!(obj instanceof L2Npc))
+						continue;
+					
+					L2Npc npc = (L2Npc) obj;
+					
+					if (!faction_id.equals(npc.getFactionId()))
+						continue;
+					
+					if (_actor.isInsideRadius(npc, npc.getFactionRange(), false, true) && Math.abs(getAttackTarget().getZ() - npc.getZ()) < 200)
 					{
-						if (!(obj instanceof L2Npc))
-							continue;
-						
-						L2Npc npc = (L2Npc) obj;
-						
-						if (!faction_id.equals(npc.getFactionId()))
-							continue;
-						
-						if (_actor.isInsideRadius(npc, npc.getFactionRange(), false, true) && Math.abs(getAttackTarget().getZ() - npc.getZ()) < 200)
-						{
-							npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getAttackTarget(), 1);
-						}
+						npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getAttackTarget(), 1);
 					}
 				}
 			}
@@ -457,30 +455,28 @@ public class L2ControllableMobAI extends L2AttackableAI
 		List<L2Character> potentialTarget = new FastList<L2Character>();
 		
 		Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
-		//synchronized (npc.getKnownList().getKnownObjects())
+		for (L2Object obj : objs)
 		{
-			for (L2Object obj : objs)
-			{
-				if (!(obj instanceof L2Character))
-					continue;
-				
-				npcX = npc.getX();
-				npcY = npc.getY();
-				targetX = obj.getX();
-				targetY = obj.getY();
-				
-				dx = npcX - targetX;
-				dy = npcY - targetY;
-				
-				if (dx * dx + dy * dy > dblAggroRange)
-					continue;
-				
-				L2Character target = (L2Character) obj;
-				
-				if (autoAttackCondition(target)) // check aggression
-					potentialTarget.add(target);
-			}
+			if (!(obj instanceof L2Character))
+				continue;
+			
+			npcX = npc.getX();
+			npcY = npc.getY();
+			targetX = obj.getX();
+			targetY = obj.getY();
+			
+			dx = npcX - targetX;
+			dy = npcY - targetY;
+			
+			if (dx * dx + dy * dy > dblAggroRange)
+				continue;
+			
+			L2Character target = (L2Character) obj;
+			
+			if (autoAttackCondition(target)) // check aggression
+				potentialTarget.add(target);
 		}
+		
 		
 		if (potentialTarget.isEmpty()) // nothing to do
 			return null;

@@ -28,9 +28,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
-
 
 /**
  * This class ...
@@ -41,7 +39,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class SendWareHouseDepositList extends L2GameClientPacket
 {
-	private static final String _C__31_SENDWAREHOUSEDEPOSITLIST = "[C] 31 SendWareHouseDepositList";
+	private static final String _C__3B_SENDWAREHOUSEDEPOSITLIST = "[C] 3B SendWareHouseDepositList";
 	private static Logger _log = Logger.getLogger(SendWareHouseDepositList.class.getName());
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
@@ -85,7 +83,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("deposit"))
 		{
-			player.sendMessage("You depositing items too fast.");
+			player.sendMessage("You are depositing items too fast.");
 			return;
 		}
 		
@@ -102,7 +100,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 		
 		if (!isPrivate && !player.getAccessLevel().allowTransaction())
 		{
-			player.sendMessage("Transactions are disable for your Access Level");
+			player.sendMessage("Transactions are disabled for your Access Level.");
 			return;
 		}
 		
@@ -142,14 +140,14 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 		// Item Max Limit Check
 		if (!warehouse.validateCapacity(slots))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
+			player.sendPacket(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED);
 			return;
 		}
 		
 		// Check if enough adena and charge the fee
 		if (currentAdena < fee || !player.reduceAdena(warehouse.getName(), fee, manager, false))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			player.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 			return;
 		}
 		
@@ -222,12 +220,9 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__31_SENDWAREHOUSEDEPOSITLIST;
+		return _C__3B_SENDWAREHOUSEDEPOSITLIST;
 	}
 }

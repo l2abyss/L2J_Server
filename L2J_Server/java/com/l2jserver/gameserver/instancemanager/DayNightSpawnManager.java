@@ -28,11 +28,8 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2RaidBossInstance;
 
 /**
- *
- * @version $Revision: $ $Date: $
  * @author  godson
  */
-
 public class DayNightSpawnManager
 {
 	
@@ -86,10 +83,10 @@ public class DayNightSpawnManager
 	
 	/**
 	 * Manage Spawn/Respawn
-	 * Arg 1 : List with spawns must be unspawned
-	 * Arg 2 : List with spawns must be spawned
-	 * Arg 3 : String for log info for unspawned L2NpcInstance
-	 * Arg 4 : String for log info for spawned L2NpcInstance
+	 * @param unSpawnCreatures List with spawns must be unspawned
+	 * @param spawnCreatures List with spawns must be spawned
+	 * @param UnspawnLogInfo String for log info for unspawned L2NpcInstance
+	 * @param SpawnLogInfo String for log info for spawned L2NpcInstance
 	 */
 	private void spawnCreatures(List<L2Spawn> unSpawnCreatures, List<L2Spawn> spawnCreatures, String UnspawnLogInfo,
 			String SpawnLogInfo)
@@ -241,9 +238,8 @@ public class DayNightSpawnManager
 			
 			return raidboss;
 		}
-		else
-			_bosses.put(spawnDat, null);
 		
+		_bosses.put(spawnDat, null);
 		return null;
 	}
 	

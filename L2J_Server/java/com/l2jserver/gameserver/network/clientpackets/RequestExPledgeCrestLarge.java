@@ -25,11 +25,11 @@ import com.l2jserver.gameserver.network.serverpackets.ExPledgeCrestLarge;
  *
  * This is a trigger
  * @author -Wooden-
- *
  */
 public final class RequestExPledgeCrestLarge extends L2GameClientPacket
 {
 	private static final String _C__D0_10_REQUESTEXPLEDGECRESTLARGE = "[C] D0:10 RequestExPledgeCrestLarge";
+	
 	private int _crestId;
 	
 	@Override
@@ -48,12 +48,8 @@ public final class RequestExPledgeCrestLarge extends L2GameClientPacket
 			ExPledgeCrestLarge pcl = new ExPledgeCrestLarge(_crestId, data);
 			sendPacket(pcl);
 		}
-		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

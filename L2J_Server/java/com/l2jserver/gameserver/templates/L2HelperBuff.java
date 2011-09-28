@@ -41,6 +41,7 @@ public class L2HelperBuff
 	private boolean _forSummon = false;
 	/**
 	 * Constructor of L2HelperBuff.<BR><BR>
+	 * @param set 
 	 */
 	public L2HelperBuff(StatsSet set)
 	{

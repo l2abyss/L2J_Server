@@ -184,6 +184,12 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 	{
 		return Config.ALT_OLY_TEAM_REWARD;
 	}
+	
+	@Override
+	protected final String getWeeklyMatchType()
+	{
+		return COMP_DONE_WEEK_TEAM;
+	}
 
 	@Override
 	public final boolean containsParticipant(int playerId)
@@ -676,6 +682,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				{
 					par = _teamOne[i];
 					par.updateStat(COMP_DONE, 1);
+					par.updateStat(COMP_DONE_WEEK, 1);
+					par.updateStat(getWeeklyMatchType(), 1);
 					par.updateNobleStats();
 				}
 
@@ -683,6 +691,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				{
 					par = _teamTwo[i];
 					par.updateStat(COMP_DONE, 1);
+					par.updateStat(COMP_DONE_WEEK, 1);
+					par.updateStat(getWeeklyMatchType(), 1);
 					par.updateNobleStats();
 				}
 			}
@@ -804,6 +814,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				par = _teamOne[i];
 				par.updateStat(COMP_DONE, 1);
+				par.updateStat(COMP_DONE_WEEK, 1);
+				par.updateStat(getWeeklyMatchType(), 1);
 				par.updateNobleStats();
 			}
 
@@ -811,6 +823,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				par = _teamTwo[i];
 				par.updateStat(COMP_DONE, 1);
+				par.updateStat(COMP_DONE_WEEK, 1);
+				par.updateStat(getWeeklyMatchType(), 1);
 				par.updateNobleStats();
 			}
 		}

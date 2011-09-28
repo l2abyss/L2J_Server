@@ -255,7 +255,7 @@ public class TopicBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * @param forumByID
+	 * @param forum 
 	 * @param activeChar
 	 * @param idf
 	 */
@@ -325,7 +325,10 @@ public class TopicBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * @param memo
+	 * @param forum 
+	 * @param activeChar 
+	 * @param index 
+	 * @param idf 
 	 */
 	private void showTopics(Forum forum, L2PcInstance activeChar, int index, int idf)
 	{
@@ -354,6 +357,7 @@ public class TopicBBSManager extends BaseBBSManager
 	/**
 	 * @param forum
 	 * @param activeChar
+	 * @param index 
 	 */
 	private void showMemoTopics(Forum forum, L2PcInstance activeChar, int index)
 	{

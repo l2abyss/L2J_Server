@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import com.l2jserver.gameserver.datatables.MapRegionTable;
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
@@ -24,260 +22,38 @@ public class TownManager
 {
 	//private static final Logger _log = Logger.getLogger(TownManager.class.getName());
 	
-	// =========================================================
-	// Property - Public
-	
-	public final static L2TownZone getClosestTown(L2Object activeObject)
+	public final static int getTownCastle(int townId)
 	{
-		switch (MapRegionTable.getInstance().getMapRegion(activeObject.getPosition().getX(), activeObject.getPosition().getY()))
+		switch(townId)
 		{
-			case 0:
-				return getTown(2); // TI
-			case 1:
-				return getTown(3); // Elven
-			case 2:
-				return getTown(1); // DE
-			case 3:
-				return getTown(4); // Orc
-			case 4:
-				return getTown(6); // Dwarven
-			case 5:
-				return getTown(7); // Gludio
-			case 6:
-				return getTown(5); // Gludin
-			case 7:
-				return getTown(8); // Dion
-			case 8:
-				return getTown(9); // Giran
-			case 9:
-				return getTown(10); // Oren
-			case 10:
-				return getTown(12); // Aden
-			case 11:
-				return getTown(11); // HV
-			case 12:
-				return getTown(9); // Giran Harbour
-			case 13:
-				return getTown(15); // Heine
-			case 14:
-				return getTown(14); // Rune
-			case 15:
-				return getTown(13); // Goddard
-			case 16:
-				return getTown(17); // Schuttgart
-			case 17:
-				return getTown(16); // Floran
-			case 18:
-				return getTown(19); //Primeval Isle
-			case 19:
-				return getTown(20); //Kamael Village
-			case 20:
-				return getTown(21); //South of Wastelands Camp
-			case 21:
-				return getTown(22); //Fantasy Island
-			case 22:
-				return getTown(23); //Neutral Zone
-			case 23:
-				return getTown(24);//Coliseum
-			case 24:
-				return getTown(25);//GM Consultation service
-			case 25:
-				return getTown(26);//Dimensional Gap
-			case 26:
-				return getTown(27);//Cemetery of the Empire
-			case 27:
-				return getTown(28);//inside the Steel Citadel
-			case 28:
-				return getTown(29);//Steel Citadel Resistance
-			case 29:
-				return getTown(30);//Inside Kamaloka
-			case 30:
-				return getTown(31);//Inside Nia Kamaloka
-			case 31:
-				return getTown(32);//Inside Rim Kamaloka
-			case 32:
-				return getTown(33);//near the Keucereus clan association location
-			case 33:
-				return getTown(34);//inside the Seed of Infinity
-			case 34:
-				return getTown(35);//outside the Seed of Infinity
-			case 35:
-				return getTown(36);//inside Aerial Cleft
+			case 912:
+				return 1;
+			case 916:
+				return 2;
+			case 918:
+				return 3;
+			case 922:
+				return 4;
+			case 924:
+				return 5;
+			case 926:
+				return 6;
+			case 1537:
+				return 7;
+			case 1538:
+				return 8;
+			case 1714:
+				return 9;
+			default:
+				return 0;
 		}
-		
-		return getTown(16); // Default to floran
-	}
-	
-	public final static L2TownZone getSecondClosestTown(L2Object activeObject)
-	{
-		switch (MapRegionTable.getInstance().getMapRegion(activeObject.getPosition().getX(), activeObject.getPosition().getY()))
-		{
-			case 0:
-				return getTown(5); // TI
-			case 1:
-				return getTown(5); // Elven
-			case 2:
-				return getTown(5); // DE
-			case 3:
-				return getTown(4); // Orc
-			case 4:
-				return getTown(6); // Dwarven
-			case 5:
-				return getTown(5); // Gludio
-			case 6:
-				return getTown(5); // Gludin
-			case 7:
-				return getTown(7); // Dion
-			case 8:
-				return getTown(11); // Giran
-			case 9:
-				return getTown(11); // Oren
-			case 10:
-				return getTown(11); // Aden
-			case 11:
-				return getTown(11); // HV
-			case 12:
-				return getTown(16); // Giran Harbour
-			case 13:
-				return getTown(16); // Heine
-			case 14:
-				return getTown(13); // Rune
-			case 15:
-				return getTown(12); // Goddard
-			case 16:
-				return getTown(6); // Schuttgart
-			case 17:
-				return getTown(16); // Floran
-			case 18:
-				return getTown(19); //Primeval Isle
-			case 19:
-				return getTown(20); //Kamael Village
-			case 20:
-				return getTown(21); //South of Wastelands Camp
-			case 21:
-				return getTown(22); //Fantasy Island
-			case 22:
-				return getTown(23); //Neutral Zone
-			case 23:
-				return getTown(24);//Coliseum
-			case 24:
-				return getTown(25);//GM Consultation service
-			case 25:
-				return getTown(26);//Dimensional Gap
-			case 26:
-				return getTown(27);//Cemetery of the Empire
-			case 27:
-				return getTown(28);//inside the Steel Citadel
-			case 28:
-				return getTown(29);//Steel Citadel Resistance
-			case 29:
-				return getTown(30);//Inside Kamaloka
-			case 30:
-				return getTown(31);//Inside Nia Kamaloka
-			case 31:
-				return getTown(32);//Inside Rim Kamaloka
-			case 32:
-				return getTown(33);//near the Keucereus clan association location
-			case 33:
-				return getTown(34);//inside the Seed of Infinity
-			case 34:
-				return getTown(35);//outside the Seed of Infinity
-			case 35:
-				return getTown(36);//inside Aerial Cleft
-		}
-		
-		return getTown(16); // Default to floran
-	}
-	
-	public final static int getClosestLocation(L2Object activeObject)
-	{
-		switch (MapRegionTable.getInstance().getMapRegion(activeObject.getPosition().getX(), activeObject.getPosition().getY()))
-		{
-			case 0:
-				return 1; // TI
-			case 1:
-				return 4; // Elven
-			case 2:
-				return 3; // DE
-			case 3:
-				return 9; // Orc
-			case 4:
-				return 9; // Dwarven
-			case 5:
-				return 2; // Gludio
-			case 6:
-				return 2; // Gludin
-			case 7:
-				return 5; // Dion
-			case 8:
-				return 6; // Giran
-			case 9:
-				return 10; // Oren
-			case 10:
-				return 13; // Aden
-			case 11:
-				return 11; // HV
-			case 12:
-				return 6; // Giran Harbour
-			case 13:
-				return 12; // Heine
-			case 14:
-				return 14; // Rune
-			case 15:
-				return 15; // Goddard
-			case 16:
-				return 9; // Schuttgart
-				/*
-			case 17:
-				return getTown(16); // Floran
-			case 18:
-				return getTown(19); //Primeval Isle
-            case 19:
-                return getTown(20); //Kamael Village
-            case 20:
-                return getTown(21); //South of Wastelands Camp
-            case 21:
-                return getTown(22); //Fantasy Island
-            case 22:
-                return 7; //Neutral Zone
-            case 23:
-                return getTown(24);//Coliseum
-            case 24:
-                return getTown(25);//GM Consultation service
-            case 25:
-                return getTown(26);//Dimensional Gap
-            case 26:
-                return getTown(27);//Cemetery of the Empire
-            case 27:
-                return getTown(28);//inside the Steel Citadel
-            case 28:
-                return getTown(29);//Steel Citadel Resistance
-            case 29:
-                return getTown(30);//Inside Kamaloka
-            case 30:
-                return getTown(31);//Inside Nia Kamaloka
-            case 31:
-                return getTown(32);//Inside Rim Kamaloka
-            case 32:
-                return getTown(33);//near the Keucereus clan association location
-            case 33:
-                return getTown(34);//inside the Seed of Infinity
-            case 34:
-                return getTown(35);//outside the Seed of Infinity
-            case 35:
-                return getTown(36);//inside Aerial Cleft
-				 */
-		}
-		return 0;
 	}
 	
 	public final static boolean townHasCastleInSiege(int townId)
 	{
-		//int[] castleidarray = {0,0,0,0,0,0,0,1,2,3,4,0,5,0,0,6,0};
-		int[] castleidarray = {0,0,0,0,0,0,0,1,2,3,4,0,5,7,8,6,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		int castleIndex= castleidarray[townId] ;
+		int castleIndex = getTownCastle(townId);
 		
-		if ( castleIndex > 0 )
+		if (castleIndex > 0)
 		{
 			Castle castle = CastleManager.getInstance().getCastles().get(CastleManager.getInstance().getCastleIndex(castleIndex));
 			if (castle != null)
@@ -288,18 +64,8 @@ public class TownManager
 	
 	public final static boolean townHasCastleInSiege(int x, int y)
 	{
-		int curtown= (MapRegionTable.getInstance().getMapRegion(x, y));
-		//int[] castleidarray = {0,0,0,0,0,1,0,2,3,4,5,0,0,6,0,0,0,0};
-		int[] castleidarray = {0,0,0,0,0,1,0,2,3,4,5,0,0,6,8,7,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		//find an instance of the castle for this town.
-		int castleIndex = castleidarray[curtown];
-		if ( castleIndex > 0 )
-		{
-			Castle castle = CastleManager.getInstance().getCastles().get(CastleManager.getInstance().getCastleIndex(castleIndex));
-			if (castle != null)
-				return castle.getSiege().getIsInProgress();
-		}
-		return false;
+		int curtown = MapRegionManager.getInstance().getMapRegion(x, y).getLocId();
+		return townHasCastleInSiege(curtown);
 	}
 	
 	public final static L2TownZone getTown(int townId)

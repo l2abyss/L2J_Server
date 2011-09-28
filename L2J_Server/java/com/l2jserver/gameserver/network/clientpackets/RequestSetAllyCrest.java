@@ -25,11 +25,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * Client packet for setting ally crest.
- *
  */
 public final class RequestSetAllyCrest extends L2GameClientPacket
 {
-	private static final String _C__87_REQUESTSETALLYCREST = "[C] 87 RequestSetAllyCrest";
+	private static final String _C__91_REQUESTSETALLYCREST = "[C] 91 RequestSetAllyCrest";
 	static Logger _log = Logger.getLogger(RequestSetAllyCrest.class.getName());
 	
 	private int _length;
@@ -91,12 +90,9 @@ public final class RequestSetAllyCrest extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__87_REQUESTSETALLYCREST;
+		return _C__91_REQUESTSETALLYCREST;
 	}
 }

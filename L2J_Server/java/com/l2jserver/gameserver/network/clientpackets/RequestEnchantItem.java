@@ -41,7 +41,7 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 	protected static final Logger _log = Logger.getLogger(RequestEnchantItem.class.getName());
 	protected static final Logger _logEnchant = Logger.getLogger("enchant");
 	
-	private static final String _C__58_REQUESTENCHANTITEM = "[C] 58 RequestEnchantItem";
+	private static final String _C__5F_REQUESTENCHANTITEM = "[C] 5F RequestEnchantItem";
 	
 	private int _objectId = 0;
 	private int _supportId;
@@ -348,14 +348,9 @@ public final class RequestEnchantItem extends AbstractEnchantPacket
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__58_REQUESTENCHANTITEM;
+		return _C__5F_REQUESTENCHANTITEM;
 	}
 }

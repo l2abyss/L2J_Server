@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
  */
 public final class Appearing extends L2GameClientPacket
 {
-	private static final String _C__30_APPEARING = "[C] 30 Appearing";
+	private static final String _C__3A_APPEARING = "[C] 3A Appearing";
 	
 	@Override
 	protected void readImpl()
@@ -47,13 +47,10 @@ public final class Appearing extends L2GameClientPacket
 		sendPacket(new ExBrExtraUserInfo(activeChar));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__30_APPEARING;
+		return _C__3A_APPEARING;
 	}
 	
 	@Override

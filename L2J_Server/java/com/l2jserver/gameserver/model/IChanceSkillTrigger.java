@@ -24,21 +24,25 @@ public interface IChanceSkillTrigger
 {
 	/**
 	 * Just a flag
+	 * @return 
 	 */
 	public boolean triggersChanceSkill();
 	
 	/**
 	 * Triggered Id
+	 * @return 
 	 */
 	public int getTriggeredChanceId();
 	
 	/**
 	 * Triggered level
+	 * @return 
 	 */
 	public int getTriggeredChanceLevel();
 	
 	/**
 	 * Chance condition object
+	 * @return 
 	 */
 	public ChanceCondition getTriggeredChanceCondition();
 }

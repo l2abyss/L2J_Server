@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestJoinPledge extends L2GameClientPacket
 {
-	private static final String _C__24_REQUESTJOINPLEDGE = "[C] 24 RequestJoinPledge";
+	private static final String _C__26_REQUESTJOINPLEDGE = "[C] 26 RequestJoinPledge";
 	
 	private int _target;
 	private int _pledgeType;
@@ -74,12 +74,9 @@ public final class RequestJoinPledge extends L2GameClientPacket
 		return _pledgeType;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__24_REQUESTJOINPLEDGE;
+		return _C__26_REQUESTJOINPLEDGE;
 	}
 }

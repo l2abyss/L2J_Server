@@ -29,6 +29,7 @@ public final class AcquireSkillList extends L2GameServerPacket
 	 */
 	public enum SkillType
 	{
+		//TODO: Transform is 0 or 4?
 		ClassTransform, //0
 		Fishing, //1
 		Pledge, //2

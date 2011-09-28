@@ -24,6 +24,8 @@ import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
  */
 public final class RequestGetOffVehicle extends L2GameClientPacket
 {
+	private static final String _C__54_GETOFFVEHICLE = "[S] 54 GetOffVehicle";
+	
 	private int _boatId, _x, _y, _z;
 	
 	@Override
@@ -62,6 +64,6 @@ public final class RequestGetOffVehicle extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[S] 5d GetOffVehicle";
+		return _C__54_GETOFFVEHICLE;
 	}
 }

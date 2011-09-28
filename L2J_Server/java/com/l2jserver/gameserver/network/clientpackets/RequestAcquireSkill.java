@@ -148,7 +148,6 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					{
 						giveSkill(activeChar, trainer, skill);
 					}
-					break;
 				}
 				else
 				{
@@ -284,13 +283,11 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 								activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL));
 								return;
 							}
-							else
-							{
-								final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-								sm.addItemName(itemId);
-								sm.addItemNumber(itemCount);
-								activeChar.sendPacket(sm);
-							}
+							
+							final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
+							sm.addItemName(itemId);
+							sm.addItemNumber(itemCount);
+							activeChar.sendPacket(sm);
 						}
 						
 						if (rep > 0)
@@ -411,6 +408,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 	 * @param player the skill learning player.
 	 * @param trainer the skills teaching Npc.
 	 * @param s the skill to be learn.
+	 * @return 
 	 */
 	private boolean checkPlayerSkill(L2PcInstance player, L2Npc trainer, L2SkillLearn s)
 	{
@@ -446,7 +444,6 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					long reqItemCount = 0;
 					for (int[] itemIdCount : s.getItemsIdCount())
 					{
-						
 						reqItemCount = player.getInventory().getInventoryItemCount(itemIdCount[0], -1);
 						if (reqItemCount < itemIdCount[1])
 						{

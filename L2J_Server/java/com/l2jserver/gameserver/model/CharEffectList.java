@@ -69,6 +69,7 @@ public class CharEffectList
 	
 	private FastList<L2Effect> _buffs;
 	private FastList<L2Effect> _debuffs;
+	private FastList<L2Effect> _passives; // They bypass most of the actions, keep in mind that those arent included in getAllEffects()
 	
 	// The table containing the List of all stacked effect in progress for each Stack group Identifier
 	private Map<String, List<L2Effect>> _stackedEffects;
@@ -80,14 +81,18 @@ public class CharEffectList
 	private boolean _queuesInitialized = false;
 	private LinkedBlockingQueue<L2Effect> _addQueue;
 	private LinkedBlockingQueue<L2Effect> _removeQueue;
-	private AtomicBoolean queueLock = new AtomicBoolean();
+	private final AtomicBoolean queueLock = new AtomicBoolean();
 	private int _effectFlags;
 	
 	// only party icons need to be updated
 	private boolean _partyOnly = false;
 	
 	// Owner of this list
-	private L2Character _owner;
+	private final L2Character _owner;
+	
+	private L2Effect[] _effectCache;
+	private volatile boolean _rebuildCache = true;
+	private final Object _buildEffectLock = new Object();
 	
 	public CharEffectList(L2Character owner)
 	{
@@ -101,37 +106,33 @@ public class CharEffectList
 	public final L2Effect[] getAllEffects()
 	{
 		// If no effect is active, return EMPTY_EFFECTS
-		if ( (_buffs == null || _buffs.isEmpty()) && (_debuffs == null || _debuffs.isEmpty()) )
+		if ((_buffs == null || _buffs.isEmpty()) && (_debuffs == null || _debuffs.isEmpty()))
 		{
 			return EMPTY_EFFECTS;
 		}
 		
-		// Create a copy of the effects
-		FastList<L2Effect> temp = FastList.newInstance();
-		
-		// Add all buffs and all debuffs
-		if (_buffs != null)
+		synchronized (_buildEffectLock)
 		{
-			//synchronized (_buffs)
-			{
-				if (!_buffs.isEmpty())
-					temp.addAll(_buffs);
-			}
+			// If we dont need to rebuild the cache, just return the current one.
+			if (!_rebuildCache)
+				return _effectCache;
+			
+			_rebuildCache = false;
+			
+			// Create a copy of the effects
+			FastList<L2Effect> temp = FastList.newInstance();
+			
+			// Add all buffs and all debuffs
+			if (_buffs != null && !_buffs.isEmpty())
+				temp.addAll(_buffs);
+			if (_debuffs != null && !_debuffs.isEmpty())
+				temp.addAll(_debuffs);
+			
+			// Return all effects in an array
+			L2Effect[] tempArray = new L2Effect[temp.size()];
+			temp.toArray(tempArray);
+			return (_effectCache = tempArray);
 		}
-		if (_debuffs != null)
-		{
-			//synchronized (_debuffs)
-			{
-				if (!_debuffs.isEmpty())
-					temp.addAll(_debuffs);
-			}
-		}
-		
-		// Return all effects in an array
-		L2Effect[] tempArray = new L2Effect[temp.size()];
-		temp.toArray(tempArray);
-		FastList.recycle(temp);
-		return tempArray;
 	}
 	
 	/**
@@ -143,45 +144,35 @@ public class CharEffectList
 	{
 		L2Effect effectNotInUse = null;
 		
-		if (_buffs != null)
+		if (_buffs != null && !_buffs.isEmpty())
 		{
-			//synchronized (_buffs)
+			for (L2Effect e : _buffs)
 			{
-				if (!_buffs.isEmpty())
+				if (e == null)
+					continue;
+				
+				if (e.getEffectType() == tp)
 				{
-					for (L2Effect e: _buffs)
-					{
-						if (e == null)
-							continue;
-						if (e.getEffectType() == tp)
-						{
-							if (e.getInUse())
-								return e;
-							else
-								effectNotInUse = e;
-						}
-					}
+					if (e.getInUse())
+						return e;
+					
+					effectNotInUse = e;
 				}
 			}
 		}
-		if (effectNotInUse == null && _debuffs != null)
+		if (effectNotInUse == null && _debuffs != null && !_debuffs.isEmpty())
 		{
-			//synchronized (_debuffs)
+			for (L2Effect e : _debuffs)
 			{
-				if (!_debuffs.isEmpty())
+				if (e == null)
+					continue;
+				
+				if (e.getEffectType() == tp)
 				{
-					for (L2Effect e: _debuffs)
-					{
-						if (e == null)
-							continue;
-						if (e.getEffectType() == tp)
-						{
-							if (e.getInUse())
-								return e;
-							else
-								effectNotInUse = e;
-						}
-					}
+					if (e.getInUse())
+						return e;
+					
+					effectNotInUse = e;
 				}
 			}
 		}
@@ -199,109 +190,86 @@ public class CharEffectList
 		
 		if (skill.isDebuff())
 		{
-			if (_debuffs == null)
-				return null;
-			
-			//synchronized (_debuffs)
+			if (_debuffs != null && !_debuffs.isEmpty())
 			{
-				if (_debuffs.isEmpty())
-					return null;
-				
-				for (L2Effect e: _debuffs)
+				for (L2Effect e : _debuffs)
 				{
 					if (e == null)
 						continue;
+					
 					if (e.getSkill() == skill)
 					{
 						if (e.getInUse())
 							return e;
-						else
-							effectNotInUse = e;
+						
+						effectNotInUse = e;
 					}
 				}
 			}
-			return effectNotInUse;
 		}
 		else
 		{
-			if (_buffs == null)
-				return null;
-			
-			//synchronized (_buffs)
+			if (_buffs != null && !_buffs.isEmpty())
 			{
-				if (_buffs.isEmpty())
-					return null;
-				
-				for (L2Effect e: _buffs)
+				for (L2Effect e : _buffs)
 				{
 					if (e == null)
 						continue;
+					
 					if (e.getSkill() == skill)
 					{
 						if (e.getInUse())
 							return e;
-						else
-							effectNotInUse = e;
+						
+						effectNotInUse = e;
 					}
 				}
 			}
-			return effectNotInUse;
 		}
+		return effectNotInUse;
 	}
 	
 	/**
 	 * Returns the first effect matching the given skillId
-	 * @param index
+	 * @param skillId
 	 * @return
 	 */
 	public final L2Effect getFirstEffect(int skillId)
 	{
 		L2Effect effectNotInUse = null;
 		
-		if (_buffs != null)
+		if (_buffs != null && !_buffs.isEmpty())
 		{
-			//synchronized (_buffs)
+			for (L2Effect e : _buffs)
 			{
-				if (!_buffs.isEmpty())
+				if (e == null)
+					continue;
+				
+				if (e.getSkill().getId() == skillId)
 				{
-					for (L2Effect e: _buffs)
-					{
-						if (e == null)
-							continue;
-						if (e.getSkill().getId() == skillId)
-						{
-							if (e.getInUse())
-								return e;
-							else
-								effectNotInUse = e;
-						}
-					}
+					if (e.getInUse())
+						return e;
+					
+					effectNotInUse = e;
 				}
 			}
 		}
 		
-		if (effectNotInUse == null && _debuffs != null)
+		if (effectNotInUse == null && _debuffs != null && !_debuffs.isEmpty())
 		{
-			//synchronized (_debuffs)
+			for (L2Effect e : _debuffs)
 			{
-				if (!_debuffs.isEmpty())
+				if (e == null)
+					continue;
+				if (e.getSkill().getId() == skillId)
 				{
-					for (L2Effect e: _debuffs)
-					{
-						if (e == null)
-							continue;
-						if (e.getSkill().getId() == skillId)
-						{
-							if (e.getInUse())
-								return e;
-							else
-								effectNotInUse = e;
-						}
-					}
+					if (e.getInUse())
+						return e;
+					
+					effectNotInUse = e;
 				}
 			}
 		}
-		
 		return effectNotInUse;
 	}
 	
@@ -314,11 +282,7 @@ public class CharEffectList
 	 */
 	private boolean doesStack(L2Skill checkSkill)
 	{
-		if ( (_buffs == null || _buffs.isEmpty()) ||
-				checkSkill._effectTemplates == null ||
-				checkSkill._effectTemplates.length < 1 ||
-				checkSkill._effectTemplates[0].abnormalType == null ||
-				"none".equals(checkSkill._effectTemplates[0].abnormalType))
+		if ((_buffs == null || _buffs.isEmpty()) || checkSkill._effectTemplates == null || checkSkill._effectTemplates.length < 1 || checkSkill._effectTemplates[0].abnormalType == null || "none".equals(checkSkill._effectTemplates[0].abnormalType))
 		{
 			return false;
 		}
@@ -341,28 +305,24 @@ public class CharEffectList
 	 */
 	public int getBuffCount()
 	{
-		if (_buffs == null) return 0;
-		int buffCount=0;
+		if (_buffs == null || _buffs.isEmpty())
+			return 0;
 		
-		//synchronized(_buffs)
+		int buffCount = 0;
+		for (L2Effect e : _buffs)
 		{
-			if (_buffs.isEmpty())
-				return 0;
-			
-			for (L2Effect e : _buffs)
+			if (e != null && e.getShowIcon() && !e.getSkill().isDance() && !e.getSkill().isTriggeredSkill() && !e.getSkill().is7Signs())
 			{
-				if (e != null && e.getShowIcon() && !e.getSkill().isDance() && !e.getSkill().is7Signs())
+				switch (e.getSkill().getSkillType())
 				{
-					switch (e.getSkill().getSkillType())
-					{
-						case BUFF:
-						case HEAL_PERCENT:
-						case MANAHEAL_PERCENT:
-							buffCount++;
-					}
+					case BUFF:
+					case HEAL_PERCENT:
+					case MANAHEAL_PERCENT:
+						buffCount++;
 				}
 			}
 		}
+		
 		return buffCount;
 	}
 	
@@ -372,8 +332,27 @@ public class CharEffectList
 	 */
 	public int getDanceCount()
 	{
-		if (_buffs == null) return 0;
+		if (_buffs == null || _buffs.isEmpty())
+			return 0;
+		
 		int danceCount = 0;
+		for (L2Effect e : _buffs)
+		{
+			if (e != null && e.getSkill().isDance() && e.getInUse())
+				danceCount++;
+		}
+		
+		return danceCount;
+	}
+	
+	/**
+	 * Return the number of Activation Buffs in this CharEffectList
+	 * @return
+	 */
+	public int getTriggeredBuffCount()
+	{
+		if (_buffs == null) return 0;
+		int activationBuffCount = 0;
 		
 		//synchronized(_buffs)
 		{
@@ -382,11 +361,11 @@ public class CharEffectList
 			
 			for (L2Effect e : _buffs)
 			{
-				if (e != null && e.getSkill().isDance() && e.getInUse())
-					danceCount++;
+				if (e != null && e.getSkill().isTriggeredSkill() && e.getInUse())
+					activationBuffCount++;
 			}
 		}
-		return danceCount;
+		return activationBuffCount;
 	}
 	
 	/**
@@ -426,16 +405,12 @@ public class CharEffectList
 	 */
 	public void stopAllToggles()
 	{
-		if (_buffs != null)
+		if (_buffs != null && !_buffs.isEmpty())
 		{
-			//synchronized (_buffs)
+			for (L2Effect e : _buffs)
 			{
-				if (!_buffs.isEmpty())
-				{
-					for (L2Effect e : _buffs)
-						if (e != null && e.getSkill().isToggle())
-							e.exit();
-				}
+				if (e != null && e.getSkill().isToggle())
+					e.exit();
 			}
 		}
 	}
@@ -446,41 +421,25 @@ public class CharEffectList
 	 */
 	public final void stopEffects(L2EffectType type)
 	{
-		// Go through all active skills effects
-		FastList<L2Effect> temp = FastList.newInstance();
-		if (_buffs != null)
+		if (_buffs != null && !_buffs.isEmpty())
 		{
-			//synchronized (_buffs)
+			for (L2Effect e : _buffs)
 			{
-				if (!_buffs.isEmpty())
-				{
-					for (L2Effect e : _buffs)
-						// Get active skills effects of the selected type
-						if (e != null && e.getEffectType() == type)
-							temp.add(e);
-				}
-			}
-		}
-		if (_debuffs != null)
-		{
-			//synchronized (_debuffs)
-			{
-				if (!_debuffs.isEmpty())
-				{
-					for (L2Effect e : _debuffs)
-						// Get active skills effects of the selected type
-						if (e != null && e.getEffectType() == type)
-							temp.add(e);
-				}
-			}
-		}
-		if (!temp.isEmpty())
-		{
-			for (L2Effect e : temp)
-				if (e != null)
+				// Get active skills effects of the selected type
+				if (e != null && e.getEffectType() == type)
 					e.exit();
+			}
 		}
-		FastList.recycle(temp);
+		
+		if (_debuffs != null && !_debuffs.isEmpty())
+		{
+			for (L2Effect e : _debuffs)
+			{
+				// Get active skills effects of the selected type
+				if (e != null && e.getEffectType() == type)
+					e.exit();
+			}
+		}
 	}
 	
 	/**
@@ -489,86 +448,47 @@ public class CharEffectList
 	 */
 	public final void stopSkillEffects(int skillId)
 	{
-		// Go through all active skills effects
-		FastList<L2Effect> temp = FastList.newInstance();
-		if (_buffs != null)
+		if (_buffs != null && !_buffs.isEmpty())
 		{
-			//synchronized (_buffs)
+			for (L2Effect e : _buffs)
 			{
-				if (!_buffs.isEmpty())
-				{
-					for (L2Effect e : _buffs)
-						if (e != null && e.getSkill().getId() == skillId)
-							temp.add(e);
-				}
-			}
-		}
-		if (_debuffs != null)
-		{
-			//synchronized (_debuffs)
-			{
-				if (!_debuffs.isEmpty())
-				{
-					for (L2Effect e : _debuffs)
-						if (e != null && e.getSkill().getId() == skillId)
-							temp.add(e);
-				}
-			}
-		}
-		if (!temp.isEmpty())
-		{
-			for (L2Effect e : temp)
-				if (e != null)
+				if (e != null && e.getSkill().getId() == skillId)
 					e.exit();
+			}
 		}
-		FastList.recycle(temp);
+		if (_debuffs != null && !_debuffs.isEmpty())
+		{
+			for (L2Effect e : _debuffs)
+			{
+				if (e != null && e.getSkill().getId() == skillId)
+					e.exit();
+			}
+		}
 	}
 	
 	/**
 	 * Exits all effects created by a specific skill type
 	 * @param skillType skill type
+	 * @param negateLvl 
 	 */
 	public final void stopSkillEffects(L2SkillType skillType, int negateLvl)
 	{
-		// Go through all active skills effects
-		FastList<L2Effect> temp = FastList.newInstance();
-		if (_buffs != null)
+		if (_buffs != null && !_buffs.isEmpty())
 		{
-			//synchronized (_buffs)
+			for (L2Effect e : _buffs)
 			{
-				if (!_buffs.isEmpty())
-				{
-					for (L2Effect e : _buffs)
-					{
-						if (e != null && (e.getSkill().getSkillType() == skillType || (e.getSkill().getEffectType() != null && e.getSkill().getEffectType() == skillType))
-								&& (negateLvl == -1 || (e.getSkill().getEffectType() != null && e.getSkill().getEffectAbnormalLvl() >= 0 && e.getSkill().getEffectAbnormalLvl() <= negateLvl) || (e.getSkill().getAbnormalLvl() >= 0 && e.getSkill().getAbnormalLvl() <= negateLvl)))
-							temp.add(e);
-					}
-				}
-			}
-		}
-		if (_debuffs != null)
-		{
-			//synchronized (_debuffs)
-			{
-				if (!_debuffs.isEmpty())
-				{
-					for (L2Effect e : _debuffs)
-					{
-						if (e != null && (e.getSkill().getSkillType() == skillType || (e.getSkill().getEffectType() != null && e.getSkill().getEffectType() == skillType))
-								&& (negateLvl == -1 || (e.getSkill().getEffectType() != null && e.getSkill().getEffectAbnormalLvl() >= 0 && e.getSkill().getEffectAbnormalLvl() <= negateLvl) || (e.getSkill().getAbnormalLvl() >= 0 && e.getSkill().getAbnormalLvl() <= negateLvl)))
-							temp.add(e);
-					}
-				}
-			}
-		}
-		if (!temp.isEmpty())
-		{
-			for (L2Effect e : temp)
-				if (e != null)
+				if (e != null && (e.getSkill().getSkillType() == skillType || (e.getSkill().getEffectType() != null && e.getSkill().getEffectType() == skillType)) && (negateLvl == -1 || (e.getSkill().getEffectType() != null && e.getSkill().getEffectAbnormalLvl() >= 0 && e.getSkill().getEffectAbnormalLvl() <= negateLvl) || (e.getSkill().getAbnormalLvl() >= 0 && e.getSkill().getAbnormalLvl() <= negateLvl)))
 					e.exit();
+			}
 		}
-		FastList.recycle(temp);
+		if (_debuffs != null && !_debuffs.isEmpty())
+		{
+			for (L2Effect e : _debuffs)
+			{
+				if (e != null && (e.getSkill().getSkillType() == skillType || (e.getSkill().getEffectType() != null && e.getSkill().getEffectType() == skillType)) && (negateLvl == -1 || (e.getSkill().getEffectType() != null && e.getSkill().getEffectAbnormalLvl() >= 0 && e.getSkill().getEffectAbnormalLvl() <= negateLvl) || (e.getSkill().getAbnormalLvl() >= 0 && e.getSkill().getAbnormalLvl() <= negateLvl)))
+					e.exit();
+			}
+		}
 	}
 	
 	/**
@@ -579,16 +499,12 @@ public class CharEffectList
 	{
 		if (_hasBuffsRemovedOnAnyAction)
 		{
-			if (_buffs != null)
+			if (_buffs != null && !_buffs.isEmpty())
 			{
-				//synchronized (_buffs)
+				for (L2Effect e : _buffs)
 				{
-					if (!_buffs.isEmpty())
-					{
-						for (L2Effect e : _buffs)
-							if (e != null && e.getSkill().isRemovedOnAnyActionExceptMove())
-								e.exit(true);
-					}
+					if (e != null && e.getSkill().isRemovedOnAnyActionExceptMove())
+						e.exit(true);
 				}
 			}
 		}
@@ -598,35 +514,23 @@ public class CharEffectList
 	{
 		if (_hasBuffsRemovedOnDamage)
 		{
-			if (_buffs != null)
+			if (_buffs != null && !_buffs.isEmpty())
 			{
-				//synchronized (_buffs)
+				for (L2Effect e : _buffs)
 				{
-					if (!_buffs.isEmpty())
-					{
-						for (L2Effect e : _buffs)
-							if (e != null
-									&& e.getSkill().isRemovedOnDamage()
-									&& (awake || e.getSkill().getSkillType() != L2SkillType.SLEEP))
-								e.exit(true);
-					}
+					if (e != null && e.getSkill().isRemovedOnDamage() && (awake || e.getSkill().getSkillType() != L2SkillType.SLEEP))
+						e.exit(true);
 				}
 			}
 		}
 		if (_hasDebuffsRemovedOnDamage)
 		{
-			if (_debuffs != null)
+			if (_debuffs != null && !_debuffs.isEmpty())
 			{
-				//synchronized (_buffs)
+				for (L2Effect e : _debuffs)
 				{
-					if (!_debuffs.isEmpty())
-					{
-						for (L2Effect e : _debuffs)
-							if (e != null
-									&& e.getSkill().isRemovedOnDamage()
-									&& (awake || e.getSkill().getSkillType() != L2SkillType.SLEEP))
-								e.exit(true);
-					}
+					if (e != null && e.getSkill().isRemovedOnDamage() && (awake || e.getSkill().getSkillType() != L2SkillType.SLEEP))
+						e.exit(true);
 				}
 			}
 		}
@@ -645,7 +549,8 @@ public class CharEffectList
 	
 	public void queueEffect(L2Effect effect, boolean remove)
 	{
-		if (effect == null) return;
+		if (effect == null)
+			return;
 		
 		if (!_queuesInitialized)
 			init();
@@ -704,9 +609,23 @@ public class CharEffectList
 	
 	protected void removeEffectFromQueue(L2Effect effect)
 	{
-		if (effect == null) return;
+		if (effect == null)
+			return;
+		
+		if (effect.isPassiveEffect())
+		{
+			if (effect.setInUse(false))
+			{
+				// Remove Func added by this effect from the L2Character Calculator
+				_owner.removeStatsOwner(effect.getStatFuncs());
+				_passives.remove(effect);
+			}
+		}
 		
 		FastList<L2Effect> effectList;
+		
+		// array modified, then rebuild on next request
+		_rebuildCache = true;
 		
 		if (effect.getSkill().isDebuff())
 		{
@@ -728,12 +647,14 @@ public class CharEffectList
 		}
 		else
 		{
-			if(_stackedEffects == null) return;
+			if (_stackedEffects == null)
+				return;
 			
 			// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
 			List<L2Effect> stackQueue = _stackedEffects.get(effect.getAbnormalType());
 			
-			if (stackQueue == null || stackQueue.isEmpty()) return;
+			if (stackQueue == null || stackQueue.isEmpty())
+				return;
 			
 			int index = stackQueue.indexOf(effect);
 			
@@ -787,20 +708,53 @@ public class CharEffectList
 	
 	protected void addEffectFromQueue(L2Effect newEffect)
 	{
-		if (newEffect == null) return;
+		if (newEffect == null)
+			return;
 		
 		L2Skill newSkill = newEffect.getSkill();
 		
+		// Passive effects are treated specially
+		if (newEffect.isPassiveEffect())
+		{
+			if (_passives == null)
+				_passives = new FastList<L2Effect>().shared();
+			
+			// Passive effects dont need stack type
+			if ("none".equals(newEffect.getAbnormalType()))
+			{
+				// Set this L2Effect to In Use
+				if (newEffect.setInUse(true))
+				{
+					for (L2Effect eff : _passives)
+					{
+						if (eff == null)
+							continue;
+						
+						// Check and remove if there is already such effect in order to prevent passive effects overstack.
+						if (eff.getEffectTemplate().equals(newEffect.getEffectTemplate()))
+							eff.exit();
+							
+					}
+					
+					// Add Funcs of this effect to the Calculator set of the L2Character
+					_owner.addStatFuncs(newEffect.getStatFuncs());
+					_passives.add(newEffect);
+				}
+			}
+			
+			return;
+		}
+		
+		// array modified, then rebuild on next request
+		_rebuildCache = true;
+		
 		if (newSkill.isDebuff())
 		{
-			if (_debuffs == null) _debuffs = new FastList<L2Effect>().shared();
+			if (_debuffs == null)
+				_debuffs = new FastList<L2Effect>().shared();
 			for (L2Effect e : _debuffs)
 			{
-				if (e != null
-						&& e.getSkill().getId() == newEffect.getSkill().getId()
-						&& e.getEffectType() == newEffect.getEffectType()
-						&& e.getAbnormalLvl() == newEffect.getAbnormalLvl()
-						&& e.getAbnormalType().equals(newEffect.getAbnormalType()))
+				if (e != null && e.getSkill().getId() == newEffect.getSkill().getId() && e.getEffectType() == newEffect.getEffectType() && e.getAbnormalLvl() == newEffect.getAbnormalLvl() && e.getAbnormalType().equals(newEffect.getAbnormalType()))
 				{
 					// Started scheduled timer needs to be canceled.
 					newEffect.stopEffectTask();
@@ -811,15 +765,12 @@ public class CharEffectList
 		}
 		else
 		{
-			if (_buffs == null) _buffs = new FastList<L2Effect>().shared();
+			if (_buffs == null)
+				_buffs = new FastList<L2Effect>().shared();
 			
 			for (L2Effect e : _buffs)
 			{
-				if (e != null
-						&& e.getSkill().getId() == newEffect.getSkill().getId()
-						&& e.getEffectType() == newEffect.getEffectType()
-						&& e.getAbnormalLvl() == newEffect.getAbnormalLvl()
-						&& e.getAbnormalType().equals(newEffect.getAbnormalType()))
+				if (e != null && e.getSkill().getId() == newEffect.getSkill().getId() && e.getEffectType() == newEffect.getEffectType() && e.getAbnormalLvl() == newEffect.getAbnormalLvl() && e.getAbnormalType().equals(newEffect.getAbnormalType()))
 				{
 					e.exit(); // exit this
 				}
@@ -854,6 +805,24 @@ public class CharEffectList
 						}
 					}
 				}
+				else if (newSkill.isTriggeredSkill())
+				{
+					effectsToRemove = getTriggeredBuffCount() - Config.TRIGGERED_BUFFS_MAX_AMOUNT;
+					if (effectsToRemove >= 0)
+					{
+						for (L2Effect e : _buffs)
+						{
+							if (e == null || !e.getSkill().isTriggeredSkill())
+								continue;
+							
+							// get first dance
+							e.exit();
+							effectsToRemove--;
+							if (effectsToRemove < 0)
+								break;
+						}
+					}
+				}
 				else
 				{
 					effectsToRemove = getBuffCount() - _owner.getMaxBuffCount();
@@ -866,7 +835,7 @@ public class CharEffectList
 							case MANAHEAL_PERCENT:
 								for (L2Effect e : _buffs)
 								{
-									if (e == null || e.getSkill().isDance())
+									if (e == null || e.getSkill().isDance() || e.getSkill().isTriggeredSkill())
 										continue;
 									
 									switch (e.getSkill().getSkillType())
@@ -888,12 +857,12 @@ public class CharEffectList
 				}
 			}
 			
-			// Icons order: buffs, 7s, toggles, dances
-			if (newSkill.isDance())
+			// Icons order: buffs, 7s, toggles, dances, activation buffs
+			if (newSkill.isTriggeredSkill())
 				_buffs.addLast(newEffect);
 			else
 			{
-				int pos=0;
+				int pos = 0;
 				if (newSkill.isToggle())
 				{
 					// toggle skill - before all dances
@@ -906,6 +875,18 @@ public class CharEffectList
 						pos++;
 					}
 				}
+				else if (newSkill.isDance())
+				{
+					// dance skill - before all activation buffs
+					for (L2Effect e : _buffs)
+					{
+						if (e == null)
+							continue;
+						if (e.getSkill().isTriggeredSkill())
+							break;
+						pos++;
+					}
+				}
 				else
 				{
 					// normal buff - before toggles and 7s and dances
@@ -913,8 +894,7 @@ public class CharEffectList
 					{
 						if (e == null)
 							continue;
-						if (e.getSkill().isToggle() || e.getSkill().is7Signs()
-								|| e.getSkill().isDance())
+						if (e.getSkill().isToggle() || e.getSkill().is7Signs() || e.getSkill().isDance() || e.getSkill().isTriggeredSkill())
 							break;
 						pos++;
 					}
@@ -937,7 +917,8 @@ public class CharEffectList
 		List<L2Effect> stackQueue;
 		L2Effect effectToAdd = null;
 		L2Effect effectToRemove = null;
-		if (_stackedEffects == null) _stackedEffects = new FastMap<String, List<L2Effect>>();
+		if (_stackedEffects == null)
+			_stackedEffects = new FastMap<String, List<L2Effect>>();
 		
 		// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
 		stackQueue = _stackedEffects.get(newEffect.getAbnormalType());
@@ -957,7 +938,8 @@ public class CharEffectList
 				{
 					if (newEffect.getAbnormalLvl() < queueIterator.next().getAbnormalLvl())
 						pos++;
-					else break;
+					else
+						break;
 				}
 				// Add the new effect to the Stack list in function of its position in the Stack group
 				stackQueue.add(pos, newEffect);
@@ -1015,6 +997,25 @@ public class CharEffectList
 		}
 	}
 	
+	/**
+	 * Remove all passive effects held by this <b>skillId</b>.
+	 * @param skillId 
+	 */
+	public void removePassiveEffects(int skillId)
+	{
+		if (_passives == null)
+			return;
+		
+		for (L2Effect eff : _passives)
+		{
+			if (eff == null)
+				continue;
+			
+			if (eff.getSkill().getId() == skillId)
+				eff.exit();
+		}
+	}
+	
 	protected void updateEffectIcons()
 	{
 		if (_owner == null)
@@ -1040,53 +1041,50 @@ public class CharEffectList
 			if (_owner.isInParty())
 				ps = new PartySpelled(_owner);
 			
-			if (((L2PcInstance)_owner).isInOlympiadMode() && ((L2PcInstance)_owner).isOlympiadStart())
-				os = new ExOlympiadSpelledInfo((L2PcInstance)_owner);
+			if (((L2PcInstance) _owner).isInOlympiadMode() && ((L2PcInstance) _owner).isOlympiadStart())
+				os = new ExOlympiadSpelledInfo((L2PcInstance) _owner);
 		}
-		else
-			if (_owner instanceof L2Summon)
-				ps = new PartySpelled(_owner);
+		else if (_owner instanceof L2Summon)
+			ps = new PartySpelled(_owner);
 		
 		boolean foundRemovedOnAction = false;
 		boolean foundRemovedOnDamage = false;
 		
 		if (_buffs != null && !_buffs.isEmpty())
 		{
-			//synchronized (_buffs)
+			for (L2Effect e : _buffs)
 			{
-				for (L2Effect e : _buffs)
+				if (e == null)
+					continue;
+				
+				if (e.getSkill().isRemovedOnAnyActionExceptMove())
+					foundRemovedOnAction = true;
+				if (e.getSkill().isRemovedOnDamage())
+					foundRemovedOnDamage = true;
+				
+				if (!e.getShowIcon())
+					continue;
+				
+				switch (e.getEffectType())
 				{
-					if (e == null)
+					case CHARGE: // handled by EtcStatusUpdate
+					case SIGNET_GROUND:
 						continue;
+				}
+				
+				if (e.getInUse())
+				{
+					if (mi != null)
+						e.addIcon(mi);
 					
-					if (e.getSkill().isRemovedOnAnyActionExceptMove())
-						foundRemovedOnAction = true;
-					if (e.getSkill().isRemovedOnDamage())
-						foundRemovedOnDamage = true;
+					if (ps != null)
+						e.addPartySpelledIcon(ps);
 					
-					if (!e.getShowIcon())
-						continue;
-					
-					switch (e.getEffectType())
-					{
-						case CHARGE: // handled by EtcStatusUpdate
-						case SIGNET_GROUND:
-							continue;
-					}
-					
-					if (e.getInUse())
-					{
-						if (mi != null)
-							e.addIcon(mi);
-						
-						if (ps != null)
-							e.addPartySpelledIcon(ps);
-						
-						if (os != null)
-							e.addOlympiadSpelledIcon(os);
-					}
+					if (os != null)
+						e.addOlympiadSpelledIcon(os);
 				}
 			}
+			
 		}
 		
 		_hasBuffsRemovedOnAnyAction = foundRemovedOnAction;
@@ -1095,40 +1093,38 @@ public class CharEffectList
 		
 		if (_debuffs != null && !_debuffs.isEmpty())
 		{
-			//synchronized (_debuffs)
+			for (L2Effect e : _debuffs)
 			{
-				for (L2Effect e : _debuffs)
+				if (e == null)
+					continue;
+				
+				if (e.getSkill().isRemovedOnAnyActionExceptMove())
+					foundRemovedOnAction = true;
+				if (e.getSkill().isRemovedOnDamage())
+					foundRemovedOnDamage = true;
+				
+				if (!e.getShowIcon())
+					continue;
+				
+				switch (e.getEffectType())
 				{
-					if (e == null)
+					case SIGNET_GROUND:
 						continue;
+				}
+				
+				if (e.getInUse())
+				{
+					if (mi != null)
+						e.addIcon(mi);
 					
-					if (e.getSkill().isRemovedOnAnyActionExceptMove())
-						foundRemovedOnAction = true;
-					if (e.getSkill().isRemovedOnDamage())
-						foundRemovedOnDamage = true;
+					if (ps != null)
+						e.addPartySpelledIcon(ps);
 					
-					if (!e.getShowIcon())
-						continue;
-					
-					switch (e.getEffectType())
-					{
-						case SIGNET_GROUND:
-							continue;
-					}
-					
-					if (e.getInUse())
-					{
-						if (mi != null)
-							e.addIcon(mi);
-						
-						if (ps != null)
-							e.addPartySpelledIcon(ps);
-						
-						if (os != null)
-							e.addOlympiadSpelledIcon(os);
-					}
+					if (os != null)
+						e.addOlympiadSpelledIcon(os);
 				}
 			}
+			
 		}
 		
 		_hasDebuffsRemovedOnDamage = foundRemovedOnDamage;
@@ -1140,7 +1136,7 @@ public class CharEffectList
 		{
 			if (_owner instanceof L2Summon)
 			{
-				L2PcInstance summonOwner = ((L2Summon)_owner).getOwner();
+				L2PcInstance summonOwner = ((L2Summon) _owner).getOwner();
 				
 				if (summonOwner != null)
 				{
@@ -1150,14 +1146,13 @@ public class CharEffectList
 						summonOwner.sendPacket(ps);
 				}
 			}
-			else
-				if (_owner instanceof L2PcInstance && _owner.isInParty())
-					_owner.getParty().broadcastToPartyMembers(ps);
+			else if (_owner instanceof L2PcInstance && _owner.isInParty())
+				_owner.getParty().broadcastToPartyMembers(ps);
 		}
 		
 		if (os != null)
 		{
-			final OlympiadGameTask game = OlympiadGameManager.getInstance().getOlympiadTask(((L2PcInstance)_owner).getOlympiadGameId());
+			final OlympiadGameTask game = OlympiadGameManager.getInstance().getOlympiadTask(((L2PcInstance) _owner).getOlympiadGameId());
 			if (game != null && game.isBattleStarted())
 				game.getZone().broadcastPacketToObservers(os);
 		}
@@ -1170,18 +1165,15 @@ public class CharEffectList
 		
 		if (_buffs != null && !_buffs.isEmpty())
 		{
-			//synchronized (_buffs)
+			for (L2Effect e : _buffs)
 			{
-				for (L2Effect e : _buffs)
-				{
-					if (e == null)
-						continue;
-					
-					if (e.getSkill().isRemovedOnAnyActionExceptMove())
-						foundRemovedOnAction = true;
-					if (e.getSkill().isRemovedOnDamage())
-						foundRemovedOnDamage = true;
-				}
+				if (e == null)
+					continue;
+				
+				if (e.getSkill().isRemovedOnAnyActionExceptMove())
+					foundRemovedOnAction = true;
+				if (e.getSkill().isRemovedOnDamage())
+					foundRemovedOnDamage = true;
 			}
 		}
 		_hasBuffsRemovedOnAnyAction = foundRemovedOnAction;
@@ -1190,16 +1182,13 @@ public class CharEffectList
 		
 		if (_debuffs != null && !_debuffs.isEmpty())
 		{
-			//synchronized (_debuffs)
+			for (L2Effect e : _debuffs)
 			{
-				for (L2Effect e : _debuffs)
-				{
-					if (e == null)
-						continue;
-					
-					if (e.getSkill().isRemovedOnDamage())
-						foundRemovedOnDamage = true;
-				}
+				if (e == null)
+					continue;
+				
+				if (e.getSkill().isRemovedOnDamage())
+					foundRemovedOnDamage = true;
 			}
 		}
 		_hasDebuffsRemovedOnDamage = foundRemovedOnDamage;
@@ -1212,7 +1201,7 @@ public class CharEffectList
 	 */
 	private L2Effect listsContains(L2Effect effect)
 	{
-		if (_buffs != null && !_buffs.isEmpty()&& _buffs.contains(effect))
+		if (_buffs != null && !_buffs.isEmpty() && _buffs.contains(effect))
 			return effect;
 		if (_debuffs != null && !_debuffs.isEmpty() && _debuffs.contains(effect))
 			return effect;
@@ -1246,7 +1235,7 @@ public class CharEffectList
 				flags |= e.getEffectFlags();
 			}
 		}
-
+		
 		_effectFlags = flags;
 	}
 	
@@ -1266,36 +1255,20 @@ public class CharEffectList
 	 */
 	public void clear()
 	{
+		/*
+		 * Removed .clear() since nodes/entries and its references (Effects) should be
+		 * terminated by GC when Queue/Map/List object has no more reference.
+		 * This way we will save a little more CPU
+		 * [DrHouse]
+		 */
 		try
 		{
-			if (_addQueue != null)
-			{
-				_addQueue.clear();
-				_addQueue = null;
-			}
-			if (_removeQueue != null)
-			{
-				_removeQueue.clear();
-				_removeQueue = null;
-			}
+			_addQueue = null;
+			_removeQueue = null;
+			_buffs = null;
+			_debuffs = null;
+			_stackedEffects = null;
 			_queuesInitialized = false;
-			
-			if (_buffs != null)
-			{
-				_buffs.clear();
-				_buffs = null;
-			}
-			if (_debuffs != null)
-			{
-				_debuffs.clear();
-				_debuffs = null;
-			}
-			
-			if (_stackedEffects != null)
-			{
-				_stackedEffects.clear();
-				_stackedEffects = null;
-			}
 		}
 		catch (Exception e)
 		{

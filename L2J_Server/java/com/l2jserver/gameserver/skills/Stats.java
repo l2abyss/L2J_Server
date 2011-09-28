@@ -29,6 +29,9 @@ public enum Stats
 	MAX_HP("maxHp"),
 	MAX_MP("maxMp"),
 	MAX_CP("maxCp"),
+	MAX_RECOVERABLE_HP("maxRecoverableHp"), // The maximum HP that is able to be recovered trough heals
+	MAX_RECOVERABLE_MP("maxRecoverableMp"),
+	MAX_RECOVERABLE_CP("maxRecoverableCp"),
 	REGENERATE_HP_RATE("regHp"),
 	REGENERATE_CP_RATE("regCp"),
 	REGENERATE_MP_RATE("regMp"),
@@ -124,6 +127,9 @@ public enum Stats
 	PARALYZE_VULN("paralyzeVuln"),
 	ROOT_VULN("rootVuln"),
 	SLEEP_VULN("sleepVuln"),
+	PHYSICALBLOCKADE_VULN("physicalBlockadeVuln"),
+	BOSS_VULN("bossVuln"),
+	GUST_VULN("gustVuln"),
 	DAMAGE_ZONE_VULN("damageZoneVuln"),
 	MOVEMENT_VULN("movementVuln"),
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
@@ -194,6 +200,8 @@ public enum Stats
 	VENGEANCE_SKILL_PHYSICAL_DAMAGE("vengeancePdam"),
 	ABSORB_DAMAGE_PERCENT("absorbDam"),
 	TRANSFER_DAMAGE_PERCENT("transDam"),
+	MANA_SHIELD_PERCENT("manaShield"),
+	TRANSFER_DAMAGE_TO_PLAYER("transDamToPlayer"),
 	ABSORB_MANA_DAMAGE_PERCENT("absorbDamMana"),
 	
 	MAX_LOAD("maxLoad"),

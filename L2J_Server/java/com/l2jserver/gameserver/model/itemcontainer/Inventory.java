@@ -117,7 +117,10 @@ public abstract class Inventory extends ItemContainer
 		}
 		
 		/**
-		 * Add alteration in inventory when item equiped
+		 * Add alteration in inventory when item equipped
+		 * @param slot 
+		 * @param item 
+		 * @param inventory 
 		 */
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
@@ -126,7 +129,10 @@ public abstract class Inventory extends ItemContainer
 		}
 		
 		/**
-		 * Add alteration in inventory when item unequiped
+		 * Add alteration in inventory when item unequipped
+		 * @param slot 
+		 * @param item 
+		 * @param inventory 
 		 */
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
@@ -136,7 +142,7 @@ public abstract class Inventory extends ItemContainer
 		
 		/**
 		 * Returns alterations in inventory
-		 * @return L2ItemInstance[] : array of alterated items
+		 * @return L2ItemInstance[] : array of altered items
 		 */
 		public L2ItemInstance[] getChangedItems()
 		{
@@ -825,9 +831,10 @@ public abstract class Inventory extends ItemContainer
 	
 	/**
 	 * Returns the item in the paperdoll slot
+	 * @param slot 
 	 * @return L2ItemInstance
 	 */
-	public L2ItemInstance getPaperdollItem(int slot)
+	public synchronized L2ItemInstance getPaperdollItem(int slot)
 	{
 		return _paperdoll[slot];
 	}
@@ -889,7 +896,7 @@ public abstract class Inventory extends ItemContainer
 	
 	/**
 	 * Returns the item in the paperdoll L2Item slot
-	 * @param L2Item slot identifier
+	 * @param slot identifier
 	 * @return L2ItemInstance
 	 */
 	public L2ItemInstance getPaperdollItemByL2ItemId(int slot)
@@ -905,7 +912,7 @@ public abstract class Inventory extends ItemContainer
 	 * @param slot : int designating the slot
 	 * @return int designating the ID of the item
 	 */
-	public int getPaperdollItemId(int slot)
+	public synchronized int getPaperdollItemId(int slot)
 	{
 		L2ItemInstance item = _paperdoll[slot];
 		if (item != null)
@@ -913,15 +920,12 @@ public abstract class Inventory extends ItemContainer
 		return 0;
 	}
 	
-	public int getPaperdollAugmentationId(int slot)
+	public synchronized int getPaperdollAugmentationId(int slot)
 	{
-		L2ItemInstance item = _paperdoll[slot];
-		if (item != null)
+		final L2ItemInstance item = _paperdoll[slot];
+		if ((item != null) && (item.getAugmentation() != null))
 		{
-			if (item.getAugmentation() != null)
-				return item.getAugmentation().getAugmentationId();
-			else
-				return 0;
+			return item.getAugmentation().getAugmentationId();
 		}
 		return 0;
 	}
@@ -931,7 +935,7 @@ public abstract class Inventory extends ItemContainer
 	 * @param slot : int pointing out the slot
 	 * @return int designating the objectID
 	 */
-	public int getPaperdollObjectId(int slot)
+	public synchronized int getPaperdollObjectId(int slot)
 	{
 		L2ItemInstance item = _paperdoll[slot];
 		if (item != null)
@@ -940,8 +944,8 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Adds new inventory's paperdoll listener
-	 * @param PaperdollListener pointing out the listener
+	 * Adds new inventory's paperdoll listener.
+	 * @param listener the new listener
 	 */
 	public synchronized void addPaperdollListener(PaperdollListener listener)
 	{
@@ -950,8 +954,8 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Removes a paperdoll listener
-	 * @param PaperdollListener pointing out the listener to be deleted
+	 * Removes a paperdoll listener.
+	 * @param listener the listener to be deleted
 	 */
 	public synchronized void removePaperdollListener(PaperdollListener listener)
 	{
@@ -1272,9 +1276,9 @@ public abstract class Inventory extends ItemContainer
 		
 		int targetSlot = item.getItem().getBodyPart();
 		
-		//check if player wear formal
+		// Check if player is using Formal Wear and item isn't Wedding Bouquet.
 		L2ItemInstance formal = getPaperdollItem(PAPERDOLL_CHEST);
-		if (formal != null && formal.getItem().getBodyPart() == L2Item.SLOT_ALLDRESS)
+		if ((item.getItemId() != 21163) && (formal != null) && (formal.getItem().getBodyPart() == L2Item.SLOT_ALLDRESS))
 		{
 			switch (targetSlot)
 			{

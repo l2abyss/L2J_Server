@@ -323,6 +323,7 @@ public class Duel
 	
 	/**
 	 * Check if a player engaged in pvp combat (only for 1on1 duels)
+	 * @param sendMessage 
 	 * @return returns true if a duelist is engaged in Pvp combat
 	 */
 	public boolean isDuelistInPvp(boolean sendMessage)
@@ -452,7 +453,7 @@ public class Duel
 	
 	/**
 	 * Restore player conditions
-	 * @param was the duel canceled?
+	 * @param abnormalDuelEnd true if the duel was the duel canceled
 	 */
 	public void restorePlayerConditions(boolean abnormalDuelEnd)
 	{
@@ -575,8 +576,8 @@ public class Duel
 	}
 	
 	/**
-	 * Broadcast a packet to the challanger team
-	 *
+	 * Broadcast a packet to the challenger team
+	 * @param packet 
 	 */
 	public void broadcastToTeam1(L2GameServerPacket packet)
 	{
@@ -594,7 +595,7 @@ public class Duel
 	
 	/**
 	 * Broadcast a packet to the challenged team
-	 *
+	 * @param packet 
 	 */
 	public void broadcastToTeam2(L2GameServerPacket packet)
 	{
@@ -689,7 +690,7 @@ public class Duel
 	
 	/**
 	 * The duel has reached a state in which it can no longer continue
-	 * @param duel result
+	 * @param result the duel result.
 	 */
 	public void endDuel(DuelResultEnum result)
 	{
@@ -786,8 +787,7 @@ public class Duel
 		{
 			if (_surrenderRequest == 1)
 				return DuelResultEnum.Team1Surrender;
-			else
-				return DuelResultEnum.Team2Surrender;
+			return DuelResultEnum.Team2Surrender;
 		}
 		// duel timed out
 		else if (getRemainingTime() <= 0)
@@ -834,7 +834,7 @@ public class Duel
 	
 	/**
 	 * Register a surrender request
-	 * @param surrendering player
+	 * @param player the player that surrenders.
 	 */
 	public void doSurrender(L2PcInstance player)
 	{
@@ -893,7 +893,7 @@ public class Duel
 	
 	/**
 	 * This function is called whenever a player was defeated in a duel
-	 * @param dieing player
+	 * @param player the player defeated.
 	 */
 	public void onPlayerDefeat(L2PcInstance player)
 	{
@@ -938,7 +938,7 @@ public class Duel
 	
 	/**
 	 * This function is called whenever a player leaves a party
-	 * @param leaving player
+	 * @param player the player quitting.
 	 */
 	public void onRemoveFromParty(L2PcInstance player)
 	{

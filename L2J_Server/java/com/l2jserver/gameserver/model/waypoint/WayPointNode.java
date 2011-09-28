@@ -37,14 +37,13 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * This class ...
  *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
-
 public class WayPointNode extends L2Object
 {
 	private int _id;
@@ -184,8 +183,8 @@ public class WayPointNode extends L2Object
 	}
 	
 	/**
-	 * @param target
-	 * @param selectedNode
+	 * @param nodeA
+	 * @param nodeB
 	 */
 	public static void drawLine(WayPointNode nodeA, WayPointNode nodeB)
 	{

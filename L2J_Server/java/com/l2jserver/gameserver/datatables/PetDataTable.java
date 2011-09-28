@@ -290,8 +290,9 @@ public class PetDataTable
 	}
 	
 	/**
+	 * @param npcId 
+	 * @return 
 	 * @see L2PetData#getFood()
-	 * 
 	 */
 	@Deprecated
 	public static int[] getFoodItemId(int npcId)

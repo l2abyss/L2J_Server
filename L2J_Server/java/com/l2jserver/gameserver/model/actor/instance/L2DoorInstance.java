@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.actor.status.DoorStatus;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.DoorStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.OnEventTrigger;
@@ -82,7 +83,7 @@ public class L2DoorInstance extends L2Character
 	protected final String _name;
 	private boolean _open;
 	private boolean _isCommanderDoor;
-	private boolean _unlockable;
+	private final boolean _unlockable;
 	private boolean _isAttackableDoor = false;
 	private boolean _isWall = false; // is castle wall ?
 	private boolean _ShowHp = false;
@@ -152,6 +153,7 @@ public class L2DoorInstance extends L2Character
 	
 	class CloseTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try
@@ -170,6 +172,7 @@ public class L2DoorInstance extends L2Character
 	 */
 	class AutoOpenClose implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try
@@ -198,6 +201,11 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	/**
+	 * @param objectId 
+	 * @param template 
+	 * @param doorId 
+	 * @param name 
+	 * @param unlockable 
 	 */
 	public L2DoorInstance(int objectId, L2CharTemplate template, int doorId, String name, boolean unlockable)
 	{
@@ -323,7 +331,7 @@ public class L2DoorInstance extends L2Character
 	 * <BR>
 	 * <B>Note:</B> A value of -1 cancels the auto open/close task.
 	 *
-	 * @param int actionDelay
+	 * @param actionDelay
 	 */
 	public void setAutoActionDelay(int actionDelay)
 	{
@@ -388,6 +396,8 @@ public class L2DoorInstance extends L2Character
 			return true;
 		if (getFort() != null && getFort().getFortId() > 0 && getFort().getZone().isActive() && !getIsCommanderDoor())
 			return true;
+		if(getClanHall() != null && getClanHall().isSiegableHall() && ((SiegableHall)getClanHall()).getSiegeZone().isActive())
+			return true;
 		return false;
 	}
 	
@@ -401,21 +411,25 @@ public class L2DoorInstance extends L2Character
 		if (!(attacker instanceof L2Playable))
 			return false;
 		
-		if (getClanHall() != null)
-			return false;
+		L2PcInstance actingPlayer = attacker.getActingPlayer();
 		
+		if(getClanHall() != null)
+		{
+			if(!getClanHall().isSiegableHall())
+				return false;
+			return ((SiegableHall)getClanHall()).isInSiege()
+					&& ((SiegableHall)getClanHall()).getSiege().checkIsAttacker(actingPlayer.getClan());
+		}
 		// Attackable  only during siege by everyone (not owner)
 		boolean isCastle = (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getZone().isActive());
 		boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getZone().isActive() && !getIsCommanderDoor());
 		int activeSiegeId = (getFort() != null ? getFort().getFortId() : (getCastle() != null ? getCastle().getCastleId() : 0));
-		L2PcInstance actingPlayer = attacker.getActingPlayer();
 		
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
 			if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, activeSiegeId))
 				return false;
-			else
-				return true;
+			return true;
 		}
 		else if (isFort)
 		{
@@ -450,12 +464,11 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	/**
-	 * Return the distance after which the object must be remove from _knownObject according to the type of the object.<BR><BR>
-	 *
 	 * <B><U> Values </U> :</B><BR><BR>
 	 * <li> object is a L2PcInstance : 4000</li>
 	 * <li> object is not a L2PcInstance : 0 </li><BR><BR>
-	 *
+	 * @param object 
+	 * @return the distance after which the object must be remove from _knownObject according to the type of the object.
 	 */
 	public int getDistanceToForgetObject(L2Object object)
 	{
@@ -504,18 +517,16 @@ public class L2DoorInstance extends L2Character
 		OnEventTrigger oe = null;
 		if (_emitter > 0)
 			oe = new OnEventTrigger(this, getOpen());
-		//synchronized (getKnownList().getKnownPlayers())
+
+		for (L2PcInstance player : knownPlayers)
 		{
-			for (L2PcInstance player : knownPlayers)
-			{
-				if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
-					su = new StaticObject(this, true);
-				
-				player.sendPacket(su);
-				player.sendPacket(dsu);
-				if (oe != null)
-					player.sendPacket(oe);
-			}
+			if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
+				su = new StaticObject(this, true);
+			
+			player.sendPacket(su);
+			player.sendPacket(dsu);
+			if (oe != null)
+				player.sendPacket(oe);
 		}
 	}
 	
@@ -613,14 +624,12 @@ public class L2DoorInstance extends L2Character
 		FastList<L2DefenderInstance> result = new FastList<L2DefenderInstance>();
 		
 		Collection<L2Object> objs = getKnownList().getKnownObjects().values();
-		//synchronized (getKnownList().getKnownObjects())
+		for (L2Object obj : objs)
 		{
-			for (L2Object obj : objs)
-			{
-				if (obj instanceof L2DefenderInstance)
-					result.add((L2DefenderInstance) obj);
-			}
+			if (obj instanceof L2DefenderInstance)
+				result.add((L2DefenderInstance) obj);
 		}
+	
 		return result;
 	}
 	
@@ -646,6 +655,7 @@ public class L2DoorInstance extends L2Character
 	
 	/**
 	 * Set this door as a castle wall, can be damaged by siege golem only.
+	 * @param b 
 	 */
 	public void setIsWall(boolean b)
 	{
@@ -713,8 +723,9 @@ public class L2DoorInstance extends L2Character
 		
 		boolean isFort = (getFort() != null && getFort().getFortId() > 0 && getFort().getSiege().getIsInProgress()) && !getIsCommanderDoor();
 		boolean isCastle = (getCastle() != null	&& getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress());
+		boolean isHall = (getClanHall() != null && getClanHall().isSiegableHall() && ((SiegableHall)getClanHall()).isInSiege());
 		
-		if (isFort || isCastle)
+		if (isFort || isCastle || isHall)
 			broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.CASTLE_GATE_BROKEN_DOWN));
 		return true;
 	}

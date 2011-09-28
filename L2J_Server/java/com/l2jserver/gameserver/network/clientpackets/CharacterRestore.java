@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
  */
 public final class CharacterRestore extends L2GameClientPacket
 {
-	private static final String _C__62_CHARACTERRESTORE = "[C] 62 CharacterRestore";
+	private static final String _C__7B_CHARACTERRESTORE = "[C] 7B CharacterRestore";
 	//private static Logger _log = Logger.getLogger(CharacterRestore.class.getName());
 	
 	// cd
@@ -50,12 +50,9 @@ public final class CharacterRestore extends L2GameClientPacket
 		getClient().setCharSelection(cl.getCharInfo());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__62_CHARACTERRESTORE;
+		return _C__7B_CHARACTERRESTORE;
 	}
 }

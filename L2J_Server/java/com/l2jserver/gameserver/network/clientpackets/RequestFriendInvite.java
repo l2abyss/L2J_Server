@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestFriendInvite extends L2GameClientPacket
 {
-	private static final String _C__5E_REQUESTFRIENDINVITE = "[C] 5E RequestFriendInvite";
+	private static final String _C__77_REQUESTFRIENDINVITE = "[C] 77 RequestFriendInvite";
 	//private static Logger _log = Logger.getLogger(RequestFriendInvite.class.getName());
 	
 	private String _name;
@@ -50,7 +50,6 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		final L2PcInstance friend = L2World.getInstance().getPlayer(_name);
 		
 		SystemMessage sm;
-		
 		// can't use friend invite for locating invisible characters
 		if (friend == null || !friend.isOnline() || friend.getAppearance().getInvisible())
 		{
@@ -74,6 +73,11 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		else if (BlockList.isBlocked(friend, activeChar))
 		{
 			activeChar.sendMessage("You are in target's block list.");
+			return;
+		}
+		else if (activeChar.isInOlympiadMode() || friend.isInOlympiadMode())
+		{
+			activeChar.sendPacket(SystemMessageId.A_USER_CURRENTLY_PARTICIPATING_IN_THE_OLYMPIAD_CANNOT_SEND_PARTY_AND_FRIEND_INVITATIONS);
 			return;
 		}
 		
@@ -100,13 +104,12 @@ public final class RequestFriendInvite extends L2GameClientPacket
 			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
 			sm.addString(_name);
 		}
-		
 		activeChar.sendPacket(sm);
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _C__5E_REQUESTFRIENDINVITE;
+		return _C__77_REQUESTFRIENDINVITE;
 	}
 }

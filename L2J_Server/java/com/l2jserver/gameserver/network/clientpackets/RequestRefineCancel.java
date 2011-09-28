@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class RequestRefineCancel extends L2GameClientPacket
 {
-	private static final String _C__D0_2E_REQUESTREFINECANCEL = "[C] D0:2E RequestRefineCancel";
+	private static final String _C__D0_43_REQUESTREFINECANCEL = "[C] D0:43 RequestRefineCancel";
 	private int _targetItemObjId;
 	
 	@Override
@@ -39,9 +39,6 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		_targetItemObjId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -131,12 +128,9 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		activeChar.sendPacket(iu);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_2E_REQUESTREFINECANCEL;
+		return _C__D0_43_REQUESTREFINECANCEL;
 	}
 }

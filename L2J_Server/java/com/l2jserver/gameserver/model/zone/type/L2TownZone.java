@@ -17,14 +17,14 @@ package com.l2jserver.gameserver.model.zone.type;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
  * A Town zone
  *
  * @author  durgus
  */
-public class L2TownZone extends L2SpawnZone
+public class L2TownZone extends L2ZoneType
 {
 	private int _townId;
 	private int _taxById;
@@ -44,17 +44,11 @@ public class L2TownZone extends L2SpawnZone
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("townId"))
-		{
 			_townId = Integer.parseInt(value);
-		}
 		else if (name.equals("taxById"))
-		{
 			_taxById = Integer.parseInt(value);
-		}
 		else if (name.equals("isPeaceZone"))
-		{
 			_isPeaceZone = Boolean.parseBoolean(value);
-		}
 		else
 			super.setParameter(name, value);
 	}

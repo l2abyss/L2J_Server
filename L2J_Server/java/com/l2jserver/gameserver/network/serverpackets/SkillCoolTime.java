@@ -14,8 +14,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
+
+import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TimeStamp;
@@ -27,16 +28,16 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TimeStamp;
  */
 public class SkillCoolTime extends L2GameServerPacket
 {
-	public Collection<TimeStamp> _reuseTimeStamps;
+	public FastList<TimeStamp> _reuseTimeStamps;
 	
 	public SkillCoolTime(L2PcInstance cha)
 	{
-		_reuseTimeStamps = cha.getReuseTimeStamps();
-		Iterator<TimeStamp> iter = _reuseTimeStamps.iterator();
-		while (iter.hasNext())
+		_reuseTimeStamps = new FastList<TimeStamp>();
+		Collections.addAll(_reuseTimeStamps, cha.getReuseTimeStamps());
+		for (TimeStamp ts : _reuseTimeStamps)
 		{
-			if (!iter.next().hasNotPassed()) // remove expired timestamps
-				iter.remove();
+			if (!ts.hasNotPassed())
+				_reuseTimeStamps.remove(ts);
 		}
 	}
 	

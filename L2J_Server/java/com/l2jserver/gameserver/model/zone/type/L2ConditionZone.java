@@ -16,12 +16,12 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.zone.L2SpawnZone;
+import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
  * @author UnAfraid
  */
-public class L2ConditionZone extends L2SpawnZone
+public class L2ConditionZone extends L2ZoneType
 {
 	private boolean NO_ITEM_DROP = false;
 	private boolean NO_BOOKMARK = false;
@@ -48,13 +48,9 @@ public class L2ConditionZone extends L2SpawnZone
 		if (character instanceof L2PcInstance)
 		{
 			if (NO_BOOKMARK)
-			{
 				character.setInsideZone(L2Character.ZONE_NOBOOKMARK, true);
-			}
 			if (NO_ITEM_DROP)
-			{
 				character.setInsideZone(L2Character.ZONE_NOITEMDROP, true);
-			}
 		}
 	}
 	
@@ -65,13 +61,9 @@ public class L2ConditionZone extends L2SpawnZone
 		if (character instanceof L2PcInstance)
 		{
 			if (NO_BOOKMARK)
-			{
 				character.setInsideZone(L2Character.ZONE_NOBOOKMARK, false);
-			}
 			if (NO_ITEM_DROP)
-			{
 				character.setInsideZone(L2Character.ZONE_NOITEMDROP, false);
-			}
 		}
 	}
 	

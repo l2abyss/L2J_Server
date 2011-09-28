@@ -26,8 +26,10 @@ import javolution.util.FastMap;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
@@ -37,6 +39,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.Siege;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
@@ -143,6 +146,7 @@ public class ClanTable
 	 * Creates a new clan and store clan info to database
 	 *
 	 * @param player
+	 * @param clanName 
 	 * @return NULL if clan with same name already exists
 	 */
 	public L2Clan createClan(L2PcInstance player, String clanName)
@@ -240,6 +244,13 @@ public class ClanTable
 				siege.removeSiegeClan(clan);
 			}
 		}
+		int hallId = clan.getHasHideout();
+		if(hallId == 0)
+		{
+			for(SiegableHall hall : CHSiegeManager.getInstance().getConquerableHalls().values())
+				hall.removeAttacker(clan);
+		}
+		
 		L2ClanMember leaderMember = clan.getLeader();
 		if (leaderMember == null)
 			clan.getWarehouse().destroyAllItems("ClanRemove", null, null);
@@ -253,6 +264,8 @@ public class ClanTable
 		
 		_clans.remove(clanId);
 		IdFactory.getInstance().releaseId(clanId);
+
+		CrestCache.getInstance().removePledgeCrest(clan.getCrestId());
 		
 		Connection con = null;
 		try
@@ -305,6 +318,12 @@ public class ClanTable
 					if (clan == owner)
 						fort.removeOwner(true);
 				}
+			}
+			if(hallId != 0)
+			{
+				SiegableHall hall = CHSiegeManager.getInstance().getSiegableHall(hallId);
+				if(hall != null && hall.getOwnerId() == clanId)
+					hall.free();
 			}
 			if (Config.DEBUG)
 				_log.fine("clan removed in db: " + clanId);

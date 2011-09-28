@@ -24,36 +24,20 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ExRpItemLink;
 
 /**
- *
  * @author  KenM
  */
 public class RequestExRqItemLink extends L2GameClientPacket
 {
-	private static String name = "[C] DO:1E RequestExRqItemLink";
+	private static String _C__D0_1E_REQUESTEXRQITEMLINK = "[C] D0:1E RequestExRqItemLink";
 	private int _objectId;
 	private Logger _log = Logger.getLogger(RequestExRqItemLink.class.getName());
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return name;
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -71,9 +55,15 @@ public class RequestExRqItemLink extends L2GameClientPacket
 				else
 				{
 					if (Config.DEBUG)
-						_log.info(getClient()+" requested "+name+" for item which wasnt published! ID:"+_objectId);
+						_log.info(getClient()+" requested item link for item which wasnt published! ID:"+_objectId);
 				}
 			}
 		}
+	}
+	
+	@Override
+	public String getType()
+	{
+		return _C__D0_1E_REQUESTEXRQITEMLINK;
 	}
 }

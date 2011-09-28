@@ -15,9 +15,11 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.datatables.AccessLevels;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
@@ -27,6 +29,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
 
 /**
  * sample
@@ -50,7 +54,7 @@ public class Die extends L2GameServerPacket
 	L2Character _activeChar;
 	
 	/**
-	 * @param _characters
+	 * @param cha
 	 */
 	public Die(L2Character cha)
 	{
@@ -84,7 +88,7 @@ public class Die extends L2GameServerPacket
 		// 6d 04 00 00 00 - FIXED
 		
 		writeD(_canTeleport ? 0x01 : 0);                                                   // 6d 00 00 00 00 - to nearest village
-		if (_canTeleport && _clan != null)
+		if (_canTeleport && _clan != null && ZoneManager.getInstance().getZone(_activeChar, L2RespawnZone.class) == null)
 		{
 			boolean isInCastleDefense = false;
 			boolean isInFortDefense = false;
@@ -92,6 +96,7 @@ public class Die extends L2GameServerPacket
 			L2SiegeClan siegeClan = null;
 			Castle castle = CastleManager.getInstance().getCastle(_activeChar);
 			Fort fort = FortManager.getInstance().getFort(_activeChar);
+			SiegableHall hall = CHSiegeManager.getInstance().getNearbyClanHall(_activeChar);
 			if (castle != null && castle.getSiege().getIsInProgress())
 			{
 				//siege in progress
@@ -114,7 +119,8 @@ public class Die extends L2GameServerPacket
 					isInCastleDefense? 0x01 : 0x00);             		// 6d 02 00 00 00 - to castle
 			writeD((TerritoryWarManager.getInstance().getFlagForClan(_clan) != null)
 					|| (siegeClan != null && !isInCastleDefense && !isInFortDefense
-							&& !siegeClan.getFlag().isEmpty()) ? 0x01 : 0x00);       // 6d 03 00 00 00 - to siege HQ
+						&& !siegeClan.getFlag().isEmpty())
+						|| (hall != null && hall.getSiege().checkIsAttacker(_clan))? 0x01 : 0x00);       // 6d 03 00 00 00 - to siege HQ
 			writeD(_sweepable ? 0x01 : 0x00);                               // sweepable  (blue glow)
 			writeD(_access.allowFixedRes() ? 0x01: 0x00);                  // 6d 04 00 00 00 - to FIXED
 			writeD(_clan.getHasFort() > 0  || isInFortDefense? 0x01 : 0x00);    // 6d 05 00 00 00 - to fortress

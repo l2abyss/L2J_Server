@@ -68,16 +68,8 @@ public class PcStatus extends PlayableStatus
 		if (getActiveChar().isDead())
 			return;
 		
-		if (getActiveChar().isInvul())
-		{
-			if (attacker == getActiveChar())
-			{
-				if (!isDOT && !isHPConsumption)
-					return;
-			}
-			else
-				return;
-		}
+		if (getActiveChar().isInvul() && !(isDOT || isHPConsumption))
+			return;
 		
 		if (!isHPConsumption)
 		{
@@ -94,6 +86,7 @@ public class PcStatus extends PlayableStatus
 		
 		int fullValue = (int) value;
 		int tDmg = 0;
+		int mpDam = 0;
 		
 		if (attacker != null && attacker != getActiveChar())
 		{
@@ -119,8 +112,7 @@ public class PcStatus extends PlayableStatus
 			
 			// Check and calculate transfered damage
 			final L2Summon summon = getActiveChar().getPet();
-			//TODO correct range
-			if (summon != null && summon instanceof L2SummonInstance && Util.checkIfInRange(900, getActiveChar(), summon, true))
+			if (summon != null && summon instanceof L2SummonInstance && Util.checkIfInRange(1000, getActiveChar(), summon, true))
 			{
 				tDmg = (int)value * (int)getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_PERCENT, 0, null, null) /100;
 				
@@ -131,6 +123,66 @@ public class PcStatus extends PlayableStatus
 					summon.reduceCurrentHp(tDmg, attacker, null);
 					value -= tDmg;
 					fullValue = (int) value; // reduce the announced value here as player will get a message about summon damage
+				}
+			}
+			
+			mpDam = (int) value * (int) getActiveChar().getStat().calcStat(Stats.MANA_SHIELD_PERCENT, 0, null, null) / 100;
+			
+			if (mpDam > 0)
+			{
+				mpDam = (int) (value - mpDam);
+				if (mpDam > getActiveChar().getCurrentMp())
+				{
+					getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING));
+					getActiveChar().getFirstEffect(1556).stopEffectTask();
+					value = mpDam - getActiveChar().getCurrentMp();
+					getActiveChar().setCurrentMp(0);
+				}
+				else
+				{
+					getActiveChar().reduceCurrentMp(mpDam);
+					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP);
+					smsg.addNumber(mpDam);
+					getActiveChar().sendPacket(smsg);
+					return;
+				}
+			}
+			
+			final L2PcInstance caster = getActiveChar().getTransferingDamageTo();
+			if (caster != null
+					&& getActiveChar().getParty() != null
+					&& Util.checkIfInRange(1000, getActiveChar(), caster, true)
+					&& !caster.isDead() 
+					&& getActiveChar() != caster
+					&& getActiveChar().getParty().getPartyMembers().contains(caster))
+			{
+				int transferDmg = 0;
+				
+				transferDmg = (int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_TO_PLAYER, 0, null, null) / 100;
+				transferDmg = Math.min((int) caster.getCurrentHp() - 1, transferDmg);
+				if (transferDmg > 0 && attacker instanceof L2Playable)
+				{
+					int membersInRange = 0;
+					for (L2PcInstance member : caster.getParty().getPartyMembers())
+					{
+						if (Util.checkIfInRange(1000, member, caster, false) && member != caster)
+							membersInRange++;
+					}
+					
+					if (caster.getCurrentCp() > 0)
+					{
+						if (caster.getCurrentCp() > transferDmg)
+							reduceCp(transferDmg);
+						else
+						{
+							transferDmg = (int) (transferDmg - caster.getCurrentCp());
+							reduceCp((int) caster.getCurrentCp());
+						}
+					}
+					
+					caster.reduceCurrentHp(transferDmg / membersInRange, attacker, null);
+					value -= transferDmg;
+					fullValue = (int) value;
 				}
 			}
 			
@@ -295,15 +347,15 @@ public class PcStatus extends PlayableStatus
 		final PcStat charstat = getActiveChar().getStat();
 		
 		// Modify the current CP of the L2Character and broadcast Server->Client packet StatusUpdate
-		if (getCurrentCp() < charstat.getMaxCp())
+		if (getCurrentCp() < charstat.getMaxRecoverableCp())
 			setCurrentCp(getCurrentCp() + Formulas.calcCpRegen(getActiveChar()), false);
 		
 		// Modify the current HP of the L2Character and broadcast Server->Client packet StatusUpdate
-		if (getCurrentHp() < charstat.getMaxHp())
+		if (getCurrentHp() < charstat.getMaxRecoverableHp())
 			setCurrentHp(getCurrentHp() + Formulas.calcHpRegen(getActiveChar()), false);
 		
 		// Modify the current MP of the L2Character and broadcast Server->Client packet StatusUpdate
-		if (getCurrentMp() < charstat.getMaxMp())
+		if (getCurrentMp() < charstat.getMaxRecoverableMp())
 			setCurrentMp(getCurrentMp() + Formulas.calcMpRegen(getActiveChar()), false);
 		
 		getActiveChar().broadcastStatusUpdate(); //send the StatusUpdate packet

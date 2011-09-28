@@ -22,16 +22,15 @@ import com.l2jserver.gameserver.network.serverpackets.ExClosePartyRoom;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * 
  * @author Gnacik
- *
  */
 public final class RequestWithdrawPartyRoom extends L2GameClientPacket
 {
+	private static final String _C__D0_0B_REQUESTWITHDRAWPARTYROOM = "[C] D0:0B RequestWithdrawPartyRoom";
+	
 	private int _roomid;
 	@SuppressWarnings("unused")
 	private int _unk1;
-	
 	
 	@Override
 	protected void readImpl()
@@ -75,7 +74,6 @@ public final class RequestWithdrawPartyRoom extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] D0:0B RequestWithdrawPartyRoom";
+		return _C__D0_0B_REQUESTWITHDRAWPARTYROOM;
 	}
-	
 }

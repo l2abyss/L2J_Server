@@ -30,6 +30,7 @@
 	<property name="build.dist.game" location="${build.dist}/game" />
 	<property name="build.dist.libs" location="${build.dist}/libs" />
 	<property name="build.dist.login" location="${build.dist}/login" />
+	<property name="build.dist.tools" location="${build.dist}/tools" />
 
 	<path id="classpath">
 		<fileset dir="${lib}">
@@ -62,6 +63,7 @@
 	<target name="jar" depends="compile" description="Create the jar files">
 		<jar destfile="${build.dist.login}/l2jlogin.jar">
 			<fileset dir="${build.classes}">
+				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/gameserver/**" />
 			</fileset>
 			<manifest>
@@ -75,6 +77,7 @@
 		</jar>
 		<jar destfile="${build.dist.game}/l2jserver.jar">
 			<fileset dir="${build.classes}">
+				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/loginserver/**" />
 				<exclude name="**/accountmanager/**" />
 				<exclude name="**/gsregistering/**" />
@@ -86,6 +89,57 @@
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.gameserver.GameServer" />
+			</manifest>
+		</jar>
+		<jar destfile="${build.dist.tools}/dbinst_cs.jar">
+			<fileset dir="${build.classes}">
+				<include name="**/dbinstaller/**" />
+				<include name="**/images/**" />
+				<include name="**/util/swing/**" />
+				<exclude name="**/LauncherGS*" />
+				<exclude name="**/LauncherLS*" />
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
+				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
+				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherCS" />
+			</manifest>
+		</jar>
+		<jar destfile="${build.dist.tools}/dbinst_gs.jar">
+			<fileset dir="${build.classes}">
+				<include name="**/dbinstaller/**" />
+				<include name="**/images/**" />
+				<include name="**/util/swing/**" />
+				<exclude name="**/LauncherCS*" />
+				<exclude name="**/LauncherLS*" />
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
+				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
+				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherGS" />
+			</manifest>
+		</jar>
+		<jar destfile="${build.dist.tools}/dbinst_ls.jar">
+			<fileset dir="${build.classes}">
+				<include name="**/dbinstaller/**" />
+				<include name="**/images/**" />
+				<include name="**/util/swing/**" />
+				<exclude name="**/LauncherCS*" />
+				<exclude name="**/LauncherGS*" />
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Class-Path" value="${manifest.libs}" />
+				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
+				<attribute name="Main-Class" value="com.l2jserver.dbinstaller.LauncherLS" />
 			</manifest>
 		</jar>
 	</target>

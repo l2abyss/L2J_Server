@@ -81,8 +81,8 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 				sm.addItemName(targetItem);
 				if (targetItem.isArmor())
 				{
-					sm.addElemntal(realElement);
-					sm.addElemntal(Elementals.getOppositeElement(realElement));
+					sm.addElemental(realElement);
+					sm.addElemental(Elementals.getOppositeElement(realElement));
 				}
 			}
 			else
@@ -94,18 +94,16 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 				sm.addItemName(targetItem);
 				if (targetItem.isArmor())
 				{
-					sm.addElemntal(realElement);
-					sm.addElemntal(Elementals.getOppositeElement(realElement));
+					sm.addElemental(realElement);
+					sm.addElemental(Elementals.getOppositeElement(realElement));
 				}
 			}
 			activeChar.sendPacket(sm);
 			activeChar.sendPacket(new ExBaseAttributeCancelResult(targetItem.getObjectId(), _element));
-			return;
 		}
 		else
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DO_NOT_HAVE_ENOUGH_FUNDS_TO_CANCEL_ATTRIBUTE));
-			return;
 		}
 	}
 	

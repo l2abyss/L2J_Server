@@ -26,16 +26,12 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestConfirmGemStone extends AbstractRefinePacket
 {
-	private static final String _C__D0_2B_REQUESTCONFIRMGEMSTONE = "[C] D0:2B RequestConfirmGemStone";
+	private static final String _C__D0_28_REQUESTCONFIRMGEMSTONE = "[C] D0:28 RequestConfirmGemStone";
 	private int _targetItemObjId;
 	private int _refinerItemObjId;
 	private int _gemstoneItemObjId;
 	private long _gemStoneCount;
 	
-	/**
-	 * @param buf
-	 * @param client
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -45,9 +41,6 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		_gemStoneCount= readQ();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected
 	void runImpl()
@@ -86,12 +79,9 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		activeChar.sendPacket(new ExPutCommissionResultForVariationMake(_gemstoneItemObjId, _gemStoneCount, gemStoneItem.getItemId()));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_2B_REQUESTCONFIRMGEMSTONE;
+		return _C__D0_28_REQUESTCONFIRMGEMSTONE;
 	}
 }

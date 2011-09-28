@@ -420,6 +420,10 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 
 				_playerOne.updateStat(COMP_DONE, 1);
 				_playerTwo.updateStat(COMP_DONE, 1);
+				_playerOne.updateStat(COMP_DONE_WEEK, 1);
+				_playerTwo.updateStat(COMP_DONE_WEEK, 1);
+				_playerOne.updateStat(getWeeklyMatchType(), 1);
+				_playerTwo.updateStat(getWeeklyMatchType(), 1);
 				
 				_playerOne.updateNobleStats();
 				_playerTwo.updateNobleStats();
@@ -523,6 +527,10 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 
 			_playerOne.updateStat(COMP_DONE, 1);
 			_playerTwo.updateStat(COMP_DONE, 1);
+			_playerOne.updateStat(COMP_DONE_WEEK, 1);
+			_playerTwo.updateStat(COMP_DONE_WEEK, 1);
+			_playerOne.updateStat(getWeeklyMatchType(), 1);
+			_playerTwo.updateStat(getWeeklyMatchType(), 1);
 			
 			_playerOne.updateNobleStats();
 			_playerTwo.updateNobleStats();

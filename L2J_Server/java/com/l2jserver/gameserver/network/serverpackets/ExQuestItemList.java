@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
  */
 public class ExQuestItemList extends L2GameServerPacket
 {
-	private static final String _S__FE_C5_EXQUESTITEMLIST = "[S] FE:C5 ExQuestItemList";
+	private static final String _S__FE_C6_EXQUESTITEMLIST = "[S] FE:C6 ExQuestItemList";
 	
 	private FastList<L2ItemInstance> _items;
 	private PcInventory _inventory;
@@ -49,7 +49,7 @@ public class ExQuestItemList extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0xC5);
+		writeH(0xC6);
 		writeH(_items.size());
 		for (L2ItemInstance item : _items)
 		{
@@ -84,7 +84,7 @@ public class ExQuestItemList extends L2GameServerPacket
 		{
 			writeH(_inventory.getBlockItems().length);
 			writeC(_inventory.getBlockMode());
-			for(int i : _inventory.getBlockItems())
+			for (int i : _inventory.getBlockItems())
 				writeD(i);
 		}
 		else
@@ -98,7 +98,7 @@ public class ExQuestItemList extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__FE_C5_EXQUESTITEMLIST;
+		return _S__FE_C6_EXQUESTITEMLIST;
 	}
 	
 }

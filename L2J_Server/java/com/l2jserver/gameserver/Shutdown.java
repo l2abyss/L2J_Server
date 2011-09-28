@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver;
 
-import java.util.Collection;
+import gnu.trove.TObjectProcedure;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.OfflineTradersTable;
+import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.GlobalVariablesManager;
@@ -64,11 +66,9 @@ public class Shutdown extends Thread
 	private static final String[] MODE_TEXT = { "SIGTERM", "shutting down", "restarting", "aborting" };
 	
 	/**
-	 * This function starts a shutdown countdown from Telnet (Copied from Function startShutdown())
+	 * This function starts a shutdown count down from Telnet (Copied from Function startShutdown())
 	 *
-	 * @param ip IP Which Issued shutdown command
-	 * @param seconds seconds untill shutdown
-	 * @param restart true if the server will restart after shutdown
+	 * @param seconds seconds until shutdown
 	 */
 	private void SendServerQuit(int seconds)
 	{
@@ -209,10 +209,15 @@ public class Shutdown extends Thread
 	{
 		if (this == SingletonHolder._instance)
 		{
+			TimeCounter tc = new TimeCounter();
+			TimeCounter tc1 = new TimeCounter();
 			try
 			{
 				if ((Config.OFFLINE_TRADE_ENABLE || Config.OFFLINE_CRAFT_ENABLE) && Config.RESTORE_OFFLINERS)
+				{
 					OfflineTradersTable.storeOffliners();
+					_log.info("Offline Traders Table: Offline shops stored("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
+				}
 			}
 			catch (Throwable t)
 			{
@@ -222,7 +227,7 @@ public class Shutdown extends Thread
 			try
 			{
 				disconnectAllCharacters();
-				_log.info("All players disconnected.");
+				_log.info("All players disconnected and saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 			}
 			catch (Throwable t)
 			{
@@ -233,6 +238,7 @@ public class Shutdown extends Thread
 			try
 			{
 				GameTimeController.getInstance().stopTimer();
+				_log.info("Game Time Controller: Timer stopped("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 			}
 			catch (Throwable t)
 			{
@@ -243,6 +249,7 @@ public class Shutdown extends Thread
 			try
 			{
 				ThreadPoolManager.getInstance().shutdown();
+				_log.info("Thread Pool Manager: Manager has been shut down("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 			}
 			catch (Throwable t)
 			{
@@ -252,6 +259,7 @@ public class Shutdown extends Thread
 			try
 			{
 				CommunityServerThread.getInstance().interrupt();
+				_log.info("Community Server Thread: Thread interruped("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 			}
 			catch (Throwable t)
 			{
@@ -261,6 +269,7 @@ public class Shutdown extends Thread
 			try
 			{
 				LoginServerThread.getInstance().interrupt();
+				_log.info("Login Server Thread: Thread interruped("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 			}
 			catch (Throwable t)
 			{
@@ -269,11 +278,13 @@ public class Shutdown extends Thread
 			
 			// last byebye, save all data and quit this server
 			saveData();
+			tc.restartCounter();
 			
 			// saveData sends messages to exit players, so shutdown selector after it
 			try
 			{
 				GameServer.gameServer.getSelectorThread().shutdown();
+				_log.info("Game Server: Selector thread has been shut down("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 			}
 			catch (Throwable t)
 			{
@@ -284,6 +295,7 @@ public class Shutdown extends Thread
 			try
 			{
 				L2DatabaseFactory.getInstance().shutdown();
+				_log.info("L2Database Factory: Database connection has been shut down("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 			}
 			catch (Throwable t)
 			{
@@ -299,6 +311,8 @@ public class Shutdown extends Thread
 			{
 				Runtime.getRuntime().halt(0);
 			}
+			
+			_log.info("The server has been successfully shut down in "+tc1.getEstimatedTime()/1000+"seconds.");
 		}
 		else
 		{
@@ -514,49 +528,63 @@ public class Shutdown extends Thread
 		
 		/*if (Config.ACTIVATE_POSITION_RECORDER)
 			Universe.getInstance().implode(true);*/
-		
+		TimeCounter tc = new TimeCounter();
 		// Seven Signs data is now saved along with Festival data.
 		if (!SevenSigns.getInstance().isSealValidationPeriod())
+		{
 			SevenSignsFestival.getInstance().saveFestivalData(false);
+			_log.info("SevenSignsFestival: Festival data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
+		}
 		
 		// Save Seven Signs data before closing. :)
 		SevenSigns.getInstance().saveSevenSignsData();
+		_log.info("SevenSigns: Seven Signs data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		SevenSigns.getInstance().saveSevenSignsStatus();
+		_log.info("SevenSigns: Seven Signs status saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		
 		// Save all raidboss and GrandBoss status ^_^
 		RaidBossSpawnManager.getInstance().cleanUp();
-		_log.info("RaidBossSpawnManager: All raidboss info saved!!");
+		_log.info("RaidBossSpawnManager: All raidboss info saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		GrandBossManager.getInstance().cleanUp();
-		_log.info("GrandBossManager: All Grand Boss info saved!!");
+		_log.info("GrandBossManager: All Grand Boss info saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		_log.info("TradeController saving data.. This action may take some minutes! Please wait until completed!");
 		TradeController.getInstance().dataCountStore();
-		_log.info("TradeController: All count Item Saved");
+		_log.info("TradeController: All count Item saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		ItemAuctionManager.getInstance().shutdown();
+		_log.info("Item Auction Manager: All tasks stopped("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		Olympiad.getInstance().saveOlympiadStatus();
-		_log.info("Olympiad System: Data saved!!");
+		_log.info("Olympiad System: Data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		Hero.getInstance().shutdown();
-		_log.info("Hero System: Data saved!!");
+		_log.info("Hero System: Data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		ClanTable.getInstance().storeClanScore();
-		_log.info("Clan System: Data saved!!");
+		_log.info("Clan System: Data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		
 		// Save Cursed Weapons data before closing.
 		CursedWeaponsManager.getInstance().saveData();
+		_log.info("Cursed Weapons Manager: Data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		
 		// Save all manor data
 		CastleManorManager.getInstance().save();
+		_log.info("Castle Manor Manager: Data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
+		
+		CHSiegeManager.getInstance().onServerShutDown();
+		_log.info("CHSiegeManager: Siegable hall attacker lists saved!");
 		
 		// Save all global (non-player specific) Quest data that needs to persist after reboot
 		QuestManager.getInstance().save();
+		_log.info("Quest Manager: Data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		
 		// Save all global variables data
 		GlobalVariablesManager.getInstance().saveVars();
+		_log.info("Global Variables Manager: Variables saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		
 		//Save items on ground before closing
 		if (Config.SAVE_DROPPED_ITEM)
 		{
 			ItemsOnGroundManager.getInstance().saveInDb();
+			_log.info("Items On Ground Manager: Data saved("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 			ItemsOnGroundManager.getInstance().cleanUp();
-			_log.info("ItemsOnGroundManager: All items on ground saved!!");
+			_log.info("Items On Ground Manager: Cleaned up("+tc.getEstimatedTimeAndRestartCounter()+"ms).");
 		}
 		
 		try
@@ -576,13 +604,16 @@ public class Shutdown extends Thread
 	 */
 	private void disconnectAllCharacters()
 	{
-		Collection<L2PcInstance> pls = L2World.getInstance().getAllPlayers().values();
-		//synchronized (L2World.getInstance().getAllPlayers())
+		L2World.getInstance().getAllPlayers().safeForEachValue(new disconnectAllCharacters());
+	}
+	
+	private final class disconnectAllCharacters implements TObjectProcedure<L2PcInstance>
+	{
+		@Override
+		public final boolean execute(final L2PcInstance player)
 		{
-			for (L2PcInstance player : pls)
+			if (player != null)
 			{
-				if (player == null)
-					continue;
 				//Logout Character
 				try
 				{
@@ -597,9 +628,42 @@ public class Shutdown extends Thread
 				}
 				catch (Throwable t)
 				{
-					_log.log(Level.WARNING, "Failed logour char "+player, t);
+					_log.log(Level.WARNING, "Failed logour char " + player, t);
 				}
 			}
+			return true;
+		}
+	}
+	
+	/**
+	 * A simple class used to track down the estimated time of method executions.
+	 * Once this class is created, it saves the start time, and when you want to get
+	 * the estimated time, use the getEstimatedTime() method.
+	 */
+	private static final class TimeCounter
+	{
+		private long _startTime;
+		
+		private TimeCounter()
+		{
+			restartCounter();
+		}
+		
+		private void restartCounter()
+		{
+			_startTime = System.currentTimeMillis();
+		}
+		
+		private long getEstimatedTimeAndRestartCounter()
+		{
+			final long toReturn = System.currentTimeMillis() - _startTime;
+			restartCounter();
+			return toReturn;
+		}
+		
+		private long getEstimatedTime()
+		{
+			return System.currentTimeMillis() - _startTime;
 		}
 	}
 	

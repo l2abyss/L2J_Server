@@ -32,6 +32,8 @@ public class ChairSit extends L2GameServerPacket
 	private int _staticObjectId;
 	
 	/**
+	 * @param player 
+	 * @param staticObjectId 
 	 */
 	public ChairSit(L2PcInstance player, int staticObjectId)
 	{

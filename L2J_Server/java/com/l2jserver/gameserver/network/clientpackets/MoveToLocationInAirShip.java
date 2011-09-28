@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExMoveToLocationInAirShip;
 import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * format: ddddddd
@@ -99,9 +99,6 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 		activeChar.broadcastPacket(new ExMoveToLocationInAirShip(activeChar));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Party;
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -56,6 +57,10 @@ public abstract class AbstractOlympiadGame
 	protected static final String COMP_WON = "competitions_won";
 	protected static final String COMP_LOST = "competitions_lost";
 	protected static final String COMP_DRAWN = "competitions_drawn";
+	protected static final String COMP_DONE_WEEK = "competitions_done_week";
+	protected static final String COMP_DONE_WEEK_CLASSED = "competitions_done_week_classed";
+	protected static final String COMP_DONE_WEEK_NON_CLASSED = "competitions_done_week_non_classed";
+	protected static final String COMP_DONE_WEEK_TEAM = "competitions_done_week_team";
 
 	protected long _startTime = 0;
 	protected boolean _aborted = false;
@@ -170,7 +175,7 @@ public abstract class AbstractOlympiadGame
 			player.setIsOlympiadStart(false);
 			player.setOlympiadSide(par.side);
 			player.olyBuff = 5;
-			player.setInstanceId(0);
+			player.setInstanceId(OlympiadGameManager.getInstance().getOlympiadTask(id).getZone().getInstanceId());
 			player.teleToLocation(loc, false);
 			player.sendPacket(new ExOlympiadMode(2));
 		}
@@ -240,7 +245,7 @@ public abstract class AbstractOlympiadGame
 			{
 				final L2Party party = player.getParty();
 				if (party != null)
-					party.removePartyMember(player);
+					party.removePartyMember(player, messageType.Expelled);
 			}
 			// Remove Agathion
 			if (player.getAgathionId() > 0)
@@ -371,6 +376,7 @@ public abstract class AbstractOlympiadGame
 		if (player.getLastX() == 0 && player.getLastY() == 0)
 			return;
 
+		player.setInstanceId(0);
 		player.teleToLocation(player.getLastX(), player.getLastY(), player.getLastZ());
 		player.setLastCords(0, 0, 0);
 	}
@@ -451,4 +457,6 @@ public abstract class AbstractOlympiadGame
 	protected abstract int getDivider();
 
 	protected abstract int[][] getReward();
+	
+	protected abstract String getWeeklyMatchType();
 }

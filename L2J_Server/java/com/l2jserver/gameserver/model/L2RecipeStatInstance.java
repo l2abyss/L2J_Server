@@ -39,6 +39,8 @@ public class L2RecipeStatInstance
 	
 	/**
 	 * Constructor of L2RecipeStatInstance.<BR><BR>
+	 * @param type 
+	 * @param value 
 	 */
 	public L2RecipeStatInstance(String type, int value)
 	{
@@ -51,7 +53,7 @@ public class L2RecipeStatInstance
 	}
 	
 	/**
-	 * Return the the type of the L2RecipeStatInstance.<BR><BR>
+	 * @return the the type of the L2RecipeStatInstance.
 	 */
 	public StatType getType()
 	{
@@ -59,7 +61,7 @@ public class L2RecipeStatInstance
 	}
 	
 	/**
-	 * Return the value of the L2RecipeStatInstance.<BR><BR>
+	 * @return the value of the L2RecipeStatInstance.
 	 */
 	public int getValue()
 	{

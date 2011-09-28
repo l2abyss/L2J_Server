@@ -23,14 +23,13 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExDuelAskStart;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
 /**
  * Format:(ch) Sd
  * @author  -Wooden-
  */
 public final class RequestDuelStart extends L2GameClientPacket
 {
-	private static final String _C__D0_27_REQUESTDUELSTART = "[C] D0:27 RequestDuelStart";
+	private static final String _C__D0_1B_REQUESTDUELSTART = "[C] D0:1B RequestDuelStart";
 	private static Logger _log = Logger.getLogger(RequestDuelStart.class.getName());
 	private String _player;
 	private int _partyDuel;
@@ -43,9 +42,6 @@ public final class RequestDuelStart extends L2GameClientPacket
 		_partyDuel = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -177,13 +173,9 @@ public final class RequestDuelStart extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_27_REQUESTDUELSTART;
+		return _C__D0_1B_REQUESTDUELSTART;
 	}
-	
 }

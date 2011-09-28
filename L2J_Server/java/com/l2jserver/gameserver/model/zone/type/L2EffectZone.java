@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
 
@@ -31,10 +30,8 @@ import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
 
-
 /**
  * another type of damage zone with skills
- *
  * @author  kerberos
  */
 public class L2EffectZone extends L2ZoneType
@@ -222,13 +219,7 @@ public class L2EffectZone extends L2ZoneType
 	{
 		if (_skills == null || !_skills.containsKey(skillId))
 			return 0;
-		else
-			return _skills.get(skillId);
-	}
-	
-	protected Collection<L2Character> getCharacterList()
-	{
-		return _characterList.values();
+		return _skills.get(skillId);
 	}
 	
 	class ApplySkill implements Runnable
@@ -244,7 +235,7 @@ public class L2EffectZone extends L2ZoneType
 		{
 			if (isEnabled())
 			{
-				for (L2Character temp : L2EffectZone.this.getCharacterList())
+				for (L2Character temp : getCharactersInsideArray())
 				{
 					if (temp != null && !temp.isDead())
 					{
@@ -273,5 +264,4 @@ public class L2EffectZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
-	
 }

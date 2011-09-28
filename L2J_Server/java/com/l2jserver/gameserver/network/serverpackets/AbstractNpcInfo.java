@@ -173,7 +173,9 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeC(_npc.isInCombat() ? 1 : 0);
 			writeC(_npc.isAlikeDead() ? 1 : 0);
 			writeC(_isSummoned ? 2 : 0); // 0=teleported 1=default 2=summoned
+			writeD(-1); // High Five NPCString ID
 			writeS(_name);
+			writeD(-1); // High Five NPCString ID
 			writeS(_title);
 			writeD(0x00); // Title color 0=client default
 			writeD(0x00); //pvp flag
@@ -256,7 +258,9 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeC(_trap.isInCombat() ? 1 : 0);
 			writeC(_trap.isAlikeDead() ? 1 : 0);
 			writeC(_isSummoned ? 2 : 0); //  0=teleported  1=default   2=summoned
+			writeD(-1); // High Five NPCString ID
 			writeS(_name);
+			writeD(-1); // High Five NPCString ID
 			writeS(_title);
 			writeD(0x00); // title color 0 = client default
 			
@@ -378,7 +382,9 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeC(_summon.isInCombat() ? 1 : 0);
 			writeC(_summon.isAlikeDead() ? 1 : 0);
 			writeC(_val); //  0=teleported  1=default   2=summoned
+			writeD(-1); // High Five NPCString ID
 			writeS(_name);
+			writeD(-1); // High Five NPCString ID
 			writeS(_title);
 			writeD(0x01);// Title color 0=client default
 			

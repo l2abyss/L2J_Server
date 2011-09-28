@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestAnswerJoinPledge extends L2GameClientPacket
 {
-	private static final String _C__25_REQUESTANSWERJOINPLEDGE = "[C] 25 RequestAnswerJoinPledge";
+	private static final String _C__27_REQUESTANSWERJOINPLEDGE = "[C] 27 RequestAnswerJoinPledge";
 	
 	private int _answer;
 	
@@ -114,12 +114,9 @@ public final class RequestAnswerJoinPledge extends L2GameClientPacket
 		activeChar.getRequest().onRequestResponse();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__25_REQUESTANSWERJOINPLEDGE;
+		return _C__27_REQUESTANSWERJOINPLEDGE;
 	}
 }

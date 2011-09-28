@@ -40,6 +40,7 @@ import com.l2jserver.util.StringUtil;
 public final class L2ClassMasterInstance extends L2MerchantInstance
 {
 	/**
+	 * @param objectId 
 	 * @param template
 	 */
 	public L2ClassMasterInstance(int objectId, L2NpcTemplate template)
@@ -324,13 +325,10 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		int newJobLevel = currentClassId.level() + 1;
 		
 		// Weight/Inventory check
-		if(!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty())
+		if(!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty() && !player.isInventoryUnder80(false))
 		{
-			if (player.getWeightPenalty() >= 3 || (player.getInventoryLimit() * 0.8 <= player.getInventory().getSize(false)))
-			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
-				return false;
-			}
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+			return false;
 		}
 		
 		// check if player have all required items for class transfer
@@ -379,8 +377,8 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 	}
 	
 	/**
-	 * Returns minimum player level required for next class transfer
 	 * @param level - current skillId level (0 - start, 1 - first, etc)
+	 * @return minimum player level required for next class transfer
 	 */
 	private static final int getMinLevel(int level)
 	{

@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.gameserverpackets;
 
-import java.io.IOException;
-
 import com.l2jserver.util.network.BaseSendablePacket;
 
 public class AuthRequest extends BaseSendablePacket
@@ -34,8 +32,11 @@ public class AuthRequest extends BaseSendablePacket
 	 * @param id
 	 * @param acceptAlternate
 	 * @param hexid
+	 * @param port 
 	 * @param reserveHost
 	 * @param maxplayer
+	 * @param subnets 
+	 * @param hosts 
 	 */
 	public AuthRequest(int id, boolean acceptAlternate, byte[] hexid, int port, boolean reserveHost, int maxplayer, String[] subnets, String[] hosts)
 	{
@@ -59,7 +60,7 @@ public class AuthRequest extends BaseSendablePacket
 	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
 	 */
 	@Override
-	public byte[] getContent() throws IOException
+	public byte[] getContent()
 	{
 		return getBytes();
 	}

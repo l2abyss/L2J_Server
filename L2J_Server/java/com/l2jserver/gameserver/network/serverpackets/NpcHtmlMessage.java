@@ -140,9 +140,7 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	private boolean _validate = true;
 	
 	/**
-	 * 
 	 * @param npcObjId
-	 * @param text
 	 * @param itemId
 	 */
 	public NpcHtmlMessage(int npcObjId, int itemId)
@@ -152,7 +150,8 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	}
 	
 	/**
-	 * @param _characters
+	 * @param npcObjId
+	 * @param text
 	 */
 	public NpcHtmlMessage(int npcObjId, String text)
 	{
@@ -177,7 +176,7 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	public void runImpl()
 	{
 		if (Config.BYPASS_VALIDATION && _validate)
-			buildBypassCache(getClient().getActiveChar());
+			buildBypassCache(getClient().getActiveChar());		
 	}
 	
 	public void setHtml(String text)
@@ -243,11 +242,12 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 		
 		writeD(_npcObjId);
 		writeS(_html);
-		writeD(_itemId);
+		if (_npcObjId != 0)
+			writeD(_itemId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
+	/**
+	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
 	 */
 	@Override
 	public String getType()

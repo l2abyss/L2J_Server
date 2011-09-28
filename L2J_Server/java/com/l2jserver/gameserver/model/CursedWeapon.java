@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.TransformationManager;
+import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -40,9 +41,8 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Broadcast;
-import com.l2jserver.util.Point3D;
+import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
-
 
 public class CursedWeapon
 {
@@ -429,7 +429,7 @@ public class CursedWeapon
 		_player.setKarma(9999999);
 		_player.setPkKills(0);
 		if (_player.isInParty())
-			_player.getParty().removePartyMember(_player);
+			_player.getParty().removePartyMember(_player, messageType.Expelled);
 		
 		// Disable All Skills
 		// Do Transform
@@ -673,13 +673,11 @@ public class CursedWeapon
 	}
 	public int getLevel()
 	{
-		if (_nbKills > _stageKills*_skillMaxLevel)
+		if (_nbKills > _stageKills * _skillMaxLevel)
 		{
 			return _skillMaxLevel;
-		} else
-		{
-			return (_nbKills / _stageKills);
-		}
+		} 
+		return (_nbKills / _stageKills);
 	}
 	public long getTimeLeft()
 	{

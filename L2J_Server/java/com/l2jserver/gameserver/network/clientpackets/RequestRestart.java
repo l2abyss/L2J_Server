@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.network.serverpackets.RestartResponse;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 
-
 /**
  * This class ...
  *
@@ -39,7 +38,7 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
  */
 public final class RequestRestart extends L2GameClientPacket
 {
-	private static final String _C__46_REQUESTRESTART = "[C] 46 RequestRestart";
+	private static final String _C__57_REQUESTRESTART = "[C] 57 RequestRestart";
 	private static final Logger _log = Logger.getLogger(RequestRestart.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
@@ -132,12 +131,9 @@ public final class RequestRestart extends L2GameClientPacket
 		client.setCharSelection(cl.getCharInfo());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__46_REQUESTRESTART;
+		return _C__57_REQUESTRESTART;
 	}
 }

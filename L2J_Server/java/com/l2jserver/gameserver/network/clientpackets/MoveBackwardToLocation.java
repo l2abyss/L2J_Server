@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -32,6 +33,7 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class MoveBackwardToLocation extends L2GameClientPacket
 {
+	private static final String _C__0F_MOVEBACKWARDTOLOC = "[C] 0F MoveBackwardToLoc";
 	//private static Logger _log = Logger.getLogger(MoveBackwardToLocation.class.getName());
 	// cdddddd
 	private int _targetX;
@@ -52,8 +54,6 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 	{
 		return TaskPriority.PR_HIGH;
 	}
-	
-	private static final String _C__01_MOVEBACKWARDTOLOC = "[C] 01 MoveBackwardToLoc";
 	
 	@Override
 	protected void readImpl()
@@ -84,6 +84,16 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
+		
+		if(Config.PLAYER_MOVEMENT_BLOCK_TIME > 0
+			&& !activeChar.isGM()
+			&& activeChar.getNotMoveUntil() > System.currentTimeMillis())
+		{
+			getClient().sendPacket(SystemMessage.getSystemMessage(3226));
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
 
 		if (_targetX == _originX && _targetY == _originY && _targetZ == _originZ)
 		{
@@ -133,12 +143,9 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__01_MOVEBACKWARDTOLOC;
+		return _C__0F_MOVEBACKWARDTOLOC;
 	}
 }

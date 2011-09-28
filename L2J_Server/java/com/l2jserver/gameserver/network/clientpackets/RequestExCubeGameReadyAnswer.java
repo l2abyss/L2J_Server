@@ -20,11 +20,10 @@ import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author mrTJO
  * Format: chddd
- * 
  * d: Arena
  * d: Answer
+ * @author mrTJO
  */
 public final class RequestExCubeGameReadyAnswer extends L2GameClientPacket
 {

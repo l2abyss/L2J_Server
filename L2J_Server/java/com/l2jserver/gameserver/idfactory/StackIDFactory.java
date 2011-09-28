@@ -145,7 +145,7 @@ public class StackIDFactory extends IdFactory
 	
 	/**
 	 * return a used Object ID back to the pool
-	 * @param object ID
+	 * @param id
 	 */
 	@Override
 	public synchronized void releaseId(int id)

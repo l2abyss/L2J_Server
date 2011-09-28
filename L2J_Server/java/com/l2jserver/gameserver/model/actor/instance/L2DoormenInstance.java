@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 public class L2DoormenInstance extends L2NpcInstance
 {
 	/**
+	 * @param objectID 
 	 * @param template
 	 */
 	public L2DoormenInstance(int objectID, L2NpcTemplate template)

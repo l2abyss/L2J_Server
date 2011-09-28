@@ -33,7 +33,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
-import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShowCommunityBoard;
@@ -42,7 +41,6 @@ import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.GMAudit;
-
 
 /**
  * This class ...
@@ -138,9 +136,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				{
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 					
-					if (_command.substring(endOfId+1).startsWith("event_participate"))
-						L2Event.inscribePlayer(activeChar);
-					else if (object instanceof L2Npc && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
+					if (object instanceof L2Npc && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 						((L2Npc)object).onBypassFeedback(activeChar, _command.substring(endOfId+1));
 					
 					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
@@ -182,6 +178,16 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				{
 					if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), _command)))
 						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
+				}
+				else
+					CommunityBoard.getInstance().handleCommands(getClient(), _command);
+			}
+			else if (_command.startsWith("bbs"))
+			{
+				if (Config.ENABLE_COMMUNITY_BOARD)
+				{
+					if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), _command)))
+						activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
 				}
 				else
 					CommunityBoard.getInstance().handleCommands(getClient(), _command);
@@ -273,7 +279,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	}
 	
 	/**
-	 * @param client
+	 * @param activeChar
 	 */
 	private static void comeHere(L2PcInstance activeChar)
 	{
@@ -287,9 +293,6 @@ public final class RequestBypassToServer extends L2GameClientPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -20,14 +20,16 @@ import com.l2jserver.gameserver.model.quest.QuestState;
 
 public class RequestTutorialQuestionMark extends L2GameClientPacket
 {
-	//     private static Logger _log = Logger.getLogger(RequestTutorialQuestionMark.class.getName());
-	int _number = 0;
+	private static final String _C__87_REQUESTTUTORIALQUESTIONMARK = "[C] 87 RequestTutorialQuestionMark";
+	
+	private int _number = 0;
 	
 	@Override
 	protected void readImpl()
 	{
 		_number = readD();
 	}
+	
 	@Override
 	protected void runImpl()
 	{
@@ -46,6 +48,6 @@ public class RequestTutorialQuestionMark extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return "[C] 87 RequestTutorialQuestionMark";
+		return _C__87_REQUESTTUTORIALQUESTIONMARK;
 	}
 }

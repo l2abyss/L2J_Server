@@ -24,12 +24,11 @@ import com.l2jserver.gameserver.network.serverpackets.ExGetBossRecord;
 /**
  * Format: (ch) d
  * @author  -Wooden-
- *
  */
 public class RequestGetBossRecord extends L2GameClientPacket
 {
 	protected static final Logger _log = Logger.getLogger(RequestGetBossRecord.class.getName());
-	private static final String _C__D0_18_REQUESTGETBOSSRECORD = "[C] D0:18 RequestGetBossRecord";
+	private static final String _C__D0_40_REQUESTGETBOSSRECORD = "[C] D0:40 RequestGetBossRecord";
 	private int _bossId;
 	
 	@Override
@@ -38,9 +37,6 @@ public class RequestGetBossRecord extends L2GameClientPacket
 		_bossId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.util.network.BaseRecievePacket.ClientBasePacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -62,13 +58,10 @@ public class RequestGetBossRecord extends L2GameClientPacket
 		activeChar.sendPacket(new ExGetBossRecord(ranking, points, list));
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__D0_18_REQUESTGETBOSSRECORD;
+		return _C__D0_40_REQUESTGETBOSSRECORD;
 	}
 	
 	@Override

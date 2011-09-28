@@ -55,8 +55,8 @@ public class ExShowReceivedPostList extends L2GameServerPacket
 				writeD(msg.isUnread() ? 0x01 : 0x00);
 				writeD(0x01);
 				writeD(msg.hasAttachments() ? 0x01 : 0x00);
-				writeD(msg.isFourStars() ? 0x01 : 0x00);
-				writeD(msg.isNews() ? 0x01 : 0x00);
+				writeD(msg.isReturned() ? 0x01 : 0x00);
+				writeD(msg.getSendBySystem());
 				writeD(0);
 			}
 		}

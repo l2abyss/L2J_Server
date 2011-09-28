@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SSQStatus;
  */
 public final class RequestSSQStatus extends L2GameClientPacket
 {
-	private static final String _C__C7_RequestSSQStatus = "[C] C7 RequestSSQStatus";
+	private static final String _C__C8_RequestSSQStatus = "[C] C8 RequestSSQStatus";
 	
 	private int _page;
 	
@@ -52,12 +52,9 @@ public final class RequestSSQStatus extends L2GameClientPacket
 		activeChar.sendPacket(ssqs);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__C7_RequestSSQStatus;
+		return _C__C8_RequestSSQStatus;
 	}
 }

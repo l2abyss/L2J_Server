@@ -20,6 +20,7 @@ import com.l2jserver.gameserver.model.quest.QuestState;
 public class RequestTutorialClientEvent extends L2GameClientPacket
 {
 	private static final String _C__88_REQUESTTUTORIALCLIENTEVENT = "[C] 88 RequestTutorialClientEvent";
+	
 	int eventId = 0;
 	
 	@Override

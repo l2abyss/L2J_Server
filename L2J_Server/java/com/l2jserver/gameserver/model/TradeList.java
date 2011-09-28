@@ -36,7 +36,6 @@ import com.l2jserver.gameserver.util.Util;
 
 /**
  * @author Advi
- *
  */
 public class TradeList
 {
@@ -247,7 +246,7 @@ public class TradeList
 	}
 	
 	/**
-	 * Retrieves items from TradeList
+	 * @return all items from TradeList
 	 */
 	public TradeItem[] getItems()
 	{
@@ -256,6 +255,7 @@ public class TradeList
 	
 	/**
 	 * Returns the list of items in inventory available for transaction
+	 * @param inventory 
 	 * @return L2ItemInstance : items in inventory
 	 */
 	public TradeList.TradeItem[] getAvailableItems(PcInventory inventory)
@@ -273,7 +273,7 @@ public class TradeList
 	}
 	
 	/**
-	 * Returns Item List size
+	 * @return Item List size
 	 */
 	public int getItemCount()
 	{
@@ -295,8 +295,7 @@ public class TradeList
 				{
 					if (item.getCount() <= exclItem.getCount())
 						return null;
-					else
-						return new TradeItem(item, item.getCount() - exclItem.getCount(), item.getReferencePrice());
+					return new TradeItem(item, item.getCount() - exclItem.getCount(), item.getReferencePrice());
 				}
 			}
 		}
@@ -395,9 +394,9 @@ public class TradeList
 	
 	/**
 	 * Add item to TradeList
-	 * @param objectId : int
-	 * @param count : long
-	 * @param price : long
+	 * @param itemId
+	 * @param count
+	 * @param price
 	 * @return
 	 */
 	public synchronized TradeItem addItemByItemId(int itemId, long count, long price)
@@ -441,6 +440,7 @@ public class TradeList
 	/**
 	 * Remove item from TradeList
 	 * @param objectId : int
+	 * @param itemId 
 	 * @param count : int
 	 * @return
 	 */
@@ -581,6 +581,7 @@ public class TradeList
 	
 	/**
 	 * Validates TradeList with owner inventory
+	 * @return 
 	 */
 	private boolean validate()
 	{
@@ -607,6 +608,10 @@ public class TradeList
 	
 	/**
 	 * Transfers all TradeItems from inventory to partner
+	 * @param partner 
+	 * @param ownerIU 
+	 * @param partnerIU 
+	 * @return 
 	 */
 	private boolean TransferItems(L2PcInstance partner, InventoryUpdate ownerIU, InventoryUpdate partnerIU)
 	{
@@ -640,7 +645,8 @@ public class TradeList
 	}
 	
 	/**
-	 * Count items slots
+	 * @param partner 
+	 * @return items slots count
 	 */
 	public int countItemsSlots(L2PcInstance partner)
 	{
@@ -663,7 +669,7 @@ public class TradeList
 	}
 	
 	/**
-	 * Calc weight of items in tradeList
+	 * @return the weight of items in tradeList
 	 */
 	public int calcItemsWeight()
 	{
@@ -684,6 +690,7 @@ public class TradeList
 	
 	/**
 	 * Proceeds with trade
+	 * @param partnerList 
 	 */
 	private void doExchange(TradeList partnerList)
 	{
@@ -738,6 +745,8 @@ public class TradeList
 	
 	/**
 	 * Buy items from this PrivateStore list
+	 * @param player 
+	 * @param items 
 	 * @return int: result of trading. 0 - ok, 1 - canceled (no adena), 2 - failed (item error)
 	 */
 	public synchronized int privateStoreBuy(L2PcInstance player, FastSet<ItemRequest> items)
@@ -932,12 +941,13 @@ public class TradeList
 		player.sendPacket(playerIU);
 		if (ok)
 			return 0;
-		else
-			return 2;
+		return 2;
 	}
 	
 	/**
 	 * Sell items to this PrivateStore list
+	 * @param player 
+	 * @param items 
 	 * @return : boolean true if success
 	 */
 	public synchronized boolean privateStoreSell(L2PcInstance player, ItemRequest[] items)

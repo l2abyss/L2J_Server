@@ -37,44 +37,49 @@ public class EnchantFormatter extends Formatter
 		final StringBuilder output = StringUtil.startAppend(30
 				+ record.getMessage().length()
 				+ (params == null ? 0 : params.length * 10), "[", dateFmt.format(new Date(record.getMillis())), "] ", record.getMessage());
-		for (Object p : params)
+		
+		if (params != null)
 		{
-			if (p == null)
-				continue;
-			
-			StringUtil.append(output, ", ");
-			
-			if (p instanceof L2PcInstance)
+			for (Object p : params)
 			{
-				L2PcInstance player = (L2PcInstance)p;
-				StringUtil.append(output, "Character:", player.getName(),
-						" ["+String.valueOf(player.getObjectId())+"] Account:",
-						player.getAccountName());
-				if (player.getClient() != null && !player.getClient().isDetached())
-					StringUtil.append(output, " IP:", player.getClient().getConnection().getInetAddress().getHostAddress());
-			}
-			else if (p instanceof L2ItemInstance)
-			{
-				L2ItemInstance item = (L2ItemInstance)p;
-				if (item.getEnchantLevel() > 0)
+				if (p == null)
+					continue;
+				
+				StringUtil.append(output, ", ");
+				
+				if (p instanceof L2PcInstance)
 				{
-					StringUtil.append(output, "+", String.valueOf(item.getEnchantLevel()), " ");
+					L2PcInstance player = (L2PcInstance)p;
+					StringUtil.append(output, "Character:", player.getName(),
+							" ["+String.valueOf(player.getObjectId())+"] Account:",
+							player.getAccountName());
+					if (player.getClient() != null && !player.getClient().isDetached())
+						StringUtil.append(output, " IP:", player.getClient().getConnection().getInetAddress().getHostAddress());
 				}
-				StringUtil.append(output, item.getItem().getName(), "(", String.valueOf(item.getCount()), ")");
-				StringUtil.append(output, " [", String.valueOf(item.getObjectId()), "]");
-			}
-			else if (p instanceof L2Skill)
-			{
-				L2Skill skill = (L2Skill)p;
-				if (skill.getLevel() > 100)
+				else if (p instanceof L2ItemInstance)
 				{
-					StringUtil.append(output, "+", String.valueOf(skill.getLevel() % 100), " ");
+					L2ItemInstance item = (L2ItemInstance)p;
+					if (item.getEnchantLevel() > 0)
+					{
+						StringUtil.append(output, "+", String.valueOf(item.getEnchantLevel()), " ");
+					}
+					StringUtil.append(output, item.getItem().getName(), "(", String.valueOf(item.getCount()), ")");
+					StringUtil.append(output, " [", String.valueOf(item.getObjectId()), "]");
 				}
-				StringUtil.append(output, skill.getName(), "(", String.valueOf(skill.getId())," ", String.valueOf(skill.getLevel()), ")");
+				else if (p instanceof L2Skill)
+				{
+					L2Skill skill = (L2Skill)p;
+					if (skill.getLevel() > 100)
+					{
+						StringUtil.append(output, "+", String.valueOf(skill.getLevel() % 100), " ");
+					}
+					StringUtil.append(output, skill.getName(), "(", String.valueOf(skill.getId())," ", String.valueOf(skill.getLevel()), ")");
+				}
+				else
+					StringUtil.append(output, p.toString());
 			}
-			else
-				StringUtil.append(output, p.toString());
 		}
+
 		output.append(CRLF);
 		return output.toString();
 	}

@@ -21,35 +21,20 @@ import com.l2jserver.gameserver.network.serverpackets.ExPutEnchantTargetItemResu
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- *
  * @author  KenM
  */
 public class RequestExTryToPutEnchantTargetItem extends AbstractEnchantPacket
 {
+	private static final String _C__D0_4C_REQUESTEXTRYTOPUTENCHANTTARGETITEM = "[C] D0:4C RequestExTryToPutEnchantTargetItem";
 	
 	private int _objectId = 0;
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[C] D0:4F RequestExTryToPutEnchantTargetItem".intern();
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
 		_objectId = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -83,5 +68,11 @@ public class RequestExTryToPutEnchantTargetItem extends AbstractEnchantPacket
 			activeChar.setActiveEnchantTimestamp(System.currentTimeMillis());
 			activeChar.sendPacket(new ExPutEnchantTargetItemResult(_objectId));
 		}
+	}
+	
+	@Override
+	public String getType()
+	{
+		return _C__D0_4C_REQUESTEXTRYTOPUTENCHANTTARGETITEM;
 	}
 }

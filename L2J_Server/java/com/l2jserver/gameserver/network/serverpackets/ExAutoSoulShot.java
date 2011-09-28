@@ -26,8 +26,9 @@ public class ExAutoSoulShot extends L2GameServerPacket
 	private int _type;
 	
 	/**
-	 * 0xfe:0x12 ExAutoSoulShot         (ch)dd
-	 * @param _characters
+	 * 0xfe:0x12 ExAutoSoulShot (ch)dd
+	 * @param itemId
+	 * @param type
 	 */
 	public ExAutoSoulShot(int itemId, int type)
 	{

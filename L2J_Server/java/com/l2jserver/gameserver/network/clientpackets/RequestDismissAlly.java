@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestDismissAlly extends L2GameClientPacket
 {
-	private static final String _C__86_REQUESTDISMISSALLY = "[C] 86 RequestDismissAlly";
+	private static final String _C__90_REQUESTDISMISSALLY = "[C] 90 RequestDismissAlly";
 	//static Logger _log = Logger.getLogger(RequestDismissAlly.class.getName());
 	
 	@Override
@@ -50,12 +50,9 @@ public final class RequestDismissAlly extends L2GameClientPacket
 		activeChar.getClan().dissolveAlly(activeChar);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
-		return _C__86_REQUESTDISMISSALLY;
+		return _C__90_REQUESTDISMISSALLY;
 	}
 }

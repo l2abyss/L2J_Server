@@ -42,6 +42,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 	private static final Logger _log = Logger.getLogger(L2GamePacketHandler.class.getName());
 	
 	// implementation
+	@Override
 	public ReceivablePacket<L2GameClient> handlePacket(ByteBuffer buf, L2GameClient client)
 	{
 		if (client.dropPacket())
@@ -108,14 +109,17 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 							case 0x36:
 								msg = new RequestGotoLobby();
 								break;
-								/*
-								 * case 0x3d:
-								 *
-								 *  msg = new RequestAllFortressInfo();
-								 *  break;
-								 */
 							case 0x5a:
 								msg = new RequestExCubeGameChangeTeam();
+								break;
+							case 0x93:
+								msg = new RequestEx2ndPasswordCheck();
+								break;
+							case 0x94:
+								msg = new RequestEx2ndPasswordVerify();
+								break;
+							case 0x95:
+								msg = new RequestEx2ndPasswordReq();
 								break;
 							default:
 								printDebugDoubleOpcode(opcode, id2, buf, state, client);
@@ -133,7 +137,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						msg = new Logout();
 						break;
 					case 0x01:
-						msg = new AttackRequest();
+						msg = new Attack();
 						break;
 					case 0x03:
 						msg = new RequestStartPledgeWar();
@@ -407,7 +411,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0x67:
 						msg = new RequestPledgeCrest();
 						break;
-					case 0x6b:
+					case 0x6b: //RequestSendL2FriendSay
 						msg = new RequestSendFriendMsg();
 						break;
 					case 0x6c:
@@ -473,7 +477,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0x81:
 						msg = new RequestPartyMatchDetail();
 						break;
-					case 0x83:
+					case 0x83: //SendPrivateStoreBuyList
 						msg = new RequestPrivateStoreBuy();
 						break;
 					case 0x85:
@@ -539,7 +543,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0x99:
 						msg = new RequestPrivateStoreManageBuy();
 						break;
-					case 0x9a:
+					case 0x9a: // SetPrivateStoreList
 						msg = new SetPrivateStoreListBuy ();
 						break;
 					case 0x9c:
@@ -558,10 +562,10 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						// RequestSkillCoolTime
 						break;
 					case 0xa7:
-						//msg = new RequestPackageSendableItemList();
+						msg = new RequestPackageSendableItemList();
 						break;
 					case 0xa8:
-						// msg = new RequestPackageSend();
+						msg = new RequestPackageSend();
 						break;
 					case 0xa9:
 						msg = new RequestBlock();
@@ -569,16 +573,16 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xaa:
 						msg = new RequestSiegeInfo();
 						break;
-					case 0xab:
+					case 0xab: // RequestCastleSiegeAttackerList
 						msg = new RequestSiegeAttackerList();
 						break;
 					case 0xac:
 						msg = new RequestSiegeDefenderList();
 						break;
-					case 0xad:
+					case 0xad: //RequestJoinCastleSiege
 						msg = new RequestJoinSiege();
 						break;
-					case 0xae:
+					case 0xae: //RequestConfirmCastleSiegeWaitingList
 						msg = new RequestConfirmSiegeWaitingList();
 						break;
 					case 0xaf:
@@ -629,7 +633,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xbe:
 						msg = new RequestRecipeShopMakeInfo();
 						break;
-					case 0xbf:
+					case 0xbf: // RequestRecipeShopMakeDo
 						msg = new RequestRecipeShopMakeItem();
 						break;
 					case 0xc0: // RequestRecipeShopSellList
@@ -660,7 +664,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						msg = new RequestSSQStatus();
 						break;
 					case 0xc9:
-						// PetitionVote
+						msg = new RequestPetitionFeedback();
 						break;
 					case 0xcb:
 						msg = new GameGuardReply();
@@ -726,7 +730,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 							case 0x0b:
 								msg = new RequestWithdrawPartyRoom();
 								break;
-							case 0x0c: // RequestHandOverPartyMaster
+							case 0x0c:
 								msg = new RequestChangePartyLeader();
 								break;
 							case 0x0d:
@@ -837,13 +841,13 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 							case 0x31:
 								msg = new RequestListPartyMatchingWaitingRoom();
 								break;
-							case 0x32: // test me
+							case 0x32:
 								msg = new RequestExEnchantSkillSafe();
 								break;
-							case 0x33: // test me
+							case 0x33:
 								msg = new RequestExEnchantSkillUntrain();
 								break;
-							case 0x34: // test me
+							case 0x34:
 								msg = new RequestExEnchantSkillRouteChange();
 								break;
 							case 0x35:
@@ -976,7 +980,6 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								// NotifyStartMiniGame
 								break;
 							case 0x57:
-								// RequestJoinDominionWar
 								msg = new RequestJoinDominionWar();
 								break;
 							case 0x58:
@@ -1028,7 +1031,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								msg = new RequestSentPost();
 								break;
 							case 0x6f:
-								msg = new RequestCancelPost();
+								msg = new RequestCancelPostAttachment();
 								break;
 							case 0x70:
 								// RequestShowNewUserPetition
@@ -1070,32 +1073,61 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								// RequestAddExpandQuestAlarm
 								break;
 							case 0x7e:
-								// RequestVoteNew
 								msg = new RequestVoteNew();
 								break;
-							case 0x7f:
-								// RequestBRGamePoint
-								break;
-							case 0x80:
-								// RequestBRProductList
-								break;
-							case 0x81:
-								// RequestBRProductInfo
-								break;
-							case 0x82:
-								// RequestBRBuyProduct
-								break;
-							case 0x83:
-								// RequestBRRecentProductList
-								break;
 							case 0x84:
-								// BrMinigameLoadScores
+								msg = new RequestExAddContactToContactList();
 								break;
 							case 0x85:
-								// BrMinigameInsertScore
+								msg = new RequestExDeleteContactFromContactList();
 								break;
 							case 0x86:
+								msg = new RequestExShowContactList();
+								break;
+							case 0x87:
+								msg = new RequestExFriendListExtended();
+								break;
+							case 0x88:
+								//msg = new RequestExOlympiadMatchListRefresh();
+								break;
+							case 0x89:
+								// RequestBRGamePoint
+								break;
+							case 0x8A:
+								// RequestBRProductList
+								break;
+							case 0x8B:
+								// RequestBRProductInfo
+								break;
+							case 0x8C:
+								// RequestBRBuyProduct
+								break;
+							case 0x8D:
+								// RequestBRRecentProductList
+								break;
+							case 0x8E:
+								// BrMinigameLoadScores
+								break;
+							case 0x8F:
+								// BrMinigameInsertScore
+								break;
+							case 0x90:
 								// BrLectureMark
+								break;
+							case 0x91:
+								// RequestGoodsInventoryInfo 
+								break;
+							case 0x92:
+								// RequestUseGoodsInventoryItem 
+								break;
+							case 0x93:
+								// RequestEx2ndPasswordCheck 
+								break;
+							case 0x94:
+								// RequestEx2ndPasswordVerify  
+								break;
+							case 0x95:
+								// RequestEx2ndPasswordReq 
 								break;
 							default:
 								this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
@@ -1141,11 +1173,13 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 	}
 	
 	// impl
+	@Override
 	public L2GameClient create(MMOConnection<L2GameClient> con)
 	{
 		return new L2GameClient(con);
 	}
 	
+	@Override
 	public void execute(ReceivablePacket<L2GameClient> rp)
 	{
 		rp.getClient().execute(rp);

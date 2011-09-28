@@ -16,14 +16,13 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  *  @author ShanSoft
  *  @structure chdSdS
  */
 public final class RequestSaveBookMarkSlot extends L2GameClientPacket
 {
-	private static final String _C__51_REQUESTSAVEBOOKMARKSLOT = "[C] 51 RequestSaveBookMarkSlot";
+	private static final String _C__D0_51_01_REQUESTSAVEBOOKMARKSLOT = "[C] D0:51:01 RequestSaveBookMarkSlot";
 	
 	private int icon;
 	private String name,tag;
@@ -45,10 +44,9 @@ public final class RequestSaveBookMarkSlot extends L2GameClientPacket
 		activeChar.teleportBookmarkAdd(activeChar.getX(), activeChar.getY(), activeChar.getZ(), icon, tag, name);
 	}
 	
-	
 	@Override
 	public String getType()
 	{
-		return _C__51_REQUESTSAVEBOOKMARKSLOT;
+		return _C__D0_51_01_REQUESTSAVEBOOKMARKSLOT;
 	}
 }
