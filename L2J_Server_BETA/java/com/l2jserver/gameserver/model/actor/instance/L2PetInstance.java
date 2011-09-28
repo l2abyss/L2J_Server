@@ -610,6 +610,7 @@ public class L2PetInstance extends L2Summon
 		getInventory().transferItemsToOwner();
 		super.deleteMe(owner);
 		destroyControlItem(owner, false); //this should also delete the pet from the db
+		CharSummonTable.getInstance().getPets().remove(getOwner().getObjectId());
 	}
 	
 	@Override
