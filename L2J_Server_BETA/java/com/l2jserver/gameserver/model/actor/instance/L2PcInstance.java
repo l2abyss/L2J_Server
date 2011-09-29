@@ -96,7 +96,6 @@ import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.CharEffectList;
-import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.FishData;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -6023,13 +6022,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void setPet(L2Summon summon)
 	{
-		_summon = summon;
-		// update attack element value display
-		if ((_summon == null || _summon instanceof L2SummonInstance)
-				&& getClassId().isSummoner() && getAttackElement() != Elementals.NONE)
-			sendPacket(new UserInfo(this));
-		
+		_summon = summon;		
 	}
+	
 	/**
 	 * Set the L2Decoy of the L2PcInstance.<BR><BR>
 	 * @param decoy 
@@ -13744,18 +13739,6 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	/** End of section for mounted pets */
-	
-	@Override
-	public int getAttackElementValue(byte attribute)
-	{
-		int value = super.getAttackElementValue(attribute);
-		
-		// 20% if summon exist
-		if (getPet() != null && getClassId().isSummoner() && (getPet() instanceof L2SummonInstance))
-			return value / 5;
-		
-		return value;
-	}
 	
 	/**
 	 * @return event effect id
