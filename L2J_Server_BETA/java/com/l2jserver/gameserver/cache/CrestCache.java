@@ -84,6 +84,8 @@ public class CrestCache
 		FastMap<Integer, byte[]> _mapPledgeLarge = _cachePledgeLarge.getContentMap();
 		FastMap<Integer, byte[]> _mapAlly = _cacheAlly.getContentMap();
 		
+		final L2Clan[] clans = ClanTable.getInstance().getClans();
+		
 		for (File file : files)
 		{
 			RandomAccessFile f = null;
@@ -95,17 +97,65 @@ public class CrestCache
 					content = new byte[(int) f.length()];
 					f.readFully(content);
 					
+					boolean erase = true;
+					int crestId = 0;
+					
 					if (file.getName().startsWith("Crest_Large_"))
 					{
-						_mapPledgeLarge.put(Integer.valueOf(file.getName().substring(12, file.getName().length() - 4)), content);
+						crestId = Integer.valueOf(file.getName().substring(12, file.getName().length() - 4));
+						if(Config.CLEAR_CREST_CACHE)
+						{
+							for(final L2Clan clan : clans)
+								if(clan.getCrestLargeId() == crestId)
+								{
+									erase = false;
+									break;
+								}
+							if(erase)
+							{
+								file.delete();
+								continue;
+							}
+						}
+						_mapPledgeLarge.put(crestId, content);
 					}
 					else if (file.getName().startsWith("Crest_"))
 					{
-						_mapPledge.put(Integer.valueOf(file.getName().substring(6, file.getName().length() - 4)), content);
+						crestId = Integer.valueOf(file.getName().substring(6, file.getName().length() - 4));
+						if(Config.CLEAR_CREST_CACHE)
+						{
+							for(final L2Clan clan : clans)
+								if(clan.getCrestId() == crestId)
+								{
+									erase = false;
+									break;
+								}
+							if(erase)
+							{
+								file.delete();
+								continue;
+							}
+						}
+						_mapPledge.put(crestId, content);
 					}
 					else if (file.getName().startsWith("AllyCrest_"))
 					{
-						_mapAlly.put(Integer.valueOf(file.getName().substring(10, file.getName().length() - 4)), content);
+						crestId = Integer.valueOf(file.getName().substring(10, file.getName().length() - 4));
+						if(Config.CLEAR_CREST_CACHE)
+						{
+							for(final L2Clan clan : clans)
+								if(clan.getAllyCrestId() == crestId)
+								{
+									erase = false;
+									break;
+								}
+							if(erase)
+							{
+								file.delete();
+								continue;
+							}
+						}
+						_mapAlly.put(crestId, content);
 					}
 					_loadedFiles++;
 					_bytesBuffLen += content.length;

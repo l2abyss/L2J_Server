@@ -62,6 +62,9 @@ public class L2SkillSummon extends L2Skill
 	private final int _itemConsumeIdOT;
 	// how many times to consume an item
 	private final int _itemConsumeSteps;
+	// Inherit elementals from master
+	private final boolean _inheritElementals;
+	private final double _elementalSharePercent;
 	
 	public L2SkillSummon(StatsSet set)
 	{
@@ -83,6 +86,9 @@ public class L2SkillSummon extends L2Skill
 		_itemConsumeIdOT = set.getInteger("itemConsumeIdOT", 0);
 		_itemConsumeTime = set.getInteger("itemConsumeTime", 0);
 		_itemConsumeSteps = set.getInteger("itemConsumeSteps", 0);
+		
+		_inheritElementals = set.getBool("inheritElementals", false);
+		_elementalSharePercent = set.getDouble("inheritPercent", 1);
 	}
 	
 	public boolean checkCondition(L2Character activeChar)
@@ -231,7 +237,9 @@ public class L2SkillSummon extends L2Skill
 		summon.setName(summonTemplate.name);
 		summon.setTitle(activeChar.getName());
 		summon.setExpPenalty(_expPenalty);
-		
+		summon.setSharedElementals(_inheritElementals);
+		summon.setSharedElementalsValue(_elementalSharePercent);
+			
 		if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 		{
 			summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));
