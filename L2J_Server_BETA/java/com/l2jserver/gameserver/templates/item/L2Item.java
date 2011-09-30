@@ -194,8 +194,8 @@ public abstract class L2Item
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
 	
-	private List<Quest> _questEvents = new FastList<Quest>();
-	
+	private final List<Quest> _questEvents = new FastList<Quest>();
+	private final int _useSkillDisTime;
 	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
 	
 	/**
@@ -230,6 +230,7 @@ public abstract class L2Item
 		_ex_immediate_effect = set.getInteger("ex_immediate_effect", 0) > 0;
 		//used for custom type select
 		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
+		_useSkillDisTime = set.getInteger("useSkillDisTime", 0);
 		
 		//TODO cleanup + finish
 		String equip_condition = set.getString("equip_condition", null);
@@ -945,6 +946,11 @@ public abstract class L2Item
 	public L2ActionType getDefaultAction()
 	{
 		return _defaultAction;
+	}
+	
+	public int useSkillDisTime()
+	{
+		return _useSkillDisTime;
 	}
 
 	/**

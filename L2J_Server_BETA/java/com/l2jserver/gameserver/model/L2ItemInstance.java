@@ -1938,6 +1938,11 @@ public final class L2ItemInstance extends L2Object
 		return getItem().isFreightable();
 	}
 	
+	public int useSkillDisTime()
+	{
+		return getItem().useSkillDisTime();
+	}
+	
 	public int getOlyEnchantLevel()
 	{
 		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());

@@ -1966,7 +1966,7 @@ public abstract class L2Character extends L2Object
 				{
 					if (item.isEquipped())
 					{
-						item.decreaseMana(false, skill.getReuseDelay() / 60000);
+						item.decreaseMana(false, item.useSkillDisTime() > 0 ? item.useSkillDisTime() : (skill.getReuseDelay() / 60000)); // TODO: Remove when dp is added
 						break;
 					}
 				}
