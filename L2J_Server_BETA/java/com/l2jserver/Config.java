@@ -716,6 +716,7 @@ public final class Config
 	public static boolean L2JMOD_WEDDING_SAMESEX;
 	public static boolean L2JMOD_WEDDING_FORMALWEAR;
 	public static int L2JMOD_WEDDING_DIVORCE_COSTS;
+	public static boolean L2JMOD_HELLBOUND_STATUS;
 	public static boolean BANKING_SYSTEM_ENABLED;
 	public static int BANKING_SYSTEM_GOLDBARS;
 	public static int BANKING_SYSTEM_ADENA;
@@ -794,6 +795,7 @@ public final class Config
 	public static double RAID_PATTACK_MULTIPLIER;
 	public static double RAID_MATTACK_MULTIPLIER;
 	public static double RAID_MINION_RESPAWN_TIMER;
+	public static TIntIntHashMap MINIONS_RESPAWN_TIME;
 	public static float RAID_MIN_RESPAWN_MULTIPLIER;
 	public static float RAID_MAX_RESPAWN_MULTIPLIER;
 	public static boolean RAID_DISABLE_CURSE;
@@ -830,6 +832,8 @@ public final class Config
 	public static float RATE_PARTY_XP;
 	public static float RATE_PARTY_SP;
 	public static float RATE_CONSUMABLE_COST;
+	public static float RATE_HB_TRUST_INCREASE;
+	public static float RATE_HB_TRUST_DECREASE;
 	public static float RATE_EXTR_FISH;
 	public static float RATE_DROP_ITEMS;
 	public static float RATE_DROP_ITEMS_BY_RAID;
@@ -1055,6 +1059,9 @@ public final class Config
 	public static int Random_Of_Zaken_Spawn;
 	public static int Interval_Of_Frintezza_Spawn;
 	public static int Random_Of_Frintezza_Spawn;
+	public static int BELETH_MIN_PLAYERS;
+	public static int INTERVAL_OF_BELETH_SPAWN;
+	public static int RANDOM_OF_BELETH_SPAWN;
 	
 	// Gracia Seeds Settings
 	
@@ -2150,6 +2157,27 @@ public final class Config
 					RAID_MIN_RESPAWN_MULTIPLIER = Float.parseFloat(NPC.getProperty("RaidMinRespawnMultiplier", "1.0"));
 					RAID_MAX_RESPAWN_MULTIPLIER = Float.parseFloat(NPC.getProperty("RaidMaxRespawnMultiplier", "1.0"));
 					RAID_MINION_RESPAWN_TIMER = Integer.parseInt(NPC.getProperty("RaidMinionRespawnTime", "300000"));
+					final String[] propertySplit = NPC.getProperty("CustomMinionsRespawnTime", "").split(";");
+					MINIONS_RESPAWN_TIME = new TIntIntHashMap(propertySplit.length);
+					for (String prop : propertySplit)
+					{
+						String[] propSplit = prop.split(",");
+						if (propSplit.length != 2)
+						{
+							_log.warning(StringUtil.concat("[CustomMinionsRespawnTime]: invalid config property -> CustomMinionsRespawnTime \"", prop, "\""));
+						}
+						
+						try
+						{
+							MINIONS_RESPAWN_TIME.put(Integer.valueOf(propSplit[0]), Integer.valueOf(propSplit[1]));
+						}
+						catch (NumberFormatException nfe)
+						{
+							if (!prop.isEmpty())
+								_log.warning(StringUtil.concat("[CustomMinionsRespawnTime]: invalid config property -> CustomMinionsRespawnTime \"", propSplit[0], "\"", propSplit[1]));
+						}
+					}
+					
 					RAID_DISABLE_CURSE = Boolean.parseBoolean(NPC.getProperty("DisableRaidCurse", "False"));
 					RAID_CHAOS_TIME = Integer.parseInt(NPC.getProperty("RaidChaosTime", "10"));
 					GRAND_CHAOS_TIME = Integer.parseInt(NPC.getProperty("GrandChaosTime", "10"));
@@ -2207,6 +2235,8 @@ public final class Config
 					RATE_QUEST_REWARD_SCROLL = Float.parseFloat(ratesSettings.getProperty("RateQuestRewardScroll", "1."));
 					RATE_QUEST_REWARD_RECIPE = Float.parseFloat(ratesSettings.getProperty("RateQuestRewardRecipe", "1."));
 					RATE_QUEST_REWARD_MATERIAL = Float.parseFloat(ratesSettings.getProperty("RateQuestRewardMaterial", "1."));
+					RATE_HB_TRUST_INCREASE = Float.parseFloat(ratesSettings.getProperty("RateHellboundTrustIncrease", "1."));
+					RATE_HB_TRUST_DECREASE = Float.parseFloat(ratesSettings.getProperty("RateHellboundTrustDecrease", "1."));
 					
 					RATE_VITALITY_LEVEL_1 = Float.parseFloat(ratesSettings.getProperty("RateVitalityLevel1", "1.5"));
 					RATE_VITALITY_LEVEL_2 = Float.parseFloat(ratesSettings.getProperty("RateVitalityLevel2", "2."));
@@ -2570,6 +2600,7 @@ public final class Config
 					L2JMOD_MULTILANG_DEFAULT = L2JModSettings.getProperty("MultiLangDefault", "en");
 					if (!L2JMOD_MULTILANG_ALLOWED.contains(L2JMOD_MULTILANG_DEFAULT))
 						_log.warning("MultiLang[Config.load()]: default language: " + L2JMOD_MULTILANG_DEFAULT + " is not in allowed list !");
+					L2JMOD_HELLBOUND_STATUS = Boolean.parseBoolean(L2JModSettings.getProperty("HellboundStatus", "False"));
 					L2JMOD_MULTILANG_VOICED_ALLOW = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangVoiceCommand", "True"));
 					L2JMOD_MULTILANG_SM_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangSystemMessageEnable", "false"));
 					allowed = L2JModSettings.getProperty("MultiLangSystemMessageAllowed", "").split(";");
@@ -2834,6 +2865,17 @@ public final class Config
 						Random_Of_Frintezza_Spawn = 8;
 					Random_Of_Frintezza_Spawn = Random_Of_Frintezza_Spawn * 3600000;
 					
+					INTERVAL_OF_BELETH_SPAWN = Integer.parseInt(grandbossSettings.getProperty("IntervalOfBelethSpawn", "192"));
+					if (INTERVAL_OF_BELETH_SPAWN < 1 || INTERVAL_OF_BELETH_SPAWN > 480)
+						INTERVAL_OF_BELETH_SPAWN = 192;
+					INTERVAL_OF_BELETH_SPAWN *= 3600000;
+					
+					RANDOM_OF_BELETH_SPAWN = Integer.parseInt(grandbossSettings.getProperty("RandomOfBelethSpawn", "148"));
+					if (RANDOM_OF_BELETH_SPAWN < 1 || RANDOM_OF_BELETH_SPAWN > 192)
+						RANDOM_OF_BELETH_SPAWN = 148;
+					RANDOM_OF_BELETH_SPAWN *= 3600000;
+					
+					BELETH_MIN_PLAYERS = Integer.parseInt(grandbossSettings.getProperty("BelethMinPlayers", "36"));
 				}
 				catch (Exception e)
 				{
@@ -3085,6 +3127,8 @@ public final class Config
 		else if (pName.equalsIgnoreCase("RateQuestRewardScroll")) RATE_QUEST_REWARD_SCROLL = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateQuestRewardRecipe")) RATE_QUEST_REWARD_RECIPE = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateQuestRewardMaterial")) RATE_QUEST_REWARD_MATERIAL = Float.parseFloat(pValue);
+		else if (pName.equalsIgnoreCase("RateHellboundTrustIncrease")) RATE_HB_TRUST_INCREASE = Float.parseFloat(pValue);
+		else if (pName.equalsIgnoreCase("RateHellboundTrustDecrease")) RATE_HB_TRUST_DECREASE = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateVitalityLevel1")) RATE_VITALITY_LEVEL_1 = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateVitalityLevel2")) RATE_VITALITY_LEVEL_2 = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateVitalityLevel3")) RATE_VITALITY_LEVEL_3 = Float.parseFloat(pValue);

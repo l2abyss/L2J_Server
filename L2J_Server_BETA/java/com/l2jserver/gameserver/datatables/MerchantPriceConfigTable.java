@@ -60,7 +60,7 @@ public class MerchantPriceConfigTable implements InstanceListManager
 	{
 		for (MerchantPriceConfig mpc : _mpcs.values())
 		{
-			if (npc.getWorldRegion().containsZone(mpc.getZoneId()))
+			if (npc.getWorldRegion() != null && npc.getWorldRegion().containsZone(mpc.getZoneId()))
 			{
 				return mpc;
 			}

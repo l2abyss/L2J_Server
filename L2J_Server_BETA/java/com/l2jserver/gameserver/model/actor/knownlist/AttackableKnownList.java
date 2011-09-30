@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.actor.knownlist;
 import java.util.Collection;
 
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -43,8 +44,8 @@ public class AttackableKnownList extends NpcKnownList
 		// Set the L2Attackable Intention to AI_INTENTION_IDLE
 		final Collection<L2PcInstance> known = getKnownPlayers().values();
 		
-		//FIXME: This is a temporary solution
-		if (getActiveChar().hasAI() && (known == null || known.isEmpty()))
+		//FIXME: This is a temporary solution && support for Walking Manager
+		if (getActiveChar().hasAI() && (known == null || known.isEmpty()) && !WalkingManager.getInstance().isRegistered(getActiveChar()))
 			getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
 		
 		return true;

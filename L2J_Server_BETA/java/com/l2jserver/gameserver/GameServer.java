@@ -108,6 +108,7 @@ import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TransformationManager;
+import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.AutoChatHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
@@ -260,6 +261,7 @@ public class GameServer
 		HerbDropTable.getInstance();
 		NpcTable.getInstance();
 		NpcWalkerRoutesTable.getInstance();
+		WalkingManager.getInstance();
 		ZoneManager.getInstance();
 		DoorTable.getInstance();
 		StaticObjects.getInstance();
@@ -268,6 +270,7 @@ public class GameServer
 		FortManager.getInstance().loadInstances();
 		NpcBufferTable.getInstance();
 		SpawnTable.getInstance();
+		HellboundManager.getInstance();
 		RaidBossSpawnManager.getInstance();
 		DayNightSpawnManager.getInstance().trim().notifyChangeMode();
 		GrandBossManager.getInstance().initZones();
@@ -378,7 +381,6 @@ public class GameServer
 		MerchantPriceConfigTable.getInstance().updateReferences();
 		CastleManager.getInstance().activateInstances();
 		FortManager.getInstance().activateInstances();
-		HellboundManager.getInstance();
 		
 		if (Config.ALLOW_MAIL)
 			MailManager.getInstance();

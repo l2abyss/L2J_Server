@@ -166,6 +166,7 @@ public abstract class L2Item
 	private final int _crystalType; // default to none-grade
 	private final int _duration;
 	private final int _time;
+	private final int _autoDestroyTime;
 	private final int _bodyPart;
 	private final int _referencePrice;
 	private final int _crystalCount;
@@ -210,6 +211,7 @@ public abstract class L2Item
 		_materialType = ItemTable._materials.get(set.getString("material", "steel")); // default is steel, yeah and what?
 		_duration = set.getInteger("duration", -1);
 		_time = set.getInteger("time", -1);
+		_autoDestroyTime = set.getInteger("auto_destroy_time", -1) * 1000;
 		_bodyPart = ItemTable._slots.get(set.getString("bodypart", "none"));
 		_referencePrice = set.getInteger("price", 0);
 		_crystalType = ItemTable._crystalTypes.get(set.getString("crystal_type", "none")); // default to none-grade
@@ -327,6 +329,15 @@ public abstract class L2Item
 	{
 		return _time;
 	}
+	
+	/**
+	 * @return the auto destroy time of the item in seconds: 0 or less - default
+	 */
+	public final int getAutoDestroyTime()
+	{
+		return _autoDestroyTime;
+	}
+	
 	/**
 	 * Returns the ID of the iden
 	 * @return int

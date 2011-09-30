@@ -30,6 +30,7 @@ import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
+import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2ItemInstance;
@@ -691,6 +692,10 @@ public class L2CharacterAI extends AbstractAI
 			((L2Attackable) _accessor.getActor()).setisReturningToSpawnPoint(false);
 		}
 		clientStoppedMoving();
+		
+		//Walking Manager support
+		if (_actor instanceof L2Npc)
+			WalkingManager.getInstance().onArrived((L2Npc) _actor);
 		
 		// If the Intention was AI_INTENTION_MOVE_TO, set the Intention to AI_INTENTION_ACTIVE
 		if (getIntention() == AI_INTENTION_MOVE_TO)

@@ -13386,6 +13386,12 @@ public final class SystemMessageId
 	public static final SystemMessageId NPCS_RECAPTURED_FORTRESS;
 	
 	/**
+	* ID: 2291<br>
+	* Message: You can operate the machine when you participate in the party.
+	*/
+	public static final SystemMessageId CAN_OPERATE_MACHINE_WHEN_IN_PARTY;
+	
+	/**
 	 * ID: 2293<br>
 	 * Message: Current location: $s1, $s2, $s3 (inside the Steel Citadel)
 	 */
@@ -17053,6 +17059,7 @@ public final class SystemMessageId
 		USE_SHORTCUT_CONFIRM = new SystemMessageId(2272);
 		SKILL_NOT_FOR_SUBCLASS = new SystemMessageId(2273);
 		NPCS_RECAPTURED_FORTRESS = new SystemMessageId(2276);
+		CAN_OPERATE_MACHINE_WHEN_IN_PARTY = new SystemMessageId(2291);
 		LOC_IN_STEEL_CITADEL_S1_S2_S3 = new SystemMessageId(2293);
 		GAINED_VITALITY_POINTS = new SystemMessageId(2296);
 		LOC_STEEL_CITADEL = new SystemMessageId(2301);

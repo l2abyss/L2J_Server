@@ -322,7 +322,7 @@ public class L2Attackable extends L2Npc
 	
 	private int _isSpoiledBy = 0;
 	
-	private int _onKillDelay = 5000;
+	protected int _onKillDelay = 5000;
 	
 	/**
 	 * Constructor of L2Attackable (use L2Character and L2NpcInstance constructor).
@@ -550,7 +550,7 @@ public class L2Attackable extends L2Npc
 		return true;
 	}
 	
-	private static class OnKillNotifyTask implements Runnable
+	protected static class OnKillNotifyTask implements Runnable
 	{
 		private final L2Attackable _attackable;
 		private final Quest _quest;

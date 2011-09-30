@@ -94,6 +94,7 @@ import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.FishData;
@@ -174,7 +175,9 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
+import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2BossZone;
+import com.l2jserver.gameserver.model.zone.type.L2NoRestartZone;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -323,6 +326,11 @@ public final class L2PcInstance extends L2Playable
 	// Character Transformation SQL String Definitions:
 	private static final String SELECT_CHAR_TRANSFORM = "SELECT transform_id FROM characters WHERE charId=?";
 	private static final String UPDATE_CHAR_TRANSFORM = "UPDATE characters SET transform_id=? WHERE charId=?";
+
+	// Character zone restart time SQL String Definitions - L2Master mod
+	private static final String DELETE_ZONE_RESTART_LIMIT = "DELETE FROM character_norestart_zone_time WHERE charId = ?";
+	private static final String LOAD_ZONE_RESTART_LIMIT = "SELECT time_limit FROM character_norestart_zone_time WHERE charId = ?";
+	private static final String UPDATE_ZONE_RESTART_LIMIT = "REPLACE INTO character_norestart_zone_time (charId, time_limit) VALUES (?,?)";
 	
 	public static final int REQUEST_TIMEOUT = 15;
 	public static final int STORE_PRIVATE_NONE = 0;
@@ -386,6 +394,7 @@ public final class L2PcInstance extends L2Playable
 	private long _onlineBeginTime;
 	private long _lastAccess;
 	private long _uptime;
+	private long _zoneRestartLimitTime = 0;
 	
 	private final ReentrantLock _subclassLock = new ReentrantLock();
 	protected int _baseClass;
@@ -3030,6 +3039,84 @@ public final class L2PcInstance extends L2Playable
 	{
 		_onlineTime = time;
 		_onlineBeginTime = System.currentTimeMillis();
+	}
+
+	public long getZoneRestartLimitTime()
+	{
+		return _zoneRestartLimitTime;
+	}
+	
+	public void setZoneRestartLimitTime(long time)
+	{
+		_zoneRestartLimitTime = time;
+	}
+	
+	public void storeZoneRestartLimitTime()
+	{
+		if (isInsideZone(L2Character.ZONE_NORESTART))
+		{
+			L2NoRestartZone zone = null; 
+			for (L2ZoneType tmpzone : ZoneManager.getInstance().getZones(this))
+			{
+				if (tmpzone instanceof L2NoRestartZone)
+				{
+					zone = (L2NoRestartZone) tmpzone;
+					break;
+				}
+			}
+			if (zone != null)
+			{
+				Connection con = null;
+				try
+				{
+					con = L2DatabaseFactory.getInstance().getConnection();
+					final PreparedStatement statement = con.prepareStatement(UPDATE_ZONE_RESTART_LIMIT);
+					statement.setInt(1, getObjectId());
+					statement.setLong(2, System.currentTimeMillis() + (zone.getRestartAllowedTime() * 1000));
+					statement.execute();
+					statement.close();
+				}
+				catch (SQLException e)
+				{
+					_log.log(Level.WARNING, "Cannot store zone norestart limit for character "+getObjectId(), e);
+				}
+				finally
+				{
+					L2DatabaseFactory.close(con);
+				}
+			}
+		}
+	}
+	
+	private void restoreZoneRestartLimitTime()
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(LOAD_ZONE_RESTART_LIMIT);
+			statement.setInt(1, getObjectId());
+			final ResultSet rset = statement.executeQuery();
+			
+			if (rset.next())
+			{
+				setZoneRestartLimitTime(rset.getLong("time_limit"));
+				statement.close();
+				statement = con.prepareStatement(DELETE_ZONE_RESTART_LIMIT);
+				statement.setInt(1, getObjectId());
+				statement.executeUpdate();
+			}
+			rset.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not restore "+this+" zone restart time: " + e.getMessage(), e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
 	}
 	
 	/**
@@ -7312,6 +7399,8 @@ public final class L2PcInstance extends L2Playable
 			
 			if (Config.STORE_UI_SETTINGS)
 				player.restoreUISettings();
+			
+			player.restoreZoneRestartLimitTime();
 		}
 		catch (Exception e)
 		{

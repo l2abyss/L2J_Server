@@ -41,7 +41,7 @@ import com.l2jserver.util.Rnd;
  *
  * @version $Revision: 1.11.2.1.2.7 $ $Date: 2005/04/06 16:13:40 $
  */
-public final class L2GuardInstance extends L2Attackable
+public class L2GuardInstance extends L2Attackable
 {
 	private static Logger _log = Logger.getLogger(L2GuardInstance.class.getName());
 	

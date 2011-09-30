@@ -33,6 +33,7 @@ import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
+import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Object;
@@ -1448,6 +1449,9 @@ public class L2Npc extends L2Character
 		// Decrease its spawn counter
 		if (_spawn != null)
 			_spawn.decreaseCount(this);
+		
+		//Notify Walking Manager
+		WalkingManager.getInstance().onDeath(this);
 	}
 	
 	/**

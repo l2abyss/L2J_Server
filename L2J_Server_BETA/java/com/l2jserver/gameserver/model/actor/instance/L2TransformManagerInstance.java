@@ -121,7 +121,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 				}
 				else
 				{
-					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+					final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile(player.getHtmlPrefix(), htmlFolder + "master_transformation008.htm");
 					player.sendPacket(html);
 				}

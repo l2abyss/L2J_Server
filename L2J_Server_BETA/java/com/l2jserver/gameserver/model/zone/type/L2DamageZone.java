@@ -43,6 +43,8 @@ public class L2DamageZone extends L2ZoneType
 	private int _startTask;
 	private int _reuseTask;
 	
+	private boolean _enabled;
+	
 	public L2DamageZone(int id)
 	{
 		super(id);
@@ -58,6 +60,9 @@ public class L2DamageZone extends L2ZoneType
 		// no castle by default
 		_castleId = 0;
 		_castle = null;
+		
+		//enabled by default
+		_enabled = true;
 		
 		setTargetType(InstanceType.L2Playable); // default only playabale
 	}
@@ -84,6 +89,10 @@ public class L2DamageZone extends L2ZoneType
 		else if (name.equalsIgnoreCase("reuse"))
 		{
 			_reuseTask = Integer.parseInt(value);
+		}
+		else if (name.equalsIgnoreCase("enabled"))
+		{
+			_enabled = Boolean.parseBoolean(value);
 		}
 		else
 			super.setParameter(name, value);
@@ -168,6 +177,9 @@ public class L2DamageZone extends L2ZoneType
 				}
 			}
 			
+			if (!_enabled)
+				return;
+			
 			for (L2Character temp : _dmgZone.getCharactersInsideArray())
 			{
 				if (temp != null && !temp.isDead())
@@ -189,6 +201,11 @@ public class L2DamageZone extends L2ZoneType
 				}
 			}
 		}
+	}
+	
+	public void setEnabled(boolean state)
+	{
+		_enabled = state;
 	}
 	
 	@Override
