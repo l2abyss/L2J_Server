@@ -90,7 +90,7 @@ public class L2DamageZone extends L2ZoneType
 		{
 			_reuseTask = Integer.parseInt(value);
 		}
-		else if (name.equalsIgnoreCase("enabled"))
+		else if (name.equalsIgnoreCase("default_enabled"))
 		{
 			_enabled = Boolean.parseBoolean(value);
 		}

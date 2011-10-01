@@ -67,7 +67,7 @@ public class L2BossZone extends L2ZoneType
 		{
 			_timeInvade = Integer.parseInt(value);
 		}
-		else if (name.equals("EnabledByDefault"))
+		else if (name.equals("default_enabled"))
 		{
 			_enabled = Boolean.parseBoolean(value);
 		}

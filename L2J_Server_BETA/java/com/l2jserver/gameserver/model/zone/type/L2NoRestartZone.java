@@ -37,7 +37,7 @@ public class L2NoRestartZone extends L2ZoneType
 	@Override
 	public void setParameter(String name, String value)
 	{
-		if (name.equalsIgnoreCase("EnabledByDefault"))
+		if (name.equalsIgnoreCase("default_enabled"))
 		{
 			_enabled = Boolean.parseBoolean(value);
 		}
@@ -46,10 +46,6 @@ public class L2NoRestartZone extends L2ZoneType
 			_restartAllowedTime = Integer.parseInt(value);
 		}
 		else if (name.equalsIgnoreCase("restartTime"))
-		{
-			// Do nothing.
-		}
-		else if (name.equalsIgnoreCase("defaultStatus"))
 		{
 			// Do nothing.
 		}
