@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.entity.RecoBonus;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -103,11 +102,29 @@ public class PcStat extends PlayableStat
 	@Override
 	public boolean addExpAndSp(long addToExp, int addToSp)
 	{
-		float ratioTakenByPlayer = 0;
-		// Allowed to gain exp/sp?
+		return addExpAndSp(addToExp, addToSp, false);
+	}
+	
+	public boolean addExpAndSp(long addToExp, int addToSp, boolean useBonuses)
+	{
 		L2PcInstance activeChar = getActiveChar();
+		
+		// Allowed to gain exp/sp?
 		if (!activeChar.getAccessLevel().canGainExp())
 			return false;
+		
+		long baseExp = addToExp;
+		int baseSp = addToSp;
+		
+		double bonus = 1.;
+		
+		if (useBonuses)
+			bonus = activeChar.getExpBonusMultiplier();
+		
+		addToExp *= bonus;
+		addToSp  *= bonus;
+		
+		float ratioTakenByPlayer = 0;
 		
 		// if this player has a pet that takes from the owner's Exp, give the pet Exp now
 		
@@ -120,8 +137,10 @@ public class PcStat extends PlayableStat
 			// allow possible customizations that would have the pet earning more than 100% of the owner's exp/sp
 			if (ratioTakenByPlayer > 1)
 				ratioTakenByPlayer = 1;
+			
 			if (!pet.isDead())
 				pet.addExpAndSp((long) (addToExp * (1 - ratioTakenByPlayer)), (int) (addToSp * (1 - ratioTakenByPlayer)));
+		
 			// now adjust the max ratio to avoid the owner earning negative exp/sp
 			addToExp = (long) (addToExp * ratioTakenByPlayer);
 			addToSp = (int) (addToSp * ratioTakenByPlayer);
@@ -130,60 +149,36 @@ public class PcStat extends PlayableStat
 		if (!super.addExpAndSp(addToExp, addToSp))
 			return false;
 		
-		// Send a Server->Client System Message to the L2PcInstance
+		SystemMessage sm = null;
 		if (addToExp == 0 && addToSp != 0)
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_SP);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_SP);
 			sm.addNumber(addToSp);
-			activeChar.sendPacket(sm);
 		}
 		else if (addToSp == 0 && addToExp != 0)
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
 			sm.addNumber((int) addToExp);
-			activeChar.sendPacket(sm);
 		}
 		else
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
-			sm.addNumber((int) addToExp);
-			sm.addNumber(addToSp);
-			activeChar.sendPacket(sm);
-		}
-		return true;
-	}
-	
-	public boolean addExpAndSp(long addToExp, int addToSp, boolean useBonuses)
-	{
-		if (useBonuses)
-		{
-			if (Config.ENABLE_VITALITY)
+			if ((addToExp - baseExp) > 0)
 			{
-				switch (_vitalityLevel)
-				{
-					case 1:
-						addToExp *= Config.RATE_VITALITY_LEVEL_1;
-						addToSp *= Config.RATE_VITALITY_LEVEL_1;
-						break;
-					case 2:
-						addToExp *= Config.RATE_VITALITY_LEVEL_2;
-						addToSp *= Config.RATE_VITALITY_LEVEL_2;
-						break;
-					case 3:
-						addToExp *= Config.RATE_VITALITY_LEVEL_3;
-						addToSp *= Config.RATE_VITALITY_LEVEL_3;
-						break;
-					case 4:
-						addToExp *= Config.RATE_VITALITY_LEVEL_4;
-						addToSp *= Config.RATE_VITALITY_LEVEL_4;
-						break;
-				}
+				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4);
+				sm.addNumber((int) addToExp);
+				sm.addNumber((int) (addToExp - baseExp));
+				sm.addNumber(addToSp);
+				sm.addNumber((addToSp - baseSp));
 			}
-			// Apply recommendation bonus
-			addToExp *= RecoBonus.getRecoMultiplier(getActiveChar());
-			addToSp  *= RecoBonus.getRecoMultiplier(getActiveChar());
+			else
+			{
+				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
+				sm.addNumber((int) addToExp);
+				sm.addNumber(addToSp);
+			}
 		}
-		return addExpAndSp(addToExp, addToSp);
+		activeChar.sendPacket(sm);
+		return true;
 	}
 	
 	@Override
@@ -588,6 +583,33 @@ public class PcStat extends PlayableStat
 		
 		_vitalityPoints = points;
 		updateVitalityLevel(quiet);
+	}
+	
+	
+	public double getVitalityMultiplier()
+	{
+		double vitality = 1.0;
+		
+		if (Config.ENABLE_VITALITY)
+		{
+			switch (getVitalityLevel())
+			{
+				case 1:
+					vitality = Config.RATE_VITALITY_LEVEL_1;
+					break;
+				case 2:
+					vitality = Config.RATE_VITALITY_LEVEL_2;
+					break;
+				case 3:
+					vitality = Config.RATE_VITALITY_LEVEL_3;
+					break;
+				case 4:
+					vitality = Config.RATE_VITALITY_LEVEL_4;
+					break;
+			}
+		}
+		
+		return vitality;
 	}
 	
 	/**

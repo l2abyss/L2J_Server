@@ -159,6 +159,7 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.entity.L2Event;
+import com.l2jserver.gameserver.model.entity.RecoBonus;
 import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -15276,5 +15277,50 @@ public final class L2PcInstance extends L2Playable
 	public void updateNotMoveUntil()
 	{
 		_notMoveUntil = System.currentTimeMillis() + Config.PLAYER_MOVEMENT_BLOCK_TIME;
+	}
+	
+	public double getExpBonusMultiplier()
+	{
+		double bonus = 1.0;
+		double vitality = 1.0;
+		double nevits = 1.0;
+		double hunting = 1.0;
+		double bonusExp = 1.0;
+		
+		// Bonus from Vitality System
+		vitality = getStat().getVitalityMultiplier();
+		
+		// Bonus from Nevit's Blessing
+		nevits = RecoBonus.getRecoMultiplier(this);
+		
+		// Bonus from Nevit's Hunting
+		// TODO: Nevit's hutning bonus
+		
+		// Bonus exp from skills
+		bonusExp = calcStat(Stats.BONUS_EXP, 1.0, null, null);
+		
+		if (vitality > 1.0)
+			bonus += (vitality - 1);
+		if (nevits > 1.0)
+			bonus += (nevits - 1);
+		if (hunting > 1.0)
+			bonus += (hunting - 1);
+		if (bonusExp > 1.0)
+			bonus += (bonusExp -1);
+		
+		// Check for abnormal bonuses
+		bonus = Math.max(bonus, 1);
+		bonus = Math.min(bonus, Config.MAX_BONUS_EXP);
+		
+		if (isDebug())
+		{
+			sendDebugMessage("Vitality Multiplier: " + vitality);
+			sendDebugMessage("Nevit's Multiplier: " + nevits);
+			sendDebugMessage("Hunting Multiplier: " + hunting);
+			sendDebugMessage("Bonus Multiplier: " + bonusExp);
+			sendDebugMessage("Total Exp Multiplier: " + bonus);
+		}
+		
+		return bonus;
 	}
 }

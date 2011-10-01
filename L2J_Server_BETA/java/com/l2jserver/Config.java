@@ -139,6 +139,7 @@ public final class Config
 	public static int FEE_DELETE_SUBCLASS_SKILLS;
 	public static boolean RESTORE_SERVITOR_ON_RECONNECT;
 	public static boolean RESTORE_PET_ON_RECONNECT;
+	public static double MAX_BONUS_EXP;
 	public static int MAX_RUN_SPEED;
 	public static int MAX_PCRIT_RATE;
 	public static int MAX_MCRIT_RATE;
@@ -1609,6 +1610,7 @@ public final class Config
 					ENABLE_VITALITY = Boolean.parseBoolean(Character.getProperty("EnableVitality", "True"));
 					RECOVER_VITALITY_ON_RECONNECT = Boolean.parseBoolean(Character.getProperty("RecoverVitalityOnReconnect", "True"));
 					STARTING_VITALITY_POINTS = Integer.parseInt(Character.getProperty("StartingVitalityPoints", "20000"));
+					MAX_BONUS_EXP = Double.parseDouble(Character.getProperty("MaxExpBonus", "3.5"));
 					MAX_RUN_SPEED = Integer.parseInt(Character.getProperty("MaxRunSpeed", "250"));
 					MAX_PCRIT_RATE = Integer.parseInt(Character.getProperty("MaxPCritRate", "500"));
 					MAX_MCRIT_RATE = Integer.parseInt(Character.getProperty("MaxMCritRate", "200"));
