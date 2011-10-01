@@ -41,11 +41,11 @@ public class CrestCache
 {
 	private static Logger _log = Logger.getLogger(CrestCache.class.getName());
 	
-	private FastMRUCache<Integer, byte[]> _cachePledge = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cachePledge = new FastMRUCache<Integer, byte[]>();
 	
-	private FastMRUCache<Integer, byte[]> _cachePledgeLarge = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cachePledgeLarge = new FastMRUCache<Integer, byte[]>();
 	
-	private FastMRUCache<Integer, byte[]> _cacheAlly = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cacheAlly = new FastMRUCache<Integer, byte[]>();
 	
 	private int _loadedFiles;
 	
@@ -173,6 +173,37 @@ public class CrestCache
 					catch (Exception e1)
 					{
 					}
+				}
+			}
+		}
+		
+		for (L2Clan clan : clans)
+		{
+			if (clan.getCrestId() != 0)
+			{
+				if (getPledgeCrest(clan.getCrestId()) == null)
+				{
+					_log.log(Level.INFO, "Removing non-existent crest for clan " + clan.getName() + " [" + clan.getClanId() + "], crestId:" + clan.getCrestId());
+					clan.setCrestId(0);
+					clan.changeClanCrest(0);
+				}
+			}
+			if (clan.getCrestLargeId() != 0)
+			{
+				if (getPledgeCrestLarge(clan.getCrestLargeId()) == null)
+				{
+					_log.log(Level.INFO, "Removing non-existent large crest for clan " + clan.getName() + " [" + clan.getClanId() + "], crestLargeId:" + clan.getCrestLargeId());
+					clan.setCrestLargeId(0);
+					clan.changeLargeCrest(0);
+				}
+			}
+			if (clan.getAllyCrestId() != 0)
+			{
+				if (getAllyCrest(clan.getAllyCrestId()) == null)
+				{
+					_log.log(Level.INFO, "Removing non-existent ally crest for clan " + clan.getName() + " [" + clan.getClanId() + "], allyCrestId:" + clan.getAllyCrestId());
+					clan.setAllyCrestId(0);
+					clan.changeAllyCrest(0, true);
 				}
 			}
 		}
@@ -397,6 +428,7 @@ public class CrestCache
 	
 	private static class BmpFilter implements FileFilter
 	{
+		@Override
 		public boolean accept(File file)
 		{
 			return (file.getName().endsWith(".bmp"));
@@ -405,6 +437,7 @@ public class CrestCache
 	
 	private static class OldPledgeFilter implements FileFilter
 	{
+		@Override
 		public boolean accept(File file)
 		{
 			return (file.getName().startsWith("Pledge_"));

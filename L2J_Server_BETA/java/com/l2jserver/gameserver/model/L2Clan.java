@@ -77,7 +77,7 @@ public class L2Clan
 	private String _name;
 	private int _clanId;
 	private L2ClanMember _leader;
-	private Map<Integer, L2ClanMember> _members = new FastMap<Integer, L2ClanMember>();
+	private final Map<Integer, L2ClanMember> _members = new FastMap<Integer, L2ClanMember>();
 	
 	private String _allyName;
 	private int _allyId;
@@ -104,9 +104,9 @@ public class L2Clan
 	/** Leader clan dissolve ally */
 	public static final int PENALTY_TYPE_DISSOLVE_ALLY = 4;
 	
-	private ItemContainer _warehouse = new ClanWarehouse(this);
-	private List<Integer> _atWarWith = new FastList<Integer>();
-	private List<Integer> _atWarAttackers = new FastList<Integer>();
+	private final ItemContainer _warehouse = new ClanWarehouse(this);
+	private final List<Integer> _atWarWith = new FastList<Integer>();
+	private final List<Integer> _atWarAttackers = new FastList<Integer>();
 	
 	private Forum _forum;
 	
@@ -1030,7 +1030,6 @@ public class L2Clan
 			restoreRankPrivs();
 			restoreSkills();
 			restoreNotice();
-			checkCrests();
 		}
 		catch (Exception e)
 		{
@@ -1537,7 +1536,7 @@ public class L2Clan
 	
 	public static class SubPledge
 	{
-		private int _id;
+		private final int _id;
 		private String _subPledgeName;
 		private int _leaderId;
 		private final Map<Integer, L2Skill> _subPledgeSkills = new FastMap<Integer, L2Skill>();
@@ -1587,8 +1586,8 @@ public class L2Clan
 	
 	public static class RankPrivs
 	{
-		private int _rankId;
-		private int _party;// TODO find out what this stuff means and implement it
+		private final int _rankId;
+		private final int _party;// TODO find out what this stuff means and implement it
 		private int _rankPrivs;
 		
 		public RankPrivs(int rank, int party, int privs)
@@ -2886,36 +2885,5 @@ public class L2Clan
 		SubPledgeSkill[] result = list.toArray(new SubPledgeSkill[list.size()]);
 		FastList.recycle(list);
 		return result;
-	}
-	
-	private void checkCrests()
-	{
-		if (getCrestId() != 0)
-		{
-			if (CrestCache.getInstance().getPledgeCrest(getCrestId()) == null)
-			{
-				_log.log(Level.INFO, "Removing non-existent crest for clan " + getName() + " [" + getClanId() + "], crestId:" + getCrestId());
-				setCrestId(0);
-				changeClanCrest(0);
-			}
-		}
-		if (getCrestLargeId() != 0)
-		{
-			if (CrestCache.getInstance().getPledgeCrestLarge(getCrestLargeId()) == null)
-			{
-				_log.log(Level.INFO, "Removing non-existent large crest for clan " + getName() + " [" + getClanId() + "], crestLargeId:" + getCrestLargeId());
-				setCrestLargeId(0);
-				changeLargeCrest(0);
-			}
-		}
-		if (getAllyCrestId() != 0)
-		{
-			if (CrestCache.getInstance().getAllyCrest(getAllyCrestId()) == null)
-			{
-				_log.log(Level.INFO, "Removing non-existent ally crest for clan " + getName() + " [" + getClanId() + "], allyCrestId:" + getAllyCrestId());
-				setAllyCrestId(0);
-				changeAllyCrest(0, true);
-			}
-		}
 	}
 }

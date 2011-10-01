@@ -26,7 +26,6 @@ import javolution.util.FastMap;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
@@ -60,7 +59,7 @@ public class ClanTable
 {
 	private static Logger _log = Logger.getLogger(ClanTable.class.getName());
 	
-	private Map<Integer, L2Clan> _clans;
+	private final Map<Integer, L2Clan> _clans;
 	
 	public static ClanTable getInstance()
 	{
@@ -262,9 +261,6 @@ public class ClanTable
 			clan.removeClanMember(member.getObjectId(), 0);
 		}
 		
-		if(Config.CLEAR_CREST_CACHE)
-			deleteClanCrests(clan);
-		
 		_clans.remove(clanId);
 		IdFactory.getInstance().releaseId(clanId);
 		
@@ -339,37 +335,11 @@ public class ClanTable
 		}
 	}
 	
-	private void deleteClanCrests(L2Clan clan)
-	{
-		try
-		{
-			CrestCache.getInstance().removePledgeCrest(clan.getCrestId());
-			CrestCache.getInstance().removePledgeCrestLarge(clan.getCrestLargeId());
-			
-			int allyCrestId = clan.getAllyCrestId();
-			if(allyCrestId > 0)
-			{
-				boolean erase = true;
-				for(L2Clan cln : getClans())
-					if(cln.getAllyId() == allyCrestId)
-					{
-						erase = false;
-						break;
-					}
-				if(erase)
-					CrestCache.getInstance().removeAllyCrest(allyCrestId);
-			}
-			
-		}
-		catch(Exception e)
-		{
-			_log.log(Level.WARNING, "ClanTable: Couldnt erased clan crests", e);
-		}
-	}
-	
 	public void scheduleRemoveClan(final int clanId)
 	{
-		ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
+		ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() 
+		{
+			@Override
 			public void run()
 			{
 				if (getClan(clanId) == null)
