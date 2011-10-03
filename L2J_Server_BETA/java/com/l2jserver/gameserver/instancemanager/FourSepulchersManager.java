@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TIntIntHashMap;
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1426,7 +1426,7 @@ public class FourSepulchersManager
 	
 	protected void closeAllDoors()
 	{
-		for (int doorId : _hallGateKeepers.getValues())
+		for (int doorId : _hallGateKeepers.values())
 		{
 			try
 			{

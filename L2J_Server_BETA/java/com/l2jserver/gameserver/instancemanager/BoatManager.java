@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.Map;
 

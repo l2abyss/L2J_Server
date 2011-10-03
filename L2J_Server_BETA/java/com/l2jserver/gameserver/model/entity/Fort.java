@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
-import gnu.trove.TIntIntHashMap;
-import gnu.trove.TObjectProcedure;
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

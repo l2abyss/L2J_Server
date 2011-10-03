@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
-import gnu.trove.TIntObjectIterator;
+import gnu.trove.iterator.TIntObjectIterator;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.List;

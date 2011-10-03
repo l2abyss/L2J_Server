@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.templates.chars;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -464,7 +464,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	public L2Skill[] getSkillsArray()
 	{
-		return _skills.getValues(new L2Skill[_skills.size()]);
+		return _skills.values(new L2Skill[_skills.size()]);
 	}
 	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)

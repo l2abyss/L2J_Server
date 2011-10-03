@@ -14,10 +14,10 @@
  */
 package com.l2jserver;
 
-import gnu.trove.TIntArrayList;
-import gnu.trove.TIntFloatHashMap;
-import gnu.trove.TIntIntHashMap;
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.list.array.TIntArrayList;
+import gnu.trove.map.hash.TIntFloatHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.BufferedReader;
 import java.io.File;

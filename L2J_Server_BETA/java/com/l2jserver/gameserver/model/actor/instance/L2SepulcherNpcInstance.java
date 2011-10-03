@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.concurrent.Future;
 

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model;
 
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
@@ -73,7 +73,7 @@ public final class L2EnchantSkillLearn
 	
 	public L2EnchantSkillGroup getFirstRouteGroup()
 	{
-		return EnchantGroupsTable.getInstance().getEnchantSkillGroupById(_enchantRoutes.getValues()[0]);
+		return EnchantGroupsTable.getInstance().getEnchantSkillGroupById(_enchantRoutes.values()[0]);
 	}
 	
 	public int[] getAllRoutes()

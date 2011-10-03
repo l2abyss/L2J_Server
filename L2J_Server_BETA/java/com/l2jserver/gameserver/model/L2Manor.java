@@ -53,7 +53,7 @@ public class L2Manor
 	
 	public SeedData[] getSeedsDataArray()
 	{
-		return _seeds.getValues(new SeedData[_seeds.size()]);
+		return _seeds.values(new SeedData[_seeds.size()]);
 	}
 	
 	public FastList<Integer> getAllCrops()

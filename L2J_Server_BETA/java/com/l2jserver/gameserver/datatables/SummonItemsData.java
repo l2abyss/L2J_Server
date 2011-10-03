@@ -21,7 +21,7 @@
 
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.Scanner;
@@ -112,7 +112,7 @@ public class SummonItemsData
 		int size = _summonitems.size();
 		int[] result = new int[size];
 		int i = 0;
-		for (Object si : _summonitems.getValues())
+		for (Object si : _summonitems.values())
 		{
 			result[i++] = ((L2SummonItem) si).getItemId();
 		}

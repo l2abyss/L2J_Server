@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -268,7 +268,7 @@ public class DoorTable
 	
 	public L2DoorInstance[] getDoors()
 	{
-		L2DoorInstance[] _allTemplates = _staticItems.getValues(new L2DoorInstance[_staticItems.size()]);
+		L2DoorInstance[] _allTemplates = _staticItems.values(new L2DoorInstance[_staticItems.size()]);
 		return _allTemplates;
 	}
 	

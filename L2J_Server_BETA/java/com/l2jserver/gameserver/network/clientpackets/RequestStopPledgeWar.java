@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;

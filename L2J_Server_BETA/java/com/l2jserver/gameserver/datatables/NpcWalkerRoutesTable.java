@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -137,7 +137,7 @@ public class NpcWalkerRoutesTable
 			}
 		}
 		
-		for (Object list : _routes.getValues())
+		for (Object list : _routes.values())
 			((ArrayList<?>)list).trimToSize();
 		
 		_log.info("WalkerRoutesTable: Loaded " + _routes.size() + " Npc Walker Routes.");

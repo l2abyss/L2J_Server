@@ -420,7 +420,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		}
 		
 		// Update pvp flag for winners when siege zone becomes unactive
-		for(Object obj : _hall.getSiegeZone().getCharactersInside().getValues())
+		for(Object obj : _hall.getSiegeZone().getCharactersInside().values())
 			if(obj != null && obj instanceof L2PcInstance)
 				((L2PcInstance)obj).startPvPFlag();
 		

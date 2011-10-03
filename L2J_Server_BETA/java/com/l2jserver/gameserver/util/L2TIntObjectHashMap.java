@@ -14,17 +14,17 @@
  */
 package com.l2jserver.gameserver.util;
 
-import gnu.trove.TIntObjectHashMap;
-import gnu.trove.TIntObjectProcedure;
-import gnu.trove.TIntProcedure;
-import gnu.trove.TObjectFunction;
-import gnu.trove.TObjectProcedure;
+import gnu.trove.function.TObjectFunction;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.procedure.TIntObjectProcedure;
+import gnu.trove.procedure.TIntProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Custom extension of TIntObjectHashMap that is synchronised via
+ * Custom extension of TIntObjectHashMap that is synchronized via
  * ReentrantReadWriteLock.
  * The purpose of this map is to replace the use of FastMap<K,V>.shared() which
  * requires a lot of resources.
@@ -152,12 +152,12 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	}
 	
 	@Override
-	public Object[] getValues()
+	public V[] values()
 	{
 		_readLock.lock();
 		try
 		{
-			return super.getValues();
+			return super.values();
 		}
 		finally
 		{
@@ -166,12 +166,12 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	}
 	
 	@Override
-	public <T> T[] getValues(T[] arg0)
+	public V[] values(V[] arg0)
 	{
 		_readLock.lock();
 		try
 		{
-			return super.getValues(arg0);
+			return super.values(arg0);
 		}
 		finally
 		{
@@ -222,7 +222,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	}
 	
 	@Override
-	public boolean containsValue(V arg0)
+	public boolean containsValue(Object arg0)
 	{
 		_readLock.lock();
 		try
@@ -288,7 +288,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	}
 	
 	@Override
-	public boolean forEachValue(TObjectProcedure<V> arg0)
+	public boolean forEachValue(TObjectProcedure<? super V> arg0)
 	{
 		_readLock.lock();
 		try
@@ -326,7 +326,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	}
 	
 	@Override
-	public boolean forEachEntry(TIntObjectProcedure<V> arg0)
+	public boolean forEachEntry(TIntObjectProcedure<? super V> arg0)
 	{
 		_readLock.lock();
 		try
@@ -364,7 +364,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	}
 	
 	@Override
-	public boolean retainEntries(TIntObjectProcedure<V> arg0)
+	public boolean retainEntries(TIntObjectProcedure<? super V> arg0)
 	{
 		_writeLock.lock();
 		try

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.ArrayList;
 import java.util.List;

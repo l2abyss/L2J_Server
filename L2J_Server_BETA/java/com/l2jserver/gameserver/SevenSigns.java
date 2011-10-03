@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

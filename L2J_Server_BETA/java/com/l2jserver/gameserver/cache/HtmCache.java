@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.cache;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.BufferedInputStream;
 import java.io.File;

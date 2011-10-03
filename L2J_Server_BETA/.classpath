@@ -15,6 +15,6 @@
 	<classpathentry kind="lib" path="lib/mmocore.jar" />
 	<classpathentry kind="lib" path="lib/netcon.jar" />
 	<classpathentry kind="lib" path="lib/smtp.jar" />
-	<classpathentry kind="lib" path="lib/trove-2.1.0.jar" />
+	<classpathentry kind="lib" path="lib/trove-3.0.0.jar" />
 	<classpathentry kind="output" path="bin" />
 </classpath>

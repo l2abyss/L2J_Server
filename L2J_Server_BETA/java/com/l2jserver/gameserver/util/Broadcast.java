@@ -24,7 +24,7 @@
  */
 package com.l2jserver.gameserver.util;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.Collection;
 import java.util.logging.Level;

@@ -19,7 +19,7 @@
 
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

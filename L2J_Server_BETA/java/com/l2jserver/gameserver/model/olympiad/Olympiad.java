@@ -19,7 +19,7 @@
 
 package com.l2jserver.gameserver.model.olympiad;
 
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.model;
 
-import gnu.trove.TIntObjectHashMap;
-import gnu.trove.TObjectProcedure;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -214,7 +214,7 @@ public final class L2World
 	
 	public final L2Object[] getAllVisibleObjectsArray()
 	{
-		return _allObjects.getValues(new L2Object[_allObjects.size()]);
+		return _allObjects.values(new L2Object[_allObjects.size()]);
 	}
 	
 	public final boolean forEachObject(final TObjectProcedure<L2Object> proc)
@@ -247,7 +247,7 @@ public final class L2World
 	
 	public final L2PcInstance[] getAllPlayersArray()
 	{
-		return _allPlayers.getValues(new L2PcInstance[_allPlayers.size()]);
+		return _allPlayers.values(new L2PcInstance[_allPlayers.size()]);
 	}
 	
 	public final boolean forEachPlayer(final TObjectProcedure<L2PcInstance> proc)

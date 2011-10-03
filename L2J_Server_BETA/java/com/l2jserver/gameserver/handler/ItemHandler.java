@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
 
