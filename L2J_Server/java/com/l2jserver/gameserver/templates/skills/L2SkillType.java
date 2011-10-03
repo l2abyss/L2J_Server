@@ -153,6 +153,7 @@ public enum L2SkillType
 	
 	// Cancel
 	CANCEL,
+	CANCEL_ALL,
 	CANCEL_STATS,
 	CANCEL_DEBUFF,
 	NEGATE,
