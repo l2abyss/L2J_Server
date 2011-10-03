@@ -122,6 +122,7 @@ public abstract class Inventory extends ItemContainer
 		 * @param item 
 		 * @param inventory 
 		 */
+		@Override
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			if (!_changed.contains(item))
@@ -134,6 +135,7 @@ public abstract class Inventory extends ItemContainer
 		 * @param item 
 		 * @param inventory 
 		 */
+		@Override
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			if (!_changed.contains(item))
@@ -159,6 +161,7 @@ public abstract class Inventory extends ItemContainer
 			return instance;
 		}
 		
+		@Override
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			if (slot != PAPERDOLL_RHAND)
@@ -187,6 +190,7 @@ public abstract class Inventory extends ItemContainer
 			}
 		}
 		
+		@Override
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			if (slot != PAPERDOLL_RHAND)
@@ -218,6 +222,7 @@ public abstract class Inventory extends ItemContainer
 			return instance;
 		}
 		
+		@Override
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			/*if (slot == PAPERDOLL_RHAND)
@@ -225,6 +230,7 @@ public abstract class Inventory extends ItemContainer
 			inventory.getOwner().removeStatsOwner(item);
 		}
 		
+		@Override
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			/*if (slot == PAPERDOLL_RHAND)
@@ -242,6 +248,7 @@ public abstract class Inventory extends ItemContainer
 			return instance;
 		}
 		
+		@Override
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			L2PcInstance player;
@@ -321,6 +328,7 @@ public abstract class Inventory extends ItemContainer
 			
 		}
 		
+		@Override
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			L2PcInstance player;
@@ -432,6 +440,7 @@ public abstract class Inventory extends ItemContainer
 			return instance;
 		}
 		
+		@Override
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			if (!(inventory.getOwner() instanceof L2PcInstance))
@@ -570,6 +579,7 @@ public abstract class Inventory extends ItemContainer
 			}
 		}
 		
+		@Override
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			if (!(inventory.getOwner() instanceof L2PcInstance))
@@ -683,6 +693,7 @@ public abstract class Inventory extends ItemContainer
 		{
 			return instance;
 		}
+		@Override
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 			if (item.getItem().getBodyPart() == L2Item.SLOT_R_BRACELET)
@@ -697,6 +708,7 @@ public abstract class Inventory extends ItemContainer
 		}
 		
 		// Note (April 3, 2009): Currently on equip, talismans do not display properly, do we need checks here to fix this?
+		@Override
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
 		}
@@ -834,7 +846,7 @@ public abstract class Inventory extends ItemContainer
 	 * @param slot 
 	 * @return L2ItemInstance
 	 */
-	public synchronized L2ItemInstance getPaperdollItem(int slot)
+	public L2ItemInstance getPaperdollItem(int slot)
 	{
 		return _paperdoll[slot];
 	}
@@ -912,7 +924,7 @@ public abstract class Inventory extends ItemContainer
 	 * @param slot : int designating the slot
 	 * @return int designating the ID of the item
 	 */
-	public synchronized int getPaperdollItemId(int slot)
+	public int getPaperdollItemId(int slot)
 	{
 		L2ItemInstance item = _paperdoll[slot];
 		if (item != null)
@@ -920,7 +932,7 @@ public abstract class Inventory extends ItemContainer
 		return 0;
 	}
 	
-	public synchronized int getPaperdollAugmentationId(int slot)
+	public int getPaperdollAugmentationId(int slot)
 	{
 		final L2ItemInstance item = _paperdoll[slot];
 		if ((item != null) && (item.getAugmentation() != null))
@@ -935,7 +947,7 @@ public abstract class Inventory extends ItemContainer
 	 * @param slot : int pointing out the slot
 	 * @return int designating the objectID
 	 */
-	public synchronized int getPaperdollObjectId(int slot)
+	public int getPaperdollObjectId(int slot)
 	{
 		L2ItemInstance item = _paperdoll[slot];
 		if (item != null)
