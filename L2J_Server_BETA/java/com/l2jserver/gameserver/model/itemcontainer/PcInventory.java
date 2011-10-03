@@ -50,6 +50,8 @@ public class PcInventory extends Inventory
 	private int[] _blockItems = null;
 	
 	private int _questSlots;
+	
+	private final Object _lock;
 	/**
 	 * Block modes:
 	 * <UL>
@@ -63,18 +65,37 @@ public class PcInventory extends Inventory
 	public PcInventory(L2PcInstance owner)
 	{
 		_owner = owner;
+		_lock = new Object();
 	}
 	
 	@Override
-	public L2PcInstance getOwner() { return _owner; }
-	@Override
-	protected ItemLocation getBaseLocation() { return ItemLocation.INVENTORY; }
-	@Override
-	protected ItemLocation getEquipLocation() { return ItemLocation.PAPERDOLL; }
+	public L2PcInstance getOwner()
+	{
+		return _owner;
+	}
 	
-	public L2ItemInstance getAdenaInstance() {return _adena;}
 	@Override
-	public long getAdena() {return _adena != null ? _adena.getCount() : 0;}
+	protected ItemLocation getBaseLocation()
+	{
+		return ItemLocation.INVENTORY;
+	}
+	
+	@Override
+	protected ItemLocation getEquipLocation()
+	{
+		return ItemLocation.PAPERDOLL;
+	}
+	
+	public L2ItemInstance getAdenaInstance()
+	{
+		return _adena;
+	}
+	
+	@Override
+	public long getAdena()
+	{
+		return _adena != null ? _adena.getCount() : 0;
+	}
 	
 	public L2ItemInstance getAncientAdenaInstance()
 	{
@@ -646,9 +667,9 @@ public class PcInventory extends Inventory
 		else if (item.getItemId() == ANCIENT_ADENA_ID)
 			_ancientAdena = null;
 		
-		synchronized(_items)
+		if (item.isQuestItem())
 		{
-			if (item.isQuestItem())
+			synchronized (_lock)
 			{
 				_questSlots--;
 				if (_questSlots < 0)
@@ -657,8 +678,8 @@ public class PcInventory extends Inventory
 					_log.warning(this + ": QuestInventory size < 0!");
 				}
 			}
-			return super.removeItem(item);
 		}
+		return super.removeItem(item);
 	}
 	
 	/**
@@ -890,14 +911,14 @@ public class PcInventory extends Inventory
 	@Override
 	protected void addItem(L2ItemInstance item)
 	{
-		synchronized(_items)
+		if (item.isQuestItem())
 		{
-			if (item.isQuestItem())
+			synchronized (_lock)
 			{
 				_questSlots++;
 			}
-			super.addItem(item);
 		}
+		super.addItem(item);
 	}
 	
 	public int getSize(boolean quest)

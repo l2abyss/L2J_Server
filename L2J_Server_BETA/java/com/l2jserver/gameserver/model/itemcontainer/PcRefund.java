@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class PcRefund extends ItemContainer
 {
-	private L2PcInstance _owner;
+	private final L2PcInstance _owner;
 	
 	public PcRefund(L2PcInstance owner)
 	{
@@ -61,11 +61,7 @@ public class PcRefund extends ItemContainer
 		{
 			if (getSize() > 12)
 			{
-				L2ItemInstance removedItem;
-				synchronized (_items)
-				{
-					removedItem = _items.remove(0);
-				}
+				L2ItemInstance removedItem = _items.remove(0);
 				if (removedItem != null)
 				{
 					ItemTable.getInstance().destroyItem("ClearRefund", removedItem, getOwner(), null);

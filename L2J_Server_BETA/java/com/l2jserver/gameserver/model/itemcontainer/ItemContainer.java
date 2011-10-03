@@ -46,14 +46,17 @@ public abstract class ItemContainer
 	
 	protected ItemContainer()
 	{
-		_items = new FastList<L2ItemInstance>();
+		_items = new FastList<L2ItemInstance>().shared();
 	}
 	
 	protected abstract L2Character getOwner();
 	
 	protected abstract ItemLocation getBaseLocation();
 	
-	public String getName() { return "ItemContainer"; }
+	public String getName()
+	{
+		return "ItemContainer";
+	}
 	
 	/**
 	 * Returns the ownerID of the inventory
@@ -79,10 +82,7 @@ public abstract class ItemContainer
 	 */
 	public L2ItemInstance[] getItems()
 	{
-		synchronized (_items)
-		{
-			return _items.toArray(new L2ItemInstance[_items.size()]);
-		}
+		return _items.toArray(new L2ItemInstance[_items.size()]);
 	}
 	
 	/**
@@ -480,7 +480,7 @@ public abstract class ItemContainer
 	 * @param actor : L2PcInstance Player requesting the item destroy
 	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
 	 */
-	public synchronized void destroyAllItems(String process, L2PcInstance actor, Object reference)
+	public void destroyAllItems(String process, L2PcInstance actor, Object reference)
 	{
 		for (L2ItemInstance item : _items)
 		{
@@ -515,10 +515,7 @@ public abstract class ItemContainer
 	 */
 	protected void addItem(L2ItemInstance item)
 	{
-		synchronized (_items)
-		{
-			_items.add(item);
-		}
+		_items.add(item);
 	}
 	
 	/**
@@ -528,10 +525,7 @@ public abstract class ItemContainer
 	 */
 	protected boolean removeItem(L2ItemInstance item)
 	{
-		synchronized (_items)
-		{
-			return _items.remove(item);
-		}
+		return _items.remove(item);
 	}
 	
 	/**
