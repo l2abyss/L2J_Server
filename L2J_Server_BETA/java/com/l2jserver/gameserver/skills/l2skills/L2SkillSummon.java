@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 public class L2SkillSummon extends L2Skill
 {
@@ -99,7 +100,7 @@ public class L2SkillSummon extends L2Skill
 			
 			if (isCubic())
 			{
-				if (getTargetType() != L2Skill.SkillTargetType.TARGET_SELF)
+				if (getTargetType() != L2TargetType.TARGET_SELF)
 				{
 					return true; //Player is always able to cast mass cubic skill
 				}

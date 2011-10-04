@@ -26,11 +26,11 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Character.AIAccessor;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 public class L2PlayerAI extends L2PlayableAI
 {
@@ -254,7 +254,7 @@ public class L2PlayerAI extends L2PlayableAI
 		if (Config.DEBUG)
 			_log.warning("L2PlayerAI: thinkCast -> Start");
 		
-		if (_skill.getTargetType() == SkillTargetType.TARGET_GROUND && _actor instanceof L2PcInstance)
+		if (_skill.getTargetType() == L2TargetType.TARGET_GROUND && _actor instanceof L2PcInstance)
 		{
 			if (maybeMoveToPosition(((L2PcInstance) _actor).getCurrentSkillWorldPosition(), _actor.getMagicalAttackRange(_skill)))
 			{

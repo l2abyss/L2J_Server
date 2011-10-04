@@ -121,7 +121,6 @@ import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.L2Request;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.L2UIKeysSettings;
@@ -270,6 +269,7 @@ import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.PlayerEventStatus;
@@ -2407,7 +2407,7 @@ public final class L2PcInstance extends L2Playable
 			L2Skill effectSkill = currenteffect.getSkill();
 			
 			// Ignore all buff skills that are party related (ie. songs, dances) while still remaining weapon dependant on cast though.
-			if (!effectSkill.isOffensive() && !(effectSkill.getTargetType() == SkillTargetType.TARGET_PARTY && effectSkill.getSkillType() == L2SkillType.BUFF))
+			if (!effectSkill.isOffensive() && !(effectSkill.getTargetType() == L2TargetType.TARGET_PARTY && effectSkill.getSkillType() == L2SkillType.BUFF))
 			{
 				// Check to rest to assure current effect meets weapon requirements.
 				if (!effectSkill.getWeaponDependancy(this))
@@ -8836,10 +8836,10 @@ public final class L2PcInstance extends L2Playable
 		//************************************* Check Target *******************************************
 		// Create and set a L2Object containing the target of the skill
 		L2Object target = null;
-		SkillTargetType sklTargetType = skill.getTargetType();
+		L2TargetType sklTargetType = skill.getTargetType();
 		Point3D worldPosition = getCurrentSkillWorldPosition();
 		
-		if (sklTargetType == SkillTargetType.TARGET_GROUND && worldPosition == null)
+		if (sklTargetType == L2TargetType.TARGET_GROUND && worldPosition == null)
 		{
 			_log.info("WorldPosition is null for skill: "+skill.getName() + ", player: " + getName() + ".");
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -9055,7 +9055,7 @@ public final class L2PcInstance extends L2Playable
 			if (dontMove)
 			{
 				// Calculate the distance between the L2PcInstance and the target
-				if (sklTargetType == SkillTargetType.TARGET_GROUND)
+				if (sklTargetType == L2TargetType.TARGET_GROUND)
 				{
 					if (!isInsideRadius(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), skill.getCastRange()+getTemplate().collisionRadius, false, false))
 					{
@@ -9199,8 +9199,8 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// TODO: Unhardcode skillId 844 which is the outpost construct skill
-		if ((sklTargetType == SkillTargetType.TARGET_HOLY && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false, skill))
-				|| (sklTargetType == SkillTargetType.TARGET_FLAGPOLE && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill))
+		if ((sklTargetType == L2TargetType.TARGET_HOLY && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false, skill))
+				|| (sklTargetType == L2TargetType.TARGET_FLAGPOLE && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill))
 				|| (sklType == L2SkillType.SIEGEFLAG && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844))
 				|| (sklType == L2SkillType.STRSIEGEASSAULT && !checkIfOkToUseStriderSiegeAssault())
 				|| (sklType == L2SkillType.SUMMON_FRIEND && !(checkSummonerStatus(this) && checkSummonTargetStatus(target, this))))
@@ -9213,7 +9213,7 @@ public final class L2PcInstance extends L2Playable
 		// GeoData Los Check here
 		if (skill.getCastRange() > 0)
 		{
-			if (sklTargetType == SkillTargetType.TARGET_GROUND)
+			if (sklTargetType == L2TargetType.TARGET_GROUND)
 			{
 				if (!GeoData.getInstance().canSeeTarget(this, worldPosition))
 				{

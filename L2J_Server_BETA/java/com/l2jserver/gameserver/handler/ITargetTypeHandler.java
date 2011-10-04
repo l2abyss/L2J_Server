@@ -16,19 +16,17 @@ package com.l2jserver.gameserver.handler;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 /**
- * 
- *
  * @author UnAfraid
  */
-public interface ISkillTargetTypeHandler
+public interface ITargetTypeHandler
 {
 	static final L2Object[] _emptyTargetList = new L2Object[0];
 	
 	public L2Object[] getTargetList(L2Skill skill, L2Character activeChar, boolean onlyFirst, L2Character target);
 	
-	public Enum<SkillTargetType> getTargetType();
+	public Enum<L2TargetType> getTargetType();
 }

@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Formulas;
 import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 
 public class L2SkillDrain extends L2Skill
@@ -62,7 +63,7 @@ public class L2SkillDrain extends L2Skill
 		
 		for(L2Character target: (L2Character[]) targets)
 		{
-			if (target.isAlikeDead() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
+			if (target.isAlikeDead() && getTargetType() != L2TargetType.TARGET_CORPSE_MOB)
 				continue;
 			
 			if (activeChar != target && target.isInvul())
@@ -131,7 +132,7 @@ public class L2SkillDrain extends L2Skill
 			activeChar.sendPacket(suhp);
 			
 			// Check to see if we should damage the target
-			if (damage > 0 && (!target.isDead() || getTargetType() != SkillTargetType.TARGET_CORPSE_MOB))
+			if (damage > 0 && (!target.isDead() || getTargetType() != L2TargetType.TARGET_CORPSE_MOB))
 			{
 				// Manage attack or cast break of the target (calculating rate, sending message...)
 				if (!target.isRaid() && Formulas.calcAtkBreak(target, damage))
@@ -152,7 +153,7 @@ public class L2SkillDrain extends L2Skill
 					_logDamage.log(record);
 				}
 				
-				if (hasEffects() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
+				if (hasEffects() && getTargetType() != L2TargetType.TARGET_CORPSE_MOB)
 				{
 					// ignoring vengance-like reflections
 					if ((Formulas.calcSkillReflect(target, this) & Formulas.SKILL_REFLECT_SUCCEED) > 0)
@@ -183,7 +184,7 @@ public class L2SkillDrain extends L2Skill
 			}
 			
 			// Check to see if we should do the decay right after the cast
-			if (target.isDead() && getTargetType() == SkillTargetType.TARGET_CORPSE_MOB && target instanceof L2Npc) {
+			if (target.isDead() && getTargetType() == L2TargetType.TARGET_CORPSE_MOB && target instanceof L2Npc) {
 				((L2Npc)target).endDecayTask();
 			}
 		}
@@ -204,7 +205,7 @@ public class L2SkillDrain extends L2Skill
 		
 		for(L2Character target: (L2Character[]) targets)
 		{
-			if (target.isAlikeDead() && getTargetType() != SkillTargetType.TARGET_CORPSE_MOB)
+			if (target.isAlikeDead() && getTargetType() != L2TargetType.TARGET_CORPSE_MOB)
 				continue;
 			
 			boolean mcrit = Formulas.calcMCrit(activeCubic.getMCriticalHit(target, this));
@@ -225,7 +226,7 @@ public class L2SkillDrain extends L2Skill
 			owner.sendPacket(suhp);
 			
 			// Check to see if we should damage the target
-			if (damage > 0 && (!target.isDead() || getTargetType() != SkillTargetType.TARGET_CORPSE_MOB))
+			if (damage > 0 && (!target.isDead() || getTargetType() != L2TargetType.TARGET_CORPSE_MOB))
 			{
 				target.reduceCurrentHp(damage, activeCubic.getOwner(), this);
 				

@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.handler.ISkillTargetTypeHandler;
+import com.l2jserver.gameserver.handler.ITargetTypeHandler;
 import com.l2jserver.gameserver.handler.TargetHandler;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -55,6 +55,7 @@ import com.l2jserver.gameserver.templates.effects.EffectTemplate;
 import com.l2jserver.gameserver.templates.item.L2Armor;
 import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -80,47 +81,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public static enum SkillOpType
 	{
 		OP_PASSIVE, OP_ACTIVE, OP_TOGGLE
-	}
-	
-	/** Target types of skills : SELF, PARTY, CLAN, PET... */
-	public static enum SkillTargetType
-	{
-		TARGET_NONE,
-		TARGET_SELF,
-		TARGET_ONE,
-		TARGET_PARTY,
-		TARGET_ALLY,
-		TARGET_CLAN,
-		TARGET_PET,
-		TARGET_SUMMON,
-		TARGET_AREA,
-		TARGET_FRONT_AREA,
-		TARGET_BEHIND_AREA,
-		TARGET_AURA,
-		TARGET_AURA_CORPSE_MOB,
-		TARGET_FRONT_AURA,
-		TARGET_BEHIND_AURA,
-		TARGET_CORPSE,
-		TARGET_UNDEAD,
-		TARGET_AREA_UNDEAD,
-		TARGET_CORPSE_ALLY,
-		TARGET_CORPSE_CLAN,
-		TARGET_CORPSE_PLAYER,
-		TARGET_CORPSE_PET,
-		TARGET_AREA_CORPSE_MOB,
-		TARGET_CORPSE_MOB,
-		TARGET_UNLOCKABLE,
-		TARGET_HOLY,
-		TARGET_FLAGPOLE,
-		TARGET_PARTY_MEMBER,
-		TARGET_PARTY_OTHER,
-		TARGET_PARTY_CLAN,
-		TARGET_ENEMY_SUMMON,
-		TARGET_OWNER_PET,
-		TARGET_GROUND,
-		TARGET_PARTY_NOTME,
-		TARGET_AREA_SUMMON,
-		TARGET_CLAN_MEMBER
 	}
 	
 	public static enum SkillTraitType
@@ -212,7 +172,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _equipDelay;
 	
 	/** Target type of the skill : SELF, PARTY, CLAN, PET... */
-	private final SkillTargetType _targetType;
+	private final L2TargetType _targetType;
 	private final int _feed;
 	// base success chance
 	private final double _power;
@@ -482,7 +442,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_skillRadius = set.getInteger("skillRadius", 80);
 		
-		_targetType = set.getEnum("target", SkillTargetType.class);
+		_targetType = set.getEnum("target", L2TargetType.class);
 		_power = set.getFloat("power", 0.f);
 		_pvpPower = set.getFloat("pvpPower", (float)getPower());
 		_pvePower = set.getFloat("pvePower", (float)getPower());
@@ -636,7 +596,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * Return the target type of the skill : SELF, PARTY, CLAN, PET...<BR><BR>
 	 * @return 
 	 */
-	public final SkillTargetType getTargetType()
+	public final L2TargetType getTargetType()
 	{
 		return _targetType;
 	}
@@ -1466,7 +1426,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 */
 	public final L2Object[] getTargetList(L2Character activeChar, boolean onlyFirst, L2Character target)
 	{
-		ISkillTargetTypeHandler handler = TargetHandler.getInstance().getSkillTarget(getTargetType()); 
+		final ITargetTypeHandler handler = TargetHandler.getInstance().getTargetTypeHandler(getTargetType()); 
 		if (handler != null) 
 		{ 
 			try 

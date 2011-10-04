@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Attackable.AggroInfo;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
@@ -59,6 +58,7 @@ import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 public abstract class L2Summon extends L2Playable
 {
@@ -707,7 +707,7 @@ public abstract class L2Summon extends L2Playable
 				}
 				
 				// Check if a Forced ATTACK is in progress on non-attackable target
-				if (!target.isAutoAttackable(this) && !forceUse && skill.getTargetType() != SkillTargetType.TARGET_AURA && skill.getTargetType() != SkillTargetType.TARGET_FRONT_AURA && skill.getTargetType() != SkillTargetType.TARGET_BEHIND_AURA && skill.getTargetType() != SkillTargetType.TARGET_CLAN && skill.getTargetType() != SkillTargetType.TARGET_ALLY && skill.getTargetType() != SkillTargetType.TARGET_PARTY && skill.getTargetType() != SkillTargetType.TARGET_SELF)
+				if (!target.isAutoAttackable(this) && !forceUse && skill.getTargetType() != L2TargetType.TARGET_AURA && skill.getTargetType() != L2TargetType.TARGET_FRONT_AURA && skill.getTargetType() != L2TargetType.TARGET_BEHIND_AURA && skill.getTargetType() != L2TargetType.TARGET_CLAN && skill.getTargetType() != L2TargetType.TARGET_ALLY && skill.getTargetType() != L2TargetType.TARGET_PARTY && skill.getTargetType() != L2TargetType.TARGET_SELF)
 				{
 					return false;
 				}

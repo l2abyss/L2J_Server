@@ -75,6 +75,7 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
 import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
@@ -333,7 +334,7 @@ public class L2Npc extends L2Character
 				{
 					for (L2Skill sk : skills)
 					{
-						if (sk == null || sk.isPassive() || sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
+						if (sk == null || sk.isPassive() || sk.getTargetType() == L2TargetType.TARGET_SELF)
 							continue;
 						
 						if (sk.getCastRange() >= 200)
@@ -395,7 +396,7 @@ public class L2Npc extends L2Character
 				{
 					for (L2Skill sk : skills)
 					{
-						if (sk == null || sk.isPassive() || sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
+						if (sk == null || sk.isPassive() || sk.getTargetType() == L2TargetType.TARGET_SELF)
 							continue;
 						
 						if (sk.getCastRange() <= 200)
