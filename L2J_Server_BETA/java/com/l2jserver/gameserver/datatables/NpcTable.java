@@ -21,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -847,43 +846,44 @@ public class NpcTable
 	
 	public L2NpcTemplate getTemplateByName(String name)
 	{
-		for (Object npcTemplate : _npcs.values())
-			if (((L2NpcTemplate)npcTemplate).name.equalsIgnoreCase(name))
-				return (L2NpcTemplate) npcTemplate;
-		
+		for (L2NpcTemplate npcTemplate : _npcs.valueCollection())
+		{
+			if (npcTemplate.name.equalsIgnoreCase(name))
+				return npcTemplate;
+		}
 		return null;
 	}
 	
 	public L2NpcTemplate[] getAllOfLevel(int lvl)
 	{
-		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
-		
-		for (Object t : _npcs.values())
-			if (((L2NpcTemplate)t).level == lvl)
-				list.add((L2NpcTemplate) t);
-		
+		final List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
+		for (L2NpcTemplate npcTemplate : _npcs.valueCollection())
+		{
+			if (npcTemplate.level == lvl)
+				list.add(npcTemplate);
+		}
 		return list.toArray(new L2NpcTemplate[list.size()]);
 	}
 	
 	public L2NpcTemplate[] getAllMonstersOfLevel(int lvl)
 	{
-		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
-		
-		for (Object t : _npcs.values())
-			if (((L2NpcTemplate)t).level == lvl && "L2Monster".equals(((L2NpcTemplate)t).type))
-				list.add((L2NpcTemplate) t);
-		
+		final List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
+		for (L2NpcTemplate npcTemplate : _npcs.valueCollection())
+		{
+			if (npcTemplate.level == lvl && "L2Monster".equals(npcTemplate.type))
+				list.add(npcTemplate);
+		}
 		return list.toArray(new L2NpcTemplate[list.size()]);
 	}
 	
 	public L2NpcTemplate[] getAllNpcStartingWith(String letter)
 	{
-		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
-		
-		for (Object t : _npcs.values())
-			if (((L2NpcTemplate)t).name.startsWith(letter) && "L2Npc".equals(((L2NpcTemplate)t).type))
-				list.add((L2NpcTemplate) t);
-		
+		final List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
+		for (L2NpcTemplate npcTemplate : _npcs.valueCollection())
+		{
+			if (npcTemplate.name.startsWith(letter) && "L2Npc".equals(npcTemplate.type))
+				list.add(npcTemplate);
+		}
 		return list.toArray(new L2NpcTemplate[list.size()]);
 	}
 	
@@ -893,31 +893,47 @@ public class NpcTable
 	 */
 	public L2NpcTemplate[] getAllNpcOfClassType(String classType)
 	{
-		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
-		
-		for (Object t : _npcs.values())
-			if (classType.equals(((L2NpcTemplate)t).type))
-				list.add((L2NpcTemplate) t);
-		
+		final List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
+		for (L2NpcTemplate npcTemplate : _npcs.valueCollection())
+		{
+			if (classType.equals(npcTemplate.type))
+				list.add(npcTemplate);
+		}
 		return list.toArray(new L2NpcTemplate[list.size()]);
 	}
 
 	/**
-	 * @param clazz
-	 * @return
+	 * @param clazz the class type to search.
+	 * @return list of all NPC templates with class {@code clazz}.
 	 */
-	public Set<Integer> getAllNpcOfL2jClass(Class<?> clazz)
+	public List<L2NpcTemplate> getAllNpcOfClass(Class<?> clazz)
 	{
-		return null;
+		final List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
+		for (L2NpcTemplate npcTemplate : _npcs.valueCollection())
+		{
+			if (npcTemplate.type.equals(clazz.getSimpleName()))
+			{
+				list.add(npcTemplate);
+			}
+		}
+		return list;
 	}
 	
 	/**
-	 * @param aiType
-	 * @return
+	 * @param aiType the AI type to search.
+	 * @return list of all NPC templates with AI type {@code aiType}.
 	 */
-	public Set<Integer> getAllNpcOfAiType(String aiType)
+	public List<L2NpcTemplate> getAllNpcOfAiType(String aiType)
 	{
-		return null;
+		final List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
+		for (L2NpcTemplate npcTemplate : _npcs.valueCollection())
+		{
+			if ((npcTemplate.getAIDataStatic() != null) && npcTemplate.getAIDataStatic().getAiType().name().equals(aiType))
+			{
+				list.add(npcTemplate);
+			}
+		}
+		return list;
 	}
 	
 	@SuppressWarnings("synthetic-access")

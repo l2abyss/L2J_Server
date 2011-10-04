@@ -55,7 +55,7 @@ import com.l2jserver.util.Rnd;
 public class DimensionalRiftManager
 {
 	private static Logger _log = Logger.getLogger(DimensionalRiftManager.class.getName());
-	private TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>>(7);
+	private final TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>>(7);
 	private final int DIMENSIONAL_FRAGMENT_ITEM_ID = 7079;
 	
 	public static DimensionalRiftManager getInstance()
@@ -540,9 +540,9 @@ public class DimensionalRiftManager
 	public boolean isAllowedEnter(byte type)
 	{
 		int count = 0;
-		for (Object room : _rooms.get(type).values())
+		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
 		{
-			if (((DimensionalRiftRoom) room).ispartyInside())
+			if (room.ispartyInside())
 				count++;
 		}
 		return (count < (_rooms.get(type).size() - 1));
@@ -551,10 +551,10 @@ public class DimensionalRiftManager
 	public FastList<Byte> getFreeRooms(byte type)
 	{
 		FastList<Byte> list = new FastList<Byte>();
-		for (Object room : _rooms.get(type).values())
+		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
 		{
-			if (!((DimensionalRiftRoom) room).ispartyInside())
-				list.add(((DimensionalRiftRoom) room)._room);
+			if (!room.ispartyInside())
+				list.add(room._room);
 		}
 		return list;
 	}
