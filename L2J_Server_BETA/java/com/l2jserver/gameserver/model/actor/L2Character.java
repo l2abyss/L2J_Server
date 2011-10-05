@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -209,6 +210,8 @@ public abstract class L2Character extends L2Object
 	protected byte _zoneValidateCounter = 4;
 	
 	private L2Character _debugger = null;
+	
+	private final ReentrantLock _teleportLock;
 	
 	/**
 	 * @return True if debugging is enabled for this L2Character
@@ -421,6 +424,7 @@ public abstract class L2Character extends L2Object
 		}
 		
 		setIsInvul(true);
+		_teleportLock = new ReentrantLock();
 	}
 	
 	protected void initCharStatusUpdateValues()
@@ -456,12 +460,18 @@ public abstract class L2Character extends L2Object
 	
 	public void onTeleported()
 	{
-		synchronized (this)
+		if (!_teleportLock.tryLock())
+			return;
+		try
 		{
 			if (!isTeleporting())
 				return;
 			spawnMe(getPosition().getX(), getPosition().getY(), getPosition().getZ());
 			setIsTeleporting(false);
+		}
+		finally
+		{
+			_teleportLock.unlock();
 		}
 		if (_isPendingRevive)
 			doRevive();
