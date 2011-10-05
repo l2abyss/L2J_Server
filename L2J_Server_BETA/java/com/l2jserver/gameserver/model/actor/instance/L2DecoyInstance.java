@@ -92,6 +92,7 @@ public class L2DecoyInstance extends L2Decoy
 			_Decoy = Decoy;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -123,6 +124,7 @@ public class L2DecoyInstance extends L2Decoy
 			_skill = Hate;
 		}
 		
+		@Override
 		public void run()
 		{
 			try

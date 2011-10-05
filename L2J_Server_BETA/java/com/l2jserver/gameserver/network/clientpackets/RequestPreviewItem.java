@@ -64,6 +64,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 	
 	private class RemoveWearItemsTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try

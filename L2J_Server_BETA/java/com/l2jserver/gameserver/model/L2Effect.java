@@ -116,6 +116,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	
 	private final class EffectTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try
@@ -690,8 +691,12 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	public int getForceEffect() { return 0; }
 	public boolean isBuffEffect() { return false; }
 	public boolean isDebuffEffect() { return false; }
+	@Override
 	public boolean triggersChanceSkill() { return false; }	
+	@Override
 	public int getTriggeredChanceId() { return 0; }
+	@Override
 	public int getTriggeredChanceLevel() { return 0; }
+	@Override
 	public ChanceCondition getTriggeredChanceCondition() { return null; }
 }

@@ -329,6 +329,7 @@ public class ThreadPoolManager
 			_group = new ThreadGroup(_name);
 		}
 		
+		@Override
 		public Thread newThread(Runnable r)
 		{
 			Thread t = new Thread(_group, r);

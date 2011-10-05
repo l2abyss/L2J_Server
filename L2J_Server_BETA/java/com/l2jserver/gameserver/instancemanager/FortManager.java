@@ -159,6 +159,7 @@ public class FortManager implements InstanceListManager
 		return _forts;
 	}
 	
+	@Override
 	public void loadInstances()
 	{
 		_log.info("Initializing FortManager");
@@ -194,10 +195,12 @@ public class FortManager implements InstanceListManager
 		}
 	}
 	
+	@Override
 	public void updateReferences()
 	{
 	}
 	
+	@Override
 	public void activateInstances()
 	{
 		for (final Fort fort : _forts)

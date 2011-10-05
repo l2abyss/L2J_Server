@@ -149,6 +149,7 @@ public final class SystemMessage extends L2GameServerPacket
 	 * @param id 
 	 * @deprecated
 	 */
+	@Deprecated
 	private SystemMessage(final int id)
 	{
 		this(SystemMessageId.getSystemMessageId(id));

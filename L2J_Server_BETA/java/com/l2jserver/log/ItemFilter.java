@@ -33,6 +33,7 @@ public class ItemFilter implements Filter
 	private String _excludeProcess = "Consume";
 	private String _excludeItemType = "Arrow, Shot, Herb";
 	
+	@Override
 	public boolean isLoggable(LogRecord record)
 	{
 		if (!"item".equals(record.getLoggerName())) return false;

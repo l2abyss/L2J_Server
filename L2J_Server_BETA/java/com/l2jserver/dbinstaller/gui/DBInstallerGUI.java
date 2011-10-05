@@ -71,27 +71,32 @@ public class DBInstallerGUI extends JFrame implements DBOutputInterface
 		add(scrollPane, BorderLayout.CENTER);
 	}
 	
+	@Override
 	public void setProgressIndeterminate(boolean value)
 	{
 		_progBar.setIndeterminate(value);
 	}
 	
+	@Override
 	public void setProgressMaximum(int maxValue)
 	{
 		_progBar.setMaximum(maxValue);
 	}
 	
+	@Override
 	public void setProgressValue(int value)
 	{
 		_progBar.setValue(value);
 	}
 	
+	@Override
 	public void appendToProgressArea(String text)
 	{
 		_progArea.append(text+"\n");
 		_progArea.setCaretPosition(_progArea.getDocument().getLength());
 	}
 	
+	@Override
 	public Connection getConnection()
 	{
 		return _con;

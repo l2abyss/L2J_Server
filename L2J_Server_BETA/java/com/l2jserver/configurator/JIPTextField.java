@@ -80,6 +80,7 @@ public class JIPTextField extends JPanel implements FocusListener
 	{
 		final ActionListener nextfocusaction = new ActionListener()
 		{
+			@Override
 			public void actionPerformed(ActionEvent evt)
 			{
 				((Component) evt.getSource()).transferFocus();
@@ -234,6 +235,7 @@ public class JIPTextField extends JPanel implements FocusListener
 	}
 	
 	
+	@Override
 	public void focusGained(FocusEvent event)
 	{
 		if (_focusListeners != null)
@@ -245,6 +247,7 @@ public class JIPTextField extends JPanel implements FocusListener
 		}
 	}
 	
+	@Override
 	public void focusLost(FocusEvent event)
 	{
 		if (isCorrect() || isEmpty())

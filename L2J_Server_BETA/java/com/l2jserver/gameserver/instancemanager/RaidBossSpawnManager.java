@@ -136,6 +136,7 @@ public class RaidBossSpawnManager
 			bossId = npcId;
 		}
 		
+		@Override
 		public void run()
 		{
 			L2RaidBossInstance raidboss = null;

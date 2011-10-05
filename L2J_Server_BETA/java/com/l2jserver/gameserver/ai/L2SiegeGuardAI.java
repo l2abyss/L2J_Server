@@ -82,6 +82,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		_attackRange = ((L2Attackable) _actor).getPhysicalAttackRange();
 	}
 	
+	@Override
 	public void run()
 	{
 		// Launch actions corresponding to the Event Think

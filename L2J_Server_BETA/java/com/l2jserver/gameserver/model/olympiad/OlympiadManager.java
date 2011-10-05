@@ -518,6 +518,7 @@ public class OlympiadManager
 			_team = t;
 		}
 		
+		@Override
 		public final void run()
 		{
 			L2PcInstance teamMember;

@@ -276,6 +276,7 @@ public class MinionList
 			_minion = minion;
 		}
 
+		@Override
 		public void run()
 		{
 			if (!_master.isAlikeDead() && _master.isVisible())

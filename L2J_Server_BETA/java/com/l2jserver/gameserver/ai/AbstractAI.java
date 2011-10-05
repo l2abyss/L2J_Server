@@ -64,6 +64,7 @@ abstract class AbstractAI implements Ctrl
 			_range = range;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -155,6 +156,7 @@ abstract class AbstractAI implements Ctrl
 	/**
 	 * @return the L2Character managed by this Accessor AI.
 	 */
+	@Override
 	public L2Character getActor()
 	{
 		return _actor;
@@ -163,6 +165,7 @@ abstract class AbstractAI implements Ctrl
 	/**
 	 * @return the current Intention.
 	 */
+	@Override
 	public CtrlIntention getIntention()
 	{
 		return _intention;
@@ -189,6 +192,7 @@ abstract class AbstractAI implements Ctrl
 	/**
 	 * @return current attack target.
 	 */
+	@Override
 	public L2Character getAttackTarget()
 	{
 		return _attackTarget;
@@ -228,6 +232,7 @@ abstract class AbstractAI implements Ctrl
 	 * @param intention The new Intention to set to the AI
 	 *
 	 */
+	@Override
 	public final void setIntention(CtrlIntention intention)
 	{
 		setIntention(intention, null, null);
@@ -242,6 +247,7 @@ abstract class AbstractAI implements Ctrl
 	 * @param arg0 The first parameter of the Intention (optional target)
 	 *
 	 */
+	@Override
 	public final void setIntention(CtrlIntention intention, Object arg0)
 	{
 		setIntention(intention, arg0, null);
@@ -280,6 +286,7 @@ abstract class AbstractAI implements Ctrl
 		}
 	}
 	 */
+	@Override
 	public final void setIntention(CtrlIntention intention, Object arg0, Object arg1)
 	{
 		/*
@@ -333,6 +340,7 @@ abstract class AbstractAI implements Ctrl
 	 * @param evt The event whose the AI must be notified
 	 *
 	 */
+	@Override
 	public final void notifyEvent(CtrlEvent evt)
 	{
 		notifyEvent(evt, null, null);
@@ -348,6 +356,7 @@ abstract class AbstractAI implements Ctrl
 	 * @param arg0 The first parameter of the Event (optional target)
 	 *
 	 */
+	@Override
 	public final void notifyEvent(CtrlEvent evt, Object arg0)
 	{
 		notifyEvent(evt, arg0, null);
@@ -394,6 +403,7 @@ abstract class AbstractAI implements Ctrl
 	 * @param arg1 The second parameter of the Event (optional target)
 	 *
 	 */
+	@Override
 	public final void notifyEvent(CtrlEvent evt, Object arg0, Object arg1)
 	{
 		if ((!_actor.isVisible() && !_actor.isTeleporting()) || !_actor.hasAI())

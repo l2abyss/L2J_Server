@@ -299,6 +299,7 @@ public class CastleManorManager
 		
 		_scheduledManorRefresh = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (!isDisabled())
@@ -307,6 +308,7 @@ public class CastleManorManager
 					_log.info("Manor System: Under maintenance mode started");
 					
 					_scheduledMaintenanceEnd = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
+						@Override
 						public void run()
 						{
 							_log.info("Manor System: Next period started");
@@ -334,6 +336,7 @@ public class CastleManorManager
 		
 		_scheduledNextPeriodapprove = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				if (!isDisabled())

@@ -117,6 +117,7 @@ public final class OlympiadGameTask implements Runnable
 		ThreadPoolManager.getInstance().executeTask(this);
 	}
 
+	@Override
 	public final void run()
 	{
 		try

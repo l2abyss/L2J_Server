@@ -288,6 +288,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	
 	private final class ConsumeFuelTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			int fuel = getFuel();
@@ -305,6 +306,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	
 	private final class CheckTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			if (isVisible()
@@ -317,6 +319,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	
 	private final class DecayTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			deleteMe();

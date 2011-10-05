@@ -388,6 +388,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			_DoorId = doorId;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -410,6 +411,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			_NpcId = npcId;
 		}
 		
+		@Override
 		public void run()
 		{
 			FourSepulchersManager.getInstance().spawnMysteriousBox(_NpcId);
@@ -425,6 +427,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			_NpcId = npcId;
 		}
 		
+		@Override
 		public void run()
 		{
 			FourSepulchersManager.getInstance().spawnMonster(_NpcId);

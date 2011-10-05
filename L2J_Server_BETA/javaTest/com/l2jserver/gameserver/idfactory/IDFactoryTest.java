@@ -142,6 +142,7 @@ public class IDFactoryTest extends TestCase
 		long _time1;
 		long _time2;
 		AtomicInteger _myCount   = new AtomicInteger(0);
+		@Override
 		public void run()
 		{
 			for (int i=0; i<REQUESTER_THREAD_REQUESTS; i++)
@@ -181,6 +182,7 @@ public class IDFactoryTest extends TestCase
 		AtomicInteger _myCount = new AtomicInteger(100);
 		long _time1;
 		long _time2;
+		@Override
 		public void run()
 		{
 			for (int i=0; i<RELEASER_THREAD_RELEASES; i++)

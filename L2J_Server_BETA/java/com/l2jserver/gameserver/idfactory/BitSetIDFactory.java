@@ -49,6 +49,7 @@ public class BitSetIDFactory extends IdFactory
 	
 	protected class BitSetCapacityCheck implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			synchronized (BitSetIDFactory.this)

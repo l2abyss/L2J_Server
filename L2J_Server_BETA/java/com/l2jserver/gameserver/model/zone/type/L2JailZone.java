@@ -93,6 +93,7 @@ public class L2JailZone extends L2ZoneType
 			_activeChar = (L2PcInstance) character;
 		}
 		
+		@Override
 		public void run()
 		{
 			_activeChar.teleToLocation(-114356, -249645, -2984); // Jail

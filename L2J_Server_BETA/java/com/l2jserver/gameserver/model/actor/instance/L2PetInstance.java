@@ -129,6 +129,7 @@ public class L2PetInstance extends L2Summon
 	
 	class FeedTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try

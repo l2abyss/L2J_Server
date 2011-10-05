@@ -42,6 +42,7 @@ public class CastleUpdater implements Runnable
 		_runCount = runCount;
 	}
 	
+	@Override
 	public void run()
 	{
 		try

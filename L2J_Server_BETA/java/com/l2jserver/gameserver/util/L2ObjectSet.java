@@ -73,6 +73,7 @@ public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 	
 	public abstract boolean contains(T obj);
 	
+	@Override
 	public abstract Iterator<T> iterator();
 	
 }

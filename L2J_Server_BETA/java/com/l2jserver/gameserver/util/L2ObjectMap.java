@@ -53,6 +53,7 @@ public abstract class L2ObjectMap<T extends L2Object> implements Iterable<T>
 	
 	public abstract boolean contains(T obj);
 	
+	@Override
 	public abstract Iterator<T> iterator();
 	
 	public static L2ObjectMap<L2Object> createL2ObjectMap()

@@ -150,6 +150,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 		this.getPlayer().transform(this);
 	}
 	
+	@Override
 	public void run()
 	{
 		this.stop();

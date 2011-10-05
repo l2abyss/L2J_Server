@@ -47,6 +47,7 @@ public enum L2ArmorType implements L2ItemType
 	 * Returns the ID of the ArmorType after applying a mask.
 	 * @return int : ID of the ArmorType after mask
 	 */
+	@Override
 	public int mask()
 	{
 		return _mask;

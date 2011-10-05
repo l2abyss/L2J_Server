@@ -141,6 +141,7 @@ public abstract class ClanHall
 				_cwh = cwh;
 			}
 			
+			@Override
 			public void run()
 			{
 				try

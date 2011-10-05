@@ -365,26 +365,31 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 			}
 		}
 		
+		@Override
 		public void mouseEntered(MouseEvent e)
 		{
 			forwardEvent(e);
 		}
 		
+		@Override
 		public void mouseExited(MouseEvent e)
 		{
 			forwardEvent(e);
 		}
 		
+		@Override
 		public void mousePressed(MouseEvent e)
 		{
 			forwardEvent(e);
 		}
 		
+		@Override
 		public void mouseClicked(MouseEvent e)
 		{
 			forwardEvent(e);
 		}
 		
+		@Override
 		public void mouseReleased(MouseEvent e)
 		{
 			forwardEvent(e);

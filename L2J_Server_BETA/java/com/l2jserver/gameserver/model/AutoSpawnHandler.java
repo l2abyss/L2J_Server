@@ -434,6 +434,7 @@ public class AutoSpawnHandler
 			_objectId = objectId;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -569,6 +570,7 @@ public class AutoSpawnHandler
 			_objectId = objectId;
 		}
 		
+		@Override
 		public void run()
 		{
 			try

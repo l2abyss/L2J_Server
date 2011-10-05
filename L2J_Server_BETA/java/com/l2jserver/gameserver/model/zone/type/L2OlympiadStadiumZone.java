@@ -231,6 +231,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 			_player = player;
 		}
 
+		@Override
 		public void run()
 		{
 			if (_player != null)

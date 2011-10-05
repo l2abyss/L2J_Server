@@ -146,6 +146,7 @@ public class L2MonsterInstance extends L2Attackable
 		if (_maintenanceTask == null)
 		{
 			_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
+				@Override
 				public void run()
 				{
 					if (_enableMinions)

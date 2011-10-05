@@ -369,6 +369,7 @@ public class CharStatus
 	/** Task of HP/MP regeneration */
 	class RegenTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try

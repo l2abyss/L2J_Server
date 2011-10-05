@@ -346,10 +346,12 @@ extends L2ObjectMap<T>
 					return;
 			}
 		}
+		@Override
 		public boolean hasNext()
 		{
 			return _nextObj != null;
 		}
+		@Override
 		public T next()
 		{
 			if (_nextObj == null)
@@ -365,6 +367,7 @@ extends L2ObjectMap<T>
 				_nextObj = null;
 			return _lastRet;
 		}
+		@Override
 		public void remove()
 		{
 			if (_lastRet == null)

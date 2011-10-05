@@ -182,6 +182,7 @@ public class AutoAnnounceTaskManager
 			_stopped = true;
 		}
 		
+		@Override
 		public void run()
 		{
 			if (!_stopped && _repeat != 0)

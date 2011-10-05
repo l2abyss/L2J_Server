@@ -104,6 +104,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 	
 	class oustAllPlayers implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try

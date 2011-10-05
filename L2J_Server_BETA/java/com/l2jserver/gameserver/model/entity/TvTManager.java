@@ -186,6 +186,7 @@ public class TvTManager
 		/**
 		 * @see java.lang.Runnable#run()
 		 */
+		@Override
 		public void run()
 		{
 			int delay = (int) Math.round((_startTime - System.currentTimeMillis()) / 1000.0);

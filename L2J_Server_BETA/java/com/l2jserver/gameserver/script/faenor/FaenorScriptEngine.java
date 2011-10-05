@@ -72,6 +72,7 @@ public class FaenorScriptEngine extends ScriptEngine
 		File packDirectory = new File(Config.DATAPACK_ROOT, PACKAGE_DIRECTORY);//_log.sss(packDirectory.getAbsolutePath());
 		
 		FileFilter fileFilter = new FileFilter() {
+			@Override
 			public boolean accept(File file)
 			{
 				return file.getName().endsWith(".zip");

@@ -162,6 +162,7 @@ public class L2DamageZone extends L2ZoneType
 			_castle = zone.getCastle();
 		}
 		
+		@Override
 		public void run()
 		{
 			boolean siege = false;

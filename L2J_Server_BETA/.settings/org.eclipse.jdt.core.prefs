@@ -1,4 +1,4 @@
-#Mon Oct 03 22:35:58 UYST 2011
+#Wed Oct 05 17:11:24 UYST 2011
 eclipse.preferences.version=1
 org.eclipse.jdt.core.codeComplete.argumentPrefixes=
 org.eclipse.jdt.core.codeComplete.argumentSuffixes=
@@ -38,7 +38,7 @@ org.eclipse.jdt.core.compiler.problem.invalidJavadocTagsNotVisibleRef=enabled
 org.eclipse.jdt.core.compiler.problem.invalidJavadocTagsVisibility=private
 org.eclipse.jdt.core.compiler.problem.localVariableHiding=ignore
 org.eclipse.jdt.core.compiler.problem.methodWithConstructorName=warning
-org.eclipse.jdt.core.compiler.problem.missingDeprecatedAnnotation=ignore
+org.eclipse.jdt.core.compiler.problem.missingDeprecatedAnnotation=warning
 org.eclipse.jdt.core.compiler.problem.missingHashCodeMethod=ignore
 org.eclipse.jdt.core.compiler.problem.missingJavadocComments=ignore
 org.eclipse.jdt.core.compiler.problem.missingJavadocCommentsOverriding=disabled
@@ -48,7 +48,7 @@ org.eclipse.jdt.core.compiler.problem.missingJavadocTags=warning
 org.eclipse.jdt.core.compiler.problem.missingJavadocTagsMethodTypeParameters=enabled
 org.eclipse.jdt.core.compiler.problem.missingJavadocTagsOverriding=enabled
 org.eclipse.jdt.core.compiler.problem.missingJavadocTagsVisibility=private
-org.eclipse.jdt.core.compiler.problem.missingOverrideAnnotation=ignore
+org.eclipse.jdt.core.compiler.problem.missingOverrideAnnotation=warning
 org.eclipse.jdt.core.compiler.problem.missingOverrideAnnotationForInterfaceMethodImplementation=enabled
 org.eclipse.jdt.core.compiler.problem.missingSerialVersion=warning
 org.eclipse.jdt.core.compiler.problem.missingSynchronizedOnInheritedMethod=ignore

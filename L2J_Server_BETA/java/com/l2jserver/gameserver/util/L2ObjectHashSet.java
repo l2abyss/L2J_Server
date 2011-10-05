@@ -336,10 +336,12 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 					return;
 			}
 		}
+		@Override
 		public boolean hasNext()
 		{
 			return _nextObj != null;
 		}
+		@Override
 		public T next()
 		{
 			if (_nextObj == null)
@@ -355,6 +357,7 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 				_nextObj = null;
 			return _lastRet;
 		}
+		@Override
 		public void remove()
 		{
 			if (_lastRet == null)

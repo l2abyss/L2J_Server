@@ -61,6 +61,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			activeChar = _activeChar;
 		}
 		
+		@Override
 		@SuppressWarnings("synthetic-access")
 		public void run()
 		{

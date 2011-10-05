@@ -162,6 +162,7 @@ public class L2RaceManagerInstance extends L2Npc
 			_type = pType;
 		}
 		
+		@Override
 		public void run()
 		{
 			makeAnnouncement(_type);
@@ -489,6 +490,7 @@ public class L2RaceManagerInstance extends L2Npc
 	
 	class RunRace implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			_packet = new MonRaceInfo(_codes[2][0], _codes[2][1], MonsterRace.getInstance().getMonsters(),
@@ -500,6 +502,7 @@ public class L2RaceManagerInstance extends L2Npc
 	
 	class RunEnd implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			makeAnnouncement(SystemMessageId.MONSRACE_FIRST_PLACE_S1_SECOND_S2);

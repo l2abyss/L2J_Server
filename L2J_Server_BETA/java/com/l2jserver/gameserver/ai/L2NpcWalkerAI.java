@@ -70,6 +70,7 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 			_log.warning(getClass().getSimpleName()+": Missing route data! Npc: "+_actor);
 	}
 	
+	@Override
 	public void run()
 	{
 		onEvtThink();

@@ -361,6 +361,7 @@ public class Message
 			_msg = msg;
 		}
 		
+		@Override
 		public void run()
 		{
 			if (_msg != null)

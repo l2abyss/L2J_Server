@@ -63,6 +63,7 @@ public class OlympiadGameManager implements Runnable
 		_battleStarted = true;
 	}
 
+	@Override
 	public final void run()
 	{
 		if (Olympiad.getInstance().isOlympiadEnd())

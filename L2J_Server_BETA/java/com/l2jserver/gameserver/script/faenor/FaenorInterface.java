@@ -53,6 +53,7 @@ public class FaenorInterface implements EngineInterface
 	 * Adds a new Quest Drop to an NPC
 	 * @see com.l2jserver.gameserver.script.EngineInterface#addQuestDrop(int, int, int, int, int, String, String[])
 	 */
+	@Override
 	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states)
 	{
 		L2NpcTemplate npc = npcTable.getTemplate(npcID);
@@ -158,11 +159,13 @@ public class FaenorInterface implements EngineInterface
 		return questDrops;
 	}
 	
+	@Override
 	public void addEventDrop(int[] items, int[] count, double chance, DateRange range)
 	{
 		EventDroplist.getInstance().addGlobalDrop(items, count, (int) (chance * L2DropData.MAX_CHANCE), range);
 	}
 	
+	@Override
 	public void onPlayerLogin(String[] message, DateRange validDateRange)
 	{
 		Announcements.getInstance().addEventAnnouncement(validDateRange, message);

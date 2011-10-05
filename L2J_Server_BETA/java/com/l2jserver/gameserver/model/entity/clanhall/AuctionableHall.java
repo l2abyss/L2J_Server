@@ -123,6 +123,7 @@ public final class AuctionableHall extends ClanHall
 	/** Fee Task */
 	private class FeeTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try

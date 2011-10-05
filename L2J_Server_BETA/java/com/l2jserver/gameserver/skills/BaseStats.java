@@ -93,6 +93,7 @@ public enum BaseStats
 	
 	private static final class STR implements BaseStat
 	{
+		@Override
 		public final double calcBonus(L2Character actor)
 		{
 			return STRbonus[actor.getSTR()];
@@ -101,6 +102,7 @@ public enum BaseStats
 	
 	private static final class INT implements BaseStat
 	{
+		@Override
 		public final double calcBonus(L2Character actor)
 		{
 			return INTbonus[actor.getINT()];
@@ -109,6 +111,7 @@ public enum BaseStats
 	
 	private static final class DEX implements BaseStat
 	{
+		@Override
 		public final double calcBonus(L2Character actor)
 		{
 			return DEXbonus[actor.getDEX()];
@@ -117,6 +120,7 @@ public enum BaseStats
 	
 	private static final class WIT implements BaseStat
 	{
+		@Override
 		public final double calcBonus(L2Character actor)
 		{
 			return WITbonus[actor.getWIT()];
@@ -125,6 +129,7 @@ public enum BaseStats
 	
 	private static final class CON implements BaseStat
 	{
+		@Override
 		public final double calcBonus(L2Character actor)
 		{
 			return CONbonus[actor.getCON()];
@@ -133,6 +138,7 @@ public enum BaseStats
 	
 	private static final class MEN implements BaseStat
 	{
+		@Override
 		public final double calcBonus(L2Character actor)
 		{
 			return MENbonus[actor.getMEN()];
@@ -141,6 +147,7 @@ public enum BaseStats
 	
 	private static final class NULL implements BaseStat
 	{
+		@Override
 		public final double calcBonus(L2Character actor)
 		{
 			return 1f;

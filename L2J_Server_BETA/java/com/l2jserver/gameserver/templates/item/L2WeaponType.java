@@ -59,6 +59,7 @@ public enum L2WeaponType implements L2ItemType
 	 * Returns the ID of the item after applying the mask.
 	 * @return int : ID of the item
 	 */
+	@Override
 	public int mask()
 	{
 		return _mask;

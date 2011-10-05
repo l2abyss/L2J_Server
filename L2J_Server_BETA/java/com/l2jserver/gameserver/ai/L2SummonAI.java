@@ -197,6 +197,7 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 			_startAvoid = true;
 	}
 	
+	@Override
 	public void run()
 	{
 		if (_startAvoid)

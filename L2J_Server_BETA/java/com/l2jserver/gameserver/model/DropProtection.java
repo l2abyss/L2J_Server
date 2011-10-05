@@ -33,6 +33,7 @@ public class DropProtection implements Runnable
 	
 	private static final long PROTECTED_MILLIS_TIME = 15000;
 	
+	@Override
 	public synchronized void run()
 	{
 		_isProtected = false;
