@@ -2314,13 +2314,12 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					continue;
 				if (obj instanceof L2PcInstance)
 				{
-					if (MostHate != null || !MostHate.isDead())
+					if ((MostHate != null) && !MostHate.isDead())
 						actor.addDamageHate(obj, 0, actor.getHating(MostHate));
 					else
 						actor.addDamageHate(obj, 0, 2000);
 					actor.setTarget(obj);
 					setAttackTarget(obj);
-					
 				}
 				else if (obj instanceof L2Attackable)
 				{
