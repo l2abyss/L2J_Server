@@ -935,6 +935,7 @@ public final class Config
 	public static int MMO_MAX_SEND_PER_PASS;
 	public static int MMO_MAX_READ_PER_PASS;
 	public static int MMO_HELPER_BUFFER_COUNT;
+	public static boolean MMO_TCP_NODELAY;
 	
 	//--------------------------------------------------
 	// Vitality Settings
@@ -1815,6 +1816,7 @@ public final class Config
 					MMO_MAX_SEND_PER_PASS = Integer.parseInt(mmoSettings.getProperty("MaxSendPerPass", "12"));
 					MMO_MAX_READ_PER_PASS = Integer.parseInt(mmoSettings.getProperty("MaxReadPerPass", "12"));
 					MMO_HELPER_BUFFER_COUNT = Integer.parseInt(mmoSettings.getProperty("HelperBufferCount", "20"));
+					MMO_TCP_NODELAY = Boolean.parseBoolean(mmoSettings.getProperty("TcpNoDelay", "False"));
 				}
 				catch (Exception e)
 				{
@@ -2988,6 +2990,7 @@ public final class Config
 					MMO_MAX_SEND_PER_PASS = Integer.parseInt(mmoSettings.getProperty("MaxSendPerPass", "12"));
 					MMO_MAX_READ_PER_PASS = Integer.parseInt(mmoSettings.getProperty("MaxReadPerPass", "12"));
 					MMO_HELPER_BUFFER_COUNT = Integer.parseInt(mmoSettings.getProperty("HelperBufferCount", "20"));
+					MMO_TCP_NODELAY = Boolean.parseBoolean(mmoSettings.getProperty("TcpNoDelay", "False"));
 				}
 				catch (Exception e)
 				{
