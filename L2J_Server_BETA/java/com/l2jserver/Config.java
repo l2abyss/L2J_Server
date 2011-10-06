@@ -2714,7 +2714,7 @@ public final class Config
 					ALT_OLY_START_TIME = Integer.parseInt(olympiad.getProperty("AltOlyStartTime", "18"));
 					ALT_OLY_MIN = Integer.parseInt(olympiad.getProperty("AltOlyMin","00"));
 					ALT_OLY_CPERIOD = Long.parseLong(olympiad.getProperty("AltOlyCPeriod","21600000"));
-					ALT_OLY_BATTLE = Long.parseLong(olympiad.getProperty("AltOlyBattle","360000"));
+					ALT_OLY_BATTLE = Long.parseLong(olympiad.getProperty("AltOlyBattle","300000"));
 					ALT_OLY_WPERIOD = Long.parseLong(olympiad.getProperty("AltOlyWPeriod","604800000"));
 					ALT_OLY_VPERIOD = Long.parseLong(olympiad.getProperty("AltOlyVPeriod","86400000"));
 					ALT_OLY_START_POINTS = Integer.parseInt(olympiad.getProperty("AltOlyStartPoints","10"));
