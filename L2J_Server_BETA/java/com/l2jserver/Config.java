@@ -414,6 +414,7 @@ public final class Config
 	public static boolean GM_TRADE_RESTRICTED_ITEMS;
 	public static boolean GM_RESTART_FIGHTING;
 	public static boolean GM_ANNOUNCER_NAME;
+	public static boolean GM_CRITANNOUNCER_NAME;
 	public static boolean GM_GIVE_SPECIAL_SKILLS;
 	public static boolean GM_GIVE_SPECIAL_AURA_SKILLS;
 	public static boolean BYPASS_VALIDATION;
@@ -1877,6 +1878,7 @@ public final class Config
 					GM_TRADE_RESTRICTED_ITEMS = Boolean.parseBoolean(General.getProperty("GMTradeRestrictedItems", "False"));
 					GM_RESTART_FIGHTING = Boolean.parseBoolean(General.getProperty("GMRestartFighting", "True"));
 					GM_ANNOUNCER_NAME = Boolean.parseBoolean(General.getProperty("GMShowAnnouncerName", "False"));
+					GM_CRITANNOUNCER_NAME = Boolean.parseBoolean(General.getProperty("GMShowCritAnnouncerName", "False"));
 					GM_GIVE_SPECIAL_SKILLS = Boolean.parseBoolean(General.getProperty("GMGiveSpecialSkills", "False"));
 					GM_GIVE_SPECIAL_AURA_SKILLS = Boolean.parseBoolean(General.getProperty("GMGiveSpecialAuraSkills", "False"));
 					BYPASS_VALIDATION = Boolean.parseBoolean(General.getProperty("BypassValidation", "True"));

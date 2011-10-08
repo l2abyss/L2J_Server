@@ -219,9 +219,15 @@ public final class Broadcast
 		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcast(mov));
 	}
 	
-	public static void announceToOnlinePlayers(String text)
+	public static void announceToOnlinePlayers(String text, boolean isCritical)
 	{
-		CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
+		CreatureSay cs;
+		
+		if (isCritical)
+			cs = new CreatureSay(0, Say2.CRITICAL_ANNOUNCE, "", text);
+		else
+			cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
+		
 		toAllOnlinePlayers(cs);
 	}
 	

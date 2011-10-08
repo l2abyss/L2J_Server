@@ -49,6 +49,7 @@ public class Announcements
 	private static Logger _log = Logger.getLogger(Announcements.class.getName());
 	
 	private List<String> _announcements = new FastList<String>();
+	private List<String> _critAnnouncements = new FastList<String>();
 	private List<List<Object>> _eventAnnouncements = new FastList<List<Object>>();
 	
 	private Announcements()
@@ -64,28 +65,31 @@ public class Announcements
 	public void loadAnnouncements()
 	{
 		_announcements.clear();
-		File file = new File(Config.DATAPACK_ROOT, "data/announcements.txt");
-		if (file.exists())
-		{
-			readFromDisk(file);
-		}
-		else
-		{
-			_log.warning("data/announcements.txt doesn't exist");
-		}
+		_critAnnouncements.clear();
+		readFromDisk("data/announcements.txt", _announcements);
+		readFromDisk("data/critannouncements.txt", _critAnnouncements);
+		
+		if (Config.DEBUG)
+			_log.info("Announcements: Loaded " + (_announcements.size() + _critAnnouncements.size())  + " announcements.");
 	}
 	
 	public void showAnnouncements(L2PcInstance activeChar)
 	{
-		for (int i = 0; i < _announcements.size(); i++)
+		for (String announce : _announcements)
 		{
-			CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, activeChar.getName(), _announcements.get(i));
+			CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, activeChar.getName(), announce);
 			activeChar.sendPacket(cs);
 		}
 		
-		for (int i = 0; i < _eventAnnouncements.size(); i++)
+		for (String critAnnounce : _critAnnouncements)
 		{
-			List<Object> entry = _eventAnnouncements.get(i);
+			CreatureSay cs = new CreatureSay(0, Say2.CRITICAL_ANNOUNCE, activeChar.getName(), critAnnounce);
+			activeChar.sendPacket(cs);
+		}
+		
+		for (List<Object> eventAnnounce : _eventAnnouncements)
+		{
+			List<Object> entry = eventAnnounce;
 			
 			DateRange validDateRange = (DateRange) entry.get(0);
 			String[] msg = (String[]) entry.get(1);
@@ -127,69 +131,111 @@ public class Announcements
 		activeChar.sendPacket(adminReply);
 	}
 	
+	public void listCritAnnouncements(L2PcInstance activeChar)
+	{
+		String content = HtmCache.getInstance().getHtmForce(activeChar.getHtmlPrefix(), "data/html/admin/critannounce.htm");
+		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+		adminReply.setHtml(content);
+		final StringBuilder replyMSG = StringUtil.startAppend(500, "<br>");
+		for (int i = 0; i < _critAnnouncements.size(); i++)
+		{
+			StringUtil.append(replyMSG, "<table width=260><tr><td width=220>", _critAnnouncements.get(i), "</td><td width=40>"
+					+ "<button value=\"Delete\" action=\"bypass -h admin_del_critannouncement ", String.valueOf(i), "\" width=60 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>");
+		}
+		adminReply.replace("%critannounces%", replyMSG.toString());
+		activeChar.sendPacket(adminReply);
+	}
+	
 	public void addAnnouncement(String text)
 	{
 		_announcements.add(text);
-		saveToDisk();
+		saveToDisk(false);
 	}
 	
 	public void delAnnouncement(int line)
 	{
 		_announcements.remove(line);
-		saveToDisk();
+		saveToDisk(false);
 	}
 	
-	private void readFromDisk(File file)
+	public void addCritAnnouncement(String text)
 	{
-		LineNumberReader lnr = null;
-		try
+		_critAnnouncements.add(text);
+		saveToDisk(true);
+	}
+	
+	public void delCritAnnouncement(int line)
+	{
+		_critAnnouncements.remove(line);
+		saveToDisk(true);
+	}
+	
+	private void readFromDisk(String path, List<String> list)
+	{
+		File file = new File(Config.DATAPACK_ROOT, path);
+		
+		if (file.exists())
 		{
-			int i = 0;
-			String line = null;
-			lnr = new LineNumberReader(new FileReader(file));
-			while ((line = lnr.readLine()) != null)
-			{
-				StringTokenizer st = new StringTokenizer(line, "\n\r");
-				if (st.hasMoreTokens())
-				{
-					String announcement = st.nextToken();
-					_announcements.add(announcement);
-					
-					i++;
-				}
-			}
-			
-			if (Config.DEBUG)
-				_log.info("Announcements: Loaded " + i + " Announcements.");
-		}
-		catch (IOException e1)
-		{
-			_log.log(Level.SEVERE, "Error reading announcements: ", e1);
-		}
-		finally
-		{
+			LineNumberReader lnr = null;
 			try
 			{
-				lnr.close();
+				String line = null;
+				lnr = new LineNumberReader(new FileReader(file));
+				while ((line = lnr.readLine()) != null)
+				{
+					StringTokenizer st = new StringTokenizer(line, "\n\r");
+					if (st.hasMoreTokens())
+					{
+						String announcement = st.nextToken();
+						list.add(announcement);
+					}
+				}
 			}
-			catch (Exception e2)
+			catch (IOException e1)
 			{
-				// nothing
+				_log.log(Level.SEVERE, "Error reading announcements: ", e1);
+			}
+			finally
+			{
+				try
+				{
+					lnr.close();
+				}
+				catch (Exception e2)
+				{
+					// nothing
+				}
 			}
 		}
+		else
+			_log.warning(file.getAbsolutePath() + " doesn't exist");
 	}
 	
-	private void saveToDisk()
+	private void saveToDisk(boolean isCritical)
 	{
-		File file = new File("data/announcements.txt");
+		String path;
+		List<String> list;
+		
+		if (isCritical)
+		{
+			path = "data/critannouncements.txt";
+			list = _critAnnouncements;
+		}
+		else
+		{
+			path = "data/announcements.txt";
+			list = _announcements;
+		}
+		
+		File file = new File(path);
 		FileWriter save = null;
 		
 		try
 		{
 			save = new FileWriter(file);
-			for (int i = 0; i < _announcements.size(); i++)
+			for (String announce : list)
 			{
-				save.write(_announcements.get(i));
+				save.write(announce);
 				save.write("\r\n");
 			}
 		}
@@ -211,7 +257,12 @@ public class Announcements
 	
 	public void announceToAll(String text)
 	{
-		Broadcast.announceToOnlinePlayers(text);
+		announceToAll(text, false);
+	}
+	
+	public void announceToAll(String text, boolean isCritical)
+	{
+		Broadcast.announceToOnlinePlayers(text, isCritical);
 	}
 	
 	public void announceToAll(SystemMessage sm)
@@ -225,13 +276,13 @@ public class Announcements
 	}
 	
 	// Method for handling announcements from admin
-	public void handleAnnounce(String command, int lengthToTrim)
+	public void handleAnnounce(String command, int lengthToTrim, boolean isCritical)
 	{
 		try
 		{
 			// Announce string to everyone on server
 			String text = command.substring(lengthToTrim);
-			SingletonHolder._instance.announceToAll(text);
+			SingletonHolder._instance.announceToAll(text, isCritical);
 		}
 		
 		// No body cares!
