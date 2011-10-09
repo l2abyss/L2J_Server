@@ -1855,7 +1855,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * @param slot The slot in wich the shortCuts is equiped
+	 * @param slot The slot in which the shortCuts is equipped
 	 * @param page The page of shortCuts containing the slot
 	 * @return the L2ShortCut of the L2PcInstance corresponding to the position (page-slot).
 	 */
@@ -1865,12 +1865,22 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Add a L2shortCut to the L2PcInstance _shortCuts<BR><BR>
+	 * Add a L2shortCut to the L2PcInstance _shortCuts
 	 * @param shortcut 
 	 */
 	public void registerShortCut(L2ShortCut shortcut)
 	{
 		_shortCuts.registerShortCut(shortcut);
+	}
+	
+	/**
+	 * Updates the shortcut bars with the new skill.
+	 * @param skillId the skill Id to search and update.
+	 * @param skillLevel the skill level to update.
+	 */
+	public void updateShortCuts(int skillId, int skillLevel)
+	{
+		_shortCuts.updateShortCuts(skillId, skillLevel);
 	}
 	
 	/**

@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
@@ -40,7 +39,6 @@ import com.l2jserver.gameserver.network.serverpackets.AcquireSkillDone;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.ExStorageMaxCount;
 import com.l2jserver.gameserver.network.serverpackets.PledgeSkillList;
-import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
@@ -494,36 +492,13 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		player.addSkill(skill, true);
 		player.sendSkillList();
 		
-		updateShortCuts(player);
+		player.updateShortCuts(_id, _level);
 		showSkillList(trainer, player);
 		
 		//If skill is expand type then sends packet:
 		if ((_id >= 1368) && (_id <= 1372))
 		{
 			player.sendPacket(new ExStorageMaxCount(player));
-		}
-	}
-	
-	/**
-	 * Updates the shortcut bars with the new acquired skill.
-	 * @param player the player that needs a shortcut update.
-	 */
-	private void updateShortCuts(L2PcInstance player)
-	{
-		//Update all the shortcuts for this skill
-		if (_level > 1)
-		{
-			final L2ShortCut[] allShortCuts = player.getAllShortCuts();
-			
-			for (L2ShortCut sc : allShortCuts)
-			{
-				if ((sc.getId() == _id) && (sc.getType() == L2ShortCut.TYPE_SKILL))
-				{
-					L2ShortCut newsc = new L2ShortCut(sc.getSlot(), sc.getPage(), sc.getType(), sc.getId(), _level, 1);
-					player.sendPacket(new ShortCutRegister(newsc));
-					player.registerShortCut(newsc);
-				}
-			}
 		}
 	}
 	

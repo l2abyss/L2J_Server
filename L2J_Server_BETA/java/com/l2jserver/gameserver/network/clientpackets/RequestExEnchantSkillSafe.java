@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -32,7 +31,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfoDetail;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillResult;
-import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.util.Rnd;
@@ -99,8 +97,9 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 		{
 			return;
 		}
-		EnchantSkillDetail esd = s.getEnchantSkillDetail(_skillLvl);
-		if (player.getSkillLevel(_skillId) != s.getMinSkillLevel(_skillLvl))
+		final EnchantSkillDetail esd = s.getEnchantSkillDetail(_skillLvl);
+		final int currentSkillLevel = player.getSkillLevel(_skillId);
+		if (currentSkillLevel != s.getMinSkillLevel(_skillLvl))
 		{
 			return;
 		}
@@ -185,31 +184,14 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 			player.sendPacket(new UserInfo(player));
 			player.sendPacket(new ExBrExtraUserInfo(player));
 			player.sendSkillList();
-			player.sendPacket(new ExEnchantSkillInfo(_skillId, player.getSkillLevel(_skillId)));
-			player.sendPacket(new ExEnchantSkillInfoDetail(1, _skillId, player.getSkillLevel(_skillId)+1, player));
-			
-			this.updateSkillShortcuts(player);
+			player.sendPacket(new ExEnchantSkillInfo(_skillId, currentSkillLevel));
+			player.sendPacket(new ExEnchantSkillInfoDetail(1, _skillId, currentSkillLevel + 1, player));
+			player.updateShortCuts(_skillId, currentSkillLevel);
 		}
 		else
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ENOUGH_SP_TO_ENCHANT_THAT_SKILL);
 			player.sendPacket(sm);
-		}
-	}
-	
-	private void updateSkillShortcuts(L2PcInstance player)
-	{
-		// update all the shortcuts to this skill
-		L2ShortCut[] allShortCuts = player.getAllShortCuts();
-		
-		for (L2ShortCut sc : allShortCuts)
-		{
-			if (sc.getId() == _skillId && sc.getType() == L2ShortCut.TYPE_SKILL)
-			{
-				L2ShortCut newsc = new L2ShortCut(sc.getSlot(), sc.getPage(), sc.getType(), sc.getId(), player.getSkillLevel(_skillId), 1);
-				player.sendPacket(new ShortCutRegister(newsc));
-				player.registerShortCut(newsc);
-			}
 		}
 	}
 	
