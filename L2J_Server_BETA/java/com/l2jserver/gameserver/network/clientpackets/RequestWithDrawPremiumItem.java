@@ -31,14 +31,14 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 	
 	private int _itemNum;
 	private int _charId;
-	private long _itemcount;
+	private long _itemCount;
 	
 	@Override
 	protected void readImpl()
 	{
 		_itemNum = readD();
 		_charId = readD();
-		_itemcount = readQ();
+		_itemCount = readQ();
 	}
 	
 	@Override
@@ -48,25 +48,24 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		
 		if (activeChar == null)
 			return;
-		if (_itemcount <= 0)
+		else if (_itemCount <= 0)
 			return;
-		
-		if (activeChar.getObjectId() != _charId)
+		else if (activeChar.getObjectId() != _charId)
 		{
 			Util.handleIllegalPlayerAction(activeChar, "[RequestWithDrawPremiumItem] Incorrect owner, Player: " + activeChar.getName(), Config.DEFAULT_PUNISH);
 			return;
 		}
-		if (activeChar.getPremiumItemList().isEmpty())
+		else if (activeChar.getPremiumItemList().isEmpty())
 		{
 			Util.handleIllegalPlayerAction(activeChar, "[RequestWithDrawPremiumItem] Player: " + activeChar.getName() + " try to get item with empty list!", Config.DEFAULT_PUNISH);
 			return;
 		}
-		if (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder80(false))
+		else if (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder80(false))
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_RECEIVE_THE_VITAMIN_ITEM));
 			return;
 		}
-		if (activeChar.isProcessingTransaction())
+		else if (activeChar.isProcessingTransaction())
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_RECEIVE_A_VITAMIN_ITEM_DURING_AN_EXCHANGE));
 			return;
@@ -75,15 +74,17 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		L2PremiumItem _item = activeChar.getPremiumItemList().get(_itemNum);
 		if (_item == null)
 			return;
-		if (_item.getCount() < _itemcount)
+		else if (_item.getCount() < _itemCount)
 			return;
 		
-		activeChar.addItem("PremiumItem", _item.getItemId(), _itemcount, null, true);
+		long itemsLeft = (_item.getCount() - _itemCount);
 		
-		if(_itemcount < _item.getCount() )
+		activeChar.addItem("PremiumItem", _item.getItemId(), _itemCount, null, true);
+		
+		if (itemsLeft > 0)
 		{
-			activeChar.getPremiumItemList().get(_itemNum).updateCount(_item.getCount()-_itemcount);
-			activeChar.updatePremiumItem(_itemNum, _item.getCount()-_itemcount);
+			activeChar.getPremiumItemList().get(_itemNum).updateCount(itemsLeft);
+			activeChar.updatePremiumItem(_itemNum, itemsLeft);
 		}
 		else
 		{
@@ -91,7 +92,7 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 			activeChar.deletePremiumItem(_itemNum);
 		}
 		
-		if(activeChar.getPremiumItemList().isEmpty())
+		if (activeChar.getPremiumItemList().isEmpty())
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THERE_ARE_NO_MORE_VITAMIN_ITEMS_TO_BE_FOUND));
 		else
 			activeChar.sendPacket(new ExGetPremiumItemList(activeChar));
