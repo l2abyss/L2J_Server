@@ -505,6 +505,14 @@ public class L2PetInstance extends L2Summon
 				getOwner().sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
+			if (!target.getDropProtection().tryPickUp(this))
+			{
+				getOwner().sendPacket(ActionFailed.STATIC_PACKET);
+				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
+				smsg.addItemName(target);
+				getOwner().sendPacket(smsg);
+				return;
+			}
 			if ( !_inventory.validateCapacity(target))
 			{
 				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS));
