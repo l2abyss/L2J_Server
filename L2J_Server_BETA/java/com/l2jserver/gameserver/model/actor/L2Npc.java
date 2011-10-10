@@ -139,33 +139,27 @@ public class L2Npc extends L2Character
 	protected boolean _isHideName = false;
 	private int _displayEffect = 0;
 	
+	private final L2NpcAIData _staticAIData = getTemplate().getAIDataStatic();
+	
 	//AI Recall
 	public int getSoulShot()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSoulShot();
-		
+		return _staticAIData.getSoulShot();
 	}
 	
 	public int getSpiritShot()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSpiritShot();
-		
+		return _staticAIData.getSpiritShot();
 	}
 	
 	public int getSoulShotChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSoulShotChance();
-		
+		return _staticAIData.getSoulShotChance();
 	}
 	
 	public int getSpiritShotChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSpiritShotChance();
-		
+		return _staticAIData.getSpiritShotChance();
 	}
 	
 	public boolean useSoulShot()
@@ -220,97 +214,82 @@ public class L2Npc extends L2Character
 	
 	public int getEnemyRange()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getEnemyRange();
+		return _staticAIData.getEnemyRange();
 	}
 	
 	public String getEnemyClan()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getEnemyClan();
+		return _staticAIData.getEnemyClan();
 	}
 	
 	public int getClanRange()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getClanRange();
+		return _staticAIData.getClanRange();
 	}
 	
 	public String getClan()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getClan();
+		return _staticAIData.getClan();
 	}
 	
-	// GET THE PRIMARY ATTACK
+	/**
+	 * @return the primary attack.
+	 */
 	public int getPrimarySkillId()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getPrimarySkillId();	
+		return _staticAIData.getPrimarySkillId();	
 	}
 	
 	public int getMinSkillChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getMinSkillChance();
+		return _staticAIData.getMinSkillChance();
 	}
 	
 	public int getMaxSkillChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getMaxSkillChance();
+		return _staticAIData.getMaxSkillChance();
 	}
 	
 	public int getCanMove()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getCanMove();
+		return _staticAIData.getCanMove();
 	}
 	
 	public int getIsChaos()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getIsChaos();
+		return _staticAIData.getIsChaos();
 	}
 	
 	public int getCanDodge()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getDodge();
+		return _staticAIData.getDodge();
 	}
 	
 	public int getSSkillChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getShortRangeChance();
+		return _staticAIData.getShortRangeChance();
 	}
 	
 	public int getLSkillChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getLongRangeChance();
+		return _staticAIData.getLongRangeChance();
 	}
 	
 	public int getSwitchRangeChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSwitchRangeChance();	
+		return _staticAIData.getSwitchRangeChance();	
 	}
 	
 	public boolean hasLSkill()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		
-		if (AI.getLongRangeSkill() == 0)
+		if (_staticAIData.getLongRangeSkill() == 0)
 			return false;
 		return true;
 	}
 	
 	public boolean hasSSkill()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		
-		if (AI.getShortRangeSkill() == 0)
+		if (_staticAIData.getShortRangeSkill() == 0)
 			return false;
 		return true;
 	}
@@ -319,12 +298,10 @@ public class L2Npc extends L2Character
 	{
 		FastList<L2Skill> skilldata = new FastList<L2Skill>();
 		boolean hasLrange = false;
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		
-		if (AI == null || AI.getLongRangeSkill() == 0)
+		if (_staticAIData == null || _staticAIData.getLongRangeSkill() == 0)
 			return null;
 		
-		switch (AI.getLongRangeSkill())
+		switch (_staticAIData.getLongRangeSkill())
 		{
 			case -1:
 			{
@@ -365,7 +342,7 @@ public class L2Npc extends L2Character
 			{
 				for (L2Skill sk : getAllSkills())
 				{
-					if (sk.getId() == AI.getLongRangeSkill())
+					if (sk.getId() == _staticAIData.getLongRangeSkill())
 					{
 						skilldata.add(sk);
 						hasLrange = true;
@@ -381,12 +358,10 @@ public class L2Npc extends L2Character
 	{
 		FastList<L2Skill> skilldata = new FastList<L2Skill>();
 		boolean hasSrange = false;
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		
-		if (AI == null || AI.getShortRangeSkill() == 0)
+		if (_staticAIData == null || _staticAIData.getShortRangeSkill() == 0)
 			return null;
 		
-		switch (AI.getShortRangeSkill())
+		switch (_staticAIData.getShortRangeSkill())
 		{
 			case -1:
 			{
@@ -427,7 +402,7 @@ public class L2Npc extends L2Character
 			{
 				for (L2Skill sk : getAllSkills())
 				{
-					if (sk.getId() == AI.getShortRangeSkill())
+					if (sk.getId() == _staticAIData.getShortRangeSkill())
 					{
 						skilldata.add(sk);
 						hasSrange = true;
@@ -782,8 +757,7 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * Set the busy status of this L2NpcInstance.<BR><BR>
-	 * @param isBusy 
+	 * @param isBusy the busy status of this L2Npc
 	 */
 	public void setBusy(boolean isBusy)
 	{
@@ -799,8 +773,7 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * Set the busy message of this L2NpcInstance.<BR><BR>
-	 * @param message 
+	 * @param message the busy message of this L2Npc.
 	 */
 	public void setBusyMessage(String message)
 	{
@@ -835,8 +808,6 @@ public class L2Npc extends L2Character
 	
 	public boolean canInteract(L2PcInstance player)
 	{
-		// TODO: NPC busy check etc...
-		
 		if (player.isCastingNow() || player.isCastingSimultaneouslyNow())
 			return false;
 		if (player.isDead() || player.isFakeDeath())
@@ -849,7 +820,8 @@ public class L2Npc extends L2Character
 			return false;
 		if (player.getInstanceId() != getInstanceId() && player.getInstanceId() != -1)
 			return false;
-		
+		if (isBusy())
+			return false;
 		return true;
 	}
 	
@@ -1695,7 +1667,7 @@ public class L2Npc extends L2Character
 	
 	public AIType getAiType()
 	{
-		return getTemplate().getAIDataStatic().getAiType();
+		return _staticAIData.getAiType();
 	}
 	
 	public void setDisplayEffect(int val)
