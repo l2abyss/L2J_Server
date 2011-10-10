@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfo;
@@ -133,7 +134,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 				check &= player.destroyItem("Consume", spb.getObjectId(), 1, player, true);
 			}
 			
-			check &= player.destroyItemByItemId("Consume", 57, requiredAdena, player, true);
+			check &= player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, requiredAdena, player, true);
 			if (!check)
 			{
 				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));

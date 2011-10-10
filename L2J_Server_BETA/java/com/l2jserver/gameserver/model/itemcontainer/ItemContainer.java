@@ -212,7 +212,7 @@ public abstract class ItemContainer
 			item = olditem;
 			
 			// Updates database
-			if (item.getItemId() == 57 && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(57))
+			if (item.getItemId() == PcInventory.ADENA_ID && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID))
 			{
 				// Small adena changes won't be saved to database all the time
 				if (GameTimeController.getGameTicks() % 5 == 0)
@@ -258,7 +258,7 @@ public abstract class ItemContainer
 			item.changeCount(process, count, actor, reference);
 			item.setLastChange(L2ItemInstance.MODIFIED);
 			// Updates database
-			if (itemId == 57 && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(57))
+			if (itemId == PcInventory.ADENA_ID && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID))
 			{
 				// Small adena changes won't be saved to database all the time
 				if (GameTimeController.getGameTicks() % 5 == 0)
@@ -490,22 +490,19 @@ public abstract class ItemContainer
 	}
 	
 	/**
-	 * Get warehouse adena
-	 * @return 
+	 * @return warehouse Adena.
 	 */
 	public long getAdena()
 	{
 		long count = 0;
-		
 		for (L2ItemInstance item : _items)
 		{
-			if (item != null && item.getItemId() == 57)
+			if (item != null && item.getItemId() == PcInventory.ADENA_ID)
 			{
 				count = item.getCount();
 				return count;
 			}
 		}
-		
 		return count;
 	}
 	

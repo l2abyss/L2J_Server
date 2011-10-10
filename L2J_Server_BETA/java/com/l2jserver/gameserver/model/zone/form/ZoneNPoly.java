@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.zone.form;
 
 import com.l2jserver.gameserver.GeoEngine;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
 import com.l2jserver.util.Rnd;
 
@@ -167,7 +168,7 @@ public class ZoneNPoly extends L2ZoneForm
 			for (int o = 1; o <= lenght; o++)
 			{
 				float k = o/lenght;
-				dropDebugItem(57, 1, (int) (_x[i] + k*vx), (int) (_y[i] + k*vy), z);
+				dropDebugItem(PcInventory.ADENA_ID, 1, (int) (_x[i] + k*vx), (int) (_y[i] + k*vy), z);
 			}
 		}
 	}

@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.itemcontainer.PcFreight;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
@@ -118,7 +119,7 @@ public class RequestPackageSend extends L2GameClientPacket
 				return;
 			
 			// Calculate needed adena and slots
-			if (item.getItemId() == 57)
+			if (item.getItemId() == PcInventory.ADENA_ID)
 				currentAdena -= i.getCount();
 			else if (!item.isStackable())
 				slots += i.getCount();

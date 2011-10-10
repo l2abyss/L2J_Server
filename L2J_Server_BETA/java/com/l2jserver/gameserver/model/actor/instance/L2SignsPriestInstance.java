@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -62,8 +63,7 @@ public class L2SignsPriestInstance extends L2Npc
 			int cabal = SevenSigns.CABAL_NULL;
 			int stoneType = 0;
 			
-			L2ItemInstance ancientAdena = player.getInventory().getItemByItemId(SevenSigns.ANCIENT_ADENA_ID);
-			long ancientAdenaAmount = ancientAdena == null ? 0 : ancientAdena.getCount();
+			final long ancientAdenaAmount = player.getAncientAdena();
 			
 			int val = Integer.parseInt(command.substring(11, 12).trim());
 			
@@ -167,7 +167,7 @@ public class L2SignsPriestInstance extends L2Npc
 						showChatWindow(player, val, "dusk", false);
 					break;
 				case 34: // Pay the participation fee request
-					L2ItemInstance adena = player.getInventory().getItemByItemId(57); //adena
+					L2ItemInstance adena = player.getInventory().getItemByItemId(PcInventory.ADENA_ID); //adena
 					L2ItemInstance certif = player.getInventory().getItemByItemId(6388); //Lord of the Manor's Certificate of Approval
 					boolean fee = true;
 					

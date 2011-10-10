@@ -3832,7 +3832,7 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public boolean destroyItemByItemId(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 	{
-		if (itemId == 57)
+		if (itemId == PcInventory.ADENA_ID)
 			return reduceAdena(process, count, reference, sendMessage);
 		
 		L2ItemInstance item = _inventory.getItemByItemId(itemId);
@@ -4713,8 +4713,10 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (isInParty()&&ItemTable.getInstance().getTemplate(item.getItemId()).getItemType() != L2EtcItemType.HERB)
 			getParty().distributeItem(this, item, false, target);
-		else if (item.getItemId() == 57) addAdena("Loot", item.getCount(), target, true);
-		else addItem("Loot", item.getItemId(), item.getCount(), target, true);
+		else if (item.getItemId() == PcInventory.ADENA_ID)
+			addAdena("Loot", item.getCount(), target, true);
+		else
+			addItem("Loot", item.getItemId(), item.getCount(), target, true);
 	}
 	
 	
@@ -4798,7 +4800,7 @@ public final class L2PcInstance extends L2Playable
 			
 			if (target.getOwnerId() != 0 && target.getOwnerId() != getObjectId() && !isInLooterParty(target.getOwnerId()))
 			{
-				if (target.getItemId() == 57)
+				if (target.getItemId() == PcInventory.ADENA_ID)
 				{
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
 					smsg.addItemNumber(target.getCount());
@@ -4880,7 +4882,7 @@ public final class L2PcInstance extends L2Playable
 			// Check if a Party is in progress
 			if (isInParty()) getParty().distributeItem(this, target);
 			// Target is adena
-			else if (target.getItemId() == 57 && getInventory().getAdenaInstance() != null)
+			else if (target.getItemId() == PcInventory.ADENA_ID && getInventory().getAdenaInstance() != null)
 			{
 				addAdena("Pickup", target.getCount(), null, true);
 				ItemTable.getInstance().destroyItem("Pickup", target, this, null);
@@ -5663,7 +5665,7 @@ public final class L2PcInstance extends L2Playable
 							itemDrop.isShadowItem() || // Dont drop Shadow Items
 							itemDrop.isTimeLimitedItem() || // Dont drop Time Limited Items
 							!itemDrop.isDropable() ||
-							itemDrop.getItemId() == 57 || // Adena
+							itemDrop.getItemId() == PcInventory.ADENA_ID || // Adena
 							itemDrop.getItem().getType2() == L2Item.TYPE2_QUEST ||                  // Quest Items
 							getPet() != null && getPet().getControlObjectId() == itemDrop.getItemId() || // Control Item of active pet
 							Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_ITEMS, itemDrop.getItemId()) >= 0 || // Item listed in the non droppable item list

@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.zone.form;
 
 import com.l2jserver.gameserver.GeoEngine;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
 import com.l2jserver.util.Rnd;
 
@@ -151,14 +152,14 @@ public class ZoneCuboid extends L2ZoneForm
 		//x1->x2
 		for (int x = _x1; x < _x2; x = x + STEP)
 		{
-			dropDebugItem(57, 1, x, _y1, z);
-			dropDebugItem(57, 1, x, _y2, z);
+			dropDebugItem(PcInventory.ADENA_ID, 1, x, _y1, z);
+			dropDebugItem(PcInventory.ADENA_ID, 1, x, _y2, z);
 		}
 		//y1->y2
 		for (int y = _y1; y < _y2; y = y + STEP)
 		{
-			dropDebugItem(57, 1, _x1, y, z);
-			dropDebugItem(57, 1, _x2, y, z);
+			dropDebugItem(PcInventory.ADENA_ID, 1, _x1, y, z);
+			dropDebugItem(PcInventory.ADENA_ID, 1, _x2, y, z);
 		}
 	}
 	

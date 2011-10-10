@@ -45,6 +45,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.util.FloodProtectorConfig;
 import com.l2jserver.util.L2Properties;
 import com.l2jserver.util.StringUtil;
@@ -2331,9 +2332,9 @@ public final class Config
 							}
 						}
 					}
-					if (RATE_DROP_ITEMS_ID.get(57) == 0f)
+					if (RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID) == 0f)
 					{
-						RATE_DROP_ITEMS_ID.put(57, RATE_DROP_ITEMS); //for Adena rate if not defined
+						RATE_DROP_ITEMS_ID.put(PcInventory.ADENA_ID, RATE_DROP_ITEMS); //for Adena rate if not defined
 					}
 				}
 				catch (Exception e)
@@ -3120,7 +3121,7 @@ public final class Config
 		else if (pName.equalsIgnoreCase("RateConsumableCost")) RATE_CONSUMABLE_COST = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateExtractFish")) RATE_EXTR_FISH = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateDropItems")) RATE_DROP_ITEMS = Float.parseFloat(pValue);
-		else if (pName.equalsIgnoreCase("RateDropAdena")) RATE_DROP_ITEMS_ID.put(57, Float.parseFloat(pValue));
+		else if (pName.equalsIgnoreCase("RateDropAdena")) RATE_DROP_ITEMS_ID.put(PcInventory.ADENA_ID, Float.parseFloat(pValue));
 		else if (pName.equalsIgnoreCase("RateRaidDropItems")) RATE_DROP_ITEMS_BY_RAID = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateDropSpoil")) RATE_DROP_SPOIL = Float.parseFloat(pValue);
 		else if (pName.equalsIgnoreCase("RateDropManor")) RATE_DROP_MANOR = Integer.parseInt(pValue);

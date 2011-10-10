@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfo;
@@ -127,7 +128,7 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 			boolean check = player.getStat().removeExpAndSp(0, requiredSp, false);
 			check &= player.destroyItem("Consume", spb.getObjectId(), 1, player, true);
 			
-			check &= player.destroyItemByItemId("Consume", 57, requireditems, player, true);
+			check &= player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, requireditems, player, true);
 			
 			if (!check)
 			{

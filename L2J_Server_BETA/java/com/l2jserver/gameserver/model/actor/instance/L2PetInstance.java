@@ -50,6 +50,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.stat.PetStat;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -528,7 +529,7 @@ public class L2PetInstance extends L2Summon
 			{
 				getOwner().sendPacket(ActionFailed.STATIC_PACKET);
 				
-				if (target.getItemId() == 57)
+				if (target.getItemId() == PcInventory.ADENA_ID)
 				{
 					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
 					smsg.addItemNumber(target.getCount());
@@ -575,7 +576,7 @@ public class L2PetInstance extends L2Summon
 		}
 		else
 		{
-			if (target.getItemId() == 57)
+			if (target.getItemId() == PcInventory.ADENA_ID)
 			{
 				SystemMessage sm2 = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1_ADENA);
 				sm2.addItemNumber(target.getCount());

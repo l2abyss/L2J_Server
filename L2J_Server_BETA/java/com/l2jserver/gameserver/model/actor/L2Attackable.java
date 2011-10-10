@@ -22,6 +22,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
+import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.ai.CtrlIntention;
@@ -51,6 +52,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.AttackableKnownList;
 import com.l2jserver.gameserver.model.actor.status.AttackableStatus;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
@@ -1198,7 +1200,7 @@ public class L2Attackable extends L2Npc
 				// We should multiply by the server's drop rate, so we always get a low chance of drop for deep blue mobs.
 				// NOTE: This is valid only for adena drops! Others drops will still obey server's rate
 				deepBlueDrop = 3;
-				if (drop.getItemId() == 57)
+				if (drop.getItemId() == PcInventory.ADENA_ID)
 					deepBlueDrop *= isRaid() && !isRaidMinion() ? (int) Config.RATE_DROP_ITEMS_BY_RAID : (int) Config.RATE_DROP_ITEMS;
 			}
 		}
@@ -1260,10 +1262,11 @@ public class L2Attackable extends L2Npc
 			// Prepare for next iteration if dropChance > L2DropData.MAX_CHANCE
 			dropChance -= L2DropData.MAX_CHANCE;
 		}
-		if (Config.L2JMOD_CHAMPION_ENABLE)
-			// TODO (April 11, 2009): Find a way not to hardcode these values.
-			if ((drop.getItemId() == 57 || (drop.getItemId() >= 6360 && drop.getItemId() <= 6362)) && isChampion())
-				itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+		
+		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && ((drop.getItemId() == PcInventory.ADENA_ID) || Util.contains(SevenSigns.SEAL_STONE_IDS, drop.getItemId())))
+		{
+			itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+		}
 		
 		if (itemCount > 0)
 			return new RewardItem(drop.getItemId(), itemCount);
@@ -1393,10 +1396,11 @@ public class L2Attackable extends L2Npc
 				// Prepare for next iteration if dropChance > L2DropData.MAX_CHANCE
 				dropChance -= L2DropData.MAX_CHANCE;
 			}
-			if (Config.L2JMOD_CHAMPION_ENABLE)
-				// TODO (April 11, 2009): Find a way not to hardcode these values.
-				if ((drop.getItemId() == 57 || (drop.getItemId() >= 6360 && drop.getItemId() <= 6362)) && isChampion())
-					itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+			
+			if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && ((drop.getItemId() == PcInventory.ADENA_ID) || Util.contains(SevenSigns.SEAL_STONE_IDS, drop.getItemId())))
+			{
+				itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+			}
 			
 			if (!Config.MULTIPLE_ITEM_DROP && !ItemTable.getInstance().getTemplate(drop.getItemId()).isStackable() && itemCount > 1)
 				itemCount = 1;

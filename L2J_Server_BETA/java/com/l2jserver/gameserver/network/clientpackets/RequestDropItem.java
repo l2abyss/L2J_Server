@@ -21,6 +21,7 @@ import com.l2jserver.gameserver.GmListTable;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
@@ -213,7 +214,7 @@ public final class RequestDropItem extends L2GameClientPacket
 					+ " x: " + activeChar.getX() + " y: " + activeChar.getY() + " z: " + activeChar.getZ() + ")");
 		}
 		
-		if (dropedItem != null && dropedItem.getItemId() == 57 && dropedItem.getCount() >= 1000000)
+		if (dropedItem != null && dropedItem.getItemId() == PcInventory.ADENA_ID && dropedItem.getCount() >= 1000000)
 		{
 			String msg = "Character (" + activeChar.getName() + ") has dropped (" + dropedItem.getCount() + ")adena at (" + _x + "," + _y + "," + _z + ")";
 			_log.warning(msg);
