@@ -21,6 +21,7 @@ import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -89,7 +90,7 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 			&& !activeChar.isGM()
 			&& activeChar.getNotMoveUntil() > System.currentTimeMillis())
 		{
-			getClient().sendPacket(SystemMessage.getSystemMessage(3226));
+			getClient().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC));
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

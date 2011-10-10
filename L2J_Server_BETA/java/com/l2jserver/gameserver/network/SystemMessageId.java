@@ -1865,7 +1865,35 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId CEASE_WAR_REQUEST_ACCEPTED;
 	
-	// 314  - 318 empty
+	/**
+	 * ID: 314<br>
+	 * Message: You have failed to surrender.
+	 */
+	public static final SystemMessageId FAILED_TO_SURRENDER;
+	
+	/**
+	 * ID: 315<br>
+	 * Message: You have failed to personally surrender.
+	 */
+	public static final SystemMessageId FAILED_TO_PERSONALLY_SURRENDER;
+	
+	/**
+	 * ID: 316<br>
+	 * Message: You have failed to withdraw from the party.
+	 */
+	public static final SystemMessageId FAILED_TO_WITHDRAW_FROM_THE_PARTY;
+	
+	/**
+	 * ID: 317<br>
+	 * Message: You have failed to expel the party member.
+	 */
+	public static final SystemMessageId FAILED_TO_EXPEL_THE_PARTY_MEMBER;
+	
+	/**
+	 * ID: 318<br>
+	 * Message: You have failed to disperse the party.
+	 */
+	public static final SystemMessageId FAILED_TO_DISPERSE_THE_PARTY;
 	
 	/**
 	 * ID: 319<br>
@@ -14811,6 +14839,12 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM;
 	
+	/***
+	 * ID: 3226
+	 * Message: You cannot move while speaking to an NPC. One moment please.
+	 */
+	public static final SystemMessageId CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC;
+	
 	/**
 	 * ID: 3255<br>
 	 * Message: Arcane Shield decreased your MP by $1 instead of HP.
@@ -15170,6 +15204,11 @@ public final class SystemMessageId
 		CLAN_WAR_DECLARATION_ACCEPTED = new SystemMessageId(311);
 		CLAN_WAR_DECLARATION_REFUSED = new SystemMessageId(312);
 		CEASE_WAR_REQUEST_ACCEPTED = new SystemMessageId(313);
+		FAILED_TO_SURRENDER = new SystemMessageId(314);
+		FAILED_TO_PERSONALLY_SURRENDER = new SystemMessageId(315);
+		FAILED_TO_WITHDRAW_FROM_THE_PARTY = new SystemMessageId(316);
+		FAILED_TO_EXPEL_THE_PARTY_MEMBER = new SystemMessageId(317);
+		FAILED_TO_DISPERSE_THE_PARTY = new SystemMessageId(318);
 		UNABLE_TO_UNLOCK_DOOR = new SystemMessageId(319);
 		FAILED_TO_UNLOCK_DOOR = new SystemMessageId(320);
 		ITS_NOT_LOCKED = new SystemMessageId(321);
@@ -17302,7 +17341,8 @@ public final class SystemMessageId
 		CANNOT_ADD_YOUR_NAME_ON_CONTACT_LIST = new SystemMessageId(3221);
 		CONTACT_LIST_LIMIT_REACHED = new SystemMessageId(3222);
 		MAX_OLY_WEEKLY_MATCHES_REACHED = new SystemMessageId(3224);
-		MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM = new SystemMessageId(3225);		
+		MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM = new SystemMessageId(3225);
+		CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC = new SystemMessageId(3226);
 		ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP = new SystemMessageId(3255);
 		YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4 = new SystemMessageId(3259);
 		MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING = new SystemMessageId(3256);

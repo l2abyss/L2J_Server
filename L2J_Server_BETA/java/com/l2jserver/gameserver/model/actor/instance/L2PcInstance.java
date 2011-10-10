@@ -14119,7 +14119,7 @@ public final class L2PcInstance extends L2Playable
 			return;
 		if (getInventory().getInventoryItemCount(13016, 0) == 0)
 		{
-			sendPacket(SystemMessage.getSystemMessage(2359));
+			sendPacket(SystemMessageId.YOU_CANNOT_TELEPORT_BECAUSE_YOU_DO_NOT_HAVE_A_TELEPORT_ITEM);
 			return;
 		}
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
@@ -14229,13 +14229,13 @@ public final class L2PcInstance extends L2Playable
 		
 		if(tpbookmark.size() >= _bookmarkslot)
 		{
-			sendPacket(SystemMessage.getSystemMessage(2358));
+			sendPacket(SystemMessageId.YOU_HAVE_NO_SPACE_TO_SAVE_THE_TELEPORT_LOCATION);
 			return;
 		}
 		
 		if(getInventory().getInventoryItemCount(20033, 0) == 0)
 		{
-			sendPacket(SystemMessage.getSystemMessage(6501));
+			sendPacket(SystemMessageId.YOU_CANNOT_BOOKMARK_THIS_LOCATION_BECAUSE_YOU_DO_NOT_HAVE_A_MY_TELEPORT_FLAG);
 			return;
 		}
 		

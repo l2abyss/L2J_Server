@@ -126,7 +126,7 @@ public final class SystemMessage extends L2GameServerPacket
 	/**
 	 * Use {@link #getSystemMessage(SystemMessageId)} where possible instead
 	 * @param id
-	 * @return
+	 * @return the system message associated to the given Id.
 	 */
 	public static SystemMessage getSystemMessage(int id)
 	{

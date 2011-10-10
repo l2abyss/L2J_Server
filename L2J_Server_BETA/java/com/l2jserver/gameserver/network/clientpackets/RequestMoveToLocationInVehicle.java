@@ -64,7 +64,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 			&& !activeChar.isGM()
 			&& activeChar.getNotMoveUntil() > System.currentTimeMillis())
 		{
-			getClient().sendPacket(SystemMessage.getSystemMessage(3226));
+			getClient().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC));
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
