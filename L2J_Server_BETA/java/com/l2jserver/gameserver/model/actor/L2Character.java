@@ -6092,7 +6092,7 @@ public abstract class L2Character extends L2Object
 		if (_skills == null)
 			return new L2Skill[0];
 		
-		return _skills.values(new L2Skill[_skills.size()]);
+		return _skills.values();
 	}
 	
 	public ChanceSkillList getChanceSkills()

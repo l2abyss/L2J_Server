@@ -214,7 +214,7 @@ public final class L2World
 	
 	public final L2Object[] getAllVisibleObjectsArray()
 	{
-		return _allObjects.values(new L2Object[_allObjects.size()]);
+		return _allObjects.values();
 	}
 	
 	public final boolean forEachObject(final TObjectProcedure<L2Object> proc)
@@ -247,7 +247,7 @@ public final class L2World
 	
 	public final L2PcInstance[] getAllPlayersArray()
 	{
-		return _allPlayers.values(new L2PcInstance[_allPlayers.size()]);
+		return _allPlayers.values();
 	}
 	
 	public final boolean forEachPlayer(final TObjectProcedure<L2PcInstance> proc)
