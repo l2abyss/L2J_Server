@@ -76,7 +76,7 @@ public final class RequestAnswerJoinAlly extends L2GameClientPacket
 				activeChar.getClan().setAllyPenaltyExpiryTime(0, 0);
 				activeChar.getClan().changeAllyCrest(clan.getAllyCrestId(), true);
 				activeChar.getClan().updateClanInDB();
-				for (L2Clan c : ClanTable.getInstance().getClans())
+				for (L2Clan c : ClanTable.getInstance().getClanAllies(clan.getAllyId()))
 				{
 					if (c.getAllyId() == clan.getAllyId())
 					{

@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.TradeList.TradeItem;
+import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;

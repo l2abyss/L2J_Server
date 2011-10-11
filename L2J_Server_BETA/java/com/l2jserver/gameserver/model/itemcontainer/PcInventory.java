@@ -26,8 +26,8 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.TradeList;
-import com.l2jserver.gameserver.model.TradeList.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -333,20 +333,20 @@ public class PcInventory extends Inventory
 	 * @param tradeList 
 	 * @return L2ItemInstance : items in inventory
 	 */
-	public TradeList.TradeItem[] getAvailableItems(TradeList tradeList)
+	public TradeItem[] getAvailableItems(TradeList tradeList)
 	{
-		FastList<TradeList.TradeItem> list = FastList.newInstance();
+		FastList<TradeItem> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
 			if (item != null && item.isAvailable(getOwner(), false, false))
 			{
-				TradeList.TradeItem adjItem = tradeList.adjustAvailableItem(item);
+				TradeItem adjItem = tradeList.adjustAvailableItem(item);
 				if (adjItem != null)
 					list.add(adjItem);
 			}
 		}
 		
-		TradeList.TradeItem[] result = list.toArray(new TradeList.TradeItem[list.size()]);
+		TradeItem[] result = list.toArray(new TradeItem[list.size()]);
 		FastList.recycle(list);
 		
 		return result;
@@ -354,7 +354,7 @@ public class PcInventory extends Inventory
 	
 	/**
 	 * Adjust TradeItem according his status in inventory
-	 * @param item : L2ItemInstance to be adjusten
+	 * @param item : L2ItemInstance to be adjusted
 	 */
 	public void adjustAvailableItem(TradeItem item)
 	{

@@ -60,11 +60,8 @@ public final class RequestAllyInfo extends L2GameClientPacket
 		int clanCount = 0;
 		int totalMembers = 0;
 		int onlineMembers = 0;
-		for (L2Clan clan : ClanTable.getInstance().getClans())
+		for (L2Clan clan : ClanTable.getInstance().getClanAllies(activeChar.getAllyId()))
 		{
-			if (clan.getAllyId() != activeChar.getAllyId())
-				continue;
-			
 			clanCount++;
 			totalMembers += clan.getMembersCount();
 			onlineMembers += clan.getOnlineMembersCount();
@@ -85,11 +82,8 @@ public final class RequestAllyInfo extends L2GameClientPacket
 		sendPacket(sm);
 		
 		sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_HEAD);
-		for (L2Clan clan : ClanTable.getInstance().getClans())
+		for (L2Clan clan : ClanTable.getInstance().getClanAllies(activeChar.getAllyId()))
 		{
-			if (clan.getAllyId() != activeChar.getAllyId())
-				continue;
-			
 			sendPacket(sm); // send head or separator
 			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_NAME_S1);
 			sm.addString(clan.getName());
@@ -102,6 +96,7 @@ public final class RequestAllyInfo extends L2GameClientPacket
 			sendPacket(sm);
 			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_SEPARATOR);
 		}
+		
 		sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_FOOT);
 		sendPacket(sm);
 	}

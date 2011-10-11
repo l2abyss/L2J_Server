@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.datatables;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -137,7 +139,6 @@ public class ClanTable
 			}
 			
 		}
-		
 		return null;
 	}
 	
@@ -522,6 +523,22 @@ public class ClanTable
 				}
 			}
 		}
+	}
+	
+	public List<L2Clan> getClanAllies(int allianceId)
+	{
+		final List<L2Clan> clanAllies = new ArrayList<>();
+		if (allianceId != 0)
+		{
+			for (L2Clan clan : _clans.values())
+			{
+				if ((clan != null) && (clan.getAllyId() == allianceId))
+				{
+					clanAllies.add(clan);
+				}
+			}
+		}
+		return clanAllies;
 	}
 	
 	public void storeClanScore()

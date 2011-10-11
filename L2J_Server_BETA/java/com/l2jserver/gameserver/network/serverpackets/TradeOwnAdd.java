@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.TradeList;
+import com.l2jserver.gameserver.model.TradeItem;
 
 /**
  * This class ...
@@ -25,9 +25,9 @@ import com.l2jserver.gameserver.model.TradeList;
 public final class TradeOwnAdd extends L2GameServerPacket
 {
 	private static final String _S__30_TRADEOWNADD = "[S] 1a TradeOwnAdd";
-	private TradeList.TradeItem _item;
+	private TradeItem _item;
 	
-	public TradeOwnAdd(TradeList.TradeItem item)
+	public TradeOwnAdd(TradeItem item)
 	{
 		_item = item;
 	}

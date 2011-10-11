@@ -396,21 +396,13 @@ public class Siege implements Siegable
 				addDefender(sc_newowner, SiegeClanType.OWNER);
 				
 				// The player's clan is in an alliance
-				if (allyId != 0)
+				for (L2Clan clan : ClanTable.getInstance().getClanAllies(allyId))
 				{
-					L2Clan[] clanList = ClanTable.getInstance().getClans();
-					
-					for (L2Clan clan : clanList)
+					final L2SiegeClan sc = getAttackerClan(clan.getClanId());
+					if (sc != null)
 					{
-						if (clan.getAllyId() == allyId)
-						{
-							L2SiegeClan sc = getAttackerClan(clan.getClanId());
-							if (sc != null)
-							{
-								removeAttacker(sc);
-								addDefender(sc, SiegeClanType.DEFENDER);
-							}
-						}
+						removeAttacker(sc);
+						addDefender(sc, SiegeClanType.DEFENDER);
 					}
 				}
 				teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionManager.TeleportWhereType.SiegeFlag); // Teleport to the second closest town

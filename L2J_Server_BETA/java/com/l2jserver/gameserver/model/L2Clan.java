@@ -1387,16 +1387,9 @@ public class L2Clan
 	
 	public void broadcastToOnlineAllyMembers(L2GameServerPacket packet)
 	{
-		if (getAllyId() == 0)
+		for (L2Clan clan : ClanTable.getInstance().getClanAllies(getAllyId()))
 		{
-			return;
-		}
-		for (L2Clan clan : ClanTable.getInstance().getClans())
-		{
-			if (clan.getAllyId() == getAllyId())
-			{
-				clan.broadcastToOnlineMembers(packet);
-			}
+			clan.broadcastToOnlineMembers(packet);
 		}
 	}
 	
@@ -2232,15 +2225,7 @@ public class L2Clan
 			return false;
 		}
 		
-		int numOfClansInAlly = 0;
-		for (L2Clan clan : ClanTable.getInstance().getClans())
-		{
-			if (clan.getAllyId() == activeChar.getAllyId())
-			{
-				++numOfClansInAlly;
-			}
-		}
-		if (numOfClansInAlly >= Config.ALT_MAX_NUM_OF_CLANS_IN_ALLY)
+		if (ClanTable.getInstance().getClanAllies(activeChar.getAllyId()).size() >= Config.ALT_MAX_NUM_OF_CLANS_IN_ALLY)
 		{
 			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_THE_LIMIT));
 			return false;
@@ -2372,9 +2357,9 @@ public class L2Clan
 		broadcastToOnlineAllyMembers(SystemMessage.getSystemMessage(SystemMessageId.ALLIANCE_DISOLVED));
 		
 		long currentTime = System.currentTimeMillis();
-		for (L2Clan clan : ClanTable.getInstance().getClans())
+		for (L2Clan clan : ClanTable.getInstance().getClanAllies(getAllyId()))
 		{
-			if (clan.getAllyId() == getAllyId() && clan.getClanId() != getClanId())
+			if (clan.getClanId() != getClanId())
 			{
 				clan.setAllyId(0);
 				clan.setAllyName(null);
@@ -2769,13 +2754,12 @@ public class L2Clan
 		}
 		else
 		{
-			for (L2Clan clan : ClanTable.getInstance().getClans())
+			for (L2Clan clan : ClanTable.getInstance().getClanAllies(getAllyId()))
 			{
-				if (clan.getAllyId() == getAllyId())
+				clan.setAllyCrestId(crestId);
+				for (L2PcInstance member : clan.getOnlineMembers(0))
 				{
-					clan.setAllyCrestId(crestId);
-					for (L2PcInstance member : clan.getOnlineMembers(0))
-						member.broadcastUserInfo();
+					member.broadcastUserInfo();
 				}
 			}
 		}

@@ -39,150 +39,6 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class TradeList
 {
-	public static class TradeItem
-	{
-		private int _objectId;
-		private final L2Item _item;
-		private int _location;
-		private int _enchant;
-		private int _type1;
-		private int _type2;
-		private long _count;
-		private long _storeCount;
-		private long _price;
-		private final byte _elemAtkType;
-		private final int _elemAtkPower;
-		private int[] _elemDefAttr = { 0, 0, 0, 0, 0, 0 };
-		
-		public TradeItem(L2ItemInstance item, long count, long price)
-		{
-			_objectId = item.getObjectId();
-			_item = item.getItem();
-			_location = item.getLocationSlot();
-			_enchant = item.getEnchantLevel();
-			_type1 = item.getCustomType1();
-			_type2 = item.getCustomType2();
-			_count = count;
-			_price = price;
-			_elemAtkType = item.getAttackElementType();
-			_elemAtkPower = item.getAttackElementPower();
-			for (byte i = 0; i < 6; i++)
-				_elemDefAttr[i] = item.getElementDefAttr(i);
-		}
-		
-		public TradeItem(L2Item item, long count, long price)
-		{
-			_objectId = 0;
-			_item = item;
-			_location = 0;
-			_enchant = 0;
-			_type1 = 0;
-			_type2 = 0;
-			_count = count;
-			_storeCount = count;
-			_price = price;
-			_elemAtkType = Elementals.NONE;
-			_elemAtkPower = 0;
-		}
-		
-		public TradeItem(TradeItem item, long count, long price)
-		{
-			_objectId = item.getObjectId();
-			_item = item.getItem();
-			_location = item.getLocationSlot();
-			_enchant = item.getEnchant();
-			_type1 = item.getCustomType1();
-			_type2 = item.getCustomType2();
-			_count = count;
-			_storeCount = count;
-			_price = price;
-			_elemAtkType = item.getAttackElementType();
-			_elemAtkPower = item.getAttackElementPower();
-			for (byte i = 0; i < 6; i++)
-				_elemDefAttr[i] = item.getElementDefAttr(i);
-		}
-		
-		public void setObjectId(int objectId)
-		{
-			_objectId = objectId;
-		}
-		
-		public int getObjectId()
-		{
-			return _objectId;
-		}
-		
-		public L2Item getItem()
-		{
-			return _item;
-		}
-		
-		public int getLocationSlot()
-		{
-			return _location;
-		}
-		
-		public void setEnchant(int enchant)
-		{
-			_enchant = enchant;
-		}
-		
-		public int getEnchant()
-		{
-			return _enchant;
-		}
-		
-		public int getCustomType1()
-		{
-			return _type1;
-		}
-		
-		public int getCustomType2()
-		{
-			return _type2;
-		}
-		
-		public void setCount(long count)
-		{
-			_count = count;
-		}
-		
-		public long getCount()
-		{
-			return _count;
-		}
-		
-		public long getStoreCount()
-		{
-			return _storeCount;
-		}
-		
-		public void setPrice(long price)
-		{
-			_price = price;
-		}
-		
-		public long getPrice()
-		{
-			return _price;
-		}
-		
-		public byte getAttackElementType()
-		{
-			return _elemAtkType;
-		}
-		
-		public int getAttackElementPower()
-		{
-			return _elemAtkPower;
-		}
-		
-		public int getElementDefAttr(byte i)
-		{
-			return _elemDefAttr[i];
-		}
-	}
-	
 	private static final Logger _log = Logger.getLogger(TradeList.class.getName());
 	
 	private final L2PcInstance _owner;
@@ -258,16 +114,16 @@ public class TradeList
 	 * @param inventory 
 	 * @return L2ItemInstance : items in inventory
 	 */
-	public TradeList.TradeItem[] getAvailableItems(PcInventory inventory)
+	public TradeItem[] getAvailableItems(PcInventory inventory)
 	{
-		FastList<TradeList.TradeItem> list = FastList.newInstance();
-		for (TradeList.TradeItem item : _items)
+		FastList<TradeItem> list = FastList.newInstance();
+		for (TradeItem item : _items)
 		{
 			item = new TradeItem(item, item.getCount(), item.getPrice());
 			inventory.adjustAvailableItem(item);
 			list.add(item);
 		}
-		TradeList.TradeItem[] result = list.toArray(new TradeList.TradeItem[list.size()]);
+		TradeItem[] result = list.toArray(new TradeItem[list.size()]);
 		FastList.recycle(list);
 		return result;
 	}

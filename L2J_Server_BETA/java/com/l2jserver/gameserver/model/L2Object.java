@@ -29,18 +29,14 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
-
 /**
- * Mother class of all objects in the world wich ones is it possible
+ * Mother class of all objects in the world which ones is it possible
  * to interact (PC, NPC, Item...)<BR><BR>
  *
  * L2Object :<BR><BR>
  * <li>L2Character</li>
  * <li>L2ItemInstance</li>
- * <li>L2Potion</li>
- *
  */
-
 public abstract class L2Object
 {
 	// =========================================================
@@ -388,7 +384,7 @@ public abstract class L2Object
 		
 		_instanceId = instanceId;
 		
-		// If we change it for visible objects, me must clear & revalidate knownlists
+		// If we change it for visible objects, me must clear & revalidates knownlists
 		if (_isVisible && _knownList != null)
 		{
 			if (this instanceof L2PcInstance)
@@ -448,7 +444,7 @@ public abstract class L2Object
 			getPosition().setWorldRegion(null);
 		}
 		
-		// this can synchronize on others instancies, so it's out of
+		// this can synchronize on others instances, so it's out of
 		// synchronized, to avoid deadlocks
 		// Remove the L2Object from the world
 		L2World.getInstance().removeVisibleObject(this, reg);
@@ -496,7 +492,7 @@ public abstract class L2Object
 			getPosition().getWorldRegion().addVisibleObject(this);
 		}
 		
-		// this can synchronize on others instancies, so it's out of
+		// this can synchronize on others instances, so it's out of
 		// synchronized, to avoid deadlocks
 		// Add the L2Object spawn in the world as a visible object
 		L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion());
@@ -526,7 +522,7 @@ public abstract class L2Object
 		
 		L2World.getInstance().storeObject(this);
 		
-		// these can synchronize on others instancies, so they're out of
+		// these can synchronize on others instances, so they're out of
 		// synchronized, to avoid deadlocks
 		
 		// Add the L2Object spawn to _visibleObjects and if necessary to _allplayers of its L2WorldRegion
@@ -564,10 +560,9 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Return the visibilty state of the L2Object. <BR><BR>
-	 *
+	 * Return the visibility state of the L2Object.
 	 * <B><U> Concept</U> :</B><BR><BR>
-	 * A L2Object is visble if <B>__IsVisible</B>=true and <B>_worldregion</B>!=null <BR><BR>
+	 * A L2Object is visible if <B>__IsVisible</B>=true and <B>_worldregion</B>!=null <BR><BR>
 	 * @return 
 	 */
 	public final boolean isVisible()
@@ -637,14 +632,14 @@ public abstract class L2Object
 	{
 		_position = new ObjectPosition(this);
 	}
+	
 	public final void setObjectPosition(ObjectPosition value)
 	{
 		_position = value;
 	}
 	
 	/**
-	 * returns reference to region this object is in
-	 * @return 
+	 * @return reference to region this object is in.
 	 */
 	public L2WorldRegion getWorldRegion()
 	{

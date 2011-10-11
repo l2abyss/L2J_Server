@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -93,7 +94,7 @@ public final class AddTradeItem extends L2GameClientPacket
 			return;
 		}
 		
-		final TradeList.TradeItem item = trade.addItem(_objectId, _count);
+		final TradeItem item = trade.addItem(_objectId, _count);
 		if (item != null)
 		{
 			player.sendPacket(new TradeOwnAdd(item));
