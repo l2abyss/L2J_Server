@@ -189,7 +189,7 @@ public class NpcTable
 			{
 				if (!skills.isEmpty())
 				{
-					for (L2Skill skill : skills.values(new L2Skill[skills.size()]))
+					for (L2Skill skill : skills.values())
 						created.addSkill(skill);
 				}
 				if (classIds != null)
@@ -304,7 +304,7 @@ public class NpcTable
 	
 	public L2NpcTemplate getTemplateByName(String name)
 	{
-		for (L2NpcTemplate npcTemplate : _npcs.values(new L2NpcTemplate[_npcs.size()]))
+		for (L2NpcTemplate npcTemplate : _npcs.values())
 			if (npcTemplate.name.equalsIgnoreCase(name))
 				return npcTemplate;
 		
@@ -315,7 +315,7 @@ public class NpcTable
 	{
 		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
 		
-		for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[_npcs.size()]))
+		for (L2NpcTemplate t : _npcs.values())
 			if (t.level == lvl)
 				list.add(t);
 		
@@ -326,7 +326,7 @@ public class NpcTable
 	{
 		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
 		
-		for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[_npcs.size()]))
+		for (L2NpcTemplate t : _npcs.values())
 			if (t.level == lvl && "L2Monster".equals(t.type))
 				list.add(t);
 		
@@ -337,7 +337,7 @@ public class NpcTable
 	{
 		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
 		
-		for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[_npcs.size()]))
+		for (L2NpcTemplate t : _npcs.values())
 			if (t.name.startsWith(letter) && "L2Npc".equals((t).type))
 				list.add(t);
 		
@@ -352,7 +352,7 @@ public class NpcTable
 	{
 		List<L2NpcTemplate> list = new FastList<L2NpcTemplate>();
 		
-		for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[_npcs.size()]))
+		for (L2NpcTemplate t : _npcs.values())
 			if (classType.equals(t.type))
 				list.add(t);
 		

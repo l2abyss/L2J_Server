@@ -9600,7 +9600,7 @@ public final class L2PcInstance extends L2Playable
 		if (getCubics() != null)
 		{
 			boolean removed = false;
-			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[_cubics.size()]))
+			for (L2CubicInstance cubic : _cubics.values())
 			{
 				cubic.stopAction();
 				delCubic(cubic.getId());
