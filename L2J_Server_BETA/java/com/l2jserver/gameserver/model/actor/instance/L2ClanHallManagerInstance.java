@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
@@ -1330,7 +1331,10 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 			else if (actualCommand.equalsIgnoreCase("list_back"))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
-				html.setFile(player.getHtmlPrefix(), "data/html/clanHallManager/chamberlain.htm");
+				String file = "data/html/clanHallManager/chamberlain-"+getNpcId()+".htm";
+				if(!HtmCache.getInstance().isLoadable(file))
+					file = "data/html/clanHallManager/chamberlain.htm";
+				html.setFile(player.getHtmlPrefix(), file);
 				html.replace("%objectId%", String.valueOf(this.getObjectId()));
 				html.replace("%npcname%", this.getName());
 				sendHtmlMessage(player, html);
@@ -1371,7 +1375,11 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 		
 		int condition = validateCondition(player);
 		if (condition == COND_OWNER)
-			filename = "data/html/clanHallManager/chamberlain.htm";// Owner message window
+		{
+			filename = "data/html/clanHallManager/chamberlain-"+getNpcId()+".htm";
+			if(!HtmCache.getInstance().isLoadable(filename))
+				filename = "data/html/clanHallManager/chamberlain.htm";// Owner message window
+		}
 		else if (condition == COND_OWNER_FALSE)
 			filename = "data/html/clanHallManager/chamberlain-of.htm";
 		NpcHtmlMessage html = new NpcHtmlMessage(1);

@@ -241,6 +241,8 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You have already placed the maximum number of flags possible.";
 		else if (!player.isInsideZone(L2Character.ZONE_HQ))
 			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
+		else if(!hall.getSiege().canPlantFlag())
+			text = "You cannot place a flag on this siege.";
 		else
 			return true;
 		

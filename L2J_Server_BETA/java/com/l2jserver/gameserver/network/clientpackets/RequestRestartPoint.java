@@ -159,6 +159,10 @@ public final class RequestRestartPoint extends L2GameClientPacket
 						siegeClan = hall.getSiege().getAttackerClan(activeChar.getClan());
 					if ((siegeClan == null || siegeClan.getFlag().isEmpty()) && flag == null)
 					{
+						// Check if clan hall has inner spawns loc
+						if(hall != null && (loc = hall.getSiege().getInnerSpawnLoc(activeChar)) != null)
+							break;
+						
 						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Siege HQ and he doesn't have Siege HQ!");
 						return;
 					}
