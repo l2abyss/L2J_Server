@@ -123,13 +123,15 @@ public abstract class L2Summon extends L2Playable
 			
 			this.setFollowStatus(true);
 			updateAndBroadcastStatus(0);
-			getOwner().sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
+			sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
 			for (L2PcInstance player : getOwner().getKnownList().getKnownPlayersInRadius(800))
+			{
 				player.sendPacket(new RelationChanged(this, getOwner().getRelation(player), isAutoAttackable(player)));
+			}
 			L2Party party = this.getOwner().getParty();
 			if (party != null)
 			{
-				party.broadcastToPartyMembers(this.getOwner(), new ExPartyPetWindowAdd(this));
+				party.broadcastToPartyMembers(getOwner(), new ExPartyPetWindowAdd(this));
 			}
 		}
 		setShowSummonAnimation(false); // addVisibleObject created the info packets with summon animation
@@ -408,7 +410,7 @@ public abstract class L2Summon extends L2Playable
 			if (getInventory() != null && getInventory().getSize() > 0)
 			{
 				getOwner().setPetInvItems(true);
-				getOwner().sendPacket(SystemMessageId.ITEMS_IN_PET_INVENTORY);
+				sendPacket(SystemMessageId.ITEMS_IN_PET_INVENTORY);
 			}
 			else
 				getOwner().setPetInvItems(false);
@@ -628,8 +630,7 @@ public abstract class L2Summon extends L2Playable
 		// Check the validity of the target
 		if (target == null)
 		{
-			if (getOwner() != null)
-				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_CANT_FOUND));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_CANT_FOUND));
 			return false;
 		}
 		
@@ -638,8 +639,7 @@ public abstract class L2Summon extends L2Playable
 		// Check if this skill is enabled (e.g. reuse time)
 		if (isSkillDisabled(skill))
 		{
-			if (getOwner() != null)
-				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING));
 			return false;
 		}
 		
@@ -649,8 +649,7 @@ public abstract class L2Summon extends L2Playable
 		if (getCurrentMp() < getStat().getMpConsume(skill) + getStat().getMpInitialConsume(skill))
 		{
 			// Send a System Message to the caster
-			if (getOwner() != null)
-				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
 			return false;
 		}
 		
@@ -658,8 +657,7 @@ public abstract class L2Summon extends L2Playable
 		if (getCurrentHp() <= skill.getHpConsume())
 		{
 			// Send a System Message to the caster
-			if (getOwner() != null)
-				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_HP));
+			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_HP));
 			return false;
 		}
 		
@@ -753,9 +751,9 @@ public abstract class L2Summon extends L2Playable
 		{
 			if (pcrit || mcrit)
 				if (this instanceof L2SummonInstance)
-					getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB));
+					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB));
 				else
-					getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_PET));
+					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_PET));
 			
 			if (getOwner().isInOlympiadMode() && target instanceof L2PcInstance && ((L2PcInstance) target).isInOlympiadMode() && ((L2PcInstance) target).getOlympiadGameId() == getOwner().getOlympiadGameId())
 			{
@@ -774,7 +772,7 @@ public abstract class L2Summon extends L2Playable
 				sm.addNumber(damage);
 			}
 			
-			getOwner().sendPacket(sm);
+			sendPacket(sm);
 		}
 	}
 	
@@ -788,7 +786,7 @@ public abstract class L2Summon extends L2Playable
 			sm.addNpcName(this);
 			sm.addCharName(attacker);
 			sm.addNumber((int) damage);
-			getOwner().sendPacket(sm);
+			sendPacket(sm);
 		}
 	}
 	
@@ -845,16 +843,16 @@ public abstract class L2Summon extends L2Playable
 		if (getOwner() == null)
 			return;
 		
-		getOwner().sendPacket(new PetInfo(this, val));
-		getOwner().sendPacket(new PetStatusUpdate(this));
+		sendPacket(new PetInfo(this, val));
+		sendPacket(new PetStatusUpdate(this));
 		if (isVisible())
 		{
 			broadcastNpcInfo(val);
 		}
-		L2Party party = this.getOwner().getParty();
+		L2Party party = getOwner().getParty();
 		if (party != null)
 		{
-			party.broadcastToPartyMembers(this.getOwner(), new ExPartyPetWindowUpdate(this));
+			party.broadcastToPartyMembers(getOwner(), new ExPartyPetWindowUpdate(this));
 		}
 		updateEffectIcons(true);
 	}
@@ -916,7 +914,7 @@ public abstract class L2Summon extends L2Playable
 	public void onTeleported()
 	{
 		super.onTeleported();
-		getOwner().sendPacket(new TeleportToLocation(this, getPosition().getX(), getPosition().getY(), getPosition().getZ(), getPosition().getHeading()));
+		sendPacket(new TeleportToLocation(this, getPosition().getX(), getPosition().getY(), getPosition().getZ(), getPosition().getHeading()));
 	}
 	
 	@Override

@@ -191,7 +191,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 		
 		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.PET_USES_S1);
 		msg.addSkillName(skill);
-		getOwner().sendPacket(msg);
+		sendPacket(msg);
 		
 		// calling useMagic changes the follow status, if the babypet actually casts
 		// (as opposed to failing due some factors, such as too low MP, etc).

@@ -213,7 +213,7 @@ public final class RequestActionUse extends L2GameClientPacket
 					
 					if (pet.isLockedTarget())
 					{
-						pet.getOwner().sendPacket(SystemMessageId.FAILED_CHANGE_TARGET);
+						pet.sendPacket(SystemMessageId.FAILED_CHANGE_TARGET);
 						return;
 					}
 					

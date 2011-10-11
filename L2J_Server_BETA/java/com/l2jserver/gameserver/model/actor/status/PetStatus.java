@@ -50,7 +50,7 @@ public class PetStatus extends SummonStatus
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_C1);
 				sm.addCharName(attacker);
 				sm.addNumber((int)value);
-				getActiveChar().getOwner().sendPacket(sm);
+				getActiveChar().sendPacket(sm);
 			}
 			getActiveChar().getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, attacker);
 		}
