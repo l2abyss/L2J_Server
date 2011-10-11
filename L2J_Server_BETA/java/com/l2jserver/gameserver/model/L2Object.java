@@ -25,6 +25,7 @@ import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
@@ -685,6 +686,11 @@ public abstract class L2Object
 	 * @param mov 
 	 */
 	public void sendPacket(L2GameServerPacket mov)
+	{
+		// default implementation
+	}
+	
+	public void sendPacket(SystemMessageId id)
 	{
 		// default implementation
 	}

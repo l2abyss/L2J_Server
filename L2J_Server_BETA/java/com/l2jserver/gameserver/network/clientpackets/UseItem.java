@@ -172,14 +172,7 @@ public final class UseItem extends L2GameClientPacket
 			_log.log(Level.INFO, activeChar.getObjectId() + ": use item " + _objectId);
 		
 		if (item.isEquipable())
-		{
-			// Don't allow hero equipment and restricted items during Olympiad
-			if (activeChar.isInOlympiadMode() && (item.isHeroItem() || item.isOlyRestrictedItem()))
-			{
-				activeChar.sendPacket(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT);
-				return;
-			}
-			
+		{	
 			// Don't allow to put formal wear while a cursed weapon is equipped.
 			if (activeChar.isCursedWeaponEquipped() && _itemId == 6408)
 			{

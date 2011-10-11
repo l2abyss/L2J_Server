@@ -4656,6 +4656,7 @@ public final class L2PcInstance extends L2Playable
 	 * Send SystemMessage packet.<BR><BR>
 	 * @param id SystemMessageId
 	 */
+	@Override
 	public void sendPacket(SystemMessageId id)
 	{
 		sendPacket(SystemMessage.getSystemMessage(id));
@@ -13606,8 +13607,7 @@ public final class L2PcInstance extends L2Playable
 		for (int i = 0; i < Inventory.PAPERDOLL_TOTALSLOTS; i++)
 		{
 			L2ItemInstance equippedItem = getInventory().getPaperdollItem(i);
-			if (equippedItem != null && (!equippedItem.getItem().checkCondition(this, this, false)
-					|| (isInOlympiadMode() && equippedItem.isOlyRestrictedItem())))
+			if (equippedItem != null && !equippedItem.getItem().checkCondition(this, this, false))
 			{
 				getInventory().unEquipItemInSlot(i);
 				
@@ -13618,7 +13618,7 @@ public final class L2PcInstance extends L2Playable
 				SystemMessage sm = null;
 				if (equippedItem.getItem().getBodyPart() == L2Item.SLOT_BACK)
 				{
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLOAK_REMOVED_BECAUSE_ARMOR_SET_REMOVED));
+					sendPacket(SystemMessageId.CLOAK_REMOVED_BECAUSE_ARMOR_SET_REMOVED);
 					return;
 				}
 				

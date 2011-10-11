@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -177,6 +178,7 @@ public abstract class L2Item
 	private final boolean _depositable;
 	private final boolean _questItem;
 	private final boolean _freightable;
+	private final boolean _is_oly_restricted;
 	private final boolean _common;
 	private final boolean _heroItem;
 	private final boolean _pvpItem;
@@ -225,6 +227,7 @@ public abstract class L2Item
 		_depositable = set.getBool("is_depositable", true);
 		_questItem = set.getBool("is_questitem", false);
 		_freightable = set.getBool("is_freightable", false);
+		_is_oly_restricted = set.getBool("is_oly_restricted", false);
 		
 		//_immediate_effect - herb
 		_ex_immediate_effect = set.getInteger("ex_immediate_effect", 0) > 0;
@@ -864,7 +867,17 @@ public abstract class L2Item
 		if (activeChar.isGM() && !Config.GM_ITEM_RESTRICTION)
 			return true;
 		
-		if (_preConditions == null)
+		// Don't allow hero equipment and restricted items during Olympiad
+		if ((isOlyRestrictedItem() || isHeroItem()) && ((activeChar instanceof L2PcInstance) && activeChar.getActingPlayer().isInOlympiadMode()))
+		{
+			if (isEquipable())
+				activeChar.sendPacket(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT);
+			else
+				activeChar.sendPacket(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
+			return false;
+		}
+		
+		if (!isConditionAttached())
 			return true;
 		
 		Env env = new Env();
@@ -881,7 +894,7 @@ public abstract class L2Item
 			{
 				if (activeChar instanceof L2Summon)
 				{
-					activeChar.getActingPlayer().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_CANNOT_USE_ITEM));
+					activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
 					return false;
 				}
 				
@@ -898,7 +911,7 @@ public abstract class L2Item
 						SystemMessage sm = SystemMessage.getSystemMessage(msgId);
 						if (preCondition.isAddName())
 							sm.addItemName(_itemId);
-						activeChar.getActingPlayer().sendPacket(sm);
+						activeChar.sendPacket(sm);
 					}
 				}
 				return false;
@@ -920,6 +933,11 @@ public abstract class L2Item
 	public boolean isFreightable()
 	{
 		return _freightable;
+	}
+	
+	public boolean isOlyRestrictedItem()
+	{
+		return _is_oly_restricted || Config.LIST_OLY_RESTRICTED_ITEMS.contains(_itemId);
 	}
 
 	/**

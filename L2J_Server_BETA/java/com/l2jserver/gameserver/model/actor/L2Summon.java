@@ -930,4 +930,18 @@ public abstract class L2Summon extends L2Playable
 	{
 		return getTemplate().isUndead();
 	}
+	
+	@Override
+	public void sendPacket(L2GameServerPacket mov)
+	{
+		if (getOwner() != null)
+			getOwner().sendPacket(mov);
+	}
+	
+	@Override
+	public void sendPacket(SystemMessageId id)
+	{
+		if (getOwner() != null)
+			getOwner().sendPacket(id);
+	}
 }
