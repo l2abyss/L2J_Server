@@ -8671,7 +8671,7 @@ public final class L2PcInstance extends L2Playable
 				return false;
 			
 			// Check if the attacker is not in the same ally
-			if (attacker instanceof L2PcInstance && getAllyId() == attackerPlayer.getAllyId())
+			if (attacker instanceof L2PcInstance && getAllyId() != 0 && getAllyId() == attackerPlayer.getAllyId())
 				return false;
 			
 			// Now check again if the L2PcInstance is in pvp zone, but this time at siege PvP zone, applying clan/ally checks
