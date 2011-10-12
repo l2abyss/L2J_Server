@@ -17,6 +17,7 @@ package com.l2jserver.communityserver.communityboard;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
+
 import com.l2jserver.communityserver.network.writepackets.PlayerShowBoard;
 
 public abstract class CommunityBoard
@@ -33,7 +34,7 @@ public abstract class CommunityBoard
 	{
 		return _mgr;
 	}
-
+	
 	protected final void sendWrite(final int playerObjId, final String html, String string, String string2, String string3)
 	{
 		try
@@ -67,28 +68,28 @@ public abstract class CommunityBoard
 			e.printStackTrace();
 		}
 	}
-
+	
 	protected final void send(final int playerObjId, final String text)
 	{
 		try
 		{
 			if (text.length() <= 4096)
 			{
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text, (byte)0));
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, null, (byte)1));
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, null, (byte)2));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text, (byte) 0));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, null, (byte) 1));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, null, (byte) 2));
 			}
 			else if (text.length() <= 8192)
 			{
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(0, 4096), (byte)0));
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(4096), (byte)1));
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, null, (byte)2));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(0, 4096), (byte) 0));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(4096), (byte) 1));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, null, (byte) 2));
 			}
 			else if (text.length() <= 12288)
 			{
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(0, 4096), (byte)0));
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(4096, 8192), (byte)1));
-				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(8192), (byte)2));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(0, 4096), (byte) 0));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(4096, 8192), (byte) 1));
+				_mgr.sendPacket(new PlayerShowBoard(playerObjId, text.substring(8192), (byte) 2));
 			}
 			else
 			{
@@ -104,27 +105,31 @@ public abstract class CommunityBoard
 	protected String edtiPlayerTxT(String txt)
 	{
 		if (txt == null)
-			return ""; 
+		{
+			return "";
+		}
 		txt = txt.replace(">", "&gt;");
 		txt = txt.replace("<", "&lt;");
 		txt = txt.replace("\n", "<br1>");
 		txt = txt.replace("$", "\\$");
 		return txt;
 	}
-
+	
 	protected String edtiSavedTxT(String txt)
 	{
 		if (txt == null)
+		{
 			return "";
+		}
 		txt = txt.replace("&gt;", ">");
 		txt = txt.replace("&lt;", "<");
 		txt = txt.replace("<br1>", "\n");
 		txt = txt.replace("\\$", "$");
 		return txt;
 	}
-
+	
 	public abstract void parseCmd(final int playerObjId, final String cmd);
 	
 	public abstract void parseWrite(final int playerObjId, String ar1, String ar2, String ar3, String ar4, String ar5);
-
+	
 }

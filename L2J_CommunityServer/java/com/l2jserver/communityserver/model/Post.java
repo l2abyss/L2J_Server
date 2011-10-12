@@ -14,7 +14,6 @@
  */
 package com.l2jserver.communityserver.model;
 
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -36,25 +35,25 @@ public class Post
 	
 	private final int _sqlDPId;
 	private int _postId;
-	private int _postOwnerId;
-	private String _postRecipientList;
-	private int _postParentId;
-	private long _postDate;
+	private final int _postOwnerId;
+	private final String _postRecipientList;
+	private final int _postParentId;
+	private final long _postDate;
 	private int _postTopicId;
-	private int _postForumId;
+	private final int _postForumId;
 	private String _postTitle;
 	private String _postTxt;
 	private int _postType;
 	private int _lastCommentId;
-	private Map<Integer, Comment> _comments;
+	private final Map<Integer, Comment> _comments;
 	private int _readCount;
 	
 	/**
 	 * @param restore
 	 * @param t
 	 */
-	//public enum ConstructorType {REPLY, CREATE };
-	public Post(ConstructorType ct, final int sqlDPId, int postId, int postOwnerID,String recipentList,long date,int tid,int postForumID, String title, String txt, int type, int readCount)
+	// public enum ConstructorType {REPLY, CREATE };
+	public Post(ConstructorType ct, final int sqlDPId, int postId, int postOwnerID, String recipentList, long date, int tid, int postForumID, String title, String txt, int type, int readCount)
 	{
 		_sqlDPId = sqlDPId;
 		_postId = postId;
@@ -78,8 +77,8 @@ public class Post
 			loadComments();
 		}
 	}
-
-	public Post(ConstructorType ct, final int sqlDPId, int postId, int postOwnerID, String recipentList,int postParentId, long date, int tid, int postForumID, String title, String txt, int type, int readCount)
+	
+	public Post(ConstructorType ct, final int sqlDPId, int postId, int postOwnerID, String recipentList, int postParentId, long date, int tid, int postForumID, String title, String txt, int type, int readCount)
 	{
 		_sqlDPId = sqlDPId;
 		_postId = postId;
@@ -103,7 +102,7 @@ public class Post
 			loadComments();
 		}
 	}
-
+	
 	private void loadComments()
 	{
 		java.sql.Connection con = null;
@@ -126,7 +125,9 @@ public class Post
 				Comment c = new Comment(ConstructorType.RESTORE, _sqlDPId, commentId, commentOwner, date, _postId, _postTopicId, _postForumId, text);
 				_comments.put(commentId, c);
 				if (commentId > _lastCommentId)
+				{
 					_lastCommentId = commentId;
+				}
 			}
 			result.close();
 			statement.close();
@@ -152,7 +153,7 @@ public class Post
 	{
 		return ++_lastCommentId;
 	}
-
+	
 	public void insertindb()
 	{
 		java.sql.Connection con = null;
@@ -189,13 +190,15 @@ public class Post
 			{
 			}
 		}
-
+		
 	}
-
+	
 	public void deleteme()
 	{
-		for (Comment c: _comments.values())
+		for (Comment c : _comments.values())
+		{
 			c.deleteme();
+		}
 		_comments.clear();
 		java.sql.Connection con = null;
 		try
@@ -224,7 +227,7 @@ public class Post
 			}
 		}
 	}
-
+	
 	/**
 	 * @param i
 	 */
@@ -261,9 +264,9 @@ public class Post
 			{
 			}
 		}
-
+		
 	}
-
+	
 	public void clearComments()
 	{
 		_comments.clear();
@@ -294,7 +297,7 @@ public class Post
 	{
 		return _comments.values();
 	}
-
+	
 	/**
 	 *
 	 */
@@ -305,7 +308,7 @@ public class Post
 	{
 		return _postId;
 	}
-
+	
 	public String getText()
 	{
 		return _postTxt;
@@ -327,7 +330,7 @@ public class Post
 		_postTxt = newTxt;
 		updatePost();
 	}
-
+	
 	public void updatePost(String newTitle, String newTxt, int type)
 	{
 		_postTitle = newTitle;
@@ -347,25 +350,25 @@ public class Post
 	{
 		return _postRecipientList;
 	}
-
+	
 	public String getTitle()
 	{
 		return _postTitle;
 	}
-
+	
 	public Long getDate()
 	{
 		return _postDate;
 	}
-
+	
 	public int getType()
 	{
 		return _postType;
 	}
-
+	
 	public String getTypeName()
 	{
-		switch(_postType)
+		switch (_postType)
 		{
 			case ADVERTISE:
 				return "[Advertise]";
@@ -387,5 +390,5 @@ public class Post
 		_readCount++;
 		updatePost();
 	}
-
+	
 }

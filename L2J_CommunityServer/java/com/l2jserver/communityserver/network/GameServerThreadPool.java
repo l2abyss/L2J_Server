@@ -23,7 +23,9 @@ public final class GameServerThreadPool
 	public static final GameServerThreadPool getInstance()
 	{
 		if (_instance == null)
+		{
 			_instance = new GameServerThreadPool();
+		}
 		return _instance;
 	}
 	

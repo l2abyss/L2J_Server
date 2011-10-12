@@ -14,13 +14,13 @@
  */
 package com.l2jserver.communityserver.network.readpackets;
 
+import org.netcon.BaseReadPacket;
+
 import com.l2jserver.communityserver.network.GameServerThread;
-import com.l2jserver.communityserver.network.netcon.BaseReadPacket;
 
 /**
  * @author Forsaiken
  */
-
 public final class GameServerAuth extends BaseReadPacket
 {
 	private final GameServerThread _gst;

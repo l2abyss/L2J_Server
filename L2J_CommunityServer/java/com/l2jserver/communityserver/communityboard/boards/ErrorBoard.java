@@ -29,7 +29,9 @@ public class ErrorBoard extends CommunityBoard
 	{
 		String error = "unknown error";
 		if (cmd.startsWith("noBoard"))
+		{
 			error = "unknown Board: " + cmd.split(";")[1];
+		}
 		String content = "<html><body><br><br><center>Community Board: " + error + " </center></body></html>";
 		
 		super.send(playerObjId, content);

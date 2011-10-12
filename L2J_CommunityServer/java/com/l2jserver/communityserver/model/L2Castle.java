@@ -16,16 +16,14 @@ package com.l2jserver.communityserver.model;
 
 /**
  * This class describes a castle instance
- *
  */
 public class L2Castle
 {
-	private int _castleId;
-	private String _name;
-	private int _ownerId;
-	private int _tax;
-	private long _siegeDate;
-
+	private final int _castleId;
+	private final String _name;
+	private final int _ownerId;
+	private final int _tax;
+	private final long _siegeDate;
 	
 	public L2Castle(int castleId, String name, int ownerId, int tax, long siegeDate)
 	{
@@ -61,4 +59,3 @@ public class L2Castle
 		return _tax;
 	}
 }
-

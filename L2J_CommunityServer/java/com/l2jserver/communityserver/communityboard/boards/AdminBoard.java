@@ -27,7 +27,7 @@ public class AdminBoard extends CommunityBoard
 	@Override
 	public final void parseCmd(final int playerObjId, final String cmd)
 	{
-
+		
 	}
 	
 	@Override

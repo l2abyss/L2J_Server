@@ -14,15 +14,16 @@
  */
 package com.l2jserver.communityserver.network.writepackets;
 
-import com.l2jserver.communityserver.network.netcon.BaseWritePacket;
+import org.netcon.BaseWritePacket;
 
 public final class PlayerSendMessage extends BaseWritePacket
 {
-	public static final int TEXT_MESSAGE						= 0;
-	public static final int ONLY_THE_CLAN_LEADER_IS_ENABLED		= 236;
-	public static final int NO_CB_IN_MY_CLAN					= 1050;
-	public static final int NO_READ_PERMISSION					= 1070;
-	public static final int NO_WRITE_PERMISSION					= 1071;
+	public static final int TEXT_MESSAGE = 0;
+	public static final int ONLY_THE_CLAN_LEADER_IS_ENABLED = 236;
+	public static final int NO_CB_IN_MY_CLAN = 1050;
+	public static final int NO_READ_PERMISSION = 1070;
+	public static final int NO_WRITE_PERMISSION = 1071;
+	
 	public PlayerSendMessage(final int playerObjId, final int type, String message)
 	{
 		writeC(0x02);

@@ -16,11 +16,10 @@ package com.l2jserver.communityserver.model;
 
 /**
  * This class describes a clan instance
- *
  */
 public class L2Clan
 {
-	private int _clanId;
+	private final int _clanId;
 	private String _name;
 	private int _level;
 	private int _lordObjId;
@@ -58,7 +57,7 @@ public class L2Clan
 	{
 		_name = val;
 	}
-
+	
 	public String getName()
 	{
 		return _name;
@@ -68,7 +67,7 @@ public class L2Clan
 	{
 		_lordName = val;
 	}
-
+	
 	public String getLordName()
 	{
 		return _lordName;
@@ -84,7 +83,7 @@ public class L2Clan
 	{
 		_level = val;
 	}
-
+	
 	public int getClanLevel()
 	{
 		return _level;
@@ -94,7 +93,7 @@ public class L2Clan
 	{
 		_members = val;
 	}
-
+	
 	public int getMembersCount()
 	{
 		return _members;
@@ -104,27 +103,27 @@ public class L2Clan
 	{
 		_lordObjId = val;
 	}
-
+	
 	public int getLordObjId()
 	{
 		return _lordObjId;
 	}
-
+	
 	public void setAllianceName(String val)
 	{
 		_allianceName = val;
 	}
-
+	
 	public String getAllianceName()
 	{
 		return _allianceName;
 	}
-
+	
 	public void setAllianceClanIdList(int[] val)
 	{
 		_allianceClanIdList = val;
 	}
-
+	
 	public int[] getAllianceClanIdList()
 	{
 		return _allianceClanIdList;

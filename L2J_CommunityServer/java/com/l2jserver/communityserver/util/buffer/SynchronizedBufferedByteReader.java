@@ -18,7 +18,7 @@ package com.l2jserver.communityserver.util.buffer;
  * @author Forsaiken
  */
 public final class SynchronizedBufferedByteReader extends AbstractBufferedByteReader
-{	
+{
 	public SynchronizedBufferedByteReader(final byte[] data)
 	{
 		super(data);
@@ -29,7 +29,7 @@ public final class SynchronizedBufferedByteReader extends AbstractBufferedByteRe
 	{
 		int result;
 		
-		synchronized(buf)
+		synchronized (buf)
 		{
 			result = buf[rIndex++] & 0x000000FF;
 		}
@@ -42,10 +42,10 @@ public final class SynchronizedBufferedByteReader extends AbstractBufferedByteRe
 	{
 		int result;
 		
-		synchronized(buf)
+		synchronized (buf)
 		{
 			result = buf[rIndex++] & 0x000000FF;
-			result |= buf[rIndex++] << 8 & 0x0000FF00;
+			result |= (buf[rIndex++] << 8) & 0x0000FF00;
 		}
 		
 		return result;
@@ -56,12 +56,12 @@ public final class SynchronizedBufferedByteReader extends AbstractBufferedByteRe
 	{
 		int result;
 		
-		synchronized(buf)
+		synchronized (buf)
 		{
 			result = buf[rIndex++] & 0x000000FF;
-			result |= buf[rIndex++] << 8 & 0x0000FF00;
-			result |= buf[rIndex++] << 16 & 0x00FF0000;
-			result |= buf[rIndex++] << 24 & 0xFF000000;
+			result |= (buf[rIndex++] << 8) & 0x0000FF00;
+			result |= (buf[rIndex++] << 16) & 0x00FF0000;
+			result |= (buf[rIndex++] << 24) & 0xFF000000;
 		}
 		
 		return result;
@@ -72,16 +72,16 @@ public final class SynchronizedBufferedByteReader extends AbstractBufferedByteRe
 	{
 		long result;
 		
-		synchronized(buf)
+		synchronized (buf)
 		{
 			result = buf[rIndex++] & 0x00000000000000FF;
-			result |= buf[rIndex++] << 8 & 0x000000000000FF00;
-			result |= buf[rIndex++] << 16 & 0x0000000000FF0000;
-			result |= buf[rIndex++] << 24 & 0x00000000FF000000;
-			result |= buf[rIndex++] << 32 & 0x000000FF00000000L;
-			result |= buf[rIndex++] << 40 & 0x0000FF0000000000L;
-			result |= buf[rIndex++] << 48 & 0x00FF000000000000L;
-			result |= buf[rIndex++] << 56 & 0xFF00000000000000L;
+			result |= (buf[rIndex++] << 8) & 0x000000000000FF00;
+			result |= (buf[rIndex++] << 16) & 0x0000000000FF0000;
+			result |= (buf[rIndex++] << 24) & 0x00000000FF000000;
+			result |= (buf[rIndex++] << 32) & 0x000000FF00000000L;
+			result |= (buf[rIndex++] << 40) & 0x0000FF0000000000L;
+			result |= (buf[rIndex++] << 48) & 0x00FF000000000000L;
+			result |= (buf[rIndex++] << 56) & 0xFF00000000000000L;
 		}
 		
 		return Double.longBitsToDouble(result);
@@ -92,13 +92,13 @@ public final class SynchronizedBufferedByteReader extends AbstractBufferedByteRe
 	{
 		int value1, value2;
 		
-		synchronized(buf)
+		synchronized (buf)
 		{
-			value1 = (buf[rIndex++] & 0x000000FF) | (buf[rIndex++] << 8 & 0x0000FF00) | (buf[rIndex++] << 16 & 0x00FF0000) | (buf[rIndex++] << 24 & 0xFF000000);
-			value2 = (buf[rIndex++] & 0x000000FF) | (buf[rIndex++] << 8 & 0x0000FF00) | (buf[rIndex++] << 16 & 0x00FF0000) | (buf[rIndex++] << 24 & 0xFF000000);
+			value1 = (buf[rIndex++] & 0x000000FF) | ((buf[rIndex++] << 8) & 0x0000FF00) | ((buf[rIndex++] << 16) & 0x00FF0000) | ((buf[rIndex++] << 24) & 0xFF000000);
+			value2 = (buf[rIndex++] & 0x000000FF) | ((buf[rIndex++] << 8) & 0x0000FF00) | ((buf[rIndex++] << 16) & 0x00FF0000) | ((buf[rIndex++] << 24) & 0xFF000000);
 		}
 		
-		return (value1 & 0xFFFFFFFFL) | (value2 & 0xFFFFFFFFL) << 32;
+		return (value1 & 0xFFFFFFFFL) | ((value2 & 0xFFFFFFFFL) << 32);
 	}
 	
 	@Override
@@ -106,7 +106,7 @@ public final class SynchronizedBufferedByteReader extends AbstractBufferedByteRe
 	{
 		final byte[] result = new byte[length];
 		
-		synchronized(buf)
+		synchronized (buf)
 		{
 			for (int i = 0; i < length; i++)
 			{
@@ -124,11 +124,11 @@ public final class SynchronizedBufferedByteReader extends AbstractBufferedByteRe
 		
 		try
 		{
-			synchronized(buf)
+			synchronized (buf)
 			{
 				result = new String(buf, rIndex, buf.length - rIndex, "UTF-16LE");
 				result = result.substring(0, result.indexOf(0x00));
-				rIndex += result.length() * 2 + 2;
+				rIndex += (result.length() * 2) + 2;
 			}
 		}
 		catch (Exception e)

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
+
 import com.l2jserver.communityserver.util.Rnd;
 
 public final class GameServerRegistrationTable
@@ -39,7 +40,9 @@ public final class GameServerRegistrationTable
 	public static GameServerRegistrationTable getInstance()
 	{
 		if (_instance == null)
+		{
 			_instance = new GameServerRegistrationTable();
+		}
 		return _instance;
 	}
 	
@@ -49,10 +52,10 @@ public final class GameServerRegistrationTable
 	public GameServerRegistrationTable()
 	{
 		_registeredGameServers = loadRegisteredGameServers();
-		_log.info("Loaded "+_registeredGameServers.size()+" registered GameServers");
+		_log.info("Loaded " + _registeredGameServers.size() + " registered GameServers");
 		
 		_keyPairs = loadRSAKeys();
-		_log.info("Cached "+_keyPairs.length+" RSA keys for GameServer communication.");
+		_log.info("Cached " + _keyPairs.length + " RSA keys for GameServer communication.");
 	}
 	
 	private final KeyPair[] loadRSAKeys()
@@ -135,7 +138,9 @@ public final class GameServerRegistrationTable
 		for (final byte[] hex : _registeredGameServers.keySet())
 		{
 			if (Arrays.equals(hex, hexId))
+			{
 				return true;
+			}
 		}
 		
 		return false;
@@ -146,7 +151,9 @@ public final class GameServerRegistrationTable
 		for (Map.Entry<byte[], Boolean> entry : _registeredGameServers.entrySet())
 		{
 			if (entry.getValue() && Arrays.equals(entry.getKey(), hexId))
+			{
 				return true;
+			}
 		}
 		
 		return false;

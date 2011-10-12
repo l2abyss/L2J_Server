@@ -25,19 +25,18 @@ import com.l2jserver.communityserver.Config;
 /**
  * Simple wrapper class to run packets on a ThreadPoolExecutor.<br>
  * PriorityThreadFactory has been imported from L2J Server, coded by Wooden
- * 
  * @author DrHouse - L2JServer Team
- *
  */
 public class ThreadPoolManager
 {
 	private static ThreadPoolExecutor _mainPool;
 	
-	
 	public static synchronized final boolean init()
 	{
 		if (_mainPool != null)
+		{
 			return false;
+		}
 		
 		_mainPool = new ThreadPoolExecutor(Config.GENERAL_THREAD_CORE_SIZE, Config.GENERAL_THREAD_CORE_SIZE + 2, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new PriorityThreadFactory("CommunityServer Executor pool", Thread.NORM_PRIORITY));
 		_mainPool.prestartAllCoreThreads();
@@ -51,10 +50,10 @@ public class ThreadPoolManager
 	
 	private static class PriorityThreadFactory implements ThreadFactory
 	{
-		private int _prio;
-		private String _name;
-		private AtomicInteger _threadNumber = new AtomicInteger(1);
-		private ThreadGroup _group;
+		private final int _prio;
+		private final String _name;
+		private final AtomicInteger _threadNumber = new AtomicInteger(1);
+		private final ThreadGroup _group;
 		
 		public PriorityThreadFactory(String name, int prio)
 		{
@@ -63,9 +62,11 @@ public class ThreadPoolManager
 			_group = new ThreadGroup(_name);
 		}
 		
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
 		 * @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable)
 		 */
+		@Override
 		public Thread newThread(Runnable r)
 		{
 			Thread t = new Thread(_group, r);

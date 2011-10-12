@@ -14,15 +14,15 @@
  */
 package com.l2jserver.communityserver.network.writepackets;
 
-import com.l2jserver.communityserver.network.netcon.BaseWritePacket;
+import org.netcon.BaseWritePacket;
 
 public final class AuthResponse extends BaseWritePacket
 {
-	public static final byte AUTHED						= 0;
-	public static final byte REASON_WRONG_HEX_ID		= 1;
-	public static final byte REASON_HEX_ID_IN_USE		= 2;
-	public static final byte REASON_WRONG_SQL_DP_ID		= 3;
-	public static final byte REASON_SQL_DP_ID_IN_USE	= 4;
+	public static final byte AUTHED = 0;
+	public static final byte REASON_WRONG_HEX_ID = 1;
+	public static final byte REASON_HEX_ID_IN_USE = 2;
+	public static final byte REASON_WRONG_SQL_DP_ID = 3;
+	public static final byte REASON_SQL_DP_ID_IN_USE = 4;
 	
 	public AuthResponse(final int status)
 	{

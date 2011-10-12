@@ -19,17 +19,19 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
+
 import com.l2jserver.communityserver.cache.HtmCache;
 import com.l2jserver.communityserver.communityboard.CommunityBoard;
 import com.l2jserver.communityserver.communityboard.CommunityBoardManager;
 import com.l2jserver.communityserver.model.Forum;
-import com.l2jserver.communityserver.model.Topic;
 import com.l2jserver.communityserver.model.Post;
+import com.l2jserver.communityserver.model.Topic;
 import com.l2jserver.communityserver.model.Topic.ConstructorType;
 
 public final class MemoBoard extends CommunityBoard
 {
 	private static Logger _log = Logger.getLogger(MemoBoard.class.getName());
+	
 	public MemoBoard(final CommunityBoardManager mgr)
 	{
 		super(mgr);
@@ -40,19 +42,29 @@ public final class MemoBoard extends CommunityBoard
 	{
 		Forum playerForum = getCommunityBoardManager().getPlayerForum(playerObjId);
 		if (cmd.equals("_bbsmemo"))
+		{
 			showPage(playerObjId, playerForum, 1);
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("crea"))
+		{
 			showWrite(playerObjId, null);
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("list"))
+		{
 			showPage(playerObjId, playerForum, Integer.valueOf(cmd.split(";")[2]));
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("read"))
 		{
 			Topic t = playerForum.gettopic(Topic.MEMO);
 			Post p = t.getPost(Integer.valueOf(cmd.split(";")[2]));
 			if (p == null)
+			{
 				_log.info("Memo read command: " + cmd.split(";")[2]);
+			}
 			else
+			{
 				showPost(playerObjId, p);
+			}
 		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("del"))
 		{
@@ -65,7 +77,9 @@ public final class MemoBoard extends CommunityBoard
 			showWrite(playerObjId, p);
 		}
 		else
+		{
 			_log.info("Memo command missing: " + cmd.split(";")[1]);
+		}
 	}
 	
 	public final void showPage(final int playerObjId, Forum f, int index)
@@ -84,12 +98,12 @@ public final class MemoBoard extends CommunityBoard
 		int i = 0;
 		for (Post p : t.getAllPosts())
 		{
-			if (i > ((index - 1) * 10 + 9))
- 			{
- 				break;
- 			}
+			if (i > (((index - 1) * 10) + 9))
+			{
+				break;
+			}
 			if (i++ >= ((index - 1) * 10))
- 			{
+			{
 				mList.append("<img src=\"L2UI.SquareBlank\" width=\"750\" height=\"3\">");
 				mList.append("<table border=0 cellspacing=0 cellpadding=0 width=750>");
 				mList.append("<tr> ");
@@ -102,48 +116,48 @@ public final class MemoBoard extends CommunityBoard
 				mList.append("<tr><td height=5></td></tr>");
 				mList.append("</table>");
 				mList.append("<img src=\"L2UI.SquareBlank\" width=\"750\" height=\"3\">");
-				mList.append("<img src=\"L2UI.SquareGray\" width=\"750\" height=\"1\">");				
- 			}
+				mList.append("<img src=\"L2UI.SquareGray\" width=\"750\" height=\"1\">");
+			}
 		}
 		content = content.replaceAll("%memoList%", mList.toString());
 		mList.clear();
 		mList.clear();
- 		if (index == 1)
- 		{
+		if (index == 1)
+		{
 			mList.append("<td><button action=\"\" back=\"l2ui_ch3.prev1_down\" fore=\"l2ui_ch3.prev1\" width=16 height=16 ></td>");
- 		}
- 		else
- 		{
+		}
+		else
+		{
 			mList.append("<td><button action=\"bypass _bbsmemo;list;" + (index - 1) + "\" back=\"l2ui_ch3.prev1_down\" fore=\"l2ui_ch3.prev1\" width=16 height=16 ></td>");
- 		}
-
- 		int nbp;
+		}
+		
+		int nbp;
 		nbp = t.getAllPosts().size() / 10;
-		if (nbp * 10 != t.getAllPosts().size())
- 		{
- 			nbp++;
- 		}
+		if ((nbp * 10) != t.getAllPosts().size())
+		{
+			nbp++;
+		}
 		for (i = 1; i <= nbp; i++)
- 		{
- 			if (i == index)
- 			{
+		{
+			if (i == index)
+			{
 				mList.append("<td> " + i + " </td>");
- 			}
- 			else
- 			{
+			}
+			else
+			{
 				mList.append("<td><a action=\"bypass _bbsmemo;list;" + i + "\"> " + i + " </a></td>");
- 			}
- 		}
- 		if (index == nbp)
- 		{
+			}
+		}
+		if (index == nbp)
+		{
 			mList.append("<td><button action=\"\" back=\"l2ui_ch3.next1_down\" fore=\"l2ui_ch3.next1\" width=16 height=16 ></td>");
- 		}
- 		else
- 		{
+		}
+		else
+		{
 			mList.append("<td><button action=\"bypass _bbsmemo;list;" + (index + 1) + "\" back=\"l2ui_ch3.next1_down\" fore=\"l2ui_ch3.next1\" width=16 height=16 ></td>");
- 		}
+		}
 		content = content.replaceAll("%memoListLength%", mList.toString());
-
+		
 		super.send(playerObjId, content);
 	}
 	
@@ -154,7 +168,9 @@ public final class MemoBoard extends CommunityBoard
 		String content = HtmCache.getInstance().getHtm("data/staticfiles/html/memo-write.htm");
 		content = content.replaceAll("%playerObjId%", String.valueOf(playerObjId));
 		if (p == null)
+		{
 			content = content.replaceAll("%job%", "new");
+		}
 		else
 		{
 			content = content.replaceAll("%job%", "edit");
@@ -194,7 +210,9 @@ public final class MemoBoard extends CommunityBoard
 			playerForum.gettopic(Topic.MEMO).getPost(Integer.valueOf(ar2)).updatePost(super.edtiPlayerTxT(ar3), super.edtiPlayerTxT(ar4));
 		}
 		else
+		{
 			_log.info("Memo Write command missing: " + ar1);
+		}
 		showPage(playerObjId, playerForum, 1);
 	}
 }

@@ -17,10 +17,12 @@ package com.l2jserver.communityserver.network.writepackets;
 import java.io.UnsupportedEncodingException;
 
 import javolution.util.FastList;
-import com.l2jserver.communityserver.network.netcon.BaseWritePacket;
+
+import org.netcon.BaseWritePacket;
 
 public final class PlayerShowBoard extends BaseWritePacket
 {
+	//@formatter:off
 	private static final byte[] DEC_HEAD =
 	{
 		123,	// C 0x7B
@@ -42,6 +44,7 @@ public final class PlayerShowBoard extends BaseWritePacket
 		{49,0,48,0,51,0,8,0,0,0,0,0},	// "103"
 		{49,0,48,0,52,0,8,0,0,0,0,0}	// "104"
 	};
+	//@formatter:on
 	
 	private PlayerShowBoard(final int playerObjId)
 	{
@@ -116,28 +119,31 @@ public final class PlayerShowBoard extends BaseWritePacket
 	
 	private final byte[] getBytes10X(final String html, final byte id) throws UnsupportedEncodingException
 	{
-	    if (html == null) return DEC_10X[id];
-	    final byte[] dataHtml = html.getBytes("UTF-16LE");
-        final byte[] data = new byte[12 + dataHtml.length];
-        data[0] = 49;
-        data[2] = 48;
-        data[4] = (byte)(49 + id);
-        data[6] = 8;
-        System.arraycopy(dataHtml, 0, data, 8, dataHtml.length);
-        return data;
+		if (html == null)
+		{
+			return DEC_10X[id];
+		}
+		final byte[] dataHtml = html.getBytes("UTF-16LE");
+		final byte[] data = new byte[12 + dataHtml.length];
+		data[0] = 49;
+		data[2] = 48;
+		data[4] = (byte) (49 + id);
+		data[6] = 8;
+		System.arraycopy(dataHtml, 0, data, 8, dataHtml.length);
+		return data;
 	}
 	
 	private final byte[] getBytes1001(final String html) throws UnsupportedEncodingException
 	{
 		final byte[] dataHtml = html.getBytes("UTF-16LE");
-        final byte[] data = new byte[14 + dataHtml.length];
-        data[0] = 49;
-        data[2] = 48;
-        data[4] = 48;
-        data[6] = 49;
-        data[8] = 8;
-        System.arraycopy(dataHtml, 0, data, 10, dataHtml.length);
-        return data;
+		final byte[] data = new byte[14 + dataHtml.length];
+		data[0] = 49;
+		data[2] = 48;
+		data[4] = 48;
+		data[6] = 49;
+		data[8] = 8;
+		System.arraycopy(dataHtml, 0, data, 10, dataHtml.length);
+		return data;
 	}
 	
 	private final byte[] getBytes1002(final FastList<String> args) throws UnsupportedEncodingException
@@ -162,9 +168,9 @@ public final class PlayerShowBoard extends BaseWritePacket
 			System.arraycopy(dataHtml, 0, data, i, dataHtml.length);
 			i += dataHtml.length;
 			data[i] = 0x20;
-			i+=2;
+			i += 2;
 			data[i] = 0x08;
-			i+=2;
+			i += 2;
 		}
 		return data;
 	}

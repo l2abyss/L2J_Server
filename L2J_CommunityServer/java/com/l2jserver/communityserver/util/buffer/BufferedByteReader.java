@@ -34,7 +34,7 @@ public final class BufferedByteReader extends AbstractBufferedByteReader
 	public final int readH()
 	{
 		int result = buf[rIndex++] & 0x000000FF;
-		result |= buf[rIndex++] << 8 & 0x0000FF00;
+		result |= (buf[rIndex++] << 8) & 0x0000FF00;
 		return result;
 	}
 	
@@ -42,9 +42,9 @@ public final class BufferedByteReader extends AbstractBufferedByteReader
 	public final int readD()
 	{
 		int result = buf[rIndex++] & 0x000000FF;
-		result |= buf[rIndex++] << 8 & 0x0000FF00;
-		result |= buf[rIndex++] << 16 & 0x00FF0000;
-		result |= buf[rIndex++] << 24 & 0xFF000000;
+		result |= (buf[rIndex++] << 8) & 0x0000FF00;
+		result |= (buf[rIndex++] << 16) & 0x00FF0000;
+		result |= (buf[rIndex++] << 24) & 0xFF000000;
 		return result;
 	}
 	
@@ -52,22 +52,22 @@ public final class BufferedByteReader extends AbstractBufferedByteReader
 	public final double readF()
 	{
 		long result = buf[rIndex++] & 0x00000000000000FF;
-		result |= buf[rIndex++] << 8 & 0x000000000000FF00;
-		result |= buf[rIndex++] << 16 & 0x0000000000FF0000;
-		result |= buf[rIndex++] << 24 & 0x00000000FF000000;
-		result |= buf[rIndex++] << 32 & 0x000000FF00000000L;
-		result |= buf[rIndex++] << 40 & 0x0000FF0000000000L;
-		result |= buf[rIndex++] << 48 & 0x00FF000000000000L;
-		result |= buf[rIndex++] << 56 & 0xFF00000000000000L;
+		result |= (buf[rIndex++] << 8) & 0x000000000000FF00;
+		result |= (buf[rIndex++] << 16) & 0x0000000000FF0000;
+		result |= (buf[rIndex++] << 24) & 0x00000000FF000000;
+		result |= (buf[rIndex++] << 32) & 0x000000FF00000000L;
+		result |= (buf[rIndex++] << 40) & 0x0000FF0000000000L;
+		result |= (buf[rIndex++] << 48) & 0x00FF000000000000L;
+		result |= (buf[rIndex++] << 56) & 0xFF00000000000000L;
 		return Double.longBitsToDouble(result);
 	}
 	
 	@Override
 	public final long readQ()
 	{
-		final int value1 = (buf[rIndex++] & 0x000000FF) | (buf[rIndex++] << 8 & 0x0000FF00) | (buf[rIndex++] << 16 & 0x00FF0000) | (buf[rIndex++] << 24 & 0xFF000000);
-		final int value2 = (buf[rIndex++] & 0x000000FF) | (buf[rIndex++] << 8 & 0x0000FF00) | (buf[rIndex++] << 16 & 0x00FF0000) | (buf[rIndex++] << 24 & 0xFF000000);
-		return (value1 & 0xFFFFFFFFL) | (value2 & 0xFFFFFFFFL) << 32;
+		final int value1 = (buf[rIndex++] & 0x000000FF) | ((buf[rIndex++] << 8) & 0x0000FF00) | ((buf[rIndex++] << 16) & 0x00FF0000) | ((buf[rIndex++] << 24) & 0xFF000000);
+		final int value2 = (buf[rIndex++] & 0x000000FF) | ((buf[rIndex++] << 8) & 0x0000FF00) | ((buf[rIndex++] << 16) & 0x00FF0000) | ((buf[rIndex++] << 24) & 0xFF000000);
+		return (value1 & 0xFFFFFFFFL) | ((value2 & 0xFFFFFFFFL) << 32);
 	}
 	
 	@Override
@@ -87,7 +87,7 @@ public final class BufferedByteReader extends AbstractBufferedByteReader
 		{
 			result = new String(buf, rIndex, buf.length - rIndex, "UTF-16LE");
 			result = result.substring(0, result.indexOf(0x00));
-			rIndex += result.length() * 2 + 2;
+			rIndex += (result.length() * 2) + 2;
 		}
 		catch (Exception e)
 		{

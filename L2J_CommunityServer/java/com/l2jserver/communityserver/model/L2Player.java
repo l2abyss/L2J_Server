@@ -18,19 +18,18 @@ import javolution.util.FastList;
 
 /**
  * This class describes a player instance
- *
  */
 public class L2Player
 {
-	private int _objId;
+	private final int _objId;
 	private String _name;
-	private String _accountName;
+	private final String _accountName;
 	private int _level;
 	private int _accessLevel;
 	private int _clanId;
 	private boolean _isOnline;
-	private FastList<Integer> _friends;
-	private FastList<Integer> _selectedFriends;
+	private final FastList<Integer> _friends;
+	private final FastList<Integer> _selectedFriends;
 	private Forum _forum;
 	
 	public L2Player(int objId, String name, String accountName, int level, int accessLevel, int clanId, boolean isOnline)
@@ -56,7 +55,7 @@ public class L2Player
 	{
 		_name = val;
 	}
-
+	
 	public String getName()
 	{
 		return _name;
@@ -66,7 +65,7 @@ public class L2Player
 	{
 		return _accountName;
 	}
-
+	
 	// do not use this from here!!!
 	public Forum getForum()
 	{
@@ -77,7 +76,7 @@ public class L2Player
 	{
 		_level = val;
 	}
-
+	
 	public int getLevel()
 	{
 		return _level;
@@ -87,22 +86,22 @@ public class L2Player
 	{
 		_accessLevel = val;
 	}
-
+	
 	public int getAccessLevel()
 	{
 		return _accessLevel;
 	}
-
+	
 	public void setClanId(int val)
 	{
 		_clanId = val;
 	}
-
+	
 	public int getClanId()
 	{
 		return _clanId;
 	}
-
+	
 	public boolean isOnline()
 	{
 		return _isOnline;
@@ -132,12 +131,12 @@ public class L2Player
 	{
 		_friends.clear();
 	}
-
+	
 	public FastList<Integer> getFriendList()
 	{
 		return _friends;
 	}
-
+	
 	public void selectFriend(Integer friendId)
 	{
 		_selectedFriends.add(friendId);
@@ -153,4 +152,3 @@ public class L2Player
 		return _selectedFriends;
 	}
 }
-

@@ -30,11 +30,17 @@ public abstract class AbstractBufferedByteWriter
 	}
 	
 	public abstract void writeC(final int value);
+	
 	public abstract void writeH(final int value);
+	
 	public abstract void writeD(final int value);
+	
 	public abstract void writeF(final double value);
+	
 	public abstract void writeQ(final long value);
+	
 	public abstract void writeS(final String text);
+	
 	public abstract void writeB(final byte[] data);
 	
 	public final int length()

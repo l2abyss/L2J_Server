@@ -14,8 +14,9 @@
  */
 package com.l2jserver.communityserver.network.readpackets;
 
+import org.netcon.BaseReadPacket;
+
 import com.l2jserver.communityserver.network.GameServerThread;
-import com.l2jserver.communityserver.network.netcon.BaseReadPacket;
 
 public final class RequestWriteCommunityBoard extends BaseReadPacket
 {
@@ -38,6 +39,6 @@ public final class RequestWriteCommunityBoard extends BaseReadPacket
 		final String arg4 = super.readS();
 		final String arg5 = super.readS();
 		
-		_gst.getCommunityBoardManager().parseWrite(playerObjId,url,arg1,arg2,arg3,arg4,arg5);
+		_gst.getCommunityBoardManager().parseWrite(playerObjId, url, arg1, arg2, arg3, arg4, arg5);
 	}
 }

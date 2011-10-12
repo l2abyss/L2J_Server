@@ -20,24 +20,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+
 import javolution.text.TextBuilder;
 
 /**
  * This class ...
- * 
  * @version $Revision: 1.1.4.2 $ $Date: 2005/03/27 15:30:08 $
  */
 public class ConsoleLogFormatter extends Formatter
 {
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
 	 */
 	private static final String CRLF = "\r\n";
-
-	private SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
-
+	
+	private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
+	
+	@Override
 	public String format(LogRecord record)
 	{
 		TextBuilder output = new TextBuilder();

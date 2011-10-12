@@ -19,13 +19,14 @@ import java.net.Socket;
 import java.util.List;
 
 import javolution.util.FastList;
-import com.l2jserver.communityserver.network.netcon.NetConnectionConfig;
-import com.l2jserver.communityserver.network.netcon.NetConnectionListener;
+
+import org.netcon.NetConnectionConfig;
+import org.netcon.NetConnectionListener;
 
 public final class GameServerListener extends NetConnectionListener
 {
 	private static List<GameServerThread> _gameServers = new FastList<GameServerThread>();
-
+	
 	public GameServerListener(final NetConnectionConfig config) throws IOException
 	{
 		super(config);

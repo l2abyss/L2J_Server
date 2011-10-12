@@ -14,19 +14,18 @@
  */
 package com.l2jserver.communityserver.network.writepackets;
 
-import com.l2jserver.communityserver.network.netcon.BaseWritePacket;
+import org.netcon.BaseWritePacket;
 
 /**
  * @author Forsaiken
  */
-
 public final class InitCS extends BaseWritePacket
 {
 	public InitCS(final byte[] publicKey)
-    {
-    	writeC(0x00);
-    	writeC(0x00);
-    	writeD(publicKey.length);
-    	writeB(publicKey);
-    }
+	{
+		writeC(0x00);
+		writeC(0x00);
+		writeD(publicKey.length);
+		writeB(publicKey);
+	}
 }

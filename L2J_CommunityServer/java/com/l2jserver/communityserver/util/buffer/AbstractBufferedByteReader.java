@@ -28,10 +28,16 @@ public abstract class AbstractBufferedByteReader
 	}
 	
 	public abstract int readC();
+	
 	public abstract int readH();
+	
 	public abstract int readD();
+	
 	public abstract double readF();
+	
 	public abstract long readQ();
+	
 	public abstract String readS();
+	
 	public abstract byte[] readB(final int length);
 }

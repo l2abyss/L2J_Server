@@ -14,7 +14,7 @@
  */
 package com.l2jserver.communityserver.network.writepackets;
 
-import com.l2jserver.communityserver.network.netcon.BaseWritePacket;
+import org.netcon.BaseWritePacket;
 
 public final class CommunityServerFail extends BaseWritePacket
 {

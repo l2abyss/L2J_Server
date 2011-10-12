@@ -14,7 +14,6 @@
  */
 package com.l2jserver.communityserver.model;
 
-
 import java.sql.PreparedStatement;
 import java.util.logging.Logger;
 
@@ -26,20 +25,20 @@ public class Comment
 	private static Logger _log = Logger.getLogger(Comment.class.getName());
 	
 	private final int _sqlDPId;
-	private int _commentId;
-	private int _commentOwnerId;
-	private long _commentDate;
-	private int _commentPostId;
-	private int _commentTopicId;
-	private int _commentForumId;
-	private String _commentTxt;
+	private final int _commentId;
+	private final int _commentOwnerId;
+	private final long _commentDate;
+	private final int _commentPostId;
+	private final int _commentTopicId;
+	private final int _commentForumId;
+	private final String _commentTxt;
 	
 	/**
 	 * @param restore
 	 * @param t
 	 */
-	//public enum ConstructorType {REPLY, CREATE };
-	public Comment(ConstructorType ct, final int sqlDPId, int commentId, int commentOwnerID, long date, int pid, int tid,int commentForumID, String txt)
+	// public enum ConstructorType {REPLY, CREATE };
+	public Comment(ConstructorType ct, final int sqlDPId, int commentId, int commentOwnerID, long date, int pid, int tid, int commentForumID, String txt)
 	{
 		_sqlDPId = sqlDPId;
 		_commentId = commentId;
@@ -54,7 +53,7 @@ public class Comment
 			insertindb();
 		}
 	}
-
+	
 	public void insertindb()
 	{
 		java.sql.Connection con = null;
@@ -87,9 +86,9 @@ public class Comment
 			{
 			}
 		}
-
+		
 	}
-
+	
 	public void deleteme()
 	{
 		java.sql.Connection con = null;
@@ -120,7 +119,7 @@ public class Comment
 			}
 		}
 	}
-
+	
 	/**
 	 *
 	 */
@@ -131,7 +130,7 @@ public class Comment
 	{
 		return _commentId;
 	}
-
+	
 	public String getText()
 	{
 		return _commentTxt;
@@ -146,5 +145,5 @@ public class Comment
 	{
 		return _commentDate;
 	}
-
+	
 }

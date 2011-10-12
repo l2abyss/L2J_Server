@@ -36,25 +36,25 @@ public final class BufferedByteWriter extends AbstractBufferedByteWriter
 	public final void writeC(final int value)
 	{
 		expand(1);
-		buf[wIndex++] = (byte)(value & 0x000000FF);
+		buf[wIndex++] = (byte) (value & 0x000000FF);
 	}
 	
 	@Override
 	public final void writeH(final int value)
 	{
 		expand(2);
-		buf[wIndex++] = (byte)(value & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 8 & 0x000000FF);
+		buf[wIndex++] = (byte) (value & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 8) & 0x000000FF);
 	}
 	
 	@Override
 	public final void writeD(final int value)
 	{
 		expand(4);
-		buf[wIndex++] = (byte)(value & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 8 & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 16 & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 24 & 0x000000FF);
+		buf[wIndex++] = (byte) (value & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 8) & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 16) & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 24) & 0x000000FF);
 	}
 	
 	@Override
@@ -67,14 +67,14 @@ public final class BufferedByteWriter extends AbstractBufferedByteWriter
 	public final void writeQ(final long value)
 	{
 		expand(8);
-		buf[wIndex++] = (byte)(value & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 8 & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 16 & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 24 & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 32 & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 40 & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 48 & 0x000000FF);
-		buf[wIndex++] = (byte)(value >> 56 & 0x000000FF);
+		buf[wIndex++] = (byte) (value & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 8) & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 16) & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 24) & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 32) & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 40) & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 48) & 0x000000FF);
+		buf[wIndex++] = (byte) ((value >> 56) & 0x000000FF);
 	}
 	
 	@Override
@@ -123,6 +123,8 @@ public final class BufferedByteWriter extends AbstractBufferedByteWriter
 	{
 		final int newSize = wIndex + expand;
 		if (newSize > buf.length)
+		{
 			buf = Arrays.copyOf(buf, Math.max(buf.length << 1, newSize));
+		}
 	}
 }

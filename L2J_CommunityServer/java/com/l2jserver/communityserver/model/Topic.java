@@ -39,19 +39,19 @@ public class Topic
 	public static final int ANNOUNCE = 6;
 	public static final int BULLETIN = 7;
 	
-	//perm
+	// perm
 	public static final int NONE = 0;
 	public static final int ALL = 1;
 	public static final int READ = 2;
-
-	private int _id; // same as type
-	private int _forumId;
+	
+	private final int _id; // same as type
+	private final int _forumId;
 	private final int _sqlDPId;
-	private String _topicName;
-	private int _ownerId;
+	private final String _topicName;
+	private final int _ownerId;
 	private int _lastPostId;
 	private int _permissions;
-	private Map<Integer, Post> _posts;
+	private final Map<Integer, Post> _posts;
 	
 	/**
 	 * @param restaure
@@ -111,7 +111,9 @@ public class Topic
 				Post p = new Post(ConstructorType.RESTORE, _sqlDPId, postId, postOwner, recipientList, parentId, date, _id, _forumId, title, text, type, readCount);
 				_posts.put(postId, p);
 				if (postId > _lastPostId)
+				{
 					_lastPostId = postId;
+				}
 			}
 			result.close();
 			statement.close();
@@ -132,7 +134,7 @@ public class Topic
 			}
 		}
 	}
-
+	
 	public int getNewPostId()
 	{
 		return ++_lastPostId;
@@ -177,10 +179,9 @@ public class Topic
 	
 	public enum ConstructorType
 	{
-		RESTORE,
-		CREATE
+		RESTORE, CREATE
 	}
-
+	
 	public void clearPosts()
 	{
 		_posts.clear();
@@ -216,11 +217,13 @@ public class Topic
 	{
 		// if the Topic type is Announce then only Advertise Posts count
 		Post[] ret = new Post[2];
-		for (Post p: _posts.values())
+		for (Post p : _posts.values())
 		{
-			if (_id == ANNOUNCE && p.getType() != Post.ADVERTISE)
+			if ((_id == ANNOUNCE) && (p.getType() != Post.ADVERTISE))
+			{
 				continue;
-			if (ret[0] == null || ret[0].getDate() < p.getDate())
+			}
+			if ((ret[0] == null) || (ret[0].getDate() < p.getDate()))
 			{
 				ret[1] = ret[0];
 				ret[0] = p;
@@ -233,16 +236,22 @@ public class Topic
 	{
 		FastList<Post> ret = new FastList<Post>();
 		if (parent == null)
+		{
 			return ret;
+		}
 		// parent post always the first
 		ret.add(parent);
-		for (Post p: _posts.values())
+		for (Post p : _posts.values())
+		{
 			if (p.getParentId() == parent.getID())
+			{
 				ret.add(p);
-
+			}
+		}
+		
 		return ret;
 	}
-
+	
 	/**
 	 * @return
 	 */

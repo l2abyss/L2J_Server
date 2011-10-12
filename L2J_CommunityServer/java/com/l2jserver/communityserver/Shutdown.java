@@ -16,14 +16,10 @@ package com.l2jserver.communityserver;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.communityserver.L2DatabaseFactory;
 import com.l2jserver.communityserver.model.L2Player;
 
 /**
- *
- * This class provides the functions for shutting down and restarting the server
- * It closes all open clientconnections and saves all data.
- *
+ * This class provides the functions for shutting down and restarting the server It closes all open clientconnections and saves all data.
  * @version $Revision: 1.2.4.5 $ $Date: 2005/03/27 15:29:09 $
  */
 public class Shutdown extends Thread
@@ -45,16 +41,15 @@ public class Shutdown extends Thread
 	
 	/**
 	 * This function starts a shutdown countdown from Telnet (Copied from Function startShutdown())
-	 *
-	 * @param ip            IP Which Issued shutdown command
-	 * @param seconds       seconds untill shutdown
-	 * @param restart       true if the server will restart after shutdown
+	 * @param ip IP Which Issued shutdown command
+	 * @param seconds seconds untill shutdown
+	 * @param restart true if the server will restart after shutdown
 	 */
 	
 	public void startTelnetShutdown(String IP, int seconds, boolean restart)
 	{
 		_log.warning("IP: " + IP + " issued shutdown command. " + MODE_TEXT[_shutdownMode] + " in " + seconds + " seconds!");
-		//_an.announceToAll("Server is " + _modeText[shutdownMode] + " in "+seconds+ " seconds!");
+		// _an.announceToAll("Server is " + _modeText[shutdownMode] + " in "+seconds+ " seconds!");
 		
 		if (restart)
 		{
@@ -100,8 +95,7 @@ public class Shutdown extends Thread
 	
 	/**
 	 * This function aborts a running countdown
-	 *
-	 * @param IP            IP Which Issued shutdown command
+	 * @param IP IP Which Issued shutdown command
 	 */
 	public void telnetAbort(String IP)
 	{
@@ -115,7 +109,6 @@ public class Shutdown extends Thread
 	
 	/**
 	 * Default constucter is only used internal to create the shutdown-hook instance
-	 *
 	 */
 	public Shutdown()
 	{
@@ -125,10 +118,8 @@ public class Shutdown extends Thread
 	
 	/**
 	 * This creates a countdown instance of Shutdown.
-	 *
-	 * @param seconds	how many seconds until shutdown
-	 * @param restart	true is the server shall restart after shutdown
-	 *
+	 * @param seconds how many seconds until shutdown
+	 * @param restart true is the server shall restart after shutdown
 	 */
 	public Shutdown(int seconds, boolean restart)
 	{
@@ -148,11 +139,8 @@ public class Shutdown extends Thread
 	}
 	
 	/**
-	 * get the shutdown-hook instance
-	 * the shutdown-hook instance is created by the first call of this function,
-	 * but it has to be registrered externaly.
-	 *
-	 * @return	instance of Shutdown, to be used as shutdown hook
+	 * get the shutdown-hook instance the shutdown-hook instance is created by the first call of this function, but it has to be registrered externaly.
+	 * @return instance of Shutdown, to be used as shutdown hook
 	 */
 	public static Shutdown getInstance()
 	{
@@ -164,20 +152,8 @@ public class Shutdown extends Thread
 	}
 	
 	/**
-	 * this function is called, when a new thread starts
-	 *
-	 * if this thread is the thread of getInstance, then this is the shutdown hook
-	 * and we save all data and disconnect all clients.
-	 *
-	 * after this thread ends, the server will completely exit
-	 *
-	 * if this is not the thread of getInstance, then this is a countdown thread.
-	 * we start the countdown, and when we finished it, and it was not aborted,
-	 * we tell the shutdown-hook why we call exit, and then call exit
-	 *
-	 * when the exit status of the server is 1, startServer.sh / startServer.bat
-	 * will restart the server.
-	 *
+	 * this function is called, when a new thread starts if this thread is the thread of getInstance, then this is the shutdown hook and we save all data and disconnect all clients. after this thread ends, the server will completely exit if this is not the thread of getInstance, then this is a
+	 * countdown thread. we start the countdown, and when we finished it, and it was not aborted, we tell the shutdown-hook why we call exit, and then call exit when the exit status of the server is 1, startServer.sh / startServer.bat will restart the server.
 	 */
 	@Override
 	public void run()
@@ -200,8 +176,8 @@ public class Shutdown extends Thread
 			// saveData sends messages to exit players, so sgutdown selector after it
 			try
 			{
-				//GameServer.gameServer.getSelectorThread().shutdown();
-				//GameServer.gameServer.getSelectorThread().setDaemon(true);
+				// GameServer.gameServer.getSelectorThread().shutdown();
+				// GameServer.gameServer.getSelectorThread().setDaemon(true);
 			}
 			catch (Throwable t)
 			{
@@ -250,14 +226,13 @@ public class Shutdown extends Thread
 	
 	/**
 	 * This functions starts a shutdown countdown
-	 *
-	 * @param activeChar	GM who issued the shutdown command
-	 * @param seconds		seconds until shutdown
-	 * @param restart		true if the server will restart after shutdown
+	 * @param activeChar GM who issued the shutdown command
+	 * @param seconds seconds until shutdown
+	 * @param restart true if the server will restart after shutdown
 	 */
 	public void startShutdown(L2Player activeChar, int seconds, boolean restart)
 	{
-		_log.warning("GM: " + activeChar.getName() + "(" + activeChar.getObjId() + ") issued shutdown command. " + MODE_TEXT[_shutdownMode] + " in " + seconds + " seconds!");	
+		_log.warning("GM: " + activeChar.getName() + "(" + activeChar.getObjId() + ") issued shutdown command. " + MODE_TEXT[_shutdownMode] + " in " + seconds + " seconds!");
 		if (restart)
 		{
 			_shutdownMode = GM_RESTART;
@@ -297,15 +272,14 @@ public class Shutdown extends Thread
 			_counterInstance.abort(activeChar);
 		}
 		
-		//		 the main instance should only run for shutdown hook, so we start a new instance
+		// the main instance should only run for shutdown hook, so we start a new instance
 		_counterInstance = new Shutdown(seconds, restart);
 		_counterInstance.start();
 	}
 	
 	/**
 	 * This function aborts a running countdown
-	 *
-	 * @param activeChar	GM who issued the abort command
+	 * @param activeChar GM who issued the abort command
 	 */
 	public void abort(L2Player activeChar)
 	{
@@ -318,7 +292,7 @@ public class Shutdown extends Thread
 	
 	/**
 	 * set the shutdown mode
-	 * @param mode	what mode shall be set
+	 * @param mode what mode shall be set
 	 */
 	private void setMode(int mode)
 	{
@@ -327,7 +301,6 @@ public class Shutdown extends Thread
 	
 	/**
 	 * set shutdown mode to ABORT
-	 *
 	 */
 	private void _abort()
 	{
@@ -335,8 +308,7 @@ public class Shutdown extends Thread
 	}
 	
 	/**
-	 * this counts the countdown and reports it to all players
-	 * countdown is aborted if mode changes to ABORT
+	 * this counts the countdown and reports it to all players countdown is aborted if mode changes to ABORT
 	 */
 	private void countdown()
 	{
@@ -347,22 +319,23 @@ public class Shutdown extends Thread
 			{
 				_secondsShut--;
 				
-				int delay = 1000; //milliseconds
+				int delay = 1000; // milliseconds
 				Thread.sleep(delay);
 				
 				if (_shutdownMode == ABORT)
+				{
 					break;
+				}
 			}
 		}
 		catch (InterruptedException e)
 		{
-			//this will never happen
+			// this will never happen
 		}
 	}
 	
 	/**
 	 * this sends a last byebye, disconnects all players and saves data
-	 *
 	 */
 	private void saveData()
 	{
@@ -377,7 +350,7 @@ public class Shutdown extends Thread
 			case GM_RESTART:
 				System.err.println("GM restart received. Restarting NOW!");
 				break;
-			
+		
 		}
 		
 		try
@@ -387,7 +360,7 @@ public class Shutdown extends Thread
 		}
 		catch (InterruptedException e)
 		{
-			//never happens :p
+			// never happens :p
 		}
 	}
 }

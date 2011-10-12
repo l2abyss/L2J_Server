@@ -20,20 +20,21 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
+
 import com.l2jserver.communityserver.L2DatabaseFactory;
 import com.l2jserver.communityserver.model.Topic.ConstructorType;
 
 public class Forum
 {
-	//type
+	// type
 	public static final int ROOT = 0;
 	public static final int NORMAL = 1;
 	public static final int CLAN = 2;
 	public static final int PLAYER = 3;
 	
 	private static Logger _log = Logger.getLogger(Forum.class.getName());
-	private Map<Integer, Topic> _topic;
-	private int _forumId;
+	private final Map<Integer, Topic> _topic;
+	private final int _forumId;
 	private final int _sqlDPId;
 	private String _forumName;
 	private int _forumType;
@@ -182,8 +183,8 @@ public class Forum
 	}
 	
 	/**
-	* @return
-	*/
+	 * @return
+	 */
 	public int getID()
 	{
 		return _forumId;

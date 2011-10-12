@@ -21,19 +21,21 @@ import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
 import javolution.util.FastList;
+
 import com.l2jserver.communityserver.cache.HtmCache;
 import com.l2jserver.communityserver.communityboard.CommunityBoard;
 import com.l2jserver.communityserver.communityboard.CommunityBoardManager;
 import com.l2jserver.communityserver.model.Comment;
 import com.l2jserver.communityserver.model.Forum;
-import com.l2jserver.communityserver.model.Topic;
 import com.l2jserver.communityserver.model.Post;
+import com.l2jserver.communityserver.model.Topic;
 import com.l2jserver.communityserver.model.Topic.ConstructorType;
 import com.l2jserver.communityserver.network.writepackets.PlayerSendMessage;
 
 public final class ClanPostBoard extends CommunityBoard
 {
 	private static Logger _log = Logger.getLogger(ClanPostBoard.class.getName());
+	
 	public ClanPostBoard(final CommunityBoardManager mgr)
 	{
 		super(mgr);
@@ -46,9 +48,13 @@ public final class ClanPostBoard extends CommunityBoard
 		Forum clanForum = getCommunityBoardManager().getClanForum(clanId);
 		int type;
 		if (cmd.split(";")[2].equalsIgnoreCase("announce"))
+		{
 			type = Topic.ANNOUNCE;
+		}
 		else if (cmd.split(";")[2].equalsIgnoreCase("cbb"))
+		{
 			type = Topic.BULLETIN;
+		}
 		else
 		{
 			_log.info("Clan Post Board command error: " + cmd);
@@ -59,10 +65,10 @@ public final class ClanPostBoard extends CommunityBoard
 		perNon = (perNon - perMem) / 10;
 		boolean isPlayerMember = getCommunityBoardManager().getPlayer(playerObjId).getClanId() == clanId;
 		boolean isLeader = getCommunityBoardManager().getClan(clanId).getLordObjId() == playerObjId;
-		if (!isLeader && ((isPlayerMember && perMem == 0) || (!isPlayerMember && perNon == 0)))
+		if (!isLeader && ((isPlayerMember && (perMem == 0)) || (!isPlayerMember && (perNon == 0))))
 		{
 			// TODO: this way Clan Post Board command missing part could be missed
-			super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId,PlayerSendMessage.NO_READ_PERMISSION,""));
+			super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId, PlayerSendMessage.NO_READ_PERMISSION, ""));
 			return;
 		}
 		
@@ -70,7 +76,9 @@ public final class ClanPostBoard extends CommunityBoard
 		{
 			int index = 1;
 			if (cmd.split(";").length == 5)
+			{
 				index = Integer.valueOf(cmd.split(";")[4]);
+			}
 			showPage(playerObjId, clanForum, type, index);
 		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("read"))
@@ -78,7 +86,9 @@ public final class ClanPostBoard extends CommunityBoard
 			Topic t = clanForum.gettopic(type);
 			Post p = t.getPost(Integer.valueOf(cmd.split(";")[4]));
 			if (p == null)
+			{
 				_log.info("Missing post: " + cmd);
+			}
 			else
 			{
 				if (cmd.split(";").length > 5)
@@ -87,13 +97,15 @@ public final class ClanPostBoard extends CommunityBoard
 					showPost(playerObjId, t, p, clanId, type, Integer.valueOf(cmd.split(";")[5]), Integer.valueOf(cmd.split(";")[6]));
 				}
 				else
+				{
 					showPost(playerObjId, t, p, clanId, type, 1, 1);
+				}
 			}
 		}
-		else if (!isLeader && ((isPlayerMember && perMem == 1) || (!isPlayerMember && perNon == 1)))
+		else if (!isLeader && ((isPlayerMember && (perMem == 1)) || (!isPlayerMember && (perNon == 1))))
 		{
 			// TODO: this way Clan Post Board command missing part could be missed
-			super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId,PlayerSendMessage.NO_WRITE_PERMISSION,""));
+			super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId, PlayerSendMessage.NO_WRITE_PERMISSION, ""));
 			return;
 		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("crea"))
@@ -123,7 +135,9 @@ public final class ClanPostBoard extends CommunityBoard
 			showReply(playerObjId, p, clanId, type);
 		}
 		else
+		{
 			_log.info("Clan Post Board command missing: " + cmd.split(";")[1]);
+		}
 	}
 	
 	private String replace(String txt, int type)
@@ -144,7 +158,7 @@ public final class ClanPostBoard extends CommunityBoard
 				content = content.replaceAll("%combobox%", "Information;Miscellaneous");
 				break;
 		}
-
+		
 		return content;
 	}
 	
@@ -163,12 +177,12 @@ public final class ClanPostBoard extends CommunityBoard
 		int i = 0;
 		for (Post p : t.getAllPosts())
 		{
-			if (i > ((index - 1) * 10 + 9))
- 			{
- 				break;
- 			}
+			if (i > (((index - 1) * 10) + 9))
+			{
+				break;
+			}
 			if (i++ >= ((index - 1) * 10))
- 			{
+			{
 				mList.append("<img src=\"L2UI.SquareBlank\" width=\"750\" height=\"3\">");
 				mList.append("<table border=0 cellspacing=0 cellpadding=0 width=750>");
 				mList.append("<tr> ");
@@ -184,48 +198,48 @@ public final class ClanPostBoard extends CommunityBoard
 				mList.append("</table>");
 				mList.append("<img src=\"L2UI.SquareBlank\" width=\"750\" height=\"3\">");
 				mList.append("<img src=\"L2UI.SquareGray\" width=\"750\" height=\"1\">");
- 			}
+			}
 		}
 		content = content.replaceAll("%postList%", mList.toString());
 		mList.clear();
- 		if (index == 1)
- 		{
+		if (index == 1)
+		{
 			mList.append("<td><button action=\"\" back=\"l2ui_ch3.prev1_down\" fore=\"l2ui_ch3.prev1\" width=16 height=16 ></td>");
- 		}
- 		else
- 		{
+		}
+		else
+		{
 			mList.append("<td><button action=\"bypass _bbscpost;list;%type%;%clanid%;" + (index - 1) + "\" back=\"l2ui_ch3.prev1_down\" fore=\"l2ui_ch3.prev1\" width=16 height=16 ></td>");
- 		}
-
- 		int nbp;
+		}
+		
+		int nbp;
 		nbp = t.getAllPosts().size() / 10;
-		if (nbp * 10 != t.getAllPosts().size())
- 		{
- 			nbp++;
- 		}
+		if ((nbp * 10) != t.getAllPosts().size())
+		{
+			nbp++;
+		}
 		for (i = 1; i <= nbp; i++)
- 		{
- 			if (i == index)
- 			{
+		{
+			if (i == index)
+			{
 				mList.append("<td> " + i + " </td>");
- 			}
- 			else
- 			{
+			}
+			else
+			{
 				mList.append("<td><a action=\"bypass _bbscpost;list;%type%;%clanid%;" + i + "\"> " + i + " </a></td>");
- 			}
- 		}
- 		if (index == nbp)
- 		{
+			}
+		}
+		if (index == nbp)
+		{
 			mList.append("<td><button action=\"\" back=\"l2ui_ch3.next1_down\" fore=\"l2ui_ch3.next1\" width=16 height=16 ></td>");
- 		}
- 		else
- 		{
+		}
+		else
+		{
 			mList.append("<td><button action=\"bypass _bbscpost;list;%type%;%clanid%;" + (index + 1) + "\" back=\"l2ui_ch3.next1_down\" fore=\"l2ui_ch3.next1\" width=16 height=16 ></td>");
- 		}
+		}
 		content = content.replaceAll("%postListLength%", mList.toString());
 		content = replace(content, type);
 		content = content.replaceAll("%clanid%", String.valueOf(f.getOwner()));
-
+		
 		super.send(playerObjId, content);
 	}
 	
@@ -251,7 +265,7 @@ public final class ClanPostBoard extends CommunityBoard
 		
 		super.sendWrite(playerObjId, content, message, title, title);
 	}
-
+	
 	public final void showReply(final int playerObjId, Post p, int clanId, int type)
 	{
 		if (p == null)
@@ -283,7 +297,9 @@ public final class ClanPostBoard extends CommunityBoard
 			parent = t.getPost(p.getParentId());
 		}
 		else
+		{
 			content = content.replaceAll("%postParentId%", String.valueOf(p.getID()));
+		}
 		content = content.replaceAll("%postOwnerName%", getCommunityBoardManager().getPlayer(p.getOwnerId()).getName());
 		content = content.replaceAll("%postReadCount%", String.valueOf(p.getReadCount()));
 		content = content.replaceAll("%postDate%", DateFormat.getInstance().format(new Date(p.getDate())));
@@ -292,7 +308,7 @@ public final class ClanPostBoard extends CommunityBoard
 		// reply list
 		TextBuilder mList = new TextBuilder();
 		int i = 1;
-		FastList<Post> childrenList = t.getChildrenPosts(parent); 
+		FastList<Post> childrenList = t.getChildrenPosts(parent);
 		for (Post child : childrenList)
 		{
 			if (i++ == indexR)
@@ -301,9 +317,13 @@ public final class ClanPostBoard extends CommunityBoard
 				mList.append("<tr>");
 				mList.append("<td WIDTH=60 align=center>" + child.getID() + "</td>");
 				if (child != p)
+				{
 					mList.append("<td width=415><a action=\"bypass _bbscpost;read;%type%;" + clanId + ";" + child.getID() + "\">" + child.getTypeName() + child.getTitle() + "</a></td>");
+				}
 				else
+				{
 					mList.append("<td width=415>" + child.getTypeName() + child.getTitle() + "</td>");
+				}
 				mList.append("<td WIDTH=130 align=center>" + getCommunityBoardManager().getPlayer(child.getOwnerId()).getName() + "</td>");
 				mList.append("<td WIDTH=80 align=center>" + DateFormat.getInstance().format(new Date(child.getDate())) + "</td>");
 				mList.append("<td WIDTH=65 align=center>" + child.getReadCount() + "</td>");
@@ -313,23 +333,34 @@ public final class ClanPostBoard extends CommunityBoard
 		}
 		content = content.replaceAll("%replyList%", mList.toString());
 		if (indexR == 1)
+		{
 			content = content.replaceAll("%prevReply%", "[Previous Reply]");
+		}
 		else
+		{
 			content = content.replaceAll("%prevReply%", "<a action=\"bypass _bbscpost;read;%type%;" + clanId + ";" + p.getID() + ";" + (indexR - 1) + ";" + indexC + "\">[Previous Reply]</a>");
+		}
 		content = content.replaceAll("%replyCount%", indexR + "/" + childrenList.size());
 		if (indexR == childrenList.size())
+		{
 			content = content.replaceAll("%nextReply%", "[Next Reply]");
+		}
 		else
+		{
 			content = content.replaceAll("%nextReply%", "<a action=\"bypass _bbscpost;read;%type%;" + clanId + ";" + p.getID() + ";" + (indexR + 1) + ";" + indexC + "\">[Next Reply]</a>");
+		}
 		
 		// comment list
 		mList.clear();
 		i = 1;
 		Collection<Comment> commentsList = p.getAllComments();
-		int csize = commentsList.size(); 
+		int csize = commentsList.size();
 		if (csize == 0)
+		{
 			csize = 1;
+		}
 		else
+		{
 			for (Comment c : commentsList)
 			{
 				if (i++ == indexC)
@@ -348,17 +379,26 @@ public final class ClanPostBoard extends CommunityBoard
 					mList.append("</td></tr>");
 				}
 			}
+		}
 		content = content.replaceAll("%commentList%", mList.toString());
 		if (indexC == 1)
+		{
 			content = content.replaceAll("%prevCom%", "[Previous Comment]");
+		}
 		else
+		{
 			content = content.replaceAll("%prevCom%", "<a action=\"bypass _bbscpost;read;%type%;" + clanId + ";" + p.getID() + ";" + indexR + ";" + (indexC - 1) + "\">[Previous Comment]</a>");
+		}
 		content = content.replaceAll("%comCount%", indexC + "/" + csize);
 		if (indexC == csize)
+		{
 			content = content.replaceAll("%nextCom%", "[Next Comment]");
+		}
 		else
+		{
 			content = content.replaceAll("%nextCom%", "<a action=\"bypass _bbscpost;read;%type%;" + clanId + ";" + p.getID() + ";" + indexR + ";" + (indexC + 1) + "\">[Next Comment]</a>");
-
+		}
+		
 		content = replace(content, type);
 		content = content.replaceAll("%clanid%", String.valueOf(clanId));
 		super.send(playerObjId, content);
@@ -374,20 +414,24 @@ public final class ClanPostBoard extends CommunityBoard
 		int perNon = clanForum.gettopic(topicId).getPermissions();
 		int perMem = perNon % 10;
 		perNon = (perNon - perMem) / 10;
-		boolean isPlayerMember = getCommunityBoardManager().getPlayer(playerObjId).getClanId() == clanId; 
+		boolean isPlayerMember = getCommunityBoardManager().getPlayer(playerObjId).getClanId() == clanId;
 		boolean isLeader = getCommunityBoardManager().getClan(clanId).getLordObjId() == playerObjId;
-		if (!isLeader && ((isPlayerMember && perMem != 2) || (!isPlayerMember && perNon != 2)))
+		if (!isLeader && ((isPlayerMember && (perMem != 2)) || (!isPlayerMember && (perNon != 2))))
 		{
-			super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId,PlayerSendMessage.NO_WRITE_PERMISSION,""));
+			super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId, PlayerSendMessage.NO_WRITE_PERMISSION, ""));
 			return;
 		}
-
+		
 		int type = Post.ADVERTISE;
 		if (ar5.equalsIgnoreCase("Information"))
+		{
 			type = Post.INFORMATION;
+		}
 		else if (ar5.equalsIgnoreCase("Miscellaneous"))
+		{
 			type = Post.MISCELLANEOUS;
-
+		}
+		
 		if (ar1.equalsIgnoreCase("new"))
 		{
 			postId = clanForum.gettopic(topicId).getNewPostId();
@@ -415,7 +459,9 @@ public final class ClanPostBoard extends CommunityBoard
 			return;
 		}
 		else
+		{
 			_log.info("Clan Post Write command missing: " + ar1);
+		}
 		showPage(playerObjId, clanForum, topicId, 1);
 	}
 }

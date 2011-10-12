@@ -23,24 +23,24 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import javolution.util.FastMap;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import javolution.util.FastMap;
 import com.l2jserver.communityserver.Config;
 
 /**
  * @author Layane
- *
  */
 public class HtmCache
 {
 	private static Logger _log = Logger.getLogger(HtmCache.class.getName());
 	private static HtmCache _instance;
 	
-	private FastMap<Integer, String> _cache;
-	private FastMap<Integer, String> _serverTopDir;
+	private final FastMap<Integer, String> _cache;
+	private final FastMap<Integer, String> _serverTopDir;
 	
 	private int _loadedFiles;
 	private long _bytesBuffLen;
@@ -48,7 +48,9 @@ public class HtmCache
 	public static HtmCache getInstance()
 	{
 		if (_instance == null)
+		{
 			_instance = new HtmCache();
+		}
 		
 		return _instance;
 	}
@@ -109,7 +111,8 @@ public class HtmCache
 	
 	public void reload(File f)
 	{
-/*		if (!Config.LAZY_CACHE)
+		// @formatter:off
+		/*if (!Config.LAZY_CACHE)
 		{
 			_log.info("Html cache start...");
 			parseDir(f);
@@ -122,6 +125,7 @@ public class HtmCache
 			_bytesBuffLen = 0;
 			_log.info("Cache[HTML]: Running lazy cache");
 		//}
+		// @formatter:on
 	}
 	
 	public void reloadPath(File f)
@@ -147,6 +151,7 @@ public class HtmCache
 	
 	class HtmFilter implements FileFilter
 	{
+		@Override
 		public boolean accept(File file)
 		{
 			if (!file.isDirectory())
@@ -165,9 +170,13 @@ public class HtmCache
 		for (File file : files)
 		{
 			if (!file.isDirectory())
+			{
 				loadFile(file);
+			}
 			else
+			{
 				parseDir(file);
+			}
 		}
 	}
 	
@@ -203,7 +212,7 @@ public class HtmCache
 				}
 				else
 				{
-					_bytesBuffLen = _bytesBuffLen - oldContent.length() + bytes;
+					_bytesBuffLen = (_bytesBuffLen - oldContent.length()) + bytes;
 				}
 				
 				_cache.put(hashcode, content);
@@ -247,22 +256,26 @@ public class HtmCache
 		String content = _cache.get(path.hashCode());
 		
 		if (content == null)
+		{
 			content = loadFile(new File(Config.DATAPACK_ROOT, path));
-
+		}
+		
 		return content;
 	}
-
+	
 	public String getHtm(final int sqlDPId, String file)
 	{
 		String path = "data/top/" + _serverTopDir.get(sqlDPId) + "/" + file;
 		String content = _cache.get(path.hashCode());
 		
 		if (content == null)
+		{
 			content = loadFile(new File(Config.DATAPACK_ROOT, path));
-
+		}
+		
 		return content;
 	}
-
+	
 	public boolean contains(String path)
 	{
 		return _cache.containsKey(path.hashCode());
@@ -270,16 +283,17 @@ public class HtmCache
 	
 	/**
 	 * Check if an HTM exists and can be loaded
-	 * @param
-	 * path The path to the HTM
-	 * */
+	 * @param path The path to the HTM
+	 */
 	public boolean isLoadable(String path)
 	{
 		File file = new File(path);
 		HtmFilter filter = new HtmFilter();
 		
 		if (file.exists() && filter.accept(file) && !file.isDirectory())
+		{
 			return true;
+		}
 		
 		return false;
 	}

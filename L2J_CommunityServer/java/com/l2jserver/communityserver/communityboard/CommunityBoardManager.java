@@ -20,22 +20,24 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
+
+import org.netcon.BaseWritePacket;
+
 import com.l2jserver.communityserver.Config;
 import com.l2jserver.communityserver.L2DatabaseFactory;
 import com.l2jserver.communityserver.communityboard.boards.ClanBoard;
+import com.l2jserver.communityserver.communityboard.boards.ClanPostBoard;
 import com.l2jserver.communityserver.communityboard.boards.ErrorBoard;
 import com.l2jserver.communityserver.communityboard.boards.FriendBoard;
 import com.l2jserver.communityserver.communityboard.boards.MailBoard;
 import com.l2jserver.communityserver.communityboard.boards.MemoBoard;
 import com.l2jserver.communityserver.communityboard.boards.RegionBoard;
 import com.l2jserver.communityserver.communityboard.boards.TopBoard;
-import com.l2jserver.communityserver.communityboard.boards.ClanPostBoard;
 import com.l2jserver.communityserver.model.Forum;
 import com.l2jserver.communityserver.model.L2Castle;
-import com.l2jserver.communityserver.model.L2Player;
 import com.l2jserver.communityserver.model.L2Clan;
+import com.l2jserver.communityserver.model.L2Player;
 import com.l2jserver.communityserver.network.GameServerThread;
-import com.l2jserver.communityserver.network.netcon.BaseWritePacket;
 import com.l2jserver.communityserver.network.writepackets.RequestWorldInfo;
 
 public final class CommunityBoardManager
@@ -46,7 +48,9 @@ public final class CommunityBoardManager
 	public static CommunityBoardManager getInstance(final int sqlDPId)
 	{
 		if (_instances == null)
+		{
 			_instances = new FastMap<Integer, CommunityBoardManager>();
+		}
 		
 		CommunityBoardManager mgr = _instances.get(sqlDPId);
 		
@@ -59,10 +63,10 @@ public final class CommunityBoardManager
 		return mgr;
 	}
 	
-	private FastMap<Integer, Forum> _forumRoot;
-	private FastMap<Integer, L2Player> _players;
-	private FastMap<Integer, L2Clan> _clans;
-	private FastMap<Integer, L2Castle> _castles;
+	private final FastMap<Integer, Forum> _forumRoot;
+	private final FastMap<Integer, L2Player> _players;
+	private final FastMap<Integer, L2Clan> _clans;
+	private final FastMap<Integer, L2Castle> _castles;
 	private final FastMap<String, CommunityBoard> _boards;
 	private final int _sqlDPId;
 	private GameServerThread _gst;
@@ -126,7 +130,9 @@ public final class CommunityBoardManager
 					}
 				}
 				if (f.getID() > _lastForumId)
+				{
 					_lastForumId = f.getID();
+				}
 			}
 			result.close();
 			statement.close();
@@ -153,7 +159,9 @@ public final class CommunityBoardManager
 			statement.setInt(1, _sqlDPId);
 			ResultSet result = statement.executeQuery();
 			while (result.next())
+			{
 				getClan(result.getInt("clanId")).setIntroduction(result.getString("introduction"));
+			}
 			result.close();
 			statement.close();
 		}
@@ -175,14 +183,16 @@ public final class CommunityBoardManager
 		int requestedClanNotices = 0;
 		try
 		{
-			for(L2Clan c : _clans.values())
+			for (L2Clan c : _clans.values())
 			{
 				if (c == null)
+				{
 					continue;
+				}
 				if (_players.containsKey(c.getLordObjId()) && _players.get(c.getLordObjId()).isOnline())
 				{
-					getGST().sendPacket(new RequestWorldInfo(RequestWorldInfo.CLAN_NOTICE_DATA,c.getClanId(), "", false));
-					requestedClanNotices++;	
+					getGST().sendPacket(new RequestWorldInfo(RequestWorldInfo.CLAN_NOTICE_DATA, c.getClanId(), "", false));
+					requestedClanNotices++;
 				}
 			}
 			_log.info("Requesting " + requestedClanNotices + " clan notices from GS.");
@@ -192,7 +202,7 @@ public final class CommunityBoardManager
 			_log.warning("Data error on Notice Load: " + e);
 			// e.printStackTrace();
 		}
-
+		
 	}
 	
 	private int getNewForumId()
@@ -211,7 +221,9 @@ public final class CommunityBoardManager
 	public void addPlayer(L2Player player)
 	{
 		if (!_players.containsKey(player.getObjId()))
+		{
 			_players.put(player.getObjId(), player);
+		}
 	}
 	
 	public void updatePlayer(int playerObjId, String name, String accountName, int playerLevel, int accessLevel, int playerClanId, boolean isOnline, int[] friendIDs)
@@ -220,25 +232,35 @@ public final class CommunityBoardManager
 		{
 			L2Player player = _players.get(playerObjId);
 			if (player.getName() != name)
+			{
 				player.setName(name);
+			}
 			if (player.getLevel() != playerLevel)
+			{
 				player.setLevel(playerLevel);
+			}
 			if (player.getAccessLevel() != accessLevel)
+			{
 				player.setAccessLevel(accessLevel);
+			}
 			if (player.getClanId() != playerClanId)
+			{
 				player.setClanId(playerClanId);
+			}
 			if (player.isOnline() != isOnline)
+			{
 				player.setIsOnline(isOnline);
+			}
 			player.removeAllFriends();
-			for(int i : friendIDs)
+			for (int i : friendIDs)
 			{
 				player.addFriend(i);
-			}			
+			}
 		}
 		else
 		{
 			L2Player player = new L2Player(playerObjId, name, accountName, playerLevel, accessLevel, playerClanId, isOnline);
-			for(int i : friendIDs)
+			for (int i : friendIDs)
 			{
 				player.addFriend(i);
 			}
@@ -250,18 +272,24 @@ public final class CommunityBoardManager
 	public L2Player getPlayer(int playerObjId)
 	{
 		if (!_players.containsKey(playerObjId))
+		{
 			return null;
+		}
 		return _players.get(playerObjId);
 	}
 	
 	public L2Player getPlayerByName(String playerName)
 	{
 		for (L2Player p : _players.values())
+		{
 			if (p.getName().equalsIgnoreCase(playerName.toLowerCase()))
+			{
 				return p;
+			}
+		}
 		return null;
 	}
-
+	
 	public Collection<L2Player> getPlayerList()
 	{
 		return _players.values();
@@ -270,10 +298,12 @@ public final class CommunityBoardManager
 	public Forum getPlayerForum(int playerObjId)
 	{
 		if (!_players.containsKey(playerObjId))
+		{
 			return null;
+		}
 		L2Player p = _players.get(playerObjId);
 		Forum ret = p.getForum();
-		if (ret == null && p.getLevel() >= Config.MIN_PLAYER_LVL_FOR_FORUM)
+		if ((ret == null) && (p.getLevel() >= Config.MIN_PLAYER_LVL_FOR_FORUM))
 		{
 			ret = new Forum(_sqlDPId, getNewForumId(), p.getName(), Forum.PLAYER, p.getObjId());
 			p.setForum(ret);
@@ -284,7 +314,9 @@ public final class CommunityBoardManager
 	public void addClan(L2Clan clan)
 	{
 		if (!_clans.containsKey(clan.getClanId()))
+		{
 			_clans.put(clan.getClanId(), clan);
+		}
 	}
 	
 	public void updateClan(int clanId, String clanName, int level, int lordObjId, String lordName, int members, String allyName, int[] alliance, boolean isNoticeEnabled)
@@ -293,23 +325,35 @@ public final class CommunityBoardManager
 		{
 			L2Clan clan = _clans.get(clanId);
 			if (clan.getName() != clanName)
+			{
 				clan.setName(clanName);
+			}
 			if (clan.getClanLevel() != level)
+			{
 				clan.setLevel(level);
+			}
 			if (clan.getLordObjId() != lordObjId)
 			{
 				clan.setLordObjId(lordObjId);
 				clan.setLordName(lordName);
 			}
 			if (clan.getLordName() != lordName)
+			{
 				clan.setLordName(lordName);
+			}
 			if (clan.getMembersCount() != members)
+			{
 				clan.setMembersCount(members);
+			}
 			if (clan.getAllianceName() != allyName)
+			{
 				clan.setAllianceName(allyName);
+			}
 			clan.setAllianceClanIdList(alliance);
 			if (clan.isNoticeEnabled() != isNoticeEnabled)
+			{
 				clan.setNoticeEnabled(isNoticeEnabled);
+			}
 		}
 		else
 		{
@@ -322,20 +366,26 @@ public final class CommunityBoardManager
 	public L2Clan getClan(int clanId)
 	{
 		if (!_clans.containsKey(clanId))
+		{
 			return null;
+		}
 		return _clans.get(clanId);
 	}
 	
 	public L2Clan getPlayersClan(int playerObjId)
 	{
 		if (!_players.containsKey(playerObjId))
+		{
 			return null;
+		}
 		int clanId = _players.get(playerObjId).getClanId();
 		if (!_clans.containsKey(clanId))
+		{
 			return null;
+		}
 		return _clans.get(clanId);
 	}
-
+	
 	public Collection<L2Clan> getClanList()
 	{
 		return _clans.values();
@@ -344,10 +394,12 @@ public final class CommunityBoardManager
 	public Forum getClanForum(int clanId)
 	{
 		if (!_clans.containsKey(clanId))
+		{
 			return null;
+		}
 		L2Clan c = _clans.get(clanId);
 		Forum ret = c.getForum();
-		if (ret == null && c.getClanLevel() >= Config.MIN_CLAN_LVL_FOR_FORUM)
+		if ((ret == null) && (c.getClanLevel() >= Config.MIN_CLAN_LVL_FOR_FORUM))
 		{
 			ret = new Forum(_sqlDPId, getNewForumId(), c.getName(), Forum.CLAN, c.getClanId());
 			c.setForum(ret);
@@ -369,7 +421,7 @@ public final class CommunityBoardManager
 	{
 		return _castles.values();
 	}
-
+	
 	public boolean isLoaded()
 	{
 		return _isLoaded;
@@ -380,7 +432,7 @@ public final class CommunityBoardManager
 		loadDataBase();
 		_isLoaded = true;
 	}
-		
+	
 	public void storeClanIntro(int clanId, String intro)
 	{
 		java.sql.Connection con = null;
@@ -418,9 +470,13 @@ public final class CommunityBoardManager
 		try
 		{
 			if (_boards.containsKey(board))
+			{
 				_boards.get(board).parseCmd(playerObjId, cmd);
+			}
 			else
+			{
 				_boards.get("_bbserror").parseCmd(playerObjId, "noBoard;" + cmd);
+			}
 		}
 		catch (Exception e)
 		{
@@ -433,9 +489,13 @@ public final class CommunityBoardManager
 		try
 		{
 			if (_boards.containsKey(url))
+			{
 				_boards.get(url).parseWrite(playerObjId, arg1, arg2, arg3, arg4, arg5);
+			}
 			else
+			{
 				_boards.get("_bbserror").parseCmd(playerObjId, "noBoard;" + url);
+			}
 		}
 		catch (Exception e)
 		{

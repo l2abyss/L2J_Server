@@ -17,6 +17,7 @@ package com.l2jserver.communityserver.communityboard.boards;
 import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
+
 import com.l2jserver.communityserver.cache.HtmCache;
 import com.l2jserver.communityserver.communityboard.CommunityBoard;
 import com.l2jserver.communityserver.communityboard.CommunityBoardManager;
@@ -25,6 +26,7 @@ import com.l2jserver.communityserver.model.L2Player;
 public final class FriendBoard extends CommunityBoard
 {
 	private static Logger _log = Logger.getLogger(FriendBoard.class.getName());
+	
 	public FriendBoard(final CommunityBoardManager mgr)
 	{
 		super(mgr);
@@ -34,7 +36,9 @@ public final class FriendBoard extends CommunityBoard
 	public void parseCmd(final int playerObjId, final String cmd)
 	{
 		if (cmd.equals("_bbsfriend"))
+		{
 			showMainPage(playerObjId, false);
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("mail"))
 		{
 			showMailWrite(playerObjId);
@@ -44,7 +48,9 @@ public final class FriendBoard extends CommunityBoard
 			L2Player player = super.getCommunityBoardManager().getPlayer(playerObjId);
 			Integer friendId = Integer.valueOf(cmd.split(";")[2]);
 			if (!player.getSelectedFriendsList().contains(friendId))
+			{
 				player.selectFriend(friendId);
+			}
 			showMainPage(playerObjId, false);
 		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("deselect"))
@@ -58,7 +64,9 @@ public final class FriendBoard extends CommunityBoard
 			showMainPage(playerObjId, true);
 		}
 		else
+		{
 			_log.info("Friend command missing: " + cmd.split(";")[1]);
+		}
 	}
 	
 	public final void showMainPage(final int playerObjId, boolean delMsg)
@@ -66,23 +74,27 @@ public final class FriendBoard extends CommunityBoard
 		String content = HtmCache.getInstance().getHtm("data/staticfiles/html/friend.htm");
 		TextBuilder fList = new TextBuilder();
 		L2Player player = super.getCommunityBoardManager().getPlayer(playerObjId);
-		for (int f:player.getFriendList())
+		for (int f : player.getFriendList())
 		{
 			L2Player friend = super.getCommunityBoardManager().getPlayer(f);
-			fList.append("<a action=\"bypass _bbsfriend;select;" + friend.getObjId() + "\">" + friend.getName() + "</a> (" + (friend.isOnline() ? "On":"Off") + ") &nbsp;");
+			fList.append("<a action=\"bypass _bbsfriend;select;" + friend.getObjId() + "\">" + friend.getName() + "</a> (" + (friend.isOnline() ? "On" : "Off") + ") &nbsp;");
 		}
 		content = content.replaceAll("%friendslist%", fList.toString());
 		fList.clear();
-		for (int f:player.getSelectedFriendsList())
+		for (int f : player.getSelectedFriendsList())
 		{
 			L2Player friend = super.getCommunityBoardManager().getPlayer(f);
 			fList.append("<a action=\"bypass _bbsfriend;deselect;" + friend.getObjId() + "\">" + friend.getName() + "</a>;");
 		}
 		content = content.replaceAll("%selectedFriendsList%", fList.toString());
 		if (delMsg)
+		{
 			content = content.replaceAll("%deleteMSG%", "<br>\nAre you sure you want to delete all messages from your Friends List? <button value = \"OK\" action=\"bypass _bssfriend;delall\" back=\"l2ui_ch3.smallbutton2_down\" width=65 height=20 fore=\"l2ui_ch3.smallbutton2\">");
+		}
 		else
+		{
 			content = content.replaceAll("%deleteMSG%", "");
+		}
 		super.send(playerObjId, content);
 	}
 	
@@ -92,24 +104,28 @@ public final class FriendBoard extends CommunityBoard
 		String message = " ";
 		String content = HtmCache.getInstance().getHtm("data/staticfiles/html/mail-write.htm");
 		content = content.replaceAll("%maillink%", "<a action=\"bypass _bbsfriend\">&\\$904;</a> > &\\$915;");
-
+		
 		content = content.replaceAll("%playerObjId%", String.valueOf(playerObjId));
 		content = content.replaceAll("%postId%", "-1");
 		
 		String toList = "";
 		L2Player player = super.getCommunityBoardManager().getPlayer(playerObjId);
-		for (int f:player.getSelectedFriendsList())
+		for (int f : player.getSelectedFriendsList())
 		{
 			if (toList.equals(""))
+			{
 				toList += super.getCommunityBoardManager().getPlayer(f).getName();
+			}
 			else
+			{
 				toList += (";" + super.getCommunityBoardManager().getPlayer(f).getName());
+			}
 		}
-
+		
 		super.sendWrite(playerObjId, content, message, title, toList);
-
+		
 	}
-
+	
 	@Override
 	public final void parseWrite(final int playerObjId, final String ar1, final String ar2, final String ar3, final String ar4, final String ar5)
 	{

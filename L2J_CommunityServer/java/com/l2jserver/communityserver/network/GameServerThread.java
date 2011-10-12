@@ -22,17 +22,18 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.netcon.BaseReadPacket;
+import org.netcon.BaseWritePacket;
+import org.netcon.NetConnection;
+import org.netcon.NetConnectionConfig;
+
 import com.l2jserver.communityserver.GameServerRegistrationTable;
 import com.l2jserver.communityserver.communityboard.CommunityBoardManager;
-import com.l2jserver.communityserver.network.netcon.BaseReadPacket;
-import com.l2jserver.communityserver.network.netcon.BaseWritePacket;
-import com.l2jserver.communityserver.network.netcon.NetConnection;
-import com.l2jserver.communityserver.network.netcon.NetConnectionConfig;
 import com.l2jserver.communityserver.network.readpackets.BlowFishKey;
 import com.l2jserver.communityserver.network.readpackets.GameServerAuth;
-import com.l2jserver.communityserver.network.readpackets.WorldInfo;
 import com.l2jserver.communityserver.network.readpackets.RequestShowCommunityBoard;
 import com.l2jserver.communityserver.network.readpackets.RequestWriteCommunityBoard;
+import com.l2jserver.communityserver.network.readpackets.WorldInfo;
 import com.l2jserver.communityserver.network.writepackets.AuthResponse;
 import com.l2jserver.communityserver.network.writepackets.CommunityServerFail;
 import com.l2jserver.communityserver.network.writepackets.InitCS;
@@ -42,7 +43,6 @@ import com.l2jserver.communityserver.threading.ThreadPoolManager;
 /**
  * @author Forsaiken
  */
-
 public class GameServerThread extends NetConnection
 {
 	protected static final Logger _log = Logger.getLogger(GameServerThread.class.getName());
@@ -54,13 +54,13 @@ public class GameServerThread extends NetConnection
 	private boolean _isAuthed;
 	private loadingData _loadingTask;
 	
-	public GameServerThread(final NetConnectionConfig config) throws IOException
+	public GameServerThread(final NetConnectionConfig config)
 	{
 		super(config);
-		setName(getClass().getSimpleName()+"-"+getId());
+		setName(getClass().getSimpleName() + "-" + getId());
 		final KeyPair pair = GameServerRegistrationTable.getInstance().getRandomKeyPair();
-		_privateKey = (RSAPrivateKey)pair.getPrivate();
-		_publicKey = (RSAPublicKey)pair.getPublic();
+		_privateKey = (RSAPrivateKey) pair.getPrivate();
+		_publicKey = (RSAPublicKey) pair.getPublic();
 	}
 	
 	@Override
@@ -110,39 +110,37 @@ public class GameServerThread extends NetConnection
 						}
 						
 						if (_loadingTask != null)
+						{
 							_loadingTask.addPacket();
+						}
 						packet = new WorldInfo(data, this, packetType2);
+						//@formatter:off
 						/*
 						switch (packetType2)
 						{
 							case 0x00:
 								packet = new WorldInfo(data, this, packetType2);
 								break;
-
 							case 0x01:
 								packet = new WorldInfo(data, this, 1);
 								break;
-								
 							case 0x02:
 								packet = new WorldInfo(data, this, 2);
 								break;
-								
 							case 0x03:
 								packet = new PlayerUpdate(data, this);
 								break;
-								
 							case 0x04:
 								// clan update
 								break;
-								
 							case 0x05:
 								// clan created
 								break;
-								
 							case 0x06:
 								// clan deleted
 								break;
 						}*/
+						//@formatter:on
 						break;
 					}
 					
@@ -169,9 +167,13 @@ public class GameServerThread extends NetConnection
 				}
 				
 				if (packet != null)
+				{
 					ThreadPoolManager.execute(packet);
+				}
 				else
+				{
 					throw new IOException("Invalid packet!");
+				}
 			}
 		}
 		catch (SocketException se)
@@ -196,12 +198,16 @@ public class GameServerThread extends NetConnection
 	private final void setCommunityBoardManager(final CommunityBoardManager communityBoardManager)
 	{
 		if (_communityBoardManager != null)
+		{
 			_communityBoardManager.setGST(null);
+		}
 		
 		_communityBoardManager = communityBoardManager;
 		
 		if (_communityBoardManager != null)
+		{
 			_communityBoardManager.setGST(this);
+		}
 	}
 	
 	public final void sendPacket(final BaseWritePacket packet)
@@ -294,10 +300,10 @@ public class GameServerThread extends NetConnection
 			_loadingTask.sendedPacket(val);
 		}
 	}
-
+	
 	private final class loadingData implements Runnable
 	{
-		private  GameServerThread _gst;
+		private final GameServerThread _gst;
 		private int _incomePacket;
 		private int _neededPacket;
 		
@@ -307,13 +313,14 @@ public class GameServerThread extends NetConnection
 			_neededPacket = -1;
 			_incomePacket = 0;
 		}
-
+		
+		@Override
 		public final void run()
 		{
 			try
 			{
 				int i = 0;
-				while ((_neededPacket == -1 || _incomePacket < _neededPacket) && i++ < 15)
+				while (((_neededPacket == -1) || (_incomePacket < _neededPacket)) && (i++ < 15))
 				{
 					currentThread();
 					Thread.sleep(1000);
@@ -325,9 +332,13 @@ public class GameServerThread extends NetConnection
 				e.printStackTrace();
 			}
 			if (_neededPacket == -1)
+			{
 				_gst.forceClose(null);
+			}
 			else if (_incomePacket != _neededPacket)
+			{
 				_gst.forceClose(null);
+			}
 			else
 			{
 				_log.info("CB successfully get " + _gst.getCommunityBoardManager().getPlayerList().size() + " player(s) data.");

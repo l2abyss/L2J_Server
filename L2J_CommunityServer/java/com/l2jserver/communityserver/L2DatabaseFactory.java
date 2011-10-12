@@ -23,16 +23,15 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class L2DatabaseFactory
 {
-    static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
-
-    public static enum ProviderType
-    {
-        MySql,
-        MsSql
-    }
-    
-    private static L2DatabaseFactory _instance;
-    private final ProviderType _providerType;
+	static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
+	
+	public static enum ProviderType
+	{
+		MySql, MsSql
+	}
+	
+	private static L2DatabaseFactory _instance;
+	private final ProviderType _providerType;
 	private final ComboPooledDataSource _source;
 	
 	public L2DatabaseFactory() throws SQLException
@@ -40,10 +39,10 @@ public class L2DatabaseFactory
 		try
 		{
 			if (Config.DATABASE_MAX_CONNECTIONS < 2)
-            {
-                Config.DATABASE_MAX_CONNECTIONS = 2;
-                _log.warning("at least " + Config.DATABASE_MAX_CONNECTIONS + " db connections are required.");
-            }
+			{
+				Config.DATABASE_MAX_CONNECTIONS = 2;
+				_log.warning("at least " + Config.DATABASE_MAX_CONNECTIONS + " db connections are required.");
+			}
 			
 			_source = new ComboPooledDataSource();
 			_source.setAutoCommitOnClose(true);
@@ -67,9 +66,13 @@ public class L2DatabaseFactory
 			_source.getConnection().close();
 			
 			if (Config.DATABASE_DRIVER.toLowerCase().contains("microsoft"))
-                _providerType = ProviderType.MsSql;
-            else
-                _providerType = ProviderType.MySql;
+			{
+				_providerType = ProviderType.MsSql;
+			}
+			else
+			{
+				_providerType = ProviderType.MySql;
+			}
 		}
 		catch (SQLException x)
 		{
@@ -83,59 +86,69 @@ public class L2DatabaseFactory
 		}
 	}
 	
-    public final String prepQuerySelect(String[] fields, String tableName, String whereClause, boolean returnOnlyTopRecord)
-    {
-        String msSqlTop1 = "";
-        String mySqlTop1 = "";
-        if (returnOnlyTopRecord)
-        {
-            if (getProviderType() == ProviderType.MsSql) msSqlTop1 = " Top 1 ";
-            if (getProviderType() == ProviderType.MySql) mySqlTop1 = " Limit 1 ";
-        }
-        String query = "SELECT " + msSqlTop1 + safetyString(fields) + " FROM " + tableName + " WHERE " + whereClause + mySqlTop1;
-        return query;
-    }
-
-    public final void shutdown()
-    {
-        try
-        {
-            _source.close();
-        }
-        catch (Exception e)
-        {
-        	_log.log(Level.INFO, "", e);
-        }
-    }
-
-    public final String safetyString(String[] whatToCheck)
-    {
-        String braceLeft = "`";
-        String braceRight = "`";
-        if (getProviderType() == ProviderType.MsSql)
-        {
-            braceLeft = "[";
-            braceRight = "]";
-        }
-
-        String result = "";
-        for (String word : whatToCheck)
-        {
-            if (result != "")
-            	result += ", ";
-            result += braceLeft + word + braceRight;
-        }
-        return result;
-    }
-    
+	public final String prepQuerySelect(String[] fields, String tableName, String whereClause, boolean returnOnlyTopRecord)
+	{
+		String msSqlTop1 = "";
+		String mySqlTop1 = "";
+		if (returnOnlyTopRecord)
+		{
+			if (getProviderType() == ProviderType.MsSql)
+			{
+				msSqlTop1 = " Top 1 ";
+			}
+			if (getProviderType() == ProviderType.MySql)
+			{
+				mySqlTop1 = " Limit 1 ";
+			}
+		}
+		String query = "SELECT " + msSqlTop1 + safetyString(fields) + " FROM " + tableName + " WHERE " + whereClause + mySqlTop1;
+		return query;
+	}
+	
+	public final void shutdown()
+	{
+		try
+		{
+			_source.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.INFO, "", e);
+		}
+	}
+	
+	public final String safetyString(String[] whatToCheck)
+	{
+		String braceLeft = "`";
+		String braceRight = "`";
+		if (getProviderType() == ProviderType.MsSql)
+		{
+			braceLeft = "[";
+			braceRight = "]";
+		}
+		
+		String result = "";
+		for (String word : whatToCheck)
+		{
+			if (result != "")
+			{
+				result += ", ";
+			}
+			result += braceLeft + word + braceRight;
+		}
+		return result;
+	}
+	
 	public static final L2DatabaseFactory getInstance() throws SQLException
 	{
 		if (_instance == null)
+		{
 			_instance = new L2DatabaseFactory();
+		}
 		
 		return _instance;
 	}
-
+	
 	public final Connection getConnection()
 	{
 		Connection con = null;
@@ -147,24 +160,24 @@ public class L2DatabaseFactory
 			}
 			catch (SQLException e)
 			{
-				_log.warning("L2DatabaseFactory: getConnection() failed, trying again "+e);
+				_log.warning("L2DatabaseFactory: getConnection() failed, trying again " + e);
 			}
 		}
 		return con;
 	}
-
+	
 	public final int getBusyConnectionCount() throws SQLException
 	{
-	    return _source.getNumBusyConnectionsDefaultUser();
+		return _source.getNumBusyConnectionsDefaultUser();
 	}
-
+	
 	public final int getIdleConnectionCount() throws SQLException
 	{
-	    return _source.getNumIdleConnectionsDefaultUser();
+		return _source.getNumIdleConnectionsDefaultUser();
 	}
-
-    public final ProviderType getProviderType()
-    {
-    	return _providerType;
-    }
+	
+	public final ProviderType getProviderType()
+	{
+		return _providerType;
+	}
 }

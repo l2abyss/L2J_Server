@@ -16,14 +16,15 @@ package com.l2jserver.communityserver.network.readpackets;
 
 //import java.util.logging.Logger;
 
+import org.netcon.BaseReadPacket;
+
 import com.l2jserver.communityserver.model.Forum;
 import com.l2jserver.communityserver.model.L2Castle;
-import com.l2jserver.communityserver.model.L2Player;
 import com.l2jserver.communityserver.model.L2Clan;
+import com.l2jserver.communityserver.model.L2Player;
 import com.l2jserver.communityserver.model.Post;
 import com.l2jserver.communityserver.model.Topic;
 import com.l2jserver.communityserver.network.GameServerThread;
-import com.l2jserver.communityserver.network.netcon.BaseReadPacket;
 import com.l2jserver.communityserver.network.writepackets.PlayerSendMessage;
 import com.l2jserver.communityserver.network.writepackets.RequestWorldInfo;
 
@@ -55,14 +56,14 @@ public final class WorldInfo extends BaseReadPacket
 				int i;
 				switch (type)
 				{
-					// information
+				// information
 					case 0:
 						_gst.addNeededPacket(super.readD());
 						break;
 					// player
 					case 1:
 						final int playersCount = super.readD();
-						for (i = 0; i < playersCount;i++)
+						for (i = 0; i < playersCount; i++)
 						{
 							int playerObjId = super.readD();
 							String name = super.readS();
@@ -90,7 +91,7 @@ public final class WorldInfo extends BaseReadPacket
 						String lordName;
 						int members;
 						String allyName;
-						for (i = 0; i < clanCount;i++)
+						for (i = 0; i < clanCount; i++)
 						{
 							clanId = super.readD();
 							clanName = super.readS();
@@ -98,7 +99,7 @@ public final class WorldInfo extends BaseReadPacket
 							lordObjId = super.readD();
 							lordName = super.readS();
 							members = super.readD();
-							boolean isNoticeEnabled =(super.readC() == 1 ? true : false);
+							boolean isNoticeEnabled = (super.readC() == 1 ? true : false);
 							allyName = super.readS();
 							int allySize = super.readD();
 							int[] alliance = new int[allySize];
@@ -112,13 +113,13 @@ public final class WorldInfo extends BaseReadPacket
 					// castle
 					case 3:
 						final int castleCount = super.readD();
-						for (i = 0; i < castleCount;i++)
+						for (i = 0; i < castleCount; i++)
 						{
 							int castleId = super.readD();
 							String castleName = super.readS();
 							int ownerId = super.readD();
 							int tax = super.readD();
-							long siegeDate = ((long)super.readD()) * 1000;
+							long siegeDate = ((long) super.readD()) * 1000;
 							_gst.getCommunityBoardManager().addCastle(new L2Castle(castleId, castleName, ownerId, tax, siegeDate));
 						}
 						break;
@@ -128,7 +129,7 @@ public final class WorldInfo extends BaseReadPacket
 				final int isFull = super.readC();
 				switch (isFull)
 				{
-					// full player packet
+				// full player packet
 					case 0x00:
 						int playerObjId = super.readD();
 						String name = super.readS();
@@ -155,20 +156,28 @@ public final class WorldInfo extends BaseReadPacket
 							return;
 						}
 						L2Player player = _gst.getCommunityBoardManager().getPlayer(playerObjId);
-						L2Clan playersClan = _gst.getCommunityBoardManager().getClan(player.getClanId()); 
+						L2Clan playersClan = _gst.getCommunityBoardManager().getClan(player.getClanId());
 						player.setIsOnline(isOnline);
 						if (isOnline)
 						{
 							Forum f = _gst.getCommunityBoardManager().getPlayerForum(playerObjId);
 							int unReaded = 0;
 							for (Post p : f.gettopic(Topic.INBOX).getAllPosts())
+							{
 								if (p.getReadCount() == 0)
+								{
 									unReaded++;
+								}
+							}
 							if (unReaded >= 1)
-								_gst.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId,1227,String.valueOf(unReaded)));
+							{
+								_gst.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId, 1227, String.valueOf(unReaded)));
+							}
 						}
-						if (playersClan != null && playersClan.getLordObjId() == playerObjId && !playersClan.isNoticeLoaded())
+						if ((playersClan != null) && (playersClan.getLordObjId() == playerObjId) && !playersClan.isNoticeLoaded())
+						{
 							_gst.sendPacket(new RequestWorldInfo(RequestWorldInfo.CLAN_NOTICE_DATA, playersClan.getClanId(), "", false));
+						}
 						break;
 				}
 				break;
@@ -179,7 +188,7 @@ public final class WorldInfo extends BaseReadPacket
 				int lordObjId = super.readD();
 				String lordName = super.readS();
 				int members = super.readD();
-				boolean isNoticeEnabled =(super.readC() == 1 ? true : false);
+				boolean isNoticeEnabled = (super.readC() == 1 ? true : false);
 				String allyName = super.readS();
 				int allySize = super.readD();
 				int[] alliance = new int[allySize];

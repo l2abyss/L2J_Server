@@ -14,16 +14,17 @@
  */
 package com.l2jserver.communityserver.network.writepackets;
 
-import com.l2jserver.communityserver.network.netcon.BaseWritePacket;
+import org.netcon.BaseWritePacket;
 
 public final class RequestWorldInfo extends BaseWritePacket
 {
-	public static final byte SERVER_LOAD						= 0;
-	public static final byte PLAYER_DATA_UPDATE					= 1;
-	public static final byte CLAN_DATA_UPDATE					= 2;
-	public static final byte CLAN_NOTICE_UPDATE					= 3;
-	public static final byte CLAN_NOTICE_FLAG					= 4;
-	public static final byte CLAN_NOTICE_DATA					= 5;
+	public static final byte SERVER_LOAD = 0;
+	public static final byte PLAYER_DATA_UPDATE = 1;
+	public static final byte CLAN_DATA_UPDATE = 2;
+	public static final byte CLAN_NOTICE_UPDATE = 3;
+	public static final byte CLAN_NOTICE_FLAG = 4;
+	public static final byte CLAN_NOTICE_DATA = 5;
+	
 	public RequestWorldInfo(final int type, int intbuffer, String strbuffer, boolean boobuffer)
 	{
 		writeC(0x01);
@@ -44,12 +45,12 @@ public final class RequestWorldInfo extends BaseWritePacket
 				writeC(0x03);
 				super.writeD(intbuffer);
 				super.writeS(strbuffer);
-				super.writeC((boobuffer ? 1:0));
+				super.writeC((boobuffer ? 1 : 0));
 				break;
 			case CLAN_NOTICE_FLAG:
 				writeC(0x04);
 				super.writeD(intbuffer);
-				super.writeC((boobuffer ? 1:0));
+				super.writeC((boobuffer ? 1 : 0));
 				break;
 			case CLAN_NOTICE_DATA:
 				writeC(0x05);

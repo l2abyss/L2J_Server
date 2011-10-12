@@ -19,14 +19,14 @@ import java.security.interfaces.RSAPrivateKey;
 
 import javax.crypto.Cipher;
 
+import org.netcon.BaseReadPacket;
+import org.netcon.crypt.NewCrypt;
+
 import com.l2jserver.communityserver.network.GameServerThread;
-import com.l2jserver.communityserver.network.netcon.BaseReadPacket;
-import com.l2jserver.communityserver.network.netcon.crypt.NewCrypt;
 
 /**
  * @author -Wooden-
  */
-
 public class BlowFishKey extends BaseReadPacket
 {
 	private final RSAPrivateKey _key;
@@ -43,19 +43,21 @@ public class BlowFishKey extends BaseReadPacket
 		try
 		{
 			final Cipher rsaCipher = Cipher.getInstance("RSA/ECB/nopadding");
-	        rsaCipher.init(Cipher.DECRYPT_MODE, _key);
-	        final byte[] tempDecryptKey = rsaCipher.doFinal(tempKey);
-	        // there are nulls before the key we must remove them
-	        int i = 0;
-	        for (; i < tempDecryptKey.length; i++)
-	        {
-	        	if (tempDecryptKey[i] != 0)
-	        		break;
-	        }
-	        final byte key2[] = new byte[tempDecryptKey.length-i];
-	        System.arraycopy(tempDecryptKey, i, key2, 0, tempDecryptKey.length - i);
-	        
-	        _gst.setCrypt(new NewCrypt(key2));
+			rsaCipher.init(Cipher.DECRYPT_MODE, _key);
+			final byte[] tempDecryptKey = rsaCipher.doFinal(tempKey);
+			// there are nulls before the key we must remove them
+			int i = 0;
+			for (; i < tempDecryptKey.length; i++)
+			{
+				if (tempDecryptKey[i] != 0)
+				{
+					break;
+				}
+			}
+			final byte key2[] = new byte[tempDecryptKey.length - i];
+			System.arraycopy(tempDecryptKey, i, key2, 0, tempDecryptKey.length - i);
+			
+			_gst.setCrypt(new NewCrypt(key2));
 		}
 		catch (GeneralSecurityException e)
 		{

@@ -19,20 +19,22 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
+
 import com.l2jserver.communityserver.Config;
 import com.l2jserver.communityserver.cache.HtmCache;
 import com.l2jserver.communityserver.communityboard.CommunityBoard;
 import com.l2jserver.communityserver.communityboard.CommunityBoardManager;
 import com.l2jserver.communityserver.model.Forum;
 import com.l2jserver.communityserver.model.L2Player;
-import com.l2jserver.communityserver.model.Topic;
 import com.l2jserver.communityserver.model.Post;
+import com.l2jserver.communityserver.model.Topic;
 import com.l2jserver.communityserver.model.Topic.ConstructorType;
 import com.l2jserver.communityserver.network.writepackets.PlayerSendMessage;
 
 public final class MailBoard extends CommunityBoard
 {
 	private static Logger _log = Logger.getLogger(MailBoard.class.getName());
+	
 	public MailBoard(final CommunityBoardManager mgr)
 	{
 		super(mgr);
@@ -48,15 +50,25 @@ public final class MailBoard extends CommunityBoard
 			super.send(playerObjId, content);
 		}
 		if (cmd.equals("_bbsmail"))
+		{
 			showPage(playerObjId, playerForum, Topic.INBOX, 1);
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("sent"))
+		{
 			showPage(playerObjId, playerForum, Topic.OUTBOX, 1);
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("archive"))
+		{
 			showPage(playerObjId, playerForum, Topic.ARCHIVE, 1);
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("tarchive"))
+		{
 			showPage(playerObjId, playerForum, Topic.TEMP_ARCHIVE, 1);
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("crea"))
+		{
 			showWrite(playerObjId, null, 0);
+		}
 		else if (cmd.split(";")[1].equalsIgnoreCase("reply"))
 		{
 			Topic t = playerForum.gettopic(Integer.valueOf(cmd.split(";")[2]));
@@ -91,7 +103,9 @@ public final class MailBoard extends CommunityBoard
 			showMail(playerObjId, playerForum, t, p);
 		}
 		else
+		{
 			_log.info("Mail command missing: " + cmd.split(";")[1]);
+		}
 	}
 	
 	public final void showPage(final int playerObjId, Forum f, int topicType, int index)
@@ -126,12 +140,12 @@ public final class MailBoard extends CommunityBoard
 		int i = 0;
 		for (Post p : t.getAllPosts())
 		{
-			if (i > ((index - 1) * 10 + 9))
- 			{
- 				break;
- 			}
+			if (i > (((index - 1) * 10) + 9))
+			{
+				break;
+			}
 			if (i++ >= ((index - 1) * 10))
- 			{
+			{
 				mList.append("<table border=0 cellspacing=0 cellpadding=5 width=755>");
 				mList.append("<tr> ");
 				mList.append("<td FIXWIDTH=5 align=center></td>");
@@ -142,44 +156,44 @@ public final class MailBoard extends CommunityBoard
 				mList.append("</tr>");
 				mList.append("</table>");
 				mList.append("<img src=\"L2UI.Squaregray\" width=\"755\" height=\"1\">");
- 			}
+			}
 		}
 		content = content.replaceAll("%maillist%", mList.toString());
 		mList.clear();
- 		if (index == 1)
- 		{
+		if (index == 1)
+		{
 			mList.append("<td><button action=\"\" back=\"l2ui_ch3.prev1_down\" fore=\"l2ui_ch3.prev1\" width=16 height=16 ></td>");
- 		}
- 		else
- 		{
+		}
+		else
+		{
 			mList.append("<td><button action=\"bypass _bbspost;list;" + (index - 1) + "\" back=\"l2ui_ch3.prev1_down\" fore=\"l2ui_ch3.prev1\" width=16 height=16 ></td>");
- 		}
-
- 		int nbp;
+		}
+		
+		int nbp;
 		nbp = t.getAllPosts().size() / 10;
-		if (nbp * 10 != t.getAllPosts().size())
- 		{
- 			nbp++;
- 		}
+		if ((nbp * 10) != t.getAllPosts().size())
+		{
+			nbp++;
+		}
 		for (i = 1; i <= nbp; i++)
- 		{
- 			if (i == index)
- 			{
+		{
+			if (i == index)
+			{
 				mList.append("<td> " + i + " </td>");
- 			}
- 			else
- 			{
+			}
+			else
+			{
 				mList.append("<td><a action=\"bypass _bbspost;list;" + i + "\"> " + i + " </a></td>");
- 			}
- 		}
- 		if (index == nbp)
- 		{
+			}
+		}
+		if (index == nbp)
+		{
 			mList.append("<td><button action=\"\" back=\"l2ui_ch3.next1_down\" fore=\"l2ui_ch3.next1\" width=16 height=16 ></td>");
- 		}
- 		else
- 		{
+		}
+		else
+		{
 			mList.append("<td><button action=\"bypass _bbspost;list;" + (index + 1) + "\" back=\"l2ui_ch3.next1_down\" fore=\"l2ui_ch3.next1\" width=16 height=16 ></td>");
- 		}
+		}
 		content = content.replaceAll("%maillistlength%", mList.toString());
 		super.send(playerObjId, content);
 	}
@@ -228,7 +242,7 @@ public final class MailBoard extends CommunityBoard
 		String toList = " ";
 		String content = HtmCache.getInstance().getHtm("data/staticfiles/html/mail-write.htm");
 		content = content.replaceAll("%maillink%", "<a action=\"bypass _bbsmail\">Inbox</a>");
-
+		
 		content = content.replaceAll("%playerObjId%", String.valueOf(playerObjId));
 		if (p == null)
 		{
@@ -240,12 +254,15 @@ public final class MailBoard extends CommunityBoard
 			title = p.getTitle();
 			message = p.getText();
 			if (type == 1)
+			{
 				toList = p.getRecipientList();
+			}
 		}
 		
 		super.sendWrite(playerObjId, content, message, title, toList);
-
+		
 	}
+	
 	@Override
 	public final void parseWrite(final int playerObjId, final String ar1, final String ar2, final String ar3, final String ar4, final String ar5)
 	{
@@ -257,10 +274,10 @@ public final class MailBoard extends CommunityBoard
 		for (String recipient : recipients)
 		{
 			L2Player receiver = getCommunityBoardManager().getPlayerByName(recipient);
-
+			
 			if (ar1.equalsIgnoreCase("new"))
 			{
-				if  (receiver != null)
+				if (receiver != null)
 				{
 					Forum receiverForum = getCommunityBoardManager().getPlayerForum(receiver.getObjId());
 					postId = receiverForum.gettopic(Topic.INBOX).getNewPostId();
@@ -268,8 +285,8 @@ public final class MailBoard extends CommunityBoard
 					receiverForum.gettopic(Topic.INBOX).addPost(p);
 					if (receiver.isOnline())
 					{
-						super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(receiver.getObjId(),-1,""));
-						super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(receiver.getObjId(),1233,""));
+						super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(receiver.getObjId(), -1, ""));
+						super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(receiver.getObjId(), 1233, ""));
 					}
 					isSended = true;
 				}
@@ -279,12 +296,14 @@ public final class MailBoard extends CommunityBoard
 				postId = senderForum.gettopic(Topic.TEMP_ARCHIVE).getNewPostId();
 				p = new Post(ConstructorType.CREATE, senderForum.getSqlDPId(), postId, playerObjId, ar3, System.currentTimeMillis(), Topic.TEMP_ARCHIVE, senderForum.getID(), super.edtiPlayerTxT(ar4), super.edtiPlayerTxT(ar5), 0, 0);
 				senderForum.gettopic(Topic.TEMP_ARCHIVE).addPost(p);
-				super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId,1234,""));
+				super.getCommunityBoardManager().getGST().sendPacket(new PlayerSendMessage(playerObjId, 1234, ""));
 				showPage(playerObjId, senderForum, Topic.TEMP_ARCHIVE, 1);
 				return;
 			}
 			else
+			{
 				_log.info("Mail Write command missing: " + ar1);
+			}
 		}
 		if (isSended)
 		{

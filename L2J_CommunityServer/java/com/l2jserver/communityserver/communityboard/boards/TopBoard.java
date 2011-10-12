@@ -33,7 +33,9 @@ public class TopBoard extends CommunityBoard
 		String file = "";
 		String content = "";
 		if (cmd.equalsIgnoreCase("_bbshome"))
+		{
 			file = "index.htm";
+		}
 		else if (cmd.startsWith("_bbshome;"))
 		{
 			StringTokenizer st = new StringTokenizer(cmd, ";");
@@ -41,11 +43,17 @@ public class TopBoard extends CommunityBoard
 			file = st.nextToken();
 		}
 		if (file.isEmpty())
+		{
 			content = "<html><body><br><br><center>Error: no file name </center></body></html>";
+		}
 		else
-			content = HtmCache.getInstance().getHtm(this.getCommunityBoardManager().getSQLDPId(),"html/" + file);
+		{
+			content = HtmCache.getInstance().getHtm(getCommunityBoardManager().getSQLDPId(), "html/" + file);
+		}
 		if (content == null)
+		{
 			content = "<html><body><br><br><center>404 :File Not foud: '" + file + "' </center></body></html>";
+		}
 		
 		super.send(playerObjId, content);
 	}

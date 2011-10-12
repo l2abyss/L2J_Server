@@ -22,11 +22,11 @@ import java.sql.SQLException;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import org.netcon.NetConnectionConfig;
+
 import com.l2jserver.communityserver.cache.HtmCache;
 import com.l2jserver.communityserver.network.GameServerListener;
-import com.l2jserver.communityserver.network.netcon.NetConnectionConfig;
 import com.l2jserver.communityserver.threading.ThreadPoolManager;
-import com.l2jserver.communityserver.Shutdown;
 
 public final class L2CommunityServer
 {
@@ -50,7 +50,7 @@ public final class L2CommunityServer
 	public L2CommunityServer()
 	{
 		final String LOG_FOLDER = "log";
-		final String LOG_NAME   = "./log.cfg";
+		final String LOG_NAME = "./log.cfg";
 		
 		File logFolder = new File(Config.DATAPACK_ROOT, LOG_FOLDER);
 		logFolder.mkdir();
@@ -95,7 +95,7 @@ public final class L2CommunityServer
 		}
 		catch (SQLException e)
 		{
-			_log.severe("FATAL: Failed initializing database. Reason: "+e.getMessage());
+			_log.severe("FATAL: Failed initializing database. Reason: " + e.getMessage());
 			System.exit(1);
 		}
 		

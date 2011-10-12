@@ -34,34 +34,34 @@ public final class SynchronizedBufferedByteWriter extends AbstractBufferedByteWr
 	@Override
 	public final void writeC(final int value)
 	{
-		synchronized(buf)
+		synchronized (buf)
 		{
 			expand(1);
-			buf[wIndex++] = (byte)(value & 0x000000FF);
+			buf[wIndex++] = (byte) (value & 0x000000FF);
 		}
 	}
 	
 	@Override
 	public final void writeH(final int value)
 	{
-		synchronized(buf)
+		synchronized (buf)
 		{
 			expand(2);
-			buf[wIndex++] = (byte)(value & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 8 & 0x000000FF);
+			buf[wIndex++] = (byte) (value & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 8) & 0x000000FF);
 		}
 	}
 	
 	@Override
 	public final void writeD(final int value)
 	{
-		synchronized(buf)
+		synchronized (buf)
 		{
 			expand(4);
-			buf[wIndex++] = (byte)(value & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 8 & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 16 & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 24 & 0x000000FF);
+			buf[wIndex++] = (byte) (value & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 8) & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 16) & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 24) & 0x000000FF);
 		}
 	}
 	
@@ -74,17 +74,17 @@ public final class SynchronizedBufferedByteWriter extends AbstractBufferedByteWr
 	@Override
 	public final void writeQ(final long value)
 	{
-		synchronized(buf)
+		synchronized (buf)
 		{
 			expand(8);
-			buf[wIndex++] = (byte)(value & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 8 & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 16 & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 24 & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 32 & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 40 & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 48 & 0x000000FF);
-			buf[wIndex++] = (byte)(value >> 56 & 0x000000FF);
+			buf[wIndex++] = (byte) (value & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 8) & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 16) & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 24) & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 32) & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 40) & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 48) & 0x000000FF);
+			buf[wIndex++] = (byte) ((value >> 56) & 0x000000FF);
 		}
 	}
 	
@@ -93,12 +93,12 @@ public final class SynchronizedBufferedByteWriter extends AbstractBufferedByteWr
 	{
 		if (text != null)
 		{
-			synchronized(buf)
+			synchronized (buf)
 			{
 				expand(text.length() + 2);
 				for (final char c : text.toCharArray())
 				{
-					buf[wIndex] = (byte)c;
+					buf[wIndex] = (byte) c;
 					wIndex += 2;
 				}
 				wIndex += 2;
@@ -106,7 +106,7 @@ public final class SynchronizedBufferedByteWriter extends AbstractBufferedByteWr
 		}
 		else
 		{
-			synchronized(buf)
+			synchronized (buf)
 			{
 				expand(2);
 				wIndex += 2;
@@ -119,7 +119,7 @@ public final class SynchronizedBufferedByteWriter extends AbstractBufferedByteWr
 	{
 		try
 		{
-			synchronized(buf)
+			synchronized (buf)
 			{
 				expand(data.length);
 				System.arraycopy(data, 0, buf, wIndex, data.length);
@@ -136,6 +136,8 @@ public final class SynchronizedBufferedByteWriter extends AbstractBufferedByteWr
 	{
 		final int newSize = wIndex + expand;
 		if (newSize > buf.length)
+		{
 			buf = Arrays.copyOf(buf, Math.max(buf.length << 1, newSize));
+		}
 	}
 }

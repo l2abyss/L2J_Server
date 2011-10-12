@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import javolution.text.TextBuilder;
+
 import com.l2jserver.communityserver.cache.HtmCache;
 import com.l2jserver.communityserver.communityboard.CommunityBoard;
 import com.l2jserver.communityserver.communityboard.CommunityBoardManager;
@@ -36,10 +37,9 @@ public final class RegionBoard extends CommunityBoard
 	{
 		// this board is disabled on retail, and its not fully implemented here, so for now it is disabled
 		super.send(playerObjId, "");
-		/*if (cmd.equals("_bbsloc"))
-			showMainPage(playerObjId);
-		else
-			showCastlePage(playerObjId, super.getCommunityBoardManager().getCastle(Integer.valueOf(cmd.split(";")[1])));*/
+		/*
+		 * if (cmd.equals("_bbsloc")) showMainPage(playerObjId); else showCastlePage(playerObjId, super.getCommunityBoardManager().getCastle(Integer.valueOf(cmd.split(";")[1])));
+		 */
 	}
 	
 	public final void showMainPage(final int playerObjId)
@@ -98,7 +98,7 @@ public final class RegionBoard extends CommunityBoard
 		
 		super.send(playerObjId, content);
 	}
-
+	
 	@Override
 	public final void parseWrite(final int playerObjId, final String ar1, final String ar2, final String ar3, final String ar4, final String ar5)
 	{
