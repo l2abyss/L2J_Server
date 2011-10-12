@@ -104,7 +104,7 @@ public class MailManager
 	
 	public final Message[] getMessages()
 	{
-		return _messages.values();
+		return _messages.values(new Message[0]);
 	}
 	
 	public final boolean hasUnreadPost(L2PcInstance player)

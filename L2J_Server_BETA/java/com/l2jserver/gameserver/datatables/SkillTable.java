@@ -58,7 +58,7 @@ public class SkillTable
 		SkillsEngine.getInstance().loadAllSkills(_skills);
 		
 		_skillMaxLevel.clear();
-		for (final L2Skill skill : _skills.values())
+		for (final L2Skill skill : _skills.values(new L2Skill[0]))
 		{
 			final int skillId = skill.getId();
 			final int skillLvl = skill.getLevel();

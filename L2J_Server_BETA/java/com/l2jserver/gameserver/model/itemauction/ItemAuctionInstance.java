@@ -212,7 +212,7 @@ public final class ItemAuctionInstance
 	
 	final void checkAndSetCurrentAndNextAuction()
 	{
-		final ItemAuction[] auctions = _auctions.values();
+		final ItemAuction[] auctions = _auctions.values(new ItemAuction[0]);
 		
 		ItemAuction currentAuction = null;
 		ItemAuction nextAuction = null;
@@ -354,7 +354,7 @@ public final class ItemAuctionInstance
 		
 		synchronized (_auctions)
 		{
-			auctions = _auctions.values();
+			auctions = _auctions.values(new ItemAuction[0]);
 		}
 		
 		return auctions;

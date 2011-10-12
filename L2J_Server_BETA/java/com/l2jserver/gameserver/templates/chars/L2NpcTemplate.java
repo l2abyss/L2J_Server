@@ -465,7 +465,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	public L2Skill[] getSkillsArray()
 	{
-		return _skills.values();
+		return _skills.values(new L2Skill[0]);
 	}
 	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)

@@ -467,7 +467,7 @@ public abstract class L2ZoneType
 	
 	public L2Character[] getCharactersInsideArray()
 	{
-		return _characterList.values();
+		return _characterList.values(new L2Character[0]);
 	}
 	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
