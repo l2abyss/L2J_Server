@@ -86,6 +86,13 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			return;
 		}
 		
+		if (!item.isElementable())
+		{
+			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_REQUIREMENT_NOT_SUFFICIENT));
+			player.setActiveEnchantAttrItem(null);
+			return;
+		}
+		
 		switch (item.getLocation())
 		{
 			case INVENTORY:
@@ -104,13 +111,6 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 				Util.handleIllegalPlayerAction(player, "Player "+player.getName()+" tried to use enchant Exploit!", Config.DEFAULT_PUNISH);
 				return;
 			}
-		}
-		
-		if (!item.isElementable() || item.getItemType() == L2ArmorType.SHIELD || item.getItemType() == L2ArmorType.SIGIL) // XXX: UnAfraid: temp fix for shield / sigils untill they are fixed in dp!
-		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_REQUIREMENT_NOT_SUFFICIENT));
-			player.setActiveEnchantAttrItem(null);
-			return;
 		}
 		
 		int stoneId = stone.getItemId();
