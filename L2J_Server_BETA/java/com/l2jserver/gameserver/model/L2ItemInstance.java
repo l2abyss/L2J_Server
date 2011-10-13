@@ -461,7 +461,16 @@ public final class L2ItemInstance extends L2Object
 		this.changeCount(null, count, creator, reference);
 	}
 	
-	
+	/**
+	 * Return true if item can be enchanted
+	 * @return boolean
+	 */
+	public boolean isEnchantable()
+	{
+		if (getLocation() == ItemLocation.INVENTORY || getLocation() == ItemLocation.PAPERDOLL)
+			return getItem().isEnchantable();
+		return false;
+	}
 	
 	/**
 	 * Returns if item is equipable
@@ -1932,6 +1941,13 @@ public final class L2ItemInstance extends L2Object
 	public boolean isQuestItem()
 	{
 		return getItem().isQuestItem();
+	}
+	
+	public boolean isElementable()
+	{
+		if (getLocation() == ItemLocation.INVENTORY || getLocation() == ItemLocation.PAPERDOLL)
+			return getItem().isElementable();
+		return false;
 	}
 	
 	public boolean isFreightable()

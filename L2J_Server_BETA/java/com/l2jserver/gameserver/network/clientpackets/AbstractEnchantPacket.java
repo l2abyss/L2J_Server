@@ -21,7 +21,6 @@ import java.util.Arrays;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 
 
 public abstract class AbstractEnchantPacket extends L2GameClientPacket
@@ -341,42 +340,5 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 	protected static final EnchantItem getSupportItem(L2ItemInstance item)
 	{
 		return _supports.get(item.getItemId());
-	}
-	
-	/**
-	 * @param item 
-	 * @return true if item can be enchanted
-	 */
-	protected static final boolean isEnchantable(L2ItemInstance item)
-	{
-		if (item.isHeroItem())
-			return false;
-		if (item.isShadowItem())
-			return false;
-		if (item.isCommonItem())
-			return false;
-		if (item.isEtcItem())
-			return false;
-		if (item.isTimeLimitedItem())
-			return false;
-		// rods
-		if (item.getItem().getItemType() == L2WeaponType.FISHINGROD)
-			return false;
-		// bracelets
-		if (item.getItem().getBodyPart() == L2Item.SLOT_L_BRACELET)
-			return false;
-		if (item.getItem().getBodyPart() == L2Item.SLOT_R_BRACELET)
-			return false;
-		if (item.getItem().getBodyPart() == L2Item.SLOT_BACK)
-			return false;
-		// blacklist check
-		if (Arrays.binarySearch(Config.ENCHANT_BLACKLIST, item.getItemId()) >= 0)
-			return false;		
-		// only items in inventory and equipped can be enchanted
-		if (item.getLocation() != L2ItemInstance.ItemLocation.INVENTORY
-				&& item.getLocation() != L2ItemInstance.ItemLocation.PAPERDOLL)
-			return false;
-		
-		return true;
 	}
 }

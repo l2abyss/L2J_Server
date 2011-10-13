@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.templates.item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -176,6 +177,8 @@ public abstract class L2Item
 	private final boolean _destroyable;
 	private final boolean _tradeable;
 	private final boolean _depositable;
+	private final boolean _enchantable;
+	private final boolean _elementable;
 	private final boolean _questItem;
 	private final boolean _freightable;
 	private final boolean _is_oly_restricted;
@@ -225,12 +228,15 @@ public abstract class L2Item
 		_destroyable = set.getBool("is_destroyable", true);
 		_tradeable = set.getBool("is_tradable", true);
 		_depositable = set.getBool("is_depositable", true);
+		_elementable = set.getBool("element_enabled", false);
+		_enchantable = set.getBool("enchant_enabled", false);
 		_questItem = set.getBool("is_questitem", false);
 		_freightable = set.getBool("is_freightable", false);
 		_is_oly_restricted = set.getBool("is_oly_restricted", false);
 		
 		//_immediate_effect - herb
-		_ex_immediate_effect = set.getInteger("ex_immediate_effect", 0) > 0;
+		_ex_immediate_effect = set.getBool("ex_immediate_effect", false);
+		
 		//used for custom type select
 		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
 		_useSkillDisTime = set.getInteger("useSkillDisTime", 0);
@@ -625,6 +631,22 @@ public abstract class L2Item
 	public final boolean isDepositable()
 	{
 		return _depositable;
+	}
+	
+	/**
+	 * @return {@code true} if the item can be enchanted, {@code false} otherwise.
+	 */
+	public final boolean isEnchantable()
+	{
+		return _enchantable && Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getItemId()) == 0;
+	}
+	
+	/**
+	 * @return {@code true} if the item can be elemented, {@code false} otherwise.
+	 */
+	public final boolean isElementable()
+	{
+		return _elementable;
 	}
 	
 	/**

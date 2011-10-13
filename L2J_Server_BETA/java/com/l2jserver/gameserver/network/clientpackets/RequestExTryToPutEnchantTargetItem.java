@@ -57,7 +57,7 @@ public class RequestExTryToPutEnchantTargetItem extends AbstractEnchantPacket
 			// template for scroll
 			EnchantScroll scrollTemplate = getEnchantScroll(scroll);
 			
-			if (!scrollTemplate.isValid(item) || !isEnchantable(item))
+			if (!scrollTemplate.isValid(item) || !item.isEnchantable())
 			{
 				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
 				activeChar.setActiveEnchantItem(null);
