@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
