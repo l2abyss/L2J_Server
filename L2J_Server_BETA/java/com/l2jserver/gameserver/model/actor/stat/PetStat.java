@@ -135,14 +135,14 @@ public class PetStat extends SummonStat
 		{
 			switch (stat)
 			{
-				case AGGRESSION: attack += getActiveChar().getTemplate().baseAggression; break;
-				case BLEED:      attack += getActiveChar().getTemplate().baseBleed;      break;
-				case POISON:     attack += getActiveChar().getTemplate().basePoison;     break;
-				case STUN:       attack += getActiveChar().getTemplate().baseStun;       break;
-				case ROOT:       attack += getActiveChar().getTemplate().baseRoot;       break;
-				case MOVEMENT:   attack += getActiveChar().getTemplate().baseMovement;   break;
-				case CONFUSION:  attack += getActiveChar().getTemplate().baseConfusion;  break;
-				case SLEEP:      attack += getActiveChar().getTemplate().baseSleep;      break;
+				case AGGRESSION: attack += getActiveChar().getTemplate().getBaseAggression(); break;
+				case BLEED:      attack += getActiveChar().getTemplate().getBaseBleed();      break;
+				case POISON:     attack += getActiveChar().getTemplate().getBasePoison();     break;
+				case STUN:       attack += getActiveChar().getTemplate().getBaseStun();       break;
+				case ROOT:       attack += getActiveChar().getTemplate().getBaseRoot();       break;
+				case MOVEMENT:   attack += getActiveChar().getTemplate().getBaseMovement();   break;
+				case CONFUSION:  attack += getActiveChar().getTemplate().getBaseConfusion();  break;
+				case SLEEP:      attack += getActiveChar().getTemplate().getBaseSleep();      break;
 			}
 		}
 		if (skill != null) attack += skill.getPower();

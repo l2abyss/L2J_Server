@@ -222,7 +222,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		jClass = set.getString("jClass");
 		
 		// can be loaded from db
-		baseVitalityDivider = level > 0 && rewardExp > 0 ? baseHpMax * 9 * level * level /(100 * rewardExp) : 0;
+		baseVitalityDivider = level > 0 && rewardExp > 0 ? getBaseHpMax() * 9 * level * level /(100 * rewardExp) : 0;
 	}
 	
 	public void addTeachInfo(ClassId classId)

@@ -67,13 +67,10 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		_heading = cha.getHeading();
 		_mAtkSpd = cha.getMAtkSpd();
 		_pAtkSpd = cha.getPAtkSpd();
-		_runSpd = cha.getTemplate().baseRunSpd;
-		_walkSpd = cha.getTemplate().baseWalkSpd;
+		_runSpd = cha.getTemplate().getBaseRunSpd();
+		_walkSpd = cha.getTemplate().getBaseWalkSpd();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
@@ -215,8 +212,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_isAttackable = cha.isAutoAttackable(attacker);
 			_rhand = 0;
 			_lhand = 0;
-			_collisionHeight = _trap.getTemplate().fCollisionHeight;
-			_collisionRadius = _trap.getTemplate().fCollisionRadius;
+			_collisionHeight = _trap.getTemplate().getfCollisionHeight();
+			_collisionRadius = _trap.getTemplate().getfCollisionRadius();
 			if (cha.getTemplate().serverSideName)
 				_name = cha.getName();
 			_title = cha.getOwner() != null ? cha.getOwner().getName() : "";
@@ -335,8 +332,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_name = cha.getName();
 			_title = cha.getOwner() != null ? ((!cha.getOwner().isOnline()) ? "" : cha.getOwner().getName()) : ""; // when owner online, summon will show in title owner name
 			_idTemplate = cha.getTemplate().idTemplate;
-			_collisionHeight = cha.getTemplate().fCollisionHeight;
-			_collisionRadius = cha.getTemplate().fCollisionRadius;
+			_collisionHeight = cha.getTemplate().getfCollisionHeight();
+			_collisionRadius = cha.getTemplate().getfCollisionRadius();
 			_invisible = cha.getOwner() != null ? cha.getOwner().getAppearance().getInvisible() : false;
 		}
 		

@@ -515,8 +515,8 @@ public class L2Npc extends L2Character
 		_currentRHandId = getTemplate().rhand;
 		_currentEnchant = Config.ENABLE_RANDOM_ENCHANT_EFFECT ? Rnd.get(4, 21) : getTemplate().enchantEffect;
 		// initialize the "current" collisions
-		_currentCollisionHeight = getTemplate().fCollisionHeight;
-		_currentCollisionRadius = getTemplate().fCollisionRadius;
+		_currentCollisionHeight = getTemplate().getfCollisionHeight();
+		_currentCollisionRadius = getTemplate().getfCollisionRadius();
 		
 		if (template == null)
 		{
@@ -1367,11 +1367,11 @@ public class L2Npc extends L2Character
 			return false;
 		
 		// normally this wouldn't really be needed, but for those few exceptions,
-		// we do need to reset the weapons back to the initial templated weapon.
+		// we do need to reset the weapons back to the initial template weapon.
 		_currentLHandId = getTemplate().lhand;
 		_currentRHandId = getTemplate().rhand;
-		_currentCollisionHeight = getTemplate().fCollisionHeight;
-		_currentCollisionRadius = getTemplate().fCollisionRadius;
+		_currentCollisionHeight = getTemplate().getfCollisionHeight();
+		_currentCollisionRadius = getTemplate().getfCollisionRadius();
 		DecayTaskManager.getInstance().addDecayTask(this);
 		return true;
 	}

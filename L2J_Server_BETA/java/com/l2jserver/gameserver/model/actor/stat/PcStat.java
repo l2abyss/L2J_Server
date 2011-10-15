@@ -414,7 +414,7 @@ public class PcStat extends PlayableStat
 		L2PcInstance player = getActiveChar();
 		if (player.isMounted())
 		{
-			int baseRunSpd = NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).baseRunSpd;
+			int baseRunSpd = NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseRunSpd();
 			val = (int) Math.round(calcStat(Stats.RUN_SPEED, baseRunSpd, null, null));
 		}
 		else
@@ -469,7 +469,7 @@ public class PcStat extends PlayableStat
 			return 1;
 		
 		if (getActiveChar().isMounted())
-			return getRunSpeed() * 1f / NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).baseRunSpd;
+			return getRunSpeed() * 1f / NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseRunSpd();
 		
 		return super.getMovementSpeedMultiplier();
 	}

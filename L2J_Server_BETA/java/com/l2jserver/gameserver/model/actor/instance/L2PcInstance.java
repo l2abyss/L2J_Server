@@ -9085,7 +9085,7 @@ public final class L2PcInstance extends L2Playable
 				// Calculate the distance between the L2PcInstance and the target
 				if (sklTargetType == L2TargetType.TARGET_GROUND)
 				{
-					if (!isInsideRadius(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), skill.getCastRange()+getTemplate().collisionRadius, false, false))
+					if (!isInsideRadius(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), skill.getCastRange()+getTemplate().getCollisionRadius(), false, false))
 					{
 						// Send a System Message to the caster
 						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_TOO_FAR));
@@ -9095,7 +9095,7 @@ public final class L2PcInstance extends L2Playable
 						return false;
 					}
 				}
-				else if (skill.getCastRange() > 0 && !isInsideRadius(target, skill.getCastRange()+getTemplate().collisionRadius, false, false))
+				else if (skill.getCastRange() > 0 && !isInsideRadius(target, skill.getCastRange()+getTemplate().getCollisionRadius(), false, false))
 				{
 					// Send a System Message to the caster
 					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_TOO_FAR));
@@ -14681,14 +14681,14 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (getAppearance().getSex())
 			return getBaseTemplate().fCollisionRadius_female;
-		return getBaseTemplate().fCollisionRadius;
+		return getBaseTemplate().getfCollisionRadius();
 	}
 	
 	public double getCollisionHeight()
 	{
 		if (getAppearance().getSex())
 			return getBaseTemplate().fCollisionHeight_female;
-		return getBaseTemplate().fCollisionHeight;
+		return getBaseTemplate().getfCollisionHeight();
 	}
 	
 	public final int getClientX()

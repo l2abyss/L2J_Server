@@ -919,33 +919,33 @@ public class NpcTable
 				switch(rset.getByte("elemAtkType"))
 				{
 					case Elementals.FIRE:
-						npcDat.baseFire = rset.getInt("elemAtkValue");
+						npcDat.setBaseFire(rset.getInt("elemAtkValue"));
 						break;
 					case Elementals.WATER:
-						npcDat.baseWater = rset.getInt("elemAtkValue");
+						npcDat.setBaseWater(rset.getInt("elemAtkValue"));
 						break;
 					case Elementals.EARTH:
-						npcDat.baseEarth = rset.getInt("elemAtkValue");
+						npcDat.setBaseEarth(rset.getInt("elemAtkValue"));
 						break;
 					case Elementals.WIND:
-						npcDat.baseWind = rset.getInt("elemAtkValue");
+						npcDat.setBaseWind(rset.getInt("elemAtkValue"));
 						break;
 					case Elementals.HOLY:
-						npcDat.baseHoly = rset.getInt("elemAtkValue");
+						npcDat.setBaseHoly(rset.getInt("elemAtkValue"));
 						break;
 					case Elementals.DARK:
-						npcDat.baseDark = rset.getInt("elemAtkValue");
+						npcDat.setBaseDark(rset.getInt("elemAtkValue"));
 						break;
 					default:
 						_log.severe("NPCElementals: Elementals Error with id : " + npc_id + "; unknown elementType: " + rset.getByte("elemAtkType"));
 						continue;
 				}
-				npcDat.baseFireRes = rset.getInt("fireDefValue");
-				npcDat.baseWaterRes = rset.getInt("waterDefValue");
-				npcDat.baseEarthRes = rset.getInt("earthDefValue");
-				npcDat.baseWindRes = rset.getInt("windDefValue");
-				npcDat.baseHolyRes = rset.getInt("holyDefValue");
-				npcDat.baseDarkRes = rset.getInt("darkDefValue");
+				npcDat.setBaseFireRes(rset.getInt("fireDefValue"));
+				npcDat.setBaseWaterRes(rset.getInt("waterDefValue"));
+				npcDat.setBaseEarthRes(rset.getInt("earthDefValue"));
+				npcDat.setBaseWindRes(rset.getInt("windDefValue"));
+				npcDat.setBaseHolyRes(rset.getInt("holyDefValue"));
+				npcDat.setBaseDarkRes(rset.getInt("darkDefValue"));
 				cont++;
 			}
 			
@@ -978,33 +978,33 @@ public class NpcTable
 					switch(rset.getByte("elemAtkType"))
 					{
 						case Elementals.FIRE:
-							npcDat.baseFire = rset.getInt("elemAtkValue");
+							npcDat.setBaseFire(rset.getInt("elemAtkValue"));
 							break;
 						case Elementals.WATER:
-							npcDat.baseWater = rset.getInt("elemAtkValue");
+							npcDat.setBaseWater(rset.getInt("elemAtkValue"));
 							break;
 						case Elementals.EARTH:
-							npcDat.baseEarth = rset.getInt("elemAtkValue");
+							npcDat.setBaseEarth(rset.getInt("elemAtkValue"));
 							break;
 						case Elementals.WIND:
-							npcDat.baseWind = rset.getInt("elemAtkValue");
+							npcDat.setBaseWind(rset.getInt("elemAtkValue"));
 							break;
 						case Elementals.HOLY:
-							npcDat.baseHoly = rset.getInt("elemAtkValue");
+							npcDat.setBaseHoly(rset.getInt("elemAtkValue"));
 							break;
 						case Elementals.DARK:
-							npcDat.baseDark = rset.getInt("elemAtkValue");
+							npcDat.setBaseDark(rset.getInt("elemAtkValue"));
 							break;
 						default:
 							_log.severe("NPCElementals: Custom Elementals Error with id : " + npc_id + "; unknown elementType: " + rset.getByte("elemAtkType"));
 							continue;
 					}
-					npcDat.baseFireRes = rset.getInt("fireDefValue");
-					npcDat.baseWaterRes = rset.getInt("waterDefValue");
-					npcDat.baseEarthRes = rset.getInt("earthDefValue");
-					npcDat.baseWindRes = rset.getInt("windDefValue");
-					npcDat.baseHolyRes = rset.getInt("holyDefValue");
-					npcDat.baseDarkRes = rset.getInt("darkDefValue");
+					npcDat.setBaseFireRes(rset.getInt("fireDefValue"));
+					npcDat.setBaseWaterRes(rset.getInt("waterDefValue"));
+					npcDat.setBaseEarthRes(rset.getInt("earthDefValue"));
+					npcDat.setBaseWindRes(rset.getInt("windDefValue"));
+					npcDat.setBaseHolyRes(rset.getInt("holyDefValue"));
+					npcDat.setBaseDarkRes(rset.getInt("darkDefValue"));
 					cont++;
 				}
 				rset.close();

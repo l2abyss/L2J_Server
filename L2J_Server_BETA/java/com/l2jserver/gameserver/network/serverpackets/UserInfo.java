@@ -287,8 +287,8 @@ public final class UserInfo extends L2GameServerPacket
 		L2Transformation trans;
 		if (_activeChar.getMountType() != 0 && pet != null)
 		{
-			writeF(pet.getTemplate().fCollisionRadius);
-			writeF(pet.getTemplate().fCollisionHeight);
+			writeF(pet.getTemplate().getfCollisionRadius());
+			writeF(pet.getTemplate().getfCollisionHeight());
 		}
 		else if ((trans = _activeChar.getTransformation()) != null)
 		{

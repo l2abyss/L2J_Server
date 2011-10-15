@@ -1098,7 +1098,7 @@ public final class Formulas
 	 */
 	public static final double calcHpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().baseHpReg;
+		double init = cha.getTemplate().getBaseHpReg();
 		double hpRegenMultiplier = cha.isRaid() ? Config.RAID_HP_REGEN_MULTIPLIER : Config.HP_REGEN_MULTIPLIER;
 		double hpRegenBonus = 0;
 		
@@ -1199,7 +1199,7 @@ public final class Formulas
 	 */
 	public static final double calcMpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().baseMpReg;
+		double init = cha.getTemplate().getBaseMpReg();
 		double mpRegenMultiplier = cha.isRaid() ? Config.RAID_MP_REGEN_MULTIPLIER : Config.MP_REGEN_MULTIPLIER;
 		double mpRegenBonus = 0;
 		
@@ -1293,7 +1293,7 @@ public final class Formulas
 	 */
 	public static final double calcCpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().baseHpReg;
+		double init = cha.getTemplate().getBaseHpReg();
 		double cpRegenMultiplier = Config.CP_REGEN_MULTIPLIER;
 		double cpRegenBonus = 0;
 		
@@ -1596,7 +1596,7 @@ public final class Formulas
 		if (crit)
 		{
 			//Finally retail like formula
-			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, null) * (70 * damage / defence);
+			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().getBaseCritVuln(), target, null) * (70 * damage / defence);
 			//Crit dmg add is almost useless in normal hits...
 			damage += (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 70 / defence);
 		}
@@ -2327,25 +2327,25 @@ public final class Formulas
 				switch (stat)
 				{
 					case AGGRESSION:
-						multiplier = target.getTemplate().baseAggressionVuln;
+						multiplier = target.getTemplate().getBaseAggressionVuln();
 						break;
 					case BLEED:
-						multiplier = target.getTemplate().baseBleedVuln;
+						multiplier = target.getTemplate().getBaseBleedVuln();
 						break;
 					case POISON:
-						multiplier = target.getTemplate().basePoisonVuln;
+						multiplier = target.getTemplate().getBasePoisonVuln();
 						break;
 					case STUN:
-						multiplier = target.getTemplate().baseStunVuln;
+						multiplier = target.getTemplate().getBaseStunVuln();
 						break;
 					case ROOT:
-						multiplier = target.getTemplate().baseRootVuln;
+						multiplier = target.getTemplate().getBaseRootVuln();
 						break;
 					case MOVEMENT:
-						multiplier = target.getTemplate().baseMovementVuln;
+						multiplier = target.getTemplate().getBaseMovementVuln();
 						break;
 					case SLEEP:
-						multiplier = target.getTemplate().baseSleepVuln;
+						multiplier = target.getTemplate().getBaseSleepVuln();
 						break;
 				}
 			}
