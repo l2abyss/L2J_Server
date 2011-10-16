@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2TeleportLocation;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
@@ -63,6 +64,9 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
+		if(getClanHall().isSiegableHall() && ((SiegableHall)getClanHall()).isInSiege())
+			return;
+		
 		int condition = validateCondition(player);
 		if (condition <= COND_ALL_FALSE)
 			return;

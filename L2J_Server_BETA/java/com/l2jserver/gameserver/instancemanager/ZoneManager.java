@@ -353,24 +353,8 @@ public class ZoneManager
 										int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
 										int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
 										int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
-										
-										Node val = attrs.getNamedItem("isOther");
-										boolean other = val != null && Boolean.parseBoolean(val.getNodeValue());
-										
-										val = attrs.getNamedItem("isChaotic");
-										boolean chaotic = val != null && Boolean.parseBoolean(val.getNodeValue());
-										
-										val = attrs.getNamedItem("isBanish");
-										boolean banish = val != null && Boolean.parseBoolean(val.getNodeValue());
-										
-										if (other)
-											((L2ZoneRespawn) temp).addOtherSpawn(spawnX, spawnY, spawnZ);
-										else if (chaotic)
-											((L2ZoneRespawn) temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
-										else if (banish)
-											((L2ZoneRespawn) temp).addBanishSpawn(spawnX, spawnY, spawnZ);
-										else
-											((L2ZoneRespawn) temp).addSpawn(spawnX, spawnY, spawnZ);
+										Node val = attrs.getNamedItem("type");
+										((L2ZoneRespawn)temp).parseLoc(spawnX, spawnY, spawnZ, val == null? null : val.getNodeValue());
 									}
 									else if ("race".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2RespawnZone)
 									{

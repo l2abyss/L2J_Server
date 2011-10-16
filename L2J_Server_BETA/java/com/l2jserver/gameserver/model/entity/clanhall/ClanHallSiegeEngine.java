@@ -316,7 +316,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		}
 		
 		_hall.free();
-		
+		_hall.banishForeigners();
 		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.REGISTRATION_TERM_FOR_S1_ENDED);
 		msg.addString(getName());
 		Announcements.getInstance().announceToAll(msg);
@@ -341,7 +341,6 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			return;
 		}
 		
-		_hall.banishForeigners();
 		_hall.spawnDoor();
 		loadGuards();
 		spawnSiegeGuards();
@@ -492,6 +491,11 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	}
 	
 	public boolean canPlantFlag()
+	{
+		return true;
+	}
+	
+	public boolean doorIsAutoAttackable()
 	{
 		return true;
 	}

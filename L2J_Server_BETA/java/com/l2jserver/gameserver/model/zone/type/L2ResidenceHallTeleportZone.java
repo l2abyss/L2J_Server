@@ -19,6 +19,7 @@ import java.util.concurrent.ScheduledFuture;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.Rnd;
 
 /**
  * @author BiggBoss
@@ -62,13 +63,16 @@ public class L2ResidenceHallTeleportZone extends L2ResidenceTeleportZone
 		@Override
 		public void run()
 		{
-			final Location loc = getSpawns().get(0);
+			int index = 0;
+			if(getSpawns().size() > 1)
+				index = Rnd.get(getSpawns().size());
+			final Location loc = getSpawns().get(index);
 			if(loc == null)
 				throw new NullPointerException();
 			
 			for(L2PcInstance pc : getAllPlayers())
 				if(pc != null)
-					pc.teleToLocation(loc, 0);
+					pc.teleToLocation(loc, false);
 		}
 	}
 }

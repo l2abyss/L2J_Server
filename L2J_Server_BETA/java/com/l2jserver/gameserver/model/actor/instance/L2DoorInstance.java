@@ -418,6 +418,7 @@ public class L2DoorInstance extends L2Character
 			if(!getClanHall().isSiegableHall())
 				return false;
 			return ((SiegableHall)getClanHall()).isInSiege()
+					&& ((SiegableHall)getClanHall()).getSiege().doorIsAutoAttackable()
 					&& ((SiegableHall)getClanHall()).getSiege().checkIsAttacker(actingPlayer.getClan());
 		}
 		// Attackable  only during siege by everyone (not owner)
