@@ -99,7 +99,6 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 				if (trainer instanceof L2TransformManagerInstance)
 				{
 					final L2SkillLearn s = SkillTreesData.getInstance().getTransformSkill(_id, _level);
-					
 					if (s != null)
 					{
 						int itemId = -1;
@@ -124,15 +123,14 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 					}
 					return;
 				}
-				else if (trainer.getTemplate().canTeach(activeChar.getClassId()))
+				else if (trainer.getTemplate().canTeach(activeChar.getLearningClass()))
 				{
-					final L2SkillLearn s = SkillTreesData.getInstance().getClassSkill(_id, _level, activeChar.getClassId());
+					final L2SkillLearn s = SkillTreesData.getInstance().getClassSkill(_id, _level, activeChar.getLearningClass());
 					if (s != null)
 					{
 						int itemId = -1;
 						int itemCount = -1;
-						final int levelUpSp = s.getLevelUpSp();
-						
+						final int levelUpSp = s.getCalculatedLevelUpSp(activeChar.getClassId(), activeChar.getLearningClass());
 						final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.ClassTransform);
 						
 						if (s.getItemsIdCount() != null)
