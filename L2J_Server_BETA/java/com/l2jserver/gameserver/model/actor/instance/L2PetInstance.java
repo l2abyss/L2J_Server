@@ -103,7 +103,7 @@ public class L2PetInstance extends L2Summon
 	public final L2PetLevelData getPetLevelData()
 	{
 		if (_leveldata == null)
-			_leveldata = PetDataTable.getInstance().getPetLevelData(getTemplate().npcId, getStat().getLevel());
+			_leveldata = PetDataTable.getInstance().getPetLevelData(getTemplate().getNpcId(), getStat().getLevel());
 		
 		return _leveldata;
 	}
@@ -111,7 +111,7 @@ public class L2PetInstance extends L2Summon
 	public final L2PetData getPetData()
 	{
 		if (_data == null)
-			_data = PetDataTable.getInstance().getPetData(getTemplate().npcId);
+			_data = PetDataTable.getInstance().getPetData(getTemplate().getNpcId());
 		
 		return _data;
 	}
@@ -158,7 +158,7 @@ public class L2PetInstance extends L2Summon
 					if (getCurrentFed() == 0)
 					{
 						// Owl Monk remove PK
-						if(getTemplate().npcId == 16050 && getOwner() != null)
+						if(getTemplate().getNpcId() == 16050 && getOwner() != null)
 						{
 							getOwner().setPkKills(Math.max(0, getOwner().getPkKills()-Rnd.get(1,6)));
 						}
@@ -268,7 +268,7 @@ public class L2PetInstance extends L2Summon
 	 */
 	public L2PetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control)
 	{
-		this(objectId, template, owner, control, (byte) (template.idTemplate == 12564 ? owner.getLevel() : template.level));
+		this(objectId, template, owner, control, (byte) (template.getIdTemplate() == 12564 ? owner.getLevel() : template.getLevel()));
 	}
 	
 	/**
@@ -286,12 +286,12 @@ public class L2PetInstance extends L2Summon
 		
 		_controlObjectId = control.getObjectId();
 		
-		getStat().setLevel((byte)Math.max(level, PetDataTable.getInstance().getPetMinLevel(template.npcId)));
+		getStat().setLevel((byte)Math.max(level, PetDataTable.getInstance().getPetMinLevel(template.getNpcId())));
 		
 		_inventory = new PetInventory(this);
 		_inventory.restore();
 		
-		int npcId = template.npcId;
+		int npcId = template.getNpcId();
 		_mountable = PetDataTable.isMountable(npcId);
 		getPetData();
 		getPetLevelData();
@@ -821,22 +821,23 @@ public class L2PetInstance extends L2Summon
 			PreparedStatement statement = con.prepareStatement("SELECT item_obj_id, name, level, curHp, curMp, exp, sp, fed FROM pets WHERE item_obj_id=?");
 			statement.setInt(1, control.getObjectId());
 			ResultSet rset = statement.executeQuery();
+			final int id = IdFactory.getInstance().getNextId();
 			if (!rset.next())
 			{
-				if (template.type.compareToIgnoreCase("L2BabyPet")==0)
-					pet = new L2BabyPetInstance(IdFactory.getInstance().getNextId(), template, owner, control);
+				if (template.isType("L2BabyPet"))
+					pet = new L2BabyPetInstance(id, template, owner, control);
 				else
-					pet = new L2PetInstance(IdFactory.getInstance().getNextId(), template, owner, control);
+					pet = new L2PetInstance(id, template, owner, control);
 				
 				rset.close();
 				statement.close();
 				return pet;
 			}
 			
-			if (template.type.compareToIgnoreCase("L2BabyPet")==0)
-				pet = new L2BabyPetInstance(IdFactory.getInstance().getNextId(), template, owner, control, rset.getByte("level"));
+			if (template.isType("L2BabyPet"))
+				pet = new L2BabyPetInstance(id, template, owner, control, rset.getByte("level"));
 			else
-				pet = new L2PetInstance(IdFactory.getInstance().getNextId(), template, owner, control, rset.getByte("level"));
+				pet = new L2PetInstance(id, template, owner, control, rset.getByte("level"));
 			
 			pet._respawned = true;
 			pet.setName(rset.getString("name"));

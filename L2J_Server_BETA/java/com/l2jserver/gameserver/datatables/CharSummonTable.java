@@ -204,15 +204,22 @@ public class CharSummonTable
 					return;
 				}
 				
-				if (summonTemplate.type.equalsIgnoreCase("L2SiegeSummon"))
-					summon = new L2SiegeSummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, skill);
-				/* TODO: Confirm L2Merchant 
-				else if (summonTemplate.type.equalsIgnoreCase("L2MerchantSummon"))
-					summon = new L2MerchantSummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, skill);*/
+				final int id = IdFactory.getInstance().getNextId();
+				if (summonTemplate.isType("L2SiegeSummon"))
+				{
+					summon = new L2SiegeSummonInstance(id, summonTemplate, activeChar, skill);
+				}
+				else if (summonTemplate.isType("L2MerchantSummon"))
+				{
+					// TODO: Confirm L2Merchant summon = new L2MerchantSummonInstance(id, summonTemplate, activeChar, skill);
+					summon = new L2SummonInstance(id, summonTemplate, activeChar, skill);
+				}
 				else
-					summon = new L2SummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, skill);
+				{
+					summon = new L2SummonInstance(id, summonTemplate, activeChar, skill);
+				}
 				
-				summon.setName(summonTemplate.name);
+				summon.setName(summonTemplate.getName());
 				summon.setTitle(activeChar.getName());
 				summon.setExpPenalty(skill.getExpPenalty());
 				

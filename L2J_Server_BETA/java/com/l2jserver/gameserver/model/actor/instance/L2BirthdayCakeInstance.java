@@ -40,9 +40,9 @@ public class L2BirthdayCakeInstance extends L2Npc
 	{
 		super(objectId, template);
 		
-		if (template.npcId == BIRTHDAY_CAKE_24)
+		if (template.getNpcId() == BIRTHDAY_CAKE_24)
 			_skill = SkillTable.getInstance().getInfo(22035, 1);
-		else if (template.npcId == BIRTHDAY_CAKE)
+		else if (template.getNpcId() == BIRTHDAY_CAKE)
 			_skill = SkillTable.getInstance().getInfo(22250, 1);
 		
 		_masterId = masterId;

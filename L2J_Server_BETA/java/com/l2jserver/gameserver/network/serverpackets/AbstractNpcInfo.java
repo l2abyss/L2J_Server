@@ -93,20 +93,20 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		{
 			super(cha);
 			_npc = cha;
-			_idTemplate = cha.getTemplate().idTemplate; // On every subclass
+			_idTemplate = cha.getTemplate().getIdTemplate(); // On every subclass
 			_rhand = cha.getRightHandItem(); // On every subclass
 			_lhand = cha.getLeftHandItem(); // On every subclass
 			_enchantEffect = cha.getEnchantEffect();
 			_collisionHeight = cha.getCollisionHeight();// On every subclass
 			_collisionRadius = cha.getCollisionRadius();// On every subclass
 			_isAttackable = cha.isAutoAttackable(attacker);
-			if (cha.getTemplate().serverSideName)
+			if (cha.getTemplate().isServerSideName())
 				_name = cha.getName();// On every subclass
 			
 			if (Config.L2JMOD_CHAMPION_ENABLE && cha.isChampion())
 				_title = (Config.L2JMOD_CHAMP_TITLE); // On every subclass
-			else if (cha.getTemplate().serverSideTitle)
-				_title = cha.getTemplate().title; // On every subclass
+			else if (cha.getTemplate().isServerSideTitle())
+				_title = cha.getTemplate().getTitle(); // On every subclass
 			else
 				_title = cha.getTitle(); // On every subclass
 			
@@ -208,13 +208,13 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			super(cha);
 			
 			_trap = cha;
-			_idTemplate = cha.getTemplate().idTemplate;
+			_idTemplate = cha.getTemplate().getIdTemplate();
 			_isAttackable = cha.isAutoAttackable(attacker);
 			_rhand = 0;
 			_lhand = 0;
 			_collisionHeight = _trap.getTemplate().getfCollisionHeight();
 			_collisionRadius = _trap.getTemplate().getfCollisionRadius();
-			if (cha.getTemplate().serverSideName)
+			if (cha.getTemplate().isServerSideName())
 				_name = cha.getName();
 			_title = cha.getOwner() != null ? cha.getOwner().getName() : "";
 			_runSpd = _trap.getRunSpeed();
@@ -302,7 +302,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			if (_summon.isShowSummonAnimation())
 				_val = 2; //override for spawn
 			
-			int npcId = cha.getTemplate().npcId;
+			int npcId = cha.getTemplate().getNpcId();
 			
 			if (npcId == 16041 || npcId == 16042)
 			{
@@ -328,10 +328,10 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_rhand = cha.getWeapon();
 			_lhand = 0;
 			_chest = cha.getArmor();
-			_enchantEffect = cha.getTemplate().enchantEffect;
+			_enchantEffect = cha.getTemplate().getEnchantEffect();
 			_name = cha.getName();
 			_title = cha.getOwner() != null ? ((!cha.getOwner().isOnline()) ? "" : cha.getOwner().getName()) : ""; // when owner online, summon will show in title owner name
-			_idTemplate = cha.getTemplate().idTemplate;
+			_idTemplate = cha.getTemplate().getIdTemplate();
 			_collisionHeight = cha.getTemplate().getfCollisionHeight();
 			_collisionRadius = cha.getTemplate().getfCollisionRadius();
 			_invisible = cha.getOwner() != null ? cha.getOwner().getAppearance().getInvisible() : false;

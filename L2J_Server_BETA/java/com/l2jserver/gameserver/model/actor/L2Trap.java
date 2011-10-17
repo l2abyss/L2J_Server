@@ -55,7 +55,7 @@ public class L2Trap extends L2Character
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2Trap);
-		setName(template.name);
+		setName(template.getName());
 		setIsInvul(false);
 		
 		_isTriggered = false;
@@ -120,7 +120,7 @@ public class L2Trap extends L2Character
 	 */
 	public final int getNpcId()
 	{
-		return getTemplate().npcId;
+		return getTemplate().getNpcId();
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public class L2Trap extends L2Character
 	@Override
 	public int getLevel()
 	{
-		return getTemplate().level;
+		return getTemplate().getLevel();
 	}
 	
 	/**

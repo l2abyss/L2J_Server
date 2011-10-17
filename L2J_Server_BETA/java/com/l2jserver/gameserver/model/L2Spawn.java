@@ -163,7 +163,7 @@ public class L2Spawn
 		
 		// Create the generic constructor of L2NpcInstance managed by this L2Spawn
 		Class<?>[] parameters = {int.class, Class.forName("com.l2jserver.gameserver.templates.chars.L2NpcTemplate")};
-		_constructor = Class.forName("com.l2jserver.gameserver.model.actor.instance." + _template.type + "Instance").getConstructor(parameters);
+		_constructor = Class.forName("com.l2jserver.gameserver.model.actor.instance." + _template.getType() + "Instance").getConstructor(parameters);
 	}
 	
 	/**
@@ -211,7 +211,7 @@ public class L2Spawn
 	 */
 	public int getNpcid()
 	{
-		return _template.npcId;
+		return _template.getNpcId();
 	}
 	
 	/**
@@ -444,10 +444,7 @@ public class L2Spawn
 		try
 		{
 			// Check if the L2Spawn is not a L2Pet or L2Minion or L2Decoy spawn
-			if (_template.type.equalsIgnoreCase("L2Pet")
-					|| _template.type.equalsIgnoreCase("L2Decoy")
-					|| _template.type.equalsIgnoreCase("L2Trap")
-					|| _template.type.equalsIgnoreCase("L2EffectPoint"))
+			if (_template.isType("L2Pet") || _template.isType("L2Decoy") || _template.isType("L2Trap") || _template.isType("L2EffectPoint"))
 			{
 				_currentCount++;
 				
@@ -472,7 +469,7 @@ public class L2Spawn
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "NPC "+_template.npcId+" class not found", e);
+			_log.log(Level.WARNING, "NPC " + _template.getNpcId() + " class not found", e);
 		}
 		return mob;
 	}
@@ -538,7 +535,7 @@ public class L2Spawn
 			if
 			(
 					mob instanceof L2MonsterInstance
-					&& !getTemplate().isQuestMonster
+					&& !getTemplate().isQuestMonster()
 					&& !mob.isRaid()
 					&& !((L2MonsterInstance)mob).isRaidMinion()
 					&& Config.L2JMOD_CHAMPION_FREQUENCY > 0
@@ -565,8 +562,9 @@ public class L2Spawn
 		_lastSpawn = mob;
 		
 		if (Config.DEBUG)
-			_log.finest("spawned Mob ID: "+_template.npcId+" ,at: "+mob.getX()+" x, "+mob.getY()+" y, "+mob.getZ()+" z");
-		
+		{
+			_log.finest("Spawned Mob Id: " + _template.getNpcId() + " , at: X: " + mob.getX() + " Y: " + mob.getY() + " Z: " + mob.getZ());
+		}
 		// Increase the current number of L2NpcInstance managed by this L2Spawn
 		_currentCount++;
 		return mob;

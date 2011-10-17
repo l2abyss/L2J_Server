@@ -69,7 +69,7 @@ public class MonRaceInfo extends L2GameServerPacket
 		{
 			//_log.info("MOnster "+(i+1)+" npcid "+_monsters[i].getNpcTemplate().getNpcId());
 			writeD(_monsters[i].getObjectId());                         //npcObjectID
-			writeD(_monsters[i].getTemplate().npcId+1000000);   //npcID
+			writeD(_monsters[i].getTemplate().getNpcId()+1000000);   //npcID
 			writeD(14107);                                              //origin X
 			writeD(181875 + (58 * (7-i)));                                  //origin Y
 			writeD(-3566);                                              //origin Z

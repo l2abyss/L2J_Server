@@ -294,7 +294,7 @@ public class L2Npc extends L2Character
 		return true;
 	}
 	
-	public FastList<L2Skill> getLrangeSkill()
+	public FastList<L2Skill> getLongRangeSkill()
 	{
 		FastList<L2Skill> skilldata = new FastList<L2Skill>();
 		boolean hasLrange = false;
@@ -325,9 +325,9 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				if (getTemplate()._universalskills != null)
+				if (getTemplate().getUniversalSkills() != null)
 				{
-					for (L2Skill sk : getTemplate()._universalskills)
+					for (L2Skill sk : getTemplate().getUniversalSkills())
 					{
 						if (sk.getCastRange() >= 200)
 						{
@@ -354,7 +354,7 @@ public class L2Npc extends L2Character
 		return (hasLrange ? skilldata : null);
 	}
 	
-	public FastList<L2Skill> getSrangeSkill()
+	public FastList<L2Skill> getShortRangeSkill()
 	{
 		FastList<L2Skill> skilldata = new FastList<L2Skill>();
 		boolean hasSrange = false;
@@ -385,9 +385,9 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				if (getTemplate()._universalskills != null)
+				if (getTemplate().getUniversalSkills() != null)
 				{
-					for (L2Skill sk : getTemplate()._universalskills)
+					for (L2Skill sk : getTemplate().getUniversalSkills())
 					{
 						if (sk.getCastRange() <= 200)
 						{
@@ -511,9 +511,9 @@ public class L2Npc extends L2Character
 		initCharStatusUpdateValues();
 		
 		// initialize the "current" equipment
-		_currentLHandId = getTemplate().lhand;
-		_currentRHandId = getTemplate().rhand;
-		_currentEnchant = Config.ENABLE_RANDOM_ENCHANT_EFFECT ? Rnd.get(4, 21) : getTemplate().enchantEffect;
+		_currentLHandId = getTemplate().getLeftHand();
+		_currentRHandId = getTemplate().getRightHand();
+		_currentEnchant = Config.ENABLE_RANDOM_ENCHANT_EFFECT ? Rnd.get(4, 21) : getTemplate().getEnchantEffect();
 		// initialize the "current" collisions
 		_currentCollisionHeight = getTemplate().getfCollisionHeight();
 		_currentCollisionRadius = getTemplate().getfCollisionRadius();
@@ -525,7 +525,7 @@ public class L2Npc extends L2Character
 		}
 		
 		// Set the name of the L2Character
-		setName(template.name);
+		setName(template.getName());
 	}
 	
 	@Override
@@ -576,7 +576,7 @@ public class L2Npc extends L2Character
 	 */
 	public int getNpcId()
 	{
-		return getTemplate().npcId;
+		return getTemplate().getNpcId();
 	}
 	
 	@Override
@@ -602,7 +602,7 @@ public class L2Npc extends L2Character
 	@Override
 	public final int getLevel()
 	{
-		return getTemplate().level;
+		return getTemplate().getLevel();
 	}
 	
 	/**
@@ -618,7 +618,7 @@ public class L2Npc extends L2Character
 	 */
 	public int getAggroRange()
 	{
-		return getTemplate().aggroRange;
+		return getTemplate().getAggroRange();
 	}
 	
 	/**
@@ -968,13 +968,13 @@ public class L2Npc extends L2Character
 	public L2Weapon getActiveWeaponItem()
 	{
 		// Get the weapon identifier equiped in the right hand of the L2NpcInstance
-		int weaponId = getTemplate().rhand;
+		int weaponId = getTemplate().getRightHand();
 		
 		if (weaponId < 1)
 			return null;
 		
 		// Get the weapon item equiped in the right hand of the L2NpcInstance
-		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().rhand);
+		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().getRightHand());
 		
 		if (!(item instanceof L2Weapon))
 			return null;
@@ -999,13 +999,13 @@ public class L2Npc extends L2Character
 	public L2Weapon getSecondaryWeaponItem()
 	{
 		// Get the weapon identifier equiped in the right hand of the L2NpcInstance
-		int weaponId = getTemplate().lhand;
+		int weaponId = getTemplate().getLeftHand();
 		
 		if (weaponId < 1)
 			return null;
 		
 		// Get the weapon item equiped in the right hand of the L2NpcInstance
-		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().lhand);
+		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().getLeftHand());
 		
 		if (!(item instanceof L2Weapon))
 			return null;
@@ -1144,10 +1144,10 @@ public class L2Npc extends L2Character
 			}
 		}
 		
-		if ("L2Auctioneer".equals(getTemplate().type) && val == 0)
+		if (getTemplate().isType("L2Auctioneer") && (val == 0))
 			return;
 		
-		int npcId = getTemplate().npcId;
+		int npcId = getTemplate().getNpcId();
 		
 		/* For use with Seven Signs implementation */
 		String filename = SevenSigns.SEVEN_SIGNS_HTML_PATH;
@@ -1331,7 +1331,7 @@ public class L2Npc extends L2Character
 	 */
 	public int getExpReward()
 	{
-		return (int) (getTemplate().rewardExp * Config.RATE_XP);
+		return (int) (getTemplate().getRewardExp() * Config.RATE_XP);
 	}
 	
 	/**
@@ -1339,7 +1339,7 @@ public class L2Npc extends L2Character
 	 */
 	public int getSpReward()
 	{
-		return (int) (getTemplate().rewardSp * Config.RATE_SP);
+		return (int) (getTemplate().getRewardSp() * Config.RATE_SP);
 	}
 	
 	/**
@@ -1368,8 +1368,8 @@ public class L2Npc extends L2Character
 		
 		// normally this wouldn't really be needed, but for those few exceptions,
 		// we do need to reset the weapons back to the initial template weapon.
-		_currentLHandId = getTemplate().lhand;
-		_currentRHandId = getTemplate().rhand;
+		_currentLHandId = getTemplate().getLeftHand();
+		_currentRHandId = getTemplate().getRightHand();
 		_currentCollisionHeight = getTemplate().getfCollisionHeight();
 		_currentCollisionRadius = getTemplate().getfCollisionRadius();
 		DecayTaskManager.getInstance().addDecayTask(this);
@@ -1494,7 +1494,7 @@ public class L2Npc extends L2Character
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + ":" + getTemplate().name + "(" + getNpcId() + ")" + "[" + getObjectId() + "]";
+		return getClass().getSimpleName() + ":" + getName() + "(" + getNpcId() + ")" + "[" + getObjectId() + "]";
 	}
 	
 	public boolean isDecayed()

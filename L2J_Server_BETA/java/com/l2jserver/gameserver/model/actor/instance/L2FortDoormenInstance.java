@@ -37,11 +37,11 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
 		if (!isOwnerClan(player))
-			html.setFile(player.getHtmlPrefix(), "data/html/doormen/"+ getTemplate().npcId + "-no.htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + "-no.htm");
 		else if (isUnderSiege())
-			html.setFile(player.getHtmlPrefix(), "data/html/doormen/"+ getTemplate().npcId + "-busy.htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + "-busy.htm");
 		else
-			html.setFile(player.getHtmlPrefix(), "data/html/doormen/"+ getTemplate().npcId + ".htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + ".htm");
 		
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);

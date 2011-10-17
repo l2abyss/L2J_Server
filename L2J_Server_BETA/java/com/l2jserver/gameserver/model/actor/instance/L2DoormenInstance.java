@@ -87,9 +87,9 @@ public class L2DoormenInstance extends L2NpcInstance
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
 		if (!isOwnerClan(player))
-			html.setFile(player.getHtmlPrefix(), "data/html/doormen/"+ getTemplate().npcId + "-no.htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + "-no.htm");
 		else
-			html.setFile(player.getHtmlPrefix(), "data/html/doormen/"+ getTemplate().npcId + ".htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + ".htm");
 		
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
@@ -122,7 +122,7 @@ public class L2DoormenInstance extends L2NpcInstance
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(player.getHtmlPrefix(), "data/html/doormen/"+ getTemplate().npcId + "-busy.htm");
+		html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + "-busy.htm");
 		player.sendPacket(html);
 	}
 	

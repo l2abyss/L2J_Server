@@ -163,9 +163,9 @@ public final class L2TeleporterInstance extends L2Npc
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
-		String filename = "data/html/teleporter/free/" + getTemplate().npcId + ".htm";
+		String filename = "data/html/teleporter/free/" + getTemplate().getNpcId() + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
-			filename = "data/html/teleporter/" + getTemplate().npcId + "-1.htm";
+			filename = "data/html/teleporter/" + getTemplate().getNpcId() + "-1.htm";
 		
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));

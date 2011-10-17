@@ -204,8 +204,8 @@ public final class SystemMessage extends L2GameServerPacket
 	{
 		if (cha instanceof L2Npc)
 		{
-			if (((L2Npc)cha).getTemplate().serverSideName)
-				return addString(((L2Npc)cha).getTemplate().name);
+			if (((L2Npc)cha).getTemplate().isServerSideName())
+				return addString(((L2Npc)cha).getTemplate().getName());
 			return addNpcName((L2Npc)cha);
 		}
 		else if (cha instanceof L2PcInstance)
@@ -214,8 +214,8 @@ public final class SystemMessage extends L2GameServerPacket
 		}
 		else if (cha instanceof L2Summon)
 		{
-			if (((L2Summon)cha).getTemplate().serverSideName)
-				return addString(((L2Summon)cha).getTemplate().name);
+			if (((L2Summon)cha).getTemplate().isServerSideName())
+				return addString(((L2Summon)cha).getTemplate().getName());
 			return addNpcName((L2Summon)cha);
 		}
 		return addString(cha.getName());
@@ -240,8 +240,8 @@ public final class SystemMessage extends L2GameServerPacket
 	public final SystemMessage addNpcName(final L2NpcTemplate template)
 	{
 		if (template.isCustom())
-			return addString(template.name);
-		return addNpcName(template.npcId);
+			return addString(template.getName());
+		return addNpcName(template.getNpcId());
 	}
 	
 	public final SystemMessage addNpcName(final int id)

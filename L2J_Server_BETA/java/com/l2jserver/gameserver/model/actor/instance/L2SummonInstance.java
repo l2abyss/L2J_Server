@@ -123,7 +123,7 @@ public class L2SummonInstance extends L2Summon
 	@Override
 	public final int getLevel()
 	{
-		return (getTemplate() != null ? getTemplate().level : 0);
+		return (getTemplate() != null ? getTemplate().getLevel() : 0);
 	}
 	
 	@Override
@@ -229,7 +229,7 @@ public class L2SummonInstance extends L2Summon
 			return false;
 		
 		if (Config.DEBUG)
-			_log.warning("L2SummonInstance: " + getTemplate().name + " (" + getOwner().getName() + ") has been killed.");
+			_log.warning("L2SummonInstance: " + getTemplate().getName() + " (" + getOwner().getName() + ") has been killed.");
 		
 		if (_summonLifeTask != null)
 		{
@@ -512,7 +512,7 @@ public class L2SummonInstance extends L2Summon
 		public void run()
 		{
 			if (Config.DEBUG)
-				log.warning("L2SummonInstance: " + _summon.getTemplate().name + " (" + _activeChar.getName() + ") run task.");
+				log.warning("L2SummonInstance: " + _summon.getTemplate().getName() + " (" + _activeChar.getName() + ") run task.");
 			
 			try
 			{
@@ -566,7 +566,7 @@ public class L2SummonInstance extends L2Summon
 	public void unSummon(L2PcInstance owner)
 	{
 		if (Config.DEBUG)
-			_log.warning("L2SummonInstance: " + getTemplate().name + " (" + owner.getName() + ") unsummoned.");
+			_log.warning("L2SummonInstance: " + getTemplate().getName() + " (" + owner.getName() + ") unsummoned.");
 		
 		if (_summonLifeTask != null)
 		{
@@ -590,7 +590,7 @@ public class L2SummonInstance extends L2Summon
 	public boolean destroyItemByItemId(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 	{
 		if (Config.DEBUG)
-			_log.warning("L2SummonInstance: " + getTemplate().name + " (" + getOwner().getName() + ") consume.");
+			_log.warning("L2SummonInstance: " + getTemplate().getName() + " (" + getOwner().getName() + ") consume.");
 		
 		return getOwner().destroyItemByItemId(process, itemId, count, reference, sendMessage);
 	}

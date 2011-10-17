@@ -106,9 +106,9 @@ public class PetStat extends SummonStat
 	@Override
 	public void setLevel(byte value)
 	{
-		getActiveChar().setPetData(PetDataTable.getInstance().getPetLevelData(getActiveChar().getTemplate().npcId, value));
+		getActiveChar().setPetData(PetDataTable.getInstance().getPetLevelData(getActiveChar().getTemplate().getNpcId(), value));
 		if (getActiveChar().getPetLevelData() == null)
-			throw new IllegalArgumentException("No pet data for npc: "+getActiveChar().getTemplate().npcId+" level: "+value);
+			throw new IllegalArgumentException("No pet data for npc: " + getActiveChar().getTemplate().getNpcId() + " level: " + value);
 		getActiveChar().stopFeed();
 		super.setLevel(value);
 		

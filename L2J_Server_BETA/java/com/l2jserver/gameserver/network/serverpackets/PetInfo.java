@@ -81,7 +81,7 @@ public class PetInfo extends L2GameServerPacket
 		writeC(0xb2);
 		writeD(_summon.getSummonType());
 		writeD(_summon.getObjectId());
-		writeD(_summon.getTemplate().idTemplate+1000000);
+		writeD(_summon.getTemplate().getIdTemplate()+1000000);
 		writeD(0);    // 1=attackable
 		
 		writeD(_x);
@@ -119,7 +119,7 @@ public class PetInfo extends L2GameServerPacket
 		}
 		else
 		{
-			writeS(_summon.getTemplate().serverSideName ? _summon.getName() : ""); // Summon name.
+			writeS(_summon.getTemplate().isServerSideName() ? _summon.getName() : ""); // Summon name.
 		}
 		writeD(-1); // High Five NPCString ID
 		writeS(_summon.getTitle()); // owner name

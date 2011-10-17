@@ -103,13 +103,13 @@ public abstract class L2Decoy extends L2Character
 	
 	public final int getNpcId()
 	{
-		return getTemplate().npcId;
+		return getTemplate().getNpcId();
 	}
 	
 	@Override
 	public int getLevel()
 	{
-		return getTemplate().level;
+		return getTemplate().getLevel();
 	}
 	
 	public void deleteMe(L2PcInstance owner)

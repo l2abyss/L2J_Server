@@ -312,7 +312,7 @@ public final class UserInfo extends L2GameServerPacket
 		{
 			L2NpcTemplate polyObj = NpcTable.getInstance().getTemplate(_activeChar.getPoly().getPolyId());
 			if(polyObj != null)
-				title += " - " + polyObj.name;
+				title += " - " + polyObj.getName();
 		}
 		writeS(title);
 		

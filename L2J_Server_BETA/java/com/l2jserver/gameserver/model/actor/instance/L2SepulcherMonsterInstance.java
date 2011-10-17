@@ -44,7 +44,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 		super(objectId, template);
 		setInstanceType(InstanceType.L2SepulcherMonsterInstance);
 		setShowSummonAnimation(true);
-		switch (template.npcId)
+		switch (template.getNpcId())
 		{
 			case 25339:
 			case 25342:

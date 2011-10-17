@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import java.util.List;
+
 import javolution.util.FastList;
 import javolution.util.FastMap;
 
@@ -36,7 +38,7 @@ import com.l2jserver.util.StringUtil;
 
 public class L2NpcInstance extends L2Npc
 {
-	private final ClassId[] _classesToTeach;
+	private final List<ClassId> _classesToTeach;
 	
 	public L2NpcInstance(int objectId, L2NpcTemplate template)
 	{
@@ -67,10 +69,10 @@ public class L2NpcInstance extends L2Npc
 				super.addEffect(newEffect);
 			else
 				newEffect.stopEffectTask();
-		}		
+		}
 	}
 	
-	public ClassId[] getClassesToTeach()
+	public List<ClassId> getClassesToTeach()
 	{
 		return _classesToTeach;
 	}
@@ -88,7 +90,7 @@ public class L2NpcInstance extends L2Npc
 			_log.fine("SkillList activated on: "+npc.getObjectId());
 		}
 		
-		final int npcId = npc.getTemplate().npcId;
+		final int npcId = npc.getTemplate().getNpcId();
 		
 		if (npcId == 32611) //Tolonis (Officer)
 		{

@@ -49,8 +49,7 @@ public class L2GroupSpawn extends L2Spawn
 		
 		try
 		{
-			if (_template.type.equalsIgnoreCase("L2Pet") ||
-					_template.type.equalsIgnoreCase("L2Minion"))
+			if (_template.isType("L2Pet") || _template.isType("L2Minion"))
 				return null;
 			
 			Object[] parameters = {IdFactory.getInstance().getNextId(), _template};
@@ -92,9 +91,9 @@ public class L2GroupSpawn extends L2Spawn
 			mob.onSpawn();
 			
 			if (Config.DEBUG)
-				_log.finest("spawned Mob ID: "+_template.npcId+" ,at: "
-						+mob.getX()+" x, "+mob.getY()+" y, "+mob.getZ()+" z");
-			
+			{
+				_log.finest("Spawned Mob Id: " + _template.getNpcId() + " ,at: X: " + mob.getX() + " Y: " + mob.getY() + " Z: " + mob.getZ());
+			}
 			return mob;
 			
 		}

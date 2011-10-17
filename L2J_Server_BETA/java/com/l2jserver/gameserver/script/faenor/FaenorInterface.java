@@ -116,16 +116,14 @@ public class FaenorInterface implements EngineInterface
 		{
 			int maxCategory = -1;
 			
-			if (npc.getDropData() != null)
-				for (L2DropCategory cat : npc.getDropData())
-				{
-					if (maxCategory < cat.getCategoryType())
-						maxCategory = cat.getCategoryType();
-				}
+			for (L2DropCategory cat : npc.getDropData())
+			{
+				if (maxCategory < cat.getCategoryType())
+					maxCategory = cat.getCategoryType();
+			}
 			maxCategory++;
 			npc.addDropData(drop, maxCategory);
 		}
-		
 	}
 	
 	/**
@@ -146,16 +144,17 @@ public class FaenorInterface implements EngineInterface
 		{
 			return null;
 		}
-		List<L2DropData> questDrops = new FastList<L2DropData>();
-		if (npc.getDropData() != null)
-			for (L2DropCategory cat : npc.getDropData())
-				for (L2DropData drop : cat.getAllDrops())
+		List<L2DropData> questDrops = new FastList<>();
+		for (L2DropCategory cat : npc.getDropData())
+		{
+			for (L2DropData drop : cat.getAllDrops())
+			{
+				if (drop.getQuestID() != null)
 				{
-					if (drop.getQuestID() != null)
-					{
-						questDrops.add(drop);
-					}
+					questDrops.add(drop);
 				}
+			}
+		}
 		return questDrops;
 	}
 	

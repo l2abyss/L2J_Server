@@ -60,7 +60,6 @@ public class L2SkillSpawn extends L2Skill
 			return;
 		}
 		
-		L2Npc npc;
 		final L2NpcTemplate template = NpcTable.getInstance().getTemplate(_npcId);
 		if (template == null)
 		{
@@ -68,21 +67,31 @@ public class L2SkillSpawn extends L2Skill
 			return;
 		}
 		
-		if (template.type.equalsIgnoreCase("L2XmassTree"))
-			npc = new L2XmassTreeInstance(IdFactory.getInstance().getNextId(), template);
-		else if (template.type.equalsIgnoreCase("L2BirthdayCake"))
-			npc = new L2BirthdayCakeInstance(IdFactory.getInstance().getNextId(), template, caster.getObjectId());
-		else if (template.type.equalsIgnoreCase("L2Totem"))
-			npc = new L2TotemInstance(IdFactory.getInstance().getNextId(), template, _skillToCast);
-		/*
-		 * TODO
-		 * else if (template.type.equalsIgnoreCase("L2WeddingCake"))
-		 * npc = new L2WeddingCakeInstance(IdFactory.getInstance().getNextId(), template);
-		 */
+		final int id = IdFactory.getInstance().getNextId();
+		final L2Npc npc;
+		if (template.isType("L2XmassTree"))
+		{
+			npc = new L2XmassTreeInstance(id, template);
+		}
+		else if (template.isType("L2BirthdayCake"))
+		{
+			npc = new L2BirthdayCakeInstance(id, template, caster.getObjectId());
+		}
+		else if (template.isType("L2Totem"))
+		{
+			npc = new L2TotemInstance(id, template, _skillToCast);
+		}
+		else if (template.isType("L2WeddingCake"))
+		{
+			 // TODO: npc = new L2WeddingCakeInstance(id, template);
+			npc = new L2NpcInstance(id, template);
+		}
 		else
-			npc = new L2NpcInstance(IdFactory.getInstance().getNextId(), template);
+		{
+			npc = new L2NpcInstance(id, template);
+		}
 		
-		npc.setName(template.name);
+		npc.setName(template.getName());
 		npc.setTitle(caster.getName());
 		npc.setHeading(-1);
 		npc.setShowSummonAnimation(_summonSpawn);

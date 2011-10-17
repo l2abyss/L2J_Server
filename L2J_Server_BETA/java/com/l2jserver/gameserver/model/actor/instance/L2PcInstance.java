@@ -6670,7 +6670,7 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		
 		stopAllToggles();
-		Ride mount = new Ride(this, true, pet.getTemplate().npcId);
+		Ride mount = new Ride(this, true, pet.getTemplate().getNpcId());
 		setMount(pet.getNpcId(), pet.getLevel(), mount.getMountType());
 		setMountObjectID(pet.getControlObjectId());
 		clearPetData();

@@ -450,7 +450,7 @@ public class RaidBossSpawnManager
 		L2NpcTemplate template = NpcTable.getInstance().getTemplate(bossId);
 		if (template == null)
 			return null;
-		if (!template.type.equalsIgnoreCase("L2RaidBoss"))
+		if (!template.isType("L2RaidBoss"))
 			return null;
 		return template;
 	}

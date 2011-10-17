@@ -1607,68 +1607,65 @@ public class L2Attackable extends L2Npc
 		CursedWeaponsManager.getInstance().checkDrop(this, player);
 		
 		// now throw all categorized drops and handle spoil.
-		if (npcTemplate.getDropData() != null)
+		for (L2DropCategory cat : npcTemplate.getDropData())
 		{
-			for (L2DropCategory cat : npcTemplate.getDropData())
+			RewardItem item = null;
+			if (cat.isSweep())
 			{
-				RewardItem item = null;
-				if (cat.isSweep())
+				// according to sh1ny, seeded mobs CAN be spoiled and swept.
+				if (isSpoil()/* && !isSeeded() */)
 				{
-					// according to sh1ny, seeded mobs CAN be spoiled and swept.
-					if (isSpoil()/* && !isSeeded() */)
+					FastList<RewardItem> sweepList = new FastList<RewardItem>();
+					
+					for (L2DropData drop : cat.getAllDrops())
 					{
-						FastList<RewardItem> sweepList = new FastList<RewardItem>();
-						
-						for (L2DropData drop : cat.getAllDrops())
-						{
-							item = calculateRewardItem(player, drop, levelModifier, true);
-							if (item == null)
-								continue;
-							
-							if (Config.DEBUG)
-								_log.fine("Item id to spoil: " + item.getItemId() + " amount: " + item.getCount());
-							sweepList.add(item);
-						}
-						// Set the table _sweepItems of this L2Attackable
-						if (!sweepList.isEmpty())
-							_sweepItems = sweepList.toArray(new RewardItem[sweepList.size()]);
-					}
-				}
-				else
-				{
-					if (isSeeded())
-					{
-						L2DropData drop = cat.dropSeedAllowedDropsOnly();
-						
-						if (drop == null)
+						item = calculateRewardItem(player, drop, levelModifier, true);
+						if (item == null)
 							continue;
 						
-						item = calculateRewardItem(player, drop, levelModifier, false);
-					}
-					else
-						item = calculateCategorizedRewardItem(player, cat, levelModifier);
-					
-					if (item != null)
-					{
 						if (Config.DEBUG)
-							_log.fine("Item id to drop: " + item.getItemId() + " amount: " + item.getCount());
+							_log.fine("Item id to spoil: " + item.getItemId() + " amount: " + item.getCount());
+						sweepList.add(item);
+					}
+					// Set the table _sweepItems of this L2Attackable
+					if (!sweepList.isEmpty())
+						_sweepItems = sweepList.toArray(new RewardItem[sweepList.size()]);
+				}
+			}
+			else
+			{
+				if (isSeeded())
+				{
+					L2DropData drop = cat.dropSeedAllowedDropsOnly();
+					
+					if (drop == null)
+						continue;
+					
+					item = calculateRewardItem(player, drop, levelModifier, false);
+				}
+				else
+					item = calculateCategorizedRewardItem(player, cat, levelModifier);
+				
+				if (item != null)
+				{
+					if (Config.DEBUG)
+						_log.fine("Item id to drop: " + item.getItemId() + " amount: " + item.getCount());
+					
+					// Check if the autoLoot mode is active
+					if (isFlying() || (!isRaid() && Config.AUTO_LOOT) || (isRaid() && Config.AUTO_LOOT_RAIDS))
+						player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
+					else
+						dropItem(player, item); // drop the item on the ground
 						
-						// Check if the autoLoot mode is active
-						if (isFlying() || (!isRaid() && Config.AUTO_LOOT) || (isRaid() && Config.AUTO_LOOT_RAIDS))
-							player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
-						else
-							dropItem(player, item); // drop the item on the ground
-							
-						// Broadcast message if RaidBoss was defeated
-						if (isRaid() && !isRaidMinion())
-						{
-							SystemMessage sm;
-							sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
-							sm.addCharName(this);
-							sm.addItemName(item.getItemId());
-							sm.addItemNumber(item.getCount());
-							broadcastPacket(sm);
-						}
+					// Broadcast message if RaidBoss was defeated
+					if (isRaid() && !isRaidMinion())
+					{
+						SystemMessage sm;
+						sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
+						sm.addCharName(this);
+						sm.addItemName(item.getItemId());
+						sm.addItemNumber(item.getCount());
+						broadcastPacket(sm);
 					}
 				}
 			}
@@ -1696,9 +1693,9 @@ public class L2Attackable extends L2Npc
 		}
 		
 		//Instant Item Drop :>
-		if (getTemplate().dropherbgroup > 0)
+		if (getTemplate().getDropHerbGroup() > 0)
 		{
-			for (L2DropCategory cat : HerbDropTable.getInstance().getHerbDroplist(getTemplate().dropherbgroup))
+			for (L2DropCategory cat : HerbDropTable.getInstance().getHerbDroplist(getTemplate().getDropHerbGroup()))
 			{
 				RewardItem item = calculateCategorizedHerbItem(player, cat);
 				if (item != null)
@@ -2386,7 +2383,7 @@ public class L2Attackable extends L2Npc
 		if (damage <= 0)
 			return 0;
 		
-		final float divider = getTemplate().baseVitalityDivider;
+		final float divider = getTemplate().getBaseVitalityDivider();
 		if (divider == 0)
 			return 0;
 		

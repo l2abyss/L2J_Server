@@ -75,6 +75,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public static final int SKILL_CRYSTALLIZE = 248;
 	public static final int SKILL_DIVINE_INSPIRATION = 1405;
 	public static final int SKILL_CLAN_LUCK = 390;
+	public static final int SKILL_NPC_RACE = 4416;
 	
 	public static final boolean geoEnabled = Config.GEODATA > 0;
 	

@@ -48,7 +48,7 @@ public final class ExPartyPetWindowAdd extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x18);
 		writeD(_summon.getObjectId());
-		writeD(_summon.getTemplate().idTemplate + 1000000);
+		writeD(_summon.getTemplate().getIdTemplate() + 1000000);
 		writeD(_summon.getSummonType());
 		writeD(_summon.getOwner().getObjectId());
 		writeS(_summon.getName());
