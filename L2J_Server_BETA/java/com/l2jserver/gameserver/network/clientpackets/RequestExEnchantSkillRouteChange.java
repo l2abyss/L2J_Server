@@ -98,14 +98,14 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			return;
 		}
 		
-		final int currentSkillLevel = player.getSkillLevel(_skillId);
+		final int beforeEnchantSkillLevel = player.getSkillLevel(_skillId);
 		// do u have this skill enchanted?
-		if (currentSkillLevel <= 100)
+		if (beforeEnchantSkillLevel <= 100)
 		{
 			return;
 		}
 		
-		int currentEnchantLevel = currentSkillLevel % 100;
+		int currentEnchantLevel = beforeEnchantSkillLevel % 100;
 		// is the requested level valid?
 		if (currentEnchantLevel != _skillLvl % 100)
 		{
@@ -198,9 +198,10 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 				player.sendPacket(sm);
 			}
 			player.sendSkillList();
-			player.sendPacket(new ExEnchantSkillInfo(_skillId, currentSkillLevel));
-			player.sendPacket(new ExEnchantSkillInfoDetail(3, _skillId, currentSkillLevel, player));
-			player.updateShortCuts(_skillId, currentSkillLevel);
+			final int afterEnchantSkillLevel = player.getSkillLevel(_skillId);
+			player.sendPacket(new ExEnchantSkillInfo(_skillId, afterEnchantSkillLevel));
+			player.sendPacket(new ExEnchantSkillInfoDetail(3, _skillId, afterEnchantSkillLevel, player));
+			player.updateShortCuts(_skillId, afterEnchantSkillLevel);
 		}
 		else
 		{

@@ -100,8 +100,8 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 			return;
 		}
 		final EnchantSkillDetail esd = s.getEnchantSkillDetail(_skillLvl);
-		final int currentSkillLevel = player.getSkillLevel(_skillId);
-		if (currentSkillLevel != s.getMinSkillLevel(_skillLvl))
+		final int beforeEnchantSkillLevel = player.getSkillLevel(_skillId);
+		if (beforeEnchantSkillLevel != s.getMinSkillLevel(_skillLvl))
 		{
 			return;
 		}
@@ -183,9 +183,10 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 			player.sendPacket(new UserInfo(player));
 			player.sendPacket(new ExBrExtraUserInfo(player));
 			player.sendSkillList();
-			player.sendPacket(new ExEnchantSkillInfo(_skillId, currentSkillLevel));
-			player.sendPacket(new ExEnchantSkillInfoDetail(0, _skillId, currentSkillLevel + 1, player));
-			player.updateShortCuts(_skillId, currentSkillLevel);
+			final int afterEnchantSkillLevel = player.getSkillLevel(_skillId);
+			player.sendPacket(new ExEnchantSkillInfo(_skillId, afterEnchantSkillLevel));
+			player.sendPacket(new ExEnchantSkillInfoDetail(0, _skillId, afterEnchantSkillLevel + 1, player));
+			player.updateShortCuts(_skillId, afterEnchantSkillLevel);
 		}
 		else
 		{

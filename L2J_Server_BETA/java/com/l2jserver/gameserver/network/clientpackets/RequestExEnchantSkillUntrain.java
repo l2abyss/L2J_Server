@@ -102,11 +102,11 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		
 		int reqItemId = EnchantGroupsTable.UNTRAIN_ENCHANT_BOOK;
 		
-		final int currentSkillLevel = player.getSkillLevel(_skillId);
-		if (currentSkillLevel - 1 != _skillLvl && (currentSkillLevel % 100 != 1 || _skillLvl != s.getBaseLevel()))
+		final int beforeUntrainSkillLevel = player.getSkillLevel(_skillId);
+		if (beforeUntrainSkillLevel - 1 != _skillLvl && (beforeUntrainSkillLevel % 100 != 1 || _skillLvl != s.getBaseLevel()))
 			return;
 		
-		EnchantSkillDetail esd = s.getEnchantSkillDetail(currentSkillLevel);
+		EnchantSkillDetail esd = s.getEnchantSkillDetail(beforeUntrainSkillLevel);
 		
 		int requiredSp = esd.getSpCost();
 		int requireditems = esd.getAdenaCost();
@@ -176,9 +176,10 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 			player.sendPacket(sm);
 		}
 		player.sendSkillList();
-		player.sendPacket(new ExEnchantSkillInfo(_skillId, player.getSkillLevel(_skillId)));
-		player.sendPacket(new ExEnchantSkillInfoDetail(2, _skillId, player.getSkillLevel(_skillId)-1, player));
-		player.updateShortCuts(_skillId, currentSkillLevel);
+		final int afterUntrainSkillLevel = player.getSkillLevel(_skillId);
+		player.sendPacket(new ExEnchantSkillInfo(_skillId, afterUntrainSkillLevel));
+		player.sendPacket(new ExEnchantSkillInfoDetail(2, _skillId, afterUntrainSkillLevel - 1, player));
+		player.updateShortCuts(_skillId, afterUntrainSkillLevel);
 	}
 	
 	@Override
