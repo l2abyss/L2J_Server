@@ -2078,7 +2078,7 @@ public abstract class L2Character extends L2Object
 			return false;
 		}
 		
-		if (!skill.isPotion())
+		if (!skill.isPotion() || !skill.ignoreSkillMute()) // Skill mute checks.
 		{
 			// Check if the skill is a magic spell and if the L2Character is not muted
 			if (skill.isMagic())

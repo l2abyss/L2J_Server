@@ -267,9 +267,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final String _attribute;
 	
 	private final boolean _ignoreShield;
+	private final boolean _ignoreSkillMute;
+	
 	private final boolean _isSuicideAttack;
 	private final boolean _canBeReflected;
-	
 	private final boolean _canBeDispeled;
 	
 	private final boolean _isClanSkill;
@@ -454,6 +455,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_maxChance = set.getInteger("maxChance", Config.MAX_DEBUFF_CHANCE);
 		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
+		_ignoreSkillMute = set.getBool("ignoreSkillMute", false);
 		_skillType = set.getEnum("skillType", L2SkillType.class);
 		_effectType = set.getEnum("effectType", L2SkillType.class, null);
 		_effectId = set.getInteger("effectId", 0);
@@ -1984,6 +1986,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean ignoreShield()
 	{
 		return _ignoreShield;
+	}
+	
+	public boolean ignoreSkillMute()
+	{
+		return _ignoreSkillMute;
 	}
 	
 	public boolean canBeReflected()

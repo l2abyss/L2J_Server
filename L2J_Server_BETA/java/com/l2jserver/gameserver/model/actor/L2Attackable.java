@@ -408,15 +408,18 @@ public class L2Attackable extends L2Npc
 		if (getCurrentHp() <= skill.getHpConsume())
 			return;
 		
-		if (skill.isMagic())
+		if (!skill.ignoreSkillMute())
 		{
-			if (isMuted())
-				return;
-		}
-		else
-		{
-			if (isPhysicalMuted())
-				return;
+			if (skill.isMagic())
+			{
+				if (isMuted())
+					return;
+			}
+			else
+			{
+				if (isPhysicalMuted())
+					return;
+			}
 		}
 		
 		L2Object target = skill.getFirstOfTargetList(this);
