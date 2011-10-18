@@ -23,7 +23,6 @@ import com.l2jserver.dbinstaller.RunTasks;
 import com.l2jserver.dbinstaller.util.mysql.MySqlConnect;
 
 /**
- * 
  * @author mrTJO
  */
 public class DBInstallerConsole implements DBOutputInterface
@@ -37,24 +36,23 @@ public class DBInstallerConsole implements DBOutputInterface
 		Scanner scn = new Scanner(System.in);
 		while (_con == null)
 		{
-			System.out.printf("%s (%s): ", "Host", prop.get("dbHost_"+db, "localhost"));
+			System.out.printf("%s (%s): ", "Host", prop.get("dbHost_" + db, "localhost"));
 			String dbHost = scn.nextLine();
-			System.out.printf("%s (%s): ", "Port", prop.get("dbPort_"+db, "3306"));
+			System.out.printf("%s (%s): ", "Port", prop.get("dbPort_" + db, "3306"));
 			String dbPort = scn.nextLine();
-			System.out.printf("%s (%s): ", "Username", prop.get("dbUser_"+db, "root"));
+			System.out.printf("%s (%s): ", "Username", prop.get("dbUser_" + db, "root"));
 			String dbUser = scn.nextLine();
 			System.out.printf("%s (%s): ", "Password", "");
 			String dbPass = scn.nextLine();
-			System.out.printf("%s (%s): ", "Database", prop.get("dbDbse_"+db, db));
+			System.out.printf("%s (%s): ", "Database", prop.get("dbDbse_" + db, db));
 			String dbDbse = scn.nextLine();
 			
-			dbHost = dbHost.isEmpty() ? prop.get("dbHost_"+db, "localhost") : dbHost;
-			dbPort = dbPort.isEmpty() ? prop.get("dbPort_"+db, "3306") : dbPort;
-			dbUser = dbUser.isEmpty() ? prop.get("dbUser_"+db, "root") : dbUser;
-			dbDbse = dbDbse.isEmpty() ? prop.get("dbDbse_"+db, db) : dbDbse;
+			dbHost = dbHost.isEmpty() ? prop.get("dbHost_" + db, "localhost") : dbHost;
+			dbPort = dbPort.isEmpty() ? prop.get("dbPort_" + db, "3306") : dbPort;
+			dbUser = dbUser.isEmpty() ? prop.get("dbUser_" + db, "root") : dbUser;
+			dbDbse = dbDbse.isEmpty() ? prop.get("dbDbse_" + db, db) : dbDbse;
 			
-			MySqlConnect connector = new MySqlConnect(dbHost, dbPort, dbUser,
-					dbPass, dbDbse, true);
+			MySqlConnect connector = new MySqlConnect(dbHost, dbPort, dbUser, dbPass, dbDbse, true);
 			
 			_con = connector.getConnection();
 		}
@@ -80,33 +78,42 @@ public class DBInstallerConsole implements DBOutputInterface
 		
 		rt.run();
 	}
-
+	
 	@Override
 	public void appendToProgressArea(String text)
 	{
 		System.out.println(text);
 	}
-
+	
 	@Override
 	public Connection getConnection()
 	{
 		return _con;
 	}
-
-	@Override
-	public void setProgressIndeterminate(boolean value) { }
-
-	@Override
-	public void setProgressMaximum(int maxValue) { }
-
-	@Override
-	public void setProgressValue(int value) { }
 	
 	@Override
-	public void setFrameVisible(boolean value) { }
-
+	public void setProgressIndeterminate(boolean value)
+	{
+	}
+	
 	@Override
-	public int requestConfirm(String title, String message, int type) {
+	public void setProgressMaximum(int maxValue)
+	{
+	}
+	
+	@Override
+	public void setProgressValue(int value)
+	{
+	}
+	
+	@Override
+	public void setFrameVisible(boolean value)
+	{
+	}
+	
+	@Override
+	public int requestConfirm(String title, String message, int type)
+	{
 		System.out.print(message);
 		Scanner scn = new Scanner(System.in);
 		String res = scn.next();
@@ -114,9 +121,10 @@ public class DBInstallerConsole implements DBOutputInterface
 			return 0;
 		return 1;
 	}
-
+	
 	@Override
-	public void showMessage(String title, String message, int type) {
+	public void showMessage(String title, String message, int type)
+	{
 		System.out.println(message);
 	}
 }

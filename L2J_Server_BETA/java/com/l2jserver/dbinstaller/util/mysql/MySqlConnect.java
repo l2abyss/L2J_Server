@@ -23,7 +23,6 @@ import java.util.Formatter;
 import javax.swing.JOptionPane;
 
 /**
- * 
  * @author mrTJO
  */
 public class MySqlConnect
@@ -35,13 +34,11 @@ public class MySqlConnect
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			con = DriverManager.getConnection(
-				new Formatter().format("jdbc:mysql://%1$s:%2$s", host, port).toString(),
-				user, password);
+			con = DriverManager.getConnection(new Formatter().format("jdbc:mysql://%1$s:%2$s", host, port).toString(), user, password);
 			
 			Statement st = con.createStatement();
-			st.execute("CREATE DATABASE IF NOT EXISTS `"+db+"`");
-			st.execute("USE `"+db+"`");
+			st.execute("CREATE DATABASE IF NOT EXISTS `" + db + "`");
+			st.execute("USE `" + db + "`");
 			st.close();
 		}
 		catch (SQLException e)
@@ -49,32 +46,28 @@ public class MySqlConnect
 			if (console)
 				e.printStackTrace();
 			else
-				JOptionPane.showMessageDialog(null, "MySQL Error: "+e.getMessage(),
-					"Connection Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "MySQL Error: " + e.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch (InstantiationException e)
 		{
 			if (console)
 				e.printStackTrace();
 			else
-				JOptionPane.showMessageDialog(null, "Instantiation Exception: "+e.getMessage(),
-					"Connection Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Instantiation Exception: " + e.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch (IllegalAccessException e)
 		{
 			if (console)
 				e.printStackTrace();
 			else
-				JOptionPane.showMessageDialog(null, "Illegal Access: "+e.getMessage(), "Connection Error",
-					JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Illegal Access: " + e.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch (ClassNotFoundException e)
 		{
 			if (console)
 				e.printStackTrace();
 			else
-				JOptionPane.showMessageDialog(null, "Cannot find MySQL Connector: "+e.getMessage(),
-					"Connection Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Cannot find MySQL Connector: " + e.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	

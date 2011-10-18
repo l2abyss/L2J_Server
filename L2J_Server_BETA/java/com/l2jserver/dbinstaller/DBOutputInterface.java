@@ -17,7 +17,6 @@ package com.l2jserver.dbinstaller;
 import java.sql.Connection;
 
 /**
- * 
  * @author mrTJO
  */
 public interface DBOutputInterface

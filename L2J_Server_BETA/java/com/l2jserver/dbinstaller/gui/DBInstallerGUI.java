@@ -29,7 +29,6 @@ import com.l2jserver.dbinstaller.DBOutputInterface;
 import com.l2jserver.images.ImagesTable;
 
 /**
- * 
  * @author mrTJO
  */
 public class DBInstallerGUI extends JFrame implements DBOutputInterface
@@ -47,7 +46,6 @@ public class DBInstallerGUI extends JFrame implements DBOutputInterface
 		setDefaultLookAndFeelDecorated(true);
 		setIconImage(ImagesTable.getImage("l2j.png").getImage());
 		
-		
 		_con = con;
 		
 		int width = 480;
@@ -55,7 +53,7 @@ public class DBInstallerGUI extends JFrame implements DBOutputInterface
 		Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds((resolution.width-width)/2, (resolution.height-height)/2, width, height);
+		setBounds((resolution.width - width) / 2, (resolution.height - height) / 2, width, height);
 		setResizable(false);
 		
 		_progBar = new JProgressBar();
@@ -92,7 +90,7 @@ public class DBInstallerGUI extends JFrame implements DBOutputInterface
 	@Override
 	public void appendToProgressArea(String text)
 	{
-		_progArea.append(text+"\n");
+		_progArea.append(text + "\n");
 		_progArea.setCaretPosition(_progArea.getDocument().getLength());
 	}
 	
@@ -101,21 +99,22 @@ public class DBInstallerGUI extends JFrame implements DBOutputInterface
 	{
 		return _con;
 	}
-
+	
 	@Override
 	public void setFrameVisible(boolean value)
 	{
 		setVisible(value);
 	}
-
+	
 	@Override
 	public int requestConfirm(String title, String message, int type)
 	{
 		return JOptionPane.showConfirmDialog(null, message, title, type);
 	}
-
+	
 	@Override
-	public void showMessage(String title, String message, int type) {
+	public void showMessage(String title, String message, int type)
+	{
 		JOptionPane.showMessageDialog(null, message, title, type);
 	}
 }

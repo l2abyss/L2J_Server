@@ -21,10 +21,7 @@ import com.l2jserver.dbinstaller.console.DBInstallerConsole;
 import com.l2jserver.dbinstaller.gui.DBConfigGUI;
 
 /**
- * Contains main class for Database Installer
- * If system doesn't support the graphical UI,
- * start the installer in console mode.
- * 
+ * Contains main class for Database Installer If system doesn't support the graphical UI, start the installer in console mode.
  * @author mrTJO
  */
 public class LauncherGS
@@ -40,7 +37,9 @@ public class LauncherGS
 			// Set OS Look And Feel
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch (Exception e) { }
+		catch (Exception e)
+		{
+		}
 		
 		try
 		{

@@ -31,7 +31,6 @@ import com.l2jserver.dbinstaller.DBOutputInterface;
 import com.l2jserver.dbinstaller.util.FileWriterStdout;
 
 /**
- * 
  * @author mrTJO
  */
 public class DBDumper
@@ -54,12 +53,11 @@ public class DBDumper
 			Formatter form = new Formatter();
 			PreparedStatement stmt = con.prepareStatement("SHOW TABLES");
 			ResultSet rset = stmt.executeQuery();
-			File dump = new File("dumps", form.format("%1$s_dump_%2$tY%2$tm%2$td-%2$tH%2$tM%2$tS.sql",
-					_db, new GregorianCalendar().getTime()).toString());
+			File dump = new File("dumps", form.format("%1$s_dump_%2$tY%2$tm%2$td-%2$tH%2$tM%2$tS.sql", _db, new GregorianCalendar().getTime()).toString());
 			new File("dumps").mkdir();
 			dump.createNewFile();
 			
-			_frame.appendToProgressArea("Writing dump "+dump.getName());
+			_frame.appendToProgressArea("Writing dump " + dump.getName());
 			if (rset.last())
 			{
 				int rows = rset.getRow();
@@ -75,18 +73,19 @@ public class DBDumper
 			while (rset.next())
 			{
 				_frame.setProgressValue(rset.getRow());
-				_frame.appendToProgressArea("Dumping Table "+rset.getString(1));
-				ps.println("CREATE TABLE `"+rset.getString(1)+"`");
+				_frame.appendToProgressArea("Dumping Table " + rset.getString(1));
+				ps.println("CREATE TABLE `" + rset.getString(1) + "`");
 				ps.println("(");
-				PreparedStatement desc = con.prepareStatement("DESC "+rset.getString(1));
+				PreparedStatement desc = con.prepareStatement("DESC " + rset.getString(1));
 				ResultSet dset = desc.executeQuery();
 				Map<String, List<String>> keys = new HashMap<String, List<String>>();
 				boolean isFirst = true;
 				while (dset.next())
 				{
-					if (!isFirst) ps.println(",");
-					ps.print("\t`"+dset.getString(1)+"`");
-					ps.print(" "+dset.getString(2));
+					if (!isFirst)
+						ps.println(",");
+					ps.print("\t`" + dset.getString(1) + "`");
+					ps.print(" " + dset.getString(2));
 					if (dset.getString(3).equals("NO"))
 						ps.print(" NOT NULL");
 					if (!dset.getString(4).isEmpty())
@@ -96,9 +95,9 @@ public class DBDumper
 						keys.get(dset.getString(4)).add(dset.getString(1));
 					}
 					if (dset.getString(5) != null)
-						ps.print(" DEFAULT '"+dset.getString(5)+"'");
+						ps.print(" DEFAULT '" + dset.getString(5) + "'");
 					if (!dset.getString(6).isEmpty())
-						ps.print(" "+dset.getString(6));
+						ps.print(" " + dset.getString(6));
 					isFirst = false;
 				}
 				if (keys.containsKey("PRI"))
@@ -108,8 +107,9 @@ public class DBDumper
 					isFirst = true;
 					for (String key : keys.get("PRI"))
 					{
-						if (!isFirst) ps.print(", ");
-						ps.print("`"+key+"`");
+						if (!isFirst)
+							ps.print(", ");
+						ps.print("`" + key + "`");
 						isFirst = false;
 					}
 					ps.print(")");
@@ -120,8 +120,9 @@ public class DBDumper
 					isFirst = true;
 					for (String key : keys.get("MUL"))
 					{
-						if (!isFirst) ps.println(", ");
-						ps.print("\tKEY `key_"+key+"` (`"+key+"`)");
+						if (!isFirst)
+							ps.println(", ");
+						ps.print("\tKEY `key_" + key + "` (`" + key + "`)");
 						isFirst = false;
 					}
 				}
@@ -131,14 +132,14 @@ public class DBDumper
 				dset.close();
 				desc.close();
 				
-				desc = con.prepareStatement("SELECT * FROM "+rset.getString(1));
+				desc = con.prepareStatement("SELECT * FROM " + rset.getString(1));
 				dset = desc.executeQuery();
 				isFirst = true;
 				int cnt = 0;
 				while (dset.next())
 				{
-					if ((cnt%100) == 0)
-						ps.println("INSERT INTO `"+rset.getString(1)+"` VALUES ");
+					if ((cnt % 100) == 0)
+						ps.println("INSERT INTO `" + rset.getString(1) + "` VALUES ");
 					else
 						ps.println(",");
 					
@@ -152,17 +153,17 @@ public class DBDumper
 						if (dset.getString(i) == null)
 							ps.print("NULL");
 						else
-							ps.print("'"+dset.getString(i).replace("\'", "\\\'")+"'");
+							ps.print("'" + dset.getString(i).replace("\'", "\\\'") + "'");
 						isInFirst = false;
 					}
 					ps.print(")");
 					isFirst = false;
 					
-					if ((cnt%100) == 99)
+					if ((cnt % 100) == 99)
 						ps.println(";");
 					cnt++;
 				}
-				if (!isFirst && (cnt%100) != 0)
+				if (!isFirst && (cnt % 100) != 0)
 					ps.println(";");
 				ps.println();
 				ps.flush();

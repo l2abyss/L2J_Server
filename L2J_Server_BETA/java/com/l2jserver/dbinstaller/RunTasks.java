@@ -25,7 +25,6 @@ import com.l2jserver.dbinstaller.util.mysql.ScriptExecutor;
 import com.l2jserver.dbinstaller.util.mysql.ScriptExecutor.SqlFileFilter;
 
 /**
- * 
  * @author mrTJO
  */
 public class RunTasks extends Thread
@@ -36,8 +35,7 @@ public class RunTasks extends Thread
 	String _sqlDir;
 	String _cleanUpFile;
 	
-	public RunTasks(DBOutputInterface frame, String db, String sqlDir, String cleanUpFile,
-			boolean cleanInstall)
+	public RunTasks(DBOutputInterface frame, String db, String sqlDir, String cleanUpFile, boolean cleanInstall)
 	{
 		_frame = frame;
 		_db = db;
@@ -73,8 +71,8 @@ public class RunTasks extends Thread
 			{
 				StringBuilder sb = new StringBuilder();
 				for (File cf : files)
-					sb.append(cf.getName()+';');
-				prefs.put(_db+"_upd", sb.toString());
+					sb.append(cf.getName() + ';');
+				prefs.put(_db + "_upd", sb.toString());
 			}
 		}
 		else
@@ -85,10 +83,10 @@ public class RunTasks extends Thread
 				
 				for (File cf : files)
 				{
-					if (!prefs.get(_db+"_upd", "").contains(cf.getName()))
+					if (!prefs.get(_db + "_upd", "").contains(cf.getName()))
 					{
 						exec.execSqlFile(cf, true);
-						prefs.put(_db+"_upd", prefs.get(_db+"_upd", "")+cf.getName()+";");
+						prefs.put(_db + "_upd", prefs.get(_db + "_upd", "") + cf.getName() + ";");
 					}
 				}
 				_frame.appendToProgressArea("Database Updates Installed!");
@@ -102,8 +100,7 @@ public class RunTasks extends Thread
 		File cusDir = new File(_sqlDir, "custom");
 		if (cusDir.exists())
 		{
-			int ch = _frame.requestConfirm("Install Custom",
-					"Do you want to install custom tables?", JOptionPane.YES_NO_OPTION);
+			int ch = _frame.requestConfirm("Install Custom", "Do you want to install custom tables?", JOptionPane.YES_NO_OPTION);
 			if (ch == 0)
 			{
 				_frame.appendToProgressArea("Installing Custom Tables...");
@@ -115,8 +112,7 @@ public class RunTasks extends Thread
 		File modDir = new File(_sqlDir, "mods");
 		if (modDir.exists())
 		{
-			int ch = _frame.requestConfirm("Install Mods",
-					"Do you want to install mod tables?", JOptionPane.YES_NO_OPTION);
+			int ch = _frame.requestConfirm("Install Mods", "Do you want to install mod tables?", JOptionPane.YES_NO_OPTION);
 			if (ch == 0)
 			{
 				_frame.appendToProgressArea("Installing Mods Tables...");
@@ -131,13 +127,11 @@ public class RunTasks extends Thread
 		}
 		catch (SQLException e)
 		{
-			JOptionPane.showMessageDialog(null, "Cannot close MySQL Connection: "+e.getMessage(),
-					"Connection Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Cannot close MySQL Connection: " + e.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
 		}
 		
 		_frame.setFrameVisible(false);
-		_frame.showMessage("Done!", "Database Installation Complete!",
-				JOptionPane.INFORMATION_MESSAGE);
+		_frame.showMessage("Done!", "Database Installation Complete!", JOptionPane.INFORMATION_MESSAGE);
 		System.exit(0);
 		
 	}

@@ -27,12 +27,12 @@ import javax.swing.JOptionPane;
 import com.l2jserver.dbinstaller.DBOutputInterface;
 
 /**
- * 
  * @author mrTJO
  */
 public class ScriptExecutor
 {
 	DBOutputInterface _frame;
+	
 	public ScriptExecutor(DBOutputInterface frame)
 	{
 		_frame = frame;
@@ -47,7 +47,7 @@ public class ScriptExecutor
 	{
 		File[] file = dir.listFiles(new SqlFileFilter());
 		_frame.setProgressIndeterminate(false);
-		_frame.setProgressMaximum(file.length-1);
+		_frame.setProgressMaximum(file.length - 1);
 		for (int i = 0; i < file.length; i++)
 		{
 			_frame.setProgressValue(i);
@@ -64,7 +64,7 @@ public class ScriptExecutor
 	{
 		try
 		{
-			_frame.appendToProgressArea("Installing "+file.getName());
+			_frame.appendToProgressArea("Installing " + file.getName());
 			String line = "";
 			Connection con = _frame.getConnection();
 			Statement stmt = con.createStatement();
@@ -80,7 +80,7 @@ public class ScriptExecutor
 				
 				line = line.trim();
 				if (!line.isEmpty())
-					sb.append(line+"\n");
+					sb.append(line + "\n");
 				
 				if (line.endsWith(";"))
 				{
@@ -92,33 +92,31 @@ public class ScriptExecutor
 		}
 		catch (FileNotFoundException e)
 		{
-			JOptionPane.showMessageDialog(null, "File Not Found!: "+e.getMessage(), "Installer Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "File Not Found!: " + e.getMessage(), "Installer Error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch (SQLException e)
 		{
 			if (!skipErrors)
 			{
-				Object[] options = { "Continue", "Abort" };
-				int n = JOptionPane.showOptionDialog(null, "MySQL Error: "+e.getMessage(),
-					"Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
-					null, options, options[0]);
-			
+				Object[] options =
+				{
+					"Continue", "Abort"
+				};
+				int n = JOptionPane.showOptionDialog(null, "MySQL Error: " + e.getMessage(), "Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+				
 				if (n == 1)
 					System.exit(0);
 			}
 		}
 	}
 	
-	
 	public static class SqlFileFilter implements FileFilter
 	{
 		@Override
 		public boolean accept(File pathname)
 		{
-			if (pathname.getName().endsWith(".sql"))
-				return true;
-			return false;
+			return pathname.getName().endsWith(".sql");
 		}
 	}
-
+	
 }

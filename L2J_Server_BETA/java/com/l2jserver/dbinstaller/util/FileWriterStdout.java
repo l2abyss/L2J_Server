@@ -20,7 +20,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * 
  * @author mrTJO
  */
 public class FileWriterStdout extends BufferedWriter
@@ -37,7 +36,7 @@ public class FileWriterStdout extends BufferedWriter
 	
 	public void println(String line) throws IOException
 	{
-		append(line+"\n");
+		append(line + "\n");
 	}
 	
 	public void print(String text) throws IOException
