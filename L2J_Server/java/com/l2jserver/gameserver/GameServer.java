@@ -74,14 +74,7 @@ import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
 import com.l2jserver.gameserver.datatables.UITable;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
-import com.l2jserver.gameserver.handler.AdminCommandHandler;
-import com.l2jserver.gameserver.handler.ChatHandler;
 import com.l2jserver.gameserver.handler.EffectHandler;
-import com.l2jserver.gameserver.handler.ItemHandler;
-import com.l2jserver.gameserver.handler.SkillHandler;
-import com.l2jserver.gameserver.handler.TargetHandler;
-import com.l2jserver.gameserver.handler.UserCommandHandler;
-import com.l2jserver.gameserver.handler.VoicedCommandHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
@@ -220,7 +213,6 @@ public class GameServer
 		GlobalVariablesManager.getInstance();
 		
 		printSection("Skills");
-		TargetHandler.getInstance().executeScript();
 		EffectHandler.getInstance().executeScript();
 		EnchantGroupsTable.getInstance();
 		SkillTable.getInstance();
@@ -376,13 +368,6 @@ public class GameServer
 		
 		_log.info("AutoChatHandler: Loaded " + AutoChatHandler.getInstance().size() + " handlers in total.");
 		_log.info("AutoSpawnHandler: Loaded " + AutoSpawnHandler.getInstance().size() + " handlers in total.");
-		
-		AdminCommandHandler.getInstance();
-		ChatHandler.getInstance();
-		ItemHandler.getInstance();
-		SkillHandler.getInstance();
-		UserCommandHandler.getInstance();
-		VoicedCommandHandler.getInstance();
 		
 		if (Config.L2JMOD_ALLOW_WEDDING)
 			CoupleManager.getInstance();

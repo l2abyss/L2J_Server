@@ -14,23 +14,17 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import java.io.File;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
-import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 
 /**
  * @author UnAfraid
  */
 public class TargetHandler
 {
-	private static Logger _log = Logger.getLogger(TargetHandler.class.getName());
-	
 	private final Map<Enum<SkillTargetType>, ISkillTargetTypeHandler> _datatable;
 	
 	public static TargetHandler getInstance()
@@ -45,30 +39,12 @@ public class TargetHandler
 	
 	public void registerSkillTargetType(ISkillTargetTypeHandler handler)
 	{
-		Enum<SkillTargetType> ids = handler.getTargetType();
-		if (_datatable.containsKey(ids))
-			_log.log(Level.FINE, "Target Handler: " + ids.toString() + " is already registered into the map!");
-		_datatable.put(ids, handler);
+		_datatable.put(handler.getTargetType(), handler);
 	}
 	
 	public ISkillTargetTypeHandler getSkillTarget(Enum<SkillTargetType> skillTargetType)
 	{
-		Enum<SkillTargetType> target = skillTargetType;
-		return _datatable.get(target);
-	}
-	
-	public void executeScript()
-	{
-		try
-		{
-			File file = new File(L2ScriptEngineManager.SCRIPT_FOLDER, "handlers/TargetMasterHandler.java");
-			L2ScriptEngineManager.getInstance().executeScript(file);
-		}
-		catch (Exception e)
-		{
-			_log.warning("Problems while running TargetMansterHandler");
-			e.printStackTrace();
-		}
+		return _datatable.get(skillTargetType);
 	}
 	
 	public int size()
