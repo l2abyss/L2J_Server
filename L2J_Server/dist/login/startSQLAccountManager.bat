@@ -1,5 +1,4 @@
 @echo off
-cls
 title L2J - SQL Account Manager
 color 17
 java -Djava.util.logging.config.file=console.cfg -cp ./../libs/*;l2jlogin.jar com.l2jserver.accountmanager.SQLAccountManager 2> NUL
