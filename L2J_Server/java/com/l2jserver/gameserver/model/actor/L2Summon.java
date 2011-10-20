@@ -317,6 +317,8 @@ public abstract class L2Summon extends L2Playable
 			stopNoblesseBlessing(null);
 			storeEffect(true);
 		}
+		else
+			storeEffect(false);
 		
 		if (!super.doDie(killer))
 			return false;
