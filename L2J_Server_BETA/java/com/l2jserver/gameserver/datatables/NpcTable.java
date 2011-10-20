@@ -506,14 +506,13 @@ public class NpcTable
 				int skillId = rset.getInt("skillid");
 				int level = rset.getInt("level");
 				
-				if ((npcDat.getRace() == null) && (skillId == L2Skill.SKILL_NPC_RACE))
+				if (skillId == L2Skill.SKILL_NPC_RACE)
 				{
 					npcDat.setRace(level);
 					continue;
 				}
 				
 				npcSkill = SkillTable.getInstance().getInfo(skillId, level);
-				
 				if (npcSkill == null)
 				{
 					continue;

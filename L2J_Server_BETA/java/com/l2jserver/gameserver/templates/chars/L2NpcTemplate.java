@@ -773,11 +773,11 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the NPC race.
 	 */
-	public L2NpcTemplate.Race getRace()
+	public Race getRace()
 	{
 		if (_race == null)
 		{
-			_race = L2NpcTemplate.Race.NONE;
+			_race = Race.NONE;
 		}
 		return _race;
 	}
@@ -942,82 +942,82 @@ public final class L2NpcTemplate extends L2CharTemplate
 		switch (raceId)
 		{
 			case 1:
-				_race = L2NpcTemplate.Race.UNDEAD;
+				_race = Race.UNDEAD;
 				break;
 			case 2:
-				_race = L2NpcTemplate.Race.MAGICCREATURE;
+				_race = Race.MAGICCREATURE;
 				break;
 			case 3:
-				_race = L2NpcTemplate.Race.BEAST;
+				_race = Race.BEAST;
 				break;
 			case 4:
-				_race = L2NpcTemplate.Race.ANIMAL;
+				_race = Race.ANIMAL;
 				break;
 			case 5:
-				_race = L2NpcTemplate.Race.PLANT;
+				_race = Race.PLANT;
 				break;
 			case 6:
-				_race = L2NpcTemplate.Race.HUMANOID;
+				_race = Race.HUMANOID;
 				break;
 			case 7:
-				_race = L2NpcTemplate.Race.SPIRIT;
+				_race = Race.SPIRIT;
 				break;
 			case 8:
-				_race = L2NpcTemplate.Race.ANGEL;
+				_race = Race.ANGEL;
 				break;
 			case 9:
-				_race = L2NpcTemplate.Race.DEMON;
+				_race = Race.DEMON;
 				break;
 			case 10:
-				_race = L2NpcTemplate.Race.DRAGON;
+				_race = Race.DRAGON;
 				break;
 			case 11:
-				_race = L2NpcTemplate.Race.GIANT;
+				_race = Race.GIANT;
 				break;
 			case 12:
-				_race = L2NpcTemplate.Race.BUG;
+				_race = Race.BUG;
 				break;
 			case 13:
-				_race = L2NpcTemplate.Race.FAIRIE;
+				_race = Race.FAIRIE;
 				break;
 			case 14:
-				_race = L2NpcTemplate.Race.HUMAN;
+				_race = Race.HUMAN;
 				break;
 			case 15:
-				_race = L2NpcTemplate.Race.ELVE;
+				_race = Race.ELVE;
 				break;
 			case 16:
-				_race = L2NpcTemplate.Race.DARKELVE;
+				_race = Race.DARKELVE;
 				break;
 			case 17:
-				_race = L2NpcTemplate.Race.ORC;
+				_race = Race.ORC;
 				break;
 			case 18:
-				_race = L2NpcTemplate.Race.DWARVE;
+				_race = Race.DWARVE;
 				break;
 			case 19:
-				_race = L2NpcTemplate.Race.OTHER;
+				_race = Race.OTHER;
 				break;
 			case 20:
-				_race = L2NpcTemplate.Race.NONLIVING;
+				_race = Race.NONLIVING;
 				break;
 			case 21:
-				_race = L2NpcTemplate.Race.SIEGEWEAPON;
+				_race = Race.SIEGEWEAPON;
 				break;
 			case 22:
-				_race = L2NpcTemplate.Race.DEFENDINGARMY;
+				_race = Race.DEFENDINGARMY;
 				break;
 			case 23:
-				_race = L2NpcTemplate.Race.MERCENARIE;
+				_race = Race.MERCENARIE;
 				break;
 			case 24:
-				_race = L2NpcTemplate.Race.UNKNOWN;
+				_race = Race.UNKNOWN;
 				break;
 			case 25:
-				_race = L2NpcTemplate.Race.KAMAEL;
+				_race = Race.KAMAEL;
 				break;
 			default:
-				_race = L2NpcTemplate.Race.NONE;
+				_race = Race.NONE;
 				break;
 		}
 	}
