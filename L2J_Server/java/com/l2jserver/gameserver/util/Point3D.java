@@ -65,7 +65,7 @@ public class Point3D implements Serializable
 		_z = worldPosition._z;
 	}
 	
-	public void setTo(Point3D point)
+	public synchronized void setTo(Point3D point)
 	{
 		_x = point._x;
 		_y = point._y;
@@ -117,8 +117,7 @@ public class Point3D implements Serializable
 		return (dx * dx) + (dy * dy);
 	}
 	
-	public static boolean distanceLessThan(Point3D point1, Point3D point2,
-			double distance)
+	public static boolean distanceLessThan(Point3D point1, Point3D point2, double distance)
 	{
 		return distanceSquared(point1, point2) < distance * distance;
 	}
@@ -128,7 +127,7 @@ public class Point3D implements Serializable
 		return _x;
 	}
 	
-	public void setX(int pX)
+	public synchronized void setX(int pX)
 	{
 		_x = pX;
 	}
@@ -138,7 +137,7 @@ public class Point3D implements Serializable
 		return _y;
 	}
 	
-	public void setY(int pY)
+	public synchronized void setY(int pY)
 	{
 		_y = pY;
 	}
@@ -148,12 +147,12 @@ public class Point3D implements Serializable
 		return _z;
 	}
 	
-	public void setZ(int pZ)
+	public synchronized void setZ(int pZ)
 	{
 		_z = pZ;
 	}
 	
-	public void setXYZ(int pX, int pY, int pZ)
+	public synchronized void setXYZ(int pX, int pY, int pZ)
 	{
 		_x = pX;
 		_y = pY;
