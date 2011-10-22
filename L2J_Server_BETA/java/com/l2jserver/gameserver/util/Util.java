@@ -13,6 +13,7 @@
 package com.l2jserver.gameserver.util;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -360,6 +361,21 @@ public final class Util
 		}
 		return s;
 	}
+	
+    /**
+     * Format the given date on the given format
+     * @param date : the date to format.
+     * @param format : the format to correct by.
+     * @return a string representation of the formatted date.
+     */
+    public static String formatDate(Date date, String format)
+    {
+        final DateFormat dateFormat = new SimpleDateFormat(format);
+        if (date != null)
+            return dateFormat.format(date);
+       
+        return null;
+    }
 	
 	/**
 	 * @param <T> 
