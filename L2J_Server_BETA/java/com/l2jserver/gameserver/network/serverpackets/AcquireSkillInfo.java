@@ -14,9 +14,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
-
 import javolution.util.FastList;
+
+import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 
 /**
  * Sample:

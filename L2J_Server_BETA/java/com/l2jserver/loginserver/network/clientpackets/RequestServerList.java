@@ -14,8 +14,8 @@
  */
 package com.l2jserver.loginserver.network.clientpackets;
 
-import com.l2jserver.loginserver.network.serverpackets.ServerList;
 import com.l2jserver.loginserver.network.serverpackets.LoginFail.LoginFailReason;
+import com.l2jserver.loginserver.network.serverpackets.ServerList;
 
 /**
  * Format: ddc
