@@ -15,6 +15,7 @@
 package com.l2jserver.dbinstaller;
 
 import java.awt.HeadlessException;
+
 import javax.swing.UIManager;
 
 import com.l2jserver.dbinstaller.console.DBInstallerConsole;

@@ -20,9 +20,9 @@ import java.sql.ResultSet;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.l2jserver.L2DatabaseFactory;
-
 import javolution.util.FastMap;
+
+import com.l2jserver.L2DatabaseFactory;
 
 public class GlobalVariablesManager
 {

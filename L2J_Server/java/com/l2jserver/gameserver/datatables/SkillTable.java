@@ -12,11 +12,11 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.util.logging.Logger;
-
 import gnu.trove.TIntArrayList;
 import gnu.trove.TIntIntHashMap;
 import gnu.trove.TIntObjectHashMap;
+
+import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.skills.SkillsEngine;
