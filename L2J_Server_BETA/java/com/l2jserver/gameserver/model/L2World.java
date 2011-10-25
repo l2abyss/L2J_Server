@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -82,6 +83,7 @@ public final class L2World
 	
 	/** L2ObjectHashMap(L2Object) containing all visible objects */
 	private final L2TIntObjectHashMap<L2Object> _allObjects;
+	private final L2TIntObjectHashMap<String> _allObjectsDebug;
 	
 	/** List with the pets instances and their owner id */
 	private final L2TIntObjectHashMap<L2PetInstance> _petsInstance;
@@ -95,6 +97,7 @@ public final class L2World
 	{
 		_allPlayers = new L2TIntObjectHashMap<L2PcInstance>();
 		_allObjects = new L2TIntObjectHashMap<L2Object>();
+		_allObjectsDebug = new L2TIntObjectHashMap<String>();
 		_petsInstance = new L2TIntObjectHashMap<L2PetInstance>();
 		
 		initRegions();
@@ -122,19 +125,24 @@ public final class L2World
 		{
 			if (Config.DEBUG)
 			{
-				_log.warning("[L2World] object: " + object + " already exist in OID map!");
-				_log.info(StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
+				_log.log(Level.WARNING, "--------[L2World] object: " + object + " already exist in OID map!--------");
+				_log.log(Level.WARNING, "New object: " + StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
+				_log.log(Level.WARNING, "----------------- Previous Put -----------------");
+				_log.log(Level.WARNING, "Previous: " + _allObjectsDebug.get(object.getObjectId()));
+				_log.log(Level.WARNING, "---------------------- End ---------------------");
 				return;
 			}
 		}
 		
 		_allObjects.put(object.getObjectId(), object);
+		_allObjectsDebug.put(object.getObjectId(), StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
 	}
 	
 	public long timeStoreObject(L2Object object)
 	{
 		long time = System.nanoTime();
 		_allObjects.put(object.getObjectId(), object);
+		_allObjectsDebug.put(object.getObjectId(), StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
 		time = System.nanoTime() - time;
 		return time;
 	}
