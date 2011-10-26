@@ -298,11 +298,11 @@ abstract class DocumentBase
 		}
 		Lambda lambda = getLambda(n, template);
 		Condition applayCond = parseCondition(n.getFirstChild(), template);
-		AbnormalEffect abnormal = AbnormalEffect.NULL;
-		if (attrs.getNamedItem("abnormal") != null)
+		AbnormalEffect abnormalVisualEffect = AbnormalEffect.NULL;
+		if (attrs.getNamedItem("abnormalVisualEffect") != null)
 		{
-			String abn = attrs.getNamedItem("abnormal").getNodeValue();
-			abnormal = AbnormalEffect.getByName(abn);
+			String abn = attrs.getNamedItem("abnormalVisualEffect").getNodeValue();
+			abnormalVisualEffect = AbnormalEffect.getByName(abn);
 		}
 		AbnormalEffect[] special = null;
 		if (attrs.getNamedItem("special") != null)
@@ -391,7 +391,7 @@ abstract class DocumentBase
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " "
 					+ activationChance);
 		
-		lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormal, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance, passiveEffect);
+		lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormalVisualEffect, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance, passiveEffect);
 		parseTemplate(n, lt);
 		if (template instanceof L2Item)
 			((L2Item) template).attach(lt);
