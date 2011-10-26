@@ -24,8 +24,8 @@ import com.l2jserver.gameserver.model.L2Skill;
 public class PledgeSkillList extends L2GameServerPacket
 {
 	private static final String _S__FE_39_PLEDGESKILLLIST = "[S] FE:3A PledgeSkillList";
-	private L2Skill[] _skills;
-	private SubPledgeSkill[] _subSkills;
+	private final L2Skill[] _skills;
+	private final SubPledgeSkill[] _subSkills;
 	
 	public static class SubPledgeSkill
 	{
@@ -57,7 +57,7 @@ public class PledgeSkillList extends L2GameServerPacket
 		writeD(_subSkills.length); //Squad skill length
 		for (L2Skill sk : _skills)
 		{
-			writeD(sk.getId());
+			writeD(sk.getDisplayId());
 			writeD(sk.getLevel());
 		}
 		for (SubPledgeSkill sk : _subSkills)
