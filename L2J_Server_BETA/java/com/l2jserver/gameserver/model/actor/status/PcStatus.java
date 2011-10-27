@@ -68,6 +68,14 @@ public class PcStatus extends PlayableStatus
 		if (getActiveChar().isDead())
 			return;
 		
+		// If OFFLINE_MODE_NO_DAMAGE is enabled and player is offline and he is in store/craft mode, no damage is taken.
+		if (Config.OFFLINE_MODE_NO_DAMAGE && getActiveChar().getClient() != null && getActiveChar().getClient().isDetached()
+			&& ((Config.OFFLINE_TRADE_ENABLE && ((getActiveChar().getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL) || (getActiveChar().getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY)))
+			|| (Config.OFFLINE_CRAFT_ENABLE && (getActiveChar().isInCraftMode() || (getActiveChar().getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_MANUFACTURE)))))
+		{
+			return;
+		}
+		
 		if (getActiveChar().isInvul() && !(isDOT || isHPConsumption))
 			return;
 		

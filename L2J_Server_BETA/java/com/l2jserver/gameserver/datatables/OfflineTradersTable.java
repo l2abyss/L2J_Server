@@ -222,8 +222,6 @@ public class OfflineTradersTable
 					stm_items.close();
 					
 					player.sitDown();
-					if (Config.OFFLINE_MODE_SET_INVULNERABLE)
-						player.setIsInvul(true);
 					if (Config.OFFLINE_SET_NAME_COLOR)
 						player.getAppearance().setNameColor(Config.OFFLINE_NAME_COLOR);
 					player.setPrivateStoreType(type);
