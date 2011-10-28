@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
@@ -34,7 +35,7 @@ public final class L2SkillLearn
 	private final boolean _autoGet;
 	private final int _levelUpSp;
 	private final int[][] _itemsIdCount;
-	private final int[] _races;
+	private final Race[] _races;
 	private final int[] _preReqSkillIdLvl;
 	private final int _socialClass;
 	private final boolean _residenceSkill;
@@ -44,7 +45,7 @@ public final class L2SkillLearn
 	private final boolean _learnedByFS;
 	
 	/**
-	 * Constructor for L2SkillLearn. 
+	 * Constructor for L2SkillLearn.
 	 * @param set the set with the L2SkillLearn data.
 	 */
 	public L2SkillLearn(StatsSet set)
@@ -64,8 +65,8 @@ public final class L2SkillLearn
 			{
 				try
 				{
-					_itemsIdCount[i][0] = Integer.parseInt(itemIdCount.split(",")[0]);//Id
-					_itemsIdCount[i][1] = Integer.parseInt(itemIdCount.split(",")[1]);//Count
+					_itemsIdCount[i][0] = Integer.parseInt(itemIdCount.split(",")[0]);// Id
+					_itemsIdCount[i][1] = Integer.parseInt(itemIdCount.split(",")[1]);// Count
 					i++;
 				}
 				catch (Exception e)
@@ -80,7 +81,13 @@ public final class L2SkillLearn
 		}
 		if (!set.getString("race", "").isEmpty())
 		{
-			_races = set.getIntegerArray("race");
+			final int[] allowedRaces = set.getIntegerArray("race");
+			final int totalRaces = allowedRaces.length;
+			_races = new Race[totalRaces];
+			for (int i = 0; i < totalRaces; i++)
+			{
+				_races[i] = Race.values()[allowedRaces[i]];
+			}
 		}
 		else
 		{
@@ -199,7 +206,7 @@ public final class L2SkillLearn
 	/**
 	 * @return the array with the races that can acquire this skill.
 	 */
-	public int[] getRaces()
+	public Race[] getRaces()
 	{
 		return _races;
 	}
@@ -237,7 +244,7 @@ public final class L2SkillLearn
 	}
 	
 	/**
-	 * @return the array with Sub-Class conditions, amount of subclasses and level. 
+	 * @return the array with Sub-Class conditions, amount of subclasses and level.
 	 */
 	public int[][] getSubClassConditions()
 	{
