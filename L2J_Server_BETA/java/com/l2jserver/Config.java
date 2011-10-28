@@ -422,6 +422,7 @@ public final class Config
 	public static boolean GAMEGUARD_ENFORCE;
 	public static boolean GAMEGUARD_PROHIBITACTION;
 	public static boolean LOG_CHAT;
+	public static boolean LOG_AUTO_ANNOUNCEMENTS;
 	public static boolean LOG_ITEMS;
 	public static boolean LOG_ITEMS_SMALL_LOG;
 	public static boolean LOG_ITEM_ENCHANTS;
@@ -1886,6 +1887,7 @@ public final class Config
 					GAMEGUARD_ENFORCE = Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "False"));
 					GAMEGUARD_PROHIBITACTION = Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "False"));
 					LOG_CHAT = Boolean.parseBoolean(General.getProperty("LogChat", "false"));
+					LOG_AUTO_ANNOUNCEMENTS = Boolean.parseBoolean(General.getProperty("LogAutoAnnouncements", "False"));
 					LOG_ITEMS = Boolean.parseBoolean(General.getProperty("LogItems", "false"));
 					LOG_ITEMS_SMALL_LOG = Boolean.parseBoolean(General.getProperty("LogItemsSmallLog", "false"));
 					LOG_ITEM_ENCHANTS = Boolean.parseBoolean(General.getProperty("LogItemEnchants", "false"));
@@ -3504,8 +3506,6 @@ public final class Config
 		}
 		return true;
 	}
-	
-	private Config() { }
 	
 	/**
 	 * Save hexadecimal ID of the server in the L2Properties file.

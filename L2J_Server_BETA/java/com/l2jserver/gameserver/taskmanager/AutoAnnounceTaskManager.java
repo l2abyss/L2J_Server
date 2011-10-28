@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
+import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.util.Broadcast;
@@ -215,7 +216,10 @@ public class AutoAnnounceTaskManager
 	public void announce(String text, boolean isCritical)
 	{
 		Broadcast.announceToOnlinePlayers(text, isCritical);
-		_log.info("AutoAnnounce: " + text);
+		if (Config.LOG_AUTO_ANNOUNCEMENTS)
+		{
+			_log.info(isCritical ? "Critical AutoAnnounce" : "AutoAnnounce" + text);
+		}
 	}
 	
 	@SuppressWarnings("synthetic-access")
