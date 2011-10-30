@@ -6603,14 +6603,24 @@ public final class L2PcInstance extends L2Playable
 	public boolean disarmWeapons()
 	{
 		// Don't allow disarming a cursed weapon
-		if (isCursedWeaponEquipped()) return false;
+		if (isCursedWeaponEquipped()) 
+			return false;
 		
 		// Don't allow disarming a Combat Flag or Territory Ward
-		if (isCombatFlagEquipped()) return false;
+		else if (isCombatFlagEquipped()) 
+			return false;
 		
 		// Unequip the weapon
 		L2ItemInstance wpn = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-		if (wpn != null)
+		if (wpn == null)
+		{
+			return false;
+		}
+		else if (wpn.getWeaponItem().isForceEquip())
+		{
+			return false;
+		}
+		else
 		{
 			L2ItemInstance[] unequiped = getInventory().unEquipItemInBodySlotAndRecord(wpn.getItem().getBodyPart());
 			InventoryUpdate iu = new InventoryUpdate();
@@ -12933,12 +12943,6 @@ public final class L2PcInstance extends L2Playable
 	public int getCursedWeaponEquippedId()
 	{
 		return _cursedWeaponEquippedId;
-	}
-	
-	@Override
-	public boolean isAttackingDisabled()
-	{
-		return (super.isAttackingDisabled() || _combatFlagEquippedId);
 	}
 	
 	public boolean isCombatFlagEquipped()

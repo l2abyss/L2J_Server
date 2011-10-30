@@ -98,6 +98,7 @@ import com.l2jserver.gameserver.pathfinding.PathFinding;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.skills.Calculator;
 import com.l2jserver.gameserver.skills.Formulas;
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillAgathion;
@@ -786,44 +787,48 @@ public abstract class L2Character extends L2Object
 			}
 		}
 		
+		
+		// Check if attacker's weapon can attack
+		if (getActiveWeaponItem() != null)
+		{
+			L2Weapon wpn = getActiveWeaponItem();
+			if (!wpn.isAttackWeapon())
+			{
+				sendPacket(SystemMessageId.THAT_WEAPON_CANT_ATTACK);
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+		}
+		
 		if (isAttackingDisabled())
 			return;
 		
-		if (this instanceof L2PcInstance)
+		if (getActingPlayer() != null)
 		{
-			if (((L2PcInstance) this).inObserverMode())
+			if (getActingPlayer().inObserverMode())
 			{
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE));
+				sendPacket(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 			
-			if (target.getActingPlayer() != null && ((L2PcInstance) this).getSiegeState() > 0 && this.isInsideZone(L2Character.ZONE_SIEGE) && target.getActingPlayer().getSiegeState() == ((L2PcInstance) this).getSiegeState() && target.getActingPlayer() != this && target.getActingPlayer().getSiegeSide() == ((L2PcInstance) this).getSiegeSide())
+			else if (target.getActingPlayer() != null && getActingPlayer().getSiegeState() > 0 && isInsideZone(L2Character.ZONE_SIEGE) && target.getActingPlayer().getSiegeState() == getActingPlayer().getSiegeState() && target.getActingPlayer() != this && target.getActingPlayer().getSiegeSide() == getActingPlayer().getSiegeSide())
 			{
-				//
 				if (TerritoryWarManager.getInstance().isTWInProgress())
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
+					sendPacket(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY);
 				else
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+					sendPacket(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 			
 			// Checking if target has moved to peace zone
-			if (target.isInsidePeaceZone((L2PcInstance) this))
+			else if (target.isInsidePeaceZone(getActingPlayer()))
 			{
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-			// TODO: unhardcode this to support boolean if with that weapon u can attack or not (for ex transform weapons)
-			if (((L2PcInstance) this).getActiveWeaponItem() != null && ((L2PcInstance) this).getActiveWeaponItem().getItemId() == 9819)
-			{
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THAT_WEAPON_CANT_ATTACK));
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
-			}
-			
 		}
 		else if (isInsidePeaceZone(this, target))
 		{
@@ -843,7 +848,7 @@ public abstract class L2Character extends L2Object
 		if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.FISHINGROD)
 		{
 			//	You can't make an attack with a fishing pole.
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE));
+			sendPacket(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE);
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 			
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -853,7 +858,7 @@ public abstract class L2Character extends L2Object
 		// GeoData Los Check here (or dz > 1000)
 		if (!GeoData.getInstance().canSeeTarget(this, target))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_SEE_TARGET));
+			sendPacket(SystemMessageId.CANT_SEE_TARGET);
 			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -2138,6 +2143,30 @@ public abstract class L2Character extends L2Object
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
+		}
+		
+		// Check if the caster's weapon is limited to use only its own skills
+		if (getActiveWeaponItem() != null)
+		{
+			L2Weapon wep = getActiveWeaponItem();
+			if (wep.useWeaponSkillsOnly() && !isGM())
+			{
+				boolean found = false;
+				for (SkillHolder sh : wep.getSkills())
+				{
+					if (sh.getSkillId() == skill.getId())
+					{
+						found = true;
+					}
+				}
+				
+				if (!found)
+				{
+					if (getActingPlayer() != null)
+						sendPacket(SystemMessageId.WEAPON_CAN_USE_ONLY_WEAPON_SKILL);
+					return false;
+				}
+			}
 		}
 		
 		// Check if the spell consumes an Item

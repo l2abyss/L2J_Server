@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.templates.item.L2Item;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.8.2.3.2.7 $ $Date: 2005/03/27 15:29:30 $
  */
 public class RequestUnEquipItem extends L2GameClientPacket
@@ -39,8 +38,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
 	private int _slot;
 	
 	/**
-	 * packet type id 0x11
-	 * format:		cd
+	 * packet type id 0x11 format: cd
 	 */
 	@Override
 	protected void readImpl()
@@ -80,8 +78,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
 		}
 		
 		// Prevent player from unequipping items in special conditions
-		if (activeChar.isStunned() || activeChar.isSleeping()
-				|| activeChar.isParalyzed() || activeChar.isAlikeDead())
+		if (activeChar.isStunned() || activeChar.isSleeping() || activeChar.isParalyzed() || activeChar.isAlikeDead())
 		{
 			activeChar.sendMessage("Your status does not allow you to do that.");
 			return;
@@ -95,13 +92,18 @@ public class RequestUnEquipItem extends L2GameClientPacket
 			return;
 		}
 		
-		L2ItemInstance[] unequiped =
-			activeChar.getInventory().unEquipItemInBodySlotAndRecord(_slot);
+		if (item.isWeapon() && item.getWeaponItem().isForceEquip() && !activeChar.isGM())
+		{
+			activeChar.sendPacket(SystemMessageId.ITEM_CANNOT_BE_TAKEN_OFF);
+			return;
+		}
+		
+		L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInBodySlotAndRecord(_slot);
 		
 		// show the update in the inventory
 		InventoryUpdate iu = new InventoryUpdate();
 		
-		for (L2ItemInstance itm: unequiped)
+		for (L2ItemInstance itm : unequiped)
 		{
 			activeChar.checkSShotsMatch(null, itm);
 			
