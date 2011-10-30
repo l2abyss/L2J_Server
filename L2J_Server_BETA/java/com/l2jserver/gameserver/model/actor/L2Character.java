@@ -792,9 +792,12 @@ public abstract class L2Character extends L2Object
 		if (getActiveWeaponItem() != null)
 		{
 			L2Weapon wpn = getActiveWeaponItem();
-			if (!wpn.isAttackWeapon())
+			if (!wpn.isAttackWeapon() && !isGM())
 			{
-				sendPacket(SystemMessageId.THAT_WEAPON_CANT_ATTACK);
+				if (wpn.getItemType() == L2WeaponType.FISHINGROD)
+					sendPacket(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE);
+				else
+					sendPacket(SystemMessageId.THAT_WEAPON_CANT_ATTACK);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
@@ -844,16 +847,6 @@ public abstract class L2Character extends L2Object
 		
 		// Get the active weapon item corresponding to the active weapon instance (always equiped in the right hand)
 		L2Weapon weaponItem = getActiveWeaponItem();
-		
-		if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.FISHINGROD)
-		{
-			//	You can't make an attack with a fishing pole.
-			sendPacket(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE);
-			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-			
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
 		
 		// GeoData Los Check here (or dz > 1000)
 		if (!GeoData.getInstance().canSeeTarget(this, target))
