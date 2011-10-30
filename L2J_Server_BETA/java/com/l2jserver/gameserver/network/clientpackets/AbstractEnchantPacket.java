@@ -298,6 +298,26 @@ public abstract class AbstractEnchantPacket extends L2GameClientPacket
 		_scrolls.put(22020, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_B, 0, 100, null));
 		_scrolls.put(22021, new EnchantScroll(false, false, false, false, L2Item.CRYSTAL_A, 0, 100, null));
 		
+		// Destruction Weapon
+		_scrolls.put(22229, new EnchantScroll(true, false, false, true, L2Item.CRYSTAL_D, 16, 0, null));
+		_scrolls.put(22227, new EnchantScroll(true, false, false, true, L2Item.CRYSTAL_C, 16, 0, null));
+		_scrolls.put(22225, new EnchantScroll(true, false, false, true, L2Item.CRYSTAL_B, 16, 0, null));
+		_scrolls.put(22223, new EnchantScroll(true, false, false, true, L2Item.CRYSTAL_A, 16, 0, null));
+		_scrolls.put(22221, new EnchantScroll(true, false, false, true, L2Item.CRYSTAL_S, 16, 0, null));
+		// Destruction Armor
+		_scrolls.put(22230, new EnchantScroll(false, false, false, true, L2Item.CRYSTAL_D, 16, 0, null));
+		_scrolls.put(22228, new EnchantScroll(false, false, false, true, L2Item.CRYSTAL_C, 16, 0, null));
+		_scrolls.put(22226, new EnchantScroll(false, false, false, true, L2Item.CRYSTAL_B, 16, 0, null));
+		_scrolls.put(22224, new EnchantScroll(false, false, false, true, L2Item.CRYSTAL_A, 16, 0, null));
+		_scrolls.put(22222, new EnchantScroll(false, false, false, true, L2Item.CRYSTAL_S, 16, 0, null));
+
+		// PC Bang Enchants
+		_scrolls.put(15346, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_S, 0, 0, new int[]{ 15313, 15314, 15315, 15316, 15317, 15318, 15319, 15320, 15321, 15322, 15323, 15324, 15325, 15326 }));
+		_scrolls.put(15347, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_A, 0, 0, new int[]{ 13210, 13211, 13212, 13213, 13214, 13215, 13216, 13217, 13218, 13219, 13220, 13221, 13222, 13223, 13224 }));
+		_scrolls.put(15348, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_B, 0, 0, new int[]{ 13194, 13195, 13196, 13197, 13198, 13199, 13200, 13201, 13202, 13203, 13204, 13205, 13206, 13207, 13208, 13209, }));
+		_scrolls.put(15349, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_C, 0, 0, new int[]{ 13178, 13179, 13180, 13181, 13182, 13183, 13184, 13185, 13186, 13187, 13188, 13189, 13190, 13191, 13192, 13193 }));
+		_scrolls.put(15350, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_D, 0, 0, new int[]{ 13163, 13164, 13165, 13166, 13167, 13168, 13169, 13170, 13171, 13172, 13173, 13174, 13175, 13176, 13177 }));
+		
 		// Master Yogi's Scroll Enchant Weapon (event)
 		_scrolls.put(13540, new EnchantScroll(true, false, false, false, L2Item.CRYSTAL_NONE, 0, 0, new int[]{ 13539 }));
 		
