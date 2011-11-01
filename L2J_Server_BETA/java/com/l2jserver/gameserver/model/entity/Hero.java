@@ -527,7 +527,7 @@ public class Hero
 			List<StatsSet> _mainlist = _herodiary.get(charid);
 			NpcHtmlMessage DiaryReply = new NpcHtmlMessage(5);
 			final String htmContent = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(),"data/html/olympiad/herodiary.htm");
-			if (htmContent != null)
+			if (htmContent != null && _heroMessage.containsKey(charid))
 			{
 				DiaryReply.setHtml(htmContent);
 				DiaryReply.replace("%heroname%", CharNameTable.getInstance().getNameById(charid));

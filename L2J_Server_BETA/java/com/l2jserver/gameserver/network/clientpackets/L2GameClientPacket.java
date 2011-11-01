@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
  * Packets received by the game server from clients
- * @author  KenM
+ * @author KenM
  */
 public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 {
@@ -36,7 +36,7 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	@Override
 	public boolean read()
 	{
-		//_log.info(this.getType());
+		// _log.info(this.getType());
 		try
 		{
 			readImpl();
@@ -61,22 +61,19 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 		{
 			runImpl();
 			
-			/* Removes onspawn protection - player has faster computer than average
-			 * Since GE: True for all packets
-			 * except RequestItemList and UseItem (in case the item is a Scroll of Escape (736)
+			/*
+			 * Removes onspawn protection - player has faster computer than average Since GE: True for all packets except RequestItemList and UseItem (in case the item is a Scroll of Escape (736)
 			 */
 			if (triggersOnActionRequest())
 			{
 				final L2PcInstance actor = getClient().getActiveChar();
-				if(actor != null && (actor.isSpawnProtected() || actor.isInvul()))
+				if (actor != null && (actor.isSpawnProtected() || actor.isInvul()))
 				{
 					actor.onActionRequest();
 					if (Config.DEBUG)
 						_log.info("Spawn protection for player " + actor.getName() + " removed by packet: " + getType());
 				}
 			}
-			
-			cleanUp();
 		}
 		catch (Throwable t)
 		{
@@ -100,15 +97,11 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	public abstract String getType();
 	
 	/**
-	 * Overridden with true value on some packets that should disable spawn protection
-	 * (RequestItemList and UseItem only)
-	 * @return 
+	 * Overridden with true value on some packets that should disable spawn protection (RequestItemList and UseItem only)
+	 * @return
 	 */
 	protected boolean triggersOnActionRequest()
 	{
 		return true;
 	}
-	
-	protected void cleanUp()
-	{}
 }
