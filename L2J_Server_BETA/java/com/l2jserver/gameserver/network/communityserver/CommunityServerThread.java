@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.network.communityserver.readpackets.RequestPlaye
 import com.l2jserver.gameserver.network.communityserver.readpackets.RequestWorldInfo;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class CommunityServerThread extends NetConnection
 {
@@ -111,7 +111,9 @@ public final class CommunityServerThread extends NetConnection
 	public boolean sendPacket(final BaseWritePacket packet, final boolean needAuth)
 	{
 		if (needAuth && !_authed)
+		{
 			return false;
+		}
 		
 		try
 		{
@@ -140,7 +142,7 @@ public final class CommunityServerThread extends NetConnection
 		{
 			try
 			{
-				super.sleep(10000L);
+				sleep(10000L);
 			}
 			catch (InterruptedException e)
 			{
@@ -164,7 +166,6 @@ public final class CommunityServerThread extends NetConnection
 				continue;
 			}
 			
-			
 			try
 			{
 				long gameServerConnectStart = System.currentTimeMillis();
@@ -175,7 +176,9 @@ public final class CommunityServerThread extends NetConnection
 					packetType2 = data[1] & 0xFF;
 					
 					if (Config.PACKET_HANDLER_DEBUG)
+					{
 						_log.log(Level.INFO, "Received packet: 0x" + Integer.toHexString(packetType1) + "-0x" + Integer.toHexString(packetType2));
+					}
 					
 					switch (packetType1)
 					{
@@ -186,12 +189,10 @@ public final class CommunityServerThread extends NetConnection
 								case 0x00:
 									packet = new InitCS(data, this);
 									break;
-									
 								case 0x01:
 									_log.info("Server connected in " + ((System.currentTimeMillis() - gameServerConnectStart) / 1000) + " seconds");
 									packet = new AuthResponse(data, this);
 									break;
-									
 								case 0x02:
 									packet = new ConnectionError(data);
 									break;
@@ -241,13 +242,19 @@ public final class CommunityServerThread extends NetConnection
 					}
 					
 					if (packet != null)
-						//new Thread(packet).start();
+					{
+						// new Thread(packet).start();
 						ThreadPoolManager.getInstance().executeCommunityPacket(packet);
+					}
 					else
+					{
 						throw new IOException("Invalid packet!");
+					}
 				}
 				if (isInterrupted())
+				{
 					forceClose(null);
+				}
 			}
 			catch (IOException e)
 			{
