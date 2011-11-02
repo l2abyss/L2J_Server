@@ -182,7 +182,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						// RequestEquipItem
 						break;
 					case 0x16:
-						msg = new RequestUnEquipItem();
+						//msg = new RequestUnEquipItem();
 						break;
 					case 0x17:
 						msg = new RequestDropItem();

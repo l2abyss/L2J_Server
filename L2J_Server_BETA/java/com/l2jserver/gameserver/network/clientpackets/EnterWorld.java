@@ -312,7 +312,7 @@ public class EnterWorld extends L2GameClientPacket
 		activeChar.broadcastUserInfo();
 		
 		// Send Macro List
-		activeChar.getMacroses().sendUpdate();
+		activeChar.getMacros().sendUpdate();
 		
 		// Send Item List
 		sendPacket(new ItemList(activeChar, false));

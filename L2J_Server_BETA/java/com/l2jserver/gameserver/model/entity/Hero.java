@@ -1112,6 +1112,14 @@ public class Hero
 		}
 	}
 	
+	/**
+	 * @param objectId the player's object Id to verify.
+	 * @return {@code true} if there are heros and the player is in the list, {@code false} otherwise.
+	 */
+	public boolean isHero(int objectId)
+	{
+		return _heroes == null ? false : _heroes.containsKey(objectId);
+	}
 	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
