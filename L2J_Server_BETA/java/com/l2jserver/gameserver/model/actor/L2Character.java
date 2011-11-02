@@ -89,6 +89,7 @@ import com.l2jserver.gameserver.network.serverpackets.MoveToLocation;
 import com.l2jserver.gameserver.network.serverpackets.Revive;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 import com.l2jserver.gameserver.network.serverpackets.SetupGauge;
+import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -7526,5 +7527,10 @@ public abstract class L2Character extends L2Object
 	public boolean isAffected(int flag)
 	{
 		return _effects.isAffected(flag);
+	}
+	
+	public void broadcastSocialAction(int id)
+	{
+		broadcastPacket(new SocialAction(getObjectId(), id));
 	}
 }

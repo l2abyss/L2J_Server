@@ -464,7 +464,7 @@ public class CursedWeapon
 		// Refresh player stats
 		_player.broadcastUserInfo();
 		
-		SocialAction atk = new SocialAction(_player, 17);
+		SocialAction atk = new SocialAction(_player.getObjectId(), 17);
 		
 		_player.broadcastPacket(atk);
 		

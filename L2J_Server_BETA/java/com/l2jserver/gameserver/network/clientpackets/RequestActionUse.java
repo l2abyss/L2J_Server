@@ -893,7 +893,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		
 		if (activeChar.canMakeSocialAction())
 		{
-			activeChar.broadcastPacket(new SocialAction(activeChar, id));
+			activeChar.broadcastPacket(new SocialAction(activeChar.getObjectId(), id));
 		}
 	}
 	
