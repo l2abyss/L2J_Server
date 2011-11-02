@@ -40,18 +40,34 @@ import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.StopRotation;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 
-
 /**
- * Mother class of all objects AI in the world.<BR><BR>
- *
- * AbastractAI :<BR><BR>
- * <li>L2CharacterAI</li><BR><BR>
+ * Mother class of all objects AI in the world.<br>
+ * AbastractAI :<br>
+ * <li>L2CharacterAI</li>
  */
-abstract class AbstractAI implements Ctrl
+public abstract class AbstractAI implements Ctrl
 {
 	protected static final Logger _log = Logger.getLogger(AbstractAI.class.getName());
 	
-	class FollowTask implements Runnable
+	private NextAction _nextAction;
+	
+	/**
+	 * @return the _nextAction
+	 */
+	public NextAction getNextAction()
+	{
+		return _nextAction;
+	}
+	
+	/**
+	 * @param nextAction the next action to set.
+	 */
+	public void setNextAction(NextAction nextAction)
+	{
+		_nextAction = nextAction;
+	}
+	
+	private class FollowTask implements Runnable
 	{
 		protected int _range = 70;
 		
@@ -329,6 +345,12 @@ abstract class AbstractAI implements Ctrl
 				onIntentionInteract((L2Object) arg0);
 				break;
 		}
+		
+		// If do move or follow intention drop next action.
+		if ((_nextAction != null) && _nextAction.getIntentions().contains(intention))
+		{
+			_nextAction = null;
+		}
 	}
 	
 	/**
@@ -483,6 +505,12 @@ abstract class AbstractAI implements Ctrl
 			case EVT_FINISH_CASTING:
 				onEvtFinishCasting();
 				break;
+		}
+		
+		// Do next action.
+		if ((_nextAction != null) && _nextAction.getEvents().contains(evt))
+		{
+			_nextAction.doAction();
 		}
 	}
 	

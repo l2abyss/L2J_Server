@@ -20,6 +20,10 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.ai.CtrlEvent;
+import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.ai.NextAction;
+import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
@@ -191,18 +195,13 @@ public final class UseItem extends L2GameClientPacket
 				case L2Item.SLOT_L_HAND:
 				case L2Item.SLOT_R_HAND:
 				{
-					// prevent players to equip weapon while wearing combat flag
+					// Prevent players to equip weapon while wearing combat flag
 					if (activeChar.getActiveWeaponItem() != null && activeChar.getActiveWeaponItem().getItemId() == 9819)
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
 					}
-					// Prevent player to remove the weapon on special conditions
-					if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
-					{
-						activeChar.sendPacket(SystemMessageId.CANNOT_CHANGE_WEAPON_DURING_AN_ATTACK);
-						return;
-					}
+					
 					if (activeChar.isMounted())
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
@@ -282,13 +281,29 @@ public final class UseItem extends L2GameClientPacket
 				}
 			}
 			
-			if (activeChar.isAttackingNow())
+			if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
 			{
-				ThreadPoolManager.getInstance().scheduleGeneral( new WeaponEquipTask(item,activeChar), (activeChar.getAttackEndTime()-GameTimeController.getGameTicks())*GameTimeController.MILLIS_IN_TICK);
-				return;
+				// Creating next action class.
+				final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, new NextActionCallback()
+				{
+					@Override
+					public void doWork()
+					{
+						activeChar.useEquippableItem(item, true);
+					}
+				});
+				
+				// Binding next action to AI.
+				activeChar.getAI().setNextAction(nextAction);
 			}
-			
-			activeChar.useEquippableItem(item, true);
+			else if (activeChar.isAttackingNow())
+			{
+				ThreadPoolManager.getInstance().scheduleGeneral(new WeaponEquipTask(item, activeChar), (activeChar.getAttackEndTime() - GameTimeController.getGameTicks()) * GameTimeController.MILLIS_IN_TICK);
+			}
+			else
+			{
+				activeChar.useEquippableItem(item, true);
+			}
 		}
 		else
 		{
