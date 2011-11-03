@@ -168,7 +168,7 @@ public class Olympiad
 	
 	private void load()
 	{
-		_nobles = new FastMap<Integer, StatsSet>();
+		_nobles = new FastMap<Integer, StatsSet>().shared();
 		
 		Connection con = null;
 		
