@@ -320,6 +320,7 @@ public abstract class L2Object
 		assert getPosition().getWorldRegion() != null || _isVisible;
 		return getPosition().getX();
 	}
+	
 	/**
 	 * @return The id of the instance zone the object is in - id 0 is global
 	 * since everything like dropped items, mobs, players can be in a instanciated area, it must be in l2object

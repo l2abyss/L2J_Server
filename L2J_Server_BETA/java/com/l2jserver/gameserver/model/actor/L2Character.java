@@ -4218,6 +4218,11 @@ public abstract class L2Character extends L2Object
 		_heading = heading;
 	}
 	
+	public Location getLocation()
+	{
+		return new Location(getX(), getY(), getZ(), getHeading(), getInstanceId());
+	}
+	
 	public final int getXdestination()
 	{
 		MoveData m = _move;
@@ -5173,6 +5178,11 @@ public abstract class L2Character extends L2Object
 	public final boolean isInsideRadius(int x, int y, int radius, boolean strictCheck)
 	{
 		return isInsideRadius(x, y, 0, radius, false, strictCheck);
+	}
+	
+	public final boolean isInsideRadius(Location loc, int radius, boolean checkZ, boolean strictCheck)
+	{
+		return isInsideRadius(loc.getX(), loc.getY(), loc.getZ(), radius, checkZ, strictCheck);
 	}
 	
 	/**
