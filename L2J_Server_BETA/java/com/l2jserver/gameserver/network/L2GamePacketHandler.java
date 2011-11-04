@@ -183,8 +183,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 						client.handleCheat("Used obsolete RequestEquipItem packet!");
 						break;
 					case 0x16:
-						// RequestUnEquipItem
-						client.handleCheat("Used obsolete RequestUnEquipItem packet!");
+						msg = new RequestUnEquipItem();
 						break;
 					case 0x17:
 						msg = new RequestDropItem();
