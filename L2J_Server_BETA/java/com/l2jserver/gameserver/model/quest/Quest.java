@@ -45,6 +45,7 @@ import com.l2jserver.gameserver.model.actor.L2Trap;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
+import com.l2jserver.gameserver.model.olympiad.CompetitionType;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -77,6 +78,7 @@ public class Quest extends ManagedScript
 	private final byte _initialState = State.CREATED;
 	protected boolean _onEnterWorld = false;
 	private boolean _isCustom = false;
+	private boolean _isOlympiadUse = false;
 	// NOTE: questItemIds will be overridden by child classes.  Ideally, it should be
 	// protected instead of public.  However, quest scripts written in Jython will
 	// have trouble with protected, as Jython only knows private and public...
@@ -2003,6 +2005,24 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * @return true if the quest script is a custom quest.
+	 */
+	public boolean isCustomQuest()
+	{
+		return _isCustom;
+	}
+	
+	public void setOlympiadUse(boolean val)
+	{
+		_isOlympiadUse = val;
+	}
+	
+	public boolean isOlympiadUse()
+	{
+		return _isOlympiadUse;
+	}
+	
+	/**
 	 * @param val if true the quest script will be set as custom quest.
 	 */
 	public void setIsCustom(boolean val)
@@ -2010,11 +2030,37 @@ public class Quest extends ManagedScript
 		_isCustom = val;
 	}
 	
-	/**
-	 * @return true if the quest script is a custom quest.
-	 */
-	public boolean isCustomQuest()
+	public final void notifyOlympiadWin(L2PcInstance winner, CompetitionType type)
 	{
-		return _isCustom;
+		try
+		{
+			onOlympiadWin(winner, type);
+		}
+		catch (Exception e)
+		{
+			showError(winner, e);
+		}
+	}
+	
+	public final void notifyOlympiadLoose(L2PcInstance looser, CompetitionType type)
+	{
+		try
+		{
+			onOlympiadLoose(looser, type);
+		}
+		catch (Exception e)
+		{
+			showError(looser, e);
+		}
+	}
+	
+	public void onOlympiadWin(L2PcInstance winner, CompetitionType type)
+	{
+		
+	}
+	
+	public void onOlympiadLoose(L2PcInstance winner, CompetitionType type)
+	{
+		
 	}
 }
