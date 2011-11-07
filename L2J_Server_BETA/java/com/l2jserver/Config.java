@@ -1062,8 +1062,6 @@ public final class Config
 	public static int Random_Of_QueenAnt_Spawn;
 	public static int Interval_Of_Zaken_Spawn;
 	public static int Random_Of_Zaken_Spawn;
-	public static int Interval_Of_Frintezza_Spawn;
-	public static int Random_Of_Frintezza_Spawn;
 	public static int BELETH_MIN_PLAYERS;
 	public static int INTERVAL_OF_BELETH_SPAWN;
 	public static int RANDOM_OF_BELETH_SPAWN;
@@ -2863,16 +2861,6 @@ public final class Config
 					if (Random_Of_Zaken_Spawn < 1 || Random_Of_Zaken_Spawn > 192)
 						Random_Of_Zaken_Spawn = 20;
 					Random_Of_Zaken_Spawn = Random_Of_Zaken_Spawn * 3600000;
-					
-					Interval_Of_Frintezza_Spawn = Integer.parseInt(grandbossSettings.getProperty("IntervalOfFrintezzaSpawn", "48"));
-					if (Interval_Of_Frintezza_Spawn < 1 || Interval_Of_Frintezza_Spawn > 480)
-						Interval_Of_Frintezza_Spawn = 48;
-					Interval_Of_Frintezza_Spawn = Interval_Of_Frintezza_Spawn * 3600000;
-					
-					Random_Of_Frintezza_Spawn = Integer.parseInt(grandbossSettings.getProperty("RandomOfFrintezzaSpawn", "8"));
-					if (Random_Of_Frintezza_Spawn < 1 || Random_Of_Frintezza_Spawn > 192)
-						Random_Of_Frintezza_Spawn = 8;
-					Random_Of_Frintezza_Spawn = Random_Of_Frintezza_Spawn * 3600000;
 					
 					INTERVAL_OF_BELETH_SPAWN = Integer.parseInt(grandbossSettings.getProperty("IntervalOfBelethSpawn", "192"));
 					if (INTERVAL_OF_BELETH_SPAWN < 1 || INTERVAL_OF_BELETH_SPAWN > 480)
