@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
@@ -694,14 +695,14 @@ public class Olympiad
 			return;
 		}
 		
-		for (Integer nobleId : _nobles.keySet())
+		for (Entry<Integer, StatsSet> entry : _nobles.entrySet())
 		{
-			StatsSet nobleInfo = _nobles.get(nobleId);
+			final StatsSet nobleInfo = entry.getValue();
 			int currentPoints = nobleInfo.getInteger(POINTS);
 			currentPoints += WEEKLY_POINTS;
 			nobleInfo.set(POINTS, currentPoints);
 			
-			updateNobleStats(nobleId, nobleInfo);
+			updateNobleStats(entry.getKey(), nobleInfo);
 		}
 	}
 	
@@ -715,15 +716,15 @@ public class Olympiad
 			return;
 		}
 		
-		for (Integer nobleId : _nobles.keySet())
+		for (Entry<Integer, StatsSet> entry : _nobles.entrySet())
 		{
-			StatsSet nobleInfo = _nobles.get(nobleId);
+			StatsSet nobleInfo = entry.getValue();
 			nobleInfo.set(COMP_DONE_WEEK, 0);
 			nobleInfo.set(COMP_DONE_WEEK_CLASSED, 0);
 			nobleInfo.set(COMP_DONE_WEEK_NON_CLASSED, 0);
 			nobleInfo.set(COMP_DONE_WEEK_TEAM, 0);
 			
-			updateNobleStats(nobleId, nobleInfo);
+			updateNobleStats(entry.getKey(), nobleInfo);
 		}
 	}
 	
@@ -752,16 +753,16 @@ public class Olympiad
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
-			for (int nobleId : _nobles.keySet())
+			for (Entry<Integer, StatsSet> entry : _nobles.entrySet())
 			{
-				StatsSet nobleInfo = _nobles.get(nobleId);
+				StatsSet nobleInfo = entry.getValue();
 				
 				if (nobleInfo == null)
 				{
 					continue;
 				}
 				
-				int charId = nobleId;
+				int charId = entry.getKey();
 				int classId = nobleInfo.getInteger(CLASS_ID);
 				int points = nobleInfo.getInteger(POINTS);
 				int compDone = nobleInfo.getInteger(COMP_DONE);
@@ -791,7 +792,7 @@ public class Olympiad
 					
 					nobleInfo.set("to_save", false);
 					
-					updateNobleStats(nobleId, nobleInfo);
+					updateNobleStats(charId, nobleInfo);
 				}
 				else
 				{
@@ -856,11 +857,24 @@ public class Olympiad
 		{
 			L2DatabaseFactory.close(con);
 		}
+		//@formatter:off
 		/*
-		 * Properties OlympiadProperties = new Properties(); FileOutputStream fos = null; try { fos = new FileOutputStream(new File("./" + OLYMPIAD_DATA_FILE)); OlympiadProperties.setProperty("CurrentCycle", String.valueOf(_currentCycle)); OlympiadProperties.setProperty("Period",
-		 * String.valueOf(_period)); OlympiadProperties.setProperty("OlympiadEnd", String.valueOf(_olympiadEnd)); OlympiadProperties.setProperty("ValdationEnd", String.valueOf(_validationEnd)); OlympiadProperties.setProperty("NextWeeklyChange", String.valueOf(_nextWeeklyChange));
-		 * OlympiadProperties.store(fos, "Olympiad Properties"); } catch (Exception e) { _log.log(Level.WARNING, "Olympiad System: Unable to save olympiad properties to file: ", e); } finally { try { fos.close(); } catch (Exception e) { } }
-		 */
+		Properties OlympiadProperties = new Properties();
+		try (FileOutputStream fos = new FileOutputStream(new File("./" + OLYMPIAD_DATA_FILE));)
+		{
+			OlympiadProperties.setProperty("CurrentCycle", String.valueOf(_currentCycle));
+			OlympiadProperties.setProperty("Period", String.valueOf(_period));
+			OlympiadProperties.setProperty("OlympiadEnd", String.valueOf(_olympiadEnd));
+			OlympiadProperties.setProperty("ValdationEnd", String.valueOf(_validationEnd));
+			OlympiadProperties.setProperty("NextWeeklyChange", String.valueOf(_nextWeeklyChange));
+			OlympiadProperties.store(fos, "Olympiad Properties");
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Olympiad System: Unable to save olympiad properties to file: ", e);
+		}
+		*/
+		//@formatter:on
 	}
 	
 	protected void updateMonthlyData()
@@ -898,16 +912,15 @@ public class Olympiad
 		{
 			_logResults.info("Noble,charid,classid,compDone,points");
 			
-			for (Integer nobleId : _nobles.keySet())
+			for (Entry<Integer, StatsSet> entry : _nobles.entrySet())
 			{
-				StatsSet nobleInfo = _nobles.get(nobleId);
-				
+				final StatsSet nobleInfo = entry.getValue();
 				if (nobleInfo == null)
 				{
 					continue;
 				}
 				
-				int charId = nobleId;
+				int charId = entry.getKey();
 				int classId = nobleInfo.getInteger(CLASS_ID);
 				String charName = nobleInfo.getString(CHAR_NAME);
 				int points = nobleInfo.getInteger(POINTS);
