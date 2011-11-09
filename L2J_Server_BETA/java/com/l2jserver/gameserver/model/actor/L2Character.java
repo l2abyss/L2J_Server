@@ -4264,7 +4264,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public boolean isInCombat()
 	{
-		return (getAI().getAttackTarget() != null || getAI().isAutoAttacking());
+		return hasAI() && (getAI().getAttackTarget() != null || getAI().isAutoAttacking());
 	}
 	
 	/**
