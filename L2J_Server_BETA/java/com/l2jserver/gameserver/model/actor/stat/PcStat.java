@@ -676,7 +676,7 @@ public class PcStat extends PlayableStat
 		double vitality = 1.0;
 		double nevits = 1.0;
 		double hunting = 1.0;
-		double bonusExp = 1.0;
+		double bonusSp = 1.0;
 		
 		// Bonus from Vitality System
 		vitality = getVitalityMultiplier();
@@ -687,8 +687,8 @@ public class PcStat extends PlayableStat
 		// Bonus from Nevit's Hunting
 		// TODO: Nevit's hutning bonus
 		
-		// Bonus exp from skills
-		bonusExp = calcStat(Stats.BONUS_SP, 1.0, null, null);
+		// Bonus sp from skills
+		bonusSp = calcStat(Stats.BONUS_SP, 1.0, null, null);
 		
 		if (vitality > 1.0)
 			bonus += (vitality - 1);
@@ -696,19 +696,19 @@ public class PcStat extends PlayableStat
 			bonus += (nevits - 1);
 		if (hunting > 1.0)
 			bonus += (hunting - 1);
-		if (bonusExp > 1.0)
-			bonus += (bonusExp -1);
+		if (bonusSp > 1.0)
+			bonus += (bonusSp -1);
 		
 		// Check for abnormal bonuses
 		bonus = Math.max(bonus, 1);
-		bonus = Math.min(bonus, Config.MAX_BONUS_EXP);
+		bonus = Math.min(bonus, Config.MAX_BONUS_SP);
 		
 		if (getActiveChar().isDebug())
 		{
 			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
 			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
 			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
-			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusExp);
+			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusSp);
 			getActiveChar().sendDebugMessage("Total Sp Multiplier: " + bonus);
 		}
 		
