@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTraitType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -64,6 +63,7 @@ import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.templates.item.L2Weapon;
 import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TraitType;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
@@ -2361,10 +2361,10 @@ public final class Formulas
 		if (skill == null)
 			return multiplier;
 		
-		final SkillTraitType trait = skill.getTraitType();
+		final L2TraitType trait = skill.getTraitType();
 		// First check if skill have trait set
 		// If yes, use correct vuln
-		if (trait != null && trait != SkillTraitType.NONE)
+		if (trait != null && trait != L2TraitType.NONE)
 		{
 			switch (trait)
 			{
@@ -2442,10 +2442,10 @@ public final class Formulas
 		if (skill == null)
 			return multiplier;
 		
-		final SkillTraitType trait = skill.getTraitType();
+		final L2TraitType trait = skill.getTraitType();
 		// First check if skill have trait set
 		// If yes, use correct vuln
-		if (trait != null && trait != SkillTraitType.NONE)
+		if (trait != null && trait != L2TraitType.NONE)
 		{
 			switch (trait)
 			{

@@ -56,6 +56,7 @@ import com.l2jserver.gameserver.templates.item.L2Armor;
 import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.templates.skills.L2TargetType;
+import com.l2jserver.gameserver.templates.skills.L2TraitType;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -84,24 +85,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		OP_PASSIVE, OP_ACTIVE, OP_TOGGLE
 	}
 	
-	public static enum SkillTraitType
-	{
-		NONE,
-		BLEED,
-		BOSS,
-		DEATH,
-		DERANGEMENT,
-		ETC,
-		GUST,
-		HOLD,
-		PARALYZE,
-		PHYSICAL_BLOCKADE,
-		POISON,
-		SHOCK,
-		SLEEP,
-		VALAKAS
-	}
-	
 	//conditional values
 	public final static int COND_RUNNING = 0x0001;
 	public final static int COND_WALKING = 0x0002;
@@ -127,7 +110,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final String _name;
 	private final SkillOpType _operateType;
 	private final boolean _magic;
-	private final SkillTraitType _traitType;
+	private final L2TraitType _traitType;
 	private final boolean _staticReuse;
 	private final boolean _staticHitTime;
 	private final boolean _staticDamage; // Damage dealing skills do static damage based on the power value.
@@ -291,7 +274,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_name = set.getString("name");
 		_operateType = set.getEnum("operateType", SkillOpType.class);
 		_magic = set.getBool("isMagic", false);
-		_traitType = set.getEnum("trait", SkillTraitType.class, SkillTraitType.NONE);
+		_traitType = set.getEnum("trait", L2TraitType.class, L2TraitType.NONE);
 		_staticReuse = set.getBool("staticReuse", false);
 		_staticHitTime = set.getBool("staticHitTime", false);
 		_staticDamage = set.getBool("staticDamage", false);
@@ -582,7 +565,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _skillType;
 	}
 	
-	public final SkillTraitType getTraitType()
+	public final L2TraitType getTraitType()
 	{
 		return _traitType;
 	}
