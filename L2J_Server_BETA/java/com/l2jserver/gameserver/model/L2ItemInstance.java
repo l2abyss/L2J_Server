@@ -1976,7 +1976,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public boolean hasPassiveSkills()
 	{
-		return isEtcItem() && getLocation() == ItemLocation.INVENTORY && getOwnerId() > 0;
+		return isEtcItem() && getLocation() == ItemLocation.INVENTORY && getOwnerId() > 0 && getItem().getSkills() != null;
 	}
 	
 	public void giveSkillsToOwner()
