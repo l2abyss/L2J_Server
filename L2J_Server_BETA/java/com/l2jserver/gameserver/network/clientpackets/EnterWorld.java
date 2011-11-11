@@ -352,6 +352,8 @@ public class EnterWorld extends L2GameClientPacket
 		
 		activeChar.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 		
+		activeChar.getInventory().applyItemSkills();
+		
 		if (L2Event.isParticipant(activeChar))
 			L2Event.restorePlayerEventStatus(activeChar);
 		

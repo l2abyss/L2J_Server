@@ -46,6 +46,7 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SpawnItem;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.templates.item.L2Armor;
 import com.l2jserver.gameserver.templates.item.L2EtcItem;
@@ -325,8 +326,15 @@ public final class L2ItemInstance extends L2Object
 		if (owner_id == _ownerId)
 			return;
 		
+		// Remove any inventory skills from the old owner.
+		removeSkillsFromOwner();
+		
 		_ownerId = owner_id;
 		_storedInDb = false;
+		
+		// Give any inventory skills to the new owner only if the item is in inventory
+		// else the skills will be given when location is set to inventory.
+		giveSkillsToOwner();
 	}
 	
 	/**
@@ -358,9 +366,17 @@ public final class L2ItemInstance extends L2Object
 	{
 		if (loc == _loc && loc_data == _locData)
 			return;
+		
+		// Remove any inventory skills from the old owner.
+		removeSkillsFromOwner();
+				
 		_loc = loc;
 		_locData = loc_data;
 		_storedInDb = false;
+		
+		// Give any inventory skills to the new owner only if the item is in inventory
+		// else the skills will be given when location is set to inventory.
+		giveSkillsToOwner();
 	}
 	
 	public ItemLocation getLocation()
@@ -1956,5 +1972,44 @@ public final class L2ItemInstance extends L2Object
 			enchant = Config.ALT_OLY_ENCHANT_LIMIT;
 		
 		return enchant;
+	}
+	
+	public boolean hasPassiveSkills()
+	{
+		return isEtcItem() && getLocation() == ItemLocation.INVENTORY && getOwnerId() > 0;
+	}
+	
+	public void giveSkillsToOwner()
+	{
+		if (!hasPassiveSkills())
+			return;
+		
+		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		
+		if (player != null)
+		{
+			for (SkillHolder sh : getItem().getSkills())
+			{
+				if (sh.getSkill().isPassive())
+					player.addSkill(sh.getSkill(), false);
+			}
+		}
+	}
+	
+	public void removeSkillsFromOwner()
+	{
+		if (!hasPassiveSkills())
+			return;
+		
+		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		
+		if (player != null)
+		{
+			for (SkillHolder sh : getItem().getSkills())
+			{
+				if (sh.getSkill().isPassive())
+					player.removeSkill(sh.getSkill(), false, true);
+			}
+		}
 	}
 }

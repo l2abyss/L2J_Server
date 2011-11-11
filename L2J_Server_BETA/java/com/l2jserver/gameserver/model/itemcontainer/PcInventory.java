@@ -933,4 +933,15 @@ public class PcInventory extends Inventory
 	{
 		return getClass().getSimpleName()+"["+_owner+"]";
 	}
+	
+	/**
+	 * Apply skills of inventory items
+	 */
+	public void applyItemSkills()
+	{
+		for (L2ItemInstance item : _items)
+		{
+			item.giveSkillsToOwner();
+		}
+	}
 }
