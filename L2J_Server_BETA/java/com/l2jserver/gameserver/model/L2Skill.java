@@ -279,7 +279,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	private L2ExtractableSkill _extractableItems = null;
 	
-	private final int _maxTargets; 
+	private final int _maxTargets;
+	private final boolean _isStaticHeal;
 	
 	protected L2Skill(StatsSet set)
 	{
@@ -556,6 +557,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			_extractableItems = parseExtractableSkill(_id, _level, capsuled_items);
 		}
 		_maxTargets = set.getInteger("maxTargets", -1);
+		_isStaticHeal = set.getBool("isStaticHeal", false);
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -2089,4 +2091,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _maxTargets;
 	}
 
+	public boolean isStaticHeal()
+	{
+		return _isStaticHeal;
+	}
 }
