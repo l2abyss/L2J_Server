@@ -84,6 +84,7 @@ public enum Stats
 	MCRITICAL_RATE("mCritRate"),
 	EXPSP_RATE("rExp"),
 	BONUS_EXP("bonusExp"),
+	BONUS_SP("bonusSp"),
 	ATTACK_CANCEL("cancel"),
 	MAGIC_FAILURE_RATE("magicFailureRate"),	
 	

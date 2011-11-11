@@ -21,6 +21,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.entity.RecoBonus;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -116,13 +117,17 @@ public class PcStat extends PlayableStat
 		long baseExp = addToExp;
 		int baseSp = addToSp;
 		
-		double bonus = 1.;
+		double bonusExp = 1.;
+		double bonusSp = 1.;
 		
 		if (useBonuses)
-			bonus = activeChar.getExpBonusMultiplier();
+		{
+			bonusExp = getExpBonusMultiplier();
+			bonusSp = getSpBonusMultiplier();
+		}
 		
-		addToExp *= bonus;
-		addToSp  *= bonus;
+		addToExp *= bonusExp;
+		addToSp  *= bonusSp;
 		
 		float ratioTakenByPlayer = 0;
 		
@@ -618,5 +623,95 @@ public class PcStat extends PlayableStat
 	public byte getVitalityLevel()
 	{
 		return _vitalityLevel;
+	}
+	
+	public double getExpBonusMultiplier()
+	{
+		double bonus = 1.0;
+		double vitality = 1.0;
+		double nevits = 1.0;
+		double hunting = 1.0;
+		double bonusExp = 1.0;
+		
+		// Bonus from Vitality System
+		vitality = getVitalityMultiplier();
+		
+		// Bonus from Nevit's Blessing
+		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
+		
+		// Bonus from Nevit's Hunting
+		// TODO: Nevit's hutning bonus
+		
+		// Bonus exp from skills
+		bonusExp = calcStat(Stats.BONUS_EXP, 1.0, null, null);
+		
+		if (vitality > 1.0)
+			bonus += (vitality - 1);
+		if (nevits > 1.0)
+			bonus += (nevits - 1);
+		if (hunting > 1.0)
+			bonus += (hunting - 1);
+		if (bonusExp > 1.0)
+			bonus += (bonusExp -1);
+		
+		// Check for abnormal bonuses
+		bonus = Math.max(bonus, 1);
+		bonus = Math.min(bonus, Config.MAX_BONUS_EXP);
+		
+		if (getActiveChar().isDebug())
+		{
+			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
+			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
+			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
+			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusExp);
+			getActiveChar().sendDebugMessage("Total Exp Multiplier: " + bonus);
+		}
+		
+		return bonus;
+	}
+	
+	public double getSpBonusMultiplier()
+	{
+		double bonus = 1.0;
+		double vitality = 1.0;
+		double nevits = 1.0;
+		double hunting = 1.0;
+		double bonusExp = 1.0;
+		
+		// Bonus from Vitality System
+		vitality = getVitalityMultiplier();
+		
+		// Bonus from Nevit's Blessing
+		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
+		
+		// Bonus from Nevit's Hunting
+		// TODO: Nevit's hutning bonus
+		
+		// Bonus exp from skills
+		bonusExp = calcStat(Stats.BONUS_SP, 1.0, null, null);
+		
+		if (vitality > 1.0)
+			bonus += (vitality - 1);
+		if (nevits > 1.0)
+			bonus += (nevits - 1);
+		if (hunting > 1.0)
+			bonus += (hunting - 1);
+		if (bonusExp > 1.0)
+			bonus += (bonusExp -1);
+		
+		// Check for abnormal bonuses
+		bonus = Math.max(bonus, 1);
+		bonus = Math.min(bonus, Config.MAX_BONUS_EXP);
+		
+		if (getActiveChar().isDebug())
+		{
+			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
+			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
+			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
+			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusExp);
+			getActiveChar().sendDebugMessage("Total Sp Multiplier: " + bonus);
+		}
+		
+		return bonus;
 	}
 }
