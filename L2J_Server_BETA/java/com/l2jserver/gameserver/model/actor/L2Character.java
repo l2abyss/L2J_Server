@@ -1971,14 +1971,16 @@ public abstract class L2Character extends L2Object
 			
 			//reduce talisman mana on skill use
 			if (skill.getReferenceItemId() > 0 && ItemTable.getInstance().getTemplate(skill.getReferenceItemId()).getBodyPart() == L2Item.SLOT_DECO)
+			{
 				for (L2ItemInstance item : getInventory().getItemsByItemId(skill.getReferenceItemId()))
 				{
 					if (item.isEquipped())
 					{
-						item.decreaseMana(false, item.useSkillDisTime() > 0 ? item.useSkillDisTime() : (skill.getReuseDelay() / 60000)); // TODO: Remove when dp is added
+						item.decreaseMana(false, item.useSkillDisTime());
 						break;
 					}
 				}
+			}
 		}
 		
 		// Before start AI Cast Broadcast Fly Effect is Need
