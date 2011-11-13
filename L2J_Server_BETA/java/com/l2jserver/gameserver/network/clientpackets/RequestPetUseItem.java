@@ -117,7 +117,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			}
 		}
 		
-		final IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+		final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 		if (handler != null)
 		{
 			useItem(pet, item, activeChar);
@@ -147,7 +147,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		}
 		else
 		{
-			final IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+			final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 			if (handler != null)
 			{
 				handler.useItem(pet, item, false);

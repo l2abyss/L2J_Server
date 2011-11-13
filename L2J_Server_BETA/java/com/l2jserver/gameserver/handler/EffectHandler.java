@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.handler;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -24,31 +25,30 @@ import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 
 /**
  * @author BiggBoss
- *
  */
 public final class EffectHandler
-{	
+{
 	private static final class SingletonHolder
 	{
 		private static final EffectHandler _instance = new EffectHandler();
 	}
-
+	
 	private static final Logger _log = Logger.getLogger(EffectHandler.class.getName());
-	private FastMap<String, Class<? extends L2Effect>> _handlers;
+	private final FastMap<Integer, Class<? extends L2Effect>> _handlers;
 	
 	private EffectHandler()
 	{
-		_handlers = new FastMap<String, Class<? extends L2Effect>>();
+		_handlers = new FastMap<Integer, Class<? extends L2Effect>>();
 	}
 	
-	public void registerHandler(String effect, Class<? extends L2Effect> func)
+	public void registerHandler(String name, Class<? extends L2Effect> func)
 	{
-		_handlers.put(effect, func);
+		_handlers.put(name.hashCode(), func);
 	}
 	
 	public final Class<? extends L2Effect> getHandler(String name)
 	{
-		return _handlers.get(name);
+		return _handlers.get(name.hashCode());
 	}
 	
 	public int size()
@@ -63,12 +63,11 @@ public final class EffectHandler
 			File file = new File(L2ScriptEngineManager.SCRIPT_FOLDER, "handlers/EffectMasterHandler.java");
 			L2ScriptEngineManager.getInstance().executeScript(file);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
-			_log.warning("Problems while running EffectMansterHandler");
-			e.printStackTrace();
+			_log.log(Level.WARNING, "Problems while running EffectMansterHandler", e);
 		}
-		_log.config("Loaded "+size()+" Effect handlers");
+		_log.config("Loaded " + size() + " Effect handlers");
 	}
 	
 	public static EffectHandler getInstance()

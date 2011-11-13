@@ -37,12 +37,12 @@ public class TargetHandler
 		_datatable = new FastMap<Enum<L2TargetType>, ITargetTypeHandler>();
 	}
 	
-	public void registerTargetType(ITargetTypeHandler handler)
+	public void registerHandler(ITargetTypeHandler handler)
 	{
 		_datatable.put(handler.getTargetType(), handler);
 	}
 	
-	public ITargetTypeHandler getTargetTypeHandler(Enum<L2TargetType> targetType)
+	public ITargetTypeHandler getHandler(Enum<L2TargetType> targetType)
 	{
 		return _datatable.get(targetType);
 	}

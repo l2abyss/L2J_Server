@@ -19,24 +19,27 @@ import java.util.Map;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
-
-public class ActionHandler
+/**
+ * @author UnAfraid
+ * 
+ */
+public class ActionShiftHandler
 {
-	private final Map<InstanceType, IActionHandler> _actions;
+	private final Map<InstanceType, IActionHandler> _actionsShift;
 	
-	public static ActionHandler getInstance()
+	public static ActionShiftHandler getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	private ActionHandler()
+	private ActionShiftHandler()
 	{
-		_actions = new FastMap<InstanceType, IActionHandler>();
+		_actionsShift = new FastMap<InstanceType, IActionHandler>();
 	}
 	
 	public void registerHandler(IActionHandler handler)
 	{
-		_actions.put(handler.getInstanceType(), handler);
+		_actionsShift.put(handler.getInstanceType(), handler);
 	}
 	
 	public IActionHandler getHandler(InstanceType iType)
@@ -44,7 +47,7 @@ public class ActionHandler
 		IActionHandler result = null;
 		for (InstanceType t = iType; t != null; t = t.getParent())
 		{
-			result = _actions.get(t);
+			result = _actionsShift.get(t);
 			if (result != null)
 				break;
 		}
@@ -53,12 +56,12 @@ public class ActionHandler
 	
 	public int size()
 	{
-		return _actions.size();
+		return _actionsShift.size();
 	}
 	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
-		protected static final ActionHandler _instance = new ActionHandler();
+		protected static final ActionShiftHandler _instance = new ActionShiftHandler();
 	}
 }

@@ -86,10 +86,10 @@ public class L2PetInstance extends L2Summon
 	private static final String DELETE_SKILL_SAVE = "DELETE FROM character_pet_skills_save WHERE petObjItemId=?";
 
 	private int _curFed;
-	private PetInventory _inventory;
+	private final PetInventory _inventory;
 	private final int _controlObjectId;
 	private boolean _respawned;
-	private boolean _mountable;
+	private final boolean _mountable;
 	private Future<?> _feedTask;
 	private L2PetData _data;
 	private L2PetLevelData _leveldata;
@@ -186,7 +186,7 @@ public class L2PetInstance extends L2Summon
 				}
 				if (food != null && isHungry())
 				{
-					IItemHandler handler = ItemHandler.getInstance().getItemHandler(food.getEtcItem());
+					IItemHandler handler = ItemHandler.getInstance().getHandler(food.getEtcItem());
 					if (handler != null)
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_TOOK_S1_BECAUSE_HE_WAS_HUNGRY);
@@ -565,7 +565,7 @@ public class L2PetInstance extends L2Summon
 		// Herbs
 		if (target.getItemType() == L2EtcItemType.HERB)
 		{
-			IItemHandler handler = ItemHandler.getInstance().getItemHandler(target.getEtcItem());
+			IItemHandler handler = ItemHandler.getInstance().getHandler(target.getEtcItem());
 			if (handler == null)
 				_log.fine("No item handler registered for item ID " + target.getItemId() + ".");
 			else

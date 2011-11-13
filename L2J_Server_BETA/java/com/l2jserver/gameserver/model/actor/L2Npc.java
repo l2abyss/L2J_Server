@@ -942,7 +942,7 @@ public class L2Npc extends L2Character
 			}
 			else
 			{
-				IBypassHandler handler = BypassHandler.getInstance().getBypassHandler(command);
+				IBypassHandler handler = BypassHandler.getInstance().getHandler(command);
 				if (handler != null)
 					handler.useBypass(command, player, this);
 				else

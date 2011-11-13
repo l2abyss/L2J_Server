@@ -33,7 +33,7 @@ public class TelnetHandler
 		_telnetHandlers = new TIntObjectHashMap<ITelnetHandler>();
 	}
 	
-	public void registerCommandHandler(ITelnetHandler handler)
+	public void registerHandler(ITelnetHandler handler)
 	{
 		for (String element : handler.getCommandList())
 		{
@@ -41,7 +41,7 @@ public class TelnetHandler
 		}
 	}
 	
-	public ITelnetHandler getCommandHandler(String BypassCommand)
+	public ITelnetHandler getHandler(String BypassCommand)
 	{
 		String command = BypassCommand;
 		

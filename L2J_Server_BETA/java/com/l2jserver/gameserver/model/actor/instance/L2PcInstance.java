@@ -3663,7 +3663,7 @@ public final class L2PcInstance extends L2Playable
 				if(!isCastingNow())
 				{
 					L2ItemInstance herb = new L2ItemInstance(_charId, itemId);
-					IItemHandler handler = ItemHandler.getInstance().getItemHandler(herb.getEtcItem());
+					IItemHandler handler = ItemHandler.getInstance().getHandler(herb.getEtcItem());
 					if (handler == null)
 						_log.warning("No item handler registered for Herb - item ID " + herb.getItemId() + ".");
 					else
@@ -4862,7 +4862,7 @@ public final class L2PcInstance extends L2Playable
 		//Auto use herbs - pick up
 		if (target.getItemType() == L2EtcItemType.HERB)
 		{
-			IItemHandler handler = ItemHandler.getInstance().getItemHandler(target.getEtcItem());
+			IItemHandler handler = ItemHandler.getInstance().getHandler(target.getEtcItem());
 			if (handler == null)
 				_log.fine("No item handler registered for item ID " + target.getItemId() + ".");
 			else
@@ -9849,7 +9849,7 @@ public final class L2PcInstance extends L2Playable
 								case 22075: case 22076: case 22077:
 								case 22078: case 22079: case 22080:
 								case 22081:
-									handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+									handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 									
 									if (handler != null)
 										handler.useItem(this, item, false);
@@ -9863,7 +9863,7 @@ public final class L2PcInstance extends L2Playable
 							{
 								case 6646: case 6647:
 								case 20333: case 20334:
-									handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+									handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 									
 									if (handler != null)
 										handler.useItem(this, item, false);
@@ -9883,7 +9883,7 @@ public final class L2PcInstance extends L2Playable
 								case 5789: case 22082: case 22083:
 								case 22084: case 22085: case 22086:
 									
-									handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+									handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 									
 									if (handler != null)
 										handler.useItem(this, item, false);
@@ -9895,7 +9895,7 @@ public final class L2PcInstance extends L2Playable
 						{
 							if (itemId == 6645 || itemId == 20332)
 							{
-								handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+								handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 								
 								if (handler != null)
 									handler.useItem(this, item, false);
@@ -13736,7 +13736,7 @@ public final class L2PcInstance extends L2Playable
 				
 				if (food != null && isHungry())
 				{
-					IItemHandler handler = ItemHandler.getInstance().getItemHandler(food.getEtcItem());
+					IItemHandler handler = ItemHandler.getInstance().getHandler(food.getEtcItem());
 					if (handler != null)
 					{
 						handler.useItem(L2PcInstance.this, food, false);

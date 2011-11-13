@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model;
 
 import com.l2jserver.gameserver.handler.ActionHandler;
+import com.l2jserver.gameserver.handler.ActionShiftHandler;
 import com.l2jserver.gameserver.handler.IActionHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
@@ -270,7 +271,7 @@ public abstract class L2Object
 	
 	public void onAction(L2PcInstance player, boolean interact)
 	{
-		IActionHandler handler = ActionHandler.getInstance().getActionHandler(getInstanceType());
+		IActionHandler handler = ActionHandler.getInstance().getHandler(getInstanceType());
 		if (handler != null)
 			handler.action(player, this, interact);
 		
@@ -279,7 +280,7 @@ public abstract class L2Object
 	
 	public void onActionShift(L2PcInstance player)
 	{
-		IActionHandler handler = ActionHandler.getInstance().getActionShiftHandler(getInstanceType());
+		IActionHandler handler = ActionShiftHandler.getInstance().getHandler(getInstanceType());
 		if (handler != null)
 			handler.action(player, this, true);
 		

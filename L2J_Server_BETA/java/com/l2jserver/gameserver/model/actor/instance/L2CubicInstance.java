@@ -82,7 +82,7 @@ public class L2CubicInstance
 	protected int _maxcount;
 	protected int _currentcount;
 	protected boolean _active;
-	private boolean _givenByOther;
+	private final boolean _givenByOther;
 	
 	protected List<L2Skill> _skills = new FastList<L2Skill>();
 	
@@ -466,7 +466,7 @@ public class L2CubicInstance
 	
 	private class Action implements Runnable
 	{
-		private int _chance;
+		private final int _chance;
 		
 		Action(int chance)
 		{
@@ -571,7 +571,7 @@ public class L2CubicInstance
 							_owner.broadcastPacket(new MagicSkillUse(_owner, target, skill.getId(), skill.getLevel(), 0, 0));
 							
 							L2SkillType type = skill.getSkillType();
-							ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
+							ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 							L2Character[] targets = { target };
 							
 							if ((type == L2SkillType.PARALYZE) || (type == L2SkillType.STUN)
@@ -1006,7 +1006,7 @@ public class L2CubicInstance
 						if (target.getMaxHp() - target.getCurrentHp() > skill.getPower())
 						{
 							L2Character[] targets = { target };
-							ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
+							ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 							if (handler != null)
 							{
 								handler.useSkill(_owner, skill, targets);

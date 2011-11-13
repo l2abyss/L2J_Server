@@ -188,7 +188,7 @@ public class GameStatusThread extends Thread
 					break;
 				}
 				
-				final ITelnetHandler handler = TelnetHandler.getInstance().getCommandHandler(_usrCommand);
+				final ITelnetHandler handler = TelnetHandler.getInstance().getHandler(_usrCommand);
 				if (handler != null)
 					handler.useCommand(_usrCommand, _print, _cSocket, _uptime);
 				

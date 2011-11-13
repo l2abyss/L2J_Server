@@ -84,7 +84,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			{
 				String command = _command.split(" ")[0];
 				
-				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(command);
+				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getHandler(command);
 				
 				if (ach == null)
 				{
@@ -168,7 +168,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			// Navigate through Manor windows
 			else if (_command.startsWith("manor_menu_select"))
 			{
-				final IBypassHandler manor = BypassHandler.getInstance().getBypassHandler("manor_menu_select");
+				final IBypassHandler manor = BypassHandler.getInstance().getHandler("manor_menu_select");
 				if (manor != null)
 					manor.useBypass(_command, activeChar, null);
 			}
@@ -249,7 +249,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			}
 			else
 			{
-				final IBypassHandler handler = BypassHandler.getInstance().getBypassHandler(_command);
+				final IBypassHandler handler = BypassHandler.getInstance().getHandler(_command);
 				if (handler != null)
 					handler.useBypass(_command, activeChar, null);
 				else

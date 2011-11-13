@@ -73,7 +73,7 @@ public final class DlgAnswer extends L2GameClientPacket
 				if (_answer == 0)
 					return;
 				String command = _command.split(" ")[0];
-				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(command);
+				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getHandler(command);
 				if (AdminCommandAccessRights.getInstance().hasAccess(command, activeChar.getAccessLevel()))
 				{
 					if (Config.GMAUDIT)

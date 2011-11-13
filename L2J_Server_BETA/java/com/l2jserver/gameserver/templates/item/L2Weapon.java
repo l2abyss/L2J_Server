@@ -398,7 +398,7 @@ public final class L2Weapon extends L2Item
 			return _emptyEffectSet;
 		
 		// Get the skill handler corresponding to the skill type
-		ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(_skillsOnCast.getSkill().getSkillType());
+		ISkillHandler handler = SkillHandler.getInstance().getHandler(_skillsOnCast.getSkill().getSkillType());
 		
 		L2Character[] targets = new L2Character[1];
 		targets[0] = target;
