@@ -50,7 +50,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class BlockList
 {
 	private static Logger _log = Logger.getLogger(BlockList.class.getName());
-	private static Map<Integer, List<Integer>> _offlineList = new FastMap<Integer, List<Integer>>();
+	private static Map<Integer, List<Integer>> _offlineList = new FastMap<Integer, List<Integer>>().shared();
 	
 	private final L2PcInstance _owner;
 	private List<Integer> _blockList;
@@ -63,13 +63,13 @@ public class BlockList
 			_blockList = loadList(_owner.getObjectId());
 	}
 	
-	private synchronized void addToBlockList(int target)
+	private void addToBlockList(int target)
 	{
 		_blockList.add(target);
 		updateInDB(target, true);
 	}
 	
-	private synchronized void removeFromBlockList(int target)
+	private void removeFromBlockList(int target)
 	{
 		_blockList.remove(Integer.valueOf(target));
 		updateInDB(target, false);
