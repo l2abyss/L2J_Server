@@ -180,7 +180,7 @@ public abstract class L2Item
 	private final boolean _destroyable;
 	private final boolean _tradeable;
 	private final boolean _depositable;
-	private final boolean _enchantable;
+	private final int _enchantable;
 	private final boolean _elementable;
 	private final boolean _questItem;
 	private final boolean _freightable;
@@ -232,7 +232,7 @@ public abstract class L2Item
 		_tradeable = set.getBool("is_tradable", true);
 		_depositable = set.getBool("is_depositable", true);
 		_elementable = set.getBool("element_enabled", false);
-		_enchantable = set.getBool("enchant_enabled", false);
+		_enchantable = set.getInteger("enchant_enabled", 0);
 		_questItem = set.getBool("is_questitem", false);
 		_freightable = set.getBool("is_freightable", false);
 		_is_oly_restricted = set.getBool("is_oly_restricted", false);
@@ -629,9 +629,9 @@ public abstract class L2Item
 	 * This method also check the enchant blacklist.
 	 * @return {@code true} if the item can be enchanted, {@code false} otherwise.
 	 */
-	public final boolean isEnchantable()
+	public final int isEnchantable()
 	{
-		return _enchantable && Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getItemId()) < 0;
+		return Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getItemId()) < 0 ?  _enchantable : 0;
 	}
 	
 	/**

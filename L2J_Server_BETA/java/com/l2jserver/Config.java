@@ -1003,19 +1003,10 @@ public final class Config
 	}
 	public static ObjectMapType MAP_TYPE;
 	public static ObjectSetType SET_TYPE;
-	public static int ENCHANT_CHANCE_WEAPON;
-	public static int ENCHANT_CHANCE_ARMOR;
-	public static int ENCHANT_CHANCE_JEWELRY;
-	public static int ENCHANT_CHANCE_ELEMENT_STONE;
-	public static int ENCHANT_CHANCE_ELEMENT_CRYSTAL;
-	public static int ENCHANT_CHANCE_ELEMENT_JEWEL;
-	public static int ENCHANT_CHANCE_ELEMENT_ENERGY;
-	public static int BLESSED_ENCHANT_CHANCE_WEAPON;
-	public static int BLESSED_ENCHANT_CHANCE_ARMOR;
-	public static int BLESSED_ENCHANT_CHANCE_JEWELRY;
-	public static int ENCHANT_MAX_WEAPON;
-	public static int ENCHANT_MAX_ARMOR;
-	public static int ENCHANT_MAX_JEWELRY;
+	public static double ENCHANT_CHANCE_ELEMENT_STONE;
+	public static double ENCHANT_CHANCE_ELEMENT_CRYSTAL;
+	public static double ENCHANT_CHANCE_ELEMENT_JEWEL;
+	public static double ENCHANT_CHANCE_ELEMENT_ENERGY;
 	public static int ENCHANT_SAFE_MAX;
 	public static int ENCHANT_SAFE_MAX_FULL;
 	public static int[] ENCHANT_BLACKLIST;
@@ -1640,19 +1631,10 @@ public final class Config
 					WAREHOUSE_SLOTS_CLAN = Integer.parseInt(Character.getProperty("MaximumWarehouseSlotsForClan", "150"));
 					ALT_FREIGHT_SLOTS = Integer.parseInt(Character.getProperty("MaximumFreightSlots", "200"));
 					ALT_FREIGHT_PRIECE = Integer.parseInt(Character.getProperty("FreightPriece", "1000"));
-					ENCHANT_CHANCE_WEAPON = Integer.parseInt(Character.getProperty("EnchantChanceWeapon", "66"));
-					ENCHANT_CHANCE_ARMOR = Integer.parseInt(Character.getProperty("EnchantChanceArmor", "66"));
-					ENCHANT_CHANCE_JEWELRY = Integer.parseInt(Character.getProperty("EnchantChanceJewelry", "66"));
-					ENCHANT_CHANCE_ELEMENT_STONE = Integer.parseInt(Character.getProperty("EnchantChanceElementStone", "50"));
-					ENCHANT_CHANCE_ELEMENT_CRYSTAL = Integer.parseInt(Character.getProperty("EnchantChanceElementCrystal", "30"));
-					ENCHANT_CHANCE_ELEMENT_JEWEL = Integer.parseInt(Character.getProperty("EnchantChanceElementJewel", "20"));
-					ENCHANT_CHANCE_ELEMENT_ENERGY = Integer.parseInt(Character.getProperty("EnchantChanceElementEnergy", "10"));
-					BLESSED_ENCHANT_CHANCE_WEAPON = Integer.parseInt(Character.getProperty("BlessedEnchantChanceWeapon", "66"));
-					BLESSED_ENCHANT_CHANCE_ARMOR = Integer.parseInt(Character.getProperty("BlessedEnchantChanceArmor", "66"));
-					BLESSED_ENCHANT_CHANCE_JEWELRY = Integer.parseInt(Character.getProperty("BlessedEnchantChanceJewelry", "66"));
-					ENCHANT_MAX_WEAPON = Integer.parseInt(Character.getProperty("EnchantMaxWeapon", "0"));
-					ENCHANT_MAX_ARMOR = Integer.parseInt(Character.getProperty("EnchantMaxArmor", "0"));
-					ENCHANT_MAX_JEWELRY = Integer.parseInt(Character.getProperty("EnchantMaxJewelry", "0"));
+					ENCHANT_CHANCE_ELEMENT_STONE = Double.parseDouble(Character.getProperty("EnchantChanceElementStone", "50"));
+					ENCHANT_CHANCE_ELEMENT_CRYSTAL = Double.parseDouble(Character.getProperty("EnchantChanceElementCrystal", "30"));
+					ENCHANT_CHANCE_ELEMENT_JEWEL = Double.parseDouble(Character.getProperty("EnchantChanceElementJewel", "20"));
+					ENCHANT_CHANCE_ELEMENT_ENERGY = Double.parseDouble(Character.getProperty("EnchantChanceElementEnergy", "10"));
 					ENCHANT_SAFE_MAX = Integer.parseInt(Character.getProperty("EnchantSafeMax", "3"));
 					ENCHANT_SAFE_MAX_FULL = Integer.parseInt(Character.getProperty("EnchantSafeMaxFull", "4"));
 					String[] notenchantable = Character.getProperty("EnchantBlackList","7816,7817,7818,7819,7820,7821,7822,7823,7824,7825,7826,7827,7828,7829,7830,7831,13293,13294,13296").split(",");
@@ -3250,16 +3232,10 @@ public final class Config
 		else if (pName.equalsIgnoreCase("MaximumWarehouseSlotsForDwarf")) WAREHOUSE_SLOTS_DWARF = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("MaximumWarehouseSlotsForClan")) WAREHOUSE_SLOTS_CLAN = Integer.parseInt(pValue);
 		
-		else if (pName.equalsIgnoreCase("EnchantChanceWeapon")) ENCHANT_CHANCE_WEAPON = Integer.parseInt(pValue);
-		else if (pName.equalsIgnoreCase("EnchantChanceArmor")) ENCHANT_CHANCE_ARMOR = Integer.parseInt(pValue);
-		else if (pName.equalsIgnoreCase("EnchantChanceJewelry")) ENCHANT_CHANCE_JEWELRY = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantChanceElementStone")) ENCHANT_CHANCE_ELEMENT_STONE = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantChanceElementCrystal")) ENCHANT_CHANCE_ELEMENT_CRYSTAL = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantChanceElementJewel")) ENCHANT_CHANCE_ELEMENT_JEWEL = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantChanceElementEnergy")) ENCHANT_CHANCE_ELEMENT_ENERGY = Integer.parseInt(pValue);
-		else if (pName.equalsIgnoreCase("EnchantMaxWeapon")) ENCHANT_MAX_WEAPON = Integer.parseInt(pValue);
-		else if (pName.equalsIgnoreCase("EnchantMaxArmor")) ENCHANT_MAX_ARMOR = Integer.parseInt(pValue);
-		else if (pName.equalsIgnoreCase("EnchantMaxJewelry")) ENCHANT_MAX_JEWELRY = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantSafeMax")) ENCHANT_SAFE_MAX = Integer.parseInt(pValue);
 		else if (pName.equalsIgnoreCase("EnchantSafeMaxFull")) ENCHANT_SAFE_MAX_FULL = Integer.parseInt(pValue);
 		

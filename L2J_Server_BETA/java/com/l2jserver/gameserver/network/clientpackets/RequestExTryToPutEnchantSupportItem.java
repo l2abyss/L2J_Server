@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.datatables.EnchantItemTable;
+import com.l2jserver.gameserver.model.EnchantItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -23,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 /**
  * @author  KenM
  */
-public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
+public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
 {
 	private static final String _C__D0_4D_REQUESTEXTRYTOPUTENCHANTSUPPORTITEM = "[C] D0:4D RequestExTryToPutEnchantSupportItem";
 	
@@ -51,7 +53,7 @@ public class RequestExTryToPutEnchantSupportItem extends AbstractEnchantPacket
 				if (item == null || support == null)
 					return;
 				
-				EnchantItem supportTemplate = getSupportItem(support);
+				EnchantItem supportTemplate = EnchantItemTable.getInstance().getSupportItem(support);
 				
 				if (supportTemplate == null || !supportTemplate.isValid(item))
 				{

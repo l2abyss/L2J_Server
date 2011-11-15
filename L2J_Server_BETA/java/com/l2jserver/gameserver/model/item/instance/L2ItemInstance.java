@@ -491,11 +491,11 @@ public final class L2ItemInstance extends L2Object
 	 * Return true if item can be enchanted
 	 * @return boolean
 	 */
-	public boolean isEnchantable()
+	public int isEnchantable()
 	{
 		if (getLocation() == ItemLocation.INVENTORY || getLocation() == ItemLocation.PAPERDOLL)
 			return getItem().isEnchantable();
-		return false;
+		return 0;
 	}
 	
 	/**
