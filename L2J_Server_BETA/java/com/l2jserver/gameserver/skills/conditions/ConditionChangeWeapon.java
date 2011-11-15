@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.skills.conditions;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.L2Weapon;
 import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
 
 /**
  * The Class ConditionChangeWeapon.

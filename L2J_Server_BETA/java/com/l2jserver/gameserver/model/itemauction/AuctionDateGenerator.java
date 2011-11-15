@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.model.itemauction;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.gameserver.model.StatsSet;
 
 /**
  * 

@@ -12,9 +12,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.model.item.instance;
 
-import com.l2jserver.gameserver.templates.item.L2Henna;
+import com.l2jserver.gameserver.model.item.L2Henna;
 
 /**
  * This class represents a Non-Player-Character in the world. it can be

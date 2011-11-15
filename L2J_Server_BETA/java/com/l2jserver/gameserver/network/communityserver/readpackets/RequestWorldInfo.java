@@ -26,11 +26,11 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.InitWorldInfo;
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
  * @authors  Forsaiken, Gigiikun

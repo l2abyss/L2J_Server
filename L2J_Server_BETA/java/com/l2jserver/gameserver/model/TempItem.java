@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model;
 
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+
 /**
  * Class explanation:<br>
  * For item counting or checking purposes. When you don't want to modify inventory<br>

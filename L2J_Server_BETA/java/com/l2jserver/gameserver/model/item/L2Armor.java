@@ -12,18 +12,19 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.templates.item;
+package com.l2jserver.gameserver.model.item;
 
 import java.util.ArrayList;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.type.L2ArmorType;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
-import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.util.StringUtil;
 
 /**

@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
@@ -27,13 +28,10 @@ public class CombatFlag
 	//private static final Logger _log = Logger.getLogger(CombatFlag.class.getName());
 	
 	protected L2PcInstance _player = null;
-	public int playerId = 0;
+	private int _playerId = 0;
 	private L2ItemInstance _item = null;
-	
-	
 	private Location _location;
-	public L2ItemInstance itemInstance;
-	
+	private L2ItemInstance _itemInstance;
 	private int _itemId;
 	
 	@SuppressWarnings("unused")
@@ -54,9 +52,8 @@ public class CombatFlag
 	public synchronized void spawnMe()
 	{
 		// Init the dropped L2ItemInstance and add it in the world as a visible object at the position where mob was last
-		L2ItemInstance i = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
-		i.dropMe(null, _location.getX(), _location.getY(),  _location.getZ());
-		itemInstance = i;
+		_itemInstance = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
+		_itemInstance.dropMe(null, _location.getX(), _location.getY(),  _location.getZ());
 	}
 	
 	public synchronized void unSpawnMe()
@@ -65,9 +62,9 @@ public class CombatFlag
 		{
 			dropIt();
 		}
-		if (itemInstance != null)
+		if (_itemInstance != null)
 		{
-			itemInstance.decayMe();
+			_itemInstance.decayMe();
 		}
 	}
 	
@@ -75,14 +72,14 @@ public class CombatFlag
 	{
 		if (player.isMounted())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+			player.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 			return false;
 		}
 		
 		// Player holding it data
 		_player = player;
-		playerId = _player.getObjectId();
-		itemInstance = null;
+		_playerId = _player.getObjectId();
+		_itemInstance = null;
 		
 		// Equip with the weapon
 		_item = item;
@@ -116,6 +113,16 @@ public class CombatFlag
 		_item = null;
 		_player.broadcastUserInfo();
 		_player = null;
-		playerId = 0;
+		_playerId = 0;
+	}
+	
+	public int getPlayerOnjectId()
+	{
+		return _playerId;
+	}
+	
+	public L2ItemInstance getCombatFlagInstance()
+	{
+		return _itemInstance;
 	}
 }

@@ -24,16 +24,13 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.templates.L2HelperBuff;
-import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.gameserver.model.L2HelperBuff;
+import com.l2jserver.gameserver.model.StatsSet;
 
 /**
  * This class represents the Newbie Helper Buff list
- *
  * Author: Ayor
- *
  */
-
 public class HelperBuffTable
 {
 	

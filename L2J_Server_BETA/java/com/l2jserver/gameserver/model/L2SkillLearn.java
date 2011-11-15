@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.Race;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
  * @author Zoey76

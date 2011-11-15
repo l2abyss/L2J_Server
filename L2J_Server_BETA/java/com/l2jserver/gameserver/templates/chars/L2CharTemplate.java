@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.templates.chars;
 
-import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.gameserver.model.StatsSet;
 
 /**
  * @author Zoey76

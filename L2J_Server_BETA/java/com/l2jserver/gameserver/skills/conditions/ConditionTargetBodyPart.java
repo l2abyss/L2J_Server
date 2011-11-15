@@ -14,10 +14,10 @@
  */
 package com.l2jserver.gameserver.skills.conditions;
 
+import com.l2jserver.gameserver.model.item.L2Armor;
+import com.l2jserver.gameserver.model.item.L2Item;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.templates.item.L2Armor;
-import com.l2jserver.gameserver.templates.item.L2Item;
 
 /**
  * The Class ConditionTargetBodyPart.

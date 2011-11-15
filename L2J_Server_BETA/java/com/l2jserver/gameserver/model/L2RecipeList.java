@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model;
 
-import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
  * This class describes a Recipe used by Dwarf to craft Item.

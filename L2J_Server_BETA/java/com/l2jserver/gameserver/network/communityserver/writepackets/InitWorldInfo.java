@@ -29,8 +29,8 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
  * @authors  Forsaiken, Gigiikun

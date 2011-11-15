@@ -16,12 +16,11 @@ package com.l2jserver.gameserver.skills.l2skills;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
  * @author JIV
- *
  */
 public class L2SkillSweeper extends L2Skill
 {

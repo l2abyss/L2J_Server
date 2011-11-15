@@ -19,8 +19,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import java.util.Arrays;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 
 public abstract class AbstractEnchantPacket extends L2GameClientPacket

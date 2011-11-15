@@ -15,17 +15,14 @@
 package com.l2jserver.gameserver.skills;
 
 import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 /**
- *
  * An Env object is just a class to pass parameters to a calculator such as L2PcInstance, L2ItemInstance, Initial value.
- *
  */
-
 public final class Env {
 	
 	public L2Character    player;
