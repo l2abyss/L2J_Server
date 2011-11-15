@@ -849,16 +849,16 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					int posX = npc.getX();
 					int posY = npc.getY();
 					int posZ = npc.getZ() + 30;
-					 
-                    if (originalAttackTarget.getX() < posX)
-                        posX = posX + 300;
-                    else
-                        posX = posX - 300;
-                   
-                    if (originalAttackTarget.getY() < posY)
-                        posY = posY + 300;
-                    else
-                        posY = posY - 300;
+					
+					if (originalAttackTarget.getX() < posX)
+						posX = posX + 300;
+					else
+						posX = posX - 300;
+					
+					if (originalAttackTarget.getY() < posY)
+						posY = posY + 300;
+					else
+						posY = posY - 300;
 					
 					if (Config.GEODATA == 0 || GeoData.getInstance().canMoveFromToTarget(npc.getX(), npc.getY(), npc.getZ(), posX, posY, posZ, npc.getInstanceId()))
 						setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(posX, posY, posZ, 0));
