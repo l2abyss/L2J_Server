@@ -391,7 +391,7 @@ public class FortSiegeManager
 		
 		for (CombatFlag cf : fcf)
 		{
-			if (cf.getPlayerOnjectId() == player.getObjectId())
+			if (cf.getPlayerObjectId() == player.getObjectId())
 			{
 				cf.dropIt();
 				if (fort.getSiege().getIsInProgress())

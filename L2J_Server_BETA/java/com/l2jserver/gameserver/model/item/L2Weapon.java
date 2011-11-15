@@ -44,8 +44,6 @@ import com.l2jserver.util.StringUtil;
 
 /**
  * This class is dedicated to the management of weapons.
- *
- * @version $Revision: 1.4.2.3.2.5 $ $Date: 2005/04/02 15:57:51 $
  */
 public final class L2Weapon extends L2Item
 {
@@ -55,9 +53,11 @@ public final class L2Weapon extends L2Item
 	private final int _soulShotCount;
 	private final int _spiritShotCount;
 	private final int _mpConsume;
-	private SkillHolder _enchant4Skill = null; // skill that activates when item is enchanted +4 (for duals)
+	/**
+	 * Skill that activates when item is enchanted +4 (for duals).
+	 */
+	private SkillHolder _enchant4Skill = null;
 	private final int _changeWeaponId;
-	// private final String[] _skill;
 	
 	// Attached skills for Special Abilities
 	private SkillHolder _skillsOnCast;
@@ -72,17 +72,8 @@ public final class L2Weapon extends L2Item
 	private final boolean _useWeaponSkillsOnly;
 	
 	/**
-	 * Constructor for Weapon.<BR><BR>
-	 * <U><I>Variables filled :</I></U><BR>
-	 * <LI>_soulShotCount & _spiritShotCount</LI>
-	 * <LI>_pDam & _mDam & _rndDam</LI>
-	 * <LI>_critical</LI>
-	 * <LI>_hitModifier</LI>
-	 * <LI>_avoidModifier</LI>
-	 * <LI>_shieldDes & _shieldDefRate</LI>
-	 * <LI>_atkSpeed & _AtkReuse</LI>
-	 * <LI>_mpConsume</LI>
-	 * @param set : StatsSet designating the set of couples (key,value) characterizing the armor
+	 * Constructor for Weapon.
+	 * @param set the StatsSet designating the set of couples (key,value) characterizing the weapon.
 	 * @see L2Item constructor
 	 */
 	public L2Weapon(StatsSet set)
@@ -103,7 +94,7 @@ public final class L2Weapon extends L2Item
 		{
 			String[] info = skill.split("-");
 			
-			if (info != null && info.length == 2)
+			if ((info != null) && (info.length == 2))
 			{
 				int id = 0;
 				int level = 0;
@@ -115,10 +106,12 @@ public final class L2Weapon extends L2Item
 				catch (Exception nfe)
 				{
 					// Incorrect syntax, dont add new skill
-					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in weapon enchant skills! item ", this.toString()));
+					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in weapon enchant skills! item ", toString()));
 				}
-				if (id > 0 && level > 0)
+				if ((id > 0) && (level > 0))
+				{
 					_enchant4Skill = new SkillHolder(id, level);
+				}
 			}
 		}
 		
@@ -127,7 +120,7 @@ public final class L2Weapon extends L2Item
 		{
 			String[] info = skill.split("-");
 			String infochance = set.getString("oncast_chance", null);
-			if (info != null && info.length == 2)
+			if ((info != null) && (info.length == 2))
 			{
 				int id = 0;
 				int level = 0;
@@ -137,29 +130,32 @@ public final class L2Weapon extends L2Item
 					id = Integer.parseInt(info[0]);
 					level = Integer.parseInt(info[1]);
 					if (infochance != null)
+					{
 						chance = Integer.parseInt(infochance);
+					}
 				}
 				catch (Exception nfe)
 				{
 					// Incorrect syntax, dont add new skill
-					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in weapon oncast skills! item ", this.toString()));
+					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in weapon oncast skills! item ", toString()));
 				}
-				if (id > 0 && level > 0 && chance > 0)
+				if ((id > 0) && (level > 0) && (chance > 0))
 				{
 					_skillsOnCast = new SkillHolder(id, level);
 					if (infochance != null)
+					{
 						_skillsOnCastCondition = new ConditionGameChance(chance);
+					}
 				}
 			}
 		}
 		
-
 		skill = set.getString("oncrit_skill", null);
 		if (skill != null)
 		{
 			String[] info = skill.split("-");
 			String infochance = set.getString("oncrit_chance", null);
-			if (info != null && info.length == 2)
+			if ((info != null) && (info.length == 2))
 			{
 				int id = 0;
 				int level = 0;
@@ -169,32 +165,34 @@ public final class L2Weapon extends L2Item
 					id = Integer.parseInt(info[0]);
 					level = Integer.parseInt(info[1]);
 					if (infochance != null)
+					{
 						chance = Integer.parseInt(infochance);
+					}
 				}
 				catch (Exception nfe)
 				{
 					// Incorrect syntax, dont add new skill
-					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in weapon oncrit skills! item ", this.toString()));
+					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in weapon oncrit skills! item ", toString()));
 				}
-				if (id > 0 && level > 0 && chance > 0)
+				if ((id > 0) && (level > 0) && (chance > 0))
 				{
 					_skillsOnCrit = new SkillHolder(id, level);
 					if (infochance != null)
+					{
 						_skillsOnCritCondition = new ConditionGameChance(chance);
+					}
 				}
 			}
 		}
 		
 		_changeWeaponId = set.getInteger("change_weaponId", 0);
-		
 		_isForceEquip = set.getBool("isForceEquip", false);
 		_isAttackWeapon = set.getBool("isAttackWeapon", true);
 		_useWeaponSkillsOnly = set.getBool("useWeaponSkillsOnly", false);
 	}
 	
 	/**
-	 * Returns the type of Weapon
-	 * @return L2WeaponType
+	 * @return the type of Weapon
 	 */
 	@Override
 	public L2WeaponType getItemType()
@@ -203,8 +201,7 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	 * Returns the ID of the Etc item after applying the mask.
-	 * @return int : ID of the Weapon
+	 * @return the ID of the Etc item after applying the mask.
 	 */
 	@Override
 	public int getItemMask()
@@ -213,8 +210,7 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	 * Returns true if L2Weapon is magic type.
-	 * @return boolean
+	 * @return {@code true} if the weapon is magic, {@code false} otherwise.
 	 */
 	public boolean isMagicWeapon()
 	{
@@ -222,8 +218,7 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	 * Returns the quantity of SoulShot used.
-	 * @return int
+	 * @return the quantity of SoulShot used.
 	 */
 	public int getSoulShotCount()
 	{
@@ -231,18 +226,15 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	 * Returns the quatity of SpiritShot used.
-	 * @return int
+	 * @return the quantity of SpiritShot used.
 	 */
 	public int getSpiritShotCount()
 	{
 		return _spiritShotCount;
 	}
 	
-	
 	/**
-	 * Returns the random damage inflicted by the weapon
-	 * @return int
+	 * @return the random damage inflicted by the weapon.
 	 */
 	public int getRandomDamage()
 	{
@@ -250,17 +242,15 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	 * Return the Reuse Delay of the L2Weapon.<BR><BR>
-	 * @return int
+	 * @return the Reuse Delay of the L2Weapon.
 	 */
 	public int getReuseDelay()
 	{
 		return _reuseDelay;
 	}
-
+	
 	/**
-	 * Returns the MP consumption with the weapon
-	 * @return int
+	 * @return the MP consumption with the weapon.
 	 */
 	public int getMpConsume()
 	{
@@ -268,51 +258,61 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	 * Returns skill that player get when has equiped weapon +4  or more  (for duals SA)
-	 * @return
+	 * @return the skill that player get when has equipped weapon +4 or more (for duals SA).
 	 */
 	public L2Skill getEnchant4Skill()
 	{
 		if (_enchant4Skill == null)
+		{
 			return null;
+		}
 		return _enchant4Skill.getSkill();
 	}
 	
 	/**
-	 * Returns the Id in wich weapon this weapon can be changed
-	 * @return
+	 * @return the Id in which weapon this weapon can be changed.
 	 */
 	public int getChangeWeaponId()
 	{
 		return _changeWeaponId;
 	}
 	
+	/**
+	 * @return {@code true} if the weapon is force equip, {@code false} otherwise.
+	 */
 	public boolean isForceEquip()
 	{
 		return _isForceEquip;
 	}
 	
+	/**
+	 * @return {@code true} if the weapon is attack weapon, {@code false} otherwise.
+	 */
 	public boolean isAttackWeapon()
 	{
 		return _isAttackWeapon;
 	}
 	
+	/**
+	 * @return {@code true} if the weapon is skills only, {@code false} otherwise.
+	 */
 	public boolean useWeaponSkillsOnly()
 	{
 		return _useWeaponSkillsOnly;
 	}
 	
 	/**
-	 * Returns array of Func objects containing the list of functions used by the weapon
-	 * @param instance : L2ItemInstance pointing out the weapon
-	 * @param player : L2Character pointing out the player
-	 * @return Func[] : array of functions
+	 * @param instance the L2ItemInstance pointing out the weapon.
+	 * @param player the L2Character pointing out the player.
+	 * @return an array of Func objects containing the list of functions used by the weapon.
 	 */
 	@Override
 	public Func[] getStatFuncs(L2ItemInstance instance, L2Character player)
 	{
-		if (_funcTemplates == null || _funcTemplates.length == 0)
+		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
+		{
 			return _emptyFunctionSet;
+		}
 		
 		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
 		
@@ -325,23 +325,26 @@ public final class L2Weapon extends L2Item
 		{
 			f = t.getFunc(env, instance);
 			if (f != null)
+			{
 				funcs.add(f);
+			}
 		}
 		
 		return funcs.toArray(new Func[funcs.size()]);
 	}
 	
 	/**
-	 * Returns effects of skills associated with the item to be triggered onHit.
-	 * @param caster : L2Character pointing out the caster
-	 * @param target : L2Character pointing out the target
-	 * @param crit : boolean tells whether the hit was critical
-	 * @return L2Effect[] : array of effects generated by the skill
+	 * @param caster the L2Character pointing out the caster
+	 * @param target the L2Character pointing out the target
+	 * @param crit the boolean tells whether the hit was critical
+	 * @return the effects of skills associated with the item to be triggered onHit.
 	 */
 	public L2Effect[] getSkillEffects(L2Character caster, L2Character target, boolean crit)
 	{
-		if (_skillsOnCrit == null || !crit)
+		if ((_skillsOnCrit == null) || !crit)
+		{
 			return _emptyEffectSet;
+		}
 		List<L2Effect> effects = new FastList<L2Effect>();
 		
 		if (_skillsOnCritCondition != null)
@@ -351,38 +354,55 @@ public final class L2Weapon extends L2Item
 			env.target = target;
 			env.skill = _skillsOnCrit.getSkill();
 			if (!_skillsOnCritCondition.test(env))
+			{
 				return _emptyEffectSet; // Skill condition not met
+			}
 		}
 		
 		byte shld = Formulas.calcShldUse(caster, target, _skillsOnCrit.getSkill());
 		if (!Formulas.calcSkillSuccess(caster, target, _skillsOnCrit.getSkill(), shld, false, false, false))
+		{
 			return _emptyEffectSet; // These skills should not work on RaidBoss
+		}
 		if (target.getFirstEffect(_skillsOnCrit.getSkill().getId()) != null)
+		{
 			target.getFirstEffect(_skillsOnCrit.getSkill().getId()).exit();
+		}
 		for (L2Effect e : _skillsOnCrit.getSkill().getEffects(caster, target, new Env(shld, false, false, false)))
+		{
 			effects.add(e);
+		}
 		if (effects.isEmpty())
+		{
 			return _emptyEffectSet;
+		}
 		return effects.toArray(new L2Effect[effects.size()]);
 	}
 	
 	/**
-	 * Returns effects of skills associated with the item to be triggered onCast.
-	 * @param caster : L2Character pointing out the caster
-	 * @param target : L2Character pointing out the target
-	 * @param trigger : L2Skill pointing out the skill triggering this action
-	 * @return L2Effect[] : array of effects generated by the skill
+	 * @param caster the L2Character pointing out the caster
+	 * @param target the L2Character pointing out the target
+	 * @param trigger the L2Skill pointing out the skill triggering this action
+	 * @return the effects of skills associated with the item to be triggered onCast.
 	 */
 	public L2Effect[] getSkillEffects(L2Character caster, L2Character target, L2Skill trigger)
 	{
 		if (_skillsOnCast == null)
+		{
 			return _emptyEffectSet;
+		}
 		if (trigger.isOffensive() != _skillsOnCast.getSkill().isOffensive())
+		{
 			return _emptyEffectSet; // Trigger only same type of skill
-		if (trigger.isToggle() && _skillsOnCast.getSkill().getSkillType() == L2SkillType.BUFF)
+		}
+		if (trigger.isToggle() && (_skillsOnCast.getSkill().getSkillType() == L2SkillType.BUFF))
+		{
 			return _emptyEffectSet; // No buffing with toggle skills
-		if (!trigger.isMagic() && _skillsOnCast.getSkill().getSkillType() == L2SkillType.BUFF)
+		}
+		if (!trigger.isMagic() && (_skillsOnCast.getSkill().getSkillType() == L2SkillType.BUFF))
+		{
 			return _emptyEffectSet; // No buffing with not magic skills
+		}
 		
 		if (_skillsOnCastCondition != null)
 		{
@@ -391,12 +411,16 @@ public final class L2Weapon extends L2Item
 			env.target = target;
 			env.skill = _skillsOnCast.getSkill();
 			if (!_skillsOnCastCondition.test(env))
+			{
 				return _emptyEffectSet;
+			}
 		}
 		
 		byte shld = Formulas.calcShldUse(caster, target, _skillsOnCast.getSkill());
 		if (_skillsOnCast.getSkill().isOffensive() && !Formulas.calcSkillSuccess(caster, target, _skillsOnCast.getSkill(), shld, false, false, false))
+		{
 			return _emptyEffectSet;
+		}
 		
 		// Get the skill handler corresponding to the skill type
 		ISkillHandler handler = SkillHandler.getInstance().getHandler(_skillsOnCast.getSkill().getSkillType());
@@ -406,9 +430,13 @@ public final class L2Weapon extends L2Item
 		
 		// Launch the magic skill and calculate its effects
 		if (handler != null)
+		{
 			handler.useSkill(caster, _skillsOnCast.getSkill(), targets);
+		}
 		else
+		{
 			_skillsOnCast.getSkill().useSkill(caster, targets);
+		}
 		
 		// notify quests of a skill use
 		if (caster instanceof L2PcInstance)
@@ -433,5 +461,4 @@ public final class L2Weapon extends L2Item
 		}
 		return _emptyEffectSet;
 	}
-	
 }

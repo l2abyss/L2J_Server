@@ -19,34 +19,31 @@ import com.l2jserver.gameserver.model.item.type.L2ItemType;
 
 /**
  * This class contains L2ItemInstance<BR>
- * Use to sort L2ItemInstance of :
- * <LI>L2Armor</LI>
- * <LI>L2EtcItem</LI>
- * <LI>L2Weapon</LI>
+ * Use to sort L2ItemInstance of : <LI>L2Armor</LI> <LI>L2EtcItem</LI> <LI>L2Weapon</LI>
  * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
 public class L2WarehouseItem
 {
-	private L2Item _item;
-	private int _object;
-	private long _count;
-	private int _owner;
-	private int _locationSlot;
-	private int _enchant;
-	private int _grade;
+	private final L2Item _item;
+	private final int _object;
+	private final long _count;
+	private final int _owner;
+	private final int _locationSlot;
+	private final int _enchant;
+	private final int _grade;
 	private boolean _isAugmented;
 	private int _augmentationId;
-	private int _customType1;
-	private int _customType2;
-	private int _mana;
+	private final int _customType1;
+	private final int _customType2;
+	private final int _mana;
 	
 	private int _elemAtkType = -2;
 	private int _elemAtkPower = 0;
-	private int[] _elemDefAttr =
+	private final int[] _elemDefAttr =
 	{
-			0, 0, 0, 0, 0, 0
+		0, 0, 0, 0, 0, 0
 	};
-	private int _time;
+	private final int _time;
 	
 	public L2WarehouseItem(L2ItemInstance item)
 	{
@@ -65,19 +62,22 @@ public class L2WarehouseItem
 			_augmentationId = item.getAugmentation().getAugmentationId();
 		}
 		else
+		{
 			_isAugmented = false;
+		}
 		_mana = item.getMana();
-		_time = item.isTimeLimitedItem() ? (int) (item.getRemainingTime()/1000) : -1;
+		_time = item.isTimeLimitedItem() ? (int) (item.getRemainingTime() / 1000) : -1;
 		
 		_elemAtkType = item.getAttackElementType();
 		_elemAtkPower = item.getAttackElementPower();
 		for (byte i = 0; i < 6; i++)
+		{
 			_elemDefAttr[i] = item.getElementDefAttr(i);
+		}
 	}
 	
 	/**
-	 * Returns the item.
-	 * @return L2Item
+	 * @return the item.
 	 */
 	public L2Item getItem()
 	{
@@ -85,8 +85,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the unique objectId
-	 * @return int
+	 * @return the unique objectId.
 	 */
 	public final int getObjectId()
 	{
@@ -94,8 +93,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the owner
-	 * @return int
+	 * @return the owner.
 	 */
 	public final int getOwnerId()
 	{
@@ -103,8 +101,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the LocationSlot
-	 * @return int
+	 * @return the location slot.
 	 */
 	public final int getLocationSlot()
 	{
@@ -112,8 +109,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the count
-	 * @return int
+	 * @return the count.
 	 */
 	public final long getCount()
 	{
@@ -121,8 +117,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the first type
-	 * @return int
+	 * @return the first type.
 	 */
 	public final int getType1()
 	{
@@ -130,8 +125,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the second type
-	 * @return int
+	 * @return the second type.
 	 */
 	public final int getType2()
 	{
@@ -139,8 +133,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the second type
-	 * @return int
+	 * @return the second type.
 	 */
 	public final L2ItemType getItemType()
 	{
@@ -148,8 +141,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the ItemId
-	 * @return int
+	 * @return the ItemId.
 	 */
 	public final int getItemId()
 	{
@@ -157,8 +149,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the part of body used with this item
-	 * @return int
+	 * @return the part of body used with this item.
 	 */
 	public final int getBodyPart()
 	{
@@ -166,8 +157,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the enchant level
-	 * @return int
+	 * @return the enchant level.
 	 */
 	public final int getEnchantLevel()
 	{
@@ -175,8 +165,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the item grade
-	 * @return int
+	 * @return the item grade
 	 */
 	public final int getItemGrade()
 	{
@@ -184,8 +173,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns true if it is a weapon
-	 * @return boolean
+	 * @return {@code true} if the item is a weapon, {@code false} otherwise.
 	 */
 	public final boolean isWeapon()
 	{
@@ -193,8 +181,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns true if it is an armor
-	 * @return boolean
+	 * @return {@code true} if the item is an armor, {@code false} otherwise.
 	 */
 	public final boolean isArmor()
 	{
@@ -202,8 +189,7 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns true if it is an EtcItem
-	 * @return boolean
+	 * @return {@code true} if the item is an etc item, {@code false} otherwise.
 	 */
 	public final boolean isEtcItem()
 	{
@@ -211,19 +197,24 @@ public class L2WarehouseItem
 	}
 	
 	/**
-	 * Returns the name of the item
-	 * @return String
+	 * @return the name of the item
 	 */
 	public String getItemName()
 	{
 		return _item.getName();
 	}
 	
+	/**
+	 * @return {@code true} if the item is augmented, {@code false} otherwise.
+	 */
 	public boolean isAugmented()
 	{
 		return _isAugmented;
 	}
 	
+	/**
+	 * @return the augmentation If.
+	 */
 	public int getAugmentationId()
 	{
 		return _augmentationId;
@@ -273,9 +264,9 @@ public class L2WarehouseItem
 	{
 		return _time;
 	}
+	
 	/**
-	 * Returns the name of the item
-	 * @return String
+	 * @return the name of the item
 	 */
 	@Override
 	public String toString()

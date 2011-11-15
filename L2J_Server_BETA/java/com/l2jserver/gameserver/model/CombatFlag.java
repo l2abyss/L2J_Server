@@ -23,28 +23,24 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
+@SuppressWarnings("unused")
 public class CombatFlag
 {
-	//private static final Logger _log = Logger.getLogger(CombatFlag.class.getName());
+	// private static final Logger _log = Logger.getLogger(CombatFlag.class.getName());
 	
-	protected L2PcInstance _player = null;
+	private L2PcInstance _player = null;
 	private int _playerId = 0;
 	private L2ItemInstance _item = null;
-	private Location _location;
 	private L2ItemInstance _itemInstance;
-	private int _itemId;
+	private final Location _location;
+	private final int _itemId;
+	private final int _heading;
+	private final int _fortId;
 	
-	@SuppressWarnings("unused")
-	private int _heading;
-	@SuppressWarnings("unused")
-	private int _fortId;
-	
-	// =========================================================
-	// Constructor
 	public CombatFlag(int fort_id, int x, int y, int z, int heading, int item_id)
 	{
 		_fortId = fort_id;
-		_location = new Location(x,y,z,heading);
+		_location = new Location(x, y, z, heading);
 		_heading = heading;
 		_itemId = item_id;
 	}
@@ -53,7 +49,7 @@ public class CombatFlag
 	{
 		// Init the dropped L2ItemInstance and add it in the world as a visible object at the position where mob was last
 		_itemInstance = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
-		_itemInstance.dropMe(null, _location.getX(), _location.getY(),  _location.getZ());
+		_itemInstance.dropMe(null, _location.getX(), _location.getY(), _location.getZ());
 	}
 	
 	public synchronized void unSpawnMe()
@@ -95,8 +91,10 @@ public class CombatFlag
 			iu.addItem(_item);
 			_player.sendPacket(iu);
 		}
-		else _player.sendPacket(new ItemList(_player, false));
-		
+		else
+		{
+			_player.sendPacket(new ItemList(_player, false));
+		}
 		// Refresh player stats
 		_player.broadcastUserInfo();
 		_player.setCombatFlagEquipped(true);
@@ -116,7 +114,7 @@ public class CombatFlag
 		_playerId = 0;
 	}
 	
-	public int getPlayerOnjectId()
+	public int getPlayerObjectId()
 	{
 		return _playerId;
 	}
