@@ -999,7 +999,7 @@ public class L2PetInstance extends L2Summon
 					switch (effect.getEffectType())
 					{
 						case HEAL_OVER_TIME:
-						case COMBAT_POINT_HEAL_OVER_TIME:
+						case CPHEAL_OVER_TIME:
 							// TODO: Fix me.
 						case HIDE:
 							continue;

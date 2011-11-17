@@ -358,7 +358,7 @@ public class L2SummonInstance extends L2Summon
 					switch (effect.getEffectType())
 					{
 						case HEAL_OVER_TIME:
-						case COMBAT_POINT_HEAL_OVER_TIME:
+						case CPHEAL_OVER_TIME:
 							// TODO: Fix me.
 						case HIDE:
 							continue;
@@ -499,8 +499,8 @@ public class L2SummonInstance extends L2Summon
 	
 	static class SummonLifetime implements Runnable
 	{
-		private L2PcInstance _activeChar;
-		private L2SummonInstance _summon;
+		private final L2PcInstance _activeChar;
+		private final L2SummonInstance _summon;
 		
 		SummonLifetime(L2PcInstance activeChar, L2SummonInstance newpet)
 		{
