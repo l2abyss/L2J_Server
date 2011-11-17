@@ -327,68 +327,80 @@ public class NpcTable
 	}
 	
 	/**
-	 * @param lvl of all the templates to get.
+	 * @param lvls of all the templates to get.
 	 * @return the template list for the given level.
 	 */
-	public List<L2NpcTemplate> getAllOfLevel(int lvl)
+	public List<L2NpcTemplate> getAllOfLevel(int ...lvls)
 	{
 		final List<L2NpcTemplate> list = new FastList<>();
-		for (L2NpcTemplate t : _npcs.valueCollection())
+		for (int lvl : lvls)
 		{
-			if (t.getLevel() == lvl)
+			for (L2NpcTemplate t : _npcs.valueCollection())
 			{
-				list.add(t);
+				if (t.getLevel() == lvl)
+				{
+					list.add(t);
+				}
 			}
 		}
 		return list;
 	}
 	
 	/**
-	 * @param lvl of all the monster templates to get.
+	 * @param lvls of all the monster templates to get.
 	 * @return the template list for the given level.
 	 */
-	public List<L2NpcTemplate> getAllMonstersOfLevel(int lvl)
+	public List<L2NpcTemplate> getAllMonstersOfLevel(int ...lvls)
 	{
 		final List<L2NpcTemplate> list = new FastList<>();
-		for (L2NpcTemplate t : _npcs.valueCollection())
+		for (int lvl : lvls)
 		{
-			if ((t.getLevel() == lvl) && t.isType("L2Monster"))
+			for (L2NpcTemplate t : _npcs.valueCollection())
 			{
-				list.add(t);
+				if ((t.getLevel() == lvl) && t.isType("L2Monster"))
+				{
+					list.add(t);
+				}
 			}
 		}
 		return list;
 	}
 	
 	/**
-	 * @param letter of all the NPC templates which its name start with.
+	 * @param letters of all the NPC templates which its name start with.
 	 * @return the template list for the given letter.
 	 */
-	public List<L2NpcTemplate> getAllNpcStartingWith(String letter)
+	public List<L2NpcTemplate> getAllNpcStartingWith(String ...letters)
 	{
 		final List<L2NpcTemplate> list = new FastList<>();
-		for (L2NpcTemplate t : _npcs.valueCollection())
+		for (String letter : letters)
 		{
-			if (t.getName().startsWith(letter) && t.isType("L2Npc"))
+			for (L2NpcTemplate t : _npcs.valueCollection())
 			{
-				list.add(t);
+				if (t.getName().startsWith(letter) && t.isType("L2Npc"))
+				{
+					list.add(t);
+				}
 			}
 		}
 		return list;
 	}
 	
 	/**
-	 * @param classType of all the templates to get.
+	 * @param classTypes of all the templates to get.
 	 * @return the template list for the given class type.
 	 */
-	public List<L2NpcTemplate> getAllNpcOfClassType(String classType)
+	public List<L2NpcTemplate> getAllNpcOfClassType(String ...classTypes)
 	{
 		final List<L2NpcTemplate> list = new FastList<>();
-		for (L2NpcTemplate t : _npcs.valueCollection())
+		for (String classType : classTypes)
 		{
-			if (t.isType(classType))
+			for (L2NpcTemplate t : _npcs.valueCollection())
 			{
-				list.add(t);
+				if (t.isType(classType))
+				{
+					list.add(t);
+				}
 			}
 		}
 		return list;
