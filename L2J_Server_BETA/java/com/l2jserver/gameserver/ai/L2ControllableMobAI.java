@@ -20,6 +20,7 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -40,12 +41,13 @@ import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 /**
- * @author littlecrow
  * AI for controllable mobs
- *
+ * @author littlecrow
  */
 public class L2ControllableMobAI extends L2AttackableAI
 {
+	private static final Logger _log = Logger.getLogger(L2AttackableAI.class.getName());
+	
 	public static final int AI_IDLE = 1;
 	public static final int AI_NORMAL = 2;
 	public static final int AI_FORCEATTACK = 3;
