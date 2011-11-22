@@ -2377,7 +2377,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	
 	private FastList<L2Skill> shortRangeSkillRender()
 	{
-		shortRangeSkills = _skillrender.getLongRangeSkills();
+		shortRangeSkills = _skillrender.getShortRangeSkills();
 		if (shortRangeSkills.isEmpty())
 		{
 			shortRangeSkills = getActiveChar().getShortRangeSkill();

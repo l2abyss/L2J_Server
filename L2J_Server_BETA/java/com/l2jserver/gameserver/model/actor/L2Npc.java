@@ -296,11 +296,11 @@ public class L2Npc extends L2Character
 	
 	public FastList<L2Skill> getLongRangeSkill()
 	{
-		FastList<L2Skill> skilldata = new FastList<L2Skill>();
-		boolean hasLrange = false;
+		final FastList<L2Skill> skilldata = new FastList<>();
 		if (_staticAIData == null || _staticAIData.getLongRangeSkill() == 0)
+		{
 			return null;
-		
+		}
 		switch (_staticAIData.getLongRangeSkill())
 		{
 			case -1:
@@ -317,7 +317,6 @@ public class L2Npc extends L2Character
 						if (sk.getCastRange() >= 200)
 						{
 							skilldata.add(sk);
-							hasLrange = true;
 						}
 					}
 				}
@@ -332,7 +331,6 @@ public class L2Npc extends L2Character
 						if (sk.getCastRange() >= 200)
 						{
 							skilldata.add(sk);
-							hasLrange = true;
 						}
 					}
 				}
@@ -345,22 +343,20 @@ public class L2Npc extends L2Character
 					if (sk.getId() == _staticAIData.getLongRangeSkill())
 					{
 						skilldata.add(sk);
-						hasLrange = true;
 					}
 				}
 			}
 		}
-		
-		return (hasLrange ? skilldata : null);
+		return skilldata;
 	}
 	
 	public FastList<L2Skill> getShortRangeSkill()
 	{
-		FastList<L2Skill> skilldata = new FastList<L2Skill>();
-		boolean hasSrange = false;
+		final FastList<L2Skill> skilldata = new FastList<>();
 		if (_staticAIData == null || _staticAIData.getShortRangeSkill() == 0)
-			return null;
-		
+		{
+			return skilldata;
+		}
 		switch (_staticAIData.getShortRangeSkill())
 		{
 			case -1:
@@ -372,12 +368,12 @@ public class L2Npc extends L2Character
 					for (L2Skill sk : skills)
 					{
 						if (sk == null || sk.isPassive() || sk.getTargetType() == L2TargetType.TARGET_SELF)
+						{
 							continue;
-						
+						}
 						if (sk.getCastRange() <= 200)
 						{
 							skilldata.add(sk);
-							hasSrange = true;
 						}
 					}
 				}
@@ -392,7 +388,6 @@ public class L2Npc extends L2Character
 						if (sk.getCastRange() <= 200)
 						{
 							skilldata.add(sk);
-							hasSrange = true;
 						}
 					}
 				}
@@ -405,13 +400,11 @@ public class L2Npc extends L2Character
 					if (sk.getId() == _staticAIData.getShortRangeSkill())
 					{
 						skilldata.add(sk);
-						hasSrange = true;
 					}
 				}
 			}
 		}
-		
-		return (hasSrange ? skilldata : null);
+		return skilldata;
 	}
 	
 	/** Task launching the function onRandomAnimation() */
