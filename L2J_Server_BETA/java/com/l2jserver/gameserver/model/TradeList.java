@@ -556,13 +556,13 @@ public class TradeList
 		// check weight and slots
 		if ((!getOwner().getInventory().validateWeight(partnerList.calcItemsWeight())) || !(partnerList.getOwner().getInventory().validateWeight(calcItemsWeight())))
 		{
-			partnerList.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
-			getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+			partnerList.getOwner().sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
+			getOwner().sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
 		}
 		else if ((!getOwner().getInventory().validateCapacity(partnerList.countItemsSlots(getOwner()))) || (!partnerList.getOwner().getInventory().validateCapacity(countItemsSlots(partnerList.getOwner()))))
 		{
-			partnerList.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
-			getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
+			partnerList.getOwner().sendPacket(SystemMessageId.SLOTS_FULL);
+			getOwner().sendPacket(SystemMessageId.SLOTS_FULL);
 		}
 		else
 		{
@@ -697,19 +697,19 @@ public class TradeList
 		
 		if (totalPrice > playerInventory.getAdena())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			player.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 			return 1;
 		}
 		
 		if (!playerInventory.validateWeight(weight))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+			player.sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
 			return 1;
 		}
 		
 		if (!playerInventory.validateCapacity(slots))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
+			player.sendPacket(SystemMessageId.SLOTS_FULL);
 			return 1;
 		}
 		
@@ -720,7 +720,7 @@ public class TradeList
 		final L2ItemInstance adenaItem = playerInventory.getAdenaInstance();
 		if (!playerInventory.reduceAdena("PrivateStore", totalPrice, player, _owner))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			player.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 			return 1;
 		}
 		playerIU.addItem(adenaItem);

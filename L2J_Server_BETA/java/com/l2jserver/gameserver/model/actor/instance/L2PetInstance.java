@@ -729,7 +729,11 @@ public class L2PetInstance extends L2Summon
 			{
 				removedItem = owner.getInventory().destroyItem("PetDestroy", getControlObjectId(), 1, getOwner(), this);
 				if (removedItem != null)
-					owner.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED).addItemName(removedItem));
+				{
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
+					sm.addItemName(removedItem);
+					owner.sendPacket(sm);
+				}
 			}
 			
 			if (removedItem == null)

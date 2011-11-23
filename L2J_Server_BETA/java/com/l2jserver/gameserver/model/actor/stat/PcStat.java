@@ -232,7 +232,7 @@ public class PcStat extends PlayableStat
 			
 			getActiveChar().setCurrentCp(getMaxCp());
 			getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
-			getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_INCREASED_YOUR_LEVEL));
+			getActiveChar().sendPacket(SystemMessageId.YOU_INCREASED_YOUR_LEVEL);
 			
 			L2ClassMasterInstance.showQuestionMark(getActiveChar());
 		}
@@ -506,13 +506,13 @@ public class PcStat extends PlayableStat
 		if (!quiet && level != _vitalityLevel)
 		{
 			if (level < _vitalityLevel)
-				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_HAS_DECREASED));
+				getActiveChar().sendPacket(SystemMessageId.VITALITY_HAS_DECREASED);
 			else
-				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_HAS_INCREASED));
+				getActiveChar().sendPacket(SystemMessageId.VITALITY_HAS_INCREASED);
 			if (level == 0)
-				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_IS_EXHAUSTED));
+				getActiveChar().sendPacket(SystemMessageId.VITALITY_IS_EXHAUSTED);
 			else if (level == 4)
-				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_IS_AT_MAXIMUM));
+				getActiveChar().sendPacket(SystemMessageId.VITALITY_IS_AT_MAXIMUM);
 		}
 		
 		_vitalityLevel = level;

@@ -148,7 +148,7 @@ public final class PetitionManager
 			// End petition consultation and inform them, if they are still online. And if petitioner is online, enable Evaluation button
 			if (getPetitioner() != null && getPetitioner().isOnline())
 			{
-				getPetitioner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_END_THE_PETITION_PLEASE_PROVIDE_FEEDBACK));
+				getPetitioner().sendPacket(SystemMessageId.THIS_END_THE_PETITION_PLEASE_PROVIDE_FEEDBACK);
 				getPetitioner().sendPacket(new PetitionVotePacket());
 			}
 			

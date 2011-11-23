@@ -269,12 +269,12 @@ public class L2RaceManagerInstance extends L2Npc
 	{
 		if (command.startsWith("BuyTicket") && _state != ACCEPTING_BETS)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MONSRACE_TICKETS_NOT_AVAILABLE));
+			player.sendPacket(SystemMessageId.MONSRACE_TICKETS_NOT_AVAILABLE);
 			command = "Chat 0";
 		}
 		if (command.startsWith("ShowOdds") && _state == ACCEPTING_BETS)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MONSRACE_NO_PAYOUT_INFO));
+			player.sendPacket(SystemMessageId.MONSRACE_NO_PAYOUT_INFO);
 			command = "Chat 0";
 		}
 		

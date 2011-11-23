@@ -47,7 +47,6 @@ import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -939,7 +938,7 @@ public class FourSepulchersManager
 				
 				if (player.getWeightPenalty() >= 3)
 				{
-					mem.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+					mem.sendPacket(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT);
 					return;
 				}
 			}
@@ -967,7 +966,7 @@ public class FourSepulchersManager
 				
 				if (player.getWeightPenalty() >= 3)
 				{
-					mem.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+					mem.sendPacket(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT);
 					return;
 				}
 			}
@@ -988,7 +987,7 @@ public class FourSepulchersManager
 			
 			if (player.getWeightPenalty() >= 3)
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+				player.sendPacket(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT);
 				return;
 			}
 		}

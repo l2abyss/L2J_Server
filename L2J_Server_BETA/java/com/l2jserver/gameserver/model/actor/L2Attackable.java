@@ -731,7 +731,7 @@ public class L2Attackable extends L2Npc
 								L2PcInstance player = (L2PcInstance) attacker;
 								if (isOverhit() && attacker == getOverhitAttacker())
 								{
-									player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OVER_HIT));
+									player.sendPacket(SystemMessageId.OVER_HIT);
 									exp += calculateOverhitExp(exp);
 								}
 							}
@@ -873,7 +873,7 @@ public class L2Attackable extends L2Npc
 							
 							if (isOverhit() && attacker == getOverhitAttacker())
 							{
-								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OVER_HIT));
+								player.sendPacket(SystemMessageId.OVER_HIT);
 								exp += calculateOverhitExp(exp);
 							}
 						}
@@ -1926,7 +1926,7 @@ public class L2Attackable extends L2Npc
 		{
 			if (sendMessage)
 			{
-				sweeper.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SWEEP_NOT_ALLOWED));
+				sweeper.sendPacket(SystemMessageId.SWEEP_NOT_ALLOWED);
 			}
 			return false;
 		}

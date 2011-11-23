@@ -1775,9 +1775,9 @@ public final class Formulas
 						&& (target.getLevel() - attacker.getLevel()) <= 9)
 				{
 					if (skill.getSkillType() == L2SkillType.DRAIN)
-						attacker.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DRAIN_HALF_SUCCESFUL));
+						attacker.sendPacket(SystemMessageId.DRAIN_HALF_SUCCESFUL);
 					else
-						attacker.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ATTACK_FAILED));
+						attacker.sendPacket(SystemMessageId.ATTACK_FAILED);
 					
 					damage /= 2;
 				}
@@ -1876,9 +1876,9 @@ public final class Formulas
 		{
 			if (calcMagicSuccess(owner, target, skill) && (target.getLevel() - skill.getMagicLevel()) <= 9){
 				if (skill.getSkillType() == L2SkillType.DRAIN)
-					owner.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DRAIN_HALF_SUCCESFUL));
+					owner.sendPacket(SystemMessageId.DRAIN_HALF_SUCCESFUL);
 				else
-					owner.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ATTACK_FAILED));
+					owner.sendPacket(SystemMessageId.ATTACK_FAILED);
 				
 				damage /= 2;
 			}
@@ -2036,11 +2036,11 @@ public final class Formulas
 						{
 							player.setCurrentHp(1);
 							player.setCurrentCp(1);
-							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL));
+							player.sendPacket(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL);
 						}
 					}
 				}
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LETHAL_STRIKE));
+				activeChar.sendPacket(SystemMessageId.LETHAL_STRIKE);
 			}
 			else if (skill.getLethalChance1() > 0 && Rnd.get(1000) < calcLethal(activeChar, target, skill.getLethalChance1(),skill.getMagicLevel()))
 			{
@@ -2053,8 +2053,8 @@ public final class Formulas
 								(((L2PcInstance)activeChar).isGM() && !((L2PcInstance)activeChar).getAccessLevel().canGiveDamage())))
 						{
 							player.setCurrentCp(1); // Set CP to 1
-							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL));
-							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CP_SIPHON));
+							player.sendPacket(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL);
+							activeChar.sendPacket(SystemMessageId.CP_SIPHON);
 						}
 					}
 				}
@@ -2274,10 +2274,10 @@ public final class Formulas
 			switch (shldSuccess)
 			{
 				case SHIELD_DEFENSE_SUCCEED:
-					enemy.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL));
+					enemy.sendPacket(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL);
 					break;
 				case SHIELD_DEFENSE_PERFECT_BLOCK:
-					enemy.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS));
+					enemy.sendPacket(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS);
 					break;
 			}
 		}

@@ -71,7 +71,6 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
@@ -790,7 +789,7 @@ public class L2Npc extends L2Character
 		}
 		if (player.isLockedTarget() && player.getLockedTarget() != this)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
+			player.sendPacket(SystemMessageId.FAILED_CHANGE_TARGET);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
 		}

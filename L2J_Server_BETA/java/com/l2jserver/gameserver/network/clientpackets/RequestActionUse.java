@@ -1114,7 +1114,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		//Probably is: The request cannot be completed because the target does not meet location requirements.
 		if (activeChar.isAllSkillsDisabled() || player.isAllSkillsDisabled())
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COUPLE_ACTION_CANCELED));
+			activeChar.sendPacket(SystemMessageId.COUPLE_ACTION_CANCELED);
 			return;
 		}
 		

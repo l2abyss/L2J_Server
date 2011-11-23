@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.model.entity.Auction;
 import com.l2jserver.gameserver.model.entity.Auction.Bidder;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public final class L2AuctioneerInstance extends L2Npc
@@ -217,7 +216,7 @@ public final class L2AuctioneerInstance extends L2Npc
 			{
 				if (player.getClan() == null || player.getClan().getLevel() < 2)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.AUCTION_ONLY_CLAN_LEVEL_2_HIGHER));
+					player.sendPacket(SystemMessageId.AUCTION_ONLY_CLAN_LEVEL_2_HIGHER);
 					return;
 				}
 				
@@ -226,7 +225,7 @@ public final class L2AuctioneerInstance extends L2Npc
 				
 				if ((player.getClan().getAuctionBiddedAt() > 0 && player.getClan().getAuctionBiddedAt() != Integer.parseInt(val)) || player.getClan().getHasHideout() > 0)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_SUBMITTED_BID));
+					player.sendPacket(SystemMessageId.ALREADY_SUBMITTED_BID);
 					return;
 				}
 				
@@ -456,12 +455,12 @@ public final class L2AuctioneerInstance extends L2Npc
 				}
 				else if (player.getClan() != null && player.getClan().getHasHideout() == 0)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_OFFERINGS_OWN_OR_MADE_BID_FOR));
+					player.sendPacket(SystemMessageId.NO_OFFERINGS_OWN_OR_MADE_BID_FOR);
 					return;
 				}
 				else if (player.getClan() == null)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_PARTICIPATE_IN_AN_AUCTION));
+					player.sendPacket(SystemMessageId.CANNOT_PARTICIPATE_IN_AN_AUCTION);
 					return;
 				}
 			}
@@ -483,7 +482,7 @@ public final class L2AuctioneerInstance extends L2Npc
 				if (AuctionManager.getInstance().getAuction(player.getClan().getAuctionBiddedAt()) != null)
 				{
 					AuctionManager.getInstance().getAuction(player.getClan().getAuctionBiddedAt()).cancelBid(player.getClanId());
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANCELED_BID));
+					player.sendPacket(SystemMessageId.CANCELED_BID);
 				}
 				return;
 			}

@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -54,7 +53,7 @@ public final class RequestReplyStartPledgeWar extends L2GameClientPacket
 		}
 		else
 		{
-			requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WAR_PROCLAMATION_HAS_BEEN_REFUSED));
+			requestor.sendPacket(SystemMessageId.WAR_PROCLAMATION_HAS_BEEN_REFUSED);
 		}
 		activeChar.setActiveRequester(null);
 		requestor.onTransactionResponse();

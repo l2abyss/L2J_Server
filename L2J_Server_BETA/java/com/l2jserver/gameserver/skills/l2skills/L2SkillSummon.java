@@ -28,7 +28,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
@@ -120,7 +119,7 @@ public class L2SkillSummon extends L2Skill
 					return false;
 				if (player.getPet() != null)
 				{
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ALREADY_HAVE_A_PET));
+					activeChar.sendPacket(SystemMessageId.YOU_ALREADY_HAVE_A_PET);
 					return false;
 				}
 			}
@@ -206,7 +205,7 @@ public class L2SkillSummon extends L2Skill
 				if (activeChar.getCubics().size() > mastery) {
 					if (Config.DEBUG)
 						_log.fine("player can't summon any more cubics. ignore summon skill");
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CUBIC_SUMMONING_FAILED));
+					activeChar.sendPacket(SystemMessageId.CUBIC_SUMMONING_FAILED);
 					return;
 				}
 				activeChar.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _maxcount, _summonTotalLifeTime, false);

@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPutEnchantSupportItemResult;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * @author  KenM
@@ -58,7 +57,7 @@ public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
 				if (supportTemplate == null || !supportTemplate.isValid(item))
 				{
 					// message may be custom
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION));
+					activeChar.sendPacket(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION);
 					activeChar.setActiveEnchantSupportItem(null);
 					activeChar.sendPacket(new ExPutEnchantSupportItemResult(0));
 					return;

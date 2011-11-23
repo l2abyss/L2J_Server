@@ -225,7 +225,7 @@ public class MailManager
 					if (sender != null)
 					{
 						msg.getAttachments().returnToWh(sender.getWarehouse());
-						sender.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAIL_RETURNED));
+						sender.sendPacket(SystemMessageId.MAIL_RETURNED);
 					}
 					else
 						msg.getAttachments().returnToWh(null);

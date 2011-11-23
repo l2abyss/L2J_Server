@@ -569,7 +569,7 @@ public class L2Party
 			{
 				if (isLeader(player))
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_TRANSFER_RIGHTS_TO_YOURSELF));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_TRANSFER_RIGHTS_TO_YOURSELF);
 				}
 				else
 				{
@@ -601,7 +601,7 @@ public class L2Party
 			}
 			else
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CAN_TRANSFER_RIGHTS_ONLY_TO_ANOTHER_PARTY_MEMBER));
+				player.sendPacket(SystemMessageId.YOU_CAN_TRANSFER_RIGHTS_ONLY_TO_ANOTHER_PARTY_MEMBER);
 			}
 		}
 		

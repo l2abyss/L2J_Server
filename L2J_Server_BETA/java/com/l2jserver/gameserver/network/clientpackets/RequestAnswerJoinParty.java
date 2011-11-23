@@ -114,7 +114,7 @@ public final class RequestAnswerJoinParty extends L2GameClientPacket
 		}
 		else // 0
 		{
-			//requestor.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PLAYER_DECLINED)); FIXME: Done in client?
+			//requestor.sendPacket(SystemMessageId.PLAYER_DECLINED); FIXME: Done in client?
 			
 			//activate garbage collection if there are no other members in party (happens when we were creating new one)
 			if (requestor.isInParty() && requestor.getParty().getMemberCount() == 1)

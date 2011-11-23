@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExClosePartyRoom;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * @author Gnacik
@@ -67,7 +66,7 @@ public final class RequestWithdrawPartyRoom extends L2GameClientPacket
 			//_activeChar.setPartyMatching(0);
 			
 			_activeChar.sendPacket(new ExClosePartyRoom());
-			_activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PARTY_ROOM_EXITED));
+			_activeChar.sendPacket(SystemMessageId.PARTY_ROOM_EXITED);
 		}
 	}
 	

@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public class MoveToLocationAirShip extends L2GameClientPacket
 {
@@ -112,7 +111,7 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 				{
 					if (fuelConsumption > ship.getFuel())
 					{
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_AIRSHIP_CANNOT_TELEPORT));
+						activeChar.sendPacket(SystemMessageId.THE_AIRSHIP_CANNOT_TELEPORT);
 						return;
 					}
 					ship.setFuel(ship.getFuel() - fuelConsumption);

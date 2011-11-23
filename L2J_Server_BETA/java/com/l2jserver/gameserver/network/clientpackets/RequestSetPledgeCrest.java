@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Client packet for setting/deleting clan crest.
@@ -59,7 +58,7 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		
 		if (clan.getDissolvingExpiryTime() > System.currentTimeMillis())
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_SET_CREST_WHILE_DISSOLUTION_IN_PROGRESS));
+			activeChar.sendPacket(SystemMessageId.CANNOT_SET_CREST_WHILE_DISSOLUTION_IN_PROGRESS);
 			return;
 		}
 		
@@ -83,14 +82,14 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 					return;
 				
 				crestId = 0;
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED));
+				activeChar.sendPacket(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED);
 				updated = true;
 			}
 			else
 			{
 				if (clan.getLevel() < 3)
 				{
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST));
+					activeChar.sendPacket(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST);
 					return;
 				}
 				

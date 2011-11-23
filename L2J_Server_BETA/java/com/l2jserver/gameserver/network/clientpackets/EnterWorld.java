@@ -210,7 +210,7 @@ public class EnterWorld extends L2GameClientPacket
 			if (clanHall != null)
 			{
 				if (!clanHall.getPaid())
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PAYMENT_FOR_YOUR_CLAN_HALL_HAS_NOT_BEEN_MADE_PLEASE_MAKE_PAYMENT_TO_YOUR_CLAN_WAREHOUSE_BY_S1_TOMORROW));
+					activeChar.sendPacket(SystemMessageId.PAYMENT_FOR_YOUR_CLAN_HALL_HAS_NOT_BEEN_MADE_PLEASE_MAKE_PAYMENT_TO_YOUR_CLAN_WAREHOUSE_BY_S1_TOMORROW);
 			}
 			
 			for (Siege siege : SiegeManager.getInstance().getSieges())
@@ -387,7 +387,7 @@ public class EnterWorld extends L2GameClientPacket
 				obj.sendPacket(sm);
 		}
 		
-		sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WELCOME_TO_LINEAGE));
+		activeChar.sendPacket(SystemMessageId.WELCOME_TO_LINEAGE);
 		
 		activeChar.sendMessage(getText("VGhpcyBzZXJ2ZXIgdXNlcyBMMkosIGEgcHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==\n"));
 		activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IGwyanNlcnZlci5jb20=\n"));
@@ -456,7 +456,7 @@ public class EnterWorld extends L2GameClientPacket
 			DimensionalRiftManager.getInstance().teleportToWaitingRoom(activeChar);
 		
 		if (activeChar.getClanJoinExpiryTime() > System.currentTimeMillis())
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBERSHIP_TERMINATED));
+			activeChar.sendPacket(SystemMessageId.CLAN_MEMBERSHIP_TERMINATED);
 		
 		// remove combat flag before teleporting
 		if (activeChar.getInventory().getItemByItemId(9819) != null)
@@ -500,7 +500,7 @@ public class EnterWorld extends L2GameClientPacket
 		int birthday = activeChar.checkBirthDay();
 		if (birthday == 0)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_BIRTHDAY_GIFT_HAS_ARRIVED));
+			activeChar.sendPacket(SystemMessageId.YOUR_BIRTHDAY_GIFT_HAS_ARRIVED);
 			// activeChar.sendPacket(new ExBirthdayPopup()); Removed in H5?
 		}
 		else if (birthday != -1)

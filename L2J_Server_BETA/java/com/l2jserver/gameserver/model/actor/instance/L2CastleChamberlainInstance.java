@@ -297,7 +297,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 							}
 							else
 							{
-								sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+								sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 							}
 						}
 					}

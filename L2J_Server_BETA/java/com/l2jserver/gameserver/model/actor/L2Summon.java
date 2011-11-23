@@ -632,7 +632,7 @@ public abstract class L2Summon extends L2Playable
 		// Check the validity of the target
 		if (target == null)
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_CANT_FOUND));
+			sendPacket(SystemMessageId.TARGET_CANT_FOUND);
 			return false;
 		}
 		
@@ -641,7 +641,7 @@ public abstract class L2Summon extends L2Playable
 		// Check if this skill is enabled (e.g. reuse time)
 		if (isSkillDisabled(skill))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING));
+			sendPacket(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING);
 			return false;
 		}
 		
@@ -651,7 +651,7 @@ public abstract class L2Summon extends L2Playable
 		if (getCurrentMp() < getStat().getMpConsume(skill) + getStat().getMpInitialConsume(skill))
 		{
 			// Send a System Message to the caster
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+			sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 			return false;
 		}
 		
@@ -659,7 +659,7 @@ public abstract class L2Summon extends L2Playable
 		if (getCurrentHp() <= skill.getHpConsume())
 		{
 			// Send a System Message to the caster
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_HP));
+			sendPacket(SystemMessageId.NOT_ENOUGH_HP);
 			return false;
 		}
 		
@@ -671,7 +671,7 @@ public abstract class L2Summon extends L2Playable
 			if (isInsidePeaceZone(this, target) && getOwner() != null && (!getOwner().getAccessLevel().allowPeaceAttack()))
 			{
 				// If summon or target is in a peace zone, send a system message TARGET_IN_PEACEZONE
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
+				sendPacket(SystemMessageId.TARGET_IN_PEACEZONE);
 				return false;
 			}
 			
@@ -686,9 +686,9 @@ public abstract class L2Summon extends L2Playable
 			{
 				//
 				if (TerritoryWarManager.getInstance().isTWInProgress())
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
+					sendPacket(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY);
 				else
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+					sendPacket(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return false;
 			}
@@ -753,9 +753,9 @@ public abstract class L2Summon extends L2Playable
 		{
 			if (pcrit || mcrit)
 				if (this instanceof L2SummonInstance)
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB));
+					sendPacket(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB);
 				else
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_PET));
+					sendPacket(SystemMessageId.CRITICAL_HIT_BY_PET);
 			
 			if (getOwner().isInOlympiadMode() && target instanceof L2PcInstance && ((L2PcInstance) target).isInOlympiadMode() && ((L2PcInstance) target).getOlympiadGameId() == getOwner().getOlympiadGameId())
 			{
@@ -800,7 +800,7 @@ public abstract class L2Summon extends L2Playable
 		if (!actingPlayer.checkPvpSkill(getTarget(), skill, true) && !actingPlayer.getAccessLevel().allowPeaceAttack())
 		{
 			// Send a System Message to the L2PcInstance
-			actingPlayer.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+			actingPlayer.sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 			
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			actingPlayer.sendPacket(ActionFailed.STATIC_PACKET);

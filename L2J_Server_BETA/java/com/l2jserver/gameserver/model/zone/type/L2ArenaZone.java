@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * An arena
@@ -42,7 +41,7 @@ public class L2ArenaZone extends L2ZoneType
 		if (character instanceof L2PcInstance)
 		{
 			if (!character.isInsideZone(L2Character.ZONE_PVP))
-				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
 		}
 	}
 	
@@ -55,7 +54,7 @@ public class L2ArenaZone extends L2ZoneType
 		if (character instanceof L2PcInstance)
 		{
 			if (!character.isInsideZone(L2Character.ZONE_PVP))
-				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 		}
 	}
 	

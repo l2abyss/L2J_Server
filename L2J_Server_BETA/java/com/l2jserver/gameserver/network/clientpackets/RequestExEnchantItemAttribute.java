@@ -50,7 +50,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		{
 			// Player canceled enchant
 			player.setActiveEnchantAttrItem(null);
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_CANCELED));
+			player.sendPacket(SystemMessageId.ELEMENTAL_ENHANCE_CANCELED);
 			return;
 		}
 		
@@ -62,7 +62,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		
 		if (player.getPrivateStoreType() != 0)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_ADD_ELEMENTAL_POWER_WHILE_OPERATING_PRIVATE_STORE_OR_WORKSHOP));
+			player.sendPacket(SystemMessageId.CANNOT_ADD_ELEMENTAL_POWER_WHILE_OPERATING_PRIVATE_STORE_OR_WORKSHOP);
 			player.setActiveEnchantAttrItem(null);
 			return;
 		}
@@ -87,7 +87,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		
 		if (!item.isElementable())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_REQUIREMENT_NOT_SUFFICIENT));
+			player.sendPacket(SystemMessageId.ELEMENTAL_ENHANCE_REQUIREMENT_NOT_SUFFICIENT);
 			player.setActiveEnchantAttrItem(null);
 			return;
 		}
@@ -127,7 +127,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		if ((item.isWeapon() && oldElement != null && oldElement.getElement() != elementToAdd && oldElement.getElement() != -2)
 				|| (item.isArmor() && item.getElemental(elementToAdd) == null && item.getElementals() != null && item.getElementals().length >= 3))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ANOTHER_ELEMENTAL_POWER_ALREADY_ADDED));
+			player.sendPacket(SystemMessageId.ANOTHER_ELEMENTAL_POWER_ALREADY_ADDED);
 			player.setActiveEnchantAttrItem(null);
 			return;
 		}
@@ -155,14 +155,14 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 		
 		if (powerToAdd <= 0)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_ENHANCE_CANCELED));
+			player.sendPacket(SystemMessageId.ELEMENTAL_ENHANCE_CANCELED);
 			player.setActiveEnchantAttrItem(null);
 			return;
 		}
 		
 		if(!player.destroyItem("AttrEnchant", stone, 1, player, true))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+			player.sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
 			Util.handleIllegalPlayerAction(player, "Player "+player.getName()+" tried to attribute enchant with a stone he doesn't have", Config.DEFAULT_PUNISH);
 			player.setActiveEnchantAttrItem(null);
 			return;
@@ -223,7 +223,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			player.sendPacket(iu);
 		}
 		else
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_ADDING_ELEMENTAL_POWER));
+			player.sendPacket(SystemMessageId.FAILED_ADDING_ELEMENTAL_POWER);
 		
 		player.sendPacket(new ExAttributeEnchantResult(powerToAdd));
 		player.sendPacket(new UserInfo(player));

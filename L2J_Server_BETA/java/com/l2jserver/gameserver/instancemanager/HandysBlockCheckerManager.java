@@ -170,7 +170,7 @@ public final class HandysBlockCheckerManager
 				
 			if(player.isCursedWeaponEquipped())
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_REGISTER_PROCESSING_CURSED_WEAPON));
+				player.sendPacket(SystemMessageId.CANNOT_REGISTER_PROCESSING_CURSED_WEAPON);
 				return false;
 			}
 			
@@ -183,24 +183,24 @@ public final class HandysBlockCheckerManager
 			if(OlympiadManager.getInstance().isRegistered(player))
 			{
 				OlympiadManager.getInstance().unRegisterNoble(player);
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE);
 			}				
 			/*
 			if(UnderGroundColiseum.getInstance().isRegisteredPlayer(player))
 			{
 				UngerGroundColiseum.getInstance().removeParticipant(player);
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
 			}
 			if(KrateiCubeManager.getInstance().isRegisteredPlayer(player))
 			{
 				KrateiCubeManager.getInstance().removeParticipant(player);
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
 			}
 			*/
 			
 			if(_registrationPenalty.contains(player.getObjectId()))
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_REQUEST_REGISTRATION_10_SECS_AFTER));
+				player.sendPacket(SystemMessageId.CANNOT_REQUEST_REGISTRATION_10_SECS_AFTER);
 				return false;
 			}
 			

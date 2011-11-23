@@ -1844,7 +1844,7 @@ public final class L2ItemInstance extends L2Object
 			{
 				player.getWarehouse().destroyItem("L2ItemInstance", this, player, null);
 			}
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TIME_LIMITED_ITEM_DELETED));
+			player.sendPacket(SystemMessageId.TIME_LIMITED_ITEM_DELETED);
 			// delete from world
 			L2World.getInstance().removeObject(this);
 		}

@@ -39,7 +39,6 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShow
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
@@ -177,7 +176,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				if (Config.ENABLE_COMMUNITY_BOARD)
 				{
 					if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), _command)))
-						activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
+						activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
 				}
 				else
 					CommunityBoard.getInstance().handleCommands(getClient(), _command);
@@ -195,12 +194,12 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			else if (_command.startsWith("_mail"))
 			{
 				if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), "_bbsmail")))
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
+					activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
 			}
 			else if (_command.startsWith("_friend"))
 			{
 				if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), "_bbsfriend")))
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
+					activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
 			}
 			else if (_command.startsWith("Quest "))
 			{

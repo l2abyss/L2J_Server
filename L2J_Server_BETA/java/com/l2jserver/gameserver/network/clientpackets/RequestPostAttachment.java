@@ -70,25 +70,25 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		
 		if (!activeChar.isInsideZone(ZONE_PEACE))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_RECEIVE_NOT_IN_PEACE_ZONE));
+			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_NOT_IN_PEACE_ZONE);
 			return;
 		}
 		
 		if (activeChar.getActiveTradeList() != null)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_RECEIVE_DURING_EXCHANGE));
+			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_DURING_EXCHANGE);
 			return;
 		}
 		
 		if (activeChar.isEnchanting())
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_RECEIVE_DURING_ENCHANT));
+			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_DURING_ENCHANT);
 			return;
 		}
 		
 		if (activeChar.getPrivateStoreType() > 0)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_RECEIVE_PRIVATE_STORE));
+			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_PRIVATE_STORE);
 			return;
 		}
 		
@@ -150,21 +150,21 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		// Item Max Limit Check
 		if (!activeChar.getInventory().validateCapacity(slots))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_RECEIVE_INVENTORY_FULL));
+			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_INVENTORY_FULL);
 			return;
 		}
 		
 		// Weight limit Check
 		if (!activeChar.getInventory().validateWeight(weight))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_RECEIVE_INVENTORY_FULL));
+			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_INVENTORY_FULL);
 			return;
 		}
 		
 		long adena = msg.getReqAdena();
 		if (adena > 0 && !activeChar.reduceAdena("PayMail", adena, null, true))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_RECEIVE_NO_ADENA));
+			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_NO_ADENA);
 			return;
 		}
 		
@@ -242,7 +242,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		}
 		
 		activeChar.sendPacket(new ExChangePostState(true, _msgId, Message.READED));
-		activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAIL_SUCCESSFULLY_RECEIVED));
+		activeChar.sendPacket(SystemMessageId.MAIL_SUCCESSFULLY_RECEIVED);
 	}
 	
 	@Override

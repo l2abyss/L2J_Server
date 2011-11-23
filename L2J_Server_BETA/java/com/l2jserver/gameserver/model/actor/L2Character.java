@@ -872,7 +872,7 @@ public abstract class L2Character extends L2Object
 						// Cancel the action because the L2PcInstance have no arrow
 						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 						sendPacket(ActionFailed.STATIC_PACKET);
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ARROWS));
+						sendPacket(SystemMessageId.NOT_ENOUGH_ARROWS);
 						return;
 					}
 					
@@ -888,7 +888,7 @@ public abstract class L2Character extends L2Object
 						{
 							// If L2PcInstance doesn't have enough MP, stop the attack
 							ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_READY_TO_ACT), 1000);
-							sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+							sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 							sendPacket(ActionFailed.STATIC_PACKET);
 							return;
 						}
@@ -929,7 +929,7 @@ public abstract class L2Character extends L2Object
 						// Cancel the action because the L2PcInstance have no arrow
 						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 						sendPacket(ActionFailed.STATIC_PACKET);
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_BOLTS));
+						sendPacket(SystemMessageId.NOT_ENOUGH_BOLTS);
 						return;
 					}
 					
@@ -1144,7 +1144,7 @@ public abstract class L2Character extends L2Object
 		if (this instanceof L2PcInstance)
 		{
 			// Send a system message
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.GETTING_READY_TO_SHOOT_AN_ARROW));
+			sendPacket(SystemMessageId.GETTING_READY_TO_SHOOT_AN_ARROW);
 			
 			// Send a Server->Client packet SetupGauge
 			SetupGauge sg = new SetupGauge(SetupGauge.RED, sAtk + reuse);
@@ -1217,7 +1217,7 @@ public abstract class L2Character extends L2Object
 		if (this instanceof L2PcInstance)
 		{
 			// Send a system message
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CROSSBOW_PREPARING_TO_FIRE));
+			sendPacket(SystemMessageId.CROSSBOW_PREPARING_TO_FIRE);
 			
 			// Send a Server->Client packet SetupGauge
 			SetupGauge sg = new SetupGauge(SetupGauge.RED, sAtk + reuse);
@@ -1725,8 +1725,8 @@ public abstract class L2Character extends L2Object
 		{
 			if (isResurrectionBlocked() || target.isResurrectionBlocked())
 			{
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.REJECT_RESURRECTION)); // Reject resurrection
-				target.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.REJECT_RESURRECTION)); // Reject resurrection
+				sendPacket(SystemMessageId.REJECT_RESURRECTION); // Reject resurrection
+				target.sendPacket(SystemMessageId.REJECT_RESURRECTION); // Reject resurrection
 				
 				if (simultaneously)
 					setIsCastingSimultaneouslyNow(false);
@@ -1890,9 +1890,7 @@ public abstract class L2Character extends L2Object
 				
 				if (getActingPlayer() != null)
 				{
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SKILL_READY_TO_USE_AGAIN);
-					getActingPlayer().sendPacket(sm);
-					sm = null;
+					getActingPlayer().sendPacket(SystemMessageId.SKILL_READY_TO_USE_AGAIN);
 				}
 			}
 			
@@ -1911,7 +1909,7 @@ public abstract class L2Character extends L2Object
 			{
 				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, true))
 				{
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+					sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
 					if (simultaneously)
 						setIsCastingSimultaneouslyNow(false);
 					else
@@ -1963,7 +1961,7 @@ public abstract class L2Character extends L2Object
 			{
 				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, true))
 				{
-					getActingPlayer().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+					getActingPlayer().sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
 					abortCast();
 					return;
 				}
@@ -2061,7 +2059,7 @@ public abstract class L2Character extends L2Object
 		if (getCurrentMp() < getStat().getMpConsume(skill) + getStat().getMpInitialConsume(skill))
 		{
 			// Send a System Message to the caster
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+			sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 			
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -2072,7 +2070,7 @@ public abstract class L2Character extends L2Object
 		if (getCurrentHp() <= skill.getHpConsume())
 		{
 			// Send a System Message to the caster
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_HP));
+			sendPacket(SystemMessageId.NOT_ENOUGH_HP);
 			
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -2186,7 +2184,7 @@ public abstract class L2Character extends L2Object
 				else
 				{
 					// Send a System Message to the caster
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL));
+					sendPacket(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
 				}
 				return false;
 			}
@@ -5456,10 +5454,10 @@ public abstract class L2Character extends L2Object
 				   if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
 				   {
 				             damage = 1;
-				             enemy.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS)); //SHIELD_DEFENCE faultless
+				             enemy.sendPacket(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS); //SHIELD_DEFENCE faultless
 				   }
 				    else
-				      enemy.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL));
+				      enemy.sendPacket(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL);
 				}*/
 			}
 			
@@ -5634,7 +5632,7 @@ public abstract class L2Character extends L2Object
 				sendPacket(ActionFailed.STATIC_PACKET);
 				
 				// Send a system message
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ATTACK_FAILED));
+				sendPacket(SystemMessageId.ATTACK_FAILED);
 			}
 		}
 	}
@@ -5653,7 +5651,7 @@ public abstract class L2Character extends L2Object
 			if (this instanceof L2PcInstance)
 			{
 				// Send a system message
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CASTING_INTERRUPTED));
+				sendPacket(SystemMessageId.CASTING_INTERRUPTED);
 			}
 		}
 	}
@@ -5688,7 +5686,7 @@ public abstract class L2Character extends L2Object
 		if (isInsidePeaceZone(player))
 		{
 			// If L2Character or target is in a peace zone, send a system message TARGET_IN_PEACEZONE a Server->Client packet ActionFailed
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
+			player.sendPacket(SystemMessageId.TARGET_IN_PEACEZONE);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -5722,7 +5720,7 @@ public abstract class L2Character extends L2Object
 		// GeoData Los Check or dz > 1000
 		if (!GeoData.getInstance().canSeeTarget(player, this))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_SEE_TARGET));
+			player.sendPacket(SystemMessageId.CANT_SEE_TARGET);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -6279,11 +6277,11 @@ public abstract class L2Character extends L2Object
 				if (this instanceof L2PcInstance)
 				{
 					if (_skiprange > 0)
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED));
+						sendPacket(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
 					else if (_skipgeo > 0)
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_SEE_TARGET));
+						sendPacket(SystemMessageId.CANT_SEE_TARGET);
 					else if (_skippeace > 0)
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.A_MALICIOUS_SKILL_CANNOT_BE_USED_IN_PEACE_ZONE));
+						sendPacket(SystemMessageId.A_MALICIOUS_SKILL_CANNOT_BE_USED_IN_PEACE_ZONE);
 				}
 				abortCast();
 				return;
@@ -6402,7 +6400,7 @@ public abstract class L2Character extends L2Object
 			{
 				if (mpConsume > getCurrentMp())
 				{
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+					sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 					abortCast();
 					return;
 				}

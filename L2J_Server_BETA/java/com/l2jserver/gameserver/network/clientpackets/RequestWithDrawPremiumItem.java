@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.model.L2PremiumItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExGetPremiumItemList;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -62,12 +61,12 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		}
 		else if (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder80(false))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_RECEIVE_THE_VITAMIN_ITEM));
+			activeChar.sendPacket(SystemMessageId.YOU_CANNOT_RECEIVE_THE_VITAMIN_ITEM);
 			return;
 		}
 		else if (activeChar.isProcessingTransaction())
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_RECEIVE_A_VITAMIN_ITEM_DURING_AN_EXCHANGE));
+			activeChar.sendPacket(SystemMessageId.YOU_CANNOT_RECEIVE_A_VITAMIN_ITEM_DURING_AN_EXCHANGE);
 			return;
 		}
 		
@@ -93,7 +92,7 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		}
 		
 		if (activeChar.getPremiumItemList().isEmpty())
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THERE_ARE_NO_MORE_VITAMIN_ITEMS_TO_BE_FOUND));
+			activeChar.sendPacket(SystemMessageId.THERE_ARE_NO_MORE_VITAMIN_ITEMS_TO_BE_FOUND);
 		else
 			activeChar.sendPacket(new ExGetPremiumItemList(activeChar));
 	}

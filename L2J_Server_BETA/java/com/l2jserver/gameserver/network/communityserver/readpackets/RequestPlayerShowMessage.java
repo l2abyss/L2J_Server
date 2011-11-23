@@ -55,22 +55,22 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				player.sendMessage(super.readS());
 				break;
 			case 236:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED));
+				player.sendPacket(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED);
 				break;
 			case 1050:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_CB_IN_MY_CLAN));
+				player.sendPacket(SystemMessageId.NO_CB_IN_MY_CLAN);
 				break;
 			case 1070:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_READ_PERMISSION));
+				player.sendPacket(SystemMessageId.NO_READ_PERMISSION);
 				break;
 			case 1071:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_WRITE_PERMISSION));
+				player.sendPacket(SystemMessageId.NO_WRITE_PERMISSION);
 				break;
 			case 1205:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAILBOX_FULL));
+				player.sendPacket(SystemMessageId.MAILBOX_FULL);
 				break;
 			case 1206:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MEMOBOX_FULL));
+				player.sendPacket(SystemMessageId.MEMOBOX_FULL);
 				break;
 			case 1227:
 				try
@@ -99,25 +99,25 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				}
 				break;
 			case 1229:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_MORE_MESSAGES_TODAY));
+				player.sendPacket(SystemMessageId.NO_MORE_MESSAGES_TODAY);
 				break;
 			case 1230:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_FIVE_RECIPIENTS));
+				player.sendPacket(SystemMessageId.ONLY_FIVE_RECIPIENTS);
 				break;
 			case 1231:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SENT_MAIL));
+				player.sendPacket(SystemMessageId.SENT_MAIL);
 				break;
 			case 1232:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MESSAGE_NOT_SENT));
+				player.sendPacket(SystemMessageId.MESSAGE_NOT_SENT);
 				break;
 			case 1233:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NEW_MAIL));
+				player.sendPacket(SystemMessageId.NEW_MAIL);
 				break;
 			case 1234:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAIL_STORED_IN_MAILBOX));
+				player.sendPacket(SystemMessageId.MAIL_STORED_IN_MAILBOX);
 				break;
 			case 1238:
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TEMP_MAILBOX_FULL));
+				player.sendPacket(SystemMessageId.TEMP_MAILBOX_FULL);
 				break;
 			case 1370:
 				try

@@ -64,7 +64,7 @@ public final class RequestExOustFromMPCC extends L2GameClientPacket
 		}
 		else
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_CANT_FOUND));
+			activeChar.sendPacket(SystemMessageId.TARGET_CANT_FOUND);
 		}
 	}
 	

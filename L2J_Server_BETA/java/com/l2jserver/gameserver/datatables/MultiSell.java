@@ -152,24 +152,24 @@ public class MultiSell
 			case CLAN_REPUTATION:
 				if (player.getClan() == null)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER));
+					player.sendPacket(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER);
 					break;
 				}
 				if (!player.isClanLeader())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED));
+					player.sendPacket(SystemMessageId.ONLY_THE_CLAN_LEADER_IS_ENABLED);
 					break;
 				}
 				if (player.getClan().getReputationScore() < amount)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW));
+					player.sendPacket(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW);
 					break;
 				}
 				return true;
 			case FAME:
 				if (player.getFame() < amount)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_FAME_POINTS));
+					player.sendPacket(SystemMessageId.NOT_ENOUGH_FAME_POINTS);
 					break;
 				}
 				return true;

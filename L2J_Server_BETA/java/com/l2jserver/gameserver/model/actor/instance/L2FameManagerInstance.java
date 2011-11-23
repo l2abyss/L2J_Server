@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
@@ -75,7 +74,7 @@ public class L2FameManagerInstance extends L2Npc
 					player.sendPacket(new UserInfo(player));
 					player.sendPacket(new ExBrExtraUserInfo(player));
 					player.getClan().addReputationScore(50, true);
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_50_CLAN_FAME_POINTS));
+					player.sendPacket(SystemMessageId.ACQUIRED_50_CLAN_FAME_POINTS);
 					html.setFile(player.getHtmlPrefix(), "data/html/famemanager/"+getNpcId()+"-5.htm");
 				}
 				else

@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPartyRoomMember;
 import com.l2jserver.gameserver.network.serverpackets.PartyMatchDetail;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * author: Gnacik
@@ -77,7 +76,7 @@ public class RequestPartyMatchList extends L2GameClientPacket
 						continue;
 					
 					_member.sendPacket(new PartyMatchDetail(_activeChar, _room));
-					_member.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PARTY_ROOM_REVISED));
+					_member.sendPacket(SystemMessageId.PARTY_ROOM_REVISED);
 				}
 			}
 		}
@@ -111,7 +110,7 @@ public class RequestPartyMatchList extends L2GameClientPacket
 			_activeChar.sendPacket(new PartyMatchDetail(_activeChar, _room));
 			_activeChar.sendPacket(new ExPartyRoomMember(_activeChar, _room, 1));
 			
-			_activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PARTY_ROOM_CREATED));
+			_activeChar.sendPacket(SystemMessageId.PARTY_ROOM_CREATED);
 			
 			_activeChar.setPartyRoom(_maxid);
 			//_activeChar.setPartyMatching(1);

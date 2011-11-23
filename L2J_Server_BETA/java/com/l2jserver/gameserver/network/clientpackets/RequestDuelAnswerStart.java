@@ -63,7 +63,7 @@ public final class RequestDuelAnswerStart extends L2GameClientPacket
 			}
 			else if (player.isInDuel())
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_UNABLE_TO_REQUEST_A_DUEL_AT_THIS_TIME));
+				player.sendPacket(SystemMessageId.YOU_ARE_UNABLE_TO_REQUEST_A_DUEL_AT_THIS_TIME);
 				return;
 			}
 			

@@ -141,7 +141,7 @@ public class PcStatus extends PlayableStatus
 				mpDam = (int) (value - mpDam);
 				if (mpDam > getActiveChar().getCurrentMp())
 				{
-					getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING));
+					getActiveChar().sendPacket(SystemMessageId.MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING);
 					getActiveChar().getFirstEffect(1556).stopEffectTask();
 					value = mpDam - getActiveChar().getCurrentMp();
 					getActiveChar().setCurrentMp(0);

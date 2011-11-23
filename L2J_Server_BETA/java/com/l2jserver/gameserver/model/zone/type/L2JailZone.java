@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * A jail zone
@@ -44,7 +43,7 @@ public class L2JailZone extends L2ZoneType
 			if (Config.JAIL_IS_PVP)
 			{
 				character.setInsideZone(L2Character.ZONE_PVP, true);
-				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
 			}
 			if (Config.JAIL_DISABLE_TRANSACTION)
 				character.setInsideZone(L2Character.ZONE_NOSTORE, true);
@@ -61,7 +60,7 @@ public class L2JailZone extends L2ZoneType
 			if (Config.JAIL_IS_PVP)
 			{
 				character.setInsideZone(L2Character.ZONE_PVP, false);
-				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 			}
 			if (((L2PcInstance) character).isInJail())
 			{
