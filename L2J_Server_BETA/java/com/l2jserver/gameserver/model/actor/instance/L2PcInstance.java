@@ -728,7 +728,7 @@ public final class L2PcInstance extends L2Playable
 	
 	protected boolean _inventoryDisable = false;
 	
-	protected L2TIntObjectHashMap<L2CubicInstance> _cubics = new L2TIntObjectHashMap<L2CubicInstance>();
+	private L2TIntObjectHashMap<L2CubicInstance> _cubics = new L2TIntObjectHashMap<>();
 	
 	/** Active shots. */
 	protected FastSet<Integer> _activeSoulShots = new FastSet<Integer>().shared();
@@ -5590,7 +5590,7 @@ public final class L2PcInstance extends L2Playable
 		// Unsummon Cubics
 		if (!_cubics.isEmpty())
 		{
-			for (L2CubicInstance cubic : _cubics.valueCollection())
+			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[0]))
 			{
 				cubic.stopAction();
 				cubic.cancelDisappear();
@@ -9646,7 +9646,7 @@ public final class L2PcInstance extends L2Playable
 		if (getCubics() != null)
 		{
 			boolean removed = false;
-			for (L2CubicInstance cubic : _cubics.valueCollection())
+			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[0]))
 			{
 				cubic.stopAction();
 				delCubic(cubic.getId());
@@ -9662,7 +9662,7 @@ public final class L2PcInstance extends L2Playable
 		if (getCubics() != null)
 		{
 			boolean removed = false;
-			for (L2CubicInstance cubic : _cubics.valueCollection())
+			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[0]))
 			{
 				if (cubic.givenByOther())
 				{
@@ -10150,7 +10150,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (!getCubics().isEmpty())
 		{
-			for (L2CubicInstance cubic : _cubics.valueCollection())
+			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[0]))
 			{
 				cubic.stopAction();
 				cubic.cancelDisappear();

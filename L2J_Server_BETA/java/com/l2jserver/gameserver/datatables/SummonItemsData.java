@@ -111,7 +111,7 @@ public class SummonItemsData
 		int size = _summonitems.size();
 		int[] result = new int[size];
 		int i = 0;
-		for (L2SummonItem si : _summonitems.valueCollection())
+		for (L2SummonItem si : _summonitems.values(new L2SummonItem[0]))
 		{
 			result[i++] = si.getItemId();
 		}

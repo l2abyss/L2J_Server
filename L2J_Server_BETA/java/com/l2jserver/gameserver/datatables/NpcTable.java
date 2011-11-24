@@ -316,7 +316,7 @@ public class NpcTable
 	 */
 	public L2NpcTemplate getTemplateByName(String name)
 	{
-		for (L2NpcTemplate npcTemplate : _npcs.valueCollection())
+		for (L2NpcTemplate npcTemplate : _npcs.values(new L2NpcTemplate[0]))
 		{
 			if (npcTemplate.getName().equalsIgnoreCase(name))
 			{
@@ -335,7 +335,7 @@ public class NpcTable
 		final List<L2NpcTemplate> list = new FastList<>();
 		for (int lvl : lvls)
 		{
-			for (L2NpcTemplate t : _npcs.valueCollection())
+			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
 			{
 				if (t.getLevel() == lvl)
 				{
@@ -355,7 +355,7 @@ public class NpcTable
 		final List<L2NpcTemplate> list = new FastList<>();
 		for (int lvl : lvls)
 		{
-			for (L2NpcTemplate t : _npcs.valueCollection())
+			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
 			{
 				if ((t.getLevel() == lvl) && t.isType("L2Monster"))
 				{
@@ -375,7 +375,7 @@ public class NpcTable
 		final List<L2NpcTemplate> list = new FastList<>();
 		for (String letter : letters)
 		{
-			for (L2NpcTemplate t : _npcs.valueCollection())
+			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
 			{
 				if (t.getName().startsWith(letter) && t.isType("L2Npc"))
 				{
@@ -395,7 +395,7 @@ public class NpcTable
 		final List<L2NpcTemplate> list = new FastList<>();
 		for (String classType : classTypes)
 		{
-			for (L2NpcTemplate t : _npcs.valueCollection())
+			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
 			{
 				if (t.isType(classType))
 				{
