@@ -1003,6 +1003,7 @@ public final class Config
 	}
 	public static ObjectMapType MAP_TYPE;
 	public static ObjectSetType SET_TYPE;
+	public static double ENCHANT_CHANCE;
 	public static double ENCHANT_CHANCE_ELEMENT_STONE;
 	public static double ENCHANT_CHANCE_ELEMENT_CRYSTAL;
 	public static double ENCHANT_CHANCE_ELEMENT_JEWEL;
@@ -1631,6 +1632,7 @@ public final class Config
 					WAREHOUSE_SLOTS_CLAN = Integer.parseInt(Character.getProperty("MaximumWarehouseSlotsForClan", "150"));
 					ALT_FREIGHT_SLOTS = Integer.parseInt(Character.getProperty("MaximumFreightSlots", "200"));
 					ALT_FREIGHT_PRIECE = Integer.parseInt(Character.getProperty("FreightPriece", "1000"));
+					ENCHANT_CHANCE = Double.parseDouble(Character.getProperty("EnchantChance", "66.66"));
 					ENCHANT_CHANCE_ELEMENT_STONE = Double.parseDouble(Character.getProperty("EnchantChanceElementStone", "50"));
 					ENCHANT_CHANCE_ELEMENT_CRYSTAL = Double.parseDouble(Character.getProperty("EnchantChanceElementCrystal", "30"));
 					ENCHANT_CHANCE_ELEMENT_JEWEL = Double.parseDouble(Character.getProperty("EnchantChanceElementJewel", "20"));

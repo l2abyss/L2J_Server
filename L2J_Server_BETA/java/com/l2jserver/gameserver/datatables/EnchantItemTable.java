@@ -88,7 +88,7 @@ public class EnchantItemTable
 						boolean isSafe = false;
 						int type = L2Item.CRYSTAL_NONE;
 						int maxEnchant = 0;
-						double chance = 66.66;
+						double chance = Config.ENCHANT_CHANCE;
 						int[] items = null;
 						
 						NamedNodeMap attrs = n.getAttributes();
