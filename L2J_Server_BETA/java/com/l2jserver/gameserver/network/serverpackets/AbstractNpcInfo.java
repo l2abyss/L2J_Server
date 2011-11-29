@@ -82,7 +82,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	 */
 	public static class NpcInfo extends AbstractNpcInfo
 	{
-		private L2Npc _npc;
+		private final L2Npc _npc;
 		private int _clanCrest = 0;
 		private int _allyCrest = 0;
 		private int _allyId = 0;
@@ -192,8 +192,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_npc.isFlying() ? 1 : 0); // C6
 			writeD(0x00);
 			writeD(_npc.getColorEffect());// CT1.5 Pet form and skills, Color effect
-			writeC(_npc.isHideName() ? 0x00 : 0x01);
-			writeC(_npc.isHideName() ? 0x00 : 0x01);
+			writeC(_npc.isShowName() ? 0x01 : 0x00);
+			writeC(_npc.isTargetable() ? 0x01 : 0x00);
 			writeD(_npc.getSpecialEffect());
 			writeD(_displayEffect);
 		}
@@ -201,7 +201,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	
 	public static class TrapInfo extends AbstractNpcInfo
 	{
-		private L2Trap _trap;
+		private final L2Trap _trap;
 		
 		public TrapInfo(L2Trap cha, L2Character attacker)
 		{
@@ -290,7 +290,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	 */
 	public static class SummonInfo extends AbstractNpcInfo
 	{
-		private L2Summon _summon;
+		private final L2Summon _summon;
 		private int _form = 0;
 		private int _val = 0;
 		

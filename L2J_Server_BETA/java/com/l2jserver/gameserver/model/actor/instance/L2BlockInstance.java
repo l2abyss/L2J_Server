@@ -43,7 +43,6 @@ public class L2BlockInstance extends L2MonsterInstance
 	public L2BlockInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
-		this.setHideName(true);
 	}
 	
 	/**

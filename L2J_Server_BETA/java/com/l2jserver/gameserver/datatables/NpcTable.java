@@ -105,14 +105,11 @@ public class NpcTable
 		npcDat.set("rewardSp", NpcData.getInt("sp"));
 		npcDat.set("basePAtkSpd", NpcData.getInt("atkspd"));
 		npcDat.set("baseMAtkSpd", NpcData.getInt("matkspd"));
-		npcDat.set("aggroRange", NpcData.getInt("aggro"));
 		npcDat.set("rhand", NpcData.getInt("rhand"));
 		npcDat.set("lhand", NpcData.getInt("lhand"));
 		npcDat.set("enchant", NpcData.getInt("enchant"));
 		npcDat.set("baseWalkSpd", NpcData.getInt("walkspd"));
 		npcDat.set("baseRunSpd", NpcData.getInt("runspd"));
-		npcDat.set("targetable", NpcData.getBoolean("targetable"));
-		npcDat.set("show_name", NpcData.getBoolean("show_name"));
 		
 		// constants, until we have stats in DB
 		npcDat.safeSet("baseSTR", NpcData.getInt("str"), 0, BaseStats.MAX_STAT_VALUE, "Loading npc template id: " + NpcData.getInt("idTemplate"));
@@ -884,6 +881,9 @@ public class NpcTable
 				npcAIDat.setEnemyRange(rset.getInt("enemyRange"));
 				npcAIDat.setDodge(rset.getInt("dodge"));
 				npcAIDat.setAi(rset.getString("aiType"));
+				npcAIDat.setAggro(rset.getInt("aggro"));
+				npcAIDat.setShowName(rset.getBoolean("showName"));
+				npcAIDat.setTargetable(rset.getBoolean("targetable"));
 				
 				npcDat.setAIData(npcAIDat);
 				cont++;

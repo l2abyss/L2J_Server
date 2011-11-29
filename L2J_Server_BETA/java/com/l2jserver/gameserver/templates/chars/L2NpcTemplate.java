@@ -53,7 +53,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 	private final byte _level;
 	private final int _rewardExp;
 	private final int _rewardSp;
-	private final int _aggroRange;
 	private final int _rHand;
 	private final int _lHand;
 	private final int _enchantEffect;
@@ -215,7 +214,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_level = set.getByte("level");
 		_rewardExp = set.getInteger("rewardExp");
 		_rewardSp = set.getInteger("rewardSp");
-		_aggroRange = set.getInteger("aggroRange");
 		_rHand = set.getInteger("rhand");
 		_lHand = set.getInteger("lhand");
 		_enchantEffect = set.getInteger("enchant");
@@ -571,14 +569,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 			_categories.removeFirst();
 		}
 		_categories.clear();
-	}
-	
-	/**
-	 * @return the aggro range value.
-	 */
-	public int getAggroRange()
-	{
-		return _aggroRange;
 	}
 	
 	public L2NpcAIData getAIDataStatic()

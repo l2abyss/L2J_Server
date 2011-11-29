@@ -47,6 +47,9 @@ public class L2NpcAIData
 	private int _shortRangeChance;
 	private int _switchRangeChance;
 	private AIType _aiType = AIType.FIGHTER;
+	private int _aggroRange;
+	private boolean _showName;
+	private boolean _targetable;
 	
 	public void setPrimarySkillId(int primarySkillId)
 	{
@@ -177,6 +180,21 @@ public class L2NpcAIData
 		}
 	}
 	
+	public void setAggro(int val)
+	{
+		_aggroRange = val;
+	}
+	
+	public void setTargetable(boolean val)
+	{
+		_targetable = val;
+	}
+	
+	public void setShowName(boolean val)
+	{
+		_showName = val;
+	}
+	
 	public int getPrimarySkillId()
 	{
 		return _primarySkillId;
@@ -275,5 +293,26 @@ public class L2NpcAIData
 	public AIType getAiType()
 	{
 		return _aiType;
+	}
+	
+	public int getAggroRange()
+	{
+		return _aggroRange;
+	}
+	
+	/**
+	 * @return {@code true} if the NPC name should shows above NPC, {@code false} otherwise.
+	 */
+	public boolean showName()
+	{
+		return _showName;
+	}
+	
+	/**
+	 * @return {@code true} if the NPC can be targeted, {@code false} otherwise.
+	 */
+	public boolean isTargetable()
+	{
+		return _targetable;
 	}
 }
