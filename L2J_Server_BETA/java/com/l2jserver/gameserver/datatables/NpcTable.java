@@ -865,7 +865,10 @@ public class NpcTable
 				npcAIDat.setPrimarySkillId(rset.getInt("primarySkillId"));
 				npcAIDat.setMinSkillChance(rset.getInt("minSkillChance"));
 				npcAIDat.setMaxSkillChance(rset.getInt("maxSkillChance"));
+				npcAIDat.setAggro(rset.getInt("aggro"));
 				npcAIDat.setCanMove(rset.getInt("canMove"));
+				npcAIDat.setShowName(rset.getBoolean("showName"));
+				npcAIDat.setTargetable(rset.getBoolean("targetable"));
 				npcAIDat.setSoulShot(rset.getInt("soulshot"));
 				npcAIDat.setSpiritShot(rset.getInt("spiritshot"));
 				npcAIDat.setSoulShotChance(rset.getInt("ssChance"));
@@ -881,9 +884,6 @@ public class NpcTable
 				npcAIDat.setEnemyRange(rset.getInt("enemyRange"));
 				npcAIDat.setDodge(rset.getInt("dodge"));
 				npcAIDat.setAi(rset.getString("aiType"));
-				npcAIDat.setAggro(rset.getInt("aggro"));
-				npcAIDat.setShowName(rset.getBoolean("showName"));
-				npcAIDat.setTargetable(rset.getBoolean("targetable"));
 				
 				npcDat.setAIData(npcAIDat);
 				cont++;
@@ -920,7 +920,10 @@ public class NpcTable
 					npcAIDat.setPrimarySkillId(rset.getInt("primarySkillId"));
 					npcAIDat.setMinSkillChance(rset.getInt("minSkillChance"));
 					npcAIDat.setMaxSkillChance(rset.getInt("maxSkillChance"));
+					npcAIDat.setAggro(rset.getInt("aggro"));
 					npcAIDat.setCanMove(rset.getInt("canMove"));
+					npcAIDat.setShowName(rset.getBoolean("showName"));
+					npcAIDat.setTargetable(rset.getBoolean("targetable"));
 					npcAIDat.setSoulShot(rset.getInt("soulshot"));
 					npcAIDat.setSpiritShot(rset.getInt("spiritshot"));
 					npcAIDat.setSoulShotChance(rset.getInt("ssChance"));
