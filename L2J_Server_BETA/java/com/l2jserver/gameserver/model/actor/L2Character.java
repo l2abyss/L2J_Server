@@ -5566,7 +5566,7 @@ public abstract class L2Character extends L2Object
 					_chanceSkills.onHit(target, damage, false, crit);
 					// Reflect triggers onHit
 					if (reflectedDamage > 0)
-						_chanceSkills.onHit(target, damage, true, false);
+						_chanceSkills.onHit(target, reflectedDamage, true, false);
 				}
 				
 				// Maybe launch chance skills on target
