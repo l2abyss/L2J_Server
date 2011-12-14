@@ -171,7 +171,7 @@ public class L2Event
 			spawn.setLocz(target.getZ());
 			spawn.setAmount(1);
 			spawn.setHeading(target.getHeading());
-			
+			spawn.stopRespawn();
 			SpawnTable.getInstance().addNewSpawn(spawn, false);
 			
 			spawn.init();
@@ -366,7 +366,7 @@ public class L2Event
 			if (NpcTable.getInstance().getTemplate(_npcId) == null)
 				return "Cannot start event, invalid npc id.";
 			
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream("data/events/" + _eventName)));
+			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(Config.DATAPACK_ROOT+"/data/events/" + _eventName)));
 			BufferedReader inbr = new BufferedReader(new InputStreamReader(in));
 			_eventCreator = inbr.readLine();
 			_eventInfo = inbr.readLine();
