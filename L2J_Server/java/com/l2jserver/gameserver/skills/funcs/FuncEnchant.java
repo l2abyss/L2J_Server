@@ -79,18 +79,23 @@ public class FuncEnchant extends Func
 			switch (item.getItem().getItemGradeSPlus())
 			{
 				case L2Item.CRYSTAL_S:
+				case L2Item.CRYSTAL_S80:
+				case L2Item.CRYSTAL_S84:
+					// M. Atk. increases by 4 for all weapons.
+					// Starting at +4, M. Atk. bonus double.
 					env.value += 4 * enchant + 8 * overenchant;
 					break;
 				case L2Item.CRYSTAL_A:
-					env.value += 3 * enchant + 6 * overenchant;
-					break;
 				case L2Item.CRYSTAL_B:
-					env.value += 3 * enchant + 6 * overenchant;
-					break;
 				case L2Item.CRYSTAL_C:
+					// M. Atk. increases by 3 for all weapons.
+					// Starting at +4, M. Atk. bonus double.
 					env.value += 3 * enchant + 6 * overenchant;
 					break;
 				case L2Item.CRYSTAL_D:
+				case L2Item.CRYSTAL_NONE:
+					// M. Atk. increases by 2 for all weapons. Starting at +4, M. Atk. bonus double.
+					// Starting at +4, M. Atk. bonus double.
 					env.value += 2 * enchant + 4 * overenchant;
 					break;
 			}
@@ -105,13 +110,28 @@ public class FuncEnchant extends Func
 			switch (item.getItem().getItemGradeSPlus())
 			{
 				case L2Item.CRYSTAL_S:
+				case L2Item.CRYSTAL_S80:
+				case L2Item.CRYSTAL_S84:
 					switch(type)
 					{
 						case BOW:
 						case CROSSBOW:
+							// P. Atk. increases by 10 for bows.
+							// Starting at +4, P. Atk. bonus double.
 							env.value += 10 * enchant + 20 * overenchant;
 							break;
+						case BIGSWORD:
+						case BIGBLUNT:
+						case DUAL:
+						case DUALFIST:
+						case DUALDAGGER:
+							// P. Atk. increases by 6 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
+							// Starting at +4, P. Atk. bonus double.
+							env.value += 6 * enchant + 12 * overenchant;
+							break;
 						default:
+							// P. Atk. increases by 5 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
+							// Starting at +4, P. Atk. bonus double.
 							env.value += 5 * enchant + 10 * overenchant;
 							break;
 					}
@@ -121,33 +141,48 @@ public class FuncEnchant extends Func
 					{
 						case BOW:
 						case CROSSBOW:
+							// P. Atk. increases by 8 for bows.
+							// Starting at +4, P. Atk. bonus double.
 							env.value += 8 * enchant + 16 * overenchant;
 							break;
+						case BIGSWORD:
+						case BIGBLUNT:
+						case DUAL:
+						case DUALFIST:
+						case DUALDAGGER:
+							// P. Atk. increases by 5 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
+							// Starting at +4, P. Atk. bonus double.
+							env.value += 5 * enchant + 10 * overenchant;
+							break;
 						default:
+							// P. Atk. increases by 4 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
+							// Starting at +4, P. Atk. bonus double.
 							env.value += 4 * enchant + 8 * overenchant;
 							break;
 					}
 					break;
 				case L2Item.CRYSTAL_B:
-					switch(type)
-					{
-						case BOW:
-						case CROSSBOW:
-							env.value += 6 * enchant + 12 * overenchant;
-							break;
-						default:
-							env.value += 3 * enchant + 6 * overenchant;
-							break;
-					}
-					break;
 				case L2Item.CRYSTAL_C:
 					switch(type)
 					{
 						case BOW:
 						case CROSSBOW:
+							// P. Atk. increases by 6 for bows.
+							// Starting at +4, P. Atk. bonus double.
 							env.value += 6 * enchant + 12 * overenchant;
 							break;
+						case BIGSWORD:
+						case BIGBLUNT:
+						case DUAL:
+						case DUALFIST:
+						case DUALDAGGER:
+							// P. Atk. increases by 4 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
+							// Starting at +4, P. Atk. bonus double.
+							env.value += 4 * enchant + 8 * overenchant;
+							break;
 						default:
+							// P. Atk. increases by 3 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
+							// Starting at +4, P. Atk. bonus double.
 							env.value += 3 * enchant + 6 * overenchant;
 							break;
 					}
@@ -159,10 +194,14 @@ public class FuncEnchant extends Func
 						case BOW:
 						case CROSSBOW:
 						{
+							// Bows increase by 4.
+							// Starting at +4, P. Atk. bonus double.
 							env.value += 4 * enchant + 8 * overenchant;
 							break;
 						}
 						default:
+							// P. Atk. increases by 2 for all weapons with the exception of bows.
+							// Starting at +4, P. Atk. bonus double.
 							env.value += 2 * enchant + 4 * overenchant;
 							break;
 					}
