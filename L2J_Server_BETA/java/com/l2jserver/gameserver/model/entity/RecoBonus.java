@@ -52,7 +52,7 @@ public final class RecoBonus
 	{
 		double _multiplier = 1;
 		
-		int bonus = getRecoBonus(activeChar);
+		double bonus = getRecoBonus(activeChar);
 		if(bonus > 0)
 			_multiplier = (1 + (bonus / 100));
 		
