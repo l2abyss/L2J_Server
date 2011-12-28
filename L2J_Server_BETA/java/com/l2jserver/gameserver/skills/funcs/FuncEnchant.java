@@ -79,8 +79,6 @@ public class FuncEnchant extends Func
 			switch (item.getItem().getItemGradeSPlus())
 			{
 				case L2Item.CRYSTAL_S:
-				case L2Item.CRYSTAL_S80:
-				case L2Item.CRYSTAL_S84:
 					// M. Atk. increases by 4 for all weapons.
 					// Starting at +4, M. Atk. bonus double.
 					env.value += 4 * enchant + 8 * overenchant;
@@ -110,8 +108,6 @@ public class FuncEnchant extends Func
 			switch (item.getItem().getItemGradeSPlus())
 			{
 				case L2Item.CRYSTAL_S:
-				case L2Item.CRYSTAL_S80:
-				case L2Item.CRYSTAL_S84:
 					switch(type)
 					{
 						case BOW:
@@ -124,6 +120,7 @@ public class FuncEnchant extends Func
 						case BIGBLUNT:
 						case DUAL:
 						case DUALFIST:
+						case ANCIENTSWORD:
 						case DUALDAGGER:
 							// P. Atk. increases by 6 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
 							// Starting at +4, P. Atk. bonus double.
@@ -149,6 +146,7 @@ public class FuncEnchant extends Func
 						case BIGBLUNT:
 						case DUAL:
 						case DUALFIST:
+						case ANCIENTSWORD:
 						case DUALDAGGER:
 							// P. Atk. increases by 5 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
 							// Starting at +4, P. Atk. bonus double.
@@ -175,6 +173,7 @@ public class FuncEnchant extends Func
 						case BIGBLUNT:
 						case DUAL:
 						case DUALFIST:
+						case ANCIENTSWORD:
 						case DUALDAGGER:
 							// P. Atk. increases by 4 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
 							// Starting at +4, P. Atk. bonus double.
