@@ -1754,14 +1754,14 @@ public class L2Attackable extends L2Npc
 		// Go through DateDrop of EventDroplist allNpcDateDrops within the date range
 		for (DateDrop drop : EventDroplist.getInstance().getAllDrops())
 		{
-			if (Rnd.get(L2DropData.MAX_CHANCE) < drop.chance)
+			if (Rnd.get(L2DropData.MAX_CHANCE) < drop.getEventDrop().getDropChance())
 			{
-				RewardItem item = new RewardItem(drop.items[Rnd.get(drop.items.length)], Rnd.get(drop.min, drop.max));
+				final RewardItem rewardItem = new RewardItem(drop.getEventDrop().getItemIdList()[Rnd.get(drop.getEventDrop().getItemIdList().length)], Rnd.get(drop.getEventDrop().getMinCount(), drop.getEventDrop().getMaxCount()));
 				
 				if (Config.AUTO_LOOT || isFlying())
-					player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
+					player.doAutoLoot(this, rewardItem); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				else
-					dropItem(player, item); // drop the item on the ground
+					dropItem(player, rewardItem); // drop the item on the ground
 			}
 		}
 	}

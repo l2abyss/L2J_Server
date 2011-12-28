@@ -22,17 +22,16 @@ import java.util.logging.Logger;
 
 /**
  * @author Luis Arias
- *
  */
 public class DateRange
 {
 	protected static final Logger _log = Logger.getLogger(DateRange.class.getName());
-	private Date _startDate, _endDate;
+	private final Date _startDate, _endDate;
 	
 	public DateRange(Date from, Date to)
 	{
-		_startDate   = from;
-		_endDate     = to;
+		_startDate = from;
+		_endDate = to;
 	}
 	
 	public static DateRange parse(String dateRange, DateFormat format)
@@ -42,8 +41,8 @@ public class DateRange
 		{
 			try
 			{
-				Date start  = format.parse(date[0]);
-				Date end    = format.parse(date[1]);
+				Date start = format.parse(date[0]);
+				Date end = format.parse(date[1]);
 				
 				return new DateRange(start, end);
 			}
@@ -57,7 +56,7 @@ public class DateRange
 	
 	public boolean isValid()
 	{
-		return _startDate == null || _endDate == null;
+		return (_startDate != null) && (_endDate != null) && _startDate.before(_endDate);
 	}
 	
 	public boolean isWithinRange(Date date)
@@ -73,5 +72,11 @@ public class DateRange
 	public Date getStartDate()
 	{
 		return _startDate;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "DateRange: From: " + getStartDate() + " To: " + getEndDate();
 	}
 }
