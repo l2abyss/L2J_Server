@@ -20,6 +20,7 @@ import gnu.trove.procedure.TIntObjectProcedure;
 import gnu.trove.procedure.TIntProcedure;
 import gnu.trove.procedure.TObjectProcedure;
 
+import java.util.Collection;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -35,7 +36,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	
 	private final Lock _readLock;
 	private final Lock _writeLock;
-	private boolean _tempWritesLockDisable;
+	private boolean _tempLocksDisable;
 	
 	public L2TIntObjectHashMap()
 	{
@@ -43,7 +44,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 		_readLock = lock.readLock();
 		_writeLock = lock.writeLock();
-		_tempWritesLockDisable = false;
+		_tempLocksDisable = false;
 	}
 	
 	@Override
@@ -78,54 +79,49 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	@Override
 	public V get(int key)
 	{
-		if (!_tempWritesLockDisable)
-		{
+		if (!_tempLocksDisable)
 			_readLock.lock();
-		}
+		
 		try
 		{
 			return super.get(key);
 		}
 		finally
 		{
-			if (!_tempWritesLockDisable)
-			{
+			if (!_tempLocksDisable)
 				_readLock.unlock();
-			}
 		}
 	}
 	
 	@Override
 	public void clear()
 	{
-		_writeLock.lock();
+		if (!_tempLocksDisable)
+			_writeLock.lock();
 		try
 		{
 			super.clear();
 		}
 		finally
 		{
-			_writeLock.unlock();
+			if (!_tempLocksDisable)
+				_writeLock.unlock();
 		}
 	}
 	
 	@Override
 	public V remove(int key)
 	{
-		if (!_tempWritesLockDisable)
-		{
+		if (!_tempLocksDisable)
 			_writeLock.lock();
-		}
 		try
 		{
 			return super.remove(key);
 		}
 		finally
 		{
-			if (!_tempWritesLockDisable)
-			{
+			if (!_tempLocksDisable)
 				_writeLock.unlock();
-			}
 		}
 	}
 	
@@ -160,24 +156,42 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	@Override
 	public V[] values()
 	{
-		_readLock.lock();
+		if (!_tempLocksDisable)
+			_readLock.lock();
 		try
 		{
 			return super.values();
 		}
 		finally
 		{
-			_readLock.unlock();
+			if (!_tempLocksDisable)
+				_readLock.unlock();
 		}
 	}
 	
 	@Override
 	public V[] values(V[] arg0)
 	{
-		_readLock.lock();
+		if (!_tempLocksDisable)
+			_readLock.lock();
 		try
 		{
 			return super.values(arg0);
+		}
+		finally
+		{
+			if (!_tempLocksDisable)
+				_readLock.unlock();
+		}
+	}
+	
+	@Override
+	public Collection<V> valueCollection()
+	{
+		_readLock.lock();
+		try
+		{
+			return super.valueCollection();
 		}
 		finally
 		{
@@ -283,12 +297,12 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		_writeLock.lock();
 		try
 		{
-			_tempWritesLockDisable = true;
+			_tempLocksDisable = true;
 			return super.forEachKey(procedure);
 		}
 		finally
 		{
-			_tempWritesLockDisable = false;
+			_tempLocksDisable = false;
 			_writeLock.unlock();
 		}
 	}
@@ -321,12 +335,12 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		_writeLock.lock();
 		try
 		{
-			_tempWritesLockDisable = true;
+			_tempLocksDisable = true;
 			return super.forEachValue(arg0);
 		}
 		finally
 		{
-			_tempWritesLockDisable = false;
+			_tempLocksDisable = false;
 			_writeLock.unlock();
 		}
 	}
@@ -359,12 +373,12 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		_writeLock.lock();
 		try
 		{
-			_tempWritesLockDisable = true;
+			_tempLocksDisable = true;
 			return super.forEachEntry(arg0);
 		}
 		finally
 		{
-			_tempWritesLockDisable = false;
+			_tempLocksDisable = false;
 			_writeLock.unlock();
 		}
 	}
