@@ -23,8 +23,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * A jail zone
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2JailZone extends L2ZoneType
 {
@@ -39,14 +38,15 @@ public class L2JailZone extends L2ZoneType
 		if (character instanceof L2PcInstance)
 		{
 			character.setInsideZone(L2Character.ZONE_JAIL, true);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 			if (Config.JAIL_IS_PVP)
 			{
 				character.setInsideZone(L2Character.ZONE_PVP, true);
 				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
 			}
 			if (Config.JAIL_DISABLE_TRANSACTION)
+			{
 				character.setInsideZone(L2Character.ZONE_NOSTORE, true);
+			}
 		}
 	}
 	
@@ -56,7 +56,6 @@ public class L2JailZone extends L2ZoneType
 		if (character instanceof L2PcInstance)
 		{
 			character.setInsideZone(L2Character.ZONE_JAIL, false);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 			if (Config.JAIL_IS_PVP)
 			{
 				character.setInsideZone(L2Character.ZONE_PVP, false);
@@ -69,7 +68,9 @@ public class L2JailZone extends L2ZoneType
 				character.sendMessage("You cannot cheat your way out of here. You must wait until your jail time is over.");
 			}
 			if (Config.JAIL_DISABLE_TRANSACTION)
+			{
 				character.setInsideZone(L2Character.ZONE_NOSTORE, false);
+			}
 		}
 	}
 	
@@ -85,7 +86,7 @@ public class L2JailZone extends L2ZoneType
 	
 	static class BackToJail implements Runnable
 	{
-		private L2PcInstance _activeChar;
+		private final L2PcInstance _activeChar;
 		
 		BackToJail(L2Character character)
 		{

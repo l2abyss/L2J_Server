@@ -506,7 +506,7 @@ public final class Config
 	public static boolean FORCE_GEODATA;
 	public static boolean MOVE_BASED_KNOWNLIST;
 	public static long KNOWNLIST_UPDATE_INTERVAL;
-	public static int ZONE_TOWN;
+	public static int PEACE_ZONE_MODE;
 	public static String DEFAULT_GLOBAL_CHAT;
 	public static String DEFAULT_TRADE_CHAT;
 	public static boolean ALLOW_WAREHOUSE;
@@ -1966,7 +1966,7 @@ public final class Config
 					String str = General.getProperty("EnableFallingDamage", "auto");
 					ENABLE_FALLING_DAMAGE = "auto".equalsIgnoreCase(str) ? GEODATA > 0 : Boolean.parseBoolean(str);
 					
-					ZONE_TOWN = Integer.parseInt(General.getProperty("ZoneTown", "0"));
+					PEACE_ZONE_MODE = Integer.parseInt(General.getProperty("PeaceZoneMode", "0"));
 					DEFAULT_GLOBAL_CHAT = General.getProperty("GlobalChat", "ON");
 					DEFAULT_TRADE_CHAT = General.getProperty("TradeChat", "ON");
 					ALLOW_WAREHOUSE = Boolean.parseBoolean(General.getProperty("AllowWarehouse", "True"));
@@ -3215,7 +3215,7 @@ public final class Config
 		
 		else if (pName.equalsIgnoreCase("MaximumOnlineUsers")) MAXIMUM_ONLINE_USERS = Integer.parseInt(pValue);
 		
-		else if (pName.equalsIgnoreCase("ZoneTown")) ZONE_TOWN = Integer.parseInt(pValue);
+		else if (pName.equalsIgnoreCase("PeaceZoneMode")) PEACE_ZONE_MODE = Integer.parseInt(pValue);
 		
 		else if (pName.equalsIgnoreCase("CheckKnownList")) CHECK_KNOWN = Boolean.parseBoolean(pValue);
 		

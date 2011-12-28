@@ -21,8 +21,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * An arena
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2ArenaZone extends L2ZoneType
 {
@@ -35,27 +34,29 @@ public class L2ArenaZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_PVP, true);
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
-		
 		if (character instanceof L2PcInstance)
 		{
 			if (!character.isInsideZone(L2Character.ZONE_PVP))
+			{
 				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
+			}
 		}
+		
+		character.setInsideZone(L2Character.ZONE_PVP, true);
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_PVP, false);
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
-		
 		if (character instanceof L2PcInstance)
 		{
 			if (!character.isInsideZone(L2Character.ZONE_PVP))
+			{
 				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
+			}
 		}
+		
+		character.setInsideZone(L2Character.ZONE_PVP, false);
 	}
 	
 	@Override

@@ -14,77 +14,52 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
  * A Town zone
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2TownZone extends L2ZoneType
 {
 	private int _townId;
 	private int _taxById;
-	private boolean _isPeaceZone;
 	
 	public L2TownZone(int id)
 	{
 		super(id);
 		
 		_taxById = 0;
-		
-		// Default not peace zone
-		_isPeaceZone = false;
 	}
 	
 	@Override
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("townId"))
+		{
 			_townId = Integer.parseInt(value);
+		}
 		else if (name.equals("taxById"))
+		{
 			_taxById = Integer.parseInt(value);
-		else if (name.equals("isPeaceZone"))
-			_isPeaceZone = Boolean.parseBoolean(value);
+		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
-		{
-			// PVP possible during siege, now for siege participants only
-			// Could also check if this town is in siege, or if any siege is going on
-			if (((L2PcInstance) character).getSiegeState() != 0 && Config.ZONE_TOWN == 1)
-				return;
-			
-			//((L2PcInstance)character).sendMessage("You entered "+_townName);
-		}
-		
-		if (_isPeaceZone && Config.ZONE_TOWN != 2)
-			character.setInsideZone(L2Character.ZONE_PEACE, true);
-		
 		character.setInsideZone(L2Character.ZONE_TOWN, true);
-		
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		// TODO: there should be no exit if there was possibly no enter
-		if (_isPeaceZone)
-			character.setInsideZone(L2Character.ZONE_PEACE, false);
-		
 		character.setInsideZone(L2Character.ZONE_TOWN, false);
-		
-		// if (character instanceof L2PcInstance)
-		//((L2PcInstance)character).sendMessage("You left "+_townName);
-		
 	}
 	
 	@Override
@@ -113,10 +88,5 @@ public class L2TownZone extends L2ZoneType
 	public final int getTaxById()
 	{
 		return _taxById;
-	}
-	
-	public final boolean isPeaceZone()
-	{
-		return _isPeaceZone;
 	}
 }
