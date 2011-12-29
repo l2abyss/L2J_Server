@@ -20,12 +20,11 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
- * An arena
+ * A PVP Zone
  * @author durgus
  */
 public class L2ArenaZone extends L2ZoneType
 {
-	
 	public L2ArenaZone(int id)
 	{
 		super(id);

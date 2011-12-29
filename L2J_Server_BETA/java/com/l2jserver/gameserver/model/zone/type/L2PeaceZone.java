@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
- * A peaceful zone
+ * A Peace Zone
  * @author durgus
  */
 public class L2PeaceZone extends L2ZoneType
@@ -59,8 +59,6 @@ public class L2PeaceZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_PEACE, true);
 		}
-		
-		character.setInsideZone(L2Character.ZONE_PEACE, true);
 	}
 	
 	@Override
