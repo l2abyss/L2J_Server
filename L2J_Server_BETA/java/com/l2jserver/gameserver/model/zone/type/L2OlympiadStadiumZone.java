@@ -121,8 +121,6 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	@Override
 	protected final void onEnter(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
-
 		if (_task != null)
 		{
 			if (_task.isBattleStarted())
@@ -161,8 +159,6 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	@Override
 	protected final void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
-
 		if (_task != null)
 		{
 			if (_task.isBattleStarted())

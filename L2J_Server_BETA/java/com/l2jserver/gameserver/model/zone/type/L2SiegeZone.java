@@ -89,7 +89,7 @@ public class L2SiegeZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, true);
 			character.setInsideZone(L2Character.ZONE_SIEGE, true);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
+			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true); // FIXME: Custom ?
 			
 			if (character instanceof L2PcInstance)
 			{
@@ -115,7 +115,7 @@ public class L2SiegeZone extends L2ZoneType
 	{
 		character.setInsideZone(L2Character.ZONE_PVP, false);
 		character.setInsideZone(L2Character.ZONE_SIEGE, false);
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
+		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false); // FIXME: Custom ?
 		if (_isActiveSiege)
 		{
 			if (character instanceof L2PcInstance)
