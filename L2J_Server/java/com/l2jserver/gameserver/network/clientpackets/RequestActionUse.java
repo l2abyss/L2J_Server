@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
-import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2ManufactureList;
@@ -122,8 +121,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				if (activeChar.getMountType() != 0)
 					break;
 				
-				if (target != null && !activeChar.isSitting() && target instanceof L2StaticObjectInstance && ((L2StaticObjectInstance) target).getType() == 1 && CastleManager.getInstance().getCastle(target) != null
-						&& activeChar.isInsideRadius(target, L2StaticObjectInstance.INTERACTION_DISTANCE, false, false))
+				if (target != null && !activeChar.isSitting() && target instanceof L2StaticObjectInstance && ((L2StaticObjectInstance) target).getType() == 1 && activeChar.isInsideRadius(target, L2StaticObjectInstance.INTERACTION_DISTANCE, false, false))
 				{
 					final ChairSit cs = new ChairSit(activeChar, ((L2StaticObjectInstance) target).getStaticObjectId());
 					activeChar.sendPacket(cs);
