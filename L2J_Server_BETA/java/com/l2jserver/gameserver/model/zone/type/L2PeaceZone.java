@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
-import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * A Peace Zone
@@ -37,11 +36,6 @@ public class L2PeaceZone extends L2ZoneType
 	{
 		if (character instanceof L2PcInstance)
 		{
-			if (!character.isInsideZone(L2Character.ZONE_PEACE))
-			{
-				character.sendPacket(SystemMessageId.ENTER_PEACEFUL_ZONE);
-			}
-			
 			if (((L2PcInstance) character).isCombatFlagEquipped() && TerritoryWarManager.getInstance().isTWInProgress())
 			{
 				TerritoryWarManager.getInstance().dropCombatFlag(((L2PcInstance) character), false, true);
@@ -64,15 +58,10 @@ public class L2PeaceZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (Config.PEACE_ZONE_MODE != 2)
 		{
-			if (!character.isInsideZone(L2Character.ZONE_PEACE))
-			{
-				character.sendPacket(SystemMessageId.EXIT_PEACEFUL_ZONE);
-			}
+			character.setInsideZone(L2Character.ZONE_PEACE, false);
 		}
-		
-		character.setInsideZone(L2Character.ZONE_PEACE, false);
 	}
 	
 	@Override
