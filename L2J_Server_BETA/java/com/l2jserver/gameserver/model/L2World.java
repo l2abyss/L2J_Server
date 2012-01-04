@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.ArrayList;
@@ -183,17 +182,6 @@ public final class L2World
 	public L2Object findObject(int oID)
 	{
 		return _allObjects.get(oID);
-	}
-	
-	/**
-	 * Added by Tempy - 08 Aug 05
-	 * @return retrieval of all visible objects in world.
-	 * @deprecated do not use that function, its unsafe!
-	 */
-	@Deprecated
-	public final TIntObjectHashMap<L2Object> getAllVisibleObjects()
-	{
-		return _allObjects;
 	}
 	
 	public final L2Object[] getAllVisibleObjectsArray()
