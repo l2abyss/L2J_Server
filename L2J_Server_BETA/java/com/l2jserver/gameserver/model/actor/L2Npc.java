@@ -137,6 +137,11 @@ public class L2Npc extends L2Character
 	public boolean _spsrecharged = true;
 	private int _displayEffect = 0;
 	
+	/**
+	 * The character that summons this NPC.
+	 */
+	private L2Character _summoner = null;
+	
 	private final L2NpcAIData _staticAIData = getTemplate().getAIDataStatic();
 	
 	//AI Recall
@@ -1680,5 +1685,21 @@ public class L2Npc extends L2Character
 	public int getColorEffect()
 	{
 		return 0;
+	}
+	
+	/**
+	 * @return the character that summoned this NPC.
+	 */
+	public L2Character getSummoner()
+	{
+		return _summoner;
+	}
+	
+	/**
+	 * @param summoner the summoner of this NPC.
+	 */
+	public void setSummoner(L2Character summoner)
+	{
+		_summoner = summoner;
 	}
 }
