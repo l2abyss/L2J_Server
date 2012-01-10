@@ -499,6 +499,15 @@ public class MapRegionManager
 		}
 	}
 	
+	/**
+	 * @param regionName the map region name.
+	 * @return if exists the map region identified by that name, null otherwise.
+	 */
+	public L2MapRegion getMapRegionByName(String regionName)
+	{
+		return _regions.get(regionName);
+	}
+	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{

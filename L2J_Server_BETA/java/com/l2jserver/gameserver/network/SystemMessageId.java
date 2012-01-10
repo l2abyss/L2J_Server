@@ -590,7 +590,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 94<br>
-	 * Message: 2004-2009 (c) Copyright NCsoft Corporation. All Rights Reserved.
+	 * Message: 2004-2011 © NC Interactive, Inc. All Rights Reserved.
 	 */
 	public static final SystemMessageId COPYRIGHT;
 	
@@ -734,7 +734,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 118<br>
-	 * Message: You have requested a trade with $c1
+	 * Message: You have requested a trade with $c1.
 	 */
 	public static final SystemMessageId REQUEST_C1_FOR_TRADE;
 	
@@ -10123,7 +10123,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1734<br>
-	 * not belong another clan and not yet completed their 2nd class transfer.
+	 * Message: To join a Clan Academy, characters must be Level 40 or below, not belong another clan and not yet completed their 2nd class transfer.
 	 */
 	public static final SystemMessageId ACADEMY_REQUIREMENTS;
 	
@@ -11169,13 +11169,13 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1906<br>
-	 * Message: Select the combat unit
+	 * Message: Select the combat unit to transfer to.
 	 */
 	public static final SystemMessageId SELECT_COMBAT_UNIT;
 	
 	/**
 	 * ID: 1907<br>
-	 * Message: Select the character who will [...]
+	 * Message: Select the  character who will replace the current character.
 	 */
 	public static final SystemMessageId SELECT_CHARACTER_WHO_WILL;
 	
