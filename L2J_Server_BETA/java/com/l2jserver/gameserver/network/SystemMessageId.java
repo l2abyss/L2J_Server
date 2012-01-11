@@ -590,7 +590,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 94<br>
-	 * Message: 2004-2011 © NC Interactive, Inc. All Rights Reserved.
+	 * Message: 2004-2011 (c) NC Interactive, Inc. All Rights Reserved.
 	 */
 	public static final SystemMessageId COPYRIGHT;
 	
