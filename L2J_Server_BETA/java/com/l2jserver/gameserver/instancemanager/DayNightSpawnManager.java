@@ -184,11 +184,11 @@ public class DayNightSpawnManager
 	{
 		try
 		{
+			L2RaidBossInstance boss;
 			for (L2Spawn spawn : _bosses.keySet())
 			{
-				L2RaidBossInstance boss = _bosses.get(spawn);
-				
-				if (boss == null && mode == 1)
+				boss = _bosses.get(spawn);
+				if ((boss == null) && (mode == 1))
 				{
 					boss = (L2RaidBossInstance) spawn.doSpawn();
 					RaidBossSpawnManager.getInstance().notifySpawnNightBoss(boss);
@@ -197,10 +197,12 @@ public class DayNightSpawnManager
 					continue;
 				}
 				
-				if (boss == null && mode == 0)
+				if ((boss == null) && (mode == 0))
+				{
 					continue;
+				}
 				
-				if (boss.getNpcId() == 25328 && boss.getRaidStatus().equals(RaidBossSpawnManager.StatusEnum.ALIVE))
+				if ((boss != null) && (boss.getNpcId() == 25328) && boss.getRaidStatus().equals(RaidBossSpawnManager.StatusEnum.ALIVE))
 					handleHellmans(boss, mode);
 				return;
 			}

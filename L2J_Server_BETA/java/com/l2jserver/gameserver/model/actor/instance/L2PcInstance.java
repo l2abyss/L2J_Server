@@ -14304,11 +14304,7 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		
-		TeleportBookmark tpadd = new TeleportBookmark(id, x, y, z, icon, tag, name);
-		if(tpbookmark == null)
-			tpbookmark = new FastList<TeleportBookmark>();
-		
-		tpbookmark.add(tpadd);
+		tpbookmark.add(new TeleportBookmark(id, x, y, z, icon, tag, name));
 		
 		destroyItem("Consume", getInventory().getItemByItemId(20033).getObjectId(), 1, null, false);
 		

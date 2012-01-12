@@ -67,6 +67,7 @@ public class PetDataTable
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Could not parse PetData.xml file: " + e.getMessage(), e);
+				return;
 			}
 			
 			Node n = doc.getFirstChild();

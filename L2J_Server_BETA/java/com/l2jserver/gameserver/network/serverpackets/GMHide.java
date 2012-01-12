@@ -23,7 +23,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class GMHide extends L2GameServerPacket
 {
 	// cd
-	private static int _mode;
+	private int _mode;
 	
 	
 	/**

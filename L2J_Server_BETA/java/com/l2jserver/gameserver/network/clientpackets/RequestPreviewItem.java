@@ -139,10 +139,14 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		L2TradeList list = null;
 		
 		// Get the current merchant targeted by the player
-		L2MerchantInstance merchant = (target instanceof L2MerchantInstance) ? (L2MerchantInstance) target : null;
+		final L2MerchantInstance merchant = (target instanceof L2MerchantInstance) ? (L2MerchantInstance) target : null;
+		if (merchant == null)
+		{
+			_log.warning(getClass().getName() + " Null merchant!");
+			return;
+		}
 		
-		List<L2TradeList> lists = TradeController.getInstance().getBuyListByNpcId(merchant.getNpcId());
-		
+		final List<L2TradeList> lists = TradeController.getInstance().getBuyListByNpcId(merchant.getNpcId());
 		if (lists == null)
 		{
 			Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);

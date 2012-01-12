@@ -73,6 +73,7 @@ public class NpcWalkerRoutesTable
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Could not parse WalkerRoutes.xml file: " + e.getMessage(), e);
+				return;
 			}
 			
 			Node n = doc.getFirstChild();

@@ -78,6 +78,7 @@ public class EnchantHPBonusData
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Could not parse enchantHPBonus.xml file: " + e.getMessage(), e);
+				return;
 			}
 			
 			for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())

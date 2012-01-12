@@ -38,18 +38,15 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
+ * This class manage the player add/remove, team change and<br>
+ * event arena status, as the clearance of the participants<br>
+ * list or liberate the arena.
  * @author BiggBoss
  */
 public final class HandysBlockCheckerManager 
 {
-	/*
-	 * This class manage the player add/remove, team change and
-	 * event arena status, as the clearance of the participants
-	 * list or liberate the arena 
-	 */
-	
 	// All the participants and their team classifed by arena
-	private static ArenaParticipantsHolder[] _arenaPlayers;
+	private static ArenaParticipantsHolder[] _arenaPlayers = new ArenaParticipantsHolder[4];
 	
 	// Arena votes to start the game
 	private static TIntIntHashMap _arenaVotes = new TIntIntHashMap();
@@ -61,7 +58,7 @@ public final class HandysBlockCheckerManager
 	private static FastList<Integer> _registrationPenalty = new FastList<Integer>();
 	
 	/**
-	 * Return the number of event-start votes for the spcified
+	 * Return the number of event-start votes for the specified
 	 * arena id
 	 * @param arenaId
 	 * @return int (number of votes)
@@ -134,8 +131,6 @@ public final class HandysBlockCheckerManager
 	 */
 	public void startUpParticipantsQueue()
 	{
-		_arenaPlayers = new ArenaParticipantsHolder[4];
-		
 		for(int i = 0; i < 4; ++i)
 		{
 			_arenaPlayers[i] = new ArenaParticipantsHolder(i);
@@ -143,7 +138,7 @@ public final class HandysBlockCheckerManager
 	}
 	
 	/**
-	 * Add the player to the specified arena (throught the specified
+	 * Add the player to the specified arena (through the specified
 	 * arena manager) and send the needed server ->  client packets
 	 * @param player
 	 * @param arenaId
