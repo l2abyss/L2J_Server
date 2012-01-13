@@ -478,6 +478,8 @@ public class L2SummonInstance extends L2Summon
 
 			for (SummonEffect se : SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()))
 			{
+				if (se == null)
+					continue;
 				Env env = new Env();
 				env.player = this;
 				env.target = this;

@@ -521,6 +521,9 @@ public class L2DoorInstance extends L2Character
 
 		for (L2PcInstance player : knownPlayers)
 		{
+			if (player == null)
+				continue;
+			
 			if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
 				su = new StaticObject(this, true);
 			
