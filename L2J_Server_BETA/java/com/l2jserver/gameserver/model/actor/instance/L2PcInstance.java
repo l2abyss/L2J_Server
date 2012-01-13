@@ -8124,7 +8124,8 @@ public final class L2PcInstance extends L2Playable
 		final L2ShortCut[] allShortCuts = getAllShortCuts();
 		for (L2ShortCut sc : allShortCuts)
 		{
-			if ((sc != null) && (skill != null) && (sc.getId() == skill.getId()) && (sc.getType() == L2ShortCut.TYPE_SKILL))
+			if ((sc != null) && (skill != null) && (sc.getId() == skill.getId()) && (sc.getType() == L2ShortCut.TYPE_SKILL)
+				&& !(skill.getId() >= 3080 && skill.getId() <= 3259)) // FIXME: Rough fix for shortcuts of augments getting removed. Find a better way
 				deleteShortCut(sc.getSlot(), sc.getPage());
 		}
 		return oldSkill;
