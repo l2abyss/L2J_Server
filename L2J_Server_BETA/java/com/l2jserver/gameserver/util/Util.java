@@ -157,15 +157,17 @@ public final class Util
 	public static String capitalizeFirst(String str)
 	{
 		if (str == null || str.isEmpty())
+		{
 			return str;
-		
+		}
 		final char[] arr = str.toCharArray();
 		final char c = arr[0];
 		
 		if (Character.isLetter(c))
+		{
 			arr[0] = Character.toUpperCase(c);
-		
-		return arr.toString();
+		}
+		return new String(arr);
 	}
 	
 	/**
