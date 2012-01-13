@@ -1,14 +1,4 @@
 /*
- * $Header: SpawnListener.java, 7/09/2005 23:44:50 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 7/09/2005 23:44:50 $
- * $Revision: 1 $
- * $Log: SpawnListener.java,v $
- * Revision 1  7/09/2005 23:44:50  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later

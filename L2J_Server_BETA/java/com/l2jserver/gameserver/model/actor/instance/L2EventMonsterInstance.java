@@ -17,8 +17,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
- ** @author Gnacik
- **
+ * @author Gnacik
  */
 public class L2EventMonsterInstance extends L2MonsterInstance
 {

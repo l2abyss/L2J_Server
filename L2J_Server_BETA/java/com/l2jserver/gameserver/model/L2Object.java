@@ -182,7 +182,8 @@ public abstract class L2Object
 		L2NpcBufferInstance(L2Npc),
 		L2TvTEventNpcInstance(L2Npc),
 		L2WeddingManagerInstance(L2Npc),
-		L2EventMobInstance(L2Npc);
+		L2EventMobInstance(L2Npc),
+		L2BirthdayCakeInstance(L2Npc);
 		
 		private final InstanceType _parent;
 		private final long _typeL;
