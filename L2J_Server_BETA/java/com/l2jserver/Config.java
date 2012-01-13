@@ -919,6 +919,7 @@ public final class Config
 	public static int MAXIMUM_ONLINE_USERS;
 	public static String CNAME_TEMPLATE;
 	public static String PET_NAME_TEMPLATE;
+	public static String CLAN_NAME_TEMPLATE;
 	public static int MAX_CHARACTERS_NUMBER_PER_ACCOUNT;
 	public static File DATAPACK_ROOT;
 	public static boolean ACCEPT_ALTERNATE_ID;
@@ -1169,6 +1170,7 @@ public final class Config
 					
 					CNAME_TEMPLATE = serverSettings.getProperty("CnameTemplate", ".*");
 					PET_NAME_TEMPLATE = serverSettings.getProperty("PetNameTemplate", ".*");
+					CLAN_NAME_TEMPLATE = serverSettings.getProperty("ClanNameTemplate", ".*");
 					
 					MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "0"));
 					MAXIMUM_ONLINE_USERS = Integer.parseInt(serverSettings.getProperty("MaximumOnlineUsers", "100"));

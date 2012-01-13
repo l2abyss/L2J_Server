@@ -16,6 +16,9 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javolution.util.FastList;
 
@@ -102,6 +105,12 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		{
 			if (cmdParams.isEmpty())
 				return;
+			
+			if (!isValidName(cmdParams))
+			{
+				player.sendPacket(SystemMessageId.CLAN_NAME_INCORRECT);
+				return;
+			}
 			
 			ClanTable.getInstance().createClan(player, cmdParams);
 		}
@@ -916,7 +925,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			
 			return;
 		}
-		if (!Util.isAlphaNumeric(clanName) || 2 > clanName.length())
+		if (!Util.isAlphaNumeric(clanName) || !isValidName(clanName) || 2 > clanName.length())
 		{
 			player.sendPacket(SystemMessageId.CLAN_NAME_INCORRECT);
 			return;
@@ -1012,7 +1021,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			player.sendMessage("Pledge don't exists.");
 			return;
 		}
-		if (!Util.isAlphaNumeric(pledgeName) || 2 > pledgeName.length())
+		if (!Util.isAlphaNumeric(pledgeName) || !isValidName(pledgeName) || 2 > pledgeName.length())
 		{
 			player.sendPacket(SystemMessageId.CLAN_NAME_INCORRECT);
 			return;
@@ -1134,5 +1143,27 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			player.sendPacket(asl);
 		}
 		player.sendPacket(ActionFailed.STATIC_PACKET);
+	}
+	
+	private static boolean isValidName(String text)
+	{
+		boolean result = true;
+		String test = text;
+		Pattern pattern;
+		try
+		{
+			pattern = Pattern.compile(Config.CLAN_NAME_TEMPLATE);
+		}
+		catch (PatternSyntaxException e) // case of illegal pattern
+		{
+			_log.warning("ERROR : Clan name pattern of config is wrong!");
+			pattern = Pattern.compile(".*");
+		}
+		Matcher regexp = pattern.matcher(test);
+		if (!regexp.matches())
+		{
+			result = false;
+		}
+		return result;
 	}
 }
