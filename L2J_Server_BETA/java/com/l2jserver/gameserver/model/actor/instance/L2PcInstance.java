@@ -841,13 +841,19 @@ public final class L2PcInstance extends L2Playable
 	{
 		updatePvPFlag(1);
 		
-		_PvPRegTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new PvPFlag(), 1000, 1000);
+		if (_PvPRegTask == null)
+		{
+			_PvPRegTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new PvPFlag(), 1000, 1000);
+		}
 	}
 	
 	public void stopPvpRegTask()
 	{
 		if (_PvPRegTask != null)
+		{
 			_PvPRegTask.cancel(true);
+			_PvPRegTask = null;
+		}
 	}
 	
 	public void stopPvPFlag()
