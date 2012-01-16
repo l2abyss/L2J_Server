@@ -47,13 +47,9 @@ public final class KeyPacket extends L2GameServerPacket
 		writeD(0x00); // obfuscation key
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__01_KEYPACKET;
 	}
-	
 }

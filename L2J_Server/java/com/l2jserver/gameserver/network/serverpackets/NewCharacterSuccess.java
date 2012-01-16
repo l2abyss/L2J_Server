@@ -55,29 +55,26 @@ public class NewCharacterSuccess extends L2GameServerPacket
 			writeD(temp.race.ordinal());
 			writeD(temp.classId.getId());
 			writeD(0x46);
-			writeD(temp.baseSTR);
+			writeD(temp.getBaseSTR());
 			writeD(0x0a);
 			writeD(0x46);
-			writeD(temp.baseDEX);
+			writeD(temp.getBaseDEX());
 			writeD(0x0a);
 			writeD(0x46);
-			writeD(temp.baseCON);
+			writeD(temp.getBaseCON());
 			writeD(0x0a);
 			writeD(0x46);
-			writeD(temp.baseINT);
+			writeD(temp.getBaseINT());
 			writeD(0x0a);
 			writeD(0x46);
-			writeD(temp.baseWIT);
+			writeD(temp.getBaseWIT());
 			writeD(0x0a);
 			writeD(0x46);
-			writeD(temp.baseMEN);
+			writeD(temp.getBaseMEN());
 			writeD(0x0a);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

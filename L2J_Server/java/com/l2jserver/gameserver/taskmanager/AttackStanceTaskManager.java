@@ -64,7 +64,7 @@ public class AttackStanceTaskManager
 		if (actor instanceof L2PcInstance)
 		{
 			L2PcInstance player = (L2PcInstance) actor;
-			for (L2CubicInstance cubic : player.getCubics().getValues(new L2CubicInstance[player.getCubics().size()]))
+			for (L2CubicInstance cubic : player.getCubics().values(new L2CubicInstance[0]))
 				if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
 					cubic.doAction();
 		}
@@ -98,6 +98,7 @@ public class AttackStanceTaskManager
 			// Do nothing
 		}
 		
+		@Override
 		public void run()
 		{
 			Long current = System.currentTimeMillis();

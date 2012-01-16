@@ -83,6 +83,7 @@ public final class FusionSkill
 	
 	public class GeoCheckTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			try

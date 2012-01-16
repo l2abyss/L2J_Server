@@ -45,9 +45,6 @@ public final class DeleteObject extends L2GameServerPacket
 		writeD(0x00); //c2
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

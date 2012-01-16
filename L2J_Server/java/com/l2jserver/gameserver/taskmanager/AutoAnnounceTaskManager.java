@@ -21,12 +21,12 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
+import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.util.Broadcast;
 
 /**
- * 
  * @author nBd
  */
 public class AutoAnnounceTaskManager
@@ -57,7 +57,9 @@ public class AutoAnnounceTaskManager
 		if (!_announces.isEmpty())
 		{
 			for (AutoAnnouncement a : _announces)
+			{
 				a.stopAnnounce();
+			}
 			
 			_announces.clear();
 		}
@@ -67,7 +69,7 @@ public class AutoAnnounceTaskManager
 		try
 		{
 			conn = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = conn.prepareStatement("SELECT id, initial, delay, cycle, memo FROM auto_announcements");
+			PreparedStatement statement = conn.prepareStatement("SELECT * FROM auto_announcements");
 			ResultSet data = statement.executeQuery();
 			while (data.next())
 			{
@@ -76,11 +78,14 @@ public class AutoAnnounceTaskManager
 				long delay = data.getLong("delay");
 				int repeat = data.getInt("cycle");
 				String memo = data.getString("memo");
+				boolean isCritical = Boolean.parseBoolean(data.getString("isCritical"));
 				String[] text = memo.split("/n");
-				ThreadPoolManager.getInstance().scheduleGeneral(new AutoAnnouncement(id, delay, repeat, text), initial);
+				ThreadPoolManager.getInstance().scheduleGeneral(new AutoAnnouncement(id, delay, repeat, text, isCritical), initial);
 				count++;
 				if (_nextId <= id)
+				{
 					_nextId = id + 1;
+				}
 			}
 			data.close();
 			statement.close();
@@ -96,25 +101,26 @@ public class AutoAnnounceTaskManager
 		_log.log(Level.INFO, "AutoAnnoucements: Loaded " + count + " Auto Annoucement Data.");
 	}
 	
-	public void addAutoAnnounce(long initial, long delay, int repeat, String memo)
+	public void addAutoAnnounce(long initial, long delay, int repeat, String memo, boolean isCritical)
 	{
 		Connection conn = null;
 		
 		try
 		{
 			conn = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = conn.prepareStatement("INSERT INTO auto_announcements (id, initial, delay, cycle, memo) VALUES (?,?,?,?,?)");
+			PreparedStatement statement = conn.prepareStatement("INSERT INTO auto_announcements (id, initial, delay, cycle, memo, isCritical) VALUES (?,?,?,?,?,?)");
 			statement.setInt(1, _nextId);
 			statement.setLong(2, initial);
 			statement.setLong(3, delay);
 			statement.setInt(4, repeat);
 			statement.setString(5, memo);
+			statement.setString(6, String.valueOf(isCritical));
 			statement.execute();
 			
 			statement.close();
 			
 			String[] text = memo.split("/n");
-			ThreadPoolManager.getInstance().scheduleGeneral(new AutoAnnouncement(_nextId++, delay, repeat, text), initial);
+			ThreadPoolManager.getInstance().scheduleGeneral(new AutoAnnouncement(_nextId++, delay, repeat, text, isCritical), initial);
 		}
 		catch (Exception e)
 		{
@@ -156,20 +162,24 @@ public class AutoAnnounceTaskManager
 	
 	public class AutoAnnouncement implements Runnable
 	{
-		private int _id;
-		private long _delay;
+		private final int _id;
+		private final long _delay;
 		private int _repeat = -1;
-		private String[] _memo;
+		private final String[] _memo;
 		private boolean _stopped = false;
+		private final boolean _isCritical;
 		
-		public AutoAnnouncement(int id, long delay, int repeat, String[] memo)
+		public AutoAnnouncement(int id, long delay, int repeat, String[] memo, boolean isCritical)
 		{
 			_id = id;
 			_delay = delay;
 			_repeat = repeat;
 			_memo = memo;
+			_isCritical = isCritical;
 			if (!_announces.contains(this))
+			{
 				_announces.add(this);
+			}
 		}
 		
 		public String[] getMemo()
@@ -182,17 +192,25 @@ public class AutoAnnounceTaskManager
 			_stopped = true;
 		}
 		
+		public boolean isCritical()
+		{
+			return _isCritical;
+		}
+		
+		@Override
 		public void run()
 		{
-			if (!_stopped && _repeat != 0)
+			if (!_stopped && (_repeat != 0))
 			{
 				for (String text : _memo)
 				{
-					announce(text);
+					announce(text, _isCritical);
 				}
 				
 				if (_repeat > 0)
+				{
 					_repeat--;
+				}
 				ThreadPoolManager.getInstance().scheduleGeneral(this, _delay);
 			}
 			else
@@ -202,10 +220,13 @@ public class AutoAnnounceTaskManager
 		}
 	}
 	
-	public void announce(String text)
+	public void announce(String text, boolean isCritical)
 	{
-		Broadcast.announceToOnlinePlayers(text);
-		_log.info("AutoAnnounce: " + text);
+		Broadcast.announceToOnlinePlayers(text, isCritical);
+		if (Config.LOG_AUTO_ANNOUNCEMENTS)
+		{
+			_log.info((isCritical ? "Critical AutoAnnounce" : "AutoAnnounce") + text);
+		}
 	}
 	
 	@SuppressWarnings("synthetic-access")

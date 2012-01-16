@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,11 +53,9 @@ import com.l2jserver.gameserver.model.FusionSkill;
 import com.l2jserver.gameserver.model.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
@@ -71,6 +70,10 @@ import com.l2jserver.gameserver.model.actor.position.CharPosition;
 import com.l2jserver.gameserver.model.actor.stat.CharStat;
 import com.l2jserver.gameserver.model.actor.status.CharStatus;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.type.L2WeaponType;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -89,6 +92,7 @@ import com.l2jserver.gameserver.network.serverpackets.MoveToLocation;
 import com.l2jserver.gameserver.network.serverpackets.Revive;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 import com.l2jserver.gameserver.network.serverpackets.SetupGauge;
+import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -98,6 +102,7 @@ import com.l2jserver.gameserver.pathfinding.PathFinding;
 import com.l2jserver.gameserver.skills.AbnormalEffect;
 import com.l2jserver.gameserver.skills.Calculator;
 import com.l2jserver.gameserver.skills.Formulas;
+import com.l2jserver.gameserver.skills.SkillHolder;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillAgathion;
@@ -106,11 +111,9 @@ import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
@@ -203,11 +206,14 @@ public abstract class L2Character extends L2Object
 	public static final byte ZONE_ALTERED = 19;
 	public static final byte ZONE_NOBOOKMARK = 20;
 	public static final byte ZONE_NOITEMDROP = 21;
+	public static final byte ZONE_NORESTART = 22;
 	
-	private final byte[] _zones = new byte[22];
+	private final byte[] _zones = new byte[23];
 	protected byte _zoneValidateCounter = 4;
 	
 	private L2Character _debugger = null;
+	
+	private final ReentrantLock _teleportLock;
 	
 	/**
 	 * @return True if debugging is enabled for this L2Character
@@ -420,6 +426,7 @@ public abstract class L2Character extends L2Object
 		}
 		
 		setIsInvul(true);
+		_teleportLock = new ReentrantLock();
 	}
 	
 	protected void initCharStatusUpdateValues()
@@ -455,12 +462,18 @@ public abstract class L2Character extends L2Object
 	
 	public void onTeleported()
 	{
-		synchronized (this)
+		if (!_teleportLock.tryLock())
+			return;
+		try
 		{
 			if (!isTeleporting())
 				return;
 			spawnMe(getPosition().getX(), getPosition().getY(), getPosition().getZ());
 			setIsTeleporting(false);
+		}
+		finally
+		{
+			_teleportLock.unlock();
 		}
 		if (_isPendingRevive)
 			doRevive();
@@ -775,44 +788,51 @@ public abstract class L2Character extends L2Object
 			}
 		}
 		
+		
+		// Check if attacker's weapon can attack
+		if (getActiveWeaponItem() != null)
+		{
+			L2Weapon wpn = getActiveWeaponItem();
+			if (!wpn.isAttackWeapon() && !isGM())
+			{
+				if (wpn.getItemType() == L2WeaponType.FISHINGROD)
+					sendPacket(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE);
+				else
+					sendPacket(SystemMessageId.THAT_WEAPON_CANT_ATTACK);
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+		}
+		
 		if (isAttackingDisabled())
 			return;
 		
-		if (this instanceof L2PcInstance)
+		if (getActingPlayer() != null)
 		{
-			if (((L2PcInstance) this).inObserverMode())
+			if (getActingPlayer().inObserverMode())
 			{
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE));
+				sendPacket(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 			
-			if (target.getActingPlayer() != null && ((L2PcInstance) this).getSiegeState() > 0 && this.isInsideZone(L2Character.ZONE_SIEGE) && target.getActingPlayer().getSiegeState() == ((L2PcInstance) this).getSiegeState() && target.getActingPlayer() != this && target.getActingPlayer().getSiegeSide() == ((L2PcInstance) this).getSiegeSide())
+			else if (target.getActingPlayer() != null && getActingPlayer().getSiegeState() > 0 && isInsideZone(L2Character.ZONE_SIEGE) && target.getActingPlayer().getSiegeState() == getActingPlayer().getSiegeState() && target.getActingPlayer() != this && target.getActingPlayer().getSiegeSide() == getActingPlayer().getSiegeSide())
 			{
-				//
 				if (TerritoryWarManager.getInstance().isTWInProgress())
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
+					sendPacket(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY);
 				else
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+					sendPacket(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 			
 			// Checking if target has moved to peace zone
-			if (target.isInsidePeaceZone((L2PcInstance) this))
+			else if (target.isInsidePeaceZone(getActingPlayer()))
 			{
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-			// TODO: unhardcode this to support boolean if with that weapon u can attack or not (for ex transform weapons)
-			if (((L2PcInstance) this).getActiveWeaponItem() != null && ((L2PcInstance) this).getActiveWeaponItem().getItemId() == 9819)
-			{
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THAT_WEAPON_CANT_ATTACK));
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
-			}
-			
 		}
 		else if (isInsidePeaceZone(this, target))
 		{
@@ -823,26 +843,16 @@ public abstract class L2Character extends L2Object
 		
 		stopEffectsOnAction();
 		
-		// Get the active weapon instance (always equiped in the right hand)
+		// Get the active weapon instance (always equipped in the right hand)
 		L2ItemInstance weaponInst = getActiveWeaponInstance();
 		
 		// Get the active weapon item corresponding to the active weapon instance (always equiped in the right hand)
 		L2Weapon weaponItem = getActiveWeaponItem();
 		
-		if (weaponItem != null && weaponItem.getItemType() == L2WeaponType.FISHINGROD)
-		{
-			//	You can't make an attack with a fishing pole.
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_ATTACK_WITH_FISHING_POLE));
-			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-			
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-		
 		// GeoData Los Check here (or dz > 1000)
 		if (!GeoData.getInstance().canSeeTarget(this, target))
 		{
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_SEE_TARGET));
+			sendPacket(SystemMessageId.CANT_SEE_TARGET);
 			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -862,7 +872,7 @@ public abstract class L2Character extends L2Object
 						// Cancel the action because the L2PcInstance have no arrow
 						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 						sendPacket(ActionFailed.STATIC_PACKET);
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ARROWS));
+						sendPacket(SystemMessageId.NOT_ENOUGH_ARROWS);
 						return;
 					}
 					
@@ -878,7 +888,7 @@ public abstract class L2Character extends L2Object
 						{
 							// If L2PcInstance doesn't have enough MP, stop the attack
 							ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_READY_TO_ACT), 1000);
-							sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+							sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 							sendPacket(ActionFailed.STATIC_PACKET);
 							return;
 						}
@@ -919,7 +929,7 @@ public abstract class L2Character extends L2Object
 						// Cancel the action because the L2PcInstance have no arrow
 						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 						sendPacket(ActionFailed.STATIC_PACKET);
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_BOLTS));
+						sendPacket(SystemMessageId.NOT_ENOUGH_BOLTS);
 						return;
 					}
 					
@@ -1134,7 +1144,7 @@ public abstract class L2Character extends L2Object
 		if (this instanceof L2PcInstance)
 		{
 			// Send a system message
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.GETTING_READY_TO_SHOOT_AN_ARROW));
+			sendPacket(SystemMessageId.GETTING_READY_TO_SHOOT_AN_ARROW);
 			
 			// Send a Server->Client packet SetupGauge
 			SetupGauge sg = new SetupGauge(SetupGauge.RED, sAtk + reuse);
@@ -1207,7 +1217,7 @@ public abstract class L2Character extends L2Object
 		if (this instanceof L2PcInstance)
 		{
 			// Send a system message
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CROSSBOW_PREPARING_TO_FIRE));
+			sendPacket(SystemMessageId.CROSSBOW_PREPARING_TO_FIRE);
 			
 			// Send a Server->Client packet SetupGauge
 			SetupGauge sg = new SetupGauge(SetupGauge.RED, sAtk + reuse);
@@ -1715,8 +1725,8 @@ public abstract class L2Character extends L2Object
 		{
 			if (isResurrectionBlocked() || target.isResurrectionBlocked())
 			{
-				sendPacket(SystemMessage.getSystemMessage(356)); // Reject resurrection
-				target.sendPacket(SystemMessage.getSystemMessage(356)); // Reject resurrection
+				sendPacket(SystemMessageId.REJECT_RESURRECTION); // Reject resurrection
+				target.sendPacket(SystemMessageId.REJECT_RESURRECTION); // Reject resurrection
 				
 				if (simultaneously)
 					setIsCastingSimultaneouslyNow(false);
@@ -1880,9 +1890,7 @@ public abstract class L2Character extends L2Object
 				
 				if (getActingPlayer() != null)
 				{
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SKILL_READY_TO_USE_AGAIN);
-					getActingPlayer().sendPacket(sm);
-					sm = null;
+					getActingPlayer().sendPacket(SystemMessageId.SKILL_READY_TO_USE_AGAIN);
 				}
 			}
 			
@@ -1901,7 +1909,7 @@ public abstract class L2Character extends L2Object
 			{
 				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, true))
 				{
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+					sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
 					if (simultaneously)
 						setIsCastingSimultaneouslyNow(false);
 					else
@@ -1953,7 +1961,7 @@ public abstract class L2Character extends L2Object
 			{
 				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, true))
 				{
-					getActingPlayer().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ITEMS));
+					getActingPlayer().sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
 					abortCast();
 					return;
 				}
@@ -1961,14 +1969,16 @@ public abstract class L2Character extends L2Object
 			
 			//reduce talisman mana on skill use
 			if (skill.getReferenceItemId() > 0 && ItemTable.getInstance().getTemplate(skill.getReferenceItemId()).getBodyPart() == L2Item.SLOT_DECO)
+			{
 				for (L2ItemInstance item : getInventory().getItemsByItemId(skill.getReferenceItemId()))
 				{
 					if (item.isEquipped())
 					{
-						item.decreaseMana(false, skill.getReuseDelay() / 60000);
+						item.decreaseMana(false, item.useSkillDisTime());
 						break;
 					}
 				}
+			}
 		}
 		
 		// Before start AI Cast Broadcast Fly Effect is Need
@@ -2049,7 +2059,7 @@ public abstract class L2Character extends L2Object
 		if (getCurrentMp() < getStat().getMpConsume(skill) + getStat().getMpInitialConsume(skill))
 		{
 			// Send a System Message to the caster
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+			sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 			
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -2060,14 +2070,14 @@ public abstract class L2Character extends L2Object
 		if (getCurrentHp() <= skill.getHpConsume())
 		{
 			// Send a System Message to the caster
-			sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_HP));
+			sendPacket(SystemMessageId.NOT_ENOUGH_HP);
 			
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
 		}
 		
-		if (!skill.isPotion())
+		if (!skill.isPotion() || !skill.ignoreSkillMute()) // Skill mute checks.
 		{
 			// Check if the skill is a magic spell and if the L2Character is not muted
 			if (skill.isMagic())
@@ -2104,7 +2114,7 @@ public abstract class L2Character extends L2Object
 			if (region == null)
 				return false;
 			boolean canCast = true;
-			if (skill.getTargetType() == SkillTargetType.TARGET_GROUND && this instanceof L2PcInstance)
+			if (skill.getTargetType() == L2TargetType.TARGET_GROUND && this instanceof L2PcInstance)
 			{
 				Point3D wp = ((L2PcInstance) this).getCurrentSkillWorldPosition();
 				if (!region.checkEffectRangeInsidePeaceZone(skill, wp.getX(), wp.getY(), wp.getZ()))
@@ -2129,6 +2139,30 @@ public abstract class L2Character extends L2Object
 			return false;
 		}
 		
+		// Check if the caster's weapon is limited to use only its own skills
+		if (getActiveWeaponItem() != null)
+		{
+			L2Weapon wep = getActiveWeaponItem();
+			if (wep.useWeaponSkillsOnly() && !isGM())
+			{
+				boolean found = false;
+				for (SkillHolder sh : wep.getSkills())
+				{
+					if (sh.getSkillId() == skill.getId())
+					{
+						found = true;
+					}
+				}
+				
+				if (!found)
+				{
+					if (getActingPlayer() != null)
+						sendPacket(SystemMessageId.WEAPON_CAN_USE_ONLY_WEAPON_SKILL);
+					return false;
+				}
+			}
+		}
+		
 		// Check if the spell consumes an Item
 		// TODO: combine check and consume
 		if (skill.getItemConsumeId() > 0 && getInventory() != null)
@@ -2150,7 +2184,7 @@ public abstract class L2Character extends L2Object
 				else
 				{
 					// Send a System Message to the caster
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL));
+					sendPacket(SystemMessageId.THERE_ARE_NOT_ENOUGH_NECESSARY_ITEMS_TO_USE_THE_SKILL);
 				}
 				return false;
 			}
@@ -4184,6 +4218,11 @@ public abstract class L2Character extends L2Object
 		_heading = heading;
 	}
 	
+	public Location getLocation()
+	{
+		return new Location(getX(), getY(), getZ(), getHeading(), getInstanceId());
+	}
+	
 	public final int getXdestination()
 	{
 		MoveData m = _move;
@@ -4225,7 +4264,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public boolean isInCombat()
 	{
-		return (getAI().getAttackTarget() != null || getAI().isAutoAttacking());
+		return hasAI() && (getAI().getAttackTarget() != null || getAI().isAutoAttacking());
 	}
 	
 	/**
@@ -5141,6 +5180,11 @@ public abstract class L2Character extends L2Object
 		return isInsideRadius(x, y, 0, radius, false, strictCheck);
 	}
 	
+	public final boolean isInsideRadius(Location loc, int radius, boolean checkZ, boolean strictCheck)
+	{
+		return isInsideRadius(loc.getX(), loc.getY(), loc.getZ(), radius, checkZ, strictCheck);
+	}
+	
 	/**
 	 * Check if this object is inside the given radius around the given point.<BR><BR>
 	 *
@@ -5410,10 +5454,10 @@ public abstract class L2Character extends L2Object
 				   if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100))
 				   {
 				             damage = 1;
-				             enemy.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS)); //SHIELD_DEFENCE faultless
+				             enemy.sendPacket(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS); //SHIELD_DEFENCE faultless
 				   }
 				    else
-				      enemy.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL));
+				      enemy.sendPacket(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL);
 				}*/
 			}
 			
@@ -5522,7 +5566,7 @@ public abstract class L2Character extends L2Object
 					_chanceSkills.onHit(target, damage, false, crit);
 					// Reflect triggers onHit
 					if (reflectedDamage > 0)
-						_chanceSkills.onHit(target, damage, true, false);
+						_chanceSkills.onHit(target, reflectedDamage, true, false);
 				}
 				
 				// Maybe launch chance skills on target
@@ -5588,7 +5632,7 @@ public abstract class L2Character extends L2Object
 				sendPacket(ActionFailed.STATIC_PACKET);
 				
 				// Send a system message
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ATTACK_FAILED));
+				sendPacket(SystemMessageId.ATTACK_FAILED);
 			}
 		}
 	}
@@ -5607,7 +5651,7 @@ public abstract class L2Character extends L2Object
 			if (this instanceof L2PcInstance)
 			{
 				// Send a system message
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CASTING_INTERRUPTED));
+				sendPacket(SystemMessageId.CASTING_INTERRUPTED);
 			}
 		}
 	}
@@ -5642,7 +5686,7 @@ public abstract class L2Character extends L2Object
 		if (isInsidePeaceZone(player))
 		{
 			// If L2Character or target is in a peace zone, send a system message TARGET_IN_PEACEZONE a Server->Client packet ActionFailed
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
+			player.sendPacket(SystemMessageId.TARGET_IN_PEACEZONE);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -5676,7 +5720,7 @@ public abstract class L2Character extends L2Object
 		// GeoData Los Check or dz > 1000
 		if (!GeoData.getInstance().canSeeTarget(player, this))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_SEE_TARGET));
+			player.sendPacket(SystemMessageId.CANT_SEE_TARGET);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -6081,7 +6125,7 @@ public abstract class L2Character extends L2Object
 		if (_skills == null)
 			return new L2Skill[0];
 		
-		return _skills.getValues(new L2Skill[_skills.size()]);
+		return _skills.values(new L2Skill[0]);
 	}
 	
 	public ChanceSkillList getChanceSkills()
@@ -6233,11 +6277,11 @@ public abstract class L2Character extends L2Object
 				if (this instanceof L2PcInstance)
 				{
 					if (_skiprange > 0)
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED));
+						sendPacket(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
 					else if (_skipgeo > 0)
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_SEE_TARGET));
+						sendPacket(SystemMessageId.CANT_SEE_TARGET);
 					else if (_skippeace > 0)
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.A_MALICIOUS_SKILL_CANNOT_BE_USED_IN_PEACE_ZONE));
+						sendPacket(SystemMessageId.A_MALICIOUS_SKILL_CANNOT_BE_USED_IN_PEACE_ZONE);
 				}
 				abortCast();
 				return;
@@ -6356,7 +6400,7 @@ public abstract class L2Character extends L2Object
 			{
 				if (mpConsume > getCurrentMp())
 				{
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+					sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 					abortCast();
 					return;
 				}
@@ -6653,7 +6697,7 @@ public abstract class L2Character extends L2Object
 		try
 		{
 			// Get the skill handler corresponding to the skill type (PDAM, MDAM, SWEEP...) started in gameserver
-			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
+			ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 			L2Weapon activeWeapon = getActiveWeaponItem();
 			
 			// Check if the toggle skill effects are already in progress on the L2Character
@@ -7493,5 +7537,10 @@ public abstract class L2Character extends L2Object
 	public boolean isAffected(int flag)
 	{
 		return _effects.isAffected(flag);
+	}
+	
+	public void broadcastSocialAction(int id)
+	{
+		broadcastPacket(new SocialAction(getObjectId(), id));
 	}
 }

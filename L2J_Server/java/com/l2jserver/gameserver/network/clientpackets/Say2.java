@@ -21,13 +21,12 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.ChatHandler;
 import com.l2jserver.gameserver.handler.IChatHandler;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 
@@ -138,7 +137,7 @@ public final class Say2 extends L2GameClientPacket
 		// Allow higher limit if player shift some item (text is longer then).
 		if (!activeChar.isGM() && ((_text.indexOf(8) >= 0 && _text.length() > 500) || (_text.indexOf(8) < 0 && _text.length() > 105)))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DONT_SPAM));
+			activeChar.sendPacket(SystemMessageId.DONT_SPAM);
 			return;
 		}
 		
@@ -150,7 +149,7 @@ public final class Say2 extends L2GameClientPacket
 		
 		if (activeChar.isCursedWeaponEquipped() && (_type == TRADE || _type == SHOUT))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SHOUT_AND_TRADE_CHAT_CANNOT_BE_USED_WHILE_POSSESSING_CURSED_WEAPON));
+			activeChar.sendPacket(SystemMessageId.SHOUT_AND_TRADE_CHAT_CANNOT_BE_USED_WHILE_POSSESSING_CURSED_WEAPON);
 			return;
 		}
 		
@@ -160,7 +159,7 @@ public final class Say2 extends L2GameClientPacket
 			{
 				if (_type == chatId)
 				{
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED));
+					activeChar.sendPacket(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED);
 					return;
 				}
 			}
@@ -200,7 +199,7 @@ public final class Say2 extends L2GameClientPacket
 		if (Config.USE_SAY_FILTER)
 			checkText();
 		
-		IChatHandler handler = ChatHandler.getInstance().getChatHandler(_type);
+		IChatHandler handler = ChatHandler.getInstance().getHandler(_type);
 		if (handler != null)
 			handler.handleChat(_type, activeChar, _target, _text);
 		else

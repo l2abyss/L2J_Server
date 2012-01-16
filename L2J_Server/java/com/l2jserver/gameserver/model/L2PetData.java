@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.ArrayList;
 import java.util.List;

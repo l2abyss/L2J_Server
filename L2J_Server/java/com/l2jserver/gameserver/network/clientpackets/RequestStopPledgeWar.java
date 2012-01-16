@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 
 
@@ -67,7 +66,7 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 		// Check if player who does the request has the correct rights to do it
 		if ((player.getClanPrivileges() & L2Clan.CP_CL_PLEDGE_WAR) != L2Clan.CP_CL_PLEDGE_WAR )
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;
 		}
 		
@@ -96,7 +95,7 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 				continue;
 			if (AttackStanceTaskManager.getInstance().getAttackStanceTask(member.getPlayerInstance()))
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_STOP_CLAN_WAR_WHILE_IN_COMBAT));
+				player.sendPacket(SystemMessageId.CANT_STOP_CLAN_WAR_WHILE_IN_COMBAT);
 				return;
 			}
 		}

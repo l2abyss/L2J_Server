@@ -164,8 +164,8 @@ public class CharInfo extends L2GameServerPacket
 				writeD(_walkSpd); // fly walk speed ?
 				writeF(_moveMultiplier);
 				writeF(_attackSpeedMultiplier);
-				writeF(template.fCollisionRadius);
-				writeF(template.fCollisionHeight);
+				writeF(template.getfCollisionRadius());
+				writeF(template.getfCollisionHeight());
 				writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_RHAND)); // right hand weapon
 				writeD(0);
 				writeD(_inv.getPaperdollItemId(Inventory.PAPERDOLL_LHAND)); // left hand weapon
@@ -213,8 +213,8 @@ public class CharInfo extends L2GameServerPacket
 				writeD(0);  // C2
 				writeC(0);  // C2
 				writeC(0x00);  // C3  team circle 1-blue, 2-red
-				writeF(template.fCollisionRadius);
-				writeF(template.fCollisionHeight);
+				writeF(template.getfCollisionRadius());
+				writeF(template.getfCollisionHeight());
 				writeD(0x00);  // C4
 				writeD(0x00);  // C6
 				writeD(0x00);
@@ -334,8 +334,8 @@ public class CharInfo extends L2GameServerPacket
 			
 			if (_activeChar.getMountType() != 0)
 			{
-				writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).fCollisionRadius);
-				writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).fCollisionHeight);
+				writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).getfCollisionRadius());
+				writeF(NpcTable.getInstance().getTemplate(_activeChar.getMountNpcId()).getfCollisionHeight());
 			}
 			else if (_activeChar.getTransformation() != null)
 			{
@@ -467,9 +467,6 @@ public class CharInfo extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -45,9 +45,6 @@ public class ShowMiniMap extends L2GameServerPacket
 		writeC(SevenSigns.getInstance().getCurrentPeriod());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

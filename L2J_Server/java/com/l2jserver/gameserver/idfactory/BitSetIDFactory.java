@@ -1,14 +1,4 @@
 /*
- * $Header: BitSetIDFactory.java, 24/08/2005 22:44:26 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 24/08/2005 22:44:26 $
- * $Revision: 1 $
- * $Log: BitSetIDFactory.java,v $
- * Revision 1  24/08/2005 22:44:26  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -32,13 +22,11 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.util.PrimeFinder;
 
-
 /**
  * This class ..
  *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
-
 public class BitSetIDFactory extends IdFactory
 {
 	private static Logger _log = Logger.getLogger(BitSetIDFactory.class.getName());
@@ -49,6 +37,7 @@ public class BitSetIDFactory extends IdFactory
 	
 	protected class BitSetCapacityCheck implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			synchronized (BitSetIDFactory.this)

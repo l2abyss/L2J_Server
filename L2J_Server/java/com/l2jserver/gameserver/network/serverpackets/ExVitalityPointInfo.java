@@ -28,9 +28,6 @@ public class ExVitalityPointInfo extends L2GameServerPacket
 		_vitalityPoints = vitPoints;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -39,9 +36,6 @@ public class ExVitalityPointInfo extends L2GameServerPacket
 		writeD(_vitalityPoints);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

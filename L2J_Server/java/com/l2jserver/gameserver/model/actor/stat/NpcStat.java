@@ -27,14 +27,14 @@ public class NpcStat extends CharStat
 	@Override
 	public byte getLevel()
 	{
-		return getActiveChar().getTemplate().level;
+		return getActiveChar().getTemplate().getLevel();
 	}
 	
 	@Override
 	public L2Npc getActiveChar() { return (L2Npc)super.getActiveChar(); }
 	
 	@Override
-	public int getWalkSpeed(){ return (int) calcStat(Stats.WALK_SPEED, getActiveChar().getTemplate().baseWalkSpd, null, null);}
+	public int getWalkSpeed(){ return (int) calcStat(Stats.WALK_SPEED, getActiveChar().getTemplate().getBaseWalkSpd(), null, null);}
 	
 	@Override
 	public float getMovementSpeedMultiplier()
@@ -42,7 +42,7 @@ public class NpcStat extends CharStat
 		if (getActiveChar() == null)
 			return 1;
 		if (getActiveChar().isRunning())
-			return getRunSpeed() * 1f / getActiveChar().getTemplate().baseRunSpd;
-		return getWalkSpeed() * 1f / getActiveChar().getTemplate().baseWalkSpd;
+			return getRunSpeed() * 1f / getActiveChar().getTemplate().getBaseRunSpd();
+		return getWalkSpeed() * 1f / getActiveChar().getTemplate().getBaseWalkSpd();
 	}
 }

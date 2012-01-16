@@ -590,7 +590,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 94<br>
-	 * Message: 2004-2009 (c) Copyright NCsoft Corporation. All Rights Reserved.
+	 * Message: 2004-2011 (c) NC Interactive, Inc. All Rights Reserved.
 	 */
 	public static final SystemMessageId COPYRIGHT;
 	
@@ -734,7 +734,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 118<br>
-	 * Message: You have requested a trade with $c1
+	 * Message: You have requested a trade with $c1.
 	 */
 	public static final SystemMessageId REQUEST_C1_FOR_TRADE;
 	
@@ -1865,7 +1865,35 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId CEASE_WAR_REQUEST_ACCEPTED;
 	
-	// 314  - 318 empty
+	/**
+	 * ID: 314<br>
+	 * Message: You have failed to surrender.
+	 */
+	public static final SystemMessageId FAILED_TO_SURRENDER;
+	
+	/**
+	 * ID: 315<br>
+	 * Message: You have failed to personally surrender.
+	 */
+	public static final SystemMessageId FAILED_TO_PERSONALLY_SURRENDER;
+	
+	/**
+	 * ID: 316<br>
+	 * Message: You have failed to withdraw from the party.
+	 */
+	public static final SystemMessageId FAILED_TO_WITHDRAW_FROM_THE_PARTY;
+	
+	/**
+	 * ID: 317<br>
+	 * Message: You have failed to expel the party member.
+	 */
+	public static final SystemMessageId FAILED_TO_EXPEL_THE_PARTY_MEMBER;
+	
+	/**
+	 * ID: 318<br>
+	 * Message: You have failed to disperse the party.
+	 */
+	public static final SystemMessageId FAILED_TO_DISPERSE_THE_PARTY;
 	
 	/**
 	 * ID: 319<br>
@@ -10095,7 +10123,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1734<br>
-	 * not belong another clan and not yet completed their 2nd class transfer.
+	 * Message: To join a Clan Academy, characters must be Level 40 or below, not belong another clan and not yet completed their 2nd class transfer.
 	 */
 	public static final SystemMessageId ACADEMY_REQUIREMENTS;
 	
@@ -11141,13 +11169,13 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1906<br>
-	 * Message: Select the combat unit
+	 * Message: Select the combat unit to transfer to.
 	 */
 	public static final SystemMessageId SELECT_COMBAT_UNIT;
 	
 	/**
 	 * ID: 1907<br>
-	 * Message: Select the character who will [...]
+	 * Message: Select the  character who will replace the current character.
 	 */
 	public static final SystemMessageId SELECT_CHARACTER_WHO_WILL;
 	
@@ -13386,6 +13414,12 @@ public final class SystemMessageId
 	public static final SystemMessageId NPCS_RECAPTURED_FORTRESS;
 	
 	/**
+	* ID: 2291<br>
+	* Message: You can operate the machine when you participate in the party.
+	*/
+	public static final SystemMessageId CAN_OPERATE_MACHINE_WHEN_IN_PARTY;
+	
+	/**
 	 * ID: 2293<br>
 	 * Message: Current location: $s1, $s2, $s3 (inside the Steel Citadel)
 	 */
@@ -14011,6 +14045,18 @@ public final class SystemMessageId
 	 * Message: You cannot control because you are too far.
 	 */
 	public static final SystemMessageId CANT_CONTROL_TOO_FAR;
+
+	/**
+	* ID: 2764<br>
+	* Message: You cannot enter because the corresponding alliance channel's maximum number of entrants has been reached.
+	*/
+	public static final SystemMessageId YOU_CANNOT_ENTER_BECAUSE_MAXIMUM_ENTRANTS;
+
+	/**
+	* ID: 2765<br>
+	* Message: Only the alliance channel leader can attempt entry.
+	*/
+	public static final SystemMessageId ONLY_ALLIANCE_CHANNEL_LEADER_CAN_ENTER;
 	
 	/**
 	 * ID: 2766<br>
@@ -14071,7 +14117,13 @@ public final class SystemMessageId
 	 * Message: You cannot teleport while in possession of a ward.
 	 */
 	public static final SystemMessageId YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD;
-	
+
+	/**
+	 * ID: 2793<br>
+	 * Message: You must have a minimum of ($s1) people to enter this Instant Zone. Your request for entry is denied
+ 	 */
+	public static final SystemMessageId YOU_MUST_HAVE_MINIMUM_OF_S1_PEOPLE_TO_ENTER;
+
 	/**
 	 * ID: 2795<br>
 	 * Message: You've already requested a territory war in another territory elsewhere.
@@ -14805,12 +14857,24 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM;
 	
+	/***
+	 * ID: 3226
+	 * Message: You cannot move while speaking to an NPC. One moment please.
+	 */
+	public static final SystemMessageId CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC;
+	
 	/**
 	 * ID: 3255<br>
 	 * Message: Arcane Shield decreased your MP by $1 instead of HP.
 	 */
 	public static final SystemMessageId ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP;
-
+	
+	/**
+	 * ID: 3259<br>
+	 * Message: You have acquired $s1 EXP (Bonus: $s2) and $s3 SP (Bonus: $s4).
+	 */
+	public static final SystemMessageId YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4;
+	
 	/**
 	 * ID: 3256<br>
 	 * Message: MP became 0 and the Arcane Shield is disappearing.
@@ -15158,6 +15222,11 @@ public final class SystemMessageId
 		CLAN_WAR_DECLARATION_ACCEPTED = new SystemMessageId(311);
 		CLAN_WAR_DECLARATION_REFUSED = new SystemMessageId(312);
 		CEASE_WAR_REQUEST_ACCEPTED = new SystemMessageId(313);
+		FAILED_TO_SURRENDER = new SystemMessageId(314);
+		FAILED_TO_PERSONALLY_SURRENDER = new SystemMessageId(315);
+		FAILED_TO_WITHDRAW_FROM_THE_PARTY = new SystemMessageId(316);
+		FAILED_TO_EXPEL_THE_PARTY_MEMBER = new SystemMessageId(317);
+		FAILED_TO_DISPERSE_THE_PARTY = new SystemMessageId(318);
 		UNABLE_TO_UNLOCK_DOOR = new SystemMessageId(319);
 		FAILED_TO_UNLOCK_DOOR = new SystemMessageId(320);
 		ITS_NOT_LOCKED = new SystemMessageId(321);
@@ -17053,6 +17122,7 @@ public final class SystemMessageId
 		USE_SHORTCUT_CONFIRM = new SystemMessageId(2272);
 		SKILL_NOT_FOR_SUBCLASS = new SystemMessageId(2273);
 		NPCS_RECAPTURED_FORTRESS = new SystemMessageId(2276);
+		CAN_OPERATE_MACHINE_WHEN_IN_PARTY = new SystemMessageId(2291);
 		LOC_IN_STEEL_CITADEL_S1_S2_S3 = new SystemMessageId(2293);
 		GAINED_VITALITY_POINTS = new SystemMessageId(2296);
 		LOC_STEEL_CITADEL = new SystemMessageId(2301);
@@ -17158,6 +17228,8 @@ public final class SystemMessageId
 		THE_S1_WARD_HAS_BEEN_DESTROYED_C2_HAS_THE_WARD = new SystemMessageId(2750);
 		THE_CHAR_THAT_ACQUIRED_S1_WARD_HAS_BEEN_KILLED = new SystemMessageId(2751);
 		CANT_CONTROL_TOO_FAR = new SystemMessageId(2762);
+		YOU_CANNOT_ENTER_BECAUSE_MAXIMUM_ENTRANTS = new SystemMessageId(2764);
+		ONLY_ALLIANCE_CHANNEL_LEADER_CAN_ENTER = new SystemMessageId(2765);
 		SEED_OF_INFINITY_STAGE_1_ATTACK_IN_PROGRESS = new SystemMessageId(2766);
 		SEED_OF_INFINITY_STAGE_2_ATTACK_IN_PROGRESS = new SystemMessageId(2767);
 		SEED_OF_INFINITY_CONQUEST_COMPLETE = new SystemMessageId(2768);
@@ -17168,6 +17240,7 @@ public final class SystemMessageId
 		SEED_OF_DESTRUCTION_DEFENSE_IN_PROGRESS = new SystemMessageId(2773);
 		THE_AIRSHIP_SUMMON_LICENSE_ENTERED = new SystemMessageId(2777);
 		YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD = new SystemMessageId(2778);
+		YOU_MUST_HAVE_MINIMUM_OF_S1_PEOPLE_TO_ENTER = new SystemMessageId(2793);
 		YOU_ALREADY_REQUESTED_TW_REGISTRATION = new SystemMessageId(2795);
 		THE_TERRITORY_OWNER_CLAN_CANNOT_PARTICIPATE_AS_MERCENARIES = new SystemMessageId(2796);
 		NOT_TERRITORY_REGISTRATION_PERIOD = new SystemMessageId(2797);
@@ -17289,8 +17362,10 @@ public final class SystemMessageId
 		CANNOT_ADD_YOUR_NAME_ON_CONTACT_LIST = new SystemMessageId(3221);
 		CONTACT_LIST_LIMIT_REACHED = new SystemMessageId(3222);
 		MAX_OLY_WEEKLY_MATCHES_REACHED = new SystemMessageId(3224);
-		MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM = new SystemMessageId(3225);		
+		MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM = new SystemMessageId(3225);
+		CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC = new SystemMessageId(3226);
 		ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP = new SystemMessageId(3255);
+		YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4 = new SystemMessageId(3259);
 		MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING = new SystemMessageId(3256);
 		YOU_HAVE_S1_MATCHES_REMAINING_THAT_YOU_CAN_PARTECIPATE_IN_THIS_WEEK_S2_CLASSED_S3_NON_CLASSED_S4_TEAM = new SystemMessageId(3261);
 		YOU_CANNOT_BOOKMARK_THIS_LOCATION_BECAUSE_YOU_DO_NOT_HAVE_A_MY_TELEPORT_FLAG = new SystemMessageId(6501);

@@ -1,14 +1,4 @@
 /*
- * $Header: MultiSellList.java, 2/08/2005 14:21:01 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 2/08/2005 14:21:01 $
- * $Revision: 1 $
- * $Log: MultiSellList.java,v $
- * Revision 1  2/08/2005 14:21:01  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later

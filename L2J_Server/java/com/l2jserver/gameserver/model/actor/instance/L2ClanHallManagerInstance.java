@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
@@ -27,11 +28,11 @@ import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2TeleportLocation;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
+import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
@@ -62,6 +63,9 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
+		if(getClanHall().isSiegableHall() && ((SiegableHall)getClanHall()).isInSiege())
+			return;
+		
 		int condition = validateCondition(player);
 		if (condition <= COND_ALL_FALSE)
 			return;
@@ -1330,7 +1334,10 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 			else if (actualCommand.equalsIgnoreCase("list_back"))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
-				html.setFile(player.getHtmlPrefix(), "data/html/clanHallManager/chamberlain.htm");
+				String file = "data/html/clanHallManager/chamberlain-"+getNpcId()+".htm";
+				if(!HtmCache.getInstance().isLoadable(file))
+					file = "data/html/clanHallManager/chamberlain.htm";
+				html.setFile(player.getHtmlPrefix(), file);
 				html.replace("%objectId%", String.valueOf(this.getObjectId()));
 				html.replace("%npcname%", this.getName());
 				sendHtmlMessage(player, html);
@@ -1371,7 +1378,11 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 		
 		int condition = validateCondition(player);
 		if (condition == COND_OWNER)
-			filename = "data/html/clanHallManager/chamberlain.htm";// Owner message window
+		{
+			filename = "data/html/clanHallManager/chamberlain-"+getNpcId()+".htm";
+			if(!HtmCache.getInstance().isLoadable(filename))
+				filename = "data/html/clanHallManager/chamberlain.htm";// Owner message window
+		}
 		else if (condition == COND_OWNER_FALSE)
 			filename = "data/html/clanHallManager/chamberlain-of.htm";
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
@@ -1422,7 +1433,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 		{
 			if (player.isCombatFlagEquipped())
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD));
+				player.sendPacket(SystemMessageId.YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD);
 				return;
 			}
 			else if (player.destroyItemByItemId("Teleport", list.getItemId(), list.getPrice(), this, true))

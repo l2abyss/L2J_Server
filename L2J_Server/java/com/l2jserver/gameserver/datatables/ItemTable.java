@@ -32,20 +32,20 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Item;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.instance.L2EventMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.L2Armor;
+import com.l2jserver.gameserver.model.item.L2EtcItem;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.item.type.L2ArmorType;
+import com.l2jserver.gameserver.model.item.type.L2WeaponType;
 import com.l2jserver.gameserver.skills.SkillsEngine;
-import com.l2jserver.gameserver.templates.item.L2Armor;
-import com.l2jserver.gameserver.templates.item.L2ArmorType;
-import com.l2jserver.gameserver.templates.item.L2EtcItem;
-import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
@@ -451,6 +451,7 @@ public class ItemTable
 			_item = item;
 		}
 		
+		@Override
 		public void run()
 		{
 			_item.setOwnerId(0);

@@ -16,8 +16,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.entity.Message;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 
 /**
@@ -44,9 +44,6 @@ public class ExReplyReceivedPost extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -104,9 +101,6 @@ public class ExReplyReceivedPost extends L2GameServerPacket
 		_msg = null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

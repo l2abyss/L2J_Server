@@ -41,7 +41,7 @@ import com.l2jserver.util.Rnd;
  *
  * @version $Revision: 1.11.2.1.2.7 $ $Date: 2005/04/06 16:13:40 $
  */
-public final class L2GuardInstance extends L2Attackable
+public class L2GuardInstance extends L2Attackable
 {
 	private static Logger _log = Logger.getLogger(L2GuardInstance.class.getName());
 	
@@ -49,6 +49,7 @@ public final class L2GuardInstance extends L2Attackable
 	
 	public class ReturnTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			if(getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
@@ -216,7 +217,7 @@ public final class L2GuardInstance extends L2Attackable
 				{
 					// Send a Server->Client packet SocialAction to the all L2PcInstance on the _knownPlayer of the L2NpcInstance
 					// to display a social action of the L2GuardInstance on their client
-					SocialAction sa = new SocialAction(this, Rnd.nextInt(8));
+					SocialAction sa = new SocialAction(getObjectId(), Rnd.nextInt(8));
 					broadcastPacket(sa);
 					
 					// Open a chat window on client with the text of the L2GuardInstance

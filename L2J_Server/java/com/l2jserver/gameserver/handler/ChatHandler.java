@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.logging.Logger;
 
@@ -29,7 +29,7 @@ public class ChatHandler
 {
 	private static Logger _log = Logger.getLogger(ChatHandler.class.getName());
 	
-	private TIntObjectHashMap<IChatHandler> _datatable;
+	private final TIntObjectHashMap<IChatHandler> _datatable;
 	
 	public static ChatHandler getInstance()
 	{
@@ -48,7 +48,7 @@ public class ChatHandler
 	 * Register a new chat handler
 	 * @param handler
 	 */
-	public void registerChatHandler(IChatHandler handler)
+	public void registerHandler(IChatHandler handler)
 	{
 		int[] ids = handler.getChatTypeList();
 		for (int i = 0; i < ids.length; i++)
@@ -64,7 +64,7 @@ public class ChatHandler
 	 * @param chatType
 	 * @return
 	 */
-	public IChatHandler getChatHandler(int chatType)
+	public IChatHandler getHandler(int chatType)
 	{
 		return _datatable.get(chatType);
 	}

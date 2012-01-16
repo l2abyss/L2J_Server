@@ -17,7 +17,7 @@ package com.l2jserver.log;
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 
 /**
@@ -33,6 +33,7 @@ public class ItemFilter implements Filter
 	private String _excludeProcess = "Consume";
 	private String _excludeItemType = "Arrow, Shot, Herb";
 	
+	@Override
 	public boolean isLoggable(LogRecord record)
 	{
 		if (!"item".equals(record.getLoggerName())) return false;

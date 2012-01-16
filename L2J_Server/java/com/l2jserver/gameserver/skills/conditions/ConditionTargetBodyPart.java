@@ -14,10 +14,10 @@
  */
 package com.l2jserver.gameserver.skills.conditions;
 
+import com.l2jserver.gameserver.model.item.L2Armor;
+import com.l2jserver.gameserver.model.item.L2Item;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.templates.item.L2Armor;
-import com.l2jserver.gameserver.templates.item.L2Item;
 
 /**
  * The Class ConditionTargetBodyPart.
@@ -39,9 +39,6 @@ public class ConditionTargetBodyPart extends Condition
 		_armor = armor;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

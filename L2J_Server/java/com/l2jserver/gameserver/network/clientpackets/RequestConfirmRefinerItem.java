@@ -14,11 +14,10 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPutIntensiveResultForVariationMake;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Fromat(ch) dd
@@ -56,7 +55,7 @@ public class RequestConfirmRefinerItem extends AbstractRefinePacket
 		
 		if (!isValid(activeChar, targetItem, refinerItem))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM));
+			activeChar.sendPacket(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM);
 			return;
 		}
 		

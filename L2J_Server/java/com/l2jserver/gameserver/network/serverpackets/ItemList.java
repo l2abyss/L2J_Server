@@ -18,8 +18,8 @@ import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 
 
@@ -153,9 +153,6 @@ public final class ItemList extends L2GameServerPacket
 			writeH(0x00);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

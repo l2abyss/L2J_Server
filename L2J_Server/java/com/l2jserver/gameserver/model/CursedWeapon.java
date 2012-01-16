@@ -31,6 +31,8 @@ import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.Earthquake;
 import com.l2jserver.gameserver.network.serverpackets.ExRedSky;
@@ -39,7 +41,6 @@ import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
@@ -238,6 +239,7 @@ public class CursedWeapon
 		{
 		}
 		
+		@Override
 		public void run()
 		{
 			if (System.currentTimeMillis() >= getEndTime())
@@ -352,6 +354,7 @@ public class CursedWeapon
 			
 			ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
 			{
+				@Override
 				public void run()
 				{
 					TransformationManager.getInstance().transformPlayer(transformationId, _player);
@@ -462,7 +465,7 @@ public class CursedWeapon
 		// Refresh player stats
 		_player.broadcastUserInfo();
 		
-		SocialAction atk = new SocialAction(_player, 17);
+		SocialAction atk = new SocialAction(_player.getObjectId(), 17);
 		
 		_player.broadcastPacket(atk);
 		

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,18 +33,14 @@ import com.l2jserver.gameserver.model.L2NpcWalkerNode;
 import com.l2jserver.gameserver.network.NpcStringId;
 
 /**
- * Main Table to Load Npc Walkers Routes and Chat SQL Table.<br>
- * 
- * @author Rayan RPG for L2Emu Project, JIV
- * 
- * @since 927
- *
+ * Main Table to Load Npc Walkers Routes and Chat.<br>
+ * @author Rayan, JIV
  */
 public class NpcWalkerRoutesTable
 {
-	private final static Logger _log = Logger.getLogger(SpawnTable.class.getName());
+	private final static Logger _log = Logger.getLogger(NpcWalkerRoutesTable.class.getName());
 	
-	private TIntObjectHashMap<List<L2NpcWalkerNode>> _routes = new TIntObjectHashMap<List<L2NpcWalkerNode>>();
+	private final TIntObjectHashMap<List<L2NpcWalkerNode>> _routes = new TIntObjectHashMap<List<L2NpcWalkerNode>>();
 	
 	public static NpcWalkerRoutesTable getInstance()
 	{
@@ -77,6 +73,7 @@ public class NpcWalkerRoutesTable
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Could not parse WalkerRoutes.xml file: " + e.getMessage(), e);
+				return;
 			}
 			
 			Node n = doc.getFirstChild();
@@ -100,7 +97,9 @@ public class NpcWalkerRoutesTable
 							NpcStringId npcString = null;
 							Node node = attrs.getNamedItem("string");
 							if (node != null)
+							{
 								chatString = node.getNodeValue();
+							}
 							else
 							{
 								node = attrs.getNamedItem("npcString");
@@ -132,14 +131,13 @@ public class NpcWalkerRoutesTable
 							list.add(new L2NpcWalkerNode(id, npcString, chatString, x, y, z, delay, running));
 						}
 					}
+					
+					// ArrayList has initial capacity of 10, let's trim them to size before putting it into the map.
+					((ArrayList<L2NpcWalkerNode>) list).trimToSize();
 					_routes.put(npcId, list);
 				}
 			}
 		}
-		
-		for (Object list : _routes.getValues())
-			((ArrayList<?>)list).trimToSize();
-		
 		_log.info("WalkerRoutesTable: Loaded " + _routes.size() + " Npc Walker Routes.");
 	}
 	
@@ -152,10 +150,5 @@ public class NpcWalkerRoutesTable
 	private static class SingletonHolder
 	{
 		protected static final NpcWalkerRoutesTable _instance = new NpcWalkerRoutesTable();
-	}
-	
-	public static void main(String... arg)
-	{
-		getInstance().load();
 	}
 }

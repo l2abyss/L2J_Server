@@ -52,13 +52,9 @@ public class BlowFishKey extends BaseSendablePacket
 		writeB(encrypted);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
-	 */
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }

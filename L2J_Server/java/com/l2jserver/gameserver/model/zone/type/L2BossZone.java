@@ -67,7 +67,7 @@ public class L2BossZone extends L2ZoneType
 		{
 			_timeInvade = Integer.parseInt(value);
 		}
-		else if (name.equals("EnabledByDefault"))
+		else if (name.equals("default_enabled"))
 		{
 			_enabled = Boolean.parseBoolean(value);
 		}
@@ -110,8 +110,6 @@ public class L2BossZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				final L2PcInstance player = (L2PcInstance)character;
-				
-				player.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 				if (player.isGM())
 					return;
 				// if player has been (previously) cleared by npc/ai for entry and the zone is
@@ -172,7 +170,6 @@ public class L2BossZone extends L2ZoneType
 			if (character instanceof L2PcInstance)
 			{
 				final L2PcInstance player = (L2PcInstance) character;
-				player.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 				if (player.isGM())
 					return;
 				// if the player just got disconnected/logged out, store the dc

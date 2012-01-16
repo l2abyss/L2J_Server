@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 /**
  * 16
@@ -74,13 +74,9 @@ public class DropItem extends L2GameServerPacket
 		writeD(1); // unknown
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__16_DROPITEM;
 	}
-	
 }

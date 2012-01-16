@@ -217,6 +217,7 @@ public class L2SiegeFlagInstance extends L2Npc
 		
 		public ScheduleTalkTask() {}
 		
+		@Override
 		public void run()
 		{
 			setCanTalk(true);

@@ -185,6 +185,7 @@ public class Duel
 			_duel = duel;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -222,6 +223,7 @@ public class Duel
 			_duel = duel;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -264,6 +266,7 @@ public class Duel
 			_result = result;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -655,10 +658,10 @@ public class Duel
 		if (_partyDuel && looser.getParty() != null)
 		{
 			for (L2PcInstance temp : looser.getParty().getPartyMembers())
-				temp.broadcastPacket(new SocialAction(temp, 7));
+				temp.broadcastPacket(new SocialAction(temp.getObjectId(), 7));
 		}
 		else
-			looser.broadcastPacket(new SocialAction(looser, 7));
+			looser.broadcastPacket(new SocialAction(looser.getObjectId(), 7));
 	}
 	
 	/**

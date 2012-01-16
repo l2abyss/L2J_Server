@@ -128,7 +128,7 @@ public class GmListTable
 	{
 		if (isGmOnline(player.isGM()))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.GM_LIST));
+			player.sendPacket(SystemMessageId.GM_LIST);
 			
 			for (String name : getAllGmNames(player.isGM()))
 			{
@@ -138,7 +138,7 @@ public class GmListTable
 			}
 		}
 		else
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_GM_PROVIDING_SERVICE_NOW));
+			player.sendPacket(SystemMessageId.NO_GM_PROVIDING_SERVICE_NOW);
 	}
 	
 	public static void broadcastToGMs(L2GameServerPacket packet)

@@ -24,31 +24,31 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.templates.L2HelperBuff;
-import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.gameserver.model.L2HelperBuff;
+import com.l2jserver.gameserver.model.StatsSet;
 
 /**
  * This class represents the Newbie Helper Buff list
- *
- * Author: Ayor
- *
+ * @author Ayor
  */
-
 public class HelperBuffTable
 {
-	
-	private static Logger _log = Logger.getLogger(HennaTable.class.getName());
+	private static Logger _log = Logger.getLogger(HelperBuffTable.class.getName());
 	
 	/** The table containing all Buff of the Newbie Helper */
-	private List<L2HelperBuff> _helperBuff;
+	private final List<L2HelperBuff> _helperBuff;
 	
-	/** The player level since Newbie Helper can give the fisrt buff <BR>
-	 *  Used to generate message : "Come back here when you have reached level ...") */
+	/**
+	 * The player level since Newbie Helper can give the fisrt buff <BR>
+	 * Used to generate message : "Come back here when you have reached level ...")
+	 */
 	private int _magicClassLowestLevel = 100;
 	private int _physicClassLowestLevel = 100;
 	
-	/** The player level above which Newbie Helper won't give any buff <BR>
-	 *  Used to generate message : "Only novice character of level ... or less can receive my support magic.") */
+	/**
+	 * The player level above which Newbie Helper won't give any buff <BR>
+	 * Used to generate message : "Only novice character of level ... or less can receive my support magic.")
+	 */
 	private int _magicClassHighestLevel = 1;
 	private int _physicClassHighestLevel = 1;
 	
@@ -99,8 +99,8 @@ public class HelperBuffTable
 	
 	/**
 	 * Load the Newbie Helper Buff list from SQL Table helper_buff_list
-	 * @param HelperBuffData 
-	 * @throws Exception 
+	 * @param HelperBuffData
+	 * @throws Exception
 	 */
 	private void fillHelperBuffTable(ResultSet HelperBuffData) throws Exception
 	{
@@ -122,26 +122,38 @@ public class HelperBuffTable
 			if ("false".equals(HelperBuffData.getString("is_magic_class")))
 			{
 				if (HelperBuffData.getInt("lower_level") < _physicClassLowestLevel)
+				{
 					_physicClassLowestLevel = HelperBuffData.getInt("lower_level");
+				}
 				
 				if (HelperBuffData.getInt("upper_level") > _physicClassHighestLevel)
+				{
 					_physicClassHighestLevel = HelperBuffData.getInt("upper_level");
+				}
 			}
 			else
 			{
 				if (HelperBuffData.getInt("lower_level") < _magicClassLowestLevel)
+				{
 					_magicClassLowestLevel = HelperBuffData.getInt("lower_level");
+				}
 				
 				if (HelperBuffData.getInt("upper_level") > _magicClassHighestLevel)
+				{
 					_magicClassHighestLevel = HelperBuffData.getInt("upper_level");
+				}
 			}
 			if ("true".equals(HelperBuffData.getString("forSummon")))
 			{
 				if (HelperBuffData.getInt("lower_level") < _servitorLowestLevel)
+				{
 					_servitorLowestLevel = HelperBuffData.getInt("lower_level");
+				}
 				
 				if (HelperBuffData.getInt("upper_level") > _servitorHighestLevel)
+				{
 					_servitorHighestLevel = HelperBuffData.getInt("upper_level");
+				}
 			}
 			// Add this Helper Buff to the Helper Buff List
 			L2HelperBuff template = new L2HelperBuff(helperBuffDat);
@@ -201,7 +213,7 @@ public class HelperBuffTable
 	}
 	
 	/**
-	  @return Returns the servitorHighestLevel.
+	 * @return Returns the servitorHighestLevel.
 	 */
 	public int getServitorHighestLevel()
 	{

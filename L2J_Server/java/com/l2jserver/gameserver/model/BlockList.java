@@ -1,14 +1,4 @@
 /*
- * $Header: BlockList.java, 21/11/2005 14:53:53 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 21/11/2005 14:53:53 $
- * $Revision: 1 $
- * $Log: BlockList.java,v $
- * Revision 1  21/11/2005 14:53:53  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -46,11 +36,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  * 
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
-
 public class BlockList
 {
 	private static Logger _log = Logger.getLogger(BlockList.class.getName());
-	private static Map<Integer, List<Integer>> _offlineList = new FastMap<Integer, List<Integer>>();
+	private static Map<Integer, List<Integer>> _offlineList = new FastMap<Integer, List<Integer>>().shared();
 	
 	private final L2PcInstance _owner;
 	private List<Integer> _blockList;
@@ -63,13 +52,13 @@ public class BlockList
 			_blockList = loadList(_owner.getObjectId());
 	}
 	
-	private synchronized void addToBlockList(int target)
+	private void addToBlockList(int target)
 	{
 		_blockList.add(target);
 		updateInDB(target, true);
 	}
 	
-	private synchronized void removeFromBlockList(int target)
+	private void removeFromBlockList(int target)
 	{
 		_blockList.remove(Integer.valueOf(target));
 		updateInDB(target, false);

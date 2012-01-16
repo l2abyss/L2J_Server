@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.itemauction;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,13 +39,13 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.instancemanager.ItemAuctionManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.util.Rnd;
 
 public final class ItemAuctionInstance
@@ -212,7 +212,7 @@ public final class ItemAuctionInstance
 	
 	final void checkAndSetCurrentAndNextAuction()
 	{
-		final ItemAuction[] auctions = _auctions.getValues(new ItemAuction[_auctions.size()]);
+		final ItemAuction[] auctions = _auctions.values(new ItemAuction[0]);
 		
 		ItemAuction currentAuction = null;
 		ItemAuction nextAuction = null;
@@ -354,7 +354,7 @@ public final class ItemAuctionInstance
 		
 		synchronized (_auctions)
 		{
-			auctions = _auctions.getValues(new ItemAuction[_auctions.size()]);
+			auctions = _auctions.values(new ItemAuction[0]);
 		}
 		
 		return auctions;
@@ -471,7 +471,7 @@ public final class ItemAuctionInstance
 			if (player != null)
 			{
 				player.getWarehouse().addItem("ItemAuction", item, null, null);
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WON_BID_ITEM_CAN_BE_FOUND_IN_WAREHOUSE));
+				player.sendPacket(SystemMessageId.WON_BID_ITEM_CAN_BE_FOUND_IN_WAREHOUSE);
 				
 				_log.log(Level.INFO, "L2ItemAuctionInstance: Auction " + auction.getAuctionId() + " has finished. Highest bid by " + player.getName() + " for instance " + _instanceId);
 			}

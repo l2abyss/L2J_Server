@@ -23,11 +23,9 @@ import com.l2jserver.gameserver.ai.L2SummonAI;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Attackable.AggroInfo;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
@@ -39,6 +37,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.SummonKnownList;
 import com.l2jserver.gameserver.model.actor.stat.SummonStat;
 import com.l2jserver.gameserver.model.actor.status.SummonStatus;
+import com.l2jserver.gameserver.model.item.L2EtcItem;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -57,8 +58,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.item.L2EtcItem;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 public abstract class L2Summon extends L2Playable
 {
@@ -123,13 +123,15 @@ public abstract class L2Summon extends L2Playable
 			
 			this.setFollowStatus(true);
 			updateAndBroadcastStatus(0);
-			getOwner().sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
+			sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
 			for (L2PcInstance player : getOwner().getKnownList().getKnownPlayersInRadius(800))
+			{
 				player.sendPacket(new RelationChanged(this, getOwner().getRelation(player), isAutoAttackable(player)));
+			}
 			L2Party party = this.getOwner().getParty();
 			if (party != null)
 			{
-				party.broadcastToPartyMembers(this.getOwner(), new ExPartyPetWindowAdd(this));
+				party.broadcastToPartyMembers(getOwner(), new ExPartyPetWindowAdd(this));
 			}
 		}
 		setShowSummonAnimation(false); // addVisibleObject created the info packets with summon animation
@@ -270,7 +272,7 @@ public abstract class L2Summon extends L2Playable
 	
 	public final int getNpcId()
 	{
-		return getTemplate().npcId;
+		return getTemplate().getNpcId();
 	}
 	
 	public int getMaxLoad()
@@ -410,7 +412,7 @@ public abstract class L2Summon extends L2Playable
 			if (getInventory() != null && getInventory().getSize() > 0)
 			{
 				getOwner().setPetInvItems(true);
-				getOwner().sendPacket(SystemMessageId.ITEMS_IN_PET_INVENTORY);
+				sendPacket(SystemMessageId.ITEMS_IN_PET_INVENTORY);
 			}
 			else
 				getOwner().setPetInvItems(false);
@@ -630,8 +632,7 @@ public abstract class L2Summon extends L2Playable
 		// Check the validity of the target
 		if (target == null)
 		{
-			if (getOwner() != null)
-				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_CANT_FOUND));
+			sendPacket(SystemMessageId.TARGET_CANT_FOUND);
 			return false;
 		}
 		
@@ -640,8 +641,7 @@ public abstract class L2Summon extends L2Playable
 		// Check if this skill is enabled (e.g. reuse time)
 		if (isSkillDisabled(skill))
 		{
-			if (getOwner() != null)
-				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING));
+			sendPacket(SystemMessageId.PET_SKILL_CANNOT_BE_USED_RECHARCHING);
 			return false;
 		}
 		
@@ -651,8 +651,7 @@ public abstract class L2Summon extends L2Playable
 		if (getCurrentMp() < getStat().getMpConsume(skill) + getStat().getMpInitialConsume(skill))
 		{
 			// Send a System Message to the caster
-			if (getOwner() != null)
-				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+			sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 			return false;
 		}
 		
@@ -660,8 +659,7 @@ public abstract class L2Summon extends L2Playable
 		if (getCurrentHp() <= skill.getHpConsume())
 		{
 			// Send a System Message to the caster
-			if (getOwner() != null)
-				getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_HP));
+			sendPacket(SystemMessageId.NOT_ENOUGH_HP);
 			return false;
 		}
 		
@@ -673,7 +671,7 @@ public abstract class L2Summon extends L2Playable
 			if (isInsidePeaceZone(this, target) && getOwner() != null && (!getOwner().getAccessLevel().allowPeaceAttack()))
 			{
 				// If summon or target is in a peace zone, send a system message TARGET_IN_PEACEZONE
-				sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IN_PEACEZONE));
+				sendPacket(SystemMessageId.TARGET_IN_PEACEZONE);
 				return false;
 			}
 			
@@ -688,9 +686,9 @@ public abstract class L2Summon extends L2Playable
 			{
 				//
 				if (TerritoryWarManager.getInstance().isTWInProgress())
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY));
+					sendPacket(SystemMessageId.YOU_CANNOT_ATTACK_A_MEMBER_OF_THE_SAME_TERRITORY);
 				else
-					sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+					sendPacket(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return false;
 			}
@@ -709,7 +707,7 @@ public abstract class L2Summon extends L2Playable
 				}
 				
 				// Check if a Forced ATTACK is in progress on non-attackable target
-				if (!target.isAutoAttackable(this) && !forceUse && skill.getTargetType() != SkillTargetType.TARGET_AURA && skill.getTargetType() != SkillTargetType.TARGET_FRONT_AURA && skill.getTargetType() != SkillTargetType.TARGET_BEHIND_AURA && skill.getTargetType() != SkillTargetType.TARGET_CLAN && skill.getTargetType() != SkillTargetType.TARGET_ALLY && skill.getTargetType() != SkillTargetType.TARGET_PARTY && skill.getTargetType() != SkillTargetType.TARGET_SELF)
+				if (!target.isAutoAttackable(this) && !forceUse && skill.getTargetType() != L2TargetType.TARGET_AURA && skill.getTargetType() != L2TargetType.TARGET_FRONT_AURA && skill.getTargetType() != L2TargetType.TARGET_BEHIND_AURA && skill.getTargetType() != L2TargetType.TARGET_CLAN && skill.getTargetType() != L2TargetType.TARGET_ALLY && skill.getTargetType() != L2TargetType.TARGET_PARTY && skill.getTargetType() != L2TargetType.TARGET_SELF)
 				{
 					return false;
 				}
@@ -755,9 +753,9 @@ public abstract class L2Summon extends L2Playable
 		{
 			if (pcrit || mcrit)
 				if (this instanceof L2SummonInstance)
-					getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB));
+					sendPacket(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB);
 				else
-					getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CRITICAL_HIT_BY_PET));
+					sendPacket(SystemMessageId.CRITICAL_HIT_BY_PET);
 			
 			if (getOwner().isInOlympiadMode() && target instanceof L2PcInstance && ((L2PcInstance) target).isInOlympiadMode() && ((L2PcInstance) target).getOlympiadGameId() == getOwner().getOlympiadGameId())
 			{
@@ -776,7 +774,7 @@ public abstract class L2Summon extends L2Playable
 				sm.addNumber(damage);
 			}
 			
-			getOwner().sendPacket(sm);
+			sendPacket(sm);
 		}
 	}
 	
@@ -790,7 +788,7 @@ public abstract class L2Summon extends L2Playable
 			sm.addNpcName(this);
 			sm.addCharName(attacker);
 			sm.addNumber((int) damage);
-			getOwner().sendPacket(sm);
+			sendPacket(sm);
 		}
 	}
 	
@@ -802,7 +800,7 @@ public abstract class L2Summon extends L2Playable
 		if (!actingPlayer.checkPvpSkill(getTarget(), skill, true) && !actingPlayer.getAccessLevel().allowPeaceAttack())
 		{
 			// Send a System Message to the L2PcInstance
-			actingPlayer.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_INCORRECT));
+			actingPlayer.sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 			
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			actingPlayer.sendPacket(ActionFailed.STATIC_PACKET);
@@ -847,16 +845,16 @@ public abstract class L2Summon extends L2Playable
 		if (getOwner() == null)
 			return;
 		
-		getOwner().sendPacket(new PetInfo(this, val));
-		getOwner().sendPacket(new PetStatusUpdate(this));
+		sendPacket(new PetInfo(this, val));
+		sendPacket(new PetStatusUpdate(this));
 		if (isVisible())
 		{
 			broadcastNpcInfo(val);
 		}
-		L2Party party = this.getOwner().getParty();
+		L2Party party = getOwner().getParty();
 		if (party != null)
 		{
-			party.broadcastToPartyMembers(this.getOwner(), new ExPartyPetWindowUpdate(this));
+			party.broadcastToPartyMembers(getOwner(), new ExPartyPetWindowUpdate(this));
 		}
 		updateEffectIcons(true);
 	}
@@ -911,14 +909,11 @@ public abstract class L2Summon extends L2Playable
 			activeChar.sendPacket(new AbstractNpcInfo.SummonInfo(this, activeChar, 0));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Character#onTeleported()
-	 */
 	@Override
 	public void onTeleported()
 	{
 		super.onTeleported();
-		getOwner().sendPacket(new TeleportToLocation(this, getPosition().getX(), getPosition().getY(), getPosition().getZ(), getPosition().getHeading()));
+		sendPacket(new TeleportToLocation(this, getPosition().getX(), getPosition().getY(), getPosition().getZ(), getPosition().getHeading()));
 	}
 	
 	@Override
@@ -931,5 +926,19 @@ public abstract class L2Summon extends L2Playable
 	public boolean isUndead()
 	{
 		return getTemplate().isUndead();
+	}
+	
+	@Override
+	public void sendPacket(L2GameServerPacket mov)
+	{
+		if (getOwner() != null)
+			getOwner().sendPacket(mov);
+	}
+	
+	@Override
+	public void sendPacket(SystemMessageId id)
+	{
+		if (getOwner() != null)
+			getOwner().sendPacket(id);
 	}
 }

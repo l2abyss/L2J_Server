@@ -24,9 +24,6 @@ public class ExShowQuestInfo extends L2GameServerPacket
 {
 	private static final String _S__FE_19_EXQUESTINFO = "[S] FE:20 EXQUESTINFO";
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -34,9 +31,6 @@ public class ExShowQuestInfo extends L2GameServerPacket
 		writeH(0x20);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

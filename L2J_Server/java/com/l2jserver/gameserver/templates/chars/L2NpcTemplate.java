@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.templates.chars;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.List;
 import java.util.Map;
@@ -29,100 +29,88 @@ import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2XmassTreeInstance;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 
 /**
- * This cl contains all generic data of a L2Spawn object.<BR><BR>
- *
- * <B><U> Data</U> :</B><BR><BR>
- * <li>npcId, type, name, sex</li>
- * <li>rewardExp, rewardSp</li>
- * <li>aggroRange, factionId, factionRange</li>
- * <li>rhand, lhand</li>
- * <li>isUndead</li>
- * <li>_drops</li>
- * <li>_minions</li>
- * <li>_teachInfo</li>
- * <li>_skills</li>
- * <li>_questsStart</li><BR><BR>
- *
- * @version $Revision: 1.1.2.4 $ $Date: 2005/04/02 15:57:51 $
+ * @author Zoey76
  */
 public final class L2NpcTemplate extends L2CharTemplate
 {
-	protected static final Logger _log = Logger.getLogger(Quest.class.getName());
+	private static final Logger _log = Logger.getLogger(L2NpcTemplate.class.getName());
 	
-	public final int npcId;
-	public final int idTemplate;
-	public final String type;
-	public final String name;
-	public final boolean serverSideName;
-	public final String title;
-	public final boolean serverSideTitle;
-	public final String sex;
-	public final byte level;
-	public final int rewardExp;
-	public final int rewardSp;
-	public final int aggroRange;
-	public final int rhand;
-	public final int lhand;
-	public final int enchantEffect;
-	public Race race;
-	public final String jClass;
-	public final int dropherbgroup;
-	public boolean isQuestMonster; // doesn't include all mobs that are involved in
-	// quests, just plain quest monsters for preventing champion spawn
-	public final float baseVitalityDivider;
+	private final int _npcId;
+	private final int _idTemplate;
+	private final String _type;
+	private final String _name;
+	private final boolean _serverSideName;
+	private final String _title;
+	private final boolean _serverSideTitle;
+	private final String _sex;
+	private final byte _level;
+	private final int _rewardExp;
+	private final int _rewardSp;
+	private final int _rHand;
+	private final int _lHand;
+	private final int _enchantEffect;
 	
-	//Skill AI
-	public FastList<L2Skill> _buffskills;
-	public FastList<L2Skill> _negativeskills;
-	public FastList<L2Skill> _debuffskills;
-	public FastList<L2Skill> _atkskills;
-	public FastList<L2Skill> _rootskills;
-	public FastList<L2Skill> _stunskills;
-	public FastList<L2Skill> _sleepskills;
-	public FastList<L2Skill> _paralyzeskills;
-	public FastList<L2Skill> _fossilskills;
-	public FastList<L2Skill> _floatskills;
-	public FastList<L2Skill> _immobiliseskills;
-	public FastList<L2Skill> _healskills;
-	public FastList<L2Skill> _resskills;
-	public FastList<L2Skill> _dotskills;
-	public FastList<L2Skill> _cotskills;
-	public FastList<L2Skill> _universalskills;
-	public FastList<L2Skill> _manaskills;
-	public FastList<L2Skill> _Lrangeskills;
-	public FastList<L2Skill> _Srangeskills;
-	public FastList<L2Skill> _generalskills;
-	private FastList<L2Skill> _suicideSkills;
+	private Race _race;
+	private final String _clientClass;
 	
-	private boolean _hasbuffskills;
-	private boolean _hasnegativeskills;
-	private boolean _hasdebuffskills;
-	private boolean _hasatkskills;
-	private boolean _hasrootskills;
-	private boolean _hasstunskills;
-	private boolean _hassleepskills;
-	private boolean _hasparalyzeskills;
-	private boolean _hasfossilskills;
-	private boolean _hasfloatskills;
-	private boolean _hasimmobiliseskills;
-	private boolean _hashealskills;
-	private boolean _hasresskills;
-	private boolean _hasdotskills;
-	private boolean _hascotskills;
-	private boolean _hasuniversalskills;
-	private boolean _hasmanaskills;
-	private boolean _hasLrangeskills;
-	private boolean _hasSrangeskills;
-	private boolean _hasgeneralskills;
-	private boolean _hasSuicideSkills;
+	private final int _dropHerbGroup;
+	private final boolean _isCustom;
+	/**
+	 * Doesn't include all mobs that are involved in quests, just plain quest monsters for preventing champion spawn.
+	 */
+	private final boolean _isQuestMonster;
+	private final float _baseVitalityDivider;
+	
+	// Skill AI
+	private final FastList<L2Skill> _buffSkills = new FastList<>();
+	private final FastList<L2Skill> _negativeSkills = new FastList<>();
+	private final FastList<L2Skill> _debuffSkills = new FastList<>();
+	private final FastList<L2Skill> _atkSkills = new FastList<>();
+	private final FastList<L2Skill> _rootSkills = new FastList<>();
+	private final FastList<L2Skill> _stunskills = new FastList<>();
+	private final FastList<L2Skill> _sleepSkills = new FastList<>();
+	private final FastList<L2Skill> _paralyzeSkills = new FastList<>();
+	private final FastList<L2Skill> _fossilSkills = new FastList<>();
+	private final FastList<L2Skill> _floatSkills = new FastList<>();
+	private final FastList<L2Skill> _immobilizeSkills = new FastList<>();
+	private final FastList<L2Skill> _healSkills = new FastList<>();
+	private final FastList<L2Skill> _resSkills = new FastList<>();
+	private final FastList<L2Skill> _dotSkills = new FastList<>();
+	private final FastList<L2Skill> _cotSkills = new FastList<>();
+	private final FastList<L2Skill> _universalSkills = new FastList<>();
+	private final FastList<L2Skill> _manaSkills = new FastList<>();
+	private final FastList<L2Skill> _longRangeSkills = new FastList<>();
+	private final FastList<L2Skill> _shortRangeSkills = new FastList<>();
+	private final FastList<L2Skill> _generalSkills = new FastList<>();
+	private final FastList<L2Skill> _suicideSkills = new FastList<>();
 	
 	private L2NpcAIData _AIdataStatic = new L2NpcAIData();
+	
+	/**
+	 * The table containing all Item that can be dropped by L2NpcInstance using this L2NpcTemplate
+	 */
+	private final FastList<L2DropCategory> _categories = new FastList<>();
+	
+	/**
+	 * The table containing all Minions that must be spawn with the L2NpcInstance using this L2NpcTemplate
+	 */
+	private final List<L2MinionData> _minions = new FastList<>();
+	
+	private final List<ClassId> _teachInfo = new FastList<>();
+	
+	private final TIntObjectHashMap<L2Skill> _skills = new TIntObjectHashMap<>();
+	
+	/**
+	 * Contains a list of quests for each event type (questStart, questAttack, questKill, etc).
+	 */
+	private final Map<QuestEventType, Quest[]> _questEvents = new FastMap<>();
 	
 	public static enum AIType
 	{
@@ -164,158 +152,288 @@ public final class L2NpcTemplate extends L2CharTemplate
 		NONE
 	}
 	
-	//private final StatsSet _npcStatsSet;
-	
-	/** The table containing all Item that can be dropped by L2NpcInstance using this L2NpcTemplate*/
-	private FastList<L2DropCategory> _categories = null;
-	
-	/** The table containing all Minions that must be spawn with the L2NpcInstance using this L2NpcTemplate*/
-	private List<L2MinionData> _minions = null;
-	
-	private List<ClassId> _teachInfo;
-	private TIntObjectHashMap<L2Skill> _skills;
-	//private Map<Stats, Double> _vulnerabilities;
-	// contains a list of quests for each event type (questStart, questAttack, questKill, etc)
-	private Map<Quest.QuestEventType, Quest[]> _questEvents;
+	public static boolean isAssignableTo(Class<?> sub, Class<?> clazz)
+	{
+		// If clazz represents an interface
+		if (clazz.isInterface())
+		{
+			// check if obj implements the clazz interface
+			Class<?>[] interfaces = sub.getInterfaces();
+			for (Class<?> interface1 : interfaces)
+			{
+				if (clazz.getName().equals(interface1.getName()))
+				{
+					return true;
+				}
+			}
+		}
+		else
+		{
+			do
+			{
+				if (sub.getName().equals(clazz.getName()))
+				{
+					return true;
+				}
+				
+				sub = sub.getSuperclass();
+			}
+			while (sub != null);
+		}
+		return false;
+	}
 	
 	/**
-	 * Constructor of L2Character.<BR><BR>
-	 * 
+	 * Checks if obj can be assigned to the Class represented by clazz.<br>
+	 * This is true if, and only if, obj is the same class represented by clazz, or a subclass of it or obj implements the interface represented by clazz.
+	 * @param obj
+	 * @param clazz
+	 * @return
+	 */
+	public static boolean isAssignableTo(Object obj, Class<?> clazz)
+	{
+		return L2NpcTemplate.isAssignableTo(obj.getClass(), clazz);
+	}
+	
+	/**
+	 * Constructor of L2Character.
 	 * @param set The StatsSet object to transfer data to the method
-	 * 
 	 */
 	public L2NpcTemplate(StatsSet set)
 	{
 		super(set);
-		npcId = set.getInteger("npcId");
-		idTemplate = set.getInteger("idTemplate");
-		type = set.getString("type");
-		name = set.getString("name");
-		serverSideName = set.getBool("serverSideName");
-		title = set.getString("title");
-		if (title.equalsIgnoreCase("Quest Monster"))
-			isQuestMonster = true;
-		else
-			isQuestMonster = false;
-		serverSideTitle = set.getBool("serverSideTitle");
-		sex = set.getString("sex");
-		level = set.getByte("level");
-		rewardExp = set.getInteger("rewardExp");
-		rewardSp = set.getInteger("rewardSp");
-		aggroRange = set.getInteger("aggroRange");
-		rhand = set.getInteger("rhand");
-		lhand = set.getInteger("lhand");
-		enchantEffect = set.getInteger("enchant");
-		race = null;
-		int herbGroup = set.getInteger("dropHerbGroup");
-		if (herbGroup > 0 && HerbDropTable.getInstance().getHerbDroplist(herbGroup) == null)
+		_npcId = set.getInteger("npcId");
+		_idTemplate = set.getInteger("idTemplate");
+		_type = set.getString("type");
+		_name = set.getString("name");
+		_serverSideName = set.getBool("serverSideName");
+		_title = set.getString("title");
+		_isQuestMonster = getTitle().equalsIgnoreCase("Quest Monster");
+		_serverSideTitle = set.getBool("serverSideTitle");
+		_sex = set.getString("sex");
+		_level = set.getByte("level");
+		_rewardExp = set.getInteger("rewardExp");
+		_rewardSp = set.getInteger("rewardSp");
+		_rHand = set.getInteger("rhand");
+		_lHand = set.getInteger("lhand");
+		_enchantEffect = set.getInteger("enchant");
+		_race = null;
+		final int herbGroup = set.getInteger("dropHerbGroup");
+		if ((herbGroup > 0) && (HerbDropTable.getInstance().getHerbDroplist(herbGroup) == null))
 		{
-			_log.warning("Missing Herb Drop Group for npcId: " + npcId);
-			dropherbgroup = 0;
+			_log.warning("Missing Herb Drop Group for npcId: " + getNpcId());
+			_dropHerbGroup = 0;
 		}
 		else
-			dropherbgroup = herbGroup;
+		{
+			_dropHerbGroup = herbGroup;
+		}
 		
-		//_npcStatsSet = set;
-		_teachInfo = null;
-		jClass = set.getString("jClass");
+		_clientClass = set.getString("client_class");
 		
-		// can be loaded from db
-		baseVitalityDivider = level > 0 && rewardExp > 0 ? baseHpMax * 9 * level * level /(100 * rewardExp) : 0;
+		// TODO: Could be loaded from db.
+		_baseVitalityDivider = (getLevel() > 0) && (getRewardExp() > 0) ? (getBaseHpMax() * 9 * getLevel() * getLevel()) / (100 * getRewardExp()) : 0;
+		
+		_isCustom = _npcId != _idTemplate;
 	}
 	
-	public void addTeachInfo(ClassId classId)
+	public void addAtkSkill(L2Skill skill)
 	{
-		if (_teachInfo == null)
-			_teachInfo = new FastList<ClassId>();
-		_teachInfo.add(classId);
+		_atkSkills.add(skill);
 	}
 	
-	public ClassId[] getTeachInfo()
+	public void addBuffSkill(L2Skill skill)
 	{
-		if (_teachInfo == null)
-			return null;
-		return _teachInfo.toArray(new ClassId[_teachInfo.size()]);
+		_buffSkills.add(skill);
 	}
 	
-	public boolean canTeach(ClassId classId)
+	public void addCOTSkill(L2Skill skill)
 	{
-		if (_teachInfo == null)
-			return false;
-		
-		// If the player is on a third class, fetch the class teacher
-		// information for its parent class.
-		if (classId.level() == 3)
-			return _teachInfo.contains(classId.getParent());
-		
-		return _teachInfo.contains(classId);
+		_cotSkills.add(skill);
 	}
 	
-	// add a drop to a given category.  If the category does not exist, create it.
+	public void addDebuffSkill(L2Skill skill)
+	{
+		_debuffSkills.add(skill);
+	}
+	
+	public void addDOTSkill(L2Skill skill)
+	{
+		_dotSkills.add(skill);
+	}
+	
+	/**
+	 * Add a drop to a given category.<br>
+	 * If the category does not exist, create it.
+	 * @param drop
+	 * @param categoryType
+	 */
 	public void addDropData(L2DropData drop, int categoryType)
 	{
 		if (drop.isQuestDrop())
 		{
-			//			if (_questDrops == null)
-			//				_questDrops = new FastList<L2DropData>(0);
-			//			_questDrops.add(drop);
+			// if (_questDrops == null)
+			// _questDrops = new FastList<L2DropData>(0);
+			// _questDrops.add(drop);
 		}
 		else
 		{
-			if (_categories == null)
-				_categories = new FastList<L2DropCategory>();
-			// if the category doesn't already exist, create it first
+			// If the category doesn't already exist, create it first
 			synchronized (_categories)
 			{
 				boolean catExists = false;
 				for (L2DropCategory cat : _categories)
-					// if the category exists, add the drop to this category.
+				{
+					// If the category exists, add the drop to this category.
 					if (cat.getCategoryType() == categoryType)
 					{
-						cat.addDropData(drop, type.equalsIgnoreCase("L2RaidBoss") || type.equalsIgnoreCase("L2GrandBoss"));
+						cat.addDropData(drop, isType("L2RaidBoss") || isType("L2GrandBoss"));
 						catExists = true;
 						break;
 					}
-				// if the category doesn't exit, create it and add the drop
+				}
+				// If the category doesn't exit, create it and add the drop
 				if (!catExists)
 				{
-					L2DropCategory cat = new L2DropCategory(categoryType);
-					cat.addDropData(drop, type.equalsIgnoreCase("L2RaidBoss") || type.equalsIgnoreCase("L2GrandBoss"));
+					final L2DropCategory cat = new L2DropCategory(categoryType);
+					cat.addDropData(drop, isType("L2RaidBoss") || isType("L2GrandBoss"));
 					_categories.add(cat);
 				}
 			}
 		}
 	}
 	
+	public void addFloatSkill(L2Skill skill)
+	{
+		_floatSkills.add(skill);
+	}
+	
+	public void addFossilSkill(L2Skill skill)
+	{
+		_fossilSkills.add(skill);
+	}
+	
+	public void addGeneralSkill(L2Skill skill)
+	{
+		getGeneralskills().add(skill);
+	}
+	
+	public void addHealSkill(L2Skill skill)
+	{
+		_healSkills.add(skill);
+	}
+	
+	public void addImmobiliseSkill(L2Skill skill)
+	{
+		_immobilizeSkills.add(skill);
+	}
+	
+	public void addManaHealSkill(L2Skill skill)
+	{
+		_manaSkills.add(skill);
+	}
+	
+	public void addNegativeSkill(L2Skill skill)
+	{
+		_negativeSkills.add(skill);
+	}
+	
+	public void addParalyzeSkill(L2Skill skill)
+	{
+		_paralyzeSkills.add(skill);
+	}
+	
+	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
+	{
+		if (_questEvents.get(EventType) == null)
+		{
+			_questEvents.put(EventType, new Quest[]
+			{
+				q
+			});
+		}
+		else
+		{
+			Quest[] _quests = _questEvents.get(EventType);
+			int len = _quests.length;
+			
+			// if only one registration per npc is allowed for this event type
+			// then only register this NPC if not already registered for the specified event.
+			// if a quest allows multiple registrations, then register regardless of count
+			// In all cases, check if this new registration is replacing an older copy of the SAME quest
+			// Finally, check quest class hierarchy: a parent class should never replace a child class.
+			// a child class should always replace a parent class.
+			if (!EventType.isMultipleRegistrationAllowed())
+			{
+				// if it is the same quest (i.e. reload) or the existing is a superclass of the new one, replace the existing.
+				if (_quests[0].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[0].getClass()))
+				{
+					_quests[0] = q;
+				}
+				else
+				{
+					_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \"" + EventType + "\" for NPC \"" + _name + "\" and quest \"" + q.getName() + "\".");
+				}
+			}
+			else
+			{
+				// be ready to add a new quest to a new copy of the list, with larger size than previously.
+				Quest[] tmp = new Quest[len + 1];
+				
+				// loop through the existing quests and copy them to the new list. While doing so, also
+				// check if this new quest happens to be just a replacement for a previously loaded quest.
+				// Replace existing if the new quest is the same (reload) or a child of the existing quest.
+				// Do nothing if the new quest is a superclass of an existing quest.
+				// Add the new quest in the end of the list otherwise.
+				for (int i = 0; i < len; i++)
+				{
+					if (_quests[i].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[i].getClass()))
+					{
+						_quests[i] = q;
+						return;
+					}
+					else if (L2NpcTemplate.isAssignableTo(_quests[i], q.getClass()))
+					{
+						return;
+					}
+					tmp[i] = _quests[i];
+				}
+				tmp[len] = q;
+				_questEvents.put(EventType, tmp);
+			}
+		}
+	}
+	
 	public void addRaidData(L2MinionData minion)
 	{
-		if (_minions == null)
-			_minions = new FastList<L2MinionData>();
 		_minions.add(minion);
 	}
 	
-	/*public void addVulnerability(Stats id, double vuln)
+	public void addRangeSkill(L2Skill skill)
 	{
-		if (_vulnerabilities == null)
-			_vulnerabilities = new FastMap<Stats, Double>();
-		_vulnerabilities.put(id, new Double(vuln));
+		if ((skill.getCastRange() <= 150) && (skill.getCastRange() > 0))
+		{
+			_shortRangeSkills.add(skill);
+		}
+		else if (skill.getCastRange() > 150)
+		{
+			_longRangeSkills.add(skill);
+		}
 	}
 	
-	public double getVulnerability(Stats id)
+	public void addResSkill(L2Skill skill)
 	{
-		if (_vulnerabilities == null || _vulnerabilities.get(id) == null)
-			return 1;
-		return _vulnerabilities.get(id);
-	}*/
+		_resSkills.add(skill);
+	}
 	
+	public void addRootSkill(L2Skill skill)
+	{
+		_rootSkills.add(skill);
+	}
 	
 	public void addSkill(L2Skill skill)
 	{
-		
-		if (_skills == null)
-			_skills = new TIntObjectHashMap<L2Skill>();
-		
-		if(!skill.isPassive())
+		if (!skill.isPassive())
 		{
 			if (skill.isSuicideAttack())
 			{
@@ -324,7 +442,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 			else
 			{
 				addGeneralSkill(skill);
-				switch(skill.getSkillType())
+				switch (skill.getSkillType())
 				{
 					case BUFF:
 						addBuffSkill(skill);
@@ -368,11 +486,11 @@ public final class L2NpcTemplate extends L2CharTemplate
 					case BLOW:
 					case DRAIN:
 					case CHARGEDAM:
-					case FATAL:	
+					case FATAL:
 					case DEATHLINK:
 					case CPDAM:
 					case MANADAM:
-					case CPDAMPERCENT:	
+					case CPDAMPERCENT:
 						addAtkSkill(skill);
 						addUniversalSkill(skill);
 						addRangeSkill(skill);
@@ -394,7 +512,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 						addNegativeSkill(skill);
 						addRangeSkill(skill);
 						break;
-					default :
+					default:
 						addUniversalSkill(skill);
 						break;
 				}
@@ -404,11 +522,121 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_skills.put(skill.getId(), skill);
 	}
 	
-	
-	/*public double removeVulnerability(Stats id)
+	public void addSleepSkill(L2Skill skill)
 	{
-		return _vulnerabilities.remove(id);
-	}*/
+		_sleepSkills.add(skill);
+	}
+	
+	public void addStunSkill(L2Skill skill)
+	{
+		_stunskills.add(skill);
+	}
+	
+	public void addSuicideSkill(L2Skill skill)
+	{
+		_suicideSkills.add(skill);
+	}
+	
+	public void addTeachInfo(ClassId classId)
+	{
+		_teachInfo.add(classId);
+	}
+	
+	public void addUniversalSkill(L2Skill skill)
+	{
+		_universalSkills.add(skill);
+	}
+	
+	public boolean canTeach(ClassId classId)
+	{
+		// If the player is on a third class, fetch the class teacher
+		// information for its parent class.
+		if (classId.level() == 3)
+		{
+			return _teachInfo.contains(classId.getParent());
+		}
+		return _teachInfo.contains(classId);
+	}
+	
+	/**
+	 * Empty all possible drops of this L2NpcTemplate.
+	 */
+	public synchronized void clearAllDropData()
+	{
+		while (!_categories.isEmpty())
+		{
+			_categories.getFirst().clearAllDrops();
+			_categories.removeFirst();
+		}
+		_categories.clear();
+	}
+	
+	public L2NpcAIData getAIDataStatic()
+	{
+		return _AIdataStatic;
+	}
+	
+	/**
+	 * @return the list of all possible item drops of this L2NpcTemplate.<br>
+	 *         (ie full drops and part drops, mats, miscellaneous & UNCATEGORIZED)
+	 */
+	public List<L2DropData> getAllDropData()
+	{
+		final List<L2DropData> list = new FastList<>();
+		for (L2DropCategory tmp : _categories)
+		{
+			list.addAll(tmp.getAllDrops());
+		}
+		return list;
+	}
+	
+	/**
+	 * @return the attack skills.
+	 */
+	public FastList<L2Skill> getAtkSkills()
+	{
+		return _atkSkills;
+	}
+	
+	/**
+	 * @return the base vitality divider value.
+	 */
+	public float getBaseVitalityDivider()
+	{
+		return _baseVitalityDivider;
+	}
+	
+	/**
+	 * @return the buff skills.
+	 */
+	public FastList<L2Skill> getBuffSkills()
+	{
+		return _buffSkills;
+	}
+	
+	/**
+	 * @return the client class (same as texture path).
+	 */
+	public String getClientClass()
+	{
+		return _clientClass;
+	}
+	
+	/**
+	 * @return the cost over time skills.
+	 */
+	public FastList<L2Skill> getCostOverTimeSkills()
+	{
+		return _cotSkills;
+	}
+	
+	/**
+	 * @return the debuff skills.
+	 */
+	public FastList<L2Skill> getDebuffSkills()
+	{
+		return _debuffSkills;
+	}
 	
 	/**
 	 * @return the list of all possible UNCATEGORIZED drops of this L2NpcTemplate.
@@ -419,34 +647,85 @@ public final class L2NpcTemplate extends L2CharTemplate
 	}
 	
 	/**
-	 * @return the list of all possible item drops of this L2NpcTemplate.<br>
-	 * (ie full drops and part drops, mats, miscellaneous & UNCATEGORIZED)
+	 * @return the drop herb group.
 	 */
-	public List<L2DropData> getAllDropData()
+	public int getDropHerbGroup()
 	{
-		if (_categories == null)
-			return null;
-		List<L2DropData> lst = new FastList<L2DropData>();
-		for (L2DropCategory tmp : _categories)
-		{
-			lst.addAll(tmp.getAllDrops());
-		}
-		return lst;
+		return _dropHerbGroup;
 	}
 	
 	/**
-	 * Empty all possible drops of this L2NpcTemplate.<BR><BR>
+	 * @return the enchant effect.
 	 */
-	public synchronized void clearAllDropData()
+	public int getEnchantEffect()
 	{
-		if (_categories == null)
-			return;
-		while (!_categories.isEmpty())
-		{
-			_categories.getFirst().clearAllDrops();
-			_categories.removeFirst();
-		}
-		_categories.clear();
+		return _enchantEffect;
+	}
+	
+	public Map<QuestEventType, Quest[]> getEventQuests()
+	{
+		return _questEvents;
+	}
+	
+	public Quest[] getEventQuests(QuestEventType EventType)
+	{
+		return _questEvents.get(EventType);
+	}
+	
+	/**
+	 * @return the general skills.
+	 */
+	public FastList<L2Skill> getGeneralskills()
+	{
+		return _generalSkills;
+	}
+	
+	/**
+	 * @return the heal skills.
+	 */
+	public FastList<L2Skill> getHealSkills()
+	{
+		return _healSkills;
+	}
+	
+	/**
+	 * @return the Id template.
+	 */
+	public int getIdTemplate()
+	{
+		return _idTemplate;
+	}
+	
+	/**
+	 * @return the immobilize skills.
+	 */
+	public FastList<L2Skill> getImmobiliseSkills()
+	{
+		return _immobilizeSkills;
+	}
+	
+	/**
+	 * @return the left hand item.
+	 */
+	public int getLeftHand()
+	{
+		return _lHand;
+	}
+	
+	/**
+	 * @return the NPC level.
+	 */
+	public byte getLevel()
+	{
+		return _level;
+	}
+	
+	/**
+	 * @return the long range skills.
+	 */
+	public FastList<L2Skill> getLongRangeSkills()
+	{
+		return _longRangeSkills;
 	}
 	
 	/**
@@ -457,6 +736,90 @@ public final class L2NpcTemplate extends L2CharTemplate
 		return _minions;
 	}
 	
+	/**
+	 * @return the NPC name.
+	 */
+	public String getName()
+	{
+		return _name;
+	}
+	
+	/**
+	 * @return the negative skills.
+	 */
+	public FastList<L2Skill> getNegativeSkills()
+	{
+		return _negativeSkills;
+	}
+	
+	/**
+	 * @return the npc Id.
+	 */
+	public int getNpcId()
+	{
+		return _npcId;
+	}
+	
+	/**
+	 * @return the NPC race.
+	 */
+	public Race getRace()
+	{
+		if (_race == null)
+		{
+			_race = Race.NONE;
+		}
+		return _race;
+	}
+	
+	/**
+	 * @return the resurrection skills.
+	 */
+	public FastList<L2Skill> getResSkills()
+	{
+		return _resSkills;
+	}
+	
+	/**
+	 * @return the reward Exp.
+	 */
+	public int getRewardExp()
+	{
+		return _rewardExp;
+	}
+	
+	/**
+	 * @return the reward SP.
+	 */
+	public int getRewardSp()
+	{
+		return _rewardSp;
+	}
+	
+	/**
+	 * @return the right hand weapon.
+	 */
+	public int getRightHand()
+	{
+		return _rHand;
+	}
+	
+	/**
+	 * @return the NPC sex.
+	 */
+	public String getSex()
+	{
+		return _sex;
+	}
+	
+	/**
+	 * @return the short range skills.
+	 */
+	public FastList<L2Skill> getShortRangeSkills()
+	{
+		return _shortRangeSkills;
+	}
+	
 	public TIntObjectHashMap<L2Skill> getSkills()
 	{
 		return _skills;
@@ -464,526 +827,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	public L2Skill[] getSkillsArray()
 	{
-		return _skills.getValues(new L2Skill[_skills.size()]);
-	}
-	
-	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
-	{
-		if (_questEvents == null)
-			_questEvents = new FastMap<Quest.QuestEventType, Quest[]>();
-			
-			if (_questEvents.get(EventType) == null)
-			{
-				_questEvents.put(EventType, new Quest[]
-				                                      {
-						q
-				                                      });
-			}
-			else
-			{
-				Quest[] _quests = _questEvents.get(EventType);
-				int len = _quests.length;
-				
-				// if only one registration per npc is allowed for this event type
-				// then only register this NPC if not already registered for the specified event.
-				// if a quest allows multiple registrations, then register regardless of count
-				// In all cases, check if this new registration is replacing an older copy of the SAME quest
-				// Finally, check quest class hierarchy: a parent class should never replace a child class.
-				// a child class should always replace a parent class.
-				if (!EventType.isMultipleRegistrationAllowed())
-				{
-					// if it is the same quest (i.e. reload) or the existing is a superclass of the new one, replace the existing.
-					if (_quests[0].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[0].getClass()))
-					{
-						_quests[0] = q;
-					}
-					else
-					{
-						_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \"" + EventType + "\" for NPC \"" + name + "\" and quest \"" + q.getName() + "\".");
-					}
-				}
-				else
-				{
-					// be ready to add a new quest to a new copy of the list, with larger size than previously.
-					Quest[] tmp = new Quest[len + 1];
-					
-					// loop through the existing quests and copy them to the new list.  While doing so, also
-					// check if this new quest happens to be just a replacement for a previously loaded quest.
-					// Replace existing if the new quest is the same (reload) or a child of the existing quest.
-					// Do nothing if the new quest is a superclass of an existing quest.
-					// Add the new quest in the end of the list otherwise.
-					for (int i = 0; i < len; i++)
-					{
-						if (_quests[i].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[i].getClass()))
-						{
-							_quests[i] = q;
-							return;
-						}
-						else if (L2NpcTemplate.isAssignableTo(_quests[i], q.getClass()))
-						{
-							return;
-						}
-						tmp[i] = _quests[i];
-					}
-					tmp[len] = q;
-					_questEvents.put(EventType, tmp);
-				}
-			}
-	}
-	
-	/**
-	 * Checks if obj can be assigned to the Class represented by clazz.<br>
-	 * This is true if, and only if, obj is the same class represented by clazz,
-	 * or a subclass of it or obj implements the interface represented by clazz.
-	 * 
-	 * 
-	 * @param obj
-	 * @param clazz
-	 * @return
-	 */
-	public static boolean isAssignableTo(Object obj, Class<?> clazz)
-	{
-		return L2NpcTemplate.isAssignableTo(obj.getClass(), clazz);
-	}
-	
-	public static boolean isAssignableTo(Class<?> sub, Class<?> clazz)
-	{
-		// if clazz represents an interface
-		if (clazz.isInterface())
-		{
-			// check if obj implements the clazz interface
-			Class<?>[] interfaces = sub.getInterfaces();
-			for (int i = 0; i < interfaces.length; i++)
-			{
-				if (clazz.getName().equals(interfaces[i].getName()))
-				{
-					return true;
-				}
-			}
-		}
-		else
-		{
-			do
-			{
-				if (sub.getName().equals(clazz.getName()))
-				{
-					return true;
-				}
-				
-				sub = sub.getSuperclass();
-			}
-			while (sub != null);
-		}
-		
-		return false;
-	}
-	
-	public Quest[] getEventQuests(Quest.QuestEventType EventType)
-	{
-		if (_questEvents == null)
-		{
-			return null;
-		}
-		return _questEvents.get(EventType);
-	}
-	
-	public void setRace(int raceId)
-	{
-		switch (raceId)
-		{
-			case 1:
-				race = L2NpcTemplate.Race.UNDEAD;
-				break;
-			case 2:
-				race = L2NpcTemplate.Race.MAGICCREATURE;
-				break;
-			case 3:
-				race = L2NpcTemplate.Race.BEAST;
-				break;
-			case 4:
-				race = L2NpcTemplate.Race.ANIMAL;
-				break;
-			case 5:
-				race = L2NpcTemplate.Race.PLANT;
-				break;
-			case 6:
-				race = L2NpcTemplate.Race.HUMANOID;
-				break;
-			case 7:
-				race = L2NpcTemplate.Race.SPIRIT;
-				break;
-			case 8:
-				race = L2NpcTemplate.Race.ANGEL;
-				break;
-			case 9:
-				race = L2NpcTemplate.Race.DEMON;
-				break;
-			case 10:
-				race = L2NpcTemplate.Race.DRAGON;
-				break;
-			case 11:
-				race = L2NpcTemplate.Race.GIANT;
-				break;
-			case 12:
-				race = L2NpcTemplate.Race.BUG;
-				break;
-			case 13:
-				race = L2NpcTemplate.Race.FAIRIE;
-				break;
-			case 14:
-				race = L2NpcTemplate.Race.HUMAN;
-				break;
-			case 15:
-				race = L2NpcTemplate.Race.ELVE;
-				break;
-			case 16:
-				race = L2NpcTemplate.Race.DARKELVE;
-				break;
-			case 17:
-				race = L2NpcTemplate.Race.ORC;
-				break;
-			case 18:
-				race = L2NpcTemplate.Race.DWARVE;
-				break;
-			case 19:
-				race = L2NpcTemplate.Race.OTHER;
-				break;
-			case 20:
-				race = L2NpcTemplate.Race.NONLIVING;
-				break;
-			case 21:
-				race = L2NpcTemplate.Race.SIEGEWEAPON;
-				break;
-			case 22:
-				race = L2NpcTemplate.Race.DEFENDINGARMY;
-				break;
-			case 23:
-				race = L2NpcTemplate.Race.MERCENARIE;
-				break;
-			case 24:
-				race = L2NpcTemplate.Race.UNKNOWN;
-				break;
-			case 25:
-				race = L2NpcTemplate.Race.KAMAEL;
-				break;
-			default:
-				race = L2NpcTemplate.Race.NONE;
-				break;
-		}
-	}
-	
-	//-----------------------------------------------------------------------
-	// Npc AI Data
-	// By ShanSoft
-	public void setAIData(L2NpcAIData aidata)
-	{
-		//_AIdataStatic = new L2NpcAIData(); // not needed to init object and in next line override with other reference. maybe other intention?
-		_AIdataStatic = aidata;
-	}
-	//-----------------------------------------------------------------------
-	
-	public L2NpcAIData getAIDataStatic()
-	{
-		return _AIdataStatic;
-	}
-	
-	public void addBuffSkill(L2Skill skill)
-	{
-		if (_buffskills == null)
-			_buffskills = new FastList<L2Skill>();
-		_buffskills.add(skill);
-		_hasbuffskills=true;
-	}
-	
-	public void addHealSkill(L2Skill skill)
-	{
-		if (_healskills == null)
-			_healskills = new FastList<L2Skill>();
-		_healskills.add(skill);
-		_hashealskills=true;
-	}
-	
-	public void addResSkill(L2Skill skill)
-	{
-		if (_resskills == null)
-			_resskills = new FastList<L2Skill>();
-		_resskills.add(skill);
-		_hasresskills=true;
-	}
-	
-	public void addAtkSkill(L2Skill skill)
-	{
-		if (_atkskills == null)
-			_atkskills = new FastList<L2Skill>();
-		_atkskills.add(skill);
-		_hasatkskills=true;
-	}
-	
-	public void addDebuffSkill(L2Skill skill)
-	{
-		if (_debuffskills == null)
-			_debuffskills = new FastList<L2Skill>();
-		_debuffskills.add(skill);
-		_hasdebuffskills=true;
-	}
-	
-	public void addRootSkill(L2Skill skill)
-	{
-		if (_rootskills == null)
-			_rootskills = new FastList<L2Skill>();
-		_rootskills.add(skill);
-		_hasrootskills=true;
-	}
-	
-	public void addSleepSkill(L2Skill skill)
-	{
-		if (_sleepskills == null)
-			_sleepskills = new FastList<L2Skill>();
-		_sleepskills.add(skill);
-		_hassleepskills=true;
-	}
-	
-	public void addStunSkill(L2Skill skill)
-	{
-		if (_stunskills == null)
-			_stunskills = new FastList<L2Skill>();
-		_stunskills.add(skill);
-		_hasstunskills=true;
-	}
-	
-	public void addParalyzeSkill(L2Skill skill)
-	{
-		if (_paralyzeskills == null)
-			_paralyzeskills = new FastList<L2Skill>();
-		_paralyzeskills.add(skill);
-		_hasparalyzeskills=true;
-	}
-	
-	public void addFloatSkill(L2Skill skill)
-	{
-		if (_floatskills == null)
-			_floatskills = new FastList<L2Skill>();
-		_floatskills.add(skill);
-		_hasfloatskills=true;
-	}
-	
-	public void addFossilSkill(L2Skill skill)
-	{
-		if (_fossilskills == null)
-			_fossilskills = new FastList<L2Skill>();
-		_fossilskills.add(skill);
-		_hasfossilskills=true;
-	}
-	
-	public void addNegativeSkill(L2Skill skill)
-	{
-		if (_negativeskills == null)
-			_negativeskills = new FastList<L2Skill>();
-		_negativeskills.add(skill);
-		_hasnegativeskills=true;
-	}
-	
-	public void addImmobiliseSkill(L2Skill skill)
-	{
-		if (_immobiliseskills == null)
-			_immobiliseskills = new FastList<L2Skill>();
-		_immobiliseskills.add(skill);
-		_hasimmobiliseskills=true;
-	}
-	
-	public void addDOTSkill(L2Skill skill)
-	{
-		if (_dotskills == null)
-			_dotskills = new FastList<L2Skill>();
-		_dotskills.add(skill);
-		_hasdotskills=true;
-	}
-	
-	public void addUniversalSkill(L2Skill skill)
-	{
-		if (_universalskills == null)
-			_universalskills = new FastList<L2Skill>();
-		_universalskills.add(skill);
-		_hasuniversalskills=true;
-	}
-	
-	public void addCOTSkill(L2Skill skill)
-	{
-		if (_cotskills == null)
-			_cotskills = new FastList<L2Skill>();
-		_cotskills.add(skill);
-		_hascotskills=true;
-	}
-	
-	public void addManaHealSkill(L2Skill skill)
-	{
-		if (_manaskills == null)
-			_manaskills = new FastList<L2Skill>();
-		_manaskills.add(skill);
-		_hasmanaskills=true;
-	}
-	
-	public void addGeneralSkill(L2Skill skill)
-	{
-		if (_generalskills == null)
-			_generalskills = new FastList<L2Skill>();
-		_generalskills.add(skill);
-		_hasgeneralskills=true;
-	}
-	
-	public void addSuicideSkill(L2Skill skill)
-	{
-		if (_suicideSkills == null)
-			_suicideSkills = new FastList<L2Skill>();
-		_suicideSkills.add(skill);
-		
-		_hasSuicideSkills = true;
-	}
-	
-	public void addRangeSkill(L2Skill skill)
-	{
-		if (skill.getCastRange() <= 150 && skill.getCastRange() > 0)
-		{
-			if (_Srangeskills == null)
-				_Srangeskills = new FastList<L2Skill>();
-			_Srangeskills.add(skill);
-			_hasSrangeskills=true;
-		}
-		else if (skill.getCastRange() > 150)
-		{
-			if (_Lrangeskills == null)
-				_Lrangeskills = new FastList<L2Skill>();
-			_Lrangeskills.add(skill);
-			_hasLrangeskills=true;
-		}
-	}
-	
-	//--------------------------------------------------------------------
-	public boolean hasBuffSkill()
-	{
-		return _hasbuffskills;
-	}
-	public boolean hasHealSkill()
-	{
-		return _hashealskills;
-	}
-	
-	public boolean hasResSkill()
-	{
-		return _hasresskills;
-	}
-	
-	public boolean hasAtkSkill()
-	{
-		return _hasatkskills;
-	}
-	
-	public boolean hasDebuffSkill()
-	{
-		return _hasdebuffskills;
-	}
-	
-	public boolean hasRootSkill()
-	{
-		return _hasrootskills;
-	}
-	
-	public boolean hasSleepSkill()
-	{
-		return _hassleepskills;
-	}
-	
-	public boolean hasStunSkill()
-	{
-		return _hasstunskills;
-	}
-	
-	public boolean hasParalyzeSkill()
-	{
-		return _hasparalyzeskills;
-	}
-	
-	public boolean hasFloatSkill()
-	{
-		return _hasfloatskills;
-	}
-	
-	public boolean hasFossilSkill()
-	{
-		return _hasfossilskills;
-	}
-	
-	public boolean hasNegativeSkill()
-	{
-		return _hasnegativeskills;
-	}
-	
-	public boolean hasImmobiliseSkill()
-	{
-		return _hasimmobiliseskills;
-	}
-	
-	public boolean hasDOTSkill()
-	{
-		return _hasdotskills;
-	}
-	
-	public boolean hasUniversalSkill()
-	{
-		return _hasuniversalskills;
-	}
-	
-	public boolean hasCOTSkill()
-	{
-		return _hascotskills;
-	}
-	
-	public boolean hasManaHealSkill()
-	{
-		return _hasmanaskills;
-	}
-	public boolean hasAutoLrangeSkill()
-	{
-		return _hasLrangeskills;
-	}
-	public boolean hasAutoSrangeSkill()
-	{
-		return _hasSrangeskills;
-	}
-	public boolean hasSkill()
-	{
-		return _hasgeneralskills;
-	}
-	
-	public L2NpcTemplate.Race getRace()
-	{
-		if (race == null)
-			race = L2NpcTemplate.Race.NONE;
-		
-		return race;
-	}
-	
-	public boolean isCustom()
-	{
-		return npcId != idTemplate;
-	}
-	
-	/**
-	 * @return name
-	 */
-	public String getName()
-	{
-		return name;
-	}
-	
-	public boolean isSpecialTree()
-	{
-		return npcId == L2XmassTreeInstance.SPECIAL_TREE_ID;
-	}
-	
-	public boolean isUndead()
-	{
-		return (race == Race.UNDEAD);
+		return _skills.values(new L2Skill[0]);
 	}
 	
 	public FastList<L2Skill> getSuicideSkills()
@@ -991,8 +835,180 @@ public final class L2NpcTemplate extends L2CharTemplate
 		return _suicideSkills;
 	}
 	
-	public boolean hasSuicideSkill()
+	public List<ClassId> getTeachInfo()
 	{
-		return _hasSuicideSkills;
+		return _teachInfo;
+	}
+	
+	/**
+	 * @return the NPC title.
+	 */
+	public String getTitle()
+	{
+		return _title;
+	}
+	
+	/**
+	 * @return the NPC type.
+	 */
+	public String getType()
+	{
+		return _type;
+	}
+	
+	/**
+	 * @return the universal skills.
+	 */
+	public FastList<L2Skill> getUniversalSkills()
+	{
+		return _universalSkills;
+	}
+	
+	/**
+	 * @return {@code true} if the NPC is custom, {@code false} otherwise.
+	 */
+	public boolean isCustom()
+	{
+		return _isCustom;
+	}
+	
+	/**
+	 * @return {@code true} if the NPC is a quest monster, {@code false} otherwise.
+	 */
+	public boolean isQuestMonster()
+	{
+		return _isQuestMonster;
+	}
+	
+	/**
+	 * @return {@code true} if the NPC uses server side name, {@code false} otherwise.
+	 */
+	public boolean isServerSideName()
+	{
+		return _serverSideName;
+	}
+	
+	/**
+	 * @return {@code true} if the NPC uses server side title, {@code false} otherwise.
+	 */
+	public boolean isServerSideTitle()
+	{
+		return _serverSideTitle;
+	}
+	
+	/**
+	 * @return {@code true} if the NPC is Christmas Special Tree, {@code false} otherwise.
+	 */
+	public boolean isSpecialTree()
+	{
+		return _npcId == L2XmassTreeInstance.SPECIAL_TREE_ID;
+	}
+	
+	/**
+	 * Checks types, ignore case.
+	 * @param t the type to check.
+	 * @return {@code true} if the type are the same, {@code false} otherwise.
+	 */
+	public boolean isType(String t)
+	{
+		return _type.equalsIgnoreCase(t);
+	}
+	
+	/**
+	 * @return {@code true} if the NPC is an undead, {@code false} otherwise.
+	 */
+	public boolean isUndead()
+	{
+		return _race == Race.UNDEAD;
+	}
+	
+	public void setAIData(L2NpcAIData AIData)
+	{
+		_AIdataStatic = AIData;
+	}
+	
+	public void setRace(int raceId)
+	{
+		switch (raceId)
+		{
+			case 1:
+				_race = Race.UNDEAD;
+				break;
+			case 2:
+				_race = Race.MAGICCREATURE;
+				break;
+			case 3:
+				_race = Race.BEAST;
+				break;
+			case 4:
+				_race = Race.ANIMAL;
+				break;
+			case 5:
+				_race = Race.PLANT;
+				break;
+			case 6:
+				_race = Race.HUMANOID;
+				break;
+			case 7:
+				_race = Race.SPIRIT;
+				break;
+			case 8:
+				_race = Race.ANGEL;
+				break;
+			case 9:
+				_race = Race.DEMON;
+				break;
+			case 10:
+				_race = Race.DRAGON;
+				break;
+			case 11:
+				_race = Race.GIANT;
+				break;
+			case 12:
+				_race = Race.BUG;
+				break;
+			case 13:
+				_race = Race.FAIRIE;
+				break;
+			case 14:
+				_race = Race.HUMAN;
+				break;
+			case 15:
+				_race = Race.ELVE;
+				break;
+			case 16:
+				_race = Race.DARKELVE;
+				break;
+			case 17:
+				_race = Race.ORC;
+				break;
+			case 18:
+				_race = Race.DWARVE;
+				break;
+			case 19:
+				_race = Race.OTHER;
+				break;
+			case 20:
+				_race = Race.NONLIVING;
+				break;
+			case 21:
+				_race = Race.SIEGEWEAPON;
+				break;
+			case 22:
+				_race = Race.DEFENDINGARMY;
+				break;
+			case 23:
+				_race = Race.MERCENARIE;
+				break;
+			case 24:
+				_race = Race.UNKNOWN;
+				break;
+			case 25:
+				_race = Race.KAMAEL;
+				break;
+			default:
+				_race = Race.NONE;
+				break;
+		}
 	}
 }

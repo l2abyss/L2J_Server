@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
@@ -115,7 +116,7 @@ public class TerritoryWard
 	{
 		if (player.isMounted())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION));
+			player.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 			player.destroyItem("CombatFlag", item, null, true);
 			spawnMe();
 			return false;
@@ -156,7 +157,7 @@ public class TerritoryWard
 		// Refresh player stats
 		_player.broadcastUserInfo();
 		_player.setCombatFlagEquipped(true);
-		_player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_VE_ACQUIRED_THE_WARD));
+		_player.sendPacket(SystemMessageId.YOU_VE_ACQUIRED_THE_WARD);
 		TerritoryWarManager.getInstance().giveTWPoint(player, _territoryId, 5);
 		return true;
 	}

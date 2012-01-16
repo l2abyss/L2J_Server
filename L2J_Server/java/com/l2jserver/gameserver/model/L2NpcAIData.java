@@ -1,38 +1,28 @@
 /*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.
- *
- * http://www.gnu.org/copyleft/gpl.html
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
 
 /**
- * Author: ShanSoft
- * By L2JTW
- * 
- * 
+ * This Data is for NPC Attributes and AI related stuffs.<br>
+ * @author ShanSoft
  */
-
-// This Data is for NPC Attributes and AI relate stuffs...
-// Still need to finish...Update later...
 public class L2NpcAIData
 {
-	
-	//Basic AI
+	// Basic AI
 	private int _primarySkillId;
 	private int _minskillChance;
 	private int _maxskillChance;
@@ -46,8 +36,6 @@ public class L2NpcAIData
 	private int _clanRange;
 	private String _enemyClan = null;
 	private int _enemyRange;
-	//private int _baseShldRate;
-	//private int _baseShldDef;
 	private int _dodge;
 	private int _longRangeSkill;
 	private int _shortRangeSkill;
@@ -55,17 +43,17 @@ public class L2NpcAIData
 	private int _shortRangeChance;
 	private int _switchRangeChance;
 	private AIType _aiType = AIType.FIGHTER;
+	private int _aggroRange;
+	private boolean _showName;
+	private boolean _targetable;
 	
-	//--------------------------------------------------------------------------------------------------------------
-	//Setting....
-	//--------------------------------------------------------------------------------------------------------------
 	public void setPrimarySkillId(int primarySkillId)
 	{
 		_primarySkillId = primarySkillId;
 	}
 	
 	public void setMinSkillChance(int skill_chance)
-	{	
+	{
 		_minskillChance = skill_chance;
 	}
 	
@@ -76,12 +64,12 @@ public class L2NpcAIData
 	
 	public void setCanMove(int canMove)
 	{
-		_canMove = canMove;	
+		_canMove = canMove;
 	}
 	
 	public void setSoulShot(int soulshot)
 	{
-		_soulshot = soulshot;	
+		_soulshot = soulshot;
 	}
 	
 	public void setSpiritShot(int spiritshot)
@@ -91,12 +79,12 @@ public class L2NpcAIData
 	
 	public void setSoulShotChance(int soulshotchance)
 	{
-		_soulshotChance = soulshotchance;	
+		_soulshotChance = soulshotchance;
 	}
 	
 	public void setSpiritShotChance(int spiritshotchance)
 	{
-		_spiritshotChance = spiritshotchance;	
+		_spiritshotChance = spiritshotchance;
 	}
 	
 	public void setShortRangeSkill(int shortrangeskill)
@@ -111,7 +99,7 @@ public class L2NpcAIData
 	
 	public void setLongRangeSkill(int longrangeskill)
 	{
-		_longRangeSkill = longrangeskill;	
+		_longRangeSkill = longrangeskill;
 	}
 	
 	public void setLongRangeChance(int longrangechance)
@@ -131,8 +119,10 @@ public class L2NpcAIData
 	
 	public void setClan(String clan)
 	{
-		if (clan != null && !clan.equals("") && !clan.equalsIgnoreCase("null"))
+		if ((clan != null) && !clan.equals("") && !clan.equalsIgnoreCase("null"))
+		{
 			_clan = clan.intern();
+		}
 	}
 	
 	public void setClanRange(int clanRange)
@@ -142,13 +132,15 @@ public class L2NpcAIData
 	
 	public void setEnemyClan(String enemyClan)
 	{
-		if (enemyClan != null && !enemyClan.equals("") && !enemyClan.equalsIgnoreCase("null"))
+		if ((enemyClan != null) && !enemyClan.equals("") && !enemyClan.equalsIgnoreCase("null"))
+		{
 			_enemyClan = enemyClan.intern();
+		}
 	}
 	
 	public void setEnemyRange(int enemyRange)
 	{
-		_enemyRange = enemyRange;	
+		_enemyRange = enemyRange;
 	}
 	
 	public void setDodge(int dodge)
@@ -159,35 +151,46 @@ public class L2NpcAIData
 	public void setAi(String ai)
 	{
 		if (ai.equalsIgnoreCase("archer"))
+		{
 			_aiType = AIType.ARCHER;
+		}
 		else if (ai.equalsIgnoreCase("balanced"))
+		{
 			_aiType = AIType.BALANCED;
+		}
 		else if (ai.equalsIgnoreCase("mage"))
+		{
 			_aiType = AIType.MAGE;
+		}
 		else if (ai.equalsIgnoreCase("healer"))
+		{
 			_aiType = AIType.HEALER;
+		}
 		else if (ai.equalsIgnoreCase("corpse"))
+		{
 			_aiType = AIType.CORPSE;
+		}
 		else
+		{
 			_aiType = AIType.FIGHTER;
+		}
 	}
 	
-	/*
-	
-	public void setBaseShldRate(int baseShldRate)
+	public void setAggro(int val)
 	{
-		_baseShldRate = baseShldRate;	
+		_aggroRange = val;
 	}
 	
-	public void setBaseShldDef(int baseShldDef)
+	public void setTargetable(boolean val)
 	{
-		_baseShldDef = baseShldDef;	
+		_targetable = val;
 	}
-	 */
 	
-	//--------------------------------------------------------------------------------------------------------------
-	//Data Recall....
-	//--------------------------------------------------------------------------------------------------------------
+	public void setShowName(boolean val)
+	{
+		_showName = val;
+	}
+	
 	public int getPrimarySkillId()
 	{
 		return _primarySkillId;
@@ -205,62 +208,62 @@ public class L2NpcAIData
 	
 	public int getCanMove()
 	{
-		return _canMove;	
+		return _canMove;
 	}
 	
 	public int getSoulShot()
 	{
-		return _soulshot;	
+		return _soulshot;
 	}
 	
 	public int getSpiritShot()
 	{
-		return _spiritshot;	
+		return _spiritshot;
 	}
 	
 	public int getSoulShotChance()
 	{
-		return _soulshotChance;	
+		return _soulshotChance;
 	}
 	
 	public int getSpiritShotChance()
 	{
-		return _spiritshotChance;	
+		return _spiritshotChance;
 	}
 	
 	public int getShortRangeSkill()
 	{
-		return _shortRangeSkill;	
+		return _shortRangeSkill;
 	}
 	
 	public int getShortRangeChance()
 	{
-		return _shortRangeChance;	
+		return _shortRangeChance;
 	}
 	
 	public int getLongRangeSkill()
 	{
-		return _longRangeSkill;	
+		return _longRangeSkill;
 	}
 	
 	public int getLongRangeChance()
 	{
-		return _longRangeChance;	
+		return _longRangeChance;
 	}
 	
 	public int getSwitchRangeChance()
 	{
-		return _switchRangeChance;	
+		return _switchRangeChance;
 	}
 	
 	public int getIsChaos()
 	{
-		return _isChaos;	
+		return _isChaos;
 	}
 	
 	public String getClan()
 	{
-		return _clan;	
+		return _clan;
 	}
 	
 	public int getClanRange()
@@ -270,17 +273,17 @@ public class L2NpcAIData
 	
 	public String getEnemyClan()
 	{
-		return _enemyClan;	
+		return _enemyClan;
 	}
 	
 	public int getEnemyRange()
 	{
-		return _enemyRange;	
+		return _enemyRange;
 	}
 	
 	public int getDodge()
 	{
-		return _dodge;	
+		return _dodge;
 	}
 	
 	public AIType getAiType()
@@ -288,16 +291,24 @@ public class L2NpcAIData
 		return _aiType;
 	}
 	
-	/*
-	
-	public int getBaseShldRate()
+	public int getAggroRange()
 	{
-		return _baseShldRate;	
+		return _aggroRange;
 	}
 	
-	public int getBaseShldDef()
-	{
-		return _baseShldDef;	
-	}
+	/**
+	 * @return {@code true} if the NPC name should shows above NPC, {@code false} otherwise.
 	 */
+	public boolean showName()
+	{
+		return _showName;
+	}
+	
+	/**
+	 * @return {@code true} if the NPC can be targeted, {@code false} otherwise.
+	 */
+	public boolean isTargetable()
+	{
+		return _targetable;
+	}
 }

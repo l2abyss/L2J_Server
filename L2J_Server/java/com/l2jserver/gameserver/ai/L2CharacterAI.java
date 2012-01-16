@@ -30,10 +30,9 @@ import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
+import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
@@ -42,17 +41,20 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.item.type.L2WeaponType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.AutoAttackStop;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
+
 /**
  * This class manages AI of L2Character.<BR><BR>
  *
@@ -692,6 +694,10 @@ public class L2CharacterAI extends AbstractAI
 		}
 		clientStoppedMoving();
 		
+		//Walking Manager support
+		if (_actor instanceof L2Npc)
+			WalkingManager.getInstance().onArrived((L2Npc) _actor);
+		
 		// If the Intention was AI_INTENTION_MOVE_TO, set the Intention to AI_INTENTION_ACTIVE
 		if (getIntention() == AI_INTENTION_MOVE_TO)
 			setIntention(AI_INTENTION_ACTIVE);
@@ -909,7 +915,7 @@ public class L2CharacterAI extends AbstractAI
 		if (offset < 0)
 			return false; // skill radius -1
 		
-		if (!_actor.isInsideRadius(worldPosition.getX(), worldPosition.getY(), offset + _actor.getTemplate().collisionRadius, false))
+		if (!_actor.isInsideRadius(worldPosition.getX(), worldPosition.getY(), offset + _actor.getTemplate().getCollisionRadius(), false))
 		{
 			if (_actor.isMovementDisabled())
 				return true;
@@ -973,9 +979,9 @@ public class L2CharacterAI extends AbstractAI
 		if (offset < 0)
 			return false; // skill radius -1
 		
-		offset += _actor.getTemplate().collisionRadius;
+		offset += _actor.getTemplate().getCollisionRadius();
 		if (target instanceof L2Character)
-			offset += ((L2Character) target).getTemplate().collisionRadius;
+			offset += ((L2Character) target).getTemplate().getCollisionRadius();
 		
 		if (!_actor.isInsideRadius(target, offset, false, false))
 		{
@@ -1006,9 +1012,8 @@ public class L2CharacterAI extends AbstractAI
 			{
 				if (!((L2PcInstance)_actor).getTransformation().canStartFollowToCast())
 				{
-					((L2PcInstance)_actor).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED));
-					((L2PcInstance)_actor).sendPacket(ActionFailed.STATIC_PACKET);
-					
+					_actor.sendPacket(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
+					_actor.sendPacket(ActionFailed.STATIC_PACKET);
 					return true;
 				}
 			}
@@ -1349,10 +1354,10 @@ public class L2CharacterAI extends AbstractAI
 	
 	public boolean canAura(L2Skill sk)
 	{
-		if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
-				|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-				|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
-				|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
+		if(sk.getTargetType() == L2TargetType.TARGET_AURA
+				|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA
+				|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA
+				|| (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
 		{
 			for(L2Object target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 			{
@@ -1367,10 +1372,10 @@ public class L2CharacterAI extends AbstractAI
 	{
 		if(sk.getSkillType() != L2SkillType.NEGATE || sk.getSkillType() != L2SkillType.CANCEL)
 		{
-			if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
-					|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
+			if(sk.getTargetType() == L2TargetType.TARGET_AURA
+					|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA
+					|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA
+					|| (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
 			{
 				boolean cancast = true;
 				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
@@ -1399,9 +1404,9 @@ public class L2CharacterAI extends AbstractAI
 				if(cancast)
 					return true;
 			}
-			else if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AREA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AREA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AREA)
+			else if(sk.getTargetType() == L2TargetType.TARGET_AREA
+					|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA
+					|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA)
 			{
 				boolean cancast = true;
 				for(L2Character target: getAttackTarget().getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
@@ -1425,10 +1430,10 @@ public class L2CharacterAI extends AbstractAI
 		}
 		else
 		{
-			if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AURA
-					|| (sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AURA_CORPSE_MOB))
+			if(sk.getTargetType() == L2TargetType.TARGET_AURA
+					|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA
+					|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA
+					|| (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
 			{
 				boolean cancast = false;
 				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
@@ -1449,9 +1454,9 @@ public class L2CharacterAI extends AbstractAI
 				if(cancast)
 					return true;
 			}
-			else if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_AREA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_BEHIND_AREA
-					|| sk.getTargetType() == L2Skill.SkillTargetType.TARGET_FRONT_AREA)
+			else if(sk.getTargetType() == L2TargetType.TARGET_AREA
+					|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA
+					|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA)
 			{
 				boolean cancast = true;
 				for(L2Character target: getAttackTarget().getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
@@ -1484,7 +1489,7 @@ public class L2CharacterAI extends AbstractAI
 	}
 	public boolean canParty(L2Skill sk)
 	{
-		if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY)
+		if(sk.getTargetType() == L2TargetType.TARGET_PARTY)
 		{
 			int count = 0;
 			int ccount = 0;
@@ -1520,7 +1525,7 @@ public class L2CharacterAI extends AbstractAI
 	}
 	public boolean isParty(L2Skill sk)
 	{
-		if(sk.getTargetType() == L2Skill.SkillTargetType.TARGET_PARTY)
+		if(sk.getTargetType() == L2TargetType.TARGET_PARTY)
 		{
 			return true;
 		}

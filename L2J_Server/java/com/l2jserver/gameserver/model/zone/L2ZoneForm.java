@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.model.zone;
 
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 /**
  * Abstract base class for any zone form

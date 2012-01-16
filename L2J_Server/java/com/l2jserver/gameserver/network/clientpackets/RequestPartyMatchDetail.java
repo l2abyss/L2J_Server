@@ -92,7 +92,7 @@ public final class RequestPartyMatchDetail extends L2GameClientPacket
 		}
 		else
 		{
-			_activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_ENTER_PARTY_ROOM));
+			_activeChar.sendPacket(SystemMessageId.CANT_ENTER_PARTY_ROOM);
 		}
 	}
 	

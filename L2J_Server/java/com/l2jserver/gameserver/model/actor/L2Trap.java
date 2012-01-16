@@ -18,10 +18,11 @@ import java.util.Collection;
 import java.util.logging.Level;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.TrapKnownList;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.TrapAction;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
@@ -29,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
 
 /**
  *
@@ -55,7 +55,7 @@ public class L2Trap extends L2Character
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2Trap);
-		setName(template.name);
+		setName(template.getName());
 		setIsInvul(false);
 		
 		_isTriggered = false;
@@ -120,7 +120,7 @@ public class L2Trap extends L2Character
 	 */
 	public final int getNpcId()
 	{
-		return getTemplate().npcId;
+		return getTemplate().getNpcId();
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public class L2Trap extends L2Character
 	@Override
 	public int getLevel()
 	{
-		return getTemplate().level;
+		return getTemplate().getLevel();
 	}
 	
 	/**
@@ -298,7 +298,7 @@ public class L2Trap extends L2Character
 						_timeRemaining -= TICK;
 						if (_timeRemaining < _lifeTime - 15000)
 						{
-							SocialAction sa = new SocialAction(L2Trap.this, 2);
+							SocialAction sa = new SocialAction(getObjectId(), 2);
 							broadcastPacket(sa);
 						}
 						if (_timeRemaining < 0)

@@ -20,13 +20,21 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.ai.CtrlEvent;
+import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.ai.NextAction;
+import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.type.L2ArmorType;
+import com.l2jserver.gameserver.model.item.type.L2WeaponType;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -34,10 +42,6 @@ import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.ShowCalculator;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.SkillHolder;
-import com.l2jserver.gameserver.templates.item.L2ArmorType;
-import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 /**
@@ -172,14 +176,7 @@ public final class UseItem extends L2GameClientPacket
 			_log.log(Level.INFO, activeChar.getObjectId() + ": use item " + _objectId);
 		
 		if (item.isEquipable())
-		{
-			// Don't allow hero equipment and restricted items during Olympiad
-			if (activeChar.isInOlympiadMode() && (item.isHeroItem() || item.isOlyRestrictedItem()))
-			{
-				activeChar.sendPacket(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT);
-				return;
-			}
-			
+		{	
 			// Don't allow to put formal wear while a cursed weapon is equipped.
 			if (activeChar.isCursedWeaponEquipped() && _itemId == 6408)
 			{
@@ -198,18 +195,13 @@ public final class UseItem extends L2GameClientPacket
 				case L2Item.SLOT_L_HAND:
 				case L2Item.SLOT_R_HAND:
 				{
-					// prevent players to equip weapon while wearing combat flag
+					// Prevent players to equip weapon while wearing combat flag
 					if (activeChar.getActiveWeaponItem() != null && activeChar.getActiveWeaponItem().getItemId() == 9819)
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
 					}
-					// Prevent player to remove the weapon on special conditions
-					if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
-					{
-						activeChar.sendPacket(SystemMessageId.CANNOT_CHANGE_WEAPON_DURING_AN_ATTACK);
-						return;
-					}
+					
 					if (activeChar.isMounted())
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
@@ -289,13 +281,29 @@ public final class UseItem extends L2GameClientPacket
 				}
 			}
 			
-			if (activeChar.isAttackingNow())
+			if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
 			{
-				ThreadPoolManager.getInstance().scheduleGeneral( new WeaponEquipTask(item,activeChar), (activeChar.getAttackEndTime()-GameTimeController.getGameTicks())*GameTimeController.MILLIS_IN_TICK);
-				return;
+				// Creating next action class.
+				final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, new NextActionCallback()
+				{
+					@Override
+					public void doWork()
+					{
+						activeChar.useEquippableItem(item, true);
+					}
+				});
+				
+				// Binding next action to AI.
+				activeChar.getAI().setNextAction(nextAction);
 			}
-			
-			activeChar.useEquippableItem(item, true);
+			else if (activeChar.isAttackingNow())
+			{
+				ThreadPoolManager.getInstance().scheduleGeneral(new WeaponEquipTask(item, activeChar), (activeChar.getAttackEndTime() - GameTimeController.getGameTicks()) * GameTimeController.MILLIS_IN_TICK);
+			}
+			else
+			{
+				activeChar.useEquippableItem(item, true);
+			}
 		}
 		else
 		{
@@ -319,7 +327,7 @@ public final class UseItem extends L2GameClientPacket
 			}
 			else
 			{
-				IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+				IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 				if (handler != null)
 					handler.useItem(activeChar, item, _ctrlPressed);
 				else if (Config.DEBUG)

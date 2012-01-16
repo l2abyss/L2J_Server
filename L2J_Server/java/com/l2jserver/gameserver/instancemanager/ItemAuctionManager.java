@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.sql.Connection;
@@ -127,7 +127,7 @@ public final class ItemAuctionManager
 	
 	public final void shutdown()
 	{
-		final ItemAuctionInstance[] instances = _managerInstances.getValues(new ItemAuctionInstance[_managerInstances.size()]);
+		final ItemAuctionInstance[] instances = _managerInstances.values(new ItemAuctionInstance[0]);
 		for (final ItemAuctionInstance instance : instances)
 		{
 			instance.shutdown();

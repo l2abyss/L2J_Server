@@ -1,7 +1,7 @@
 $OutputEncoding = New-Object -typename System.Text.UTF8Encoding
 $a = (Get-Host).UI.RawUI
 $a.WindowTitle = "L2J - SQL Account Manager"
-java "-Djava.util.logging.config.file=console.cfg" -cp "./../libs/*;l2jlogin.jar" com.l2jserver.accountmanager.SQLAccountManager 2> $null
+java "-Djava.util.logging.config.file=console.cfg" -cp "./../libs/*;l2jlogin.jar" com.l2jserver.tools.accountmanager.SQLAccountManager 2> $null
 if ($LASTEXITCODE -like 0)
 {
     ""

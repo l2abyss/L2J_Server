@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 /**
  * 15
@@ -79,9 +79,6 @@ public final class SpawnItem extends L2GameServerPacket
 		writeD(0x00); // freya unk
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -149,9 +149,6 @@ public class Attack extends L2GameServerPacket
 		writeD(_tz);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

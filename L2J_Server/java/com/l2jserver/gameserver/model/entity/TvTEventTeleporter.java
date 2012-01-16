@@ -57,6 +57,7 @@ public class TvTEventTeleporter implements Runnable
 	 *
 	 * @see java.lang.Runnable#run()
 	 */
+	@Override
 	public void run()
 	{
 		if (_playerInstance == null)

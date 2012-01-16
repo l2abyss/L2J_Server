@@ -61,135 +61,11 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			activeChar = _activeChar;
 		}
 		
+		@Override
 		@SuppressWarnings("synthetic-access")
 		public void run()
 		{
-			Location loc = null;
-			Castle castle = null;
-			Fort fort = null;
-			SiegableHall hall = null;
-			boolean isInDefense = false;
-			int instanceId = 0;
-			
-			// force jail
-			if (activeChar.isInJail())
-			{
-				_requestedPointType = 27;
-			}
-			else if (activeChar.isFestivalParticipant())
-			{
-				_requestedPointType = 5;
-			}
-			switch (_requestedPointType)
-			{
-				case 1: // to clanhall
-					if (activeChar.getClan() == null || activeChar.getClan().getHasHideout() == 0)
-					{
-						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Clanhall and he doesn't have Clanhall!");
-						return;
-					}
-					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.ClanHall);
-					
-					if (ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan())!= null &&
-							ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()).getFunction(ClanHall.FUNC_RESTORE_EXP) != null)
-					{
-						activeChar.restoreExp(ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()).getFunction(ClanHall.FUNC_RESTORE_EXP).getLvl());
-					}
-					break;
-					
-				case 2: // to castle
-					castle = CastleManager.getInstance().getCastle(activeChar);
-					
-					if (castle != null && castle.getSiege().getIsInProgress())
-					{
-						// Siege in progress
-						if (castle.getSiege().checkIsDefender(activeChar.getClan()))
-							loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
-						// Just in case you lost castle while being dead.. Port to nearest Town.
-						else if (castle.getSiege().checkIsAttacker(activeChar.getClan()))
-							loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Town);
-						else
-						{
-							_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Castle and he doesn't have Castle!");
-							return;
-						}
-					}
-					else
-					{
-						if (activeChar.getClan() == null || activeChar.getClan().getHasCastle() == 0)
-							return;
-						loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
-					}
-					if (CastleManager.getInstance().getCastleByOwner(activeChar.getClan())!= null &&
-							CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).getFunction(Castle.FUNC_RESTORE_EXP) != null)
-					{
-						activeChar.restoreExp(CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).getFunction(Castle.FUNC_RESTORE_EXP).getLvl());
-					}
-					break;
-					
-				case 3: // to fortress
-					//fort = FortManager.getInstance().getFort(activeChar);
-					
-					if ((activeChar.getClan() == null || activeChar.getClan().getHasFort() == 0) && !isInDefense)
-					{
-						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Fortress and he doesn't have Fortress!");
-						return;
-					}
-					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Fortress);
-					if (FortManager.getInstance().getFortByOwner(activeChar.getClan())!= null &&
-							FortManager.getInstance().getFortByOwner(activeChar.getClan()).getFunction(Fort.FUNC_RESTORE_EXP) != null)
-					{
-						activeChar.restoreExp(FortManager.getInstance().getFortByOwner(activeChar.getClan()).getFunction(Fort.FUNC_RESTORE_EXP).getLvl());
-					}
-					break;
-					
-				case 4: // to siege HQ
-					L2SiegeClan siegeClan = null;
-					castle = CastleManager.getInstance().getCastle(activeChar);
-					fort = FortManager.getInstance().getFort(activeChar);
-					hall = CHSiegeManager.getInstance().getNearbyClanHall(activeChar);
-					L2SiegeFlagInstance flag = TerritoryWarManager.getInstance().getFlagForClan(activeChar.getClan());
-					
-					if (castle != null && castle.getSiege().getIsInProgress())
-						siegeClan = castle.getSiege().getAttackerClan(activeChar.getClan());
-					else if (fort != null && fort.getSiege().getIsInProgress())
-						siegeClan = fort.getSiege().getAttackerClan(activeChar.getClan());
-					else if (hall != null && hall.isInSiege())
-						siegeClan = hall.getSiege().getAttackerClan(activeChar.getClan());
-					if ((siegeClan == null || siegeClan.getFlag().isEmpty()) && flag == null)
-					{
-						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Siege HQ and he doesn't have Siege HQ!");
-						return;
-					}
-					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.SiegeFlag);
-					break;
-					
-				case 5: // Fixed or Player is a festival participant
-					if (!activeChar.isGM() && !activeChar.isFestivalParticipant())
-					{
-						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - Fixed and he isn't festival participant!");
-						return;
-					}
-					instanceId = activeChar.getInstanceId();
-					loc = new Location(activeChar.getX(), activeChar.getY(), activeChar.getZ()); // spawn them where they died
-					break;
-				case 6: // TODO: agathion ress
-					break;
-				case 27: // to jail
-					if (!activeChar.isInJail()) return;
-					loc = new Location(-114356, -249645, -2984);
-					break;
-					
-				default:
-					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Town);
-					break;
-			}
-			
-			// Teleport and revive
-			activeChar.setInstanceId(instanceId);
-			activeChar.setIsIn7sDungeon(false);
-			activeChar.setIsPendingRevive(true);
-			activeChar.teleToLocation(loc, true);
+			RequestRestartPoint.this.portPlayer(activeChar);
 		}
 	}
 	
@@ -232,8 +108,142 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			}
 		}
 		
-		// run immediately (no need to schedule)
-		new DeathTask(activeChar).run();
+		portPlayer(activeChar);
+	}
+	
+	private final void portPlayer(final L2PcInstance activeChar) 
+	{
+		Location loc = null;
+		Castle castle = null;
+		Fort fort = null;
+		SiegableHall hall = null;
+		boolean isInDefense = false;
+		int instanceId = 0;
+		
+		// force jail
+		if (activeChar.isInJail())
+		{
+			_requestedPointType = 27;
+		}
+		else if (activeChar.isFestivalParticipant())
+		{
+			_requestedPointType = 5;
+		}
+		switch (_requestedPointType)
+		{
+			case 1: // to clanhall
+				if (activeChar.getClan() == null || activeChar.getClan().getHasHideout() == 0)
+				{
+					_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Clanhall and he doesn't have Clanhall!");
+					return;
+				}
+				loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.ClanHall);
+				
+				if (ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan())!= null &&
+						ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()).getFunction(ClanHall.FUNC_RESTORE_EXP) != null)
+				{
+					activeChar.restoreExp(ClanHallManager.getInstance().getClanHallByOwner(activeChar.getClan()).getFunction(ClanHall.FUNC_RESTORE_EXP).getLvl());
+				}
+				break;
+				
+			case 2: // to castle
+				castle = CastleManager.getInstance().getCastle(activeChar);
+				
+				if (castle != null && castle.getSiege().getIsInProgress())
+				{
+					// Siege in progress
+					if (castle.getSiege().checkIsDefender(activeChar.getClan()))
+						loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
+					// Just in case you lost castle while being dead.. Port to nearest Town.
+					else if (castle.getSiege().checkIsAttacker(activeChar.getClan()))
+						loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Town);
+					else
+					{
+						_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Castle and he doesn't have Castle!");
+						return;
+					}
+				}
+				else
+				{
+					if (activeChar.getClan() == null || activeChar.getClan().getHasCastle() == 0)
+						return;
+					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
+				}
+				if (CastleManager.getInstance().getCastleByOwner(activeChar.getClan())!= null &&
+						CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).getFunction(Castle.FUNC_RESTORE_EXP) != null)
+				{
+					activeChar.restoreExp(CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).getFunction(Castle.FUNC_RESTORE_EXP).getLvl());
+				}
+				break;
+				
+			case 3: // to fortress
+				//fort = FortManager.getInstance().getFort(activeChar);
+				
+				if ((activeChar.getClan() == null || activeChar.getClan().getHasFort() == 0) && !isInDefense)
+				{
+					_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Fortress and he doesn't have Fortress!");
+					return;
+				}
+				loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Fortress);
+				if (FortManager.getInstance().getFortByOwner(activeChar.getClan())!= null &&
+						FortManager.getInstance().getFortByOwner(activeChar.getClan()).getFunction(Fort.FUNC_RESTORE_EXP) != null)
+				{
+					activeChar.restoreExp(FortManager.getInstance().getFortByOwner(activeChar.getClan()).getFunction(Fort.FUNC_RESTORE_EXP).getLvl());
+				}
+				break;
+				
+			case 4: // to siege HQ
+				L2SiegeClan siegeClan = null;
+				castle = CastleManager.getInstance().getCastle(activeChar);
+				fort = FortManager.getInstance().getFort(activeChar);
+				hall = CHSiegeManager.getInstance().getNearbyClanHall(activeChar);
+				L2SiegeFlagInstance flag = TerritoryWarManager.getInstance().getFlagForClan(activeChar.getClan());
+				
+				if (castle != null && castle.getSiege().getIsInProgress())
+					siegeClan = castle.getSiege().getAttackerClan(activeChar.getClan());
+				else if (fort != null && fort.getSiege().getIsInProgress())
+					siegeClan = fort.getSiege().getAttackerClan(activeChar.getClan());
+				else if (hall != null && hall.isInSiege())
+					siegeClan = hall.getSiege().getAttackerClan(activeChar.getClan());
+				if ((siegeClan == null || siegeClan.getFlag().isEmpty()) && flag == null)
+				{
+					// Check if clan hall has inner spawns loc
+					if(hall != null && (loc = hall.getSiege().getInnerSpawnLoc(activeChar)) != null)
+						break;
+					
+					_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Siege HQ and he doesn't have Siege HQ!");
+					return;
+				}
+				loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.SiegeFlag);
+				break;
+				
+			case 5: // Fixed or Player is a festival participant
+				if (!activeChar.isGM() && !activeChar.isFestivalParticipant())
+				{
+					_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - Fixed and he isn't festival participant!");
+					return;
+				}
+				instanceId = activeChar.getInstanceId();
+				loc = new Location(activeChar.getX(), activeChar.getY(), activeChar.getZ()); // spawn them where they died
+				break;
+			case 6: // TODO: agathion ress
+				break;
+			case 27: // to jail
+				if (!activeChar.isInJail()) return;
+				loc = new Location(-114356, -249645, -2984);
+				break;
+				
+			default:
+				loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Town);
+				break;
+		}
+		
+		// Teleport and revive
+		activeChar.setInstanceId(instanceId);
+		activeChar.setIsIn7sDungeon(false);
+		activeChar.setIsPendingRevive(true);
+		activeChar.teleToLocation(loc, true);
+
 	}
 	
 	@Override

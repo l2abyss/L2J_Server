@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -42,13 +41,14 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.DoorStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.OnEventTrigger;
 import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
 
 /**
  * This class ...
@@ -418,6 +418,7 @@ public class L2DoorInstance extends L2Character
 			if(!getClanHall().isSiegableHall())
 				return false;
 			return ((SiegableHall)getClanHall()).isInSiege()
+					&& ((SiegableHall)getClanHall()).getSiege().doorIsAutoAttackable()
 					&& ((SiegableHall)getClanHall()).getSiege().checkIsAttacker(actingPlayer.getClan());
 		}
 		// Attackable  only during siege by everyone (not owner)
@@ -520,6 +521,9 @@ public class L2DoorInstance extends L2Character
 
 		for (L2PcInstance player : knownPlayers)
 		{
+			if (player == null)
+				continue;
+			
 			if ((getCastle() != null && getCastle().getCastleId() > 0) || (getFort() != null && getFort().getFortId() > 0 && !getIsCommanderDoor()))
 				su = new StaticObject(this, true);
 			

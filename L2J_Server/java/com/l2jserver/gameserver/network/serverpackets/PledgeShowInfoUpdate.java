@@ -53,9 +53,6 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 		writeD(_clan.isAtWar() ? 1 : 0); //c5
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

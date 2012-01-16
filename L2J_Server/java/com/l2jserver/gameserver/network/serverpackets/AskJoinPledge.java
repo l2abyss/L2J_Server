@@ -48,9 +48,6 @@ public final class AskJoinPledge extends L2GameServerPacket
 		writeS(_pledgeName);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -19,7 +19,7 @@ import java.util.Collection;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.L2TradeList.L2TradeItem;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Item;
 
 
 public class ShopPreviewList extends L2GameServerPacket
@@ -85,9 +85,6 @@ public class ShopPreviewList extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

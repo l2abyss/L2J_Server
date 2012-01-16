@@ -48,7 +48,7 @@ public class L2DecoyInstance extends L2Decoy
 		}
 		_timeRemaining = _totalLifeTime;
 		int delay = 1000;
-		int skilllevel = getTemplate().idTemplate - 13070;
+		int skilllevel = getTemplate().getIdTemplate() - 13070;
 		_DecoyLifeTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new DecoyLifetime(getOwner(), this), delay, delay);
 		_HateSpam = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new HateSpam(this, SkillTable.getInstance().getInfo(5272, skilllevel)), 2000, 5000);
 	}
@@ -92,6 +92,7 @@ public class L2DecoyInstance extends L2Decoy
 			_Decoy = Decoy;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -123,6 +124,7 @@ public class L2DecoyInstance extends L2Decoy
 			_skill = Hate;
 		}
 		
+		@Override
 		public void run()
 		{
 			try

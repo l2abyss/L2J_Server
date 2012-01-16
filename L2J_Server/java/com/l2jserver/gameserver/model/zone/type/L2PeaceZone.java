@@ -14,15 +14,15 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
- * A peaceful zone
- *
- * @author  durgus
+ * A Peace Zone
+ * @author durgus
  */
 public class L2PeaceZone extends L2ZoneType
 {
@@ -34,16 +34,34 @@ public class L2PeaceZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_PEACE, true);
-		if (character instanceof L2PcInstance && ((L2PcInstance)character).isCombatFlagEquipped()
-				&& TerritoryWarManager.getInstance().isTWInProgress())
-			TerritoryWarManager.getInstance().dropCombatFlag(((L2PcInstance)character), false, true);
+		if (character instanceof L2PcInstance)
+		{
+			if (((L2PcInstance) character).isCombatFlagEquipped() && TerritoryWarManager.getInstance().isTWInProgress())
+			{
+				TerritoryWarManager.getInstance().dropCombatFlag(((L2PcInstance) character), false, true);
+			}
+			
+			// PVP possible during siege, now for siege participants only
+			// Could also check if this town is in siege, or if any siege is going on
+			if ((((L2PcInstance) character).getSiegeState() != 0) && (Config.PEACE_ZONE_MODE == 1))
+			{
+				return;
+			}
+		}
+		
+		if (Config.PEACE_ZONE_MODE != 2)
+		{
+			character.setInsideZone(L2Character.ZONE_PEACE, true);
+		}
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_PEACE, false);
+		if (Config.PEACE_ZONE_MODE != 2)
+		{
+			character.setInsideZone(L2Character.ZONE_PEACE, false);
+		}
 	}
 	
 	@Override
@@ -55,5 +73,4 @@ public class L2PeaceZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
-	
 }

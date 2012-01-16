@@ -15,7 +15,7 @@
 
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -36,11 +36,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.form.ZoneCuboid;
@@ -353,24 +353,8 @@ public class ZoneManager
 										int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
 										int spawnY = Integer.parseInt(attrs.getNamedItem("Y").getNodeValue());
 										int spawnZ = Integer.parseInt(attrs.getNamedItem("Z").getNodeValue());
-										
-										Node val = attrs.getNamedItem("isOther");
-										boolean other = val != null && Boolean.parseBoolean(val.getNodeValue());
-										
-										val = attrs.getNamedItem("isChaotic");
-										boolean chaotic = val != null && Boolean.parseBoolean(val.getNodeValue());
-										
-										val = attrs.getNamedItem("isBanish");
-										boolean banish = val != null && Boolean.parseBoolean(val.getNodeValue());
-										
-										if (other)
-											((L2ZoneRespawn) temp).addOtherSpawn(spawnX, spawnY, spawnZ);
-										else if (chaotic)
-											((L2ZoneRespawn) temp).addChaoticSpawn(spawnX, spawnY, spawnZ);
-										else if (banish)
-											((L2ZoneRespawn) temp).addBanishSpawn(spawnX, spawnY, spawnZ);
-										else
-											((L2ZoneRespawn) temp).addSpawn(spawnX, spawnY, spawnZ);
+										Node val = attrs.getNamedItem("type");
+										((L2ZoneRespawn)temp).parseLoc(spawnX, spawnY, spawnZ, val == null? null : val.getNodeValue());
 									}
 									else if ("race".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2RespawnZone)
 									{

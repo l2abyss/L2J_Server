@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.model;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.itemcontainer.Warehouse;
 
 public final class ClanWarehouse extends Warehouse

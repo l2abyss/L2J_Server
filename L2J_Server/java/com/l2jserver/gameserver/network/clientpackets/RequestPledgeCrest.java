@@ -40,9 +40,6 @@ public final class RequestPledgeCrest extends L2GameClientPacket
 		sendPacket(new PledgeCrest(_crestId));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -35,9 +35,6 @@ public class ExCubeGameEnd extends L2GameServerPacket
 		_isRedTeamWin = isRedTeamWin;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -48,13 +45,9 @@ public class ExCubeGameEnd extends L2GameServerPacket
 		writeD(_isRedTeamWin ? 0x01 : 0x00);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__FE_98_01_EXCUBEGAMEEND;
 	}
-	
 }

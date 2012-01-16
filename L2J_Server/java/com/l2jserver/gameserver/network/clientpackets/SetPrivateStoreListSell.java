@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreManageListSell;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreMsgSell;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
 
@@ -78,7 +77,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		
 		if (_items == null)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INCORRECT_ITEM_COUNT));
+			player.sendPacket(SystemMessageId.INCORRECT_ITEM_COUNT);
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
 			player.broadcastUserInfo();
 			return;
@@ -86,13 +85,13 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		
 		if (!player.getAccessLevel().allowTransaction())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;
 		}
 		
 		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
+			player.sendPacket(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT);
 			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -101,7 +100,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		if (player.isInsideZone(L2Character.ZONE_NOSTORE))
 		{
 			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_PRIVATE_STORE_HERE));
+			player.sendPacket(SystemMessageId.NO_PRIVATE_STORE_HERE);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -110,7 +109,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		if (_items.length > player.getPrivateSellStoreLimit())
 		{
 			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
+			player.sendPacket(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED);
 			return;
 		}
 		

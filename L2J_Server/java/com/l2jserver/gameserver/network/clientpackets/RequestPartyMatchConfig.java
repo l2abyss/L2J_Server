@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExPartyRoomMember;
 import com.l2jserver.gameserver.network.serverpackets.ListPartyWating;
 import com.l2jserver.gameserver.network.serverpackets.PartyMatchDetail;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
@@ -55,7 +54,7 @@ public final class RequestPartyMatchConfig extends L2GameClientPacket
 		
 		if( !_activeChar.isInPartyMatchRoom() && _activeChar.getParty() != null && _activeChar.getParty().getLeader() != _activeChar)
 		{
-			_activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_VIEW_PARTY_ROOMS));
+			_activeChar.sendPacket(SystemMessageId.CANT_VIEW_PARTY_ROOMS);
 			_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

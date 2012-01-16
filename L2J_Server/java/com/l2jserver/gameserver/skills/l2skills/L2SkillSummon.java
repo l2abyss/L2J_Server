@@ -20,6 +20,7 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
@@ -27,9 +28,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 public class L2SkillSummon extends L2Skill
 {
@@ -62,6 +62,9 @@ public class L2SkillSummon extends L2Skill
 	private final int _itemConsumeIdOT;
 	// how many times to consume an item
 	private final int _itemConsumeSteps;
+	// Inherit elementals from master
+	private final boolean _inheritElementals;
+	private final double _elementalSharePercent;
 	
 	public L2SkillSummon(StatsSet set)
 	{
@@ -83,6 +86,9 @@ public class L2SkillSummon extends L2Skill
 		_itemConsumeIdOT = set.getInteger("itemConsumeIdOT", 0);
 		_itemConsumeTime = set.getInteger("itemConsumeTime", 0);
 		_itemConsumeSteps = set.getInteger("itemConsumeSteps", 0);
+		
+		_inheritElementals = set.getBool("inheritElementals", false);
+		_elementalSharePercent = set.getDouble("inheritPercent", 1);
 	}
 	
 	public boolean checkCondition(L2Character activeChar)
@@ -93,7 +99,7 @@ public class L2SkillSummon extends L2Skill
 			
 			if (isCubic())
 			{
-				if (getTargetType() != L2Skill.SkillTargetType.TARGET_SELF)
+				if (getTargetType() != L2TargetType.TARGET_SELF)
 				{
 					return true; //Player is always able to cast mass cubic skill
 				}
@@ -113,7 +119,7 @@ public class L2SkillSummon extends L2Skill
 					return false;
 				if (player.getPet() != null)
 				{
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ALREADY_HAVE_A_PET));
+					activeChar.sendPacket(SystemMessageId.YOU_ALREADY_HAVE_A_PET);
 					return false;
 				}
 			}
@@ -160,8 +166,8 @@ public class L2SkillSummon extends L2Skill
 						mastery = 0;
 					if (mastery == 0 && !player.getCubics().isEmpty())
 					{
-						// Player can have only 1 cubic - we shuld replace old cubic with new one
-						for (L2CubicInstance c: player.getCubics().getValues(new L2CubicInstance[player.getCubics().size()]))
+						// Player can have only 1 cubic - we should replace old cubic with new one
+						for (L2CubicInstance c: player.getCubics().values(new L2CubicInstance[0]))
 						{
 							c.stopAction();
 							c = null;
@@ -199,7 +205,7 @@ public class L2SkillSummon extends L2Skill
 				if (activeChar.getCubics().size() > mastery) {
 					if (Config.DEBUG)
 						_log.fine("player can't summon any more cubics. ignore summon skill");
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CUBIC_SUMMONING_FAILED));
+					activeChar.sendPacket(SystemMessageId.CUBIC_SUMMONING_FAILED);
 					return;
 				}
 				activeChar.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _maxcount, _summonTotalLifeTime, false);
@@ -221,17 +227,21 @@ public class L2SkillSummon extends L2Skill
 			_log.warning("Summon attempt for nonexisting NPC ID:"+_npcId+", skill ID:"+this.getId());
 			return; // npcID doesn't exist
 		}
-		if (summonTemplate.type.equalsIgnoreCase("L2SiegeSummon"))
-			summon = new L2SiegeSummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, this);
-		else if (summonTemplate.type.equalsIgnoreCase("L2MerchantSummon"))
-			summon = new L2MerchantSummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, this);
-		else
-			summon = new L2SummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, this);
 		
-		summon.setName(summonTemplate.name);
+		final int id = IdFactory.getInstance().getNextId();
+		if (summonTemplate.isType("L2SiegeSummon"))
+			summon = new L2SiegeSummonInstance(id, summonTemplate, activeChar, this);
+		else if (summonTemplate.isType("L2MerchantSummon"))
+			summon = new L2MerchantSummonInstance(id, summonTemplate, activeChar, this);
+		else
+			summon = new L2SummonInstance(id, summonTemplate, activeChar, this);
+		
+		summon.setName(summonTemplate.getName());
 		summon.setTitle(activeChar.getName());
 		summon.setExpPenalty(_expPenalty);
-		
+		summon.setSharedElementals(_inheritElementals);
+		summon.setSharedElementalsValue(_elementalSharePercent);
+			
 		if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 		{
 			summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));

@@ -23,9 +23,9 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.MultiSell;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Augmentation;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.multisell.Entry;
 import com.l2jserver.gameserver.model.multisell.Ingredient;
@@ -151,13 +151,13 @@ public class MultiSellChoose extends L2GameClientPacket
 				
 				if (!inv.validateWeight(weight))
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+					player.sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
 					return;
 				}
 				
 				if (!inv.validateCapacity(slots))
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
+					player.sendPacket(SystemMessageId.SLOTS_FULL);
 					return;
 				}
 				
@@ -179,7 +179,7 @@ public class MultiSellChoose extends L2GameClientPacket
 						{
 							if (ex.getItemCount() + e.getItemCount() > Integer.MAX_VALUE)
 							{
-								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
+								player.sendPacket(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED);
 								return;
 							}
 							// two same ingredients, merge into one and replace old
@@ -202,7 +202,7 @@ public class MultiSellChoose extends L2GameClientPacket
 				{
 					if (e.getItemCount() * _amount > Integer.MAX_VALUE)
 					{
-						player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
+						player.sendPacket(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED);
 						return;
 					}
 					if (e.getItemId() < 0)

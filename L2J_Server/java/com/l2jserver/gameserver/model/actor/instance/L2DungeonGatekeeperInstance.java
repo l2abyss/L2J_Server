@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 
@@ -57,12 +56,12 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			{
 				if (compWinner == SevenSigns.CABAL_DAWN && (playerCabal != SevenSigns.CABAL_DAWN || sealAvariceOwner != SevenSigns.CABAL_DAWN))
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+					player.sendPacket(SystemMessageId.CAN_BE_USED_BY_DAWN);
 					canPort = false;
 				}
 				else if (compWinner == SevenSigns.CABAL_DUSK && (playerCabal != SevenSigns.CABAL_DUSK || sealAvariceOwner != SevenSigns.CABAL_DUSK))
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+					player.sendPacket(SystemMessageId.CAN_BE_USED_BY_DUSK);
 					canPort = false;
 				}
 				else if (compWinner == SevenSigns.CABAL_NULL && playerCabal != SevenSigns.CABAL_NULL)
@@ -96,12 +95,12 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			{
 				if (compWinner == SevenSigns.CABAL_DAWN && (playerCabal != SevenSigns.CABAL_DAWN || sealGnosisOwner != SevenSigns.CABAL_DAWN))
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DAWN));
+					player.sendPacket(SystemMessageId.CAN_BE_USED_BY_DAWN);
 					canPort = false;
 				}
 				else if (compWinner == SevenSigns.CABAL_DUSK && (playerCabal != SevenSigns.CABAL_DUSK || sealGnosisOwner != SevenSigns.CABAL_DUSK))
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CAN_BE_USED_BY_DUSK));
+					player.sendPacket(SystemMessageId.CAN_BE_USED_BY_DUSK);
 					canPort = false;
 				}
 				else if (compWinner == SevenSigns.CABAL_NULL && playerCabal != SevenSigns.CABAL_NULL)

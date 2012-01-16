@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver;
 
-import gnu.trove.TIntObjectHashMap;
-import gnu.trove.TObjectProcedure;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -136,6 +136,7 @@ public class GameTimeController
 	
 	private final class MoveObjects implements TObjectProcedure<L2Character>
 	{
+		@Override
 		public final boolean execute(final L2Character ch)
 		{
 			if (ch.updatePosition(_gameTicks))
@@ -220,6 +221,7 @@ public class GameTimeController
 			_ended = ended;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -243,6 +245,7 @@ public class GameTimeController
 		int h;
 		boolean tempIsNight;
 		
+		@Override
 		public void run()
 		{
 			h = ((getGameTime() + 29) / 60) % 24; // Time in hour (+ 29 is to round 60)

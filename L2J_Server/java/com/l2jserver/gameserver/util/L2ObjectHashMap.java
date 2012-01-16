@@ -19,29 +19,25 @@ import java.util.NoSuchElementException;
 
 import com.l2jserver.gameserver.model.L2Object;
 
-
 /**
- * This class is a highly optimized hashtable, where
+ * This class is a highly optimized hash table, where
  * keys are integers. The main goal of this class is to allow
- * concurent read/iterate and write access to this table,
+ * concurrent read/iterate and write access to this table,
  * plus minimal used memory.
  *
  * This class uses plain array as the table of values, and
  * keys are used to get position in the table. If the position
- * is already busy, we iterate to the next position, unil we
+ * is already busy, we iterate to the next position, until we
  * find the needed element or null.
  *
  * To iterate over the table (read access) we may simply iterate
- * throgh table array.
+ * through table array.
  *
  * In case we remove an element from the table, we check - if
  * the next position is null, we reset table's slot to null,
- * otherwice we assign it to a dummy value
- *
- *
+ * otherwise we assign it to a dummy value
+ * @param <T> type of values stored in this hash table
  * @author mkizub
- *
- * @param <T> type of values stored in this hashtable
  */
 public final class L2ObjectHashMap<T extends L2Object>
 extends L2ObjectMap<T>
@@ -83,27 +79,18 @@ extends L2ObjectMap<T>
 		if (DEBUG) check();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#size()
-	 */
 	@Override
 	public int size()
 	{
 		return _count;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#isEmpty()
-	 */
 	@Override
 	public boolean isEmpty()
 	{
 		return _count == 0;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#clear()
-	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public synchronized void clear()
@@ -134,9 +121,6 @@ extends L2ObjectMap<T>
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#put(T)
-	 */
 	@Override
 	public synchronized void put(T obj)
 	{
@@ -195,9 +179,6 @@ extends L2ObjectMap<T>
 		throw new IllegalStateException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#remove(T)
-	 */
 	@Override
 	public synchronized void remove(T obj)
 	{
@@ -231,9 +212,6 @@ extends L2ObjectMap<T>
 		throw new IllegalStateException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#get(int)
-	 */
 	@Override
 	public T get(int id)
 	{
@@ -268,9 +246,6 @@ extends L2ObjectMap<T>
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#contains(T)
-	 */
 	@Override
 	public boolean contains(T obj)
 	{
@@ -321,9 +296,6 @@ extends L2ObjectMap<T>
 		if (DEBUG) check();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectMap#iterator()
-	 */
 	@Override
 	public Iterator<T> iterator()
 	{
@@ -346,10 +318,12 @@ extends L2ObjectMap<T>
 					return;
 			}
 		}
+		@Override
 		public boolean hasNext()
 		{
 			return _nextObj != null;
 		}
+		@Override
 		public T next()
 		{
 			if (_nextObj == null)
@@ -365,6 +339,7 @@ extends L2ObjectMap<T>
 				_nextObj = null;
 			return _lastRet;
 		}
+		@Override
 		public void remove()
 		{
 			if (_lastRet == null)

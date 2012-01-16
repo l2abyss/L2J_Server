@@ -13,6 +13,7 @@
 package com.l2jserver.gameserver.util;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -41,11 +42,9 @@ public final class Util
 	}
 	
 	/**
-	 * Return degree value of object 2 to the horizontal line with object 1
-	 * being the origin
 	 * @param obj1 
 	 * @param obj2 
-	 * @return 
+	 * @return degree value of object 2 to the horizontal line with object 1 being the origin.
 	 */
 	public static double calculateAngleFrom(L2Object obj1, L2Object obj2)
 	{
@@ -53,12 +52,11 @@ public final class Util
 	}
 	
 	/**
-	 * Return degree value of object 2 to the horizontal line with object 1 being the origin
 	 * @param obj1X 
 	 * @param obj1Y 
 	 * @param obj2X 
 	 * @param obj2Y 
-	 * @return 
+	 * @return degree value of object 2 to the horizontal line with object 1 being the origin
 	 */
 	public final static double calculateAngleFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
 	{
@@ -159,15 +157,17 @@ public final class Util
 	public static String capitalizeFirst(String str)
 	{
 		if (str == null || str.isEmpty())
+		{
 			return str;
-		
+		}
 		final char[] arr = str.toCharArray();
 		final char c = arr[0];
 		
 		if (Character.isLetter(c))
+		{
 			arr[0] = Character.toUpperCase(c);
-		
-		return arr.toString();
+		}
+		return new String(arr);
 	}
 	
 	/**
@@ -219,9 +219,9 @@ public final class Util
 			
 		int rad = 0;
 		if (obj1 instanceof L2Character)
-			rad += ((L2Character) obj1).getTemplate().collisionRadius;
+			rad += ((L2Character) obj1).getTemplate().getCollisionRadius();
 		if (obj2 instanceof L2Character)
-			rad += ((L2Character) obj2).getTemplate().collisionRadius;
+			rad += ((L2Character) obj2).getTemplate().getCollisionRadius();
 		
 		double dx = obj1.getX() - obj2.getX();
 		double dy = obj1.getY() - obj2.getY();
@@ -363,6 +363,21 @@ public final class Util
 		}
 		return s;
 	}
+	
+    /**
+     * Format the given date on the given format
+     * @param date : the date to format.
+     * @param format : the format to correct by.
+     * @return a string representation of the formatted date.
+     */
+    public static String formatDate(Date date, String format)
+    {
+        final DateFormat dateFormat = new SimpleDateFormat(format);
+        if (date != null)
+            return dateFormat.format(date);
+       
+        return null;
+    }
 	
 	/**
 	 * @param <T> 

@@ -25,9 +25,6 @@ public class ExMailArrived extends L2GameServerPacket
 	private static final String _S__FE_2D_EXMAILARRIVED = "[S] FE:2e ExMailArrived";
 	public static final ExMailArrived STATIC_PACKET = new ExMailArrived();
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected
 	void writeImpl()
@@ -36,9 +33,6 @@ public class ExMailArrived extends L2GameServerPacket
 		writeH(0x2e);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

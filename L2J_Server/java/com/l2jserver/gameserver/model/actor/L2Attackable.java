@@ -22,6 +22,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
+import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.ai.CtrlIntention;
@@ -39,7 +40,6 @@ import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2CommandChannel;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
@@ -51,6 +51,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.AttackableKnownList;
 import com.l2jserver.gameserver.model.actor.status.AttackableStatus;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
@@ -59,8 +63,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.item.L2EtcItemType;
-import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -322,7 +324,7 @@ public class L2Attackable extends L2Npc
 	
 	private int _isSpoiledBy = 0;
 	
-	private int _onKillDelay = 5000;
+	protected int _onKillDelay = 5000;
 	
 	/**
 	 * Constructor of L2Attackable (use L2Character and L2NpcInstance constructor).
@@ -406,15 +408,18 @@ public class L2Attackable extends L2Npc
 		if (getCurrentHp() <= skill.getHpConsume())
 			return;
 		
-		if (skill.isMagic())
+		if (!skill.ignoreSkillMute())
 		{
-			if (isMuted())
-				return;
-		}
-		else
-		{
-			if (isPhysicalMuted())
-				return;
+			if (skill.isMagic())
+			{
+				if (isMuted())
+					return;
+			}
+			else
+			{
+				if (isPhysicalMuted())
+					return;
+			}
 		}
 		
 		L2Object target = skill.getFirstOfTargetList(this);
@@ -550,7 +555,7 @@ public class L2Attackable extends L2Npc
 		return true;
 	}
 	
-	private static class OnKillNotifyTask implements Runnable
+	protected static class OnKillNotifyTask implements Runnable
 	{
 		private final L2Attackable _attackable;
 		private final Quest _quest;
@@ -726,7 +731,7 @@ public class L2Attackable extends L2Npc
 								L2PcInstance player = (L2PcInstance) attacker;
 								if (isOverhit() && attacker == getOverhitAttacker())
 								{
-									player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OVER_HIT));
+									player.sendPacket(SystemMessageId.OVER_HIT);
 									exp += calculateOverhitExp(exp);
 								}
 							}
@@ -868,7 +873,7 @@ public class L2Attackable extends L2Npc
 							
 							if (isOverhit() && attacker == getOverhitAttacker())
 							{
-								player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OVER_HIT));
+								player.sendPacket(SystemMessageId.OVER_HIT);
 								exp += calculateOverhitExp(exp);
 							}
 						}
@@ -1198,7 +1203,7 @@ public class L2Attackable extends L2Npc
 				// We should multiply by the server's drop rate, so we always get a low chance of drop for deep blue mobs.
 				// NOTE: This is valid only for adena drops! Others drops will still obey server's rate
 				deepBlueDrop = 3;
-				if (drop.getItemId() == 57)
+				if (drop.getItemId() == PcInventory.ADENA_ID)
 					deepBlueDrop *= isRaid() && !isRaidMinion() ? (int) Config.RATE_DROP_ITEMS_BY_RAID : (int) Config.RATE_DROP_ITEMS;
 			}
 		}
@@ -1260,10 +1265,11 @@ public class L2Attackable extends L2Npc
 			// Prepare for next iteration if dropChance > L2DropData.MAX_CHANCE
 			dropChance -= L2DropData.MAX_CHANCE;
 		}
-		if (Config.L2JMOD_CHAMPION_ENABLE)
-			// TODO (April 11, 2009): Find a way not to hardcode these values.
-			if ((drop.getItemId() == 57 || (drop.getItemId() >= 6360 && drop.getItemId() <= 6362)) && isChampion())
-				itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+		
+		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && ((drop.getItemId() == PcInventory.ADENA_ID) || Util.contains(SevenSigns.SEAL_STONE_IDS, drop.getItemId())))
+		{
+			itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+		}
 		
 		if (itemCount > 0)
 			return new RewardItem(drop.getItemId(), itemCount);
@@ -1393,10 +1399,11 @@ public class L2Attackable extends L2Npc
 				// Prepare for next iteration if dropChance > L2DropData.MAX_CHANCE
 				dropChance -= L2DropData.MAX_CHANCE;
 			}
-			if (Config.L2JMOD_CHAMPION_ENABLE)
-				// TODO (April 11, 2009): Find a way not to hardcode these values.
-				if ((drop.getItemId() == 57 || (drop.getItemId() >= 6360 && drop.getItemId() <= 6362)) && isChampion())
-					itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+			
+			if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && ((drop.getItemId() == PcInventory.ADENA_ID) || Util.contains(SevenSigns.SEAL_STONE_IDS, drop.getItemId())))
+			{
+				itemCount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+			}
 			
 			if (!Config.MULTIPLE_ITEM_DROP && !ItemTable.getInstance().getTemplate(drop.getItemId()).isStackable() && itemCount > 1)
 				itemCount = 1;
@@ -1603,68 +1610,65 @@ public class L2Attackable extends L2Npc
 		CursedWeaponsManager.getInstance().checkDrop(this, player);
 		
 		// now throw all categorized drops and handle spoil.
-		if (npcTemplate.getDropData() != null)
+		for (L2DropCategory cat : npcTemplate.getDropData())
 		{
-			for (L2DropCategory cat : npcTemplate.getDropData())
+			RewardItem item = null;
+			if (cat.isSweep())
 			{
-				RewardItem item = null;
-				if (cat.isSweep())
+				// according to sh1ny, seeded mobs CAN be spoiled and swept.
+				if (isSpoil()/* && !isSeeded() */)
 				{
-					// according to sh1ny, seeded mobs CAN be spoiled and swept.
-					if (isSpoil()/* && !isSeeded() */)
+					FastList<RewardItem> sweepList = new FastList<RewardItem>();
+					
+					for (L2DropData drop : cat.getAllDrops())
 					{
-						FastList<RewardItem> sweepList = new FastList<RewardItem>();
-						
-						for (L2DropData drop : cat.getAllDrops())
-						{
-							item = calculateRewardItem(player, drop, levelModifier, true);
-							if (item == null)
-								continue;
-							
-							if (Config.DEBUG)
-								_log.fine("Item id to spoil: " + item.getItemId() + " amount: " + item.getCount());
-							sweepList.add(item);
-						}
-						// Set the table _sweepItems of this L2Attackable
-						if (!sweepList.isEmpty())
-							_sweepItems = sweepList.toArray(new RewardItem[sweepList.size()]);
-					}
-				}
-				else
-				{
-					if (isSeeded())
-					{
-						L2DropData drop = cat.dropSeedAllowedDropsOnly();
-						
-						if (drop == null)
+						item = calculateRewardItem(player, drop, levelModifier, true);
+						if (item == null)
 							continue;
 						
-						item = calculateRewardItem(player, drop, levelModifier, false);
-					}
-					else
-						item = calculateCategorizedRewardItem(player, cat, levelModifier);
-					
-					if (item != null)
-					{
 						if (Config.DEBUG)
-							_log.fine("Item id to drop: " + item.getItemId() + " amount: " + item.getCount());
+							_log.fine("Item id to spoil: " + item.getItemId() + " amount: " + item.getCount());
+						sweepList.add(item);
+					}
+					// Set the table _sweepItems of this L2Attackable
+					if (!sweepList.isEmpty())
+						_sweepItems = sweepList.toArray(new RewardItem[sweepList.size()]);
+				}
+			}
+			else
+			{
+				if (isSeeded())
+				{
+					L2DropData drop = cat.dropSeedAllowedDropsOnly();
+					
+					if (drop == null)
+						continue;
+					
+					item = calculateRewardItem(player, drop, levelModifier, false);
+				}
+				else
+					item = calculateCategorizedRewardItem(player, cat, levelModifier);
+				
+				if (item != null)
+				{
+					if (Config.DEBUG)
+						_log.fine("Item id to drop: " + item.getItemId() + " amount: " + item.getCount());
+					
+					// Check if the autoLoot mode is active
+					if (isFlying() || (!isRaid() && Config.AUTO_LOOT) || (isRaid() && Config.AUTO_LOOT_RAIDS))
+						player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
+					else
+						dropItem(player, item); // drop the item on the ground
 						
-						// Check if the autoLoot mode is active
-						if (isFlying() || (!isRaid() && Config.AUTO_LOOT) || (isRaid() && Config.AUTO_LOOT_RAIDS))
-							player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
-						else
-							dropItem(player, item); // drop the item on the ground
-							
-						// Broadcast message if RaidBoss was defeated
-						if (isRaid() && !isRaidMinion())
-						{
-							SystemMessage sm;
-							sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
-							sm.addCharName(this);
-							sm.addItemName(item.getItemId());
-							sm.addItemNumber(item.getCount());
-							broadcastPacket(sm);
-						}
+					// Broadcast message if RaidBoss was defeated
+					if (isRaid() && !isRaidMinion())
+					{
+						SystemMessage sm;
+						sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
+						sm.addCharName(this);
+						sm.addItemName(item.getItemId());
+						sm.addItemNumber(item.getCount());
+						broadcastPacket(sm);
 					}
 				}
 			}
@@ -1692,9 +1696,9 @@ public class L2Attackable extends L2Npc
 		}
 		
 		//Instant Item Drop :>
-		if (getTemplate().dropherbgroup > 0)
+		if (getTemplate().getDropHerbGroup() > 0)
 		{
-			for (L2DropCategory cat : HerbDropTable.getInstance().getHerbDroplist(getTemplate().dropherbgroup))
+			for (L2DropCategory cat : HerbDropTable.getInstance().getHerbDroplist(getTemplate().getDropHerbGroup()))
 			{
 				RewardItem item = calculateCategorizedHerbItem(player, cat);
 				if (item != null)
@@ -1750,14 +1754,14 @@ public class L2Attackable extends L2Npc
 		// Go through DateDrop of EventDroplist allNpcDateDrops within the date range
 		for (DateDrop drop : EventDroplist.getInstance().getAllDrops())
 		{
-			if (Rnd.get(L2DropData.MAX_CHANCE) < drop.chance)
+			if (Rnd.get(L2DropData.MAX_CHANCE) < drop.getEventDrop().getDropChance())
 			{
-				RewardItem item = new RewardItem(drop.items[Rnd.get(drop.items.length)], Rnd.get(drop.min, drop.max));
+				final RewardItem rewardItem = new RewardItem(drop.getEventDrop().getItemIdList()[Rnd.get(drop.getEventDrop().getItemIdList().length)], Rnd.get(drop.getEventDrop().getMinCount(), drop.getEventDrop().getMaxCount()));
 				
 				if (Config.AUTO_LOOT || isFlying())
-					player.doAutoLoot(this, item); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
+					player.doAutoLoot(this, rewardItem); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				else
-					dropItem(player, item); // drop the item on the ground
+					dropItem(player, rewardItem); // drop the item on the ground
 			}
 		}
 	}
@@ -1922,7 +1926,7 @@ public class L2Attackable extends L2Npc
 		{
 			if (sendMessage)
 			{
-				sweeper.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SWEEP_NOT_ALLOWED));
+				sweeper.sendPacket(SystemMessageId.SWEEP_NOT_ALLOWED);
 			}
 			return false;
 		}
@@ -2382,7 +2386,7 @@ public class L2Attackable extends L2Npc
 		if (damage <= 0)
 			return 0;
 		
-		final float divider = getTemplate().baseVitalityDivider;
+		final float divider = getTemplate().getBaseVitalityDivider();
 		if (divider == 0)
 			return 0;
 		

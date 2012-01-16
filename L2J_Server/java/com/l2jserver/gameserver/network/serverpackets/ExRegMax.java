@@ -29,9 +29,6 @@ public class ExRegMax extends L2GameServerPacket
 		_time = time;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -43,9 +40,6 @@ public class ExRegMax extends L2GameServerPacket
 		writeF(_max);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

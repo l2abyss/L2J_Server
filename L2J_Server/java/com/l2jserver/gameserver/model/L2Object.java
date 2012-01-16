@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model;
 
 import com.l2jserver.gameserver.handler.ActionHandler;
+import com.l2jserver.gameserver.handler.ActionShiftHandler;
 import com.l2jserver.gameserver.handler.IActionHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
@@ -25,22 +26,19 @@ import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
-
 /**
- * Mother class of all objects in the world wich ones is it possible
+ * Mother class of all objects in the world which ones is it possible
  * to interact (PC, NPC, Item...)<BR><BR>
  *
  * L2Object :<BR><BR>
  * <li>L2Character</li>
  * <li>L2ItemInstance</li>
- * <li>L2Potion</li>
- *
  */
-
 public abstract class L2Object
 {
 	// =========================================================
@@ -95,6 +93,7 @@ public abstract class L2Object
 		// Attackable
 		L2Attackable(L2Npc),
 		L2GuardInstance(L2Attackable),
+		L2QuestGuardInstance(L2GuardInstance),
 		L2MonsterInstance(L2Attackable),
 		L2ChestInstance(L2MonsterInstance),
 		L2ControllableMobInstance(L2MonsterInstance),
@@ -183,7 +182,8 @@ public abstract class L2Object
 		L2NpcBufferInstance(L2Npc),
 		L2TvTEventNpcInstance(L2Npc),
 		L2WeddingManagerInstance(L2Npc),
-		L2EventMobInstance(L2Npc);
+		L2EventMobInstance(L2Npc),
+		L2BirthdayCakeInstance(L2Npc);
 		
 		private final InstanceType _parent;
 		private final long _typeL;
@@ -272,7 +272,7 @@ public abstract class L2Object
 	
 	public void onAction(L2PcInstance player, boolean interact)
 	{
-		IActionHandler handler = ActionHandler.getInstance().getActionHandler(getInstanceType());
+		IActionHandler handler = ActionHandler.getInstance().getHandler(getInstanceType());
 		if (handler != null)
 			handler.action(player, this, interact);
 		
@@ -281,7 +281,7 @@ public abstract class L2Object
 	
 	public void onActionShift(L2PcInstance player)
 	{
-		IActionHandler handler = ActionHandler.getInstance().getActionShiftHandler(getInstanceType());
+		IActionHandler handler = ActionShiftHandler.getInstance().getHandler(getInstanceType());
 		if (handler != null)
 			handler.action(player, this, true);
 		
@@ -322,6 +322,7 @@ public abstract class L2Object
 		assert getPosition().getWorldRegion() != null || _isVisible;
 		return getPosition().getX();
 	}
+	
 	/**
 	 * @return The id of the instance zone the object is in - id 0 is global
 	 * since everything like dropped items, mobs, players can be in a instanciated area, it must be in l2object
@@ -387,7 +388,7 @@ public abstract class L2Object
 		
 		_instanceId = instanceId;
 		
-		// If we change it for visible objects, me must clear & revalidate knownlists
+		// If we change it for visible objects, me must clear & revalidates knownlists
 		if (_isVisible && _knownList != null)
 		{
 			if (this instanceof L2PcInstance)
@@ -447,7 +448,7 @@ public abstract class L2Object
 			getPosition().setWorldRegion(null);
 		}
 		
-		// this can synchronize on others instancies, so it's out of
+		// this can synchronize on others instances, so it's out of
 		// synchronized, to avoid deadlocks
 		// Remove the L2Object from the world
 		L2World.getInstance().removeVisibleObject(this, reg);
@@ -495,7 +496,7 @@ public abstract class L2Object
 			getPosition().getWorldRegion().addVisibleObject(this);
 		}
 		
-		// this can synchronize on others instancies, so it's out of
+		// this can synchronize on others instances, so it's out of
 		// synchronized, to avoid deadlocks
 		// Add the L2Object spawn in the world as a visible object
 		L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion());
@@ -525,7 +526,7 @@ public abstract class L2Object
 		
 		L2World.getInstance().storeObject(this);
 		
-		// these can synchronize on others instancies, so they're out of
+		// these can synchronize on others instances, so they're out of
 		// synchronized, to avoid deadlocks
 		
 		// Add the L2Object spawn to _visibleObjects and if necessary to _allplayers of its L2WorldRegion
@@ -563,15 +564,13 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Return the visibilty state of the L2Object. <BR><BR>
-	 *
+	 * Return the visibility state of the L2Object.
 	 * <B><U> Concept</U> :</B><BR><BR>
-	 * A L2Object is visble if <B>__IsVisible</B>=true and <B>_worldregion</B>!=null <BR><BR>
+	 * A L2Object is visible if <B>__IsVisible</B>=true and <B>_worldregion</B>!=null <BR><BR>
 	 * @return 
 	 */
 	public final boolean isVisible()
 	{
-		//return getPosition().getWorldRegion() != null && _IsVisible;
 		return getPosition().getWorldRegion() != null;
 	}
 	public final void setIsVisible(boolean value)
@@ -605,6 +604,7 @@ public abstract class L2Object
 	{
 		return _name;
 	}
+	
 	public void setName(String value)
 	{
 		_name = value;
@@ -617,7 +617,8 @@ public abstract class L2Object
 	
 	public final ObjectPoly getPoly()
 	{
-		if (_poly == null) _poly = new ObjectPoly(this);
+		if (_poly == null)
+			_poly = new ObjectPoly(this);
 		return _poly;
 	}
 	
@@ -636,14 +637,14 @@ public abstract class L2Object
 	{
 		_position = new ObjectPosition(this);
 	}
+	
 	public final void setObjectPosition(ObjectPosition value)
 	{
 		_position = value;
 	}
 	
 	/**
-	 * returns reference to region this object is in
-	 * @return 
+	 * @return reference to region this object is in.
 	 */
 	public L2WorldRegion getWorldRegion()
 	{
@@ -689,6 +690,18 @@ public abstract class L2Object
 	 * @param mov 
 	 */
 	public void sendPacket(L2GameServerPacket mov)
+	{
+		// default implementation
+	}
+
+	/**
+	 * Not Implemented.<BR><BR>
+	 *
+	 * <B><U> Overridden in </U> :</B><BR><BR>
+	 * <li> L2PcInstance</li><BR><BR>
+	 * @param id 
+	 */
+	public void sendPacket(SystemMessageId id)
 	{
 		// default implementation
 	}

@@ -1,14 +1,4 @@
 /*
- * $Header: Broadcast.java, 18/11/2005 15:33:35 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 18/11/2005 15:33:35 $
- * $Revision: 1 $
- * $Log: Broadcast.java,v $
- * Revision 1  18/11/2005 15:33:35  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -24,7 +14,7 @@
  */
 package com.l2jserver.gameserver.util;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -219,9 +209,15 @@ public final class Broadcast
 		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcast(mov));
 	}
 	
-	public static void announceToOnlinePlayers(String text)
+	public static void announceToOnlinePlayers(String text, boolean isCritical)
 	{
-		CreatureSay cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
+		CreatureSay cs;
+		
+		if (isCritical)
+			cs = new CreatureSay(0, Say2.CRITICAL_ANNOUNCE, "", text);
+		else
+			cs = new CreatureSay(0, Say2.ANNOUNCEMENT, "", text);
+		
 		toAllOnlinePlayers(cs);
 	}
 	

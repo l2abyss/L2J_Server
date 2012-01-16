@@ -42,13 +42,9 @@ public final class AutoAttackStart extends L2GameServerPacket
 		writeD(_targetObjId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__3B_AUTOATTACKSTART;
 	}
-	
 }

@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreManageListBuy;
 import com.l2jserver.gameserver.network.serverpackets.PrivateStoreMsgBuy;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
 
@@ -92,13 +91,13 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		
 		if (!player.getAccessLevel().allowTransaction())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;
 		}
 		
 		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
+			player.sendPacket(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT);
 			player.sendPacket(new PrivateStoreManageListBuy(player));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -107,7 +106,7 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		if (player.isInsideZone(L2Character.ZONE_NOSTORE))
 		{
 			player.sendPacket(new PrivateStoreManageListBuy(player));
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NO_PRIVATE_STORE_HERE));
+			player.sendPacket(SystemMessageId.NO_PRIVATE_STORE_HERE);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -119,7 +118,7 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		if (_items.length > player.getPrivateBuyStoreLimit())
 		{
 			player.sendPacket(new PrivateStoreManageListBuy(player));
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED));
+			player.sendPacket(SystemMessageId.YOU_HAVE_EXCEEDED_QUANTITY_THAT_CAN_BE_INPUTTED);
 			return;
 		}
 		
@@ -144,7 +143,7 @@ public final class SetPrivateStoreListBuy extends L2GameClientPacket
 		if (totalCost > player.getAdena())
 		{
 			player.sendPacket(new PrivateStoreManageListBuy(player));
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.THE_PURCHASE_PRICE_IS_HIGHER_THAN_MONEY));
+			player.sendPacket(SystemMessageId.THE_PURCHASE_PRICE_IS_HIGHER_THAN_MONEY);
 			return;
 		}
 		

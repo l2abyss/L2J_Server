@@ -31,9 +31,6 @@ public class ExCubeGameRequestReady extends L2GameServerPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -42,13 +39,9 @@ public class ExCubeGameRequestReady extends L2GameServerPacket
 		writeD(0x04);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__FE_97_04_EXCUBEGAMEREQUESTREADY;
 	}
-	
 }

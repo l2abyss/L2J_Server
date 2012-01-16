@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
@@ -57,6 +57,9 @@ import com.l2jserver.gameserver.model.actor.status.NpcStatus;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
@@ -68,12 +71,10 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
-import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
@@ -134,36 +135,34 @@ public class L2Npc extends L2Character
 	private int _spiritshotamount = 0;
 	public boolean _ssrecharged = true;
 	public boolean _spsrecharged = true;
-	protected boolean _isHideName = false;
 	private int _displayEffect = 0;
+	
+	/**
+	 * The character that summons this NPC.
+	 */
+	private L2Character _summoner = null;
+	
+	private final L2NpcAIData _staticAIData = getTemplate().getAIDataStatic();
 	
 	//AI Recall
 	public int getSoulShot()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSoulShot();
-		
+		return _staticAIData.getSoulShot();
 	}
 	
 	public int getSpiritShot()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSpiritShot();
-		
+		return _staticAIData.getSpiritShot();
 	}
 	
 	public int getSoulShotChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSoulShotChance();
-		
+		return _staticAIData.getSoulShotChance();
 	}
 	
 	public int getSpiritShotChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSpiritShotChance();
-		
+		return _staticAIData.getSpiritShotChance();
 	}
 	
 	public boolean useSoulShot()
@@ -218,111 +217,95 @@ public class L2Npc extends L2Character
 	
 	public int getEnemyRange()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getEnemyRange();
+		return _staticAIData.getEnemyRange();
 	}
 	
 	public String getEnemyClan()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getEnemyClan();
+		return _staticAIData.getEnemyClan();
 	}
 	
 	public int getClanRange()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getClanRange();
+		return _staticAIData.getClanRange();
 	}
 	
 	public String getClan()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getClan();
+		return _staticAIData.getClan();
 	}
 	
-	// GET THE PRIMARY ATTACK
+	/**
+	 * @return the primary attack.
+	 */
 	public int getPrimarySkillId()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getPrimarySkillId();	
+		return _staticAIData.getPrimarySkillId();	
 	}
 	
 	public int getMinSkillChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getMinSkillChance();
+		return _staticAIData.getMinSkillChance();
 	}
 	
 	public int getMaxSkillChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getMaxSkillChance();
+		return _staticAIData.getMaxSkillChance();
 	}
 	
 	public int getCanMove()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getCanMove();
+		return _staticAIData.getCanMove();
 	}
 	
 	public int getIsChaos()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getIsChaos();
+		return _staticAIData.getIsChaos();
 	}
 	
 	public int getCanDodge()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getDodge();
+		return _staticAIData.getDodge();
 	}
 	
 	public int getSSkillChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getShortRangeChance();
+		return _staticAIData.getShortRangeChance();
 	}
 	
 	public int getLSkillChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getLongRangeChance();
+		return _staticAIData.getLongRangeChance();
 	}
 	
 	public int getSwitchRangeChance()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		return AI.getSwitchRangeChance();	
+		return _staticAIData.getSwitchRangeChance();	
 	}
 	
 	public boolean hasLSkill()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		
-		if (AI.getLongRangeSkill() == 0)
+		if (_staticAIData.getLongRangeSkill() == 0)
 			return false;
 		return true;
 	}
 	
 	public boolean hasSSkill()
 	{
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
-		
-		if (AI.getShortRangeSkill() == 0)
+		if (_staticAIData.getShortRangeSkill() == 0)
 			return false;
 		return true;
 	}
 	
-	public FastList<L2Skill> getLrangeSkill()
+	public FastList<L2Skill> getLongRangeSkill()
 	{
-		FastList<L2Skill> skilldata = new FastList<L2Skill>();
-		boolean hasLrange = false;
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		final FastList<L2Skill> skilldata = new FastList<>();
+		if (_staticAIData == null || _staticAIData.getLongRangeSkill() == 0)
+		{
+			return skilldata;
+		}
 		
-		if (AI == null || AI.getLongRangeSkill() == 0)
-			return null;
-		
-		switch (AI.getLongRangeSkill())
+		switch (_staticAIData.getLongRangeSkill())
 		{
 			case -1:
 			{
@@ -332,13 +315,12 @@ public class L2Npc extends L2Character
 				{
 					for (L2Skill sk : skills)
 					{
-						if (sk == null || sk.isPassive() || sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
+						if (sk == null || sk.isPassive() || sk.getTargetType() == L2TargetType.TARGET_SELF)
 							continue;
 						
 						if (sk.getCastRange() >= 200)
 						{
 							skilldata.add(sk);
-							hasLrange = true;
 						}
 					}
 				}
@@ -346,14 +328,13 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				if (getTemplate()._universalskills != null)
+				if (getTemplate().getUniversalSkills() != null)
 				{
-					for (L2Skill sk : getTemplate()._universalskills)
+					for (L2Skill sk : getTemplate().getUniversalSkills())
 					{
 						if (sk.getCastRange() >= 200)
 						{
 							skilldata.add(sk);
-							hasLrange = true;
 						}
 					}
 				}
@@ -363,28 +344,25 @@ public class L2Npc extends L2Character
 			{
 				for (L2Skill sk : getAllSkills())
 				{
-					if (sk.getId() == AI.getLongRangeSkill())
+					if (sk.getId() == _staticAIData.getLongRangeSkill())
 					{
 						skilldata.add(sk);
-						hasLrange = true;
 					}
 				}
 			}
 		}
-		
-		return (hasLrange ? skilldata : null);
+		return skilldata;
 	}
 	
-	public FastList<L2Skill> getSrangeSkill()
+	public FastList<L2Skill> getShortRangeSkill()
 	{
-		FastList<L2Skill> skilldata = new FastList<L2Skill>();
-		boolean hasSrange = false;
-		L2NpcAIData AI = getTemplate().getAIDataStatic();
+		final FastList<L2Skill> skilldata = new FastList<>();
+		if (_staticAIData == null || _staticAIData.getShortRangeSkill() == 0)
+		{
+			return skilldata;
+		}
 		
-		if (AI == null || AI.getShortRangeSkill() == 0)
-			return null;
-		
-		switch (AI.getShortRangeSkill())
+		switch (_staticAIData.getShortRangeSkill())
 		{
 			case -1:
 			{
@@ -394,13 +372,13 @@ public class L2Npc extends L2Character
 				{
 					for (L2Skill sk : skills)
 					{
-						if (sk == null || sk.isPassive() || sk.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF)
+						if (sk == null || sk.isPassive() || sk.getTargetType() == L2TargetType.TARGET_SELF)
+						{
 							continue;
-						
+						}
 						if (sk.getCastRange() <= 200)
 						{
 							skilldata.add(sk);
-							hasSrange = true;
 						}
 					}
 				}
@@ -408,14 +386,13 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				if (getTemplate()._universalskills != null)
+				if (getTemplate().getUniversalSkills() != null)
 				{
-					for (L2Skill sk : getTemplate()._universalskills)
+					for (L2Skill sk : getTemplate().getUniversalSkills())
 					{
 						if (sk.getCastRange() <= 200)
 						{
 							skilldata.add(sk);
-							hasSrange = true;
 						}
 					}
 				}
@@ -425,16 +402,14 @@ public class L2Npc extends L2Character
 			{
 				for (L2Skill sk : getAllSkills())
 				{
-					if (sk.getId() == AI.getShortRangeSkill())
+					if (sk.getId() == _staticAIData.getShortRangeSkill())
 					{
 						skilldata.add(sk);
-						hasSrange = true;
 					}
 				}
 			}
 		}
-		
-		return (hasSrange ? skilldata : null);
+		return skilldata;
 	}
 	
 	/** Task launching the function onRandomAnimation() */
@@ -482,7 +457,7 @@ public class L2Npc extends L2Character
 		if (now - _lastSocialBroadcast > _minimalSocialInterval)
 		{
 			_lastSocialBroadcast = now;
-			broadcastPacket(new SocialAction(this, animationId));
+			broadcastPacket(new SocialAction(getObjectId(), animationId));
 		}
 	}
 	
@@ -534,12 +509,12 @@ public class L2Npc extends L2Character
 		initCharStatusUpdateValues();
 		
 		// initialize the "current" equipment
-		_currentLHandId = getTemplate().lhand;
-		_currentRHandId = getTemplate().rhand;
-		_currentEnchant = Config.ENABLE_RANDOM_ENCHANT_EFFECT ? Rnd.get(4, 21) : getTemplate().enchantEffect;
+		_currentLHandId = getTemplate().getLeftHand();
+		_currentRHandId = getTemplate().getRightHand();
+		_currentEnchant = Config.ENABLE_RANDOM_ENCHANT_EFFECT ? Rnd.get(4, 21) : getTemplate().getEnchantEffect();
 		// initialize the "current" collisions
-		_currentCollisionHeight = getTemplate().fCollisionHeight;
-		_currentCollisionRadius = getTemplate().fCollisionRadius;
+		_currentCollisionHeight = getTemplate().getfCollisionHeight();
+		_currentCollisionRadius = getTemplate().getfCollisionRadius();
 		
 		if (template == null)
 		{
@@ -548,7 +523,7 @@ public class L2Npc extends L2Character
 		}
 		
 		// Set the name of the L2Character
-		setName(template.name);
+		setName(template.getName());
 	}
 	
 	@Override
@@ -599,7 +574,7 @@ public class L2Npc extends L2Character
 	 */
 	public int getNpcId()
 	{
-		return getTemplate().npcId;
+		return getTemplate().getNpcId();
 	}
 	
 	@Override
@@ -625,7 +600,7 @@ public class L2Npc extends L2Character
 	@Override
 	public final int getLevel()
 	{
-		return getTemplate().level;
+		return getTemplate().getLevel();
 	}
 	
 	/**
@@ -641,7 +616,7 @@ public class L2Npc extends L2Character
 	 */
 	public int getAggroRange()
 	{
-		return getTemplate().aggroRange;
+		return _staticAIData.getAggroRange();
 	}
 	
 	/**
@@ -780,8 +755,7 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * Set the busy status of this L2NpcInstance.<BR><BR>
-	 * @param isBusy 
+	 * @param isBusy the busy status of this L2Npc
 	 */
 	public void setBusy(boolean isBusy)
 	{
@@ -797,8 +771,7 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * Set the busy message of this L2NpcInstance.<BR><BR>
-	 * @param message 
+	 * @param message the busy message of this L2Npc.
 	 */
 	public void setBusyMessage(String message)
 	{
@@ -822,7 +795,7 @@ public class L2Npc extends L2Character
 		}
 		if (player.isLockedTarget() && player.getLockedTarget() != this)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_CHANGE_TARGET));
+			player.sendPacket(SystemMessageId.FAILED_CHANGE_TARGET);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
 		}
@@ -833,8 +806,6 @@ public class L2Npc extends L2Character
 	
 	public boolean canInteract(L2PcInstance player)
 	{
-		// TODO: NPC busy check etc...
-		
 		if (player.isCastingNow() || player.isCastingSimultaneouslyNow())
 			return false;
 		if (player.isDead() || player.isFakeDeath())
@@ -847,7 +818,8 @@ public class L2Npc extends L2Character
 			return false;
 		if (player.getInstanceId() != getInstanceId() && player.getInstanceId() != -1)
 			return false;
-		
+		if (isBusy())
+			return false;
 		return true;
 	}
 	
@@ -968,7 +940,7 @@ public class L2Npc extends L2Character
 			}
 			else
 			{
-				IBypassHandler handler = BypassHandler.getInstance().getBypassHandler(command);
+				IBypassHandler handler = BypassHandler.getInstance().getHandler(command);
 				if (handler != null)
 					handler.useBypass(command, player, this);
 				else
@@ -994,13 +966,13 @@ public class L2Npc extends L2Character
 	public L2Weapon getActiveWeaponItem()
 	{
 		// Get the weapon identifier equiped in the right hand of the L2NpcInstance
-		int weaponId = getTemplate().rhand;
+		int weaponId = getTemplate().getRightHand();
 		
 		if (weaponId < 1)
 			return null;
 		
 		// Get the weapon item equiped in the right hand of the L2NpcInstance
-		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().rhand);
+		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().getRightHand());
 		
 		if (!(item instanceof L2Weapon))
 			return null;
@@ -1025,13 +997,13 @@ public class L2Npc extends L2Character
 	public L2Weapon getSecondaryWeaponItem()
 	{
 		// Get the weapon identifier equiped in the right hand of the L2NpcInstance
-		int weaponId = getTemplate().lhand;
+		int weaponId = getTemplate().getLeftHand();
 		
 		if (weaponId < 1)
 			return null;
 		
 		// Get the weapon item equiped in the right hand of the L2NpcInstance
-		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().lhand);
+		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().getLeftHand());
 		
 		if (!(item instanceof L2Weapon))
 			return null;
@@ -1170,10 +1142,10 @@ public class L2Npc extends L2Character
 			}
 		}
 		
-		if ("L2Auctioneer".equals(getTemplate().type) && val == 0)
+		if (getTemplate().isType("L2Auctioneer") && (val == 0))
 			return;
 		
-		int npcId = getTemplate().npcId;
+		int npcId = getTemplate().getNpcId();
 		
 		/* For use with Seven Signs implementation */
 		String filename = SevenSigns.SEVEN_SIGNS_HTML_PATH;
@@ -1357,7 +1329,7 @@ public class L2Npc extends L2Character
 	 */
 	public int getExpReward()
 	{
-		return (int) (getTemplate().rewardExp * Config.RATE_XP);
+		return (int) (getTemplate().getRewardExp() * Config.RATE_XP);
 	}
 	
 	/**
@@ -1365,7 +1337,7 @@ public class L2Npc extends L2Character
 	 */
 	public int getSpReward()
 	{
-		return (int) (getTemplate().rewardSp * Config.RATE_SP);
+		return (int) (getTemplate().getRewardSp() * Config.RATE_SP);
 	}
 	
 	/**
@@ -1393,11 +1365,11 @@ public class L2Npc extends L2Character
 			return false;
 		
 		// normally this wouldn't really be needed, but for those few exceptions,
-		// we do need to reset the weapons back to the initial templated weapon.
-		_currentLHandId = getTemplate().lhand;
-		_currentRHandId = getTemplate().rhand;
-		_currentCollisionHeight = getTemplate().fCollisionHeight;
-		_currentCollisionRadius = getTemplate().fCollisionRadius;
+		// we do need to reset the weapons back to the initial template weapon.
+		_currentLHandId = getTemplate().getLeftHand();
+		_currentRHandId = getTemplate().getRightHand();
+		_currentCollisionHeight = getTemplate().getfCollisionHeight();
+		_currentCollisionRadius = getTemplate().getfCollisionRadius();
 		DecayTaskManager.getInstance().addDecayTask(this);
 		return true;
 	}
@@ -1448,6 +1420,9 @@ public class L2Npc extends L2Character
 		// Decrease its spawn counter
 		if (_spawn != null)
 			_spawn.decreaseCount(this);
+		
+		//Notify Walking Manager
+		WalkingManager.getInstance().onDeath(this);
 	}
 	
 	/**
@@ -1517,7 +1492,7 @@ public class L2Npc extends L2Character
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + ":" + getTemplate().name + "(" + getNpcId() + ")" + "[" + getObjectId() + "]";
+		return getClass().getSimpleName() + ":" + getName() + "(" + getNpcId() + ")" + "[" + getObjectId() + "]";
 	}
 	
 	public boolean isDecayed()
@@ -1571,14 +1546,14 @@ public class L2Npc extends L2Character
 		updateAbnormalEffect();
 	}
 	
-	public void setHideName(boolean val)
+	public boolean isShowName()
 	{
-		_isHideName = val;
+		return _staticAIData.showName();
 	}
 	
-	public boolean isHideName()
+	public boolean isTargetable()
 	{
-		return _isHideName;
+		return _staticAIData.isTargetable();
 	}
 	
 	public void setCollisionHeight(double height)
@@ -1679,9 +1654,6 @@ public class L2Npc extends L2Character
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Character#isMovementDisabled()
-	 */
 	@Override
 	public boolean isMovementDisabled()
 	{
@@ -1690,7 +1662,7 @@ public class L2Npc extends L2Character
 	
 	public AIType getAiType()
 	{
-		return getTemplate().getAIDataStatic().getAiType();
+		return _staticAIData.getAiType();
 	}
 	
 	public void setDisplayEffect(int val)
@@ -1710,5 +1682,21 @@ public class L2Npc extends L2Character
 	public int getColorEffect()
 	{
 		return 0;
+	}
+	
+	/**
+	 * @return the character that summoned this NPC.
+	 */
+	public L2Character getSummoner()
+	{
+		return _summoner;
+	}
+	
+	/**
+	 * @param summoner the summoner of this NPC.
+	 */
+	public void setSummoner(L2Character summoner)
+	{
+		_summoner = summoner;
 	}
 }

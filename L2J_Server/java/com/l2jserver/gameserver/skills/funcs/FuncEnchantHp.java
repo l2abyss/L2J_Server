@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.skills.funcs;
 
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
-import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.skills.Env;
 import com.l2jserver.gameserver.skills.Stats;
 

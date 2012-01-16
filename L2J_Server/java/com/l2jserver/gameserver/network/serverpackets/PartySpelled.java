@@ -74,9 +74,6 @@ public class PartySpelled extends L2GameServerPacket
 		_effects.add(new Effect(skillId, dat, duration));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

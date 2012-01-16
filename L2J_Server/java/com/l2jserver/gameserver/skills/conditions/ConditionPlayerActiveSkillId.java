@@ -50,9 +50,6 @@ public class ConditionPlayerActiveSkillId extends Condition
 		_skillLevel = skillLevel;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

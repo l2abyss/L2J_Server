@@ -24,17 +24,17 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.TradeList;
-import com.l2jserver.gameserver.model.TradeList.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.templates.item.L2EtcItemType;
-import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
 
 public class PcInventory extends Inventory
@@ -50,6 +50,8 @@ public class PcInventory extends Inventory
 	private int[] _blockItems = null;
 	
 	private int _questSlots;
+	
+	private final Object _lock;
 	/**
 	 * Block modes:
 	 * <UL>
@@ -63,18 +65,37 @@ public class PcInventory extends Inventory
 	public PcInventory(L2PcInstance owner)
 	{
 		_owner = owner;
+		_lock = new Object();
 	}
 	
 	@Override
-	public L2PcInstance getOwner() { return _owner; }
-	@Override
-	protected ItemLocation getBaseLocation() { return ItemLocation.INVENTORY; }
-	@Override
-	protected ItemLocation getEquipLocation() { return ItemLocation.PAPERDOLL; }
+	public L2PcInstance getOwner()
+	{
+		return _owner;
+	}
 	
-	public L2ItemInstance getAdenaInstance() {return _adena;}
 	@Override
-	public long getAdena() {return _adena != null ? _adena.getCount() : 0;}
+	protected ItemLocation getBaseLocation()
+	{
+		return ItemLocation.INVENTORY;
+	}
+	
+	@Override
+	protected ItemLocation getEquipLocation()
+	{
+		return ItemLocation.PAPERDOLL;
+	}
+	
+	public L2ItemInstance getAdenaInstance()
+	{
+		return _adena;
+	}
+	
+	@Override
+	public long getAdena()
+	{
+		return _adena != null ? _adena.getCount() : 0;
+	}
 	
 	public L2ItemInstance getAncientAdenaInstance()
 	{
@@ -102,9 +123,9 @@ public class PcInventory extends Inventory
 		FastList<L2ItemInstance> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
-			if ((!allowAdena && item.getItemId() == 57))
+			if ((!allowAdena && item.getItemId() == ADENA_ID))
 				continue;
-			if ((!allowAncientAdena && item.getItemId() == 5575))
+			if ((!allowAncientAdena && item.getItemId() == ANCIENT_ADENA_ID))
 				continue;
 			
 			boolean isDuplicate = false;
@@ -147,9 +168,9 @@ public class PcInventory extends Inventory
 		{
 			if (item == null)
 				continue;
-			if ((!allowAdena && item.getItemId() == 57))
+			if ((!allowAdena && item.getItemId() == ADENA_ID))
 				continue;
-			if ((!allowAncientAdena && item.getItemId() == 5575))
+			if ((!allowAncientAdena && item.getItemId() == ANCIENT_ADENA_ID))
 				continue;
 			
 			boolean isDuplicate = false;
@@ -312,20 +333,20 @@ public class PcInventory extends Inventory
 	 * @param tradeList 
 	 * @return L2ItemInstance : items in inventory
 	 */
-	public TradeList.TradeItem[] getAvailableItems(TradeList tradeList)
+	public TradeItem[] getAvailableItems(TradeList tradeList)
 	{
-		FastList<TradeList.TradeItem> list = FastList.newInstance();
+		FastList<TradeItem> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
 			if (item != null && item.isAvailable(getOwner(), false, false))
 			{
-				TradeList.TradeItem adjItem = tradeList.adjustAvailableItem(item);
+				TradeItem adjItem = tradeList.adjustAvailableItem(item);
 				if (adjItem != null)
 					list.add(adjItem);
 			}
 		}
 		
-		TradeList.TradeItem[] result = list.toArray(new TradeList.TradeItem[list.size()]);
+		TradeItem[] result = list.toArray(new TradeItem[list.size()]);
 		FastList.recycle(list);
 		
 		return result;
@@ -333,7 +354,7 @@ public class PcInventory extends Inventory
 	
 	/**
 	 * Adjust TradeItem according his status in inventory
-	 * @param item : L2ItemInstance to be adjusten
+	 * @param item : L2ItemInstance to be adjusted
 	 */
 	public void adjustAvailableItem(TradeItem item)
 	{
@@ -646,9 +667,9 @@ public class PcInventory extends Inventory
 		else if (item.getItemId() == ANCIENT_ADENA_ID)
 			_ancientAdena = null;
 		
-		synchronized(_items)
+		if (item.isQuestItem())
 		{
-			if (item.isQuestItem())
+			synchronized (_lock)
 			{
 				_questSlots--;
 				if (_questSlots < 0)
@@ -657,8 +678,8 @@ public class PcInventory extends Inventory
 					_log.warning(this + ": QuestInventory size < 0!");
 				}
 			}
-			return super.removeItem(item);
 		}
+		return super.removeItem(item);
 	}
 	
 	/**
@@ -890,14 +911,14 @@ public class PcInventory extends Inventory
 	@Override
 	protected void addItem(L2ItemInstance item)
 	{
-		synchronized(_items)
+		if (item.isQuestItem())
 		{
-			if (item.isQuestItem())
+			synchronized (_lock)
 			{
 				_questSlots++;
 			}
-			super.addItem(item);
 		}
+		super.addItem(item);
 	}
 	
 	public int getSize(boolean quest)
@@ -911,5 +932,16 @@ public class PcInventory extends Inventory
 	public String toString()
 	{
 		return getClass().getSimpleName()+"["+_owner+"]";
+	}
+	
+	/**
+	 * Apply skills of inventory items
+	 */
+	public void applyItemSkills()
+	{
+		for (L2ItemInstance item : _items)
+		{
+			item.giveSkillsToOwner();
+		}
 	}
 }

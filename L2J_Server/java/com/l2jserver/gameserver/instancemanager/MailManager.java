@@ -104,7 +104,7 @@ public class MailManager
 	
 	public final Message[] getMessages()
 	{
-		return _messages.getValues(new Message[_messages.size()]);
+		return _messages.values(new Message[0]);
 	}
 	
 	public final boolean hasUnreadPost(L2PcInstance player)
@@ -210,6 +210,7 @@ public class MailManager
 			_msgId = msgId;
 		}
 		
+		@Override
 		public void run()
 		{
 			final Message msg = getMessage(_msgId);
@@ -224,7 +225,7 @@ public class MailManager
 					if (sender != null)
 					{
 						msg.getAttachments().returnToWh(sender.getWarehouse());
-						sender.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MAIL_RETURNED));
+						sender.sendPacket(SystemMessageId.MAIL_RETURNED);
 					}
 					else
 						msg.getAttachments().returnToWh(null);

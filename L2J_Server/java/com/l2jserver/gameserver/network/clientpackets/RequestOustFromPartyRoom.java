@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExClosePartyRoom;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * format (ch) d
@@ -58,14 +57,14 @@ public final class RequestOustFromPartyRoom extends L2GameClientPacket
 		
 		if (activeChar.isInParty() && member.isInParty() && activeChar.getParty().getPartyLeaderOID() == member.getParty().getPartyLeaderOID())
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_DISMISS_PARTY_MEMBER));
+			activeChar.sendPacket(SystemMessageId.CANNOT_DISMISS_PARTY_MEMBER);
 		}
 		else
 		{
 			_room.deleteMember(member);
 			member.setPartyRoom(0);
 			member.sendPacket(new ExClosePartyRoom());
-			member.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.OUSTED_FROM_PARTY_ROOM));
+			member.sendPacket(SystemMessageId.OUSTED_FROM_PARTY_ROOM);
 		}
 	}
 	

@@ -38,6 +38,7 @@ import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Siegable;
@@ -57,11 +58,12 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	private static final String SQL_SAVE_ATTACKERS = "INSERT INTO clanhall_siege_attackers VALUES (?,?)";
 	private static final String SQL_LOAD_GUARDS = "SELECT * FROM clanhall_siege_guards WHERE clanHallId = ?";
 
+	public static final int FORTRESS_RESSISTANCE = 21;
 	public static final int DEVASTATED_CASTLE = 34;
 	public static final int BANDIT_STRONGHOLD = 35;
-	public static final int FORTRESS_RESSISTANCE = 21;
-	public static final int FORTRESS_OF_DEAD = 64;
 	public static final int RAINBOW_SPRINGS = 62;
+	public static final int BEAST_FARM = 63;
+	public static final int FORTRESS_OF_DEAD = 64;
 	
 	protected final Logger _log;
 	
@@ -87,12 +89,8 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	
 	//XXX Load methods -------------------------------
 	
-	private final void loadAttackers()
+	public void loadAttackers()
 	{
-		// XXX
-		if(_hall.getId() == 63)
-			return;;
-		
 		Connection con = null;
 		try
 		{
@@ -318,7 +316,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		}
 		
 		_hall.free();
-		
+		_hall.banishForeigners();
 		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.REGISTRATION_TERM_FOR_S1_ENDED);
 		msg.addString(getName());
 		Announcements.getInstance().announceToAll(msg);
@@ -343,13 +341,9 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			return;
 		}
 		
-		_hall.banishForeigners();
 		_hall.spawnDoor();
-		if(_hall.getId() != BANDIT_STRONGHOLD)
-		{
-			loadGuards();
-			spawnSiegeGuards();
-		}
+		loadGuards();
+		spawnSiegeGuards();
 		_hall.updateSiegeZone(true);
 		
 		final byte state = 1;
@@ -365,6 +359,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 				{
 					pc.setSiegeState(state);
 					pc.broadcastUserInfo();
+					pc.setIsInHideoutSiege(true);
 				}
 			}
 		}
@@ -416,11 +411,12 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			{
 				player.setSiegeState(state);
 				player.broadcastUserInfo();
+				player.setIsInHideoutSiege(false);
 			}
 		}
 		
 		// Update pvp flag for winners when siege zone becomes unactive
-		for(Object obj : _hall.getSiegeZone().getCharactersInside().getValues())
+		for(Object obj : _hall.getSiegeZone().getCharactersInside().values())
 			if(obj != null && obj instanceof L2PcInstance)
 				((L2PcInstance)obj).startPvPFlag();
 		
@@ -432,8 +428,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		_log.config("Siege of "+_hall.getName()+" scheduled for: "+_hall.getSiegeDate().getTime());
 		
 		_hall.updateSiegeStatus(SiegeStatus.REGISTERING);
-		if(_hall.getId() != BANDIT_STRONGHOLD)
-			unSpawnSiegeGuards();
+		unSpawnSiegeGuards();
 	}
 	
 	@Override
@@ -490,10 +485,30 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	}
 	
 	// XXX Siege task and abstract methods -------------------
+	public Location getInnerSpawnLoc(L2PcInstance player)
+	{
+		return null;
+	}
 	
-	public abstract L2Clan getWinner(); 
-	public void onSiegeStarts() {}
-	public void onSiegeEnds()  {}
+	public boolean canPlantFlag()
+	{
+		return true;
+	}
+	
+	public boolean doorIsAutoAttackable()
+	{
+		return true;
+	}
+		
+	public void onSiegeStarts() 
+	{
+	}
+	
+	public void onSiegeEnds()
+	{
+	}
+	
+	public abstract L2Clan getWinner();
 	
 	public class PrepareOwner implements Runnable
 	{

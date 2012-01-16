@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.TradeList;
+import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -36,8 +36,8 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 	private int _objId;
 	private long _playerAdena;
 	private boolean _packageSale;
-	private TradeList.TradeItem[] _itemList;
-	private TradeList.TradeItem[] _sellList;
+	private TradeItem[] _itemList;
+	private TradeItem[] _sellList;
 	
 	public PrivateStoreManageListSell(L2PcInstance player, boolean isPackageSale)
 	{
@@ -60,7 +60,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 		
 		//section2
 		writeD(_itemList.length); //for potential sells
-		for (TradeList.TradeItem item : _itemList)
+		for (TradeItem item : _itemList)
 		{
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
@@ -91,7 +91,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 		}
 		//section 3
 		writeD(_sellList.length); //count for any items already added for sell
-		for (TradeList.TradeItem item : _sellList)
+		for (TradeItem item : _sellList)
 		{
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
@@ -123,9 +123,6 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

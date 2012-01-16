@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.logging.Logger;
 
@@ -29,7 +29,7 @@ public class AdminCommandHandler
 {
 	private static Logger _log = Logger.getLogger(AdminCommandHandler.class.getName());
 	
-	private TIntObjectHashMap<IAdminCommandHandler> _datatable;
+	private final TIntObjectHashMap<IAdminCommandHandler> _datatable;
 	
 	public static AdminCommandHandler getInstance()
 	{
@@ -41,7 +41,7 @@ public class AdminCommandHandler
 		_datatable = new TIntObjectHashMap<IAdminCommandHandler>();
 	}
 	
-	public void registerAdminCommandHandler(IAdminCommandHandler handler)
+	public void registerHandler(IAdminCommandHandler handler)
 	{
 		String[] ids = handler.getAdminCommandList();
 		for (int i = 0; i < ids.length; i++)
@@ -52,7 +52,7 @@ public class AdminCommandHandler
 		}
 	}
 	
-	public IAdminCommandHandler getAdminCommandHandler(String adminCommand)
+	public IAdminCommandHandler getHandler(String adminCommand)
 	{
 		String command = adminCommand;
 		if (adminCommand.indexOf(" ") != -1)

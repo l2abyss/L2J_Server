@@ -1,14 +1,4 @@
 /*
- * $Header: Point3D.java, 19/07/2005 21:33:07 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 19/07/2005 21:33:07 $
- * $Revision: 1 $
- * $Log: Point3D.java,v $
- * Revision 1  19/07/2005 21:33:07  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later

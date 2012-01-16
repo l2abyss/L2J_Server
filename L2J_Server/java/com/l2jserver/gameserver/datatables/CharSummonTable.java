@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,13 +26,13 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2SummonItem;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -204,15 +204,22 @@ public class CharSummonTable
 					return;
 				}
 				
-				if (summonTemplate.type.equalsIgnoreCase("L2SiegeSummon"))
-					summon = new L2SiegeSummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, skill);
-				/* TODO: Confirm L2Merchant 
-				else if (summonTemplate.type.equalsIgnoreCase("L2MerchantSummon"))
-					summon = new L2MerchantSummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, skill);*/
+				final int id = IdFactory.getInstance().getNextId();
+				if (summonTemplate.isType("L2SiegeSummon"))
+				{
+					summon = new L2SiegeSummonInstance(id, summonTemplate, activeChar, skill);
+				}
+				else if (summonTemplate.isType("L2MerchantSummon"))
+				{
+					// TODO: Confirm L2Merchant summon = new L2MerchantSummonInstance(id, summonTemplate, activeChar, skill);
+					summon = new L2SummonInstance(id, summonTemplate, activeChar, skill);
+				}
 				else
-					summon = new L2SummonInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, skill);
+				{
+					summon = new L2SummonInstance(id, summonTemplate, activeChar, skill);
+				}
 				
-				summon.setName(summonTemplate.name);
+				summon.setName(summonTemplate.getName());
 				summon.setTitle(activeChar.getName());
 				summon.setExpPenalty(skill.getExpPenalty());
 				

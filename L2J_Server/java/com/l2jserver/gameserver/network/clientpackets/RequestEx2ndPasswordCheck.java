@@ -45,9 +45,6 @@ public class RequestEx2ndPasswordCheck extends L2GameClientPacket
 		getClient().getSecondaryAuth().openDialog();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

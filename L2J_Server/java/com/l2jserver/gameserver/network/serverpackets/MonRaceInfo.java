@@ -69,15 +69,15 @@ public class MonRaceInfo extends L2GameServerPacket
 		{
 			//_log.info("MOnster "+(i+1)+" npcid "+_monsters[i].getNpcTemplate().getNpcId());
 			writeD(_monsters[i].getObjectId());                         //npcObjectID
-			writeD(_monsters[i].getTemplate().npcId+1000000);   //npcID
+			writeD(_monsters[i].getTemplate().getNpcId()+1000000);   //npcID
 			writeD(14107);                                              //origin X
 			writeD(181875 + (58 * (7-i)));                                  //origin Y
 			writeD(-3566);                                              //origin Z
 			writeD(12080);                                              //end X
 			writeD(181875 + (58 * (7-i)));                                  //end Y
 			writeD(-3566);                                              //end Z
-			writeF(_monsters[i].getTemplate().fCollisionHeight);                  //coll. height
-			writeF(_monsters[i].getTemplate().fCollisionRadius);                  //coll. radius
+			writeF(_monsters[i].getTemplate().getfCollisionHeight());                  //coll. height
+			writeF(_monsters[i].getTemplate().getfCollisionRadius());                  //coll. radius
 			writeD(120);            // ?? unknown
 			for (int j=0; j<20; j++)
 			{
@@ -93,9 +93,6 @@ public class MonRaceInfo extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

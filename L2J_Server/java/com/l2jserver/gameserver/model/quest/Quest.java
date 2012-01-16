@@ -38,12 +38,15 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Trap;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.olympiad.CompetitionType;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -51,7 +54,6 @@ import com.l2jserver.gameserver.network.serverpackets.NpcQuestHtmlMessage;
 import com.l2jserver.gameserver.scripting.ManagedScript;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.MinionList;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
@@ -66,7 +68,7 @@ public class Quest extends ManagedScript
 	/** HashMap containing events from String value of the event */
 	private static Map<String, Quest> _allEventsS = new FastMap<String, Quest>();
 	/** HashMap containing lists of timers from the name of the timer */
-	private final Map<String, FastList<QuestTimer>> _allEventTimers = new FastMap<String, FastList<QuestTimer>>();
+	private final Map<String, FastList<QuestTimer>> _allEventTimers = new FastMap<String, FastList<QuestTimer>>().shared();
 	
 	private final ReentrantReadWriteLock _rwLock = new ReentrantReadWriteLock();
 	
@@ -76,6 +78,7 @@ public class Quest extends ManagedScript
 	private final byte _initialState = State.CREATED;
 	protected boolean _onEnterWorld = false;
 	private boolean _isCustom = false;
+	private boolean _isOlympiadUse = false;
 	// NOTE: questItemIds will be overridden by child classes.  Ideally, it should be
 	// protected instead of public.  However, quest scripts written in Jython will
 	// have trouble with protected, as Jython only knows private and public...
@@ -1844,9 +1847,19 @@ public class Quest extends ManagedScript
 		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false);
 	}
 	
+	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffSet, long despawnDelay)
+	{
+		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffSet, despawnDelay, false);
+	}
+	
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
 	{
 		return addSpawn(npcId, x, y, z, heading, randomOffset, despawnDelay, isSummonSpawn, 0);
+	}
+	
+	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
+	{
+		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffset, despawnDelay, isSummonSpawn, 0);
 	}
 	
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay, boolean isSummonSpawn, int instanceId)
@@ -1992,6 +2005,24 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * @return true if the quest script is a custom quest.
+	 */
+	public boolean isCustomQuest()
+	{
+		return _isCustom;
+	}
+	
+	public void setOlympiadUse(boolean val)
+	{
+		_isOlympiadUse = val;
+	}
+	
+	public boolean isOlympiadUse()
+	{
+		return _isOlympiadUse;
+	}
+	
+	/**
 	 * @param val if true the quest script will be set as custom quest.
 	 */
 	public void setIsCustom(boolean val)
@@ -1999,11 +2030,37 @@ public class Quest extends ManagedScript
 		_isCustom = val;
 	}
 	
-	/**
-	 * @return true if the quest script is a custom quest.
-	 */
-	public boolean isCustomQuest()
+	public final void notifyOlympiadWin(L2PcInstance winner, CompetitionType type)
 	{
-		return _isCustom;
+		try
+		{
+			onOlympiadWin(winner, type);
+		}
+		catch (Exception e)
+		{
+			showError(winner, e);
+		}
+	}
+	
+	public final void notifyOlympiadLoose(L2PcInstance looser, CompetitionType type)
+	{
+		try
+		{
+			onOlympiadLoose(looser, type);
+		}
+		catch (Exception e)
+		{
+			showError(looser, e);
+		}
+	}
+	
+	public void onOlympiadWin(L2PcInstance winner, CompetitionType type)
+	{
+		
+	}
+	
+	public void onOlympiadLoose(L2PcInstance winner, CompetitionType type)
+	{
+		
 	}
 }

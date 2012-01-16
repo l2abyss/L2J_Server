@@ -18,9 +18,9 @@ import java.util.List;
 
 import javolution.util.FastList;
 
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.Race;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
  * @author mkizub

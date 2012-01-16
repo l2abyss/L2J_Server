@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.L2FriendSay;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Recieve Private (Friend) Message - 0xCC
@@ -66,7 +65,7 @@ public final class RequestSendFriendMsg extends L2GameClientPacket
 		if (targetPlayer == null
 				|| !targetPlayer.getFriendList().contains(activeChar.getObjectId()))
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME));
+			activeChar.sendPacket(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 			return;
 		}
 		

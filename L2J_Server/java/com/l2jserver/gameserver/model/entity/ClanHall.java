@@ -30,11 +30,12 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 public abstract class ClanHall
 {
@@ -141,6 +142,7 @@ public abstract class ClanHall
 				_cwh = cwh;
 			}
 			
+			@Override
 			public void run()
 			{
 				try
@@ -157,7 +159,7 @@ public abstract class ClanHall
 						dbSave();
 						if (_cwh)
 						{
-							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_function_fee", 57, fee, null, null);
+							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_function_fee", PcInventory.ADENA_ID, fee, null, null);
 							if (Config.DEBUG)
 								_log.warning("deducted " + fee + " adena from " + getName() + " owner's cwh for function id : " + getType());
 						}
@@ -476,7 +478,7 @@ public abstract class ClanHall
 			_log.warning("Called ClanHall.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerId());
 		if (lease > 0)
 		{
-			if (!player.destroyItemByItemId("Consume", 57, lease, null, true))
+			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
 				return false;
 		}
 		if (addNew)

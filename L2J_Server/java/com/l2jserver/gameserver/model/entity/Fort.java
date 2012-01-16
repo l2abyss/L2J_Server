@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
-import gnu.trove.TIntIntHashMap;
-import gnu.trove.TObjectProcedure;
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,6 +53,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.type.L2FortZone;
 import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -183,6 +184,7 @@ public class Fort
 				_cwh = cwh;
 			}
 			
+			@Override
 			public void run()
 			{
 				try
@@ -199,7 +201,7 @@ public class Fort
 						dbSave();
 						if (_cwh)
 						{
-							getOwnerClan().getWarehouse().destroyItemByItemId("CS_function_fee", 57, fee, null, null);
+							getOwnerClan().getWarehouse().destroyItemByItemId("CS_function_fee", PcInventory.ADENA_ID, fee, null, null);
 							if (Config.DEBUG)
 								_log.warning("Deducted " + fee + " adena from " + getName() + " owner's cwh for function id : " + getType());
 						}
@@ -304,6 +306,7 @@ public class Fort
 			_fortInst = pFort;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -754,7 +757,7 @@ public class Fort
 		if (Config.DEBUG)
 			_log.warning("Called Fort.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerClan());
 		if (lease > 0)
-			if (!player.destroyItemByItemId("Consume", 57, lease, null, true))
+			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
 				return false;
 		if (addNew)
 		{
@@ -1112,6 +1115,7 @@ public class Fort
 			_clan = clan;
 		}
 		
+		@Override
 		public void run()
 		{
 			try

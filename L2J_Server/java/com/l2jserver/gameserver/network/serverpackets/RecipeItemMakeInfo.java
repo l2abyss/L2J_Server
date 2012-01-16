@@ -71,9 +71,6 @@ public class RecipeItemMakeInfo extends L2GameServerPacket
 		else if (Config.DEBUG) _log.info("No recipe found with ID = " + _id);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

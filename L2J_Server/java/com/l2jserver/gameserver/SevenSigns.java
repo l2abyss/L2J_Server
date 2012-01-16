@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,13 +39,13 @@ import com.l2jserver.gameserver.model.AutoChatHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler.AutoSpawnInstance;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.util.Broadcast;
 
 /**
@@ -83,7 +83,6 @@ public class SevenSigns
 	public static final int PERIOD_MINOR_LENGTH = 900000;
 	public static final int PERIOD_MAJOR_LENGTH = 604800000 - PERIOD_MINOR_LENGTH;
 	
-	public static final int ANCIENT_ADENA_ID = 5575;
 	public static final int RECORD_SEVEN_SIGNS_ID = 5707;
 	public static final int CERTIFICATE_OF_APPROVAL_ID = 6388;
 	public static final int RECORD_SEVEN_SIGNS_COST = 500;
@@ -99,10 +98,12 @@ public class SevenSigns
 	public static final int ANAKIM_NPC_ID = 25286;
 	public static final int CREST_OF_DAWN_ID = 31170;
 	public static final int CREST_OF_DUSK_ID = 31171;
-	// Seal Stone Related Constants \\
+	// Seal Stone Related Constants
 	public static final int SEAL_STONE_BLUE_ID = 6360;
 	public static final int SEAL_STONE_GREEN_ID = 6361;
 	public static final int SEAL_STONE_RED_ID = 6362;
+	
+	public static final int[] SEAL_STONE_IDS = { SEAL_STONE_BLUE_ID, SEAL_STONE_GREEN_ID, SEAL_STONE_RED_ID };
 	
 	public static final int SEAL_STONE_BLUE_VALUE = 3;
 	public static final int SEAL_STONE_GREEN_VALUE = 5;
@@ -1419,6 +1420,7 @@ public class SevenSigns
 	 */
 	protected class SevenSignsPeriodChange implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			/*

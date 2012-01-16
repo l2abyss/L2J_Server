@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
@@ -55,7 +54,7 @@ public class L2FortBallistaInstance extends L2Npc
 				if (player.getClan() != null && player.getClan().getLevel() >= 5)
 				{
 					player.getClan().addReputationScore(Config.BALLISTA_POINTS, true);
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BALLISTA_DESTROYED_CLAN_REPU_INCREASED));
+					player.sendPacket(SystemMessageId.BALLISTA_DESTROYED_CLAN_REPU_INCREASED);
 				}
 			}
 		}

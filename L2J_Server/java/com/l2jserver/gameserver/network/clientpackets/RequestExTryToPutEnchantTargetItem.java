@@ -14,16 +14,17 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.datatables.EnchantItemTable;
+import com.l2jserver.gameserver.model.EnchantScroll;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPutEnchantTargetItemResult;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * @author  KenM
+ * @author KenM
  */
-public class RequestExTryToPutEnchantTargetItem extends AbstractEnchantPacket
+public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 {
 	private static final String _C__D0_4C_REQUESTEXTRYTOPUTENCHANTTARGETITEM = "[C] D0:4C RequestExTryToPutEnchantTargetItem";
 	
@@ -40,34 +41,32 @@ public class RequestExTryToPutEnchantTargetItem extends AbstractEnchantPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		
-		if (_objectId == 0)
+		if (_objectId == 0 || activeChar == null)
 			return;
 		
-		if (activeChar != null)
+		if (activeChar.isEnchanting())
+			return;
+		
+		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
+		L2ItemInstance scroll = activeChar.getActiveEnchantItem();
+		
+		if (item == null || scroll == null)
+			return;
+		
+		// template for scroll
+		EnchantScroll scrollTemplate = EnchantItemTable.getInstance().getEnchantScroll(scroll);
+		
+		if (!scrollTemplate.isValid(item))
 		{
-			if (activeChar.isEnchanting())
-				return;
-			
-			L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
-			L2ItemInstance scroll = activeChar.getActiveEnchantItem();
-			
-			if (item == null || scroll == null)
-				return;
-			
-			// template for scroll
-			EnchantScroll scrollTemplate = getEnchantScroll(scroll);
-			
-			if (!scrollTemplate.isValid(item) || !isEnchantable(item))
-			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS));
-				activeChar.setActiveEnchantItem(null);
-				activeChar.sendPacket(new ExPutEnchantTargetItemResult(0));
-				return;
-			}
-			activeChar.setIsEnchanting(true);
-			activeChar.setActiveEnchantTimestamp(System.currentTimeMillis());
-			activeChar.sendPacket(new ExPutEnchantTargetItemResult(_objectId));
+			activeChar.sendPacket(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS);
+			activeChar.setActiveEnchantItem(null);
+			activeChar.sendPacket(new ExPutEnchantTargetItemResult(0));
+			return;
 		}
+		activeChar.setIsEnchanting(true);
+		activeChar.setActiveEnchantTimestamp(System.currentTimeMillis());
+		activeChar.sendPacket(new ExPutEnchantTargetItemResult(_objectId));
+		
 	}
 	
 	@Override

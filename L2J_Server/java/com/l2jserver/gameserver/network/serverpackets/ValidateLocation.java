@@ -54,9 +54,6 @@ public class ValidateLocation extends L2GameServerPacket
 		writeD(_heading);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

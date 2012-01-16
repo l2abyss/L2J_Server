@@ -56,13 +56,9 @@ public class AskJoinParty extends L2GameServerPacket
 		writeD(_itemDistribution);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__4B_ASKJOINPARTY_0X4B;
 	}
-	
 }

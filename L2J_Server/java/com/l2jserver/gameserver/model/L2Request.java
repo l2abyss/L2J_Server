@@ -93,7 +93,7 @@ public class L2Request
 	{
 		if (partner == null)
 		{
-			_player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET));
+			_player.sendPacket(SystemMessageId.YOU_HAVE_INVITED_THE_WRONG_TARGET);
 			return false;
 		}
 		if (partner.getRequest().isProcessingRequest())
@@ -106,7 +106,7 @@ public class L2Request
 		}
 		if (isProcessingRequest())
 		{
-			_player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WAITING_FOR_ANOTHER_REPLY));
+			_player.sendPacket(SystemMessageId.WAITING_FOR_ANOTHER_REPLY);
 			return false;
 		}
 		
@@ -125,6 +125,7 @@ public class L2Request
 		_isAnswerer = isRequestor ? false : true;
 		ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				clear();

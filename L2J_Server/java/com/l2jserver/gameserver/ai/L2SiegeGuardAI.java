@@ -82,6 +82,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		_attackRange = ((L2Attackable) _actor).getPhysicalAttackRange();
 	}
 	
+	@Override
 	public void run()
 	{
 		// Launch actions corresponding to the Event Think
@@ -476,7 +477,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 			_actor.setTarget(attackTarget);
 			skills = _actor.getAllSkills();
 			dist_2 = _actor.getPlanDistanceSq(attackTarget.getX(), attackTarget.getY());
-			range = _actor.getPhysicalAttackRange() + _actor.getTemplate().collisionRadius + attackTarget.getTemplate().collisionRadius;
+			range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + attackTarget.getTemplate().getCollisionRadius();
 			if (attackTarget.isMoving())
 				range += 50;
 		}

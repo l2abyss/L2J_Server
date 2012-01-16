@@ -16,79 +16,77 @@ package com.l2jserver.gameserver.datatables;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.script.DateRange;
+import com.l2jserver.gameserver.script.EventDrop;
 
 /**
- * This class manage drop of Special Events created by GM for a defined period.
- * During a Special Event all L2Attackable can drop extra Items.
- * Those extra Items are defined in the table <B>allNpcDateDrops</B>.
- * Each Special Event has a start and end date to stop to drop extra Items automaticaly.<BR><BR>
+ * This class manage drop of Special Events created by GM for a defined period.<br>
+ * During a Special Event all L2Attackable can drop extra Items.<br>
+ * Those extra Items are defined in the table <b>allNpcDateDrops</b>.<br>
+ * Each Special Event has a start and end date to stop to drop extra Items automatically.
  */
-
 public class EventDroplist
 {
+	private static Logger _log = Logger.getLogger(EventDroplist.class.getName());
 	
-	//private static Logger _log = Logger.getLogger(EventDroplist.class.getName());
-	
-	/** The table containing all DataDrop object */
-	private List<DateDrop> _allNpcDateDrops;
-	
-	public static EventDroplist getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	/**
+	 * The table containing all DataDrop object
+	 */
+	private static final List<DateDrop> _allNpcDateDrops = new FastList<DateDrop>();
 	
 	public static class DateDrop
 	{
-		/** Start and end date of the Event */
-		public DateRange dateRange;
+		private final DateRange _dateRange;
+		private final EventDrop _eventDrop;
 		
-		/** The table containing Item identifier that can be dropped as extra Items during the Event */
-		public int[] items;
+		public DateDrop(DateRange dateRange, EventDrop eventDrop)
+		{
+			_dateRange = dateRange;
+			_eventDrop = eventDrop;
+		}
 		
-		/** The min number of Item dropped in one time during this Event */
-		public int min;
+		/**
+		 * @return the _eventDrop
+		 */
+		public EventDrop getEventDrop()
+		{
+			return _eventDrop;
+		}
 		
-		/** The max number of Item dropped in one time during this Event */
-		public int max;
-		
-		/** The rate of drop for this Event */
-		public int chance;
-		
+		/**
+		 * @return the _dateRange
+		 */
+		public DateRange getDateRange()
+		{
+			return _dateRange;
+		}
 	}
 	
 	/**
-	 * Constructor of EventDroplist.<BR><BR>
-	 */
-	private EventDroplist()
-	{
-		_allNpcDateDrops = new FastList<DateDrop>();
-	}
-	
-	/**
-	 * Create and Init a new DateDrop then add it to the allNpcDateDrops of EventDroplist .<BR><BR>
-	 *
-	 * @param items The table containing all item identifier of this DateDrop
+	 * Create and Init a new DateDrop then add it to the allNpcDateDrops of EventDroplist .
+	 * @param itemIdList The table containing all item identifier of this DateDrop
 	 * @param count The table containing min and max value of this DateDrop
 	 * @param chance The chance to obtain this drop
-	 * @param range The DateRange object to add to this DateDrop
-	 *
+	 * @param dateRange The DateRange object to add to this DateDrop
 	 */
-	public void addGlobalDrop(int[] items, int[] count, int chance, DateRange range)
+	public void addGlobalDrop(int[] itemIdList, int[] count, int chance, DateRange dateRange)
 	{
-		
-		DateDrop date = new DateDrop();
-		
-		date.dateRange = range;
-		date.items = items;
-		date.min = count[0];
-		date.max = count[1];
-		date.chance = chance;
-		
-		_allNpcDateDrops.add(date);
+		_allNpcDateDrops.add(new DateDrop(dateRange, new EventDrop(itemIdList, count[0], count[1], chance)));
+	}
+	
+	/**
+	 * Adds an event drop for a given date range.
+	 * @param dateRange the date range.
+	 * @param eventDrop the event drop.
+	 */
+	public void addGlobalDrop(DateRange dateRange, EventDrop eventDrop)
+	{
+		_allNpcDateDrops.add(new DateDrop(dateRange, eventDrop));
 	}
 	
 	/**
@@ -96,19 +94,25 @@ public class EventDroplist
 	 */
 	public List<DateDrop> getAllDrops()
 	{
-		List<DateDrop> list = new FastList<DateDrop>();
-		
+		final List<DateDrop> list = new FastList<DateDrop>();
+		final Date currentDate = new Date();
 		for (DateDrop drop : _allNpcDateDrops)
 		{
-			Date currentDate = new Date();
-			//_log.info("From: "+drop.from+" To: "+drop.to+" Now: "+ currentDate);
-			if (drop.dateRange.isWithinRange(currentDate))
+			if (Config.DEBUG)
+			{
+				_log.info(drop._dateRange.toString() + " Now: " + currentDate);
+			}
+			if (drop._dateRange.isWithinRange(currentDate))
 			{
 				list.add(drop);
 			}
 		}
-		
 		return list;
+	}
+	
+	public static EventDroplist getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	@SuppressWarnings("synthetic-access")

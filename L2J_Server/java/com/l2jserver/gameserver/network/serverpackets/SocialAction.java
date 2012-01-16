@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
  * This class ...
@@ -26,19 +25,19 @@ public class SocialAction extends L2GameServerPacket
 	public static final int LEVEL_UP = 2122;
 	
 	private static final String _S__3D_SOCIALACTION = "[S] 27 SocialAction";
-	private int _charObjId;
-	private int _actionId;
+	private final int _charObjId;
+	private final int _actionId;
 	
 	/**
-	 * 0x3d SocialAction         dd
-	 * @param cha
+	 * @param objectId
 	 * @param actionId
-	 */
-	public SocialAction(L2Character cha, int actionId)
+	 */	
+	public SocialAction(int objectId, int actionId)
 	{
-		_charObjId = cha.getObjectId();
+		_charObjId = objectId;
 		_actionId = actionId;
 	}
+
 	
 	@Override
 	protected final void writeImpl()

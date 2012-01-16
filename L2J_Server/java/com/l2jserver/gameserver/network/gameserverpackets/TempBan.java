@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.gameserverpackets;
 import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
- * 
  * @author mrTJO
  */
 public class TempBan extends BaseSendablePacket
@@ -42,13 +41,9 @@ public class TempBan extends BaseSendablePacket
 		this(accountName, ip, time, null);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.network.BaseSendablePacket#getContent()
-	 */
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }

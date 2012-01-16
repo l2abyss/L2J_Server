@@ -17,6 +17,8 @@ package com.l2jserver.gameserver.datatables;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +28,6 @@ import javolution.util.FastMap;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
@@ -60,7 +61,7 @@ public class ClanTable
 {
 	private static Logger _log = Logger.getLogger(ClanTable.class.getName());
 	
-	private Map<Integer, L2Clan> _clans;
+	private final Map<Integer, L2Clan> _clans;
 	
 	public static ClanTable getInstance()
 	{
@@ -138,7 +139,6 @@ public class ClanTable
 			}
 			
 		}
-		
 		return null;
 	}
 	
@@ -159,27 +159,27 @@ public class ClanTable
 		
 		if (10 > player.getLevel())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DO_NOT_MEET_CRITERIA_IN_ORDER_TO_CREATE_A_CLAN));
+			player.sendPacket(SystemMessageId.YOU_DO_NOT_MEET_CRITERIA_IN_ORDER_TO_CREATE_A_CLAN);
 			return null;
 		}
 		if (0 != player.getClanId())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_CREATE_CLAN));
+			player.sendPacket(SystemMessageId.FAILED_TO_CREATE_CLAN);
 			return null;
 		}
 		if (System.currentTimeMillis() < player.getClanCreateExpiryTime())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_MUST_WAIT_XX_DAYS_BEFORE_CREATING_A_NEW_CLAN));
+			player.sendPacket(SystemMessageId.YOU_MUST_WAIT_XX_DAYS_BEFORE_CREATING_A_NEW_CLAN);
 			return null;
 		}
 		if (!Util.isAlphaNumeric(clanName) || 2 > clanName.length())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_INCORRECT));
+			player.sendPacket(SystemMessageId.CLAN_NAME_INCORRECT);
 			return null;
 		}
 		if (16 < clanName.length())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_NAME_TOO_LONG));
+			player.sendPacket(SystemMessageId.CLAN_NAME_TOO_LONG);
 			return null;
 		}
 		
@@ -213,7 +213,7 @@ public class ClanTable
 		player.sendPacket(new UserInfo(player));
 		player.sendPacket(new ExBrExtraUserInfo(player));
 		player.sendPacket(new PledgeShowMemberListUpdate(player));
-		player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_CREATED));
+		player.sendPacket(SystemMessageId.CLAN_CREATED);
 		// notify CB server that a new Clan is created
 		CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, clan, WorldInfo.TYPE_UPDATE_CLAN_DATA));
 		return clan;
@@ -264,8 +264,6 @@ public class ClanTable
 		
 		_clans.remove(clanId);
 		IdFactory.getInstance().releaseId(clanId);
-
-		CrestCache.getInstance().removePledgeCrest(clan.getCrestId());
 		
 		Connection con = null;
 		try
@@ -340,7 +338,9 @@ public class ClanTable
 	
 	public void scheduleRemoveClan(final int clanId)
 	{
-		ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
+		ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() 
+		{
+			@Override
 			public void run()
 			{
 				if (getClan(clanId) == null)
@@ -523,6 +523,22 @@ public class ClanTable
 				}
 			}
 		}
+	}
+	
+	public List<L2Clan> getClanAllies(int allianceId)
+	{
+		final List<L2Clan> clanAllies = new ArrayList<>();
+		if (allianceId != 0)
+		{
+			for (L2Clan clan : _clans.values())
+			{
+				if ((clan != null) && (clan.getAllyId() == allianceId))
+				{
+					clanAllies.add(clan);
+				}
+			}
+		}
+		return clanAllies;
 	}
 	
 	public void storeClanScore()

@@ -1,14 +1,4 @@
 /*
- * $Header: WorldObjectSet.java, 22/07/2005 14:11:29 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 22/07/2005 14:11:29 $
- * $Revision: 1 $
- * $Log: WorldObjectSet.java,v $
- * Revision 1  22/07/2005 14:11:29  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -46,67 +36,45 @@ public class WorldObjectSet<T extends L2Object> extends L2ObjectSet<T>
 		_objectMap = new FastMap<Integer, T>().shared();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#size()
-	 */
 	@Override
 	public int size()
 	{
 		return _objectMap.size();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#isEmpty()
-	 */
 	@Override
 	public boolean isEmpty()
 	{
 		return _objectMap.isEmpty();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#clear()
-	 */
 	@Override
 	public void clear()
 	{
 		_objectMap.clear();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#put(T)
-	 */
 	@Override
 	public void put(T obj)
 	{
 		_objectMap.put(obj.getObjectId(), obj);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#remove(T)
-	 */
 	@Override
 	public void remove(T obj)
 	{
 		_objectMap.remove(obj.getObjectId());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#contains(T)
-	 */
 	@Override
 	public boolean contains(T obj)
 	{
 		return _objectMap.containsKey(obj.getObjectId());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#iterator()
-	 */
 	@Override
 	public Iterator<T> iterator()
 	{
 		return _objectMap.values().iterator();
 	}
-	
 }

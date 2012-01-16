@@ -14,13 +14,13 @@
  */
 package com.l2jserver.gameserver.model;
 
-import gnu.trove.TIntObjectHashMap;
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -82,6 +82,7 @@ public final class L2World
 	
 	/** L2ObjectHashMap(L2Object) containing all visible objects */
 	private final L2TIntObjectHashMap<L2Object> _allObjects;
+	private final L2TIntObjectHashMap<String> _allObjectsDebug;
 	
 	/** List with the pets instances and their owner id */
 	private final L2TIntObjectHashMap<L2PetInstance> _petsInstance;
@@ -95,6 +96,7 @@ public final class L2World
 	{
 		_allPlayers = new L2TIntObjectHashMap<L2PcInstance>();
 		_allObjects = new L2TIntObjectHashMap<L2Object>();
+		_allObjectsDebug = new L2TIntObjectHashMap<String>();
 		_petsInstance = new L2TIntObjectHashMap<L2PetInstance>();
 		
 		initRegions();
@@ -120,23 +122,16 @@ public final class L2World
 	{
 		if (_allObjects.containsKey(object.getObjectId()))
 		{
-			if (Config.DEBUG)
-			{
-				_log.warning("[L2World] object: " + object + " already exist in OID map!");
-				_log.info(StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
-				return;
-			}
+			_log.log(Level.WARNING, "--------[L2World] object: " + object + " already exist in OID map!--------");
+			_log.log(Level.WARNING, "New object: " + StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
+			_log.log(Level.WARNING, "----------------- Previous Put -----------------");
+			_log.log(Level.WARNING, "Previous: " + _allObjectsDebug.get(object.getObjectId()));
+			_log.log(Level.WARNING, "---------------------- End ---------------------");
+			return;
 		}
 		
 		_allObjects.put(object.getObjectId(), object);
-	}
-	
-	public long timeStoreObject(L2Object object)
-	{
-		long time = System.nanoTime();
-		_allObjects.put(object.getObjectId(), object);
-		time = System.nanoTime() - time;
-		return time;
+		_allObjectsDebug.put(object.getObjectId(), StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
 	}
 	
 	/**
@@ -153,7 +148,7 @@ public final class L2World
 	public void removeObject(L2Object object)
 	{
 		_allObjects.remove(object.getObjectId()); // suggestion by whatev
-		//IdFactory.getInstance().releaseId(object.getObjectId());
+		_allObjectsDebug.remove(object.getObjectId());
 	}
 	
 	public void removeObjects(List<L2Object> list)
@@ -161,24 +156,20 @@ public final class L2World
 		for (L2Object o : list)
 		{
 			if (o != null)
+			{
 				_allObjects.remove(o.getObjectId()); // suggestion by whatev
+				_allObjectsDebug.remove(o.getObjectId());
+			}
 		}
-		//IdFactory.getInstance().releaseId(object.getObjectId());
 	}
 	
 	public void removeObjects(L2Object[] objects)
 	{
 		for (L2Object o : objects)
+		{
 			_allObjects.remove(o.getObjectId()); // suggestion by whatev
-		//IdFactory.getInstance().releaseId(object.getObjectId());
-	}
-	
-	public long timeRemoveObject(L2Object object)
-	{
-		long time = System.nanoTime();
-		_allObjects.remove(object.getObjectId());
-		time = System.nanoTime() - time;
-		return time;
+			_allObjectsDebug.remove(o.getObjectId());
+		}
 	}
 	
 	/**
@@ -193,28 +184,9 @@ public final class L2World
 		return _allObjects.get(oID);
 	}
 	
-	public long timeFindObject(int objectID)
-	{
-		long time = System.nanoTime();
-		_allObjects.get(objectID);
-		time = System.nanoTime() - time;
-		return time;
-	}
-	
-	/**
-	 * Added by Tempy - 08 Aug 05
-	 * @return retrieval of all visible objects in world.
-	 * @deprecated do not use that function, its unsafe!
-	 */
-	@Deprecated
-	public final TIntObjectHashMap<L2Object> getAllVisibleObjects()
-	{
-		return _allObjects;
-	}
-	
 	public final L2Object[] getAllVisibleObjectsArray()
 	{
-		return _allObjects.getValues(new L2Object[_allObjects.size()]);
+		return _allObjects.values(new L2Object[0]);
 	}
 	
 	public final boolean forEachObject(final TObjectProcedure<L2Object> proc)
@@ -247,7 +219,7 @@ public final class L2World
 	
 	public final L2PcInstance[] getAllPlayersArray()
 	{
-		return _allPlayers.getValues(new L2PcInstance[_allPlayers.size()]);
+		return _allPlayers.values(new L2PcInstance[0]);
 	}
 	
 	public final boolean forEachPlayer(final TObjectProcedure<L2PcInstance> proc)

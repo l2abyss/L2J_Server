@@ -30,11 +30,12 @@ import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2DropData;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExShowQuestMark;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -578,7 +579,7 @@ public final class QuestState
 	 */
 	public void giveAdena(long count, boolean applyRates)
 	{
-		giveItems(57, count, applyRates ? 0 : 1);
+		giveItems(PcInventory.ADENA_ID, count, applyRates ? 0 : 1);
 	}
 	
 	/**
@@ -596,7 +597,7 @@ public final class QuestState
 		if (_tmpItem == null)
 			return;
 		
-		if (itemId == 57)
+		if (itemId == PcInventory.ADENA_ID)
 		{
 			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
 		}
@@ -637,7 +638,7 @@ public final class QuestState
 			return;
 		
 		// If item for reward is gold, send message of gold reward to client
-		if (itemId == 57)
+		if (itemId == PcInventory.ADENA_ID)
 		{
 			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);
@@ -682,7 +683,7 @@ public final class QuestState
 			return;
 		
 		// If item for reward is adena (ID=57), modify count with rate for quest reward if rates available
-		if (itemId == 57 && !(enchantlevel > 0))
+		if (itemId == PcInventory.ADENA_ID && !(enchantlevel > 0))
 			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
 		
 		// Add items to player's inventory
@@ -692,11 +693,11 @@ public final class QuestState
 			return;
 		
 		// set enchant level for item if that item is not adena
-		if (enchantlevel > 0 && itemId != 57)
+		if (enchantlevel > 0 && itemId != PcInventory.ADENA_ID)
 			item.setEnchantLevel(enchantlevel);
 		
 		// If item for reward is gold, send message of gold reward to client
-		if (itemId == 57)
+		if (itemId == PcInventory.ADENA_ID)
 		{
 			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);
@@ -749,7 +750,7 @@ public final class QuestState
 		}
 		
 		// If item for reward is gold, send message of gold reward to client
-		if (itemId == 57)
+		if (itemId == PcInventory.ADENA_ID)
 		{
 			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);

@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TIntIntHashMap;
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,18 +36,17 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SepulcherMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SepulcherNpcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -939,7 +938,7 @@ public class FourSepulchersManager
 				
 				if (player.getWeightPenalty() >= 3)
 				{
-					mem.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+					mem.sendPacket(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT);
 					return;
 				}
 			}
@@ -967,7 +966,7 @@ public class FourSepulchersManager
 				
 				if (player.getWeightPenalty() >= 3)
 				{
-					mem.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+					mem.sendPacket(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT);
 					return;
 				}
 			}
@@ -988,7 +987,7 @@ public class FourSepulchersManager
 			
 			if (player.getWeightPenalty() >= 3)
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+				player.sendPacket(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT);
 				return;
 			}
 		}
@@ -1426,7 +1425,7 @@ public class FourSepulchersManager
 	
 	protected void closeAllDoors()
 	{
-		for (int doorId : _hallGateKeepers.getValues())
+		for (int doorId : _hallGateKeepers.values())
 		{
 			try
 			{
@@ -1585,6 +1584,7 @@ public class FourSepulchersManager
 	
 	protected class ManagerSay implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			if (_inAttackTime)
@@ -1614,6 +1614,7 @@ public class FourSepulchersManager
 	
 	protected class ChangeEntryTime implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			// _log.info("FourSepulchersManager:In Entry Time");
@@ -1648,6 +1649,7 @@ public class FourSepulchersManager
 	
 	protected class ChangeWarmUpTime implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			// _log.info("FourSepulchersManager:In Warm-Up Time");
@@ -1677,6 +1679,7 @@ public class FourSepulchersManager
 	
 	protected class ChangeAttackTime implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			// _log.info("FourSepulchersManager:In Attack Time");
@@ -1737,6 +1740,7 @@ public class FourSepulchersManager
 	
 	protected class ChangeCoolDownTime implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			// _log.info("FourSepulchersManager:In Cool-Down Time");

@@ -27,14 +27,10 @@ public class RequestCharacters extends BaseSendablePacket
 		writeC(0x05);
 		writeS(account);
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.network.BaseSendablePacket#getContent()
-	 */
+	
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }

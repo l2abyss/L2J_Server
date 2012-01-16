@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 /**
  * CT2.3: Added support for allowing effect as a chance skill trigger (DrHouse)
@@ -161,7 +162,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				
 				L2Character firstTarget = (L2Character)targets[0];
 				
-				ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(skill.getSkillType());
+				ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 				
 				_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
 				_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
@@ -190,7 +191,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			L2Skill triggered = SkillTable.getInstance().getInfo(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
 			if (triggered == null)
 				return;
-			L2Character caster = triggered.getTargetType() == L2Skill.SkillTargetType.TARGET_SELF ? _owner : effect.getEffector();
+			L2Character caster = triggered.getTargetType() == L2TargetType.TARGET_SELF ? _owner : effect.getEffector();
 			
 			if (caster == null
 					|| triggered.getSkillType() == L2SkillType.NOTDONE
@@ -207,7 +208,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			
 			L2Character firstTarget = (L2Character)targets[0];
 			
-			ISkillHandler handler = SkillHandler.getInstance().getSkillHandler(triggered.getSkillType());
+			ISkillHandler handler = SkillHandler.getInstance().getHandler(triggered.getSkillType());
 			
 			_owner.broadcastPacket(new MagicSkillLaunched(_owner, triggered.getDisplayId(), triggered.getLevel(), targets));
 			_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, triggered.getDisplayId(), triggered.getLevel(), 0, 0));

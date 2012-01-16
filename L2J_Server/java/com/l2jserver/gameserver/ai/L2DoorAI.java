@@ -162,9 +162,7 @@ public class L2DoorAI extends L2CharacterAI
 			_attacker = attacker;
 		}
 		
-		/* (non-Javadoc)
-		 * @see java.lang.Runnable#run()
-		 */
+		@Override
 		public void run()
 		{
 			for (L2DefenderInstance guard : _door.getKnownDefenders())

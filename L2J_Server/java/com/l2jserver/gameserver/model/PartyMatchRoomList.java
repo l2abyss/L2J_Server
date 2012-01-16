@@ -21,8 +21,6 @@ import javolution.util.FastMap;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExClosePartyRoom;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-
 
 /**
  * @author Gnacik
@@ -51,7 +49,7 @@ public class PartyMatchRoomList
 				continue;
 			
 			_member.sendPacket(new ExClosePartyRoom());
-			_member.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PARTY_ROOM_DISBANDED));
+			_member.sendPacket(SystemMessageId.PARTY_ROOM_DISBANDED);
 			
 			_member.setPartyRoom(0);
 			//_member.setPartyMatching(0);

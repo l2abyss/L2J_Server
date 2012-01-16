@@ -27,12 +27,6 @@ import com.l2jserver.util.Util;
  */
 public class ConsoleLogFormatter extends Formatter
 {
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
-	 */
 	// private static final String _ = " ";
 	private static final String CRLF = "\r\n";
 	
@@ -56,7 +50,6 @@ public class ConsoleLogFormatter extends Formatter
 			{
 			}
 		}
-		
 		return output.toString();
 	}
 }

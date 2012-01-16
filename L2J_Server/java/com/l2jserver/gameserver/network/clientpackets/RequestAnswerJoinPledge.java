@@ -88,7 +88,7 @@ public final class RequestAnswerJoinPledge extends L2GameClientPacket
 				clan.addClanMember(activeChar);
 				activeChar.setClanPrivileges(activeChar.getClan().getRankPrivs(activeChar.getPowerGrade()));
 				
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENTERED_THE_CLAN));
+				activeChar.sendPacket(SystemMessageId.ENTERED_THE_CLAN);
 				
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_JOINED_CLAN);
 				sm.addString(activeChar.getName());

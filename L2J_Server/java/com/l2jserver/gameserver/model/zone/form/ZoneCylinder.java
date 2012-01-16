@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.zone.form;
 
 import com.l2jserver.gameserver.GeoEngine;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
 import com.l2jserver.util.Rnd;
 
@@ -113,7 +114,7 @@ public class ZoneCylinder extends L2ZoneForm
 		{
 			int x = (int) (Math.cos(angle * i) * _rad);
 			int y = (int) (Math.sin(angle * i) * _rad);
-			dropDebugItem(57, 1, _x + x, _y + y, z);
+			dropDebugItem(PcInventory.ADENA_ID, 1, _x + x, _y + y, z);
 		}
 	}
 	

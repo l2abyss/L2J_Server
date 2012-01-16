@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,8 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.templates.StatsSet;
-import com.l2jserver.gameserver.templates.item.L2Henna;
+import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.item.L2Henna;
 
 /**
  * This class ...

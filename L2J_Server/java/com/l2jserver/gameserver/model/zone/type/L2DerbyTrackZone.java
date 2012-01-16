@@ -20,8 +20,7 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
  * The Monster Derby Track Zone
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2DerbyTrackZone extends L2ZoneType
 {
@@ -36,8 +35,6 @@ public class L2DerbyTrackZone extends L2ZoneType
 		if (character instanceof L2Playable)
 		{
 			character.setInsideZone(L2Character.ZONE_MONSTERTRACK, true);
-			character.setInsideZone(L2Character.ZONE_PEACE, true);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
 		}
 	}
 	
@@ -47,8 +44,6 @@ public class L2DerbyTrackZone extends L2ZoneType
 		if (character instanceof L2Playable)
 		{
 			character.setInsideZone(L2Character.ZONE_MONSTERTRACK, false);
-			character.setInsideZone(L2Character.ZONE_PEACE, false);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
 		}
 	}
 	

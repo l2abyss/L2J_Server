@@ -747,6 +747,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			{
 				if ((getActiveChar() != null) && !isDetached())
 				{
+					getActiveChar().storeZoneRestartLimitTime();
 					setDetached(true);
 					if (offlineMode(getActiveChar()))
 					{
@@ -764,9 +765,6 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 								getActiveChar().getPet().broadcastNpcInfo(0);
 							}
 						}
-						
-						if (Config.OFFLINE_MODE_SET_INVULNERABLE)
-							getActiveChar().setIsInvul(true);
 						
 						if (Config.OFFLINE_SET_NAME_COLOR)
 						{

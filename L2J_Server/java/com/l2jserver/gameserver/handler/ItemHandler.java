@@ -14,9 +14,9 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
-import com.l2jserver.gameserver.templates.item.L2EtcItem;
+import com.l2jserver.gameserver.model.item.L2EtcItem;
 
 /**
  * This class manages handlers of items
@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.templates.item.L2EtcItem;
  */
 public class ItemHandler
 {
-	private TIntObjectHashMap<IItemHandler> _datatable;
+	private final TIntObjectHashMap<IItemHandler> _datatable;
 	
 	/**
 	 * Create ItemHandler if doesn't exist and returns ItemHandler
@@ -60,7 +60,7 @@ public class ItemHandler
 	 * (existing in classes of package itemhandlers) sets as key of the Map.
 	 * @param handler (IItemHandler)
 	 */
-	public void registerItemHandler(IItemHandler handler)
+	public void registerHandler(IItemHandler handler)
 	{
 		_datatable.put(handler.getClass().getSimpleName().intern().hashCode(), handler);
 	}
@@ -70,7 +70,7 @@ public class ItemHandler
 	 * @param item
 	 * @return IItemHandler
 	 */
-	public IItemHandler getItemHandler(L2EtcItem item)
+	public IItemHandler getHandler(L2EtcItem item)
 	{
 		if (item == null || item.getHandlerName() == null)
 			return null;

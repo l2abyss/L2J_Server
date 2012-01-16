@@ -16,7 +16,9 @@ package com.l2jserver.gameserver.model;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.templates.StatsSet;
+import com.l2jserver.Config;
+import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.base.Race;
 
 /**
  * @author Zoey76
@@ -32,7 +34,7 @@ public final class L2SkillLearn
 	private final boolean _autoGet;
 	private final int _levelUpSp;
 	private final int[][] _itemsIdCount;
-	private final int[] _races;
+	private final Race[] _races;
 	private final int[] _preReqSkillIdLvl;
 	private final int _socialClass;
 	private final boolean _residenceSkill;
@@ -42,7 +44,7 @@ public final class L2SkillLearn
 	private final boolean _learnedByFS;
 	
 	/**
-	 * Constructor for L2SkillLearn. 
+	 * Constructor for L2SkillLearn.
 	 * @param set the set with the L2SkillLearn data.
 	 */
 	public L2SkillLearn(StatsSet set)
@@ -62,8 +64,8 @@ public final class L2SkillLearn
 			{
 				try
 				{
-					_itemsIdCount[i][0] = Integer.parseInt(itemIdCount.split(",")[0]);//Id
-					_itemsIdCount[i][1] = Integer.parseInt(itemIdCount.split(",")[1]);//Count
+					_itemsIdCount[i][0] = Integer.parseInt(itemIdCount.split(",")[0]);// Id
+					_itemsIdCount[i][1] = Integer.parseInt(itemIdCount.split(",")[1]);// Count
 					i++;
 				}
 				catch (Exception e)
@@ -78,7 +80,13 @@ public final class L2SkillLearn
 		}
 		if (!set.getString("race", "").isEmpty())
 		{
-			_races = set.getIntegerArray("race");
+			final int[] allowedRaces = set.getIntegerArray("race");
+			final int totalRaces = allowedRaces.length;
+			_races = new Race[totalRaces];
+			for (int i = 0; i < totalRaces; i++)
+			{
+				_races[i] = Race.values()[allowedRaces[i]];
+			}
 		}
 		else
 		{
@@ -197,7 +205,7 @@ public final class L2SkillLearn
 	/**
 	 * @return the array with the races that can acquire this skill.
 	 */
-	public int[] getRaces()
+	public Race[] getRaces()
 	{
 		return _races;
 	}
@@ -235,7 +243,7 @@ public final class L2SkillLearn
 	}
 	
 	/**
-	 * @return the array with Sub-Class conditions, amount of subclasses and level. 
+	 * @return the array with Sub-Class conditions, amount of subclasses and level.
 	 */
 	public int[][] getSubClassConditions()
 	{
@@ -256,5 +264,37 @@ public final class L2SkillLearn
 	public boolean isLearnedByFS()
 	{
 		return _learnedByFS;
+	}
+	
+	/**
+	 * Used for AltGameSkillLearn mod.<br>
+	 * If the alternative skill learn system is enabled and the player is learning a skill from a different class apply a fee.<br>
+	 * If the player is learning a skill from other class type (mage learning warrior skills or vice versa) the fee is higher.
+	 * @param playerClass the player class Id.
+	 * @param learningClass the skill learning player class Id.
+	 * @return the amount of SP required to acquire this skill, by calculating the cost for the alternative skill learn system.
+	 */
+	public int getCalculatedLevelUpSp(ClassId playerClass, ClassId learningClass)
+	{
+		if ((playerClass == null) || (learningClass == null))
+		{
+			return _levelUpSp;
+		}
+		
+		int levelUpSp = _levelUpSp;
+		// If the alternative skill learn system is enabled and the player is learning a skill from a different class apply a fee.
+		if (Config.ALT_GAME_SKILL_LEARN && (playerClass != learningClass))
+		{
+			// If the player is learning a skill from other class type (mage learning warrior skills or vice versa) the fee is higher.
+			if (playerClass.isMage() != learningClass.isMage())
+			{
+				levelUpSp *= 3;
+			}
+			else
+			{
+				levelUpSp *= 2;
+			}
+		}
+		return levelUpSp;
 	}
 }

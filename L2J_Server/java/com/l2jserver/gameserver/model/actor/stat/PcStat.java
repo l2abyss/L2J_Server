@@ -103,11 +103,33 @@ public class PcStat extends PlayableStat
 	@Override
 	public boolean addExpAndSp(long addToExp, int addToSp)
 	{
-		float ratioTakenByPlayer = 0;
-		// Allowed to gain exp/sp?
+		return addExpAndSp(addToExp, addToSp, false);
+	}
+	
+	public boolean addExpAndSp(long addToExp, int addToSp, boolean useBonuses)
+	{
 		L2PcInstance activeChar = getActiveChar();
+		
+		// Allowed to gain exp/sp?
 		if (!activeChar.getAccessLevel().canGainExp())
 			return false;
+		
+		long baseExp = addToExp;
+		int baseSp = addToSp;
+		
+		double bonusExp = 1.;
+		double bonusSp = 1.;
+		
+		if (useBonuses)
+		{
+			bonusExp = getExpBonusMultiplier();
+			bonusSp = getSpBonusMultiplier();
+		}
+		
+		addToExp *= bonusExp;
+		addToSp  *= bonusSp;
+		
+		float ratioTakenByPlayer = 0;
 		
 		// if this player has a pet that takes from the owner's Exp, give the pet Exp now
 		
@@ -120,8 +142,10 @@ public class PcStat extends PlayableStat
 			// allow possible customizations that would have the pet earning more than 100% of the owner's exp/sp
 			if (ratioTakenByPlayer > 1)
 				ratioTakenByPlayer = 1;
+			
 			if (!pet.isDead())
 				pet.addExpAndSp((long) (addToExp * (1 - ratioTakenByPlayer)), (int) (addToSp * (1 - ratioTakenByPlayer)));
+		
 			// now adjust the max ratio to avoid the owner earning negative exp/sp
 			addToExp = (long) (addToExp * ratioTakenByPlayer);
 			addToSp = (int) (addToSp * ratioTakenByPlayer);
@@ -130,60 +154,36 @@ public class PcStat extends PlayableStat
 		if (!super.addExpAndSp(addToExp, addToSp))
 			return false;
 		
-		// Send a Server->Client System Message to the L2PcInstance
+		SystemMessage sm = null;
 		if (addToExp == 0 && addToSp != 0)
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_SP);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_SP);
 			sm.addNumber(addToSp);
-			activeChar.sendPacket(sm);
 		}
 		else if (addToSp == 0 && addToExp != 0)
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
 			sm.addNumber((int) addToExp);
-			activeChar.sendPacket(sm);
 		}
 		else
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
-			sm.addNumber((int) addToExp);
-			sm.addNumber(addToSp);
-			activeChar.sendPacket(sm);
-		}
-		return true;
-	}
-	
-	public boolean addExpAndSp(long addToExp, int addToSp, boolean useBonuses)
-	{
-		if (useBonuses)
-		{
-			if (Config.ENABLE_VITALITY)
+			if ((addToExp - baseExp) > 0)
 			{
-				switch (_vitalityLevel)
-				{
-					case 1:
-						addToExp *= Config.RATE_VITALITY_LEVEL_1;
-						addToSp *= Config.RATE_VITALITY_LEVEL_1;
-						break;
-					case 2:
-						addToExp *= Config.RATE_VITALITY_LEVEL_2;
-						addToSp *= Config.RATE_VITALITY_LEVEL_2;
-						break;
-					case 3:
-						addToExp *= Config.RATE_VITALITY_LEVEL_3;
-						addToSp *= Config.RATE_VITALITY_LEVEL_3;
-						break;
-					case 4:
-						addToExp *= Config.RATE_VITALITY_LEVEL_4;
-						addToSp *= Config.RATE_VITALITY_LEVEL_4;
-						break;
-				}
+				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4);
+				sm.addNumber((int) addToExp);
+				sm.addNumber((int) (addToExp - baseExp));
+				sm.addNumber(addToSp);
+				sm.addNumber((addToSp - baseSp));
 			}
-			// Apply recommendation bonus
-			addToExp *= RecoBonus.getRecoMultiplier(getActiveChar());
-			addToSp  *= RecoBonus.getRecoMultiplier(getActiveChar());
+			else
+			{
+				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
+				sm.addNumber((int) addToExp);
+				sm.addNumber(addToSp);
+			}
 		}
-		return addExpAndSp(addToExp, addToSp);
+		activeChar.sendPacket(sm);
+		return true;
 	}
 	
 	@Override
@@ -231,8 +231,8 @@ public class PcStat extends PlayableStat
 			}
 			
 			getActiveChar().setCurrentCp(getMaxCp());
-			getActiveChar().broadcastPacket(new SocialAction(getActiveChar(), SocialAction.LEVEL_UP));
-			getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_INCREASED_YOUR_LEVEL));
+			getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
+			getActiveChar().sendPacket(SystemMessageId.YOU_INCREASED_YOUR_LEVEL);
 			
 			L2ClassMasterInstance.showQuestionMark(getActiveChar());
 		}
@@ -419,7 +419,7 @@ public class PcStat extends PlayableStat
 		L2PcInstance player = getActiveChar();
 		if (player.isMounted())
 		{
-			int baseRunSpd = NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).baseRunSpd;
+			int baseRunSpd = NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseRunSpd();
 			val = (int) Math.round(calcStat(Stats.RUN_SPEED, baseRunSpd, null, null));
 		}
 		else
@@ -474,7 +474,7 @@ public class PcStat extends PlayableStat
 			return 1;
 		
 		if (getActiveChar().isMounted())
-			return getRunSpeed() * 1f / NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).baseRunSpd;
+			return getRunSpeed() * 1f / NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseRunSpd();
 		
 		return super.getMovementSpeedMultiplier();
 	}
@@ -506,13 +506,13 @@ public class PcStat extends PlayableStat
 		if (!quiet && level != _vitalityLevel)
 		{
 			if (level < _vitalityLevel)
-				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_HAS_DECREASED));
+				getActiveChar().sendPacket(SystemMessageId.VITALITY_HAS_DECREASED);
 			else
-				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_HAS_INCREASED));
+				getActiveChar().sendPacket(SystemMessageId.VITALITY_HAS_INCREASED);
 			if (level == 0)
-				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_IS_EXHAUSTED));
+				getActiveChar().sendPacket(SystemMessageId.VITALITY_IS_EXHAUSTED);
 			else if (level == 4)
-				getActiveChar().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.VITALITY_IS_AT_MAXIMUM));
+				getActiveChar().sendPacket(SystemMessageId.VITALITY_IS_AT_MAXIMUM);
 		}
 		
 		_vitalityLevel = level;
@@ -590,11 +590,128 @@ public class PcStat extends PlayableStat
 		updateVitalityLevel(quiet);
 	}
 	
+	
+	public double getVitalityMultiplier()
+	{
+		double vitality = 1.0;
+		
+		if (Config.ENABLE_VITALITY)
+		{
+			switch (getVitalityLevel())
+			{
+				case 1:
+					vitality = Config.RATE_VITALITY_LEVEL_1;
+					break;
+				case 2:
+					vitality = Config.RATE_VITALITY_LEVEL_2;
+					break;
+				case 3:
+					vitality = Config.RATE_VITALITY_LEVEL_3;
+					break;
+				case 4:
+					vitality = Config.RATE_VITALITY_LEVEL_4;
+					break;
+			}
+		}
+		
+		return vitality;
+	}
+	
 	/**
 	 * @return the _vitalityLevel
 	 */
 	public byte getVitalityLevel()
 	{
 		return _vitalityLevel;
+	}
+	
+	public double getExpBonusMultiplier()
+	{
+		double bonus = 1.0;
+		double vitality = 1.0;
+		double nevits = 1.0;
+		double hunting = 1.0;
+		double bonusExp = 1.0;
+		
+		// Bonus from Vitality System
+		vitality = getVitalityMultiplier();
+		
+		// Bonus from Nevit's Blessing
+		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
+		
+		// Bonus from Nevit's Hunting
+		// TODO: Nevit's hutning bonus
+		
+		// Bonus exp from skills
+		bonusExp = calcStat(Stats.BONUS_EXP, 1.0, null, null);
+		
+		if (vitality > 1.0)
+			bonus += (vitality - 1);
+		if (nevits > 1.0)
+			bonus += (nevits - 1);
+		if (hunting > 1.0)
+			bonus += (hunting - 1);
+		if (bonusExp > 1.0)
+			bonus += (bonusExp -1);
+		
+		// Check for abnormal bonuses
+		bonus = Math.max(bonus, 1);
+		bonus = Math.min(bonus, Config.MAX_BONUS_EXP);
+		
+		if (getActiveChar().isDebug())
+		{
+			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
+			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
+			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
+			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusExp);
+			getActiveChar().sendDebugMessage("Total Exp Multiplier: " + bonus);
+		}
+		
+		return bonus;
+	}
+	
+	public double getSpBonusMultiplier()
+	{
+		double bonus = 1.0;
+		double vitality = 1.0;
+		double nevits = 1.0;
+		double hunting = 1.0;
+		double bonusSp = 1.0;
+		
+		// Bonus from Vitality System
+		vitality = getVitalityMultiplier();
+		
+		// Bonus from Nevit's Blessing
+		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
+		
+		// Bonus from Nevit's Hunting
+		// TODO: Nevit's hutning bonus
+		
+		// Bonus sp from skills
+		bonusSp = calcStat(Stats.BONUS_SP, 1.0, null, null);
+		
+		if (vitality > 1.0)
+			bonus += (vitality - 1);
+		if (nevits > 1.0)
+			bonus += (nevits - 1);
+		if (hunting > 1.0)
+			bonus += (hunting - 1);
+		if (bonusSp > 1.0)
+			bonus += (bonusSp -1);
+		
+		// Check for abnormal bonuses
+		bonus = Math.max(bonus, 1);
+		bonus = Math.min(bonus, Config.MAX_BONUS_SP);
+		
+		if (getActiveChar().isDebug())
+		{
+			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
+			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
+			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
+			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusSp);
+			getActiveChar().sendDebugMessage("Total Sp Multiplier: " + bonus);
+		}
+		
+		return bonus;
 	}
 }

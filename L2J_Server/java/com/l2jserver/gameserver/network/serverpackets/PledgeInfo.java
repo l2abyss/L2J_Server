@@ -49,9 +49,6 @@ public class PledgeInfo extends L2GameServerPacket
 		writeS(_clan.getAllyName());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

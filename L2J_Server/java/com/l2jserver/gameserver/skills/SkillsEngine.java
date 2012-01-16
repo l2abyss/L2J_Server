@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.skills;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.List;
@@ -25,7 +25,7 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Item;
 import com.l2jserver.util.file.filter.XMLFilter;
 
 /**

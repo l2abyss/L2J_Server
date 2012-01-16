@@ -22,12 +22,12 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.RecipeController;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.templates.item.L2EtcItemType;
-import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2WarehouseItem;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2WarehouseItem;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
 
 /**
  * 0x42 WarehouseWithdrawalList  dh (h dddhh dhhh d)
@@ -239,6 +239,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			order = sortOrder;
 		}
 		
+		@Override
 		public int compare(L2WarehouseItem o1, L2WarehouseItem o2)
 		{
 			if (o1.getType2() == L2Item.TYPE2_MONEY && o2.getType2() != L2Item.TYPE2_MONEY)
@@ -266,6 +267,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			rc = RecipeController.getInstance();
 		}
 		
+		@Override
 		public int compare(L2WarehouseItem o1, L2WarehouseItem o2)
 		{
 			if (o1.getType2() == L2Item.TYPE2_MONEY && o2.getType2() != L2Item.TYPE2_MONEY)
@@ -313,6 +315,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			order = sortOrder;
 		}
 		
+		@Override
 		public int compare(L2WarehouseItem o1, L2WarehouseItem o2)
 		{
 			if (o1.getType2() == L2Item.TYPE2_MONEY && o2.getType2() != L2Item.TYPE2_MONEY)
@@ -337,6 +340,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			order = sortOrder;
 		}
 		
+		@Override
 		public int compare(L2WarehouseItem o1, L2WarehouseItem o2)
 		{
 			if (o1.getType2() == L2Item.TYPE2_MONEY && o2.getType2() != L2Item.TYPE2_MONEY)
@@ -362,6 +366,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			order = sortOrder;
 		}
 		
+		@Override
 		public int compare(L2WarehouseItem o1, L2WarehouseItem o2)
 		{
 			if (o1.getType2() == L2Item.TYPE2_MONEY && o2.getType2() != L2Item.TYPE2_MONEY)
@@ -726,9 +731,6 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

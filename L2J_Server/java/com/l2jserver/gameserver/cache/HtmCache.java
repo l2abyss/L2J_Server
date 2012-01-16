@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.cache;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -94,6 +94,7 @@ public class HtmCache
 	
 	private static class HtmFilter implements FileFilter
 	{
+		@Override
 		public boolean accept(File file)
 		{
 			if (!file.isDirectory())

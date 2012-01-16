@@ -25,13 +25,14 @@ import javolution.util.FastSet;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -39,150 +40,6 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class TradeList
 {
-	public static class TradeItem
-	{
-		private int _objectId;
-		private final L2Item _item;
-		private int _location;
-		private int _enchant;
-		private int _type1;
-		private int _type2;
-		private long _count;
-		private long _storeCount;
-		private long _price;
-		private final byte _elemAtkType;
-		private final int _elemAtkPower;
-		private int[] _elemDefAttr = { 0, 0, 0, 0, 0, 0 };
-		
-		public TradeItem(L2ItemInstance item, long count, long price)
-		{
-			_objectId = item.getObjectId();
-			_item = item.getItem();
-			_location = item.getLocationSlot();
-			_enchant = item.getEnchantLevel();
-			_type1 = item.getCustomType1();
-			_type2 = item.getCustomType2();
-			_count = count;
-			_price = price;
-			_elemAtkType = item.getAttackElementType();
-			_elemAtkPower = item.getAttackElementPower();
-			for (byte i = 0; i < 6; i++)
-				_elemDefAttr[i] = item.getElementDefAttr(i);
-		}
-		
-		public TradeItem(L2Item item, long count, long price)
-		{
-			_objectId = 0;
-			_item = item;
-			_location = 0;
-			_enchant = 0;
-			_type1 = 0;
-			_type2 = 0;
-			_count = count;
-			_storeCount = count;
-			_price = price;
-			_elemAtkType = Elementals.NONE;
-			_elemAtkPower = 0;
-		}
-		
-		public TradeItem(TradeItem item, long count, long price)
-		{
-			_objectId = item.getObjectId();
-			_item = item.getItem();
-			_location = item.getLocationSlot();
-			_enchant = item.getEnchant();
-			_type1 = item.getCustomType1();
-			_type2 = item.getCustomType2();
-			_count = count;
-			_storeCount = count;
-			_price = price;
-			_elemAtkType = item.getAttackElementType();
-			_elemAtkPower = item.getAttackElementPower();
-			for (byte i = 0; i < 6; i++)
-				_elemDefAttr[i] = item.getElementDefAttr(i);
-		}
-		
-		public void setObjectId(int objectId)
-		{
-			_objectId = objectId;
-		}
-		
-		public int getObjectId()
-		{
-			return _objectId;
-		}
-		
-		public L2Item getItem()
-		{
-			return _item;
-		}
-		
-		public int getLocationSlot()
-		{
-			return _location;
-		}
-		
-		public void setEnchant(int enchant)
-		{
-			_enchant = enchant;
-		}
-		
-		public int getEnchant()
-		{
-			return _enchant;
-		}
-		
-		public int getCustomType1()
-		{
-			return _type1;
-		}
-		
-		public int getCustomType2()
-		{
-			return _type2;
-		}
-		
-		public void setCount(long count)
-		{
-			_count = count;
-		}
-		
-		public long getCount()
-		{
-			return _count;
-		}
-		
-		public long getStoreCount()
-		{
-			return _storeCount;
-		}
-		
-		public void setPrice(long price)
-		{
-			_price = price;
-		}
-		
-		public long getPrice()
-		{
-			return _price;
-		}
-		
-		public byte getAttackElementType()
-		{
-			return _elemAtkType;
-		}
-		
-		public int getAttackElementPower()
-		{
-			return _elemAtkPower;
-		}
-		
-		public int getElementDefAttr(byte i)
-		{
-			return _elemDefAttr[i];
-		}
-	}
-	
 	private static final Logger _log = Logger.getLogger(TradeList.class.getName());
 	
 	private final L2PcInstance _owner;
@@ -258,16 +115,16 @@ public class TradeList
 	 * @param inventory 
 	 * @return L2ItemInstance : items in inventory
 	 */
-	public TradeList.TradeItem[] getAvailableItems(PcInventory inventory)
+	public TradeItem[] getAvailableItems(PcInventory inventory)
 	{
-		FastList<TradeList.TradeItem> list = FastList.newInstance();
-		for (TradeList.TradeItem item : _items)
+		FastList<TradeItem> list = FastList.newInstance();
+		for (TradeItem item : _items)
 		{
 			item = new TradeItem(item, item.getCount(), item.getPrice());
 			inventory.adjustAvailableItem(item);
 			list.add(item);
 		}
-		TradeList.TradeItem[] result = list.toArray(new TradeList.TradeItem[list.size()]);
+		TradeItem[] result = list.toArray(new TradeItem[list.size()]);
 		FastList.recycle(list);
 		return result;
 	}
@@ -699,13 +556,13 @@ public class TradeList
 		// check weight and slots
 		if ((!getOwner().getInventory().validateWeight(partnerList.calcItemsWeight())) || !(partnerList.getOwner().getInventory().validateWeight(calcItemsWeight())))
 		{
-			partnerList.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
-			getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+			partnerList.getOwner().sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
+			getOwner().sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
 		}
 		else if ((!getOwner().getInventory().validateCapacity(partnerList.countItemsSlots(getOwner()))) || (!partnerList.getOwner().getInventory().validateCapacity(countItemsSlots(partnerList.getOwner()))))
 		{
-			partnerList.getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
-			getOwner().sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
+			partnerList.getOwner().sendPacket(SystemMessageId.SLOTS_FULL);
+			getOwner().sendPacket(SystemMessageId.SLOTS_FULL);
 		}
 		else
 		{
@@ -840,19 +697,19 @@ public class TradeList
 		
 		if (totalPrice > playerInventory.getAdena())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			player.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 			return 1;
 		}
 		
 		if (!playerInventory.validateWeight(weight))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.WEIGHT_LIMIT_EXCEEDED));
+			player.sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
 			return 1;
 		}
 		
 		if (!playerInventory.validateCapacity(slots))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SLOTS_FULL));
+			player.sendPacket(SystemMessageId.SLOTS_FULL);
 			return 1;
 		}
 		
@@ -863,7 +720,7 @@ public class TradeList
 		final L2ItemInstance adenaItem = playerInventory.getAdenaInstance();
 		if (!playerInventory.reduceAdena("PrivateStore", totalPrice, player, _owner))
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+			player.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 			return 1;
 		}
 		playerIU.addItem(adenaItem);

@@ -25,10 +25,10 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2PetData.L2PetSkillLearn;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.SkillHolder;
@@ -191,7 +191,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 		
 		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.PET_USES_S1);
 		msg.addSkillName(skill);
-		getOwner().sendPacket(msg);
+		sendPacket(msg);
 		
 		// calling useMagic changes the follow status, if the babypet actually casts
 		// (as opposed to failing due some factors, such as too low MP, etc).
@@ -215,6 +215,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 			_baby = baby;
 		}
 		
+		@Override
 		public void run()
 		{
 			L2PcInstance owner = _baby.getOwner();

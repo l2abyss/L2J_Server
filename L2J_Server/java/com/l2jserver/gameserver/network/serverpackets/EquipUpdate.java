@@ -17,8 +17,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 
 /**
@@ -130,9 +130,6 @@ public final class EquipUpdate extends L2GameServerPacket
 		writeD(bodypart);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

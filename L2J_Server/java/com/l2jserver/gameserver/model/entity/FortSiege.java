@@ -62,6 +62,7 @@ public class FortSiege implements Siegable
 	
 	public class ScheduleEndSiegeTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			if (!getIsInProgress())
@@ -90,6 +91,7 @@ public class FortSiege implements Siegable
 			_time = time;
 		}
 		
+		@Override
 		public void run()
 		{
 			if (getIsInProgress())
@@ -168,6 +170,7 @@ public class FortSiege implements Siegable
 	
 	public class ScheduleSuspiciousMerchantSpawn implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			if (getIsInProgress())
@@ -186,6 +189,7 @@ public class FortSiege implements Siegable
 	
 	public class ScheduleSiegeRestore implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			if (!getIsInProgress())
@@ -226,6 +230,7 @@ public class FortSiege implements Siegable
 	/**
 	 * When siege ends<BR><BR>
 	 */
+	@Override
 	public void endSiege()
 	{
 		if (getIsInProgress())
@@ -277,6 +282,7 @@ public class FortSiege implements Siegable
 	/**
 	 * When siege starts<BR><BR>
 	 */
+	@Override
 	public void startSiege()
 	{
 		if (!getIsInProgress())
@@ -437,6 +443,7 @@ public class FortSiege implements Siegable
 	 * @param clan The L2Clan of the player
 	 * @return true if clan is attacker
 	 */
+	@Override
 	public boolean checkIsAttacker(L2Clan clan)
 	{
 		return (getAttackerClan(clan) != null);
@@ -446,6 +453,7 @@ public class FortSiege implements Siegable
 	 * @param clan The L2Clan of the player
 	 * @return true if clan is defender
 	 */
+	@Override
 	public boolean checkIsDefender(L2Clan clan)
 	{
 		if (clan != null && getFort().getOwnerClan() == clan)
@@ -506,6 +514,7 @@ public class FortSiege implements Siegable
 	/**
 	 * @return list of L2PcInstance registered as attacker in the zone.
 	 */
+	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
 		List<L2PcInstance> players = new FastList<L2PcInstance>();
@@ -854,17 +863,17 @@ public class FortSiege implements Siegable
 		else if ((player.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) != L2Clan.CP_CS_MANAGE_SIEGE)
 		{
 			b = false;
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT));
+			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 		}
 		else if (player.getClan() == getFort().getOwnerClan())
 		{
 			b = false;
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING));
+			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING);
 		}
 		else if (getFort().getOwnerClan() != null && player.getClan().getHasCastle() > 0 && player.getClan().getHasCastle() == getFort().getCastleId())
 		{
 			b = false;
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_REGISTER_TO_SIEGE_DUE_TO_CONTRACT));
+			player.sendPacket(SystemMessageId.CANT_REGISTER_TO_SIEGE_DUE_TO_CONTRACT);
 		}
 		else if (getFort().getTimeTillRebelArmy() > 0 && getFort().getTimeTillRebelArmy() <= 7200)
 		{
@@ -883,13 +892,13 @@ public class FortSiege implements Siegable
 				if (fort.getSiege().getAttackerClan(player.getClanId()) != null)
 				{
 					b = false;
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
+					player.sendPacket(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE);
 					break;
 				}
 				if (fort.getOwnerClan() == player.getClan() && (fort.getSiege().getIsInProgress() || fort.getSiege()._siegeStartTask != null))
 				{
 					b = false;
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
+					player.sendPacket(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE);
 					break;
 				}
 			}
@@ -1116,6 +1125,7 @@ public class FortSiege implements Siegable
 		getSiegeGuardManager().spawnSiegeGuard();
 	}
 	
+	@Override
 	public final L2SiegeClan getAttackerClan(L2Clan clan)
 	{
 		if (clan == null)
@@ -1124,6 +1134,7 @@ public class FortSiege implements Siegable
 		return getAttackerClan(clan.getClanId());
 	}
 	
+	@Override
 	public final L2SiegeClan getAttackerClan(int clanId)
 	{
 		for (L2SiegeClan sc : getAttackerClans())
@@ -1133,6 +1144,7 @@ public class FortSiege implements Siegable
 		return null;
 	}
 	
+	@Override
 	public final List<L2SiegeClan> getAttackerClans()
 	{
 		return _attackerClans;
@@ -1148,11 +1160,13 @@ public class FortSiege implements Siegable
 		return _isInProgress;
 	}
 	
+	@Override
 	public final Calendar getSiegeDate()
 	{
 		return getFort().getSiegeDate();
 	}
 	
+	@Override
 	public List<L2Npc> getFlag(L2Clan clan)
 	{
 		if (clan != null)
@@ -1204,27 +1218,18 @@ public class FortSiege implements Siegable
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#giveFame()
-	 */
 	@Override
 	public boolean giveFame()
 	{
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameFrequency()
-	 */
 	@Override
 	public int getFameFrequency()
 	{
 		return Config.FORTRESS_ZONE_FAME_TASK_FREQUENCY;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameAmount()
-	 */
 	@Override
 	public int getFameAmount()
 	{

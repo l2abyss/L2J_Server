@@ -18,16 +18,13 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * An arena
- *
- * @author  durgus
+ * A PVP Zone
+ * @author durgus
  */
 public class L2ArenaZone extends L2ZoneType
 {
-	
 	public L2ArenaZone(int id)
 	{
 		super(id);
@@ -36,27 +33,29 @@ public class L2ArenaZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_PVP, true);
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
-		
 		if (character instanceof L2PcInstance)
 		{
 			if (!character.isInsideZone(L2Character.ZONE_PVP))
-				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+			{
+				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
+			}
 		}
+		
+		character.setInsideZone(L2Character.ZONE_PVP, true);
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_PVP, false);
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
-		
 		if (character instanceof L2PcInstance)
 		{
 			if (!character.isInsideZone(L2Character.ZONE_PVP))
-				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+			{
+				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
+			}
 		}
+		
+		character.setInsideZone(L2Character.ZONE_PVP, false);
 	}
 	
 	@Override

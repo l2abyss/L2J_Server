@@ -20,9 +20,9 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 /**
  * This class ...
@@ -78,7 +78,7 @@ public class SellList extends L2GameServerPacket
 	{
 		writeC(0x06);
 		writeQ(_money);
-		writeD(_lease == null ? 0x00 : 1000000 + _lease.getTemplate().npcId);
+		writeD(_lease == null ? 0x00 : 1000000 + _lease.getTemplate().getNpcId());
 		writeH(_selllist.size());
 		
 		for (L2ItemInstance item : _selllist)
@@ -107,9 +107,6 @@ public class SellList extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -34,13 +34,13 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.CombatFlag;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -341,7 +341,7 @@ public class FortSiegeManager
 		FastList<CombatFlag> fcf = _flagList.get(fort.getFortId());
 		for (CombatFlag cf : fcf)
 		{
-			if (cf.itemInstance == item)
+			if (cf.getCombatFlagInstance() == item)
 			{
 				cf.activate(player, item);
 			}
@@ -391,7 +391,7 @@ public class FortSiegeManager
 		
 		for (CombatFlag cf : fcf)
 		{
-			if (cf.playerId == player.getObjectId())
+			if (cf.getPlayerObjectId() == player.getObjectId())
 			{
 				cf.dropIt();
 				if (fort.getSiege().getIsInProgress())

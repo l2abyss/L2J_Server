@@ -47,6 +47,7 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	 * 
 	 * @see org.mmocore.network.IMMOExecutor#execute(org.mmocore.network.ReceivablePacket)
 	 */
+	@Override
 	public void execute(ReceivablePacket<L2LoginClient> packet)
 	{
 		_generalPacketsThreadPool.execute(packet);
@@ -56,6 +57,7 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	 * 
 	 * @see org.mmocore.network.IClientFactory#create(org.mmocore.network.MMOConnection)
 	 */
+	@Override
 	public L2LoginClient create(MMOConnection<L2LoginClient> con)
 	{
 		L2LoginClient client = new L2LoginClient(con);
@@ -67,6 +69,7 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	 * 
 	 * @see org.mmocore.network.IAcceptFilter#accept(java.nio.channels.SocketChannel)
 	 */
+	@Override
 	public boolean accept(SocketChannel sc)
 	{
 		return _ipv4filter.accept(sc) && !LoginController.getInstance().isBannedAddress(sc.socket().getInetAddress());

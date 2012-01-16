@@ -35,14 +35,16 @@ import org.xml.sax.SAXException;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2RecipeInstance;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.L2RecipeStatInstance;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.TempItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -56,8 +58,6 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
-import com.l2jserver.gameserver.templates.StatsSet;
-import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -65,8 +65,8 @@ public class RecipeController
 {
 	protected static final Logger _log = Logger.getLogger(RecipeController.class.getName());
 	
-	private Map<Integer, L2RecipeList> _lists;
-	private static final Map<Integer, RecipeItemMaker> _activeMakers = new FastMap<Integer, RecipeItemMaker>();
+	private static final Map<Integer, L2RecipeList> _lists = new FastMap<Integer, L2RecipeList>();
+	private static final Map<Integer, RecipeItemMaker> _activeMakers = new FastMap<Integer, RecipeItemMaker>().shared();
 	private static final String RECIPES_FILE = "recipes.xml";
 	
 	public static RecipeController getInstance()
@@ -76,8 +76,6 @@ public class RecipeController
 	
 	private RecipeController()
 	{
-		_lists = new FastMap<Integer, L2RecipeList>();
-		
 		try
 		{
 			loadFromXML();
@@ -138,12 +136,12 @@ public class RecipeController
 			return;
 		}
 		
-		player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_ALTER_RECIPEBOOK_WHILE_CRAFTING));
+		player.sendPacket(SystemMessageId.CANT_ALTER_RECIPEBOOK_WHILE_CRAFTING);
 	}
 	
 	public synchronized void requestMakeItemAbort(L2PcInstance player)
 	{
-		_activeMakers.remove(player.getObjectId()); // TODO:  anything else here?
+		_activeMakers.remove(player.getObjectId()); // TODO: anything else here?
 	}
 	
 	public synchronized void requestManufactureItem(L2PcInstance manufacturer, int recipeListId, L2PcInstance player)
@@ -191,7 +189,7 @@ public class RecipeController
 	{
 		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT));
+			player.sendPacket(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT);
 			return;
 		}
 		
@@ -478,7 +476,7 @@ public class RecipeController
 						_price = temp.getCost();
 						if (_target.getAdena() < _price) // check price
 						{
-							_target.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+							_target.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 							abort();
 							return;
 						}
@@ -520,6 +518,7 @@ public class RecipeController
 			_isValid = true;
 		}
 		
+		@Override
 		public void run()
 		{
 			if (!Config.IS_CRAFTING_ENABLED)
@@ -622,7 +621,7 @@ public class RecipeController
 				
 				if (adenatransfer == null)
 				{
-					_target.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA));
+					_target.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 					abort();
 					return;
 				}
@@ -655,7 +654,7 @@ public class RecipeController
 				}
 				else
 				{
-					_target.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ITEM_MIXING_FAILED));
+					_target.sendPacket(SystemMessageId.ITEM_MIXING_FAILED);
 				}
 				updateMakeInfo(false);
 			}
@@ -779,9 +778,8 @@ public class RecipeController
 							ThreadPoolManager.getInstance().scheduleGeneral(this, 100 + _delay);
 						}
 						else
-						// no rest - report no hp
 						{
-							_target.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_HP));
+							_target.sendPacket(SystemMessageId.NOT_ENOUGH_HP);
 							abort();
 						}
 						ret = false;
@@ -802,9 +800,8 @@ public class RecipeController
 							ThreadPoolManager.getInstance().scheduleGeneral(this, 100 + _delay);
 						}
 						else
-						// no rest - report no mana
 						{
-							_target.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_MP));
+							_target.sendPacket(SystemMessageId.NOT_ENOUGH_MP);
 							abort();
 						}
 						ret = false;
@@ -995,7 +992,7 @@ public class RecipeController
 				}
 				
 				// Added multiplication of Creation speed with XP/SP gain
-				// slower crafting -> more XP,  faster crafting -> less XP
+				// slower crafting -> more XP, faster crafting -> less XP
 				// you can use ALT_GAME_CREATION_XP_RATE/SP to
 				// modify XP/SP gained (default = 1)
 				

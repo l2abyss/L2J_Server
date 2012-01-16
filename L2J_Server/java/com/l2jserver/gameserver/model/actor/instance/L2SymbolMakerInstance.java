@@ -32,9 +32,6 @@ public class L2SymbolMakerInstance extends L2Npc
 		return "data/html/symbolmaker/SymbolMaker.htm";
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.L2Object#isAttackable()
-	 */
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{

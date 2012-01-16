@@ -26,7 +26,7 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
@@ -126,6 +126,7 @@ public class Lottery
 			// Do nothing
 		}
 		
+		@Override
 		public void run()
 		{
 			Connection con = null;
@@ -243,6 +244,7 @@ public class Lottery
 			// Do nothing
 		}
 		
+		@Override
 		public void run()
 		{
 			if (Config.DEBUG)
@@ -260,6 +262,7 @@ public class Lottery
 			// Do nothing
 		}
 		
+		@Override
 		public void run()
 		{
 			if (Config.DEBUG)

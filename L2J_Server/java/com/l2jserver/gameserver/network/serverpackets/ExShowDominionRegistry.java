@@ -83,9 +83,19 @@ public class ExShowDominionRegistry extends L2GameServerPacket
 		else
 		{
 			L2Clan clan = TerritoryWarManager.getInstance().getTerritory(_castleId).getOwnerClan();
-			writeS(clan.getName()); // Owners Clan
-			writeS(clan.getLeaderName()); // Owner Clan Leader
-			writeS(clan.getAllyName()); // Owner Alliance
+			if (clan == null)
+			{
+				// something is wrong
+				writeS("No Owner"); // Owners Clan
+				writeS("No Owner"); // Owner Clan Leader
+				writeS("No Ally"); // Owner Alliance
+			}
+			else
+			{
+				writeS(clan.getName()); // Owners Clan
+				writeS(clan.getLeaderName()); // Owner Clan Leader
+				writeS(clan.getAllyName()); // Owner Alliance
+			}
 		}
 		writeD(_clanReq); // Clan Request
 		writeD(_mercReq); // Merc Request

@@ -56,13 +56,9 @@ public class AskJoinAlly extends L2GameServerPacket
 		writeS(_requestorName);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__A8_ASKJOINALLY_0XA8;
 	}
-	
 }

@@ -54,7 +54,7 @@ public final class RequestPetitionCancel extends L2GameClientPacket
 			if (activeChar.isGM())
 				PetitionManager.getInstance().endActivePetition(activeChar);
 			else
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PETITION_UNDER_PROCESS));
+				activeChar.sendPacket(SystemMessageId.PETITION_UNDER_PROCESS);
 		}
 		else
 		{
@@ -75,12 +75,12 @@ public final class RequestPetitionCancel extends L2GameClientPacket
 				}
 				else
 				{
-					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_CANCEL_PETITION_TRY_LATER));
+					activeChar.sendPacket(SystemMessageId.FAILED_CANCEL_PETITION_TRY_LATER);
 				}
 			}
 			else
 			{
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.PETITION_NOT_SUBMITTED));
+				activeChar.sendPacket(SystemMessageId.PETITION_NOT_SUBMITTED);
 			}
 		}
 	}

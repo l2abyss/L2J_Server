@@ -18,14 +18,14 @@ import java.util.Map;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.gameserver.model.L2Skill.SkillTargetType;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 /**
  * @author UnAfraid
  */
 public class TargetHandler
 {
-	private final Map<Enum<SkillTargetType>, ISkillTargetTypeHandler> _datatable;
+	private final Map<Enum<L2TargetType>, ITargetTypeHandler> _datatable;
 	
 	public static TargetHandler getInstance()
 	{
@@ -34,17 +34,17 @@ public class TargetHandler
 	
 	private TargetHandler()
 	{
-		_datatable = new FastMap<Enum<SkillTargetType>, ISkillTargetTypeHandler>();
+		_datatable = new FastMap<Enum<L2TargetType>, ITargetTypeHandler>();
 	}
 	
-	public void registerSkillTargetType(ISkillTargetTypeHandler handler)
+	public void registerHandler(ITargetTypeHandler handler)
 	{
 		_datatable.put(handler.getTargetType(), handler);
 	}
 	
-	public ISkillTargetTypeHandler getSkillTarget(Enum<SkillTargetType> skillTargetType)
+	public ITargetTypeHandler getHandler(Enum<L2TargetType> targetType)
 	{
-		return _datatable.get(skillTargetType);
+		return _datatable.get(targetType);
 	}
 	
 	public int size()

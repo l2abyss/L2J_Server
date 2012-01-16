@@ -47,13 +47,9 @@ public final class DoorInfo extends L2GameServerPacket
 		writeD(_door.getDoorId());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__60_DOORINFO;
 	}
-	
 }

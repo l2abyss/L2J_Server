@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TByteObjectHashMap;
+import gnu.trove.map.hash.TByteObjectHashMap;
 
 import java.awt.Polygon;
 import java.awt.Shape;
@@ -38,11 +38,11 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.DimensionalRift;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -55,7 +55,7 @@ import com.l2jserver.util.Rnd;
 public class DimensionalRiftManager
 {
 	private static Logger _log = Logger.getLogger(DimensionalRiftManager.class.getName());
-	private TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>>(7);
+	private final TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>>(7);
 	private final int DIMENSIONAL_FRAGMENT_ITEM_ID = 7079;
 	
 	public static DimensionalRiftManager getInstance()
@@ -540,9 +540,9 @@ public class DimensionalRiftManager
 	public boolean isAllowedEnter(byte type)
 	{
 		int count = 0;
-		for (Object room : _rooms.get(type).getValues())
+		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
 		{
-			if (((DimensionalRiftRoom) room).ispartyInside())
+			if (room.ispartyInside())
 				count++;
 		}
 		return (count < (_rooms.get(type).size() - 1));
@@ -551,10 +551,10 @@ public class DimensionalRiftManager
 	public FastList<Byte> getFreeRooms(byte type)
 	{
 		FastList<Byte> list = new FastList<Byte>();
-		for (Object room : _rooms.get(type).getValues())
+		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
 		{
-			if (!((DimensionalRiftRoom) room).ispartyInside())
-				list.add(((DimensionalRiftRoom) room)._room);
+			if (!room.ispartyInside())
+				list.add(room._room);
 		}
 		return list;
 	}

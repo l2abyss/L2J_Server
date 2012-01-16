@@ -67,13 +67,10 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		_heading = cha.getHeading();
 		_mAtkSpd = cha.getMAtkSpd();
 		_pAtkSpd = cha.getPAtkSpd();
-		_runSpd = cha.getTemplate().baseRunSpd;
-		_walkSpd = cha.getTemplate().baseWalkSpd;
+		_runSpd = cha.getTemplate().getBaseRunSpd();
+		_walkSpd = cha.getTemplate().getBaseWalkSpd();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
@@ -85,7 +82,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	 */
 	public static class NpcInfo extends AbstractNpcInfo
 	{
-		private L2Npc _npc;
+		private final L2Npc _npc;
 		private int _clanCrest = 0;
 		private int _allyCrest = 0;
 		private int _allyId = 0;
@@ -96,20 +93,20 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		{
 			super(cha);
 			_npc = cha;
-			_idTemplate = cha.getTemplate().idTemplate; // On every subclass
+			_idTemplate = cha.getTemplate().getIdTemplate(); // On every subclass
 			_rhand = cha.getRightHandItem(); // On every subclass
 			_lhand = cha.getLeftHandItem(); // On every subclass
 			_enchantEffect = cha.getEnchantEffect();
 			_collisionHeight = cha.getCollisionHeight();// On every subclass
 			_collisionRadius = cha.getCollisionRadius();// On every subclass
 			_isAttackable = cha.isAutoAttackable(attacker);
-			if (cha.getTemplate().serverSideName)
+			if (cha.getTemplate().isServerSideName())
 				_name = cha.getName();// On every subclass
 			
 			if (Config.L2JMOD_CHAMPION_ENABLE && cha.isChampion())
 				_title = (Config.L2JMOD_CHAMP_TITLE); // On every subclass
-			else if (cha.getTemplate().serverSideTitle)
-				_title = cha.getTemplate().title; // On every subclass
+			else if (cha.getTemplate().isServerSideTitle())
+				_title = cha.getTemplate().getTitle(); // On every subclass
 			else
 				_title = cha.getTitle(); // On every subclass
 			
@@ -195,8 +192,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_npc.isFlying() ? 1 : 0); // C6
 			writeD(0x00);
 			writeD(_npc.getColorEffect());// CT1.5 Pet form and skills, Color effect
-			writeC(_npc.isHideName() ? 0x00 : 0x01);
-			writeC(_npc.isHideName() ? 0x00 : 0x01);
+			writeC(_npc.isShowName() ? 0x01 : 0x00);
+			writeC(_npc.isTargetable() ? 0x01 : 0x00);
 			writeD(_npc.getSpecialEffect());
 			writeD(_displayEffect);
 		}
@@ -204,20 +201,20 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	
 	public static class TrapInfo extends AbstractNpcInfo
 	{
-		private L2Trap _trap;
+		private final L2Trap _trap;
 		
 		public TrapInfo(L2Trap cha, L2Character attacker)
 		{
 			super(cha);
 			
 			_trap = cha;
-			_idTemplate = cha.getTemplate().idTemplate;
+			_idTemplate = cha.getTemplate().getIdTemplate();
 			_isAttackable = cha.isAutoAttackable(attacker);
 			_rhand = 0;
 			_lhand = 0;
-			_collisionHeight = _trap.getTemplate().fCollisionHeight;
-			_collisionRadius = _trap.getTemplate().fCollisionRadius;
-			if (cha.getTemplate().serverSideName)
+			_collisionHeight = _trap.getTemplate().getfCollisionHeight();
+			_collisionRadius = _trap.getTemplate().getfCollisionRadius();
+			if (cha.getTemplate().isServerSideName())
 				_name = cha.getName();
 			_title = cha.getOwner() != null ? cha.getOwner().getName() : "";
 			_runSpd = _trap.getRunSpeed();
@@ -293,7 +290,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	 */
 	public static class SummonInfo extends AbstractNpcInfo
 	{
-		private L2Summon _summon;
+		private final L2Summon _summon;
 		private int _form = 0;
 		private int _val = 0;
 		
@@ -305,7 +302,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			if (_summon.isShowSummonAnimation())
 				_val = 2; //override for spawn
 			
-			int npcId = cha.getTemplate().npcId;
+			int npcId = cha.getTemplate().getNpcId();
 			
 			if (npcId == 16041 || npcId == 16042)
 			{
@@ -331,12 +328,12 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_rhand = cha.getWeapon();
 			_lhand = 0;
 			_chest = cha.getArmor();
-			_enchantEffect = cha.getTemplate().enchantEffect;
+			_enchantEffect = cha.getTemplate().getEnchantEffect();
 			_name = cha.getName();
 			_title = cha.getOwner() != null ? ((!cha.getOwner().isOnline()) ? "" : cha.getOwner().getName()) : ""; // when owner online, summon will show in title owner name
-			_idTemplate = cha.getTemplate().idTemplate;
-			_collisionHeight = cha.getTemplate().fCollisionHeight;
-			_collisionRadius = cha.getTemplate().fCollisionRadius;
+			_idTemplate = cha.getTemplate().getIdTemplate();
+			_collisionHeight = cha.getTemplate().getfCollisionHeight();
+			_collisionRadius = cha.getTemplate().getfCollisionRadius();
 			_invisible = cha.getOwner() != null ? cha.getOwner().getAppearance().getInvisible() : false;
 		}
 		

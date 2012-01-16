@@ -20,9 +20,9 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -117,7 +117,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			}
 		}
 		
-		final IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+		final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 		if (handler != null)
 		{
 			useItem(pet, item, activeChar);
@@ -147,7 +147,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 		}
 		else
 		{
-			final IItemHandler handler = ItemHandler.getInstance().getItemHandler(item.getEtcItem());
+			final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 			if (handler != null)
 			{
 				handler.useItem(pet, item, false);

@@ -14,27 +14,82 @@
  */
 package com.l2jserver.gameserver.model;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.2.4.1 $ $Date: 2005/03/27 15:29:32 $
- */
-public final class TradeItem
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+
+public class TradeItem
 {
 	private int _objectId;
-	private int _itemId;
-	private long _price;
-	private long _storePrice;
+	private final L2Item _item;
+	private final int _location;
+	private int _enchant;
+	private final int _type1;
+	private final int _type2;
 	private long _count;
-	private int _enchantLevel;
-	
-	public TradeItem()
+	private long _storeCount;
+	private long _price;
+	private final byte _elemAtkType;
+	private final int _elemAtkPower;
+	private final int[] _elemDefAttr =
 	{
+		0, 0, 0, 0, 0, 0
+	};
+	
+	public TradeItem(L2ItemInstance item, long count, long price)
+	{
+		_objectId = item.getObjectId();
+		_item = item.getItem();
+		_location = item.getLocationSlot();
+		_enchant = item.getEnchantLevel();
+		_type1 = item.getCustomType1();
+		_type2 = item.getCustomType2();
+		_count = count;
+		_price = price;
+		_elemAtkType = item.getAttackElementType();
+		_elemAtkPower = item.getAttackElementPower();
+		for (byte i = 0; i < 6; i++)
+		{
+			_elemDefAttr[i] = item.getElementDefAttr(i);
+		}
 	}
 	
-	public void setObjectId(int id)
+	public TradeItem(L2Item item, long count, long price)
 	{
-		_objectId = id;
+		_objectId = 0;
+		_item = item;
+		_location = 0;
+		_enchant = 0;
+		_type1 = 0;
+		_type2 = 0;
+		_count = count;
+		_storeCount = count;
+		_price = price;
+		_elemAtkType = Elementals.NONE;
+		_elemAtkPower = 0;
+	}
+	
+	public TradeItem(TradeItem item, long count, long price)
+	{
+		_objectId = item.getObjectId();
+		_item = item.getItem();
+		_location = item.getLocationSlot();
+		_enchant = item.getEnchant();
+		_type1 = item.getCustomType1();
+		_type2 = item.getCustomType2();
+		_count = count;
+		_storeCount = count;
+		_price = price;
+		_elemAtkType = item.getAttackElementType();
+		_elemAtkPower = item.getAttackElementPower();
+		for (byte i = 0; i < 6; i++)
+		{
+			_elemDefAttr[i] = item.getElementDefAttr(i);
+		}
+	}
+	
+	public void setObjectId(int objectId)
+	{
+		_objectId = objectId;
 	}
 	
 	public int getObjectId()
@@ -42,34 +97,34 @@ public final class TradeItem
 		return _objectId;
 	}
 	
-	public void setItemId(int id)
+	public L2Item getItem()
 	{
-		_itemId = id;
+		return _item;
 	}
 	
-	public int getItemId()
+	public int getLocationSlot()
 	{
-		return _itemId;
+		return _location;
 	}
 	
-	public void setOwnersPrice(long price)
+	public void setEnchant(int enchant)
 	{
-		_price = price;
+		_enchant = enchant;
 	}
 	
-	public long getOwnersPrice()
+	public int getEnchant()
 	{
-		return _price;
+		return _enchant;
 	}
 	
-	public void setstorePrice(long price)
+	public int getCustomType1()
 	{
-		_storePrice = price;
+		return _type1;
 	}
 	
-	public long getStorePrice()
+	public int getCustomType2()
 	{
-		return _storePrice;
+		return _type2;
 	}
 	
 	public void setCount(long count)
@@ -82,14 +137,33 @@ public final class TradeItem
 		return _count;
 	}
 	
-	public void setEnchantLevel(int enchant)
+	public long getStoreCount()
 	{
-		_enchantLevel = enchant;
+		return _storeCount;
 	}
 	
-	public int getEnchantLevel()
+	public void setPrice(long price)
 	{
-		return _enchantLevel;
+		_price = price;
 	}
 	
+	public long getPrice()
+	{
+		return _price;
+	}
+	
+	public byte getAttackElementType()
+	{
+		return _elemAtkType;
+	}
+	
+	public int getAttackElementPower()
+	{
+		return _elemAtkPower;
+	}
+	
+	public int getElementDefAttr(byte i)
+	{
+		return _elemDefAttr[i];
+	}
 }

@@ -46,6 +46,7 @@ public final class OlympiadAnnouncer implements Runnable
 		}
 	}
 
+	@Override
 	public void run()
 	{
 		OlympiadGameTask task;

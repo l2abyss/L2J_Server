@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,16 +33,14 @@ import org.w3c.dom.Node;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Augmentation;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.item.L2Item;
 import com.l2jserver.gameserver.network.clientpackets.AbstractRefinePacket;
 import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.templates.item.L2Item;
 import com.l2jserver.util.Rnd;
 
 /**
  * This class manages the augmentation data and can also create new augmentations.
- *
- * @author  durgus
- * edited by Gigiikun
+ * @author durgus, edited by Gigiikun
  */
 public class AugmentationData
 {
@@ -60,9 +58,9 @@ public class AugmentationData
 	private static final int STAT_START = 1;
 	private static final int STAT_END = 14560;
 	private static final int STAT_BLOCKSIZE = 3640;
-	//private static final int STAT_NUMBEROF_BLOCKS = 4;
+	// private static final int STAT_NUMBEROF_BLOCKS = 4;
 	private static final int STAT_SUBBLOCKSIZE = 91;
-	//private static final int STAT_NUMBEROF_SUBBLOCKS = 40;
+	// private static final int STAT_NUMBEROF_SUBBLOCKS = 40;
 	private static final int STAT_NUM = 13;
 	
 	private static final byte[] STATS1_MAP = new byte[STAT_SUBBLOCKSIZE];
@@ -88,32 +86,32 @@ public class AugmentationData
 	
 	private static final int ACC_RING_START = ACC_START;
 	private static final int ACC_RING_SKILLS = 18;
-	private static final int ACC_RING_BLOCKSIZE = ACC_RING_SKILLS + 4 * ACC_STAT_SUBBLOCKSIZE;
-	private static final int ACC_RING_END = ACC_RING_START + ACC_BLOCKS_NUM * ACC_RING_BLOCKSIZE - 1;
+	private static final int ACC_RING_BLOCKSIZE = ACC_RING_SKILLS + (4 * ACC_STAT_SUBBLOCKSIZE);
+	private static final int ACC_RING_END = (ACC_RING_START + (ACC_BLOCKS_NUM * ACC_RING_BLOCKSIZE)) - 1;
 	
 	private static final int ACC_EAR_START = ACC_RING_END + 1;
 	private static final int ACC_EAR_SKILLS = 18;
-	private static final int ACC_EAR_BLOCKSIZE = ACC_EAR_SKILLS + 4 * ACC_STAT_SUBBLOCKSIZE;
-	private static final int ACC_EAR_END = ACC_EAR_START + ACC_BLOCKS_NUM * ACC_EAR_BLOCKSIZE - 1;
+	private static final int ACC_EAR_BLOCKSIZE = ACC_EAR_SKILLS + (4 * ACC_STAT_SUBBLOCKSIZE);
+	private static final int ACC_EAR_END = (ACC_EAR_START + (ACC_BLOCKS_NUM * ACC_EAR_BLOCKSIZE)) - 1;
 	
 	private static final int ACC_NECK_START = ACC_EAR_END + 1;
 	private static final int ACC_NECK_SKILLS = 24;
-	private static final int ACC_NECK_BLOCKSIZE = ACC_NECK_SKILLS + 4 * ACC_STAT_SUBBLOCKSIZE;
+	private static final int ACC_NECK_BLOCKSIZE = ACC_NECK_SKILLS + (4 * ACC_STAT_SUBBLOCKSIZE);
 	
-	private static final int ACC_END = ACC_NECK_START + ACC_BLOCKS_NUM * ACC_NECK_BLOCKSIZE;
+	private static final int ACC_END = ACC_NECK_START + (ACC_BLOCKS_NUM * ACC_NECK_BLOCKSIZE);
 	
 	private static final byte[] ACC_STATS1_MAP = new byte[ACC_STAT_SUBBLOCKSIZE];
 	private static final byte[] ACC_STATS2_MAP = new byte[ACC_STAT_SUBBLOCKSIZE];
 	
-	private ArrayList<?>[] _augStats = new ArrayList[4];
-	private ArrayList<?>[] _augAccStats = new ArrayList[4];
+	private final ArrayList<?>[] _augStats = new ArrayList<?>[4];
+	private final ArrayList<?>[] _augAccStats = new ArrayList<?>[4];
 	
-	private ArrayList<?>[] _blueSkills = new ArrayList[10];
-	private ArrayList<?>[] _purpleSkills = new ArrayList[10];
-	private ArrayList<?>[] _redSkills = new ArrayList[10];
-	private ArrayList<?>[] _yellowSkills = new ArrayList[10];
+	private final ArrayList<?>[] _blueSkills = new ArrayList<?>[10];
+	private final ArrayList<?>[] _purpleSkills = new ArrayList<?>[10];
+	private final ArrayList<?>[] _redSkills = new ArrayList<?>[10];
+	private final ArrayList<?>[] _yellowSkills = new ArrayList<?>[10];
 	
-	private TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<AugmentationSkill>();
+	private final TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<AugmentationSkill>();
 	
 	// =========================================================
 	// Constructor
@@ -154,8 +152,8 @@ public class AugmentationData
 			for (int j = i + 1; j < STAT_NUM; idx++, j++)
 			{
 				// combined stats
-				STATS1_MAP[idx] = (byte)i;
-				STATS2_MAP[idx] = (byte)j;
+				STATS1_MAP[idx] = (byte) i;
+				STATS2_MAP[idx] = (byte) j;
 			}
 		}
 		idx = 0;
@@ -168,12 +166,12 @@ public class AugmentationData
 		// 05-05 - order is changed here
 		// 04-05 /
 		// First values always solo, next are combined, except last 3 values
-		for (int i = 0; i < ACC_STAT_NUM - 2; i++)
+		for (int i = 0; i < (ACC_STAT_NUM - 2); i++)
 		{
 			for (int j = i; j < ACC_STAT_NUM; idx++, j++)
 			{
-				ACC_STATS1_MAP[idx] = (byte)i;
-				ACC_STATS2_MAP[idx] = (byte)j;
+				ACC_STATS1_MAP[idx] = (byte) i;
+				ACC_STATS2_MAP[idx] = (byte) j;
 			}
 		}
 		ACC_STATS1_MAP[idx] = 4;
@@ -198,8 +196,7 @@ public class AugmentationData
 		_log.info("AugmentationData: Loaded: " + (_augAccStats[0].size() * 4) + " accessory augmentation stats.");
 		for (int i = 0; i < 10; i++)
 		{
-			_log.info("AugmentationData: Loaded: " + _blueSkills[i].size() + " blue, " + _purpleSkills[i].size() + " purple and "
-					+ _redSkills[i].size() + " red skills for lifeStoneLevel " + i);
+			_log.info("AugmentationData: Loaded: " + _blueSkills[i].size() + " blue, " + _purpleSkills[i].size() + " purple and " + _redSkills[i].size() + " red skills for lifeStoneLevel " + i);
 		}
 	}
 	
@@ -208,8 +205,8 @@ public class AugmentationData
 	
 	public static class AugmentationSkill
 	{
-		private int _skillId;
-		private int _skillLevel;
+		private final int _skillId;
+		private final int _skillLevel;
 		
 		public AugmentationSkill(int skillId, int skillLevel)
 		{
@@ -252,15 +249,19 @@ public class AugmentationData
 		
 		public float getSingleStatValue(int i)
 		{
-			if (i >= _singleSize || i < 0)
+			if ((i >= _singleSize) || (i < 0))
+			{
 				return _singleValues[_singleSize - 1];
+			}
 			return _singleValues[i];
 		}
 		
 		public float getCombinedStatValue(int i)
 		{
-			if (i >= _combinedSize || i < 0)
+			if ((i >= _combinedSize) || (i < 0))
+			{
 				return _combinedValues[_combinedSize - 1];
+			}
 			return _combinedValues[i];
 		}
 		
@@ -288,7 +289,9 @@ public class AugmentationData
 			if (!file.exists())
 			{
 				if (Config.DEBUG)
+				{
 					_log.info("The augmentation skillmap file is missing.");
+				}
 				return;
 			}
 			
@@ -328,27 +331,35 @@ public class AugmentationData
 							if (skillId == 0)
 							{
 								if (Config.DEBUG)
-									_log.log(Level.SEVERE, "Bad skillId in augmentation_skillmap.xml in the augmentationId:"
-											+ augmentationId);
+								{
+									_log.log(Level.SEVERE, "Bad skillId in augmentation_skillmap.xml in the augmentationId:" + augmentationId);
+								}
 								badAugmantData++;
 								continue;
 							}
 							else if (skillLvL == 0)
 							{
 								if (Config.DEBUG)
-									_log.log(Level.SEVERE, "Bad skillLevel in augmentation_skillmap.xml in the augmentationId:"
-											+ augmentationId);
+								{
+									_log.log(Level.SEVERE, "Bad skillLevel in augmentation_skillmap.xml in the augmentationId:" + augmentationId);
+								}
 								badAugmantData++;
 								continue;
 							}
 							int k = (augmentationId - BLUE_START) / SKILLS_BLOCKSIZE;
 							
 							if (type.equalsIgnoreCase("blue"))
-								((ArrayList<Integer>)_blueSkills[k]).add(augmentationId);
+							{
+								((ArrayList<Integer>) _blueSkills[k]).add(augmentationId);
+							}
 							else if (type.equalsIgnoreCase("purple"))
-								((ArrayList<Integer>)_purpleSkills[k]).add(augmentationId);
+							{
+								((ArrayList<Integer>) _purpleSkills[k]).add(augmentationId);
+							}
 							else
-								((ArrayList<Integer>)_redSkills[k]).add(augmentationId);
+							{
+								((ArrayList<Integer>) _redSkills[k]).add(augmentationId);
+							}
 							
 							_allSkills.put(augmentationId, new AugmentationSkill(skillId, skillLvL));
 						}
@@ -356,7 +367,9 @@ public class AugmentationData
 				}
 			}
 			if (badAugmantData != 0)
+			{
 				_log.info("AugmentationData: " + badAugmantData + " bad skill(s) were skipped.");
+			}
 		}
 		catch (Exception e)
 		{
@@ -377,7 +390,9 @@ public class AugmentationData
 				if (!file.exists())
 				{
 					if (Config.DEBUG)
+					{
 						_log.info("The augmentation stat data file " + i + " is missing.");
+					}
 					return;
 				}
 				
@@ -405,21 +420,27 @@ public class AugmentationData
 										StringTokenizer data = new StringTokenizer(cd.getFirstChild().getNodeValue());
 										FastList<Float> array = new FastList<Float>();
 										while (data.hasMoreTokens())
+										{
 											array.add(Float.parseFloat(data.nextToken()));
+										}
 										
 										if (tableName.equalsIgnoreCase("#soloValues"))
 										{
 											soloValues = new float[array.size()];
 											int x = 0;
 											for (float value : array)
+											{
 												soloValues[x++] = value;
+											}
 										}
 										else
 										{
 											combinedValues = new float[array.size()];
 											int x = 0;
 											for (float value : array)
+											{
 												combinedValues[x++] = value;
+											}
 										}
 									}
 								}
@@ -447,7 +468,9 @@ public class AugmentationData
 				if (!file.exists())
 				{
 					if (Config.DEBUG)
+					{
 						_log.info("The jewel augmentation stat data file " + i + " is missing.");
+					}
 					return;
 				}
 				
@@ -475,21 +498,27 @@ public class AugmentationData
 										StringTokenizer data = new StringTokenizer(cd.getFirstChild().getNodeValue());
 										FastList<Float> array = new FastList<Float>();
 										while (data.hasMoreTokens())
+										{
 											array.add(Float.parseFloat(data.nextToken()));
+										}
 										
 										if (tableName.equalsIgnoreCase("#soloValues"))
 										{
 											soloValues = new float[array.size()];
 											int x = 0;
 											for (float value : array)
+											{
 												soloValues[x++] = value;
+											}
 										}
 										else
 										{
 											combinedValues = new float[array.size()];
 											int x = 0;
 											for (float value : array)
+											{
 												combinedValues[x++] = value;
+											}
 										}
 									}
 								}
@@ -543,42 +572,62 @@ public class AugmentationData
 		boolean generateSkill = false;
 		boolean generateGlow = false;
 		
-		//lifestonelevel is used for stat Id and skill level, but here the max level is 9
+		// lifestonelevel is used for stat Id and skill level, but here the max level is 9
 		lifeStoneLevel = Math.min(lifeStoneLevel, 9);
 		
 		switch (lifeStoneGrade)
 		{
 			case AbstractRefinePacket.GRADE_NONE:
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_NG_SKILL_CHANCE)
+				{
 					generateSkill = true;
+				}
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_NG_GLOW_CHANCE)
+				{
 					generateGlow = true;
+				}
 				break;
 			case AbstractRefinePacket.GRADE_MID:
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_MID_SKILL_CHANCE)
+				{
 					generateSkill = true;
+				}
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_MID_GLOW_CHANCE)
+				{
 					generateGlow = true;
+				}
 				break;
 			case AbstractRefinePacket.GRADE_HIGH:
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_HIGH_SKILL_CHANCE)
+				{
 					generateSkill = true;
+				}
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_HIGH_GLOW_CHANCE)
+				{
 					generateGlow = true;
+				}
 				break;
 			case AbstractRefinePacket.GRADE_TOP:
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_TOP_SKILL_CHANCE)
+				{
 					generateSkill = true;
+				}
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_TOP_GLOW_CHANCE)
+				{
 					generateGlow = true;
+				}
 				break;
 			case AbstractRefinePacket.GRADE_ACC:
 				if (Rnd.get(1, 100) <= Config.AUGMENTATION_ACC_SKILL_CHANCE)
+				{
 					generateSkill = true;
+				}
 		}
 		
-		if (!generateSkill && Rnd.get(1, 100) <= Config.AUGMENTATION_BASESTAT_CHANCE)
+		if (!generateSkill && (Rnd.get(1, 100) <= Config.AUGMENTATION_BASESTAT_CHANCE))
+		{
 			stat34 = Rnd.get(BASESTAT_STR, BASESTAT_MEN);
+		}
 		
 		// Second: decide which grade the augmentation result is going to have:
 		// 0:yellow, 1:blue, 2:purple, 3:red
@@ -586,21 +635,31 @@ public class AugmentationData
 		// whats known is: you cant have yellow with skill(or baseStatModifier)
 		// noGrade stone can not have glow, mid only with skill, high has a chance(custom), top allways glow
 		int resultColor = Rnd.get(0, 100);
-		if (stat34 == 0 && !generateSkill)
+		if ((stat34 == 0) && !generateSkill)
 		{
-			if (resultColor <= (15 * lifeStoneGrade) + 40)
+			if (resultColor <= ((15 * lifeStoneGrade) + 40))
+			{
 				resultColor = 1;
+			}
 			else
+			{
 				resultColor = 0;
+			}
 		}
 		else
 		{
-			if (resultColor <= (10 * lifeStoneGrade) + 5 || stat34 != 0)
+			if ((resultColor <= ((10 * lifeStoneGrade) + 5)) || (stat34 != 0))
+			{
 				resultColor = 3;
-			else if (resultColor <= (10 * lifeStoneGrade) + 10)
+			}
+			else if (resultColor <= ((10 * lifeStoneGrade) + 10))
+			{
 				resultColor = 1;
+			}
 			else
+			{
 				resultColor = 2;
+			}
 		}
 		
 		// generate a skill if neccessary
@@ -610,13 +669,13 @@ public class AugmentationData
 			switch (resultColor)
 			{
 				case 1: // blue skill
-					stat34 = ((Integer)_blueSkills[lifeStoneLevel].get(Rnd.get(0, _blueSkills[lifeStoneLevel].size() - 1)));
+					stat34 = ((Integer) _blueSkills[lifeStoneLevel].get(Rnd.get(0, _blueSkills[lifeStoneLevel].size() - 1)));
 					break;
 				case 2: // purple skill
-					stat34 = ((Integer)_purpleSkills[lifeStoneLevel].get(Rnd.get(0, _purpleSkills[lifeStoneLevel].size() - 1)));
+					stat34 = ((Integer) _purpleSkills[lifeStoneLevel].get(Rnd.get(0, _purpleSkills[lifeStoneLevel].size() - 1)));
 					break;
 				case 3: // red skill
-					stat34 = ((Integer)_redSkills[lifeStoneLevel].get(Rnd.get(0, _redSkills[lifeStoneLevel].size() - 1)));
+					stat34 = ((Integer) _redSkills[lifeStoneLevel].get(Rnd.get(0, _redSkills[lifeStoneLevel].size() - 1)));
 					break;
 			}
 			skill = _allSkills.get(stat34).getSkill();
@@ -647,30 +706,36 @@ public class AugmentationData
 		if (stat34 == 0)
 		{
 			int temp = Rnd.get(2, 3);
-			int colorOffset = resultColor * (10 * STAT_SUBBLOCKSIZE) + temp * STAT_BLOCKSIZE + 1;
+			int colorOffset = (resultColor * (10 * STAT_SUBBLOCKSIZE)) + (temp * STAT_BLOCKSIZE) + 1;
 			offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + colorOffset;
 			
-			stat34 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
-			if (generateGlow && lifeStoneGrade >= 2)
-				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + lifeStoneGrade
-				* (10 * STAT_SUBBLOCKSIZE) + 1;
+			stat34 = Rnd.get(offset, (offset + STAT_SUBBLOCKSIZE) - 1);
+			if (generateGlow && (lifeStoneGrade >= 2))
+			{
+				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + ((temp - 2) * STAT_BLOCKSIZE) + (lifeStoneGrade * (10 * STAT_SUBBLOCKSIZE)) + 1;
+			}
 			else
-				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + (temp - 2) * STAT_BLOCKSIZE + Rnd.get(0, 1)
-				* (10 * STAT_SUBBLOCKSIZE) + 1;
+			{
+				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + ((temp - 2) * STAT_BLOCKSIZE) + (Rnd.get(0, 1) * (10 * STAT_SUBBLOCKSIZE)) + 1;
+			}
 		}
 		else
 		{
 			if (!generateGlow)
-				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + 1;
+			{
+				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + (Rnd.get(0, 1) * STAT_BLOCKSIZE) + 1;
+			}
 			else
-				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + Rnd.get(0, 1) * STAT_BLOCKSIZE + (lifeStoneGrade + resultColor) / 2
-				* (10 * STAT_SUBBLOCKSIZE) + 1;
+			{
+				offset = (lifeStoneLevel * STAT_SUBBLOCKSIZE) + (Rnd.get(0, 1) * STAT_BLOCKSIZE) + (((lifeStoneGrade + resultColor) / 2) * (10 * STAT_SUBBLOCKSIZE)) + 1;
+			}
 		}
-		stat12 = Rnd.get(offset, offset + STAT_SUBBLOCKSIZE - 1);
+		stat12 = Rnd.get(offset, (offset + STAT_SUBBLOCKSIZE) - 1);
 		
 		if (Config.DEBUG)
-			_log.info("Augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; resultColor=" + resultColor + "; level="
-					+ lifeStoneLevel + "; grade=" + lifeStoneGrade);
+		{
+			_log.info("Augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; resultColor=" + resultColor + "; level=" + lifeStoneLevel + "; grade=" + lifeStoneGrade);
+		}
 		return new L2Augmentation(((stat34 << 16) + stat12), skill);
 	}
 	
@@ -686,15 +751,15 @@ public class AugmentationData
 		switch (bodyPart)
 		{
 			case L2Item.SLOT_LR_FINGER:
-				base = ACC_RING_START + ACC_RING_BLOCKSIZE * lifeStoneLevel;
+				base = ACC_RING_START + (ACC_RING_BLOCKSIZE * lifeStoneLevel);
 				skillsLength = ACC_RING_SKILLS;
 				break;
 			case L2Item.SLOT_LR_EAR:
-				base = ACC_EAR_START + ACC_EAR_BLOCKSIZE * lifeStoneLevel;
+				base = ACC_EAR_START + (ACC_EAR_BLOCKSIZE * lifeStoneLevel);
 				skillsLength = ACC_EAR_SKILLS;
 				break;
 			case L2Item.SLOT_NECK:
-				base = ACC_NECK_START + ACC_NECK_BLOCKSIZE * lifeStoneLevel;
+				base = ACC_NECK_START + (ACC_NECK_BLOCKSIZE * lifeStoneLevel);
 				skillsLength = ACC_NECK_SKILLS;
 				break;
 			default:
@@ -712,7 +777,9 @@ public class AugmentationData
 			// second augmentation (skill)
 			stat34 = base + Rnd.get(skillsLength);
 			if (_allSkills.contains(stat34))
+			{
 				skill = _allSkills.get(stat34).getSkill();
+			}
 		}
 		
 		if (skill == null)
@@ -722,15 +789,16 @@ public class AugmentationData
 			// starting from next and wrapping over using remainder
 			stat34 = (stat12 + 1 + Rnd.get(ACC_STAT_SUBBLOCKSIZE - 1)) % ACC_STAT_SUBBLOCKSIZE;
 			// this is a stats - skipping skills
-			stat34 = base + skillsLength + ACC_STAT_SUBBLOCKSIZE * resultColor + stat34;
+			stat34 = base + skillsLength + (ACC_STAT_SUBBLOCKSIZE * resultColor) + stat34;
 		}
 		
 		// stat12 has stats only
-		stat12 = base + skillsLength + ACC_STAT_SUBBLOCKSIZE * resultColor + stat12;
+		stat12 = base + skillsLength + (ACC_STAT_SUBBLOCKSIZE * resultColor) + stat12;
 		
 		if (Config.DEBUG)
-			_log.info("Accessory augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; level="
-					+ lifeStoneLevel);
+		{
+			_log.info("Accessory augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; level=" + lifeStoneLevel);
+		}
 		return new L2Augmentation(((stat34 << 16) + stat12), skill);
 	}
 	
@@ -780,7 +848,7 @@ public class AugmentationData
 		for (int i = 0; i < 2; i++)
 		{
 			// weapon augmentation - stats
-			if (stats[i] >= STAT_START && stats[i] <= STAT_END)
+			if ((stats[i] >= STAT_START) && (stats[i] <= STAT_END))
 			{
 				int base = stats[i] - STAT_START;
 				int color = base / STAT_BLOCKSIZE; // 4 color blocks
@@ -795,7 +863,8 @@ public class AugmentationData
 					AugmentationStat as = ((AugmentationStat) _augStats[color].get(stat1));
 					temp.add(new AugStat(as.getStat(), as.getSingleStatValue(level)));
 				}
-				else // combined stat
+				else
+				// combined stat
 				{
 					AugmentationStat as = ((AugmentationStat) _augStats[color].get(stat1));
 					temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
@@ -804,7 +873,7 @@ public class AugmentationData
 				}
 			}
 			// its a base stat
-			else if (stats[i] >= BASESTAT_STR && stats[i] <= BASESTAT_MEN)
+			else if ((stats[i] >= BASESTAT_STR) && (stats[i] <= BASESTAT_MEN))
 			{
 				switch (stats[i])
 				{
@@ -827,7 +896,7 @@ public class AugmentationData
 			// each area consist of 10 blocks (level)
 			// each block has skills first (18 or 24 for necklaces)
 			// and sub-block for stats next
-			else if (stats[i] >= ACC_START && stats[i] <= ACC_END)
+			else if ((stats[i] >= ACC_START) && (stats[i] <= ACC_END))
 			{
 				int base, level, subblock;
 				
@@ -837,13 +906,14 @@ public class AugmentationData
 					level = base / ACC_RING_BLOCKSIZE; // stat level (block number)
 					subblock = (base % ACC_RING_BLOCKSIZE) - ACC_RING_SKILLS; // skills first
 				}
-				else if (stats[i] <= ACC_EAR_END) //earrings area
+				else if (stats[i] <= ACC_EAR_END) // earrings area
 				{
 					base = stats[i] - ACC_EAR_START;
 					level = base / ACC_EAR_BLOCKSIZE;
 					subblock = (base % ACC_EAR_BLOCKSIZE) - ACC_EAR_SKILLS;
 				}
-				else // necklaces
+				else
+				// necklaces
 				{
 					base = stats[i] - ACC_NECK_START;
 					level = base / ACC_NECK_BLOCKSIZE;
@@ -861,7 +931,8 @@ public class AugmentationData
 						AugmentationStat as = ((AugmentationStat) _augAccStats[color].get(stat1));
 						temp.add(new AugStat(as.getStat(), as.getSingleStatValue(level)));
 					}
-					else // combined
+					else
+					// combined
 					{
 						AugmentationStat as = ((AugmentationStat) _augAccStats[color].get(stat1));
 						temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
@@ -882,7 +953,9 @@ public class AugmentationData
 	{
 		final AugmentationSkill temp = _allSkills.get(augmentationId);
 		if (temp == null)
+		{
 			return null;
+		}
 		
 		return temp.getSkill();
 	}

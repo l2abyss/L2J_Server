@@ -27,13 +27,13 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
 
 /**
  * @author Advi
@@ -46,14 +46,17 @@ public abstract class ItemContainer
 	
 	protected ItemContainer()
 	{
-		_items = new FastList<L2ItemInstance>();
+		_items = new FastList<L2ItemInstance>().shared();
 	}
 	
 	protected abstract L2Character getOwner();
 	
 	protected abstract ItemLocation getBaseLocation();
 	
-	public String getName() { return "ItemContainer"; }
+	public String getName()
+	{
+		return "ItemContainer";
+	}
 	
 	/**
 	 * Returns the ownerID of the inventory
@@ -79,10 +82,7 @@ public abstract class ItemContainer
 	 */
 	public L2ItemInstance[] getItems()
 	{
-		synchronized (_items)
-		{
-			return _items.toArray(new L2ItemInstance[_items.size()]);
-		}
+		return _items.toArray(new L2ItemInstance[_items.size()]);
 	}
 	
 	/**
@@ -212,7 +212,7 @@ public abstract class ItemContainer
 			item = olditem;
 			
 			// Updates database
-			if (item.getItemId() == 57 && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(57))
+			if (item.getItemId() == PcInventory.ADENA_ID && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID))
 			{
 				// Small adena changes won't be saved to database all the time
 				if (GameTimeController.getGameTicks() % 5 == 0)
@@ -258,7 +258,7 @@ public abstract class ItemContainer
 			item.changeCount(process, count, actor, reference);
 			item.setLastChange(L2ItemInstance.MODIFIED);
 			// Updates database
-			if (itemId == 57 && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(57))
+			if (itemId == PcInventory.ADENA_ID && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID))
 			{
 				// Small adena changes won't be saved to database all the time
 				if (GameTimeController.getGameTicks() % 5 == 0)
@@ -480,7 +480,7 @@ public abstract class ItemContainer
 	 * @param actor : L2PcInstance Player requesting the item destroy
 	 * @param reference : Object Object referencing current action like NPC selling item or previous item in transformation
 	 */
-	public synchronized void destroyAllItems(String process, L2PcInstance actor, Object reference)
+	public void destroyAllItems(String process, L2PcInstance actor, Object reference)
 	{
 		for (L2ItemInstance item : _items)
 		{
@@ -490,22 +490,19 @@ public abstract class ItemContainer
 	}
 	
 	/**
-	 * Get warehouse adena
-	 * @return 
+	 * @return warehouse Adena.
 	 */
 	public long getAdena()
 	{
 		long count = 0;
-		
 		for (L2ItemInstance item : _items)
 		{
-			if (item != null && item.getItemId() == 57)
+			if (item != null && item.getItemId() == PcInventory.ADENA_ID)
 			{
 				count = item.getCount();
 				return count;
 			}
 		}
-		
 		return count;
 	}
 	
@@ -515,10 +512,7 @@ public abstract class ItemContainer
 	 */
 	protected void addItem(L2ItemInstance item)
 	{
-		synchronized (_items)
-		{
-			_items.add(item);
-		}
+		_items.add(item);
 	}
 	
 	/**
@@ -528,10 +522,7 @@ public abstract class ItemContainer
 	 */
 	protected boolean removeItem(L2ItemInstance item)
 	{
-		synchronized (_items)
-		{
-			return _items.remove(item);
-		}
+		return _items.remove(item);
 	}
 	
 	/**

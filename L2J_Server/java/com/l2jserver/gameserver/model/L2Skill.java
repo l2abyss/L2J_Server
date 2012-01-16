@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.datatables.GMSkillTable;
 import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.handler.ISkillTargetTypeHandler;
+import com.l2jserver.gameserver.handler.ITargetTypeHandler;
 import com.l2jserver.gameserver.handler.TargetHandler;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -41,6 +41,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
+import com.l2jserver.gameserver.model.item.L2Armor;
+import com.l2jserver.gameserver.model.item.type.L2ArmorType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.skills.BaseStats;
@@ -50,11 +52,10 @@ import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.skills.conditions.Condition;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
-import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
-import com.l2jserver.gameserver.templates.item.L2Armor;
-import com.l2jserver.gameserver.templates.item.L2ArmorType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
+import com.l2jserver.gameserver.templates.skills.L2TraitType;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -74,71 +75,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public static final int SKILL_CRYSTALLIZE = 248;
 	public static final int SKILL_DIVINE_INSPIRATION = 1405;
 	public static final int SKILL_CLAN_LUCK = 390;
+	public static final int SKILL_NPC_RACE = 4416;
 	
 	public static final boolean geoEnabled = Config.GEODATA > 0;
 	
 	public static enum SkillOpType
 	{
 		OP_PASSIVE, OP_ACTIVE, OP_TOGGLE
-	}
-	
-	/** Target types of skills : SELF, PARTY, CLAN, PET... */
-	public static enum SkillTargetType
-	{
-		TARGET_NONE,
-		TARGET_SELF,
-		TARGET_ONE,
-		TARGET_PARTY,
-		TARGET_ALLY,
-		TARGET_CLAN,
-		TARGET_PET,
-		TARGET_SUMMON,
-		TARGET_AREA,
-		TARGET_FRONT_AREA,
-		TARGET_BEHIND_AREA,
-		TARGET_AURA,
-		TARGET_AURA_CORPSE_MOB,
-		TARGET_FRONT_AURA,
-		TARGET_BEHIND_AURA,
-		TARGET_CORPSE,
-		TARGET_UNDEAD,
-		TARGET_AREA_UNDEAD,
-		TARGET_CORPSE_ALLY,
-		TARGET_CORPSE_CLAN,
-		TARGET_CORPSE_PLAYER,
-		TARGET_CORPSE_PET,
-		TARGET_AREA_CORPSE_MOB,
-		TARGET_CORPSE_MOB,
-		TARGET_UNLOCKABLE,
-		TARGET_HOLY,
-		TARGET_FLAGPOLE,
-		TARGET_PARTY_MEMBER,
-		TARGET_PARTY_OTHER,
-		TARGET_PARTY_CLAN,
-		TARGET_ENEMY_SUMMON,
-		TARGET_OWNER_PET,
-		TARGET_GROUND,
-		TARGET_PARTY_NOTME,
-		TARGET_AREA_SUMMON,
-		TARGET_CLAN_MEMBER
-	}
-	
-	public static enum SkillTraitType
-	{
-		NONE,
-		BLEED,
-		BOSS,
-		DEATH,
-		DERANGEMENT,
-		ETC,
-		GUST,
-		HOLD,
-		PARALYZE,
-		PHYSICAL_BLOCKADE,
-		POISON,
-		SHOCK,
-		SLEEP,
-		VALAKAS
 	}
 	
 	//conditional values
@@ -166,7 +109,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final String _name;
 	private final SkillOpType _operateType;
 	private final boolean _magic;
-	private final SkillTraitType _traitType;
+	private final L2TraitType _traitType;
 	private final boolean _staticReuse;
 	private final boolean _staticHitTime;
 	private final boolean _staticDamage; // Damage dealing skills do static damage based on the power value.
@@ -212,7 +155,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _equipDelay;
 	
 	/** Target type of the skill : SELF, PARTY, CLAN, PET... */
-	private final SkillTargetType _targetType;
+	private final L2TargetType _targetType;
 	private final int _feed;
 	// base success chance
 	private final double _power;
@@ -306,9 +249,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final String _attribute;
 	
 	private final boolean _ignoreShield;
+	private final boolean _ignoreSkillMute;
+	
 	private final boolean _isSuicideAttack;
 	private final boolean _canBeReflected;
-	
 	private final boolean _canBeDispeled;
 	
 	private final boolean _isClanSkill;
@@ -317,7 +261,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	private L2ExtractableSkill _extractableItems = null;
 	
-	private final int _maxTargets; 
+	private final int _maxTargets;
+	private final boolean _isStaticHeal;
 	
 	protected L2Skill(StatsSet set)
 	{
@@ -328,7 +273,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_name = set.getString("name");
 		_operateType = set.getEnum("operateType", SkillOpType.class);
 		_magic = set.getBool("isMagic", false);
-		_traitType = set.getEnum("trait", SkillTraitType.class, SkillTraitType.NONE);
+		_traitType = set.getEnum("trait", L2TraitType.class, L2TraitType.NONE);
 		_staticReuse = set.getBool("staticReuse", false);
 		_staticHitTime = set.getBool("staticHitTime", false);
 		_staticDamage = set.getBool("staticDamage", false);
@@ -482,7 +427,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_skillRadius = set.getInteger("skillRadius", 80);
 		
-		_targetType = set.getEnum("target", SkillTargetType.class);
+		_targetType = set.getEnum("target", L2TargetType.class);
 		_power = set.getFloat("power", 0.f);
 		_pvpPower = set.getFloat("pvpPower", (float)getPower());
 		_pvePower = set.getFloat("pvePower", (float)getPower());
@@ -493,6 +438,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_maxChance = set.getInteger("maxChance", Config.MAX_DEBUFF_CHANCE);
 		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
+		_ignoreSkillMute = set.getBool("ignoreSkillMute", false);
 		_skillType = set.getEnum("skillType", L2SkillType.class);
 		_effectType = set.getEnum("effectType", L2SkillType.class, null);
 		_effectId = set.getInteger("effectId", 0);
@@ -593,6 +539,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			_extractableItems = parseExtractableSkill(_id, _level, capsuled_items);
 		}
 		_maxTargets = set.getInteger("maxTargets", -1);
+		_isStaticHeal = set.getBool("isStaticHeal", false);
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -617,7 +564,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _skillType;
 	}
 	
-	public final SkillTraitType getTraitType()
+	public final L2TraitType getTraitType()
 	{
 		return _traitType;
 	}
@@ -636,7 +583,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * Return the target type of the skill : SELF, PARTY, CLAN, PET...<BR><BR>
 	 * @return 
 	 */
-	public final SkillTargetType getTargetType()
+	public final L2TargetType getTargetType()
 	{
 		return _targetType;
 	}
@@ -1466,7 +1413,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 */
 	public final L2Object[] getTargetList(L2Character activeChar, boolean onlyFirst, L2Character target)
 	{
-		ISkillTargetTypeHandler handler = TargetHandler.getInstance().getSkillTarget(getTargetType()); 
+		final ITargetTypeHandler handler = TargetHandler.getInstance().getHandler(getTargetType()); 
 		if (handler != null) 
 		{ 
 			try 
@@ -2025,6 +1972,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _ignoreShield;
 	}
 	
+	public boolean ignoreSkillMute()
+	{
+		return _ignoreSkillMute;
+	}
+	
 	public boolean canBeReflected()
 	{
 		return _canBeReflected;
@@ -2121,4 +2073,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _maxTargets;
 	}
 
+	public boolean isStaticHeal()
+	{
+		return _isStaticHeal;
+	}
 }

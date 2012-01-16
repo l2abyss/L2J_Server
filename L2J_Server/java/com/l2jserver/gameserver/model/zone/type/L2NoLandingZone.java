@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * A no landing zone
@@ -42,7 +41,7 @@ public class L2NoLandingZone extends L2ZoneType
 			character.setInsideZone(L2Character.ZONE_NOLANDING, true);
 			if (((L2PcInstance) character).getMountType() == 2)
 			{
-				character.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN));
+				character.sendPacket(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN);
 				((L2PcInstance) character).enteredNoLanding(dismountDelay);
 			}
 		}
@@ -71,9 +70,6 @@ public class L2NoLandingZone extends L2ZoneType
 	{
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.zone.L2ZoneType#setParameter(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void setParameter(String name, String value)
 	{

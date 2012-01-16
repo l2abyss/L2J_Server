@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * A  siege zone
@@ -90,7 +89,7 @@ public class L2SiegeZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_PVP, true);
 			character.setInsideZone(L2Character.ZONE_SIEGE, true);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true);
+			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true); // FIXME: Custom ?
 			
 			if (character instanceof L2PcInstance)
 			{
@@ -101,10 +100,10 @@ public class L2SiegeZone extends L2ZoneType
 					if (_siege.giveFame() && _siege.getFameFrequency() > 0)
 						((L2PcInstance) character).startFameTask(_siege.getFameFrequency() * 1000, _siege.getFameAmount());
 				}
-				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE));
+				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
 				if (!Config.ALLOW_WYVERN_DURING_SIEGE && ((L2PcInstance) character).getMountType() == 2)
 				{
-					character.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN));
+					character.sendPacket(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN);
 					((L2PcInstance) character).enteredNoLanding(DISMOUNT_DELAY);
 				}
 			}
@@ -116,12 +115,12 @@ public class L2SiegeZone extends L2ZoneType
 	{
 		character.setInsideZone(L2Character.ZONE_PVP, false);
 		character.setInsideZone(L2Character.ZONE_SIEGE, false);
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
+		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false); // FIXME: Custom ?
 		if (_isActiveSiege)
 		{
 			if (character instanceof L2PcInstance)
 			{
-				((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 				if (((L2PcInstance) character).getMountType() == 2)
 				{
 					((L2PcInstance) character).exitedNoLanding();
@@ -207,7 +206,7 @@ public class L2SiegeZone extends L2ZoneType
 				
 				if (character instanceof L2PcInstance)
 				{
-					((L2PcInstance) character).sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LEFT_COMBAT_ZONE));
+					character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 					((L2PcInstance) character).stopFameTask();
 					if (((L2PcInstance) character).getMountType() == 2)
 					{

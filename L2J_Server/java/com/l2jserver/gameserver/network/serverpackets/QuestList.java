@@ -120,9 +120,6 @@ public class QuestList extends L2GameServerPacket
 		writeB(new byte[128]);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

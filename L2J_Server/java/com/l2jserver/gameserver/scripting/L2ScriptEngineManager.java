@@ -45,8 +45,7 @@ import com.l2jserver.Config;
 import com.l2jserver.script.jython.JythonScriptEngine;
 
 /**
- * Caches script engines and provides funcionality for executing and managing scripts.<BR>
- *
+ * Caches script engines and provides functionality for executing and managing scripts.
  * @author  KenM
  */
 public final class L2ScriptEngineManager

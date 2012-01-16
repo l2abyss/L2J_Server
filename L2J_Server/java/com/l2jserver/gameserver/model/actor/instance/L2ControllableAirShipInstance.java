@@ -120,58 +120,58 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 				final int z = player.getInVehiclePosition().getZ() - 0x6b;
 				if (x * x + y * y + z * z > 2500)
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_CONTROL_TOO_FAR));
+					player.sendPacket(SystemMessageId.CANT_CONTROL_TOO_FAR);
 					return false;
 				}
 				//TODO: Missing message ID: 2739  Message: You cannot control the helm because you do not meet the requirements.
 				else if (player.isInCombat())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_BATTLE));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_BATTLE);
 					return false;
 				}
 				else if (player.isSitting())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_SITTING_POSITION));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_SITTING_POSITION);
 					return false;
 				}
 				else if (player.isParalyzed())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_YOU_ARE_PETRIFIED));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_YOU_ARE_PETRIFIED);
 					return false;
 				}
 				else if (player.isCursedWeaponEquipped())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_A_CURSED_WEAPON_IS_EQUIPPED));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_A_CURSED_WEAPON_IS_EQUIPPED);
 					return false;
 				}
 				else if (player.isFishing())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_FISHING));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_FISHING);
 					return false;
 				}
 				else if (player.isDead() || player.isFakeDeath())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHEN_YOU_ARE_DEAD));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHEN_YOU_ARE_DEAD);
 					return false;
 				}
 				else if (player.isCastingNow())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_USING_A_SKILL));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_USING_A_SKILL);
 					return false;
 				}
 				else if (player.isTransformed())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_TRANSFORMED));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_TRANSFORMED);
 					return false;
 				}
 				else if (player.isCombatFlagEquipped())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG);
 					return false;
 				}
 				else if (player.isInDuel())
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_DUEL));
+					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_DUEL);
 					return false;
 				}
 				_captain = player;
@@ -288,6 +288,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	
 	private final class ConsumeFuelTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			int fuel = getFuel();
@@ -305,6 +306,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	
 	private final class CheckTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			if (isVisible()
@@ -317,6 +319,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	
 	private final class DecayTask implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			deleteMe();

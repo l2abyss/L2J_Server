@@ -16,9 +16,9 @@ package com.l2jserver.gameserver.model.itemauction;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.L2Augmentation;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.templates.StatsSet;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 /**
  * @author Forsaiken

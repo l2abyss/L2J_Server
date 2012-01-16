@@ -43,20 +43,17 @@ public class ItemRequest
 	public int getItemId(){return _itemId;}
 	public void setCount(long count){_count = count;}
 	public long getCount(){return _count;}
-	public long getPrice(){return _price;}
+	public long getPrice()
+	{
+		return _price;
+	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode()
 	{
 		return _objectId;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{

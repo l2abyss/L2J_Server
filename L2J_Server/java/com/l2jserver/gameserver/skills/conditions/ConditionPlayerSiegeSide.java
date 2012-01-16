@@ -35,9 +35,6 @@ public class ConditionPlayerSiegeSide extends Condition
 		_siegeSide = side;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

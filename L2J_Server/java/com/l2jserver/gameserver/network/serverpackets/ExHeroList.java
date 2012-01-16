@@ -16,9 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.Map;
 
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 
 /**
@@ -49,9 +49,6 @@ public class ExHeroList extends L2GameServerPacket
 		_heroList = Hero.getInstance().getHeroes();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -73,9 +70,6 @@ public class ExHeroList extends L2GameServerPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

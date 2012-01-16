@@ -1,7 +1,7 @@
 package com.l2jserver.gameserver.model.entity;
 
-import gnu.trove.TIntHashSet;
-import gnu.trove.TIntProcedure;
+import gnu.trove.procedure.TIntProcedure;
+import gnu.trove.set.hash.TIntHashSet;
 
 import java.io.File;
 import java.io.IOException;
@@ -644,6 +644,7 @@ public class Instance
 			_remaining = remaining;
 		}
 		
+		@Override
 		public void run()
 		{
 			doCheckTimeUp(_remaining);
@@ -652,6 +653,7 @@ public class Instance
 	
 	public class TimeUp implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			InstanceManager.getInstance().destroyInstance(getId());

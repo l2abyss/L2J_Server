@@ -54,8 +54,8 @@ public class PetInfo extends L2GameServerPacket
 		_mAtkSpd = _summon.getMAtkSpd();
 		_pAtkSpd = _summon.getPAtkSpd();
 		_multiplier = _summon.getMovementSpeedMultiplier();
-		_runSpd = _summon.getTemplate().baseRunSpd;
-		_walkSpd = _summon.getTemplate().baseWalkSpd;
+		_runSpd = _summon.getTemplate().getBaseRunSpd();
+		_walkSpd = _summon.getTemplate().getBaseWalkSpd();
 		_swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
 		_swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
 		_maxHp = _summon.getMaxVisibleHp();
@@ -81,7 +81,7 @@ public class PetInfo extends L2GameServerPacket
 		writeC(0xb2);
 		writeD(_summon.getSummonType());
 		writeD(_summon.getObjectId());
-		writeD(_summon.getTemplate().idTemplate+1000000);
+		writeD(_summon.getTemplate().getIdTemplate()+1000000);
 		writeD(0);    // 1=attackable
 		
 		writeD(_x);
@@ -102,8 +102,8 @@ public class PetInfo extends L2GameServerPacket
 		
 		writeF(_multiplier); // movement multiplier
 		writeF(1); // attack speed multiplier
-		writeF(_summon.getTemplate().fCollisionRadius);
-		writeF(_summon.getTemplate().fCollisionHeight);
+		writeF(_summon.getTemplate().getfCollisionRadius());
+		writeF(_summon.getTemplate().getfCollisionHeight());
 		writeD(_summon.getWeapon()); // right hand weapon
 		writeD(_summon.getArmor()); // body armor
 		writeD(0); // left hand weapon
@@ -119,7 +119,7 @@ public class PetInfo extends L2GameServerPacket
 		}
 		else
 		{
-			writeS(_summon.getTemplate().serverSideName ? _summon.getName() : ""); // Summon name.
+			writeS(_summon.getTemplate().isServerSideName() ? _summon.getName() : ""); // Summon name.
 		}
 		writeD(-1); // High Five NPCString ID
 		writeS(_summon.getTitle()); // owner name

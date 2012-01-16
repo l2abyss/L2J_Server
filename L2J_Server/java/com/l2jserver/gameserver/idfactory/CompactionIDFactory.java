@@ -1,14 +1,4 @@
 /*
- * $Header: CompactionIDFactory.java, 24/08/2005 22:32:43 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 24/08/2005 22:32:43 $
- * $Revision: 1 $
- * $Log: CompactionIDFactory.java,v $
- * Revision 1  24/08/2005 22:32:43  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -41,7 +31,6 @@ import com.l2jserver.L2DatabaseFactory;
  *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
-
 @Deprecated
 public class CompactionIDFactory extends IdFactory
 {

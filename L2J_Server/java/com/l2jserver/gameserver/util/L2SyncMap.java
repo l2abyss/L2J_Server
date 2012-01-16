@@ -41,30 +41,37 @@ public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 	static final long serialVersionUID = 1L;
 	private final L2FastMap<K, V> _map = new L2FastMap<K, V>();
 	
+	@Override
 	public synchronized V put(K key, V value) {
 		return _map.put(key, value);
 	}
 	
+	@Override
 	public synchronized V get(Object key) {
 		return _map.get(key);
 	}
 	
+	@Override
 	public synchronized V remove(Object key) {
 		return _map.remove(key);
 	}
 	
+	@Override
 	public synchronized boolean containsKey(Object key) {
 		return _map.containsKey(key);
 	}
 	
+	@Override
 	public synchronized int size() {
 		return _map.size();
 	}
 	
+	@Override
 	public synchronized boolean isEmpty() {
 		return _map.isEmpty();
 	}
 	
+	@Override
 	public synchronized void clear() {
 		_map.clear();
 	}
@@ -73,6 +80,7 @@ public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 	 * This method use specific locking strategy: map which have lowest hashCode() will be locked first
 	 * @see java.util.Map#putAll(java.util.Map)
 	 */
+	@Override
 	public void putAll(Map<? extends K, ? extends V> map) {
 		if (map == null || this == map) return;
 		if (this.hashCode() <= map.hashCode())
@@ -90,6 +98,7 @@ public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 		}
 	}
 	
+	@Override
 	public synchronized boolean containsValue(Object value) {
 		return _map.containsValue(value);
 	}
@@ -134,6 +143,8 @@ public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 	 * @throws UnsupportedOperationException
 	 * @see java.util.Map#values()
 	 */
+	@Override
+	@Deprecated
 	public Collection<V> values() {
 		throw new UnsupportedOperationException();
 	}
@@ -144,6 +155,8 @@ public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 	 * @deprecated
 	 * @throws UnsupportedOperationException
 	 */
+	@Override
+	@Deprecated
 	public Set<K> keySet() {
 		throw new UnsupportedOperationException();
 	}
@@ -154,6 +167,8 @@ public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 	 * @throws UnsupportedOperationException
 	 * @see java.util.Map#entrySet()
 	 */
+	@Override
+	@Deprecated
 	public Set<Map.Entry<K,V>> entrySet() {
 		throw new UnsupportedOperationException();
 	}

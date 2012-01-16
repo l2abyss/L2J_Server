@@ -52,9 +52,6 @@ public final class DoorStatusUpdate extends L2GameServerPacket
 		writeD(_door.getMaxVisibleHp());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -30,7 +30,7 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Item;
 
 /**
  * This class ...
@@ -343,6 +343,7 @@ public class L2TradeList
 			/**
 			 * @see java.lang.Runnable#run()
 			 */
+			@Override
 			public void run()
 			{
 				L2TradeItem.this.saveDataTimer();

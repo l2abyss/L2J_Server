@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
@@ -34,7 +35,6 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 public class L2SkillSiegeFlag extends L2Skill
 {
@@ -241,6 +241,8 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You have already placed the maximum number of flags possible.";
 		else if (!player.isInsideZone(L2Character.ZONE_HQ))
 			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
+		else if(!hall.getSiege().canPlantFlag())
+			text = "You cannot place a flag on this siege.";
 		else
 			return true;
 		

@@ -14,18 +14,18 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -54,9 +54,6 @@ public class L2NpcBufferInstance extends L2Npc
 		setInstanceType(InstanceType.L2NpcBufferInstance);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Npc#showChatWindow(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, int)
-	 */
 	@Override
 	public void showChatWindow(L2PcInstance playerInstance, int val)
 	{
@@ -80,9 +77,6 @@ public class L2NpcBufferInstance extends L2Npc
 		playerInstance.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Npc#onBypassFeedback(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, java.lang.String)
-	 */
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{

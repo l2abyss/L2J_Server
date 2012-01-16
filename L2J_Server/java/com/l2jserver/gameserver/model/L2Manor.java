@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.templates.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Item;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 
 /**
@@ -53,7 +53,7 @@ public class L2Manor
 	
 	public SeedData[] getSeedsDataArray()
 	{
-		return _seeds.getValues(new SeedData[_seeds.size()]);
+		return _seeds.values(new SeedData[0]);
 	}
 	
 	public FastList<Integer> getAllCrops()

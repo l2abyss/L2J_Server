@@ -1,14 +1,4 @@
 /*
- * $Header: L2ObjectSet.java, 22/07/2005 13:22:46 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 22/07/2005 13:22:46 $
- * $Revision: 1 $
- * $Log: L2ObjectSet.java,v $
- * Revision 1  22/07/2005 13:22:46  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -73,6 +63,7 @@ public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 	
 	public abstract boolean contains(T obj);
 	
+	@Override
 	public abstract Iterator<T> iterator();
 	
 }

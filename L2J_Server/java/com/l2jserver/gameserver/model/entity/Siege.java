@@ -396,21 +396,13 @@ public class Siege implements Siegable
 				addDefender(sc_newowner, SiegeClanType.OWNER);
 				
 				// The player's clan is in an alliance
-				if (allyId != 0)
+				for (L2Clan clan : ClanTable.getInstance().getClanAllies(allyId))
 				{
-					L2Clan[] clanList = ClanTable.getInstance().getClans();
-					
-					for (L2Clan clan : clanList)
+					final L2SiegeClan sc = getAttackerClan(clan.getClanId());
+					if (sc != null)
 					{
-						if (clan.getAllyId() == allyId)
-						{
-							L2SiegeClan sc = getAttackerClan(clan.getClanId());
-							if (sc != null)
-							{
-								removeAttacker(sc);
-								addDefender(sc, SiegeClanType.DEFENDER);
-							}
-						}
+						removeAttacker(sc);
+						addDefender(sc, SiegeClanType.DEFENDER);
 					}
 				}
 				teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionManager.TeleportWhereType.SiegeFlag); // Teleport to the second closest town
@@ -871,7 +863,7 @@ public class Siege implements Siegable
 		{
 			if (player.getClan().getAllyId() == allyId && !force)
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_ATTACK_ALLIANCE_CASTLE));
+				player.sendPacket(SystemMessageId.CANNOT_ATTACK_ALLIANCE_CASTLE);
 				return;
 			}
 		}
@@ -1049,21 +1041,21 @@ public class Siege implements Siegable
 			player.sendPacket(sm);
 		}
 		else if (getIsInProgress())
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_SIEGE_REGISTRATION_TIME2));
+			player.sendPacket(SystemMessageId.NOT_SIEGE_REGISTRATION_TIME2);
 		else if (player.getClan() == null || player.getClan().getLevel() < SiegeManager.getInstance().getSiegeClanMinLevel())
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ONLY_CLAN_LEVEL_5_ABOVE_MAY_SIEGE));
+			player.sendPacket(SystemMessageId.ONLY_CLAN_LEVEL_5_ABOVE_MAY_SIEGE);
 		else if (player.getClan().getClanId() == getCastle().getOwnerId())
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING));
+			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING);
 		else if (player.getClan().getHasCastle() > 0)
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CLAN_THAT_OWNS_CASTLE_CANNOT_PARTICIPATE_OTHER_SIEGE));
+			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_CANNOT_PARTICIPATE_OTHER_SIEGE);
 		else if (SiegeManager.getInstance().checkIsRegistered(player.getClan(), getCastle().getCastleId()))
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE));
+			player.sendPacket(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE);
 		else if (checkIfAlreadyRegisteredForSameDay(player.getClan()))
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.APPLICATION_DENIED_BECAUSE_ALREADY_SUBMITTED_A_REQUEST_FOR_ANOTHER_SIEGE_BATTLE));
+			player.sendPacket(SystemMessageId.APPLICATION_DENIED_BECAUSE_ALREADY_SUBMITTED_A_REQUEST_FOR_ANOTHER_SIEGE_BATTLE);
 		else if ((typeId == ATTACKER) && (getAttackerClans().size() >= SiegeManager.getInstance().getAttackerMaxClans()))
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ATTACKER_SIDE_FULL));
+			player.sendPacket(SystemMessageId.ATTACKER_SIDE_FULL);
 		else if ((typeId == DEFENDER || typeId == DEFENDER_NOT_APPROWED || typeId == OWNER) && (getDefenderClans().size() + getDefenderWaitingClans().size() >= SiegeManager.getInstance().getDefenderMaxClans()))
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DEFENDER_SIDE_FULL));
+			player.sendPacket(SystemMessageId.DEFENDER_SIDE_FULL);
 		else
 			return true;
 		
@@ -1653,27 +1645,18 @@ public class Siege implements Siegable
 		return _flameTowerCount > 0;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#giveFame()
-	 */
 	@Override
 	public boolean giveFame()
 	{
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameFrequency()
-	 */
 	@Override
 	public int getFameFrequency()
 	{
 		return Config.CASTLE_ZONE_FAME_TASK_FREQUENCY;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameAmount()
-	 */
 	@Override
 	public int getFameAmount()
 	{

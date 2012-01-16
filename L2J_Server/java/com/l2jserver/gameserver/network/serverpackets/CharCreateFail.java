@@ -40,9 +40,6 @@ public class CharCreateFail extends L2GameServerPacket
 		writeD(_error);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

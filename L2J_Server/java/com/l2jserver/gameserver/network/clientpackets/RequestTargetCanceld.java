@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TargetUnselected;
 
 /**
@@ -45,7 +44,7 @@ public final class RequestTargetCanceld extends L2GameClientPacket
 		
 		if (activeChar.isLockedTarget())
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FAILED_DISABLE_TARGET));
+			activeChar.sendPacket(SystemMessageId.FAILED_DISABLE_TARGET);
 			return;
 		}
 		

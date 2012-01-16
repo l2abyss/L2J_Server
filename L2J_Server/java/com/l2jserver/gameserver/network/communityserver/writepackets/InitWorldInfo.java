@@ -29,8 +29,8 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 /**
  * @authors  Forsaiken, Gigiikun
@@ -60,25 +60,36 @@ public final class InitWorldInfo extends BaseWritePacket
 				i = 0;
 				for (L2Clan c : clans)
 				{
+					if (c == null)
+					{
+						continue;
+					}
 					if (i++ == info)
 						break;
 					super.writeD(c.getClanId());
 					super.writeS(c.getName());
 					super.writeD(c.getLevel());
-					super.writeD(c.getLeader().getObjectId());
-					super.writeS(c.getLeader().getName());
+					if (c.getLeader() == null)
+					{
+						writeD(0);
+						writeS("");
+						_log.info("Clan Id: " + c.getClanId() + " has null clan leader!"); 
+					}
+					else
+					{
+						super.writeD(c.getLeader().getObjectId());
+						super.writeS(c.getLeader().getName());
+					}
 					super.writeD(c.getMembersCount());
 					super.writeC((c.isNoticeEnabled() ? 1:0));
+					// Alliance info:
 					super.writeS(c.getAllyName());
-					FastList<Integer> allyClanIdList = FastList.newInstance();
-					if (c.getAllyId() != 0)
-						for (L2Clan clan : ClanTable.getInstance().getClans())
-							if (clan.getAllyId() == c.getAllyId() && c != clan)
-								allyClanIdList.add(clan.getClanId());
-					super.writeD(allyClanIdList.size());
-					for (int k : allyClanIdList)
-						super.writeD(k);
-					FastList.recycle(allyClanIdList);
+					final List<L2Clan> clanAllies = ClanTable.getInstance().getClanAllies(c.getAllyId());
+					super.writeD(clanAllies.size());
+					for (L2Clan allies : clanAllies)
+					{
+						super.writeD(allies.getClanId());
+					}
 				}
 				break;
 			case TYPE_PLAYER:

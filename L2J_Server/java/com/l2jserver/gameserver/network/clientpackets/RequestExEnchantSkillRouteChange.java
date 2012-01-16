@@ -23,16 +23,15 @@ import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
-import com.l2jserver.gameserver.model.L2ItemInstance;
-import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfoDetail;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillResult;
-import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.util.Rnd;
@@ -99,14 +98,14 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			return;
 		}
 		
-		int currentLevel = player.getSkillLevel(_skillId);
+		final int beforeEnchantSkillLevel = player.getSkillLevel(_skillId);
 		// do u have this skill enchanted?
-		if (currentLevel <= 100)
+		if (beforeEnchantSkillLevel <= 100)
 		{
 			return;
 		}
 		
-		int currentEnchantLevel = currentLevel % 100;
+		int currentEnchantLevel = beforeEnchantSkillLevel % 100;
 		// is the requested level valid?
 		if (currentEnchantLevel != _skillLvl % 100)
 		{
@@ -125,14 +124,14 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			{
 				if (spb == null)// Haven't spellbook
 				{
-					player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_ITENS_NEEDED_TO_CHANGE_SKILL_ENCHANT_ROUTE));
+					player.sendPacket(SystemMessageId.YOU_DONT_HAVE_ALL_ITENS_NEEDED_TO_CHANGE_SKILL_ENCHANT_ROUTE);
 					return;
 				}
 			}
 			
 			if (player.getInventory().getAdena() < requireditems)
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+				player.sendPacket(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL);
 				return;
 			}
 			
@@ -143,11 +142,11 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 				check &= player.destroyItem("Consume", spb.getObjectId(), 1, player, true);
 			}
 			
-			check &= player.destroyItemByItemId("Consume", 57, requireditems, player, true);
+			check &= player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, requireditems, player, true);
 			
 			if (!check)
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL));
+				player.sendPacket(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL);
 				return;
 			}
 			
@@ -199,32 +198,15 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 				player.sendPacket(sm);
 			}
 			player.sendSkillList();
-			player.sendPacket(new ExEnchantSkillInfo(_skillId, player.getSkillLevel(_skillId)));
-			player.sendPacket(new ExEnchantSkillInfoDetail(3, _skillId, player.getSkillLevel(_skillId), player));
-			
-			this.updateSkillShortcuts(player);
-			
+			final int afterEnchantSkillLevel = player.getSkillLevel(_skillId);
+			player.sendPacket(new ExEnchantSkillInfo(_skillId, afterEnchantSkillLevel));
+			player.sendPacket(new ExEnchantSkillInfoDetail(3, _skillId, afterEnchantSkillLevel, player));
+			player.updateShortCuts(_skillId, afterEnchantSkillLevel);
 		}
 		else
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_DONT_HAVE_ENOUGH_SP_TO_ENCHANT_THAT_SKILL);
 			player.sendPacket(sm);
-		}
-	}
-	
-	private void updateSkillShortcuts(L2PcInstance player)
-	{
-		// update all the shortcuts to this skill
-		L2ShortCut[] allShortCuts = player.getAllShortCuts();
-		
-		for (L2ShortCut sc : allShortCuts)
-		{
-			if (sc.getId() == _skillId && sc.getType() == L2ShortCut.TYPE_SKILL)
-			{
-				L2ShortCut newsc = new L2ShortCut(sc.getSlot(), sc.getPage(), sc.getType(), sc.getId(), player.getSkillLevel(_skillId), 1);
-				player.sendPacket(new ShortCutRegister(newsc));
-				player.registerShortCut(newsc);
-			}
 		}
 	}
 	

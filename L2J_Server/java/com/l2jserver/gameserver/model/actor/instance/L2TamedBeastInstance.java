@@ -24,10 +24,10 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
@@ -215,6 +215,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			_skill = skill;
 		}
 		
+		@Override
 		public void run()
 		{
 			if (_skill == null)
@@ -396,6 +397,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			_tamedBeast = tamedBeast;
 		}
 		
+		@Override
 		public void run()
 		{
 			int foodTypeSkillId = _tamedBeast.getFoodType();
@@ -408,7 +410,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 				if (item != null && item.getCount() >= 1)
 				{
 					owner.destroyItem("BeastMob", item, 1, _tamedBeast, true);
-					_tamedBeast.broadcastPacket(new SocialAction(_tamedBeast, 3));
+					_tamedBeast.broadcastPacket(new SocialAction(_tamedBeast.getObjectId(), 3));
 				}
 				else
 					_tamedBeast.deleteMe();
@@ -467,6 +469,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			_numBuffs = numBuffs;
 		}
 		
+		@Override
 		public void run()
 		{
 			L2PcInstance owner = _tamedBeast.getOwner();

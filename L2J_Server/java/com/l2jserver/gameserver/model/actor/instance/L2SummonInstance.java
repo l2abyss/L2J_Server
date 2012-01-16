@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -68,6 +68,9 @@ public class L2SummonInstance extends L2Summon
 	
 	private int _referenceSkill;
 	
+	private boolean _shareElementals = false;
+	private double _sharedElementalsPercent = 1;
+	
 	public L2SummonInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
 	{
 		super(objectId, template, owner);
@@ -120,7 +123,7 @@ public class L2SummonInstance extends L2Summon
 	@Override
 	public final int getLevel()
 	{
-		return (getTemplate() != null ? getTemplate().level : 0);
+		return (getTemplate() != null ? getTemplate().getLevel() : 0);
 	}
 	
 	@Override
@@ -137,6 +140,26 @@ public class L2SummonInstance extends L2Summon
 	public float getExpPenalty()
 	{
 		return _expPenalty;
+	}
+	
+	public void setSharedElementals(final boolean val)
+	{
+		_shareElementals = val;
+	}
+	
+	public boolean isSharingElementals()
+	{
+		return _shareElementals;
+	}
+	
+	public void setSharedElementalsValue(final double val)
+	{
+		_sharedElementalsPercent = val;
+	}
+	
+	public double sharedElementalsPercent()
+	{
+		return _sharedElementalsPercent;
 	}
 	
 	public int getItemConsumeCount()
@@ -206,7 +229,7 @@ public class L2SummonInstance extends L2Summon
 			return false;
 		
 		if (Config.DEBUG)
-			_log.warning("L2SummonInstance: " + getTemplate().name + " (" + getOwner().getName() + ") has been killed.");
+			_log.warning("L2SummonInstance: " + getTemplate().getName() + " (" + getOwner().getName() + ") has been killed.");
 		
 		if (_summonLifeTask != null)
 		{
@@ -335,7 +358,7 @@ public class L2SummonInstance extends L2Summon
 					switch (effect.getEffectType())
 					{
 						case HEAL_OVER_TIME:
-						case COMBAT_POINT_HEAL_OVER_TIME:
+						case CPHEAL_OVER_TIME:
 							// TODO: Fix me.
 						case HIDE:
 							continue;
@@ -455,6 +478,8 @@ public class L2SummonInstance extends L2Summon
 
 			for (SummonEffect se : SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()))
 			{
+				if (se == null)
+					continue;
 				Env env = new Env();
 				env.player = this;
 				env.target = this;
@@ -476,8 +501,8 @@ public class L2SummonInstance extends L2Summon
 	
 	static class SummonLifetime implements Runnable
 	{
-		private L2PcInstance _activeChar;
-		private L2SummonInstance _summon;
+		private final L2PcInstance _activeChar;
+		private final L2SummonInstance _summon;
 		
 		SummonLifetime(L2PcInstance activeChar, L2SummonInstance newpet)
 		{
@@ -485,10 +510,11 @@ public class L2SummonInstance extends L2Summon
 			_summon = newpet;
 		}
 		
+		@Override
 		public void run()
 		{
 			if (Config.DEBUG)
-				log.warning("L2SummonInstance: " + _summon.getTemplate().name + " (" + _activeChar.getName() + ") run task.");
+				log.warning("L2SummonInstance: " + _summon.getTemplate().getName() + " (" + _activeChar.getName() + ") run task.");
 			
 			try
 			{
@@ -526,7 +552,7 @@ public class L2SummonInstance extends L2Summon
 				// prevent useless packet-sending when the difference isn't visible.
 				if ((_summon.lastShowntimeRemaining - newTimeRemaining) > maxTime / 352)
 				{
-					_summon.getOwner().sendPacket(new SetSummonRemainTime(maxTime, (int) newTimeRemaining));
+					_summon.sendPacket(new SetSummonRemainTime(maxTime, (int) newTimeRemaining));
 					_summon.lastShowntimeRemaining = (int) newTimeRemaining;
 					_summon.updateEffectIcons();
 				}
@@ -542,7 +568,7 @@ public class L2SummonInstance extends L2Summon
 	public void unSummon(L2PcInstance owner)
 	{
 		if (Config.DEBUG)
-			_log.warning("L2SummonInstance: " + getTemplate().name + " (" + owner.getName() + ") unsummoned.");
+			_log.warning("L2SummonInstance: " + getTemplate().getName() + " (" + owner.getName() + ") unsummoned.");
 		
 		if (_summonLifeTask != null)
 		{
@@ -566,38 +592,9 @@ public class L2SummonInstance extends L2Summon
 	public boolean destroyItemByItemId(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 	{
 		if (Config.DEBUG)
-			_log.warning("L2SummonInstance: " + getTemplate().name + " (" + getOwner().getName() + ") consume.");
+			_log.warning("L2SummonInstance: " + getTemplate().getName() + " (" + getOwner().getName() + ") consume.");
 		
 		return getOwner().destroyItemByItemId(process, itemId, count, reference, sendMessage);
-	}
-	
-	@Override
-	public byte getAttackElement()
-	{
-		if (getOwner() == null || !getOwner().getClassId().isSummoner())
-			return super.getAttackElement();
-		
-		return getOwner().getAttackElement();
-	}
-	
-	@Override
-	public int getAttackElementValue(byte attribute)
-	{
-		if (getOwner() == null || !getOwner().getClassId().isSummoner() || getOwner().getExpertiseWeaponPenalty() > 0)
-			return super.getAttackElementValue(attribute);
-		
-		// 80% of the owner (onwer already has only 20%)
-		return 4 * getOwner().getAttackElementValue(attribute);
-	}
-	
-	@Override
-	public int getDefenseElementValue(byte attribute)
-	{
-		if (getOwner() == null || !getOwner().getClassId().isSummoner())
-			return super.getDefenseElementValue(attribute);
-		
-		// bonus from owner
-		return super.getDefenseElementValue(attribute) + getOwner().getDefenseElementValue(attribute);
 	}
 	
 	public void setTimeRemaining(int time)
@@ -608,5 +605,29 @@ public class L2SummonInstance extends L2Summon
 	public int getReferenceSkill()
 	{
 		return _referenceSkill;
+	}
+	
+	@Override
+	public byte getAttackElement()
+	{
+		if(isSharingElementals() && getOwner() != null)
+			return getOwner().getAttackElement();
+		return super.getAttackElement();
+	}
+	
+	@Override
+	public int getAttackElementValue(byte attackAttribute)
+	{
+		if(isSharingElementals() && getOwner() != null)
+			return (int)(getOwner().getAttackElementValue(attackAttribute) * sharedElementalsPercent());
+		return super.getAttackElementValue(attackAttribute);
+	}
+	
+	@Override
+	public int getDefenseElementValue(byte defenseAttribute)
+	{
+		if(isSharingElementals() && getOwner() != null)
+			return (int)(getOwner().getDefenseElementValue(defenseAttribute) * sharedElementalsPercent());
+		return super.getDefenseElementValue(defenseAttribute);
 	}
 }

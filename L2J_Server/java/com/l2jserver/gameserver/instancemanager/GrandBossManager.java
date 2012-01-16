@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TIntIntHashMap;
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,11 +31,12 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.type.L2BossZone;
-import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.util.L2FastList;
 
 /**
@@ -247,6 +248,11 @@ public class GrandBossManager
 			}
 		}
 		return null;
+	}
+	
+	public final L2BossZone getZone(Location loc)
+	{
+		return getZone(loc.getX(), loc.getY(), loc.getZ());
 	}
 	
 	public final L2BossZone getZone(int x, int y, int z)

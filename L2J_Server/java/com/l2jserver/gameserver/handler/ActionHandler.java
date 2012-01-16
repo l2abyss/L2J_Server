@@ -22,8 +22,7 @@ import com.l2jserver.gameserver.model.L2Object.InstanceType;
 
 public class ActionHandler
 {
-	private Map<InstanceType, IActionHandler> _actions;
-	private Map<InstanceType, IActionHandler> _actionsShift;
+	private final Map<InstanceType, IActionHandler> _actions;
 	
 	public static ActionHandler getInstance()
 	{
@@ -33,20 +32,14 @@ public class ActionHandler
 	private ActionHandler()
 	{
 		_actions = new FastMap<InstanceType, IActionHandler>();
-		_actionsShift = new FastMap<InstanceType, IActionHandler>();
 	}
 	
-	public void registerActionHandler(IActionHandler handler)
+	public void registerHandler(IActionHandler handler)
 	{
 		_actions.put(handler.getInstanceType(), handler);
 	}
 	
-	public void registerActionShiftHandler(IActionHandler handler)
-	{
-		_actionsShift.put(handler.getInstanceType(), handler);
-	}
-	
-	public IActionHandler getActionHandler(InstanceType iType)
+	public IActionHandler getHandler(InstanceType iType)
 	{
 		IActionHandler result = null;
 		for (InstanceType t = iType; t != null; t = t.getParent())
@@ -58,26 +51,9 @@ public class ActionHandler
 		return result;
 	}
 	
-	public IActionHandler getActionShiftHandler(InstanceType iType)
-	{
-		IActionHandler result = null;
-		for (InstanceType t = iType; t != null; t = t.getParent())
-		{
-			result = _actionsShift.get(t);
-			if (result != null)
-				break;
-		}
-		return result;
-	}
-	
 	public int size()
 	{
 		return _actions.size();
-	}
-	
-	public int sizeShift()
-	{
-		return _actionsShift.size();
 	}
 	
 	@SuppressWarnings("synthetic-access")

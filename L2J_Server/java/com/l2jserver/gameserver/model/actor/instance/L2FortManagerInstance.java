@@ -203,7 +203,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					else
 					{
 						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-						html.setFile(player.getHtmlPrefix(), "data/html/fortress/" + getTemplate().npcId	+ "-d.htm");
+						html.setFile(player.getHtmlPrefix(), "data/html/fortress/" + getTemplate().getNpcId() + "-d.htm");
 						html.replace("%objectId%", String.valueOf(getObjectId()));
 						html.replace("%npcname%", getName());
 						player.sendPacket(html);

@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
@@ -33,26 +32,29 @@ public class L2BirthdayCakeInstance extends L2Npc
 	private static final int BIRTHDAY_CAKE_24 = 106;
 	private static final int BIRTHDAY_CAKE = 139;
 	private static L2Skill _skill;
-	private ScheduledFuture<?> _aiTask;
-	private int _masterId;
+	private final ScheduledFuture<?> _aiTask;
 	
-	public L2BirthdayCakeInstance(int objectId, L2NpcTemplate template, int masterId)
+	public L2BirthdayCakeInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		
-		if (template.npcId == BIRTHDAY_CAKE_24)
+		if (template.getNpcId() == BIRTHDAY_CAKE_24)
+		{
 			_skill = SkillTable.getInstance().getInfo(22035, 1);
-		else if (template.npcId == BIRTHDAY_CAKE)
+		}
+		else if (template.getNpcId() == BIRTHDAY_CAKE)
+		{
 			_skill = SkillTable.getInstance().getInfo(22250, 1);
-		
-		_masterId = masterId;
+		}
 		
 		_aiTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new BuffTask(this), 1000, 1000);
+		
+		setInstanceType(InstanceType.L2BirthdayCakeInstance);
 	}
 	
-	class BuffTask implements Runnable
+	private class BuffTask implements Runnable
 	{
-		L2BirthdayCakeInstance _cake;
+		private final L2BirthdayCakeInstance _cake;
 		
 		protected BuffTask(L2BirthdayCakeInstance cake)
 		{
@@ -66,29 +68,35 @@ public class L2BirthdayCakeInstance extends L2Npc
 			{
 				if (_cake.getNpcId() == BIRTHDAY_CAKE_24)
 				{
-					for(L2PcInstance player : _cake.getKnownList().getKnownPlayersInRadius(_skill.getSkillRadius()))
+					for (L2PcInstance player : _cake.getKnownList().getKnownPlayersInRadius(_skill.getSkillRadius()))
 					{
 						_skill.getEffects(_cake, player);
 					}
 				}
 				else if (_cake.getNpcId() == BIRTHDAY_CAKE)
 				{
-					L2PcInstance player = L2World.getInstance().getPlayer(_masterId);
+					final L2PcInstance player = (L2PcInstance) _cake.getSummoner();
 					if (player == null)
+					{
 						return;
+					}
 					
-					L2Party party = player.getParty();
+					final L2Party party = player.getParty();
 					if (party == null)
 					{
 						if (player.isInsideRadius(_cake, _skill.getSkillRadius(), true, true))
+						{
 							_skill.getEffects(_cake, player);
+						}
 					}
 					else
 					{
 						for (L2PcInstance member : party.getPartyMembers())
 						{
-							if (member != null && member.isInsideRadius(_cake, _skill.getSkillRadius(), true, true))
+							if ((member != null) && member.isInsideRadius(_cake, _skill.getSkillRadius(), true, true))
+							{
 								_skill.getEffects(_cake, member);
+							}
 						}
 					}
 				}
@@ -100,13 +108,12 @@ public class L2BirthdayCakeInstance extends L2Npc
 	public void deleteMe()
 	{
 		if (_aiTask != null)
+		{
 			_aiTask.cancel(true);
+		}
 		super.deleteMe();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.L2Object#isAttackable()
-	 */
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{

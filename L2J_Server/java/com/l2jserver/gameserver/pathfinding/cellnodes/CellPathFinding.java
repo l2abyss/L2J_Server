@@ -25,8 +25,9 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.pathfinding.AbstractNode;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
@@ -145,7 +146,7 @@ public class CellPathFinding extends PathFinding
 						dropDebugItem(1831, (int) (-n.getCost() * 10), n.getLoc());
 					else
 						// known nodes
-						dropDebugItem(57, (int) (n.getCost() * 10), n.getLoc());
+						dropDebugItem(PcInventory.ADENA_ID, (int) (n.getCost() * 10), n.getLoc());
 				}
 			}
 			

@@ -36,8 +36,12 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.PlayerState;
 import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.type.L2ArmorType;
+import com.l2jserver.gameserver.model.item.type.L2WeaponType;
 import com.l2jserver.gameserver.skills.conditions.Condition;
 import com.l2jserver.gameserver.skills.conditions.ConditionChangeWeapon;
 import com.l2jserver.gameserver.skills.conditions.ConditionForceBuff;
@@ -109,11 +113,7 @@ import com.l2jserver.gameserver.skills.funcs.Lambda;
 import com.l2jserver.gameserver.skills.funcs.LambdaCalc;
 import com.l2jserver.gameserver.skills.funcs.LambdaConst;
 import com.l2jserver.gameserver.skills.funcs.LambdaStats;
-import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
-import com.l2jserver.gameserver.templates.item.L2ArmorType;
-import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 /**

@@ -24,13 +24,13 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SummonItemsData;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2SummonItem;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
@@ -120,7 +120,7 @@ public final class Evolve
 		player.setPet(petSummon);
 		
 		player.sendPacket(new MagicSkillUse(npc, 2046, 1, 1000, 600000));
-		player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUMMON_A_PET));
+		player.sendPacket(SystemMessageId.SUMMON_A_PET);
 		//L2World.getInstance().storeObject(petSummon);
 		petSummon.spawnMe(oldX, oldY, oldZ);
 		petSummon.startFeed();
@@ -165,7 +165,9 @@ public final class Evolve
 		
 		//deleting old pet item
 		L2ItemInstance removedItem = player.getInventory().destroyItem("PetRestore", item, player, npc);
-		player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED).addItemName(removedItem));
+		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
+		sm.addItemName(removedItem);
+		player.sendPacket(sm);
 		
 		//Give new pet item
 		L2ItemInstance addedItem = player.getInventory().addItem("PetRestore", itemIdgive, 1, player, npc);
@@ -188,7 +190,7 @@ public final class Evolve
 		player.setPet(petSummon);
 		
 		player.sendPacket(new MagicSkillUse(npc, 2046, 1, 1000, 600000));
-		player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SUMMON_A_PET));
+		player.sendPacket(SystemMessageId.SUMMON_A_PET);
 		//L2World.getInstance().storeObject(petSummon);
 		petSummon.spawnMe(player.getX(), player.getY(), player.getZ());
 		petSummon.startFeed();
@@ -247,6 +249,7 @@ public final class Evolve
 			_petSummon = petSummon;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -274,6 +277,7 @@ public final class Evolve
 			_petSummon = petSummon;
 		}
 		
+		@Override
 		public void run()
 		{
 			try

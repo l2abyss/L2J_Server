@@ -33,9 +33,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
-import com.l2jserver.gameserver.model.zone.type.L2DerbyTrackZone;
 import com.l2jserver.gameserver.model.zone.type.L2PeaceZone;
-import com.l2jserver.gameserver.model.zone.type.L2TownZone;
 
 public final class L2WorldRegion
 {
@@ -131,7 +129,7 @@ public final class L2WorldRegion
 		
 		for (L2ZoneType e : getZones())
 		{
-			if ((e instanceof L2TownZone && ((L2TownZone) e).isPeaceZone()) || e instanceof L2DerbyTrackZone || e instanceof L2PeaceZone)
+			if (e instanceof L2PeaceZone)
 			{
 				if (e.isInsideZone(x, up, z))
 					return false;

@@ -26,10 +26,8 @@ import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.Elementals;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.L2Skill.SkillTraitType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -46,6 +44,12 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Siege;
+import com.l2jserver.gameserver.model.item.L2Armor;
+import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.item.L2Weapon;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.type.L2ArmorType;
+import com.l2jserver.gameserver.model.item.type.L2WeaponType;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
@@ -58,12 +62,8 @@ import com.l2jserver.gameserver.skills.conditions.ConditionUsingItemType;
 import com.l2jserver.gameserver.skills.funcs.Func;
 import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 import com.l2jserver.gameserver.templates.effects.EffectTemplate;
-import com.l2jserver.gameserver.templates.item.L2Armor;
-import com.l2jserver.gameserver.templates.item.L2ArmorType;
-import com.l2jserver.gameserver.templates.item.L2Item;
-import com.l2jserver.gameserver.templates.item.L2Weapon;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TraitType;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
@@ -1098,7 +1098,7 @@ public final class Formulas
 	 */
 	public static final double calcHpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().baseHpReg;
+		double init = cha.getTemplate().getBaseHpReg();
 		double hpRegenMultiplier = cha.isRaid() ? Config.RAID_HP_REGEN_MULTIPLIER : Config.HP_REGEN_MULTIPLIER;
 		double hpRegenBonus = 0;
 		
@@ -1199,7 +1199,7 @@ public final class Formulas
 	 */
 	public static final double calcMpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().baseMpReg;
+		double init = cha.getTemplate().getBaseMpReg();
 		double mpRegenMultiplier = cha.isRaid() ? Config.RAID_MP_REGEN_MULTIPLIER : Config.MP_REGEN_MULTIPLIER;
 		double mpRegenBonus = 0;
 		
@@ -1293,7 +1293,7 @@ public final class Formulas
 	 */
 	public static final double calcCpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().baseHpReg;
+		double init = cha.getTemplate().getBaseHpReg();
 		double cpRegenMultiplier = Config.CP_REGEN_MULTIPLIER;
 		double cpRegenBonus = 0;
 		
@@ -1596,7 +1596,7 @@ public final class Formulas
 		if (crit)
 		{
 			//Finally retail like formula
-			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().baseCritVuln, target, null) * (70 * damage / defence);
+			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().getBaseCritVuln(), target, null) * (70 * damage / defence);
 			//Crit dmg add is almost useless in normal hits...
 			damage += (attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 70 / defence);
 		}
@@ -1775,9 +1775,9 @@ public final class Formulas
 						&& (target.getLevel() - attacker.getLevel()) <= 9)
 				{
 					if (skill.getSkillType() == L2SkillType.DRAIN)
-						attacker.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DRAIN_HALF_SUCCESFUL));
+						attacker.sendPacket(SystemMessageId.DRAIN_HALF_SUCCESFUL);
 					else
-						attacker.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ATTACK_FAILED));
+						attacker.sendPacket(SystemMessageId.ATTACK_FAILED);
 					
 					damage /= 2;
 				}
@@ -1876,9 +1876,9 @@ public final class Formulas
 		{
 			if (calcMagicSuccess(owner, target, skill) && (target.getLevel() - skill.getMagicLevel()) <= 9){
 				if (skill.getSkillType() == L2SkillType.DRAIN)
-					owner.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.DRAIN_HALF_SUCCESFUL));
+					owner.sendPacket(SystemMessageId.DRAIN_HALF_SUCCESFUL);
 				else
-					owner.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.ATTACK_FAILED));
+					owner.sendPacket(SystemMessageId.ATTACK_FAILED);
 				
 				damage /= 2;
 			}
@@ -2036,11 +2036,11 @@ public final class Formulas
 						{
 							player.setCurrentHp(1);
 							player.setCurrentCp(1);
-							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL));
+							player.sendPacket(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL);
 						}
 					}
 				}
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.LETHAL_STRIKE));
+				activeChar.sendPacket(SystemMessageId.LETHAL_STRIKE);
 			}
 			else if (skill.getLethalChance1() > 0 && Rnd.get(1000) < calcLethal(activeChar, target, skill.getLethalChance1(),skill.getMagicLevel()))
 			{
@@ -2053,8 +2053,8 @@ public final class Formulas
 								(((L2PcInstance)activeChar).isGM() && !((L2PcInstance)activeChar).getAccessLevel().canGiveDamage())))
 						{
 							player.setCurrentCp(1); // Set CP to 1
-							player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL));
-							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CP_SIPHON));
+							player.sendPacket(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL);
+							activeChar.sendPacket(SystemMessageId.CP_SIPHON);
 						}
 					}
 				}
@@ -2274,10 +2274,10 @@ public final class Formulas
 			switch (shldSuccess)
 			{
 				case SHIELD_DEFENSE_SUCCEED:
-					enemy.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL));
+					enemy.sendPacket(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL);
 					break;
 				case SHIELD_DEFENSE_PERFECT_BLOCK:
-					enemy.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS));
+					enemy.sendPacket(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS);
 					break;
 			}
 		}
@@ -2327,25 +2327,25 @@ public final class Formulas
 				switch (stat)
 				{
 					case AGGRESSION:
-						multiplier = target.getTemplate().baseAggressionVuln;
+						multiplier = target.getTemplate().getBaseAggressionVuln();
 						break;
 					case BLEED:
-						multiplier = target.getTemplate().baseBleedVuln;
+						multiplier = target.getTemplate().getBaseBleedVuln();
 						break;
 					case POISON:
-						multiplier = target.getTemplate().basePoisonVuln;
+						multiplier = target.getTemplate().getBasePoisonVuln();
 						break;
 					case STUN:
-						multiplier = target.getTemplate().baseStunVuln;
+						multiplier = target.getTemplate().getBaseStunVuln();
 						break;
 					case ROOT:
-						multiplier = target.getTemplate().baseRootVuln;
+						multiplier = target.getTemplate().getBaseRootVuln();
 						break;
 					case MOVEMENT:
-						multiplier = target.getTemplate().baseMovementVuln;
+						multiplier = target.getTemplate().getBaseMovementVuln();
 						break;
 					case SLEEP:
-						multiplier = target.getTemplate().baseSleepVuln;
+						multiplier = target.getTemplate().getBaseSleepVuln();
 						break;
 				}
 			}
@@ -2361,10 +2361,10 @@ public final class Formulas
 		if (skill == null)
 			return multiplier;
 		
-		final SkillTraitType trait = skill.getTraitType();
+		final L2TraitType trait = skill.getTraitType();
 		// First check if skill have trait set
 		// If yes, use correct vuln
-		if (trait != null && trait != SkillTraitType.NONE)
+		if (trait != null && trait != L2TraitType.NONE)
 		{
 			switch (trait)
 			{
@@ -2442,10 +2442,10 @@ public final class Formulas
 		if (skill == null)
 			return multiplier;
 		
-		final SkillTraitType trait = skill.getTraitType();
+		final L2TraitType trait = skill.getTraitType();
 		// First check if skill have trait set
 		// If yes, use correct vuln
-		if (trait != null && trait != SkillTraitType.NONE)
+		if (trait != null && trait != L2TraitType.NONE)
 		{
 			switch (trait)
 			{
@@ -2543,6 +2543,9 @@ public final class Formulas
 	
 	public static boolean calcEffectSuccess(L2Character attacker, L2Character target, EffectTemplate effect, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
+		if (skill.getPower() == -1)
+			return true;
+		
 		final L2SkillType type = effect.effectType;
 		final int value = (int)effect.effectPower;
 
@@ -2652,6 +2655,9 @@ public final class Formulas
 	
 	public static boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
+		if (skill.getPower() == -1)
+			return true;
+		
 		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
 		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
 		if (skill.ignoreResists())
@@ -2758,6 +2764,9 @@ public final class Formulas
 	
 	public static boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill, byte shld)
 	{
+		if (skill.getPower() == -1)
+			return true;
+		
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 			return false;
 		final boolean isPvP = (target instanceof L2Playable);
@@ -2844,6 +2853,9 @@ public final class Formulas
 	
 	public static boolean calcMagicSuccess(L2Character attacker, L2Character target, L2Skill skill)
 	{
+		if (skill.getPower() == -1)
+			return true;
+		
 		// DS: remove skill magic level dependence from nukes
 		//int lvlDifference = (target.getLevel() - (skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()));
 		int lvlDifference = (target.getLevel() - (skill.getSkillType() == L2SkillType.SPOIL ? skill.getMagicLevel() : attacker.getLevel()));

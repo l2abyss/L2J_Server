@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,18 +38,15 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
+ * This class manage the player add/remove, team change and<br>
+ * event arena status, as the clearance of the participants<br>
+ * list or liberate the arena.
  * @author BiggBoss
  */
 public final class HandysBlockCheckerManager 
 {
-	/*
-	 * This class manage the player add/remove, team change and
-	 * event arena status, as the clearance of the participants
-	 * list or liberate the arena 
-	 */
-	
 	// All the participants and their team classifed by arena
-	private static ArenaParticipantsHolder[] _arenaPlayers;
+	private static ArenaParticipantsHolder[] _arenaPlayers = new ArenaParticipantsHolder[4];
 	
 	// Arena votes to start the game
 	private static TIntIntHashMap _arenaVotes = new TIntIntHashMap();
@@ -61,7 +58,7 @@ public final class HandysBlockCheckerManager
 	private static FastList<Integer> _registrationPenalty = new FastList<Integer>();
 	
 	/**
-	 * Return the number of event-start votes for the spcified
+	 * Return the number of event-start votes for the specified
 	 * arena id
 	 * @param arenaId
 	 * @return int (number of votes)
@@ -134,8 +131,6 @@ public final class HandysBlockCheckerManager
 	 */
 	public void startUpParticipantsQueue()
 	{
-		_arenaPlayers = new ArenaParticipantsHolder[4];
-		
 		for(int i = 0; i < 4; ++i)
 		{
 			_arenaPlayers[i] = new ArenaParticipantsHolder(i);
@@ -143,7 +138,7 @@ public final class HandysBlockCheckerManager
 	}
 	
 	/**
-	 * Add the player to the specified arena (throught the specified
+	 * Add the player to the specified arena (through the specified
 	 * arena manager) and send the needed server ->  client packets
 	 * @param player
 	 * @param arenaId
@@ -170,7 +165,7 @@ public final class HandysBlockCheckerManager
 				
 			if(player.isCursedWeaponEquipped())
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_REGISTER_PROCESSING_CURSED_WEAPON));
+				player.sendPacket(SystemMessageId.CANNOT_REGISTER_PROCESSING_CURSED_WEAPON);
 				return false;
 			}
 			
@@ -183,24 +178,24 @@ public final class HandysBlockCheckerManager
 			if(OlympiadManager.getInstance().isRegistered(player))
 			{
 				OlympiadManager.getInstance().unRegisterNoble(player);
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE);
 			}				
 			/*
 			if(UnderGroundColiseum.getInstance().isRegisteredPlayer(player))
 			{
 				UngerGroundColiseum.getInstance().removeParticipant(player);
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
 			}
 			if(KrateiCubeManager.getInstance().isRegisteredPlayer(player))
 			{
 				KrateiCubeManager.getInstance().removeParticipant(player);
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
+				player.sendPacket(SystemMessageId.COLISEUM_OLYMPIAD_KRATEIS_APPLICANTS_CANNOT_PARTICIPATE));
 			}
 			*/
 			
 			if(_registrationPenalty.contains(player.getObjectId()))
 			{
-				player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANNOT_REQUEST_REGISTRATION_10_SECS_AFTER));
+				player.sendPacket(SystemMessageId.CANNOT_REQUEST_REGISTRATION_10_SECS_AFTER);
 				return false;
 			}
 			

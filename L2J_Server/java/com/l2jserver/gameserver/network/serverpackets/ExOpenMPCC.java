@@ -26,9 +26,6 @@ public class ExOpenMPCC extends L2GameServerPacket
 	
 	private static final String _S__FE_25_EXOPENMPCC = "[S] FE:12 ExOpenMPCC";
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -37,9 +34,6 @@ public class ExOpenMPCC extends L2GameServerPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

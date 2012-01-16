@@ -12,9 +12,9 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.TIntArrayList;
-import gnu.trove.TIntIntHashMap;
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.list.array.TIntArrayList;
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.logging.Logger;
 
@@ -58,7 +58,7 @@ public class SkillTable
 		SkillsEngine.getInstance().loadAllSkills(_skills);
 		
 		_skillMaxLevel.clear();
-		for (final L2Skill skill : _skills.getValues(new L2Skill[_skills.size()]))
+		for (final L2Skill skill : _skills.values(new L2Skill[0]))
 		{
 			final int skillId = skill.getId();
 			final int skillLvl = skill.getLevel();

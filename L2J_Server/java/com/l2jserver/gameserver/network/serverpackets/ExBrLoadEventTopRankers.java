@@ -36,9 +36,6 @@ public class ExBrLoadEventTopRankers extends L2GameServerPacket
 		_myScore = myScore;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected final void writeImpl()
 	{
@@ -52,9 +49,6 @@ public class ExBrLoadEventTopRankers extends L2GameServerPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

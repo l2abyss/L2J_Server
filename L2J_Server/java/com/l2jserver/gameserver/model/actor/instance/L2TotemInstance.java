@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.Collection;
 import java.util.concurrent.ScheduledFuture;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -28,12 +27,12 @@ import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author UnAfraid
- *
  */
 public class L2TotemInstance extends L2Npc
 {
 	private ScheduledFuture<?> _aiTask;
-	private final L2Skill _skill;
+	
+	private L2Skill _skill;
 	
 	private class TotemAI implements Runnable
 	{
@@ -49,13 +48,15 @@ public class L2TotemInstance extends L2Npc
 		{
 			if (_skill == null)
 			{
-				_caster._aiTask.cancel(false);
-				_caster._aiTask = null;
+				if (_caster._aiTask != null)
+				{
+					_caster._aiTask.cancel(false);
+					_caster._aiTask = null;
+				}
 				return;
 			}
 			
-			Collection<L2PcInstance> plrs = getKnownList().getKnownPlayersInRadius(_skill.getSkillRadius());
-			for (L2PcInstance player : plrs)
+			for (L2PcInstance player : getKnownList().getKnownPlayersInRadius(_skill.getSkillRadius()))
 			{
 				if (player.getFirstEffect(_skill.getId()) == null)
 				{
@@ -63,6 +64,12 @@ public class L2TotemInstance extends L2Npc
 				}
 			}
 		}
+	}
+	
+	public L2TotemInstance(int objectId, L2NpcTemplate template)
+	{
+		super(objectId, template);
+		setInstanceType(InstanceType.L2TotemInstance);
 	}
 	
 	public L2TotemInstance(int objectId, L2NpcTemplate template, int skillId)
@@ -77,7 +84,9 @@ public class L2TotemInstance extends L2Npc
 	public void deleteMe()
 	{
 		if (_aiTask != null)
+		{
 			_aiTask.cancel(true);
+		}
 		super.deleteMe();
 	}
 	
@@ -97,5 +106,21 @@ public class L2TotemInstance extends L2Npc
 	public void onAction(L2PcInstance player, boolean interact)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
+	}
+	
+	public void setAITask()
+	{
+		if (_aiTask == null)
+		{
+			_aiTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new TotemAI(this), 3000, 3000);
+		}
+	}
+	
+	/**
+	 * @param skillId the _skill to set
+	 */
+	public void setSkill(int skillId)
+	{
+		_skill = SkillTable.getInstance().getInfo(skillId, 1);
 	}
 }

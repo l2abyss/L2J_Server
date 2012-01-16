@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.L2HennaInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2HennaInstance;
 
 public class HennaItemDrawInfo extends L2GameServerPacket
 {
@@ -54,9 +54,6 @@ public class HennaItemDrawInfo extends L2GameServerPacket
 		writeC(_activeChar.getWIT() + _henna.getStatWIT()); //equip WIT
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -44,9 +44,10 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -55,7 +56,6 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.templates.StatsSet;
 import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.StringUtil;
 
@@ -527,7 +527,7 @@ public class Hero
 			List<StatsSet> _mainlist = _herodiary.get(charid);
 			NpcHtmlMessage DiaryReply = new NpcHtmlMessage(5);
 			final String htmContent = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(),"data/html/olympiad/herodiary.htm");
-			if (htmContent != null)
+			if (htmContent != null && _heroMessage.containsKey(charid))
 			{
 				DiaryReply.setHtml(htmContent);
 				DiaryReply.replace("%heroname%", CharNameTable.getInstance().getNameById(charid));
@@ -1112,6 +1112,14 @@ public class Hero
 		}
 	}
 	
+	/**
+	 * @param objectId the player's object Id to verify.
+	 * @return {@code true} if there are heros and the player is in the list, {@code false} otherwise.
+	 */
+	public boolean isHero(int objectId)
+	{
+		return _heroes == null ? false : _heroes.containsKey(objectId);
+	}
 	
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder

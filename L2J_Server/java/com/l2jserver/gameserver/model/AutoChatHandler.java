@@ -266,6 +266,7 @@ public class AutoChatHandler implements SpawnListener
 	 * NPC ID will be added to that chat instance.
 	 * @param npc 
 	 */
+	@Override
 	public void npcSpawned(L2Npc npc)
 	{
 		synchronized (_registeredChats)
@@ -691,6 +692,7 @@ public class AutoChatHandler implements SpawnListener
 				_objectId = pObjectId;
 			}
 			
+			@Override
 			public synchronized void run()
 			{
 				AutoChatInstance chatInst = _registeredChats.get(_runnerNpcId);

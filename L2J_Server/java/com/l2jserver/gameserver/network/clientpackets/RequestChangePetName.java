@@ -56,7 +56,7 @@ public final class RequestChangePetName extends L2GameClientPacket
 			activeChar.sendPacket(SystemMessageId.NAMING_YOU_CANNOT_SET_NAME_OF_THE_PET);
 			return;
 		}
-		else if (PetNameTable.getInstance().doesPetNameExist(_name, pet.getTemplate().npcId))
+		else if (PetNameTable.getInstance().doesPetNameExist(_name, pet.getTemplate().getNpcId()))
 		{
 			activeChar.sendPacket(SystemMessageId.NAMING_ALREADY_IN_USE_BY_ANOTHER_PET);
 			return;

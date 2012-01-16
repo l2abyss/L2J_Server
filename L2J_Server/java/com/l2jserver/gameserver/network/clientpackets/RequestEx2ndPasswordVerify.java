@@ -44,9 +44,6 @@ public class RequestEx2ndPasswordVerify extends L2GameClientPacket
 		getClient().getSecondaryAuth().checkPassword(_password, false);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

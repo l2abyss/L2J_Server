@@ -1,14 +1,4 @@
 /*
- * $Header: L2ObjectMap.java, 22/07/2005 13:17:51 luisantonioa Exp $
- *
- * $Author: luisantonioa $
- * $Date: 22/07/2005 13:17:51 $
- * $Revision: 1 $
- * $Log: L2ObjectMap.java,v $
- * Revision 1  22/07/2005 13:17:51  luisantonioa
- * Added copyright notice
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -53,6 +43,7 @@ public abstract class L2ObjectMap<T extends L2Object> implements Iterable<T>
 	
 	public abstract boolean contains(T obj);
 	
+	@Override
 	public abstract Iterator<T> iterator();
 	
 	public static L2ObjectMap<L2Object> createL2ObjectMap()

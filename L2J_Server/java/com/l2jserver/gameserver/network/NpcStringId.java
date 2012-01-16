@@ -11731,6 +11731,12 @@ public final class NpcStringId
 	 * Message: ** Vacant Seat **
 	 */
 	public static final NpcStringId _VACANT_SEAT;
+	
+	/**
+	 * ID: 1010643<br>
+	 * Message: $s1 minute(s) are remaining.
+	 */
+	public static final NpcStringId S1_MINUTES_REMAINING;
 
 	/**
 	 * ID: 1010644<br>
@@ -13711,6 +13717,12 @@ public final class NpcStringId
 	 * Message: You have done well in finding me, but I cannot just hand you the key!
 	 */
 	public static final NpcStringId YOU_HAVE_DONE_WELL_IN_FINDING_ME_BUT_I_CANNOT_JUST_HAND_YOU_THE_KEY;
+	
+	/**
+	 * ID: 1800079<br>
+	 * Message: $s1 second(s) remaining.
+	 */
+	public static final NpcStringId S1_SECONDS_REMAINING;
 
 	/**
 	 * ID: 1800081<br>
@@ -13927,6 +13939,12 @@ public final class NpcStringId
 	 * Message: We'll have dinner in hell!!!
 	 */
 	public static final NpcStringId WELL_HAVE_DINNER_IN_HELL;
+	
+	/**
+	 * ID: 1800117<br>
+	 * Message: Detonator initialization- time set for $s1 minute(s) from now-
+	 */
+	public static final NpcStringId DETONATOR_INITIALIZATION_TIME_S1_MINUTES_FROM_NOW;
 
 	/**
 	 * ID: 1800118<br>
@@ -23540,6 +23558,7 @@ public final class NpcStringId
 		GRARR_S1_TEAM_IS_USING_THE_HOT_SPRINGS_SULFUR_ON_THE_OPPONENTS_CAMP = new NpcStringId(1010640);
 		GRARR_S1_TEAM_IS_ATTEMPTING_TO_STEAL_THE_JACKPOT = new NpcStringId(1010641);
 		_VACANT_SEAT = new NpcStringId(1010642);
+		S1_MINUTES_REMAINING = new NpcStringId(1010643);
 		HOW_DARE_YOU_RUIN_THE_PERFORMANCE_OF_THE_DARK_CHOIR_UNFORGIVABLE = new NpcStringId(1010644);
 		GET_RID_OF_THE_INVADERS_WHO_INTERRUPT_THE_PERFORMANCE_OF_THE_DARK_CHOIR = new NpcStringId(1010645);
 		DONT_YOU_HEAR_THE_MUSIC_OF_DEATH_REVEAL_THE_HORROR_OF_THE_DARK_CHOIR = new NpcStringId(1010646);
@@ -23870,6 +23889,7 @@ public final class NpcStringId
 		GUYS_SHOW_THEM_OUR_POWER = new NpcStringId(1800076);
 		YOU_HAVE_FINALLY_COME_HERE_BUT_YOU_WILL_NOT_BE_ABLE_TO_FIND_THE_SECRET_ROOM = new NpcStringId(1800077);
 		YOU_HAVE_DONE_WELL_IN_FINDING_ME_BUT_I_CANNOT_JUST_HAND_YOU_THE_KEY = new NpcStringId(1800078);
+		S1_SECONDS_REMAINING = new NpcStringId(1800079);
 		THE_MATCH_IS_AUTOMATICALLY_CANCELED_BECAUSE_YOU_ARE_TOO_FAR_FROM_THE_ADMISSION_MANAGER = new NpcStringId(1800081);
 		UGH_I_HAVE_BUTTERFLIES_IN_MY_STOMACH_THE_SHOW_STARTS_SOON = new NpcStringId(1800082);
 		THANK_YOU_ALL_FOR_COMING_HERE_TONIGHT = new NpcStringId(1800083);
@@ -23906,6 +23926,7 @@ public final class NpcStringId
 		FREEDOM_OR_DEATH = new NpcStringId(1800114);
 		THIS_IS_THE_WILL_OF_TRUE_WARRIORS = new NpcStringId(1800115);
 		WELL_HAVE_DINNER_IN_HELL = new NpcStringId(1800116);
+		DETONATOR_INITIALIZATION_TIME_S1_MINUTES_FROM_NOW = new NpcStringId(1800117);
 		ZZZZ_CITY_INTERFERENCE_ERROR_FORWARD_EFFECT_CREATED = new NpcStringId(1800118);
 		ZZZZ_CITY_INTERFERENCE_ERROR_RECURRENCE_EFFECT_CREATED = new NpcStringId(1800119);
 		GUARDS_ARE_COMING_RUN = new NpcStringId(1800120);

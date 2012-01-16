@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.templates.skills;
 import java.lang.reflect.Constructor;
 
 import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillAgathion;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillAppearance;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillChangeWeapon;
@@ -35,7 +36,6 @@ import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillSweeper;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillTeleport;
 import com.l2jserver.gameserver.skills.l2skills.L2SkillTrap;
-import com.l2jserver.gameserver.templates.StatsSet;
 
 
 /**

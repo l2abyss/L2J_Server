@@ -51,7 +51,7 @@ public class PetStat extends SummonStat
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_EARNED_S1_EXP);
 		sm.addNumber((int)addToExp);
 		getActiveChar().updateAndBroadcastStatus(1);
-		getActiveChar().getOwner().sendPacket(sm);
+		getActiveChar().sendPacket(sm);
 		
 		return true;
 	}
@@ -66,16 +66,13 @@ public class PetStat extends SummonStat
 		// Sync up exp with current level
 		//if (getExp() > getExpForLevel(getLevel() + 1) || getExp() < getExpForLevel(getLevel())) setExp(Experience.LEVEL[getLevel()]);
 		
-		//TODO : proper system msg if is any
-		//if (levelIncreased) getActiveChar().getOwner().sendMessage("Your pet has increased it's level.");
-		
 		StatusUpdate su = new StatusUpdate(getActiveChar());
 		su.addAttribute(StatusUpdate.LEVEL, getLevel());
 		su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
 		su.addAttribute(StatusUpdate.MAX_MP, getMaxMp());
 		getActiveChar().broadcastPacket(su);
 		if (levelIncreased)
-			getActiveChar().broadcastPacket(new SocialAction(getActiveChar(), SocialAction.LEVEL_UP));
+			getActiveChar().broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
 		// Send a Server->Client packet PetInfo to the L2PcInstance
 		getActiveChar().updateAndBroadcastStatus(1);
 		
@@ -109,9 +106,9 @@ public class PetStat extends SummonStat
 	@Override
 	public void setLevel(byte value)
 	{
-		getActiveChar().setPetData(PetDataTable.getInstance().getPetLevelData(getActiveChar().getTemplate().npcId, value));
+		getActiveChar().setPetData(PetDataTable.getInstance().getPetLevelData(getActiveChar().getTemplate().getNpcId(), value));
 		if (getActiveChar().getPetLevelData() == null)
-			throw new IllegalArgumentException("No pet data for npc: "+getActiveChar().getTemplate().npcId+" level: "+value);
+			throw new IllegalArgumentException("No pet data for npc: " + getActiveChar().getTemplate().getNpcId() + " level: " + value);
 		getActiveChar().stopFeed();
 		super.setLevel(value);
 		
@@ -138,14 +135,14 @@ public class PetStat extends SummonStat
 		{
 			switch (stat)
 			{
-				case AGGRESSION: attack += getActiveChar().getTemplate().baseAggression; break;
-				case BLEED:      attack += getActiveChar().getTemplate().baseBleed;      break;
-				case POISON:     attack += getActiveChar().getTemplate().basePoison;     break;
-				case STUN:       attack += getActiveChar().getTemplate().baseStun;       break;
-				case ROOT:       attack += getActiveChar().getTemplate().baseRoot;       break;
-				case MOVEMENT:   attack += getActiveChar().getTemplate().baseMovement;   break;
-				case CONFUSION:  attack += getActiveChar().getTemplate().baseConfusion;  break;
-				case SLEEP:      attack += getActiveChar().getTemplate().baseSleep;      break;
+				case AGGRESSION: attack += getActiveChar().getTemplate().getBaseAggression(); break;
+				case BLEED:      attack += getActiveChar().getTemplate().getBaseBleed();      break;
+				case POISON:     attack += getActiveChar().getTemplate().getBasePoison();     break;
+				case STUN:       attack += getActiveChar().getTemplate().getBaseStun();       break;
+				case ROOT:       attack += getActiveChar().getTemplate().getBaseRoot();       break;
+				case MOVEMENT:   attack += getActiveChar().getTemplate().getBaseMovement();   break;
+				case CONFUSION:  attack += getActiveChar().getTemplate().getBaseConfusion();  break;
+				case SLEEP:      attack += getActiveChar().getTemplate().getBaseSleep();      break;
 			}
 		}
 		if (skill != null) attack += skill.getPower();

@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public class CommunityBoard
 {
@@ -47,7 +46,7 @@ public class CommunityBoard
 		{
 			default:
 			case 0: //disabled
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
+				activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
 				break;
 			case 1: // old
 				RegionBBSManager.getInstance().parsecmd(command, activeChar);

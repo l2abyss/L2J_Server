@@ -40,8 +40,8 @@ public final class RecoBonus
 			if (activeChar.getRecomHave() == 0)
 				return 0;
 			
-			int _lvl = (int) Math.ceil(activeChar.getLevel()/10);
-			int _exp = (int) Math.ceil((Math.min(100, activeChar.getRecomHave())-1)/10);
+			int _lvl = activeChar.getLevel() / 10;
+			int _exp = (Math.min(100, activeChar.getRecomHave()) - 1) / 10;
 			
 			return _recoBonus[_lvl][_exp];
 		}
@@ -52,7 +52,7 @@ public final class RecoBonus
 	{
 		double _multiplier = 1;
 		
-		int bonus = getRecoBonus(activeChar);
+		double bonus = getRecoBonus(activeChar);
 		if(bonus > 0)
 			_multiplier = (1 + (bonus / 100));
 		

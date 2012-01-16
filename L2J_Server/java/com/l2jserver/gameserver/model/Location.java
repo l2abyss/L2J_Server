@@ -24,11 +24,11 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 
 public final class Location
 {
-	private int _x;
-	private int _y;
-	private int _z;
+	private final int _x;
+	private final int _y;
+	private final int _z;
 	private int _heading;
-	
+	private int _instanceId;
 	
 	public Location(int x, int y, int z)
 	{
@@ -42,6 +42,7 @@ public final class Location
 		_x = obj.getX();
 		_y = obj.getY();
 		_z = obj.getZ();
+		_instanceId = obj.getInstanceId();
 	}
 	
 	public Location(L2Character obj)
@@ -50,6 +51,7 @@ public final class Location
 		_y = obj.getY();
 		_z = obj.getZ();
 		_heading = obj.getHeading();
+		_instanceId = obj.getInstanceId();
 	}
 	
 	
@@ -59,6 +61,15 @@ public final class Location
 		_y = y;
 		_z = z;
 		_heading = heading;
+	}
+	
+	public Location(int x, int y, int z, int heading, int instanceId)
+	{
+		_x = x;
+		_y = y;
+		_z = z;
+		_heading = heading;
+		_instanceId = instanceId;
 	}
 	
 	public int getX()
@@ -79,5 +90,10 @@ public final class Location
 	public int getHeading()
 	{
 		return _heading;
+	}
+	
+	public int getInstanceId()
+	{
+		return _instanceId;
 	}
 }

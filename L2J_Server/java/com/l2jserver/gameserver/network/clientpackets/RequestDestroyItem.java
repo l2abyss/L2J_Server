@@ -23,8 +23,8 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
@@ -33,7 +33,6 @@ import com.l2jserver.gameserver.util.Util;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.7.2.4.2.6 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestDestroyItem extends L2GameClientPacket
@@ -58,10 +57,10 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		if (activeChar == null)
 			return;
 		
-		if(_count <= 0)
+		if (_count <= 0)
 		{
 			if (_count < 0)
-				Util.handleIllegalPlayerAction(activeChar,"[RequestDestroyItem] Character " + activeChar.getName() + " of account " + activeChar.getAccountName() + " tried to destroy item with oid " + _objectId + " but has count < 0!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "[RequestDestroyItem] Character " + activeChar.getName() + " of account " + activeChar.getAccountName() + " tried to destroy item with oid " + _objectId + " but has count < 0!", Config.DEFAULT_PUNISH);
 			return;
 		}
 		
@@ -80,6 +79,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		}
 		
 		L2ItemInstance itemToRemove = activeChar.getInventory().getItemByObjectId(_objectId);
+		
 		// if we can't find the requested item, its actually a cheat
 		if (itemToRemove == null)
 		{
@@ -132,13 +132,11 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		if (_count > itemToRemove.getCount())
 			count = itemToRemove.getCount();
 		
-		
 		if (itemToRemove.isEquipped())
 		{
-			L2ItemInstance[] unequiped =
-				activeChar.getInventory().unEquipItemInSlotAndRecord(itemToRemove.getLocationSlot());
+			L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(itemToRemove.getLocationSlot());
 			InventoryUpdate iu = new InventoryUpdate();
-			for (L2ItemInstance item: unequiped)
+			for (L2ItemInstance item : unequiped)
 			{
 				activeChar.checkSShotsMatch(null, item);
 				
@@ -176,21 +174,24 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		}
 		if (itemToRemove.isTimeLimitedItem())
 			itemToRemove.endOfLife();
+		
 		L2ItemInstance removedItem = activeChar.getInventory().destroyItem("Destroy", _objectId, count, activeChar, null);
 		
-		if(removedItem == null)
+		if (removedItem == null)
 			return;
 		
 		if (!Config.FORCE_INVENTORY_UPDATE)
 		{
 			InventoryUpdate iu = new InventoryUpdate();
-			if (removedItem.getCount() == 0) iu.addRemovedItem(removedItem);
-			else iu.addModifiedItem(removedItem);
+			if (removedItem.getCount() == 0)
+				iu.addRemovedItem(removedItem);
+			else
+				iu.addModifiedItem(removedItem);
 			
-			//client.getConnection().sendPacket(iu);
 			activeChar.sendPacket(iu);
 		}
-		else sendPacket(new ItemList(activeChar, true));
+		else
+			sendPacket(new ItemList(activeChar, true));
 		
 		StatusUpdate su = new StatusUpdate(activeChar);
 		su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());

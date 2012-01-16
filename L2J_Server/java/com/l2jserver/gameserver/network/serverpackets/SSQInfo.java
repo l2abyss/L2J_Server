@@ -28,7 +28,7 @@ public class SSQInfo extends L2GameServerPacket
 {
 	private static final String _S__F8_SSQINFO = "[S] 73 SSQInfo";
 	
-	private static int _state = 0;
+	private int _state = 0;
 	
 	public SSQInfo()
 	{
@@ -65,9 +65,6 @@ public class SSQInfo extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
-import gnu.trove.TIntIntHashMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -191,6 +191,7 @@ public class Castle
 				_cwh = cwh;
 			}
 			
+			@Override
 			public void run()
 			{
 				try
@@ -207,7 +208,7 @@ public class Castle
 						dbSave();
 						if (_cwh)
 						{
-							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", 57, fee, null, null);
+							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", PcInventory.ADENA_ID, fee, null, null);
 							if (Config.DEBUG)
 								_log.warning("deducted " + fee + " adena from " + getName() + " owner's cwh for function id : " + getType());
 						}
@@ -827,7 +828,7 @@ public class Castle
 		if (Config.DEBUG)
 			_log.warning("Called Castle.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerId());
 		if (lease > 0)
-			if (!player.destroyItemByItemId("Consume", 57, lease, null, true))
+			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
 				return false;
 		if (addNew)
 		{

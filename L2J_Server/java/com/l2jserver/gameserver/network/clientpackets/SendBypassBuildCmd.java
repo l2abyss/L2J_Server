@@ -55,7 +55,7 @@ public final class SendBypassBuildCmd extends L2GameClientPacket
 		
 		String command = "admin_" + _command.split(" ")[0];
 		
-		IAdminCommandHandler ach = AdminCommandHandler.getInstance().getAdminCommandHandler(command);
+		IAdminCommandHandler ach = AdminCommandHandler.getInstance().getHandler(command);
 		
 		if (ach == null)
 		{

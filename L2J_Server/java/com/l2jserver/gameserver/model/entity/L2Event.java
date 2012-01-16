@@ -171,7 +171,7 @@ public class L2Event
 			spawn.setLocz(target.getZ());
 			spawn.setAmount(1);
 			spawn.setHeading(target.getHeading());
-			
+			spawn.stopRespawn();
 			SpawnTable.getInstance().addNewSpawn(spawn, false);
 			
 			spawn.init();
@@ -251,7 +251,7 @@ public class L2Event
 			return;
 		}
 		
-		if (AntiFeedManager.getInstance().tryAddPlayer(AntiFeedManager.L2EVENT_ID, player, Config.L2JMOD_DUALBOX_CHECK_MAX_L2EVENT_PARTICIPANTS_PER_IP))
+		if (Config.L2JMOD_DUALBOX_CHECK_MAX_L2EVENT_PARTICIPANTS_PER_IP == 0 || AntiFeedManager.getInstance().tryAddPlayer(AntiFeedManager.L2EVENT_ID, player, Config.L2JMOD_DUALBOX_CHECK_MAX_L2EVENT_PARTICIPANTS_PER_IP))
 			_registeredPlayers.add(player);
 		else
 		{
@@ -366,7 +366,7 @@ public class L2Event
 			if (NpcTable.getInstance().getTemplate(_npcId) == null)
 				return "Cannot start event, invalid npc id.";
 			
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream("data/events/" + _eventName)));
+			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(Config.DATAPACK_ROOT+"data/events/" + _eventName)));
 			BufferedReader inbr = new BufferedReader(new InputStreamReader(in));
 			_eventCreator = inbr.readLine();
 			_eventInfo = inbr.readLine();

@@ -17,8 +17,8 @@ package com.l2jserver.gameserver.skills.conditions;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.item.L2Item;
 import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.templates.item.L2Item;
 
 /**
  * @author JIV
@@ -33,9 +33,6 @@ public class ConditionPetType extends Condition
 		this.petType = petType;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

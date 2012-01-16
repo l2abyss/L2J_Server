@@ -21,6 +21,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.entity.Fort;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 
 /**
  * Class managing periodical events with castle
@@ -48,6 +49,7 @@ public class FortUpdater implements Runnable
 		_updaterType = ut;
 	}
 	
+	@Override
 	public void run()
 	{
 		try
@@ -64,7 +66,7 @@ public class FortUpdater implements Runnable
 					{
 						if (_clan.getWarehouse().getAdena() >= Config.FS_FEE_FOR_CASTLE)
 						{
-							_clan.getWarehouse().destroyItemByItemId("FS_fee_for_Castle", 57, Config.FS_FEE_FOR_CASTLE, null, null);
+							_clan.getWarehouse().destroyItemByItemId("FS_fee_for_Castle", PcInventory.ADENA_ID, Config.FS_FEE_FOR_CASTLE, null, null);
 							CastleManager.getInstance().getCastleById(_fort.getCastleId()).addToTreasuryNoTax(Config.FS_FEE_FOR_CASTLE);
 							_fort.raiseSupplyLvL();
 						}

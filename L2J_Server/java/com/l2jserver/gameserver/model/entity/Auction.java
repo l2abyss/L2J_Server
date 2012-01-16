@@ -37,7 +37,6 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 
 public class Auction
@@ -125,6 +124,7 @@ public class Auction
 		{
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -310,7 +310,7 @@ public class Auction
 			}
 		}
 		if ((bid < getStartingBid()) || (bid <= getHighestBidderMaxBid()))
-			bidder.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BID_PRICE_MUST_BE_HIGHER));
+			bidder.sendPacket(SystemMessageId.BID_PRICE_MUST_BE_HIGHER);
 	}
 	
 	/**
@@ -344,7 +344,7 @@ public class Auction
 			bidder.getClan().getWarehouse().destroyItemByItemId("Buy", ADENA_ID, quantity, bidder, bidder);
 			return true;
 		}
-		bidder.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.NOT_ENOUGH_ADENA_IN_CWH));
+		bidder.sendPacket(SystemMessageId.NOT_ENOUGH_ADENA_IN_CWH);
 		return false;
 	}
 	
@@ -398,7 +398,7 @@ public class Auction
 				_bidders.get(_highestBidderId).setBid(bid);
 				_bidders.get(_highestBidderId).setTimeBid(Calendar.getInstance().getTimeInMillis());
 			}
-			bidder.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.BID_IN_CLANHALL_AUCTION));
+			bidder.sendPacket(SystemMessageId.BID_IN_CLANHALL_AUCTION);
 		}
 		catch (Exception e)
 		{

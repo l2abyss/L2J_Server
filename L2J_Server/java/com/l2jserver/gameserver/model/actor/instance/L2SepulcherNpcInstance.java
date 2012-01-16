@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.concurrent.Future;
 
@@ -23,9 +23,9 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
@@ -181,7 +181,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 					// L2PcInstance on the _knownPlayer of the L2NpcInstance
 					// to display a social action of the L2NpcInstance on their
 					// client
-					SocialAction sa = new SocialAction(this, Rnd.get(8));
+					SocialAction sa = new SocialAction(getObjectId(), Rnd.get(8));
 					broadcastPacket(sa);
 					
 					doAction(player);
@@ -388,6 +388,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			_DoorId = doorId;
 		}
 		
+		@Override
 		public void run()
 		{
 			try
@@ -410,6 +411,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			_NpcId = npcId;
 		}
 		
+		@Override
 		public void run()
 		{
 			FourSepulchersManager.getInstance().spawnMysteriousBox(_NpcId);
@@ -425,6 +427,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			_NpcId = npcId;
 		}
 		
+		@Override
 		public void run()
 		{
 			FourSepulchersManager.getInstance().spawnMonster(_NpcId);

@@ -16,9 +16,9 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager.ArenaParticipantsHolder;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.entity.BlockCheckerEngine;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExCubeGameChangePoints;
@@ -43,7 +43,6 @@ public class L2BlockInstance extends L2MonsterInstance
 	public L2BlockInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
-		this.setHideName(true);
 	}
 	
 	/**

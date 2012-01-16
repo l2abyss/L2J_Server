@@ -68,7 +68,7 @@ public class L2MotherTreeZone extends L2ZoneType
 		if (character instanceof L2PcInstance)
 		{
 			L2PcInstance player = (L2PcInstance) character;
-			player.setInsideZone(L2Character.ZONE_MOTHERTREE, true);
+			character.setInsideZone(L2Character.ZONE_MOTHERTREE, true);
 			if (_enterMsg != 0)
 				player.sendPacket(SystemMessage.getSystemMessage(_enterMsg));
 		}
@@ -89,6 +89,7 @@ public class L2MotherTreeZone extends L2ZoneType
 	@Override
 	public void onDieInside(L2Character character)
 	{
+		
 	}
 	
 	@Override
@@ -111,5 +112,4 @@ public class L2MotherTreeZone extends L2ZoneType
 	{
 		return _hpRegen;
 	}
-	
 }

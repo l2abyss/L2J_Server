@@ -17,12 +17,11 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.datatables.HennaTreeTable;
-import com.l2jserver.gameserver.model.L2HennaInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.L2Henna;
+import com.l2jserver.gameserver.model.item.instance.L2HennaInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.item.L2Henna;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -83,7 +82,7 @@ public final class RequestHennaEquip extends L2GameClientPacket
 		
 		if (activeChar.getHennaEmptySlots() == 0)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SYMBOLS_FULL));
+			activeChar.sendPacket(SystemMessageId.SYMBOLS_FULL);
 			return;
 		}
 		
@@ -97,11 +96,11 @@ public final class RequestHennaEquip extends L2GameClientPacket
 			iu.addModifiedItem(activeChar.getInventory().getAdenaInstance());
 			activeChar.sendPacket(iu);
 			
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.SYMBOL_ADDED));
+			activeChar.sendPacket(SystemMessageId.SYMBOL_ADDED);
 		}
 		else
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_DRAW_SYMBOL));
+			activeChar.sendPacket(SystemMessageId.CANT_DRAW_SYMBOL);
 			if ((!activeChar.isGM()) && (cheater))
 				Util.handleIllegalPlayerAction(activeChar,"Exploit attempt: Character "+activeChar.getName()+" of account "+activeChar.getAccountName()+" tryed to add a forbidden henna.",Config.DEFAULT_PUNISH);
 		}

@@ -24,22 +24,22 @@ import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
 import com.l2jserver.gameserver.network.serverpackets.ExAutoSoulShot;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
-import com.l2jserver.gameserver.templates.item.L2EtcItemType;
-
+import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:33 $
  */
 public class ShortCuts
 {
 	private static Logger _log = Logger.getLogger(ShortCuts.class.getName());
-	
-	private L2PcInstance _owner;
-	private Map<Integer, L2ShortCut> _shortCuts = new TreeMap<Integer, L2ShortCut>();
+	private static final int MAX_SHORTCUTS_PER_BAR = 12;
+	private final L2PcInstance _owner;
+	private final Map<Integer, L2ShortCut> _shortCuts = new TreeMap<Integer, L2ShortCut>();
 	
 	public ShortCuts(L2PcInstance owner)
 	{
@@ -53,10 +53,9 @@ public class ShortCuts
 	
 	public L2ShortCut getShortCut(int slot, int page)
 	{
-		L2ShortCut sc = _shortCuts.get(slot + page * 12);
-		
-		// verify shortcut
-		if (sc != null && sc.getType() == L2ShortCut.TYPE_ITEM)
+		L2ShortCut sc = _shortCuts.get(slot + (page * MAX_SHORTCUTS_PER_BAR));
+		// Verify shortcut
+		if ((sc != null) && (sc.getType() == L2ShortCut.TYPE_ITEM))
 		{
 			if (_owner.getInventory().getItemByObjectId(sc.getId()) == null)
 			{
@@ -64,32 +63,36 @@ public class ShortCuts
 				sc = null;
 			}
 		}
-		
 		return sc;
 	}
 	
 	public synchronized void registerShortCut(L2ShortCut shortcut)
 	{
-		// verify shortcut
+		// Verify shortcut
 		if (shortcut.getType() == L2ShortCut.TYPE_ITEM)
 		{
-			L2ItemInstance item = _owner.getInventory().getItemByObjectId(shortcut.getId());
+			final L2ItemInstance item = _owner.getInventory().getItemByObjectId(shortcut.getId());
 			if (item == null)
+			{
 				return;
+			}
 			if (item.isEtcItem())
+			{
 				shortcut.setSharedReuseGroup(item.getEtcItem().getSharedReuseGroup());
+			}
 		}
-		L2ShortCut oldShortCut = _shortCuts.put(shortcut.getSlot() + 12 * shortcut.getPage(), shortcut);
+		final L2ShortCut oldShortCut = _shortCuts.put(shortcut.getSlot() + (shortcut.getPage() * MAX_SHORTCUTS_PER_BAR), shortcut);
 		registerShortCutInDb(shortcut, oldShortCut);
 	}
 	
 	private void registerShortCutInDb(L2ShortCut shortcut, L2ShortCut oldShortCut)
 	{
 		if (oldShortCut != null)
+		{
 			deleteShortCutFromDb(oldShortCut);
+		}
 		
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -117,14 +120,15 @@ public class ShortCuts
 	
 	/**
 	 * @param slot
-	 * @param page 
+	 * @param page
 	 */
 	public synchronized void deleteShortCut(int slot, int page)
 	{
-		L2ShortCut old = _shortCuts.remove(slot+page*12);
-		
-		if (old == null || _owner == null)
+		final L2ShortCut old = _shortCuts.remove(slot + (page * MAX_SHORTCUTS_PER_BAR));
+		if ((old == null) || (_owner == null))
+		{
 			return;
+		}
 		deleteShortCutFromDb(old);
 		if (old.getType() == L2ShortCut.TYPE_ITEM)
 		{
@@ -133,31 +137,30 @@ public class ShortCuts
 			if ((item != null) && (item.getItemType() == L2EtcItemType.SHOT))
 			{
 				if (_owner.removeAutoSoulShot(item.getItemId()))
+				{
 					_owner.sendPacket(new ExAutoSoulShot(item.getItemId(), 0));
+				}
 			}
 		}
 		
 		_owner.sendPacket(new ShortCutInit(_owner));
 		
 		for (int shotId : _owner.getAutoSoulShot())
+		{
 			_owner.sendPacket(new ExAutoSoulShot(shotId, 1));
+		}
 	}
 	
 	public synchronized void deleteShortCutByObjectId(int objectId)
 	{
-		L2ShortCut toRemove = null;
-		
 		for (L2ShortCut shortcut : _shortCuts.values())
 		{
-			if (shortcut.getType() == L2ShortCut.TYPE_ITEM && shortcut.getId() == objectId)
+			if ((shortcut.getType() == L2ShortCut.TYPE_ITEM) && (shortcut.getId() == objectId))
 			{
-				toRemove = shortcut;
+				deleteShortCut(shortcut.getSlot(), shortcut.getPage());
 				break;
 			}
 		}
-		
-		if (toRemove != null)
-			deleteShortCut(toRemove.getSlot(), toRemove.getPage());
 	}
 	
 	/**
@@ -166,7 +169,6 @@ public class ShortCuts
 	private void deleteShortCutFromDb(L2ShortCut shortcut)
 	{
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -193,7 +195,6 @@ public class ShortCuts
 	{
 		_shortCuts.clear();
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -212,7 +213,7 @@ public class ShortCuts
 				int level = rset.getInt("level");
 				
 				L2ShortCut sc = new L2ShortCut(slot, page, type, id, level, 1);
-				_shortCuts.put(slot+page*12, sc);
+				_shortCuts.put(slot + (page * MAX_SHORTCUTS_PER_BAR), sc);
 			}
 			
 			rset.close();
@@ -227,16 +228,39 @@ public class ShortCuts
 			L2DatabaseFactory.close(con);
 		}
 		
-		// verify shortcuts
+		// Verify shortcuts
 		for (L2ShortCut sc : getAllShortCuts())
 		{
 			if (sc.getType() == L2ShortCut.TYPE_ITEM)
 			{
 				L2ItemInstance item = _owner.getInventory().getItemByObjectId(sc.getId());
 				if (item == null)
+				{
 					deleteShortCut(sc.getSlot(), sc.getPage());
+				}
 				else if (item.isEtcItem())
+				{
 					sc.setSharedReuseGroup(item.getEtcItem().getSharedReuseGroup());
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Updates the shortcut bars with the new skill.
+	 * @param skillId the skill Id to search and update.
+	 * @param skillLevel the skill level to update.
+	 */
+	public synchronized void updateShortCuts(int skillId, int skillLevel)
+	{
+		// Update all the shortcuts for this skill
+		for (L2ShortCut sc : _shortCuts.values())
+		{
+			if ((sc.getId() == skillId) && (sc.getType() == L2ShortCut.TYPE_SKILL))
+			{
+				L2ShortCut newsc = new L2ShortCut(sc.getSlot(), sc.getPage(), sc.getType(), sc.getId(), skillLevel, 1);
+				_owner.sendPacket(new ShortCutRegister(newsc));
+				_owner.registerShortCut(newsc);
 			}
 		}
 	}

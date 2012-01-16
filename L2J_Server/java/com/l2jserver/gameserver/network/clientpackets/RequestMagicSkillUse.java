@@ -17,11 +17,15 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.position.PcPosition;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 /**
  * This class ...
@@ -89,8 +93,16 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 			// players mounted on pets cannot use any toggle skills
 			if (skill.isToggle() && activeChar.isMounted())
 				return;
-			// activeChar.stopMove();
+			
 			activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
+			
+			// Stop if use self-buff.
+			if(skill.getSkillType() == L2SkillType.BUFF && skill.getTargetType() == L2TargetType.TARGET_SELF)
+			{
+				final PcPosition charPos = activeChar.getPosition();
+				final L2CharPosition stopPos = new L2CharPosition(charPos.getX(), charPos.getY(), charPos.getZ(), charPos.getHeading());
+				activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, stopPos);
+			}
 		}
 		else
 		{

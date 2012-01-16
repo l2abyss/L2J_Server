@@ -19,12 +19,11 @@ import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.instancemanager.BoatManager;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.type.L2WeaponType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MoveToLocationInVehicle;
 import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.item.L2WeaponType;
 import com.l2jserver.gameserver.util.Point3D;
 
 public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
@@ -64,7 +63,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 			&& !activeChar.isGM()
 			&& activeChar.getNotMoveUntil() > System.currentTimeMillis())
 		{
-			getClient().sendPacket(SystemMessage.getSystemMessage(3226));
+			activeChar.sendPacket(SystemMessageId.CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -91,14 +90,14 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		
 		if (activeChar.getPet() != null)
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.RELEASE_PET_ON_BOAT));
+			activeChar.sendPacket(SystemMessageId.RELEASE_PET_ON_BOAT);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		if (activeChar.isTransformed())
 		{
-			activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CANT_POLYMORPH_ON_BOAT));
+			activeChar.sendPacket(SystemMessageId.CANT_POLYMORPH_ON_BOAT);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

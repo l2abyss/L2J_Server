@@ -53,7 +53,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 		{
 			return;
 		}
-		_items = FastSet.newInstance();
+		_items = new FastSet<ItemRequest>();
 		
 		for (int i = 0; i < count; i++)
 		{
@@ -181,12 +181,6 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 	public String getType()
 	{
 		return _C__83_REQUESTPRIVATESTOREBUY;
-	}
-	
-	@Override
-	protected void cleanUp()
-	{
-		FastSet.recycle(_items);
 	}
 	
 	@Override

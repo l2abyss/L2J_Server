@@ -24,9 +24,6 @@ public class ExDominionWarEnd extends L2GameServerPacket
 {
 	private static final String TYPE = "[S] FE:A4 ExDominionWarEnd";
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -34,13 +31,9 @@ public class ExDominionWarEnd extends L2GameServerPacket
 		writeH(0xA4);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return TYPE;
 	}
-	
 }

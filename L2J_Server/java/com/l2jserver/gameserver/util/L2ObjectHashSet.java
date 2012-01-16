@@ -82,27 +82,18 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 		if (DEBUG) check();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#size()
-	 */
 	@Override
 	public int size()
 	{
 		return _count;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#isEmpty()
-	 */
 	@Override
 	public boolean isEmpty()
 	{
 		return _count == 0;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#clear()
-	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public synchronized void clear()
@@ -130,9 +121,6 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#put(T)
-	 */
 	@Override
 	public synchronized void put(T obj)
 	{
@@ -194,9 +182,6 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 		throw new IllegalStateException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#remove(T)
-	 */
 	@Override
 	public synchronized void remove(T obj)
 	{
@@ -233,9 +218,6 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 		throw new IllegalStateException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#contains(T)
-	 */
 	@Override
 	public boolean contains(T obj)
 	{
@@ -311,9 +293,6 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 		if (DEBUG) check();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.L2ObjectSet#iterator()
-	 */
 	@Override
 	public Iterator<T> iterator()
 	{
@@ -336,10 +315,12 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 					return;
 			}
 		}
+		@Override
 		public boolean hasNext()
 		{
 			return _nextObj != null;
 		}
+		@Override
 		public T next()
 		{
 			if (_nextObj == null)
@@ -355,6 +336,7 @@ public final class L2ObjectHashSet<T extends L2Object> extends L2ObjectSet<T>
 				_nextObj = null;
 			return _lastRet;
 		}
+		@Override
 		public void remove()
 		{
 			if (_lastRet == null)

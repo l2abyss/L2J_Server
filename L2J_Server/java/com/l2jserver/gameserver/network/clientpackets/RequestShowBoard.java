@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShowCommunityBoard;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 
 /**
@@ -59,7 +58,7 @@ public final class RequestShowBoard extends L2GameClientPacket
 			if (CommunityServerThread.getInstance().isAuthed())
 				CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), "_bbshome"), true);
 			else
-				activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.CB_OFFLINE));
+				activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
 		}
 		else
 			CommunityBoard.getInstance().handleCommands(getClient(), Config.BBS_DEFAULT);

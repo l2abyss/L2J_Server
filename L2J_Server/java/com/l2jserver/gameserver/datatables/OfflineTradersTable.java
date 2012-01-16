@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.TradeList.TradeItem;
+import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
@@ -222,8 +222,6 @@ public class OfflineTradersTable
 					stm_items.close();
 					
 					player.sitDown();
-					if (Config.OFFLINE_MODE_SET_INVULNERABLE)
-						player.setIsInvul(true);
 					if (Config.OFFLINE_SET_NAME_COLOR)
 						player.getAppearance().setNameColor(Config.OFFLINE_NAME_COLOR);
 					player.setPrivateStoreType(type);

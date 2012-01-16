@@ -60,7 +60,7 @@ public class MerchantPriceConfigTable implements InstanceListManager
 	{
 		for (MerchantPriceConfig mpc : _mpcs.values())
 		{
-			if (npc.getWorldRegion().containsZone(mpc.getZoneId()))
+			if (npc.getWorldRegion() != null && npc.getWorldRegion().containsZone(mpc.getZoneId()))
 			{
 				return mpc;
 			}
@@ -159,6 +159,7 @@ public class MerchantPriceConfigTable implements InstanceListManager
 		return null;
 	}
 	
+	@Override
 	public void loadInstances()
 	{
 		try
@@ -172,6 +173,7 @@ public class MerchantPriceConfigTable implements InstanceListManager
 		}
 	}
 	
+	@Override
 	public void updateReferences()
 	{
 		for (final MerchantPriceConfig mpc : _mpcs.values())
@@ -180,6 +182,7 @@ public class MerchantPriceConfigTable implements InstanceListManager
 		}
 	}
 	
+	@Override
 	public void activateInstances()
 	{
 	}

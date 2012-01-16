@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.TradeList;
+import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -28,7 +28,7 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 	private static final String _S__D1_PRIVATESTORELISTBUY = "[S] be PrivateStoreListBuy";
 	private int _objId;
 	private long _playerAdena;
-	private TradeList.TradeItem[] _items;
+	private TradeItem[] _items;
 	
 	public PrivateStoreListBuy(L2PcInstance player, L2PcInstance storePlayer)
 	{
@@ -47,7 +47,7 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 		
 		writeD(_items.length);
 		
-		for (TradeList.TradeItem item : _items)
+		for (TradeItem item : _items)
 		{
 			writeD(item.getObjectId());
 			writeD(item.getItem().getItemId());
@@ -81,9 +81,6 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

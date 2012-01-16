@@ -32,9 +32,6 @@ public class ExCubeGameCloseUI extends L2GameServerPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -43,13 +40,9 @@ public class ExCubeGameCloseUI extends L2GameServerPacket
 		writeD(0xffffffff);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__FE_97_FFFFFFFF_EXCUBEGAMECLOSEUI;
 	}
-	
 }

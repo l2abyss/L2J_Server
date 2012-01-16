@@ -1,11 +1,4 @@
 /*
- * $Header: IllegalPlayerAction.java, 21/10/2005 23:32:02 luisantonioa Exp $
- * 
- * $Author: luisantonioa $ $Date: 21/10/2005 23:32:02 $ $Revision: 1 $ $Log:
- * IllegalPlayerAction.java,v $ Revision 1 21/10/2005 23:32:02 luisantonioa
- * Added copyright notice
- * 
- * 
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -71,6 +64,7 @@ public final class IllegalPlayerAction implements Runnable
 		}
 	}
 	
+	@Override
 	public void run()
 	{
 		LogRecord record = new LogRecord(Level.INFO, "AUDIT:" + _message);

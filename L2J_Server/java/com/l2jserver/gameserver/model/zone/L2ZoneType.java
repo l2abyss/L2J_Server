@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.zone;
 
-import gnu.trove.TObjectProcedure;
+import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -467,7 +467,7 @@ public abstract class L2ZoneType
 	
 	public L2Character[] getCharactersInsideArray()
 	{
-		return _characterList.getValues(new L2Character[_characterList.size()]);
+		return _characterList.values(new L2Character[0]);
 	}
 	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)

@@ -28,12 +28,12 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
@@ -184,10 +184,10 @@ public final class CharacterCreate extends L2GameClientPacket
 			newChar = L2PcInstance.create(objectId, template, getClient().getAccountName(), _name, _hairStyle, _hairColor, _face, _sex != 0);
 		}
 		
-		newChar.setCurrentHp(template.baseHpMax);
-		newChar.setCurrentCp(template.baseCpMax);
-		newChar.setCurrentMp(template.baseMpMax);
-		// newChar.setMaxLoad(template.baseLoad);
+		newChar.setCurrentHp(template.getBaseHpMax());
+		newChar.setCurrentCp(template.getBaseCpMax());
+		newChar.setCurrentMp(template.getBaseMpMax());
+		//newChar.setMaxLoad(template.getBaseLoad());
 		
 		CharCreateOk cco = new CharCreateOk();
 		sendPacket(cco);

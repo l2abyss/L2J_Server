@@ -28,10 +28,10 @@ import com.l2jserver.gameserver.InstanceListManager;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 public class CastleManager implements InstanceListManager
 {
@@ -261,6 +261,7 @@ public class CastleManager implements InstanceListManager
 		}
 	}
 	
+	@Override
 	public void loadInstances()
 	{
 		_log.info("Initializing CastleManager");
@@ -291,10 +292,12 @@ public class CastleManager implements InstanceListManager
 		}
 	}
 	
+	@Override
 	public void updateReferences()
 	{
 	}
 	
+	@Override
 	public void activateInstances()
 	{
 		for (final Castle castle : _castles)

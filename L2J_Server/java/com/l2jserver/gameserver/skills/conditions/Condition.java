@@ -133,9 +133,7 @@ public abstract class Condition implements ConditionListener
 	 */
 	public abstract boolean testImpl(Env env);
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.ConditionListener#notifyChanged()
-	 */
+	@Override
 	public void notifyChanged()
 	{
 		if (_listener != null)

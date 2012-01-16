@@ -329,6 +329,7 @@ public class ThreadPoolManager
 			_group = new ThreadGroup(_name);
 		}
 		
+		@Override
 		public Thread newThread(Runnable r)
 		{
 			Thread t = new Thread(_group, r);
@@ -480,9 +481,6 @@ public class ThreadPoolManager
 	
 	private class PurgeTask implements Runnable
 	{
-		/* (non-Javadoc)
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{

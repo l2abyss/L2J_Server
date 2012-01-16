@@ -21,9 +21,10 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.MonsterRace;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.knownlist.RaceManagerKnownList;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
@@ -162,6 +163,7 @@ public class L2RaceManagerInstance extends L2Npc
 			_type = pType;
 		}
 		
+		@Override
 		public void run()
 		{
 			makeAnnouncement(_type);
@@ -267,12 +269,12 @@ public class L2RaceManagerInstance extends L2Npc
 	{
 		if (command.startsWith("BuyTicket") && _state != ACCEPTING_BETS)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MONSRACE_TICKETS_NOT_AVAILABLE));
+			player.sendPacket(SystemMessageId.MONSRACE_TICKETS_NOT_AVAILABLE);
 			command = "Chat 0";
 		}
 		if (command.startsWith("ShowOdds") && _state == ACCEPTING_BETS)
 		{
-			player.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.MONSRACE_NO_PAYOUT_INFO));
+			player.sendPacket(SystemMessageId.MONSRACE_NO_PAYOUT_INFO);
 			command = "Chat 0";
 		}
 		
@@ -308,7 +310,7 @@ public class L2RaceManagerInstance extends L2Npc
 	public void showOdds(L2PcInstance player)
 	{
 		if (_state == ACCEPTING_BETS) return;
-		int npcId = getTemplate().npcId;
+		int npcId = getTemplate().getNpcId();
 		String filename, search;
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		filename = getHtmlPath(npcId, 5);
@@ -317,7 +319,7 @@ public class L2RaceManagerInstance extends L2Npc
 		{
 			int n = i + 1;
 			search = "Mob" + n;
-			html.replace(search, MonsterRace.getInstance().getMonsters()[i].getTemplate().name);
+			html.replace(search, MonsterRace.getInstance().getMonsters()[i].getTemplate().getName());
 		}
 		html.replace("1race", String.valueOf(_raceNumber));
 		html.replace("%objectId%", String.valueOf(getObjectId()));
@@ -327,7 +329,7 @@ public class L2RaceManagerInstance extends L2Npc
 	
 	public void showMonsterInfo(L2PcInstance player)
 	{
-		int npcId = getTemplate().npcId;
+		int npcId = getTemplate().getNpcId();
 		String filename, search;
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		filename = getHtmlPath(npcId, 6);
@@ -336,7 +338,7 @@ public class L2RaceManagerInstance extends L2Npc
 		{
 			int n = i + 1;
 			search = "Mob" + n;
-			html.replace(search, MonsterRace.getInstance().getMonsters()[i].getTemplate().name);
+			html.replace(search, MonsterRace.getInstance().getMonsters()[i].getTemplate().getName());
 		}
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
@@ -346,7 +348,7 @@ public class L2RaceManagerInstance extends L2Npc
 	public void showBuyTicket(L2PcInstance player, int val)
 	{
 		if (_state != ACCEPTING_BETS) return;
-		int npcId = getTemplate().npcId;
+		int npcId = getTemplate().getNpcId();
 		SystemMessage sm;
 		String filename, search, replace;
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -358,7 +360,7 @@ public class L2RaceManagerInstance extends L2Npc
 			{
 				int n = i + 1;
 				search = "Mob" + n;
-				html.replace(search, MonsterRace.getInstance().getMonsters()[i].getTemplate().name);
+				html.replace(search, MonsterRace.getInstance().getMonsters()[i].getTemplate().getName());
 			}
 			search = "No1";
 			if (val == 0) html.replace(search, "");
@@ -375,7 +377,7 @@ public class L2RaceManagerInstance extends L2Npc
 			html.setFile(player.getHtmlPrefix(), filename);
 			html.replace("0place", "" + player.getRace(0));
 			search = "Mob1";
-			replace = MonsterRace.getInstance().getMonsters()[player.getRace(0) - 1].getTemplate().name;
+			replace = MonsterRace.getInstance().getMonsters()[player.getRace(0) - 1].getTemplate().getName();
 			html.replace(search, replace);
 			search = "0adena";
 			if (val == 10) html.replace(search, "");
@@ -392,7 +394,7 @@ public class L2RaceManagerInstance extends L2Npc
 			html.setFile(player.getHtmlPrefix(), filename);
 			html.replace("0place", "" + player.getRace(0));
 			search = "Mob1";
-			replace = MonsterRace.getInstance().getMonsters()[player.getRace(0) - 1].getTemplate().name;
+			replace = MonsterRace.getInstance().getMonsters()[player.getRace(0) - 1].getTemplate().getName();
 			html.replace(search, replace);
 			search = "0adena";
 			int price = _cost[player.getRace(1) - 1];
@@ -424,7 +426,7 @@ public class L2RaceManagerInstance extends L2Npc
 			player.getInventory().addItem("Race", item, player, this);
 			InventoryUpdate iu = new InventoryUpdate();
 			iu.addItem(item);
-			L2ItemInstance adenaupdate = player.getInventory().getItemByItemId(57);
+			L2ItemInstance adenaupdate = player.getInventory().getItemByItemId(PcInventory.ADENA_ID);
 			iu.addModifiedItem(adenaupdate);
 			player.sendPacket(iu);
 			return;
@@ -489,6 +491,7 @@ public class L2RaceManagerInstance extends L2Npc
 	
 	class RunRace implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			_packet = new MonRaceInfo(_codes[2][0], _codes[2][1], MonsterRace.getInstance().getMonsters(),
@@ -500,6 +503,7 @@ public class L2RaceManagerInstance extends L2Npc
 	
 	class RunEnd implements Runnable
 	{
+		@Override
 		public void run()
 		{
 			makeAnnouncement(SystemMessageId.MONSRACE_FIRST_PLACE_S1_SECOND_S2);

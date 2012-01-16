@@ -18,9 +18,9 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.ClanWarehouse;
 import com.l2jserver.gameserver.model.ItemHolder;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2ItemInstance;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.itemcontainer.PcWarehouse;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -195,9 +195,6 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		player.sendPacket(su);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

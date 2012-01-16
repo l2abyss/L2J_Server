@@ -91,9 +91,10 @@ public final class WorldInfo extends BaseWritePacket
 				super.writeS(clan.getAllyName());
 				FastList<Integer> allyClanIdList = FastList.newInstance();
 				if (clan.getAllyId() != 0)
-					for (L2Clan c : ClanTable.getInstance().getClans())
-						if (clan.getAllyId() == c.getAllyId() && c != clan)
-							allyClanIdList.add(c.getClanId());
+					for (L2Clan c : ClanTable.getInstance().getClanAllies(clan.getAllyId()))
+					{
+						allyClanIdList.add(c.getClanId());
+					}
 				super.writeD(allyClanIdList.size());
 				for (int k : allyClanIdList)
 					super.writeD(k);

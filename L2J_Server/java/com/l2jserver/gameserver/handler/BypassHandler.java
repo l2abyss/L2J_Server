@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.TIntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +30,7 @@ public class BypassHandler
 {
 	private static Logger _log = Logger.getLogger(BypassHandler.class.getName());
 	
-	private TIntObjectHashMap<IBypassHandler> _datatable;
+	private final TIntObjectHashMap<IBypassHandler> _datatable;
 	
 	public static BypassHandler getInstance()
 	{
@@ -42,7 +42,7 @@ public class BypassHandler
 		_datatable = new TIntObjectHashMap<IBypassHandler>();
 	}
 	
-	public void registerBypassHandler(IBypassHandler handler)
+	public void registerHandler(IBypassHandler handler)
 	{
 		for (String element : handler.getBypassList())
 		{
@@ -53,7 +53,7 @@ public class BypassHandler
 		}
 	}
 	
-	public IBypassHandler getBypassHandler(String BypassCommand)
+	public IBypassHandler getHandler(String BypassCommand)
 	{
 		String command = BypassCommand;
 		

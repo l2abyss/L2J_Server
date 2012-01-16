@@ -37,6 +37,29 @@ public abstract class L2ZoneRespawn extends L2ZoneType
 		super(id);
 	}
 	
+	public void parseLoc(int x, int y, int z, String type)
+	{
+		if(type == null || type.isEmpty())
+			addSpawn(x,y,z);
+		else
+		{
+			switch(type)
+			{
+				case "other":
+					addOtherSpawn(x,y,z);
+					break;
+				case "chaotic":
+					addChaoticSpawn(x,y,z);
+					break;
+				case "banish":
+					addBanishSpawn(x,y,z);
+					break;
+				default:
+					_log.warning(getClass().getSimpleName() + ": Unknown location type: "+type);
+			}
+		}
+	}
+	
 	public final void addSpawn(int x, int y, int z)
 	{
 		if (_spawnLocs == null)
