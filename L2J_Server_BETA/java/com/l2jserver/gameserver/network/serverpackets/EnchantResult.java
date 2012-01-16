@@ -38,9 +38,6 @@ public class EnchantResult extends L2GameServerPacket
 		writeQ(_count);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

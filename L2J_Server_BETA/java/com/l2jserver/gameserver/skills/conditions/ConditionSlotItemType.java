@@ -41,9 +41,6 @@ public final class ConditionSlotItemType extends ConditionInventory
 		_mask = mask;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.ConditionInventory#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

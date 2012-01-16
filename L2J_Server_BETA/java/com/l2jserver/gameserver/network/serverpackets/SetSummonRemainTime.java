@@ -40,9 +40,6 @@ public final class SetSummonRemainTime extends L2GameServerPacket
 		writeD(_remainingTime);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

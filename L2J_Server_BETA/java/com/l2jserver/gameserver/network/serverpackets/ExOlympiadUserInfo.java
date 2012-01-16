@@ -101,9 +101,6 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 		writeD(_maxCp);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

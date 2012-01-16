@@ -1218,27 +1218,18 @@ public class FortSiege implements Siegable
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#giveFame()
-	 */
 	@Override
 	public boolean giveFame()
 	{
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameFrequency()
-	 */
 	@Override
 	public int getFameFrequency()
 	{
 		return Config.FORTRESS_ZONE_FAME_TASK_FREQUENCY;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameAmount()
-	 */
 	@Override
 	public int getFameAmount()
 	{

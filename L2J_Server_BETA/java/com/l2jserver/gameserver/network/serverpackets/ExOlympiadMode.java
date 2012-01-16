@@ -47,9 +47,6 @@ public class ExOlympiadMode extends L2GameServerPacket
 		writeC(_mode);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -61,9 +61,6 @@ public final class TradeOtherAdd extends L2GameServerPacket
 		writeH(0x00); // Enchant effect 3
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -1654,9 +1654,6 @@ public class L2Npc extends L2Character
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Character#isMovementDisabled()
-	 */
 	@Override
 	public boolean isMovementDisabled()
 	{

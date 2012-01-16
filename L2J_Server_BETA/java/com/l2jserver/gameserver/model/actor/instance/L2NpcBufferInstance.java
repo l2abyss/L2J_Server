@@ -54,9 +54,6 @@ public class L2NpcBufferInstance extends L2Npc
 		setInstanceType(InstanceType.L2NpcBufferInstance);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Npc#showChatWindow(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, int)
-	 */
 	@Override
 	public void showChatWindow(L2PcInstance playerInstance, int val)
 	{
@@ -80,9 +77,6 @@ public class L2NpcBufferInstance extends L2Npc
 		playerInstance.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Npc#onBypassFeedback(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, java.lang.String)
-	 */
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{

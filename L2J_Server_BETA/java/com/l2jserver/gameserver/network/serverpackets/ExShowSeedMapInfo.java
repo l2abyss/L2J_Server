@@ -31,9 +31,6 @@ public class ExShowSeedMapInfo extends L2GameServerPacket
 {
 	private static final String _S__FE_A1_EXSHOWSEEDMAPINFO = "[S] FE:A1 ExShowSeedMapInfo";
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{

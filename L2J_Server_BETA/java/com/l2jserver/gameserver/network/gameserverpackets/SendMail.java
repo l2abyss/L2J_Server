@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.gameserverpackets;
 import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
- * 
  * @author mrTJO
  */
 public class SendMail extends BaseSendablePacket
@@ -34,13 +33,9 @@ public class SendMail extends BaseSendablePacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.util.network.BaseSendablePacket#getContent()
-	 */
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }

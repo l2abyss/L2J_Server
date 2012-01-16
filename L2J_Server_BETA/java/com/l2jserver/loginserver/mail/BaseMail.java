@@ -35,7 +35,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.loginserver.mail.MailSystem.MailContent;
 
 /**
- * 
  * @author mrTJO
  */
 public class BaseMail implements Runnable
@@ -107,8 +106,6 @@ public class BaseMail implements Runnable
 		}
 	}
 	
-	
-	
 	private String compileHtml(String account, String html, String[] args)
 	{
 		if (args != null)
@@ -155,10 +152,7 @@ public class BaseMail implements Runnable
 		}
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
+	
 	@Override
 	public void run()
 	{

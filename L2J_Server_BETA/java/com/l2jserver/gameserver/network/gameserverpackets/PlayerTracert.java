@@ -18,7 +18,6 @@ import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
  * @author mrTJO
- *
  */
 public class PlayerTracert extends BaseSendablePacket
 {
@@ -34,13 +33,9 @@ public class PlayerTracert extends BaseSendablePacket
 		writeS(hop4);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
-	 */
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }

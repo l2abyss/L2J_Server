@@ -481,9 +481,6 @@ public class ThreadPoolManager
 	
 	private class PurgeTask implements Runnable
 	{
-		/* (non-Javadoc)
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{

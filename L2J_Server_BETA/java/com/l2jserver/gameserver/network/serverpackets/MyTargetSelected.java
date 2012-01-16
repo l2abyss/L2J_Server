@@ -58,9 +58,6 @@ public class MyTargetSelected extends L2GameServerPacket
 		writeD(0x00);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

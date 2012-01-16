@@ -26,15 +26,8 @@ import com.l2jserver.util.StringUtil;
  * 
  * @version $Revision: 1.1.4.1 $ $Date: 2005/03/27 15:30:08 $
  */
-
 public class FileLogFormatter extends Formatter
 {
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.logging.Formatter#format(java.util.logging.LogRecord)
-	 */
 	private static final String CRLF = "\r\n";
 	private static final String _ = "\t";
 	private SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss,SSS");

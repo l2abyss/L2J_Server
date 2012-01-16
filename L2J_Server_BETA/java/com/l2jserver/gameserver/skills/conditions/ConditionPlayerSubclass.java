@@ -34,9 +34,6 @@ public class ConditionPlayerSubclass extends Condition
 		_val = val;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env) {
 		return (env.player instanceof L2PcInstance) ? ((L2PcInstance) env.player).isSubClassActive() == _val : true;

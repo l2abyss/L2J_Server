@@ -176,9 +176,6 @@ public class L2StaticObjectInstance extends L2Character
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.L2Object#isAttackable()
-	 */
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{

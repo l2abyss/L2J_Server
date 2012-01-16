@@ -36,9 +36,6 @@ public class StopMoveInVehicle  extends L2GameServerPacket
 		_heading = player.getHeading();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -51,9 +48,6 @@ public class StopMoveInVehicle  extends L2GameServerPacket
 		writeD(_heading);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -195,9 +195,6 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		player.sendPacket(su);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.clientpackets.ClientBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

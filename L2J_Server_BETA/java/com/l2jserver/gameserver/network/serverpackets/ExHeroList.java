@@ -49,9 +49,6 @@ public class ExHeroList extends L2GameServerPacket
 		_heroList = Hero.getInstance().getHeroes();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -73,9 +70,6 @@ public class ExHeroList extends L2GameServerPacket
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

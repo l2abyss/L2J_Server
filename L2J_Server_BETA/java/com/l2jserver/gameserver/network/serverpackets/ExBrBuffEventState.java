@@ -34,18 +34,12 @@ public class ExBrBuffEventState extends L2GameServerPacket
 		_endtime = endtime;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return "[S] FE:DB ExBrBuffEventState";
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{

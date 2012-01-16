@@ -42,9 +42,6 @@ public class ExCubeGameChangeTeam extends L2GameServerPacket
 		_fromRedTeam = fromRedTeam;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -57,13 +54,9 @@ public class ExCubeGameChangeTeam extends L2GameServerPacket
 		writeD(_fromRedTeam ? 0x00 : 0x01);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__FE_97_05_EXCUBEGAMECHANGETEAM;
 	}
-	
 }

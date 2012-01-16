@@ -33,9 +33,6 @@ public class ConditionPlayerMp extends Condition {
 		_mp = mp;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env) {
 		return env.player.getCurrentMp()*100/env.player.getMaxMp() <= _mp;

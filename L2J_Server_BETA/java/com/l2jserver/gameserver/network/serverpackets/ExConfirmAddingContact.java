@@ -33,9 +33,6 @@ public class ExConfirmAddingContact extends L2GameServerPacket
 		_added = added;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -44,14 +41,10 @@ public class ExConfirmAddingContact extends L2GameServerPacket
 		writeS(_charName);
 		writeD(_added ? 0x01 : 0x00);
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
+	
 	@Override
 	public String getType()
 	{
 		return _S__FE_D2_EXCONFIRMADDINGCONTACT;
 	}
-	
 }

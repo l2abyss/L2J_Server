@@ -20,19 +20,13 @@ import java.io.FileFilter;
 /**
  * Specialized {@link FileFilter} class.<br>
  * Accepts files ending with ".xml" only.
- * 
  * @author mrTJO
  */
 public class XMLFilter implements FileFilter
 {
-
-	/* (non-Javadoc)
-	 * @see java.io.FileFilter#accept(java.io.File)
-	 */
 	@Override
 	public boolean accept(File pathname)
 	{
 		return pathname.getName().endsWith(".xml");
 	}
-	
 }

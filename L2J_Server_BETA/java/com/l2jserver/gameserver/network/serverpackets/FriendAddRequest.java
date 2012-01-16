@@ -52,9 +52,6 @@ public class FriendAddRequest extends L2GameServerPacket
 		writeD(0);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

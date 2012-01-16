@@ -130,9 +130,6 @@ public final class EquipUpdate extends L2GameServerPacket
 		writeD(bodypart);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

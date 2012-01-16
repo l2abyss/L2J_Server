@@ -37,9 +37,6 @@ public class ExDominionWarStart extends L2GameServerPacket
 		_isDisguised = TerritoryWarManager.getInstance().isDisguised(_objId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -52,13 +49,9 @@ public class ExDominionWarStart extends L2GameServerPacket
 		writeD(_isDisguised ? _terId : 0);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return TYPE;
 	}
-	
 }

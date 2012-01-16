@@ -92,9 +92,6 @@ public class ExQuestItemList extends L2GameServerPacket
 		FastList.recycle(_items);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

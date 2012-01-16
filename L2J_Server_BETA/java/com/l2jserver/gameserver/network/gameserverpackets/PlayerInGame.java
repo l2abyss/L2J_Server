@@ -20,7 +20,6 @@ import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
  * @author -Wooden-
- *
  */
 public class PlayerInGame extends BaseSendablePacket
 {
@@ -39,13 +38,9 @@ public class PlayerInGame extends BaseSendablePacket
 			writeS(pc);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
-	 */
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }

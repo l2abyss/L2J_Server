@@ -38,9 +38,6 @@ public class ExFishingStartCombat extends L2GameServerPacket
 		_deceptiveMode = deceptiveMode;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -55,9 +52,6 @@ public class ExFishingStartCombat extends L2GameServerPacket
 		writeC(_deceptiveMode); // Fish Deceptive Mode: 0 = no, 1 = yes
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

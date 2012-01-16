@@ -42,9 +42,6 @@ public class AutoAttackStop extends L2GameServerPacket
 		writeD(_targetObjId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

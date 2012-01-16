@@ -29,9 +29,6 @@ public class SunRise extends L2GameServerPacket
 		writeC(0x12);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

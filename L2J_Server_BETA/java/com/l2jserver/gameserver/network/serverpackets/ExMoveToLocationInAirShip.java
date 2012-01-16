@@ -35,9 +35,6 @@ public class ExMoveToLocationInAirShip extends L2GameServerPacket
 		_heading = player.getHeading();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{

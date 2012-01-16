@@ -111,9 +111,6 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 		_useRaidCurse = val;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Character#giveRaidCurse()
-	 */
 	@Override
 	public boolean giveRaidCurse()
 	{

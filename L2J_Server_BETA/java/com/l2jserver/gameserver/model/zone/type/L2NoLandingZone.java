@@ -70,9 +70,6 @@ public class L2NoLandingZone extends L2ZoneType
 	{
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.zone.L2ZoneType#setParameter(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void setParameter(String name, String value)
 	{

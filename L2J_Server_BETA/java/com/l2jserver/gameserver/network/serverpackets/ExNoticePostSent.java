@@ -35,9 +35,6 @@ public class ExNoticePostSent extends L2GameServerPacket
 		_showAnim = showAnimation;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -46,9 +43,6 @@ public class ExNoticePostSent extends L2GameServerPacket
 		writeD(_showAnim ? 0x01 : 0x00);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -94,9 +94,6 @@ public final class Ride extends L2GameServerPacket
 		writeD(_z);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

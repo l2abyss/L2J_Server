@@ -43,9 +43,6 @@ public class ExCubeGameChangePoints extends L2GameServerPacket
 		_redPoints = redPoints;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -58,13 +55,9 @@ public class ExCubeGameChangePoints extends L2GameServerPacket
 		writeD(_redPoints);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__FE_98_02_EXCUBEGAMECHANGEPOINTS;
 	}
-	
 }

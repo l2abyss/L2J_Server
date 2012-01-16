@@ -1933,10 +1933,6 @@ public final class L2ItemInstance extends L2Object
 		_published = true;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.L2Object#decayMe()
-	 */
 	@Override
 	public void decayMe()
 	{

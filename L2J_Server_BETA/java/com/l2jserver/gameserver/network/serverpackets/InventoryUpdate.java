@@ -153,9 +153,6 @@ public class InventoryUpdate extends L2GameServerPacket
 		_items = null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

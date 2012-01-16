@@ -38,9 +38,6 @@ public class ExFishingStart extends L2GameServerPacket
 		_isNightLure = isNightLure;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -55,9 +52,6 @@ public class ExFishingStart extends L2GameServerPacket
 		writeC(0x00); //show fish rank result button
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

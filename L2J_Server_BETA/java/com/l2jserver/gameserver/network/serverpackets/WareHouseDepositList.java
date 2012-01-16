@@ -102,9 +102,6 @@ public final class WareHouseDepositList extends L2GameServerPacket
 		_items.clear();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

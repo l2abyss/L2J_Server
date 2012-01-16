@@ -74,13 +74,9 @@ public class DropItem extends L2GameServerPacket
 		writeD(1); // unknown
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return _S__16_DROPITEM;
 	}
-	
 }

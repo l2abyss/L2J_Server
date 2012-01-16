@@ -17,10 +17,8 @@ package com.l2jserver.gameserver.network.gameserverpackets;
 import com.l2jserver.gameserver.LoginServerThread.SessionKey;
 import com.l2jserver.util.network.BaseSendablePacket;
 
-
 /**
  * @author -Wooden-
- *
  */
 public class PlayerAuthRequest extends BaseSendablePacket
 {
@@ -34,13 +32,9 @@ public class PlayerAuthRequest extends BaseSendablePacket
 		writeD(key.loginOkID2);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
-	 */
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }

@@ -45,9 +45,6 @@ public final class RestartResponse extends L2GameServerPacket
 		writeD(_result ? 1 : 0);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -99,9 +99,6 @@ public final class PledgeShowMemberListUpdate extends L2GameServerPacket
 		writeD(_hasSponsor);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

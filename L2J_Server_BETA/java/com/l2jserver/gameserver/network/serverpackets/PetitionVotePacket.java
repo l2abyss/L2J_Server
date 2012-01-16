@@ -31,9 +31,6 @@ public class PetitionVotePacket extends L2GameServerPacket
 		writeC(0xFC);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

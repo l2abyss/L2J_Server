@@ -44,9 +44,6 @@ public final class ConditionSlotItemId extends ConditionInventory
 		_enchantLevel = enchantLevel;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.ConditionInventory#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

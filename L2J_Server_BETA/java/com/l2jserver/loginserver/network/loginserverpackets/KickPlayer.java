@@ -16,10 +16,8 @@ package com.l2jserver.loginserver.network.loginserverpackets;
 
 import com.l2jserver.util.network.BaseSendablePacket;
 
-
 /**
  * @author -Wooden-
- *
  */
 public class KickPlayer extends BaseSendablePacket
 {
@@ -29,13 +27,9 @@ public class KickPlayer extends BaseSendablePacket
 		writeS(account);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.loginserver.serverpackets.ServerBasePacket#getContent()
-	 */
 	@Override
 	public byte[] getContent()
 	{
 		return getBytes();
 	}
-	
 }

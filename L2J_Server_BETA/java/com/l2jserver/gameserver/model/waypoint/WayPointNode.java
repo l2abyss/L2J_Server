@@ -52,9 +52,6 @@ public class WayPointNode extends L2Object
 		_linkLists = Collections.synchronizedMap(new WeakHashMap<WayPointNode, List<WayPointNode>>());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.L2Object#isAutoAttackable(com.l2jserver.gameserver.model.L2Character)
-	 */
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{

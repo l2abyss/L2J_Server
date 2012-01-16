@@ -42,9 +42,6 @@ public class PrivateStoreMsgSell extends L2GameServerPacket
 		writeS(_storeMsg);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

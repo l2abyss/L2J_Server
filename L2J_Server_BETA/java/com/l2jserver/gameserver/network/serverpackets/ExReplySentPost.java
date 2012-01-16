@@ -43,9 +43,6 @@ public class ExReplySentPost extends L2GameServerPacket
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -100,9 +97,6 @@ public class ExReplySentPost extends L2GameServerPacket
 		_msg = null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

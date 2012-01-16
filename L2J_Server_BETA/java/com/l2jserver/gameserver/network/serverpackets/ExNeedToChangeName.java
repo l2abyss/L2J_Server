@@ -35,9 +35,6 @@ public class ExNeedToChangeName extends L2GameServerPacket
 		this.name = name;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -48,9 +45,6 @@ public class ExNeedToChangeName extends L2GameServerPacket
 		writeS(name);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

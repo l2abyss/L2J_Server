@@ -24,9 +24,6 @@ public final class TutorialShowHtml extends L2GameServerPacket
 		_html = html;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -34,9 +31,6 @@ public final class TutorialShowHtml extends L2GameServerPacket
 		writeS(_html);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

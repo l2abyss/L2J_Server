@@ -153,9 +153,6 @@ public final class ItemList extends L2GameServerPacket
 			writeH(0x00);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

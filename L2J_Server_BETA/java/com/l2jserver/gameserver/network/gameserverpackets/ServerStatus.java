@@ -20,7 +20,6 @@ import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
  * @author -Wooden-
- *
  */
 public class ServerStatus extends BaseSendablePacket
 {
@@ -81,9 +80,6 @@ public class ServerStatus extends BaseSendablePacket
 		_attributes.add(new Attribute(id, value));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.gameserverpackets.GameServerBasePacket#getContent()
-	 */
 	@Override
 	public byte[] getContent()
 	{
@@ -97,5 +93,4 @@ public class ServerStatus extends BaseSendablePacket
 		
 		return getBytes();
 	}
-	
 }

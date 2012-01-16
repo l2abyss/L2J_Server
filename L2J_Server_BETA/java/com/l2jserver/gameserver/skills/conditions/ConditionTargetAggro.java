@@ -39,9 +39,6 @@ public class ConditionTargetAggro extends Condition
 		_isAggro = isAggro;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

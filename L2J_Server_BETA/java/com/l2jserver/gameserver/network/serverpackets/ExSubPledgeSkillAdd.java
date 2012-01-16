@@ -41,9 +41,6 @@ public class ExSubPledgeSkillAdd extends L2GameServerPacket
 		writeD(_skillLevel);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

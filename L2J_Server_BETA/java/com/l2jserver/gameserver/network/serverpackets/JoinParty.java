@@ -51,9 +51,6 @@ public final class JoinParty extends L2GameServerPacket
 		writeD(_response);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

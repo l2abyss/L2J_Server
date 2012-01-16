@@ -33,9 +33,6 @@ public class ConditionPetType extends Condition
 		this.petType = petType;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.skills.conditions.Condition#testImpl(com.l2jserver.gameserver.skills.Env)
-	 */
 	@Override
 	public boolean testImpl(Env env)
 	{

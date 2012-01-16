@@ -909,9 +909,6 @@ public abstract class L2Summon extends L2Playable
 			activeChar.sendPacket(new AbstractNpcInfo.SummonInfo(this, activeChar, 0));
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Character#onTeleported()
-	 */
 	@Override
 	public void onTeleported()
 	{

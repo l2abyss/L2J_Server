@@ -58,9 +58,6 @@ public class ExStorageMaxCount extends L2GameServerPacket
 		_inventoryQuestItems = Config.INVENTORY_MAXIMUM_QUEST_ITEMS;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -78,9 +75,6 @@ public class ExStorageMaxCount extends L2GameServerPacket
 		writeD(_inventoryQuestItems);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

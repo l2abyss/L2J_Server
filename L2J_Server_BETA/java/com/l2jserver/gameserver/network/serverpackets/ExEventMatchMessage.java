@@ -39,9 +39,6 @@ public class ExEventMatchMessage extends L2GameServerPacket
 		_message = message;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -51,9 +48,6 @@ public class ExEventMatchMessage extends L2GameServerPacket
 		writeS(_message);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.BasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

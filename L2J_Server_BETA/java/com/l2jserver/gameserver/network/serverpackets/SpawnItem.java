@@ -79,9 +79,6 @@ public final class SpawnItem extends L2GameServerPacket
 		writeD(0x00); // freya unk
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

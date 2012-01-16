@@ -48,19 +48,13 @@ public class TaskBirthday extends Task
 	private static final Calendar _today = Calendar.getInstance();
 	
 	private int _count = 0;
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.taskmanager.Task#getName()
-	 */
+	
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.taskmanager.Task#onTimeElapsed(com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask)
-	 */
+	
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{

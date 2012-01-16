@@ -35,9 +35,6 @@ public final class ActionFailed extends L2GameServerPacket
 		writeC(0x1f);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -1525,11 +1525,6 @@ public class TerritoryWarManager implements Siegable
 		protected static final TerritoryWarManager _instance = new TerritoryWarManager();
 	}
 	
-	//TODO implement these
-	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#startSiege()
-	 */
 	@Override
 	public void startSiege()
 	{
@@ -1537,9 +1532,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#endSiege()
-	 */
 	@Override
 	public void endSiege()
 	{
@@ -1547,18 +1539,12 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClan(int)
-	 */
 	@Override
 	public L2SiegeClan getAttackerClan(int clanId)
 	{
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClan(com.l2jserver.gameserver.model.L2Clan)
-	 */
 	@Override
 	public L2SiegeClan getAttackerClan(L2Clan clan)
 	{
@@ -1566,9 +1552,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackerClans()
-	 */
 	@Override
 	public List<L2SiegeClan> getAttackerClans()
 	{
@@ -1576,9 +1559,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getAttackersInZone()
-	 */
 	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
@@ -1586,9 +1566,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#checkIsAttacker(com.l2jserver.gameserver.model.L2Clan)
-	 */
 	@Override
 	public boolean checkIsAttacker(L2Clan clan)
 	{
@@ -1596,9 +1573,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(int)
-	 */
 	@Override
 	public L2SiegeClan getDefenderClan(int clanId)
 	{
@@ -1606,9 +1580,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClan(com.l2jserver.gameserver.model.L2Clan)
-	 */
 	@Override
 	public L2SiegeClan getDefenderClan(L2Clan clan)
 	{
@@ -1616,9 +1587,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getDefenderClans()
-	 */
 	@Override
 	public List<L2SiegeClan> getDefenderClans()
 	{
@@ -1626,9 +1594,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#checkIsDefender(com.l2jserver.gameserver.model.L2Clan)
-	 */
 	@Override
 	public boolean checkIsDefender(L2Clan clan)
 	{
@@ -1636,9 +1601,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFlag(com.l2jserver.gameserver.model.L2Clan)
-	 */
 	@Override
 	public List<L2Npc> getFlag(L2Clan clan)
 	{
@@ -1646,9 +1608,6 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getSiegeDate()
-	 */
 	@Override
 	public Calendar getSiegeDate()
 	{
@@ -1656,27 +1615,18 @@ public class TerritoryWarManager implements Siegable
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#giveFame()
-	 */
 	@Override
 	public boolean giveFame()
 	{
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameFrequency()
-	 */
 	@Override
 	public int getFameFrequency()
 	{
 		return Config.CASTLE_ZONE_FAME_TASK_FREQUENCY;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.entity.Siegable#getFameAmount()
-	 */
 	@Override
 	public int getFameAmount()
 	{
@@ -1684,5 +1634,8 @@ public class TerritoryWarManager implements Siegable
 	}
 	
 	@Override
-	public void updateSiege() { }
+	public void updateSiege()
+	{
+		
+	}
 }

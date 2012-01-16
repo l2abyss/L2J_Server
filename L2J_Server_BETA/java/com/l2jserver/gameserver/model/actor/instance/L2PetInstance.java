@@ -1328,18 +1328,12 @@ public class L2PetInstance extends L2Summon
 		return 0;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Summon#getSoulShotsPerHit()
-	 */
 	@Override
 	public short getSoulShotsPerHit()
 	{
 		return getPetLevelData().getPetSoulShot();
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.model.actor.L2Summon#getSpiritShotsPerHit()
-	 */
 	@Override
 	public short getSpiritShotsPerHit()
 	{

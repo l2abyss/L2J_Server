@@ -62,9 +62,6 @@ public final class PledgeShowMemberListAdd extends L2GameServerPacket
 		writeD(_pledgeType);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.l2jserver.gameserver.serverpackets.ServerBasePacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
