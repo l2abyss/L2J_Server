@@ -19,8 +19,10 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -230,33 +232,37 @@ public class NpcTable
 	 */
 	public void saveNpc(StatsSet npc)
 	{
-		Map<String, Object> set = npc.getSet();
-		
+		final Map<String, Object> set = npc.getSet();
 		int length = 0;
-		
 		for (Object obj : set.keySet())
 		{
 			// 15 is just guessed npc name length
 			length += ((String) obj).length() + 7 + 15;
 		}
 		
-		final StringBuilder sbValues = new StringBuilder(length);
-		
-		for (Object obj : set.keySet())
+		final StringBuilder npcSb = new StringBuilder(length);
+		final StringBuilder npcAiSb = new StringBuilder(30);
+		String attribute;
+		String value;
+		for (Entry<String, Object> entry : set.entrySet())
 		{
-			final String name = (String) obj;
-			
-			if (!name.equalsIgnoreCase("npcId"))
+			attribute = entry.getKey();
+			value = String.valueOf(entry.getValue());
+			switch (attribute)
 			{
-				if (sbValues.length() > 0)
+				case "npcId":
+					break;
+				case "aggro":
+				case "showName":
+				case "targetable":
 				{
-					sbValues.append(", ");
+					appendEntry(npcAiSb, attribute, value);
+					break;
 				}
-				
-				sbValues.append(name);
-				sbValues.append(" = '");
-				sbValues.append(set.get(name));
-				sbValues.append('\'');
+				default:
+				{
+					appendEntry(npcSb, attribute, value);
+				}
 			}
 		}
 		
@@ -265,27 +271,17 @@ public class NpcTable
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			int updated = 0;
+			final int npcId = npc.getInteger("npcId");
 			if (Config.CUSTOM_NPC_TABLE)
 			{
-				final StringBuilder sbQuery = new StringBuilder(sbValues.length() + 28);
-				sbQuery.append("UPDATE custom_npc SET ");
-				sbQuery.append(sbValues.toString());
-				sbQuery.append(" WHERE id = ?");
-				PreparedStatement statement = con.prepareStatement(sbQuery.toString());
-				statement.setInt(1, npc.getInteger("npcId"));
-				updated = statement.executeUpdate();
-				statement.close();
+				updated = performUpdate(npcSb, "custom_npc", "id", npcId, con);
+				performUpdate(npcAiSb, "custom_npcaidata", "npcId", npcId, con);
 			}
+			
 			if (updated == 0)
 			{
-				final StringBuilder sbQuery = new StringBuilder(sbValues.length() + 28);
-				sbQuery.append("UPDATE npc SET ");
-				sbQuery.append(sbValues.toString());
-				sbQuery.append(" WHERE id = ?");
-				PreparedStatement statement = con.prepareStatement(sbQuery.toString());
-				statement.setInt(1, npc.getInteger("npcId"));
-				statement.executeUpdate();
-				statement.close();
+				performUpdate(npcSb, "npc", "id", npcId, con);
+				performUpdate(npcAiSb, "npcaidata", "npcId", npcId, con);
 			}
 		}
 		catch (Exception e)
@@ -296,6 +292,54 @@ public class NpcTable
 		{
 			L2DatabaseFactory.close(con);
 		}
+	}
+	
+	/**
+	 * @param sb the string builder to append the attribute and value.
+	 * @param attribute the attribute to append.
+	 * @param value the value to append.
+	 */
+	private final void appendEntry(StringBuilder sb, String attribute, String value)
+	{
+		if (sb.length() > 0)
+		{
+			sb.append(", ");
+		}
+		
+		sb.append(attribute);
+		sb.append(" = '");
+		sb.append(value);
+		sb.append("'");
+	}
+	
+	/**
+	 * @param sb the string builder with the parameters
+	 * @param table the table to update.
+	 * @param key the key of the table.
+	 * @param npcId the Npc Id. 
+	 * @param con the current database connection.
+	 * @return the count of updated NPCs.
+	 * @throws SQLException the SQL exception.
+	 */
+	private final int performUpdate(StringBuilder sb, String table, String key, int npcId, Connection con) throws SQLException
+	{
+		int updated = 0;
+		if ((sb != null) && !sb.toString().isEmpty())
+		{
+			final StringBuilder sbQuery = new StringBuilder(sb.length() + 28);
+			sbQuery.append("UPDATE ");
+			sbQuery.append(table);
+			sbQuery.append(" SET ");
+			sbQuery.append(sb.toString());
+			sbQuery.append(" WHERE ");
+			sbQuery.append(key);
+			sbQuery.append(" = ?");
+			final PreparedStatement statement = con.prepareStatement(sbQuery.toString());
+			statement.setInt(1, npcId);
+			updated = statement.executeUpdate();
+			statement.close();
+		}
+		return updated;
 	}
 	
 	/**
