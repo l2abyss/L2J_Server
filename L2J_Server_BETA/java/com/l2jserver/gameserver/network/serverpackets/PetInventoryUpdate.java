@@ -53,11 +53,31 @@ public class PetInventoryUpdate extends L2GameServerPacket
 		this(new FastList<ItemInfo>());
 	}
 	
-	public void addItem(L2ItemInstance item) { _items.add(new ItemInfo(item)); }
-	public void addNewItem(L2ItemInstance item) { _items.add(new ItemInfo(item, 1)); }
-	public void addModifiedItem(L2ItemInstance item) { _items.add(new ItemInfo(item, 2)); }
-	public void addRemovedItem(L2ItemInstance item) { _items.add(new ItemInfo(item, 3)); }
-	public void addItems(List<L2ItemInstance> items) { for (L2ItemInstance item : items) _items.add(new ItemInfo(item)); }
+	public void addItem(L2ItemInstance item)
+	{
+		_items.add(new ItemInfo(item));
+	}
+	
+	public void addNewItem(L2ItemInstance item)
+	{
+		_items.add(new ItemInfo(item, 1));
+	}
+	
+	public void addModifiedItem(L2ItemInstance item)
+	{
+		_items.add(new ItemInfo(item, 2));
+	}
+	
+	public void addRemovedItem(L2ItemInstance item)
+	{
+		_items.add(new ItemInfo(item, 3));
+	}
+	
+	public void addItems(List<L2ItemInstance> items)
+	{
+		for (L2ItemInstance item : items)
+			_items.add(new ItemInfo(item));
+	}
 	
 	private void showDebug()
 	{
@@ -78,7 +98,7 @@ public class PetInventoryUpdate extends L2GameServerPacket
 		{
 			writeH(item.getChange()); // Update type : 01-add, 02-modify, 03-remove
 			writeD(item.getObjectId());
-			writeD(item.getItem().getItemId());
+			writeD(item.getItem().getDisplayId());
 			writeD(item.getLocation());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

@@ -26,9 +26,9 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 {
 	//	private static final String _S__D1_PRIVATEBUYLISTBUY = "[S] b8 PrivateBuyListBuy";
 	private static final String _S__D1_PRIVATESTORELISTBUY = "[S] be PrivateStoreListBuy";
-	private int _objId;
-	private long _playerAdena;
-	private TradeItem[] _items;
+	private final int _objId;
+	private final long _playerAdena;
+	private final TradeItem[] _items;
 	
 	public PrivateStoreListBuy(L2PcInstance player, L2PcInstance storePlayer)
 	{
@@ -50,7 +50,7 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 		for (TradeItem item : _items)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItem().getItemId());
+			writeD(item.getItem().getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

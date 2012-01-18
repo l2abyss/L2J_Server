@@ -702,7 +702,7 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 		for (L2WarehouseItem item : _objects)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItemId());
+			writeD(item.getItem().getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

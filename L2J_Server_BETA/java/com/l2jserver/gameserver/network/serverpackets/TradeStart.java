@@ -49,7 +49,7 @@ public final class TradeStart extends L2GameServerPacket
 		for (L2ItemInstance item : _itemList)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItem().getItemId());
+			writeD(item.getItem().getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

@@ -252,12 +252,12 @@ public final class SystemMessage extends L2GameServerPacket
 	
 	public final SystemMessage addItemName(final L2ItemInstance item)
 	{
-		return addItemName(item.getItem().getItemId());
+		return addItemName(item.getItem().getDisplayId());
 	}
 	
 	public final SystemMessage addItemName(final L2Item item)
 	{
-		return addItemName(item.getItemId());
+		return addItemName(item.getDisplayId());
 	}
 	
 	public final SystemMessage addItemName(final int id)

@@ -33,11 +33,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class PrivateStoreManageListSell extends L2GameServerPacket
 {
 	private static final String _S__B3_PRIVATESELLLISTSELL = "[S] a0 PrivateSellListSell";
-	private int _objId;
-	private long _playerAdena;
-	private boolean _packageSale;
-	private TradeItem[] _itemList;
-	private TradeItem[] _sellList;
+	private final int _objId;
+	private final long _playerAdena;
+	private final boolean _packageSale;
+	private final TradeItem[] _itemList;
+	private final TradeItem[] _sellList;
 	
 	public PrivateStoreManageListSell(L2PcInstance player, boolean isPackageSale)
 	{
@@ -63,7 +63,7 @@ public class PrivateStoreManageListSell extends L2GameServerPacket
 		for (TradeItem item : _itemList)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItem().getItemId());
+			writeD(item.getItem().getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

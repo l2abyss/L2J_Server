@@ -126,7 +126,7 @@ public class InventoryUpdate extends L2GameServerPacket
 		{
 			writeH(item.getChange()); // Update type : 01-add, 02-modify, 03-remove
 			writeD(item.getObjectId()); // ObjectId
-			writeD(item.getItem().getItemId()); // ItemId
+			writeD(item.getItem().getDisplayId()); // ItemId
 			writeD(item.getLocation()); // T1
 			writeQ(item.getCount()); // Quantity
 			writeH(item.getItem().getType2()); // Item Type 2 : 00-weapon, 01-shield/armor, 02-ring/earring/necklace, 03-questitem, 04-adena, 05-item

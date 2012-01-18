@@ -50,7 +50,7 @@ public class PackageSendableList extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			writeD(item.getObjectId()); // This is not the real object id of the item!
-			writeD(item.getItemId());
+			writeD(item.getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

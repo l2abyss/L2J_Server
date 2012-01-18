@@ -163,6 +163,7 @@ public abstract class L2Item
 	};
 	
 	private final int _itemId;
+	private final int _displayId;
 	private final String _name;
 	private final String _icon;
 	private final int _weight;
@@ -213,6 +214,7 @@ public abstract class L2Item
 	protected L2Item(StatsSet set)
 	{
 		_itemId = set.getInteger("item_id");
+		_displayId = set.getInteger("displayId", _itemId);
 		_name = set.getString("name");
 		_icon = set.getString("icon", null);
 		_weight = set.getInteger("weight", 0);
@@ -352,12 +354,21 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * Returns the ID of the iden
+	 * Returns the ID of the item
 	 * @return int
 	 */
 	public final int getItemId()
 	{
 		return _itemId;
+	}
+	
+	/**
+	 * Returns the ID of the item
+	 * @return int
+	 */
+	public final int getDisplayId()
+	{
+		return _displayId;
 	}
 	
 	public abstract int getItemMask();

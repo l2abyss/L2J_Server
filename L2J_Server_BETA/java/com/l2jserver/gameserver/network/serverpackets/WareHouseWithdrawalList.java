@@ -73,7 +73,7 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItemId());
+			writeD(item.getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

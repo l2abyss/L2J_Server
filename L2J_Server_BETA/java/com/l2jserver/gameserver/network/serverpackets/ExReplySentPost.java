@@ -60,7 +60,7 @@ public class ExReplySentPost extends L2GameServerPacket
 			for (L2ItemInstance item : _items)
 			{
 				writeD(0x00);
-				writeD(item.getItemId());
+				writeD(item.getDisplayId());
 				writeD(item.getLocationSlot());
 				writeQ(item.getCount());
 				writeH(item.getItem().getType2());
