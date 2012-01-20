@@ -1585,6 +1585,10 @@ public abstract class Inventory extends ItemContainer
 			L2ItemInstance item;
 			while (inv.next())
 			{
+				// Check if that item already exists in OID map.
+				if (L2World.getInstance().findObject(inv.getInt("object_id")) != null)
+					continue;
+				
 				item = L2ItemInstance.restoreFromDb(getOwnerId(), inv);
 				
 				if (item == null)
