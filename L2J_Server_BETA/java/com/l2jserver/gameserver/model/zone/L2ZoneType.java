@@ -58,6 +58,7 @@ public abstract class L2ZoneType
 	private char _classType;
 	private Map<Quest.QuestEventType, FastList<Quest>> _questEvents;
 	private InstanceType _target = InstanceType.L2Character; // default all chars
+	private boolean _allowStore;
 	
 	protected L2ZoneType(int id)
 	{
@@ -71,6 +72,7 @@ public abstract class L2ZoneType
 		
 		_race = null;
 		_class = null;
+		_allowStore = true;
 	}
 	
 	/**
@@ -174,14 +176,19 @@ public abstract class L2ZoneType
 		{
 			_target = Enum.valueOf(InstanceType.class, value);
 		}
+		else if (name.equals("allowStore"))
+		{
+			_allowStore = Boolean.parseBoolean(value);
+		}
 		else
+		{
 			_log.info(getClass().getSimpleName()+": Unknown parameter - "+name+" in zone: "+getId());
+		}
 	}
 	
 	/**
-	 * Checks if the given character is affected by this zone
-	 * @param character
-	 * @return
+	 * @param character the player to verify.
+	 * @return {@code true} if the given character is affected by this zone, {@code false} otherwise.
 	 */
 	private boolean isAffected(L2Character character)
 	{
@@ -527,6 +534,11 @@ public abstract class L2ZoneType
 	{
 		_target = type;
 		_checkAffected = true;
+	}
+	
+	public boolean getAllowStore()
+	{
+		return _allowStore;
 	}
 	
 	@Override

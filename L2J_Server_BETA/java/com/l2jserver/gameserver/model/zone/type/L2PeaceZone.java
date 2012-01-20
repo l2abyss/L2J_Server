@@ -53,6 +53,11 @@ public class L2PeaceZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_PEACE, true);
 		}
+		
+		if (!getAllowStore())
+		{
+			character.setInsideZone(L2Character.ZONE_NOSTORE, true);
+		}
 	}
 	
 	@Override
@@ -62,15 +67,22 @@ public class L2PeaceZone extends L2ZoneType
 		{
 			character.setInsideZone(L2Character.ZONE_PEACE, false);
 		}
+		
+		if (!getAllowStore())
+		{
+			character.setInsideZone(L2Character.ZONE_NOSTORE, false);
+		}
 	}
 	
 	@Override
 	public void onDieInside(L2Character character)
 	{
+		//
 	}
 	
 	@Override
 	public void onReviveInside(L2Character character)
 	{
+		//
 	}
 }
