@@ -1192,7 +1192,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+CONFIGURATION_FILE+" File.");
 				}
 				
@@ -1252,7 +1252,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+IP_CONFIG_FILE+" File.");
 				}
 				
@@ -1270,7 +1270,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+COMMUNITY_CONFIGURATION_FILE+" File.");
 				}
 				
@@ -1489,7 +1489,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+FEATURE_CONFIG_FILE+" File.");
 				}
 				
@@ -1753,7 +1753,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+CHARACTER_CONFIG_FILE+" file.");
 				}
 				
@@ -1800,7 +1800,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+TELNET_FILE+" File.");
 				}
 				
@@ -1819,7 +1819,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load " + MMO_CONFIG_FILE + " File.");
 				}
 				
@@ -1837,7 +1837,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+ID_CONFIG_FILE+" file.");
 				}
 				
@@ -2088,7 +2088,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+GENERAL_CONFIG_FILE+" File.");
 				}
 				
@@ -2103,7 +2103,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+FLOOD_PROTECTOR_FILE);
 				}
 				
@@ -2199,7 +2199,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+NPC_CONFIG_FILE+" File.");
 				}
 				
@@ -2294,7 +2294,7 @@ public final class Config
 					catch (Exception e)
 					{
 						_log.warning("Error while loading Player XP percent lost");
-						e.printStackTrace();
+						_log.warning("Config: " + e.getMessage());
 					}
 					
 					String[] propertySplit = ratesSettings.getProperty("RateDropItemsById", "").split(";");
@@ -2327,7 +2327,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+RATES_CONFIG_FILE+" File.");
 				}
 				
@@ -2649,7 +2649,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+L2JMOD_CONFIG_FILE+" File.");
 				}
 				
@@ -2692,7 +2692,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+PVP_CONFIG_FILE+" File.");
 				}
 				// Load Olympiad L2Properties file (if exists)
@@ -2747,7 +2747,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+OLYMPIAD_CONFIG_FILE+" File.");
 				}
 				try
@@ -2864,7 +2864,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load " + GRANDBOSS_CONFIG_FILE + " File.");
 				}
 				
@@ -2882,7 +2882,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load " + GRACIASEEDS_CONFIG_FILE + " File.");
 				}
 				
@@ -2902,7 +2902,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load " + CHAT_FILTER_FILE + " File.");
 				}
 				
@@ -2921,7 +2921,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load " + SECURITY_CONFIG_FILE + " File.");
 				}
 				try
@@ -2939,7 +2939,7 @@ public final class Config
 				}
 				catch(Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 				}
 			}
 			finally
@@ -3003,7 +3003,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load " + LOGIN_CONFIGURATION_FILE + " File.");
 				}
 				// MMO
@@ -3021,7 +3021,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load " + MMO_CONFIG_FILE + " File.");
 				}
 				
@@ -3036,7 +3036,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load "+TELNET_FILE+" File.");
 				}
 				
@@ -3064,7 +3064,7 @@ public final class Config
 				}
 				catch (Exception e)
 				{
-					e.printStackTrace();
+					_log.warning("Config: " + e.getMessage());
 					throw new Error("Failed to Load " + EMAIL_CONFIG_FILE + " File.");
 				}
 			}
@@ -3511,7 +3511,7 @@ public final class Config
 		catch (Exception e)
 		{
 			_log.warning(StringUtil.concat("Failed to save hex id to ", fileName, " File."));
-			e.printStackTrace();
+			_log.warning("Config: " + e.getMessage());
 		}
 	}
 	

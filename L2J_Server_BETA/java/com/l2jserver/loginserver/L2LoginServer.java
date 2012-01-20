@@ -46,10 +46,10 @@ import com.l2jserver.status.Status;
  */
 public class L2LoginServer
 {
-	public static final int PROTOCOL_REV = 0x0106;
-	
-	private static L2LoginServer _instance;
 	private final Logger _log = Logger.getLogger(L2LoginServer.class.getName());
+	
+	public static final int PROTOCOL_REV = 0x0106;
+	private static L2LoginServer _instance;
 	private GameServerListener _gameServerListener;
 	private SelectorThread<L2LoginClient> _selectorThread;
 	private Status _statusServer;
@@ -87,7 +87,7 @@ public class L2LoginServer
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 		finally
 		{
@@ -100,7 +100,7 @@ public class L2LoginServer
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			}
 		}
 		

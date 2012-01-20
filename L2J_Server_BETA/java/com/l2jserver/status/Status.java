@@ -73,7 +73,7 @@ public class Status extends Thread
 					}
 					catch (IOException io)
 					{
-						io.printStackTrace();
+						_log.warning(getClass().getSimpleName() + ": " + io.getMessage());
 					}
 					break;
 				}
@@ -88,7 +88,7 @@ public class Status extends Thread
 					}
 					catch (IOException io)
 					{
-						io.printStackTrace();
+						_log.warning(getClass().getSimpleName() + ": " + io.getMessage());
 					}
 					break;
 				}

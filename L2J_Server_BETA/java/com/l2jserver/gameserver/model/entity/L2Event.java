@@ -391,7 +391,7 @@ public class L2Event
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.warning("L2Event: " + e.getMessage());
 			return "Cannot start event participation, an error has occured.";
 		}
 		
@@ -459,7 +459,7 @@ public class L2Event
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.warning("L2Event: " + e.getMessage());
 			return "Cannot start event, an error has occured.";
 		}
 		

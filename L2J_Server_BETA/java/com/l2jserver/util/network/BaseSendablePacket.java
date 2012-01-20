@@ -16,6 +16,7 @@ package com.l2jserver.util.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * This class ...
@@ -24,7 +25,9 @@ import java.io.IOException;
  */
 public abstract class BaseSendablePacket
 {
-	ByteArrayOutputStream _bao;
+	private static final Logger _log = Logger.getLogger(BaseSendablePacket.class.getName());
+	
+	private final ByteArrayOutputStream _bao;
 	
 	protected BaseSendablePacket()
 	{
@@ -74,7 +77,7 @@ public abstract class BaseSendablePacket
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 		
 		_bao.write(0);
@@ -89,7 +92,7 @@ public abstract class BaseSendablePacket
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 	

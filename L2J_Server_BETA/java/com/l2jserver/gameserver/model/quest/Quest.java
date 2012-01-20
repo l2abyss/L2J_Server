@@ -834,7 +834,9 @@ public class Quest extends ManagedScript
 	{
 		_log.log(Level.WARNING, this.getScriptFile().getAbsolutePath(), t);
 		if (t.getMessage() == null)
-			t.printStackTrace();
+		{
+			_log.warning(getClass().getSimpleName() + ": " + t.getMessage());
+		}
 		if (player != null && player.getAccessLevel().isGm())
 		{
 			String res = "<html><body><title>Script error</title>" + Util.getStackTrace(t) + "</body></html>";

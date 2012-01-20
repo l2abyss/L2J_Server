@@ -14,6 +14,8 @@
  */
 package com.l2jserver.util.network;
 
+import java.util.logging.Logger;
+
 /**
  * This class ...
  *
@@ -21,6 +23,8 @@ package com.l2jserver.util.network;
  */
 public abstract class BaseRecievePacket
 {
+	private static final Logger _log = Logger.getLogger(BaseRecievePacket.class.getName());
+	
 	private byte[] _decrypt;
 	private int _off;
 	
@@ -75,7 +79,7 @@ public abstract class BaseRecievePacket
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 		_off += result.length()*2 + 2;
 		return result;

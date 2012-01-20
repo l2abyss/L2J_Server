@@ -458,7 +458,7 @@ public final class BlockCheckerEngine
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			}
 			
 			// Spawn the block carrying girl
@@ -482,8 +482,7 @@ public final class BlockCheckerEngine
 				catch(Exception e) 
 				{
 					_log.warning("Couldnt Spawn Block Checker NPCs! Wrong instance type at npc table?");
-					if(Config.DEBUG) 
-						e.printStackTrace(); 
+					_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 				}
 			}
 			

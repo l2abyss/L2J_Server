@@ -102,7 +102,7 @@ public class BaseMail implements Runnable
 		}
 		catch (MessagingException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 	

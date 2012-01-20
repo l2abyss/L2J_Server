@@ -140,7 +140,7 @@ public class GameServerTable
 		}
 		catch (XMLStreamException xppe)
 		{
-			xppe.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + xppe.getMessage());
 		}
 		finally
 		{
@@ -150,6 +150,7 @@ public class GameServerTable
 			}
 			catch (Exception e)
 			{
+				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			}
 		}
 	}

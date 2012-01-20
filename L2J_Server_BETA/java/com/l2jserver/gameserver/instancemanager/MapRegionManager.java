@@ -83,7 +83,6 @@ public class MapRegionManager
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			_log.log(Level.SEVERE, "Failed loading MapRegion", e);
 		}
 	}

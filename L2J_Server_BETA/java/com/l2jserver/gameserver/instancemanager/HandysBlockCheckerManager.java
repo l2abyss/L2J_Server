@@ -18,6 +18,7 @@ import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
@@ -45,7 +46,9 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class HandysBlockCheckerManager 
 {
-	// All the participants and their team classifed by arena
+	private static final Logger _log = Logger.getLogger(HandysBlockCheckerManager.class.getName());
+	
+	// All the participants and their team classified by arena
 	private static ArenaParticipantsHolder[] _arenaPlayers = new ArenaParticipantsHolder[4];
 	
 	// Arena votes to start the game
@@ -511,7 +514,7 @@ public final class HandysBlockCheckerManager
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			}
 		}
 	}

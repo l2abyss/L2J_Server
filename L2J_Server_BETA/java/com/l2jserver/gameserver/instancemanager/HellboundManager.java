@@ -212,7 +212,7 @@ public class HellboundManager
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			}
 		}
 		

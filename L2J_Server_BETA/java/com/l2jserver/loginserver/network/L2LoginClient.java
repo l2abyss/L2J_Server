@@ -95,8 +95,8 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
-			super.getConnection().close((SendablePacket<L2LoginClient>)null);
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
+			super.getConnection().close((SendablePacket<L2LoginClient>) null);
 			return false;
 		}
 		
@@ -124,7 +124,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			return false;
 		}
 		

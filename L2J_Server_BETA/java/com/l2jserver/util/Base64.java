@@ -17,7 +17,7 @@ package com.l2jserver.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
+import java.util.logging.Logger;
 
 /**
  * Encodes and decodes to and from Base64 notation.
@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
  */
 public class Base64
 {
+	private static final Logger _log = Logger.getLogger(Base64.class.getName());
 	
 	/*  P U B L I C F I E L D S */
 	
@@ -518,7 +519,7 @@ public class Base64
 			} // end try
 			catch (java.io.IOException e)
 			{
-				e.printStackTrace();
+				_log.warning("Base64: " + e.getMessage());
 				return null;
 			} // end catch
 			finally
@@ -892,11 +893,11 @@ public class Base64
 		}
 		catch (java.io.IOException e)
 		{
-			e.printStackTrace();
+			_log.warning("Base64: " + e.getMessage());
 		}
 		catch (java.lang.ClassNotFoundException e)
 		{
-			e.printStackTrace();
+			_log.warning("Base64: " + e.getMessage());
 		}
 		finally
 		{

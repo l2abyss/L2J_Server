@@ -286,18 +286,15 @@ public class MultiSell
 						}
 						catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | DOMException e1)
 						{
-							_log.warning(e.getLocalizedMessage() + doc.getLocalName());
+							_log.warning(e.getMessage() + doc.getLocalName());
 							list.setUseRate(1.0);
-							e.printStackTrace();
 						}
 
 					}
 					catch (DOMException e) 
 					{
-						_log.warning(e.getLocalizedMessage() + doc.getLocalName());
-						e.printStackTrace();
+						_log.warning(e.getMessage() + doc.getLocalName());
 					}
-					
 				}
 				
 				attribute = n.getAttributes().getNamedItem("maintainEnchantment");

@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.ITelnetHandler;
@@ -31,6 +32,8 @@ import com.l2jserver.gameserver.handler.TelnetHandler;
 
 public class GameStatusThread extends Thread
 {
+	private static final Logger _log = Logger.getLogger(GameStatusThread.class.getName());
+	
 	private final Socket _cSocket;
 	
 	private final PrintWriter _print;
@@ -212,7 +215,7 @@ public class GameStatusThread extends Thread
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 }
