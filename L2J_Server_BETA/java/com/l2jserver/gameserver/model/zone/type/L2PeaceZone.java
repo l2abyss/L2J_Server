@@ -47,11 +47,6 @@ public class L2PeaceZone extends L2ZoneType
 			{
 				return;
 			}
-			
-			if (!getAllowStore())
-			{
-				character.setInsideZone(L2Character.ZONE_NOSTORE, true);
-			}
 		}
 		
 		if (Config.PEACE_ZONE_MODE != 2)
