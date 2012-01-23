@@ -842,9 +842,8 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Returns the item in the paperdoll slot
-	 * @param slot 
-	 * @return L2ItemInstance
+	 * @param slot the slot.
+	 * @return the item in the paperdoll slot
 	 */
 	public L2ItemInstance getPaperdollItem(int slot)
 	{
@@ -920,7 +919,7 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Returns the ID of the item in the paperdol slot
+	 * Returns the ID of the item in the paperdoll slot
 	 * @param slot : int designating the slot
 	 * @return int designating the ID of the item
 	 */
@@ -1056,55 +1055,74 @@ public abstract class Inventory extends ItemContainer
 	public int getSlotFromItem(L2ItemInstance item)
 	{
 		int slot = -1;
-		int location = item.getLocationSlot();
-		
+		final int location = item.getLocationSlot();
 		switch(location)
 		{
-			case PAPERDOLL_UNDER:		slot = L2Item.SLOT_UNDERWEAR;
-			break;
-			case PAPERDOLL_LEAR:		slot = L2Item.SLOT_L_EAR;
-			break;
-			case PAPERDOLL_REAR:		slot = L2Item.SLOT_R_EAR;
-			break;
-			case PAPERDOLL_NECK:		slot = L2Item.SLOT_NECK;
-			break;
-			case PAPERDOLL_RFINGER:		slot = L2Item.SLOT_R_FINGER;
-			break;
-			case PAPERDOLL_LFINGER:		slot = L2Item.SLOT_L_FINGER;
-			break;
-			case PAPERDOLL_HAIR:		slot = L2Item.SLOT_HAIR;
-			break;
-			case PAPERDOLL_HAIR2:		slot = L2Item.SLOT_HAIR2;
-			break;
-			case PAPERDOLL_HEAD:		slot = L2Item.SLOT_HEAD;
-			break;
-			case PAPERDOLL_RHAND:		slot = L2Item.SLOT_R_HAND;
-			break;
-			case PAPERDOLL_LHAND:		slot = L2Item.SLOT_L_HAND;
-			break;
-			case PAPERDOLL_GLOVES:		slot = L2Item.SLOT_GLOVES;
-			break;
-			case PAPERDOLL_CHEST:		slot = item.getItem().getBodyPart();
-			break;
-			case PAPERDOLL_LEGS:		slot = L2Item.SLOT_LEGS;
-			break;
-			case PAPERDOLL_CLOAK:		slot = L2Item.SLOT_BACK;
-			break;
-			case PAPERDOLL_FEET:		slot = L2Item.SLOT_FEET;
-			break;
-			case PAPERDOLL_LBRACELET:	 slot = L2Item.SLOT_L_BRACELET;
-			break;
-			case PAPERDOLL_RBRACELET:	 slot = L2Item.SLOT_R_BRACELET;
-			break;
+			case PAPERDOLL_UNDER:
+				slot = L2Item.SLOT_UNDERWEAR;
+				break;
+			case PAPERDOLL_LEAR:
+				slot = L2Item.SLOT_L_EAR;
+				break;
+			case PAPERDOLL_REAR:
+				slot = L2Item.SLOT_R_EAR;
+				break;
+			case PAPERDOLL_NECK:
+				slot = L2Item.SLOT_NECK;
+				break;
+			case PAPERDOLL_RFINGER:
+				slot = L2Item.SLOT_R_FINGER;
+				break;
+			case PAPERDOLL_LFINGER:
+				slot = L2Item.SLOT_L_FINGER;
+				break;
+			case PAPERDOLL_HAIR:
+				slot = L2Item.SLOT_HAIR;
+				break;
+			case PAPERDOLL_HAIR2:
+				slot = L2Item.SLOT_HAIR2;
+				break;
+			case PAPERDOLL_HEAD:
+				slot = L2Item.SLOT_HEAD;
+				break;
+			case PAPERDOLL_RHAND:
+				slot = L2Item.SLOT_R_HAND;
+				break;
+			case PAPERDOLL_LHAND:
+				slot = L2Item.SLOT_L_HAND;
+				break;
+			case PAPERDOLL_GLOVES:
+				slot = L2Item.SLOT_GLOVES;
+				break;
+			case PAPERDOLL_CHEST:
+				slot = item.getItem().getBodyPart();
+				break;
+			case PAPERDOLL_LEGS:
+				slot = L2Item.SLOT_LEGS;
+				break;
+			case PAPERDOLL_CLOAK:
+				slot = L2Item.SLOT_BACK;
+				break;
+			case PAPERDOLL_FEET:
+				slot = L2Item.SLOT_FEET;
+				break;
+			case PAPERDOLL_LBRACELET:
+				slot = L2Item.SLOT_L_BRACELET;
+				break;
+			case PAPERDOLL_RBRACELET:
+				slot = L2Item.SLOT_R_BRACELET;
+				break;
 			case PAPERDOLL_DECO1:
 			case PAPERDOLL_DECO2:
 			case PAPERDOLL_DECO3:
 			case PAPERDOLL_DECO4:
 			case PAPERDOLL_DECO5:
-			case PAPERDOLL_DECO6:		slot = L2Item.SLOT_DECO;
-			break;
-			case PAPERDOLL_BELT:		slot = L2Item.SLOT_BELT;
-			break;
+			case PAPERDOLL_DECO6:
+				slot = L2Item.SLOT_DECO;
+				break;
+			case PAPERDOLL_BELT:
+				slot = L2Item.SLOT_BELT;
+				break;
 		}
 		return slot;
 	}
@@ -1585,12 +1603,7 @@ public abstract class Inventory extends ItemContainer
 			L2ItemInstance item;
 			while (inv.next())
 			{
-				// Check if that item already exists in OID map.
-				if (L2World.getInstance().findObject(inv.getInt("object_id")) != null)
-					continue;
-				
 				item = L2ItemInstance.restoreFromDb(getOwnerId(), inv);
-				
 				if (item == null)
 					continue;
 				

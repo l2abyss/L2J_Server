@@ -104,28 +104,28 @@ public class Siege implements Siegable
 				else if ((timeRemaining <= 3600000) && (timeRemaining > 600000))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_MINUTES_UNTIL_SIEGE_CONCLUSION);
-					sm.addNumber(Math.round(timeRemaining / 60000));
+					sm.addNumber((int) timeRemaining / 60000);
 					announceToPlayer(sm, true);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndSiegeTask(_castleInst), timeRemaining - 600000); // Prepare task for 10 minute left.
 				}
 				else if ((timeRemaining <= 600000) && (timeRemaining > 300000))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_MINUTES_UNTIL_SIEGE_CONCLUSION);
-					sm.addNumber(Math.round(timeRemaining / 60000));
+					sm.addNumber((int) timeRemaining / 60000);
 					announceToPlayer(sm, true);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndSiegeTask(_castleInst), timeRemaining - 300000); // Prepare task for 5 minute left.
 				}
 				else if ((timeRemaining <= 300000) && (timeRemaining > 10000))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_MINUTES_UNTIL_SIEGE_CONCLUSION);
-					sm.addNumber(Math.round(timeRemaining / 60000));
+					sm.addNumber((int) timeRemaining / 60000);
 					announceToPlayer(sm, true);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndSiegeTask(_castleInst), timeRemaining - 10000); // Prepare task for 10 seconds count down
 				}
 				else if ((timeRemaining <= 10000) && (timeRemaining > 0))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CASTLE_SIEGE_S1_SECONDS_LEFT);
-					sm.addNumber(Math.round(timeRemaining / 1000));
+					sm.addNumber((int) timeRemaining / 1000);
 					announceToPlayer(sm, true);
 					ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndSiegeTask(_castleInst), timeRemaining); // Prepare task for second count down
 				}

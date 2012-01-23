@@ -352,7 +352,7 @@ abstract class DocumentBase
 		
 		EffectTemplate lt;
 		
-		final boolean isChanceSkillTrigger = (name == "ChanceSkillTrigger");
+		final boolean isChanceSkillTrigger = name.equals("ChanceSkillTrigger");
 		int trigId = 0;
 		if (attrs.getNamedItem("triggeredId") != null)
 			trigId = Integer.parseInt(getValue(attrs.getNamedItem("triggeredId").getNodeValue(), template));

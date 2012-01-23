@@ -27,7 +27,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class L2DatabaseFactory
 {
-	static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
+	private static final Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
 	
 	public static enum ProviderType
 	{
@@ -154,7 +154,7 @@ public class L2DatabaseFactory
 	
 	public final String safetyString(String... whatToCheck)
 	{
-		// NOTE: Use brace as a safty precaution just incase name is a reserved word
+		// NOTE: Use brace as a safety precaution just in case name is a reserved word
 		final char braceLeft;
 		final char braceRight;
 		
@@ -208,7 +208,6 @@ public class L2DatabaseFactory
 	public Connection getConnection()
 	{
 		Connection con = null;
-		
 		while (con == null)
 		{
 			try

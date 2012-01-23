@@ -386,6 +386,7 @@ public class L2Manor
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not parse seeds.xml file: " + e.getMessage(), e);
+			return;
 		}
 		
 		doc.getDocumentElement().normalize();

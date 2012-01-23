@@ -41,10 +41,9 @@ import com.l2jserver.loginserver.network.L2LoginPacketHandler;
 import com.l2jserver.status.Status;
 
 /**
- *
  * @author  KenM
  */
-public class L2LoginServer
+public final class L2LoginServer
 {
 	private final Logger _log = Logger.getLogger(L2LoginServer.class.getName());
 	

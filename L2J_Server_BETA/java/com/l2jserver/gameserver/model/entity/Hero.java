@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,16 +74,16 @@ public class Hero
 	// delete hero items
 	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN " + "(6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) " + "AND owner_id NOT IN (SELECT charId FROM characters WHERE accesslevel > 0)";
 	
-	private static Map<Integer, StatsSet> _heroes;
-	private static Map<Integer, StatsSet> _completeHeroes;
+	private static final Map<Integer, StatsSet> _heroes = new FastMap<Integer, StatsSet>();
+	private static final Map<Integer, StatsSet> _completeHeroes = new FastMap<Integer, StatsSet>();
 	
-	private static Map<Integer, StatsSet> _herocounts;
-	private static Map<Integer, List<StatsSet>> _herofights;
-	private static List<StatsSet> _fights;
+	private static final Map<Integer, StatsSet> _herocounts = new FastMap<Integer, StatsSet>();
+	private static final Map<Integer, List<StatsSet>> _herofights = new FastMap<Integer, List<StatsSet>>();
+	private static final List<StatsSet> _fights = new FastList<StatsSet>();
 	
-	private static Map<Integer, List<StatsSet>> _herodiary;
-	private static Map<Integer, String> _heroMessage;
-	private static List<StatsSet> _diary;
+	private static final Map<Integer, List<StatsSet>> _herodiary = new FastMap<Integer, List<StatsSet>>();
+	private static final Map<Integer, String> _heroMessage = new FastMap<Integer, String>();
+	private static final List<StatsSet> _diary = new FastList<StatsSet>();
 	
 	public static final String COUNT = "count";
 	public static final String PLAYED = "played";
@@ -107,13 +108,12 @@ public class Hero
 	
 	private void init()
 	{
-		_heroes = new FastMap<Integer, StatsSet>();
-		_completeHeroes = new FastMap<Integer, StatsSet>();
-		
-		_herofights = new FastMap<Integer, List<StatsSet>>();
-		_herocounts = new FastMap<Integer, StatsSet>();
-		_herodiary = new FastMap<Integer, List<StatsSet>>();
-		_heroMessage = new FastMap<Integer, String>();
+		_heroes.clear();
+		_completeHeroes.clear();
+		_herocounts.clear();
+		_herofights.clear();
+		_herodiary.clear();
+		_heroMessage.clear();
 		
 		Connection con = null;
 		try
@@ -232,11 +232,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Hero System: Couldnt load Heroes");
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
+			_log.log(Level.WARNING, "Hero System: Couldnt load Heroes", e);
 		}
 		finally
 		{
@@ -289,8 +285,7 @@ public class Hero
 	
 	public void loadDiary(int charId)
 	{
-		_diary = new FastList<StatsSet>();
-		
+		_diary.clear();
 		int diaryentries = 0;
 		Connection con = null;
 		try
@@ -343,9 +338,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Hero System: Couldnt load Hero Diary for CharId: " + charId);
-			if (Config.DEBUG)
-				_log.log(Level.WARNING, "", e);
+			_log.log(Level.WARNING, "Hero System: Couldnt load Hero Diary for CharId: " + charId, e);
 		}
 		finally
 		{
@@ -355,10 +348,8 @@ public class Hero
 	
 	public void loadFights(int charId)
 	{
-		_fights = new FastList<StatsSet>();
-		
+		_fights.clear();
 		StatsSet _herocountdata = new StatsSet();
-		
 		Calendar _data = Calendar.getInstance();
 		_data.set(Calendar.DAY_OF_MONTH, 1);
 		_data.set(Calendar.HOUR_OF_DAY, 0);
@@ -381,16 +372,24 @@ public class Hero
 			statement.setLong(3, from);
 			ResultSet rset = statement.executeQuery();
 			
+			int charOneId;
+			int charOneClass;
+			int charTwoId;
+			int charTwoClass;
+			int winner;
+			long start;
+			int time;
+			int classed;
 			while (rset.next())
 			{
-				int charOneId = rset.getInt("charOneId");
-				int charOneClass = rset.getInt("charOneClass");
-				int charTwoId = rset.getInt("charTwoId");
-				int charTwoClass = rset.getInt("charTwoClass");
-				int winner = rset.getInt("winner");
-				long start = rset.getLong("start");
-				int time = rset.getInt("time");
-				int classed = rset.getInt("classed");
+				charOneId = rset.getInt("charOneId");
+				charOneClass = rset.getInt("charOneClass");
+				charTwoId = rset.getInt("charTwoId");
+				charTwoClass = rset.getInt("charTwoClass");
+				winner = rset.getInt("winner");
+				start = rset.getLong("start");
+				time = rset.getInt("time");
+				classed = rset.getInt("classed");
 				
 				if (charId == charOneId)
 				{
@@ -479,9 +478,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Hero System: Couldnt load Hero fights history for CharId: " + charId);
-			if (Config.DEBUG)
-				_log.log(Level.WARNING, "", e);
+			_log.log(Level.WARNING, "Hero System: Couldnt load Hero fights history for CharId: " + charId, e);
 		}
 		finally
 		{
@@ -787,10 +784,10 @@ public class Hero
 		
 		updateHeroes(false);
 		
+		L2PcInstance player;
 		for(Integer charId : _heroes.keySet())
 		{
-			L2PcInstance player = L2World.getInstance().getPlayer(charId);
-			
+			player = L2World.getInstance().getPlayer(charId);
 			if (player != null)
 			{
 				player.setHero(true);
@@ -878,11 +875,13 @@ public class Hero
 			}
 			else
 			{
-				for (Integer heroId : _heroes.keySet())
+				StatsSet hero;
+				int heroId;
+				for (Entry<Integer, StatsSet> entry : _heroes.entrySet())
 				{
-					StatsSet hero = _heroes.get(heroId);
-					
-					if ((_completeHeroes == null) || !_completeHeroes.containsKey(heroId))
+					hero = entry.getValue();
+					heroId = entry.getKey();
+					if (_completeHeroes.isEmpty() || !_completeHeroes.containsKey(heroId))
 					{
 						statement = con.prepareStatement(INSERT_HERO);
 						statement.setInt(1, heroId);
@@ -946,11 +945,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Hero System: Couldnt update Heroes");
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
+			_log.log(Level.WARNING, "Hero System: Couldnt update Heroes", e);
 		}
 		finally
 		{

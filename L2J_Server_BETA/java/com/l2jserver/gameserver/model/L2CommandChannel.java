@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- *
  * @author  chris_00
  */
 public class L2CommandChannel
@@ -116,12 +115,12 @@ public class L2CommandChannel
 				if(party != null)
 					removeParty(party);
 			}
+			_partys.clear();
 		}
-		_partys.clear();
 	}
 	
 	/**
-	 * @return overall membercount of the Command Channel
+	 * @return overall member count of the Command Channel
 	 */
 	public int getMemberCount()
 	{

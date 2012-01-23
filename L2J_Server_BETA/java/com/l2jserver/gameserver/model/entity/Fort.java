@@ -436,10 +436,13 @@ public class Fort
 	 */
 	public boolean setOwner(L2Clan clan, boolean updateClansReputation)
 	{
-		L2Clan oldowner = getOwnerClan();
-		
-		// Remove old owner
-		if (oldowner != null && clan != null && clan != oldowner)
+		if (clan == null)
+		{
+			_log.warning(getClass().getSimpleName() + ": Updating Fort owner with null clan!!!");
+			return false;
+		}
+		final L2Clan oldowner = getOwnerClan();
+		if (oldowner != null && clan != oldowner)
 		{
 			// Remove points from old owner
 			updateClansReputation(oldowner, true);
