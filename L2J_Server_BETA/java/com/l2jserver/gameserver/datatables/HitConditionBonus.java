@@ -32,9 +32,9 @@ import com.l2jserver.gameserver.model.actor.L2Character;
  * @author Nik
  *
  */
-public class hitConditionBonus
+public class HitConditionBonus
 {
-	protected static final Logger _log = Logger.getLogger(hitConditionBonus.class.getName());
+	protected static final Logger _log = Logger.getLogger(HitConditionBonus.class.getName());
 	
 	private static int frontBonus = 0;
 	private static int sideBonus = 0;
@@ -49,23 +49,23 @@ public class hitConditionBonus
 		double mod = 100;
 		// Get high or low bonus
 		if (attacker.getZ() - target.getZ() > 50)
-			mod += hitConditionBonus.highBonus;
+			mod += HitConditionBonus.highBonus;
 		else if (attacker.getZ() - target.getZ() < -50)
-			mod += hitConditionBonus.lowBonus;
+			mod += HitConditionBonus.lowBonus;
 		
 		// Get weather bonus
 		if (GameTimeController.getInstance().isNowNight())
-			mod += hitConditionBonus.darkBonus;
+			mod += HitConditionBonus.darkBonus;
 		//else if () No rain support yet.
 			//chance += hitConditionBonus.rainBonus;
 		
 		// Get side bonus
 		if(attacker.isBehindTarget())
-			mod += hitConditionBonus.backBonus;
+			mod += HitConditionBonus.backBonus;
 		else if(attacker.isInFrontOfTarget())
-			mod += hitConditionBonus.frontBonus;
+			mod += HitConditionBonus.frontBonus;
 		else
-			mod += hitConditionBonus.sideBonus;
+			mod += HitConditionBonus.sideBonus;
 		
 		// If (mod / 10) is less than 0, return 0, because we cant lower more than 100%.
 		return Math.max(mod / 100, 0); 

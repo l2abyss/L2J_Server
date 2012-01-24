@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
-import com.l2jserver.gameserver.datatables.hitConditionBonus;
+import com.l2jserver.gameserver.datatables.HitConditionBonus;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -2156,7 +2156,7 @@ public final class Formulas
 		int chance = (80 + (2 * (attacker.getAccuracy() - target.getEvasionRate(attacker))))*10;
 		
 		// Get additional bonus from the conditions when you are attacking
-		chance *= hitConditionBonus.getConditionBonus(attacker, target);
+		chance *= HitConditionBonus.getConditionBonus(attacker, target);
 		
 		chance = Math.max(chance, 200);
 		chance = Math.min(chance, 980);
