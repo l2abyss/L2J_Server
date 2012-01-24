@@ -25,9 +25,11 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
@@ -35,8 +37,6 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
@@ -375,7 +375,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	 * @param skill 
 	 * @param target 
 	 *
-	 * @see com.l2jserver.gameserver.model.actor.L2Character#doCast(com.l2jserver.gameserver.model.L2Skill)
+	 * @see com.l2jserver.gameserver.model.actor.L2Character#doCast(com.l2jserver.gameserver.model.skills.L2Skill)
 	 */
 	protected void sitCastAndFollow(L2Skill skill, L2Character target)
 	{

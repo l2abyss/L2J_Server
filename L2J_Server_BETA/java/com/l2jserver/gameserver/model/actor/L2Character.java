@@ -52,10 +52,8 @@ import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.FusionSkill;
 import com.l2jserver.gameserver.model.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.L2CharPosition;
-import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
@@ -69,13 +67,29 @@ import com.l2jserver.gameserver.model.actor.knownlist.CharKnownList;
 import com.l2jserver.gameserver.model.actor.position.CharPosition;
 import com.l2jserver.gameserver.model.actor.stat.CharStat;
 import com.l2jserver.gameserver.model.actor.status.CharStatus;
+import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.effects.AbnormalEffect;
+import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2WeaponType;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.funcs.Func;
+import com.l2jserver.gameserver.model.skills.l2skills.L2SkillAgathion;
+import com.l2jserver.gameserver.model.skills.l2skills.L2SkillMount;
+import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
+import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
+import com.l2jserver.gameserver.model.stats.Calculator;
+import com.l2jserver.gameserver.model.stats.Formulas;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -99,21 +113,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
-import com.l2jserver.gameserver.skills.AbnormalEffect;
-import com.l2jserver.gameserver.skills.Calculator;
-import com.l2jserver.gameserver.skills.Formulas;
-import com.l2jserver.gameserver.skills.SkillHolder;
-import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.skills.funcs.Func;
-import com.l2jserver.gameserver.skills.l2skills.L2SkillAgathion;
-import com.l2jserver.gameserver.skills.l2skills.L2SkillMount;
-import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
-import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.skills.L2EffectType;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
-import com.l2jserver.gameserver.templates.skills.L2TargetType;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
@@ -7434,7 +7434,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * <B><U> Overridden in </U> :</B><BR><BR>
 	 * <li> L2PcInstance
-	 * <li> L2SummonInstance
+	 * <li> L2ServitorInstance
 	 * <li> L2PetInstance</li><BR><BR>
 	 * @param target 
 	 * @param damage 

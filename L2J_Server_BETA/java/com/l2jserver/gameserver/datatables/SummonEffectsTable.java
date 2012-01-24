@@ -18,8 +18,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * @author Nyaran

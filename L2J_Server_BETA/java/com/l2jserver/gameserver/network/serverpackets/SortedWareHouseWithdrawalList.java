@@ -24,10 +24,10 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.RecipeController;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2WarehouseItem;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2WarehouseItem;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 /**
  * 0x42 WarehouseWithdrawalList  dh (h dddhh dhhh d)

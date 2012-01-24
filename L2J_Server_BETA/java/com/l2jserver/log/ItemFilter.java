@@ -17,7 +17,7 @@ package com.l2jserver.log;
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
 
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 
 /**

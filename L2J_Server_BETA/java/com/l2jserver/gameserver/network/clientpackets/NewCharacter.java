@@ -18,9 +18,9 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
+import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.network.serverpackets.NewCharacterSuccess;
-import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 
 /**
  * This class ...

@@ -35,10 +35,12 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.entity.DimensionalRift;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.ExAskModifyPartyLooting;
@@ -54,7 +56,6 @@ import com.l2jserver.gameserver.network.serverpackets.PartySmallWindowAll;
 import com.l2jserver.gameserver.network.serverpackets.PartySmallWindowDelete;
 import com.l2jserver.gameserver.network.serverpackets.PartySmallWindowDeleteAll;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -736,7 +737,7 @@ public class L2Party
 	 * Distribute Experience and SP rewards to L2PcInstance Party members in the known area of the last attacker.<BR><BR>
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Get the L2PcInstance owner of the L2SummonInstance (if necessary) </li>
+	 * <li>Get the L2PcInstance owner of the L2ServitorInstance (if necessary) </li>
 	 * <li>Calculate the Experience and SP reward distribution rate </li>
 	 * <li>Add Experience and SP to the L2PcInstance </li><BR><BR>
 	 *
@@ -752,7 +753,7 @@ public class L2Party
 	 */
 	public void distributeXpAndSp(long xpReward, int spReward, List<L2Playable> rewardedMembers, int topLvl, int partyDmg, L2Attackable target)
 	{
-		L2SummonInstance summon = null;
+		L2ServitorInstance summon = null;
 		List<L2Playable> validMembers = getValidMembers(rewardedMembers, topLvl);
 		
 		float penalty;
@@ -769,7 +770,7 @@ public class L2Party
 		final float vitalityPoints = target.getVitalityPoints(partyDmg) * Config.RATE_PARTY_XP / validMembers.size();
 		final boolean useVitalityRate = target.useVitalityRate();
 		
-		// Go through the L2PcInstances and L2PetInstances (not L2SummonInstances) that must be rewarded
+		// Go through the L2PcInstances and L2PetInstances (not L2ServitorInstances) that must be rewarded
 		synchronized(rewardedMembers)
 		{
 			for (L2Character member : rewardedMembers)
@@ -778,10 +779,10 @@ public class L2Party
 				
 				penalty = 0;
 				
-				// The L2SummonInstance penalty
-				if (member.getPet() instanceof L2SummonInstance)
+				// The L2ServitorInstance penalty
+				if (member.getPet() instanceof L2ServitorInstance)
 				{
-					summon     = (L2SummonInstance)member.getPet();
+					summon     = (L2ServitorInstance)member.getPet();
 					penalty    = summon.getExpPenalty();
 				}
 				// Pets that leech xp from the owner (like babypets) do not get rewarded directly

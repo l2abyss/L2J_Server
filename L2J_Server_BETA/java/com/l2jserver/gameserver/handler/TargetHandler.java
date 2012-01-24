@@ -18,7 +18,7 @@ import java.util.Map;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.gameserver.templates.skills.L2TargetType;
+import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 
 /**
  * @author UnAfraid

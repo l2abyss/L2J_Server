@@ -21,15 +21,15 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.entity.Duel;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.model.stats.Formulas;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.skills.Formulas;
-import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -120,7 +120,7 @@ public class PcStatus extends PlayableStatus
 			
 			// Check and calculate transfered damage
 			final L2Summon summon = getActiveChar().getPet();
-			if (summon != null && summon instanceof L2SummonInstance && Util.checkIfInRange(1000, getActiveChar(), summon, true))
+			if (summon != null && summon instanceof L2ServitorInstance && Util.checkIfInRange(1000, getActiveChar(), summon, true))
 			{
 				tDmg = (int)value * (int)getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_PERCENT, 0, null, null) /100;
 				

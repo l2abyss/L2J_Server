@@ -83,9 +83,9 @@ public abstract class L2Object
 		L2TerrainObjectInstance(L2Npc),
 		L2EffectPointInstance(L2Npc),
 		// Summons, Pets, Decoys and Traps
-		L2SummonInstance(L2Summon),
-		L2SiegeSummonInstance(L2SummonInstance),
-		L2MerchantSummonInstance(L2SummonInstance),
+		L2ServitorInstance(L2Summon),
+		L2SiegeSummonInstance(L2ServitorInstance),
+		L2MerchantSummonInstance(L2ServitorInstance),
 		L2PetInstance(L2Summon),
 		L2BabyPetInstance(L2PetInstance),
 		L2DecoyInstance(L2Decoy),

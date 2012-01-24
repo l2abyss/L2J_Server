@@ -26,8 +26,8 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * This class ...

@@ -19,7 +19,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Duel;
-import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.util.Util;
 
 public class SummonStatus extends PlayableStatus

@@ -23,9 +23,9 @@ import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
-import com.l2jserver.gameserver.skills.AbnormalEffect;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * 0000: 04 03 15 00 00 77 ff 00 00 80 f1 ff ff 00 00 00    .....w..........

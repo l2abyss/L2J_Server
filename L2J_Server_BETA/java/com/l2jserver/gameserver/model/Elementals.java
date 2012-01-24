@@ -18,9 +18,9 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.skills.funcs.FuncAdd;
-import com.l2jserver.gameserver.skills.funcs.LambdaConst;
+import com.l2jserver.gameserver.model.skills.funcs.FuncAdd;
+import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
+import com.l2jserver.gameserver.model.stats.Stats;
 
 public final class Elementals
 {

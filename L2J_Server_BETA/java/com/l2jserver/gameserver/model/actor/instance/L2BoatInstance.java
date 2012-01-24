@@ -20,10 +20,10 @@ import com.l2jserver.gameserver.ai.L2BoatAI;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
+import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.network.serverpackets.VehicleDeparture;
 import com.l2jserver.gameserver.network.serverpackets.VehicleInfo;
 import com.l2jserver.gameserver.network.serverpackets.VehicleStarted;
-import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 
 /**
  * @author Maktakien, reworked by DS

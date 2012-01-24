@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.gameserver.model.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 
 /**

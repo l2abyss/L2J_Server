@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.handler;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 
 /**

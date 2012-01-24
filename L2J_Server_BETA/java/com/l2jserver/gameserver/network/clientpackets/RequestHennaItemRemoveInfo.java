@@ -16,8 +16,8 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Henna;
-import com.l2jserver.gameserver.model.item.instance.L2HennaInstance;
+import com.l2jserver.gameserver.model.items.L2Henna;
+import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
 import com.l2jserver.gameserver.network.serverpackets.HennaItemRemoveInfo;
 
 

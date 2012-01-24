@@ -43,26 +43,26 @@ import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.AttackableKnownList;
 import com.l2jserver.gameserver.model.actor.status.AttackableStatus;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -581,7 +581,7 @@ public class L2Attackable extends L2Npc
 	 * Distribute Exp and SP rewards to L2PcInstance (including Summon owner) that hit the L2Attackable and to their Party members.
 	 *
 	 * Actions:
-	 * Get the L2PcInstance owner of the L2SummonInstance (if necessary) and L2Party in progress
+	 * Get the L2PcInstance owner of the L2ServitorInstance (if necessary) and L2Party in progress
 	 * Calculate the Experience and SP rewards in function of the level difference
 	 * Add Exp and SP rewards to L2PcInstance (including Summon penalty) and to Party members in the known area of the last attacker
 	 *
@@ -622,7 +622,7 @@ public class L2Attackable extends L2Npc
 				// Prevent unwanted behavior
 				if (damage > 1)
 				{
-					if ((attacker instanceof L2SummonInstance) || ((attacker instanceof L2PetInstance) && ((L2PetInstance) attacker).getPetLevelData().getOwnerExpTaken() > 0))
+					if ((attacker instanceof L2ServitorInstance) || ((attacker instanceof L2PetInstance) && ((L2PetInstance) attacker).getPetLevelData().getOwnerExpTaken() > 0))
 						ddealer = ((L2Summon) attacker).getOwner();
 					else
 						ddealer = info.getAttacker();
@@ -694,9 +694,9 @@ public class L2Attackable extends L2Npc
 					else
 						return;
 					
-					// If this attacker is a L2PcInstance with a summoned L2SummonInstance, get Exp Penalty applied for the current summoned L2SummonInstance
-					if (attacker instanceof L2PcInstance && ((L2PcInstance) attacker).getPet() instanceof L2SummonInstance)
-						penalty = ((L2SummonInstance) ((L2PcInstance) attacker).getPet()).getExpPenalty();
+					// If this attacker is a L2PcInstance with a summoned L2ServitorInstance, get Exp Penalty applied for the current summoned L2SummonInstance
+					if (attacker instanceof L2PcInstance && ((L2PcInstance) attacker).getPet() instanceof L2ServitorInstance)
+						penalty = ((L2ServitorInstance) ((L2PcInstance) attacker).getPet()).getExpPenalty();
 					
 					// We must avoid "over damage", if any
 					if (damage > getMaxHp())
@@ -708,7 +708,7 @@ public class L2Attackable extends L2Npc
 						// Calculate Exp and SP rewards
 						if (attacker.getKnownList().knowsObject(this))
 						{
-							// Calculate the difference of level between this attacker (L2PcInstance or L2SummonInstance owner) and the L2Attackable
+							// Calculate the difference of level between this attacker (L2PcInstance or L2ServitorInstance owner) and the L2Attackable
 							// mob = 24, atk = 10, diff = -14 (full xp)
 							// mob = 24, atk = 28, diff = 4 (some xp)
 							// mob = 24, atk = 50, diff = 26 (no xp)
@@ -2058,10 +2058,10 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Calculate the Experience and SP to distribute to attacker (L2PcInstance, L2SummonInstance or L2Party) of the L2Attackable.
+	 * Calculate the Experience and SP to distribute to attacker (L2PcInstance, L2ServitorInstance or L2Party) of the L2Attackable.
 	 *
-	 * @param diff The difference of level between attacker (L2PcInstance, L2SummonInstance or L2Party) and the L2Attackable
-	 * @param damage The damages given by the attacker (L2PcInstance, L2SummonInstance or L2Party)
+	 * @param diff The difference of level between attacker (L2PcInstance, L2ServitorInstance or L2Party) and the L2Attackable
+	 * @param damage The damages given by the attacker (L2PcInstance, L2ServitorInstance or L2Party)
 	 * @return 
 	 */
 	private int[] calculateExpAndSp(int diff, int damage)

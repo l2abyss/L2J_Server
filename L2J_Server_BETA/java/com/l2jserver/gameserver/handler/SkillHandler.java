@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.handler;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 
 
 /**

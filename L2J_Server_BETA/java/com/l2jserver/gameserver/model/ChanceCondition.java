@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.util.Rnd;
 
 

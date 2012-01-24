@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * Format: (ch) dd[dd][ddd]

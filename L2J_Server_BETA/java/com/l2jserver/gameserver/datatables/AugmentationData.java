@@ -32,10 +32,10 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Augmentation;
-import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.clientpackets.AbstractRefinePacket;
-import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.util.Rnd;
 
 /**

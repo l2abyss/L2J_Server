@@ -16,8 +16,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * Structure:<BR>

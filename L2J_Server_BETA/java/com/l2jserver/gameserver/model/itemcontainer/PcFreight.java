@@ -20,9 +20,9 @@ import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.stats.Stats;
 
 public class PcFreight extends ItemContainer
 {

@@ -29,23 +29,23 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.Item;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.engines.DocumentEngine;
+import com.l2jserver.gameserver.engines.items.Item;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.instance.L2EventMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Armor;
-import com.l2jserver.gameserver.model.item.L2EtcItem;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.model.item.type.L2ArmorType;
-import com.l2jserver.gameserver.model.item.type.L2WeaponType;
-import com.l2jserver.gameserver.skills.SkillsEngine;
+import com.l2jserver.gameserver.model.items.L2Armor;
+import com.l2jserver.gameserver.model.items.L2EtcItem;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.items.type.L2ArmorType;
+import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
@@ -195,7 +195,7 @@ public class ItemTable
 		_armors.clear();
 		_etcItems.clear();
 		_weapons.clear();
-		for (L2Item item :  SkillsEngine.getInstance().loadItems())
+		for (L2Item item :  DocumentEngine.getInstance().loadItems())
 		{
 			if (highest < item.getItemId())
 				highest = item.getItemId();

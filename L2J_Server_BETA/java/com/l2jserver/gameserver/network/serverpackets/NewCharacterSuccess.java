@@ -18,7 +18,7 @@ import java.util.List;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
 
 /**
  * This class ...

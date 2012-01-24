@@ -18,8 +18,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.skills.SkillsEngine;
+import com.l2jserver.gameserver.engines.DocumentEngine;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * 
@@ -55,7 +55,7 @@ public class SkillTable
 	private void load()
 	{
 		_skills.clear();
-		SkillsEngine.getInstance().loadAllSkills(_skills);
+		DocumentEngine.getInstance().loadAllSkills(_skills);
 		
 		_skillMaxLevel.clear();
 		for (final L2Skill skill : _skills.values(new L2Skill[0]))

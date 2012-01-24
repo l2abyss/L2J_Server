@@ -24,9 +24,9 @@ import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.script.DateRange;
 import com.l2jserver.gameserver.script.EngineInterface;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author Luis Arias

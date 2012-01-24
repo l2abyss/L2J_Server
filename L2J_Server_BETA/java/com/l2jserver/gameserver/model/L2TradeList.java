@@ -30,7 +30,7 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.items.L2Item;
 
 /**
  * This class ...

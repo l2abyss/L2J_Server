@@ -19,13 +19,13 @@ import java.util.logging.Level;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Decoy;
 import com.l2jserver.gameserver.model.actor.knownlist.DecoyKnownList;
-import com.l2jserver.gameserver.skills.l2skills.L2SkillDecoy;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDecoy;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 
 public class L2DecoyInstance extends L2Decoy

@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * Olympiad Npc's Instance

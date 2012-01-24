@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2HennaInstance;
+import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
 
 public final class HennaInfo extends L2GameServerPacket
 {
