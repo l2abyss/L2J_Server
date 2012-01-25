@@ -15,12 +15,10 @@
 package com.l2jserver.gameserver.model.conditions;
 
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionPlayerHasCastle.
- *
  * @author MrPoke
  */
 public final class ConditionPlayerHasCastle extends Condition
@@ -30,7 +28,6 @@ public final class ConditionPlayerHasCastle extends Condition
 	
 	/**
 	 * Instantiates a new condition player has castle.
-	 *
 	 * @param castle the castle
 	 */
 	public ConditionPlayerHasCastle(int castle)
@@ -40,7 +37,6 @@ public final class ConditionPlayerHasCastle extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
@@ -48,16 +44,22 @@ public final class ConditionPlayerHasCastle extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
+		}
 		
-		L2Clan clan = ((L2PcInstance)env.player).getClan();
+		final L2Clan clan = env.getPlayer().getClan();
 		if (clan == null)
+		{
 			return _castle == 0;
+		}
 		
 		// Any castle
-		if (_castle == -1) return clan.getHasCastle() > 0;
-		
+		if (_castle == -1)
+		{
+			return clan.getHasCastle() > 0;
+		}
 		return clan.getHasCastle() == _castle;
 	}
 }

@@ -14,13 +14,11 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionChangeWeapon.
- *
  * @author nBd
  */
 public class ConditionChangeWeapon extends Condition
@@ -29,7 +27,6 @@ public class ConditionChangeWeapon extends Condition
 	
 	/**
 	 * Instantiates a new condition change weapon.
-	 *
 	 * @param required the required
 	 */
 	public ConditionChangeWeapon(boolean required)
@@ -39,7 +36,6 @@ public class ConditionChangeWeapon extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
@@ -47,23 +43,29 @@ public class ConditionChangeWeapon extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
+		}
 		
 		if (_required)
 		{
-			L2Weapon weaponItem = env.player.getActiveWeaponItem();
-			
+			final L2Weapon weaponItem = env.getPlayer().getActiveWeaponItem();
 			if (weaponItem == null)
+			{
 				return false;
+			}
 			
 			if (weaponItem.getChangeWeaponId() == 0)
+			{
 				return false;
+			}
 			
-			if (((L2PcInstance)env.player).isEnchanting())
+			if (env.getPlayer().isEnchanting())
+			{
 				return false;
+			}
 		}
 		return true;
 	}
-	
 }

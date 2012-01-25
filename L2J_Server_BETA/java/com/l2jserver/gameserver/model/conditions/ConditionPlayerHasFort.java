@@ -15,22 +15,18 @@
 package com.l2jserver.gameserver.model.conditions;
 
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionPlayerHasFort.
- *
  * @author MrPoke
  */
 public final class ConditionPlayerHasFort extends Condition
 {
-	
 	private final int _fort;
 	
 	/**
 	 * Instantiates a new condition player has fort.
-	 *
 	 * @param fort the fort
 	 */
 	public ConditionPlayerHasFort(int fort)
@@ -40,7 +36,6 @@ public final class ConditionPlayerHasFort extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
@@ -48,17 +43,22 @@ public final class ConditionPlayerHasFort extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
+		}
 		
-		L2Clan clan = ((L2PcInstance)env.player).getClan();
+		final L2Clan clan = env.getPlayer().getClan();
 		if (clan == null)
+		{
 			return _fort == 0;
+		}
 		
 		// Any fortress
 		if (_fort == -1)
+		{
 			return clan.getHasFort() > 0;
-			
-			return clan.getHasFort() == _fort;
+		}
+		return clan.getHasFort() == _fort;
 	}
 }

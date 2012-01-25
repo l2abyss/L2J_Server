@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.util.Util;
@@ -39,8 +38,10 @@ public class ConditionPlayerRace extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
-		return Util.contains(_races, env.player.getActingPlayer().getRace());
+		}
+		return Util.contains(_races, env.getPlayer().getRace());
 	}
 }

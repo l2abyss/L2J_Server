@@ -19,17 +19,14 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionTargetUsesWeaponKind.
- *
  * @author mkizub
  */
 public class ConditionTargetUsesWeaponKind extends Condition
 {
-	
 	private final int _weaponMask;
 	
 	/**
 	 * Instantiates a new condition target uses weapon kind.
-	 *
 	 * @param weaponMask the weapon mask
 	 */
 	public ConditionTargetUsesWeaponKind(int weaponMask)
@@ -40,14 +37,16 @@ public class ConditionTargetUsesWeaponKind extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		
-		if (env.target == null)
+		if (env.getTarget() == null)
+		{
 			return false;
+		}
 		
-		L2Weapon item = env.target.getActiveWeaponItem();
-		
+		L2Weapon item = env.getTarget().getActiveWeaponItem();
 		if (item == null)
+		{
 			return false;
+		}
 		
 		return (item.getItemType().mask() & _weaponMask) != 0;
 	}

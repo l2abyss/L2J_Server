@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionInventory.
- *
  * @author mkizub
  */
 public abstract class ConditionInventory extends Condition
@@ -28,7 +27,6 @@ public abstract class ConditionInventory extends Condition
 	
 	/**
 	 * Instantiates a new condition inventory.
-	 *
 	 * @param slot the slot
 	 */
 	public ConditionInventory(int slot)
@@ -38,7 +36,6 @@ public abstract class ConditionInventory extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)

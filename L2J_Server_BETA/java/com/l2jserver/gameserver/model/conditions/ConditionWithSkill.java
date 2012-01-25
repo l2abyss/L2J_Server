@@ -18,8 +18,7 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionWithSkill.
- *
- * @author  Steuf
+ * @author Steuf
  */
 public class ConditionWithSkill extends Condition
 {
@@ -27,7 +26,6 @@ public class ConditionWithSkill extends Condition
 	
 	/**
 	 * Instantiates a new condition with skill.
-	 *
 	 * @param skill the skill
 	 */
 	public ConditionWithSkill(boolean skill)
@@ -38,8 +36,6 @@ public class ConditionWithSkill extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!_skill && env.skill != null)
-			return false;
-		return true;
+		return (env.getSkill() != null) == _skill;
 	}
 }

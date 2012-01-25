@@ -22,13 +22,11 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionTargetActiveEffectId extends Condition
 {
-	
 	private final int _effectId;
 	private final int _effectLvl;
 	
 	/**
 	 * Instantiates a new condition target active effect id.
-	 *
 	 * @param effectId the effect id
 	 */
 	public ConditionTargetActiveEffectId(int effectId)
@@ -39,7 +37,6 @@ public class ConditionTargetActiveEffectId extends Condition
 	
 	/**
 	 * Instantiates a new condition target active effect id.
-	 *
 	 * @param effectId the effect id
 	 * @param effectLevel the effect level
 	 */
@@ -52,10 +49,11 @@ public class ConditionTargetActiveEffectId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		final L2Effect e = env.target.getFirstEffect(_effectId);
-		if (e != null && (_effectLvl == -1 || _effectLvl <= e.getSkill().getLevel()))
+		final L2Effect e = env.getTarget().getFirstEffect(_effectId);
+		if ((e != null) && ((_effectLvl == -1) || (_effectLvl <= e.getSkill().getLevel())))
+		{
 			return true;
-		
+		}
 		return false;
 	}
 }

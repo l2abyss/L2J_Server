@@ -22,13 +22,11 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionTargetActiveSkillId extends Condition
 {
-	
 	private final int _skillId;
 	private final int _skillLevel;
 	
 	/**
 	 * Instantiates a new condition target active skill id.
-	 *
 	 * @param skillId the skill id
 	 */
 	public ConditionTargetActiveSkillId(int skillId)
@@ -39,7 +37,6 @@ public class ConditionTargetActiveSkillId extends Condition
 	
 	/**
 	 * Instantiates a new condition target active skill id.
-	 *
 	 * @param skillId the skill id
 	 * @param skillLevel the skill level
 	 */
@@ -52,14 +49,16 @@ public class ConditionTargetActiveSkillId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		for (L2Skill sk : env.target.getAllSkills())
+		for (L2Skill sk : env.getTarget().getAllSkills())
 		{
 			if (sk != null)
 			{
 				if (sk.getId() == _skillId)
 				{
-					if (_skillLevel == -1 || _skillLevel <= sk.getLevel())
+					if ((_skillLevel == -1) || (_skillLevel <= sk.getLevel()))
+					{
 						return true;
+					}
 				}
 			}
 		}

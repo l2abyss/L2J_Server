@@ -19,16 +19,15 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionPlayerLandingZone.
- *
  * @author kerberos
  */
-public class ConditionPlayerLandingZone extends Condition {
+public class ConditionPlayerLandingZone extends Condition
+{
 	
-	private boolean _val;
+	private final boolean _val;
 	
 	/**
 	 * Instantiates a new condition player landing zone.
-	 *
 	 * @param val the val
 	 */
 	public ConditionPlayerLandingZone(boolean val)
@@ -37,7 +36,8 @@ public class ConditionPlayerLandingZone extends Condition {
 	}
 	
 	@Override
-	public boolean testImpl(Env env) {
-		return env.player.isInsideZone(L2Character.ZONE_LANDING) == _val;
+	public boolean testImpl(Env env)
+	{
+		return env.getCharacter().isInsideZone(L2Character.ZONE_LANDING) == _val;
 	}
 }

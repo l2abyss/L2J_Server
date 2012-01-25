@@ -18,22 +18,21 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionTargetNone.
- *
  * @author mkizub
  */
 public class ConditionTargetNone extends Condition
 {
-	
 	/**
 	 * Instantiates a new condition target none.
 	 */
 	public ConditionTargetNone()
 	{
+		//
 	}
 	
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.target == null);
+		return (env.getTarget() == null);
 	}
 }

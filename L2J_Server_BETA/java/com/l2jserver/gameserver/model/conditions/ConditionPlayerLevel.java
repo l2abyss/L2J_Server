@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionPlayerLevel.
- *
  * @author mkizub
  */
 public class ConditionPlayerLevel extends Condition
@@ -27,7 +26,6 @@ public class ConditionPlayerLevel extends Condition
 	
 	/**
 	 * Instantiates a new condition player level.
-	 *
 	 * @param level the level
 	 */
 	public ConditionPlayerLevel(int level)
@@ -38,6 +36,6 @@ public class ConditionPlayerLevel extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return env.player.getLevel() >= _level;
+		return env.getCharacter().getLevel() >= _level;
 	}
 }

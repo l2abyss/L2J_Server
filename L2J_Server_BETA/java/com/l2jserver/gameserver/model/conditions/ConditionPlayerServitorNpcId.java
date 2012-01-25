@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.conditions;
 
 import java.util.ArrayList;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -28,26 +27,27 @@ public class ConditionPlayerServitorNpcId extends Condition
 	
 	/**
 	 * Instantiates a new condition player servitor npc id.
-	 *
 	 * @param npcIds the npc ids
 	 */
 	public ConditionPlayerServitorNpcId(ArrayList<Integer> npcIds)
 	{
-		if (npcIds.size() == 1 && npcIds.get(0) == 0)
+		if ((npcIds.size() == 1) && (npcIds.get(0) == 0))
+		{
 			_npcIds = null;
+		}
 		else
+		{
 			_npcIds = npcIds;
+		}
 	}
 	
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if ((env.getPlayer() == null) || (env.getCharacter().getPet() == null))
+		{
 			return false;
-		
-		if ((env.player.getPet() == null))
-			return false;
-		
-		return _npcIds == null || _npcIds.contains(env.player.getPet().getNpcId());
+		}
+		return (_npcIds == null) || _npcIds.contains(env.getPlayer().getPet().getNpcId());
 	}
 }

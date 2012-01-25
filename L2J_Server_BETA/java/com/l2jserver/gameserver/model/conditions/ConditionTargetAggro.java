@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionTargetAggro.
- *
  * @author mkizub
  */
 public class ConditionTargetAggro extends Condition
@@ -31,7 +30,6 @@ public class ConditionTargetAggro extends Condition
 	
 	/**
 	 * Instantiates a new condition target aggro.
-	 *
 	 * @param isAggro the is aggro
 	 */
 	public ConditionTargetAggro(boolean isAggro)
@@ -42,7 +40,7 @@ public class ConditionTargetAggro extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		L2Character target = env.target;
+		final L2Character target = env.getTarget();
 		if (target instanceof L2MonsterInstance)
 		{
 			return ((L2MonsterInstance) target).isAggressive() == _isAggro;

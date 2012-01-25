@@ -1347,10 +1347,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		for(Condition cond : preCondition)
 		{
 			Env env = new Env();
-			env.player = activeChar;
-			if (target instanceof L2Character) // TODO: object or char?
-				env.target = (L2Character)target;
-			env.skill = this;
+			env.setCharacter(activeChar);
+			if (target instanceof L2Character)
+				env.setTarget((L2Character) target);
+			env.setSkill(this);
 			
 			if (!cond.test(env))
 			{
@@ -1567,8 +1567,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
 		
 		Env env = new Env();
-		env.player = player;
-		env.skill = this;
+		env.setCharacter(player);
+		env.setSkill(this);
 		
 		Func f;
 		
@@ -1646,17 +1646,17 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (env == null)
 			env = new Env();
 		
-		env.skillMastery = Formulas.calcSkillMastery(effector, this);
-		env.player = effector;
-		env.target = effected;
-		env.skill = this;
+		env.setSkillMastery(Formulas.calcSkillMastery(effector, this));
+		env.setCharacter(effector);
+		env.setTarget(effected);
+		env.setSkill(this);
 		
 		for (EffectTemplate et : _effectTemplates)
 		{
 			boolean success = true;
 			
 			if (et.effectPower > -1)
-				success = Formulas.calcEffectSuccess(effector, effected, et, this, env.shld, env.ss, env.sps, env.bss);
+				success = Formulas.calcEffectSuccess(effector, effected, et, this, env.getShield(), env.isSoulShot(), env.isSpiritShot(), env.isBlessedSpiritShot());
 			
 			if (success)
 			{
@@ -1733,16 +1733,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (env == null)
 			env = new Env();
 		
-		env.player = effector.getOwner();
-		env.cubic = effector;
-		env.target = effected;
-		env.skill = this;
+		env.setCharacter(effector.getOwner());
+		env.setCubic(effector);
+		env.setTarget(effected);
+		env.setSkill(this);
 		
 		for (EffectTemplate et : _effectTemplates)
 		{
 			boolean success = true;
 			if (et.effectPower > -1)
-				success = Formulas.calcEffectSuccess(effector.getOwner(), effected, et, this, env.shld, env.ss, env.sps, env.bss);
+				success = Formulas.calcEffectSuccess(effector.getOwner(), effected, et, this, env.getShield(), env.isSoulShot(), env.isSpiritShot(), env.isBlessedSpiritShot());
 			
 			if (success)
 			{
@@ -1770,9 +1770,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		for (EffectTemplate et : _effectTemplatesSelf)
 		{
 			Env env = new Env();
-			env.player = effector;
-			env.target = effector;
-			env.skill = this;
+			env.setCharacter(effector);
+			env.setTarget(effector);
+			env.setSkill(this);
 			L2Effect e = et.getEffect(env);
 			if (e != null)
 			{
@@ -1796,9 +1796,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		for (EffectTemplate et : _effectTemplatesPassive)
 		{
 			Env env = new Env();
-			env.player = effector;
-			env.target = effector;
-			env.skill = this;
+			env.setCharacter(effector);
+			env.setTarget(effector);
+			env.setSkill(this);
 			L2Effect e = et.getEffect(env);
 			if (e != null)
 			{

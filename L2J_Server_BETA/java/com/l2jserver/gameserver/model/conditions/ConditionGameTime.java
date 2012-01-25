@@ -19,12 +19,10 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionGameTime.
- *
  * @author mkizub
  */
 public class ConditionGameTime extends Condition
 {
-	
 	/**
 	 * The Enum CheckGameTime.
 	 */
@@ -38,7 +36,6 @@ public class ConditionGameTime extends Condition
 	
 	/**
 	 * Instantiates a new condition game time.
-	 *
 	 * @param check the check
 	 * @param required the required
 	 */
@@ -50,7 +47,6 @@ public class ConditionGameTime extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)

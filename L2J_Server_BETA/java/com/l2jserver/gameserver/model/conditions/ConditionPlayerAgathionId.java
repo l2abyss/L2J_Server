@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -26,7 +25,6 @@ public class ConditionPlayerAgathionId extends Condition
 	
 	/**
 	 * Instantiates a new condition player agathion id.
-	 *
 	 * @param agathionId the agathion id
 	 */
 	public ConditionPlayerAgathionId(int agathionId)
@@ -37,6 +35,6 @@ public class ConditionPlayerAgathionId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return ((L2PcInstance)env.player).getAgathionId() == _agathionId;
+		return (env.getPlayer() != null) && (env.getPlayer().getAgathionId() == _agathionId);
 	}
 }

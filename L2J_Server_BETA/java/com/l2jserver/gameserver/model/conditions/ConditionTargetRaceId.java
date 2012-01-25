@@ -19,20 +19,16 @@ import java.util.ArrayList;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.stats.Env;
 
-
 /**
  * The Class ConditionTargetRaceId.
- *
  * @author nBd
  */
-
 public class ConditionTargetRaceId extends Condition
 {
 	private final ArrayList<Integer> _raceIds;
 	
 	/**
 	 * Instantiates a new condition target race id.
-	 *
 	 * @param raceId the race id
 	 */
 	public ConditionTargetRaceId(ArrayList<Integer> raceId)
@@ -43,8 +39,10 @@ public class ConditionTargetRaceId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.target instanceof L2Npc))
+		if (!(env.getTarget() instanceof L2Npc))
+		{
 			return false;
-		return (_raceIds.contains(((L2Npc)env.target).getTemplate().getRace().ordinal()+1));
+		}
+		return (_raceIds.contains(((L2Npc) env.getTarget()).getTemplate().getRace().ordinal() + 1));
 	}
 }

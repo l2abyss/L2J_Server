@@ -24,11 +24,11 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 /**
  * Checks Sweeper conditions:
  * <ul>
- * 	<li>Minimum checks, player not null, skill not null.</li>
- * 	<li>Checks if the target isn't null, is dead and spoiled.</li>
- * 	<li>Checks if the sweeper player is the target spoiler, or is in the spoiler party.</li>
- * 	<li>Checks if the corpse is too old.</li>
- * 	<li>Checks inventory limit and weight max load won't be exceed after sweep.</li>
+ * <li>Minimum checks, player not null, skill not null.</li>
+ * <li>Checks if the target isn't null, is dead and spoiled.</li>
+ * <li>Checks if the sweeper player is the target spoiler, or is in the spoiler party.</li>
+ * <li>Checks if the corpse is too old.</li>
+ * <li>Checks inventory limit and weight max load won't be exceed after sweep.</li>
  * </ul>
  * If two or more conditions aren't meet at the same time, one message per condition will be shown.
  * @author Zoey76
@@ -37,6 +37,7 @@ public class ConditionPlayerCanSweep extends Condition
 {
 	private final boolean _val;
 	private static final int maxSweepTime = 15000;
+	
 	public ConditionPlayerCanSweep(boolean val)
 	{
 		_val = val;
@@ -45,11 +46,11 @@ public class ConditionPlayerCanSweep extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		boolean canSweep = (env.player != null) && (env.player instanceof L2PcInstance);
+		boolean canSweep = env.getPlayer() != null;
 		if (canSweep)
 		{
-			final L2PcInstance sweeper = env.player.getActingPlayer();
-			final L2Skill sweep = env.skill;
+			final L2PcInstance sweeper = env.getPlayer();
+			final L2Skill sweep = env.getSkill();
 			canSweep &= (sweep != null);
 			if (canSweep)
 			{

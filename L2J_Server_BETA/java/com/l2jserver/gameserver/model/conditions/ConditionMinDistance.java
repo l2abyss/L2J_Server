@@ -18,8 +18,7 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionMinDistance.
- *
- * @author  Didldak
+ * @author Didldak
  */
 public class ConditionMinDistance extends Condition
 {
@@ -27,7 +26,6 @@ public class ConditionMinDistance extends Condition
 	
 	/**
 	 * Instantiates a new condition min distance.
-	 *
 	 * @param sqDistance the sq distance
 	 */
 	public ConditionMinDistance(int sqDistance)
@@ -38,8 +36,6 @@ public class ConditionMinDistance extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (env.target == null)
-			return false;
-		return env.player.getDistanceSq(env.target) >= _sqDistance;
+		return (env.getTarget() != null) && (env.getCharacter().getDistanceSq(env.getTarget()) >= _sqDistance);
 	}
 }

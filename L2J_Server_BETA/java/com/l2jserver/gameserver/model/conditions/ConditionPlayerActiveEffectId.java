@@ -28,7 +28,6 @@ public class ConditionPlayerActiveEffectId extends Condition
 	
 	/**
 	 * Instantiates a new condition player active effect id.
-	 *
 	 * @param effectId the effect id
 	 */
 	public ConditionPlayerActiveEffectId(int effectId)
@@ -39,7 +38,6 @@ public class ConditionPlayerActiveEffectId extends Condition
 	
 	/**
 	 * Instantiates a new condition player active effect id.
-	 *
 	 * @param effectId the effect id
 	 * @param effectLevel the effect level
 	 */
@@ -52,10 +50,7 @@ public class ConditionPlayerActiveEffectId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		final L2Effect e = env.player.getFirstEffect(_effectId);
-		if (e != null && (_effectLvl == -1 || _effectLvl <= e.getSkill().getLevel()))
-			return true;
-		
-		return false;
+		final L2Effect e = env.getCharacter().getFirstEffect(_effectId);
+		return ((e != null) && ((_effectLvl == -1) || (_effectLvl <= e.getSkill().getLevel())));
 	}
 }

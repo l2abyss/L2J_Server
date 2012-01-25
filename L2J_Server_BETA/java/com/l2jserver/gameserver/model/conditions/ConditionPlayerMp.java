@@ -19,13 +19,13 @@ import com.l2jserver.gameserver.model.stats.Env;
 /**
  * The Class ConditionPlayerMp.
  */
-public class ConditionPlayerMp extends Condition {
+public class ConditionPlayerMp extends Condition
+{
 	
 	private final int _mp;
 	
 	/**
 	 * Instantiates a new condition player mp.
-	 *
 	 * @param mp the mp
 	 */
 	public ConditionPlayerMp(int mp)
@@ -34,7 +34,8 @@ public class ConditionPlayerMp extends Condition {
 	}
 	
 	@Override
-	public boolean testImpl(Env env) {
-		return env.player.getCurrentMp()*100/env.player.getMaxMp() <= _mp;
+	public boolean testImpl(Env env)
+	{
+		return ((env.getCharacter().getCurrentMp() * 100) / env.getCharacter().getMaxMp()) <= _mp;
 	}
 }

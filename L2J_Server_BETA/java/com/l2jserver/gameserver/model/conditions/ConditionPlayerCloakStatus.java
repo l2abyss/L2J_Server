@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -26,7 +25,6 @@ public class ConditionPlayerCloakStatus extends Condition
 	
 	/**
 	 * Instantiates a new condition player cloak status.
-	 *
 	 * @param val the val
 	 */
 	public ConditionPlayerCloakStatus(int val)
@@ -37,9 +35,6 @@ public class ConditionPlayerCloakStatus extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
-			return false;
-		
-		return ((L2PcInstance)env.player).getInventory().getCloakStatus() >= _val;
+		return (env.getPlayer() != null) && (env.getPlayer().getInventory().getCloakStatus() >= _val);
 	}
 }

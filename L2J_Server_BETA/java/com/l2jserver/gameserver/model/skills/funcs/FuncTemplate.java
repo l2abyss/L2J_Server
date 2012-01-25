@@ -103,6 +103,5 @@ public final class FuncTemplate
 			_log.log(Level.WARNING, "", e);
 			return null;
 		}
-		
 	}
 }

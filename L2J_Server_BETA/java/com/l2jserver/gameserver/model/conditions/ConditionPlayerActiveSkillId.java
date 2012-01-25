@@ -19,8 +19,7 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionPlayerActiveSkillId.
- *
- * @author  DrHouse
+ * @author DrHouse
  */
 public class ConditionPlayerActiveSkillId extends Condition
 {
@@ -29,7 +28,6 @@ public class ConditionPlayerActiveSkillId extends Condition
 	
 	/**
 	 * Instantiates a new condition player active skill id.
-	 *
 	 * @param skillId the skill id
 	 */
 	public ConditionPlayerActiveSkillId(int skillId)
@@ -40,7 +38,6 @@ public class ConditionPlayerActiveSkillId extends Condition
 	
 	/**
 	 * Instantiates a new condition player active skill id.
-	 *
 	 * @param skillId the skill id
 	 * @param skillLevel the skill level
 	 */
@@ -53,14 +50,16 @@ public class ConditionPlayerActiveSkillId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		for (L2Skill sk : env.player.getAllSkills())
+		for (L2Skill sk : env.getCharacter().getAllSkills())
 		{
 			if (sk != null)
 			{
 				if (sk.getId() == _skillId)
 				{
-					if (_skillLevel == -1 || _skillLevel <= sk.getLevel())
+					if ((_skillLevel == -1) || (_skillLevel <= sk.getLevel()))
+					{
 						return true;
+					}
 				}
 			}
 		}

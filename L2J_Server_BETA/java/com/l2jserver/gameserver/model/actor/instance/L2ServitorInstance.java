@@ -481,9 +481,9 @@ public class L2ServitorInstance extends L2Summon
 				if (se == null)
 					continue;
 				Env env = new Env();
-				env.player = this;
-				env.target = this;
-				env.skill = se.getSkill();
+				env.setCharacter(this);
+				env.setTarget(this);
+				env.setSkill(se.getSkill());
 				L2Effect ef;
 				for (EffectTemplate et : se.getSkill().getEffectTemplates())
 				{

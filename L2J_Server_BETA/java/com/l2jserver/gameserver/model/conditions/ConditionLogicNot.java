@@ -18,29 +18,27 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionLogicNot.
- *
  * @author mkizub
  */
 public class ConditionLogicNot extends Condition
 {
-	
-	private Condition _condition;
+	private final Condition _condition;
 	
 	/**
 	 * Instantiates a new condition logic not.
-	 *
 	 * @param condition the condition
 	 */
 	public ConditionLogicNot(Condition condition)
 	{
 		_condition = condition;
 		if (getListener() != null)
+		{
 			_condition.setListener(this);
+		}
 	}
 	
 	/**
 	 * Sets the listener.
-	 *
 	 * @param listener the new listener
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#setListener(com.l2jserver.gameserver.model.conditions.ConditionListener)
 	 */
@@ -48,15 +46,18 @@ public class ConditionLogicNot extends Condition
 	void setListener(ConditionListener listener)
 	{
 		if (listener != null)
+		{
 			_condition.setListener(this);
+		}
 		else
+		{
 			_condition.setListener(null);
+		}
 		super.setListener(listener);
 	}
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)

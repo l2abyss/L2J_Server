@@ -18,8 +18,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
- * This condition becomes true whether the player is transformed
- * and the transformation Id match the parameter or the parameter is -1
+ * This condition becomes true whether the player is transformed<br>
+ * and the transformation Id match the parameter or the parameter is -1<br>
  * which returns true if player is transformed regardless the transformation Id.
  * @author Zoey76
  */
@@ -39,11 +39,11 @@ public class ConditionPlayerTransformationId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
 		{
 			return false;
 		}
-		final L2PcInstance player = env.player.getActingPlayer();
+		final L2PcInstance player = env.getPlayer();
 		if (_id == -1)
 		{
 			return player.isTransformed();

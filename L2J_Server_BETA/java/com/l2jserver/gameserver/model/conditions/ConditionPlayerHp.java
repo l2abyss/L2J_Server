@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionPlayerHp.
- *
  * @author mr
  */
 public class ConditionPlayerHp extends Condition
@@ -27,7 +26,6 @@ public class ConditionPlayerHp extends Condition
 	
 	/**
 	 * Instantiates a new condition player hp.
-	 *
 	 * @param hp the hp
 	 */
 	public ConditionPlayerHp(int hp)
@@ -38,6 +36,6 @@ public class ConditionPlayerHp extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return env.player.getCurrentHp() * 100 / env.player.getMaxVisibleHp() <= _hp;
+		return (env.getCharacter() != null) && (((env.getCharacter().getCurrentHp() * 100) / env.getCharacter().getMaxVisibleHp()) <= _hp);
 	}
 }

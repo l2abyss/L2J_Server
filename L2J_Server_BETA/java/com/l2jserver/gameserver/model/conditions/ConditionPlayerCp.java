@@ -26,7 +26,6 @@ public class ConditionPlayerCp extends Condition
 	
 	/**
 	 * Instantiates a new condition player cp.
-	 *
 	 * @param cp the cp
 	 */
 	public ConditionPlayerCp(int cp)
@@ -37,6 +36,6 @@ public class ConditionPlayerCp extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return env.player.getCurrentCp()*100/env.player.getMaxCp() >= _cp;
+		return (env.getCharacter() != null) && (((env.getCharacter().getCurrentCp() * 100) / env.getCharacter().getMaxCp()) >= _cp);
 	}
 }

@@ -18,17 +18,14 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionItemId.
- *
  * @author mkizub
  */
 public final class ConditionItemId extends Condition
 {
-	
 	private final int _itemId;
 	
 	/**
 	 * Instantiates a new condition item id.
-	 *
 	 * @param itemId the item id
 	 */
 	public ConditionItemId(int itemId)
@@ -38,7 +35,6 @@ public final class ConditionItemId extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
@@ -46,8 +42,6 @@ public final class ConditionItemId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (env.item == null)
-			return false;
-		return env.item.getItemId() == _itemId;
+		return (env.getItem() != null) && (env.getItem().getItemId() == _itemId);
 	}
 }

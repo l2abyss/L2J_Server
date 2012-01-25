@@ -27,7 +27,6 @@ public class ConditionPlayerTvTEvent extends Condition
 	
 	/**
 	 * Instantiates a new condition player tv t event.
-	 *
 	 * @param val the val
 	 */
 	public ConditionPlayerTvTEvent(boolean val)
@@ -38,10 +37,11 @@ public class ConditionPlayerTvTEvent extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		final L2PcInstance player = env.player.getActingPlayer();
-		if (player == null || !TvTEvent.isStarted())
+		final L2PcInstance player = env.getPlayer();
+		if ((player == null) || !TvTEvent.isStarted())
+		{
 			return !_val;
-		
+		}
 		return (TvTEvent.isPlayerParticipant(player.getObjectId()) == _val);
 	}
 }

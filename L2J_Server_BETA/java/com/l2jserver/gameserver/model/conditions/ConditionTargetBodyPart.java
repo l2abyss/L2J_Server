@@ -21,17 +21,14 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionTargetBodyPart.
- *
  * @author mkizub
  */
 public class ConditionTargetBodyPart extends Condition
 {
-	
-	private L2Armor _armor;
+	private final L2Armor _armor;
 	
 	/**
 	 * Instantiates a new condition target body part.
-	 *
 	 * @param armor the armor
 	 */
 	public ConditionTargetBodyPart(L2Armor armor)
@@ -43,9 +40,11 @@ public class ConditionTargetBodyPart extends Condition
 	public boolean testImpl(Env env)
 	{
 		// target is attacker
-		if (env.target == null)
+		if (env.getTarget() == null)
+		{
 			return true;
-		int bodypart = env.target.getAttackingBodyPart();
+		}
+		int bodypart = env.getTarget().getAttackingBodyPart();
 		int armor_part = _armor.getBodyPart();
 		switch (bodypart)
 		{

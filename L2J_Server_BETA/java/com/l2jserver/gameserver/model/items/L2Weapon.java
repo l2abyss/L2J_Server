@@ -302,12 +302,12 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	 * @param instance the L2ItemInstance pointing out the weapon.
+	 * @param item the L2ItemInstance pointing out the weapon.
 	 * @param player the L2Character pointing out the player.
 	 * @return an array of Func objects containing the list of functions used by the weapon.
 	 */
 	@Override
-	public Func[] getStatFuncs(L2ItemInstance instance, L2Character player)
+	public Func[] getStatFuncs(L2ItemInstance item, L2Character player)
 	{
 		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
 		{
@@ -317,19 +317,18 @@ public final class L2Weapon extends L2Item
 		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
 		
 		Env env = new Env();
-		env.player = player;
-		env.item = instance;
-		Func f;
+		env.setCharacter(player);
+		env.setItem(item);
 		
+		Func f;
 		for (FuncTemplate t : _funcTemplates)
 		{
-			f = t.getFunc(env, instance);
+			f = t.getFunc(env, item);
 			if (f != null)
 			{
 				funcs.add(f);
 			}
 		}
-		
 		return funcs.toArray(new Func[funcs.size()]);
 	}
 	
@@ -345,14 +344,14 @@ public final class L2Weapon extends L2Item
 		{
 			return _emptyEffectSet;
 		}
-		List<L2Effect> effects = new FastList<L2Effect>();
 		
+		final List<L2Effect> effects = new FastList<L2Effect>();
 		if (_skillsOnCritCondition != null)
 		{
 			Env env = new Env();
-			env.player = caster;
-			env.target = target;
-			env.skill = _skillsOnCrit.getSkill();
+			env.setCharacter(caster);
+			env.setTarget(target);
+			env.setSkill(_skillsOnCrit.getSkill());
 			if (!_skillsOnCritCondition.test(env))
 			{
 				return _emptyEffectSet; // Skill condition not met
@@ -407,9 +406,9 @@ public final class L2Weapon extends L2Item
 		if (_skillsOnCastCondition != null)
 		{
 			Env env = new Env();
-			env.player = caster;
-			env.target = target;
-			env.skill = _skillsOnCast.getSkill();
+			env.setCharacter(caster);
+			env.setTarget(target);
+			env.setSkill(_skillsOnCast.getSkill());
 			if (!_skillsOnCastCondition.test(env))
 			{
 				return _emptyEffectSet;

@@ -14,21 +14,18 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionPlayerFlyMounted.
- *
  * @author kerberos
  */
-public class ConditionPlayerFlyMounted extends Condition {
-	
-	private boolean _val;
+public class ConditionPlayerFlyMounted extends Condition
+{
+	private final boolean _val;
 	
 	/**
 	 * Instantiates a new condition player fly mounted.
-	 *
 	 * @param val the val
 	 */
 	public ConditionPlayerFlyMounted(boolean val)
@@ -37,7 +34,8 @@ public class ConditionPlayerFlyMounted extends Condition {
 	}
 	
 	@Override
-	public boolean testImpl(Env env) {
-		return (env.player instanceof L2PcInstance) ? ((L2PcInstance) env.player).isFlyingMounted() == _val : true;
+	public boolean testImpl(Env env)
+	{
+		return (env.getPlayer() != null) ? env.getPlayer().isFlyingMounted() == _val : true;
 	}
 }

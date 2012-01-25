@@ -17,17 +17,15 @@ package com.l2jserver.gameserver.model.conditions;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.stats.Env;
 
-
 /**
  * The Class ConditionTargetNpcType.
  */
-public class ConditionTargetNpcType extends Condition {
-	
+public class ConditionTargetNpcType extends Condition
+{
 	private final InstanceType[] _npcType;
 	
 	/**
 	 * Instantiates a new condition target npc type.
-	 *
 	 * @param type the type
 	 */
 	public ConditionTargetNpcType(InstanceType[] type)
@@ -36,10 +34,12 @@ public class ConditionTargetNpcType extends Condition {
 	}
 	
 	@Override
-	public boolean testImpl(Env env) {
-		if (env.target == null)
+	public boolean testImpl(Env env)
+	{
+		if (env.getTarget() == null)
+		{
 			return false;
-		
-		return env.target.getInstanceType().isTypes(_npcType);
+		}
+		return env.getTarget().getInstanceType().isTypes(_npcType);
 	}
 }

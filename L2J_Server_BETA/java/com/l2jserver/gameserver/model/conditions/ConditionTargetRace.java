@@ -39,8 +39,10 @@ public class ConditionTargetRace extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.target instanceof L2PcInstance))
+		if (!(env.getTarget() instanceof L2PcInstance))
+		{
 			return false;
-		return Util.contains(_races, env.target.getActingPlayer().getRace());
+		}
+		return Util.contains(_races, env.getTarget().getActingPlayer().getRace());
 	}
 }

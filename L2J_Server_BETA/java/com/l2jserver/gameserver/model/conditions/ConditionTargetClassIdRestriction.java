@@ -28,7 +28,6 @@ public class ConditionTargetClassIdRestriction extends Condition
 	
 	/**
 	 * Instantiates a new condition target class id restriction.
-	 *
 	 * @param classId the class id
 	 */
 	public ConditionTargetClassIdRestriction(ArrayList<Integer> classId)
@@ -39,8 +38,10 @@ public class ConditionTargetClassIdRestriction extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.target instanceof L2PcInstance))
+		if (!(env.getTarget() instanceof L2PcInstance))
+		{
 			return false;
-		return (_classIds.contains(((L2PcInstance)env.target).getClassId().getId()));
+		}
+		return (_classIds.contains(((L2PcInstance) env.getTarget()).getClassId().getId()));
 	}
 }

@@ -19,7 +19,6 @@ import com.l2jserver.util.Rnd;
 
 /**
  * The Class ConditionGameChance.
- *
  * @author Advi
  */
 public class ConditionGameChance extends Condition
@@ -28,7 +27,6 @@ public class ConditionGameChance extends Condition
 	
 	/**
 	 * Instantiates a new condition game chance.
-	 *
 	 * @param chance the chance
 	 */
 	public ConditionGameChance(int chance)
@@ -38,7 +36,6 @@ public class ConditionGameChance extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)

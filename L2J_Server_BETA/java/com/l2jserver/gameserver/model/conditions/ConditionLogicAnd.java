@@ -18,12 +18,10 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionLogicAnd.
- *
  * @author mkizub
  */
 public class ConditionLogicAnd extends Condition
 {
-	
 	private static Condition[] _emptyConditions = new Condition[0];
 	public Condition[] conditions = _emptyConditions;
 	
@@ -37,15 +35,18 @@ public class ConditionLogicAnd extends Condition
 	
 	/**
 	 * Adds the.
-	 *
 	 * @param condition the condition
 	 */
 	public void add(Condition condition)
 	{
 		if (condition == null)
+		{
 			return;
+		}
 		if (getListener() != null)
+		{
 			condition.setListener(this);
+		}
 		final int len = conditions.length;
 		final Condition[] tmp = new Condition[len + 1];
 		System.arraycopy(conditions, 0, tmp, 0, len);
@@ -55,7 +56,6 @@ public class ConditionLogicAnd extends Condition
 	
 	/**
 	 * Sets the listener.
-	 *
 	 * @param listener the new listener
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#setListener(com.l2jserver.gameserver.model.conditions.ConditionListener)
 	 */
@@ -65,19 +65,22 @@ public class ConditionLogicAnd extends Condition
 		if (listener != null)
 		{
 			for (Condition c : conditions)
+			{
 				c.setListener(this);
+			}
 		}
 		else
 		{
 			for (Condition c : conditions)
+			{
 				c.setListener(null);
+			}
 		}
 		super.setListener(listener);
 	}
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
@@ -88,7 +91,9 @@ public class ConditionLogicAnd extends Condition
 		for (Condition c : conditions)
 		{
 			if (!c.test(env))
+			{
 				return false;
+			}
 		}
 		return true;
 	}

@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -26,7 +25,6 @@ public class ConditionPlayerSubclass extends Condition
 	
 	/**
 	 * Instantiates a new condition player subclass.
-	 *
 	 * @param val the val
 	 */
 	public ConditionPlayerSubclass(boolean val)
@@ -35,7 +33,12 @@ public class ConditionPlayerSubclass extends Condition
 	}
 	
 	@Override
-	public boolean testImpl(Env env) {
-		return (env.player instanceof L2PcInstance) ? ((L2PcInstance) env.player).isSubClassActive() == _val : true;
+	public boolean testImpl(Env env)
+	{
+		if (env.getPlayer() == null)
+		{
+			return true;
+		}
+		return env.getPlayer().isSubClassActive() == _val;
 	}
 }

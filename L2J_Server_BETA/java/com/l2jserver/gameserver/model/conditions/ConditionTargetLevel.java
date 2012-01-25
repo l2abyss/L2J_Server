@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionTargetLevel.
- *
  * @author mkizub
  */
 public class ConditionTargetLevel extends Condition
@@ -28,7 +27,6 @@ public class ConditionTargetLevel extends Condition
 	
 	/**
 	 * Instantiates a new condition target level.
-	 *
 	 * @param level the level
 	 */
 	public ConditionTargetLevel(int level)
@@ -39,8 +37,10 @@ public class ConditionTargetLevel extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (env.target == null)
+		if (env.getTarget() == null)
+		{
 			return false;
-		return env.target.getLevel() >= _level;
+		}
+		return env.getTarget().getLevel() >= _level;
 	}
 }

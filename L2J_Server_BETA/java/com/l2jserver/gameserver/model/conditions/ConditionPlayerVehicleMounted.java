@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -22,7 +21,7 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionPlayerVehicleMounted extends Condition
 {
-	private boolean _val;
+	private final boolean _val;
 	
 	/**
 	 * @param val the val
@@ -35,6 +34,10 @@ public class ConditionPlayerVehicleMounted extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.player instanceof L2PcInstance) ? ((L2PcInstance) env.player).isInVehicle() == _val : true;
+		if (env.getPlayer() == null)
+		{
+			return true;
+		}
+		return (env.getPlayer().isInVehicle() == _val);
 	}
 }

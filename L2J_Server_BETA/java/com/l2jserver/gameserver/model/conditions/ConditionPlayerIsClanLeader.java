@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -26,7 +25,6 @@ public class ConditionPlayerIsClanLeader extends Condition
 	
 	/**
 	 * Instantiates a new condition player is clan leader.
-	 *
 	 * @param val the val
 	 */
 	public ConditionPlayerIsClanLeader(boolean val)
@@ -37,8 +35,10 @@ public class ConditionPlayerIsClanLeader extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
-		return (((L2PcInstance)env.player).isClanLeader() == _val);
+		}
+		return (env.getPlayer().isClanLeader() == _val);
 	}
 }

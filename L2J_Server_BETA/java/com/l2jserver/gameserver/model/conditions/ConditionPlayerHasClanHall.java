@@ -17,12 +17,10 @@ package com.l2jserver.gameserver.model.conditions;
 import java.util.ArrayList;
 
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionPlayerHasClanHall.
- *
  * @author MrPoke
  */
 public final class ConditionPlayerHasClanHall extends Condition
@@ -31,7 +29,6 @@ public final class ConditionPlayerHasClanHall extends Condition
 	
 	/**
 	 * Instantiates a new condition player has clan hall.
-	 *
 	 * @param clanHall the clan hall
 	 */
 	public ConditionPlayerHasClanHall(ArrayList<Integer> clanHall)
@@ -41,7 +38,6 @@ public final class ConditionPlayerHasClanHall extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
@@ -49,17 +45,22 @@ public final class ConditionPlayerHasClanHall extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
+		}
 		
-		L2Clan clan = ((L2PcInstance)env.player).getClan();
+		final L2Clan clan = env.getPlayer().getClan();
 		if (clan == null)
-			return (_clanHall.size() == 1 && _clanHall.get(0) == 0);
+		{
+			return ((_clanHall.size() == 1) && (_clanHall.get(0) == 0));
+		}
 		
 		// All Clan Hall
-		if (_clanHall.size() == 1 && _clanHall.get(0) == -1)
+		if ((_clanHall.size() == 1) && (_clanHall.get(0) == -1))
+		{
 			return clan.getHasHideout() > 0;
-			
-			return _clanHall.contains(clan.getHasHideout());
+		}
+		return _clanHall.contains(clan.getHasHideout());
 	}
 }

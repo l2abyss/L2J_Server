@@ -17,18 +17,22 @@ package com.l2jserver.gameserver.model.skills.funcs;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Stats;
 
-
-
-public class FuncBaseMul extends Func {
+public class FuncBaseMul extends Func
+{
 	private final Lambda _lambda;
-	public FuncBaseMul(Stats pStat, int pOrder, Object owner, Lambda lambda) {
+	
+	public FuncBaseMul(Stats pStat, int pOrder, Object owner, Lambda lambda)
+	{
 		super(pStat, pOrder, owner);
 		_lambda = lambda;
 	}
+	
 	@Override
 	public void calc(Env env)
 	{
-		if (cond == null || cond.test(env))
-			env.value += env.baseValue * _lambda.calc(env);
+		if ((cond == null) || cond.test(env))
+		{
+			env.addValue(env.getBaseValue() * _lambda.calc(env));
+		}
 	}
 }

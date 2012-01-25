@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public final class LambdaStats extends Lambda
 {
-	
 	public enum StatsType
 	{
 		PLAYER_LEVEL,
@@ -37,32 +36,43 @@ public final class LambdaStats extends Lambda
 	{
 		_stat = stat;
 	}
+	
 	@Override
-	public double calc(Env env) {
+	public double calc(Env env)
+	{
 		switch (_stat)
 		{
 			case PLAYER_LEVEL:
-				if (env.player == null)
+				if (env.getCharacter() == null)
+				{
 					return 1;
-				return env.player.getLevel();
+				}
+				return env.getCharacter().getLevel();
 			case CUBIC_LEVEL:
-				if(env.cubic == null)
+				if (env.getCubic() == null)
+				{
 					return 1;
-				return env.cubic.getOwner().getLevel();
+				}
+				return env.getCubic().getOwner().getLevel();
 			case TARGET_LEVEL:
-				if (env.target == null)
+				if (env.getTarget() == null)
+				{
 					return 1;
-				return env.target.getLevel();
+				}
+				return env.getTarget().getLevel();
 			case PLAYER_MAX_HP:
-				if (env.player == null)
+				if (env.getCharacter() == null)
+				{
 					return 1;
-				return env.player.getMaxHp();
+				}
+				return env.getCharacter().getMaxHp();
 			case PLAYER_MAX_MP:
-				if (env.player == null)
+				if (env.getCharacter() == null)
+				{
 					return 1;
-				return env.player.getMaxMp();
+				}
+				return env.getCharacter().getMaxMp();
 		}
 		return 0;
 	}
-	
 }

@@ -151,11 +151,11 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	protected L2Effect(Env env, EffectTemplate template)
 	{
 		_state = EffectState.CREATED;
-		_skill = env.skill;
+		_skill = env.getSkill();
 		//_item = env._item == null ? null : env._item.getItem();
 		_template = template;
-		_effected = env.target;
-		_effector = env.player;
+		_effected = env.getTarget();
+		_effector = env.getCharacter();
 		_lambda = template.lambda;
 		_funcTemplates = template.funcTemplates;
 		_count = template.counter;
@@ -173,7 +173,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			}
 		}
 		
-		if (env.skillMastery)
+		if (env.isSkillMastery())
 			temp *= 2;
 		
 		_abnormalTime = temp;
@@ -211,9 +211,9 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	{
 		_template = effect._template;
 		_state = EffectState.CREATED;
-		_skill = env.skill;
-		_effected = env.target;
-		_effector = env.player;
+		_skill = env.getSkill();
+		_effected = env.getTarget();
+		_effector = env.getCharacter();
 		_lambda = _template.lambda;
 		_funcTemplates = _template.funcTemplates;
 		_count = effect.getCount();
@@ -354,9 +354,9 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	public final double calc()
 	{
 		Env env = new Env();
-		env.player = _effector;
-		env.target = _effected;
-		env.skill = _skill;
+		env.setCharacter(_effector);
+		env.setTarget(_effected);
+		env.setSkill(_skill);
 		return _lambda.calc(env);
 	}
 	
@@ -543,23 +543,26 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	{
 		if (_funcTemplates == null)
 			return _emptyFunctionSet;
-		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
+		
+		final ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
 		
 		Env env = new Env();
-		env.player = getEffector();
-		env.target = getEffected();
-		env.skill = getSkill();
-		Func f;
+		env.setCharacter(_effector);
+		env.setTarget(_effected);
+		env.setSkill(_skill);
 		
+		Func f;
 		for (FuncTemplate t : _funcTemplates)
 		{
 			f = t.getFunc(env, this); // effect is owner
 			if (f != null)
 				funcs.add(f);
 		}
-		if (funcs.isEmpty())
-			return _emptyFunctionSet;
 		
+		if (funcs.isEmpty())
+		{
+			return _emptyFunctionSet;
+		}
 		return funcs.toArray(new Func[funcs.size()]);
 	}
 	

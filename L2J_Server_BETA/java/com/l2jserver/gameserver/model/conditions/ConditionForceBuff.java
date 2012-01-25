@@ -19,10 +19,8 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionForceBuff.
- *
  * @author kombat, Forsaiken
  */
-
 public final class ConditionForceBuff extends Condition
 {
 	private static final short BATTLE_FORCE = 5104;
@@ -32,7 +30,6 @@ public final class ConditionForceBuff extends Condition
 	
 	/**
 	 * Instantiates a new condition force buff.
-	 *
 	 * @param forces the forces
 	 */
 	public ConditionForceBuff(byte[] forces)
@@ -42,7 +39,6 @@ public final class ConditionForceBuff extends Condition
 	
 	/**
 	 * Test impl.
-	 *
 	 * @param env the env
 	 * @return true, if successful
 	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
@@ -52,18 +48,21 @@ public final class ConditionForceBuff extends Condition
 	{
 		if (_forces[0] > 0)
 		{
-			L2Effect force = env.player.getFirstEffect(BATTLE_FORCE);
-			if (force == null || force.getForceEffect() < _forces[0])
+			L2Effect force = env.getCharacter().getFirstEffect(BATTLE_FORCE);
+			if ((force == null) || (force.getForceEffect() < _forces[0]))
+			{
 				return false;
+			}
 		}
 		
 		if (_forces[1] > 0)
 		{
-			L2Effect force = env.player.getFirstEffect(SPELL_FORCE);
-			if (force == null || force.getForceEffect() < _forces[1])
+			L2Effect force = env.getCharacter().getFirstEffect(SPELL_FORCE);
+			if ((force == null) || (force.getForceEffect() < _forces[1]))
+			{
 				return false;
+			}
 		}
-		
 		return true;
 	}
 }

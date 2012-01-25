@@ -17,13 +17,11 @@ package com.l2jserver.gameserver.model.conditions;
 import java.util.ArrayList;
 
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
  * @author UnAfraid
- *
  */
 public class ConditionPlayerInsideZoneId extends Condition
 {
@@ -37,13 +35,17 @@ public class ConditionPlayerInsideZoneId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
+		}
 		
-		for (L2ZoneType zone : ZoneManager.getInstance().getZones(env.player))
+		for (L2ZoneType zone : ZoneManager.getInstance().getZones(env.getCharacter()))
 		{
 			if (_zones.contains(zone.getId()))
+			{
 				return true;
+			}
 		}
 		return false;
 	}

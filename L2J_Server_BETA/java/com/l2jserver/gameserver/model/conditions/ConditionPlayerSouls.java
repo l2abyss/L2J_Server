@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -27,7 +26,6 @@ public class ConditionPlayerSouls extends Condition
 	
 	/**
 	 * Instantiates a new condition player souls.
-	 *
 	 * @param souls the souls
 	 */
 	public ConditionPlayerSouls(int souls)
@@ -38,6 +36,10 @@ public class ConditionPlayerSouls extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return ((L2PcInstance)env.player).getSouls() >= _souls;
+		if (env.getPlayer() == null)
+		{
+			return false;
+		}
+		return env.getPlayer().getSouls() >= _souls;
 	}
 }

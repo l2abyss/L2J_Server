@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.conditions;
 
 import java.util.ArrayList;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -28,7 +27,6 @@ public class ConditionPlayerClassIdRestriction extends Condition
 	
 	/**
 	 * Instantiates a new condition player class id restriction.
-	 *
 	 * @param classId the class id
 	 */
 	public ConditionPlayerClassIdRestriction(ArrayList<Integer> classId)
@@ -39,8 +37,6 @@ public class ConditionPlayerClassIdRestriction extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
-			return false;
-		return (_classIds.contains(((L2PcInstance)env.player).getClassId().getId()));
+		return (env.getPlayer() != null) && (_classIds.contains(env.getPlayer().getClassId().getId()));
 	}
 }

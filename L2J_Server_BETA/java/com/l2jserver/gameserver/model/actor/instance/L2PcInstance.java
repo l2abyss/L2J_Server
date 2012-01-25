@@ -8307,9 +8307,10 @@ public final class L2PcInstance extends L2Playable
 				if (skill.hasEffects())
 				{
 					Env env = new Env();
-					env.player = this;
-					env.target = this;
-					env.skill = skill;
+					env.setCharacter(this);
+					env.setTarget(this);
+					env.setSkill(skill);
+					
 					L2Effect ef;
 					for (EffectTemplate et : skill.getEffectTemplates())
 					{

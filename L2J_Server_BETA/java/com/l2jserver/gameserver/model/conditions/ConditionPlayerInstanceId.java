@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager.InstanceWorld;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -30,7 +29,6 @@ public class ConditionPlayerInstanceId extends Condition
 	
 	/**
 	 * Instantiates a new condition player instance id.
-	 *
 	 * @param instanceIds the instance ids
 	 */
 	public ConditionPlayerInstanceId(ArrayList<Integer> instanceIds)
@@ -41,17 +39,22 @@ public class ConditionPlayerInstanceId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
+		}
 		
-		final int instanceId = env.player.getInstanceId();
+		final int instanceId = env.getCharacter().getInstanceId();
 		if (instanceId <= 0)
+		{
 			return false; // player not in instance
+		}
 		
-		final InstanceWorld world = InstanceManager.getInstance().getPlayerWorld((L2PcInstance)env.player);
-		if (world == null || world.instanceId != instanceId)
+		final InstanceWorld world = InstanceManager.getInstance().getPlayerWorld(env.getPlayer());
+		if ((world == null) || (world.instanceId != instanceId))
+		{
 			return false; // player in the different instance
-		
+		}
 		return _instanceIds.contains(world.templateId);
 	}
 }

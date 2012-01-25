@@ -18,15 +18,13 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
- * 
  * @author DS
- *
  */
 public class ConditionTargetPlayable extends Condition
 {
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.target instanceof L2Playable);
+		return (env.getTarget() instanceof L2Playable);
 	}
 }

@@ -27,22 +27,16 @@ import com.l2jserver.gameserver.model.stats.Stats;
 
 public class CharStat
 {
-	// =========================================================
-	// Data Field
 	private L2Character _activeChar;
 	private long _exp = 0;
 	private int _sp = 0;
 	private byte _level = 1;
 	
-	// =========================================================
-	// Constructor
 	public CharStat(L2Character activeChar)
 	{
 		_activeChar = activeChar;
 	}
 	
-	// =========================================================
-	// Method - Public
 	/**
 	 * Calculate the new value of the state with modifiers that will be applied
 	 * on the targeted L2Character.<BR>
@@ -93,14 +87,15 @@ public class CharStat
 		
 		// Create and init an Env object to pass parameters to the Calculator
 		Env env = new Env();
-		env.player = _activeChar;
-		env.target = target;
-		env.skill = skill;
-		env.value = init;
+		env.setCharacter(_activeChar);
+		env.setTarget(target);
+		env.setSkill(skill);
+		env.setValue(init);
+		
 		// Launch the calculation
 		c.calc(env);
 		// avoid some troubles with negative stats (some stats should never be negative)
-		if (env.value <= 0)
+		if (env.getValue() <= 0)
 		{
 			switch(stat)
 			{
@@ -120,18 +115,11 @@ public class CharStat
 				case STAT_MEN:
 				case STAT_STR:
 				case STAT_WIT:
-					env.value = 1;
+					env.setValue(1);
 			}
 		}
-		
-		return env.value;
+		return env.getValue();
 	}
-	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	
 	/**
 	 * @return the Accuracy (base+modifier) of the L2Character in function of the Weapon Expertise Penalty.

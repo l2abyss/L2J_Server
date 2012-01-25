@@ -18,8 +18,7 @@ import com.l2jserver.gameserver.model.stats.Env;
 
 /**
  * The Class ConditionTargetAbnormal.
- *
- * @author  janiii
+ * @author janiii
  */
 public class ConditionTargetAbnormal extends Condition
 {
@@ -27,7 +26,6 @@ public class ConditionTargetAbnormal extends Condition
 	
 	/**
 	 * Instantiates a new condition target abnormal.
-	 *
 	 * @param abnormalId the abnormal id
 	 */
 	public ConditionTargetAbnormal(int abnormalId)
@@ -38,7 +36,6 @@ public class ConditionTargetAbnormal extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.target.getAbnormalEffect() & _abnormalId) != 0;
+		return (env.getTarget().getAbnormalEffect() & _abnormalId) != 0;
 	}
-	
 }

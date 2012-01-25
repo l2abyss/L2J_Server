@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -22,12 +21,10 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionPlayerSiegeSide extends Condition
 {
-	
 	private final int _siegeSide;
 	
 	/**
 	 * Instantiates a new condition player siege side.
-	 *
 	 * @param side the side
 	 */
 	public ConditionPlayerSiegeSide(int side)
@@ -38,6 +35,10 @@ public class ConditionPlayerSiegeSide extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return ((L2PcInstance)env.player).getSiegeSide() == _siegeSide;
+		if (env.getPlayer() == null)
+		{
+			return false;
+		}
+		return env.getPlayer().getSiegeSide() == _siegeSide;
 	}
 }

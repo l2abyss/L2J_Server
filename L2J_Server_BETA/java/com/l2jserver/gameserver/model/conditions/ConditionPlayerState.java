@@ -45,12 +45,11 @@ public class ConditionPlayerState extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		final L2Character character = env.player;
-		L2PcInstance player = null;
+		final L2Character character = env.getCharacter();
+		final L2PcInstance player = env.getPlayer();
 		switch (_check)
 		{
 			case RESTING:
-				player = character.getActingPlayer();
 				if (player != null)
 				{
 					return (player.isSitting() == _required);
@@ -61,7 +60,6 @@ public class ConditionPlayerState extends Condition
 			case RUNNING:
 				return character.isRunning() == _required;
 			case STANDING:
-				player = character.getActingPlayer();
 				if (player != null)
 				{
 					return (_required != (player.isSitting() || player.isMoving()));
@@ -74,14 +72,12 @@ public class ConditionPlayerState extends Condition
 			case FRONT:
 				return (character.isInFrontOfTarget() == _required);
 			case CHAOTIC:
-				player = character.getActingPlayer();
 				if (player != null)
 				{
 					return ((player.getKarma() > 0) == _required);
 				}
 				return !_required;
 			case OLYMPIAD:
-				player = character.getActingPlayer();
 				if (player != null)
 				{
 					return (player.isInOlympiadMode() == _required);

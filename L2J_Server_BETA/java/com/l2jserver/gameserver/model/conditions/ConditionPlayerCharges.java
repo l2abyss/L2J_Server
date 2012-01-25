@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -27,7 +26,6 @@ public class ConditionPlayerCharges extends Condition
 	
 	/**
 	 * Instantiates a new condition player charges.
-	 *
 	 * @param charges the charges
 	 */
 	public ConditionPlayerCharges(int charges)
@@ -38,6 +36,6 @@ public class ConditionPlayerCharges extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return ((L2PcInstance)env.player).getCharges() >= _charges;
+		return (env.getPlayer() != null) && (env.getPlayer().getCharges() >= _charges);
 	}
 }

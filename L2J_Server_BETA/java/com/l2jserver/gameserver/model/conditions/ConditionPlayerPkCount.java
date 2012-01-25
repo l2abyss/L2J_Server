@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -26,7 +25,6 @@ public class ConditionPlayerPkCount extends Condition
 	
 	/**
 	 * Instantiates a new condition player pk count.
-	 *
 	 * @param pk the pk
 	 */
 	public ConditionPlayerPkCount(int pk)
@@ -37,9 +35,10 @@ public class ConditionPlayerPkCount extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.player instanceof L2PcInstance))
+		if (env.getPlayer() == null)
+		{
 			return false;
-		
-		return ((L2PcInstance)env.player).getPkKills() <= _pk;
+		}
+		return env.getPlayer().getPkKills() <= _pk;
 	}
 }

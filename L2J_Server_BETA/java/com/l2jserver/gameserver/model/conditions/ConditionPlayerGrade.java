@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.conditions;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -26,7 +25,7 @@ import com.l2jserver.gameserver.model.stats.Env;
 public final class ConditionPlayerGrade extends Condition
 {
 	protected static final Logger _log = Logger.getLogger(ConditionPlayerGrade.class.getName());
-	//	conditional values
+	// conditional values
 	public final static int COND_NO_GRADE = 0x0001;
 	public final static int COND_D_GRADE = 0x0002;
 	public final static int COND_C_GRADE = 0x0004;
@@ -53,12 +52,6 @@ public final class ConditionPlayerGrade extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (env.player instanceof L2PcInstance)
-		{
-			final byte expIndex = (byte) ((L2PcInstance) env.player).getExpertiseLevel();
-			
-			return _value == expIndex;
-		}
-		return false;
+		return (env.getPlayer() != null) && (_value == (byte) env.getPlayer().getExpertiseLevel());
 	}
 }

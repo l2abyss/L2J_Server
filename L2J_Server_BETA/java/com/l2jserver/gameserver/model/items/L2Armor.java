@@ -122,12 +122,12 @@ public final class L2Armor extends L2Item
 	}
 	
 	/**
-	 * @param instance : L2ItemInstance pointing out the armor
+	 * @param item : L2ItemInstance pointing out the armor
 	 * @param player : L2Character pointing out the player
 	 * @return array of Func objects containing the list of functions used by the armor
 	 */
 	@Override
-	public Func[] getStatFuncs(L2ItemInstance instance, L2Character player)
+	public Func[] getStatFuncs(L2ItemInstance item, L2Character player)
 	{
 		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
 		{
@@ -137,21 +137,19 @@ public final class L2Armor extends L2Item
 		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
 		
 		Env env = new Env();
-		env.player = player;
-		env.item = instance;
+		env.setCharacter(player);
+		env.setItem(item);
 		
 		Func f;
-		
 		for (FuncTemplate t : _funcTemplates)
 		{
 			
-			f = t.getFunc(env, instance);
+			f = t.getFunc(env, item);
 			if (f != null)
 			{
 				funcs.add(f);
 			}
 		}
-		
 		return funcs.toArray(new Func[funcs.size()]);
 	}
 }
