@@ -70,12 +70,15 @@ import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
 
 /**
- * Global calculations, can be modified by server admins
+ * Global calculations.
  */
 public final class Formulas
 {
-	/** Regen Task period */
-	protected static final Logger _log = Logger.getLogger(L2Character.class.getName());
+	private static final Logger _log = Logger.getLogger(Formulas.class.getName());
+	
+	/**
+	 * Regen Task period.
+	 */
 	private static final int HP_REGENERATE_PERIOD = 3000; // 3 secs
 	
 	public static final byte SHIELD_DEFENSE_FAILED = 0; // no shield defense
@@ -161,8 +164,7 @@ public final class Formulas
 		}
 		
 		/**
-		 * Constructor of the FuncMultRegenResting.<BR>
-		 * <BR>
+		 * Constructor of the FuncMultRegenResting.
 		 * @param pStat
 		 */
 		private FuncMultRegenResting(Stats pStat)
@@ -172,8 +174,7 @@ public final class Formulas
 		}
 		
 		/**
-		 * Calculate the modifier of the state concerned.<BR>
-		 * <BR>
+		 * Calculate the modifier of the state concerned.
 		 */
 		@Override
 		public void calc(Env env)
@@ -969,8 +970,7 @@ public final class Formulas
 	}
 	
 	/**
-	 * Return the period between 2 regeneration task (3s for L2Character, 5 min for L2DoorInstance).<BR>
-	 * <BR>
+	 * Return the period between 2 regeneration task (3s for L2Character, 5 min for L2DoorInstance).
 	 * @param cha
 	 * @return
 	 */
@@ -985,16 +985,11 @@ public final class Formulas
 	}
 	
 	/**
-	 * Return the standard NPC Calculator set containing ACCURACY_COMBAT and EVASION_RATE.<BR>
-	 * <BR>
-	 * <B><U> Concept</U> :</B><BR>
-	 * <BR>
-	 * A calculator is created to manage and dynamically calculate the effect of a character property (ex : MAX_HP, REGENERATE_HP_RATE...). In fact, each calculator is a table of Func object in which each Func represents a mathematic function : <BR>
-	 * <BR>
-	 * FuncAtkAccuracy -> Math.sqrt(_player.getDEX())*6+_player.getLevel()<BR>
-	 * <BR>
-	 * To reduce cache memory use, L2NPCInstances who don't have skills share the same Calculator set called <B>NPC_STD_CALCULATOR</B>.<BR>
-	 * <BR>
+	 * Return the standard NPC Calculator set containing ACCURACY_COMBAT and EVASION_RATE.
+	 * <B><U>Concept</U>:</B><br>
+	 * A calculator is created to manage and dynamically calculate the effect of a character property (ex : MAX_HP, REGENERATE_HP_RATE...). In fact, each calculator is a table of Func object in which each Func represents a mathematic function : <br>
+	 * FuncAtkAccuracy -> Math.sqrt(_player.getDEX())*6+_player.getLevel()<br>
+	 * To reduce cache memory use, L2NPCInstances who don't have skills share the same Calculator set called <B>NPC_STD_CALCULATOR</B>.<br>
 	 * @return
 	 */
 	public static Calculator[] getStdNPCCalculators()
@@ -1067,14 +1062,10 @@ public final class Formulas
 	}
 	
 	/**
-	 * Add basics Func objects to L2PcInstance and L2Summon.<BR>
-	 * <BR>
-	 * <B><U> Concept</U> :</B><BR>
-	 * <BR>
-	 * A calculator is created to manage and dynamically calculate the effect of a character property (ex : MAX_HP, REGENERATE_HP_RATE...). In fact, each calculator is a table of Func object in which each Func represents a mathematic function : <BR>
-	 * <BR>
-	 * FuncAtkAccuracy -> Math.sqrt(_player.getDEX())*6+_player.getLevel()<BR>
-	 * <BR>
+	 * Add basics Func objects to L2PcInstance and L2Summon.<br>
+	 * <B><U>Concept</U>:</B><br>
+	 * A calculator is created to manage and dynamically calculate the effect of a character property (ex : MAX_HP, REGENERATE_HP_RATE...). In fact, each calculator is a table of Func object in which each Func represents a mathematic function : <br>
+	 * FuncAtkAccuracy -> Math.sqrt(_player.getDEX())*6+_player.getLevel()<br>
 	 * @param cha L2PcInstance or L2Summon that must obtain basic Func objects
 	 */
 	public static void addFuncsToNewCharacter(L2Character cha)
@@ -1603,7 +1594,7 @@ public final class Formulas
 	}
 	
 	/**
-	 * Calculated damage caused by ATTACK of attacker on target, called separatly for each weapon, if dual-weapon is used.
+	 * Calculated damage caused by ATTACK of attacker on target, called separately for each weapon, if dual-weapon is used.
 	 * @param attacker player or NPC that makes ATTACK
 	 * @param target player or NPC, target of ATTACK
 	 * @param skill
@@ -1683,7 +1674,7 @@ public final class Formulas
 			}
 		}
 		
-		// defence modifier depending of the attacker weapon
+		// Defense modifier depending of the attacker weapon
 		L2Weapon weapon = attacker.getActiveWeaponItem();
 		Stats stat = null;
 		boolean isBow = false;
@@ -1738,9 +1729,6 @@ public final class Formulas
 				case ANCIENTSWORD:
 					stat = Stats.ANCIENT_WPN_VULN;
 					break;
-			/*
-			 * case PET: stat = Stats.PET_WPN_VULN; break;
-			 */
 			}
 		}
 		
@@ -1749,17 +1737,6 @@ public final class Formulas
 		{
 			stat = Stats.PET_WPN_VULN;
 		}
-		
-		/*
-		 * if (shld && !Config.ALT_GAME_SHIELD_BLOCKS) { defence += target.getShldDef(); }
-		 */
-		// if (!(attacker instanceof L2RaidBossInstance) &&
-		/*
-		 * if ((attacker instanceof L2NpcInstance || attacker instanceof L2SiegeGuardInstance)) { if (attacker instanceof L2RaidBossInstance) damage *= 1; // was 10 changed for temp fix // else // damage *= 2; // if (attacker instanceof L2NpcInstance || attacker instanceof L2SiegeGuardInstance){
-		 * //damage = damage * attacker.getSTR() * attacker.getAccuracy() * 0.05 / defence; // damage = damage * attacker.getSTR()* (attacker.getSTR() + attacker.getLevel()) * 0.025 / defence; // damage += _rnd.nextDouble() * damage / 10 ; }
-		 */
-		// else {
-		// if (skill == null)
 		
 		if (crit)
 		{
@@ -1777,17 +1754,10 @@ public final class Formulas
 		{
 			// get the vulnerability due to skills (buffs, passives, toggles, etc)
 			damage = target.calcStat(stat, damage, target, null);
-			/*
-			 * if (target instanceof L2Npc) { // get the natural vulnerability for the template damage *= ((L2Npc) target).getTemplate().getVulnerability(stat); }
-			 */
 		}
 		
 		// Weapon random damage
 		damage *= attacker.getRandomDamageMultiplier();
-		
-		// damage += Rnd.nextDouble() * damage / 10;
-		// damage += _rnd.nextDouble()* attacker.getRandomDamage(target);
-		// }
 		if ((shld > 0) && Config.ALT_GAME_SHIELD_BLOCKS)
 		{
 			damage -= target.getShldDef();
@@ -2400,10 +2370,10 @@ public final class Formulas
 	}
 	
 	/**
-	 * Returns true if hit missed (target evaded) Formula based on http://l2p.l2wh.com/nonskillattacks.html
+	 * Formula based on http://l2p.l2wh.com/nonskillattacks.html
 	 * @param attacker
 	 * @param target
-	 * @return
+	 * @return {@code true} if hit missed (target evaded), {@code false} otherwise.
 	 */
 	public static boolean calcHitMiss(L2Character attacker, L2Character target)
 	{
@@ -3514,30 +3484,32 @@ public final class Formulas
 	}
 	
 	/**
-	 * Calculate skill reflection according these three possibilities: <li>Reflect failed</li> <li>Mormal reflect (just effects). <U>Only possible for skilltypes: BUFF, REFLECT, HEAL_PERCENT, MANAHEAL_PERCENT, HOT, CPHOT, MPHOT</U></li> <li>vengEance reflect (100% damage reflected but damage is also
-	 * dealt to actor). <U>This is only possible for skills with skilltype PDAM, BLOW, CHARGEDAM, MDAM or DEATHLINK</U></li>
+	 * Calculate skill reflection according these three possibilities:<br>
+	 * <ul>
+	 * <li>Reflect failed</li>
+	 * <li>Mormal reflect (just effects). <U>Only possible for skilltypes: BUFF, REFLECT, HEAL_PERCENT, MANAHEAL_PERCENT, HOT, CPHOT, MPHOT</U></li>
+	 * <li>vengEance reflect (100% damage reflected but damage is also dealt to actor). <U>This is only possible for skills with skilltype PDAM, BLOW, CHARGEDAM, MDAM or DEATHLINK</U></li>
+	 * </ul>
 	 * @param target
 	 * @param skill
 	 * @return SKILL_REFLECTED_FAILED, SKILL_REFLECT_SUCCEED or SKILL_REFLECT_VENGEANCE
 	 */
 	public static byte calcSkillReflect(L2Character target, L2Skill skill)
 	{
-		/*
-		 * Neither some special skills (like hero debuffs...) or those skills ignoring resistances can be reflected
-		 */
+		// Neither some special skills (like hero debuffs...) or those skills ignoring resistances can be reflected
 		if (skill.ignoreResists() || !skill.canBeReflected())
 		{
 			return SKILL_REFLECT_FAILED;
 		}
 		
-		// only magic and melee skills can be reflected
+		// Only magic and melee skills can be reflected
 		if (!skill.isMagic() && ((skill.getCastRange() == -1) || (skill.getCastRange() > MELEE_ATTACK_RANGE)))
 		{
 			return SKILL_REFLECT_FAILED;
 		}
 		
 		byte reflect = SKILL_REFLECT_FAILED;
-		// check for non-reflected skilltypes, need additional retail check
+		// Check for non-reflected skilltypes, need additional retail check
 		switch (skill.getSkillType())
 		{
 			case BUFF:
@@ -3571,7 +3543,6 @@ public final class Formulas
 		}
 		
 		final double reflectChance = target.calcStat(skill.isMagic() ? Stats.REFLECT_SKILL_MAGIC : Stats.REFLECT_SKILL_PHYSIC, 0, null, skill);
-		
 		if (Rnd.get(100) < reflectChance)
 		{
 			reflect |= SKILL_REFLECT_SUCCEED;

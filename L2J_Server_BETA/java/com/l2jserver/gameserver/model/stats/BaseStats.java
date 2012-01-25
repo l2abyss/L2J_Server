@@ -29,9 +29,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- * 
  * @author DS
- *
  */
 public enum BaseStats
 {
@@ -43,7 +41,7 @@ public enum BaseStats
 	MEN(new MEN()),
 	NULL(new NULL());
 	
-	protected static final Logger _log = Logger.getLogger(BaseStats.class.getName());
+	private static final Logger _log = Logger.getLogger(BaseStats.class.getName());
 	
 	public static final int MAX_STAT_VALUE = 100;
 	
@@ -69,7 +67,9 @@ public enum BaseStats
 	public final double calcBonus(L2Character actor)
 	{
 		if (actor != null)
+		{
 			return _stat.calcBonus(actor);
+		}
 		
 		return 1;
 	}
@@ -80,9 +80,10 @@ public enum BaseStats
 		for (BaseStats s : values())
 		{
 			if (s.getValue().equalsIgnoreCase(name))
+			{
 				return s;
+			}
 		}
-		
 		throw new NoSuchElementException("Unknown name '" + name + "' for enum BaseStats");
 	}
 	
@@ -173,47 +174,64 @@ public enum BaseStats
 				_log.log(Level.WARNING, "[BaseStats] Could not parse file: " + e.getMessage(), e);
 			}
 			
-			String statName;
-			int val;
-			double bonus;
-			NamedNodeMap attrs;
-			for (Node list = doc.getFirstChild(); list != null; list = list.getNextSibling())
+			if (doc != null)
 			{
-				if ("list".equalsIgnoreCase(list.getNodeName()))
+				String statName;
+				int val;
+				double bonus;
+				NamedNodeMap attrs;
+				for (Node list = doc.getFirstChild(); list != null; list = list.getNextSibling())
 				{
-					for (Node stat = list.getFirstChild(); stat != null; stat = stat.getNextSibling())
+					if ("list".equalsIgnoreCase(list.getNodeName()))
 					{
-						statName = stat.getNodeName();
-						for (Node value = stat.getFirstChild(); value != null; value = value.getNextSibling())
+						for (Node stat = list.getFirstChild(); stat != null; stat = stat.getNextSibling())
 						{
-							if ("stat".equalsIgnoreCase(value.getNodeName()))
+							statName = stat.getNodeName();
+							for (Node value = stat.getFirstChild(); value != null; value = value.getNextSibling())
 							{
-								attrs = value.getAttributes();
-								try
+								if ("stat".equalsIgnoreCase(value.getNodeName()))
 								{
-									val = Integer.parseInt(attrs.getNamedItem("value").getNodeValue());
-									bonus = Double.parseDouble(attrs.getNamedItem("bonus").getNodeValue());
+									attrs = value.getAttributes();
+									try
+									{
+										val = Integer.parseInt(attrs.getNamedItem("value").getNodeValue());
+										bonus = Double.parseDouble(attrs.getNamedItem("bonus").getNodeValue());
+									}
+									catch (Exception e)
+									{
+										_log.severe("[BaseStats] Invalid stats value: " + value.getNodeValue() + ", skipping");
+										continue;
+									}
+									
+									if ("STR".equalsIgnoreCase(statName))
+									{
+										STRbonus[val] = bonus;
+									}
+									else if ("INT".equalsIgnoreCase(statName))
+									{
+										INTbonus[val] = bonus;
+									}
+									else if ("DEX".equalsIgnoreCase(statName))
+									{
+										DEXbonus[val] = bonus;
+									}
+									else if ("WIT".equalsIgnoreCase(statName))
+									{
+										WITbonus[val] = bonus;
+									}
+									else if ("CON".equalsIgnoreCase(statName))
+									{
+										CONbonus[val] = bonus;
+									}
+									else if ("MEN".equalsIgnoreCase(statName))
+									{
+										MENbonus[val] = bonus;
+									}
+									else
+									{
+										_log.severe("[BaseStats] Invalid stats name: " + statName + ", skipping");
+									}
 								}
-								catch (Exception e)
-								{
-									_log.severe("[BaseStats] Invalid stats value: "+value.getNodeValue()+", skipping");
-									continue;
-								}
-								
-								if ("STR".equalsIgnoreCase(statName))
-									STRbonus[val] = bonus;
-								else if ("INT".equalsIgnoreCase(statName))
-									INTbonus[val] = bonus;
-								else if ("DEX".equalsIgnoreCase(statName))
-									DEXbonus[val] = bonus;
-								else if ("WIT".equalsIgnoreCase(statName))
-									WITbonus[val] = bonus;
-								else if ("CON".equalsIgnoreCase(statName))
-									CONbonus[val] = bonus;
-								else if ("MEN".equalsIgnoreCase(statName))
-									MENbonus[val] = bonus;
-								else
-									_log.severe("[BaseStats] Invalid stats name: "+statName+", skipping");
 							}
 						}
 					}
@@ -222,7 +240,7 @@ public enum BaseStats
 		}
 		else
 		{
-			throw new Error("[BaseStats] File not found: "+file.getName());
+			throw new Error("[BaseStats] File not found: " + file.getName());
 		}
 	}
 }
