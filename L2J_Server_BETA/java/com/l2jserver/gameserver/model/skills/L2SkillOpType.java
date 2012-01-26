@@ -29,7 +29,6 @@ package com.l2jserver.gameserver.model.skills;
  * 	<li>P = Passive Skill</li>
  * 	<li>T = Toggle Skill</li>
  * </ul>
- * TODO: Remove old types, keeping them for backward compatibility.
  * @author Zoey76
  */
 public enum L2SkillOpType
@@ -43,10 +42,7 @@ public enum L2SkillOpType
 	DA1,
 	DA2,
 	P,
-	T,
-	OP_ACTIVE,
-	OP_PASSIVE,
-	OP_TOGGLE;
+	T;
 	
 	/**
 	 * @return {@code true} if the operative skill type is active, {@code false} otherwise.
@@ -63,7 +59,6 @@ public enum L2SkillOpType
 			case CA5:
 			case DA1:
 			case DA2:
-			case OP_ACTIVE:
 				return true;
 			default:
 				return false;
@@ -75,7 +70,7 @@ public enum L2SkillOpType
 	 */
 	public boolean isPassive()
 	{
-		return (this == P) || (this == OP_PASSIVE);
+		return (this == P);
 	}
 	
 	/**
@@ -83,6 +78,6 @@ public enum L2SkillOpType
 	 */
 	public boolean isToggle()
 	{
-		return (this == T) || (this == OP_TOGGLE);
+		return (this == T);
 	}
 }
