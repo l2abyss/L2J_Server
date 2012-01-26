@@ -87,7 +87,7 @@ public class EnchantItemTable
 						boolean isCrystal = false;
 						boolean isSafe = false;
 						int type = L2Item.CRYSTAL_NONE;
-						int maxEnchant = 0;
+						int maxEnchant = Config.MAX_ENCHANT_LEVEL;
 						double chance = Config.ENCHANT_CHANCE;
 						int[] items = null;
 						
