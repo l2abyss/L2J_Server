@@ -6542,7 +6542,7 @@ public abstract class L2Character extends L2Object
 		final L2Object target = mut.targets.length > 0 ? mut.targets[0] : null;
 		
 		// Attack target after skill use
-		if (skill.nextActionIsAttack() && getTarget() instanceof L2Character && getTarget() != this && getTarget() == target)
+		if ((skill.nextActionIsAttack()) && (getTarget() instanceof L2Character) && (getTarget() != this) && (getTarget() == target) && (target.isAttackable()))
 		{
 			if (getAI() == null || getAI().getNextIntention() == null || getAI().getNextIntention().getCtrlIntention() != CtrlIntention.AI_INTENTION_MOVE_TO)
 			{
