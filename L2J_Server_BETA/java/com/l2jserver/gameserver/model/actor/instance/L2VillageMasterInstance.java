@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.Iterator;
 import java.util.Set;
-import java.util.regex.Matcher;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -62,7 +62,7 @@ import com.l2jserver.util.StringUtil;
  */
 public class L2VillageMasterInstance extends L2NpcInstance
 {
-	//private static Logger _log = Logger.getLogger(L2VillageMasterInstance.class.getName());
+	private static Logger _log = Logger.getLogger(L2VillageMasterInstance.class.getName());
 	
 	/**
 	 * @param objectId
@@ -1145,25 +1145,18 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
-	private static boolean isValidName(String text)
+	private static boolean isValidName(String name)
 	{
-		boolean result = true;
-		String test = text;
 		Pattern pattern;
 		try
 		{
 			pattern = Pattern.compile(Config.CLAN_NAME_TEMPLATE);
 		}
-		catch (PatternSyntaxException e) // case of illegal pattern
+		catch (PatternSyntaxException e)
 		{
-			_log.warning("ERROR : Clan name pattern of config is wrong!");
+			_log.warning("ERROR: Wrong pattern for clan name!");
 			pattern = Pattern.compile(".*");
 		}
-		Matcher regexp = pattern.matcher(test);
-		if (!regexp.matches())
-		{
-			result = false;
-		}
-		return result;
+		return pattern.matcher(name).matches();
 	}
 }

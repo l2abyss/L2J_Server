@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.taskmanager;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +48,7 @@ public class DecayTaskManager
 	
 	public void addDecayTask(L2Character actor)
 	{
-		_decayTasks.put(actor, System.currentTimeMillis());
+		addDecayTask(actor, 0); 
 	}
 	
 	public void addDecayTask(L2Character actor, int interval)
@@ -59,13 +58,7 @@ public class DecayTaskManager
 	
 	public void cancelDecayTask(L2Character actor)
 	{
-		try
-		{
-			_decayTasks.remove(actor);
-		}
-		catch (NoSuchElementException e)
-		{
-		}
+		_decayTasks.remove(actor);
 	}
 	
 	private class DecayScheduler implements Runnable
@@ -91,7 +84,7 @@ public class DecayTaskManager
 					e = it.next();
 					actor = e.getKey();
 					next = e.getValue();
-					if (next == null)
+					if (actor == null || next == null)
 						continue;
 					if (actor.isRaid() && !actor.isRaidMinion())
 						delay = Config.RAID_BOSS_DECAY_TIME;

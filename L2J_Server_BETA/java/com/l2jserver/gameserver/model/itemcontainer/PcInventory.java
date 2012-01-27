@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -39,6 +40,8 @@ import com.l2jserver.gameserver.util.Util;
 
 public class PcInventory extends Inventory
 {
+	private static final Logger _log = Logger.getLogger(PcInventory.class.getName());
+	
 	public static final int ADENA_ID = 57;
 	public static final int ANCIENT_ADENA_ID = 5575;
 	public static final long MAX_ADENA = 99900000000L;

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -52,7 +53,7 @@ import com.l2jserver.util.StringUtil;
  */
 public abstract class Inventory extends ItemContainer
 {
-	//protected static final Logger _log = Logger.getLogger(Inventory.class.getName());
+	private static final Logger _log = Logger.getLogger(Inventory.class.getName());
 	
 	public interface PaperdollListener
 	{
@@ -932,26 +933,20 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Returns the ID of the item in the paperdol slot
+	 * Returns the ID of the item in the paperdoll slot
 	 * @param slot : int designating the slot
 	 * @return int designating the ID of the item
 	 */
 	public int getPaperdollItemDisplayId(int slot)
 	{
-		L2ItemInstance item = _paperdoll[slot];
-		if (item != null)
-			return item.getDisplayId();
-		return 0;
+		final L2ItemInstance item = _paperdoll[slot];
+		return (item != null) ? item.getDisplayId() : 0;
 	}
 	
 	public int getPaperdollAugmentationId(int slot)
 	{
 		final L2ItemInstance item = _paperdoll[slot];
-		if ((item != null) && (item.getAugmentation() != null))
-		{
-			return item.getAugmentation().getAugmentationId();
-		}
-		return 0;
+		return ((item != null) && (item.getAugmentation() != null)) ? item.getAugmentation().getAugmentationId() : 0;
 	}
 	
 	/**
@@ -961,10 +956,8 @@ public abstract class Inventory extends ItemContainer
 	 */
 	public int getPaperdollObjectId(int slot)
 	{
-		L2ItemInstance item = _paperdoll[slot];
-		if (item != null)
-			return item.getObjectId();
-		return 0;
+		final L2ItemInstance item = _paperdoll[slot];
+		return (item != null) ? item.getObjectId() : 0;
 	}
 	
 	/**
@@ -1044,8 +1037,7 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Return the mask of weared item
-	 * @return int
+	 * @return the mask of wore item
 	 */
 	public int getWearedMask()
 	{
@@ -1159,7 +1151,7 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Unepquips item in slot and returns alterations<BR>
+	 * Unequips item in slot and returns alterations<BR>
 	 * <B>If you dont need return value use {@link Inventory#unEquipItemInSlot(int)} instead</B>
 	 * @param slot : int designating the slot
 	 * @return L2ItemInstance[] : list of items altered
@@ -1281,7 +1273,7 @@ public abstract class Inventory extends ItemContainer
 	
 	/**
 	 * Equips item and returns list of alterations<BR>
-	 * <B>If you dont need return value use {@link Inventory#equipItem(L2ItemInstance)} instead</B>
+	 * <B>If you don't need return value use {@link Inventory#equipItem(L2ItemInstance)} instead</B>
 	 * @param item : L2ItemInstance corresponding to the item
 	 * @return L2ItemInstance[] : list of alterations
 	 */
@@ -1361,7 +1353,7 @@ public abstract class Inventory extends ItemContainer
 			}
 			case L2Item.SLOT_R_HAND:
 			{
-				// dont care about arrows, listener will unequip them (hopefully)
+				// don't care about arrows, listener will unequip them (hopefully)
 				setPaperdollItem(PAPERDOLL_RHAND, item);
 				break;
 			}
@@ -1500,8 +1492,7 @@ public abstract class Inventory extends ItemContainer
 	}
 	
 	/**
-	 * Returns the totalWeight.
-	 * @return int
+	 * @return the totalWeight.
 	 */
 	public int getTotalWeight()
 	{
