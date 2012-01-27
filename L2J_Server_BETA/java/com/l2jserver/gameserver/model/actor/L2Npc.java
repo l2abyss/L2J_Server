@@ -1699,4 +1699,10 @@ public class L2Npc extends L2Character
 	{
 		_summoner = summoner;
 	}
+	
+	@Override
+	public boolean isNpc()
+	{
+		return true;
+	}
 }

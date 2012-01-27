@@ -15363,4 +15363,10 @@ public final class L2PcInstance extends L2Playable
 	{
 		_notMoveUntil = System.currentTimeMillis() + Config.PLAYER_MOVEMENT_BLOCK_TIME;
 	}
+	
+	@Override
+	public boolean isPlayer()
+	{
+		return true;
+	}
 }

@@ -1368,4 +1368,10 @@ public class L2PetInstance extends L2Summon
 	{
 		return Util.contains(_data.getFood(), itemId);
 	}
+	
+	@Override
+	public boolean isPet()
+	{
+		return true;
+	}
 }

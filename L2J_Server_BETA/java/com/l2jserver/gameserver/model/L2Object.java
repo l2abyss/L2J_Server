@@ -19,13 +19,21 @@ import com.l2jserver.gameserver.handler.ActionShiftHandler;
 import com.l2jserver.gameserver.handler.IActionHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.L2Playable;
+import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
@@ -704,5 +712,85 @@ public abstract class L2Object
 	public void sendPacket(SystemMessageId id)
 	{
 		// default implementation
+	}
+
+	/**
+	 * @return {@code true} if object is instance of {@link L2PcInstance}
+	 */
+	public boolean isPlayer()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of {@link L2Playable}
+	 */
+	public boolean isPlayable()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of {@link L2Summon}
+	 */
+	public boolean isSummon()
+	{
+		return false;
+	}
+
+	/**
+	 * @return {@code true} if object is instance of {@link L2PetInstance}
+	 */
+	public boolean isPet()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of {@link L2DoorInstance}
+	 */
+	public boolean isDoor()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of {@link L2Npc}
+	 */
+	public boolean isNpc()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of {@link L2Attackable}
+	 */
+	public boolean isL2Attackable()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of {@link L2MonsterInstance}
+	 */
+	public boolean isMonster()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of {@link L2TrapInstance}
+	 */
+	public boolean isTrap()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of {@link L2ItemInstance}
+	 */
+	public boolean isItem()
+	{
+		return false;
 	}
 }

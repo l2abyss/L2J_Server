@@ -336,4 +336,9 @@ public abstract class L2Playable extends L2Character
 	
 	public abstract void restoreEffects();
 	
+	@Override
+	public boolean isPlayable()
+	{
+		return true;
+	}
 }

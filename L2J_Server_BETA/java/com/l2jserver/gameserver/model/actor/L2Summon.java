@@ -941,4 +941,10 @@ public abstract class L2Summon extends L2Playable
 		if (getOwner() != null)
 			getOwner().sendPacket(id);
 	}
+	
+	@Override
+	public boolean isSummon()
+	{
+		return true;
+	}
 }

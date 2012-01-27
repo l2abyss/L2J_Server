@@ -742,4 +742,10 @@ public class L2DoorInstance extends L2Character
 		
 		activeChar.sendPacket(new StaticObject(this, false));
 	}
+	
+	@Override
+	public boolean isDoor()
+	{
+		return true;
+	}
 }

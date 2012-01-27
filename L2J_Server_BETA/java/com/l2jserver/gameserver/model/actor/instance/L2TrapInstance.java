@@ -247,4 +247,10 @@ public class L2TrapInstance extends L2Trap
 		
 		return true;
 	}
+	
+	@Override
+	public boolean isTrap()
+	{
+		return true;
+	}
 }

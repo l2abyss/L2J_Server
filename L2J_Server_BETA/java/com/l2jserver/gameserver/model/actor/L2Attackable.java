@@ -2461,4 +2461,10 @@ public class L2Attackable extends L2Npc
 	{
 		return _champion;
 	}
+	
+	@Override
+	public boolean isL2Attackable()
+	{
+		return true;
+	}
 }
