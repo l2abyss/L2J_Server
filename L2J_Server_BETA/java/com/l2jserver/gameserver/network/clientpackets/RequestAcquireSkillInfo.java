@@ -54,18 +54,17 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 	{
 		if ((_id <= 0) || (_level <= 0))
 		{
+			_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Invalid Id: " + _id + " or level: " + _level + "!");
 			return;
 		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		
 		if (activeChar == null)
 		{
 			return;
 		}
 		
 		final L2Npc trainer = activeChar.getLastFolkNPC();
-		
 		if (!(trainer instanceof L2NpcInstance))
 		{
 			return;
@@ -77,19 +76,25 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 		}
 		
 		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
-		
 		if (skill == null)
 		{
 			_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Skill Id: " + _id + " level: " + _level + " is undefined. " + RequestAcquireSkillInfo.class.getName() + " failed.");
 			return;
 		}
 		
+		// Hack check. Doesn't apply to all Skill Types
+		final int prevSkillLevel = activeChar.getSkillLevel(_id);
 		final SkillType skillType = SkillType.values()[_skillType];
-		
-		//Doesn't apply to all Skill Types
-		if (((skillType != SkillType.Transfer) && ((_level > 1) && (activeChar.getKnownSkill(_id) == null))) || ((activeChar.getKnownSkill(_id) != null) && (activeChar.getKnownSkill(_id).getLevel() != (_level - 1))))
+		if ((prevSkillLevel > 0) && !((skillType == SkillType.Transfer) || (skillType == SkillType.SubPledge)))
 		{
-			_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Player " + activeChar.getName() + " is requesting info for skill Id: " + _id + " level " + _level + " without knowing it's previous level!");
+			if (prevSkillLevel == _level)
+			{
+				_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Player " + activeChar.getName() + " is trequesting info for a skill that already knows, Id: " + _id + " level: " + _level + "!");
+			}
+			else if (prevSkillLevel != (_level - 1))
+			{
+				_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Player " + activeChar.getName() + " is requesting info for skill Id: " + _id + " level " + _level + " without knowing it's previous level!");
+			}
 		}
 		
 		switch (skillType)

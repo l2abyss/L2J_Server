@@ -96,27 +96,30 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 			return;
 		}
 		
-		final SkillType skillType = SkillType.values()[_skillType];
-		if ((activeChar.getSkillLevel(_id) >= _level) && (skillType != SkillType.SubPledge))
-		{
-			// Already knows the skill with this level
-			return;
-		}
-		
 		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
 		if (skill == null)
 		{
-			_log.warning("Player " + activeChar.getName() + " is trying to learn a null skill id: " + _id + " level: " + _level + "!");
+			_log.warning(RequestAcquireSkill.class.getSimpleName() + ": Player " + activeChar.getName() + " is trying to learn a null skill Id: " + _id + " level: " + _level + "!");
 			return;
 		}
 		
 		// Hack check. Doesn't apply to all Skill Types
-		if (((skillType != SkillType.Transfer) && ((_level > 1) && (activeChar.getKnownSkill(_id) == null))) || ((activeChar.getKnownSkill(_id) != null) && (activeChar.getKnownSkill(_id).getLevel() != (_level - 1))))
+		final int prevSkillLevel = activeChar.getSkillLevel(_id);
+		final SkillType skillType = SkillType.values()[_skillType];
+		if ((prevSkillLevel > 0) && !((skillType == SkillType.Transfer) || (skillType == SkillType.SubPledge)))
 		{
-			// The previous level skill has not been learned.
-			activeChar.sendPacket(SystemMessageId.PREVIOUS_LEVEL_SKILL_NOT_LEARNED);
-			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " without knowing it's previous level!", 0);
-			return;
+			if (prevSkillLevel == _level)
+			{
+				_log.warning("Player " + activeChar.getName() + " is trying to learn a skill that already knows, Id: " + _id + " level: " + _level + "!");
+				return;
+			}
+			else if (prevSkillLevel != (_level - 1))
+			{
+				// The previous level skill has not been learned.
+				activeChar.sendPacket(SystemMessageId.PREVIOUS_LEVEL_SKILL_NOT_LEARNED);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " without knowing it's previous level!", 0);
+				return;
+			}
 		}
 		
 		switch (skillType)
