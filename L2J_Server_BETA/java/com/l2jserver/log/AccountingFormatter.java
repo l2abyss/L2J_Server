@@ -58,6 +58,7 @@ public class AccountingFormatter extends Formatter
 					}
 					catch (Exception e)
 					{
+						
 					}
 					
 					switch (client.getState())
@@ -68,13 +69,11 @@ public class AccountingFormatter extends Formatter
 								StringUtil.append(output, client.getActiveChar().getName());
 								StringUtil.append(output, "(", String.valueOf(client.getActiveChar().getObjectId()), ") ");
 							}
-							break;
 						case AUTHED:
 							if (client.getAccountName() != null)
 							{
 								StringUtil.append(output, client.getAccountName(), " ");
 							}
-							break;
 						case CONNECTED:
 							if (address != null)
 							{
