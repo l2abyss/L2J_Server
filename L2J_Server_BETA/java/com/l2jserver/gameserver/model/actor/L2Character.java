@@ -5513,7 +5513,7 @@ public abstract class L2Character extends L2Object
 					
 					if (absorbPercent > 0)
 					{
-						int maxCanAbsorb = (int) (getMaxHp() - getCurrentHp());
+						int maxCanAbsorb = (int) (getMaxRecoverableHp() - getCurrentHp());
 						int absorbDamage = (int) (absorbPercent / 100. * damage);
 						
 						if (absorbDamage > maxCanAbsorb)
@@ -5528,7 +5528,7 @@ public abstract class L2Character extends L2Object
 					
 					if (absorbPercent > 0)
 					{
-						int maxCanAbsorb = (int) (getMaxMp() - getCurrentMp());
+						int maxCanAbsorb = (int) (getMaxRecoverableMp() - getCurrentMp());
 						int absorbDamage = (int) (absorbPercent / 100. * damage);
 						
 						if (absorbDamage > maxCanAbsorb)
