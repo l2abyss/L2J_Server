@@ -6604,63 +6604,69 @@ public final class L2PcInstance extends L2Playable
 	}
 	/**
 	 * Disarm the player's weapon.
-	 * @return true if the player was disarmed, false otherwise.
+	 * @return {@code true} if the player was disarmed or doesn't have a weapon to disarm, {@code false} otherwise.
 	 */
 	public boolean disarmWeapons()
 	{
-		// Don't allow disarming a cursed weapon
-		if (isCursedWeaponEquipped()) 
-			return false;
-		
-		// Don't allow disarming a Combat Flag or Territory Ward
-		else if (isCombatFlagEquipped()) 
-			return false;
-		
-		// Unequip the weapon
-		L2ItemInstance wpn = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+		// If there is no weapon to disarm then return true.
+		final L2ItemInstance wpn = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
 		if (wpn == null)
 		{
-			return false;
+			return true;
 		}
-		else if (wpn.getWeaponItem().isForceEquip())
+		
+		// Don't allow disarming a cursed weapon
+		if (isCursedWeaponEquipped())
 		{
 			return false;
 		}
-		else
+		
+		// Don't allow disarming a Combat Flag or Territory Ward.
+		if (isCombatFlagEquipped())
 		{
-			L2ItemInstance[] unequiped = getInventory().unEquipItemInBodySlotAndRecord(wpn.getItem().getBodyPart());
-			InventoryUpdate iu = new InventoryUpdate();
-			for (L2ItemInstance itm: unequiped)
-				iu.addModifiedItem(itm);
-			sendPacket(iu);
-			
-			abortAttack();
-			broadcastUserInfo();
-			
-			// this can be 0 if the user pressed the right mousebutton twice very fast
-			if (unequiped.length > 0)
+			return false;
+		}
+		
+		// Don't allow disarming if the weapon is force equip.
+		if (wpn.getWeaponItem().isForceEquip())
+		{
+			return false;
+		}
+		
+		final L2ItemInstance[] unequiped = getInventory().unEquipItemInBodySlotAndRecord(wpn.getItem().getBodyPart());
+		final InventoryUpdate iu = new InventoryUpdate();
+		for (L2ItemInstance itm: unequiped)
+		{
+			iu.addModifiedItem(itm);
+		}
+		
+		sendPacket(iu);
+		abortAttack();
+		broadcastUserInfo();
+		
+		// This can be 0 if the user pressed the right mousebutton twice very fast.
+		if (unequiped.length > 0)
+		{
+			final SystemMessage sm;
+			if (unequiped[0].getEnchantLevel() > 0)
 			{
-				SystemMessage sm = null;
-				if (unequiped[0].getEnchantLevel() > 0)
-				{
-					sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-					sm.addNumber(unequiped[0].getEnchantLevel());
-					sm.addItemName(unequiped[0]);
-				}
-				else
-				{
-					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
-					sm.addItemName(unequiped[0]);
-				}
-				sendPacket(sm);
+				sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+				sm.addNumber(unequiped[0].getEnchantLevel());
+				sm.addItemName(unequiped[0]);
 			}
+			else
+			{
+				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
+				sm.addItemName(unequiped[0]);
+			}
+			sendPacket(sm);
 		}
 		return true;
 	}
 	
 	/**
-	 * Disarm the player's shield.<BR><BR>
-	 * @return 
+	 * Disarm the player's shield.
+	 * @return {@code true}.
 	 */
 	public boolean disarmShield()
 	{
