@@ -36,6 +36,7 @@ import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2AttackableAI;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
+import com.l2jserver.gameserver.datatables.AccessLevels;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -51,6 +52,7 @@ import com.l2jserver.gameserver.model.ChanceSkillList;
 import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.FusionSkill;
 import com.l2jserver.gameserver.model.IChanceSkillTrigger;
+import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
@@ -339,6 +341,12 @@ public abstract class L2Character extends L2Object
 	public boolean isGM()
 	{
 		return false;
+	}
+	
+	// Overrided in L2PcInstance
+	public L2AccessLevel getAccessLevel()
+	{
+		return null;
 	}
 	
 	// =========================================================

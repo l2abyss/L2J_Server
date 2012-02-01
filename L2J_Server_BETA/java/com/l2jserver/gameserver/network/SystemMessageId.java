@@ -13542,9 +13542,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2336<br>
-	 * Message: CP Siphon!
+	 * Message: Half-Kill!
 	 */
-	public static final SystemMessageId CP_SIPHON;
+	public static final SystemMessageId HALF_KILL;
 	
 	/**
 	 * ID: 2337<br>
@@ -17143,7 +17143,7 @@ public final class SystemMessageId
 		NOT_ENOUGH_FAME_POINTS = new SystemMessageId(2327);
 		YOU_CANNOT_RECEIVE_THE_VITAMIN_ITEM = new SystemMessageId(2333);
 		THERE_ARE_NO_MORE_VITAMIN_ITEMS_TO_BE_FOUND = new SystemMessageId(2335);
-		CP_SIPHON = new SystemMessageId(2336);
+		HALF_KILL = new SystemMessageId(2336);
 		CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL = new SystemMessageId(2337);
 		YOU_CANNOT_USE_MY_TELEPORTS_DURING_A_BATTLE = new SystemMessageId(2348);
 		YOU_CANNOT_USE_MY_TELEPORTS_WHILE_PARTICIPATING = new SystemMessageId(2349);
