@@ -342,17 +342,17 @@ public abstract class L2Character extends L2Object
 		return false;
 	}
 	
-	// Overrided in L2PcInstance
+	/**
+	 * Overridden in L2PcInstance.
+	 * @return the access level.
+	 */
 	public L2AccessLevel getAccessLevel()
 	{
 		return null;
 	}
 	
-	// =========================================================
-	// Constructor
 	/**
-	 * Constructor of L2Character.<BR><BR>
-	 *
+	 * Constructor of L2Character.<br>
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * Each L2Character owns generic and static properties (ex : all Keltir have the same number of HP...).
 	 * All of those properties are stored in a different template for each type of L2Character.
@@ -362,7 +362,7 @@ public abstract class L2Character extends L2Object
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
 	 * <li>Set the _template of the L2Character </li>
-	 * <li>Set _overloaded to false (the charcater can take more items)</li><BR><BR>
+	 * <li>Set _overloaded to false (the character can take more items)</li><BR><BR>
 	 *
 	 * <li>If L2Character is a L2NPCInstance, copy skills from template to object</li>
 	 * <li>If L2Character is a L2NPCInstance, link _calculators to NPC_STD_CALCULATOR</li><BR><BR>
@@ -390,7 +390,7 @@ public abstract class L2Character extends L2Object
 		}
 		else if (template != null && this instanceof L2Npc)
 		{
-			// Copy the Standard Calcultors of the L2NPCInstance in _calculators
+			// Copy the Standard Calculators of the L2NPCInstance in _calculators
 			_calculators = NPC_STD_CALCULATOR;
 			
 			// Copy the skills of the L2NPCInstance from its template to the L2Character Instance
@@ -750,7 +750,7 @@ public abstract class L2Character extends L2Object
 	 * Launch a physical attack against a target (Simple, Bow, Pole or Dual).<BR><BR>
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Get the active weapon (always equiped in the right hand) </li><BR><BR>
+	 * <li>Get the active weapon (always equipped in the right hand) </li><BR><BR>
 	 * <li>If weapon is a bow, check for arrows, MP and bow re-use delay (if necessary, equip the L2PcInstance with arrows in left hand)</li>
 	 * <li>If weapon is a bow, consume MP and set the new period of bow non re-use </li><BR><BR>
 	 * <li>Get the Attack Speed of the L2Character (delay (in milliseconds) before next attack) </li>
@@ -853,7 +853,7 @@ public abstract class L2Character extends L2Object
 		// Get the active weapon instance (always equipped in the right hand)
 		L2ItemInstance weaponInst = getActiveWeaponInstance();
 		
-		// Get the active weapon item corresponding to the active weapon instance (always equiped in the right hand)
+		// Get the active weapon item corresponding to the active weapon instance (always equipped in the right hand)
 		L2Weapon weaponItem = getActiveWeaponItem();
 		
 		// GeoData Los Check here (or dz > 1000)
@@ -1070,7 +1070,7 @@ public abstract class L2Character extends L2Object
 				else if (player.isHero())
 				{
 					if (target instanceof L2PcInstance && ((L2PcInstance) target).isCursedWeaponEquipped())
-						// If a cursed weapon is hitted by a Hero, Cp is reduced to 0
+						// If a cursed weapon is hit by a Hero, Cp is reduced to 0
 						target.setCurrentCp(0);
 				}
 			}
@@ -1535,10 +1535,10 @@ public abstract class L2Character extends L2Object
 	 * Manage the casting task (casting and interrupt time, re-use delay...) and display the casting bar and animation on client.<BR><BR>
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Verify the possibilty of the the cast : skill is a spell, caster isn't muted... </li>
+	 * <li>Verify the possibility of the the cast : skill is a spell, caster isn't muted... </li>
 	 * <li>Get the list of all targets (ex : area effects) and define the L2Charcater targeted (its stats will be used in calculation)</li>
 	 * <li>Calculate the casting time (base + modifier of MAtkSpd), interrupt time and re-use delay</li>
-	 * <li>Send a Server->Client packet MagicSkillUser (to diplay casting animation), a packet SetupGauge (to display casting bar) and a system message </li>
+	 * <li>Send a Server->Client packet MagicSkillUser (to display casting animation), a packet SetupGauge (to display casting bar) and a system message </li>
 	 * <li>Disable all skills during the casting time (create a task EnableAllSkills)</li>
 	 * <li>Disable the skill during the re-use delay (create a task EnableSkill)</li>
 	 * <li>Create a task MagicUseTask (that will call method onMagicUseTimer) to launch the Magic Skill at the end of the casting time</li><BR><BR>
@@ -2050,8 +2050,6 @@ public abstract class L2Character extends L2Object
 	 * Check if casting of skill is possible
 	 * @param skill
 	 * @return True if casting is possible
-	 * 
-	 * 
 	 */
 	protected boolean checkDoCastConditions(L2Skill skill)
 	{
@@ -2868,7 +2866,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Task lauching the function onHitTimer().<BR><BR>
+	 * Task launching the function onHitTimer().<BR><BR>
 	 *
 	 * <B><U> Actions</U> :</B><BR><BR>
 	 * <li>If the attacker/target is dead or use fake death, notify the AI with EVT_CANCEL and send a Server->Client packet ActionFailed (if attacker is a L2PcInstance)</li>
@@ -2910,7 +2908,7 @@ public abstract class L2Character extends L2Object
 		}
 	}
 	
-	/** Task lauching the magic skill phases */
+	/** Task launching the magic skill phases */
 	class MagicUseTask implements Runnable
 	{
 		L2Object[] targets;
@@ -3020,7 +3018,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	// =========================================================
-	/** Task lauching the magic skill phases */
+	/** Task launching the magic skill phases */
 	class FlyToLocationTask implements Runnable
 	{
 		private final L2Object _tgt;
@@ -3218,7 +3216,7 @@ public abstract class L2Character extends L2Object
 	 */
 	public final void startSleeping()
 	{
-		/* Aborts any attacks/casts if sleeped */
+		/* Aborts any attacks/casts if asleep */
 		abortAttack();
 		abortCast();
 		stopMove(null);
@@ -3592,7 +3590,7 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Updates Effect Icons for this character(palyer/summon) and his party if any<BR>
+	 * Updates Effect Icons for this character(player/summon) and his party if any<BR>
 	 * 
 	 * Overridden in:<BR>
 	 * L2PcInstance<BR>

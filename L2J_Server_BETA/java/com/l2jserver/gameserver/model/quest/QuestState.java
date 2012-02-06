@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.quest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +48,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TutorialCloseHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialEnableClientEvent;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
+import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowQuestionMark;
 import com.l2jserver.util.Rnd;
 
@@ -71,6 +73,16 @@ public final class QuestState
 	
 	/** boolean flag letting QuestStateManager know to exit quest when cleaning up */
 	private boolean _isExitQuestOnCleanUp = false;
+	
+	/**
+	 * This enumerate represent the different quest types.
+	 */
+	public static enum QuestType
+	{
+		REPEATABLE,
+		ONE_TIME,
+		DAILY
+	}
 	
 	/**
 	 * Constructor of the QuestState : save the quest in the list of quests of the player.<BR/><BR/>
@@ -1096,6 +1108,30 @@ public final class QuestState
 	}
 	
 	/**
+	 * @param type the type of the quest, {@link com.l2jserver.gameserver.model.quest.QuestState.QuestType}.
+	 * @return this quest state.
+	 */
+	public QuestState exitQuest(QuestType type)
+	{
+		switch (type)
+		{
+			case REPEATABLE:
+			case ONE_TIME:
+			{
+				exitQuest(type == QuestType.REPEATABLE);
+				break;
+			}
+			case DAILY:
+			{
+				exitQuest(false);
+				setRestartTime();
+				break;
+			}
+		}
+		return this;
+	}
+	
+	/**
 	 * Destroy element used by quest when quest is exited
 	 * @param repeatable
 	 * @return QuestState
@@ -1176,5 +1212,31 @@ public final class QuestState
 	public void dropItem(L2MonsterInstance npc, L2PcInstance player, int itemId, int count)
 	{
 		npc.dropItem(player, itemId, count);
+	}
+	
+	/**
+	 * Set the restart time for the daily quests.<br>
+	 * The time is hardcoded at {@link Quest#getResetHour()} hours, {@link Quest#getResetMinutes()} minutes of the following day.<br>
+	 * It can be overridden in scripts (quests).
+	 */
+	public void setRestartTime()
+	{
+		final Calendar reDo = Calendar.getInstance();
+		if (reDo.get(Calendar.HOUR_OF_DAY) >= getQuest().getResetHour())
+		{
+			reDo.add(Calendar.DATE, 1);
+		}
+		reDo.set(Calendar.HOUR_OF_DAY, getQuest().getResetHour());
+		reDo.set(Calendar.MINUTE, getQuest().getResetMinutes());
+		set("restartTime", String.valueOf(reDo.getTimeInMillis()));
+	}
+	
+	/**
+	 * @return {@code true} if the quest is available, for example daily quests, {@code false} otherwise.
+	 */
+	public boolean isNowAvailable()
+	{
+		final String val = get("restartTime");
+		return ((val == null) || !Util.isDigit(val)) || (Long.parseLong(val) <= System.currentTimeMillis());
 	}
 }
