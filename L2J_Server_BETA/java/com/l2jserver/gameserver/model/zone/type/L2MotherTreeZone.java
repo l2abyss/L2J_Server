@@ -42,19 +42,19 @@ public class L2MotherTreeZone extends L2ZoneType
 	{
 		if (name.equals("enterMsgId"))
 		{
-			_enterMsg = Integer.valueOf(value);
+			_enterMsg = Integer.parseInt(value);
 		}
 		else if (name.equals("leaveMsgId"))
 		{
-			_leaveMsg = Integer.valueOf(value);
+			_leaveMsg = Integer.parseInt(value);
 		}
 		else if (name.equals("MpRegenBonus"))
 		{
-			_mpRegen = Integer.valueOf(value);
+			_mpRegen = Integer.parseInt(value);
 		}
 		else if (name.equals("HpRegenBonus"))
 		{
-			_hpRegen = Integer.valueOf(value);
+			_hpRegen = Integer.parseInt(value);
 		}
 		else
 			super.setParameter(name, value);

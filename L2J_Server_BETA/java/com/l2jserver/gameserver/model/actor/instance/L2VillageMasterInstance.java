@@ -126,7 +126,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			if (cmdParams.isEmpty() || cmdParams2.isEmpty())
 				return;
 			
-			renameSubPledge(player, Integer.valueOf(cmdParams), cmdParams2);
+			renameSubPledge(player, Integer.parseInt(cmdParams), cmdParams2);
 		}
 		else if (actualCommand.equalsIgnoreCase("create_royal"))
 		{

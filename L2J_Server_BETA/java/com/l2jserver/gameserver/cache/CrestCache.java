@@ -102,7 +102,7 @@ public class CrestCache
 					
 					if (file.getName().startsWith("Crest_Large_"))
 					{
-						crestId = Integer.valueOf(file.getName().substring(12, file.getName().length() - 4));
+						crestId = Integer.parseInt(file.getName().substring(12, file.getName().length() - 4));
 						if(Config.CLEAR_CREST_CACHE)
 						{
 							for(final L2Clan clan : clans)
@@ -121,7 +121,7 @@ public class CrestCache
 					}
 					else if (file.getName().startsWith("Crest_"))
 					{
-						crestId = Integer.valueOf(file.getName().substring(6, file.getName().length() - 4));
+						crestId = Integer.parseInt(file.getName().substring(6, file.getName().length() - 4));
 						if(Config.CLEAR_CREST_CACHE)
 						{
 							for(final L2Clan clan : clans)
@@ -140,7 +140,7 @@ public class CrestCache
 					}
 					else if (file.getName().startsWith("AllyCrest_"))
 					{
-						crestId = Integer.valueOf(file.getName().substring(10, file.getName().length() - 4));
+						crestId = Integer.parseInt(file.getName().substring(10, file.getName().length() - 4));
 						if(Config.CLEAR_CREST_CACHE)
 						{
 							for(final L2Clan clan : clans)

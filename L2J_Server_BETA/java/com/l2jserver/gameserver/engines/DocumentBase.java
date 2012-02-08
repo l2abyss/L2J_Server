@@ -501,52 +501,52 @@ public abstract class DocumentBase
 			}
 			else if ("resting".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.RESTING, val));
 			}
 			else if ("flying".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.FLYING, val));
 			}
 			else if ("moving".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.MOVING, val));
 			}
 			else if ("running".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.RUNNING, val));
 			}
 			else if ("standing".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.STANDING, val));
 			}
 			else if ("behind".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.BEHIND, val));
 			}
 			else if ("front".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.FRONT, val));
 			}
 			else if ("chaotic".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.CHAOTIC, val));
 			}
 			else if ("olympiad".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerState(PlayerState.OLYMPIAD, val));
 			}
 			else if ("ishero".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerIsHero(val));
 			}
 			else if ("transformationId".equalsIgnoreCase(a.getNodeName()))
@@ -619,12 +619,12 @@ public abstract class DocumentBase
 			}
 			else if ("isClanLeader".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerIsClanLeader(val));
 			}
 			else if ("onTvTEvent".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerTvTEvent(val));
 			}
 			else if ("pledgeClass".equalsIgnoreCase(a.getNodeName()))
@@ -660,17 +660,17 @@ public abstract class DocumentBase
 			}
 			else if ("flyMounted".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerFlyMounted(val));
 			}
 			else if ("vehicleMounted".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerVehicleMounted(val));
 			}
 			else if ("landingZone".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerLandingZone(val));
 			}
 			else if ("active_effect_id".equalsIgnoreCase(a.getNodeName()))
@@ -710,7 +710,7 @@ public abstract class DocumentBase
 			}
 			else if ("subclass".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerSubclass(val));
 			}
 			else if ("instanceId".equalsIgnoreCase(a.getNodeName()))
@@ -731,7 +731,7 @@ public abstract class DocumentBase
 			}
 			else if ("cloakStatus".equalsIgnoreCase(a.getNodeName()))
 			{
-				int val = Integer.valueOf(a.getNodeValue());
+				int val = Integer.parseInt(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionPlayerCloakStatus(val));
 			}
 			else if ("hasPet".equalsIgnoreCase(a.getNodeName()))
@@ -770,7 +770,7 @@ public abstract class DocumentBase
 			}
 			else if ("canSweep".equalsIgnoreCase(a.getNodeName()))
 			{
-				cond = joinAnd(cond, new ConditionPlayerCanSweep(Boolean.valueOf(a.getNodeValue())));
+				cond = joinAnd(cond, new ConditionPlayerCanSweep(Boolean.parseBoolean(a.getNodeValue())));
 			}
 			else if ("insideZoneId".equalsIgnoreCase(a.getNodeName()))
 			{
@@ -801,7 +801,7 @@ public abstract class DocumentBase
 			Node a = attrs.item(i);
 			if ("aggro".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionTargetAggro(val));
 			}
 			else if ("siegezone".equalsIgnoreCase(a.getNodeName()))
@@ -998,7 +998,7 @@ public abstract class DocumentBase
 			}
 			else if ("weaponChange".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionChangeWeapon(val));
 			}
 		}
@@ -1015,12 +1015,12 @@ public abstract class DocumentBase
 			Node a = attrs.item(i);
 			if ("skill".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionWithSkill(val));
 			}
 			if ("night".equalsIgnoreCase(a.getNodeName()))
 			{
-				boolean val = Boolean.valueOf(a.getNodeValue());
+				boolean val = Boolean.parseBoolean(a.getNodeValue());
 				cond = joinAnd(cond, new ConditionGameTime(CheckGameTime.NIGHT, val));
 			}
 			if ("chance".equalsIgnoreCase(a.getNodeName()))

@@ -1559,7 +1559,7 @@ public final class Config
 							{
 								try
 								{
-									SKILL_REUSE_LIST.put(Integer.valueOf(skillSplit[0]), Integer.valueOf(skillSplit[1]));
+									SKILL_REUSE_LIST.put(Integer.parseInt(skillSplit[0]), Integer.parseInt(skillSplit[1]));
 								}
 								catch (NumberFormatException nfe)
 								{
@@ -2028,9 +2028,9 @@ public final class Config
 					ALT_LOTTERY_4_NUMBER_RATE = Float.parseFloat(General.getProperty("AltLottery4NumberRate","0.2"));
 					ALT_LOTTERY_3_NUMBER_RATE = Float.parseFloat(General.getProperty("AltLottery3NumberRate","0.2"));
 					ALT_LOTTERY_2_AND_1_NUMBER_PRIZE = Long.parseLong(General.getProperty("AltLottery2and1NumberPrize","200"));
-					ALT_ITEM_AUCTION_ENABLED = Boolean.valueOf(General.getProperty("AltItemAuctionEnabled", "True"));
-					ALT_ITEM_AUCTION_EXPIRED_AFTER = Integer.valueOf(General.getProperty("AltItemAuctionExpiredAfter", "14"));
-					ALT_ITEM_AUCTION_TIME_EXTENDS_ON_BID = 1000 * (long)Integer.valueOf(General.getProperty("AltItemAuctionTimeExtendsOnBid", "0"));
+					ALT_ITEM_AUCTION_ENABLED = Boolean.parseBoolean(General.getProperty("AltItemAuctionEnabled", "True"));
+					ALT_ITEM_AUCTION_EXPIRED_AFTER = Integer.parseInt(General.getProperty("AltItemAuctionExpiredAfter", "14"));
+					ALT_ITEM_AUCTION_TIME_EXTENDS_ON_BID = 1000 * (long)Integer.parseInt(General.getProperty("AltItemAuctionTimeExtendsOnBid", "0"));
 					FS_TIME_ATTACK = Integer.parseInt(General.getProperty("TimeOfAttack", "50"));
 					FS_TIME_COOLDOWN = Integer.parseInt(General.getProperty("TimeOfCoolDown", "5"));
 					FS_TIME_ENTRY = Integer.parseInt(General.getProperty("TimeOfEntry", "3"));
@@ -2064,23 +2064,23 @@ public final class Config
 					JAIL_IS_PVP = Boolean.parseBoolean(General.getProperty("JailIsPvp", "False"));
 					JAIL_DISABLE_CHAT = Boolean.parseBoolean(General.getProperty("JailDisableChat", "True"));
 					JAIL_DISABLE_TRANSACTION = Boolean.parseBoolean(General.getProperty("JailDisableTransaction", "False"));
-					CUSTOM_SPAWNLIST_TABLE = Boolean.valueOf(General.getProperty("CustomSpawnlistTable", "false"));
-					SAVE_GMSPAWN_ON_CUSTOM = Boolean.valueOf(General.getProperty("SaveGmSpawnOnCustom", "false"));
-					CUSTOM_NPC_TABLE = Boolean.valueOf(General.getProperty("CustomNpcTable", "false"));
-					CUSTOM_NPC_SKILLS_TABLE = Boolean.valueOf(General.getProperty("CustomNpcSkillsTable", "false"));
-					CUSTOM_ARMORSETS_TABLE = Boolean.valueOf(General.getProperty("CustomArmorSetsTable", "false"));
-					CUSTOM_TELEPORT_TABLE = Boolean.valueOf(General.getProperty("CustomTeleportTable", "false"));
-					CUSTOM_DROPLIST_TABLE = Boolean.valueOf(General.getProperty("CustomDroplistTable", "false"));
-					CUSTOM_MERCHANT_TABLES = Boolean.valueOf(General.getProperty("CustomMerchantTables", "false"));
-					CUSTOM_NPCBUFFER_TABLES = Boolean.valueOf(General.getProperty("CustomNpcBufferTables", "false"));
-					CUSTOM_SKILLS_LOAD = Boolean.valueOf(General.getProperty("CustomSkillsLoad", "false"));
-					CUSTOM_ITEMS_LOAD = Boolean.valueOf(General.getProperty("CustomItemsLoad", "false"));
-					CUSTOM_MULTISELL_LOAD = Boolean.valueOf(General.getProperty("CustomMultisellLoad", "false"));
+					CUSTOM_SPAWNLIST_TABLE = Boolean.parseBoolean(General.getProperty("CustomSpawnlistTable", "false"));
+					SAVE_GMSPAWN_ON_CUSTOM = Boolean.parseBoolean(General.getProperty("SaveGmSpawnOnCustom", "false"));
+					CUSTOM_NPC_TABLE = Boolean.parseBoolean(General.getProperty("CustomNpcTable", "false"));
+					CUSTOM_NPC_SKILLS_TABLE = Boolean.parseBoolean(General.getProperty("CustomNpcSkillsTable", "false"));
+					CUSTOM_ARMORSETS_TABLE = Boolean.parseBoolean(General.getProperty("CustomArmorSetsTable", "false"));
+					CUSTOM_TELEPORT_TABLE = Boolean.parseBoolean(General.getProperty("CustomTeleportTable", "false"));
+					CUSTOM_DROPLIST_TABLE = Boolean.parseBoolean(General.getProperty("CustomDroplistTable", "false"));
+					CUSTOM_MERCHANT_TABLES = Boolean.parseBoolean(General.getProperty("CustomMerchantTables", "false"));
+					CUSTOM_NPCBUFFER_TABLES = Boolean.parseBoolean(General.getProperty("CustomNpcBufferTables", "false"));
+					CUSTOM_SKILLS_LOAD = Boolean.parseBoolean(General.getProperty("CustomSkillsLoad", "false"));
+					CUSTOM_ITEMS_LOAD = Boolean.parseBoolean(General.getProperty("CustomItemsLoad", "false"));
+					CUSTOM_MULTISELL_LOAD = Boolean.parseBoolean(General.getProperty("CustomMultisellLoad", "false"));
 					ALT_BIRTHDAY_GIFT = Integer.parseInt(General.getProperty("AltBirthdayGift", "22187"));
 					ALT_BIRTHDAY_MAIL_SUBJECT = General.getProperty("AltBirthdayMailSubject", "Happy Birthday!");
 					ALT_BIRTHDAY_MAIL_TEXT = General.getProperty("AltBirthdayMailText", "Hello Adventurer!! Seeing as you're one year older now, I thought I would send you some birthday cheer :) Please find your birthday pack attached. May these gifts bring you joy and happiness on this very special day.\n\nSincerely, Alegria");
-					ENABLE_BLOCK_CHECKER_EVENT = Boolean.valueOf(General.getProperty("EnableBlockCheckerEvent", "false"));
-					MIN_BLOCK_CHECKER_TEAM_MEMBERS = Integer.valueOf(General.getProperty("BlockCheckerMinTeamMembers", "2"));
+					ENABLE_BLOCK_CHECKER_EVENT = Boolean.parseBoolean(General.getProperty("EnableBlockCheckerEvent", "false"));
+					MIN_BLOCK_CHECKER_TEAM_MEMBERS = Integer.parseInt(General.getProperty("BlockCheckerMinTeamMembers", "2"));
 					if(MIN_BLOCK_CHECKER_TEAM_MEMBERS < 1)
 						MIN_BLOCK_CHECKER_TEAM_MEMBERS = 1;
 					else if(MIN_BLOCK_CHECKER_TEAM_MEMBERS > 6)
@@ -2166,7 +2166,7 @@ public final class Config
 						
 						try
 						{
-							MINIONS_RESPAWN_TIME.put(Integer.valueOf(propSplit[0]), Integer.valueOf(propSplit[1]));
+							MINIONS_RESPAWN_TIME.put(Integer.parseInt(propSplit[0]), Integer.parseInt(propSplit[1]));
 						}
 						catch (NumberFormatException nfe)
 						{
@@ -2377,8 +2377,8 @@ public final class Config
 					L2JMOD_WEDDING_FORMALWEAR = Boolean.parseBoolean(L2JModSettings.getProperty("WeddingFormalWear", "True"));
 					L2JMOD_WEDDING_DIVORCE_COSTS = Integer.parseInt(L2JModSettings.getProperty("WeddingDivorceCosts", "20"));
 					
-					L2JMOD_ENABLE_WAREHOUSESORTING_CLAN = Boolean.valueOf(L2JModSettings.getProperty("EnableWarehouseSortingClan", "False"));
-					L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE = Boolean.valueOf(L2JModSettings.getProperty("EnableWarehouseSortingPrivate", "False"));
+					L2JMOD_ENABLE_WAREHOUSESORTING_CLAN = Boolean.parseBoolean(L2JModSettings.getProperty("EnableWarehouseSortingClan", "False"));
+					L2JMOD_ENABLE_WAREHOUSESORTING_PRIVATE = Boolean.parseBoolean(L2JModSettings.getProperty("EnableWarehouseSortingPrivate", "False"));
 					
 					if (TVT_EVENT_PARTICIPATION_NPC_ID == 0)
 					{
