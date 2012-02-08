@@ -305,8 +305,7 @@ public abstract class IdFactory
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			Statement statement = con.createStatement();
-			statement.executeUpdate("DELETE FROM mods_wedding WHERE player1Id NOT IN (SELECT charId FROM characters)");
-			statement.executeUpdate("DELETE FROM mods_wedding WHERE player2Id NOT IN (SELECT charId FROM characters)");
+			statement.executeUpdate("DELETE FROM mods_wedding WHERE (player1Id OR player2Id) NOT IN (SELECT charId FROM characters)");
 			statement.close();
 			
 			_log.info("Cleaned up invalid Weddings.");
