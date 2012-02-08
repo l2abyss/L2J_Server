@@ -19,15 +19,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 
-
 /**
  * This class ...
- * 
  * @version $Revision: 1.3.2.1.2.7 $ $Date: 2005/04/11 10:06:12 $
  */
 public abstract class IdFactory
@@ -35,7 +34,8 @@ public abstract class IdFactory
 	private static Logger _log = Logger.getLogger(IdFactory.class.getName());
 	
 	@Deprecated
-	protected static final String[] ID_UPDATES = {
+	protected static final String[] ID_UPDATES =
+	{
 		"UPDATE items                 SET owner_id = ?    WHERE owner_id = ?",
 		"UPDATE items                 SET object_id = ?   WHERE object_id = ?",
 		"UPDATE character_quests      SET charId = ?     WHERE charId = ?",
@@ -71,9 +71,11 @@ public abstract class IdFactory
 		"UPDATE olympiad_nobles        SET charId = ?     WHERE charId = ?",
 		"UPDATE character_offline_trade SET charId = ?     WHERE charId = ?",
 		"UPDATE character_offline_trade_items SET charId = ? WHERE charId = ?",
-	"UPDATE clanhall             SET ownerId = ?       WHERE ownerId = ?" };
+		"UPDATE clanhall             SET ownerId = ?       WHERE ownerId = ?"
+	};
 	
-	protected static final String[] ID_CHECKS = {
+	protected static final String[] ID_CHECKS =
+	{
 		"SELECT owner_id    FROM items                 WHERE object_id >= ?   AND object_id < ?",
 		"SELECT object_id   FROM items                 WHERE object_id >= ?   AND object_id < ?",
 		"SELECT charId     FROM character_quests      WHERE charId >= ?     AND charId < ?",
@@ -98,11 +100,13 @@ public abstract class IdFactory
 		"SELECT ally_id     FROM clan_data             WHERE ally_id >= ?     AND ally_id < ?",
 		"SELECT leader_id   FROM clan_data             WHERE leader_id >= ?   AND leader_id < ?",
 		"SELECT item_obj_id FROM pets                  WHERE item_obj_id >= ? AND item_obj_id < ?",
-	"SELECT object_id   FROM itemsonground        WHERE object_id >= ?   AND object_id < ?" };
+		"SELECT object_id   FROM itemsonground        WHERE object_id >= ?   AND object_id < ?"
+	};
 	
-	private static final String[] TIMESTAMPS_CLEAN = {
-		"DELETE FROM character_instance_time WHERE time <= ?",
-	"DELETE FROM character_skills_save WHERE restore_type = 1 AND systime <= ?"	};
+	private static final String[] TIMESTAMPS_CLEAN =
+	{
+		"DELETE FROM character_instance_time WHERE time <= ?", "DELETE FROM character_skills_save WHERE restore_type = 1 AND systime <= ?"
+	};
 	
 	protected boolean _initialized;
 	
@@ -115,10 +119,14 @@ public abstract class IdFactory
 	protected IdFactory()
 	{
 		setAllCharacterOffline();
-		
 		if (Config.DATABASE_CLEAN_UP)
+		{
+			if (Config.L2JMOD_ALLOW_WEDDING)
+			{
+				cleanInvalidWeddings();
+			}
 			cleanUpDB();
-		
+		}
 		cleanUpTimeStamps();
 	}
 	
@@ -128,8 +136,8 @@ public abstract class IdFactory
 		{
 			case Compaction:
 				throw new UnsupportedOperationException("Compaction IdFactory is disabled.");
-				//_instance = new CompactionIDFactory();
-				//break;
+				// _instance = new CompactionIDFactory();
+				// break;
 			case BitSet:
 				_instance = new BitSetIDFactory();
 				break;
@@ -159,6 +167,7 @@ public abstract class IdFactory
 		}
 		catch (SQLException e)
 		{
+			_log.log(Level.WARNING, "Could not update characters online status: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -276,11 +285,35 @@ public abstract class IdFactory
 			stmt.executeUpdate("UPDATE clanhall SET ownerId=0, paidUntil=0, paid=0 WHERE clanhall.ownerId NOT IN (SELECT clan_id FROM clan_data);");
 			stmt.executeUpdate("UPDATE fort SET owner=0 WHERE owner NOT IN (SELECT clan_id FROM clan_data);");
 			
-			_log.info("Cleaned " + cleanCount + " elements from database in "+((System.currentTimeMillis()-cleanupStart)/1000)+" s");
+			_log.info("Cleaned " + cleanCount + " elements from database in " + ((System.currentTimeMillis() - cleanupStart) / 1000) + " s");
 			stmt.close();
 		}
 		catch (SQLException e)
 		{
+			_log.log(Level.WARNING, "Could not clean up database: " + e.getMessage(), e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
+	}
+	
+	private void cleanInvalidWeddings()
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			Statement statement = con.createStatement();
+			statement.executeUpdate("DELETE FROM mods_wedding WHERE player1Id NOT IN (SELECT charId FROM characters)");
+			statement.executeUpdate("DELETE FROM mods_wedding WHERE player2Id NOT IN (SELECT charId FROM characters)");
+			statement.close();
+			
+			_log.info("Cleaned up invalid Weddings.");
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.WARNING, "Could not clean up invalid Weddings: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -317,7 +350,7 @@ public abstract class IdFactory
 	
 	/**
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 * @throws SQLException
 	 */
 	protected final int[] extractUsedObjectIDTable() throws Exception
@@ -403,7 +436,6 @@ public abstract class IdFactory
 	
 	/**
 	 * return a used Object ID back to the pool
-	 * 
 	 * @param id
 	 */
 	public abstract void releaseId(int id);
