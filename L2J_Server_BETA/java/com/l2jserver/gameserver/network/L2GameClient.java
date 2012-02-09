@@ -549,6 +549,15 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			statement.setInt(1, objid);
 			statement.execute();
 			statement.close();
+			
+			if (Config.L2JMOD_ALLOW_WEDDING)
+			{
+				statement = con.prepareStatement("DELETE FROM mods_wedding WHERE player1Id = ? OR player2Id = ?");
+				statement.setInt(1, objid);
+				statement.setInt(2, objid);
+				statement.execute();
+				statement.close();
+			}
 		}
 		catch (Exception e)
 		{
