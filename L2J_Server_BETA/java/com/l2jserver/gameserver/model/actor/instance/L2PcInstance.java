@@ -748,8 +748,6 @@ public final class L2PcInstance extends L2Playable
 	
 	private final BlockList _blockList = new BlockList(this);
 	
-	private int _team = 0;
-	
 	/** lvl of alliance with ketra orcs or varka silenos, used in quests and aggro checks
 	 *  [-5,-1] varka, 0 neutral, [1,5] ketra
 	 * */
@@ -10512,16 +10510,13 @@ public final class L2PcInstance extends L2Playable
 		return _lvlJoinedAcademy > 0;
 	}
 	
+	@Override
 	public void setTeam(int team)
 	{
-		_team = team;
+		super.setTeam(team);
+		broadcastUserInfo();
 		if (getPet() != null)
 			getPet().broadcastStatusUpdate();
-	}
-	
-	public int getTeam()
-	{
-		return _team;
 	}
 	
 	public void setWantsPeace(int wantsPeace)

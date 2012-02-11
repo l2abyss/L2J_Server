@@ -216,6 +216,7 @@ public abstract class L2Character extends L2Object
 	
 	private final ReentrantLock _teleportLock;
 	
+	private int _team;
 	/**
 	 * @return True if debugging is enabled for this L2Character
 	 */
@@ -7547,5 +7548,18 @@ public abstract class L2Character extends L2Object
 	public void broadcastSocialAction(int id)
 	{
 		broadcastPacket(new SocialAction(getObjectId(), id));
+	}
+	
+	public int getTeam()
+	{
+		return _team;
+	}
+	
+	public void setTeam(int id)
+	{
+		if (id >= 0 && id <= 2)
+		{
+			_team = id;
+		}
 	}
 }

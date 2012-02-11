@@ -1705,4 +1705,14 @@ public class L2Npc extends L2Character
 	{
 		return true;
 	}
+	
+	@Override
+	public void setTeam(int id)
+	{
+		super.setTeam(id);
+		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
+		{
+			player.sendPacket(new AbstractNpcInfo.NpcInfo(this, player));
+		}
+	}
 }

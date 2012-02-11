@@ -184,7 +184,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_allyId); // ally id
 			writeD(_allyCrest); // all crest
 			writeC(_npc.isFlying() ? 2 : 0); // C2
-			writeC(0x00); // title color 0=client
+			writeC(_npc.getTeam()); // team color 0=none, 1 = blue, 2 = red
 			
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
@@ -271,7 +271,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(0000); // C2
 			writeC(0000); // C2
 			
-			writeC(0x00); // Title color 0=client default
+			writeC(_trap.getTeam()); // team color 0=none, 1 = blue, 2 = red
 			
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
@@ -396,7 +396,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(0000); // C2
 			writeC(0000); // C2
 			
-			writeC(_summon.getTeam());// Title color 0=client default
+			writeC(_summon.getTeam()); // team color 0=none, 1 = blue, 2 = red
 			
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);

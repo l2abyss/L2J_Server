@@ -260,6 +260,7 @@ public abstract class L2Summon extends L2Playable
 		return getOwner() != null ? getOwner().getPvpFlag() : 0;
 	}
 	
+	@Override
 	public final int getTeam()
 	{
 		return getOwner() != null ? getOwner().getTeam() : 0;
