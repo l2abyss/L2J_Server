@@ -24,33 +24,22 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
-import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.stats.Stats;
-import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExShowQuestMark;
-import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.QuestList;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TutorialCloseHtml;
 import com.l2jserver.gameserver.network.serverpackets.TutorialEnableClientEvent;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
-import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowQuestionMark;
-import com.l2jserver.util.Rnd;
+import com.l2jserver.gameserver.util.Util;
 
 /**
  * @author Luis Arias
@@ -544,6 +533,8 @@ public final class QuestState
 		((L2PcInstance)character).addNotifyQuestOfDeath(this);
 	}
 	
+	// TODO: This all remains because of backward compatibility should be cleared when all scripts been re-writen in java!
+	
 	/**
 	 * Return the quantity of one sort of item hold by the player
 	 * @param itemId : ID of the item wanted to be count
@@ -551,13 +542,7 @@ public final class QuestState
 	 */
 	public long getQuestItemsCount(int itemId)
 	{
-		long count = 0;
-		
-		for (L2ItemInstance item : getPlayer().getInventory().getItems())
-			if (item != null && item.getItemId() == itemId)
-				count += item.getCount();
-		
-		return count;
+		return getQuest().getQuestItemsCount(getPlayer(), itemId);
 	}
 	
 	/**
@@ -566,7 +551,7 @@ public final class QuestState
 	 */
 	public boolean hasQuestItems(int itemId)
 	{
-		return getPlayer().getInventory().getItemByItemId(itemId) != null;
+		return getQuest().hasQuestItems(getPlayer(), itemId);
 	}
 	
 	/**
@@ -576,12 +561,7 @@ public final class QuestState
 	 */
 	public int getEnchantLevel(int itemId)
 	{
-		L2ItemInstance enchanteditem = getPlayer().getInventory().getItemByItemId(itemId);
-		
-		if (enchanteditem == null)
-			return 0;
-		
-		return enchanteditem.getEnchantLevel();
+		return getQuest().getEnchantLevel(getPlayer(), itemId);
 	}
 	
 	/**
@@ -601,82 +581,7 @@ public final class QuestState
 	 */
 	public void rewardItems(int itemId, long count)
 	{
-		if (count <= 0)
-			return;
-		
-		L2ItemInstance _tmpItem = ItemTable.getInstance().createDummyItem(itemId);
-		
-		if (_tmpItem == null)
-			return;
-		
-		if (itemId == PcInventory.ADENA_ID)
-		{
-			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
-		}
-		else if (Config.RATE_QUEST_REWARD_USE_MULTIPLIERS)
-		{
-			if(_tmpItem.isEtcItem())
-			{
-				switch (_tmpItem.getEtcItem().getItemType())
-				{
-					case POTION:
-						count = (long) (count * Config.RATE_QUEST_REWARD_POTION);
-						break;
-					case SCRL_ENCHANT_WP:
-					case SCRL_ENCHANT_AM:
-					case SCROLL:
-						count = (long) (count * Config.RATE_QUEST_REWARD_SCROLL);
-						break;
-					case RECIPE:
-						count = (long) (count * Config.RATE_QUEST_REWARD_RECIPE);
-						break;
-					case MATERIAL:
-						count = (long) (count * Config.RATE_QUEST_REWARD_MATERIAL);
-						break;
-					default:
-						count = (long) (count * Config.RATE_QUEST_REWARD);
-				}
-			}
-		}
-		else
-		{
-			count = (long) (count * Config.RATE_QUEST_REWARD);
-		}
-		
-		// Add items to player's inventory
-		L2ItemInstance item = getPlayer().getInventory().addItem("Quest", itemId, count, getPlayer(), getPlayer().getTarget());
-		
-		if (item == null)
-			return;
-		
-		// If item for reward is gold, send message of gold reward to client
-		if (itemId == PcInventory.ADENA_ID)
-		{
-			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
-			smsg.addItemNumber(count);
-			getPlayer().sendPacket(smsg);
-		}
-		// Otherwise, send message of object reward to client
-		else
-		{
-			if (count > 1)
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
-				smsg.addItemName(item);
-				smsg.addItemNumber(count);
-				getPlayer().sendPacket(smsg);
-			}
-			else
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
-				smsg.addItemName(item);
-				getPlayer().sendPacket(smsg);
-			}
-		}
-		// send packets
-		StatusUpdate su = new StatusUpdate(getPlayer());
-		su.addAttribute(StatusUpdate.CUR_LOAD, getPlayer().getCurrentLoad());
-		getPlayer().sendPacket(su);
+		getQuest().rewardItems(getPlayer(), itemId, count);
 	}
 	
 	/**
@@ -691,104 +596,12 @@ public final class QuestState
 	
 	public void giveItems(int itemId, long count, int enchantlevel)
 	{
-		if (count <= 0)
-			return;
-		
-		// If item for reward is adena (ID=57), modify count with rate for quest reward if rates available
-		if (itemId == PcInventory.ADENA_ID && !(enchantlevel > 0))
-			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
-		
-		// Add items to player's inventory
-		L2ItemInstance item = getPlayer().getInventory().addItem("Quest", itemId, count, getPlayer(), getPlayer().getTarget());
-		
-		if (item == null)
-			return;
-		
-		// set enchant level for item if that item is not adena
-		if (enchantlevel > 0 && itemId != PcInventory.ADENA_ID)
-			item.setEnchantLevel(enchantlevel);
-		
-		// If item for reward is gold, send message of gold reward to client
-		if (itemId == PcInventory.ADENA_ID)
-		{
-			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
-			smsg.addItemNumber(count);
-			getPlayer().sendPacket(smsg);
-		}
-		// Otherwise, send message of object reward to client
-		else
-		{
-			if (count > 1)
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
-				smsg.addItemName(item);
-				smsg.addItemNumber(count);
-				getPlayer().sendPacket(smsg);
-			}
-			else
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
-				smsg.addItemName(item);
-				getPlayer().sendPacket(smsg);
-			}
-		}
-		// send packets
-		StatusUpdate su = new StatusUpdate(getPlayer());
-		su.addAttribute(StatusUpdate.CUR_LOAD, getPlayer().getCurrentLoad());
-		getPlayer().sendPacket(su);
+		getQuest().giveItems(getPlayer(), itemId, count, enchantlevel);
 	}
 	
 	public void giveItems(int itemId, long count, byte attributeId, int attributeLevel)
 	{
-		if (count <= 0)
-			return;
-		
-		// Add items to player's inventory
-		L2ItemInstance item = getPlayer().getInventory().addItem("Quest", itemId, count, getPlayer(), getPlayer().getTarget());
-		
-		if (item == null)
-			return;
-		
-		// set enchant level for item if that item is not adena
-		if (attributeId >= 0 && attributeLevel > 0)
-		{
-			item.setElementAttr(attributeId, attributeLevel);
-			if (item.isEquipped())
-				item.updateElementAttrBonus(getPlayer());
-			
-			InventoryUpdate iu = new InventoryUpdate();
-			iu.addModifiedItem(item);
-			getPlayer().sendPacket(iu);
-		}
-		
-		// If item for reward is gold, send message of gold reward to client
-		if (itemId == PcInventory.ADENA_ID)
-		{
-			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
-			smsg.addItemNumber(count);
-			getPlayer().sendPacket(smsg);
-		}
-		// Otherwise, send message of object reward to client
-		else
-		{
-			if (count > 1)
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
-				smsg.addItemName(item);
-				smsg.addItemNumber(count);
-				getPlayer().sendPacket(smsg);
-			}
-			else
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
-				smsg.addItemName(item);
-				getPlayer().sendPacket(smsg);
-			}
-		}
-		// send packets
-		StatusUpdate su = new StatusUpdate(getPlayer());
-		su.addAttribute(StatusUpdate.CUR_LOAD, getPlayer().getCurrentLoad());
-		getPlayer().sendPacket(su);
+		getQuest().giveItems(getPlayer(), itemId, count, attributeId, attributeLevel);
 	}
 	
 	/**
@@ -807,50 +620,7 @@ public final class QuestState
 	
 	public boolean dropQuestItems(int itemId, int minCount, int maxCount, long neededCount, int dropChance, boolean sound)
 	{
-		dropChance *= Config.RATE_QUEST_DROP / ((getPlayer().getParty() != null) ? getPlayer().getParty().getMemberCount() : 1);
-		long currentCount = getQuestItemsCount(itemId);
-		
-		if (neededCount > 0 && currentCount >= neededCount)
-			return true;
-		
-		if (currentCount >= neededCount)
-			return true;
-		
-		long itemCount = 0;
-		int random = Rnd.get(L2DropData.MAX_CHANCE);
-		
-		while (random < dropChance)
-		{
-			// Get the item quantity dropped
-			if (minCount < maxCount)
-				itemCount += Rnd.get(minCount, maxCount);
-			else if (minCount == maxCount)
-				itemCount += minCount;
-			else
-				itemCount++;
-			
-			// Prepare for next iteration if dropChance > L2DropData.MAX_CHANCE
-			dropChance -= L2DropData.MAX_CHANCE;
-		}
-		
-		if (itemCount > 0)
-		{
-			// if over neededCount, just fill the gap
-			if (neededCount > 0 && currentCount + itemCount > neededCount)
-				itemCount = neededCount - currentCount;
-			
-			// Inventory slot check
-			if (!getPlayer().getInventory().validateCapacityByItemId(itemId))
-				return false;
-			
-			// Give the item to Player
-			getPlayer().addItem("Quest", itemId, itemCount, getPlayer().getTarget(), true);
-			
-			if (sound)
-				playSound((currentCount + itemCount < neededCount) ? "Itemsound.quest_itemget" : "Itemsound.quest_middle");
-		}
-		
-		return (neededCount > 0 && currentCount + itemCount >= neededCount);
+		return getQuest().dropQuestItems(getPlayer(), itemId, minCount, maxCount, neededCount, dropChance, sound);
 	}
 	
 	//TODO: More radar functions need to be added when the radar class is complete.
@@ -882,26 +652,7 @@ public final class QuestState
 	 */
 	public void takeItems(int itemId, long count)
 	{
-		// Get object item from player's inventory list
-		L2ItemInstance item = getPlayer().getInventory().getItemByItemId(itemId);
-		if (item == null)
-			return;
-		
-		// Tests on count value in order not to have negative value
-		if (count < 0 || count > item.getCount())
-			count = item.getCount();
-		
-		// Destroy the quantity of items wanted
-		if (item.isEquipped())
-		{
-			L2ItemInstance[] unequiped = getPlayer().getInventory().unEquipItemInBodySlotAndRecord(item.getItem().getBodyPart());
-			InventoryUpdate iu = new InventoryUpdate();
-			for (L2ItemInstance itm: unequiped)
-				iu.addModifiedItem(itm);
-			getPlayer().sendPacket(iu);
-			getPlayer().broadcastUserInfo();
-		}
-		getPlayer().destroyItemByItemId("Quest", itemId, count, getPlayer(), true);
+		getQuest().takeItems(getPlayer(), itemId, count);
 	}
 	
 	/**
@@ -910,7 +661,7 @@ public final class QuestState
 	 */
 	public void playSound(String sound)
 	{
-		getPlayer().sendPacket(new PlaySound(sound));
+		getQuest().playSound(getPlayer(), sound);
 	}
 	
 	/**
@@ -920,7 +671,7 @@ public final class QuestState
 	 */
 	public void addExpAndSp(int exp, int sp)
 	{
-		getPlayer().addExpAndSp((int) getPlayer().calcStat(Stats.EXPSP_RATE, exp * Config.RATE_QUEST_REWARD_XP, null, null), (int) getPlayer().calcStat(Stats.EXPSP_RATE, sp * Config.RATE_QUEST_REWARD_SP, null, null));
+		getQuest().addExpAndSp(getPlayer(), exp, sp);
 	}
 	
 	/**
@@ -930,7 +681,7 @@ public final class QuestState
 	 */
 	public int getRandom(int max)
 	{
-		return Rnd.get(max);
+		return getQuest().getRandom(max);
 	}
 	
 	/**
@@ -939,7 +690,7 @@ public final class QuestState
 	 */
 	public int getItemEquipped(int loc)
 	{
-		return getPlayer().getInventory().getPaperdollItemId(loc);
+		return getQuest().getItemEquipped(getPlayer(), loc);
 	}
 	
 	/**
@@ -948,7 +699,7 @@ public final class QuestState
 	 */
 	public int getGameTicks()
 	{
-		return GameTimeController.getGameTicks();
+		return getQuest().getGameTicks();
 	}
 	
 	/**
