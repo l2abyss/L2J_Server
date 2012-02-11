@@ -212,7 +212,7 @@ public class CharInfo extends L2GameServerPacket
 				writeD(0);  // C2
 				writeD(0);  // C2
 				writeC(0);  // C2
-				writeC(0x00);  // C3  team circle 1-blue, 2-red
+				writeC(_activeChar.getTeam());  // C3  team circle 1-blue, 2-red
 				writeF(template.getfCollisionRadius());
 				writeF(template.getfCollisionHeight());
 				writeD(0x00);  // C4
@@ -420,12 +420,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(0x00); //?
 			writeC(_activeChar.isMounted() || _airShipHelm != 0 ? 0 : _activeChar.getEnchantEffect());
 			
-			if(_activeChar.getTeam()==1)
-				writeC(0x01); //team circle around feet 1= Blue, 2 = red
-			else if(_activeChar.getTeam()==2)
-				writeC(0x02); //team circle around feet 1= Blue, 2 = red
-			else
-				writeC(0x00); //team circle around feet 1= Blue, 2 = red
+			writeC(_activeChar.getTeam()); //team circle around feet 1= Blue, 2 = red
 			
 			writeD(_activeChar.getClanCrestLargeId());
 			writeC(_activeChar.isNoble() ? 1 : 0); // Symbol on char menu ctrl+I
