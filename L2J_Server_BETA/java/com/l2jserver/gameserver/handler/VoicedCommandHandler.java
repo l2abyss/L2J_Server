@@ -27,7 +27,7 @@ import com.l2jserver.Config;
  */
 public class VoicedCommandHandler
 {
-	private static Logger _log = Logger.getLogger(ItemHandler.class.getName());
+	private static Logger _log = Logger.getLogger(VoicedCommandHandler.class.getName());
 	
 	private final TIntObjectHashMap<IVoicedCommandHandler> _datatable;
 	

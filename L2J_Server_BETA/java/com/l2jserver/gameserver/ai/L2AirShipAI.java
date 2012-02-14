@@ -21,9 +21,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExMoveToLocationAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExStopMoveAirShip;
 
 /**
- * 
  * @author DS
- *
  */
 public class L2AirShipAI extends L2VehicleAI
 {

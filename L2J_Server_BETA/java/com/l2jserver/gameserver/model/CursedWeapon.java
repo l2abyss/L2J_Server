@@ -48,7 +48,7 @@ import com.l2jserver.util.Rnd;
 
 public class CursedWeapon
 {
-	private static final Logger _log = Logger.getLogger(CursedWeaponsManager.class.getName());
+	private static final Logger _log = Logger.getLogger(CursedWeapon.class.getName());
 	
 	// _name is the name of the cursed weapon associated with its ID.
 	private final String _name;
@@ -81,8 +81,6 @@ public class CursedWeapon
 	
 	private static final int[] TRANSFORM_IDS = new int[]{3630,3631};
 	
-	// =========================================================
-	// Constructor
 	public CursedWeapon(int itemId, int skillId, String name)
 	{
 		_name = name;
@@ -91,8 +89,6 @@ public class CursedWeapon
 		_skillMaxLevel = SkillTable.getInstance().getMaxLevel(_skillId);
 	}
 	
-	// =========================================================
-	// Private
 	public void endOfLife()
 	{
 		if (_isActivated)
@@ -375,8 +371,6 @@ public class CursedWeapon
 		_player.sendSkillList();
 	}
 	
-	// =========================================================
-	// Public
 	public void reActivate()
 	{
 		_isActivated = true;
@@ -556,11 +550,6 @@ public class CursedWeapon
 		saveData();
 	}
 	
-	
-	
-	
-	// =========================================================
-	// Setter
 	public void setDisapearChance(int disapearChance)
 	{
 		_disapearChance = disapearChance;
@@ -618,10 +607,6 @@ public class CursedWeapon
 		_item = item;
 	}
 	
-	
-	
-	// =========================================================
-	// Getter
 	public boolean isActivated()
 	{
 		return _isActivated;

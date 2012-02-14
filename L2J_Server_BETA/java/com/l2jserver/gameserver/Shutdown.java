@@ -49,7 +49,7 @@ import com.l2jserver.gameserver.util.Broadcast;
 /**
  *
  * This class provides the functions for shutting down and restarting the server
- * It closes all open clientconnections and saves all data.
+ * It closes all open client connections and saves all data.
  *
  * @version $Revision: 1.2.4.5 $ $Date: 2005/03/27 15:29:09 $
  */

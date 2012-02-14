@@ -41,22 +41,14 @@ public class CastleManager implements InstanceListManager
 	{
 		return SingletonHolder._instance;
 	}
-	// =========================================================
 	
-	// =========================================================
-	// Data Field
 	private List<Castle> _castles;
 	
-	// =========================================================
-	// Constructor
 	private static final int _castleCirclets[] = { 0, 6838, 6835, 6839, 6837, 6840, 6834, 6836, 8182, 8183 };
 	
 	private CastleManager()
 	{
 	}
-	
-	// =========================================================
-	// Method - Public
 	
 	public final int findNearestCastleIndex(L2Object obj)
 	{
@@ -84,9 +76,6 @@ public class CastleManager implements InstanceListManager
 		}
 		return index;
 	}
-	
-	// =========================================================
-	// Property - Public
 	
 	public final Castle getCastleById(int castleId)
 	{

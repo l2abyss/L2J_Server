@@ -1,5 +1,3 @@
-
-package com.l2jserver.gameserver.model.itemauction;
 /*
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -14,15 +12,15 @@ package com.l2jserver.gameserver.model.itemauction;
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.l2jserver.gameserver.model.itemauction;
+
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import com.l2jserver.gameserver.model.StatsSet;
 
 /**
- * 
  * @author Forsaiken
- *
  */
 public final class AuctionDateGenerator
 {

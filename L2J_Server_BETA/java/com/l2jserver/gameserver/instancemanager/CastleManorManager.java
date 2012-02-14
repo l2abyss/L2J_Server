@@ -43,7 +43,6 @@ import com.l2jserver.util.Rnd;
  * Handles all schedule for manor
  * @author l3x
  */
-
 public class CastleManorManager
 {
 	protected static final Logger _log = Logger.getLogger(CastleManorManager.class.getName());

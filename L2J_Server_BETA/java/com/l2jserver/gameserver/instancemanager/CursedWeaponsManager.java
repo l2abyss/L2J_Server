@@ -52,7 +52,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
 
 /**
- *
  * @author Micht
  */
 public class CursedWeaponsManager
@@ -64,12 +63,8 @@ public class CursedWeaponsManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private Map<Integer, CursedWeapon> _cursedWeapons;
 	
-	// =========================================================
-	// Constructor
 	private CursedWeaponsManager()
 	{
 		init();
@@ -89,8 +84,6 @@ public class CursedWeaponsManager
 		_log.info("Loaded : " + _cursedWeapons.size() + " cursed weapon(s).");
 	}
 	
-	// =========================================================
-	// Method - Private
 	public final void reload()
 	{
 		init();
@@ -327,8 +320,6 @@ public class CursedWeaponsManager
 			_log.info("DONE");
 	}
 	
-	// =========================================================
-	// Properties - Public
 	public synchronized void checkDrop(L2Attackable attackable, L2PcInstance player)
 	{
 		if (attackable instanceof L2DefenderInstance || attackable instanceof L2RiftInvaderInstance
@@ -461,7 +452,6 @@ public class CursedWeaponsManager
 		}
 	}
 	
-	// =========================================================
 	public boolean isCursed(int itemId)
 	{
 		return _cursedWeapons.containsKey(itemId);

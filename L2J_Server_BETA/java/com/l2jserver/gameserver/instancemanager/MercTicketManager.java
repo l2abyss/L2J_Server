@@ -58,10 +58,7 @@ public class MercTicketManager
 	{
 		return SingletonHolder._instance;
 	}
-	// =========================================================
 	
-	// =========================================================
-	// Data Field
 	private List<L2ItemInstance> _droppedTickets; // to keep track of items on the ground
 	
 	//TODO move all these values into siege.properties

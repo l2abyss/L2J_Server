@@ -47,8 +47,6 @@ public class Duel
 	public static final int DUELSTATE_WINNER = 3;
 	public static final int DUELSTATE_INTERRUPTED = 4;
 	
-	// =========================================================
-	// Data Field
 	private int _duelId;
 	private L2PcInstance _playerA;
 	private L2PcInstance _playerB;
@@ -71,8 +69,6 @@ public class Duel
 		Timeout
 	}
 	
-	// =========================================================
-	// Constructor
 	public Duel(L2PcInstance playerA, L2PcInstance playerB, int partyDuel, int duelId)
 	{
 		_duelId = duelId;
@@ -102,9 +98,6 @@ public class Duel
 		// Schedule duel start
 		ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleStartDuelTask(this), 3000);
 	}
-	
-	// ===============================================================
-	// Nested Class
 	
 	public static class PlayerCondition
 	{
@@ -174,8 +167,6 @@ public class Duel
 		}
 	}
 	
-	// ===============================================================
-	// Schedule task
 	public class ScheduleDuelTask implements Runnable
 	{
 		private Duel _duel;
@@ -280,9 +271,6 @@ public class Duel
 		}
 	}
 	
-	// ========================================================
-	// Method - Private
-	
 	/**
 	 * Stops all players from attacking.
 	 * Used for duel timeout / interrupt.
@@ -320,9 +308,6 @@ public class Duel
 			_playerB.sendPacket(af);
 		}
 	}
-	
-	// ========================================================
-	// Method - Public
 	
 	/**
 	 * Check if a player engaged in pvp combat (only for 1on1 duels)
@@ -516,7 +501,7 @@ public class Duel
 	}
 	
 	/**
-	 * Get the player that requestet the duel
+	 * Get the player that requested the duel
 	 * @return duel requester
 	 */
 	public L2PcInstance getPlayerA()

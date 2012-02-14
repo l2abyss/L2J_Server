@@ -45,22 +45,15 @@ public class CoupleManager
 	{
 		return SingletonHolder._instance;
 	}
-	// =========================================================
 	
-	// =========================================================
-	// Data Field
 	private FastList<Couple> _couples;
 	
-	// =========================================================
-	// Method - Public
 	public void reload()
 	{
 		getCouples().clear();
 		load();
 	}
 	
-	// =========================================================
-	// Method - Private
 	private final void load()
 	{
 		Connection con = null;
@@ -92,8 +85,6 @@ public class CoupleManager
 		}
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final Couple getCouple(int coupleId)
 	{
 		int index = getCoupleIndex(coupleId);

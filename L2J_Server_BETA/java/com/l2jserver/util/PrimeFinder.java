@@ -1,22 +1,22 @@
-//   Copyright (c) 1999 CERN - European Organization for Nuclear Research.
-
-//   Permission to use, copy, modify, distribute and sell this software
-//   and its documentation for any purpose is hereby granted without fee,
-//   provided that the above copyright notice appear in all copies and
-//   that both that copyright notice and this permission notice appear in
-//   supporting documentation. CERN makes no representations about the
-//   suitability of this software for any purpose. It is provided "as is"
-//   without expressed or implied warranty.
+/*
+ * Copyright (c) 1999 CERN - European Organization for Nuclear Research.
+ * 
+ * Permission to use, copy, modify, distribute and sell this software
+ * and its documentation for any purpose is hereby granted without fee,
+ * provided that the above copyright notice appear in all copies and
+ * that both that copyright notice and this permission notice appear in
+ * supporting documentation. CERN makes no representations about the
+ * suitability of this software for any purpose. It is provided "as is"
+ * without expressed or implied warranty.
+ */
 package com.l2jserver.util;
 
 import java.util.Arrays;
 
-/*
- * Modified for Trove to use the java.util.Arrays sort/search
- * algorithms instead of those provided with colt.
- */
-
 /**
+ * <b>Modified for Trove to use the java.util.Arrays sort/search
+ * algorithms instead of those provided with colt.</b><br>
+ * 
  * Used to keep hash table capacities prime numbers.
  * Not of interest for users; only for implementors of hashtables.
  *

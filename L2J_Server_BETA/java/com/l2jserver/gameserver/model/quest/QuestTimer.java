@@ -22,12 +22,10 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 public class QuestTimer
 {
 	protected static final Logger _log = Logger.getLogger(QuestTimer.class.getName());
-	// =========================================================
-	// Schedule Task
+	
 	public class ScheduleTimerTask implements Runnable
 	{
 		@Override
@@ -49,8 +47,6 @@ public class QuestTimer
 		}
 	}
 	
-	// =========================================================
-	// Data Field
 	private boolean _isActive = true;
 	private String _name;
 	private Quest _quest;
@@ -59,8 +55,6 @@ public class QuestTimer
 	private boolean _isRepeating;
 	private ScheduledFuture<?> _schedular;
 	
-	// =========================================================
-	// Constructor
 	public QuestTimer(Quest quest, String name, long time, L2Npc npc, L2PcInstance player, boolean repeating)
 	{
 		_name = name;
@@ -84,8 +78,6 @@ public class QuestTimer
 		this(qs.getQuest(), name, time, null, qs.getPlayer(), false);
 	}
 	
-	// =========================================================
-	// Method - Public
 	public void cancel()
 	{
 		_isActive = false;
@@ -113,8 +105,6 @@ public class QuestTimer
 		return ((npc == getNpc()) && (player == getPlayer()));
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final boolean getIsActive()
 	{
 		return _isActive;

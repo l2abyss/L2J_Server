@@ -21,24 +21,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 
 public class StaticObjectKnownList extends CharKnownList
 {
-	// =========================================================
-	// Data Field
-	
-	// =========================================================
-	// Constructor
 	public StaticObjectKnownList(L2StaticObjectInstance activeChar)
 	{
 		super(activeChar);
 	}
 	
-	// =========================================================
-	// Method - Public
-	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	@Override
 	public final L2StaticObjectInstance getActiveChar() { return (L2StaticObjectInstance)super.getActiveChar(); }
 	

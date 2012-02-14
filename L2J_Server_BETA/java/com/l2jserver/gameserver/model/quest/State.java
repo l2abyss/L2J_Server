@@ -15,8 +15,6 @@
 package com.l2jserver.gameserver.model.quest;
 
 /**
- * @author Luis Arias;  version 2 by Fulminus
- *
  * This class merely enumerates the three necessary states for all quests:
  * CREATED: a quest state is created but the quest is not yet accepted.
  * STARTED: the player has accepted the quest.  Quest is currently in progress
@@ -28,6 +26,8 @@ package com.l2jserver.gameserver.model.quest;
  * string back and remap them to their correct states.
  * 
  * All quests have these and only these states.
+ * 
+ * @author Luis Arias;  version 2 by Fulminus
  */
 public class State
 {

@@ -32,23 +32,16 @@ import com.l2jserver.gameserver.model.entity.Castle;
 
 public class SiegeGuardManager
 {
-	
 	private static Logger _log = Logger.getLogger(SiegeGuardManager.class.getName());
 	
-	// =========================================================
-	// Data Field
 	private Castle _castle;
 	private List<L2Spawn> _siegeGuardSpawn = new FastList<L2Spawn>();
 	
-	// =========================================================
-	// Constructor
 	public SiegeGuardManager(Castle castle)
 	{
 		_castle = castle;
 	}
 	
-	// =========================================================
-	// Method - Public
 	/**
 	 * Add guard.
 	 * @param activeChar 
@@ -202,8 +195,6 @@ public class SiegeGuardManager
 		getSiegeGuardSpawn().clear();
 	}
 	
-	// =========================================================
-	// Method - Private
 	/**
 	 * Load guards.<BR><BR>
 	 */
@@ -294,9 +285,6 @@ public class SiegeGuardManager
 			L2DatabaseFactory.close(con);
 		}
 	}
-	
-	// =========================================================
-	// Proeprty
 	
 	public final Castle getCastle()
 	{

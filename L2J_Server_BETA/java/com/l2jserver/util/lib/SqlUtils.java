@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 
-
 public class SqlUtils
 {
 	private static Logger _log = Logger.getLogger(SqlUtils.class.getName());
@@ -31,15 +30,11 @@ public class SqlUtils
 	{
 	}
 	
-	// =========================================================
-	// Property - Public
 	public static SqlUtils getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Method - Public
 	public static Integer getIntValue(String resultField, String tableName, String whereClause)
 	{
 		String query = "";

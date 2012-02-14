@@ -49,8 +49,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  */
 public abstract class L2Object
 {
-	// =========================================================
-	// Data Field
 	private boolean _isVisible;                 // Object visibility
 	private ObjectKnownList _knownList;
 	private String _name;
@@ -61,8 +59,6 @@ public abstract class L2Object
 	
 	private InstanceType _instanceType = null;
 	
-	// =========================================================
-	// Constructor
 	public L2Object(int objectId)
 	{
 		setInstanceType(InstanceType.L2Object);
@@ -271,8 +267,6 @@ public abstract class L2Object
 		return _instanceType.isTypes(i);
 	}
 	
-	// =========================================================
-	// Event - Public
 	public final void onAction(L2PcInstance player)
 	{
 		onAction(player, true);
@@ -313,7 +307,6 @@ public abstract class L2Object
 	{
 	}
 	
-	// =========================================================
 	// Position - Should remove to fully move to L2ObjectPosition
 	public final void setXYZ(int x, int y, int z)
 	{
@@ -426,8 +419,6 @@ public abstract class L2Object
 		return getPosition().getZ();
 	}
 	
-	// =========================================================
-	// Method - Public
 	/**
 	 * Remove a L2Object from the world.<BR><BR>
 	 *
@@ -554,11 +545,6 @@ public abstract class L2Object
 			spawnMe();
 	}
 	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	public boolean isAttackable()
 	{
 		return false;

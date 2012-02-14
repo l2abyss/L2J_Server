@@ -27,18 +27,11 @@ import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 
 public class DefenderKnownList extends AttackableKnownList
 {
-	// =========================================================
-	// Data Field
-	
-	// =========================================================
-	// Constructor
 	public DefenderKnownList(L2DefenderInstance activeChar)
 	{
 		super(activeChar);
 	}
 	
-	// =========================================================
-	// Method - Public
 	@Override
 	public boolean addKnownObject(L2Object object)
 	{
@@ -71,8 +64,6 @@ public class DefenderKnownList extends AttackableKnownList
 		return true;
 	}
 	
-	// =========================================================
-	// Property - Public
 	@Override
 	public final L2DefenderInstance getActiveChar()
 	{

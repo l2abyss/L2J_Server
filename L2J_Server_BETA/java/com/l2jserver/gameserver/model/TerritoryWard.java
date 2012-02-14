@@ -44,8 +44,6 @@ public class TerritoryWard
 	private int _heading;
 	private int _territoryId;
 	
-	// =========================================================
-	// Constructor
 	public TerritoryWard(int territory_id, int x, int y, int z, int heading, int item_id, int castleId, L2Npc npc)
 	{
 		_territoryId = territory_id;

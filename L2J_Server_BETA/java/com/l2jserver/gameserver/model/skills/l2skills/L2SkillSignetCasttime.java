@@ -12,11 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @author Forsaiken
- */
-
 package com.l2jserver.gameserver.model.skills.l2skills;
 
 import com.l2jserver.gameserver.model.L2Object;
@@ -24,6 +19,9 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
+/**
+ * @author Forsaiken
+ */
 public final class L2SkillSignetCasttime extends L2Skill
 {
 	public int _effectNpcId;

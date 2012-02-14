@@ -12,11 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @author godson
- */
-
 package com.l2jserver.gameserver.model.olympiad;
 
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -52,6 +47,9 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.L2FastList;
 
+/**
+ * @author godson
+ */
 public class Olympiad
 {
 	protected static final Logger _log = Logger.getLogger(Olympiad.class.getName());

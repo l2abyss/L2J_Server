@@ -386,8 +386,6 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 		}
 	}
 	
-	// ========================================================================
-	
 	/**
 	 * This method is used to limit the given Warehouse List to:
 	 * <li>Weapon</li>

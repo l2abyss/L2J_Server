@@ -837,8 +837,6 @@ public class FortSiege implements Siegable
 		}
 	}
 	
-	// =========================================================
-	// Method - Private
 	/**
 	 * Add clan as attacker<BR><BR>
 	 * @param clanId The int of clan's id

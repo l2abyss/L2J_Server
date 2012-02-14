@@ -11,7 +11,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.l2jserver.util;
 
 import java.lang.management.LockInfo;
@@ -26,10 +25,8 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.Shutdown;
 
-
 /**
  * Thread to check for deadlocked threads.
- * 
  * @author -Nemesiss- L2M
  */
 public class DeadLockDetector extends Thread

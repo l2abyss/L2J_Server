@@ -65,8 +65,6 @@ public class Castle
 {
 	protected static final Logger _log = Logger.getLogger(Castle.class.getName());
 	
-	// =========================================================
-	// Data Field
 	private List<CropProcure> _procure = new ArrayList<CropProcure>();
 	private List<SeedProduction> _production = new ArrayList<SeedProduction>();
 	private List<CropProcure> _procureNext = new ArrayList<CropProcure>();
@@ -79,8 +77,7 @@ public class Castle
 	private static final String CASTLE_MANOR_DELETE_PROCURE_PERIOD = "DELETE FROM castle_manor_procure WHERE castle_id=? AND period=?;";
 	private static final String CASTLE_UPDATE_CROP = "UPDATE castle_manor_procure SET can_buy=? WHERE crop_id=? AND castle_id=? AND period=?";
 	private static final String CASTLE_UPDATE_SEED = "UPDATE castle_manor_production SET can_produce=? WHERE seed_id=? AND castle_id=? AND period=?";
-	// =========================================================
-	// Data Field
+	
 	private int _castleId = 0;
 	private List<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
 	private List<String> _doorDefault = new FastList<String>();
@@ -254,8 +251,6 @@ public class Castle
 		}
 	}
 	
-	// =========================================================
-	// Constructor
 	public Castle(int castleId)
 	{
 		_castleId = castleId;
@@ -282,9 +277,6 @@ public class Castle
 			loadFunctions();
 		}
 	}
-	
-	// =========================================================
-	// Method - Public
 	
 	/**
 	 * Return function with id 
@@ -697,8 +689,6 @@ public class Castle
 		saveDoorUpgrade(doorId, hp, pDef, mDef);
 	}
 	
-	// =========================================================
-	// Method - Private
 	// This method loads castle
 	private void load()
 	{
@@ -993,7 +983,6 @@ public class Castle
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			
-			// ============================================================================
 			// NEED TO REMOVE HAS CASTLE FLAG FROM CLAN_DATA
 			// SHOULD BE CHECKED FROM CASTLE TABLE
 			statement = con.prepareStatement("UPDATE clan_data SET hasCastle=0 WHERE hasCastle=?");
@@ -1006,7 +995,6 @@ public class Castle
 			statement.setInt(2, getOwnerId());
 			statement.execute();
 			statement.close();
-			// ============================================================================
 			
 			// Announce to clan memebers
 			if (clan != null)
@@ -1027,8 +1015,6 @@ public class Castle
 		}
 	}
 	
-	// =========================================================
-	// Property
 	public final int getCastleId()
 	{
 		return _castleId;

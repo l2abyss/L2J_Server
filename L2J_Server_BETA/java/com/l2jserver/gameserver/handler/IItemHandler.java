@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  *
  * @version $Revision: 1.1.4.3 $ $Date: 2005/03/27 15:30:09 $
  */
-
 public interface IItemHandler
 {
 	public static Logger _log = Logger.getLogger(IItemHandler.class.getName());

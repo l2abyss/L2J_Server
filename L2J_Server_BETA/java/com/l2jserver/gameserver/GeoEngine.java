@@ -44,12 +44,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Point3D;
 
 /**
- *
  * @author -Nemesiss-
  */
 public class GeoEngine extends GeoData
 {
-	private static Logger _log = Logger.getLogger(GeoData.class.getName());
+	private static final Logger _log = Logger.getLogger(GeoEngine.class.getName());
+	
 	private static final byte EAST = 1;
 	private static final byte WEST = 2;
 	private static final byte SOUTH = 4;

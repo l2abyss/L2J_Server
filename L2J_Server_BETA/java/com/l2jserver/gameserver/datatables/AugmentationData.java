@@ -51,9 +51,6 @@ public class AugmentationData
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
-	
 	// stats
 	private static final int STAT_START = 1;
 	private static final int STAT_END = 14560;
@@ -113,8 +110,6 @@ public class AugmentationData
 	
 	private final TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<AugmentationSkill>();
 	
-	// =========================================================
-	// Constructor
 	private AugmentationData()
 	{
 		_log.info("Initializing AugmentationData.");
@@ -199,9 +194,6 @@ public class AugmentationData
 			_log.info("AugmentationData: Loaded: " + _blueSkills[i].size() + " blue, " + _purpleSkills[i].size() + " purple and " + _redSkills[i].size() + " red skills for lifeStoneLevel " + i);
 		}
 	}
-	
-	// =========================================================
-	// Nested Class
 	
 	public static class AugmentationSkill
 	{

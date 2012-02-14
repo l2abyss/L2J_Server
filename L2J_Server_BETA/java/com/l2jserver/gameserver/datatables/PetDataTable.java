@@ -29,13 +29,12 @@ import org.w3c.dom.Node;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2PetLevelData;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class PetDataTable
 {
-	private static Logger _log = Logger.getLogger(L2PetInstance.class.getName());
+	private static Logger _log = Logger.getLogger(PetDataTable.class.getName());
 	
 	private static TIntObjectHashMap<L2PetData> _petTable;
 

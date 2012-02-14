@@ -38,12 +38,8 @@ public class FortManager implements InstanceListManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private List<Fort> _forts;
 	
-	// =========================================================
-	// Constructor
 	private FortManager()
 	{
 	}
@@ -76,8 +72,6 @@ public class FortManager implements InstanceListManager
 		return index;
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final Fort getFortById(int fortId)
 	{
 		for (Fort f : getForts())

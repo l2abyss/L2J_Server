@@ -275,7 +275,12 @@ public class Announcements
 		Broadcast.toPlayersInInstance(sm, instanceId);
 	}
 	
-	// Method for handling announcements from admin
+	/**
+	 * Method for handling announcements from admin
+	 * @param command
+	 * @param lengthToTrim
+	 * @param isCritical
+	 */
 	public void handleAnnounce(String command, int lengthToTrim, boolean isCritical)
 	{
 		try

@@ -38,9 +38,6 @@ public class PcStat extends PlayableStat
 {
 	//private static Logger _log = Logger.getLogger(PcStat.class.getName());
 	
-	// =========================================================
-	// Data Field
-	
 	private int _oldMaxHp; // stats watch
 	private int _oldMaxMp; // stats watch
 	private int _oldMaxCp; // stats watch
@@ -51,15 +48,11 @@ public class PcStat extends PlayableStat
 	public static final int MAX_VITALITY_POINTS = VITALITY_LEVELS[4];
 	public static final int MIN_VITALITY_POINTS = 1;
 	
-	// =========================================================
-	// Constructor
 	public PcStat(L2PcInstance activeChar)
 	{
 		super(activeChar);
 	}
 	
-	// =========================================================
-	// Method - Public
 	@Override
 	public boolean addExp(long value)
 	{
@@ -289,11 +282,6 @@ public class PcStat extends PlayableStat
 		return ExperienceTable.getInstance().getExpForLevel(level);
 	}
 	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	@Override
 	public final L2PcInstance getActiveChar()
 	{
@@ -640,7 +628,7 @@ public class PcStat extends PlayableStat
 		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
 		
 		// Bonus from Nevit's Hunting
-		// TODO: Nevit's hutning bonus
+		// TODO: Nevit's hunting bonus
 		
 		// Bonus exp from skills
 		bonusExp = calcStat(Stats.BONUS_EXP, 1.0, null, null);
@@ -685,7 +673,7 @@ public class PcStat extends PlayableStat
 		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
 		
 		// Bonus from Nevit's Hunting
-		// TODO: Nevit's hutning bonus
+		// TODO: Nevit's hunting bonus
 		
 		// Bonus sp from skills
 		bonusSp = calcStat(Stats.BONUS_SP, 1.0, null, null);

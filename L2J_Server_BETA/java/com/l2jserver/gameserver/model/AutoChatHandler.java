@@ -659,7 +659,7 @@ public class AutoChatHandler implements SpawnListener
 				{
 					AutoChatRunner acr = new AutoChatRunner(_npcId, _npcInstance.getObjectId());
 					if (getChatDelay() == 0)
-						// Schedule it set to 5Ms, isn't error, if use 0 sometine
+						// Schedule it set to 5Ms, isn't error, if use 0 sometime
 						// chatDefinition return null in AutoChatRunner
 						_chatTask = ThreadPoolManager.getInstance().scheduleGeneral(acr, 5);
 					else

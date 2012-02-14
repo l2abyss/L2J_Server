@@ -33,14 +33,12 @@ import javax.swing.filechooser.FileFilter;
 
 import com.l2jserver.loginserver.GameServerTable;
 
-
 /**
- *
  * @author  KenM
  */
-@SuppressWarnings("serial")
 public class RegisterDialog extends JDialog implements ActionListener
 {
+	private static final long serialVersionUID = 1L;
 	
 	private final ResourceBundle _bundle;
 	private final JComboBox<ComboServer> _combo;

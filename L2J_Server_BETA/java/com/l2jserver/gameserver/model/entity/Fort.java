@@ -66,8 +66,6 @@ public class Fort
 {
 	protected static final Logger _log = Logger.getLogger(Fort.class.getName());
 	
-	// =========================================================
-	// Data Field
 	private int _fortId = 0;
 	private List<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
 	private L2StaticObjectInstance _flagPole = null;
@@ -245,8 +243,6 @@ public class Fort
 		}
 	}
 	
-	// =========================================================
-	// Constructor
 	public Fort(int fortId)
 	{
 		_fortId = fortId;
@@ -322,9 +318,6 @@ public class Fort
 			}
 		}
 	}
-	
-	// =========================================================
-	// Method - Public
 	
 	public void endOfSiege(L2Clan clan)
 	{
@@ -615,8 +608,6 @@ public class Fort
 		}
 	}
 	
-	// =========================================================
-	// Method - Private
 	// This method loads fort
 	private void load()
 	{
@@ -972,7 +963,6 @@ public class Fort
 			statement.execute();
 			statement.close();
 			
-			// ============================================================================
 			// Announce to clan memebers
 			if (clan != null)
 			{

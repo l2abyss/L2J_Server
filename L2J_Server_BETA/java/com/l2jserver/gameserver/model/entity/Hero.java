@@ -12,11 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @author godson
- */
-
 package com.l2jserver.gameserver.model.entity;
 
 import java.sql.Connection;
@@ -60,6 +55,9 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.util.StringUtil;
 
+/**
+ * @author godson
+ */
 public class Hero
 {
 	private static Logger _log = Logger.getLogger(Hero.class.getName());

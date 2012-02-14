@@ -144,8 +144,6 @@ public abstract class L2Character extends L2Object
 {
 	public static final Logger _log = Logger.getLogger(L2Character.class.getName());
 	
-	// =========================================================
-	// Data Field
 	private Set<L2Character> _attackByList;
 	private volatile boolean _isCastingNow = false;
 	private volatile boolean _isCastingSimultaneouslyNow = false;
@@ -444,8 +442,6 @@ public abstract class L2Character extends L2Object
 		_hpUpdateDecCheck = _hpUpdateIncCheck - _hpUpdateInterval;
 	}
 	
-	// =========================================================
-	// Event - Public
 	/**
 	 * Remove the L2Character from the world when the decay task is launched.<BR><BR>
 	 *
@@ -487,8 +483,6 @@ public abstract class L2Character extends L2Object
 			doRevive();
 	}
 	
-	// =========================================================
-	// Method - Public
 	/**
 	 * Add L2Character instance that is attacking to the attacker list.<BR><BR>
 	 * @param player The L2Character that attacks this one
@@ -745,8 +739,6 @@ public abstract class L2Character extends L2Object
 			teleToLocation(x, y, z, heading, 0);
 	}
 	
-	// =========================================================
-	// Method - Private
 	/**
 	 * Launch a physical attack against a target (Simple, Bow, Pole or Dual).<BR><BR>
 	 *
@@ -1405,7 +1397,6 @@ public abstract class L2Character extends L2Object
 		
 		/*if (angleChar <= 0)
 		    angleChar += 360;*/
-		// ===========================================================
 		
 		boolean hitted = doAttackHitSimple(attack, target, 100, sAtk);
 		double attackpercent = 85;
@@ -2388,8 +2379,6 @@ public abstract class L2Character extends L2Object
 		doRevive();
 	}
 	
-	// =========================================================
-	// Property - Public
 	/**
 	 * @return the L2CharacterAI of the L2Character and if its null create a new one.
 	 */
@@ -3018,7 +3007,6 @@ public abstract class L2Character extends L2Object
 		}
 	}
 	
-	// =========================================================
 	/** Task launching the magic skill phases */
 	class FlyToLocationTask implements Runnable
 	{
@@ -3052,9 +3040,7 @@ public abstract class L2Character extends L2Object
 		}
 	}
 	
-	// =========================================================
 	// Abnormal Effect - NEED TO REMOVE ONCE L2CHARABNORMALEFFECT IS COMPLETE
-	// Data Field
 	/** Map 32 bits (0x0000) containing all abnormal effect in progress */
 	private int _AbnormalEffects;
 	
@@ -3062,7 +3048,6 @@ public abstract class L2Character extends L2Object
 	
 	private int _SpecialEffects;
 	
-	// Method - Public
 	/**
 	 * Launch and add L2Effect (including Stack Group management) to L2Character and update client magic icon.<BR><BR>
 	 *
@@ -3604,7 +3589,6 @@ public abstract class L2Character extends L2Object
 		// overridden
 	}
 	
-	// Property - Public
 	/**
 	 * <B><U> Concept</U> :</B><BR><BR>
 	 * In Server->Client packet, each effect is represented by 1 bit of the map (ex : BLEEDING = 0x0001 (bit 1), SLEEP = 0x0080 (bit 8)...).
@@ -3716,8 +3700,6 @@ public abstract class L2Character extends L2Object
 		return _effects.getFirstEffect(tp);
 	}
 	
-	// =========================================================
-	// =========================================================
 	// NEED TO ORGANIZE AND MOVE TO PROPER PLACE
 	/** This class permit to the L2Character AI to obtain informations and uses L2Character method */
 	public class AIAccessor
@@ -7084,17 +7066,12 @@ public abstract class L2Character extends L2Object
 	 */
 	public abstract int getLevel();
 	
-	// =========================================================
-	
-	// =========================================================
 	// Stat - NEED TO REMOVE ONCE L2CHARSTAT IS COMPLETE
-	// Property - Public
 	public final double calcStat(Stats stat, double init, L2Character target, L2Skill skill)
 	{
 		return getStat().calcStat(stat, init, target, skill);
 	}
 	
-	// Property - Public
 	public int getAccuracy()
 	{
 		return getStat().getAccuracy();
@@ -7330,11 +7307,7 @@ public abstract class L2Character extends L2Object
 		return getStat().getWIT();
 	}
 	
-	// =========================================================
-	
-	// =========================================================
 	// Status - NEED TO REMOVE ONCE L2CHARTATUS IS COMPLETE
-	// Method - Public
 	public void addStatusListener(L2Character object)
 	{
 		getStatus().addStatusListener(object);
@@ -7373,7 +7346,6 @@ public abstract class L2Character extends L2Object
 		getStatus().stopHpMpRegeneration();
 	}
 	
-	// Property - Public
 	public final double getCurrentCp()
 	{
 		return getStatus().getCurrentCp();
@@ -7418,8 +7390,6 @@ public abstract class L2Character extends L2Object
 	{
 		getStatus().setCurrentMp(newMp);
 	}
-	
-	// =========================================================
 	
 	public boolean isChampion()
 	{

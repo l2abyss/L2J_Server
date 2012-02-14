@@ -12,11 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @author Forsaiken
- */
-
 package com.l2jserver.gameserver.model.skills.l2skills;
 
 import com.l2jserver.gameserver.datatables.NpcTable;
@@ -31,6 +26,9 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.util.Point3D;
 
+/**
+ * @author Forsaiken
+ */
 public final class L2SkillSignet extends L2Skill
 {
 	private int _effectNpcId;

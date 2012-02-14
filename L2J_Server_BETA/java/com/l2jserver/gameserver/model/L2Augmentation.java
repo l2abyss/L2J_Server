@@ -50,9 +50,6 @@ public final class L2Augmentation
 		this(effects, skill != 0 ? SkillTable.getInstance().getInfo(skill, skillLevel) : null);
 	}
 	
-	// =========================================================
-	// Nested Class
-	
 	public static class AugmentationStatBoni
 	{
 		private Stats _stats[];

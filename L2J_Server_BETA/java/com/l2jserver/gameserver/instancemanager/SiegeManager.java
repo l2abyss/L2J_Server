@@ -51,13 +51,10 @@ public class SiegeManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private int _attackerMaxClans = 500; // Max number of clans
 	private int _attackerRespawnDelay = 0; // Time in ms. Changeable in siege.config
 	private int _defenderMaxClans = 500; // Max number of clans
 	
-	// Siege settings
 	private TIntObjectHashMap<FastList<SiegeSpawn>> _artefactSpawnList;
 	private TIntObjectHashMap<FastList<SiegeSpawn>> _controlTowerSpawnList;
 	private TIntObjectHashMap<FastList<SiegeSpawn>> _flameTowerSpawnList;
@@ -67,16 +64,12 @@ public class SiegeManager
 	private int _siegeLength = 120; // Time in minute. Changeable in siege.config
 	private int _bloodAllianceReward = 0; // Number of Blood Alliance items reward for successful castle defending
 	
-	// =========================================================
-	// Constructor
 	private SiegeManager()
 	{
 		_log.info("Initializing SiegeManager");
 		load();
 	}
 	
-	// =========================================================
-	// Method - Public
 	public final void addSiegeSkills(L2PcInstance character)
 	{
 		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getHasCastle() > 0))
@@ -164,8 +157,6 @@ public class SiegeManager
 		}
 	}
 	
-	// =========================================================
-	// Method - Private
 	private final void load()
 	{
 		InputStream is = null;
@@ -298,8 +289,6 @@ public class SiegeManager
 		}
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final FastList<SiegeSpawn> getArtefactSpawnList(int _castleId)
 	{
 		return _artefactSpawnList.get(_castleId);

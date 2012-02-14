@@ -25,17 +25,13 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * @author evill33t
- *
  */
 public class Couple
 {
 	private static final Logger _log = Logger.getLogger(Couple.class.getName());
 	
-	// =========================================================
-	// Data Field
 	private int _Id = 0;
 	private int _player1Id = 0;
 	private int _player2Id = 0;
@@ -43,8 +39,6 @@ public class Couple
 	private Calendar _affiancedDate;
 	private Calendar _weddingDate;
 	
-	// =========================================================
-	// Constructor
 	public Couple(int coupleId)
 	{
 		_Id = coupleId;

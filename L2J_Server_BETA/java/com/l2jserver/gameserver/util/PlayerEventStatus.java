@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 /**
  * @author Nik
  */
-
 public class PlayerEventStatus
 {
 	public L2PcInstance player = null;

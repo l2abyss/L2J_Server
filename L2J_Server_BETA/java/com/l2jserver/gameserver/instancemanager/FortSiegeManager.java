@@ -53,8 +53,6 @@ public class FortSiegeManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private int _attackerMaxClans = 500; // Max number of clans
 	
 	// Fort Siege settings
@@ -67,16 +65,12 @@ public class FortSiegeManager
 	private int _suspiciousMerchantRespawnDelay = 180; // Time in minute. Changeable in fortsiege.properties
 	private List<FortSiege> _sieges;
 	
-	// =========================================================
-	// Constructor
 	private FortSiegeManager()
 	{
 		_log.info("Initializing FortSiegeManager");
 		load();
 	}
 	
-	// =========================================================
-	// Method - Public
 	public final void addSiegeSkills(L2PcInstance character)
 	{
 		character.addSkill(SkillTable.FrequentSkill.SEAL_OF_RULER.getSkill(), false);
@@ -157,8 +151,6 @@ public class FortSiegeManager
 		character.removeSkill(SkillTable.FrequentSkill.BUILD_HEADQUARTERS.getSkill());
 	}
 	
-	// =========================================================
-	// Method - Private
 	private final void load()
 	{
 		InputStream is = null;
@@ -251,8 +243,6 @@ public class FortSiegeManager
 		}
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final FastList<SiegeSpawn> getCommanderSpawnList(int _fortId)
 	{
 		if (_commanderSpawnList.containsKey(_fortId))

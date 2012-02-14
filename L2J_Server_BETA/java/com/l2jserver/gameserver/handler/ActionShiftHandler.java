@@ -19,9 +19,9 @@ import java.util.Map;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
+
 /**
  * @author UnAfraid
- * 
  */
 public class ActionShiftHandler
 {

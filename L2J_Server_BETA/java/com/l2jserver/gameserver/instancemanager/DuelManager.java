@@ -32,21 +32,14 @@ public class DuelManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private FastList<Duel> _duels;
 	private int _currentDuelId = 0x90;
 	
-	// =========================================================
-	// Constructor
 	private DuelManager()
 	{
 		_log.info("Initializing DuelManager");
 		_duels = new FastList<Duel>();
 	}
-	
-	// =========================================================
-	// Method - Private
 	
 	private int getNextDuelId()
 	{
@@ -55,9 +48,6 @@ public class DuelManager
 			_currentDuelId = 1;
 		return _currentDuelId;
 	}
-	
-	// =========================================================
-	// Method - Public
 	
 	public Duel getDuel(int duelId)
 	{
@@ -141,7 +131,7 @@ public class DuelManager
 	
 	/**
 	 * Updates player states.
-	 * @param player - the dieing player
+	 * @param player - the dying player
 	 */
 	public void onPlayerDefeat(L2PcInstance player)
 	{

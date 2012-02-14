@@ -32,25 +32,13 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class NpcKnownList extends CharKnownList
 {
-	// =========================================================
-	// Data Field
 	private ScheduledFuture<?> _trackingTask = null;
 	
-	// =========================================================
-	// Constructor
 	public NpcKnownList(L2Npc activeChar)
 	{
 		super(activeChar);
 	}
 	
-	// =========================================================
-	// Method - Public
-	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	@Override
 	public L2Npc getActiveChar()
 	{

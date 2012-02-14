@@ -27,7 +27,8 @@ import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class ItemsAutoDestroy
 {
-	protected static final Logger _log = Logger.getLogger(ItemsAutoDestroy.class.getName());
+	private static final Logger _log = Logger.getLogger(ItemsAutoDestroy.class.getName());
+	
 	protected List<L2ItemInstance> _items = null;
 	protected static long _sleep;
 	

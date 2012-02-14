@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.l2jserver.gameserver.instancemanager;
 
 import gnu.trove.procedure.TObjectProcedure;
@@ -73,11 +72,6 @@ public class ZoneManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
-	
-	// =========================================================
-	// Constructor
 	private ZoneManager()
 	{
 		load();
@@ -116,9 +110,6 @@ public class ZoneManager
 			return true;
 		}
 	}
-	
-	// =========================================================
-	// Method - Private
 	
 	private final void load()
 	{
@@ -454,7 +445,7 @@ public class ZoneManager
 	
 	/**
 	 * Returns all zones registered with the ZoneManager.
-	 * To minimise iteration processing retrieve zones from L2WorldRegion for a specific location instead.
+	 * To minimize iteration processing retrieve zones from L2WorldRegion for a specific location instead.
 	 * @return zones
 	 * @see #getAllZones(Class)
 	 */

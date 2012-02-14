@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 
-
 /**
  * This class ...
  *
@@ -33,7 +32,7 @@ import com.l2jserver.L2DatabaseFactory;
  */
 public class StackIDFactory extends IdFactory
 {
-	private static Logger _log = Logger.getLogger(IdFactory.class.getName());
+	private static Logger _log = Logger.getLogger(StackIDFactory.class.getName());
 	
 	private int _curOID;
 	private int _tempOID;

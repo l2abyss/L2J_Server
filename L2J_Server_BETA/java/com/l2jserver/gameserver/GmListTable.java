@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class GmListTable
 {
-	private static Logger _log = Logger.getLogger(GmListTable.class.getName());
+	private static final Logger _log = Logger.getLogger(GmListTable.class.getName());
 	
 	/** Set(L2PcInstance>) containing all the GM in game */
 	private FastMap<L2PcInstance, Boolean> _gmList;

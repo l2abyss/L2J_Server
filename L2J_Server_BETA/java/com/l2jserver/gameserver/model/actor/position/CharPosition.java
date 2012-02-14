@@ -18,13 +18,10 @@ import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- *
- * @author  Erb
+ * @author Erb
  */
 public class CharPosition extends ObjectPosition
 {
-	// =========================================================
-	// Constructor
 	public CharPosition(L2Character activeObject)
 	{
 		super(activeObject);
@@ -46,7 +43,6 @@ public class CharPosition extends ObjectPosition
 			else
 				getWorldRegion().removeFromZones((L2Character)getActiveObject());    // at world region change
 		}
-		
 		super.setWorldRegion(value);
 	}
 }

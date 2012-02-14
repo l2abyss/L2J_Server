@@ -22,9 +22,7 @@ import com.l2jserver.gameserver.network.serverpackets.VehicleInfo;
 import com.l2jserver.gameserver.network.serverpackets.VehicleStarted;
 
 /**
- * 
  * @author DS
- *
  */
 public class L2BoatAI extends L2VehicleAI
 {

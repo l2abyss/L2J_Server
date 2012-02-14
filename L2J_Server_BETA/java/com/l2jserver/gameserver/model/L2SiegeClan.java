@@ -22,10 +22,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 
 public class L2SiegeClan
 {
-	// ==========================================================================================
-	// Instance
-	// ===============================================================
-	// Data Field
 	private int _clanId = 0;
 	private List<L2Npc> _flag = new FastList<L2Npc>();
 	private int _numFlagsAdded = 0;
@@ -39,17 +35,12 @@ public class L2SiegeClan
 		DEFENDER_PENDING
 	}
 	
-	// =========================================================
-	// Constructor
-	
 	public L2SiegeClan(int clanId, SiegeClanType type)
 	{
 		_clanId = clanId;
 		_type = type;
 	}
 	
-	// =========================================================
-	// Method - Public
 	public int getNumFlags()
 	{
 		return _numFlagsAdded;
@@ -91,8 +82,6 @@ public class L2SiegeClan
 		}
 	}
 	
-	// =========================================================
-	// Property
 	public final int getClanId()
 	{
 		return _clanId;

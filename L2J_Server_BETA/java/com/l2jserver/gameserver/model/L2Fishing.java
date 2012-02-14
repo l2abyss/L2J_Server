@@ -31,8 +31,6 @@ import com.l2jserver.util.Rnd;
 
 public class L2Fishing implements Runnable
 {
-	// =========================================================
-	// Data Field
 	private L2PcInstance _fisher;
 	private int _time;
 	private int _stop = 0;
@@ -71,7 +69,6 @@ public class L2Fishing implements Runnable
 		else aiTask();
 	}
 	
-	// =========================================================
 	public L2Fishing(L2PcInstance Fisher, FishData fish, boolean isNoob, boolean isUpperGrade)
 	{
 		_fisher = Fisher;

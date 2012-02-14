@@ -16,7 +16,6 @@ package com.l2jserver;
 
 /**
  * This class used to be the starter class, since LS/GS split, it only retains server mode
- *
  */
 public class Server
 {

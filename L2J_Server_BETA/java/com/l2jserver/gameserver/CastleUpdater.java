@@ -25,10 +25,8 @@ import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 
 
 /**
- *
- * Thorgrim - 2005
  * Class managing periodical events with castle
- *
+ * @author Thorgrim - 2005
  */
 public class CastleUpdater implements Runnable
 {

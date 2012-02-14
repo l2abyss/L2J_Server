@@ -12,11 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @author godson
- */
-
 package com.l2jserver.gameserver.datatables;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -31,11 +26,8 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2ArmorSet;
 
-
 /**
- *
- *
- * @author  Luno
+ * @author godson, Luno
  */
 public class ArmorSetsTable
 {

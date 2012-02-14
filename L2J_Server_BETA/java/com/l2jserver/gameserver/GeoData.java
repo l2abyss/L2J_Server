@@ -23,14 +23,12 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Point3D;
 
-
 /**
- *
  * @author  -Nemesiss-
  */
 public class GeoData
 {
-	private static Logger _log = Logger.getLogger(GeoData.class.getName());
+	private static final Logger _log = Logger.getLogger(GeoData.class.getName());
 	
 	protected GeoData()
 	{

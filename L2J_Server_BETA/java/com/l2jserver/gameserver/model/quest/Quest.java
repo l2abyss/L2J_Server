@@ -1850,7 +1850,6 @@ public class Quest extends ManagedScript
 		return content;
 	}
 	
-	// Method - Public
 	/**
 	 * Add a temporary (quest) spawn
 	 * @param npcId 
