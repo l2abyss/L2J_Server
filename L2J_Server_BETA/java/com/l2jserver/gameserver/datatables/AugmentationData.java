@@ -18,6 +18,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,7 +56,7 @@ public class AugmentationData
 	private static final int STAT_START = 1;
 	private static final int STAT_END = 14560;
 	private static final int STAT_BLOCKSIZE = 3640;
-	// private static final int STAT_NUMBEROF_BLOCKS = 4;
+	private static final int STAT_NUMBEROF_BLOCKS = 4;
 	private static final int STAT_SUBBLOCKSIZE = 91;
 	// private static final int STAT_NUMBEROF_SUBBLOCKS = 40;
 	private static final int STAT_NUM = 13;
@@ -100,13 +101,13 @@ public class AugmentationData
 	private static final byte[] ACC_STATS1_MAP = new byte[ACC_STAT_SUBBLOCKSIZE];
 	private static final byte[] ACC_STATS2_MAP = new byte[ACC_STAT_SUBBLOCKSIZE];
 	
-	private final ArrayList<?>[] _augStats = new ArrayList<?>[4];
-	private final ArrayList<?>[] _augAccStats = new ArrayList<?>[4];
+	private final List<List<AugmentationStat>> _augStats = new ArrayList<>(4);
+	private final List<List<AugmentationStat>> _augAccStats = new ArrayList<>(4);
 	
-	private final ArrayList<?>[] _blueSkills = new ArrayList<?>[10];
-	private final ArrayList<?>[] _purpleSkills = new ArrayList<?>[10];
-	private final ArrayList<?>[] _redSkills = new ArrayList<?>[10];
-	private final ArrayList<?>[] _yellowSkills = new ArrayList<?>[10];
+	private final List<List<Integer>> _blueSkills = new ArrayList<>(10);
+	private final List<List<Integer>> _purpleSkills = new ArrayList<>(10);
+	private final List<List<Integer>> _redSkills = new ArrayList<>(10);
+	private final List<List<Integer>> _yellowSkills = new ArrayList<>(10);
 	
 	private final TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<AugmentationSkill>();
 	
@@ -114,15 +115,18 @@ public class AugmentationData
 	{
 		_log.info("Initializing AugmentationData.");
 		
-		_augStats[0] = new ArrayList<AugmentationStat>();
-		_augStats[1] = new ArrayList<AugmentationStat>();
-		_augStats[2] = new ArrayList<AugmentationStat>();
-		_augStats[3] = new ArrayList<AugmentationStat>();
-		
-		_augAccStats[0] = new ArrayList<AugmentationStat>();
-		_augAccStats[1] = new ArrayList<AugmentationStat>();
-		_augAccStats[2] = new ArrayList<AugmentationStat>();
-		_augAccStats[3] = new ArrayList<AugmentationStat>();
+		for (int i = 0; i < 10; i++)
+		{
+			if (i < STAT_NUMBEROF_BLOCKS)
+			{
+				_augStats.add(new ArrayList<AugmentationStat>());
+				_augAccStats.add(new ArrayList<AugmentationStat>());
+			}
+			_blueSkills.add(new ArrayList<Integer>());
+			_purpleSkills.add(new ArrayList<Integer>());
+			_redSkills.add(new ArrayList<Integer>());
+			_yellowSkills.add(new ArrayList<Integer>());
+		}
 		
 		// Lookup tables structure: STAT1 represent first stat, STAT2 - second.
 		// If both values are the same - use solo stat, if different - combined.
@@ -176,22 +180,14 @@ public class AugmentationData
 		ACC_STATS1_MAP[idx] = 4;
 		ACC_STATS2_MAP[idx] = 5;
 		
-		for (int i = 0; i < 10; i++)
-		{
-			_blueSkills[i] = new ArrayList<Integer>();
-			_purpleSkills[i] = new ArrayList<Integer>();
-			_redSkills[i] = new ArrayList<Integer>();
-			_yellowSkills[i] = new ArrayList<Integer>();
-		}
-		
 		load();
 		
 		// Use size*4: since theres 4 blocks of stat-data with equivalent size
-		_log.info("AugmentationData: Loaded: " + (_augStats[0].size() * 4) + " augmentation stats.");
-		_log.info("AugmentationData: Loaded: " + (_augAccStats[0].size() * 4) + " accessory augmentation stats.");
+		_log.info("AugmentationData: Loaded: " + (_augStats.get(0).size() * 4) + " augmentation stats.");
+		_log.info("AugmentationData: Loaded: " + (_augAccStats.get(0).size() * 4) + " accessory augmentation stats.");
 		for (int i = 0; i < 10; i++)
 		{
-			_log.info("AugmentationData: Loaded: " + _blueSkills[i].size() + " blue, " + _purpleSkills[i].size() + " purple and " + _redSkills[i].size() + " red skills for lifeStoneLevel " + i);
+			_log.info("AugmentationData: Loaded: " + _blueSkills.get(i).size() + " blue, " + _purpleSkills.get(i).size() + " purple and " + _redSkills.get(i).size() + " red skills for lifeStoneLevel " + i);
 		}
 	}
 	
@@ -263,7 +259,6 @@ public class AugmentationData
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private final void load()
 	{
 		// Load the skillmap
@@ -342,15 +337,15 @@ public class AugmentationData
 							
 							if (type.equalsIgnoreCase("blue"))
 							{
-								((ArrayList<Integer>) _blueSkills[k]).add(augmentationId);
+								_blueSkills.get(k).add(augmentationId);
 							}
 							else if (type.equalsIgnoreCase("purple"))
 							{
-								((ArrayList<Integer>) _purpleSkills[k]).add(augmentationId);
+								_purpleSkills.get(k).add(augmentationId);
 							}
 							else
 							{
-								((ArrayList<Integer>) _redSkills[k]).add(augmentationId);
+								_redSkills.get(k).add(augmentationId);
 							}
 							
 							_allSkills.put(augmentationId, new AugmentationSkill(skillId, skillLvL));
@@ -437,7 +432,7 @@ public class AugmentationData
 									}
 								}
 								// store this stat
-								((ArrayList<AugmentationStat>) _augStats[(i - 1)]).add(new AugmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
+								_augStats.get(i - 1).add(new AugmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
 							}
 						}
 					}
@@ -515,7 +510,7 @@ public class AugmentationData
 									}
 								}
 								// store this stat
-								((ArrayList<AugmentationStat>) _augAccStats[(i - 1)]).add(new AugmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
+								_augAccStats.get(i - 1).add(new AugmentationStat(Stats.valueOfXml(statName), soloValues, combinedValues));
 							}
 						}
 					}
@@ -564,7 +559,7 @@ public class AugmentationData
 		boolean generateSkill = false;
 		boolean generateGlow = false;
 		
-		// lifestonelevel is used for stat Id and skill level, but here the max level is 9
+		// life stone level is used for stat Id and skill level, but here the max level is 9
 		lifeStoneLevel = Math.min(lifeStoneLevel, 9);
 		
 		switch (lifeStoneGrade)
@@ -624,8 +619,8 @@ public class AugmentationData
 		// Second: decide which grade the augmentation result is going to have:
 		// 0:yellow, 1:blue, 2:purple, 3:red
 		// The chances used here are most likely custom,
-		// whats known is: you cant have yellow with skill(or baseStatModifier)
-		// noGrade stone can not have glow, mid only with skill, high has a chance(custom), top allways glow
+		// what's known is: you can't have yellow with skill(or baseStatModifier)
+		// noGrade stone can not have glow, mid only with skill, high has a chance(custom), top always glow
 		int resultColor = Rnd.get(0, 100);
 		if ((stat34 == 0) && !generateSkill)
 		{
@@ -654,26 +649,26 @@ public class AugmentationData
 			}
 		}
 		
-		// generate a skill if neccessary
+		// generate a skill if necessary
 		L2Skill skill = null;
 		if (generateSkill)
 		{
 			switch (resultColor)
 			{
 				case 1: // blue skill
-					stat34 = ((Integer) _blueSkills[lifeStoneLevel].get(Rnd.get(0, _blueSkills[lifeStoneLevel].size() - 1)));
+					stat34 = _blueSkills.get(lifeStoneLevel).get(Rnd.get(0, _blueSkills.get(lifeStoneLevel).size() - 1));
 					break;
 				case 2: // purple skill
-					stat34 = ((Integer) _purpleSkills[lifeStoneLevel].get(Rnd.get(0, _purpleSkills[lifeStoneLevel].size() - 1)));
+					stat34 = _purpleSkills.get(lifeStoneLevel).get(Rnd.get(0, _purpleSkills.get(lifeStoneLevel).size() - 1));
 					break;
 				case 3: // red skill
-					stat34 = ((Integer) _redSkills[lifeStoneLevel].get(Rnd.get(0, _redSkills[lifeStoneLevel].size() - 1)));
+					stat34 = _redSkills.get(lifeStoneLevel).get(Rnd.get(0, _redSkills.get(lifeStoneLevel).size() - 1));
 					break;
 			}
 			skill = _allSkills.get(stat34).getSkill();
 		}
 		
-		// Third: Calculate the subblock offset for the choosen color,
+		// Third: Calculate the subblock offset for the chosen color,
 		// and the level of the lifeStone
 		// from large number of retail augmentations:
 		// no skill part
@@ -824,7 +819,7 @@ public class AugmentationData
 	public FastList<AugStat> getAugStatsById(int augmentationId)
 	{
 		FastList<AugStat> temp = new FastList<AugStat>();
-		// An augmentation id contains 2 short vaues so we gotta seperate them here
+		// An augmentation id contains 2 short values so we have to separate them here
 		// both values contain a number from 1-16380, the first 14560 values are stats
 		// the 14560 stats are divided into 4 blocks each holding 3640 values
 		// each block contains 40 subblocks holding 91 stat values
@@ -852,15 +847,15 @@ public class AugmentationData
 				byte stat2 = STATS2_MAP[stat];
 				if (stat1 == stat2) // solo stat
 				{
-					AugmentationStat as = ((AugmentationStat) _augStats[color].get(stat1));
+					AugmentationStat as = _augStats.get(color).get(stat1);
 					temp.add(new AugStat(as.getStat(), as.getSingleStatValue(level)));
 				}
 				else
 				// combined stat
 				{
-					AugmentationStat as = ((AugmentationStat) _augStats[color].get(stat1));
+					AugmentationStat as = _augStats.get(color).get(stat1);
 					temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
-					as = ((AugmentationStat) _augStats[color].get(stat2));
+					as = _augStats.get(color).get(stat2);
 					temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
 				}
 			}
@@ -920,15 +915,15 @@ public class AugmentationData
 					byte stat2 = ACC_STATS2_MAP[stat];
 					if (stat1 == stat2) // solo
 					{
-						AugmentationStat as = ((AugmentationStat) _augAccStats[color].get(stat1));
+						AugmentationStat as = _augAccStats.get(color).get(stat1);
 						temp.add(new AugStat(as.getStat(), as.getSingleStatValue(level)));
 					}
 					else
 					// combined
 					{
-						AugmentationStat as = ((AugmentationStat) _augAccStats[color].get(stat1));
+						AugmentationStat as = _augAccStats.get(color).get(stat1);
 						temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
-						as = ((AugmentationStat) _augAccStats[color].get(stat2));
+						as = _augAccStats.get(color).get(stat2);
 						temp.add(new AugStat(as.getStat(), as.getCombinedStatValue(level)));
 					}
 				}
@@ -938,8 +933,9 @@ public class AugmentationData
 		return temp;
 	}
 	
-	/*
-	 * Returns skill by augmentation Id or null if not valid or not found
+	/**
+	 * @param augmentationId 
+	 * @return skill by augmentation Id or null if not valid or not found.
 	 */
 	public L2Skill getAugSkillById(int augmentationId)
 	{
