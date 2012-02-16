@@ -211,7 +211,7 @@ public final class Formulas
 			else
 			{
 				float level = env.getCharacter().getLevel();
-				env.mulValue(BaseStats.STR.calcBonus(env.getPlayer()) * ((level + 89) / 100));
+				env.mulValue(BaseStats.STR.calcBonus(env.getCharacter()) * ((level + 89) / 100));
 			}
 		}
 	}
