@@ -41,7 +41,6 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TimeStamp;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -279,13 +278,14 @@ public class L2Clan
 			SiegeManager.getInstance().addSiegeSkills(newLeader);
 			
 			// Transferring siege skills TimeStamps from old leader to new leader to prevent unlimited headquarters
-			if (!exLeader.getReuseTimeStamp().isEmpty())
+			if (!exLeader.getSkillReuseTimeStamps().isEmpty())
 			{
+				TimeStamp t;
 				for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble(), getHasCastle() > 0))
 				{
-					if (exLeader.getReuseTimeStamp().containsKey(sk.getReuseHashCode()))
+					if (exLeader.hasSkillReuse(sk.getReuseHashCode()))
 					{
-						TimeStamp t = exLeader.getReuseTimeStamp().get(sk.getReuseHashCode());
+						t = exLeader.getSkillReuseTimeStamp(sk.getReuseHashCode());
 						newLeader.addTimeStamp(sk, t.getReuse(), t.getStamp());
 					}
 				}

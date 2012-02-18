@@ -129,19 +129,18 @@ public final class L2Augmentation
 			player.addSkill(_skill);
 			if (_skill.isActive())
 			{
-				if (!player.getReuseTimeStamp().isEmpty() && player.getReuseTimeStamp().containsKey(_skill.getReuseHashCode()))
+				final long delay = player.getSkillRemainingReuseTime(_skill.getReuseHashCode());
+				if (delay > 0)
 				{
-					final long delay = player.getReuseTimeStamp().get(_skill.getReuseHashCode()).getRemaining();
-					if (delay > 0)
-					{
-						player.disableSkill(_skill, delay);
-						updateTimeStamp = true;
-					}
+					player.disableSkill(_skill, delay);
+					updateTimeStamp = true;
 				}
 			}
 			player.sendSkillList();
 			if (updateTimeStamp)
+			{
 				player.sendPacket(new SkillCoolTime(player));
+			}
 		}
 	}
 	

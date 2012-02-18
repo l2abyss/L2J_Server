@@ -29,7 +29,6 @@ import com.l2jserver.util.StringUtil;
 public final class L2EtcItem extends L2Item
 {
 	private String _handler;
-	private final int _sharedReuseGroup;
 	private L2EtcItemType _type;
 	private final boolean _isBlessed;
 	private final List<L2ExtractableProduct> _extractableItems;
@@ -75,7 +74,6 @@ public final class L2EtcItem extends L2Item
 		}
 		
 		_handler = set.getString("handler", null); // ! null !
-		_sharedReuseGroup = set.getInteger("shared_reuse_group", -1);
 		_isBlessed = set.getBool("blessed", false);
 		
 		// Extractable
@@ -156,14 +154,6 @@ public final class L2EtcItem extends L2Item
 	public String getHandlerName()
 	{
 		return _handler;
-	}
-	
-	/**
-	 * @return the shared reuse time group.
-	 */
-	public int getSharedReuseGroup()
-	{
-		return _sharedReuseGroup;
 	}
 	
 	/**

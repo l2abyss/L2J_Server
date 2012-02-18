@@ -566,8 +566,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the type of item
-	 * @return Enum
+	 * @return the type of item.
 	 */
 	public L2ItemType getItemType()
 	{
@@ -575,8 +574,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the ID of the item
-	 * @return int
+	 * @return the Id of the item.
 	 */
 	public int getItemId()
 	{
@@ -584,8 +582,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the ID of the item
-	 * @return int
+	 * @return the display Id of the item.
 	 */
 	public int getDisplayId()
 	{
@@ -593,8 +590,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns true if item is an EtcItem
-	 * @return boolean
+	 * @return {@code true} if item is an EtcItem, {@code false} otherwise.
 	 */
 	public boolean isEtcItem()
 	{
@@ -602,8 +598,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns true if item is a Weapon/Shield
-	 * @return boolean
+	 * @return {@code true} if item is a Weapon/Shield, {@code false} otherwise.
 	 */
 	public boolean isWeapon()
 	{
@@ -611,8 +606,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns true if item is an Armor
-	 * @return boolean
+	 * @return {@code true} if item is an Armor, {@code false} otherwise.
 	 */
 	public boolean isArmor()
 	{
@@ -620,8 +614,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the characteristics of the L2EtcItem
-	 * @return L2EtcItem
+	 * @return the characteristics of the L2EtcItem, {@code false} otherwise.
 	 */
 	public L2EtcItem getEtcItem()
 	{
@@ -633,8 +626,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the characteristics of the L2Weapon
-	 * @return L2Weapon
+	 * @return the characteristics of the L2Weapon.
 	 */
 	public L2Weapon getWeaponItem()
 	{
@@ -646,8 +638,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the characteristics of the L2Armor
-	 * @return L2Armor
+	 * @return the characteristics of the L2Armor.
 	 */
 	public L2Armor getArmorItem()
 	{
@@ -659,8 +650,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the quantity of crystals for crystallization
-	 * @return int
+	 * @return the quantity of crystals for crystallization.
 	 */
 	public final int getCrystalCount()
 	{
@@ -668,8 +658,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the reference price of the item
-	 * @return int
+	 * @return the reference price of the item.
 	 */
 	public int getReferencePrice()
 	{
@@ -677,8 +666,7 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the name of the item
-	 * @return String
+	 * @return the name of the item.
 	 */
 	public String getItemName()
 	{
@@ -686,8 +674,23 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * Returns the last change of the item
-	 * @return int
+	 * @return the reuse delay of this item.
+	 */
+	public int getReuseDelay()
+	{
+		return _item.getReuseDelay();
+	}
+	
+	/**
+	 * @return the shared reuse item group.
+	 */
+	public int getSharedReuseGroup()
+	{
+		return _item.getSharedReuseGroup();
+	}
+	
+	/**
+	 * @return the last change of the item
 	 */
 	public int getLastChange()
 	{

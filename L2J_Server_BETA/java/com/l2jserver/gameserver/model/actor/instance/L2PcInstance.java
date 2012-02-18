@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -129,6 +130,7 @@ import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.ShortCuts;
 import com.l2jserver.gameserver.model.TerritoryWard;
+import com.l2jserver.gameserver.model.TimeStamp;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -221,6 +223,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExSetCompassZoneCode;
 import com.l2jserver.gameserver.network.serverpackets.ExSpawnEmitter;
 import com.l2jserver.gameserver.network.serverpackets.ExStartScenePlayer;
 import com.l2jserver.gameserver.network.serverpackets.ExStorageMaxCount;
+import com.l2jserver.gameserver.network.serverpackets.ExUseSharedGroupItem;
 import com.l2jserver.gameserver.network.serverpackets.ExVitalityPointInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExVoteSystemInfo;
 import com.l2jserver.gameserver.network.serverpackets.FriendStatusPacket;
@@ -295,6 +298,11 @@ public final class L2PcInstance extends L2Playable
 	private static final String ADD_SKILL_SAVE = "INSERT INTO character_skills_save (charId,skill_id,skill_level,effect_count,effect_cur_time,reuse_delay,systime,restore_type,class_index,buff_index) VALUES (?,?,?,?,?,?,?,?,?,?)";
 	private static final String RESTORE_SKILL_SAVE = "SELECT skill_id,skill_level,effect_count,effect_cur_time, reuse_delay, systime, restore_type FROM character_skills_save WHERE charId=? AND class_index=? ORDER BY buff_index ASC";
 	private static final String DELETE_SKILL_SAVE = "DELETE FROM character_skills_save WHERE charId=? AND class_index=?";
+	
+	// Character Item Reuse Time String Definition:
+	private static final String ADD_ITEM_REUSE_SAVE = "INSERT INTO character_item_reuse_save (charId,itemId,itemObjId,reuseDelay,systime) VALUES (?,?,?,?,?)";
+	private static final String RESTORE_ITEM_REUSE_SAVE = "SELECT charId,itemId,itemObjId,reuseDelay,systime FROM character_item_reuse_save WHERE charId=?";
+	private static final String DELETE_ITEM_REUSE_SAVE = "DELETE FROM character_item_reuse_save WHERE charId=?";
 	
 	// Character Character SQL String Definitions:
 	private static final String INSERT_CHARACTER = "INSERT INTO characters (account_name,charId,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,face,hairStyle,hairColor,sex,exp,sp,karma,fame,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,title_color,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,newbie,nobless,power_grade,createDate) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -463,6 +471,11 @@ public final class L2PcInstance extends L2Playable
 	private PunishLevel _punishLevel = PunishLevel.NONE;
 	private long _punishTimer = 0;
 	private ScheduledFuture<?> _punishTask;
+	
+	private boolean _canFeed;
+	private int _eventEffectId = 0;
+	private boolean _isInSiege;
+	private boolean _isInHideoutSiege = false;
 	
 	public enum PunishLevel
 	{
@@ -4289,7 +4302,7 @@ public final class L2PcInstance extends L2Playable
 	public void enableSkill(L2Skill skill)
 	{
 		super.enableSkill(skill);
-		_reuseTimeStamps.remove(skill.getReuseHashCode());
+		_reuseTimeStampsSkills.remove(skill.getReuseHashCode());
 	}
 	
 	/**
@@ -7435,6 +7448,8 @@ public final class L2PcInstance extends L2Playable
 			if (Config.STORE_SKILL_COOLTIME)
 				player.restoreEffects();
 			
+			player.restoreItemReuse();
+			
 			// Restore current Cp, HP and MP values
 			player.setCurrentCp(currentCp);
 			player.setCurrentHp(currentHp);
@@ -7763,6 +7778,7 @@ public final class L2PcInstance extends L2Playable
 		storeCharBase();
 		storeCharSub();
 		storeEffect(storeActiveEffects);
+		storeItemReuseDelay();
 		transformInsertInfo();
 		if(Config.STORE_RECIPE_SHOPLIST)
 			storeRecipeShopList();
@@ -7962,9 +7978,9 @@ public final class L2PcInstance extends L2Playable
 						statement.setInt(4, effect.getCount());
 						statement.setInt(5, effect.getTime());
 						
-						if (_reuseTimeStamps.containsKey(skill.getReuseHashCode()))
+						if (_reuseTimeStampsSkills.containsKey(skill.getReuseHashCode()))
 						{
-							TimeStamp t = _reuseTimeStamps.get(skill.getReuseHashCode());
+							TimeStamp t = _reuseTimeStampsSkills.get(skill.getReuseHashCode());
 							statement.setLong(6, t.hasNotPassed() ? t.getReuse() : 0);
 							statement.setDouble(7, t.hasNotPassed() ? t.getStamp() : 0);
 						}
@@ -7984,13 +8000,17 @@ public final class L2PcInstance extends L2Playable
 			
 			// Store the reuse delays of remaining skills which
 			// lost effect but still under reuse delay. 'restore_type' 1.
-			for (int hash : _reuseTimeStamps.keys())
+			int hash;
+			TimeStamp t;
+			for (Entry<Integer, TimeStamp> ts : _reuseTimeStampsSkills.entrySet())
 			{
+				hash = ts.getKey();
 				if (storedSkills.contains(hash))
+				{
 					continue;
-				
-				TimeStamp t = _reuseTimeStamps.get(hash);
-				if (t != null && t.hasNotPassed())
+				}
+				t = ts.getValue();
+				if ((t != null) && t.hasNotPassed())
 				{
 					storedSkills.add(hash);
 					
@@ -8012,6 +8032,44 @@ public final class L2PcInstance extends L2Playable
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not store char effect data: ", e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
+	}
+	
+	private void storeItemReuseDelay()
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			
+			PreparedStatement statement = con.prepareStatement(DELETE_ITEM_REUSE_SAVE);
+			
+			statement.setInt(1, getObjectId());
+			statement.execute();
+			statement.close();
+			
+			statement = con.prepareStatement(ADD_ITEM_REUSE_SAVE);
+			for (TimeStamp ts : _reuseTimeStampsItems.values())
+			{
+				if ((ts != null) && ts.hasNotPassed())
+				{
+					statement.setInt(1, getObjectId());
+					statement.setInt(2, ts.getItemId());
+					statement.setInt(3, ts.getItemObjectId());
+					statement.setLong(4, ts.getReuse());
+					statement.setDouble(5, ts.getStamp());
+					statement.execute();
+				}
+			}
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not store char item reuse data: ", e);
 		}
 		finally
 		{
@@ -8342,6 +8400,79 @@ public final class L2PcInstance extends L2Playable
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore "+this+" active effect data: " + e.getMessage(), e);
+		}
+		finally
+		{
+			L2DatabaseFactory.close(con);
+		}
+	}
+	
+	/**
+	 * Retrieve from the database all Item Reuse Time of this L2PcInstance and add them to the player.
+	 */
+	private void restoreItemReuse()
+	{
+		Connection con = null;
+		try
+		{
+			con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(RESTORE_ITEM_REUSE_SAVE);
+			statement.setInt(1, getObjectId());
+			final ResultSet rset = statement.executeQuery();
+			int itemId;
+			@SuppressWarnings("unused")
+			int itemObjId;
+			long reuseDelay;
+			long systime;
+			boolean isInInventory;
+			long remainingTime;
+			while (rset.next())
+			{
+				itemId = rset.getInt("itemId");
+				itemObjId = rset.getInt("itemObjId");
+				reuseDelay = rset.getLong("reuseDelay");
+				systime = rset.getLong("systime");
+				isInInventory = true;
+				
+				// Using item Id
+				L2ItemInstance item = getInventory().getItemByItemId(itemId);
+				if (item == null)
+				{
+					item = getWarehouse().getItemByItemId(itemId);
+					isInInventory = false;
+				}
+				
+				if ((item != null) && (item.getItemId() == itemId) && (item.getReuseDelay() > 0))
+				{
+					remainingTime = systime - System.currentTimeMillis();
+					// Hardcoded to 10 seconds.
+					if (remainingTime > 10)
+					{
+						addTimeStampItem(item, reuseDelay, systime);
+						
+						if (isInInventory && item.isEtcItem())
+						{
+							final int group = item.getSharedReuseGroup();
+							if (group > 0)
+							{
+								sendPacket(new ExUseSharedGroupItem(itemId, group, (int) remainingTime, (int) reuseDelay));
+							}
+						}
+					}
+				}
+			}
+			
+			rset.close();
+			statement.close();
+			
+			statement = con.prepareStatement(DELETE_ITEM_REUSE_SAVE);
+			statement.setInt(1, getObjectId());
+			statement.executeUpdate();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Could not restore "+this+" Item Reuse data: " + e.getMessage(), e);
 		}
 		finally
 		{
@@ -9009,10 +9140,9 @@ public final class L2PcInstance extends L2Playable
 		if (isSkillDisabled(skill))
 		{
 			SystemMessage sm = null;
-			
-			if (_reuseTimeStamps.containsKey(skill.getReuseHashCode()))
+			if (_reuseTimeStampsSkills.containsKey(skill.getReuseHashCode()))
 			{
-				int remainingTime = (int)(_reuseTimeStamps.get(skill.getReuseHashCode()).getRemaining()/1000);
+				int remainingTime = (int)(_reuseTimeStampsSkills.get(skill.getReuseHashCode()).getRemaining()/1000);
 				int hours = remainingTime/3600;
 				int minutes = (remainingTime%3600)/60;
 				int seconds = (remainingTime%60);
@@ -10878,7 +11008,7 @@ public final class L2PcInstance extends L2Playable
 			 * 2. Register the correct _classId against applied 'classIndex'.
 			 */
 			store(Config.SUBCLASS_STORE_SKILL_COOLTIME);
-			_reuseTimeStamps.clear();
+			_reuseTimeStampsSkills.clear();
 			
 			// clear charges
 			_charges.set(0);
@@ -13218,96 +13348,81 @@ public final class L2PcInstance extends L2Playable
 			addSkill(SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel()), false);
 	}
 	
-	private final L2TIntObjectHashMap<TimeStamp> _reuseTimeStamps = new L2TIntObjectHashMap<TimeStamp>();
-	private boolean _canFeed;
-	private int _eventEffectId = 0;
-	private boolean _isInSiege;
-	private boolean _isInHideoutSiege = false;
+	private FastMap<Integer, TimeStamp> _reuseTimeStampsItems = new FastMap<>();
 	
-	public TimeStamp[] getReuseTimeStamps()
+	public void addTimeStampItem(L2ItemInstance item, long reuse)
 	{
-		return _reuseTimeStamps.values(new TimeStamp[0]);
+		_reuseTimeStampsItems.put(item.getObjectId(), new TimeStamp(item, reuse));
 	}
 	
-	public L2TIntObjectHashMap<TimeStamp> getReuseTimeStamp()
+	public void addTimeStampItem(L2ItemInstance item, long reuse, long systime)
 	{
-		return _reuseTimeStamps;
+		_reuseTimeStampsItems.put(item.getObjectId(), new TimeStamp(item, reuse, systime));
 	}
 	
-	/**
-	 * Simple class containing all neccessary information to maintain
-	 * valid timestamps and reuse for skills upon relog. Filter this
-	 * carefully as it becomes redundant to store reuse for small delays.
-	 * @author  Yesod
-	 */
-	public static class TimeStamp
+	public long getItemRemainingReuseTime(int itemObjId)
 	{
-		private final int _skillId;
-		private final int _skillLvl;
-		private final long _reuse;
-		private final long _stamp;
-		
-		public TimeStamp(L2Skill skill, long reuse)
+		if (_reuseTimeStampsItems.isEmpty() || !_reuseTimeStampsItems.containsKey(itemObjId))
 		{
-			_skillId = skill.getId();
-			_skillLvl = skill.getLevel();
-			_reuse = reuse;
-			_stamp = System.currentTimeMillis()+ reuse;
+			return -1;
 		}
-		
-		public TimeStamp(L2Skill skill, long reuse, long systime)
+		return _reuseTimeStampsItems.get(itemObjId).getRemaining();
+	}
+	
+	public long getReuseDelayOnGroup(int group)
+	{
+		if (group > 0)
 		{
-			_skillId = skill.getId();
-			_skillLvl = skill.getLevel();
-			_reuse = reuse;
-			_stamp = systime;
+			for (TimeStamp ts : _reuseTimeStampsItems.values())
+			{
+				if ((ts.getSharedReuseGroup() == group) && ts.hasNotPassed())
+				{
+					return ts.getRemaining();
+				}
+			}
 		}
-		
-		public long getStamp()
+		return 0;
+	}
+	
+	private final FastMap<Integer, TimeStamp> _reuseTimeStampsSkills = new FastMap<>();
+	
+	public FastMap<Integer, TimeStamp> getSkillReuseTimeStamps()
+	{
+		return _reuseTimeStampsSkills;
+	}
+	
+	public long getSkillRemainingReuseTime(int skillReuseHashId)
+	{
+		if (_reuseTimeStampsSkills.isEmpty() || !_reuseTimeStampsSkills.containsKey(skillReuseHashId))
 		{
-			return _stamp;
+			return -1;
 		}
-		
-		public int getSkillId()
+		return _reuseTimeStampsSkills.get(skillReuseHashId).getRemaining();
+	}
+	
+	public boolean hasSkillReuse(int skillReuseHashId)
+	{
+		if (_reuseTimeStampsSkills.isEmpty() || !_reuseTimeStampsSkills.containsKey(skillReuseHashId))
 		{
-			return _skillId;
+			return false;
 		}
-		
-		public int getSkillLvl()
-		{
-			return _skillLvl;
-		}
-		
-		public long getReuse()
-		{
-			return _reuse;
-		}
-		
-		public long getRemaining()
-		{
-			return Math.max(_stamp - System.currentTimeMillis(), 0);
-		}
-		
-		/* Check if the reuse delay has passed and
-		 * if it has not then update the stored reuse time
-		 * according to what is currently remaining on
-		 * the delay. */
-		public boolean hasNotPassed()
-		{
-			return System.currentTimeMillis() < _stamp;
-		}
+		return _reuseTimeStampsSkills.get(skillReuseHashId).hasNotPassed();
+	}
+	
+	public TimeStamp getSkillReuseTimeStamp(int skillReuseHashId)
+	{
+		return _reuseTimeStampsSkills.get(skillReuseHashId);
 	}
 	
 	/**
-	 * Index according to skill id the current
-	 * timestamp of use.
+	 * Index according to skill id the current timestamp of use.
 	 * @param skill
 	 * @param reuse delay
 	 */
 	@Override
 	public void addTimeStamp(L2Skill skill, long reuse)
 	{
-		_reuseTimeStamps.put(skill.getReuseHashCode(), new TimeStamp(skill, reuse));
+		_reuseTimeStampsSkills.put(skill.getReuseHashCode(), new TimeStamp(skill, reuse));
 	}
 	
 	/**
@@ -13319,8 +13434,10 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void addTimeStamp(L2Skill skill, long reuse, long systime)
 	{
-		_reuseTimeStamps.put(skill.getReuseHashCode(), new TimeStamp(skill, reuse, systime));
+		_reuseTimeStampsSkills.put(skill.getReuseHashCode(), new TimeStamp(skill, reuse, systime));
 	}
+	
+	
 	
 	@Override
 	public L2PcInstance getActingPlayer()
@@ -13437,10 +13554,8 @@ public final class L2PcInstance extends L2Playable
 		getStat().updateVitalityPoints(points, useRates, quiet);
 	}
 	
-	/*
-	 * Function for skill summon friend or Gate Chant.
-	 */
 	/**
+	 * Function for skill summon friend or Gate Chant.
 	 * Request Teleport 
 	 * @param requester 
 	 * @param skill 

@@ -57,6 +57,8 @@ import com.l2jserver.util.StringUtil;
  */
 public abstract class L2Item
 {
+	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
+	
 	public static final int TYPE1_WEAPON_RING_EARRING_NECKLACE = 0;
 	public static final int TYPE1_SHIELD_ARMOR = 1;
 	public static final int TYPE1_ITEM_QUESTITEM_ADENA = 4;
@@ -205,7 +207,8 @@ public abstract class L2Item
 	
 	private final List<Quest> _questEvents = new FastList<Quest>();
 	private final int _useSkillDisTime;
-	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
+	private final int _reuseDelay;
+	private int _sharedReuseGroup;
 	
 	/**
 	 * Constructor of the L2Item that fill class variables.<BR><BR>
@@ -245,6 +248,8 @@ public abstract class L2Item
 		//used for custom type select
 		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
 		_useSkillDisTime = set.getInteger("useSkillDisTime", 0);
+		_reuseDelay = set.getInteger("reuse_delay", 0);
+		_sharedReuseGroup = set.getInteger("shared_reuse_group", 0);
 		
 		//TODO cleanup + finish
 		String equip_condition = set.getString("equip_condition", null);
@@ -995,10 +1000,26 @@ public abstract class L2Item
 	{
 		return _useSkillDisTime;
 	}
-
+	
 	/**
-	 * Get the icon link in client files.<BR> Usable in HTML windows.
-	 * @return the _icon
+	 * @return the Reuse Delay of item.
+	 */
+	public int getReuseDelay()
+	{
+		return _reuseDelay;
+	}
+	
+	/**
+	 * @return the shared reuse group.
+	 */
+	public int getSharedReuseGroup()
+	{
+		return _sharedReuseGroup;
+	}
+	
+	/**
+	 * Usable in HTML windows.
+	 * @return the icon link in client files.
 	 */
 	public String getIcon()
 	{

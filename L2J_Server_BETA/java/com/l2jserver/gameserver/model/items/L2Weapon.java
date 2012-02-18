@@ -65,8 +65,6 @@ public final class L2Weapon extends L2Item
 	private SkillHolder _skillsOnCrit;
 	private Condition _skillsOnCritCondition = null;
 	
-	private final int _reuseDelay;
-	
 	private final boolean _isForceEquip;
 	private final boolean _isAttackWeapon;
 	private final boolean _useWeaponSkillsOnly;
@@ -87,7 +85,6 @@ public final class L2Weapon extends L2Item
 		_spiritShotCount = set.getInteger("spiritshots", 0);
 		_rndDam = set.getInteger("random_damage", 0);
 		_mpConsume = set.getInteger("mp_consume", 0);
-		_reuseDelay = set.getInteger("reuse_delay", 0);
 		
 		String skill = set.getString("enchant4_skill", null);
 		if (skill != null)
@@ -239,14 +236,6 @@ public final class L2Weapon extends L2Item
 	public int getRandomDamage()
 	{
 		return _rndDam;
-	}
-	
-	/**
-	 * @return the Reuse Delay of the L2Weapon.
-	 */
-	public int getReuseDelay()
-	{
-		return _reuseDelay;
 	}
 	
 	/**

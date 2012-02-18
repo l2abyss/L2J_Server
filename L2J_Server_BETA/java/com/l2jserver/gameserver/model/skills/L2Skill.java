@@ -393,22 +393,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_coolTime = set.getInteger("coolTime", 0);
 		_isDebuff = set.getBool("isDebuff", false);
 		_feed = set.getInteger("feed", 0);
-		
-		String reuseHash = set.getString("sharedReuse", null);
-		if (reuseHash != null)
-		{
-			try
-			{
-				String[] valuesSplit = reuseHash.split("-");
-				_reuseHashCode = SkillTable.getSkillHashCode(Integer.parseInt(valuesSplit[0]), Integer.parseInt(valuesSplit[1]));
-			}
-			catch (Exception e)
-			{
-				throw new IllegalArgumentException("SkillId: "+_id+" invalid sharedReuse value: "+reuseHash+", \"skillId-skillLvl\" required");
-			}
-		}
-		else
-			_reuseHashCode = SkillTable.getSkillHashCode(_id, _level);
+		_reuseHashCode = SkillTable.getSkillHashCode(_id, _level);
 		
 		if (Config.ENABLE_MODIFY_SKILL_REUSE && Config.SKILL_REUSE_LIST.containsKey(_id))
 		{

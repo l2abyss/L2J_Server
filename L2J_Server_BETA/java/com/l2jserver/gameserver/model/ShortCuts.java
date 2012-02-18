@@ -76,10 +76,7 @@ public class ShortCuts
 			{
 				return;
 			}
-			if (item.isEtcItem())
-			{
-				shortcut.setSharedReuseGroup(item.getEtcItem().getSharedReuseGroup());
-			}
+			shortcut.setSharedReuseGroup(item.getSharedReuseGroup());
 		}
 		final L2ShortCut oldShortCut = _shortCuts.put(shortcut.getSlot() + (shortcut.getPage() * MAX_SHORTCUTS_PER_BAR), shortcut);
 		registerShortCutInDb(shortcut, oldShortCut);
