@@ -94,6 +94,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionTargetActiveEffectId;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetActiveSkillId;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetAggro;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetClassIdRestriction;
+import com.l2jserver.gameserver.model.conditions.ConditionTargetInvSize;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetLevel;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcId;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcType;
@@ -101,6 +102,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionTargetPlayable;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetRace;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetRaceId;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetUsesWeaponKind;
+import com.l2jserver.gameserver.model.conditions.ConditionTargetWeight;
 import com.l2jserver.gameserver.model.conditions.ConditionUsingItemType;
 import com.l2jserver.gameserver.model.conditions.ConditionUsingSkill;
 import com.l2jserver.gameserver.model.conditions.ConditionWithSkill;
@@ -943,6 +945,16 @@ public abstract class DocumentBase
 				}
 				
 				cond = joinAnd(cond, new ConditionTargetNpcType(types));
+			}
+			else if ("weight".equalsIgnoreCase(a.getNodeName()))
+			{
+				int weight = Integer.decode(getValue(a.getNodeValue(), null));
+				cond = joinAnd(cond, new ConditionTargetWeight(weight));
+			}
+			else if ("invSize".equalsIgnoreCase(a.getNodeName()))
+			{
+				int size = Integer.decode(getValue(a.getNodeValue(), null));
+				cond = joinAnd(cond, new ConditionTargetInvSize(size));
 			}
 		}
 		if (cond == null) _log.severe("Unrecognized <target> condition in " + _file);

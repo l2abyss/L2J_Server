@@ -35,7 +35,7 @@ public class L2ExtractableSkill
 		return _hash;
 	}
 	
-	public FastList<L2ExtractableProductItem> getProductItemsArray()
+	public FastList<L2ExtractableProductItem> getProductItems()
 	{
 		return _product;
 	}

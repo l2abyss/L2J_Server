@@ -136,8 +136,6 @@ public enum L2SkillType
 	COMMON_CRAFT,
 	DWARVEN_CRAFT,
 	CREATE_ITEM(L2SkillCreateItem.class),
-	EXTRACTABLE,
-	EXTRACTABLE_FISH,
 	LEARN_SKILL(L2SkillLearnSkill.class),
 	
 	// Summons
