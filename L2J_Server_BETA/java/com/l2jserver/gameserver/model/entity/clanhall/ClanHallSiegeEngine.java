@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -412,10 +413,14 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			}
 		}
 		
-		// Update pvp flag for winners when siege zone becomes unactive
-		for(Object obj : _hall.getSiegeZone().getCharactersInside().values())
-			if(obj != null && obj instanceof L2PcInstance)
-				((L2PcInstance)obj).startPvPFlag();
+		// Update pvp flag for winners when siege zone becomes inactive
+		for(L2Character chr : _hall.getSiegeZone().getCharactersInsideArray())
+		{
+			if((chr != null) && chr.isPlayer())
+			{
+				chr.getActingPlayer().startPvPFlag();
+			}
+		}
 		
 		getAttackers().clear();
 		
