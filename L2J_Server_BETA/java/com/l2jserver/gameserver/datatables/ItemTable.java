@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
@@ -46,6 +47,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.NewItemListener;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
@@ -57,6 +59,8 @@ public class ItemTable
 {
 	private static Logger _log = Logger.getLogger(ItemTable.class.getName());
 	private static Logger _logItems = Logger.getLogger("item");
+	
+	private static FastList<NewItemListener> newItemListeners = new FastList<NewItemListener>().shared();
 	
 	public static final Map<String, Integer> _materials = new FastMap<String, Integer>();
 	public static final Map<String, Integer> _crystalTypes = new FastMap<String, Integer>();
@@ -245,7 +249,7 @@ public class ItemTable
 	 */
 	public L2Item getTemplate(int id)
 	{
-		if (id >= _allTemplates.length)
+		if (id >= _allTemplates.length || id < 0)
 			return null;
 		
 		return _allTemplates[id];
@@ -268,6 +272,14 @@ public class ItemTable
 	 */
 	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
 	{
+		for (NewItemListener listener : newItemListeners)
+		{
+			if (listener.containsItemId(itemId))
+			{
+				if (!listener.onCreate(itemId, actor))
+					return null;
+			}
+		}
 		// Create and Init the L2ItemInstance corresponding to the Item Identifier
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 		
@@ -478,5 +490,27 @@ public class ItemTable
 	private static class SingletonHolder
 	{
 		protected static final ItemTable _instance = new ItemTable();
+	}
+	
+	// Listeners
+	/**
+	 * Adds a new item listener
+	 * @param listener
+	 */
+	public static void addNewItemListener(NewItemListener listener)
+	{
+		if (!newItemListeners.contains(listener))
+		{
+			newItemListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a new item listener
+	 * @param listener
+	 */
+	public static void removeNewItemListener(NewItemListener listener)
+	{
+		newItemListeners.remove(listener);
 	}
 }

@@ -27,6 +27,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GeoData;
@@ -61,6 +63,8 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SpawnItem;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.AugmentListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.DropListener;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
@@ -71,6 +75,9 @@ public final class L2ItemInstance extends L2Object
 {
 	protected static final Logger _log = Logger.getLogger(L2ItemInstance.class.getName());
 	private static final Logger _logItems = Logger.getLogger("item");
+	
+	private static FastList<AugmentListener> augmentListeners = new FastList<AugmentListener>().shared();
+	private static FastList<DropListener> dropListeners = new FastList<DropListener>().shared();
 	
 	/** Enumeration of locations for item */
 	public static enum ItemLocation
@@ -241,6 +248,11 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public final void pickupMe(L2Character player)
 	{
+		for (DropListener listener : dropListeners)
+		{
+			if (!listener.onPickup(this, (L2PcInstance) player, getPosition().getX(), getPosition().getY(), getPosition().getZ()))
+				return;
+		}
 		assert getPosition().getWorldRegion() != null;
 		
 		L2WorldRegion oldregion = getPosition().getWorldRegion();
@@ -878,6 +890,11 @@ public final class L2ItemInstance extends L2Object
 		// there shall be no previous augmentation..
 		if (_augmentation != null)
 			return false;
+		for (AugmentListener listener : augmentListeners)
+		{
+			if (!listener.onAugment(this, _augmentation))
+				return false;
+		}
 		_augmentation = augmentation;
 		updateItemAttributes(null);
 		return true;
@@ -890,6 +907,11 @@ public final class L2ItemInstance extends L2Object
 	{
 		if (_augmentation == null)
 			return;
+		for (AugmentListener listener : augmentListeners)
+		{
+			if (!listener.onRemoveAugment(this, _augmentation))
+				return;
+		}
 		_augmentation = null;
 		
 		Connection con = null;
@@ -1600,6 +1622,14 @@ public final class L2ItemInstance extends L2Object
 	
 	public final void dropMe(L2Character dropper, int x, int y, int z)
 	{
+		if(dropper.isPlayer())
+		{
+			for (DropListener listener : dropListeners)
+			{
+				if (!listener.onDrop(this, dropper.getActingPlayer(), x, y, z))
+					return;
+			}
+		}		
 		ThreadPoolManager.getInstance().executeTask(new ItemDropTask(this, dropper, x, y, z));
 	}
 	
@@ -2032,5 +2062,48 @@ public final class L2ItemInstance extends L2Object
 	public boolean isItem()
 	{
 		return true;
+	}
+	
+	// LISTENERS
+	/**
+	 * Adds an augmentation listener
+	 * @param listener
+	 */
+	public static void addAugmentListener(AugmentListener listener)
+	{
+		if (!augmentListeners.contains(listener))
+		{
+			augmentListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes an augmentation listener
+	 * @param listener
+	 */
+	public static void removeAugmentListener(AugmentListener listener)
+	{
+		augmentListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a drop / pickup listener
+	 * @param listener
+	 */
+	public static void addDropListener(DropListener listener)
+	{
+		if (!dropListeners.contains(listener))
+		{
+			dropListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a drop / pickup listener
+	 * @param listener
+	 */
+	public static void removeDropListener(DropListener listener)
+	{
+		dropListeners.remove(listener);
 	}
 }

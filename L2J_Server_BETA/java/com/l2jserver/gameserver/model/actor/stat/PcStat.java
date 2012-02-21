@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.stat;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
@@ -33,11 +35,10 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerLevelListener;
 
 public class PcStat extends PlayableStat
-{
-	//private static Logger _log = Logger.getLogger(PcStat.class.getName());
-	
+{	
 	private int _oldMaxHp; // stats watch
 	private int _oldMaxMp; // stats watch
 	private int _oldMaxCp; // stats watch
@@ -47,6 +48,9 @@ public class PcStat extends PlayableStat
 	public static final int VITALITY_LEVELS[] = { 240, 2000, 13000, 17000, 20000 };
 	public static final int MAX_VITALITY_POINTS = VITALITY_LEVELS[4];
 	public static final int MIN_VITALITY_POINTS = 1;
+	
+	public FastList<PlayerLevelListener> levelListeners = new FastList<PlayerLevelListener>().shared();
+	public static FastList<PlayerLevelListener> globalLevelListeners = new FastList<PlayerLevelListener>().shared();
 	
 	public PcStat(L2PcInstance activeChar)
 	{
@@ -212,8 +216,16 @@ public class PcStat extends PlayableStat
 		if (getLevel() + value > ExperienceTable.getInstance().getMaxLevel() - 1)
 			return false;
 		
-		boolean levelIncreased = super.addLevel(value);
+		for (PlayerLevelListener listener : levelListeners)
+		{
+			listener.levelChanged(getActiveChar(), getLevel(), getLevel() + value);
+		}
+		for (PlayerLevelListener listener : globalLevelListeners)
+		{
+			listener.levelChanged(getActiveChar(), getLevel(), getLevel() + value);
+		}
 		
+		boolean levelIncreased = super.addLevel(value);
 		if (levelIncreased)
 		{
 			if (!Config.DISABLE_TUTORIAL)
@@ -701,5 +713,50 @@ public class PcStat extends PlayableStat
 		}
 		
 		return bonus;
+	}
+	
+	/**
+	 * Listeners
+	 */
+	/**
+	 * Adds a global player level listener
+	 * @param listener
+	 */
+	public static void addGlobalLevelListener(PlayerLevelListener listener)
+	{
+		if (!globalLevelListeners.contains(listener))
+		{
+			globalLevelListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a global player level listener
+	 * @param listener
+	 */
+	public static void removeGlobalLevelListener(PlayerLevelListener listener)
+	{
+		globalLevelListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a player level listener
+	 * @param listener
+	 */
+	public void addLevelListener(PlayerLevelListener listener)
+	{
+		if (!levelListeners.contains(listener))
+		{
+			levelListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a player level listener
+	 * @param listener
+	 */
+	public void removeLevelListener(PlayerLevelListener listener)
+	{
+		levelListeners.remove(listener);
 	}
 }

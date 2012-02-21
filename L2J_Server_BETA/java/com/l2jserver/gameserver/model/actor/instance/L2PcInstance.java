@@ -271,6 +271,11 @@ import com.l2jserver.gameserver.network.serverpackets.TradeDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeOtherDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeStart;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.EquipmentListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.HennaListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerDespawnListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ProfessionChangeListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.TransformListener;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
@@ -346,6 +351,15 @@ public final class L2PcInstance extends L2Playable
 	public static final int STORE_PRIVATE_BUY = 3;
 	public static final int STORE_PRIVATE_MANUFACTURE = 5;
 	public static final int STORE_PRIVATE_PACKAGE_SELL = 8;
+	
+	public static FastList<PlayerDespawnListener> despawnListeners = new FastList<PlayerDespawnListener>().shared();
+	public static FastList<HennaListener> hennaListeners = new FastList<HennaListener>().shared();
+	public FastList<EquipmentListener> equipmentListeners = new FastList<EquipmentListener>().shared();
+	public static FastList<EquipmentListener> globalEquipmentListeners = new FastList<EquipmentListener>().shared();
+	public FastList<TransformListener> transformListeners = new FastList<TransformListener>().shared();
+	public FastList<ProfessionChangeListener> professionChangeListeners = new FastList<ProfessionChangeListener>().shared();
+	public static FastList<ProfessionChangeListener> globalProfessionChangeListeners = new FastList<ProfessionChangeListener>().shared();
+
 	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
@@ -1425,6 +1439,10 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void logout()
 	{
+		for(PlayerDespawnListener listener : despawnListeners)
+		{
+			listener.onDespawn(this);
+		}
 		logout(true);
 	}
 	
@@ -2484,6 +2502,16 @@ public final class L2PcInstance extends L2Playable
 		
 		if (isEquiped)
 		{
+			for(EquipmentListener listener : equipmentListeners)
+			{
+				if(!listener.onEquip(item, false))
+					return;
+			}
+			for(EquipmentListener listener : globalEquipmentListeners)
+			{
+				if(!listener.onEquip(item, false))
+					return;
+			}
 			if (item.getEnchantLevel() > 0)
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
@@ -2506,6 +2534,16 @@ public final class L2PcInstance extends L2Playable
 		}
 		else
 		{
+			for(EquipmentListener listener : equipmentListeners)
+			{
+				if(!listener.onEquip(item, true))
+					return;
+			}
+			for(EquipmentListener listener : globalEquipmentListeners)
+			{
+				if(!listener.onEquip(item, true))
+					return;
+			}
 			items = getInventory().equipItemAndRecord(item);
 			
 			if (item.isEquipped())
@@ -4098,8 +4136,9 @@ public final class L2PcInstance extends L2Playable
 			if ( (item.isEquipable() && Config.DESTROY_EQUIPABLE_PLAYER_ITEM) || !item.isEquipable())
 				ItemsAutoDestroy.getInstance().addItem(item);
 		}
-		if (Config.DESTROY_DROPPED_PLAYER_ITEM){
-			if (!item.isEquipable() || (item.isEquipable()  && Config.DESTROY_EQUIPABLE_PLAYER_ITEM ))
+		if (Config.DESTROY_DROPPED_PLAYER_ITEM)
+		{
+			if (!item.isEquipable() || (item.isEquipable() && Config.DESTROY_EQUIPABLE_PLAYER_ITEM))
 				item.setProtected(false);
 			else
 				item.setProtected(true);
@@ -5038,6 +5077,11 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(msg);
 			return;
 		}
+		for(TransformListener listener : transformListeners)
+		{
+			if(!listener.onTransform(transformation))
+				return;
+		}
 		setQueuedSkill(null, false, false);
 		if(isMounted())
 		{
@@ -5059,6 +5103,11 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (_transformation != null)
 		{
+			for(TransformListener listener : transformListeners)
+			{
+				if(!listener.onUntransform(_transformation))
+					return;
+			}
 			setQueuedSkill(null, false, false);
 			setTransformAllowedSkills(new int[]{});
 			_transformation.onUntransform();
@@ -8567,6 +8616,11 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean removeHenna(int slot)
 	{
+		for(HennaListener listener : hennaListeners)
+		{
+			if(!listener.onRemoveHenna(this, getHenna(slot+1)))
+				return false;
+		}
 		if (slot < 1 || slot > 3)
 			return false;
 		
@@ -8632,6 +8686,11 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean addHenna(L2HennaInstance henna)
 	{
+		for(HennaListener listener : hennaListeners)
+		{
+			if(!listener.onAddHenna(this, henna))
+				return false;
+		}
 		for (int i = 0; i < 3; i++)
 		{
 			if (_henna[i] == null)
@@ -9212,7 +9271,8 @@ public final class L2PcInstance extends L2Playable
 				return false;
 			}
 			
-			if (isInOlympiadMode() && !isOlympiadStart()){
+			if (isInOlympiadMode() && !isOlympiadStart())
+			{
 				// if L2PcInstance is in Olympia and the match isn't already start, send a Server->Client packet ActionFailed
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return false;
@@ -10512,7 +10572,8 @@ public final class L2PcInstance extends L2Playable
 		_OlympiadStart = b;
 	}
 	
-	public boolean isOlympiadStart(){
+	public boolean isOlympiadStart()
+	{
 		return _OlympiadStart;
 	}
 	
@@ -10957,9 +11018,17 @@ public final class L2PcInstance extends L2Playable
 			_log.severe("Missing template for classId: "+classId);
 			throw new Error();
 		}
-		
 		// Set the template of the L2PcInstance
 		setTemplate(t);
+		
+		for (ProfessionChangeListener listener : professionChangeListeners)
+		{
+			listener.professionChanged(this, isSubClassActive(), t);
+		}
+		for (ProfessionChangeListener listener : globalProfessionChangeListeners)
+		{
+			listener.professionChanged(this, isSubClassActive(), t);
+		}
 	}
 	
 	/**
@@ -12777,28 +12846,29 @@ public final class L2PcInstance extends L2Playable
 	
 	public void setPunishLevel(int state)
 	{
-		switch (state){
-			case 0 :
+		switch (state)
+		{
+			case 0:
 			{
 				_punishLevel = PunishLevel.NONE;
 				break;
 			}
-			case 1 :
+			case 1:
 			{
 				_punishLevel = PunishLevel.CHAT;
 				break;
 			}
-			case 2 :
+			case 2:
 			{
 				_punishLevel = PunishLevel.JAIL;
 				break;
 			}
-			case 3 :
+			case 3:
 			{
 				_punishLevel = PunishLevel.CHAR;
 				break;
 			}
-			case 4 :
+			case 4:
 			{
 				_punishLevel = PunishLevel.ACC;
 				break;
@@ -15485,5 +15555,153 @@ public final class L2PcInstance extends L2Playable
 	public boolean isPlayer()
 	{
 		return true;
+	}
+	
+	// LISTENERS
+	/**
+	 * Adds a despawn listener
+	 * @param listener
+	 */
+	public static void addDespawnListener(PlayerDespawnListener listener)
+	{
+		if (!despawnListeners.contains(listener))
+		{
+			despawnListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a despawn listener
+	 * @param listener
+	 */
+	public static void removeDespawnListener(PlayerDespawnListener listener)
+	{
+		despawnListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a henna listener
+	 * @param listener
+	 */
+	public static void addHennaListener(HennaListener listener)
+	{
+		if (!hennaListeners.contains(listener))
+		{
+			hennaListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a henna listener
+	 * @param listener
+	 */
+	public static void removeHennaListener(HennaListener listener)
+	{
+		hennaListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds an equipment listener
+	 * @param listener
+	 */
+	public void addEquipmentListener(EquipmentListener listener)
+	{
+		if (!equipmentListeners.contains(listener))
+		{
+			equipmentListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes an equipment listener
+	 * @param listener
+	 */
+	public void removeEquipmentListener(EquipmentListener listener)
+	{
+		equipmentListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds an equipment listener
+	 * @param listener
+	 */
+	public static void addGlobalEquipmentListener(EquipmentListener listener)
+	{
+		if (!globalEquipmentListeners.contains(listener))
+		{
+			globalEquipmentListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes an equipment listener
+	 * @param listener
+	 */
+	public static void removeGlobalEquipmentListener(EquipmentListener listener)
+	{
+		globalEquipmentListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a transformation listener
+	 * @param listener
+	 */
+	public void addTransformListener(TransformListener listener)
+	{
+		if (!transformListeners.contains(listener))
+		{
+			transformListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Remove a transformation listener
+	 * @param listener
+	 */
+	public void removeTransformListener(TransformListener listener)
+	{
+		transformListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a profession change listener
+	 * @param listener
+	 */
+	public void addProfessionChangeListener(ProfessionChangeListener listener)
+	{
+		if (!professionChangeListeners.contains(listener))
+		{
+			professionChangeListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a profession change listener
+	 * @param listener
+	 */
+	public void removeProfessionChangeListener(ProfessionChangeListener listener)
+	{
+		professionChangeListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a global profession change listener
+	 * @param listener
+	 */
+	public static void addGlobalProfessionChangeListener(ProfessionChangeListener listener)
+	{
+		if (!globalProfessionChangeListeners.contains(listener))
+		{
+			globalProfessionChangeListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a global profession change listener
+	 * @param listener
+	 */
+	public static void removeGlobalProfessionChangeListener(ProfessionChangeListener listener)
+	{
+		globalProfessionChangeListeners.remove(listener);
 	}
 }

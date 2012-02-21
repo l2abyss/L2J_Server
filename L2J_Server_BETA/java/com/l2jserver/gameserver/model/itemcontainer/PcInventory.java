@@ -36,6 +36,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ItemTracker;
 import com.l2jserver.gameserver.util.Util;
 
 public class PcInventory extends Inventory
@@ -64,6 +65,8 @@ public class PcInventory extends Inventory
 	 * </UL>
 	 */
 	private int _blockMode = -1;
+	
+	private static FastList<ItemTracker> itemTrackers = new FastList<ItemTracker>().shared();
 	
 	public PcInventory(L2PcInstance owner)
 	{
@@ -463,6 +466,13 @@ public class PcInventory extends Inventory
 		if (item != null && item.getItemId() == ANCIENT_ADENA_ID && !item.equals(_ancientAdena))
 			_ancientAdena = item;
 		
+		for (ItemTracker tracker : itemTrackers)
+		{
+			if (tracker.containsItemId(item.getItemId()))
+			{
+				tracker.onAddToInventory(item, actor);
+			}
+		}
 		return item;
 	}
 	
@@ -501,7 +511,16 @@ public class PcInventory extends Inventory
 			StatusUpdate su = new StatusUpdate(actor);
 			su.addAttribute(StatusUpdate.CUR_LOAD, actor.getCurrentLoad());
 			actor.sendPacket(su);
+			
+			for (ItemTracker tracker : itemTrackers)
+			{
+				if (tracker.containsItemId(item.getItemId()))
+				{
+					tracker.onAddToInventory(item, actor);
+				}
+			}
 		}
+		
 		
 		return item;
 	}
@@ -527,6 +546,13 @@ public class PcInventory extends Inventory
 		if (_ancientAdena != null && (_ancientAdena.getCount() <= 0 || _ancientAdena.getOwnerId() != getOwnerId()))
 			_ancientAdena = null;
 		
+		for (ItemTracker tracker : itemTrackers)
+		{
+			if (tracker.containsItemId(item.getItemId()))
+			{
+				tracker.onTransfer(item, actor, target);
+			}
+		}
 		return item;
 	}
 	
@@ -563,6 +589,14 @@ public class PcInventory extends Inventory
 		if (_ancientAdena != null && _ancientAdena.getCount() <= 0)
 			_ancientAdena = null;
 		
+		for (ItemTracker tracker : itemTrackers)
+		{
+			if (tracker.containsItemId(item.getItemId()))
+			{
+				tracker.onDestroy(item, actor);
+			}
+		}
+
 		return item;
 	}
 	
@@ -625,6 +659,13 @@ public class PcInventory extends Inventory
 		if (_ancientAdena != null && (_ancientAdena.getCount() <= 0 || _ancientAdena.getOwnerId() != getOwnerId()))
 			_ancientAdena = null;
 		
+		for (ItemTracker tracker : itemTrackers)
+		{
+			if (tracker.containsItemId(item.getItemId()))
+			{
+				tracker.onDrop(item, actor);
+			}
+		}
 		return item;
 	}
 	
@@ -648,6 +689,13 @@ public class PcInventory extends Inventory
 		if (_ancientAdena != null && (_ancientAdena.getCount() <= 0 || _ancientAdena.getOwnerId() != getOwnerId()))
 			_ancientAdena = null;
 		
+		for (ItemTracker tracker : itemTrackers)
+		{
+			if (tracker.containsItemId(item.getItemId()))
+			{
+				tracker.onDrop(item, actor);
+			}
+		}
 		return item;
 	}
 	
@@ -946,5 +994,27 @@ public class PcInventory extends Inventory
 		{
 			item.giveSkillsToOwner();
 		}
+	}
+	
+	// LISTENERS
+	/**
+	 * Adds an item tracker
+	 * @param tracker
+	 */
+	public static void addItemTracker(ItemTracker tracker)
+	{
+		if (!itemTrackers.contains(itemTrackers))
+		{
+			itemTrackers.add(tracker);
+		}
+	}
+	
+	/**
+	 * Removes an item tracker
+	 * @param tracker
+	 */
+	public static void removeItemTracker(ItemTracker tracker)
+	{
+		itemTrackers.remove(tracker);
 	}
 }

@@ -18,6 +18,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.ChatHandler;
 import com.l2jserver.gameserver.handler.IChatHandler;
@@ -27,6 +29,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatFilterListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener;
 import com.l2jserver.gameserver.util.Util;
 
 
@@ -40,6 +44,9 @@ public final class Say2 extends L2GameClientPacket
 	private static final String _C__49_SAY2 = "[C] 49 Say2";
 	private static Logger _log = Logger.getLogger(Say2.class.getName());
 	private static Logger _logChat = Logger.getLogger("chat");
+	
+	private static FastList<ChatListener> chatListeners = new FastList<ChatListener>().shared();
+	private static FastList<ChatFilterListener> chatFilterListeners = new FastList<ChatFilterListener>().shared();
 	
 	public final static int ALL = 0;
 	public final static int SHOUT = 1; //!
@@ -90,9 +97,44 @@ public final class Say2 extends L2GameClientPacket
 		"MPCC_ROOM"
 	};
 	
-	private static final String[] WALKER_COMMAND_LIST = { "USESKILL", "USEITEM", "BUYITEM", "SELLITEM", "SAVEITEM", "LOADITEM", "MSG", "DELAY", "LABEL", "JMP", "CALL",
-		"RETURN", "MOVETO", "NPCSEL", "NPCDLG", "DLGSEL", "CHARSTATUS", "POSOUTRANGE", "POSINRANGE", "GOHOME", "SAY", "EXIT", "PAUSE", "STRINDLG", "STRNOTINDLG", "CHANGEWAITTYPE",
-		"FORCEATTACK", "ISMEMBER", "REQUESTJOINPARTY", "REQUESTOUTPARTY", "QUITPARTY", "MEMBERSTATUS", "CHARBUFFS", "ITEMCOUNT", "FOLLOWTELEPORT" };
+	private static final String[] WALKER_COMMAND_LIST =
+	{
+		"USESKILL",
+		"USEITEM",
+		"BUYITEM",
+		"SELLITEM",
+		"SAVEITEM",
+		"LOADITEM",
+		"MSG",
+		"DELAY",
+		"LABEL",
+		"JMP",
+		"CALL",
+		"RETURN",
+		"MOVETO",
+		"NPCSEL",
+		"NPCDLG",
+		"DLGSEL",
+		"CHARSTATUS",
+		"POSOUTRANGE",
+		"POSINRANGE",
+		"GOHOME",
+		"SAY",
+		"EXIT",
+		"PAUSE",
+		"STRINDLG",
+		"STRNOTINDLG",
+		"CHANGEWAITTYPE",
+		"FORCEATTACK",
+		"ISMEMBER",
+		"REQUESTJOINPARTY",
+		"REQUESTOUTPARTY",
+		"QUITPARTY",
+		"MEMBERSTATUS",
+		"CHARBUFFS",
+		"ITEMCOUNT",
+		"FOLLOWTELEPORT"
+	};
 	
 	private String _text;
 	private int _type;
@@ -195,9 +237,20 @@ public final class Say2 extends L2GameClientPacket
 			if (!parseAndPublishItem(activeChar))
 				return;
 		
+		for (ChatListener listener : chatListeners)
+		{
+			listener.onTalk(_text, activeChar, _target, ChatListener.getTargetType(CHAT_NAMES[_type]));
+		}
+		
 		// Say Filter implementation
 		if (Config.USE_SAY_FILTER)
 			checkText();
+		
+		// Custom chat filter
+		for (ChatFilterListener listener : chatFilterListeners)
+		{
+			_text = listener.onTalk(_text, activeChar, ChatListener.getTargetType(CHAT_NAMES[_type]));
+		}
 		
 		IChatHandler handler = ChatHandler.getInstance().getHandler(_type);
 		if (handler != null)
@@ -272,5 +325,48 @@ public final class Say2 extends L2GameClientPacket
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
+	}
+	
+	// Listeners
+	/**
+	 * Adds a chat listener
+	 * @param listener
+	 */
+	public static void addChatListener(ChatListener listener)
+	{
+		if (!chatListeners.contains(listener))
+		{
+			chatListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes the given listener
+	 * @param listener
+	 */
+	public static void removeChatListener(ChatListener listener)
+	{
+		chatListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a chat listener
+	 * @param listener
+	 */
+	public static void addChatFilterListener(ChatFilterListener listener)
+	{
+		if (!chatFilterListeners.contains(listener))
+		{
+			chatFilterListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes the given listener
+	 * @param listener
+	 */
+	public static void removeChatFilterListener(ChatFilterListener listener)
+	{
+		chatFilterListeners.remove(listener);
 	}
 }

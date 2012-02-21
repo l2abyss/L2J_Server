@@ -50,11 +50,14 @@ import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.events.FortSiegeListener;
 
 public class FortSiege implements Siegable
 {
 	protected static final Logger _log = Logger.getLogger(FortSiege.class.getName());
 	
+	private static FastList<FortSiegeListener> fortSiegeListeners = new FastList<FortSiegeListener>().shared();
+
 	public static enum TeleportWhoType
 	{
 		All, Attacker, Owner,
@@ -276,6 +279,10 @@ public class FortSiege implements Siegable
 				getFort().setVisibleFlag(true);
 			
 			_log.info("Siege of " + getFort().getName() + " fort finished.");
+			for (FortSiegeListener listener : fortSiegeListeners)
+			{
+				listener.onEnd(this);
+			}
 		}
 	}
 	
@@ -287,6 +294,13 @@ public class FortSiege implements Siegable
 	{
 		if (!getIsInProgress())
 		{
+			for (FortSiegeListener listener : fortSiegeListeners)
+			{
+				if (!listener.onStart(this))
+				{
+					return;
+				}
+			}
 			if (_siegeStartTask != null) // used admin command "admin_startfortsiege"
 			{
 				_siegeStartTask.cancel(true);
@@ -1236,4 +1250,26 @@ public class FortSiege implements Siegable
 	
 	@Override
 	public void updateSiege() { }
+	
+	// Listeners
+	/**
+	 * Adds a fort siege listener
+	 * @param listener
+	 */
+	public static void addFortSiegeListener(FortSiegeListener listener)
+	{
+		if (!fortSiegeListeners.contains(listener))
+		{
+			fortSiegeListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a fort siege listener
+	 * @param listener
+	 */
+	public static void removeFortSiegeListener(FortSiegeListener listener)
+	{
+		fortSiegeListeners.remove(listener);
+	}
 }

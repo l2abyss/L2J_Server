@@ -63,6 +63,9 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreationListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanWarListener;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -73,6 +76,10 @@ import com.l2jserver.gameserver.util.Util;
 public class L2Clan
 {
 	private static final Logger _log = Logger.getLogger(L2Clan.class.getName());
+	
+	private static FastList<ClanCreationListener> clanCreationListeners = new FastList<ClanCreationListener>().shared();
+	private static FastList<ClanMembershipListener> clanMembershipListeners = new FastList<ClanMembershipListener>().shared();
+	private static FastList<ClanWarListener> clanWarListeners = new FastList<ClanWarListener>().shared();
 	
 	private String _name;
 	private int _clanId;
@@ -199,6 +206,10 @@ public class L2Clan
 		_clanId = clanId;
 		_name = clanName;
 		initializePrivs();
+		for (ClanCreationListener listener : clanCreationListeners)
+		{
+			listener.onClanCreate(this);
+		}
 	}
 	
 	/**
@@ -258,6 +269,16 @@ public class L2Clan
 		}
 		
 		L2PcInstance exLeader = getLeader().getPlayerInstance();
+		L2PcInstance newLeader = member.getPlayerInstance();
+		
+		for (ClanMembershipListener listener : clanMembershipListeners)
+		{
+			if (!listener.onLeaderChange(this, newLeader, exLeader))
+			{
+				return;
+			}
+		}
+		
 		SiegeManager.getInstance().removeSiegeSkills(exLeader);
 		exLeader.setClan(this);
 		exLeader.setClanPrivileges(L2Clan.CP_NOTHING);
@@ -269,7 +290,6 @@ public class L2Clan
 		exLeader.setPledgeClass(exLeader.getClan().getClanMember(exLeader.getObjectId()).calculatePledgeClass(exLeader));
 		exLeader.broadcastUserInfo();
 		exLeader.checkItemRestriction();
-		L2PcInstance newLeader = member.getPlayerInstance();
 		newLeader.setClan(this);
 		newLeader.setPledgeClass(member.calculatePledgeClass(newLeader));
 		newLeader.setClanPrivileges(L2Clan.CP_ALL);
@@ -348,6 +368,14 @@ public class L2Clan
 	 */
 	public void addClanMember(L2PcInstance player)
 	{
+		for (ClanMembershipListener listener : clanMembershipListeners)
+		{
+			if (!listener.onJoin(player, this))
+			{
+				return;
+			}
+		}
+		
 		final L2ClanMember member = new L2ClanMember(this, player);
 		// store in memory
 		addClanMember(member);
@@ -405,6 +433,14 @@ public class L2Clan
 	 */
 	public void removeClanMember(int objectId, long clanJoinExpiryTime)
 	{
+		for (ClanMembershipListener listener : clanMembershipListeners)
+		{
+			if (!listener.onLeave(objectId, this))
+			{
+				return;
+			}
+		}
+		
 		final L2ClanMember exMember = _members.remove(objectId);
 		if (exMember == null)
 		{
@@ -1460,12 +1496,26 @@ public class L2Clan
 	
 	public void setEnemyClan(L2Clan clan)
 	{
+		for (ClanWarListener listener : clanWarListeners)
+		{
+			if (!listener.onWarStart(this, clan))
+			{
+				return;
+			}
+		}
 		Integer id = clan.getClanId();
 		_atWarWith.add(id);
 	}
 	
 	public void setEnemyClan(Integer clan)
 	{
+		for (ClanWarListener listener : clanWarListeners)
+		{
+			if (!listener.onWarStart(this, ClanTable.getInstance().getClan(clan)))
+			{
+				return;
+			}
+		}
 		_atWarWith.add(clan);
 	}
 	
@@ -1482,6 +1532,13 @@ public class L2Clan
 	
 	public void deleteEnemyClan(L2Clan clan)
 	{
+		for (ClanWarListener listener : clanWarListeners)
+		{
+			if (!listener.onWarEnd(this, clan))
+			{
+				return;
+			}
+		}
 		Integer id = clan.getClanId();
 		_atWarWith.remove(id);
 	}
@@ -2393,6 +2450,14 @@ public class L2Clan
 		
 		boolean increaseClanLevel = false;
 		
+		for (ClanCreationListener listener : clanCreationListeners)
+		{
+			if (!listener.onClanLevelUp(this, getLevel()))
+			{
+				return false;
+			}
+		}
+		
 		switch (getLevel())
 		{
 			case 0:
@@ -2864,5 +2929,69 @@ public class L2Clan
 		SubPledgeSkill[] result = list.toArray(new SubPledgeSkill[list.size()]);
 		FastList.recycle(list);
 		return result;
+	}
+	
+	// Listeners
+	/**
+	 * Adds a clan creation listener
+	 * @param listener
+	 */
+	public static void addClanCreationListener(ClanCreationListener listener)
+	{
+		if (!clanCreationListeners.contains(listener))
+		{
+			clanCreationListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a clan creation listener
+	 * @param listener
+	 */
+	public static void removeClanCreationListener(ClanCreationListener listener)
+	{
+		clanCreationListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a clan join listener (a player just joined the clan)
+	 * @param listener
+	 */
+	public static void addClanMembershipListener(ClanMembershipListener listener)
+	{
+		if (!clanMembershipListeners.contains(listener))
+		{
+			clanMembershipListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a clan join listener (a player left the clan)
+	 * @param listener
+	 */
+	public static void removeClanMembershipListener(ClanMembershipListener listener)
+	{
+		clanMembershipListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a clan war listener
+	 * @param listener
+	 */
+	public static void addClanWarListener(ClanWarListener listener)
+	{
+		if (!clanWarListeners.contains(listener))
+		{
+			clanWarListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a clan war listener
+	 * @param listener
+	 */
+	public static void removeClanWarListener(ClanWarListener listener)
+	{
+		clanWarListeners.remove(listener);
 	}
 }

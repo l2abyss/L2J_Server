@@ -14,16 +14,21 @@
  */
 package com.l2jserver.gameserver.model;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.itemcontainer.Warehouse;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanWarehouseListener;
 
 public final class ClanWarehouse extends Warehouse
 {
-	//private static final Logger _log = Logger.getLogger(PcWarehouse.class.getName());
-	
 	private L2Clan _clan;
+	
+	private FastList<ClanWarehouseListener> clanWarehouseListeners = new FastList<ClanWarehouseListener>().shared();
 	
 	public ClanWarehouse(L2Clan clan)
 	{
@@ -31,20 +36,122 @@ public final class ClanWarehouse extends Warehouse
 	}
 	
 	@Override
-	public String getName() { return "ClanWarehouse"; }
+	public String getName()
+	{
+		return "ClanWarehouse";
+	}
 	
 	@Override
-	public int getOwnerId() { return _clan.getClanId(); }
+	public int getOwnerId()
+	{
+		return _clan.getClanId();
+	}
+	
 	@Override
-	public L2PcInstance getOwner() { return _clan.getLeader().getPlayerInstance(); }
+	public L2PcInstance getOwner()
+	{
+		return _clan.getLeader().getPlayerInstance();
+	}
+	
 	@Override
-	public ItemLocation getBaseLocation() { return ItemLocation.CLANWH; }
-	public String getLocationId() { return "0"; }
-	public int getLocationId(boolean dummy) { return 0; }
-	public void setLocationId(L2PcInstance dummy) { }
+	public ItemLocation getBaseLocation()
+	{
+		return ItemLocation.CLANWH;
+	}
+	
+	public String getLocationId()
+	{
+		return "0";
+	}
+	
+	public int getLocationId(boolean dummy)
+	{
+		return 0;
+	}
+	
+	public void setLocationId(L2PcInstance dummy)
+	{
+	}
+	
 	@Override
 	public boolean validateCapacity(int slots)
 	{
 		return (_items.size() + slots <= Config.WAREHOUSE_SLOTS_CLAN);
+	}
+	
+	@Override
+	public L2ItemInstance addItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
+	{
+		L2ItemInstance item = getItemByItemId(itemId);
+		for (ClanWarehouseListener listener : clanWarehouseListeners)
+		{
+			if (!listener.onAddItem(process, item, actor))
+			{
+				return null;
+			}
+		}
+		return super.addItem(process, item, actor, reference);
+	}
+	
+	@Override
+	public L2ItemInstance addItem(String process, L2ItemInstance item, L2PcInstance actor, Object reference)
+	{
+		for (ClanWarehouseListener listener : clanWarehouseListeners)
+		{
+			if (!listener.onAddItem(process, item, actor))
+			{
+				return null;
+			}
+		}
+		return super.addItem(process, item, actor, reference);
+	}
+	
+	@Override
+	public L2ItemInstance destroyItem(String process, L2ItemInstance item, long count, L2PcInstance actor, Object reference)
+	{
+		for (ClanWarehouseListener listener : clanWarehouseListeners)
+		{
+			if (!listener.onDeleteItem(process, item, count, actor))
+			{
+				return null;
+			}
+		}
+		return super.destroyItem(process, item, count, actor, reference);
+	}
+	
+	@Override
+	public L2ItemInstance transferItem(String process, int objectId, long count, ItemContainer target, L2PcInstance actor, Object reference)
+	{
+		L2ItemInstance sourceitem = getItemByObjectId(objectId);
+		for (ClanWarehouseListener listener : clanWarehouseListeners)
+		{
+			if (!listener.onTransferItem(process, sourceitem, count, target, actor))
+			{
+				return null;
+			}
+		}
+		return super.transferItem(process, objectId, count, target, actor, reference);
+	}
+	
+	// Listeners
+	/**
+	 * Adds a clan warehouse listener
+	 * @param listener
+	 */
+	public void addWarehouseListener(ClanWarehouseListener listener)
+	{
+		if (!clanWarehouseListeners.contains(listener))
+		{
+			clanWarehouseListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a clan warehouse listener
+	 * @param listener
+	 */
+	public void removeWarehouseListener(ClanWarehouseListener listener)
+	{
+		clanWarehouseListeners.remove(listener);
 	}
 }

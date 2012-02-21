@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
@@ -50,6 +51,7 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.events.TvTListener;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
 
@@ -81,6 +83,8 @@ public class TvTEvent
 	private static L2Npc _lastNpcSpawn = null;
 	/** Instance id<br> */
 	private static int _TvTEventInstance = 0;
+	
+	private static FastList<TvTListener> tvtListeners = new FastList<TvTListener>().shared();
 	
 	/**
 	 * No instance of this class!<br>
@@ -144,6 +148,10 @@ public class TvTEvent
 		}
 		
 		setState(EventState.PARTICIPATING);
+		for(TvTListener listener : tvtListeners)
+		{
+			listener.onRegistrationStart();
+		}
 		return true;
 	}
 	
@@ -289,6 +297,10 @@ public class TvTEvent
 				}
 			}
 		}
+		for(TvTListener listener : tvtListeners)
+		{
+			listener.onBegin();
+		}
 		
 		return true;
 	}
@@ -333,6 +345,10 @@ public class TvTEvent
 		// Get team which has more points
 		TvTEventTeam team = _teams[_teams[0].getPoints() > _teams[1].getPoints() ? 0 : 1];
 		rewardTeam(team);
+		for(TvTListener listener : tvtListeners)
+		{
+			listener.onEnd();
+		}
 		return "TvT Event: Event finish. Team " + team.getName() + " won with " + team.getPoints() + " kills.";
 	}
 	
@@ -897,6 +913,10 @@ public class TvTEvent
 					playerInstance.sendPacket(cs);
 				}
 			}
+			for(TvTListener listener : tvtListeners)
+			{
+				listener.onKill(killedPlayerInstance, killerPlayerInstance, killerTeam);
+			}
 		}
 	}
 	
@@ -1159,9 +1179,10 @@ public class TvTEvent
 	public static String[] getTeamNames()
 	{
 		return new String[]
-		                  {
-				_teams[0].getName(), _teams[1].getName()
-		                  };
+		{
+			_teams[0].getName(),
+			_teams[1].getName()
+		};
 	}
 	
 	/**
@@ -1172,9 +1193,10 @@ public class TvTEvent
 	public static int[] getTeamsPlayerCounts()
 	{
 		return new int[]
-		               {
-				_teams[0].getParticipatedPlayerCount(), _teams[1].getParticipatedPlayerCount()
-		               };
+		{
+			_teams[0].getParticipatedPlayerCount(),
+			_teams[1].getParticipatedPlayerCount()
+		};
 	}
 	
 	/**
@@ -1185,13 +1207,36 @@ public class TvTEvent
 	public static int[] getTeamsPoints()
 	{
 		return new int[]
-		               {
-				_teams[0].getPoints(), _teams[1].getPoints()
-		               };
+		{
+			_teams[0].getPoints(), 
+			_teams[1].getPoints()
+		};
 	}
 	
 	public static int getTvTEventInstance()
 	{
 		return _TvTEventInstance;
+	}
+	
+	// Listeners
+	/**
+	 * Adds a TvT listener
+	 * @param listener
+	 */
+	public static void addTvTListener(TvTListener listener)
+	{
+		if (!tvtListeners.contains(listener))
+		{
+			tvtListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a TvT listener
+	 * @param listener
+	 */
+	public static void removeTvtListener(TvTListener listener)
+	{
+		tvtListeners.remove(listener);
 	}
 }

@@ -1,0 +1,58 @@
+/*
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.l2jserver.gameserver.scripting.scriptengine.listeners.clan;
+
+import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
+
+/**
+ * Notifies when a clan war starts or ends
+ * @author TheOne
+ */
+public abstract class ClanWarListener extends L2JListener
+{
+	public ClanWarListener()
+	{
+		register();
+	}
+	
+	/**
+	 * Clan war just started
+	 * @param clan1
+	 * @param clan2
+	 * @return
+	 */
+	public abstract boolean onWarStart(L2Clan clan1, L2Clan clan2);
+	
+	/**
+	 * Clan war just ended
+	 * @param clan1
+	 * @param clan2
+	 * @return
+	 */
+	public abstract boolean onWarEnd(L2Clan clan1, L2Clan clan2);
+	
+	@Override
+	public void register()
+	{
+		L2Clan.addClanWarListener(this);
+	}
+	
+	@Override
+	public void unregister()
+	{
+		L2Clan.removeClanWarListener(this);
+	}
+}
