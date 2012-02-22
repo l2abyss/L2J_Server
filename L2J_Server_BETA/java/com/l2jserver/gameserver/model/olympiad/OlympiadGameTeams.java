@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
 
 /**
- * 
  * @author Pere, DS
  */
 public class OlympiadGameTeams extends AbstractOlympiadGame
@@ -505,7 +504,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					{
 						par = _teamOne[i];
 						removePointsFromParticipant(par, Math.min(par.stats.getInteger(POINTS) / 3, Config.ALT_OLY_MAX_POINTS));
-						par.updateNobleStats();
 					}
 				}
 				if (_teamTwoDefaulted)
@@ -514,7 +512,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					{
 						par = _teamTwo[i];
 						removePointsFromParticipant(par, Math.min(par.stats.getInteger(POINTS) / 3, Config.ALT_OLY_MAX_POINTS));
-						par.updateNobleStats();
 					}
 				}
 			}
@@ -684,7 +681,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					par.updateStat(COMP_DONE, 1);
 					par.updateStat(COMP_DONE_WEEK, 1);
 					par.updateStat(getWeeklyMatchType(), 1);
-					par.updateNobleStats();
 				}
 
 				for (int i = _teamTwoSize; --i >= 0;)
@@ -693,7 +689,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					par.updateStat(COMP_DONE, 1);
 					par.updateStat(COMP_DONE_WEEK, 1);
 					par.updateStat(getWeeklyMatchType(), 1);
-					par.updateNobleStats();
 				}
 			}
 			catch (Exception e)
@@ -816,7 +811,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				par.updateStat(COMP_DONE, 1);
 				par.updateStat(COMP_DONE_WEEK, 1);
 				par.updateStat(getWeeklyMatchType(), 1);
-				par.updateNobleStats();
 			}
 
 			for (int i = _teamTwoSize; --i >= 0;)
@@ -825,7 +819,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				par.updateStat(COMP_DONE, 1);
 				par.updateStat(COMP_DONE_WEEK, 1);
 				par.updateStat(getWeeklyMatchType(), 1);
-				par.updateNobleStats();
 			}
 		}
 		catch (Exception e)

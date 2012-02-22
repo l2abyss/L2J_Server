@@ -35,7 +35,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
 
 /**
- * 
  * @author GodKratos, Pere, DS
  */
 abstract public class OlympiadGameNormal extends AbstractOlympiadGame
@@ -310,7 +309,6 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 					{
 						points = Math.min(playerOnePoints / 3, Config.ALT_OLY_MAX_POINTS);
 						removePointsFromParticipant(_playerOne, points);
-						_playerOne.updateNobleStats();
 						
 						if (Config.ALT_OLY_LOG_FIGHTS)
 						{
@@ -330,7 +328,6 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 					{
 						points = Math.min(playerTwoPoints / 3, Config.ALT_OLY_MAX_POINTS);
 						removePointsFromParticipant(_playerTwo, points);
-						_playerTwo.updateNobleStats();
 						
 						if (Config.ALT_OLY_LOG_FIGHTS)
 						{
@@ -424,9 +421,6 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 				_playerTwo.updateStat(COMP_DONE_WEEK, 1);
 				_playerOne.updateStat(getWeeklyMatchType(), 1);
 				_playerTwo.updateStat(getWeeklyMatchType(), 1);
-				
-				_playerOne.updateNobleStats();
-				_playerTwo.updateNobleStats();
 				return;
 			}
 			catch (Exception e)
@@ -531,9 +525,6 @@ abstract public class OlympiadGameNormal extends AbstractOlympiadGame
 			_playerTwo.updateStat(COMP_DONE_WEEK, 1);
 			_playerOne.updateStat(getWeeklyMatchType(), 1);
 			_playerTwo.updateStat(getWeeklyMatchType(), 1);
-			
-			_playerOne.updateNobleStats();
-			_playerTwo.updateNobleStats();
 			
 			if (Config.ALT_OLY_LOG_FIGHTS)
 			{

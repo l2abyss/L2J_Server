@@ -15,9 +15,7 @@
 package com.l2jserver.gameserver.model.olympiad;
 
 /**
- * 
  * @author DS
- *
  */
 public enum CompetitionType
 {
@@ -25,14 +23,14 @@ public enum CompetitionType
 	NON_CLASSED("non-classed"),
 	TEAMS("teams"),
 	OTHER("other");
-
+	
 	private final String _name;
-
+	
 	private CompetitionType(String name)
 	{
 		_name = name;
 	}
-
+	
 	@Override
 	public final String toString()
 	{

@@ -19,9 +19,7 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * 
  * @author DS
- *
  */
 public final class Participant
 {
@@ -63,10 +61,5 @@ public final class Participant
 	public final void updateStat(String statName, int increment)
 	{
 		stats.set(statName, Math.max(stats.getInteger(statName) + increment, 0));
-	}
-
-	public final void updateNobleStats()
-	{
-		Olympiad.updateNobleStats(objectId, stats);
 	}
 }
