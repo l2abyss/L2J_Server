@@ -1709,6 +1709,11 @@ public final class L2ItemInstance extends L2Object
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
 			statement.close();
+			
+			statement = con.prepareStatement("DELETE FROM item_elementals WHERE itemId = ?");
+			statement.setInt(1, getObjectId());
+			statement.executeUpdate();
+			statement.close();
 		}
 		catch (Exception e)
 		{
