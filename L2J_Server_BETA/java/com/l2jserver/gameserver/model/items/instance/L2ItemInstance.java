@@ -73,7 +73,7 @@ import com.l2jserver.gameserver.util.GMAudit;
  */
 public final class L2ItemInstance extends L2Object
 {
-	protected static final Logger _log = Logger.getLogger(L2ItemInstance.class.getName());
+	private static final Logger _log = Logger.getLogger(L2ItemInstance.class.getName());
 	private static final Logger _logItems = Logger.getLogger("item");
 	
 	private static FastList<AugmentListener> augmentListeners = new FastList<AugmentListener>().shared();
@@ -1740,7 +1740,7 @@ public final class L2ItemInstance extends L2Object
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM items WHERE object_id=?");
+			statement = con.prepareStatement("DELETE FROM items WHERE object_id = ?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
 			_existsInDb = false;
@@ -1748,6 +1748,11 @@ public final class L2ItemInstance extends L2Object
 			statement.close();
 			
 			statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId = ?");
+			statement.setInt(1, getObjectId());
+			statement.executeUpdate();
+			statement.close();
+			
+			statement = con.prepareStatement("DELETE FROM item_elementals WHERE itemId = ?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
 			statement.close();
