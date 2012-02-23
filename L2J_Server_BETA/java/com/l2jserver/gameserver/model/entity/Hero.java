@@ -77,11 +77,9 @@ public class Hero
 	
 	private static final Map<Integer, StatsSet> _herocounts = new FastMap<Integer, StatsSet>();
 	private static final Map<Integer, List<StatsSet>> _herofights = new FastMap<Integer, List<StatsSet>>();
-	private static final List<StatsSet> _fights = new FastList<StatsSet>();
 	
 	private static final Map<Integer, List<StatsSet>> _herodiary = new FastMap<Integer, List<StatsSet>>();
 	private static final Map<Integer, String> _heroMessage = new FastMap<Integer, String>();
-	private static final List<StatsSet> _diary = new FastList<StatsSet>();
 	
 	public static final String COUNT = "count";
 	public static final String PLAYED = "played";
@@ -283,7 +281,7 @@ public class Hero
 	
 	public void loadDiary(int charId)
 	{
-		_diary.clear();
+		final List<StatsSet> _diary = new FastList<StatsSet>();
 		int diaryentries = 0;
 		Connection con = null;
 		try
@@ -346,7 +344,7 @@ public class Hero
 	
 	public void loadFights(int charId)
 	{
-		_fights.clear();
+		final List<StatsSet> _fights = new FastList<StatsSet>();
 		StatsSet _herocountdata = new StatsSet();
 		Calendar _data = Calendar.getInstance();
 		_data.set(Calendar.DAY_OF_MONTH, 1);
