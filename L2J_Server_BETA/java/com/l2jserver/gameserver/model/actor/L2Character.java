@@ -2302,13 +2302,18 @@ public abstract class L2Character extends L2Object
 				return false;
 			}
 		}
-		for (DeathListener listener : killer.getDeathListeners())
+		
+		if (killer != null)
 		{
-			if (!listener.onKill(this, killer))
+			for (DeathListener listener : killer.getDeathListeners())
 			{
-				return false;
+				if (!listener.onKill(this, killer))
+				{
+					return false;
+				}
 			}
 		}
+		
 		for (DeathListener listener : globalDeathListeners)
 		{
 			if (killer instanceof L2PcInstance || this instanceof L2PcInstance)
