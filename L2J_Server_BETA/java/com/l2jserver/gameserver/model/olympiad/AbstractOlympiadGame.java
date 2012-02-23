@@ -45,9 +45,7 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * 
  * @author godson, GodKratos, Pere, DS
- *
  */
 public abstract class AbstractOlympiadGame
 {
@@ -215,9 +213,9 @@ public abstract class AbstractOlympiadGame
 			if (player.getClan() != null)
 			{
 				player.getClan().removeSkillEffects(player);
-				if (player.getClan().getHasCastle() > 0)
+				if (player.getClan().getCastleId() > 0)
 					CastleManager.getInstance().getCastleByOwner(player.getClan()).removeResidentialSkills(player);
-				if (player.getClan().getHasFort() > 0)
+				if (player.getClan().getFortId() > 0)
 					FortManager.getInstance().getFortByOwner(player.getClan()).removeResidentialSkills(player);
 			}
 			// Abort casting if player casting
@@ -353,9 +351,9 @@ public abstract class AbstractOlympiadGame
 			if (player.getClan() != null)
 			{
 				player.getClan().addSkillEffects(player);
-				if (player.getClan().getHasCastle() > 0)
+				if (player.getClan().getCastleId() > 0)
 					CastleManager.getInstance().getCastleByOwner(player.getClan()).giveResidentialSkills(player);
-				if (player.getClan().getHasFort() > 0)
+				if (player.getClan().getFortId() > 0)
 					FortManager.getInstance().getFortByOwner(player.getClan()).giveResidentialSkills(player);
 			}
 			

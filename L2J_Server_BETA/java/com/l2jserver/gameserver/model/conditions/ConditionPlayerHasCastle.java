@@ -58,8 +58,8 @@ public final class ConditionPlayerHasCastle extends Condition
 		// Any castle
 		if (_castle == -1)
 		{
-			return clan.getHasCastle() > 0;
+			return clan.getCastleId() > 0;
 		}
-		return clan.getHasCastle() == _castle;
+		return clan.getCastleId() == _castle;
 	}
 }

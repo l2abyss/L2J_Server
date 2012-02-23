@@ -2904,9 +2904,9 @@ public final class L2PcInstance extends L2Playable
 			
 			if (clan.getLevel() >= SiegeManager.getInstance().getSiegeClanMinLevel() && isClanLeader())
 				SiegeManager.getInstance().addSiegeSkills(this);
-			if (getClan().getHasCastle() > 0)
+			if (getClan().getCastleId() > 0)
 				CastleManager.getInstance().getCastleByOwner(getClan()).giveResidentialSkills(this);
-			if (getClan().getHasFort() > 0)
+			if (getClan().getFortId() > 0)
 				FortManager.getInstance().getFortByOwner(getClan()).giveResidentialSkills(this);
 		}
 		

@@ -271,10 +271,10 @@ public class EnterWorld extends L2GameClientPacket
 			sendPacket(new PledgeStatusChanged(activeChar.getClan()));
 			
 			// Residential skills support
-			if (activeChar.getClan().getHasCastle() > 0)
+			if (activeChar.getClan().getCastleId() > 0)
 				CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
 			
-			if (activeChar.getClan().getHasFort() > 0)
+			if (activeChar.getClan().getFortId() > 0)
 				FortManager.getInstance().getFortByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
 			
 			showClanNotice = activeChar.getClan().isNoticeEnabled();

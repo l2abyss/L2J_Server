@@ -245,7 +245,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				
 				final L2Clan clan = activeChar.getClan();
-				if ((clan.getHasFort() == 0) && (clan.getHasCastle() == 0))
+				if ((clan.getFortId() == 0) && (clan.getCastleId() == 0))
 				{
 					return;
 				}

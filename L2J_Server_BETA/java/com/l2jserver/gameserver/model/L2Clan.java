@@ -89,9 +89,9 @@ public class L2Clan
 	private String _allyName;
 	private int _allyId;
 	private int _level;
-	private int _hasCastle;
-	private int _hasFort;
-	private int _hasHideout;
+	private int _castleId;
+	private int _fortId;
+	private int _hideoutId;
 	private int _hiredGuards;
 	private int _crestId;
 	private int _crestLargeId;
@@ -301,7 +301,7 @@ public class L2Clan
 			if (!exLeader.getSkillReuseTimeStamps().isEmpty())
 			{
 				TimeStamp t;
-				for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble(), getHasCastle() > 0))
+				for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble(), getCastleId() > 0))
 				{
 					if (exLeader.hasSkillReuse(sk.getReuseHashCode()))
 					{
@@ -485,7 +485,7 @@ public class L2Clan
 		exMember.saveApprenticeAndSponsor(0, 0);
 		if (Config.REMOVE_CASTLE_CIRCLETS)
 		{
-			CastleManager.getInstance().removeCirclet(exMember, getHasCastle());
+			CastleManager.getInstance().removeCirclet(exMember, getCastleId());
 		}
 		if (exMember.isOnline())
 		{
@@ -506,9 +506,9 @@ public class L2Clan
 			removeSkillEffects(player);
 			
 			// remove Residential skills
-			if (player.getClan().getHasCastle() > 0)
+			if (player.getClan().getCastleId() > 0)
 				CastleManager.getInstance().getCastleByOwner(player.getClan()).removeResidentialSkills(player);
-			if (player.getClan().getHasFort() > 0)
+			if (player.getClan().getFortId() > 0)
 				FortManager.getInstance().getFortByOwner(player.getClan()).removeResidentialSkills(player);
 			player.sendSkillList();
 			
@@ -716,27 +716,27 @@ public class L2Clan
 	}
 	
 	/**
-	 * @return {code true} if the clan has a castle.
+	 * @return the castle Id for this clan if owns a castle, zero otherwise.
 	 */
-	public int getHasCastle()
+	public int getCastleId()
 	{
-		return _hasCastle;
+		return _castleId;
 	}
 	
 	/**
-	 * @return {code true} if the clan has a fort.
+	 * @return the fort Id for this clan if owns a fort, zero otherwise.
 	 */
-	public int getHasFort()
+	public int getFortId()
 	{
-		return _hasFort;
+		return _fortId;
 	}
 	
 	/**
-	 * @return {code true} if the clan has a hideout.
+	 * @return the hideout Id for this clan if owns a hideout, zero otherwise.
 	 */
-	public int getHasHideout()
+	public int getHideoutId()
 	{
-		return _hasHideout;
+		return _hideoutId;
 	}
 	
 	/**
@@ -788,27 +788,27 @@ public class L2Clan
 	}
 	
 	/**
-	 * @param hasCastle The hasCastle to set.
+	 * @param castleId the castle Id to set.
 	 */
-	public void setHasCastle(int hasCastle)
+	public void setCastleId(int castleId)
 	{
-		_hasCastle = hasCastle;
+		_castleId = castleId;
 	}
 	
 	/**
-	 * @param hasFort The hasFort to set.
+	 * @param fortId the fort Id to set.
 	 */
-	public void setHasFort(int hasFort)
+	public void setFortId(int fortId)
 	{
-		_hasFort = hasFort;
+		_fortId = fortId;
 	}
 	
 	/**
-	 * @param hasHideout The hasHideout to set.
+	 * @param hideoutId the hideout Id to set.
 	 */
-	public void setHasHideout(int hasHideout)
+	public void setHideoutId(int hideoutId)
 	{
-		_hasHideout = hasHideout;
+		_hideoutId = hideoutId;
 	}
 	
 	/**
@@ -915,7 +915,7 @@ public class L2Clan
 			statement.setInt(1, getClanId());
 			statement.setString(2, getName());
 			statement.setInt(3, getLevel());
-			statement.setInt(4, getHasCastle());
+			statement.setInt(4, getCastleId());
 			statement.setInt(5, getAllyId());
 			statement.setString(6, getAllyName());
 			statement.setInt(7, getLeaderId());
@@ -1016,7 +1016,7 @@ public class L2Clan
 			{
 				setName(clanData.getString("clan_name"));
 				setLevel(clanData.getInt("clan_level"));
-				setHasCastle(clanData.getInt("hasCastle"));
+				setCastleId(clanData.getInt("hasCastle"));
 				setAllyId(clanData.getInt("ally_id"));
 				setAllyName(clanData.getString("ally_name"));
 				setAllyPenaltyExpiryTime(clanData.getLong("ally_penalty_expiry_time"), clanData.getInt("ally_penalty_type"));

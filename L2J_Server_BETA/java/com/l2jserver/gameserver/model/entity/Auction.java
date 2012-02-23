@@ -435,7 +435,7 @@ public class Auction
 		}
 		for (Bidder b : _bidders.values())
 		{
-			if (ClanTable.getInstance().getClanByName(b.getClanName()).getHasHideout() == 0)
+			if (ClanTable.getInstance().getClanByName(b.getClanName()).getHideoutId() == 0)
 				returnItem(b.getClanName(), b.getBid(), true); // 10 % tax
 			else
 			{

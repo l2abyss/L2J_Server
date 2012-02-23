@@ -59,8 +59,8 @@ public final class ConditionPlayerHasClanHall extends Condition
 		// All Clan Hall
 		if ((_clanHall.size() == 1) && (_clanHall.get(0) == -1))
 		{
-			return clan.getHasHideout() > 0;
+			return clan.getHideoutId() > 0;
 		}
-		return _clanHall.contains(clan.getHasHideout());
+		return _clanHall.contains(clan.getHideoutId());
 	}
 }

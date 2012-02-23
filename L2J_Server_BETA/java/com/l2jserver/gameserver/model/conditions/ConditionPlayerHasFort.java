@@ -57,8 +57,8 @@ public final class ConditionPlayerHasFort extends Condition
 		// Any fortress
 		if (_fort == -1)
 		{
-			return clan.getHasFort() > 0;
+			return clan.getFortId() > 0;
 		}
-		return clan.getHasFort() == _fort;
+		return clan.getFortId() == _fort;
 	}
 }

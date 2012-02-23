@@ -220,7 +220,7 @@ public abstract class ClanHall
 		{
 			L2Clan clan = ClanTable.getInstance().getClan(_ownerId);
 			if(clan != null)
-				clan.setHasHideout(getId());
+				clan.setHideoutId(getId());
 			else
 				free();
 		}
@@ -353,8 +353,8 @@ public abstract class ClanHall
 			return;
 		_ownerId = clan.getClanId();
 		_isFree = false;
-		clan.setHasHideout(getId());
-		// Annonce to Online member new ClanHall
+		clan.setHideoutId(getId());
+		// Announce to Online member new ClanHall
 		clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 		updateDb();
 	}

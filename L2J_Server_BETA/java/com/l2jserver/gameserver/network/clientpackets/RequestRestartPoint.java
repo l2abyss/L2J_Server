@@ -132,7 +132,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		switch (_requestedPointType)
 		{
 			case 1: // to clanhall
-				if (activeChar.getClan() == null || activeChar.getClan().getHasHideout() == 0)
+				if (activeChar.getClan() == null || activeChar.getClan().getHideoutId() == 0)
 				{
 					_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Clanhall and he doesn't have Clanhall!");
 					return;
@@ -165,7 +165,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				}
 				else
 				{
-					if (activeChar.getClan() == null || activeChar.getClan().getHasCastle() == 0)
+					if (activeChar.getClan() == null || activeChar.getClan().getCastleId() == 0)
 						return;
 					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
 				}
@@ -179,7 +179,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			case 3: // to fortress
 				//fort = FortManager.getInstance().getFort(activeChar);
 				
-				if ((activeChar.getClan() == null || activeChar.getClan().getHasFort() == 0) && !isInDefense)
+				if ((activeChar.getClan() == null || activeChar.getClan().getFortId() == 0) && !isInDefense)
 				{
 					_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Fortress and he doesn't have Fortress!");
 					return;

@@ -112,9 +112,9 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		
 		writeD(_clan.getCrestId()); // crest id .. is used again
 		writeD(_clan.getLevel());
-		writeD(_clan.getHasCastle());
-		writeD(_clan.getHasHideout());
-		writeD(_clan.getHasFort());
+		writeD(_clan.getCastleId());
+		writeD(_clan.getHideoutId());
+		writeD(_clan.getFortId());
 		writeD(_clan.getRank());
 		writeD(_clan.getReputationScore());
 		writeD(0); //0

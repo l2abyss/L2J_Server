@@ -134,8 +134,8 @@ public class TerritoryWarManager implements Siegable
 			return 0;
 		if (player.getClan() != null)
 		{
-			if (player.getClan().getHasCastle() > 0)
-				return player.getClan().getHasCastle() + 80;
+			if (player.getClan().getCastleId() > 0)
+				return player.getClan().getCastleId() + 80;
 			for(int cId:_registeredClans.keySet())
 				if (_registeredClans.get(cId).contains(player.getClan()))
 					return cId + 80;
@@ -169,8 +169,8 @@ public class TerritoryWarManager implements Siegable
 		if (clan == null)
 			return false;
 		
-		if (clan.getHasCastle() > 0)
-			return (castleId == -1 ? true : (clan.getHasCastle() == castleId));
+		if (clan.getCastleId() > 0)
+			return (castleId == -1 ? true : (clan.getCastleId() == castleId));
 		
 		if (castleId == -1)
 		{
@@ -420,8 +420,8 @@ public class TerritoryWarManager implements Siegable
 	
 	public L2SiegeFlagInstance getHQForClan(L2Clan clan)
 	{
-		if (clan.getHasCastle() > 0)
-			return _territoryList.get(clan.getHasCastle()).getHQ();
+		if (clan.getCastleId() > 0)
+			return _territoryList.get(clan.getCastleId()).getHQ();
 		return null;
 	}
 	
@@ -434,8 +434,8 @@ public class TerritoryWarManager implements Siegable
 	
 	public void setHQForClan(L2Clan clan, L2SiegeFlagInstance hq)
 	{
-		if (clan.getHasCastle() > 0)
-			_territoryList.get(clan.getHasCastle()).setHQ(hq);
+		if (clan.getCastleId() > 0)
+			_territoryList.get(clan.getCastleId()).setHQ(hq);
 	}
 	
 	public void addClanFlag(L2Clan clan, L2SiegeFlagInstance flag)

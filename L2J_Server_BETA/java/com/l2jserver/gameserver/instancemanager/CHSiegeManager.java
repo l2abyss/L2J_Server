@@ -154,7 +154,7 @@ public final class CHSiegeManager
 			player.sendPacket(SystemMessageId.NOT_SIEGE_REGISTRATION_TIME2);
 		else if(hall.getOwnerId() == clan.getClanId())
 			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING);
-		else if(clan.getHasCastle() != 0 || clan.getHasHideout() != 0)
+		else if(clan.getCastleId() != 0 || clan.getHideoutId() != 0)
 			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_CANNOT_PARTICIPATE_OTHER_SIEGE);
 		else if(hall.getSiege().checkIsAttacker(clan))
 			player.sendPacket(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE);

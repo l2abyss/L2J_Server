@@ -72,7 +72,7 @@ public class SiegeManager
 	
 	public final void addSiegeSkills(L2PcInstance character)
 	{
-		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getHasCastle() > 0))
+		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getCastleId() > 0))
 		{
 			character.addSkill(sk, false);
 		}
@@ -116,7 +116,7 @@ public class SiegeManager
 		if (clan == null)
 			return false;
 		
-		if (clan.getHasCastle() > 0)
+		if (clan.getCastleId() > 0)
 			return true;
 		
 		Connection con = null;
@@ -151,7 +151,7 @@ public class SiegeManager
 	
 	public final void removeSiegeSkills(L2PcInstance character)
 	{
-		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getHasCastle() > 0))
+		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getCastleId() > 0))
 		{
 			character.removeSkill(sk);
 		}

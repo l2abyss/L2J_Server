@@ -746,7 +746,7 @@ public class FortSiege implements Siegable
 	 */
 	public void removeSiegeClan(L2Clan clan)
 	{
-		if (clan == null || clan.getHasFort() == getFort().getFortId() || !FortSiegeManager.getInstance().checkIsRegistered(clan, getFort().getFortId()))
+		if (clan == null || clan.getFortId() == getFort().getFortId() || !FortSiegeManager.getInstance().checkIsRegistered(clan, getFort().getFortId()))
 			return;
 		
 		removeSiegeClan(clan.getClanId());
@@ -882,7 +882,7 @@ public class FortSiege implements Siegable
 			b = false;
 			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING);
 		}
-		else if (getFort().getOwnerClan() != null && player.getClan().getHasCastle() > 0 && player.getClan().getHasCastle() == getFort().getCastleId())
+		else if (getFort().getOwnerClan() != null && player.getClan().getCastleId() > 0 && player.getClan().getCastleId() == getFort().getCastleId())
 		{
 			b = false;
 			player.sendPacket(SystemMessageId.CANT_REGISTER_TO_SIEGE_DUE_TO_CONTRACT);

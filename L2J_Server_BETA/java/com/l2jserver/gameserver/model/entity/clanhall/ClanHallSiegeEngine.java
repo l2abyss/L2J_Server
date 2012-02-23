@@ -379,7 +379,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		if(_missionAccomplished && winner != null)
 		{
 			_hall.setOwner(winner);
-			winner.setHasHideout(_hall.getId());
+			winner.setHideoutId(_hall.getId());
 			finalMsg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_VICTORIOUS_OVER_S2_S_SIEGE);
 			finalMsg.addString(winner.getName());
 			finalMsg.addString(_hall.getName());

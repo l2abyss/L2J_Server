@@ -457,7 +457,7 @@ public class Fort
 		setFortState(0, 0); // initialize fort state
 		
 		//	if clan already have castle, don't store him in fortress
-		if (clan.getHasCastle() > 0)
+		if (clan.getCastleId() > 0)
 		{
 			getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.NPCS_RECAPTURED_FORTRESS));
 			return false;
@@ -470,7 +470,7 @@ public class Fort
 		spawnSpecialEnvoys();
 		ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 1 * 60 * 60 * 1000); // Prepare 1hr task for special envoys despawn
 		// if clan have already fortress, remove it
-		if (clan.getHasFort() > 0)
+		if (clan.getFortId() > 0)
 			FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
 		
 		setBloodOathReward(0);
@@ -500,7 +500,7 @@ public class Fort
 				removeResidentialSkills(member);
 				member.sendSkillList();
 			}
-			clan.setHasFort(0);
+			clan.setFortId(0);
 			clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 			setOwnerClan(null);
 			setBloodOathReward(0);
@@ -646,7 +646,7 @@ public class Fort
 			if (ownerId > 0)
 			{
 				L2Clan clan = ClanTable.getInstance().getClan(ownerId); // Try to find clan instance
-				clan.setHasFort(getFortId());
+				clan.setFortId(getFortId());
 				setOwnerClan(clan);
 				int runCount = getOwnedTime() / (Config.FS_UPDATE_FRQ * 60);
 				long initial = System.currentTimeMillis() - _lastOwnedTime.getTimeInMillis();
@@ -966,7 +966,7 @@ public class Fort
 			// Announce to clan memebers
 			if (clan != null)
 			{
-				clan.setHasFort(getFortId()); // Set has fort flag for new owner
+				clan.setFortId(getFortId()); // Set has fort flag for new owner
 				SystemMessage sm;
 				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2);
 				sm.addString(clan.getName());

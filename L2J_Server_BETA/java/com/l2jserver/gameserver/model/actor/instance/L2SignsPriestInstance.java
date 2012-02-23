@@ -145,7 +145,7 @@ public class L2SignsPriestInstance extends L2Npc
 					else if (cabal == SevenSigns.CABAL_DUSK && Config.ALT_GAME_CASTLE_DUSK) //dusk
 					{
 						// castle owners cannot participate with dusk side
-						if (player.getClan() != null && player.getClan().getHasCastle() > 0)
+						if (player.getClan() != null && player.getClan().getCastleId() > 0)
 						{
 							showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dusk_no.htm");
 							break;
@@ -154,7 +154,7 @@ public class L2SignsPriestInstance extends L2Npc
 					else if (cabal == SevenSigns.CABAL_DAWN && Config.ALT_GAME_CASTLE_DAWN) //dawn
 					{
 						// clans without castle need to pay participation fee
-						if (player.getClan() == null || player.getClan().getHasCastle() == 0)
+						if (player.getClan() == null || player.getClan().getCastleId() == 0)
 						{
 							showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_fee.htm");
 							break;
@@ -193,7 +193,7 @@ public class L2SignsPriestInstance extends L2Npc
 					{
 						if (cabal == SevenSigns.CABAL_DUSK && Config.ALT_GAME_CASTLE_DUSK)
 						{
-							if (player.getClan() != null && player.getClan().getHasCastle() > 0) // even if in htmls is said that ally can have castle too, but its not
+							if (player.getClan() != null && player.getClan().getCastleId() > 0) // even if in htmls is said that ally can have castle too, but its not
 							{
 								showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dusk_no.htm");
 								return;
@@ -209,7 +209,7 @@ public class L2SignsPriestInstance extends L2Npc
 						{
 							boolean allowJoinDawn = false;
 							
-							if (player.getClan() != null && player.getClan().getHasCastle() > 0) // castle owner don't need to pay anything
+							if (player.getClan() != null && player.getClan().getCastleId() > 0) // castle owner don't need to pay anything
 								allowJoinDawn = true;
 							else if (player.destroyItemByItemId("SevenSigns", SevenSigns.CERTIFICATE_OF_APPROVAL_ID, 1, this, true))
 								allowJoinDawn = true;

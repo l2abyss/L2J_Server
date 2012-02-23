@@ -943,7 +943,7 @@ public class Siege implements Siegable
 	 */
 	public void removeSiegeClan(L2Clan clan)
 	{
-		if (clan == null || clan.getHasCastle() == getCastle().getCastleId() || !SiegeManager.getInstance().checkIsRegistered(clan, getCastle().getCastleId()))
+		if (clan == null || clan.getCastleId() == getCastle().getCastleId() || !SiegeManager.getInstance().checkIsRegistered(clan, getCastle().getCastleId()))
 			return;
 		removeSiegeClan(clan.getClanId());
 	}
@@ -1064,7 +1064,7 @@ public class Siege implements Siegable
 			player.sendPacket(SystemMessageId.ONLY_CLAN_LEVEL_5_ABOVE_MAY_SIEGE);
 		else if (player.getClan().getClanId() == getCastle().getOwnerId())
 			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING);
-		else if (player.getClan().getHasCastle() > 0)
+		else if (player.getClan().getCastleId() > 0)
 			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_CANNOT_PARTICIPATE_OTHER_SIEGE);
 		else if (SiegeManager.getInstance().checkIsRegistered(player.getClan(), getCastle().getCastleId()))
 			player.sendPacket(SystemMessageId.ALREADY_REQUESTED_SIEGE_BATTLE);
@@ -1301,7 +1301,7 @@ public class Siege implements Siegable
 	 */
 	private void saveSiegeClan(L2Clan clan, byte typeId, boolean isUpdateRegistration)
 	{
-		if (clan.getHasCastle() > 0)
+		if (clan.getCastleId() > 0)
 			return;
 		
 		Connection con = null;

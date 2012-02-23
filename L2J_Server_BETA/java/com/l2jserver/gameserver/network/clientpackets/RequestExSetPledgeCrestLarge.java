@@ -87,7 +87,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 			}
 			else
 			{
-				if (clan.getHasCastle() == 0 && clan.getHasHideout() == 0)
+				if (clan.getCastleId() == 0 && clan.getHideoutId() == 0)
 				{
 					activeChar.sendMessage("Only a clan that owns a clan hall or a castle can get their emblem displayed on clan related items"); //there is a system message for that but didnt found the id
 					return;

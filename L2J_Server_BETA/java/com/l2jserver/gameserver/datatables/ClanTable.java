@@ -228,7 +228,7 @@ public class ClanTable
 		}
 		
 		clan.broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.CLAN_HAS_DISPERSED));
-		int castleId = clan.getHasCastle();
+		int castleId = clan.getCastleId();
 		if (castleId == 0)
 		{
 			for (Siege siege : SiegeManager.getInstance().getSieges())
@@ -236,7 +236,7 @@ public class ClanTable
 				siege.removeSiegeClan(clan);
 			}
 		}
-		int fortId = clan.getHasFort();
+		int fortId = clan.getFortId();
 		if (fortId == 0)
 		{
 			for (FortSiege siege : FortSiegeManager.getInstance().getSieges())
@@ -244,7 +244,7 @@ public class ClanTable
 				siege.removeSiegeClan(clan);
 			}
 		}
-		int hallId = clan.getHasHideout();
+		int hallId = clan.getHideoutId();
 		if(hallId == 0)
 		{
 			for(SiegableHall hall : CHSiegeManager.getInstance().getConquerableHalls().values())
