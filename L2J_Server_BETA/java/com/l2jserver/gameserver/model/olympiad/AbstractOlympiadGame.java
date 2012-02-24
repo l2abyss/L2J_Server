@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.datatables.HeroSkillTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -228,8 +228,10 @@ public abstract class AbstractOlympiadGame
 			// Remove Hero Skills
 			if (player.isHero())
 			{
-				for (L2Skill skill : HeroSkillTable.getHeroSkills())
+				for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+				{
 					player.removeSkill(skill, false);
+				}
 			}
 			
 			// Heal Player fully
@@ -360,8 +362,10 @@ public abstract class AbstractOlympiadGame
 			// Add Hero Skills
 			if (player.isHero())
 			{
-				for (L2Skill skill : HeroSkillTable.getHeroSkills())
+				for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+				{
 					player.addSkill(skill, false);
+				}
 			}
 			player.sendSkillList();
 

@@ -18,6 +18,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -49,10 +51,10 @@ public final class SkillTreesData
 {
 	private static final Logger _log = Logger.getLogger(SkillTreesData.class.getName());
 	
-	// ClassId, FastMap of Skill Hash Code, L2LearkSkill
+	// ClassId, FastMap of Skill Hash Code, L2SkillLearn
 	private static final FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _classSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
 	private static final FastMap<ClassId, FastMap<Integer, L2SkillLearn>> _transferSkillTrees = new FastMap<ClassId, FastMap<Integer, L2SkillLearn>>();
-	// Skill Hash Code, L2LearkSkill
+	// Skill Hash Code, L2SkillLearn
 	private static final FastMap<Integer, L2SkillLearn> _collectSkillTree = new FastMap<Integer, L2SkillLearn>();
 	private static final FastMap<Integer, L2SkillLearn> _fishingSkillTree = new FastMap<Integer, L2SkillLearn>();
 	private static final FastMap<Integer, L2SkillLearn> _pledgeSkillTree = new FastMap<Integer, L2SkillLearn>();
@@ -60,6 +62,11 @@ public final class SkillTreesData
 	private static final FastMap<Integer, L2SkillLearn> _subPledgeSkillTree = new FastMap<Integer, L2SkillLearn>();
 	private static final FastMap<Integer, L2SkillLearn> _transformSkillTree = new FastMap<Integer, L2SkillLearn>();
 	private static final FastMap<Integer, L2SkillLearn> _commonSkillTree = new FastMap<Integer, L2SkillLearn>();
+	// Other skill trees
+	private static final FastMap<Integer, L2SkillLearn> _nobleSkillTree = new FastMap<>();
+	private static final FastMap<Integer, L2SkillLearn> _heroSkillTree = new FastMap<>();
+	private static final FastMap<Integer, L2SkillLearn> _gameMasterSkillTree = new FastMap<>();
+	private static final FastMap<Integer, L2SkillLearn> _gameMasterAuraSkillTree = new FastMap<>();
 	
 	// Checker, sorted arrays of hash codes
 	private TIntObjectHashMap<int[]> _skillsByClassIdHashCodes; // Occupation skills
@@ -89,6 +96,10 @@ public final class SkillTreesData
 		_subPledgeSkillTree.clear();
 		_transferSkillTrees.clear();
 		_transformSkillTree.clear();
+		_nobleSkillTree.clear();
+		_heroSkillTree.clear();
+		_gameMasterSkillTree.clear();
+		_gameMasterAuraSkillTree.clear();
 		
 		// Load files.
 		_loading = loadFiles();
@@ -134,6 +145,10 @@ public final class SkillTreesData
 		_log.info(getClass().getSimpleName() + ": Loaded " + _pledgeSkillTree.size() + " Pledge Skills, " + (_pledgeSkillTree.size() - residentialSkillCount) + " for Pledge and " + residentialSkillCount + " Residential.");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _subPledgeSkillTree.size() + " Sub-Pledge Skills.");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _transformSkillTree.size() + " Transform Skills.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _nobleSkillTree.size() + " Noble Skills.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _heroSkillTree.size() + " Hero Skills.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _gameMasterSkillTree.size() + " Game Master Skills.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _gameMasterAuraSkillTree.size() + " Game Master Aura Skills.");
 		final int commonSkills = _commonSkillTree.size();
 		if (commonSkills > 0)
 		{
@@ -193,7 +208,6 @@ public final class SkillTreesData
 		int cId = -1;
 		int parentClassId = -1;
 		ClassId classId = null;
-		
 		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
@@ -402,6 +416,22 @@ public final class SkillTreesData
 									{
 										_transformSkillTree.put(skillHashCode, skillLearn);
 									}
+									else if (type.equals("nobleSkillTree"))
+									{
+										_nobleSkillTree.put(skillHashCode, skillLearn);
+									}
+									else if (type.equals("heroSkillTree"))
+									{
+										_heroSkillTree.put(skillHashCode, skillLearn);
+									}
+									else if (type.equals("gameMasterSkillTree"))
+									{
+										_gameMasterSkillTree.put(skillHashCode, skillLearn);
+									}
+									else if (type.equals("gameMasterAuraSkillTree"))
+									{
+										_gameMasterAuraSkillTree.put(skillHashCode, skillLearn);
+									}
 								}
 							}
 						}
@@ -528,6 +558,62 @@ public final class SkillTreesData
 	public FastMap<Integer, L2SkillLearn> getTransformSkillTree()
 	{
 		return _transformSkillTree;
+	}
+	
+	/**
+	 * @return the complete Noble Skill Tree.
+	 */
+	public FastMap<Integer, L2Skill> getNobleSkillTree()
+	{
+		final FastMap<Integer, L2Skill> tree = new FastMap<>();
+		final SkillTable st = SkillTable.getInstance();
+		for (Entry<Integer, L2SkillLearn> e : _nobleSkillTree.entrySet())
+		{
+			tree.put(e.getKey(), st.getInfo(e.getValue().getSkillId(), e.getValue().getSkillLevel()));
+		}
+		return tree;
+	}
+	
+	/**
+	 * @return the complete Hero Skill Tree.
+	 */
+	public FastMap<Integer, L2Skill> getHeroSkillTree()
+	{
+		final FastMap<Integer, L2Skill> tree = new FastMap<>();
+		final SkillTable st = SkillTable.getInstance();
+		for (Entry<Integer, L2SkillLearn> e : _heroSkillTree.entrySet())
+		{
+			tree.put(e.getKey(), st.getInfo(e.getValue().getSkillId(), e.getValue().getSkillLevel()));
+		}
+		return tree;
+	}
+	
+	/**
+	 * @return the complete Game Master Skill Tree.
+	 */
+	public FastMap<Integer, L2Skill> getGMSkillTree()
+	{
+		final FastMap<Integer, L2Skill> tree = new FastMap<>();
+		final SkillTable st = SkillTable.getInstance();
+		for (Entry<Integer, L2SkillLearn> e : _gameMasterSkillTree.entrySet())
+		{
+			tree.put(e.getKey(), st.getInfo(e.getValue().getSkillId(), e.getValue().getSkillLevel()));
+		}
+		return tree;
+	}
+	
+	/**
+	 * @return the complete Game Master Aura Skill Tree.
+	 */
+	public FastMap<Integer, L2Skill> getGMAuraSkillTree()
+	{
+		final FastMap<Integer, L2Skill> tree = new FastMap<>();
+		final SkillTable st = SkillTable.getInstance();
+		for (Entry<Integer, L2SkillLearn> e : _gameMasterAuraSkillTree.entrySet())
+		{
+			tree.put(e.getKey(), st.getInfo(e.getValue().getSkillId(), e.getValue().getSkillLevel()));
+		}
+		return tree;
 	}
 	
 	/**
@@ -1088,6 +1174,67 @@ public final class SkillTreesData
 			}
 		}
 		return minLevel;
+	}
+	
+	/**
+	 * @param skillId the Id of the skill to check.
+	 * @param skillLevel the level of the skill to check, if it's -1 only Id will be checked.
+	 * @return {@code true} if the skill is present in the Hero Skill Tree, {@code false} otherwise.
+	 */
+	public boolean isHeroSkill(int skillId, int skillLevel)
+	{
+		if (_heroSkillTree.containsKey(SkillTable.getSkillHashCode(skillId, skillLevel)))
+		{
+			return true;
+		}
+		
+		for (L2SkillLearn skill : _heroSkillTree.values())
+		{
+			if ((skill.getSkillId() == skillId) && (skillLevel == -1))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @param skillId skillId the Id of the skill to check.
+	 * @param skillLevel skillLevel the level of the skill to check, if it's -1 only Id will be checked.
+	 * @return {@code true} if the skill is present in the Game Master Skill Trees, {@code false} otherwise.
+	 */
+	public boolean isGMSkill(int skillId, int skillLevel)
+	{
+		final FastMap<Integer, L2SkillLearn> gmSkills = new FastMap<>();
+		gmSkills.putAll(_gameMasterSkillTree);
+		gmSkills.putAll(_gameMasterAuraSkillTree);
+		if (gmSkills.containsKey(SkillTable.getSkillHashCode(skillId, skillLevel)))
+		{
+			return true;
+		}
+		
+		for (L2SkillLearn skill : gmSkills.values())
+		{
+			if ((skill.getSkillId() == skillId) && (skillLevel == -1))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @param gmchar the player to add the Game Master skills.
+	 * @param auraSkills if {@code true} it will add "GM Aura" skills, else will add the "GM regular" skills.
+	 */
+	public void addSkills(L2PcInstance gmchar, boolean auraSkills)
+	{
+		final Collection<L2SkillLearn> skills = auraSkills ? _gameMasterAuraSkillTree.values() : _gameMasterSkillTree.values();
+		final SkillTable st = SkillTable.getInstance();
+		for (L2SkillLearn sl : skills)
+		{
+			gmchar.addSkill(st.getInfo(sl.getSkillId(), sl.getSkillLevel()), false); // Don't Save GM skills to database
+		}
 	}
 	
 	/**

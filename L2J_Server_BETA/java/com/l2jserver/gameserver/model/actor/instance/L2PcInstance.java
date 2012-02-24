@@ -70,9 +70,7 @@ import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.HennaTable;
-import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.NobleSkillTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -10549,13 +10547,17 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (hero && _baseClass == _activeClass)
 		{
-			for (L2Skill s : HeroSkillTable.getHeroSkills())
-				addSkill(s, false); //Dont Save Hero skills to database
+			for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+			{
+				addSkill(skill, false); //Dont Save Hero skills to database
+			}
 		}
 		else
 		{
-			for (L2Skill s : HeroSkillTable.getHeroSkills())
-				super.removeSkill(s); //Just Remove skills from nonHero characters
+			for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+			{
+				super.removeSkill(skill); //Just Remove skills from nonHero characters
+			}
 		}
 		_hero = hero;
 		
@@ -10675,12 +10677,22 @@ public final class L2PcInstance extends L2Playable
 	
 	public void setNoble(boolean val)
 	{
+		final Collection<L2Skill> nobleSkillTree = SkillTreesData.getInstance().getNobleSkillTree().values();
 		if (val)
-			for (L2Skill s : NobleSkillTable.getInstance().getNobleSkills())
-				addSkill(s, false); //Dont Save Noble skills to Sql
+		{
+			for (L2Skill skill : nobleSkillTree)
+			{
+				addSkill(skill, false);
+			}
+		}
 		else
-			for (L2Skill s : NobleSkillTable.getInstance().getNobleSkills())
-				super.removeSkill(s); //Just Remove skills without deleting from Sql
+		{
+			for (L2Skill skill : nobleSkillTree)
+			{
+				super.removeSkill(skill);
+			}
+		}
+		
 		_noble = val;
 		
 		sendSkillList();

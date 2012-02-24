@@ -26,10 +26,9 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
-import com.l2jserver.gameserver.datatables.GMSkillTable;
-import com.l2jserver.gameserver.datatables.HeroSkillTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.handler.ITargetTypeHandler;
 import com.l2jserver.gameserver.handler.TargetHandler;
 import com.l2jserver.gameserver.model.ChanceCondition;
@@ -490,8 +489,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_transformId = set.getInteger("transformId", 0);
 		_transformDuration = set.getInteger("transformDuration", 0);
 		
-		_isHeroSkill = HeroSkillTable.isHeroSkill(_id);
-		_isGMSkill = GMSkillTable.isGMSkill(_id);
+		_isHeroSkill = SkillTreesData.getInstance().isHeroSkill(_id, _level);
+		_isGMSkill = SkillTreesData.getInstance().isGMSkill(_id, _level);
 		
 		_baseCritRate = set.getInteger("baseCritRate", (_skillType == L2SkillType.PDAM  || _skillType == L2SkillType.BLOW) ? 0 : -1);
 		_lethalEffect1 = set.getInteger("lethal1",0);
