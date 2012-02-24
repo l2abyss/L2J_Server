@@ -202,6 +202,7 @@ public final class Config
 	public static int ALT_PARTY_RANGE;
 	public static int ALT_PARTY_RANGE2;
 	public static boolean ALT_LEAVE_PARTY_LEADER;
+	public static long MAX_ADENA;
 	public static long STARTING_ADENA;
 	public static byte STARTING_LEVEL;
 	public static int STARTING_SP;
@@ -1704,6 +1705,9 @@ public final class Config
 					ALT_PARTY_RANGE = Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
 					ALT_PARTY_RANGE2 = Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
 					ALT_LEAVE_PARTY_LEADER = Boolean.parseBoolean(Character.getProperty("AltLeavePartyLeader", "False"));
+					MAX_ADENA = Long.parseLong(Character.getProperty("MaxAdena", "99900000000"));
+					if (MAX_ADENA < 0)
+						MAX_ADENA = Long.MAX_VALUE;
 					STARTING_ADENA = Long.parseLong(Character.getProperty("StartingAdena", "0"));
 					STARTING_LEVEL = Byte.parseByte(Character.getProperty("StartingLevel", "1"));
 					STARTING_SP = Integer.parseInt(Character.getProperty("StartingSP", "0"));
