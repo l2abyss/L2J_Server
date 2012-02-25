@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -348,10 +349,18 @@ public final class UseItem extends L2GameClientPacket
 				return;
 			}
 			
-			final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+			final L2EtcItem etcItem = item.getEtcItem();
+			final IItemHandler handler = ItemHandler.getInstance().getHandler(etcItem);
 			if (handler == null)
 			{
-				_log.log(Level.WARNING, "No item handler registered for item ID " + _itemId + ".");
+				if ((etcItem != null) && (etcItem.getHandlerName() != null))
+				{
+					_log.log(Level.WARNING, "Unmanaged Item handler: " + etcItem.getHandlerName() + " for Item Id: " + _itemId + "!");
+				}
+				else if (Config.DEBUG)
+				{
+					_log.log(Level.WARNING, "No Item handler registered for Item Id: " + _itemId + "!");
+				}
 				return;
 			}
 			
