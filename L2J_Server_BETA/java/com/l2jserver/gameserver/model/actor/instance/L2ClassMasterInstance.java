@@ -437,7 +437,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 	private static String getRequiredItems(int level)
 	{
 		if (Config.CLASS_MASTER_SETTINGS.getRequireItems(level) == null || Config.CLASS_MASTER_SETTINGS.getRequireItems(level).isEmpty())
-			return "<tr><td>none</td></r>";
+			return "<tr><td>none</td></tr>";
 		StringBuilder sb = new StringBuilder();
 		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(level).keys())
 		{
