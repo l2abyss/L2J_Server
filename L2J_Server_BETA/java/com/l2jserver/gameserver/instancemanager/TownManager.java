@@ -20,11 +20,11 @@ import com.l2jserver.gameserver.model.zone.type.L2TownZone;
 
 public class TownManager
 {
-	//private static final Logger _log = Logger.getLogger(TownManager.class.getName());
+	// private static final Logger _log = Logger.getLogger(TownManager.class.getName());
 	
 	public final static int getTownCastle(int townId)
 	{
-		switch(townId)
+		switch (townId)
 		{
 			case 912:
 				return 1;
@@ -57,7 +57,9 @@ public class TownManager
 		{
 			Castle castle = CastleManager.getInstance().getCastles().get(CastleManager.getInstance().getCastleIndex(castleIndex));
 			if (castle != null)
+			{
 				return castle.getSiege().getIsInProgress();
+			}
 		}
 		return false;
 	}
@@ -73,7 +75,9 @@ public class TownManager
 		for (L2TownZone temp : ZoneManager.getInstance().getAllZones(L2TownZone.class))
 		{
 			if (temp.getTownId() == townId)
+			{
 				return temp;
+			}
 		}
 		return null;
 	}
@@ -90,7 +94,9 @@ public class TownManager
 		for (L2ZoneType temp : ZoneManager.getInstance().getZones(x, y, z))
 		{
 			if (temp instanceof L2TownZone)
+			{
 				return (L2TownZone) temp;
+			}
 		}
 		return null;
 	}
