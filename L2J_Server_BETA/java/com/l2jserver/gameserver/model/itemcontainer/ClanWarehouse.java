@@ -12,23 +12,22 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.model.itemcontainer;
 
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
-import com.l2jserver.gameserver.model.itemcontainer.Warehouse;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanWarehouseListener;
 
 public final class ClanWarehouse extends Warehouse
 {
-	private L2Clan _clan;
+	private final L2Clan _clan;
 	
-	private FastList<ClanWarehouseListener> clanWarehouseListeners = new FastList<ClanWarehouseListener>().shared();
+	private final FastList<ClanWarehouseListener> clanWarehouseListeners = new FastList<ClanWarehouseListener>().shared();
 	
 	public ClanWarehouse(L2Clan clan)
 	{
@@ -76,7 +75,7 @@ public final class ClanWarehouse extends Warehouse
 	@Override
 	public boolean validateCapacity(int slots)
 	{
-		return (_items.size() + slots <= Config.WAREHOUSE_SLOTS_CLAN);
+		return ((_items.size() + slots) <= Config.WAREHOUSE_SLOTS_CLAN);
 	}
 	
 	@Override

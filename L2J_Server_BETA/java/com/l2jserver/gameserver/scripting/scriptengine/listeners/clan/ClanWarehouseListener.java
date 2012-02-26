@@ -14,9 +14,9 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.clan;
 
-import com.l2jserver.gameserver.model.ClanWarehouse;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
