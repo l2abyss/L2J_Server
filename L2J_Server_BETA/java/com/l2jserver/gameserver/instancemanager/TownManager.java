@@ -38,9 +38,9 @@ public class TownManager
 				return 5;
 			case 926:
 				return 6;
-			case 1537:
-				return 7;
 			case 1538:
+				return 7;
+			case 1537:
 				return 8;
 			case 1714:
 				return 9;
