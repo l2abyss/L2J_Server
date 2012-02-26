@@ -90,7 +90,7 @@ public final class ClanWarehouse extends Warehouse
 				return null;
 			}
 		}
-		return super.addItem(process, item, actor, reference);
+		return super.addItem(process, itemId, count, actor, reference);
 	}
 	
 	@Override

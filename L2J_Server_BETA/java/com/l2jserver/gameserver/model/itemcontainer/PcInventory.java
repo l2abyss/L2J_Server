@@ -1003,7 +1003,7 @@ public class PcInventory extends Inventory
 	 */
 	public static void addItemTracker(ItemTracker tracker)
 	{
-		if (!itemTrackers.contains(itemTrackers))
+		if (!itemTrackers.contains(tracker))
 		{
 			itemTrackers.add(tracker);
 		}
