@@ -8787,7 +8787,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1519<br>
-	 * the pet's body will disappear along with all the pet's items.
+	 * Message: The pet has been killed. If you don't resurrect it within 24 hours, the pet's body will disappear along with all the pet's items.
 	 */
 	public static final SystemMessageId MAKE_SURE_YOU_RESSURECT_YOUR_PET_WITHIN_24_HOURS;
 	
@@ -13498,17 +13498,20 @@ public final class SystemMessageId
 	public static final SystemMessageId TIME_LIMITED_ITEM_DELETED;
 	
 	/**
-	 * 2372 1 There is not much time remaining until the hunting helper pet leaves.
+	 * ID: 2372<br>
+	 * Message: There is not much time remaining until the hunting helper pet leaves.
 	 */
 	public static final SystemMessageId THERE_NOT_MUCH_TIME_REMAINING_UNTIL_HELPER_LEAVES;
 	
 	/**
-	 * 2373 1 The hunting helper pet is now leaving. 0 B09B79 0 0 0 0 0 none
+	 * ID: 2373<br>
+	 * The hunting helper pet is now leaving.
 	 */
 	public static final SystemMessageId THE_HELPER_PET_LEAVING;
 	
 	/**
-	 * 2375 1 The hunting helper pet cannot be returned because there is not much time remaining until it leaves. 0
+	 * ID: 2375<br>
+	 * Message: The hunting helper pet cannot be returned ecause there is not much time remaining until it leaves.
 	 */
 	public static final SystemMessageId THE_HELPER_PET_CANNOT_BE_RETURNED;
 	
@@ -13627,22 +13630,26 @@ public final class SystemMessageId
 	public static final SystemMessageId THE_COLLECTION_HAS_FAILED;
 	
 	/**
-	 * ID: 2448 Message: Your birthday gift has arrived
+	 * ID: 2448<br>
+	 * Message: Your birthday gift has arrived
 	 */
 	public static final SystemMessageId YOUR_BIRTHDAY_GIFT_HAS_ARRIVED;
 	
 	/**
-	 * ID: 2449 Message: There are $s1 days until your character's birthday.
+	 * ID: 2449<br>
+	 * Message: There are $s1 days until your character's birthday.
 	 */
 	public static final SystemMessageId THERE_ARE_S1_DAYS_UNTIL_YOUR_CHARACTERS_BIRTHDAY;
 	
 	/**
-	 * ID: 2450 Message: $c1's character birthday is $s3/$s4/$s2.
+	 * ID: 2450<br>
+	 * Message: $c1's character birthday is $s3/$s4/$s2.
 	 */
 	public static final SystemMessageId C1_BIRTHDAY_IS_S3_S4_S2;
 	
 	/**
-	 * ID: 2451 Message: The cloak equip has been removed because the armor set equip has been removed.
+	 * ID: 2451<br>
+	 * Message: The cloak equip has been removed because the armor set equip has been removed.
 	 */
 	public static final SystemMessageId CLOAK_REMOVED_BECAUSE_ARMOR_SET_REMOVED;
 	
@@ -13695,27 +13702,32 @@ public final class SystemMessageId
 	public static final SystemMessageId THE_AIRSHIP_NEED_MORE_S1;
 	
 	/**
-	 * ID: 2463 Message: The airship's fuel (EP) will soon run out.
+	 * ID: 2463<br>
+	 * Message: The airship's fuel (EP) will soon run out.
 	 */
 	public static final SystemMessageId THE_AIRSHIP_FUEL_SOON_RUN_OUT;
 	
 	/**
-	 * ID: 2464 Message: The airship's fuel (EP) has run out. The airship's speed will be greatly decreased in this condition.
+	 * ID: 2464<br>
+	 * Message: The airship's fuel (EP) has run out. The airship's speed will be greatly decreased in this condition.
 	 */
 	public static final SystemMessageId THE_AIRSHIP_FUEL_RUN_OUT;
 	
 	/**
-	 * ID: 2465 Message: You have selected a 3 vs 3 class irrelevant team match. Do you wish to participate?
+	 * ID: 2465<br>
+	 * Message: You have selected a 3 vs 3 class irrelevant team match. Do you wish to participate?
 	 */
 	public static final SystemMessageId OLYMPIAD_3VS3_CONFIRM;
 	
 	/**
-	 * ID: 2491 Message: Your ship cannot teleport because it does not have enough fuel for the trip.
+	 * ID: 2491<br>
+	 * Message: Your ship cannot teleport because it does not have enough fuel for the trip.
 	 */
 	public static final SystemMessageId THE_AIRSHIP_CANNOT_TELEPORT;
 	
 	/**
-	 * ID: 2492 Message: The airship has been summoned. It will automatically depart in %s minutes.
+	 * ID: 2492<br>
+	 * Message: The airship has been summoned. It will automatically depart in %s minutes.
 	 */
 	public static final SystemMessageId THE_AIRSHIP_SUMMONED;
 	
@@ -13726,17 +13738,20 @@ public final class SystemMessageId
 	public static final SystemMessageId THE_COLLECTION_HAS_SUCCEEDED;
 	
 	/**
-	 * ID: 2701 Message: The match is being prepared. Please try again later.
+	 * ID: 2701<br>
+	 * Message: The match is being prepared. Please try again later.
 	 */
 	public static final SystemMessageId MATCH_BEING_PREPARED_TRY_LATER;
 	
 	/**
-	 * ID: 2702 Message: You were excluded from the match because the registration count was not correct.
+	 * ID: 2702<br>
+	 * Message: You were excluded from the match because the registration count was not correct.
 	 */
 	public static final SystemMessageId EXCLUDED_FROM_MATCH_DUE_INCORRECT_COUNT;
 	
 	/**
-	 * ID: 2703 Message: The team was adjusted because the population ratio was not correct.
+	 * ID: 2703<br>
+	 * Message: The team was adjusted because the population ratio was not correct.
 	 */
 	public static final SystemMessageId TEAM_ADJUSTED_BECAUSE_WRONG_POPULATION_RATIO;
 	
@@ -13747,17 +13762,20 @@ public final class SystemMessageId
 	public static final SystemMessageId CANNOT_REGISTER_CAUSE_QUEUE_FULL;
 	
 	/**
-	 * ID: 2705 Message: The match waiting time was extended by 1 minute.
+	 * ID: 2705<br>
+	 * Message: The match waiting time was extended by 1 minute.
 	 */
 	public static final SystemMessageId MATCH_WAITING_TIME_EXTENDED;
 	
 	/**
-	 * ID: 2706 Message: You cannot enter because you do not meet the requirements.
+	 * ID: 2706<br>
+	 * Message: You cannot enter because you do not meet the requirements.
 	 */
 	public static final SystemMessageId CANNOT_ENTER_CAUSE_DONT_MATCH_REQUIREMENTS;
 	
 	/**
-	 * ID: 2707 Message: You cannot make another request for 10 seconds after cancelling a match registration.
+	 * ID: 2707<br>
+	 * Message: You cannot make another request for 10 seconds after cancelling a match registration.
 	 */
 	public static final SystemMessageId CANNOT_REQUEST_REGISTRATION_10_SECS_AFTER;
 	
@@ -14037,12 +14055,14 @@ public final class SystemMessageId
 	public static final SystemMessageId TERRITORY_WAR_HAS_ENDED;
 	
 	/**
-	 * ID: 2911 You've requested $c1 to be on your Friends List.
+	 * ID: 2911<br>
+	 * You've requested $c1 to be on your Friends List.
 	 */
 	public static final SystemMessageId YOU_REQUESTED_C1_TO_BE_FRIEND;
 	
 	/**
-	 * ID: 2913 Message: Clan $s1 has succeeded in capturing $s2's territory ward.
+	 * ID: 2913<br>
+	 * Message: Clan $s1 has succeeded in capturing $s2's territory ward.
 	 */
 	public static final SystemMessageId CLAN_S1_HAS_SUCCEDED_IN_CAPTURING_S2_TERRITORY_WARD;
 	
