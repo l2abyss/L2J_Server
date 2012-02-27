@@ -26,25 +26,22 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 public class EnchantScroll extends EnchantItem
 {
 	private final boolean _isBlessed;
-	private final boolean _isCrystal;
 	private final boolean _isSafe;
 	
 	/**
 	 * @param wep
 	 * @param bless
-	 * @param crystal
 	 * @param safe
 	 * @param type
 	 * @param level
 	 * @param chance
 	 * @param items
 	 */
-	public EnchantScroll(boolean wep, boolean bless, boolean crystal, boolean safe, int type, int level, double chance, int[] items)
+	public EnchantScroll(boolean wep, boolean bless, boolean safe, int type, int level, double chance, int[] items)
 	{
 		super(wep, type, level, chance, items);
 		
 		_isBlessed = bless;
-		_isCrystal = crystal;
 		_isSafe = safe;
 	}
 	
@@ -54,14 +51,6 @@ public class EnchantScroll extends EnchantItem
 	public final boolean isBlessed()
 	{
 		return _isBlessed;
-	}
-	
-	/**
-	 * @return true for crystal scrolls
-	 */
-	public final boolean isCrystal()
-	{
-		return _isCrystal;
 	}
 	
 	/**

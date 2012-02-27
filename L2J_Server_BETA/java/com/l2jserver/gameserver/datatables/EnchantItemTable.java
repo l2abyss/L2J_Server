@@ -84,7 +84,6 @@ public class EnchantItemTable
 						int scrollId = 0;
 						boolean isWeapon = true;
 						boolean isBlessed = false;
-						boolean isCrystal = false;
 						boolean isSafe = false;
 						int type = L2Item.CRYSTAL_NONE;
 						int maxEnchant = Config.MAX_ENCHANT_LEVEL;
@@ -111,12 +110,6 @@ public class EnchantItemTable
 						if (att != null)
 						{
 							isBlessed = Boolean.parseBoolean(att.getNodeValue());
-						}
-						
-						att = attrs.getNamedItem("isCrystal");
-						if (att != null)
-						{
-							isCrystal = Boolean.parseBoolean(att.getNodeValue());
 						}
 						
 						att = attrs.getNamedItem("isSafe");
@@ -172,7 +165,7 @@ public class EnchantItemTable
 							Arrays.sort(items);
 						}
 						
-						_scrolls.put(scrollId, new EnchantScroll(isWeapon, isBlessed, isCrystal, isSafe, type, maxEnchant, chance, items));
+						_scrolls.put(scrollId, new EnchantScroll(isWeapon, isBlessed, isSafe, type, maxEnchant, chance, items));
 					}
 					else if ("support".equalsIgnoreCase(n.getNodeName()))
 					{
