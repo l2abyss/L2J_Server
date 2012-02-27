@@ -107,7 +107,8 @@ public abstract class IdFactory
 	
 	private static final String[] TIMESTAMPS_CLEAN =
 	{
-		"DELETE FROM character_instance_time WHERE time <= ?", "DELETE FROM character_skills_save WHERE restore_type = 1 AND systime <= ?"
+		"DELETE FROM character_instance_time WHERE time <= ?",
+		"DELETE FROM character_skills_save WHERE restore_type = 1 AND systime <= ?"
 	};
 	
 	protected boolean _initialized;

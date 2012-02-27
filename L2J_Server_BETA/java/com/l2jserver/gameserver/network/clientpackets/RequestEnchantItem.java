@@ -61,8 +61,10 @@ public final class RequestEnchantItem extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		
-		if (activeChar == null || _objectId == 0)
+		if ((activeChar == null) || (_objectId == 0))
+		{
 			return;
+		}
 		
 		if (!activeChar.isOnline() || getClient().isDetached())
 		{
@@ -81,7 +83,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		L2ItemInstance scroll = activeChar.getActiveEnchantItem();
 		L2ItemInstance support = activeChar.getActiveEnchantSupportItem();
 		
-		if (item == null || scroll == null)
+		if ((item == null) || (scroll == null))
 		{
 			activeChar.setActiveEnchantItem(null);
 			return;
@@ -92,7 +94,9 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		
 		// scroll not found in list
 		if (scrollTemplate == null)
+		{
 			return;
+		}
 		
 		// template for support item, if exist
 		EnchantItem supportTemplate = null;
@@ -116,7 +120,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		}
 		
 		// fast auto-enchant cheat check
-		if (activeChar.getActiveEnchantTimestamp() == 0 || System.currentTimeMillis() - activeChar.getActiveEnchantTimestamp() < 2000)
+		if ((activeChar.getActiveEnchantTimestamp() == 0) || ((System.currentTimeMillis() - activeChar.getActiveEnchantTimestamp()) < 2000))
 		{
 			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " use autoenchant program ", Config.DEFAULT_PUNISH);
 			activeChar.setActiveEnchantItem(null);
@@ -157,7 +161,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			L2Item it = item.getItem();
 			
 			// last validation check
-			if (item.getOwnerId() != activeChar.getObjectId() || item.isEnchantable() == 0 || chance < 0)
+			if ((item.getOwnerId() != activeChar.getObjectId()) || (item.isEnchantable() == 0) || (chance < 0))
 			{
 				activeChar.sendPacket(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION);
 				activeChar.setActiveEnchantItem(null);
@@ -177,7 +181,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					LogRecord record = new LogRecord(Level.INFO, "Success");
 					record.setParameters(new Object[]
 					{
-						activeChar, item, scroll, support, chance
+						activeChar,
+						item,
+						scroll,
+						support,
+						chance
 					});
 					record.setLoggerName("item");
 					_logEnchant.log(record);
@@ -186,7 +194,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				// announce the success
 				int minEnchantAnnounce = item.isArmor() ? 6 : 7;
 				int maxEnchantAnnounce = item.isArmor() ? 0 : 15;
-				if (item.getEnchantLevel() == minEnchantAnnounce || item.getEnchantLevel() == maxEnchantAnnounce)
+				if ((item.getEnchantLevel() == minEnchantAnnounce) || (item.getEnchantLevel() == maxEnchantAnnounce))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_SUCCESSFULY_ENCHANTED_A_S2_S3);
 					sm.addCharName(activeChar);
@@ -196,10 +204,12 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					
 					L2Skill skill = SkillTable.FrequentSkill.FIREWORK.getSkill();
 					if (skill != null)
+					{
 						activeChar.broadcastPacket(new MagicSkillUse(activeChar, activeChar, skill.getId(), skill.getLevel(), skill.getHitTime(), skill.getReuseDelay()));
+					}
 				}
 				
-				if (it instanceof L2Armor && item.getEnchantLevel() == 4 && activeChar.getInventory().getItemByObjectId(item.getObjectId()).isEquipped())
+				if ((it instanceof L2Armor) && (item.getEnchantLevel() == 4) && activeChar.getInventory().getItemByObjectId(item.getObjectId()).isEquipped())
 				{
 					enchant4Skill = ((L2Armor) it).getEnchant4Skill();
 					if (enchant4Skill != null)
@@ -215,7 +225,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				if (scrollTemplate.isSafe())
 				{
 					// safe enchant - remain old value
-					// need retail message
+					activeChar.sendPacket(SystemMessageId.SAFE_ENCHANT_FAILED);
 					activeChar.sendPacket(new EnchantResult(5, 0, 0));
 					
 					if (Config.LOG_ITEM_ENCHANTS)
@@ -223,7 +233,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						LogRecord record = new LogRecord(Level.INFO, "Safe Fail");
 						record.setParameters(new Object[]
 						{
-							activeChar, item, scroll, support, chance
+							activeChar,
+							item,
+							scroll,
+							support,
+							chance
 						});
 						record.setLoggerName("item");
 						_logEnchant.log(record);
@@ -251,7 +265,9 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(item.getLocationSlot());
 						InventoryUpdate iu = new InventoryUpdate();
 						for (L2ItemInstance itm : unequiped)
+						{
 							iu.addModifiedItem(itm);
+						}
 						
 						activeChar.sendPacket(iu);
 						activeChar.broadcastUserInfo();
@@ -271,7 +287,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 							LogRecord record = new LogRecord(Level.INFO, "Blessed Fail");
 							record.setParameters(new Object[]
 							{
-								activeChar, item, scroll, support, chance
+								activeChar,
+								item,
+								scroll,
+								support,
+								chance
 							});
 							record.setLoggerName("item");
 							_logEnchant.log(record);
@@ -281,9 +301,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					{
 						// enchant failed, destroy item
 						int crystalId = item.getItem().getCrystalItemId();
-						int count = item.getCrystalCount() - (item.getItem().getCrystalCount() + 1) / 2;
+						int count = item.getCrystalCount() - ((item.getItem().getCrystalCount() + 1) / 2);
 						if (count < 1)
+						{
 							count = 1;
+						}
 						
 						L2ItemInstance destroyItem = activeChar.getInventory().destroyItem("Enchant", item, activeChar, null);
 						if (destroyItem == null)
@@ -298,7 +320,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 								LogRecord record = new LogRecord(Level.INFO, "Unable to destroy");
 								record.setParameters(new Object[]
 								{
-									activeChar, item, scroll, support, chance
+									activeChar,
+									item,
+									scroll,
+									support,
+									chance
 								});
 								record.setLoggerName("item");
 								_logEnchant.log(record);
@@ -321,31 +347,47 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						{
 							InventoryUpdate iu = new InventoryUpdate();
 							if (destroyItem.getCount() == 0)
+							{
 								iu.addRemovedItem(destroyItem);
+							}
 							else
+							{
 								iu.addModifiedItem(destroyItem);
+							}
 							
 							if (crystals != null)
+							{
 								iu.addItem(crystals);
+							}
 							
 							activeChar.sendPacket(iu);
 						}
 						else
+						{
 							activeChar.sendPacket(new ItemList(activeChar, true));
+						}
 						
 						L2World world = L2World.getInstance();
 						world.removeObject(destroyItem);
 						if (crystalId == 0)
+						{
 							activeChar.sendPacket(new EnchantResult(4, 0, 0));
+						}
 						else
+						{
 							activeChar.sendPacket(new EnchantResult(1, crystalId, count));
+						}
 						
 						if (Config.LOG_ITEM_ENCHANTS)
 						{
 							LogRecord record = new LogRecord(Level.INFO, "Fail");
 							record.setParameters(new Object[]
 							{
-								activeChar, item, scroll, support, chance
+								activeChar,
+								item,
+								scroll,
+								support,
+								chance
 							});
 							record.setLoggerName("item");
 							_logEnchant.log(record);
