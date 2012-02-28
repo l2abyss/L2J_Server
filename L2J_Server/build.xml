@@ -164,6 +164,9 @@
 	</target>
 
 	<target name="clean" description="Remove the output directories">
+		<exec dir="." executable="svn">
+			<arg value="upgrade" />
+		</exec>
 		<delete dir="${build}" />
 	</target>
 
