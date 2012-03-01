@@ -65,6 +65,9 @@ public final class L2Weapon extends L2Item
 	private SkillHolder _skillsOnCrit;
 	private Condition _skillsOnCritCondition = null;
 	
+	private final int _reducedSoulshot;
+	private final int _reducedSoulshotChance;
+	
 	private final boolean _isForceEquip;
 	private final boolean _isAttackWeapon;
 	private final boolean _useWeaponSkillsOnly;
@@ -85,6 +88,10 @@ public final class L2Weapon extends L2Item
 		_spiritShotCount = set.getInteger("spiritshots", 0);
 		_rndDam = set.getInteger("random_damage", 0);
 		_mpConsume = set.getInteger("mp_consume", 0);
+		
+		String[] reduced_soulshots = set.getString("reduced_soulshot", "").split(",");
+		_reducedSoulshotChance = (reduced_soulshots.length == 2) ? Integer.parseInt(reduced_soulshots[0]) : 0;
+		_reducedSoulshot = (reduced_soulshots.length == 2) ? Integer.parseInt(reduced_soulshots[1]) : 0;
 		
 		String skill = set.getString("enchant4_skill", null);
 		if (skill != null)
@@ -228,6 +235,22 @@ public final class L2Weapon extends L2Item
 	public int getSpiritShotCount()
 	{
 		return _spiritShotCount;
+	}
+	
+	/**
+	 * @return the quantity of SoultShot used.
+	 */
+	public int getReducedSoulShot()
+	{
+		return _reducedSoulshot;
+	}
+	
+	/**
+	 * @return the chance to use Reduced SoultShot.
+	 */
+	public int getReducedSoulShotChance()
+	{
+		return _reducedSoulshotChance;
 	}
 	
 	/**

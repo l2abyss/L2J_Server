@@ -241,7 +241,6 @@ public enum Stats
 	BOW_MP_CONSUME_RATE("BowMpConsumeRate"),
 	HP_CONSUME_RATE("HpConsumeRate"),
 	MP_CONSUME("MpConsume"),
-	SOULSHOT_COUNT("soulShotCount"),
 	
 	// T1 stats
 	transformId("transformId"),
