@@ -68,6 +68,9 @@ public final class L2Weapon extends L2Item
 	private final int _reducedSoulshot;
 	private final int _reducedSoulshotChance;
 	
+	private final int _reducedMpConsume;
+	private final int _reducedMpConsumeChance;
+	
 	private final boolean _isForceEquip;
 	private final boolean _isAttackWeapon;
 	private final boolean _useWeaponSkillsOnly;
@@ -92,6 +95,10 @@ public final class L2Weapon extends L2Item
 		String[] reduced_soulshots = set.getString("reduced_soulshot", "").split(",");
 		_reducedSoulshotChance = (reduced_soulshots.length == 2) ? Integer.parseInt(reduced_soulshots[0]) : 0;
 		_reducedSoulshot = (reduced_soulshots.length == 2) ? Integer.parseInt(reduced_soulshots[1]) : 0;
+		
+		String[] reduced_mpconsume = set.getString("reduced_mp_consume", "").split(",");
+		_reducedMpConsumeChance = (reduced_mpconsume.length == 2) ? Integer.parseInt(reduced_mpconsume[0]) : 0;
+		_reducedMpConsume = (reduced_mpconsume.length == 2) ? Integer.parseInt(reduced_mpconsume[1]) : 0;
 		
 		String skill = set.getString("enchant4_skill", null);
 		if (skill != null)
@@ -238,7 +245,7 @@ public final class L2Weapon extends L2Item
 	}
 	
 	/**
-	 * @return the quantity of SoultShot used.
+	 * @return the reduced quantity of SoultShot used.
 	 */
 	public int getReducedSoulShot()
 	{
@@ -267,6 +274,22 @@ public final class L2Weapon extends L2Item
 	public int getMpConsume()
 	{
 		return _mpConsume;
+	}
+	
+	/**
+	 * @return the reduced MP consumption with the weapon.
+	 */
+	public int getReducedMpConsume()
+	{
+		return _reducedMpConsume;
+	}
+	
+	/**
+	 * @return the chance to use getReducedMpConsume()
+	 */
+	public int getReducedMpConsumeChance()
+	{
+		return _reducedMpConsumeChance;
 	}
 	
 	/**

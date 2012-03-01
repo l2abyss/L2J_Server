@@ -892,9 +892,18 @@ public abstract class L2Character extends L2Object
 			if (weaponItem.getItemType() == L2WeaponType.BOW)
 			{
 				//Check for arrows and MP
-				if (this instanceof L2PcInstance)
+				if (isPlayer())
 				{
-					// Equip arrows needed in left hand and send a Server->Client packet ItemList to the L2PcINstance then return True
+					// Checking if target has moved to peace zone - only for player-bow attacks at the moment
+					// Other melee is checked in movement code and for offensive spells a check is done every time
+					if (target.isInsidePeaceZone(getActingPlayer()))
+					{
+						getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+						sendPacket(ActionFailed.STATIC_PACKET);
+						return;
+					}
+					
+					// Equip arrows needed in left hand and send a Server->Client packet ItemList to the L2PcInstance then return True
 					if (!checkAndEquipArrows())
 					{
 						// Cancel the action because the L2PcInstance have no arrow
@@ -908,8 +917,11 @@ public abstract class L2Character extends L2Object
 					if (_disableBowAttackEndTime <= GameTimeController.getGameTicks())
 					{
 						// Verify if L2PcInstance owns enough MP
-						int saMpConsume = (int) getStat().calcStat(Stats.MP_CONSUME, 0, null, null);
-						int mpConsume = saMpConsume == 0 ? weaponItem.getMpConsume() : saMpConsume;
+						int mpConsume = weaponItem.getMpConsume();
+						if (weaponItem.getReducedMpConsume() > 0 && Rnd.get(100) < weaponItem.getReducedMpConsumeChance())
+						{
+							mpConsume = weaponItem.getReducedMpConsume();
+						}
 						mpConsume = (int) calcStat(Stats.BOW_MP_CONSUME_RATE, mpConsume, null, null);
 						
 						if (getCurrentMp() < mpConsume)
@@ -920,6 +932,7 @@ public abstract class L2Character extends L2Object
 							sendPacket(ActionFailed.STATIC_PACKET);
 							return;
 						}
+						
 						// If L2PcInstance have enough MP, the bow consumes it
 						if (mpConsume > 0)
 							getStatus().reduceMp(mpConsume);
@@ -931,7 +944,6 @@ public abstract class L2Character extends L2Object
 					{
 						// Cancel the action because the bow can't be re-use at this moment
 						ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_READY_TO_ACT), 1000);
-						
 						sendPacket(ActionFailed.STATIC_PACKET);
 						return;
 					}
@@ -940,11 +952,11 @@ public abstract class L2Character extends L2Object
 			if (weaponItem.getItemType() == L2WeaponType.CROSSBOW)
 			{
 				//Check for bolts
-				if (this instanceof L2PcInstance)
+				if (isPlayer())
 				{
 					// Checking if target has moved to peace zone - only for player-crossbow attacks at the moment
 					// Other melee is checked in movement code and for offensive spells a check is done every time
-					if (target.isInsidePeaceZone((L2PcInstance) this))
+					if (target.isInsidePeaceZone(getActingPlayer()))
 					{
 						getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 						sendPacket(ActionFailed.STATIC_PACKET);
@@ -964,6 +976,27 @@ public abstract class L2Character extends L2Object
 					// Verify if the crossbow can be use
 					if (_disableCrossBowAttackEndTime <= GameTimeController.getGameTicks())
 					{
+						// Verify if L2PcInstance owns enough MP
+						int mpConsume = weaponItem.getMpConsume();
+						if (weaponItem.getReducedMpConsume() > 0 && Rnd.get(100) < weaponItem.getReducedMpConsumeChance())
+						{
+							mpConsume = weaponItem.getReducedMpConsume();
+						}
+						mpConsume = (int) calcStat(Stats.BOW_MP_CONSUME_RATE, mpConsume, null, null);
+						
+						if (getCurrentMp() < mpConsume)
+						{
+							// If L2PcInstance doesn't have enough MP, stop the attack
+							ThreadPoolManager.getInstance().scheduleAi(new NotifyAITask(CtrlEvent.EVT_READY_TO_ACT), 1000);
+							sendPacket(SystemMessageId.NOT_ENOUGH_MP);
+							sendPacket(ActionFailed.STATIC_PACKET);
+							return;
+						}
+						
+						// If L2PcInstance have enough MP, the bow consumes it
+						if (mpConsume > 0)
+							getStatus().reduceMp(mpConsume);
+						
 						// Set the period of crossbow no re-use
 						_disableCrossBowAttackEndTime = 5 * GameTimeController.TICKS_PER_SECOND + GameTimeController.getGameTicks();
 					}
@@ -975,7 +1008,7 @@ public abstract class L2Character extends L2Object
 						return;
 					}
 				}
-				else if (this instanceof L2Npc)
+				else if (isNpc())
 				{
 					if (_disableCrossBowAttackEndTime > GameTimeController.getGameTicks())
 						return;
@@ -991,20 +1024,20 @@ public abstract class L2Character extends L2Object
 			setCurrentCp(getCurrentCp() - 10);
 		
 		// Recharge any active auto soulshot tasks for player (or player's summon if one exists).
-		if (this instanceof L2PcInstance)
-			((L2PcInstance) this).rechargeAutoSoulShot(true, false, false);
-		else if (this instanceof L2Summon)
-			((L2Summon) this).getOwner().rechargeAutoSoulShot(true, false, true);
+		if (isPlayer())
+			getActingPlayer().rechargeAutoSoulShot(true, false, false);
+		else if (isSummon())
+			getActingPlayer().rechargeAutoSoulShot(true, false, true);
 		
 		// Verify if soulshots are charged.
 		boolean wasSSCharged;
 		
-		if (this instanceof L2Summon && !(this instanceof L2PetInstance && weaponInst != null))
+		if (isSummon() && !(isPet() && weaponInst != null))
 			wasSSCharged = (((L2Summon) this).getChargedSoulShot() != L2ItemInstance.CHARGED_NONE);
 		else
 			wasSSCharged = (weaponInst != null && weaponInst.getChargedSoulshot() != L2ItemInstance.CHARGED_NONE);
 		
-		if (this instanceof L2Attackable)
+		if (isL2Attackable())
 		{
 			if (((L2Npc) this).useSoulShot())
 			{
