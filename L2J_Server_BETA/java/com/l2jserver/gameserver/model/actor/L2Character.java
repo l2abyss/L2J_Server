@@ -789,13 +789,13 @@ public abstract class L2Character extends L2Object
 		
 		if (!isAlikeDead())
 		{
-			if (this instanceof L2Npc && target.isAlikeDead() || !getKnownList().knowsObject(target))
+			if (isNpc() && target.isAlikeDead() || !getKnownList().knowsObject(target))
 			{
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-			else if (this instanceof L2PcInstance)
+			else if (isPlayer())
 			{
 				if (target.isDead())
 				{
@@ -1024,10 +1024,8 @@ public abstract class L2Character extends L2Object
 			setCurrentCp(getCurrentCp() - 10);
 		
 		// Recharge any active auto soulshot tasks for player (or player's summon if one exists).
-		if (isPlayer())
-			getActingPlayer().rechargeAutoSoulShot(true, false, false);
-		else if (isSummon())
-			getActingPlayer().rechargeAutoSoulShot(true, false, true);
+		if (isPlayer() || isSummon())
+			getActingPlayer().rechargeAutoSoulShot(true, false, isSummon());
 		
 		// Verify if soulshots are charged.
 		boolean wasSSCharged;
@@ -1047,6 +1045,7 @@ public abstract class L2Character extends L2Object
 		
 		// Get the Attack Speed of the L2Character (delay (in milliseconds) before next attack)
 		int timeAtk = calculateTimeBetweenAttacks(target, weaponItem);
+		
 		// the hit is calculated to happen halfway to the animation - might need further tuning e.g. in bow case
 		int timeToHit = timeAtk / 2;
 		_attackEndTime = GameTimeController.getGameTicks();
@@ -1097,8 +1096,9 @@ public abstract class L2Character extends L2Object
 		}
 		// Check if hit isn't missed
 		if (!hitted)
-			// Abort the attack of the L2Character and send Server->Client ActionFailed packet
-			abortAttack();
+		{
+			abortAttack(); // Abort the attack of the L2Character and send Server->Client ActionFailed packet
+		}
 		else
 		{
 			/* ADDED BY nexus - 2006-08-17
@@ -1108,7 +1108,7 @@ public abstract class L2Character extends L2Object
 			 */
 
 			// If we didn't miss the hit, discharge the shoulshots, if any
-			if (this instanceof L2Summon && !(this instanceof L2PetInstance && weaponInst != null))
+			if (isSummon() && !(isPet() && weaponInst != null))
 				((L2Summon) this).setChargedSoulShot(L2ItemInstance.CHARGED_NONE);
 			else if (weaponInst != null)
 				weaponInst.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
@@ -1119,13 +1119,17 @@ public abstract class L2Character extends L2Object
 				{
 					// If hitted by a cursed weapon, Cp is reduced to 0
 					if (!target.isInvul())
+					{
 						target.setCurrentCp(0);
+					}
 				}
 				else if (player.isHero())
 				{
-					if (target instanceof L2PcInstance && ((L2PcInstance) target).isCursedWeaponEquipped())
-						// If a cursed weapon is hit by a Hero, Cp is reduced to 0
+					// If a cursed weapon is hit by a Hero, Cp is reduced to 0
+					if (target.isPlayer() && target.getActingPlayer().isCursedWeaponEquipped())
+					{
 						target.setCurrentCp(0);
+					}
 				}
 			}
 		}
