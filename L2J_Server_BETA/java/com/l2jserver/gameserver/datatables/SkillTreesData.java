@@ -122,7 +122,7 @@ public final class SkillTreesData
 		int fishingDwarvenSkillCount = 0;
 		for (L2SkillLearn fishSkill : _fishingSkillTree.values())
 		{
-			if ((fishSkill.getRaces() != null) && Util.contains(fishSkill.getRaces(), 4))
+			if ((fishSkill.getRaces() != null) && Util.contains(fishSkill.getRaces(), Race.Dwarf))
 			{
 				fishingDwarvenSkillCount++;
 			}
@@ -684,7 +684,7 @@ public final class SkillTreesData
 		final L2Skill[] oldSkills = player.getAllSkills();
 		for (L2SkillLearn temp : skills.values())
 		{
-			if ((temp.getRaces() != null) && Util.contains(temp.getRaces(), 4) && !player.hasDwarvenCraft())
+			if ((temp.getRaces() != null) && Util.contains(temp.getRaces(), Race.Dwarf) && !player.hasDwarvenCraft())
 			{
 				continue;
 			}
@@ -867,7 +867,7 @@ public final class SkillTreesData
 		final L2Skill[] oldSkills = player.getAllSkills();
 		for (L2SkillLearn temp : skills.values())
 		{
-			if ((player.getLevel() >= temp.getGetLevel()) && ((temp.getRaces() == null) || Util.contains(temp.getRaces(), player.getRace().ordinal())))
+			if ((player.getLevel() >= temp.getGetLevel()) && ((temp.getRaces() == null) || Util.contains(temp.getRaces(), player.getRace())))
 			{
 				boolean knownSkill = false;
 				
