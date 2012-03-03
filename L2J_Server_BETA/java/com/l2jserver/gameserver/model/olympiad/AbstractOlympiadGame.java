@@ -91,14 +91,14 @@ public abstract class AbstractOlympiadGame
 	{
 		par.updateStat(POINTS, points);
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_GAINED_S2_OLYMPIAD_POINTS);
-		sm.addString(par.name);
+		sm.addString(par.getName());
 		sm.addNumber(points);
 		broadcastPacket(sm);
 		
 		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
 		{
 			if (quest != null && quest.isOlympiadUse())
-				quest.notifyOlympiadWin(par.player, getType());
+				quest.notifyOlympiadWin(par.getPlayer(), getType());
 		}
 	}
 
@@ -106,14 +106,14 @@ public abstract class AbstractOlympiadGame
 	{
 		par.updateStat(POINTS, -points);
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
-		sm.addString(par.name);
+		sm.addString(par.getName());
 		sm.addNumber(points);
 		broadcastPacket(sm);
 		
 		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
 		{
 			if (quest != null && quest.isOlympiadUse())
-				quest.notifyOlympiadLoose(par.player, getType());
+				quest.notifyOlympiadLose(par.getPlayer(), getType());
 		}
 	}
 
@@ -171,7 +171,7 @@ public abstract class AbstractOlympiadGame
 
 	protected static final boolean portPlayerToArena(Participant par, Location loc, int id)
 	{
-		final L2PcInstance player = par.player;
+		final L2PcInstance player = par.getPlayer();
 		if (player == null || !player.isOnline())
 			return false;
 
@@ -185,7 +185,7 @@ public abstract class AbstractOlympiadGame
 			player.setOlympiadGameId(id);
 			player.setIsInOlympiadMode(true);
 			player.setIsOlympiadStart(false);
-			player.setOlympiadSide(par.side);
+			player.setOlympiadSide(par.getSide());
 			player.olyBuff = 5;
 			player.setInstanceId(OlympiadGameManager.getInstance().getOlympiadTask(id).getZone().getInstanceId());
 			player.teleToLocation(loc, false);

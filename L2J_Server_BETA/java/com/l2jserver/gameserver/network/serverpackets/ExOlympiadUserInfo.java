@@ -58,7 +58,7 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 	public ExOlympiadUserInfo(Participant par)
 	{
 		_par = par;
-		_player = par.player;
+		_player = par.getPlayer();
 		if (_player != null)
 		{
 			_curHp = (int)_player.getCurrentHp();
@@ -89,10 +89,10 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 		}
 		else
 		{
-			writeC(_par.side);
-			writeD(_par.objectId);
-			writeS(_par.name);
-			writeD(_par.baseClass);
+			writeC(_par.getSide());
+			writeD(_par.getObjectId());
+			writeS(_par.getName());
+			writeD(_par.getBaseClass());
 		}
 
 		writeD(_curHp);

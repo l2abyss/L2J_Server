@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.communitybbs.Manager;
 
+import gnu.trove.iterator.TIntObjectIterator;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.StringTokenizer;
@@ -41,6 +43,15 @@ import com.l2jserver.util.StringUtil;
 public class RegionBBSManager extends BaseBBSManager
 {
 	private static Logger _logChat = Logger.getLogger("chat");
+	
+	private static final Comparator<L2PcInstance> playerNameComparator = new Comparator<L2PcInstance>()
+	{
+		@Override
+		public int compare(L2PcInstance p1, L2PcInstance p2)
+		{
+			return p1.getName().compareToIgnoreCase(p2.getName());
+		}
+	};
 	
 	private RegionBBSManager()
 	{
@@ -267,18 +278,19 @@ public class RegionBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	public/*synchronized */void changeCommunityBoard()
+	public void changeCommunityBoard()
 	{
-		FastList<L2PcInstance> sortedPlayers = new FastList<L2PcInstance>();
-		Collections.addAll(sortedPlayers, L2World.getInstance().getAllPlayersArray());
-		Collections.sort(sortedPlayers, new Comparator<L2PcInstance>()
+		final FastList<L2PcInstance> sortedPlayers = new FastList<L2PcInstance>();
+		final TIntObjectIterator<L2PcInstance> it = L2World.getInstance().getAllPlayers().iterator();
+		while (it.hasNext())
 		{
-			@Override
-			public int compare(L2PcInstance p1, L2PcInstance p2)
+			it.advance();
+			if (it.value() != null)
 			{
-				return p1.getName().compareToIgnoreCase(p2.getName());
+				sortedPlayers.add(it.value());
 			}
-		});
+		}
+		Collections.sort(sortedPlayers, playerNameComparator);
 		
 		_onlinePlayers.clear();
 		_onlineCount = 0;

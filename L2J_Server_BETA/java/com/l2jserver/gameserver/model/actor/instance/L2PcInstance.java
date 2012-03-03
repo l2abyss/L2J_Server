@@ -10800,7 +10800,7 @@ public final class L2PcInstance extends L2Playable
 						isEnchantable = false;
 				}
 				
-				sl.addSkill(s.getId(), s.getLevel(), s.isPassive(), isDisabled, isEnchantable);
+				sl.addSkill(s.getDisplayId(), s.getLevel(), s.isPassive(), isDisabled, isEnchantable);
 			}
 		}
 		

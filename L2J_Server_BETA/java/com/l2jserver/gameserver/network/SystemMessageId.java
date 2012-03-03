@@ -1399,7 +1399,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 233<br>
-	 * Message:
+	 * Message: The Academy/Royal Guard/Order of Knights is full and cannot accept new members at this time.
 	 */
 	public static final SystemMessageId SUBCLAN_IS_FULL;
 	
@@ -1835,7 +1835,23 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId PLAYER_DECLINED;
 	
-	// 306 - 308 empty
+	/**
+	 * ID: 306<br>
+	 * Message: You have failed to delete the character.
+	 */
+	public static final SystemMessageId FAILED_TO_DELETE_CHAR;
+	
+	/**
+	 * ID: 307<br>
+	 * Message: You cannot trade with a warehouse keeper.
+	 */
+	public static final SystemMessageId CANNOT_TRADE_WAREHOUSE_KEEPER;
+	
+	/**
+	 * ID: 308<br>
+	 * Message: The player declined your clan invitation.
+	 */
+	public static final SystemMessageId PLAYER_DECLINED_CLAN_INVITATION;
 	
 	/**
 	 * ID: 309<br>
@@ -1843,7 +1859,11 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId YOU_HAVE_SUCCEEDED_IN_EXPELLING_CLAN_MEMBER;
 	
-	// 310 empty
+	/**
+	 * ID: 310<br>
+	 * Message: You have failed to expel the clan member.
+	 */
+	public static final SystemMessageId FAILED_TO_EXPEL_CLAN_MEMBER;
 	
 	/**
 	 * ID: 311<br>
@@ -2091,7 +2111,17 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId NOT_ENOUGH_ITEMS;
 	
-	// 352 - 353: empty
+	/**
+	 * ID: 352<br>
+	 * Message: Incorrect item.
+	 */
+	public static final SystemMessageId INCORRECT_ITEM;
+	
+	/**
+	 * ID: 353<br>
+	 * Message: Cannot purchase.
+	 */
+	public static final SystemMessageId CANNOT_PURCHASE;
 	
 	/**
 	 * ID: 354<br>
@@ -2119,13 +2149,13 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 358<br>
-	 * Message: $s1 hour(s) until catle siege conclusion.
+	 * Message: $s1 hour(s) until castle siege conclusion.
 	 */
 	public static final SystemMessageId S1_HOURS_UNTIL_SIEGE_CONCLUSION;
 	
 	/**
 	 * ID: 359<br>
-	 * Message: $s1 minute(s) until catle siege conclusion.
+	 * Message: $s1 minute(s) until castle siege conclusion.
 	 */
 	public static final SystemMessageId S1_MINUTES_UNTIL_SIEGE_CONCLUSION;
 	
@@ -2363,7 +2393,11 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId NO_TIME_LEFT_ON_ACCOUNT;
 	
-	// 399: empty
+	/**
+	 * ID: 399<br>
+	 * Message: System error.
+	 */
+	public static final SystemMessageId SYSTEM_ERROR;
 	
 	/**
 	 * ID: 400<br>
@@ -3613,17 +3647,27 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId APPLICATION_DENIED_BECAUSE_ALREADY_SUBMITTED_A_REQUEST_FOR_ANOTHER_SIEGE_BATTLE;
 	
-	// 640 - 641: empty
+	/**
+	 * ID: 640<br>
+	 * Message: You have failed to refuse castle defense aid.
+	 */
+	public static final SystemMessageId FAILED_TO_REFUSE_CASTLE_DEFENSE_AID;
+	
+	/**
+	 * ID: 641<br>
+	 * Message: You have failed to approve castle defense aid.
+	 */
+	public static final SystemMessageId FAILED_TO_APPROVE_CASTLE_DEFENSE_AID;
 	
 	/**
 	 * ID: 642<br>
-	 * Message: You are already registered to the attacker side and must not cancel your registration before submitting your request
+	 * Message: You are already registered to the attacker side and must cancel your registration before submitting your request.
 	 */
 	public static final SystemMessageId ALREADY_ATTACKER_NOT_CANCEL;
 	
 	/**
 	 * ID: 643<br>
-	 * Message: You are already registered to the defender side and must not cancel your registration before submitting your request
+	 * Message: You have already registered to the defender side and must cancel your registration before submitting your request.
 	 */
 	public static final SystemMessageId ALREADY_DEFENDER_NOT_CANCEL;
 	
@@ -3639,7 +3683,17 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId ONLY_CLAN_LEVEL_5_ABOVE_MAY_SIEGE;
 	
-	// 646 - 647: empty
+	/**
+	 * ID: 646<br>
+	 * Message: You do not have the authority to modify the castle defender list.
+	 */
+	public static final SystemMessageId DO_NOT_HAVE_AUTHORITY_TO_MODIFY_CASTLE_DEFENDER_LIST;
+	
+	/**
+	 * ID: 647<br>
+	 * Message: You do not have the authority to modify the siege time.
+	 */
+	public static final SystemMessageId DO_NOT_HAVE_AUTHORITY_TO_MODIFY_SIEGE_TIME;
 	
 	/**
 	 * ID: 648<br>
@@ -3731,7 +3785,11 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId THE_PLAYER_IS_REJECTING_FRIEND_INVITATIONS;
 	
-	// 663 will crash client
+	/**
+	 * ID: 663<br>
+	 * Message: The siege time has been declared for $s. It is not possible to change the time after a siege time has been declared. Do you want to continue?
+	 */
+	public static final SystemMessageId SIEGE_TIME_DECLARED_FOR_S1;
 	
 	/**
 	 * ID: 664<br>
@@ -3831,7 +3889,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 680<br>
-	 * You cannot participate in an auction.
+	 * Message: You cannot participate in an auction.
 	 */
 	public static final SystemMessageId CANNOT_PARTICIPATE_IN_AN_AUCTION;
 	
@@ -3839,7 +3897,13 @@ public final class SystemMessageId
 	 * ID: 681<br>
 	 * Message: The clan does not own a clan hall.
 	 */
-	// CLAN_HAS_NO_CLAN_HALL(681) // Doesn't exist in Hellbound anymore
+	public static final SystemMessageId CLAN_HAS_NO_CLAN_HALL;
+	
+	/**
+	 * ID: 682<br>
+	 * Message: You are moving to another village. Do you want to continue?
+	 */
+	public static final SystemMessageId MOVING_TO_ANOTHER_VILLAGE;
 	
 	/**
 	 * ID: 683<br>
@@ -4119,7 +4183,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 730<br>
-	 * Message: - You have submitted your $s1th petition. - You may submit $s2 more petition(s) today.
+	 * Message: You have submitted $s1 petition(s). - You may submit $s2 more petition(s) today.
 	 */
 	public static final SystemMessageId SUBMITTED_YOU_S1_TH_PETITION_S2_LEFT;
 	
@@ -5061,13 +5125,13 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 896<br>
-	 * Message:The ferry has arrived at Gludin Harbor.
+	 * Message: The ferry has arrived at Gludin Harbor.
 	 */
 	public static final SystemMessageId FERRY_AT_GLUDIN;
 	
 	/**
 	 * ID: 897<br>
-	 * Message:The ferry will leave for Talking Island Harbor after anchoring for ten minutes.
+	 * Message: The ferry will leave for Talking Island Harbor after anchoring for ten minutes.
 	 */
 	public static final SystemMessageId FERRY_LEAVE_TALKING;
 	
@@ -6747,19 +6811,19 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1178<br>
-	 * <Seal of Avarice description>
+	 * Message: <Seal of Avarice description>
 	 */
 	public static final SystemMessageId AVARICE_DESCRIPTION;
 	
 	/**
 	 * ID: 1179<br>
-	 * <Seal of Gnosis description>
+	 * Message: <Seal of Gnosis description>
 	 */
 	public static final SystemMessageId GNOSIS_DESCRIPTION;
 	
 	/**
 	 * ID: 1180<br>
-	 * <Seal of Strife description>
+	 * Message: <Seal of Strife description>
 	 */
 	public static final SystemMessageId STRIFE_DESCRIPTION;
 	
@@ -7185,7 +7249,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1251<br>
-	 * you will not be able to accept another clan to your alliance for one day.
+	 * Message: Are you sure you want to dismiss the alliance? If you use the /allydismiss command, you will not be able to accept another clan to your alliance for one day.
 	 */
 	public static final SystemMessageId DISMISS_ALLY_CONFIRM;
 	
@@ -7425,13 +7489,13 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1291<br>
-	 * because less than 10 percent of people have voted.
+	 * Message: Although the seal was owned during the previous period, less than 10% of people have voted.
 	 */
 	public static final SystemMessageId SEAL_OWNED_10_LESS_VOTED;
 	
 	/**
 	 * ID: 1292<br>
-	 * and since less than 35 percent of people have voted.
+	 * Message: Since the seal was not owned during the previous period, and since less than 35 percent of people have voted.
 	 */
 	public static final SystemMessageId SEAL_NOT_OWNED_35_LESS_VOTED;
 	
@@ -7503,7 +7567,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1304<br>
-	 * except for an Alliance with a castle owning clan.
+	 * Message: The influence of the Seal of Strife has caused all defensive registrations to be canceled.
 	 */
 	public static final SystemMessageId STRIFE_CANCELED_DEFENSIVE_REGISTRATION;
 	
@@ -7533,7 +7597,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1309<br>
-	 * Message:To use this option, you must have the lastest version of MSN Messenger installed on your computer.
+	 * Message: To use this option, you must have the lastest version of MSN Messenger installed on your computer.
 	 */
 	public static final SystemMessageId LATEST_MSN_REQUIRED;
 	
@@ -9519,7 +9583,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1641<br>
-	 * and make haste to a Grand Olympiad Manager! Battles in the Grand Olympiad Games are now taking place!
+	 * Message: Sharpen your swords, tighten the stitching in your armor, and make haste to a Grand Olympiad Manager! Battles in the Grand Olympiad Games are now taking place!
 	 */
 	public static final SystemMessageId THE_OLYMPIAD_GAME_HAS_STARTED;
 	
@@ -9935,7 +9999,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1715<br>
-	 * Message: This is a Peaceful Zone
+	 * Message: This is a Peaceful Zone - PvP is not allowed in this area.
 	 */
 	public static final SystemMessageId PEACEFUL_ZONE;
 	
@@ -9947,7 +10011,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1717<br>
-	 * Message: Siege War Zone
+	 * Message: Siege War Zone - A siege is currently in progress in this area. If a character dies in this zone, their resurrection ability may be restricted.
 	 */
 	public static final SystemMessageId SIEGE_ZONE;
 	
@@ -9959,7 +10023,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1719<br>
-	 * Message: Seven Signs Zone
+	 * Message: Seven Signs Zone - Although a character's level may increase while in this area, HP and MP will not be regenerated.
 	 */
 	public static final SystemMessageId SEVENSIGNS_ZONE;
 	
@@ -10499,7 +10563,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1809<br>
-	 * please visit the PlayNC website (http://www.plaync.com/us/support/)
+	 * Message: Your account must be verified. For information on verification procedures, please visit the PlayNC website (http://us.ncsoft.com/support/).
 	 */
 	public static final SystemMessageId ACCOUNT_MUST_VERIFIED;
 	
@@ -10679,7 +10743,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1840<br>
-	 * Message: 3. If you enter the incorrect serial number more than 5 times, ...
+	 * Message: 3. If you enter the incorrect serial number more than 5 times, you may use it again after a certain amount of time passes.
 	 */
 	public static final SystemMessageId SERIAL_INPUT_INCORRECT;
 	
@@ -11057,7 +11121,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1903<br>
-	 * Message: Those of you who have requested NCOTP should run NCOTP by using your cell phone [...]
+	 * Message: Those of you who have requested NCOTP should run NCOTP by using your cell phone to get the NCOTP password and enter it within 1 minute. If you have not requested NCOTP, leave this field blank and click the Login button.
 	 */
 	public static final SystemMessageId NCOTP;
 	
@@ -11416,7 +11480,7 @@ public final class SystemMessageId
 	public static final SystemMessageId THE_ITEM_WAS_SUCCESSFULLY_AUGMENTED;
 	
 	/**
-	 * ID : 1963<br>
+	 * ID: 1963<br>
 	 * Message: Select the item from which you wish to remove augmentation.
 	 */
 	public static final SystemMessageId SELECT_THE_ITEM_FROM_WHICH_YOU_WISH_TO_REMOVE_AUGMENTATION;
@@ -11885,7 +11949,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2042<br>
-	 * Message: This account has been suspended for non-payment based on the cell phone payment agreement.\\n Please submit proof of payment by fax (02-2186-3499) and contact customer service at 1600-0020.
+	 * Message: This account has been suspended for non-payment based on the cell phone payment agreement. Please submit proof of payment by fax (02-2186-3499) and contact customer service at 1600-0020.
 	 */
 	public static final SystemMessageId ILLEGAL_USE23;
 	
@@ -12779,7 +12843,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2191<br>
-	 * it will applied when you start the game next time. Will you apply now?
+	 * Message: To apply selected options, the game needs to be reloaded. If you don't apply now, it will be applied when you start the game next time. Will you apply now?
 	 */
 	public static final SystemMessageId CONFIRM_APPLY_SELECTIONS;
 	
@@ -13091,7 +13155,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2243<br>
-	 * the previous clan lord rather than the new clan lord participates in the clan hall battle.
+	 * Message: During the Bandit Stronghold or Wild Beast Reserve clan hall war, the previous clan lord rather than the new clan lord participates in battle.
 	 */
 	public static final SystemMessageId WHEN_BANDITSTRONGHOLD_WILDBEASTRESERVRE_CLANLORD_IN_DANGER_PREVIOUS_LORD_PARTICIPATES_IN_BATTLE;
 	
@@ -13505,7 +13569,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2373<br>
-	 * The hunting helper pet is now leaving.
+	 * Message: The hunting helper pet is now leaving.
 	 */
 	public static final SystemMessageId THE_HELPER_PET_LEAVING;
 	
@@ -13684,19 +13748,19 @@ public final class SystemMessageId
 	public static final SystemMessageId THE_AIRSHIP_SUMMON_LICENSE_ALREADY_ACQUIRED;
 	
 	/**
-	 * ID:2460<br>
+	 * ID: 2460<br>
 	 * Message: The clan owned airship already exists.
 	 */
 	public static final SystemMessageId THE_AIRSHIP_IS_ALREADY_EXISTS;
 	
 	/**
-	 * ID:2461<br>
+	 * ID: 2461<br>
 	 * Message: The airship owned by the clan can only be purchased by the clan lord.
 	 */
 	public static final SystemMessageId THE_AIRSHIP_NO_PRIVILEGES;
 	
 	/**
-	 * ID:2462<br>
+	 * ID: 2462<br>
 	 * Message: The airship cannot be summoned because you don't have enough $s1%.
 	 */
 	public static final SystemMessageId THE_AIRSHIP_NEED_MORE_S1;
@@ -14721,12 +14785,14 @@ public final class SystemMessageId
 	public static final SystemMessageId MAX_OLY_WEEKLY_MATCHES_REACHED;
 	
 	/***
-	 * ID: 3225 Message: The total number of matches that can be entered in 1 week is 60 class irrelevant individual matches, 30 specific matches, and 10 team matches.
+	 * ID: 3225<br>
+	 * Message: The total number of matches that can be entered in 1 week is 60 class irrelevant individual matches, 30 specific matches, and 10 team matches.
 	 */
 	public static final SystemMessageId MAX_OLY_WEEKLY_MATCHES_REACHED_60_NON_CLASSED_30_CLASSED_10_TEAM;
 	
 	/***
-	 * ID: 3226 Message: You cannot move while speaking to an NPC. One moment please.
+	 * ID: 3226<br>
+	 * Message: You cannot move while speaking to an NPC. One moment please.
 	 */
 	public static final SystemMessageId CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC;
 	
@@ -15091,7 +15157,11 @@ public final class SystemMessageId
 		SELECT_ITEM_TO_ENCHANT = new SystemMessageId(303);
 		CLAN_MEMBER_S1_LOGGED_IN = new SystemMessageId(304);
 		PLAYER_DECLINED = new SystemMessageId(305);
+		FAILED_TO_DELETE_CHAR = new SystemMessageId(306);
+		CANNOT_TRADE_WAREHOUSE_KEEPER = new SystemMessageId(307);
+		PLAYER_DECLINED_CLAN_INVITATION = new SystemMessageId(308);
 		YOU_HAVE_SUCCEEDED_IN_EXPELLING_CLAN_MEMBER = new SystemMessageId(309);
+		FAILED_TO_EXPEL_CLAN_MEMBER = new SystemMessageId(310);
 		CLAN_WAR_DECLARATION_ACCEPTED = new SystemMessageId(311);
 		CLAN_WAR_DECLARATION_REFUSED = new SystemMessageId(312);
 		CEASE_WAR_REQUEST_ACCEPTED = new SystemMessageId(313);
@@ -15133,6 +15203,8 @@ public final class SystemMessageId
 		PRIVATE_STORE_ALREADY_CLOSED = new SystemMessageId(349);
 		ITEM_OUT_OF_STOCK = new SystemMessageId(350);
 		NOT_ENOUGH_ITEMS = new SystemMessageId(351);
+		INCORRECT_ITEM = new SystemMessageId(352);
+		CANNOT_PURCHASE = new SystemMessageId(353);
 		CANCEL_ENCHANT = new SystemMessageId(354);
 		INAPPROPRIATE_ENCHANT_CONDITION = new SystemMessageId(355);
 		REJECT_RESURRECTION = new SystemMessageId(356);
@@ -15178,6 +15250,7 @@ public final class SystemMessageId
 		TRY_AGAIN_AFTER_CHANGING_PASSWORD = new SystemMessageId(396);
 		NO_PAID_ACCOUNT = new SystemMessageId(397);
 		NO_TIME_LEFT_ON_ACCOUNT = new SystemMessageId(398);
+		SYSTEM_ERROR = new SystemMessageId(399);
 		WISH_TO_DROP_S1 = new SystemMessageId(400);
 		TOO_MANY_QUESTS = new SystemMessageId(401);
 		NOT_CORRECT_BOAT_TICKET = new SystemMessageId(402);
@@ -15386,10 +15459,14 @@ public final class SystemMessageId
 		ALLY_REGISTERED_SELF_TO_OPPONENT = new SystemMessageId(637);
 		ALREADY_REQUESTED_SIEGE_BATTLE = new SystemMessageId(638);
 		APPLICATION_DENIED_BECAUSE_ALREADY_SUBMITTED_A_REQUEST_FOR_ANOTHER_SIEGE_BATTLE = new SystemMessageId(639);
+		FAILED_TO_REFUSE_CASTLE_DEFENSE_AID = new SystemMessageId(640);
+		FAILED_TO_APPROVE_CASTLE_DEFENSE_AID = new SystemMessageId(641);
 		ALREADY_ATTACKER_NOT_CANCEL = new SystemMessageId(642);
 		ALREADY_DEFENDER_NOT_CANCEL = new SystemMessageId(643);
 		NOT_REGISTERED_FOR_SIEGE = new SystemMessageId(644);
 		ONLY_CLAN_LEVEL_5_ABOVE_MAY_SIEGE = new SystemMessageId(645);
+		DO_NOT_HAVE_AUTHORITY_TO_MODIFY_CASTLE_DEFENDER_LIST = new SystemMessageId(646);
+		DO_NOT_HAVE_AUTHORITY_TO_MODIFY_SIEGE_TIME = new SystemMessageId(647);
 		ATTACKER_SIDE_FULL = new SystemMessageId(648);
 		DEFENDER_SIDE_FULL = new SystemMessageId(649);
 		YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION = new SystemMessageId(650);
@@ -15405,6 +15482,7 @@ public final class SystemMessageId
 		NOT_SIEGE_REGISTRATION_TIME2 = new SystemMessageId(660);
 		SPOIL_CANNOT_USE = new SystemMessageId(661);
 		THE_PLAYER_IS_REJECTING_FRIEND_INVITATIONS = new SystemMessageId(662);
+		SIEGE_TIME_DECLARED_FOR_S1 = new SystemMessageId(663);
 		CHOOSE_PERSON_TO_RECEIVE = new SystemMessageId(664);
 		APPLYING_ALLIANCE_WAR = new SystemMessageId(665);
 		REQUEST_FOR_CEASEFIRE = new SystemMessageId(666);
@@ -15422,6 +15500,8 @@ public final class SystemMessageId
 		SUBMITTED_A_BID = new SystemMessageId(678);
 		CANCELED_BID = new SystemMessageId(679);
 		CANNOT_PARTICIPATE_IN_AN_AUCTION = new SystemMessageId(680);
+		CLAN_HAS_NO_CLAN_HALL = new SystemMessageId(681);
+		MOVING_TO_ANOTHER_VILLAGE = new SystemMessageId(681);
 		SWEEP_NOT_ALLOWED = new SystemMessageId(683);
 		CANNOT_POSITION_MERCS_DURING_SIEGE = new SystemMessageId(684);
 		CANNOT_DECLARE_WAR_ON_ALLY = new SystemMessageId(685);

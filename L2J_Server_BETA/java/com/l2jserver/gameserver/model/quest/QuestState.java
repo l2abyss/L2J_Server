@@ -675,16 +675,6 @@ public final class QuestState
 	}
 	
 	/**
-	 * Return random value
-	 * @param max : max value for randomisation
-	 * @return int
-	 */
-	public int getRandom(int max)
-	{
-		return getQuest().getRandom(max);
-	}
-	
-	/**
 	 * @param loc 
 	 * @return number of ticks from GameTimeController
 	 */

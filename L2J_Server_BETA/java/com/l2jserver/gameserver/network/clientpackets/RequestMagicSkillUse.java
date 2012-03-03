@@ -22,6 +22,7 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.position.PcPosition;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
@@ -53,17 +54,28 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 	protected void runImpl()
 	{
 		// Get the current L2PcInstance of the player
-		L2PcInstance activeChar = getClient().getActiveChar();
-		
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		// Get the level of the used skill
 		int level = activeChar.getSkillLevel(_magicId);
 		if (level <= 0)
 		{
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
+			// Player doesn't know this skill, maybe it's the display Id.
+			final SkillHolder customSkill = activeChar.getCustomSkills().get(_magicId);
+			if (customSkill != null)
+			{
+				_magicId = customSkill.getSkillId();
+				level = customSkill.getSkillLvl();
+			}
+			else
+			{
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 		}
 		
 		// Get the L2Skill template corresponding to the skillID received from the client

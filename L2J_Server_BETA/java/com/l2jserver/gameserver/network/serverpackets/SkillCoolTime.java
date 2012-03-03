@@ -32,7 +32,7 @@ public class SkillCoolTime extends L2GameServerPacket
 	{
 		for (TimeStamp ts : cha.getSkillReuseTimeStamps().values())
 		{
-			if (!ts.hasNotPassed())
+			if (ts.hasNotPassed())
 			{
 				_skillReuseTimeStamps.add(ts);
 			}

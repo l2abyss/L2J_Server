@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
+import javolution.util.FastMap;
 import javolution.util.WeakFastSet;
 
 import com.l2jserver.Config;
@@ -125,23 +126,23 @@ import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 /**
- * Mother class of all character objects of the world (PC, NPC...)<BR><BR>
- *
- * L2Character :<BR><BR>
- * <li>L2CastleGuardInstance</li>
+ * Mother class of all character objects of the world (PC, NPC...)<br>
+ * L2Character:<br>
+ * <ul>
  * <li>L2DoorInstance</li>
- * <li>L2NpcInstance</li>
- * <li>L2PlayableInstance </li><BR><BR>
- *
- *
- * <B><U> Concept of L2CharTemplate</U> :</B><BR><BR>
- * Each L2Character owns generic and static properties (ex : all Keltir have the same number of HP...).
- * All of those properties are stored in a different template for each type of L2Character.
- * Each template is loaded once in the server cache memory (reduce memory use).
- * When a new instance of L2Character is spawned, server just create a link between the instance and the template.
- * This link is stored in <B>_template</B><BR><BR>
- *
- *
+ * <li>L2Playable</li>
+ * <li>L2Npc</li>
+ * <li>L2StaticObjectInstance</li>
+ * <li>L2Trap</li>
+ * <li>L2Vehicle</li>
+ * </ul>
+ * <br>
+ * <b>Concept of L2CharTemplate:</b><br>
+ * Each L2Character owns generic and static properties (ex : all Keltir have the same number of HP...).<br>
+ * All of those properties are stored in a different template for each type of L2Character.<br>
+ * Each template is loaded once in the server cache memory (reduce memory use).<br>
+ * When a new instance of L2Character is spawned, server just create a link between the instance and the template.<br>
+ * This link is stored in {@link #_template}
  * @version $Revision: 1.53.2.45.2.34 $ $Date: 2005/04/11 10:06:08 $
  */
 public abstract class L2Character extends L2Object
@@ -184,8 +185,16 @@ public abstract class L2Character extends L2Object
 	/** Table of Calculators containing all used calculator */
 	private Calculator[] _calculators;
 	
-	/** FastMap(Integer, L2Skill) containing all skills of the L2Character */
+	/**
+	 * Map containing all skills of this character.
+	 */
 	protected final L2TIntObjectHashMap<L2Skill> _skills;
+	
+	/**
+	 * Map containing all custom skills of this character.
+	 */
+	private FastMap<Integer, SkillHolder> _customSkills;
+	
 	/** FastMap containing the active chance skills on this character */
 	private ChanceSkillList _chanceSkills;
 	
@@ -411,7 +420,13 @@ public abstract class L2Character extends L2Object
 			if (_skills != null)
 			{
 				for (L2Skill skill : getAllSkills())
+				{
+					if (skill.getDisplayId() != skill.getId())
+					{
+						getCustomSkills().put(Integer.valueOf(skill.getDisplayId()), new SkillHolder(skill.getId(), skill.getLevel()));
+					}
 					addStatFuncs(skill.getStatFuncs(null, this));
+				}
 			}
 		}
 		else
@@ -429,7 +444,13 @@ public abstract class L2Character extends L2Object
 				if (_skills != null)
 				{
 					for (L2Skill skill : getAllSkills())
+					{
+						if (skill.getDisplayId() != skill.getId())
+						{
+							getCustomSkills().put(Integer.valueOf(skill.getDisplayId()), new SkillHolder(skill.getId(), skill.getLevel()));
+						}
 						addStatFuncs(skill.getStatFuncs(null, this));
+					}
 				}
 			}
 			else
@@ -6015,7 +6036,10 @@ public abstract class L2Character extends L2Object
 		{
 			// Replace oldSkill by newSkill or Add the newSkill
 			oldSkill = _skills.put(newSkill.getId(), newSkill);
-			
+			if (newSkill.getDisplayId() != newSkill.getId())
+			{
+				getCustomSkills().put(Integer.valueOf(newSkill.getDisplayId()), new SkillHolder(newSkill.getId(), newSkill.getLevel()));
+			}
 			// If an old skill has been replaced, remove all its Func objects
 			if (oldSkill != null)
 			{
@@ -6106,6 +6130,10 @@ public abstract class L2Character extends L2Object
 		// Remove all its Func objects from the L2Character calculator set
 		if (oldSkill != null)
 		{
+			if (oldSkill.getDisplayId() != oldSkill.getId())
+			{
+				getCustomSkills().remove(Integer.valueOf(oldSkill.getDisplayId()));
+			}
 			//this is just a fail-safe againts buggers and gm dummies...
 			if ((oldSkill.triggerAnotherSkill()) && oldSkill.getTriggeredId() > 0)
 			{
@@ -6236,6 +6264,18 @@ public abstract class L2Character extends L2Object
 			return new L2Skill[0];
 		
 		return _skills.values(new L2Skill[0]);
+	}
+	
+	/**
+	 * @return all the custom skills (skills with different display Id than skill Id).
+	 */
+	public final FastMap<Integer, SkillHolder> getCustomSkills()
+	{
+		if (_customSkills == null)
+		{
+			_customSkills = new FastMap<Integer, SkillHolder>().shared();
+		}
+		return _customSkills;
 	}
 	
 	public ChanceSkillList getChanceSkills()

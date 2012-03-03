@@ -40,7 +40,7 @@ public abstract class ManagedScript
 	 * Attempts to reload this script and to refresh the necessary bindings with it ScriptControler.<BR>
 	 * Subclasses of this class should override this method to properly refresh their bindings when necessary.
 	 * 
-	 * @return true if and only if the scrip was reloaded, false otherwise.
+	 * @return true if and only if the script was reloaded, false otherwise.
 	 */
 	public boolean reload()
 	{

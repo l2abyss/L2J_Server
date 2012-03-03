@@ -76,9 +76,13 @@ public class Quest extends ManagedScript
 {
 	protected static final Logger _log = Logger.getLogger(Quest.class.getName());
 	
-	/** HashMap containing events from String value of the event */
+	/**
+	 * HashMap containing events from String value of the event.
+	 */
 	private static Map<String, Quest> _allEventsS = new FastMap<String, Quest>();
-	/** HashMap containing lists of timers from the name of the timer */
+	/**
+	 * HashMap containing lists of timers from the name of the timer.
+	 */
 	private final Map<String, FastList<QuestTimer>> _allEventTimers = new FastMap<String, FastList<QuestTimer>>().shared();
 	
 	private final ReentrantReadWriteLock _rwLock = new ReentrantReadWriteLock();
@@ -90,17 +94,17 @@ public class Quest extends ManagedScript
 	protected boolean _onEnterWorld = false;
 	private boolean _isCustom = false;
 	private boolean _isOlympiadUse = false;
-	// NOTE: questItemIds will be overridden by child classes.  Ideally, it should be
-	// protected instead of public.  However, quest scripts written in Jython will
-	// have trouble with protected, as Jython only knows private and public...
-	// In fact, protected will typically be considered private thus breaking the scripts.
-	// Leave this as public as a workaround.
+	/**
+	 * <b>Note: questItemIds will be overridden by child classes.</b><br>
+	 * Ideally, it should be protected instead of public.<br>
+	 * However, quest scripts written in Jython will have trouble with protected, as Jython only knows private and public...<br>
+	 * In fact, protected will typically be considered private thus breaking the scripts.<br>
+	 * Leave this as public as a workaround.
+	 */
 	public int[] questItemIds = null;
 	
-	private static final String DEFAULT_NO_QUEST_MSG =
-		"<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
-	private static final String DEFAULT_ALREADY_COMPLETED_MSG =
-		"<html><body>This quest has already been completed.</body></html>";
+	private static final String DEFAULT_NO_QUEST_MSG = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
+	private static final String DEFAULT_ALREADY_COMPLETED_MSG = "<html><body>This quest has already been completed.</body></html>";
 	
 	private static final int RESET_HOUR = 6;
 	private static final int RESET_MINUTES = 30;
@@ -174,6 +178,14 @@ public class Quest extends ManagedScript
 		
 	}
 	
+	/**
+	 * Trap actions:<br>
+	 * <ul>
+	 * 	<li>Triggered</li>
+	 * 	<li>Detected</li>
+	 * 	<li>Disarmed</li>
+	 * </ul>
+	 */
 	public static enum TrapAction
 	{
 		TRAP_TRIGGERED,
@@ -213,7 +225,6 @@ public class Quest extends ManagedScript
 		{
 			return _allowMultipleRegistration;
 		}
-		
 	}
 	
 	/**
@@ -315,6 +326,12 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	/**
+	 * @param name
+	 * @param npc
+	 * @param player
+	 * @return
+	 */
 	public QuestTimer getQuestTimer(String name, L2Npc npc, L2PcInstance player)
 	{
 		FastList<QuestTimer> qt = getQuestTimers(name);
@@ -341,11 +358,18 @@ public class Quest extends ManagedScript
 		return null;
 	}
 	
+	/**
+	 * @param name
+	 * @return
+	 */
 	private FastList<QuestTimer> getQuestTimers(String name)
 	{
 		return _allEventTimers.get(name);
 	}
 	
+	/**
+	 * @param name
+	 */
 	public void cancelQuestTimers(String name)
 	{
 		FastList<QuestTimer> timers = getQuestTimers(name);
@@ -368,6 +392,11 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	/**
+	 * @param name
+	 * @param npc
+	 * @param player
+	 */
 	public void cancelQuestTimer(String name, L2Npc npc, L2PcInstance player)
 	{
 		QuestTimer timer = getQuestTimer(name, npc, player);
@@ -375,6 +404,9 @@ public class Quest extends ManagedScript
 			timer.cancel();
 	}
 	
+	/**
+	 * @param timer
+	 */
 	public void removeQuestTimer(QuestTimer timer)
 	{
 		if (timer == null)
@@ -393,7 +425,16 @@ public class Quest extends ManagedScript
 		}
 	}
 	
-	// these are methods to call from java
+	// These are methods to call within the core to call the quest events.
+	
+	/**
+	 * @param npc
+	 * @param attacker
+	 * @param damage
+	 * @param isPet
+	 * @param skill
+	 * @return
+	 */
 	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
 	{
 		String res = null;
@@ -408,6 +449,12 @@ public class Quest extends ManagedScript
 		return showResult(attacker, res);
 	}
 	
+	/**
+	 * @param killer
+	 * @param victim
+	 * @param qs
+	 * @return
+	 */
 	public final boolean notifyDeath(L2Character killer, L2Character victim, QuestState qs)
 	{
 		String res = null;
@@ -422,6 +469,12 @@ public class Quest extends ManagedScript
 		return showResult(qs.getPlayer(), res);
 	}
 	
+	/**
+	 * 
+	 * @param item
+	 * @param player
+	 * @return
+	 */
 	public final boolean notifyItemUse(L2Item item, L2PcInstance player)
 	{
 		String res = null;
@@ -436,6 +489,12 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
+	/**
+	 * @param instance
+	 * @param player
+	 * @param skill
+	 * @return
+	 */
 	public final boolean notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
@@ -476,6 +535,10 @@ public class Quest extends ManagedScript
 		return false;
 	}
 	
+	/**
+	 * @param npc
+	 * @return
+	 */
 	public final boolean notifySpawn(L2Npc npc)
 	{
 		try
@@ -490,6 +553,12 @@ public class Quest extends ManagedScript
 		return false;
 	}
 	
+	/**
+	 * @param event
+	 * @param npc
+	 * @param player
+	 * @return
+	 */
 	public final boolean notifyEvent(String event, L2Npc npc, L2PcInstance player)
 	{
 		String res = null;
@@ -504,6 +573,10 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
+	/**
+	 * @param player
+	 * @return
+	 */
 	public final boolean notifyEnterWorld(L2PcInstance player)
 	{
 		String res = null;
@@ -518,6 +591,12 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
+	/**
+	 * @param npc
+	 * @param killer
+	 * @param isPet
+	 * @return
+	 */
 	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isPet)
 	{
 		String res = null;
@@ -532,6 +611,11 @@ public class Quest extends ManagedScript
 		return showResult(killer, res);
 	}
 	
+	/**
+	 * @param npc
+	 * @param qs
+	 * @return
+	 */
 	public final boolean notifyTalk(L2Npc npc, QuestState qs)
 	{
 		String res = null;
@@ -569,6 +653,11 @@ public class Quest extends ManagedScript
 		return true;
 	}
 	
+	/**
+	 * @param npc
+	 * @param player
+	 * @return
+	 */
 	public final boolean notifyAcquireSkillList(L2Npc npc, L2PcInstance player)
 	{
 		String res = null;
@@ -583,6 +672,12 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
+	/**
+	 * @param npc
+	 * @param player
+	 * @param skill
+	 * @return
+	 */
 	public final boolean notifyAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
@@ -597,6 +692,12 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
+	/**
+	 * @param npc
+	 * @param player
+	 * @param skill
+	 * @return
+	 */
 	public final boolean notifyAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
@@ -649,12 +750,27 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	/**
+	 * @param npc
+	 * @param caster
+	 * @param skill
+	 * @param targets
+	 * @param isPet
+	 * @return
+	 */
 	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 	{
 		ThreadPoolManager.getInstance().executeAi(new TmpOnSkillSee(npc, caster, skill, targets, isPet));
 		return true;
 	}
 	
+	/**
+	 * @param npc
+	 * @param caller
+	 * @param attacker
+	 * @param isPet
+	 * @return
+	 */
 	public final boolean notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
 	{
 		String res = null;
@@ -698,12 +814,24 @@ public class Quest extends ManagedScript
 			
 		}
 	}
+	
+	/**
+	 * @param npc
+	 * @param player
+	 * @param isPet
+	 * @return
+	 */
 	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
 	{
 		ThreadPoolManager.getInstance().executeAi(new TmpOnAggroEnter(npc, player, isPet));
 		return true;
 	}
 	
+	/**
+	 * @param character
+	 * @param zone
+	 * @return
+	 */
 	public final boolean notifyEnterZone(L2Character character, L2ZoneType zone)
 	{
 		L2PcInstance player = character.getActingPlayer();
@@ -722,13 +850,18 @@ public class Quest extends ManagedScript
 		return true;
 	}
 	
+	/**
+	 * @param character
+	 * @param zone
+	 * @return
+	 */
 	public final boolean notifyExitZone(L2Character character, L2ZoneType zone)
 	{
 		L2PcInstance player = character.getActingPlayer();
 		String res = null;
 		try
 		{
-			res = this.onExitZone(character, zone);
+			res = onExitZone(character, zone);
 		}
 		catch (Exception e)
 		{
@@ -740,118 +873,365 @@ public class Quest extends ManagedScript
 		return true;
 	}
 	
-	// these are methods that java calls to invoke scripts
+	/**
+	 * @param winner
+	 * @param type
+	 */
+	public final void notifyOlympiadWin(L2PcInstance winner, CompetitionType type)
+	{
+		try
+		{
+			onOlympiadWin(winner, type);
+		}
+		catch (Exception e)
+		{
+			showError(winner, e);
+		}
+	}
+	
+	/**
+	 * @param loser
+	 * @param type
+	 */
+	public final void notifyOlympiadLose(L2PcInstance loser, CompetitionType type)
+	{
+		try
+		{
+			onOlympiadLose(loser, type);
+		}
+		catch (Exception e)
+		{
+			showError(loser, e);
+		}
+	}
+	
+	// These are methods that java calls to invoke scripts.
+	
+	/**
+	 * This function is called in place of {@link #onAttack(L2Npc, L2PcInstance, int, boolean, L2Skill)} if the former is not implemented.<br>
+	 * If a script contains both onAttack(..) implementations, then this method will never be called unless the script's {@link #onAttack(L2Npc, L2PcInstance, int, boolean, L2Skill)} explicitly calls this method.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that got attacked the NPC.
+	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked.
+	 * @param damage this parameter represents the total damage that this attack has inflicted to the NPC.
+	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's pet.
+	 * @return
+	 */
 	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player attacks an NPC that is registered for the quest.<br>
+	 * If is not overridden by a subclass, then default to the returned value of the simpler (and older) {@link #onAttack(L2Npc, L2PcInstance, int, boolean)} override.<br>
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that got attacked.
+	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked the NPC.
+	 * @param damage this parameter represents the total damage that this attack has inflicted to the NPC.
+	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's pet.
+	 * @param skill parameter is the skill that player used to attack NPC.
+	 * @return
+	 */
 	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
 	{
 		return onAttack(npc, attacker, damage, isPet);
 	}
 	
+	/**
+	 * This function is called whenever an <b>exact instance</b> of a character who was previously registered for this event dies.<br>
+	 * The registration for {@link #onDeath(L2Character, L2Character, QuestState)} events <b>is not</b> done via the quest itself, but it is instead handled by the QuestState of a particular player.
+	 * @param killer this parameter contains a reference to the exact instance of the NPC that <b>killed</b> the character.
+	 * @param victim this parameter contains a reference to the exact instance of the character that got killed.
+	 * @param qs this parameter contains a reference to the QuestState of whomever was interested (waiting) for this kill.
+	 * @return
+	 */
 	public String onDeath(L2Character killer, L2Character victim, QuestState qs)
 	{
 		if (killer instanceof L2Npc)
+		{
 			return onAdvEvent("", (L2Npc) killer, qs.getPlayer());
+		}
 		return onAdvEvent("", null, qs.getPlayer());
 	}
 	
+	/**
+	 * This function is called whenever a player clicks on a link in a quest dialog and whenever a timer fires.<br>
+	 * If is not overridden by a subclass, then default to the returned value of the simpler (and older) {@link #onEvent(String, QuestState)} override.<br>
+	 * If the player has a quest state, use it as parameter in the next call, otherwise return null.
+	 * @param event this parameter contains a string identifier for the event.<br>
+	 * Generally, this string is passed directly via the link.<br>
+	 * For example:<br>
+	 * <code>
+	 * 	<a action="bypass -h Quest 626_ADarkTwilight 31517-01.htm">hello</a>
+	 * </code>
+	 * <br>
+	 * The above link sets the event variable to "31517-01.htm" for the quest 626_ADarkTwilight.<br>
+	 * In the case of timers, this will be the name of the timer.<br>
+	 * This parameter serves as a sort of identifier.
+	 * @param npc this parameter contains a reference to the instance of NPC associated with this event.<br>
+	 * This may be the NPC registered in a timer, or the NPC with whom a player is speaking, etc.<br>
+	 * This parameter may be <b>null</b> in certain circumstances.
+	 * @param player this parameter contains a reference to the player participating in this function.<br>
+	 * It may be the player speaking to the NPC, or the player who caused a timer to start (and owns that timer).<br>
+	 * This parameter may be <b>null</b> in certain circumstances.
+	 * @return
+	 */
 	public String onAdvEvent(String event, L2Npc npc, L2PcInstance player)
 	{
-		// if not overridden by a subclass, then default to the returned value of the simpler (and older) onEvent override
-		// if the player has a state, use it as parameter in the next call, else return null
-		QuestState qs = player.getQuestState(getName());
+		final QuestState qs = player.getQuestState(getName());
 		if (qs != null)
+		{
 			return onEvent(event, qs);
-		
+		}
 		return null;
 	}
 	
+	/**
+	 * This function is called in place of {@link #onAdvEvent(String, L2Npc, L2PcInstance)} if the former is not implemented.<br>
+	 * If a script contains both {@link #onAdvEvent(String, L2Npc, L2PcInstance)} and this implementation, then this method will never be called unless the script's {@link #onAdvEvent(String, L2Npc, L2PcInstance)} explicitly calls this method.
+	 * @param event this parameter contains a string identifier for the event.<br>
+	 * Generally, this string is passed directly via the link.<br>
+	 * For example:<br>
+	 * <code>
+	 * 	<a action="bypass -h Quest 626_ADarkTwilight 31517-01.htm">hello</a>
+	 * </code>
+	 * The above link sets the event variable to "31517-01.htm" for the quest 626_ADarkTwilight.<br>
+	 * In the case of timers, this will be the name of the timer.<br>
+	 * This parameter serves as a sort of identifier.
+	 * @param qs this parameter contains a reference to the quest state of the player who used the link or started the timer.
+	 * @return
+	 */
 	public String onEvent(String event, QuestState qs)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player kills a NPC that is registered for the quest.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that got killed.
+	 * @param killer this parameter contains a reference to the exact instance of the player who killed the NPC.
+	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the killer was the player's pet.
+	 * @return
+	 */
 	public String onKill(L2Npc npc, L2PcInstance killer, boolean isPet)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player clicks to the "Quest" link of an NPC that is registered for the quest.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player is talking with.
+	 * @param talker this parameter contains a reference to the exact instance of the player who is talking to the NPC.
+	 * @return
+	 */
 	public String onTalk(L2Npc npc, L2PcInstance talker)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player talks to an NPC that is registered for the quest.<br>
+	 * That is, it is triggered from the very first click on the NPC, not via another dialog.<br>
+	 * <b>Note 1:</b><br>
+	 * Each NPC can be registered to at most one quest for triggering this function.
+	 * In other words, the same one NPC cannot respond to an "onFirstTalk" request from two different quests.
+	 * Attempting to register an NPC in two different quests for this function will result in one of the two registration being ignored.<br>
+	 * <b>Note 2:</b><br>
+	 * Since a Quest link isn't clicked in order to reach this, a quest state can be invalid within this function.<br>
+	 * The coder of the script may need to create a new quest state (if necessary).<br>
+	 * <b>Note 3:</b><br>
+	 * The returned value of onFirstTalk replaces the default HTML that would have otherwise been loaded from a sub-folder of DatapackRoot/game/data/html/.<br>
+	 * If you wish to show the default HTML, within onFirstTalk do npc.showChatWindow(player) and then return ""<br>
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player is talking with.
+	 * @param player this parameter contains a reference to the exact instance of the player who is talking to the NPC.
+	 * @return
+	 * @since <a href="http://trac.l2jserver.com/changeset/771">Jython AI support for "onFirstTalk"</a>
+	 */
 	public String onFirstTalk(L2Npc npc, L2PcInstance player)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player request a skill list.<br>
+	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill list.
+	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill list.
+	 * @return
+	 */
 	public String onAcquireSkillList(L2Npc npc, L2PcInstance player)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player request a skill info.<br>
+	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill info.
+	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill info.
+	 * @param skill this parameter contains a reference to the skill that the player requested its info.
+	 * @return
+	 */
 	public String onAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player acquire a skill.<br>
+	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill.
+	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill.
+	 * @param skill this parameter contains a reference to the skill that the player requested.
+	 * @return
+	 */
 	public String onAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player uses a quest item that has a quest events list<br>
+	 * TODO: complete this documentation and unhardcode it to work with all item uses not with those listed.
+	 * @param item this parameter contains a reference to the instance of the quest item that the player used.
+	 * @param player this parameter contains a reference to the exact instance of the player who used the quest item.
+	 * @return
+	 */
 	public String onItemUse(L2Item item, L2PcInstance player)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player casts a skill near a registered NPC (1000 distance).<br>
+	 * <b>Note:</b><br>
+	 * If a skill does damage, both onSkillSee(..) and onAttack(..) will be triggered for the damaged NPC!<br>
+	 * However, only onSkillSee(..) will be triggered if the skill does no damage,<br>
+	 * or if it damages an NPC who has no onAttack(..) registration while near another NPC who has an onSkillSee registration.<br>
+	 * TODO: confirm if the distance is 1000 and unhardcode.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that saw the skill.
+	 * @param caster this parameter references the actual instance of the player who cast the skill.
+	 * @param skill this parameter is a reference to the actual skill that was used (from which info about the id and level of the skill can be obtained).
+	 * @param targets this parameter is an array of all objects (can be any type of object, including mobs and players) that are affected by the skill.
+	 * @param isPet this parameter if it's {@code false} it denotes that the caster was indeed the player, else it specifies that the caster was the player's pet.
+	 * @return
+	 */
 	public String onSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever an NPC finish casting a skill.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC that casted the skill.
+	 * @param player this parameter references the actual instance of the player who is target of the skill.
+	 * This parameter may be <b>null</b> in certain circumstances.
+	 * @param skill this parameter is a reference to the actual skill that was used by the NPC.
+	 * @return
+	 */
 	public String onSpellFinished(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a trap action is performed.
+	 * @param trap this parameter contains a reference to the exact instance of the trap that was activated.
+	 * @param trigger this parameter contains a reference to the exact instance of the character that triggered the action.
+	 * @param action this parameter contains a reference to the action that was triggered.
+	 * @return
+	 */
 	public String onTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever an NPC spawns or re-spawns and passes a reference to the newly (re)spawned NPC.<br>
+	 * Currently the only function that has no reference to a player.<br>
+	 * It is useful for initializations, starting quest timers, displaying chat (NpcSay), and more.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC who just (re)spawned.
+	 * @return
+	 */
 	public String onSpawn(L2Npc npc)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever an NPC is called by another NPC in the same faction.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC who is being asked for help.
+	 * @param caller this parameter contains a reference to the exact instance of the NPC who is asking for help.<br>
+	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked.
+	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the attacker was the player's pet.
+	 * @return
+	 */
 	public String onFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player enters an NPC aggression range.
+	 * @param npc this parameter contains a reference to the exact instance of the NPC whose aggression range is being transgressed.
+	 * @param player this parameter contains a reference to the exact instance of the player who is entering the NPC's aggression range.
+	 * @param isPet this parameter if it's {@code false} it denotes that the character that entered the aggression range was indeed the player, else it specifies that the character was the player's pet.
+	 * @return
+	 */
 	public String onAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a player enters the game.
+	 * @param player this parameter contains a reference to the exact instance of the player who is entering to the world.
+	 * @return
+	 */
 	public String onEnterWorld(L2PcInstance player)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a character enters a registered zone.
+	 * @param character this parameter contains a reference to the exact instance of the character who is entering the zone.
+	 * @param zone this parameter contains a reference to the zone.
+	 * @return
+	 */
 	public String onEnterZone(L2Character character, L2ZoneType zone)
 	{
 		return null;
 	}
 	
+	/**
+	 * This function is called whenever a character exits a registered zone.
+	 * @param character this parameter contains a reference to the exact instance of the character who is exiting the zone.
+	 * @param zone this parameter contains a reference to the zone.
+	 * @return
+	 */
 	public String onExitZone(L2Character character, L2ZoneType zone)
 	{
 		return null;
+	}
+	
+	/**
+	 * This function is called whenever a player wins an Olympiad Game.
+	 * @param winner this parameter contains a reference to the exact instance of the player who won the competition.
+	 * @param type this parameter contains a reference to the competition type.
+	 */
+	public void onOlympiadWin(L2PcInstance winner, CompetitionType type)
+	{
+		
+	}
+	
+	/**
+	 * This function is called whenever a player looses an Olympiad Game.
+	 * @param loser this parameter contains a reference to the exact instance of the player who lose the competition.
+	 * @param type this parameter contains a reference to the competition type.
+	 */
+	public void onOlympiadLose(L2PcInstance loser, CompetitionType type)
+	{
+		
 	}
 	
 	/**
@@ -918,7 +1298,6 @@ public class Quest extends ManagedScript
 	 */
 	public final static void playerEnter(L2PcInstance player)
 	{
-		
 		Connection con = null;
 		try
 		{
@@ -1259,7 +1638,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Create a record in database for quest.<BR><BR>
 	 * <U><I>Actions :</I></U><BR>
-	 * Use fucntion createQuestVarInDb() with following parameters :<BR>
+	 * Use function createQuestVarInDb() with following parameters :<BR>
 	 * <LI>QuestState : parameter sq that puts in fields of database :
 	 * 	 <UL type="square">
 	 *     <LI>charId : ID of the player</LI>
@@ -1375,6 +1754,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addFirstTalkId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_FIRST_TALK);
@@ -1394,6 +1777,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addAcquireSkillId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
@@ -1413,6 +1800,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addAttackId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_ATTACK);
@@ -1432,6 +1823,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addKillId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_KILL);
@@ -1451,6 +1846,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addTalkId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_TALK);
@@ -1470,6 +1869,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addSpawnId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_SPAWN);
@@ -1490,11 +1893,19 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addSkillSeeId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_SKILL_SEE);
 	}
 	
+	/**
+	 * @param npcIds
+	 * @return
+	 */
 	public L2NpcTemplate[] addSpellFinishedId(int ...npcIds)
 	{
 		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
@@ -1504,11 +1915,19 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addSpellFinishedId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
 	}
 	
+	/**
+	 * @param npcIds
+	 * @return
+	 */
 	public L2NpcTemplate[] addTrapActionId(int ...npcIds)
 	{
 		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
@@ -1518,6 +1937,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addTrapActionId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
@@ -1537,6 +1960,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addFactionCallId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_FACTION_CALL);
@@ -1556,11 +1983,19 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param npcId
+	 * @return
+	 */
 	public L2NpcTemplate addAggroRangeEnterId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
 	}
 	
+	/**
+	 * @param zoneIds
+	 * @return
+	 */
 	public L2ZoneType[] addEnterZoneId(int ...zoneIds)
 	{
 		L2ZoneType[] value = new L2ZoneType[zoneIds.length];
@@ -1572,7 +2007,7 @@ public class Quest extends ManagedScript
 				L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
 				if (zone != null)
 				{
-					zone.addQuestEvent(Quest.QuestEventType.ON_ENTER_ZONE, this);
+					zone.addQuestEvent(QuestEventType.ON_ENTER_ZONE, this);
 				}
 				value[i++] = zone;
 			}
@@ -1586,6 +2021,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param zoneId
+	 * @return
+	 */
 	public L2ZoneType addEnterZoneId(int zoneId)
 	{
 		try
@@ -1593,7 +2032,7 @@ public class Quest extends ManagedScript
 			L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
 			if (zone != null)
 			{
-				zone.addQuestEvent(Quest.QuestEventType.ON_ENTER_ZONE, this);
+				zone.addQuestEvent(QuestEventType.ON_ENTER_ZONE, this);
 			}
 			return zone;
 		}
@@ -1604,6 +2043,10 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	/**
+	 * @param zoneIds
+	 * @return
+	 */
 	public L2ZoneType[] addExitZoneId(int ...zoneIds)
 	{
 		L2ZoneType[] value = new L2ZoneType[zoneIds.length];
@@ -1615,7 +2058,7 @@ public class Quest extends ManagedScript
 				L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
 				if (zone != null)
 				{
-					zone.addQuestEvent(Quest.QuestEventType.ON_EXIT_ZONE, this);
+					zone.addQuestEvent(QuestEventType.ON_EXIT_ZONE, this);
 				}
 				value[i++] = zone;
 			}
@@ -1629,6 +2072,10 @@ public class Quest extends ManagedScript
 		return value;
 	}
 	
+	/**
+	 * @param zoneId
+	 * @return
+	 */
 	public L2ZoneType addExitZoneId(int zoneId)
 	{
 		try
@@ -1636,7 +2083,7 @@ public class Quest extends ManagedScript
 			L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
 			if (zone != null)
 			{
-				zone.addQuestEvent(Quest.QuestEventType.ON_EXIT_ZONE, this);
+				zone.addQuestEvent(QuestEventType.ON_EXIT_ZONE, this);
 			}
 			return zone;
 		}
@@ -1647,21 +2094,28 @@ public class Quest extends ManagedScript
 		}
 	}
 	
-	// returns a random party member's L2PcInstance for the passed player's party
-	// returns the passed player if he has no party.
+	/**
+	 * Use this method to get a random party member from a player's party.<br>
+	 * Useful when distributing rewards after killing an NPC.
+	 * @param player this parameter represents the player whom the party will taken.
+	 * @return if {@code player} is null returns null, if the {@code player} does not have a party returns {@code player}, other wise select a random party member.
+	 */
 	public L2PcInstance getRandomPartyMember(L2PcInstance player)
 	{
-		// NPE prevention.  If the player is null, there is nothing to return
 		if (player == null)
+		{
 			return null;
-		if ((player.getParty() == null) || (player.getParty().getPartyMembers().isEmpty()))
+		}
+		final L2Party party = player.getParty();
+		if ((party == null) || (party.getPartyMembers().isEmpty()))
+		{
 			return player;
-		L2Party party = player.getParty();
+		}
 		return party.getPartyMembers().get(Rnd.get(party.getPartyMembers().size()));
 	}
 	
 	/**
-	 * Auxilary function for party quests.
+	 * Auxiliary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
 	 * @param player the instance of a player whose party is to be searched
@@ -1675,7 +2129,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Auxilary function for party quests.
+	 * Auxiliary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
 	 * @param player the instance of a player whose party is to be searched
@@ -1736,7 +2190,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Auxilary function for party quests.
+	 * Auxiliary function for party quests.
 	 * Note: This function is only here because of how commonly it may be used by quest developers.
 	 * For any variations on this function, the quest script can always handle things on its own
 	 * @param player the instance of a player whose party is to be searched
@@ -1873,26 +2327,74 @@ public class Quest extends ManagedScript
 		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, isSummonSpawn);
 	}
 	
+	/**
+	 * @param npcId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param randomOffSet
+	 * @param despawnDelay
+	 * @return
+	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffSet, long despawnDelay)
 	{
 		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false);
 	}
 	
+	/**
+	 * @param npcId
+	 * @param loc
+	 * @param randomOffSet
+	 * @param despawnDelay
+	 * @return
+	 */
 	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffSet, long despawnDelay)
 	{
 		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffSet, despawnDelay, false);
 	}
 	
+	/**
+	 * @param npcId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param randomOffset
+	 * @param despawnDelay
+	 * @param isSummonSpawn
+	 * @return
+	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
 	{
 		return addSpawn(npcId, x, y, z, heading, randomOffset, despawnDelay, isSummonSpawn, 0);
 	}
 	
+	/**
+	 * @param npcId
+	 * @param loc
+	 * @param randomOffset
+	 * @param despawnDelay
+	 * @param isSummonSpawn
+	 * @return
+	 */
 	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
 	{
 		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffset, despawnDelay, isSummonSpawn, 0);
 	}
 	
+	/**
+	 * @param npcId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param randomOffset
+	 * @param despawnDelay
+	 * @param isSummonSpawn
+	 * @param instanceId
+	 * @return
+	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay, boolean isSummonSpawn, int instanceId)
 	{
 		L2Npc result = null;
@@ -1954,6 +2456,16 @@ public class Quest extends ManagedScript
 		return null;
 	}
 	
+	/**
+	 * @param trapId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param skill
+	 * @param instanceId
+	 * @return
+	 */
 	public L2Trap addTrap(int trapId, int x, int y, int z, int heading, L2Skill skill, int instanceId)
 	{
 		L2NpcTemplate TrapTemplate = NpcTable.getInstance().getTemplate(trapId);
@@ -1968,11 +2480,19 @@ public class Quest extends ManagedScript
 		return trap;
 	}
 	
+	/**
+	 * @param master
+	 * @param minionId
+	 * @return
+	 */
 	public L2Npc addMinion(L2MonsterInstance master, int minionId)
 	{
 		return MinionList.spawnMinion(master, minionId);
 	}
 	
+	/**
+	 * @return the registered quest items Ids.
+	 */
 	public int[] getRegisteredItemIds()
 	{
 		return questItemIds;
@@ -2003,6 +2523,10 @@ public class Quest extends ManagedScript
 		return unload(true);
 	}
 	
+	/**
+	 * @param removeFromList
+	 * @return
+	 */
 	public boolean unload(boolean removeFromList)
 	{
 		this.saveGlobalData();
@@ -2025,96 +2549,77 @@ public class Quest extends ManagedScript
 		return QuestManager.getInstance();
 	}
 	
+	/**
+	 * @param val
+	 */
 	public void setOnEnterWorld(boolean val)
 	{
 		_onEnterWorld = val;
 	}
 	
+	/**
+	 * @return
+	 */
 	public boolean getOnEnterWorld()
 	{
 		return _onEnterWorld;
 	}
 	
 	/**
-	 * @return true if the quest script is a custom quest.
-	 */
-	public boolean isCustomQuest()
-	{
-		return _isCustom;
-	}
-	
-	public void setOlympiadUse(boolean val)
-	{
-		_isOlympiadUse = val;
-	}
-	
-	public boolean isOlympiadUse()
-	{
-		return _isOlympiadUse;
-	}
-	
-	/**
-	 * @param val if true the quest script will be set as custom quest.
+	 * If a quest is set as custom, it will display it's name in the NPC Quest List.<br>
+	 * Retail quests are unhardcoded to display the name using a client string.
+	 * @param val if {@code true} the quest script will be set as custom quest.
 	 */
 	public void setIsCustom(boolean val)
 	{
 		_isCustom = val;
 	}
 	
-	public final void notifyOlympiadWin(L2PcInstance winner, CompetitionType type)
+	/**
+	 * @return {@code true} if the quest script is a custom quest, {@code false} otherwise.
+	 */
+	public boolean isCustomQuest()
 	{
-		try
-		{
-			onOlympiadWin(winner, type);
-		}
-		catch (Exception e)
-		{
-			showError(winner, e);
-		}
-	}
-	
-	public final void notifyOlympiadLoose(L2PcInstance looser, CompetitionType type)
-	{
-		try
-		{
-			onOlympiadLoose(looser, type);
-		}
-		catch (Exception e)
-		{
-			showError(looser, e);
-		}
-	}
-	
-	public void onOlympiadWin(L2PcInstance winner, CompetitionType type)
-	{
-		
-	}
-	
-	public void onOlympiadLoose(L2PcInstance winner, CompetitionType type)
-	{
-		
+		return _isCustom;
 	}
 	
 	/**
-	 * Return the quantity of one sort of item hold by the player
-	 * @param player 
-	 * @param itemId : ID of the item wanted to be count
-	 * @return long
+	 * @param val
+	 */
+	public void setOlympiadUse(boolean val)
+	{
+		_isOlympiadUse = val;
+	}
+	
+	/**
+	 * @return {@code true} if the quest script is used for Olympiad quests, {@code false} otherwise.
+	 */
+	public boolean isOlympiadUse()
+	{
+		return _isOlympiadUse;
+	}
+	
+	/**
+	 * @param player this parameter contains a reference to the player to check.
+	 * @param itemId the item wanted to be count.
+	 * @return the quantity of one sort of item hold by the player.
 	 */
 	public long getQuestItemsCount(L2PcInstance player, int itemId)
 	{
 		long count = 0;
-		
 		for (L2ItemInstance item : player.getInventory().getItems())
-			if (item != null && item.getItemId() == itemId)
+		{
+			if ((item != null) && (item.getItemId() == itemId))
+			{
 				count += item.getCount();
-		
+			}
+		}
 		return count;
 	}
 	
 	/**
-	 * @param player 
-	 * @param itemId the item Id of the item you're looking for
+	 * @param player this parameter contains a reference to the player to check.
+	 * @param itemId the item Id of the item to verify.
 	 * @return true if item exists in player's inventory, false - if not
 	 */
 	public boolean hasQuestItems(L2PcInstance player, int itemId)
@@ -2123,10 +2628,9 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Return the level of enchantment on the weapon of the player(Done specifically for weapon SA's)
-	 * @param player 
+	 * @param player this parameter contains a reference to the player to check.
 	 * @param itemId : ID of the item to check enchantment
-	 * @return int
+	 * @return the level of enchantment on the weapon of the player(Done specifically for weapon SA's)
 	 */
 	public int getEnchantLevel(L2PcInstance player, int itemId)
 	{
@@ -2139,10 +2643,10 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Give adena to the player
-	 * @param player 
-	 * @param count
-	 * @param applyRates
+	 * Give Adena to the player
+	 * @param player this parameter contains a reference to the player that receives the Adena.
+	 * @param count this parameter represent the Adena count to give to the player.
+	 * @param applyRates if {@code true} quest rates will be applied.
 	 */
 	public void giveAdena(L2PcInstance player, long count, boolean applyRates)
 	{
@@ -2246,6 +2750,12 @@ public class Quest extends ManagedScript
 		giveItems(player, itemId, count, 0);
 	}
 	
+	/**
+	 * @param player
+	 * @param itemId
+	 * @param count
+	 * @param enchantlevel
+	 */
 	public void giveItems(L2PcInstance player, int itemId, long count, int enchantlevel)
 	{
 		if (count <= 0)
@@ -2295,6 +2805,13 @@ public class Quest extends ManagedScript
 		player.sendPacket(su);
 	}
 	
+	/**
+	 * @param player
+	 * @param itemId
+	 * @param count
+	 * @param attributeId
+	 * @param attributeLevel
+	 */
 	public void giveItems(L2PcInstance player, int itemId, long count, byte attributeId, int attributeLevel)
 	{
 		if (count <= 0)
@@ -2363,6 +2880,16 @@ public class Quest extends ManagedScript
 		return dropQuestItems(player, itemId, count, count, neededCount, dropChance, sound);
 	}
 	
+	/**
+	 * @param player
+	 * @param itemId
+	 * @param minCount
+	 * @param maxCount
+	 * @param neededCount
+	 * @param dropChance
+	 * @param sound
+	 * @return
+	 */
 	public boolean dropQuestItems(L2PcInstance player, int itemId, int minCount, int maxCount, long neededCount, int dropChance, boolean sound)
 	{
 		dropChance *= Config.RATE_QUEST_DROP / ((player.getParty() != null) ? player.getParty().getMemberCount() : 1);
@@ -2466,28 +2993,40 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Return random value
-	 * @param max : max value for randomization
-	 * @return int
+	 * Gets a random integer number from 0 (inclusive) to {@code max} (exclusive).<br>
+	 * Use this method instead importing {@link com.l2jserver.util.Rnd} utility.
+	 * @param max this parameter represents the maximum value for randomization.
+	 * @return a random integer number from 0 to {@code max} - 1.
 	 */
-	public int getRandom(int max)
+	public static int getRandom(int max)
 	{
 		return Rnd.get(max);
 	}
 	
 	/**
-	 * @param player 
-	 * @param loc 
-	 * @return number of ticks from GameTimeController
+	 * Gets a random integer number from {@code min} (inclusive) to {@code max} (inclusive).<br>
+	 * Use this method instead importing {@link com.l2jserver.util.Rnd} utility.
+	 * @param min this parameter represents the minimum value for randomization.
+	 * @param max this parameter represents the maximum value for randomization.
+	 * @return a random integer number from {@code min} to {@code max} .
 	 */
-	public int getItemEquipped(L2PcInstance player, int loc)
+	public static int getRandom(int min, int max)
 	{
-		return player.getInventory().getPaperdollItemId(loc);
+		return Rnd.get(min, max);
 	}
 	
 	/**
-	 * Return the number of ticks from the GameTimeController
-	 * @return int
+	 * @param player this parameter is a reference to the player.
+	 * @param slot this parameter represents the location in the player's inventory.
+	 * @return the item Id of the item present in the inventory slot {@code slot} if it's not null, 0 otherwise.
+	 */
+	public int getItemEquipped(L2PcInstance player, int slot)
+	{
+		return player.getInventory().getPaperdollItemId(slot);
+	}
+	
+	/**
+	 * @return the number of ticks from the {@link com.l2jserver.gameserver.GameTimeController}.
 	 */
 	public int getGameTicks()
 	{

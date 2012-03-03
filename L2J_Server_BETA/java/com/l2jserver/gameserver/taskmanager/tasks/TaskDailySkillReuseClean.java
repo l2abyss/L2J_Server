@@ -29,25 +29,19 @@ public class TaskDailySkillReuseClean extends Task
 {
 	private static final Logger _log = Logger.getLogger(TaskDailySkillReuseClean.class.getName());
 	
-	private static final String NAME = "daily_skill_clearn";
+	private static final String NAME = "daily_skill_clean";
 	
-	private static final int[] _daily_skills = {
-		2510
+	private static final int[] _daily_skills =
+	{
+		2510, 22180
 	};
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#getName()
-	 */
+	
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#onTimeElapsed(com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask)
-	 */
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
@@ -55,7 +49,7 @@ public class TaskDailySkillReuseClean extends Task
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			for(int skill_id : _daily_skills)
+			for (int skill_id : _daily_skills)
 			{
 				PreparedStatement statement = con.prepareStatement("DELETE FROM character_skills_save WHERE skill_id=?;");
 				statement.setInt(1, skill_id);
@@ -71,18 +65,13 @@ public class TaskDailySkillReuseClean extends Task
 		{
 			L2DatabaseFactory.close(con);
 		}
-		_log.config("Daily skill reuse cleared");
+		_log.config("Daily skill reuse cleaned.");
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#initializate()
-	 */
 	@Override
 	public void initializate()
 	{
 		super.initializate();
 		TaskManager.addUniqueTask(NAME, TaskTypes.TYPE_GLOBAL_TASK, "1", "06:30:00", "");
 	}
-	
 }
