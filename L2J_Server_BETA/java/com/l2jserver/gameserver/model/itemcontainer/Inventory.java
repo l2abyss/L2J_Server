@@ -402,10 +402,9 @@ public abstract class Inventory extends ItemContainer
 						
 						if (itemSkill.isActive())
 						{
-							if (player.hasSkillReuse(itemSkill.getReuseHashCode()))
+							if (!player.hasSkillReuse(itemSkill.getReuseHashCode()))
 							{
 								int equipDelay = itemSkill.getEquipDelay();
-								
 								if (equipDelay > 0)
 								{
 									player.addTimeStamp(itemSkill, equipDelay);
