@@ -31,13 +31,17 @@ public class QuestTimer
 		@Override
 		public void run()
 		{
-			if (this == null || !getIsActive())
+			if ((this == null) || !getIsActive())
+			{
 				return;
+			}
 			
 			try
 			{
 				if (!getIsRepeating())
+				{
 					cancel();
+				}
 				getQuest().notifyEvent(getName(), getNpc(), getPlayer());
 			}
 			catch (Exception e)
@@ -48,11 +52,11 @@ public class QuestTimer
 	}
 	
 	private boolean _isActive = true;
-	private String _name;
-	private Quest _quest;
-	private L2Npc _npc;
-	private L2PcInstance _player;
-	private boolean _isRepeating;
+	private final String _name;
+	private final Quest _quest;
+	private final L2Npc _npc;
+	private final L2PcInstance _player;
+	private final boolean _isRepeating;
 	private ScheduledFuture<?> _schedular;
 	
 	public QuestTimer(Quest quest, String name, long time, L2Npc npc, L2PcInstance player, boolean repeating)
@@ -63,9 +67,13 @@ public class QuestTimer
 		_npc = npc;
 		_isRepeating = repeating;
 		if (repeating)
+		{
 			_schedular = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ScheduleTimerTask(), time, time); // Prepare auto end task
+		}
 		else
+		{
 			_schedular = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleTimerTask(), time); // Prepare auto end task
+		}
 	}
 	
 	public QuestTimer(Quest quest, String name, long time, L2Npc npc, L2PcInstance player)
@@ -83,7 +91,9 @@ public class QuestTimer
 		_isActive = false;
 		
 		if (_schedular != null)
+		{
 			_schedular.cancel(false);
+		}
 		
 		getQuest().removeQuestTimer(this);
 	}
@@ -94,14 +104,18 @@ public class QuestTimer
 	 * @param name : Name of the timer
 	 * @param npc : Npc instance attached to the desired timer (null if no npc attached)
 	 * @param player : Player instance attached to the desired timer (null if no player attached)
-	 * @return 
+	 * @return
 	 */
 	public boolean isMatch(Quest quest, String name, L2Npc npc, L2PcInstance player)
 	{
 		if ((quest == null) || (name == null))
+		{
 			return false;
-		if ((quest != getQuest()) || name.compareToIgnoreCase(getName()) != 0)
+		}
+		if ((quest != getQuest()) || (name.compareToIgnoreCase(getName()) != 0))
+		{
 			return false;
+		}
 		return ((npc == getNpc()) && (player == getPlayer()));
 	}
 	

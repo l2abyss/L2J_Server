@@ -46,21 +46,31 @@ import com.l2jserver.gameserver.util.Util;
  */
 public final class QuestState
 {
-	protected static final Logger _log = Logger.getLogger(Quest.class.getName());
+	protected static final Logger _log = Logger.getLogger(QuestState.class.getName());
 	
-	/** Quest associated to the QuestState */
+	/**
+	 * Quest associated to the QuestState
+	 */
 	private final String _questName;
 	
-	/** Player who engaged the quest */
+	/**
+	 * Player who engaged the quest
+	 */
 	private final L2PcInstance _player;
 	
-	/** State of the quest */
+	/**
+	 * State of the quest
+	 */
 	private byte _state;
 	
-	/** List of couples (variable for quest,value of the variable for quest) */
+	/**
+	 * List of couples (variable for quest,value of the variable for quest)
+	 */
 	private Map<String, String> _vars;
 	
-	/** boolean flag letting QuestStateManager know to exit quest when cleaning up */
+	/**
+	 * boolean flag letting QuestStateManager know to exit quest when cleaning up
+	 */
 	private boolean _isExitQuestOnCleanUp = false;
 	
 	/**
@@ -74,26 +84,26 @@ public final class QuestState
 	}
 	
 	/**
-	 * Constructor of the QuestState : save the quest in the list of quests of the player.<BR/><BR/>
-	 *
-	 * <U><I>Actions :</U></I><BR/>
-	 * <LI>Save informations in the object QuestState created (Quest, Player, Completion, State)</LI>
-	 * <LI>Add the QuestState in the player's list of quests by using setQuestState()</LI>
-	 * <LI>Add drops gotten by the quest</LI>
-	 * <BR/>
-	 * @param quest : quest associated with the QuestState
-	 * @param player : L2PcInstance pointing out the player
-	 * @param state : state of the quest
+	 * Constructor of the QuestState : save the quest in the list of quests of the player.<br>
+	 * Actions:<br>
+	 * <ul>
+	 * <li>Save informations in the object QuestState created (Quest, Player, Completion, State)</li>
+	 * <li>Add the QuestState in the player's list of quests by using setQuestState()</li>
+	 * <li>Add drops gotten by the quest</li>
+	 * </ul>
+	 * @param quest the quest associated with this QuestState.
+	 * @param player the player reference to the owner of the state.
+	 * @param state the state of the quest.
 	 */
-	QuestState(Quest quest, L2PcInstance player, byte state)
+	public QuestState(Quest quest, L2PcInstance player, byte state)
 	{
 		_questName = quest.getName();
 		_player = player;
 		
-		// Save the state of the quest for the player in the player's list of quest onwed
+		// Save the state of the quest for the player in the player's list of quest owned.
 		getPlayer().setQuestState(this);
 		
-		// set the state of the quest
+		// Set the state of the quest.
 		_state = state;
 	}
 	
@@ -157,13 +167,15 @@ public final class QuestState
 	}
 	
 	/**
-	 * Return state of the quest after its initialization.<BR><BR>
-	 * <U><I>Actions :</I></U>
-	 * <LI>Remove drops from previous state</LI>
-	 * <LI>Set new state of the quest</LI>
-	 * <LI>Add drop for new state</LI>
-	 * <LI>Update information in database</LI>
-	 * <LI>Send packet QuestList to client</LI>
+	 * Return state of the quest after its initialization.<br>
+	 * Actions:<br>
+	 * <ul>
+	 * <li>Remove drops from previous state.</li>
+	 * <li>Set new state of the quest.</li>
+	 * <li>Add drop for new state.</li>
+	 * <li>Update information in database.</li>
+	 * <li>Send packet QuestList to client.</li>
+	 * </ul>
 	 * @param state
 	 * @return object
 	 */
@@ -176,15 +188,23 @@ public final class QuestState
 			_state = state;
 			
 			if (newQuest)
+			{
 				Quest.createQuestInDb(this);
+			}
 			else
+			{
 				Quest.updateQuestInDb(this);
+			}
 			
 			getPlayer().sendPacket(new QuestList());
 		}
 		return state;
 	}
 	
+	/**
+	 * @param state
+	 * @return
+	 */
 	public Object setStateAndNotSave(byte state)
 	{
 		// set new state if it is not already in that state
@@ -205,24 +225,30 @@ public final class QuestState
 	public String setInternal(String var, String val)
 	{
 		if (_vars == null)
+		{
 			_vars = new FastMap<String, String>();
+		}
 		
 		if (val == null)
+		{
 			val = "";
+		}
 		
 		_vars.put(var, val);
 		return val;
 	}
 	
 	/**
-	 * Return value of parameter "val" after adding the couple (var,val) in class variable "vars".<BR><BR>
-	 * <U><I>Actions :</I></U><BR>
-	 * <LI>Initialize class variable "vars" if is null</LI>
-	 * <LI>Initialize parameter "val" if is null</LI>
-	 * <LI>Add/Update couple (var,val) in class variable FastMap "vars"</LI>
-	 * <LI>If the key represented by "var" exists in FastMap "vars", the couple (var,val) is updated in the database. The key is known as
-	 * existing if the preceding value of the key (given as result of function put()) is not null.<BR>
-	 * If the key doesn't exist, the couple is added/created in the database</LI>
+	 * Return value of parameter "val" after adding the couple (var,val) in class variable "vars".<br>
+	 * Actions:<br>
+	 * <ul>
+	 * <li>Initialize class variable "vars" if is null.</li>
+	 * <li>Initialize parameter "val" if is null</li>
+	 * <li>Add/Update couple (var,val) in class variable FastMap "vars"</li>
+	 * <li>If the key represented by "var" exists in FastMap "vars", the couple (var,val) is updated in the database.<br>
+	 * The key is known as existing if the preceding value of the key (given as result of function put()) is not null.<br>
+	 * If the key doesn't exist, the couple is added/created in the database</li>
+	 * <ul>
 	 * @param var : String indicating the name of the variable for quest
 	 * @param val : String indicating the value of the variable for quest
 	 * @return String (equal to parameter "val")
@@ -230,18 +256,26 @@ public final class QuestState
 	public String set(String var, String val)
 	{
 		if (_vars == null)
+		{
 			_vars = new FastMap<String, String>();
+		}
 		
 		if (val == null)
+		{
 			val = "";
+		}
 		
 		// FastMap.put() returns previous value associated with specified key, or null if there was no mapping for key.
 		String old = _vars.put(var, val);
 		
 		if (old != null)
+		{
 			Quest.updateQuestVarInDb(this, var, val);
+		}
 		else
+		{
 			Quest.createQuestVarInDb(this, var, val);
+		}
 		
 		if ("cond".equals(var))
 		{
@@ -268,19 +302,18 @@ public final class QuestState
 	}
 	
 	/**
-	 * Internally handles the progression of the quest so that it is ready for sending
-	 * appropriate packets to the client<BR><BR>
-	 * <U><I>Actions :</I></U><BR>
-	 * <LI>Check if the new progress number resets the quest to a previous (smaller) step</LI>
-	 * <LI>If not, check if quest progress steps have been skipped</LI>
-	 * <LI>If skipped, prepare the variable completedStateFlags appropriately to be ready for sending to clients</LI>
-	 * <LI>If no steps were skipped, flags do not need to be prepared...</LI>
-	 * <LI>If the passed step resets the quest to a previous step, reset such that steps after the parameter are not
-	 * considered, while skipped steps before the parameter, if any, maintain their info</LI>
+	 * Internally handles the progression of the quest so that it is ready for sending appropriate packets to the client.<br>
+	 * Actions:<br>
+	 * <ul>
+	 * <li>Check if the new progress number resets the quest to a previous (smaller) step.</li>
+	 * <li>If not, check if quest progress steps have been skipped.</li>
+	 * <li>If skipped, prepare the variable completedStateFlags appropriately to be ready for sending to clients.</li>
+	 * <li>If no steps were skipped, flags do not need to be prepared...</li>
+	 * <li>If the passed step resets the quest to a previous step, reset such that steps after the parameter are not considered, while skipped steps before the parameter, if any, maintain their info.</li>
+	 * </ul>
+	 * For more info on the variable communicating the progress steps to the client, please see ?
 	 * @param cond : int indicating the step number for the current quest progress (as will be shown to the client)
 	 * @param old : int indicating the previously noted step
-	 *
-	 * For more info on the variable communicating the progress steps to the client, please see
 	 */
 	private void setCond(int cond, int old)
 	{
@@ -288,23 +321,27 @@ public final class QuestState
 		
 		// if there is no change since last setting, there is nothing to do here
 		if (cond == old)
+		{
 			return;
+		}
 		
-		// cond 0 and 1 do not need completedStateFlags.  Also, if cond > 1, the 1st step must
-		// always exist (i.e. it can never be skipped).  So if cond is 2, we can still safely
+		// cond 0 and 1 do not need completedStateFlags. Also, if cond > 1, the 1st step must
+		// always exist (i.e. it can never be skipped). So if cond is 2, we can still safely
 		// assume no steps have been skipped.
 		// Finally, more than 31 steps CANNOT be supported in any way with skipping.
-		if (cond < 3 || cond > 31)
+		if ((cond < 3) || (cond > 31))
 		{
 			unset("__compltdStateFlags");
 		}
 		else
+		{
 			completedStateFlags = getInt("__compltdStateFlags");
+		}
 		
 		// case 1: No steps have been skipped so far...
 		if (completedStateFlags == 0)
 		{
-			// check if this step also doesn't skip anything.  If so, no further work is needed
+			// check if this step also doesn't skip anything. If so, no further work is needed
 			// also, in this case, no work is needed if the state is being reset to a smaller value
 			// in those cases, skip forward to informing the client about the change...
 			
@@ -333,9 +370,11 @@ public final class QuestState
 			{
 				completedStateFlags &= ((1 << cond) - 1); // note, this also unsets the flag indicating that there exist skips
 				
-				//now, check if this resulted in no steps being skipped any more
+				// now, check if this resulted in no steps being skipped any more
 				if (completedStateFlags == ((1 << cond) - 1))
+				{
 					unset("__compltdStateFlags");
+				}
 				else
 				{
 					// set the most significant bit back to 1 again, to correctly indicate that this skips states.
@@ -359,13 +398,15 @@ public final class QuestState
 		getPlayer().sendPacket(ql);
 		
 		int questId = getQuest().getQuestIntId();
-		if (questId > 0 && questId < 19999 && cond > 0)
+		if ((questId > 0) && (questId < 19999) && (cond > 0))
+		{
 			getPlayer().sendPacket(new ExShowQuestMark(questId));
+		}
 	}
 	
 	/**
-	 * Remove the variable of quest from the list of variables for the quest.<BR><BR>
-	 * <U><I>Concept : </I></U>
+	 * Remove the variable of quest from the list of variables for the quest.<br>
+	 * Concept:<br>
 	 * Remove the variable of quest represented by "var" from the class variable FastMap "vars" and from the database.
 	 * @param var : String designating the variable for the quest to be deleted
 	 * @return String pointing out the previous value associated with the variable "var"
@@ -373,21 +414,24 @@ public final class QuestState
 	public String unset(String var)
 	{
 		if (_vars == null)
+		{
 			return null;
+		}
 		
 		String old = _vars.remove(var);
 		
 		if (old != null)
+		{
 			Quest.deleteQuestVarInDb(this, var);
+		}
 		
 		return old;
 	}
 	
 	/**
-	 * Insert (or Update) in the database variables that need to stay persistant for this player after a reboot.
-	 * This function is for storage of values that do not related to a specific quest but are
-	 * global for all quests.  For example, player's can get only once the adena and XP reward for
-	 * the first class quests, but they can make more than one first class quest.
+	 * Insert (or Update) in the database variables that need to stay persistent for this player after a reboot.<br>
+	 * This function is for storage of values that do not related to a specific quest but are global for all quests.<br>
+	 * For example, player's can get only once the Adena and XP reward for the first class quests, but they can make more than one first class quest.
 	 * @param var : String designating the name of the variable for the quest
 	 * @param value : String designating the value of the variable for the quest
 	 */
@@ -416,11 +460,11 @@ public final class QuestState
 	}
 	
 	/**
-	 * Read from the database a previously saved variable for this quest.
-	 * Due to performance considerations, this function should best be used only when the quest is first loaded.
-	 * Subclasses of this class can define structures into which these loaded values can be saved.
-	 * However, on-demand usage of this function throughout the script is not prohibited, only not recommended.
-	 * Values read from this function were entered by calls to "saveGlobalQuestVar"
+	 * Read from the database a previously saved variable for this quest.<br>
+	 * Due to performance considerations, this function should best be used only when the quest is first loaded.<br>
+	 * Subclasses of this class can define structures into which these loaded values can be saved.<br>
+	 * However, on-demand usage of this function throughout the script is not prohibited, only not recommended.<br>
+	 * Values read from this function were entered by calls to "saveGlobalQuestVar".
 	 * @param var : String designating the name of the variable for the quest
 	 * @return String : String representing the loaded value for the passed var, or an empty string if the var was invalid
 	 */
@@ -437,7 +481,9 @@ public final class QuestState
 			statement.setString(2, var);
 			ResultSet rs = statement.executeQuery();
 			if (rs.first())
+			{
 				result = rs.getString(1);
+			}
 			rs.close();
 			statement.close();
 		}
@@ -487,7 +533,9 @@ public final class QuestState
 	public String get(String var)
 	{
 		if (_vars == null)
+		{
 			return null;
+		}
 		
 		return _vars.get(var);
 	}
@@ -500,11 +548,15 @@ public final class QuestState
 	public int getInt(String var)
 	{
 		if (_vars == null)
+		{
 			return 0;
+		}
 		
 		final String variable = _vars.get(var);
-		if (variable == null || variable.length() == 0)
+		if ((variable == null) || (variable.length() == 0))
+		{
 			return 0;
+		}
 		
 		int varint = 0;
 		try
@@ -514,8 +566,8 @@ public final class QuestState
 		catch (Exception e)
 		{
 			_log.log(Level.FINER, getPlayer().getName() + ": variable " + var + " isn't an integer: " + varint + " ! " + e.getMessage(), e);
-			//	    if (Config.AUTODELETE_INVALID_QUEST_DATA)
-			//		exitQuest(true);
+			// if (Config.AUTODELETE_INVALID_QUEST_DATA)
+			// exitQuest(true);
 		}
 		
 		return varint;
@@ -527,10 +579,12 @@ public final class QuestState
 	 */
 	public void addNotifyOfDeath(L2Character character)
 	{
-		if (character == null || !(character instanceof L2PcInstance))
+		if ((character == null) || !(character instanceof L2PcInstance))
+		{
 			return;
+		}
 		
-		((L2PcInstance)character).addNotifyQuestOfDeath(this);
+		((L2PcInstance) character).addNotifyQuestOfDeath(this);
 	}
 	
 	// TODO: This all remains because of backward compatibility should be cleared when all scripts been re-writen in java!
@@ -623,7 +677,7 @@ public final class QuestState
 		return getQuest().dropQuestItems(getPlayer(), itemId, minCount, maxCount, neededCount, dropChance, sound);
 	}
 	
-	//TODO: More radar functions need to be added when the radar class is complete.
+	// TODO: More radar functions need to be added when the radar class is complete.
 	// BEGIN STUFF THAT WILL PROBABLY BE CHANGED
 	public void addRadar(int x, int y, int z)
 	{
@@ -643,10 +697,12 @@ public final class QuestState
 	// END STUFF THAT WILL PROBABLY BE CHANGED
 	
 	/**
-	 * Remove items from player's inventory when talking to NPC in order to have rewards.<BR><BR>
-	 * <U><I>Actions :</I></U>
-	 * <LI>Destroy quantity of items wanted</LI>
-	 * <LI>Send new inventory list to player</LI>
+	 * Remove items from player's inventory when talking to NPC in order to have rewards.<br>
+	 * Actions:<br>
+	 * <ul>
+	 * <li>Destroy quantity of items wanted</li>
+	 * <li>Send new inventory list to player</li>
+	 * </ul>
 	 * @param itemId : Identifier of the item
 	 * @param count : Quantity of items to destroy
 	 */
@@ -675,7 +731,7 @@ public final class QuestState
 	}
 	
 	/**
-	 * @param loc 
+	 * @param loc
 	 * @return number of ticks from GameTimeController
 	 */
 	public int getItemEquipped(int loc)
@@ -707,9 +763,9 @@ public final class QuestState
 	}
 	
 	/**
-	 * Start a timer for quest.<BR><BR>
+	 * Start a timer for quest.
 	 * @param name The name of the timer. Will also be the value for event of onEvent
-	 * @param time The milisecond value the timer will elapse
+	 * @param time The millisecond value the timer will elapse
 	 */
 	public void startQuestTimer(String name, long time)
 	{
@@ -732,9 +788,8 @@ public final class QuestState
 	}
 	
 	/**
-	 * Return the QuestTimer object with the specified name
-	 * @param name 
-	 * @return QuestTimer<BR> Return null if name does not exist
+	 * @param name the quest timer name.
+	 * @return the QuestTimer object with the specified name, null if the name doesn't exist.
 	 */
 	public final QuestTimer getQuestTimer(String name)
 	{
@@ -743,7 +798,7 @@ public final class QuestState
 	
 	/**
 	 * Add spawn for player instance
-	 * @param npcId 
+	 * @param npcId
 	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId)
@@ -762,12 +817,12 @@ public final class QuestState
 	}
 	
 	/**
-	 * Add spawn for player instance
-	 * Will despawn after the spawn length expires
-	 * Uses player's coords and heading.
-	 * Adds a little randomization in the x y coords
-	 * @param npcId 
-	 * @param cha 
+	 * Add spawn for player instance.<br>
+	 * Will despawn after the spawn length expires.<br>
+	 * Uses player's coords and heading.<br>
+	 * Adds a little randomization in the x y coords.<br>
+	 * @param npcId
+	 * @param cha
 	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha)
@@ -781,13 +836,13 @@ public final class QuestState
 	}
 	
 	/**
-	 * Add spawn for player instance
-	 * Will despawn after the spawn length expires
-	 * @param npcId 
-	 * @param x 
-	 * @param y 
-	 * @param z 
-	 * @param despawnDelay 
+	 * Add spawn for player instance.<br>
+	 * Will despawn after the spawn length expires.
+	 * @param npcId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param despawnDelay
 	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int despawnDelay)
@@ -796,13 +851,13 @@ public final class QuestState
 	}
 	
 	/**
-	 * Add spawn for player instance
-	 * Inherits coords and heading from specified L2Character instance.
+	 * Add spawn for player instance.<br>
+	 * Inherits coords and heading from specified L2Character instance.<br>
 	 * It could be either the player, or any killed/attacked mob
-	 * @param npcId 
-	 * @param cha 
-	 * @param randomOffset 
-	 * @param despawnDelay 
+	 * @param npcId
+	 * @param cha
+	 * @param randomOffset
+	 * @param despawnDelay
 	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha, boolean randomOffset, int despawnDelay)
@@ -812,13 +867,13 @@ public final class QuestState
 	
 	/**
 	 * Add spawn for player instance
-	 * @param npcId 
-	 * @param x 
-	 * @param y 
-	 * @param z 
-	 * @param heading 
-	 * @param randomOffset 
-	 * @param despawnDelay 
+	 * @param npcId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param randomOffset
+	 * @param despawnDelay
 	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay)
@@ -828,14 +883,14 @@ public final class QuestState
 	
 	/**
 	 * Add spawn for player instance
-	 * @param npcId 
-	 * @param x 
-	 * @param y 
-	 * @param z 
-	 * @param heading 
-	 * @param randomOffset 
-	 * @param despawnDelay 
-	 * @param isSummonSpawn 
+	 * @param npcId
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param randomOffset
+	 * @param despawnDelay
+	 * @param isSummonSpawn
 	 * @return object id of newly spawned npc
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
@@ -883,7 +938,9 @@ public final class QuestState
 		_player.removeNotifyQuestOfDeath(this);
 		
 		if (isCompleted() || isCreated())
+		{
 			return this;
+		}
 		
 		// Say quest is completed
 		setState(State.COMPLETED);
@@ -892,8 +949,10 @@ public final class QuestState
 		int[] itemIdList = getQuest().getRegisteredItemIds();
 		if (itemIdList != null)
 		{
-			for (int i = 0; i < itemIdList.length; i++)
-				takeItems(itemIdList[i], -1);
+			for (int element : itemIdList)
+			{
+				takeItems(element, -1);
+			}
 		}
 		
 		// If quest is repeatable, delete quest from list of quest of the player and from database (quest CAN be created again => repeatable)
@@ -910,7 +969,9 @@ public final class QuestState
 			if (_vars != null)
 			{
 				for (String var : _vars.keySet())
+				{
 					unset(var);
+				}
 			}
 			
 			Quest.updateQuestInDb(this);
