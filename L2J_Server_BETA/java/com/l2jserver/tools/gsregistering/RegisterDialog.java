@@ -29,6 +29,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 
 import com.l2jserver.loginserver.GameServerTable;
@@ -48,7 +49,7 @@ public class RegisterDialog extends JDialog implements ActionListener
 	{
 		super(owner.getFrame(), true);
 		_owner = owner;
-		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		_bundle = owner.getBundle();
 		this.setTitle(_bundle.getString("registerGS"));
 		this.setResizable(false);
@@ -183,7 +184,7 @@ public class RegisterDialog extends JDialog implements ActionListener
 			
 			try
 			{
-				GUserInterface.registerGameServer(gsId, fc.getSelectedFile().getAbsolutePath());
+				BaseGameServerRegister.registerGameServer(gsId, fc.getSelectedFile().getAbsolutePath());
 				_owner.refreshAsync();
 				this.setVisible(false);
 			}

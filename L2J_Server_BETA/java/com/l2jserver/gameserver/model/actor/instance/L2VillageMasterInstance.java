@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Clan.SubPledge;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.L2SkillLearn;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.PlayerClass;
@@ -830,7 +831,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			}
 		}
 		
-		if (player.isInsideZone(L2PcInstance.ZONE_SIEGE))
+		if (player.isInsideZone(L2Character.ZONE_SIEGE))
 		{
 			player.sendPacket(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE);
 			return;

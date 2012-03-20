@@ -53,6 +53,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
@@ -206,7 +207,7 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 				ConfigProperty cp = (ConfigProperty) cc;
 				cons.gridx = 0;
 				
-				JLabel keyLabel = new JLabel(cp.getDisplayName()+':', ImagesTable.getImage("help.png"), JLabel.LEFT);
+				JLabel keyLabel = new JLabel(cp.getDisplayName()+':', ImagesTable.getImage("help.png"), SwingConstants.LEFT);
 				String comments = "<b>"+cp.getName()+":</b><br>"+cp.getComments();
 				comments = comments.replace("\r\n", "<br>");
 				comments = "<html>"+comments+"</html>";
