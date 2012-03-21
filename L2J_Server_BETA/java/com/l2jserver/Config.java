@@ -50,6 +50,11 @@ import com.l2jserver.gameserver.util.FloodProtectorConfig;
 import com.l2jserver.util.L2Properties;
 import com.l2jserver.util.StringUtil;
 
+/**
+ * This class loads all the game server related configurations from files.<br>
+ * The files are usually located in game/config folder in game server's root folder.<br>
+ * Each configuration has a default value (that should reflect retail behavior).
+ */
 public final class Config
 {
 	protected static final Logger _log = Logger.getLogger(Config.class.getName());

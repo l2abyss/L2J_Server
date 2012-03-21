@@ -45,6 +45,24 @@ import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
+ * This class loads and manage the characters and pledges skills trees.<br>
+ * Here can be found the following skill trees:<br>
+ * <ul>
+ * <li>Class skill trees: player skill trees for each class.</li>
+ * <li>Transfer skill trees: player skill trees for each healer class.</lI>
+ * <li>Collect skill tree: player skill tree for Gracia related skills.</li>
+ * <li>Fishing skill tree: player skill tree for fishing related skills.</li>
+ * <li>Transform skill tree: player skill tree for transformation related skills.</li>
+ * <li>Sub-Class skill tree: player skill tree for sub-class related skills.</li>
+ * <li>Noble skill tree: player skill tree for noblesse related skills.</li>
+ * <li>Hero skill tree: player skill tree for heroes related skills.</li>
+ * <li>GM skill tree: player skill tree for Game Master related skills.</li>
+ * <li>Common skill tree: custom skill tree for players, skills in this skill tree will be available for all players.</li>
+ * <li>Pledge skill tree: clan skill tree for main clan.</li>
+ * <li>Sub-Pledge skill tree: clan skill tree for sub-clans.<li>
+ * </ul>
+ * For easy customization of player class skill trees, the parent Id of each class is taken from the XML data, this means you can use a different class parent Id than in the normal game play, for example all 3rd class dagger users will have Treasure Hunter skills as 1st and 2nd class skills.<br>
+ * For XML schema please refer to skillTrees.xsd in datapack in xsd folder and for parameters documentation refer to documentation.txt in skillTrees folder.<br>
  * @author Zoey76
  */
 public final class SkillTreesData
@@ -85,6 +103,9 @@ public final class SkillTreesData
 		load();
 	}
 	
+	/**
+	 * Wrapper for required actions to clear and load all skill trees.
+	 */
 	public void load()
 	{
 		_loading = true;
@@ -157,7 +178,7 @@ public final class SkillTreesData
 	}
 	
 	/**
-	 * Loads all files type xml from data/skillTrees/ and call the parser for each one of them.
+	 * Loads all files type XML from data/skillTrees/ and call the parser for each one of them.
 	 * @return {@code false} when the files are loaded.
 	 */
 	private boolean loadFiles()
@@ -178,7 +199,7 @@ public final class SkillTreesData
 	
 	/**
 	 * Parse a skill tree file and store it into the correct skill tree.
-	 * @param file the xml file to be parsed.
+	 * @param file the XML file to be parsed.
 	 */
 	private void loadSkillTree(File file)
 	{
@@ -1385,6 +1406,9 @@ public final class SkillTreesData
 		return false;
 	}
 	
+	/**
+	 * @return the only instance of this class.
+	 */
 	public static SkillTreesData getInstance()
 	{
 		return SingletonHolder._instance;

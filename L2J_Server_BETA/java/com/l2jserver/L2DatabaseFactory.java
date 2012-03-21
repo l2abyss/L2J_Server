@@ -25,6 +25,9 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+/**
+ * This class manages the database connections.<br>
+ */
 public class L2DatabaseFactory
 {
 	private static final Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
