@@ -75,6 +75,7 @@ public class MailSystem
 			}
 			
 			Node n = doc.getFirstChild();
+			File mailFile;
 			for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 			{
 				if (d.getNodeName().equals("mail"))
@@ -83,10 +84,10 @@ public class MailSystem
 					String subject = d.getAttributes().getNamedItem("subject").getNodeValue();
 					String maFile = d.getAttributes().getNamedItem("file").getNodeValue();
 					
-					try
+					mailFile = new File(Config.DATAPACK_ROOT, "data/mail/" + maFile);
+					try (FileInputStream fis = new FileInputStream(mailFile);
+						BufferedInputStream bis = new BufferedInputStream(fis);)
 					{
-						FileInputStream fis = new FileInputStream(new File(Config.DATAPACK_ROOT, "data/mail/" + maFile));
-						BufferedInputStream bis = new BufferedInputStream(fis);
 						int bytes = bis.available();
 						byte[] raw = new byte[bytes];
 						
