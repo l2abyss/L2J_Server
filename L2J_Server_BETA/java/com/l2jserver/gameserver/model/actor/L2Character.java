@@ -2092,7 +2092,7 @@ public abstract class L2Character extends L2Object
 		}
 		
 		// Before start AI Cast Broadcast Fly Effect is Need
-		if (skill.getFlyType() != null && (this instanceof L2PcInstance))
+		if (skill.getFlyType() != null)
 			ThreadPoolManager.getInstance().scheduleEffect(new FlyToLocationTask(this, target, skill), 50);
 		
 		MagicUseTask mut = new MagicUseTask(targets, skill, hitTime, coolTime, simultaneously, shotSave);
