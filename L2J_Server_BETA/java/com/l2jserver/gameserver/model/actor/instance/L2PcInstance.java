@@ -11116,6 +11116,8 @@ public final class L2PcInstance extends L2Playable
 			}
 			_classIndex = classIndex;
 			
+			setLearningClass(getClassId());
+			
 			if (isInParty())
 				getParty().recalculatePartyLevel();
 			
