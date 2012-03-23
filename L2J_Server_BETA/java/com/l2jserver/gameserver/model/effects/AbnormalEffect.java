@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.effects;
 import java.util.NoSuchElementException;
 
 /**
- *
  * @author  DrHouse
  */
 public enum AbnormalEffect
@@ -105,8 +104,9 @@ public enum AbnormalEffect
 	}
 	
 	/**
-	 * @param name
-	 * @return
+	 * @param name the name of the abnormal effect to get.
+	 * @return the found abnormal effect.
+	 * @throws NoSuchElementException if no abnormal effect is found with the specified name.
 	 */
 	public static AbnormalEffect getByName(String name)
 	{
@@ -115,7 +115,6 @@ public enum AbnormalEffect
 			if (eff.getName().equals(name))
 				return eff;
 		}
-		
 		throw new NoSuchElementException("AbnormalEffect not found for name: '"+name+ "'.\n Please check "+AbnormalEffect.class.getCanonicalName());
 	}
 }
