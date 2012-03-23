@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.RecipeController;
 import com.l2jserver.gameserver.model.L2RecipeList;
@@ -33,7 +31,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class RecipeItemMakeInfo extends L2GameServerPacket
 {
 	private static final String _S__D7_RECIPEITEMMAKEINFO = "[S] dd RecipeItemMakeInfo";
-	private static Logger _log = Logger.getLogger(RecipeItemMakeInfo.class.getName());
 	
 	private int _id;
 	private L2PcInstance _activeChar;

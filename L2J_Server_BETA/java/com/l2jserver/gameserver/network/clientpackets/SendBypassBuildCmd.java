@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
@@ -31,7 +29,6 @@ import com.l2jserver.gameserver.util.GMAudit;
 public final class SendBypassBuildCmd extends L2GameClientPacket
 {
 	private static final String _C__74_SENDBYPASSBUILDCMD = "[C] 74 SendBypassBuildCmd";
-	private static Logger _log = Logger.getLogger(SendBypassBuildCmd.class.getName());
 
 	public final static int GM_MESSAGE = 9;
 	public final static int ANNOUNCEMENT = 10;

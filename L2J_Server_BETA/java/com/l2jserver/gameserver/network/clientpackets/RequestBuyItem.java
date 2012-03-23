@@ -18,7 +18,6 @@ import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
 import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.TradeController;
@@ -44,7 +43,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestBuyItem extends L2GameClientPacket
 {
 	private static final String _C__40_REQUESTBUYITEM = "[C] 40 RequestBuyItem";
-	private static Logger _log = Logger.getLogger(RequestBuyItem.class.getName());
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
 	

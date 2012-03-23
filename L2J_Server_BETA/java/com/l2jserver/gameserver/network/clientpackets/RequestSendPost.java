@@ -18,8 +18,6 @@ import static com.l2jserver.gameserver.model.actor.L2Character.ZONE_PEACE;
 import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
 import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AccessLevels;
 import com.l2jserver.gameserver.datatables.CharNameTable;
@@ -44,7 +42,6 @@ import com.l2jserver.util.StringUtil;
 public final class RequestSendPost extends L2GameClientPacket
 {
 	private static final String _C__D0_66_REQUESTSENDPOST = "[C] D0:66 RequestSendPost";
-	private static final Logger _log = Logger.getLogger(RequestSendPost.class.getName());
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
 	

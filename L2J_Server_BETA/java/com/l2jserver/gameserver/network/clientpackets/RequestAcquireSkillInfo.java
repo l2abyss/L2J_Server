@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
@@ -35,7 +33,6 @@ import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType
 public final class RequestAcquireSkillInfo extends L2GameClientPacket
 {
 	private static final String _C__73_REQUESTACQUIRESKILLINFO = "[C] 73 RequestAcquireSkillInfo";
-	private static final Logger _log = Logger.getLogger(RequestAcquireSkillInfo.class.getName());
 	
 	private int _id;
 	private int _level;

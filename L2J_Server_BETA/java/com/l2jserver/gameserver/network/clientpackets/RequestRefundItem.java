@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.TradeController;
@@ -41,7 +40,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestRefundItem extends L2GameClientPacket
 {
 	private static final String _C__D0_75_REQUESTREFUNDITEM = "[C] D0:75 RequestRefundItem";
-	private static final Logger _log = Logger.getLogger(RequestRefundItem.class.getName());
 	
 	private static final int BATCH_LENGTH = 4; // length of the one item
 	

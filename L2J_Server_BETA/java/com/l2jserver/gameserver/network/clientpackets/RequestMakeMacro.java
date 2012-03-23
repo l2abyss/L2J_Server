@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Macro;
 import com.l2jserver.gameserver.model.L2Macro.L2MacroCmd;
@@ -47,7 +45,6 @@ public final class RequestMakeMacro extends L2GameClientPacket
 {
 	private static final String _C__CD_REQUESTMAKEMACRO = "[C] CD RequestMakeMacro";
 	
-	protected static final Logger _log = Logger.getLogger(RequestMakeMacro.class.getName());
 	private L2Macro _macro;
 	private int _commandsLenght = 0;
 	

@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GmListTable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -38,7 +36,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestDropItem extends L2GameClientPacket
 {
 	private static final String _C__17_REQUESTDROPITEM = "[C] 17 RequestDropItem";
-	private static Logger _log = Logger.getLogger(RequestDropItem.class.getName());
 	
 	private int _objectId;
 	private long _count;

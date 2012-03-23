@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -32,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 public final class Action extends L2GameClientPacket
 {
 	private static final String __C__1F_ACTION = "[C] 1F Action";
-	private static final Logger _log = Logger.getLogger(Action.class.getName());
 	
 	// cddddc
 	private int _objectId;

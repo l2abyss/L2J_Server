@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
@@ -50,9 +49,7 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestPreviewItem extends L2GameClientPacket
 {
 	private static final String _C__C7_REQUESTPREVIEWITEM = "[C] C7 RequestPreviewItem";
-	
-	protected static final Logger _log = Logger.getLogger(RequestPreviewItem.class.getName());
-	
+		
 	private L2PcInstance _activeChar;
 	private Map<Integer, Integer> _item_list;
 	@SuppressWarnings("unused")

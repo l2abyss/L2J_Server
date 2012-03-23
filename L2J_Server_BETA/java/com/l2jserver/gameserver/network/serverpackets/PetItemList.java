@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -28,7 +26,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public class PetItemList extends L2GameServerPacket
 {
-	private static Logger _log = Logger.getLogger(PetItemList.class.getName());
 	private static final String _S__cb_PETITEMLIST = "[S] b3 PetItemList";
 	private L2PetInstance _activeChar;
 	

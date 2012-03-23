@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -36,7 +34,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 public final class RequestMagicSkillUse extends L2GameClientPacket
 {
 	private static final String _C__39_REQUESTMAGICSKILLUSE = "[C] 39 RequestMagicSkillUse";
-	private static Logger _log = Logger.getLogger(RequestMagicSkillUse.class.getName());
 	
 	private int _magicId;
 	private boolean _ctrlPressed;

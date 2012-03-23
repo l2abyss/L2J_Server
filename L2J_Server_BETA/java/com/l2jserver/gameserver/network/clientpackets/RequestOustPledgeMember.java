@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
@@ -32,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestOustPledgeMember extends L2GameClientPacket
 {
 	private static final String _C__29_REQUESTOUSTPLEDGEMEMBER = "[C] 29 RequestOustPledgeMember";
-	static Logger _log = Logger.getLogger(RequestOustPledgeMember.class.getName());
 	
 	private String _target;
 	

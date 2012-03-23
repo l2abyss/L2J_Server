@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -31,7 +29,6 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
 public final class RequestQuestAbort extends L2GameClientPacket
 {
 	private static final String _C__63_REQUESTQUESTABORT = "[C] 63 RequestQuestAbort";
-	private static Logger _log = Logger.getLogger(RequestQuestAbort.class.getName());
 	
 	private int _questId;
 	

@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
@@ -53,7 +52,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class UseItem extends L2GameClientPacket
 {
 	private static final String _C__19_USEITEM = "[C] 19 UseItem";
-	private static Logger _log = Logger.getLogger(UseItem.class.getName());
 	
 	private int _objectId;
 	private boolean _ctrlPressed;

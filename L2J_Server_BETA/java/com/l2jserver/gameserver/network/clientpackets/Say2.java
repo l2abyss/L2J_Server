@@ -42,7 +42,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class Say2 extends L2GameClientPacket
 {
 	private static final String _C__49_SAY2 = "[C] 49 Say2";
-	private static Logger _log = Logger.getLogger(Say2.class.getName());
 	private static Logger _logChat = Logger.getLogger("chat");
 	
 	private static FastList<ChatListener> chatListeners = new FastList<ChatListener>().shared();

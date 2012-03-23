@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -27,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestSurrenderPledgeWar extends L2GameClientPacket
 {
 	private static final String _C__07_REQUESTSURRENDERPLEDGEWAR = "[C] 07 RequestSurrenderPledgeWar";
-	private static Logger _log = Logger.getLogger(RequestSurrenderPledgeWar.class.getName());
 	
 	private String _pledgeName;
 	private L2Clan _clan;

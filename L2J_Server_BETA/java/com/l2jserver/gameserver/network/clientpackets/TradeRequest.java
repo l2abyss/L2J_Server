@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2Object;
@@ -35,7 +33,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class TradeRequest extends L2GameClientPacket
 {
 	private static final String _C__1A_TRADEREQUEST = "[C] 15 TradeRequest";
-	private static Logger _log = Logger.getLogger(TradeRequest.class.getName());
 	
 	private int _objectId;
 	

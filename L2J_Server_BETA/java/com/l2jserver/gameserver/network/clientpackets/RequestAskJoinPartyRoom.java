@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
 
 /**
  * Format: (ch) S
@@ -22,7 +21,6 @@ import java.util.logging.Logger;
  */
 public class RequestAskJoinPartyRoom extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestAskJoinPartyRoom.class.getName());
 	private static final String _C__D0_2F_REQUESTASKJOINPARTYROOM = "[C] D0:2F RequestAskJoinPartyRoom";
 	private String _player; // not tested, just guessed
 	

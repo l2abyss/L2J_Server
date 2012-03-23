@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -24,7 +22,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class EndScenePlayer extends L2GameClientPacket
 {
 	private static final String _C__D0_5B_ENDSCENEPLAYER = "[C] D0:5B EndScenePlayer";
-	private static Logger _log = Logger.getLogger(EndScenePlayer.class.getName());
 	
 	private int _movieId;
 	

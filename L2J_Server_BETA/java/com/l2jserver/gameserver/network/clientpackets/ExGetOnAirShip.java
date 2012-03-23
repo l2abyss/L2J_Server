@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
 
 /**
  * Format: (c) dddd
@@ -29,7 +28,6 @@ public class ExGetOnAirShip extends L2GameClientPacket
 {
 	private static final String _C__D0_36_EXGETONAIRSHIP = "[C] D0:36 ExGetOnAirShip";
 	
-	protected static final Logger _log = Logger.getLogger(ExGetOnAirShip.class.getName());
 	private int _x;
 	private int _y;
 	private int _z;

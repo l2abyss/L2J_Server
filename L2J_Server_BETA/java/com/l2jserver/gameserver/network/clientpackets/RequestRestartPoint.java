@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -41,7 +39,6 @@ import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 public final class RequestRestartPoint extends L2GameClientPacket
 {
 	private static final String _C__7D_REQUESTRESTARTPOINT = "[C] 7D RequestRestartPoint";
-	private static Logger _log = Logger.getLogger(RequestRestartPoint.class.getName());
 	
 	protected int     _requestedPointType;
 	protected boolean _continuation;

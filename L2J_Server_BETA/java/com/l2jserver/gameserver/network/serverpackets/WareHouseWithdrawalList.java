@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -32,7 +30,6 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 	public static final int CLAN = 4;
 	public static final int CASTLE = 3; //not sure
 	public static final int FREIGHT = 1;
-	private static Logger _log = Logger.getLogger(WareHouseWithdrawalList.class.getName());
 	private static final String _S__54_WAREHOUSEWITHDRAWALLIST = "[S] 42 WareHouseWithdrawalList";
 	private L2PcInstance _activeChar;
 	private long _playerAdena;

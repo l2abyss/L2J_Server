@@ -41,7 +41,6 @@ import com.l2jserver.util.Rnd;
 
 public final class RequestEnchantItem extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestEnchantItem.class.getName());
 	protected static final Logger _logEnchant = Logger.getLogger("enchant");
 	
 	private static final String _C__5F_REQUESTENCHANTITEM = "[C] 5F RequestEnchantItem";

@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -29,7 +28,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class RequestPetitionFeedback extends L2GameClientPacket
 {
 	private static final String _C__C9_REQUESTPETITIONFEEDBACK = "[C] C9 RequestPetitionFeedback";
-	private static final Logger _log = Logger.getLogger(RequestPetitionFeedback.class.getName());
 	
 	private static final String INSERT_FEEDBACK = "INSERT INTO petition_feedback VALUES (?,?,?,?,?)";
 	

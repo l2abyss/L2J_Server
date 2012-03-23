@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
@@ -33,7 +31,6 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	public static final int CLAN = 4;
 	public static final int CASTLE = 3; //not sure
 	public static final int FREIGHT = 1;
-	private static Logger _log = Logger.getLogger(WareHouseDepositList.class.getName());
 	private static final String _S__53_WAREHOUSEDEPOSITLIST = "[S] 41 WareHouseDepositList";
 	private final long _playerAdena;
 	private final FastList<L2ItemInstance> _items;

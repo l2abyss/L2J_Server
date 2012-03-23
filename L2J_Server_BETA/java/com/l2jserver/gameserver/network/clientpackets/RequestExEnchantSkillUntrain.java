@@ -46,7 +46,6 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 {
 	private static final String _C__D0_33_REQUESTEXENCHANTSKILLUNTRAIN = "[C] D0:33 RequestExEnchantSkillUntrain";
-	private static final Logger _log = Logger.getLogger(RequestExEnchantSkillUntrain.class.getName());
 	private static final Logger _logEnchant = Logger.getLogger("enchant");
 	
 	private int _skillId;

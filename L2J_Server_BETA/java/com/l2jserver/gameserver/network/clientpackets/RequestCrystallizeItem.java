@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -38,9 +36,7 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestCrystallizeItem extends L2GameClientPacket
 {
 	private static final String _C__2F_REQUESTDCRYSTALLIZEITEM = "[C] 2F RequestCrystallizeItem";
-	
-	private static Logger _log = Logger.getLogger(RequestCrystallizeItem.class.getName());
-	
+		
 	private int _objectId;
 	private long _count;
 	

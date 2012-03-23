@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 public final class ProtocolVersion extends L2GameClientPacket
 {
 	private static final String _C__0E_PROTOCOLVERSION = "[C] 0E ProtocolVersion";
-	private static final Logger _log = Logger.getLogger(ProtocolVersion.class.getName());
 	private static final Logger _logAccounting = Logger.getLogger("accounting");
 	
 	private int _version;

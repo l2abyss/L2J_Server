@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
@@ -30,7 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.PartyMatchDetail;
 public class RequestPartyMatchList extends L2GameClientPacket
 {
 	private static final String _C__80_REQUESTPARTYMATCHLIST = "[C] 80 RequestPartyMatchList";
-	private static final Logger _log = Logger.getLogger(RequestPartyMatchList.class.getName());
 	
 	private int _roomid;
 	private int _membersmax;

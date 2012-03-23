@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.handler.IItemHandler;
@@ -29,7 +27,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public final class RequestPetUseItem extends L2GameClientPacket
 {
-	private static Logger _log = Logger.getLogger(RequestPetUseItem.class.getName());
 	private static final String _C__8A_REQUESTPETUSEITEM = "[C] 8A RequestPetUseItem";
 	
 	private int _objectId;

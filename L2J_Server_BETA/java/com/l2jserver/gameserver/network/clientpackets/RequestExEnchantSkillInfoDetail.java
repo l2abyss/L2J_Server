@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -28,7 +26,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfoDetail;
 public final class RequestExEnchantSkillInfoDetail extends L2GameClientPacket
 {
 	private static final String _C_D0_46_REQUESTEXENCHANTSKILLINFO = "[C] D0:46 RequestExEnchantSkillInfoDetail";
-	protected static final Logger _log = Logger.getLogger(RequestExEnchantSkillInfoDetail.class.getName());
 	
 	private int _type;
 	private int _skillId;

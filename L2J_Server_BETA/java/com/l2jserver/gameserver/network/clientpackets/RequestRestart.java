@@ -39,7 +39,6 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 public final class RequestRestart extends L2GameClientPacket
 {
 	private static final String _C__57_REQUESTRESTART = "[C] 57 RequestRestart";
-	private static final Logger _log = Logger.getLogger(RequestRestart.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
 	@Override

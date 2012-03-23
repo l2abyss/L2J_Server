@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.StringTokenizer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
@@ -49,7 +48,6 @@ import com.l2jserver.gameserver.util.GMAudit;
 public final class RequestBypassToServer extends L2GameClientPacket
 {
 	private static final String _C__23_REQUESTBYPASSTOSERVER = "[C] 23 RequestBypassToServer";
-	private static Logger _log = Logger.getLogger(RequestBypassToServer.class.getName());
 	
 	// S
 	private String _command;

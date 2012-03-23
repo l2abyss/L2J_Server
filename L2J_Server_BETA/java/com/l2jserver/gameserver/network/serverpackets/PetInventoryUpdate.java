@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -32,7 +31,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public class PetInventoryUpdate extends L2GameServerPacket
 {
-	private static Logger _log = Logger.getLogger(InventoryUpdate.class.getName());
 	private static final String _S__37_INVENTORYUPDATE = "[S] b4 InventoryUpdate";
 	private List<ItemInfo> _items;
 	

@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -24,7 +22,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 public final class RequestBlock extends L2GameClientPacket
 {
 	private static final String _C__A9_REQUESTBLOCK = "[C] A9 RequestBlock";
-	private static Logger _log = Logger.getLogger(L2PcInstance.class.getName());
 	
 	private final static int BLOCK = 0;
 	private final static int UNBLOCK = 1;

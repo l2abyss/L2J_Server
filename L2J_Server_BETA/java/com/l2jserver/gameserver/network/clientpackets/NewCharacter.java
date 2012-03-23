@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
@@ -30,7 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.NewCharacterSuccess;
 public final class NewCharacter extends L2GameClientPacket
 {
 	private static final String _C__13_NEWCHARACTER = "[C] 13 NewCharacter";
-	private static Logger _log = Logger.getLogger(NewCharacter.class.getName());
 	
 	@Override
 	protected void readImpl()

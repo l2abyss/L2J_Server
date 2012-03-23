@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -41,7 +40,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class MultiSellChoose extends L2GameClientPacket
 {
 	private static final String _C__B0_MULTISELLCHOOSE = "[C] B0 MultiSellChoose";
-	private static Logger _log = Logger.getLogger(MultiSellChoose.class.getName());
+
 	private int _listId;
 	private int _entryId;
 	private long _amount;

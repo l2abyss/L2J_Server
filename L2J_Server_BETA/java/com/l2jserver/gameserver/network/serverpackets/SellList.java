@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -32,7 +31,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 public class SellList extends L2GameServerPacket
 {
 	private static final String _S__10_SELLLIST = "[S] 06 SellList";
-	private static Logger _log = Logger.getLogger(SellList.class.getName());
 	private final L2PcInstance _activeChar;
 	private final L2MerchantInstance _lease;
 	private long _money;

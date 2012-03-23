@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -64,7 +62,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public final class ItemList extends L2GameServerPacket
 {
-	private static Logger _log = Logger.getLogger(ItemList.class.getName());
 	private static final String _S__11_ITEMLIST = "[S] 11 ItemList";
 	
 	private PcInventory _inventory;

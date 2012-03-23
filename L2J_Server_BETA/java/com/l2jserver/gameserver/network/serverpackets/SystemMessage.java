@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
@@ -40,7 +39,6 @@ import com.l2jserver.gameserver.network.SystemMessageId.SMLocalisation;
 
 public final class SystemMessage extends L2GameServerPacket
 {
-	private static final Logger _log = Logger.getLogger(SystemMessage.class.getName());
 	private static final SMParam[] EMPTY_PARAM_ARRAY = new SMParam[0];
 	
 	private static final class SMParam

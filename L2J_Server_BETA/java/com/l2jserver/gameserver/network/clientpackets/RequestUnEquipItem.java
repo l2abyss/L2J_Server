@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2EtcItem;
@@ -31,7 +29,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class RequestUnEquipItem extends L2GameClientPacket
 {
 	private static final String _C__16_REQUESTUNEQUIPITEM = "[C] 16 RequestUnequipItem";
-	private static Logger _log = Logger.getLogger(RequestUnEquipItem.class.getName());
 	
 	private int _slot;
 	

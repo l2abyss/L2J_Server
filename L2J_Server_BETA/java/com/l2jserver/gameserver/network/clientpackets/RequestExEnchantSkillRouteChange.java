@@ -43,7 +43,6 @@ import com.l2jserver.util.Rnd;
 public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 {
 	private static final String _C__D0_34_REQUESTEXENCHANTSKILLROUTECHANGE = "[C] D0:34 RequestExEnchantSkillRouteChange";
-	protected static final Logger _log = Logger.getLogger(RequestExEnchantSkillRouteChange.class.getName());
 	private static final Logger _logEnchant = Logger.getLogger("enchant");
 	
 	private int _skillId;

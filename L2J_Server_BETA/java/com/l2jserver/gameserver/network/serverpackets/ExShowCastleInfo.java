@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -27,13 +26,7 @@ import com.l2jserver.gameserver.model.entity.Castle;
  * @author  KenM
  */
 public class ExShowCastleInfo extends L2GameServerPacket
-{
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	private static Logger _log = Logger.getLogger(ExShowCastleInfo.class.getName());
-	
+{	
 	@Override
 	public String getType()
 	{

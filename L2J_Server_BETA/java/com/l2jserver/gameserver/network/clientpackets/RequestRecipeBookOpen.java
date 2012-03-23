@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.RecipeController;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -24,7 +22,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 public final class RequestRecipeBookOpen extends L2GameClientPacket
 {
 	private static final String _C__B5_REQUESTRECIPEBOOKOPEN = "[C] B5 RequestRecipeBookOpen";
-	private static Logger _log = Logger.getLogger(RequestRecipeBookOpen.class.getName());
 	
 	private boolean _isDwarvenCraft;
 	

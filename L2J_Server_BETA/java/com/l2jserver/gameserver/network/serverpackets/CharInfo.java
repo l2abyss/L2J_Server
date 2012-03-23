@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
@@ -50,9 +48,7 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
  * @version $Revision: 1.7.2.6.2.11 $ $Date: 2005/04/11 10:05:54 $
  */
 public class CharInfo extends L2GameServerPacket
-{
-	private static final Logger _log = Logger.getLogger(CharInfo.class.getName());
-	
+{	
 	private static final String _S__03_CHARINFO = "[S] 31 CharInfo";
 	private final L2PcInstance _activeChar;
 	private final Inventory _inv;

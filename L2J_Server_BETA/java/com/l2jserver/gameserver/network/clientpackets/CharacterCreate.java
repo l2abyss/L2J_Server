@@ -49,7 +49,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class CharacterCreate extends L2GameClientPacket
 {
 	private static final String _C__0C_CHARACTERCREATE = "[C] 0C CharacterCreate";
-	private static final Logger _log = Logger.getLogger(CharacterCreate.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
 	// cSdddddddddddd

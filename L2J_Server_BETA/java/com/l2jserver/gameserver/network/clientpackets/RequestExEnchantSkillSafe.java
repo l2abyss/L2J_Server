@@ -43,7 +43,6 @@ import com.l2jserver.util.Rnd;
 public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 {
 	private static final String _C__D0_32_REQUESTEXENCHANTSKILLSAFE = "[C] D0:32 RequestExEnchantSkillSafe";
-	private static final Logger _log = Logger.getLogger(RequestExEnchantSkillSafe.class.getName());
 	private static final Logger _logEnchant = Logger.getLogger("enchant");
 	
 	private int _skillId;

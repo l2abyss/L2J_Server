@@ -38,7 +38,6 @@ import com.l2jserver.gameserver.network.serverpackets.ServerClose;
 public class CharacterSelect extends L2GameClientPacket
 {
 	private static final String _C__12_CHARACTERSELECT = "[C] 12 CharacterSelect";
-	private static final Logger _log = Logger.getLogger(CharacterSelect.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
 	// cd

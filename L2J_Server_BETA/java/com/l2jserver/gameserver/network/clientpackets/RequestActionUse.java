@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
@@ -61,7 +60,6 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 public final class RequestActionUse extends L2GameClientPacket
 {
 	private static final String _C__56_REQUESTACTIONUSE = "[C] 56 RequestActionUse";
-	private static Logger _log = Logger.getLogger(RequestActionUse.class.getName());
 	
 	private int _actionId;
 	private boolean _ctrlPressed;
