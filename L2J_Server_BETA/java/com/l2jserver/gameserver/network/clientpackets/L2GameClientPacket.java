@@ -31,12 +31,11 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  */
 public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 {
-	protected static final Logger _log = Logger.getLogger(L2GameClientPacket.class.getName());
+	protected final Logger _log = Logger.getLogger(getClass().getName());
 	
 	@Override
 	public boolean read()
 	{
-		// _log.info(this.getType());
 		try
 		{
 			readImpl();

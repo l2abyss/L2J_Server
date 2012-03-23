@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.network.L2GameClient;
  */
 public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 {
-	private static final Logger _log = Logger.getLogger(L2GameServerPacket.class.getName());
+	protected final Logger _log = Logger.getLogger(getClass().getName());
 	
 	protected boolean _invisible = false;
 	
