@@ -63,6 +63,7 @@ import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
@@ -80,10 +81,11 @@ import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
 
 /**
- * This class represents a Non-Player-Character in the world. It can be a monster or a friendly character.
- * It also uses a template to fetch some static values. The templates are hardcoded in the client, so we can rely on them.<BR><BR>
- *
- * L2Character :<BR><BR>
+ * This class represents a Non-Player-Character in the world.<br>
+ * It can be a monster or a friendly character.<br>
+ * It also uses a template to fetch some static values.<br>
+ * The templates are hardcoded in the client, so we can rely on them.
+ * L2Npc:<br>
  * <li>L2Attackable</li>
  * <li>L2BoxInstance</li>
  */
@@ -1390,8 +1392,8 @@ public class L2Npc extends L2Character
 	{
 		super.onSpawn();
 		
-		if (getTemplate().getEventQuests(Quest.QuestEventType.ON_SPAWN) != null)
-			for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_SPAWN))
+		if (getTemplate().getEventQuests(QuestEventType.ON_SPAWN) != null)
+			for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_SPAWN))
 				quest.notifySpawn(this);
 	}
 	
@@ -1637,12 +1639,12 @@ public class L2Npc extends L2Character
 	{
 		try
 		{
-			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED) != null)
+			if (getTemplate().getEventQuests(QuestEventType.ON_SPELL_FINISHED) != null)
 			{
 				L2PcInstance player = null;
 				if (target != null)
 					player = target.getActingPlayer();
-				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED))
+				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_SPELL_FINISHED))
 				{
 					quest.notifySpellFinished(this, player, skill);
 				}
