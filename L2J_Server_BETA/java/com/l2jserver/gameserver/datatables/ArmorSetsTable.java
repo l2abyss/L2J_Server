@@ -14,17 +14,21 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
 import com.l2jserver.Config;
-import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2ArmorSet;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
+import com.l2jserver.util.XMLParser;
+import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
  * @author godson, Luno
@@ -33,7 +37,7 @@ public class ArmorSetsTable
 {
 	private static Logger _log = Logger.getLogger(ArmorSetsTable.class.getName());
 	
-	private TIntObjectHashMap<L2ArmorSet> _armorSets;
+	private FastList<L2ArmorSet> _armorSets;
 	
 	public static ArmorSetsTable getInstance()
 	{
@@ -42,101 +46,151 @@ public class ArmorSetsTable
 	
 	private ArmorSetsTable()
 	{
-		_armorSets = new TIntObjectHashMap<L2ArmorSet>();
+		_armorSets = new FastList<>();
 		loadData();
+	}
+	
+	private final class Parser extends XMLParser
+	{
+		public Parser(File f)
+		{
+			super(f);
+		}
+		
+		@Override
+		public void parseDoc(Document doc)
+		{
+			NamedNodeMap attrs;
+			L2ArmorSet set;
+			Node att = null;
+			for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+			{
+				if ("list".equalsIgnoreCase(n.getNodeName()))
+				{
+					for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+					{
+						if ("set".equalsIgnoreCase(d.getNodeName()))
+						{
+							set = new L2ArmorSet();
+							_armorSets.add(set);
+							for (Node a = d.getFirstChild(); a != null; a = a.getNextSibling())
+							{
+								attrs = a.getAttributes();
+								try
+								{
+									if (attrs != null)
+										att = attrs.getNamedItem("id");
+									String name = a.getNodeName();
+									if ("chest".equalsIgnoreCase(name))
+									{
+										set.addChest(Integer.parseInt(att.getNodeValue()));
+									}
+									else if ("feet".equalsIgnoreCase(name))
+									{
+										set.addFeet(Integer.parseInt(att.getNodeValue()));
+									}
+									else if ("gloves".equalsIgnoreCase(name))
+									{
+										set.addGloves(Integer.parseInt(att.getNodeValue()));
+									}
+									else if ("head".equalsIgnoreCase(name))
+									{
+										set.addHead(Integer.parseInt(att.getNodeValue()));
+									}
+									else if ("legs".equalsIgnoreCase(name))
+									{
+										set.addLegs(Integer.parseInt(att.getNodeValue()));
+									}
+									else if ("shield".equalsIgnoreCase(name))
+									{
+										set.addShield(Integer.parseInt(att.getNodeValue()));
+									}
+									else if ("skill".equalsIgnoreCase(name))
+									{
+										int skillId = Integer.parseInt(att.getNodeValue());
+										int skillLevel = Integer.parseInt(attrs.getNamedItem("level").getNodeValue());
+										set.addSkill(new SkillHolder(skillId, skillLevel));										
+									}
+									else if ("shield_skill".equalsIgnoreCase(name))
+									{
+										int skillId = Integer.parseInt(att.getNodeValue());
+										int skillLevel = Integer.parseInt(attrs.getNamedItem("level").getNodeValue());
+										set.addShieldSkill(new SkillHolder(skillId, skillLevel));
+									}
+									else if ("enchant6skill".equalsIgnoreCase(name))
+									{
+										int skillId = Integer.parseInt(att.getNodeValue());
+										int skillLevel = Integer.parseInt(attrs.getNamedItem("level").getNodeValue());
+										set.addEnchant6Skill(new SkillHolder(skillId, skillLevel));
+									}
+									else if ("con".equalsIgnoreCase(name))
+									{
+										// TODO: Implement me
+									}
+									else if ("dex".equalsIgnoreCase(name))
+									{
+										// TODO: Implement me
+									}
+									else if ("str".equalsIgnoreCase(name))
+									{
+										// TODO: Implement me
+									}
+									else if ("men".equalsIgnoreCase(name))
+									{
+										// TODO: Implement me
+									}
+									else if ("wit".equalsIgnoreCase(name))
+									{
+										// TODO: Implement me
+									}
+									else if ("int".equalsIgnoreCase(name))
+									{
+										// TODO: Implement me
+									}
+								}
+								catch (Exception e)
+								{
+									_log.log(Level.WARNING, "Error while parsing set id: " + d.getAttributes().getNamedItem("id").getNodeValue() + " " + e.getMessage(), e);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private void loadData()
 	{
-		Connection con = null;
-		try
+		File dir = new File(Config.DATAPACK_ROOT, "data/stats/armorsets");
+		if (dir.isDirectory())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM armorsets");
-			ResultSet rset = statement.executeQuery();
-			
-			while (rset.next())
+			for (File f : dir.listFiles(new XMLFilter()))
 			{
-				int chest = rset.getInt("chest");
-				int legs = rset.getInt("legs");
-				int head = rset.getInt("head");
-				int gloves = rset.getInt("gloves");
-				int feet = rset.getInt("feet");
-				String[] skills = rset.getString("skill").split(";");
-				int shield = rset.getInt("shield");
-				int shield_skill_id = rset.getInt("shield_skill_id");
-				int enchant6skill = rset.getInt("enchant6skill");
-				int mw_legs = rset.getInt("mw_legs");
-				int mw_head = rset.getInt("mw_head");
-				int mw_gloves = rset.getInt("mw_gloves");
-				int mw_feet = rset.getInt("mw_feet");
-				int mw_shield = rset.getInt("mw_shield");
-				_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skills, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
-			}
-			
-			rset.close();
-			statement.close();
-			_log.info("ArmorSetsTable: Loaded " + _armorSets.size() + " armor sets.");
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "ArmorSetsTable: Error reading ArmorSets table: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		
-		if (Config.CUSTOM_ARMORSETS_TABLE)
-		{
-			try
-			{
-				int cSets = _armorSets.size();
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("SELECT chest, legs, head, gloves, feet, skill, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield FROM custom_armorsets");
-				ResultSet rset = statement.executeQuery();
-				while (rset.next())
-				{
-					int chest = rset.getInt("chest");
-					int legs = rset.getInt("legs");
-					int head = rset.getInt("head");
-					int gloves = rset.getInt("gloves");
-					int feet = rset.getInt("feet");
-					String[] skills = rset.getString("skill").split(";");
-					int shield = rset.getInt("shield");
-					int shield_skill_id = rset.getInt("shield_skill_id");
-					int enchant6skill = rset.getInt("enchant6skill");
-					int mw_legs = rset.getInt("mw_legs");
-					int mw_head = rset.getInt("mw_head");
-					int mw_gloves = rset.getInt("mw_gloves");
-					int mw_feet = rset.getInt("mw_feet");
-					int mw_shield = rset.getInt("mw_shield");
-					_armorSets.put(chest, new L2ArmorSet(chest, legs, head, gloves, feet, skills, shield, shield_skill_id, enchant6skill, mw_legs, mw_head, mw_gloves, mw_feet, mw_shield));
-				}
-				
-				rset.close();
-				statement.close();
-				_log.info("ArmorSetsTable: Loaded " + (_armorSets.size() - cSets) + " Custom armor sets.");
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.SEVERE, "ArmorSetsTable: Error reading Custom ArmorSets table: " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
+				new Parser(f);
 			}
 		}
+		else
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't find folder: " + dir.getAbsolutePath());
+		}
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _armorSets.size() + " Armor sets.");
 	}
 	
 	public boolean setExists(int chestId)
 	{
-		return _armorSets.containsKey(chestId);
+		return getSet(chestId) != null;
 	}
 	
 	public L2ArmorSet getSet(int chestId)
 	{
-		return _armorSets.get(chestId);
+		for (L2ArmorSet set : _armorSets)
+		{
+			if (set.containsChest(chestId))
+				return set;
+		}
+		
+		return null;
 	}
 	
 	@SuppressWarnings("synthetic-access")

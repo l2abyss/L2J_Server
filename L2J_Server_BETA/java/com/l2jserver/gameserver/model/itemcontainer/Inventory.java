@@ -28,7 +28,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ArmorSetsTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2ArmorSet;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -466,105 +465,82 @@ public abstract class Inventory extends ItemContainer
 			{
 				if (armorSet.containAll(player))
 				{
-					int skillId, skillLvl;
 					L2Skill itemSkill;
-					final String[] skills = armorSet.getSkills();
+					final FastList<SkillHolder> skills = armorSet.getSkills();
 					
 					if (skills != null)
 					{
-						for (String skillInfo : skills)
+						for (SkillHolder holder : skills)
 						{
-							skillId = 0;
-							skillLvl = 0;
-							String[] skill = skillInfo.split("-");
-							if (skill != null && skill.length == 2)
+							
+							itemSkill = holder.getSkill();
+							if (itemSkill != null)
 							{
-								try
+								player.addSkill(itemSkill, false);
+								
+								if (itemSkill.isActive())
 								{
-									skillId = Integer.parseInt(skill[0]);
-									skillLvl = Integer.parseInt(skill[1]);
-								}
-								catch (NumberFormatException e)
-								{
-									_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+skillInfo+".");
-								}
-								if (skillId > 0 && skillLvl > 0)
-								{
-									itemSkill = SkillTable.getInstance().getInfo(skillId, skillLvl);
-									if (itemSkill != null)
+									if (player.hasSkillReuse(itemSkill.getReuseHashCode()))
 									{
-										player.addSkill(itemSkill, false);
+										int equipDelay = itemSkill.getEquipDelay();
 										
-										if (itemSkill.isActive())
+										if (equipDelay > 0)
 										{
-											if (player.hasSkillReuse(itemSkill.getReuseHashCode()))
-											{
-												int equipDelay = itemSkill.getEquipDelay();
-												
-												if (equipDelay > 0)
-												{
-													player.addTimeStamp(itemSkill, itemSkill.getEquipDelay());
-													player.disableSkill(itemSkill, itemSkill.getEquipDelay());
-												}
-											}
-											updateTimeStamp = true;
+											player.addTimeStamp(itemSkill, itemSkill.getEquipDelay());
+											player.disableSkill(itemSkill, itemSkill.getEquipDelay());
 										}
-										update = true;
 									}
-									else
-									{
-										_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+skillInfo+".");
-									}
+									updateTimeStamp = true;
 								}
+								update = true;
+							}
+							else
+							{
+								_log.warning("Inventory.ArmorSetListener: Incorrect skill: " + holder + ".");
 							}
 						}
 					}
 					
 					if (armorSet.containShield(player)) // has shield from set
 					{
-						final L2Skill shieldSkill = SkillTable.getInstance().getInfo(armorSet.getShieldSkillId(),1);
-						
-						if (shieldSkill != null)
+						for (SkillHolder holder : armorSet.getShieldSkillId())
 						{
-							player.addSkill(shieldSkill, false);
-							update = true;
+							if (holder.getSkill() != null)
+							{
+								player.addSkill(holder.getSkill(), false);
+								update = true;
+							}
+							else
+								_log.warning("Inventory.ArmorSetListener: Incorrect skill: " + holder + ".");
 						}
-						else
-							_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+armorSet.getShieldSkillId()+".");
 					}
 					
 					if (armorSet.isEnchanted6(player)) // has all parts of set enchanted to 6 or more
 					{
-						final int skillId6 = armorSet.getEnchant6skillId();
-						
-						if (skillId6 > 0)
+						for (SkillHolder holder : armorSet.getEnchant6skillId())
 						{
-							L2Skill skille = SkillTable.getInstance().getInfo(skillId6,1);
-							
-							if (skille != null)
+							if (holder.getSkill() != null)
 							{
-								player.addSkill(skille, false);
+								player.addSkill(holder.getSkill(), false);
 								update = true;
 							}
 							else
-								_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+armorSet.getEnchant6skillId()+".");
+								_log.warning("Inventory.ArmorSetListener: Incorrect skill: " + holder + ".");
 						}
 					}
 				}
 			}
 			else if (armorSet.containShield(item.getItemId()))
 			{
-				if (armorSet.containAll(player))
+				for (SkillHolder holder : armorSet.getShieldSkillId())
 				{
-					final L2Skill shieldSkill = SkillTable.getInstance().getInfo(armorSet.getShieldSkillId(),1);
-					
-					if (shieldSkill != null)
+					if (holder.getSkill() != null)
 					{
-						player.addSkill(shieldSkill, false);
+						player.addSkill(holder.getSkill(), false);
 						update = true;
 					}
 					else
-						_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+armorSet.getShieldSkillId()+".");
+						_log.warning("Inventory.ArmorSetListener: Incorrect skill: " + holder + ".");
 				}
 			}
 			
@@ -586,11 +562,10 @@ public abstract class Inventory extends ItemContainer
 			L2PcInstance player = (L2PcInstance) inventory.getOwner();
 			
 			boolean remove = false;
-			int skillId, skillLvl;
 			L2Skill itemSkill;
-			String[] skills = null;
-			int shieldSkill = 0; // shield skill
-			int skillId6 = 0; // enchant +6 skill
+			FastList<SkillHolder> skills = null;
+			FastList<SkillHolder> shieldSkill = null; // shield skill
+			FastList<SkillHolder> skillId6 = null; // enchant +6 skill
 			
 			if (slot == PAPERDOLL_CHEST)
 			{
@@ -631,50 +606,38 @@ public abstract class Inventory extends ItemContainer
 			{
 				if (skills != null)
 				{
-					for (String skillInfo : skills)
+					for (SkillHolder holder : skills)
 					{
-						skillId = 0;
-						skillLvl = 0;
-						String[] skill = skillInfo.split("-");
-						if (skill != null && skill.length == 2)
-						{
-							try
-							{
-								skillId = Integer.parseInt(skill[0]);
-								skillLvl = Integer.parseInt(skill[1]);
-							}
-							catch (NumberFormatException e)
-							{
-								_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+skillInfo+".");
-							}
-							if (skillId > 0 && skillLvl >0)
-							{
-								itemSkill = SkillTable.getInstance().getInfo(skillId, skillLvl);
-								if (itemSkill != null)
-									player.removeSkill(itemSkill, false, itemSkill.isPassive());
-								else
-									_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+skillInfo+".");
-							}
-						}
+						itemSkill = holder.getSkill();
+						if (itemSkill != null)
+							player.removeSkill(itemSkill, false, itemSkill.isPassive());
+						else
+							_log.warning("Inventory.ArmorSetListener: Incorrect skill: " + holder + ".");
 					}
 				}
 				
-				if (shieldSkill != 0)
+				if (shieldSkill != null)
 				{
-					L2Skill skill = SkillTable.getInstance().getInfo(shieldSkill,1);
-					if (skill != null)
-						player.removeSkill(skill, false, skill.isPassive());
-					else
-						_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+shieldSkill+".");
+					for (SkillHolder holder : shieldSkill)
+					{
+						itemSkill = holder.getSkill();
+						if (itemSkill != null)
+							player.removeSkill(itemSkill, false, itemSkill.isPassive());
+						else
+							_log.warning("Inventory.ArmorSetListener: Incorrect skill: " + holder + ".");
+					}
 				}
 				
-				if (skillId6 != 0)
+				if (skillId6 != null)
 				{
-					L2Skill skill = SkillTable.getInstance().getInfo(skillId6,1);
-					if (skill != null)
-						player.removeSkill(skill, false, skill.isPassive());
-					else
-						_log.warning("Inventory.ArmorSetListener: Incorrect skill: "+skillId6+".");
+					for (SkillHolder holder : skillId6)
+					{
+						itemSkill = holder.getSkill();
+						if (itemSkill != null)
+							player.removeSkill(itemSkill, false, itemSkill.isPassive());
+						else
+							_log.warning("Inventory.ArmorSetListener: Incorrect skill: " + holder + ".");
+					}
 				}
 				
 				player.checkItemRestriction();

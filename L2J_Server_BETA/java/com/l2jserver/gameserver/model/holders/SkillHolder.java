@@ -54,4 +54,10 @@ public final class SkillHolder
 	{
 		return SkillTable.getInstance().getInfo(_skillId, _skillLvl);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "[SkillId: " + _skillId + " Level: " + _skillLvl + "]";
+	}
 }
