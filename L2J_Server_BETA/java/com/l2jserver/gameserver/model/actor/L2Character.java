@@ -6266,6 +6266,14 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
+	 * @return the map containing this character skills.
+	 */
+	public L2TIntObjectHashMap<L2Skill> getSkills()
+	{
+		return _skills;
+	}
+	
+	/**
 	 * @return all the custom skills (skills with different display Id than skill Id).
 	 */
 	public final FastMap<Integer, SkillHolder> getCustomSkills()

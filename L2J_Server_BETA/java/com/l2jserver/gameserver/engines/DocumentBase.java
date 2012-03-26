@@ -126,7 +126,7 @@ import com.l2jserver.gameserver.model.stats.Stats;
  */
 public abstract class DocumentBase
 {
-	protected static Logger _log = Logger.getLogger(DocumentBase.class.getName());
+	protected final Logger _log = Logger.getLogger(getClass().getName());
 	
 	private final File _file;
 	protected Map<String, String[]> _tables;

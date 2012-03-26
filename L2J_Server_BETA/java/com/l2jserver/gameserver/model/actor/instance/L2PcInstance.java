@@ -2968,26 +2968,24 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Give all available AutoGet skills to the player.<br>
+	 * Give all available AutoGet skills to the player.
 	 */
 	public void giveAvailableAutoGetSkills()
 	{
 		// Get available skills
 		final FastList<L2SkillLearn> autoGetSkills = SkillTreesData.getInstance().getAvailableAutoGetSkills(this);
-		
-		if ((autoGetSkills != null) && !autoGetSkills.isEmpty())
+		final SkillTable st = SkillTable.getInstance();
+		L2Skill skill;
+		for (L2SkillLearn s : autoGetSkills)
 		{
-			for (L2SkillLearn s: autoGetSkills)
+			skill = st.getInfo(s.getSkillId(), s.getSkillLevel());
+			if (skill != null)
 			{
-				final L2Skill skill = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
-				if (skill != null)
-				{
-					addSkill(skill, true);
-				}
-				else
-				{
-					_log.warning("Skipped null autoGet Skill for player:" + getName() + "[" + getObjectId() + "]");
-				}
+				addSkill(skill, true);
+			}
+			else
+			{
+				_log.warning("Skipping null autoGet Skill for player: " + this);
 			}
 		}
 	}

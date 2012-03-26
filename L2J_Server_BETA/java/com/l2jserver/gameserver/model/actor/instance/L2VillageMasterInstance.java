@@ -36,6 +36,7 @@ import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.PlayerClass;
 import com.l2jserver.gameserver.model.base.Race;
@@ -45,7 +46,6 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
@@ -1112,12 +1112,12 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		
 		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailablePledgeSkills(player.getClan());
-		final AcquireSkillList asl = new AcquireSkillList(SkillType.Pledge);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Pledge);
 		int counts = 0;
 		
 		for (L2SkillLearn s: skills)
 		{
-			asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), s.getLevelUpSp(), s.getSocialClass());
+			asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), s.getLevelUpSp(), s.getSocialClass().ordinal());
 			counts++;
 		}
 		

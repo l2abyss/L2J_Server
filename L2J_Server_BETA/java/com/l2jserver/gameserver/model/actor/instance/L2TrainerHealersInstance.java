@@ -23,10 +23,11 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
 /**
@@ -99,26 +100,21 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 			if (!hasTransferSkillItems(player))
 			{
 				final Collection<L2SkillLearn> skills = SkillTreesData.getInstance().getTransferSkillTree(player.getClassId()).values();
-				
 				for (L2SkillLearn s : skills)
 				{
 					final L2Skill sk = player.getKnownSkill(s.getSkillId());
 					if (sk != null)
 					{
 						player.removeSkill(sk);
-						if (s.getItemsIdCount() != null)
+						for (ItemHolder item : s.getRequiredItems())
 						{
-							player.addItem("Cleanse", s.getItemsIdCount()[0][0], s.getItemsIdCount()[0][1], this, true);
-						}
-						else
-						{
-							_log.warning(getClass().getSimpleName() + ": Transfer skill Id: " + s.getSkillId() + " doesn't have required items defined!");
+							player.addItem("Cleanse", item.getId(), item.getCount(), this, true);
 						}
 						hasSkills = true;
 					}
 				}
 				
-				//Adena gets reduced once.
+				// Adena gets reduced once.
 				if (hasSkills)
 				{
 					player.reduceAdena("Cleanse", Config.FEE_DELETE_TRANSFER_SKILLS, this, true);
@@ -126,7 +122,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 			}
 			else
 			{
-				//Come back when you have used all transfer skill items for this class.
+				// Come back when you have used all transfer skill items for this class.
 				html.setFile(player.getHtmlPrefix(), "data/html/trainer/skilltransfer/cleanse-no_skills.htm");
 				player.sendPacket(html);
 			}
@@ -144,7 +140,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 	public static void showTransferSkillList(L2PcInstance player)
 	{
 		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableTransferSkills(player);
-		final AcquireSkillList asl = new AcquireSkillList(SkillType.Transfer);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Transfer);
 		int count = 0;
 		
 		for (L2SkillLearn s : skills)

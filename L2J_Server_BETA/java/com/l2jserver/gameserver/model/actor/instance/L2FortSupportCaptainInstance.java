@@ -23,9 +23,9 @@ import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
@@ -101,7 +101,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 			if (player.isClanLeader())
 			{
 				final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
-				final AcquireSkillList asl = new AcquireSkillList(SkillType.SubPledge);
+				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubPledge);
 				int count = 0;
 				
 				for (L2SkillLearn s : skills)

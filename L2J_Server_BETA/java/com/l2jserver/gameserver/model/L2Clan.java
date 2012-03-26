@@ -1230,6 +1230,14 @@ public class L2Clan
 		return _skills.values().toArray(new L2Skill[_skills.values().size()]);
 	}
 	
+	/**
+	 * @return the map containing this clan skills.
+	 */
+	public Map<Integer, L2Skill> getSkills()
+	{
+		return _skills;
+	}
+	
 	/** 
 	 * Used to add a skill to skill list of this L2Clan 
 	 * @param newSkill 
