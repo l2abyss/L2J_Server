@@ -144,7 +144,7 @@ public class EnchantItemTable
 							if ("item".equalsIgnoreCase(cd.getNodeName()))
 							{
 								att = cd.getAttributes().getNamedItem("id");
-								if (itemz != null)
+								if (att != null)
 									itemz.add(Integer.parseInt(att.getNodeValue()));
 								else
 								{
@@ -217,7 +217,7 @@ public class EnchantItemTable
 							if ("item".equalsIgnoreCase(cd.getNodeName()))
 							{
 								att = cd.getAttributes().getNamedItem("id");
-								if (itemz != null)
+								if (att != null)
 									itemz.add(Integer.parseInt(att.getNodeValue()));
 								else
 								{
