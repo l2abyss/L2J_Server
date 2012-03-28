@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.clientpackets.RequestRestart;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -33,11 +34,13 @@ public abstract class PlayerDespawnListener extends L2JListener
 	public void register()
 	{
 		L2PcInstance.addDespawnListener(this);
+		RequestRestart.addDespawnListener(this);
 	}
 	
 	@Override
 	public void unregister()
 	{
 		L2PcInstance.removeDespawnListener(this);
+		RequestRestart.removeDespawnListener(this);
 	}
 }

@@ -55,6 +55,8 @@ import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
 import com.l2jserver.gameserver.network.serverpackets.SiegeInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.events.SiegeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.events.SiegeListener;
 
 public class Siege implements Siegable
@@ -305,10 +307,7 @@ public class Siege implements Siegable
 			getCastle().getZone().setIsActive(false);
 			getCastle().getZone().updateZoneStatusForCharactersInside();
 			getCastle().getZone().setSiegeInstance(null);
-			for(SiegeListener listener : siegeListeners)
-			{
-				listener.onEnd(this);
-			}
+			fireSiegeListeners(EventStage.END);
 		}
 	}
 	
@@ -427,10 +426,7 @@ public class Siege implements Siegable
 				spawnControlTower(getCastle().getCastleId());
 				spawnFlameTower(getCastle().getCastleId());
 				updatePlayerSiegeStateFlags(false);
-				for(SiegeListener listener : siegeListeners)
-				{
-					listener.onControlChange(this);
-				}
+				fireSiegeListeners(EventStage.CONTROL_CHANGE);
 			}
 		}
 	}
@@ -443,13 +439,8 @@ public class Siege implements Siegable
 	{
 		if (!getIsInProgress())
 		{
-			for(SiegeListener listener : siegeListeners)
-			{
-				if(!listener.onStart(this))
-				{
-					return;
-				}
-			}
+			if(!fireSiegeListeners(EventStage.START))
+				return;
 			_firstOwnerClanId = getCastle().getOwnerId();
 			
 			if (getAttackerClans().isEmpty())
@@ -1685,6 +1676,50 @@ public class Siege implements Siegable
 	public void updateSiege() { }
 	
 	// Listeners
+	/**
+	 * Fires the appropriate SiegeListener<br>
+	 * If it returns false on EventStage.start, the siege is cancelled
+	 * @param stage
+	 * @return
+	 */
+	private boolean fireSiegeListeners(EventStage stage){
+		if(!siegeListeners.isEmpty()){
+			SiegeEvent event = new SiegeEvent();
+			event.setSiege(this);
+			event.setStage(stage);
+			switch(stage){
+				case START:
+				{
+					for(SiegeListener listener : siegeListeners)
+					{
+						if(!listener.onStart(event))
+						{
+							return false;
+						}
+					}
+					break;
+				}
+				case END:
+				{
+					for(SiegeListener listener : siegeListeners)
+					{
+						listener.onEnd(event);
+					}
+					break;
+				}
+				case CONTROL_CHANGE:
+				{
+					for(SiegeListener listener : siegeListeners)
+					{
+						listener.onControlChange(event);
+					}
+					break;
+				}
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Adds a siege listener
 	 * @param listener

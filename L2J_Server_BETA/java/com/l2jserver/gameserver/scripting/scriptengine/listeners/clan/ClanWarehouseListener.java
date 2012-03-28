@@ -15,10 +15,10 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.clan;
 
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseAddItemEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseDeleteItemEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseTransferEvent;
 import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
-import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -36,33 +36,24 @@ public abstract class ClanWarehouseListener extends L2JListener
 	
 	/**
 	 * An item was just added
-	 * @param process
-	 * @param item
-	 * @param actor
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onAddItem(String process, L2ItemInstance item, L2PcInstance actor);
+	public abstract boolean onAddItem(ClanWarehouseAddItemEvent event);
 	
 	/**
 	 * An item was just deleted
-	 * @param process
-	 * @param item
-	 * @param count
-	 * @param actor
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onDeleteItem(String process, L2ItemInstance item, long count, L2PcInstance actor);
+	public abstract boolean onDeleteItem(ClanWarehouseDeleteItemEvent event);
 	
 	/**
 	 * An item was just transfered
-	 * @param process
-	 * @param item
-	 * @param count
-	 * @param target
-	 * @param actor
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onTransferItem(String process, L2ItemInstance item, long count, ItemContainer target, L2PcInstance actor);
+	public abstract boolean onTransferItem(ClanWarehouseTransferEvent event);
 	
 	@Override
 	public void register()

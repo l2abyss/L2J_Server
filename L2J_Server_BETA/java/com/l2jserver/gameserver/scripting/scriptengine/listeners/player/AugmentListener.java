@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
-import com.l2jserver.gameserver.model.L2Augmentation;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AugmentEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -31,19 +31,17 @@ public abstract class AugmentListener extends L2JListener
 	
 	/**
 	 * Triggered when a L2ItemInstance is augmented
-	 * @param item
-	 * @param augmentation
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onAugment(L2ItemInstance item, L2Augmentation augmentation);
+	public abstract boolean onAugment(AugmentEvent event);
 	
 	/**
 	 * Triggered when a L2ItemInstance's augmentation is removed
-	 * @param item
-	 * @param augmentation
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onRemoveAugment(L2ItemInstance item, L2Augmentation augmentation);
+	public abstract boolean onRemoveAugment(AugmentEvent event);
 	
 	@Override
 	public void register()

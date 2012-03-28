@@ -19,21 +19,39 @@ import java.util.List;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.model.L2Augmentation;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
-import com.l2jserver.gameserver.model.entity.FortSiege;
-import com.l2jserver.gameserver.model.entity.Siege;
-import com.l2jserver.gameserver.model.entity.TvTEventTeam;
-import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
-import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AddToInventoryEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AttackEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AugmentEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ChatEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanCreationEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanJoinEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaderChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaveEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLevelUpEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseAddItemEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseDeleteItemEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseTransferEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.DeathEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.EquipmentEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.FortSiegeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.HennaEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemCreateEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDestroyEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDropEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemPickupEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemTransferEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ProfessionChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.SiegeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.SkillUseEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.TransformEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.TvtKillEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.AttackListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.DeathListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.SkillUseListener;
@@ -57,7 +75,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.Professi
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.TransformListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatFilterListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener.ChatTargetType;
 
 /**
  * L2Script is an extension of Quest.java which makes use of the L2J listeners.<br>
@@ -131,24 +148,22 @@ public abstract class L2Script extends Quest
 	
 	/**
 	 * Used locally to call onDeath()
-	 * @param killer
-	 * @param victim
+	 * @param event 
 	 * @return
 	 */
-	private boolean notifyDeath(L2Character killer, L2Character victim)
+	private boolean notifyDeath(DeathEvent event)
 	{
-		return onDeath(killer, victim);
+		return onDeath(event);
 	}
 	
 	/**
 	 * Used locally to call onAttack(L2Character,L2Character)
-	 * @param target
-	 * @param attacker
+	 * @param event 
 	 * @return
 	 */
-	private boolean notifyAttack(L2Character target, L2Character attacker)
+	private boolean notifyAttack(AttackEvent event)
 	{
-		return onAttack(target, attacker);
+		return onAttack(event);
 	}
 	
 	// Register for event notification
@@ -164,15 +179,15 @@ public abstract class L2Script extends Quest
 		DeathListener listener = new DeathListener(character)
 		{
 			@Override
-			public boolean onKill(L2Character target, L2Character killer)
+			public boolean onKill(DeathEvent event)
 			{
-				return notifyDeath(killer, target);
+				return notifyDeath(event);
 			}
 			
 			@Override
-			public boolean onDeath(L2Character target, L2Character killer)
+			public boolean onDeath(DeathEvent event)
 			{
-				return notifyDeath(killer, target);
+				return notifyDeath(event);
 			}
 		};
 		_listeners.add(listener);
@@ -251,15 +266,15 @@ public abstract class L2Script extends Quest
 			AttackListener listener = new AttackListener(character)
 			{
 				@Override
-				public boolean onAttack(L2Character target)
+				public boolean onAttack(AttackEvent event)
 				{
-					return notifyAttack(target, character);
+					return notifyAttack(event);
 				}
 				
 				@Override
-				public boolean isAttacked(L2Character attacker)
+				public boolean isAttacked(AttackEvent event)
 				{
-					return notifyAttack(character, attacker);
+					return notifyAttack(event);
 				}
 			};
 			_listeners.add(listener);
@@ -296,9 +311,9 @@ public abstract class L2Script extends Quest
 		SkillUseListener listener = new SkillUseListener(npcId, skillId)
 		{
 			@Override
-			public boolean onSkillUse(L2Skill skill, L2Character character, L2Object[] targets)
+			public boolean onSkillUse(SkillUseEvent event)
 			{
-				return onUseSkill(skill, character, targets);
+				return onUseSkill(event);
 			}
 		};
 		_listeners.add(listener);
@@ -316,9 +331,9 @@ public abstract class L2Script extends Quest
 			SkillUseListener listener = new SkillUseListener(character, skillId)
 			{
 				@Override
-				public boolean onSkillUse(L2Skill skill, L2Character character, L2Object[] targets)
+				public boolean onSkillUse(SkillUseEvent event)
 				{
-					return onUseSkill(skill, character, targets);
+					return onUseSkill(event);
 				}
 			};
 			_listeners.add(listener);
@@ -370,15 +385,15 @@ public abstract class L2Script extends Quest
 		ClanCreationListener listener = new ClanCreationListener()
 		{
 			@Override
-			public void onClanCreate(L2Clan clan)
+			public void onClanCreate(ClanCreationEvent event)
 			{
-				onClanCreated(clan);
+				onClanCreated(event);
 			}
 			
 			@Override
-			public boolean onClanLevelUp(L2Clan clan, int oldLevel)
+			public boolean onClanLevelUp(ClanLevelUpEvent event)
 			{
-				return onClanLeveledUp(clan, oldLevel);
+				return onClanLeveledUp(event);
 			}
 		};
 		_listeners.add(listener);
@@ -408,21 +423,21 @@ public abstract class L2Script extends Quest
 		ClanMembershipListener listener = new ClanMembershipListener()
 		{
 			@Override
-			public boolean onJoin(L2PcInstance player, L2Clan clan)
+			public boolean onJoin(ClanJoinEvent event)
 			{
-				return onClanJoin(player, clan);
+				return onClanJoin(event);
 			}
 			
 			@Override
-			public boolean onLeaderChange(L2Clan clan, L2PcInstance newLeader, L2PcInstance oldLeader)
+			public boolean onLeaderChange(ClanLeaderChangeEvent event)
 			{
-				return onClanLeaderChange(player, clan);
+				return onClanLeaderChange(event);
 			}
 			
 			@Override
-			public boolean onLeave(int playerObjId, L2Clan clan)
+			public boolean onLeave(ClanLeaveEvent event)
 			{
-				return onClanLeave(playerObjId, clan);
+				return onClanLeave(event);
 			}
 		};
 		_listeners.add(listener);
@@ -455,21 +470,21 @@ public abstract class L2Script extends Quest
 			ClanWarehouseListener listener = new ClanWarehouseListener(clan)
 			{
 				@Override
-				public boolean onAddItem(String process, L2ItemInstance item, L2PcInstance actor)
+				public boolean onAddItem(ClanWarehouseAddItemEvent event)
 				{
-					return onClanWarehouseAddItem(process, item, actor);
+					return onClanWarehouseAddItem(event);
 				}
 				
 				@Override
-				public boolean onDeleteItem(String process, L2ItemInstance item, long count, L2PcInstance actor)
+				public boolean onDeleteItem(ClanWarehouseDeleteItemEvent event)
 				{
-					return onClanWarehouseDeleteItem(process, item, count, actor);
+					return onClanWarehouseDeleteItem(event);
 				}
 				
 				@Override
-				public boolean onTransferItem(String process, L2ItemInstance item, long count, ItemContainer target, L2PcInstance actor)
+				public boolean onTransferItem(ClanWarehouseTransferEvent event)
 				{
-					return onClanWarehouseTransferItem(process, item, count, target, actor);
+					return onClanWarehouseTransferItem(event);
 				}
 			};
 			_listeners.add(listener);
@@ -504,15 +519,17 @@ public abstract class L2Script extends Quest
 		ClanWarListener listener = new ClanWarListener()
 		{
 			@Override
-			public boolean onWarStart(L2Clan clan1, L2Clan clan2)
+			public boolean onWarStart(ClanWarEvent event)
 			{
-				return onClanWarEvent(clan1, clan2, EventStage.start);
+				event.setStage(EventStage.START);
+				return onClanWarEvent(event);
 			}
 			
 			@Override
-			public boolean onWarEnd(L2Clan clan1, L2Clan clan2)
+			public boolean onWarEnd(ClanWarEvent event)
 			{
-				return onClanWarEvent(clan1, clan2, EventStage.end);
+				event.setStage(EventStage.END);
+				return onClanWarEvent(event);
 			}
 		};
 		_listeners.add(listener);
@@ -542,15 +559,17 @@ public abstract class L2Script extends Quest
 		FortSiegeListener listener = new FortSiegeListener()
 		{
 			@Override
-			public boolean onStart(FortSiege fortSiege)
+			public boolean onStart(FortSiegeEvent event)
 			{
-				return onFortSiegeEvent(fortSiege, EventStage.start);
+				event.setStage(EventStage.START);
+				return onFortSiegeEvent(event);
 			}
 			
 			@Override
-			public void onEnd(FortSiege fortSiege)
+			public void onEnd(FortSiegeEvent event)
 			{
-				onFortSiegeEvent(fortSiege, EventStage.end);
+				event.setStage(EventStage.END);
+				onFortSiegeEvent(event);
 			}
 		};
 		_listeners.add(listener);
@@ -580,21 +599,23 @@ public abstract class L2Script extends Quest
 		SiegeListener listener = new SiegeListener()
 		{
 			@Override
-			public boolean onStart(Siege siege)
+			public boolean onStart(SiegeEvent event)
 			{
-				return onSiegeEvent(siege, EventStage.start);
+				event.setStage(EventStage.START);
+				return onSiegeEvent(event);
 			}
 			
 			@Override
-			public void onEnd(Siege siege)
+			public void onEnd(SiegeEvent event)
 			{
-				onSiegeEvent(siege, EventStage.end);
+				event.setStage(EventStage.END);
+				onSiegeEvent(event);
 			}
 			
 			@Override
-			public void onControlChange(Siege siege)
+			public void onControlChange(SiegeEvent event)
 			{
-				onCastleControlChange(siege);
+				onCastleControlChange(event);
 			}
 		};
 		_listeners.add(listener);
@@ -631,25 +652,25 @@ public abstract class L2Script extends Quest
 			@Override
 			public void onBegin()
 			{
-				onTvtEvent(EventStage.start);
+				onTvtEvent(EventStage.START);
 			}
 			
 			@Override
-			public void onKill(L2PcInstance killed, L2PcInstance killer, TvTEventTeam killerTeam)
+			public void onKill(TvtKillEvent event)
 			{
-				onTvtKill(killed, killer, killerTeam);
+				onTvtKill(event);
 			}
 			
 			@Override
 			public void onEnd()
 			{
-				onTvtEvent(EventStage.end);
+				onTvtEvent(EventStage.END);
 			}
 			
 			@Override
 			public void onRegistrationStart()
 			{
-				onTvtEvent(EventStage.registration_begin);
+				onTvtEvent(EventStage.REGISTRATION_BEGIN);
 			}
 		};
 		_listeners.add(listener);
@@ -679,15 +700,15 @@ public abstract class L2Script extends Quest
 		AugmentListener listener = new AugmentListener()
 		{
 			@Override
-			public boolean onAugment(L2ItemInstance item, L2Augmentation augmentation)
+			public boolean onAugment(AugmentEvent event)
 			{
-				return onItemAugment(item, augmentation, true);
+				return onItemAugment(event);
 			}
 			
 			@Override
-			public boolean onRemoveAugment(L2ItemInstance item, L2Augmentation augmentation)
+			public boolean onRemoveAugment(AugmentEvent event)
 			{
-				return onItemAugment(item, augmentation, false);
+				return onItemAugment(event);
 			}
 		};
 		_listeners.add(listener);
@@ -718,15 +739,15 @@ public abstract class L2Script extends Quest
 		{
 			
 			@Override
-			public boolean onDrop(L2ItemInstance item, L2PcInstance dropper, int x, int y, int z)
+			public boolean onDrop(ItemDropEvent event)
 			{
-				return onItemDrop(item, dropper, x, y, z);
+				return onItemDrop(event);
 			}
 			
 			@Override
-			public boolean onPickup(L2ItemInstance item, L2PcInstance picker, int x, int y, int z)
+			public boolean onPickup(ItemPickupEvent event)
 			{
-				return onItemPickup(item, picker, x, y, z);
+				return onItemPickup(event);
 			}
 		};
 		_listeners.add(listener);
@@ -758,9 +779,9 @@ public abstract class L2Script extends Quest
 		PlayerLevelListener listener = new PlayerLevelListener(player)
 		{
 			@Override
-			public void levelChanged(L2PcInstance player, int oldLevel, int newLevel)
+			public void levelChanged(PlayerLevelChangeEvent event)
 			{
-				onPlayerLevelChange(player, oldLevel, newLevel);
+				onPlayerLevelChange(event);
 			}
 		};
 		_listeners.add(listener);
@@ -794,9 +815,9 @@ public abstract class L2Script extends Quest
 		ProfessionChangeListener listener = new ProfessionChangeListener(player)
 		{
 			@Override
-			public void professionChanged(L2PcInstance player, boolean isSubClass, L2PcTemplate template)
+			public void professionChanged(ProfessionChangeEvent event)
 			{
-				onProfessionChange(player, isSubClass, template);
+				onProfessionChange(event);
 			}
 		};
 		_listeners.add(listener);
@@ -830,9 +851,9 @@ public abstract class L2Script extends Quest
 		EquipmentListener listener = new EquipmentListener(player)
 		{
 			@Override
-			public boolean onEquip(L2ItemInstance item, boolean isEquipped)
+			public boolean onEquip(EquipmentEvent event)
 			{
-				return onItemEquip(player, item, isEquipped);
+				return onItemEquip(event);
 			}
 		};
 		_listeners.add(listener);
@@ -864,15 +885,15 @@ public abstract class L2Script extends Quest
 		HennaListener listener = new HennaListener()
 		{
 			@Override
-			public boolean onAddHenna(L2PcInstance player, L2HennaInstance henna)
+			public boolean onAddHenna(HennaEvent event)
 			{
-				return onHennaModify(player, henna, true);
+				return onHennaModify(event);
 			}
 			
 			@Override
-			public boolean onRemoveHenna(L2PcInstance player, L2HennaInstance henna)
+			public boolean onRemoveHenna(HennaEvent event)
 			{
-				return onHennaModify(player, henna, false);
+				return onHennaModify(event);
 			}
 		};
 		_listeners.add(listener);
@@ -906,27 +927,27 @@ public abstract class L2Script extends Quest
 			ItemTracker listener = new ItemTracker(itemIds)
 			{
 				@Override
-				public void onDrop(L2ItemInstance item, L2PcInstance player)
+				public void onDrop(ItemDropEvent event)
 				{
-					onItemTrackerEvent(item, player, null, ItemTrackerEvent.drop);
+					onItemTrackerEvent(event);
 				}
 				
 				@Override
-				public void onAddToInventory(L2ItemInstance item, L2PcInstance player)
+				public void onAddToInventory(AddToInventoryEvent event)
 				{
-					onItemTrackerEvent(item, player, null, ItemTrackerEvent.add_to_inventory);
+					onItemTrackerEvent(event);
 				}
 				
 				@Override
-				public void onDestroy(L2ItemInstance item, L2PcInstance player)
+				public void onDestroy(ItemDestroyEvent event)
 				{
-					onItemTrackerEvent(item, player, null, ItemTrackerEvent.destroy);
+					onItemTrackerEvent(event);
 				}
 				
 				@Override
-				public void onTransfer(L2ItemInstance item, L2PcInstance player, ItemContainer target)
+				public void onTransfer(ItemTransferEvent event)
 				{
-					onItemTrackerEvent(item, player, target, ItemTrackerEvent.transfer);
+					onItemTrackerEvent(event);
 				}
 			};
 			_listeners.add(listener);
@@ -961,9 +982,9 @@ public abstract class L2Script extends Quest
 			{
 				
 				@Override
-				public boolean onCreate(int itemId, L2PcInstance player)
+				public boolean onCreate(ItemCreateEvent event)
 				{
-					return onItemCreate(itemId, player);
+					return onItemCreate(event);
 				}
 			};
 			_listeners.add(listener);
@@ -997,15 +1018,16 @@ public abstract class L2Script extends Quest
 			TransformListener listener = new TransformListener(player)
 			{
 				@Override
-				public boolean onTransform(L2Transformation transformation)
+				public boolean onTransform(TransformEvent event)
 				{
-					return onPlayerTransform(player, transformation, true);
+					event.setTransforming(true);
+					return onPlayerTransform(event);
 				}
 				
 				@Override
-				public boolean onUntransform(L2Transformation transformation)
+				public boolean onUntransform(TransformEvent event)
 				{
-					return onPlayerTransform(player, transformation, false);
+					return onPlayerTransform(event);
 				}
 			};
 			_listeners.add(listener);
@@ -1040,9 +1062,9 @@ public abstract class L2Script extends Quest
 		ChatFilterListener listener = new ChatFilterListener()
 		{
 			@Override
-			public String onTalk(String text, L2PcInstance origin, ChatTargetType targetType)
+			public String onTalk(ChatEvent event)
 			{
-				return filterChat(text, origin, targetType);
+				return filterChat(event);
 			}
 		};
 		_listeners.add(listener);
@@ -1072,9 +1094,9 @@ public abstract class L2Script extends Quest
 		ChatListener listener = new ChatListener()
 		{
 			@Override
-			public void onTalk(String text, L2PcInstance origin, String target, ChatTargetType targetType)
+			public void onTalk(ChatEvent event)
 			{
-				onPlayerTalk(text, origin, target, targetType);
+				onPlayerTalk(event);
 			}
 		};
 		_listeners.add(listener);
@@ -1117,22 +1139,20 @@ public abstract class L2Script extends Quest
 	
 	/**
 	 * Fired when a L2Character registered with addAttackNotify is either attacked or attacks another L2Character
-	 * @param target
-	 * @param attacker
+	 * @param event
 	 * @return
 	 */
-	public boolean onAttack(L2Character target, L2Character attacker)
+	public boolean onAttack(AttackEvent event)
 	{
 		return true;
 	}
 	
 	/**
 	 * Fired when a L2Character registered with addNotifyDeath is either killed or kills another L2Character
-	 * @param killer
-	 * @param victim
+	 * @param event
 	 * @return
 	 */
-	public boolean onDeath(L2Character killer, L2Character victim)
+	public boolean onDeath(DeathEvent event)
 	{
 		return true;
 	}
@@ -1140,21 +1160,19 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a SKillUseListener gets triggered.<br>
 	 * Register using addSkillUseNotify()
-	 * @param skill
-	 * @param caster
-	 * @param targets
+	 * @param event
 	 * @return
 	 */
-	public boolean onUseSkill(L2Skill skill, L2Character caster, L2Object[] targets)
+	public boolean onUseSkill(SkillUseEvent event)
 	{
 		return true;
 	}
 	
 	/**
 	 * Fired when a clan is created Register the listener using addClanCreationLevelUpNotify()
-	 * @param clan
+	 * @param event
 	 */
-	public void onClanCreated(L2Clan clan)
+	public void onClanCreated(ClanCreationEvent event)
 	{
 		
 	}
@@ -1162,11 +1180,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a clan levels up<br>
 	 * Register the listener using addClanCreationLevelUpListener()
-	 * @param clan
-	 * @param oldLevel
+	 * @param event
 	 * @return
 	 */
-	public boolean onClanLeveledUp(L2Clan clan, int oldLevel)
+	public boolean onClanLeveledUp(ClanLevelUpEvent event)
 	{
 		return true;
 	}
@@ -1174,11 +1191,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a player joins a clan<br>
 	 * Register the listener with addClanJoinLeaveNotify()<br>
-	 * @param player
-	 * @param clan
+	 * @param event
 	 * @return
 	 */
-	public boolean onClanJoin(L2PcInstance player, L2Clan clan)
+	public boolean onClanJoin(ClanJoinEvent event)
 	{
 		return true;
 	}
@@ -1186,11 +1202,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a player leaves a clan<br>
 	 * Register the listener with addClanJoinLeaveNotify()<br>
-	 * @param playerObjId
-	 * @param clan
+	 * @param event
 	 * @return
 	 */
-	public boolean onClanLeave(int playerObjId, L2Clan clan)
+	public boolean onClanLeave(ClanLeaveEvent event)
 	{
 		return true;
 	}
@@ -1198,11 +1213,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a clan leader is changed for another<br>
 	 * Register the listener with addClanJoinLeaveNotify()<br>
-	 * @param player
-	 * @param clan
+	 * @param event
 	 * @return
 	 */
-	public boolean onClanLeaderChange(L2PcInstance player, L2Clan clan)
+	public boolean onClanLeaderChange(ClanLeaderChangeEvent event)
 	{
 		return true;
 	}
@@ -1210,12 +1224,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when an item is added to a clan warehouse<br>
 	 * Register the listener with addClanWarehouseNotify(L2Clan)
-	 * @param process
-	 * @param item
-	 * @param actor
+	 * @param event
 	 * @return
 	 */
-	public boolean onClanWarehouseAddItem(String process, L2ItemInstance item, L2PcInstance actor)
+	public boolean onClanWarehouseAddItem(ClanWarehouseAddItemEvent event)
 	{
 		return true;
 	}
@@ -1223,13 +1235,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when an item is deleted from a clan warehouse<br>
 	 * Register the listener with addClanWarehouseNotify(L2Clan)
-	 * @param process
-	 * @param item
-	 * @param count
-	 * @param actor
+	 * @param event
 	 * @return
 	 */
-	public boolean onClanWarehouseDeleteItem(String process, L2ItemInstance item, long count, L2PcInstance actor)
+	public boolean onClanWarehouseDeleteItem(ClanWarehouseDeleteItemEvent event)
 	{
 		return true;
 	}
@@ -1237,14 +1246,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when an item is transfered from/to a clan warehouse<br>
 	 * Register the listener with addClanWarehouseNotify(L2Clan)
-	 * @param process
-	 * @param item
-	 * @param count
-	 * @param target
-	 * @param actor
+	 * @param event
 	 * @return
 	 */
-	public boolean onClanWarehouseTransferItem(String process, L2ItemInstance item, long count, ItemContainer target, L2PcInstance actor)
+	public boolean onClanWarehouseTransferItem(ClanWarehouseTransferEvent event)
 	{
 		return true;
 	}
@@ -1252,12 +1257,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a clan war starts or ends<br>
 	 * Register the listener witn addClanWarNotify()
-	 * @param clan1
-	 * @param clan2
-	 * @param stage
+	 * @param event
 	 * @return
 	 */
-	public boolean onClanWarEvent(L2Clan clan1, L2Clan clan2, EventStage stage)
+	public boolean onClanWarEvent(ClanWarEvent event)
 	{
 		return true;
 	}
@@ -1265,11 +1268,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a fort siege starts or ends<br>
 	 * Register using addFortSiegeNotify()
-	 * @param fortSiege
-	 * @param stage
+	 * @param event
 	 * @return
 	 */
-	public boolean onFortSiegeEvent(FortSiege fortSiege, EventStage stage)
+	public boolean onFortSiegeEvent(FortSiegeEvent event)
 	{
 		return true;
 	}
@@ -1277,11 +1279,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a castle siege starts or ends<br>
 	 * Register using addSiegeNotify()
-	 * @param siege
-	 * @param stage
+	 * @param event
 	 * @return
 	 */
-	public boolean onSiegeEvent(Siege siege, EventStage stage)
+	public boolean onSiegeEvent(SiegeEvent event)
 	{
 		return true;
 	}
@@ -1289,9 +1290,9 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when the control of a castle changes during a siege<br>
 	 * Register using addSiegeNotify()
-	 * @param siege
+	 * @param event
 	 */
-	public void onCastleControlChange(Siege siege)
+	public void onCastleControlChange(SiegeEvent event)
 	{
 		
 	}
@@ -1309,11 +1310,9 @@ public abstract class L2Script extends Quest
 	/**
 	 * Notifies that a player was killed during TvT<br>
 	 * Register using addTvtNotify()
-	 * @param killed
-	 * @param killer
-	 * @param killerTeam
+	 * @param event
 	 */
-	public void onTvtKill(L2PcInstance killed, L2PcInstance killer, TvTEventTeam killerTeam)
+	public void onTvtKill(TvtKillEvent event)
 	{
 		
 	}
@@ -1321,12 +1320,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * triggered when an item is augmented or when the augmentation is removed<br>
 	 * Register using addItemAugmentNotify()
-	 * @param item
-	 * @param augmentation
-	 * @param augment -> false = remove augment
+	 * @param event
 	 * @return
 	 */
-	public boolean onItemAugment(L2ItemInstance item, L2Augmentation augmentation, boolean augment)
+	public boolean onItemAugment(AugmentEvent event)
 	{
 		return true;
 	}
@@ -1334,14 +1331,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when an item is dropped by a player<br>
 	 * Register using addItemDropPickupNotify()
-	 * @param item
-	 * @param dropper
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param event
 	 * @return
 	 */
-	public boolean onItemDrop(L2ItemInstance item, L2PcInstance dropper, int x, int y, int z)
+	public boolean onItemDrop(ItemDropEvent event)
 	{
 		return true;
 	}
@@ -1349,14 +1342,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when an item is picked up by a player<br>
 	 * Register using addItemDropPickupNotify()
-	 * @param item
-	 * @param dropper
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param event
 	 * @return
 	 */
-	public boolean onItemPickup(L2ItemInstance item, L2PcInstance dropper, int x, int y, int z)
+	public boolean onItemPickup(ItemPickupEvent event)
 	{
 		return true;
 	}
@@ -1364,12 +1353,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when an item is equipped or unequipped<br>
 	 * Register using addEquipmentNotify()
-	 * @param player
-	 * @param item
-	 * @param isEquipped
+	 * @param event
 	 * @return
 	 */
-	public boolean onItemEquip(L2PcInstance player, L2ItemInstance item, boolean isEquipped)
+	public boolean onItemEquip(EquipmentEvent event)
 	{
 		return true;
 	}
@@ -1377,11 +1364,9 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a player's level changes<br>
 	 * Register using addPlayerLevelNotify(player)
-	 * @param player
-	 * @param oldLevel
-	 * @param newLevel
+	 * @param event
 	 */
-	public void onPlayerLevelChange(L2PcInstance player, int oldLevel, int newLevel)
+	public void onPlayerLevelChange(PlayerLevelChangeEvent event)
 	{
 		
 	}
@@ -1389,11 +1374,9 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a player changes profession<br>
 	 * Register using addProfessionChangeNotify(player)
-	 * @param player
-	 * @param isSubClass
-	 * @param template
+	 * @param event
 	 */
-	public void onProfessionChange(L2PcInstance player, boolean isSubClass, L2PcTemplate template)
+	public void onProfessionChange(ProfessionChangeEvent event)
 	{
 		
 	}
@@ -1401,12 +1384,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a player's henna changes (add/remove)<br>
 	 * Register using addHennaNotify()
-	 * @param player
-	 * @param henna
-	 * @param add -> false = remove
+	 * @param event
 	 * @return
 	 */
-	public boolean onHennaModify(L2PcInstance player, L2HennaInstance henna, boolean add)
+	public boolean onHennaModify(HennaEvent event)
 	{
 		return true;
 	}
@@ -1414,12 +1395,9 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when an item on the item tracker list has an event<br>
 	 * Register using addItemTracker(itemIds)
-	 * @param item
-	 * @param player
-	 * @param target
 	 * @param event
 	 */
-	public void onItemTrackerEvent(L2ItemInstance item, L2PcInstance player, ItemContainer target, ItemTrackerEvent event)
+	public void onItemTrackerEvent(L2Event event)
 	{
 		
 	}
@@ -1427,11 +1405,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when an item is created<br>
 	 * Register using addNewItemNotify(itemIds)
-	 * @param itemId
-	 * @param player
+	 * @param event
 	 * @return
 	 */
-	public boolean onItemCreate(int itemId, L2PcInstance player)
+	public boolean onItemCreate(ItemCreateEvent event)
 	{
 		return true;
 	}
@@ -1439,12 +1416,10 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a player transforms/untransforms<br>
 	 * Register using addTransformNotify(player)
-	 * @param player
-	 * @param transformation
-	 * @param isTransforming -> false = untransform
+	 * @param event
 	 * @return
 	 */
-	public boolean onPlayerTransform(L2PcInstance player, L2Transformation transformation, boolean isTransforming)
+	public boolean onPlayerTransform(TransformEvent event)
 	{
 		return true;
 	}
@@ -1453,12 +1428,10 @@ public abstract class L2Script extends Quest
 	 * Allows for custom chat filtering<br>
 	 * Fired each time a player writes something in any form of chat<br>
 	 * Register using addPlayerChatFilter()
-	 * @param text
-	 * @param origin
-	 * @param targetType
+	 * @param event
 	 * @return
 	 */
-	public String filterChat(String text, L2PcInstance origin, ChatTargetType targetType)
+	public String filterChat(ChatEvent event)
 	{
 		return "";
 	}
@@ -1466,12 +1439,9 @@ public abstract class L2Script extends Quest
 	/**
 	 * Fired when a player writes some text in chat<br>
 	 * Register using addPlayerTalkNotify()
-	 * @param text
-	 * @param origin
-	 * @param target
-	 * @param targetType
+	 * @param event
 	 */
-	public void onPlayerTalk(String text, L2PcInstance origin, String target, ChatTargetType targetType)
+	public void onPlayerTalk(ChatEvent event)
 	{
 		
 	}
@@ -1480,17 +1450,18 @@ public abstract class L2Script extends Quest
 	
 	public enum EventStage
 	{
-		start,
-		end,
-		event_stopped,
-		registration_begin
+		START,
+		END,
+		EVENT_STOPPED,
+		REGISTRATION_BEGIN,
+		CONTROL_CHANGE
 	}
 	
 	public enum ItemTrackerEvent
 	{
-		drop,
-		add_to_inventory,
-		destroy,
-		transfer
+		DROP,
+		ADD_TO_INVENTORY,
+		DESTROY,
+		TRANSFER
 	}
 }

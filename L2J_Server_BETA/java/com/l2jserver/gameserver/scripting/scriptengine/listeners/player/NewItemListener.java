@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 import java.util.List;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemCreateEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -36,11 +36,10 @@ public abstract class NewItemListener extends L2JListener
 	
 	/**
 	 * An item corresponding to the itemIds list was just created
-	 * @param itemId
-	 * @param player
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onCreate(int itemId, L2PcInstance player);
+	public abstract boolean onCreate(ItemCreateEvent event);
 	
 	@Override
 	public void register()

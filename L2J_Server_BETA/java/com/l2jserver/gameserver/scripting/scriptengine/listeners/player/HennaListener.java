@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.HennaEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -30,19 +30,17 @@ public abstract class HennaListener extends L2JListener
 	
 	/**
 	 * The given henna has just been added to the player
-	 * @param player
-	 * @param henna
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onAddHenna(L2PcInstance player, L2HennaInstance henna);
+	public abstract boolean onAddHenna(HennaEvent event);
 	
 	/**
 	 * The given henna has just been removed from the player
-	 * @param player
-	 * @param henna
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onRemoveHenna(L2PcInstance player, L2HennaInstance henna);
+	public abstract boolean onRemoveHenna(HennaEvent event);
 	
 	@Override
 	public void register()

@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.events;
 
 import com.l2jserver.gameserver.model.entity.Siege;
+import com.l2jserver.gameserver.scripting.scriptengine.events.SiegeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -29,22 +30,22 @@ public abstract class SiegeListener extends L2JListener
 	
 	/**
 	 * Fired when a siege starts
-	 * @param siege
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onStart(Siege siege);
+	public abstract boolean onStart(SiegeEvent event);
 	
 	/**
 	 * Fired when a siege ends
-	 * @param siege
+	 * @param event 
 	 */
-	public abstract void onEnd(Siege siege);
+	public abstract void onEnd(SiegeEvent event);
 	
 	/**
 	 * Fired when the control of the castle change hands during the siege
-	 * @param siege
+	 * @param event 
 	 */
-	public abstract void onControlChange(Siege siege);
+	public abstract void onControlChange(SiegeEvent event);
 	
 	@Override
 	public void register()

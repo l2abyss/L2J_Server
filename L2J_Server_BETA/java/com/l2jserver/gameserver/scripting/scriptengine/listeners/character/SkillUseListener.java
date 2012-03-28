@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.character;
 
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.scripting.scriptengine.events.SkillUseEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -56,12 +55,10 @@ public abstract class SkillUseListener extends L2JListener
 	
 	/**
 	 * A L2Character just cast a skill
-	 * @param skill
-	 * @param character
-	 * @param targets
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onSkillUse(L2Skill skill, L2Character character, L2Object[] targets);
+	public abstract boolean onSkillUse(SkillUseEvent event);
 	
 	@Override
 	public void register()

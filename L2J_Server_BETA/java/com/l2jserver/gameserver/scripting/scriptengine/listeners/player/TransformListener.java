@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
-import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.TransformEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -36,17 +36,17 @@ public abstract class TransformListener extends L2JListener
 	
 	/**
 	 * The player just transformed
-	 * @param transformation
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onTransform(L2Transformation transformation);
+	public abstract boolean onTransform(TransformEvent event);
 	
 	/**
 	 * The player just untransformed
-	 * @param transformation
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onUntransform(L2Transformation transformation);
+	public abstract boolean onUntransform(TransformEvent event);
 	
 	@Override
 	public void register()

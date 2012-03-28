@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.events;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
-import com.l2jserver.gameserver.model.entity.TvTEventTeam;
+import com.l2jserver.gameserver.scripting.scriptengine.events.TvtKillEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -37,11 +36,9 @@ public abstract class TvTListener extends L2JListener
 	
 	/**
 	 * A player has been killed
-	 * @param killed
-	 * @param killer
-	 * @param killerTeam
+	 * @param event 
 	 */
-	public abstract void onKill(L2PcInstance killed, L2PcInstance killer, TvTEventTeam killerTeam);
+	public abstract void onKill(TvtKillEvent event);
 	
 	/**
 	 * Fired when a TvT event ends

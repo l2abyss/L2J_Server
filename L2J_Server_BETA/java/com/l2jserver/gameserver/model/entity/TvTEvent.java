@@ -51,6 +51,8 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.events.TvtKillEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.events.TvTListener;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
@@ -148,10 +150,7 @@ public class TvTEvent
 		}
 		
 		setState(EventState.PARTICIPATING);
-		for(TvTListener listener : tvtListeners)
-		{
-			listener.onRegistrationStart();
-		}
+		fireTvtEventListeners(EventStage.REGISTRATION_BEGIN);
 		return true;
 	}
 	
@@ -297,10 +296,7 @@ public class TvTEvent
 				}
 			}
 		}
-		for(TvTListener listener : tvtListeners)
-		{
-			listener.onBegin();
-		}
+		fireTvtEventListeners(EventStage.START);
 		
 		return true;
 	}
@@ -345,10 +341,7 @@ public class TvTEvent
 		// Get team which has more points
 		TvTEventTeam team = _teams[_teams[0].getPoints() > _teams[1].getPoints() ? 0 : 1];
 		rewardTeam(team);
-		for(TvTListener listener : tvtListeners)
-		{
-			listener.onEnd();
-		}
+		fireTvtEventListeners(EventStage.END);
 		return "TvT Event: Event finish. Team " + team.getName() + " won with " + team.getPoints() + " kills.";
 	}
 	
@@ -913,10 +906,7 @@ public class TvTEvent
 					playerInstance.sendPacket(cs);
 				}
 			}
-			for(TvTListener listener : tvtListeners)
-			{
-				listener.onKill(killedPlayerInstance, killerPlayerInstance, killerTeam);
-			}
+			fireTvtKillListeners(killerPlayerInstance,killedPlayerInstance,killerTeam);
 		}
 	}
 	
@@ -1219,6 +1209,60 @@ public class TvTEvent
 	}
 	
 	// Listeners
+	/**
+	 * Fires all the TvTListener.onKill() methods, if any
+	 * @param killer
+	 * @param victim
+	 * @param killerTeam
+	 */
+	private static void fireTvtKillListeners(L2PcInstance killer, L2PcInstance victim, TvTEventTeam killerTeam){
+		if(!tvtListeners.isEmpty() && killer != null && victim != null && killerTeam != null){
+			TvtKillEvent event = new TvtKillEvent();
+			event.setKiller(killer);
+			event.setVictim(victim);
+			event.setKillerTeam(killerTeam);
+			for(TvTListener listener : tvtListeners)
+			{
+				listener.onKill(event);
+			}
+		}
+	}
+	
+	/**
+	 * Fires the appropriate TvtEventListeners, if any
+	 * @param stage
+	 */
+	private static void fireTvtEventListeners(EventStage stage){
+		if(!tvtListeners.isEmpty()){
+			switch(stage){
+				case REGISTRATION_BEGIN:
+				{
+					for(TvTListener listener : tvtListeners)
+					{
+						listener.onRegistrationStart();
+					}
+					break;
+				}
+				case START:
+				{
+					for(TvTListener listener : tvtListeners)
+					{
+						listener.onBegin();
+					}
+					break;
+				}
+				case END:
+				{
+					for(TvTListener listener : tvtListeners)
+					{
+						listener.onEnd();
+					}
+					break;
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Adds a TvT listener
 	 * @param listener

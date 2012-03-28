@@ -35,6 +35,7 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerLevelListener;
 
 public class PcStat extends PlayableStat
@@ -215,15 +216,7 @@ public class PcStat extends PlayableStat
 	{
 		if (getLevel() + value > ExperienceTable.getInstance().getMaxLevel() - 1)
 			return false;
-		
-		for (PlayerLevelListener listener : levelListeners)
-		{
-			listener.levelChanged(getActiveChar(), getLevel(), getLevel() + value);
-		}
-		for (PlayerLevelListener listener : globalLevelListeners)
-		{
-			listener.levelChanged(getActiveChar(), getLevel(), getLevel() + value);
-		}
+		fireLevelChangeListeners(value);
 		
 		boolean levelIncreased = super.addLevel(value);
 		if (levelIncreased)
@@ -718,6 +711,27 @@ public class PcStat extends PlayableStat
 	/**
 	 * Listeners
 	 */
+	/**
+	 * Fires all the level change listeners, if any.
+	 * @param value
+	 */
+	private void fireLevelChangeListeners(byte value){
+		if(!levelListeners.isEmpty() || !globalLevelListeners.isEmpty()){
+			PlayerLevelChangeEvent event = new PlayerLevelChangeEvent();
+			event.setPlayer(getActiveChar());
+			event.setOldLevel(getLevel());
+			event.setNewLevel(getLevel() + value);
+			for (PlayerLevelListener listener : levelListeners)
+			{
+				listener.levelChanged(event);
+			}
+			for (PlayerLevelListener listener : globalLevelListeners)
+			{
+				listener.levelChanged(event);
+			}
+		}
+	}
+	
 	/**
 	 * Adds a global player level listener
 	 * @param listener

@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ChatEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatFilterListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener;
 import com.l2jserver.gameserver.util.Util;
@@ -235,21 +236,14 @@ public final class Say2 extends L2GameClientPacket
 		if (_text.indexOf(8) >= 0)
 			if (!parseAndPublishItem(activeChar))
 				return;
-		
-		for (ChatListener listener : chatListeners)
-		{
-			listener.onTalk(_text, activeChar, _target, ChatListener.getTargetType(CHAT_NAMES[_type]));
-		}
+		fireChatListeners(activeChar);
 		
 		// Say Filter implementation
 		if (Config.USE_SAY_FILTER)
 			checkText();
 		
 		// Custom chat filter
-		for (ChatFilterListener listener : chatFilterListeners)
-		{
-			_text = listener.onTalk(_text, activeChar, ChatListener.getTargetType(CHAT_NAMES[_type]));
-		}
+		fireChatFilters(activeChar);
 		
 		IChatHandler handler = ChatHandler.getInstance().getHandler(_type);
 		if (handler != null)
@@ -327,6 +321,48 @@ public final class Say2 extends L2GameClientPacket
 	}
 	
 	// Listeners
+	/**
+	 * Fires all the chat listeners, if any
+	 * @param activeChar
+	 */
+	private void fireChatListeners(L2PcInstance activeChar){
+		if(!chatListeners.isEmpty()){
+			ChatEvent event = null;
+			event = new ChatEvent();
+			event.setOrigin(activeChar);
+			event.setTarget(_target);
+			event.setTargetType(ChatListener.getTargetType(CHAT_NAMES[_type]));
+			event.setText(_text);
+			for (ChatListener listener : chatListeners)
+			{
+				listener.onTalk(event);
+			}
+		}
+	}
+	
+	/**
+	 * Fires the custom chat filter, if any<br>
+	 * This type of listener should be registered only once 
+	 * since if there are many of them they might override each 
+	 * other!
+	 * @param activeChar
+	 */
+	private void fireChatFilters(L2PcInstance activeChar){
+		if(!chatFilterListeners.isEmpty()){
+			ChatEvent event = null;
+			event = new ChatEvent();
+			event.setOrigin(activeChar);
+			event.setTarget(_target);
+			event.setTargetType(ChatListener.getTargetType(CHAT_NAMES[_type]));
+			event.setText(_text);
+			for (ChatFilterListener listener : chatFilterListeners)
+			{
+				_text = listener.onTalk(event);
+			}
+		}
+		
+	}
+	
 	/**
 	 * Adds a chat listener
 	 * @param listener

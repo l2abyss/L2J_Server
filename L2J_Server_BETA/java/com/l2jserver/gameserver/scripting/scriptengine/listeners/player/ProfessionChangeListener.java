@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ProfessionChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -36,7 +36,11 @@ public abstract class ProfessionChangeListener extends L2JListener
 		register();
 	}
 	
-	public abstract void professionChanged(L2PcInstance player, boolean isSubClass, L2PcTemplate template);
+	/**
+	 * Player's profession has changed
+	 * @param event
+	 */
+	public abstract void professionChanged(ProfessionChangeEvent event);
 	
 	@Override
 	public void register()

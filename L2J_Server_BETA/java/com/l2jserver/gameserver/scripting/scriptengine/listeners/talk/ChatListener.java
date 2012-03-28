@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.talk;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ChatEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -33,12 +33,9 @@ public abstract class ChatListener extends L2JListener
 	
 	/**
 	 * Notifies that the given text was sent from player1(origin) to a given target.<br>
-	 * @param text
-	 * @param origin
-	 * @param target
-	 * @param targetType
+	 * @param event 
 	 */
-	public abstract void onTalk(String text, L2PcInstance origin, String target, ChatTargetType targetType);
+	public abstract void onTalk(ChatEvent event);
 	
 	@Override
 	public void register()

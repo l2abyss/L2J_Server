@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.character;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.scripting.scriptengine.events.DeathEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -44,20 +45,18 @@ public abstract class DeathListener extends L2JListener
 	/**
 	 * The character just killed the target<br>
 	 * If you use this listener as global, use: onDeathGlobal()
-	 * @param target
-	 * @param killer
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onKill(L2Character target, L2Character killer);
+	public abstract boolean onKill(DeathEvent event);
 	
 	/**
 	 * The character was just killed by the target<br>
 	 * If you use this listener as global, use: onDeathGlobal()
-	 * @param target
-	 * @param killer
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onDeath(L2Character target, L2Character killer);
+	public abstract boolean onDeath(DeathEvent event);
 	
 	/**
 	 * Returns the character

@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.events;
 
 import com.l2jserver.gameserver.model.entity.FortSiege;
+import com.l2jserver.gameserver.scripting.scriptengine.events.FortSiegeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -29,16 +30,16 @@ public abstract class FortSiegeListener extends L2JListener
 	
 	/**
 	 * Fired when a fort siege starts
-	 * @param fortSiege
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onStart(FortSiege fortSiege);
+	public abstract boolean onStart(FortSiegeEvent event);
 	
 	/**
 	 * Fired when a fort siege ends
-	 * @param fortSiege
+	 * @param event 
 	 */
-	public abstract void onEnd(FortSiege fortSiege);
+	public abstract void onEnd(FortSiegeEvent event);
 	
 	@Override
 	public void register()

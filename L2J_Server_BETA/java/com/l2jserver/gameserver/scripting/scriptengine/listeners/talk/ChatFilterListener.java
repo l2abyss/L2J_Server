@@ -14,10 +14,9 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.talk;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ChatEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener.ChatTargetType;
 
 /**
  * Listener to intercept player chat.<br>
@@ -34,12 +33,10 @@ public abstract class ChatFilterListener extends L2JListener
 	
 	/**
 	 * Allows for filtering the text
-	 * @param text
-	 * @param origin
-	 * @param targetType
+	 * @param event 
 	 * @return
 	 */
-	public abstract String onTalk(String text, L2PcInstance origin, ChatTargetType targetType);
+	public abstract String onTalk(ChatEvent event);
 	
 	@Override
 	public void register()

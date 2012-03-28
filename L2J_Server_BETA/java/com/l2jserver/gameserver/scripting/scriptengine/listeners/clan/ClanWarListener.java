@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.clan;
 
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -30,19 +31,17 @@ public abstract class ClanWarListener extends L2JListener
 	
 	/**
 	 * Clan war just started
-	 * @param clan1
-	 * @param clan2
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onWarStart(L2Clan clan1, L2Clan clan2);
+	public abstract boolean onWarStart(ClanWarEvent event);
 	
 	/**
 	 * Clan war just ended
-	 * @param clan1
-	 * @param clan2
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onWarEnd(L2Clan clan1, L2Clan clan2);
+	public abstract boolean onWarEnd(ClanWarEvent event);
 	
 	@Override
 	public void register()

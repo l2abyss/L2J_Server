@@ -14,8 +14,9 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDropEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemPickupEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -31,25 +32,17 @@ public abstract class DropListener extends L2JListener
 	
 	/**
 	 * The item was dropped
-	 * @param item
-	 * @param dropper
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onDrop(L2ItemInstance item, L2PcInstance dropper, int x, int y, int z);
+	public abstract boolean onDrop(ItemDropEvent event);
 	
 	/**
 	 * The item was picked up
-	 * @param item
-	 * @param picker
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onPickup(L2ItemInstance item, L2PcInstance picker, int x, int y, int z);
+	public abstract boolean onPickup(ItemPickupEvent event);
 	
 	@Override
 	public void register()

@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
+import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -36,7 +37,11 @@ public abstract class PlayerLevelListener extends L2JListener
 		register();
 	}
 	
-	public abstract void levelChanged(L2PcInstance player, int oldLevel, int newLevel);
+	/**
+	 * The player's level has changed
+	 * @param event
+	 */
+	public abstract void levelChanged(PlayerLevelChangeEvent event);
 	
 	@Override
 	public void register()

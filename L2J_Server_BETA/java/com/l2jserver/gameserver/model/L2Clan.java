@@ -64,6 +64,13 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanCreationEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanJoinEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaderChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaveEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLevelUpEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreationListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanWarListener;
@@ -207,10 +214,7 @@ public class L2Clan
 		_clanId = clanId;
 		_name = clanName;
 		initializePrivs();
-		for (ClanCreationListener listener : clanCreationListeners)
-		{
-			listener.onClanCreate(this);
-		}
+		fireClanCreationListeners();
 	}
 	
 	/**
@@ -271,13 +275,8 @@ public class L2Clan
 		
 		L2PcInstance exLeader = getLeader().getPlayerInstance();
 		L2PcInstance newLeader = member.getPlayerInstance();
-		
-		for (ClanMembershipListener listener : clanMembershipListeners)
-		{
-			if (!listener.onLeaderChange(this, newLeader, exLeader))
-			{
-				return;
-			}
+		if(!fireClanLeaderChangeListeners(newLeader,exLeader)){
+			return;
 		}
 		
 		SiegeManager.getInstance().removeSiegeSkills(exLeader);
@@ -369,12 +368,8 @@ public class L2Clan
 	 */
 	public void addClanMember(L2PcInstance player)
 	{
-		for (ClanMembershipListener listener : clanMembershipListeners)
-		{
-			if (!listener.onJoin(player, this))
-			{
-				return;
-			}
+		if(!fireClanJoinListeners(player)){
+			return;
 		}
 		
 		final L2ClanMember member = new L2ClanMember(this, player);
@@ -434,12 +429,8 @@ public class L2Clan
 	 */
 	public void removeClanMember(int objectId, long clanJoinExpiryTime)
 	{
-		for (ClanMembershipListener listener : clanMembershipListeners)
-		{
-			if (!listener.onLeave(objectId, this))
-			{
-				return;
-			}
+		if(!fireClanLeaveListeners(objectId)){
+			return;
 		}
 		
 		final L2ClanMember exMember = _members.remove(objectId);
@@ -1505,12 +1496,8 @@ public class L2Clan
 	
 	public void setEnemyClan(L2Clan clan)
 	{
-		for (ClanWarListener listener : clanWarListeners)
-		{
-			if (!listener.onWarStart(this, clan))
-			{
-				return;
-			}
+		if(!fireClanWarStartListeners(clan)){
+			return;
 		}
 		Integer id = clan.getClanId();
 		_atWarWith.add(id);
@@ -1518,12 +1505,8 @@ public class L2Clan
 	
 	public void setEnemyClan(Integer clan)
 	{
-		for (ClanWarListener listener : clanWarListeners)
-		{
-			if (!listener.onWarStart(this, ClanTable.getInstance().getClan(clan)))
-			{
-				return;
-			}
+		if(!fireClanWarStartListeners(ClanTable.getInstance().getClan(clan))){
+			return;
 		}
 		_atWarWith.add(clan);
 	}
@@ -1541,12 +1524,8 @@ public class L2Clan
 	
 	public void deleteEnemyClan(L2Clan clan)
 	{
-		for (ClanWarListener listener : clanWarListeners)
-		{
-			if (!listener.onWarEnd(this, clan))
-			{
-				return;
-			}
+		if(!fireClanWarEndListeners(clan)){
+			return;
 		}
 		Integer id = clan.getClanId();
 		_atWarWith.remove(id);
@@ -2459,12 +2438,8 @@ public class L2Clan
 		
 		boolean increaseClanLevel = false;
 		
-		for (ClanCreationListener listener : clanCreationListeners)
-		{
-			if (!listener.onClanLevelUp(this, getLevel()))
-			{
-				return false;
-			}
+		if(!fireClanLevelUpListeners()){
+			return false;
 		}
 		
 		switch (getLevel())
@@ -2941,6 +2916,155 @@ public class L2Clan
 	}
 	
 	// Listeners
+	/**
+	 * Fires the clan creation listeners, if any.
+	 */
+	private void fireClanCreationListeners(){
+		if(!clanCreationListeners.isEmpty()){
+			ClanCreationEvent event = new ClanCreationEvent();
+			event.setClan(this);
+			for (ClanCreationListener listener : clanCreationListeners)
+			{
+				listener.onClanCreate(event);
+			}
+		}
+	}
+	
+	/**
+	 * Fires all the ClanMemberShipListener.onLeaderChange() methods, if any.
+	 * Prevents the clan leader change if it returns false;
+	 * @param newLeader
+	 * @param exLeader
+	 * @return
+	 */
+	private boolean fireClanLeaderChangeListeners(L2PcInstance newLeader, L2PcInstance exLeader){
+		if(!clanMembershipListeners.isEmpty() && newLeader != null && exLeader != null){
+			ClanLeaderChangeEvent event = new ClanLeaderChangeEvent();
+			event.setClan(this);
+			event.setNewLeader(newLeader);
+			event.setOldLeader(exLeader);
+			for (ClanMembershipListener listener : clanMembershipListeners)
+			{
+				if (!listener.onLeaderChange(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanMembershipListener.onJoin() methods, if any<br>
+	 * Returns true/false -> allow the player to join or not
+	 * @param player
+	 * @return
+	 */
+	private boolean fireClanJoinListeners(L2PcInstance player){
+		if(!clanMembershipListeners.isEmpty() && player != null){
+			ClanJoinEvent event = new ClanJoinEvent();
+			event.setClan(this);
+			event.setPlayer(player);
+			for (ClanMembershipListener listener : clanMembershipListeners)
+			{
+				if (!listener.onJoin(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanMembershipListener.onLeave() methods, if any<br>
+	 * Returns true/false -> the player can leave the clan or not
+	 * @param objectId - the clan member's objectId
+	 * @return
+	 */
+	private boolean fireClanLeaveListeners(int objectId){
+		if(!clanMembershipListeners.isEmpty()){
+			ClanLeaveEvent event = new ClanLeaveEvent();
+			event.setPlayerId(objectId);
+			event.setClan(this);
+			for (ClanMembershipListener listener : clanMembershipListeners)
+			{
+				if (!listener.onLeave(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanWarListener.onWarStart() methods<br>
+	 * Returns true if the clan war is allowed
+	 * @param clan -> the new enemy clan
+	 * @return
+	 */
+	private boolean fireClanWarStartListeners(L2Clan clan){
+		if(!clanWarListeners.isEmpty() && clan != null){
+			ClanWarEvent event = new ClanWarEvent();
+			event.setClan1(this);
+			event.setClan2(clan);
+			event.setStage(EventStage.START);
+			for (ClanWarListener listener : clanWarListeners)
+			{
+				if (!listener.onWarStart(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanWarListener.onWarEnd() methods<br>
+	 * Returns true if the clan war end is allowed
+	 * @param clan -> the enemy clan
+	 * @return
+	 */
+	private boolean fireClanWarEndListeners(L2Clan clan){
+		if(!clanWarListeners.isEmpty() && clan != null){
+			ClanWarEvent event = new ClanWarEvent();
+			event.setClan1(this);
+			event.setClan2(clan);
+			event.setStage(EventStage.END);
+			for (ClanWarListener listener : clanWarListeners)
+			{
+				if (!listener.onWarEnd(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanCreationListener.onClanLevelUp() methods, if any<br>
+	 * Blocks the level up if it returns false
+	 * @return
+	 */
+	private boolean fireClanLevelUpListeners(){
+		if(!clanCreationListeners.isEmpty()){
+			ClanLevelUpEvent event = new ClanLevelUpEvent();
+			event.setClan(this);
+			event.setOldLevel(_level);
+			for (ClanCreationListener listener : clanCreationListeners)
+			{
+				if (!listener.onClanLevelUp(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Adds a clan creation listener
 	 * @param listener

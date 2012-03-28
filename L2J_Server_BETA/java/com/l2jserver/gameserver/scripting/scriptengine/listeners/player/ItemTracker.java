@@ -16,10 +16,11 @@ package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AddToInventoryEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDestroyEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDropEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemTransferEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -40,32 +41,27 @@ public abstract class ItemTracker extends L2JListener
 	
 	/**
 	 * The item has been dropped
-	 * @param item
-	 * @param player
+	 * @param event 
 	 */
-	public abstract void onDrop(L2ItemInstance item, L2PcInstance player);
+	public abstract void onDrop(ItemDropEvent event);
 	
 	/**
 	 * The item has been added to the inventory
-	 * @param item
-	 * @param player
+	 * @param event 
 	 */
-	public abstract void onAddToInventory(L2ItemInstance item, L2PcInstance player);
+	public abstract void onAddToInventory(AddToInventoryEvent event);
 	
 	/**
 	 * Notifies when the item is destroyed
-	 * @param item
-	 * @param player
+	 * @param event 
 	 */
-	public abstract void onDestroy(L2ItemInstance item, L2PcInstance player);
+	public abstract void onDestroy(ItemDestroyEvent event);
 	
 	/**
 	 * Notifies when the item is transfered or traded
-	 * @param item
-	 * @param player
-	 * @param target
+	 * @param event 
 	 */
-	public abstract void onTransfer(L2ItemInstance item, L2PcInstance player, ItemContainer target);
+	public abstract void onTransfer(ItemTransferEvent event);
 	
 	@Override
 	public void register()

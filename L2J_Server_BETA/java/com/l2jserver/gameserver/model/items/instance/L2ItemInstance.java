@@ -63,6 +63,9 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SpawnItem;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AugmentEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDropEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemPickupEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.AugmentListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.DropListener;
 import com.l2jserver.gameserver.util.GMAudit;
@@ -248,10 +251,8 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public final void pickupMe(L2Character player)
 	{
-		for (DropListener listener : dropListeners)
-		{
-			if (!listener.onPickup(this, (L2PcInstance) player, getPosition().getX(), getPosition().getY(), getPosition().getZ()))
-				return;
+		if(!firePickupListeners(player.getActingPlayer())){
+			return;
 		}
 		assert getPosition().getWorldRegion() != null;
 		
@@ -890,10 +891,8 @@ public final class L2ItemInstance extends L2Object
 		// there shall be no previous augmentation..
 		if (_augmentation != null)
 			return false;
-		for (AugmentListener listener : augmentListeners)
-		{
-			if (!listener.onAugment(this, _augmentation))
-				return false;
+		if(!fireAugmentListeners(true,augmentation)){
+			return false;
 		}
 		_augmentation = augmentation;
 		updateItemAttributes(null);
@@ -907,10 +906,8 @@ public final class L2ItemInstance extends L2Object
 	{
 		if (_augmentation == null)
 			return;
-		for (AugmentListener listener : augmentListeners)
-		{
-			if (!listener.onRemoveAugment(this, _augmentation))
-				return;
+		if(!fireAugmentListeners(true,_augmentation)){
+			return;
 		}
 		_augmentation = null;
 		
@@ -1622,14 +1619,9 @@ public final class L2ItemInstance extends L2Object
 	
 	public final void dropMe(L2Character dropper, int x, int y, int z)
 	{
-		if((dropper != null) && dropper.isPlayer())
-		{
-			for (DropListener listener : dropListeners)
-			{
-				if (!listener.onDrop(this, dropper.getActingPlayer(), x, y, z))
-					return;
-			}
-		}		
+		if(!fireDropListeners(dropper.getActingPlayer(),x,y,z)){
+			return;
+		}
 		ThreadPoolManager.getInstance().executeTask(new ItemDropTask(this, dropper, x, y, z));
 	}
 	
@@ -2070,6 +2062,73 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	// LISTENERS
+	/**
+	 * Fires all the DropListener.onPickup() methods, if any
+	 * @param actor
+	 * @return false if the item cannot be picked up by the given player
+	 */
+	private boolean firePickupListeners(L2PcInstance actor){
+		if(!dropListeners.isEmpty() && actor != null){
+			ItemPickupEvent event = new ItemPickupEvent();
+			event.setItem(this);
+			event.setPicker(actor);
+			event.setX(getPosition().getX());
+			event.setY(getPosition().getY());
+			event.setZ(getPosition().getZ());
+			for (DropListener listener : dropListeners)
+			{
+				if (!listener.onPickup(event))
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the AugmentListener.onAugment() methods, if any
+	 * @param isAugment
+	 * @param augmentation 
+	 * @return false if the operation is not allowed
+	 */
+	private boolean fireAugmentListeners(boolean isAugment, L2Augmentation augmentation){
+		if(!augmentListeners.isEmpty() && augmentation != null){
+			AugmentEvent event = new AugmentEvent();
+			event.setAugmentation(augmentation);
+			event.setIsAugment(isAugment);
+			event.setItem(this);
+			for (AugmentListener listener : augmentListeners)
+			{
+				if(isAugment){
+					if (!listener.onAugment(event))
+						return false;
+				}
+				else{
+					if(!listener.onRemoveAugment(event)){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private boolean fireDropListeners(L2PcInstance dropper, int x, int y, int z){
+		if(!dropListeners.isEmpty() && dropper != null && dropper.isPlayer()){
+			ItemDropEvent event = new ItemDropEvent();
+			event.setDropper(dropper);
+			event.setItem(this);
+			event.setX(x);
+			event.setY(y);
+			event.setZ(z);
+			for (DropListener listener : dropListeners)
+			{
+				if (!listener.onDrop(event))
+					return false;
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Adds an augmentation listener
 	 * @param listener

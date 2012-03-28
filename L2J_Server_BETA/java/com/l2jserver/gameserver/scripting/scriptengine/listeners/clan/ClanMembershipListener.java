@@ -15,7 +15,9 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.clan;
 
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanJoinEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaderChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaveEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -31,28 +33,24 @@ public abstract class ClanMembershipListener extends L2JListener
 	
 	/**
 	 * A player just joined the clan
-	 * @param player
-	 * @param clan
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onJoin(L2PcInstance player, L2Clan clan);
+	public abstract boolean onJoin(ClanJoinEvent event);
 	
 	/**
 	 * A player just left the clan
-	 * @param playerObjId
-	 * @param clan
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onLeave(int playerObjId, L2Clan clan);
+	public abstract boolean onLeave(ClanLeaveEvent event);
 	
 	/**
 	 * Fired when the clan leader changes
-	 * @param clan
-	 * @param newLeader
-	 * @param oldLeader
+	 * @param event
 	 * @return
 	 */
-	public abstract boolean onLeaderChange(L2Clan clan, L2PcInstance newLeader, L2PcInstance oldLeader);
+	public abstract boolean onLeaderChange(ClanLeaderChangeEvent event);
 	
 	@Override
 	public void register()

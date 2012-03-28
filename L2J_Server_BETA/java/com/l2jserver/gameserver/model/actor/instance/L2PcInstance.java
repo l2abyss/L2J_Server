@@ -269,6 +269,10 @@ import com.l2jserver.gameserver.network.serverpackets.TradeDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeOtherDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeStart;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.events.EquipmentEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.HennaEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ProfessionChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.TransformEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.EquipmentListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.HennaListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerDespawnListener;
@@ -2498,18 +2502,12 @@ public final class L2PcInstance extends L2Playable
 			checkSShotsMatch(item, old);
 		}
 		
+		if(!fireEquipmentListeners(isEquiped,item))
+		{
+			return;
+		}
 		if (isEquiped)
 		{
-			for(EquipmentListener listener : equipmentListeners)
-			{
-				if(!listener.onEquip(item, false))
-					return;
-			}
-			for(EquipmentListener listener : globalEquipmentListeners)
-			{
-				if(!listener.onEquip(item, false))
-					return;
-			}
 			if (item.getEnchantLevel() > 0)
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
@@ -2532,16 +2530,6 @@ public final class L2PcInstance extends L2Playable
 		}
 		else
 		{
-			for(EquipmentListener listener : equipmentListeners)
-			{
-				if(!listener.onEquip(item, true))
-					return;
-			}
-			for(EquipmentListener listener : globalEquipmentListeners)
-			{
-				if(!listener.onEquip(item, true))
-					return;
-			}
 			items = getInventory().equipItemAndRecord(item);
 			
 			if (item.isEquipped())
@@ -5073,11 +5061,10 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(msg);
 			return;
 		}
-		for(TransformListener listener : transformListeners)
-		{
-			if(!listener.onTransform(transformation))
-				return;
+		if(!fireTransformListeners(transformation,true)){
+			return;
 		}
+
 		setQueuedSkill(null, false, false);
 		if(isMounted())
 		{
@@ -5099,10 +5086,8 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (_transformation != null)
 		{
-			for(TransformListener listener : transformListeners)
-			{
-				if(!listener.onUntransform(_transformation))
-					return;
+			if(!fireTransformListeners(_transformation,false)){
+				return;
 			}
 			setQueuedSkill(null, false, false);
 			setTransformAllowedSkills(new int[]{});
@@ -8612,10 +8597,8 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean removeHenna(int slot)
 	{
-		for(HennaListener listener : hennaListeners)
-		{
-			if(!listener.onRemoveHenna(this, getHenna(slot+1)))
-				return false;
+		if(!fireHennaListeners(getHenna(slot+1),false)){
+			return false;
 		}
 		if (slot < 1 || slot > 3)
 			return false;
@@ -8682,10 +8665,8 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean addHenna(L2HennaInstance henna)
 	{
-		for(HennaListener listener : hennaListeners)
-		{
-			if(!listener.onAddHenna(this, henna))
-				return false;
+		if(!fireHennaListeners(henna,true)){
+			return false;
 		}
 		for (int i = 0; i < 3; i++)
 		{
@@ -11030,15 +11011,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		// Set the template of the L2PcInstance
 		setTemplate(t);
-		
-		for (ProfessionChangeListener listener : professionChangeListeners)
-		{
-			listener.professionChanged(this, isSubClassActive(), t);
-		}
-		for (ProfessionChangeListener listener : globalProfessionChangeListeners)
-		{
-			listener.professionChanged(this, isSubClassActive(), t);
-		}
+		fireProfessionChangeListeners(t);
 	}
 	
 	/**
@@ -15570,6 +15543,97 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	// LISTENERS
+	/**
+	 * Fires all the equipment listeners, if any.<br>
+	 * Action is cancelled if it returns false.
+	 * @param isEquiped 
+	 * @param item
+	 * @return
+	 */
+	private boolean fireEquipmentListeners(boolean isEquiped, L2ItemInstance item){
+		if(item != null){
+			EquipmentEvent event = new EquipmentEvent();
+			event.setEquipped(!isEquiped);
+			event.setItem(item);
+			for(EquipmentListener listener : equipmentListeners)
+			{
+				if(!listener.onEquip(event))
+					return false;
+			}
+			for(EquipmentListener listener : globalEquipmentListeners)
+			{
+				if(!listener.onEquip(event))
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the transformation listeners, if any.<br>
+	 * If it returns false, the action is cancelled.<br>
+	 * @param transformation
+	 * @param isTransforming
+	 * @return
+	 */
+	private boolean fireTransformListeners(L2Transformation transformation, boolean isTransforming){
+		if(transformation != null && !transformListeners.isEmpty()){
+			TransformEvent event = new TransformEvent();
+			event.setTransformation(transformation);
+			event.setTransforming(isTransforming);
+			for(TransformListener listener : transformListeners)
+			{
+				if(!listener.onTransform(event))
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the henna listeners, if any.<br>
+	 * The action is cancelled if it returns false
+	 * @param henna
+	 * @param isAdding
+	 * @return
+	 */
+	private boolean fireHennaListeners(L2HennaInstance henna, boolean isAdding){
+		if(henna != null && !hennaListeners.isEmpty()){
+			HennaEvent event = new HennaEvent();
+			event.setAdd(isAdding);
+			event.setHenna(henna);
+			event.setPlayer(this);
+			for(HennaListener listener : hennaListeners)
+			{
+				if(!listener.onRemoveHenna(event))
+					return false;
+			}
+		}
+		return true;	
+	}
+	
+	/**
+	 * Fires all the profession change listeners
+	 * @param t
+	 */
+	private void fireProfessionChangeListeners(L2PcTemplate t){
+		if(!professionChangeListeners.isEmpty() || !globalProfessionChangeListeners.isEmpty()){
+			ProfessionChangeEvent event = null;
+			event = new ProfessionChangeEvent();
+			event.setPlayer(this);
+			event.setSubClass(isSubClassActive());
+			event.setTemplate(t);
+			for (ProfessionChangeListener listener : professionChangeListeners)
+			{
+				listener.professionChanged(event);
+			}
+			for (ProfessionChangeListener listener : globalProfessionChangeListeners)
+			{
+				listener.professionChanged(event);
+			}
+		}
+	}
+	
 	/**
 	 * Adds a despawn listener
 	 * @param listener

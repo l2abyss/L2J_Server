@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.events.EquipmentEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -44,11 +44,10 @@ public abstract class EquipmentListener extends L2JListener
 	
 	/**
 	 * The item has just been equipped or unequipped
-	 * @param item
-	 * @param isEquipped
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onEquip(L2ItemInstance item, boolean isEquipped);
+	public abstract boolean onEquip(EquipmentEvent event);
 	
 	@Override
 	public void register()

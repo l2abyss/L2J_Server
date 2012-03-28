@@ -92,7 +92,7 @@ public abstract class L2Playable extends L2Character
 	
 	@Override
 	public boolean doDie(L2Character killer)
-	{
+	{		
 		// killing is only possible one time
 		synchronized (this)
 		{
@@ -101,6 +101,14 @@ public abstract class L2Playable extends L2Character
 			// now reset currentHp to zero
 			setCurrentHp(0);
 			setIsDead(true);
+		}
+		
+		/**
+		 * This needs to stay here because it overrides L2Character.doDie() and does 
+		 * not call for super.doDie()
+		 */
+		if(!super.fireDeathListeners(killer)){
+			return false;
 		}
 		
 		// Set target to null and cancel Attack or Cast

@@ -116,6 +116,9 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AttackEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.DeathEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.SkillUseEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.AttackListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.DeathListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.SkillUseListener;
@@ -793,19 +796,9 @@ public abstract class L2Character extends L2Object
 		if (isAttackingDisabled())
 			return;
 		
-		for (AttackListener listener : attackListeners)
+		if(!fireAttackListeners(target))
 		{
-			if (!listener.onAttack(target))
-			{
-				return;
-			}
-		}
-		for (AttackListener listener : target.getAttackListeners())
-		{
-			if (!listener.isAttacked(this))
-			{
-				return;
-			}
+			return;
 		}
 		if (Config.DEBUG)
 			_log.fine(getName() + " doAttack: target=" + target);
@@ -1788,10 +1781,12 @@ public abstract class L2Character extends L2Object
 		}
 		beginCast(skill, simultaneously, target, targets);
 	}
-	
+		
 	private void beginCast(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
 	{
-		
+		if(!fireSkillCastListeners(skill,simultaneously,target,targets)){
+			return;
+		}
 		if (target == null)
 		{
 			if (simultaneously)
@@ -1804,32 +1799,6 @@ public abstract class L2Character extends L2Object
 				getAI().setIntention(AI_INTENTION_ACTIVE);
 			}
 			return;
-		}
-		for(SkillUseListener listener : skillUseListeners)
-		{
-			int skillId = skill.getId();
-			if(listener.getSkillId() == -1 || skillId == listener.getSkillId())
-			{
-				if(!listener.onSkillUse(skill, this, targets))
-				{
-					return;
-				}
-			}
-		}
-		for(SkillUseListener listener : globalSkillUseListeners)
-		{
-			int npcId = listener.getNpcId();
-			int skillId = listener.getSkillId();
-			boolean skillOk = skillId == -1 || skillId == skill.getId();
-			boolean charOk = (npcId == -1 && this instanceof L2NpcInstance) || (npcId == -2 && this instanceof L2PcInstance) || 
-				npcId == -3 || (this instanceof L2NpcInstance && ((L2NpcInstance)this).getNpcId() == npcId);
-			if(skillOk && charOk)
-			{
-				if(!listener.onSkillUse(skill, this, targets))
-				{
-					return;
-				}
-			}
 		}
 		if (skill.getSkillType() == L2SkillType.RESURRECT)
 		{
@@ -2351,36 +2320,8 @@ public abstract class L2Character extends L2Object
 			setCurrentHp(0);
 			setIsDead(true);
 		}
-		
-		for (DeathListener listener : deathListeners)
-		{
-			if (!listener.onDeath(this, killer))
-			{
-				return false;
-			}
-		}
-		
-		if (killer != null)
-		{
-			for (DeathListener listener : killer.getDeathListeners())
-			{
-				if (!listener.onKill(this, killer))
-				{
-					return false;
-				}
-			}
-		}
-		
-		for (DeathListener listener : globalDeathListeners)
-		{
-			if (killer instanceof L2PcInstance || this instanceof L2PcInstance)
-			{
-				if (!listener.onDeath(this, killer))
-				{
-					return false;
-				}
-				
-			}
+		if(!fireDeathListeners(killer)){
+			return false;
 		}
 		
 		// Set target to null and cancel Attack or Cast
@@ -7703,6 +7644,137 @@ public abstract class L2Character extends L2Object
 	}
 	
 	// LISTENERS
+	
+	/**
+	 * Fires the attack listeners, if any.
+	 * Returns false if the attack is to be blocked.
+	 * @param target
+	 * @return
+	 */
+	private boolean fireAttackListeners(L2Character target){
+		if(target != null && (!attackListeners.isEmpty() || !target.getAttackListeners().isEmpty())){
+			AttackEvent event = new AttackEvent();
+			event.setTarget(target);
+			event.setAttacker(this);
+			for (AttackListener listener : attackListeners)
+			{
+				if (!listener.onAttack(event))
+				{
+					return false;
+				}
+			}
+			for (AttackListener listener : target.getAttackListeners())
+			{
+				if (!listener.isAttacked(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires the skill cast listeners, if any.
+	 * Returns false if the attack is to be blocked.
+	 * @param skill
+	 * @param simultaneously
+	 * @param target
+	 * @param targets
+	 * @return
+	 */
+	private boolean fireSkillCastListeners(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets){
+		if(skill != null && (target != null || targets.length != 0) && (!skillUseListeners.isEmpty() || !globalSkillUseListeners.isEmpty())){
+			int arraySize = (target == null ? 0 : 1) + (targets == null ? 0 : targets.length);
+			L2Object[] t = new L2Object[arraySize];
+			int i = 0;
+			if(target != null){
+				t[0] = target;
+				i ++;
+			}
+			if(targets != null){
+				for(int f=0; f<targets.length; f++){
+					t[f+i] = targets[f]; 
+				}
+			}
+			if(targets.length > 0){
+				SkillUseEvent event = new SkillUseEvent();
+				event.setCaster(this);
+				event.setSkill(skill);
+				event.setTargets(t);
+				for(SkillUseListener listener : skillUseListeners)
+				{
+					int skillId = skill.getId();
+					if(listener.getSkillId() == -1 || skillId == listener.getSkillId())
+					{
+						if(!listener.onSkillUse(event))
+						{
+							return false;
+						}
+					}
+				}
+				for(SkillUseListener listener : globalSkillUseListeners)
+				{
+					int npcId = listener.getNpcId();
+					int skillId = listener.getSkillId();
+					boolean skillOk = skillId == -1 || skillId == skill.getId();
+					boolean charOk = (npcId == -1 && this instanceof L2NpcInstance) || (npcId == -2 && this instanceof L2PcInstance) || 
+						npcId == -3 || (this instanceof L2NpcInstance && ((L2NpcInstance)this).getNpcId() == npcId);
+					if(skillOk && charOk)
+					{
+						if(!listener.onSkillUse(event))
+						{
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires the death listeners, if any.<br>
+	 * If it returns false, the doDie method will return false (and the L2Character wont die)<br>
+	 * The method is public so that L2Playable can access it.
+	 * @param killer
+	 * @return
+	 */
+	public boolean fireDeathListeners(L2Character killer){
+		if(killer != null && (!deathListeners.isEmpty() || !globalDeathListeners.isEmpty() || !killer.getDeathListeners().isEmpty())){
+			DeathEvent event = new DeathEvent();
+			event.setKiller(killer);
+			event.setVictim(this);
+			for (DeathListener listener : deathListeners)
+			{
+				if (!listener.onDeath(event))
+				{
+					return false;
+				}
+			}
+			for (DeathListener listener : killer.getDeathListeners())
+			{
+				if (!listener.onKill(event))
+				{
+					return false;
+				}
+			}
+			for (DeathListener listener : globalDeathListeners)
+			{
+				if (killer instanceof L2PcInstance || this instanceof L2PcInstance)
+				{
+					if (!listener.onDeath(event))
+					{
+						return false;
+					}
+					
+				}
+			}
+		}
+		return true;
+	}
+
+	
 	/**
 	 * Adds an attack listener
 	 * @param listener
@@ -7774,6 +7846,10 @@ public abstract class L2Character extends L2Object
 		{
 			globalDeathListeners.remove(listener);
 		}
+	}
+	
+	public static List<DeathListener> getGlobalDeathListeners(){
+		return globalDeathListeners;
 	}
 	
 	/**

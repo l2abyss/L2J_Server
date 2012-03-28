@@ -47,6 +47,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemCreateEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.NewItemListener;
 import com.l2jserver.gameserver.util.GMAudit;
 
@@ -272,13 +273,8 @@ public class ItemTable
 	 */
 	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
 	{
-		for (NewItemListener listener : newItemListeners)
-		{
-			if (listener.containsItemId(itemId))
-			{
-				if (!listener.onCreate(itemId, actor))
-					return null;
-			}
+		if(!fireNewItemListeners(process,itemId,count,actor,reference)){
+			return null;
 		}
 		// Create and Init the L2ItemInstance corresponding to the Item Identifier
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
@@ -493,6 +489,35 @@ public class ItemTable
 	}
 	
 	// Listeners
+	
+	/**
+	 * Fires all the new item listeners, if any
+	 * @param process
+	 * @param itemId
+	 * @param count
+	 * @param actor
+	 * @param reference
+	 * @return
+	 */
+	private boolean fireNewItemListeners(String process, int itemId, long count, L2PcInstance actor, Object reference){
+		if(!newItemListeners.isEmpty() && actor != null){
+			ItemCreateEvent event = new ItemCreateEvent();
+			event.setItemId(itemId);
+			event.setPlayer(actor);
+			event.setCount(count);
+			event.setProcess(process);
+			event.setReference(reference);
+			for (NewItemListener listener : newItemListeners)
+			{
+				if (listener.containsItemId(itemId))
+				{
+					if (!listener.onCreate(event))
+						return false;
+				}
+			}
+		}
+		return true;
+	}
 	/**
 	 * Adds a new item listener
 	 * @param listener

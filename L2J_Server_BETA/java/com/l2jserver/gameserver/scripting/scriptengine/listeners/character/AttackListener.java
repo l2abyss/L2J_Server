@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.character;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AttackEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -38,17 +39,17 @@ public abstract class AttackListener extends L2JListener
 	
 	/**
 	 * The player just attacked another character
-	 * @param target
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onAttack(L2Character target);
+	public abstract boolean onAttack(AttackEvent event);
 	
 	/**
 	 * The player was just attacked by another character
-	 * @param attacker
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean isAttacked(L2Character attacker);
+	public abstract boolean isAttacked(AttackEvent event);
 	
 	@Override
 	public void register()

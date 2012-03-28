@@ -15,6 +15,8 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.clan;
 
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanCreationEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLevelUpEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -30,17 +32,16 @@ public abstract class ClanCreationListener extends L2JListener
 	
 	/**
 	 * Fired when a clan is created
-	 * @param clan
+	 * @param event 
 	 */
-	public abstract void onClanCreate(L2Clan clan);
+	public abstract void onClanCreate(ClanCreationEvent event);
 	
 	/**
 	 * Fired when a clan levels up
-	 * @param clan
-	 * @param oldLevel
+	 * @param event 
 	 * @return
 	 */
-	public abstract boolean onClanLevelUp(L2Clan clan, int oldLevel);
+	public abstract boolean onClanLevelUp(ClanLevelUpEvent event);
 	
 	@Override
 	public void register()

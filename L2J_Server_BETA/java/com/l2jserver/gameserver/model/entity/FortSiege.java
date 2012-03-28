@@ -50,6 +50,8 @@ import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.events.FortSiegeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.events.FortSiegeListener;
 
 public class FortSiege implements Siegable
@@ -279,10 +281,7 @@ public class FortSiege implements Siegable
 				getFort().setVisibleFlag(true);
 			
 			_log.info("Siege of " + getFort().getName() + " fort finished.");
-			for (FortSiegeListener listener : fortSiegeListeners)
-			{
-				listener.onEnd(this);
-			}
+			fireFortSiegeEventListeners(EventStage.END);
 		}
 	}
 	
@@ -294,12 +293,8 @@ public class FortSiege implements Siegable
 	{
 		if (!getIsInProgress())
 		{
-			for (FortSiegeListener listener : fortSiegeListeners)
-			{
-				if (!listener.onStart(this))
-				{
-					return;
-				}
+			if(!fireFortSiegeEventListeners(EventStage.START)){
+				return;
 			}
 			if (_siegeStartTask != null) // used admin command "admin_startfortsiege"
 			{
@@ -1252,6 +1247,42 @@ public class FortSiege implements Siegable
 	public void updateSiege() { }
 	
 	// Listeners
+	/**
+	 * Fires all the FortSiegeListener.onStart() or onEnd() methods<br>
+	 * depending on the EventStage<br>
+	 * @param stage
+	 * @return if onStart() returns false, the siege is cancelled
+	 */
+	private boolean fireFortSiegeEventListeners(EventStage stage){
+		if(!fortSiegeListeners.isEmpty()){
+			FortSiegeEvent event = new FortSiegeEvent();
+			event.setSiege(this);
+			event.setStage(stage);
+			switch(stage){
+				case START:
+				{
+					for (FortSiegeListener listener : fortSiegeListeners)
+					{
+						if (!listener.onStart(event))
+						{
+							return false;
+						}
+					}
+					break;
+				}
+				case END:
+				{
+					for (FortSiegeListener listener : fortSiegeListeners)
+					{
+						listener.onEnd(event);
+					}
+					break;
+				}
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * Adds a fort siege listener
 	 * @param listener
