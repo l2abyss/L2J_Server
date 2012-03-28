@@ -85,7 +85,7 @@ public final class ClanWarehouse extends Warehouse
 	public L2ItemInstance addItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
 	{
 		L2ItemInstance item = getItemByItemId(itemId);
-		if(!fireClanWarehouseAddItemListeners(process,item,actor,count))
+		if (!fireClanWarehouseAddItemListeners(process, item, actor, count))
 		{
 			return null;
 		}
@@ -95,7 +95,7 @@ public final class ClanWarehouse extends Warehouse
 	@Override
 	public L2ItemInstance addItem(String process, L2ItemInstance item, L2PcInstance actor, Object reference)
 	{
-		if(!fireClanWarehouseAddItemListeners(process,item,actor,item.getCount()))
+		if (!fireClanWarehouseAddItemListeners(process, item, actor, item.getCount()))
 		{
 			return null;
 		}
@@ -105,7 +105,8 @@ public final class ClanWarehouse extends Warehouse
 	@Override
 	public L2ItemInstance destroyItem(String process, L2ItemInstance item, long count, L2PcInstance actor, Object reference)
 	{
-		if(!fireClanWarehouseDeleteItemListeners(process,item,actor,count)){
+		if (!fireClanWarehouseDeleteItemListeners(process, item, actor, count))
+		{
 			return null;
 		}
 		return super.destroyItem(process, item, count, actor, reference);
@@ -115,7 +116,7 @@ public final class ClanWarehouse extends Warehouse
 	public L2ItemInstance transferItem(String process, int objectId, long count, ItemContainer target, L2PcInstance actor, Object reference)
 	{
 		L2ItemInstance sourceitem = getItemByObjectId(objectId);
-		if(!fireClanWarehouseTransferListeners(process,sourceitem,count,target,actor))
+		if (!fireClanWarehouseTransferListeners(process, sourceitem, count, target, actor))
 		{
 			return null;
 		}
@@ -129,18 +130,22 @@ public final class ClanWarehouse extends Warehouse
 	 * @param process
 	 * @param item
 	 * @param actor
-	 * @param count 
+	 * @param count
 	 * @return
 	 */
-	private boolean fireClanWarehouseAddItemListeners(String process, L2ItemInstance item, L2PcInstance actor, long count){
-		if(!clanWarehouseListeners.isEmpty() && actor != null && item != null){
+	private boolean fireClanWarehouseAddItemListeners(String process, L2ItemInstance item, L2PcInstance actor, long count)
+	{
+		if (!clanWarehouseListeners.isEmpty() && actor != null && item != null)
+		{
 			ClanWarehouseAddItemEvent event = new ClanWarehouseAddItemEvent();
 			event.setActor(actor);
 			event.setItem(item);
 			event.setCount(count);
 			event.setProcess(process);
-			for(ClanWarehouseListener listener : clanWarehouseListeners){
-				if(!listener.onAddItem(event)){
+			for (ClanWarehouseListener listener : clanWarehouseListeners)
+			{
+				if (!listener.onAddItem(event))
+				{
 					return false;
 				}
 			}
@@ -154,18 +159,22 @@ public final class ClanWarehouse extends Warehouse
 	 * @param process
 	 * @param item
 	 * @param actor
-	 * @param count 
+	 * @param count
 	 * @return
 	 */
-	private boolean fireClanWarehouseDeleteItemListeners(String process, L2ItemInstance item, L2PcInstance actor, long count){
-		if(!clanWarehouseListeners.isEmpty() && actor != null && item != null){
+	private boolean fireClanWarehouseDeleteItemListeners(String process, L2ItemInstance item, L2PcInstance actor, long count)
+	{
+		if (!clanWarehouseListeners.isEmpty() && actor != null && item != null)
+		{
 			ClanWarehouseDeleteItemEvent event = new ClanWarehouseDeleteItemEvent();
 			event.setActor(actor);
 			event.setCount(count);
 			event.setItem(item);
 			event.setProcess(process);
-			for(ClanWarehouseListener listener : clanWarehouseListeners){
-				if(!listener.onDeleteItem(event)){
+			for (ClanWarehouseListener listener : clanWarehouseListeners)
+			{
+				if (!listener.onDeleteItem(event))
+				{
 					return false;
 				}
 			}
@@ -178,21 +187,25 @@ public final class ClanWarehouse extends Warehouse
 	 * Action is cancelled if it returns false
 	 * @param process
 	 * @param item
-	 * @param count 
-	 * @param target 
+	 * @param count
+	 * @param target
 	 * @param actor
 	 * @return
 	 */
-	private boolean fireClanWarehouseTransferListeners(String process, L2ItemInstance item, long count, ItemContainer target, L2PcInstance actor){
-		if(!clanWarehouseListeners.isEmpty() && actor != null && item != null && target != null){
+	private boolean fireClanWarehouseTransferListeners(String process, L2ItemInstance item, long count, ItemContainer target, L2PcInstance actor)
+	{
+		if (!clanWarehouseListeners.isEmpty() && actor != null && item != null && target != null)
+		{
 			ClanWarehouseTransferEvent event = new ClanWarehouseTransferEvent();
 			event.setActor(actor);
 			event.setCount(count);
 			event.setItem(item);
 			event.setProcess(process);
 			event.setTarget(target);
-			for(ClanWarehouseListener listener : clanWarehouseListeners){
-				if(!listener.onTransferItem(event)){
+			for (ClanWarehouseListener listener : clanWarehouseListeners)
+			{
+				if (!listener.onTransferItem(event))
+				{
 					return false;
 				}
 			}

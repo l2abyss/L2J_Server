@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ClanWarehouseDeleteItemEvent implements L2Event
 {
@@ -28,6 +27,7 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	private L2ItemInstance item;
 	private L2PcInstance actor;
 	private long count;
+	
 	/**
 	 * @return the process
 	 */
@@ -35,6 +35,7 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	{
 		return process;
 	}
+	
 	/**
 	 * @param process the process to set
 	 */
@@ -42,6 +43,7 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	{
 		this.process = process;
 	}
+	
 	/**
 	 * @return the item
 	 */
@@ -49,6 +51,7 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	{
 		return item;
 	}
+	
 	/**
 	 * @param item the item to set
 	 */
@@ -56,6 +59,7 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	{
 		this.item = item;
 	}
+	
 	/**
 	 * @return the actor
 	 */
@@ -63,6 +67,7 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	{
 		return actor;
 	}
+	
 	/**
 	 * @param actor the actor to set
 	 */
@@ -70,6 +75,7 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	{
 		this.actor = actor;
 	}
+	
 	/**
 	 * @return the count
 	 */
@@ -77,6 +83,7 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	{
 		return count;
 	}
+	
 	/**
 	 * @param count the count to set
 	 */
@@ -84,5 +91,5 @@ public class ClanWarehouseDeleteItemEvent implements L2Event
 	{
 		this.count = count;
 	}
-
+	
 }

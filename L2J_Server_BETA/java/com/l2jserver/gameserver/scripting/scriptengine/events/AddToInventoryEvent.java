@@ -20,12 +20,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class AddToInventoryEvent implements L2Event
 {
 	private L2ItemInstance item;
 	private L2PcInstance player;
+	
 	/**
 	 * @return the item
 	 */
@@ -33,6 +33,7 @@ public class AddToInventoryEvent implements L2Event
 	{
 		return item;
 	}
+	
 	/**
 	 * @param item the item to set
 	 */
@@ -40,6 +41,7 @@ public class AddToInventoryEvent implements L2Event
 	{
 		this.item = item;
 	}
+	
 	/**
 	 * @return the player
 	 */
@@ -47,6 +49,7 @@ public class AddToInventoryEvent implements L2Event
 	{
 		return player;
 	}
+	
 	/**
 	 * @param player the player to set
 	 */

@@ -19,12 +19,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class DeathEvent implements L2Event
 {
 	private L2Character victim;
 	private L2Character killer;
+	
 	/**
 	 * @return the victim
 	 */
@@ -32,6 +32,7 @@ public class DeathEvent implements L2Event
 	{
 		return victim;
 	}
+	
 	/**
 	 * @param victim the victim to set
 	 */
@@ -39,6 +40,7 @@ public class DeathEvent implements L2Event
 	{
 		this.victim = victim;
 	}
+	
 	/**
 	 * @return the killer
 	 */
@@ -46,6 +48,7 @@ public class DeathEvent implements L2Event
 	{
 		return killer;
 	}
+	
 	/**
 	 * @param killer the killer to set
 	 */

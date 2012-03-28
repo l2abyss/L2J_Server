@@ -965,7 +965,8 @@ public class PcInventory extends Inventory
 	}
 	
 	// LISTENERS
-	private static enum TrackerEvent{
+	private static enum TrackerEvent
+	{
 		DROP,
 		ADD_TO_INVENTORY,
 		DESTROY,
@@ -979,9 +980,12 @@ public class PcInventory extends Inventory
 	 * @param item
 	 * @param target
 	 */
-	private void fireTrackerEvents(TrackerEvent tEvent, L2PcInstance actor, L2ItemInstance item, ItemContainer target){
-		if(item != null && actor != null && !itemTrackers.isEmpty()){
-			switch(tEvent){
+	private void fireTrackerEvents(TrackerEvent tEvent, L2PcInstance actor, L2ItemInstance item, ItemContainer target)
+	{
+		if (item != null && actor != null && !itemTrackers.isEmpty())
+		{
+			switch (tEvent)
+			{
 				case ADD_TO_INVENTORY:
 				{
 					AddToInventoryEvent event = new AddToInventoryEvent();
@@ -1029,7 +1033,8 @@ public class PcInventory extends Inventory
 				}
 				case TRANSFER:
 				{
-					if(target != null){
+					if (target != null)
+					{
 						ItemTransferEvent event = new ItemTransferEvent();
 						event.setItem(item);
 						event.setPlayer(actor);

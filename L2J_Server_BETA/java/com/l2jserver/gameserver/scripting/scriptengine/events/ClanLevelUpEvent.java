@@ -19,12 +19,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ClanLevelUpEvent implements L2Event
 {
 	private L2Clan clan;
 	private int oldLevel;
+	
 	/**
 	 * @return the clan
 	 */
@@ -32,6 +32,7 @@ public class ClanLevelUpEvent implements L2Event
 	{
 		return clan;
 	}
+	
 	/**
 	 * @param clan the clan to set
 	 */
@@ -39,6 +40,7 @@ public class ClanLevelUpEvent implements L2Event
 	{
 		this.clan = clan;
 	}
+	
 	/**
 	 * @return the oldLevel
 	 */
@@ -46,6 +48,7 @@ public class ClanLevelUpEvent implements L2Event
 	{
 		return oldLevel;
 	}
+	
 	/**
 	 * @param oldLevel the oldLevel to set
 	 */

@@ -20,13 +20,13 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ProfessionChangeEvent implements L2Event
 {
 	private L2PcInstance player;
 	private boolean isSubClass;
 	private L2PcTemplate template;
+	
 	/**
 	 * @return the player
 	 */
@@ -34,6 +34,7 @@ public class ProfessionChangeEvent implements L2Event
 	{
 		return player;
 	}
+	
 	/**
 	 * @param player the player to set
 	 */
@@ -41,6 +42,7 @@ public class ProfessionChangeEvent implements L2Event
 	{
 		this.player = player;
 	}
+	
 	/**
 	 * @return the isSubClass
 	 */
@@ -48,6 +50,7 @@ public class ProfessionChangeEvent implements L2Event
 	{
 		return isSubClass;
 	}
+	
 	/**
 	 * @param isSubClass the isSubClass to set
 	 */
@@ -55,6 +58,7 @@ public class ProfessionChangeEvent implements L2Event
 	{
 		this.isSubClass = isSubClass;
 	}
+	
 	/**
 	 * @return the template
 	 */
@@ -62,6 +66,7 @@ public class ProfessionChangeEvent implements L2Event
 	{
 		return template;
 	}
+	
 	/**
 	 * @param template the template to set
 	 */

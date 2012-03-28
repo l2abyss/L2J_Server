@@ -20,13 +20,13 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ClanLeaderChangeEvent implements L2Event
 {
 	private L2Clan clan;
 	private L2PcInstance newLeader;
 	private L2PcInstance oldLeader;
+	
 	/**
 	 * @return the clan
 	 */
@@ -34,6 +34,7 @@ public class ClanLeaderChangeEvent implements L2Event
 	{
 		return clan;
 	}
+	
 	/**
 	 * @param clan the clan to set
 	 */
@@ -41,6 +42,7 @@ public class ClanLeaderChangeEvent implements L2Event
 	{
 		this.clan = clan;
 	}
+	
 	/**
 	 * @return the newLeader
 	 */
@@ -48,6 +50,7 @@ public class ClanLeaderChangeEvent implements L2Event
 	{
 		return newLeader;
 	}
+	
 	/**
 	 * @param newLeader the newLeader to set
 	 */
@@ -55,6 +58,7 @@ public class ClanLeaderChangeEvent implements L2Event
 	{
 		this.newLeader = newLeader;
 	}
+	
 	/**
 	 * @return the oldLeader
 	 */
@@ -62,6 +66,7 @@ public class ClanLeaderChangeEvent implements L2Event
 	{
 		return oldLeader;
 	}
+	
 	/**
 	 * @param oldLeader the oldLeader to set
 	 */

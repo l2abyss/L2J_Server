@@ -21,13 +21,13 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class SkillUseEvent implements L2Event
 {
 	private L2Character caster;
 	private L2Skill skill;
 	private L2Object[] targets;
+	
 	/**
 	 * @return the caster
 	 */
@@ -35,6 +35,7 @@ public class SkillUseEvent implements L2Event
 	{
 		return caster;
 	}
+	
 	/**
 	 * @param caster the caster to set
 	 */
@@ -42,6 +43,7 @@ public class SkillUseEvent implements L2Event
 	{
 		this.caster = caster;
 	}
+	
 	/**
 	 * @return the targets
 	 */
@@ -49,6 +51,7 @@ public class SkillUseEvent implements L2Event
 	{
 		return targets;
 	}
+	
 	/**
 	 * @param targets the targets to set
 	 */
@@ -56,6 +59,7 @@ public class SkillUseEvent implements L2Event
 	{
 		this.targets = targets;
 	}
+	
 	/**
 	 * @return the skill
 	 */
@@ -63,6 +67,7 @@ public class SkillUseEvent implements L2Event
 	{
 		return skill;
 	}
+	
 	/**
 	 * @param skill the skill to set
 	 */

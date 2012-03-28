@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListen
 
 /**
  * @author TheOne
- *
  */
 public class ChatEvent implements L2Event
 {
@@ -28,6 +27,7 @@ public class ChatEvent implements L2Event
 	private L2PcInstance origin;
 	private String target;
 	private ChatTargetType targetType;
+	
 	/**
 	 * @return the text
 	 */
@@ -35,6 +35,7 @@ public class ChatEvent implements L2Event
 	{
 		return text;
 	}
+	
 	/**
 	 * @param text the text to set
 	 */
@@ -42,6 +43,7 @@ public class ChatEvent implements L2Event
 	{
 		this.text = text;
 	}
+	
 	/**
 	 * @return the origin
 	 */
@@ -49,6 +51,7 @@ public class ChatEvent implements L2Event
 	{
 		return origin;
 	}
+	
 	/**
 	 * @param origin the origin to set
 	 */
@@ -56,6 +59,7 @@ public class ChatEvent implements L2Event
 	{
 		this.origin = origin;
 	}
+	
 	/**
 	 * @return the target
 	 */
@@ -63,6 +67,7 @@ public class ChatEvent implements L2Event
 	{
 		return target;
 	}
+	
 	/**
 	 * @param target the target to set
 	 */
@@ -70,6 +75,7 @@ public class ChatEvent implements L2Event
 	{
 		this.target = target;
 	}
+	
 	/**
 	 * @return the targetType
 	 */
@@ -77,6 +83,7 @@ public class ChatEvent implements L2Event
 	{
 		return targetType;
 	}
+	
 	/**
 	 * @param targetType the targetType to set
 	 */

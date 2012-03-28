@@ -275,7 +275,8 @@ public class L2Clan
 		
 		L2PcInstance exLeader = getLeader().getPlayerInstance();
 		L2PcInstance newLeader = member.getPlayerInstance();
-		if(!fireClanLeaderChangeListeners(newLeader,exLeader)){
+		if (!fireClanLeaderChangeListeners(newLeader, exLeader))
+		{
 			return;
 		}
 		
@@ -368,7 +369,8 @@ public class L2Clan
 	 */
 	public void addClanMember(L2PcInstance player)
 	{
-		if(!fireClanJoinListeners(player)){
+		if (!fireClanJoinListeners(player))
+		{
 			return;
 		}
 		
@@ -429,7 +431,8 @@ public class L2Clan
 	 */
 	public void removeClanMember(int objectId, long clanJoinExpiryTime)
 	{
-		if(!fireClanLeaveListeners(objectId)){
+		if (!fireClanLeaveListeners(objectId))
+		{
 			return;
 		}
 		
@@ -1496,7 +1499,8 @@ public class L2Clan
 	
 	public void setEnemyClan(L2Clan clan)
 	{
-		if(!fireClanWarStartListeners(clan)){
+		if (!fireClanWarStartListeners(clan))
+		{
 			return;
 		}
 		Integer id = clan.getClanId();
@@ -1505,7 +1509,8 @@ public class L2Clan
 	
 	public void setEnemyClan(Integer clan)
 	{
-		if(!fireClanWarStartListeners(ClanTable.getInstance().getClan(clan))){
+		if (!fireClanWarStartListeners(ClanTable.getInstance().getClan(clan)))
+		{
 			return;
 		}
 		_atWarWith.add(clan);
@@ -1524,7 +1529,8 @@ public class L2Clan
 	
 	public void deleteEnemyClan(L2Clan clan)
 	{
-		if(!fireClanWarEndListeners(clan)){
+		if (!fireClanWarEndListeners(clan))
+		{
 			return;
 		}
 		Integer id = clan.getClanId();
@@ -2438,7 +2444,8 @@ public class L2Clan
 		
 		boolean increaseClanLevel = false;
 		
-		if(!fireClanLevelUpListeners()){
+		if (!fireClanLevelUpListeners())
+		{
 			return false;
 		}
 		
@@ -2919,8 +2926,10 @@ public class L2Clan
 	/**
 	 * Fires the clan creation listeners, if any.
 	 */
-	private void fireClanCreationListeners(){
-		if(!clanCreationListeners.isEmpty()){
+	private void fireClanCreationListeners()
+	{
+		if (!clanCreationListeners.isEmpty())
+		{
 			ClanCreationEvent event = new ClanCreationEvent();
 			event.setClan(this);
 			for (ClanCreationListener listener : clanCreationListeners)
@@ -2931,14 +2940,15 @@ public class L2Clan
 	}
 	
 	/**
-	 * Fires all the ClanMemberShipListener.onLeaderChange() methods, if any.
-	 * Prevents the clan leader change if it returns false;
+	 * Fires all the ClanMemberShipListener.onLeaderChange() methods, if any. Prevents the clan leader change if it returns false;
 	 * @param newLeader
 	 * @param exLeader
 	 * @return
 	 */
-	private boolean fireClanLeaderChangeListeners(L2PcInstance newLeader, L2PcInstance exLeader){
-		if(!clanMembershipListeners.isEmpty() && newLeader != null && exLeader != null){
+	private boolean fireClanLeaderChangeListeners(L2PcInstance newLeader, L2PcInstance exLeader)
+	{
+		if (!clanMembershipListeners.isEmpty() && newLeader != null && exLeader != null)
+		{
 			ClanLeaderChangeEvent event = new ClanLeaderChangeEvent();
 			event.setClan(this);
 			event.setNewLeader(newLeader);
@@ -2960,8 +2970,10 @@ public class L2Clan
 	 * @param player
 	 * @return
 	 */
-	private boolean fireClanJoinListeners(L2PcInstance player){
-		if(!clanMembershipListeners.isEmpty() && player != null){
+	private boolean fireClanJoinListeners(L2PcInstance player)
+	{
+		if (!clanMembershipListeners.isEmpty() && player != null)
+		{
 			ClanJoinEvent event = new ClanJoinEvent();
 			event.setClan(this);
 			event.setPlayer(player);
@@ -2982,8 +2994,10 @@ public class L2Clan
 	 * @param objectId - the clan member's objectId
 	 * @return
 	 */
-	private boolean fireClanLeaveListeners(int objectId){
-		if(!clanMembershipListeners.isEmpty()){
+	private boolean fireClanLeaveListeners(int objectId)
+	{
+		if (!clanMembershipListeners.isEmpty())
+		{
 			ClanLeaveEvent event = new ClanLeaveEvent();
 			event.setPlayerId(objectId);
 			event.setClan(this);
@@ -3004,8 +3018,10 @@ public class L2Clan
 	 * @param clan -> the new enemy clan
 	 * @return
 	 */
-	private boolean fireClanWarStartListeners(L2Clan clan){
-		if(!clanWarListeners.isEmpty() && clan != null){
+	private boolean fireClanWarStartListeners(L2Clan clan)
+	{
+		if (!clanWarListeners.isEmpty() && clan != null)
+		{
 			ClanWarEvent event = new ClanWarEvent();
 			event.setClan1(this);
 			event.setClan2(clan);
@@ -3027,8 +3043,10 @@ public class L2Clan
 	 * @param clan -> the enemy clan
 	 * @return
 	 */
-	private boolean fireClanWarEndListeners(L2Clan clan){
-		if(!clanWarListeners.isEmpty() && clan != null){
+	private boolean fireClanWarEndListeners(L2Clan clan)
+	{
+		if (!clanWarListeners.isEmpty() && clan != null)
+		{
 			ClanWarEvent event = new ClanWarEvent();
 			event.setClan1(this);
 			event.setClan2(clan);
@@ -3049,8 +3067,10 @@ public class L2Clan
 	 * Blocks the level up if it returns false
 	 * @return
 	 */
-	private boolean fireClanLevelUpListeners(){
-		if(!clanCreationListeners.isEmpty()){
+	private boolean fireClanLevelUpListeners()
+	{
+		if (!clanCreationListeners.isEmpty())
+		{
 			ClanLevelUpEvent event = new ClanLevelUpEvent();
 			event.setClan(this);
 			event.setOldLevel(_level);

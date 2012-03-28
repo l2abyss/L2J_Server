@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class HennaEvent implements L2Event
 {
@@ -35,6 +34,7 @@ public class HennaEvent implements L2Event
 	{
 		return player;
 	}
+	
 	/**
 	 * @param player the player to set
 	 */
@@ -42,6 +42,7 @@ public class HennaEvent implements L2Event
 	{
 		this.player = player;
 	}
+	
 	/**
 	 * @return the henna
 	 */
@@ -49,6 +50,7 @@ public class HennaEvent implements L2Event
 	{
 		return henna;
 	}
+	
 	/**
 	 * @param henna the henna to set
 	 */
@@ -56,6 +58,7 @@ public class HennaEvent implements L2Event
 	{
 		this.henna = henna;
 	}
+	
 	/**
 	 * @return the add
 	 */
@@ -63,6 +66,7 @@ public class HennaEvent implements L2Event
 	{
 		return add;
 	}
+	
 	/**
 	 * @param add the add to set
 	 */

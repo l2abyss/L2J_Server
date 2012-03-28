@@ -715,8 +715,10 @@ public class PcStat extends PlayableStat
 	 * Fires all the level change listeners, if any.
 	 * @param value
 	 */
-	private void fireLevelChangeListeners(byte value){
-		if(!levelListeners.isEmpty() || !globalLevelListeners.isEmpty()){
+	private void fireLevelChangeListeners(byte value)
+	{
+		if (!levelListeners.isEmpty() || !globalLevelListeners.isEmpty())
+		{
 			PlayerLevelChangeEvent event = new PlayerLevelChangeEvent();
 			event.setPlayer(getActiveChar());
 			event.setOldLevel(getLevel());

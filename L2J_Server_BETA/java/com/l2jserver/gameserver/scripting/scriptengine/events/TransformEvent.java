@@ -19,13 +19,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class TransformEvent implements L2Event
 {
 	private L2Transformation transformation;
 	private boolean transforming; // false = untransforming
-
+	
 	/**
 	 * @return the transformation
 	 */
@@ -33,7 +32,7 @@ public class TransformEvent implements L2Event
 	{
 		return transformation;
 	}
-
+	
 	/**
 	 * @param transformation the transformation to set
 	 */
@@ -41,7 +40,7 @@ public class TransformEvent implements L2Event
 	{
 		this.transformation = transformation;
 	}
-
+	
 	/**
 	 * @return the transforming
 	 */
@@ -49,7 +48,7 @@ public class TransformEvent implements L2Event
 	{
 		return transforming;
 	}
-
+	
 	/**
 	 * @param transforming the transforming to set
 	 */

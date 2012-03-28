@@ -20,13 +20,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
 
 /**
  * @author TheOne
- *
  */
 public class SiegeEvent implements L2Event
 {
 	private Siege siege;
 	private EventStage stage;
-
+	
 	/**
 	 * @return the siege
 	 */
@@ -34,7 +33,7 @@ public class SiegeEvent implements L2Event
 	{
 		return siege;
 	}
-
+	
 	/**
 	 * @param siege the siege to set
 	 */
@@ -42,7 +41,7 @@ public class SiegeEvent implements L2Event
 	{
 		this.siege = siege;
 	}
-
+	
 	/**
 	 * @return the stage
 	 */
@@ -50,7 +49,7 @@ public class SiegeEvent implements L2Event
 	{
 		return stage;
 	}
-
+	
 	/**
 	 * @param stage the stage to set
 	 */

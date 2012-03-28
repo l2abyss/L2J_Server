@@ -273,9 +273,11 @@ public class ItemTable
 	 */
 	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
 	{
-		if(!fireNewItemListeners(process,itemId,count,actor,reference)){
+		if(!fireNewItemListeners(process,itemId,count,actor,reference))
+		{
 			return null;
 		}
+		
 		// Create and Init the L2ItemInstance corresponding to the Item Identifier
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 		
@@ -499,8 +501,10 @@ public class ItemTable
 	 * @param reference
 	 * @return
 	 */
-	private boolean fireNewItemListeners(String process, int itemId, long count, L2PcInstance actor, Object reference){
-		if(!newItemListeners.isEmpty() && actor != null){
+	private boolean fireNewItemListeners(String process, int itemId, long count, L2PcInstance actor, Object reference)
+	{
+		if (!newItemListeners.isEmpty() && actor != null)
+		{
 			ItemCreateEvent event = new ItemCreateEvent();
 			event.setItemId(itemId);
 			event.setPlayer(actor);
@@ -518,6 +522,7 @@ public class ItemTable
 		}
 		return true;
 	}
+	
 	/**
 	 * Adds a new item listener
 	 * @param listener

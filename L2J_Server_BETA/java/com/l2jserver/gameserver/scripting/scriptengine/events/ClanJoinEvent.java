@@ -20,12 +20,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ClanJoinEvent implements L2Event
 {
 	private L2PcInstance player;
 	private L2Clan clan;
+	
 	/**
 	 * @return the player
 	 */
@@ -33,6 +33,7 @@ public class ClanJoinEvent implements L2Event
 	{
 		return player;
 	}
+	
 	/**
 	 * @param player the player to set
 	 */
@@ -40,6 +41,7 @@ public class ClanJoinEvent implements L2Event
 	{
 		this.player = player;
 	}
+	
 	/**
 	 * @return the clan
 	 */
@@ -47,6 +49,7 @@ public class ClanJoinEvent implements L2Event
 	{
 		return clan;
 	}
+	
 	/**
 	 * @param clan the clan to set
 	 */

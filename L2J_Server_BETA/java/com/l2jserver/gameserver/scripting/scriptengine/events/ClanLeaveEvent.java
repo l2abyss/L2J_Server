@@ -19,12 +19,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ClanLeaveEvent implements L2Event
 {
 	private int playerId;
 	private L2Clan clan;
+	
 	/**
 	 * @return the playerId
 	 */
@@ -32,6 +32,7 @@ public class ClanLeaveEvent implements L2Event
 	{
 		return playerId;
 	}
+	
 	/**
 	 * @param playerId the playerId to set
 	 */
@@ -39,6 +40,7 @@ public class ClanLeaveEvent implements L2Event
 	{
 		this.playerId = playerId;
 	}
+	
 	/**
 	 * @return the clan
 	 */
@@ -46,6 +48,7 @@ public class ClanLeaveEvent implements L2Event
 	{
 		return clan;
 	}
+	
 	/**
 	 * @param clan the clan to set
 	 */

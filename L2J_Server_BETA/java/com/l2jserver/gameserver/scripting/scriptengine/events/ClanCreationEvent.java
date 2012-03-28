@@ -19,12 +19,11 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ClanCreationEvent implements L2Event
 {
 	private L2Clan clan;
-
+	
 	/**
 	 * @return the clan
 	 */
@@ -32,7 +31,7 @@ public class ClanCreationEvent implements L2Event
 	{
 		return clan;
 	}
-
+	
 	/**
 	 * @param clan the clan to set
 	 */

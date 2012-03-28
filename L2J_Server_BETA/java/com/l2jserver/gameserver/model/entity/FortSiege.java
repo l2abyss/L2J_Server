@@ -293,7 +293,8 @@ public class FortSiege implements Siegable
 	{
 		if (!getIsInProgress())
 		{
-			if(!fireFortSiegeEventListeners(EventStage.START)){
+			if (!fireFortSiegeEventListeners(EventStage.START))
+			{
 				return;
 			}
 			if (_siegeStartTask != null) // used admin command "admin_startfortsiege"
@@ -1244,7 +1245,9 @@ public class FortSiege implements Siegable
 	}
 	
 	@Override
-	public void updateSiege() { }
+	public void updateSiege()
+	{
+	}
 	
 	// Listeners
 	/**
@@ -1253,12 +1256,15 @@ public class FortSiege implements Siegable
 	 * @param stage
 	 * @return if onStart() returns false, the siege is cancelled
 	 */
-	private boolean fireFortSiegeEventListeners(EventStage stage){
-		if(!fortSiegeListeners.isEmpty()){
+	private boolean fireFortSiegeEventListeners(EventStage stage)
+	{
+		if (!fortSiegeListeners.isEmpty())
+		{
 			FortSiegeEvent event = new FortSiegeEvent();
 			event.setSiege(this);
 			event.setStage(stage);
-			switch(stage){
+			switch (stage)
+			{
 				case START:
 				{
 					for (FortSiegeListener listener : fortSiegeListeners)

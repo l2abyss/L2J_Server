@@ -251,7 +251,8 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public final void pickupMe(L2Character player)
 	{
-		if(!firePickupListeners(player.getActingPlayer())){
+		if (!firePickupListeners(player.getActingPlayer()))
+		{
 			return;
 		}
 		assert getPosition().getWorldRegion() != null;
@@ -891,7 +892,8 @@ public final class L2ItemInstance extends L2Object
 		// there shall be no previous augmentation..
 		if (_augmentation != null)
 			return false;
-		if(!fireAugmentListeners(true,augmentation)){
+		if (!fireAugmentListeners(true, augmentation))
+		{
 			return false;
 		}
 		_augmentation = augmentation;
@@ -906,7 +908,8 @@ public final class L2ItemInstance extends L2Object
 	{
 		if (_augmentation == null)
 			return;
-		if(!fireAugmentListeners(true,_augmentation)){
+		if (!fireAugmentListeners(true, _augmentation))
+		{
 			return;
 		}
 		_augmentation = null;
@@ -1619,7 +1622,8 @@ public final class L2ItemInstance extends L2Object
 	
 	public final void dropMe(L2Character dropper, int x, int y, int z)
 	{
-		if(!fireDropListeners(dropper.getActingPlayer(),x,y,z)){
+		if (!fireDropListeners(dropper.getActingPlayer(), x, y, z))
+		{
 			return;
 		}
 		ThreadPoolManager.getInstance().executeTask(new ItemDropTask(this, dropper, x, y, z));
@@ -2067,8 +2071,10 @@ public final class L2ItemInstance extends L2Object
 	 * @param actor
 	 * @return false if the item cannot be picked up by the given player
 	 */
-	private boolean firePickupListeners(L2PcInstance actor){
-		if(!dropListeners.isEmpty() && actor != null){
+	private boolean firePickupListeners(L2PcInstance actor)
+	{
+		if (!dropListeners.isEmpty() && actor != null)
+		{
 			ItemPickupEvent event = new ItemPickupEvent();
 			event.setItem(this);
 			event.setPicker(actor);
@@ -2087,23 +2093,28 @@ public final class L2ItemInstance extends L2Object
 	/**
 	 * Fires all the AugmentListener.onAugment() methods, if any
 	 * @param isAugment
-	 * @param augmentation 
+	 * @param augmentation
 	 * @return false if the operation is not allowed
 	 */
-	private boolean fireAugmentListeners(boolean isAugment, L2Augmentation augmentation){
-		if(!augmentListeners.isEmpty() && augmentation != null){
+	private boolean fireAugmentListeners(boolean isAugment, L2Augmentation augmentation)
+	{
+		if (!augmentListeners.isEmpty() && augmentation != null)
+		{
 			AugmentEvent event = new AugmentEvent();
 			event.setAugmentation(augmentation);
 			event.setIsAugment(isAugment);
 			event.setItem(this);
 			for (AugmentListener listener : augmentListeners)
 			{
-				if(isAugment){
+				if (isAugment)
+				{
 					if (!listener.onAugment(event))
 						return false;
 				}
-				else{
-					if(!listener.onRemoveAugment(event)){
+				else
+				{
+					if (!listener.onRemoveAugment(event))
+					{
 						return false;
 					}
 				}
@@ -2112,8 +2123,10 @@ public final class L2ItemInstance extends L2Object
 		return true;
 	}
 	
-	private boolean fireDropListeners(L2PcInstance dropper, int x, int y, int z){
-		if(!dropListeners.isEmpty() && dropper != null && dropper.isPlayer()){
+	private boolean fireDropListeners(L2PcInstance dropper, int x, int y, int z)
+	{
+		if (!dropListeners.isEmpty() && dropper != null && dropper.isPlayer())
+		{
 			ItemDropEvent event = new ItemDropEvent();
 			event.setDropper(dropper);
 			event.setItem(this);

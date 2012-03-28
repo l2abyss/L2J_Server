@@ -20,13 +20,13 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class TvtKillEvent implements L2Event
 {
 	private L2PcInstance killer;
 	private L2PcInstance victim;
 	private TvTEventTeam killerTeam;
+	
 	/**
 	 * @return the killer
 	 */
@@ -34,6 +34,7 @@ public class TvtKillEvent implements L2Event
 	{
 		return killer;
 	}
+	
 	/**
 	 * @param killer the killer to set
 	 */
@@ -41,6 +42,7 @@ public class TvtKillEvent implements L2Event
 	{
 		this.killer = killer;
 	}
+	
 	/**
 	 * @return the victim
 	 */
@@ -48,6 +50,7 @@ public class TvtKillEvent implements L2Event
 	{
 		return victim;
 	}
+	
 	/**
 	 * @param victim the victim to set
 	 */
@@ -55,6 +58,7 @@ public class TvtKillEvent implements L2Event
 	{
 		this.victim = victim;
 	}
+	
 	/**
 	 * @return the killerTeam
 	 */
@@ -62,6 +66,7 @@ public class TvtKillEvent implements L2Event
 	{
 		return killerTeam;
 	}
+	
 	/**
 	 * @param killerTeam the killerTeam to set
 	 */

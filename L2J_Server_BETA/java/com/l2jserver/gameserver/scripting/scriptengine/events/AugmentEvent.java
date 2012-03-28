@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class AugmentEvent implements L2Event
 {
@@ -35,6 +34,7 @@ public class AugmentEvent implements L2Event
 	{
 		return item;
 	}
+	
 	/**
 	 * @param item the item to set
 	 */
@@ -42,6 +42,7 @@ public class AugmentEvent implements L2Event
 	{
 		this.item = item;
 	}
+	
 	/**
 	 * @return the augmentation
 	 */
@@ -49,6 +50,7 @@ public class AugmentEvent implements L2Event
 	{
 		return augmentation;
 	}
+	
 	/**
 	 * @param augmentation the augmentation to set
 	 */
@@ -56,6 +58,7 @@ public class AugmentEvent implements L2Event
 	{
 		this.augmentation = augmentation;
 	}
+	
 	/**
 	 * @return the isAugment
 	 */
@@ -63,6 +66,7 @@ public class AugmentEvent implements L2Event
 	{
 		return isAugment;
 	}
+	
 	/**
 	 * @param isAugment the isAugment to set
 	 */

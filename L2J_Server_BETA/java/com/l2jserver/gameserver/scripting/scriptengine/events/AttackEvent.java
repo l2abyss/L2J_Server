@@ -19,12 +19,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class AttackEvent implements L2Event
 {
 	private L2Character attacker;
 	private L2Character target;
+	
 	/**
 	 * @return the attacker
 	 */
@@ -32,6 +32,7 @@ public class AttackEvent implements L2Event
 	{
 		return attacker;
 	}
+	
 	/**
 	 * @param attacker the attacker to set
 	 */
@@ -39,6 +40,7 @@ public class AttackEvent implements L2Event
 	{
 		this.attacker = attacker;
 	}
+	
 	/**
 	 * @return the target
 	 */
@@ -46,6 +48,7 @@ public class AttackEvent implements L2Event
 	{
 		return target;
 	}
+	
 	/**
 	 * @param target the target to set
 	 */

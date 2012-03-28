@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ItemPickupEvent implements L2Event
 {
@@ -29,6 +28,7 @@ public class ItemPickupEvent implements L2Event
 	private int x;
 	private int y;
 	private int z;
+	
 	/**
 	 * @return the item
 	 */
@@ -36,6 +36,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		return item;
 	}
+	
 	/**
 	 * @param item the item to set
 	 */
@@ -43,6 +44,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		this.item = item;
 	}
+	
 	/**
 	 * @return the picker
 	 */
@@ -50,6 +52,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		return picker;
 	}
+	
 	/**
 	 * @param picker the picker to set
 	 */
@@ -57,6 +60,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		this.picker = picker;
 	}
+	
 	/**
 	 * @return the x
 	 */
@@ -64,6 +68,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		return x;
 	}
+	
 	/**
 	 * @param x the x to set
 	 */
@@ -71,6 +76,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		this.x = x;
 	}
+	
 	/**
 	 * @return the y
 	 */
@@ -78,6 +84,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		return y;
 	}
+	
 	/**
 	 * @param y the y to set
 	 */
@@ -85,6 +92,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		this.y = y;
 	}
+	
 	/**
 	 * @return the z
 	 */
@@ -92,6 +100,7 @@ public class ItemPickupEvent implements L2Event
 	{
 		return z;
 	}
+	
 	/**
 	 * @param z the z to set
 	 */

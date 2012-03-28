@@ -19,12 +19,12 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class EquipmentEvent implements L2Event
 {
 	private L2ItemInstance item;
 	private boolean isEquipped;
+	
 	/**
 	 * @return the item
 	 */
@@ -32,6 +32,7 @@ public class EquipmentEvent implements L2Event
 	{
 		return item;
 	}
+	
 	/**
 	 * @param item the item to set
 	 */
@@ -39,6 +40,7 @@ public class EquipmentEvent implements L2Event
 	{
 		this.item = item;
 	}
+	
 	/**
 	 * @return the isEquipped
 	 */
@@ -46,6 +48,7 @@ public class EquipmentEvent implements L2Event
 	{
 		return isEquipped;
 	}
+	
 	/**
 	 * @param isEquipped the isEquipped to set
 	 */

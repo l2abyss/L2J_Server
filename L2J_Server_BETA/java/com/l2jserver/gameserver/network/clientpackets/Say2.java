@@ -325,8 +325,10 @@ public final class Say2 extends L2GameClientPacket
 	 * Fires all the chat listeners, if any
 	 * @param activeChar
 	 */
-	private void fireChatListeners(L2PcInstance activeChar){
-		if(!chatListeners.isEmpty()){
+	private void fireChatListeners(L2PcInstance activeChar)
+	{
+		if (!chatListeners.isEmpty())
+		{
 			ChatEvent event = null;
 			event = new ChatEvent();
 			event.setOrigin(activeChar);
@@ -347,8 +349,10 @@ public final class Say2 extends L2GameClientPacket
 	 * other!
 	 * @param activeChar
 	 */
-	private void fireChatFilters(L2PcInstance activeChar){
-		if(!chatFilterListeners.isEmpty()){
+	private void fireChatFilters(L2PcInstance activeChar)
+	{
+		if (!chatFilterListeners.isEmpty())
+		{
 			ChatEvent event = null;
 			event = new ChatEvent();
 			event.setOrigin(activeChar);
@@ -362,7 +366,7 @@ public final class Say2 extends L2GameClientPacket
 		}
 		
 	}
-	
+
 	/**
 	 * Adds a chat listener
 	 * @param listener

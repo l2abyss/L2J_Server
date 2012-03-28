@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
 
 /**
  * @author TheOne
- *
  */
 public class ClanWarEvent implements L2Event
 {
@@ -35,6 +34,7 @@ public class ClanWarEvent implements L2Event
 	{
 		return clan1;
 	}
+	
 	/**
 	 * @param clan1 the clan1 to set
 	 */
@@ -42,6 +42,7 @@ public class ClanWarEvent implements L2Event
 	{
 		this.clan1 = clan1;
 	}
+	
 	/**
 	 * @return the clan2
 	 */
@@ -49,6 +50,7 @@ public class ClanWarEvent implements L2Event
 	{
 		return clan2;
 	}
+	
 	/**
 	 * @param clan2 the clan2 to set
 	 */
@@ -56,6 +58,7 @@ public class ClanWarEvent implements L2Event
 	{
 		this.clan2 = clan2;
 	}
+	
 	/**
 	 * @return the stage
 	 */
@@ -63,6 +66,7 @@ public class ClanWarEvent implements L2Event
 	{
 		return stage;
 	}
+	
 	/**
 	 * @param stage the stage to set
 	 */

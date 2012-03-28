@@ -19,13 +19,13 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class PlayerLevelChangeEvent implements L2Event
 {
 	private L2PcInstance player;
 	private int oldLevel;
 	private int newLevel;
+	
 	/**
 	 * @return the player
 	 */
@@ -33,6 +33,7 @@ public class PlayerLevelChangeEvent implements L2Event
 	{
 		return player;
 	}
+	
 	/**
 	 * @param player the player to set
 	 */
@@ -40,6 +41,7 @@ public class PlayerLevelChangeEvent implements L2Event
 	{
 		this.player = player;
 	}
+	
 	/**
 	 * @return the oldLevel
 	 */
@@ -47,6 +49,7 @@ public class PlayerLevelChangeEvent implements L2Event
 	{
 		return oldLevel;
 	}
+	
 	/**
 	 * @param oldLevel the oldLevel to set
 	 */
@@ -54,6 +57,7 @@ public class PlayerLevelChangeEvent implements L2Event
 	{
 		this.oldLevel = oldLevel;
 	}
+	
 	/**
 	 * @return the newLevel
 	 */
@@ -61,6 +65,7 @@ public class PlayerLevelChangeEvent implements L2Event
 	{
 		return newLevel;
 	}
+	
 	/**
 	 * @param newLevel the newLevel to set
 	 */

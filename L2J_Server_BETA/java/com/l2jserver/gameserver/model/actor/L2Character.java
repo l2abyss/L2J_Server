@@ -1784,7 +1784,8 @@ public abstract class L2Character extends L2Object
 		
 	private void beginCast(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
 	{
-		if(!fireSkillCastListeners(skill,simultaneously,target,targets)){
+		if (!fireSkillCastListeners(skill, simultaneously, target, targets))
+		{
 			return;
 		}
 		if (target == null)
@@ -2320,7 +2321,8 @@ public abstract class L2Character extends L2Object
 			setCurrentHp(0);
 			setIsDead(true);
 		}
-		if(!fireDeathListeners(killer)){
+		if (!fireDeathListeners(killer))
+		{
 			return false;
 		}
 		
@@ -7646,13 +7648,14 @@ public abstract class L2Character extends L2Object
 	// LISTENERS
 	
 	/**
-	 * Fires the attack listeners, if any.
-	 * Returns false if the attack is to be blocked.
+	 * Fires the attack listeners, if any. Returns false if the attack is to be blocked.
 	 * @param target
 	 * @return
 	 */
-	private boolean fireAttackListeners(L2Character target){
-		if(target != null && (!attackListeners.isEmpty() || !target.getAttackListeners().isEmpty())){
+	private boolean fireAttackListeners(L2Character target)
+	{
+		if (target != null && (!attackListeners.isEmpty() || !target.getAttackListeners().isEmpty()))
+		{
 			AttackEvent event = new AttackEvent();
 			event.setTarget(target);
 			event.setAttacker(this);
@@ -7675,54 +7678,58 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Fires the skill cast listeners, if any.
-	 * Returns false if the attack is to be blocked.
+	 * Fires the skill cast listeners, if any. Returns false if the attack is to be blocked.
 	 * @param skill
 	 * @param simultaneously
 	 * @param target
 	 * @param targets
 	 * @return
 	 */
-	private boolean fireSkillCastListeners(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets){
-		if(skill != null && (target != null || targets.length != 0) && (!skillUseListeners.isEmpty() || !globalSkillUseListeners.isEmpty())){
+	private boolean fireSkillCastListeners(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
+	{
+		if (skill != null && (target != null || targets.length != 0) && (!skillUseListeners.isEmpty() || !globalSkillUseListeners.isEmpty()))
+		{
 			int arraySize = (target == null ? 0 : 1) + (targets == null ? 0 : targets.length);
 			L2Object[] t = new L2Object[arraySize];
 			int i = 0;
-			if(target != null){
+			if (target != null)
+			{
 				t[0] = target;
-				i ++;
+				i++;
 			}
-			if(targets != null){
-				for(int f=0; f<targets.length; f++){
-					t[f+i] = targets[f]; 
+			if (targets != null)
+			{
+				for (int f = 0; f < targets.length; f++)
+				{
+					t[f + i] = targets[f];
 				}
 			}
-			if(targets.length > 0){
+			if (targets.length > 0)
+			{
 				SkillUseEvent event = new SkillUseEvent();
 				event.setCaster(this);
 				event.setSkill(skill);
 				event.setTargets(t);
-				for(SkillUseListener listener : skillUseListeners)
+				for (SkillUseListener listener : skillUseListeners)
 				{
 					int skillId = skill.getId();
-					if(listener.getSkillId() == -1 || skillId == listener.getSkillId())
+					if (listener.getSkillId() == -1 || skillId == listener.getSkillId())
 					{
-						if(!listener.onSkillUse(event))
+						if (!listener.onSkillUse(event))
 						{
 							return false;
 						}
 					}
 				}
-				for(SkillUseListener listener : globalSkillUseListeners)
+				for (SkillUseListener listener : globalSkillUseListeners)
 				{
 					int npcId = listener.getNpcId();
 					int skillId = listener.getSkillId();
 					boolean skillOk = skillId == -1 || skillId == skill.getId();
-					boolean charOk = (npcId == -1 && this instanceof L2NpcInstance) || (npcId == -2 && this instanceof L2PcInstance) || 
-						npcId == -3 || (this instanceof L2NpcInstance && ((L2NpcInstance)this).getNpcId() == npcId);
-					if(skillOk && charOk)
+					boolean charOk = (npcId == -1 && this instanceof L2NpcInstance) || (npcId == -2 && this instanceof L2PcInstance) || npcId == -3 || (this instanceof L2NpcInstance && ((L2NpcInstance) this).getNpcId() == npcId);
+					if (skillOk && charOk)
 					{
-						if(!listener.onSkillUse(event))
+						if (!listener.onSkillUse(event))
 						{
 							return false;
 						}
@@ -7740,8 +7747,10 @@ public abstract class L2Character extends L2Object
 	 * @param killer
 	 * @return
 	 */
-	public boolean fireDeathListeners(L2Character killer){
-		if(killer != null && (!deathListeners.isEmpty() || !globalDeathListeners.isEmpty() || !killer.getDeathListeners().isEmpty())){
+	public boolean fireDeathListeners(L2Character killer)
+	{
+		if (killer != null && (!deathListeners.isEmpty() || !globalDeathListeners.isEmpty() || !killer.getDeathListeners().isEmpty()))
+		{
 			DeathEvent event = new DeathEvent();
 			event.setKiller(killer);
 			event.setVictim(this);

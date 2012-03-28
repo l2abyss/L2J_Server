@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
  * @author TheOne
- *
  */
 public class ItemCreateEvent implements L2Event
 {
@@ -28,6 +27,7 @@ public class ItemCreateEvent implements L2Event
 	private String process;
 	private Object reference;
 	private long count;
+	
 	/**
 	 * @return the player
 	 */
@@ -35,6 +35,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		return player;
 	}
+	
 	/**
 	 * @param player the player to set
 	 */
@@ -42,6 +43,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		this.player = player;
 	}
+	
 	/**
 	 * @return the itemId
 	 */
@@ -49,6 +51,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		return itemId;
 	}
+	
 	/**
 	 * @param itemId the itemId to set
 	 */
@@ -56,6 +59,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		this.itemId = itemId;
 	}
+	
 	/**
 	 * @return the process
 	 */
@@ -63,6 +67,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		return process;
 	}
+	
 	/**
 	 * @param process the process to set
 	 */
@@ -70,6 +75,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		this.process = process;
 	}
+	
 	/**
 	 * @return the reference
 	 */
@@ -77,6 +83,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		return reference;
 	}
+	
 	/**
 	 * @param reference the reference to set
 	 */
@@ -84,6 +91,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		this.reference = reference;
 	}
+	
 	/**
 	 * @return the count
 	 */
@@ -91,6 +99,7 @@ public class ItemCreateEvent implements L2Event
 	{
 		return count;
 	}
+	
 	/**
 	 * @param count the count to set
 	 */

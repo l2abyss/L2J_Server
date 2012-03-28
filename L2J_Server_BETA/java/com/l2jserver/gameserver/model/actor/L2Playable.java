@@ -92,7 +92,7 @@ public abstract class L2Playable extends L2Character
 	
 	@Override
 	public boolean doDie(L2Character killer)
-	{		
+	{
 		// killing is only possible one time
 		synchronized (this)
 		{
@@ -107,7 +107,8 @@ public abstract class L2Playable extends L2Character
 		 * This needs to stay here because it overrides L2Character.doDie() and does 
 		 * not call for super.doDie()
 		 */
-		if(!super.fireDeathListeners(killer)){
+		if (!super.fireDeathListeners(killer))
+		{
 			return false;
 		}
 		
