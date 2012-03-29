@@ -41,11 +41,7 @@ public final class HitConditionBonus extends DocumentParser
 	
 	private HitConditionBonus()
 	{
-		final Document doc = parseFile(new File(Config.DATAPACK_ROOT, "data/stats/hitConditionBonus.xml"));
-		if (doc != null)
-		{
-			parseDocument(doc);
-		}
+		parseFile(new File(Config.DATAPACK_ROOT, "data/stats/hitConditionBonus.xml"));
 		_log.info(getClass().getSimpleName() + ": Loaded Hit Condition bonuses.");
 		if (Config.DEBUG)
 		{

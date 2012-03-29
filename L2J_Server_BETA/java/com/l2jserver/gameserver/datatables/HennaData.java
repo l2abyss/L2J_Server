@@ -44,11 +44,7 @@ public final class HennaData extends DocumentParser
 	private HennaData()
 	{
 		_hennaList.clear();
-		final Document doc = parseFile(new File(Config.DATAPACK_ROOT, "data/stats/hennaList.xml"));
-		if (doc != null)
-		{
-			parseDocument(doc);
-		}
+		parseFile(new File(Config.DATAPACK_ROOT, "data/stats/hennaList.xml"));
 		_log.info(getClass().getSimpleName() + ": Loaded " + _hennaList.size() + " Henna data.");
 	}
 	

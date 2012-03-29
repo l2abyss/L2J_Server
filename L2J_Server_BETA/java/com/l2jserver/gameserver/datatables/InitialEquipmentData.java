@@ -44,11 +44,7 @@ public final class InitialEquipmentData extends DocumentParser
 	private InitialEquipmentData()
 	{
 		_initialEquipmentList.clear();
-		final Document doc = parseFile(new File(Config.DATAPACK_ROOT, Config.INITIAL_EQUIPMENT_EVENT ? filePathEvent : filePathNormal));
-		if (doc != null)
-		{
-			parseDocument(doc);
-		}
+		parseFile(new File(Config.DATAPACK_ROOT, Config.INITIAL_EQUIPMENT_EVENT ? filePathEvent : filePathNormal));
 		_log.info(getClass().getSimpleName() + ": Loaded " + _initialEquipmentList.size() + " Initial Equipment data.");
 	}
 	

@@ -39,11 +39,7 @@ public final class ClassListData extends DocumentParser
 	private ClassListData()
 	{
 		_classData.clear();
-		final Document doc = parseFile(new File(Config.DATAPACK_ROOT, "data/stats/chars/classList.xml"));
-		if (doc != null)
-		{
-			parseDocument(doc);
-		}
+		parseFile(new File(Config.DATAPACK_ROOT, "data/stats/chars/classList.xml"));
 		_log.info(getClass().getSimpleName() + ": Loaded " + _classData.size() + " Class data.");
 	}
 	

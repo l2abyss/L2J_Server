@@ -44,16 +44,16 @@ public abstract class DocumentParser
 	
 	/**
 	 * Parses a single XML file.<br>
+	 * If the file was successfully parsed, call {@link #parseDocument(Document)} for the parsed document.
 	 * Validation is enforced.
 	 * @param f the XML file to parse.
-	 * @return the document with the parsed data.
 	 */
-	public Document parseFile(File f)
+	protected void parseFile(File f)
 	{
 		if (!xmlFilter.accept(f))
 		{
 			_log.warning(getClass().getSimpleName() + ": Could not parse " + f.getName() + " is not a file or it doesn't exist!");
-			return null;
+			return;
 		}
 		
 		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -71,9 +71,9 @@ public abstract class DocumentParser
 		catch (Exception e)
 		{
 			_log.warning(getClass().getSimpleName() + ": Could not parse " + f.getName() + " file: " + e.getMessage());
-			return null;
+			return;
 		}
-		return doc;
+		parseDocument(doc);
 	}
 	
 	/**
@@ -81,18 +81,17 @@ public abstract class DocumentParser
 	 * @param path the path to the directory where the XML files are.
 	 * @return {@code false} if it fails to find the directory, {@code true} otherwise.
 	 */
-	public boolean parseDirectory(String path)
+	protected boolean parseDirectory(String path)
 	{
 		return parseDirectory(new File(path));
 	}
 	
 	/**
-	 * Loads all XML files from {@code path} and calls {@link #parseFile(File)} for each one of them.<br>
-	 * If the file was successfully parsed, call {@link #parseDocument(Document)} for the parsed document.
+	 * Loads all XML files from {@code path} and calls {@link #parseFile(File)} for each one of them.
 	 * @param dir the directory object to scan.
 	 * @return {@code false} if it fails to find the directory, {@code true} otherwise.
 	 */
-	public boolean parseDirectory(File dir)
+	protected boolean parseDirectory(File dir)
 	{
 		if (!dir.exists())
 		{
@@ -103,18 +102,14 @@ public abstract class DocumentParser
 		final File[] listOfFiles = dir.listFiles(xmlFilter);
 		for (File f : listOfFiles)
 		{
-			final Document doc = parseFile(f);
-			if (doc != null)
-			{
-				parseDocument(doc);
-			}
+			parseFile(f);
 		}
 		return true;
 	}
 	
 	/**
 	 * Abstract method that when implemented will parse a document.<br>
-	 * Is expected to be used along with {@link #parseFile(File)}.
+	 * Is expected to be call from {@link #parseFile(File)}.
 	 * @param doc the document to parse.
 	 */
 	protected abstract void parseDocument(Document doc);
@@ -171,7 +166,7 @@ public abstract class DocumentParser
 	 * Simple XML error handler.
 	 * @author Zoey76
 	 */
-	public class XMLErrorHandler implements ErrorHandler
+	protected class XMLErrorHandler implements ErrorHandler
 	{
 		@Override
 		public void warning(SAXParseException e) throws SAXParseException
