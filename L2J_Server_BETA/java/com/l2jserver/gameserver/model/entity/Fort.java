@@ -70,7 +70,6 @@ public class Fort
 	private List<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
 	private L2StaticObjectInstance _flagPole = null;
 	private List<String> _doorDefault = new FastList<String>();
-	private List<String> _flagPoleStats = new FastList<String>();
 	private String _name = "";
 	private FortSiege _siege = null;
 	private Calendar _siegeDate;
@@ -828,35 +827,19 @@ public class Fort
 		}
 	}
 	
-	// This method loads fort flagpoles data from database
 	private void loadFlagPoles()
 	{
-		Connection con = null;
-		try
+		for(L2StaticObjectInstance obj : StaticObjects.getInstance().getStaticObjects())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_staticobjects WHERE fortId = ? AND objectType = ?");
-			statement.setInt(1, getFortId());
-			statement.setInt(2, 1);
-			ResultSet rs = statement.executeQuery();
-			while (rs.next())
+			if (obj.getType() == 3 && obj.getName().startsWith(_name))
 			{
-				//Create list of the door default for use when respawning dead doors
-				_flagPoleStats.add(rs.getString("name") + ";" + rs.getInt("id") + ";" + rs.getInt("x") + ";" + rs.getInt("y") + ";"
-						+ rs.getInt("z") + ";3;none;0;0");
-				_flagPole = StaticObjects.parse(_flagPoleStats.get(_flagPoleStats.size() - 1));
-				StaticObjects.getInstance().putObject(_flagPole);
+				_flagPole = obj;
+				break;
 			}
-			rs.close();
-			statement.close();
 		}
-		catch (Exception e)
+		if (_flagPole == null)
 		{
-			_log.log(Level.WARNING, "Exception: loadFlagPoles(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
+			throw new NullPointerException("Can't find flagpole for Fort " + this);
 		}
 	}
 	
@@ -1498,5 +1481,11 @@ public class Fort
 			character.sendPacket(_sm);
 			return true;
 		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return _name + "(" + _fortId + ")";
 	}
 }
