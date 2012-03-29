@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver.model;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
@@ -26,34 +27,33 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public final class L2ArmorSet
 {
-	private final FastList<Integer> _chest;
-	private final FastList<Integer> _legs;
-	private final FastList<Integer> _head;
-	private final FastList<Integer> _gloves;
-	private final FastList<Integer> _feet;	
-	private final FastList<Integer> _shield;
+	private int _chestId;
+	private final List<Integer> _legs;
+	private final List<Integer> _head;
+	private final List<Integer> _gloves;
+	private final List<Integer> _feet;	
+	private final List<Integer> _shield;
 	
-	private final FastList<SkillHolder> _skills;
-	private final FastList<SkillHolder> _shieldSkills;
-	private final FastList<SkillHolder> _enchant6Skill;
+	private final List<SkillHolder> _skills;
+	private final List<SkillHolder> _shieldSkills;
+	private final List<SkillHolder> _enchant6Skill;
 	
 	public L2ArmorSet()
 	{
-		_chest = new FastList<>();
-		_legs = new FastList<>();
-		_head = new FastList<>();
-		_gloves = new FastList<>();
-		_feet = new FastList<>();
-		_shield = new FastList<>();
+		_legs = new ArrayList<>();
+		_head = new ArrayList<>();
+		_gloves = new ArrayList<>();
+		_feet = new ArrayList<>();
+		_shield = new ArrayList<>();
 		
-		_skills = new FastList<>();
-		_shieldSkills = new FastList<>();
-		_enchant6Skill = new FastList<>();
+		_skills = new ArrayList<>();
+		_shieldSkills = new ArrayList<>();
+		_enchant6Skill = new ArrayList<>();
 	}
 	
 	public void addChest(int id)
 	{
-		_chest.add(id);
+		_chestId = id;
 	}
 	
 	public void addLegs(int id)
@@ -126,53 +126,50 @@ public final class L2ArmorSet
 		if (feetItem != null)
 			feet = feetItem.getItemId();
 		
-		if (!_chest.isEmpty())
-		{
-			for (Integer chest : _chest)
-			{
-				if (containAll(chest, legs, head, gloves, feet))
-					return true;
-			}
-		}
-		return containAll(0, legs, head, gloves, feet);
+		return containAll(_chestId, legs, head, gloves, feet);
 	}
 	
 	public boolean containAll(int chest, int legs, int head, int gloves, int feet)
 	{
-		if (!_chest.isEmpty() && !_chest.contains(Integer.valueOf(chest)))
+		if (_chestId != 0 &&_chestId != chest)
 			return false;
-		if (!_legs.isEmpty() && !_legs.contains(Integer.valueOf(legs)))
+		if (!_legs.isEmpty() && !_legs.contains(legs))
 			return false;
-		if (!_head.isEmpty() && !_head.contains(Integer.valueOf(head)))
+		if (!_head.isEmpty() && !_head.contains(head))
 			return false;
-		if (!_gloves.isEmpty() && !_gloves.contains(Integer.valueOf(gloves)))
+		if (!_gloves.isEmpty() && !_gloves.contains(gloves))
 			return false;
-		if (!_feet.isEmpty() && !_feet.contains(Integer.valueOf(feet)))
+		if (!_feet.isEmpty() && !_feet.contains(feet))
 			return false;
 		
 		return true;
 	}
 	
-	public boolean containItem(int slot, Integer itemId)
+	public boolean containItem(int slot, int itemId)
 	{
 		switch (slot)
 		{
 			case Inventory.PAPERDOLL_CHEST:
-				return _chest.contains(Integer.valueOf(itemId));
+				return _chestId == itemId;
 			case Inventory.PAPERDOLL_LEGS:
-				return _legs.contains(Integer.valueOf(itemId));
+				return _legs.contains(itemId);
 			case Inventory.PAPERDOLL_HEAD:
-				return _head.contains(Integer.valueOf(itemId));
+				return _head.contains(itemId);
 			case Inventory.PAPERDOLL_GLOVES:
-				return _gloves.contains(Integer.valueOf(itemId));
+				return _gloves.contains(itemId);
 			case Inventory.PAPERDOLL_FEET:
-				return _feet.contains(Integer.valueOf(itemId));
+				return _feet.contains(itemId);
 			default:
 				return false;
 		}
 	}
 	
-	public FastList<SkillHolder> getSkills()
+	public int getChestId()
+	{
+		return _chestId;
+	}
+	
+	public List<SkillHolder> getSkills()
 	{
 		return _skills;
 	}
@@ -193,12 +190,12 @@ public final class L2ArmorSet
 		return _shield.contains(Integer.valueOf(shield_id));
 	}
 	
-	public FastList<SkillHolder> getShieldSkillId()
+	public List<SkillHolder> getShieldSkillId()
 	{
 		return _shieldSkills;
 	}
 	
-	public FastList<SkillHolder> getEnchant6skillId()
+	public List<SkillHolder> getEnchant6skillId()
 	{
 		return _enchant6Skill;
 	}
@@ -233,10 +230,5 @@ public final class L2ArmorSet
 			return false;
 		
 		return true;
-	}
-
-	public boolean containsChest(int chestId)
-	{
-		return _chest.contains(Integer.valueOf(chestId));
 	}
 }

@@ -466,7 +466,7 @@ public abstract class Inventory extends ItemContainer
 				if (armorSet.containAll(player))
 				{
 					L2Skill itemSkill;
-					final FastList<SkillHolder> skills = armorSet.getSkills();
+					final List<SkillHolder> skills = armorSet.getSkills();
 					
 					if (skills != null)
 					{
@@ -563,9 +563,9 @@ public abstract class Inventory extends ItemContainer
 			
 			boolean remove = false;
 			L2Skill itemSkill;
-			FastList<SkillHolder> skills = null;
-			FastList<SkillHolder> shieldSkill = null; // shield skill
-			FastList<SkillHolder> skillId6 = null; // enchant +6 skill
+			List<SkillHolder> skills = null;
+			List<SkillHolder> shieldSkill = null; // shield skill
+			List<SkillHolder> skillId6 = null; // enchant +6 skill
 			
 			if (slot == PAPERDOLL_CHEST)
 			{
