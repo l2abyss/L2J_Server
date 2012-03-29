@@ -53,6 +53,7 @@ import com.l2jserver.gameserver.datatables.FishTable;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
 import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.datatables.HerbDropTable;
+import com.l2jserver.gameserver.datatables.HitConditionBonus;
 import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.LevelUpData;
@@ -234,6 +235,7 @@ public class GameServer
 		ClassListData.getInstance();
 		InitialEquipmentData.getInstance();
 		ExperienceTable.getInstance();
+		HitConditionBonus.getInstance();
 		CharTemplateTable.getInstance();
 		CharNameTable.getInstance();
 		LevelUpData.getInstance();

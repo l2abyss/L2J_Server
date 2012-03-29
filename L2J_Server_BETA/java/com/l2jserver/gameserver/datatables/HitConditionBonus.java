@@ -15,124 +15,137 @@
 package com.l2jserver.gameserver.datatables;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
+import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- * 
+ * This class load, holds and calculates the hit condition bonuses.
  * @author Nik
- *
  */
-public class HitConditionBonus
+public final class HitConditionBonus extends DocumentParser
 {
-	protected static final Logger _log = Logger.getLogger(HitConditionBonus.class.getName());
+	private int frontBonus = 0;
+	private int sideBonus = 0;
+	private int backBonus = 0;
+	private int highBonus = 0;
+	private int lowBonus = 0;
+	private int darkBonus = 0;
+	private int rainBonus = 0;
 	
-	private static int frontBonus = 0;
-	private static int sideBonus = 0;
-	private static int backBonus = 0;
-	private static int highBonus = 0;
-	private static int lowBonus = 0;
-	private static int darkBonus = 0;
-	//private static int rainBonus = 0;
+	private HitConditionBonus()
+	{
+		final Document doc = parseFile(new File(Config.DATAPACK_ROOT, "data/stats/hitConditionBonus.xml"));
+		if (doc != null)
+		{
+			parseDocument(doc);
+		}
+		_log.info(getClass().getSimpleName() + ": Loaded Hit Condition bonuses.");
+		if (Config.DEBUG)
+		{
+			_log.info(getClass().getSimpleName() + ": Front bonus: " + frontBonus);
+			_log.info(getClass().getSimpleName() + ": Side bonus: " + sideBonus);
+			_log.info(getClass().getSimpleName() + ": Back bonus: " + backBonus);
+			_log.info(getClass().getSimpleName() + ": High bonus: " + highBonus);
+			_log.info(getClass().getSimpleName() + ": Low bonus: " + lowBonus);
+			_log.info(getClass().getSimpleName() + ": Dark bonus: " + darkBonus);
+			_log.info(getClass().getSimpleName() + ": Rain bonus: " + rainBonus);
+		}
+	}
 	
-	public static double getConditionBonus(L2Character attacker, L2Character target)
+	@Override
+	protected void parseDocument(Document doc)
+	{
+		final Node n = doc.getFirstChild();
+		NamedNodeMap attrs;
+		for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+		{
+			attrs = d.getAttributes();
+			switch (d.getNodeName())
+			{
+				case "front":
+					frontBonus = parseInt(attrs, "val");
+					break;
+				case "side":
+					sideBonus = parseInt(attrs, "val");
+					break;
+				case "back":
+					backBonus = parseInt(attrs, "val");
+					break;
+				case "high":
+					highBonus = parseInt(attrs, "val");
+					break;
+				case "low":
+					lowBonus = parseInt(attrs, "val");
+					break;
+				case "dark":
+					darkBonus = parseInt(attrs, "val");
+					break;
+				case "rain":
+					rainBonus = parseInt(attrs, "val");
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * @param attacker the attacking character.
+	 * @param target the attacked character.
+	 * @return the bonus of the attacker against the target.
+	 */
+	public double getConditionBonus(L2Character attacker, L2Character target)
 	{
 		double mod = 100;
 		// Get high or low bonus
-		if (attacker.getZ() - target.getZ() > 50)
-			mod += HitConditionBonus.highBonus;
-		else if (attacker.getZ() - target.getZ() < -50)
-			mod += HitConditionBonus.lowBonus;
+		if ((attacker.getZ() - target.getZ()) > 50)
+		{
+			mod += highBonus;
+		}
+		else if ((attacker.getZ() - target.getZ()) < -50)
+		{
+			mod += lowBonus;
+		}
 		
 		// Get weather bonus
 		if (GameTimeController.getInstance().isNowNight())
-			mod += HitConditionBonus.darkBonus;
-		//else if () No rain support yet.
-			//chance += hitConditionBonus.rainBonus;
+		{
+			mod += darkBonus;
+			// else if () No rain support yet.
+			// chance += hitConditionBonus.rainBonus;
+		}
 		
 		// Get side bonus
-		if(attacker.isBehindTarget())
-			mod += HitConditionBonus.backBonus;
-		else if(attacker.isInFrontOfTarget())
-			mod += HitConditionBonus.frontBonus;
+		if (attacker.isBehindTarget())
+		{
+			mod += backBonus;
+		}
+		else if (attacker.isInFrontOfTarget())
+		{
+			mod += frontBonus;
+		}
 		else
-			mod += HitConditionBonus.sideBonus;
+		{
+			mod += sideBonus;
+		}
 		
-		// If (mod / 10) is less than 0, return 0, because we cant lower more than 100%.
-		return Math.max(mod / 100, 0); 
+		// If (mod / 100) is less than 0, return 0, because we can't lower more than 100%.
+		return Math.max(mod / 100, 0);
 	}
 	
-	static
+	public static HitConditionBonus getInstance()
 	{
-		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setIgnoringElementContentWhitespace(true);
-		factory.setIgnoringComments(true);
-		final File file = new File(Config.DATAPACK_ROOT, "data/stats/hitConditionBonus.xml");
-		Document doc = null;
-		
-		if (file.exists())
-		{
-			try
-			{
-				doc = factory.newDocumentBuilder().parse(file);
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "[hitConditionBonus] Could not parse file: " + e.getMessage(), e);
-			}
-			
-			String name;
-			for (Node list = doc.getFirstChild(); list != null; list = list.getNextSibling())
-			{
-				if ("hitConditionBonus".equalsIgnoreCase(list.getNodeName()) || "list".equalsIgnoreCase(list.getNodeName()))
-				{
-					for (Node cond = list.getFirstChild(); cond != null; cond = cond.getNextSibling())
-					{
-						int bonus = 0;
-						name = cond.getNodeName();
-						try
-						{
-							if (cond.hasAttributes())
-								bonus = Integer.parseInt(cond.getAttributes().getNamedItem("val").getNodeValue());							
-						}
-						catch (Exception e)
-						{
-							_log.log(Level.WARNING, "[hitConditionBonus] Could not parse condition: " + e.getMessage(), e);
-						}
-						finally
-						{
-							if ("front".equals(name))
-								frontBonus = bonus;
-							else if ("side".equals(name))
-								sideBonus = bonus;
-							else if ("back".equals(name))
-								backBonus = bonus;
-							else if ("high".equals(name))
-								highBonus = bonus;
-							else if ("low".equals(name))
-								lowBonus = bonus;
-							else if ("dark".equals(name))
-								darkBonus = bonus;
-							//else if ("rain".equals(name))
-								//rainBonus = bonus;
-						}
-						
-					}
-				}
-			}
-		}
-		else
-		{
-			throw new Error("[hitConditionBonus] File not found: "+file.getName());
-		}
+		return SingletonHolder._instance;
+	}
+	
+	@SuppressWarnings("synthetic-access")
+	private static class SingletonHolder
+	{
+		protected static final HitConditionBonus _instance = new HitConditionBonus();
 	}
 }

@@ -2373,7 +2373,7 @@ public final class Formulas
 		int chance = (80 + (2 * (attacker.getAccuracy() - target.getEvasionRate(attacker)))) * 10;
 		
 		// Get additional bonus from the conditions when you are attacking
-		chance *= HitConditionBonus.getConditionBonus(attacker, target);
+		chance *= HitConditionBonus.getInstance().getConditionBonus(attacker, target);
 		
 		chance = Math.max(chance, 200);
 		chance = Math.min(chance, 980);

@@ -15,106 +15,88 @@
 package com.l2jserver.gameserver.datatables;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.engines.DocumentParser;
 
 /**
+ * This class holds the Experience points for each level for players and pets.
  * @author mrTJO
  */
-public class ExperienceTable
+public final class ExperienceTable extends DocumentParser
 {
-	private static Logger _log = Logger.getLogger(ExperienceTable.class.getName());
+	private final Map<Integer, Long> _expTable = new HashMap<>();
+	
 	private byte MAX_LEVEL;
 	private byte MAX_PET_LEVEL;
 	
-	private Map<Integer, Long> _expTable;
-	
-	public static ExperienceTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	private ExperienceTable()
 	{
-		loadTable();
-	}
-	
-	private void loadTable()
-	{
-		File xml = new File(Config.DATAPACK_ROOT, "data/stats/experience.xml");
-		Document doc = null;
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setValidating(false);
-		factory.setIgnoringComments(true);
-		if (xml.exists())
+		_expTable.clear();
+		final Document doc = parseFile(new File(Config.DATAPACK_ROOT, "data/stats/experience.xml"));
+		if (doc != null)
 		{
-			try
-			{
-				doc = factory.newDocumentBuilder().parse(xml);
-			}
-			catch (IOException e)
-			{
-				_log.log(Level.WARNING, "Could not read experience.xml table: " + e.getMessage(), e);
-				return;
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "Could not parse experience.xml table: " + e.getMessage(), e);
-				return;
-			}
-			
-			Node table = doc.getFirstChild();
-			NamedNodeMap tableAttr = table.getAttributes();
-			
-			MAX_LEVEL = (byte)(Byte.parseByte(tableAttr.getNamedItem("maxLevel").getNodeValue())+1);
-			MAX_PET_LEVEL = (byte)(Byte.parseByte(tableAttr.getNamedItem("maxPetLevel").getNodeValue())+1);
-
-			_expTable = new HashMap<Integer, Long>(MAX_LEVEL+1);
-			
-			for (Node experience = table.getFirstChild(); experience != null; experience = experience.getNextSibling())
-			{
-				if (experience.getNodeName().equals("experience"))
-				{
-					NamedNodeMap attrs = experience.getAttributes();
-					int level = Integer.parseInt(attrs.getNamedItem("level").getNodeValue());
-					long exp = Long.parseLong(attrs.getNamedItem("tolevel").getNodeValue());
-					
-					_expTable.put(level, exp);
-				}
-			}
-			
-			_log.info("ExperienceTable: Loaded "+_expTable.size()+" levels");
-			_log.info("ExperienceTable: Max Player Level is: "+(MAX_LEVEL-1));
-			_log.info("ExperienceTable: Max Pet Level is: "+(MAX_PET_LEVEL-1));
+			parseDocument(doc);
 		}
-		else
-			_log.warning("ExperienceTable: experience.xml not found!");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _expTable.size() + " levels.");
+		_log.info(getClass().getSimpleName() + ": Max Player Level is: " + (MAX_LEVEL - 1));
+		_log.info(getClass().getSimpleName() + ": Max Pet Level is: " + (MAX_PET_LEVEL - 1));
 	}
 	
+	@Override
+	protected void parseDocument(Document doc)
+	{
+		final Node table = doc.getFirstChild();
+		final NamedNodeMap tableAttr = table.getAttributes();
+		
+		MAX_LEVEL = (byte) (Byte.parseByte(tableAttr.getNamedItem("maxLevel").getNodeValue()) + 1);
+		MAX_PET_LEVEL = (byte) (Byte.parseByte(tableAttr.getNamedItem("maxPetLevel").getNodeValue()) + 1);
+		
+		NamedNodeMap attrs;
+		for (Node n = table.getFirstChild(); n != null; n = n.getNextSibling())
+		{
+			if ("experience".equals(n.getNodeName()))
+			{
+				attrs = n.getAttributes();
+				_expTable.put(parseInteger(attrs, "level"), parseLong(attrs, "tolevel"));
+			}
+		}
+	}
+	
+	/**
+	 * @param level the level required.
+	 * @return the experience points required to reach the given level.
+	 */
 	public long getExpForLevel(int level)
 	{
 		return _expTable.get(level);
 	}
 	
+	/**
+	 * @return the maximum level acquirable by a player.
+	 */
 	public byte getMaxLevel()
 	{
 		return MAX_LEVEL;
 	}
 	
+	/**
+	 * @return the maximum level acquirable by a pet.
+	 */
 	public byte getMaxPetLevel()
 	{
 		return MAX_PET_LEVEL;
+	}
+	
+	public static ExperienceTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	@SuppressWarnings("synthetic-access")

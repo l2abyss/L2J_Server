@@ -158,6 +158,16 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * @param n the named node map.
+	 * @param name the attribute name.
+	 * @return a parsed integer.
+	 */
+	protected static Long parseLong(NamedNodeMap n, String name)
+	{
+		return Long.valueOf(n.getNamedItem(name).getNodeValue());
+	}
+	
+	/**
 	 * Simple XML error handler.
 	 * @author Zoey76
 	 */
