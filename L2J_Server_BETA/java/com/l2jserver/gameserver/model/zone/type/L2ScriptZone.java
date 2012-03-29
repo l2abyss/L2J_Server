@@ -18,11 +18,8 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
- * A scripted zone...
- * Creation of such a zone should require somekind
- * of jython script reference which can handle onEnter() / onExit()
- *
- * @author  durgus
+ * A scripted zone... Creation of such a zone should require somekind of jython script reference which can handle onEnter() / onExit()
+ * @author durgus
  */
 public class L2ScriptZone extends L2ZoneType
 {
@@ -52,5 +49,4 @@ public class L2ScriptZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
-	
 }

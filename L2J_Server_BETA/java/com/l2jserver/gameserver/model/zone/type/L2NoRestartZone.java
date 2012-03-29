@@ -67,7 +67,7 @@ public class L2NoRestartZone extends L2ZoneType
 			return;
 		}
 		
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			character.setInsideZone(L2Character.ZONE_NORESTART, true);
 			L2PcInstance player = (L2PcInstance) character;
@@ -88,7 +88,7 @@ public class L2NoRestartZone extends L2ZoneType
 			return;
 		}
 		
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			character.setInsideZone(L2Character.ZONE_NORESTART, false);
 		}
@@ -97,13 +97,11 @@ public class L2NoRestartZone extends L2ZoneType
 	@Override
 	public void onDieInside(L2Character character)
 	{
-		// Do nothing.
 	}
 	
 	@Override
 	public void onReviveInside(L2Character character)
 	{
-		// Do nothing.
 	}
 	
 	public int getRestartAllowedTime()

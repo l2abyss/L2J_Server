@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
@@ -32,7 +31,7 @@ public class L2DerbyTrackZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2Playable)
+		if (character.isPlayable())
 		{
 			character.setInsideZone(L2Character.ZONE_MONSTERTRACK, true);
 		}
@@ -41,7 +40,7 @@ public class L2DerbyTrackZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (character instanceof L2Playable)
+		if (character.isPlayable())
 		{
 			character.setInsideZone(L2Character.ZONE_MONSTERTRACK, false);
 		}
@@ -56,5 +55,4 @@ public class L2DerbyTrackZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
-	
 }

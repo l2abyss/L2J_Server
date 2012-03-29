@@ -15,12 +15,10 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
  * Zone where store is not allowed.
- * 
  * @author fordfrog
  */
 public class L2NoStoreZone extends L2ZoneType
@@ -33,7 +31,7 @@ public class L2NoStoreZone extends L2ZoneType
 	@Override
 	protected void onEnter(final L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			character.setInsideZone(L2Character.ZONE_NOSTORE, true);
 		}
@@ -42,7 +40,7 @@ public class L2NoStoreZone extends L2ZoneType
 	@Override
 	protected void onExit(final L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			character.setInsideZone(L2Character.ZONE_NOSTORE, false);
 		}

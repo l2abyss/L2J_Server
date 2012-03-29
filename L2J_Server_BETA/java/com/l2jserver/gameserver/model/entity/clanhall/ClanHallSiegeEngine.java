@@ -272,8 +272,8 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
-		final FastList<L2PcInstance> list = _hall.getSiegeZone().getAllPlayers();
-		FastList<L2PcInstance> attackers = new FastList<L2PcInstance>();
+		final List<L2PcInstance> list = _hall.getSiegeZone().getAllPlayers();
+		List<L2PcInstance> attackers = new FastList<L2PcInstance>();
 		
 		for(L2PcInstance pc : list)
 		{

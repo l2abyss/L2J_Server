@@ -15,16 +15,14 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.instancemanager.CastleManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
 /**
  * A castle zone
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2CastleZone extends L2ZoneRespawn
 {
@@ -49,14 +47,18 @@ public class L2CastleZone extends L2ZoneRespawn
 	protected void onEnter(L2Character character)
 	{
 		if (getCastle() != null)
+		{
 			character.setInsideZone(L2Character.ZONE_CASTLE, true);
+		}
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
 		if (getCastle() != null)
+		{
 			character.setInsideZone(L2Character.ZONE_CASTLE, false);
+		}
 	}
 	
 	@Override
@@ -75,14 +77,15 @@ public class L2CastleZone extends L2ZoneRespawn
 	 */
 	public void banishForeigners(int owningClanId)
 	{
+		TeleportWhereType type = TeleportWhereType.Town;
 		for (L2Character temp : getCharactersInsideArray())
 		{
-			if (!(temp instanceof L2PcInstance))
+			if (temp == null || !temp.isPlayer())
 				continue;
-			if (((L2PcInstance) temp).getClanId() == owningClanId)
+			else if (temp.getActingPlayer().getClanId() == owningClanId)
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.Town);
+			temp.teleToLocation(type);
 		}
 	}
 	
@@ -94,7 +97,9 @@ public class L2CastleZone extends L2ZoneRespawn
 	private final Castle getCastle()
 	{
 		if (_castle == null)
+		{
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
+		}
 		return _castle;
 	}
 }

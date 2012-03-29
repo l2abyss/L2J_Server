@@ -74,7 +74,4 @@ public class L2AbnormalZone extends L2ZoneType
 	{
 		onEnter(character);
 	}
-	
-	
-	
 }

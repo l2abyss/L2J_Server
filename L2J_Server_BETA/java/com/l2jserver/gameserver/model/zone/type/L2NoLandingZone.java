@@ -15,14 +15,12 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * A no landing zone
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2NoLandingZone extends L2ZoneType
 {
@@ -34,15 +32,26 @@ public class L2NoLandingZone extends L2ZoneType
 	}
 	
 	@Override
+	public void setParameter(String name, String value)
+	{
+		if (name.equals("dismountDelay"))
+		{
+			dismountDelay = Integer.parseInt(value);
+		}
+		else
+			super.setParameter(name, value);
+	}
+	
+	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			character.setInsideZone(L2Character.ZONE_NOLANDING, true);
-			if (((L2PcInstance) character).getMountType() == 2)
+			if (character.getActingPlayer().getMountType() == 2)
 			{
 				character.sendPacket(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN);
-				((L2PcInstance) character).enteredNoLanding(dismountDelay);
+				character.getActingPlayer().enteredNoLanding(dismountDelay);
 			}
 		}
 	}
@@ -50,12 +59,12 @@ public class L2NoLandingZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			character.setInsideZone(L2Character.ZONE_NOLANDING, false);
-			if (((L2PcInstance) character).getMountType() == 2)
+			if (character.getActingPlayer().getMountType() == 2)
 			{
-				((L2PcInstance) character).exitedNoLanding();
+				character.getActingPlayer().exitedNoLanding();
 			}
 		}
 	}
@@ -68,16 +77,5 @@ public class L2NoLandingZone extends L2ZoneType
 	@Override
 	public void onReviveInside(L2Character character)
 	{
-	}
-	
-	@Override
-	public void setParameter(String name, String value)
-	{
-		if (name.equals("dismountDelay"))
-		{
-			dismountDelay = Integer.parseInt(value);
-		}
-		else
-			super.setParameter(name, value);
 	}
 }

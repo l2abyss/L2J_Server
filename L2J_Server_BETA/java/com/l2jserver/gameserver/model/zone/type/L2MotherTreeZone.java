@@ -20,10 +20,8 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * A mother-trees zone
- * Basic type zone for Hp, MP regen
- *
- * @author  durgus
+ * A mother-trees zone Basic type zone for Hp, MP regen
+ * @author durgus
  */
 public class L2MotherTreeZone extends L2ZoneType
 {
@@ -57,32 +55,36 @@ public class L2MotherTreeZone extends L2ZoneType
 			_hpRegen = Integer.parseInt(value);
 		}
 		else
+		{
 			super.setParameter(name, value);
-		
+		}
 	}
-	
 	
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) character;
+			L2PcInstance player = character.getActingPlayer();
 			character.setInsideZone(L2Character.ZONE_MOTHERTREE, true);
 			if (_enterMsg != 0)
+			{
 				player.sendPacket(SystemMessage.getSystemMessage(_enterMsg));
+			}
 		}
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) character;
+			L2PcInstance player = character.getActingPlayer();
 			player.setInsideZone(L2Character.ZONE_MOTHERTREE, false);
 			if (_leaveMsg != 0)
+			{
 				player.sendPacket(SystemMessage.getSystemMessage(_leaveMsg));
+			}
 		}
 	}
 	

@@ -34,16 +34,17 @@ public class L2PeaceZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
-			if (((L2PcInstance) character).isCombatFlagEquipped() && TerritoryWarManager.getInstance().isTWInProgress())
+			L2PcInstance player = character.getActingPlayer();
+			if (player.isCombatFlagEquipped() && TerritoryWarManager.getInstance().isTWInProgress())
 			{
-				TerritoryWarManager.getInstance().dropCombatFlag(((L2PcInstance) character), false, true);
+				TerritoryWarManager.getInstance().dropCombatFlag(player, false, true);
 			}
 			
 			// PVP possible during siege, now for siege participants only
 			// Could also check if this town is in siege, or if any siege is going on
-			if ((((L2PcInstance) character).getSiegeState() != 0) && (Config.PEACE_ZONE_MODE == 1))
+			if (player.getSiegeState() != 0 && (Config.PEACE_ZONE_MODE == 1))
 			{
 				return;
 			}
@@ -77,12 +78,10 @@ public class L2PeaceZone extends L2ZoneType
 	@Override
 	public void onDieInside(L2Character character)
 	{
-		//
 	}
 	
 	@Override
 	public void onReviveInside(L2Character character)
 	{
-		//
 	}
 }

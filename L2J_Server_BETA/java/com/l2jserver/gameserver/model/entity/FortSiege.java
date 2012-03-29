@@ -250,7 +250,7 @@ public class FortSiege implements Siegable
 			
 			updatePlayerSiegeStateFlags(true);
 			
-			getFort().getZone().banishForeigners(getFort().getOwnerClan());
+			getFort().getZone().banishForeigners(getFort().getOwnerClan().getClanId());
 			getFort().getZone().setIsActive(false);
 			getFort().getZone().updateZoneStatusForCharactersInside();
 			getFort().getZone().setSiegeInstance(null);

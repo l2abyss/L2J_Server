@@ -14,12 +14,12 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author BiggBoss
@@ -36,14 +36,18 @@ public final class L2SiegableHallZone extends L2ClanHallZone
 	@Override
 	public void parseLoc(int x, int y, int z, String type)
 	{
-		if(type != null && type.equals("challenger"))
+		if (type != null && type.equals("challenger"))
 		{
-			if(_challengerLocations == null)
-				_challengerLocations = new java.util.ArrayList<Location>();
-			_challengerLocations.add(new Location(x,y,z));
+			if (_challengerLocations == null)
+			{
+				_challengerLocations = new ArrayList<Location>();
+			}
+			_challengerLocations.add(new Location(x, y, z));
 		}
 		else
+		{
 			super.parseLoc(x, y, z, type);
+		}
 	}
 	
 	public List<Location> getChallengerSpawns()
@@ -54,12 +58,14 @@ public final class L2SiegableHallZone extends L2ClanHallZone
 	public void banishNonSiegeParticipants()
 	{
 		final TeleportWhereType banish = TeleportWhereType.ClanHall_banish;
-		for(L2Character character : getCharactersInsideArray())
+		for (L2Character character : getCharactersInsideArray())
 		{
-			if(character instanceof L2PcInstance)
+			if (character != null && character.isPlayer())
 			{
-				if(!((L2PcInstance)character).isInHideoutSiege())
+				if (!character.getActingPlayer().isInHideoutSiege())
+				{
 					character.teleToLocation(banish);
+				}
 			}
 		}
 	}

@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.List;
+
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -21,7 +23,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
 /**
- * @author Nyaran (based on Kerberos work for custom L2CastleTeleportZone)
+ * based on Kerberos work for custom L2CastleTeleportZone
+ * @author Nyaran
  */
 public class L2ResidenceTeleportZone extends L2ZoneRespawn
 {
@@ -36,9 +39,13 @@ public class L2ResidenceTeleportZone extends L2ZoneRespawn
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("residenceId"))
+		{
 			_residenceId = Integer.parseInt(value);
+		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
@@ -67,14 +74,14 @@ public class L2ResidenceTeleportZone extends L2ZoneRespawn
 	 * Returns all players within this zone
 	 * @return
 	 */
-	public FastList<L2PcInstance> getAllPlayers()
+	public List<L2PcInstance> getAllPlayers()
 	{
-		FastList<L2PcInstance> players = new FastList<L2PcInstance>();
+		List<L2PcInstance> players = new FastList<L2PcInstance>();
 		
 		for (L2Character temp : getCharactersInsideArray())
 		{
-			if (temp instanceof L2PcInstance)
-				players.add((L2PcInstance) temp);
+			if (temp != null && temp.isPlayer())
+				players.add(temp.getActingPlayer());
 		}
 		
 		return players;
@@ -82,19 +89,17 @@ public class L2ResidenceTeleportZone extends L2ZoneRespawn
 	
 	public void oustAllPlayers()
 	{
-		if (_characterList == null)
-			return;
-		if (_characterList.isEmpty())
+		if (_characterList == null || _characterList.isEmpty())
 			return;
 		for (L2Character character : getCharactersInsideArray())
 		{
-			if (character == null)
-				continue;
-			if (character instanceof L2PcInstance)
+			if (character != null && character.isPlayer())
 			{
-				L2PcInstance player = (L2PcInstance) character;
+				L2PcInstance player = character.getActingPlayer();
 				if (player.isOnline())
+				{
 					player.teleToLocation(getSpawnLoc(), 200);
+				}
 			}
 		}
 	}
