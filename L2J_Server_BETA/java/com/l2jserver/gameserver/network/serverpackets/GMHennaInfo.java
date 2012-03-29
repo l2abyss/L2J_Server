@@ -15,51 +15,38 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
+import com.l2jserver.gameserver.model.items.L2Henna;
 
 /**
- *
- * @author  KenM
+ * @author KenM, Zoey76
  */
 public class GMHennaInfo extends L2GameServerPacket
 {
+	private static final String _S__F0_GMHENNAINFO = "[S] F0 GMHennaInfo";
+	
 	private final L2PcInstance _activeChar;
-	private final L2HennaInstance[] _hennas = new L2HennaInstance[3];
-	private int _count;
+	private final L2Henna[] _hennas = new L2Henna[3];
+	private final int _count;
 	
 	public GMHennaInfo(L2PcInstance activeChar)
 	{
 		_activeChar = activeChar;
 		
 		int j = 0;
-		for (int i = 0; i < 3; i++)
+		for (L2Henna henna : _activeChar.getHennaList())
 		{
-			L2HennaInstance h = _activeChar.getHenna(i+1);
-			if (h != null)
+			if (henna != null)
 			{
-				_hennas[j++] = h;
+				_hennas[j++] = henna;
 			}
 		}
 		_count = j;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] 0xf0 GMHennaInfo";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xf0);
-		
+		writeC(0xF0);
 		writeC(_activeChar.getHennaStatINT());
 		writeC(_activeChar.getHennaStatSTR());
 		writeC(_activeChar.getHennaStatCON());
@@ -67,12 +54,17 @@ public class GMHennaInfo extends L2GameServerPacket
 		writeC(_activeChar.getHennaStatDEX());
 		writeC(_activeChar.getHennaStatWIT());
 		writeD(3); // slots?
-		writeD(_count); //size
-		for (int i = 0; i < _count; i++)
+		writeD(_count); // size
+		for (L2Henna henna : _hennas)
 		{
-			writeD(_hennas[i].getSymbolId());
+			writeD(henna.getDyeId());
 			writeD(0x01);
 		}
 	}
 	
+	@Override
+	public String getType()
+	{
+		return _S__F0_GMHENNAINFO;
+	}
 }

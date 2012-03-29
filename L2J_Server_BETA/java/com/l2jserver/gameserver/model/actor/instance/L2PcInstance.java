@@ -66,10 +66,11 @@ import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.FishTable;
-import com.l2jserver.gameserver.datatables.HennaTable;
+import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
@@ -173,7 +174,6 @@ import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Henna;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
-import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
@@ -629,7 +629,7 @@ public final class L2PcInstance extends L2Playable
 	private final List<L2PcInstance> _snoopedPlayer = new FastList<L2PcInstance>();
 	
 	// hennas
-	private final L2HennaInstance[] _henna = new L2HennaInstance[3];
+	private final L2Henna[] _henna = new L2Henna[3];
 	private int _hennaSTR;
 	private int _hennaINT;
 	private int _hennaDEX;
@@ -1364,11 +1364,22 @@ public final class L2PcInstance extends L2Playable
 		return CharTemplateTable.getInstance().getTemplate(_baseClass);
 	}
 	
-	/** Return the L2PcTemplate link to the L2PcInstance. */
+	/**
+	 * @return the L2PcTemplate link to the L2PcInstance.
+	 */
 	@Override
-	public final L2PcTemplate getTemplate() { return (L2PcTemplate)super.getTemplate(); }
+	public final L2PcTemplate getTemplate()
+	{
+		return (L2PcTemplate) super.getTemplate();
+	}
 	
-	public void setTemplate(ClassId newclass) { super.setTemplate(CharTemplateTable.getInstance().getTemplate(newclass)); }
+	/**
+	 * @param newclass
+	 */
+	public void setTemplate(ClassId newclass)
+	{
+		super.setTemplate(CharTemplateTable.getInstance().getTemplate(newclass));
+	}
 	
 	/**
 	 * Return the AI of the L2PcInstance (create it if necessary).<BR><BR>
@@ -2614,7 +2625,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public ClassId getClassId()
 	{
-		return getTemplate().classId;
+		return getTemplate().getClassId();
 	}
 	
 	/**
@@ -2996,10 +3007,10 @@ public final class L2PcInstance extends L2Playable
 	public Race getRace()
 	{
 		if (!isSubClassActive())
-			return getTemplate().race;
-		
-		L2PcTemplate charTemp = CharTemplateTable.getInstance().getTemplate(_baseClass);
-		return charTemp.race;
+		{
+			return getTemplate().getRace();
+		}
+		return CharTemplateTable.getInstance().getTemplate(_baseClass).getRace();
 	}
 	
 	public L2Radar getRadar()
@@ -7287,7 +7298,7 @@ public final class L2PcInstance extends L2Playable
 			while (rset.next())
 			{
 				final int activeClassId = rset.getInt("classid");
-				final boolean female = rset.getInt("sex")!=0;
+				final boolean female = rset.getInt("sex") != 0;
 				final L2PcTemplate template = CharTemplateTable.getInstance().getTemplate(activeClassId);
 				PcAppearance app = new PcAppearance(rset.getByte("face"), rset.getByte("hairColor"), rset.getByte("hairStyle"), female);
 				
@@ -8326,7 +8337,7 @@ public final class L2PcInstance extends L2Playable
 					if (!SkillTreesData.getInstance().isSkillAllowed(this, skill))
 					{
 						Util.handleIllegalPlayerAction(this, "Player " + getName() + " has invalid skill " + skill.getName() +
-								" ("+skill.getId() + "/" + skill.getLevel() + "), class:" + getTemplate().className, 1);
+							" ("+skill.getId() + "/" + skill.getLevel() + "), class:" + ClassListData.getInstance().getClass(getClassId()).getClassName(false), 1);
 						if (Config.SKILL_CHECK_REMOVE)
 							removeSkill(skill);
 					}
@@ -8513,12 +8524,11 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Retrieve from the database all Henna of this L2PcInstance, add them to _henna and calculate stats of the L2PcInstance.<BR><BR>
+	 * Retrieve from the database all Henna of this L2PcInstance, add them to _henna and calculate stats of the L2PcInstance.
 	 */
 	private void restoreHenna()
 	{
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -8527,30 +8537,27 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(2, getClassIndex());
 			ResultSet rset = statement.executeQuery();
 			
-			for (int i=0;i<3;i++)
-				_henna[i]=null;
+			for (int i = 0; i < 3; i++)
+			{
+				_henna[i] = null;
+			}
 			
+			int slot;
+			int symbolId;
 			while (rset.next())
 			{
-				int slot = rset.getInt("slot");
-				
-				if (slot<1 || slot>3)
-					continue;
-				
-				int symbol_id = rset.getInt("symbol_id");
-				
-				L2HennaInstance sym = null;
-				
-				if (symbol_id != 0)
+				slot = rset.getInt("slot");
+				if ((slot < 1) || (slot > 3))
 				{
-					L2Henna tpl = HennaTable.getInstance().getTemplate(symbol_id);
-					
-					if (tpl != null)
-					{
-						sym = new L2HennaInstance(tpl);
-						_henna[slot-1] = sym;
-					}
+					continue;
 				}
+				
+				symbolId = rset.getInt("symbol_id");
+				if (symbolId == 0)
+				{
+					continue;
+				}
+				_henna[slot - 1] = HennaData.getInstance().getHenna(symbolId);
 			}
 			
 			rset.close();
@@ -8558,7 +8565,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Failed restoing character "+this+" hennas.", e);
+			_log.log(Level.SEVERE, "Failed restoing character " + this + " hennas.", e);
 		}
 		finally
 		{
@@ -8593,7 +8600,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Remove a Henna of the L2PcInstance, save update in the character_hennas table of the database and send Server->Client HennaInfo/UserInfo packet to this L2PcInstance.<BR><BR>
+	 * Remove a Henna of the L2PcInstance, save update in the character_hennas table of the database and send Server->Client HennaInfo/UserInfo packet to this L2PcInstance.
 	 * @param slot 
 	 * @return 
 	 */
@@ -8603,26 +8610,30 @@ public final class L2PcInstance extends L2Playable
 		{
 			return false;
 		}
+		
 		if (slot < 1 || slot > 3)
+		{
 			return false;
+		}
 		
 		slot--;
 		
-		if (_henna[slot] == null)
+		L2Henna henna = _henna[slot];
+		if (henna == null)
+		{
 			return false;
+		}
 		
-		L2HennaInstance henna = _henna[slot];
 		_henna[slot] = null;
 		
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(DELETE_CHAR_HENNA);
+			final PreparedStatement statement = con.prepareStatement(DELETE_CHAR_HENNA);
 			
 			statement.setInt(1, getObjectId());
-			statement.setInt(2, slot+1);
+			statement.setInt(2, slot + 1);
 			statement.setInt(3, getClassIndex());
 			
 			statement.execute();
@@ -8647,26 +8658,23 @@ public final class L2PcInstance extends L2Playable
 		sendPacket(new UserInfo(this));
 		sendPacket(new ExBrExtraUserInfo(this));
 		// Add the recovered dyes to the player's inventory and notify them.
-		getInventory().addItem("Henna", henna.getItemIdDye(), henna.getAmountDyeRequire() / 2, this, null);
+		getInventory().addItem("Henna", henna.getDyeItemId(), henna.getCancelCount(), this, null);
+		reduceAdena("Henna", henna.getCancelFee(), this, false);
 		
-		reduceAdena("Henna", henna.getPrice() / 5, this, false);
-		
-		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
-		sm.addItemName(henna.getItemIdDye());
-		sm.addItemNumber(henna.getAmountDyeRequire() / 2);
+		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
+		sm.addItemName(henna.getDyeItemId());
+		sm.addItemNumber(henna.getCancelCount());
 		sendPacket(sm);
-		
 		sendPacket(SystemMessageId.SYMBOL_DELETED);
-		
 		return true;
 	}
 	
 	/**
-	 * Add a Henna to the L2PcInstance, save update in the character_hennas table of the database and send Server->Client HennaInfo/UserInfo packet to this L2PcInstance.<BR><BR>
-	 * @param henna 
-	 * @return 
+	 * Add a Henna to the L2PcInstance, save update in the character_hennas table of the database and send Server->Client HennaInfo/UserInfo packet to this L2PcInstance.
+	 * @param henna the henna to add to the player.
+	 * @return {@code true} if the henna is added to the player, {@code false} otherwise.
 	 */
-	public boolean addHenna(L2HennaInstance henna)
+	public boolean addHenna(L2Henna henna)
 	{
 		if (!fireHennaListeners(henna, true))
 		{
@@ -8682,15 +8690,14 @@ public final class L2PcInstance extends L2Playable
 				recalcHennaStats();
 				
 				Connection con = null;
-				
 				try
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
 					PreparedStatement statement = con.prepareStatement(ADD_CHAR_HENNA);
 					
 					statement.setInt(1, getObjectId());
-					statement.setInt(2, henna.getSymbolId());
-					statement.setInt(3, i+1);
+					statement.setInt(2, henna.getDyeId());
+					statement.setInt(3, i + 1);
 					statement.setInt(4, getClassIndex());
 					
 					statement.execute();
@@ -8719,7 +8726,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Calculate Henna modifiers of this L2PcInstance.<BR><BR>
+	 * Calculate Henna modifiers of this L2PcInstance.
 	 */
 	private void recalcHennaStats()
 	{
@@ -8730,35 +8737,41 @@ public final class L2PcInstance extends L2Playable
 		_hennaWIT = 0;
 		_hennaDEX = 0;
 		
-		for (int i=0;i<3;i++)
-		{
-			if (_henna[i]==null)continue;
-			_hennaINT += _henna[i].getStatINT();
-			_hennaSTR += _henna[i].getStatSTR();
-			_hennaMEN += _henna[i].getStatMEM();
-			_hennaCON += _henna[i].getStatCON();
-			_hennaWIT += _henna[i].getStatWIT();
-			_hennaDEX += _henna[i].getStatDEX();
-		}
-		
-		if (_hennaINT>5)_hennaINT=5;
-		if (_hennaSTR>5)_hennaSTR=5;
-		if (_hennaMEN>5)_hennaMEN=5;
-		if (_hennaCON>5)_hennaCON=5;
-		if (_hennaWIT>5)_hennaWIT=5;
-		if (_hennaDEX>5)_hennaDEX=5;
-	}
+		for (int i = 0; i < 3; i++)
+ 		{
+			if (_henna[i] == null)
+			{
+				continue;
+			}
+			
+			_hennaINT += _henna[i].getStatINT() > 5 ? 5 : _henna[i].getStatINT();
+			_hennaSTR += _henna[i].getStatSTR() > 5 ? 5 : _henna[i].getStatSTR();
+			_hennaMEN += _henna[i].getStatMEN() > 5 ? 5 : _henna[i].getStatMEN();
+			_hennaCON += _henna[i].getStatCON() > 5 ? 5 : _henna[i].getStatCON();
+			_hennaWIT += _henna[i].getStatWIT() > 5 ? 5 : _henna[i].getStatWIT();
+			_hennaDEX += _henna[i].getStatDEX() > 5 ? 5 : _henna[i].getStatDEX();
+ 		}
+ 	}
 	
 	/**
 	 * @param slot 
 	 * @return the Henna of this L2PcInstance corresponding to the selected slot.
 	 */
-	public L2HennaInstance getHenna(int slot)
+	public L2Henna getHenna(int slot)
 	{
-		if (slot < 1 || slot > 3)
+		if ((slot < 1) || (slot > 3))
+		{
 			return null;
-		
+		}
 		return _henna[slot - 1];
+	}
+	
+	/**
+	 * @return the henna holder for this player.
+	 */
+	public L2Henna[] getHennaList()
+	{
+		return _henna;
 	}
 	
 	/**
@@ -10851,9 +10864,11 @@ public final class L2PcInstance extends L2Playable
 			getSubClasses().put(newClass.getClassIndex(), newClass);
 			
 			if (Config.DEBUG)
+			{
 				_log.info(getName() + " added class ID " + classId + " as a sub class at index " + classIndex + ".");
+			}
 			
-			final ClassId subTemplate = ClassId.values()[classId];
+			final ClassId subTemplate = ClassId.getClassId(classId);
 			final FastMap<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(subTemplate);
 			final FastMap<Integer, L2Skill> prevSkillList = new FastMap<Integer, L2Skill>();
 			
@@ -11006,16 +11021,15 @@ public final class L2PcInstance extends L2Playable
 	{
 		_activeClass = classId;
 		
-		L2PcTemplate t = CharTemplateTable.getInstance().getTemplate(classId);
-		
-		if (t == null)
+		final L2PcTemplate pcTemplate = CharTemplateTable.getInstance().getTemplate(classId);
+		if (pcTemplate == null)
 		{
-			_log.severe("Missing template for classId: "+classId);
+			_log.severe("Missing template for classId: " + classId);
 			throw new Error();
 		}
 		// Set the template of the L2PcInstance
-		setTemplate(t);
-		fireProfessionChangeListeners(t);
+		setTemplate(pcTemplate);
+		fireProfessionChangeListeners(pcTemplate);
 	}
 	
 	/**
@@ -14903,16 +14917,12 @@ public final class L2PcInstance extends L2Playable
 	
 	public double getCollisionRadius()
 	{
-		if (getAppearance().getSex())
-			return getBaseTemplate().fCollisionRadius_female;
-		return getBaseTemplate().getfCollisionRadius();
+		return getAppearance().getSex() ? getBaseTemplate().getFCollisionRadiusFemale() : getBaseTemplate().getfCollisionRadius();
 	}
 	
 	public double getCollisionHeight()
 	{
-		if (getAppearance().getSex())
-			return getBaseTemplate().fCollisionHeight_female;
-		return getBaseTemplate().getfCollisionHeight();
+		return getAppearance().getSex() ? getBaseTemplate().getFCollisionHeightFemale() : getBaseTemplate().getfCollisionHeight();
 	}
 	
 	public final int getClientX()
@@ -15605,7 +15615,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param isAdding
 	 * @return
 	 */
-	private boolean fireHennaListeners(L2HennaInstance henna, boolean isAdding)
+	private boolean fireHennaListeners(L2Henna henna, boolean isAdding)
 	{
 		if (henna != null && !hennaListeners.isEmpty())
 		{

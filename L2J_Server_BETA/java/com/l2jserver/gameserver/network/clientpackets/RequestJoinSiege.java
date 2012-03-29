@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.SiegeInfo;
 public final class RequestJoinSiege extends L2GameClientPacket
 {
 	private static final String _C__AD_RequestJoinSiege = "[C] AD RequestJoinSiege";
-	//private static Logger _log = Logger.getLogger(RequestJoinSiege.class.getName());
 	
 	private int _castleId;
 	private int _isAttacker;

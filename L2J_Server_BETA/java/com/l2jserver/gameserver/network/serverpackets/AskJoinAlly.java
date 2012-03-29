@@ -14,10 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-
 /**
- *
  * sample
  * <p>
  * 7d
@@ -33,7 +30,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 public class AskJoinAlly extends L2GameServerPacket
 {
 	private static final String _S__A8_ASKJOINALLY_0XA8 = "[S] bb AskJoinAlly 0xa8";
-	//private static Logger _log = Logger.getLogger(AskJoinAlly.class.getName());
 	
 	private String _requestorName;
 	private int _requestorObjId;

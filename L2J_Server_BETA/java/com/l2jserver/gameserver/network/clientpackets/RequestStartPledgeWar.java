@@ -25,11 +25,9 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
 public final class RequestStartPledgeWar extends L2GameClientPacket
 {
 	private static final String _C__03_REQUESTSTARTPLEDGEWAR = "[C] 03 RequestStartPledgewar";
-	//private static Logger _log = Logger.getLogger(RequestStartPledgeWar.class.getName());
 	
 	private String _pledgeName;
 	private L2Clan _clan;

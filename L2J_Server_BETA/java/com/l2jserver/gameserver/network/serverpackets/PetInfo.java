@@ -25,8 +25,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
  */
 public class PetInfo extends L2GameServerPacket
 {
-	//private static Logger _log = Logger.getLogger(PetInfo.class.getName());
-	
 	private static final String _S__B2_PETINFO = "[S] b2 PetInfo";
 	private L2Summon _summon;
 	private int _x, _y, _z, _heading;

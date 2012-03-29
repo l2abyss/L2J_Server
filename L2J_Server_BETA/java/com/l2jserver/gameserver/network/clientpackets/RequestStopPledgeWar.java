@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 public final class RequestStopPledgeWar extends L2GameClientPacket
 {
 	private static final String _C__05_REQUESTSTOPPLEDGEWAR = "[C] 05 RequestStopPledgeWar";
-	//private static Logger _log = Logger.getLogger(RequestStopPledgeWar.class.getName());
 	
 	private String _pledgeName;
 	

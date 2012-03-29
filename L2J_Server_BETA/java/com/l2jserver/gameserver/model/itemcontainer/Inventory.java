@@ -452,12 +452,12 @@ public abstract class Inventory extends ItemContainer
 			if (chestItem == null)
 				return;
 			
-			// Checks for armorset for the equiped chest
-			L2ArmorSet armorSet = ArmorSetsTable.getInstance().getSet(chestItem.getItemId());
-			
-			if (armorSet == null)
+			// Checks for armor set for the equipped chest.
+			if (!ArmorSetsTable.getInstance().isArmorSet(chestItem.getItemId()))
+			{
 				return;
-			
+			}
+			final L2ArmorSet armorSet = ArmorSetsTable.getInstance().getSet(chestItem.getItemId());
 			boolean update = false;
 			boolean updateTimeStamp = false;
 			// Checks if equiped item is part of set
@@ -569,10 +569,11 @@ public abstract class Inventory extends ItemContainer
 			
 			if (slot == PAPERDOLL_CHEST)
 			{
-				L2ArmorSet armorSet = ArmorSetsTable.getInstance().getSet(item.getItemId());
-				if (armorSet == null)
+				if (!ArmorSetsTable.getInstance().isArmorSet(item.getItemId()))
+				{
 					return;
-				
+				}
+				final L2ArmorSet armorSet = ArmorSetsTable.getInstance().getSet(item.getItemId());
 				remove = true;
 				skills = armorSet.getSkills();
 				shieldSkill = armorSet.getShieldSkillId();

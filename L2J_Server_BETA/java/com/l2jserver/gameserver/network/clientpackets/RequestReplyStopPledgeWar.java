@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 public final class RequestReplyStopPledgeWar extends L2GameClientPacket
 {
 	private static final String _C__06_REQUESTREPLYSTOPPLEDGEWAR = "[C] 06 RequestReplyStopPledgeWar";
-	//private static Logger _log = Logger.getLogger(RequestReplyStopPledgeWar.class.getName());
 	
 	private int _answer;
 	

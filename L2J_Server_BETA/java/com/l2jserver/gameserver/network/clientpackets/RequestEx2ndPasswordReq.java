@@ -29,9 +29,9 @@ import com.l2jserver.gameserver.security.SecondaryPasswordAuth;
 public class RequestEx2ndPasswordReq extends L2GameClientPacket
 {
 	private static final String _C__D0_AF_REQUESTEX2NDPASSWORDREQ = "[C] D0:AF RequestEx2ndPasswordReq";
-	//private static Logger _log = Logger.getLogger(RequestEx2ndPasswordReq.class.getName());
-	int _changePass;
-	String _password, _newPassword;
+	
+	private int _changePass;
+	private String _password, _newPassword;
 	
 	@Override
 	protected void readImpl()

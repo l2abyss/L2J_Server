@@ -24,8 +24,6 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
 public final class RequestQuestList extends L2GameClientPacket
 {
 	private static final String _C__62_REQUESTQUESTLIST = "[C] 62 RequestQuestList";
-	//private static Logger _log = Logger.getLogger(RequestQuestList.class.getName());
-	
 	
 	@Override
 	protected void readImpl()

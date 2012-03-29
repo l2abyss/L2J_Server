@@ -196,18 +196,24 @@ public final class StatsSet
 	 */
 	public int getInteger(String name)
 	{
-		Object val = _set.get(name);
+		final Object val = _set.get(name);
 		if (val == null)
-			throw new IllegalArgumentException("Integer value required, but not specified");
+		{
+			throw new IllegalArgumentException("Integer value required, but not specified: " + name + "!");
+		}
+		
 		if (val instanceof Number)
+		{
 			return ((Number) val).intValue();
+		}
+		
 		try
 		{
 			return Integer.parseInt((String) val);
 		}
 		catch (Exception e)
 		{
-			throw new IllegalArgumentException("Integer value required, but found: " + val);
+			throw new IllegalArgumentException("Integer value required, but found: " + val + "!");
 		}
 	}
 	

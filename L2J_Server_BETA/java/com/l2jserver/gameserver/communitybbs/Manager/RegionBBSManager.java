@@ -28,6 +28,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameServer;
+import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2World;
@@ -131,7 +132,7 @@ public class RegionBBSManager extends BaseBBSManager
 			else if (player.getLevel() >= 20)
 				levelApprox = "medium";
 			
-			StringUtil.append(htmlCode, "<table border=0><tr><td>", player.getName(), " (", sex, " ", player.getTemplate().className, "):</td></tr>"
+			StringUtil.append(htmlCode, "<table border=0><tr><td>", player.getName(), " (", sex, " ", ClassListData.getInstance().getClass(player.getClassId()).getClassName(true), "):</td></tr>"
 					+ "<tr><td>Level: ", levelApprox, "</td></tr>" + "<tr><td><br></td></tr>");
 			
 			if (activeChar != null

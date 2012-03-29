@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeItemMakeInfo;
 public final class RequestRecipeItemMakeInfo extends L2GameClientPacket
 {
 	private static final String _C__B7_REQUESTRECIPEITEMMAKEINFO = "[C] B7 RequestRecipeItemMakeInfo";
-	//private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
 	
 	private int _id;
 	

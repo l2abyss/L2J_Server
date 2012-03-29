@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
 public final class RequestAnswerJoinAlly extends L2GameClientPacket
 {
 	private static final String _C__8D_REQUESTANSWERJOINALLY = "[C] 8D RequestAnswerJoinAlly";
-	//private static Logger _log = Logger.getLogger(RequestAnswerJoinAlly.class.getName());
 	
 	private int _response;
 	

@@ -28,9 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestJoinAlly extends L2GameClientPacket
 {
-	
 	private static final String _C__8C_REQUESTJOINALLY = "[C] 8C RequestJoinAlly";
-	//private static Logger _log = Logger.getLogger(RequestJoinAlly.class.getName());
 	
 	private int _id;
 	

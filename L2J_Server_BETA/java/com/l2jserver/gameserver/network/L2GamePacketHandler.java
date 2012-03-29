@@ -646,11 +646,11 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xc2:
 						// Unused (RequestEvaluate/VoteSociality)
 						break;
-					case 0xc3: // RequestHennaItemList
-						msg = new RequestHennaDrawList();
+					case 0xc3:
+						msg = new RequestHennaItemList();
 						break;
 					case 0xc4:
-						msg = new RequestHennaItemDrawInfo();
+						msg = new RequestHennaItemInfo();
 						break;
 					case 0xc5:
 						msg = new RequestBuySeed();

@@ -19,12 +19,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- *
  * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
  */
 public class GMViewItemList extends L2GameServerPacket
 {
-	//private static Logger _log = Logger.getLogger(GMViewItemList.class.getName());
 	private static final String _S__AD_GMVIEWITEMLIST = "[S] 9a GMViewItemList";
 	private L2ItemInstance[] _items;
 	private int _limit;

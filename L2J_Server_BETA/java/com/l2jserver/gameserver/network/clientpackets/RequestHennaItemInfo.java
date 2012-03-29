@@ -14,42 +14,51 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.datatables.HennaTreeTable;
+import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
-import com.l2jserver.gameserver.network.serverpackets.HennaEquipList;
+import com.l2jserver.gameserver.model.items.L2Henna;
+import com.l2jserver.gameserver.network.serverpackets.HennaItemDrawInfo;
 
 /**
- * @author Tempy
+ * @author Zoey76
  */
-public final class RequestHennaDrawList extends L2GameClientPacket
+public final class RequestHennaItemInfo extends L2GameClientPacket
 {
-	private static final String _C__C3_REQUESTHENNADRAWLIST = "[C] C3 RequestHennaDrawList";
+	private static final String _C__C4_REQUESTHENNAITEMINFO = "[C] C4 RequestHennaItemInfo";
 	
-	// This is just a trigger packet...
-	@SuppressWarnings("unused")
-	private int _unknown;
+	private int _symbolId;
 	
 	@Override
 	protected void readImpl()
 	{
-		_unknown = readD(); // ??
+		_symbolId = readD();
 	}
 	
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
-		L2HennaInstance[] henna = HennaTreeTable.getInstance().getAvailableHenna(activeChar.getClassId());
-		activeChar.sendPacket(new HennaEquipList(activeChar, henna));
+		final L2Henna henna = HennaData.getInstance().getHenna(_symbolId);
+		if (henna == null)
+		{
+			if (_symbolId != 0)
+			{
+				_log.warning(getClass().getSimpleName() + ": Invalid Henna Id: " + _symbolId + " from player " + activeChar);
+			}
+			sendActionFailed();
+			return;
+		}
+		activeChar.sendPacket(new HennaItemDrawInfo(henna, activeChar));
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _C__C3_REQUESTHENNADRAWLIST;
+		return _C__C4_REQUESTHENNAITEMINFO;
 	}
 }

@@ -21,6 +21,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
@@ -46,7 +48,7 @@ public abstract class DocumentParser
 	 * @param f the XML file to parse.
 	 * @return the document with the parsed data.
 	 */
-	public Document parse(File f)
+	public Document parseFile(File f)
 	{
 		if (!xmlFilter.accept(f))
 		{
@@ -75,22 +77,22 @@ public abstract class DocumentParser
 	}
 	
 	/**
-	 * Wrapper for {@link #loadDirectory(File)}.
+	 * Wrapper for {@link #parseDirectory(File)}.
 	 * @param path the path to the directory where the XML files are.
 	 * @return {@code false} if it fails to find the directory, {@code true} otherwise.
 	 */
-	public boolean loadDirectory(String path)
+	public boolean parseDirectory(String path)
 	{
-		return loadDirectory(new File(path));
+		return parseDirectory(new File(path));
 	}
 	
 	/**
-	 * Loads all XML files from {@code path} and calls {@link #parse(File)} for each one of them.<br>
-	 * If the file was successfully parsed, call {@link #parseDoc(Document)} for the parsed document.
+	 * Loads all XML files from {@code path} and calls {@link #parseFile(File)} for each one of them.<br>
+	 * If the file was successfully parsed, call {@link #parseDocument(Document)} for the parsed document.
 	 * @param dir the directory object to scan.
 	 * @return {@code false} if it fails to find the directory, {@code true} otherwise.
 	 */
-	public boolean loadDirectory(File dir)
+	public boolean parseDirectory(File dir)
 	{
 		if (!dir.exists())
 		{
@@ -101,10 +103,10 @@ public abstract class DocumentParser
 		final File[] listOfFiles = dir.listFiles(xmlFilter);
 		for (File f : listOfFiles)
 		{
-			final Document doc = parse(f);
+			final Document doc = parseFile(f);
 			if (doc != null)
 			{
-				parseDoc(doc);
+				parseDocument(doc);
 			}
 		}
 		return true;
@@ -112,10 +114,48 @@ public abstract class DocumentParser
 	
 	/**
 	 * Abstract method that when implemented will parse a document.<br>
-	 * Is expected to be used along with {@link #parse(File)}.
+	 * Is expected to be used along with {@link #parseFile(File)}.
 	 * @param doc the document to parse.
 	 */
-	protected abstract void parseDoc(Document doc);
+	protected abstract void parseDocument(Document doc);
+	
+	/**
+	 * @param n the named node map.
+	 * @param name the attribute name.
+	 * @return a parsed integer.
+	 */
+	protected static int parseInt(NamedNodeMap n, String name)
+	{
+		return Integer.parseInt(n.getNamedItem(name).getNodeValue());
+	}
+	
+	/**
+	 * @param n the named node map.
+	 * @param name the attribute name.
+	 * @return a parsed integer object.
+	 */
+	protected static Integer parseInteger(NamedNodeMap n, String name)
+	{
+		return Integer.valueOf(n.getNamedItem(name).getNodeValue());
+	}
+	
+	/**
+	 * @param n the node to parse.
+	 * @return the parsed integer.
+	 */
+	protected static int parseInt(Node n)
+	{
+		return Integer.parseInt(n.getNodeValue());
+	}
+	
+	/**
+	 * @param n the node to parse.
+	 * @return the parsed integer object.
+	 */
+	protected static Integer parseInteger(Node n)
+	{
+		return Integer.valueOf(n.getNodeValue());
+	}
 	
 	/**
 	 * Simple XML error handler.

@@ -23,6 +23,7 @@ import org.mmocore.network.ReceivablePacket;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
+import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
@@ -102,5 +103,21 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	protected boolean triggersOnActionRequest()
 	{
 		return true;
+	}
+	
+	/**
+	 * @return the active player if exist, otherwise null.
+	 */
+	protected final L2PcInstance getActiveChar()
+	{
+		return getClient().getActiveChar();
+	}
+	
+	protected final void sendActionFailed()
+	{
+		if (getClient() != null)
+		{
+			getClient().sendPacket(ActionFailed.STATIC_PACKET);
+		}
 	}
 }

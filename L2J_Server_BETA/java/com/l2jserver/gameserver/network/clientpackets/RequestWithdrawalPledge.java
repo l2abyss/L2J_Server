@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestWithdrawalPledge extends L2GameClientPacket
 {
 	private static final String _C__28_REQUESTWITHDRAWALPLEDGE = "[C] 28 RequestWithdrawalPledge";
-	//static Logger _log = Logger.getLogger(RequestWithdrawalPledge.class.getName());
 	
 	@Override
 	protected void readImpl()

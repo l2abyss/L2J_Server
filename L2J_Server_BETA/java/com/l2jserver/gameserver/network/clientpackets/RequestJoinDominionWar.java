@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowDominionRegistry;
 public final class RequestJoinDominionWar extends L2GameClientPacket
 {
 	private static final String _C__D0_57_REQUESTJOINDOMINIONWAR = "[C] D0:57 RequestJoinDominionWar";
-	// private static Logger _log = Logger.getLogger(RequestJoinDominionWar.class.getName());
 	
 	private int _territoryId;
 	private int _isClan;

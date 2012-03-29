@@ -35,8 +35,8 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.CharNameTable;
-import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -60,7 +60,7 @@ import com.l2jserver.util.StringUtil;
  */
 public class Hero
 {
-	private static Logger _log = Logger.getLogger(Hero.class.getName());
+	private static final Logger _log = Logger.getLogger(Hero.class.getName());
 	
 	private static final String GET_HEROES = "SELECT heroes.charId, " + "characters.char_name, heroes.class_id, heroes.count, heroes.played " + "FROM heroes, characters WHERE characters.charId = heroes.charId " + "AND heroes.played = 1";
 	private static final String GET_ALL_HEROES = "SELECT heroes.charId, " + "characters.char_name, heroes.class_id, heroes.count, heroes.played " + "FROM heroes, characters WHERE characters.charId = heroes.charId";
@@ -390,7 +390,7 @@ public class Hero
 				if (charId == charOneId)
 				{
 					String name = CharNameTable.getInstance().getNameById(charTwoId);
-					String cls = CharTemplateTable.getInstance().getClassNameById(charTwoClass);
+					String cls = ClassListData.getInstance().getClass(charTwoClass).getClassName(true);
 					if(name != null && cls != null)
 					{
 						StatsSet fight = new StatsSet();
@@ -426,7 +426,7 @@ public class Hero
 				else if (charId == charTwoId)
 				{
 					String name = CharNameTable.getInstance().getNameById(charOneId);
-					String cls = CharTemplateTable.getInstance().getClassNameById(charOneClass);
+					String cls = ClassListData.getInstance().getClass(charOneClass).getClassName(true);
 					if(name != null && cls != null)
 					{
 						StatsSet fight = new StatsSet();

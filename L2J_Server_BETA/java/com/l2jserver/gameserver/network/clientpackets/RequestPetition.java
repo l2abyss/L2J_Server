@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestPetition extends L2GameClientPacket
 {
 	private static final String _C__89_RequestPetition = "[C] 89 RequestPetition";
-	//private static Logger _log = Logger.getLogger(RequestPetition.class.getName());
 	
 	private String _content;
 	private int _type;       // 1 = on : 0 = off;

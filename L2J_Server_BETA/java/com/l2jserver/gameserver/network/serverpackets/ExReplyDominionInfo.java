@@ -21,20 +21,12 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 
 /**
- *
  * @author  JIV
  */
 public class ExReplyDominionInfo extends L2GameServerPacket
 {
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	// private static Logger _log = Logger.getLogger(ExReplyDominionInfo.class.getName());
 	private int _warTime = (int) (TerritoryWarManager.getInstance().getTWStartTimeInMillis() / 1000);
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{

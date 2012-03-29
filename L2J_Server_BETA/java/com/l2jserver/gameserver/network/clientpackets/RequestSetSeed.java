@@ -45,7 +45,6 @@ import com.l2jserver.gameserver.util.Util;
 public class RequestSetSeed extends L2GameClientPacket
 {
 	private static final String _C__D0_03_REQUESTSETSEED = "[C] D0:03 RequestSetSeed";
-	//private static Logger _log = Logger.getLogger(RequestSetSeed.class.getName());
 	
 	private static final int BATCH_LENGTH = 20; // length of the one item
 	

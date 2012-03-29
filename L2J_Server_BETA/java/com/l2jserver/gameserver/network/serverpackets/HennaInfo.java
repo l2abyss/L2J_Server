@@ -15,26 +15,29 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
+import com.l2jserver.gameserver.model.items.L2Henna;
 
+/**
+ * @author Zoey76
+ */
 public final class HennaInfo extends L2GameServerPacket
 {
-	private static final String _S__E4_HennaInfo = "[S] e5 HennaInfo";
+	private static final String _S__E5_HENNAINFO = "[S] E5 HennaInfo";
 	
 	private final L2PcInstance _activeChar;
-	private final L2HennaInstance[] _hennas = new L2HennaInstance[3];
-	private int _count;
+	private final L2Henna[] _hennas = new L2Henna[3];
+	private final int _count;
 	
 	public HennaInfo(L2PcInstance player)
 	{
 		_activeChar = player;
-		
 		int j = 0;
-		for (int i = 0; i < 3; i++)
+		for (L2Henna henna : _activeChar.getHennaList())
 		{
-			L2HennaInstance henna = _activeChar.getHenna(i+1);
 			if (henna != null)
+			{
 				_hennas[j++] = henna;
+			}
 		}
 		_count = j;
 	}
@@ -42,18 +45,18 @@ public final class HennaInfo extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xe5);
-		writeC(_activeChar.getHennaStatINT()); //equip INT
-		writeC(_activeChar.getHennaStatSTR()); //equip STR
-		writeC(_activeChar.getHennaStatCON()); //equip CON
-		writeC(_activeChar.getHennaStatMEN()); //equip MEM
-		writeC(_activeChar.getHennaStatDEX()); //equip DEX
-		writeC(_activeChar.getHennaStatWIT()); //equip WIT
-		writeD(3); // slots?
-		writeD(_count); //size
+		writeC(0xE5);
+		writeC(_activeChar.getHennaStatINT()); // equip INT
+		writeC(_activeChar.getHennaStatSTR()); // equip STR
+		writeC(_activeChar.getHennaStatCON()); // equip CON
+		writeC(_activeChar.getHennaStatMEN()); // equip MEN
+		writeC(_activeChar.getHennaStatDEX()); // equip DEX
+		writeC(_activeChar.getHennaStatWIT()); // equip WIT
+		writeD(3); // Slots
+		writeD(_count); // Size
 		for (int i = 0; i < _count; i++)
 		{
-			writeD(_hennas[i].getSymbolId());
+			writeD(_hennas[i].getDyeId());
 			writeD(0x01);
 		}
 	}
@@ -61,6 +64,6 @@ public final class HennaInfo extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__E4_HennaInfo;
+		return _S__E5_HENNAINFO;
 	}
 }

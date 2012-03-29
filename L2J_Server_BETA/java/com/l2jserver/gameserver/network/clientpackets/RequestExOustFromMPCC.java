@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class RequestExOustFromMPCC extends L2GameClientPacket
 {
-	//private static Logger _log = Logger.getLogger(RequestExOustFromMPCC.class.getName());
 	private static final String _C__D0_08_REQUESTEXOUSTFROMMPCC = "[C] D0:08 RequestExOustFromMPCC";
 	private String _name;
 	

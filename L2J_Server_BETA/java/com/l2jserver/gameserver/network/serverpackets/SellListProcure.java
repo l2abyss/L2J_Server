@@ -28,7 +28,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 public class SellListProcure extends L2GameServerPacket
 {
 	private static final String _S__E9_SELLLISTPROCURE = "[S] ef SellListProcure";
-	//private static Logger _log = Logger.getLogger(SellListProcure.class.getName());
 	
 	private final L2PcInstance _activeChar;
 	private long _money;

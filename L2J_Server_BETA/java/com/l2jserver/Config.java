@@ -207,10 +207,11 @@ public final class Config
 	public static int ALT_PARTY_RANGE;
 	public static int ALT_PARTY_RANGE2;
 	public static boolean ALT_LEAVE_PARTY_LEADER;
-	public static long MAX_ADENA;
+	public static boolean INITIAL_EQUIPMENT_EVENT;
 	public static long STARTING_ADENA;
 	public static byte STARTING_LEVEL;
 	public static int STARTING_SP;
+	public static long MAX_ADENA;
 	public static boolean AUTO_LOOT;
 	public static boolean AUTO_LOOT_RAIDS;
 	public static int LOOT_RAIDS_PRIVILEGE_INTERVAL;
@@ -1710,12 +1711,13 @@ public final class Config
 					ALT_PARTY_RANGE = Integer.parseInt(Character.getProperty("AltPartyRange", "1600"));
 					ALT_PARTY_RANGE2 = Integer.parseInt(Character.getProperty("AltPartyRange2", "1400"));
 					ALT_LEAVE_PARTY_LEADER = Boolean.parseBoolean(Character.getProperty("AltLeavePartyLeader", "False"));
-					MAX_ADENA = Long.parseLong(Character.getProperty("MaxAdena", "99900000000"));
-					if (MAX_ADENA < 0)
-						MAX_ADENA = Long.MAX_VALUE;
+					INITIAL_EQUIPMENT_EVENT = Boolean.parseBoolean(Character.getProperty("InitialEquipmentEvent", "False"));
 					STARTING_ADENA = Long.parseLong(Character.getProperty("StartingAdena", "0"));
 					STARTING_LEVEL = Byte.parseByte(Character.getProperty("StartingLevel", "1"));
 					STARTING_SP = Integer.parseInt(Character.getProperty("StartingSP", "0"));
+					MAX_ADENA = Long.parseLong(Character.getProperty("MaxAdena", "99900000000"));
+					if (MAX_ADENA < 0)
+						MAX_ADENA = Long.MAX_VALUE;
 					AUTO_LOOT = Boolean.parseBoolean(Character.getProperty("AutoLoot", "false"));
 					AUTO_LOOT_RAIDS = Boolean.parseBoolean(Character.getProperty("AutoLootRaids", "false"));
 					LOOT_RAIDS_PRIVILEGE_INTERVAL = Integer.parseInt(Character.getProperty("RaidLootRightsInterval", "900")) * 1000;

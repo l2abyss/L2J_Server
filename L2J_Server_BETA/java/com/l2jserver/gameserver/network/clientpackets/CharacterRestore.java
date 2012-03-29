@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 public final class CharacterRestore extends L2GameClientPacket
 {
 	private static final String _C__7B_CHARACTERRESTORE = "[C] 7B CharacterRestore";
-	//private static Logger _log = Logger.getLogger(CharacterRestore.class.getName());
 	
 	// cd
 	private int _charSlot;

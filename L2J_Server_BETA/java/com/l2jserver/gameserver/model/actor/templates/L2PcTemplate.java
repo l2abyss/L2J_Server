@@ -16,128 +16,229 @@ package com.l2jserver.gameserver.model.actor.templates;
 
 import java.util.List;
 
-import javolution.util.FastList;
-
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.model.items.PcItemTemplate;
 
 /**
- * @author mkizub
+ * @author mkizub, Zoey76
  */
 public class L2PcTemplate extends L2CharTemplate
 {
-	/** The Class object of the L2PcInstance */
-	public final ClassId classId;
+	private final ClassId _classId;
+	private final Race _race;
+	private final String _className;
 	
-	public final Race race;
-	public final String className;
+	private final int _spawnX;
+	private final int _spawnY;
+	private final int _spawnZ;
 	
-	public final int spawnX;
-	public final int spawnY;
-	public final int spawnZ;
+	private final int _classBaseLevel;
+	private final float _lvlHpAdd;
+	private final float _lvlHpMod;
+	private final float _lvlCpAdd;
+	private final float _lvlCpMod;
+	private final float _lvlMpAdd;
+	private final float _lvlMpMod;
 	
-	public final int classBaseLevel;
-	public final float lvlHpAdd;
-	public final float lvlHpMod;
-	public final float lvlCpAdd;
-	public final float lvlCpMod;
-	public final float lvlMpAdd;
-	public final float lvlMpMod;
+	private final double _fCollisionHeightMale;
+	private final double _fCollisionRadiusMale;
 	
-	public final double fCollisionHeight_female;
-	public final double fCollisionRadius_female;
+	private final double _fCollisionHeightFemale;
+	private final double _fCollisionRadiusFemale;
 	
-	private List<PcTemplateItem> _items = new FastList<PcTemplateItem>();
+	private final int _fallHeight;
 	
-	public L2PcTemplate(StatsSet set)
+	private final List<PcItemTemplate> _initialEquipment;
+	
+	public L2PcTemplate(StatsSet set, List<PcItemTemplate> initialEquipment)
 	{
 		super(set);
-		classId = ClassId.values()[set.getInteger("classId")];
-		race = Race.values()[set.getInteger("raceId")];
-		className = set.getString("className");
+		_classId = ClassId.getClassId(set.getInteger("classId"));
+		_race = Race.values()[set.getInteger("raceId")];
+		_className = set.getString("className");
 		
-		spawnX = set.getInteger("spawnX");
-		spawnY = set.getInteger("spawnY");
-		spawnZ = set.getInteger("spawnZ");
+		_spawnX = set.getInteger("spawnX");
+		_spawnY = set.getInteger("spawnY");
+		_spawnZ = set.getInteger("spawnZ");
 		
-		classBaseLevel = set.getInteger("classBaseLevel");
-		lvlHpAdd = set.getFloat("lvlHpAdd");
-		lvlHpMod = set.getFloat("lvlHpMod");
-		lvlCpAdd = set.getFloat("lvlCpAdd");
-		lvlCpMod = set.getFloat("lvlCpMod");
-		lvlMpAdd = set.getFloat("lvlMpAdd");
-		lvlMpMod = set.getFloat("lvlMpMod");
+		_classBaseLevel = set.getInteger("classBaseLevel");
+		_lvlHpAdd = set.getFloat("lvlHpAdd");
+		_lvlHpMod = set.getFloat("lvlHpMod");
+		_lvlCpAdd = set.getFloat("lvlCpAdd");
+		_lvlCpMod = set.getFloat("lvlCpMod");
+		_lvlMpAdd = set.getFloat("lvlMpAdd");
+		_lvlMpMod = set.getFloat("lvlMpMod");
 		
-		fCollisionRadius_female = set.getDouble("collision_radius_female");
-		fCollisionHeight_female = set.getDouble("collision_height_female");
+		_fCollisionRadiusMale = set.getDouble("collision_radius");
+		_fCollisionHeightMale = set.getDouble("collision_height");
+		
+		_fCollisionRadiusFemale = set.getDouble("collision_radius_female");
+		_fCollisionHeightFemale = set.getDouble("collision_height_female");
+		
+		_fallHeight = 333; // TODO: Unhardcode it.
+		
+		_initialEquipment = initialEquipment;
 	}
 	
 	/**
-	 * Adds starter equipment.
-	 * @param itemId
-	 * @param amount
-	 * @param equipped
+	 * @return the template class Id.
 	 */
-	public void addItem(int itemId, int amount, boolean equipped)
+	public ClassId getClassId()
 	{
-		_items.add(new PcTemplateItem(itemId, amount, equipped));
+		return _classId;
 	}
 	
 	/**
-	 *
-	 * @return itemIds of all the starter equipment
+	 * @return the template race.
 	 */
-	public List<PcTemplateItem> getItems()
+	public Race getRace()
 	{
-		return _items;
+		return _race;
 	}
 	
-	public static final class PcTemplateItem
+	/**
+	 * @return the template server side class name.
+	 */
+	public String getClassName()
 	{
-		private final int _itemId;
-		private final int _amount;
-		private final boolean _equipped;
-		
-		/**
-		 * @param amount
-		 * @param itemId
-		 * @param equipped 
-		 */
-		public PcTemplateItem(int itemId, int amount, boolean equipped)
-		{
-			_itemId = itemId;
-			_amount = amount;
-			_equipped = equipped;
-		}
-		
-		/**
-		 * @return Returns the itemId.
-		 */
-		public int getItemId()
-		{
-			return _itemId;
-		}
-		
-		/**
-		 * @return Returns the amount.
-		 */
-		public int getAmount()
-		{
-			return _amount;
-		}
-		
-		/**
-		 * @return Returns the if the item should be equipped after char creation.
-		 */
-		public boolean isEquipped()
-		{
-			return _equipped;
-		}
+		return _className;
 	}
 	
-	public final int getFallHeight()
+	/**
+	 * @return the template X spawn coordinate.
+	 */
+	public int getSpawnX()
 	{
-		return 333; // TODO: unhardcode it
+		return _spawnX;
+	}
+	
+	/**
+	 * @return the template Y spawn coordinate.
+	 */
+	public int getSpawnY()
+	{
+		return _spawnY;
+	}
+	
+	/**
+	 * @return the template Z spawn coordinate.
+	 */
+	public int getSpawnZ()
+	{
+		return _spawnZ;
+	}
+	
+	/**
+	 * @return the template class base level.
+	 */
+	public int getClassBaseLevel()
+	{
+		return _classBaseLevel;
+	}
+	
+	/**
+	 * @return the template level Hp add.
+	 */
+	public float getLvlHpAdd()
+	{
+		return _lvlHpAdd;
+	}
+	
+	/**
+	 * @return the template level Hp mod.
+	 */
+	public float getLvlHpMod()
+	{
+		return _lvlHpMod;
+	}
+	
+	/**
+	 * @return the template level Cp add.
+	 */
+	public float getLvlCpAdd()
+	{
+		return _lvlCpAdd;
+	}
+	
+	/**
+	 * @return the template level Cp mod.
+	 */
+	public float getLvlCpMod()
+	{
+		return _lvlCpMod;
+	}
+	
+	/**
+	 * @return the template level Mp add.
+	 */
+	public float getLvlMpAdd()
+	{
+		return _lvlMpAdd;
+	}
+	
+	/**
+	 * @return the template level Mp mod.
+	 */
+	public float getLvlMpMod()
+	{
+		return _lvlMpMod;
+	}
+	
+	/**
+	 * @return the template collision height for male characters.
+	 */
+	public double getFCollisionHeightMale()
+	{
+		return _fCollisionHeightMale;
+	}
+	
+	/**
+	 * @return the template collision radius for male characters.
+	 */
+	public double getFCollisionRadiusMale()
+	{
+		return _fCollisionRadiusMale;
+	}
+	
+	/**
+	 * @return the template collision height for female characters.
+	 */
+	public double getFCollisionHeightFemale()
+	{
+		return _fCollisionHeightFemale;
+	}
+	
+	/**
+	 * @return the template collision radius for female characters.
+	 */
+	public double getFCollisionRadiusFemale()
+	{
+		return _fCollisionRadiusFemale;
+	}
+	
+	/**
+	 * @return the fall height.
+	 */
+	public int getFallHeight()
+	{
+		return _fallHeight;
+	}
+	
+	/**
+	 * @return the initial equipment for this Pc template.
+	 */
+	public List<PcItemTemplate> getInitialEquipment()
+	{
+		return _initialEquipment;
+	}
+
+	/**
+	 * @return {@code true} if this Pc template has an initial equipment associated, {@code false} otherwise.
+	 */
+	public boolean hasInitialEquipment()
+	{
+		return _initialEquipment != null;
 	}
 }

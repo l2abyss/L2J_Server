@@ -846,10 +846,10 @@ public final class Formulas
 		public void calc(Env env)
 		{
 			L2PcTemplate t = (L2PcTemplate) env.getCharacter().getTemplate();
-			int lvl = env.getCharacter().getLevel() - t.classBaseLevel;
-			double hpmod = t.lvlHpMod * lvl;
-			double hpmax = (t.lvlHpAdd + hpmod) * lvl;
-			double hpmin = (t.lvlHpAdd * lvl) + hpmod;
+			int lvl = env.getCharacter().getLevel() - t.getClassBaseLevel();
+			double hpmod = t.getLvlHpMod() * lvl;
+			double hpmax = (t.getLvlHpAdd() + hpmod) * lvl;
+			double hpmin = (t.getLvlHpAdd() * lvl) + hpmod;
 			env.addValue((hpmax + hpmin) / 2);
 		}
 	}
@@ -893,10 +893,10 @@ public final class Formulas
 		public void calc(Env env)
 		{
 			L2PcTemplate t = (L2PcTemplate) env.getCharacter().getTemplate();
-			int lvl = env.getCharacter().getLevel() - t.classBaseLevel;
-			double cpmod = t.lvlCpMod * lvl;
-			double cpmax = (t.lvlCpAdd + cpmod) * lvl;
-			double cpmin = (t.lvlCpAdd * lvl) + cpmod;
+			int lvl = env.getCharacter().getLevel() - t.getClassBaseLevel();
+			double cpmod = t.getLvlCpMod() * lvl;
+			double cpmax = (t.getLvlCpAdd() + cpmod) * lvl;
+			double cpmin = (t.getLvlCpAdd() * lvl) + cpmod;
 			env.addValue((cpmax + cpmin) / 2);
 		}
 	}
@@ -940,10 +940,10 @@ public final class Formulas
 		public void calc(Env env)
 		{
 			L2PcTemplate t = (L2PcTemplate) env.getCharacter().getTemplate();
-			int lvl = env.getCharacter().getLevel() - t.classBaseLevel;
-			double mpmod = t.lvlMpMod * lvl;
-			double mpmax = (t.lvlMpAdd + mpmod) * lvl;
-			double mpmin = (t.lvlMpAdd * lvl) + mpmod;
+			int lvl = env.getCharacter().getLevel() - t.getClassBaseLevel();
+			double mpmod = t.getLvlMpMod() * lvl;
+			double mpmax = (t.getLvlMpAdd() + mpmod) * lvl;
+			double mpmin = (t.getLvlMpAdd() * lvl) + mpmod;
 			env.addValue((mpmax + mpmin) / 2);
 		}
 	}
@@ -985,7 +985,7 @@ public final class Formulas
 	}
 	
 	/**
-	 * Return the standard NPC Calculator set containing ACCURACY_COMBAT and EVASION_RATE.
+	 * Return the standard NPC Calculator set containing ACCURACY_COMBAT and EVASION_RATE.<br>
 	 * <B><U>Concept</U>:</B><br>
 	 * A calculator is created to manage and dynamically calculate the effect of a character property (ex : MAX_HP, REGENERATE_HP_RATE...). In fact, each calculator is a table of Func object in which each Func represents a mathematic function : <br>
 	 * FuncAtkAccuracy -> Math.sqrt(_player.getDEX())*6+_player.getLevel()<br>

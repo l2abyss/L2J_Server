@@ -21,10 +21,10 @@ package com.l2jserver.gameserver.model.base;
 public enum AcquireSkillType
 {
 	Class,
-	Transform,
 	Fishing,
 	Pledge,
 	SubPledge,
+	Transform,
 	Transfer,
 	SubClass,
 	Collect

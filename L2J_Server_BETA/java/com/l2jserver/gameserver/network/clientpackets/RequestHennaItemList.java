@@ -14,48 +14,38 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.datatables.HennaTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.L2Henna;
-import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
-import com.l2jserver.gameserver.network.serverpackets.HennaItemDrawInfo;
+import com.l2jserver.gameserver.network.serverpackets.HennaEquipList;
 
 /**
- * This class ...
- *
- * @version $Revision$ $Date$
+ * @author Tempy, Zoey76
  */
-public final class RequestHennaItemDrawInfo extends L2GameClientPacket
+public final class RequestHennaItemList extends L2GameClientPacket
 {
-	private static final String _C__C4_REQUESTHENNAITEMDRAWINFO = "[C] C4 RequestHennaItemDrawInfo";
+	private static final String _C__C3_REQUESTHENNAITEMLIST = "[C] C3 RequestHennaItemList";
 	
-	private int _symbolId;
-	// format  cd
+	@SuppressWarnings("unused")
+	private int _unknown;
 	
 	@Override
 	protected void readImpl()
 	{
-		_symbolId = readD();
+		_unknown = readD(); // TODO: Identify.
 	}
 	
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null)
-			return;
-		
-		L2Henna template = HennaTable.getInstance().getTemplate(_symbolId);
-		if (template == null)
-			return;
-		
-		L2HennaInstance henna = new L2HennaInstance(template);
-		activeChar.sendPacket(new HennaItemDrawInfo(henna, activeChar));
+		final L2PcInstance activeChar = getActiveChar();
+		if (activeChar != null)
+		{
+			activeChar.sendPacket(new HennaEquipList(activeChar));
+		}
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _C__C4_REQUESTHENNAITEMDRAWINFO;
+		return _C__C3_REQUESTHENNAITEMLIST;
 	}
 }

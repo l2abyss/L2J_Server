@@ -787,7 +787,7 @@ public class NpcTable
 				}
 				
 				cont++;
-				npc.addTeachInfo(ClassId.values()[classId]);
+				npc.addTeachInfo(ClassId.getClassId(classId));
 			}
 			
 			rset.close();

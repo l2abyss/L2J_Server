@@ -123,7 +123,7 @@ public final class SkillTreesData extends DocumentParser
 		_gameMasterAuraSkillTree.clear();
 		
 		// Load files.
-		_loading = loadDirectory(new File(Config.DATAPACK_ROOT, "data/skillTrees/"));
+		_loading = parseDirectory(new File(Config.DATAPACK_ROOT, "data/skillTrees/"));
 		
 		// Generate check arrays.
 		generateCheckArrays();
@@ -137,7 +137,7 @@ public final class SkillTreesData extends DocumentParser
 	 * @param doc the document to be parsed.
 	 */
 	@Override
-	protected void parseDoc(Document doc)
+	protected void parseDocument(Document doc)
 	{
 		NamedNodeMap attrs;
 		Node attr;
@@ -197,10 +197,10 @@ public final class SkillTreesData extends DocumentParser
 									switch (b.getNodeName())
 									{
 										case "item":
-											skillLearn.addRequiredItem(new ItemHolder(Integer.parseInt(attrs.getNamedItem("id").getNodeValue()), Integer.parseInt(attrs.getNamedItem("count").getNodeValue())));
+											skillLearn.addRequiredItem(new ItemHolder(parseInt(attrs, "id"), parseInt(attrs, "count")));
 											break;
 										case "preRequisiteSkill":
-											skillLearn.addPreReqSkill(new SkillHolder(Integer.parseInt(attrs.getNamedItem("id").getNodeValue()), Integer.parseInt(attrs.getNamedItem("lvl").getNodeValue())));
+											skillLearn.addPreReqSkill(new SkillHolder(parseInt(attrs, "id"), parseInt(attrs, "lvl")));
 											break;
 										case "race":
 											skillLearn.addRace(Race.valueOf(b.getTextContent()));
@@ -212,7 +212,7 @@ public final class SkillTreesData extends DocumentParser
 											skillLearn.setSocialClass(Enum.valueOf(SocialClass.class, b.getTextContent()));
 											break;
 										case "subClassConditions":
-											skillLearn.addSubclassConditions(Integer.parseInt(attrs.getNamedItem("slot").getNodeValue()), Integer.parseInt(attrs.getNamedItem("lvl").getNodeValue()));
+											skillLearn.addSubclassConditions(parseInt(attrs, "slot"), parseInt(attrs, "lvl"));
 											break;
 									}
 								}
@@ -1187,7 +1187,7 @@ public final class SkillTreesData extends DocumentParser
 		}
 		
 		final String className = getClass().getSimpleName();
-		_log.info(className + ": Loaded " + classSkillTreeCount + "  Class Skills for " + _classSkillTrees.size() + " Class Skill Trees.");
+		_log.info(className + ": Loaded " + classSkillTreeCount + " Class Skills for " + _classSkillTrees.size() + " Class Skill Trees.");
 		_log.info(className + ": Loaded " + _subClassSkillTree.size() + " Sub-Class Skills.");
 		_log.info(className + ": Loaded " + trasferSkillTreeCount + " Transfer Skills for " + _transferSkillTrees.size() + " Transfer Skill Trees.");
 		_log.info(className + ": Loaded " + _fishingSkillTree.size() + " Fishing Skills, " + dwarvenOnlyFishingSkillCount + " Dwarven only Fishing Skills.");

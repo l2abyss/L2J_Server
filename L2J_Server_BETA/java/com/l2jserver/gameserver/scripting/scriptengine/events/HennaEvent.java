@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.scripting.scriptengine.events;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.instance.L2HennaInstance;
+import com.l2jserver.gameserver.model.items.L2Henna;
 import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 public class HennaEvent implements L2Event
 {
 	private L2PcInstance player;
-	private L2HennaInstance henna;
+	private L2Henna henna;
 	private boolean add;
 	
 	/**
@@ -36,27 +36,27 @@ public class HennaEvent implements L2Event
 	}
 	
 	/**
-	 * @param player the player to set
+	 * @param p the player to set
 	 */
-	public void setPlayer(L2PcInstance player)
+	public void setPlayer(L2PcInstance p)
 	{
-		this.player = player;
+		player = p;
 	}
 	
 	/**
 	 * @return the henna
 	 */
-	public L2HennaInstance getHenna()
+	public L2Henna getHenna()
 	{
 		return henna;
 	}
 	
 	/**
-	 * @param henna the henna to set
+	 * @param h 
 	 */
-	public void setHenna(L2HennaInstance henna)
+	public void setHenna(L2Henna h)
 	{
-		this.henna = henna;
+		henna = h;
 	}
 	
 	/**

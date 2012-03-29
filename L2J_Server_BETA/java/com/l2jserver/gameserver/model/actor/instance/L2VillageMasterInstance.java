@@ -23,8 +23,8 @@ import java.util.regex.PatternSyntaxException;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -275,10 +275,10 @@ public class L2VillageMasterInstance extends L2NpcInstance
 									"<a action=\"bypass -h npc_%objectId%_Subclass 4 ",
 									String.valueOf(subClass.ordinal()),
 									"\" msg=\"1268;",
-									formatClassForDisplay(subClass),
+									ClassListData.getInstance().getClass(subClass.ordinal()).getClassName(true),
 									"\">",
-									formatClassForDisplay(subClass),
-							"</a><br>");
+									ClassListData.getInstance().getClass(subClass.ordinal()).getClassName(true),
+									"</a><br>");
 						}
 						html.replace("%list%", content1.toString());
 					}
@@ -312,8 +312,8 @@ public class L2VillageMasterInstance extends L2NpcInstance
 						{
 							StringUtil.append(content2,
 									"<a action=\"bypass -h npc_%objectId%_Subclass 5 0\">",
-									CharTemplateTable.getInstance().getClassNameById(player.getBaseClass()),
-							"</a><br>");
+									ClassListData.getInstance().getClass(player.getBaseClass()).getClassName(true),
+									"</a><br>");
 						}
 						
 						for (Iterator<SubClass> subList = iterSubClasses(player); subList.hasNext();)
@@ -325,8 +325,8 @@ public class L2VillageMasterInstance extends L2NpcInstance
 										"<a action=\"bypass -h npc_%objectId%_Subclass 5 ",
 										String.valueOf(subClass.getClassIndex()),
 										"\">",
-										formatClassForDisplay(subClass.getClassDefinition()),
-								"</a><br>");
+										ClassListData.getInstance().getClass(subClass.getClassId()).getClassName(true),
+										"</a><br>");
 							}
 						}
 						
@@ -364,8 +364,8 @@ public class L2VillageMasterInstance extends L2NpcInstance
 									"<a action=\"bypass -h npc_%objectId%_Subclass 6 ",
 									String.valueOf(subClass.getClassIndex()),
 									"\">",
-									CharTemplateTable.getInstance().getClassNameById(subClass.getClassId()),
-							"</a><br>");
+									ClassListData.getInstance().getClass(subClass.getClassId()).getClassName(true),
+									"</a><br>");
 						}
 						html.replace("%list%", content3.toString());
 					}
@@ -374,17 +374,17 @@ public class L2VillageMasterInstance extends L2NpcInstance
 						// retail html contain only 3 subclasses
 						html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_Modify.htm");
 						if (player.getSubClasses().containsKey(1))
-							html.replace("%sub1%", CharTemplateTable.getInstance().getClassNameById(player.getSubClasses().get(1).getClassId()));
+							html.replace("%sub1%", ClassListData.getInstance().getClass(player.getSubClasses().get(1).getClassId()).getClassName(true));
 						else
 							html.replace("<a action=\"bypass -h npc_%objectId%_Subclass 6 1\">%sub1%</a><br>", "");
 						
 						if (player.getSubClasses().containsKey(2))
-							html.replace("%sub2%", CharTemplateTable.getInstance().getClassNameById(player.getSubClasses().get(2).getClassId()));
+							html.replace("%sub2%", ClassListData.getInstance().getClass(player.getSubClasses().get(2).getClassId()).getClassName(true));
 						else
 							html.replace("<a action=\"bypass -h npc_%objectId%_Subclass 6 2\">%sub2%</a><br>", "");
 						
 						if (player.getSubClasses().containsKey(3))
-							html.replace("%sub3%", CharTemplateTable.getInstance().getClassNameById(player.getSubClasses().get(3).getClassId()));
+							html.replace("%sub3%", ClassListData.getInstance().getClass(player.getSubClasses().get(3).getClassId()).getClassName(true));
 						else
 							html.replace("<a action=\"bypass -h npc_%objectId%_Subclass 6 3\">%sub3%</a><br>", "");
 					}
@@ -512,8 +512,8 @@ public class L2VillageMasterInstance extends L2NpcInstance
 								String.valueOf(subClass.ordinal()),
 								"\" msg=\"1445;",
 								"\">",
-								formatClassForDisplay(subClass),
-						"</a><br>");
+								ClassListData.getInstance().getClass(subClass.ordinal()).getClassName(true),
+								"</a><br>");
 					}
 					
 					switch (paramOne)
@@ -555,7 +555,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 						player.setActiveClass(paramOne);
 						
 						html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_ModifyOk.htm");
-						html.replace("%name%", CharTemplateTable.getInstance().getClassNameById(paramTwo));
+						html.replace("%name%", ClassListData.getInstance().getClass(paramTwo).getClassName(true));
 						
 						player.sendPacket(SystemMessageId.ADD_NEW_SUBCLASS); // Subclass added.
 					}
@@ -613,15 +613,17 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		return true;
 	}
 	
-	/*
+	/**
 	 * Returns list of available subclasses
 	 * Base class and already used subclasses removed
+	 * @param player 
+	 * @return 
 	 */
 	private final Set<PlayerClass> getAvailableSubClasses(L2PcInstance player)
 	{
 		// get player base class
 		final int currentBaseId = player.getBaseClass();
-		final ClassId baseCID = ClassId.values()[currentBaseId];
+		final ClassId baseCID = ClassId.getClassId(currentBaseId);
 		
 		// we need 2nd occupation ID
 		final int baseClassId;
@@ -671,11 +673,13 @@ public class L2VillageMasterInstance extends L2NpcInstance
 				
 				// scan for already used subclasses
 				int availClassId = pclass.ordinal();
-				ClassId cid = ClassId.values()[availClassId];
+				ClassId cid = ClassId.getClassId(availClassId);
+				SubClass prevSubClass;
+				ClassId subClassId;
 				for (Iterator<SubClass> subList = iterSubClasses(player); subList.hasNext();)
 				{
-					SubClass prevSubClass = subList.next();
-					ClassId subClassId = ClassId.values()[prevSubClass.getClassId()];
+					prevSubClass = subList.next();
+					subClassId = ClassId.getClassId(prevSubClass.getClassId());
 					
 					if (subClassId.equalsOrChildOf(cid))
 					{
@@ -704,18 +708,22 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			return false;
 		
 		final ClassId cid = ClassId.values()[classId];
+		SubClass sub;
+		ClassId subClassId;
 		for (Iterator<SubClass> subList = iterSubClasses(player); subList.hasNext();)
 		{
-			SubClass sub = subList.next();
-			ClassId subClassId = ClassId.values()[sub.getClassId()];
+			sub = subList.next();
+			subClassId = ClassId.values()[sub.getClassId()];
 			
 			if (subClassId.equalsOrChildOf(cid))
+			{
 				return false;
+			}
 		}
 		
 		// get player base class
 		final int currentBaseId = player.getBaseClass();
-		final ClassId baseCID = ClassId.values()[currentBaseId];
+		final ClassId baseCID = ClassId.getClassId(currentBaseId);
 		
 		// we need 2nd occupation ID
 		final int baseClassId;
@@ -751,16 +759,20 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		return true;
 	}
 	
-	/*
+	/**
 	 * Returns true if this classId allowed for master
+	 * @param classId 
+	 * @return 
 	 */
 	public final boolean checkVillageMaster(int classId)
 	{
 		return checkVillageMaster(PlayerClass.values()[classId]);
 	}
 	
-	/*
+	/**
 	 * Returns true if this PlayerClass is allowed for master
+	 * @param pclass 
+	 * @return 
 	 */
 	public final boolean checkVillageMaster(PlayerClass pclass)
 	{
@@ -768,20 +780,6 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			return true;
 		
 		return checkVillageMasterRace(pclass) && checkVillageMasterTeachType(pclass);
-	}
-	
-	private static final String formatClassForDisplay(PlayerClass className)
-	{
-		String classNameStr = className.toString();
-		char[] charArray = classNameStr.toCharArray();
-		
-		for (int i = 1; i < charArray.length; i++)
-		{
-			if (Character.isUpperCase(charArray[i]))
-				classNameStr = classNameStr.substring(0, i) + " " + classNameStr.substring(i);
-		}
-		
-		return classNameStr;
 	}
 	
 	private static final Iterator<SubClass> iterSubClasses(L2PcInstance player)

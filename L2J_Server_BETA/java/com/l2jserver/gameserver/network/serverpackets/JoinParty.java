@@ -14,10 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-
 /**
- *
  * sample
  * <p>
  * 4c
@@ -32,7 +29,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 public final class JoinParty extends L2GameServerPacket
 {
 	private static final String _S__4C_JOINPARTY = "[S] 3a JoinParty";
-	//private static Logger _log = Logger.getLogger(JoinParty.class.getName());
 	
 	private int _response;
 	

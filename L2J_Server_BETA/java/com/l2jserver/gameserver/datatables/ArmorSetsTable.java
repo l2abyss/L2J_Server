@@ -31,29 +31,24 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 /**
  * @author godson, Luno, UnAfraid
  */
-public class ArmorSetsTable extends DocumentParser
+public final class ArmorSetsTable extends DocumentParser
 {
-	private Map<Integer, L2ArmorSet> _armorSets;
-	
-	public static ArmorSetsTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<Integer, L2ArmorSet> _armorSets = new HashMap<>();
 	
 	private ArmorSetsTable()
 	{
-		_armorSets = new HashMap<>();
 		load();
 	}
 	
 	private void load()
 	{
-		loadDirectory(new File(Config.DATAPACK_ROOT, "data/stats/armorsets"));
+		_armorSets.clear();
+		parseDirectory(new File(Config.DATAPACK_ROOT, "data/stats/armorsets"));
 		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _armorSets.size() + " Armor sets.");
 	}
 	
 	@Override
-	protected void parseDoc(Document doc)
+	protected void parseDocument(Document doc)
 	{
 		NamedNodeMap attrs;
 		L2ArmorSet set;
@@ -73,52 +68,52 @@ public class ArmorSetsTable extends DocumentParser
 							{
 								case "chest":
 								{
-									set.addChest(getIntValue(attrs.getNamedItem("id")));
+									set.addChest(parseInt(attrs, "id"));
 									break;
 								}
 								case "feet":
 								{
-									set.addFeet(getIntValue(attrs.getNamedItem("id")));
+									set.addFeet(parseInt(attrs, "id"));
 									break;
 								}
 								case "gloves":
 								{
-									set.addGloves(getIntValue(attrs.getNamedItem("id")));
+									set.addGloves(parseInt(attrs, "id"));
 									break;
 								}
 								case "head":
 								{
-									set.addHead(getIntValue(attrs.getNamedItem("id")));
+									set.addHead(parseInt(attrs, "id"));
 									break;
 								}
 								case "legs":
 								{
-									set.addLegs(getIntValue(attrs.getNamedItem("id")));
+									set.addLegs(parseInt(attrs, "id"));
 									break;
 								}
 								case "shield":
 								{
-									set.addShield(getIntValue(attrs.getNamedItem("id")));
+									set.addShield(parseInt(attrs, "id"));
 									break;
 								}
 								case "skill":
 								{
-									int skillId = getIntValue(attrs.getNamedItem("id"));
-									int skillLevel = getIntValue(attrs.getNamedItem("level"));
+									int skillId = parseInt(attrs, "id");
+									int skillLevel = parseInt(attrs, "level");
 									set.addSkill(new SkillHolder(skillId, skillLevel));
 									break;
 								}
 								case "shield_skill":
 								{
-									int skillId = getIntValue(attrs.getNamedItem("id"));
-									int skillLevel = getIntValue(attrs.getNamedItem("level"));
+									int skillId = parseInt(attrs, "id");
+									int skillLevel = parseInt(attrs, "level");
 									set.addShieldSkill(new SkillHolder(skillId, skillLevel));
 									break;
 								}
 								case "enchant6skill":
 								{
-									int skillId = getIntValue(attrs.getNamedItem("id"));
-									int skillLevel = getIntValue(attrs.getNamedItem("level"));
+									int skillId = parseInt(attrs, "id");
+									int skillLevel = parseInt(attrs, "level");
 									set.addEnchant6Skill(new SkillHolder(skillId, skillLevel));
 									break;
 								}
@@ -161,19 +156,27 @@ public class ArmorSetsTable extends DocumentParser
 		}
 	}
 	
-	private int getIntValue(Node n)
-	{
-		return Integer.parseInt(n.getNodeValue());
-	}
-	
-	public boolean setExists(int chestId)
+	/**
+	 * @param chestId the chest Id to verify.
+	 * @return {@code true} if the chest Id belongs to a registered armor set, {@code false} otherwise.
+	 */
+	public boolean isArmorSet(int chestId)
 	{
 		return _armorSets.containsKey(chestId);
 	}
 	
+	/**
+	 * @param chestId the chest Id identifying the armor set.
+	 * @return the armor set associated to the give chest Id.
+	 */
 	public L2ArmorSet getSet(int chestId)
 	{
 		return _armorSets.get(chestId);
+	}
+	
+	public static ArmorSetsTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	@SuppressWarnings("synthetic-access")
