@@ -15,10 +15,10 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.clan;
 
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseAddItemEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseDeleteItemEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseTransferEvent;
-import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**

@@ -44,14 +44,14 @@ public final class CharTemplateTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("SELECT * FROM class_list, char_templates, lvlupgain" + " WHERE class_list.id = char_templates.classId" + " AND class_list.id = lvlupgain.classId" + " ORDER BY class_list.id");
+			final PreparedStatement statement = con.prepareStatement("SELECT * FROM char_templates, lvlupgain WHERE char_templates.classId = lvlupgain.classId ORDER BY char_templates.ClassId");
 			final ResultSet rset = statement.executeQuery();
-			
-			int count = 0;
+			StatsSet set;
+			int cId;
 			while (rset.next())
 			{
-				final StatsSet set = new StatsSet();
-				final int cId = rset.getInt("id");
+				set = new StatsSet();
+				cId = rset.getInt("ClassId");
 				set.set("classId", cId);
 				set.set("className", rset.getString("className"));
 				set.set("raceId", rset.getInt("raceId"));
@@ -97,12 +97,10 @@ public final class CharTemplateTable
 				
 				final L2PcTemplate ct = new L2PcTemplate(set, InitialEquipmentData.getInstance().getEquipmentList(cId));
 				_charTemplates.put(ClassId.getClassId(cId), ct);
-				++count;
 			}
 			rset.close();
 			statement.close();
-			
-			_log.info("CharTemplateTable: Loaded " + count + " Character Templates.");
+			_log.info("CharTemplateTable: Loaded " + _charTemplates.size() + " Character Templates.");
 		}
 		catch (SQLException e)
 		{
