@@ -481,6 +481,7 @@ public class ClanTable
 	private void restorewars()
 	{
 		Connection con = null;
+		L2Clan clan1, clan2;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -488,8 +489,15 @@ public class ClanTable
 			ResultSet rset = statement.executeQuery();
 			while (rset.next())
 			{
-				getClan(rset.getInt("clan1")).setEnemyClan(rset.getInt("clan2"));
-				getClan(rset.getInt("clan2")).setAttackerClan(rset.getInt("clan1"));
+				clan1 = getClan(rset.getInt("clan1"));
+				clan2 = getClan(rset.getInt("clan2"));
+				if (clan1 != null && clan2 != null)
+				{
+					clan1.setEnemyClan(rset.getInt("clan2"));
+					clan2.setAttackerClan(rset.getInt("clan1"));
+				}
+				else
+					_log.log(Level.WARNING, "[ClanTable]: restorewars one of clans is null clan1:" + clan1 + " clan2:" + clan2);
 			}
 			statement.close();
 		}
