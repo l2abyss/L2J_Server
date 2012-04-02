@@ -282,14 +282,14 @@ public class OlympiadManager
 
 				int teamPoints = 0;
 				ArrayList<Integer> team = new ArrayList<Integer>(party.getMemberCount());
-				for (L2PcInstance noble : party.getPartyMembers())
+				for (L2PcInstance noble : party.getMembers())
 				{
 					if (!checkNoble(noble, player))
 					{
 						// remove previously registered party members
 						if (Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP > 0)
 						{
-							for (L2PcInstance unreg : party.getPartyMembers())
+							for (L2PcInstance unreg : party.getMembers())
 							{
 								if (unreg == noble)
 									break;
@@ -315,13 +315,13 @@ public class OlympiadManager
 					// remove previously registered party members
 					if (Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP > 0)
 					{
-						for (L2PcInstance unreg : party.getPartyMembers())
+						for (L2PcInstance unreg : party.getMembers())
 							AntiFeedManager.getInstance().removePlayer(AntiFeedManager.OLYMPIAD_ID, unreg);		
 					}						
 					return false;
 				}
 
-				party.broadcastToPartyMembers(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_REGISTERED_IN_A_WAITING_LIST_OF_TEAM_GAMES));
+				party.broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_REGISTERED_IN_A_WAITING_LIST_OF_TEAM_GAMES));
 				_teamsBasedRegisters.add(team);
 				break;
 			}

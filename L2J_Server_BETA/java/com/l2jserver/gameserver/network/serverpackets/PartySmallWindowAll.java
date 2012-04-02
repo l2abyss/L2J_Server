@@ -43,7 +43,7 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 	{
 		_exclude = exclude;
 		_party = party;
-		_LeaderOID = _party.getPartyLeaderOID();
+		_LeaderOID = _party.getLeaderObjectId();
 		_dist = _party.getLootDistribution();
 	}
 	
@@ -55,7 +55,7 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 		writeD(_dist);
 		writeD(_party.getMemberCount() - 1);
 		
-		for (L2PcInstance member : _party.getPartyMembers())
+		for (L2PcInstance member : _party.getMembers())
 		{
 			if ((member != null) && (member != _exclude))
 			{

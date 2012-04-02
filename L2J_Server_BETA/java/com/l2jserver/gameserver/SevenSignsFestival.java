@@ -1389,7 +1389,7 @@ public class SevenSignsFestival implements SpawnListener
 		if (festivalParty != null)
 		{
 			participants = new ArrayList<Integer>(festivalParty.getMemberCount());
-			for (L2PcInstance player : festivalParty.getPartyMembers())
+			for (L2PcInstance player : festivalParty.getMembers())
 			{
 				if (player == null)
 					continue;
@@ -1397,7 +1397,7 @@ public class SevenSignsFestival implements SpawnListener
 			}
 			
 			if (Config.DEBUG)
-				_log.info("SevenSignsFestival: " + festivalParty.getPartyMembers().toString() + " have signed up to the "
+				_log.info("SevenSignsFestival: " + festivalParty.getMembers().size() + " have signed up to the "
 						+ SevenSigns.getCabalShortName(oracle) + " " + getFestivalName(festivalId) + " festival.");
 		}
 		

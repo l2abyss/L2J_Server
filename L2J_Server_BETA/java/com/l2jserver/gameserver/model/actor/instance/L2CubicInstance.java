@@ -328,7 +328,7 @@ public class L2CubicInstance
 					
 					if (partyA != null)
 					{
-						if (partyA.getPartyMembers().contains(_owner))
+						if (partyA.getMembers().contains(_owner))
 							if (partyB != null)
 								partyEnemy = partyB;
 							else
@@ -351,7 +351,7 @@ public class L2CubicInstance
 							return;
 					if (partyEnemy != null)
 					{
-						if (partyEnemy.getPartyMembers().contains(ownerTarget))
+						if (partyEnemy.getMembers().contains(ownerTarget))
 							_target = (L2Character) ownerTarget;
 						return;
 					}
@@ -422,7 +422,7 @@ public class L2CubicInstance
 						
 						if (_owner.getParty() != null)
 						{
-							if (_owner.getParty().getPartyMembers().contains(enemy))
+							if (_owner.getParty().getMembers().contains(enemy))
 								targetIt = false;
 							else if (_owner.getParty().getCommandChannel() != null)
 							{
@@ -900,7 +900,7 @@ public class L2CubicInstance
 		{
 			// Get all visible objects in a spheric area near the L2Character
 			// Get a list of Party Members
-			List<L2PcInstance> partyList = party.getPartyMembers();
+			List<L2PcInstance> partyList = party.getMembers();
 			for (L2Character partyMember : partyList)
 			{
 				if (!partyMember.isDead())

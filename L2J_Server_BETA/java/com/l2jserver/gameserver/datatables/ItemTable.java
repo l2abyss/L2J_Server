@@ -290,7 +290,7 @@ public class ItemTable
 				// if in CommandChannel and was killing a World/RaidBoss
 				if (raid.getFirstCommandChannelAttacked() != null && !Config.AUTO_LOOT_RAIDS)
 				{
-					item.setOwnerId(raid.getFirstCommandChannelAttacked().getChannelLeader().getObjectId());
+					item.setOwnerId(raid.getFirstCommandChannelAttacked().getLeaderObjectId());
 					itemLootShedule = ThreadPoolManager.getInstance().scheduleGeneral(new ResetOwner(item), Config.LOOT_RAIDS_PRIVILEGE_INTERVAL);
 					item.setItemLootShedule(itemLootShedule);
 				}

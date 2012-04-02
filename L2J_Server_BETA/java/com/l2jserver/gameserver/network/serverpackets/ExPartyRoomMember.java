@@ -52,7 +52,7 @@ public class ExPartyRoomMember extends L2GameServerPacket
 				writeD(1);
 			else
 			{
-				if((_room.getOwner().isInParty() && _member.isInParty()) && (_room.getOwner().getParty().getPartyLeaderOID() == _member.getParty().getPartyLeaderOID()))
+				if((_room.getOwner().isInParty() && _member.isInParty()) && (_room.getOwner().getParty().getLeaderObjectId() == _member.getParty().getLeaderObjectId()))
 					writeD(2);
 				else
 					writeD(0);

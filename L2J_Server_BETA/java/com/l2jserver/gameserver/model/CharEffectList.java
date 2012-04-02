@@ -1143,13 +1143,13 @@ public class CharEffectList
 				if (summonOwner != null)
 				{
 					if (summonOwner.isInParty())
-						summonOwner.getParty().broadcastToPartyMembers(ps);
+						summonOwner.getParty().broadcastPacket(ps);
 					else
 						summonOwner.sendPacket(ps);
 				}
 			}
 			else if (_owner instanceof L2PcInstance && _owner.isInParty())
-				_owner.getParty().broadcastToPartyMembers(ps);
+				_owner.getParty().broadcastPacket(ps);
 		}
 		
 		if (os != null)

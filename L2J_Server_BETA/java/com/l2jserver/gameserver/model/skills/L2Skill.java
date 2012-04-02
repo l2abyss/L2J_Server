@@ -1470,7 +1470,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				if (player.isInParty() && targetPlayer.isInParty())
 				{
 					// Same party
-					if (player.getParty().getPartyLeaderOID() == targetPlayer.getParty().getPartyLeaderOID())
+					if (player.getParty().getLeaderObjectId() == targetPlayer.getParty().getLeaderObjectId())
 						return false;
 					
 					// Same commandchannel

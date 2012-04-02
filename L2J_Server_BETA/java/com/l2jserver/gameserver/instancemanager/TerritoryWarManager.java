@@ -531,7 +531,7 @@ public class TerritoryWarManager implements Siegable
 		if (victimSide == 0)
 			return;
 		if (killer.getParty() != null && type < 5)
-			for(L2PcInstance pl : killer.getParty().getPartyMembers())
+			for(L2PcInstance pl : killer.getParty().getMembers())
 			{
 				if (pl.getSiegeSide() == victimSide || pl.getSiegeSide() == 0 || !Util.checkIfInRange(2000, killer, pl, false))
 					continue;

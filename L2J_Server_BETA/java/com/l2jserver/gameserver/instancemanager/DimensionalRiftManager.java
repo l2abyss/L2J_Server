@@ -275,7 +275,7 @@ public class DimensionalRiftManager
 			return;
 		}
 		
-		if (player.getParty().getPartyLeaderOID() != player.getObjectId())
+		if (player.getParty().getLeaderObjectId() != player.getObjectId())
 		{
 			showHtmlFile(player, "data/html/seven_signs/rift/NotPartyLeader.htm", npc);
 			return;
@@ -304,7 +304,7 @@ public class DimensionalRiftManager
 			return;
 		}
 		
-		for (L2PcInstance p : player.getParty().getPartyMembers())
+		for (L2PcInstance p : player.getParty().getMembers())
 			if (!checkIfInPeaceZone(p.getX(), p.getY(), p.getZ()))
 			{
 				canPass = false;
@@ -319,7 +319,7 @@ public class DimensionalRiftManager
 		
 		L2ItemInstance i;
 		int count = getNeededItems(type);
-		for (L2PcInstance p : player.getParty().getPartyMembers())
+		for (L2PcInstance p : player.getParty().getMembers())
 		{
 			i = p.getInventory().getItemByItemId(DIMENSIONAL_FRAGMENT_ITEM_ID);
 			
@@ -354,7 +354,7 @@ public class DimensionalRiftManager
 			return;
 		}
 		
-		for (L2PcInstance p : player.getParty().getPartyMembers())
+		for (L2PcInstance p : player.getParty().getMembers())
 		{
 			i = p.getInventory().getItemByItemId(DIMENSIONAL_FRAGMENT_ITEM_ID);
 			if (!p.destroyItem("RiftEntrance", i, count, null, false))

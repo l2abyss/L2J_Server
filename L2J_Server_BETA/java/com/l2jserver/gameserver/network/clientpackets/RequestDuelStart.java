@@ -94,14 +94,14 @@ public final class RequestDuelStart extends L2GameClientPacket
 				return;
 			}
 			// Target may not be of the same party
-			else if (activeChar.getParty().getPartyMembers().contains(targetChar))
+			else if (activeChar.getParty().containsPlayer(targetChar))
 			{
 				activeChar.sendMessage("This player is a member of your own party.");
 				return;
 			}
 			
 			// Check if every player is ready for a duel
-			for (L2PcInstance temp : activeChar.getParty().getPartyMembers())
+			for (L2PcInstance temp : activeChar.getParty().getMembers())
 			{
 				if (!temp.canDuel())
 				{
@@ -110,7 +110,7 @@ public final class RequestDuelStart extends L2GameClientPacket
 				}
 			}
 			L2PcInstance partyLeader = null; // snatch party leader of targetChar's party
-			for (L2PcInstance temp : targetChar.getParty().getPartyMembers())
+			for (L2PcInstance temp : targetChar.getParty().getMembers())
 			{
 				if (partyLeader == null) partyLeader = temp;
 				if (!temp.canDuel())

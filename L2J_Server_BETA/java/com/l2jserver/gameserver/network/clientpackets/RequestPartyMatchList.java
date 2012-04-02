@@ -91,7 +91,7 @@ public class RequestPartyMatchList extends L2GameClientPacket
 			
 			if (_activeChar.isInParty())
 			{
-				for (L2PcInstance ptmember : _activeChar.getParty().getPartyMembers())
+				for (L2PcInstance ptmember : _activeChar.getParty().getMembers())
 				{
 					if (ptmember == null)
 						continue;

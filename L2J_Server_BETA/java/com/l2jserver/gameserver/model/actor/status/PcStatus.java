@@ -162,7 +162,7 @@ public class PcStatus extends PlayableStatus
 					&& Util.checkIfInRange(1000, getActiveChar(), caster, true)
 					&& !caster.isDead() 
 					&& getActiveChar() != caster
-					&& getActiveChar().getParty().getPartyMembers().contains(caster))
+					&& getActiveChar().getParty().getMembers().contains(caster))
 			{
 				int transferDmg = 0;
 				
@@ -171,7 +171,7 @@ public class PcStatus extends PlayableStatus
 				if (transferDmg > 0 && attacker instanceof L2Playable)
 				{
 					int membersInRange = 0;
-					for (L2PcInstance member : caster.getParty().getPartyMembers())
+					for (L2PcInstance member : caster.getParty().getMembers())
 					{
 						if (Util.checkIfInRange(1000, member, caster, false) && member != caster)
 							membersInRange++;

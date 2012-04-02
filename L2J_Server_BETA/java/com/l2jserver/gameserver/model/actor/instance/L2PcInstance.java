@@ -1157,9 +1157,9 @@ public final class L2PcInstance extends L2Playable
 		if (getParty() != null && getParty() == target.getParty())
 		{
 			result |= RelationChanged.RELATION_HAS_PARTY;
-			for (int i = 0; i < getParty().getPartyMembers().size(); i++)
+			for (int i = 0; i < getParty().getMembers().size(); i++)
 			{
-				if (getParty().getPartyMembers().get(i) != this)
+				if (getParty().getMembers().get(i) != this)
 					continue;
 				switch (i)
 				{
@@ -2675,7 +2675,7 @@ public final class L2PcInstance extends L2Playable
 			
 			// Update class icon in party and clan
 			if (isInParty())
-				getParty().broadcastToPartyMembers(new PartySmallWindowUpdate(this));
+				getParty().broadcastPacket(new PartySmallWindowUpdate(this));
 			
 			if (getClan() != null)
 				getClan().broadcastToOnlineMembers(new PledgeShowMemberListUpdate(this));
@@ -5222,7 +5222,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if(newTarget!=null)
 		{
-			boolean isParty=(( (newTarget instanceof L2PcInstance) && isInParty() && getParty().getPartyMembers().contains(newTarget)));
+			boolean isParty=(( (newTarget instanceof L2PcInstance) && isInParty() && getParty().getMembers().contains(newTarget)));
 			
 			// Check if the new target is visible
 			if (!isParty && !newTarget.isVisible())
@@ -8856,7 +8856,7 @@ public final class L2PcInstance extends L2Playable
 			return true;
 		
 		// Check if the attacker is not in the same party. NOTE: Party checks goes before oly checks in order to prevent patry member autoattack at oly. 
-		if (getParty() != null && getParty().getPartyMembers().contains(attacker))
+		if (getParty() != null && getParty().getMembers().contains(attacker))
 			return false;
 		
 		// Check if the attacker is in olympia and olympia start
@@ -9644,7 +9644,7 @@ public final class L2PcInstance extends L2Playable
 			return getParty().getCommandChannel().getMembers().contains(looter);
 		
 		if (isInParty() && looter != null)
-			return getParty().getPartyMembers().contains(looter);
+			return getParty().getMembers().contains(looter);
 		
 		return false;
 	}

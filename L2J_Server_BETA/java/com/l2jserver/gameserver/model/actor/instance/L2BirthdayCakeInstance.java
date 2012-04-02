@@ -91,7 +91,7 @@ public class L2BirthdayCakeInstance extends L2Npc
 					}
 					else
 					{
-						for (L2PcInstance member : party.getPartyMembers())
+						for (L2PcInstance member : party.getMembers())
 						{
 							if ((member != null) && member.isInsideRadius(_cake, _skill.getSkillRadius(), true, true))
 							{

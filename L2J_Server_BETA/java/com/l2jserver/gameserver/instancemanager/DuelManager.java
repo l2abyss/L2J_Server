@@ -69,7 +69,7 @@ public class DuelManager
 		if (partyDuel == 1)
 		{
 			boolean playerInPvP = false;
-			for (L2PcInstance temp : playerA.getParty().getPartyMembers())
+			for (L2PcInstance temp : playerA.getParty().getMembers())
 			{
 				if (temp.getPvpFlag() != 0)
 				{
@@ -79,7 +79,7 @@ public class DuelManager
 			}
 			if (!playerInPvP)
 			{
-				for (L2PcInstance temp : playerB.getParty().getPartyMembers())
+				for (L2PcInstance temp : playerB.getParty().getMembers())
 				{
 					if (temp.getPvpFlag() != 0)
 					{
@@ -91,11 +91,11 @@ public class DuelManager
 			// A player has PvP flag
 			if (playerInPvP)
 			{
-				for (L2PcInstance temp : playerA.getParty().getPartyMembers())
+				for (L2PcInstance temp : playerA.getParty().getMembers())
 				{
 					temp.sendMessage(engagedInPvP);
 				}
-				for (L2PcInstance temp : playerB.getParty().getPartyMembers())
+				for (L2PcInstance temp : playerB.getParty().getMembers())
 				{
 					temp.sendMessage(engagedInPvP);
 				}
@@ -194,11 +194,11 @@ public class DuelManager
 		}
 		else if (duel.isPartyDuel())
 		{
-			if (duel.getPlayerA().getParty() != null && duel.getPlayerA().getParty().getPartyMembers().contains(player))
+			if (duel.getPlayerA().getParty() != null && duel.getPlayerA().getParty().getMembers().contains(player))
 			{
 				duel.broadcastToTeam2(packet);
 			}
-			else if (duel.getPlayerB().getParty() != null && duel.getPlayerB().getParty().getPartyMembers().contains(player))
+			else if (duel.getPlayerB().getParty() != null && duel.getPlayerB().getParty().getMembers().contains(player))
 			{
 				duel.broadcastToTeam1(packet);
 			}

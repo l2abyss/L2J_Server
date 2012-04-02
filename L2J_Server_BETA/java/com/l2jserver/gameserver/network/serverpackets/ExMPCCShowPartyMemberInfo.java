@@ -39,7 +39,7 @@ public class ExMPCCShowPartyMemberInfo extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x4b);
 		writeD(_party.getMemberCount()); // Number of Members
-		for(L2PcInstance pc : _party.getPartyMembers())
+		for(L2PcInstance pc : _party.getMembers())
 		{
 			writeS(pc.getName()); // Membername
 			writeD(pc.getObjectId()); // ObjId

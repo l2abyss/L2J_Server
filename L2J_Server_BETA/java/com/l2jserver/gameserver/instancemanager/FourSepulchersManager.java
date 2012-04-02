@@ -922,7 +922,7 @@ public class FourSepulchersManager
 				return;
 			}
 			
-			for (L2PcInstance mem : player.getParty().getPartyMembers())
+			for (L2PcInstance mem : player.getParty().getMembers())
 			{
 				QuestState qs = mem.getQuestState(QUEST_ID);
 				if (qs == null || (!qs.isStarted() && !qs.isCompleted()))
@@ -950,7 +950,7 @@ public class FourSepulchersManager
 				showHtmlFile(player, npcId + "-NL.htm", npc, null);
 				return;
 			}
-			for (L2PcInstance mem : player.getParty().getPartyMembers())
+			for (L2PcInstance mem : player.getParty().getMembers())
 			{
 				QuestState qs = mem.getQuestState(QUEST_ID);
 				if (qs == null || (!qs.isStarted() && !qs.isCompleted()))
@@ -1012,7 +1012,7 @@ public class FourSepulchersManager
 		if (Config.FS_PARTY_MEMBER_COUNT > 1)
 		{
 			List<L2PcInstance> members = new FastList<L2PcInstance>();
-			for (L2PcInstance mem : player.getParty().getPartyMembers())
+			for (L2PcInstance mem : player.getParty().getMembers())
 			{
 				if (!mem.isDead() && Util.checkIfInRange(700, player, mem, true))
 				{
@@ -1048,7 +1048,7 @@ public class FourSepulchersManager
 		if (Config.FS_PARTY_MEMBER_COUNT <= 1 && player.isInParty())
 		{
 			List<L2PcInstance> members = new FastList<L2PcInstance>();
-			for (L2PcInstance mem : player.getParty().getPartyMembers())
+			for (L2PcInstance mem : player.getParty().getMembers())
 			{
 				if (!mem.isDead() && Util.checkIfInRange(700, player, mem, true))
 				{

@@ -55,7 +55,7 @@ public final class RequestOustFromPartyRoom extends L2GameClientPacket
 		if (_room.getOwner() != activeChar)
 			return;
 		
-		if (activeChar.isInParty() && member.isInParty() && activeChar.getParty().getPartyLeaderOID() == member.getParty().getPartyLeaderOID())
+		if (activeChar.isInParty() && member.isInParty() && activeChar.getParty().getLeaderObjectId() == member.getParty().getLeaderObjectId())
 		{
 			activeChar.sendPacket(SystemMessageId.CANNOT_DISMISS_PARTY_MEMBER);
 		}

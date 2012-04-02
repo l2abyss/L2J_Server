@@ -38,7 +38,7 @@ public class PartyMemberPosition extends L2GameServerPacket
 	public void reuse(L2Party party)
 	{
 		locations.clear();
-		for (L2PcInstance member : party.getPartyMembers())
+		for (L2PcInstance member : party.getMembers())
 		{
 			if (member == null)
 				continue;

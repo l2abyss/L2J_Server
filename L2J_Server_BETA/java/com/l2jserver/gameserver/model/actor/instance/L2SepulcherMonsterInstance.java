@@ -294,7 +294,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 		
 		if (player.getParty() != null)
 		{
-			for (L2PcInstance mem : player.getParty().getPartyMembers())
+			for (L2PcInstance mem : player.getParty().getMembers())
 			{
 				QuestState qs = mem.getQuestState(questId);
 				if (qs != null
