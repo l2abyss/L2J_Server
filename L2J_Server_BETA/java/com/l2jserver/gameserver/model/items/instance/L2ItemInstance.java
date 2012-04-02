@@ -1622,7 +1622,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public final void dropMe(L2Character dropper, int x, int y, int z)
 	{
-		if (!fireDropListeners(dropper.getActingPlayer(), x, y, z))
+		if ((dropper != null) && !fireDropListeners(dropper.getActingPlayer(), x, y, z))
 		{
 			return;
 		}
