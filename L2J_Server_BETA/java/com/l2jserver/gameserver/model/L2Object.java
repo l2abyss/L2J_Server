@@ -40,19 +40,18 @@ import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
- * Mother class of all objects in the world which ones is it possible
- * to interact (PC, NPC, Item...)<BR><BR>
- *
- * L2Object :<BR><BR>
- * <li>L2Character</li>
- * <li>L2ItemInstance</li>
+ * Mother class of all objects in the world which ones is it possible to interact (PC, NPC, Item...)<BR>
+ * <BR>
+ * L2Object :<BR>
+ * <BR>
+ * <li>L2Character</li> <li>L2ItemInstance</li>
  */
 public abstract class L2Object
 {
-	private boolean _isVisible;                 // Object visibility
+	private boolean _isVisible; // Object visibility
 	private ObjectKnownList _knownList;
 	private String _name;
-	private int _objectId;                      // Object identifier
+	private int _objectId; // Object identifier
 	private ObjectPoly _poly;
 	private ObjectPosition _position;
 	private int _instanceId = 0;
@@ -296,12 +295,12 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Do Nothing.<BR><BR>
-	 *
-	 * <B><U> Overridden in </U> :</B><BR><BR>
-	 * <li> L2GuardInstance :  Set the home location of its L2GuardInstance </li>
-	 * <li> L2Attackable    :  Reset the Spoiled flag </li><BR><BR>
-	 *
+	 * Do Nothing.<BR>
+	 * <BR>
+	 * <B><U> Overridden in </U> :</B><BR>
+	 * <BR>
+	 * <li>L2GuardInstance : Set the home location of its L2GuardInstance</li> <li>L2Attackable : Reset the Spoiled flag</li><BR>
+	 * <BR>
 	 */
 	public void onSpawn()
 	{
@@ -325,8 +324,7 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * @return The id of the instance zone the object is in - id 0 is global
-	 * since everything like dropped items, mobs, players can be in a instanciated area, it must be in l2object
+	 * @return The id of the instance zone the object is in - id 0 is global since everything like dropped items, mobs, players can be in a instanciated area, it must be in l2object
 	 */
 	public int getInstanceId()
 	{
@@ -376,15 +374,15 @@ public abstract class L2Object
 				}
 			}
 			
-			if (((L2PcInstance)this).getPet() != null)
-				((L2PcInstance)this).getPet().setInstanceId(instanceId);
+			if (((L2PcInstance) this).getPet() != null)
+				((L2PcInstance) this).getPet().setInstanceId(instanceId);
 		}
 		else if (this instanceof L2Npc)
 		{
 			if (_instanceId > 0 && oldI != null)
-				oldI.removeNpc(((L2Npc)this));
+				oldI.removeNpc(((L2Npc) this));
 			if (instanceId > 0)
-				newI.addNpc(((L2Npc)this));
+				newI.addNpc(((L2Npc) this));
 		}
 		
 		_instanceId = instanceId;
@@ -420,20 +418,23 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Remove a L2Object from the world.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Remove the L2Object from the world</li><BR><BR>
-	 *
+	 * Remove a L2Object from the world.<BR>
+	 * <BR>
+	 * <B><U> Actions</U> :</B><BR>
+	 * <BR>
+	 * <li>Remove the L2Object from the world</li><BR>
+	 * <BR>
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T REMOVE the object from _allObjects of L2World </B></FONT><BR>
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND Server->Client packets to players</B></FONT><BR><BR>
-	 *
-	 * <B><U> Assert </U> :</B><BR><BR>
-	 * <li> _worldRegion != null <I>(L2Object is visible at the beginning)</I></li><BR><BR>
-	 *
-	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> Delete NPC/PC or Unsummon</li><BR><BR>
-	 *
+	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND Server->Client packets to players</B></FONT><BR>
+	 * <BR>
+	 * <B><U> Assert </U> :</B><BR>
+	 * <BR>
+	 * <li>_worldRegion != null <I>(L2Object is visible at the beginning)</I></li><BR>
+	 * <BR>
+	 * <B><U> Example of use </U> :</B><BR>
+	 * <BR>
+	 * <li>Delete NPC/PC or Unsummon</li><BR>
+	 * <BR>
 	 */
 	public void decayMe()
 	{
@@ -462,21 +463,19 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Init the position of a L2Object spawn and add it in the world as a visible object.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Set the x,y,z position of the L2Object spawn and update its _worldregion </li>
-	 * <li>Add the L2Object spawn in the _allobjects of L2World </li>
-	 * <li>Add the L2Object spawn to _visibleObjects of its L2WorldRegion</li>
-	 * <li>Add the L2Object spawn in the world as a <B>visible</B> object</li><BR><BR>
-	 *
-	 * <B><U> Assert </U> :</B><BR><BR>
-	 * <li> _worldRegion == null <I>(L2Object is invisible at the beginning)</I></li><BR><BR>
-	 *
-	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> Create Door</li>
-	 * <li> Spawn : Monster, Minion, CTs, Summon...</li><BR>
-	 *
+	 * Init the position of a L2Object spawn and add it in the world as a visible object.<BR>
+	 * <BR>
+	 * <B><U> Actions</U> :</B><BR>
+	 * <BR>
+	 * <li>Set the x,y,z position of the L2Object spawn and update its _worldregion</li> <li>Add the L2Object spawn in the _allobjects of L2World</li> <li>Add the L2Object spawn to _visibleObjects of its L2WorldRegion</li> <li>Add the L2Object spawn in the world as a <B>visible</B> object</li><BR>
+	 * <BR>
+	 * <B><U> Assert </U> :</B><BR>
+	 * <BR>
+	 * <li>_worldRegion == null <I>(L2Object is invisible at the beginning)</I></li><BR>
+	 * <BR>
+	 * <B><U> Example of use </U> :</B><BR>
+	 * <BR>
+	 * <li>Create Door</li> <li>Spawn : Monster, Minion, CTs, Summon...</li><BR>
 	 */
 	public final void spawnMe()
 	{
@@ -512,12 +511,16 @@ public abstract class L2Object
 			// Set the x,y,z position of the L2Object spawn and update its _worldregion
 			_isVisible = true;
 			
-			if (x > L2World.MAP_MAX_X) x = L2World.MAP_MAX_X - 5000;
-			if (x < L2World.MAP_MIN_X) x = L2World.MAP_MIN_X + 5000;
-			if (y > L2World.MAP_MAX_Y) y = L2World.MAP_MAX_Y - 5000;
-			if (y < L2World.MAP_MIN_Y) y = L2World.MAP_MIN_Y + 5000;
+			if (x > L2World.MAP_MAX_X)
+				x = L2World.MAP_MAX_X - 5000;
+			if (x < L2World.MAP_MIN_X)
+				x = L2World.MAP_MIN_X + 5000;
+			if (y > L2World.MAP_MAX_Y)
+				y = L2World.MAP_MAX_Y - 5000;
+			if (y < L2World.MAP_MIN_Y)
+				y = L2World.MAP_MIN_Y + 5000;
 			
-			getPosition().setWorldPosition(x, y ,z);
+			getPosition().setWorldPosition(x, y, z);
 			getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
 			
 			// Add the L2Object spawn in the _allobjects of L2World
@@ -558,19 +561,22 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Return the visibility state of the L2Object.
-	 * <B><U> Concept</U> :</B><BR><BR>
-	 * A L2Object is visible if <B>__IsVisible</B>=true and <B>_worldregion</B>!=null <BR><BR>
-	 * @return 
+	 * Return the visibility state of the L2Object. <B><U> Concept</U> :</B><BR>
+	 * <BR>
+	 * A L2Object is visible if <B>__IsVisible</B>=true and <B>_worldregion</B>!=null <BR>
+	 * <BR>
+	 * @return
 	 */
 	public final boolean isVisible()
 	{
 		return getPosition().getWorldRegion() != null;
 	}
+	
 	public final void setIsVisible(boolean value)
 	{
 		_isVisible = value;
-		if (!_isVisible) getPosition().setWorldRegion(null);
+		if (!_isVisible)
+			getPosition().setWorldRegion(null);
 	}
 	
 	public ObjectKnownList getKnownList()
@@ -579,10 +585,7 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Initializes the KnownList of the L2Object,
-	 * is overwritten in classes that require a different knownlist Type.
-	 * 
-	 * Removes the need for instanceof checks.
+	 * Initializes the KnownList of the L2Object, is overwritten in classes that require a different knownlist Type. Removes the need for instanceof checks.
 	 */
 	public void initKnownList()
 	{
@@ -622,10 +625,7 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Initializes the Position class of the L2Object,
-	 * is overwritten in classes that require a different position Type.
-	 * 
-	 * Removes the need for instanceof checks.
+	 * Initializes the Position class of the L2Object, is overwritten in classes that require a different position Type. Removes the need for instanceof checks.
 	 */
 	public void initPosition()
 	{
@@ -651,19 +651,10 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * Sends the Server->Client info packet for the object.<br><br>
-	 * Is Overridden in:
-	 * <li>L2AirShipInstance</li>
-	 * <li>L2BoatInstance</li>
-	 * <li>L2DoorInstance</li>
-	 * <li>L2PcInstance</li>
-	 * <li>L2StaticObjectInstance</li>
-	 * <li>L2Decoy</li>
-	 * <li>L2Npc</li>
-	 * <li>L2Summon</li>
-	 * <li>L2Trap</li>
-	 * <li>L2ItemInstance</li>
-	 * @param activeChar 
+	 * Sends the Server->Client info packet for the object.<br>
+	 * <br>
+	 * Is Overridden in: <li>L2AirShipInstance</li> <li>L2BoatInstance</li> <li>L2DoorInstance</li> <li>L2PcInstance</li> <li>L2StaticObjectInstance</li> <li>L2Decoy</li> <li>L2Npc</li> <li>L2Summon</li> <li>L2Trap</li> <li>L2ItemInstance</li>
+	 * @param activeChar
 	 */
 	public void sendInfo(L2PcInstance activeChar)
 	{
@@ -673,33 +664,37 @@ public abstract class L2Object
 	@Override
 	public String toString()
 	{
-		return (getClass().getSimpleName() + ":"+getName()+"[" + getObjectId() + "]");
+		return (getClass().getSimpleName() + ":" + getName() + "[" + getObjectId() + "]");
 	}
 	
 	/**
-	 * Not Implemented.<BR><BR>
-	 *
-	 * <B><U> Overridden in </U> :</B><BR><BR>
-	 * <li> L2PcInstance</li><BR><BR>
-	 * @param mov 
+	 * Not Implemented.<BR>
+	 * <BR>
+	 * <B><U> Overridden in </U> :</B><BR>
+	 * <BR>
+	 * <li>L2PcInstance</li><BR>
+	 * <BR>
+	 * @param mov
 	 */
 	public void sendPacket(L2GameServerPacket mov)
 	{
 		// default implementation
 	}
-
+	
 	/**
-	 * Not Implemented.<BR><BR>
-	 *
-	 * <B><U> Overridden in </U> :</B><BR><BR>
-	 * <li> L2PcInstance</li><BR><BR>
-	 * @param id 
+	 * Not Implemented.<BR>
+	 * <BR>
+	 * <B><U> Overridden in </U> :</B><BR>
+	 * <BR>
+	 * <li>L2PcInstance</li><BR>
+	 * <BR>
+	 * @param id
 	 */
 	public void sendPacket(SystemMessageId id)
 	{
 		// default implementation
 	}
-
+	
 	/**
 	 * @return {@code true} if object is instance of {@link L2PcInstance}
 	 */
@@ -723,7 +718,7 @@ public abstract class L2Object
 	{
 		return false;
 	}
-
+	
 	/**
 	 * @return {@code true} if object is instance of {@link L2PetInstance}
 	 */
@@ -778,5 +773,21 @@ public abstract class L2Object
 	public boolean isItem()
 	{
 		return false;
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj instanceof L2Object)
+		{
+			return _objectId == ((L2Object) obj)._objectId;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return _objectId;
 	}
 }
