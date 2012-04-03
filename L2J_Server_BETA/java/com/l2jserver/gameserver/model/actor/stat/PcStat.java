@@ -302,6 +302,11 @@ public class PcStat extends PlayableStat
 		return super.getExp();
 	}
 	
+	public final long getBaseExp()
+	{
+		return super.getExp();
+	}
+	
 	@Override
 	public final void setExp(long value)
 	{
@@ -317,6 +322,11 @@ public class PcStat extends PlayableStat
 		if (getActiveChar().isSubClassActive())
 			return getActiveChar().getSubClasses().get(getActiveChar().getClassIndex()).getLevel();
 		
+		return super.getLevel();
+	}
+	
+	public final byte getBaseLevel()
+	{
 		return super.getLevel();
 	}
 	
@@ -389,6 +399,11 @@ public class PcStat extends PlayableStat
 		if (getActiveChar().isSubClassActive())
 			return getActiveChar().getSubClasses().get(getActiveChar().getClassIndex()).getSp();
 		
+		return super.getSp();
+	}
+	
+	public final int getBaseSp()
+	{
 		return super.getSp();
 	}
 	

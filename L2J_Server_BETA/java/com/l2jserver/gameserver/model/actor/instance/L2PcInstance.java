@@ -7843,12 +7843,9 @@ public final class L2PcInstance extends L2Playable
 		try
 		{
 			// Get the exp, level, and sp of base class to store in base table
-			int currentClassIndex = getClassIndex();
-			_classIndex = 0;
-			long exp     = getStat().getExp();
-			int level   = getStat().getLevel();
-			int sp      = getStat().getSp();
-			_classIndex = currentClassIndex;
+			long exp = getStat().getBaseExp();
+			int level = getStat().getBaseLevel();
+			int sp = getStat().getBaseSp();
 			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			// Update base class
