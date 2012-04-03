@@ -20,7 +20,7 @@ import com.l2jserver.gameserver.model.items.L2Henna;
 /**
  * @author KenM, Zoey76
  */
-public class GMHennaInfo extends L2GameServerPacket
+public final class GMHennaInfo extends L2GameServerPacket
 {
 	private static final String _S__F0_GMHENNAINFO = "[S] F0 GMHennaInfo";
 	
@@ -28,10 +28,9 @@ public class GMHennaInfo extends L2GameServerPacket
 	private final L2Henna[] _hennas = new L2Henna[3];
 	private final int _count;
 	
-	public GMHennaInfo(L2PcInstance activeChar)
+	public GMHennaInfo(L2PcInstance player)
 	{
-		_activeChar = activeChar;
-		
+		_activeChar = player;
 		int j = 0;
 		for (L2Henna henna : _activeChar.getHennaList())
 		{
@@ -44,20 +43,20 @@ public class GMHennaInfo extends L2GameServerPacket
 	}
 	
 	@Override
-	protected void writeImpl()
+	protected final void writeImpl()
 	{
 		writeC(0xF0);
-		writeC(_activeChar.getHennaStatINT());
-		writeC(_activeChar.getHennaStatSTR());
-		writeC(_activeChar.getHennaStatCON());
-		writeC(_activeChar.getHennaStatMEN());
-		writeC(_activeChar.getHennaStatDEX());
-		writeC(_activeChar.getHennaStatWIT());
-		writeD(3); // slots?
-		writeD(_count); // size
-		for (L2Henna henna : _hennas)
+		writeC(_activeChar.getHennaStatINT()); // equip INT
+		writeC(_activeChar.getHennaStatSTR()); // equip STR
+		writeC(_activeChar.getHennaStatCON()); // equip CON
+		writeC(_activeChar.getHennaStatMEN()); // equip MEN
+		writeC(_activeChar.getHennaStatDEX()); // equip DEX
+		writeC(_activeChar.getHennaStatWIT()); // equip WIT
+		writeD(3); // Slots
+		writeD(_count); // Size
+		for (int i = 0; i < _count; i++)
 		{
-			writeD(henna.getDyeId());
+			writeD(_hennas[i].getDyeId());
 			writeD(0x01);
 		}
 	}
