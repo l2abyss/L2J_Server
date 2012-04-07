@@ -149,6 +149,7 @@ import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.ClassLevel;
 import com.l2jserver.gameserver.model.base.PlayerClass;
 import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.model.base.Sex;
 import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
@@ -1103,7 +1104,7 @@ public final class L2PcInstance extends L2Playable
 		
 		// Set the base class ID to that of the actual class ID.
 		player.setBaseClass(player.getClassId());
-		// Kept for backwards compabitility.
+		// Kept for backwards compatibility.
 		player.setNewbie(1);
 		// Add the player in the characters table of the database
 		boolean ok = player.createDb();
@@ -7281,15 +7282,14 @@ public final class L2PcInstance extends L2Playable
 	{
 		L2PcInstance player = null;
 		Connection con = null;
-		
 		try
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement statement = con.prepareStatement(RESTORE_CHARACTER);
+			final PreparedStatement statement = con.prepareStatement(RESTORE_CHARACTER);
 			statement.setInt(1, objectId);
-			ResultSet rset = statement.executeQuery();
+			final ResultSet rset = statement.executeQuery();
 			
 			double currentCp = 0;
 			double currentHp = 0;
@@ -7298,7 +7298,7 @@ public final class L2PcInstance extends L2Playable
 			while (rset.next())
 			{
 				final int activeClassId = rset.getInt("classid");
-				final boolean female = rset.getInt("sex") != 0;
+				final boolean female = rset.getInt("sex") != Sex.MALE;
 				final L2PcTemplate template = CharTemplateTable.getInstance().getTemplate(activeClassId);
 				PcAppearance app = new PcAppearance(rset.getByte("face"), rset.getByte("hairColor"), rset.getByte("hairStyle"), female);
 				
@@ -8734,19 +8734,19 @@ public final class L2PcInstance extends L2Playable
 		_hennaWIT = 0;
 		_hennaDEX = 0;
 		
-		for (int i = 0; i < 3; i++)
+		for (L2Henna h : _henna)
  		{
-			if (_henna[i] == null)
+			if (h == null)
 			{
 				continue;
 			}
 			
-			_hennaINT += _henna[i].getStatINT() > 5 ? 5 : _henna[i].getStatINT();
-			_hennaSTR += _henna[i].getStatSTR() > 5 ? 5 : _henna[i].getStatSTR();
-			_hennaMEN += _henna[i].getStatMEN() > 5 ? 5 : _henna[i].getStatMEN();
-			_hennaCON += _henna[i].getStatCON() > 5 ? 5 : _henna[i].getStatCON();
-			_hennaWIT += _henna[i].getStatWIT() > 5 ? 5 : _henna[i].getStatWIT();
-			_hennaDEX += _henna[i].getStatDEX() > 5 ? 5 : _henna[i].getStatDEX();
+			_hennaINT += (_hennaINT + h.getStatINT() > 5) ? 5 - _hennaINT : h.getStatINT();
+			_hennaSTR += (_hennaSTR + h.getStatSTR() > 5) ? 5 - _hennaSTR : h.getStatSTR();
+			_hennaMEN += (_hennaMEN + h.getStatMEN() > 5) ? 5 - _hennaMEN : h.getStatMEN();
+			_hennaCON +=(_hennaMEN + h.getStatCON() > 5) ? 5 - _hennaCON : h.getStatCON();
+			_hennaWIT += (_hennaWIT + h.getStatWIT() > 5) ? 5 - _hennaWIT : h.getStatWIT();
+			_hennaDEX += (_hennaDEX + h.getStatDEX() > 5) ? 5 - _hennaDEX : h.getStatDEX();
  		}
  	}
 	

@@ -14,6 +14,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Henna;
 
@@ -25,25 +28,22 @@ public final class HennaInfo extends L2GameServerPacket
 	private static final String _S__E5_HENNAINFO = "[S] E5 HennaInfo";
 	
 	private final L2PcInstance _activeChar;
-	private final L2Henna[] _hennas = new L2Henna[3];
-	private final int _count;
+	private final List<L2Henna> _hennas = new ArrayList<>();
 	
 	public HennaInfo(L2PcInstance player)
 	{
 		_activeChar = player;
-		int j = 0;
 		for (L2Henna henna : _activeChar.getHennaList())
 		{
 			if (henna != null)
 			{
-				_hennas[j++] = henna;
+				_hennas.add(henna);
 			}
 		}
-		_count = j;
 	}
 	
 	@Override
-	protected final void writeImpl()
+	protected void writeImpl()
 	{
 		writeC(0xE5);
 		writeC(_activeChar.getHennaStatINT()); // equip INT
@@ -52,11 +52,10 @@ public final class HennaInfo extends L2GameServerPacket
 		writeC(_activeChar.getHennaStatMEN()); // equip MEN
 		writeC(_activeChar.getHennaStatDEX()); // equip DEX
 		writeC(_activeChar.getHennaStatWIT()); // equip WIT
-		writeD(3); // Slots
-		writeD(_count); // Size
-		for (int i = 0; i < _count; i++)
+		writeD(_hennas.size()); // Size
+		for (L2Henna henna : _hennas)
 		{
-			writeD(_hennas[i].getDyeId());
+			writeD(henna.getDyeId());
 			writeD(0x01);
 		}
 	}

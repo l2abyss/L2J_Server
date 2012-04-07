@@ -20,7 +20,7 @@ import com.l2jserver.gameserver.model.items.L2Henna;
 /**
  * @author Zoey76
  */
-public class HennaItemRemoveInfo extends L2GameServerPacket
+public final class HennaItemRemoveInfo extends L2GameServerPacket
 {
 	private static final String _S__E7_HENNAITEMREMOVEINFO = "[S] E7 HennaItemRemoveInfo";
 	
@@ -34,14 +34,14 @@ public class HennaItemRemoveInfo extends L2GameServerPacket
 	}
 	
 	@Override
-	protected final void writeImpl()
+	protected void writeImpl()
 	{
 		writeC(0xE7);
 		writeD(_henna.getDyeId()); // symbol Id
 		writeD(_henna.getDyeItemId()); // item id of dye
 		writeQ(_henna.getCancelCount()); // total amount of dye require
 		writeQ(_henna.getCancelFee()); // total amount of Adena require to remove symbol
-		writeD(1); // able to remove or not 0 is false and 1 is true
+		writeD(_henna.isAllowedClass(_activeChar.getClassId()) ? 0x01 : 0x00); // able to remove or not
 		writeQ(_activeChar.getAdena());
 		writeD(_activeChar.getINT()); // current INT
 		writeC(_activeChar.getINT() - _henna.getStatINT()); // equip INT
