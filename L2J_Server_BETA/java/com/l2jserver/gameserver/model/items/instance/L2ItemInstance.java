@@ -1610,7 +1610,7 @@ public final class L2ItemInstance extends L2Object
 			_itm.setDropTime(System.currentTimeMillis());
 			_itm.setDropperObjectId(_dropper != null ? _dropper.getObjectId() : 0); // Set the dropper Id for the knownlist packets in sendInfo
 			
-			// this can synchronize on others instancies, so it's out of
+			// this can synchronize on others instances, so it's out of
 			// synchronized, to avoid deadlocks
 			// Add the L2ItemInstance dropped in the world as a visible object
 			L2World.getInstance().addVisibleObject(_itm, _itm.getPosition().getWorldRegion());
@@ -1622,7 +1622,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public final void dropMe(L2Character dropper, int x, int y, int z)
 	{
-		if ((dropper != null) && !fireDropListeners(dropper.getActingPlayer(), x, y, z))
+		if (!fireDropListeners(dropper, new Location(x, y, z)))
 		{
 			return;
 		}
@@ -2078,9 +2078,7 @@ public final class L2ItemInstance extends L2Object
 			ItemPickupEvent event = new ItemPickupEvent();
 			event.setItem(this);
 			event.setPicker(actor);
-			event.setX(getPosition().getX());
-			event.setY(getPosition().getY());
-			event.setZ(getPosition().getZ());
+			event.setLocation(new Location(getPosition().getX(), getPosition().getY(), getPosition().getZ()));
 			for (DropListener listener : dropListeners)
 			{
 				if (!listener.onPickup(event))
@@ -2123,20 +2121,20 @@ public final class L2ItemInstance extends L2Object
 		return true;
 	}
 	
-	private boolean fireDropListeners(L2PcInstance dropper, int x, int y, int z)
+	private boolean fireDropListeners(L2Character dropper, Location loc)
 	{
-		if (!dropListeners.isEmpty() && dropper != null && dropper.isPlayer())
+		if (!dropListeners.isEmpty() && (dropper != null))
 		{
 			ItemDropEvent event = new ItemDropEvent();
 			event.setDropper(dropper);
 			event.setItem(this);
-			event.setX(x);
-			event.setY(y);
-			event.setZ(z);
+			event.setLocation(loc);
 			for (DropListener listener : dropListeners)
 			{
 				if (!listener.onDrop(event))
+				{
 					return false;
+				}
 			}
 		}
 		return true;

@@ -16,12 +16,6 @@ package com.l2jserver.gameserver.model;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.1.4.1 $ $Date: 2005/03/27 15:29:33 $
- */
-
 public final class Location
 {
 	private final int _x;
@@ -95,5 +89,11 @@ public final class Location
 	public int getInstanceId()
 	{
 		return _instanceId;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "[" + getClass().getSimpleName() + "] X: " + _x + " Y: " + _y + " Z: " + _z + " Heading: " + _heading +  " InstanceId: " + _instanceId;
 	}
 }

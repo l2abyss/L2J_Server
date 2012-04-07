@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.events;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
@@ -24,10 +25,8 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 public class ItemDropEvent implements L2Event
 {
 	private L2ItemInstance item;
-	private L2PcInstance dropper;
-	private int x;
-	private int y;
-	private int z;
+	private L2Character dropper;
+	private Location loc;
 	
 	/**
 	 * @return the item
@@ -38,74 +37,42 @@ public class ItemDropEvent implements L2Event
 	}
 	
 	/**
-	 * @param item the item to set
+	 * @param i the item to set
 	 */
-	public void setItem(L2ItemInstance item)
+	public void setItem(L2ItemInstance i)
 	{
-		this.item = item;
+		item = i;
 	}
 	
 	/**
 	 * @return the dropper
 	 */
-	public L2PcInstance getDropper()
+	public L2Character getDropper()
 	{
 		return dropper;
 	}
 	
 	/**
-	 * @param dropper the dropper to set
+	 * @param d the dropper to set
 	 */
-	public void setDropper(L2PcInstance dropper)
+	public void setDropper(L2Character d)
 	{
-		this.dropper = dropper;
+		dropper = d;
 	}
 	
 	/**
-	 * @return the x
+	 * @return the location where the item was dropped.
 	 */
-	public int getX()
+	public Location getLocation()
 	{
-		return x;
+		return loc;
 	}
 	
 	/**
-	 * @param x the x to set
+	 * @param l the location to to set
 	 */
-	public void setX(int x)
+	public void setLocation(Location l)
 	{
-		this.x = x;
-	}
-	
-	/**
-	 * @return the y
-	 */
-	public int getY()
-	{
-		return y;
-	}
-	
-	/**
-	 * @param y the y to set
-	 */
-	public void setY(int y)
-	{
-		this.y = y;
-	}
-	
-	/**
-	 * @return the z
-	 */
-	public int getZ()
-	{
-		return z;
-	}
-	
-	/**
-	 * @param z the z to set
-	 */
-	public void setZ(int z)
-	{
-		this.z = z;
+		loc = l;
 	}
 }

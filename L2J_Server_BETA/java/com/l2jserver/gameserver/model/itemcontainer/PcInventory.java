@@ -1005,9 +1005,7 @@ public class PcInventory extends Inventory
 					ItemDropEvent event = new ItemDropEvent();
 					event.setItem(item);
 					event.setDropper(actor);
-					event.setX(actor.getX());
-					event.setY(actor.getY());
-					event.setZ(actor.getZ());
+					event.setLocation(actor.getLocation());
 					for (ItemTracker tracker : itemTrackers)
 					{
 						if (tracker.containsItemId(item.getItemId()))
