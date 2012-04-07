@@ -16,21 +16,16 @@ package com.l2jserver.gameserver.idfactory;
 
 import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.util.PrimeFinder;
 
 /**
  * This class ..
- *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
 public class BitSetIDFactory extends IdFactory
 {
-	private static Logger _log = Logger.getLogger(BitSetIDFactory.class.getName());
-	
 	private BitSet _freeIds;
 	private AtomicInteger _freeIdCount;
 	private AtomicInteger _nextFreeId;
@@ -43,7 +38,9 @@ public class BitSetIDFactory extends IdFactory
 			synchronized (BitSetIDFactory.this)
 			{
 				if (reachingBitSetCapacity())
+				{
 					increaseBitSetCapacity();
+				}
 			}
 		}
 		
@@ -53,12 +50,12 @@ public class BitSetIDFactory extends IdFactory
 	{
 		super();
 		
-		synchronized(BitSetIDFactory.class)
+		synchronized (BitSetIDFactory.class)
 		{
 			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new BitSetCapacityCheck(), 30000, 30000);
 			initialize();
 		}
-		_log.info("IDFactory: " + _freeIds.size() + " id's available.");
+		_log.info(getClass().getSimpleName() + ": " + _freeIds.size() + " id's available.");
 	}
 	
 	public void initialize()
@@ -74,7 +71,7 @@ public class BitSetIDFactory extends IdFactory
 				int objectID = usedObjectId - FIRST_OID;
 				if (objectID < 0)
 				{
-					_log.warning("Object ID " + usedObjectId + " in DB is less than minimum ID of " + FIRST_OID);
+					_log.warning(getClass().getSimpleName() + ": Object ID " + usedObjectId + " in DB is less than minimum ID of " + FIRST_OID);
 					continue;
 				}
 				_freeIds.set(usedObjectId - FIRST_OID);
@@ -87,14 +84,10 @@ public class BitSetIDFactory extends IdFactory
 		catch (Exception e)
 		{
 			_initialized = false;
-			_log.log(Level.SEVERE, "BitSet ID Factory could not be initialized correctly: " + e.getMessage(), e);
+			_log.severe(getClass().getSimpleName() + ": Could not be initialized properly: " + e.getMessage());
 		}
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.idfactory.IdFactory#releaseId(int)
-	 */
 	@Override
 	public synchronized void releaseId(int objectID)
 	{
@@ -104,13 +97,11 @@ public class BitSetIDFactory extends IdFactory
 			_freeIdCount.incrementAndGet();
 		}
 		else
-			_log.warning("BitSet ID Factory: release objectID " + objectID + " failed (< " + FIRST_OID + ")");
+		{
+			_log.warning(getClass().getSimpleName() + ": Release objectID " + objectID + " failed (< " + FIRST_OID + ")");
+		}
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.idfactory.IdFactory#getNextId()
-	 */
 	@Override
 	public synchronized int getNextId()
 	{
@@ -141,10 +132,6 @@ public class BitSetIDFactory extends IdFactory
 		return newID + FIRST_OID;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.idfactory.IdFactory#size()
-	 */
 	@Override
 	public synchronized int size()
 	{
@@ -152,7 +139,6 @@ public class BitSetIDFactory extends IdFactory
 	}
 	
 	/**
-	 * 
 	 * @return
 	 */
 	protected synchronized int usedIdCount()
@@ -161,17 +147,16 @@ public class BitSetIDFactory extends IdFactory
 	}
 	
 	/**
-	 * 
 	 * @return
 	 */
 	protected synchronized boolean reachingBitSetCapacity()
 	{
-		return PrimeFinder.nextPrime(usedIdCount() * 11 / 10) > _freeIds.size();
+		return PrimeFinder.nextPrime((usedIdCount() * 11) / 10) > _freeIds.size();
 	}
 	
 	protected synchronized void increaseBitSetCapacity()
 	{
-		BitSet newBitSet = new BitSet(PrimeFinder.nextPrime(usedIdCount() * 11 / 10));
+		BitSet newBitSet = new BitSet(PrimeFinder.nextPrime((usedIdCount() * 11) / 10));
 		newBitSet.or(_freeIds);
 		_freeIds = newBitSet;
 	}

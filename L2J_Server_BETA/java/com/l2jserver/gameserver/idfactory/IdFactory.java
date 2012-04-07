@@ -33,7 +33,7 @@ import com.l2jserver.L2DatabaseFactory;
  */
 public abstract class IdFactory
 {
-	private static Logger _log = Logger.getLogger(IdFactory.class.getName());
+	protected final Logger _log = Logger.getLogger(getClass().getName());
 	
 	@Deprecated
 	protected static final String[] ID_UPDATES =

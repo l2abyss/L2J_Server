@@ -18,25 +18,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 
-
 /**
- * This class ...
- * 18.8.2010 - JIV - Disabling until someone update it
- *
- * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
+ * 18.8.2010 - JIV: Disabling until someone update it
  */
 @Deprecated
 public class CompactionIDFactory extends IdFactory
 {
-	private static Logger _log = Logger.getLogger(CompactionIDFactory.class.getName());
 	private int _curOID;
-	private int _freeSize;
+	private final int _freeSize;
 	
 	protected CompactionIDFactory()
 	{
@@ -48,7 +41,7 @@ public class CompactionIDFactory extends IdFactory
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			//con.createStatement().execute("drop table if exists tmp_obj_id");
+			// con.createStatement().execute("drop table if exists tmp_obj_id");
 			
 			int[] tmp_obj_ids = extractUsedObjectIDTable();
 			
@@ -58,12 +51,12 @@ public class CompactionIDFactory extends IdFactory
 				N = insertUntil(tmp_obj_ids, idx, N, con);
 			}
 			_curOID++;
-			_log.info("IdFactory: Next usable Object ID is: " + _curOID);
+			_log.info(getClass().getSimpleName() + ": Next usable Object ID is: " + _curOID);
 			_initialized = true;
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "ID Factory could not be initialized correctly: " + e.getMessage(), e);
+			_log.severe(getClass().getSimpleName() + ": Could not initialize properly: " + e.getMessage());
 		}
 		finally
 		{
@@ -91,7 +84,7 @@ public class CompactionIDFactory extends IdFactory
 				while (rs.next())
 				{
 					int badId = rs.getInt(1);
-					_log.severe("Bad ID " + badId + " in DB found by: " + check);
+					_log.severe(getClass().getSimpleName() + ": Bad ID " + badId + " in DB found by: " + check);
 					throw new RuntimeException();
 				}
 				rs.close();
@@ -100,12 +93,14 @@ public class CompactionIDFactory extends IdFactory
 		}
 		
 		int hole = id - _curOID;
-		if (hole > N - idx)
+		if (hole > (N - idx))
+		{
 			hole = N - idx;
+		}
 		for (int i = 1; i <= hole; i++)
 		{
 			id = tmp_obj_ids[N - i];
-			_log.info("Compacting DB object ID=" + id + " into " + (_curOID));
+			_log.info(getClass().getSimpleName() + ": Compacting DB object ID=" + id + " into " + (_curOID));
 			for (String update : ID_UPDATES)
 			{
 				PreparedStatement ps = con.prepareStatement(update);
@@ -116,35 +111,48 @@ public class CompactionIDFactory extends IdFactory
 			}
 			_curOID++;
 		}
-		if (hole < N - idx)
+		if (hole < (N - idx))
+		{
 			_curOID++;
+		}
 		return N - hole;
 	}
 	
 	@Override
 	public synchronized int getNextId()
 	{
-		/*if (_freeSize == 0)*/return _curOID++;
-		/* else
-		 	return _freeOIDs[--_freeSize];*/
+		// @formatter:off
+		/*
+		 * if (_freeSize == 0)
+		 */
+			return _curOID++;
+		/*
+		 * else
+		 * 	return _freeOIDs[--_freeSize];
+		 */
+		// @formatter:on
 	}
 	
 	@Override
 	public synchronized void releaseId(int id)
 	{
-		//dont release ids until we are sure it isnt messing up
-		/* if (_freeSize >= _freeOIDs.length)
+		// Don't release Ids until we are sure it isn't messing up
+		// @formatter:off
+		/*
+		 if (_freeSize >= _freeOIDs.length)
 		 {
-		     int[] tmp = new int[_freeSize + STACK_SIZE_INCREMENT];
-		     System.arraycopy(_freeOIDs, 0, tmp, 0, _freeSize);
-		     _freeOIDs = tmp;
+		 	int[] tmp = new int[_freeSize + STACK_SIZE_INCREMENT];
+		 	System.arraycopy(_freeOIDs, 0, tmp, 0, _freeSize);
+		 	_freeOIDs = tmp;
 		 }
-		 _freeOIDs[_freeSize++] = id;*/
+		 _freeOIDs[_freeSize++] = id;
+		 */
+		// @formatter:on
 	}
 	
 	@Override
 	public int size()
 	{
-		return _freeSize + LAST_OID - FIRST_OID;
+		return (_freeSize + LAST_OID) - FIRST_OID;
 	}
 }
