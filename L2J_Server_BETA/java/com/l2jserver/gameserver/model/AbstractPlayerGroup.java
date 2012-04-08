@@ -172,21 +172,4 @@ public abstract class AbstractPlayerGroup
 		}
 		return true;
 	}
-	
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (getClass().equals(obj.getClass()))
-		{
-			return getLeader().equals(((AbstractPlayerGroup) obj).getLeader());
-			
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return getLeader().hashCode();
-	}
 }

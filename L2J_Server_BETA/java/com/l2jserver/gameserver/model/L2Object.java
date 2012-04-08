@@ -774,20 +774,4 @@ public abstract class L2Object
 	{
 		return false;
 	}
-	
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj instanceof L2Object)
-		{
-			return _objectId == ((L2Object) obj)._objectId;
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return _objectId;
-	}
 }
