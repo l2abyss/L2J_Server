@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +21,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.engines.DocumentParser;
 
 /**
@@ -39,7 +37,7 @@ public final class ExperienceTable extends DocumentParser
 	private ExperienceTable()
 	{
 		_expTable.clear();
-		parseFile(new File(Config.DATAPACK_ROOT, "data/stats/experience.xml"));
+		parseDatapackFile("data/stats/experience.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _expTable.size() + " levels.");
 		_log.info(getClass().getSimpleName() + ": Max Player Level is: " + (MAX_LEVEL - 1));
 		_log.info(getClass().getSimpleName() + ": Max Pet Level is: " + (MAX_PET_LEVEL - 1));

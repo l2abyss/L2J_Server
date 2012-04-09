@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +23,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
@@ -44,7 +42,7 @@ public final class HennaData extends DocumentParser
 	private HennaData()
 	{
 		_hennaList.clear();
-		parseFile(new File(Config.DATAPACK_ROOT, "data/stats/hennaList.xml"));
+		parseDatapackFile("data/stats/hennaList.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _hennaList.size() + " Henna data.");
 	}
 	

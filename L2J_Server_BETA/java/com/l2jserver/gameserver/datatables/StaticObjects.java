@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +22,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.StatsSet;
@@ -41,7 +39,7 @@ public final class StaticObjects extends DocumentParser
 	private StaticObjects()
 	{
 		_staticObjects.clear();
-		parseFile(new File(Config.DATAPACK_ROOT, "data/staticObjects.xml"));
+		parseDatapackFile("data/staticObjects.xml");
 		_log.info("StaticObject: Loaded " + _staticObjects.size() + " StaticObject Templates.");
 	}
 	

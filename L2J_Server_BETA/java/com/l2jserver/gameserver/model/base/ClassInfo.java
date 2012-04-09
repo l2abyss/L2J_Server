@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.base;
 
+import java.util.regex.Matcher;
+
 /**
  * This class will hold the information of the player classes.
  * @author Zoey76
@@ -49,12 +51,11 @@ public final class ClassInfo
 	}
 	
 	/**
-	 * @param displayClientName if {@code true} the code to display the client side name will be returned, <b>HTMLs only</b>.
-	 * @return the in-game class name.
+	 * @return the hardcoded in-game class name.
 	 */
-	public String getClassName(boolean displayClientName)
+	public String getClassName()
 	{
-		return displayClientName ? getClassClientCode() : _className;
+		return _className;
 	}
 	
 	/**
@@ -81,9 +82,17 @@ public final class ClassInfo
 	/**
 	 * @return the class client Id formatted to be displayed on a HTML.
 	 */
-	private String getClassClientCode()
+	public String getClientCode()
 	{
 		return "&$" + getClassClientId() + ";";
+	}
+	
+	/**
+	 * @return the escaped class client Id formatted to be displayed on a HTML.
+	 */
+	public String getEscapedClientCode()
+	{
+		return Matcher.quoteReplacement(getClientCode());
 	}
 	
 	/**

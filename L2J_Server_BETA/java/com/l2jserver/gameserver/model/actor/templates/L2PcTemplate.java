@@ -101,7 +101,7 @@ public class L2PcTemplate extends L2CharTemplate
 	
 	/**
 	 * @return the template server side class name.
-	 * @deprecated replaced by {@link ClassInfo#getClassName(boolean)}
+	 * @deprecated replaced by {@link ClassInfo#getClassName()}
 	 */
 	@Deprecated
 	public String getClassName()

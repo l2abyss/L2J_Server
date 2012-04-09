@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +43,7 @@ public final class InitialEquipmentData extends DocumentParser
 	private InitialEquipmentData()
 	{
 		_initialEquipmentList.clear();
-		parseFile(new File(Config.DATAPACK_ROOT, Config.INITIAL_EQUIPMENT_EVENT ? filePathEvent : filePathNormal));
+		parseDatapackFile(Config.INITIAL_EQUIPMENT_EVENT ? filePathEvent : filePathNormal);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _initialEquipmentList.size() + " Initial Equipment data.");
 	}
 	

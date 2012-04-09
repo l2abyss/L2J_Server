@@ -8334,7 +8334,7 @@ public final class L2PcInstance extends L2Playable
 					if (!SkillTreesData.getInstance().isSkillAllowed(this, skill))
 					{
 						Util.handleIllegalPlayerAction(this, "Player " + getName() + " has invalid skill " + skill.getName() +
-							" ("+skill.getId() + "/" + skill.getLevel() + "), class:" + ClassListData.getInstance().getClass(getClassId()).getClassName(false), 1);
+							" ("+skill.getId() + "/" + skill.getLevel() + "), class:" + ClassListData.getInstance().getClass(getClassId()).getClassName(), 1);
 						if (Config.SKILL_CHECK_REMOVE)
 							removeSkill(skill);
 					}

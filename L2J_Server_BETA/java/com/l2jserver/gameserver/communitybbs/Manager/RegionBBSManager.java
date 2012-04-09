@@ -132,7 +132,7 @@ public class RegionBBSManager extends BaseBBSManager
 			else if (player.getLevel() >= 20)
 				levelApprox = "medium";
 			
-			StringUtil.append(htmlCode, "<table border=0><tr><td>", player.getName(), " (", sex, " ", ClassListData.getInstance().getClass(player.getClassId()).getClassName(true), "):</td></tr>"
+			StringUtil.append(htmlCode, "<table border=0><tr><td>", player.getName(), " (", sex, " ", ClassListData.getInstance().getClass(player.getClassId()).getClientCode(), "):</td></tr>"
 					+ "<tr><td>Level: ", levelApprox, "</td></tr>" + "<tr><td><br></td></tr>");
 			
 			if (activeChar != null

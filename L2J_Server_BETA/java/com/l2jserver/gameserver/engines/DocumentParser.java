@@ -26,6 +26,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
+import com.l2jserver.Config;
 import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
@@ -41,6 +42,15 @@ public abstract class DocumentParser
 	private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
 	
 	private static final XMLFilter xmlFilter = new XMLFilter();
+	
+	/**
+	 * Wrapper for {@link #parseFile(File)} method.
+	 * @param path the relative path to the datapack root of the XML file to parse.
+	 */
+	protected void parseDatapackFile(String path)
+	{
+		parseFile(new File(Config.DATAPACK_ROOT, path));
+	}
 	
 	/**
 	 * Parses a single XML file.<br>
@@ -160,6 +170,17 @@ public abstract class DocumentParser
 	protected static Long parseLong(NamedNodeMap n, String name)
 	{
 		return Long.valueOf(n.getNamedItem(name).getNodeValue());
+	}
+	
+	/**
+	 * @param n the named node map.
+	 * @param name the attribute name.
+	 * @return {@code true} if the attribute exists and it's value is {@code true}, {@code false} otherwise.
+	 */
+	protected static boolean parseBoolean(NamedNodeMap n, String name)
+	{
+		final Node b = n.getNamedItem(name);
+		return (b != null) && Boolean.parseBoolean(b.getNodeValue());
 	}
 	
 	/**

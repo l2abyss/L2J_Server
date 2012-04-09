@@ -390,7 +390,7 @@ public class Hero
 				if (charId == charOneId)
 				{
 					String name = CharNameTable.getInstance().getNameById(charTwoId);
-					String cls = ClassListData.getInstance().getClass(charTwoClass).getClassName(true);
+					String cls = ClassListData.getInstance().getClass(charTwoClass).getClientCode();
 					if(name != null && cls != null)
 					{
 						StatsSet fight = new StatsSet();
@@ -426,7 +426,7 @@ public class Hero
 				else if (charId == charTwoId)
 				{
 					String name = CharNameTable.getInstance().getNameById(charOneId);
-					String cls = ClassListData.getInstance().getClass(charOneClass).getClassName(true);
+					String cls = ClassListData.getInstance().getClass(charOneClass).getClientCode();
 					if(name != null && cls != null)
 					{
 						StatsSet fight = new StatsSet();
