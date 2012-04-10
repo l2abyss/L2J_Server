@@ -299,7 +299,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 						"<a action=\"link CO",
 						String.valueOf(cid.getId()),
 						"\">",
-						ClassListData.getInstance().getClass(cid).getClientCode(),
+						ClassListData.getInstance().getClass(cid).getEscapedClientCode(),
 						"</a><br>"
 				);
 			}
