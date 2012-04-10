@@ -8744,14 +8744,14 @@ public final class L2PcInstance extends L2Playable
 			_hennaINT += (_hennaINT + h.getStatINT() > 5) ? 5 - _hennaINT : h.getStatINT();
 			_hennaSTR += (_hennaSTR + h.getStatSTR() > 5) ? 5 - _hennaSTR : h.getStatSTR();
 			_hennaMEN += (_hennaMEN + h.getStatMEN() > 5) ? 5 - _hennaMEN : h.getStatMEN();
-			_hennaCON +=(_hennaMEN + h.getStatCON() > 5) ? 5 - _hennaCON : h.getStatCON();
+			_hennaCON +=(_hennaCON + h.getStatCON() > 5) ? 5 - _hennaCON : h.getStatCON();
 			_hennaWIT += (_hennaWIT + h.getStatWIT() > 5) ? 5 - _hennaWIT : h.getStatWIT();
 			_hennaDEX += (_hennaDEX + h.getStatDEX() > 5) ? 5 - _hennaDEX : h.getStatDEX();
  		}
  	}
 	
 	/**
-	 * @param slot 
+	 * @param slot the character inventory henna slot.
 	 * @return the Henna of this L2PcInstance corresponding to the selected slot.
 	 */
 	public L2Henna getHenna(int slot)
