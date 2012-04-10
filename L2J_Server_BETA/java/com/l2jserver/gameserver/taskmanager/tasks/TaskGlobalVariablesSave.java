@@ -14,37 +14,25 @@
  */
 package com.l2jserver.gameserver.taskmanager.tasks;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.instancemanager.GlobalVariablesManager;
 import com.l2jserver.gameserver.taskmanager.Task;
 import com.l2jserver.gameserver.taskmanager.TaskManager;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
 import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
-
 /**
  * @author Gigiikun
  */
 public class TaskGlobalVariablesSave extends Task
 {
-	private static final Logger _log = Logger.getLogger(TaskGlobalVariablesSave.class.getName());
 	public static final String NAME = "global_varibales_save";
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#getName()
-	 */
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#onTimeElapsed(com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask)
-	 */
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
@@ -52,10 +40,6 @@ public class TaskGlobalVariablesSave extends Task
 		_log.info("GlobalVariablesManager: Data updated successfully.");
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#initializate()
-	 */
 	@Override
 	public void initializate()
 	{

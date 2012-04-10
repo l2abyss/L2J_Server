@@ -20,19 +20,19 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
 
-
 /**
  * @author Layane
- * 
  */
 public abstract class Task
 {
-	private static Logger _log = Logger.getLogger(Task.class.getName());
+	protected final Logger _log = Logger.getLogger(getClass().getName());
 	
 	public void initializate()
 	{
 		if (Config.DEBUG)
+		{
 			_log.info("Task" + getName() + " inializate");
+		}
 	}
 	
 	public ScheduledFuture<?> launchSpecial(ExecutedTask instance)
@@ -46,5 +46,6 @@ public abstract class Task
 	
 	public void onDestroy()
 	{
+		
 	}
 }

@@ -16,8 +16,6 @@ package com.l2jserver.gameserver.taskmanager.tasks;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.taskmanager.Task;
@@ -27,13 +25,12 @@ import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
 public class TaskDailySkillReuseClean extends Task
 {
-	private static final Logger _log = Logger.getLogger(TaskDailySkillReuseClean.class.getName());
-	
 	private static final String NAME = "daily_skill_clean";
 	
 	private static final int[] _daily_skills =
 	{
-		2510, 22180
+		2510,
+		22180
 	};
 	
 	@Override
@@ -59,13 +56,13 @@ public class TaskDailySkillReuseClean extends Task
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Could not reset daily skill reuse: " + e);
+			_log.severe(getClass().getSimpleName() + ": Could not reset daily skill reuse: " + e);
 		}
 		finally
 		{
 			L2DatabaseFactory.close(con);
 		}
-		_log.config("Daily skill reuse cleaned.");
+		_log.info("Daily skill reuse cleaned.");
 	}
 	
 	@Override

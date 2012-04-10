@@ -16,8 +16,6 @@ package com.l2jserver.gameserver.taskmanager.tasks;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.taskmanager.Task;
@@ -25,18 +23,14 @@ import com.l2jserver.gameserver.taskmanager.TaskManager;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
 import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
-
 /**
- ** @author Gnacik
- ** 
+ * @author Gnacik
  */
 public class TaskDailyQuestClean extends Task
 {
-	private static final Logger _log = Logger.getLogger(TaskDailyQuestClean.class.getName());
-	
 	private static final String NAME = "daily_quest_clean";
 	
-	private static final String[] _daily_names = 
+	private static final String[] _daily_names =
 	{
 		"463_IMustBeaGenius",
 		"464_Oath",
@@ -47,20 +41,12 @@ public class TaskDailyQuestClean extends Task
 		"553_OlympiadUndefeated"
 	};
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#getName()
-	 */
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#onTimeElapsed(com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask)
-	 */
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
@@ -68,7 +54,7 @@ public class TaskDailyQuestClean extends Task
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			for(String name : _daily_names)
+			for (String name : _daily_names)
 			{
 				PreparedStatement statement = con.prepareStatement("DELETE FROM character_quests WHERE name=? AND var='<state>' AND value='Completed';");
 				statement.setString(1, name);
@@ -78,24 +64,19 @@ public class TaskDailyQuestClean extends Task
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Could not reset daily quests: " + e);
+			_log.severe(getClass().getSimpleName() + ": Could not reset daily quests: " + e);
 		}
 		finally
 		{
 			L2DatabaseFactory.close(con);
 		}
-		_log.config("Daily quests cleared");
+		_log.info("Daily quests cleared");
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#initializate()
-	 */
 	@Override
 	public void initializate()
 	{
 		super.initializate();
 		TaskManager.addUniqueTask(NAME, TaskTypes.TYPE_GLOBAL_TASK, "1", "06:30:00", "");
 	}
-	
 }

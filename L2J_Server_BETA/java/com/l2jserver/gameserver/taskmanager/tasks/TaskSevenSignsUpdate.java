@@ -14,9 +14,6 @@
  */
 package com.l2jserver.gameserver.taskmanager.tasks;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.taskmanager.Task;
@@ -24,54 +21,38 @@ import com.l2jserver.gameserver.taskmanager.TaskManager;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
 import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
-
 /**
- * Updates all data for the Seven Signs and Festival of Darkness engines, when
- * time is elapsed.
- * 
+ * Updates all data for the Seven Signs and Festival of Darkness engines, when time is elapsed.
  * @author Tempy
  */
 public class TaskSevenSignsUpdate extends Task
 {
-	private static final Logger _log = Logger.getLogger(TaskSevenSignsUpdate.class.getName());
-	public static final String NAME = "seven_signs_update";
+	private static final String NAME = "seven_signs_update";
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#getName()
-	 */
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#onTimeElapsed(com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask)
-	 */
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
 		try
 		{
 			SevenSigns.getInstance().saveSevenSignsStatus();
-			
 			if (!SevenSigns.getInstance().isSealValidationPeriod())
+			{
 				SevenSignsFestival.getInstance().saveFestivalData(false);
-			
+			}
 			_log.info("SevenSigns: Data updated successfully.");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "SevenSigns: Failed to save Seven Signs configuration: " + e.getMessage(), e);
+			_log.warning(getClass().getSimpleName() + ": SevenSigns: Failed to save Seven Signs configuration: " + e.getMessage());
 		}
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#initializate()
-	 */
 	@Override
 	public void initializate()
 	{

@@ -33,16 +33,10 @@ import com.l2jserver.gameserver.util.Broadcast;
  */
 public class AutoAnnounceTaskManager
 {
-	protected static final Logger _log = Logger.getLogger(AutoAnnounceTaskManager.class.getName());
+	private static final Logger _log = Logger.getLogger(AutoAnnounceTaskManager.class.getName());
 	
-	protected List<AutoAnnouncement> _announces = new FastList<AutoAnnouncement>();
-	
+	private final List<AutoAnnouncement> _announces = new FastList<>();
 	private int _nextId = 1;
-	
-	public static AutoAnnounceTaskManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	private AutoAnnounceTaskManager()
 	{
@@ -106,7 +100,6 @@ public class AutoAnnounceTaskManager
 	public void addAutoAnnounce(long initial, long delay, int repeat, String memo, boolean isCritical)
 	{
 		Connection conn = null;
-		
 		try
 		{
 			conn = L2DatabaseFactory.getInstance().getConnection();
@@ -229,6 +222,11 @@ public class AutoAnnounceTaskManager
 		{
 			_log.info((isCritical ? "Critical AutoAnnounce" : "AutoAnnounce") + text);
 		}
+	}
+	
+	public static AutoAnnounceTaskManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	@SuppressWarnings("synthetic-access")

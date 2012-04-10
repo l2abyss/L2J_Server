@@ -35,7 +35,7 @@ public class DecayTaskManager
 	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
 	
 	protected final Map<L2Character, Long> _decayTasks = new FastMap<L2Character, Long>().shared();
-
+	
 	private DecayTaskManager()
 	{
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new DecayScheduler(), 10000, Config.DECAY_TIME_TASK);
@@ -48,7 +48,7 @@ public class DecayTaskManager
 	
 	public void addDecayTask(L2Character actor)
 	{
-		addDecayTask(actor, 0); 
+		addDecayTask(actor, 0);
 	}
 	
 	public void addDecayTask(L2Character actor, int interval)
@@ -84,14 +84,22 @@ public class DecayTaskManager
 					e = it.next();
 					actor = e.getKey();
 					next = e.getValue();
-					if (actor == null || next == null)
+					if ((actor == null) || (next == null))
+					{
 						continue;
+					}
 					if (actor.isRaid() && !actor.isRaidMinion())
+					{
 						delay = Config.RAID_BOSS_DECAY_TIME;
+					}
 					else if ((actor instanceof L2Attackable) && (((L2Attackable) actor).isSpoil() || ((L2Attackable) actor).isSeeded()))
+					{
 						delay = Config.SPOILED_DECAY_TIME;
+					}
 					else
+					{
 						delay = Config.NPC_DECAY_TIME;
+					}
 					if ((current - next) > delay)
 					{
 						actor.onDecay();
@@ -134,7 +142,7 @@ public class DecayTaskManager
 	
 	/**
 	 * <u><b><font color="FF0000">Read only</font></b></u>
-	 * @return 
+	 * @return
 	 */
 	public Map<L2Character, Long> getTasks()
 	{

@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.taskmanager.tasks;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import javax.script.ScriptException;
 
@@ -25,31 +24,21 @@ import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
 
 /**
  * @author janiii
- *
  */
 public class TaskScript extends Task
 {
-	private static final Logger _log = Logger.getLogger(TaskScript.class.getName());
 	public static final String NAME = "script";
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#getName()
-	 */
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#onTimeElapsed(com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask)
-	 */
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
-		File file = new File(L2ScriptEngineManager.SCRIPT_FOLDER, "cron/" + task.getParams()[2]);
+		final File file = new File(L2ScriptEngineManager.SCRIPT_FOLDER, "cron/" + task.getParams()[2]);
 		if (file.isFile())
 		{
 			try

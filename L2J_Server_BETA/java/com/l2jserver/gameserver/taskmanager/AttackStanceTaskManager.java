@@ -57,8 +57,12 @@ public class AttackStanceTaskManager
 		{
 			L2PcInstance player = (L2PcInstance) actor;
 			for (L2CubicInstance cubic : player.getCubics().values(new L2CubicInstance[0]))
+			{
 				if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
+				{
 					cubic.doAction();
+				}
+			}
 		}
 		_attackStanceTasks.put(actor, System.currentTimeMillis());
 	}
@@ -97,6 +101,7 @@ public class AttackStanceTaskManager
 			try
 			{
 				if (_attackStanceTasks != null)
+				{
 					synchronized (this)
 					{
 						for (L2Character actor : _attackStanceTasks.keySet())
@@ -104,18 +109,20 @@ public class AttackStanceTaskManager
 							if ((current - _attackStanceTasks.get(actor)) > 15000)
 							{
 								actor.broadcastPacket(new AutoAttackStop(actor.getObjectId()));
-								if (actor instanceof L2PcInstance && ((L2PcInstance) actor).getPet() != null)
+								if ((actor instanceof L2PcInstance) && (((L2PcInstance) actor).getPet() != null))
+								{
 									((L2PcInstance) actor).getPet().broadcastPacket(new AutoAttackStop(((L2PcInstance) actor).getPet().getObjectId()));
+								}
 								actor.getAI().setAutoAttacking(false);
 								_attackStanceTasks.remove(actor);
 							}
 						}
 					}
+				}
 			}
 			catch (Exception e)
 			{
-				// TODO: Find out the reason for exception. Unless caught here,
-				// players remain in attack positions.
+				// TODO: Find out the reason for exception. Unless caught here, players remain in attack positions.
 				_log.log(Level.WARNING, "Error in FightModeScheduler: " + e.getMessage(), e);
 			}
 		}

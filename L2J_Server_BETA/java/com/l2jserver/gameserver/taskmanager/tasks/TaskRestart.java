@@ -20,31 +20,21 @@ import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
 
 /**
  * @author Layane
- * 
  */
 public final class TaskRestart extends Task
 {
 	public static final String NAME = "restart";
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#getName()
-	 */
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#onTimeElapsed(com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask)
-	 */
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
 		Shutdown handler = new Shutdown(Integer.parseInt(task.getParams()[2]), true);
 		handler.start();
 	}
-	
 }
