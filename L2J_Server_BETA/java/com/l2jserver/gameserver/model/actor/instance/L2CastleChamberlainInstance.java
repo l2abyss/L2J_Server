@@ -1270,7 +1270,6 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 						ret.setFile(htmlPrefix, "data/html/chamberlain/siegetime5.htm");
 						return ret;
 					}
-					break;
 				case 2:
 					ret.setFile(htmlPrefix, "data/html/chamberlain/siegetime6.htm");
 					List<Integer> list;

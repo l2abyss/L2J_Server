@@ -286,7 +286,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 			return;
 		
 		String msg = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/classmaster/tutorialtemplate.htm");
-		msg = msg.replaceAll("%name%", ClassListData.getInstance().getClass(currentClassId).getClientCode());
+		msg = msg.replaceAll("%name%", ClassListData.getInstance().getClass(currentClassId).getEscapedClientCode());
 		
 		final StringBuilder menu = new StringBuilder(100);
 		for (ClassId cid : ClassId.values())
