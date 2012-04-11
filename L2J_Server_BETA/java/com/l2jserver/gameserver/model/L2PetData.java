@@ -14,143 +14,193 @@
  */
 package com.l2jserver.gameserver.model;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 
 /**
- * Class hold information about basic pet stats which are same on each level
+ * Class hold information about basic pet stats which are same on each level.
  * @author JIV
- *
  */
 public class L2PetData
 {
-	private TIntObjectHashMap<L2PetLevelData> _levelStats = new TIntObjectHashMap<L2PetLevelData>();
-	private List<L2PetSkillLearn> _skills = new ArrayList<L2PetSkillLearn>();
+	private final Map<Integer, L2PetLevelData> _levelStats = new HashMap<>();
+	private final List<L2PetSkillLearn> _skills = new ArrayList<>();
 	
 	private int _load = 20000;
-	private int _hungry_limit = 1;
+	private int _hungryLimit = 1;
 	private int _minlvl = Byte.MAX_VALUE;
-	private int[] _food = {};
+	private final List<Integer> _food = new ArrayList<>();
 	
-	public void addNewStat(L2PetLevelData data, int level)
+	/**
+	 * @param level the pet's level.
+	 * @param data the pet's data.
+	 */
+	public void addNewStat(int level, L2PetLevelData data)
 	{
 		if (_minlvl > level)
+		{
 			_minlvl = level;
+		}
 		_levelStats.put(level, data);
 	}
 	
+	/**
+	 * @param petLevel the pet's level.
+	 * @return the pet data associated to that pet level.
+	 */
 	public L2PetLevelData getPetLevelData(int petLevel)
 	{
 		return _levelStats.get(petLevel);
 	}
 	
+	/**
+	 * @return the pet's weight load.
+	 */
 	public int getLoad()
 	{
 		return _load;
 	}
 	
-	public int getHungry_limit()
+	/**
+	 * @return the pet's hunger limit.
+	 */
+	public int getHungryLimit()
 	{
-		return _hungry_limit;
+		return _hungryLimit;
 	}
 	
+	/**
+	 * @return the pet's minimum level.
+	 */
 	public int getMinLevel()
 	{
 		return _minlvl;
 	}
 	
-	public int[] getFood()
+	/**
+	 * @return the pet's food list.
+	 */
+	public List<Integer> getFood()
 	{
 		return _food;
 	}
 	
-	public void set_load(int _load)
+	/**
+	 * @param foodId the pet's food Id to add.
+	 */
+	public void addFood(Integer foodId)
 	{
-		this._load = _load;
-	}
-
-	public void set_hungry_limit(int _hungry_limit)
-	{
-		this._hungry_limit = _hungry_limit;
-	}
-
-	public void set_food(int[] _food)
-	{
-		this._food = _food;
+		_food.add(foodId);
 	}
 	
-	//SKILS
-	
-	public void addNewSkill(int id, int lvl, int petLvl)
+	/**
+	 * @param load the weight load to set.
+	 */
+	public void setLoad(int load)
 	{
-		_skills.add(new L2PetSkillLearn(id, lvl, petLvl));
+		_load = load;
 	}
 	
+	/**
+	 * @param limit the hunger limit to set.
+	 */
+	public void setHungryLimit(int limit)
+	{
+		_hungryLimit = limit;
+	}
+	
+	// SKILS
+	
+	/**
+	 * @param skillId the skill Id to add.
+	 * @param skillLvl the skill level.
+	 * @param petLvl the pet's level when this skill is available.
+	 */
+	public void addNewSkill(int skillId, int skillLvl, int petLvl)
+	{
+		_skills.add(new L2PetSkillLearn(skillId, skillLvl, petLvl));
+	}
+	
+	/**
+	 * TODO: Simplify this.
+	 * @param skillId the skill Id.
+	 * @param petLvl the pet level.
+	 * @return the level of the skill for the given skill Id and pet level.
+	 */
 	public int getAvailableLevel(int skillId, int petLvl)
 	{
 		int lvl = 0;
 		for (L2PetSkillLearn temp : _skills)
-		{ 
-			if (temp.getId() != skillId)
+		{
+			if (temp.getSkillId() != skillId)
+			{
 				continue;
-			if (temp.getLevel() == 0)
+			}
+			if (temp.getSkillLvl() == 0)
 			{
 				if (petLvl < 70)
 				{
 					lvl = (petLvl / 10);
 					if (lvl <= 0)
+					{
 						lvl = 1;
+					}
 				}
 				else
+				{
 					lvl = (7 + ((petLvl - 70) / 5));
+				}
 				
 				// formula usable for skill that have 10 or more skill levels
-				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getId());
+				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getSkillId());
 				if (lvl > maxLvl)
+				{
 					lvl = maxLvl;
+				}
 				break;
 			}
 			else if (temp.getMinLevel() <= petLvl)
 			{
-				if (temp.getLevel() > lvl)
-					lvl = temp.getLevel();
+				if (temp.getSkillLvl() > lvl)
+				{
+					lvl = temp.getSkillLvl();
+				}
 			}
 		}
 		return lvl;
 	}
 	
+	/**
+	 * @return the list with the pet's skill data.
+	 */
 	public List<L2PetSkillLearn> getAvailableSkills()
 	{
 		return _skills;
 	}
 	
-	public static final class L2PetSkillLearn
+	public static final class L2PetSkillLearn extends SkillHolder
 	{
-		private final int _id;
-		private final int _level;
 		private final int _minLevel;
 		
+		/**
+		 * @param id the skill Id.
+		 * @param lvl the skill level.
+		 * @param minLvl the minimum level when this skill is available.
+		 */
 		public L2PetSkillLearn(int id, int lvl, int minLvl)
 		{
-			_id = id;
-			_level = lvl;
+			super(id, lvl);
 			_minLevel = minLvl;
 		}
 		
-		public int getId()
-		{
-			return _id;
-		}
-		
-		public int getLevel()
-		{
-			return _level;
-		}
-		
+		/**
+		 * @return the minimum level for the pet to get the skill.
+		 */
 		public int getMinLevel()
 		{
 			return _minLevel;

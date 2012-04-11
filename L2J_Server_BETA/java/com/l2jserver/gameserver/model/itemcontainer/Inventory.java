@@ -26,7 +26,7 @@ import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.ArmorSetsTable;
+import com.l2jserver.gameserver.datatables.ArmorSetsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.L2ArmorSet;
 import com.l2jserver.gameserver.model.L2World;
@@ -453,11 +453,11 @@ public abstract class Inventory extends ItemContainer
 				return;
 			
 			// Checks for armor set for the equipped chest.
-			if (!ArmorSetsTable.getInstance().isArmorSet(chestItem.getItemId()))
+			if (!ArmorSetsData.getInstance().isArmorSet(chestItem.getItemId()))
 			{
 				return;
 			}
-			final L2ArmorSet armorSet = ArmorSetsTable.getInstance().getSet(chestItem.getItemId());
+			final L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(chestItem.getItemId());
 			boolean update = false;
 			boolean updateTimeStamp = false;
 			// Checks if equiped item is part of set
@@ -569,11 +569,11 @@ public abstract class Inventory extends ItemContainer
 			
 			if (slot == PAPERDOLL_CHEST)
 			{
-				if (!ArmorSetsTable.getInstance().isArmorSet(item.getItemId()))
+				if (!ArmorSetsData.getInstance().isArmorSet(item.getItemId()))
 				{
 					return;
 				}
-				final L2ArmorSet armorSet = ArmorSetsTable.getInstance().getSet(item.getItemId());
+				final L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(item.getItemId());
 				remove = true;
 				skills = armorSet.getSkills();
 				shieldSkill = armorSet.getShieldSkillId();
@@ -585,7 +585,7 @@ public abstract class Inventory extends ItemContainer
 				if (chestItem == null)
 					return;
 				
-				L2ArmorSet armorSet = ArmorSetsTable.getInstance().getSet(chestItem.getItemId());
+				L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(chestItem.getItemId());
 				if (armorSet == null)
 					return;
 				

@@ -262,7 +262,7 @@ public final class RequestActionUse extends L2GameClientPacket
 						{
 							if (!pet.isHungry())
 								pet.unSummon(activeChar);
-							else if (((L2PetInstance) pet).getPetData().getFood().length > 0)
+							else if (!((L2PetInstance) pet).getPetData().getFood().isEmpty())
 								activeChar.sendPacket(SystemMessageId.YOU_CANNOT_RESTORE_HUNGRY_PETS);
 							else
 								activeChar.sendPacket(SystemMessageId.THE_HELPER_PET_CANNOT_BE_RETURNED);

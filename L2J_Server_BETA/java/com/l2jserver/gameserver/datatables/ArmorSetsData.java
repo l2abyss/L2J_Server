@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.datatables;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -31,20 +30,15 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 /**
  * @author godson, Luno, UnAfraid
  */
-public final class ArmorSetsTable extends DocumentParser
+public final class ArmorSetsData extends DocumentParser
 {
-	private final Map<Integer, L2ArmorSet> _armorSets = new HashMap<>();
+	private static final Map<Integer, L2ArmorSet> _armorSets = new HashMap<>();
 	
-	private ArmorSetsTable()
-	{
-		load();
-	}
-	
-	private void load()
+	private ArmorSetsData()
 	{
 		_armorSets.clear();
 		parseDirectory(new File(Config.DATAPACK_ROOT, "data/stats/armorsets"));
-		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _armorSets.size() + " Armor sets.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _armorSets.size() + " Armor sets.");
 	}
 	
 	@Override
@@ -174,7 +168,7 @@ public final class ArmorSetsTable extends DocumentParser
 		return _armorSets.get(chestId);
 	}
 	
-	public static ArmorSetsTable getInstance()
+	public static ArmorSetsData getInstance()
 	{
 		return SingletonHolder._instance;
 	}
@@ -182,6 +176,6 @@ public final class ArmorSetsTable extends DocumentParser
 	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
-		protected static final ArmorSetsTable _instance = new ArmorSetsTable();
+		protected static final ArmorSetsData _instance = new ArmorSetsData();
 	}
 }

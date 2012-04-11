@@ -36,7 +36,7 @@ import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.AccessLevels;
 import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
-import com.l2jserver.gameserver.datatables.ArmorSetsTable;
+import com.l2jserver.gameserver.datatables.ArmorSetsData;
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharSummonTable;
@@ -227,7 +227,7 @@ public class GameServer
 		TradeController.getInstance();
 		MultiSell.getInstance();
 		RecipeController.getInstance();
-		ArmorSetsTable.getInstance();
+		ArmorSetsData.getInstance();
 		FishTable.getInstance();
 		HennaData.getInstance();
 		

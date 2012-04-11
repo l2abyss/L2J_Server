@@ -76,7 +76,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 		double healPower = 0;
 		for (L2PetSkillLearn psl : PetDataTable.getInstance().getPetData(getNpcId()).getAvailableSkills())
 		{
-			int id = psl.getId();
+			int id = psl.getSkillId();
 			int lvl = PetDataTable.getInstance().getPetData(getNpcId()).getAvailableLevel(id, getLevel());
 			if (lvl == 0) // not enough pet lvl
 				continue;

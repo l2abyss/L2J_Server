@@ -13922,8 +13922,8 @@ public final class L2PcInstance extends L2Playable
 					sendPacket(SystemMessageId.OUT_OF_FEED_MOUNT_CANCELED);
 				}
 				
-				int[] foodIds = getPetData(getMountNpcId()).getFood();
-				if (foodIds.length == 0)
+				List<Integer> foodIds = getPetData(getMountNpcId()).getFood();
+				if (foodIds.isEmpty())
 					return;
 				L2ItemInstance food = null;
 				for (int id : foodIds)
@@ -14034,7 +14034,7 @@ public final class L2PcInstance extends L2Playable
 	
 	private boolean isHungry()
 	{
-		return _canFeed ? (getCurrentFeed() < (getPetData(getMountNpcId()).getHungry_limit() / 100f * getPetLevelData(getMountNpcId()).getPetMaxFeed())):false;
+		return _canFeed ? (getCurrentFeed() < (getPetData(getMountNpcId()).getHungryLimit() / 100f * getPetLevelData(getMountNpcId()).getPetMaxFeed())):false;
 	}
 	
 	private class Dismount implements Runnable

@@ -422,7 +422,7 @@ public class ItemTable
 			}
 			
 			// if it's a pet control item, delete the pet as well
-			if (PetDataTable.isPetItem(item.getItemId()))
+			if (item.getItem().isPetItem())
 			{
 				Connection con = null;
 				try

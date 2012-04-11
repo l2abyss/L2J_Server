@@ -20,7 +20,6 @@ import java.util.logging.Level;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -144,7 +143,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			activeChar.broadcastUserInfo();
 		}
 		
-		if (PetDataTable.isPetItem(itemId))
+		if (itemToRemove.getItem().isPetItem())
 		{
 			Connection con = null;
 			try

@@ -1035,4 +1035,9 @@ public abstract class L2Item
 	{
 		return _questEvents;
 	}
+	
+	public boolean isPetItem()
+	{
+		return getItemType() == L2EtcItemType.PET_COLLAR;
+	}
 }

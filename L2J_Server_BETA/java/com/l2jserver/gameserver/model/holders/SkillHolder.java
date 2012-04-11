@@ -18,12 +18,10 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
- * 
+ * Simple class for storing skill id/level.
  * @author BiggBoss
- * Simple class for storing skill id/level
- *
  */
-public final class SkillHolder
+public class SkillHolder
 {
 	private final int _skillId;
 	private final int _skillLvl;

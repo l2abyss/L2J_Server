@@ -68,11 +68,9 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 /**
- *
  * This class ...
  *
  * @version $Revision: 1.15.2.10.2.16 $ $Date: 2005/04/06 16:13:40 $
@@ -152,8 +150,8 @@ public class L2PetInstance extends L2Summon
 				
 				broadcastStatusUpdate();
 				
-				int[] foodIds = getPetData().getFood();
-				if (foodIds.length == 0)
+				List<Integer> foodIds = getPetData().getFood();
+				if (foodIds.isEmpty())
 				{
 					if (getCurrentFed() == 0)
 					{
@@ -1299,7 +1297,7 @@ public class L2PetInstance extends L2Summon
 	@Override
 	public final boolean isHungry()
 	{
-		return getCurrentFed() < ((getPetData().getHungry_limit() / 100f) * getPetLevelData().getPetMaxFeed());
+		return getCurrentFed() < ((getPetData().getHungryLimit() / 100f) * getPetLevelData().getPetMaxFeed());
 	}
 	
 	@Override
@@ -1366,7 +1364,7 @@ public class L2PetInstance extends L2Summon
 	
 	public boolean canEatFoodId(int itemId)
 	{
-		return Util.contains(_data.getFood(), itemId);
+		return _data.getFood().contains(Integer.valueOf(itemId));
 	}
 	
 	@Override
