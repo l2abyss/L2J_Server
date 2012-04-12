@@ -393,7 +393,7 @@ public final class StatsSet
 	 * @param deflt : float designating the default value if value associated with the key is null
 	 * @return double : value associated to the key
 	 */
-	public double getDouble(String name, float deflt)
+	public double getDouble(String name, double deflt)
 	{
 		Object val = _set.get(name);
 		if (val == null)

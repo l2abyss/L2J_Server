@@ -49,7 +49,7 @@ import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
 import com.l2jserver.gameserver.datatables.EnchantItemTable;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.FishTable;
+import com.l2jserver.gameserver.datatables.FishData;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
 import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.datatables.HerbDropTable;
@@ -228,7 +228,7 @@ public class GameServer
 		MultiSell.getInstance();
 		RecipeController.getInstance();
 		ArmorSetsData.getInstance();
-		FishTable.getInstance();
+		FishData.getInstance();
 		HennaData.getInstance();
 		
 		printSection("Characters");
