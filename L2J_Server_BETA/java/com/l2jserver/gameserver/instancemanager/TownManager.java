@@ -66,8 +66,7 @@ public class TownManager
 	
 	public final static boolean townHasCastleInSiege(int x, int y)
 	{
-		int curtown = MapRegionManager.getInstance().getMapRegion(x, y).getLocId();
-		return townHasCastleInSiege(curtown);
+		return townHasCastleInSiege(MapRegionManager.getInstance().getMapRegionLocId(x, y));
 	}
 	
 	public final static L2TownZone getTown(int townId)

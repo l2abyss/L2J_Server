@@ -637,7 +637,7 @@ public final class L2AuctioneerInstance extends L2Npc
 	
 	private String getPictureName(L2PcInstance plyr)
 	{
-		int nearestTownId = MapRegionManager.getInstance().getMapRegion(plyr).getLocId();
+		int nearestTownId = MapRegionManager.getInstance().getMapRegionLocId(plyr);
 		String nearestTown;
 		
 		switch (nearestTownId)
