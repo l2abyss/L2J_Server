@@ -222,6 +222,8 @@ public class CharSummonTable
 				summon.setName(summonTemplate.getName());
 				summon.setTitle(activeChar.getName());
 				summon.setExpPenalty(skill.getExpPenalty());
+				summon.setSharedElementals(skill.getInheritElementals());
+				summon.setSharedElementalsValue(skill.getElementalSharePercent());
 				
 				if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 				{

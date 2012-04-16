@@ -321,4 +321,14 @@ public class L2SkillSummon extends L2Skill
 	{
 		return _expPenalty;
 	}
+	
+	public final boolean getInheritElementals()
+	{
+		return _inheritElementals;
+	}
+	
+	public final double getElementalSharePercent()
+	{
+		return _elementalSharePercent;
+	}
 }
