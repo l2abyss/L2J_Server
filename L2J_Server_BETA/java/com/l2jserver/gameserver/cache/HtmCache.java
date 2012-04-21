@@ -99,7 +99,7 @@ public class HtmCache
 	
 	private void parseDir(File dir)
 	{
-		final File[] files = dir.listFiles(htmlFilter);
+		final File[] files = dir.listFiles();
 		for (File file : files)
 		{
 			if (!file.isDirectory())
@@ -115,36 +115,39 @@ public class HtmCache
 	
 	public String loadFile(File file)
 	{
+		if (!htmlFilter.accept(file))
+		{
+			return null;
+		}
+		
 		final String relpath = Util.getRelativePath(Config.DATAPACK_ROOT, file);
 		final int hashcode = relpath.hashCode();
 		String content = null;
-		if (htmlFilter.accept(file))
+		try (FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);)
 		{
-			try (FileInputStream fis = new FileInputStream(file); BufferedInputStream bis = new BufferedInputStream(fis);)
+			final int bytes = bis.available();
+			byte[] raw = new byte[bytes];
+			
+			bis.read(raw);
+			content = new String(raw, "UTF-8");
+			content = content.replaceAll("\r\n", "\n");
+			
+			String oldContent = _cache.get(hashcode);
+			if (oldContent == null)
 			{
-				final int bytes = bis.available();
-				byte[] raw = new byte[bytes];
-				
-				bis.read(raw);
-				content = new String(raw, "UTF-8");
-				content = content.replaceAll("\r\n", "\n");
-				
-				String oldContent = _cache.get(hashcode);
-				if (oldContent == null)
-				{
-					_bytesBuffLen += bytes;
-					_loadedFiles++;
-				}
-				else
-				{
-					_bytesBuffLen = (_bytesBuffLen - oldContent.length()) + bytes;
-				}
-				_cache.put(hashcode, content);
+				_bytesBuffLen += bytes;
+				_loadedFiles++;
 			}
-			catch (Exception e)
+			else
 			{
-				_log.log(Level.WARNING, "Problem with htm file " + e.getMessage(), e);
+				_bytesBuffLen = (_bytesBuffLen - oldContent.length()) + bytes;
 			}
+			_cache.put(hashcode, content);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Problem with htm file " + e.getMessage(), e);
 		}
 		return content;
 	}
