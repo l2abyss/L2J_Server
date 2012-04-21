@@ -1643,11 +1643,10 @@ public final class L2ItemInstance extends L2Object
 			return;
 		
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=? " + "WHERE object_id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=? " + "WHERE object_id = ?");
 			statement.setInt(1, _ownerId);
 			statement.setLong(2, getCount());
 			statement.setString(3, _loc.name());
@@ -1684,11 +1683,10 @@ public final class L2ItemInstance extends L2Object
 			return;
 		
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+			PreparedStatement statement = con.prepareStatement("INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setInt(1, _ownerId);
 			statement.setInt(2, _itemId);
 			statement.setLong(3, getCount());
@@ -1732,11 +1730,10 @@ public final class L2ItemInstance extends L2Object
 			return;
 		
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM items WHERE object_id = ?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE object_id = ?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
 			_existsInDb = false;

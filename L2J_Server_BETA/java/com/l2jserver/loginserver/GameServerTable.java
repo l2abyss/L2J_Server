@@ -157,19 +157,14 @@ public class GameServerTable
 	
 	private void loadRegisteredGameServers() throws SQLException
 	{
-		Connection con = null;
-		PreparedStatement statement = null;
-		
-		int id;
-		con = L2DatabaseFactory.getInstance().getConnection();
-		statement = con.prepareStatement("SELECT * FROM gameservers");
+		Connection con = L2DatabaseFactory.getInstance().getConnection();
+		PreparedStatement statement = con.prepareStatement("SELECT * FROM gameservers");
 		ResultSet rset = statement.executeQuery();
-		GameServerInfo gsi;
+		int id;
 		while (rset.next())
 		{
 			id = rset.getInt("server_id");
-			gsi = new GameServerInfo(id, stringToHex(rset.getString("hexid")));
-			_gameServerTable.put(id, gsi);
+			_gameServerTable.put(id, new GameServerInfo(id, stringToHex(rset.getString("hexid"))));
 		}
 		rset.close();
 		statement.close();
@@ -232,11 +227,10 @@ public class GameServerTable
 	public void registerServerOnDB(byte[] hexId, int id, String externalHost)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("INSERT INTO gameservers (hexid,server_id,host) values (?,?,?)");
+			PreparedStatement statement = con.prepareStatement("INSERT INTO gameservers (hexid,server_id,host) values (?,?,?)");
 			statement.setString(1, hexToString(hexId));
 			statement.setInt(2, id);
 			statement.setString(3, externalHost);

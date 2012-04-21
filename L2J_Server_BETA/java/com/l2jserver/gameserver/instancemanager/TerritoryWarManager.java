@@ -700,10 +700,9 @@ public class TerritoryWarManager implements Siegable
 	
 	private final void load()
 	{
-		InputStream is = null;
-		try
+		
+		try (InputStream is = new FileInputStream(new File(Config.TW_CONFIGURATION_FILE)))
 		{
-			is = new FileInputStream(new File(Config.TW_CONFIGURATION_FILE));
 			L2Properties territoryWarSettings = new L2Properties();
 			territoryWarSettings.load(is);
 			
@@ -841,16 +840,6 @@ public class TerritoryWarManager implements Siegable
 		{
 			//_initialized = false;
 			_log.log(Level.WARNING, "Error while loading Territory War Manager! " + e.getMessage(), e);
-		}
-		finally
-		{
-			try
-			{
-				is.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 	

@@ -479,11 +479,10 @@ public class FortSiege implements Siegable
 	public void clearSiegeClan()
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM fortsiege_clans WHERE fort_id=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM fortsiege_clans WHERE fort_id=?");
 			statement.setInt(1, getFort().getFortId());
 			statement.execute();
 			statement.close();
@@ -955,25 +954,19 @@ public class FortSiege implements Siegable
 	private void loadSiegeClan()
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			getAttackerClans().clear();
-			
-			ResultSet rs = null;
-			
 			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			statement = con.prepareStatement("SELECT clan_id FROM fortsiege_clans WHERE fort_id=?");
+			PreparedStatement statement = con.prepareStatement("SELECT clan_id FROM fortsiege_clans WHERE fort_id=?");
 			statement.setInt(1, getFort().getFortId());
-			rs = statement.executeQuery();
-			
+			ResultSet rs = statement.executeQuery();
 			while (rs.next())
 			{
 				addAttacker(rs.getInt("clan_id"));
 			}
-			
 			rs.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{

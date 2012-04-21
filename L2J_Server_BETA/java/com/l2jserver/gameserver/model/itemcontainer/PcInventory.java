@@ -726,12 +726,10 @@ public class PcInventory extends Inventory
 	{
 		int[][] paperdoll = new int[31][3];
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement2 = con.prepareStatement(
-			"SELECT object_id,item_id,loc_data,enchant_level FROM items WHERE owner_id=? AND loc='PAPERDOLL'");
+			PreparedStatement statement2 = con.prepareStatement("SELECT object_id,item_id,loc_data,enchant_level FROM items WHERE owner_id=? AND loc='PAPERDOLL'");
 			statement2.setInt(1, objectId);
 			ResultSet invdata = statement2.executeQuery();
 			

@@ -668,11 +668,10 @@ public class Siege implements Siegable
 	public void clearSiegeClan()
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=?");
 			statement.setInt(1, getCastle().getCastleId());
 			statement.execute();
 			statement.close();

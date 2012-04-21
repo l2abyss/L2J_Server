@@ -112,8 +112,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					try
 					{
 						con = L2DatabaseFactory.getInstance().getConnection();
-						PreparedStatement statement;
-						statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?");
+						PreparedStatement statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?");
 						statement.setInt(1, p.getInteger("charId"));
 						ResultSet rset = statement.executeQuery();
 						

@@ -255,7 +255,6 @@ public class CrestCache
 				{
 					L2DatabaseFactory.close(con);
 				}
-				
 				clan.setCrestId(newId);
 			}
 			else

@@ -301,6 +301,7 @@ public class HellboundManager
 				}
 			}
 			rset.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{

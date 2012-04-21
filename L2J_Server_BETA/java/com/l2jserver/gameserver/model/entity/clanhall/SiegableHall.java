@@ -121,9 +121,7 @@ public final class SiegableHall extends ClanHall
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement(SQL_SAVE);
+			PreparedStatement statement = con.prepareStatement(SQL_SAVE);
 			statement.setInt(1, getOwnerId());
 			statement.setLong(2, getNextSiegeTime());
 			statement.setInt(3, getId());

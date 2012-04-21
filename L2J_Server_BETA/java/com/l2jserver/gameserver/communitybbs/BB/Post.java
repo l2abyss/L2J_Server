@@ -96,7 +96,6 @@ public class Post
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	public Post(Topic t)
 	{

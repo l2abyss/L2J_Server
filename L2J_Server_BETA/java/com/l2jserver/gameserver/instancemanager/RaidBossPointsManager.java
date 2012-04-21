@@ -101,8 +101,7 @@ public class RaidBossPointsManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("REPLACE INTO character_raid_points (`charId`,`boss_id`,`points`) VALUES (?,?,?)");
+			PreparedStatement statement = con.prepareStatement("REPLACE INTO character_raid_points (`charId`,`boss_id`,`points`) VALUES (?,?,?)");
 			statement.setInt(1, player.getObjectId());
 			statement.setInt(2, raidId);
 			statement.setInt(3, points);
@@ -166,8 +165,7 @@ public class RaidBossPointsManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("DELETE from character_raid_points WHERE charId > 0");
+			final PreparedStatement statement = con.prepareStatement("DELETE from character_raid_points WHERE charId > 0");
 			statement.executeUpdate();
 			statement.close();
 			_list.clear();

@@ -366,13 +366,12 @@ public class LoginController
 			if (loginOk && client.getLastServer() != serverId)
 			{
 				Connection con = null;
-				PreparedStatement statement = null;
 				try
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
 					
 					String stmt = "UPDATE accounts SET lastServer = ? WHERE login = ?";
-					statement = con.prepareStatement(stmt);
+					PreparedStatement statement = con.prepareStatement(stmt);
 					statement.setInt(1, serverId);
 					statement.setString(2, client.getAccount());
 					statement.executeUpdate();
@@ -395,13 +394,12 @@ public class LoginController
 	public void setAccountAccessLevel(String account, int banLevel)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
 			String stmt = "UPDATE accounts SET accessLevel=? WHERE login=?";
-			statement = con.prepareStatement(stmt);
+			PreparedStatement statement = con.prepareStatement(stmt);
 			statement.setInt(1, banLevel);
 			statement.setString(2, account);
 			statement.executeUpdate();
@@ -413,13 +411,7 @@ public class LoginController
 		}
 		finally
 		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -427,13 +419,12 @@ public class LoginController
 			String hop1, String hop2, String hop3, String hop4)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
 			String stmt = "UPDATE accounts SET pcIp=?, hop1=?, hop2=?, hop3=?, hop4=? WHERE login=?";
-			statement = con.prepareStatement(stmt);
+			PreparedStatement statement = con.prepareStatement(stmt);
 			statement.setString(1, pcIp);
 			statement.setString(2, hop1);
 			statement.setString(3, hop2);
@@ -449,13 +440,7 @@ public class LoginController
 		}
 		finally
 		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

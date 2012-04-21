@@ -126,9 +126,7 @@ public class Couple
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?");
 			statement.setBoolean(1, true);
 			_weddingDate = Calendar.getInstance();
 			statement.setLong(2, _weddingDate.getTimeInMillis());
@@ -153,9 +151,7 @@ public class Couple
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?");
 			statement.setInt(1, _Id);
 			statement.execute();
 			statement.close();

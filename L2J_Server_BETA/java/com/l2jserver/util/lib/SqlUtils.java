@@ -64,7 +64,6 @@ public class SqlUtils
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		return res;
 	}
 	
@@ -110,7 +109,6 @@ public class SqlUtils
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		return res;
 	}
 	

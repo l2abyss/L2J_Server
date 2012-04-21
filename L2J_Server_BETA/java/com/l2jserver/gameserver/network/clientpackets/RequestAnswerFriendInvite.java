@@ -86,7 +86,8 @@ public final class RequestAnswerFriendInvite extends L2GameClientPacket
 				{
 					L2DatabaseFactory.close(con);
 				}
-			} else
+			}
+			else
 			{
 				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_INVITE_A_FRIEND);
 				requestor.sendPacket(msg);

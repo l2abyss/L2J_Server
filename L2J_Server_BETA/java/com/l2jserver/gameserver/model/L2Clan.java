@@ -897,7 +897,7 @@ public class L2Clan
 	 * 	<li>Clan leader Id</li>
 	 * 	<li>Clan crest Id</li>
 	 * 	<li>Clan large crest Id</li>
-	 * 	<li>Allaince crest Id</li>
+	 * 	<li>Alliance crest Id</li>
 	 * </ul>
 	 */
 	public void store()
@@ -940,11 +940,10 @@ public class L2Clan
 	private void removeMemberInDatabase(L2ClanMember member, long clanJoinExpiryTime, long clanCreateExpiryTime)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("UPDATE characters SET clanid=0, title=?, clan_join_expiry_time=?, clan_create_expiry_time=?, clan_privs=0, wantspeace=0, subpledge=0, lvl_joined_academy=0, apprentice=0, sponsor=0 WHERE charId=?");
+			PreparedStatement statement = con.prepareStatement("UPDATE characters SET clanid=0, title=?, clan_join_expiry_time=?, clan_create_expiry_time=?, clan_privs=0, wantspeace=0, subpledge=0, lvl_joined_academy=0, apprentice=0, sponsor=0 WHERE charId=?");
 			statement.setString(1, "");
 			statement.setLong(2, clanJoinExpiryTime);
 			statement.setLong(3, clanCreateExpiryTime);
@@ -1100,7 +1099,6 @@ public class L2Clan
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	private void storeNotice(String notice, boolean enabled)
@@ -1930,7 +1928,6 @@ public class L2Clan
 			_privs.get(rank).setPrivs(privs);
 			
 			Connection con = null;
-			
 			try
 			{
 				//_log.warning("requested store clan privs in db for rank: "+rank+", privs: "+privs);
@@ -1942,7 +1939,6 @@ public class L2Clan
 				statement.setInt(3, 0);
 				statement.setInt(4, privs);
 				statement.setInt(5, privs);
-				
 				statement.execute();
 				statement.close();
 			}

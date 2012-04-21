@@ -199,9 +199,7 @@ public final class AuctionableHall extends ClanHall
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("UPDATE clanhall SET ownerId=?, paidUntil=?, paid=? WHERE id=?");
+			PreparedStatement statement = con.prepareStatement("UPDATE clanhall SET ownerId=?, paidUntil=?, paid=? WHERE id=?");
 			statement.setInt(1, getOwnerId());
 			statement.setLong(2, getPaidUntil());
 			statement.setInt(3, (getPaid()) ? 1 : 0);

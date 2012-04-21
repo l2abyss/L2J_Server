@@ -214,27 +214,15 @@ public class Olympiad
 			_log.log(Level.INFO, "Olympiad System: failed to load data from database, trying to load from file.");
 			
 			Properties OlympiadProperties = new Properties();
-			InputStream is = null;
-			try
+			try (InputStream is = new FileInputStream(new File("./" + OLYMPIAD_DATA_FILE)))
 			{
-				is = new FileInputStream(new File("./" + OLYMPIAD_DATA_FILE));
+				
 				OlympiadProperties.load(is);
 			}
 			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Olympiad System: Error loading olympiad properties: ", e);
 				return;
-			}
-			finally
-			{
-				try
-				{
-					is.close();
-				}
-				catch (Exception e)
-				{
-					_log.log(Level.WARNING, "", e);
-				}
 			}
 			
 			_currentCycle = Integer.parseInt(OlympiadProperties.getProperty("CurrentCycle", "1"));

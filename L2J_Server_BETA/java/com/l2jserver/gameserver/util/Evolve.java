@@ -234,7 +234,6 @@ public final class Evolve
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		return true;
 	}
 	

@@ -704,14 +704,11 @@ public class Castle
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
-			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("Select * from castle where id = ?");
+			PreparedStatement statement = con.prepareStatement("Select * from castle where id = ?");
 			statement.setInt(1, getCastleId());
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
 			{
@@ -802,9 +799,8 @@ public class Castle
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM castle_functions WHERE castle_id=? AND type=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM castle_functions WHERE castle_id=? AND type=?");
 			statement.setInt(1, getCastleId());
 			statement.setInt(2, functionType);
 			statement.execute();
@@ -987,11 +983,9 @@ public class Castle
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
 			// NEED TO REMOVE HAS CASTLE FLAG FROM CLAN_DATA
 			// SHOULD BE CHECKED FROM CASTLE TABLE
-			statement = con.prepareStatement("UPDATE clan_data SET hasCastle = 0 WHERE hasCastle = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET hasCastle = 0 WHERE hasCastle = ?");
 			statement.setInt(1, getCastleId());
 			statement.execute();
 			statement.close();
@@ -1002,7 +996,7 @@ public class Castle
 			statement.execute();
 			statement.close();
 			
-			// Announce to clan memebers
+			// Announce to clan members
 			if (clan != null)
 			{
 				clan.setCastleId(getCastleId()); // Set has castle flag for new owner
@@ -1203,13 +1197,11 @@ public class Castle
 	public void saveSeedData()
 	{
 		Connection con = null;
-		PreparedStatement statement;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement(CASTLE_MANOR_DELETE_PRODUCTION);
+			PreparedStatement statement = con.prepareStatement(CASTLE_MANOR_DELETE_PRODUCTION);
 			statement.setInt(1, getCastleId());
 			
 			statement.execute();
@@ -1275,12 +1267,11 @@ public class Castle
 	public void saveSeedData(int period)
 	{
 		Connection con = null;
-		PreparedStatement statement;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement(CASTLE_MANOR_DELETE_PRODUCTION_PERIOD);
+			PreparedStatement statement = con.prepareStatement(CASTLE_MANOR_DELETE_PRODUCTION_PERIOD);
 			statement.setInt(1, getCastleId());
 			statement.setInt(2, period);
 			statement.execute();
@@ -1326,12 +1317,11 @@ public class Castle
 	public void saveCropData()
 	{
 		Connection con = null;
-		PreparedStatement statement;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement(CASTLE_MANOR_DELETE_PROCURE);
+			PreparedStatement statement = con.prepareStatement(CASTLE_MANOR_DELETE_PROCURE);
 			statement.setInt(1, getCastleId());
 			statement.execute();
 			statement.close();
@@ -1394,12 +1384,11 @@ public class Castle
 	public void saveCropData(int period)
 	{
 		Connection con = null;
-		PreparedStatement statement;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement(CASTLE_MANOR_DELETE_PROCURE_PERIOD);
+			PreparedStatement statement = con.prepareStatement(CASTLE_MANOR_DELETE_PROCURE_PERIOD);
 			statement.setInt(1, getCastleId());
 			statement.setInt(2, period);
 			statement.execute();
@@ -1446,12 +1435,11 @@ public class Castle
 	public void updateCrop(int cropId, long amount, int period)
 	{
 		Connection con = null;
-		PreparedStatement statement;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement(CASTLE_UPDATE_CROP);
+			PreparedStatement statement = con.prepareStatement(CASTLE_UPDATE_CROP);
 			statement.setLong(1, amount);
 			statement.setInt(2, cropId);
 			statement.setInt(3, getCastleId());
@@ -1472,12 +1460,11 @@ public class Castle
 	public void updateSeed(int seedId, long amount, int period)
 	{
 		Connection con = null;
-		PreparedStatement statement;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement(CASTLE_UPDATE_SEED);
+			PreparedStatement statement = con.prepareStatement(CASTLE_UPDATE_SEED);
 			statement.setLong(1, amount);
 			statement.setInt(2, seedId);
 			statement.setInt(3, getCastleId());
@@ -1533,12 +1520,11 @@ public class Castle
 	public void updateShowNpcCrest()
 	{
 		Connection con = null;
-		PreparedStatement statement;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("UPDATE castle SET showNpcCrest = ? WHERE id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE castle SET showNpcCrest = ? WHERE id = ?");
 			statement.setString(1, String.valueOf(getShowNpcCrest()));
 			statement.setInt(2, getCastleId());
 			statement.execute();

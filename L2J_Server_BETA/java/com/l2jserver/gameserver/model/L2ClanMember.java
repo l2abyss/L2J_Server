@@ -624,7 +624,6 @@ public class L2ClanMember
 	public void saveApprenticeAndSponsor(int apprentice, int sponsor)
 	{
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();

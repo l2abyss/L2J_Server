@@ -177,11 +177,10 @@ public class MailManager
 		_messages.put(msg.getId(), msg);
 		
 		Connection con = null;
-		PreparedStatement stmt = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			stmt = Message.getStatement(msg, con);
+			PreparedStatement stmt = Message.getStatement(msg, con);
 			stmt.execute();
 			stmt.close();
 		}
@@ -253,11 +252,10 @@ public class MailManager
 	public final void markAsReadInDb(int msgId)
 	{
 		Connection con = null;
-		PreparedStatement stmt = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			stmt = con.prepareStatement("UPDATE messages SET isUnread = 'false' WHERE messageId = ?");
+			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET isUnread = 'false' WHERE messageId = ?");
 			stmt.setInt(1, msgId);
 			stmt.execute();
 			stmt.close();
@@ -325,12 +323,11 @@ public class MailManager
 	public final void removeAttachmentsInDb(int msgId)
 	{
 		Connection con = null;
-		PreparedStatement stmt = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			stmt = con.prepareStatement("UPDATE messages SET hasAttachments = 'false' WHERE messageId = ?");
+			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET hasAttachments = 'false' WHERE messageId = ?");
 			
 			stmt.setInt(1, msgId);
 			
@@ -350,12 +347,11 @@ public class MailManager
 	public final void deleteMessageInDb(int msgId)
 	{
 		Connection con = null;
-		PreparedStatement stmt = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			stmt = con.prepareStatement("DELETE FROM messages WHERE messageId = ?");
+			PreparedStatement stmt = con.prepareStatement("DELETE FROM messages WHERE messageId = ?");
 			
 			stmt.setInt(1, msgId);
 			
@@ -370,7 +366,6 @@ public class MailManager
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		_messages.remove(msgId);
 		IdFactory.getInstance().releaseId(msgId);
 	}

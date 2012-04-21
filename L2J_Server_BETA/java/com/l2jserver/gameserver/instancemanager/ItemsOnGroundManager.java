@@ -297,7 +297,7 @@ public class ItemsOnGroundManager
 			
 			if (Config.DEBUG)
 			{
-				_log.warning("ItemsOnGroundManager: " + _items.size() + " items on ground saved");
+				_log.info(getClass().getSimpleName() + ": Saved " + _items.size() + " items on ground.");
 			}
 		}
 	}

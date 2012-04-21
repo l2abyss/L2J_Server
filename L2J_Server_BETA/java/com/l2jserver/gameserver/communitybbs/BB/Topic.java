@@ -99,7 +99,6 @@ public class Topic
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	public enum ConstructorType

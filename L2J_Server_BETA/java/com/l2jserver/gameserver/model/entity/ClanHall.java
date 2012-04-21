@@ -419,12 +419,10 @@ public abstract class ClanHall
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("Select * from clanhall_functions where hall_id = ?");
+			PreparedStatement statement = con.prepareStatement("Select * from clanhall_functions where hall_id = ?");
 			statement.setInt(1, getId());
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			while (rs.next())
 			{
 				_functions.put(rs.getInt("type"), new ClanHallFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
@@ -452,9 +450,8 @@ public abstract class ClanHall
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM clanhall_functions WHERE hall_id=? AND type=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM clanhall_functions WHERE hall_id=? AND type=?");
 			statement.setInt(1, getId());
 			statement.setInt(2, functionType);
 			statement.execute();

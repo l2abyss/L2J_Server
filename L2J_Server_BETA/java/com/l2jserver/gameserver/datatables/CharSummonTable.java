@@ -268,7 +268,6 @@ public class CharSummonTable
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(REMOVE_SUMMON);
 			statement.setInt(1, activeChar.getObjectId());
-			
 			statement.execute();
 			statement.close();
 			_servitors.remove(activeChar.getObjectId());

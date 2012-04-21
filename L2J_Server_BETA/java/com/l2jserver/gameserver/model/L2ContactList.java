@@ -180,7 +180,6 @@ public class L2ContactList
 		_contacts.remove(name);
 		
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();

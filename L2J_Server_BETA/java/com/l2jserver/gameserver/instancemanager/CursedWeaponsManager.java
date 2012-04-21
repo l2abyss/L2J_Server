@@ -189,7 +189,6 @@ public class CursedWeaponsManager
 			
 			PreparedStatement statement = con.prepareStatement("SELECT itemId, charId, playerKarma, playerPkKills, nbKills, endTime FROM cursed_weapons");
 			ResultSet rset = statement.executeQuery();
-			
 			while (rset.next())
 			{
 				int itemId = rset.getInt("itemId");
@@ -217,8 +216,6 @@ public class CursedWeaponsManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore CursedWeapons data: " + e.getMessage(), e);
-			
-			return;
 		}
 		finally
 		{
@@ -315,7 +312,6 @@ public class CursedWeaponsManager
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		if (Config.DEBUG)
 			_log.info("DONE");
 	}

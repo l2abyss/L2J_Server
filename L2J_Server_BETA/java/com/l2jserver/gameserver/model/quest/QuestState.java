@@ -441,8 +441,7 @@ public final class QuestState
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("REPLACE INTO character_quest_global_data (charId,var,value) VALUES (?,?,?)");
+			PreparedStatement statement = con.prepareStatement("REPLACE INTO character_quest_global_data (charId,var,value) VALUES (?,?,?)");
 			statement.setInt(1, _player.getObjectId());
 			statement.setString(2, var);
 			statement.setString(3, value);
@@ -508,8 +507,7 @@ public final class QuestState
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId = ? AND var = ?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId = ? AND var = ?");
 			statement.setInt(1, _player.getObjectId());
 			statement.setString(2, var);
 			statement.executeUpdate();

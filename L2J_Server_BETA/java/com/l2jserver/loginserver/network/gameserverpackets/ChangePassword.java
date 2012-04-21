@@ -99,7 +99,6 @@ public class ChangePassword extends BaseRecievePacket
 					else
 					{
 						gst.ChangePasswordResponse((byte) 0, characterName, "The password change was unsuccessful!");
-						L2DatabaseFactory.close(con);
 					}
 				}
 				else

@@ -241,7 +241,6 @@ public final class ItemAuction
 				statement.setLong(3, bid.getLastBid());
 				statement.setLong(4, bid.getLastBid());
 			}
-			
 			statement.execute();
 			statement.close();
 		}

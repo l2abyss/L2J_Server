@@ -452,7 +452,7 @@ public class NpcTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = null;
+			PreparedStatement statement;
 			if (id > 0)
 			{
 				statement = con.prepareStatement("SELECT * FROM npc WHERE id = ?");
@@ -521,7 +521,7 @@ public class NpcTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = null;
+			PreparedStatement statement;
 			if (id > 0)
 			{
 				statement = con.prepareStatement("SELECT * FROM npcskills WHERE npcid = ?");
@@ -757,8 +757,7 @@ public class NpcTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = null;
-			
+			PreparedStatement statement;
 			if (id > 0)
 			{
 				statement = con.prepareStatement("SELECT * FROM skill_learn WHERE npc_id = ?");

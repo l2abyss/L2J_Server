@@ -191,7 +191,6 @@ public class Forum
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	public int getTopicSize()

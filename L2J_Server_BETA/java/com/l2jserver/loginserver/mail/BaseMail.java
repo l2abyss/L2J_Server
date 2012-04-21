@@ -142,13 +142,7 @@ public class BaseMail implements Runnable
 		}
 		finally
 		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		return null;
 	}

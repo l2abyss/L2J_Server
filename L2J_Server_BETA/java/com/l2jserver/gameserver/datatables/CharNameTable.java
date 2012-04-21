@@ -241,7 +241,6 @@ public class CharNameTable
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		return number;
 	}
 	
@@ -250,12 +249,11 @@ public class CharNameTable
 		String name;
 		int id = -1;
 		int accessLevel = 0;
-		PreparedStatement statement = null;
 		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT charId,char_name,accesslevel FROM characters");
+			PreparedStatement statement = con.prepareStatement("SELECT charId,char_name,accesslevel FROM characters");
 			ResultSet rset = statement.executeQuery();
 			while (rset.next())
 			{

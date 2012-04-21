@@ -158,7 +158,6 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		if(_guards == null)
 		{
 			_guards = new FastList<L2Spawn>();
-		
 			Connection con = null;
 			try
 			{

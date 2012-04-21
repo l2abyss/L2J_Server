@@ -545,9 +545,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("UPDATE fort SET blood=?, supplyLvL=? WHERE id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE fort SET blood=?, supplyLvL=? WHERE id = ?");
 			statement.setInt(1, _blood);
 			statement.setInt(2, _supplyLvL);
 			statement.setInt(3, getFortId());
@@ -613,14 +611,11 @@ public class Fort
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
-			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("SELECT * FROM fort WHERE id = ?");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort WHERE id = ?");
 			statement.setInt(1, getFortId());
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			int ownerId = 0;
 			
 			while (rs.next())
@@ -714,9 +709,8 @@ public class Fort
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM fort_functions WHERE fort_id=? AND type=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM fort_functions WHERE fort_id=? AND type=?");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, functionType);
 			statement.execute();
@@ -934,9 +928,7 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=?,blood=? WHERE id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=?,blood=? WHERE id = ?");
 			statement.setInt(1, clanId);
 			statement.setLong(2, _lastOwnedTime.getTimeInMillis());
 			statement.setInt(3, 0);
@@ -1134,15 +1126,12 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("UPDATE fort SET state=?,castleId=? WHERE id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE fort SET state=?,castleId=? WHERE id = ?");
 			statement.setInt(1, getFortState());
 			statement.setInt(2, getCastleId());
 			statement.setInt(3, getFortId());
 			statement.execute();
 			statement.close();
-			
 		}
 		catch (Exception e)
 		{
