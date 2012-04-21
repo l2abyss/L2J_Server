@@ -99,7 +99,7 @@ public class RequestPackageSend extends L2GameClientPacket
 			return;
 		
 		// Freight price from config or normal price per item slot (30)
-		int fee = _count * Config.ALT_FREIGHT_PRIECE; //Config.ALT_GAME_FREIGHT_PRICE;
+		int fee = _count * Config.ALT_FREIGHT_PRICE; //Config.ALT_GAME_FREIGHT_PRICE;
 		double currentAdena = player.getAdena();
 		int slots = 0;
 		
