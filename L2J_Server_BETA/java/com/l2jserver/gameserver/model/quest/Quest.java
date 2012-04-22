@@ -2702,11 +2702,29 @@ public class Quest extends ManagedScript
 	/**
 	 * @param player this parameter contains a reference to the player to check.
 	 * @param itemId the item Id of the item to verify.
-	 * @return true if item exists in player's inventory, false - if not
+	 * @return {code true} if the item exists in player's inventory, otherwise {@code false}.
 	 */
 	public boolean hasQuestItems(L2PcInstance player, int itemId)
 	{
 		return player.getInventory().getItemByItemId(itemId) != null;
+	}
+	
+	/**
+	 * @param player this parameter contains a reference to the player to check.
+	 * @param itemIds the item Ids of the items to verify.
+	 * @return {code true} if all the items exists in player's inventory, otherwise {@code false}.
+	 */
+	public boolean hasQuestItems(L2PcInstance player, int... itemIds)
+	{
+		final PcInventory inv = player.getInventory();
+		for (int itemId : itemIds)
+		{
+			if (inv.getItemByItemId(itemId) == null)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
