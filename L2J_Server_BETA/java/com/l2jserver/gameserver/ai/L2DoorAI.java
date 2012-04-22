@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
  */
 public class L2DoorAI extends L2CharacterAI
 {
-	
 	public L2DoorAI(L2DoorInstance.AIAccessor accessor)
 	{
 		super(accessor);

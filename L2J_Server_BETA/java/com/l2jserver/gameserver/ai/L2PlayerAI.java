@@ -252,7 +252,7 @@ public class L2PlayerAI extends L2PlayableAI
 	{
 		L2Character target = getCastTarget();
 		if (Config.DEBUG)
-			_log.warning("L2PlayerAI: thinkCast -> Start");
+			_log.warning(getClass().getSimpleName() + ": thinkCast -> Start");
 		
 		if (_skill.getTargetType() == L2TargetType.TARGET_GROUND && _actor instanceof L2PcInstance)
 		{

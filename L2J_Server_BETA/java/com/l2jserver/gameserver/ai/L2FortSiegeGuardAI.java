@@ -19,7 +19,6 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
 
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
@@ -48,9 +47,6 @@ import com.l2jserver.util.Rnd;
  */
 public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 {
-	
-	protected static final Logger _log1 = Logger.getLogger(L2FortSiegeGuardAI.class.getName());
-	
 	private static final int MAX_ATTACK_TIMEOUT = 300; // int ticks, i.e. 30 seconds
 	
 	/** The L2Attackable AI task executed every 1s (call onEvtThink method)*/
@@ -182,7 +178,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	synchronized void changeIntention(CtrlIntention intention, Object arg0, Object arg1)
 	{
 		if (Config.DEBUG)
-			_log1.info("L2SiegeAI.changeIntention(" + intention + ", " + arg0 + ", " + arg1 + ")");
+			_log.warning(getClass().getSimpleName() + ": changeIntention(" + intention + ", " + arg0 + ", " + arg1 + ")");
 		
 		if (intention == AI_INTENTION_IDLE /*|| intention == AI_INTENTION_ACTIVE*/) // active becomes idle if only a summon is present
 		{
@@ -338,7 +334,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	private void thinkAttack()
 	{
 		if (Config.DEBUG)
-			_log1.info("L2FortSiegeGuardAI.thinkAttack(); timeout=" + (_attackTimeout - GameTimeController.getGameTicks()));
+			_log.warning(getClass().getSimpleName() + ": thinkAttack(); timeout=" + (_attackTimeout - GameTimeController.getGameTicks()));
 		
 		if (_attackTimeout < GameTimeController.getGameTicks())
 		{

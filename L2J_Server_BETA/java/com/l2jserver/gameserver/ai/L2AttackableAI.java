@@ -20,8 +20,6 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
 
 import java.util.Collection;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -63,23 +61,25 @@ import com.l2jserver.util.Rnd;
  */
 public class L2AttackableAI extends L2CharacterAI implements Runnable
 {
-	private static final Logger _log = Logger.getLogger(L2AttackableAI.class.getName());
-	
 	private static final int RANDOM_WALK_RATE = 30; // confirmed
 	// private static final int MAX_DRIFT_RANGE = 300;
 	private static final int MAX_ATTACK_TIMEOUT = 1200; // int ticks, i.e. 2min
-	
-	/** The L2Attackable AI task executed every 1s (call onEvtThink method)*/
+	/**
+	 * The L2Attackable AI task executed every 1s (call onEvtThink method).
+	 */
 	private Future<?> _aiTask;
-	
-	/** The delay after which the attacked is stopped */
+	/**
+	 * The delay after which the attacked is stopped.
+	 */
 	private int _attackTimeout;
-	
-	/** The L2Attackable aggro counter */
+	/**
+	 * The L2Attackable aggro counter.
+	 */
 	private int _globalAggro;
-	
-	/** The flag used to indicate that a thinking action is in progress */
-	private boolean _thinking; // to prevent recursive thinking
+	/**
+	 * The flag used to indicate that a thinking action is in progress, to prevent recursive thinking.
+	 */
+	private boolean _thinking;
 	
 	private int timepass = 0;
 	private int chaostime = 0;
@@ -89,16 +89,13 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	int lastBuffTick;
 	
 	/**
-	 * Constructor of L2AttackableAI.<BR><BR>
-	 *
+	 * Constructor of L2AttackableAI.
 	 * @param accessor The AI accessor of the L2Character
-	 *
 	 */
 	public L2AttackableAI(L2Character.AIAccessor accessor)
 	{
 		super(accessor);
 		_skillrender = NpcTable.getInstance().getTemplate(getActiveChar().getTemplate().getNpcId());
-		//_selfAnalysis.init();
 		_attackTimeout = Integer.MAX_VALUE;
 		_globalAggro = -10; // 10 seconds timeout of ATTACK after respawn
 	}
@@ -143,9 +140,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	private boolean autoAttackCondition(L2Character target)
 	{
 		if (target == null || getActiveChar() == null)
+		{
 			return false;
-		
-		L2Attackable me = getActiveChar();
+		}
+		final L2Attackable me = getActiveChar();
 		
 		// Check if the target isn't invulnerable
 		if (target.isInvul())
@@ -173,10 +171,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				return false;
 		}
 		
-		// Check if the target is a L2PcInstance
-		if (target instanceof L2PcInstance)
+		// Gets the player if there is any.
+		final L2PcInstance player = target.getActingPlayer();
+		if (player != null)
 		{
-			final L2PcInstance player = target.getActingPlayer();
 			// Don't take the aggro if the GM has the access level below or equal to GM_DONT_TAKE_AGGRO
 			if (player.isGM() && !player.getAccessLevel().canTakeAggro())
 				return false;
@@ -203,48 +201,24 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if (me instanceof L2RiftInvaderInstance && !DimensionalRiftManager.getInstance().getRoom(riftType, riftRoom).checkIfInZone(me.getX(), me.getY(), me.getZ()))
 					return false;
 			}
-			
-			//if (_selfAnalysis.cannotMoveOnLand && !target.isInsideZone(L2Character.ZONE_WATER))
-			//	return false;
 		}
 		
-		// Check if the target is a L2Summon
-		if (target instanceof L2Summon)
-		{
-			L2PcInstance owner = ((L2Summon) target).getOwner();
-			if (owner != null)
-			{
-				// Don't take the aggro if the GM has the access level below or equal to GM_DONT_TAKE_AGGRO
-				if (owner.isGM() && (owner.isInvul() || !owner.getAccessLevel().canTakeAggro()))
-					return false;
-				// Check if player is an ally (comparing mem addr)
-				if ("varka_silenos_clan".equals(me.getFactionId()) && owner.isAlliedWithVarka())
-					return false;
-				if ("ketra_orc_clan".equals(me.getFactionId()) && owner.isAlliedWithKetra())
-					return false;
-			}
-		}
 		// Check if the actor is a L2GuardInstance
-		if (getActiveChar() instanceof L2GuardInstance)
+		if (me instanceof L2GuardInstance)
 		{
-			
 			// Check if the L2PcInstance target has karma (=PK)
-			if (target instanceof L2PcInstance && ((L2PcInstance) target).getKarma() > 0)
-				// Los Check
-				return GeoData.getInstance().canSeeTarget(me, target);
-			
-			//if (target instanceof L2Summon)
-			//	return ((L2Summon)target).getKarma() > 0;
-			
+			if ((player != null) && player.getKarma() > 0)
+			{
+				return GeoData.getInstance().canSeeTarget(me, player); // Los Check
+			}
 			// Check if the L2MonsterInstance target is aggressive
 			if (target instanceof L2MonsterInstance && Config.GUARD_ATTACK_AGGRO_MOB)
 				return (((L2MonsterInstance) target).isAggressive() && GeoData.getInstance().canSeeTarget(me, target));
 			
 			return false;
 		}
-		else if (getActiveChar() instanceof L2FriendlyMobInstance)
-		{ // the actor is a L2FriendlyMobInstance
-			
+		else if (me instanceof L2FriendlyMobInstance)
+		{
 			// Check if the target isn't another L2Npc
 			if (target instanceof L2Npc)
 				return false;
@@ -258,23 +232,23 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			if (target instanceof L2Attackable)
 			{
-				if (getActiveChar().getEnemyClan() == null || ((L2Attackable) target).getClan() == null)
+				if (me.getEnemyClan() == null || ((L2Attackable) target).getClan() == null)
 					return false;
 				
-				if (!target.isAutoAttackable(getActiveChar()))
+				if (!target.isAutoAttackable(me))
 					return false;
 				
-				if (getActiveChar().getEnemyClan().equals(((L2Attackable) target).getClan()))
+				if (me.getEnemyClan().equals(((L2Attackable) target).getClan()))
 				{
-					if (getActiveChar().isInsideRadius(target, getActiveChar().getEnemyRange(), false, false))
+					if (me.isInsideRadius(target, me.getEnemyRange(), false, false))
 					{
-						return GeoData.getInstance().canSeeTarget(getActiveChar(), target);
+						return GeoData.getInstance().canSeeTarget(me, target);
 					}
 					return false;
 				}
-				if (getActiveChar().getIsChaos() > 0 && me.isInsideRadius(target, getActiveChar().getIsChaos(), false, false))
+				if (me.getIsChaos() > 0 && me.isInsideRadius(target, me.getIsChaos(), false, false))
 				{
-					if (getActiveChar().getFactionId() != null && getActiveChar().getFactionId().equals(((L2Attackable) target).getFactionId()))
+					if (me.getFactionId() != null && me.getFactionId().equals(((L2Attackable) target).getFactionId()))
 					{
 						return false;
 					}
@@ -391,7 +365,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		_attackTimeout = MAX_ATTACK_TIMEOUT + GameTimeController.getGameTicks();
 		
 		// self and buffs
-		
 		if (lastBuffTick + 30 < GameTimeController.getGameTicks())
 		{
 			for (L2Skill sk : _skillrender.getBuffSkills())
@@ -758,7 +731,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 			catch (NullPointerException e)
 			{
-				_log.log(Level.WARNING, "L2AttackableAI: thinkAttack() faction call failed: " + e.getMessage(), e);
+				_log.warning(getClass().getSimpleName() + ": thinkAttack() faction call failed: " + e.getMessage());
 			}
 		}
 
@@ -1912,7 +1885,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		catch (NullPointerException e)
 		{
 			setIntention(AI_INTENTION_ACTIVE);
-			_log.log(Level.WARNING, this+ " - failed executing movementDisable(): "+e.getMessage(),e);
+			_log.warning(getClass().getSimpleName() + ": " + this + " - failed executing movementDisable(): " + e.getMessage());
 			return;
 		}
 	}
@@ -2422,7 +2395,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 		catch(Exception e)
 		{
-			_log.log(Level.WARNING, this+" -  onEvtThink() failed: "+e.getMessage(), e);
+			_log.warning(getClass().getSimpleName() + ": " + this + " -  onEvtThink() failed: " + e.getMessage());
 		}
 		finally
 		{

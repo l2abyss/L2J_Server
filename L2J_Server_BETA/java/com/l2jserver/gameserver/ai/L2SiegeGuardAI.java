@@ -45,8 +45,6 @@ import com.l2jserver.util.Rnd;
  */
 public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 {
-	//protected static final Logger _log = Logger.getLogger(L2SiegeGuardAI.class.getName());
-	
 	private static final int MAX_ATTACK_TIMEOUT = 300; // int ticks, i.e. 30 seconds
 	
 	/** The L2Attackable AI task executed every 1s (call onEvtThink method)*/
@@ -171,7 +169,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	synchronized void changeIntention(CtrlIntention intention, Object arg0, Object arg1)
 	{
 		if (Config.DEBUG)
-			_log.info("L2SiegeAI.changeIntention(" + intention + ", " + arg0 + ", " + arg1 + ")");
+			_log.info(getClass().getSimpleName() + ": changeIntention(" + intention + ", " + arg0 + ", " + arg1 + ")");
 		
 		if (intention == AI_INTENTION_IDLE /*|| intention == AI_INTENTION_ACTIVE*/) // active becomes idle if only a summon is present
 		{
@@ -321,7 +319,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	private void thinkAttack()
 	{
 		if (Config.DEBUG)
-			_log.info("L2SiegeGuardAI.thinkAttack(); timeout=" + (_attackTimeout - GameTimeController.getGameTicks()));
+			_log.info(getClass().getSimpleName() + ": thinkAttack(); timeout=" + (_attackTimeout - GameTimeController.getGameTicks()));
 		
 		if (_attackTimeout < GameTimeController.getGameTicks())
 		{
@@ -483,7 +481,6 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		}
 		catch (NullPointerException e)
 		{
-			//_log.warning("AttackableAI: Attack target is NULL.");
 			_actor.setTarget(null);
 			setIntention(AI_INTENTION_IDLE, null, null);
 			return;

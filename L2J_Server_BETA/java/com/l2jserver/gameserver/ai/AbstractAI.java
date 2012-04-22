@@ -19,7 +19,6 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
 
 import java.util.concurrent.Future;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.GameTimeController;
@@ -47,7 +46,7 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
  */
 public abstract class AbstractAI implements Ctrl
 {
-	protected static final Logger _log = Logger.getLogger(AbstractAI.class.getName());
+	protected final Logger _log = Logger.getLogger(getClass().getName());
 	
 	private NextAction _nextAction;
 	
@@ -114,7 +113,7 @@ public abstract class AbstractAI implements Ctrl
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "", e);
+				_log.warning(getClass().getSimpleName() + ": Error: " + e.getMessage());
 			}
 		}
 	}
