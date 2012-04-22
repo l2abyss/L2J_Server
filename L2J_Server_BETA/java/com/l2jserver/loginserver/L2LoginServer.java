@@ -77,30 +77,14 @@ public final class L2LoginServer
 		logFolder.mkdir();
 		
 		// Create input stream for log file -- or store file data into memory
-		InputStream is = null;
-		try
+		
+		try (InputStream is = new FileInputStream(new File(LOG_NAME)))
 		{
-			is = new FileInputStream(new File(LOG_NAME));
 			LogManager.getLogManager().readConfiguration(is);
-			is.close();
 		}
 		catch (IOException e)
 		{
 			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
-		}
-		finally
-		{
-			try
-			{
-				if (is != null)
-				{
-					is.close();
-				}
-			}
-			catch (IOException e)
-			{
-				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
-			}
 		}
 		
 		// Load Config
@@ -127,20 +111,7 @@ public final class L2LoginServer
 			System.exit(1);
 		}
 		
-		try
-		{
-			GameServerTable.load();
-		}
-		catch (GeneralSecurityException e)
-		{
-			_log.log(Level.SEVERE, "FATAL: Failed to load GameServerTable. Reason: " + e.getMessage(), e);
-			System.exit(1);
-		}
-		catch (SQLException e)
-		{
-			_log.log(Level.SEVERE, "FATAL: Failed to load GameServerTable. Reason: " + e.getMessage(), e);
-			System.exit(1);
-		}
+		GameServerTable.getInstance();
 		
 		loadBanFile();
 		

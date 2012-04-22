@@ -293,26 +293,10 @@ public abstract class BaseGameServerRegister
 	 */
 	public void load()
 	{
-		try
-		{
-			loadImp();
-		}
-		catch (Exception e)
-		{
-			showError(getBundle().getString("gsListRetrieveError"), e);
-		}
-	}
-	
-	/**
-	 * Loads Configs and SQL.
-	 * @throws Exception the exception
-	 */
-	protected void loadImp() throws Exception
-	{
 		Server.serverMode = Server.MODE_LOGINSERVER;
 		
 		Config.load();
-		GameServerTable.load();
+		GameServerTable.getInstance();
 		
 		_loaded = true;
 	}
