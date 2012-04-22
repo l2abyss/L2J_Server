@@ -150,7 +150,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _coolTime;
 	private final int _reuseHashCode;
 	private final int _reuseDelay;
-	private final int _buffDuration;
 	// for item skills delay on equip
 	private final int _equipDelay;
 	
@@ -405,8 +404,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		{
 			_reuseDelay = set.getInteger("reuseDelay", 0);
 		}
-		
-		_buffDuration = set.getInteger("buffDuration", 0);
 		
 		_equipDelay = set.getInteger("equipDelay", 0);
 		
@@ -769,11 +766,22 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * @return Returns the buffDuration.
+	 * TODO: Zoey76, temp fix until skill reworks is done.
+	 * @return the calculated buff duration used to display buff icons.
 	 */
 	public final int getBuffDuration()
 	{
-		return _buffDuration;
+		int duration = 0;
+		final EffectTemplate firstEffect = hasEffects() ? getEffectTemplates()[0] : null;
+		if (firstEffect != null)
+		{
+			duration = firstEffect.abnormalTime * 1000;
+			if (firstEffect.counter > 1)
+			{
+				duration *= firstEffect.counter;
+			}
+		}
+		return duration;
 	}
 	
 	/**
