@@ -63,7 +63,7 @@ public final class RequestJoinParty extends L2GameClientPacket
 			return;
 		}
 		
-		if (target.getAppearance().getInvisible())
+		if (!requestor.isGM() && target.getAppearance().getInvisible())
 		{
 			requestor.sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 			return;
