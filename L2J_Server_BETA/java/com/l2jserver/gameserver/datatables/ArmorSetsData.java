@@ -113,32 +113,32 @@ public final class ArmorSetsData extends DocumentParser
 								}
 								case "con":
 								{
-									// TODO: Implement me
+									set.addCon(parseInt(attrs, "val"));
 									break;
 								}
 								case "dex":
 								{
-									// TODO: Implement me
+									set.addDex(parseInt(attrs, "val"));
 									break;
 								}
 								case "str":
 								{
-									// TODO: Implement me
+									set.addStr(parseInt(attrs, "val"));
 									break;
 								}
 								case "men":
 								{
-									// TODO: Implement me
+									set.addMen(parseInt(attrs, "val"));
 									break;
 								}
 								case "wit":
 								{
-									// TODO: Implement me
+									set.addWit(parseInt(attrs, "val"));
 									break;
 								}
 								case "int":
 								{
-									// TODO: Implement me
+									set.addInt(parseInt(attrs, "val"));
 									break;
 								}
 							}

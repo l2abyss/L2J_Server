@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.actor;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -4015,7 +4016,7 @@ public abstract class L2Character extends L2Object
 	public final void addStatFuncs(Func[] funcs)
 	{
 		
-		FastList<Stats> modifiedStats = new FastList<Stats>();
+		List<Stats> modifiedStats = new ArrayList<Stats>();
 		
 		for (Func f : funcs)
 		{
@@ -4098,7 +4099,7 @@ public abstract class L2Character extends L2Object
 	public final void removeStatFuncs(Func[] funcs)
 	{
 		
-		FastList<Stats> modifiedStats = new FastList<Stats>();
+		List<Stats> modifiedStats = new ArrayList<Stats>();
 		
 		for (Func f : funcs)
 		{
@@ -4136,7 +4137,7 @@ public abstract class L2Character extends L2Object
 	public final void removeStatsOwner(Object owner)
 	{
 		
-		FastList<Stats> modifiedStats = null;
+		List<Stats> modifiedStats = null;
 		
 		int i = 0;
 		// Go through the Calculator set
@@ -4159,7 +4160,7 @@ public abstract class L2Character extends L2Object
 			}
 			
 			// If possible, free the memory and just create a link on NPC_STD_CALCULATOR
-			if (this instanceof L2Npc)
+			if (isNpc())
 			{
 				i = 0;
 				for (; i < Stats.NUM_STATS; i++)
@@ -4182,7 +4183,7 @@ public abstract class L2Character extends L2Object
 		}
 	}
 	
-	protected void broadcastModifiedStats(FastList<Stats> stats)
+	protected void broadcastModifiedStats(List<Stats> stats)
 	{
 		if (stats == null || stats.isEmpty())
 			return;

@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver.model.stats;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 
@@ -160,9 +161,9 @@ public final class Calculator
 	 * @param owner 
 	 * @return 
 	 */
-	public synchronized FastList<Stats> removeOwner(Object owner)
+	public synchronized List<Stats> removeOwner(Object owner)
 	{
-		FastList<Stats> modifiedStats = new FastList<Stats>();
+		List<Stats> modifiedStats = new ArrayList<Stats>();
 		
 		for (Func func: _functions)
 		{

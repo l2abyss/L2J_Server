@@ -38,6 +38,13 @@ public final class L2ArmorSet
 	private final List<SkillHolder> _shieldSkills;
 	private final List<SkillHolder> _enchant6Skill;
 	
+	private int _con;
+	private int _dex;
+	private int _str;
+	private int _men;
+	private int _wit;
+	private int _int;
+	
 	public L2ArmorSet()
 	{
 		_legs = new ArrayList<>();
@@ -94,6 +101,36 @@ public final class L2ArmorSet
 	public void addEnchant6Skill(SkillHolder holder)
 	{
 		_enchant6Skill.add(holder);
+	}
+	
+	public void addCon(int val)
+	{
+		_con = val;
+	}
+	
+	public void addDex(int val)
+	{
+		_dex = val;
+	}
+	
+	public void addStr(int val)
+	{
+		_str = val;
+	}
+	
+	public void addMen(int val)
+	{
+		_men = val;
+	}
+	
+	public void addWit(int val)
+	{
+		_wit = val;
+	}
+	
+	public void addInt(int val)
+	{
+		_int = val;
 	}
 	
 	/**
@@ -230,5 +267,35 @@ public final class L2ArmorSet
 			return false;
 		
 		return true;
+	}
+	
+	public int getCON()
+	{
+		return _con;
+	}
+	
+	public int getDEX()
+	{
+		return _dex;
+	}
+	
+	public int getSTR()
+	{
+		return _str;
+	}
+	
+	public int getMEN()
+	{
+		return _men;
+	}
+	
+	public int getWIT()
+	{
+		return _wit;
+	}
+	
+	public int getINT()
+	{
+		return _int;
 	}
 }

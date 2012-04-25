@@ -1355,7 +1355,7 @@ public class L2PetInstance extends L2Summon
 	}
 
 	@Override
-	protected void broadcastModifiedStats(FastList<Stats> stats)
+	protected void broadcastModifiedStats(List<Stats> stats)
 	{
 		// check for initialization
 		if (getInstanceType() == InstanceType.L2PetInstance)
