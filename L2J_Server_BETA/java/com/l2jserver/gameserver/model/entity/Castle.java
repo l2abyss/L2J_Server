@@ -556,7 +556,7 @@ public class Castle
 		setShowNpcCrest(false);
 		
 		// if clan have fortress, remove it
-		if (clan.getFortId() > 0)
+		if ((clan != null) && clan.getFortId() > 0)
 			FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
 		
 		if (getSiege().getIsInProgress()) // If siege in progress
@@ -564,10 +564,13 @@ public class Castle
 			
 		TerritoryWarManager.getInstance().getTerritory(_castleId).setOwnerClan(clan);
 		
-		for (L2PcInstance member : clan.getOnlineMembers(0))
+		if (clan != null)
 		{
-			giveResidentialSkills(member);
-			member.sendSkillList();
+			for (L2PcInstance member : clan.getOnlineMembers(0))
+			{
+				giveResidentialSkills(member);
+				member.sendSkillList();
+			}
 		}
 	}
 	

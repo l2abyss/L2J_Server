@@ -125,6 +125,12 @@ public final class TaskManager
 			return object == null ? false : id == ((ExecutedTask) object).id;
 		}
 		
+		@Override
+		public int hashCode()
+		{
+			return id;
+		}
+		
 		public Task getTask()
 		{
 			return task;

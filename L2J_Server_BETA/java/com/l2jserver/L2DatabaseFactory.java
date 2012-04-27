@@ -38,7 +38,7 @@ public class L2DatabaseFactory
 	}
 	
 	private static L2DatabaseFactory _instance;
-	private static ScheduledExecutorService _executor;
+	private static volatile ScheduledExecutorService _executor;
 	private ProviderType _providerType;
 	private ComboPooledDataSource _source;
 	

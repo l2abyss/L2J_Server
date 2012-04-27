@@ -165,7 +165,6 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 	@Override
 	public void load()
 	{
-		
 		SwingUtilities.invokeLater
 		(
 				new Runnable()

@@ -91,6 +91,7 @@ public class LocalizationParser
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Could not load localization file");
+				return;
 			}
 			
 			Node n = doc.getFirstChild();

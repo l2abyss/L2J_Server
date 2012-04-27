@@ -76,12 +76,13 @@ public abstract class BaseRecievePacket
 		{
 			result = new String(_decrypt,_off,_decrypt.length-_off, "UTF-16LE");
 			result = result.substring(0, result.indexOf(0x00));
+			_off += result.length()*2 + 2;
 		}
 		catch (Exception e)
 		{
 			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
-		_off += result.length()*2 + 2;
+		
 		return result;
 	}
 	

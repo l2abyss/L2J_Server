@@ -89,7 +89,11 @@ public class Base64
 	{
 		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Enter String to encode: ");
-		System.out.println(Base64.encodeBytes(bf.readLine().getBytes()));
+		final String line = bf.readLine();
+		if (line != null)
+		{
+			System.out.println(Base64.encodeBytes(line.getBytes()));
+		}
 	}
 	
 	/** Determine which ALPHABET to use. */

@@ -14,14 +14,10 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
+import java.util.Map;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -39,26 +35,23 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * This class manage the player add/remove, team change and<br>
- * event arena status, as the clearance of the participants<br>
- * list or liberate the arena.
+ * This class manage the player add/remove, team change and event arena status,<br>
+ * as the clearance of the participants list or liberate the arena.
  * @author BiggBoss
  */
 public final class HandysBlockCheckerManager 
 {
-	private static final Logger _log = Logger.getLogger(HandysBlockCheckerManager.class.getName());
-	
 	// All the participants and their team classified by arena
-	private static ArenaParticipantsHolder[] _arenaPlayers = new ArenaParticipantsHolder[4];
+	private static final ArenaParticipantsHolder[] _arenaPlayers = new ArenaParticipantsHolder[4];
 	
 	// Arena votes to start the game
-	private static TIntIntHashMap _arenaVotes = new TIntIntHashMap();
+	private static final Map<Integer, Integer> _arenaVotes = new HashMap<>();
 	
 	// Arena Status, True = is being used, otherwise, False
-	private static FastMap<Integer, Boolean> _arenaStatus;
+	private static final Map<Integer, Boolean> _arenaStatus = new HashMap<>();
 	
 	// Registration request penalty (10 seconds)
-	private static FastList<Integer> _registrationPenalty = new FastList<Integer>();
+	private static List<Integer> _registrationPenalty = new ArrayList<>();
 	
 	/**
 	 * Return the number of event-start votes for the specified
@@ -109,14 +102,10 @@ public final class HandysBlockCheckerManager
 	private HandysBlockCheckerManager()
 	{
 		// Initialize arena status
-		if(_arenaStatus == null)
-		{
-			_arenaStatus = new FastMap<Integer, Boolean>();
-			_arenaStatus.put(0, false);
-			_arenaStatus.put(1, false);
-			_arenaStatus.put(2, false);
-			_arenaStatus.put(3, false);			
-		}
+		_arenaStatus.put(0, false);
+		_arenaStatus.put(1, false);
+		_arenaStatus.put(2, false);
+		_arenaStatus.put(3, false);
 	}
 	
 	/**
@@ -498,8 +487,7 @@ public final class HandysBlockCheckerManager
 	
 	private class PenaltyRemove implements Runnable
 	{
-		Integer objectId;
-		
+		private final Integer objectId;
 		public PenaltyRemove(Integer id)
 		{
 			objectId = id;
@@ -508,14 +496,7 @@ public final class HandysBlockCheckerManager
 		@Override
 		public void run()
 		{
-			try
-			{
-				_registrationPenalty.remove(objectId);
-			}
-			catch(Exception e)
-			{
-				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
-			}
+			_registrationPenalty.remove(objectId);
 		}
 	}
 }

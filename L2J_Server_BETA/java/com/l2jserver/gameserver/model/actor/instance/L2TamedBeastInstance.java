@@ -59,7 +59,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	private L2PcInstance _owner;
 	private Future<?> _buffTask = null;
 	private Future<?> _durationCheckTask = null;
-	private static boolean _isFreyaBeast;
+	private boolean _isFreyaBeast;
 	private List<L2Skill> _beastSkills = null;
 	
 	public L2TamedBeastInstance(int objectId, L2NpcTemplate template)
@@ -404,7 +404,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			L2PcInstance owner = _tamedBeast.getOwner();
 			
 			L2ItemInstance item = null;
-			if (_isFreyaBeast)
+			if (_tamedBeast._isFreyaBeast)
 			{
 				item = owner.getInventory().getItemByItemId(foodTypeSkillId);
 				if (item != null && item.getCount() >= 1)

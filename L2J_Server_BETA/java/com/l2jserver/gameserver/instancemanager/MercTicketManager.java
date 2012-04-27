@@ -36,30 +36,17 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- * @author yellowperil & Fulminus
- * This class is similar to the SiegeGuardManager, except it handles
- * the loading of the mercenary tickets that are dropped on castle floors
- * by the castle lords.
- * These tickets (aka badges) need to be readded after each server reboot
- * except when the server crashed in the middle of an ongoig siege.
- * In addition, this class keeps track of the added tickets, in order to
- * properly limit the number of mercenaries in each castle and the
- * number of mercenaries from each mercenary type.
- * Finally, we provide auxilary functions to identify the castle in
- * which each item (and its corresponding NPC) belong to, in order to
- * help avoid mixing them up.
- *
+ * This class is similar to the SiegeGuardManager, except it handles the loading of the mercenary tickets that are dropped on castle floors by the castle lords.<br>
+ * These tickets (a.k.a. badges) need to be read after each server reboot except when the server crashed in the middle of an ongoing siege.<br>
+ * In addition, this class keeps track of the added tickets, in order to properly limit the number of mercenaries in each castle and the number of mercenaries from each mercenary type.<br>
+ * Finally, we provide auxiliary functions to identify the castle in which each item (and its corresponding NPC) belong to, in order to help avoid mixing them up.
+ * @author yellowperil, Fulminus
  */
 public class MercTicketManager
 {
-	protected static final Logger _log = Logger.getLogger(MercTicketManager.class.getName());
+	private static final Logger _log = Logger.getLogger(MercTicketManager.class.getName());
 	
-	public static final MercTicketManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	private List<L2ItemInstance> _droppedTickets; // to keep track of items on the ground
+	private static final FastList<L2ItemInstance> _droppedTickets = new FastList<>();
 	
 	//TODO move all these values into siege.properties
 	// max tickets per merc type = 10 + (castleid * 2)?
@@ -116,7 +103,8 @@ public class MercTicketManager
 	
 	private MercTicketManager()
 	{
-		_log.info("Initializing MercTicketManager");
+		_log.info("Initializing MercTicketManager.");
+		_droppedTickets.shared();
 		load();
 	}
 	
@@ -137,14 +125,16 @@ public class MercTicketManager
 	
 	public void reload()
 	{
-		getDroppedTickets().clear();
+		_droppedTickets.clear();
 		load();
 	}
 	
+	/**
+	 * Load merc tickets into the world.
+	 */
 	private final void load()
 	{
 		Connection con = null;
-		// load merc tickets into the world
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -188,9 +178,9 @@ public class MercTicketManager
 							L2ItemInstance dropticket = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 							dropticket.setLocation(L2ItemInstance.ItemLocation.VOID);
 							dropticket.dropMe(null, x, y, z);
-							dropticket.setDropTime(0); //avoids it from beeing removed by the auto item destroyer
+							dropticket.setDropTime(0); //avoids it from being removed by the auto item destroyer
 							L2World.getInstance().storeObject(dropticket);
-							getDroppedTickets().add(dropticket);
+							_droppedTickets.add(dropticket);
 						}
 						break;
 					}
@@ -198,7 +188,7 @@ public class MercTicketManager
 			rs.close();
 			statement.close();
 			
-			_log.info("Loaded: " + getDroppedTickets().size() + " Mercenary Tickets");
+			_log.info("Loaded: " + _droppedTickets.size() + " Mercenary Tickets");
 		}
 		catch (Exception e)
 		{
@@ -231,7 +221,7 @@ public class MercTicketManager
 			return true;
 		
 		int count = 0;
-		for (L2ItemInstance ticket : getDroppedTickets())
+		for (L2ItemInstance ticket : _droppedTickets)
 		{
 			if (ticket != null && ticket.getItemId() == itemId)
 				count++;
@@ -257,7 +247,7 @@ public class MercTicketManager
 			return true;
 		
 		int count = 0;
-		for (L2ItemInstance ticket : getDroppedTickets())
+		for (L2ItemInstance ticket : _droppedTickets)
 		{
 			if ((ticket != null) && (getTicketCastleId(ticket.getItemId()) == castleId))
 				count++;
@@ -274,7 +264,7 @@ public class MercTicketManager
 	
 	public boolean isTooCloseToAnotherTicket(int x, int y, int z)
 	{
-		for (L2ItemInstance item : getDroppedTickets())
+		for (L2ItemInstance item : _droppedTickets)
 		{
 			double dx = x - item.getX();
 			double dy = y - item.getY();
@@ -358,7 +348,7 @@ public class MercTicketManager
 	 */
 	public void deleteTickets(int castleId)
 	{
-		Iterator<L2ItemInstance> it = getDroppedTickets().iterator();
+		Iterator<L2ItemInstance> it = _droppedTickets.iterator();
 		while (it.hasNext())
 		{
 			L2ItemInstance item = it.next();
@@ -396,7 +386,7 @@ public class MercTicketManager
 			(new SiegeGuardManager(castle)).removeMerc(npcId, item.getX(), item.getY(), item.getZ());
 		}
 		
-		getDroppedTickets().remove(item);
+		_droppedTickets.remove(item);
 	}
 	
 	public int[] getItemIds()
@@ -406,13 +396,12 @@ public class MercTicketManager
 	
 	public final List<L2ItemInstance> getDroppedTickets()
 	{
-		if (_droppedTickets == null)
-			synchronized (this)
-			{
-				if (_droppedTickets == null)
-					_droppedTickets = new FastList<L2ItemInstance>();
-			}
 		return _droppedTickets;
+	}
+	
+	public static final MercTicketManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	@SuppressWarnings("synthetic-access")

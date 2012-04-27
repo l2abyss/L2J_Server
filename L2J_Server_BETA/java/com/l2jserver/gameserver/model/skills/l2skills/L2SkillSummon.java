@@ -152,7 +152,7 @@ public class L2SkillSummon extends L2Skill
 			int _cubicSkillLevel = getLevel();
 			if (_cubicSkillLevel > 100)
 			{
-				_cubicSkillLevel = Math.round(((getLevel()-100)/7)+8);
+				_cubicSkillLevel = ((getLevel()-100) / 7) + 8;
 			}
 			
 			if (targets.length > 1) // Mass cubic skill

@@ -28,7 +28,6 @@ public class Point3D implements Serializable
 	 */
 	private static final long serialVersionUID = 4638345252031872576L;
 	
-	/* since using volatile vars, removing all synchronizations */
 	private volatile int _x, _y, _z;
 	
 	public Point3D(int pX, int pY, int pZ)
@@ -112,7 +111,7 @@ public class Point3D implements Serializable
 		return distanceSquared(point1, point2) < distance * distance;
 	}
 	
-	public int getX()
+	public synchronized int getX()
 	{
 		return _x;
 	}
@@ -122,7 +121,7 @@ public class Point3D implements Serializable
 		_x = pX;
 	}
 	
-	public int getY()
+	public synchronized int getY()
 	{
 		return _y;
 	}
@@ -132,7 +131,7 @@ public class Point3D implements Serializable
 		_y = pY;
 	}
 	
-	public int getZ()
+	public synchronized int getZ()
 	{
 		return _z;
 	}
@@ -148,8 +147,4 @@ public class Point3D implements Serializable
 		_y = pY;
 		_z = pZ;
 	}
-	
-	/* note by Deedlit: we are using volatile variable types here. We dont need to additionally 
-	 * use synchronized, cause volatile vars are synced vars. Removed all, please test if all is ok. Need to
-	 * look through code and remove similar pointless lockings if any more there. */
 }

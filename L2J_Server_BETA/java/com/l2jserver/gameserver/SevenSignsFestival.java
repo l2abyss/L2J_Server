@@ -1281,12 +1281,12 @@ public class SevenSignsFestival implements SpawnListener
 		_nextFestivalStart = System.currentTimeMillis() + milliFromNow;
 	}
 	
-	public final int getMinsToNextCycle()
+	public final long getMinsToNextCycle()
 	{
 		if (SevenSigns.getInstance().isSealValidationPeriod())
 			return -1;
 		
-		return Math.round((_nextFestivalCycleStart - System.currentTimeMillis()) / 60000);
+		return (_nextFestivalCycleStart - System.currentTimeMillis()) / 60000;
 	}
 	
 	public final int getMinsToNextFestival()
@@ -1294,7 +1294,7 @@ public class SevenSignsFestival implements SpawnListener
 		if (SevenSigns.getInstance().isSealValidationPeriod())
 			return -1;
 		
-		return Math.round((_nextFestivalStart - System.currentTimeMillis()) / 60000) + 1;
+		return (int) (((_nextFestivalStart - System.currentTimeMillis()) / 60000) + 1);
 	}
 	
 	public final String getTimeToNextFestivalStr()
@@ -2266,6 +2266,8 @@ public class SevenSignsFestival implements SpawnListener
 				case 3:
 					_npcSpawns = (_cabal == SevenSigns.CABAL_DAWN) ? FESTIVAL_DAWN_CHEST_SPAWNS[_levelRange] : FESTIVAL_DUSK_CHEST_SPAWNS[_levelRange];
 					break;
+				default:
+					return;
 			}
 			
 			for (int i = 0; i < _npcSpawns.length; i++)

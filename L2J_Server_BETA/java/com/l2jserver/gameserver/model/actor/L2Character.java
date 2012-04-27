@@ -159,7 +159,7 @@ public abstract class L2Character extends L2Object
 	private static FastList<SkillUseListener> globalSkillUseListeners = new FastList<SkillUseListener>().shared();
 	private FastList<SkillUseListener> skillUseListeners = new FastList<SkillUseListener>().shared();
 	
-	private Set<L2Character> _attackByList;
+	private volatile Set<L2Character> _attackByList;
 	private volatile boolean _isCastingNow = false;
 	private volatile boolean _isCastingSimultaneouslyNow = false;
 	private L2Skill _lastSkillCast;
@@ -200,7 +200,7 @@ public abstract class L2Character extends L2Object
 	private FastMap<Integer, SkillHolder> _customSkills;
 	
 	/** FastMap containing the active chance skills on this character */
-	private ChanceSkillList _chanceSkills;
+	private volatile ChanceSkillList _chanceSkills;
 	
 	/** Current force buff this caster is casting to a target */
 	protected FusionSkill _fusionSkill;
@@ -2528,13 +2528,15 @@ public abstract class L2Character extends L2Object
 	 */
 	public final Set<L2Character> getAttackByList()
 	{
-		if (_attackByList != null)
-			return _attackByList;
-		
-		synchronized (this)
+		if (_attackByList == null)
 		{
-			if (_attackByList == null)
-				_attackByList = new WeakFastSet<L2Character>(true);
+			synchronized (this)
+			{
+				if (_attackByList == null)
+				{
+					_attackByList = new WeakFastSet<L2Character>(true);
+				}
+			}
 		}
 		return _attackByList;
 	}
@@ -3933,13 +3935,10 @@ public abstract class L2Character extends L2Object
 	
 	private int _castInterruptTime;
 	
-	/** Table of calculators containing all standard NPC calculator (ex : ACCURACY_COMBAT, EVASION_RATE */
-	private static final Calculator[] NPC_STD_CALCULATOR;
-	
-	static
-	{
-		NPC_STD_CALCULATOR = Formulas.getStdNPCCalculators();
-	}
+	/**
+	 * Table of calculators containing all standard NPC calculator (ex : ACCURACY_COMBAT, EVASION_RATE)
+	 */
+	private static final Calculator[] NPC_STD_CALCULATOR = Formulas.getStdNPCCalculators();
 	
 	protected L2CharacterAI _ai;
 	
@@ -7704,35 +7703,36 @@ public abstract class L2Character extends L2Object
 				{
 					t[f + i] = targets[f];
 				}
-			}
-			if (targets.length > 0)
-			{
-				SkillUseEvent event = new SkillUseEvent();
-				event.setCaster(this);
-				event.setSkill(skill);
-				event.setTargets(t);
-				for (SkillUseListener listener : skillUseListeners)
+				
+				if (targets.length > 0)
 				{
-					int skillId = skill.getId();
-					if (listener.getSkillId() == -1 || skillId == listener.getSkillId())
+					SkillUseEvent event = new SkillUseEvent();
+					event.setCaster(this);
+					event.setSkill(skill);
+					event.setTargets(t);
+					for (SkillUseListener listener : skillUseListeners)
 					{
-						if (!listener.onSkillUse(event))
+						int skillId = skill.getId();
+						if (listener.getSkillId() == -1 || skillId == listener.getSkillId())
 						{
-							return false;
+							if (!listener.onSkillUse(event))
+							{
+								return false;
+							}
 						}
 					}
-				}
-				for (SkillUseListener listener : globalSkillUseListeners)
-				{
-					int npcId = listener.getNpcId();
-					int skillId = listener.getSkillId();
-					boolean skillOk = skillId == -1 || skillId == skill.getId();
-					boolean charOk = (npcId == -1 && this instanceof L2NpcInstance) || (npcId == -2 && this instanceof L2PcInstance) || npcId == -3 || (this instanceof L2NpcInstance && ((L2NpcInstance) this).getNpcId() == npcId);
-					if (skillOk && charOk)
+					for (SkillUseListener listener : globalSkillUseListeners)
 					{
-						if (!listener.onSkillUse(event))
+						int npcId = listener.getNpcId();
+						int skillId = listener.getSkillId();
+						boolean skillOk = skillId == -1 || skillId == skill.getId();
+						boolean charOk = (npcId == -1 && this instanceof L2NpcInstance) || (npcId == -2 && this instanceof L2PcInstance) || npcId == -3 || (this instanceof L2NpcInstance && ((L2NpcInstance) this).getNpcId() == npcId);
+						if (skillOk && charOk)
 						{
-							return false;
+							if (!listener.onSkillUse(event))
+							{
+								return false;
+							}
 						}
 					}
 				}

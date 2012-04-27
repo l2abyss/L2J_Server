@@ -97,12 +97,12 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.CharEffectList;
-import com.l2jserver.gameserver.model.L2Fish;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.L2ContactList;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
+import com.l2jserver.gameserver.model.L2Fish;
 import com.l2jserver.gameserver.model.L2Fishing;
 import com.l2jserver.gameserver.model.L2Macro;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
@@ -465,7 +465,7 @@ public final class L2PcInstance extends L2Playable
 	/** Vitality recovery task */
 	private ScheduledFuture<?> _vitalityTask;
 	
-	private ScheduledFuture<?> _teleportWatchdog;
+	private volatile ScheduledFuture<?> _teleportWatchdog;
 	
 	/** The Siege state of the L2PcInstance */
 	private byte _siegeState = 0;
@@ -1389,11 +1389,14 @@ public final class L2PcInstance extends L2Playable
 	public L2CharacterAI getAI()
 	{
 		L2CharacterAI ai = _ai; // copy handle
-		if (ai == null)
+		if (_ai == null)
 		{
 			synchronized(this)
 			{
-				if (_ai == null) _ai = new L2PlayerAI(new L2PcInstance.AIAccessor());
+				if (_ai == null)
+				{
+					_ai = new L2PlayerAI(new L2PcInstance.AIAccessor());
+				}
 				return _ai;
 			}
 		}
@@ -1843,7 +1846,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/** List of all QuestState instance that needs to be notified of this L2PcInstance's or its pet's death */
-	private List<QuestState> _notifyQuestOfDeathList;
+	private volatile List<QuestState> _notifyQuestOfDeathList;
 	
 	/**
 	 * Add QuestState instance that is to be notified of L2PcInstance's death.<BR><BR>
@@ -7465,6 +7468,11 @@ public final class L2PcInstance extends L2Playable
 			rset.close();
 			statement.close();
 			
+			if (player == null)
+			{
+				return null;
+			}
+			
 			// Set Hero status if it applies
 			if (Hero.getInstance().isHero(objectId))
 			{
@@ -12374,11 +12382,11 @@ public final class L2PcInstance extends L2Playable
 				isNoob = _fish.getFishGrade() == 0;
 				isUpperGrade = _fish.getFishGrade() == 2;
 				if (lureid == 6519 || lureid == 6522 || lureid == 6525 || lureid == 8505 || lureid == 8508 || lureid == 8511) //low grade
-					checkDelay = Math.round(_fish.getGutsCheckTime() * (133));
+					checkDelay = _fish.getGutsCheckTime() * 133;
 				else if (lureid == 6520 || lureid == 6523 || lureid == 6526 || (lureid >= 8505 && lureid <= 8513) || (lureid >= 7610 && lureid <= 7613) || (lureid >= 7807 && lureid <= 7809) || (lureid >= 8484 && lureid <= 8486)) //medium grade, beginner, prize-winning & quest special bait
-					checkDelay = Math.round(_fish.getGutsCheckTime() * (100));
+					checkDelay = _fish.getGutsCheckTime() * 100;
 				else if (lureid == 6521 || lureid == 6524 || lureid == 6527 || lureid == 8507 || lureid == 8510 || lureid == 8513) //high grade
-					checkDelay = Math.round(_fish.getGutsCheckTime() * (66));
+					checkDelay = _fish.getGutsCheckTime() * 66;
 			}
 			_taskforfish = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new LookingForFishTask(_fish.getStartCombatTime(), _fish.getFishGuts(), _fish.getFishGroup(), isNoob, isUpperGrade), 10000, checkDelay);
 		}

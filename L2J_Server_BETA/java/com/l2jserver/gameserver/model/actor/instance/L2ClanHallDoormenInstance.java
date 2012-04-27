@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.util.Evolve;
 
 public class L2ClanHallDoormenInstance extends L2DoormenInstance
 {
-	private boolean _init = false;
+	private volatile boolean _init = false;
 	private ClanHall _clanHall = null;
 	private boolean _hasEvolve = false;
 	

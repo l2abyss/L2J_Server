@@ -508,9 +508,9 @@ public class RaidBossSpawnManager
 				ScheduledFuture<?> f = _schedules.get(bossId);
 				f.cancel(true);
 			}
+			_schedules.clear();
 		}
 		
-		_schedules.clear();
 		_storedInfo.clear();
 		_spawns.clear();
 	}

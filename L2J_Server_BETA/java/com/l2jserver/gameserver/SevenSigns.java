@@ -131,15 +131,15 @@ public class SevenSigns
 	private Map<Integer, Integer> _signsDuskSealTotals;
 	private Map<Integer, Integer> _signsDawnSealTotals;
 	
-	private static AutoSpawnInstance _merchantSpawn;
-	private static AutoSpawnInstance _blacksmithSpawn;
-	private static AutoSpawnInstance _lilithSpawn;
-	private static AutoSpawnInstance _anakimSpawn;
-	private static Map<Integer, AutoSpawnInstance> _crestofdawnspawns;
-	private static Map<Integer, AutoSpawnInstance> _crestofduskspawns;
-	private static Map<Integer, AutoSpawnInstance> _oratorSpawns;
-	private static Map<Integer, AutoSpawnInstance> _preacherSpawns;
-	private static Map<Integer, AutoSpawnInstance> _marketeerSpawns;
+	private AutoSpawnInstance _merchantSpawn;
+	private AutoSpawnInstance _blacksmithSpawn;
+	private AutoSpawnInstance _lilithSpawn;
+	private AutoSpawnInstance _anakimSpawn;
+	private Map<Integer, AutoSpawnInstance> _crestofdawnspawns;
+	private Map<Integer, AutoSpawnInstance> _crestofduskspawns;
+	private Map<Integer, AutoSpawnInstance> _oratorSpawns;
+	private Map<Integer, AutoSpawnInstance> _preacherSpawns;
+	private Map<Integer, AutoSpawnInstance> _marketeerSpawns;
 	
 	private static final String LOAD_DATA =
 		"SELECT charId, cabal, seal, red_stones, green_stones, blue_stones, " +
