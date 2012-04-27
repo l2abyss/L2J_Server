@@ -94,7 +94,10 @@ public class ValueSortMap
 	 * @param ascendingOrder Values will be sorted as per value of ascendingOrder
 	 * @return LinkedHashMap Sorted new LinkedHashMap
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({
+		"rawtypes",
+		"null"
+	})
 	private static LinkedHashMap sortMapByValue(Map inMap, Comparator comparator, Boolean ascendingOrder)
 	{
 		int iSize = inMap.size();

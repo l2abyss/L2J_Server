@@ -601,12 +601,11 @@ public class L2Attackable extends L2Npc
 			
 			int damage;
 			L2Character attacker, ddealer;
-			RewardInfo reward;
 			
 			L2PcInstance maxDealer = null;
 			int maxDamage = 0;
 			
-			// While Interating over This Map Removing Object is Not Allowed
+			// While Iterating over This Map Removing Object is Not Allowed
 			// Go through the _aggroList of the L2Attackable
 			for (AggroInfo info : getAggroList().values())
 			{
@@ -632,7 +631,7 @@ public class L2Attackable extends L2Npc
 						continue;
 					
 					// Calculate real damages (Summoners should get own damage plus summon's damage)
-					reward = rewards.get(ddealer);
+					RewardInfo reward = rewards.get(ddealer);
 					
 					if (reward == null)
 						reward = new RewardInfo(ddealer, damage);
@@ -666,15 +665,8 @@ public class L2Attackable extends L2Npc
 				float partyMul, penalty;
 				RewardInfo reward2;
 				int[] tmp;
-				
-				// TODO: Zoey76: Rewrite, bad iteration, NPE vulnerability, possible concurrent modification.
-				for (FastMap.Entry<L2Character, RewardInfo> entry = rewards.head(), end = rewards.tail(); (entry = entry.getNext()) != end;)
+				for (RewardInfo reward : rewards.values())
 				{
-					if (entry == null)
-						continue;
-					
-					reward = entry.getValue();
-					
 					if (reward == null)
 						continue;
 					

@@ -128,6 +128,10 @@ public class NpcBufferTable
 			{
 				try
 				{
+					if (con == null)
+					{
+						con = L2DatabaseFactory.getInstance().getConnection();
+					}
 					PreparedStatement statement = con.prepareStatement("SELECT `npc_id`,`skill_id`,`skill_level`,`skill_fee_id`,`skill_fee_amount`,`buff_group` FROM `custom_npc_buffer` ORDER BY `npc_id` ASC");
 					ResultSet rset = statement.executeQuery();
 					
