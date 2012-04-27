@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import java.util.List;
 import java.util.StringTokenizer;
-
-import javolution.util.FastList;
 
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
@@ -100,7 +99,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 		{
 			if (player.isClanLeader())
 			{
-				final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
+				final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
 				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubPledge);
 				int count = 0;
 				

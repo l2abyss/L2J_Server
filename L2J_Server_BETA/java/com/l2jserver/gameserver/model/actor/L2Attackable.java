@@ -667,6 +667,7 @@ public class L2Attackable extends L2Npc
 				RewardInfo reward2;
 				int[] tmp;
 				
+				// TODO: Zoey76: Rewrite, bad iteration, NPE vulnerability, possible concurrent modification.
 				for (FastMap.Entry<L2Character, RewardInfo> entry = rewards.head(), end = rewards.tail(); (entry = entry.getNext()) != end;)
 				{
 					if (entry == null)

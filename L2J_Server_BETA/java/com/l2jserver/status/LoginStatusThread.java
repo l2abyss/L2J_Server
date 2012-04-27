@@ -70,11 +70,10 @@ public class LoginStatusThread extends Thread
 		if (Config.DEVELOPER)
 			telnetOutput(2, "");
 		
-		InputStream telnetIS = null;
-		try
+		final File file = new File(Config.TELNET_FILE);
+		try (InputStream telnetIS = new FileInputStream(file))
 		{
 			Properties telnetSettings = new Properties();
-			telnetIS = new FileInputStream(new File(Config.TELNET_FILE));
 			telnetSettings.load(telnetIS);
 			
 			String HostList = telnetSettings.getProperty("ListOfHosts", "127.0.0.1,localhost,::1");
@@ -101,16 +100,6 @@ public class LoginStatusThread extends Thread
 			if (Config.DEVELOPER)
 				telnetOutput(4, "");
 			telnetOutput(1, "Error: " + e);
-		}
-		finally
-		{
-			try
-			{
-				telnetIS.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 		
 		if (Config.DEVELOPER)

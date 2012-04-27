@@ -172,39 +172,25 @@ public class Announcements
 	
 	private void readFromDisk(String path, List<String> list)
 	{
-		File file = new File(Config.DATAPACK_ROOT, path);
-		
+		final File file = new File(Config.DATAPACK_ROOT, path);
 		if (file.exists())
 		{
-			LineNumberReader lnr = null;
-			try
+			
+			try (LineNumberReader lnr = new LineNumberReader(new FileReader(file)))
 			{
 				String line = null;
-				lnr = new LineNumberReader(new FileReader(file));
 				while ((line = lnr.readLine()) != null)
 				{
 					StringTokenizer st = new StringTokenizer(line, "\n\r");
 					if (st.hasMoreTokens())
 					{
-						String announcement = st.nextToken();
-						list.add(announcement);
+						list.add(st.nextToken());
 					}
 				}
 			}
 			catch (IOException e1)
 			{
 				_log.log(Level.SEVERE, "Error reading announcements: ", e1);
-			}
-			finally
-			{
-				try
-				{
-					lnr.close();
-				}
-				catch (Exception e2)
-				{
-					// nothing
-				}
 			}
 		}
 		else
@@ -227,12 +213,9 @@ public class Announcements
 			list = _announcements;
 		}
 		
-		File file = new File(path);
-		FileWriter save = null;
-		
-		try
+		final File file = new File(path);
+		try (FileWriter save = new FileWriter(file))
 		{
-			save = new FileWriter(file);
 			for (String announce : list)
 			{
 				save.write(announce);
@@ -242,16 +225,6 @@ public class Announcements
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, "Saving to the announcements file has failed: ", e);
-		}
-		finally
-		{
-			try
-			{
-				save.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 	

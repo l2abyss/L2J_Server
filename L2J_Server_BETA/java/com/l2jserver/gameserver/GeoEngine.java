@@ -701,13 +701,13 @@ public class GeoEngine extends GeoData
 		String fname = "./data/geodata/" + rx + "_" + ry + ".l2j";
 		short regionoffset = (short) ((rx << 5) + ry);
 		_log.info("Geo Engine: - Loading: " + fname + " -> region offset: " + regionoffset + "X: " + rx + " Y: " + ry);
-		File Geo = new File(fname);
+		
 		int size, index = 0, block = 0, flor = 0;
-		FileChannel roChannel = null;
-		try
+		// Create a read-only memory-mapped file
+		final File Geo = new File(fname);
+		try (RandomAccessFile raf = new RandomAccessFile(Geo, "r");
+			FileChannel roChannel = raf.getChannel())
 		{
-			// Create a read-only memory-mapped file
-			roChannel = new RandomAccessFile(Geo, "r").getChannel();
 			size = (int) roChannel.size();
 			MappedByteBuffer geo;
 			if (Config.FORCE_GEODATA) //Force O/S to Loads this buffer's content into physical memory.
@@ -753,16 +753,6 @@ public class GeoEngine extends GeoData
 		{
 			_log.log(Level.WARNING, "Failed to Load GeoFile at block: " + block, e);
 			return false;
-		}
-		finally
-		{
-			try
-			{
-				roChannel.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 		return true;
 	}

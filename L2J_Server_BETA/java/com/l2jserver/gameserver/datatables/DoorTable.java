@@ -46,11 +46,6 @@ public class DoorTable
 	private final TIntObjectHashMap<L2DoorInstance> _staticItems;
 	private final TIntObjectHashMap<ArrayList<L2DoorInstance>> _regions;
 	
-	public static DoorTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	private DoorTable()
 	{
 		_staticItems = new TIntObjectHashMap<L2DoorInstance>();
@@ -73,12 +68,11 @@ public class DoorTable
 	
 	public void parseData()
 	{
-		LineNumberReader lnr = null;
-		try
+		final File doorData = new File(Config.DATAPACK_ROOT, "data/door.csv");
+		try (FileReader fr = new FileReader(doorData);
+			BufferedReader br = new BufferedReader (fr);
+			LineNumberReader lnr = new LineNumberReader(br))
 		{
-			File doorData = new File(Config.DATAPACK_ROOT, "data/door.csv");
-			lnr = new LineNumberReader(new BufferedReader(new FileReader(doorData)));
-			
 			String line = null;
 			_log.info("Searching clan halls doors:");
 			
@@ -101,16 +95,6 @@ public class DoorTable
 		catch (IOException e)
 		{
 			_log.log(Level.WARNING, "Error while creating door table " + e.getMessage(), e);
-		}
-		finally
-		{
-			try
-			{
-				lnr.close();
-			}
-			catch (Exception e1)
-			{ /* ignore problems */
-			}
 		}
 	}
 	
@@ -380,6 +364,11 @@ public class DoorTable
 		{
 			_log.log(Level.WARNING, "There are errors in your Door.csv file. Update door.csv", e);
 		}
+	}
+	
+	public static DoorTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	@SuppressWarnings("synthetic-access")

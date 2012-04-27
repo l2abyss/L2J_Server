@@ -153,10 +153,9 @@ public class FortSiegeManager
 	
 	private final void load()
 	{
-		InputStream is = null;
-		try
+		final File file = new File(Config.FORTSIEGE_CONFIGURATION_FILE);
+		try (InputStream is = new FileInputStream(file))
 		{
-			is = new FileInputStream(new File(Config.FORTSIEGE_CONFIGURATION_FILE));
 			Properties siegeSettings = new Properties();
 			siegeSettings.load(is);
 			
@@ -228,18 +227,7 @@ public class FortSiegeManager
 		}
 		catch (Exception e)
 		{
-			//_initialized = false;
 			_log.log(Level.WARNING, "Error while loading fortsiege data." + e.getMessage(), e);
-		}
-		finally
-		{
-			try
-			{
-				is.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 	

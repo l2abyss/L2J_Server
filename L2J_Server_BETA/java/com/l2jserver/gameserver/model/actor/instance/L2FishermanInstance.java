@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import javolution.util.FastList;
+import java.util.List;
 
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
@@ -66,7 +66,7 @@ public final class L2FishermanInstance extends L2MerchantInstance
 	
 	public static void showFishSkillList(L2PcInstance player)
 	{
-		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableFishingSkills(player);
+		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableFishingSkills(player);
 		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Fishing);
 		
 		int count = 0;

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import javolution.util.FastList;
+import java.util.List;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.MultiSell;
@@ -274,7 +274,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 	 */
 	public static void showTransformSkillList(L2PcInstance player)
 	{
-		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableTransformSkills(player);
+		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableTransformSkills(player);
 		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Transform);
 		int counts = 0;
 		
@@ -315,7 +315,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 	 */
 	public static void showSubClassSkillList(L2PcInstance player)
 	{
-		final FastList<L2SkillLearn> subClassSkills = SkillTreesData.getInstance().getAvailableSubClassSkills(player);
+		final List<L2SkillLearn> subClassSkills = SkillTreesData.getInstance().getAvailableSubClassSkills(player);
 		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubClass);
 		int count = 0;
 		

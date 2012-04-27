@@ -46,32 +46,27 @@ public class ConditionPlayerCanSweep extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		boolean canSweep = env.getPlayer() != null;
-		if (canSweep)
+		boolean canSweep = false;
+		if (env.getPlayer() != null)
 		{
 			final L2PcInstance sweeper = env.getPlayer();
 			final L2Skill sweep = env.getSkill();
-			canSweep &= (sweep != null);
-			if (canSweep)
+			if (sweep != null)
 			{
 				final L2Object[] targets = sweep.getTargetList(sweeper);
-				canSweep &= (targets != null);
-				if (canSweep)
+				if (targets != null)
 				{
 					L2Attackable target;
 					for (L2Object objTarget : targets)
 					{
-						canSweep &= (objTarget != null) && (objTarget instanceof L2Attackable);
-						if (canSweep)
+						if (objTarget instanceof L2Attackable)
 						{
 							target = (L2Attackable) objTarget;
-							canSweep &= target.isDead();
-							if (canSweep)
+							if (target.isDead())
 							{
-								canSweep &= target.isSpoil();
-								if (canSweep)
+								if (target.isSpoil())
 								{
-									canSweep &= target.checkSpoilOwner(sweeper, true);
+									canSweep = target.checkSpoilOwner(sweeper, true);
 									canSweep &= target.checkCorpseTime(sweeper, maxSweepTime, true);
 									canSweep &= sweeper.getInventory().checkInventorySlotsAndWeight(target.getSpoilLootItems(), true, true);
 								}

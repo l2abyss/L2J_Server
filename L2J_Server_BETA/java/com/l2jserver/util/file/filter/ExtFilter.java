@@ -20,18 +20,18 @@ import java.io.FileFilter;
 /**
  * @author lasarus
  */
-public class ExtFilter implements FileFilter 
+public class ExtFilter implements FileFilter
 {
-	String _ext;
-
-	public ExtFilter(String extention) 
+	private final String _ext;
+	
+	public ExtFilter(String ext)
 	{
-		_ext = extention;
+		_ext = ext;
 	}
-
+	
 	@Override
-	public boolean accept(File pathname)
+	public boolean accept(File f)
 	{
-		return pathname.getName().endsWith(_ext);
+		return f.getName().toLowerCase().endsWith(_ext);
 	}
 }

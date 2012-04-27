@@ -249,7 +249,7 @@ public class Fort
 		loadDoor();
 		loadFlagPoles();
 		_function = new FastMap<Integer, FortFunction>();
-		FastList<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(fortId);
+		final List<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(fortId);
 		for (L2SkillLearn s : residentialSkills)
 		{
 			L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());

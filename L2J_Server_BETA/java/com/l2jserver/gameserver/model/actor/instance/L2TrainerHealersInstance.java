@@ -15,8 +15,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.Collection;
-
-import javolution.util.FastList;
+import java.util.List;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -139,7 +138,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 	 */
 	public static void showTransferSkillList(L2PcInstance player)
 	{
-		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableTransferSkills(player);
+		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableTransferSkills(player);
 		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Transfer);
 		int count = 0;
 		

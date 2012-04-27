@@ -27,7 +27,7 @@ public class HTMLFilter implements FileFilter
 	@Override
 	public boolean accept(File f)
 	{
-		if ((f == null) || !f.exists() || f.isDirectory())
+		if ((f == null) || !f.isFile())
 		{
 			return false;
 		}

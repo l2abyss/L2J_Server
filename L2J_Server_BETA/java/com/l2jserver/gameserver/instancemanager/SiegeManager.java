@@ -159,10 +159,9 @@ public class SiegeManager
 	
 	private final void load()
 	{
-		InputStream is = null;
-		try
+		final File file = new File(Config.SIEGE_CONFIGURATION_FILE);
+		try (InputStream is = new FileInputStream(file))
 		{
-			is = new FileInputStream(new File(Config.SIEGE_CONFIGURATION_FILE));
 			Properties siegeSettings = new Properties();
 			siegeSettings.load(is);
 			
@@ -274,18 +273,7 @@ public class SiegeManager
 		}
 		catch (Exception e)
 		{
-			//_initialized = false;
 			_log.log(Level.WARNING, "Error while loading siege data: " + e.getMessage(), e);
-		}
-		finally
-		{
-			try
-			{
-				is.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 	

@@ -16,7 +16,6 @@ package com.l2jserver.loginserver;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -206,31 +205,19 @@ public final class L2LoginServer
 	
 	private void loadBanFile()
 	{
-		File bannedFile = new File("./banned_ip.cfg");
+		final File bannedFile = new File("./banned_ip.cfg");
 		if (bannedFile.exists() && bannedFile.isFile())
 		{
-			FileInputStream fis = null;
-			try
-			{
-				fis = new FileInputStream(bannedFile);
-			}
-			catch (FileNotFoundException e)
-			{
-				_log.log(Level.WARNING, "Failed to load banned IPs file (" + bannedFile.getName() + ") for reading. Reason: " + e.getMessage(), e);
-				return;
-			}
-			
-			LineNumberReader reader = null;
 			String line;
 			String[] parts;
-			try
+			try (FileInputStream fis = new FileInputStream(bannedFile);
+				InputStreamReader is = new InputStreamReader(fis);
+				LineNumberReader reader = new LineNumberReader(is))
 			{
-				reader = new LineNumberReader(new InputStreamReader(fis));
-				
 				while ((line = reader.readLine()) != null)
 				{
 					line = line.trim();
-					// check if this line isnt a comment line
+					// check if this line isn't a comment line
 					if (line.length() > 0 && line.charAt(0) != '#')
 					{
 						// split comments if any
@@ -272,24 +259,6 @@ public final class L2LoginServer
 			catch (IOException e)
 			{
 				_log.log(Level.WARNING, "Error while reading the bans file (" + bannedFile.getName() + "). Details: " + e.getMessage(), e);
-			}
-			finally
-			{
-				try
-				{
-					reader.close();
-				}
-				catch (Exception e)
-				{
-				}
-				
-				try
-				{
-					fis.close();
-				}
-				catch (Exception e)
-				{
-				}
 			}
 			_log.info("Loaded " + LoginController.getInstance().getBannedIps().size() + " IP Bans.");
 		}

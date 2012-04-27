@@ -32,37 +32,18 @@ public class Log
 	
 	public static final void add(String text, String cat)
 	{
-		
-		/*
-		 * Logger _log = logs.get(cat); if(_log == null) { _log =
-		 * Logger.getLogger(cat); logs.put(cat, _log); }
-		 */
-		
 		String date = (new SimpleDateFormat("yy.MM.dd H:mm:ss")).format(new Date());
 		String curr = (new SimpleDateFormat("yyyy-MM-dd-")).format(new Date());
 		new File("log/game").mkdirs();
-		FileWriter save = null;
 		
-		try
+		final File file = new File("log/game/" + (curr != null ? curr : "" )+(cat != null ? cat : "unk") + ".txt");
+		try (FileWriter save = new FileWriter(file, true))
 		{
-			File file = new File("log/game/" + (curr != null ? curr : "" )+(cat != null ? cat : "unk") + ".txt");
-			save = new FileWriter(file, true);
-			String out = "[" + date + "] " + text + "\n";
-			save.write(out);
+			save.write("[" + date + "] " + text + "\n");
 		}
 		catch (IOException e)
 		{
 			_log.log(Level.WARNING, "Error saving logfile: ", e);
-		}
-		finally
-		{
-			try
-			{
-				save.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 }

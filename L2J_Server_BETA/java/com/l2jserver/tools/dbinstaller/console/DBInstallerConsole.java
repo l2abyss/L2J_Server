@@ -68,15 +68,20 @@ public class DBInstallerConsole implements DBOutputInterface
 			{
 				rt = new RunTasks(this, db, dir, cleanUp, true);
 			}
-			else
-				System.exit(0);
 		}
 		else if (resp.equalsIgnoreCase("u"))
+		{
 			rt = new RunTasks(this, db, dir, cleanUp, false);
-		else
-			System.exit(0);
+		}
 		
-		rt.run();
+		if (rt != null)
+		{
+			rt.run();
+		}
+		else
+		{
+			System.exit(0);
+		}
 	}
 	
 	@Override

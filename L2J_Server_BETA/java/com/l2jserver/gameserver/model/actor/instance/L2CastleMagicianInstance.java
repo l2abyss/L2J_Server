@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import javolution.util.FastList;
+import java.util.List;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
@@ -366,7 +366,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		{
 			if (player.isClanLeader())
 			{
-				final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
+				final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
 				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubPledge);
 				int count = 0;
 				

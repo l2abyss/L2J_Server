@@ -74,7 +74,7 @@ public final class RequestGMCommand extends L2GameClientPacket
 			}
 			case 2: // player clan
 			{
-				if (player.getClan() != null)
+				if ((player != null) && (player.getClan() != null))
 					sendPacket(new GMViewPledgeInfo(player.getClan(),player));
 				break;
 			}

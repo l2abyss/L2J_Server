@@ -15,9 +15,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.List;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
+import java.util.Map;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
@@ -90,7 +88,7 @@ public class L2NpcInstance extends L2Npc
 		final int npcId = npc.getTemplate().getNpcId();
 		if (npcId == 32611) //Tolonis (Officer)
 		{
-			final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableCollectSkills(player);
+			final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableCollectSkills(player);
 			final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Collect);
 			
 			int counts = 0;
@@ -150,7 +148,7 @@ public class L2NpcInstance extends L2Npc
 		}
 		
 		// Normal skills, No LearnedByFS, no AutoGet skills.
-		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSkills(player, classId, false, false);
+		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSkills(player, classId, false, false);
 		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Class);
 		int count = 0;
 		player.setLearningClass(classId);
@@ -165,7 +163,7 @@ public class L2NpcInstance extends L2Npc
 		
 		if (count == 0)
 		{
-			final FastMap<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(classId);
+			final Map<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(classId);
 			final int minLevel = SkillTreesData.getInstance().getMinLevelForNewSkill(player, skillTree);
 			if (minLevel > 0)
 			{

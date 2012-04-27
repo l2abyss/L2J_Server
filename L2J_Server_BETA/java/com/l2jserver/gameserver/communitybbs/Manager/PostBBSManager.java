@@ -32,13 +32,7 @@ import com.l2jserver.util.StringUtil;
 
 public class PostBBSManager extends BaseBBSManager
 {
-	
 	private Map<Topic, Post> _postByTopic;
-	
-	public static PostBBSManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	private PostBBSManager()
 	{
@@ -305,28 +299,32 @@ public class PostBBSManager extends BaseBBSManager
 			}
 			else
 			{
-				CPost cp = null;
-				Post p = getGPosttByTopic(t);
+				final Post p = getGPosttByTopic(t);
 				if (p != null)
 				{
-					cp = p.getCPost(idp);
-				}
-				if (cp == null)
-				{
-					ShowBoard sb = new ShowBoard("<html><body><br><br><center>the post: " + idp
-							+ " does not exist !</center><br><br></body></html>", "101");
-					activeChar.sendPacket(sb);
-					activeChar.sendPacket(new ShowBoard(null, "102"));
-					activeChar.sendPacket(new ShowBoard(null, "103"));
-				}
-				else
-				{
-					p.getCPost(idp).postTxt = ar4;
-					p.updatetxt(idp);
-					parsecmd("_bbsposts;read;" + f.getID() + ";" + t.getID(), activeChar);
+					final CPost cp = p.getCPost(idp);
+					if (cp == null)
+					{
+						ShowBoard sb = new ShowBoard("<html><body><br><br><center>the post: " + idp
+								+ " does not exist !</center><br><br></body></html>", "101");
+						activeChar.sendPacket(sb);
+						activeChar.sendPacket(new ShowBoard(null, "102"));
+						activeChar.sendPacket(new ShowBoard(null, "103"));
+					}
+					else
+					{
+						p.getCPost(idp).postTxt = ar4;
+						p.updatetxt(idp);
+						parsecmd("_bbsposts;read;" + f.getID() + ";" + t.getID(), activeChar);
+					}
 				}
 			}
 		}
+	}
+	
+	public static PostBBSManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	@SuppressWarnings("synthetic-access")

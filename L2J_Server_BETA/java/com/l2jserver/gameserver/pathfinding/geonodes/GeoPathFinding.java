@@ -403,11 +403,11 @@ public class GeoPathFinding extends PathFinding
 		_log.info("PathFinding Engine: - Loading: " + fname + " -> region offset: " + regionoffset + "X: " + rx + " Y: " + ry);
 		File Pn = new File(fname);
 		int node = 0, size, index = 0;
-		FileChannel roChannel = null;
-		try
+		
+		// Create a read-only memory-mapped file
+		try (RandomAccessFile raf = new RandomAccessFile(Pn, "r");
+			FileChannel roChannel = raf.getChannel())
 		{
-			// Create a read-only memory-mapped file
-			roChannel = new RandomAccessFile(Pn, "r").getChannel();
 			size = (int) roChannel.size();
 			MappedByteBuffer nodes;
 			if (Config.FORCE_GEODATA) //Force O/S to Loads this buffer's content into physical memory.
@@ -432,17 +432,6 @@ public class GeoPathFinding extends PathFinding
 		{
 			_log.log(Level.WARNING, "Failed to Load PathNode File: " + fname + " : " + e.getMessage(), e);
 		}
-		finally
-		{
-			try
-			{
-				roChannel.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
-		
 	}
 	
 	@SuppressWarnings("synthetic-access")

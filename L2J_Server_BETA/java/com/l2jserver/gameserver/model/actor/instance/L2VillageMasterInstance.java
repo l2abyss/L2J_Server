@@ -15,12 +15,11 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
@@ -1109,7 +1108,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			return;
 		}
 		
-		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailablePledgeSkills(player.getClan());
+		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailablePledgeSkills(player.getClan());
 		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Pledge);
 		int counts = 0;
 		

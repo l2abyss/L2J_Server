@@ -19,10 +19,10 @@ import java.io.FileFilter;
 
 /**
  * Specialized {@link FileFilter} class.<br>
- * Accepts files ending with ".xml" only.
- * @author mrTJO
+ * Accepts <b>files</b> starting with "Pledge_" only.
+ * @author Zoey76
  */
-public class XMLFilter implements FileFilter
+public class OldPledgeFilter implements FileFilter
 {
 	@Override
 	public boolean accept(File f)
@@ -31,6 +31,6 @@ public class XMLFilter implements FileFilter
 		{
 			return false;
 		}
-		return f.getName().toLowerCase().endsWith(".xml");
+		return f.getName().toLowerCase().startsWith("Pledge_");
 	}
 }

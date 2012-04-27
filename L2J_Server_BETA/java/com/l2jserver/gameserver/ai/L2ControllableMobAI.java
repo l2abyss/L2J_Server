@@ -127,7 +127,6 @@ public class L2ControllableMobAI extends L2AttackableAI
 	protected void thinkCast()
 	{
 		L2Attackable npc = (L2Attackable) _actor;
-		
 		if ((getAttackTarget() == null) || getAttackTarget().isAlikeDead())
 		{
 			setAttackTarget(findNextRndTarget());
@@ -141,25 +140,12 @@ public class L2ControllableMobAI extends L2AttackableAI
 		
 		npc.setTarget(getAttackTarget());
 		
-		L2Skill[] skills = null;
-		// double dist2 = 0;
-		
-		try
-		{
-			skills = _actor.getAllSkills();
-			// dist2 = _actor.getPlanDistanceSq(getAttackTarget().getX(), getAttackTarget().getY());
-		}
-		catch (NullPointerException e)
-		{
-			_log.warning(getClass().getSimpleName() + ": Encountered Null Value: " + e.getMessage());
-		}
-		
 		if (!_actor.isMuted())
 		{
 			int max_range = 0;
 			// check distant skills
 			
-			for (L2Skill sk : skills)
+			for (L2Skill sk : _actor.getAllSkills())
 			{
 				if (Util.checkIfInRange(sk.getCastRange(), _actor, getAttackTarget(), true) && !_actor.isSkillDisabled(sk) && (_actor.getCurrentMp() > _actor.getStat().getMpConsume(sk)))
 				{
@@ -194,33 +180,20 @@ public class L2ControllableMobAI extends L2AttackableAI
 			return;
 		}
 		
-		L2Skill[] skills = null;
-		double dist2 = 0;
-		int range = 0;
-		int max_range = 0;
-		
 		_actor.setTarget(target);
 		// as a response, we put the target in a forcedattack mode
 		L2ControllableMobInstance theTarget = (L2ControllableMobInstance) target;
 		L2ControllableMobAI ctrlAi = (L2ControllableMobAI) theTarget.getAI();
 		ctrlAi.forceAttack(_actor);
 		
-		try
-		{
-			skills = _actor.getAllSkills();
-			dist2 = _actor.getPlanDistanceSq(target.getX(), target.getY());
-			range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + target.getTemplate().getCollisionRadius();
-			max_range = range;
-		}
-		catch (NullPointerException e)
-		{
-			_log.warning(getClass().getSimpleName() + ": Encountered Null Value: " + e.getMessage());
-		}
+		double dist2 = _actor.getPlanDistanceSq(target.getX(), target.getY());
+		int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + target.getTemplate().getCollisionRadius();
+		int max_range = range;
 		
 		if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 		{
 			// check distant skills
-			for (L2Skill sk : skills)
+			for (L2Skill sk : _actor.getAllSkills())
 			{
 				int castRange = sk.getCastRange();
 				
@@ -252,28 +225,15 @@ public class L2ControllableMobAI extends L2AttackableAI
 			setAlternateAI(AI_IDLE);
 		}
 		
-		L2Skill[] skills = null;
-		double dist2 = 0;
-		int range = 0;
-		int max_range = 0;
-		
-		try
-		{
-			_actor.setTarget(getForcedTarget());
-			skills = _actor.getAllSkills();
-			dist2 = _actor.getPlanDistanceSq(getForcedTarget().getX(), getForcedTarget().getY());
-			range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + getForcedTarget().getTemplate().getCollisionRadius();
-			max_range = range;
-		}
-		catch (NullPointerException e)
-		{
-			_log.warning(getClass().getSimpleName() + ": Encountered Null Value: " + e.getMessage());
-		}
+		_actor.setTarget(getForcedTarget());
+		double dist2 = _actor.getPlanDistanceSq(getForcedTarget().getX(), getForcedTarget().getY());
+		int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + getForcedTarget().getTemplate().getCollisionRadius();
+		int max_range = range;
 		
 		if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 		{
 			// check distant skills
-			for (L2Skill sk : skills)
+			for (L2Skill sk : _actor.getAllSkills())
 			{
 				int castRange = sk.getCastRange();
 				
@@ -340,28 +300,15 @@ public class L2ControllableMobAI extends L2AttackableAI
 				}
 			}
 			
-			L2Skill[] skills = null;
-			double dist2 = 0;
-			int range = 0;
-			int max_range = 0;
-			
-			try
-			{
-				_actor.setTarget(getAttackTarget());
-				skills = _actor.getAllSkills();
-				dist2 = _actor.getPlanDistanceSq(getAttackTarget().getX(), getAttackTarget().getY());
-				range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + getAttackTarget().getTemplate().getCollisionRadius();
-				max_range = range;
-			}
-			catch (NullPointerException e)
-			{
-				_log.warning(getClass().getSimpleName() + ": Encountered Null Value: " + e.getMessage());
-			}
+			_actor.setTarget(getAttackTarget());
+			double dist2 = _actor.getPlanDistanceSq(getAttackTarget().getX(), getAttackTarget().getY());
+			int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + getAttackTarget().getTemplate().getCollisionRadius();
+			int max_range = range;
 			
 			if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 			{
 				// check distant skills
-				for (L2Skill sk : skills)
+				for (L2Skill sk : _actor.getAllSkills())
 				{
 					int castRange = sk.getCastRange();
 					
@@ -401,9 +348,9 @@ public class L2ControllableMobAI extends L2AttackableAI
 				setAttackTarget(hated);
 			}
 			
-			if (!_actor.isMuted() && (skills.length > 0) && (Rnd.nextInt(5) == 3))
+			if (!_actor.isMuted() && (Rnd.nextInt(5) == 3))
 			{
-				for (L2Skill sk : skills)
+				for (L2Skill sk : _actor.getAllSkills())
 				{
 					int castRange = sk.getCastRange();
 					

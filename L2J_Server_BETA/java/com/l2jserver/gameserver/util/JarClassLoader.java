@@ -56,21 +56,23 @@ public class JarClassLoader extends ClassLoader
 	private byte[] loadClassData(String name) throws IOException
 	{
 		byte[] classData = null;
+		final String fileName = name.replace('.', '/') + ".class";
 		for (String jarFile : _jars)
 		{
-			ZipFile zipFile = null;
-			DataInputStream zipStream = null;
-			try
+			
+			final File file = new File(jarFile);
+			try (ZipFile zipFile = new ZipFile(file);)
 			{
-				File file = new File(jarFile);
-				zipFile = new ZipFile(file);
-				String fileName = name.replace('.', '/') + ".class";
-				ZipEntry entry = zipFile.getEntry(fileName);
+				final ZipEntry entry = zipFile.getEntry(fileName);
 				if (entry == null)
+				{
 					continue;
+				}
 				classData = new byte[(int) entry.getSize()];
-				zipStream = new DataInputStream(zipFile.getInputStream(entry));
-				zipStream.readFully(classData, 0, (int) entry.getSize());
+				try (DataInputStream zipStream = new DataInputStream(zipFile.getInputStream(entry)))
+				{
+					zipStream.readFully(classData, 0, (int) entry.getSize());
+				}
 				break;
 			}
 			catch (IOException e)
@@ -78,27 +80,11 @@ public class JarClassLoader extends ClassLoader
 				_log.log(Level.WARNING, jarFile + ": " + e.getMessage(), e);
 				continue;
 			}
-			finally
-			{
-				try
-				{
-					zipFile.close();
-				}
-				catch (Exception e)
-				{
-				}
-				
-				try
-				{
-					zipStream.close();
-				}
-				catch (Exception e)
-				{
-				}
-			}
 		}
 		if (classData == null)
+		{
 			throw new IOException("class not found in " + _jars);
+		}
 		return classData;
 	}
 }

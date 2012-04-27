@@ -468,16 +468,9 @@ public final class L2ScriptEngineManager
 		String name = script.getName() + ".error.log";
 		if (dir != null)
 		{
-			File file = new File(dir + "/" + name);
-			FileOutputStream fos = null;
-			try
+			final File file = new File(dir + "/" + name);
+			try (FileOutputStream fos = new FileOutputStream(file))
 			{
-				if (!file.exists())
-				{
-					file.createNewFile();
-				}
-				
-				fos = new FileOutputStream(file);
 				String errorHeader = "Error on: " + file.getCanonicalPath() + "\r\nLine: " + e.getLineNumber() + " - Column: "
 				+ e.getColumnNumber() + "\r\n\r\n";
 				fos.write(errorHeader.getBytes());
@@ -488,16 +481,6 @@ public final class L2ScriptEngineManager
 			{
 				_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage()
 						+ "Additionally failed when trying to write an error report on script directory. Reason: " + ioe.getMessage(), ioe);
-			}
-			finally
-			{
-				try
-				{
-					fos.close();
-				}
-				catch (Exception e1)
-				{
-				}
 			}
 		}
 		else
