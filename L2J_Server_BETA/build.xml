@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="L2J_Server_BETA" default="dist" basedir=".">
+<project name="L2J_Server_BETA" default="build" basedir=".">
 	<description>
 		This script will build the L2J Server.
 
@@ -156,11 +156,10 @@
 		<copy todir="${build.dist.login}">
 			<fileset dir="misc" />
 		</copy>
-		<fixcrlf srcdir="${build.dist.game}" eol="crlf" eof="remove" includes="**/*.bat" />
-		<fixcrlf srcdir="${build.dist.game}" eol="lf" eof="remove" includes="**/*.sh" />
-		<fixcrlf srcdir="${build.dist.login}" eol="crlf" eof="remove" includes="**/*.bat" />
-		<fixcrlf srcdir="${build.dist.login}" eol="lf" eof="remove" includes="**/*.sh" />
-		<zip destfile="${build}/L2J_Server_BETA.zip" basedir="${build.dist}" />
+	</target>
+	
+	<target name="build" depends="dist">
+		<zip destfile="${build}/L2J_Server_BETA.zip" basedir="${build.dist}" level="9" />
 	</target>
 
 	<target name="clean" description="Remove the output directories">
