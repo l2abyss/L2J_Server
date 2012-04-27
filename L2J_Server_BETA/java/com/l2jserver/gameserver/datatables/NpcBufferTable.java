@@ -103,7 +103,7 @@ public class NpcBufferTable
 						skills = new NpcBufferSkills(npcId);
 						skills.addSkill(skillId, skillLevel, skillFeeId, skillFeeAmount, buffGroup);
 					}
-					else
+					else if (skills != null)
 					{
 						skills.addSkill(skillId, skillLevel, skillFeeId, skillFeeAmount, buffGroup);
 					}
@@ -153,7 +153,7 @@ public class NpcBufferTable
 							skills = new NpcBufferSkills(npcId);
 							skills.addSkill(skillId, skillLevel, skillFeeId, skillFeeAmount, buffGroup);
 						}
-						else
+						else if (skills != null)
 						{
 							skills.addSkill(skillId, skillLevel, skillFeeId, skillFeeAmount, buffGroup);
 						}

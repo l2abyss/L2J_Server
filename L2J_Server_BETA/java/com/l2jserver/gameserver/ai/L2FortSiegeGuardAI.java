@@ -135,7 +135,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		}
 		
 		// Check if the target isn't invulnerable
-		if (target.isInvul())
+		if ((target != null) && target.isInvul())
 		{
 			// However EffectInvincible requires to check GMs specially
 			if (target instanceof L2PcInstance && ((L2PcInstance) target).isGM())

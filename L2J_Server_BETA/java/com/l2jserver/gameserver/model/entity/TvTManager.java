@@ -90,8 +90,11 @@ public class TvTManager
 					nextStartTime = testStartTime;
 				}
 			}
-			_task = new TvTStartTask(nextStartTime.getTimeInMillis());
-			ThreadPoolManager.getInstance().executeTask(_task);
+			if (nextStartTime != null)
+			{
+				_task = new TvTStartTask(nextStartTime.getTimeInMillis());
+				ThreadPoolManager.getInstance().executeTask(_task);
+			}
 		}
 		catch (Exception e)
 		{

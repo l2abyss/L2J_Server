@@ -122,7 +122,10 @@ public abstract class BaseGameServerRegister
 					}
 					catch (NumberFormatException e)
 					{
-						System.out.printf(bundle.getString("wrongUnregisterArg") + '\n', gsId);
+						if (bundle != null)
+						{
+							System.out.printf(bundle.getString("wrongUnregisterArg") + '\n', gsId);
+						}
 						System.exit(1);
 					}
 				}

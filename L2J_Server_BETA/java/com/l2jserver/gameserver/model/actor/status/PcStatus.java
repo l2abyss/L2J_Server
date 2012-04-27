@@ -246,9 +246,11 @@ public class PcStatus extends PlayableStatus
 				{
 					getActiveChar().disableAllSkills();
 					stopHpMpRegeneration();
-					attacker.getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-					attacker.sendPacket(ActionFailed.STATIC_PACKET);
-					
+					if (attacker != null)
+					{
+						attacker.getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+						attacker.sendPacket(ActionFailed.STATIC_PACKET);
+					}
 					// let the DuelManager know of his defeat
 					DuelManager.getInstance().onPlayerDefeat(getActiveChar());
 					value = 1;

@@ -150,7 +150,7 @@ public class PcInventory extends Inventory
 					break;
 				}
 			}
-			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false, false)))) list.add(item);
+			if (!isDuplicate && (!onlyAvailable || ((item != null) && item.isSellable() && item.isAvailable(getOwner(), false, false)))) list.add(item);
 		}
 		
 		L2ItemInstance[] result = list.toArray(new L2ItemInstance[list.size()]);

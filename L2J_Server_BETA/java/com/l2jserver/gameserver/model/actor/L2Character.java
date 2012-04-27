@@ -421,7 +421,7 @@ public abstract class L2Character extends L2Object
 			_skills = new L2TIntObjectHashMap<L2Skill>();
 			if (((L2NpcTemplate) template).getSkills() != null)
 				_skills.putAll(((L2NpcTemplate) template).getSkills());
-			if (_skills != null)
+			if (!_skills.isEmpty())
 			{
 				for (L2Skill skill : getAllSkills())
 				{
@@ -444,8 +444,11 @@ public abstract class L2Character extends L2Object
 				// The skills list can be affected by spell effects so it's necessary to make a copy
 				// to avoid that a spell affecting a L2Summon, affects others L2Summon of the same type too.
 				_skills = new L2TIntObjectHashMap<L2Skill>();
-				_skills.putAll(((L2NpcTemplate) template).getSkills());
-				if (_skills != null)
+				if (template != null)
+				{
+					_skills.putAll(((L2NpcTemplate) template).getSkills());
+				}
+				if (!_skills.isEmpty())
 				{
 					for (L2Skill skill : getAllSkills())
 					{
@@ -459,7 +462,6 @@ public abstract class L2Character extends L2Object
 			}
 			else
 			{
-				// Initialize the FastMap _skills to null
 				_skills = new L2TIntObjectHashMap<L2Skill>();
 			}
 			
@@ -6642,7 +6644,7 @@ public abstract class L2Character extends L2Object
 		final L2Object target = mut.targets.length > 0 ? mut.targets[0] : null;
 		
 		// Attack target after skill use
-		if ((skill.nextActionIsAttack()) && (getTarget() instanceof L2Character) && (getTarget() != this) && (getTarget() == target) && (target.isAttackable()))
+		if ((skill.nextActionIsAttack()) && (getTarget() instanceof L2Character) && (getTarget() != this) && (target != null) && (getTarget() == target) && target.isAttackable())
 		{
 			if (getAI() == null || getAI().getNextIntention() == null || getAI().getNextIntention().getCtrlIntention() != CtrlIntention.AI_INTENTION_MOVE_TO)
 			{
