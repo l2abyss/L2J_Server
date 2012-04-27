@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author DS
- *
  */
 public class Entry
 {
@@ -38,8 +36,7 @@ public class Entry
 	}
 	
 	/**
-	 * This constructor used in PreparedEntry only
-	 * ArrayLists not created
+	 * This constructor used in PreparedEntry only, ArrayLists not created.
 	 */
 	protected Entry()
 	{
@@ -60,7 +57,9 @@ public class Entry
 		_products.add(product);
 		
 		if (!product.isStackable())
+		{
 			_stackable = false;
+		}
 	}
 	
 	public final List<Ingredient> getProducts()

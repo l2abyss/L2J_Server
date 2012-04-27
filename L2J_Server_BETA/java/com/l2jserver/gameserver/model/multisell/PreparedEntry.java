@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- * 
  * @author DS
- *
  */
 public class PreparedEntry extends Entry
 {
@@ -32,8 +30,10 @@ public class PreparedEntry extends Entry
 	public PreparedEntry(Entry template, L2ItemInstance item, boolean applyTaxes, boolean maintainEnchantment, double taxRate)
 	{
 		_entryId = template.getEntryId() * 100000;
-		if (maintainEnchantment && item != null)
+		if (maintainEnchantment && (item != null))
+		{
 			_entryId += item.getEnchantLevel();
+		}
 		
 		ItemInfo info = null;
 		long adenaAmount = 0;
@@ -48,16 +48,18 @@ public class PreparedEntry extends Entry
 				{
 					// if taxes are to be applied, modify/add the adena count based on the template adena/ancient adena count
 					if (applyTaxes)
+					{
 						_taxAmount += Math.round(ing.getItemCount() * taxRate);
+					}
 				}
 				else
+				{
 					adenaAmount += ing.getItemCount();
-				
-				continue; // do not yet add this adena amount to the list as non-taxIngredient adena might be entered later (order not guaranteed)
+				}
+				// do not yet add this adena amount to the list as non-taxIngredient adena might be entered later (order not guaranteed)
+				continue;
 			}
-			else if (maintainEnchantment
-					&& item != null
-					&& ing.isArmorOrWeapon())
+			else if (maintainEnchantment && (item != null) && ing.isArmorOrWeapon())
 			{
 				info = new ItemInfo(item);
 				final Ingredient newIngredient = ing.getCopy();
@@ -69,32 +71,30 @@ public class PreparedEntry extends Entry
 				final Ingredient newIngredient = ing.getCopy();
 				_ingredients.add(newIngredient);
 			}
-				
 		}
 		
 		// now add the adena, if any.
 		adenaAmount += _taxAmount; // do not forget tax
 		if (adenaAmount > 0)
+		{
 			_ingredients.add(new Ingredient(ADENA_ID, adenaAmount, false, false));
+		}
 		
 		// now copy products
 		_products = new ArrayList<Ingredient>(template.getProducts().size());
 		for (Ingredient ing : template.getProducts())
 		{
 			if (!ing.isStackable())
+			{
 				_stackable = false;
+			}
 			
+			final Ingredient newProduct = ing.getCopy();
 			if (maintainEnchantment && ing.isArmorOrWeapon())
 			{
-				final Ingredient newProduct = ing.getCopy();
 				newProduct.setItemInfo(info);
-				_products.add(newProduct);
 			}
-			else
-			{
-				final Ingredient newProduct = ing.getCopy();
-				_products.add(newProduct);
-			}
+			_products.add(newProduct);
 		}
 	}
 	

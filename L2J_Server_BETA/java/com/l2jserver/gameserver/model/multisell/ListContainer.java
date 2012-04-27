@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author DS
- *
  */
 public class ListContainer
 {
@@ -37,9 +35,8 @@ public class ListContainer
 	}
 	
 	/**
-	 * This constructor used in PreparedListContainer only
-	 * ArrayList not created
-	 * @param listId 
+	 * This constructor used in PreparedListContainer only ArrayList not created
+	 * @param listId
 	 */
 	protected ListContainer(int listId)
 	{
@@ -76,25 +73,22 @@ public class ListContainer
 		_maintainEnchantment = maintainEnchantment;
 	}
 	
-	public double getUseRate() 
+	public double getUseRate()
 	{
 		return _useRate;
 	}
+	
 	/**
-	 * Set this to create multisell with increased products, all product counts will be multiplied
-	 * by the rate specified<br>
-	 * 
-	 * 
-	 * <b>NOTE:</b> It affects only parser, it won't change values of already parsed multisell
-	 * since MultiSells' parseEntry method handles this feature
-	 * @param rate 
-	 * @see com.l2jserver.gameserver.datatables.MultiSell#parseEntry 
+	 * Set this to create multisell with increased products, all product counts will be multiplied by the rate specified.<br>
+	 * <b>NOTE:</b> It affects only parser, it won't change values of already parsed multisell since MultiSells' parseEntry method handles this feature.
+	 * @param rate
+	 * @see com.l2jserver.gameserver.datatables.MultiSell#parseEntry
 	 */
-	public void setUseRate(double rate) 
+	public void setUseRate(double rate)
 	{
 		_useRate = rate;
 	}
-
+	
 	public final boolean getMaintainEnchantment()
 	{
 		return _maintainEnchantment;
