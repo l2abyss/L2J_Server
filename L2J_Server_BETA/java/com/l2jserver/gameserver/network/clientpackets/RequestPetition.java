@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GmListTable;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.instancemanager.PetitionManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -50,7 +50,7 @@ public final class RequestPetition extends L2GameClientPacket
 		if (activeChar == null)
 			return;
 		
-		if (!GmListTable.getInstance().isGmOnline(false))
+		if (!AdminTable.getInstance().isGmOnline(false))
 		{
 			activeChar.sendPacket(SystemMessageId.NO_GM_PROVIDING_SERVICE_NOW);
 			return;

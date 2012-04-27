@@ -243,9 +243,10 @@ public final class StatsSet
 	/**
 	 * Returns the int[] associated to the key put in parameter ("name"). If the value associated to the key is null, this method returns the value of the parameter deflt.
 	 * @param name : String designating the key in the set
+	 * @param splitOn 
 	 * @return int[] : value associated to the key
 	 */
-	public int[] getIntegerArray(String name)
+	public int[] getIntegerArray(String name, String splitOn)
 	{
 		Object val = _set.get(name);
 		if (val == null)
@@ -259,7 +260,7 @@ public final class StatsSet
 			return result;
 		}
 		int c = 0;
-		String[] vals = ((String) val).split(";");
+		String[] vals = ((String) val).split(splitOn);
 		int[] result = new int[vals.length];
 		for (String v : vals)
 		{

@@ -45,7 +45,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.GeoData;
-import com.l2jserver.gameserver.GmListTable;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
 import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.RecipeController;
@@ -61,8 +60,7 @@ import com.l2jserver.gameserver.cache.WarehouseCacheManager;
 import com.l2jserver.gameserver.communitybbs.BB.Forum;
 import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.communitybbs.Manager.RegionBBSManager;
-import com.l2jserver.gameserver.datatables.AccessLevels;
-import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
@@ -4708,7 +4706,7 @@ public final class L2PcInstance extends L2Playable
 			L2GameClient client = L2PcInstance.this.getClient();
 			if (client != null && !client.isAuthedGG() && L2PcInstance.this.isOnline())
 			{
-				GmListTable.broadcastMessageToGMs("Client "+client+" failed to reply GameGuard query and is being kicked!");
+				AdminTable.getInstance().broadcastMessageToGMs("Client "+client+" failed to reply GameGuard query and is being kicked!");
 				_log.info("Client "+client+" failed to reply GameGuard query and is being kicked!");
 				client.close(LeaveWorld.STATIC_PACKET);
 			}
@@ -7042,45 +7040,28 @@ public final class L2PcInstance extends L2Playable
 	 * @param level 
 	 */
 	public void setAccessLevel(int level)
-	{
-		if (level == AccessLevels._masterAccessLevelNum)
-		{
-			_log.warning( "Master access level set for character " + getName() + "! Just a warning to be careful ;)" );
-			_accessLevel = AccessLevels._masterAccessLevel;
-		}
-		else if (level == AccessLevels._userAccessLevelNum)
-			_accessLevel = AccessLevels._userAccessLevel;
-		else
-		{
-			L2AccessLevel accessLevel = AccessLevels.getInstance().getAccessLevel(level);
-			
-			if (accessLevel == null)
-			{
-				if (level < 0)
-				{
-					AccessLevels.getInstance().addBanAccessLevel(level);
-					_accessLevel = AccessLevels.getInstance().getAccessLevel(level);
-				}
-				else
-				{
-					_log.warning( "Tryed to set unregistered access level " + level + " to character " + getName() + ". Setting access level without privileges!" );
-					_accessLevel = AccessLevels._userAccessLevel;
-				}
-			}
-			else
-				_accessLevel = accessLevel;
-		}
+	{	
+		_accessLevel = AdminTable.getInstance().getAccessLevel(level);
 		
 		getAppearance().setNameColor(_accessLevel.getNameColor());
 		getAppearance().setTitleColor(_accessLevel.getTitleColor());
 		broadcastUserInfo();
 		
 		CharNameTable.getInstance().addName(this);
+		
+		if (!AdminTable.getInstance().hasAccessLevel(level))
+		{
+			_log.warning("Tryed to set unregistered access level " + level + " for " + toString() + ". Setting access level without privileges!");
+		}
+		else if (level > 0)
+		{
+			_log.warning(_accessLevel.getName() + " access level set for character " + getName() + "! Just a warning to be careful ;)");
+		}
 	}
 	
 	public void setAccountAccesslevel(int level)
 	{
-		LoginServerThread.getInstance().sendAccessLevel(getAccountName(),level);
+		LoginServerThread.getInstance().sendAccessLevel(getAccountName(), level);
 	}
 	
 	/**
@@ -7090,9 +7071,9 @@ public final class L2PcInstance extends L2Playable
 	public L2AccessLevel getAccessLevel()
 	{
 		if (Config.EVERYBODY_HAS_ADMIN_RIGHTS)
-			return AccessLevels._masterAccessLevel;
-		else if ( _accessLevel == null ) /* This is here because inventory etc. is loaded before access level on login, so it is not null */
-			setAccessLevel(AccessLevels._userAccessLevelNum);
+			return AdminTable.getInstance().getMasterAccessLevel();
+		else if (_accessLevel == null) /* This is here because inventory etc. is loaded before access level on login, so it is not null */
+			setAccessLevel(0);
 		
 		return _accessLevel;
 	}
@@ -7117,7 +7098,10 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(new UserInfo(this));
 			sendPacket(new ExBrExtraUserInfo(this));
 		}
-		if (broadcastType == 2) broadcastUserInfo();
+		if (broadcastType == 2)
+		{
+			broadcastUserInfo();
+		}
 	}
 	
 	/**
@@ -10373,7 +10357,6 @@ public final class L2PcInstance extends L2Playable
 		setTarget(null);
 		setIsInvul(true);
 		getAppearance().setInvisible();
-		//sendPacket(new GMHide(1));
 		teleToLocation(loc, false);
 		sendPacket(new ExOlympiadMode(3));
 		
@@ -10387,13 +10370,15 @@ public final class L2PcInstance extends L2Playable
 		setXYZ(_lastX, _lastY, _lastZ);
 		setIsParalyzed(false);
 		stopParalyze(false);
-		//sendPacket(new GMHide(0));
-		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invis", getAccessLevel()))
+		if (!isGM())
+		{
 			getAppearance().setVisible();
-		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invul", getAccessLevel()))
 			setIsInvul(false);
-		if (getAI() != null)
+		}
+		if (hasAI())
+		{
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+		}
 		
 		setFalling(); // prevent receive falling damage
 		_observerMode = false;
@@ -10412,13 +10397,15 @@ public final class L2PcInstance extends L2Playable
 		sendPacket(new ExOlympiadMode(0));
 		setInstanceId(0);
 		teleToLocation(_lastX, _lastY, _lastZ, true);
-		//sendPacket(new GMHide(0));
-		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invis", getAccessLevel()))
+		if (!isGM())
+		{
 			getAppearance().setVisible();
-		if (!AdminCommandAccessRights.getInstance().hasAccess("admin_invul", getAccessLevel()))
 			setIsInvul(false);
-		if (getAI() != null)
+		}
+		if (hasAI())
+		{
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+		}
 		setLastCords(0, 0, 0);
 		broadcastUserInfo();
 	}
@@ -12155,7 +12142,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			try
 			{
-				GmListTable.getInstance().deleteGm(this);
+				AdminTable.getInstance().deleteGm(this);
 			}
 			catch (Exception e)
 			{

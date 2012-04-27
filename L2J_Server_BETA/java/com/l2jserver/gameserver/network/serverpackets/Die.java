@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.datatables.AccessLevels;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -49,7 +49,7 @@ public class Die extends L2GameServerPacket
 	private int _charObjId;
 	private boolean _canTeleport;
 	private boolean _sweepable;
-	private L2AccessLevel _access = AccessLevels._userAccessLevel;
+	private L2AccessLevel _access = AdminTable.getInstance().getAccessLevel(0);
 	private L2Clan _clan;
 	L2Character _activeChar;
 	

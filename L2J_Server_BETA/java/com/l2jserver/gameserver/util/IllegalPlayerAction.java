@@ -19,7 +19,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GmListTable;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 
@@ -70,12 +70,13 @@ public final class IllegalPlayerAction implements Runnable
 		LogRecord record = new LogRecord(Level.INFO, "AUDIT:" + _message);
 		record.setLoggerName("audit");
 		record.setParameters(new Object[]
-		                                {
-				_actor, _punishment
-		                                });
+		{
+			_actor,
+			_punishment
+		});
 		_logAudit.log(record);
 		
-		GmListTable.broadcastMessageToGMs(_message);
+		AdminTable.getInstance().broadcastMessageToGMs(_message);
 		
 		switch (_punishment)
 		{

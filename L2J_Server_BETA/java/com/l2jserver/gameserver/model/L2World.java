@@ -23,10 +23,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GmListTable;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -207,9 +205,9 @@ public final class L2World
 	/**
 	 * @return a table containing all GMs.
 	 */
-	public FastList<L2PcInstance> getAllGMs()
+	public List<L2PcInstance> getAllGMs()
 	{
-		return GmListTable.getInstance().getAllGms(true);
+		return AdminTable.getInstance().getAllGms(true);
 	}
 	
 	public L2TIntObjectHashMap<L2PcInstance> getAllPlayers()

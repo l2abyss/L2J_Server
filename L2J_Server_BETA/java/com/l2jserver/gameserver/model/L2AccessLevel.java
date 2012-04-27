@@ -14,26 +14,21 @@
  */
 package com.l2jserver.gameserver.model;
 
-import java.util.logging.Logger;
-
-import com.l2jserver.gameserver.datatables.AccessLevels;
-
+import com.l2jserver.gameserver.datatables.AdminTable;
 
 /**
  * @author FBIagent<br>
  */
 public class L2AccessLevel
 {
-	/** The logger<br> */
-	private static Logger _log = Logger.getLogger( L2AccessLevel.class.getName() );
 	/** The access level<br> */
 	private int _accessLevel = 0;
 	/** The access level name<br> */
 	private String _name = null;
 	/** Child access levels */
-	L2AccessLevel[] _childsAccessLevel = null;
+	L2AccessLevel _childsAccessLevel = null;
 	/** Child access levels */
-	private String _childs = null;
+	private int _child = 0;
 	/** The name color for the access level<br> */
 	private int _nameColor = 0;
 	/** The title color for the access level<br> */
@@ -55,46 +50,43 @@ public class L2AccessLevel
 	/** Flag to gain exp in party */
 	private boolean _gainExp = false;
 	
-	/**
-	 * Initializes members<br><br>
-	 * 
-	 * @param accessLevel as int<br>
-	 * @param name as String<br>
-	 * @param nameColor as int<br>
-	 * @param titleColor as int<br>
-	 * @param childs as String<br>
-	 * @param isGm as boolean<br>
-	 * @param allowPeaceAttack as boolean<br>
-	 * @param allowFixedRes as boolean<br>
-	 * @param allowTransaction as boolean<br>
-	 * @param allowAltG as boolean<br>
-	 * @param giveDamage as boolean<br>
-	 * @param takeAggro as boolean<br>
-	 * @param gainExp as boolean<br>
-	 */
-	public L2AccessLevel(int accessLevel, String name, int nameColor, int titleColor, String childs, boolean isGm,
-			boolean allowPeaceAttack, boolean allowFixedRes, boolean allowTransaction, boolean allowAltG, boolean giveDamage, boolean takeAggro, boolean gainExp)
+	public L2AccessLevel(StatsSet set)
 	{
-		_accessLevel = accessLevel;
-		_name = name;
-		_nameColor = nameColor;
-		_titleColor = titleColor;
-		_childs = childs;
-		_isGm = isGm;
-		_allowPeaceAttack = allowPeaceAttack;
-		_allowFixedRes = allowFixedRes;
-		_allowTransaction = allowTransaction;
-		_allowAltG = allowAltG;
-		_giveDamage = giveDamage;
-		_takeAggro = takeAggro;
-		_gainExp = gainExp;
+		_accessLevel = set.getInteger("level");
+		_name = set.getString("name");
+		_nameColor = Integer.decode("0x" + set.getString("nameColor", "FFFFFF"));
+		_titleColor = Integer.decode("0x" + set.getString("titleColor", "FFFFFF"));
+		_child = set.getInteger("childAccess", 0);
+		_isGm = set.getBool("isGM", false);
+		_allowPeaceAttack = set.getBool("allowPeaceAttack", false);
+		_allowFixedRes = set.getBool("allowFixedRes", false);
+		_allowTransaction = set.getBool("allowTransaction", true);
+		_allowAltG = set.getBool("allowAltg", false);
+		_giveDamage = set.getBool("giveDamage", true);
+		_takeAggro = set.getBool("takeAggro", true);
+		_gainExp = set.getBool("gainExp", true);
 	}
 	
-	
+	public L2AccessLevel()
+	{
+		_accessLevel = 0;
+		_name = "User";
+		_nameColor = Integer.decode("0xFFFFFF");
+		_titleColor = Integer.decode("0xFFFFFF");
+		_child = 0;
+		_isGm = false;
+		_allowPeaceAttack = false;
+		_allowFixedRes = false;
+		_allowTransaction = true;
+		_allowAltG = false;
+		_giveDamage = true;
+		_takeAggro = true;
+		_gainExp = true;
+	}
 	
 	/**
-	 * Returns the access level<br><br>
-	 * 
+	 * Returns the access level<br>
+	 * <br>
 	 * @return int: access level<br>
 	 */
 	public int getLevel()
@@ -103,8 +95,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns the access level name<br><br>
-	 * 
+	 * Returns the access level name<br>
+	 * <br>
 	 * @return String: access level name<br>
 	 */
 	public String getName()
@@ -113,8 +105,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns the name color of the access level<br><br>
-	 * 
+	 * Returns the name color of the access level<br>
+	 * <br>
 	 * @return int: the name color for the access level<br>
 	 */
 	public int getNameColor()
@@ -123,8 +115,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns the title color color of the access level<br><br>
-	 * 
+	 * Returns the title color color of the access level<br>
+	 * <br>
 	 * @return int: the title color for the access level<br>
 	 */
 	public int getTitleColor()
@@ -133,8 +125,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Retuns if the access level has gm access or not<br><br>
-	 * 
+	 * Retuns if the access level has gm access or not<br>
+	 * <br>
 	 * @return boolean: true if access level have gm access, otherwise false<br>
 	 */
 	public boolean isGm()
@@ -143,8 +135,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns if the access level is allowed to attack in peace zone or not<br><br>
-	 * 
+	 * Returns if the access level is allowed to attack in peace zone or not<br>
+	 * <br>
 	 * @return boolean: true if the access level is allowed to attack in peace zone, otherwise false<br>
 	 */
 	public boolean allowPeaceAttack()
@@ -153,7 +145,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Retruns if the access level is allowed to use fixed res or not<br><br>
+	 * Retruns if the access level is allowed to use fixed res or not<br>
+	 * <br>
 	 * @return true if the access level is allowed to use fixed res, otherwise false<br>
 	 */
 	public boolean allowFixedRes()
@@ -162,8 +155,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns if the access level is allowed to perform transactions or not<br><br>
-	 * 
+	 * Returns if the access level is allowed to perform transactions or not<br>
+	 * <br>
 	 * @return boolean: true if access level is allowed to perform transactions, otherwise false<br>
 	 */
 	public boolean allowTransaction()
@@ -172,8 +165,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns if the access level is allowed to use AltG commands or not<br><br>
-	 * 
+	 * Returns if the access level is allowed to use AltG commands or not<br>
+	 * <br>
 	 * @return boolean: true if access level is allowed to use AltG commands, otherwise false<br>
 	 */
 	public boolean allowAltG()
@@ -182,8 +175,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns if the access level can give damage or not<br><br>
-	 * 
+	 * Returns if the access level can give damage or not<br>
+	 * <br>
 	 * @return boolean: true if the access level can give damage, otherwise false<br>
 	 */
 	public boolean canGiveDamage()
@@ -192,8 +185,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns if the access level can take aggro or not<br><br>
-	 * 
+	 * Returns if the access level can take aggro or not<br>
+	 * <br>
 	 * @return boolean: true if the access level can take aggro, otherwise false<br>
 	 */
 	public boolean canTakeAggro()
@@ -202,8 +195,8 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns if the access level can gain exp or not<br><br>
-	 * 
+	 * Returns if the access level can gain exp or not<br>
+	 * <br>
 	 * @return boolean: true if the access level can gain exp, otherwise false<br>
 	 */
 	public boolean canGainExp()
@@ -212,60 +205,21 @@ public class L2AccessLevel
 	}
 	
 	/**
-	 * Returns if the access level contains allowedAccess as child<br><br>
-	 *
-	 * @param accessLevel as AccessLevel<br><br>
-	 * 
+	 * Returns if the access level contains allowedAccess as child<br>
+	 * @param accessLevel as AccessLevel<br>
 	 * @return boolean: true if a child access level is equals to allowedAccess, otherwise false<br>
 	 */
 	public boolean hasChildAccess(L2AccessLevel accessLevel)
 	{
 		if (_childsAccessLevel == null)
 		{
-			if (_childs == null)
+			if (_child <= 0)
+			{
 				return false;
-			
-			setChildAccess(_childs);
-			for (L2AccessLevel childAccess : _childsAccessLevel)
-			{
-				if (childAccess != null && (childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess(accessLevel)))
-					return true;
 			}
+			
+			_childsAccessLevel = AdminTable.getInstance().getAccessLevel(_child);
 		}
-		else
-		{
-			for (L2AccessLevel childAccess : _childsAccessLevel)
-			{
-				if (childAccess != null && (childAccess.getLevel() == accessLevel.getLevel() || childAccess.hasChildAccess(accessLevel)))
-					return true;
-			}
-		}
-		return false;
-	}
-	
-	private void setChildAccess(String childs)
-	{
-		String[] childsSplit = childs.split(";");
-		
-		_childsAccessLevel = new L2AccessLevel[childsSplit.length];
-		
-		for (int i = 0;i < childsSplit.length;++ i)
-		{
-			L2AccessLevel accessLevelInst = AccessLevels.getInstance().getAccessLevel(Integer.parseInt(childsSplit[i]));
-			
-			if (accessLevelInst == null)
-			{
-				_log.warning("AccessLevel: Undefined child access level " + childsSplit[i]);
-				continue;
-			}
-			
-			if (accessLevelInst.hasChildAccess(this))
-			{
-				_log.warning("AccessLevel: Child access tree overlapping for " + _name + " and " + accessLevelInst.getName());
-				continue;
-			}
-			
-			_childsAccessLevel[i] = accessLevelInst;
-		}
+		return (_childsAccessLevel.getLevel() == accessLevel.getLevel() || _childsAccessLevel.hasChildAccess(accessLevel));
 	}
 }

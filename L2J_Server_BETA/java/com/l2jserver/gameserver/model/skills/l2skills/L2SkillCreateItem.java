@@ -39,7 +39,7 @@ public class L2SkillCreateItem extends L2Skill
 	public L2SkillCreateItem(StatsSet set)
 	{
 		super(set);
-		_createItemId = set.getIntegerArray("create_item_id");
+		_createItemId = set.getIntegerArray("create_item_id", ";");
 		_createItemCount = set.getInteger("create_item_count", 0);
 		_randomCount = set.getInteger("random_count", 1);
 	}
