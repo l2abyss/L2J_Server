@@ -24,8 +24,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
-import com.l2jserver.gameserver.model.L2Fish;
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.fishing.L2Fish;
 
 /**
  * This class holds the Fish information.
