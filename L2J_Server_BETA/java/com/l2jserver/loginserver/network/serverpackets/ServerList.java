@@ -28,8 +28,10 @@ import com.l2jserver.loginserver.network.gameserverpackets.ServerStatus;
 
 /**
  * ServerList
+ * 
+ * <pre>
  * Format: cc [cddcchhcdc]
- *
+ * 
  * c: server list size (number of servers)
  * c: ?
  * [ (repeat for each servers)
@@ -42,23 +44,24 @@ import com.l2jserver.loginserver.network.gameserverpackets.ServerStatus;
  * h: max number of players
  * c: 0 if server is down
  * d: 2nd bit: clock
- *    3rd bit: wont dsiplay server name
+ *    3rd bit: won't display server name
  *    4th bit: test server (used by client?)
- * c: 0 if you dont want to display brackets in front of sever name
+ * c: 0 if you don't want to display brackets in front of sever name
  * ]
- *
- * Server will be considered as Good when the number of  online players
- * is less than half the maximum. as Normal between half and 4/5
- * and Full when there's more than 4/5 of the maximum number of players
+ * </pre>
+ * 
+ * Server will be considered as Good when the number of online players<br>
+ * is less than half the maximum. as Normal between half and 4/5<br>
+ * and Full when there's more than 4/5 of the maximum number of players.
  */
 public final class ServerList extends L2LoginServerPacket
 {
 	private static final Logger _log = Logger.getLogger(ServerList.class.getName());
 	
-	private List<ServerData> _servers;
-	private int _lastServer;
-	private Map<Integer, Integer> _charsOnServers;
-	private Map<Integer, long[]> _charsToDelete;
+	private final List<ServerData> _servers;
+	private final int _lastServer;
+	private final Map<Integer, Integer> _charsOnServers;
+	private final Map<Integer, long[]> _charsToDelete;
 	
 	class ServerData
 	{
@@ -108,7 +111,9 @@ public final class ServerList extends L2LoginServerPacket
 		_servers = new ArrayList<ServerData>(GameServerTable.getInstance().getRegisteredGameServers().size());
 		_lastServer = client.getLastServer();
 		for (GameServerInfo gsi : GameServerTable.getInstance().getRegisteredGameServers().values())
+		{
 			_servers.add(new ServerData(client, gsi));
+		}
 		_charsOnServers = client.getCharsOnServ();
 		_charsToDelete = client.getCharsWaitingDelOnServ();
 	}
@@ -145,19 +150,23 @@ public final class ServerList extends L2LoginServerPacket
 			{
 				writeC(servId);
 				writeC(_charsOnServers.get(servId));
-				if (_charsToDelete == null || !_charsToDelete.containsKey(servId))
+				if ((_charsToDelete == null) || !_charsToDelete.containsKey(servId))
+				{
 					writeC(0x00);
+				}
 				else
 				{
 					writeC(_charsToDelete.get(servId).length);
 					for (long deleteTime : _charsToDelete.get(servId))
 					{
-						writeD((int)((deleteTime-System.currentTimeMillis())/1000));
+						writeD((int) ((deleteTime - System.currentTimeMillis()) / 1000));
 					}
 				}
 			}
 		}
 		else
+		{
 			writeC(0x00);
+		}
 	}
 }

@@ -38,7 +38,8 @@ import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 /**
- * A 1.4 file that provides utility methods for creating form- or grid-style layouts with SpringLayout. These utilities are used by several programs, such as SpringBox and SpringCompactGrid.
+ * A 1.4 file that provides utility methods for creating form- or grid-style layouts with SpringLayout.<br>
+ * These utilities are used by several programs, such as SpringBox and SpringCompactGrid.
  */
 public class SpringUtilities
 {
@@ -111,7 +112,7 @@ public class SpringUtilities
 		for (int i = 0; i < max; i++)
 		{
 			SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
-			if (i % cols == 0)
+			if ((i % cols) == 0)
 			{ // start of new row
 				lastRowCons = lastCons;
 				cons.setX(initialXSpring);
@@ -125,7 +126,7 @@ public class SpringUtilities
 				}
 			}
 			
-			if (i / cols == 0)
+			if ((i / cols) == 0)
 			{
 				// first row
 				cons.setY(initialYSpring);
@@ -154,7 +155,7 @@ public class SpringUtilities
 	private static SpringLayout.Constraints getConstraintsForCell(int row, int col, Container parent, int cols)
 	{
 		SpringLayout layout = (SpringLayout) parent.getLayout();
-		Component c = parent.getComponent(row * cols + col);
+		Component c = parent.getComponent((row * cols) + col);
 		return layout.getConstraints(c);
 	}
 	

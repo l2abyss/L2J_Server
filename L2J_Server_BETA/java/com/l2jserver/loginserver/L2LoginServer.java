@@ -40,7 +40,7 @@ import com.l2jserver.loginserver.network.L2LoginPacketHandler;
 import com.l2jserver.status.Status;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public final class L2LoginServer
 {
@@ -210,15 +210,13 @@ public final class L2LoginServer
 		{
 			String line;
 			String[] parts;
-			try (FileInputStream fis = new FileInputStream(bannedFile);
-				InputStreamReader is = new InputStreamReader(fis);
-				LineNumberReader reader = new LineNumberReader(is))
+			try (FileInputStream fis = new FileInputStream(bannedFile); InputStreamReader is = new InputStreamReader(fis); LineNumberReader reader = new LineNumberReader(is))
 			{
 				while ((line = reader.readLine()) != null)
 				{
 					line = line.trim();
 					// check if this line isn't a comment line
-					if (line.length() > 0 && line.charAt(0) != '#')
+					if ((line.length() > 0) && (line.charAt(0) != '#'))
 					{
 						// split comments if any
 						parts = line.split("#", 2);

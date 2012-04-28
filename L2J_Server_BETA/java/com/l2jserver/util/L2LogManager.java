@@ -22,7 +22,6 @@ import java.util.logging.LogManager;
  */
 public class L2LogManager extends LogManager
 {
-	
 	public L2LogManager()
 	{
 		super();

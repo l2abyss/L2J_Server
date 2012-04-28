@@ -20,33 +20,35 @@ import java.util.Map;
 /**
  * A custom version of HashMap with extension for iterating without using temporary collection<br>
  * <br>
- * @author  Julian Version 1.0.1 (2008-02-07)<br>
- * Changes:<br>
- *      1.0.0 - Initial version.<br>
- *      1.0.1 - Made forEachP() final.<br>
- * @param <K> 
- * @param <V> 
+ * @author Julian Version 1.0.1 (2008-02-07)<br>
+ *         Changes:<br>
+ *         1.0.0 - Initial version.<br>
+ *         1.0.1 - Made forEachP() final.<br>
+ * @param <K>
+ * @param <V>
  */
-public class L2FastMap<K extends Object, V extends Object> extends HashMap<K,V>
+public class L2FastMap<K extends Object, V extends Object> extends HashMap<K, V>
 {
 	static final long serialVersionUID = 1L;
 	
 	/**
 	 * Public inner interface used by ForEach iterations<br>
-	 *
-	 * @author  Julian
-	 * @param <K> 
-	 * @param <V> 
+	 * @author Julian
+	 * @param <K>
+	 * @param <V>
 	 */
-	public interface I2ForEach<K,V> {
+	public interface I2ForEach<K, V>
+	{
 		public boolean forEach(K key, V val);
 	}
 	
-	public interface I2ForEachKey<K> {
+	public interface I2ForEachKey<K>
+	{
 		public boolean forEach(K key);
 	}
 	
-	public interface I2ForEachValue<V> {
+	public interface I2ForEachValue<V>
+	{
 		public boolean forEach(V val);
 	}
 	
@@ -55,23 +57,41 @@ public class L2FastMap<K extends Object, V extends Object> extends HashMap<K,V>
 	 * <br>
 	 * @param func - a class method that must be executed on every element of collection.<br>
 	 * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
-	 *             check method (I2ForEach.forEach())<br>
+	 *         check method (I2ForEach.forEach())<br>
 	 */
-	public boolean ForEach(I2ForEach<K,V> func) {
-		for (Map.Entry<K,V> e: this.entrySet())
-			if (!func.forEach(e.getKey(),e.getValue())) return false;
+	public boolean ForEach(I2ForEach<K, V> func)
+	{
+		for (Map.Entry<K, V> e : entrySet())
+		{
+			if (!func.forEach(e.getKey(), e.getValue()))
+			{
+				return false;
+			}
+		}
 		return true;
 	}
 	
-	public boolean ForEachKey(I2ForEachKey<K> func) {
-		for (K k: this.keySet())
-			if (!func.forEach(k)) return false;
+	public boolean ForEachKey(I2ForEachKey<K> func)
+	{
+		for (K k : keySet())
+		{
+			if (!func.forEach(k))
+			{
+				return false;
+			}
+		}
 		return true;
 	}
 	
-	public boolean ForEachValue(I2ForEachValue<V> func) {
-		for (V v: this.values())
-			if (!func.forEach(v)) return false;
+	public boolean ForEachValue(I2ForEachValue<V> func)
+	{
+		for (V v : values())
+		{
+			if (!func.forEach(v))
+			{
+				return false;
+			}
+		}
 		return true;
 	}
 }

@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
 
 import com.l2jserver.tools.dbinstaller.util.mysql.DBDumper;
 import com.l2jserver.tools.dbinstaller.util.mysql.ScriptExecutor;
-import com.l2jserver.tools.dbinstaller.util.mysql.ScriptExecutor.SqlFileFilter;
+import com.l2jserver.util.file.filter.SQLFilter;
 
 /**
  * @author mrTJO
@@ -52,7 +52,7 @@ public class RunTasks extends Thread
 		
 		File clnFile = new File(_cleanUpFile);
 		File updDir = new File(_sqlDir, "updates");
-		File[] files = updDir.listFiles(new SqlFileFilter());
+		File[] files = updDir.listFiles(new SQLFilter());
 		
 		Preferences prefs = Preferences.userRoot();
 		
@@ -65,13 +65,17 @@ public class RunTasks extends Thread
 				_frame.appendToProgressArea("Database Cleaned!");
 			}
 			else
+			{
 				_frame.appendToProgressArea("Database Cleaning Script Not Found!");
+			}
 			
 			if (updDir.exists())
 			{
 				StringBuilder sb = new StringBuilder();
 				for (File cf : files)
+				{
 					sb.append(cf.getName() + ';');
+				}
 				prefs.put(_db + "_upd", sb.toString());
 			}
 		}

@@ -23,7 +23,6 @@ import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author -Wooden-
- *
  */
 public class PlayerInGame extends BaseRecievePacket
 {
@@ -31,7 +30,7 @@ public class PlayerInGame extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
-	 * @param server 
+	 * @param server
 	 */
 	public PlayerInGame(byte[] decrypt, GameServerThread server)
 	{
@@ -43,9 +42,9 @@ public class PlayerInGame extends BaseRecievePacket
 			server.addAccountOnGameServer(account);
 			if (Config.DEBUG)
 			{
-				_log.info("Account "+account+" logged in GameServer: ["+server.getServerId()+"] "+GameServerTable.getInstance().getServerNameById(server.getServerId()));
+				_log.info("Account " + account + " logged in GameServer: [" + server.getServerId() + "] " + GameServerTable.getInstance().getServerNameById(server.getServerId()));
 			}
-			server.broadcastToTelnet("Account "+account+" logged in GameServer "+server.getServerId());
+			server.broadcastToTelnet("Account " + account + " logged in GameServer " + server.getServerId());
 		}
 	}
 }

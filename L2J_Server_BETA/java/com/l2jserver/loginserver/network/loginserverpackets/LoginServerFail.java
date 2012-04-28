@@ -18,7 +18,6 @@ import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
  * @author -Wooden-
- *
  */
 public class LoginServerFail extends BaseSendablePacket
 {

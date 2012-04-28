@@ -28,8 +28,7 @@ import com.l2jserver.loginserver.network.clientpackets.RequestServerLogin;
 
 /**
  * Handler for packets received by Login Server
- *
- * @author  KenM
+ * @author KenM
  */
 public final class L2LoginPacketHandler implements IPacketHandler<L2LoginClient>
 {
@@ -90,6 +89,6 @@ public final class L2LoginPacketHandler implements IPacketHandler<L2LoginClient>
 	
 	private void debugOpcode(int opcode, LoginClientState state)
 	{
-		_log.info("Unknown Opcode: "+opcode+" for state: "+state.name());
+		_log.info("Unknown Opcode: " + opcode + " for state: " + state.name());
 	}
 }

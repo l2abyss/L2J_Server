@@ -33,9 +33,11 @@ import com.l2jserver.loginserver.network.serverpackets.LoginOk;
 import com.l2jserver.loginserver.network.serverpackets.ServerList;
 
 /**
+ * <pre>
  * Format: x
  * 0 (a leading null)
- * x: the rsa encrypted block with the login an password
+ * x: the rsa encrypted block with the login an password.
+ * <pre>
  */
 public class RequestAuthLogin extends L2LoginClientPacket
 {

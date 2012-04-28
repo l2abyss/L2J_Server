@@ -15,7 +15,6 @@
 package com.l2jserver.tools.dbinstaller.util.mysql;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,6 +24,7 @@ import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 import com.l2jserver.tools.dbinstaller.DBOutputInterface;
+import com.l2jserver.util.file.filter.SQLFilter;
 
 /**
  * @author mrTJO
@@ -45,7 +45,7 @@ public class ScriptExecutor
 	
 	public void execSqlBatch(File dir, boolean skipErrors)
 	{
-		File[] file = dir.listFiles(new SqlFileFilter());
+		File[] file = dir.listFiles(new SQLFilter());
 		_frame.setProgressIndeterminate(false);
 		_frame.setProgressMaximum(file.length - 1);
 		for (int i = 0; i < file.length; i++)
@@ -74,13 +74,19 @@ public class ScriptExecutor
 			{
 				line = scn.nextLine();
 				if (line.startsWith("--"))
+				{
 					continue;
+				}
 				else if (line.contains("--"))
+				{
 					line = line.split("--")[0];
+				}
 				
 				line = line.trim();
 				if (!line.isEmpty())
+				{
 					sb.append(line + "\n");
+				}
 				
 				if (line.endsWith(";"))
 				{
@@ -100,23 +106,16 @@ public class ScriptExecutor
 			{
 				Object[] options =
 				{
-					"Continue", "Abort"
+					"Continue",
+					"Abort"
 				};
 				int n = JOptionPane.showOptionDialog(null, "MySQL Error: " + e.getMessage(), "Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 				
 				if (n == 1)
+				{
 					System.exit(0);
+				}
 			}
 		}
 	}
-	
-	public static class SqlFileFilter implements FileFilter
-	{
-		@Override
-		public boolean accept(File pathname)
-		{
-			return pathname.getName().endsWith(".sql");
-		}
-	}
-	
 }

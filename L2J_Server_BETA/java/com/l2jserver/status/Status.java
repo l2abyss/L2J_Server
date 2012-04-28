@@ -34,18 +34,18 @@ public class Status extends Thread
 {
 	protected static final Logger _log = Logger.getLogger(Status.class.getName());
 	
-	private ServerSocket statusServerSocket;
+	private final ServerSocket statusServerSocket;
 	
-	private int _uptime;
-	private int _statusPort;
+	private final int _uptime;
+	private final int _statusPort;
 	private String _statusPw;
-	private int _mode;
-	private List<LoginStatusThread> _loginStatus;
+	private final int _mode;
+	private final List<LoginStatusThread> _loginStatus;
 	
 	@Override
 	public void run()
 	{
-		this.setPriority(Thread.MAX_PRIORITY);
+		setPriority(Thread.MAX_PRIORITY);
 		
 		while (true)
 		{
@@ -65,7 +65,7 @@ public class Status extends Thread
 						_loginStatus.add(lst);
 					}
 				}
-				if (this.isInterrupted())
+				if (isInterrupted())
 				{
 					try
 					{
@@ -80,7 +80,7 @@ public class Status extends Thread
 			}
 			catch (IOException e)
 			{
-				if (this.isInterrupted())
+				if (isInterrupted())
 				{
 					try
 					{
@@ -108,7 +108,7 @@ public class Status extends Thread
 		_statusPort = Integer.parseInt(telnetSettings.getProperty("StatusPort", "12345"));
 		_statusPw = telnetSettings.getProperty("StatusPW");
 		
-		if (_mode == Server.MODE_GAMESERVER || _mode == Server.MODE_LOGINSERVER)
+		if ((_mode == Server.MODE_GAMESERVER) || (_mode == Server.MODE_LOGINSERVER))
 		{
 			if (_statusPw == null)
 			{

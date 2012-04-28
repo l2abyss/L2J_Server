@@ -40,7 +40,6 @@ public class ConsoleLocalizator extends LocalizationParser
 	
 	/**
 	 * Load ConsoleLocalizator by using Default Locale
-	 * 
 	 * @param dir
 	 * @param baseName
 	 */
@@ -51,7 +50,6 @@ public class ConsoleLocalizator extends LocalizationParser
 	
 	/**
 	 * Load ConsoleLocalizator by using a specified Locale
-	 * 
 	 * @param dir
 	 * @param baseName
 	 * @param locale
@@ -63,9 +61,7 @@ public class ConsoleLocalizator extends LocalizationParser
 	}
 	
 	/**
-	 * Load ConsoleLocalizator by using a custom xml file
-	 * ../languages/<dir>/<baseName>_<locale>.xml
-	 * 
+	 * Load ConsoleLocalizator by using a custom xml file ../languages/<dir>/<baseName>_<locale>.xml
 	 * @param dir
 	 * @param baseName
 	 * @param locale
@@ -125,9 +121,7 @@ public class ConsoleLocalizator extends LocalizationParser
 	}
 	
 	/**
-	 * Get string from translation, add arguments
-	 * and write it to console.
-	 * 
+	 * Get string from translation, add arguments and write it to console.
 	 * @param id
 	 * @param args
 	 */
@@ -135,9 +129,13 @@ public class ConsoleLocalizator extends LocalizationParser
 	{
 		String msg = getStringFromId(id);
 		if (msg == null)
+		{
 			msg = formatText("Untranslated id: %s", id);
+		}
 		else
+		{
 			msg = formatText(msg, args);
+		}
 		directPrint(msg);
 	}
 	
@@ -150,10 +148,7 @@ public class ConsoleLocalizator extends LocalizationParser
 	}
 	
 	/**
-	 * Get string from translation, add arguments
-	 * and write it to console with a newline at the
-	 * end of string.
-	 * 
+	 * Get string from translation, add arguments and write it to console with a newline at the end of string.
 	 * @param id
 	 * @param args
 	 */
@@ -161,17 +156,18 @@ public class ConsoleLocalizator extends LocalizationParser
 	{
 		String msg = getStringFromId(id);
 		if (msg == null)
+		{
 			msg = formatText("Untranslated id: %s\n", id);
+		}
 		else
-			msg = formatText(msg+"\n", args);
+		{
+			msg = formatText(msg + "\n", args);
+		}
 		directPrint(msg);
 	}
 	
 	/**
-	 * Get string from translation, add arguments
-	 * and write it to console.
-	 * Wait for an input and return in form of string.
-	 * 
+	 * Get string from translation, add arguments and write it to console. Wait for an input and return in form of string.
 	 * @param id
 	 * @param args
 	 * @return Input String
@@ -185,9 +181,7 @@ public class ConsoleLocalizator extends LocalizationParser
 	}
 	
 	/**
-	 * Read string from translation file and append
-	 * arguments.
-	 * 
+	 * Read string from translation file and append arguments.
 	 * @param id
 	 * @param args
 	 * @return
@@ -196,13 +190,14 @@ public class ConsoleLocalizator extends LocalizationParser
 	{
 		String msg = getStringFromId(id);
 		if (msg == null)
+		{
 			return formatText("Untranslated id: %s", id);
+		}
 		return formatText(msg, args);
 	}
 	
 	/**
 	 * Append arguments to specified string.
-	 * 
 	 * @param text
 	 * @param args
 	 * @return
@@ -214,18 +209,18 @@ public class ConsoleLocalizator extends LocalizationParser
 	}
 	
 	/**
-	 * Write the text into console by using UTF-8
-	 * PrintStream under UNIX environment, and 
-	 * Kernel32.dll under Windows.
-	 * 
+	 * Write the text into console by using UTF-8 PrintStream under UNIX environment, and Kernel32.dll under Windows.
 	 * @param message
 	 */
 	private void directPrint(String message)
 	{
 		if (_wcon == null)
+		{
 			_out.print(message);
+		}
 		else
-			_wcon.WriteConsoleW(_stdout, message.toCharArray(),
-					message.length(), new IntByReference(), null);
+		{
+			_wcon.WriteConsoleW(_stdout, message.toCharArray(), message.length(), new IntByReference(), null);
+		}
 	}
 }

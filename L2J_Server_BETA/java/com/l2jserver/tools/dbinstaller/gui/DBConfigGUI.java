@@ -148,19 +148,25 @@ public class DBConfigGUI extends JFrame
 					
 					Object[] options =
 					{
-						"Full Install", "Upgrade", "Exit"
+						"Full Install",
+						"Upgrade",
+						"Exit"
 					};
 					int n = JOptionPane.showOptionDialog(null, "Select Installation Type", "Installation Type", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 					
-					if (n == 2 || n == -1)
+					if ((n == 2) || (n == -1))
+					{
 						System.exit(0);
+					}
 					
 					if (n == 0)
 					{
 						int conf = JOptionPane.showConfirmDialog(null, "Do you really want to destroy your db?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 						
 						if (conf == 1)
+						{
 							System.exit(0);
+						}
 						
 						cleanInstall = true;
 					}

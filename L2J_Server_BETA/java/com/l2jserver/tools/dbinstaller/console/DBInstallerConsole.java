@@ -123,7 +123,9 @@ public class DBInstallerConsole implements DBOutputInterface
 		Scanner scn = new Scanner(System.in);
 		String res = scn.next();
 		if (res.equalsIgnoreCase("y"))
+		{
 			return 0;
+		}
 		return 1;
 	}
 	

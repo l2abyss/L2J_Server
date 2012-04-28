@@ -36,7 +36,7 @@ public class Log
 		String curr = (new SimpleDateFormat("yyyy-MM-dd-")).format(new Date());
 		new File("log/game").mkdirs();
 		
-		final File file = new File("log/game/" + (curr != null ? curr : "" )+(cat != null ? cat : "unk") + ".txt");
+		final File file = new File("log/game/" + (curr != null ? curr : "") + (cat != null ? cat : "unk") + ".txt");
 		try (FileWriter save = new FileWriter(file, true))
 		{
 			save.write("[" + date + "] " + text + "\n");

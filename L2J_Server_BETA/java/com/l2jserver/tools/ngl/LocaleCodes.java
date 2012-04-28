@@ -19,7 +19,6 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * 
  * @author mrTJO
  */
 public class LocaleCodes
@@ -41,24 +40,29 @@ public class LocaleCodes
 		for (Locale locale : Locale.getAvailableLocales())
 		{
 			String language = locale.getLanguage();
-            //String script = locale.getScript();
-            String country = locale.getCountry();
-            String variant = locale.getVariant();
-
-            if (language == "" && country == "" && variant == "")
-            {
-                continue;
-            }
-            
-            StringBuilder lang = new StringBuilder();
-            lang.append(language);
-            if (country != "")
-            	lang.append(country);
-            if (variant != "")
-            	lang.append('_'+variant);
-            /*if (script != "")
-        		lang.append('_'+script);*/
-            _locales.put(lang.toString(), locale);
+			// String script = locale.getScript();
+			String country = locale.getCountry();
+			String variant = locale.getVariant();
+			
+			if ((language == "") && (country == "") && (variant == ""))
+			{
+				continue;
+			}
+			
+			StringBuilder lang = new StringBuilder();
+			lang.append(language);
+			if (country != "")
+			{
+				lang.append(country);
+			}
+			if (variant != "")
+			{
+				lang.append('_' + variant);
+			}
+			/*
+			 * if (script != "") lang.append('_'+script);
+			 */
+			_locales.put(lang.toString(), locale);
 		}
 	}
 	

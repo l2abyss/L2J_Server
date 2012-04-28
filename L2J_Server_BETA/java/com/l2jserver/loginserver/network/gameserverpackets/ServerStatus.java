@@ -21,16 +21,22 @@ import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
 import com.l2jserver.loginserver.GameServerThread;
 import com.l2jserver.util.network.BaseRecievePacket;
 
-
 /**
  * @author -Wooden-
- *
  */
 public class ServerStatus extends BaseRecievePacket
 {
 	protected static Logger _log = Logger.getLogger(ServerStatus.class.getName());
 	
-	public static final String [] STATUS_STRING = {"Auto", "Good", "Normal", "Full", "Down", "Gm Only"};
+	public static final String[] STATUS_STRING =
+	{
+		"Auto",
+		"Good",
+		"Normal",
+		"Full",
+		"Down",
+		"Gm Only"
+	};
 	
 	public static final int SERVER_LIST_STATUS = 0x01;
 	public static final int SERVER_TYPE = 0x02;
@@ -66,7 +72,7 @@ public class ServerStatus extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
-	 * @param server 
+	 * @param server
 	 */
 	public ServerStatus(byte[] decrypt, GameServerThread server)
 	{

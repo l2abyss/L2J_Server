@@ -30,20 +30,16 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Encodes and decodes to and from Base64 notation.
- * 
- * The source is based on the work of Robert Harder
- * 
+ * Encodes and decodes to and from Base64 notation.<br>
+ * The source is based on the work of Robert Harder.<br>
  * <p>
- * I am placing this code in the Public Domain. Do with it as you will. This
- * software comes with no guarantees or warranties but with plenty of
- * well-wishing instead! Please visit <a
- * href="http://iharder.net/xmlizable">http://iharder.net/base64</a>
+ * I am placing this code in the Public Domain.<br>
+ * Do with it as you will.<br>
+ * This software comes with no guarantees or warranties but with plenty of well-wishing instead!<br>
+ * Please visit <a href="http://iharder.net/xmlizable">http://iharder.net/base64</a><br>
  * periodically to check for updates or to contribute improvements.
  * </p>
- * 
- * @author Robert Harder
- * @author rob@iharder.net
+ * @author Robert Harder, rob@iharder.net
  * @version 2.0
  */
 public class Base64

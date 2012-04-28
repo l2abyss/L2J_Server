@@ -25,15 +25,14 @@ import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author -Wooden-
- *
  */
 public class PlayerAuthRequest extends BaseRecievePacket
-{	
+{
 	private static Logger _log = Logger.getLogger(PlayerAuthRequest.class.getName());
 	
 	/**
 	 * @param decrypt
-	 * @param server 
+	 * @param server
 	 */
 	public PlayerAuthRequest(byte[] decrypt, GameServerThread server)
 	{
@@ -48,10 +47,10 @@ public class PlayerAuthRequest extends BaseRecievePacket
 		PlayerAuthResponse authResponse;
 		if (Config.DEBUG)
 		{
-			_log.info("auth request received for Player "+account);
+			_log.info("auth request received for Player " + account);
 		}
 		SessionKey key = LoginController.getInstance().getKeyForAccount(account);
-		if (key != null && key.equals(sessionKey))
+		if ((key != null) && key.equals(sessionKey))
 		{
 			if (Config.DEBUG)
 			{
@@ -65,8 +64,8 @@ public class PlayerAuthRequest extends BaseRecievePacket
 			if (Config.DEBUG)
 			{
 				_log.info("auth request: NO");
-				_log.info("session key from self: "+key);
-				_log.info("session key sent: "+sessionKey);
+				_log.info("session key from self: " + key);
+				_log.info("session key sent: " + sessionKey);
 			}
 			authResponse = new PlayerAuthResponse(account, false);
 		}

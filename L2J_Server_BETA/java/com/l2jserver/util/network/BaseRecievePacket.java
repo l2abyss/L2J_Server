@@ -18,41 +18,40 @@ import java.util.logging.Logger;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.2.4.1 $ $Date: 2005/03/27 15:30:12 $
  */
 public abstract class BaseRecievePacket
 {
 	private static final Logger _log = Logger.getLogger(BaseRecievePacket.class.getName());
 	
-	private byte[] _decrypt;
+	private final byte[] _decrypt;
 	private int _off;
 	
 	public BaseRecievePacket(byte[] decrypt)
 	{
 		_decrypt = decrypt;
-		_off = 1;		// skip packet type id
+		_off = 1; // skip packet type id
 	}
 	
 	public int readD()
 	{
 		int result = _decrypt[_off++] & 0xff;
-		result |= _decrypt[_off++] << 8 & 0xff00;
-		result |= _decrypt[_off++] << 0x10 & 0xff0000;
-		result |= _decrypt[_off++] << 0x18 & 0xff000000;
+		result |= (_decrypt[_off++] << 8) & 0xff00;
+		result |= (_decrypt[_off++] << 0x10) & 0xff0000;
+		result |= (_decrypt[_off++] << 0x18) & 0xff000000;
 		return result;
 	}
 	
 	public int readC()
 	{
-		int result = _decrypt[_off++] &0xff;
+		int result = _decrypt[_off++] & 0xff;
 		return result;
 	}
 	
 	public int readH()
 	{
-		int result = _decrypt[_off++] &0xff;
-		result |= _decrypt[_off++] << 8 &0xff00;
+		int result = _decrypt[_off++] & 0xff;
+		result |= (_decrypt[_off++] << 8) & 0xff00;
 		return result;
 	}
 	
@@ -74,9 +73,9 @@ public abstract class BaseRecievePacket
 		String result = null;
 		try
 		{
-			result = new String(_decrypt,_off,_decrypt.length-_off, "UTF-16LE");
+			result = new String(_decrypt, _off, _decrypt.length - _off, "UTF-16LE");
 			result = result.substring(0, result.indexOf(0x00));
-			_off += result.length()*2 + 2;
+			_off += (result.length() * 2) + 2;
 		}
 		catch (Exception e)
 		{
@@ -89,9 +88,9 @@ public abstract class BaseRecievePacket
 	public final byte[] readB(int length)
 	{
 		byte[] result = new byte[length];
-		for(int i = 0; i < length; i++)
+		for (int i = 0; i < length; i++)
 		{
-			result[i]=_decrypt[_off+i];
+			result[i] = _decrypt[_off + i];
 		}
 		_off += length;
 		return result;

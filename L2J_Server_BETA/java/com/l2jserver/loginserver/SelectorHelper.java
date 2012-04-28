@@ -32,11 +32,10 @@ import com.l2jserver.util.IPv4Filter;
 /**
  * @author KenM
  */
-public class SelectorHelper implements IMMOExecutor<L2LoginClient>,
-IClientFactory<L2LoginClient>, IAcceptFilter
+public class SelectorHelper implements IMMOExecutor<L2LoginClient>, IClientFactory<L2LoginClient>, IAcceptFilter
 {
-	private ThreadPoolExecutor _generalPacketsThreadPool;
-	private IPv4Filter _ipv4filter;
+	private final ThreadPoolExecutor _generalPacketsThreadPool;
+	private final IPv4Filter _ipv4filter;
 	
 	public SelectorHelper()
 	{
@@ -45,7 +44,6 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	}
 	
 	/**
-	 * 
 	 * @see org.mmocore.network.IMMOExecutor#execute(org.mmocore.network.ReceivablePacket)
 	 */
 	@Override
@@ -55,7 +53,6 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	}
 	
 	/**
-	 * 
 	 * @see org.mmocore.network.IClientFactory#create(org.mmocore.network.MMOConnection)
 	 */
 	@Override
@@ -67,7 +64,6 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	}
 	
 	/**
-	 * 
 	 * @see org.mmocore.network.IAcceptFilter#accept(java.nio.channels.SocketChannel)
 	 */
 	@Override

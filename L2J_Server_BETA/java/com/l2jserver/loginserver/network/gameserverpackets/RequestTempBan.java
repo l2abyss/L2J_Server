@@ -34,7 +34,7 @@ public class RequestTempBan extends BaseRecievePacket
 	private final String _accountName;
 	@SuppressWarnings("unused")
 	private String _banReason;
-	private String _ip;
+	private final String _ip;
 	long _banTime;
 	
 	/**

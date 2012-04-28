@@ -15,17 +15,16 @@
 package com.l2jserver.loginserver.network.serverpackets;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public final class AccountKicked extends L2LoginServerPacket
 {
 	public static enum AccountKickedReason
 	{
-		REASON_DATA_STEALER			(0x01),
-		REASON_GENERIC_VIOLATION	(0x08),
-		REASON_7_DAYS_SUSPENDED		(0x10),
-		REASON_PERMANENTLY_BANNED	(0x20);
+		REASON_DATA_STEALER(0x01),
+		REASON_GENERIC_VIOLATION(0x08),
+		REASON_7_DAYS_SUSPENDED(0x10),
+		REASON_PERMANENTLY_BANNED(0x20);
 		
 		private final int _code;
 		
@@ -40,7 +39,7 @@ public final class AccountKicked extends L2LoginServerPacket
 		}
 	}
 	
-	private AccountKickedReason _reason;
+	private final AccountKickedReason _reason;
 	
 	/**
 	 * @param reason
@@ -59,5 +58,4 @@ public final class AccountKicked extends L2LoginServerPacket
 		writeC(0x02);
 		writeD(_reason.getCode());
 	}
-	
 }

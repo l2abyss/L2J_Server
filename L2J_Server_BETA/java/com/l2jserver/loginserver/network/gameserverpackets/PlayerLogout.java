@@ -23,7 +23,6 @@ import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author -Wooden-
- *
  */
 public class PlayerLogout extends BaseRecievePacket
 {
@@ -31,7 +30,7 @@ public class PlayerLogout extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
-	 * @param server 
+	 * @param server
 	 */
 	public PlayerLogout(byte[] decrypt, GameServerThread server)
 	{
@@ -41,9 +40,9 @@ public class PlayerLogout extends BaseRecievePacket
 		server.removeAccountOnGameServer(account);
 		if (Config.DEBUG)
 		{
-			_log.info("Player "+account+" logged out from gameserver ["+server.getServerId()+"] "+GameServerTable.getInstance().getServerNameById(server.getServerId()));
+			_log.info("Player " + account + " logged out from gameserver [" + server.getServerId() + "] " + GameServerTable.getInstance().getServerNameById(server.getServerId()));
 		}
 		
-		server.broadcastToTelnet("Player "+account+" disconnected from GameServer "+server.getServerId());
+		server.broadcastToTelnet("Player " + account + " disconnected from GameServer " + server.getServerId());
 	}
 }

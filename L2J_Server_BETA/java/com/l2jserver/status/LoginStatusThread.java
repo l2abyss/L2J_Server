@@ -35,25 +35,35 @@ public class LoginStatusThread extends Thread
 {
 	private static final Logger _log = Logger.getLogger(LoginStatusThread.class.getName());
 	
-	private Socket _cSocket;
+	private final Socket _cSocket;
 	
-	private PrintWriter _print;
-	private BufferedReader _read;
+	private final PrintWriter _print;
+	private final BufferedReader _read;
 	
 	private boolean _redirectLogger;
 	
 	private void telnetOutput(int type, String text)
 	{
 		if (type == 1)
+		{
 			System.out.println("TELNET | " + text);
+		}
 		else if (type == 2)
+		{
 			System.out.print("TELNET | " + text);
+		}
 		else if (type == 3)
+		{
 			System.out.print(text);
+		}
 		else if (type == 4)
+		{
 			System.out.println(text);
+		}
 		else
+		{
 			System.out.println("TELNET | " + text);
+		}
 	}
 	
 	private boolean isValidIP(Socket client)
@@ -68,7 +78,9 @@ public class LoginStatusThread extends Thread
 		
 		// read and loop thru list of IPs, compare with newIP
 		if (Config.DEVELOPER)
+		{
 			telnetOutput(2, "");
+		}
 		
 		final File file = new File(Config.TELNET_FILE);
 		try (InputStream telnetIS = new FileInputStream(file))
@@ -79,7 +91,9 @@ public class LoginStatusThread extends Thread
 			String HostList = telnetSettings.getProperty("ListOfHosts", "127.0.0.1,localhost,::1");
 			
 			if (Config.DEVELOPER)
+			{
 				telnetOutput(3, "Comparing ip to list...");
+			}
 			
 			// compare
 			String ipToCompare = null;
@@ -89,21 +103,29 @@ public class LoginStatusThread extends Thread
 				{
 					ipToCompare = InetAddress.getByName(ip).getHostAddress();
 					if (clientStringIP.equals(ipToCompare))
+					{
 						result = true;
+					}
 					if (Config.DEVELOPER)
+					{
 						telnetOutput(3, clientStringIP + " = " + ipToCompare + "(" + ip + ") = " + result);
+					}
 				}
 			}
 		}
 		catch (IOException e)
 		{
 			if (Config.DEVELOPER)
+			{
 				telnetOutput(4, "");
+			}
 			telnetOutput(1, "Error: " + e);
 		}
 		
 		if (Config.DEVELOPER)
+		{
 			telnetOutput(4, "Allow IP: " + result);
+		}
 		return result;
 	}
 	
@@ -161,7 +183,7 @@ public class LoginStatusThread extends Thread
 		String _usrCommand = "";
 		try
 		{
-			while (_usrCommand.compareTo("quit") != 0 && _usrCommand.compareTo("exit") != 0)
+			while ((_usrCommand.compareTo("quit") != 0) && (_usrCommand.compareTo("exit") != 0))
 			{
 				_usrCommand = _read.readLine();
 				if (_usrCommand == null)
@@ -183,7 +205,7 @@ public class LoginStatusThread extends Thread
 				}
 				else if (_usrCommand.equals("status"))
 				{
-					//TODO enhance the output
+					// TODO enhance the output
 					_print.println("Registered Server Count: " + GameServerTable.getInstance().getRegisteredGameServers().size());
 				}
 				else if (_usrCommand.startsWith("unblock"))

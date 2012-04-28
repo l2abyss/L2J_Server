@@ -17,8 +17,8 @@ package com.l2jserver.loginserver.network.loginserverpackets;
 import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
+ * Thanks to mochitto.
  * @author mrTJO
- * Thanks to mochitto
  */
 public class RequestCharacters extends BaseSendablePacket
 {

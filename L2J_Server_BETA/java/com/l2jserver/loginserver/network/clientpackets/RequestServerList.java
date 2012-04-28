@@ -18,10 +18,12 @@ import com.l2jserver.loginserver.network.serverpackets.LoginFail.LoginFailReason
 import com.l2jserver.loginserver.network.serverpackets.ServerList;
 
 /**
+ * <pre>
  * Format: ddc
  * d: fist part of session id
  * d: second part of session id
  * c: ?
+ * </pre>
  */
 public class RequestServerList extends L2LoginClientPacket
 {
@@ -58,8 +60,8 @@ public class RequestServerList extends L2LoginClientPacket
 	{
 		if (super._buf.remaining() >= 8)
 		{
-			_skey1  = readD(); // loginOk 1
-			_skey2  = readD(); // loginOk 2
+			_skey1 = readD(); // loginOk 1
+			_skey2 = readD(); // loginOk 2
 			return true;
 		}
 		return false;
