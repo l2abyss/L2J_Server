@@ -34,8 +34,8 @@ public class State
 	
 	/**
 	 * Get the quest state's string representation from its byte value.
-	 * @param state the byte value of the state.
-	 * @return a string representing the quest state (default: Start).
+	 * @param state the byte value of the state
+	 * @return the String representation of the quest state (default: Start)
 	 */
 	public static String getStateName(byte state)
 	{
@@ -52,8 +52,8 @@ public class State
 	
 	/**
 	 * Get the quest state's byte value from its string representation.
-	 * @param statename a string representing the state.
-	 * @return a byte value of the quest state (default: 0).
+	 * @param statename the String representation of the state
+	 * @return the byte value of the quest state (default: 0)
 	 */
 	public static byte getStateId(String statename)
 	{

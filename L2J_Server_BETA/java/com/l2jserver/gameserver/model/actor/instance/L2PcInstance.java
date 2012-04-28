@@ -1389,7 +1389,7 @@ public final class L2PcInstance extends L2Playable
 	public L2CharacterAI getAI()
 	{
 		L2CharacterAI ai = _ai; // copy handle
-		if (_ai == null)
+		if (ai == null)
 		{
 			synchronized(this)
 			{

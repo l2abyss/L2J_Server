@@ -43,7 +43,7 @@ public class ConditionTargetWeight extends Condition
 		if ((targetObj != null) && targetObj.isPlayer())
 		{
 			final L2PcInstance target = targetObj.getActingPlayer();
-			if (!target.getDietMode() && target.getMaxLoad() > 0)
+			if (!target.getDietMode() && (target.getMaxLoad() > 0))
 			{
 				int weightproc = (target.getCurrentLoad() * 100) / target.getMaxLoad();
 				weightproc *= (int) target.calcStat(Stats.WEIGHT_LIMIT, 1, target, null);

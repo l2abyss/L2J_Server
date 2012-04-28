@@ -79,12 +79,12 @@ public class Quest extends ManagedScript
 	protected static final Logger _log = Logger.getLogger(Quest.class.getName());
 	
 	/**
-	 * HashMap containing events from String value of the event.
+	 * Map containing events from String value of the event.
 	 */
-	private static Map<String, Quest> _allEventsS = new FastMap<String, Quest>();
+	private static Map<String, Quest> _allEventsS = new FastMap<>();
 	
 	/**
-	 * HashMap containing lists of timers from the name of the timer.
+	 * Map containing lists of timers from the name of the timer.
 	 */
 	private final Map<String, FastList<QuestTimer>> _allEventTimers = new FastMap<String, FastList<QuestTimer>>().shared();
 	private final List<Integer> _questInvolvedNpcs = new ArrayList<>();
@@ -131,7 +131,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @return a collection of the values contained in the {@link #_allEventsS}.
+	 * @return a collection of the values contained in the _allEventsS map.
 	 */
 	public static Collection<Quest> findAllEvents()
 	{
@@ -232,7 +232,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @return the Id of the quest.
+	 * @return the ID of the quest
 	 */
 	public int getQuestIntId()
 	{
@@ -241,8 +241,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add a new quest state of this quest to the database.
-	 * @param player the owner of the newly created quest state.
-	 * @return the newly created quest state object.
+	 * @param player the owner of the newly created quest state
+	 * @return the newly created {@link QuestState} object
 	 */
 	public QuestState newQuestState(L2PcInstance player)
 	{
@@ -250,7 +250,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @return the initial state of the quest.
+	 * @return the initial state of the quest
 	 */
 	public byte getInitialState()
 	{
@@ -258,7 +258,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @return the name of the quest.
+	 * @return the name of the quest
 	 */
 	public String getName()
 	{
@@ -266,7 +266,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @return the description of the quest.
+	 * @return the description of the quest
 	 */
 	public String getDescr()
 	{
@@ -275,10 +275,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add a timer to the quest (if it doesn't exist already) and start it.
-	 * @param name the name of the timer (also passed back as "event" in {@link #onAdvEvent(String, L2Npc, L2PcInstance)}).
-	 * @param time the time in ms for when to fire the timer.
-	 * @param npc the npc associated with this timer (can be null).
-	 * @param player player associated with this timer (can be null).
+	 * @param name the name of the timer (also passed back as "event" in {@link #onAdvEvent(String, L2Npc, L2PcInstance)})
+	 * @param time time in ms for when to fire the timer
+	 * @param npc the npc associated with this timer (can be null)
+	 * @param player the player associated with this timer (can be null)
 	 * @see #startQuestTimer(String, long, L2Npc, L2PcInstance, boolean)
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player)
@@ -288,12 +288,12 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add a timer to the quest (if it doesn't exist already) and start it.
-	 * @param name the name of the timer (also passed back as "event" in onAdvEvent)
-	 * @param time the time in ms for when to fire the timer
+	 * @param name the name of the timer (also passed back as "event" in {@link #onAdvEvent(String, L2Npc, L2PcInstance)})
+	 * @param time time in ms for when to fire the timer
 	 * @param npc the npc associated with this timer (can be null)
 	 * @param player the player associated with this timer (can be null)
-	 * @param repeating indicates if the timer is repeatable or one-time.<br>
-	 *            If {@code true}, it will auto-fire automatically, at a fixed rate, until explicitly canceled.
+	 * @param repeating indicates whether the timer is repeatable or one-time.<br>
+	 *            If {@code true}, the task is repeated every {@code time} milliseconds until explicitly stopped.
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player, boolean repeating)
 	{
@@ -301,7 +301,7 @@ public class Quest extends ManagedScript
 		// Add quest timer if timer doesn't already exist
 		if (timers == null)
 		{
-			timers = new FastList<QuestTimer>();
+			timers = new FastList<>();
 			timers.add(new QuestTimer(this, name, time, npc, player, repeating));
 			_allEventTimers.put(name, timers);
 		}
@@ -327,10 +327,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Get a quest timer that matches the provided name and parameters.
-	 * @param name the name of the quest timer to get.
-	 * @param npc the NPC associated with the quest timer to get.
-	 * @param player the player associated with the quest timer to get.
-	 * @return the quest timer that matches the parameters of this function or {@code null} if nothing was found.
+	 * @param name the name of the quest timer to get
+	 * @param npc the NPC associated with the quest timer to get
+	 * @param player the player associated with the quest timer to get
+	 * @return the quest timer that matches the parameters of this function or {@code null} if nothing was found
 	 */
 	public QuestTimer getQuestTimer(String name, L2Npc npc, L2PcInstance player)
 	{
@@ -363,8 +363,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Get all quest timers with the specified name.
-	 * @param name the name of the quest timers to get.
-	 * @return a list of all quest timers matching the given name or {@code null} if none was found.
+	 * @param name the name of the quest timers to get
+	 * @return a list of all quest timers matching the given name or {@code null} if none were found
 	 */
 	private FastList<QuestTimer> getQuestTimers(String name)
 	{
@@ -373,7 +373,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Cancel all quest timers with the specified name.
-	 * @param name the name of the quest timers to cancel.
+	 * @param name the name of the quest timers to cancel
 	 */
 	public void cancelQuestTimers(String name)
 	{
@@ -401,9 +401,9 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Cancel the quest timer that matches the specified name and parameters.
-	 * @param name the name of the quest timer to cancel.
-	 * @param npc the NPC associated with the quest timer to cancel.
-	 * @param player the player associated with the quest timer to cancel.
+	 * @param name the name of the quest timer to cancel
+	 * @param npc the NPC associated with the quest timer to cancel
+	 * @param player the player associated with the quest timer to cancel
 	 */
 	public void cancelQuestTimer(String name, L2Npc npc, L2PcInstance player)
 	{
@@ -417,7 +417,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Remove a quest timer from the list of all timers.<br>
 	 * Note: does not stop the timer itself!
-	 * @param timer the quest timer object to remove.
+	 * @param timer the {@link QuestState} object to remove
 	 */
 	public void removeQuestTimer(QuestTimer timer)
 	{
@@ -444,12 +444,12 @@ public class Quest extends ManagedScript
 	// These are methods to call within the core to call the quest events.
 	
 	/**
-	 * @param npc the NPC that was attacked.
-	 * @param attacker the attacking player.
-	 * @param damage the damage dealt to the NPC by the player.
-	 * @param isPet if {@code true}, the attack was actually made by the player's pet.
-	 * @param skill the skill used to attack the NPC (can be null).
-	 * @return
+	 * @param npc the NPC that was attacked
+	 * @param attacker the attacking player
+	 * @param damage the damage dealt to the NPC by the player
+	 * @param isPet if {@code true}, the attack was actually made by the player's pet
+	 * @param skill the skill used to attack the NPC (can be null)
+	 * @return {@code true} or {@code false}
 	 */
 	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
 	{
@@ -466,10 +466,10 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param killer the character that killed the victim.
-	 * @param victim the character that was killed by the killer.
-	 * @param qs the quest state object of the player to be notified of this event.
-	 * @return {@code false} if there is an error or a message sent, {@code true} otherwise.
+	 * @param killer the character that killed the {@code victim}
+	 * @param victim the character that was killed by the {@code killer}
+	 * @param qs the quest state object of the player to be notified of this event
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyDeath(L2Character killer, L2Character victim, QuestState qs)
 	{
@@ -526,10 +526,10 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Notify quest script when something happens with a trap.
-	 * @param trap the trap instance which triggers the notification.
-	 * @param trigger the character which makes effect on the trap.
-	 * @param action 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap.
-	 * @return {@code false} if the event was triggered successfully, {@code true} otherwise.
+	 * @param trap the trap instance which triggers the notification
+	 * @param trigger the character which makes effect on the trap
+	 * @param action 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap
+	 * @return {@code false} if the event was triggered successfully, {@code true} otherwise
 	 */
 	public final boolean notifyTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
 	{
@@ -652,9 +652,9 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Override the default NPC dialogs when a quest defines this for the given NPC.
-	 * @param npc the NPC whose dialogs to override.
-	 * @param player the player talking to the NPC.
-	 * @return {@code true} if the event was triggered successfully, {@code false} otherwise.
+	 * @param npc the NPC whose dialogs to override
+	 * @param player the player talking to the NPC
+	 * @return {@code true} if the event was triggered successfully, {@code false} otherwise
 	 */
 	public final boolean notifyFirstTalk(L2Npc npc, L2PcInstance player)
 	{
@@ -999,18 +999,18 @@ public class Quest extends ManagedScript
 	 *            Generally, this string is passed directly via the link.<br>
 	 *            For example:<br>
 	 *            <code>
-	 *               <a action="bypass -h Quest 626_ADarkTwilight 31517-01.htm">hello</a>
-	 *            </code><br>
+	 * 	&lt;a action="bypass -h Quest 626_ADarkTwilight 31517-01.htm"&gt;hello&lt;/a&gt;
+	 * </code> <br>
 	 *            The above link sets the event variable to "31517-01.htm" for the quest 626_ADarkTwilight.<br>
 	 *            In the case of timers, this will be the name of the timer.<br>
 	 *            This parameter serves as a sort of identifier.
 	 * @param npc this parameter contains a reference to the instance of NPC associated with this event.<br>
 	 *            This may be the NPC registered in a timer, or the NPC with whom a player is speaking, etc.<br>
-	 *            This parameter may be <b>null</b> in certain circumstances.
+	 *            This parameter may be {@code null} in certain circumstances.
 	 * @param player this parameter contains a reference to the player participating in this function.<br>
 	 *            It may be the player speaking to the NPC, or the player who caused a timer to start (and owns that timer).<br>
-	 *            This parameter may be <b>null</b> in certain circumstances.
-	 * @return the text returned by the event (may be {@code null}, a filename or just text).
+	 *            This parameter may be {@code null} in certain circumstances.
+	 * @return the text returned by the event (may be {@code null}, a filename or just text)
 	 */
 	public String onAdvEvent(String event, L2Npc npc, L2PcInstance player)
 	{
@@ -1029,13 +1029,13 @@ public class Quest extends ManagedScript
 	 *            Generally, this string is passed directly via the link.<br>
 	 *            For example:<br>
 	 *            <code>
-	 *               <a action="bypass -h Quest 626_ADarkTwilight 31517-01.htm">hello</a>
-	 *            </code><br>
+	 * 	&lt;a action="bypass -h Quest 626_ADarkTwilight 31517-01.htm"&gt;hello&lt;/a&gt;
+	 * </code><br>
 	 *            The above link sets the event variable to "31517-01.htm" for the quest 626_ADarkTwilight.<br>
 	 *            In the case of timers, this will be the name of the timer.<br>
 	 *            This parameter serves as a sort of identifier.
 	 * @param qs this parameter contains a reference to the quest state of the player who used the link or started the timer.
-	 * @return the text returned by the event (may be {@code null}, a filename or just text).
+	 * @return the text returned by the event (may be {@code null}, a filename or just text)
 	 */
 	public String onEvent(String event, QuestState qs)
 	{
@@ -1047,7 +1047,7 @@ public class Quest extends ManagedScript
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that got killed.
 	 * @param killer this parameter contains a reference to the exact instance of the player who killed the NPC.
 	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the killer was the player's pet.
-	 * @return the text returned by the event (may be {@code null}, a filename or just text).
+	 * @return the text returned by the event (may be {@code null}, a filename or just text)
 	 */
 	public String onKill(L2Npc npc, L2PcInstance killer, boolean isPet)
 	{
@@ -1058,7 +1058,7 @@ public class Quest extends ManagedScript
 	 * This function is called whenever a player clicks to the "Quest" link of an NPC that is registered for the quest.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player is talking with.
 	 * @param talker this parameter contains a reference to the exact instance of the player who is talking to the NPC.
-	 * @return the text returned by the event (may be {@code null}, a filename or just text).
+	 * @return the text returned by the event (may be {@code null}, a filename or just text)
 	 */
 	public String onTalk(L2Npc npc, L2PcInstance talker)
 	{
@@ -1080,7 +1080,7 @@ public class Quest extends ManagedScript
 	 * If you wish to show the default HTML, within onFirstTalk do npc.showChatWindow(player) and then return ""<br>
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player is talking with.
 	 * @param player this parameter contains a reference to the exact instance of the player who is talking to the NPC.
-	 * @return the text returned by the event (may be {@code null}, a filename or just text).
+	 * @return the text returned by the event (may be {@code null}, a filename or just text)
 	 * @since <a href="http://trac.l2jserver.com/changeset/771">Jython AI support for "onFirstTalk"</a>
 	 */
 	public String onFirstTalk(L2Npc npc, L2PcInstance player)
@@ -1129,8 +1129,8 @@ public class Quest extends ManagedScript
 	/**
 	 * This function is called whenever a player uses a quest item that has a quest events list<br>
 	 * TODO: complete this documentation and unhardcode it to work with all item uses not with those listed.
-	 * @param item this parameter contains a reference to the instance of the quest item that the player used.
-	 * @param player this parameter contains a reference to the exact instance of the player who used the quest item.
+	 * @param item the quest item that the player used
+	 * @param player the player who used the item
 	 * @return
 	 */
 	public String onItemUse(L2Item item, L2PcInstance player)
@@ -1145,11 +1145,11 @@ public class Quest extends ManagedScript
 	 * However, only onSkillSee(..) will be triggered if the skill does no damage,<br>
 	 * or if it damages an NPC who has no onAttack(..) registration while near another NPC who has an onSkillSee registration.<br>
 	 * TODO: confirm if the distance is 1000 and unhardcode.
-	 * @param npc this parameter contains a reference to the exact instance of the NPC that saw the skill.
-	 * @param caster this parameter references the actual instance of the player who cast the skill.
-	 * @param skill this parameter is a reference to the actual skill that was used (from which info about the id and level of the skill can be obtained).
-	 * @param targets this parameter is an array of all objects (can be any type of object, including mobs and players) that are affected by the skill.
-	 * @param isPet this parameter if it's {@code false} it denotes that the caster was indeed the player, else it specifies that the caster was the player's pet.
+	 * @param npc the NPC that saw the skill
+	 * @param caster the player who cast the skill
+	 * @param skill the actual skill that was used
+	 * @param targets an array of all objects (can be any type of object, including mobs and players) that were affected by the skill
+	 * @param isPet if {@code true}, the skill was actually cast by the player's pet, not the player himself
 	 * @return
 	 */
 	public String onSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
@@ -1159,9 +1159,9 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * This function is called whenever an NPC finishes casting a skill.
-	 * @param npc this parameter contains a reference to the exact instance of the NPC that casted the skill.
-	 * @param player this parameter references the actual instance of the player who is target of the skill. This parameter may be <b>null</b> in certain circumstances.
-	 * @param skill this parameter is a reference to the actual skill that was used by the NPC.
+	 * @param npc the NPC that casted the skill.
+	 * @param player the player who is the target of the skill. Can be {@code null}.
+	 * @param skill the actual skill that was used by the NPC.
 	 * @return
 	 */
 	public String onSpellFinished(L2Npc npc, L2PcInstance player, L2Skill skill)
@@ -1271,9 +1271,9 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Show message error to player who has an access level greater than 0.
-	 * @param player the player to whom to send the error (must be a GM).
-	 * @param t the throwable to get the message/stacktrace from.
+	 * Show an error message to the specified player.
+	 * @param player the player to whom to send the error (must be a GM)
+	 * @param t the {@link Throwable} to get the message/stacktrace from
 	 * @return {@code false}
 	 */
 	public boolean showError(L2PcInstance player, Throwable t)
@@ -1294,15 +1294,15 @@ public class Quest extends ManagedScript
 	/**
 	 * Show a message to the specified player.<br>
 	 * <u><i>Concept:</i></u><br>
-	 * Three cases are managed according to the value of the parameter "res":<br>
+	 * Three cases are managed according to the value of the {@code res} parameter:<br>
 	 * <ul>
-	 * <li>"res" ends with string ".html": an HTML is opened in order to be shown in a dialog box.</li>
-	 * <li>"res" starts with "<html>": the message hold in "res" is shown in a dialog box.</li>
-	 * <li>otherwise: the message held in "res" is shown in chat box.</li>
+	 * <li><u>{@code res} ends with ".htm" or ".html":</u> the contents of the specified HTML file are shown in a dialog window</li>
+	 * <li><u>{@code res} starts with "&lt;html&gt;":</u> the contents of the parameter are shown in a dialog window</li>
+	 * <li><u>all other cases :</u> the text contained in the parameter is shown in chat</li>
 	 * </ul>
-	 * @param player the player to whom to show the result.
-	 * @param res the message to show to the player.
-	 * @return {@code false} if the message was sent, {@code true} otherwise.
+	 * @param player the player to whom to show the result
+	 * @param res the message to show to the player
+	 * @return {@code false} if the message was sent, {@code true} otherwise
 	 */
 	public boolean showResult(L2PcInstance player, String res)
 	{
@@ -1332,7 +1332,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Loads all quest states and variables for the specified player.
-	 * @param player the player who is entering the world.
+	 * @param player the player who is entering the world
 	 */
 	public final static void playerEnter(L2PcInstance player)
 	{
@@ -1427,8 +1427,8 @@ public class Quest extends ManagedScript
 	 * Insert (or update) in the database variables that need to stay persistent for this quest after a reboot.<br>
 	 * This function is for storage of values that do not related to a specific player but are global for all characters.<br>
 	 * For example, if we need to disable a quest-gatekeeper until a certain time (as is done with some grand-boss gatekeepers), we can save that time in the DB.
-	 * @param var the name of the variable to save.
-	 * @param value the value of the variable.
+	 * @param var the name of the variable to save
+	 * @param value the value of the variable
 	 */
 	public final void saveGlobalQuestVar(String var, String value)
 	{
@@ -1459,8 +1459,8 @@ public class Quest extends ManagedScript
 	 * Subclasses of this class can define structures into which these loaded values can be saved.<br>
 	 * However, on-demand usage of this function throughout the script is not prohibited, only not recommended.<br>
 	 * Values read from this function were entered by calls to "saveGlobalQuestVar".
-	 * @param var the name of the variable to load.
-	 * @return the current value of the specified variable, or an empty string if the variable does not exist.
+	 * @param var the name of the variable to load
+	 * @return the current value of the specified variable, or an empty string if the variable does not exist
 	 */
 	public final String loadGlobalQuestVar(String var)
 	{
@@ -1494,7 +1494,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Permanently delete from the database a global quest variable that was previously saved for this quest.
-	 * @param var the name of the variable to delete.
+	 * @param var the name of the variable to delete
 	 */
 	public final void deleteGlobalQuestVar(String var)
 	{
@@ -1545,9 +1545,9 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Insert in the database the quest for the player.
-	 * @param qs the quest state whose variable to insert.
-	 * @param var the name of the variable.
-	 * @param value the value of the variable.
+	 * @param qs the {@link QuestState} object whose variable to insert
+	 * @param var the name of the variable
+	 * @param value the value of the variable
 	 */
 	public static void createQuestVarInDb(QuestState qs, String var, String value)
 	{
@@ -1575,10 +1575,10 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Update the value of the variable "var" for the specified quest in database.
-	 * @param qs the quest state of the quest whose variable to update.
-	 * @param var the name of the variable.
-	 * @param value the value of the variable.
+	 * Update the value of the variable "var" for the specified quest in database
+	 * @param qs the {@link QuestState} object whose variable to update
+	 * @param var the name of the variable
+	 * @param value the value of the variable
 	 */
 	public static void updateQuestVarInDb(QuestState qs, String var, String value)
 	{
@@ -1605,9 +1605,9 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Delete from the database all variables and states of the specified quest state.
-	 * @param qs : object QuestState pointing out the player's quest
-	 * @param var : String designating the variable characterizing the quest
+	 * Delete a variable of player's quest from the database.
+	 * @param qs the {@link QuestState} object whose variable to delete
+	 * @param var the name of the variable to delete
 	 */
 	public static void deleteQuestVarInDb(QuestState qs, String var)
 	{
@@ -1634,8 +1634,8 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Delete the player's quest from database.
-	 * @param qs : QuestState pointing out the player's quest
+	 * Delete from the database all variables and states of the specified quest state.
+	 * @param qs the {@link QuestState} object whose variables to delete
 	 */
 	public static void deleteQuestInDb(QuestState qs)
 	{
@@ -1660,20 +1660,8 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Create a record in database for quest.<br>
-	 * Actions:<br>
-	 * Use function createQuestVarInDb() with following parameters:<br>
-	 * <ul>
-	 * <li>QuestState : parameter qs that puts in fields of database:
-	 * <ul type="square">
-	 * <li>charId : ID of the player</li>
-	 * <li>name : name of the quest</li>
-	 * </ul>
-	 * </li>
-	 * <li>var : string "&lt;state&gt;" as the name of the variable for the quest</li>
-	 * <li>val : string corresponding at the ID of the state (in fact, initial state)</li>
-	 * </ul>
-	 * @param qs : QuestState
+	 * Create a database record for the specified quest state.
+	 * @param qs the {@link QuestState} object whose data to write in the database
 	 */
 	public static void createQuestInDb(QuestState qs)
 	{
@@ -1697,8 +1685,8 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param player the player whose language settings to use in finding the html of the right language.
-	 * @return the default html for when no quest is available: "You are either not on a quest that involves this NPC..".
+	 * @param player the player whose language settings to use in finding the html of the right language
+	 * @return the default html for when no quest is available: "You are either not on a quest that involves this NPC.."
 	 */
 	public static String getNoQuestMsg(L2PcInstance player)
 	{
@@ -1712,8 +1700,8 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param player the player whose language settings to use in finding the html of the right language.
-	 * @return the default html for when no quest is already completed: "This quest has already been completed.".
+	 * @param player the player whose language settings to use in finding the html of the right language
+	 * @return the default html for when no quest is already completed: "This quest has already been completed."
 	 */
 	public static String getAlreadyCompletedMsg(L2PcInstance player)
 	{
@@ -2156,7 +2144,7 @@ public class Quest extends ManagedScript
 	 * Use this method to get a random party member from a player's party.<br>
 	 * Useful when distributing rewards after killing an NPC.
 	 * @param player this parameter represents the player whom the party will taken.
-	 * @return if {@code player} is null returns null, if the {@code player} does not have a party returns {@code player}, other wise select a random party member.
+	 * @return {@code null} if {@code player} is {@code null}, {@code player} itself if the player does not have a party, and a random party member in all other cases
 	 */
 	public L2PcInstance getRandomPartyMember(L2PcInstance player)
 	{
@@ -2178,7 +2166,7 @@ public class Quest extends ManagedScript
 	 * For any variations on this function, the quest script can always handle things on its own.
 	 * @param player the instance of a player whose party is to be searched
 	 * @param value the value of the "cond" variable that must be matched
-	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified condition, or null if no match.
+	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified condition, or {@code null} if no match was found
 	 */
 	public L2PcInstance getRandomPartyMember(L2PcInstance player, String value)
 	{
@@ -2190,10 +2178,11 @@ public class Quest extends ManagedScript
 	 * Note: This function is only here because of how commonly it may be used by quest developers.<br>
 	 * For any variations on this function, the quest script can always handle things on its own.
 	 * @param player the instance of a player whose party is to be searched
-	 * @param var
-	 * @param value a tuple specifying a quest condition that must be satisfied for a party member to be considered.
-	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified condition, or null if no match. If the var is null, any random party member is returned (i.e. no condition is applied). The party member must be within 1500 distance from the target of the reference
-	 *         player, or if no target exists, 1500 distance from the player itself.
+	 * @param var the quest variable to look for in party members. If {@code null}, it simply unconditionally returns a random party member
+	 * @param value the value of the specified quest variable the random party member must have
+	 * @return a random party member that matches the specified conditions or {@code null} if no match was found.<br>
+	 *         If the {@code var} parameter is {@code null}, a random party member is selected without any conditions.<br>
+	 *         The party member must be within a range of 1500 ingame units of the target of the reference player, or, if no target exists, within the same range of the player itself
 	 */
 	public L2PcInstance getRandomPartyMember(L2PcInstance player, String var, String value)
 	{
@@ -2226,7 +2215,7 @@ public class Quest extends ManagedScript
 		
 		// if the player is in a party, gather a list of all matching party members (possibly
 		// including this player)
-		FastList<L2PcInstance> candidates = new FastList<L2PcInstance>();
+		FastList<L2PcInstance> candidates = new FastList<>();
 		
 		// get the target for enforcing distance limitations.
 		L2Object target = player.getTarget();
@@ -2252,7 +2241,7 @@ public class Quest extends ManagedScript
 		{
 			return null;
 		}
-		
+		// TODO where's the range check?
 		// if a match was found from the party, return one of them at random.
 		return candidates.get(Rnd.get(candidates.size()));
 	}
@@ -2261,9 +2250,9 @@ public class Quest extends ManagedScript
 	 * Auxiliary function for party quests.<br>
 	 * Note: This function is only here because of how commonly it may be used by quest developers.<br>
 	 * For any variations on this function, the quest script can always handle things on its own.
-	 * @param player the instance of a player whose party is to be searched
-	 * @param state the state in which the party member's queststate must be in order to be considered.
-	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified condition, or null if no match. If the var is null, any random party member is returned (i.e. no condition is applied).
+	 * @param player the player whose random party member is to be selected
+	 * @param state the quest state required of the random party member
+	 * @return {@code null} if nothing was selected or a random party member that has the specified quest state
 	 */
 	public L2PcInstance getRandomPartyMemberState(L2PcInstance player, byte state)
 	{
@@ -2290,7 +2279,7 @@ public class Quest extends ManagedScript
 		
 		// if the player is in a party, gather a list of all matching party members (possibly
 		// including this player)
-		FastList<L2PcInstance> candidates = new FastList<L2PcInstance>();
+		FastList<L2PcInstance> candidates = new FastList<>();
 		
 		// get the target for enforcing distance limitations.
 		L2Object target = player.getTarget();
@@ -2504,16 +2493,18 @@ public class Quest extends ManagedScript
 					offset = Rnd.get(2); // Get the direction of the offset
 					if (offset == 0)
 					{
+						// make offset negative
 						offset = -1;
-					} // make offset negative
+					}
 					offset *= Rnd.get(50, 100);
 					x += offset;
 					
 					offset = Rnd.get(2); // Get the direction of the offset
 					if (offset == 0)
 					{
+						// make offset negative
 						offset = -1;
-					} // make offset negative
+					}
 					offset *= Rnd.get(50, 100);
 					y += offset;
 				}
@@ -3097,7 +3088,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Remove items from player's inventory when talking to NPC in order to have rewards.<br>
-	 * Actions:<br>
+	 * <u><i>Actions :</i></u>
 	 * <ul>
 	 * <li>Destroy quantity of items wanted</li>
 	 * <li>Send new inventory list to player</li>
