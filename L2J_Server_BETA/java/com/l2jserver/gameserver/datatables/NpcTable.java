@@ -21,19 +21,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.Elementals;
-import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.L2NpcAIData;
@@ -145,28 +141,15 @@ public class NpcTable
 	 */
 	public void reloadNpc(int id)
 	{
+		Map<QuestEventType, List<Quest>> quests = null;
 		try
 		{
 			// save a copy of the old data
 			L2NpcTemplate old = getTemplate(id);
 			
-			Map<QuestEventType, List<Quest>> quests = new HashMap<>();
-			TIntObjectHashMap<L2Skill> skills = new TIntObjectHashMap<>();
-			List<L2MinionData> minions = new ArrayList<>();
-			List<ClassId> classIds = new ArrayList<>();
-			List<L2DropCategory> categories = new ArrayList<>();
-			
 			if (old != null)
 			{
-				skills.putAll(old.getSkills());
-				categories.addAll(old.getDropData());
-				classIds.addAll(old.getTeachInfo());
-				minions.addAll(old.getMinionData());
-				
-				if (!old.getEventQuests().isEmpty())
-				{
-					quests.putAll(old.getEventQuests());
-				}
+				quests = old.getEventQuests();
 			}
 			
 			loadNpcs(id);
@@ -182,31 +165,7 @@ public class NpcTable
 			
 			if ((old != null) && (created != null))
 			{
-				if (!skills.isEmpty())
-				{
-					for (L2Skill skill : skills.values(new L2Skill[0]))
-					{
-						created.addSkill(skill);
-					}
-				}
-				
-				for (ClassId classId : classIds)
-				{
-					created.addTeachInfo(classId);
-				}
-				
-				if (!minions.isEmpty())
-				{
-					for (L2MinionData minion : minions)
-					{
-						created.addRaidData(minion);
-					}
-				}
-				
-				if (!quests.isEmpty())
-				{
-					created.getEventQuests().putAll(quests);
-				}
+				created.getEventQuests().putAll(quests);
 			}
 		}
 		catch (Exception e)
@@ -312,7 +271,7 @@ public class NpcTable
 	 * @param sb the string builder with the parameters
 	 * @param table the table to update.
 	 * @param key the key of the table.
-	 * @param npcId the Npc Id. 
+	 * @param npcId the Npc Id.
 	 * @param con the current database connection.
 	 * @return the count of updated NPCs.
 	 * @throws SQLException the SQL exception.
@@ -367,9 +326,9 @@ public class NpcTable
 	 * @param lvls of all the templates to get.
 	 * @return the template list for the given level.
 	 */
-	public List<L2NpcTemplate> getAllOfLevel(int ...lvls)
+	public List<L2NpcTemplate> getAllOfLevel(int... lvls)
 	{
-		final List<L2NpcTemplate> list = new FastList<>();
+		final List<L2NpcTemplate> list = new ArrayList<>();
 		for (int lvl : lvls)
 		{
 			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
@@ -387,9 +346,9 @@ public class NpcTable
 	 * @param lvls of all the monster templates to get.
 	 * @return the template list for the given level.
 	 */
-	public List<L2NpcTemplate> getAllMonstersOfLevel(int ...lvls)
+	public List<L2NpcTemplate> getAllMonstersOfLevel(int... lvls)
 	{
-		final List<L2NpcTemplate> list = new FastList<>();
+		final List<L2NpcTemplate> list = new ArrayList<>();
 		for (int lvl : lvls)
 		{
 			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
@@ -407,9 +366,9 @@ public class NpcTable
 	 * @param letters of all the NPC templates which its name start with.
 	 * @return the template list for the given letter.
 	 */
-	public List<L2NpcTemplate> getAllNpcStartingWith(String ...letters)
+	public List<L2NpcTemplate> getAllNpcStartingWith(String... letters)
 	{
-		final List<L2NpcTemplate> list = new FastList<>();
+		final List<L2NpcTemplate> list = new ArrayList<>();
 		for (String letter : letters)
 		{
 			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
@@ -427,9 +386,9 @@ public class NpcTable
 	 * @param classTypes of all the templates to get.
 	 * @return the template list for the given class type.
 	 */
-	public List<L2NpcTemplate> getAllNpcOfClassType(String ...classTypes)
+	public List<L2NpcTemplate> getAllNpcOfClassType(String... classTypes)
 	{
-		final List<L2NpcTemplate> list = new FastList<>();
+		final List<L2NpcTemplate> list = new ArrayList<>();
 		for (String classType : classTypes)
 		{
 			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))

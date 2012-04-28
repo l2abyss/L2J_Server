@@ -17,8 +17,6 @@ package com.l2jserver.gameserver.scripting.scriptengine.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -85,7 +83,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListen
  */
 public abstract class L2Script extends Quest
 {
-	private FastList<L2JListener> _listeners = new FastList<L2JListener>();
+	private List<L2JListener> _listeners = new ArrayList<L2JListener>();
 	
 	/**
 	 * constructor
