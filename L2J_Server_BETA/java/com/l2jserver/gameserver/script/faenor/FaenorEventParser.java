@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.script.ScriptEngine;
 
 /**
  * @author Luis Arias
- * 
  */
 public class FaenorEventParser extends FaenorParser
 {
@@ -42,10 +41,6 @@ public class FaenorEventParser extends FaenorParser
 	public void parseScript(final Node eventNode, ScriptContext context)
 	{
 		String ID = attribute(eventNode, "ID");
-		
-		if (DEBUG)
-			_log.fine("Parsing Event \"" + ID + "\"");
-		
 		_eventDates = DateRange.parse(attribute(eventNode, "Active"), DATE_FORMAT);
 		
 		Date currentDate = new Date();
@@ -58,7 +53,8 @@ public class FaenorEventParser extends FaenorParser
 		if (_eventDates.getStartDate().after(currentDate))
 		{
 			_log.info("Event ID: (" + ID + ") is not active yet... Ignored.");
-			ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
+			ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+			{
 				@Override
 				public void run()
 				{
@@ -73,10 +69,8 @@ public class FaenorEventParser extends FaenorParser
 	
 	protected void parseEventDropAndMessage(Node eventNode)
 	{
-		
 		for (Node node = eventNode.getFirstChild(); node != null; node = node.getNextSibling())
 		{
-			
 			if (isNodeName(node, "DropList"))
 			{
 				parseEventDropList(node);
@@ -90,9 +84,6 @@ public class FaenorEventParser extends FaenorParser
 	
 	private void parseEventMessage(Node sysMsg)
 	{
-		if (DEBUG)
-			_log.fine("Parsing Event Message.");
-		
 		try
 		{
 			String type = attribute(sysMsg, "Type");
@@ -111,9 +102,6 @@ public class FaenorEventParser extends FaenorParser
 	
 	private void parseEventDropList(Node dropList)
 	{
-		if (DEBUG)
-			_log.fine("Parsing Droplist.");
-		
 		for (Node node = dropList.getFirstChild(); node != null; node = node.getNextSibling())
 		{
 			if (isNodeName(node, "AllDrop"))
@@ -125,9 +113,6 @@ public class FaenorEventParser extends FaenorParser
 	
 	private void parseEventDrop(Node drop)
 	{
-		if (DEBUG)
-			_log.fine("Parsing Drop.");
-		
 		try
 		{
 			int[] items = IntList.parse(attribute(drop, "Items"));
