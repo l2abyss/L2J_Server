@@ -39,14 +39,14 @@ public abstract class AttackListener extends L2JListener
 	
 	/**
 	 * The player just attacked another character
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onAttack(AttackEvent event);
 	
 	/**
 	 * The player was just attacked by another character
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean isAttacked(AttackEvent event);

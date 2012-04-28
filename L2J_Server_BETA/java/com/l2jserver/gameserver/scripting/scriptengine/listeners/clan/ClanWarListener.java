@@ -31,14 +31,14 @@ public abstract class ClanWarListener extends L2JListener
 	
 	/**
 	 * Clan war just started
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onWarStart(ClanWarEvent event);
 	
 	/**
 	 * Clan war just ended
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onWarEnd(ClanWarEvent event);

@@ -31,14 +31,14 @@ public abstract class AugmentListener extends L2JListener
 	
 	/**
 	 * Triggered when a L2ItemInstance is augmented
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onAugment(AugmentEvent event);
 	
 	/**
 	 * Triggered when a L2ItemInstance's augmentation is removed
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onRemoveAugment(AugmentEvent event);

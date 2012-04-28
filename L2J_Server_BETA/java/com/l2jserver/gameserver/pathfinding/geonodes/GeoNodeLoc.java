@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 
 /**
- *
  * @author -Nemesiss-
  */
 public class GeoNodeLoc extends AbstractNodeLoc
@@ -40,7 +39,7 @@ public class GeoNodeLoc extends AbstractNodeLoc
 	@Override
 	public int getX()
 	{
-		return   L2World.MAP_MIN_X  + _x * 128 + 48 ;
+		return L2World.MAP_MIN_X + (_x * 128) + 48;
 	}
 	
 	/**
@@ -49,7 +48,7 @@ public class GeoNodeLoc extends AbstractNodeLoc
 	@Override
 	public int getY()
 	{
-		return  L2World.MAP_MIN_Y + _y * 128 + 48 ;
+		return L2World.MAP_MIN_Y + (_y * 128) + 48;
 	}
 	
 	/**
@@ -87,9 +86,9 @@ public class GeoNodeLoc extends AbstractNodeLoc
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + _x;
-		result = prime * result + _y;
-		result = prime * result + _z;
+		result = (prime * result) + _x;
+		result = (prime * result) + _y;
+		result = (prime * result) + _z;
 		return result;
 	}
 	
@@ -100,19 +99,30 @@ public class GeoNodeLoc extends AbstractNodeLoc
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
+		{
 			return true;
+		}
 		if (obj == null)
+		{
 			return false;
+		}
 		if (!(obj instanceof GeoNodeLoc))
+		{
 			return false;
+		}
 		final GeoNodeLoc other = (GeoNodeLoc) obj;
 		if (_x != other._x)
+		{
 			return false;
+		}
 		if (_y != other._y)
+		{
 			return false;
+		}
 		if (_z != other._z)
+		{
 			return false;
+		}
 		return true;
 	}
-	
 }

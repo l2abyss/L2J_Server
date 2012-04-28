@@ -30,14 +30,14 @@ public abstract class HennaListener extends L2JListener
 	
 	/**
 	 * The given henna has just been added to the player
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onAddHenna(HennaEvent event);
 	
 	/**
 	 * The given henna has just been removed from the player
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onRemoveHenna(HennaEvent event);

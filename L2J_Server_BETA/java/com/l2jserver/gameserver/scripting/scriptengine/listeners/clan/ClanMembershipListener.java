@@ -33,14 +33,14 @@ public abstract class ClanMembershipListener extends L2JListener
 	
 	/**
 	 * A player just joined the clan
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onJoin(ClanJoinEvent event);
 	
 	/**
 	 * A player just left the clan
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onLeave(ClanLeaveEvent event);

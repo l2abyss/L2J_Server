@@ -30,9 +30,9 @@ public class ScriptPackage
 {
 	private static final Logger _log = Logger.getLogger(ScriptPackage.class.getName());
 	
-	private List<ScriptDocument> _scriptFiles;
-	private List<String> _otherFiles;
-	private String _name;
+	private final List<ScriptDocument> _scriptFiles;
+	private final List<String> _otherFiles;
+	private final String _name;
 	
 	public ScriptPackage(ZipFile pack)
 	{
@@ -59,7 +59,7 @@ public class ScriptPackage
 	}
 	
 	/**
-	 * @param pack 
+	 * @param pack
 	 */
 	private void addFiles(ZipFile pack)
 	{
@@ -84,6 +84,7 @@ public class ScriptPackage
 			}
 		}
 	}
+	
 	/**
 	 * @return Returns the name.
 	 */
@@ -96,7 +97,9 @@ public class ScriptPackage
 	public String toString()
 	{
 		if (getScriptFiles().isEmpty() && getOtherFiles().isEmpty())
+		{
 			return "Empty Package.";
+		}
 		
 		StringBuilder out = new StringBuilder();
 		out.append("Package Name: ");

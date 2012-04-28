@@ -45,7 +45,7 @@ public abstract class DeathListener extends L2JListener
 	/**
 	 * The character just killed the target<br>
 	 * If you use this listener as global, use: onDeathGlobal()
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onKill(DeathEvent event);
@@ -53,7 +53,7 @@ public abstract class DeathListener extends L2JListener
 	/**
 	 * The character was just killed by the target<br>
 	 * If you use this listener as global, use: onDeathGlobal()
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onDeath(DeathEvent event);

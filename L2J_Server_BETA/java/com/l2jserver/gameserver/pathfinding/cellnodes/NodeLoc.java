@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 
 /**
- *
  * @author -Nemesiss-
  */
 public class NodeLoc extends AbstractNodeLoc
@@ -44,7 +43,7 @@ public class NodeLoc extends AbstractNodeLoc
 	
 	public short getNSWE()
 	{
-		return (short)(_geoHeightAndNSWE & 0x0f);
+		return (short) (_geoHeightAndNSWE & 0x0f);
 	}
 	
 	/**
@@ -71,8 +70,8 @@ public class NodeLoc extends AbstractNodeLoc
 	@Override
 	public short getZ()
 	{
-		short height = (short)(_geoHeightAndNSWE & 0x0fff0);
-		return (short)(height >> 1);
+		short height = (short) (_geoHeightAndNSWE & 0x0fff0);
+		return (short) (height >> 1);
 	}
 	
 	@Override
@@ -107,9 +106,9 @@ public class NodeLoc extends AbstractNodeLoc
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + _x;
-		result = prime * result + _y;
-		result = prime * result + _geoHeightAndNSWE;
+		result = (prime * result) + _x;
+		result = (prime * result) + _y;
+		result = (prime * result) + _geoHeightAndNSWE;
 		return result;
 	}
 	
@@ -120,18 +119,30 @@ public class NodeLoc extends AbstractNodeLoc
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
+		{
 			return true;
+		}
 		if (obj == null)
+		{
 			return false;
+		}
 		if (!(obj instanceof NodeLoc))
+		{
 			return false;
+		}
 		final NodeLoc other = (NodeLoc) obj;
 		if (_x != other._x)
+		{
 			return false;
+		}
 		if (_y != other._y)
+		{
 			return false;
+		}
 		if (_geoHeightAndNSWE != other._geoHeightAndNSWE)
+		{
 			return false;
+		}
 		return true;
 	}
 }

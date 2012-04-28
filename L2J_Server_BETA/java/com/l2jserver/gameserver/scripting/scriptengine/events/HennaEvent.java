@@ -52,7 +52,7 @@ public class HennaEvent implements L2Event
 	}
 	
 	/**
-	 * @param h 
+	 * @param h
 	 */
 	public void setHenna(L2Henna h)
 	{

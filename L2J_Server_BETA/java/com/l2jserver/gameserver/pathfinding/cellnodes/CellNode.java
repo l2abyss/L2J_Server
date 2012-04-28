@@ -55,7 +55,7 @@ public class CellNode extends AbstractNode
 	
 	public void setCost(double cost)
 	{
-		_cost = (float)cost;
+		_cost = (float) cost;
 	}
 	
 	public void free()

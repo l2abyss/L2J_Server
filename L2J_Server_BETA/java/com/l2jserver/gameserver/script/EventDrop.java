@@ -34,7 +34,10 @@ public class EventDrop
 	
 	public EventDrop(int itemId, int minCount, int maxCount, int dropChance)
 	{
-		_itemIdList = new int[]{ itemId };
+		_itemIdList = new int[]
+		{
+			itemId
+		};
 		_minCount = minCount;
 		_maxCount = maxCount;
 		_dropChance = dropChance;

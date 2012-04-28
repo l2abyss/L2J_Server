@@ -52,7 +52,7 @@ public abstract class AbstractNode
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((_loc == null) ? 0 : _loc.hashCode());
+		result = (prime * result) + ((_loc == null) ? 0 : _loc.hashCode());
 		return result;
 	}
 	
@@ -63,19 +63,29 @@ public abstract class AbstractNode
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
+		{
 			return true;
+		}
 		if (obj == null)
+		{
 			return false;
+		}
 		if (!(obj instanceof AbstractNode))
+		{
 			return false;
+		}
 		final AbstractNode other = (AbstractNode) obj;
 		if (_loc == null)
 		{
 			if (other._loc != null)
+			{
 				return false;
+			}
 		}
 		else if (!_loc.equals(other._loc))
+		{
 			return false;
+		}
 		return true;
 	}
 }

@@ -30,20 +30,20 @@ public abstract class SiegeListener extends L2JListener
 	
 	/**
 	 * Fired when a siege starts
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onStart(SiegeEvent event);
 	
 	/**
 	 * Fired when a siege ends
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onEnd(SiegeEvent event);
 	
 	/**
 	 * Fired when the control of the castle change hands during the siege
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onControlChange(SiegeEvent event);
 	

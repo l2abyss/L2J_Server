@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.util.file.filter.ExtFilter;
 
 /**
- * General Utility functions related to Gameserver
+ * General Utility functions related to game server.
  */
 public final class Util
 {

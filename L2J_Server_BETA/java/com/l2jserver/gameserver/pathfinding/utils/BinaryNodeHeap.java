@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.pathfinding.utils;
 import com.l2jserver.gameserver.pathfinding.geonodes.GeoNode;
 
 /**
- *
  * @author -Nemesiss-
  */
 public class BinaryNodeHeap
@@ -27,16 +26,18 @@ public class BinaryNodeHeap
 	
 	public BinaryNodeHeap(int size)
 	{
-		_list = new GeoNode[size+1];
+		_list = new GeoNode[size + 1];
 		_size = 0;
 	}
-	public void add(GeoNode n) {
+	
+	public void add(GeoNode n)
+	{
 		_size++;
-		int pos  = _size;
+		int pos = _size;
 		_list[pos] = n;
 		while (pos != 1)
 		{
-			int p2 = pos/2;
+			int p2 = pos / 2;
 			if (_list[pos].getCost() <= _list[p2].getCost())
 			{
 				GeoNode temp = _list[p2];
@@ -45,9 +46,12 @@ public class BinaryNodeHeap
 				pos = p2;
 			}
 			else
+			{
 				break;
+			}
 		}
 	}
+	
 	public GeoNode removeFirst()
 	{
 		GeoNode first = _list[1];
@@ -58,21 +62,27 @@ public class BinaryNodeHeap
 		int cpos;
 		int dblcpos;
 		GeoNode temp;
-		while(true)
+		while (true)
 		{
 			cpos = pos;
-			dblcpos = cpos*2;
-			if ((dblcpos+1) <= _size)
+			dblcpos = cpos * 2;
+			if ((dblcpos + 1) <= _size)
 			{
 				if (_list[cpos].getCost() >= _list[dblcpos].getCost())
+				{
 					pos = dblcpos;
-				if (_list[pos].getCost() >= _list[dblcpos+1].getCost())
-					pos = dblcpos+1;
+				}
+				if (_list[pos].getCost() >= _list[dblcpos + 1].getCost())
+				{
+					pos = dblcpos + 1;
+				}
 			}
 			else if (dblcpos <= _size)
 			{
 				if (_list[cpos].getCost() >= _list[dblcpos].getCost())
+				{
 					pos = dblcpos;
+				}
 			}
 			
 			if (cpos != pos)
@@ -82,21 +92,29 @@ public class BinaryNodeHeap
 				_list[pos] = temp;
 			}
 			else
+			{
 				break;
+			}
 		}
 		return first;
 	}
+	
 	public boolean contains(GeoNode n)
 	{
 		if (_size == 0)
+		{
 			return false;
+		}
 		for (int i = 1; i <= _size; i++)
 		{
-			if(_list[i].equals(n))
+			if (_list[i].equals(n))
+			{
 				return true;
+			}
 		}
 		return false;
 	}
+	
 	public boolean isEmpty()
 	{
 		return _size == 0;

@@ -15,9 +15,9 @@
 package com.l2jserver.gameserver.util;
 
 /**
- * This interface can be implemented by extensions to register simple functions with the DynamicExtension handler<br>
- * It's in the responsibility of the extensions to interpret the get and set functions
- * @author  Galun
+ * This interface can be implemented by extensions to register simple functions with the DynamicExtension handler.<br>
+ * It's in the responsibility of the extensions to interpret the get and set functions.
+ * @author Galun
  */
 public interface ExtensionFunction
 {

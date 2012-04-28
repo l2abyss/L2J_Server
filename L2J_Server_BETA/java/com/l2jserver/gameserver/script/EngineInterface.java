@@ -36,7 +36,7 @@ import com.l2jserver.gameserver.model.L2World;
  */
 public interface EngineInterface
 {
-	//*  keep the references of Singletons to prevent garbage collection
+	// * keep the references of Singletons to prevent garbage collection
 	public CharNameTable charNametable = CharNameTable.getInstance();
 	
 	public IdFactory idFactory = IdFactory.getInstance();
@@ -60,12 +60,12 @@ public interface EngineInterface
 	public Announcements announcements = Announcements.getInstance();
 	public MapRegionManager mapRegions = MapRegionManager.getInstance();
 	
-	
-	
-	//public ArrayList getAllPlayers();
-	//public Player getPlayer(String characterName);
+	// public ArrayList getAllPlayers();
+	// public Player getPlayer(String characterName);
 	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states);
+	
 	public void addEventDrop(int[] items, int[] count, double chance, DateRange range);
+	
 	public void onPlayerLogin(String[] message, DateRange range);
 	
 }

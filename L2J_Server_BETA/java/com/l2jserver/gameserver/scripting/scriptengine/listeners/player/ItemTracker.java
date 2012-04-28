@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
  */
 public abstract class ItemTracker extends L2JListener
 {
-	private List<Integer> _itemIds;
+	private final List<Integer> _itemIds;
 	
 	public ItemTracker(List<Integer> itemIds)
 	{
@@ -41,25 +41,25 @@ public abstract class ItemTracker extends L2JListener
 	
 	/**
 	 * The item has been dropped
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onDrop(ItemDropEvent event);
 	
 	/**
 	 * The item has been added to the inventory
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onAddToInventory(AddToInventoryEvent event);
 	
 	/**
 	 * Notifies when the item is destroyed
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onDestroy(ItemDestroyEvent event);
 	
 	/**
 	 * Notifies when the item is transfered or traded
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onTransfer(ItemTransferEvent event);
 	

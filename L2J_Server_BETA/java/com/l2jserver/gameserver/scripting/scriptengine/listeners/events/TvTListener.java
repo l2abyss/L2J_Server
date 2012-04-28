@@ -36,7 +36,7 @@ public abstract class TvTListener extends L2JListener
 	
 	/**
 	 * A player has been killed
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onKill(TvtKillEvent event);
 	

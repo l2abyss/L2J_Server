@@ -44,7 +44,7 @@ public abstract class EquipmentListener extends L2JListener
 	
 	/**
 	 * The item has just been equipped or unequipped
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onEquip(EquipmentEvent event);

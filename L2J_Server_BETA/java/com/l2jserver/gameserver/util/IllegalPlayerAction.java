@@ -22,19 +22,17 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * This class ...
- * 
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
 public final class IllegalPlayerAction implements Runnable
 {
 	private static Logger _logAudit = Logger.getLogger("audit");
 	
-	private String _message;
-	private int _punishment;
-	private L2PcInstance _actor;
+	private final String _message;
+	private final int _punishment;
+	private final L2PcInstance _actor;
 	
 	public static final int PUNISH_BROADCAST = 1;
 	public static final int PUNISH_KICK = 2;

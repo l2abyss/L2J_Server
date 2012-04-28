@@ -33,7 +33,7 @@ public abstract class ChatListener extends L2JListener
 	
 	/**
 	 * Notifies that the given text was sent from player1(origin) to a given target.<br>
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onTalk(ChatEvent event);
 	

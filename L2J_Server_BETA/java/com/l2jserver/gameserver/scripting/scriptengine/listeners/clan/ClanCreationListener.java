@@ -32,13 +32,13 @@ public abstract class ClanCreationListener extends L2JListener
 	
 	/**
 	 * Fired when a clan is created
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onClanCreate(ClanCreationEvent event);
 	
 	/**
 	 * Fired when a clan levels up
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onClanLevelUp(ClanLevelUpEvent event);

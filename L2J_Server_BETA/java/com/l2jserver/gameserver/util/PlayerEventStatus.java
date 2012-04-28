@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class PlayerEventStatus
 {
 	public L2PcInstance player = null;
-	public Location initLoc = new Location(0,0,0);
+	public Location initLoc = new Location(0, 0, 0);
 	public int initInstanceId = 0;
 	public int initKarma = 0;
 	public int initPvpKills = 0;
@@ -52,8 +52,10 @@ public class PlayerEventStatus
 	public void restoreInits()
 	{
 		player.teleToLocation(initLoc, true);
-		if (initInstanceId > 0 && InstanceManager.getInstance().getInstance(initInstanceId) != null)
+		if ((initInstanceId > 0) && (InstanceManager.getInstance().getInstance(initInstanceId) != null))
+		{
 			player.setInstanceId(initInstanceId);
+		}
 		player.setKarma(initKarma);
 		player.setPvpKills(initPvpKills);
 		player.setPkKills(initPkKills);

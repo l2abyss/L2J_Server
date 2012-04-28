@@ -30,14 +30,14 @@ public abstract class FortSiegeListener extends L2JListener
 	
 	/**
 	 * Fired when a fort siege starts
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onStart(FortSiegeEvent event);
 	
 	/**
 	 * Fired when a fort siege ends
-	 * @param event 
+	 * @param event
 	 */
 	public abstract void onEnd(FortSiegeEvent event);
 	

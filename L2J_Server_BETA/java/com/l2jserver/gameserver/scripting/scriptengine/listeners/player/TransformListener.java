@@ -36,14 +36,14 @@ public abstract class TransformListener extends L2JListener
 	
 	/**
 	 * The player just transformed
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onTransform(TransformEvent event);
 	
 	/**
 	 * The player just untransformed
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onUntransform(TransformEvent event);

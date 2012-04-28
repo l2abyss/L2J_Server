@@ -55,7 +55,7 @@ public abstract class SkillUseListener extends L2JListener
 	
 	/**
 	 * A L2Character just cast a skill
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onSkillUse(SkillUseEvent event);

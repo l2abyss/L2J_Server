@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
  */
 public abstract class ClanWarehouseListener extends L2JListener
 {
-	private ClanWarehouse _clanWarehouse;
+	private final ClanWarehouse _clanWarehouse;
 	
 	public ClanWarehouseListener(L2Clan clan)
 	{
@@ -36,21 +36,21 @@ public abstract class ClanWarehouseListener extends L2JListener
 	
 	/**
 	 * An item was just added
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onAddItem(ClanWarehouseAddItemEvent event);
 	
 	/**
 	 * An item was just deleted
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onDeleteItem(ClanWarehouseDeleteItemEvent event);
 	
 	/**
 	 * An item was just transfered
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onTransferItem(ClanWarehouseTransferEvent event);

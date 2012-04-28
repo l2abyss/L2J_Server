@@ -20,12 +20,10 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 
-
 /**
  * This class ...
- *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
- * @param <T> 
+ * @param <T>
  */
 public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 {
@@ -65,5 +63,4 @@ public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 	
 	@Override
 	public abstract Iterator<T> iterator();
-	
 }

@@ -33,7 +33,7 @@ public class FaenorQuestParser extends FaenorParser
 	
 	@Override
 	public void parseScript(Node questNode, ScriptContext context)
-	{	
+	{
 		String questID = attribute(questNode, "ID");
 		
 		for (Node node = questNode.getFirstChild(); node != null; node = node.getNextSibling())
@@ -69,7 +69,7 @@ public class FaenorQuestParser extends FaenorParser
 	}
 	
 	private void parseQuestDrop(Node drop, String questID)
-	{	
+	{
 		int npcID;
 		int itemID;
 		int min;

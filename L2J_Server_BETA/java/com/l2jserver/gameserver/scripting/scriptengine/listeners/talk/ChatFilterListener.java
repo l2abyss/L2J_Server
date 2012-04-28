@@ -33,7 +33,7 @@ public abstract class ChatFilterListener extends L2JListener
 	
 	/**
 	 * Allows for filtering the text
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract String onTalk(ChatEvent event);

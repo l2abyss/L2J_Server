@@ -30,7 +30,7 @@ public abstract class PathFinding
 	{
 		if (!Config.GEODATA_CELLFINDING)
 		{
-			//Higher Memory Usage, Smaller Cpu Usage
+			// Higher Memory Usage, Smaller Cpu Usage
 			return GeoPathFinding.getInstance();
 		}
 		// Cell pathfinding, calculated directly from geodata files
@@ -41,6 +41,7 @@ public abstract class PathFinding
 	
 	public abstract List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean playable);
 	
+	// @formatter:off
 	/*
 	public List<AbstractNodeLoc> search(AbstractNode start, AbstractNode end, int instanceId)
 	{
@@ -143,6 +144,8 @@ public abstract class PathFinding
 		return null;
 	}
 	 */
+	// @formatter:on
+	
 	/**
 	 * Convert geodata position to pathnode position
 	 * @param geo_pos
@@ -150,7 +153,7 @@ public abstract class PathFinding
 	 */
 	public short getNodePos(int geo_pos)
 	{
-		return (short) (geo_pos >> 3); //OK?
+		return (short) (geo_pos >> 3); // OK?
 	}
 	
 	/**
@@ -185,7 +188,7 @@ public abstract class PathFinding
 	 */
 	public int calculateWorldX(short node_x)
 	{
-		return L2World.MAP_MIN_X + node_x * 128 + 48;
+		return L2World.MAP_MIN_X + (node_x * 128) + 48;
 	}
 	
 	/**
@@ -195,7 +198,7 @@ public abstract class PathFinding
 	 */
 	public int calculateWorldY(short node_y)
 	{
-		return L2World.MAP_MIN_Y + node_y * 128 + 48;
+		return L2World.MAP_MIN_Y + (node_y * 128) + 48;
 	}
 	
 	public String[] getStat()

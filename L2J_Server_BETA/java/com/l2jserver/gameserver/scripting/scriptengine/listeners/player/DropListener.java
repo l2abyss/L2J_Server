@@ -32,14 +32,14 @@ public abstract class DropListener extends L2JListener
 	
 	/**
 	 * The item was dropped
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onDrop(ItemDropEvent event);
 	
 	/**
 	 * The item was picked up
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onPickup(ItemPickupEvent event);

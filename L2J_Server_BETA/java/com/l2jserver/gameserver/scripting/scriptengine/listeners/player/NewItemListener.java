@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
  */
 public abstract class NewItemListener extends L2JListener
 {
-	private List<Integer> _itemIds;
+	private final List<Integer> _itemIds;
 	
 	public NewItemListener(List<Integer> itemIds)
 	{
@@ -36,7 +36,7 @@ public abstract class NewItemListener extends L2JListener
 	
 	/**
 	 * An item corresponding to the itemIds list was just created
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	public abstract boolean onCreate(ItemCreateEvent event);

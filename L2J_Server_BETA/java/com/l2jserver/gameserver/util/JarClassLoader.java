@@ -25,14 +25,12 @@ import java.util.zip.ZipFile;
 
 /**
  * This is a class loader for the dynamic extensions used by DynamicExtension class.
- *
- * @version $Revision: $ $Date: $
- * @author  galun
+ * @author galun
  */
 public class JarClassLoader extends ClassLoader
 {
 	private static Logger _log = Logger.getLogger(JarClassLoader.class.getCanonicalName());
-	HashSet<String> _jars = new HashSet<String>();
+	private final HashSet<String> _jars = new HashSet<String>();
 	
 	public void addJarFile(String filename)
 	{

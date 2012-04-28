@@ -83,7 +83,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListen
  */
 public abstract class L2Script extends Quest
 {
-	private List<L2JListener> _listeners = new ArrayList<L2JListener>();
+	private final List<L2JListener> _listeners = new ArrayList<L2JListener>();
 	
 	/**
 	 * constructor
@@ -146,7 +146,7 @@ public abstract class L2Script extends Quest
 	
 	/**
 	 * Used locally to call onDeath()
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	private boolean notifyDeath(DeathEvent event)
@@ -156,7 +156,7 @@ public abstract class L2Script extends Quest
 	
 	/**
 	 * Used locally to call onAttack(L2Character,L2Character)
-	 * @param event 
+	 * @param event
 	 * @return
 	 */
 	private boolean notifyAttack(AttackEvent event)
@@ -245,7 +245,7 @@ public abstract class L2Script extends Quest
 		List<L2JListener> removeList = new ArrayList<L2JListener>();
 		for (L2JListener listener : _listeners)
 		{
-			if (listener instanceof PlayerSpawnListener || listener instanceof PlayerDespawnListener)
+			if ((listener instanceof PlayerSpawnListener) || (listener instanceof PlayerDespawnListener))
 			{
 				removeList.add(listener);
 			}
@@ -290,7 +290,7 @@ public abstract class L2Script extends Quest
 			List<L2JListener> removeList = new ArrayList<L2JListener>();
 			for (L2JListener listener : _listeners)
 			{
-				if (listener instanceof AttackListener && ((AttackListener) listener).getCharacter() == character)
+				if ((listener instanceof AttackListener) && (((AttackListener) listener).getCharacter() == character))
 				{
 					removeList.add(listener);
 				}
@@ -349,7 +349,7 @@ public abstract class L2Script extends Quest
 			List<L2JListener> removeList = new ArrayList<L2JListener>();
 			for (L2JListener listener : _listeners)
 			{
-				if (listener instanceof SkillUseListener && ((SkillUseListener) listener).getCharacter() == character)
+				if ((listener instanceof SkillUseListener) && (((SkillUseListener) listener).getCharacter() == character))
 				{
 					removeList.add(listener);
 				}
@@ -367,7 +367,7 @@ public abstract class L2Script extends Quest
 		List<L2JListener> removeList = new ArrayList<L2JListener>();
 		for (L2JListener listener : _listeners)
 		{
-			if (listener instanceof SkillUseListener && ((SkillUseListener) listener).getNpcId() == npcId)
+			if ((listener instanceof SkillUseListener) && (((SkillUseListener) listener).getNpcId() == npcId))
 			{
 				removeList.add(listener);
 			}
@@ -500,7 +500,7 @@ public abstract class L2Script extends Quest
 			List<L2JListener> removeList = new ArrayList<L2JListener>();
 			for (L2JListener listener : _listeners)
 			{
-				if (listener instanceof ClanWarehouseListener && ((ClanWarehouseListener) listener).getWarehouse() == clan.getWarehouse())
+				if ((listener instanceof ClanWarehouseListener) && (((ClanWarehouseListener) listener).getWarehouse() == clan.getWarehouse()))
 				{
 					removeList.add(listener);
 				}
@@ -795,7 +795,7 @@ public abstract class L2Script extends Quest
 		List<L2JListener> removeList = new ArrayList<L2JListener>();
 		for (L2JListener listener : _listeners)
 		{
-			if (listener instanceof PlayerLevelListener && listener.getPlayer() == player)
+			if ((listener instanceof PlayerLevelListener) && (listener.getPlayer() == player))
 			{
 				removeList.add(listener);
 			}
@@ -831,7 +831,7 @@ public abstract class L2Script extends Quest
 		List<L2JListener> removeList = new ArrayList<L2JListener>();
 		for (L2JListener listener : _listeners)
 		{
-			if (listener instanceof ProfessionChangeListener && listener.getPlayer() == player)
+			if ((listener instanceof ProfessionChangeListener) && (listener.getPlayer() == player))
 			{
 				removeList.add(listener);
 			}
@@ -867,7 +867,7 @@ public abstract class L2Script extends Quest
 		List<L2JListener> removeList = new ArrayList<L2JListener>();
 		for (L2JListener listener : _listeners)
 		{
-			if (listener instanceof EquipmentListener && ((EquipmentListener) listener).getPlayer() == player)
+			if ((listener instanceof EquipmentListener) && (((EquipmentListener) listener).getPlayer() == player))
 			{
 				removeList.add(listener);
 			}
@@ -1043,7 +1043,7 @@ public abstract class L2Script extends Quest
 			List<L2JListener> removeList = new ArrayList<L2JListener>();
 			for (L2JListener listener : _listeners)
 			{
-				if (listener instanceof TransformListener && listener.getPlayer() == player)
+				if ((listener instanceof TransformListener) && (listener.getPlayer() == player))
 				{
 					removeList.add(listener);
 				}
