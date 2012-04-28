@@ -45,7 +45,7 @@ import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
-import com.l2jserver.gameserver.datatables.EnchantItemTable;
+import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.FishData;
@@ -219,7 +219,7 @@ public class GameServer
 		
 		printSection("Items");
 		ItemTable.getInstance();
-		EnchantItemTable.getInstance();
+		EnchantItemData.getInstance();
 		SummonItemsData.getInstance();
 		EnchantHPBonusData.getInstance();
 		MerchantPriceConfigTable.getInstance().loadInstances();

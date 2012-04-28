@@ -67,7 +67,6 @@ public final class EffectHandler
 		{
 			_log.log(Level.WARNING, "Problems while running EffectMansterHandler", e);
 		}
-		_log.config("Loaded " + size() + " Effect handlers");
 	}
 	
 	public static EffectHandler getInstance()

@@ -14,14 +14,14 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.List;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-
 /**
  * @author UnAfraid
- *
  */
 public class EnchantScroll extends EnchantItem
 {
@@ -29,20 +29,15 @@ public class EnchantScroll extends EnchantItem
 	private final boolean _isSafe;
 	
 	/**
-	 * @param wep
-	 * @param bless
-	 * @param safe
-	 * @param type
-	 * @param level
-	 * @param chance
+	 * @param set
 	 * @param items
 	 */
-	public EnchantScroll(boolean wep, boolean bless, boolean safe, int type, int level, double chance, int[] items)
+	public EnchantScroll(StatsSet set, List<Integer> items)
 	{
-		super(wep, type, level, chance, items);
+		super(set, items);
 		
-		_isBlessed = bless;
-		_isSafe = safe;
+		_isBlessed = set.getBool("isBlessed", false);
+		_isSafe = set.getBool("isSafe", false);
 	}
 	
 	/**
@@ -86,8 +81,7 @@ public class EnchantScroll extends EnchantItem
 			return -1;
 		
 		boolean fullBody = enchantItem.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR;
-		if (enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX
-				|| (fullBody && enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL))
+		if (enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX || (fullBody && enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL))
 			return 100;
 		
 		double chance = _chanceAdd;

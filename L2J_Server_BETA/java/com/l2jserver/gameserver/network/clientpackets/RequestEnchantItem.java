@@ -19,7 +19,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.EnchantItemTable;
+import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.EnchantItem;
 import com.l2jserver.gameserver.model.EnchantScroll;
@@ -89,7 +89,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		}
 		
 		// template for scroll
-		EnchantScroll scrollTemplate = EnchantItemTable.getInstance().getEnchantScroll(scroll);
+		EnchantScroll scrollTemplate = EnchantItemData.getInstance().getEnchantScroll(scroll);
 		
 		// scroll not found in list
 		if (scrollTemplate == null)
@@ -106,7 +106,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				activeChar.setActiveEnchantItem(null);
 				return;
 			}
-			supportTemplate = EnchantItemTable.getInstance().getSupportItem(support);
+			supportTemplate = EnchantItemData.getInstance().getSupportItem(support);
 		}
 		
 		// first validation check
