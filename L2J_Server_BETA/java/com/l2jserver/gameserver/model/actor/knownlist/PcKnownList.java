@@ -128,6 +128,8 @@ public class PcKnownList extends PlayableKnownList
 	{
 		if (object instanceof L2Vehicle)
 			return 10000;
+		else if (object != null && object.isWalker())
+			return 10000;
 		
 		// when knownlist grows, the distance to forget should be at least
 		// the same as the previous watch range, or it becomes possible that
@@ -146,6 +148,8 @@ public class PcKnownList extends PlayableKnownList
 	public int getDistanceToWatchObject(L2Object object)
 	{
 		if (object instanceof L2Vehicle)
+			return 8000;
+		else if (object != null && object.isWalker())
 			return 8000;
 		
 		final int knownlistSize = getKnownObjects().size();

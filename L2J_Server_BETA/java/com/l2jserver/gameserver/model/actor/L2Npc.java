@@ -1717,4 +1717,10 @@ public class L2Npc extends L2Character
 			player.sendPacket(new AbstractNpcInfo.NpcInfo(this, player));
 		}
 	}
+	
+	@Override
+	public boolean isWalker()
+	{
+		return WalkingManager.getInstance().isRegistered(this);
+	}
 }

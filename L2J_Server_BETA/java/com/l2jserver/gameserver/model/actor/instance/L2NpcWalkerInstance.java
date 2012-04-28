@@ -117,4 +117,10 @@ public class L2NpcWalkerInstance extends L2Npc
 		public void detachAI()
 		{}
 	}
+	
+	@Override
+	public boolean isWalker()
+	{
+		return true;
+	}
 }
