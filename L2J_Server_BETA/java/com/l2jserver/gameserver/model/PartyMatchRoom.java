@@ -14,11 +14,9 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExManagePartyRoomMember;
@@ -26,25 +24,24 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * @author Gnacik
- *
  */
 public class PartyMatchRoom
 {
-	private int _id;
+	private final int _id;
 	private String _title;
 	private int _loot;
 	private int _location;
 	private int _minlvl;
 	private int _maxlvl;
 	private int _maxmem;
-	private final List<L2PcInstance> _members = new FastList<L2PcInstance>();
+	private final List<L2PcInstance> _members = new ArrayList<>();
 	
 	public PartyMatchRoom(int id, String title, int loot, int minlvl, int maxlvl, int maxmem, L2PcInstance owner)
 	{
 		_id = id;
 		_title = title;
 		_loot = loot;
-		_location = MapRegionManager.getInstance().getMapRegion(owner).getBbs();
+		_location = 0; // TODO: Closes town
 		_minlvl = minlvl;
 		_maxlvl = maxlvl;
 		_maxmem = maxmem;
@@ -81,7 +78,7 @@ public class PartyMatchRoom
 	
 	public void notifyMembersAboutExit(L2PcInstance player)
 	{
-		for(L2PcInstance _member : getPartyMembers())
+		for (L2PcInstance _member : _members)
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_LEFT_PARTY_ROOM);
 			sm.addCharName(player);
@@ -97,11 +94,11 @@ public class PartyMatchRoom
 		// Remove new leader
 		_members.remove(newLeader);
 		// Move him to first position
-		_members.set(0,newLeader);
+		_members.set(0, newLeader);
 		// Add old leader as normal member
 		_members.add(oldLeader);
 		// Broadcast change
-		for(L2PcInstance member : getPartyMembers())
+		for (L2PcInstance member : _members)
 		{
 			member.sendPacket(new ExManagePartyRoomMember(newLeader, this, 1));
 			member.sendPacket(new ExManagePartyRoomMember(oldLeader, this, 1));
@@ -154,7 +151,7 @@ public class PartyMatchRoom
 		return _members.get(0);
 	}
 	
-	/* SET  */
+	/* SET */
 	
 	public void setMinLvl(int minlvl)
 	{
