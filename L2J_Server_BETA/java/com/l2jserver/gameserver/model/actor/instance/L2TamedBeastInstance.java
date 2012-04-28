@@ -249,7 +249,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			{
 				// instead of calculating this value each time, let's get this now and pass it on
 				int totalBuffsAvailable = 0;
-				for (L2Skill skill: getTemplate().getSkillsArray())
+				for (L2Skill skill: getTemplate().getSkills().values())
 				{
 					// if the skill is a buff, check if the owner has it already [  owner.getEffect(L2Skill skill) ]
 					if (skill.getSkillType() == L2SkillType.BUFF)
@@ -325,7 +325,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		// use of more than one debuff at this moment is acceptable
 		if (HPRatio >= 0.8)
 		{
-			for (L2Skill skill: getTemplate().getSkillsArray())
+			for (L2Skill skill: getTemplate().getSkills().values())
 			{
 				// if the skill is a debuff, check if the attacker has it already [  attacker.getEffect(L2Skill skill) ]
 				if ((skill.getSkillType() == L2SkillType.DEBUFF) && Rnd.get(3) < 1 && (attacker != null && attacker.getFirstEffect(skill) != null))
@@ -343,7 +343,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 				chance = 2;
 			
 			// if the owner has a lot of HP, then debuff the enemy with a random debuff among the available skills
-			for (L2Skill skill: getTemplate().getSkillsArray())
+			for (L2Skill skill: getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [  owner.getEffect(L2Skill skill) ]
 				if ( (Rnd.get(5) < chance) && ((skill.getSkillType() == L2SkillType.HEAL) ||
@@ -499,7 +499,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			L2Skill buffToGive = null;
 			
 			// get this npc's skills:  getSkills()
-			for (L2Skill skill: _tamedBeast.getTemplate().getSkillsArray())
+			for (L2Skill skill: _tamedBeast.getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [  owner.getEffect(L2Skill skill) ]
 				if (skill.getSkillType() == L2SkillType.BUFF)

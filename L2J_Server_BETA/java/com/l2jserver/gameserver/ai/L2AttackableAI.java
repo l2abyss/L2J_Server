@@ -18,10 +18,10 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Future;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
@@ -50,6 +50,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate.AIType;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
@@ -84,8 +85,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	private int timepass = 0;
 	private int chaostime = 0;
 	private final L2NpcTemplate _skillrender;
-	private FastList<L2Skill> shortRangeSkills = new FastList<>();
-	private FastList<L2Skill> longRangeSkills = new FastList<>();
+	private List<L2Skill> shortRangeSkills = new ArrayList<>();
+	private List<L2Skill> longRangeSkills = new ArrayList<>();
 	int lastBuffTick;
 	
 	/**
@@ -708,15 +709,17 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 									&& called.getInstanceId() == npc.getInstanceId())
 //									&& GeoData.getInstance().canSeeTarget(called, npc))
 							{
-								if (originalAttackTarget instanceof L2Playable)
+								if (originalAttackTarget.isPlayable())
 								{
-									Quest[] quests = called.getTemplate().getEventQuests(Quest.QuestEventType.ON_FACTION_CALL);
-									if (quests != null)
+									List<Quest> quests = called.getTemplate().getEventQuests(QuestEventType.ON_FACTION_CALL);
+									if (quests != null && !quests.isEmpty())
 									{
 										L2PcInstance player = originalAttackTarget.getActingPlayer();
-										boolean isSummon = originalAttackTarget instanceof L2Summon;
+										boolean isSummon = originalAttackTarget.isSummon();
 										for (Quest quest : quests)
+										{
 											quest.notifyFactionCall(called, getActiveChar(), player, isSummon);
+										}
 									}
 								}
 								else if (called instanceof L2Attackable && getAttackTarget() != null && called.getAI()._intention != CtrlIntention.AI_INTENTION_ATTACK)
@@ -1078,7 +1081,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			// Long/Short Range skill usage.
 			if (npc.hasLSkill() || npc.hasSSkill())
 			{
-				final FastList<L2Skill> shortRangeSkills = shortRangeSkillRender();
+				final List<L2Skill> shortRangeSkills = shortRangeSkillRender();
 				if (!shortRangeSkills.isEmpty() && npc.hasSSkill() && (dist2 <= 150) && Rnd.get(100) <= npc.getSSkillChance())
 				{
 					final L2Skill shortRangeSkill = shortRangeSkills.get(Rnd.get(shortRangeSkills.size()));
@@ -1095,7 +1098,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 				}
 				
-				final FastList<L2Skill> longRangeSkills = longRangeSkillRender();
+				final List<L2Skill> longRangeSkills = longRangeSkillRender();
 				if (!longRangeSkills.isEmpty() && npc.hasLSkill() && (dist2 > 150) && Rnd.get(100) <= npc.getLSkillChance())
 				{
 					final L2Skill longRangeSkill = longRangeSkills.get(Rnd.get(longRangeSkills.size()));
@@ -2344,7 +2347,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 	}
 	
-	private FastList<L2Skill> longRangeSkillRender()
+	private List<L2Skill> longRangeSkillRender()
 	{
 		longRangeSkills = _skillrender.getLongRangeSkills();
 		if (longRangeSkills.isEmpty())
@@ -2354,7 +2357,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		return longRangeSkills;
 	}
 	
-	private FastList<L2Skill> shortRangeSkillRender()
+	private List<L2Skill> shortRangeSkillRender()
 	{
 		shortRangeSkills = _skillrender.getShortRangeSkills();
 		if (shortRangeSkills.isEmpty())

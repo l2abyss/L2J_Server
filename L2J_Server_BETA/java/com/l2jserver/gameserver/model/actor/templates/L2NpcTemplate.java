@@ -14,13 +14,13 @@
  */
 package com.l2jserver.gameserver.model.actor.templates;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.datatables.HerbDropTable;
@@ -69,48 +69,48 @@ public final class L2NpcTemplate extends L2CharTemplate
 	private final float _baseVitalityDivider;
 	
 	// Skill AI
-	private final FastList<L2Skill> _buffSkills = new FastList<>();
-	private final FastList<L2Skill> _negativeSkills = new FastList<>();
-	private final FastList<L2Skill> _debuffSkills = new FastList<>();
-	private final FastList<L2Skill> _atkSkills = new FastList<>();
-	private final FastList<L2Skill> _rootSkills = new FastList<>();
-	private final FastList<L2Skill> _stunskills = new FastList<>();
-	private final FastList<L2Skill> _sleepSkills = new FastList<>();
-	private final FastList<L2Skill> _paralyzeSkills = new FastList<>();
-	private final FastList<L2Skill> _fossilSkills = new FastList<>();
-	private final FastList<L2Skill> _floatSkills = new FastList<>();
-	private final FastList<L2Skill> _immobilizeSkills = new FastList<>();
-	private final FastList<L2Skill> _healSkills = new FastList<>();
-	private final FastList<L2Skill> _resSkills = new FastList<>();
-	private final FastList<L2Skill> _dotSkills = new FastList<>();
-	private final FastList<L2Skill> _cotSkills = new FastList<>();
-	private final FastList<L2Skill> _universalSkills = new FastList<>();
-	private final FastList<L2Skill> _manaSkills = new FastList<>();
-	private final FastList<L2Skill> _longRangeSkills = new FastList<>();
-	private final FastList<L2Skill> _shortRangeSkills = new FastList<>();
-	private final FastList<L2Skill> _generalSkills = new FastList<>();
-	private final FastList<L2Skill> _suicideSkills = new FastList<>();
+	private final List<L2Skill> _buffSkills = new ArrayList<>();
+	private final List<L2Skill> _negativeSkills = new ArrayList<>();
+	private final List<L2Skill> _debuffSkills = new ArrayList<>();
+	private final List<L2Skill> _atkSkills = new ArrayList<>();
+	private final List<L2Skill> _rootSkills = new ArrayList<>();
+	private final List<L2Skill> _stunskills = new ArrayList<>();
+	private final List<L2Skill> _sleepSkills = new ArrayList<>();
+	private final List<L2Skill> _paralyzeSkills = new ArrayList<>();
+	private final List<L2Skill> _fossilSkills = new ArrayList<>();
+	private final List<L2Skill> _floatSkills = new ArrayList<>();
+	private final List<L2Skill> _immobilizeSkills = new ArrayList<>();
+	private final List<L2Skill> _healSkills = new ArrayList<>();
+	private final List<L2Skill> _resSkills = new ArrayList<>();
+	private final List<L2Skill> _dotSkills = new ArrayList<>();
+	private final List<L2Skill> _cotSkills = new ArrayList<>();
+	private final List<L2Skill> _universalSkills = new ArrayList<>();
+	private final List<L2Skill> _manaSkills = new ArrayList<>();
+	private final List<L2Skill> _longRangeSkills = new ArrayList<>();
+	private final List<L2Skill> _shortRangeSkills = new ArrayList<>();
+	private final List<L2Skill> _generalSkills = new ArrayList<>();
+	private final List<L2Skill> _suicideSkills = new ArrayList<>();
 	
 	private L2NpcAIData _AIdataStatic = new L2NpcAIData();
 	
 	/**
 	 * The table containing all Item that can be dropped by L2NpcInstance using this L2NpcTemplate
 	 */
-	private final FastList<L2DropCategory> _categories = new FastList<>();
+	private final List<L2DropCategory> _categories = new ArrayList<>();
 	
 	/**
 	 * The table containing all Minions that must be spawn with the L2NpcInstance using this L2NpcTemplate
 	 */
-	private final List<L2MinionData> _minions = new FastList<>();
+	private final List<L2MinionData> _minions = new ArrayList<>();
 	
-	private final List<ClassId> _teachInfo = new FastList<>();
+	private final List<ClassId> _teachInfo = new ArrayList<>();
 	
-	private final TIntObjectHashMap<L2Skill> _skills = new TIntObjectHashMap<>();
+	private final Map<Integer, L2Skill> _skills = new FastMap<Integer, L2Skill>().shared();
 	
 	/**
 	 * Contains a list of quests for each event type (questStart, questAttack, questKill, etc).
 	 */
-	private final Map<QuestEventType, Quest[]> _questEvents = new FastMap<>();
+	private final Map<QuestEventType, List<Quest>> _questEvents = new FastMap<QuestEventType, List<Quest>>().shared();
 	
 	public static enum AIType
 	{
@@ -270,13 +270,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public void addDropData(L2DropData drop, int categoryType)
 	{
-		if (drop.isQuestDrop())
-		{
-			// if (_questDrops == null)
-			// _questDrops = new FastList<L2DropData>(0);
-			// _questDrops.add(drop);
-		}
-		else
+		if (!drop.isQuestDrop())
 		{
 			// If the category doesn't already exist, create it first
 			synchronized (_categories)
@@ -343,63 +337,47 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_paralyzeSkills.add(skill);
 	}
 	
-	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
+	public void addQuestEvent(QuestEventType EventType, Quest q)
 	{
-		if (_questEvents.get(EventType) == null)
+		if (!_questEvents.containsKey(EventType))
 		{
-			_questEvents.put(EventType, new Quest[]
-			{
-				q
-			});
+			List<Quest> quests = new ArrayList<Quest>();
+			quests.add(q);
+			_questEvents.put(EventType, quests);
 		}
 		else
 		{
-			Quest[] _quests = _questEvents.get(EventType);
-			int len = _quests.length;
+			List<Quest> quests = _questEvents.get(EventType);
 			
-			// if only one registration per npc is allowed for this event type
-			// then only register this NPC if not already registered for the specified event.
-			// if a quest allows multiple registrations, then register regardless of count
-			// In all cases, check if this new registration is replacing an older copy of the SAME quest
-			// Finally, check quest class hierarchy: a parent class should never replace a child class.
-			// a child class should always replace a parent class.
-			if (!EventType.isMultipleRegistrationAllowed())
+			if (!EventType.isMultipleRegistrationAllowed() && !quests.isEmpty())
 			{
-				// if it is the same quest (i.e. reload) or the existing is a superclass of the new one, replace the existing.
-				if (_quests[0].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[0].getClass()))
-				{
-					_quests[0] = q;
-				}
-				else
-				{
-					_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \"" + EventType + "\" for NPC \"" + _name + "\" and quest \"" + q.getName() + "\".");
-				}
+				_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \"" + EventType + "\" for NPC \"" + _name + "\" and quest \"" + q.getName() + "\".");
 			}
 			else
 			{
-				// be ready to add a new quest to a new copy of the list, with larger size than previously.
-				Quest[] tmp = new Quest[len + 1];
-				
-				// loop through the existing quests and copy them to the new list. While doing so, also
-				// check if this new quest happens to be just a replacement for a previously loaded quest.
-				// Replace existing if the new quest is the same (reload) or a child of the existing quest.
-				// Do nothing if the new quest is a superclass of an existing quest.
-				// Add the new quest in the end of the list otherwise.
-				for (int i = 0; i < len; i++)
+				quests.add(q);
+			}
+		}
+	}
+
+	public void removeQuest(Quest q)
+	{
+		for (Entry<QuestEventType, List<Quest>> entry : _questEvents.entrySet())
+		{
+			if (entry.getValue().contains(q))
+			{
+				Iterator<Quest> it = entry.getValue().iterator();
+				while (it.hasNext())
 				{
-					if (_quests[i].getName().equals(q.getName()) || L2NpcTemplate.isAssignableTo(q, _quests[i].getClass()))
-					{
-						_quests[i] = q;
-						return;
-					}
-					else if (L2NpcTemplate.isAssignableTo(_quests[i], q.getClass()))
-					{
-						return;
-					}
-					tmp[i] = _quests[i];
+					Quest q1 = it.next();
+					if (q1 == q)
+						it.remove();
 				}
-				tmp[len] = q;
-				_questEvents.put(EventType, tmp);
+				
+				if (entry.getValue().isEmpty())
+				{
+					_questEvents.remove(entry.getKey());
+				}
 			}
 		}
 	}
@@ -563,10 +541,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public synchronized void clearAllDropData()
 	{
-		while (!_categories.isEmpty())
+		for (L2DropCategory cat : _categories)
 		{
-			_categories.getFirst().clearAllDrops();
-			_categories.removeFirst();
+			cat.clearAllDrops();
 		}
 		_categories.clear();
 	}
@@ -582,7 +559,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2DropData> getAllDropData()
 	{
-		final List<L2DropData> list = new FastList<>();
+		final List<L2DropData> list = new ArrayList<>();
 		for (L2DropCategory tmp : _categories)
 		{
 			list.addAll(tmp.getAllDrops());
@@ -593,7 +570,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the attack skills.
 	 */
-	public FastList<L2Skill> getAtkSkills()
+	public List<L2Skill> getAtkSkills()
 	{
 		return _atkSkills;
 	}
@@ -609,7 +586,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the buff skills.
 	 */
-	public FastList<L2Skill> getBuffSkills()
+	public List<L2Skill> getBuffSkills()
 	{
 		return _buffSkills;
 	}
@@ -625,7 +602,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the cost over time skills.
 	 */
-	public FastList<L2Skill> getCostOverTimeSkills()
+	public List<L2Skill> getCostOverTimeSkills()
 	{
 		return _cotSkills;
 	}
@@ -633,7 +610,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the debuff skills.
 	 */
-	public FastList<L2Skill> getDebuffSkills()
+	public List<L2Skill> getDebuffSkills()
 	{
 		return _debuffSkills;
 	}
@@ -641,7 +618,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the list of all possible UNCATEGORIZED drops of this L2NpcTemplate.
 	 */
-	public FastList<L2DropCategory> getDropData()
+	public List<L2DropCategory> getDropData()
 	{
 		return _categories;
 	}
@@ -662,12 +639,12 @@ public final class L2NpcTemplate extends L2CharTemplate
 		return _enchantEffect;
 	}
 	
-	public Map<QuestEventType, Quest[]> getEventQuests()
+	public Map<QuestEventType, List<Quest>> getEventQuests()
 	{
 		return _questEvents;
 	}
 	
-	public Quest[] getEventQuests(QuestEventType EventType)
+	public List<Quest> getEventQuests(QuestEventType EventType)
 	{
 		return _questEvents.get(EventType);
 	}
@@ -675,7 +652,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the general skills.
 	 */
-	public FastList<L2Skill> getGeneralskills()
+	public List<L2Skill> getGeneralskills()
 	{
 		return _generalSkills;
 	}
@@ -683,7 +660,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the heal skills.
 	 */
-	public FastList<L2Skill> getHealSkills()
+	public List<L2Skill> getHealSkills()
 	{
 		return _healSkills;
 	}
@@ -699,7 +676,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the immobilize skills.
 	 */
-	public FastList<L2Skill> getImmobiliseSkills()
+	public List<L2Skill> getImmobiliseSkills()
 	{
 		return _immobilizeSkills;
 	}
@@ -723,7 +700,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the long range skills.
 	 */
-	public FastList<L2Skill> getLongRangeSkills()
+	public List<L2Skill> getLongRangeSkills()
 	{
 		return _longRangeSkills;
 	}
@@ -747,7 +724,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the negative skills.
 	 */
-	public FastList<L2Skill> getNegativeSkills()
+	public List<L2Skill> getNegativeSkills()
 	{
 		return _negativeSkills;
 	}
@@ -775,7 +752,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the resurrection skills.
 	 */
-	public FastList<L2Skill> getResSkills()
+	public List<L2Skill> getResSkills()
 	{
 		return _resSkills;
 	}
@@ -815,22 +792,17 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the short range skills.
 	 */
-	public FastList<L2Skill> getShortRangeSkills()
+	public List<L2Skill> getShortRangeSkills()
 	{
 		return _shortRangeSkills;
 	}
 	
-	public TIntObjectHashMap<L2Skill> getSkills()
+	public Map<Integer, L2Skill> getSkills()
 	{
 		return _skills;
 	}
 	
-	public L2Skill[] getSkillsArray()
-	{
-		return _skills.values(new L2Skill[0]);
-	}
-	
-	public FastList<L2Skill> getSuicideSkills()
+	public List<L2Skill> getSuicideSkills()
 	{
 		return _suicideSkills;
 	}
@@ -859,7 +831,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * @return the universal skills.
 	 */
-	public FastList<L2Skill> getUniversalSkills()
+	public List<L2Skill> getUniversalSkills()
 	{
 		return _universalSkills;
 	}

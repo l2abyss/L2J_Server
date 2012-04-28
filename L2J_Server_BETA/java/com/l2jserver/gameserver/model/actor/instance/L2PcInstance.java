@@ -183,6 +183,7 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -1706,7 +1707,7 @@ public final class L2PcInstance extends L2Playable
 		QuestState[] states = null;
 		
 		// Go through the QuestState of the L2PcInstance quests
-		for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
+		for (Quest quest : npc.getTemplate().getEventQuests(QuestEventType.ON_ATTACK))
 		{
 			// Check if the Identifier of the L2Attackable attck is needed for the current quest
 			if (getQuestState(quest.getName())!=null)
@@ -1733,7 +1734,7 @@ public final class L2PcInstance extends L2Playable
 		QuestState[] states = null;
 		
 		// Go through the QuestState of the L2PcInstance quests
-		for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
+		for (Quest quest : npc.getTemplate().getEventQuests(QuestEventType.ON_KILL))
 		{
 			// Check if the Identifier of the L2Attackable killed is needed for the current quest
 			if (getQuestState(quest.getName())!=null)
@@ -1760,7 +1761,7 @@ public final class L2PcInstance extends L2Playable
 		QuestState[] states = null;
 		
 		// Go through the QuestState of the L2PcInstance quests
-		Quest[] quests = NpcTable.getInstance().getTemplate(npcId).getEventQuests(Quest.QuestEventType.ON_TALK);
+		List<Quest> quests = NpcTable.getInstance().getTemplate(npcId).getEventQuests(QuestEventType.ON_TALK);
 		if (quests != null)
 		{
 			for (Quest quest: quests)
@@ -1768,12 +1769,19 @@ public final class L2PcInstance extends L2Playable
 				if (quest != null)
 				{
 					// Copy the current L2PcInstance QuestState in the QuestState table
-					if (getQuestState(quest.getName())!=null)
+					if (getQuestState(quest.getName()) != null)
 					{
 						if (states == null)
-							states = new QuestState[]{getQuestState(quest.getName())};
+						{
+							states = new QuestState[]
+							{
+								getQuestState(quest.getName())
+							};
+						}
 						else
+						{
 							states = addToQuestStateArray(states, getQuestState(quest.getName()));
+						}
 					}
 				}
 			}

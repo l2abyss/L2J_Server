@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import gnu.trove.procedure.TObjectProcedure;
 
+import java.util.List;
 import java.util.concurrent.Future;
 
 import com.l2jserver.Config;
@@ -251,14 +252,22 @@ public class L2SepulcherNpcInstance extends L2Npc
 				
 			default:
 			{
-				Quest[] qlsa = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
-				if ( (qlsa != null) && qlsa.length > 0)
+				List<Quest> qlsa = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
+				List<Quest> qlst = getTemplate().getEventQuests(Quest.QuestEventType.ON_FIRST_TALK);
+				
+				if ((qlsa != null) && !qlsa.isEmpty())
+				{
 					player.setLastQuestNpcObject(getObjectId());
-				Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.ON_FIRST_TALK);
-				if ( (qlst != null) && qlst.length == 1)
-					qlst[0].notifyFirstTalk(this, player);
+				}
+				
+				if ((qlst != null) && qlst.size() == 1)
+				{
+					qlst.get(0).notifyFirstTalk(this, player);
+				}
 				else
+				{
 					showChatWindow(player, 0);
+				}
 			}
 		}
 		player.sendPacket(ActionFailed.STATIC_PACKET);

@@ -20,6 +20,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -149,11 +150,11 @@ public class NpcTable
 			// save a copy of the old data
 			L2NpcTemplate old = getTemplate(id);
 			
+			Map<QuestEventType, List<Quest>> quests = new HashMap<>();
 			TIntObjectHashMap<L2Skill> skills = new TIntObjectHashMap<>();
-			List<L2MinionData> minions = new FastList<>();
-			Map<QuestEventType, Quest[]> quests = new FastMap<>();
-			List<ClassId> classIds = new FastList<>();
-			FastList<L2DropCategory> categories = new FastList<>();
+			List<L2MinionData> minions = new ArrayList<>();
+			List<ClassId> classIds = new ArrayList<>();
+			List<L2DropCategory> categories = new ArrayList<>();
 			
 			if (old != null)
 			{
