@@ -788,6 +788,6 @@ public abstract class L2Object
 	 */
 	public boolean isTargetable()
 	{
-		return false;
+		return true;
 	}
 }
