@@ -1553,6 +1553,7 @@ public class L2Npc extends L2Character
 		return _staticAIData.showName();
 	}
 	
+	@Override
 	public boolean isTargetable()
 	{
 		return _staticAIData.isTargetable();

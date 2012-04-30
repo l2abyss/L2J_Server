@@ -782,4 +782,12 @@ public abstract class L2Object
 	{
 		return false;
 	}
+	
+	/**
+	 * @return {@code true} if object Can be targetable
+	 */
+	public boolean isTargetable()
+	{
+		return false;
+	}
 }

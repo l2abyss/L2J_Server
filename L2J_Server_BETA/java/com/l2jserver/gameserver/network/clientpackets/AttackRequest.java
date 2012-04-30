@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.7.2.1.2.2 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class AttackRequest extends L2GameClientPacket
@@ -42,38 +41,59 @@ public final class AttackRequest extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_objectId  = readD();
-		_originX  = readD();
-		_originY  = readD();
-		_originZ  = readD();
-		_attackId  = readC(); 	 // 0 for simple click   1 for shift-click
+		_objectId = readD();
+		_originX = readD();
+		_originY = readD();
+		_originZ = readD();
+		_attackId = readC(); // 0 for simple click 1 for shift-click
 	}
 	
 	@Override
 	protected void runImpl()
 	{
-		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null) return;
+		final L2PcInstance activeChar = getActiveChar();
+		if (activeChar == null)
+		{
+			return;
+		}
+		
 		// avoid using expensive operations if not needed
 		final L2Object target;
 		if (activeChar.getTargetId() == _objectId)
+		{
 			target = activeChar.getTarget();
+		}
 		else
+		{
 			target = L2World.getInstance().findObject(_objectId);
+		}
+		
 		if (target == null)
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
+		}
+		
+		else if (!target.isTargetable() && !activeChar.isGM())
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 		
 		// Players can't attack objects in the other instances
 		// except from multiverse
-		if (target.getInstanceId() != activeChar.getInstanceId()
-				&& activeChar.getInstanceId() != -1)
+		else if (target.getInstanceId() != activeChar.getInstanceId() && activeChar.getInstanceId() != -1)
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
+		}
 		
 		// Only GMs can directly attack invisible characters
-		if (target instanceof L2PcInstance
-				&& ((L2PcInstance)target).getAppearance().getInvisible()
-				&& !activeChar.isGM())
+		else if (target.isPlayer() && target.getActingPlayer().getAppearance().getInvisible() && !activeChar.isGM())
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
+		}
 		
 		if (activeChar.getTarget() != target)
 		{
@@ -81,17 +101,13 @@ public final class AttackRequest extends L2GameClientPacket
 		}
 		else
 		{
-			if ((target.getObjectId() != activeChar.getObjectId())
-					&& activeChar.getPrivateStoreType() ==0
-					&& activeChar.getActiveRequester() ==null)
+			if ((target.getObjectId() != activeChar.getObjectId()) && activeChar.getPrivateStoreType() == 0 && activeChar.getActiveRequester() == null)
 			{
-				//_log.debug("Starting ForcedAttack");
 				target.onForcedAttack(activeChar);
-				//_log.debug("Ending ForcedAttack");
 			}
 			else
 			{
-				sendPacket(ActionFailed.STATIC_PACKET);
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			}
 		}
 	}

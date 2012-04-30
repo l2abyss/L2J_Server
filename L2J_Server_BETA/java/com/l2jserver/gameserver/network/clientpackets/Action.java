@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -64,7 +65,7 @@ public final class Action extends L2GameClientPacket
 		if (activeChar.inObserverMode())
 		{
 			activeChar.sendPacket(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE);
-			sendPacket(ActionFailed.STATIC_PACKET);
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
@@ -86,21 +87,27 @@ public final class Action extends L2GameClientPacket
 		if (obj == null)
 		{
 			// pressing e.g. pickup many times quickly would get you here
-			sendPacket(ActionFailed.STATIC_PACKET);
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
+		if (!obj.isTargetable() && !activeChar.isGM())
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		// Players can't interact with objects in the other instances, except from multiverse
 		if ((obj.getInstanceId() != activeChar.getInstanceId()) && (activeChar.getInstanceId() != -1))
 		{
-			sendPacket(ActionFailed.STATIC_PACKET);
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		// Only GMs can directly interact with invisible characters
 		if (obj.isPlayer() && obj.getActingPlayer().getAppearance().getInvisible() && !activeChar.isGM())
 		{
-			sendPacket(ActionFailed.STATIC_PACKET);
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
@@ -108,15 +115,19 @@ public final class Action extends L2GameClientPacket
 		if (activeChar.getActiveRequester() != null)
 		{
 			// Actions prohibited when in trade
-			sendPacket(ActionFailed.STATIC_PACKET);
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
 		}
 		
 		switch (_actionId)
 		{
 			case 0:
+			{
 				obj.onAction(activeChar);
 				break;
+			}
 			case 1:
+			{
 				if (!activeChar.isGM() && !obj.isNpc() && Config.ALT_GAME_VIEWNPC)
 				{
 					obj.onAction(activeChar, false);
@@ -126,11 +137,14 @@ public final class Action extends L2GameClientPacket
 					obj.onActionShift(activeChar);
 				}
 				break;
+			}
 			default:
+			{
 				// Invalid action detected (probably client cheating), log this
 				_log.warning(getType() + ": Character: " + activeChar.getName() + " requested invalid action: " + _actionId);
-				sendPacket(ActionFailed.STATIC_PACKET);
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				break;
+			}
 		}
 	}
 	
