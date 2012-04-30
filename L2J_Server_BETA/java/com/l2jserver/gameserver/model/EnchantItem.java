@@ -43,7 +43,7 @@ public class EnchantItem
 		_isWeapon = set.getBool("isWeapon", true);
 		_grade = ItemTable._crystalTypes.get(set.getString("targetGrade", "none"));
 		_maxEnchantLevel = set.getInteger("maxEnchant", Config.MAX_ENCHANT_LEVEL);
-		_chanceAdd = set.getDouble("successBonus", Config.ENCHANT_CHANCE);
+		_chanceAdd = set.getDouble("successRate", Config.ENCHANT_CHANCE);
 		_itemIds = items;
 	}
 	
