@@ -51,10 +51,25 @@ public class InstanceManager extends DocumentParser
 	
 	protected InstanceManager()
 	{
+		// Creates the multiverse.
+		final Instance multiverse = new Instance(-1);
+		multiverse.setName("multiverse");
+		_instanceList.put(-1, multiverse);
+		_log.info(getClass().getSimpleName() + ": Multiverse Instance created.");
+		// Creates the universe.
+		final Instance universe = new Instance(0);
+		universe.setName("universe");
+		_instanceList.put(0, universe);
+		_log.info(getClass().getSimpleName() + ": Universe Instance created.");
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_instanceIdNames.clear();
 		parseDatapackFile("data/instancenames.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _instanceIdNames.size() + " instance names.");
-		createWorld();
 	}
 	
 	/**
@@ -273,19 +288,6 @@ public class InstanceManager extends DocumentParser
 		return null;
 	}
 	
-	private void createWorld()
-	{
-		Instance themultiverse = new Instance(-1);
-		themultiverse.setName("multiverse");
-		_instanceList.put(-1, themultiverse);
-		_log.info("Multiverse Instance created");
-		
-		Instance universe = new Instance(0);
-		universe.setName("universe");
-		_instanceList.put(0, universe);
-		_log.info("Universe Instance created");
-	}
-	
 	/**
 	 * @param instanceid
 	 */
@@ -390,13 +392,12 @@ public class InstanceManager extends DocumentParser
 	 */
 	public int createDynamicInstance(String template)
 	{
-		
 		while (getInstance(_dynamic) != null)
 		{
 			_dynamic++;
 			if (_dynamic == Integer.MAX_VALUE)
 			{
-				_log.warning("InstanceManager: More then " + (Integer.MAX_VALUE - 300000) + " instances created");
+				_log.warning(getClass().getSimpleName() + ": More then " + (Integer.MAX_VALUE - 300000) + " instances created");
 				_dynamic = 300000;
 			}
 		}

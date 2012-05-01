@@ -38,6 +38,12 @@ public final class StaticObjects extends DocumentParser
 	
 	protected StaticObjects()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_staticObjects.clear();
 		parseDatapackFile("data/staticObjects.xml");
 		_log.info("StaticObject: Loaded " + _staticObjects.size() + " StaticObject Templates.");

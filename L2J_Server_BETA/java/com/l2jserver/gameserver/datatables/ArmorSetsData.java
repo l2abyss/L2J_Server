@@ -36,6 +36,12 @@ public final class ArmorSetsData extends DocumentParser
 	
 	protected ArmorSetsData()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_armorSets.clear();
 		parseDirectory(new File(Config.DATAPACK_ROOT, "data/stats/armorsets"));
 		_log.info(getClass().getSimpleName() + ": Loaded " + _armorSets.size() + " Armor sets.");

@@ -42,6 +42,12 @@ public final class InitialEquipmentData extends DocumentParser
 	
 	protected InitialEquipmentData()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_initialEquipmentList.clear();
 		parseDatapackFile(Config.INITIAL_EQUIPMENT_EVENT ? filePathEvent : filePathNormal);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _initialEquipmentList.size() + " Initial Equipment data.");

@@ -44,6 +44,12 @@ public abstract class DocumentParser
 	private static final XMLFilter xmlFilter = new XMLFilter();
 	
 	/**
+	 * This method can be used to load/reload the data.<br>
+	 * It's highly recommended to clear the data storage, either the list or map.
+	 */
+	public abstract void load();
+	
+	/**
 	 * Wrapper for {@link #parseFile(File)} method.
 	 * @param path the relative path to the datapack root of the XML file to parse.
 	 */

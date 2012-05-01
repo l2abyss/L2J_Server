@@ -34,23 +34,22 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public class EnchantItemData extends DocumentParser
 {
-	public final Map<Integer, EnchantScroll> _scrolls;
-	public final Map<Integer, EnchantItem> _supports;
+	public static final Map<Integer, EnchantScroll> _scrolls = new HashMap<>();
+	public static final Map<Integer, EnchantItem> _supports = new HashMap<>();
 	
 	public EnchantItemData()
 	{
-		_scrolls = new HashMap<>();
-		_supports = new HashMap<>();
 		load();
 	}
 	
+	@Override
 	public void load()
 	{
 		_scrolls.clear();
 		_supports.clear();
 		parseDatapackFile("data/enchantData.xml");
-		_log.info(getClass().getSimpleName() + ": Loaded " + _scrolls.size() + " Enchant Scrolls");
-		_log.info(getClass().getSimpleName() + ": Loaded " + _supports.size() + " Support Items");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _scrolls.size() + " Enchant Scrolls.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _supports.size() + " Support Items.");
 	}
 	
 	@Override

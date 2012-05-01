@@ -103,9 +103,7 @@ public final class SkillTreesData extends DocumentParser
 		load();
 	}
 	
-	/**
-	 * Wrapper for required actions to clear and load all skill trees.
-	 */
+	@Override
 	public void load()
 	{
 		_loading = true;
@@ -123,10 +121,12 @@ public final class SkillTreesData extends DocumentParser
 		_gameMasterAuraSkillTree.clear();
 		
 		// Load files.
-		_loading = parseDirectory(new File(Config.DATAPACK_ROOT, "data/skillTrees/"));
+		parseDirectory(new File(Config.DATAPACK_ROOT, "data/skillTrees/"));
 		
 		// Generate check arrays.
 		generateCheckArrays();
+		
+		_loading = false;
 		
 		// Logs a report with skill trees info.
 		report();

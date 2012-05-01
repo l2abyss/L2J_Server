@@ -37,6 +37,12 @@ public final class PetDataTable extends DocumentParser
 	
 	protected PetDataTable()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_pets.clear();
 		parseDatapackFile("data/stats/npc/PetData.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _pets.size() + " Pets.");

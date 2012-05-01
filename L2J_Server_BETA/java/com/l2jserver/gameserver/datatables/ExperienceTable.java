@@ -36,6 +36,12 @@ public final class ExperienceTable extends DocumentParser
 	
 	protected ExperienceTable()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_expTable.clear();
 		parseDatapackFile("data/stats/experience.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _expTable.size() + " levels.");

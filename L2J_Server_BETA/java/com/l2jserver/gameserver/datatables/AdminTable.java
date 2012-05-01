@@ -43,17 +43,26 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class AdminTable extends DocumentParser
 {
-	private Map<Integer, L2AccessLevel> _accessLevels;
-	private Map<String, L2AdminCommandAccessRight> _adminCommandAccessRights;
-	private Map<L2PcInstance, Boolean> _gmList;
+	private static final Map<Integer, L2AccessLevel> _accessLevels = new HashMap<>();
+	private static final Map<String, L2AdminCommandAccessRight> _adminCommandAccessRights = new HashMap<>();
+	private static final FastMap<L2PcInstance, Boolean> _gmList = new FastMap<L2PcInstance, Boolean>();
 	private int _highestLevel = 0;
 	
 	protected AdminTable()
 	{
-		_accessLevels = new HashMap<>();
-		_adminCommandAccessRights = new HashMap<>();
-		_gmList = new FastMap<L2PcInstance, Boolean>().shared();
+		_gmList.shared();
 		load();
+	}
+	
+	@Override
+	public void load()
+	{
+		_accessLevels.clear();
+		_adminCommandAccessRights.clear();
+		parseFile(new File(Config.DATAPACK_ROOT, "data/accessLevels.xml"));
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _accessLevels.size() + " Access Levels");
+		parseFile(new File(Config.DATAPACK_ROOT, "data/adminCommands.xml"));
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _adminCommandAccessRights.size() + " Access Commands");
 	}
 	
 	@Override
@@ -80,7 +89,7 @@ public class AdminTable extends DocumentParser
 							set.set(attr.getNodeName(), attr.getNodeValue());
 						}
 						level = new L2AccessLevel(set);
-						if (level.getLevel() >  _highestLevel)
+						if (level.getLevel() > _highestLevel)
 						{
 							_highestLevel = level.getLevel();
 						}
@@ -102,30 +111,6 @@ public class AdminTable extends DocumentParser
 			}
 		}
 	}
-	
-	private void load()
-	{
-		parseFile(new File(Config.DATAPACK_ROOT, "data/accessLevels.xml"));
-		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _accessLevels.size() + " Access Levels");
-		parseFile(new File(Config.DATAPACK_ROOT, "data/adminCommands.xml"));
-		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _adminCommandAccessRights.size() + " Access Commands");
-	}
-	
-	public void reload()
-	{
-		_accessLevels.clear();
-		_adminCommandAccessRights.clear();
-		load();
-	}
-	
-	/**
-	 * @return AccessLevels: the one and only instance of this class<br>
-	 */
-	public static AdminTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	
 	/**
 	 * Returns the access level by characterAccessLevel<br>
@@ -158,13 +143,13 @@ public class AdminTable extends DocumentParser
 	}
 	
 	public boolean hasAccess(String adminCommand, L2AccessLevel accessLevel)
-	{	
+	{
 		L2AdminCommandAccessRight acar = _adminCommandAccessRights.get(adminCommand);
 		
 		if (acar == null)
 		{
 			// Trying to avoid the spam for next time when the gm would try to use the same command
-			if (accessLevel.getLevel() > 0 && accessLevel.getLevel() == _highestLevel)
+			if ((accessLevel.getLevel() > 0) && (accessLevel.getLevel() == _highestLevel))
 			{
 				acar = new L2AdminCommandAccessRight(adminCommand, true, accessLevel.getLevel());
 				_adminCommandAccessRights.put(adminCommand, acar);
@@ -225,23 +210,26 @@ public class AdminTable extends DocumentParser
 		return tmpGmList;
 	}
 	
-
 	/**
 	 * Add a L2PcInstance player to the Set _gmList
-	 * @param player 
-	 * @param hidden 
+	 * @param player
+	 * @param hidden
 	 */
 	public void addGm(L2PcInstance player, boolean hidden)
 	{
 		if (Config.DEBUG)
+		{
 			_log.fine("added gm: " + player.getName());
+		}
 		_gmList.put(player, hidden);
 	}
 	
 	public void deleteGm(L2PcInstance player)
 	{
 		if (Config.DEBUG)
+		{
 			_log.fine("deleted gm: " + player.getName());
+		}
 		
 		_gmList.remove(player);
 	}
@@ -253,7 +241,9 @@ public class AdminTable extends DocumentParser
 	public void showGm(L2PcInstance player)
 	{
 		if (_gmList.containsKey(player))
+		{
 			_gmList.put(player, false);
+		}
 	}
 	
 	/**
@@ -263,7 +253,9 @@ public class AdminTable extends DocumentParser
 	public void hideGm(L2PcInstance player)
 	{
 		if (_gmList.containsKey(player))
+		{
 			_gmList.put(player, true);
+		}
 	}
 	
 	public boolean isGmOnline(boolean includeHidden)
@@ -271,7 +263,9 @@ public class AdminTable extends DocumentParser
 		for (Entry<L2PcInstance, Boolean> entry : _gmList.entrySet())
 		{
 			if (includeHidden || !entry.getValue())
+			{
 				return true;
+			}
 		}
 		
 		return false;
@@ -298,7 +292,7 @@ public class AdminTable extends DocumentParser
 	
 	public void broadcastToGMs(L2GameServerPacket packet)
 	{
-		for (L2PcInstance gm : getInstance().getAllGms(true))
+		for (L2PcInstance gm : getAllGms(true))
 		{
 			gm.sendPacket(packet);
 		}
@@ -306,10 +300,19 @@ public class AdminTable extends DocumentParser
 	
 	public void broadcastMessageToGMs(String message)
 	{
-		for (L2PcInstance gm : getInstance().getAllGms(true))
+		for (L2PcInstance gm : getAllGms(true))
 		{
 			gm.sendMessage(message);
 		}
+	}
+	
+
+	/**
+	 * @return AccessLevels: the one and only instance of this class<br>
+	 */
+	public static AdminTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

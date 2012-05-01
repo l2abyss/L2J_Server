@@ -39,10 +39,15 @@ public final class FishData extends DocumentParser
 	
 	protected FishData()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_fishsEasy.clear();
 		_fishsNormal.clear();
 		_fishsHard.clear();
-		
 		parseDatapackFile("data/stats/items/fishing/fishes.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + (_fishsEasy.size() + _fishsNormal.size() + _fishsHard.size()) + " Fishes.");
 	}

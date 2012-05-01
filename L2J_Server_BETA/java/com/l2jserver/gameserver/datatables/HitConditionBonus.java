@@ -39,6 +39,12 @@ public final class HitConditionBonus extends DocumentParser
 	
 	protected HitConditionBonus()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		parseDatapackFile("data/stats/hitConditionBonus.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded Hit Condition bonuses.");
 		if (Config.DEBUG)

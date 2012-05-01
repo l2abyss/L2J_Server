@@ -65,6 +65,12 @@ public class MapRegionManager extends DocumentParser
 	
 	protected MapRegionManager()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_regions.clear();
 		parseDirectory(new File(Config.DATAPACK_ROOT, "data/mapregion/"));
 		_log.info(getClass().getSimpleName() + ": Loaded " + _regions.size() + " map regions.");

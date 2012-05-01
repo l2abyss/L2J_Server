@@ -36,6 +36,12 @@ public final class ClassListData extends DocumentParser
 	
 	protected ClassListData()
 	{
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
 		_classData.clear();
 		parseDatapackFile("data/stats/chars/classList.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _classData.size() + " Class data.");
