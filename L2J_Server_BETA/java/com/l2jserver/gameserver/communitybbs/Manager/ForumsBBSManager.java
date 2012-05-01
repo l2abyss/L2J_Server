@@ -41,7 +41,7 @@ public class ForumsBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	private ForumsBBSManager()
+	protected ForumsBBSManager()
 	{
 		_table = new FastList<Forum>();
 		
@@ -157,7 +157,6 @@ public class ForumsBBSManager extends BaseBBSManager
 	{
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ForumsBBSManager _instance = new ForumsBBSManager();

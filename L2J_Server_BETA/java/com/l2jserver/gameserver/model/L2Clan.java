@@ -1625,6 +1625,11 @@ public class L2Clan
 		{
 			return _subPledgeSkills.values();
 		}
+		
+		public L2Skill getSkill(int id)
+		{
+			return _subPledgeSkills.get(id);
+		}
 	}
 	
 	public static class RankPrivs
@@ -2862,13 +2867,13 @@ public class L2Clan
 		// is first level?
 		if ((current == null) && (skillLevel == 1))
 			return true;
-		// other subpledges
+		// other sub-pledges
 		for (SubPledge subunit : _subPledges.values())
 		{
 			//disable academy
-			if (subunit._id == -1)
+			if (subunit.getId() == -1)
 				continue;
-			current = subunit._subPledgeSkills.get(skillId);
+			current = subunit.getSkill(skillId);
 			// is next level?
 			if ((current != null) && ((current.getLevel() + 1) == skillLevel))
 				return true;
@@ -2893,7 +2898,7 @@ public class L2Clan
 		}
 		else
 		{
-			current = _subPledges.get(subType)._subPledgeSkills.get(id);
+			current = _subPledges.get(subType).getSkill(id);
 		}
 		// is next level?
 		if ((current != null) && (current.getLevel() + 1) == skill.getLevel())
@@ -2912,7 +2917,7 @@ public class L2Clan
 			list.add(new SubPledgeSkill(0, skill.getId(), skill.getLevel()));
 		for (SubPledge subunit: _subPledges.values())
 			for (L2Skill skill : subunit.getSkills())
-				list.add(new SubPledgeSkill(subunit._id, skill.getId(), skill.getLevel()));
+				list.add(new SubPledgeSkill(subunit.getId(), skill.getId(), skill.getLevel()));
 		SubPledgeSkill[] result = list.toArray(new SubPledgeSkill[list.size()]);
 		FastList.recycle(list);
 		return result;

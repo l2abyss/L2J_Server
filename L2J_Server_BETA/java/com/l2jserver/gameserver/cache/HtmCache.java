@@ -46,7 +46,7 @@ public class HtmCache
 		return SingletonHolder._instance;
 	}
 	
-	private HtmCache()
+	protected HtmCache()
 	{
 		if (Config.LAZY_CACHE)
 		{
@@ -216,7 +216,6 @@ public class HtmCache
 		return htmlFilter.accept(new File(path));
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final HtmCache _instance = new HtmCache();

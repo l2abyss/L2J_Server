@@ -49,7 +49,7 @@ public class InstanceManager extends DocumentParser
 	private static final String RESTORE_INSTANCE_TIMES = "SELECT instanceId,time FROM character_instance_time WHERE charId=?";
 	private static final String DELETE_INSTANCE_TIME = "DELETE FROM character_instance_time WHERE charId=? AND instanceId=?";
 	
-	private InstanceManager()
+	protected InstanceManager()
 	{
 		_instanceIdNames.clear();
 		parseDatapackFile("data/instancenames.xml");
@@ -414,7 +414,6 @@ public class InstanceManager extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final InstanceManager _instance = new InstanceManager();

@@ -42,7 +42,7 @@ public class TeleportLocationTable
 		return SingletonHolder._instance;
 	}
 	
-	private TeleportLocationTable()
+	protected TeleportLocationTable()
 	{
 		reloadAll();
 	}
@@ -136,7 +136,6 @@ public class TeleportLocationTable
 		return _teleports.get(id);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TeleportLocationTable _instance = new TeleportLocationTable();

@@ -95,9 +95,9 @@ public class ThreadPoolManager
 		}
 	}
 	
-	private ScheduledThreadPoolExecutor _effectsScheduledThreadPool;
-	private ScheduledThreadPoolExecutor _generalScheduledThreadPool;
-	private ScheduledThreadPoolExecutor _aiScheduledThreadPool;
+	protected ScheduledThreadPoolExecutor _effectsScheduledThreadPool;
+	protected ScheduledThreadPoolExecutor _generalScheduledThreadPool;
+	protected ScheduledThreadPoolExecutor _aiScheduledThreadPool;
 	private ThreadPoolExecutor _generalPacketsThreadPool;
 	private ThreadPoolExecutor _ioPacketsThreadPool;
 	private ThreadPoolExecutor _generalThreadPool;
@@ -113,7 +113,7 @@ public class ThreadPoolManager
 		return SingletonHolder._instance;
 	}
 	
-	private ThreadPoolManager()
+	protected ThreadPoolManager()
 	{
 		_effectsScheduledThreadPool = new ScheduledThreadPoolExecutor(Config.THREAD_P_EFFECTS, new PriorityThreadFactory("EffectsSTPool", Thread.NORM_PRIORITY));
 		_generalScheduledThreadPool = new ScheduledThreadPoolExecutor(Config.THREAD_P_GENERAL, new PriorityThreadFactory("GeneralSTPool", Thread.NORM_PRIORITY));
@@ -479,7 +479,7 @@ public class ThreadPoolManager
 		return sb.toString();
 	}
 	
-	private class PurgeTask implements Runnable
+	protected class PurgeTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -490,7 +490,6 @@ public class ThreadPoolManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ThreadPoolManager _instance = new ThreadPoolManager();

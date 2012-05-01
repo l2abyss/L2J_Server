@@ -180,7 +180,7 @@ public class CastleManorManager
 		}
 	}
 	
-	private CastleManorManager()
+	protected CastleManorManager()
 	{
 		_log.info("Initializing CastleManorManager");
 		load(); // load data from database
@@ -596,7 +596,6 @@ public class CastleManorManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CastleManorManager _instance = new CastleManorManager();

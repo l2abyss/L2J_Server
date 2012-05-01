@@ -39,7 +39,7 @@ public class SkillTable
 		return SingletonHolder._instance;
 	}
 	
-	private SkillTable()
+	protected SkillTable()
 	{
 		_skills = new TIntObjectHashMap<L2Skill>();
 		_skillMaxLevel = new TIntIntHashMap();
@@ -159,7 +159,6 @@ public class SkillTable
 		return temp;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SkillTable _instance = new SkillTable();
@@ -189,9 +188,9 @@ public class SkillTable
 		THE_VANQUISHED_OF_WAR(5075, 1),
 		SPECIAL_TREE_RECOVERY_BONUS(2139, 1);
 		
-		private final int _id;
-		private final int _level;
-		private L2Skill _skill = null;
+		protected final int _id;
+		protected final int _level;
+		protected L2Skill _skill = null;
 		
 		private FrequentSkill(int id, int level)
 		{

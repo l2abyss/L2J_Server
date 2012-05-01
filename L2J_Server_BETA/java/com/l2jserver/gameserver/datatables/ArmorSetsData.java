@@ -34,7 +34,7 @@ public final class ArmorSetsData extends DocumentParser
 {
 	private static final Map<Integer, L2ArmorSet> _armorSets = new HashMap<>();
 	
-	private ArmorSetsData()
+	protected ArmorSetsData()
 	{
 		_armorSets.clear();
 		parseDirectory(new File(Config.DATAPACK_ROOT, "data/stats/armorsets"));
@@ -173,7 +173,6 @@ public final class ArmorSetsData extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ArmorSetsData _instance = new ArmorSetsData();

@@ -34,7 +34,7 @@ public class PostBBSManager extends BaseBBSManager
 {
 	private Map<Topic, Post> _postByTopic;
 	
-	private PostBBSManager()
+	protected PostBBSManager()
 	{
 		_postByTopic = new FastMap<Topic, Post>();
 	}
@@ -327,7 +327,6 @@ public class PostBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final PostBBSManager _instance = new PostBBSManager();

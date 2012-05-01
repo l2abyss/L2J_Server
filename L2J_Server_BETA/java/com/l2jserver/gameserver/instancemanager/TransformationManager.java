@@ -35,7 +35,7 @@ public class TransformationManager
 	
 	private TIntObjectHashMap<L2Transformation> _transformations;
 	
-	private TransformationManager()
+	protected TransformationManager()
 	{
 		_transformations = new TIntObjectHashMap<L2Transformation>();
 	}
@@ -67,7 +67,6 @@ public class TransformationManager
 		return _transformations.put(transformation.getId(), transformation);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TransformationManager _instance = new TransformationManager();

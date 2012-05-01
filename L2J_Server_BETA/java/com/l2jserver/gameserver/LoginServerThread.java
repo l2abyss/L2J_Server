@@ -114,7 +114,7 @@ public class LoginServerThread extends Thread
 	private final String[] _subnets;
 	private final String[] _hosts;
 	
-	private LoginServerThread()
+	protected LoginServerThread()
 	{
 		super("LoginServerThread");
 		_port = Config.GAME_SERVER_LOGIN_PORT;
@@ -760,7 +760,6 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final LoginServerThread _instance = new LoginServerThread();

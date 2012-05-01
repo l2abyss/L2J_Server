@@ -34,7 +34,7 @@ public class MonsterRace
 	private int[][] _speeds;
 	private int[] _first, _second;
 	
-	private MonsterRace()
+	protected MonsterRace()
 	{
 		_monsters = new L2Npc[8];
 		_speeds = new int[8][20];
@@ -141,7 +141,6 @@ public class MonsterRace
 		return _second[0];
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final MonsterRace _instance = new MonsterRace();

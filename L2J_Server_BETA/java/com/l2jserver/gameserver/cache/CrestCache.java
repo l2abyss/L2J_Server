@@ -57,7 +57,7 @@ public class CrestCache
 		return SingletonHolder._instance;
 	}
 	
-	private CrestCache()
+	protected CrestCache()
 	{
 		convertOldPedgeFiles();
 		reload();
@@ -371,7 +371,6 @@ public class CrestCache
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CrestCache _instance = new CrestCache();

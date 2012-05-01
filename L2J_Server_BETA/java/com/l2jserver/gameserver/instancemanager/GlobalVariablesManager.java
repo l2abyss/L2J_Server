@@ -33,7 +33,7 @@ public class GlobalVariablesManager
 	
 	private final Map<String, String> _variablesMap;
 	
-	private GlobalVariablesManager()
+	protected GlobalVariablesManager()
 	{
 		_variablesMap = new FastMap<String, String>();
 		
@@ -120,7 +120,6 @@ public class GlobalVariablesManager
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GlobalVariablesManager _instance = new GlobalVariablesManager();

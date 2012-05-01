@@ -36,7 +36,7 @@ public class SummonItemsData
 		return SingletonHolder._instance;
 	}
 	
-	private SummonItemsData()
+	protected SummonItemsData()
 	{
 		Scanner s;
 		try
@@ -118,7 +118,6 @@ public class SummonItemsData
 		return result;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SummonItemsData _instance = new SummonItemsData();

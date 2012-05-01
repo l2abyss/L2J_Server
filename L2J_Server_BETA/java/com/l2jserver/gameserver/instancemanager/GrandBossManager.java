@@ -100,7 +100,7 @@ public class GrandBossManager
 		return SingletonHolder._instance;
 	}
 	
-	private GrandBossManager()
+	protected GrandBossManager()
 	{
 		_log.info("Initializing GrandBossManager");
 		init();
@@ -471,7 +471,6 @@ public class GrandBossManager
 		return _zones;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GrandBossManager _instance = new GrandBossManager();

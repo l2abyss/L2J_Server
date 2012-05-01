@@ -41,7 +41,7 @@ public class AntiFeedManager
 		return SingletonHolder._instance;
 	}
 	
-	private AntiFeedManager()
+	protected AntiFeedManager()
 	{
 		_lastDeathTimes = new FastMap<Integer,Long>().shared();
 		_eventIPs = new TIntObjectHashMap<Map<Integer, Connections>>();
@@ -246,7 +246,7 @@ public class AntiFeedManager
 		return limit < 0 ? 0 : limit + max;
 	}
 
-	private static final class Connections
+	protected static final class Connections
 	{
 		private int _num = 0;
 
@@ -301,8 +301,7 @@ public class AntiFeedManager
 			return true;
 		}
 	}
-
-	@SuppressWarnings("synthetic-access")
+	
 	private static class SingletonHolder
 	{
 		protected static final AntiFeedManager _instance = new AntiFeedManager();

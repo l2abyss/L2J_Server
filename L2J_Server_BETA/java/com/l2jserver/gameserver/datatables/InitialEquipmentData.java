@@ -40,7 +40,7 @@ public final class InitialEquipmentData extends DocumentParser
 	private static final String filePathEvent = "data/stats/initialEquipmentEvent.xml";
 	private final Map<ClassId, List<PcItemTemplate>> _initialEquipmentList = new HashMap<>();
 	
-	private InitialEquipmentData()
+	protected InitialEquipmentData()
 	{
 		_initialEquipmentList.clear();
 		parseDatapackFile(Config.INITIAL_EQUIPMENT_EVENT ? filePathEvent : filePathNormal);
@@ -114,7 +114,6 @@ public final class InitialEquipmentData extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final InitialEquipmentData _instance = new InitialEquipmentData();

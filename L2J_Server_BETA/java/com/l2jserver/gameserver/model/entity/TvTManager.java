@@ -36,7 +36,7 @@ public class TvTManager
 	/**
 	 * New instance only by getInstance()<br>
 	 */
-	private TvTManager()
+	protected TvTManager()
 	{
 		if (Config.TVT_EVENT_ENABLED)
 		{
@@ -293,7 +293,6 @@ public class TvTManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TvTManager _instance = new TvTManager();

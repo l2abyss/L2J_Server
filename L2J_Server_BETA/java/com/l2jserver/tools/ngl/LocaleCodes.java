@@ -30,7 +30,7 @@ public class LocaleCodes
 		return SingletonHolder._instance;
 	}
 	
-	private LocaleCodes()
+	protected LocaleCodes()
 	{
 		loadCodes();
 	}
@@ -71,7 +71,6 @@ public class LocaleCodes
 		return _locales.get(lang);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final LocaleCodes _instance = new LocaleCodes();

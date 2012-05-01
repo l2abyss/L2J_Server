@@ -44,7 +44,7 @@ public class BoatManager
 		return SingletonHolder._instance;
 	}
 	
-	private BoatManager()
+	protected BoatManager()
 	{
 		for (int i = 0; i < _docksBusy.length; i++)
 			_docksBusy[i] = false;
@@ -176,7 +176,7 @@ public class BoatManager
 		VehiclePathPoint _point1, _point2;
 		L2GameServerPacket[] _packets;
 		
-		private ForEachPlayerBroadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket ... packets)
+		protected ForEachPlayerBroadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket ... packets)
 		{
 			_point1 = point1;
 			_point2 = point2;
@@ -211,7 +211,6 @@ public class BoatManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final BoatManager _instance = new BoatManager();

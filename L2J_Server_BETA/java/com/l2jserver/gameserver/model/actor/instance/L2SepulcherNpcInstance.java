@@ -456,11 +456,12 @@ public class L2SepulcherNpcInstance extends L2Npc
 		L2SepulcherNpcInstance _npc;
 		CreatureSay _sm;
 		
-		private SayInShout(L2SepulcherNpcInstance npc, CreatureSay sm)
+		protected SayInShout(L2SepulcherNpcInstance npc, CreatureSay sm)
 		{
 			_npc = npc;
 			_sm = sm;
 		}
+		
 		@Override
 		public final boolean execute(final L2PcInstance player)
 		{

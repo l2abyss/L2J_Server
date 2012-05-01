@@ -34,7 +34,7 @@ public class GeoData
 	{
 	}
 	
-	private GeoData(final boolean disabled)
+	protected GeoData(final boolean disabled)
 	{
 		if (disabled)
 		{
@@ -188,7 +188,6 @@ public class GeoData
 		return false;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GeoData _instance = Config.GEODATA > 0 ? GeoEngine.getInstance() : new GeoData(true);

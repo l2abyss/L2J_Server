@@ -31,7 +31,7 @@ public class L2BirthdayCakeInstance extends L2Npc
 {
 	private static final int BIRTHDAY_CAKE_24 = 106;
 	private static final int BIRTHDAY_CAKE = 139;
-	private static L2Skill _skill;
+	protected static L2Skill _skill;
 	private final ScheduledFuture<?> _aiTask;
 	
 	public L2BirthdayCakeInstance(int objectId, L2NpcTemplate template)

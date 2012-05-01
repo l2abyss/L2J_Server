@@ -37,7 +37,7 @@ public final class FishData extends DocumentParser
 	private static final Map<Integer, L2Fish> _fishsEasy = new HashMap<>();
 	private static final Map<Integer, L2Fish> _fishsHard = new HashMap<>();
 	
-	private FishData()
+	protected FishData()
 	{
 		_fishsEasy.clear();
 		_fishsNormal.clear();
@@ -155,7 +155,6 @@ public final class FishData extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FishData _instance = new FishData();

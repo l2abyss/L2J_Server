@@ -53,12 +53,12 @@ import com.l2jserver.gameserver.taskmanager.tasks.TaskShutdown;
  */
 public final class TaskManager
 {
-	private static final Logger _log = Logger.getLogger(TaskManager.class.getName());
+	protected static final Logger _log = Logger.getLogger(TaskManager.class.getName());
 	
 	private final FastMap<Integer, Task> _tasks = new FastMap<>();
 	protected final FastList<ExecutedTask> _currentTasks = new FastList<>();
 	
-	private static final String[] SQL_STATEMENTS =
+	protected static final String[] SQL_STATEMENTS =
 	{
 		"SELECT id,task,type,last_activation,param1,param2,param3 FROM global_tasks",
 		"UPDATE global_tasks SET last_activation=? WHERE id=?",
@@ -175,7 +175,7 @@ public final class TaskManager
 		return SingletonHolder._instance;
 	}
 	
-	private TaskManager()
+	protected TaskManager()
 	{
 		initializate();
 		startAllTasks();
@@ -407,7 +407,6 @@ public final class TaskManager
 		return false;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TaskManager _instance = new TaskManager();

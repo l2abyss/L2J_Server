@@ -69,7 +69,7 @@ public class TradeController
 		return SingletonHolder._instance;
 	}
 	
-	private TradeController()
+	protected TradeController()
 	{
 		_lists.clear();
 		Connection con = null;
@@ -345,7 +345,6 @@ public class TradeController
 		return _nextListId++;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TradeController _instance = new TradeController();

@@ -35,7 +35,7 @@ public class DuelManager
 	private FastList<Duel> _duels;
 	private int _currentDuelId = 0x90;
 	
-	private DuelManager()
+	protected DuelManager()
 	{
 		_log.info("Initializing DuelManager");
 		_duels = new FastList<Duel>();
@@ -205,7 +205,6 @@ public class DuelManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final DuelManager _instance = new DuelManager();

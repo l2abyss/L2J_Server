@@ -90,7 +90,7 @@ public final class L2World
 	/**
 	 * Constructor of L2World.<BR><BR>
 	 */
-	private L2World()
+	protected L2World()
 	{
 		_allPlayers = new L2TIntObjectHashMap<L2PcInstance>();
 		_allObjects = new L2TIntObjectHashMap<L2Object>();
@@ -762,7 +762,6 @@ public final class L2World
 		_log.info("All visible NPC's deleted.");
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final L2World _instance = new L2World();

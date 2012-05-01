@@ -125,7 +125,7 @@ public class SevenSigns
 	protected int _previousWinner;
 	protected Calendar _lastSave = Calendar.getInstance();
 	
-	private Map<Integer, StatsSet> _signsPlayerData;
+	protected Map<Integer, StatsSet> _signsPlayerData;
 	
 	private Map<Integer, Integer> _signsSealOwners;
 	private Map<Integer, Integer> _signsDuskSealTotals;
@@ -162,7 +162,7 @@ public class SevenSigns
 		"festival_cycle=?, accumulated_bonus0=?, accumulated_bonus1=?, accumulated_bonus2=?," +
 		"accumulated_bonus3=?, accumulated_bonus4=?, date=? WHERE id=0";
 	
-	private SevenSigns()
+	protected SevenSigns()
 	{
 		_signsPlayerData = new FastMap<Integer, StatsSet>();
 		_signsSealOwners = new FastMap<Integer, Integer>();
@@ -1361,22 +1361,20 @@ public class SevenSigns
 	}
 	
 	/**
-	 * This method is called to remove all players from catacombs and
-	 * necropolises, who belong to the losing cabal.
-	 * <BR><BR>
+	 * This method is called to remove all players from catacombs and necropolises, who belong to the losing cabal.<br>
 	 * Should only ever called at the beginning of Seal Validation.
 	 * @param compWinner 
 	 */
 	protected void teleLosingCabalFromDungeons(String compWinner)
 	{
-		L2World.getInstance().forEachPlayer(new teleLosingCabalFromDungeons(compWinner));
+		L2World.getInstance().forEachPlayer(new TeleLosingCabalFromDungeons(compWinner));
 	}
 	
-	private final class teleLosingCabalFromDungeons implements TObjectProcedure<L2PcInstance>
+	private final class TeleLosingCabalFromDungeons implements TObjectProcedure<L2PcInstance>
 	{
 		private final String _cmpWinner;
 		
-		private teleLosingCabalFromDungeons(final String compWinner)
+		protected TeleLosingCabalFromDungeons(final String compWinner)
 		{
 			_cmpWinner = compWinner;
 		}
@@ -1571,17 +1569,18 @@ public class SevenSigns
 	
 	public void giveCPMult(int StrifeOwner)
 	{
-		L2World.getInstance().forEachPlayer(new giveCPMult(StrifeOwner));
+		L2World.getInstance().forEachPlayer(new GiveCPMult(StrifeOwner));
 	}
 	
-	private final class giveCPMult implements TObjectProcedure<L2PcInstance>
+	private final class GiveCPMult implements TObjectProcedure<L2PcInstance>
 	{
 		private final int _strifeOwner;
 		
-		private giveCPMult(int strifeOwner)
+		protected GiveCPMult(int strifeOwner)
 		{
 			_strifeOwner = strifeOwner;
 		}
+		
 		@Override
 		public final boolean execute(final L2PcInstance character)
 		{
@@ -1596,17 +1595,16 @@ public class SevenSigns
 						//Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
 						character.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
 			}
-			
 			return true;
 		}
 	}
 	
 	public void removeCPMult()
 	{
-		L2World.getInstance().forEachPlayer(new removeCPMult());
+		L2World.getInstance().forEachPlayer(new RemoveCPMult());
 	}
 	
-	private final class removeCPMult implements TObjectProcedure<L2PcInstance>
+	protected final class RemoveCPMult implements TObjectProcedure<L2PcInstance>
 	{	
 		@Override
 		public final boolean execute(final L2PcInstance character)
@@ -1637,7 +1635,6 @@ public class SevenSigns
 		return false;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SevenSigns _instance = new SevenSigns();

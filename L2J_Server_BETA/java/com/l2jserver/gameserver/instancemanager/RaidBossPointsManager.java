@@ -212,7 +212,6 @@ public class RaidBossPointsManager
 		return tmpRanking;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final RaidBossPointsManager _instance = new RaidBossPointsManager();

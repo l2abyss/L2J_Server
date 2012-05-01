@@ -37,7 +37,7 @@ public class BypassHandler
 		return SingletonHolder._instance;
 	}
 	
-	private BypassHandler()
+	protected BypassHandler()
 	{
 		_datatable = new TIntObjectHashMap<IBypassHandler>();
 	}
@@ -73,7 +73,6 @@ public class BypassHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final BypassHandler _instance = new BypassHandler();

@@ -36,7 +36,7 @@ public class DecayTaskManager
 	
 	protected final Map<L2Character, Long> _decayTasks = new FastMap<L2Character, Long>().shared();
 	
-	private DecayTaskManager()
+	protected DecayTaskManager()
 	{
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new DecayScheduler(), 10000, Config.DECAY_TIME_TASK);
 	}
@@ -149,7 +149,6 @@ public class DecayTaskManager
 		return _decayTasks;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final DecayTaskManager _instance = new DecayTaskManager();

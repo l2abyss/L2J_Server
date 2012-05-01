@@ -149,7 +149,7 @@ public abstract class L2Script extends Quest
 	 * @param event
 	 * @return
 	 */
-	private boolean notifyDeath(DeathEvent event)
+	protected boolean notifyDeath(DeathEvent event)
 	{
 		return onDeath(event);
 	}
@@ -159,7 +159,7 @@ public abstract class L2Script extends Quest
 	 * @param event
 	 * @return
 	 */
-	private boolean notifyAttack(AttackEvent event)
+	protected boolean notifyAttack(AttackEvent event)
 	{
 		return onAttack(event);
 	}

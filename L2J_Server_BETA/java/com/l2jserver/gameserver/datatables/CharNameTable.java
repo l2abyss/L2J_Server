@@ -42,7 +42,7 @@ public class CharNameTable
 	private final Map<Integer, String> _chars;
 	private final Map<Integer, Integer> _accessLevels;
 	
-	private CharNameTable()
+	protected CharNameTable()
 	{
 		_chars = new FastMap<Integer, String>();
 		_accessLevels = new FastMap<Integer, Integer>();
@@ -277,7 +277,6 @@ public class CharNameTable
 		_log.info(getClass().getSimpleName()+": Loaded "+_chars.size()+" char names.");
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CharNameTable _instance = new CharNameTable();

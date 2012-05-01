@@ -28,15 +28,10 @@ import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
  */
 public final class EffectHandler
 {
-	private static final class SingletonHolder
-	{
-		private static final EffectHandler _instance = new EffectHandler();
-	}
-	
 	private static final Logger _log = Logger.getLogger(EffectHandler.class.getName());
 	private final FastMap<Integer, Class<? extends L2Effect>> _handlers;
 	
-	private EffectHandler()
+	protected EffectHandler()
 	{
 		_handlers = new FastMap<Integer, Class<? extends L2Effect>>();
 	}
@@ -67,6 +62,11 @@ public final class EffectHandler
 		{
 			_log.log(Level.WARNING, "Problems while running EffectMansterHandler", e);
 		}
+	}
+	
+	private static final class SingletonHolder
+	{
+		protected static final EffectHandler _instance = new EffectHandler();
 	}
 	
 	public static EffectHandler getInstance()

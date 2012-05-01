@@ -41,7 +41,7 @@ public class L2DamageZone extends L2ZoneType
 	private int _startTask;
 	private int _reuseTask;
 	
-	private boolean _enabled;
+	protected boolean _enabled;
 	
 	public L2DamageZone(int id)
 	{
@@ -148,7 +148,7 @@ public class L2DamageZone extends L2ZoneType
 		}
 	}
 	
-	private Castle getCastle()
+	protected Castle getCastle()
 	{
 		if (_castleId > 0 && _castle == null)
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
@@ -161,7 +161,7 @@ public class L2DamageZone extends L2ZoneType
 		private final L2DamageZone _dmgZone;
 		private final Castle _castle;
 		
-		private ApplyDamage(L2DamageZone zone)
+		protected ApplyDamage(L2DamageZone zone)
 		{
 			_dmgZone = zone;
 			_castle = zone.getCastle();

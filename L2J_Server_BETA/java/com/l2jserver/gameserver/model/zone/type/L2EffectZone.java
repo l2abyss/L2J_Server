@@ -39,10 +39,10 @@ public class L2EffectZone extends L2ZoneType
 	private int _initialDelay;
 	private int _reuse;
 	private boolean _enabled;
-	private boolean _bypassConditions;
+	protected boolean _bypassConditions;
 	private boolean _isShowDangerIcon;
 	private volatile Future<?> _task;
-	private volatile FastMap<Integer, Integer> _skills;
+	protected volatile FastMap<Integer, Integer> _skills;
 	
 	public L2EffectZone(int id)
 	{
@@ -161,7 +161,7 @@ public class L2EffectZone extends L2ZoneType
 		}
 	}
 	
-	private L2Skill getSkill(int skillId, int skillLvl)
+	protected L2Skill getSkill(int skillId, int skillLvl)
 	{
 		return SkillTable.getInstance().getInfo(skillId, skillLvl);
 	}
@@ -220,7 +220,7 @@ public class L2EffectZone extends L2ZoneType
 	
 	private final class ApplySkill implements Runnable
 	{
-		private ApplySkill()
+		protected ApplySkill()
 		{
 			if (_skills == null)
 				throw new IllegalStateException("No skills defined.");

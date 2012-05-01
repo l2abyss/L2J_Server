@@ -52,7 +52,7 @@ public class AirShipManager
 		return SingletonHolder._instance;
 	}
 	
-	private AirShipManager()
+	protected AirShipManager()
 	{
 		StatsSet npcDat = new StatsSet();
 		npcDat.set("npcId", 9);
@@ -335,7 +335,6 @@ public class AirShipManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AirShipManager _instance = new AirShipManager();

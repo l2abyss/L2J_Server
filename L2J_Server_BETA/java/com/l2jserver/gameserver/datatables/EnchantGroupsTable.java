@@ -55,7 +55,7 @@ public class EnchantGroupsTable
 	}
 	
 	
-	private EnchantGroupsTable()
+	protected EnchantGroupsTable()
 	{
 		load();
 	}
@@ -64,11 +64,9 @@ public class EnchantGroupsTable
 	{
 		int count = 0;
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			try
 			{
 				_enchantSkillGroups = new TIntObjectHashMap<L2EnchantSkillGroup>();
@@ -211,7 +209,6 @@ public class EnchantGroupsTable
 		return 0;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final EnchantGroupsTable _instance = new EnchantGroupsTable();

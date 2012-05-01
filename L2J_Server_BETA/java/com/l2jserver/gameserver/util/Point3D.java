@@ -110,7 +110,7 @@ public class Point3D implements Serializable
 		return distanceSquared(point1, point2) < (distance * distance);
 	}
 	
-	public synchronized int getX()
+	public int getX()
 	{
 		return _x;
 	}
@@ -120,7 +120,7 @@ public class Point3D implements Serializable
 		_x = pX;
 	}
 	
-	public synchronized int getY()
+	public int getY()
 	{
 		return _y;
 	}
@@ -130,7 +130,7 @@ public class Point3D implements Serializable
 		_y = pY;
 	}
 	
-	public synchronized int getZ()
+	public int getZ()
 	{
 		return _z;
 	}

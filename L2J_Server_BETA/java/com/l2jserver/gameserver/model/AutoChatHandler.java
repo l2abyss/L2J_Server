@@ -54,7 +54,7 @@ public class AutoChatHandler implements SpawnListener
 	
 	protected Map<Integer, AutoChatInstance> _registeredChats;
 	
-	private AutoChatHandler()
+	protected AutoChatHandler()
 	{
 		_registeredChats = new FastMap<Integer, AutoChatInstance>();
 		restoreChatData();
@@ -828,7 +828,6 @@ public class AutoChatHandler implements SpawnListener
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AutoChatHandler _instance = new AutoChatHandler();

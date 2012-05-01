@@ -382,28 +382,15 @@ public class GeoPathFinding extends PathFinding
 		return new GeoNode(new GeoNodeLoc(node_x, node_y, last_z), idx2);
 	}
 	
-	private GeoPathFinding()
+	protected GeoPathFinding()
 	{
-		LineNumberReader lnr = null;
-		try
+		final File file = new File("./data/pathnode/pn_index.txt");
+		try (FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			LineNumberReader lnr = new LineNumberReader(br))
 		{
 			_log.info("PathFinding Engine: - Loading Path Nodes...");
-			File Data = new File("./data/pathnode/pn_index.txt");
-			if (!Data.exists())
-			{
-				return;
-			}
-			
-			lnr = new LineNumberReader(new BufferedReader(new FileReader(Data)));
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "", e);
-			throw new Error("Failed to Load pn_index File.");
-		}
-		String line;
-		try
-		{
+			String line;
 			while ((line = lnr.readLine()) != null)
 			{
 				if (line.trim().length() == 0)
@@ -420,16 +407,6 @@ public class GeoPathFinding extends PathFinding
 		{
 			_log.log(Level.WARNING, "", e);
 			throw new Error("Failed to Read pn_index File.");
-		}
-		finally
-		{
-			try
-			{
-				lnr.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 	
@@ -479,7 +456,6 @@ public class GeoPathFinding extends PathFinding
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GeoPathFinding _instance = new GeoPathFinding();

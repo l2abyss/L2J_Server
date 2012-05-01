@@ -137,7 +137,6 @@ public class EnchantItemData extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final EnchantItemData _instance = new EnchantItemData();

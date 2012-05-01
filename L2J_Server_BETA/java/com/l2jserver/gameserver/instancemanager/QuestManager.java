@@ -37,7 +37,7 @@ public class QuestManager extends ScriptManager<Quest>
 	
 	private Map<String, Quest> _quests = new FastMap<String, Quest>();
 	
-	private QuestManager()
+	protected QuestManager()
 	{
 		_log.info("Initializing QuestManager");
 	}
@@ -179,7 +179,6 @@ public class QuestManager extends ScriptManager<Quest>
 		return "QuestManager";
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final QuestManager _instance = new QuestManager();

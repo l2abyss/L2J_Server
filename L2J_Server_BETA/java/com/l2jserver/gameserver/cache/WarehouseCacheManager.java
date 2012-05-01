@@ -34,7 +34,7 @@ public class WarehouseCacheManager
 		return SingletonHolder._instance;
 	}
 	
-	private WarehouseCacheManager()
+	protected WarehouseCacheManager()
 	{
 		_cacheTime = Config.WAREHOUSE_CACHE_TIME * 60000L; // 60*1000 = 60000
 		_cachedWh = new FastMap<L2PcInstance, Long>().shared();
@@ -68,7 +68,6 @@ public class WarehouseCacheManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final WarehouseCacheManager _instance = new WarehouseCacheManager();

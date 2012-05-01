@@ -30,7 +30,7 @@ public class PartyMatchRoomList
 	private int _maxid = 1;
 	private Map<Integer, PartyMatchRoom> _rooms;
 	
-	private PartyMatchRoomList()
+	protected PartyMatchRoomList()
 	{
 		_rooms = new FastMap<Integer, PartyMatchRoom>();
 	}
@@ -101,7 +101,6 @@ public class PartyMatchRoomList
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final PartyMatchRoomList _instance = new PartyMatchRoomList();

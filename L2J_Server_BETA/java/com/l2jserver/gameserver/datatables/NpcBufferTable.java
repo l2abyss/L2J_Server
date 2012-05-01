@@ -68,7 +68,7 @@ public class NpcBufferTable
 		}
 	}
 	
-	private NpcBufferTable()
+	protected NpcBufferTable()
 	{
 		Connection con = null;
 		int skillCount = 0;
@@ -196,7 +196,6 @@ public class NpcBufferTable
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final NpcBufferTable _instance = new NpcBufferTable();

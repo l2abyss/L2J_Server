@@ -98,7 +98,7 @@ public final class SkillTreesData extends DocumentParser
 	 */
 	private static final Map<ClassId, ClassId> _parentClassMap = new HashMap<>();
 	
-	private SkillTreesData()
+	protected SkillTreesData()
 	{
 		load();
 	}
@@ -1207,7 +1207,6 @@ public final class SkillTreesData extends DocumentParser
 	/**
 	 * Singleton holder for the SkillTreesData class.
 	 */
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SkillTreesData _instance = new SkillTreesData();

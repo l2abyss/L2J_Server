@@ -39,7 +39,7 @@ public final class HennaData extends DocumentParser
 {
 	private static final Map<Integer, L2Henna> _hennaList = new HashMap<>();
 	
-	private HennaData()
+	protected HennaData()
 	{
 		_hennaList.clear();
 		parseDatapackFile("data/stats/hennaList.xml");
@@ -151,7 +151,6 @@ public final class HennaData extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final HennaData _instance = new HennaData();

@@ -33,7 +33,7 @@ public class SkillHandler
 		return SingletonHolder._instance;
 	}
 	
-	private SkillHandler()
+	protected SkillHandler()
 	{
 		_datatable = new TIntObjectHashMap<ISkillHandler>();
 	}
@@ -60,7 +60,6 @@ public class SkillHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SkillHandler _instance = new SkillHandler();

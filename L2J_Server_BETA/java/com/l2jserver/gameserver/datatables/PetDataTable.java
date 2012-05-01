@@ -35,7 +35,7 @@ public final class PetDataTable extends DocumentParser
 {
 	private static final Map<Integer, L2PetData> _pets = new HashMap<>();
 	
-	private PetDataTable()
+	protected PetDataTable()
 	{
 		_pets.clear();
 		parseDatapackFile("data/stats/npc/PetData.xml");
@@ -373,7 +373,6 @@ public final class PetDataTable extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final PetDataTable _instance = new PetDataTable();

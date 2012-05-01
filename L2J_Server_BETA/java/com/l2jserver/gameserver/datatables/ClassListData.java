@@ -34,7 +34,7 @@ public final class ClassListData extends DocumentParser
 {
 	private static final Map<ClassId, ClassInfo> _classData = new HashMap<>();
 	
-	private ClassListData()
+	protected ClassListData()
 	{
 		_classData.clear();
 		parseDatapackFile("data/stats/chars/classList.xml");
@@ -122,7 +122,6 @@ public final class ClassListData extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ClassListData _instance = new ClassListData();

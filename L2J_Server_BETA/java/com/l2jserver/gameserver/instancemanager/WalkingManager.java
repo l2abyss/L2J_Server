@@ -55,17 +55,17 @@ public class WalkingManager
 	private static final byte REPEAT_TELE_FIRST = 2;
 	private static final byte REPEAT_RANDOM = 3;
 	
-	private Map<Integer, L2WalkRoute> _routes; //all available routes
+	protected Map<Integer, L2WalkRoute> _routes; //all available routes
 	private Map<Integer, WalkInfo> _activeRoutes; //each record represents NPC, moving by predefined route from _routes, and moving progress
 	
 	private class WalkInfo
 	{
-		private ScheduledFuture<?> _walkCheckTask;
-		private boolean _blocked = false;
-		private boolean _suspended = false;
-		private boolean _nodeArrived = false;
-		private int _currentNode  = 0;
-		private boolean _forward = true; //Determines first --> last or first <-- last direction
+		protected ScheduledFuture<?> _walkCheckTask;
+		protected boolean _blocked = false;
+		protected boolean _suspended = false;
+		protected boolean _nodeArrived = false;
+		protected int _currentNode  = 0;
+		protected boolean _forward = true; //Determines first --> last or first <-- last direction
 		private int _routeId;
 		
 		public WalkInfo(int routeId)
@@ -73,12 +73,12 @@ public class WalkingManager
 			_routeId = routeId;
 		}
 		
-		private L2WalkRoute getRoute()
+		protected L2WalkRoute getRoute()
 		{
 			return _routes.get(_routeId);
 		}
 		
-		private L2NpcWalkerNode getCurrentNode()
+		protected L2NpcWalkerNode getCurrentNode()
 		{
 			return getRoute().getNodeList().get(_currentNode); 
 		}
@@ -89,7 +89,7 @@ public class WalkingManager
 		return SingletonHolder._instance;
 	}
 	
-	private WalkingManager()
+	protected WalkingManager()
 	{
 		_routes = new FastMap<Integer, L2WalkRoute>();
 		_activeRoutes = new FastMap<Integer, WalkInfo>();
@@ -258,7 +258,7 @@ public class WalkingManager
 					WalkInfo walk = _activeRoutes.get(npc.getObjectId());
 					//Announcements.getInstance().announceToAll("X = " + Integer.toString(npc.getX()) + ", Y = " +  Integer.toString(npc.getY()) + ", node = " + Integer.toString(walk._currentNode));
 					
-					//Prevent call simultaneosly from scheduled task and onArrived() or temporarily stop walking for resuming in future
+					//Prevent call simultaneously from scheduled task and onArrived() or temporarily stop walking for resuming in future
 					if (walk._blocked || walk._suspended)
 						return;
 					
@@ -423,7 +423,6 @@ public class WalkingManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final WalkingManager _instance = new WalkingManager();

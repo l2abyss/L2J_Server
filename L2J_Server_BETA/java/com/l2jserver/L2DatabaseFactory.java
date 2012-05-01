@@ -285,6 +285,8 @@ public class L2DatabaseFactory
 	 */
 	private static class ConnectionCloser implements Runnable
 	{
+		private static final Logger _log = Logger.getLogger(ConnectionCloser.class.getName());
+		
 		/** The connection. */
 		private final Connection c;
 		

@@ -44,7 +44,7 @@ public class SummonSkillsTable
 		load();
 	}
 	
-	private SummonSkillsTable()
+	protected SummonSkillsTable()
 	{
 		_skillTrees = new FastMap<Integer, Map<Integer, L2PetSkillLearn>>();
 		load();
@@ -196,7 +196,6 @@ public class SummonSkillsTable
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SummonSkillsTable _instance = new SummonSkillsTable();

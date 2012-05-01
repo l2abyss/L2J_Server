@@ -66,7 +66,7 @@ public class RecipeController
 	protected static final Logger _log = Logger.getLogger(RecipeController.class.getName());
 	
 	private static final Map<Integer, L2RecipeList> _lists = new FastMap<Integer, L2RecipeList>();
-	private static final Map<Integer, RecipeItemMaker> _activeMakers = new FastMap<Integer, RecipeItemMaker>().shared();
+	protected static final Map<Integer, RecipeItemMaker> _activeMakers = new FastMap<Integer, RecipeItemMaker>().shared();
 	private static final String RECIPES_FILE = "recipes.xml";
 	
 	public static RecipeController getInstance()
@@ -74,7 +74,7 @@ public class RecipeController
 		return SingletonHolder._instance;
 	}
 	
-	private RecipeController()
+	protected RecipeController()
 	{
 		try
 		{
@@ -1015,7 +1015,6 @@ public class RecipeController
 		return recipeList;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final RecipeController _instance = new RecipeController();

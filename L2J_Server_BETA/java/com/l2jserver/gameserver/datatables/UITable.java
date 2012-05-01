@@ -45,7 +45,7 @@ public class UITable
 		return SingletonHolder._instance;
 	}
 	
-	private UITable()
+	protected UITable()
 	{
 		parseCatData();
 		parseKeyData();
@@ -154,7 +154,6 @@ public class UITable
 		return _storedKeys;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final UITable _instance = new UITable();

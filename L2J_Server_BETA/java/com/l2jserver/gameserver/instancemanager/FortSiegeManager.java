@@ -65,7 +65,7 @@ public class FortSiegeManager
 	private int _suspiciousMerchantRespawnDelay = 180; // Time in minute. Changeable in fortsiege.properties
 	private List<FortSiege> _sieges;
 	
-	private FortSiegeManager()
+	protected FortSiegeManager()
 	{
 		_log.info("Initializing FortSiegeManager");
 		load();
@@ -421,7 +421,6 @@ public class FortSiegeManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FortSiegeManager _instance = new FortSiegeManager();

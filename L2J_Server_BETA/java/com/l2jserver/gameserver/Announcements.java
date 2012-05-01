@@ -52,7 +52,7 @@ public class Announcements
 	private List<String> _critAnnouncements = new FastList<String>();
 	private List<List<Object>> _eventAnnouncements = new FastList<List<Object>>();
 	
-	private Announcements()
+	protected Announcements()
 	{
 		loadAnnouncements();
 	}
@@ -173,28 +173,23 @@ public class Announcements
 	private void readFromDisk(String path, List<String> list)
 	{
 		final File file = new File(Config.DATAPACK_ROOT, path);
-		if (file.exists())
+		try (FileReader fr = new FileReader(file);
+			LineNumberReader lnr = new LineNumberReader(fr))
 		{
-			
-			try (LineNumberReader lnr = new LineNumberReader(new FileReader(file)))
+			String line = null;
+			while ((line = lnr.readLine()) != null)
 			{
-				String line = null;
-				while ((line = lnr.readLine()) != null)
+				StringTokenizer st = new StringTokenizer(line, "\n\r");
+				if (st.hasMoreTokens())
 				{
-					StringTokenizer st = new StringTokenizer(line, "\n\r");
-					if (st.hasMoreTokens())
-					{
-						list.add(st.nextToken());
-					}
+					list.add(st.nextToken());
 				}
 			}
-			catch (IOException e1)
-			{
-				_log.log(Level.SEVERE, "Error reading announcements: ", e1);
-			}
 		}
-		else
-			_log.warning(file.getAbsolutePath() + " doesn't exist");
+		catch (IOException e1)
+		{
+			_log.log(Level.SEVERE, "Error reading announcements: ", e1);
+		}
 	}
 	
 	private void saveToDisk(boolean isCritical)
@@ -270,7 +265,6 @@ public class Announcements
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Announcements _instance = new Announcements();

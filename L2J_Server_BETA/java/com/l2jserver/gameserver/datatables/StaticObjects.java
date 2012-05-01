@@ -36,7 +36,7 @@ public final class StaticObjects extends DocumentParser
 {
 	private static final Map<Integer, L2StaticObjectInstance> _staticObjects = new HashMap<>();
 	
-	private StaticObjects()
+	protected StaticObjects()
 	{
 		_staticObjects.clear();
 		parseDatapackFile("data/staticObjects.xml");
@@ -98,7 +98,6 @@ public final class StaticObjects extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final StaticObjects _instance = new StaticObjects();

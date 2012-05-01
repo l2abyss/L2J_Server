@@ -63,7 +63,7 @@ public class MapRegionManager extends DocumentParser
 		Territory_banish
 	}
 	
-	private MapRegionManager()
+	protected MapRegionManager()
 	{
 		_regions.clear();
 		parseDirectory(new File(Config.DATAPACK_ROOT, "data/mapregion/"));
@@ -523,7 +523,6 @@ public class MapRegionManager extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final MapRegionManager _instance = new MapRegionManager();

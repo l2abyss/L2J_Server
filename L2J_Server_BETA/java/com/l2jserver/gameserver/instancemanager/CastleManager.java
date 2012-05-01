@@ -46,10 +46,6 @@ public class CastleManager implements InstanceListManager
 	
 	private static final int _castleCirclets[] = { 0, 6838, 6835, 6839, 6837, 6840, 6834, 6836, 8182, 8183 };
 	
-	private CastleManager()
-	{
-	}
-	
 	public final int findNearestCastleIndex(L2Object obj)
 	{
 		return findNearestCastleIndex(obj, Long.MAX_VALUE);
@@ -295,7 +291,6 @@ public class CastleManager implements InstanceListManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CastleManager _instance = new CastleManager();

@@ -32,7 +32,7 @@ public class TargetHandler
 		return SingletonHolder._instance;
 	}
 	
-	private TargetHandler()
+	protected TargetHandler()
 	{
 		_datatable = new FastMap<Enum<L2TargetType>, ITargetTypeHandler>();
 	}
@@ -52,7 +52,6 @@ public class TargetHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TargetHandler _instance = new TargetHandler();

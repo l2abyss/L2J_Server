@@ -65,7 +65,7 @@ public final class Action extends L2GameClientPacket
 		if (activeChar.inObserverMode())
 		{
 			activeChar.sendPacket(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE);
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
@@ -87,27 +87,27 @@ public final class Action extends L2GameClientPacket
 		if (obj == null)
 		{
 			// pressing e.g. pickup many times quickly would get you here
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		if (!obj.isTargetable() && !activeChar.isGM())
 		{
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		// Players can't interact with objects in the other instances, except from multiverse
 		if ((obj.getInstanceId() != activeChar.getInstanceId()) && (activeChar.getInstanceId() != -1))
 		{
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		// Only GMs can directly interact with invisible characters
 		if (obj.isPlayer() && obj.getActingPlayer().getAppearance().getInvisible() && !activeChar.isGM())
 		{
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
@@ -115,7 +115,7 @@ public final class Action extends L2GameClientPacket
 		if (activeChar.getActiveRequester() != null)
 		{
 			// Actions prohibited when in trade
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
@@ -142,7 +142,7 @@ public final class Action extends L2GameClientPacket
 			{
 				// Invalid action detected (probably client cheating), log this
 				_log.warning(getType() + ": Character: " + activeChar.getName() + " requested invalid action: " + _actionId);
-				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				sendPacket(ActionFailed.STATIC_PACKET);
 				break;
 			}
 		}

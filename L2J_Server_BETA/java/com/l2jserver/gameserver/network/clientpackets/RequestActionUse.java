@@ -770,7 +770,7 @@ public final class RequestActionUse extends L2GameClientPacket
 	 * @param target the target to sit, throne, bench or chair.
 	 * @return {@code true} if the player can sit, {@code false} otherwise.
 	 */
-	private boolean useSit(L2PcInstance activeChar, L2Object target)
+	protected boolean useSit(L2PcInstance activeChar, L2Object target)
 	{
 		if (activeChar.getMountType() != 0)
 		{

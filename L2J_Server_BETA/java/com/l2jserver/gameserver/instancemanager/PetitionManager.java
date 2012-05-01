@@ -230,7 +230,7 @@ public final class PetitionManager
 		}
 	}
 	
-	private PetitionManager()
+	protected PetitionManager()
 	{
 		_log.info("Initializing PetitionManager");
 		_pendingPetitions = new FastMap<Integer, Petition>();
@@ -582,7 +582,6 @@ public final class PetitionManager
 		activeChar.sendPacket(html);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final PetitionManager _instance = new PetitionManager();

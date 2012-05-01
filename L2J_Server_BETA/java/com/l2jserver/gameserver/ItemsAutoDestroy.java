@@ -32,7 +32,7 @@ public class ItemsAutoDestroy
 	protected List<L2ItemInstance> _items = null;
 	protected static long _sleep;
 	
-	private ItemsAutoDestroy()
+	protected ItemsAutoDestroy()
 	{
 		_log.info("Initializing ItemsAutoDestroy.");
 		_items = new FastList<L2ItemInstance>();
@@ -114,7 +114,6 @@ public class ItemsAutoDestroy
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ItemsAutoDestroy _instance = new ItemsAutoDestroy();

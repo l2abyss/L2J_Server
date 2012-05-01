@@ -52,7 +52,7 @@ import com.l2jserver.util.StringUtil;
  */
 public abstract class Inventory extends ItemContainer
 {
-	private static final Logger _log = Logger.getLogger(Inventory.class.getName());
+	protected static final Logger _log = Logger.getLogger(Inventory.class.getName());
 	
 	public interface PaperdollListener
 	{
@@ -460,7 +460,7 @@ public abstract class Inventory extends ItemContainer
 			final L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(chestItem.getItemId());
 			boolean update = false;
 			boolean updateTimeStamp = false;
-			// Checks if equiped item is part of set
+			// Checks if equipped item is part of set
 			if (armorSet.containItem(slot, item.getItemId()))
 			{
 				if (armorSet.containAll(player))

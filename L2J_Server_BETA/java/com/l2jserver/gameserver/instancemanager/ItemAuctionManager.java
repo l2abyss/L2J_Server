@@ -50,7 +50,7 @@ public final class ItemAuctionManager
 	private final TIntObjectHashMap<ItemAuctionInstance> _managerInstances;
 	private final AtomicInteger _auctionIds;
 	
-	private ItemAuctionManager()
+	protected ItemAuctionManager()
 	{
 		_managerInstances = new TIntObjectHashMap<ItemAuctionInstance>();
 		_auctionIds = new AtomicInteger(1);
@@ -170,7 +170,6 @@ public final class ItemAuctionManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ItemAuctionManager _instance = new ItemAuctionManager();

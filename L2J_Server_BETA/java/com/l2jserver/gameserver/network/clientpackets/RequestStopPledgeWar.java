@@ -105,13 +105,15 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 	
 	private final class ForEachPlayerBroadcastUserInfo implements TObjectProcedure<L2PcInstance>
 	{
-		L2PcInstance _player;
-		L2Clan _cln;
-		private ForEachPlayerBroadcastUserInfo(L2Clan clan, L2PcInstance player)
+		private final L2PcInstance _player;
+		private final L2Clan _cln;
+		
+		protected ForEachPlayerBroadcastUserInfo(L2Clan clan, L2PcInstance player)
 		{
 			_cln = clan;
 			_player = player;
 		}
+		
 		@Override
 		public final boolean execute(final L2PcInstance cha)
 		{

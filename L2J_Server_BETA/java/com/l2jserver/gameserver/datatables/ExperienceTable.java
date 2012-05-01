@@ -34,7 +34,7 @@ public final class ExperienceTable extends DocumentParser
 	private byte MAX_LEVEL;
 	private byte MAX_PET_LEVEL;
 	
-	private ExperienceTable()
+	protected ExperienceTable()
 	{
 		_expTable.clear();
 		parseDatapackFile("data/stats/experience.xml");
@@ -93,7 +93,6 @@ public final class ExperienceTable extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ExperienceTable _instance = new ExperienceTable();

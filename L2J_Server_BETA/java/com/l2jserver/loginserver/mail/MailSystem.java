@@ -143,7 +143,6 @@ public class MailSystem
 		return _mailData.get(mailId);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final MailSystem _instance = new MailSystem();

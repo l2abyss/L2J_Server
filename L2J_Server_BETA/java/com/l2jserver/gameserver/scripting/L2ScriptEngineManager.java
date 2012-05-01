@@ -82,7 +82,7 @@ public final class L2ScriptEngineManager
 	 */
 	private final boolean PURGE_ERROR_LOG = true;
 	
-	private L2ScriptEngineManager()
+	protected L2ScriptEngineManager()
 	{
 		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 		List<ScriptEngineFactory> factories = scriptEngineManager.getEngineFactories();
@@ -523,7 +523,6 @@ public final class L2ScriptEngineManager
 		return _currentLoadingScript;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final L2ScriptEngineManager _instance = new L2ScriptEngineManager();

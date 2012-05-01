@@ -61,13 +61,20 @@ public final class RequestPreviewItem extends L2GameClientPacket
 	
 	private class RemoveWearItemsTask implements Runnable
 	{
+		private L2PcInstance activeChar;
+		
+		protected RemoveWearItemsTask(L2PcInstance player)
+		{
+			activeChar = player;
+		}
+		
 		@Override
 		public void run()
 		{
 			try
 			{
-				_activeChar.sendPacket(SystemMessageId.NO_LONGER_TRYING_ON);
-				_activeChar.sendPacket(new UserInfo(_activeChar));
+				activeChar.sendPacket(SystemMessageId.NO_LONGER_TRYING_ON);
+				activeChar.sendPacket(new UserInfo(activeChar));
 			}
 			catch (Exception e)
 			{
@@ -227,7 +234,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		{
 			_activeChar.sendPacket(new ShopPreviewInfo(_item_list));		
 			// Schedule task
-			ThreadPoolManager.getInstance().scheduleGeneral(new RemoveWearItemsTask(), Config.WEAR_DELAY * 1000);
+			ThreadPoolManager.getInstance().scheduleGeneral(new RemoveWearItemsTask(_activeChar), Config.WEAR_DELAY * 1000);
 		}
 	}
 	

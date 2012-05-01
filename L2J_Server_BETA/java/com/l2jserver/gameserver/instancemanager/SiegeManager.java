@@ -64,7 +64,7 @@ public class SiegeManager
 	private int _siegeLength = 120; // Time in minute. Changeable in siege.config
 	private int _bloodAllianceReward = 0; // Number of Blood Alliance items reward for successful castle defending
 	
-	private SiegeManager()
+	protected SiegeManager()
 	{
 		_log.info("Initializing SiegeManager");
 		load();
@@ -399,7 +399,6 @@ public class SiegeManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SiegeManager _instance = new SiegeManager();

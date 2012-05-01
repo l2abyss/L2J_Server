@@ -57,7 +57,7 @@ public final class ClanHallManager
 		return _loaded;
 	}
 	
-	private ClanHallManager()
+	protected ClanHallManager()
 	{
 		_log.info("Initializing ClanHallManager");
 		_clanHall = new FastMap<Integer, AuctionableHall>();
@@ -305,7 +305,6 @@ public final class ClanHallManager
 		return null;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ClanHallManager _instance = new ClanHallManager();

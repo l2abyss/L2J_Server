@@ -52,7 +52,7 @@ public class Lottery
 	protected boolean _isStarted;
 	protected long _enddate;
 	
-	private Lottery()
+	protected Lottery()
 	{
 		_number = 1;
 		_prize = Config.ALT_LOTTERY_PRIZE;
@@ -558,7 +558,6 @@ public class Lottery
 		return res;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Lottery _instance = new Lottery();

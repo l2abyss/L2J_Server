@@ -227,7 +227,7 @@ public final class Broadcast
 	{
 		L2GameServerPacket _packet;
 		
-		private ForEachPlayerBroadcast(L2GameServerPacket packet)
+		protected ForEachPlayerBroadcast(L2GameServerPacket packet)
 		{
 			_packet = packet;
 		}
@@ -248,7 +248,7 @@ public final class Broadcast
 		L2GameServerPacket _packet;
 		int _instanceId;
 		
-		private ForEachPlayerInInstanceBroadcast(L2GameServerPacket packet, int instanceId)
+		protected ForEachPlayerInInstanceBroadcast(L2GameServerPacket packet, int instanceId)
 		{
 			_packet = packet;
 			_instanceId = instanceId;

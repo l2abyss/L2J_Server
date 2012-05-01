@@ -73,7 +73,7 @@ public class ClanTable
 		return _clans.values().toArray(new L2Clan[_clans.size()]);
 	}
 	
-	private ClanTable()
+	protected ClanTable()
 	{
 		// forums has to be loaded before clan data, because of last forum id used should have also memo included
 		if (Config.COMMUNITY_TYPE > 0)
@@ -555,7 +555,6 @@ public class ClanTable
 			clan.updateClanScoreInDB();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ClanTable _instance = new ClanTable();

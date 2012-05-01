@@ -40,9 +40,9 @@ public class KnownListUpdateTaskManager
 	// Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
 	public static int _fullUpdateTimer = FULL_UPDATE_TIMER;
 	
-	private static final FastSet<L2WorldRegion> _failedRegions = new FastSet<L2WorldRegion>(1);
+	protected static final FastSet<L2WorldRegion> _failedRegions = new FastSet<L2WorldRegion>(1);
 	
-	private KnownListUpdateTaskManager()
+	protected KnownListUpdateTaskManager()
 	{
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(), 1000, Config.KNOWNLIST_UPDATE_INTERVAL);
 	}
@@ -167,7 +167,6 @@ public class KnownListUpdateTaskManager
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final KnownListUpdateTaskManager _instance = new KnownListUpdateTaskManager();

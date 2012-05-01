@@ -22,13 +22,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author Gnacik
- *
  */
 public class PartyMatchWaitingList
 {
 	private List<L2PcInstance> _members;
 	
-	private PartyMatchWaitingList()
+	protected PartyMatchWaitingList()
 	{
 		_members = new FastList<L2PcInstance>();
 	}
@@ -57,7 +56,6 @@ public class PartyMatchWaitingList
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final PartyMatchWaitingList _instance = new PartyMatchWaitingList();

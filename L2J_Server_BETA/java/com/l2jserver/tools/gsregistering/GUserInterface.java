@@ -51,8 +51,8 @@ import com.l2jserver.tools.images.ImagesTable;
 public class GUserInterface extends BaseGameServerRegister implements ActionListener
 {
 	private final JFrame _frame;
-	private final JTableModel _dtm;
-	private final JProgressBar _progressBar;
+	protected final JTableModel _dtm;
+	protected final JProgressBar _progressBar;
 	
 	public JTable _gsTable;
 	
@@ -312,7 +312,7 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		return _frame;
 	}
 	
-	private class ButtonCellRenderer implements TableCellRenderer
+	protected class ButtonCellRenderer implements TableCellRenderer
 	{
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)

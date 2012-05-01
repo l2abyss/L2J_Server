@@ -37,15 +37,13 @@ import com.l2jserver.util.file.filter.XMLFilter;
  */
 public class FaenorScriptEngine extends ScriptEngine
 {
-	private static Logger _log = Logger.getLogger(FaenorScriptEngine.class.getName());
-	public final static String PACKAGE_DIRECTORY = "data/faenor/";
+	private static final Logger _log = Logger.getLogger(FaenorScriptEngine.class.getName());
+	public static final String PACKAGE_DIRECTORY = "data/faenor/";
 	
-	private FaenorScriptEngine()
+	protected FaenorScriptEngine()
 	{
-		File packDirectory = new File(Config.DATAPACK_ROOT, PACKAGE_DIRECTORY);
-		
-		File[] files = packDirectory.listFiles(new XMLFilter());
-		
+		final File packDirectory = new File(Config.DATAPACK_ROOT, PACKAGE_DIRECTORY);
+		final File[] files = packDirectory.listFiles(new XMLFilter());
 		for (File file : files)
 		{
 			try (InputStream in = new FileInputStream(file))
@@ -83,7 +81,7 @@ public class FaenorScriptEngine extends ScriptEngine
 		try
 		{
 			parser.parseScript(node, context);
-			_log.info(getClass().getSimpleName() + ": Loaded  " + script.getName() + " Sucessfullty.");
+			_log.info(getClass().getSimpleName() + ": Loaded  " + script.getName() + " successfully.");
 		}
 		catch (Exception e)
 		{
@@ -96,7 +94,6 @@ public class FaenorScriptEngine extends ScriptEngine
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FaenorScriptEngine _instance = new FaenorScriptEngine();

@@ -742,12 +742,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 	}
 	
-	private class DisconnectTask implements Runnable
+	protected class DisconnectTask implements Runnable
 	{
-		
-		/**
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{
@@ -806,7 +802,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	 * @param player the player to be check.
 	 * @return {@code true} if the player is allowed to remain as off-line shop.
 	 */
-	private boolean offlineMode(L2PcInstance player)
+	protected boolean offlineMode(L2PcInstance player)
 	{
 		boolean canSetShop = false;
 		if (player.isInOlympiadMode() || player.isFestivalParticipant() || TvTEvent.isPlayerParticipant(player.getObjectId()) || player.isInJail() || (player.getVehicle() != null))
@@ -848,11 +844,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 	}
 	
-	private class CleanupTask implements Runnable
+	protected class CleanupTask implements Runnable
 	{
-		/**
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{
@@ -900,7 +893,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 	}
 	
-	private class AutoSaveTask implements Runnable
+	protected class AutoSaveTask implements Runnable
 	{
 		@Override
 		public void run()

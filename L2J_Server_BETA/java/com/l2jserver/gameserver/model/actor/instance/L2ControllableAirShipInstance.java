@@ -286,7 +286,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 			_captain.sendInfo(activeChar);
 	}
 	
-	private final class ConsumeFuelTask implements Runnable
+	protected final class ConsumeFuelTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -304,7 +304,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		}
 	}
 	
-	private final class CheckTask implements Runnable
+	protected final class CheckTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -317,7 +317,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		}
 	}
 	
-	private final class DecayTask implements Runnable
+	protected final class DecayTask implements Runnable
 	{
 		@Override
 		public void run()

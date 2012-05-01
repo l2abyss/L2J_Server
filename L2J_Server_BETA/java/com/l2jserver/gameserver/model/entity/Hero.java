@@ -97,7 +97,7 @@ public class Hero
 		return SingletonHolder._instance;
 	}
 	
-	private Hero()
+	protected Hero()
 	{
 		init();
 	}
@@ -1111,7 +1111,6 @@ public class Hero
 		return _heroes == null ? false : _heroes.containsKey(objectId);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Hero _instance = new Hero();

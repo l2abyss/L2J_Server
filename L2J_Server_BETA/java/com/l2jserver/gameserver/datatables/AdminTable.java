@@ -47,7 +47,8 @@ public class AdminTable extends DocumentParser
 	private Map<String, L2AdminCommandAccessRight> _adminCommandAccessRights;
 	private Map<L2PcInstance, Boolean> _gmList;
 	private int _highestLevel = 0;
-	private AdminTable()
+	
+	protected AdminTable()
 	{
 		_accessLevels = new HashMap<>();
 		_adminCommandAccessRights = new HashMap<>();
@@ -311,7 +312,6 @@ public class AdminTable extends DocumentParser
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AdminTable _instance = new AdminTable();

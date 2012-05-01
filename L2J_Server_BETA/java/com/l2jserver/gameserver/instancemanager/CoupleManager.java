@@ -35,7 +35,7 @@ public class CoupleManager
 {
 	private static final Logger _log = Logger.getLogger(CoupleManager.class.getName());
 	
-	private CoupleManager()
+	protected CoupleManager()
 	{
 		_log.info("L2JMOD: Initializing CoupleManager");
 		load();
@@ -158,7 +158,6 @@ public class CoupleManager
 		return _couples;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CoupleManager _instance = new CoupleManager();

@@ -40,10 +40,6 @@ public class FortManager implements InstanceListManager
 	
 	private List<Fort> _forts;
 	
-	private FortManager()
-	{
-	}
-	
 	public final int findNearestFortIndex(L2Object obj)
 	{
 		return findNearestFortIndex(obj, Long.MAX_VALUE);
@@ -203,7 +199,6 @@ public class FortManager implements InstanceListManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FortManager _instance = new FortManager();

@@ -42,22 +42,12 @@ public final class CHSiegeManager
 	private static final Logger _log = Logger.getLogger(CHSiegeManager.class.getName());
 	private static final String SQL_LOAD_HALLS = "SELECT * FROM siegable_clanhall";
 	
-	private static final class SingletonHolder
-	{
-		private static final CHSiegeManager INSTANCE = new CHSiegeManager();
-	}
+	private FastMap<Integer, SiegableHall> _siegableHalls = new FastMap<>();
 	
-	private FastMap<Integer, SiegableHall> _siegableHalls = new FastMap<Integer, SiegableHall>();
-	
-	private CHSiegeManager()
+	protected CHSiegeManager()
 	{
 		_log.info("Initializing CHSiegeManager...");
 		loadClanHalls();
-	}
-	
-	public static CHSiegeManager getInstance()
-	{
-		return SingletonHolder.INSTANCE;
 	}
 	
 	private final void loadClanHalls()
@@ -191,5 +181,15 @@ public final class CHSiegeManager
 			
 			hall.getSiege().saveAttackers();
 		}
+	}
+	
+	public static CHSiegeManager getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static final class SingletonHolder
+	{
+		protected static final CHSiegeManager _instance = new CHSiegeManager();
 	}
 }

@@ -3004,10 +3004,13 @@ public final class Config
 				throw new Error("Failed to Load " + GRACIASEEDS_CONFIG_FILE + " File.");
 			}
 			
-			try
+			final File chat_filter = new File(CHAT_FILTER_FILE);
+			try (FileReader fr = new FileReader(chat_filter);
+				BufferedReader br = new BufferedReader(fr);
+				LineNumberReader lnr = new LineNumberReader(br))
 			{
 				FILTER_LIST = new ArrayList<String>();
-				LineNumberReader lnr = new LineNumberReader(new BufferedReader(new FileReader(new File(CHAT_FILTER_FILE))));
+				
 				String line = null;
 				while ((line = lnr.readLine()) != null)
 				{

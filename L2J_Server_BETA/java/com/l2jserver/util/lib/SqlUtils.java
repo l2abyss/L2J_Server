@@ -167,7 +167,6 @@ public class SqlUtils
 		return res;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SqlUtils _instance = new SqlUtils();

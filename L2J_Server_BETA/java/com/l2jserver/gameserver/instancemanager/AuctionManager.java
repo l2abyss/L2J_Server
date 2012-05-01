@@ -84,7 +84,7 @@ public class AuctionManager
 		return SingletonHolder._instance;
 	}
 	
-	private AuctionManager()
+	protected AuctionManager()
 	{
 		_log.info("Initializing AuctionManager");
 		_auctions = new FastList<Auction>();
@@ -184,7 +184,6 @@ public class AuctionManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AuctionManager _instance = new AuctionManager();

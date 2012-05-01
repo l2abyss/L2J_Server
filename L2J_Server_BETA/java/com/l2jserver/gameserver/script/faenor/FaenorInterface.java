@@ -40,10 +40,6 @@ public class FaenorInterface implements EngineInterface
 		return SingletonHolder._instance;
 	}
 	
-	private FaenorInterface()
-	{
-	}
-	
 	public List<?> getAllPlayers()
 	{
 		return null;
@@ -174,7 +170,6 @@ public class FaenorInterface implements EngineInterface
 		Announcements.getInstance().addEventAnnouncement(validDateRange, message);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FaenorInterface _instance = new FaenorInterface();

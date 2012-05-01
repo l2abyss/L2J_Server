@@ -54,7 +54,7 @@ public class CellPathFinding extends PathFinding
 		return SingletonHolder._instance;
 	}
 	
-	private CellPathFinding()
+	protected CellPathFinding()
 	{
 		try
 		{
@@ -411,7 +411,6 @@ public class CellPathFinding extends PathFinding
 		return result;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CellPathFinding _instance = new CellPathFinding();

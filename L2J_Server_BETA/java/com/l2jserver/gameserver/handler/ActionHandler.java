@@ -29,7 +29,7 @@ public class ActionHandler
 		return SingletonHolder._instance;
 	}
 	
-	private ActionHandler()
+	protected ActionHandler()
 	{
 		_actions = new FastMap<InstanceType, IActionHandler>();
 	}
@@ -56,7 +56,6 @@ public class ActionHandler
 		return _actions.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ActionHandler _instance = new ActionHandler();

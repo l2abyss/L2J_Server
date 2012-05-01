@@ -36,7 +36,7 @@ public class VoicedCommandHandler
 		return SingletonHolder._instance;
 	}
 	
-	private VoicedCommandHandler()
+	protected VoicedCommandHandler()
 	{
 		_datatable = new TIntObjectHashMap<IVoicedCommandHandler>();
 	}
@@ -72,7 +72,6 @@ public class VoicedCommandHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final VoicedCommandHandler _instance = new VoicedCommandHandler();

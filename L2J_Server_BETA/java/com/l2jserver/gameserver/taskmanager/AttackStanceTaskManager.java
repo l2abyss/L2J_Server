@@ -36,7 +36,7 @@ public class AttackStanceTaskManager
 	
 	protected Map<L2Character, Long> _attackStanceTasks = new FastMap<L2Character, Long>().shared();
 	
-	private AttackStanceTaskManager()
+	protected AttackStanceTaskManager()
 	{
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new FightModeScheduler(), 0, 1000);
 	}
@@ -128,7 +128,6 @@ public class AttackStanceTaskManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AttackStanceTaskManager _instance = new AttackStanceTaskManager();

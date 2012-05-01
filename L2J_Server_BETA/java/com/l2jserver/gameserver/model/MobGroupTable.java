@@ -31,7 +31,7 @@ public class MobGroupTable
 	public static final int FOLLOW_RANGE = 300;
 	public static final int RANDOM_RANGE = 300;
 	
-	private MobGroupTable()
+	protected MobGroupTable()
 	{
 		_groupMap = new FastMap<Integer, MobGroup>();
 	}
@@ -75,7 +75,6 @@ public class MobGroupTable
 		return (_groupMap.remove(groupKey) != null);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final MobGroupTable _instance = new MobGroupTable();

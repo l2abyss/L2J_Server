@@ -41,7 +41,7 @@ public class EventDroplist
 	
 	public static class DateDrop
 	{
-		private final DateRange _dateRange;
+		protected final DateRange _dateRange;
 		private final EventDrop _eventDrop;
 		
 		public DateDrop(DateRange dateRange, EventDrop eventDrop)
@@ -115,7 +115,6 @@ public class EventDroplist
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final EventDroplist _instance = new EventDroplist();

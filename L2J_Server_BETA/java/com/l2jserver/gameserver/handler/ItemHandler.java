@@ -48,7 +48,7 @@ public class ItemHandler
 	/**
 	 * Constructor of ItemHandler
 	 */
-	private ItemHandler()
+	protected ItemHandler()
 	{
 		_datatable = new TIntObjectHashMap<IItemHandler>();
 	}
@@ -77,7 +77,6 @@ public class ItemHandler
 		return _datatable.get(item.getHandlerName().hashCode());
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ItemHandler _instance = new ItemHandler();

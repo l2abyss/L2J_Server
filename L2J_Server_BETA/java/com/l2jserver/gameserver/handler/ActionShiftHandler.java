@@ -32,7 +32,7 @@ public class ActionShiftHandler
 		return SingletonHolder._instance;
 	}
 	
-	private ActionShiftHandler()
+	protected ActionShiftHandler()
 	{
 		_actionsShift = new FastMap<InstanceType, IActionHandler>();
 	}
@@ -59,7 +59,6 @@ public class ActionShiftHandler
 		return _actionsShift.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ActionShiftHandler _instance = new ActionShiftHandler();

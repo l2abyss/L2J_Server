@@ -52,7 +52,7 @@ public class HellboundManager
 	private ScheduledFuture<?> _engine = null;
 	private final List<HellboundSpawn> _population;
 	
-	private HellboundManager()
+	protected HellboundManager()
 	{
 		_population = new FastList<HellboundSpawn>();
 		
@@ -385,7 +385,6 @@ public class HellboundManager
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final HellboundManager _instance = new HellboundManager();

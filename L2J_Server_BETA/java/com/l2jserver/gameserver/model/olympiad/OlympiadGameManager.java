@@ -34,7 +34,7 @@ public class OlympiadGameManager implements Runnable
 	private volatile boolean _battleStarted = false;
 	private final OlympiadGameTask[] _tasks;
 
-	private OlympiadGameManager()
+	protected OlympiadGameManager()
 	{
 		final Collection<L2OlympiadStadiumZone> zones = ZoneManager.getInstance().getAllZones(L2OlympiadStadiumZone.class);
 		if (zones == null || zones.isEmpty())
@@ -186,7 +186,6 @@ public class OlympiadGameManager implements Runnable
 			game.addDamage(player, damage);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final OlympiadGameManager _instance = new OlympiadGameManager();

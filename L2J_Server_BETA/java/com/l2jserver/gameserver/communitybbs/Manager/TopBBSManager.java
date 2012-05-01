@@ -23,10 +23,6 @@ import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 
 public class TopBBSManager extends BaseBBSManager
 {
-	private TopBBSManager()
-	{
-	}
-	
 	@Override
 	public void parsecmd(String command, L2PcInstance activeChar)
 	{
@@ -81,7 +77,6 @@ public class TopBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TopBBSManager _instance = new TopBBSManager();

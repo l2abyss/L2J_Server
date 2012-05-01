@@ -1621,11 +1621,11 @@ public class L2Npc extends L2Character
 	
 	public L2Npc scheduleDespawn(long delay)
 	{
-		ThreadPoolManager.getInstance().scheduleGeneral(this.new DespawnTask(), delay);
+		ThreadPoolManager.getInstance().scheduleGeneral(new DespawnTask(), delay);
 		return this;
 	}
 	
-	private class DespawnTask implements Runnable
+	protected class DespawnTask implements Runnable
 	{
 		@Override
 		public void run()

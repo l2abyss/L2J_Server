@@ -33,7 +33,7 @@ public final class FishingRodsData extends DocumentParser
 {
 	private static final Map<Integer, L2FishingRod> _fishingRods = new HashMap<>();
 	
-	private FishingRodsData()
+	protected FishingRodsData()
 	{
 		_fishingRods.clear();
 		
@@ -87,7 +87,6 @@ public final class FishingRodsData extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FishingRodsData _instance = new FishingRodsData();

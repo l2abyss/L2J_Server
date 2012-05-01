@@ -46,7 +46,7 @@ public class DayNightSpawnManager
 		return SingletonHolder._instance;
 	}
 	
-	private DayNightSpawnManager()
+	protected DayNightSpawnManager()
 	{
 		_dayCreatures = new ArrayList<L2Spawn>();
 		_nightCreatures = new ArrayList<L2Spawn>();
@@ -245,7 +245,6 @@ public class DayNightSpawnManager
 		return null;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final DayNightSpawnManager _instance = new DayNightSpawnManager();

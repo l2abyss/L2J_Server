@@ -50,7 +50,7 @@ public class EnchantHPBonusData
 		return SingletonHolder._instance;
 	}
 	
-	private EnchantHPBonusData()
+	protected EnchantHPBonusData()
 	{
 		load();
 	}
@@ -189,7 +189,6 @@ public class EnchantHPBonusData
 		return values[Math.min(item.getOlyEnchantLevel(), values.length) - 1];
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final EnchantHPBonusData _instance = new EnchantHPBonusData();

@@ -45,12 +45,12 @@ public enum BaseStats
 	
 	public static final int MAX_STAT_VALUE = 100;
 	
-	private static final double[] STRbonus = new double[MAX_STAT_VALUE];
-	private static final double[] INTbonus = new double[MAX_STAT_VALUE];
-	private static final double[] DEXbonus = new double[MAX_STAT_VALUE];
-	private static final double[] WITbonus = new double[MAX_STAT_VALUE];
-	private static final double[] CONbonus = new double[MAX_STAT_VALUE];
-	private static final double[] MENbonus = new double[MAX_STAT_VALUE];
+	protected static final double[] STRbonus = new double[MAX_STAT_VALUE];
+	protected static final double[] INTbonus = new double[MAX_STAT_VALUE];
+	protected static final double[] DEXbonus = new double[MAX_STAT_VALUE];
+	protected static final double[] WITbonus = new double[MAX_STAT_VALUE];
+	protected static final double[] CONbonus = new double[MAX_STAT_VALUE];
+	protected static final double[] MENbonus = new double[MAX_STAT_VALUE];
 	
 	private final BaseStat _stat;
 	
@@ -92,7 +92,7 @@ public enum BaseStats
 		public double calcBonus(L2Character actor);
 	}
 	
-	private static final class STR implements BaseStat
+	protected static final class STR implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)
@@ -101,7 +101,7 @@ public enum BaseStats
 		}
 	}
 	
-	private static final class INT implements BaseStat
+	protected static final class INT implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)
@@ -110,7 +110,7 @@ public enum BaseStats
 		}
 	}
 	
-	private static final class DEX implements BaseStat
+	protected static final class DEX implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)
@@ -119,7 +119,7 @@ public enum BaseStats
 		}
 	}
 	
-	private static final class WIT implements BaseStat
+	protected static final class WIT implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)
@@ -128,7 +128,7 @@ public enum BaseStats
 		}
 	}
 	
-	private static final class CON implements BaseStat
+	protected static final class CON implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)
@@ -137,7 +137,7 @@ public enum BaseStats
 		}
 	}
 	
-	private static final class MEN implements BaseStat
+	protected static final class MEN implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)
@@ -146,7 +146,7 @@ public enum BaseStats
 		}
 	}
 	
-	private static final class NULL implements BaseStat
+	protected static final class NULL implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)

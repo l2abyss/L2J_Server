@@ -35,10 +35,10 @@ public class AutoAnnounceTaskManager
 {
 	private static final Logger _log = Logger.getLogger(AutoAnnounceTaskManager.class.getName());
 	
-	private final List<AutoAnnouncement> _announces = new FastList<>();
+	protected final List<AutoAnnouncement> _announces = new FastList<>();
 	private int _nextId = 1;
 	
-	private AutoAnnounceTaskManager()
+	protected AutoAnnounceTaskManager()
 	{
 		restore();
 	}
@@ -138,7 +138,7 @@ public class AutoAnnounceTaskManager
 			
 			conn = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = conn.prepareStatement("DELETE FROM auto_announcements WHERE id = ?");
-			statement.setInt(1, a._id);
+			statement.setInt(1, a.getId());
 			statement.execute();
 			
 			statement.close();
@@ -175,6 +175,11 @@ public class AutoAnnounceTaskManager
 			{
 				_announces.add(this);
 			}
+		}
+		
+		public int getId()
+		{
+			return _id;
 		}
 		
 		public String[] getMemo()
@@ -229,7 +234,6 @@ public class AutoAnnounceTaskManager
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AutoAnnounceTaskManager _instance = new AutoAnnounceTaskManager();

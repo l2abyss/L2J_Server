@@ -17510,7 +17510,7 @@ public final class SystemMessageId
 		}
 	}
 	
-	private static final Builder newBuilder(final String text)
+	protected static final Builder newBuilder(final String text)
 	{
 		final ArrayList<Builder> builders = new ArrayList<Builder>();
 		

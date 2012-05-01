@@ -111,7 +111,7 @@ public class AugmentationData
 	
 	private final TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<AugmentationSkill>();
 	
-	private AugmentationData()
+	protected AugmentationData()
 	{
 		_log.info("Initializing AugmentationData.");
 		
@@ -948,7 +948,6 @@ public class AugmentationData
 		return temp.getSkill();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AugmentationData _instance = new AugmentationData();

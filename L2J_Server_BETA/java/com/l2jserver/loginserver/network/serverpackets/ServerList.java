@@ -56,7 +56,7 @@ import com.l2jserver.loginserver.network.gameserverpackets.ServerStatus;
  */
 public final class ServerList extends L2LoginServerPacket
 {
-	private static final Logger _log = Logger.getLogger(ServerList.class.getName());
+	protected static final Logger _log = Logger.getLogger(ServerList.class.getName());
 	
 	private final List<ServerData> _servers;
 	private final int _lastServer;

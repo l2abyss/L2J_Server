@@ -59,7 +59,6 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		}
 		
 		@Override
-		@SuppressWarnings("synthetic-access")
 		public void run()
 		{
 			RequestRestartPoint.this.portPlayer(activeChar);
@@ -108,7 +107,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		portPlayer(activeChar);
 	}
 	
-	private final void portPlayer(final L2PcInstance activeChar) 
+	protected final void portPlayer(final L2PcInstance activeChar) 
 	{
 		Location loc = null;
 		Castle castle = null;

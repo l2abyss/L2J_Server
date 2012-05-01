@@ -511,7 +511,7 @@ public abstract class L2ZoneType
 	private final class BroadcastPacket implements TObjectProcedure<L2Character>
 	{
 		final L2GameServerPacket _packet;
-		private BroadcastPacket(L2GameServerPacket packet)
+		protected BroadcastPacket(L2GameServerPacket packet)
 		{
 			_packet = packet;
 		}

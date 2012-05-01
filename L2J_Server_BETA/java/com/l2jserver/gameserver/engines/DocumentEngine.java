@@ -45,7 +45,7 @@ public class DocumentEngine
 		return SingletonHolder._instance;
 	}
 	
-	private DocumentEngine()
+	protected DocumentEngine()
 	{
 		hashFiles("data/stats/items", _itemFiles);
 		if (Config.CUSTOM_ITEMS_LOAD)
@@ -117,7 +117,6 @@ public class DocumentEngine
 		return list;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final DocumentEngine _instance = new DocumentEngine();

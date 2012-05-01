@@ -47,7 +47,7 @@ public class NpcWalkerRoutesTable
 		return SingletonHolder._instance;
 	}
 	
-	private NpcWalkerRoutesTable()
+	protected NpcWalkerRoutesTable()
 	{
 		if (Config.ALLOW_NPC_WALKERS)
 		{
@@ -146,7 +146,6 @@ public class NpcWalkerRoutesTable
 		return _routes.get(id);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final NpcWalkerRoutesTable _instance = new NpcWalkerRoutesTable();

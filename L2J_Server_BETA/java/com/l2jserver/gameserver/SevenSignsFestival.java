@@ -62,12 +62,12 @@ import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 /**
- *Seven Signs Festival of Darkness Engine
- *
- *TODO:
- *- Archer mobs should target healer characters over other party members.
- *- ADDED 29 Sep: Players that leave a party during the Seven Signs Festival will now take damage and cannot be healed.
- *
+ * Seven Signs Festival of Darkness Engine.<br>
+ * TODO:<br>
+ * <ul>
+ * <li>Archer mobs should target healer characters over other party members.</li>
+ * <li>Added 29 Sep: Players that leave a party during the Seven Signs Festival will now take damage and cannot be healed.</li>
+ * </ul>
  *@author Tempy
  */
 public class SevenSignsFestival implements SpawnListener
@@ -780,7 +780,7 @@ public class SevenSignsFestival implements SpawnListener
 	 */
 	private Map<Integer, Map<Integer, StatsSet>> _festivalData;
 	
-	private SevenSignsFestival()
+	protected SevenSignsFestival()
 	{
 		_accumulatedBonuses = new FastList<Integer>();
 		
@@ -2459,7 +2459,7 @@ public class SevenSignsFestival implements SpawnListener
 		}
 	}
 	
-	private final class ForEachPlayerRemoveUnusedBloodOfferings implements TObjectProcedure<L2PcInstance>
+	protected final class ForEachPlayerRemoveUnusedBloodOfferings implements TObjectProcedure<L2PcInstance>
 	{	
 		@Override
 		public final boolean execute(final L2PcInstance onlinePlayer)
@@ -2478,7 +2478,6 @@ public class SevenSignsFestival implements SpawnListener
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SevenSignsFestival _instance = new SevenSignsFestival();

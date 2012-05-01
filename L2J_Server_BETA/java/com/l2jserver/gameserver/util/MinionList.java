@@ -39,11 +39,11 @@ public class MinionList
 {
 	private static Logger _log = Logger.getLogger(MinionList.class.getName());
 	
-	private final L2MonsterInstance _master;
+	protected final L2MonsterInstance _master;
 	/** List containing the current spawned minions */
 	private final List<L2MonsterInstance> _minionReferences;
 	/** List containing the cached deleted minions for reuse */
-	private List<L2MonsterInstance> _reusedMinionReferences = null;
+	protected List<L2MonsterInstance> _reusedMinionReferences = null;
 	
 	public MinionList(L2MonsterInstance pMaster)
 	{
@@ -347,7 +347,7 @@ public class MinionList
 		return initializeNpcInstance(master, minion);
 	}
 	
-	private static final L2MonsterInstance initializeNpcInstance(L2MonsterInstance master, L2MonsterInstance minion)
+	protected static final L2MonsterInstance initializeNpcInstance(L2MonsterInstance master, L2MonsterInstance minion)
 	{
 		minion.stopAllEffects();
 		minion.setIsDead(false);

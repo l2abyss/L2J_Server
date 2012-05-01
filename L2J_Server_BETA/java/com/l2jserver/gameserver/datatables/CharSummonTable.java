@@ -328,7 +328,6 @@ public class CharSummonTable
 		petSummon.broadcastStatusUpdate();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CharSummonTable _instance = new CharSummonTable();

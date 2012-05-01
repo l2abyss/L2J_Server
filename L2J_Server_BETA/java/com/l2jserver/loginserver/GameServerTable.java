@@ -683,7 +683,6 @@ public final class GameServerTable
 	/**
 	 * The Class SingletonHolder.
 	 */
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GameServerTable _instance = new GameServerTable();

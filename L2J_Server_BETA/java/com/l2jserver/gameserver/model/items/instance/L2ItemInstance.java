@@ -1217,6 +1217,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public static class ScheduleConsumeManaTask implements Runnable
 	{
+		private static final Logger _log = Logger.getLogger(ScheduleConsumeManaTask.class.getName());
 		private final L2ItemInstance _shadowItem;
 		
 		public ScheduleConsumeManaTask(L2ItemInstance item)
@@ -1906,6 +1907,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public static class ScheduleLifeTimeTask implements Runnable
 	{
+		private static final Logger _log = Logger.getLogger(ScheduleLifeTimeTask.class.getName());
 		private final L2ItemInstance _limitedItem;
 		
 		public ScheduleLifeTimeTask(L2ItemInstance item)

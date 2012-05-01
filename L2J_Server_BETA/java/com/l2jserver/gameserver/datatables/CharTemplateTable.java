@@ -38,7 +38,7 @@ public final class CharTemplateTable
 	
 	private static final Map<ClassId, L2PcTemplate> _charTemplates = new HashMap<>();
 	
-	private CharTemplateTable()
+	protected CharTemplateTable()
 	{
 		Connection con = null;
 		try
@@ -127,7 +127,6 @@ public final class CharTemplateTable
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CharTemplateTable _instance = new CharTemplateTable();

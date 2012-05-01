@@ -47,7 +47,7 @@ public class NpcTable
 	
 	private final TIntObjectHashMap<L2NpcTemplate> _npcs = new TIntObjectHashMap<L2NpcTemplate>();
 	
-	private NpcTable()
+	protected NpcTable()
 	{
 		_npcs.clear();
 		restoreNpcData();
@@ -1110,7 +1110,6 @@ public class NpcTable
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final NpcTable _instance = new NpcTable();

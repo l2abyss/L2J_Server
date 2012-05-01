@@ -40,7 +40,7 @@ public class L2Manor
 	
 	private static L2TIntObjectHashMap<SeedData> _seeds;
 	
-	private L2Manor()
+	protected L2Manor()
 	{
 		_seeds = new L2TIntObjectHashMap<SeedData>();
 		parseData();
@@ -451,10 +451,7 @@ public class L2Manor
 
 
 	}
-
 	
-	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final L2Manor _instance = new L2Manor();

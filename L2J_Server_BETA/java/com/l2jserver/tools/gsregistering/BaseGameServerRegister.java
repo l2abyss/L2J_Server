@@ -426,7 +426,7 @@ public abstract class BaseGameServerRegister
 	/**
 	 * The Class BaseTask.
 	 */
-	private static abstract class BaseTask implements Runnable
+	protected static abstract class BaseTask implements Runnable
 	{
 		private ResourceBundle _bundle;
 		
@@ -610,7 +610,7 @@ public abstract class BaseGameServerRegister
 	/**
 	 * The Class UnregisterAllTask.
 	 */
-	private static class UnregisterAllTask extends BaseTask
+	protected static class UnregisterAllTask extends BaseTask
 	{
 		@Override
 		public void run()

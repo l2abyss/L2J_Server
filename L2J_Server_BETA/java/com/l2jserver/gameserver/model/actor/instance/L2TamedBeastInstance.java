@@ -56,10 +56,10 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	private static final int BUFF_INTERVAL = 5000;	// 5 seconds
 	private int _remainingTime = MAX_DURATION;
 	private int _homeX, _homeY, _homeZ;
-	private L2PcInstance _owner;
+	protected L2PcInstance _owner;
 	private Future<?> _buffTask = null;
 	private Future<?> _durationCheckTask = null;
-	private boolean _isFreyaBeast;
+	protected boolean _isFreyaBeast;
 	private List<L2Skill> _beastSkills = null;
 	
 	public L2TamedBeastInstance(int objectId, L2NpcTemplate template)

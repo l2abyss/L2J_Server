@@ -36,7 +36,7 @@ public class Territory
 		return SingletonHolder._instance;
 	}
 	
-	private Territory()
+	protected Territory()
 	{
 		// load all data at server start
 		reload_data();
@@ -75,7 +75,6 @@ public class Territory
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Territory _instance = new Territory();

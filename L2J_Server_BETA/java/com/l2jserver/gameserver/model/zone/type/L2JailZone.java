@@ -87,7 +87,7 @@ public class L2JailZone extends L2ZoneType
 	{
 		private final L2Character _activeChar;
 		
-		private BackToJail(L2Character character)
+		protected BackToJail(L2Character character)
 		{
 			_activeChar = character;
 		}

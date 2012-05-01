@@ -95,7 +95,6 @@ public class SummonEffectsTable
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SummonEffectsTable _instance = new SummonEffectsTable();

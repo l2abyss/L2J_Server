@@ -165,7 +165,7 @@ public class Olympiad
 		return SingletonHolder._instance;
 	}
 	
-	private Olympiad()
+	protected Olympiad()
 	{
 		load();
 		AntiFeedManager.getInstance().registerEvent(AntiFeedManager.OLYMPIAD_ID);
@@ -1384,7 +1384,6 @@ public class Olympiad
 		return _nobles.put(Integer.valueOf(charId), data);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Olympiad _instance = new Olympiad();

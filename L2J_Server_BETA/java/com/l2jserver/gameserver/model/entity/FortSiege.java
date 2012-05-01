@@ -217,7 +217,7 @@ public class FortSiege implements Siegable
 	
 	// Fort setting
 	protected FastList<L2Spawn> _commanders = new FastList<L2Spawn>();
-	private final Fort _fort;
+	protected final Fort _fort;
 	private boolean _isInProgress = false;
 	private FortSiegeGuardManager _siegeGuardManager;
 	ScheduledFuture<?> _siegeEnd = null;

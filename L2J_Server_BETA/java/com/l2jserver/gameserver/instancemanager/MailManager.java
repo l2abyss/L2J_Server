@@ -49,7 +49,7 @@ public class MailManager
 		return SingletonHolder._instance;
 	}
 	
-	private MailManager()
+	protected MailManager()
 	{
 		load();
 	}
@@ -200,8 +200,10 @@ public class MailManager
 		ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msg.getId()), msg.getExpiration() - System.currentTimeMillis());
 	}
 	
-	class MessageDeletionTask implements Runnable
+	private class MessageDeletionTask implements Runnable
 	{
+		private final Logger _log = Logger.getLogger(MessageDeletionTask.class.getName());
+		
 		final int _msgId;
 		
 		public MessageDeletionTask(int msgId)
@@ -370,7 +372,6 @@ public class MailManager
 		IdFactory.getInstance().releaseId(msgId);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final MailManager _instance = new MailManager();

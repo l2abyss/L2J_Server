@@ -37,7 +37,7 @@ public final class HitConditionBonus extends DocumentParser
 	private int darkBonus = 0;
 	private int rainBonus = 0;
 	
-	private HitConditionBonus()
+	protected HitConditionBonus()
 	{
 		parseDatapackFile("data/stats/hitConditionBonus.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded Hit Condition bonuses.");
@@ -137,7 +137,6 @@ public final class HitConditionBonus extends DocumentParser
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final HitConditionBonus _instance = new HitConditionBonus();

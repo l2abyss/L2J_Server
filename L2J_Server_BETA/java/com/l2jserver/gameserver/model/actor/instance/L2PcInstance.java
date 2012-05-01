@@ -584,7 +584,7 @@ public final class L2PcInstance extends L2Playable
 	/** Recommendation task **/
 	private ScheduledFuture<?> _recoGiveTask;
 	/** Recommendation Two Hours bonus **/
-	private boolean _recoTwoHoursGiven = false;
+	protected boolean _recoTwoHoursGiven = false;
 	
 	private final PcInventory _inventory = new PcInventory(this);
 	private final PcFreight _freight = new PcFreight(this);
@@ -969,7 +969,7 @@ public final class L2PcInstance extends L2Playable
 	/** ShortBuff clearing Task */
 	ScheduledFuture<?> _shortBuffTask = null;
 	
-	private class ShortBuffTask implements Runnable
+	protected class ShortBuffTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -1029,7 +1029,7 @@ public final class L2PcInstance extends L2Playable
 	//summon friend
 	private final SummonRequest _summonRequest = new SummonRequest();
 	
-	private static class SummonRequest
+	protected static class SummonRequest
 	{
 		private L2PcInstance _target = null;
 		private L2Skill _skill = null;
@@ -1054,7 +1054,7 @@ public final class L2PcInstance extends L2Playable
 	// open/close gates
 	private final GatesRequest _gatesRequest = new GatesRequest();
 	
-	private static class GatesRequest
+	protected static class GatesRequest
 	{
 		private L2DoorInstance _target = null;
 		public void setTarget(L2DoorInstance door)
@@ -3272,7 +3272,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Sit down Task
 	 */
-	private class SitDownTask implements Runnable
+	protected class SitDownTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -3284,7 +3284,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * Stand up Task
 	 */
-	private class StandUpTask implements Runnable
+	protected class StandUpTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -4703,7 +4703,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private class GameGuardCheck implements Runnable
+	protected class GameGuardCheck implements Runnable
 	{
 		/**
 		 * @see java.lang.Runnable#run()
@@ -9903,7 +9903,7 @@ public final class L2PcInstance extends L2Playable
 		return _inventoryDisable;
 	}
 	
-	private class InventoryEnable implements Runnable
+	protected class InventoryEnable implements Runnable
 	{
 		@Override
 		public void run()
@@ -10155,7 +10155,7 @@ public final class L2PcInstance extends L2Playable
 	
 	private ScheduledFuture<?> _taskWarnUserTakeBreak;
 	
-	private class WarnUserTakeBreak implements Runnable
+	protected class WarnUserTakeBreak implements Runnable
 	{
 		@Override
 		public void run()
@@ -10170,7 +10170,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private class RentPetTask implements Runnable
+	protected class RentPetTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -10179,7 +10179,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private class WaterTask implements Runnable
+	protected class WaterTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -13045,7 +13045,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private class PunishTask implements Runnable
+	protected class PunishTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -13308,7 +13308,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private class SoulTask implements Runnable
+	protected class SoulTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -13895,7 +13895,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/** Section for mounted pets */
-	private class FeedTask implements Runnable
+	protected class FeedTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -13996,7 +13996,7 @@ public final class L2PcInstance extends L2Playable
 		_data = null;
 	}
 	
-	private final L2PetData getPetData(int npcId)
+	protected final L2PetData getPetData(int npcId)
 	{
 		if (_data == null)
 			_data = PetDataTable.getInstance().getPetData(npcId);
@@ -14012,7 +14012,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public int getCurrentFeed() { return _curFeed; }
 	
-	private int getFeedConsume()
+	protected int getFeedConsume()
 	{
 		// if pet is attacking
 		if (isAttackingNow())
@@ -14032,12 +14032,12 @@ public final class L2PcInstance extends L2Playable
 		return getPetLevelData(_mountNpcId).getPetMaxFeed();
 	}
 	
-	private boolean isHungry()
+	protected boolean isHungry()
 	{
 		return _canFeed ? (getCurrentFeed() < (getPetData(getMountNpcId()).getHungryLimit() / 100f * getPetLevelData(getMountNpcId()).getPetMaxFeed())):false;
 	}
 	
-	private class Dismount implements Runnable
+	protected class Dismount implements Runnable
 	{
 		@Override
 		public void run()
@@ -14055,7 +14055,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public void enteredNoLanding(int delay)
 	{
-		_dismountTask = ThreadPoolManager.getInstance().scheduleGeneral(new L2PcInstance.Dismount(), delay * 1000);
+		_dismountTask = ThreadPoolManager.getInstance().scheduleGeneral(new Dismount(), delay * 1000);
 	}
 	
 	public void exitedNoLanding()
@@ -14238,9 +14238,8 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private class ChargeTask implements Runnable
+	protected class ChargeTask implements Runnable
 	{
-		
 		@Override
 		public void run()
 		{
@@ -15447,7 +15446,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private class RecoGiveTask implements Runnable
+	protected class RecoGiveTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -15476,7 +15475,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private class RecoBonusTaskEnd implements Runnable
+	protected class RecoBonusTaskEnd implements Runnable
 	{
 		@Override
 		public void run()

@@ -128,7 +128,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 		int _region;
 		NpcSay _cs;
 		
-		private ForEachPlayerInRegionSendPacket(int region, NpcSay cs)
+		protected ForEachPlayerInRegionSendPacket(int region, NpcSay cs)
 		{
 			_region = region;
 			_cs = cs;

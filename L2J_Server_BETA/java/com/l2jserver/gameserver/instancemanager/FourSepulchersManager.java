@@ -143,10 +143,6 @@ public class FourSepulchersManager
 	
 	protected byte _newCycleMin = 55;
 	
-	private FourSepulchersManager()
-	{
-	}
-	
 	public static final FourSepulchersManager getInstance()
 	{
 		return SingletonHolder._instance;
@@ -1787,7 +1783,6 @@ public class FourSepulchersManager
 		player.sendPacket(html);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FourSepulchersManager _instance = new FourSepulchersManager();

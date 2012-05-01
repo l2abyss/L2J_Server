@@ -78,7 +78,7 @@ public class AutoSpawnHandler
 	
 	protected boolean _activeState = true;
 	
-	private AutoSpawnHandler()
+	protected AutoSpawnHandler()
 	{
 		_registeredSpawns = new FastMap<Integer, AutoSpawnInstance>();
 		_runningSpawns = new FastMap<Integer, ScheduledFuture<?>>();
@@ -769,7 +769,6 @@ public class AutoSpawnHandler
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AutoSpawnHandler _instance = new AutoSpawnHandler();

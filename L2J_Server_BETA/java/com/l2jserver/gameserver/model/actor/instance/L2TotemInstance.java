@@ -30,9 +30,9 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
  */
 public class L2TotemInstance extends L2Npc
 {
-	private ScheduledFuture<?> _aiTask;
+	protected ScheduledFuture<?> _aiTask;
 	
-	private L2Skill _skill;
+	protected L2Skill _skill;
 	
 	private class TotemAI implements Runnable
 	{

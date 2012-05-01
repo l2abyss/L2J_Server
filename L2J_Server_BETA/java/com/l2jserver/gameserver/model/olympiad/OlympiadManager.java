@@ -42,7 +42,7 @@ public class OlympiadManager
 	private final Map<Integer, List<Integer>> _classBasedRegisters;
 	private final List<List<Integer>> _teamsBasedRegisters;
 
-	private OlympiadManager()
+	protected OlympiadManager()
 	{
 		_nonClassBasedRegisters = new FastList<Integer>().shared();
 		_classBasedRegisters = new FastMap<Integer, List<Integer>>().shared();
@@ -538,8 +538,7 @@ public class OlympiadManager
 			teamMember = null;
 		}
 	}
-
-	@SuppressWarnings("synthetic-access")
+	
 	private static class SingletonHolder
 	{
 		protected static final OlympiadManager _instance = new OlympiadManager();

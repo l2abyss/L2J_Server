@@ -37,9 +37,7 @@ import com.l2jserver.util.Rnd;
  */
 public class L2MonsterInstance extends L2Attackable
 {
-	//private static Logger _log = Logger.getLogger(L2MonsterInstance.class.getName());
-	
-	private boolean _enableMinions = true;
+	protected boolean _enableMinions = true;
 	
 	private L2MonsterInstance _master = null;
 	private MinionList _minionList = null;

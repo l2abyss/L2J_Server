@@ -62,7 +62,7 @@ public class L2ResidenceHallTeleportZone extends L2ResidenceTeleportZone
 			_teleTask = ThreadPoolManager.getInstance().scheduleGeneral(new TeleportTask(), 30000);
 	}
 	
-	private class TeleportTask implements Runnable
+	protected class TeleportTask implements Runnable
 	{
 		@Override
 		public void run()
