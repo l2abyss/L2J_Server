@@ -43,12 +43,14 @@ public final class MailBoard extends CommunityBoard
 	@Override
 	public void parseCmd(final int playerObjId, final String cmd)
 	{
-		Forum playerForum = getCommunityBoardManager().getPlayerForum(playerObjId);
+		final Forum playerForum = getCommunityBoardManager().getPlayerForum(playerObjId);
 		if (playerForum == null)
 		{
 			String content = HtmCache.getInstance().getHtm("data/staticfiles/html/nopage.htm");
 			super.send(playerObjId, content);
+			return;
 		}
+		
 		if (cmd.equals("_bbsmail"))
 		{
 			showPage(playerObjId, playerForum, Topic.INBOX, 1);

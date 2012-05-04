@@ -183,16 +183,12 @@ public class HtmCache
 	public String loadFile(File file)
 	{
 		HtmFilter filter = new HtmFilter();
-		
 		if (file.exists() && filter.accept(file) && !file.isDirectory())
 		{
 			String content;
-			FileInputStream fis = null;
-			
-			try
+			try (FileInputStream fis = new FileInputStream(file);
+				BufferedInputStream bis = new BufferedInputStream(fis))
 			{
-				fis = new FileInputStream(file);
-				BufferedInputStream bis = new BufferedInputStream(fis);
 				int bytes = bis.available();
 				byte[] raw = new byte[bytes];
 				
@@ -204,7 +200,6 @@ public class HtmCache
 				int hashcode = relpath.hashCode();
 				
 				String oldContent = _cache.get(hashcode);
-				
 				if (oldContent == null)
 				{
 					_bytesBuffLen += bytes;
@@ -223,18 +218,7 @@ public class HtmCache
 			{
 				_log.warning("problem with htm file " + e);
 			}
-			finally
-			{
-				try
-				{
-					fis.close();
-				}
-				catch (Exception e1)
-				{
-				}
-			}
 		}
-		
 		return null;
 	}
 	
@@ -283,18 +267,17 @@ public class HtmCache
 	
 	/**
 	 * Check if an HTM exists and can be loaded
-	 * @param path The path to the HTM
+	 * @param path The path to the HTM/HTML
+	 * @return {@code true} if the HTM/HTML file exists
 	 */
 	public boolean isLoadable(String path)
 	{
 		File file = new File(path);
 		HtmFilter filter = new HtmFilter();
-		
 		if (file.exists() && filter.accept(file) && !file.isDirectory())
 		{
 			return true;
 		}
-		
 		return false;
 	}
 }

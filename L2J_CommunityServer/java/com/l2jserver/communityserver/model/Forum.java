@@ -14,6 +14,7 @@
  */
 package com.l2jserver.communityserver.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
@@ -42,7 +43,8 @@ public class Forum
 	private boolean _loaded = false;
 	
 	/**
-	 * @param i
+	 * @param sqlDPId 
+	 * @param Forumid 
 	 */
 	public Forum(final int sqlDPId, int Forumid)
 	{
@@ -52,10 +54,11 @@ public class Forum
 	}
 	
 	/**
+	 * @param sqlDPId 
+	 * @param Forumid 
 	 * @param name
-	 * @param parent
-	 * @param type
-	 * @param perm
+	 * @param type 
+	 * @param OwnerID 
 	 */
 	public Forum(final int sqlDPId, int Forumid, String name, int type, int OwnerID)
 	{
@@ -82,12 +85,9 @@ public class Forum
 		}
 	}
 	
-	/**
-	 *
-	 */
 	private void load()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -112,13 +112,7 @@ public class Forum
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		try
 		{
@@ -142,13 +136,7 @@ public class Forum
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -229,12 +217,9 @@ public class Forum
 		return _sqlDPId;
 	}
 	
-	/**
-	 *
-	 */
 	public void insertindb()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			// TODO: needs to be changed
@@ -255,19 +240,10 @@ public class Forum
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
-	/**
-	 *
-	 */
 	public void vload()
 	{
 		if (_loaded == false)

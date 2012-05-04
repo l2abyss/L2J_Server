@@ -14,6 +14,7 @@
  */
 package com.l2jserver.communityserver.communityboard;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -94,7 +95,7 @@ public final class CommunityBoardManager
 	
 	private void loadDataBase()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -144,13 +145,7 @@ public final class CommunityBoardManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		try
 		{
@@ -172,13 +167,7 @@ public final class CommunityBoardManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		int requestedClanNotices = 0;
 		try
@@ -200,9 +189,7 @@ public final class CommunityBoardManager
 		catch (Exception e)
 		{
 			_log.warning("Data error on Notice Load: " + e);
-			// e.printStackTrace();
 		}
-		
 	}
 	
 	private int getNewForumId()
@@ -435,7 +422,7 @@ public final class CommunityBoardManager
 	
 	public void storeClanIntro(int clanId, String intro)
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -446,7 +433,6 @@ public final class CommunityBoardManager
 			statement.setString(4, intro);
 			statement.execute();
 			statement.close();
-			
 		}
 		catch (Exception e)
 		{
@@ -454,13 +440,7 @@ public final class CommunityBoardManager
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	

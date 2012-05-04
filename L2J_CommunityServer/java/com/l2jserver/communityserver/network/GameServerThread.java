@@ -52,7 +52,7 @@ public class GameServerThread extends NetConnection
 	
 	private CommunityBoardManager _communityBoardManager;
 	private boolean _isAuthed;
-	private loadingData _loadingTask;
+	protected loadingData _loadingTask;
 	
 	public GameServerThread(final NetConnectionConfig config)
 	{
@@ -307,7 +307,7 @@ public class GameServerThread extends NetConnection
 		private int _incomePacket;
 		private int _neededPacket;
 		
-		private loadingData(GameServerThread gst)
+		protected loadingData(GameServerThread gst)
 		{
 			_gst = gst;
 			_neededPacket = -1;

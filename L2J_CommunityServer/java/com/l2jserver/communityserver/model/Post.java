@@ -14,6 +14,7 @@
  */
 package com.l2jserver.communityserver.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -27,7 +28,7 @@ import com.l2jserver.communityserver.model.Topic.ConstructorType;
 
 public class Post
 {
-	private static Logger _log = Logger.getLogger(Post.class.getName());
+	private static final Logger _log = Logger.getLogger(Post.class.getName());
 	// type
 	public static final int ADVERTISE = 0;
 	public static final int MISCELLANEOUS = 1;
@@ -49,10 +50,19 @@ public class Post
 	private int _readCount;
 	
 	/**
-	 * @param restore
-	 * @param t
+	 * @param ct 
+	 * @param sqlDPId 
+	 * @param postId 
+	 * @param postOwnerID 
+	 * @param recipentList 
+	 * @param date 
+	 * @param tid 
+	 * @param postForumID 
+	 * @param title 
+	 * @param txt 
+	 * @param type 
+	 * @param readCount 
 	 */
-	// public enum ConstructorType {REPLY, CREATE };
 	public Post(ConstructorType ct, final int sqlDPId, int postId, int postOwnerID, String recipentList, long date, int tid, int postForumID, String title, String txt, int type, int readCount)
 	{
 		_sqlDPId = sqlDPId;
@@ -105,7 +115,7 @@ public class Post
 	
 	private void loadComments()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -139,13 +149,7 @@ public class Post
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -156,7 +160,7 @@ public class Post
 	
 	public void insertindb()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -182,13 +186,7 @@ public class Post
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		
 	}
@@ -200,7 +198,7 @@ public class Post
 			c.deleteme();
 		}
 		_comments.clear();
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -218,22 +216,13 @@ public class Post
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
-	/**
-	 * @param i
-	 */
 	private void updatePost()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -256,15 +245,8 @@ public class Post
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	public void clearComments()
@@ -298,9 +280,6 @@ public class Post
 		return _comments.values();
 	}
 	
-	/**
-	 *
-	 */
 	/**
 	 * @return
 	 */
@@ -390,5 +369,4 @@ public class Post
 		_readCount++;
 		updatePost();
 	}
-	
 }

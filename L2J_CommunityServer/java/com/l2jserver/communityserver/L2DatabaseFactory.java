@@ -139,6 +139,27 @@ public class L2DatabaseFactory
 		return result;
 	}
 	
+	/**
+	 * Close the connection.
+	 * @param con the con
+	 */
+	public static void close(Connection con)
+	{
+		if (con == null)
+		{
+			return;
+		}
+		
+		try
+		{
+			con.close();
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.WARNING, "Failed to close database connection!", e);
+		}
+	}
+	
 	public static final L2DatabaseFactory getInstance() throws SQLException
 	{
 		if (_instance == null)

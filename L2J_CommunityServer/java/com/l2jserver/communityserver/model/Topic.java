@@ -14,6 +14,7 @@
  */
 package com.l2jserver.communityserver.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -27,8 +28,8 @@ import com.l2jserver.communityserver.L2DatabaseFactory;
 
 public class Topic
 {
+	private static final Logger _log = Logger.getLogger(Topic.class.getName());
 	
-	private static Logger _log = Logger.getLogger(Topic.class.getName());
 	// type
 	public static final int SERVER = 0;
 	public static final int INBOX = 1;
@@ -54,15 +55,13 @@ public class Topic
 	private final Map<Integer, Post> _posts;
 	
 	/**
-	 * @param restaure
-	 * @param i
-	 * @param j
-	 * @param string
-	 * @param k
-	 * @param string2
-	 * @param l
-	 * @param m
-	 * @param n
+	 * @param ct 
+	 * @param sqlDPId 
+	 * @param id 
+	 * @param fid 
+	 * @param name 
+	 * @param oid 
+	 * @param per 
 	 */
 	public Topic(ConstructorType ct, final int sqlDPId, int id, int fid, String name, int oid, int per)
 	{
@@ -87,7 +86,7 @@ public class Topic
 	
 	private void loadPosts()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -125,13 +124,7 @@ public class Topic
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -140,12 +133,9 @@ public class Topic
 		return ++_lastPostId;
 	}
 	
-	/**
-	 *
-	 */
 	public void insertindb()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -166,15 +156,8 @@ public class Topic
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	public enum ConstructorType
@@ -248,7 +231,6 @@ public class Topic
 				ret.add(p);
 			}
 		}
-		
 		return ret;
 	}
 	
@@ -270,17 +252,16 @@ public class Topic
 	 */
 	public String getName()
 	{
-		// TODO Auto-generated method stub
 		return _topicName;
 	}
 	
 	/**
-	 *
+	 * @param f 
 	 */
 	public void deleteme(Forum f)
 	{
 		f.rmTopicByID(getID());
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -296,13 +277,7 @@ public class Topic
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -332,13 +307,7 @@ public class Topic
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 }

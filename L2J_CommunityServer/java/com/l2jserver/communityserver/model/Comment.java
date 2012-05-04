@@ -14,6 +14,7 @@
  */
 package com.l2jserver.communityserver.model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Logger;
 
@@ -22,7 +23,7 @@ import com.l2jserver.communityserver.model.Topic.ConstructorType;
 
 public class Comment
 {
-	private static Logger _log = Logger.getLogger(Comment.class.getName());
+	private static final Logger _log = Logger.getLogger(Comment.class.getName());
 	
 	private final int _sqlDPId;
 	private final int _commentId;
@@ -32,12 +33,19 @@ public class Comment
 	private final int _commentTopicId;
 	private final int _commentForumId;
 	private final String _commentTxt;
-	
+
 	/**
-	 * @param restore
-	 * @param t
+	 * 
+	 * @param ct
+	 * @param sqlDPId
+	 * @param commentId
+	 * @param commentOwnerID
+	 * @param date
+	 * @param pid
+	 * @param tid
+	 * @param commentForumID
+	 * @param txt
 	 */
-	// public enum ConstructorType {REPLY, CREATE };
 	public Comment(ConstructorType ct, final int sqlDPId, int commentId, int commentOwnerID, long date, int pid, int tid, int commentForumID, String txt)
 	{
 		_sqlDPId = sqlDPId;
@@ -56,7 +64,7 @@ public class Comment
 	
 	public void insertindb()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -78,20 +86,13 @@ public class Comment
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	public void deleteme()
 	{
-		java.sql.Connection con = null;
+		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -110,19 +111,10 @@ public class Comment
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
-	/**
-	 *
-	 */
 	/**
 	 * @return
 	 */
@@ -145,5 +137,4 @@ public class Comment
 	{
 		return _commentDate;
 	}
-	
 }

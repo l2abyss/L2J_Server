@@ -86,21 +86,19 @@ public final class GameServerRegistrationTable
 		final Map<byte[], Boolean> registeredGameServers = new FastMap<byte[], Boolean>();
 		
 		Connection con = null;
-		PreparedStatement statement = null;
-		ResultSet rset = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT hex_id FROM registered_gameservers");
-			rset = statement.executeQuery();
+			PreparedStatement statement = con.prepareStatement("SELECT hex_id FROM registered_gameservers");
+			ResultSet rset = statement.executeQuery();
 			
 			while (rset.next())
 			{
 				// for (byte b : stringToHex(rset.getString("hex_id")))
 				registeredGameServers.put(stringToHex(rset.getString("hex_id")), false);
 			}
-			
+			statement.close();
+			rset.close();
 		}
 		catch (SQLException e)
 		{
@@ -108,18 +106,8 @@ public final class GameServerRegistrationTable
 		}
 		finally
 		{
-			try
-			{
-				con.close();
-				statement.close();
-				rset.close();
-			}
-			catch (Exception e)
-			{
-				
-			}
+			L2DatabaseFactory.close(con);
 		}
-		
 		return registeredGameServers;
 	}
 	
