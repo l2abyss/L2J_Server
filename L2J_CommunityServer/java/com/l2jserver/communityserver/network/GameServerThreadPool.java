@@ -14,38 +14,45 @@
  */
 package com.l2jserver.communityserver.network;
 
-import javolution.util.FastMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class GameServerThreadPool
 {
-	private static GameServerThreadPool _instance;
+	private final Map<Integer, GameServerThread> _gameServerThreads = new HashMap<>();
 	
-	public static final GameServerThreadPool getInstance()
-	{
-		if (_instance == null)
-		{
-			_instance = new GameServerThreadPool();
-		}
-		return _instance;
-	}
-	
-	private final FastMap<Integer, GameServerThread> _gameServerThreads;
-	
-	private GameServerThreadPool()
-	{
-		_gameServerThreads = new FastMap<Integer, GameServerThread>();
-	}
-	
+	/**
+	 * Using a version of the double-locking check.
+	 * @param serverId
+	 * @param gst
+	 */
 	public final void addGameServerThread(final int serverId, final GameServerThread gst)
 	{
-		synchronized (_gameServerThreads)
+		if (!_gameServerThreads.containsKey(serverId))
 		{
-			_gameServerThreads.put(serverId, gst);
+			synchronized (_gameServerThreads)
+			{
+				if (!_gameServerThreads.containsKey(serverId))
+				{
+					_gameServerThreads.put(serverId, gst);
+				}
+			}
 		}
 	}
 	
 	public final GameServerThread getGameServerThread(final int serverId)
 	{
 		return _gameServerThreads.get(serverId);
+	}
+	
+
+	public static GameServerThreadPool getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final GameServerThreadPool _instance = new GameServerThreadPool();
 	}
 }
