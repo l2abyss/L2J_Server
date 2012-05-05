@@ -31,6 +31,6 @@ public class OldPledgeFilter implements FileFilter
 		{
 			return false;
 		}
-		return f.getName().toLowerCase().startsWith("Pledge_");
+		return f.getName().startsWith("Pledge_");
 	}
 }
