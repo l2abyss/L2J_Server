@@ -218,7 +218,7 @@ public final class CommunityBoardManager
 		if (_players.containsKey(playerObjId))
 		{
 			L2Player player = _players.get(playerObjId);
-			if (player.getName().equals(name))
+			if (!player.getName().equals(name))
 			{
 				player.setName(name);
 			}
@@ -311,7 +311,7 @@ public final class CommunityBoardManager
 		if (_clans.containsKey(clanId))
 		{
 			L2Clan clan = _clans.get(clanId);
-			if (clan.getName().equals(clanName))
+			if (!clan.getName().equals(clanName))
 			{
 				clan.setName(clanName);
 			}
@@ -324,7 +324,7 @@ public final class CommunityBoardManager
 				clan.setLordObjId(lordObjId);
 				clan.setLordName(lordName);
 			}
-			if (clan.getLordName().equals(lordName))
+			if (!clan.getLordName().equals(lordName))
 			{
 				clan.setLordName(lordName);
 			}
@@ -332,7 +332,7 @@ public final class CommunityBoardManager
 			{
 				clan.setMembersCount(members);
 			}
-			if (clan.getAllianceName().equals(allyName))
+			if (!clan.getAllianceName().equals(allyName))
 			{
 				clan.setAllianceName(allyName);
 			}
