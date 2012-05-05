@@ -69,8 +69,9 @@ public class DoorTable
 	public void parseData()
 	{
 		final File doorData = new File(Config.DATAPACK_ROOT, "data/door.csv");
-		try (FileReader fr = new FileReader(doorData);
-			BufferedReader br = new BufferedReader (fr);
+		try (
+			FileReader fr = new FileReader(doorData);
+			BufferedReader br = new BufferedReader(fr);
 			LineNumberReader lnr = new LineNumberReader(br))
 		{
 			String line = null;
@@ -78,8 +79,10 @@ public class DoorTable
 			
 			while ((line = lnr.readLine()) != null)
 			{
-				if (line.trim().length() == 0 || line.startsWith("#"))
+				if ((line.trim().length() == 0) || line.startsWith("#"))
+				{
 					continue;
+				}
 				
 				L2DoorInstance door = parseList(line, false);
 				putDoor(door);
@@ -100,10 +103,8 @@ public class DoorTable
 	
 	/**
 	 * Parses door list.
-	 *
 	 * @param line string
 	 * @param commanderDoor whether the door is commander door (fortress)
-	 *
 	 * @return created door instance
 	 */
 	public static L2DoorInstance parseList(final String line, final boolean commanderDoor)
@@ -129,28 +130,46 @@ public class DoorTable
 			int emitter = Integer.parseInt(st.nextToken());
 			boolean unlockable = false;
 			if (st.hasMoreTokens())
+			{
 				unlockable = Boolean.parseBoolean(st.nextToken());
+			}
 			boolean startOpen = false;
 			if (st.hasMoreTokens())
+			{
 				startOpen = Boolean.parseBoolean(st.nextToken());
+			}
 			boolean targetable = true;
 			if (st.hasMoreTokens())
+			{
 				targetable = Boolean.parseBoolean(st.nextToken());
+			}
 			int hallId = 0;
-			if(st.hasMoreTokens())
+			if (st.hasMoreTokens())
+			{
 				hallId = Integer.parseInt(st.nextToken());
-
+			}
+			
 			if (rangeXMin > rangeXMax)
+			{
 				_log.severe("Error in door data, XMin > XMax, ID:" + id);
+			}
 			if (rangeYMin > rangeYMax)
+			{
 				_log.severe("Error in door data, YMin > YMax, ID:" + id);
+			}
 			if (rangeZMin > rangeZMax)
+			{
 				_log.severe("Error in door data, ZMin > ZMax, ID:" + id);
+			}
 			int collisionRadius; // (max) radius for movement checks
 			if ((rangeXMax - rangeXMin) > (rangeYMax - rangeYMin))
+			{
 				collisionRadius = rangeYMax - rangeYMin;
+			}
 			else
+			{
 				collisionRadius = rangeXMax - rangeXMin;
+			}
 			
 			StatsSet npcDat = new StatsSet();
 			npcDat.set("npcId", id);
@@ -170,7 +189,7 @@ public class DoorTable
 			npcDat.set("baseEvasRate", 38);
 			npcDat.set("baseCritRate", 38);
 			
-			//npcDat.set("name", "");
+			// npcDat.set("name", "");
 			npcDat.set("collision_radius", collisionRadius);
 			npcDat.set("collision_height", rangeZMax - rangeZMin);
 			npcDat.set("sex", "male");
@@ -206,23 +225,29 @@ public class DoorTable
 			door.setEmitter(emitter);
 			door.setTargetable(targetable);
 			
-			if(hallId > 0)
+			if (hallId > 0)
 			{
 				ClanHall hall = ClanHallManager.getAllClanHalls().get(hallId);
-				if(hall != null)
+				if (hall != null)
 				{
 					door.setClanHall(hall);
 					hall.getDoors().add(door);
 					
-					if(hall.isSiegableHall())
-						((SiegableHall)hall).getDoorDefault().add(line);
+					if (hall.isSiegableHall())
+					{
+						((SiegableHall) hall).getDoorDefault().add(line);
+					}
 				}
 			}
 			
 			if (commanderDoor)
+			{
 				door.setIsCommanderDoor(startOpen);
+			}
 			else
+			{
 				door.setOpen(startOpen);
+			}
 		}
 		catch (Exception e)
 		{
@@ -241,7 +266,9 @@ public class DoorTable
 		_staticItems.put(door.getDoorId(), door);
 		
 		if (_regions.contains(door.getMapRegion()))
+		{
 			_regions.get(door.getMapRegion()).add(door);
+		}
 		else
 		{
 			final ArrayList<L2DoorInstance> region = new ArrayList<L2DoorInstance>();
@@ -256,29 +283,103 @@ public class DoorTable
 	}
 	
 	/**
-	 * Performs a check and sets up a scheduled task for
-	 * those doors that require auto opening/closing.
+	 * Performs a check and sets up a scheduled task for those doors that require auto opening/closing.
 	 */
 	public void checkAutoOpen()
 	{
 		for (L2DoorInstance doorInst : getDoors())
-			// Garden of Eva (every 7 minutes)
-			if (doorInst.getDoorName().startsWith("goe"))
-				doorInst.setAutoActionDelay(420000);
-		
-		// Tower of Insolence (every 5 minutes)
-			else if (doorInst.getDoorName().startsWith("aden_tower"))
+		{
+			// Tower of Insolence (open_time 120 seconds)
+			// TODO: (close_time 120 seconds & random_time 120 seconds)
+			if (doorInst.getDoorName().startsWith("toi_"))
+			{
+				doorInst.setAutoActionDelay(120000);
+			}
+			
+			// devils (open_time 2 minutes)
+			// TODO: (close_time 120 seconds & random_time 30 seconds)
+			else if (doorInst.getDoorName().startsWith("di_"))
+			{
+				doorInst.setAutoActionDelay(120000);
+			}
+			
+			// Garden of Eva (open_time 300 seconds)
+			// TODO: (close_time 20 seconds & random_time 120 seconds)
+			else if (doorInst.getDoorName().startsWith("goe_"))
+			{
 				doorInst.setAutoActionDelay(300000);
-		
-		/* TODO: check which are automatic
-		// devils (every 5 minutes)
-		else if (doorInst.getDoorName().startsWith("pirate_isle"))
-		   doorInst.setAutoActionDelay(300000);
-
-		// Cruma Tower (every 20 minutes)
-		else if (doorInst.getDoorName().startsWith("cruma"))
-			doorInst.setAutoActionDelay(1200000);
-		 */
+			}
+			
+			// Kratei's Cube (open_time 20 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc20_"))
+			{
+				doorInst.setAutoActionDelay(20000);
+			}
+			
+			// Kratei's Cube (open_time 30 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc30_"))
+			{
+				doorInst.setAutoActionDelay(30000);
+			}
+			
+			// Kratei's Cube (open_time 25 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc25_"))
+			{
+				doorInst.setAutoActionDelay(25000);
+			}
+			
+			// Kratei's Cube (open_time 15 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc15_"))
+			{
+				doorInst.setAutoActionDelay(15000);
+			}
+			
+			// Kratei's Cube (open_time 10 seconds)
+			// TODO: (close_time 15 seconds & random_time 5 seconds)
+			else if (doorInst.getDoorName().startsWith("kc10_"))
+			{
+				doorInst.setAutoActionDelay(10000);
+			}
+			
+			// Kratei's Cube (open_time 10 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc10b_"))
+			{
+				doorInst.setAutoActionDelay(10000);
+			}
+			
+			// Kratei's Cube (open_time 14 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc14_"))
+			{
+				doorInst.setAutoActionDelay(14000);
+			}
+			
+			// Kratei's Cube (open_time 23 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc23_"))
+			{
+				doorInst.setAutoActionDelay(23000);
+			}
+			
+			// Kratei's Cube (open_time 18 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc18_"))
+			{
+				doorInst.setAutoActionDelay(18000);
+			}
+			
+			// Kratei's Cube (open_time 26 seconds)
+			// TODO: (close_time 15 seconds & random_time 10 seconds)
+			else if (doorInst.getDoorName().startsWith("kc26_"))
+			{
+				doorInst.setAutoActionDelay(26000);
+			}
+		}
 	}
 	
 	public boolean checkIfDoorsBetween(AbstractNodeLoc start, AbstractNodeLoc end, int instanceId)
@@ -289,33 +390,39 @@ public class DoorTable
 	public boolean checkIfDoorsBetween(int x, int y, int z, int tx, int ty, int tz, int instanceId)
 	{
 		ArrayList<L2DoorInstance> allDoors;
-		if (instanceId > 0 && InstanceManager.getInstance().getInstance(instanceId) != null)
+		if ((instanceId > 0) && (InstanceManager.getInstance().getInstance(instanceId) != null))
+		{
 			allDoors = InstanceManager.getInstance().getInstance(instanceId).getDoors();
+		}
 		else
+		{
 			allDoors = _regions.get(MapRegionManager.getInstance().getMapRegionLocId(x, y));
+		}
 		
 		if (allDoors == null)
+		{
 			return false;
+		}
 		
 		for (L2DoorInstance doorInst : allDoors)
 		{
 			if (doorInst.getXMax() == 0)
+			{
 				continue;
+			}
 			
 			// line segment goes through box
 			// first basic checks to stop most calculations short
 			// phase 1, x
-			if ((x <= doorInst.getXMax() && tx >= doorInst.getXMin())
-					|| (tx <= doorInst.getXMax() && x >= doorInst.getXMin()))
+			if (((x <= doorInst.getXMax()) && (tx >= doorInst.getXMin())) || ((tx <= doorInst.getXMax()) && (x >= doorInst.getXMin())))
 			{
-				//phase 2, y
-				if ((y <= doorInst.getYMax() && ty >= doorInst.getYMin())
-						|| (ty <= doorInst.getYMax() && y >= doorInst.getYMin()))
+				// phase 2, y
+				if (((y <= doorInst.getYMax()) && (ty >= doorInst.getYMin())) || ((ty <= doorInst.getYMax()) && (y >= doorInst.getYMin())))
 				{
 					// phase 3, basically only z remains but now we calculate it with another formula (by rage)
 					// in some cases the direct line check (only) in the beginning isn't sufficient,
 					// when char z changes a lot along the path
-					if (doorInst.getCurrentHp() > 0 && !doorInst.getOpen())
+					if ((doorInst.getCurrentHp() > 0) && !doorInst.getOpen())
 					{
 						int px1 = doorInst.getXMin();
 						int py1 = doorInst.getYMin();
@@ -330,22 +437,23 @@ public class DoorTable
 						
 						int dk;
 						
-						if ((dk = (doorInst.getA() * l + doorInst.getB() * m + doorInst.getC() * n)) == 0)
-							continue; // Parallel
-						
-						float p = (float) (doorInst.getA() * x + doorInst.getB() * y + doorInst.getC() * z + doorInst.getD()) / (float) dk;
-						
-						int fx = (int) (x - l * p);
-						int fy = (int) (y - m * p);
-						int fz = (int) (z - n * p);
-						
-						if ((Math.min(x, tx) <= fx && fx <= Math.max(x, tx)) && (Math.min(y, ty) <= fy && fy <= Math.max(y, ty))
-								&& (Math.min(z, tz) <= fz && fz <= Math.max(z, tz)))
+						if ((dk = ((doorInst.getA() * l) + (doorInst.getB() * m) + (doorInst.getC() * n))) == 0)
 						{
-							if (((fx >= px1 && fx <= px2) || (fx >= px2 && fx <= px1))
-									&& ((fy >= py1 && fy <= py2) || (fy >= py2 && fy <= py1))
-									&& ((fz >= pz1 && fz <= pz2) || (fz >= pz2 && fz <= pz1)))
+							continue; // Parallel
+						}
+						
+						float p = (float) ((doorInst.getA() * x) + (doorInst.getB() * y) + (doorInst.getC() * z) + doorInst.getD()) / (float) dk;
+						
+						int fx = (int) (x - (l * p));
+						int fy = (int) (y - (m * p));
+						int fz = (int) (z - (n * p));
+						
+						if (((Math.min(x, tx) <= fx) && (fx <= Math.max(x, tx))) && ((Math.min(y, ty) <= fy) && (fy <= Math.max(y, ty))) && ((Math.min(z, tz) <= fz) && (fz <= Math.max(z, tz))))
+						{
+							if ((((fx >= px1) && (fx <= px2)) || ((fx >= px2) && (fx <= px1))) && (((fy >= py1) && (fy <= py2)) || ((fy >= py2) && (fy <= py1))) && (((fz >= pz1) && (fz <= pz2)) || ((fz >= pz2) && (fz <= pz1))))
+							{
 								return true; // Door between
+							}
 						}
 					}
 				}
