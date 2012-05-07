@@ -296,7 +296,7 @@ public class DoorTable
 				doorInst.setAutoActionDelay(120000);
 			}
 			
-			// devils (open_time 2 minutes)
+			// Devil Isle (open_time 120 seconds)
 			// TODO: (close_time 120 seconds & random_time 30 seconds)
 			else if (doorInst.getDoorName().startsWith("di_"))
 			{
