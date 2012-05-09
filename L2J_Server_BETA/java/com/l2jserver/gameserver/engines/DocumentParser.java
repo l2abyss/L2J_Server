@@ -43,6 +43,7 @@ public abstract class DocumentParser
 	
 	private static final XMLFilter xmlFilter = new XMLFilter();
 	
+	private File _currentFile;
 	/**
 	 * This method can be used to load/reload the data.<br>
 	 * It's highly recommended to clear the data storage, either the list or map.
@@ -77,6 +78,7 @@ public abstract class DocumentParser
 		dbf.setValidating(true);
 		dbf.setIgnoringComments(true);
 		Document doc = null;
+		_currentFile = f;
 		try
 		{
 			dbf.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
@@ -90,6 +92,11 @@ public abstract class DocumentParser
 			return;
 		}
 		parseDocument(doc);
+	}
+	
+	public File getCurrentFile()
+	{
+		return _currentFile;
 	}
 	
 	/**
@@ -176,6 +183,16 @@ public abstract class DocumentParser
 	protected static Long parseLong(NamedNodeMap n, String name)
 	{
 		return Long.valueOf(n.getNamedItem(name).getNodeValue());
+	}
+	
+	/**
+	 * @param n the named node map.
+	 * @param name the attribute name.
+	 * @return a parsed double.
+	 */
+	protected static Double parseDouble(NamedNodeMap n, String name)
+	{
+		return Double.valueOf(n.getNamedItem(name).getNodeValue());
 	}
 	
 	/**
