@@ -429,12 +429,7 @@ public final class L2Weapon extends L2Item
 		{
 			return _emptyEffectSet;
 		}
-		// No Trigger if Toggle Skill
-		if (trigger.isToggle() && _skillsOnCast.getSkill().isToggle())
-		{
-			return _emptyEffectSet;
-		}
-		// No Trigger if not Magic skill
+		// No Trigger if not Magic Skill
 		if (!trigger.isMagic() && !_skillsOnCast.getSkill().isMagic())
 		{
 			return _emptyEffectSet;

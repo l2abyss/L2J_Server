@@ -119,7 +119,6 @@ public enum Stats
 	MOVEMENT("movement"), // slowdown movement, debuff
 	CONFUSION("confusion"), // mob changes target, opposite to aggression/hate
 	SLEEP("sleep"), // sleep (don't move/ATTACK) until attacked
-	VALAKAS("valakas"),
 
 	// VULNERABILITIES
 	AGGRESSION_VULN("aggressionVuln"),
@@ -141,6 +140,7 @@ public enum Stats
 	CRIT_VULN("critVuln"), // Resistence to Crit DMG in percent.
 	CRIT_ADD_VULN("critAddVuln"), // Resistence to Crit DMG in value (ex: +100 will be 100 more crit dmg, NOT 100% more).
 	MAGIC_DAMAGE_VULN("magicDamVul"),
+	VALAKAS_VULN("valakasVuln"),
 	
 	// RESISTANCES
 	FIRE_RES("fireRes"),
@@ -149,7 +149,6 @@ public enum Stats
 	EARTH_RES("earthRes"),
 	HOLY_RES("holyRes"),
 	DARK_RES("darkRes"),
-	VALAKAS_RES("valakasRes"),
 	MAGIC_SUCCESS_RES("magicSuccRes"),
 	//BUFF_IMMUNITY("buffImmunity"), //TODO: Implement me
 	DEBUFF_IMMUNITY("debuffImmunity"),
@@ -175,6 +174,7 @@ public enum Stats
 	DERANGEMENT_PROF("derangementProf"),
 	DEBUFF_PROF("debuffProf"),
 	CRIT_PROF("critProf"),
+	VALAKAS_PROF("valakasProf"),
 	
 	// WEAPONS VULNERABILITIES
 	NONE_WPN_VULN("noneWpnVuln"), // Shields!!!

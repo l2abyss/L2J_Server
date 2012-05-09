@@ -698,7 +698,7 @@ public final class Formulas
 			proximityBonus = 1.1; // +10% crit dmg when side stabbed
 		}
 		
-		damage += Formulas.calcValakasAttribute(attacker, target, skill);
+		damage += calcValakasTrait(attacker, target, skill);
 		
 		double element = calcElemental(attacker, target, skill);
 		
@@ -755,7 +755,7 @@ public final class Formulas
 		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
-		damage += calcValakasAttribute(attacker, target, skill);
+		damage += calcValakasTrait(attacker, target, skill);
 		if (attacker instanceof L2Npc)
 		{
 			if (((L2Npc) attacker)._soulshotcharged)
@@ -1855,25 +1855,23 @@ public final class Formulas
 				case SLEEP:
 					multiplier = target.calcStat(Stats.SLEEP_VULN, multiplier, target, null);
 					break;
-			// case VALAKAS:
+				case VALAKAS:
+					multiplier = target.calcStat(Stats.VALAKAS_VULN, multiplier, target, null);
+					break;
 			}
 		}
 		else
 		{
-			// Since not all traits are handled by skill parameter
-			// rest is checked by skilltype
+			// Since not all traits are handled by trait parameter
+			// rest is checked by skillType or isDebuff Boolean.
 			final L2SkillType type = skill.getSkillType();
-			if (type != null)
+			if (type == L2SkillType.BUFF)
 			{
-				switch (type)
-				{
-					case DEBUFF:
-						multiplier = target.calcStat(Stats.DEBUFF_VULN, multiplier, target, null);
-						break;
-					case BUFF:
-						multiplier = target.calcStat(Stats.BUFF_VULN, multiplier, target, null);
-						break;
-				}
+				multiplier = target.calcStat(Stats.BUFF_VULN, multiplier, target, null);
+			}
+			else if ((type == L2SkillType.DEBUFF) || (skill.isDebuff()))
+			{
+				multiplier = target.calcStat(Stats.DEBUFF_VULN, multiplier, target, null);
 			}
 		}
 		return multiplier;
@@ -1932,25 +1930,23 @@ public final class Formulas
 				case SLEEP:
 					multiplier = attacker.calcStat(Stats.SLEEP_PROF, multiplier, target, null);
 					break;
-			// case VALAKAS:
+				case VALAKAS:
+					multiplier = attacker.calcStat(Stats.VALAKAS_PROF, multiplier, target, null);
+					break;
 			}
 		}
 		else
 		{
 			// Since not all traits are handled by skill parameter
-			// rest is checked by skilltype
+			// rest is checked by skillType or isDebuff Boolean.
 			final L2SkillType type = skill.getSkillType();
-			if (type != null)
+			if (type == L2SkillType.CANCEL)
 			{
-				switch (type)
-				{
-					case DEBUFF:
-						multiplier = attacker.calcStat(Stats.DEBUFF_PROF, multiplier, target, null);
-						break;
-					case CANCEL:
-						multiplier = attacker.calcStat(Stats.CANCEL_PROF, multiplier, target, null);
-						break;
-				}
+				multiplier = attacker.calcStat(Stats.CANCEL_PROF, multiplier, target, null);
+			}
+			else if ((type == L2SkillType.DEBUFF) || (skill.isDebuff()))
+			{
+				multiplier = target.calcStat(Stats.DEBUFF_PROF, multiplier, target, null);
 			}
 		}
 		return multiplier;
@@ -2518,23 +2514,23 @@ public final class Formulas
 		return Rnd.get(100) < val;
 	}
 	
-	public static double calcValakasAttribute(L2Character attacker, L2Character target, L2Skill skill)
+	public static double calcValakasTrait(L2Character attacker, L2Character target, L2Skill skill)
 	{
 		double calcPower = 0;
 		double calcDefen = 0;
 		
-		if ((skill != null) && skill.getAttributeName().contains("valakas"))
+		if ((skill != null) && (skill.getTraitType() == L2TraitType.VALAKAS))
 		{
-			calcPower = attacker.calcStat(Stats.VALAKAS, calcPower, target, skill);
-			calcDefen = target.calcStat(Stats.VALAKAS_RES, calcDefen, target, skill);
+			calcPower = attacker.calcStat(Stats.VALAKAS_PROF, calcPower, target, skill);
+			calcDefen = target.calcStat(Stats.VALAKAS_VULN, calcDefen, target, skill);
 		}
 		else
 		{
-			calcPower = attacker.calcStat(Stats.VALAKAS, calcPower, target, skill);
+			calcPower = attacker.calcStat(Stats.VALAKAS_PROF, calcPower, target, skill);
 			if (calcPower > 0)
 			{
-				calcPower = attacker.calcStat(Stats.VALAKAS, calcPower, target, skill);
-				calcDefen = target.calcStat(Stats.VALAKAS_RES, calcDefen, target, skill);
+				calcPower = attacker.calcStat(Stats.VALAKAS_PROF, calcPower, target, skill);
+				calcDefen = target.calcStat(Stats.VALAKAS_VULN, calcDefen, target, skill);
 			}
 		}
 		return calcPower - calcDefen;
