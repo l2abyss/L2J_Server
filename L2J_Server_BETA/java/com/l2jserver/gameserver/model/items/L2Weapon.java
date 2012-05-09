@@ -35,7 +35,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -425,17 +424,20 @@ public final class L2Weapon extends L2Item
 		{
 			return _emptyEffectSet;
 		}
-		if (trigger.isOffensive() != _skillsOnCast.getSkill().isOffensive())
+		// No Trigger if Offensive Skill
+		if (trigger.isOffensive() && _skillsOnCast.getSkill().isOffensive())
 		{
-			return _emptyEffectSet; // Trigger only same type of skill
+			return _emptyEffectSet;
 		}
-		if (trigger.isToggle() && (_skillsOnCast.getSkill().getSkillType() == L2SkillType.BUFF))
+		// No Trigger if Toggle Skill
+		if (trigger.isToggle() && _skillsOnCast.getSkill().isToggle())
 		{
-			return _emptyEffectSet; // No buffing with toggle skills
+			return _emptyEffectSet;
 		}
-		if (!trigger.isMagic() && (_skillsOnCast.getSkill().getSkillType() == L2SkillType.BUFF))
+		// No Trigger if not Magic skill
+		if (!trigger.isMagic() && !_skillsOnCast.getSkill().isMagic())
 		{
-			return _emptyEffectSet; // No buffing with not magic skills
+			return _emptyEffectSet;
 		}
 		
 		if (_skillsOnCastCondition != null)
