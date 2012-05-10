@@ -39,7 +39,7 @@ public class ZoneCuboid extends L2ZoneForm
 		int _y1 = Math.min(y1, y2);
 		int _y2 = Math.max(y1, y2);
 		
-		_r = new Rectangle(_x1, _y2, _x2 - _x1, _y2 - _y1);
+		_r = new Rectangle(_x1, _y1, _x2 - _x1, _y2 - _y1);
 		
 		_z1 = Math.min(z1, z2);
 		_z2 = Math.max(z1, z2);
