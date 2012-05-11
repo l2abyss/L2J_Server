@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -77,17 +76,9 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 		}
 		else if (actualCommand.equalsIgnoreCase("ExchangeKE"))
 		{
-			int item = TalismanIds[Rnd.get(TalismanIds.length)];
-			
-			if (player.destroyItemByItemId("FortSupportUnit", 9912, 10, this, false))
+			final int itemId = TalismanIds[Rnd.get(TalismanIds.length)];
+			if (player.exchangeItemsById("FortSupportUnitExchangeKE", this, 9912, 10, itemId, 1, true))
 			{
-				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-				msg.addItemName(9912);
-				msg.addNumber(10);
-				player.sendPacket(msg);
-				
-				player.addItem("FortSupportUnit", item, 1, player, true);
-				
 				showChatWindow(player, "data/html/fortress/supportunit-talisman.htm");
 			}
 			else

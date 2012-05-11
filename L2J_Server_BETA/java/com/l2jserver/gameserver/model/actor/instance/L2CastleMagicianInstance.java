@@ -32,11 +32,10 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
 
 /**
- * @author Kerberos | ZaKaX
+ * @author Kerberos, ZaKaX
  */
 public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTrainer
 {
@@ -321,15 +320,8 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 				}
 			}
 			
-			if (player.destroyItemByItemId("ExchangeKE", 9912, 10, this, false))
+			if (player.exchangeItemsById("ExchangeKE", this, 9912, 10, item, 1, true))
 			{
-				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-				msg.addItemName(9912);
-				msg.addNumber(10);
-				player.sendPacket(msg);
-				
-				player.addItem("ExchangeKE", item, 1, player, true);
-				
 				filename = "data/html/castlemagician/magician-KE-Exchange.htm";
 			}
 			else

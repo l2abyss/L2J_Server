@@ -4033,6 +4033,46 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
+	 * Use instead of calling {@link #addItem(String, L2ItemInstance, L2Object, boolean)} and {@link #destroyItemByItemId(String, int, long, L2Object, boolean)}<br>
+	 * This method validates slots and weight limit, for stackable and non-stackable items.
+	 * @param process a generic string representing the process that is exchanging this items
+	 * @param reference the (probably NPC) reference, could be null
+	 * @param coinId the item Id of the item given on the exchange
+	 * @param cost the amount of items given on the exchange
+	 * @param rewardId the item received on the exchange
+	 * @param count the amount of items received on the exchange
+	 * @param sendMessage if {@code true} it will send messages to the acting player
+	 * @return {@code true} if the player successfully exchanged the items, {@code false} otherwise
+	 */
+	public boolean exchangeItemsById(String process, L2Object reference, int coinId, long cost, int rewardId, long count, boolean sendMessage)
+	{
+		final PcInventory inv = getInventory();
+		if (!inv.validateCapacityByItemId(rewardId, count))
+		{
+			if (sendMessage)
+			{
+				sendPacket(SystemMessageId.SLOTS_FULL);
+			}
+			return false;
+		}
+		
+		if (!inv.validateWeightByItemId(rewardId, count))
+		{
+			if (sendMessage)
+			{
+				sendPacket(SystemMessageId.WEIGHT_LIMIT_EXCEEDED);
+			}
+			return false;
+		}
+		
+		if (destroyItemByItemId(process, coinId, cost, reference, sendMessage))
+		{
+			addItem(process, rewardId, count, reference, sendMessage);
+			return true;
+		}
+		return false;
+	}
+	/**
 	 * Drop item from inventory and send a Server->Client InventoryUpdate packet to the L2PcInstance.
 	 * @param process String Identifier of process triggering this action
 	 * @param item L2ItemInstance to be dropped

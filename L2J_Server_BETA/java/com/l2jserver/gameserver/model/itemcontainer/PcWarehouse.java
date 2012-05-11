@@ -47,7 +47,7 @@ public class PcWarehouse extends Warehouse
 	}
 	
 	@Override
-	public boolean validateCapacity(int slots)
+	public boolean validateCapacity(long slots)
 	{
 		return (_items.size() + slots <= _owner.getWareHouseLimit());
 	}

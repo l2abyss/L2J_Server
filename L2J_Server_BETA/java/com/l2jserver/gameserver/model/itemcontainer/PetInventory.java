@@ -73,7 +73,7 @@ public class PetInventory extends Inventory
 	}
 	
 	@Override
-	public boolean validateCapacity(int slots)
+	public boolean validateCapacity(long slots)
 	{
 		return (_items.size() + slots <= _owner.getInventoryLimit());
 	}
@@ -88,7 +88,7 @@ public class PetInventory extends Inventory
 	}
 	
 	@Override
-	public boolean validateWeight(int weight)
+	public boolean validateWeight(long weight)
 	{
 		return (_totalWeight + weight <= _owner.getMaxLoad());
 	}

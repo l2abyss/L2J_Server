@@ -828,12 +828,12 @@ public class PcInventory extends Inventory
 	}
 	
 	@Override
-	public boolean validateCapacity(int slots)
+	public boolean validateCapacity(long slots)
 	{
 		return validateCapacity(slots, false);
 	}
 	
-	public boolean validateCapacity(int slots, boolean questItem)
+	public boolean validateCapacity(long slots, boolean questItem)
 	{
 		if (!questItem)
 			return (_items.size() - _questSlots + slots <= _owner.getInventoryLimit());
@@ -841,7 +841,7 @@ public class PcInventory extends Inventory
 	}
 	
 	@Override
-	public boolean validateWeight(int weight)
+	public boolean validateWeight(long weight)
 	{
 		// Disable weight check for GMs.
 		if (_owner.isGM() && _owner.getDietMode() && _owner.getAccessLevel().allowTransaction())
