@@ -116,7 +116,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			{
 				_periodFirstTime = 0;
 				_periodStartTicks = GameTimeController.getGameTicks();
-				L2Effect.this.scheduleEffect();
+				scheduleEffect();
 			}
 			catch (Exception e)
 			{
@@ -390,7 +390,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 */
 	public final void exit()
 	{
-		this.exit(false);
+		exit(false);
 	}
 	
 	public final void exit(boolean preventUpdate)
@@ -640,15 +640,15 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	public boolean canBeStolen()
 	{
 		if(!effectCanBeStolen()
-				|| this.getEffectType() == L2EffectType.TRANSFORMATION
-				|| this.getSkill().isPassive()
-				|| this.getSkill().isToggle()
-				|| this.getSkill().isDebuff()
-				|| this.getSkill().isHeroSkill()
-				|| this.getSkill().isGMSkill()
-				|| (this.getSkill().isPotion() && (this.getSkill().getId() != 2274 && this.getSkill().getId() != 2341)) // Hardcode for now :<
-				|| this.isHerbEffect()
-				|| !this.getSkill().canBeDispeled())
+				|| getEffectType() == L2EffectType.TRANSFORMATION
+				|| getSkill().isPassive()
+				|| getSkill().isToggle()
+				|| getSkill().isDebuff()
+				|| getSkill().isHeroSkill()
+				|| getSkill().isGMSkill()
+				|| (getSkill().isPotion() && (getSkill().getId() != 2274 && getSkill().getId() != 2341)) // Hardcode for now :<
+				|| isHerbEffect()
+				|| !getSkill().canBeDispeled())
 			return false;
 		return true;
 	}

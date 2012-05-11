@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.clan;
 
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
@@ -46,12 +46,12 @@ public abstract class ClanWarListener extends L2JListener
 	@Override
 	public void register()
 	{
-		L2Clan.addClanWarListener(this);
+		ClanTable.addClanWarListener(this);
 	}
 	
 	@Override
 	public void unregister()
 	{
-		L2Clan.removeClanWarListener(this);
+		ClanTable.removeClanWarListener(this);
 	}
 }

@@ -18,12 +18,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
+import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -50,6 +51,9 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListAll;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanWarListener;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -60,8 +64,9 @@ import com.l2jserver.gameserver.util.Util;
 public class ClanTable
 {
 	private static Logger _log = Logger.getLogger(ClanTable.class.getName());
+	private static List<ClanWarListener> clanWarListeners = new FastList<ClanWarListener>().shared();
 	
-	private final Map<Integer, L2Clan> _clans;
+	private final Map<Integer, L2Clan> _clans = new HashMap<>();
 	
 	public static ClanTable getInstance()
 	{
@@ -79,7 +84,6 @@ public class ClanTable
 		if (Config.COMMUNITY_TYPE > 0)
 			ForumsBBSManager.getInstance().initRoot();
 		
-		_clans = new FastMap<Integer, L2Clan>();
 		L2Clan clan;
 		Connection con = null;
 		try
@@ -371,6 +375,12 @@ public class ClanTable
 	{
 		L2Clan clan1 = ClanTable.getInstance().getClan(clanId1);
 		L2Clan clan2 = ClanTable.getInstance().getClan(clanId2);
+		
+		if (!fireClanWarStartListeners(clan1, clan2))
+		{
+			return;
+		}
+		
 		clan1.setEnemyClan(clan2);
 		clan2.setAttackerClan(clan1);
 		clan1.broadcastClanStatus();
@@ -413,6 +423,12 @@ public class ClanTable
 	{
 		L2Clan clan1 = ClanTable.getInstance().getClan(clanId1);
 		L2Clan clan2 = ClanTable.getInstance().getClan(clanId2);
+		
+		if (!fireClanWarEndListeners(clan1, clan2))
+		{
+			return;
+		}
+		
 		clan1.deleteEnemyClan(clan2);
 		clan2.deleteAttackerClan(clan1);
 		clan1.broadcastClanStatus();
@@ -472,6 +488,10 @@ public class ClanTable
 		}
 		if (count == clan1.getMembers().length - 1)
 		{
+			if (!fireClanWarEndListeners(clan1, clan2))
+			{
+				return;
+			}
 			clan1.deleteEnemyClan(clan2);
 			clan2.deleteEnemyClan(clan1);
 			deleteclanswars(clan1.getClanId(), clan2.getClanId());
@@ -485,7 +505,7 @@ public class ClanTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT clan1, clan2, wantspeace1, wantspeace2 FROM clan_wars");
+			PreparedStatement statement = con.prepareStatement("SELECT clan1, clan2 FROM clan_wars");
 			ResultSet rset = statement.executeQuery();
 			while (rset.next())
 			{
@@ -553,6 +573,79 @@ public class ClanTable
 	{
 		for (L2Clan clan : _clans.values())
 			clan.updateClanScoreInDB();
+	}
+	
+	/**
+	 * Fires all the ClanWarListener.onWarStart() methods<br>
+	 * Returns true if the clan war is allowed
+	 * @param clan1
+	 * @param clan2
+	 * @return
+	 */
+	private boolean fireClanWarStartListeners(L2Clan clan1, L2Clan clan2)
+	{
+		if (!clanWarListeners.isEmpty() && clan1 != null && clan2 != null)
+		{
+			ClanWarEvent event = new ClanWarEvent();
+			event.setClan1(clan1);
+			event.setClan2(clan2);
+			event.setStage(EventStage.START);
+			for (ClanWarListener listener : clanWarListeners)
+			{
+				if (!listener.onWarStart(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanWarListener.onWarEnd() methods<br>
+	 * Returns true if the clan war end is allowed
+	 * @param clan1
+	 * @param clan2
+	 * @return
+	 */
+	private boolean fireClanWarEndListeners(L2Clan clan1, L2Clan clan2)
+	{
+		if (!clanWarListeners.isEmpty() && clan1 != null && clan2 != null)
+		{
+			ClanWarEvent event = new ClanWarEvent();
+			event.setClan1(clan1);
+			event.setClan2(clan2);
+			event.setStage(EventStage.END);
+			for (ClanWarListener listener : clanWarListeners)
+			{
+				if (!listener.onWarEnd(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Adds a clan war listener
+	 * @param listener
+	 */
+	public static void addClanWarListener(ClanWarListener listener)
+	{
+		if (!clanWarListeners.contains(listener))
+		{
+			clanWarListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a clan war listener
+	 * @param listener
+	 */
+	public static void removeClanWarListener(ClanWarListener listener)
+	{
+		clanWarListeners.remove(listener);
 	}
 	
 	private static class SingletonHolder

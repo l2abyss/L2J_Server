@@ -95,7 +95,7 @@ public final class CharTemplateTable
 				set.set("collision_radius_female", rset.getDouble("f_col_r"));
 				set.set("collision_height_female", rset.getDouble("f_col_h"));
 				
-				final L2PcTemplate ct = new L2PcTemplate(set, InitialEquipmentData.getInstance().getEquipmentList(cId));
+				final L2PcTemplate ct = new L2PcTemplate(set);
 				_charTemplates.put(ClassId.getClassId(cId), ct);
 			}
 			rset.close();

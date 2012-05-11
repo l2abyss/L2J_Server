@@ -69,11 +69,8 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.ClanJoinEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaderChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaveEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLevelUpEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreationListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanWarListener;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -85,9 +82,8 @@ public class L2Clan
 {
 	private static final Logger _log = Logger.getLogger(L2Clan.class.getName());
 	
-	private static FastList<ClanCreationListener> clanCreationListeners = new FastList<ClanCreationListener>().shared();
-	private static FastList<ClanMembershipListener> clanMembershipListeners = new FastList<ClanMembershipListener>().shared();
-	private static FastList<ClanWarListener> clanWarListeners = new FastList<ClanWarListener>().shared();
+	private static List<ClanCreationListener> clanCreationListeners = new FastList<ClanCreationListener>().shared();
+	private static List<ClanMembershipListener> clanMembershipListeners = new FastList<ClanMembershipListener>().shared();
 	
 	private String _name;
 	private int _clanId;
@@ -1497,20 +1493,12 @@ public class L2Clan
 	
 	public void setEnemyClan(L2Clan clan)
 	{
-		if (!fireClanWarStartListeners(clan))
-		{
-			return;
-		}
 		Integer id = clan.getClanId();
 		_atWarWith.add(id);
 	}
 	
 	public void setEnemyClan(Integer clan)
 	{
-		if (!fireClanWarStartListeners(ClanTable.getInstance().getClan(clan)))
-		{
-			return;
-		}
 		_atWarWith.add(clan);
 	}
 	
@@ -1527,10 +1515,6 @@ public class L2Clan
 	
 	public void deleteEnemyClan(L2Clan clan)
 	{
-		if (!fireClanWarEndListeners(clan))
-		{
-			return;
-		}
 		Integer id = clan.getClanId();
 		_atWarWith.remove(id);
 	}
@@ -3014,56 +2998,6 @@ public class L2Clan
 	}
 	
 	/**
-	 * Fires all the ClanWarListener.onWarStart() methods<br>
-	 * Returns true if the clan war is allowed
-	 * @param clan -> the new enemy clan
-	 * @return
-	 */
-	private boolean fireClanWarStartListeners(L2Clan clan)
-	{
-		if (!clanWarListeners.isEmpty() && clan != null)
-		{
-			ClanWarEvent event = new ClanWarEvent();
-			event.setClan1(this);
-			event.setClan2(clan);
-			event.setStage(EventStage.START);
-			for (ClanWarListener listener : clanWarListeners)
-			{
-				if (!listener.onWarStart(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Fires all the ClanWarListener.onWarEnd() methods<br>
-	 * Returns true if the clan war end is allowed
-	 * @param clan -> the enemy clan
-	 * @return
-	 */
-	private boolean fireClanWarEndListeners(L2Clan clan)
-	{
-		if (!clanWarListeners.isEmpty() && clan != null)
-		{
-			ClanWarEvent event = new ClanWarEvent();
-			event.setClan1(this);
-			event.setClan2(clan);
-			event.setStage(EventStage.END);
-			for (ClanWarListener listener : clanWarListeners)
-			{
-				if (!listener.onWarEnd(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
 	 * Fires all the ClanCreationListener.onClanLevelUp() methods, if any<br>
 	 * Blocks the level up if it returns false
 	 * @return
@@ -3126,26 +3060,5 @@ public class L2Clan
 	public static void removeClanMembershipListener(ClanMembershipListener listener)
 	{
 		clanMembershipListeners.remove(listener);
-	}
-	
-	/**
-	 * Adds a clan war listener
-	 * @param listener
-	 */
-	public static void addClanWarListener(ClanWarListener listener)
-	{
-		if (!clanWarListeners.contains(listener))
-		{
-			clanWarListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a clan war listener
-	 * @param listener
-	 */
-	public static void removeClanWarListener(ClanWarListener listener)
-	{
-		clanWarListeners.remove(listener);
 	}
 }
