@@ -38,6 +38,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
+import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -68,7 +69,6 @@ import com.l2jserver.gameserver.network.loginserverpackets.RequestCharacters;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.network.serverpackets.LoginFail;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.util.Util;
 import com.l2jserver.util.crypt.NewCrypt;
 import com.l2jserver.util.network.BaseSendablePacket;
@@ -108,7 +108,7 @@ public class LoginServerThread extends Thread
 	private final boolean _reserveHost;
 	private int _maxPlayer;
 	private final List<WaitingClient> _waitingClients;
-	private final L2TIntObjectHashMap<L2GameClient> _accountsInGameServer;
+	private final FastMap<String, L2GameClient> _accountsInGameServer = new FastMap<>();
 	private int _status;
 	private String _serverName;
 	private final String[] _subnets;
@@ -135,7 +135,7 @@ public class LoginServerThread extends Thread
 		_subnets = Config.GAME_SERVER_SUBNETS;
 		_hosts = Config.GAME_SERVER_HOSTS;
 		_waitingClients = new FastList<WaitingClient>();
-		_accountsInGameServer = new L2TIntObjectHashMap<L2GameClient>();
+		_accountsInGameServer.shared();
 		_maxPlayer = Config.MAXIMUM_ONLINE_USERS;
 	}
 	
@@ -336,7 +336,7 @@ public class LoginServerThread extends Thread
 									_log.warning("Session key is not correct. Closing connection for account " + wcToRemove.account + ".");
 									//wcToRemove.gameClient.getConnection().sendPacket(new LoginFail(LoginFail.SYSTEM_ERROR_LOGIN_LATER));
 									wcToRemove.gameClient.close(new LoginFail(LoginFail.SYSTEM_ERROR_LOGIN_LATER));
-									_accountsInGameServer.remove(wcToRemove.account.hashCode());
+									_accountsInGameServer.remove(wcToRemove.account);
 								}
 								_waitingClients.remove(wcToRemove);
 							}
@@ -449,13 +449,13 @@ public class LoginServerThread extends Thread
 		}
 		finally
 		{
-			_accountsInGameServer.remove(account.hashCode());
+			_accountsInGameServer.remove(account);
 		}
 	}
 	
 	public void addGameServerLogin(String account, L2GameClient client)
 	{
-		_accountsInGameServer.put(account.hashCode(), client);
+		_accountsInGameServer.put(account, client);
 	}
 	
 	public void sendAccessLevel(String account, int level)
@@ -521,7 +521,7 @@ public class LoginServerThread extends Thread
 	
 	public void doKickPlayer(String account)
 	{
-		L2GameClient client = _accountsInGameServer.get(account.hashCode());
+		L2GameClient client = _accountsInGameServer.get(account);
 		if (client != null)
 		{
 			LogRecord record = new LogRecord(Level.WARNING, "Kicked by login");
