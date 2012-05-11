@@ -38,7 +38,7 @@ public class ConditionPlayerRace extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (env.getPlayer() == null)
+		if ((env.getCharacter() == null) || !env.getCharacter().isPlayer())
 		{
 			return false;
 		}
