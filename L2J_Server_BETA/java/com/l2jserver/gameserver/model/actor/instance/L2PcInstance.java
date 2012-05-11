@@ -281,7 +281,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.Professi
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.TransformListener;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.FloodProtectors;
-import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.PlayerEventStatus;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
@@ -653,7 +652,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _minimapAllowed = false;
 	
 	// client radar
-	//TODO: This needs to be better intergrated and saved/loaded
+	//TODO: This needs to be better integrated and saved/loaded
 	private L2Radar _radar;
 	
 	// Party matching
@@ -758,7 +757,7 @@ public final class L2PcInstance extends L2Playable
 	
 	protected boolean _inventoryDisable = false;
 	
-	private L2TIntObjectHashMap<L2CubicInstance> _cubics = new L2TIntObjectHashMap<>();
+	private final FastMap<Integer, L2CubicInstance> _cubics = new FastMap<>();
 	
 	/** Active shots. */
 	protected FastSet<Integer> _activeSoulShots = new FastSet<Integer>().shared();
@@ -1294,6 +1293,8 @@ public final class L2PcInstance extends L2Playable
 		_radar = new L2Radar(this);
 		
 		startVitalityTask();
+		
+		_cubics.shared();
 	}
 	
 	private L2PcInstance(int objectId)
@@ -5699,12 +5700,11 @@ public final class L2PcInstance extends L2Playable
 		// Unsummon Cubics
 		if (!_cubics.isEmpty())
 		{
-			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[0]))
+			for (L2CubicInstance cubic : _cubics.values())
 			{
 				cubic.stopAction();
 				cubic.cancelDisappear();
 			}
-			
 			_cubics.clear();
 		}
 		
@@ -9871,36 +9871,32 @@ public final class L2PcInstance extends L2Playable
 	
 	public final void stopCubics()
 	{
-		if (getCubics() != null)
+		if (!_cubics.isEmpty())
 		{
-			boolean removed = false;
-			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[0]))
+			for (L2CubicInstance cubic : _cubics.values())
 			{
 				cubic.stopAction();
-				delCubic(cubic.getId());
-				removed = true;
+				cubic.cancelDisappear();
 			}
-			if (removed)
-				broadcastUserInfo();
+			_cubics.clear();
+			broadcastUserInfo();
 		}
 	}
 	
 	public final void stopCubicsByOthers()
 	{
-		if (getCubics() != null)
+		if (!_cubics.isEmpty())
 		{
-			boolean removed = false;
-			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[0]))
+			for (L2CubicInstance cubic : _cubics.values())
 			{
 				if (cubic.givenByOther())
 				{
 					cubic.stopAction();
-					delCubic(cubic.getId());
-					removed = true;
+					cubic.cancelDisappear();
 				}
 			}
-			if (removed)
-				broadcastUserInfo();
+			_cubics.clear();
+			broadcastUserInfo();
 		}
 	}
 	
@@ -9952,7 +9948,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	public L2TIntObjectHashMap<L2CubicInstance> getCubics()
+	public FastMap<Integer, L2CubicInstance> getCubics()
 	{
 		return _cubics;
 	}
@@ -9971,10 +9967,10 @@ public final class L2PcInstance extends L2Playable
 	public void addCubic(int id, int level, double matk, int activationtime, int activationchance, int maxcount, int totalLifetime, boolean givenByOther)
 	{
 		if (Config.DEBUG)
+		{
 			_log.info("L2PcInstance(" + getName() + "): addCubic(" + id + "|" + level + "|" + matk + ")");
-		L2CubicInstance cubic = new L2CubicInstance(this, id, level, (int) matk, activationtime, activationchance, maxcount, totalLifetime, givenByOther);
-		
-		_cubics.put(id, cubic);
+		}
+		_cubics.put(id, new L2CubicInstance(this, id, level, (int) matk, activationtime, activationchance, maxcount, totalLifetime, givenByOther));
 	}
 	
 	/**
@@ -10377,15 +10373,14 @@ public final class L2PcInstance extends L2Playable
 		
 		stopEffects(L2EffectType.HIDE);
 		
-		if (!getCubics().isEmpty())
+		if (!_cubics.isEmpty())
 		{
-			for (L2CubicInstance cubic : _cubics.values(new L2CubicInstance[0]))
+			for (L2CubicInstance cubic : _cubics.values())
 			{
 				cubic.stopAction();
 				cubic.cancelDisappear();
 			}
-			
-			getCubics().clear();
+			_cubics.clear();
 		}
 		
 		if (getParty() != null)

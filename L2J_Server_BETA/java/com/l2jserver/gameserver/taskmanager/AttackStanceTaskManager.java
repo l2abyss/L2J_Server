@@ -48,15 +48,10 @@ public class AttackStanceTaskManager
 	
 	public void addAttackStanceTask(L2Character actor)
 	{
-		if (actor instanceof L2Summon)
+		if ((actor != null) && actor.isPlayable())
 		{
-			L2Summon summon = (L2Summon) actor;
-			actor = summon.getOwner();
-		}
-		if (actor instanceof L2PcInstance)
-		{
-			L2PcInstance player = (L2PcInstance) actor;
-			for (L2CubicInstance cubic : player.getCubics().values(new L2CubicInstance[0]))
+			final L2PcInstance player = actor.getActingPlayer();
+			for (L2CubicInstance cubic : player.getCubics().values())
 			{
 				if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
 				{
