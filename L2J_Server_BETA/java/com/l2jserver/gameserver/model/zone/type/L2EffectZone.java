@@ -231,7 +231,7 @@ public class L2EffectZone extends L2ZoneType
 		{
 			if (isEnabled())
 			{
-				for (L2Character temp : getCharactersInsideArray())
+				for (L2Character temp : getCharactersInside())
 				{
 					if (temp != null && !temp.isDead())
 					{

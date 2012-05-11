@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.entity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -63,7 +64,7 @@ public class Siege implements Siegable
 {
 	protected static final Logger _log = Logger.getLogger(Siege.class.getName());
 	
-	private static FastList<SiegeListener> siegeListeners = new FastList<SiegeListener>().shared();
+	private static List<SiegeListener> siegeListeners = new FastList<SiegeListener>().shared();
 	
 	// typeId's
 	public static final byte OWNER = -1;
@@ -73,7 +74,11 @@ public class Siege implements Siegable
 	
 	public static enum TeleportWhoType
 	{
-		All, Attacker, DefenderNotOwner, Owner, Spectator
+		All,
+		Attacker,
+		DefenderNotOwner,
+		Owner,
+		Spectator
 	}
 	
 	private int _controlTowerCount;
@@ -217,13 +222,13 @@ public class Siege implements Siegable
 		}
 	}
 	
-	private final List<L2SiegeClan> _attackerClans = new FastList<L2SiegeClan>();
-	private final List<L2SiegeClan> _defenderClans = new FastList<L2SiegeClan>();
-	private final List<L2SiegeClan> _defenderWaitingClans = new FastList<L2SiegeClan>();
+	private final List<L2SiegeClan> _attackerClans = new ArrayList<L2SiegeClan>();
+	private final List<L2SiegeClan> _defenderClans = new ArrayList<L2SiegeClan>();
+	private final List<L2SiegeClan> _defenderWaitingClans = new ArrayList<L2SiegeClan>();
 	
 	// Castle setting
-	private List<L2ControlTowerInstance> _controlTowers = new FastList<L2ControlTowerInstance>();
-	private List<L2FlameTowerInstance> _flameTowers = new FastList<L2FlameTowerInstance>();
+	private List<L2ControlTowerInstance> _controlTowers = new ArrayList<L2ControlTowerInstance>();
+	private List<L2FlameTowerInstance> _flameTowers = new ArrayList<L2FlameTowerInstance>();
 	private final Castle[] _castle;
 	private boolean _isInProgress = false;
 	private boolean _isNormalSide = true; // true = Atk is Atk, false = Atk is Def
@@ -340,7 +345,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * When control of castle changed during siege<BR><BR>
+	 * When control of castle changed during siege<BR>
+	 * <BR>
 	 */
 	public void midVictory()
 	{
@@ -419,7 +425,7 @@ public class Siege implements Siegable
 				getCastle().spawnDoor(true); // Respawn door to castle but make them weaker (50% hp)
 				removeControlTower(); // Remove all control tower from this castle
 				removeFlameTower();
-				_controlTowerCount = 0;//Each new siege midvictory CT are completely respawned.
+				_controlTowerCount = 0;// Each new siege midvictory CT are completely respawned.
 				_controlTowerMaxCount = 0;
 				_flameTowerCount = 0;
 				_flameTowerMaxCount = 0;
@@ -432,14 +438,15 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * When siege starts<BR><BR>
+	 * When siege starts<BR>
+	 * <BR>
 	 */
 	@Override
 	public void startSiege()
 	{
 		if (!getIsInProgress())
 		{
-			if(!fireSiegeListeners(EventStage.START))
+			if (!fireSiegeListeners(EventStage.START))
 				return;
 			_firstOwnerClanId = getCastle().getOwnerId();
 			
@@ -462,7 +469,7 @@ public class Siege implements Siegable
 			loadSiegeClan(); // Load siege clan from db
 			updatePlayerSiegeStateFlags(false);
 			teleportPlayer(Siege.TeleportWhoType.Attacker, MapRegionManager.TeleportWhereType.Town); // Teleport to the closest town
-			//teleportPlayer(Siege.TeleportWhoType.Spectator, MapRegionTable.TeleportWhereType.Town);      // Teleport to the second closest town
+			// teleportPlayer(Siege.TeleportWhoType.Spectator, MapRegionTable.TeleportWhereType.Town); // Teleport to the second closest town
 			_controlTowerCount = 0;
 			_controlTowerMaxCount = 0;
 			spawnControlTower(getCastle().getCastleId()); // Spawn control tower
@@ -486,7 +493,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Announce to player.<BR><BR>
+	 * Announce to player.<BR>
+	 * <BR>
 	 * @param message The SystemMessage to send to player
 	 * @param bothSides True - broadcast to both attackers and defenders. False - only to defenders.
 	 */
@@ -590,7 +598,7 @@ public class Siege implements Siegable
 				}
 				member.sendPacket(new UserInfo(member));
 				member.sendPacket(new ExBrExtraUserInfo(member));
-
+				
 				for (L2PcInstance player : member.getKnownList().getKnownPlayers().values())
 				{
 					if (player == null)
@@ -604,7 +612,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Approve clan as defender for siege<BR><BR>
+	 * Approve clan as defender for siege<BR>
+	 * <BR>
 	 * @param clanId The int of player's clan id
 	 */
 	public void approveSiegeDefenderClan(int clanId)
@@ -616,7 +625,7 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * @param object 
+	 * @param object
 	 * @return true if object is inside the zone
 	 */
 	public boolean checkIfInZone(L2Object object)
@@ -625,9 +634,9 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * @param x 
-	 * @param y 
-	 * @param z 
+	 * @param x
+	 * @param y
+	 * @param z
 	 * @return true if object is inside the zone
 	 */
 	public boolean checkIfInZone(int x, int y, int z)
@@ -636,7 +645,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Return true if clan is attacker<BR><BR>
+	 * Return true if clan is attacker<BR>
+	 * <BR>
 	 * @param clan The L2Clan of the player
 	 */
 	@Override
@@ -646,7 +656,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Return true if clan is defender<BR><BR>
+	 * Return true if clan is defender<BR>
+	 * <BR>
 	 * @param clan The L2Clan of the player
 	 */
 	@Override
@@ -725,7 +736,7 @@ public class Siege implements Siegable
 	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
-		List<L2PcInstance> players = new FastList<L2PcInstance>();
+		List<L2PcInstance> players = new ArrayList<L2PcInstance>();
 		L2Clan clan;
 		for (L2SiegeClan siegeclan : getAttackerClans())
 		{
@@ -747,7 +758,7 @@ public class Siege implements Siegable
 	 */
 	public List<L2PcInstance> getDefendersButNotOwnersInZone()
 	{
-		List<L2PcInstance> players = new FastList<L2PcInstance>();
+		List<L2PcInstance> players = new ArrayList<L2PcInstance>();
 		L2Clan clan;
 		for (L2SiegeClan siegeclan : getDefenderClans())
 		{
@@ -771,7 +782,7 @@ public class Siege implements Siegable
 	 */
 	public List<L2PcInstance> getPlayersInZone()
 	{
-		return getCastle().getZone().getAllPlayers();
+		return getCastle().getZone().getPlayersInside();
 	}
 	
 	/**
@@ -779,7 +790,7 @@ public class Siege implements Siegable
 	 */
 	public List<L2PcInstance> getOwnersInZone()
 	{
-		List<L2PcInstance> players = new FastList<L2PcInstance>();
+		List<L2PcInstance> players = new ArrayList<L2PcInstance>();
 		L2Clan clan;
 		for (L2SiegeClan siegeclan : getDefenderClans())
 		{
@@ -803,9 +814,9 @@ public class Siege implements Siegable
 	 */
 	public List<L2PcInstance> getSpectatorsInZone()
 	{
-		List<L2PcInstance> players = new FastList<L2PcInstance>();
+		List<L2PcInstance> players = new ArrayList<L2PcInstance>();
 		
-		for (L2PcInstance player : getCastle().getZone().getAllPlayers())
+		for (L2PcInstance player : getCastle().getZone().getPlayersInside())
 		{
 			if (player == null)
 				continue;
@@ -817,7 +828,7 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Control Tower was killed 
+	 * Control Tower was killed
 	 * @param ct
 	 */
 	public void killedCT(L2Npc ct)
@@ -828,7 +839,7 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Remove the flag that was killed 
+	 * Remove the flag that was killed
 	 * @param flag
 	 */
 	public void killedFlag(L2Npc flag)
@@ -843,7 +854,7 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Display list of registered clans 
+	 * Display list of registered clans
 	 * @param player
 	 */
 	public void listRegisterClan(L2PcInstance player)
@@ -852,7 +863,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Register clan as attacker<BR><BR>
+	 * Register clan as attacker<BR>
+	 * <BR>
 	 * @param player The L2PcInstance of the player trying to register
 	 */
 	public void registerAttacker(L2PcInstance player)
@@ -880,7 +892,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Register clan as defender<BR><BR>
+	 * Register clan as defender<BR>
+	 * <BR>
 	 * @param player The L2PcInstance of the player trying to register
 	 */
 	public void registerDefender(L2PcInstance player)
@@ -897,7 +910,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Remove clan from siege<BR><BR>
+	 * Remove clan from siege<BR>
+	 * <BR>
 	 * @param clanId The int of player's clan id
 	 */
 	public void removeSiegeClan(int clanId)
@@ -928,7 +942,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Remove clan from siege<BR><BR>
+	 * Remove clan from siege<BR>
+	 * <BR>
 	 * @param clan clan being removed
 	 */
 	public void removeSiegeClan(L2Clan clan)
@@ -939,7 +954,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Remove clan from siege<BR><BR>
+	 * Remove clan from siege<BR>
+	 * <BR>
 	 * @param player The L2PcInstance of player/clan being removed
 	 */
 	public void removeSiegeClan(L2PcInstance player)
@@ -948,7 +964,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Start the auto tasks<BR><BR>
+	 * Start the auto tasks<BR>
+	 * <BR>
 	 */
 	public void startAutoTask()
 	{
@@ -966,8 +983,8 @@ public class Siege implements Siegable
 	
 	/**
 	 * Teleport players
-	 * @param teleportWho 
-	 * @param teleportWhere 
+	 * @param teleportWho
+	 * @param teleportWhere
 	 */
 	public void teleportPlayer(TeleportWhoType teleportWho, MapRegionManager.TeleportWhereType teleportWhere)
 	{
@@ -999,7 +1016,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Add clan as attacker<BR><BR>
+	 * Add clan as attacker<BR>
+	 * <BR>
 	 * @param clanId The int of clan's id
 	 */
 	private void addAttacker(int clanId)
@@ -1008,7 +1026,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Add clan as defender<BR><BR>
+	 * Add clan as defender<BR>
+	 * <BR>
 	 * @param clanId The int of clan's id
 	 */
 	private void addDefender(int clanId)
@@ -1017,7 +1036,9 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * <p>Add clan as defender with the specified type</p>
+	 * <p>
+	 * Add clan as defender with the specified type
+	 * </p>
 	 * @param clanId The int of clan's id
 	 * @param type the type of the clan
 	 */
@@ -1027,7 +1048,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Add clan as defender waiting approval<BR><BR>
+	 * Add clan as defender waiting approval<BR>
+	 * <BR>
 	 * @param clanId The int of clan's id
 	 */
 	private void addDefenderWaiting(int clanId)
@@ -1094,7 +1116,8 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Return the correct siege date as Calendar.<BR><BR>
+	 * Return the correct siege date as Calendar.<BR>
+	 * <BR>
 	 */
 	public void correctSiegeDateTime()
 	{
@@ -1284,10 +1307,11 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Save registration to database.<BR><BR>
+	 * Save registration to database.<BR>
+	 * <BR>
 	 * @param clan The L2Clan of player
 	 * @param typeId -1 = owner 0 = defender, 1 = attacker, 2 = defender waiting
-	 * @param isUpdateRegistration 
+	 * @param isUpdateRegistration
 	 */
 	private void saveSiegeClan(L2Clan clan, byte typeId, boolean isUpdateRegistration)
 	{
@@ -1376,14 +1400,14 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Spawn control tower. 
+	 * Spawn control tower.
 	 * @param Id
 	 */
 	private void spawnControlTower(int Id)
 	{
-		//Set control tower array size if one does not exist
+		// Set control tower array size if one does not exist
 		if (_controlTowers == null)
-			_controlTowers = new FastList<L2ControlTowerInstance>();
+			_controlTowers = new ArrayList<L2ControlTowerInstance>();
 		
 		for (SiegeSpawn _sp : SiegeManager.getInstance().getControlTowerSpawnList(Id))
 		{
@@ -1402,14 +1426,14 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * Spawn flame tower. 
+	 * Spawn flame tower.
 	 * @param Id
 	 */
 	private void spawnFlameTower(int Id)
 	{
-		//Set control tower array size if one does not exist
+		// Set control tower array size if one does not exist
 		if (_flameTowers == null)
-			_flameTowers = new FastList<L2FlameTowerInstance>();
+			_flameTowers = new ArrayList<L2FlameTowerInstance>();
 		
 		for (SiegeSpawn _sp : SiegeManager.getInstance().getFlameTowerSpawnList(Id))
 		{
@@ -1430,12 +1454,13 @@ public class Siege implements Siegable
 			_flameTowerMaxCount++;
 			_flameTowers.add(ct);
 		}
-		if (_flameTowerCount == 0) //TODO: temp fix until flame towers are assigned in config
+		if (_flameTowerCount == 0) // TODO: temp fix until flame towers are assigned in config
 			_flameTowerCount = 1;
 	}
 	
 	/**
-	 * Spawn siege guard.<BR><BR>
+	 * Spawn siege guard.<BR>
+	 * <BR>
 	 */
 	private void spawnSiegeGuard()
 	{
@@ -1649,7 +1674,7 @@ public class Siege implements Siegable
 	 */
 	public boolean isTrapsActive()
 	{
-		//return true;
+		// return true;
 		return _flameTowerCount > 0;
 	}
 	

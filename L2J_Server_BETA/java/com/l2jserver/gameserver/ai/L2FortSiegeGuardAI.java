@@ -18,6 +18,7 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
 
+import java.util.Collection;
 import java.util.concurrent.Future;
 
 import com.l2jserver.Config;
@@ -479,7 +480,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	private void attackPrepare()
 	{
 		// Get all information needed to choose between physical or magical attack
-		L2Skill[] skills = null;
+		Collection<L2Skill> skills = null;
 		double dist_2 = 0;
 		int range = 0;
 		L2DefenderInstance sGuard;

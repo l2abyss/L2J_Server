@@ -210,7 +210,7 @@ public class L2BossZone extends L2ZoneType
 				{
 					_raidList.clear();
 					int count = 0;
-					for (L2Character obj : getCharactersInsideArray())
+					for (L2Character obj : getCharactersInside())
 					{
 						if (obj == null)
 						{
@@ -305,7 +305,7 @@ public class L2BossZone extends L2ZoneType
 		if (_characterList.isEmpty())
 			return;
 		
-		for (L2Character character : getCharactersInsideArray())
+		for (L2Character character : getCharactersInside())
 		{
 			if (character != null && character.isPlayer())
 			{
@@ -327,7 +327,7 @@ public class L2BossZone extends L2ZoneType
 		if (_characterList.isEmpty())
 			return;
 		
-		for (L2Character character : getCharactersInsideArray())
+		for (L2Character character : getCharactersInside())
 		{
 			if (character != null && character.isPlayer())
 			{
@@ -391,7 +391,7 @@ public class L2BossZone extends L2ZoneType
 			return;
 		
 		Map<Integer, L2PcInstance> npcKnownPlayers = npc.getKnownList().getKnownPlayers();
-		for (L2Character character : getCharactersInsideArray())
+		for (L2Character character : getCharactersInside())
 		{
 			if (character != null && character.isPlayer())
 			{

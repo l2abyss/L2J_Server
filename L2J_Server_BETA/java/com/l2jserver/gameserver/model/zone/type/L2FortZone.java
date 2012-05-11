@@ -14,8 +14,9 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
 /**
@@ -76,14 +77,13 @@ public class L2FortZone extends L2ZoneRespawn
 	 */
 	public void banishForeigners(int owningClanId)
 	{
-		for (L2Character temp : getCharactersInsideArray())
+		TeleportWhereType type = TeleportWhereType.Fortress_banish;
+		for (L2PcInstance temp : getPlayersInside())
 		{
-			if (temp == null || !temp.isPlayer())
-				continue;
-			else if (temp.getActingPlayer().getClanId() == owningClanId)
+			if (temp.getClanId() == owningClanId)
 				continue;
 			
-			temp.teleToLocation(MapRegionManager.TeleportWhereType.Fortress_banish);
+			temp.teleToLocation(type);
 		}
 	}
 	

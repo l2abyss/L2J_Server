@@ -14,7 +14,10 @@
  */
 package com.l2jserver.gameserver.model.actor.templates;
 
+import java.util.Map;
+
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * @author Zoey76
@@ -739,5 +742,14 @@ public class L2CharTemplate
 	public void setBaseDarkRes(double baseDarkRes)
 	{
 		_baseDarkRes = baseDarkRes;
+	}
+	
+	/**
+	 * Overridden in L2NpcTemplate
+	 * @return
+	 */
+	public Map<Integer, L2Skill> getSkills()
+	{
+		return null;
 	}
 }

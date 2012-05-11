@@ -188,7 +188,7 @@ public class L2DamageZone extends L2ZoneType
 				}
 			}
 			
-			for (L2Character temp : _dmgZone.getCharactersInsideArray())
+			for (L2Character temp : _dmgZone.getCharactersInside())
 			{
 				if (temp != null && !temp.isDead())
 				{

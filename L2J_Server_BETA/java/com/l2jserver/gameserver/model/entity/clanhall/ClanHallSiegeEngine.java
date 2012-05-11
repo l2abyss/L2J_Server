@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
@@ -271,7 +272,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
-		final List<L2PcInstance> list = _hall.getSiegeZone().getAllPlayers();
+		final Collection<L2PcInstance> list = _hall.getSiegeZone().getPlayersInside();
 		List<L2PcInstance> attackers = new FastList<L2PcInstance>();
 		
 		for(L2PcInstance pc : list)
@@ -413,7 +414,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		}
 		
 		// Update pvp flag for winners when siege zone becomes inactive
-		for(L2Character chr : _hall.getSiegeZone().getCharactersInsideArray())
+		for(L2Character chr : _hall.getSiegeZone().getCharactersInside())
 		{
 			if((chr != null) && chr.isPlayer())
 			{

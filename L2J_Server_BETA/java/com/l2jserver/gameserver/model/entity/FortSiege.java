@@ -551,7 +551,7 @@ public class FortSiege implements Siegable
 	 */
 	public List<L2PcInstance> getPlayersInZone()
 	{
-		return getFort().getZone().getAllPlayers();
+		return getFort().getZone().getPlayersInside();
 	}
 	
 	/**

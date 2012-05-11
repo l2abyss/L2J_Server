@@ -797,6 +797,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		return _shortRangeSkills;
 	}
 	
+	@Override
 	public Map<Integer, L2Skill> getSkills()
 	{
 		return _skills;

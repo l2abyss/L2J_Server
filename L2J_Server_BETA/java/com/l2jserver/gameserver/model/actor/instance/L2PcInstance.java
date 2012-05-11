@@ -10917,7 +10917,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			if (Config.DEBUG)
-				_log.info(getName() + " was given " + getAllSkills().length + " skills for their new sub class.");
+				_log.info(getName() + " was given " + getAllSkills().size() + " skills for their new sub class.");
 			
 			return true;
 		}
@@ -15154,7 +15154,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void checkPlayerSkills()
 	{
-		for (int id : _skills.keys())
+		for (int id : getSkills().keySet())
 		{
 			int level = getSkillLevel(id);
 			if (level >= 100) // enchanted skill
@@ -15187,7 +15187,7 @@ public final class L2PcInstance extends L2Playable
 		if (nextLevel == -1) // there is no lower skill
 		{
 			_log.info("Removing skill id "+id+ " level "+getSkillLevel(id)+" from player "+this);
-			removeSkill(_skills.get(id), true);
+			removeSkill(getSkills().get(id), true);
 		}
 		else // replace with lower one
 		{

@@ -20,6 +20,7 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
@@ -153,11 +154,11 @@ public abstract class L2Character extends L2Object
 {
 	public static final Logger _log = Logger.getLogger(L2Character.class.getName());
 	
-	private FastList<AttackListener> attackListeners = new FastList<AttackListener>().shared();
-	private FastList<DeathListener> deathListeners = new FastList<DeathListener>().shared();
-	private static FastList<DeathListener> globalDeathListeners = new FastList<DeathListener>().shared();
-	private static FastList<SkillUseListener> globalSkillUseListeners = new FastList<SkillUseListener>().shared();
-	private FastList<SkillUseListener> skillUseListeners = new FastList<SkillUseListener>().shared();
+	private static List<DeathListener> globalDeathListeners = new FastList<DeathListener>().shared();
+	private static List<SkillUseListener> globalSkillUseListeners = new FastList<SkillUseListener>().shared();
+	private List<AttackListener> attackListeners = new FastList<AttackListener>().shared();
+	private List<DeathListener> deathListeners = new FastList<DeathListener>().shared();
+	private List<SkillUseListener> skillUseListeners = new FastList<SkillUseListener>().shared();
 	
 	private volatile Set<L2Character> _attackByList;
 	private volatile boolean _isCastingNow = false;
@@ -192,12 +193,12 @@ public abstract class L2Character extends L2Object
 	/**
 	 * Map containing all skills of this character.
 	 */
-	protected final L2TIntObjectHashMap<L2Skill> _skills;
+	private final FastMap<Integer, L2Skill> _skills = new FastMap<>();
 	
 	/**
 	 * Map containing all custom skills of this character.
 	 */
-	private FastMap<Integer, SkillHolder> _customSkills;
+	private final FastMap<Integer, SkillHolder> _customSkills = new FastMap<>();
 	
 	/** FastMap containing the active chance skills on this character */
 	private volatile ChanceSkillList _chanceSkills;
@@ -402,15 +403,17 @@ public abstract class L2Character extends L2Object
 		initCharStat();
 		initCharStatus();
 		
+		_skills.shared();
+		_customSkills.shared();
+		
 		// Set its template to the new L2Character
 		_template = template;
 		
-		if (this instanceof L2DoorInstance)
+		if (isDoor())
 		{
 			_calculators = Formulas.getStdDoorCalculators();
-			_skills = null;
 		}
-		else if (template != null && this instanceof L2Npc)
+		else if (template != null && isNpc())
 		{
 			// Copy the Standard Calculators of the L2NPCInstance in _calculators
 			_calculators = NPC_STD_CALCULATOR;
@@ -418,16 +421,18 @@ public abstract class L2Character extends L2Object
 			// Copy the skills of the L2NPCInstance from its template to the L2Character Instance
 			// The skills list can be affected by spell effects so it's necessary to make a copy
 			// to avoid that a spell affecting a L2NPCInstance, affects others L2NPCInstance of the same type too.
-			_skills = new L2TIntObjectHashMap<L2Skill>();
-			if (((L2NpcTemplate) template).getSkills() != null)
-				_skills.putAll(((L2NpcTemplate) template).getSkills());
+			if (template.getSkills() != null)
+			{
+				_skills.putAll(template.getSkills());
+			}
+			
 			if (!_skills.isEmpty())
 			{
 				for (L2Skill skill : getAllSkills())
 				{
 					if (skill.getDisplayId() != skill.getId())
 					{
-						getCustomSkills().put(Integer.valueOf(skill.getDisplayId()), new SkillHolder(skill.getId(), skill.getLevel()));
+						_customSkills.put(Integer.valueOf(skill.getDisplayId()), new SkillHolder(skill));
 					}
 					addStatFuncs(skill.getStatFuncs(null, this));
 				}
@@ -438,12 +443,11 @@ public abstract class L2Character extends L2Object
 			// If L2Character is a L2PcInstance or a L2Summon, create the basic calculator set
 			_calculators = new Calculator[Stats.NUM_STATS];
 			
-			if (this instanceof L2Summon)
+			if (isSummon())
 			{
 				// Copy the skills of the L2Summon from its template to the L2Character Instance
 				// The skills list can be affected by spell effects so it's necessary to make a copy
 				// to avoid that a spell affecting a L2Summon, affects others L2Summon of the same type too.
-				_skills = new L2TIntObjectHashMap<L2Skill>();
 				if (template != null)
 				{
 					_skills.putAll(((L2NpcTemplate) template).getSkills());
@@ -454,15 +458,11 @@ public abstract class L2Character extends L2Object
 					{
 						if (skill.getDisplayId() != skill.getId())
 						{
-							getCustomSkills().put(Integer.valueOf(skill.getDisplayId()), new SkillHolder(skill.getId(), skill.getLevel()));
+							_customSkills.put(Integer.valueOf(skill.getDisplayId()), new SkillHolder(skill));
 						}
 						addStatFuncs(skill.getStatFuncs(null, this));
 					}
 				}
-			}
-			else
-			{
-				_skills = new L2TIntObjectHashMap<L2Skill>();
 			}
 			
 			Formulas.addFuncsToNewCharacter(this);
@@ -5982,7 +5982,7 @@ public abstract class L2Character extends L2Object
 			oldSkill = _skills.put(newSkill.getId(), newSkill);
 			if (newSkill.getDisplayId() != newSkill.getId())
 			{
-				getCustomSkills().put(Integer.valueOf(newSkill.getDisplayId()), new SkillHolder(newSkill.getId(), newSkill.getLevel()));
+				_customSkills.put(Integer.valueOf(newSkill.getDisplayId()), new SkillHolder(newSkill));
 			}
 			// If an old skill has been replaced, remove all its Func objects
 			if (oldSkill != null)
@@ -6076,7 +6076,7 @@ public abstract class L2Character extends L2Object
 		{
 			if (oldSkill.getDisplayId() != oldSkill.getId())
 			{
-				getCustomSkills().remove(Integer.valueOf(oldSkill.getDisplayId()));
+				_customSkills.remove(Integer.valueOf(oldSkill.getDisplayId()));
 			}
 			//this is just a fail-safe againts buggers and gm dummies...
 			if ((oldSkill.triggerAnotherSkill()) && oldSkill.getTriggeredId() > 0)
@@ -6202,18 +6202,15 @@ public abstract class L2Character extends L2Object
 	 * All skills own by a L2Character are identified in <B>_skills</B> the L2Character <BR><BR>
 	 * @return all skills own by the L2Character in a table of L2Skill.
 	 */
-	public final L2Skill[] getAllSkills()
-	{
-		if (_skills == null)
-			return new L2Skill[0];
-		
-		return _skills.values(new L2Skill[0]);
+	public final Collection<L2Skill> getAllSkills()
+	{	
+		return _skills.values();
 	}
 	
 	/**
 	 * @return the map containing this character skills.
 	 */
-	public L2TIntObjectHashMap<L2Skill> getSkills()
+	public Map<Integer, L2Skill> getSkills()
 	{
 		return _skills;
 	}
@@ -6221,12 +6218,8 @@ public abstract class L2Character extends L2Object
 	/**
 	 * @return all the custom skills (skills with different display Id than skill Id).
 	 */
-	public final FastMap<Integer, SkillHolder> getCustomSkills()
+	public final Map<Integer, SkillHolder> getCustomSkills()
 	{
-		if (_customSkills == null)
-		{
-			_customSkills = new FastMap<Integer, SkillHolder>().shared();
-		}
 		return _customSkills;
 	}
 	
@@ -6258,9 +6251,6 @@ public abstract class L2Character extends L2Object
 	 */
 	public final L2Skill getKnownSkill(int skillId)
 	{
-		if (_skills == null)
-			return null;
-		
 		return _skills.get(skillId);
 	}
 	

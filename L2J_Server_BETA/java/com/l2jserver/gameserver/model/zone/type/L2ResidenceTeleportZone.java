@@ -14,10 +14,6 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import java.util.List;
-
-import javolution.util.FastList;
-
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
@@ -70,36 +66,13 @@ public class L2ResidenceTeleportZone extends L2ZoneRespawn
 	{
 	}
 	
-	/**
-	 * Returns all players within this zone
-	 * @return
-	 */
-	public List<L2PcInstance> getAllPlayers()
-	{
-		List<L2PcInstance> players = new FastList<L2PcInstance>();
-		
-		for (L2Character temp : getCharactersInsideArray())
-		{
-			if (temp != null && temp.isPlayer())
-				players.add(temp.getActingPlayer());
-		}
-		
-		return players;
-	}
-	
 	public void oustAllPlayers()
 	{
-		if (_characterList == null || _characterList.isEmpty())
-			return;
-		for (L2Character character : getCharactersInsideArray())
+		for (L2PcInstance player : getPlayersInside())
 		{
-			if (character != null && character.isPlayer())
+			if (player != null && player.isOnline())
 			{
-				L2PcInstance player = character.getActingPlayer();
-				if (player.isOnline())
-				{
-					player.teleToLocation(getSpawnLoc(), 200);
-				}
+				player.teleToLocation(getSpawnLoc(), 200);
 			}
 		}
 	}

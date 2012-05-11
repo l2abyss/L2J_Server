@@ -14,10 +14,6 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import java.util.List;
-
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
@@ -208,7 +204,7 @@ public class L2SiegeZone extends L2ZoneType
 	{
 		if (_isActiveSiege)
 		{
-			for (L2Character character : getCharactersInsideArray())
+			for (L2Character character : getCharactersInside())
 			{
 				if (character != null)
 					onEnter(character);
@@ -217,7 +213,7 @@ public class L2SiegeZone extends L2ZoneType
 		else
 		{
 			L2PcInstance player;
-			for (L2Character character : getCharactersInsideArray())
+			for (L2Character character : getCharactersInside())
 			{
 				if (character == null)
 					continue;
@@ -251,28 +247,11 @@ public class L2SiegeZone extends L2ZoneType
 	 */
 	public void announceToPlayers(String message)
 	{
-		for (L2Character temp : getCharactersInsideArray())
+		for (L2PcInstance player : getPlayersInside())
 		{
-			if (temp != null && temp.isPlayer())
-				temp.sendMessage(message);
+			if (player != null)
+				player.sendMessage(message);
 		}
-	}
-	
-	/**
-	 * Returns all players within this zone
-	 * @return
-	 */
-	public List<L2PcInstance> getAllPlayers()
-	{
-		List<L2PcInstance> players = new FastList<L2PcInstance>();
-		
-		for (L2Character temp : getCharactersInsideArray())
-		{
-			if (temp != null && temp.isPlayer())
-				players.add(temp.getActingPlayer());
-		}
-		
-		return players;
 	}
 	
 	public int getSiegeObjectId()
@@ -302,11 +281,9 @@ public class L2SiegeZone extends L2ZoneType
 	public void banishForeigners(int owningClanId)
 	{
 		TeleportWhereType type = TeleportWhereType.Town;
-		for (L2Character temp : getCharactersInsideArray())
+		for (L2PcInstance temp : getPlayersInside())
 		{
-			if (temp == null || !temp.isPlayer())
-				continue;
-			else if (temp.getActingPlayer().getClanId() == owningClanId)
+			if (temp.getClanId() == owningClanId)
 				continue;
 			
 			temp.teleToLocation(type);

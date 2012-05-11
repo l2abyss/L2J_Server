@@ -79,7 +79,7 @@ public class L2ResidenceHallTeleportZone extends L2ResidenceTeleportZone
 				throw new NullPointerException();
 			}
 			
-			for (L2PcInstance pc : getAllPlayers())
+			for (L2PcInstance pc : getPlayersInside())
 			{
 				if (pc != null)
 				{
