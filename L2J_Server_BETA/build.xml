@@ -21,16 +21,16 @@
 		http://www.gnu.org/copyleft/gpl.html
 	</description>
 
-	<property name="src" location="java" />
-	<property name="lib" location="dist/lib" />
+	<property name="bin" location="bin" />
 	<property name="build" location="build" />
-	<property name="build.classes" location="${build}/classes" />
 	<property name="build.dist" location="${build}/dist" />
 	<property name="build.dist.doc" location="${build.dist}/doc" />
 	<property name="build.dist.game" location="${build.dist}/game" />
 	<property name="build.dist.libs" location="${build.dist}/libs" />
 	<property name="build.dist.login" location="${build.dist}/login" />
 	<property name="build.dist.tools" location="${build.dist}/tools" />
+	<property name="lib" location="dist/lib" />
+	<property name="src" location="java" />
 
 	<path id="classpath">
 		<fileset dir="${lib}">
@@ -50,7 +50,6 @@
 
 	<target name="init" depends="checkRequirements,getChangelogDateVersion" description="Create the output directories.">
 		<mkdir dir="${build}" />
-		<mkdir dir="${build.classes}" />
 	</target>
 
 	<target name="dist" depends="init">
@@ -68,12 +67,12 @@
 	</target>
 	
 	<target name="compile" depends="dist" description="Compile the source.">
-		<javac srcdir="${src}" classpathref="classpath" destdir="${build.classes}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
+		<javac srcdir="${src}" classpathref="classpath" destdir="${bin}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar files">
 		<jar destfile="${build.dist.login}/l2jlogin.jar">
-			<fileset dir="${build.classes}">
+			<fileset dir="${bin}">
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/gameserver/**" />
 			</fileset>
@@ -87,7 +86,7 @@
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.game}/l2jserver.jar">
-			<fileset dir="${build.classes}">
+			<fileset dir="${bin}">
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/loginserver/**" />
 				<exclude name="**/accountmanager/**" />
@@ -103,7 +102,7 @@
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.tools}/dbinst_cs.jar">
-			<fileset dir="${build.classes}">
+			<fileset dir="${bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
@@ -120,7 +119,7 @@
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.tools}/dbinst_gs.jar">
-			<fileset dir="${build.classes}">
+			<fileset dir="${bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
@@ -137,7 +136,7 @@
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.tools}/dbinst_ls.jar">
-			<fileset dir="${build.classes}">
+			<fileset dir="${bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
