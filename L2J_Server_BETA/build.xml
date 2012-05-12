@@ -21,8 +21,8 @@
 		http://www.gnu.org/copyleft/gpl.html
 	</description>
 
-	<property name="bin" location="bin" />
 	<property name="build" location="build" />
+	<property name="build.bin" location="${build}/bin" />
 	<property name="build.dist" location="${build}/dist" />
 	<property name="build.dist.doc" location="${build.dist}/doc" />
 	<property name="build.dist.game" location="${build.dist}/game" />
@@ -48,10 +48,11 @@
 	</pathconvert>
 
 	<target name="init" depends="checkRequirements,getChangelogDateVersion" description="Create the output directories.">
-		<mkdir dir="${build}" />
+		<delete dir="${build.bin}" quiet="true" />
+		<mkdir dir="${build.bin}" />
 	</target>
 
-	<target name="dist" depends="init">
+	<target name="dist" depends="init" description="Export the files to the output directory.">
 		<sync todir="${build.dist}" includeemptydirs="true">
 			<fileset dir="dist" />
 		</sync>
@@ -66,12 +67,12 @@
 	</target>
 
 	<target name="compile" depends="dist" description="Compile the source.">
-		<javac srcdir="${src}" classpathref="classpath" destdir="${bin}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
+		<javac srcdir="${src}" classpathref="classpath" destdir="${build.bin}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
 	</target>
 
-	<target name="jar" depends="compile" description="Create the jar files">
+	<target name="jar" depends="compile" description="Create the jar files.">
 		<jar destfile="${build.dist.login}/l2jlogin.jar">
-			<fileset dir="${bin}">
+			<fileset dir="${build.bin}">
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/gameserver/**" />
 			</fileset>
@@ -85,7 +86,7 @@
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.game}/l2jserver.jar">
-			<fileset dir="${bin}">
+			<fileset dir="${build.bin}">
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/loginserver/**" />
 				<exclude name="**/accountmanager/**" />
@@ -101,7 +102,7 @@
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.tools}/dbinst_cs.jar">
-			<fileset dir="${bin}">
+			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
@@ -118,7 +119,7 @@
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.tools}/dbinst_gs.jar">
-			<fileset dir="${bin}">
+			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
@@ -135,7 +136,7 @@
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.tools}/dbinst_ls.jar">
-			<fileset dir="${bin}">
+			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
@@ -153,11 +154,11 @@
 		</jar>
 	</target>
 
-	<target name="build" depends="jar">
+	<target name="build" depends="jar" description="Create the Zip file.">
 		<zip destfile="${build}/L2J_Server_BETA.zip" basedir="${build.dist}" level="9" update="true" />
 	</target>
 
-	<target name="checkRequirements" description="Check Requirements">
+	<target name="checkRequirements" description="Check Requirements.">
 		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
 			<condition>
 				<not>
@@ -169,7 +170,7 @@
 		<fail unless="JDK7.present" message="Java 1.7 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
 	</target>
 
-	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version">
+	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version.">
 		<exec dir="." executable="svn" outputproperty="l2j.changelog">
 			<arg value="log" />
 			<arg value="--stop-on-copy" />
