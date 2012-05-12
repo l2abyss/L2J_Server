@@ -53,7 +53,7 @@
 	</target>
 
 	<target name="dist" depends="init">
-		<sync todir="${build.dist}">
+		<sync todir="${build.dist}" includeemptydirs="true">
 			<fileset dir="dist" />
 		</sync>
 		<concat destfile="${build.dist.doc}/L2J_Server_CHANGELOG.txt">${l2j.changelog}</concat>
