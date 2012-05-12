@@ -26,14 +26,13 @@
 	<property name="build.dist" location="${build}/dist" />
 	<property name="build.dist.doc" location="${build.dist}/doc" />
 	<property name="build.dist.game" location="${build.dist}/game" />
-	<property name="build.dist.libs" location="${build.dist}/libs" />
 	<property name="build.dist.login" location="${build.dist}/login" />
 	<property name="build.dist.tools" location="${build.dist}/tools" />
-	<property name="lib" location="dist/lib" />
+	<property name="libs" location="dist/libs" />
 	<property name="src" location="java" />
 
 	<path id="classpath">
-		<fileset dir="${lib}">
+		<fileset dir="${libs}">
 			<include name="*.jar" />
 		</fileset>
 	</path>
@@ -65,7 +64,7 @@
 			<fileset dir="misc" />
 		</copy>
 	</target>
-	
+
 	<target name="compile" depends="dist" description="Compile the source.">
 		<javac srcdir="${src}" classpathref="classpath" destdir="${bin}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
 	</target>
@@ -153,7 +152,7 @@
 			</manifest>
 		</jar>
 	</target>
-	
+
 	<target name="build" depends="jar">
 		<zip destfile="${build}/L2J_Server_BETA.zip" basedir="${build.dist}" level="9" update="true" />
 	</target>

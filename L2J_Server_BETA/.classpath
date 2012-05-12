@@ -3,17 +3,17 @@
 	<classpathentry kind="src" path="java" />
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER" />
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4" />
-	<classpathentry kind="lib" path="dist/lib/c3p0-0.9.2-pre1.jar" />
-	<classpathentry kind="lib" path="dist/lib/javolution-5.5.1.jar" />
-	<classpathentry kind="lib" path="dist/lib/jna.jar" />
-	<classpathentry kind="lib" path="dist/lib/jython.jar" />
-	<classpathentry kind="lib" path="dist/lib/jython-engine-2.2.1.jar" />
-	<classpathentry kind="lib" path="dist/lib/mail.jar" />
-	<classpathentry kind="lib" path="dist/lib/mailapi.jar" />
-	<classpathentry kind="lib" path="dist/lib/mchange-commons-0.2.jar" />
-	<classpathentry kind="lib" path="dist/lib/mmocore.jar" />
-	<classpathentry kind="lib" path="dist/lib/netcon.jar" />
-	<classpathentry kind="lib" path="dist/lib/smtp.jar" />
-	<classpathentry kind="lib" path="dist/lib/trove-3.0.2.jar" />
+	<classpathentry kind="lib" path="dist/libs/c3p0-0.9.2-pre1.jar" />
+	<classpathentry kind="lib" path="dist/libs/javolution-5.5.1.jar" />
+	<classpathentry kind="lib" path="dist/libs/jna.jar" />
+	<classpathentry kind="lib" path="dist/libs/jython.jar" />
+	<classpathentry kind="lib" path="dist/libs/jython-engine-2.2.1.jar" />
+	<classpathentry kind="lib" path="dist/libs/mail.jar" />
+	<classpathentry kind="lib" path="dist/libs/mailapi.jar" />
+	<classpathentry kind="lib" path="dist/libs/mchange-commons-0.2.jar" />
+	<classpathentry kind="lib" path="dist/libs/mmocore.jar" />
+	<classpathentry kind="lib" path="dist/libs/netcon.jar" />
+	<classpathentry kind="lib" path="dist/libs/smtp.jar" />
+	<classpathentry kind="lib" path="dist/libs/trove-3.0.2.jar" />
 	<classpathentry kind="output" path="bin" />
 </classpath>
