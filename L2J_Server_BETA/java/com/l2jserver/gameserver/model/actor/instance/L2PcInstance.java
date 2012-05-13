@@ -13013,13 +13013,13 @@ public final class L2PcInstance extends L2Playable
 			}
 			case CHAR: // Ban Character
 			{
-				setAccessLevel(-100);
+				setAccessLevel(-1);
 				logout();
 				break;
 			}
 			case ACC: // Ban Account
 			{
-				setAccountAccesslevel(-100);
+				setAccountAccesslevel(-1);
 				logout();
 				break;
 			}

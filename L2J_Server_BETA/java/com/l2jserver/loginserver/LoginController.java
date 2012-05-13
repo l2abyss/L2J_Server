@@ -71,7 +71,7 @@ public class LoginController
 	protected byte[][] _blowfishKeys;
 	private static final int BLOWFISH_KEYS = 20;
 	
-	private static final String USER_INFO_SELECT = "SELECT password, IF(? > value OR value IS NULL, accessLevel, -100) AS accessLevel, lastServer, userIp " + "FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
+	private static final String USER_INFO_SELECT = "SELECT password, IF(? > value OR value IS NULL, accessLevel, -1) AS accessLevel, lastServer, userIp " + "FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
 	
 	public static void load() throws GeneralSecurityException
 	{

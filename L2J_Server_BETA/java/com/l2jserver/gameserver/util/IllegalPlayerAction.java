@@ -51,8 +51,8 @@ public final class IllegalPlayerAction implements Runnable
 				_actor.sendMessage("You will be kicked for illegal action, GM informed.");
 				break;
 			case PUNISH_KICKBAN:
-				_actor.setAccessLevel(-100);
-				_actor.setAccountAccesslevel(-100);
+				_actor.setAccessLevel(-1);
+				_actor.setAccountAccesslevel(-1);
 				_actor.sendMessage("You are banned for illegal action, GM informed.");
 				break;
 			case PUNISH_JAIL:
