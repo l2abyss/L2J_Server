@@ -45,7 +45,7 @@ public class PostBBSManager extends BaseBBSManager
 		post = _postByTopic.get(t);
 		if (post == null)
 		{
-			post = load(t);
+			post = new Post(t);
 			_postByTopic.put(t, post);
 		}
 		return post;
@@ -65,17 +65,6 @@ public class PostBBSManager extends BaseBBSManager
 		{
 			_postByTopic.put(t, p);
 		}
-	}
-	
-	/**
-	 * @param t
-	 * @return
-	 */
-	private Post load(Topic t)
-	{
-		Post p;
-		p = new Post(t);
-		return p;
 	}
 	
 	@Override
