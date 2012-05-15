@@ -35,7 +35,7 @@ import java.io.IOException;
  */
 public class BlowfishEngine
 {
-	private final static int[] KP =
+	private static final int[] KP =
 	{
 		0x243F6A88,
 		0x85A308D3,
@@ -56,7 +56,7 @@ public class BlowfishEngine
 		0x9216D5D9,
 		0x8979FB1B
 	};
-	private final static int[] KS0 =
+	private static final int[] KS0 =
 	{
 		0xD1310BA6,
 		0x98DFB5AC,
@@ -315,7 +315,7 @@ public class BlowfishEngine
 		0x08BA4799,
 		0x6E85076A
 	};
-	private final static int[] KS1 =
+	private static final int[] KS1 =
 	{
 		0x4B7A70E9,
 		0xB5B32944,
@@ -574,7 +574,7 @@ public class BlowfishEngine
 		0xE6E39F2B,
 		0xDB83ADF7
 	};
-	private final static int[] KS2 =
+	private static final int[] KS2 =
 	{
 		0xE93D5A68,
 		0x948140F7,
@@ -833,7 +833,7 @@ public class BlowfishEngine
 		0x670EFA8E,
 		0x406000E0
 	};
-	private final static int[] KS3 =
+	private static final int[] KS3 =
 	{
 		0x3A39CE37,
 		0xD3FAF5CF,

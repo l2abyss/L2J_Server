@@ -41,7 +41,7 @@ public class InstanceManager extends DocumentParser
 	private int _dynamic = 300000;
 	
 	// InstanceId Names
-	private final static Map<Integer, String> _instanceIdNames = new HashMap<>();
+	private static final Map<Integer, String> _instanceIdNames = new HashMap<>();
 	private final Map<Integer, Map<Integer, Long>> _playerInstanceTimes = new FastMap<>();
 	
 	private static final String ADD_INSTANCE_TIME = "INSERT INTO character_instance_time (charId,instanceId,time) values (?,?,?) ON DUPLICATE KEY UPDATE time=?";

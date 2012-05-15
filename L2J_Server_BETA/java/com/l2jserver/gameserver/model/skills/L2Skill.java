@@ -85,15 +85,15 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public static final boolean geoEnabled = Config.GEODATA > 0;
 	
 	//conditional values
-	public final static int COND_RUNNING = 0x0001;
-	public final static int COND_WALKING = 0x0002;
-	public final static int COND_SIT = 0x0004;
-	public final static int COND_BEHIND = 0x0008;
-	public final static int COND_CRIT = 0x0010;
-	public final static int COND_LOWHP = 0x0020;
-	public final static int COND_ROBES = 0x0040;
-	public final static int COND_CHARGES = 0x0080;
-	public final static int COND_SHIELD = 0x0100;
+	public static final int COND_RUNNING = 0x0001;
+	public static final int COND_WALKING = 0x0002;
+	public static final int COND_SIT = 0x0004;
+	public static final int COND_BEHIND = 0x0008;
+	public static final int COND_CRIT = 0x0010;
+	public static final int COND_LOWHP = 0x0020;
+	public static final int COND_ROBES = 0x0040;
+	public static final int COND_CHARGES = 0x0080;
+	public static final int COND_SHIELD = 0x0100;
 	
 	private static final Func[] _emptyFunctionSet = new Func[0];
 	private static final L2Effect[] _emptyEffectSet = new L2Effect[0];

@@ -28,9 +28,9 @@ package com.l2jserver.gameserver.model.quest;
  */
 public class State
 {
-	public final static byte CREATED = 0;
-	public final static byte STARTED = 1;
-	public final static byte COMPLETED = 2;
+	public static final byte CREATED = 0;
+	public static final byte STARTED = 1;
+	public static final byte COMPLETED = 2;
 	
 	/**
 	 * Get the quest state's string representation from its byte value.

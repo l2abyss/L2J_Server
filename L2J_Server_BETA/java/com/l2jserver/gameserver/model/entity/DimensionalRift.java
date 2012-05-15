@@ -57,8 +57,6 @@ public class DimensionalRift
 	protected FastList<L2PcInstance> revivedInWaitingRoom = new FastList<L2PcInstance>();
 	private boolean isBossRoom = false;
 	
-	//private final static Log _log = LogFactory.getLog(DimensionalRift.class.getName());
-	
 	public DimensionalRift(L2Party party, byte type, byte room)
 	{
 		DimensionalRiftManager.getInstance().getRoom(type, room).setPartyInside(true);

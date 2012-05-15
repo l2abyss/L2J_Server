@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ExShowDominionRegistry extends L2GameServerPacket
 {
-	private final static int MINID = 80;
+	private static final int MINID = 80;
 	private final int _castleId;
 	private int _clanReq = 0x00;
 	private int _mercReq = 0x00;

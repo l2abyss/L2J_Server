@@ -1334,7 +1334,7 @@ public class Quest extends ManagedScript
 	 * Loads all quest states and variables for the specified player.
 	 * @param player the player who is entering the world
 	 */
-	public final static void playerEnter(L2PcInstance player)
+	public static final void playerEnter(L2PcInstance player)
 	{
 		Connection con = null;
 		try

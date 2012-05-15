@@ -30,15 +30,15 @@ import com.l2jserver.gameserver.model.stats.Env;
 public final class ConditionSiegeZone extends Condition
 {
 	// conditional values
-	public final static int COND_NOT_ZONE = 0x0001;
-	public final static int COND_CAST_ATTACK = 0x0002;
-	public final static int COND_CAST_DEFEND = 0x0004;
-	public final static int COND_CAST_NEUTRAL = 0x0008;
-	public final static int COND_FORT_ATTACK = 0x0010;
-	public final static int COND_FORT_DEFEND = 0x0020;
-	public final static int COND_FORT_NEUTRAL = 0x0040;
-	public final static int COND_TW_CHANNEL = 0x0080;
-	public final static int COND_TW_PROGRESS = 0x0100;
+	public static final int COND_NOT_ZONE = 0x0001;
+	public static final int COND_CAST_ATTACK = 0x0002;
+	public static final int COND_CAST_DEFEND = 0x0004;
+	public static final int COND_CAST_NEUTRAL = 0x0008;
+	public static final int COND_FORT_ATTACK = 0x0010;
+	public static final int COND_FORT_DEFEND = 0x0020;
+	public static final int COND_FORT_NEUTRAL = 0x0040;
+	public static final int COND_TW_CHANNEL = 0x0080;
+	public static final int COND_TW_PROGRESS = 0x0100;
 	
 	private final int _value;
 	private final boolean _self;

@@ -144,7 +144,7 @@ public final class ItemAuctionManager
 		return _auctionIds.getAndIncrement();
 	}
 	
-	public final static void deleteAuction(final int auctionId)
+	public static final void deleteAuction(final int auctionId)
 	{
 		Connection con = null;
 		try

@@ -39,14 +39,12 @@ import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-
 /**
  * @author evill33t, GodKratos
- * 
  */
 public class Instance
 {
-	private final static Logger _log = Logger.getLogger(Instance.class.getName());
+	private static final Logger _log = Logger.getLogger(Instance.class.getName());
 	
 	private int _id;
 	private String _name;

@@ -22,7 +22,7 @@ public class TownManager
 {
 	// private static final Logger _log = Logger.getLogger(TownManager.class.getName());
 	
-	public final static int getTownCastle(int townId)
+	public static final int getTownCastle(int townId)
 	{
 		switch (townId)
 		{
@@ -49,7 +49,7 @@ public class TownManager
 		}
 	}
 	
-	public final static boolean townHasCastleInSiege(int townId)
+	public static final boolean townHasCastleInSiege(int townId)
 	{
 		int castleIndex = getTownCastle(townId);
 		
@@ -64,12 +64,12 @@ public class TownManager
 		return false;
 	}
 	
-	public final static boolean townHasCastleInSiege(int x, int y)
+	public static final boolean townHasCastleInSiege(int x, int y)
 	{
 		return townHasCastleInSiege(MapRegionManager.getInstance().getMapRegionLocId(x, y));
 	}
 	
-	public final static L2TownZone getTown(int townId)
+	public static final L2TownZone getTown(int townId)
 	{
 		for (L2TownZone temp : ZoneManager.getInstance().getAllZones(L2TownZone.class))
 		{
@@ -88,7 +88,7 @@ public class TownManager
 	 * @param z
 	 * @return
 	 */
-	public final static L2TownZone getTown(int x, int y, int z)
+	public static final L2TownZone getTown(int x, int y, int z)
 	{
 		for (L2ZoneType temp : ZoneManager.getInstance().getZones(x, y, z))
 		{

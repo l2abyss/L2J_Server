@@ -39,7 +39,7 @@ import com.l2jserver.loginserver.mail.MailSystem.MailContent;
  */
 public class BaseMail implements Runnable
 {
-	private final static Logger _log = Logger.getLogger(BaseMail.class.getName());
+	private static final Logger _log = Logger.getLogger(BaseMail.class.getName());
 	
 	private final Properties _mailProp = new Properties();
 	private final SmtpAuthenticator _authenticator;

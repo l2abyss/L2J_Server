@@ -22,7 +22,7 @@ public class ExCaptureOrc extends L2GameServerPacket
 {
 	private static final String _S__FE_44_EXCAPTUREORC = "[S] FE:45 ExSearchOrc";
 	
-	private final static byte[] _test;
+	private static final byte[] _test;
 	static
 	{
 		_test = new byte[]

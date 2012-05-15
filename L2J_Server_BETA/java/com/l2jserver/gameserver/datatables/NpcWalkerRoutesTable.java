@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.network.NpcStringId;
  */
 public class NpcWalkerRoutesTable
 {
-	private final static Logger _log = Logger.getLogger(NpcWalkerRoutesTable.class.getName());
+	private static final Logger _log = Logger.getLogger(NpcWalkerRoutesTable.class.getName());
 	
 	private final TIntObjectHashMap<List<L2NpcWalkerNode>> _routes = new TIntObjectHashMap<List<L2NpcWalkerNode>>();
 	

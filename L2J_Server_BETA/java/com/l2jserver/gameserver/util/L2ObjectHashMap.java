@@ -34,7 +34,7 @@ public final class L2ObjectHashMap<T extends L2Object> extends L2ObjectMap<T>
 	private static final boolean TRACE = false;
 	private static final boolean DEBUG = false;
 	
-	private final static int[] PRIMES = {
+	private static final int[] PRIMES = {
 		5, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293,
 		353, 431, 521, 631, 761, 919, 1103, 1327, 1597, 1931, 2333, 2801,
 		3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591, 17519,

@@ -34,7 +34,7 @@ public class LocalizationParser
 {
 	private String LANGUAGES_DIRECTORY = "../languages/";
 	private final Map<String, String> _msgMap = new HashMap<String, String>();
-	private final static Logger _log = Logger.getLogger(LocalizationParser.class.getName());
+	private static final Logger _log = Logger.getLogger(LocalizationParser.class.getName());
 	private final String _baseName;
 	
 	public LocalizationParser(String dir, String baseName, Locale locale)

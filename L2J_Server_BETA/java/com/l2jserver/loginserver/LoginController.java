@@ -55,7 +55,7 @@ public class LoginController
 	private static LoginController _instance;
 	
 	/** Time before kicking the client if he didn't logged yet */
-	public final static int LOGIN_TIMEOUT = 60 * 1000;
+	public static final int LOGIN_TIMEOUT = 60 * 1000;
 	
 	/** Authed Clients on LoginServer */
 	protected FastMap<String, L2LoginClient> _loginServerClients = new FastMap<String, L2LoginClient>().shared();

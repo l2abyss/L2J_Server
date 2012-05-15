@@ -25207,7 +25207,7 @@ public final class NpcStringId
 		buildFastLookupTable();
 	}
 	
-	private final static void buildFastLookupTable()
+	private static final void buildFastLookupTable()
 	{
 		final Field[] fields = NpcStringId.class.getDeclaredFields();
 		final ArrayList<NpcStringId> nsIds = new ArrayList<NpcStringId>(fields.length);

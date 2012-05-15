@@ -60,7 +60,7 @@ public final class Util
 	 * @param obj2Y
 	 * @return degree value of object 2 to the horizontal line with object 1 being the origin
 	 */
-	public final static double calculateAngleFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
+	public static final double calculateAngleFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
 	{
 		double angleTarget = Math.toDegrees(Math.atan2(obj2Y - obj1Y, obj2X - obj1X));
 		if (angleTarget < 0)
@@ -70,13 +70,13 @@ public final class Util
 		return angleTarget;
 	}
 	
-	public final static double convertHeadingToDegree(int clientHeading)
+	public static final double convertHeadingToDegree(int clientHeading)
 	{
 		double degree = clientHeading / 182.044444444;
 		return degree;
 	}
 	
-	public final static int convertDegreeToClientHeading(double degree)
+	public static final int convertDegreeToClientHeading(double degree)
 	{
 		if (degree < 0)
 		{
@@ -85,12 +85,12 @@ public final class Util
 		return (int) (degree * 182.044444444);
 	}
 	
-	public final static int calculateHeadingFrom(L2Object obj1, L2Object obj2)
+	public static final int calculateHeadingFrom(L2Object obj1, L2Object obj2)
 	{
 		return calculateHeadingFrom(obj1.getX(), obj1.getY(), obj2.getX(), obj2.getY());
 	}
 	
-	public final static int calculateHeadingFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
+	public static final int calculateHeadingFrom(int obj1X, int obj1Y, int obj2X, int obj2Y)
 	{
 		double angleTarget = Math.toDegrees(Math.atan2(obj2Y - obj1Y, obj2X - obj1X));
 		if (angleTarget < 0)
@@ -100,7 +100,7 @@ public final class Util
 		return (int) (angleTarget * 182.044444444);
 	}
 	
-	public final static int calculateHeadingFrom(double dx, double dy)
+	public static final int calculateHeadingFrom(double dx, double dy)
 	{
 		double angleTarget = Math.toDegrees(Math.atan2(dy, dx));
 		if (angleTarget < 0)
