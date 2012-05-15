@@ -620,7 +620,6 @@ public final class Config
 	public static boolean SAVE_GMSPAWN_ON_CUSTOM;
 	public static boolean CUSTOM_NPC_TABLE;
 	public static boolean CUSTOM_NPC_SKILLS_TABLE;
-	public static boolean CUSTOM_ARMORSETS_TABLE;
 	public static boolean CUSTOM_TELEPORT_TABLE;
 	public static boolean CUSTOM_DROPLIST_TABLE;
 	public static boolean CUSTOM_MERCHANT_TABLES;
@@ -2096,7 +2095,6 @@ public final class Config
 				SAVE_GMSPAWN_ON_CUSTOM = Boolean.parseBoolean(General.getProperty("SaveGmSpawnOnCustom", "false"));
 				CUSTOM_NPC_TABLE = Boolean.parseBoolean(General.getProperty("CustomNpcTable", "false"));
 				CUSTOM_NPC_SKILLS_TABLE = Boolean.parseBoolean(General.getProperty("CustomNpcSkillsTable", "false"));
-				CUSTOM_ARMORSETS_TABLE = Boolean.parseBoolean(General.getProperty("CustomArmorSetsTable", "false"));
 				CUSTOM_TELEPORT_TABLE = Boolean.parseBoolean(General.getProperty("CustomTeleportTable", "false"));
 				CUSTOM_DROPLIST_TABLE = Boolean.parseBoolean(General.getProperty("CustomDroplistTable", "false"));
 				CUSTOM_MERCHANT_TABLES = Boolean.parseBoolean(General.getProperty("CustomMerchantTables", "false"));
