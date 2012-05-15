@@ -310,7 +310,7 @@ public class L2Attackable extends L2Npc
 	
 	private L2Character _overhitAttacker;
 	
-	private L2CommandChannel _firstCommandChannelAttacked = null;
+	private volatile L2CommandChannel _firstCommandChannelAttacked = null;
 	private CommandChannelTimer _commandChannelTimer = null;
 	private long _commandChannelLastAttack = 0;
 	
@@ -650,7 +650,7 @@ public class L2Attackable extends L2Npc
 			}
 			
 			// Manage Base, Quests and Sweep drops of the L2Attackable
-			doItemDrop(maxDealer != null && maxDealer.isOnline() == true ? maxDealer : lastAttacker);
+			doItemDrop(maxDealer != null && maxDealer.isOnline() ? maxDealer : lastAttacker);
 			
 			// Manage drop of Special Events created by GM for a defined period
 			doEventDrop(lastAttacker);

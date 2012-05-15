@@ -194,7 +194,7 @@ public final class Say2 extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isChatBanned() && !_text.startsWith("."))
+		if (activeChar.isChatBanned() && _text.charAt(0) != '.')
 		{
 			for (int chatId : Config.BAN_CHAT_CHANNELS)
 			{

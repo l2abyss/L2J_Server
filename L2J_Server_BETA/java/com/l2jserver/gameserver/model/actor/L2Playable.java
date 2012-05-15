@@ -180,7 +180,7 @@ public abstract class L2Playable extends L2Character
 		L2PcInstance player = null;
 		if (this instanceof L2PcInstance)
 			player = (L2PcInstance)this;
-		else if (this instanceof L2Summon)
+		else if (isSummon())
 			player = ((L2Summon)this).getOwner();
 		
 		if (player == null) return false;                                               // Active player is null

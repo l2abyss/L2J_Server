@@ -901,7 +901,7 @@ public abstract class L2Summon extends L2Playable
 			activeChar.sendPacket(new PetInfo(this, 0));
 			// The PetInfo packet wipes the PartySpelled (list of active  spells' icons).  Re-add them
 			updateEffectIcons(true);
-			if (this instanceof L2PetInstance)
+			if (isPet())
 			{
 				activeChar.sendPacket(new PetItemList((L2PetInstance) this));
 			}
