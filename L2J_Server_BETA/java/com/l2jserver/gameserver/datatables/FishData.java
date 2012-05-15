@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -33,10 +32,13 @@ import com.l2jserver.gameserver.model.fishing.L2Fish;
  */
 public final class FishData extends DocumentParser
 {
-	private static final Map<Integer, L2Fish> _fishsNormal = new HashMap<>();
-	private static final Map<Integer, L2Fish> _fishsEasy = new HashMap<>();
-	private static final Map<Integer, L2Fish> _fishsHard = new HashMap<>();
+	private static final Map<Integer, L2Fish> _fishNormal = new HashMap<>();
+	private static final Map<Integer, L2Fish> _fishEasy = new HashMap<>();
+	private static final Map<Integer, L2Fish> _fishHard = new HashMap<>();
 	
+	/**
+	 * Instantiates a new fish data.
+	 */
 	protected FishData()
 	{
 		load();
@@ -45,21 +47,21 @@ public final class FishData extends DocumentParser
 	@Override
 	public void load()
 	{
-		_fishsEasy.clear();
-		_fishsNormal.clear();
-		_fishsHard.clear();
+		_fishEasy.clear();
+		_fishNormal.clear();
+		_fishHard.clear();
 		parseDatapackFile("data/stats/items/fishing/fishes.xml");
-		_log.info(getClass().getSimpleName() + ": Loaded " + (_fishsEasy.size() + _fishsNormal.size() + _fishsHard.size()) + " Fishes.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + (_fishEasy.size() + _fishNormal.size() + _fishHard.size()) + " Fishes.");
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
 		NamedNodeMap attrs;
 		Node att;
 		L2Fish fish;
 		StatsSet set;
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
@@ -67,7 +69,6 @@ public final class FishData extends DocumentParser
 				{
 					if ("fish".equalsIgnoreCase(d.getNodeName()))
 					{
-						
 						attrs = d.getAttributes();
 						
 						set = new StatsSet();
@@ -81,17 +82,17 @@ public final class FishData extends DocumentParser
 						{
 							case 0:
 							{
-								_fishsEasy.put(fish.getFishId(), fish);
+								_fishEasy.put(fish.getFishId(), fish);
 								break;
 							}
 							case 1:
 							{
-								_fishsNormal.put(fish.getFishId(), fish);
+								_fishNormal.put(fish.getFishId(), fish);
 								break;
 							}
 							case 2:
 							{
-								_fishsHard.put(fish.getFishId(), fish);
+								_fishHard.put(fish.getFishId(), fish);
 								break;
 							}
 						}
@@ -102,6 +103,7 @@ public final class FishData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the fish.
 	 * @param level the fish Level
 	 * @param group the fish Group
 	 * @param grade the fish Grade
@@ -109,52 +111,52 @@ public final class FishData extends DocumentParser
 	 */
 	public List<L2Fish> getFish(int level, int group, int grade)
 	{
-		ArrayList<L2Fish> result = new ArrayList<L2Fish>();
-		Map<Integer, L2Fish> _Fishs = null;
+		final ArrayList<L2Fish> result = new ArrayList<L2Fish>();
+		Map<Integer, L2Fish> fish = null;
 		switch (grade)
 		{
 			case 0:
 			{
-				_Fishs = _fishsEasy;
+				fish = _fishEasy;
 				break;
 			}
 			case 1:
 			{
-				_Fishs = _fishsNormal;
+				fish = _fishNormal;
 				break;
 			}
 			case 2:
 			{
-				_Fishs = _fishsHard;
+				fish = _fishHard;
 				break;
 			}
+			default:
+			{
+				_log.warning(getClass().getSimpleName() + ": Unmanaged fish grade!");
+				return result;
+			}
 		}
-		if (_Fishs == null)
+		
+		for (L2Fish f : fish.values())
 		{
-			// the fish list is empty
-			_log.warning(getClass().getSimpleName() + ": Fish are not defined !");
-			return null;
-		}
-		for (L2Fish f : _Fishs.values())
-		{
-			if (f.getFishLevel() != level)
+			if ((f.getFishLevel() != level) || (f.getFishGroup() != group))
 			{
 				continue;
 			}
-			if (f.getFishGroup() != group)
-			{
-				continue;
-			}
-			
 			result.add(f);
 		}
+		
 		if (result.isEmpty())
 		{
-			_log.warning(getClass().getSimpleName() + ": Cant Find Any Fish!? - Lvl: " + level + " Group: " + group + " Grade: " + grade);
+			_log.warning(getClass().getSimpleName() + ": Cannot find any fish for level: " + level + " group: " + group + " and grade: " + grade + "!");
 		}
 		return result;
 	}
 	
+	/**
+	 * Gets the single instance of FishData.
+	 * @return single instance of FishData
+	 */
 	public static FishData getInstance()
 	{
 		return SingletonHolder._instance;

@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -39,6 +38,9 @@ public final class HennaData extends DocumentParser
 {
 	private static final Map<Integer, L2Henna> _hennaList = new HashMap<>();
 	
+	/**
+	 * Instantiates a new henna data.
+	 */
 	protected HennaData()
 	{
 		load();
@@ -53,9 +55,9 @@ public final class HennaData extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equals(n.getNodeName()))
 			{
@@ -70,6 +72,10 @@ public final class HennaData extends DocumentParser
 		}
 	}
 	
+	/**
+	 * Parses the henna.
+	 * @param d the d
+	 */
 	private void parseHenna(Node d)
 	{
 		final StatsSet set = new StatsSet();
@@ -127,6 +133,7 @@ public final class HennaData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the henna.
 	 * @param id of the dye.
 	 * @return the dye with that id.
 	 */
@@ -136,6 +143,7 @@ public final class HennaData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the henna list.
 	 * @param classId the player's class Id.
 	 * @return the list with all the allowed dyes.
 	 */
@@ -152,6 +160,10 @@ public final class HennaData extends DocumentParser
 		return list;
 	}
 	
+	/**
+	 * Gets the single instance of HennaData.
+	 * @return single instance of HennaData
+	 */
 	public static HennaData getInstance()
 	{
 		return SingletonHolder._instance;

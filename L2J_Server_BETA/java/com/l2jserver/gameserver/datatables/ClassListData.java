@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.datatables;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -34,6 +33,9 @@ public final class ClassListData extends DocumentParser
 {
 	private static final Map<ClassId, ClassInfo> _classData = new HashMap<>();
 	
+	/**
+	 * Instantiates a new class list data.
+	 */
 	protected ClassListData()
 	{
 		load();
@@ -48,7 +50,7 @@ public final class ClassListData extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
 		NamedNodeMap attrs;
 		Node attr;
@@ -56,7 +58,7 @@ public final class ClassListData extends DocumentParser
 		String className;
 		String classServName;
 		ClassId parentClassId;
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equals(n.getNodeName()))
 			{
@@ -81,6 +83,7 @@ public final class ClassListData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the class list.
 	 * @return the complete class list.
 	 */
 	public Map<ClassId, ClassInfo> getClassList()
@@ -89,6 +92,7 @@ public final class ClassListData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the class info.
 	 * @param classId the class Id.
 	 * @return the class info related to the given {@code classId}.
 	 */
@@ -98,6 +102,7 @@ public final class ClassListData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the class info.
 	 * @param classId the class Id as integer.
 	 * @return the class info related to the given {@code classId}.
 	 */
@@ -108,6 +113,7 @@ public final class ClassListData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the class info.
 	 * @param classServName the server side class name.
 	 * @return the class info related to the given {@code classServName}.
 	 */
@@ -123,6 +129,10 @@ public final class ClassListData extends DocumentParser
 		return null;
 	}
 	
+	/**
+	 * Gets the single instance of ClassListData.
+	 * @return single instance of ClassListData
+	 */
 	public static ClassListData getInstance()
 	{
 		return SingletonHolder._instance;

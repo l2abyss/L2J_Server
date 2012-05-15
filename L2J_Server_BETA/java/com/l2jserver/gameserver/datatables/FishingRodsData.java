@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.datatables;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -33,6 +32,9 @@ public final class FishingRodsData extends DocumentParser
 {
 	private static final Map<Integer, L2FishingRod> _fishingRods = new HashMap<>();
 	
+	/**
+	 * Instantiates a new fishing rods data.
+	 */
 	protected FishingRodsData()
 	{
 		load();
@@ -47,13 +49,13 @@ public final class FishingRodsData extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
 		NamedNodeMap attrs;
 		Node att;
 		L2FishingRod fishingRod;
 		StatsSet set;
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
@@ -79,7 +81,8 @@ public final class FishingRodsData extends DocumentParser
 	}
 	
 	/**
-	 * @param itemId
+	 * Gets the fishing rod.
+	 * @param itemId the item id
 	 * @return A fishing Rod by Item Id
 	 */
 	public L2FishingRod getFishingRod(int itemId)
@@ -87,6 +90,10 @@ public final class FishingRodsData extends DocumentParser
 		return _fishingRods.get(itemId);
 	}
 	
+	/**
+	 * Gets the single instance of FishingRodsData.
+	 * @return single instance of FishingRodsData
+	 */
 	public static FishingRodsData getInstance()
 	{
 		return SingletonHolder._instance;

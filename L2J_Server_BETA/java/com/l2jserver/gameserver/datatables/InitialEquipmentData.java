@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -40,6 +39,9 @@ public final class InitialEquipmentData extends DocumentParser
 	private static final String filePathEvent = "data/stats/initialEquipmentEvent.xml";
 	private final Map<ClassId, List<PcItemTemplate>> _initialEquipmentList = new HashMap<>();
 	
+	/**
+	 * Instantiates a new initial equipment data.
+	 */
 	protected InitialEquipmentData()
 	{
 		load();
@@ -54,9 +56,9 @@ public final class InitialEquipmentData extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
@@ -72,6 +74,7 @@ public final class InitialEquipmentData extends DocumentParser
 	}
 	
 	/**
+	 * Parses the equipment.
 	 * @param d parse an initial equipment and add it to {@link #_initialEquipmentList}
 	 */
 	private void parseEquipment(Node d)
@@ -98,6 +101,7 @@ public final class InitialEquipmentData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the equipment list.
 	 * @param cId the class Id for the required initial equipment.
 	 * @return the initial equipment for the given class Id.
 	 */
@@ -107,6 +111,7 @@ public final class InitialEquipmentData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the equipment list.
 	 * @param cId the class Id for the required initial equipment.
 	 * @return the initial equipment for the given class Id.
 	 */
@@ -115,6 +120,10 @@ public final class InitialEquipmentData extends DocumentParser
 		return _initialEquipmentList.get(ClassId.getClassId(cId));
 	}
 	
+	/**
+	 * Gets the single instance of InitialEquipmentData.
+	 * @return single instance of InitialEquipmentData
+	 */
 	public static InitialEquipmentData getInstance()
 	{
 		return SingletonHolder._instance;

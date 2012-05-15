@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -37,6 +36,9 @@ public class EnchantItemData extends DocumentParser
 	public static final Map<Integer, EnchantScroll> _scrolls = new HashMap<>();
 	public static final Map<Integer, EnchantItem> _supports = new HashMap<>();
 	
+	/**
+	 * Instantiates a new enchant item data.
+	 */
 	public EnchantItemData()
 	{
 		load();
@@ -53,11 +55,11 @@ public class EnchantItemData extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
 		StatsSet set;
 		Node att;
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
@@ -114,7 +116,8 @@ public class EnchantItemData extends DocumentParser
 	}
 	
 	/**
-	 * @param scroll
+	 * Gets the enchant scroll.
+	 * @param scroll the scroll
 	 * @return enchant template for scroll
 	 */
 	public final EnchantScroll getEnchantScroll(L2ItemInstance scroll)
@@ -123,7 +126,8 @@ public class EnchantItemData extends DocumentParser
 	}
 	
 	/**
-	 * @param item
+	 * Gets the support item.
+	 * @param item the item
 	 * @return enchant template for support item
 	 */
 	public final EnchantItem getSupportItem(L2ItemInstance item)
@@ -131,6 +135,10 @@ public class EnchantItemData extends DocumentParser
 		return _supports.get(item.getItemId());
 	}
 	
+	/**
+	 * Gets the single instance of EnchantItemData.
+	 * @return single instance of EnchantItemData
+	 */
 	public static final EnchantItemData getInstance()
 	{
 		return SingletonHolder._instance;

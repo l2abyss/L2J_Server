@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.datatables;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -27,7 +26,7 @@ import com.l2jserver.gameserver.model.L2PetLevelData;
 import com.l2jserver.gameserver.model.StatsSet;
 
 /**
- * This class parse and hold all pet parameters.
+ * This class parse and hold all pet parameters.<br>
  * TODO: Unhardcode where is possible boolean methods and load and use all pet parameters.
  * @author Zoey76 (rework)
  */
@@ -35,6 +34,9 @@ public final class PetDataTable extends DocumentParser
 {
 	private static final Map<Integer, L2PetData> _pets = new HashMap<>();
 	
+	/**
+	 * Instantiates a new pet data table.
+	 */
 	protected PetDataTable()
 	{
 		load();
@@ -49,10 +51,10 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
 		NamedNodeMap attrs;
-		Node n = doc.getFirstChild();
+		Node n = getCurrentDocument().getFirstChild();
 		for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 		{
 			if (d.getNodeName().equals("pet"))
@@ -121,6 +123,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Gets the pet level data.
 	 * @param petId the pet Id.
 	 * @param petLevel the pet level.
 	 * @return the pet's parameters for the given Id and level.
@@ -136,8 +139,9 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Gets the pet data.
 	 * @param petId the pet Id.
-	 * @return 
+	 * @return the pet data
 	 */
 	public L2PetData getPetData(int petId)
 	{
@@ -149,8 +153,9 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Gets the pet min level.
 	 * @param petId the pet Id.
-	 * @return
+	 * @return the pet min level
 	 */
 	public int getPetMinLevel(int petId)
 	{
@@ -158,6 +163,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is wolf.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from a wolf, {@code false} otherwise.
 	 */
@@ -167,6 +173,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is evolved wolf.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from an evolved wolf, {@code false} otherwise.
 	 */
@@ -176,6 +183,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is sin eater.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from a Sin Eater, {@code false} otherwise.
 	 */
@@ -185,6 +193,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is hatchling.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from a hatchling, {@code false} otherwise.
 	 */
@@ -194,6 +203,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is strider.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from a strider, {@code false} otherwise.
 	 */
@@ -203,6 +213,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is wyvern.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from a wyvern, {@code false} otherwise.
 	 */
@@ -212,6 +223,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is baby.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from a baby pet, {@code false} otherwise.
 	 */
@@ -221,6 +233,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is improved baby.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from an improved baby pet, {@code false} otherwise.
 	 */
@@ -230,6 +243,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is pet food.
 	 * @param itemId the item Id to verify.
 	 * @return {@code true} if the given Id is from a pet's food, {@code false} otherwise.
 	 */
@@ -252,6 +266,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Gets the pet items by npc.
 	 * @param npcId the NPC Id to get its summoning item.
 	 * @return an array containing the list of summoning items for the given NPC Id.
 	 */
@@ -353,6 +368,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is mountable.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from a mountable pet, {@code false} otherwise.
 	 */
@@ -372,6 +388,7 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * Gets the single instance of PetDataTable.
 	 * @return this class unique instance.
 	 */
 	public static PetDataTable getInstance()

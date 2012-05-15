@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.datatables;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -34,6 +33,9 @@ public final class ExperienceTable extends DocumentParser
 	private byte MAX_LEVEL;
 	private byte MAX_PET_LEVEL;
 	
+	/**
+	 * Instantiates a new experience table.
+	 */
 	protected ExperienceTable()
 	{
 		load();
@@ -50,9 +52,9 @@ public final class ExperienceTable extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
-		final Node table = doc.getFirstChild();
+		final Node table = getCurrentDocument().getFirstChild();
 		final NamedNodeMap tableAttr = table.getAttributes();
 		
 		MAX_LEVEL = (byte) (Byte.parseByte(tableAttr.getNamedItem("maxLevel").getNodeValue()) + 1);
@@ -70,6 +72,7 @@ public final class ExperienceTable extends DocumentParser
 	}
 	
 	/**
+	 * Gets the exp for level.
 	 * @param level the level required.
 	 * @return the experience points required to reach the given level.
 	 */
@@ -79,6 +82,7 @@ public final class ExperienceTable extends DocumentParser
 	}
 	
 	/**
+	 * Gets the max level.
 	 * @return the maximum level acquirable by a player.
 	 */
 	public byte getMaxLevel()
@@ -87,6 +91,7 @@ public final class ExperienceTable extends DocumentParser
 	}
 	
 	/**
+	 * Gets the max pet level.
 	 * @return the maximum level acquirable by a pet.
 	 */
 	public byte getMaxPetLevel()
@@ -94,6 +99,10 @@ public final class ExperienceTable extends DocumentParser
 		return MAX_PET_LEVEL;
 	}
 	
+	/**
+	 * Gets the single instance of ExperienceTable.
+	 * @return single instance of ExperienceTable
+	 */
 	public static ExperienceTable getInstance()
 	{
 		return SingletonHolder._instance;

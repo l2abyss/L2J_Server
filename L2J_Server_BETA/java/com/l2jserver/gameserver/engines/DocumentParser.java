@@ -44,6 +44,9 @@ public abstract class DocumentParser
 	private static final XMLFilter xmlFilter = new XMLFilter();
 	
 	private File _currentFile;
+	
+	private Document _currentDocument;
+	
 	/**
 	 * This method can be used to load/reload the data.<br>
 	 * It's highly recommended to clear the data storage, either the list or map.
@@ -61,8 +64,8 @@ public abstract class DocumentParser
 	
 	/**
 	 * Parses a single XML file.<br>
-	 * If the file was successfully parsed, call {@link #parseDocument(Document)} for the parsed document.
-	 * Validation is enforced.
+	 * If the file was successfully parsed, call {@link #parseDocument(Document)} for the parsed document.<br>
+	 * <b>Validation is enforced.</b>
 	 * @param f the XML file to parse.
 	 */
 	protected void parseFile(File f)
@@ -77,26 +80,39 @@ public abstract class DocumentParser
 		dbf.setNamespaceAware(true);
 		dbf.setValidating(true);
 		dbf.setIgnoringComments(true);
-		Document doc = null;
+		_currentDocument = null;
 		_currentFile = f;
 		try
 		{
 			dbf.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
 			final DocumentBuilder db = dbf.newDocumentBuilder();
 			db.setErrorHandler(new XMLErrorHandler());
-			doc = db.parse(f);
+			_currentDocument = db.parse(f);
 		}
 		catch (Exception e)
 		{
 			_log.warning(getClass().getSimpleName() + ": Could not parse " + f.getName() + " file: " + e.getMessage());
 			return;
 		}
-		parseDocument(doc);
+		parseDocument();
 	}
 	
+	/**
+	 * Gets the current file.
+	 * @return the current file
+	 */
 	public File getCurrentFile()
 	{
 		return _currentFile;
+	}
+	
+	/**
+	 * Gets the current document.
+	 * @return the current document
+	 */
+	protected Document getCurrentDocument()
+	{
+		return _currentDocument;
 	}
 	
 	/**
@@ -131,13 +147,22 @@ public abstract class DocumentParser
 	}
 	
 	/**
-	 * Abstract method that when implemented will parse a document.<br>
-	 * Is expected to be call from {@link #parseFile(File)}.
+	 * Overridable method that could parse a custom document.<br>
 	 * @param doc the document to parse.
 	 */
-	protected abstract void parseDocument(Document doc);
+	protected void parseDocument(Document doc)
+	{
+		// Do nothing, to be overridden in sub-classes.
+	}
 	
 	/**
+	 * Abstract method that when implemented will parse the current document.<br>
+	 * Is expected to be call from {@link #parseFile(File)}.
+	 */
+	protected abstract void parseDocument();
+	
+	/**
+	 * Parses the int.
 	 * @param n the named node map.
 	 * @param name the attribute name.
 	 * @return a parsed integer.
@@ -148,6 +173,7 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * Parses the integer.
 	 * @param n the named node map.
 	 * @param name the attribute name.
 	 * @return a parsed integer object.
@@ -158,6 +184,7 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * Parses the int.
 	 * @param n the node to parse.
 	 * @return the parsed integer.
 	 */
@@ -167,6 +194,7 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * Parses the integer.
 	 * @param n the node to parse.
 	 * @return the parsed integer object.
 	 */
@@ -176,6 +204,7 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * Parses the long.
 	 * @param n the named node map.
 	 * @param name the attribute name.
 	 * @return a parsed integer.
@@ -186,6 +215,7 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * Parses the double.
 	 * @param n the named node map.
 	 * @param name the attribute name.
 	 * @return a parsed double.
@@ -196,6 +226,7 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * Parses the boolean.
 	 * @param n the named node map.
 	 * @param name the attribute name.
 	 * @return {@code true} if the attribute exists and it's value is {@code true}, {@code false} otherwise.

@@ -24,7 +24,6 @@ import java.util.logging.Level;
 
 import javolution.util.FastMap;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -48,6 +47,9 @@ public class AdminTable extends DocumentParser
 	private static final FastMap<L2PcInstance, Boolean> _gmList = new FastMap<L2PcInstance, Boolean>();
 	private int _highestLevel = 0;
 	
+	/**
+	 * Instantiates a new admin table.
+	 */
 	protected AdminTable()
 	{
 		_gmList.shared();
@@ -66,14 +68,14 @@ public class AdminTable extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
 		NamedNodeMap attrs;
 		Node attr;
 		StatsSet set;
 		L2AccessLevel level;
 		L2AdminCommandAccessRight command;
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
@@ -113,11 +115,9 @@ public class AdminTable extends DocumentParser
 	}
 	
 	/**
-	 * Returns the access level by characterAccessLevel<br>
-	 * <br>
-	 * @param accessLevelNum as int<br>
-	 * <br>
-	 * @return AccessLevel: AccessLevel instance by char access level<br>
+	 * Returns the access level by characterAccessLevel.
+	 * @param accessLevelNum as int
+	 * @return the access level instance by char access level
 	 */
 	public L2AccessLevel getAccessLevel(int accessLevelNum)
 	{
@@ -132,20 +132,34 @@ public class AdminTable extends DocumentParser
 		return _accessLevels.get(accessLevelNum);
 	}
 	
+	/**
+	 * Gets the master access level.
+	 * @return the master access level
+	 */
 	public L2AccessLevel getMasterAccessLevel()
 	{
 		return _accessLevels.get(_highestLevel);
 	}
 	
+	/**
+	 * Checks for access level.
+	 * @param id the id
+	 * @return {@code true}, if successful, {@code false} otherwise
+	 */
 	public boolean hasAccessLevel(int id)
 	{
 		return _accessLevels.containsKey(id);
 	}
 	
+	/**
+	 * Checks for access.
+	 * @param adminCommand the admin command
+	 * @param accessLevel the access level
+	 * @return {@code true}, if successful, {@code false} otherwise
+	 */
 	public boolean hasAccess(String adminCommand, L2AccessLevel accessLevel)
 	{
 		L2AdminCommandAccessRight acar = _adminCommandAccessRights.get(adminCommand);
-		
 		if (acar == null)
 		{
 			// Trying to avoid the spam for next time when the gm would try to use the same command
@@ -161,10 +175,14 @@ public class AdminTable extends DocumentParser
 				return false;
 			}
 		}
-		
 		return acar.hasAccess(accessLevel);
 	}
 	
+	/**
+	 * Require confirm.
+	 * @param command the command
+	 * @return {@code true}, if the command require confirmation, {@code false} otherwise
+	 */
 	public boolean requireConfirm(String command)
 	{
 		L2AdminCommandAccessRight acar = _adminCommandAccessRights.get(command);
@@ -176,10 +194,14 @@ public class AdminTable extends DocumentParser
 		return acar.getRequireConfirm();
 	}
 	
+	/**
+	 * Gets the all GMs.
+	 * @param includeHidden the include hidden
+	 * @return the all GMs
+	 */
 	public List<L2PcInstance> getAllGms(boolean includeHidden)
 	{
-		List<L2PcInstance> tmpGmList = new ArrayList<>();
-		
+		final List<L2PcInstance> tmpGmList = new ArrayList<>();
 		for (Entry<L2PcInstance, Boolean> entry : _gmList.entrySet())
 		{
 			if (includeHidden || !entry.getValue())
@@ -187,14 +209,17 @@ public class AdminTable extends DocumentParser
 				tmpGmList.add(entry.getKey());
 			}
 		}
-		
 		return tmpGmList;
 	}
 	
+	/**
+	 * Gets the all GM names.
+	 * @param includeHidden the include hidden
+	 * @return the all GM names
+	 */
 	public List<String> getAllGmNames(boolean includeHidden)
 	{
-		List<String> tmpGmList = new ArrayList<>();
-		
+		final List<String> tmpGmList = new ArrayList<>();
 		for (Entry<L2PcInstance, Boolean> entry : _gmList.entrySet())
 		{
 			if (!entry.getValue())
@@ -206,14 +231,13 @@ public class AdminTable extends DocumentParser
 				tmpGmList.add(entry.getKey().getName() + " (invis)");
 			}
 		}
-		
 		return tmpGmList;
 	}
 	
 	/**
-	 * Add a L2PcInstance player to the Set _gmList
-	 * @param player
-	 * @param hidden
+	 * Add a L2PcInstance player to the Set _gmList.
+	 * @param player the player
+	 * @param hidden the hidden
 	 */
 	public void addGm(L2PcInstance player, boolean hidden)
 	{
@@ -224,19 +248,22 @@ public class AdminTable extends DocumentParser
 		_gmList.put(player, hidden);
 	}
 	
+	/**
+	 * Delete a GM.
+	 * @param player the player
+	 */
 	public void deleteGm(L2PcInstance player)
 	{
 		if (Config.DEBUG)
 		{
 			_log.fine("deleted gm: " + player.getName());
 		}
-		
 		_gmList.remove(player);
 	}
 	
 	/**
-	 * GM will be displayed on clients gmlist
-	 * @param player
+	 * GM will be displayed on clients GM list.
+	 * @param player the player
 	 */
 	public void showGm(L2PcInstance player)
 	{
@@ -247,8 +274,8 @@ public class AdminTable extends DocumentParser
 	}
 	
 	/**
-	 * GM will no longer be displayed on clients gmlist
-	 * @param player
+	 * GM will no longer be displayed on clients GM list.
+	 * @param player the player
 	 */
 	public void hideGm(L2PcInstance player)
 	{
@@ -258,6 +285,11 @@ public class AdminTable extends DocumentParser
 		}
 	}
 	
+	/**
+	 * Checks if is GM online.
+	 * @param includeHidden the include hidden
+	 * @return true, if is GM online
+	 */
 	public boolean isGmOnline(boolean includeHidden)
 	{
 		for (Entry<L2PcInstance, Boolean> entry : _gmList.entrySet())
@@ -267,10 +299,13 @@ public class AdminTable extends DocumentParser
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
+	/**
+	 * Send list to player.
+	 * @param player the player
+	 */
 	public void sendListToPlayer(L2PcInstance player)
 	{
 		if (isGmOnline(player.isGM()))
@@ -290,6 +325,10 @@ public class AdminTable extends DocumentParser
 		}
 	}
 	
+	/**
+	 * Broadcast to GMs.
+	 * @param packet the packet
+	 */
 	public void broadcastToGMs(L2GameServerPacket packet)
 	{
 		for (L2PcInstance gm : getAllGms(true))
@@ -298,6 +337,10 @@ public class AdminTable extends DocumentParser
 		}
 	}
 	
+	/**
+	 * Broadcast message to GMs.
+	 * @param message the message
+	 */
 	public void broadcastMessageToGMs(String message)
 	{
 		for (L2PcInstance gm : getAllGms(true))
@@ -306,8 +349,8 @@ public class AdminTable extends DocumentParser
 		}
 	}
 	
-
 	/**
+	 * Gets the single instance of AdminTable.
 	 * @return AccessLevels: the one and only instance of this class<br>
 	 */
 	public static AdminTable getInstance()

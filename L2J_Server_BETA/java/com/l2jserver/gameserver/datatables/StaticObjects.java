@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -36,6 +35,9 @@ public final class StaticObjects extends DocumentParser
 {
 	private static final Map<Integer, L2StaticObjectInstance> _staticObjects = new HashMap<>();
 	
+	/**
+	 * Instantiates a new static objects.
+	 */
 	protected StaticObjects()
 	{
 		load();
@@ -50,12 +52,12 @@ public final class StaticObjects extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
 		NamedNodeMap attrs;
 		Node att;
 		StatsSet set;
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
@@ -92,6 +94,7 @@ public final class StaticObjects extends DocumentParser
 	}
 	
 	/**
+	 * Gets the static objects.
 	 * @return a collection of static objects.
 	 */
 	public Collection<L2StaticObjectInstance> getStaticObjects()
@@ -99,6 +102,10 @@ public final class StaticObjects extends DocumentParser
 		return _staticObjects.values();
 	}
 	
+	/**
+	 * Gets the single instance of StaticObjects.
+	 * @return single instance of StaticObjects
+	 */
 	public static StaticObjects getInstance()
 	{
 		return SingletonHolder._instance;

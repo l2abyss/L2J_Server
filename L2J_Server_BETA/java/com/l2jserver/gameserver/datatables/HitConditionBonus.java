@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -37,6 +36,9 @@ public final class HitConditionBonus extends DocumentParser
 	private int darkBonus = 0;
 	private int rainBonus = 0;
 	
+	/**
+	 * Instantiates a new hit condition bonus.
+	 */
 	protected HitConditionBonus()
 	{
 		load();
@@ -60,9 +62,9 @@ public final class HitConditionBonus extends DocumentParser
 	}
 	
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
-		final Node n = doc.getFirstChild();
+		final Node n = getCurrentDocument().getFirstChild();
 		NamedNodeMap attrs;
 		for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 		{
@@ -95,6 +97,7 @@ public final class HitConditionBonus extends DocumentParser
 	}
 	
 	/**
+	 * Gets the condition bonus.
 	 * @param attacker the attacking character.
 	 * @param target the attacked character.
 	 * @return the bonus of the attacker against the target.
@@ -138,6 +141,10 @@ public final class HitConditionBonus extends DocumentParser
 		return Math.max(mod / 100, 0);
 	}
 	
+	/**
+	 * Gets the single instance of HitConditionBonus.
+	 * @return single instance of HitConditionBonus
+	 */
 	public static HitConditionBonus getInstance()
 	{
 		return SingletonHolder._instance;

@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -98,6 +97,9 @@ public final class SkillTreesData extends DocumentParser
 	 */
 	private static final Map<ClassId, ClassId> _parentClassMap = new HashMap<>();
 	
+	/**
+	 * Instantiates a new skill trees data.
+	 */
 	protected SkillTreesData()
 	{
 		load();
@@ -134,10 +136,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Parse a skill tree file and store it into the correct skill tree.
-	 * @param doc the document to be parsed.
 	 */
 	@Override
-	protected void parseDocument(Document doc)
+	protected void parseDocument()
 	{
 		NamedNodeMap attrs;
 		Node attr;
@@ -145,7 +146,7 @@ public final class SkillTreesData extends DocumentParser
 		int cId = -1;
 		int parentClassId = -1;
 		ClassId classId = null;
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
@@ -337,12 +338,13 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the transfer skill tree.<br>
+	 * If new classes are implemented over 3rd class, we use a recursive call.
 	 * @param classId the transfer skill tree ID.
 	 * @return the complete Transfer Skill Tree for a given {@code classId}.
 	 */
 	public Map<Integer, L2SkillLearn> getTransferSkillTree(ClassId classId)
 	{
-		// If new classes are implemented over 3rd class, we use a recursive call.
 		if (classId.level() >= 3)
 		{
 			return getTransferSkillTree(classId.getParent());
@@ -351,6 +353,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the common skill tree.
 	 * @return the complete Common Skill Tree.
 	 */
 	public Map<Integer, L2SkillLearn> getCommonSkillTree()
@@ -359,6 +362,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the collect skill tree.
 	 * @return the complete Collect Skill Tree.
 	 */
 	public Map<Integer, L2SkillLearn> getCollectSkillTree()
@@ -367,6 +371,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the fishing skill tree.
 	 * @return the complete Fishing Skill Tree.
 	 */
 	public Map<Integer, L2SkillLearn> getFishingSkillTree()
@@ -375,6 +380,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the pledge skill tree.
 	 * @return the complete Pledge Skill Tree.
 	 */
 	public Map<Integer, L2SkillLearn> getPledgeSkillTree()
@@ -383,6 +389,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the sub class skill tree.
 	 * @return the complete Sub-Class Skill Tree.
 	 */
 	public Map<Integer, L2SkillLearn> getSubClassSkillTree()
@@ -391,6 +398,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the sub pledge skill tree.
 	 * @return the complete Sub-Pledge Skill Tree.
 	 */
 	public Map<Integer, L2SkillLearn> getSubPledgeSkillTree()
@@ -399,6 +407,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the transform skill tree.
 	 * @return the complete Transform Skill Tree.
 	 */
 	public Map<Integer, L2SkillLearn> getTransformSkillTree()
@@ -407,6 +416,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the noble skill tree.
 	 * @return the complete Noble Skill Tree.
 	 */
 	public Map<Integer, L2Skill> getNobleSkillTree()
@@ -421,6 +431,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the hero skill tree.
 	 * @return the complete Hero Skill Tree.
 	 */
 	public Map<Integer, L2Skill> getHeroSkillTree()
@@ -435,6 +446,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the gM skill tree.
 	 * @return the complete Game Master Skill Tree.
 	 */
 	public Map<Integer, L2Skill> getGMSkillTree()
@@ -449,6 +461,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the gM aura skill tree.
 	 * @return the complete Game Master Aura Skill Tree.
 	 */
 	public Map<Integer, L2Skill> getGMAuraSkillTree()
@@ -463,6 +476,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the available skills.
 	 * @param player the learning skill player.
 	 * @param classId the learning skill class ID.
 	 * @param includeByFs if {@code true} skills from Forgotten Scroll will be included.
@@ -502,6 +516,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the available auto get skills.
 	 * @param player the player requesting the Auto-Get skills.
 	 * @return all the available Auto-Get skills for a given {@code player}.
 	 */
@@ -545,7 +560,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Dwarvens will get additional dwarven only fishing skills.
-	 * @param player
+	 * @param player the player
 	 * @return all the available Fishing skills for a given {@code player}.
 	 */
 	public List<L2SkillLearn> getAvailableFishingSkills(L2PcInstance player)
@@ -606,6 +621,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the available transfer skills.
 	 * @param player the transfer skill learning player.
 	 * @return all the available Transfer skills for a given {@code player}.
 	 */
@@ -666,6 +682,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the available pledge skills.
 	 * @param clan the pledge skill learning clan.
 	 * @return all the available Pledge skills for a given {@code clan}.
 	 */
@@ -694,6 +711,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the available sub pledge skills.
 	 * @param clan the sub-pledge skill learning clan.
 	 * @return all the available Sub-Pledge skills for a given {@code clan}.
 	 */
@@ -711,6 +729,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the available sub class skills.
 	 * @param player the sub-class skill learning player.
 	 * @return all the available Sub-Class skills for a given {@code player}.
 	 */
@@ -747,6 +766,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the available residential skills.
 	 * @param residenceId the id of the Castle, Fort, Territory.
 	 * @return all the available Residential skills for a given {@code residenceId}.
 	 */
@@ -805,6 +825,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the transform skill.
 	 * @param id the transformation skill ID.
 	 * @param lvl the transformation skill level.
 	 * @return the transform skill from the Transform Skill Tree for a given {@code id} and {@code lvl}.
@@ -815,6 +836,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the class skill.
 	 * @param id the class skill ID.
 	 * @param lvl the class skill level.
 	 * @param classId the class skill tree ID.
@@ -826,6 +848,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the fishing skill.
 	 * @param id the fishing skill ID.
 	 * @param lvl the fishing skill level.
 	 * @return Fishing skill from the Fishing Skill Tree for a given {@code id} and {@code lvl}.
@@ -836,6 +859,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the pledge skill.
 	 * @param id the pledge skill ID.
 	 * @param lvl the pledge skill level.
 	 * @return the pledge skill from the Pledge Skill Tree for a given {@code id} and {@code lvl}.
@@ -846,6 +870,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the sub pledge skill.
 	 * @param id the sub-pledge skill ID.
 	 * @param lvl the sub-pledge skill level.
 	 * @return the sub-pledge skill from the Sub-Pledge Skill Tree for a given {@code id} and {@code lvl}.
@@ -856,6 +881,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the transfer skill.
 	 * @param id the transfer skill ID.
 	 * @param lvl the transfer skill level.
 	 * @param classId the transfer skill tree ID.
@@ -875,6 +901,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the sub class skill.
 	 * @param id the sub-class skill ID.
 	 * @param lvl the sub-class skill level.
 	 * @return the sub-class skill from the Sub-Class Skill Tree for a given {@code id} and {@code lvl}.
@@ -885,6 +912,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the common skill.
 	 * @param id the common skill Id.
 	 * @param lvl the common skill level.
 	 * @return the common skill from the Common Skill Tree for a given {@code id} and {@code lvl}.
@@ -895,6 +923,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the collect skill.
 	 * @param id the collect skill ID.
 	 * @param lvl the collect skill level.
 	 * @return the collect skill from the Collect Skill Tree for a given {@code id} and {@code lvl}.
@@ -905,6 +934,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the min level for new skill.
 	 * @param player the player that requires the minimum level.
 	 * @param skillTree the skill tree to search the minimum get level.
 	 * @return the minimum level for a new skill for a given {@code player} and {@code skillTree}.
@@ -933,6 +963,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is hero skill.
 	 * @param skillId the Id of the skill to check.
 	 * @param skillLevel the level of the skill to check, if it's -1 only Id will be checked.
 	 * @return {@code true} if the skill is present in the Hero Skill Tree, {@code false} otherwise.
@@ -955,6 +986,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Checks if is GM skill.
 	 * @param skillId skillId the Id of the skill to check.
 	 * @param skillLevel skillLevel the level of the skill to check, if it's -1 only Id will be checked.
 	 * @return {@code true} if the skill is present in the Game Master Skill Trees, {@code false} otherwise.
@@ -980,6 +1012,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Adds the skills.
 	 * @param gmchar the player to add the Game Master skills.
 	 * @param auraSkills if {@code true} it will add "GM Aura" skills, else will add the "GM regular" skills.
 	 */
@@ -1197,6 +1230,7 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Gets the single instance of SkillTreesData.
 	 * @return the only instance of this class.
 	 */
 	public static SkillTreesData getInstance()
