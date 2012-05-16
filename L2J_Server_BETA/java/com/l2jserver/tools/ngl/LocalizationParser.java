@@ -49,11 +49,11 @@ public class LocalizationParser
 		
 		StringBuilder sb = new StringBuilder();
 		sb.append(language);
-		if (country != "")
+		if (!country.isEmpty())
 		{
 			sb.append(country);
 		}
-		if (variant != "")
+		if (!variant.isEmpty())
 		{
 			sb.append('_' + variant);
 			// Java 7 Function

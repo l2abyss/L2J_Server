@@ -266,7 +266,7 @@ public class FortSiege implements Siegable
 			getSiegeGuardManager().unspawnSiegeGuard(); // Remove all spawned siege guard from this fort
 			getFort().resetDoors(); // Respawn door to fort
 			
-			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSuspiciousMerchantSpawn(), FortSiegeManager.getInstance().getSuspiciousMerchantRespawnDelay() * 60 * 1000l); // Prepare 3hr task for suspicious merchant respawn
+			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSuspiciousMerchantSpawn(), FortSiegeManager.getInstance().getSuspiciousMerchantRespawnDelay() * 60 * 1000L); // Prepare 3hr task for suspicious merchant respawn
 			setSiegeDateTime(true); // store suspicious merchant spawn in DB
 			
 			if (_siegeEnd != null)
@@ -326,7 +326,7 @@ public class FortSiege implements Siegable
 			getFort().getZone().updateZoneStatusForCharactersInside();
 			
 			// Schedule a task to prepare auto siege end
-			_siegeEnd = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndSiegeTask(), FortSiegeManager.getInstance().getSiegeLength() * 60 * 1000l); // Prepare auto end task
+			_siegeEnd = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndSiegeTask(), FortSiegeManager.getInstance().getSiegeLength() * 60 * 1000L); // Prepare auto end task
 			
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_FORTRESS_BATTLE_S1_HAS_BEGUN);
 			sm.addFortId(getFort().getFortId());
@@ -639,7 +639,7 @@ public class FortSiege implements Siegable
 				else if (_siegeRestore == null)
 				{
 					getFort().getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.SEIZED_BARRACKS));
-					_siegeRestore = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSiegeRestore(), FortSiegeManager.getInstance().getCountDownLength() * 60 * 1000l);
+					_siegeRestore = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSiegeRestore(), FortSiegeManager.getInstance().getCountDownLength() * 60 * 1000L);
 				}
 				else
 					getFort().getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.SEIZED_BARRACKS));

@@ -57,7 +57,7 @@ import com.l2jserver.util.StringUtil;
  */
 public final class Config
 {
-	protected static final Logger _log = Logger.getLogger(Config.class.getName());
+	private static final Logger _log = Logger.getLogger(Config.class.getName());
 	
 	// --------------------------------------------------
 	// L2J Property File Definitions

@@ -58,13 +58,13 @@ public abstract class BaseRecievePacket
 	public double readF()
 	{
 		long result = _decrypt[_off++] & 0xff;
-		result |= (_decrypt[_off++] & 0xffl) << 8l;
-		result |= (_decrypt[_off++] & 0xffl) << 16l;
-		result |= (_decrypt[_off++] & 0xffl) << 24l;
-		result |= (_decrypt[_off++] & 0xffl) << 32l;
-		result |= (_decrypt[_off++] & 0xffl) << 40l;
-		result |= (_decrypt[_off++] & 0xffl) << 48l;
-		result |= (_decrypt[_off++] & 0xffl) << 56l;
+		result |= (_decrypt[_off++] & 0xffL) << 8L;
+		result |= (_decrypt[_off++] & 0xffL) << 16L;
+		result |= (_decrypt[_off++] & 0xffL) << 24L;
+		result |= (_decrypt[_off++] & 0xffL) << 32L;
+		result |= (_decrypt[_off++] & 0xffL) << 40L;
+		result |= (_decrypt[_off++] & 0xffL) << 48L;
+		result |= (_decrypt[_off++] & 0xffL) << 56L;
 		return Double.longBitsToDouble(result);
 	}
 	
@@ -99,13 +99,13 @@ public abstract class BaseRecievePacket
 	public long readQ()
 	{
 		long result = _decrypt[_off++] & 0xff;
-		result |= (_decrypt[_off++] & 0xffl) << 8l;
-		result |= (_decrypt[_off++] & 0xffl) << 16l;
-		result |= (_decrypt[_off++] & 0xffl) << 24l;
-		result |= (_decrypt[_off++] & 0xffl) << 32l;
-		result |= (_decrypt[_off++] & 0xffl) << 40l;
-		result |= (_decrypt[_off++] & 0xffl) << 48l;
-		result |= (_decrypt[_off++] & 0xffl) << 56l;
+		result |= (_decrypt[_off++] & 0xffL) << 8L;
+		result |= (_decrypt[_off++] & 0xffL) << 16L;
+		result |= (_decrypt[_off++] & 0xffL) << 24L;
+		result |= (_decrypt[_off++] & 0xffL) << 32L;
+		result |= (_decrypt[_off++] & 0xffL) << 40L;
+		result |= (_decrypt[_off++] & 0xffL) << 48L;
+		result |= (_decrypt[_off++] & 0xffL) << 56L;
 		return result;
 	}
 }

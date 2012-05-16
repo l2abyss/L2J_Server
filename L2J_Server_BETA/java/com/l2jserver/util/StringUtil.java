@@ -271,7 +271,7 @@ public final class StringUtil
 		final TextBuilder sbString = TextBuilder.newInstance();
 		for (final StackTraceElement element : trace)
 		{
-			sbString.append(element.toString()).append("\n");
+			sbString.append(element.toString()).append('\n');
 		}
 		
 		String result = sbString.toString();

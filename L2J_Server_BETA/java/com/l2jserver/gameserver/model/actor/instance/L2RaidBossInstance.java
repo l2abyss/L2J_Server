@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Hero;
-import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
@@ -150,16 +149,6 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			if (!isInsideRadius(spawnX, spawnY, spawnZ, Math.max(Config.MAX_DRIFT_RANGE, 200), true, false))
 				teleToLocation(spawnX, spawnY, spawnZ, false);
 		}
-	}
-	
-	/**
-	 * Reduce the current HP of the L2Attackable, update its _aggroList and launch the doDie Task if necessary.<BR><BR>
-	 *
-	 */
-	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
-	{
-		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
 	}
 	
 	public void setRaidStatus (RaidBossSpawnManager.StatusEnum status)

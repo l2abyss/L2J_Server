@@ -231,9 +231,9 @@ public class FourSepulchersManager
 			tmp.set(Calendar.HOUR, Calendar.getInstance().get(Calendar.HOUR) - 1);
 		tmp.set(Calendar.MINUTE, _newCycleMin);
 		_coolDownTimeEnd = tmp.getTimeInMillis();
-		_entryTimeEnd = _coolDownTimeEnd + Config.FS_TIME_ENTRY * 60000l;
-		_warmUpTimeEnd = _entryTimeEnd + Config.FS_TIME_WARMUP * 60000l;
-		_attackTimeEnd = _warmUpTimeEnd + Config.FS_TIME_ATTACK * 60000l;
+		_entryTimeEnd = _coolDownTimeEnd + Config.FS_TIME_ENTRY * 60000L;
+		_warmUpTimeEnd = _entryTimeEnd + Config.FS_TIME_WARMUP * 60000L;
+		_attackTimeEnd = _warmUpTimeEnd + Config.FS_TIME_ATTACK * 60000L;
 	}
 	
 	public void clean()
@@ -1628,7 +1628,7 @@ public class FourSepulchersManager
 			if (_firstTimeRun)
 				interval = _entryTimeEnd - Calendar.getInstance().getTimeInMillis();
 			else
-				interval = Config.FS_TIME_ENTRY * 60000l; // else use stupid
+				interval = Config.FS_TIME_ENTRY * 60000L; // else use stupid
 			// method
 			
 			// launching saying process...
@@ -1662,7 +1662,7 @@ public class FourSepulchersManager
 			if (_firstTimeRun)
 				interval = _warmUpTimeEnd - Calendar.getInstance().getTimeInMillis();
 			else
-				interval = Config.FS_TIME_WARMUP * 60000l;
+				interval = Config.FS_TIME_WARMUP * 60000L;
 			_changeAttackTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChangeAttackTime(), interval);
 			
 			if (_changeWarmUpTimeTask != null)
@@ -1723,7 +1723,7 @@ public class FourSepulchersManager
 			if (_firstTimeRun)
 				interval = _attackTimeEnd - Calendar.getInstance().getTimeInMillis();
 			else
-				interval = Config.FS_TIME_ATTACK * 60000l;
+				interval = Config.FS_TIME_ATTACK * 60000L;
 			_changeCoolDownTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ChangeCoolDownTime(), interval);
 			
 			if (_changeAttackTimeTask != null)

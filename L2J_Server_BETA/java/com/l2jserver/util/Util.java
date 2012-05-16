@@ -89,7 +89,7 @@ public class Util
 					}
 				}
 				
-				result.append("\n");
+				result.append('\n');
 				counter = 0;
 			}
 		}
@@ -116,7 +116,7 @@ public class Util
 				}
 			}
 			
-			result.append("\n");
+			result.append('\n');
 		}
 		
 		return result.toString();

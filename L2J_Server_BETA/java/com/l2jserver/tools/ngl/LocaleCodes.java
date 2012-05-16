@@ -44,18 +44,18 @@ public class LocaleCodes
 			String country = locale.getCountry();
 			String variant = locale.getVariant();
 			
-			if ((language == "") && (country == "") && (variant == ""))
+			if (language.isEmpty() && country.isEmpty() && variant.isEmpty())
 			{
 				continue;
 			}
 			
 			StringBuilder lang = new StringBuilder();
 			lang.append(language);
-			if (country != "")
+			if (!country.isEmpty())
 			{
 				lang.append(country);
 			}
-			if (variant != "")
+			if (!variant.isEmpty())
 			{
 				lang.append('_' + variant);
 			}

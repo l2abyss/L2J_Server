@@ -58,7 +58,6 @@ public class FastMRUCache<K, V> extends FastCollection implements Reusable
 		{
 			return _node == object;
 		}
-		
 	}
 	
 	/**

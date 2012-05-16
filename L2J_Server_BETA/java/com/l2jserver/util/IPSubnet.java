@@ -126,6 +126,10 @@ public class IPSubnet
 	@Override
 	public boolean equals(Object o)
 	{
+		if (this == o)
+		{
+			return true;
+		}
 		if (o instanceof IPSubnet)
 		{
 			return applyMask(((IPSubnet) o).getAddress());

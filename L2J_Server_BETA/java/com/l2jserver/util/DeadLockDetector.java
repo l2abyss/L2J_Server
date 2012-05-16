@@ -76,25 +76,25 @@ public class DeadLockDetector extends Thread
 						
 						ThreadInfo dl = ti;
 						info.append("Java-level deadlock:\n");
-						info.append("\t");
+						info.append('\t');
 						info.append(dl.getThreadName());
 						info.append(" is waiting to lock ");
 						info.append(dl.getLockInfo().toString());
 						info.append(" which is held by ");
 						info.append(dl.getLockOwnerName());
-						info.append("\n");
+						info.append('\n');
 						while ((dl = tmx.getThreadInfo(new long[]
 						{
 							dl.getLockOwnerId()
 						}, true, true)[0]).getThreadId() != ti.getThreadId())
 						{
-							info.append("\t");
+							info.append('\t');
 							info.append(dl.getThreadName());
 							info.append(" is waiting to lock ");
 							info.append(dl.getLockInfo().toString());
 							info.append(" which is held by ");
 							info.append(dl.getLockOwnerName());
-							info.append("\n");
+							info.append('\n');
 						}
 					}
 					_log.warning(info.toString());

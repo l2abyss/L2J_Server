@@ -644,12 +644,12 @@ public class Fort
 				setOwnerClan(clan);
 				int runCount = getOwnedTime() / (Config.FS_UPDATE_FRQ * 60);
 				long initial = System.currentTimeMillis() - _lastOwnedTime.getTimeInMillis();
-				while (initial > (Config.FS_UPDATE_FRQ * 60000l))
-					initial -= (Config.FS_UPDATE_FRQ * 60000l);
-				initial = (Config.FS_UPDATE_FRQ * 60000l) - initial;
+				while (initial > (Config.FS_UPDATE_FRQ * 60000L))
+					initial -= (Config.FS_UPDATE_FRQ * 60000L);
+				initial = (Config.FS_UPDATE_FRQ * 60000L) - initial;
 				if (Config.FS_MAX_OWN_TIME <= 0 || getOwnedTime() < Config.FS_MAX_OWN_TIME * 3600)
 				{
-					_FortUpdater[0] = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FortUpdater(this, clan, runCount, UpdaterType.PERIODIC_UPDATE), initial, Config.FS_UPDATE_FRQ * 60000l); // Schedule owner tasks to start running
+					_FortUpdater[0] = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FortUpdater(this, clan, runCount, UpdaterType.PERIODIC_UPDATE), initial, Config.FS_UPDATE_FRQ * 60000L); // Schedule owner tasks to start running
 					if (Config.FS_MAX_OWN_TIME > 0)
 						_FortUpdater[1] = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FortUpdater(this, clan, runCount, UpdaterType.MAX_OWN_TIME), 3600000, 3600000); // Schedule owner tasks to remove owener
 				}
@@ -953,7 +953,7 @@ public class Fort
 					_FortUpdater[0].cancel(false);
 				if (_FortUpdater[1] != null)
 					_FortUpdater[1].cancel(false);
-				_FortUpdater[0] = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FortUpdater(this, clan, 0, UpdaterType.PERIODIC_UPDATE), Config.FS_UPDATE_FRQ * 60000l, Config.FS_UPDATE_FRQ * 60000l); // Schedule owner tasks to start running
+				_FortUpdater[0] = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FortUpdater(this, clan, 0, UpdaterType.PERIODIC_UPDATE), Config.FS_UPDATE_FRQ * 60000L, Config.FS_UPDATE_FRQ * 60000L); // Schedule owner tasks to start running
 				if (Config.FS_MAX_OWN_TIME > 0)
 					_FortUpdater[1] = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FortUpdater(this, clan, 0, UpdaterType.MAX_OWN_TIME), 3600000, 3600000); // Schedule owner tasks to remove owener
 			}
@@ -1046,7 +1046,7 @@ public class Fort
 		if (_lastOwnedTime.getTimeInMillis() == 0)
 			return 0;
 		
-		return (int) ((_lastOwnedTime.getTimeInMillis() + Config.FS_MAX_OWN_TIME * 3600000l - System.currentTimeMillis()) / 1000l);
+		return (int) ((_lastOwnedTime.getTimeInMillis() + Config.FS_MAX_OWN_TIME * 3600000L - System.currentTimeMillis()) / 1000L);
 	}
 	
 	public final long getTimeTillNextFortUpdate()

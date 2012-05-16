@@ -19,7 +19,6 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.funcs.FuncAdd;
@@ -79,7 +78,7 @@ public final class L2Augmentation
 			if (_active) return;
 			
 			for (int i=0; i < _stats.length; i++)
-				((L2Character)player).addStatFunc(new FuncAdd(_stats[i], 0x40, this, new LambdaConst(_values[i])));
+				player.addStatFunc(new FuncAdd(_stats[i], 0x40, this, new LambdaConst(_values[i])));
 			
 			_active = true;
 		}
@@ -87,9 +86,11 @@ public final class L2Augmentation
 		public void removeBonus(L2PcInstance player)
 		{
 			// make sure the bonuses are not removed twice
-			if (!_active) return;
-			
-			((L2Character)player).removeStatsOwner(this);
+			if (!_active)
+			{
+				return;
+			}
+			player.removeStatsOwner(this);
 			
 			_active = false;
 		}

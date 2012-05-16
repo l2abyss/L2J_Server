@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.funcs.FuncAdd;
 import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
@@ -256,7 +255,7 @@ public final class Elementals
 			if (!_active)
 				return;
 			
-			((L2Character) player).removeStatsOwner(this);
+			player.removeStatsOwner(this);
 			
 			_active = false;
 		}

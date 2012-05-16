@@ -150,7 +150,7 @@ public class JIPTextField extends JPanel implements FocusListener
 		{
 			if (_textFields[i].getText().length() == 0)
 			{
-				str.append("0");
+				str.append('0');
 			}
 			else
 			{
@@ -159,7 +159,7 @@ public class JIPTextField extends JPanel implements FocusListener
 			
 			if (i < 3)
 			{
-				str.append(".");
+				str.append('.');
 			}
 		}
 		return str.toString();

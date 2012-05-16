@@ -990,7 +990,7 @@ public class SevenSignsFestival implements SpawnListener
 				
 			query.append("accumulated_bonus");
 			query.append(String.valueOf(FESTIVAL_COUNT - 1));
-			query.append(" ");
+			query.append(' ');
 			query.append("FROM seven_signs_status WHERE id=0");
 			
 			statement = con.prepareStatement(query.toString());

@@ -52,14 +52,22 @@ public class SessionKey
 	}
 	
 	/**
-	 * <p>
 	 * Only checks the PlayOk part of the session key if server doesn't show the license when player logs in.
-	 * </p>
-	 * @param key
+	 * @param o
 	 * @return true if keys are equal.
 	 */
-	public boolean equals(SessionKey key)
+	@Override
+	public boolean equals(Object o)
 	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (!(o instanceof SessionKey))
+		{
+			return false;
+		}
+		final SessionKey key = (SessionKey) o;
 		// when server doesn't show license it doesn't send the LoginOk packet, client doesn't have this part of the key then.
 		if (Config.SHOW_LICENCE)
 		{

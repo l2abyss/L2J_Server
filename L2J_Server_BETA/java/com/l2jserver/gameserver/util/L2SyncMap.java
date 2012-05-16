@@ -35,7 +35,6 @@ import com.l2jserver.util.L2FastMap.I2ForEachValue;
  */
 public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 {
-	static final long serialVersionUID = 1L;
 	private final L2FastMap<K, V> _map = new L2FastMap<K, V>();
 	
 	@Override

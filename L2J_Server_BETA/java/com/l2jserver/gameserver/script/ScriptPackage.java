@@ -104,7 +104,7 @@ public class ScriptPackage
 		StringBuilder out = new StringBuilder();
 		out.append("Package Name: ");
 		out.append(getName());
-		out.append("\n");
+		out.append('\n');
 		
 		if (!getScriptFiles().isEmpty())
 		{
@@ -112,7 +112,7 @@ public class ScriptPackage
 			for (ScriptDocument script : getScriptFiles())
 			{
 				out.append(script.getName());
-				out.append("\n");
+				out.append('\n');
 			}
 		}
 		
@@ -122,7 +122,7 @@ public class ScriptPackage
 			for (String fileName : getOtherFiles())
 			{
 				out.append(fileName);
-				out.append("\n");
+				out.append('\n');
 			}
 		}
 		return out.toString();

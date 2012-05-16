@@ -75,6 +75,10 @@ public class Point3D implements Serializable
 	@Override
 	public boolean equals(Object o)
 	{
+		if (this == o)
+		{
+			return true;
+		}
 		if (o instanceof Point3D)
 		{
 			Point3D point3D = (Point3D) o;

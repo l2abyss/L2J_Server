@@ -130,7 +130,7 @@ public class DecayTaskManager
 		{
 			ret.append("Class/Name: ");
 			ret.append(actor.getClass().getSimpleName());
-			ret.append("/");
+			ret.append('/');
 			ret.append(actor.getName());
 			ret.append(" decay timer: ");
 			ret.append(current - _decayTasks.get(actor));
