@@ -155,7 +155,7 @@
 	</target>
 
 	<target name="build" depends="jar" description="Create the Zip file.">
-		<zip destfile="${build}/L2J_Server_BETA.zip" basedir="${build.dist}" level="9" update="true" />
+		<zip destfile="${build}/L2J_Server_BETA.zip" basedir="${build.dist}" level="9" />
 	</target>
 
 	<target name="checkRequirements" description="Check Requirements.">
