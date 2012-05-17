@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="L2J_CommunityServer" default="build" basedir=".">
-	<property name="src" location="java" />
-	<property name="lib" location="lib" />
+	<description>
+		This script will build the L2J CommunityServer.
+
+		This program is free software; you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
+		the Free Software Foundation; either version 3, or (at your option)
+		any later version.
+
+		This program is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+		GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License
+		along with this program; if not, write to the Free Software
+		Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+		02111-1307, USA.
+
+		http://www.gnu.org/copyleft/gpl.html
+	</description>
+
 	<property name="build" location="build" />
-	<property name="build.classes" location="${build}/classes" />
+	<property name="build.bin" location="${build}/bin" />
 	<property name="build.dist" location="${build}/dist" />
 	<property name="build.dist.community" location="${build.dist}/community" />
 	<property name="build.dist.doc" location="${build.dist}/doc" />
 	<property name="build.dist.libs" location="${build.dist}/libs" />
+	<property name="libs" location="dist/libs" />
+	<property name="src" location="java" />
 
 	<path id="classpath">
-		<fileset dir="${lib}">
+		<fileset dir="${libs}">
 			<include name="*.jar" />
 		</fileset>
 	</path>
@@ -25,18 +46,26 @@
 		</mapper>
 	</pathconvert>
 
-	<target name="init" depends="clean,checkRequirements,getChangelogDateVersion" description="Create the output directories.">
-		<mkdir dir="${build}" />
-		<mkdir dir="${build.classes}" />
+	<target name="init" depends="checkRequirements,getChangelogDateVersion" description="Create the output directories.">
+		<delete dir="${build.bin}" quiet="true" />
+		<mkdir dir="${build.bin}" />
 	</target>
 
-	<target name="compile" depends="init" description="Compile the source.">
-		<javac srcdir="${src}" classpathref="classpath" destdir="${build.classes}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
+	<target name="dist" depends="init" description="Export the files to the output directory.">
+		<sync todir="${build.dist}">
+			<fileset dir="dist" />
+		</sync>
+		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
+		<concat destfile="${build.dist.doc}/L2J_CommunityServer_CHANGELOG.txt">${l2j.changelog}</concat>
 	</target>
 
-	<target name="jar" depends="compile">
+	<target name="compile" depends="dist" description="Compile the source.">
+		<javac srcdir="${src}" classpathref="classpath" destdir="${build.bin}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
+	</target>
+
+	<target name="jar" depends="compile" description="Create the jar files.">
 		<jar destfile="${build.dist.community}/l2jcommunity.jar">
-			<fileset dir="${build.classes}" />
+			<fileset dir="${build.bin}" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
@@ -48,23 +77,8 @@
 		</jar>
 	</target>
 
-	<target name="dist" depends="jar">
-		<copy todir="${build.dist}">
-			<fileset dir="dist" />
-		</copy>
-		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
-		<concat destfile="${build.dist.doc}/L2J_CommunityServer_CHANGELOG.txt">${l2j.changelog}</concat>
-		<copy todir="${build.dist.libs}">
-			<fileset dir="lib" />
-		</copy>
-	</target>
-
-	<target name="build" depends="dist">
+	<target name="build" depends="jar" description="Create the Zip file.">
 		<zip destfile="${build}/L2J_CommunityServer.zip" basedir="${build.dist}" level="9" />
-	</target>
-
-	<target name="clean" description="Remove the output directories">
-		<delete dir="${build}" />
 	</target>
 
 	<target name="checkRequirements" description="Check Requirements">
@@ -79,7 +93,7 @@
 		<fail unless="JDK7.present" message="Java 1.7 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
 	</target>
 
-	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version">
+	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version.">
 		<exec dir="." executable="svn" outputproperty="l2j.changelog">
 			<arg value="log" />
 			<arg value="--stop-on-copy" />
