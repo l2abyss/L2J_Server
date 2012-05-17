@@ -26,7 +26,6 @@
 	<property name="build.dist" location="${build}/dist" />
 	<property name="build.dist.community" location="${build.dist}/community" />
 	<property name="build.dist.doc" location="${build.dist}/doc" />
-	<property name="build.dist.libs" location="${build.dist}/libs" />
 	<property name="libs" location="dist/libs" />
 	<property name="src" location="java" />
 
@@ -52,7 +51,7 @@
 	</target>
 
 	<target name="dist" depends="init" description="Export the files to the output directory.">
-		<sync todir="${build.dist}">
+		<sync todir="${build.dist}" includeemptydirs="true">
 			<fileset dir="dist" />
 		</sync>
 		<concat destfile="${build.dist.community}/config/l2jcs-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
