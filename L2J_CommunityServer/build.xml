@@ -27,7 +27,7 @@
 	<property name="build.dist.community" location="${build.dist}/community" />
 	<property name="build.dist.doc" location="${build.dist}/doc" />
 	<property name="libs" location="dist/libs" />
-	<property name="src" location="java" />
+	<property name="src" location="src" />
 
 	<path id="classpath">
 		<fileset dir="${libs}">
