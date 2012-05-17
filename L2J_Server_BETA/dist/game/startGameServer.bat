@@ -20,7 +20,7 @@ echo.
 goto start
 :error
 echo.
-echo Server terminated abnormaly
+echo Server terminated abnormally
 echo.
 :end
 echo.
