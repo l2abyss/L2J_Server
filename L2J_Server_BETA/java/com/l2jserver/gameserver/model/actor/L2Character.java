@@ -6192,8 +6192,8 @@ public abstract class L2Character extends L2Object
 	 * @return all skills own by the L2Character in a table of L2Skill.
 	 */
 	public final Collection<L2Skill> getAllSkills()
-	{	
-		return _skills.values();
+	{
+		return new ArrayList<>(_skills.values());
 	}
 	
 	/**
