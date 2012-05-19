@@ -100,7 +100,7 @@ public class GeoEngine extends GeoData
 	@Override
 	public boolean canSeeTarget(L2Object cha, Point3D target)
 	{
-		if (DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), cha.getZ(), target.getX(), target.getY(), target.getZ(), cha.getInstanceId()))
+		if (DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), cha.getZ(), target.getX(), target.getY(), target.getZ(), cha.getInstanceId(), true))
 			return false;
 		if (cha.getZ() >= target.getZ())
 			return canSeeTarget(cha.getX(), cha.getY(), cha.getZ(), target.getX(), target.getY(), target.getZ());
@@ -126,7 +126,7 @@ public class GeoEngine extends GeoData
 			z += 30; // well they don't move closer to balcony fence at the moment :(
 		int z2 = target.getZ() + 45;
 		if (!(target instanceof L2DoorInstance)
-				&& DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), z, target.getX(), target.getY(), z2, cha.getInstanceId()))
+				&& DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), z, target.getX(), target.getY(), z2, cha.getInstanceId(), true))
 			return false;
 		if (target instanceof L2DoorInstance)
 			return true; // door coordinates are hinge coords..

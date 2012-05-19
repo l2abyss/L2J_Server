@@ -20,6 +20,7 @@ import gnu.trove.procedure.TObjectProcedure;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -67,9 +68,8 @@ public class Fort
 	protected static final Logger _log = Logger.getLogger(Fort.class.getName());
 	
 	private int _fortId = 0;
-	private List<L2DoorInstance> _doors = new FastList<L2DoorInstance>();
+	private List<L2DoorInstance> _doors = new ArrayList<L2DoorInstance>();
 	private L2StaticObjectInstance _flagPole = null;
-	private List<String> _doorDefault = new FastList<String>();
 	private String _name = "";
 	private FortSiege _siege = null;
 	private Calendar _siegeDate;
@@ -246,7 +246,6 @@ public class Fort
 	{
 		_fortId = fortId;
 		load();
-		loadDoor();
 		loadFlagPoles();
 		_function = new FastMap<Integer, FortFunction>();
 		final List<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(fortId);
@@ -579,12 +578,11 @@ public class Fort
 	 */
 	public void resetDoors()
 	{
-		for (int i = 0; i < getDoors().size(); i++)
+		for (L2DoorInstance door : _doors)
 		{
-			L2DoorInstance door = getDoors().get(i);
 			if (door.getOpen())
 				door.closeMe();
-			if (door.getCurrentHp() <= 0)
+			if (door.isDead())
 				door.doRevive();
 			if (door.getCurrentHp() < door.getMaxHp())
 				door.setCurrentHp(door.getMaxHp());
@@ -777,48 +775,19 @@ public class Fort
 	
 	public void activateInstance()
 	{
-		for (final L2DoorInstance door : _doors)
-		{
-			door.spawnMe(door.getX(), door.getY(), door.getZ());
-		}
+		loadDoor();
 	}
 	
 	// This method loads fort door data from database
 	private void loadDoor()
 	{
-		Connection con = null;
-		try
+		for (L2DoorInstance door : DoorTable.getInstance().getDoors())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_staticobjects WHERE fortId = ? AND objectType = ?");
-			statement.setInt(1, getFortId());
-			statement.setInt(2, 0);
-			ResultSet rs = statement.executeQuery();
-			
-			while (rs.next())
-			{
-				// Create list of the door default for use when respawning dead doors
-				_doorDefault.add(rs.getString("name") + ";" + rs.getInt("id") + ";" + rs.getInt("x") + ";" + rs.getInt("y") + ";"
-						+ rs.getInt("z") + ";" + rs.getInt("range_xmin") + ";" + rs.getInt("range_ymin") + ";" + rs.getInt("range_zmin")
-						+ ";" + rs.getInt("range_xmax") + ";" + rs.getInt("range_ymax") + ";" + rs.getInt("range_zmax") + ";"
-						+ rs.getInt("hp") + ";" + rs.getInt("pDef") + ";" + rs.getInt("mDef") + ";0;" + rs.getBoolean("openType") + ";"
-						+ rs.getBoolean("commanderDoor"));
-				L2DoorInstance door;
-				_doors.add(door = DoorTable.parseList(_doorDefault.get(_doorDefault.size() - 1), true));
-				DoorTable.getInstance().putDoor(door);
-			}
-			
-			rs.close();
-			statement.close();
+			if (door.getFort() != null && door.getFort().getFortId() == getFortId())
+				_doors.add(door);
 		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Exception: loadFortDoor(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		if (Config.DEBUG)
+			_log.info("Fort "+this+" loaded "+_doors.size()+" doors.");
 	}
 	
 	private void loadFlagPoles()
@@ -844,9 +813,8 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_doorupgrade WHERE doorId IN (SELECT Id FROM fort_staticobjects WHERE fortId = ? AND objectType = ?)");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_doorupgrade WHERE fortId = ?");
 			statement.setInt(1, getFortId());
-			statement.setInt(2, 0);
 			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
@@ -872,9 +840,8 @@ public class Fort
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM fort_doorupgrade WHERE doorId IN (SELECT id FROM fort_staticobjects WHERE fortId=? AND objectType = ?)");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM fort_doorupgrade WHERE WHERE fortId = ?");
 			statement.setInt(1, getFortId());
-			statement.setInt(2, 0);
 			statement.execute();
 			statement.close();
 		}

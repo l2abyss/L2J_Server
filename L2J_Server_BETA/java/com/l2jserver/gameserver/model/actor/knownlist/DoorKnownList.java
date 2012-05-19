@@ -45,6 +45,6 @@ public class DoorKnownList extends CharKnownList
 		if (object instanceof L2DefenderInstance) return 600;
 		if (!(object instanceof L2PcInstance))
 			return 0;
-		return 3000;
+		return 3500;
 	}
 }

@@ -9172,8 +9172,8 @@ public final class L2PcInstance extends L2Playable
 			boolean isFort = (((L2DoorInstance) target).getFort() != null
 					&& ((L2DoorInstance) target).getFort().getFortId() > 0
 					&& ((L2DoorInstance) target).getFort().getSiege().getIsInProgress()
-					&& !((L2DoorInstance) target).getIsCommanderDoor());
-			if ((!isCastle && !isFort)&&(((L2DoorInstance) target).isUnlockable() && skill.getSkillType() != L2SkillType.UNLOCK))
+					&& !((L2DoorInstance) target).getIsShowHp());
+			if ((!isCastle && !isFort)&&(((L2DoorInstance) target).isOpenableBySkill() && skill.getSkillType() != L2SkillType.UNLOCK))
 				return false;
 		}
 		

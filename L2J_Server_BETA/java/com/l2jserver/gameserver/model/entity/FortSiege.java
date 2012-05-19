@@ -628,9 +628,10 @@ public class FortSiege implements Siegable
 					// open doors in main building
 					for (L2DoorInstance door : getFort().getDoors())
 					{
-						if (!door.getIsCommanderDoor())
+						if (door.getIsShowHp())
 							continue;
 						
+						//TODO this also opens control room door at big fort
 						door.openMe();
 					}
 					getFort().getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.ALL_BARRACKS_OCCUPIED));

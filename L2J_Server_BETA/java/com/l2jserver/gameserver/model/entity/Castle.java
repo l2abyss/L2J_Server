@@ -79,7 +79,6 @@ public class Castle
 	
 	private int _castleId = 0;
 	private List<L2DoorInstance> _doors = new ArrayList<>();
-	private List<String> _doorDefault = new ArrayList<>();
 	private String _name = "";
 	private int _ownerId = 0;
 	private Siege _siege = null;
@@ -256,7 +255,6 @@ public class Castle
 		 * if (_castleId == 7 || castleId == 9) // Goddard and Schuttgart _nbArtifact = 2;
 		 */
 		load();
-		loadDoor();
 		_function = new FastMap<Integer, CastleFunction>();
 		final List<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(castleId);
 		for (L2SkillLearn s : residentialSkills)
@@ -669,20 +667,18 @@ public class Castle
 	 */
 	public void spawnDoor(boolean isDoorWeak)
 	{
-		for (int i = 0; i < getDoors().size(); i++)
+		for (L2DoorInstance door : _doors)
 		{
-			L2DoorInstance door = getDoors().get(i);
-			if (door.getCurrentHp() <= 0)
+			if (door.isDead())
 			{
-				door.decayMe(); // Kill current if not killed already
-				door = DoorTable.parseList(_doorDefault.get(i), false);
-				DoorTable.getInstance().putDoor(door); // Readd the new door to the DoorTable By Erb
+				door.doRevive();
 				if (isDoorWeak)
 					door.setCurrentHp(door.getMaxHp() / 2);
-				door.spawnMe(door.getX(), door.getY(), door.getZ());
-				getDoors().set(i, door);
+				else
+					door.setCurrentHp(door.getMaxHp());
 			}
-			else if (door.getOpen())
+			
+			if (door.getOpen())
 				door.closeMe();
 		}
 		loadDoorUpgrade(); // Check for any upgrade the doors may have
@@ -855,47 +851,23 @@ public class Castle
 		}
 		return true;
 	}
-	
+
 	public void activateInstance()
 	{
-		for (final L2DoorInstance door : _doors)
-		{
-			door.spawnMe(door.getX(), door.getY(), door.getZ());
-		}
+		loadDoor();
 	}
 	
 	// This method loads castle door data from database
 	private void loadDoor()
 	{
-		Connection con = null;
-		try
+		for (L2DoorInstance door : DoorTable.getInstance().getDoors())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("Select * from castle_door where castleId = ?");
-			statement.setInt(1, getCastleId());
-			ResultSet rs = statement.executeQuery();
-			
-			while (rs.next())
-			{
-				// Create list of the door default for use when respawning dead doors
-				_doorDefault.add(rs.getString("name") + ";" + rs.getInt("id") + ";" + rs.getInt("x") + ";" + rs.getInt("y") + ";" + rs.getInt("z") + ";" + rs.getInt("range_xmin") + ";" + rs.getInt("range_ymin") + ";" + rs.getInt("range_zmin") + ";" + rs.getInt("range_xmax") + ";" + rs.getInt("range_ymax") + ";" + rs.getInt("range_zmax") + ";" + rs.getInt("hp") + ";" + rs.getInt("pDef") + ";" + rs.getInt("mDef") + ";0");
-				
-				L2DoorInstance door = DoorTable.parseList(_doorDefault.get(_doorDefault.size() - 1), false);
-				door.setIsWall(rs.getBoolean("isWall"));
+			if (door.getCastle() != null && door.getCastle().getCastleId() == getCastleId())
 				_doors.add(door);
-				DoorTable.getInstance().putDoor(door);
-			}
-			rs.close();
-			statement.close();
 		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Exception: loadCastleDoor(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		
+		if (Config.DEBUG)
+			_log.info("Castle "+this+" loaded "+_doors.size()+" doors.");
 	}
 	
 	// This method loads castle door upgrade data from database
@@ -904,9 +876,12 @@ public class Castle
 		Connection con = null;
 		try
 		{
+			StringBuilder doorIds = new StringBuilder(100);
+			for (L2DoorInstance door : getDoors())
+				doorIds.append(door.getDoorId()).append(",");
+			doorIds.deleteCharAt(doorIds.length()-1);
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM castle_doorupgrade WHERE doorId IN (SELECT Id FROM castle_door WHERE castleId = ?)");
-			statement.setInt(1, getCastleId());
+			PreparedStatement statement = con.prepareStatement("Select * from castle_doorupgrade where doorId in ("+doorIds.toString()+")");
 			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
@@ -931,9 +906,12 @@ public class Castle
 		Connection con = null;
 		try
 		{
+			StringBuilder doorIds = new StringBuilder(100);
+			for (L2DoorInstance door : getDoors())
+				doorIds.append(door.getDoorId()).append(",");
+			doorIds.deleteCharAt(doorIds.length()-1);
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("delete from castle_doorupgrade where doorId in (select id from castle_door where castleId=?)");
-			statement.setInt(1, getCastleId());
+			PreparedStatement statement = con.prepareStatement("delete from castle_doorupgrade where doorId in ("+doorIds.toString()+")");
 			statement.execute();
 			statement.close();
 		}
@@ -1658,5 +1636,11 @@ public class Castle
 		{
 			L2DatabaseFactory.close(con);
 		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return _name+"("+_castleId+")";
 	}
 }

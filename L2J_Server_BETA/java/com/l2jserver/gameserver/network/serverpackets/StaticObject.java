@@ -51,18 +51,18 @@ public class StaticObject extends L2GameServerPacket
 		_damageGrade = 0;
 	}
 	
-	public StaticObject(L2DoorInstance door, boolean showHp)
+	public StaticObject(L2DoorInstance door, boolean targetable)
 	{
 		_staticObjectId = door.getDoorId();
 		_objectId = door.getObjectId();
 		_type = 1;
-		_isTargetable = door.getTargetable();
+		_isTargetable = door.isTargetable() || targetable;
 		_meshIndex = door.getMeshIndex();
 		_isClosed = !door.getOpen();
 		_isEnemy = door.isEnemy();
 		_maxHp = door.getMaxVisibleHp();
 		_currentHp = (int) door.getCurrentHp();
-		_showHp = door.getIsShowHp() || showHp;
+		_showHp = door.getIsShowHp();
 		_damageGrade = door.getDamage();
 	}
 	

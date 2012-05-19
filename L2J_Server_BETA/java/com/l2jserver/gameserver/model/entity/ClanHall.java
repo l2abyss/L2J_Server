@@ -17,12 +17,11 @@ package com.l2jserver.gameserver.model.entity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
@@ -42,7 +41,7 @@ public abstract class ClanHall
 	protected static final Logger _log = Logger.getLogger(ClanHall.class.getName());
 	
 	private int _clanHallId;
-	private List<L2DoorInstance> _doors;
+	private ArrayList<L2DoorInstance> _doors;
 	private String _name;
 	private int _ownerId;
 	private String _desc;
@@ -269,10 +268,10 @@ public abstract class ClanHall
 	/**
 	 * @return all DoorInstance
 	 */
-	public final List<L2DoorInstance> getDoors()
+	public final ArrayList<L2DoorInstance> getDoors()
 	{
 		if (_doors == null)
-			_doors = new FastList<L2DoorInstance>();
+			_doors = new ArrayList<L2DoorInstance>();
 		return _doors;
 	}
 	
