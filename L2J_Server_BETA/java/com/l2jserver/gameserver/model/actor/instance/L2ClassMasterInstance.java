@@ -18,10 +18,8 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -361,10 +359,6 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 			player.getSubClasses().get(player.getClassIndex()).setClassId(player.getActiveClass());
 		else
 			player.setBaseClass(player.getActiveClass());
-		
-		Quest q = QuestManager.getInstance().getQuest("SkillTransfer");
-		if (q != null)
-			q.startQuestTimer("givePormanders", 1, null, player);
 		
 		player.broadcastUserInfo();
 		
