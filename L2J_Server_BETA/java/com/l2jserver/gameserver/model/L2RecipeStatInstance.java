@@ -44,11 +44,7 @@ public class L2RecipeStatInstance
 	 */
 	public L2RecipeStatInstance(String type, int value)
 	{
-		try {
-			_type = Enum.valueOf(StatType.class, type);
-		} catch (Exception e) {
-			throw new IllegalArgumentException();
-		}
+		_type = Enum.valueOf(StatType.class, type);
 		_value = value;
 	}
 	

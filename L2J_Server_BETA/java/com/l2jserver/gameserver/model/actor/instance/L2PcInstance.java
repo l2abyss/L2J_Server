@@ -73,6 +73,7 @@ import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
+import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.handler.IItemHandler;
@@ -4450,7 +4451,6 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(sm);
 			return false;
 		}
-		
 		return true;
 	}
 	
@@ -7723,9 +7723,9 @@ public final class L2PcInstance extends L2Playable
 			_dwarvenRecipeBook.clear();
 			
 			L2RecipeList recipe;
+			RecipeData rd = RecipeData.getInstance();
 			while (rset.next()) {
-				recipe = RecipeController.getInstance().getRecipeList(rset.getInt("id"));
-				
+				recipe = rd.getRecipeList(rset.getInt("id"));
 				if (loadCommon)
 				{
 					if (rset.getInt(2) == 1)

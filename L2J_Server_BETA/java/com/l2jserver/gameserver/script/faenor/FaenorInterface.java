@@ -22,6 +22,7 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.datatables.EventDroplist;
+import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -52,7 +53,7 @@ public class FaenorInterface implements EngineInterface
 	@Override
 	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states)
 	{
-		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
 		if (npc == null)
 		{
 			throw new NullPointerException();
@@ -80,7 +81,7 @@ public class FaenorInterface implements EngineInterface
 	 */
 	public void addDrop(int npcID, int itemID, int min, int max, boolean sweep, int chance) throws NullPointerException
 	{
-		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
 		if (npc == null)
 		{
 			if (Config.DEBUG)
@@ -139,7 +140,7 @@ public class FaenorInterface implements EngineInterface
 	
 	public List<L2DropData> getQuestDrops(int npcID)
 	{
-		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
 		if (npc == null)
 		{
 			return null;

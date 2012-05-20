@@ -15,15 +15,11 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.RecipeController;
+import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
- *
- *
- *
  * format   dddd
  *
  * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
@@ -53,8 +49,7 @@ public class RecipeItemMakeInfo extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		L2RecipeList recipe = RecipeController.getInstance().getRecipeList(_id);
-		
+		final L2RecipeList recipe = RecipeData.getInstance().getRecipeList(_id);
 		if (recipe != null)
 		{
 			writeC(0xdd);

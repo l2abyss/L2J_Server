@@ -18,7 +18,7 @@ import java.util.List;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcWalkerRoutesTable;
+import com.l2jserver.gameserver.datatables.NpcWalkerRoutesData;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -60,7 +60,7 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 		if (!Config.ALLOW_NPC_WALKERS)
 			return;
 		
-		_route = NpcWalkerRoutesTable.getInstance().getRouteForNpc(getActor().getNpcId());
+		_route = NpcWalkerRoutesData.getInstance().getRouteForNpc(getActor().getNpcId());
 		
 		// Here we need 1 second initial delay cause getActor().hasAI() will return null...
 		// Constructor of L2NpcWalkerAI is called faster then ai object is attached in L2NpcWalkerInstance

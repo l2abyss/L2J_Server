@@ -20,7 +20,7 @@ import java.util.List;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.RecipeController;
+import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Item;
@@ -257,12 +257,12 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 	{
 		private int order = 0;
 		
-		private RecipeController rc = null;
+		private RecipeData rd = null;
 		
 		protected WarehouseItemRecipeComparator(int sortOrder)
 		{
 			order = sortOrder;
-			rc = RecipeController.getInstance();
+			rd = RecipeData.getInstance();
 		}
 		
 		@Override
@@ -276,8 +276,8 @@ public class SortedWareHouseWithdrawalList extends L2GameServerPacket
 			{
 				try
 				{
-					L2RecipeList rp1 = rc.getRecipeByItemId(o1.getItemId());
-					L2RecipeList rp2 = rc.getRecipeByItemId(o2.getItemId());
+					L2RecipeList rp1 = rd.getRecipeByItemId(o1.getItemId());
+					L2RecipeList rp2 = rd.getRecipeByItemId(o2.getItemId());
 					
 					if (rp1 == null)
 						return (order == A2Z ? A2Z : Z2A);

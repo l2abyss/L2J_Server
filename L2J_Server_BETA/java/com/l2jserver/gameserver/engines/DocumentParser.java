@@ -238,6 +238,17 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * @param n the named node map
+	 * @param name  the attribute name
+	 * @return the node string value for the given node name and named node map if exist, otherwise an empty string
+	 */
+	protected static String parseString(NamedNodeMap n, String name)
+	{
+		final Node b = n.getNamedItem(name);
+		return (b == null) ? "" : b.getNodeValue();
+	}
+	
+	/**
 	 * Simple XML error handler.
 	 * @author Zoey76
 	 */
