@@ -78,12 +78,16 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListen
  * L2Script is an extension of Quest.java which makes use of the L2J listeners.<br>
  * It is much more in-depth than its predecessor,<br>
  * It is strongly recommended for the more advanced developers.<br>
- * Methods with boolean return values can be used as code blockers. This means that if the return is false, the action for which the listener was fired does not happen.<br>
+ * Methods with boolean return values can be used as code blockers.<br>
+ * This means that if the return is false, the action for which the listener was fired does not happen.<br>
+ * New in this version: profession change + player level change.
+ * TODO: pet item use listeners.
+ * TODO: player subclass listeners ?? (needed?)
  * @author TheOne
  */
 public abstract class L2Script extends Quest
 {
-	private final List<L2JListener> _listeners = new ArrayList<L2JListener>();
+	private final List<L2JListener> _listeners = new ArrayList<>();
 	
 	/**
 	 * constructor
@@ -93,7 +97,6 @@ public abstract class L2Script extends Quest
 	public L2Script(String name, String descr)
 	{
 		super(-1, name, descr);
-		init();
 	}
 	
 	/**
@@ -105,17 +108,7 @@ public abstract class L2Script extends Quest
 	public L2Script(int questId, String name, String descr)
 	{
 		super(questId, name, descr);
-		init();
 	}
-	
-	// New in this version: profession change + player level change
-	// TODO: pet item use listeners
-	// TODO: player subclass listeners ?? (needed?)
-	
-	/**
-	 * Initialize the variables and listeners/notifiers here This method is called automatically! No need to call it again ;)
-	 */
-	public abstract void init();
 	
 	/**
 	 * Unloads the script
