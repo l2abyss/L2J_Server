@@ -56,7 +56,7 @@ public class ZoneNPoly extends L2ZoneForm
 	@Override
 	public boolean intersectsRectangle(int ax1, int ax2, int ay1, int ay2)
 	{
-		return (_p.intersects(Math.min(ax1, ax2), Math.min(ay1, ay2), Math.max(ax1, ax2) - Math.min(ax1, ax2), Math.max(ay1, ay2) - Math.min(ay1, ay2)));
+		return (_p.intersects(Math.min(ax1, ax2), Math.min(ay1, ay2), Math.abs(ax2 - ax1), Math.abs(ay2 - ay1)));
 	}
 	
 	@Override
@@ -130,11 +130,10 @@ public class ZoneNPoly extends L2ZoneForm
 		y = Rnd.get(_minY, _maxY);
 		
 		int antiBlocker = 0;
-		while (!_p.contains(x, y) && antiBlocker < 1000)
+		while (!_p.contains(x, y) && antiBlocker++ < 1000)
 		{
 			x = Rnd.get(_minX, _maxX);
 			y = Rnd.get(_minY, _maxY);
-			antiBlocker++;
 		}
 		
 		return new int[] { x, y, GeoEngine.getInstance().getHeight(x, y, _z1) };
