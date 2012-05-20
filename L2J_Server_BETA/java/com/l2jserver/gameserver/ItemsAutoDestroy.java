@@ -34,7 +34,6 @@ public class ItemsAutoDestroy
 	
 	protected ItemsAutoDestroy()
 	{
-		_log.info("Initializing ItemsAutoDestroy.");
 		_items = new FastList<L2ItemInstance>();
 		_sleep = Config.AUTODESTROY_ITEM_AFTER * 1000;
 		if (_sleep == 0) // it should not happend as it is not called when AUTODESTROY_ITEM_AFTER = 0 but we never know..

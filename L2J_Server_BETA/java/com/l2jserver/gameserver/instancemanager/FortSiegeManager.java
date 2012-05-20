@@ -67,7 +67,6 @@ public class FortSiegeManager
 	
 	protected FortSiegeManager()
 	{
-		_log.info("Initializing FortSiegeManager");
 		load();
 	}
 	

@@ -86,7 +86,6 @@ public class AuctionManager
 	
 	protected AuctionManager()
 	{
-		_log.info("Initializing AuctionManager");
 		_auctions = new FastList<Auction>();
 		load();
 	}

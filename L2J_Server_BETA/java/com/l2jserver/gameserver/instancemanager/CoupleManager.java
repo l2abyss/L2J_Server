@@ -37,7 +37,6 @@ public class CoupleManager
 	
 	protected CoupleManager()
 	{
-		_log.info("L2JMOD: Initializing CoupleManager");
 		load();
 	}
 	
@@ -61,7 +60,7 @@ public class CoupleManager
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement statement = con.prepareStatement("Select id from mods_wedding order by id");
+			PreparedStatement statement = con.prepareStatement("SELECT id FROM mods_wedding ORDER BY id");
 			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())

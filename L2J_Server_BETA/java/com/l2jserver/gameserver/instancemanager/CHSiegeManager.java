@@ -46,7 +46,6 @@ public final class CHSiegeManager
 	
 	protected CHSiegeManager()
 	{
-		_log.info("Initializing CHSiegeManager...");
 		loadClanHalls();
 	}
 	

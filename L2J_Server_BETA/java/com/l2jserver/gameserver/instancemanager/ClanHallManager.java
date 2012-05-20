@@ -59,7 +59,6 @@ public final class ClanHallManager
 	
 	protected ClanHallManager()
 	{
-		_log.info("Initializing ClanHallManager");
 		_clanHall = new FastMap<Integer, AuctionableHall>();
 		_freeClanHall = new FastMap<Integer, AuctionableHall>();
 		_allAuctionableClanHalls = new FastMap<Integer, AuctionableHall>();

@@ -16,12 +16,12 @@ package com.l2jserver.gameserver.instancemanager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
@@ -232,9 +232,8 @@ public final class PetitionManager
 	
 	protected PetitionManager()
 	{
-		_log.info("Initializing PetitionManager");
-		_pendingPetitions = new FastMap<Integer, Petition>();
-		_completedPetitions = new FastMap<Integer, Petition>();
+		_pendingPetitions = new HashMap<>();
+		_completedPetitions = new HashMap<>();
 	}
 	
 	public void clearCompletedPetitions()

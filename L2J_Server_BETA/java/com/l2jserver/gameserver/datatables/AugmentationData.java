@@ -112,9 +112,7 @@ public class AugmentationData
 	private final TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<AugmentationSkill>();
 	
 	protected AugmentationData()
-	{
-		_log.info("Initializing AugmentationData.");
-		
+	{		
 		for (int i = 0; i < 10; i++)
 		{
 			if (i < STAT_NUMBEROF_BLOCKS)

@@ -152,7 +152,6 @@ public class FortManager implements InstanceListManager
 	@Override
 	public void loadInstances()
 	{
-		_log.info("Initializing FortManager");
 		Connection con = null;
 		try
 		{

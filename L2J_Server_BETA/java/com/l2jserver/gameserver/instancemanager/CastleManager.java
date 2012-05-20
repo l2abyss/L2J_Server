@@ -249,7 +249,6 @@ public class CastleManager implements InstanceListManager
 	@Override
 	public void loadInstances()
 	{
-		_log.info("Initializing CastleManager");
 		Connection con = null;
 		try
 		{

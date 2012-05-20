@@ -156,14 +156,8 @@ public class ItemsOnGroundManager
 			}
 			rset.close();
 			statement.close();
-			if (count > 0)
-			{
-				_log.info("ItemsOnGroundManager: restored " + count + " items.");
-			}
-			else
-			{
-				_log.info("Initializing ItemsOnGroundManager.");
-			}
+			
+			_log.info("ItemsOnGroundManager: Loaded " + count + " items.");
 		}
 		catch (Exception e)
 		{

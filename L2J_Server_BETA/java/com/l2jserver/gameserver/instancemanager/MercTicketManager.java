@@ -103,7 +103,6 @@ public class MercTicketManager
 	
 	protected MercTicketManager()
 	{
-		_log.info("Initializing MercTicketManager.");
 		_droppedTickets.shared();
 		load();
 	}

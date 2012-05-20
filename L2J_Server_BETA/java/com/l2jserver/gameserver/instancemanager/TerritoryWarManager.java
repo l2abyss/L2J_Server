@@ -102,9 +102,7 @@ public class TerritoryWarManager implements Siegable
 	protected ScheduledFuture<?> _scheduledRewardOnlineTask = null;
 	
 	protected TerritoryWarManager()
-	{
-		_log.info("Initializing TerritoryWarManager");
-		
+	{		
 		// init lists
 		_registeredClans = new FastMap<Integer, FastList<L2Clan>>();
 		_registeredMercenaries = new FastMap<Integer, FastList<Integer>>();

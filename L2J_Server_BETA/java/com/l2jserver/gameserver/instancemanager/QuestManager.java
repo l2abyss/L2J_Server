@@ -39,7 +39,6 @@ public class QuestManager extends ScriptManager<Quest>
 	
 	protected QuestManager()
 	{
-		_log.info("Initializing QuestManager");
 	}
 	
 	public final boolean reload(String questFolder)

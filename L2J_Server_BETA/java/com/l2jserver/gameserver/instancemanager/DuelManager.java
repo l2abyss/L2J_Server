@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.util.logging.Logger;
-
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -24,9 +22,7 @@ import com.l2jserver.gameserver.model.entity.Duel;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 public class DuelManager
-{
-	private static final Logger _log = Logger.getLogger(DuelManager.class.getName());
-	
+{	
 	public static final DuelManager getInstance()
 	{
 		return SingletonHolder._instance;
@@ -37,7 +33,6 @@ public class DuelManager
 	
 	protected DuelManager()
 	{
-		_log.info("Initializing DuelManager");
 		_duels = new FastList<Duel>();
 	}
 	

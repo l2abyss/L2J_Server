@@ -182,7 +182,6 @@ public class CastleManorManager
 	
 	protected CastleManorManager()
 	{
-		_log.info("Initializing CastleManorManager");
 		load(); // load data from database
 		init(); // schedule all manor related events
 		_underMaintenance = false;

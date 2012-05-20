@@ -102,7 +102,6 @@ public class GrandBossManager
 	
 	protected GrandBossManager()
 	{
-		_log.info("Initializing GrandBossManager");
 		init();
 	}
 	
