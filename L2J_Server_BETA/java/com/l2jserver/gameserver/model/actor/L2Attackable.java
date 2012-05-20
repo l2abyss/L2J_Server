@@ -815,7 +815,7 @@ public class L2Attackable extends L2Npc
 							}
 							L2Playable summon = pl.getPet();
 							
-							if (summon != null && summon instanceof L2PetInstance)
+							if (summon != null && summon.isPet())
 							{
 								reward2 = rewards.get(summon);
 								

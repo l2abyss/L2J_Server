@@ -37,6 +37,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerLevelListener;
+import com.l2jserver.gameserver.util.Util;
 
 public class PcStat extends PlayableStat
 {	
@@ -129,9 +130,8 @@ public class PcStat extends PlayableStat
 		
 		float ratioTakenByPlayer = 0;
 		
-		// if this player has a pet that takes from the owner's Exp, give the pet Exp now
-		
-		if (activeChar.getPet() instanceof L2PetInstance)
+		// if this player has a pet and it is in his range he takes from the owner's Exp, give the pet Exp now
+		if (activeChar.hasPet() && activeChar.getPet().isPet() && Util.checkIfInShortRadius(Config.ALT_PARTY_RANGE, activeChar, activeChar.getPet(), false))
 		{
 			L2PetInstance pet = (L2PetInstance) activeChar.getPet();
 			ratioTakenByPlayer = pet.getPetLevelData().getOwnerExpTaken() / 100f;
