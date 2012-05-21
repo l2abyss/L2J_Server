@@ -666,15 +666,6 @@ public class PcStat extends PlayableStat
 		bonus = Math.max(bonus, 1);
 		bonus = Math.min(bonus, Config.MAX_BONUS_EXP);
 		
-		if (getActiveChar().isDebug())
-		{
-			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
-			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
-			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
-			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusExp);
-			getActiveChar().sendDebugMessage("Total Exp Multiplier: " + bonus);
-		}
-		
 		return bonus;
 	}
 	
@@ -710,15 +701,6 @@ public class PcStat extends PlayableStat
 		// Check for abnormal bonuses
 		bonus = Math.max(bonus, 1);
 		bonus = Math.min(bonus, Config.MAX_BONUS_SP);
-		
-		if (getActiveChar().isDebug())
-		{
-			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
-			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
-			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
-			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusSp);
-			getActiveChar().sendDebugMessage("Total Sp Multiplier: " + bonus);
-		}
 		
 		return bonus;
 	}
