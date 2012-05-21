@@ -261,6 +261,7 @@ public abstract class Inventory extends ItemContainer
 			L2Skill enchant4Skill, itemSkill;
 			L2Item it = item.getItem();
 			boolean update = false;
+			boolean updateTimeStamp = false;
 			
 			if (it instanceof L2Weapon)
 			{
@@ -323,9 +324,51 @@ public abstract class Inventory extends ItemContainer
 				}
 			}
 			
-			if (update)
-				player.sendSkillList();
+			if (item.isArmor())
+			{
+				for (L2ItemInstance itm : inventory.getItems())
+				{
+					if (!itm.isEquipped() || itm.getItem().getSkills() == null)
+						continue;
+					for (SkillHolder sk : itm.getItem().getSkills())
+					{
+						if (player.getSkillLevel(sk.getSkillId()) != -1)
+							continue;
+						
+						itemSkill = sk.getSkill();
+						
+						if (itemSkill != null)
+						{
+							player.addSkill(itemSkill, false);
+							
+							if (itemSkill.isActive())
+							{
+								if (!player.hasSkillReuse(itemSkill.getReuseHashCode()))
+								{
+									int equipDelay = itemSkill.getEquipDelay();
+									if (equipDelay > 0)
+									{
+										player.addTimeStamp(itemSkill, equipDelay);
+										player.disableSkill(itemSkill, equipDelay);
+									}
+								}
+								updateTimeStamp = true;
+							}
+							update = true;
+						}
+					}
+				}
+			}
 			
+			if (update)
+			{
+				player.sendSkillList();
+				
+				if (updateTimeStamp)
+				{
+					player.sendPacket(new SkillCoolTime(player));
+				}
+			}
 		}
 		
 		@Override
@@ -1472,27 +1515,15 @@ public abstract class Inventory extends ItemContainer
 		
 		L2ItemInstance arrow = null;
 		
-		switch (bow.getItemGradeSPlus())
+		for (L2ItemInstance item : getItems())
 		{
-			default:
-			case L2Item.CRYSTAL_NONE:
-				arrow = getItemByItemId(17);
-				break; // Wooden arrow
-			case L2Item.CRYSTAL_D:
-				arrow = (arrow = getItemByItemId(1341)) != null ? arrow : getItemByItemId(22067);
-				break; // Bone arrow
-			case L2Item.CRYSTAL_C:
-				arrow = (arrow = getItemByItemId(1342)) != null ? arrow : getItemByItemId(22068);
-				break; // Fine steel arrow
-			case L2Item.CRYSTAL_B:
-				arrow = (arrow = getItemByItemId(1343)) != null ? arrow : getItemByItemId(22069);
-				break; // Silver arrow
-			case L2Item.CRYSTAL_A:
-				arrow = (arrow = getItemByItemId(1344)) != null ? arrow : getItemByItemId(22070);
-				break; // Mithril arrow
-			case L2Item.CRYSTAL_S:
-				arrow = (arrow = getItemByItemId(1345)) != null ? arrow : getItemByItemId(22071);
-				break; // Shining arrow
+			if (item.isEtcItem() && 
+				item.getItem().getItemGradeSPlus() == bow.getItemGradeSPlus() &&
+				item.getEtcItem().getItemType() == L2EtcItemType.ARROW)
+			{
+				arrow = item;
+				break;
+			}
 		}
 		
 		// Get the L2ItemInstance corresponding to the item identifier and return it
@@ -1507,28 +1538,16 @@ public abstract class Inventory extends ItemContainer
 	public L2ItemInstance findBoltForCrossBow(L2Item crossbow)
 	{
 		L2ItemInstance bolt = null;
-		
-		switch (crossbow.getItemGradeSPlus())
+				
+		for (L2ItemInstance item : getItems())
 		{
-			default:
-			case L2Item.CRYSTAL_NONE:
-				bolt = getItemByItemId(9632);
-				break; // Wooden Bolt
-			case L2Item.CRYSTAL_D:
-				bolt = (bolt = getItemByItemId(9633)) != null ? bolt : getItemByItemId(22144);
-				break; // Bone Bolt
-			case L2Item.CRYSTAL_C:
-				bolt = (bolt = getItemByItemId(9634)) != null ? bolt : getItemByItemId(22145);
-				break; // Steel Bolt
-			case L2Item.CRYSTAL_B:
-				bolt = (bolt = getItemByItemId(9635)) != null ? bolt : getItemByItemId(22146);
-				break; // Silver Bolt
-			case L2Item.CRYSTAL_A:
-				bolt = (bolt = getItemByItemId(9636)) != null ? bolt : getItemByItemId(22147);
-				break; // Mithril Bolt
-			case L2Item.CRYSTAL_S:
-				bolt = (bolt = getItemByItemId(9637)) != null ? bolt : getItemByItemId(22148);
-				break; // Shining Bolt
+			if (item.isEtcItem() && 
+				item.getItem().getItemGradeSPlus() == crossbow.getItemGradeSPlus() &&
+				item.getEtcItem().getItemType() == L2EtcItemType.BOLT)
+			{
+				bolt = item;
+				break;
+			}
 		}
 		
 		// Get the L2ItemInstance corresponding to the item identifier and return it
