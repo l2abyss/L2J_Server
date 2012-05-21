@@ -176,6 +176,7 @@ import com.l2jserver.gameserver.model.items.L2Henna;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2ActionType;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
@@ -10042,91 +10043,36 @@ public final class L2PcInstance extends L2Playable
 		if (_activeSoulShots == null || _activeSoulShots.isEmpty())
 			return;
 		
-		try
+		for (int itemId : _activeSoulShots)
 		{
-			for (int itemId : _activeSoulShots)
+			item = getInventory().getItemByItemId(itemId);
+			
+			if (item != null)
 			{
-				item = getInventory().getItemByItemId(itemId);
-				
-				if (item != null)
+				if (magic)
 				{
-					if (magic)
+					if (item.getItem().getDefaultAction() == (summon ? L2ActionType.summon_spiritshot : L2ActionType.spiritshot))
 					{
-						if (!summon)
-						{
-							switch(itemId)
-							{
-								case 2509: case 2510: case 2511: case 2512:
-								case 2513: case 2514: case 3947:
-								case 3948: case 3949: case 3950:
-								case 3951: case 3952: case 5790:
-								case 22072: case 22073: case 22074:
-								case 22075: case 22076: case 22077:
-								case 22078: case 22079: case 22080:
-								case 22081:
-									handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
-									
-									if (handler != null)
-										handler.useItem(this, item, false);
-									
-									break;
-							}
-						}
-						else
-						{
-							switch(itemId)
-							{
-								case 6646: case 6647:
-								case 20333: case 20334:
-									handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
-									
-									if (handler != null)
-										handler.useItem(this, item, false);
-									break;
-							}
-						}
-					}
-					
-					if (physical)
-					{
-						if (!summon)
-						{
-							switch(itemId)
-							{
-								case 1463: case 1464: case 1465:
-								case 1466: case 1467: case 1835:
-								case 5789: case 22082: case 22083:
-								case 22084: case 22085: case 22086:
-									
-									handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
-									
-									if (handler != null)
-										handler.useItem(this, item, false);
-									
-									break;
-							}
-						}
-						else
-						{
-							if (itemId == 6645 || itemId == 20332)
-							{
-								handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
-								
-								if (handler != null)
-									handler.useItem(this, item, false);
-							}
-						}
+						handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+						if (handler != null)
+							handler.useItem(this, item, false);
 					}
 				}
-				else
+				
+				if (physical)
 				{
-					removeAutoSoulShot(itemId);
+					if (item.getItem().getDefaultAction() == (summon ? L2ActionType.summon_soulshot : L2ActionType.soulshot))
+					{
+						handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+						if (handler != null)
+							handler.useItem(this, item, false);
+					}
 				}
 			}
-		}
-		catch (NullPointerException npe)
-		{
-			_log.log(Level.WARNING, toString() , npe);
+			else
+			{
+				removeAutoSoulShot(itemId);
+			}
 		}
 	}
 	
