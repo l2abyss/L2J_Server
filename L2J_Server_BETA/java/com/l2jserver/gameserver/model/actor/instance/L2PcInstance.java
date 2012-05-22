@@ -14147,9 +14147,8 @@ public final class L2PcInstance extends L2Playable
 			return;
 		}
 		
-		// if no charges - start clear task
-		if (_charges.get() == 0)
-			restartChargeTask();
+		// Charge clear task should be reset every time a charge is increased.
+		restartChargeTask();
 		
 		if (_charges.addAndGet(count) >= max)
 		{
@@ -14171,8 +14170,11 @@ public final class L2PcInstance extends L2Playable
 		if (_charges.get() < count)
 			return false;
 		
+		// Charge clear task should be reset every time a charge is decreased and stopped when charges become 0.
 		if (_charges.addAndGet(-count) == 0)
 			stopChargeTask();
+		else
+			restartChargeTask();
 		
 		sendPacket(new EtcStatusUpdate(this));
 		return true;
