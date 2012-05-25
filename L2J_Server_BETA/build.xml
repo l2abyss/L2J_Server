@@ -82,7 +82,6 @@
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
-				<attribute name="Main-Class" value="com.l2jserver.loginserver.L2LoginServer" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.login}/L2J_Configurator.jar">
@@ -125,7 +124,6 @@
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
-				<attribute name="Main-Class" value="com.l2jserver.gameserver.GameServer" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.game}/L2J_Configurator.jar">
