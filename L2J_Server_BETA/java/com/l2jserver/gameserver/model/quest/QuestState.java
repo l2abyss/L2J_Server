@@ -192,21 +192,6 @@ public final class QuestState
 	}
 	
 	/**
-	 * @param state
-	 * @return
-	 */
-	public Object setStateAndNotSave(byte state)
-	{
-		// set new state if it is not already in that state
-		if (_state != state)
-		{
-			_state = state;
-			_player.sendPacket(new QuestList());
-		}
-		return state;
-	}
-	
-	/**
 	 * Add parameter used in quests.
 	 * @param var : String pointing out the name of the variable for quest
 	 * @param val : String pointing out the value of the variable for quest
@@ -562,15 +547,39 @@ public final class QuestState
 	/**
 	 * Sets the quest state progress ({@code cond}) to the specified step.
 	 * @param value the new value of the quest state progress
+	 * @return this {@link QuestState} object
 	 * @see #set(String var, String val)
 	 */
-	public void setCond(int value)
+	public QuestState setCond(int value)
+	{
+		if (isStarted())
+		{
+			set("cond", String.valueOf(value));
+		}
+		return this;
+	}
+	
+	/**
+	 * Sets the quest state progress ({@code cond}) to the specified step.
+	 * @param value the new value of the quest state progress
+	 * @param playQuestMiddle if {@code true}, plays "ItemSound.quest_middle"
+	 * @return this {@link QuestState} object
+	 * @see #set(String var, String val)
+	 * @see #setCond(int value)
+	 */
+	public QuestState setCond(int value, boolean playQuestMiddle)
 	{
 		if (!isStarted())
 		{
-			return;
+			return this;
 		}
 		set("cond", String.valueOf(value));
+		
+		if (playQuestMiddle)
+		{
+			playSound("ItemSound.quest_middle");
+		}
+		return this;
 	}
 	
 	/**
@@ -587,7 +596,7 @@ public final class QuestState
 		((L2PcInstance) character).addNotifyQuestOfDeath(this);
 	}
 	
-	// TODO: This all remains because of backward compatibility should be cleared when all scripts been re-writen in java!
+	// TODO: This all remains because of backward compatibility, should be cleared when all scripts are rewritten in java
 	
 	/**
 	 * Return the quantity of one sort of item hold by the player
@@ -923,7 +932,7 @@ public final class QuestState
 	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
 	 * @param despawnDelay time in milliseconds till the npc is despawned (default: 0)
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
-	 * @see #addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
+	 * @see #addSpawn(int, int, int, int, int, boolean, int, boolean)
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay)
 	{
@@ -941,6 +950,15 @@ public final class QuestState
 	 * @param despawnDelay time in milliseconds till the npc is despawned (default: 0)
 	 * @param isSummonSpawn if {@code true}, displays a summon animation on npc spawn (default: {@code false})
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
+	 * @see #addSpawn(int)
+	 * @see #addSpawn(int, int)
+	 * @see #addSpawn(int, L2Character)
+	 * @see #addSpawn(int, L2Character, int)
+	 * @see #addSpawn(int, int, int, int)
+	 * @see #addSpawn(int, L2Character, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, int, boolean)
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
 	{
@@ -977,6 +995,9 @@ public final class QuestState
 	 * If {@code type} is {@code QuestType.ONE_TIME}, also removes all other quest data associated with this quest.
 	 * @param type the {@link QuestType} of the quest
 	 * @return this {@link QuestState} object
+	 * @see #exitQuest(QuestType type, boolean playExitQuest)
+	 * @see #exitQuest(boolean repeatable)
+	 * @see #exitQuest(boolean repeatable, boolean playExitQuest)
 	 */
 	public QuestState exitQuest(QuestType type)
 	{
@@ -1001,9 +1022,32 @@ public final class QuestState
 	
 	/**
 	 * Finishes the quest and removes all quest items associated with this quest from the player's inventory.<br>
+	 * If {@code type} is {@code QuestType.ONE_TIME}, also removes all other quest data associated with this quest.
+	 * @param type the {@link QuestType} of the quest
+	 * @param playExitQuest if {@code true}, plays "ItemSound.quest_finish"
+	 * @return this {@link QuestState} object
+	 * @see #exitQuest(QuestType type)
+	 * @see #exitQuest(boolean repeatable)
+	 * @see #exitQuest(boolean repeatable, boolean playExitQuest)
+	 */
+	public QuestState exitQuest(QuestType type, boolean playExitQuest)
+	{
+		exitQuest(type);
+		if (playExitQuest)
+		{
+			playSound("ItemSound.quest_finish");
+		}
+		return this;
+	}
+	
+	/**
+	 * Finishes the quest and removes all quest items associated with this quest from the player's inventory.<br>
 	 * If {@code repeatable} is set to {@code false}, also removes all other quest data associated with this quest.
 	 * @param repeatable if {@code true}, deletes all data and variables of this quest, otherwise keeps them
 	 * @return this {@link QuestState} object
+	 * @see #exitQuest(QuestType type)
+	 * @see #exitQuest(QuestType type, boolean playExitQuest)
+	 * @see #exitQuest(boolean repeatable, boolean playExitQuest)
 	 */
 	public QuestState exitQuest(boolean repeatable)
 	{
@@ -1053,15 +1097,20 @@ public final class QuestState
 	 * Finishes the quest and removes all quest items associated with this quest from the player's inventory.<br>
 	 * If {@code repeatable} is set to {@code false}, also removes all other quest data associated with this quest.
 	 * @param repeatable if {@code true}, deletes all data and variables of this quest, otherwise keeps them
-	 * @param playSound if {@code true}, plays "ItemSound.quest_finish"
+	 * @param playExitQuest if {@code true}, plays "ItemSound.quest_finish"
+	 * @return this {@link QuestState} object
+	 * @see #exitQuest(QuestType type)
+	 * @see #exitQuest(QuestType type, boolean playExitQuest)
+	 * @see #exitQuest(boolean repeatable)
 	 */
-	public void exitQuest(boolean repeatable, boolean playSound)
+	public QuestState exitQuest(boolean repeatable, boolean playExitQuest)
 	{
 		exitQuest(repeatable);
-		if (playSound)
+		if (playExitQuest)
 		{
 			playSound("ItemSound.quest_finish");
 		}
+		return this;
 	}
 	
 	public void showQuestionMark(int number)
@@ -1118,7 +1167,8 @@ public final class QuestState
 	}
 	
 	/**
-	 * @return {@code true} if the quest is available, for example daily quests, {@code false} otherwise.
+	 * Check if a daily quest is available to be started over.
+	 * @return {@code true} if the quest is available, {@code false} otherwise.
 	 */
 	public boolean isNowAvailable()
 	{
