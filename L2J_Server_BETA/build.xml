@@ -71,7 +71,7 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar files.">
-		<jar destfile="${build.dist.login}/l2jlogin.jar">
+		<jar destfile="${build.dist.login}/l2jlogin.jar" level="9">
 			<fileset dir="${build.bin}">
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/gameserver/**" />
@@ -79,12 +79,11 @@
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.login}/L2J_Configurator.jar">
+		<jar destfile="${build.dist.login}/L2J_Configurator.jar" level="9">
 			<fileset dir="${build.bin}">
 				<include name="**/configurator/**" />
 				<include name="**/i18n/**" />
@@ -111,7 +110,7 @@
 				<attribute name="Main-Class" value="com.l2jserver.tools.configurator.ConfigUserInterface" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.game}/l2jserver.jar">
+		<jar destfile="${build.dist.game}/l2jserver.jar" level="9">
 			<fileset dir="${build.bin}">
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/loginserver/**" />
@@ -121,12 +120,11 @@
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.game}/L2J_Configurator.jar">
+		<jar destfile="${build.dist.game}/L2J_Configurator.jar" level="9">
 			<fileset dir="${build.bin}">
 				<include name="**/configurator/**" />
 				<include name="**/i18n/**" />
@@ -153,7 +151,7 @@
 				<attribute name="Main-Class" value="com.l2jserver.tools.configurator.ConfigUserInterface" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.tools}/dbinst_cs.jar">
+		<jar destfile="${build.dist.tools}/dbinst_cs.jar" level="9">
 			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
@@ -170,7 +168,7 @@
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherCS" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.tools}/dbinst_gs.jar">
+		<jar destfile="${build.dist.tools}/dbinst_gs.jar" level="9">
 			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
@@ -187,7 +185,7 @@
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherGS" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.tools}/dbinst_ls.jar">
+		<jar destfile="${build.dist.tools}/dbinst_ls.jar" level="9">
 			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
