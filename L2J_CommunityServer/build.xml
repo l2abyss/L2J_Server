@@ -63,12 +63,11 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar files.">
-		<jar destfile="${build.dist.community}/l2jcommunity.jar">
+		<jar destfile="${build.dist.community}/l2jcommunity.jar" level="9">
 			<fileset dir="${build.bin}" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
-				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
 			</manifest>
