@@ -128,7 +128,7 @@ public final class QuestState
 	 */
 	public boolean isCreated()
 	{
-		return (getState() == State.CREATED);
+		return (_state == State.CREATED);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public final class QuestState
 	 */
 	public boolean isStarted()
 	{
-		return (getState() == State.STARTED);
+		return (_state == State.STARTED);
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public final class QuestState
 	 */
 	public boolean isCompleted()
 	{
-		return (getState() == State.COMPLETED);
+		return (_state == State.COMPLETED);
 	}
 	
 	/**
@@ -169,12 +169,10 @@ public final class QuestState
 	 */
 	public boolean setState(byte state, boolean saveInDb)
 	{
-		if (getState() == state)
+		if (_state == state)
 		{
 			return false;
 		}
-		
-		_state = state;
 		
 		if (saveInDb)
 		{
@@ -188,6 +186,7 @@ public final class QuestState
 			}
 		}
 		
+		_state = state;
 		_player.sendPacket(new QuestList());
 		return true;
 	}
