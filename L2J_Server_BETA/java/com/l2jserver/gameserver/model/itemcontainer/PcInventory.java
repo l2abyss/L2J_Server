@@ -133,24 +133,31 @@ public class PcInventory extends Inventory
 		FastList<L2ItemInstance> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
+			if (item == null)
+			{
+				continue;
+			}
 			if ((!allowAdena && item.getItemId() == ADENA_ID))
+			{
 				continue;
+			}
 			if ((!allowAncientAdena && item.getItemId() == ANCIENT_ADENA_ID))
+			{
 				continue;
-			
+			}
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
 			{
-				if (item == null)
-					continue;
-				
 				if (litem.getItemId() == item.getItemId())
 				{
 					isDuplicate = true;
 					break;
 				}
 			}
-			if (!isDuplicate && (!onlyAvailable || ((item != null) && item.isSellable() && item.isAvailable(getOwner(), false, false)))) list.add(item);
+			if (!isDuplicate && (!onlyAvailable || item.isSellable() && item.isAvailable(getOwner(), false, false)))
+			{
+				list.add(item);
+			}
 		}
 		
 		L2ItemInstance[] result = list.toArray(new L2ItemInstance[list.size()]);
@@ -177,11 +184,17 @@ public class PcInventory extends Inventory
 		for (L2ItemInstance item : _items)
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			if ((!allowAdena && item.getItemId() == ADENA_ID))
+			{
 				continue;
+			}
 			if ((!allowAncientAdena && item.getItemId() == ANCIENT_ADENA_ID))
+			{
 				continue;
+			}
 			
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
@@ -192,8 +205,11 @@ public class PcInventory extends Inventory
 					break;
 				}
 			}
+			
 			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false, false))))
+			{
 				list.add(item);
+			}
 		}
 		
 		L2ItemInstance[] result = list.toArray(new L2ItemInstance[list.size()]);
