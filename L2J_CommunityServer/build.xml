@@ -71,7 +71,6 @@
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
-				<attribute name="Main-Class" value="com.l2jserver.communityserver.L2CommunityServer" />
 			</manifest>
 		</jar>
 	</target>
