@@ -60,7 +60,7 @@ public class RecipeController
 	
 	public void requestBookOpen(L2PcInstance player, boolean isDwarvenCraft)
 	{
-		if (Config.ALT_GAME_CREATION && _activeMakers.containsKey(player.getObjectId()))
+		if (Config.ALT_GAME_CREATION && !_activeMakers.containsKey(player.getObjectId()))
 		{
 			RecipeBookItemList response = new RecipeBookItemList(isDwarvenCraft, player.getMaxMp());
 			response.addRecipes(isDwarvenCraft ? player.getDwarvenRecipeBook() : player.getCommonRecipeBook());
