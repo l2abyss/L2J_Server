@@ -181,7 +181,7 @@ public class L2Npc extends L2Character
 			if (Rnd.get(100) <= getSoulShotChance())
 			{
 				_soulshotamount = _soulshotamount - 1;
-				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2154, 1, 0, 0), 360000);
+				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2154, 1, 0, 0), 600);
 				_soulshotcharged = true;
 			}
 		}
@@ -207,7 +207,7 @@ public class L2Npc extends L2Character
 			if (Rnd.get(100) <= getSpiritShotChance())
 			{
 				_spiritshotamount = _spiritshotamount - 1;
-				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2061, 1, 0, 0), 360000);
+				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2061, 1, 0, 0), 600);
 				_spiritshotcharged = true;
 			}
 		}

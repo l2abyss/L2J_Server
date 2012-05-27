@@ -163,25 +163,19 @@ public final class Broadcast
 	}
 	
 	// To improve performance we are comparing values of radius^2 instead of calculating sqrt all the time
-	public static void toSelfAndKnownPlayersInRadius(L2Character character, L2GameServerPacket mov, long radiusSq)
+	public static void toSelfAndKnownPlayersInRadius(L2Character character, L2GameServerPacket mov, int radius)
 	{
-		if (radiusSq < 0)
-		{
-			radiusSq = 360000;
-		}
+		if (radius < 0)
+			radius = 600;
 		
 		if (character instanceof L2PcInstance)
-		{
 			character.sendPacket(mov);
-		}
 		
 		Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
 		{
-			if ((player != null) && (character.getDistanceSq(player) <= radiusSq))
-			{
+			if (player != null && Util.checkIfInRange(radius, character, player, false))
 				player.sendPacket(mov);
-			}
 		}
 	}
 	
