@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
 public final class NewCharacterSuccess extends L2GameServerPacket
 {
 	private static final String _S__0D_NEWCHARACTERSUCCESS = "[S] 0D NewCharacterSuccess";
-	private final List<L2PcTemplate> _chars = new ArrayList<L2PcTemplate>();
+	private final List<L2PcTemplate> _chars = new ArrayList<>();
 	
 	public void addChar(L2PcTemplate template)
 	{

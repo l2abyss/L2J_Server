@@ -86,7 +86,7 @@ public class AuctionManager
 	
 	protected AuctionManager()
 	{
-		_auctions = new FastList<Auction>();
+		_auctions = new FastList<>();
 		load();
 	}
 	

@@ -110,7 +110,7 @@ public class RequestSetSeed extends L2GameClientPacket
 		if (!player.isInsideRadius(manager, INTERACTION_DISTANCE, true, false))
 			return;
 		
-		List<SeedProduction> seeds = new ArrayList<SeedProduction>(_items.length);
+		List<SeedProduction> seeds = new ArrayList<>(_items.length);
 		for (Seed i : _items)
 		{
 			SeedProduction s = i.getSeed();

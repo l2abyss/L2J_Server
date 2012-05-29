@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.model.L2SummonItem;
 public class SummonItemsData
 {
 	protected static final Logger _log = Logger.getLogger(SummonItemsData.class.getName());
-	private final TIntObjectHashMap<L2SummonItem> _summonitems = new TIntObjectHashMap<L2SummonItem>();
+	private final TIntObjectHashMap<L2SummonItem> _summonitems = new TIntObjectHashMap<>();
 	
 	public static SummonItemsData getInstance()
 	{

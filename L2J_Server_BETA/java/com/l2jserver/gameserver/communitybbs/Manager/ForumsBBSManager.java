@@ -43,7 +43,7 @@ public class ForumsBBSManager extends BaseBBSManager
 	
 	protected ForumsBBSManager()
 	{
-		_table = new FastList<Forum>();
+		_table = new FastList<>();
 		
 		Connection con = null;
 		try

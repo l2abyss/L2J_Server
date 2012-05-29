@@ -50,12 +50,12 @@ public class DocumentSkill extends DocumentBase
 		public StatsSet[]           enchsets7;
 		public StatsSet[]           enchsets8;
 		public int                  currentLevel;
-		public List<L2Skill>   skills          = new FastList<L2Skill>();
-		public List<L2Skill>   currentSkills   = new FastList<L2Skill>();
+		public List<L2Skill>   skills          = new FastList<>();
+		public List<L2Skill>   currentSkills   = new FastList<>();
 	}
 	
 	private Skill _currentSkill;
-	private List<L2Skill> _skillsInFile  = new FastList<L2Skill>();
+	private List<L2Skill> _skillsInFile  = new FastList<>();
 	
 	public DocumentSkill(File file)
 	{
@@ -766,7 +766,7 @@ public class DocumentSkill extends DocumentBase
 	private void makeSkills()
 	{
 		int count = 0;
-		_currentSkill.currentSkills = new FastList<L2Skill>(_currentSkill.sets.length+_currentSkill.enchsets1.length+_currentSkill.enchsets2.length+_currentSkill.enchsets3.length+_currentSkill.enchsets4.length+_currentSkill.enchsets5.length+_currentSkill.enchsets6.length+_currentSkill.enchsets7.length+_currentSkill.enchsets8.length);
+		_currentSkill.currentSkills = new FastList<>(_currentSkill.sets.length+_currentSkill.enchsets1.length+_currentSkill.enchsets2.length+_currentSkill.enchsets3.length+_currentSkill.enchsets4.length+_currentSkill.enchsets5.length+_currentSkill.enchsets6.length+_currentSkill.enchsets7.length+_currentSkill.enchsets8.length);
 		
 		for (int i=0; i < _currentSkill.sets.length; i++)
 		{

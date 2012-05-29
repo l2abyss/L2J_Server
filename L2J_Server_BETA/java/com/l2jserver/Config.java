@@ -749,13 +749,13 @@ public final class Config
 	public static String ANNOUNCE_PVP_MSG;
 	public static boolean L2JMOD_CHAT_ADMIN;
 	public static boolean L2JMOD_MULTILANG_ENABLE;
-	public static List<String> L2JMOD_MULTILANG_ALLOWED = new ArrayList<String>();
+	public static List<String> L2JMOD_MULTILANG_ALLOWED = new ArrayList<>();
 	public static String L2JMOD_MULTILANG_DEFAULT;
 	public static boolean L2JMOD_MULTILANG_VOICED_ALLOW;
 	public static boolean L2JMOD_MULTILANG_SM_ENABLE;
-	public static List<String> L2JMOD_MULTILANG_SM_ALLOWED = new ArrayList<String>();
+	public static List<String> L2JMOD_MULTILANG_SM_ALLOWED = new ArrayList<>();
 	public static boolean L2JMOD_MULTILANG_NS_ENABLE;
-	public static List<String> L2JMOD_MULTILANG_NS_ALLOWED = new ArrayList<String>();
+	public static List<String> L2JMOD_MULTILANG_NS_ALLOWED = new ArrayList<>();
 	public static boolean L2WALKER_PROTECTION;
 	public static boolean L2JMOD_DEBUG_VOICE_COMMAND;
 	public static int L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP;
@@ -1722,7 +1722,7 @@ public final class Config
 				TELEPORT_WATCHDOG_TIMEOUT = Integer.parseInt(Character.getProperty("TeleportWatchdogTimeout", "0"));
 				PLAYER_SPAWN_PROTECTION = Integer.parseInt(Character.getProperty("PlayerSpawnProtection", "0"));
 				String[] items = Character.getProperty("PlayerSpawnProtectionAllowedItems", "0").split(",");
-				SPAWN_PROTECTION_ALLOWED_ITEMS = new ArrayList<Integer>(items.length);
+				SPAWN_PROTECTION_ALLOWED_ITEMS = new ArrayList<>(items.length);
 				for (String item : items)
 				{
 					Integer itm = 0;
@@ -3007,7 +3007,7 @@ public final class Config
 				BufferedReader br = new BufferedReader(fr);
 				LineNumberReader lnr = new LineNumberReader(br))
 			{
-				FILTER_LIST = new ArrayList<String>();
+				FILTER_LIST = new ArrayList<>();
 				
 				String line = null;
 				while ((line = lnr.readLine()) != null)

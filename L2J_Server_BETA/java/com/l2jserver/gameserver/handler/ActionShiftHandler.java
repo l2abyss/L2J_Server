@@ -34,7 +34,7 @@ public class ActionShiftHandler
 	
 	protected ActionShiftHandler()
 	{
-		_actionsShift = new FastMap<InstanceType, IActionHandler>();
+		_actionsShift = new FastMap<>();
 	}
 	
 	public void registerHandler(IActionHandler handler)

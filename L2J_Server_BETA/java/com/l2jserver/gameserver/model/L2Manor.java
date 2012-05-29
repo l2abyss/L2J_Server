@@ -42,7 +42,7 @@ public class L2Manor
 	
 	protected L2Manor()
 	{
-		_seeds = new L2TIntObjectHashMap<SeedData>();
+		_seeds = new L2TIntObjectHashMap<>();
 		parseData();
 	}
 	
@@ -58,7 +58,7 @@ public class L2Manor
 	
 	public FastList<Integer> getAllCrops()
 	{
-		FastList<Integer> crops = new FastList<Integer>();
+		FastList<Integer> crops = new FastList<>();
 		
 		for (SeedData seed : getSeedsDataArray())
 		{
@@ -216,7 +216,7 @@ public class L2Manor
 	 */
 	public FastList<Integer> getCropsForCastle(int castleId)
 	{
-		FastList<Integer> crops = new FastList<Integer>();
+		FastList<Integer> crops = new FastList<>();
 		
 		for (SeedData seed : getSeedsDataArray())
 		{
@@ -236,7 +236,7 @@ public class L2Manor
 	 */
 	public FastList<Integer> getSeedsForCastle(int castleId)
 	{
-		FastList<Integer> seedsID = new FastList<Integer>();
+		FastList<Integer> seedsID = new FastList<>();
 		
 		for (SeedData seed : getSeedsDataArray())
 		{

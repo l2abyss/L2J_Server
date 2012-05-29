@@ -45,7 +45,7 @@ public class NpcTable
 {
 	private static final Logger _log = Logger.getLogger(NpcTable.class.getName());
 	
-	private final TIntObjectHashMap<L2NpcTemplate> _npcs = new TIntObjectHashMap<L2NpcTemplate>();
+	private final TIntObjectHashMap<L2NpcTemplate> _npcs = new TIntObjectHashMap<>();
 	
 	protected NpcTable()
 	{

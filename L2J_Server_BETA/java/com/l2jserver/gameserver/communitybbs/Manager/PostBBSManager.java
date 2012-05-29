@@ -36,7 +36,7 @@ public class PostBBSManager extends BaseBBSManager
 	
 	protected PostBBSManager()
 	{
-		_postByTopic = new FastMap<Topic, Post>();
+		_postByTopic = new FastMap<>();
 	}
 	
 	public Post getGPosttByTopic(Topic t)

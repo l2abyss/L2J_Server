@@ -45,7 +45,7 @@ public class ConfirmDlg extends L2GameServerPacket
 	private static final int TYPE_NUMBER = 1;
 	private static final int TYPE_TEXT = 0;
 	
-	private final FastList<CnfDlgData> _info = new FastList<CnfDlgData>();
+	private final FastList<CnfDlgData> _info = new FastList<>();
 	
 	private int _time = 0;
 	private int _requesterId = 0;

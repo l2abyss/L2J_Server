@@ -341,7 +341,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	{
 		if (!_questEvents.containsKey(EventType))
 		{
-			List<Quest> quests = new ArrayList<Quest>();
+			List<Quest> quests = new ArrayList<>();
 			quests.add(q);
 			_questEvents.put(EventType, quests);
 		}

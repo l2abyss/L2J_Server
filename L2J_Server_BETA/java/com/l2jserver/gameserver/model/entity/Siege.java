@@ -222,13 +222,13 @@ public class Siege implements Siegable
 		}
 	}
 	
-	private final List<L2SiegeClan> _attackerClans = new ArrayList<L2SiegeClan>();
-	private final List<L2SiegeClan> _defenderClans = new ArrayList<L2SiegeClan>();
-	private final List<L2SiegeClan> _defenderWaitingClans = new ArrayList<L2SiegeClan>();
+	private final List<L2SiegeClan> _attackerClans = new ArrayList<>();
+	private final List<L2SiegeClan> _defenderClans = new ArrayList<>();
+	private final List<L2SiegeClan> _defenderWaitingClans = new ArrayList<>();
 	
 	// Castle setting
-	private List<L2ControlTowerInstance> _controlTowers = new ArrayList<L2ControlTowerInstance>();
-	private List<L2FlameTowerInstance> _flameTowers = new ArrayList<L2FlameTowerInstance>();
+	private List<L2ControlTowerInstance> _controlTowers = new ArrayList<>();
+	private List<L2FlameTowerInstance> _flameTowers = new ArrayList<>();
 	private final Castle[] _castle;
 	private boolean _isInProgress = false;
 	private boolean _isNormalSide = true; // true = Atk is Atk, false = Atk is Def
@@ -736,7 +736,7 @@ public class Siege implements Siegable
 	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
-		List<L2PcInstance> players = new ArrayList<L2PcInstance>();
+		List<L2PcInstance> players = new ArrayList<>();
 		L2Clan clan;
 		for (L2SiegeClan siegeclan : getAttackerClans())
 		{
@@ -758,7 +758,7 @@ public class Siege implements Siegable
 	 */
 	public List<L2PcInstance> getDefendersButNotOwnersInZone()
 	{
-		List<L2PcInstance> players = new ArrayList<L2PcInstance>();
+		List<L2PcInstance> players = new ArrayList<>();
 		L2Clan clan;
 		for (L2SiegeClan siegeclan : getDefenderClans())
 		{
@@ -790,7 +790,7 @@ public class Siege implements Siegable
 	 */
 	public List<L2PcInstance> getOwnersInZone()
 	{
-		List<L2PcInstance> players = new ArrayList<L2PcInstance>();
+		List<L2PcInstance> players = new ArrayList<>();
 		L2Clan clan;
 		for (L2SiegeClan siegeclan : getDefenderClans())
 		{
@@ -814,7 +814,7 @@ public class Siege implements Siegable
 	 */
 	public List<L2PcInstance> getSpectatorsInZone()
 	{
-		List<L2PcInstance> players = new ArrayList<L2PcInstance>();
+		List<L2PcInstance> players = new ArrayList<>();
 		
 		for (L2PcInstance player : getCastle().getZone().getPlayersInside())
 		{
@@ -1407,7 +1407,7 @@ public class Siege implements Siegable
 	{
 		// Set control tower array size if one does not exist
 		if (_controlTowers == null)
-			_controlTowers = new ArrayList<L2ControlTowerInstance>();
+			_controlTowers = new ArrayList<>();
 		
 		for (SiegeSpawn _sp : SiegeManager.getInstance().getControlTowerSpawnList(Id))
 		{
@@ -1433,7 +1433,7 @@ public class Siege implements Siegable
 	{
 		// Set control tower array size if one does not exist
 		if (_flameTowers == null)
-			_flameTowers = new ArrayList<L2FlameTowerInstance>();
+			_flameTowers = new ArrayList<>();
 		
 		for (SiegeSpawn _sp : SiegeManager.getInstance().getFlameTowerSpawnList(Id))
 		{

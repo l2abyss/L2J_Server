@@ -28,7 +28,7 @@ public class PackageToList extends L2GameServerPacket
 {
 	private final String _S__C8_PACKAGETOLIST = "[S] C8 PackageToList";
 	
-	private final Map<Integer,String> _players = new FastMap<Integer, String>();
+	private final Map<Integer,String> _players = new FastMap<>();
 
 	public PackageToList(Map<Integer, String> chars)
 	{

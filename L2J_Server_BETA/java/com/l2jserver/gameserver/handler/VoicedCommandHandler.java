@@ -38,7 +38,7 @@ public class VoicedCommandHandler
 	
 	protected VoicedCommandHandler()
 	{
-		_datatable = new TIntObjectHashMap<IVoicedCommandHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	public void registerHandler(IVoicedCommandHandler handler)

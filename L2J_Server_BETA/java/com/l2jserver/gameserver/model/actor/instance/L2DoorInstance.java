@@ -569,7 +569,7 @@ public class L2DoorInstance extends L2Character
 	
 	public Collection<L2DefenderInstance> getKnownDefenders()
 	{
-		FastList<L2DefenderInstance> result = new FastList<L2DefenderInstance>();
+		FastList<L2DefenderInstance> result = new FastList<>();
 		
 		Collection<L2Object> objs = getKnownList().getKnownObjects().values();
 		for (L2Object obj : objs)

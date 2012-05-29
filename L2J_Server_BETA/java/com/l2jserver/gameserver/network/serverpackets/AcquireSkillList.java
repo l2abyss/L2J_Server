@@ -52,7 +52,7 @@ public final class AcquireSkillList extends L2GameServerPacket
 	public AcquireSkillList(AcquireSkillType type)
 	{
 		_skillType = type;
-		_skills = new FastList<Skill>();
+		_skills = new FastList<>();
 	}
 	
 	public void addSkill(int id, int nextLevel, int maxLevel, int spCost, int requirements)

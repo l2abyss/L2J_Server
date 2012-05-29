@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 public class L2SiegeClan
 {
 	private int _clanId = 0;
-	private List<L2Npc> _flag = new FastList<L2Npc>();
+	private List<L2Npc> _flag = new FastList<>();
 	private int _numFlagsAdded = 0;
 	private SiegeClanType _type;
 	
@@ -91,7 +91,7 @@ public class L2SiegeClan
 	{
 		if (_flag == null)
 		{
-			_flag = new FastList<L2Npc>();
+			_flag = new FastList<>();
 		}
 		return _flag;
 	}

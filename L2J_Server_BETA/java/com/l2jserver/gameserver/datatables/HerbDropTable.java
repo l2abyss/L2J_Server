@@ -46,7 +46,7 @@ public class HerbDropTable
 	
 	protected HerbDropTable()
 	{
-		_herbGroups = new TIntObjectHashMap<FastList<L2DropCategory>>();
+		_herbGroups = new TIntObjectHashMap<>();
 		restoreData();
 	}
 	
@@ -73,7 +73,7 @@ public class HerbDropTable
 					category = _herbGroups.get(groupId);
 				else
 				{
-					category = new FastList<L2DropCategory>();
+					category = new FastList<>();
 					_herbGroups.put(groupId, category);
 				}
 				

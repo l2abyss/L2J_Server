@@ -50,11 +50,11 @@ public class HtmCache
 	{
 		if (Config.LAZY_CACHE)
 		{
-			_cache = new L2TIntObjectHashMap<String>();
+			_cache = new L2TIntObjectHashMap<>();
 		}
 		else
 		{
-			_cache = new TIntObjectHashMap<String>();
+			_cache = new TIntObjectHashMap<>();
 		}
 		reload();
 	}

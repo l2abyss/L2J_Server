@@ -213,7 +213,7 @@ public abstract class ClanHall
 			_log.warning("Init Owner : " + _ownerId);
 		_desc = set.getString("desc");
 		_location = set.getString("location");
-		_functions = new FastMap<Integer, ClanHallFunction>();
+		_functions = new FastMap<>();
 		
 		if(_ownerId > 0)
 		{
@@ -271,7 +271,7 @@ public abstract class ClanHall
 	public final ArrayList<L2DoorInstance> getDoors()
 	{
 		if (_doors == null)
-			_doors = new ArrayList<L2DoorInstance>();
+			_doors = new ArrayList<>();
 		return _doors;
 	}
 	

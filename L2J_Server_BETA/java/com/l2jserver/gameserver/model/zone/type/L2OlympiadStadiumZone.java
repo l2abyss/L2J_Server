@@ -47,7 +47,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	public L2OlympiadStadiumZone(int id)
 	{
 		super(id);
-		_buffers = new ArrayList<L2Spawn>(2);
+		_buffers = new ArrayList<>(2);
 	}
 	
 	public final void registerTask(OlympiadGameTask task)

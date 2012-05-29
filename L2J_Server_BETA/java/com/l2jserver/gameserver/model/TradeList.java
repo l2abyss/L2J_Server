@@ -53,7 +53,7 @@ public class TradeList
 	
 	public TradeList(L2PcInstance owner)
 	{
-		_items = new FastList<TradeItem>();
+		_items = new FastList<>();
 		_owner = owner;
 	}
 	

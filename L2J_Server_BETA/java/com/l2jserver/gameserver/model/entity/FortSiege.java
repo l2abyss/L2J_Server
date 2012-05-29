@@ -213,10 +213,10 @@ public class FortSiege implements Siegable
 		}
 	}
 	
-	private List<L2SiegeClan> _attackerClans = new FastList<L2SiegeClan>();
+	private List<L2SiegeClan> _attackerClans = new FastList<>();
 	
 	// Fort setting
-	protected FastList<L2Spawn> _commanders = new FastList<L2Spawn>();
+	protected FastList<L2Spawn> _commanders = new FastList<>();
 	protected final Fort _fort;
 	private boolean _isInProgress = false;
 	private FortSiegeGuardManager _siegeGuardManager;
@@ -529,7 +529,7 @@ public class FortSiege implements Siegable
 	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
-		List<L2PcInstance> players = new FastList<L2PcInstance>();
+		List<L2PcInstance> players = new FastList<>();
 		L2Clan clan;
 		for (L2SiegeClan siegeclan : getAttackerClans())
 		{
@@ -559,7 +559,7 @@ public class FortSiege implements Siegable
 	 */
 	public List<L2PcInstance> getOwnersInZone()
 	{
-		List<L2PcInstance> players = new FastList<L2PcInstance>();
+		List<L2PcInstance> players = new FastList<>();
 		L2Clan clan;
 		if (getFort().getOwnerClan() != null)
 		{

@@ -125,7 +125,7 @@ public class JIPTextField extends JPanel implements FocusListener
 	{
 		if (_focusListeners == null)
 		{
-			_focusListeners = new LinkedList<FocusListener>();
+			_focusListeners = new LinkedList<>();
 		}
 		
 		if ((fl != null) && !_focusListeners.contains(fl))

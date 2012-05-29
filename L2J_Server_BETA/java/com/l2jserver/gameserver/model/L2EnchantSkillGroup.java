@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class L2EnchantSkillGroup
 {
 	private final int _id;
-	private List<EnchantSkillDetail> _enchantDetails = new FastList<EnchantSkillDetail>();
+	private List<EnchantSkillDetail> _enchantDetails = new FastList<>();
 	
 	public L2EnchantSkillGroup(int id)
 	{

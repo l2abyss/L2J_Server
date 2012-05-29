@@ -37,7 +37,7 @@ import com.l2jserver.Config;
 public class MailSystem
 {
 	private static final Logger _log = Logger.getLogger(MailSystem.class.getName());
-	private final Map<String, MailContent> _mailData = new FastMap<String, MailContent>();
+	private final Map<String, MailContent> _mailData = new FastMap<>();
 	
 	public static MailSystem getInstance()
 	{

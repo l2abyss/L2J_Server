@@ -69,8 +69,8 @@ public class EnchantGroupsTable
 			con = L2DatabaseFactory.getInstance().getConnection();
 			try
 			{
-				_enchantSkillGroups = new TIntObjectHashMap<L2EnchantSkillGroup>();
-				_enchantSkillTrees = new TIntObjectHashMap<L2EnchantSkillLearn>();
+				_enchantSkillGroups = new TIntObjectHashMap<>();
+				_enchantSkillTrees = new TIntObjectHashMap<>();
 				
 				PreparedStatement statement = con.prepareStatement("SELECT group_id, level, adena, exp, sp, success_rate76, success_rate77, success_rate78, success_rate79, success_rate80, success_rate81, success_rate82, success_rate83, success_rate84, success_rate85 FROM enchant_skill_groups ORDER BY group_id, level");
 				ResultSet enchantGroups = statement.executeQuery();

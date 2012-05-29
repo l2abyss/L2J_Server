@@ -343,7 +343,7 @@ public class L2ServitorInstance extends L2Summon
 			
 			int buff_index = 0;
 			
-			final List<Integer> storedSkills = new FastList<Integer>();
+			final List<Integer> storedSkills = new FastList<>();
 			
 			//Store all effect data along with calculated remaining
 			statement = con.prepareStatement(ADD_SKILL_SAVE);

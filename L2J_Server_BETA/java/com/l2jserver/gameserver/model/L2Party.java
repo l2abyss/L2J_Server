@@ -172,7 +172,7 @@ public class L2Party extends AbstractPlayerGroup
 	 */
 	private L2PcInstance getCheckedRandomMember(int ItemId, L2Character target)
 	{
-		List<L2PcInstance> availableMembers = new FastList<L2PcInstance>();
+		List<L2PcInstance> availableMembers = new FastList<>();
 		for (L2PcInstance member : getMembers())
 		{
 			if (member.getInventory().validateCapacityByItemId(ItemId) && Util.checkIfInRange(Config.ALT_PARTY_RANGE2, target, member, true))
@@ -895,7 +895,7 @@ public class L2Party extends AbstractPlayerGroup
 	
 	private List<L2Playable> getValidMembers(List<L2Playable> members, int topLvl)
 	{
-		List<L2Playable> validMembers = new FastList<L2Playable>();
+		List<L2Playable> validMembers = new FastList<>();
 		
 		// Fixed LevelDiff cutoff point
 		if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("level"))

@@ -91,8 +91,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		List<Integer> teamOne = null;
 		List<Integer> teamTwo = null;
 		L2PcInstance player;
-		List<L2PcInstance> teamOnePlayers = new ArrayList<L2PcInstance>(MAX_TEAM_SIZE);
-		List<L2PcInstance> teamTwoPlayers = new ArrayList<L2PcInstance>(MAX_TEAM_SIZE);
+		List<L2PcInstance> teamOnePlayers = new ArrayList<>(MAX_TEAM_SIZE);
+		List<L2PcInstance> teamTwoPlayers = new ArrayList<>(MAX_TEAM_SIZE);
 
 		while (list.size() > 1)
 		{

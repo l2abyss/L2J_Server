@@ -31,7 +31,7 @@ public class ActionHandler
 	
 	protected ActionHandler()
 	{
-		_actions = new FastMap<InstanceType, IActionHandler>();
+		_actions = new FastMap<>();
 	}
 	
 	public void registerHandler(IActionHandler handler)

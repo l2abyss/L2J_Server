@@ -37,9 +37,9 @@ public class DoorTable extends DocumentParser
 {
 	private static final Logger _log = Logger.getLogger(DoorTable.class.getName());
 	
-	private final TIntObjectHashMap<L2DoorInstance> _doors = new TIntObjectHashMap<L2DoorInstance>();
-	private static final TIntObjectHashMap<Set<Integer>> _groups = new TIntObjectHashMap<Set<Integer>>();
-	private final TIntObjectHashMap<ArrayList<L2DoorInstance>> _regions = new TIntObjectHashMap<ArrayList<L2DoorInstance>>();
+	private final TIntObjectHashMap<L2DoorInstance> _doors = new TIntObjectHashMap<>();
+	private static final TIntObjectHashMap<Set<Integer>> _groups = new TIntObjectHashMap<>();
+	private final TIntObjectHashMap<ArrayList<L2DoorInstance>> _regions = new TIntObjectHashMap<>();
 	
 	protected DoorTable()
 	{
@@ -140,7 +140,7 @@ public class DoorTable extends DocumentParser
 			_regions.get(region).add(door);
 		else
 		{
-			final ArrayList<L2DoorInstance> list = new ArrayList<L2DoorInstance>();
+			final ArrayList<L2DoorInstance> list = new ArrayList<>();
 			list.add(door);
 			_regions.put(region, list);
 		}
@@ -151,7 +151,7 @@ public class DoorTable extends DocumentParser
 		Set<Integer> set = _groups.get(groupName.hashCode());
 		if (set == null)
 		{
-			set = new HashSet<Integer>();
+			set = new HashSet<>();
 			set.add(doorId);
 			_groups.put(groupName.hashCode(), set);
 		}

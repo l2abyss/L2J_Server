@@ -40,7 +40,7 @@ public class RequestManorList extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 			return;
-		FastList<String> manorsName = new FastList<String>();
+		FastList<String> manorsName = new FastList<>();
 		manorsName.add("gludio");
 		manorsName.add("dion");
 		manorsName.add("giran");

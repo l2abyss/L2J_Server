@@ -38,7 +38,7 @@ public class ListPartyWating extends L2GameServerPacket
 		_cha = player;
 		_loc = location;
 		_lim = limit;
-		_rooms = new FastList<PartyMatchRoom>();
+		_rooms = new FastList<>();
 	}
 	
 	@Override

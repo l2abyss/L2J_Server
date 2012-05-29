@@ -49,7 +49,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 		{
 			return;
 		}
-		_items = new FastSet<ItemRequest>();
+		_items = new FastSet<>();
 		
 		for (int i = 0; i < count; i++)
 		{

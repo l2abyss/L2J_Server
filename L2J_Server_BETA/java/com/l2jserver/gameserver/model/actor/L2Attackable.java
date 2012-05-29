@@ -316,7 +316,7 @@ public class L2Attackable extends L2Npc
 	
 	private boolean _absorbed;
 	
-	private final L2TIntObjectHashMap<AbsorberInfo> _absorbersList = new L2TIntObjectHashMap<AbsorberInfo>();
+	private final L2TIntObjectHashMap<AbsorberInfo> _absorbersList = new L2TIntObjectHashMap<>();
 	
 	private boolean _mustGiveExpSp;
 	
@@ -762,7 +762,7 @@ public class L2Attackable extends L2Npc
 						partyLvl = 0;
 						
 						// Get all L2Character that can be rewarded in the party
-						List<L2Playable> rewardedMembers = new FastList<L2Playable>();
+						List<L2Playable> rewardedMembers = new FastList<>();
 						// Go through all L2PcInstance in the party
 						List<L2PcInstance> groupMembers;
 						
@@ -1092,7 +1092,7 @@ public class L2Attackable extends L2Npc
 		L2Character mostHated = null;
 		L2Character secondMostHated = null;
 		int maxHate = 0;
-		List<L2Character> result = new FastList<L2Character>();
+		List<L2Character> result = new FastList<>();
 		
 		// While iterating over this map removing objects is not allowed
 		// Go through the aggroList of the L2Attackable
@@ -1122,7 +1122,7 @@ public class L2Attackable extends L2Npc
 	{
 		if (getAggroList().isEmpty() || isAlikeDead())
 			return null;
-		List<L2Character> result = new FastList<L2Character>();
+		List<L2Character> result = new FastList<>();
 		
 		for (AggroInfo ai : getAggroList().values())
 		{
@@ -1612,7 +1612,7 @@ public class L2Attackable extends L2Npc
 				// according to sh1ny, seeded mobs CAN be spoiled and swept.
 				if (isSpoil()/* && !isSeeded() */)
 				{
-					FastList<RewardItem> sweepList = new FastList<RewardItem>();
+					FastList<RewardItem> sweepList = new FastList<>();
 					
 					for (L2DropData drop : cat.getAllDrops())
 					{
@@ -1859,7 +1859,7 @@ public class L2Attackable extends L2Npc
 	 */
 	public FastList<L2Item> getSpoilLootItems()
 	{
-		final FastList<L2Item> lootItems = new FastList<L2Item>();
+		final FastList<L2Item> lootItems = new FastList<>();
 		if (isSweepActive())
 		{
 			for (RewardItem item : _sweepItems)
@@ -2251,7 +2251,7 @@ public class L2Attackable extends L2Npc
 		if (diff > 0)
 			count += diff;
 		
-		FastList<RewardItem> harvested = new FastList<RewardItem>();
+		FastList<RewardItem> harvested = new FastList<>();
 		
 		harvested.add(new RewardItem(L2Manor.getInstance().getCropType(_seedType), count * Config.RATE_DROP_MANOR));
 		

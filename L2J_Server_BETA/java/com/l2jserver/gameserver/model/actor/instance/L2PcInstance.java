@@ -484,7 +484,7 @@ public final class L2PcInstance extends L2Playable
 	
 	private int _bookmarkslot = 0; // The Teleport Bookmark Slot
 	
-	private List<TeleportBookmark> tpbookmark = new FastList<TeleportBookmark>();
+	private List<TeleportBookmark> tpbookmark = new FastList<>();
 	
 	private PunishLevel _punishLevel = PunishLevel.NONE;
 	private long _punishTimer = 0;
@@ -558,11 +558,11 @@ public final class L2PcInstance extends L2Playable
 	private int _transformationId = 0;
 	
 	/** The table containing all L2RecipeList of the L2PcInstance */
-	private final Map<Integer, L2RecipeList> _dwarvenRecipeBook = new FastMap<Integer, L2RecipeList>();
-	private final Map<Integer, L2RecipeList> _commonRecipeBook = new FastMap<Integer, L2RecipeList>();
+	private final Map<Integer, L2RecipeList> _dwarvenRecipeBook = new FastMap<>();
+	private final Map<Integer, L2RecipeList> _commonRecipeBook = new FastMap<>();
 	
 	/** Premium Items */
-	private final Map<Integer, L2PremiumItem> _premiumItems = new FastMap<Integer, L2PremiumItem>();
+	private final Map<Integer, L2PremiumItem> _premiumItems = new FastMap<>();
 	
 	/** True if the L2PcInstance is sitting */
 	private boolean _waitTypeSitting;
@@ -617,7 +617,7 @@ public final class L2PcInstance extends L2Playable
 	private int _questNpcObject = 0;
 	
 	/** The table containing all Quests began by the L2PcInstance */
-	private final Map<String, QuestState> _quests = new FastMap<String, QuestState>();
+	private final Map<String, QuestState> _quests = new FastMap<>();
 	
 	/** The list containing all shortCuts of this L2PcInstance */
 	private final ShortCuts _shortCuts = new ShortCuts(this);
@@ -627,8 +627,8 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private final MacroList _macros = new MacroList(this);
 	
-	private final List<L2PcInstance> _snoopListener = new FastList<L2PcInstance>();
-	private final List<L2PcInstance> _snoopedPlayer = new FastList<L2PcInstance>();
+	private final List<L2PcInstance> _snoopListener = new FastList<>();
+	private final List<L2PcInstance> _snoopedPlayer = new FastList<>();
 	
 	// hennas
 	private final L2Henna[] _henna = new L2Henna[3];
@@ -744,7 +744,7 @@ public final class L2PcInstance extends L2Playable
 	/** The fists L2Weapon of the L2PcInstance (used when no weapon is equiped) */
 	private L2Weapon _fistsWeaponItem;
 	
-	private final Map<Integer, String> _chars = new FastMap<Integer, String>();
+	private final Map<Integer, String> _chars = new FastMap<>();
 	
 	//private byte _updateKnownCounter = 0;
 	
@@ -795,8 +795,8 @@ public final class L2PcInstance extends L2Playable
 	private ScheduledFuture<?> _taskWater;
 	
 	/** Bypass validations */
-	private final List<String> _validBypass = new FastList<String>();
-	private final List<String> _validBypass2 = new FastList<String>();
+	private final List<String> _validBypass = new FastList<>();
+	private final List<String> _validBypass2 = new FastList<>();
 	
 	private Forum _forumMail;
 	private Forum _forumMemo;
@@ -1676,7 +1676,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public Quest[] getAllActiveQuests()
 	{
-		FastList<Quest> quests = new FastList<Quest>();
+		FastList<Quest> quests = new FastList<>();
 		
 		for (QuestState qs : _quests.values())
 		{
@@ -1896,7 +1896,7 @@ public final class L2PcInstance extends L2Playable
 			synchronized(this)
 			{
 				if (_notifyQuestOfDeathList == null)
-					_notifyQuestOfDeathList = new FastList<QuestState>();
+					_notifyQuestOfDeathList = new FastList<>();
 			}
 		}
 		
@@ -6274,7 +6274,7 @@ public final class L2PcInstance extends L2Playable
 	public void addTrainedBeast(L2TamedBeastInstance tamedBeast)
 	{
 		if (_tamedBeast == null)
-			_tamedBeast = new FastList<L2TamedBeastInstance>();
+			_tamedBeast = new FastList<>();
 		_tamedBeast.add(tamedBeast);
 	}
 	
@@ -8006,7 +8006,7 @@ public final class L2PcInstance extends L2Playable
 			
 			int buff_index = 0;
 			
-			final List<Integer> storedSkills = new FastList<Integer>();
+			final List<Integer> storedSkills = new FastList<>();
 			
 			// Store all effect data along with calulated remaining
 			// reuse delays for matching skills. 'restore_type'= 0.
@@ -10956,7 +10956,7 @@ public final class L2PcInstance extends L2Playable
 	public Map<Integer, SubClass> getSubClasses()
 	{
 		if (_subClasses == null)
-			_subClasses = new FastMap<Integer, SubClass>();
+			_subClasses = new FastMap<>();
 		
 		return _subClasses;
 	}
@@ -14451,7 +14451,7 @@ public final class L2PcInstance extends L2Playable
 		
 		int count = 0;
 		int id = 1;
-		FastList<Integer> idlist = new FastList<Integer>();
+		FastList<Integer> idlist = new FastList<>();
 		
 		int size = tpbookmark.size();
 		
@@ -14513,7 +14513,7 @@ public final class L2PcInstance extends L2Playable
 	public void restoreTeleportBookmark()
 	{
 		if(tpbookmark == null)
-			tpbookmark = new FastList<TeleportBookmark>();
+			tpbookmark = new FastList<>();
 		Connection con = null;
 		try
 		{
@@ -14714,7 +14714,7 @@ public final class L2PcInstance extends L2Playable
 	 * list of character friends
 	 * 
 	 */
-	private final List<Integer> _friendList = new FastList<Integer>();
+	private final List<Integer> _friendList = new FastList<>();
 	
 	public List<Integer> getFriendList()
 	{

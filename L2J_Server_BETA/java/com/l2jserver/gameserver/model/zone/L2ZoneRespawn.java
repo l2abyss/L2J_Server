@@ -63,7 +63,7 @@ public abstract class L2ZoneRespawn extends L2ZoneType
 	public final void addSpawn(int x, int y, int z)
 	{
 		if (_spawnLocs == null)
-			_spawnLocs = new ArrayList<Location>();
+			_spawnLocs = new ArrayList<>();
 		
 		_spawnLocs.add(new Location(x, y, z));
 	}
@@ -71,7 +71,7 @@ public abstract class L2ZoneRespawn extends L2ZoneType
 	public final void addOtherSpawn(int x, int y, int z)
 	{
 		if (_otherSpawnLocs == null)
-			_otherSpawnLocs = new ArrayList<Location>();
+			_otherSpawnLocs = new ArrayList<>();
 		
 		_otherSpawnLocs.add(new Location(x, y, z));
 	}
@@ -79,7 +79,7 @@ public abstract class L2ZoneRespawn extends L2ZoneType
 	public final void addChaoticSpawn(int x, int y, int z)
 	{
 		if (_chaoticSpawnLocs == null)
-			_chaoticSpawnLocs = new ArrayList<Location>();
+			_chaoticSpawnLocs = new ArrayList<>();
 		
 		_chaoticSpawnLocs.add(new Location(x, y, z));
 	}
@@ -87,7 +87,7 @@ public abstract class L2ZoneRespawn extends L2ZoneType
 	public final void addBanishSpawn(int x, int y, int z)
 	{
 		if (_banishSpawnLocs == null)
-			_banishSpawnLocs = new ArrayList<Location>();
+			_banishSpawnLocs = new ArrayList<>();
 		
 		_banishSpawnLocs.add(new Location(x, y, z));
 	}

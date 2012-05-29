@@ -205,7 +205,7 @@ public abstract class L2Item
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
 	
-	private final List<Quest> _questEvents = new FastList<Quest>();
+	private final List<Quest> _questEvents = new FastList<>();
 	private final int _useSkillDisTime;
 	private final int _reuseDelay;
 	private int _sharedReuseGroup;
@@ -706,7 +706,7 @@ public abstract class L2Item
 		if (_funcTemplates == null || _funcTemplates.length == 0)
 			return _emptyFunctionSet;
 		
-		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
+		ArrayList<Func> funcs = new ArrayList<>(_funcTemplates.length);
 		
 		Env env = new Env();
 		env.setCharacter(player);
@@ -874,7 +874,7 @@ public abstract class L2Item
 	public final void attach(Condition c)
 	{
 		if (_preConditions == null)
-			_preConditions = new FastList<Condition>();
+			_preConditions = new FastList<>();
 		if (!_preConditions.contains(c))
 			_preConditions.add(c);
 	}

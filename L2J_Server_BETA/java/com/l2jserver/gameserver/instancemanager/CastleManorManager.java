@@ -211,10 +211,10 @@ public class CastleManorManager
 			PreparedStatement statementProcure = con.prepareStatement(CASTLE_MANOR_LOAD_PROCURE);
 			for (Castle castle : CastleManager.getInstance().getCastles())
 			{
-				FastList<SeedProduction> production = new FastList<SeedProduction>();
-				FastList<SeedProduction> productionNext = new FastList<SeedProduction>();
-				FastList<CropProcure> procure = new FastList<CropProcure>();
-				FastList<CropProcure> procureNext = new FastList<CropProcure>();
+				FastList<SeedProduction> production = new FastList<>();
+				FastList<SeedProduction> productionNext = new FastList<>();
+				FastList<CropProcure> procure = new FastList<>();
+				FastList<CropProcure> procureNext = new FastList<>();
 				
 				// restore seed production info
 				statementProduction.setInt(1, castle.getCastleId());
@@ -439,7 +439,7 @@ public class CastleManorManager
 			}
 			else
 			{
-				FastList<SeedProduction> production = new FastList<SeedProduction>();
+				FastList<SeedProduction> production = new FastList<>();
 				for (SeedProduction s : c.getSeedProduction(PERIOD_CURRENT))
 				{
 					s.setCanProduce(s.getStartProduce());
@@ -447,7 +447,7 @@ public class CastleManorManager
 				}
 				c.setSeedProduction(production, PERIOD_NEXT);
 				
-				FastList<CropProcure> procure = new FastList<CropProcure>();
+				FastList<CropProcure> procure = new FastList<>();
 				for (CropProcure cr : c.getCropProcure(PERIOD_CURRENT))
 				{
 					cr.setAmount(cr.getStartAmount());
@@ -537,7 +537,7 @@ public class CastleManorManager
 	
 	private FastList<SeedProduction> getNewSeedsList(int castleId)
 	{
-		FastList<SeedProduction> seeds = new FastList<SeedProduction>();
+		FastList<SeedProduction> seeds = new FastList<>();
 		FastList<Integer> seedsIds = L2Manor.getInstance().getSeedsForCastle(castleId);
 		for (int sd : seedsIds)
 		{
@@ -548,7 +548,7 @@ public class CastleManorManager
 	
 	private FastList<CropProcure> getNewCropsList(int castleId)
 	{
-		FastList<CropProcure> crops = new FastList<CropProcure>();
+		FastList<CropProcure> crops = new FastList<>();
 		FastList<Integer> cropsIds = L2Manor.getInstance().getCropsForCastle(castleId);
 		for (int cr : cropsIds)
 			crops.add(new CropProcure(cr));

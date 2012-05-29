@@ -44,7 +44,7 @@ public final class ClanHallManager
 	private Map<Integer, AuctionableHall> _clanHall;
 	private Map<Integer, AuctionableHall> _freeClanHall;
 	private Map<Integer, AuctionableHall> _allAuctionableClanHalls;
-	private static Map<Integer, ClanHall> _allClanHalls = new FastMap<Integer, ClanHall>();
+	private static Map<Integer, ClanHall> _allClanHalls = new FastMap<>();
 	private boolean _loaded = false;
 	
 	public static ClanHallManager getInstance()
@@ -59,9 +59,9 @@ public final class ClanHallManager
 	
 	protected ClanHallManager()
 	{
-		_clanHall = new FastMap<Integer, AuctionableHall>();
-		_freeClanHall = new FastMap<Integer, AuctionableHall>();
-		_allAuctionableClanHalls = new FastMap<Integer, AuctionableHall>();
+		_clanHall = new FastMap<>();
+		_freeClanHall = new FastMap<>();
+		_allAuctionableClanHalls = new FastMap<>();
 		load();
 	}
 	

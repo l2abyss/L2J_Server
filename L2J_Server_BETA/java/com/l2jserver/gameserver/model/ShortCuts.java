@@ -39,7 +39,7 @@ public class ShortCuts
 	private static Logger _log = Logger.getLogger(ShortCuts.class.getName());
 	private static final int MAX_SHORTCUTS_PER_BAR = 12;
 	private final L2PcInstance _owner;
-	private final Map<Integer, L2ShortCut> _shortCuts = new TreeMap<Integer, L2ShortCut>();
+	private final Map<Integer, L2ShortCut> _shortCuts = new TreeMap<>();
 	
 	public ShortCuts(L2PcInstance owner)
 	{

@@ -153,7 +153,7 @@ public class CoupleManager
 	public final FastList<Couple> getCouples()
 	{
 		if (_couples == null)
-			_couples = new FastList<Couple>();
+			_couples = new FastList<>();
 		return _couples;
 	}
 	

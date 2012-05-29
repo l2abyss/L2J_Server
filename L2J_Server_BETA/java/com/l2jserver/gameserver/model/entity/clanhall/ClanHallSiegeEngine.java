@@ -69,7 +69,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	
 	protected final Logger _log;
 	
-	private FastMap<Integer, L2SiegeClan> _attackers = new FastMap<Integer, L2SiegeClan>();
+	private FastMap<Integer, L2SiegeClan> _attackers = new FastMap<>();
 	private FastList<L2Spawn> _guards;
 
 	public SiegableHall _hall;
@@ -158,7 +158,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	{
 		if(_guards == null)
 		{
-			_guards = new FastList<L2Spawn>();
+			_guards = new FastList<>();
 			Connection con = null;
 			try
 			{
@@ -264,7 +264,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	@Override
 	public List<L2SiegeClan> getAttackerClans()
 	{
-		FastList<L2SiegeClan> result = new FastList<L2SiegeClan>();
+		FastList<L2SiegeClan> result = new FastList<>();
 		result.addAll(_attackers.values());
 		return result;
 	}
@@ -273,7 +273,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	public List<L2PcInstance> getAttackersInZone()
 	{
 		final Collection<L2PcInstance> list = _hall.getSiegeZone().getPlayersInside();
-		List<L2PcInstance> attackers = new FastList<L2PcInstance>();
+		List<L2PcInstance> attackers = new FastList<>();
 		
 		for(L2PcInstance pc : list)
 		{

@@ -27,7 +27,7 @@ import javolution.util.FastMap;
  */
 public class ImagesTable
 {
-	private static final Map<String, ImageIcon> IMAGES = new FastMap<String, ImageIcon>();
+	private static final Map<String, ImageIcon> IMAGES = new FastMap<>();
 	
 	public static final String IMAGES_DIRECTORY = "../images/";
 	

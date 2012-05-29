@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 public class BoatManager
 {
-	private Map<Integer, L2BoatInstance> _boats = new FastMap<Integer, L2BoatInstance>();
+	private Map<Integer, L2BoatInstance> _boats = new FastMap<>();
 	private boolean[] _docksBusy = new boolean[3];
 	
 	public static final int TALKING_ISLAND = 1;

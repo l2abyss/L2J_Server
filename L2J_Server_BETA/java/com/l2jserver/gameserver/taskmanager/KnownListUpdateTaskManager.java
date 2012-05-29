@@ -40,7 +40,7 @@ public class KnownListUpdateTaskManager
 	// Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
 	public static int _fullUpdateTimer = FULL_UPDATE_TIMER;
 	
-	protected static final FastSet<L2WorldRegion> _failedRegions = new FastSet<L2WorldRegion>(1);
+	protected static final FastSet<L2WorldRegion> _failedRegions = new FastSet<>(1);
 	
 	protected KnownListUpdateTaskManager()
 	{

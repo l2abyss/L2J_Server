@@ -37,7 +37,7 @@ public class EventDroplist
 	/**
 	 * The table containing all DataDrop object
 	 */
-	private static final List<DateDrop> _allNpcDateDrops = new FastList<DateDrop>();
+	private static final List<DateDrop> _allNpcDateDrops = new FastList<>();
 	
 	public static class DateDrop
 	{
@@ -94,7 +94,7 @@ public class EventDroplist
 	 */
 	public List<DateDrop> getAllDrops()
 	{
-		final List<DateDrop> list = new FastList<DateDrop>();
+		final List<DateDrop> list = new FastList<>();
 		final Date currentDate = new Date();
 		for (DateDrop drop : _allNpcDateDrops)
 		{

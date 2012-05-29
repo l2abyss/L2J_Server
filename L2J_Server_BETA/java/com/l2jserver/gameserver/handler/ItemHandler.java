@@ -50,7 +50,7 @@ public class ItemHandler
 	 */
 	protected ItemHandler()
 	{
-		_datatable = new TIntObjectHashMap<IItemHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	/**

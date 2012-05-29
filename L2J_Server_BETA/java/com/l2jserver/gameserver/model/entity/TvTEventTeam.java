@@ -32,7 +32,7 @@ public class TvTEventTeam
 	/** The points of the team<br> */
 	private short _points;
 	/** Name and instance of all participated players in FastMap<br> */
-	private Map<Integer, L2PcInstance> _participatedPlayers = new FastMap<Integer, L2PcInstance>();
+	private Map<Integer, L2PcInstance> _participatedPlayers = new FastMap<>();
 	
 	/**
 	 * C'tor initialize the team<br><br>
@@ -94,7 +94,7 @@ public class TvTEventTeam
 	public void cleanMe()
 	{
 		_participatedPlayers.clear();
-		_participatedPlayers = new FastMap<Integer, L2PcInstance>();
+		_participatedPlayers = new FastMap<>();
 		_points = 0;
 	}
 	

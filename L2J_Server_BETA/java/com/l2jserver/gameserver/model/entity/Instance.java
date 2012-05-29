@@ -232,7 +232,7 @@ public class Instance
 	private void addDoor(int doorId, StatsSet set)
 	{
 		if (_doors == null)
-			_doors = new ArrayList<L2DoorInstance>(2);
+			_doors = new ArrayList<>(2);
 		
 		for (L2DoorInstance door: _doors)
 		{

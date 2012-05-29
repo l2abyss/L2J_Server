@@ -63,11 +63,11 @@ public class ItemTable
 	
 	private static FastList<NewItemListener> newItemListeners = new FastList<NewItemListener>().shared();
 	
-	public static final Map<String, Integer> _materials = new FastMap<String, Integer>();
-	public static final Map<String, Integer> _crystalTypes = new FastMap<String, Integer>();
-	public static final Map<String, Integer> _slots = new FastMap<String, Integer>();
-	public static final Map<String, L2WeaponType> _weaponTypes = new FastMap<String, L2WeaponType>();
-	public static final Map<String, L2ArmorType> _armorTypes = new FastMap<String, L2ArmorType>();
+	public static final Map<String, Integer> _materials = new FastMap<>();
+	public static final Map<String, Integer> _crystalTypes = new FastMap<>();
+	public static final Map<String, Integer> _slots = new FastMap<>();
+	public static final Map<String, L2WeaponType> _weaponTypes = new FastMap<>();
+	public static final Map<String, L2ArmorType> _armorTypes = new FastMap<>();
 	
 	
 	private L2Item[] _allTemplates;
@@ -188,9 +188,9 @@ public class ItemTable
 	 */
 	protected ItemTable()
 	{
-		_etcItems = new FastMap<Integer, L2EtcItem>();
-		_armors = new FastMap<Integer, L2Armor>();
-		_weapons = new FastMap<Integer, L2Weapon>();
+		_etcItems = new FastMap<>();
+		_armors = new FastMap<>();
+		_weapons = new FastMap<>();
 		load();
 	}
 	

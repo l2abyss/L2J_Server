@@ -111,7 +111,7 @@ public class RequestSetCrop extends L2GameClientPacket {
 		if (!player.isInsideRadius(manager, INTERACTION_DISTANCE, true, false))
 			return;
 		
-		List<CropProcure> crops = new ArrayList<CropProcure>(_items.length);
+		List<CropProcure> crops = new ArrayList<>(_items.length);
 		for (Crop i : _items)
 		{
 			CropProcure s = i.getCrop();

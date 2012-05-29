@@ -34,7 +34,7 @@ public class SellList extends L2GameServerPacket
 	private final L2PcInstance _activeChar;
 	private final L2MerchantInstance _lease;
 	private long _money;
-	private List<L2ItemInstance> _selllist = new FastList<L2ItemInstance>();
+	private List<L2ItemInstance> _selllist = new FastList<>();
 	
 	public SellList(L2PcInstance player)
 	{

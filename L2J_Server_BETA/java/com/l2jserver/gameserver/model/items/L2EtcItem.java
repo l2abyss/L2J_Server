@@ -81,7 +81,7 @@ public final class L2EtcItem extends L2Item
 		if (capsuled_items != null)
 		{
 			String[] split = capsuled_items.split(";");
-			_extractableItems = new ArrayList<L2ExtractableProduct>(split.length);
+			_extractableItems = new ArrayList<>(split.length);
 			for (String part : split)
 			{
 				if (part.trim().isEmpty())

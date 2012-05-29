@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.stats.Stats;
 
 public final class Elementals
 {
-	private static final TIntObjectHashMap<ElementalItems> TABLE = new TIntObjectHashMap<ElementalItems>();
+	private static final TIntObjectHashMap<ElementalItems> TABLE = new TIntObjectHashMap<>();
 	
 	static
 	{

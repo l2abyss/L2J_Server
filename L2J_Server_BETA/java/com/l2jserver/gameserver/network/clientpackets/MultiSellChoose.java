@@ -160,7 +160,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					return;
 				}
 				
-				ArrayList<Ingredient> ingredientsList = new ArrayList<Ingredient>(entry.getIngredients().size());
+				ArrayList<Ingredient> ingredientsList = new ArrayList<>(entry.getIngredients().size());
 				// Generate a list of distinct ingredients and counts in order to check if the correct item-counts
 				// are possessed by the player
 				boolean newIng;

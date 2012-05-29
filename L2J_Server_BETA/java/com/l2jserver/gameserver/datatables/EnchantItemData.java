@@ -75,7 +75,7 @@ public class EnchantItemData extends DocumentParser
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						
-						List<Integer> items = new ArrayList<Integer>();
+						List<Integer> items = new ArrayList<>();
 						
 						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 						{
@@ -98,7 +98,7 @@ public class EnchantItemData extends DocumentParser
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						
-						List<Integer> items = new ArrayList<Integer>();
+						List<Integer> items = new ArrayList<>();
 						
 						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 						{

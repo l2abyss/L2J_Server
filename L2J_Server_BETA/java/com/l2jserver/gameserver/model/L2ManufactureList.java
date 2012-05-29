@@ -31,7 +31,7 @@ public class L2ManufactureList
 	
 	public L2ManufactureList()
 	{
-		_list = new FastList<L2ManufactureItem>();
+		_list = new FastList<>();
 		_confirmed = false;
 	}
 	

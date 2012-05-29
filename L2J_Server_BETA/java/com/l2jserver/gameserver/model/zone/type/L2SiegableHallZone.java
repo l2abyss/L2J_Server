@@ -40,7 +40,7 @@ public final class L2SiegableHallZone extends L2ClanHallZone
 		{
 			if (_challengerLocations == null)
 			{
-				_challengerLocations = new ArrayList<Location>();
+				_challengerLocations = new ArrayList<>();
 			}
 			_challengerLocations.add(new Location(x, y, z));
 		}

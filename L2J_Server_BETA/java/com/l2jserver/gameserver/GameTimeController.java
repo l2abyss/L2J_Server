@@ -43,7 +43,7 @@ public class GameTimeController
 	protected static boolean _isNight = false;
 	protected static boolean _interruptRequest = false;
 	
-	protected static final TIntObjectHashMap<L2Character> _movingObjects = new TIntObjectHashMap<L2Character>();
+	protected static final TIntObjectHashMap<L2Character> _movingObjects = new TIntObjectHashMap<>();
 	private static final ReentrantLock _lock = new ReentrantLock();
 	
 	protected static TimerThread _timer;

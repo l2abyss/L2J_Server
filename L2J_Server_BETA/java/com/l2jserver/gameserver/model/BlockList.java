@@ -72,7 +72,7 @@ public class BlockList
 	private static List<Integer> loadList(int ObjId)
 	{
 		Connection con = null;
-		List<Integer> list = new FastList<Integer>();
+		List<Integer> list = new FastList<>();
 		
 		try
 		{

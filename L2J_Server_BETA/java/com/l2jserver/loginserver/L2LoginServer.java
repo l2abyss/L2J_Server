@@ -142,7 +142,7 @@ public final class L2LoginServer
 		final SelectorHelper sh = new SelectorHelper();
 		try
 		{
-			_selectorThread = new SelectorThread<L2LoginClient>(sc, sh, lph, sh, sh);
+			_selectorThread = new SelectorThread<>(sc, sh, lph, sh, sh);
 		}
 		catch (IOException e)
 		{

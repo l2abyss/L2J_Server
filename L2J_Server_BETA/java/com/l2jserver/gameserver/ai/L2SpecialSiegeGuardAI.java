@@ -33,7 +33,7 @@ public final class L2SpecialSiegeGuardAI extends L2SiegeGuardAI
 	public L2SpecialSiegeGuardAI(AIAccessor accessor)
 	{
 		super(accessor);
-		_allied = new ArrayList<Integer>();
+		_allied = new ArrayList<>();
 	}
 	
 	public ArrayList<Integer> getAlly()

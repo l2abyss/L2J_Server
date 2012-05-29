@@ -134,7 +134,7 @@ public class LoginServerThread extends Thread
 		_reserveHost = Config.RESERVE_HOST_ON_LOGIN;
 		_subnets = Config.GAME_SERVER_SUBNETS;
 		_hosts = Config.GAME_SERVER_HOSTS;
-		_waitingClients = new FastList<WaitingClient>();
+		_waitingClients = new FastList<>();
 		_accountsInGameServer.shared();
 		_maxPlayer = Config.MAXIMUM_ONLINE_USERS;
 	}
@@ -293,7 +293,7 @@ public class LoginServerThread extends Thread
 							sendPacket(st);
 							if (L2World.getInstance().getAllPlayersCount() > 0)
 							{
-								FastList<String> playerList = new FastList<String>();
+								FastList<String> playerList = new FastList<>();
 								for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 								{
 									playerList.add(player.getAccountName());
@@ -536,7 +536,7 @@ public class LoginServerThread extends Thread
 	{
 		Connection con = null;
 		int chars = 0;
-		List<Long> charToDel = new ArrayList<Long>();
+		List<Long> charToDel = new ArrayList<>();
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();

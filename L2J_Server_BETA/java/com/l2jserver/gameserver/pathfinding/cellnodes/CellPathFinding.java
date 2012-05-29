@@ -124,7 +124,7 @@ public class CellPathFinding extends PathFinding
 		{
 			if (_debugItems == null)
 			{
-				_debugItems = new FastList<L2ItemInstance>();
+				_debugItems = new FastList<>();
 			}
 			else
 			{
@@ -252,7 +252,7 @@ public class CellPathFinding extends PathFinding
 	
 	private FastList<AbstractNodeLoc> constructPath(AbstractNode node)
 	{
-		FastList<AbstractNodeLoc> path = new FastList<AbstractNodeLoc>();
+		FastList<AbstractNodeLoc> path = new FastList<>();
 		int previousDirectionX = Integer.MIN_VALUE;
 		int previousDirectionY = Integer.MIN_VALUE;
 		int directionX, directionY;
@@ -371,7 +371,7 @@ public class CellPathFinding extends PathFinding
 		{
 			mapSize = size;
 			count = cnt;
-			bufs = new ArrayList<CellNodeBuffer>(count);
+			bufs = new ArrayList<>(count);
 		}
 		
 		@Override

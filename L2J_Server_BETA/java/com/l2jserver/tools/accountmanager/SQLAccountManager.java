@@ -278,9 +278,9 @@ public class SQLAccountManager
 			statement.setString(1, account);
 			rset = statement.executeQuery();
 			
-			FastList<String> objIds = new FastList<String>();
-			FastList<String> charNames = new FastList<String>();
-			FastList<String> clanIds = new FastList<String>();
+			FastList<String> objIds = new FastList<>();
+			FastList<String> charNames = new FastList<>();
+			FastList<String> clanIds = new FastList<>();
 			
 			while (rset.next())
 			{

@@ -53,7 +53,7 @@ public class ZoneManager extends DocumentParser
 {
 	private static final Logger _log = Logger.getLogger(ZoneManager.class.getName());
 	
-	private final Map<Class<? extends L2ZoneType>, Map<Integer, ? extends L2ZoneType>> _classZones = new HashMap<Class<? extends L2ZoneType>, Map<Integer, ? extends L2ZoneType>>();
+	private final Map<Class<? extends L2ZoneType>, Map<Integer, ? extends L2ZoneType>> _classZones = new HashMap<>();
 	private int _lastDynamicId = 300000;
 	private List<L2ItemInstance> _debugItems;
 	
@@ -358,7 +358,7 @@ public class ZoneManager extends DocumentParser
 		Map<Integer, T> map = (Map<Integer, T>) _classZones.get(zone.getClass());
 		if (map == null)
 		{
-			map = new HashMap<Integer, T>();
+			map = new HashMap<>();
 			map.put(id, zone);
 			_classZones.put(zone.getClass(), map);
 		}
@@ -374,7 +374,7 @@ public class ZoneManager extends DocumentParser
 	@Deprecated
 	public Collection<L2ZoneType> getAllZones()
 	{
-		List<L2ZoneType> zones = new ArrayList<L2ZoneType>();
+		List<L2ZoneType> zones = new ArrayList<>();
 		for (Map<Integer, ? extends L2ZoneType> map : _classZones.values())
 		{
 			zones.addAll(map.values());
@@ -455,7 +455,7 @@ public class ZoneManager extends DocumentParser
 	public List<L2ZoneType> getZones(int x, int y)
 	{
 		L2WorldRegion region = L2World.getInstance().getRegion(x, y);
-		List<L2ZoneType> temp = new ArrayList<L2ZoneType>();
+		List<L2ZoneType> temp = new ArrayList<>();
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y))
@@ -474,7 +474,7 @@ public class ZoneManager extends DocumentParser
 	public List<L2ZoneType> getZones(int x, int y, int z)
 	{
 		L2WorldRegion region = L2World.getInstance().getRegion(x, y);
-		List<L2ZoneType> temp = new ArrayList<L2ZoneType>();
+		List<L2ZoneType> temp = new ArrayList<>();
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y, z))
@@ -564,7 +564,7 @@ public class ZoneManager extends DocumentParser
 	public List<L2ItemInstance> getDebugItems()
 	{
 		if (_debugItems == null)
-			_debugItems = new ArrayList<L2ItemInstance>();
+			_debugItems = new ArrayList<>();
 		return _debugItems;
 	}
 	

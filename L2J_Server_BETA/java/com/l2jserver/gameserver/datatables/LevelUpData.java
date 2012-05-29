@@ -58,7 +58,7 @@ public class LevelUpData
 	
 	protected LevelUpData()
 	{
-		_lvlTable = new TIntObjectHashMap<L2LvlupData>();
+		_lvlTable = new TIntObjectHashMap<>();
 		Connection con = null;
 		try
 		{

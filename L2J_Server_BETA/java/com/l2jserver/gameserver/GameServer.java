@@ -400,7 +400,7 @@ public class GameServer
 		sc.TCP_NODELAY = Config.MMO_TCP_NODELAY;
 		
 		_gamePacketHandler = new L2GamePacketHandler();
-		_selectorThread = new SelectorThread<L2GameClient>(sc, _gamePacketHandler, _gamePacketHandler, _gamePacketHandler, new IPv4Filter());
+		_selectorThread = new SelectorThread<>(sc, _gamePacketHandler, _gamePacketHandler, _gamePacketHandler, new IPv4Filter());
 		
 		InetAddress bindAddress = null;
 		if (!Config.GAMESERVER_HOSTNAME.equals("*"))

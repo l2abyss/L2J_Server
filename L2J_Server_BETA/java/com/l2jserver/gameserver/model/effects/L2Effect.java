@@ -544,7 +544,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		if (_funcTemplates == null)
 			return _emptyFunctionSet;
 		
-		final ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
+		final ArrayList<Func> funcs = new ArrayList<>(_funcTemplates.length);
 		
 		Env env = new Env();
 		env.setCharacter(_effector);

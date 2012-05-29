@@ -39,7 +39,7 @@ public class BypassHandler
 	
 	protected BypassHandler()
 	{
-		_datatable = new TIntObjectHashMap<IBypassHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	public void registerHandler(IBypassHandler handler)

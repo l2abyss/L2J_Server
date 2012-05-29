@@ -32,7 +32,7 @@ import com.l2jserver.Config;
 public abstract class FloodProtectedListener extends Thread
 {
 	private final Logger _log = Logger.getLogger(FloodProtectedListener.class.getName());
-	private final Map<String, ForeignConnection> _floodProtection = new FastMap<String, ForeignConnection>();
+	private final Map<String, ForeignConnection> _floodProtection = new FastMap<>();
 	private final String _listenIp;
 	private final int _port;
 	private ServerSocket _serverSocket;

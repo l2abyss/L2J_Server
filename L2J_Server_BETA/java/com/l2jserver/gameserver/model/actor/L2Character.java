@@ -2538,7 +2538,7 @@ public abstract class L2Character extends L2Object
 			{
 				if (_attackByList == null)
 				{
-					_attackByList = new WeakFastSet<L2Character>(true);
+					_attackByList = new WeakFastSet<>(true);
 				}
 			}
 		}
@@ -4019,7 +4019,7 @@ public abstract class L2Character extends L2Object
 	public final void addStatFuncs(Func[] funcs)
 	{
 		
-		List<Stats> modifiedStats = new ArrayList<Stats>();
+		List<Stats> modifiedStats = new ArrayList<>();
 		
 		for (Func f : funcs)
 		{
@@ -4102,7 +4102,7 @@ public abstract class L2Character extends L2Object
 	public final void removeStatFuncs(Func[] funcs)
 	{
 		
-		List<Stats> modifiedStats = new ArrayList<Stats>();
+		List<Stats> modifiedStats = new ArrayList<>();
 		
 		for (Func f : funcs)
 		{
@@ -6311,7 +6311,7 @@ public abstract class L2Character extends L2Object
 			int _skiprange = 0;
 			int _skipgeo = 0;
 			int _skippeace = 0;
-			List<L2Character> targetList = new FastList<L2Character>(targets.length);
+			List<L2Character> targetList = new FastList<>(targets.length);
 			for (L2Object target : targets)
 			{
 				if (target instanceof L2Character)
@@ -6698,7 +6698,7 @@ public abstract class L2Character extends L2Object
 			return;
 		
 		if (_disabledSkills == null)
-			_disabledSkills = new L2TIntObjectHashMap<Long>();
+			_disabledSkills = new L2TIntObjectHashMap<>();
 		
 		_disabledSkills.put(Integer.valueOf(skill.getReuseHashCode()), delay > 10 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
 	}

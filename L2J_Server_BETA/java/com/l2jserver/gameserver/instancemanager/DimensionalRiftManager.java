@@ -55,7 +55,7 @@ import com.l2jserver.util.Rnd;
 public class DimensionalRiftManager
 {
 	private static Logger _log = Logger.getLogger(DimensionalRiftManager.class.getName());
-	private final TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>>(7);
+	private final TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<>(7);
 	private final int DIMENSIONAL_FRAGMENT_ITEM_ID = 7079;
 	
 	public static DimensionalRiftManager getInstance()
@@ -429,8 +429,8 @@ public class DimensionalRiftManager
 			_zMax = zMax;
 			_teleportCoords = new int[] { xT, yT, zT };
 			_isBossRoom = isBossRoom;
-			_roomSpawns = new FastList<L2Spawn>();
-			_roomMobs = new FastList<L2Npc>();
+			_roomSpawns = new FastList<>();
+			_roomMobs = new FastList<>();
 			_s = new Polygon(new int[] { xMin, xMax, xMax, xMin }, new int[] { yMin, yMin, yMax, yMax }, 4);
 		}
 		
@@ -550,7 +550,7 @@ public class DimensionalRiftManager
 	
 	public FastList<Byte> getFreeRooms(byte type)
 	{
-		FastList<Byte> list = new FastList<Byte>();
+		FastList<Byte> list = new FastList<>();
 		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
 		{
 			if (!room.ispartyInside())

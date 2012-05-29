@@ -33,7 +33,7 @@ public class DuelManager
 	
 	protected DuelManager()
 	{
-		_duels = new FastList<Duel>();
+		_duels = new FastList<>();
 	}
 	
 	private int getNextDuelId()

@@ -63,7 +63,7 @@ public class PreparedListContainer extends ListContainer
 			}
 			
 			// size is not known - using FastList
-			_entries = new FastList<Entry>();
+			_entries = new FastList<>();
 			for (L2ItemInstance item : items)
 			{
 				// only do the match up on equippable items that are not currently equipped
@@ -88,7 +88,7 @@ public class PreparedListContainer extends ListContainer
 		}
 		else
 		{
-			_entries = new ArrayList<Entry>(template.getEntries().size());
+			_entries = new ArrayList<>(template.getEntries().size());
 			for (Entry ent : template.getEntries())
 			{
 				_entries.add(new PreparedEntry(ent, null, _applyTaxes, false, taxRate));

@@ -42,11 +42,11 @@ public class CrestCache
 {
 	private static Logger _log = Logger.getLogger(CrestCache.class.getName());
 	
-	private final FastMRUCache<Integer, byte[]> _cachePledge = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cachePledge = new FastMRUCache<>();
 	
-	private final FastMRUCache<Integer, byte[]> _cachePledgeLarge = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cachePledgeLarge = new FastMRUCache<>();
 	
-	private final FastMRUCache<Integer, byte[]> _cacheAlly = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cacheAlly = new FastMRUCache<>();
 	
 	private int _loadedFiles;
 	

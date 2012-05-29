@@ -86,7 +86,7 @@ public class L2EffectZone extends L2ZoneType
 		else if (name.equals("skillIdLvl"))
 		{
 			String[] propertySplit = value.split(";");
-			_skills = new FastMap<Integer, Integer>(propertySplit.length);
+			_skills = new FastMap<>(propertySplit.length);
 			for (String skill : propertySplit)
 			{
 				String[] skillSplit = skill.split("-");

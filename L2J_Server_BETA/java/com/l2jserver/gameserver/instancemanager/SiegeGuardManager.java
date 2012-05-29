@@ -35,7 +35,7 @@ public class SiegeGuardManager
 	private static Logger _log = Logger.getLogger(SiegeGuardManager.class.getName());
 	
 	private Castle _castle;
-	private List<L2Spawn> _siegeGuardSpawn = new FastList<L2Spawn>();
+	private List<L2Spawn> _siegeGuardSpawn = new FastList<>();
 	
 	public SiegeGuardManager(Castle castle)
 	{

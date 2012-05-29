@@ -245,7 +245,7 @@ public class InstanceManager extends DocumentParser
 	{
 		public int instanceId;
 		public int templateId = -1;
-		public FastList<Integer> allowed = new FastList<Integer>();
+		public FastList<Integer> allowed = new FastList<>();
 		public volatile int status;
 	}
 	

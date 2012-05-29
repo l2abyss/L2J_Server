@@ -190,7 +190,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeDeathNotify(L2Character character)
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof DeathListener)
@@ -235,7 +235,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeLoginLogoutNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if ((listener instanceof PlayerSpawnListener) || (listener instanceof PlayerDespawnListener))
@@ -280,7 +280,7 @@ public abstract class L2Script extends Quest
 	{
 		if (character != null)
 		{
-			List<L2JListener> removeList = new ArrayList<L2JListener>();
+			List<L2JListener> removeList = new ArrayList<>();
 			for (L2JListener listener : _listeners)
 			{
 				if ((listener instanceof AttackListener) && (((AttackListener) listener).getCharacter() == character))
@@ -339,7 +339,7 @@ public abstract class L2Script extends Quest
 	{
 		if (character != null)
 		{
-			List<L2JListener> removeList = new ArrayList<L2JListener>();
+			List<L2JListener> removeList = new ArrayList<>();
 			for (L2JListener listener : _listeners)
 			{
 				if ((listener instanceof SkillUseListener) && (((SkillUseListener) listener).getCharacter() == character))
@@ -357,7 +357,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeSkillUseNotify(int npcId)
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if ((listener instanceof SkillUseListener) && (((SkillUseListener) listener).getNpcId() == npcId))
@@ -395,7 +395,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeClanCreationLevelUpNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof ClanCreationListener)
@@ -439,7 +439,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeClanJoinLeaveNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof ClanMembershipListener)
@@ -490,7 +490,7 @@ public abstract class L2Script extends Quest
 	{
 		if (clan != null)
 		{
-			List<L2JListener> removeList = new ArrayList<L2JListener>();
+			List<L2JListener> removeList = new ArrayList<>();
 			for (L2JListener listener : _listeners)
 			{
 				if ((listener instanceof ClanWarehouseListener) && (((ClanWarehouseListener) listener).getWarehouse() == clan.getWarehouse()))
@@ -531,7 +531,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeClanWarNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof ClanWarListener)
@@ -571,7 +571,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeFortSiegeNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof FortSiegeListener)
@@ -617,7 +617,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeSiegeNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof SiegeListener)
@@ -672,7 +672,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeTvtNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof TvTListener)
@@ -710,7 +710,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeItemAugmentNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof AugmentListener)
@@ -749,7 +749,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeItemDropPickupNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof DropListener)
@@ -785,7 +785,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removePlayerLevelNotify(L2PcInstance player)
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if ((listener instanceof PlayerLevelListener) && (listener.getPlayer() == player))
@@ -821,7 +821,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeProfessionChangeNotify(L2PcInstance player)
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if ((listener instanceof ProfessionChangeListener) && (listener.getPlayer() == player))
@@ -857,7 +857,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeEquipmentNotify(L2PcInstance player)
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if ((listener instanceof EquipmentListener) && (((EquipmentListener) listener).getPlayer() == player))
@@ -895,7 +895,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeHennaNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof HennaListener)
@@ -950,7 +950,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeItemTrackers()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof ItemTracker)
@@ -987,7 +987,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeNewItemNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof NewItemListener)
@@ -1033,7 +1033,7 @@ public abstract class L2Script extends Quest
 	{
 		if (player != null)
 		{
-			List<L2JListener> removeList = new ArrayList<L2JListener>();
+			List<L2JListener> removeList = new ArrayList<>();
 			for (L2JListener listener : _listeners)
 			{
 				if ((listener instanceof TransformListener) && (listener.getPlayer() == player))
@@ -1066,7 +1066,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removePlayerChatFilter()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof ChatFilterListener)
@@ -1098,7 +1098,7 @@ public abstract class L2Script extends Quest
 	 */
 	public void removePlayerTalkNotify()
 	{
-		List<L2JListener> removeList = new ArrayList<L2JListener>();
+		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof ChatListener)

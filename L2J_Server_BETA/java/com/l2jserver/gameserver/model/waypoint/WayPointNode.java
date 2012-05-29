@@ -189,7 +189,7 @@ public class WayPointNode extends L2Object
 		
 		int steps = distance / 40;
 		
-		List<WayPointNode> lineNodes = new FastList<WayPointNode>();
+		List<WayPointNode> lineNodes = new FastList<>();
 		
 		for (int i = 0; i < steps; i++)
 		{
@@ -250,7 +250,7 @@ public class WayPointNode extends L2Object
 	
 	public List<WayPointNode> getLineNodes()
 	{
-		List<WayPointNode> list = new FastList<WayPointNode>();
+		List<WayPointNode> list = new FastList<>();
 		
 		for (List<WayPointNode> points : _linkLists.values())
 		{

@@ -64,7 +64,7 @@ public final class MobGroup
 	public List<L2ControllableMobInstance> getMobs()
 	{
 		if (_mobs == null)
-			_mobs = new FastList<L2ControllableMobInstance>();
+			_mobs = new FastList<>();
 		
 		return _mobs;
 	}
@@ -314,7 +314,7 @@ public final class MobGroup
 	
 	protected void removeDead()
 	{
-		List<L2ControllableMobInstance> deadMobs = new FastList<L2ControllableMobInstance>();
+		List<L2ControllableMobInstance> deadMobs = new FastList<>();
 		
 		for (L2ControllableMobInstance mobInst : getMobs())
 			if (mobInst != null && mobInst.isDead())

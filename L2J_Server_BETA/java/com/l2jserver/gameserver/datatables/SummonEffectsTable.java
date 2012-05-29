@@ -33,7 +33,7 @@ public class SummonEffectsTable
 	 * 		key: classIndex, value: servitors Map
 	 * 			key: servitorSkillId, value: Effects list
 	 */
-	private TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> _servitorEffects = new TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>>();
+	private TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> _servitorEffects = new TIntObjectHashMap<>();
 	
 	public TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> getServitorEffectsOwner()
 	{
@@ -51,7 +51,7 @@ public class SummonEffectsTable
 	}
 	
 	/** Pets **/
-	private TIntObjectHashMap<List<SummonEffect>> _petEffects = new TIntObjectHashMap<List<SummonEffect>>(); // key: petItemObjectId, value: Effects list
+	private TIntObjectHashMap<List<SummonEffect>> _petEffects = new TIntObjectHashMap<>(); // key: petItemObjectId, value: Effects list
 	
 	public TIntObjectHashMap<List<SummonEffect>> getPetEffects()
 	{

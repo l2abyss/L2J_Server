@@ -32,7 +32,7 @@ public class ExBuySellListPacket extends L2GameServerPacket
 {
 	private static final String _S__B7_ExBuySellListPacket = "[S] B7 ExBuySellListPacket";
 	
-	private final List<L2TradeItem> _buyList = new FastList<L2TradeItem>();
+	private final List<L2TradeItem> _buyList = new FastList<>();
 	private L2ItemInstance[] _sellList = null;
 	private L2ItemInstance[] _refundList = null;
 	private final boolean _done;

@@ -77,7 +77,7 @@ public class PcFreight extends ItemContainer
 	@Override
 	public L2ItemInstance[] getItems()
 	{
-		List<L2ItemInstance> list = new FastList<L2ItemInstance>();
+		List<L2ItemInstance> list = new FastList<>();
 		for (L2ItemInstance item : _items)
 		{
 			if (item.isFreightable())

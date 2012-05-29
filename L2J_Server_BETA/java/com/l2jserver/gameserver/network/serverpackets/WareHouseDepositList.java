@@ -40,7 +40,7 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	{
 		_whType = type;
 		_playerAdena = player.getAdena();
-		_items = new FastList<L2ItemInstance>();
+		_items = new FastList<>();
 		
 		final boolean isPrivate = _whType == PRIVATE;
 		for (L2ItemInstance temp : player.getInventory().getAvailableItems(true, isPrivate, false))

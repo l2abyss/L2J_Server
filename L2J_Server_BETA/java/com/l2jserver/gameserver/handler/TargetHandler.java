@@ -34,7 +34,7 @@ public class TargetHandler
 	
 	protected TargetHandler()
 	{
-		_datatable = new FastMap<Enum<L2TargetType>, ITargetTypeHandler>();
+		_datatable = new FastMap<>();
 	}
 	
 	public void registerHandler(ITargetTypeHandler handler)

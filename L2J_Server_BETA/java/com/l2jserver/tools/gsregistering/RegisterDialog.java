@@ -64,7 +64,7 @@ public class RegisterDialog extends JDialog implements ActionListener
 		final JLabel label = new JLabel(_bundle.getString("serverName"));
 		this.add(label, cons);
 		
-		_combo = new JComboBox<ComboServer>();
+		_combo = new JComboBox<>();
 		_combo.setEditable(false);
 		for (Map.Entry<Integer, String> entry : GameServerTable.getInstance().getServerNames().entrySet())
 		{

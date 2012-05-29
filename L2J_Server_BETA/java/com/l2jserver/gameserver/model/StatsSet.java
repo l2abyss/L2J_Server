@@ -30,7 +30,7 @@ public final class StatsSet
 {
 	
 	private static final Logger _log = Logger.getLogger(StatsSet.class.getName());
-	private final Map<String, Object> _set = new FastMap<String, Object>();
+	private final Map<String, Object> _set = new FastMap<>();
 	
 	/**
 	 * Returns the set of values

@@ -54,7 +54,7 @@ public class HellboundManager
 	
 	protected HellboundManager()
 	{
-		_population = new FastList<HellboundSpawn>();
+		_population = new FastList<>();
 		
 		loadData();
 		loadSpawns();

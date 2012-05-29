@@ -49,7 +49,7 @@ public class MerchantPriceConfigTable implements InstanceListManager
 	
 	private static final String MPCS_FILE = "MerchantPriceConfig.xml";
 	
-	private Map<Integer, MerchantPriceConfig> _mpcs = new FastMap<Integer, MerchantPriceConfig>();
+	private Map<Integer, MerchantPriceConfig> _mpcs = new FastMap<>();
 	private MerchantPriceConfig _defaultMpc;
 	
 	public MerchantPriceConfig getMerchantPriceConfig(L2MerchantInstance npc)

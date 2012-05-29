@@ -31,8 +31,8 @@ public class Entry
 	public Entry(int entryId)
 	{
 		_entryId = entryId;
-		_products = new ArrayList<Ingredient>();
-		_ingredients = new ArrayList<Ingredient>();
+		_products = new ArrayList<>();
+		_ingredients = new ArrayList<>();
 	}
 	
 	/**

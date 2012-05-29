@@ -31,7 +31,7 @@ public class ListContainer
 	
 	public ListContainer()
 	{
-		_entries = new ArrayList<Entry>();
+		_entries = new ArrayList<>();
 	}
 	
 	/**

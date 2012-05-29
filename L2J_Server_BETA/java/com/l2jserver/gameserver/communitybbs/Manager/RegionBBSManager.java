@@ -277,7 +277,7 @@ public class RegionBBSManager extends BaseBBSManager
 	
 	public void changeCommunityBoard()
 	{
-		final FastList<L2PcInstance> sortedPlayers = new FastList<L2PcInstance>();
+		final FastList<L2PcInstance> sortedPlayers = new FastList<>();
 		final TIntObjectIterator<L2PcInstance> it = L2World.getInstance().getAllPlayers().iterator();
 		while (it.hasNext())
 		{
@@ -329,7 +329,7 @@ public class RegionBBSManager extends BaseBBSManager
 		
 		if (!added)
 		{
-			FastList<L2PcInstance> temp = new FastList<L2PcInstance>();
+			FastList<L2PcInstance> temp = new FastList<>();
 			int page = _onlinePlayers.size() + 1;
 			if (temp.add(player))
 			{
@@ -352,7 +352,7 @@ public class RegionBBSManager extends BaseBBSManager
 		
 		for (int page : _onlinePlayers.keySet())
 		{
-			FastMap<String, String> communityPage = new FastMap<String, String>();
+			FastMap<String, String> communityPage = new FastMap<>();
 			htmlCode.setLength(0);
 			StringUtil.append(htmlCode, "<html><body><br>" + "<table>" + trOpen + "<td align=left valign=top>Server Restarted: ", String.valueOf(GameServer.dateTimeServerStarted.getTime()), tdClose
 					+ trClose + "</table>" + "<table>" + trOpen + tdOpen + "XP Rate: x", String.valueOf(Config.RATE_XP), tdClose

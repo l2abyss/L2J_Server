@@ -325,7 +325,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		String negateAbnormals = set.getString("negateAbnormals", null);
 		if (negateAbnormals != null && !negateAbnormals.isEmpty())
 		{
-			_negateAbnormals = new FastMap<String, Byte>();
+			_negateAbnormals = new FastMap<>();
 			for (String ngtStack : negateAbnormals.split(";"))
 			{
 				String[] ngt = ngtStack.split(",");
@@ -1557,7 +1557,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (!(player instanceof L2Playable) && !(player instanceof L2Attackable))
 			return _emptyFunctionSet;
 		
-		ArrayList<Func> funcs = new ArrayList<Func>(_funcTemplates.length);
+		ArrayList<Func> funcs = new ArrayList<>(_funcTemplates.length);
 		
 		Env env = new Env();
 		env.setCharacter(player);
@@ -1634,7 +1634,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 		}
 		
-		ArrayList<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplates.length);
+		ArrayList<L2Effect> effects = new ArrayList<>(_effectTemplates.length);
 		
 		if (env == null)
 			env = new Env();
@@ -1721,7 +1721,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 		}
 		
-		ArrayList<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplates.length);
+		ArrayList<L2Effect> effects = new ArrayList<>(_effectTemplates.length);
 		
 		if (env == null)
 			env = new Env();
@@ -1758,7 +1758,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (!hasSelfEffects() || isPassive())
 			return _emptyEffectSet;
 		
-		List<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplatesSelf.length);
+		List<L2Effect> effects = new ArrayList<>(_effectTemplatesSelf.length);
 		
 		for (EffectTemplate et : _effectTemplatesSelf)
 		{
@@ -1784,7 +1784,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (!hasPassiveEffects())
 			return _emptyEffectSet;
 		
-		List<L2Effect> effects = new ArrayList<L2Effect>(_effectTemplatesPassive.length);
+		List<L2Effect> effects = new ArrayList<>(_effectTemplatesPassive.length);
 		
 		for (EffectTemplate et : _effectTemplatesPassive)
 		{
@@ -1874,13 +1874,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (itemOrWeapon)
 		{
 			if (_itemPreCondition == null)
-				_itemPreCondition = new FastList<Condition>();
+				_itemPreCondition = new FastList<>();
 			_itemPreCondition.add(c);
 		}
 		else
 		{
 			if (_preCondition == null)
-				_preCondition = new FastList<Condition>();
+				_preCondition = new FastList<>();
 			_preCondition.add(c);
 		}
 	}

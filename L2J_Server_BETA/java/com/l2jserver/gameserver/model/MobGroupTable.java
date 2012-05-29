@@ -33,7 +33,7 @@ public class MobGroupTable
 	
 	protected MobGroupTable()
 	{
-		_groupMap = new FastMap<Integer, MobGroup>();
+		_groupMap = new FastMap<>();
 	}
 	
 	public static MobGroupTable getInstance()

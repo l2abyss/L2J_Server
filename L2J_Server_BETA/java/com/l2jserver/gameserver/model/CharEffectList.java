@@ -569,8 +569,8 @@ public class CharEffectList
 	{
 		if (_queuesInitialized)
 			return;
-		_addQueue = new LinkedBlockingQueue<L2Effect>();
-		_removeQueue = new LinkedBlockingQueue<L2Effect>();
+		_addQueue = new LinkedBlockingQueue<>();
+		_removeQueue = new LinkedBlockingQueue<>();
 		_queuesInitialized = true;
 	}
 	
@@ -920,7 +920,7 @@ public class CharEffectList
 		L2Effect effectToAdd = null;
 		L2Effect effectToRemove = null;
 		if (_stackedEffects == null)
-			_stackedEffects = new FastMap<String, List<L2Effect>>();
+			_stackedEffects = new FastMap<>();
 		
 		// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
 		stackQueue = _stackedEffects.get(newEffect.getAbnormalType());
@@ -966,7 +966,7 @@ public class CharEffectList
 		}
 		else
 		{
-			stackQueue = new FastList<L2Effect>();
+			stackQueue = new FastList<>();
 			stackQueue.add(0, newEffect);
 		}
 		

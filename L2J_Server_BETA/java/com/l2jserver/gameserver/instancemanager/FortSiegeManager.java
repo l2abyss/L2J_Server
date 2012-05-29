@@ -167,13 +167,13 @@ public class FortSiegeManager
 			_suspiciousMerchantRespawnDelay = Integer.decode(siegeSettings.getProperty("SuspiciousMerchantRespawnDelay", "180"));
 			
 			// Siege spawns settings
-			_commanderSpawnList = new FastMap<Integer, FastList<SiegeSpawn>>();
-			_flagList = new FastMap<Integer, FastList<CombatFlag>>();
+			_commanderSpawnList = new FastMap<>();
+			_flagList = new FastMap<>();
 			
 			for (Fort fort : FortManager.getInstance().getForts())
 			{
-				FastList<SiegeSpawn> _commanderSpawns = new FastList<SiegeSpawn>();
-				FastList<CombatFlag> _flagSpawns = new FastList<CombatFlag>();
+				FastList<SiegeSpawn> _commanderSpawns = new FastList<>();
+				FastList<CombatFlag> _flagSpawns = new FastList<>();
 				for (int i = 1; i < 5; i++)
 				{
 					String _spawnParams = siegeSettings.getProperty(fort.getName().replace(" ", "") + "Commander" + i, "");
@@ -292,14 +292,14 @@ public class FortSiegeManager
 	public final List<FortSiege> getSieges()
 	{
 		if (_sieges == null)
-			_sieges = new FastList<FortSiege>();
+			_sieges = new FastList<>();
 		return _sieges;
 	}
 	
 	public final void addSiege(FortSiege fortSiege)
 	{
 		if (_sieges == null)
-			_sieges = new FastList<FortSiege>();
+			_sieges = new FastList<>();
 		_sieges.add(fortSiege);
 	}
 	

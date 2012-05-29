@@ -45,7 +45,7 @@ public class RequestExOlympiadMatchListRefresh extends L2GameClientPacket
 		if (activeChar == null || !activeChar.inObserverMode())
 			return;
 		
-		List<OlympiadGameTask> games = new ArrayList<OlympiadGameTask>();
+		List<OlympiadGameTask> games = new ArrayList<>();
 		OlympiadGameTask task;
 		for (int i = 0; i < OlympiadGameManager.getInstance().getNumberOfStadiums(); i++)
 		{

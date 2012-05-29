@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class LocaleCodes
 {
-	Map<String, Locale> _locales = new HashMap<String, Locale>();
+	Map<String, Locale> _locales = new HashMap<>();
 	
 	public static LocaleCodes getInstance()
 	{

@@ -36,7 +36,7 @@ public class FortSiegeGuardManager
 	private static final Logger _log = Logger.getLogger(FortSiegeGuardManager.class.getName());
 	
 	private Fort _fort;
-	protected FastMap<Integer, FastList<L2Spawn>> _siegeGuards = new FastMap<Integer, FastList<L2Spawn>>();
+	protected FastMap<Integer, FastList<L2Spawn>> _siegeGuards = new FastMap<>();
 	protected FastList<L2Spawn> _siegeGuardsSpawns;
 	
 	public FortSiegeGuardManager(Fort fort)
@@ -111,7 +111,7 @@ public class FortSiegeGuardManager
 			
 			L2Spawn spawn1;
 			L2NpcTemplate template1;
-			_siegeGuardsSpawns = new FastList<L2Spawn>();
+			_siegeGuardsSpawns = new FastList<>();
 			while (rs.next())
 			{
 				int fortId = rs.getInt("fortId");

@@ -35,7 +35,7 @@ public class GlobalVariablesManager
 	
 	protected GlobalVariablesManager()
 	{
-		_variablesMap = new FastMap<String, String>();
+		_variablesMap = new FastMap<>();
 		
 		loadVars();
 	}

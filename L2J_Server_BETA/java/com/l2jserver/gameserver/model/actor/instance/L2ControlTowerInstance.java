@@ -138,7 +138,7 @@ public class L2ControlTowerInstance extends L2Npc
 			synchronized (this)
 			{
 				if (_guards == null)
-					_guards = new FastList<L2Spawn>();
+					_guards = new FastList<>();
 			}
 		}
 		

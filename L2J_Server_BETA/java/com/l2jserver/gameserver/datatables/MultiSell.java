@@ -63,7 +63,7 @@ public class MultiSell
 	
 	protected MultiSell()
 	{
-		_entries = new TIntObjectHashMap<ListContainer>();
+		_entries = new TIntObjectHashMap<>();
 		load();
 	}
 	
@@ -215,7 +215,7 @@ public class MultiSell
 	{
 		Document doc = null;
 		int id = 0;
-		List<File> files = new FastList<File>();
+		List<File> files = new FastList<>();
 		hashFiles("data/multisell", files);
 		if (Config.CUSTOM_MULTISELL_LOAD)
 			hashFiles("data/multisell/custom", files);

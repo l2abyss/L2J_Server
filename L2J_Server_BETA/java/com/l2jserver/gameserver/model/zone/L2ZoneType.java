@@ -494,7 +494,7 @@ public abstract class L2ZoneType
 			_questEvents = new HashMap<>();
 		List<Quest> questByEvents = _questEvents.get(EventType);
 		if (questByEvents == null)
-			questByEvents = new ArrayList<Quest>();
+			questByEvents = new ArrayList<>();
 		if (!questByEvents.contains(q))
 			questByEvents.add(q);
 		_questEvents.put(EventType, questByEvents);

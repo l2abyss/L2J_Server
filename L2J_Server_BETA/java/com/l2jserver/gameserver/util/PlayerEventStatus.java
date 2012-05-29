@@ -34,7 +34,7 @@ public class PlayerEventStatus
 	public int initPvpKills = 0;
 	public int initPkKills = 0;
 	public String initTitle = "";
-	public List<L2PcInstance> kills = new FastList<L2PcInstance>();
+	public List<L2PcInstance> kills = new FastList<>();
 	public boolean eventSitForced = false;
 	
 	public PlayerEventStatus(L2PcInstance player)

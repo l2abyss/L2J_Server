@@ -33,7 +33,7 @@ public final class EffectHandler
 	
 	protected EffectHandler()
 	{
-		_handlers = new FastMap<Integer, Class<? extends L2Effect>>();
+		_handlers = new FastMap<>();
 	}
 	
 	public void registerHandler(String name, Class<? extends L2Effect> func)

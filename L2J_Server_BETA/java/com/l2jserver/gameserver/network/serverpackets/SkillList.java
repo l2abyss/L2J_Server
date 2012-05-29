@@ -59,7 +59,7 @@ public final class SkillList extends L2GameServerPacket
 	
 	public SkillList()
 	{
-		_skills = new FastList<Skill>();
+		_skills = new FastList<>();
 	}
 	
 	public void addSkill(int id, int level, boolean passive, boolean disabled, boolean enchanted)

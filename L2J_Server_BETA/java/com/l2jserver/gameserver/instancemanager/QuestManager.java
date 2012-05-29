@@ -35,7 +35,7 @@ public class QuestManager extends ScriptManager<Quest>
 		return SingletonHolder._instance;
 	}
 	
-	private Map<String, Quest> _quests = new FastMap<String, Quest>();
+	private Map<String, Quest> _quests = new FastMap<>();
 	
 	protected QuestManager()
 	{

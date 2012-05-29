@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class PartyMemberPosition extends L2GameServerPacket
 {
-	Map<Integer, Location> locations = new FastMap<Integer, Location>();
+	Map<Integer, Location> locations = new FastMap<>();
 	
 	public PartyMemberPosition(L2Party party)
 	{

@@ -54,7 +54,7 @@ public class L2Territory
 	
 	public L2Territory(int terr)
 	{
-		_points = new FastList<Point>();
+		_points = new FastList<>();
 		_terr = terr;
 		_xMin = 999999;
 		_xMax =-999999;

@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.model.L2Object;
  */
 public final class ExShowTrace extends L2GameServerPacket
 {
-	private final List<Trace> _traces = new FastList<Trace>();
+	private final List<Trace> _traces = new FastList<>();
 	
 	public void addTrace(int x, int y, int z, int time)
 	{

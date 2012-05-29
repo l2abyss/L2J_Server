@@ -44,7 +44,7 @@ public class AntiFeedManager
 	protected AntiFeedManager()
 	{
 		_lastDeathTimes = new FastMap<Integer,Long>().shared();
-		_eventIPs = new TIntObjectHashMap<Map<Integer, Connections>>();
+		_eventIPs = new TIntObjectHashMap<>();
 	}
 	
 	/**

@@ -51,7 +51,7 @@ import com.l2jserver.gameserver.util.Util;
 public abstract class L2Vehicle extends L2Character
 {
 	protected int _dockId = 0;
-	protected final FastList<L2PcInstance> _passengers = new FastList<L2PcInstance>();
+	protected final FastList<L2PcInstance> _passengers = new FastList<>();
 	protected Location _oustLoc = null;
 	private Runnable _engine = null;
 	

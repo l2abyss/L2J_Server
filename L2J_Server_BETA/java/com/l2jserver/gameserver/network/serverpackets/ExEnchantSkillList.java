@@ -52,7 +52,7 @@ public class ExEnchantSkillList extends L2GameServerPacket
 	public ExEnchantSkillList(EnchantSkillType type)
 	{
 		_type = type;
-		_skills = new FastList<Skill>();
+		_skills = new FastList<>();
 	}
 	
 	@Override

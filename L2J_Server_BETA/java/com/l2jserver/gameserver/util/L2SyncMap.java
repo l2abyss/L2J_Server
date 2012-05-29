@@ -35,7 +35,7 @@ import com.l2jserver.util.L2FastMap.I2ForEachValue;
  */
 public class L2SyncMap<K extends Object, V extends Object> implements Map<K, V>
 {
-	private final L2FastMap<K, V> _map = new L2FastMap<K, V>();
+	private final L2FastMap<K, V> _map = new L2FastMap<>();
 	
 	@Override
 	public synchronized V put(K key, V value)

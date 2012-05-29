@@ -44,8 +44,8 @@ public class CharNameTable
 	
 	protected CharNameTable()
 	{
-		_chars = new FastMap<Integer, String>();
-		_accessLevels = new FastMap<Integer, Integer>();
+		_chars = new FastMap<>();
+		_accessLevels = new FastMap<>();
 		if (Config.CACHE_CHAR_NAMES)
 			loadAll();
 	}

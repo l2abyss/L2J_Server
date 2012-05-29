@@ -944,7 +944,7 @@ public class Olympiad
 			}
 		}
 		
-		_heroesToBe = new L2FastList<StatsSet>();
+		_heroesToBe = new L2FastList<>();
 		
 		Connection con = null;
 		try
@@ -953,7 +953,7 @@ public class Olympiad
 			PreparedStatement statement = con.prepareStatement(OLYMPIAD_GET_HEROS);
 			ResultSet rset;
 			StatsSet hero;
-			L2FastList<StatsSet> soulHounds = new L2FastList<StatsSet>();
+			L2FastList<StatsSet> soulHounds = new L2FastList<>();
 			for (int element : HERO_IDS)
 			{
 				statement.setInt(1, element);

@@ -30,7 +30,7 @@ public class TelnetHandler
 	
 	protected TelnetHandler()
 	{
-		_telnetHandlers = new TIntObjectHashMap<ITelnetHandler>();
+		_telnetHandlers = new TIntObjectHashMap<>();
 	}
 	
 	public void registerHandler(ITelnetHandler handler)

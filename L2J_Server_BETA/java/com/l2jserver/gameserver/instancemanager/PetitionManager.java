@@ -89,7 +89,7 @@ public final class PetitionManager
 		private PetitionState _state = PetitionState.Pending;
 		private String _content;
 		
-		private List<CreatureSay> _messageLog = new FastList<CreatureSay>();
+		private List<CreatureSay> _messageLog = new FastList<>();
 		
 		private L2PcInstance _petitioner;
 		private L2PcInstance _responder;

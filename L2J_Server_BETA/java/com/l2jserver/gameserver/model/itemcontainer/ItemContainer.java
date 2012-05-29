@@ -108,7 +108,7 @@ public abstract class ItemContainer
 	 */
 	public List<L2ItemInstance> getItemsByItemId(int itemId)
 	{
-		List<L2ItemInstance> returnList = new FastList<L2ItemInstance>();
+		List<L2ItemInstance> returnList = new FastList<>();
 		for (L2ItemInstance item : _items)
 		{
 			if (item != null && item.getItemId() == itemId)

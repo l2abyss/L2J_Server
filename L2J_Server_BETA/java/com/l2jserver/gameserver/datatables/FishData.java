@@ -111,7 +111,7 @@ public final class FishData extends DocumentParser
 	 */
 	public List<L2Fish> getFish(int level, int group, int grade)
 	{
-		final ArrayList<L2Fish> result = new ArrayList<L2Fish>();
+		final ArrayList<L2Fish> result = new ArrayList<>();
 		Map<Integer, L2Fish> fish = null;
 		switch (grade)
 		{

@@ -30,7 +30,7 @@ import java.util.zip.ZipFile;
 public class JarClassLoader extends ClassLoader
 {
 	private static Logger _log = Logger.getLogger(JarClassLoader.class.getCanonicalName());
-	private final HashSet<String> _jars = new HashSet<String>();
+	private final HashSet<String> _jars = new HashSet<>();
 	
 	public void addJarFile(String filename)
 	{

@@ -68,7 +68,7 @@ public class Fort
 	protected static final Logger _log = Logger.getLogger(Fort.class.getName());
 	
 	private int _fortId = 0;
-	private List<L2DoorInstance> _doors = new ArrayList<L2DoorInstance>();
+	private List<L2DoorInstance> _doors = new ArrayList<>();
 	private L2StaticObjectInstance _flagPole = null;
 	private String _name = "";
 	private FortSiege _siege = null;
@@ -83,14 +83,14 @@ public class Fort
 	private int _blood = 0;
 	private int _supplyLvL = 0;
 	private FastMap<Integer, FortFunction> _function;
-	private FastList<L2Skill> _residentialSkills = new FastList<L2Skill>();
+	private FastList<L2Skill> _residentialSkills = new FastList<>();
 	private ScheduledFuture<?>[] _FortUpdater = new ScheduledFuture<?>[2];
 	
 	// Spawn Data
 	private boolean _isSuspiciousMerchantSpawned = false;
-	private FastList<L2Spawn> _siegeNpcs = new FastList<L2Spawn>();
-	private FastList<L2Spawn> _npcCommanders = new FastList<L2Spawn>();
-	private FastList<L2Spawn> _specialEnvoys = new FastList<L2Spawn>();
+	private FastList<L2Spawn> _siegeNpcs = new FastList<>();
+	private FastList<L2Spawn> _npcCommanders = new FastList<>();
+	private FastList<L2Spawn> _specialEnvoys = new FastList<>();
 	
 	private TIntIntHashMap _envoyCastles = new TIntIntHashMap(2);
 	
@@ -247,7 +247,7 @@ public class Fort
 		_fortId = fortId;
 		load();
 		loadFlagPoles();
-		_function = new FastMap<Integer, FortFunction>();
+		_function = new FastMap<>();
 		final List<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(fortId);
 		for (L2SkillLearn s : residentialSkills)
 		{

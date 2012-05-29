@@ -255,7 +255,7 @@ public class Castle
 		 * if (_castleId == 7 || castleId == 9) // Goddard and Schuttgart _nbArtifact = 2;
 		 */
 		load();
-		_function = new FastMap<Integer, CastleFunction>();
+		_function = new FastMap<>();
 		final List<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(castleId);
 		for (L2SkillLearn s : residentialSkills)
 		{

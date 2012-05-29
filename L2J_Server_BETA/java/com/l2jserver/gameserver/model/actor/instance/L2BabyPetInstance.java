@@ -107,7 +107,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 						break;
 					case BUFF:
 						if (_buffs == null)
-							_buffs = new FastList<SkillHolder>();
+							_buffs = new FastList<>();
 						_buffs.add(new SkillHolder(skill));
 						break;
 					case MANAHEAL:
@@ -208,7 +208,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 	private class CastTask implements Runnable
 	{
 		private final L2BabyPetInstance _baby;
-		private List<L2Skill> _currentBuffs = new FastList<L2Skill>();
+		private List<L2Skill> _currentBuffs = new FastList<>();
 		
 		public CastTask(L2BabyPetInstance baby)
 		{

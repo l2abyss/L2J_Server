@@ -29,7 +29,7 @@ import com.l2jserver.Config;
 public class GameServerListener extends FloodProtectedListener
 {
 	private static Logger _log = Logger.getLogger(GameServerListener.class.getName());
-	private static List<GameServerThread> _gameServers = new FastList<GameServerThread>();
+	private static List<GameServerThread> _gameServers = new FastList<>();
 	
 	public GameServerListener() throws IOException
 	{

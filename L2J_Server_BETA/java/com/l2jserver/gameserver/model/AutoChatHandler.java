@@ -56,7 +56,7 @@ public class AutoChatHandler implements SpawnListener
 	
 	protected AutoChatHandler()
 	{
-		_registeredChats = new FastMap<Integer, AutoChatInstance>();
+		_registeredChats = new FastMap<>();
 		restoreChatData();
 		L2Spawn.addSpawnListener(this);
 	}
@@ -125,7 +125,7 @@ public class AutoChatHandler implements SpawnListener
 		}
 		
 		// create clean list
-		_registeredChats = new FastMap<Integer, AutoChatInstance>();
+		_registeredChats = new FastMap<>();
 		
 		// load
 		restoreChatData();
@@ -303,7 +303,7 @@ public class AutoChatHandler implements SpawnListener
 		private boolean _globalChat = false;
 		private boolean _isActive;
 		
-		private Map<Integer, AutoChatDefinition> _chatDefinitions = new FastMap<Integer, AutoChatDefinition>();
+		private Map<Integer, AutoChatDefinition> _chatDefinitions = new FastMap<>();
 		protected ScheduledFuture<?> _chatTask;
 		
 		protected AutoChatInstance(int npcId, String[] chatTexts, long chatDelay, boolean isGlobal)
@@ -457,7 +457,7 @@ public class AutoChatHandler implements SpawnListener
 		 */
 		public L2Npc[] getNPCInstanceList()
 		{
-			List<L2Npc> npcInsts = new FastList<L2Npc>();
+			List<L2Npc> npcInsts = new FastList<>();
 			
 			for (AutoChatDefinition chatDefinition : _chatDefinitions.values())
 				npcInsts.add(chatDefinition._npcInstance);
@@ -724,8 +724,8 @@ public class AutoChatHandler implements SpawnListener
 					try
 					{
 						L2Npc chatNpc = chatDef._npcInstance;
-						List<L2PcInstance> nearbyPlayers = new FastList<L2PcInstance>();
-						List<L2PcInstance> nearbyGMs = new FastList<L2PcInstance>();
+						List<L2PcInstance> nearbyPlayers = new FastList<>();
+						List<L2PcInstance> nearbyGMs = new FastList<>();
 						
 						for (L2Character player : chatNpc.getKnownList().getKnownCharactersInRadius(1500))
 						{

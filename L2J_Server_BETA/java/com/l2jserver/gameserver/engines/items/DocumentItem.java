@@ -36,7 +36,7 @@ import com.l2jserver.gameserver.model.items.L2Item;
 public final class DocumentItem extends DocumentBase
 {
 	private Item _currentItem = null;
-	private List<L2Item> _itemsInFile = new FastList<L2Item>();
+	private List<L2Item> _itemsInFile = new FastList<>();
 	
 	/**
 	 * @param file

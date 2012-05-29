@@ -92,7 +92,7 @@ public class TerritoryWarManager implements Siegable
 	protected FastList<Integer> _disguisedPlayers;
 	private FastList<TerritoryWard> _territoryWards;
 	private FastMap<L2Clan, L2SiegeFlagInstance> _clanFlags;
-	private Map<Integer,Integer[]> _participantPoints = new FastMap<Integer,Integer[]>();
+	private Map<Integer,Integer[]> _participantPoints = new FastMap<>();
 	protected Calendar _startTWDate = Calendar.getInstance();
 	protected boolean _isRegistrationOver = true;
 	protected boolean _isTWChannelOpen = false;
@@ -104,13 +104,13 @@ public class TerritoryWarManager implements Siegable
 	protected TerritoryWarManager()
 	{		
 		// init lists
-		_registeredClans = new FastMap<Integer, FastList<L2Clan>>();
-		_registeredMercenaries = new FastMap<Integer, FastList<Integer>>();
-		_territoryList = new FastMap<Integer, Territory>();
-		_territoryWards = new FastList<TerritoryWard>();
-		_clanFlags = new FastMap<L2Clan, L2SiegeFlagInstance>();
-		_disguisedPlayers = new FastList<Integer>();
-		TERRITORY_ITEM_IDS = new FastMap<Integer,Integer>();
+		_registeredClans = new FastMap<>();
+		_registeredMercenaries = new FastMap<>();
+		_territoryList = new FastMap<>();
+		_territoryWards = new FastList<>();
+		_clanFlags = new FastMap<>();
+		_disguisedPlayers = new FastList<>();
+		TERRITORY_ITEM_IDS = new FastMap<>();
 		
 		// Constant data
 		TERRITORY_ITEM_IDS.put(81, 13757);
@@ -204,7 +204,7 @@ public class TerritoryWarManager implements Siegable
 	
 	public FastList<Territory> getAllTerritories()
 	{
-		FastList<Territory> ret = new FastList<Territory>();
+		FastList<Territory> ret = new FastList<>();
 		for (Territory t : _territoryList.values())
 			if (t.getOwnerClan() != null)
 				ret.add(t);
@@ -850,7 +850,7 @@ public class TerritoryWarManager implements Siegable
 			_log.warning("TerritoryWarManager: TerritoryList is NULL!");
 			return;
 		}
-		FastList<Territory> activeTerritoryList = new FastList<Territory>();
+		FastList<Territory> activeTerritoryList = new FastList<>();
 		for(Territory t : _territoryList.values())
 		{
 			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
@@ -929,7 +929,7 @@ public class TerritoryWarManager implements Siegable
 			_log.warning("TerritoryWarManager: TerritoryList is NULL!");
 			return;
 		}
-		FastList<Territory> activeTerritoryList = new FastList<Territory>();
+		FastList<Territory> activeTerritoryList = new FastList<>();
 		for(Territory t : _territoryList.values())
 		{
 			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
@@ -1361,7 +1361,7 @@ public class TerritoryWarManager implements Siegable
 		{
 			_castleId = castleId;
 			_territoryId = castleId + 80;
-			_spawnList = new FastList<TerritoryNPCSpawn>();
+			_spawnList = new FastList<>();
 			_territoryWardSpawnPlaces = new TerritoryNPCSpawn[9];
 			_questDone = new int[2];
 		}
@@ -1480,7 +1480,7 @@ public class TerritoryWarManager implements Siegable
 		
 		public FastList<Integer> getOwnedWardIds()
 		{
-			FastList<Integer> ret = new FastList<Integer>();
+			FastList<Integer> ret = new FastList<>();
 			for(TerritoryNPCSpawn wardSpawn : _territoryWardSpawnPlaces)
 				if (wardSpawn.getNpcId() > 0)
 					ret.add(wardSpawn.getNpcId());

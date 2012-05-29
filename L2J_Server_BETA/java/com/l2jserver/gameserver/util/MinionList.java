@@ -419,7 +419,7 @@ public class MinionList
 	
 	public final int lazyCountSpawnedMinionsGroups()
 	{
-		Set<Integer> seenGroups = new FastSet<Integer>();
+		Set<Integer> seenGroups = new FastSet<>();
 		for (L2MonsterInstance minion : _minionReferences)
 		{
 			if (minion == null)

@@ -1037,7 +1037,7 @@ public final class SkillTreesData extends DocumentParser
 		// Class specific skills:
 		Map<Integer, L2SkillLearn> tempMap;
 		final Set<ClassId> keySet = _classSkillTrees.keySet();
-		_skillsByClassIdHashCodes = new TIntObjectHashMap<int[]>(keySet.size());
+		_skillsByClassIdHashCodes = new TIntObjectHashMap<>(keySet.size());
 		for (ClassId cls : keySet)
 		{
 			i = 0;
@@ -1054,7 +1054,7 @@ public final class SkillTreesData extends DocumentParser
 		
 		// Race specific skills from Fishing and Transformation skill trees.
 		final List<Integer> list = new ArrayList<>();
-		_skillsByRaceHashCodes = new TIntObjectHashMap<int[]>(Race.values().length);
+		_skillsByRaceHashCodes = new TIntObjectHashMap<>(Race.values().length);
 		for (Race r : Race.values())
 		{
 			for (L2SkillLearn s : _fishingSkillTree.values())

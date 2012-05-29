@@ -40,7 +40,7 @@ public class ExShowProcureCropDetail extends L2GameServerPacket
 	public ExShowProcureCropDetail(int cropId)
 	{
 		_cropId = cropId;
-		_castleCrops = new FastMap<Integer, CropProcure>();
+		_castleCrops = new FastMap<>();
 		
 		for (Castle c : CastleManager.getInstance().getCastles())
 		{

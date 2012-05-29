@@ -145,7 +145,7 @@ public class FortManager implements InstanceListManager
 	public final List<Fort> getForts()
 	{
 		if (_forts == null)
-			_forts = new FastList<Fort>();
+			_forts = new FastList<>();
 		return _forts;
 	}
 	

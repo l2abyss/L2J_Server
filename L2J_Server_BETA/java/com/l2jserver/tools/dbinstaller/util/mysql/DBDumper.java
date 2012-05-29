@@ -76,7 +76,7 @@ public class DBDumper
 				ps.println("(");
 				PreparedStatement desc = con.prepareStatement("DESC " + rset.getString(1));
 				ResultSet dset = desc.executeQuery();
-				Map<String, List<String>> keys = new HashMap<String, List<String>>();
+				Map<String, List<String>> keys = new HashMap<>();
 				boolean isFirst = true;
 				while (dset.next())
 				{

@@ -80,7 +80,7 @@ public class L2MapRegion
 	{
 		if (_maps == null)
 		{
-			_maps = new ArrayList<int[]>();
+			_maps = new ArrayList<>();
 		}
 		
 		_maps.add(new int[]
@@ -117,7 +117,7 @@ public class L2MapRegion
 	{
 		if (_spawnLocs == null)
 		{
-			_spawnLocs = new ArrayList<Location>();
+			_spawnLocs = new ArrayList<>();
 		}
 		
 		_spawnLocs.add(new Location(x, y, z));
@@ -127,7 +127,7 @@ public class L2MapRegion
 	{
 		if (_otherSpawnLocs == null)
 		{
-			_otherSpawnLocs = new ArrayList<Location>();
+			_otherSpawnLocs = new ArrayList<>();
 		}
 		
 		_otherSpawnLocs.add(new Location(x, y, z));
@@ -137,7 +137,7 @@ public class L2MapRegion
 	{
 		if (_chaoticSpawnLocs == null)
 		{
-			_chaoticSpawnLocs = new ArrayList<Location>();
+			_chaoticSpawnLocs = new ArrayList<>();
 		}
 		
 		_chaoticSpawnLocs.add(new Location(x, y, z));
@@ -147,7 +147,7 @@ public class L2MapRegion
 	{
 		if (_banishSpawnLocs == null)
 		{
-			_banishSpawnLocs = new ArrayList<Location>();
+			_banishSpawnLocs = new ArrayList<>();
 		}
 		
 		_banishSpawnLocs.add(new Location(x, y, z));

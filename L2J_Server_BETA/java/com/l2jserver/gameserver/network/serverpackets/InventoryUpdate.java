@@ -55,7 +55,7 @@ public class InventoryUpdate extends L2GameServerPacket
 	
 	public InventoryUpdate()
 	{
-		_items = new FastList<ItemInfo>();
+		_items = new FastList<>();
 		if (Config.DEBUG)
 		{
 			showDebug();

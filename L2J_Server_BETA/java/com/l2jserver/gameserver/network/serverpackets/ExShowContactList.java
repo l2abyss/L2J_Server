@@ -36,7 +36,7 @@ public class ExShowContactList extends L2GameServerPacket
 	
 	public ExShowContactList(L2PcInstance player)
 	{
-		_contacts = new FastList<String>();
+		_contacts = new FastList<>();
 		_contacts.addAll(player.getContactList().getAllContacts());
 	}
 	

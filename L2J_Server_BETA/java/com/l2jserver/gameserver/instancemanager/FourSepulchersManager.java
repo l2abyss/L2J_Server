@@ -111,30 +111,30 @@ public class FourSepulchersManager
 				{ 25339, 175591, -72744, -7215, 49317 }
 			},
 	};
-	protected FastMap<Integer, Boolean> _archonSpawned = new FastMap<Integer, Boolean>();
-	protected FastMap<Integer, Boolean> _hallInUse = new FastMap<Integer, Boolean>();
-	protected FastMap<Integer, L2PcInstance> _challengers = new FastMap<Integer, L2PcInstance>();
-	protected TIntObjectHashMap<int []> _startHallSpawns = new TIntObjectHashMap<int []>();
+	protected FastMap<Integer, Boolean> _archonSpawned = new FastMap<>();
+	protected FastMap<Integer, Boolean> _hallInUse = new FastMap<>();
+	protected FastMap<Integer, L2PcInstance> _challengers = new FastMap<>();
+	protected TIntObjectHashMap<int []> _startHallSpawns = new TIntObjectHashMap<>();
 	protected TIntIntHashMap _hallGateKeepers = new TIntIntHashMap();
 	protected TIntIntHashMap _keyBoxNpc = new TIntIntHashMap();
 	protected TIntIntHashMap _victim = new TIntIntHashMap();
-	protected TIntObjectHashMap<L2Spawn> _executionerSpawns = new TIntObjectHashMap<L2Spawn>();
-	protected TIntObjectHashMap<L2Spawn> _keyBoxSpawns = new TIntObjectHashMap<L2Spawn>();
-	protected TIntObjectHashMap<L2Spawn> _mysteriousBoxSpawns = new TIntObjectHashMap<L2Spawn>();
-	protected TIntObjectHashMap<L2Spawn> _shadowSpawns = new TIntObjectHashMap<L2Spawn>();
-	protected TIntObjectHashMap<FastList<L2Spawn>> _dukeFinalMobs = new TIntObjectHashMap<FastList<L2Spawn>>();
-	protected TIntObjectHashMap<FastList<L2SepulcherMonsterInstance>> _dukeMobs = new TIntObjectHashMap<FastList<L2SepulcherMonsterInstance>>();
-	protected TIntObjectHashMap<FastList<L2Spawn>> _emperorsGraveNpcs = new TIntObjectHashMap<FastList<L2Spawn>>();
-	protected TIntObjectHashMap<FastList<L2Spawn>> _magicalMonsters = new TIntObjectHashMap<FastList<L2Spawn>>();
-	protected TIntObjectHashMap<FastList<L2Spawn>> _physicalMonsters = new TIntObjectHashMap<FastList<L2Spawn>>();
-	protected TIntObjectHashMap<FastList<L2SepulcherMonsterInstance>> _viscountMobs = new TIntObjectHashMap<FastList<L2SepulcherMonsterInstance>>();
+	protected TIntObjectHashMap<L2Spawn> _executionerSpawns = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<L2Spawn> _keyBoxSpawns = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<L2Spawn> _mysteriousBoxSpawns = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<L2Spawn> _shadowSpawns = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<FastList<L2Spawn>> _dukeFinalMobs = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<FastList<L2SepulcherMonsterInstance>> _dukeMobs = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<FastList<L2Spawn>> _emperorsGraveNpcs = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<FastList<L2Spawn>> _magicalMonsters = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<FastList<L2Spawn>> _physicalMonsters = new TIntObjectHashMap<>();
+	protected TIntObjectHashMap<FastList<L2SepulcherMonsterInstance>> _viscountMobs = new TIntObjectHashMap<>();
 	
 	protected FastList<L2Spawn> _physicalSpawns;
 	protected FastList<L2Spawn> _magicalSpawns;
 	protected FastList<L2Spawn> _managers;
 	protected FastList<L2Spawn> _dukeFinalSpawns;
 	protected FastList<L2Spawn> _emperorsGraveSpawns;
-	protected FastList<L2Npc> _allMobs = new FastList<L2Npc>();
+	protected FastList<L2Npc> _allMobs = new FastList<>();
 	
 	protected long _attackTimeEnd = 0;
 	protected long _coolDownTimeEnd = 0;
@@ -266,7 +266,7 @@ public class FourSepulchersManager
 	
 	protected void spawnManagers()
 	{
-		_managers = new FastList<L2Spawn>();
+		_managers = new FastList<>();
 		// L2Spawn spawnDat;
 		
 		int i = 31921;
@@ -523,7 +523,7 @@ public class FourSepulchersManager
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
 				
-				_physicalSpawns = new FastList<L2Spawn>();
+				_physicalSpawns = new FastList<>();
 				
 				while (rset2.next())
 				{
@@ -597,7 +597,7 @@ public class FourSepulchersManager
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
 				
-				_magicalSpawns = new FastList<L2Spawn>();
+				_magicalSpawns = new FastList<>();
 				
 				while (rset2.next())
 				{
@@ -671,7 +671,7 @@ public class FourSepulchersManager
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
 				
-				_dukeFinalSpawns = new FastList<L2Spawn>();
+				_dukeFinalSpawns = new FastList<>();
 				
 				while (rset2.next())
 				{
@@ -746,7 +746,7 @@ public class FourSepulchersManager
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
 				
-				_emperorsGraveSpawns = new FastList<L2Spawn>();
+				_emperorsGraveSpawns = new FastList<>();
 				
 				while (rset2.next())
 				{
@@ -1007,7 +1007,7 @@ public class FourSepulchersManager
 		
 		if (Config.FS_PARTY_MEMBER_COUNT > 1)
 		{
-			List<L2PcInstance> members = new FastList<L2PcInstance>();
+			List<L2PcInstance> members = new FastList<>();
 			for (L2PcInstance mem : player.getParty().getMembers())
 			{
 				if (!mem.isDead() && Util.checkIfInRange(700, player, mem, true))
@@ -1043,7 +1043,7 @@ public class FourSepulchersManager
 		}
 		if (Config.FS_PARTY_MEMBER_COUNT <= 1 && player.isInParty())
 		{
-			List<L2PcInstance> members = new FastList<L2PcInstance>();
+			List<L2PcInstance> members = new FastList<>();
 			for (L2PcInstance mem : player.getParty().getMembers())
 			{
 				if (!mem.isDead() && Util.checkIfInRange(700, player, mem, true))
@@ -1122,7 +1122,7 @@ public class FourSepulchersManager
 			return;
 		
 		FastList<L2Spawn> monsterList;
-		FastList<L2SepulcherMonsterInstance> mobs = new FastList<L2SepulcherMonsterInstance>();
+		FastList<L2SepulcherMonsterInstance> mobs = new FastList<>();
 		L2Spawn keyBoxMobSpawn;
 		
 		if (Rnd.get(2) == 0)

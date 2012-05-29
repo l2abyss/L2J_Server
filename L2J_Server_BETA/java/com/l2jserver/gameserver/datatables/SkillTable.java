@@ -41,7 +41,7 @@ public class SkillTable
 	
 	protected SkillTable()
 	{
-		_skills = new TIntObjectHashMap<L2Skill>();
+		_skills = new TIntObjectHashMap<>();
 		_skillMaxLevel = new TIntIntHashMap();
 		_enchantable = new TIntArrayList();
 		load();

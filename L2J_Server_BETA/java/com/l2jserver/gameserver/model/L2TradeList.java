@@ -47,7 +47,7 @@ public class L2TradeList
 	
 	public L2TradeList(int listId)
 	{
-		_items = new FastMap<Integer, L2TradeItem>();
+		_items = new FastMap<>();
 		_listId = listId;
 	}
 	
@@ -138,7 +138,7 @@ public class L2TradeList
 	
 	public List<L2TradeItem> getItems(int start, int end)
 	{
-		List<L2TradeItem> list = new LinkedList<L2TradeItem>();
+		List<L2TradeItem> list = new LinkedList<>();
 		list.addAll(_items.values());
 		return list.subList(start, end);
 	}

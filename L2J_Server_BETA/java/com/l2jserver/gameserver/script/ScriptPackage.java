@@ -36,8 +36,8 @@ public class ScriptPackage
 	
 	public ScriptPackage(ZipFile pack)
 	{
-		_scriptFiles = new FastList<ScriptDocument>();
-		_otherFiles = new FastList<String>();
+		_scriptFiles = new FastList<>();
+		_otherFiles = new FastList<>();
 		_name = pack.getName();
 		addFiles(pack);
 	}

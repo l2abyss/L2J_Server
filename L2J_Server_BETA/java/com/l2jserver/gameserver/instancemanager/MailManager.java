@@ -42,7 +42,7 @@ public class MailManager
 {
 	private static Logger _log = Logger.getLogger(MailManager.class.getName());
 	
-	private L2TIntObjectHashMap<Message> _messages = new L2TIntObjectHashMap<Message>();
+	private L2TIntObjectHashMap<Message> _messages = new L2TIntObjectHashMap<>();
 	
 	public static MailManager getInstance()
 	{
@@ -148,7 +148,7 @@ public class MailManager
 	
 	public final List<Message> getInbox(int objectId)
 	{
-		List<Message> inbox = new FastList<Message>();
+		List<Message> inbox = new FastList<>();
 		for (Message msg : getMessages())
 		{
 			if (msg != null
@@ -161,7 +161,7 @@ public class MailManager
 	
 	public final List<Message> getOutbox(int objectId)
 	{
-		List<Message> outbox = new FastList<Message>();
+		List<Message> outbox = new FastList<>();
 		for (Message msg : getMessages())
 		{
 			if (msg != null

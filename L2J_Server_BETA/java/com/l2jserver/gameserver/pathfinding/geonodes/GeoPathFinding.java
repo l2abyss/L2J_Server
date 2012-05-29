@@ -48,8 +48,8 @@ import com.l2jserver.gameserver.pathfinding.utils.FastNodeList;
 public class GeoPathFinding extends PathFinding
 {
 	private static Logger _log = Logger.getLogger(GeoPathFinding.class.getName());
-	private static Map<Short, ByteBuffer> _pathNodes = new FastMap<Short, ByteBuffer>();
-	private static Map<Short, IntBuffer> _pathNodesIndex = new FastMap<Short, IntBuffer>();
+	private static Map<Short, ByteBuffer> _pathNodes = new FastMap<>();
+	private static Map<Short, IntBuffer> _pathNodesIndex = new FastMap<>();
 	
 	public static GeoPathFinding getInstance()
 	{
@@ -124,7 +124,7 @@ public class GeoPathFinding extends PathFinding
 		FastNodeList visited = new FastNodeList(550);
 		
 		// List of Nodes to Visit
-		LinkedList<GeoNode> to_visit = new LinkedList<GeoNode>();
+		LinkedList<GeoNode> to_visit = new LinkedList<>();
 		to_visit.add(start);
 		int targetX = end.getLoc().getNodeX();
 		int targetY = end.getLoc().getNodeY();
@@ -189,7 +189,7 @@ public class GeoPathFinding extends PathFinding
 	
 	public List<AbstractNodeLoc> constructPath2(AbstractNode node)
 	{
-		LinkedList<AbstractNodeLoc> path = new LinkedList<AbstractNodeLoc>();
+		LinkedList<AbstractNodeLoc> path = new LinkedList<>();
 		int previousDirectionX = -1000;
 		int previousDirectionY = -1000;
 		int directionX;
@@ -221,7 +221,7 @@ public class GeoPathFinding extends PathFinding
 		short regoffset = getRegionOffset(getRegionX(node_x), getRegionY(node_y));
 		ByteBuffer pn = _pathNodes.get(regoffset);
 		
-		List<AbstractNode> Neighbors = new FastList<AbstractNode>(8);
+		List<AbstractNode> Neighbors = new FastList<>(8);
 		GeoNode newNode;
 		short new_node_x, new_node_y;
 		

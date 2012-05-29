@@ -42,7 +42,7 @@ public class EnchantHPBonusData
 {
 	protected static final Logger _log = Logger.getLogger(EnchantHPBonusData.class.getName());
 	
-	private final TIntObjectHashMap<Integer[]> _armorHPBonus = new TIntObjectHashMap<Integer[]>();
+	private final TIntObjectHashMap<Integer[]> _armorHPBonus = new TIntObjectHashMap<>();
 	private static final float fullArmorModifier = 1.5f;
 	
 	public static final EnchantHPBonusData getInstance()

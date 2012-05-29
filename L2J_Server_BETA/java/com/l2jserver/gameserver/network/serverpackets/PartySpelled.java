@@ -49,7 +49,7 @@ public class PartySpelled extends L2GameServerPacket
 	
 	public PartySpelled(L2Character cha)
 	{
-		_effects = new FastList<Effect>();
+		_effects = new FastList<>();
 		_activeChar = cha;
 	}
 	

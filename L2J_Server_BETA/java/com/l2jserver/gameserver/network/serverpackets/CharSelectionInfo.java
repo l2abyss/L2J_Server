@@ -216,7 +216,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 	private static CharSelectInfoPackage[] loadCharacterSelectInfo(String loginName)
 	{
 		CharSelectInfoPackage charInfopackage;
-		List<CharSelectInfoPackage> characterList = new FastList<CharSelectInfoPackage>();
+		List<CharSelectInfoPackage> characterList = new FastList<>();
 		
 		Connection con = null;
 		try
