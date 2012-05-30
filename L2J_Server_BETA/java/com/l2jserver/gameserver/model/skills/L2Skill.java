@@ -407,7 +407,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_equipDelay = set.getInteger("equipDelay", 0);
 		
-		_skillRadius = set.getInteger("skillRadius", 80);
+		_skillRadius = set.getInteger("skillRadius", 0);
 		
 		_targetType = set.getEnum("target", L2TargetType.class);
 		_power = set.getFloat("power", 0.f);
@@ -421,7 +421,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
 		_ignoreSkillMute = set.getBool("ignoreSkillMute", false);
-		_skillType = set.getEnum("skillType", L2SkillType.class);
+		_skillType = set.getEnum("skillType", L2SkillType.class, L2SkillType.DUMMY);
 		_effectType = set.getEnum("effectType", L2SkillType.class, null);
 		_effectId = set.getInteger("effectId", 0);
 		_effectLvl = set.getInteger("effectLevel", 0);
@@ -434,7 +434,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_element = set.getByte("element", (byte)-1);
 		_elementPower = set.getInteger("elementPower", 0);
 		
-		_saveVs = set.getEnum("saveVs", BaseStats.class, null);
+		_saveVs = set.getEnum("saveVs", BaseStats.class, BaseStats.NULL);
 		
 		_condition = set.getInteger("condition", 0);
 		_conditionValue = set.getInteger("conditionValue", 0);
@@ -471,7 +471,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_maxCharges = set.getInteger("maxCharges", 0);
 		_numCharges = set.getInteger("numCharges", 0);
 		_triggeredId = set.getInteger("triggeredId", 0);
-		_triggeredLevel = set.getInteger("triggeredLevel", 0);
+		_triggeredLevel = set.getInteger("triggeredLevel", 1);
 		_chanceType = set.getString("chanceType", "");
 		if (!_chanceType.isEmpty() && !_chanceType.isEmpty())
 			_chanceCondition = ChanceCondition.parse(set);
