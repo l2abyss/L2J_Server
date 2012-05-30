@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 
 public final class ExEnchantSkillInfo extends L2GameServerPacket
@@ -45,7 +45,7 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 				_maxEnchanted = enchantLearn.isMaxEnchant(_lvl);
 				
 				// get detail for next level
-				EnchantSkillDetail esd = enchantLearn.getEnchantSkillDetail(_lvl);
+				EnchantSkillHolder esd = enchantLearn.getEnchantSkillHolder(_lvl);
 				
 				// if it exists add it
 				if (esd != null)

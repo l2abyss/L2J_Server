@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.model;
 import gnu.trove.map.hash.TIntIntHashMap;
 
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 
 /**
  * This class ...
@@ -104,7 +104,7 @@ public final class L2EnchantSkillLearn
 		return false;
 	}
 	
-	public EnchantSkillDetail getEnchantSkillDetail(int level)
+	public EnchantSkillHolder getEnchantSkillHolder(int level)
 	{
 		int enchantType = L2EnchantSkillLearn.getEnchantRoute(level);
 		if (enchantType < 1 || !_enchantRoutes.contains(enchantType))

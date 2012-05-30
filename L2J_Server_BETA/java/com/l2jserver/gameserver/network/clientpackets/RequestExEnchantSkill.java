@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
@@ -98,7 +98,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 		{
 			return;
 		}
-		final EnchantSkillDetail esd = s.getEnchantSkillDetail(_skillLvl);
+		final EnchantSkillHolder esd = s.getEnchantSkillHolder(_skillLvl);
 		final int beforeEnchantSkillLevel = player.getSkillLevel(_skillId);
 		if (beforeEnchantSkillLevel != s.getMinSkillLevel(_skillLvl))
 		{

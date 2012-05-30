@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
@@ -46,13 +46,13 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 	{
 		
 		L2EnchantSkillLearn enchantLearn = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(skillid);
-		EnchantSkillDetail esd = null;
+		EnchantSkillHolder esd = null;
 		// do we have this skill?
 		if (enchantLearn != null)
 		{
 			if (skilllvl > 100)
 			{
-				esd = enchantLearn.getEnchantSkillDetail(skilllvl);
+				esd = enchantLearn.getEnchantSkillHolder(skilllvl);
 			}
 			else
 				esd = enchantLearn.getFirstRouteGroup().getEnchantGroupDetails().get(0);

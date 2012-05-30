@@ -14,119 +14,103 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import com.l2jserver.L2DatabaseFactory;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import com.l2jserver.Config;
+import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.13.2.2.2.8 $ $Date: 2005/04/06 16:13:25 $
  */
-public class EnchantGroupsTable
+public class EnchantGroupsTable extends DocumentParser
 {
-	public static final int NORMAL_ENCHANT_COST_MULTIPLIER = 1;
-	public static final int SAFE_ENCHANT_COST_MULTIPLIER = 5;
+	public static final int NORMAL_ENCHANT_COST_MULTIPLIER = Config.NORMAL_ENCHANT_COST_MULTIPLIER;
+	public static final int SAFE_ENCHANT_COST_MULTIPLIER = Config.SAFE_ENCHANT_COST_MULTIPLIER;
 	
 	public static final int NORMAL_ENCHANT_BOOK = 6622;
 	public static final int SAFE_ENCHANT_BOOK = 9627;
 	public static final int CHANGE_ENCHANT_BOOK = 9626;
 	public static final int UNTRAIN_ENCHANT_BOOK = 9625;
 	
-	private static Logger _log = Logger.getLogger(EnchantGroupsTable.class.getName());
-	
-	private TIntObjectHashMap<L2EnchantSkillGroup> _enchantSkillGroups; //enchant skill group
-	private TIntObjectHashMap<L2EnchantSkillLearn> _enchantSkillTrees; //enchant skill list
-	
-	public static EnchantGroupsTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
+	private Map<Integer, L2EnchantSkillGroup> _enchantSkillGroups = new HashMap<>();
+	private Map<Integer, L2EnchantSkillLearn> _enchantSkillTrees = new HashMap<>();
 	
 	protected EnchantGroupsTable()
 	{
 		load();
 	}
 	
-	private void load()
+	@Override
+	public void load()
 	{
-		int count = 0;
-		Connection con = null;
-		try
+		_enchantSkillGroups.clear();
+		_enchantSkillTrees.clear();
+		parseDatapackFile("data/enchantSkillGroups.xml");
+		int routes = 0;
+		for (L2EnchantSkillGroup group : _enchantSkillGroups.values())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try
+			routes += group.getEnchantGroupDetails().size();
+		}
+		_log.info(getClass().getSimpleName() + ": Loaded " + _enchantSkillGroups.size() + " groups and " + routes + " routes.");
+	}
+	
+	@Override
+	protected void parseDocument()
+	{
+		NamedNodeMap attrs;
+		StatsSet set;
+		Node att;
+		int id = 0;
+		L2EnchantSkillGroup group;
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
+		{
+			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
-				_enchantSkillGroups = new TIntObjectHashMap<>();
-				_enchantSkillTrees = new TIntObjectHashMap<>();
-				
-				PreparedStatement statement = con.prepareStatement("SELECT group_id, level, adena, exp, sp, success_rate76, success_rate77, success_rate78, success_rate79, success_rate80, success_rate81, success_rate82, success_rate83, success_rate84, success_rate85 FROM enchant_skill_groups ORDER BY group_id, level");
-				ResultSet enchantGroups = statement.executeQuery();
-				
-				int prevGroupId = -1;
-				
-				while (enchantGroups.next())
+				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
-					int id = enchantGroups.getInt("group_id");
-					int lvl = enchantGroups.getInt("level");
-					int adena = enchantGroups.getInt("adena");
-					int exp = enchantGroups.getInt("exp");
-					int sp = enchantGroups.getInt("sp");
-					byte rate76 = enchantGroups.getByte("success_rate76");
-					byte rate77 = enchantGroups.getByte("success_rate77");
-					byte rate78 = enchantGroups.getByte("success_rate78");
-					byte rate79 = enchantGroups.getByte("success_rate79");
-					byte rate80 = enchantGroups.getByte("success_rate80");
-					byte rate81 = enchantGroups.getByte("success_rate81");
-					byte rate82 = enchantGroups.getByte("success_rate82");
-					byte rate83 = enchantGroups.getByte("success_rate83");
-					byte rate84 = enchantGroups.getByte("success_rate84");
-					byte rate85 = enchantGroups.getByte("success_rate85");
-					
-					if (prevGroupId != id)
-						prevGroupId = id;
-					
-					L2EnchantSkillGroup group = _enchantSkillGroups.get(id);
-					if (group == null)
+					if ("group".equalsIgnoreCase(d.getNodeName()))
 					{
-						group = new L2EnchantSkillGroup(id);
-						_enchantSkillGroups.put(id, group);
-						count++;
+						attrs = d.getAttributes();
+						id = parseInt(attrs, "id");
+						
+						group = _enchantSkillGroups.get(id);
+						if (group == null)
+						{
+							group = new L2EnchantSkillGroup(id);
+							_enchantSkillGroups.put(id, group);
+						}
+						
+						for (Node b = d.getFirstChild(); b != null; b = b.getNextSibling())
+						{
+							if ("enchant".equalsIgnoreCase(b.getNodeName()))
+							{
+								attrs = b.getAttributes();
+								set = new StatsSet();
+								
+								for (int i = 0; i < attrs.getLength(); i++)
+								{
+									att = attrs.item(i);
+									set.set(att.getNodeName(), att.getNodeValue());
+								}
+								group.addEnchantDetail(new EnchantSkillHolder(set));
+							}
+						}
 					}
-					EnchantSkillDetail esd = new EnchantSkillDetail(lvl, adena, exp, sp, rate76, rate77, rate78, rate79, rate80, rate81, rate82, rate83, rate84, rate85);
-					group.addEnchantDetail(esd);
 				}
-				
-				enchantGroups.close();
-				statement.close();
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.SEVERE, "Error while loading enchant skill groups ", e);
 			}
 		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Error while loading enchant skill groups ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		
-		_log.info("EnchantGroupsTable: Loaded " + count + " groups.");
 	}
 	
 	public int addNewRouteForSkill(int skillId, int maxLvL, int route, int group)
@@ -169,7 +153,7 @@ public class EnchantGroupsTable
 		if (enchantSkillLearn != null)
 		{
 			
-			EnchantSkillDetail esd = enchantSkillLearn.getEnchantSkillDetail(skill.getLevel());
+			EnchantSkillHolder esd = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
 			if (esd != null)
 			{
 				return esd.getSpCost();
@@ -184,7 +168,7 @@ public class EnchantGroupsTable
 		L2EnchantSkillLearn enchantSkillLearn = _enchantSkillTrees.get(skill.getId());
 		if (enchantSkillLearn != null)
 		{
-			EnchantSkillDetail esd = enchantSkillLearn.getEnchantSkillDetail(skill.getLevel());
+			EnchantSkillHolder esd = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
 			if (esd != null)
 			{
 				return esd.getAdenaCost();
@@ -199,7 +183,7 @@ public class EnchantGroupsTable
 		L2EnchantSkillLearn enchantSkillLearn = _enchantSkillTrees.get(skill.getId());
 		if (enchantSkillLearn != null)
 		{
-			EnchantSkillDetail esd = enchantSkillLearn.getEnchantSkillDetail(skill.getLevel());
+			EnchantSkillHolder esd = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
 			if (esd != null)
 			{
 				return esd.getRate(player);
@@ -215,7 +199,7 @@ public class EnchantGroupsTable
 	}
 	
 	/**
-	 * @param id 
+	 * @param id
 	 * @return L2EnchantSkillGroup
 	 */
 	public L2EnchantSkillGroup getEnchantSkillGroupById(int id)
@@ -223,8 +207,8 @@ public class EnchantGroupsTable
 		return _enchantSkillGroups.get(id);
 	}
 	
-	public void reload()
+	public static EnchantGroupsTable getInstance()
 	{
-		load();
+		return SingletonHolder._instance;
 	}
 }

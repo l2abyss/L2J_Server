@@ -635,6 +635,8 @@ public final class Config
 	public static boolean HBCE_FAIR_PLAY;
 	public static int PLAYER_MOVEMENT_BLOCK_TIME;
 	public static boolean CLEAR_CREST_CACHE;
+	public static int NORMAL_ENCHANT_COST_MULTIPLIER;
+	public static int SAFE_ENCHANT_COST_MULTIPLIER;
 	
 	// --------------------------------------------------
 	// FloodProtector Settings
@@ -2117,6 +2119,10 @@ public final class Config
 				}
 				HBCE_FAIR_PLAY = Boolean.parseBoolean(General.getProperty("HBCEFairPlay", "false"));
 				CLEAR_CREST_CACHE = Boolean.parseBoolean(General.getProperty("ClearClanCache", "false"));
+
+				NORMAL_ENCHANT_COST_MULTIPLIER = Integer.parseInt(General.getProperty("NormalEnchantCostMultipiler", "1"));
+				SAFE_ENCHANT_COST_MULTIPLIER = Integer.parseInt(General.getProperty("SafeEnchantCostMultipiler", "5"));
+
 			}
 			catch (Exception e)
 			{
