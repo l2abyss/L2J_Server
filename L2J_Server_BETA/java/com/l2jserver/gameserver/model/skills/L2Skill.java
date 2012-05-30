@@ -21,7 +21,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
@@ -1874,13 +1873,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (itemOrWeapon)
 		{
 			if (_itemPreCondition == null)
-				_itemPreCondition = new FastList<>();
+				_itemPreCondition = new ArrayList<>();
 			_itemPreCondition.add(c);
 		}
 		else
 		{
 			if (_preCondition == null)
-				_preCondition = new FastList<>();
+				_preCondition = new ArrayList<>();
 			_preCondition.add(c);
 		}
 	}
@@ -2010,7 +2009,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private L2ExtractableSkill parseExtractableSkill(int skillId, int skillLvl, String values)
 	{
 		final String[] prodLists = values.split(";");
-		final FastList<L2ExtractableProductItem> products = new FastList<>();
+		final List<L2ExtractableProductItem> products = new ArrayList<>();
 		String[] prodData;
 		for (String prodList : prodLists)
 		{
