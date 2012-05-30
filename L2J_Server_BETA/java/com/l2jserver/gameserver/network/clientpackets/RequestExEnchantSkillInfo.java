@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -62,7 +62,7 @@ public final class RequestExEnchantSkillInfo extends L2GameClientPacket
 			return;
 		}
 		
-		if (EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId) == null)
+		if (EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId) == null)
 			return;
 		
 		int playerSkillLvl = activeChar.getSkillLevel(_skillId);

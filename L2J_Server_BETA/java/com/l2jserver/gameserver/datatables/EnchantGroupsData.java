@@ -31,10 +31,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
- * This class ...
- * @version $Revision: 1.13.2.2.2.8 $ $Date: 2005/04/06 16:13:25 $
+ * This class holds the Enchant Groups information.<br>
+ * @author Micr0
  */
-public class EnchantGroupsTable extends DocumentParser
+public class EnchantGroupsData extends DocumentParser
 {
 	public static final int NORMAL_ENCHANT_COST_MULTIPLIER = Config.NORMAL_ENCHANT_COST_MULTIPLIER;
 	public static final int SAFE_ENCHANT_COST_MULTIPLIER = Config.SAFE_ENCHANT_COST_MULTIPLIER;
@@ -44,10 +44,13 @@ public class EnchantGroupsTable extends DocumentParser
 	public static final int CHANGE_ENCHANT_BOOK = 9626;
 	public static final int UNTRAIN_ENCHANT_BOOK = 9625;
 	
-	private Map<Integer, L2EnchantSkillGroup> _enchantSkillGroups = new HashMap<>();
-	private Map<Integer, L2EnchantSkillLearn> _enchantSkillTrees = new HashMap<>();
+	private final Map<Integer, L2EnchantSkillGroup> _enchantSkillGroups = new HashMap<>();
+	private final Map<Integer, L2EnchantSkillLearn> _enchantSkillTrees = new HashMap<>();
 	
-	protected EnchantGroupsTable()
+	/**
+	 * Instantiates a new enchant groups table.
+	 */
+	protected EnchantGroupsData()
 	{
 		load();
 	}
@@ -113,6 +116,14 @@ public class EnchantGroupsTable extends DocumentParser
 		}
 	}
 	
+	/**
+	 * Adds the new route for skill.
+	 * @param skillId the skill id
+	 * @param maxLvL the max lvl
+	 * @param route the route
+	 * @param group the group
+	 * @return the int
+	 */
 	public int addNewRouteForSkill(int skillId, int maxLvL, int route, int group)
 	{
 		L2EnchantSkillLearn enchantableSkill = _enchantSkillTrees.get(skillId);
@@ -131,84 +142,111 @@ public class EnchantGroupsTable extends DocumentParser
 		return 0;
 	}
 	
+	/**
+	 * Gets the skill enchantment for skill.
+	 * @param skill the skill
+	 * @return the skill enchantment for skill
+	 */
 	public L2EnchantSkillLearn getSkillEnchantmentForSkill(L2Skill skill)
 	{
-		L2EnchantSkillLearn esl = this.getSkillEnchantmentBySkillId(skill.getId());
 		// there is enchantment for this skill and we have the required level of it
-		if (esl != null && skill.getLevel() >= esl.getBaseLevel())
+		final L2EnchantSkillLearn esl = getSkillEnchantmentBySkillId(skill.getId());
+		if ((esl != null) && (skill.getLevel() >= esl.getBaseLevel()))
 		{
 			return esl;
 		}
 		return null;
 	}
 	
+	/**
+	 * Gets the skill enchantment by skill id.
+	 * @param skillId the skill id
+	 * @return the skill enchantment by skill id
+	 */
 	public L2EnchantSkillLearn getSkillEnchantmentBySkillId(int skillId)
 	{
 		return _enchantSkillTrees.get(skillId);
 	}
 	
-	public int getEnchantSkillSpCost(L2Skill skill)
-	{
-		L2EnchantSkillLearn enchantSkillLearn = _enchantSkillTrees.get(skill.getId());
-		if (enchantSkillLearn != null)
-		{
-			
-			EnchantSkillHolder esd = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
-			if (esd != null)
-			{
-				return esd.getSpCost();
-			}
-		}
-		
-		return Integer.MAX_VALUE;
-	}
-	
-	public int getEnchantSkillAdenaCost(L2Skill skill)
-	{
-		L2EnchantSkillLearn enchantSkillLearn = _enchantSkillTrees.get(skill.getId());
-		if (enchantSkillLearn != null)
-		{
-			EnchantSkillHolder esd = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
-			if (esd != null)
-			{
-				return esd.getAdenaCost();
-			}
-		}
-		
-		return Integer.MAX_VALUE;
-	}
-	
-	public byte getEnchantSkillRate(L2PcInstance player, L2Skill skill)
-	{
-		L2EnchantSkillLearn enchantSkillLearn = _enchantSkillTrees.get(skill.getId());
-		if (enchantSkillLearn != null)
-		{
-			EnchantSkillHolder esd = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
-			if (esd != null)
-			{
-				return esd.getRate(player);
-			}
-		}
-		
-		return 0;
-	}
-	
-	private static class SingletonHolder
-	{
-		protected static final EnchantGroupsTable _instance = new EnchantGroupsTable();
-	}
-	
 	/**
-	 * @param id
-	 * @return L2EnchantSkillGroup
+	 * Gets the enchant skill group by id.
+	 * @param id the id
+	 * @return the enchant skill group by id
 	 */
 	public L2EnchantSkillGroup getEnchantSkillGroupById(int id)
 	{
 		return _enchantSkillGroups.get(id);
 	}
 	
-	public static EnchantGroupsTable getInstance()
+	/**
+	 * Gets the enchant skill sp cost.
+	 * @param skill the skill
+	 * @return the enchant skill sp cost
+	 */
+	public int getEnchantSkillSpCost(L2Skill skill)
+	{
+		final L2EnchantSkillLearn enchantSkillLearn = _enchantSkillTrees.get(skill.getId());
+		if (enchantSkillLearn != null)
+		{
+			final EnchantSkillHolder esh = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
+			if (esh != null)
+			{
+				return esh.getSpCost();
+			}
+		}
+		return Integer.MAX_VALUE;
+	}
+	
+	/**
+	 * Gets the enchant skill Adena cost.
+	 * @param skill the skill
+	 * @return the enchant skill Adena cost
+	 */
+	public int getEnchantSkillAdenaCost(L2Skill skill)
+	{
+		final L2EnchantSkillLearn enchantSkillLearn = _enchantSkillTrees.get(skill.getId());
+		if (enchantSkillLearn != null)
+		{
+			final EnchantSkillHolder esh = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
+			if (esh != null)
+			{
+				return esh.getAdenaCost();
+			}
+		}
+		return Integer.MAX_VALUE;
+	}
+	
+	/**
+	 * Gets the enchant skill rate.
+	 * @param player the player
+	 * @param skill the skill
+	 * @return the enchant skill rate
+	 */
+	public byte getEnchantSkillRate(L2PcInstance player, L2Skill skill)
+	{
+		final L2EnchantSkillLearn enchantSkillLearn = _enchantSkillTrees.get(skill.getId());
+		if (enchantSkillLearn != null)
+		{
+			final EnchantSkillHolder esh = enchantSkillLearn.getEnchantSkillHolder(skill.getLevel());
+			if (esh != null)
+			{
+				return esh.getRate(player);
+			}
+		}
+		return 0;
+	}
+	
+	/**
+	 * Gets the single instance of EnchantGroupsData.
+	 * @return single instance of EnchantGroupsData
+	 */
+	public static EnchantGroupsData getInstance()
 	{
 		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final EnchantGroupsData _instance = new EnchantGroupsData();
 	}
 }

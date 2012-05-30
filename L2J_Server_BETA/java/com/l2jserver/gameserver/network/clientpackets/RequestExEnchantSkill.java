@@ -19,7 +19,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
@@ -93,7 +93,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 			return;
 		}
 		
-		final L2EnchantSkillLearn s = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId);
+		final L2EnchantSkillLearn s = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
 		{
 			return;
@@ -105,13 +105,13 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 			return;
 		}
 		
-		final int costMultiplier = EnchantGroupsTable.NORMAL_ENCHANT_COST_MULTIPLIER;
+		final int costMultiplier = EnchantGroupsData.NORMAL_ENCHANT_COST_MULTIPLIER;
 		final int requiredSp = esd.getSpCost() * costMultiplier;
 		if (player.getSp() >= requiredSp)
 		{
 			// only first lvl requires book
 			final boolean usesBook = _skillLvl % 100 == 1; // 101, 201, 301 ...
-			final int reqItemId = EnchantGroupsTable.NORMAL_ENCHANT_BOOK;
+			final int reqItemId = EnchantGroupsData.NORMAL_ENCHANT_BOOK;
 			final L2ItemInstance spb = player.getInventory().getItemByItemId(reqItemId);
 			
 			if (Config.ES_SP_BOOK_NEEDED && usesBook && (spb == null)) // Haven't spellbook

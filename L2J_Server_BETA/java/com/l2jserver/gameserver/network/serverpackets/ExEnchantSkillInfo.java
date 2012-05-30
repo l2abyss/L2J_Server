@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 
@@ -35,7 +35,7 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 		_id = id;
 		_lvl = lvl;
 		
-		L2EnchantSkillLearn enchantLearn = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_id);
+		L2EnchantSkillLearn enchantLearn = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_id);
 		// do we have this skill?
 		if (enchantLearn != null)
 		{

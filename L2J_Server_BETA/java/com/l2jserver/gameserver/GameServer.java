@@ -43,7 +43,7 @@ import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
 import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
@@ -214,7 +214,7 @@ public class GameServer
 		
 		printSection("Skills");
 		EffectHandler.getInstance().executeScript();
-		EnchantGroupsTable.getInstance();
+		EnchantGroupsData.getInstance();
 		SkillTreesData.getInstance();
 		SkillTable.getInstance();
 		SummonSkillsTable.getInstance();
