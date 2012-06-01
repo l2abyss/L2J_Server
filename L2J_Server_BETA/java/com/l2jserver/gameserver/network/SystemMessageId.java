@@ -13562,6 +13562,12 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_CANNOT_TELEPORT_BECAUSE_YOU_DO_NOT_HAVE_A_TELEPORT_ITEM;
 	
 	/**
+	 * ID: 2361<br>
+	 * Message: Current Location: $s1
+	 */
+	public static final SystemMessageId CURRENT_LOCATION_S1;
+	
+	/**
 	 * ID: 2366<br>
 	 * Message: The limited-time item has been deleted..
 	 */
@@ -17117,6 +17123,7 @@ public final class SystemMessageId
 		YOU_CANNOT_USE_MY_TELEPORTS_IN_AN_INSTANT_ZONE = new SystemMessageId(2357);
 		YOU_HAVE_NO_SPACE_TO_SAVE_THE_TELEPORT_LOCATION = new SystemMessageId(2358);
 		YOU_CANNOT_TELEPORT_BECAUSE_YOU_DO_NOT_HAVE_A_TELEPORT_ITEM = new SystemMessageId(2359);
+		CURRENT_LOCATION_S1 = new SystemMessageId(2361);
 		TIME_LIMITED_ITEM_DELETED = new SystemMessageId(2366);
 		THERE_NOT_MUCH_TIME_REMAINING_UNTIL_HELPER_LEAVES = new SystemMessageId(2372);
 		THE_HELPER_PET_LEAVING = new SystemMessageId(2373);
