@@ -157,7 +157,6 @@ public enum L2SkillType
 	
 	BUFF,
 	DEBUFF,
-	PASSIVE,
 	CONT,
 	FUSION,
 	
