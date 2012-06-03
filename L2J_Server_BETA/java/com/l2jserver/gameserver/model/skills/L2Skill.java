@@ -107,10 +107,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	// not needed, just for easier debug
 	private final String _name;
 	private final L2SkillOpType _operateType;
-	private final boolean _magic;
+	private final int _magic;
 	private final L2TraitType _traitType;
 	private final boolean _staticReuse;
-	private final boolean _staticHitTime;
 	private final boolean _staticDamage; // Damage dealing skills do static damage based on the power value.
 	private final int _mpConsume;
 	private final int _mpInitialConsume;
@@ -183,7 +182,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _removedOnAnyActionExceptMove;
 	private final boolean _removedOnDamage;
 	
-	private final boolean _isPotion;
 	private final byte _element;
 	private final int _elementPower;
 	
@@ -223,8 +221,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _lethalEffect2;     // percent of success for lethal 2nd effect (hit cp,hp to 1 or if mob hp to 1) (only for PDAM skills)
 	private final boolean _directHpDmg;  // If true then dmg is being make directly
 	private final boolean _isTriggeredSkill;      // If true the skill will take activation buff slot instead of a normal buff slot
-	private final boolean _isDance;      // If true then casting more dances will cost more MP
-	private final int _nextDanceCost;
 	private final float _sSBoost;	//If true skill will have SoulShot boost (power*2)
 	private final int _aggroPoints;
 	
@@ -247,7 +243,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final String _attribute;
 	
 	private final boolean _ignoreShield;
-	private final boolean _ignoreSkillMute;
 	
 	private final boolean _isSuicideAttack;
 	private final boolean _canBeReflected;
@@ -270,12 +265,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_displayId = set.getInteger("displayId", _id);
 		_name = set.getString("name");
 		_operateType = set.getEnum("operateType", L2SkillOpType.class);
-		_magic = set.getBool("isMagic", false);
+		_magic = set.getInteger("isMagic", 0);
 		_traitType = set.getEnum("trait", L2TraitType.class, L2TraitType.NONE);
 		_staticReuse = set.getBool("staticReuse", false);
-		_staticHitTime = set.getBool("staticHitTime", false);
 		_staticDamage = set.getBool("staticDamage", false);
-		_isPotion = set.getBool("isPotion", false);
 		_mpConsume = set.getInteger("mpConsume", 0);
 		_mpInitialConsume = set.getInteger("mpInitialConsume", 0);
 		_hpConsume = set.getInteger("hpConsume", 0);
@@ -419,7 +412,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_maxChance = set.getInteger("maxChance", Config.MAX_DEBUFF_CHANCE);
 		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
-		_ignoreSkillMute = set.getBool("ignoreSkillMute", false);
 		_skillType = set.getEnum("skillType", L2SkillType.class, L2SkillType.DUMMY);
 		_effectType = set.getEnum("effectType", L2SkillType.class, null);
 		_effectId = set.getInteger("effectId", 0);
@@ -494,8 +486,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_directHpDmg  = set.getBool("dmgDirectlyToHp",false);
 		_isTriggeredSkill = set.getBool("isTriggeredSkill",false);
-		_isDance = set.getBool("isDance",false);
-		_nextDanceCost = set.getInteger("nextDanceCost", 0);
 		_sSBoost = set.getFloat("SSBoost", 0.f);
 		_aggroPoints = set.getInteger("aggroPoints", 0);
 		
@@ -524,11 +514,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
-	
-	public final boolean isPotion()
-	{
-		return _isPotion;
-	}
 	
 	public final int getArmorsAllowed()
 	{
@@ -914,27 +899,27 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * @return Returns the magic.
+	 * @return Returns true to set magic skills.
 	 */
 	public final boolean isMagic()
 	{
-		return _magic;
+		return _magic == 1;
+	}
+	
+	/**
+	 * @return Returns true to set static skills.
+	*/
+	public final boolean isStatic()
+	{
+		return _magic == 2;
 	}
 	
 	/**
 	 * @return Returns true to set static reuse.
-	 */
+	*/
 	public final boolean isStaticReuse()
 	{
 		return _staticReuse;
-	}
-	
-	/**
-	 * @return Returns true to set static hittime.
-	 */
-	public final boolean isStaticHitTime()
-	{
-		return _staticHitTime;
 	}
 	
 	public final boolean isStaticDamage()
@@ -1039,12 +1024,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public final boolean isDance()
 	{
-		return _isDance;
-	}
-	
-	public final int getNextDanceMpCost()
-	{
-		return _nextDanceCost;
+		return _magic == 3;
 	}
 	
 	public final float getSSBoost()
@@ -1072,7 +1052,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public final boolean useSpiritShot()
 	{
-		return isMagic();
+		return _magic == 1;
 	}
 	public final boolean useFishShot()
 	{
@@ -1962,11 +1942,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean ignoreShield()
 	{
 		return _ignoreShield;
-	}
-	
-	public boolean ignoreSkillMute()
-	{
-		return _ignoreSkillMute;
 	}
 	
 	public boolean canBeReflected()

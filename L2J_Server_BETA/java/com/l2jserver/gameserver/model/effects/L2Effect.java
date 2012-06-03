@@ -575,7 +575,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		final L2Skill sk = getSkill();
 		if (_totalCount > 1)
 		{
-			if (sk.isPotion())
+			if (sk.isStatic())
 				mi.addEffect(sk.getDisplayId(), getLevel(), sk.getBuffDuration() - (getTaskTime() * 1000));
 			else
 				mi.addEffect(sk.getDisplayId(), getLevel(), -1);
@@ -646,7 +646,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 				|| getSkill().isDebuff()
 				|| getSkill().isHeroSkill()
 				|| getSkill().isGMSkill()
-				|| (getSkill().isPotion() && (getSkill().getId() != 2274 && getSkill().getId() != 2341)) // Hardcode for now :<
+				|| getSkill().isStatic()
 				|| isHerbEffect()
 				|| !getSkill().canBeDispeled())
 			return false;

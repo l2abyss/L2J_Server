@@ -1909,8 +1909,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			return false;
 		}
-		// Is a magic skill and character is magically muted or is a physical skill and character is physically muted.
-		if (!skill.ignoreSkillMute() && ((skill.isMagic() && getActiveChar().isMuted()) || getActiveChar().isPhysicalMuted()))
+		// If is a static skill and magic skill and character is muted or is a physical skill muted and character is physically muted.
+		if (!skill.isStatic() && ((skill.isMagic() && getActiveChar().isMuted()) || getActiveChar().isPhysicalMuted()))
 		{
 			return false;
 		}

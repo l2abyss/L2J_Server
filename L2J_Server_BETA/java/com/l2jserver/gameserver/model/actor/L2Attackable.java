@@ -409,7 +409,7 @@ public class L2Attackable extends L2Npc
 		if (getCurrentHp() <= skill.getHpConsume())
 			return;
 		
-		if (!skill.ignoreSkillMute())
+		if (!skill.isStatic())
 		{
 			if (skill.isMagic())
 			{
