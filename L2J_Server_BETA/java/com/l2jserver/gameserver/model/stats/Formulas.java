@@ -2496,7 +2496,7 @@ public final class Formulas
 	
 	public static boolean calcSkillMastery(L2Character actor, L2Skill sk)
 	{
-		// Static Skills are not effected by Skill Mastery.
+		// Static Skills are not affected by Skill Mastery.
 		if (sk.isStatic())
 		{
 			return false;
