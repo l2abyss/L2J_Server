@@ -2496,7 +2496,8 @@ public final class Formulas
 	
 	public static boolean calcSkillMastery(L2Character actor, L2Skill sk)
 	{
-		if (sk.getSkillType() == L2SkillType.FISHING)
+		// Static Skills are not effected by Skill Mastery.
+		if (sk.isStatic())
 		{
 			return false;
 		}
