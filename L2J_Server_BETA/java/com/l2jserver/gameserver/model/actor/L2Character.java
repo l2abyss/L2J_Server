@@ -1868,7 +1868,20 @@ public abstract class L2Character extends L2Object
 					hitTime = (int) (0.60 * hitTime);
 					coolTime = (int) (0.60 * coolTime);
 					
-					weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+					// FIXME: This should be done independently in each handler.
+					// Skills that consume SPS/BSPS without increase power.
+					switch (skill.getSkillType())
+					{
+						case DUMMY:
+						case BUFF:
+						case MANAHEAL:
+						case MANARECHARGE:
+						case MANA_BY_LEVEL:
+						case RESURRECT:
+						case RECALL:
+							weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+							break;
+					}
 				}
 			}
 			

@@ -1065,36 +1065,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public int getMinPledgeClass() { return _minPledgeClass;  }
 	
-	public final boolean isPvpSkill()
-	{
-		switch (_skillType)
-		{
-			case DOT:
-			case BLEED:
-			case CONFUSION:
-			case POISON:
-			case DEBUFF:
-			case AGGDEBUFF:
-			case STUN:
-			case ROOT:
-			case FEAR:
-			case SLEEP:
-			case MDOT:
-			case MUTE:
-			case PARALYZE:
-			case CANCEL:
-			case BETRAY:
-			case DISARM:
-			case AGGDAMAGE:
-			case STEAL_BUFF:
-			case AGGREDUCE_CHAR:
-			case MANADAM:
-				return true;
-			default:
-				return false;
-		}
-	}
-	
 	public final boolean isOffensive()
 	{
 		return _isOffensive;
@@ -1188,6 +1158,36 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _flyCourse;
 	}
 	
+	public final boolean isPvpSkill()
+	{
+		switch (_skillType)
+		{
+			case DOT:
+			case BLEED:
+			case CONFUSION:
+			case POISON:
+			case DEBUFF:
+			case AGGDEBUFF:
+			case STUN:
+			case ROOT:
+			case FEAR:
+			case SLEEP:
+			case MDOT:
+			case MUTE:
+			case PARALYZE:
+			case CANCEL:
+			case BETRAY:
+			case DISARM:
+			case AGGDAMAGE:
+			case STEAL_BUFF:
+			case AGGREDUCE_CHAR:
+			case MANADAM:
+				return true;
+			default:
+				return false;
+		}
+	}
+	
 	public final boolean isSkillTypeOffensive()
 	{
 		switch (_skillType)
@@ -1237,7 +1237,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case INSTANT_JUMP:
 				return true;
 			default:
-				return this.isDebuff();
+				return false;
 		}
 	}
 	
