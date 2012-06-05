@@ -256,19 +256,9 @@ public class GameServerThread extends NetConnection
 		final CommunityBoardManager communityBoardManager = CommunityBoardManager.getInstance(sqlDPId);
 		if (communityBoardManager.getGST() != null)
 		{
-			try
+			if (communityBoardManager.getGST().isConnected())
 			{
-				if (communityBoardManager.getGST().isConnected())
-				{
-					_log.log(Level.INFO, "SQLDPId allready in use. Closing connection...");
-					forceClose(null);
-					return;
-				}
-			}
-			catch (IOException e)
-			{
-				_log.log(Level.INFO, "Exception. Closing connection...", e);
-				e.printStackTrace();
+				_log.log(Level.INFO, "SQLDPId allready in use. Closing connection...");
 				forceClose(null);
 				return;
 			}

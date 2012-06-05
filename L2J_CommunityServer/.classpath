@@ -7,6 +7,6 @@
 	<classpathentry kind="lib" path="dist/libs/javolution-5.5.1.jar" />
 	<classpathentry kind="lib" path="dist/libs/mchange-commons-java-0.2.1.jar" />
 	<classpathentry kind="lib" path="dist/libs/mysql-connector-java-5.1.20-bin.jar" />
-	<classpathentry kind="lib" path="dist/libs/netcon.jar" />
+	<classpathentry kind="lib" path="dist/libs/netcon-1.7.jar" />
 	<classpathentry kind="output" path="bin" />
 </classpath>
