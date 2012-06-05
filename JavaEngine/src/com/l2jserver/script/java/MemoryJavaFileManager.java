@@ -49,14 +49,13 @@ import org.eclipse.jdt.internal.compiler.tool.EclipseFileManager;
  */
 public final class MemoryJavaFileManager extends EclipseFileManager
 {
-	
 	private static final String EXT = ".java";
-	private Map<String, byte[]> classBytes;
+	protected Map<String, byte[]> classBytes;
 	
 	public MemoryJavaFileManager()
 	{
 		super(null, null);
-		classBytes = new HashMap<String, byte[]>();
+		classBytes = new HashMap<>();
 	}
 	
 	public Map<String, byte[]> getClassBytes()
@@ -65,13 +64,13 @@ public final class MemoryJavaFileManager extends EclipseFileManager
 	}
 	
 	@Override
-	public void close() throws IOException
+	public void close()
 	{
-		classBytes = new HashMap<String, byte[]>();
+		classBytes = new HashMap<>();
 	}
 	
 	@Override
-	public void flush() throws IOException
+	public void flush()
 	{
 	}
 	
@@ -106,7 +105,7 @@ public final class MemoryJavaFileManager extends EclipseFileManager
 	 */
 	private class ClassOutputBuffer extends SimpleJavaFileObject
 	{
-		private final String name;
+		protected final String name;
 		
 		ClassOutputBuffer(String name)
 		{
@@ -137,10 +136,7 @@ public final class MemoryJavaFileManager extends EclipseFileManager
 		{
 			return new ClassOutputBuffer(className.replace('/', '.'));
 		}
-		else
-		{
-			return super.getJavaFileForOutput(location, className, kind, sibling);
-		}
+		return super.getJavaFileForOutput(location, className, kind, sibling);
 	}
 	
 	static JavaFileObject makeStringSource(String name, String code)
@@ -155,23 +151,21 @@ public final class MemoryJavaFileManager extends EclipseFileManager
 		{
 			return file.toURI();
 		}
-		else
+		
+		try
 		{
-			try
+			final StringBuilder newUri = new StringBuilder();
+			newUri.append("file:///");
+			newUri.append(name.replace('.', '/'));
+			if (name.endsWith(EXT))
 			{
-				final StringBuilder newUri = new StringBuilder();
-				newUri.append("file:///");
-				newUri.append(name.replace('.', '/'));
-				if (name.endsWith(EXT))
-				{
-					newUri.replace(newUri.length() - EXT.length(), newUri.length(), EXT);
-				}
-				return URI.create(newUri.toString());
+				newUri.replace(newUri.length() - EXT.length(), newUri.length(), EXT);
 			}
-			catch (Exception exp)
-			{
-				return URI.create("file:///com/sun/script/java/java_source");
-			}
+			return URI.create(newUri.toString());
+		}
+		catch (Exception exp)
+		{
+			return URI.create("file:///com/sun/script/java/java_source");
 		}
 	}
 }

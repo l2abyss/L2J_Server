@@ -1,115 +1,149 @@
 package com.l2jserver.script.bsh;
 
-import javax.script.*;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
-public class BshScriptEngineFactory implements
-	javax.script.ScriptEngineFactory
+import javax.script.ScriptEngine;
+
+public class BshScriptEngineFactory implements javax.script.ScriptEngineFactory
 {
 	// Begin impl ScriptEnginInfo
 	
-	final List<String> extensions = Arrays.asList( "bsh", "java" );
-
-	final List<String> mimeTypes = Arrays.asList(
-		"application/x-beanshell", 
-		"application/x-bsh",
-		"application/x-java-source" 
-	);
-
-	final List<String> names = Arrays.asList( "beanshell", "bsh", "java" );
-
-    public String getEngineName() {
+	final List<String> extensions = Arrays.asList("bsh", "java");
+	
+	final List<String> mimeTypes = Arrays.asList("application/x-beanshell", "application/x-bsh", "application/x-java-source");
+	
+	final List<String> names = Arrays.asList("beanshell", "bsh", "java");
+	
+	@Override
+	public String getEngineName()
+	{
 		return "BeanShell Engine";
 	}
-
-    public String getEngineVersion() {
+	
+	@Override
+	public String getEngineVersion()
+	{
 		return "1.0";
 	}
-
-    public List<String> getExtensions() {
+	
+	@Override
+	public List<String> getExtensions()
+	{
 		return extensions;
 	}
-
-    public List<String> getMimeTypes() {
+	
+	@Override
+	public List<String> getMimeTypes()
+	{
 		return mimeTypes;
 	}
-
-    public List<String> getNames() {
+	
+	@Override
+	public List<String> getNames()
+	{
 		return names;
 	}
-
-    public String getLanguageName() {
+	
+	@Override
+	public String getLanguageName()
+	{
 		return "BeanShell";
 	}
-
-    public String getLanguageVersion() {
+	
+	@Override
+	public String getLanguageVersion()
+	{
 		return bsh.Interpreter.VERSION + "";
 	}
-
-    public Object getParameter( String param ) {
-	    if ( param.equals( ScriptEngine.ENGINE ) )
+	
+	@Override
+	public Object getParameter(String param)
+	{
+		if (param.equals(ScriptEngine.ENGINE))
+		{
 			return getEngineName();
-		if ( param.equals( ScriptEngine.ENGINE_VERSION ) )
+		}
+		if (param.equals(ScriptEngine.ENGINE_VERSION))
+		{
 			return getEngineVersion();
-		if ( param.equals( ScriptEngine.NAME ) )
+		}
+		if (param.equals(ScriptEngine.NAME))
+		{
 			return getEngineName();
-		if ( param.equals( ScriptEngine.LANGUAGE ) )
+		}
+		if (param.equals(ScriptEngine.LANGUAGE))
+		{
 			return getLanguageName();
-		if ( param.equals( ScriptEngine.LANGUAGE_VERSION ) )
+		}
+		if (param.equals(ScriptEngine.LANGUAGE_VERSION))
+		{
 			return getLanguageVersion();
-		if ( param.equals( "THREADING" ) )
+		}
+		if (param.equals("THREADING"))
+		{
 			return "MULTITHREADED";
-
+		}
+		
 		return null;
 	}
-
-    public String getMethodCallSyntax( 
-		String objectName, String methodName, String ... args ) 
+	
+	@Override
+	public String getMethodCallSyntax(String objectName, String methodName, String... args)
 	{
 		// Note: this is very close to the bsh.StringUtil.methodString()
-		// method, which constructs a method signature from arg *types*.  Maybe
+		// method, which constructs a method signature from arg *types*. Maybe
 		// combine these later.
-
-        StringBuilder sb = new StringBuilder();
-		if ( objectName != null )
-			sb.append( objectName + "." );
-		sb.append( methodName + "(" );
-        if ( args.length > 0 )
-			sb.append(" ");
-        for( int i=0; i<args.length; i++ )
-            sb.append( ( (args[i] == null) ? "null" : args[i] ) 
-				+ ( i < (args.length-1) ? ", " : " " ) );
-        sb.append(")");
-        return sb.toString();
+		
+		StringBuilder sb = new StringBuilder();
+		if (objectName != null)
+		{
+			sb.append(objectName + ".");
+		}
+		sb.append(methodName + "(");
+		if (args.length > 0)
+		{
+			sb.append(' ');
+		}
+		for (int i = 0; i < args.length; i++)
+		{
+			sb.append(((args[i] == null) ? "null" : args[i]) + (i < (args.length - 1) ? ", " : " "));
+		}
+		sb.append(')');
+		return sb.toString();
 	}
-
-    public String getOutputStatement( String message ) {
+	
+	@Override
+	public String getOutputStatement(String message)
+	{
 		return "print( \"" + message + "\" );";
 	}
-
-    public String getProgram( String ... statements )
+	
+	@Override
+	public String getProgram(String... statements)
 	{
-		StringBuilder sb = new StringBuilder();
-		for( int i=0; i< statements.length; i++ )
+		final StringBuilder sb = new StringBuilder();
+		for (String statement : statements)
 		{
-			sb.append( statements[i] );
-			if ( !statements[i].endsWith(";") )
-				sb.append( ";" );
-			sb.append("\n");
+			sb.append(statement);
+			if (!statement.endsWith(";"))
+			{
+				sb.append(';');
+			}
+			sb.append('\n');
 		}
 		return sb.toString();
 	}
-
+	
 	// End impl ScriptEngineInfo
-
+	
 	// Begin impl ScriptEngineFactory
-
-	public ScriptEngine getScriptEngine() 
+	
+	@Override
+	public ScriptEngine getScriptEngine()
 	{
 		return new BshScriptEngine();
 	}
-		
+	
 	// End impl ScriptEngineFactory
 }
-

@@ -36,7 +36,7 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar file">
-		<jar destfile="${build.dist}/netcon.jar">
+		<jar destfile="${build.dist}/netcon-1.7.jar" level="9">
 			<fileset dir="${build.classes}" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
@@ -52,7 +52,7 @@
 	</target>
 
 	<target name="build" depends="dist" description="Generates a zip with the Netcon.">
-		<zip destfile="${build}/netcon.zip" basedir="${build.dist}" level="9" />
+		<zip destfile="${build}/netcon-1.7.zip" basedir="${build.dist}" level="9" />
 	</target>
 
 	<target name="clean" description="Remove the output directories.">

@@ -56,7 +56,7 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar file.">
-		<jar destfile="${build.dist}/java-engine-1.7.jar">
+		<jar destfile="${build.dist}/java-engine-1.7.jar" level="9">
 			<fileset dir="${build.classes}" />
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />

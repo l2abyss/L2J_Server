@@ -38,7 +38,6 @@ import java.util.StringTokenizer;
  */
 public final class MemoryClassLoader extends URLClassLoader
 {
-	
 	private final Map<String, byte[]> classBytes;
 	
 	public MemoryClassLoader(Map<String, byte[]> classBytes, String classPath, ClassLoader parent)
@@ -59,7 +58,7 @@ public final class MemoryClassLoader extends URLClassLoader
 	
 	public Iterable<Class<?>> loadAll() throws ClassNotFoundException
 	{
-		List<Class<?>> classes = new ArrayList<Class<?>>(classBytes.size());
+		List<Class<?>> classes = new ArrayList<>(classBytes.size());
 		for (String name : classBytes.keySet())
 		{
 			classes.add(loadClass(name));
@@ -77,10 +76,7 @@ public final class MemoryClassLoader extends URLClassLoader
 			classBytes.put(className, null);
 			return defineClass(className, buf, 0, buf.length);
 		}
-		else
-		{
-			return super.findClass(className);
-		}
+		return super.findClass(className);
 	}
 	
 	private static URL[] toURLs(String classPath)
@@ -90,7 +86,7 @@ public final class MemoryClassLoader extends URLClassLoader
 			return new URL[0];
 		}
 		
-		List<URL> list = new ArrayList<URL>();
+		List<URL> list = new ArrayList<>();
 		StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
 		while (st.hasMoreTokens())
 		{

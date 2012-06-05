@@ -25,13 +25,19 @@ public abstract class BaseReadPacket implements Runnable
 		_off = 2;
 	}
 	
-	/** BYTE */
+	/**
+	 * BYTE
+	 * @return
+	 */
 	protected final int readC()
 	{
 		return _data[(_off++)] & 0xFF;
 	}
 	
-	/** CHAR */
+	/**
+	 * CHAR
+	 * @return
+	 */
 	protected final int readH()
 	{
 		int result = _data[(_off++)] & 0xFF;
@@ -39,7 +45,10 @@ public abstract class BaseReadPacket implements Runnable
 		return result;
 	}
 	
-	/** INTEGER */
+	/**
+	 * INTEGER
+	 * @return
+	 */
 	protected final int readD()
 	{
 		int result = _data[(_off++)] & 0xFF;
@@ -49,7 +58,10 @@ public abstract class BaseReadPacket implements Runnable
 		return result;
 	}
 	
-	/** DOUBLE */
+	/**
+	 * DOUBLE
+	 * @return
+	 */
 	protected final double readF()
 	{
 		long result = _data[(_off++)] & 0xFF;
@@ -63,7 +75,10 @@ public abstract class BaseReadPacket implements Runnable
 		return Double.longBitsToDouble(result);
 	}
 	
-	/** LONG */
+	/**
+	 * LONG
+	 * @return
+	 */
 	protected final long readQ()
 	{
 		int value1 = (_data[_off++] & 0x000000FF) | ((_data[_off++] << 8) & 0x0000FF00) | ((_data[_off++] << 16) & 0x00FF0000) | ((_data[_off++] << 24) & 0xFF000000);
@@ -72,7 +87,11 @@ public abstract class BaseReadPacket implements Runnable
 		return (value1 & 0xFFFFFFFFL) | ((value2 & 0xFFFFFFFFL) << 32);
 	}
 	
-	/** BYTE ARRAY */
+	/**
+	 * BYTE ARRAY
+	 * @param length
+	 * @return
+	 */
 	protected final byte[] readB(final int length)
 	{
 		byte[] result = new byte[length];
@@ -84,7 +103,10 @@ public abstract class BaseReadPacket implements Runnable
 		return result;
 	}
 	
-	/** STRING */
+	/**
+	 * STRING
+	 * @return
+	 */
 	protected final String readS()
 	{
 		String result = null;
@@ -92,12 +114,12 @@ public abstract class BaseReadPacket implements Runnable
 		{
 			result = new String(_data, _off, _data.length - _off, "UTF-16LE");
 			result = result.substring(0, result.indexOf(0));
+			_off += (result.length() * 2) + 2;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		_off += (result.length() * 2) + 2;
 		return result;
 	}
 }

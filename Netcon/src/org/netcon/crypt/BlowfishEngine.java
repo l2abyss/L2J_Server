@@ -25,8 +25,26 @@ public class BlowfishEngine
 {
 	private final static int[] KP =
 	{
-		0x243F6A88, 0x85A308D3, 0x13198A2E, 0x03707344, 0xA4093822, 0x299F31D0, 0x082EFA98, 0xEC4E6C89, 0x452821E6, 0x38D01377, 0xBE5466CF, 0x34E90C6C, 0xC0AC29B7, 0xC97C50DD, 0x3F84D5B5, 0xB5470917, 0x9216D5D9, 0x8979FB1B
+		0x243F6A88,
+		0x85A308D3,
+		0x13198A2E,
+		0x03707344,
+		0xA4093822,
+		0x299F31D0,
+		0x082EFA98,
+		0xEC4E6C89,
+		0x452821E6,
+		0x38D01377,
+		0xBE5466CF,
+		0x34E90C6C,
+		0xC0AC29B7,
+		0xC97C50DD,
+		0x3F84D5B5,
+		0xB5470917,
+		0x9216D5D9,
+		0x8979FB1B
 	};
+	
 	private final static int[] KS0 =
 	{
 		0xD1310BA6,
@@ -1085,8 +1103,8 @@ public class BlowfishEngine
 	}
 	
 	/**
-	 * initialise a Blowfish cipher.
-	 * @param encryption whether or not we are for encryption.
+	 * Initialize a Blowfish cipher.
+	 * @param pEncrypting whether or not we are for encryption.
 	 * @param key the key used to set up the cipher.
 	 * @exception IllegalArgumentException if the params argument is inappropriate.
 	 */
@@ -1147,6 +1165,9 @@ public class BlowfishEngine
 	
 	/**
 	 * apply the encryption cycle to each value pair in the table.
+	 * @param xl
+	 * @param xr
+	 * @param table
 	 */
 	private void processTable(int xl, int xr, int[] table)
 	{
@@ -1212,6 +1233,10 @@ public class BlowfishEngine
 	
 	/**
 	 * Encrypt the given input starting at the given offset and place the result in the provided buffer starting at the given offset. The input will be an exact multiple of our blocksize.
+	 * @param src
+	 * @param srcIndex
+	 * @param dst
+	 * @param dstIndex
 	 */
 	private void encryptBlock(byte[] src, int srcIndex, byte[] dst, int dstIndex)
 	{
@@ -1230,6 +1255,10 @@ public class BlowfishEngine
 	
 	/**
 	 * Decrypt the given input starting at the given offset and place the result in the provided buffer starting at the given offset. The input will be an exact multiple of our blocksize.
+	 * @param src
+	 * @param srcIndex
+	 * @param dst
+	 * @param dstIndex
 	 */
 	private void decryptBlock(byte[] src, int srcIndex, byte[] dst, int dstIndex)
 	{

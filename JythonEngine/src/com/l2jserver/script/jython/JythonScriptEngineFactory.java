@@ -34,7 +34,6 @@ import javax.script.ScriptEngineFactory;
  */
 public class JythonScriptEngineFactory implements ScriptEngineFactory
 {
-	
 	@Override
 	public String getEngineName()
 	{
@@ -70,9 +69,9 @@ public class JythonScriptEngineFactory implements ScriptEngineFactory
 	{
 		StringBuilder buf = new StringBuilder();
 		buf.append(obj);
-		buf.append(".");
+		buf.append('.');
 		buf.append(m);
-		buf.append("(");
+		buf.append('(');
 		if (args.length != 0)
 		{
 			int i = 0;
@@ -82,7 +81,7 @@ public class JythonScriptEngineFactory implements ScriptEngineFactory
 			}
 			buf.append(args[i]);
 		}
-		buf.append(")");
+		buf.append(')');
 		
 		return buf.toString();
 	}
@@ -153,10 +152,7 @@ public class JythonScriptEngineFactory implements ScriptEngineFactory
 		{
 			return "MULTITHREADED";
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	@Override
@@ -165,9 +161,9 @@ public class JythonScriptEngineFactory implements ScriptEngineFactory
 		StringBuilder buf = new StringBuilder();
 		for (String statement : statements)
 		{
-			buf.append("\t");
+			buf.append('\t');
 			buf.append(statement);
-			buf.append("\n");
+			buf.append('\n');
 		}
 		
 		return buf.toString();
@@ -187,17 +183,17 @@ public class JythonScriptEngineFactory implements ScriptEngineFactory
 	
 	static
 	{
-		names = new ArrayList<String>(2);
+		names = new ArrayList<>(2);
 		names.add("jython");
 		names.add("python");
 		names = Collections.unmodifiableList(names);
 		
-		extensions = new ArrayList<String>(2);
+		extensions = new ArrayList<>(2);
 		extensions.add("jy");
 		extensions.add("py");
 		extensions = Collections.unmodifiableList(extensions);
 		
-		mimeTypes = new ArrayList<String>(0);
+		mimeTypes = new ArrayList<>(0);
 		mimeTypes = Collections.unmodifiableList(mimeTypes);
 	}
 }

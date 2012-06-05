@@ -72,7 +72,7 @@ public class JythonScriptEngine extends AbstractScriptEngine implements Compilab
 	static
 	{
 		PySystemState.initialize();
-		systemState = new ThreadLocal<PySystemState>();
+		systemState = new ThreadLocal<>();
 	}
 	
 	public JythonScriptEngine()
@@ -142,25 +142,22 @@ public class JythonScriptEngine extends AbstractScriptEngine implements Compilab
 	
 	// Invocable methods
 	@Override
-	public Object invokeFunction(String name, Object... args) throws ScriptException, NoSuchMethodException
+	public Object invokeFunction(String name, Object... args) throws NoSuchMethodException
 	{
 		return invokeImpl(null, name, args);
 	}
 	
 	@Override
-	public Object invokeMethod(Object obj, String name, Object... args) throws ScriptException, NoSuchMethodException
+	public Object invokeMethod(Object obj, String name, Object... args) throws NoSuchMethodException
 	{
 		if (obj == null)
 		{
 			throw new IllegalArgumentException("script object is null");
 		}
-		else
-		{
-			return invokeImpl(obj, name, args);
-		}
+		return invokeImpl(obj, name, args);
 	}
 	
-	private Object invokeImpl(Object obj, String name, Object... args) throws ScriptException, NoSuchMethodException
+	protected Object invokeImpl(Object obj, String name, Object... args) throws NoSuchMethodException
 	{
 		if (name == null)
 		{
@@ -209,10 +206,7 @@ public class JythonScriptEngine extends AbstractScriptEngine implements Compilab
 		{
 			throw new IllegalArgumentException("script object is null");
 		}
-		else
-		{
-			return makeInterface(obj, clazz);
-		}
+		return makeInterface(obj, clazz);
 	}
 	
 	@Override
@@ -329,10 +323,7 @@ public class JythonScriptEngine extends AbstractScriptEngine implements Compilab
 		{
 			return myScope;
 		}
-		else
-		{
-			return newScope(ctx);
-		}
+		return newScope(ctx);
 	}
 	
 	private PyObject newScope(ScriptContext ctx)
@@ -421,7 +412,7 @@ public class JythonScriptEngine extends AbstractScriptEngine implements Compilab
 		
 	}
 	
-	private Object evalCode(PyCode code, ScriptContext ctx) throws ScriptException
+	protected Object evalCode(PyCode code, ScriptContext ctx) throws ScriptException
 	{
 		try
 		{

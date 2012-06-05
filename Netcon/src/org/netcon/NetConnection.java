@@ -63,7 +63,7 @@ public abstract class NetConnection extends Thread
 		_tcpIn = new BufferedInputStream(_tcpCon.getInputStream(), _config.TCP_RECEIVE_BUFFER_SIZE);
 	}
 	
-	public final boolean isConnected() throws IOException
+	public final boolean isConnected()
 	{
 		return (_tcpCon != null) && _tcpCon.isConnected();
 	}

@@ -36,7 +36,6 @@ import javax.script.ScriptEngineFactory;
  */
 public class JavaScriptEngineFactory implements ScriptEngineFactory
 {
-	
 	@Override
 	public String getEngineName()
 	{
@@ -72,9 +71,9 @@ public class JavaScriptEngineFactory implements ScriptEngineFactory
 	{
 		StringBuilder buf = new StringBuilder();
 		buf.append(obj);
-		buf.append(".");
+		buf.append('.');
 		buf.append(m);
-		buf.append("(");
+		buf.append('(');
 		if (args.length != 0)
 		{
 			int i = 0;
@@ -84,7 +83,7 @@ public class JavaScriptEngineFactory implements ScriptEngineFactory
 			}
 			buf.append(args[i]);
 		}
-		buf.append(")");
+		buf.append(')');
 		return buf.toString();
 	}
 	
@@ -153,10 +152,7 @@ public class JavaScriptEngineFactory implements ScriptEngineFactory
 		{
 			return "MULTITHREADED";
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	@Override
@@ -210,11 +206,11 @@ public class JavaScriptEngineFactory implements ScriptEngineFactory
 	
 	static
 	{
-		names = new ArrayList<String>(1);
+		names = new ArrayList<>(1);
 		names.add("java");
 		names = Collections.unmodifiableList(names);
 		extensions = names;
-		mimeTypes = new ArrayList<String>(0);
+		mimeTypes = new ArrayList<>(0);
 		mimeTypes = Collections.unmodifiableList(mimeTypes);
 	}
 }

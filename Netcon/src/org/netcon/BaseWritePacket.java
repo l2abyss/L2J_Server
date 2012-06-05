@@ -92,7 +92,7 @@ public abstract class BaseWritePacket
 		}
 	}
 	
-	public final byte[] getContent() throws IOException
+	public final byte[] getContent()
 	{
 		writeD(0x00);
 		

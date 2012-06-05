@@ -81,10 +81,7 @@ public final class JythonScope extends PyObject
 			}
 			return keys;
 		}
-		else
-		{
-			return super.invoke(name);
-		}
+		return super.invoke(name);
 	}
 	
 	@Override

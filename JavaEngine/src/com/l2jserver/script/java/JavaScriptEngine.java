@@ -50,7 +50,6 @@ import javax.script.SimpleBindings;
  */
 public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 {
-	
 	// Java compiler
 	private final JavaCompiler compiler;
 	
@@ -89,7 +88,7 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 		{
 			if (_class == null)
 			{
-				Map<String, byte[]> classBytesCopy = new HashMap<String, byte[]>();
+				Map<String, byte[]> classBytesCopy = new HashMap<>();
 				classBytesCopy.putAll(_classBytes);
 				MemoryClassLoader loader = new MemoryClassLoader(classBytesCopy, _classPath, JavaScriptEngine.getParentLoader(ctx));
 				_class = JavaScriptEngine.parseMain(loader, ctx);
@@ -169,10 +168,7 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 			{
 				throw new ScriptException(((StringWriter) err).toString());
 			}
-			else
-			{
-				throw new ScriptException("compilation failed");
-			}
+			throw new ScriptException("compilation failed");
 		}
 		
 		// create a ClassLoader to load classes from MemoryJavaFileManager
@@ -180,7 +176,7 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 		return parseMain(loader, ctx);
 	}
 	
-	private static Class<?> parseMain(MemoryClassLoader loader, ScriptContext ctx) throws ScriptException
+	protected static Class<?> parseMain(MemoryClassLoader loader, ScriptContext ctx) throws ScriptException
 	{
 		String mainClassName = getMainClassName(ctx);
 		if (mainClassName != null)
@@ -219,20 +215,15 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 		{
 			return c;
 		}
-		else
+		
+		// if class with "main" method, then
+		// return first class
+		Iterator<Class<?>> itr = classes.iterator();
+		if (itr.hasNext())
 		{
-			// if class with "main" method, then
-			// return first class
-			Iterator<Class<?>> itr = classes.iterator();
-			if (itr.hasNext())
-			{
-				return itr.next();
-			}
-			else
-			{
-				return null;
-			}
+			return itr.next();
 		}
+		return null;
 	}
 	
 	private JavaCompiledScript compile(String str, ScriptContext ctx) throws ScriptException
@@ -254,10 +245,7 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 			{
 				throw new ScriptException(((StringWriter) err).toString());
 			}
-			else
-			{
-				throw new ScriptException("compilation failed");
-			}
+			throw new ScriptException("compilation failed");
 		}
 		
 		return new JavaCompiledScript(this, classBytes, classPath);
@@ -343,10 +331,7 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 		{
 			return ctx.getAttribute("javax.script.filename", scope).toString();
 		}
-		else
-		{
-			return "$unnamed.java";
-		}
+		return "$unnamed.java";
 	}
 	
 	// for certain variables, we look for System properties. This is
@@ -420,7 +405,7 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 	
 	private static final String PARENTLOADER = "parentLoader";
 	
-	private static ClassLoader getParentLoader(ScriptContext ctx)
+	protected static ClassLoader getParentLoader(ScriptContext ctx)
 	{
 		int scope = ctx.getAttributesScope(PARENTLOADER);
 		if (scope != -1)
@@ -434,7 +419,7 @@ public class JavaScriptEngine extends AbstractScriptEngine implements Compilable
 		return ClassLoader.getSystemClassLoader();
 	}
 	
-	private static Object evalClass(Class<?> clazz, ScriptContext ctx) throws ScriptException
+	protected static Object evalClass(Class<?> clazz, ScriptContext ctx) throws ScriptException
 	{
 		// JSR-223 requirement
 		ctx.setAttribute("context", ctx, 100);

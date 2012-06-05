@@ -43,7 +43,7 @@ public abstract class NetConnectionListener extends Thread
 		
 		if (_config.TCP_IP_BANN_ENABLED)
 		{
-			_ipBanns = new ArrayList<String>();
+			_ipBanns = new ArrayList<>();
 			for (final String ip : _config.TCP_IP_BANN_LIST)
 			{
 				_ipBanns.add(ip);
@@ -56,7 +56,7 @@ public abstract class NetConnectionListener extends Thread
 		
 		if (_config.TCP_FLOOD_PROTECTION_ENABLED)
 		{
-			_floodProtection = new HashMap<String, ForeignConnection>();
+			_floodProtection = new HashMap<>();
 		}
 		else
 		{
@@ -185,11 +185,11 @@ public abstract class NetConnectionListener extends Thread
 	
 	private final class ForeignConnection
 	{
-		private int connectionNumber;
-		private long lastConnection;
-		private boolean isFlooding = false;
+		protected int connectionNumber;
+		protected long lastConnection;
+		protected boolean isFlooding = false;
 		
-		private ForeignConnection(final long time)
+		protected ForeignConnection(final long time)
 		{
 			lastConnection = time;
 			connectionNumber = 1;
