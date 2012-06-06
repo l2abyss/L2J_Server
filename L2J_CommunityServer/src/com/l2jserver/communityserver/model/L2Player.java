@@ -42,8 +42,8 @@ public class L2Player
 		_clanId = clanId;
 		_isOnline = isOnline;
 		_forum = null;
-		_friends = new FastList<Integer>();
-		_selectedFriends = new FastList<Integer>();
+		_friends = new FastList<>();
+		_selectedFriends = new FastList<>();
 	}
 	
 	public int getObjId()

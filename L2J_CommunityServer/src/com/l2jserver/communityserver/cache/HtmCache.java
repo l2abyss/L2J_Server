@@ -57,8 +57,8 @@ public class HtmCache
 	
 	public HtmCache()
 	{
-		_cache = new FastMap<Integer, String>();
-		_serverTopDir = new FastMap<Integer, String>();
+		_cache = new FastMap<>();
+		_serverTopDir = new FastMap<>();
 		loadTopDirs();
 		reload();
 	}

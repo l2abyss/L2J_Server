@@ -50,7 +50,7 @@ public class Forum
 	{
 		_sqlDPId = sqlDPId;
 		_forumId = Forumid;
-		_topic = new FastMap<Integer, Topic>();
+		_topic = new FastMap<>();
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class Forum
 		_forumId = Forumid;
 		_forumType = type;
 		_ownerID = OwnerID;
-		_topic = new FastMap<Integer, Topic>();
+		_topic = new FastMap<>();
 		_loaded = true;
 		insertindb();
 		if (type == Forum.PLAYER)

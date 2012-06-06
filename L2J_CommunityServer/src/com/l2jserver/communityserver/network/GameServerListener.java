@@ -25,7 +25,7 @@ import org.netcon.NetConnectionListener;
 
 public final class GameServerListener extends NetConnectionListener
 {
-	private static List<GameServerThread> _gameServers = new FastList<GameServerThread>();
+	private static List<GameServerThread> _gameServers = new FastList<>();
 	
 	public GameServerListener(final NetConnectionConfig config) throws IOException
 	{

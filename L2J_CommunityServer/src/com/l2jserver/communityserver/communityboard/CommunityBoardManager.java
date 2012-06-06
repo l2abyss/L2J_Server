@@ -50,7 +50,7 @@ public final class CommunityBoardManager
 	{
 		if (_instances == null)
 		{
-			_instances = new FastMap<Integer, CommunityBoardManager>();
+			_instances = new FastMap<>();
 		}
 		
 		CommunityBoardManager mgr = _instances.get(sqlDPId);
@@ -78,7 +78,7 @@ public final class CommunityBoardManager
 	{
 		_sqlDPId = sqlDPId;
 		
-		_boards = new FastMap<String, CommunityBoard>();
+		_boards = new FastMap<>();
 		_boards.put("_bbsloc", new RegionBoard(this));
 		_boards.put("_bbsfriend", new FriendBoard(this));
 		_boards.put("_bbsclan", new ClanBoard(this));
@@ -87,10 +87,10 @@ public final class CommunityBoardManager
 		_boards.put("_bbsmemo", new MemoBoard(this));
 		_boards.put("_bbshome", new TopBoard(this));
 		_boards.put("_bbserror", new ErrorBoard(this));
-		_forumRoot = new FastMap<Integer, Forum>();
-		_players = new FastMap<Integer, L2Player>();
-		_clans = new FastMap<Integer, L2Clan>();
-		_castles = new FastMap<Integer, L2Castle>();
+		_forumRoot = new FastMap<>();
+		_players = new FastMap<>();
+		_clans = new FastMap<>();
+		_castles = new FastMap<>();
 	}
 	
 	private void loadDataBase()

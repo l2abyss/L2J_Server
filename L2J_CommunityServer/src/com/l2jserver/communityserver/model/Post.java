@@ -76,7 +76,7 @@ public class Post
 		_postTxt = txt;
 		_postType = type;
 		_postParentId = -1;
-		_comments = new FastMap<Integer, Comment>();
+		_comments = new FastMap<>();
 		_readCount = readCount;
 		if (ct == ConstructorType.CREATE)
 		{
@@ -101,7 +101,7 @@ public class Post
 		_postTxt = txt;
 		_postType = type;
 		_postParentId = postParentId;
-		_comments = new FastMap<Integer, Comment>();
+		_comments = new FastMap<>();
 		_readCount = readCount;
 		if (ct == ConstructorType.CREATE)
 		{

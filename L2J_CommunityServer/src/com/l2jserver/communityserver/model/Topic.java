@@ -72,7 +72,7 @@ public class Topic
 		_ownerId = oid;
 		_lastPostId = 0;
 		_permissions = per;
-		_posts = new FastMap<Integer, Post>();
+		_posts = new FastMap<>();
 		
 		if (ct == ConstructorType.CREATE)
 		{
@@ -217,7 +217,7 @@ public class Topic
 	
 	public FastList<Post> getChildrenPosts(Post parent)
 	{
-		FastList<Post> ret = new FastList<Post>();
+		FastList<Post> ret = new FastList<>();
 		if (parent == null)
 		{
 			return ret;

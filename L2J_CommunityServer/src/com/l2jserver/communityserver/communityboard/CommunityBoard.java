@@ -43,7 +43,7 @@ public abstract class CommunityBoard
 			string2 = edtiSavedTxT(string2);
 			string3 = edtiSavedTxT(string3);
 			_mgr.sendPacket(new PlayerShowBoard(playerObjId, html));
-			FastList<String> arg = new FastList<String>();
+			FastList<String> arg = new FastList<>();
 			arg.add("0");
 			arg.add("0");
 			arg.add("0");

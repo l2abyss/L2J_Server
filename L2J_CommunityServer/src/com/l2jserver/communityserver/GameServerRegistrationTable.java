@@ -83,7 +83,7 @@ public final class GameServerRegistrationTable
 	
 	private final Map<byte[], Boolean> loadRegisteredGameServers()
 	{
-		final Map<byte[], Boolean> registeredGameServers = new FastMap<byte[], Boolean>();
+		final Map<byte[], Boolean> registeredGameServers = new FastMap<>();
 		
 		Connection con = null;
 		try
