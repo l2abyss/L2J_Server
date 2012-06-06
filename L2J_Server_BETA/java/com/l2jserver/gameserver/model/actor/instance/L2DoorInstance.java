@@ -109,7 +109,7 @@ public class L2DoorInstance extends L2Character
 		_checkCollision = data.getBool("check_collision", true);
 		if (isOpenableByTime())
 		{
-			_closeTime = data.getInteger("open_time");
+			_openTime = data.getInteger("open_time");
 			_randomTime = data.getInteger("random_time", -1);
 			startTimerOpen();
 		}
