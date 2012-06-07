@@ -206,8 +206,8 @@ public enum Stats
 	TRANSFER_DAMAGE_TO_PLAYER("transDamToPlayer"),
 	ABSORB_MANA_DAMAGE_PERCENT("absorbDamMana"),
 	
-	MAX_LOAD("maxLoad"),
 	WEIGHT_LIMIT("weightLimit"),
+	WEIGHT_PENALTY("weightPenalty"),
 	
 	PATK_PLANTS("pAtk-plants"),
 	PATK_INSECTS("pAtk-insects"),

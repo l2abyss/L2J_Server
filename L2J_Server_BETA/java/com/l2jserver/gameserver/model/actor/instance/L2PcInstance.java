@@ -194,6 +194,7 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTrap;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
+import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -2315,14 +2316,10 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public int getMaxLoad()
 	{
-		// Weight Limit = (CON Modifier*69000)*Skills
+		// Weight Limit = (CON Modifier*69000) * Skills
 		// Source http://l2p.bravehost.com/weightlimit.html (May 2007)
-		// Fitted exponential curve to the data
-		int con = getCON();
-		if (con < 1) return 31000;
-		if (con > 59) return 176000;
-		double baseLoad = Math.pow(1.029993928, con)*30495.627366;
-		return (int)calcStat(Stats.MAX_LOAD, baseLoad*Config.ALT_WEIGHT_LIMIT, this, null);
+		double baseLoad = Math.floor(BaseStats.CON.calcBonus(this) * 69000 * Config.ALT_WEIGHT_LIMIT);
+		return (int)calcStat(Stats.WEIGHT_LIMIT, baseLoad, this, null);
 	}
 	
 	public int getExpertiseArmorPenalty()
@@ -2350,8 +2347,7 @@ public final class L2PcInstance extends L2Playable
 		int maxLoad = getMaxLoad();
 		if (maxLoad > 0)
 		{
-			long weightproc = (long)getCurrentLoad() * 1000 / maxLoad;
-			weightproc *= calcStat(Stats.WEIGHT_LIMIT, 1, this, null);
+			long weightproc = (long) ((getCurrentLoad() - calcStat(Stats.WEIGHT_PENALTY, 1, this, null)) * 1000 / maxLoad);
 			int newWeightPenalty;
 			if (weightproc < 500 || _dietMode)
 			{
