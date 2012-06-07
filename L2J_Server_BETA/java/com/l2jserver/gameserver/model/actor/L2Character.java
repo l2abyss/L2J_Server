@@ -2227,7 +2227,7 @@ public abstract class L2Character extends L2Object
 		if (getActiveWeaponItem() != null)
 		{
 			L2Weapon wep = getActiveWeaponItem();
-			if (wep.useWeaponSkillsOnly() && !isGM())
+			if (wep.useWeaponSkillsOnly() && !isGM() && wep.hasSkills())
 			{
 				boolean found = false;
 				for (SkillHolder sh : wep.getSkills())

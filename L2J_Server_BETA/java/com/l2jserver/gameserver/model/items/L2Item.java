@@ -879,6 +879,11 @@ public abstract class L2Item
 			_preConditions.add(c);
 	}
 	
+	public boolean hasSkills()
+	{
+		return _skillHolder != null;
+	}
+	
 	/**
 	 * Method to retrive skills linked to this item
 	 *

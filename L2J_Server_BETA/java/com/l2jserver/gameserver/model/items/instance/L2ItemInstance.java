@@ -2021,7 +2021,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public boolean hasPassiveSkills()
 	{
-		return getItemType() == L2EtcItemType.RUNE && getLocation() == ItemLocation.INVENTORY && getOwnerId() > 0 && getItem().getSkills() != null;
+		return getItemType() == L2EtcItemType.RUNE && getLocation() == ItemLocation.INVENTORY && getOwnerId() > 0 && getItem().hasSkills();
 	}
 	
 	public void giveSkillsToOwner()
