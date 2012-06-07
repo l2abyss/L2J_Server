@@ -1274,17 +1274,6 @@ public class L2PetInstance extends L2Summon
 		L2World.getInstance().addPet(oldOwnerId, this);
 	}
 	
-	public int getCurrentLoad()
-	{
-		return _inventory.getTotalWeight();
-	}
-	
-	@Override
-	public final int getMaxLoad()
-	{
-		return getPetData().getLoad();
-	}
-	
 	public int getInventoryLimit()
 	{
 		return Config.INVENTORY_MAXIMUM_PET;
@@ -1295,7 +1284,7 @@ public class L2PetInstance extends L2Summon
 		int maxLoad = getMaxLoad();
 		if (maxLoad > 0)
 		{
-			long weightproc = (long) ((getCurrentLoad() - calcStat(Stats.WEIGHT_PENALTY, 1, this, null)) * 1000 / maxLoad);
+			long weightproc = (((getCurrentLoad() - getBonusWeightPenalty()) * 1000) / maxLoad);
 			int newWeightPenalty;
 			if (weightproc < 500 || getOwner().getDietMode())
 			{

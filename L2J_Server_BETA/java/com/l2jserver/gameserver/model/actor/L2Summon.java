@@ -276,11 +276,6 @@ public abstract class L2Summon extends L2Playable
 		return getTemplate().getNpcId();
 	}
 	
-	public int getMaxLoad()
-	{
-		return 0;
-	}
-	
 	public short getSoulShotsPerHit()
 	{
 		if (getTemplate().getAIDataStatic().getSoulShot() > 0)

@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.conditions;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
-import com.l2jserver.gameserver.model.stats.Stats;
 
 /**
  * The Class ConditionTargetWeight.
@@ -45,7 +44,7 @@ public class ConditionTargetWeight extends Condition
 			final L2PcInstance target = targetObj.getActingPlayer();
 			if (!target.getDietMode() && (target.getMaxLoad() > 0))
 			{
-				int weightproc = (int) (((target.getCurrentLoad() - target.calcStat(Stats.WEIGHT_PENALTY, 1, target, null)) * 100) / target.getMaxLoad());
+				int weightproc = (((target.getCurrentLoad() - target.getBonusWeightPenalty()) * 100) / target.getMaxLoad());
 				return (weightproc < _weight);
 			}
 		}
