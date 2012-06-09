@@ -1897,8 +1897,8 @@ public abstract class L2Character extends L2Object
 		{
 			if (((L2Npc) this).useSpiritShot())
 			{
-				hitTime = (int) (0.70 * hitTime);
-				coolTime = (int) (0.70 * coolTime);
+				hitTime = (int) (0.60 * hitTime);
+				coolTime = (int) (0.60 * coolTime);
 			}
 		}
 		
@@ -1933,25 +1933,21 @@ public abstract class L2Character extends L2Object
 		else
 			setLastSimultaneousSkillCast(skill);
 		
-		// Init the reuse time of the skill
+		// Calculate the Reuse Time of the Skill
 		int reuseDelay;
-		
 		if (skill.isStaticReuse() || skill.isStatic())
 		{
 			reuseDelay = (skill.getReuseDelay());
 		}
+		else if (skill.isMagic())
+		{
+			reuseDelay = (int) (skill.getReuseDelay() * calcStat(Stats.MAGIC_REUSE_RATE, 1, null, null));
+		}
 		else
 		{
-			if (skill.isMagic())
-			{
-				reuseDelay = (int) (skill.getReuseDelay() * getStat().getMReuseRate(skill));
-			}
-			else
-			{
-				reuseDelay = (int) (skill.getReuseDelay() * getStat().getPReuseRate(skill));
-			}
+			reuseDelay = (int) (skill.getReuseDelay() * calcStat(Stats.P_REUSE, 1, null, null));
 		}
-		
+				
 		boolean skillMastery = Formulas.calcSkillMastery(this, skill);
 		
 		// Skill reuse check

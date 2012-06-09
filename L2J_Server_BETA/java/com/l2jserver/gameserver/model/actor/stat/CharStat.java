@@ -488,18 +488,6 @@ public class CharStat
 	}
 	
 	/**
-	 * @param skill 
-	 * @return the PReuse rate (base+modifier) of the L2Character.
-	 */
-	public final double getPReuseRate(L2Skill skill)
-	{
-		if (_activeChar == null)
-			return 1;
-		
-		return calcStat(Stats.P_REUSE, _activeChar.getTemplate().getBaseMReuseRate(), null, skill);
-	}
-	
-	/**
 	 * @param target 
 	 * @return the PAtk (base+modifier) of the L2Character.
 	 */

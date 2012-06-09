@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 
 /**
  * Enum of basic stats.
- *
  * @author mkizub
  */
 public enum Stats
@@ -48,10 +47,10 @@ public enum Stats
 	MAGIC_ATTACK("mAtk"),
 	PHYSICAL_SKILL_POWER("physicalSkillPower"),
 	POWER_ATTACK_SPEED("pAtkSpd"),
-	MAGIC_ATTACK_SPEED("mAtkSpd"), // how fast a magic spell is casted (including animation)
-	ATK_REUSE("atkReuse"), // make bows hit simple hits way slower and will not affect skills
-	P_REUSE("pReuse"),
-	MAGIC_REUSE_RATE("mReuse"), // how fast a magic spell becomes ready to reuse
+	MAGIC_ATTACK_SPEED("mAtkSpd"), // Magic Skill Casting Time Rate
+	ATK_REUSE("atkReuse"), // Bows Hits Reuse Rate
+	P_REUSE("pReuse"), // Physical Skill Reuse Rate
+	MAGIC_REUSE_RATE("mReuse"), // Magic Skill Reuse Rate
 	SHIELD_DEFENCE("sDef"),
 	CRITICAL_DAMAGE("cAtk"),
 	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, crit power and crit damage SA
@@ -86,7 +85,7 @@ public enum Stats
 	BONUS_EXP("bonusExp"),
 	BONUS_SP("bonusSp"),
 	ATTACK_CANCEL("cancel"),
-	MAGIC_FAILURE_RATE("magicFailureRate"),	
+	MAGIC_FAILURE_RATE("magicFailureRate"),
 	
 	// ACCURACY & RANGE
 	ACCURACY_COMBAT("accCombat"),
@@ -119,7 +118,7 @@ public enum Stats
 	MOVEMENT("movement"), // slowdown movement, debuff
 	CONFUSION("confusion"), // mob changes target, opposite to aggression/hate
 	SLEEP("sleep"), // sleep (don't move/ATTACK) until attacked
-
+	
 	// VULNERABILITIES
 	AGGRESSION_VULN("aggressionVuln"),
 	BLEED_VULN("bleedVuln"),
@@ -150,7 +149,7 @@ public enum Stats
 	HOLY_RES("holyRes"),
 	DARK_RES("darkRes"),
 	MAGIC_SUCCESS_RES("magicSuccRes"),
-	//BUFF_IMMUNITY("buffImmunity"), //TODO: Implement me
+	// BUFF_IMMUNITY("buffImmunity"), //TODO: Implement me
 	DEBUFF_IMMUNITY("debuffImmunity"),
 	
 	// ELEMENT POWER
@@ -160,7 +159,7 @@ public enum Stats
 	EARTH_POWER("earthPower"),
 	HOLY_POWER("holyPower"),
 	DARK_POWER("darkPower"),
-
+	
 	// PROFICIENCY
 	AGGRESSION_PROF("aggressionProf"),
 	BLEED_PROF("bleedProf"),
@@ -276,7 +275,9 @@ public enum Stats
 		for (Stats s : values())
 		{
 			if (s.getValue().equals(name))
+			{
 				return s;
+			}
 		}
 		
 		throw new NoSuchElementException("Unknown name '" + name + "' for enum BaseStats");
