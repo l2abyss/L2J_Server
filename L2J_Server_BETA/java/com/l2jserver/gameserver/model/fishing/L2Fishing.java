@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.fishing;
 import java.util.concurrent.Future;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.datatables.FishingMonstersData;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -147,10 +148,15 @@ public class L2Fishing implements Runnable
 		
 		if (win)
 		{
-			int check = Rnd.get(100);
-			if (check <= 5)
+			int lvl = _fisher.getLevel();
+			L2NpcTemplate monster;
+			L2FishingMonster fishingMonster = FishingMonstersData.getInstance().getFishingMonster(lvl);
+			
+			if (Rnd.get(100) <= fishingMonster.getProbability())
 			{
-				PenaltyMonster();
+				monster = NpcTable.getInstance().getTemplate(fishingMonster.getFishingMonsterId());
+				_fisher.sendPacket(SystemMessageId.YOU_CAUGHT_SOMETHING_SMELLY_THROW_IT_BACK);
+				spawnMonster(monster);
 			}
 			else
 			{
@@ -364,55 +370,16 @@ public class L2Fishing implements Runnable
 		}
 	}
 	
-	private void PenaltyMonster()
+	private void spawnMonster(L2NpcTemplate monster)
 	{
-		int lvl = (int) Math.round(_fisher.getLevel() * 0.1);
-		
-		int npcid;
-		
-		_fisher.sendPacket(SystemMessageId.YOU_CAUGHT_SOMETHING_SMELLY_THROW_IT_BACK);
-		switch (lvl)
-		{
-			case 0:
-			case 1:
-				npcid = 18319;
-				break;
-			case 2:
-				npcid = 18320;
-				break;
-			case 3:
-				npcid = 18321;
-				break;
-			case 4:
-				npcid = 18322;
-				break;
-			case 5:
-				npcid = 18323;
-				break;
-			case 6:
-				npcid = 18324;
-				break;
-			case 7:
-				npcid = 18325;
-				break;
-			case 8:
-			case 9:
-				npcid = 18326;
-				break;
-			default:
-				npcid = 18319;
-				break;
-		}
-		L2NpcTemplate temp;
-		temp = NpcTable.getInstance().getTemplate(npcid);
-		if (temp != null)
+		if (monster != null)
 		{
 			try
 			{
-				L2Spawn spawn = new L2Spawn(temp);
+				L2Spawn spawn = new L2Spawn(monster);
 				spawn.setLocx(_fisher.getX());
 				spawn.setLocy(_fisher.getY());
-				spawn.setLocz(_fisher.getZ() + 20);
+				spawn.setLocz(_fisher.getZ());
 				spawn.setAmount(1);
 				spawn.setHeading(_fisher.getHeading());
 				spawn.stopRespawn();

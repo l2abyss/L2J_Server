@@ -22,20 +22,20 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.fishing.L2FishingRod;
+import com.l2jserver.gameserver.model.fishing.L2FishingMonster;
 
 /**
- * This class holds the Fishing Rods information.
+ * This class holds the Fishing Monsters information.
  * @author nonom
  */
-public final class FishingRodsData extends DocumentParser
+public final class FishingMonstersData extends DocumentParser
 {
-	private static final Map<Integer, L2FishingRod> _fishingRods = new HashMap<>();
+	private static final Map<Integer, L2FishingMonster> _FishingMonsterData = new HashMap<>();
 	
 	/**
-	 * Instantiates a new fishing rods data.
+	 * Instantiates a new fishing monster data.
 	 */
-	protected FishingRodsData()
+	protected FishingMonstersData()
 	{
 		load();
 	}
@@ -43,9 +43,9 @@ public final class FishingRodsData extends DocumentParser
 	@Override
 	public void load()
 	{
-		_fishingRods.clear();
-		parseDatapackFile("data/stats/fishing/fishingRods.xml");
-		_log.info(getClass().getSimpleName() + ": Loaded " + _fishingRods.size() + " Fishing Rods.");
+		_FishingMonsterData.clear();
+		parseDatapackFile("data/stats/fishing/FishingMonsters.xml");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _FishingMonsterData.size() + " Fishing Monsters.");
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public final class FishingRodsData extends DocumentParser
 	{
 		NamedNodeMap attrs;
 		Node att;
-		L2FishingRod fishingRod;
+		L2FishingMonster fishingMonster;
 		StatsSet set;
 		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
@@ -61,7 +61,7 @@ public final class FishingRodsData extends DocumentParser
 			{
 				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
-					if ("fishingRod".equalsIgnoreCase(d.getNodeName()))
+					if ("fishingMonster".equalsIgnoreCase(d.getNodeName()))
 					{
 						
 						attrs = d.getAttributes();
@@ -72,8 +72,8 @@ public final class FishingRodsData extends DocumentParser
 							att = attrs.item(i);
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
-						fishingRod = new L2FishingRod(set);
-						_fishingRods.put(fishingRod.getFishingRodItemId(), fishingRod);
+						fishingMonster = new L2FishingMonster(set);
+						_FishingMonsterData.put(fishingMonster.getFishingMonsterId(), fishingMonster);
 					}
 				}
 			}
@@ -81,26 +81,33 @@ public final class FishingRodsData extends DocumentParser
 	}
 	
 	/**
-	 * Gets the fishing rod.
-	 * @param itemId the item id
-	 * @return A fishing Rod by Item Id
+	 * Gets the fishing monster.
+	 * @param lvl the fisher lvl
+	 * @return A fishing monster by fisher lvl
 	 */
-	public L2FishingRod getFishingRod(int itemId)
+	public L2FishingMonster getFishingMonster(int lvl)
 	{
-		return _fishingRods.get(itemId);
+		for (Map.Entry<Integer, L2FishingMonster> fishingMonster : _FishingMonsterData.entrySet())
+		{
+			if ((lvl >= fishingMonster.getValue().getUserMinLevel()) && (lvl <= fishingMonster.getValue().getUserMaxLevel()))
+			{
+				return fishingMonster.getValue();
+			}
+		}
+		return null;
 	}
 	
 	/**
-	 * Gets the single instance of FishingRodsData.
-	 * @return single instance of FishingRodsData
+	 * Gets the single instance of FishingMonsterData.
+	 * @return single instance of FishingMonsterData
 	 */
-	public static FishingRodsData getInstance()
+	public static FishingMonstersData getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
 	{
-		protected static final FishingRodsData _instance = new FishingRodsData();
+		protected static final FishingMonstersData _instance = new FishingMonstersData();
 	}
 }

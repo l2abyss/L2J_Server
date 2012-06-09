@@ -50,7 +50,7 @@ public final class FishData extends DocumentParser
 		_fishEasy.clear();
 		_fishNormal.clear();
 		_fishHard.clear();
-		parseDatapackFile("data/stats/items/fishing/fishes.xml");
+		parseDatapackFile("data/stats/fishing/fishes.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + (_fishEasy.size() + _fishNormal.size() + _fishHard.size()) + " Fishes.");
 	}
 	
