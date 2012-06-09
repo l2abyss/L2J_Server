@@ -122,6 +122,13 @@ public class TerritoryWarManager implements Siegable
 		TERRITORY_ITEM_IDS.put(87, 13763);
 		TERRITORY_ITEM_IDS.put(88, 13764);
 		TERRITORY_ITEM_IDS.put(89, 13765);
+		
+		_registeredClans.shared();
+		_registeredMercenaries.shared();
+		_territoryList.shared();
+		_territoryWards.shared();
+		_clanFlags.shared();
+		_disguisedPlayers.shared();
 		// load data from database
 		load();
 	}
