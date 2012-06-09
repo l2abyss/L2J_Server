@@ -47,7 +47,7 @@ public class L2DatabaseFactory
 	
 	private static L2DatabaseFactory _instance;
 	private static volatile ScheduledExecutorService _executor;
-	private static Map<Integer, ScheduledFuture<?>> _connectionClosers = new FastMap<>();
+	private static Map<Connection, ScheduledFuture<?>> _connectionClosers = new FastMap<Connection, ScheduledFuture<?>>().shared();
 	private ProviderType _providerType;
 	private ComboPooledDataSource _source;
 	
@@ -270,7 +270,7 @@ public class L2DatabaseFactory
 				con = _source.getConnection();
 				if (Server.serverMode == Server.MODE_GAMESERVER)
 				{
-					_connectionClosers.put(con.hashCode(), ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME));
+					_connectionClosers.put(con, ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME));
 				}
 				else
 				{
@@ -340,7 +340,7 @@ public class L2DatabaseFactory
 		try
 		{
 			con.close();
-			ScheduledFuture<?> conCloser = _connectionClosers.remove(con.hashCode());
+			ScheduledFuture<?> conCloser = _connectionClosers.remove(con);
 			if (conCloser != null)
 			{
 				conCloser.cancel(true);
