@@ -30,10 +30,10 @@ import com.l2jserver.gameserver.model.fishing.L2FishingMonster;
  */
 public final class FishingMonstersData extends DocumentParser
 {
-	private static final Map<Integer, L2FishingMonster> _FishingMonsterData = new HashMap<>();
+	private static final Map<Integer, L2FishingMonster> _fishingMonstersData = new HashMap<>();
 	
 	/**
-	 * Instantiates a new fishing monster data.
+	 * Instantiates a new fishing monsters data.
 	 */
 	protected FishingMonstersData()
 	{
@@ -43,9 +43,9 @@ public final class FishingMonstersData extends DocumentParser
 	@Override
 	public void load()
 	{
-		_FishingMonsterData.clear();
+		_fishingMonstersData.clear();
 		parseDatapackFile("data/stats/fishing/fishingMonsters.xml");
-		_log.info(getClass().getSimpleName() + ": Loaded " + _FishingMonsterData.size() + " Fishing Monsters.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _fishingMonstersData.size() + " Fishing Monsters.");
 	}
 	
 	@Override
@@ -73,7 +73,7 @@ public final class FishingMonstersData extends DocumentParser
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						fishingMonster = new L2FishingMonster(set);
-						_FishingMonsterData.put(fishingMonster.getFishingMonsterId(), fishingMonster);
+						_fishingMonstersData.put(fishingMonster.getFishingMonsterId(), fishingMonster);
 					}
 				}
 			}
@@ -87,7 +87,7 @@ public final class FishingMonstersData extends DocumentParser
 	 */
 	public L2FishingMonster getFishingMonster(int lvl)
 	{
-		for (Map.Entry<Integer, L2FishingMonster> fishingMonster : _FishingMonsterData.entrySet())
+		for (Map.Entry<Integer, L2FishingMonster> fishingMonster : _fishingMonstersData.entrySet())
 		{
 			if ((lvl >= fishingMonster.getValue().getUserMinLevel()) && (lvl <= fishingMonster.getValue().getUserMaxLevel()))
 			{
