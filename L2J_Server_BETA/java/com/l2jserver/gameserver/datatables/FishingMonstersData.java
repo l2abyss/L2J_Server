@@ -82,17 +82,31 @@ public final class FishingMonstersData extends DocumentParser
 	
 	/**
 	 * Gets the fishing monster.
-	 * @param lvl the fisher lvl
-	 * @return A fishing monster by fisher lvl
+	 * @param lvl the fisherman level
+	 * @return a fishing monster given the fisherman level
 	 */
 	public L2FishingMonster getFishingMonster(int lvl)
 	{
-		for (Map.Entry<Integer, L2FishingMonster> fishingMonster : _fishingMonstersData.entrySet())
+		for (L2FishingMonster fishingMonster : _fishingMonstersData.values())
 		{
-			if ((lvl >= fishingMonster.getValue().getUserMinLevel()) && (lvl <= fishingMonster.getValue().getUserMaxLevel()))
+			if ((lvl >= fishingMonster.getUserMinLevel()) && (lvl <= fishingMonster.getUserMaxLevel()))
 			{
-				return fishingMonster.getValue();
+				return fishingMonster;
 			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets the fishing monster by Id.
+	 * @param id the fishing monster Id
+	 * @return the fishing monster by Id
+	 */
+	public L2FishingMonster getFishingMonsterById(int id)
+	{
+		if (_fishingMonstersData.containsKey(id))
+		{
+			return _fishingMonstersData.get(id);
 		}
 		return null;
 	}
