@@ -110,6 +110,9 @@ public class Quest extends ManagedScript
 	private static final String DEFAULT_NO_QUEST_MSG = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
 	private static final String DEFAULT_ALREADY_COMPLETED_MSG = "<html><body>This quest has already been completed.</body></html>";
 	
+	private static final String QUEST_DELETE_FROM_CHAR_QUERY = "DELETE FROM character_quests WHERE charId=? AND name=?";
+	private static final String QUEST_DELETE_FROM_CHAR_QUERY_NON_REPEATABLE_QUERY = "DELETE FROM character_quests WHERE charId=? AND name=? AND var!=?";
+	
 	private static final int RESET_HOUR = 6;
 	private static final int RESET_MINUTES = 30;
 	
@@ -1640,16 +1643,28 @@ public class Quest extends ManagedScript
 	/**
 	 * Delete from the database all variables and states of the specified quest state.
 	 * @param qs the {@link QuestState} object whose variables to delete
+	 * @param repeatable if {@code true} the state will be kept, else it will be deleted as well
 	 */
-	public static void deleteQuestInDb(QuestState qs)
+	public static void deleteQuestInDb(QuestState qs, boolean repeatable)
 	{
 		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=? AND name=?");
-			statement.setInt(1, qs.getPlayer().getObjectId());
-			statement.setString(2, qs.getQuestName());
+			final PreparedStatement statement;
+			if (repeatable)
+			{
+				statement = con.prepareStatement(QUEST_DELETE_FROM_CHAR_QUERY);
+				statement.setInt(1, qs.getPlayer().getObjectId());
+				statement.setString(2, qs.getQuestName());
+				statement.setString(3, "<state>");
+			}
+			else
+			{
+				statement = con.prepareStatement(QUEST_DELETE_FROM_CHAR_QUERY_NON_REPEATABLE_QUERY);
+				statement.setInt(1, qs.getPlayer().getObjectId());
+				statement.setString(2, qs.getQuestName());
+			}
 			statement.executeUpdate();
 			statement.close();
 		}

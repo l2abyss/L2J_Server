@@ -386,12 +386,10 @@ public final class QuestState
 		}
 		
 		String old = _vars.remove(var);
-		
 		if (old != null)
 		{
 			Quest.deleteQuestVarInDb(this, var);
 		}
-		
 		return old;
 	}
 	
@@ -1070,26 +1068,16 @@ public final class QuestState
 			}
 		}
 		
+		Quest.deleteQuestInDb(this, repeatable);
 		if (repeatable)
 		{
 			_player.delQuestState(getQuestName());
-			Quest.deleteQuestInDb(this);
-			
-			_vars = null;
 		}
 		else
 		{
-			if (_vars != null)
-			{
-				for (String var : _vars.keySet())
-				{
-					unset(var);
-				}
-			}
-			
 			Quest.updateQuestInDb(this);
 		}
-		
+		_vars = null;
 		return this;
 	}
 	
