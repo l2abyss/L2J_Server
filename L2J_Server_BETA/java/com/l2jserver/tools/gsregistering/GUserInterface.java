@@ -284,7 +284,7 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		}
 		else if (cmd.equals("about"))
 		{
-			JOptionPane.showMessageDialog(getFrame(), getBundle().getString("credits") + "\nhttp://www.l2jserver.com\n\n" + getBundle().getString("icons") + "\n\n" + getBundle().getString("language") + '\n' + getBundle().getString("translation"), getBundle().getString("aboutItem"), JOptionPane.INFORMATION_MESSAGE, ImagesTable.getImage("l2jserverlogo.png"));
+			JOptionPane.showMessageDialog(getFrame(), getBundle().getString("credits") + "\nhttp://www.l2jserver.com\n\n" + getBundle().getString("icons") + "\n\n" + getBundle().getString("langText") + '\n' + getBundle().getString("translation"), getBundle().getString("aboutItem"), JOptionPane.INFORMATION_MESSAGE, ImagesTable.getImage("l2jserverlogo.png"));
 		}
 		else if (cmd.equals("removeAll"))
 		{

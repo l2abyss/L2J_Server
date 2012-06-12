@@ -490,7 +490,7 @@ public class Olympiad
 			long milliToStart = getMillisToCompBegin();
 			
 			double numSecs = (milliToStart / 1000) % 60;
-			double countDown = ((milliToStart / 1000) - numSecs) / 60;
+			double countDown = ((milliToStart / 1000.) - numSecs) / 60;
 			int numMins = (int) Math.floor(countDown % 60);
 			countDown = (countDown - numMins) / 60;
 			int numHours = (int) Math.floor(countDown % 24);

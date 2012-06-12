@@ -765,7 +765,7 @@ public class CharStat
 		if (skill == null)
 			return 1;
 		double mpConsume = skill.getMpConsume();
-		double nextDanceMpCost = Math.ceil(skill.getMpConsume() / 2);
+		double nextDanceMpCost = Math.ceil(skill.getMpConsume() / 2.);
 		if (skill.isDance())
 		{
 			if (Config.DANCE_CONSUME_ADDITIONAL_MP

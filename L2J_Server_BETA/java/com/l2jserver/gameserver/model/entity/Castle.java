@@ -878,7 +878,7 @@ public class Castle
 		{
 			StringBuilder doorIds = new StringBuilder(100);
 			for (L2DoorInstance door : getDoors())
-				doorIds.append(door.getDoorId()).append(",");
+				doorIds.append(door.getDoorId()).append(',');
 			doorIds.deleteCharAt(doorIds.length()-1);
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("Select * from castle_doorupgrade where doorId in ("+doorIds.toString()+")");
@@ -908,7 +908,7 @@ public class Castle
 		{
 			StringBuilder doorIds = new StringBuilder(100);
 			for (L2DoorInstance door : getDoors())
-				doorIds.append(door.getDoorId()).append(",");
+				doorIds.append(door.getDoorId()).append(',');
 			doorIds.deleteCharAt(doorIds.length()-1);
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("delete from castle_doorupgrade where doorId in ("+doorIds.toString()+")");
