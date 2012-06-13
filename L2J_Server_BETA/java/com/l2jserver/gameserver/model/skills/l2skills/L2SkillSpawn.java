@@ -93,7 +93,7 @@ public class L2SkillSpawn extends L2Skill
 		
 		spawn.setLocx(x);
 		spawn.setLocy(y);
-		spawn.setLocz(caster.getZ() + 20);
+		spawn.setLocz(caster.getZ());
 		spawn.setHeading(caster.getHeading());
 		spawn.stopRespawn();
 		
