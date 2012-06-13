@@ -1657,13 +1657,13 @@ public class Quest extends ManagedScript
 				statement = con.prepareStatement(QUEST_DELETE_FROM_CHAR_QUERY);
 				statement.setInt(1, qs.getPlayer().getObjectId());
 				statement.setString(2, qs.getQuestName());
-				statement.setString(3, "<state>");
 			}
 			else
 			{
 				statement = con.prepareStatement(QUEST_DELETE_FROM_CHAR_QUERY_NON_REPEATABLE_QUERY);
 				statement.setInt(1, qs.getPlayer().getObjectId());
 				statement.setString(2, qs.getQuestName());
+				statement.setString(3, "<state>");
 			}
 			statement.executeUpdate();
 			statement.close();
