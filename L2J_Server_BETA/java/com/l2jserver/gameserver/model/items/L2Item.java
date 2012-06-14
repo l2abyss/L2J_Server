@@ -172,6 +172,7 @@ public abstract class L2Item
 	private final boolean _stackable;
 	private final int _materialType;
 	private final int _crystalType; // default to none-grade
+	private final int _equipReuseDelay;
 	private final int _duration;
 	private final int _time;
 	private final int _autoDestroyTime;
@@ -222,6 +223,7 @@ public abstract class L2Item
 		_icon = set.getString("icon", null);
 		_weight = set.getInteger("weight", 0);
 		_materialType = ItemTable._materials.get(set.getString("material", "steel")); // default is steel, yeah and what?
+		_equipReuseDelay = set.getInteger("equip_reuse_delay", 0) * 1000;
 		_duration = set.getInteger("duration", -1);
 		_time = set.getInteger("time", -1);
 		_autoDestroyTime = set.getInteger("auto_destroy_time", -1) * 1000;
@@ -332,6 +334,14 @@ public abstract class L2Item
 	 */
 	public abstract L2ItemType getItemType();
 	
+	/**
+	 * @return the _equipReuseDelay
+	 */
+	public int getEquipReuseDelay()
+	{
+		return _equipReuseDelay;
+	}
+
 	/**
 	 * Returns the duration of the item
 	 * @return int

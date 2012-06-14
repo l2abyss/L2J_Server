@@ -2180,4 +2180,9 @@ public final class L2ItemInstance extends L2Object
 	{
 		dropListeners.remove(listener);
 	}
+
+	public int getEquipReuseDelay()
+	{
+	        return _item.getEquipReuseDelay();
+	}
 }

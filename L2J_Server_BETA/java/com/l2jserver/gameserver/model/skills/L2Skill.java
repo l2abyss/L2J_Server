@@ -148,8 +148,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _coolTime;
 	private final int _reuseHashCode;
 	private final int _reuseDelay;
-	// for item skills delay on equip
-	private final int _equipDelay;
 	
 	/** Target type of the skill : SELF, PARTY, CLAN, PET... */
 	private final L2TargetType _targetType;
@@ -396,8 +394,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		{
 			_reuseDelay = set.getInteger("reuseDelay", 0);
 		}
-		
-		_equipDelay = set.getInteger("equipDelay", 0);
 		
 		_skillRadius = set.getInteger("skillRadius", 0);
 		
@@ -962,11 +958,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final int getReuseHashCode()
 	{
 		return _reuseHashCode;
-	}
-	
-	public final int getEquipDelay()
-	{
-		return _equipDelay;
 	}
 	
 	public final int getHitTime()

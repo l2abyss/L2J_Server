@@ -345,7 +345,7 @@ public abstract class Inventory extends ItemContainer
 							{
 								if (!player.hasSkillReuse(itemSkill.getReuseHashCode()))
 								{
-									int equipDelay = itemSkill.getEquipDelay();
+									int equipDelay = item.getEquipReuseDelay();
 									if (equipDelay > 0)
 									{
 										player.addTimeStamp(itemSkill, equipDelay);
@@ -446,7 +446,7 @@ public abstract class Inventory extends ItemContainer
 						{
 							if (!player.hasSkillReuse(itemSkill.getReuseHashCode()))
 							{
-								int equipDelay = itemSkill.getEquipDelay();
+								int equipDelay = item.getEquipReuseDelay();
 								if (equipDelay > 0)
 								{
 									player.addTimeStamp(itemSkill, equipDelay);
@@ -525,12 +525,11 @@ public abstract class Inventory extends ItemContainer
 								{
 									if (player.hasSkillReuse(itemSkill.getReuseHashCode()))
 									{
-										int equipDelay = itemSkill.getEquipDelay();
-										
+										int equipDelay = item.getEquipReuseDelay();
 										if (equipDelay > 0)
 										{
-											player.addTimeStamp(itemSkill, itemSkill.getEquipDelay());
-											player.disableSkill(itemSkill, itemSkill.getEquipDelay());
+											player.addTimeStamp(itemSkill, equipDelay);
+											player.disableSkill(itemSkill, equipDelay);
 										}
 									}
 									updateTimeStamp = true;
