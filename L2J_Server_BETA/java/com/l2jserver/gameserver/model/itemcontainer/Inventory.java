@@ -523,7 +523,7 @@ public abstract class Inventory extends ItemContainer
 								
 								if (itemSkill.isActive())
 								{
-									if (player.hasSkillReuse(itemSkill.getReuseHashCode()))
+									if (!player.hasSkillReuse(itemSkill.getReuseHashCode()))
 									{
 										int equipDelay = item.getEquipReuseDelay();
 										if (equipDelay > 0)
