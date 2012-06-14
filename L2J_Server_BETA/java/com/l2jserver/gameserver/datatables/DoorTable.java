@@ -76,6 +76,7 @@ public class DoorTable extends DocumentParser
 					{
 						attrs = b.getAttributes();
 						set = new StatsSet();
+						set.set("baseHpMax", 1);  // Avoid doors without HP value created dead due to default value 0 in L2CharTemplate
 						for (int i = 0; i < attrs.getLength(); i++)
 						{
 							att = attrs.item(i);
