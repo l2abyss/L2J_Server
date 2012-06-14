@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.instancemanager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -69,25 +70,26 @@ public class QuestManager extends ScriptManager<Quest>
 	
 	public final void reloadAllQuests()
 	{
-		_log.info("Reloading Server Scripts");
+		_log.info("Reloading all server scripts.");
+		// unload all scripts
+		for (Quest quest : _quests.values())
+		{
+			if (quest != null)
+			{
+				quest.unload(false);
+			}
+		}
+		_quests.clear();
+		
 		try
 		{
-			// unload all scripts
-			for (Quest quest : _quests.values())
-			{
-				if (quest != null)
-					quest.unload(false);
-			}
-			
-			_quests.clear();
 			// now load all scripts
-			File scripts = new File(Config.DATAPACK_ROOT + "/data/scripts.cfg");
-			L2ScriptEngineManager.getInstance().executeScriptList(scripts);
+			L2ScriptEngineManager.getInstance().executeScriptList(new File(Config.DATAPACK_ROOT, "data/scripts.cfg"));
 			QuestManager.getInstance().report();
 		}
-		catch (IOException ioe)
+		catch (IOException e)
 		{
-			_log.severe("Failed loading scripts.cfg, no script going to be loaded");
+			_log.log(Level.SEVERE, "Failed loading scripts.cfg, no script going to be loaded!", e);
 		}
 	}
 	

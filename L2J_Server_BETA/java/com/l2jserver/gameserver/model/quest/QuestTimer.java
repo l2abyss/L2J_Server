@@ -31,7 +31,7 @@ public class QuestTimer
 		@Override
 		public void run()
 		{
-			if ((this == null) || !getIsActive())
+			if (!getIsActive())
 			{
 				return;
 			}
@@ -40,7 +40,7 @@ public class QuestTimer
 			{
 				if (!getIsRepeating())
 				{
-					cancel();
+					cancelAndRemove();
 				}
 				getQuest().notifyEvent(getName(), getNpc(), getPlayer());
 			}
@@ -86,16 +86,25 @@ public class QuestTimer
 		this(qs.getQuest(), name, time, null, qs.getPlayer(), false);
 	}
 	
+	/**
+	 * Cancel this quest timer.
+	 */
 	public void cancel()
 	{
 		_isActive = false;
-		
 		if (_schedular != null)
 		{
 			_schedular.cancel(false);
 		}
-		
-		getQuest().removeQuestTimer(this);
+	}
+	
+	/**
+	 * Cancel this quest timer and remove it from the associated quest.
+	 */
+	public void cancelAndRemove()
+	{
+		cancel();
+		_quest.removeQuestTimer(this);
 	}
 	
 	/**
@@ -112,11 +121,11 @@ public class QuestTimer
 		{
 			return false;
 		}
-		if ((quest != getQuest()) || (name.compareToIgnoreCase(getName()) != 0))
+		if ((quest != _quest) || !name.equalsIgnoreCase(getName()))
 		{
 			return false;
 		}
-		return ((npc == getNpc()) && (player == getPlayer()));
+		return ((npc == _npc) && (player == _player));
 	}
 	
 	public final boolean getIsActive()

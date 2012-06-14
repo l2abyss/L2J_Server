@@ -19,9 +19,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,7 +83,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Map containing events from String value of the event.
 	 */
-	private static Map<String, Quest> _allEventsS = new FastMap<>();
+	private static Map<String, Quest> _allEventsS = new HashMap<>();
 	
 	/**
 	 * Map containing lists of timers from the name of the timer.
@@ -89,6 +92,8 @@ public class Quest extends ManagedScript
 	private final List<Integer> _questInvolvedNpcs = new ArrayList<>();
 	
 	private final ReentrantReadWriteLock _rwLock = new ReentrantReadWriteLock();
+	private final WriteLock _writeLock = _rwLock.writeLock();
+	private final ReadLock _readLock = _rwLock.readLock();
 	
 	private final int _questId;
 	private final String _name;
@@ -299,7 +304,7 @@ public class Quest extends ManagedScript
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player, boolean repeating)
 	{
-		List<QuestTimer> timers = getQuestTimers(name);
+		List<QuestTimer> timers = _allEventTimers.get(name);
 		// Add quest timer if timer doesn't already exist
 		if (timers == null)
 		{
@@ -314,14 +319,14 @@ public class Quest extends ManagedScript
 			// nulls act as wildcards
 			if (getQuestTimer(name, npc, player) == null)
 			{
+				_writeLock.lock();
 				try
 				{
-					_rwLock.writeLock().lock();
 					timers.add(new QuestTimer(this, name, time, npc, player, repeating));
 				}
 				finally
 				{
-					_rwLock.writeLock().unlock();
+					_writeLock.unlock();
 				}
 			}
 		}
@@ -336,40 +341,29 @@ public class Quest extends ManagedScript
 	 */
 	public QuestTimer getQuestTimer(String name, L2Npc npc, L2PcInstance player)
 	{
-		final List<QuestTimer> qt = getQuestTimers(name);
-		if ((qt == null) || qt.isEmpty())
+		final List<QuestTimer> timers = _allEventTimers.get(name);
+		if (timers != null)
 		{
-			return null;
-		}
-		try
-		{
-			_rwLock.readLock().lock();
-			for (QuestTimer timer : qt)
+			_readLock.lock();
+			try
 			{
-				if (timer != null)
+				for (QuestTimer timer : timers)
 				{
-					if (timer.isMatch(this, name, npc, player))
+					if (timer != null)
 					{
-						return timer;
+						if (timer.isMatch(this, name, npc, player))
+						{
+							return timer;
+						}
 					}
 				}
 			}
-		}
-		finally
-		{
-			_rwLock.readLock().unlock();
+			finally
+			{
+				_readLock.unlock();
+			}
 		}
 		return null;
-	}
-	
-	/**
-	 * Get all quest timers with the specified name.
-	 * @param name the name of the quest timers to get
-	 * @return a list of all quest timers matching the given name or {@code null} if none were found
-	 */
-	private List<QuestTimer> getQuestTimers(String name)
-	{
-		return _allEventTimers.get(name);
 	}
 	
 	/**
@@ -378,25 +372,25 @@ public class Quest extends ManagedScript
 	 */
 	public void cancelQuestTimers(String name)
 	{
-		List<QuestTimer> timers = getQuestTimers(name);
-		if (timers == null)
+		final List<QuestTimer> timers = _allEventTimers.get(name);
+		if (timers != null)
 		{
-			return;
-		}
-		try
-		{
-			_rwLock.writeLock().lock();
-			for (QuestTimer timer : timers)
+			_writeLock.lock();
+			try
 			{
-				if (timer != null)
+				for (QuestTimer timer : timers)
 				{
-					timer.cancel();
+					if (timer != null)
+					{
+						timer.cancel();
+					}
 				}
+				timers.clear();
 			}
-		}
-		finally
-		{
-			_rwLock.writeLock().unlock();
+			finally
+			{
+				_writeLock.unlock();
+			}
 		}
 	}
 	
@@ -408,10 +402,10 @@ public class Quest extends ManagedScript
 	 */
 	public void cancelQuestTimer(String name, L2Npc npc, L2PcInstance player)
 	{
-		QuestTimer timer = getQuestTimer(name, npc, player);
+		final QuestTimer timer = getQuestTimer(name, npc, player);
 		if (timer != null)
 		{
-			timer.cancel();
+			timer.cancelAndRemove();
 		}
 	}
 	
@@ -422,23 +416,21 @@ public class Quest extends ManagedScript
 	 */
 	public void removeQuestTimer(QuestTimer timer)
 	{
-		if (timer == null)
+		if (timer != null)
 		{
-			return;
-		}
-		final List<QuestTimer> timers = getQuestTimers(timer.getName());
-		if (timers == null)
-		{
-			return;
-		}
-		try
-		{
-			_rwLock.writeLock().lock();
-			timers.remove(timer);
-		}
-		finally
-		{
-			_rwLock.writeLock().unlock();
+			final List<QuestTimer> timers = _allEventTimers.get(timer.getName());
+			if (timers != null)
+			{
+				_writeLock.lock();
+				try
+				{
+					timers.remove(timer);
+				}
+				finally
+				{
+					_writeLock.unlock();
+				}
+			}
 		}
 	}
 	
@@ -2631,16 +2623,25 @@ public class Quest extends ManagedScript
 		// be restarted).
 		for (List<QuestTimer> timers : _allEventTimers.values())
 		{
-			for (QuestTimer timer : timers)
+			_readLock.lock();
+			try
 			{
-				timer.cancel();
+				for (QuestTimer timer : timers)
+				{
+					timer.cancel();
+				}
 			}
+			finally
+			{
+				_readLock.unlock();
+			}
+			timers.clear();
 		}
 		_allEventTimers.clear();
 		
 		for (Integer npcId : _questInvolvedNpcs)
 		{
-			L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
+			L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId.intValue());
 			if (template != null)
 			{
 				template.removeQuest(this);
