@@ -1635,7 +1635,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Delete from the database all variables and states of the specified quest state.
 	 * @param qs the {@link QuestState} object whose variables to delete
-	 * @param repeatable if {@code true} the state will be kept, else it will be deleted as well
+	 * @param repeatable if {@code false}, the state variable will be preserved, otherwise it will be deleted as well
 	 */
 	public static void deleteQuestInDb(QuestState qs, boolean repeatable)
 	{

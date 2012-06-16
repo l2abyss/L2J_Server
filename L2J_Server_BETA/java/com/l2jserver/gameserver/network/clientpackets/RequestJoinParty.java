@@ -63,6 +63,12 @@ public final class RequestJoinParty extends L2GameClientPacket
 			return;
 		}
 		
+		if ((target.getClient() == null) || target.getClient().isDetached())
+		{
+			requestor.sendMessage("Player is in offline mode.");
+			return;
+		}
+		
 		if (!requestor.isGM() && target.getAppearance().getInvisible())
 		{
 			requestor.sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
@@ -101,12 +107,6 @@ public final class RequestJoinParty extends L2GameClientPacket
 		if (target.isInJail() || requestor.isInJail())
 		{
 			requestor.sendMessage("You cannot invite a player while is in Jail.");
-			return;
-		}
-		
-		if (target.getClient().isDetached())
-		{
-			requestor.sendMessage("Player is in offline mode.");
 			return;
 		}
 		
