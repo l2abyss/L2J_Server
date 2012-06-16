@@ -281,13 +281,6 @@ public abstract class DocumentBase
 			}
 		}
 		
-		boolean passiveEffect = false;
-		if (attrs.getNamedItem("passive") != null)
-		{
-			if (Integer.decode(getValue(attrs.getNamedItem("passive").getNodeValue(),template)) == 1)
-				passiveEffect = true;
-		}
-		
 		boolean self = false;
 		if (attrs.getNamedItem("self") != null)
 		{
@@ -354,8 +347,6 @@ public abstract class DocumentBase
 			}
 		}
 		
-		EffectTemplate lt;
-		
 		final boolean isChanceSkillTrigger = name.equals("ChanceSkillTrigger");
 		int trigId = 0;
 		if (attrs.getNamedItem("triggeredId") != null)
@@ -395,7 +386,7 @@ public abstract class DocumentBase
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " "
 					+ activationChance);
 		
-		lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormalVisualEffect, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance, passiveEffect);
+		final EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormalVisualEffect, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance);
 		parseTemplate(n, lt);
 		if (template instanceof L2Item)
 			((L2Item) template).attach(lt);
@@ -403,7 +394,7 @@ public abstract class DocumentBase
 		{
 			if (self)
 				((L2Skill) template).attachSelf(lt);
-			else if (passiveEffect)
+			else if (((L2Skill) template).isPassive())
 				((L2Skill) template).attachPassive(lt);
 			else
 				((L2Skill) template).attach(lt);
