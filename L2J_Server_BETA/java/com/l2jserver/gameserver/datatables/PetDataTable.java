@@ -243,29 +243,6 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
-	 * Checks if is pet food.
-	 * @param itemId the item Id to verify.
-	 * @return {@code true} if the given Id is from a pet's food, {@code false} otherwise.
-	 */
-	public static boolean isPetFood(int itemId)
-	{
-		switch (itemId)
-		{
-			case 2515:
-			case 4038:
-			case 5168:
-			case 5169:
-			case 6316:
-			case 7582:
-			case 9668:
-			case 10425:
-				return true;
-			default:
-				return false;
-		}
-	}
-	
-	/**
 	 * Gets the pet items by npc.
 	 * @param npcId the NPC Id to get its summoning item.
 	 * @return an array containing the list of summoning items for the given NPC Id.

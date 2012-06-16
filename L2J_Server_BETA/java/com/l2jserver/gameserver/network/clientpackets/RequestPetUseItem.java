@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -100,20 +99,6 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			return;
 		}
 		
-		final int itemId = item.getItemId();
-		if (PetDataTable.isPetFood(itemId))
-		{
-			if (pet.canEatFoodId(itemId))
-			{
-				useItem(pet, item, activeChar);
-			}
-			else
-			{
-				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
-				return;
-			}
-		}
-		
 		final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 		if (handler != null)
 		{
@@ -152,7 +137,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			}
 			else
 			{
-				_log.warning("no itemhandler registered for itemId:" + item.getItemId());
+				_log.warning("No item handler registered for itemId: " + item.getItemId());
 			}
 		}
 	}

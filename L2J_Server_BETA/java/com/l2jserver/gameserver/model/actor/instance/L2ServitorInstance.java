@@ -630,4 +630,10 @@ public class L2ServitorInstance extends L2Summon
 			return (int)(getOwner().getDefenseElementValue(defenseAttribute) * sharedElementalsPercent());
 		return super.getDefenseElementValue(defenseAttribute);
 	}
+	
+	@Override
+	public boolean isServitor()
+	{
+		return true;
+	}
 }
