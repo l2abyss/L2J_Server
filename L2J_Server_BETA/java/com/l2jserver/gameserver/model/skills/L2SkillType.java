@@ -124,7 +124,6 @@ public enum L2SkillType
 	WEAPON_SA,
 	DELUXE_KEY_UNLOCK,
 	SOW,
-	HARVEST,
 	GET_PLAYER,
 	AGATHION(L2SkillAgathion.class),
 	MOUNT(L2SkillMount.class),

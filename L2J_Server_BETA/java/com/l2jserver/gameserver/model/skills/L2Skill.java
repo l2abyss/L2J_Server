@@ -1222,7 +1222,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case BETRAY:
 			case DELUXE_KEY_UNLOCK:
 			case SOW:
-			case HARVEST:
 			case DISARM:
 			case STEAL_BUFF:
 			case INSTANT_JUMP:
