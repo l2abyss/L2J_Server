@@ -5631,15 +5631,19 @@ public final class L2PcInstance extends L2Playable
 							}
 						}
 					}
-					//If player is Lucky shouldn't get penalized.
-					if (Config.ALT_GAME_DELEVEL && !isLucky())
+					
+					if (Config.ALT_GAME_DELEVEL)
 					{
-						// Reduce the Experience of the L2PcInstance in function of the calculated Death Penalty
-						// NOTE: deathPenalty +- Exp will update karma
-						// Penalty is lower if the player is at war with the pk (war has to be declared)
-						final boolean siegeNpc = (killer instanceof L2DefenderInstance) || (killer instanceof L2FortCommanderInstance);
-						final boolean atWar = (pk != null) && (getClan() != null) && (getClan().isAtWarWith(pk.getClanId()));
-						deathPenalty(atWar, (pk != null), siegeNpc);
+						// If player is Lucky shouldn't get penalized.
+						if (!isLucky())
+						{
+							// Reduce the Experience of the L2PcInstance in function of the calculated Death Penalty
+							// NOTE: deathPenalty +- Exp will update karma
+							// Penalty is lower if the player is at war with the pk (war has to be declared)
+							final boolean siegeNpc = (killer instanceof L2DefenderInstance) || (killer instanceof L2FortCommanderInstance);
+							final boolean atWar = (pk != null) && (getClan() != null) && (getClan().isAtWarWith(pk.getClanId()));
+							deathPenalty(atWar, (pk != null), siegeNpc);
+						}
 					}
 					else if (!(isInsideZone(ZONE_PVP) && !isInSiege()) || (pk == null))
 					{
