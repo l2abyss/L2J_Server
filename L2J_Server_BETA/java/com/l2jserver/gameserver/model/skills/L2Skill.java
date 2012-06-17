@@ -1303,8 +1303,15 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		}
 		
 		List<Condition> preCondition = _preCondition;
-		if(itemOrWeapon) preCondition = _itemPreCondition;
-		if (preCondition == null || preCondition.isEmpty()) return true;
+		if(itemOrWeapon)
+		{
+			preCondition = _itemPreCondition;
+		}
+		
+		if (preCondition == null || preCondition.isEmpty())
+		{
+			return true;
+		}
 		
 		for(Condition cond : preCondition)
 		{
