@@ -54,10 +54,12 @@ public class L2SkillTeleport extends L2Skill
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
-		if (activeChar instanceof L2PcInstance)
+		activeChar.ssChecker();
+		
+		if (activeChar.isPlayer())
 		{
 			// Thanks nbd
-			if (!TvTEvent.onEscapeUse(((L2PcInstance) activeChar).getObjectId()))
+			if (!TvTEvent.onEscapeUse(activeChar.getActingPlayer().getObjectId()))
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
@@ -69,13 +71,13 @@ public class L2SkillTeleport extends L2Skill
 				return;
 			}
 			
-			if (((L2PcInstance)activeChar).isCombatFlagEquipped())
+			if (activeChar.getActingPlayer().isCombatFlagEquipped())
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 			
-			if (((L2PcInstance) activeChar).isInOlympiadMode())
+			if (activeChar.getActingPlayer().isInOlympiadMode())
 			{
 				activeChar.sendPacket(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
 				return;
@@ -92,9 +94,9 @@ public class L2SkillTeleport extends L2Skill
 		{
 			for (L2Character target: (L2Character[]) targets)
 			{
-				if (target instanceof L2PcInstance)
+				if (target.isPlayer())
 				{
-					L2PcInstance targetChar = (L2PcInstance) target;
+					L2PcInstance targetChar = target.getActingPlayer();
 					
 					// Check to see if the current player target is in a festival.
 					if (targetChar.isFestivalParticipant())
@@ -139,8 +141,8 @@ public class L2SkillTeleport extends L2Skill
 					{
 						// target is not player OR player is not flying or flymounted
 						// TODO: add check for gracia continent coords
-						if (!(target instanceof L2PcInstance)
-								|| !(target.isFlying() || ((L2PcInstance)target).isFlyingMounted()))
+						if (!(target.isPlayer())
+								|| !(target.isFlying() || (target.getActingPlayer().isFlyingMounted())))
 							loc = _loc;
 					}
 				}
@@ -158,8 +160,8 @@ public class L2SkillTeleport extends L2Skill
 				if (loc != null)
 				{
 					target.setInstanceId(0);
-					if (target instanceof L2PcInstance)
-						((L2PcInstance)target).setIsIn7sDungeon(false);
+					if (target.isPlayer())
+						target.getActingPlayer().setIsIn7sDungeon(false);
 					target.teleToLocation(loc, true);
 				}
 			}

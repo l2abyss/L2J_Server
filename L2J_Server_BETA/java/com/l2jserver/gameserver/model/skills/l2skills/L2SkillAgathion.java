@@ -34,10 +34,10 @@ public class L2SkillAgathion extends L2Skill
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
-		if (caster.isAlikeDead() || !(caster instanceof L2PcInstance))
+		if (caster.isAlikeDead() || !caster.isPlayer())
 			return;
 		
-		L2PcInstance activeChar = (L2PcInstance)caster;
+		L2PcInstance activeChar = caster.getActingPlayer();
 		
 		if (activeChar.isInOlympiadMode())
 		{

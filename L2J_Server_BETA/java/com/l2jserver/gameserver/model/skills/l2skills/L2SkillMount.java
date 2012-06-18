@@ -37,7 +37,7 @@ public class L2SkillMount extends L2Skill
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
-		if (!(caster instanceof L2PcInstance))
+		if (!caster.isPlayer())
 		{
 			return;
 		}
@@ -47,7 +47,7 @@ public class L2SkillMount extends L2Skill
 			return;
 		}
 		
-		L2PcInstance activePlayer = (L2PcInstance) caster;
+		L2PcInstance activePlayer = caster.getActingPlayer();
 		
 		if (!activePlayer.getFloodProtectors().getItemPetSummon().tryPerformAction("mount"))
 		{

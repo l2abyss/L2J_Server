@@ -39,13 +39,13 @@ public class L2SkillDecoy extends L2Skill
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
-		if (caster.isAlikeDead() || !(caster instanceof L2PcInstance))
+		if (caster.isAlikeDead() || !caster.isPlayer())
 			return;
 		
 		if (_npcId == 0)
 			return;
 		
-		final L2PcInstance activeChar = (L2PcInstance) caster;
+		final L2PcInstance activeChar = caster.getActingPlayer();
 		
 		if (activeChar.inObserverMode())
 			return;

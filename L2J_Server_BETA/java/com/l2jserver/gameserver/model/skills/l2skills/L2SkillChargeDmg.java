@@ -22,8 +22,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
@@ -52,10 +50,10 @@ public class L2SkillChargeDmg extends L2Skill
 		}
 		
 		double modifier = 0;
-		if (caster instanceof L2PcInstance)
+		if (caster.isPlayer())
 		{
 			// thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
-			modifier = 0.8+0.201*(getNumCharges()+((L2PcInstance)caster).getCharges());
+			modifier = 0.8 + 0.201 * (getNumCharges() + caster.getActingPlayer().getCharges());
 		}
 		L2ItemInstance weapon = caster.getActiveWeaponInstance();
 		boolean soul = (weapon != null
@@ -71,17 +69,17 @@ public class L2SkillChargeDmg extends L2Skill
 			boolean skillIsEvaded = Formulas.calcPhysicalSkillEvasion(target, this);
 			if(skillIsEvaded)
 			{
-				if (caster instanceof L2PcInstance)
+				if (caster.isPlayer())
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DODGES_ATTACK);
 					sm.addString(target.getName());
-					((L2PcInstance) caster).sendPacket(sm);
+					caster.getActingPlayer().sendPacket(sm);
 				}
-				if (target instanceof L2PcInstance)
+				if (target.isPlayer())
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.AVOIDED_C1_ATTACK2);
 					sm.addString(caster.getName());
-					((L2PcInstance) target).sendPacket(sm);
+					target.getActingPlayer().sendPacket(sm);
 				}
 				
 				//no futher calculations needed.
@@ -139,7 +137,7 @@ public class L2SkillChargeDmg extends L2Skill
 				double finalDamage = isStaticDamage() ? damage : damage*modifier;
 				
 				if (Config.LOG_GAME_DAMAGE
-						&& caster instanceof L2Playable
+						&& caster.isPlayable()
 						&& damage > Config.LOG_GAME_DAMAGE_THRESHOLD)
 				{
 					LogRecord record = new LogRecord(Level.INFO, "");
@@ -153,13 +151,13 @@ public class L2SkillChargeDmg extends L2Skill
 				// vengeance reflected damage
 				if ((reflect & Formulas.SKILL_REFLECT_VENGEANCE) != 0)
 				{
-					if (target instanceof L2PcInstance)
+					if (target.isPlayer())
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.COUNTERED_C1_ATTACK);
 						sm.addCharName(caster);
 						target.sendPacket(sm);
 					}
-					if (caster instanceof L2PcInstance)
+					if (caster.isPlayer())
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_PERFORMING_COUNTERATTACK);
 						sm.addCharName(target);

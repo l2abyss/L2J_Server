@@ -54,10 +54,10 @@ public class L2SkillSiegeFlag extends L2Skill
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
-		if (!(activeChar instanceof L2PcInstance))
+		if (!activeChar.isPlayer())
 			return;
 		
-		L2PcInstance player = (L2PcInstance) activeChar;
+		L2PcInstance player = activeChar.getActingPlayer();
 		
 		if (player.getClan() == null || player.getClan().getLeaderId() != player.getObjectId())
 			return;
@@ -150,11 +150,11 @@ public class L2SkillSiegeFlag extends L2Skill
 	 */
 	public static boolean checkIfOkToPlaceFlag(L2Character activeChar, Castle castle, boolean isCheckOnly)
 	{
-		if (!(activeChar instanceof L2PcInstance))
+		if (!activeChar.isPlayer())
 			return false;
 		
 		String text = "";
-		L2PcInstance player = (L2PcInstance) activeChar;
+		L2PcInstance player = activeChar.getActingPlayer();
 		
 		if (castle == null || castle.getCastleId() <= 0)
 			text = "You must be on castle ground to place a flag.";
@@ -186,11 +186,11 @@ public class L2SkillSiegeFlag extends L2Skill
 	 */
 	public static boolean checkIfOkToPlaceFlag(L2Character activeChar, Fort fort, boolean isCheckOnly)
 	{
-		if (!(activeChar instanceof L2PcInstance))
+		if (!activeChar.isPlayer())
 			return false;
 		
 		String text = "";
-		L2PcInstance player = (L2PcInstance) activeChar;
+		L2PcInstance player = activeChar.getActingPlayer();
 		
 		if (fort == null || fort.getFortId() <= 0)
 			text = "You must be on fort ground to place a flag.";
@@ -222,11 +222,11 @@ public class L2SkillSiegeFlag extends L2Skill
 	 */
 	public static boolean checkIfOkToPlaceFlag(L2Character activeChar, SiegableHall hall, boolean isCheckOnly)
 	{
-		if (!(activeChar instanceof L2PcInstance))
+		if (!activeChar.isPlayer())
 			return false;
 		
 		String text = "";
-		L2PcInstance player = (L2PcInstance) activeChar;
+		L2PcInstance player = activeChar.getActingPlayer();
 		final int hallId = hall.getId();
 		
 		if (hallId <= 0)
@@ -267,7 +267,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			return false;
 		
 		String text = "";
-		L2PcInstance player = (L2PcInstance) activeChar;
+		L2PcInstance player = activeChar.getActingPlayer();
 		
 		if ((fort != null && fort.getFortId() == 0) || (castle != null && castle.getCastleId() == 0))
 			text = "You must be on fort or castle ground to construct an outpost or flag.";

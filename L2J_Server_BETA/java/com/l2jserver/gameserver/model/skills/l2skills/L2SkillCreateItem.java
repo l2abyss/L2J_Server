@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.skills.l2skills;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -53,7 +52,7 @@ public class L2SkillCreateItem extends L2Skill
 		L2PcInstance player = activeChar.getActingPlayer();
 		if (activeChar.isAlikeDead())
 			return;
-		if (activeChar instanceof L2Playable)
+		if (activeChar.isPlayable())
 		{
 			if (_createItemId == null || _createItemCount == 0)
 			{
@@ -65,11 +64,11 @@ public class L2SkillCreateItem extends L2Skill
 			
 			int count = _createItemCount + Rnd.nextInt(_randomCount);
 			int rndid = Rnd.nextInt(_createItemId.length);
-			if (activeChar instanceof L2PcInstance)
+			if (activeChar.isPlayer())
 			{
 				player.addItem("Skill", _createItemId[rndid], count, activeChar, true);
 			}
-			else if (activeChar instanceof L2PetInstance)
+			else if (activeChar.isPet())
 			{
 				activeChar.getInventory().addItem("Skill", _createItemId[rndid], count, player, activeChar);
 				player.sendPacket(new PetItemList((L2PetInstance) activeChar));

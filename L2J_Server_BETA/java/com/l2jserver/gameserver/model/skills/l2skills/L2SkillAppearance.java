@@ -45,9 +45,9 @@ public class L2SkillAppearance extends L2Skill
 		{
 			for (L2Object target : targets)
 			{
-				if (target instanceof L2PcInstance)
+				if (target.isPlayer())
 				{
-					L2PcInstance targetPlayer = (L2PcInstance)target;
+					L2PcInstance targetPlayer = target.getActingPlayer();
 					if (_faceId >= 0)
 						targetPlayer.getAppearance().setFace(_faceId);
 					if (_hairColorId >= 0)

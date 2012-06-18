@@ -23,12 +23,9 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.L2Effect;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.Formulas;
@@ -59,9 +56,6 @@ public class L2SkillDrain extends L2Skill
 			return;
 		}
 		
-		boolean ss = false;
-		boolean bss = false;
-		
 		for (L2Character target : (L2Character[]) targets)
 		{
 			if (target.isAlikeDead() && (getTargetType() != L2TargetType.TARGET_CORPSE_MOB))
@@ -74,41 +68,9 @@ public class L2SkillDrain extends L2Skill
 				continue; // No effect on invulnerable chars unless they cast it themselves.
 			}
 			
-			L2ItemInstance weaponInst = activeChar.getActiveWeaponInstance();
-			
-			if (weaponInst != null)
-			{
-				if (weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
-				{
-					bss = true;
-					weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
-				}
-				else if (weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT)
-				{
-					ss = true;
-					weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
-				}
-			}
-			// If there is no weapon equipped, check for an active summon.
-			else if (activeChar instanceof L2Summon)
-			{
-				L2Summon activeSummon = (L2Summon) activeChar;
-				
-				if (activeSummon.getChargedSpiritShot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
-				{
-					bss = true;
-					activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
-				}
-				else if (activeSummon.getChargedSpiritShot() == L2ItemInstance.CHARGED_SPIRITSHOT)
-				{
-					ss = true;
-					activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
-				}
-			}
-			
 			boolean mcrit = Formulas.calcMCrit(activeChar.getMCriticalHit(target, this));
 			byte shld = Formulas.calcShldUse(activeChar, target, this);
-			int damage = isStaticDamage() ? (int) getPower() : (int) Formulas.calcMagicDam(activeChar, target, this, shld, ss, bss, mcrit);
+			int damage = isStaticDamage() ? (int) getPower() : (int) Formulas.calcMagicDam(activeChar, target, this, shld, activeChar.isSpiritshotCharged(this), activeChar.isBlessedSpiritshotCharged(this), mcrit);
 			
 			int _drain = 0;
 			int _cp = (int) target.getCurrentCp();
@@ -155,12 +117,17 @@ public class L2SkillDrain extends L2Skill
 				
 				activeChar.sendDamageMessage(target, damage, mcrit, false, false);
 				
-				if (Config.LOG_GAME_DAMAGE && (activeChar instanceof L2Playable) && (damage > Config.LOG_GAME_DAMAGE_THRESHOLD))
+				if (Config.LOG_GAME_DAMAGE && activeChar.isPlayable() && damage > Config.LOG_GAME_DAMAGE_THRESHOLD)
 				{
 					LogRecord record = new LogRecord(Level.INFO, "");
 					record.setParameters(new Object[]
 					{
-						activeChar, " did damage ", damage, this, " to ", target
+						activeChar,
+						" did damage ",
+						damage,
+						this,
+						" to ",
+						target
 					});
 					record.setLoggerName("mdam");
 					_logDamage.log(record);
@@ -181,7 +148,7 @@ public class L2SkillDrain extends L2Skill
 					{
 						// activate attacked effects, if any
 						target.stopSkillEffects(getId());
-						if (Formulas.calcSkillSuccess(activeChar, target, this, shld, false, ss, bss))
+						if (Formulas.calcSkillSuccess(activeChar, target, this, shld, false, activeChar.isSpiritshotCharged(this), activeChar.isBlessedSpiritshotCharged(this)))
 						{
 							getEffects(activeChar, target);
 						}
@@ -199,7 +166,7 @@ public class L2SkillDrain extends L2Skill
 			}
 			
 			// Check to see if we should do the decay right after the cast
-			if (target.isDead() && (getTargetType() == L2TargetType.TARGET_CORPSE_MOB) && (target instanceof L2Npc))
+			if (target.isDead() && getTargetType() == L2TargetType.TARGET_CORPSE_MOB && target.isNpc())
 			{
 				((L2Npc) target).endDecayTask();
 			}
@@ -213,6 +180,7 @@ public class L2SkillDrain extends L2Skill
 		}
 		// cast self effect if any
 		getEffectsSelf(activeChar);
+		activeChar.ssChecker();
 	}
 	
 	public void useCubicSkill(L2CubicInstance activeCubic, L2Object[] targets)

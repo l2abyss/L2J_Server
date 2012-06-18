@@ -53,10 +53,10 @@ public class L2SkillLearnSkill extends L2Skill
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
-		if (!(activeChar instanceof L2PcInstance))
+		if (!activeChar.isPlayer())
 			return;
 		
-		final L2PcInstance player = ((L2PcInstance)activeChar);
+		final L2PcInstance player = activeChar.getActingPlayer();
 		L2Skill newSkill;
 		
 		for (int i = 0; i < _learnSkillId.length; i++)
