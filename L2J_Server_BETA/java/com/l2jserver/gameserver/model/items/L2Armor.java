@@ -49,7 +49,7 @@ public final class L2Armor extends L2Item
 		_type = L2ArmorType.valueOf(set.getString("armor_type", "none").toUpperCase());
 		
 		int _bodyPart = getBodyPart();
-		if ((_bodyPart == L2Item.SLOT_NECK) || (_bodyPart == L2Item.SLOT_HAIR) || (_bodyPart == L2Item.SLOT_HAIR2) || (_bodyPart == L2Item.SLOT_HAIRALL) || ((_bodyPart & L2Item.SLOT_L_EAR) != 0) || ((_bodyPart & L2Item.SLOT_L_FINGER) != 0) || ((_bodyPart & L2Item.SLOT_R_BRACELET) != 0) || ((_bodyPart & L2Item.SLOT_L_BRACELET) != 0))
+		if ((_bodyPart == L2Item.SLOT_NECK) || ((_bodyPart & L2Item.SLOT_L_EAR) != 0) || ((_bodyPart & L2Item.SLOT_L_FINGER) != 0) || ((_bodyPart & L2Item.SLOT_R_BRACELET) != 0) || ((_bodyPart & L2Item.SLOT_L_BRACELET) != 0))
 		{
 			_type1 = L2Item.TYPE1_WEAPON_RING_EARRING_NECKLACE;
 			_type2 = L2Item.TYPE2_ACCESSORY;
