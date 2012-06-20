@@ -7960,7 +7960,7 @@ public abstract class L2Character extends L2Object
 	public boolean isSpiritshotCharged(L2Skill skill)
 	{
 		L2ItemInstance weaponInst = getActiveWeaponInstance();
-		if (isPlayer() && skill.isMagic() && weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT)
+		if (isPlayer() && skill.isMagic() && weaponInst != null && weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT)
 		{
 			return true;
 		}
@@ -7975,7 +7975,7 @@ public abstract class L2Character extends L2Object
 	public boolean isBlessedSpiritshotCharged(L2Skill skill)
 	{
 		L2ItemInstance weaponInst = getActiveWeaponInstance();
-		if (isPlayer() && skill.isMagic() && weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
+		if (isPlayer() && skill.isMagic() && weaponInst != null && weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
 		{
 			return true;
 		}
