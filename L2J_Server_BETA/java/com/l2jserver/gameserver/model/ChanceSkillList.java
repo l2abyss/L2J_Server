@@ -89,6 +89,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			{
 				event |= ChanceCondition.EVT_HIT_BY_OFFENSIVE_SKILL;
 				event |= ChanceCondition.EVT_ATTACKED;
+				event |= ChanceCondition.EVT_ATTACKED_HIT;
 			}
 			else
 			{
