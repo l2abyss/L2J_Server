@@ -36,7 +36,7 @@ public class FuncArmorSet extends Func
 	{
 		if (!_fh_instance.containsKey(st))
 		{
-			return _fh_instance.put(st, new FuncArmorSet(st));
+			_fh_instance.put(st, new FuncArmorSet(st));
 		}
 		return _fh_instance.get(st);
 	}
@@ -56,7 +56,7 @@ public class FuncArmorSet extends Func
 			if (chest != null)
 			{
 				L2ArmorSet set = ArmorSetsData.getInstance().getSet(chest.getItemId());
-				if (set != null && set.containAll(player))
+				if ((set != null) && set.containAll(player))
 				{
 					switch (stat)
 					{

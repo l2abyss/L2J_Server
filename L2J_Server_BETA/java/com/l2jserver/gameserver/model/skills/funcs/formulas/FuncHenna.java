@@ -33,7 +33,7 @@ public class FuncHenna extends Func
 	{
 		if (!_fh_instance.containsKey(st))
 		{
-			return _fh_instance.put(st, new FuncHenna(st));
+			_fh_instance.put(st, new FuncHenna(st));
 		}
 		return _fh_instance.get(st);
 	}

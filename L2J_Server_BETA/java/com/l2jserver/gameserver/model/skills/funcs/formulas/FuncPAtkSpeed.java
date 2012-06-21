@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.stats.Stats;
 
 /**
  * @author UnAfraid
- *
  */
 public class FuncPAtkSpeed extends Func
 {
