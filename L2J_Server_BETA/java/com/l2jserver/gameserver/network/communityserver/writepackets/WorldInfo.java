@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.communityserver.writepackets;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -35,8 +34,6 @@ public final class WorldInfo extends BaseWritePacket
 	public static final byte TYPE_UPDATE_PLAYER_STATUS	= 2;
 	public static final byte TYPE_UPDATE_CLAN_DATA		= 3;
 	public static final byte TYPE_SEND_CLAN_NOTICE		= 4;
-	@SuppressWarnings("unused")
-	private static Logger _log = Logger.getLogger(WorldInfo.class.getName());
 	
 	public WorldInfo(L2PcInstance player, L2Clan clan, final byte type)
 	{

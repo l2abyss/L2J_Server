@@ -40,15 +40,12 @@ public class TerritoryWard
 	private int _itemId;
 	private int _ownerCastleId;
 	
-	@SuppressWarnings("unused")
-	private int _heading;
 	private int _territoryId;
 	
 	public TerritoryWard(int territory_id, int x, int y, int z, int heading, int item_id, int castleId, L2Npc npc)
 	{
 		_territoryId = territory_id;
 		_location = new Location(x,y,z,heading);
-		_heading = heading;
 		_itemId = item_id;
 		_ownerCastleId = castleId;
 		_npc = npc;

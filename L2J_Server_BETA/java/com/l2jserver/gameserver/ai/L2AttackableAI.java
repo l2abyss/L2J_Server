@@ -2248,13 +2248,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		}
 	}
 	
-	@SuppressWarnings("null")
 	private void aggroReconsider()
 	{
-		
 		L2Attackable actor = getActiveChar();
 		L2Character MostHate = actor.getMostHated();
-		
 		if (actor.getHateList() != null)
 		{
 			
@@ -2286,7 +2283,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				actor.setTarget(obj);
 				setAttackTarget(obj);
 				return;
-				
 			}
 		}
 		
@@ -2300,7 +2296,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					obj = (L2Character) target;
 				else
 					continue;
-				if (obj == null || !GeoData.getInstance().canSeeTarget(actor, obj) || obj.isDead() || obj != MostHate || obj == actor)
+				
+				if (!GeoData.getInstance().canSeeTarget(actor, obj) || obj.isDead() || obj != MostHate || obj == actor)
 					continue;
 				if (obj instanceof L2PcInstance)
 				{

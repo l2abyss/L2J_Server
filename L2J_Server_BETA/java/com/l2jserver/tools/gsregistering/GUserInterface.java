@@ -183,9 +183,6 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		});
 	}
 	
-	/**
-	 * @see com.l2jserver.tools.gsregistering.BaseGameServerRegister#showError(String, Throwable)
-	 */
 	@Override
 	public void showError(String msg, Throwable t)
 	{
@@ -322,7 +319,8 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 	}
 	
 	/**
-	 * Forward mouse-events from table to buttons inside. Buttons animate properly.
+	 * Forward mouse-events from table to buttons inside.<br>
+	 * Buttons animate properly.
 	 * @author KenM
 	 */
 	private class JTableButtonMouseListener implements MouseListener
@@ -395,9 +393,10 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		}
 	}
 	
-	@SuppressWarnings("serial")
 	private class JTableModel extends DefaultTableModel
 	{
+		private static final long serialVersionUID = -5907903982876753479L;
+		
 		public JTableModel(Object[] columnNames)
 		{
 			super(columnNames, 0);
