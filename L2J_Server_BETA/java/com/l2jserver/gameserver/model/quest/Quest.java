@@ -2842,14 +2842,24 @@ public class Quest extends ManagedScript
 		
 		// Add items to player's inventory
 		L2ItemInstance item = player.getInventory().addItem("Quest", itemId, count, player, player.getTarget());
-		
 		if (item == null)
 		{
 			return;
 		}
 		
+		sendItemGetMessage(player, item, count);
+	}
+	
+	/**
+	 * Send the system message and the status update packets to the player.
+	 * @param player the player that has got the item
+	 * @param item the item obtain by the player
+	 * @param count the item count
+	 */
+	private void sendItemGetMessage(L2PcInstance player, L2ItemInstance item, long count)
+	{
 		// If item for reward is gold, send message of gold reward to client
-		if (itemId == PcInventory.ADENA_ID)
+		if (item.getItemId() == PcInventory.ADENA_ID)
 		{
 			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);
@@ -2910,7 +2920,6 @@ public class Quest extends ManagedScript
 		
 		// Add items to player's inventory
 		L2ItemInstance item = player.getInventory().addItem("Quest", itemId, count, player, player.getTarget());
-		
 		if (item == null)
 		{
 			return;
@@ -2922,34 +2931,7 @@ public class Quest extends ManagedScript
 			item.setEnchantLevel(enchantlevel);
 		}
 		
-		// If item for reward is gold, send message of gold reward to client
-		if (itemId == PcInventory.ADENA_ID)
-		{
-			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
-			smsg.addItemNumber(count);
-			player.sendPacket(smsg);
-		}
-		// Otherwise, send message of object reward to client
-		else
-		{
-			if (count > 1)
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
-				smsg.addItemName(item);
-				smsg.addItemNumber(count);
-				player.sendPacket(smsg);
-			}
-			else
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
-				smsg.addItemName(item);
-				player.sendPacket(smsg);
-			}
-		}
-		// send packets
-		StatusUpdate su = new StatusUpdate(player);
-		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
-		player.sendPacket(su);
+		sendItemGetMessage(player, item, count);
 	}
 	
 	/**
@@ -2988,34 +2970,7 @@ public class Quest extends ManagedScript
 			player.sendPacket(iu);
 		}
 		
-		// If item for reward is gold, send message of gold reward to client
-		if (itemId == PcInventory.ADENA_ID)
-		{
-			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
-			smsg.addItemNumber(count);
-			player.sendPacket(smsg);
-		}
-		// Otherwise, send message of object reward to client
-		else
-		{
-			if (count > 1)
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
-				smsg.addItemName(item);
-				smsg.addItemNumber(count);
-				player.sendPacket(smsg);
-			}
-			else
-			{
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
-				smsg.addItemName(item);
-				player.sendPacket(smsg);
-			}
-		}
-		// send packets
-		StatusUpdate su = new StatusUpdate(player);
-		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
-		player.sendPacket(su);
+		sendItemGetMessage(player, item, count);
 	}
 	
 	/**
