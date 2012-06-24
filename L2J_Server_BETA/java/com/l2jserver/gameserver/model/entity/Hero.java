@@ -62,15 +62,15 @@ public class Hero
 {
 	private static final Logger _log = Logger.getLogger(Hero.class.getName());
 	
-	private static final String GET_HEROES = "SELECT heroes.charId, " + "characters.char_name, heroes.class_id, heroes.count, heroes.played " + "FROM heroes, characters WHERE characters.charId = heroes.charId " + "AND heroes.played = 1";
-	private static final String GET_ALL_HEROES = "SELECT heroes.charId, " + "characters.char_name, heroes.class_id, heroes.count, heroes.played " + "FROM heroes, characters WHERE characters.charId = heroes.charId";
+	private static final String GET_HEROES = "SELECT heroes.charId, characters.char_name, heroes.class_id, heroes.count, heroes.played FROM heroes, characters WHERE characters.charId = heroes.charId AND heroes.played = 1";
+	private static final String GET_ALL_HEROES = "SELECT heroes.charId, characters.char_name, heroes.class_id, heroes.count, heroes.played FROM heroes, characters WHERE characters.charId = heroes.charId";
 	private static final String UPDATE_ALL = "UPDATE heroes SET played = 0";
 	private static final String INSERT_HERO = "INSERT INTO heroes (charId, class_id, count, played) VALUES (?,?,?,?)";
-	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, " + "played = ?" + " WHERE charId = ?";
-	private static final String GET_CLAN_ALLY = "SELECT characters.clanid " + "AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters " + "LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid " + "WHERE characters.charId = ?";
-	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data " + "WHERE clan_id = (SELECT clanid FROM characters WHERE charId = ?)";
+	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, played = ? WHERE charId = ?";
+	private static final String GET_CLAN_ALLY = "SELECT characters.clanid AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid WHERE characters.charId = ?";
+	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data WHERE clan_id = (SELECT clanid FROM characters WHERE charId = ?)";
 	// delete hero items
-	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN " + "(6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) " + "AND owner_id NOT IN (SELECT charId FROM characters WHERE accesslevel > 0)";
+	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN (6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) AND owner_id NOT IN (SELECT charId FROM characters WHERE accesslevel > 0)";
 	
 	private static final Map<Integer, StatsSet> _heroes = new FastMap<>();
 	private static final Map<Integer, StatsSet> _completeHeroes = new FastMap<>();
@@ -118,7 +118,6 @@ public class Hero
 			PreparedStatement statement = con.prepareStatement(GET_HEROES);
 			ResultSet rset = statement.executeQuery();
 			PreparedStatement statement2 = con.prepareStatement(GET_CLAN_ALLY);
-			ResultSet rset2 = null;
 			
 			while (rset.next())
 			{
@@ -133,39 +132,7 @@ public class Hero
 				loadDiary(charId);
 				loadMessage(charId);
 				
-				statement2.setInt(1, charId);
-				rset2 = statement2.executeQuery();
-				
-				if (rset2.next())
-				{
-					int clanId = rset2.getInt("clanid");
-					int allyId = rset2.getInt("allyId");
-					
-					String clanName = "";
-					String allyName = "";
-					int clanCrest = 0;
-					int allyCrest = 0;
-					
-					if (clanId > 0)
-					{
-						clanName = ClanTable.getInstance().getClan(clanId).getName();
-						clanCrest = ClanTable.getInstance().getClan(clanId).getCrestId();
-						
-						if (allyId > 0)
-						{
-							allyName = ClanTable.getInstance().getClan(clanId).getAllyName();
-							allyCrest = ClanTable.getInstance().getClan(clanId).getAllyCrestId();
-						}
-					}
-					
-					hero.set(CLAN_CREST, clanCrest);
-					hero.set(CLAN_NAME, clanName);
-					hero.set(ALLY_CREST, allyCrest);
-					hero.set(ALLY_NAME, allyName);
-				}
-				
-				rset2.close();
-				statement2.clearParameters();
+				processHeros(statement2, charId, hero);
 				
 				_heroes.put(charId, hero);
 			}
@@ -185,39 +152,7 @@ public class Hero
 				hero.set(COUNT, rset.getInt(COUNT));
 				hero.set(PLAYED, rset.getInt(PLAYED));
 				
-				statement2.setInt(1, charId);
-				rset2 = statement2.executeQuery();
-				
-				if (rset2.next())
-				{
-					int clanId = rset2.getInt("clanid");
-					int allyId = rset2.getInt("allyId");
-					
-					String clanName = "";
-					String allyName = "";
-					int clanCrest = 0;
-					int allyCrest = 0;
-					
-					if (clanId > 0)
-					{
-						clanName = ClanTable.getInstance().getClan(clanId).getName();
-						clanCrest = ClanTable.getInstance().getClan(clanId).getCrestId();
-						
-						if (allyId > 0)
-						{
-							allyName = ClanTable.getInstance().getClan(clanId).getAllyName();
-							allyCrest = ClanTable.getInstance().getClan(clanId).getAllyCrestId();
-						}
-					}
-					
-					hero.set(CLAN_CREST, clanCrest);
-					hero.set(CLAN_NAME, clanName);
-					hero.set(ALLY_CREST, allyCrest);
-					hero.set(ALLY_NAME, allyName);
-				}
-				
-				rset2.close();
-				statement2.clearParameters();
+				processHeros(statement2, charId, hero);
 				
 				_completeHeroes.put(charId, hero);
 			}
@@ -237,6 +172,37 @@ public class Hero
 		
 		_log.info("Hero System: Loaded " + _heroes.size() + " Heroes.");
 		_log.info("Hero System: Loaded " + _completeHeroes.size() + " all time Heroes.");
+	}
+	
+	private void processHeros(PreparedStatement ps, int charId, StatsSet hero) throws SQLException
+	{
+		ps.setInt(1, charId);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next())
+		{
+			int clanId = rs.getInt("clanid");
+			int allyId = rs.getInt("allyId");
+			String clanName = "";
+			String allyName = "";
+			int clanCrest = 0;
+			int allyCrest = 0;
+			if (clanId > 0)
+			{
+				clanName = ClanTable.getInstance().getClan(clanId).getName();
+				clanCrest = ClanTable.getInstance().getClan(clanId).getCrestId();
+				if (allyId > 0)
+				{
+					allyName = ClanTable.getInstance().getClan(clanId).getAllyName();
+					allyCrest = ClanTable.getInstance().getClan(clanId).getAllyCrestId();
+				}
+			}
+			hero.set(CLAN_CREST, clanCrest);
+			hero.set(CLAN_NAME, clanName);
+			hero.set(ALLY_CREST, allyCrest);
+			hero.set(ALLY_NAME, allyName);
+		}
+		rs.close();
+		ps.clearParameters();
 	}
 	
 	private String calcFightTime(long FightTime)
@@ -489,15 +455,11 @@ public class Hero
 	
 	public int getHeroByClass(int classid)
 	{
-		if (!_heroes.isEmpty())
+		for (Entry<Integer, StatsSet> e : _heroes.entrySet())
 		{
-			for (Integer heroId : _heroes.keySet())
+			if (e.getValue().getInteger(Olympiad.CLASS_ID) == classid)
 			{
-				StatsSet hero = _heroes.get(heroId);
-				if (hero.getInteger(Olympiad.CLASS_ID) == classid)
-				{
-					return heroId;
-				}
+				return e.getKey();
 			}
 		}
 		return 0;
@@ -983,8 +945,7 @@ public class Hero
 		setDiaryData(charId, ACTION_CASTLE_TAKEN, castleId);
 		
 		Castle castle = CastleManager.getInstance().getCastleById(castleId);
-		
-		if (_herodiary.containsKey(charId) && (castle != null))
+		if ((castle != null) && _herodiary.containsKey(charId))
 		{
 			// Get Data
 			List<StatsSet> _list = _herodiary.get(charId);
@@ -1108,7 +1069,7 @@ public class Hero
 	 */
 	public boolean isHero(int objectId)
 	{
-		return _heroes == null ? false : _heroes.containsKey(objectId);
+		return _heroes.containsKey(objectId);
 	}
 	
 	private static class SingletonHolder
