@@ -57,13 +57,7 @@
 			<fileset dir="dist" />
 		</sync>
 		<concat destfile="${build.dist.doc}/L2J_Server_CHANGELOG.txt">${l2j.changelog}</concat>
-		<copy todir="${build.dist.game}">
-			<fileset dir="misc" />
-		</copy>
 		<concat destfile="${build.dist.game}/config/l2j-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
-		<copy todir="${build.dist.login}">
-			<fileset dir="misc" />
-		</copy>
 	</target>
 
 	<target name="compile" depends="dist" description="Compile the source.">
