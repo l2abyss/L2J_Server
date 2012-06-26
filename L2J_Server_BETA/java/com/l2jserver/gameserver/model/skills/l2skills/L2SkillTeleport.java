@@ -54,7 +54,7 @@ public class L2SkillTeleport extends L2Skill
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
-		activeChar.ssChecker();
+		activeChar.spsChecker(this);
 		
 		if (activeChar.isPlayer())
 		{
