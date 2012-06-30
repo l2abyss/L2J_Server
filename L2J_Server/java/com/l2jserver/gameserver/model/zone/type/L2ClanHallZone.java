@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.ClanHall;
@@ -25,8 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
 
 /**
  * A clan hall zone
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2ClanHallZone extends L2ZoneRespawn
 {
@@ -45,8 +44,8 @@ public class L2ClanHallZone extends L2ZoneRespawn
 			_clanHallId = Integer.parseInt(value);
 			// Register self to the correct clan hall
 			ClanHall hall = ClanHallManager.getInstance().getClanHallById(_clanHallId);
-			if(hall == null)
-				_log.warning("L2ClanHallZone: Clan hall with id "+_clanHallId+" does not exist!");
+			if (hall == null)
+				_log.warning("L2ClanHallZone: Clan hall with id " + _clanHallId + " does not exist!");
 			else
 				hall.setZone(this);
 		}
@@ -57,7 +56,7 @@ public class L2ClanHallZone extends L2ZoneRespawn
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			// Set as in clan hall
 			character.setInsideZone(L2Character.ZONE_CLANHALL, true);
@@ -68,7 +67,7 @@ public class L2ClanHallZone extends L2ZoneRespawn
 			
 			// Send decoration packet
 			AgitDecoInfo deco = new AgitDecoInfo(clanHall);
-			((L2PcInstance) character).sendPacket(deco);
+			character.sendPacket(deco);
 			
 		}
 	}
@@ -76,11 +75,9 @@ public class L2ClanHallZone extends L2ZoneRespawn
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
-			// Unset clanhall zone
 			character.setInsideZone(L2Character.ZONE_CLANHALL, false);
-			
 		}
 	}
 	
@@ -100,14 +97,13 @@ public class L2ClanHallZone extends L2ZoneRespawn
 	 */
 	public void banishForeigners(int owningClanId)
 	{
-		for (L2Character temp : getCharactersInsideArray())
+		TeleportWhereType type = TeleportWhereType.ClanHall_banish;
+		for (L2PcInstance temp : getPlayersInside())
 		{
-			if (!(temp instanceof L2PcInstance))
-				continue;
-			if (((L2PcInstance) temp).getClanId() == owningClanId)
+			if (temp.getClanId() == owningClanId)
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.ClanHall_banish);
+			temp.teleToLocation(type);
 		}
 	}
 	

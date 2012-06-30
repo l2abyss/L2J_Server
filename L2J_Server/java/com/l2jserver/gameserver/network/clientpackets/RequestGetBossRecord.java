@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.instancemanager.RaidBossPointsManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -27,7 +26,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExGetBossRecord;
  */
 public class RequestGetBossRecord extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestGetBossRecord.class.getName());
 	private static final String _C__D0_40_REQUESTGETBOSSRECORD = "[C] D0:40 RequestGetBossRecord";
 	private int _bossId;
 	

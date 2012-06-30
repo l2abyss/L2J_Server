@@ -14,28 +14,25 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2CharPosition;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.position.PcPosition;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
-import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.7.2.1.2.3 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestMagicSkillUse extends L2GameClientPacket
 {
 	private static final String _C__39_REQUESTMAGICSKILLUSE = "[C] 39 RequestMagicSkillUse";
-	private static Logger _log = Logger.getLogger(RequestMagicSkillUse.class.getName());
 	
 	private int _magicId;
 	private boolean _ctrlPressed;
@@ -44,26 +41,37 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_magicId      = readD();              // Identifier of the used skill
-		_ctrlPressed  = readD() != 0;         // True if it's a ForceAttack : Ctrl pressed
-		_shiftPressed = readC() != 0;         // True if Shift pressed
+		_magicId = readD(); // Identifier of the used skill
+		_ctrlPressed = readD() != 0; // True if it's a ForceAttack : Ctrl pressed
+		_shiftPressed = readC() != 0; // True if Shift pressed
 	}
 	
 	@Override
 	protected void runImpl()
 	{
 		// Get the current L2PcInstance of the player
-		L2PcInstance activeChar = getClient().getActiveChar();
-		
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		// Get the level of the used skill
 		int level = activeChar.getSkillLevel(_magicId);
 		if (level <= 0)
 		{
-			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-			return;
+			// Player doesn't know this skill, maybe it's the display Id.
+			final SkillHolder customSkill = activeChar.getCustomSkills().get(_magicId);
+			if (customSkill != null)
+			{
+				_magicId = customSkill.getSkillId();
+				level = customSkill.getSkillLvl();
+			}
+			else
+			{
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
 		}
 		
 		// Get the L2Skill template corresponding to the skillID received from the client
@@ -72,8 +80,7 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		// Check the validity of the skill
 		if (skill != null)
 		{
-			if ((activeChar.isTransformed() || activeChar.isInStance())
-					&& !activeChar.containsAllowedTransformSkill(skill.getId()))
+			if ((activeChar.isTransformed() || activeChar.isInStance()) && !activeChar.containsAllowedTransformSkill(skill.getId()))
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;
@@ -81,23 +88,27 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 			
 			if (Config.DEBUG)
 			{
-				_log.fine("	skill:"+skill.getName() + " level:"+skill.getLevel() + " passive:"+skill.isPassive());
-				_log.fine("	range:"+skill.getCastRange()+" targettype:"+skill.getTargetType()+" power:"+skill.getPower());
-				_log.fine("	reusedelay:"+skill.getReuseDelay()+" hittime:"+skill.getHitTime());
+				_log.fine("	skill:" + skill.getName() + " level:" + skill.getLevel() + " passive:" + skill.isPassive());
+				_log.fine("	range:" + skill.getCastRange() + " targettype:" + skill.getTargetType() + " power:" + skill.getPower());
+				_log.fine("	reusedelay:" + skill.getReuseDelay() + " hittime:" + skill.getHitTime());
 			}
 			
 			// If Alternate rule Karma punishment is set to true, forbid skill Return to player with Karma
-			if (skill.getSkillType() == L2SkillType.RECALL && !Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
+			if ((skill.getSkillType() == L2SkillType.RECALL) && !Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && (activeChar.getKarma() > 0))
+			{
 				return;
+			}
 			
 			// players mounted on pets cannot use any toggle skills
 			if (skill.isToggle() && activeChar.isMounted())
+			{
 				return;
+			}
 			
 			activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
 			
-			// Stop if use self-buff.
-			if(skill.getSkillType() == L2SkillType.BUFF && skill.getTargetType() == L2TargetType.TARGET_SELF)
+			// Stop if use self-buff (except if on AirShip or Boat).
+			if (((skill.getSkillType() == L2SkillType.BUFF) && (skill.getTargetType() == L2TargetType.TARGET_SELF)) && (!activeChar.isInAirShip() || !activeChar.isInBoat()))
 			{
 				final PcPosition charPos = activeChar.getPosition();
 				final L2CharPosition stopPos = new L2CharPosition(charPos.getX(), charPos.getY(), charPos.getZ(), charPos.getHeading());

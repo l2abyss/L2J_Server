@@ -48,11 +48,11 @@ public class Announcements
 {
 	private static Logger _log = Logger.getLogger(Announcements.class.getName());
 	
-	private List<String> _announcements = new FastList<String>();
-	private List<String> _critAnnouncements = new FastList<String>();
-	private List<List<Object>> _eventAnnouncements = new FastList<List<Object>>();
+	private List<String> _announcements = new FastList<>();
+	private List<String> _critAnnouncements = new FastList<>();
+	private List<List<Object>> _eventAnnouncements = new FastList<>();
 	
-	private Announcements()
+	protected Announcements()
 	{
 		loadAnnouncements();
 	}
@@ -110,7 +110,7 @@ public class Announcements
 	
 	public void addEventAnnouncement(DateRange validDateRange, String[] msg)
 	{
-		List<Object> entry = new FastList<Object>();
+		List<Object> entry = new FastList<>();
 		entry.add(validDateRange);
 		entry.add(msg);
 		_eventAnnouncements.add(entry);
@@ -172,43 +172,24 @@ public class Announcements
 	
 	private void readFromDisk(String path, List<String> list)
 	{
-		File file = new File(Config.DATAPACK_ROOT, path);
-		
-		if (file.exists())
+		final File file = new File(Config.DATAPACK_ROOT, path);
+		try (FileReader fr = new FileReader(file);
+			LineNumberReader lnr = new LineNumberReader(fr))
 		{
-			LineNumberReader lnr = null;
-			try
+			String line = null;
+			while ((line = lnr.readLine()) != null)
 			{
-				String line = null;
-				lnr = new LineNumberReader(new FileReader(file));
-				while ((line = lnr.readLine()) != null)
+				StringTokenizer st = new StringTokenizer(line, "\n\r");
+				if (st.hasMoreTokens())
 				{
-					StringTokenizer st = new StringTokenizer(line, "\n\r");
-					if (st.hasMoreTokens())
-					{
-						String announcement = st.nextToken();
-						list.add(announcement);
-					}
-				}
-			}
-			catch (IOException e1)
-			{
-				_log.log(Level.SEVERE, "Error reading announcements: ", e1);
-			}
-			finally
-			{
-				try
-				{
-					lnr.close();
-				}
-				catch (Exception e2)
-				{
-					// nothing
+					list.add(st.nextToken());
 				}
 			}
 		}
-		else
-			_log.warning(file.getAbsolutePath() + " doesn't exist");
+		catch (IOException e1)
+		{
+			_log.log(Level.SEVERE, "Error reading announcements: ", e1);
+		}
 	}
 	
 	private void saveToDisk(boolean isCritical)
@@ -227,12 +208,9 @@ public class Announcements
 			list = _announcements;
 		}
 		
-		File file = new File(path);
-		FileWriter save = null;
-		
-		try
+		final File file = new File(path);
+		try (FileWriter save = new FileWriter(file))
 		{
-			save = new FileWriter(file);
 			for (String announce : list)
 			{
 				save.write(announce);
@@ -242,16 +220,6 @@ public class Announcements
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, "Saving to the announcements file has failed: ", e);
-		}
-		finally
-		{
-			try
-			{
-				save.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 	
@@ -275,7 +243,12 @@ public class Announcements
 		Broadcast.toPlayersInInstance(sm, instanceId);
 	}
 	
-	// Method for handling announcements from admin
+	/**
+	 * Method for handling announcements from admin
+	 * @param command
+	 * @param lengthToTrim
+	 * @param isCritical
+	 */
 	public void handleAnnounce(String command, int lengthToTrim, boolean isCritical)
 	{
 		try
@@ -292,7 +265,6 @@ public class Announcements
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Announcements _instance = new Announcements();

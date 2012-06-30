@@ -45,7 +45,6 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class RequestSetCrop extends L2GameClientPacket {
 	private static final String _C__D0_04_REQUESTSETCROP = "[C] D0:04 RequestSetCrop";
-	//private static Logger _log = Logger.getLogger(RequestSetCrop.class.getName());
 	
 	private static final int BATCH_LENGTH = 21; // length of the one item
 	
@@ -112,7 +111,7 @@ public class RequestSetCrop extends L2GameClientPacket {
 		if (!player.isInsideRadius(manager, INTERACTION_DISTANCE, true, false))
 			return;
 		
-		List<CropProcure> crops = new ArrayList<CropProcure>(_items.length);
+		List<CropProcure> crops = new ArrayList<>(_items.length);
 		for (Crop i : _items)
 		{
 			CropProcure s = i.getCrop();

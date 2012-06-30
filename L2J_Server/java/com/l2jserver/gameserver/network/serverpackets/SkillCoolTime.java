@@ -14,51 +14,37 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.Collections;
-
 import javolution.util.FastList;
 
+import com.l2jserver.gameserver.model.TimeStamp;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TimeStamp;
-
 
 /**
- *
- * @author  KenM
+ * @author KenM, Zoey76
  */
 public class SkillCoolTime extends L2GameServerPacket
 {
-	public FastList<TimeStamp> _reuseTimeStamps;
+	private static final String _S__C7_SKILLCOOLTIME = "[S] C7 SkillCoolTime";
+	
+	private final FastList<TimeStamp> _skillReuseTimeStamps = new FastList<>();
 	
 	public SkillCoolTime(L2PcInstance cha)
 	{
-		_reuseTimeStamps = new FastList<TimeStamp>();
-		Collections.addAll(_reuseTimeStamps, cha.getReuseTimeStamps());
-		for (TimeStamp ts : _reuseTimeStamps)
+		for (TimeStamp ts : cha.getSkillReuseTimeStamps().values())
 		{
-			if (!ts.hasNotPassed())
-				_reuseTimeStamps.remove(ts);
+			if (ts.hasNotPassed())
+			{
+				_skillReuseTimeStamps.add(ts);
+			}
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] C7 SkillCoolTime";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xc7);
-		writeD(_reuseTimeStamps.size()); // list size
-		for (TimeStamp ts : _reuseTimeStamps)
+		writeC(0xC7);
+		writeD(_skillReuseTimeStamps.size()); // list size
+		for (TimeStamp ts : _skillReuseTimeStamps)
 		{
 			writeD(ts.getSkillId());
 			writeD(0x00);
@@ -67,4 +53,9 @@ public class SkillCoolTime extends L2GameServerPacket
 		}
 	}
 	
+	@Override
+	public String getType()
+	{
+		return _S__C7_SKILLCOOLTIME;
+	}
 }

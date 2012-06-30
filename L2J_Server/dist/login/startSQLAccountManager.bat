@@ -4,11 +4,11 @@ color 17
 java -Djava.util.logging.config.file=console.cfg -cp ./../libs/*;l2jlogin.jar com.l2jserver.tools.accountmanager.SQLAccountManager 2> NUL
 if %errorlevel% == 0 (
 echo.
-echo Execution succesful
+echo Execution successful
 echo.
 ) else (
 echo.
-echo An error has ocurred while running the L2J Account Manager!
+echo An error has occurred while running the L2J Account Manager!
 echo.
 echo Possible reasons for this to happen:
 echo.

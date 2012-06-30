@@ -14,47 +14,31 @@
  */
 package com.l2jserver.gameserver.model;
 
-import com.l2jserver.gameserver.datatables.AccessLevels;
+import com.l2jserver.gameserver.datatables.AdminTable;
 
 /**
  * @author FBIagent<br>
  */
 public class L2AdminCommandAccessRight
-{
+{	
 	/** The admin command<br> */
 	private String _adminCommand = null;
 	/** The access levels which can use the admin command<br> */
-	private L2AccessLevel[] _accessLevels = null;
+	private int _accessLevel;
 	private boolean _requireConfirm;
 	
-	/**
-	 * Initialized members
-	 * 
-	 * @param adminCommand as String
-	 * @param accessLevels as String
-	 * @param confirm 
-	 */
-	public L2AdminCommandAccessRight(String adminCommand, String accessLevels, boolean confirm)
+	public L2AdminCommandAccessRight(StatsSet set)
 	{
-		_adminCommand = adminCommand;
+		_adminCommand = set.getString("command");
+		_requireConfirm = set.getBool("confirmDlg", false);
+		_accessLevel = set.getInteger("accessLevel", 7);		
+	}
+	
+	public L2AdminCommandAccessRight(String command, boolean confirm, int level)
+	{
+		_adminCommand = command;
 		_requireConfirm = confirm;
-		
-		String[] accessLevelsSplit = accessLevels.split(",");
-		int numLevels = accessLevelsSplit.length;
-		
-		_accessLevels = new L2AccessLevel[numLevels];
-		
-		for (int i = 0; i < numLevels; ++i)
-		{
-			try
-			{
-				_accessLevels[i] = AccessLevels.getInstance().getAccessLevel(Integer.parseInt(accessLevelsSplit[i]));
-			}
-			catch (NumberFormatException nfe)
-			{
-				_accessLevels[i] = null;
-			}
-		}
+		_accessLevel = level;		
 	}
 	
 	/**
@@ -76,16 +60,8 @@ public class L2AdminCommandAccessRight
 	 */
 	public boolean hasAccess(L2AccessLevel characterAccessLevel)
 	{
-		for (int i = 0; i < _accessLevels.length; ++i)
-		{
-			L2AccessLevel accessLevel = _accessLevels[i];
-			
-			if (accessLevel != null
-					&& (accessLevel.getLevel() == characterAccessLevel.getLevel() || characterAccessLevel.hasChildAccess(accessLevel)))
-				return true;
-		}
-		
-		return false;
+		L2AccessLevel accessLevel = AdminTable.getInstance().getAccessLevel(_accessLevel);
+		return (accessLevel.getLevel() == characterAccessLevel.getLevel() || characterAccessLevel.hasChildAccess(accessLevel));
 	}
 
 	public boolean getRequireConfirm()

@@ -21,7 +21,6 @@ import javax.script.ScriptContext;
 
 import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 
-
 public class Expression
 {
 	protected static final Logger _log = Logger.getLogger(Expression.class.getName());

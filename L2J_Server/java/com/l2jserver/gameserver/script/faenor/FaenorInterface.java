@@ -22,11 +22,12 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.datatables.EventDroplist;
+import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.script.DateRange;
 import com.l2jserver.gameserver.script.EngineInterface;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author Luis Arias
@@ -38,10 +39,6 @@ public class FaenorInterface implements EngineInterface
 	public static FaenorInterface getInstance()
 	{
 		return SingletonHolder._instance;
-	}
-	
-	private FaenorInterface()
-	{
 	}
 	
 	public List<?> getAllPlayers()
@@ -56,7 +53,7 @@ public class FaenorInterface implements EngineInterface
 	@Override
 	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states)
 	{
-		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
 		if (npc == null)
 		{
 			throw new NullPointerException();
@@ -73,22 +70,24 @@ public class FaenorInterface implements EngineInterface
 	
 	/**
 	 * Adds a new Drop to an NPC
-	 * @param npcID 
-	 * @param itemID 
-	 * @param min 
-	 * @param max 
-	 * @param sweep 
-	 * @param chance 
-	 * @throws NullPointerException 
+	 * @param npcID
+	 * @param itemID
+	 * @param min
+	 * @param max
+	 * @param sweep
+	 * @param chance
+	 * @throws NullPointerException
 	 * @see com.l2jserver.gameserver.script.EngineInterface#addQuestDrop(int, int, int, int, int, String, String[])
 	 */
 	public void addDrop(int npcID, int itemID, int min, int max, boolean sweep, int chance) throws NullPointerException
 	{
-		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
 		if (npc == null)
 		{
 			if (Config.DEBUG)
+			{
 				_log.warning("Npc doesnt Exist");
+			}
 			throw new NullPointerException();
 		}
 		L2DropData drop = new L2DropData();
@@ -101,9 +100,7 @@ public class FaenorInterface implements EngineInterface
 	}
 	
 	/**
-	 * Adds a new drop to an NPC.  If the drop is sweep, it adds it to the NPC's Sweep category
-	 * If the drop is non-sweep, it creates a new category for this drop.
-	 *
+	 * Adds a new drop to an NPC. If the drop is sweep, it adds it to the NPC's Sweep category If the drop is non-sweep, it creates a new category for this drop.
 	 * @param npc
 	 * @param drop
 	 * @param sweep
@@ -111,7 +108,9 @@ public class FaenorInterface implements EngineInterface
 	public void addDrop(L2NpcTemplate npc, L2DropData drop, boolean sweep)
 	{
 		if (sweep)
+		{
 			addDrop(npc, drop, -1);
+		}
 		else
 		{
 			int maxCategory = -1;
@@ -119,7 +118,9 @@ public class FaenorInterface implements EngineInterface
 			for (L2DropCategory cat : npc.getDropData())
 			{
 				if (maxCategory < cat.getCategoryType())
+				{
 					maxCategory = cat.getCategoryType();
+				}
 			}
 			maxCategory++;
 			npc.addDropData(drop, maxCategory);
@@ -127,7 +128,7 @@ public class FaenorInterface implements EngineInterface
 	}
 	
 	/**
-	 * Adds a new drop to an NPC, in the specified category.  If the category does not exist, it is created.
+	 * Adds a new drop to an NPC, in the specified category. If the category does not exist, it is created.
 	 * @param npc
 	 * @param drop
 	 * @param category
@@ -139,7 +140,7 @@ public class FaenorInterface implements EngineInterface
 	
 	public List<L2DropData> getQuestDrops(int npcID)
 	{
-		L2NpcTemplate npc = npcTable.getTemplate(npcID);
+		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
 		if (npc == null)
 		{
 			return null;
@@ -170,7 +171,6 @@ public class FaenorInterface implements EngineInterface
 		Announcements.getInstance().addEventAnnouncement(validDateRange, message);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FaenorInterface _instance = new FaenorInterface();

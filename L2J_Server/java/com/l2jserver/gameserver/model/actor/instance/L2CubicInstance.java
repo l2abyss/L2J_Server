@@ -1,14 +1,16 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under the terms of the
- * GNU General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License along with this program. If
- * not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -26,21 +28,21 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
-import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
+import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.entity.TvTEventTeam;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDrain;
+import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
-import com.l2jserver.gameserver.skills.Formulas;
-import com.l2jserver.gameserver.skills.l2skills.L2SkillDrain;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.util.Rnd;
 
 public class L2CubicInstance
@@ -83,7 +85,7 @@ public class L2CubicInstance
 	protected boolean _active;
 	private final boolean _givenByOther;
 	
-	protected List<L2Skill> _skills = new FastList<L2Skill>();
+	protected List<L2Skill> _skills = new FastList<>();
 	
 	private Future<?> _disappearTask;
 	private Future<?> _actionTask;
@@ -326,7 +328,7 @@ public class L2CubicInstance
 					
 					if (partyA != null)
 					{
-						if (partyA.getPartyMembers().contains(_owner))
+						if (partyA.getMembers().contains(_owner))
 							if (partyB != null)
 								partyEnemy = partyB;
 							else
@@ -349,7 +351,7 @@ public class L2CubicInstance
 							return;
 					if (partyEnemy != null)
 					{
-						if (partyEnemy.getPartyMembers().contains(ownerTarget))
+						if (partyEnemy.getMembers().contains(ownerTarget))
 							_target = (L2Character) ownerTarget;
 						return;
 					}
@@ -420,7 +422,7 @@ public class L2CubicInstance
 						
 						if (_owner.getParty() != null)
 						{
-							if (_owner.getParty().getPartyMembers().contains(enemy))
+							if (_owner.getParty().getMembers().contains(enemy))
 								targetIt = false;
 							else if (_owner.getParty().getCommandChannel() != null)
 							{
@@ -898,7 +900,7 @@ public class L2CubicInstance
 		{
 			// Get all visible objects in a spheric area near the L2Character
 			// Get a list of Party Members
-			List<L2PcInstance> partyList = party.getPartyMembers();
+			List<L2PcInstance> partyList = party.getMembers();
 			for (L2Character partyMember : partyList)
 			{
 				if (!partyMember.isDead())

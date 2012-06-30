@@ -18,17 +18,21 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.ChatHandler;
 import com.l2jserver.gameserver.handler.IChatHandler;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ChatEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatFilterListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener;
 import com.l2jserver.gameserver.util.Util;
-
 
 /**
  * This class ...
@@ -38,33 +42,35 @@ import com.l2jserver.gameserver.util.Util;
 public final class Say2 extends L2GameClientPacket
 {
 	private static final String _C__49_SAY2 = "[C] 49 Say2";
-	private static Logger _log = Logger.getLogger(Say2.class.getName());
 	private static Logger _logChat = Logger.getLogger("chat");
 	
-	public final static int ALL = 0;
-	public final static int SHOUT = 1; //!
-	public final static int TELL = 2;
-	public final static int PARTY = 3; //#
-	public final static int CLAN = 4;  //@
-	public final static int GM = 5;
-	public final static int PETITION_PLAYER = 6; // used for petition
-	public final static int PETITION_GM = 7; //* used for petition
-	public final static int TRADE = 8; //+
-	public final static int ALLIANCE = 9; //$
-	public final static int ANNOUNCEMENT = 10;
-	public final static int BOAT = 11;
-	public final static int L2FRIEND = 12;
-	public final static int MSNCHAT = 13;
-	public final static int PARTYMATCH_ROOM = 14;
-	public final static int PARTYROOM_COMMANDER = 15; //(Yellow)
-	public final static int PARTYROOM_ALL = 16; //(Red)
-	public final static int HERO_VOICE = 17;
-	public final static int CRITICAL_ANNOUNCE = 18;
-	public final static int SCREEN_ANNOUNCE = 19;
-	public final static int BATTLEFIELD = 20;
-	public final static int MPCC_ROOM = 21;
+	private static FastList<ChatListener> chatListeners = new FastList<ChatListener>().shared();
+	private static FastList<ChatFilterListener> chatFilterListeners = new FastList<ChatFilterListener>().shared();
 	
-	private final static String[] CHAT_NAMES =
+	public static final int ALL = 0;
+	public static final int SHOUT = 1; //!
+	public static final int TELL = 2;
+	public static final int PARTY = 3; //#
+	public static final int CLAN = 4;  //@
+	public static final int GM = 5;
+	public static final int PETITION_PLAYER = 6; // used for petition
+	public static final int PETITION_GM = 7; //* used for petition
+	public static final int TRADE = 8; //+
+	public static final int ALLIANCE = 9; //$
+	public static final int ANNOUNCEMENT = 10;
+	public static final int BOAT = 11;
+	public static final int L2FRIEND = 12;
+	public static final int MSNCHAT = 13;
+	public static final int PARTYMATCH_ROOM = 14;
+	public static final int PARTYROOM_COMMANDER = 15; //(Yellow)
+	public static final int PARTYROOM_ALL = 16; //(Red)
+	public static final int HERO_VOICE = 17;
+	public static final int CRITICAL_ANNOUNCE = 18;
+	public static final int SCREEN_ANNOUNCE = 19;
+	public static final int BATTLEFIELD = 20;
+	public static final int MPCC_ROOM = 21;
+	
+	private static final String[] CHAT_NAMES =
 	{
 		"ALL",
 		"SHOUT",
@@ -90,9 +96,44 @@ public final class Say2 extends L2GameClientPacket
 		"MPCC_ROOM"
 	};
 	
-	private static final String[] WALKER_COMMAND_LIST = { "USESKILL", "USEITEM", "BUYITEM", "SELLITEM", "SAVEITEM", "LOADITEM", "MSG", "DELAY", "LABEL", "JMP", "CALL",
-		"RETURN", "MOVETO", "NPCSEL", "NPCDLG", "DLGSEL", "CHARSTATUS", "POSOUTRANGE", "POSINRANGE", "GOHOME", "SAY", "EXIT", "PAUSE", "STRINDLG", "STRNOTINDLG", "CHANGEWAITTYPE",
-		"FORCEATTACK", "ISMEMBER", "REQUESTJOINPARTY", "REQUESTOUTPARTY", "QUITPARTY", "MEMBERSTATUS", "CHARBUFFS", "ITEMCOUNT", "FOLLOWTELEPORT" };
+	private static final String[] WALKER_COMMAND_LIST =
+	{
+		"USESKILL",
+		"USEITEM",
+		"BUYITEM",
+		"SELLITEM",
+		"SAVEITEM",
+		"LOADITEM",
+		"MSG",
+		"DELAY",
+		"LABEL",
+		"JMP",
+		"CALL",
+		"RETURN",
+		"MOVETO",
+		"NPCSEL",
+		"NPCDLG",
+		"DLGSEL",
+		"CHARSTATUS",
+		"POSOUTRANGE",
+		"POSINRANGE",
+		"GOHOME",
+		"SAY",
+		"EXIT",
+		"PAUSE",
+		"STRINDLG",
+		"STRNOTINDLG",
+		"CHANGEWAITTYPE",
+		"FORCEATTACK",
+		"ISMEMBER",
+		"REQUESTJOINPARTY",
+		"REQUESTOUTPARTY",
+		"QUITPARTY",
+		"MEMBERSTATUS",
+		"CHARBUFFS",
+		"ITEMCOUNT",
+		"FOLLOWTELEPORT"
+	};
 	
 	private String _text;
 	private int _type;
@@ -153,7 +194,7 @@ public final class Say2 extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isChatBanned() && !_text.startsWith("."))
+		if (activeChar.isChatBanned() && _text.charAt(0) != '.')
 		{
 			for (int chatId : Config.BAN_CHAT_CHANNELS)
 			{
@@ -194,10 +235,14 @@ public final class Say2 extends L2GameClientPacket
 		if (_text.indexOf(8) >= 0)
 			if (!parseAndPublishItem(activeChar))
 				return;
+		fireChatListeners(activeChar);
 		
 		// Say Filter implementation
 		if (Config.USE_SAY_FILTER)
 			checkText();
+		
+		// Custom chat filter
+		fireChatFilters(activeChar);
 		
 		IChatHandler handler = ChatHandler.getInstance().getHandler(_type);
 		if (handler != null)
@@ -272,5 +317,94 @@ public final class Say2 extends L2GameClientPacket
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
+	}
+	
+	// Listeners
+	/**
+	 * Fires all the chat listeners, if any
+	 * @param activeChar
+	 */
+	private void fireChatListeners(L2PcInstance activeChar)
+	{
+		if (!chatListeners.isEmpty())
+		{
+			ChatEvent event = null;
+			event = new ChatEvent();
+			event.setOrigin(activeChar);
+			event.setTarget(_target);
+			event.setTargetType(ChatListener.getTargetType(CHAT_NAMES[_type]));
+			event.setText(_text);
+			for (ChatListener listener : chatListeners)
+			{
+				listener.onTalk(event);
+			}
+		}
+	}
+	
+	/**
+	 * Fires the custom chat filter, if any<br>
+	 * This type of listener should be registered only once 
+	 * since if there are many of them they might override each 
+	 * other!
+	 * @param activeChar
+	 */
+	private void fireChatFilters(L2PcInstance activeChar)
+	{
+		if (!chatFilterListeners.isEmpty())
+		{
+			ChatEvent event = null;
+			event = new ChatEvent();
+			event.setOrigin(activeChar);
+			event.setTarget(_target);
+			event.setTargetType(ChatListener.getTargetType(CHAT_NAMES[_type]));
+			event.setText(_text);
+			for (ChatFilterListener listener : chatFilterListeners)
+			{
+				_text = listener.onTalk(event);
+			}
+		}
+		
+	}
+
+	/**
+	 * Adds a chat listener
+	 * @param listener
+	 */
+	public static void addChatListener(ChatListener listener)
+	{
+		if (!chatListeners.contains(listener))
+		{
+			chatListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes the given listener
+	 * @param listener
+	 */
+	public static void removeChatListener(ChatListener listener)
+	{
+		chatListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a chat listener
+	 * @param listener
+	 */
+	public static void addChatFilterListener(ChatFilterListener listener)
+	{
+		if (!chatFilterListeners.contains(listener))
+		{
+			chatFilterListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes the given listener
+	 * @param listener
+	 */
+	public static void removeChatFilterListener(ChatFilterListener listener)
+	{
+		chatFilterListeners.remove(listener);
 	}
 }

@@ -22,19 +22,19 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class ItemsAutoDestroy
 {
-	protected static final Logger _log = Logger.getLogger(ItemsAutoDestroy.class.getName());
+	private static final Logger _log = Logger.getLogger(ItemsAutoDestroy.class.getName());
+	
 	protected List<L2ItemInstance> _items = null;
 	protected static long _sleep;
 	
-	private ItemsAutoDestroy()
+	protected ItemsAutoDestroy()
 	{
-		_log.info("Initializing ItemsAutoDestroy.");
-		_items = new FastList<L2ItemInstance>();
+		_items = new FastList<>();
 		_sleep = Config.AUTODESTROY_ITEM_AFTER * 1000;
 		if (_sleep == 0) // it should not happend as it is not called when AUTODESTROY_ITEM_AFTER = 0 but we never know..
 			_sleep = 3600000;
@@ -113,7 +113,6 @@ public class ItemsAutoDestroy
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ItemsAutoDestroy _instance = new ItemsAutoDestroy();

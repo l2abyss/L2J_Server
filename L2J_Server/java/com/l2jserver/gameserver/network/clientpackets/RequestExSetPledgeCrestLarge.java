@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -34,7 +33,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 {
 	private static final String _C__D0_11_REQUESTEXSETPLEDGECRESTLARGE = "[C] D0:11 RequestExSetPledgeCrestLarge";
-	static Logger _log = Logger.getLogger(RequestExSetPledgeCrestLarge.class.getName());
 	
 	private int _length;
 	private byte[] _data;
@@ -87,7 +85,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 			}
 			else
 			{
-				if (clan.getHasCastle() == 0 && clan.getHasHideout() == 0)
+				if (clan.getCastleId() == 0 && clan.getHideoutId() == 0)
 				{
 					activeChar.sendMessage("Only a clan that owns a clan hall or a castle can get their emblem displayed on clan related items"); //there is a system message for that but didnt found the id
 					return;

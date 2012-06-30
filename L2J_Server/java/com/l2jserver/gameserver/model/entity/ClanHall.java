@@ -17,12 +17,11 @@ package com.l2jserver.gameserver.model.entity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
@@ -42,7 +41,7 @@ public abstract class ClanHall
 	protected static final Logger _log = Logger.getLogger(ClanHall.class.getName());
 	
 	private int _clanHallId;
-	private List<L2DoorInstance> _doors;
+	private ArrayList<L2DoorInstance> _doors;
 	private String _name;
 	private int _ownerId;
 	private String _desc;
@@ -214,13 +213,13 @@ public abstract class ClanHall
 			_log.warning("Init Owner : " + _ownerId);
 		_desc = set.getString("desc");
 		_location = set.getString("location");
-		_functions = new FastMap<Integer, ClanHallFunction>();
+		_functions = new FastMap<>();
 		
 		if(_ownerId > 0)
 		{
 			L2Clan clan = ClanTable.getInstance().getClan(_ownerId);
 			if(clan != null)
-				clan.setHasHideout(getId());
+				clan.setHideoutId(getId());
 			else
 				free();
 		}
@@ -269,10 +268,10 @@ public abstract class ClanHall
 	/**
 	 * @return all DoorInstance
 	 */
-	public final List<L2DoorInstance> getDoors()
+	public final ArrayList<L2DoorInstance> getDoors()
 	{
 		if (_doors == null)
-			_doors = new FastList<L2DoorInstance>();
+			_doors = new ArrayList<>();
 		return _doors;
 	}
 	
@@ -353,8 +352,8 @@ public abstract class ClanHall
 			return;
 		_ownerId = clan.getClanId();
 		_isFree = false;
-		clan.setHasHideout(getId());
-		// Annonce to Online member new ClanHall
+		clan.setHideoutId(getId());
+		// Announce to Online member new ClanHall
 		clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 		updateDb();
 	}
@@ -419,12 +418,10 @@ public abstract class ClanHall
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("Select * from clanhall_functions where hall_id = ?");
+			PreparedStatement statement = con.prepareStatement("Select * from clanhall_functions where hall_id = ?");
 			statement.setInt(1, getId());
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			while (rs.next())
 			{
 				_functions.put(rs.getInt("type"), new ClanHallFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
@@ -452,9 +449,8 @@ public abstract class ClanHall
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM clanhall_functions WHERE hall_id=? AND type=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM clanhall_functions WHERE hall_id=? AND type=?");
 			statement.setInt(1, getId());
 			statement.setInt(2, functionType);
 			statement.execute();
@@ -526,6 +522,11 @@ public abstract class ClanHall
 	public boolean isSiegableHall()
 	{
 		return false;
+	}
+	
+	public boolean isFree()
+	{
+		return _isFree;
 	}
 	
 	public abstract void updateDb();

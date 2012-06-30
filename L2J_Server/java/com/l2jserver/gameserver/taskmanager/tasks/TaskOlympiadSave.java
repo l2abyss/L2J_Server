@@ -14,39 +14,26 @@
  */
 package com.l2jserver.gameserver.taskmanager.tasks;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.taskmanager.Task;
 import com.l2jserver.gameserver.taskmanager.TaskManager;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
 import com.l2jserver.gameserver.taskmanager.TaskTypes;
 
-
 /**
  * Updates all data of Olympiad nobles in db
- * 
  * @author godson
  */
 public class TaskOlympiadSave extends Task
 {
-	private static final Logger _log = Logger.getLogger(TaskOlympiadSave.class.getName());
 	public static final String NAME = "olympiad_save";
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#getName()
-	 */
 	@Override
 	public String getName()
 	{
 		return NAME;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#onTimeElapsed(com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask)
-	 */
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
@@ -57,10 +44,6 @@ public class TaskOlympiadSave extends Task
 		}
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.taskmanager.Task#initializate()
-	 */
 	@Override
 	public void initializate()
 	{

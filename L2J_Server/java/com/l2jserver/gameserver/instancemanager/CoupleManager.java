@@ -35,9 +35,8 @@ public class CoupleManager
 {
 	private static final Logger _log = Logger.getLogger(CoupleManager.class.getName());
 	
-	private CoupleManager()
+	protected CoupleManager()
 	{
-		_log.info("L2JMOD: Initializing CoupleManager");
 		load();
 	}
 	
@@ -45,22 +44,15 @@ public class CoupleManager
 	{
 		return SingletonHolder._instance;
 	}
-	// =========================================================
 	
-	// =========================================================
-	// Data Field
 	private FastList<Couple> _couples;
 	
-	// =========================================================
-	// Method - Public
 	public void reload()
 	{
 		getCouples().clear();
 		load();
 	}
 	
-	// =========================================================
-	// Method - Private
 	private final void load()
 	{
 		Connection con = null;
@@ -68,7 +60,7 @@ public class CoupleManager
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement statement = con.prepareStatement("Select id from mods_wedding order by id");
+			PreparedStatement statement = con.prepareStatement("SELECT id FROM mods_wedding ORDER BY id");
 			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
@@ -92,8 +84,6 @@ public class CoupleManager
 		}
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final Couple getCouple(int coupleId)
 	{
 		int index = getCoupleIndex(coupleId);
@@ -163,11 +153,10 @@ public class CoupleManager
 	public final FastList<Couple> getCouples()
 	{
 		if (_couples == null)
-			_couples = new FastList<Couple>();
+			_couples = new FastList<>();
 		return _couples;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CoupleManager _instance = new CoupleManager();

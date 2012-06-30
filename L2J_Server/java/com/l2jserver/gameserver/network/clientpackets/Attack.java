@@ -50,28 +50,48 @@ public final class Attack extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null) return;
+		final L2PcInstance activeChar = getActiveChar();
+		if (activeChar == null)
+		{
+			return;
+		}
+		
 		// avoid using expensive operations if not needed
 		final L2Object target;
 		if (activeChar.getTargetId() == _objectId)
+		{
 			target = activeChar.getTarget();
+		}
 		else
+		{
 			target = L2World.getInstance().findObject(_objectId);
+		}
+		
 		if (target == null)
+		{
 			return;
+		}
+		
+		if (!target.isTargetable() && !activeChar.isGM())
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
 		
 		// Players can't attack objects in the other instances
 		// except from multiverse
-		if (target.getInstanceId() != activeChar.getInstanceId()
-				&& activeChar.getInstanceId() != -1)
+		else if (target.getInstanceId() != activeChar.getInstanceId() && activeChar.getInstanceId() != -1)
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
+		}
 		
 		// Only GMs can directly attack invisible characters
-		if (target instanceof L2PcInstance
-				&& ((L2PcInstance)target).getAppearance().getInvisible()
-				&& !activeChar.isGM())
+		else if (target.isPlayer() && target.getActingPlayer().getAppearance().getInvisible() && !activeChar.isGM())
+		{
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
+		}
 		
 		if (activeChar.getTarget() != target)
 		{
@@ -79,17 +99,13 @@ public final class Attack extends L2GameClientPacket
 		}
 		else
 		{
-			if ((target.getObjectId() != activeChar.getObjectId())
-					&& activeChar.getPrivateStoreType() ==0
-					&& activeChar.getActiveRequester() ==null)
+			if ((target.getObjectId() != activeChar.getObjectId()) && activeChar.getPrivateStoreType() == 0 && activeChar.getActiveRequester() == null)
 			{
-				//_log.debug("Starting ForcedAttack");
 				target.onForcedAttack(activeChar);
-				//_log.debug("Ending ForcedAttack");
 			}
 			else
 			{
-				sendPacket(ActionFailed.STATIC_PACKET);
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			}
 		}
 	}

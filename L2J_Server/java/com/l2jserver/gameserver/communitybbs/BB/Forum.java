@@ -68,8 +68,8 @@ public class Forum
 	{
 		_forumId = Forumid;
 		_fParent = FParent;
-		_children = new FastList<Forum>();
-		_topic = new FastMap<Integer, Topic>();
+		_children = new FastList<>();
+		_topic = new FastMap<>();
 		
 		/*load();
 		getChildren();	*/
@@ -92,8 +92,8 @@ public class Forum
 		_forumPerm = perm;
 		_fParent = parent;
 		_ownerID = OwnerID;
-		_children = new FastList<Forum>();
-		_topic = new FastMap<Integer, Topic>();
+		_children = new FastList<>();
+		_topic = new FastMap<>();
 		parent._children.add(this);
 		ForumsBBSManager.getInstance().addForum(this);
 		_loaded = true;
@@ -191,7 +191,6 @@ public class Forum
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	public int getTopicSize()
@@ -293,7 +292,7 @@ public class Forum
 	 */
 	public void vload()
 	{
-		if (_loaded == false)
+		if (!_loaded)
 		{
 			load();
 			getChildren();

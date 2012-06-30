@@ -14,10 +14,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -31,10 +29,9 @@ import com.l2jserver.gameserver.util.GMAudit;
 public final class SendBypassBuildCmd extends L2GameClientPacket
 {
 	private static final String _C__74_SENDBYPASSBUILDCMD = "[C] 74 SendBypassBuildCmd";
-	private static Logger _log = Logger.getLogger(SendBypassBuildCmd.class.getName());
 
-	public final static int GM_MESSAGE = 9;
-	public final static int ANNOUNCEMENT = 10;
+	public static final int GM_MESSAGE = 9;
+	public static final int ANNOUNCEMENT = 10;
 	
 	private String _command;
 	
@@ -66,7 +63,7 @@ public final class SendBypassBuildCmd extends L2GameClientPacket
 			return;
 		}
 		
-		if (!AdminCommandAccessRights.getInstance().hasAccess(command , activeChar.getAccessLevel()))
+		if (!AdminTable.getInstance().hasAccess(command , activeChar.getAccessLevel()))
 		{
 			activeChar.sendMessage("You don't have the access right to use this command!");
 			_log.warning("Character " + activeChar.getName() + " tryed to use admin command " + command + ", but have no access to it!");

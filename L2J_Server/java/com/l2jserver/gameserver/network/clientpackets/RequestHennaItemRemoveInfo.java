@@ -14,19 +14,19 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.datatables.HennaTable;
+import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Henna;
-import com.l2jserver.gameserver.model.item.instance.L2HennaInstance;
+import com.l2jserver.gameserver.model.items.L2Henna;
 import com.l2jserver.gameserver.network.serverpackets.HennaItemRemoveInfo;
 
-
+/**
+ * @author Zoey76
+ */
 public final class RequestHennaItemRemoveInfo extends L2GameClientPacket
 {
 	private static final String _C__71_REQUESTHENNAITEMREMOVEINFO = "[C] 71 RequestHennaItemRemoveInfo";
 	
 	private int _symbolId;
-	// format  cd
 	
 	@Override
 	protected void readImpl()
@@ -37,15 +37,19 @@ public final class RequestHennaItemRemoveInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
-		L2Henna template = HennaTable.getInstance().getTemplate(_symbolId);
-		if (template == null)
+		final L2Henna henna = HennaData.getInstance().getHenna(_symbolId);
+		if (henna == null)
+		{
+			_log.warning(getClass().getName() + ": Invalid Henna Id: " + _symbolId + " from player " + activeChar);
+			sendActionFailed();
 			return;
-		
-		L2HennaInstance henna = new L2HennaInstance(template);
+		}
 		activeChar.sendPacket(new HennaItemRemoveInfo(henna, activeChar));
 	}
 	

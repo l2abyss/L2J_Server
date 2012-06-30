@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.CharNameTable;
@@ -35,7 +34,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestFriendDel extends L2GameClientPacket{
 	
 	private static final String _C__7A_REQUESTFRIENDDEL = "[C] 7A RequestFriendDel";
-	private static Logger _log = Logger.getLogger(RequestFriendDel.class.getName());
 	
 	private String _name;
 	
@@ -109,7 +107,6 @@ public final class RequestFriendDel extends L2GameClientPacket{
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	@Override

@@ -19,14 +19,14 @@ import com.l2jserver.loginserver.LoginController;
 import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
+ * Thanks to mochitto.
  * @author mrTJO
- * Thanks to mochitto
  */
 public class ReplyCharacters extends BaseRecievePacket
 {
 	/**
 	 * @param decrypt
-	 * @param server 
+	 * @param server
 	 */
 	public ReplyCharacters(byte[] decrypt, GameServerThread server)
 	{
@@ -39,7 +39,6 @@ public class ReplyCharacters extends BaseRecievePacket
 		{
 			charsList[i] = readQ();
 		}
-		LoginController.getInstance().setCharactersOnServer(account,
-				chars, charsList, server.getServerId());
+		LoginController.getInstance().setCharactersOnServer(account, chars, charsList, server.getServerId());
 	}
 }

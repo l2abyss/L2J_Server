@@ -19,39 +19,34 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-import javolution.util.FastMap;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.entity.ActionKey;
 
 /**
- *
  * @author  mrTJO
  */
 public class UITable
 {
-	private static Logger _log = Logger.getLogger(UITable.class.getName());
+	private static final Logger _log = Logger.getLogger(UITable.class.getName());
 	
-	private Map<Integer, List<ActionKey>> _storedKeys;
-	private Map<Integer, List<Integer>> _storedCategories;
+	private Map<Integer, List<ActionKey>> _storedKeys = new HashMap<>();
+	private Map<Integer, List<Integer>> _storedCategories = new HashMap<>();
 	
 	public static UITable getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	private UITable()
+	protected UITable()
 	{
-		_storedKeys = new FastMap<Integer, List<ActionKey>>();
-		_storedCategories = new FastMap<Integer, List<Integer>>();
-		
 		parseCatData();
 		parseKeyData();
 		_log.info("UITable: Loaded " + _storedCategories.size() + " Categories.");
@@ -60,12 +55,11 @@ public class UITable
 	
 	private void parseCatData()
 	{
-		LineNumberReader lnr = null;
-		try
+		final File uiData = new File(Config.DATAPACK_ROOT, "data/uicats_en.csv");
+		try (FileReader fr = new FileReader(uiData);
+			BufferedReader br = new BufferedReader(fr);
+			LineNumberReader lnr = new LineNumberReader(br))
 		{
-			File uiData = new File(Config.DATAPACK_ROOT, "data/uicats_en.csv");
-			lnr = new LineNumberReader(new BufferedReader(new FileReader(uiData)));
-			
 			String line = null;
 			while ((line = lnr.readLine()) != null)
 			{
@@ -88,26 +82,15 @@ public class UITable
 		{
 			_log.log(Level.WARNING, "Error while creating UI Default Categories table " + e.getMessage(), e);
 		}
-		finally
-		{
-			try
-			{
-				lnr.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
 	private void parseKeyData()
 	{
-		LineNumberReader lnr = null;
-		try
+		final File uiData = new File(Config.DATAPACK_ROOT, "data/uikeys_en.csv");
+		try (FileReader fr = new FileReader(uiData);
+			BufferedReader br = new BufferedReader(fr);
+			LineNumberReader lnr = new LineNumberReader(br))
 		{
-			File uiData = new File(Config.DATAPACK_ROOT, "data/uikeys_en.csv");
-			lnr = new LineNumberReader(new BufferedReader(new FileReader(uiData)));
-			
 			String line = null;
 			while ((line = lnr.readLine()) != null)
 			{
@@ -134,16 +117,6 @@ public class UITable
 		{
 			_log.log(Level.WARNING, "Error while creating UI Default Keys table " + e.getMessage(), e);
 		}
-		finally
-		{
-			try
-			{
-				lnr.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
 	private void insertCategory(int cat, int cmd)
@@ -152,7 +125,7 @@ public class UITable
 			_storedCategories.get(cat).add(cmd);
 		else
 		{
-			List<Integer> tmp = new FastList<Integer>();
+			List<Integer> tmp = new ArrayList<>();
 			tmp.add(cmd);
 			_storedCategories.put(cat, tmp);
 		}
@@ -165,7 +138,7 @@ public class UITable
 			_storedKeys.get(cat).add(tmk);
 		else
 		{
-			List<ActionKey> tmp = new FastList<ActionKey>();
+			List<ActionKey> tmp = new ArrayList<>();
 			tmp.add(tmk);
 			_storedKeys.put(cat, tmp);
 		}
@@ -181,7 +154,6 @@ public class UITable
 		return _storedKeys;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final UITable _instance = new UITable();

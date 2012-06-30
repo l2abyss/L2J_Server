@@ -14,155 +14,103 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.LineNumberReader;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
+import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
-import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 
-public class StaticObjects
+/**
+ * This class loads and holds all static object data.
+ * @author UnAfraid
+ */
+public final class StaticObjects extends DocumentParser
 {
-	private static Logger _log = Logger.getLogger(StaticObjects.class.getName());
+	private static final Map<Integer, L2StaticObjectInstance> _staticObjects = new HashMap<>();
 	
-	private TIntObjectHashMap<L2StaticObjectInstance> _staticObjects;
+	/**
+	 * Instantiates a new static objects.
+	 */
+	protected StaticObjects()
+	{
+		load();
+	}
 	
+	@Override
+	public void load()
+	{
+		_staticObjects.clear();
+		parseDatapackFile("data/staticObjects.xml");
+		_log.info("StaticObject: Loaded " + _staticObjects.size() + " StaticObject Templates.");
+	}
+	
+	@Override
+	protected void parseDocument()
+	{
+		NamedNodeMap attrs;
+		Node att;
+		StatsSet set;
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
+		{
+			if ("list".equalsIgnoreCase(n.getNodeName()))
+			{
+				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+				{
+					if ("object".equalsIgnoreCase(d.getNodeName()))
+					{
+						attrs = d.getAttributes();
+						set = new StatsSet();
+						for (int i = 0; i < attrs.getLength(); i++)
+						{
+							att = attrs.item(i);
+							set.set(att.getNodeName(), att.getNodeValue());
+						}
+						addObject(set);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Initialize an static object based on the stats set and add it to the map.
+	 * @param set the stats set to add.
+	 */
+	private void addObject(StatsSet set)
+	{
+		L2StaticObjectInstance obj = new L2StaticObjectInstance(IdFactory.getInstance().getNextId(), new L2CharTemplate(new StatsSet()), set.getInteger("id"));
+		obj.setType(set.getInteger("type", 0));
+		obj.setName(set.getString("name"));
+		obj.setMap(set.getString("texture", "none"), set.getInteger("map_x", 0), set.getInteger("map_y", 0));
+		obj.spawnMe(set.getInteger("x"), set.getInteger("y"), set.getInteger("z"));
+		_staticObjects.put(obj.getObjectId(), obj);
+	}
+	
+	/**
+	 * Gets the static objects.
+	 * @return a collection of static objects.
+	 */
+	public Collection<L2StaticObjectInstance> getStaticObjects()
+	{
+		return _staticObjects.values();
+	}
+	
+	/**
+	 * Gets the single instance of StaticObjects.
+	 * @return single instance of StaticObjects
+	 */
 	public static StaticObjects getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	private StaticObjects()
-	{
-		_staticObjects = new TIntObjectHashMap<L2StaticObjectInstance>();
-		parseData();
-		_log.info("StaticObject: Loaded " + _staticObjects.size() + " StaticObject Templates.");
-	}
-	
-	private void parseData()
-	{
-		LineNumberReader lnr = null;
-		try
-		{
-			File doorData = new File(Config.DATAPACK_ROOT, "data/staticobjects.csv");
-			lnr = new LineNumberReader(new BufferedReader(new FileReader(doorData)));
-			
-			String line = null;
-			while ((line = lnr.readLine()) != null)
-			{
-				if (line.trim().length() == 0 || line.startsWith("#"))
-					continue;
-				
-				L2StaticObjectInstance obj = parse(line);
-				_staticObjects.put(obj.getStaticObjectId(), obj);
-			}
-		}
-		catch (FileNotFoundException e)
-		{
-			_log.warning("staticobjects.csv is missing in data folder");
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Error while creating StaticObjects table " + e.getMessage(), e);
-		}
-		finally
-		{
-			try
-			{
-				lnr.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
-	}
-	
-	public static L2StaticObjectInstance parse(String line)
-	{
-		StringTokenizer st = new StringTokenizer(line, ";");
-		
-		st.nextToken(); //Pass over static object name (not used in server)
-		
-		int id = Integer.parseInt(st.nextToken());
-		int x = Integer.parseInt(st.nextToken());
-		int y = Integer.parseInt(st.nextToken());
-		int z = Integer.parseInt(st.nextToken());
-		int type = Integer.parseInt(st.nextToken());
-		String texture = st.nextToken();
-		int map_x = Integer.parseInt(st.nextToken());
-		int map_y = Integer.parseInt(st.nextToken());
-		
-		StatsSet npcDat = new StatsSet();
-		npcDat.set("npcId", id);
-		npcDat.set("level", 0);
-		npcDat.set("jClass", "staticobject");
-		
-		npcDat.set("baseSTR", 0);
-		npcDat.set("baseCON", 0);
-		npcDat.set("baseDEX", 0);
-		npcDat.set("baseINT", 0);
-		npcDat.set("baseWIT", 0);
-		npcDat.set("baseMEN", 0);
-		
-		npcDat.set("baseShldDef", 0);
-		npcDat.set("baseShldRate", 0);
-		npcDat.set("baseAccCombat", 38);
-		npcDat.set("baseEvasRate", 38);
-		npcDat.set("baseCritRate", 38);
-		
-		//npcDat.set("name", "");
-		npcDat.set("collision_radius", 10);
-		npcDat.set("collision_height", 10);
-		npcDat.set("sex", "male");
-		npcDat.set("type", "");
-		npcDat.set("baseAtkRange", 0);
-		npcDat.set("baseMpMax", 0);
-		npcDat.set("baseCpMax", 0);
-		npcDat.set("rewardExp", 0);
-		npcDat.set("rewardSp", 0);
-		npcDat.set("basePAtk", 0);
-		npcDat.set("baseMAtk", 0);
-		npcDat.set("basePAtkSpd", 0);
-		npcDat.set("aggroRange", 0);
-		npcDat.set("baseMAtkSpd", 0);
-		npcDat.set("rhand", 0);
-		npcDat.set("lhand", 0);
-		npcDat.set("armor", 0);
-		npcDat.set("baseWalkSpd", 0);
-		npcDat.set("baseRunSpd", 0);
-		npcDat.set("name", "");
-		npcDat.set("baseHpMax", 1);
-		npcDat.set("baseHpReg", 3.e-3f);
-		npcDat.set("baseMpReg", 3.e-3f);
-		npcDat.set("basePDef", 1);
-		npcDat.set("baseMDef", 1);
-		
-		L2CharTemplate template = new L2CharTemplate(npcDat);
-		L2StaticObjectInstance obj = new L2StaticObjectInstance(IdFactory.getInstance().getNextId(), template, id);
-		obj.setType(type);
-		obj.setXYZ(x, y, z);
-		obj.setMap(texture, map_x, map_y);
-		obj.spawnMe();
-		
-		return obj;
-	}
-	
-	public void putObject(L2StaticObjectInstance obj)
-	{
-		_staticObjects.put(obj.getStaticObjectId(), obj);
-	}
-	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final StaticObjects _instance = new StaticObjects();

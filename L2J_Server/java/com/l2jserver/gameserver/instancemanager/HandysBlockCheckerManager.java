@@ -14,13 +14,10 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
+import java.util.Map;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -38,24 +35,23 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * This class manage the player add/remove, team change and<br>
- * event arena status, as the clearance of the participants<br>
- * list or liberate the arena.
+ * This class manage the player add/remove, team change and event arena status,<br>
+ * as the clearance of the participants list or liberate the arena.
  * @author BiggBoss
  */
 public final class HandysBlockCheckerManager 
 {
-	// All the participants and their team classifed by arena
-	private static ArenaParticipantsHolder[] _arenaPlayers = new ArenaParticipantsHolder[4];
+	// All the participants and their team classified by arena
+	private static final ArenaParticipantsHolder[] _arenaPlayers = new ArenaParticipantsHolder[4];
 	
 	// Arena votes to start the game
-	private static TIntIntHashMap _arenaVotes = new TIntIntHashMap();
+	private static final Map<Integer, Integer> _arenaVotes = new HashMap<>();
 	
 	// Arena Status, True = is being used, otherwise, False
-	private static FastMap<Integer, Boolean> _arenaStatus;
+	private static final Map<Integer, Boolean> _arenaStatus = new HashMap<>();
 	
 	// Registration request penalty (10 seconds)
-	private static FastList<Integer> _registrationPenalty = new FastList<Integer>();
+	protected static List<Integer> _registrationPenalty = new ArrayList<>();
 	
 	/**
 	 * Return the number of event-start votes for the specified
@@ -103,17 +99,13 @@ public final class HandysBlockCheckerManager
 		_arenaVotes.put(arena, 0);
 	}
 
-	private HandysBlockCheckerManager()
+	protected HandysBlockCheckerManager()
 	{
 		// Initialize arena status
-		if(_arenaStatus == null)
-		{
-			_arenaStatus = new FastMap<Integer, Boolean>();
-			_arenaStatus.put(0, false);
-			_arenaStatus.put(1, false);
-			_arenaStatus.put(2, false);
-			_arenaStatus.put(3, false);			
-		}
+		_arenaStatus.put(0, false);
+		_arenaStatus.put(1, false);
+		_arenaStatus.put(2, false);
+		_arenaStatus.put(3, false);
 	}
 	
 	/**
@@ -356,16 +348,6 @@ public final class HandysBlockCheckerManager
 		}
 	}
 	
-	public static HandysBlockCheckerManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	private static class SingletonHolder
-	{
-		private static HandysBlockCheckerManager _instance = new HandysBlockCheckerManager();
-	}
-	
 	public class ArenaParticipantsHolder
 	{
 		int _arena;
@@ -376,8 +358,8 @@ public final class HandysBlockCheckerManager
 		public ArenaParticipantsHolder(int arena)
 		{
 			_arena = arena;
-			_redPlayers = new ArrayList<L2PcInstance>(6);
-			_bluePlayers = new ArrayList<L2PcInstance>(6);
+			_redPlayers = new ArrayList<>(6);
+			_bluePlayers = new ArrayList<>(6);
 			_engine = new BlockCheckerEngine(this, _arena);
 		}
 		
@@ -393,7 +375,7 @@ public final class HandysBlockCheckerManager
 		
 		public ArrayList<L2PcInstance> getAllPlayers()
 		{
-			ArrayList<L2PcInstance> all = new ArrayList<L2PcInstance>(12);
+			ArrayList<L2PcInstance> all = new ArrayList<>(12);
 			all.addAll(_redPlayers);
 			all.addAll(_bluePlayers);
 			return all;
@@ -459,7 +441,7 @@ public final class HandysBlockCheckerManager
 			_engine.updatePlayersOnStart(this);
 		}
 		
-		private void checkAndShuffle()
+		protected void checkAndShuffle()
 		{
 			int redSize = _redPlayers.size();
 			int blueSize = _bluePlayers.size();
@@ -495,8 +477,7 @@ public final class HandysBlockCheckerManager
 	
 	private class PenaltyRemove implements Runnable
 	{
-		Integer objectId;
-		
+		private final Integer objectId;
 		public PenaltyRemove(Integer id)
 		{
 			objectId = id;
@@ -505,14 +486,17 @@ public final class HandysBlockCheckerManager
 		@Override
 		public void run()
 		{
-			try
-			{
-				_registrationPenalty.remove(objectId);
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			_registrationPenalty.remove(objectId);
 		}
+	}
+	
+	public static HandysBlockCheckerManager getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final HandysBlockCheckerManager _instance = new HandysBlockCheckerManager();
 	}
 }

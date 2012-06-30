@@ -16,10 +16,10 @@ package com.l2jserver.gameserver.model.actor;
 
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
@@ -36,7 +36,6 @@ import com.l2jserver.gameserver.instancemanager.TownManager;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
@@ -54,14 +53,19 @@ import com.l2jserver.gameserver.model.actor.instance.L2WarehouseInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.NpcKnownList;
 import com.l2jserver.gameserver.model.actor.stat.NpcStat;
 import com.l2jserver.gameserver.model.actor.status.NpcStatus;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate.AIType;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
@@ -72,18 +76,16 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate.AIType;
-import com.l2jserver.gameserver.templates.skills.L2TargetType;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
 
 /**
- * This class represents a Non-Player-Character in the world. It can be a monster or a friendly character.
- * It also uses a template to fetch some static values. The templates are hardcoded in the client, so we can rely on them.<BR><BR>
- *
- * L2Character :<BR><BR>
+ * This class represents a Non-Player-Character in the world.<br>
+ * It can be a monster or a friendly character.<br>
+ * It also uses a template to fetch some static values.<br>
+ * The templates are hardcoded in the client, so we can rely on them.
+ * L2Npc:<br>
  * <li>L2Attackable</li>
  * <li>L2BoxInstance</li>
  */
@@ -179,7 +181,7 @@ public class L2Npc extends L2Character
 			if (Rnd.get(100) <= getSoulShotChance())
 			{
 				_soulshotamount = _soulshotamount - 1;
-				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2154, 1, 0, 0), 360000);
+				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2154, 1, 0, 0), 600);
 				_soulshotcharged = true;
 			}
 		}
@@ -205,7 +207,7 @@ public class L2Npc extends L2Character
 			if (Rnd.get(100) <= getSpiritShotChance())
 			{
 				_spiritshotamount = _spiritshotamount - 1;
-				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2061, 1, 0, 0), 360000);
+				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2061, 1, 0, 0), 600);
 				_spiritshotcharged = true;
 			}
 		}
@@ -297,9 +299,9 @@ public class L2Npc extends L2Character
 		return true;
 	}
 	
-	public FastList<L2Skill> getLongRangeSkill()
+	public List<L2Skill> getLongRangeSkill()
 	{
-		final FastList<L2Skill> skilldata = new FastList<>();
+		final List<L2Skill> skilldata = new ArrayList<>();
 		if (_staticAIData == null || _staticAIData.getLongRangeSkill() == 0)
 		{
 			return skilldata;
@@ -309,8 +311,7 @@ public class L2Npc extends L2Character
 		{
 			case -1:
 			{
-				L2Skill[] skills = null;
-				skills = getAllSkills();
+				Collection<L2Skill> skills = getAllSkills();
 				if (skills != null)
 				{
 					for (L2Skill sk : skills)
@@ -354,9 +355,9 @@ public class L2Npc extends L2Character
 		return skilldata;
 	}
 	
-	public FastList<L2Skill> getShortRangeSkill()
+	public List<L2Skill> getShortRangeSkill()
 	{
-		final FastList<L2Skill> skilldata = new FastList<>();
+		final List<L2Skill> skilldata = new ArrayList<>();
 		if (_staticAIData == null || _staticAIData.getShortRangeSkill() == 0)
 		{
 			return skilldata;
@@ -366,8 +367,7 @@ public class L2Npc extends L2Character
 		{
 			case -1:
 			{
-				L2Skill[] skills = null;
-				skills = getAllSkills();
+				Collection<L2Skill> skills = getAllSkills();
 				if (skills != null)
 				{
 					for (L2Skill sk : skills)
@@ -1390,8 +1390,8 @@ public class L2Npc extends L2Character
 	{
 		super.onSpawn();
 		
-		if (getTemplate().getEventQuests(Quest.QuestEventType.ON_SPAWN) != null)
-			for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_SPAWN))
+		if (getTemplate().getEventQuests(QuestEventType.ON_SPAWN) != null)
+			for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_SPAWN))
 				quest.notifySpawn(this);
 	}
 	
@@ -1551,6 +1551,7 @@ public class L2Npc extends L2Character
 		return _staticAIData.showName();
 	}
 	
+	@Override
 	public boolean isTargetable()
 	{
 		return _staticAIData.isTargetable();
@@ -1618,11 +1619,11 @@ public class L2Npc extends L2Character
 	
 	public L2Npc scheduleDespawn(long delay)
 	{
-		ThreadPoolManager.getInstance().scheduleGeneral(this.new DespawnTask(), delay);
+		ThreadPoolManager.getInstance().scheduleGeneral(new DespawnTask(), delay);
 		return this;
 	}
 	
-	private class DespawnTask implements Runnable
+	protected class DespawnTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -1637,12 +1638,12 @@ public class L2Npc extends L2Character
 	{
 		try
 		{
-			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED) != null)
+			if (getTemplate().getEventQuests(QuestEventType.ON_SPELL_FINISHED) != null)
 			{
 				L2PcInstance player = null;
 				if (target != null)
 					player = target.getActingPlayer();
-				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_SPELL_FINISHED))
+				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_SPELL_FINISHED))
 				{
 					quest.notifySpellFinished(this, player, skill);
 				}
@@ -1698,5 +1699,27 @@ public class L2Npc extends L2Character
 	public void setSummoner(L2Character summoner)
 	{
 		_summoner = summoner;
+	}
+	
+	@Override
+	public boolean isNpc()
+	{
+		return true;
+	}
+	
+	@Override
+	public void setTeam(int id)
+	{
+		super.setTeam(id);
+		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
+		{
+			player.sendPacket(new AbstractNpcInfo.NpcInfo(this, player));
+		}
+	}
+	
+	@Override
+	public boolean isWalker()
+	{
+		return WalkingManager.getInstance().isRegistered(this);
 	}
 }

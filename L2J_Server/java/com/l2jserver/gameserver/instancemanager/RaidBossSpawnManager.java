@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2RaidBossInstance;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -56,7 +56,7 @@ public class RaidBossSpawnManager
 		UNDEFINED
 	}
 	
-	private RaidBossSpawnManager()
+	protected RaidBossSpawnManager()
 	{
 		init();
 	}
@@ -68,10 +68,10 @@ public class RaidBossSpawnManager
 	
 	private void init()
 	{
-		_bosses = new FastMap<Integer, L2RaidBossInstance>();
-		_schedules = new FastMap<Integer, ScheduledFuture<?>>();
-		_storedInfo = new FastMap<Integer, StatsSet>();
-		_spawns = new FastMap<Integer, L2Spawn>();
+		_bosses = new FastMap<>();
+		_schedules = new FastMap<>();
+		_storedInfo = new FastMap<>();
+		_spawns = new FastMap<>();
 		
 		Connection con = null;
 		try
@@ -127,11 +127,13 @@ public class RaidBossSpawnManager
 		}
 	}
 	
-	private static class spawnSchedule implements Runnable
+	private static class SpawnSchedule implements Runnable
 	{
+		private static final Logger _log = Logger.getLogger(SpawnSchedule.class.getName());
+		
 		private final int bossId;
 		
-		public spawnSchedule(int npcId)
+		public SpawnSchedule(int npcId)
 		{
 			bossId = npcId;
 		}
@@ -194,7 +196,7 @@ public class RaidBossSpawnManager
 			if (!_schedules.containsKey(boss.getNpcId()))
 			{
 				ScheduledFuture<?> futureSpawn;
-				futureSpawn = ThreadPoolManager.getInstance().scheduleGeneral(new spawnSchedule(boss.getNpcId()), respawn_delay);
+				futureSpawn = ThreadPoolManager.getInstance().scheduleGeneral(new SpawnSchedule(boss.getNpcId()), respawn_delay);
 				
 				_schedules.put(boss.getNpcId(), futureSpawn);
 				//To update immediately Database uncomment on the following line, to post the hour of respawn raid boss on your site for example or to envisage a crash landing of the waiter.
@@ -255,7 +257,7 @@ public class RaidBossSpawnManager
 			ScheduledFuture<?> futureSpawn;
 			long spawnTime = respawnTime - Calendar.getInstance().getTimeInMillis();
 			
-			futureSpawn = ThreadPoolManager.getInstance().scheduleGeneral(new spawnSchedule(bossId), spawnTime);
+			futureSpawn = ThreadPoolManager.getInstance().scheduleGeneral(new SpawnSchedule(bossId), spawnTime);
 			
 			_schedules.put(bossId, futureSpawn);
 		}
@@ -508,14 +510,13 @@ public class RaidBossSpawnManager
 				ScheduledFuture<?> f = _schedules.get(bossId);
 				f.cancel(true);
 			}
+			_schedules.clear();
 		}
 		
-		_schedules.clear();
 		_storedInfo.clear();
 		_spawns.clear();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final RaidBossSpawnManager _instance = new RaidBossSpawnManager();

@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 /**
  * This class ...
@@ -49,7 +49,7 @@ public class SpawnTable
 		return SingletonHolder._instance;
 	}
 	
-	private SpawnTable()
+	protected SpawnTable()
 	{
 		if (!Config.ALT_DEV_NO_SPAWNS)
 			fillSpawnTable();
@@ -348,7 +348,6 @@ public class SpawnTable
 			activeChar.sendMessage("No current spawns found.");
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SpawnTable _instance = new SpawnTable();

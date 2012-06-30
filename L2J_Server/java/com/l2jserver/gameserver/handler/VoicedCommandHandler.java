@@ -27,7 +27,7 @@ import com.l2jserver.Config;
  */
 public class VoicedCommandHandler
 {
-	private static Logger _log = Logger.getLogger(ItemHandler.class.getName());
+	private static Logger _log = Logger.getLogger(VoicedCommandHandler.class.getName());
 	
 	private final TIntObjectHashMap<IVoicedCommandHandler> _datatable;
 	
@@ -36,9 +36,9 @@ public class VoicedCommandHandler
 		return SingletonHolder._instance;
 	}
 	
-	private VoicedCommandHandler()
+	protected VoicedCommandHandler()
 	{
-		_datatable = new TIntObjectHashMap<IVoicedCommandHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	public void registerHandler(IVoicedCommandHandler handler)
@@ -72,7 +72,6 @@ public class VoicedCommandHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final VoicedCommandHandler _instance = new VoicedCommandHandler();

@@ -86,15 +86,15 @@ Server and Datapack may not be not be bundled or packaged.
 III. REQUIREMENTS
 ====================
 
-OS: 
-Any OS having Java JDK 1.6 installed and properly configured!
+OS:
+Any OS having Java JDK 1.7 installed and properly configured!
     We recommend using SUN JDK available at java.sun.com
 
 Hardware: 
 Decent CPU & RAM
 
 Software:
-Java JDK 1.6
+Java JDK 1.7
 MySql
 Datapack
 
@@ -135,17 +135,21 @@ open and/or forward these ports.
 V. ADMIN/GM's GUIDE
 ====================
 
-To make someone an admin you need to edit, in the l2jdb database, the desired character in the 
-characters table, while server is SHUT DOWN! Change the field, accesslevel from 0 to 100 or more. 
-You may start server after that and the person will have admin privileges. 
-Note that you must create the account and character before editing. 
+To make someone an admin you need to edit the l2j database.
 
-Possible access levels:
--100 = banned
-0 = normal account/character
-51 or more = exempt from maximum connections limit (accounts table only)
-100 or more = admin
+For accounts take a look into the 'accounts' table(loginserver database).
+Change the value of the 'accessLevel' column to one of the following:
+- < 0: banned account
+- 0: user account
+- > 0: admin/gm account (bypass max player limit)
 
+For characters take a look into the 'characters' table(gameserver database).
+Change the value of the 'accessLevel' column to one of the access levels
+described in the 'game/config/accessLevels.xml' table.
+
+To adjust the allowed admin commands for an access level take a look into
+'game/config/adminCommands.xml'.  
+ 
 More info can be found in the community wiki.
  
 Admin commands implemented:
@@ -286,7 +290,7 @@ http://www.l2jserver.com/forum/memberlist.php?mode=leaders
 Have fun playing L2J ;)
 Dev Team
 
-    L2J Server, Copyright (C) 2006-2010 
+    L2J Server, Copyright (C) 2004-2012 
     L2J Server comes with ABSOLUTELY NO WARRANTY.
     This is free software, and you are welcome to redistribute it
     under certain conditions.

@@ -30,11 +30,11 @@ import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Auction;
 import com.l2jserver.gameserver.model.entity.Auction.Bidder;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public final class L2AuctioneerInstance extends L2Npc
 {
@@ -42,7 +42,7 @@ public final class L2AuctioneerInstance extends L2Npc
 	private static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;
 	private static final int COND_REGULAR = 3;
 	
-	private Map<Integer, Auction> _pendingAuctions = new FastMap<Integer, Auction>();
+	private Map<Integer, Auction> _pendingAuctions = new FastMap<>();
 	
 	public L2AuctioneerInstance(int objectId, L2NpcTemplate template)
 	{
@@ -93,7 +93,7 @@ public final class L2AuctioneerInstance extends L2Npc
 						if (st.countTokens() >= 1)
 							bid = Math.min(Long.parseLong(st.nextToken()), MAX_ADENA);
 						
-						Auction a = new Auction(player.getClan().getHasHideout(), player.getClan(), days*86400000L, bid, ClanHallManager.getInstance().getClanHallByOwner(player.getClan()).getName());
+						Auction a = new Auction(player.getClan().getHideoutId(), player.getClan(), days*86400000L, bid, ClanHallManager.getInstance().getClanHallByOwner(player.getClan()).getName());
 						if (_pendingAuctions.get(a.getId()) != null)
 							_pendingAuctions.remove(a.getId());
 						
@@ -126,9 +126,9 @@ public final class L2AuctioneerInstance extends L2Npc
 			{
 				try
 				{
-					Auction a = _pendingAuctions.get(player.getClan().getHasHideout());
+					Auction a = _pendingAuctions.get(player.getClan().getHideoutId());
 					a.confirmAuction();
-					_pendingAuctions.remove(player.getClan().getHasHideout());
+					_pendingAuctions.remove(player.getClan().getHideoutId());
 				}
 				catch (Exception e)
 				{
@@ -223,7 +223,7 @@ public final class L2AuctioneerInstance extends L2Npc
 				if (val.isEmpty())
 					return;
 				
-				if ((player.getClan().getAuctionBiddedAt() > 0 && player.getClan().getAuctionBiddedAt() != Integer.parseInt(val)) || player.getClan().getHasHideout() > 0)
+				if ((player.getClan().getAuctionBiddedAt() > 0 && player.getClan().getAuctionBiddedAt() != Integer.parseInt(val)) || player.getClan().getHideoutId() > 0)
 				{
 					player.sendPacket(SystemMessageId.ALREADY_SUBMITTED_BID);
 					return;
@@ -371,7 +371,7 @@ public final class L2AuctioneerInstance extends L2Npc
 			}
 			else if (actualCommand.equalsIgnoreCase("selectedItems"))
 			{
-				if (player.getClan() != null && player.getClan().getHasHideout() == 0 && player.getClan().getAuctionBiddedAt() > 0)
+				if (player.getClan() != null && player.getClan().getHideoutId() == 0 && player.getClan().getAuctionBiddedAt() > 0)
 				{
 					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 					String filename = "data/html/auction/AgitBidInfo.htm";
@@ -400,13 +400,13 @@ public final class L2AuctioneerInstance extends L2Npc
 					player.sendPacket(html);
 					return;
 				}
-				else if (player.getClan() != null && AuctionManager.getInstance().getAuction(player.getClan().getHasHideout()) != null)
+				else if (player.getClan() != null && AuctionManager.getInstance().getAuction(player.getClan().getHideoutId()) != null)
 				{
 					SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 					String filename = "data/html/auction/AgitSaleInfo.htm";
 					NpcHtmlMessage html = new NpcHtmlMessage(1);
 					html.setFile(player.getHtmlPrefix(), filename);
-					Auction a = AuctionManager.getInstance().getAuction(player.getClan().getHasHideout());
+					Auction a = AuctionManager.getInstance().getAuction(player.getClan().getHideoutId());
 					if (a != null)
 					{
 						html.replace("%AGIT_NAME%", a.getItemName());
@@ -425,14 +425,14 @@ public final class L2AuctioneerInstance extends L2Npc
 						html.replace("%objectId%", String.valueOf(getObjectId()));
 					}
 					else
-						_log.warning("Auctioneer Auction null for getHasHideout : "+player.getClan().getHasHideout());
+						_log.warning("Auctioneer Auction null for getHasHideout : "+player.getClan().getHideoutId());
 					
 					player.sendPacket(html);
 					return;
 				}
-				else if (player.getClan() != null && player.getClan().getHasHideout() != 0)
+				else if (player.getClan() != null && player.getClan().getHideoutId() != 0)
 				{
-					int ItemId = player.getClan().getHasHideout();
+					int ItemId = player.getClan().getHideoutId();
 					String filename = "data/html/auction/AgitInfo.htm";
 					NpcHtmlMessage html = new NpcHtmlMessage(1);
 					html.setFile(player.getHtmlPrefix(), filename);
@@ -453,7 +453,7 @@ public final class L2AuctioneerInstance extends L2Npc
 					player.sendPacket(html);
 					return;
 				}
-				else if (player.getClan() != null && player.getClan().getHasHideout() == 0)
+				else if (player.getClan() != null && player.getClan().getHideoutId() == 0)
 				{
 					player.sendPacket(SystemMessageId.NO_OFFERINGS_OWN_OR_MADE_BID_FOR);
 					return;
@@ -508,9 +508,9 @@ public final class L2AuctioneerInstance extends L2Npc
 			}
 			else if (actualCommand.equalsIgnoreCase("doCancelAuction"))
 			{
-				if (AuctionManager.getInstance().getAuction(player.getClan().getHasHideout()) != null)
+				if (AuctionManager.getInstance().getAuction(player.getClan().getHideoutId()) != null)
 				{
-					AuctionManager.getInstance().getAuction(player.getClan().getHasHideout()).cancelAuction();
+					AuctionManager.getInstance().getAuction(player.getClan().getHideoutId()).cancelAuction();
 					player.sendMessage("Your auction has been canceled");
 				}
 				return;
@@ -637,7 +637,7 @@ public final class L2AuctioneerInstance extends L2Npc
 	
 	private String getPictureName(L2PcInstance plyr)
 	{
-		int nearestTownId = MapRegionManager.getInstance().getMapRegion(plyr).getLocId();
+		int nearestTownId = MapRegionManager.getInstance().getMapRegionLocId(plyr);
 		String nearestTown;
 		
 		switch (nearestTownId)

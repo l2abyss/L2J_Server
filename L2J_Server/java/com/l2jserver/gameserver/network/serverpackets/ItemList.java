@@ -14,13 +14,11 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 
 /**
@@ -64,7 +62,6 @@ import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
  */
 public final class ItemList extends L2GameServerPacket
 {
-	private static Logger _log = Logger.getLogger(ItemList.class.getName());
 	private static final String _S__11_ITEMLIST = "[S] 11 ItemList";
 	
 	private PcInventory _inventory;
@@ -91,15 +88,6 @@ public final class ItemList extends L2GameServerPacket
 		}
 	}
 	
-	@SuppressWarnings("unused")
-	private void showDebug()
-	{
-		for (L2ItemInstance temp : _items)
-		{
-			_log.fine("item:" + temp.getItem().getName() + " type1:" + temp.getItem().getType1() + " type2:" + temp.getItem().getType2());
-		}
-	}
-	
 	@Override
 	protected final void writeImpl()
 	{
@@ -115,7 +103,7 @@ public final class ItemList extends L2GameServerPacket
 				continue;
 			
 			writeD(temp.getObjectId());
-			writeD(temp.getItemId());
+			writeD(temp.getDisplayId());
 			writeD(temp.getLocationSlot());
 			writeQ(temp.getCount());
 			writeH(temp.getItem().getType2()); // item type2

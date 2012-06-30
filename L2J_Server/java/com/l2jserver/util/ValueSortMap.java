@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class is used to show how you can sort a java.uti.Map for values. This also takes care of null and duplicate
- * values present in the map.
+ * This class is used to show how you can sort a java.util.Map for values.<br>
+ * This also takes care of null and duplicate values present in the map.
  */
 @SuppressWarnings("unchecked")
 public class ValueSortMap
@@ -38,12 +38,12 @@ public class ValueSortMap
 	}
 	
 	/**
-	 * This method returns the new LinkedHashMap sorted with values for passed Comparater. If null values exist they
-	 * will be put in the last of the returned LinkedHashMap. If there are duplicate values they will come together at
-	 * the values ordering order but ordering between same multiple values is ramdom. Passed Map will be intect.
-	 * 
+	 * This method returns the new LinkedHashMap sorted with values for passed Comparator.<br>
+	 * If null values exist they will be put in the last of the returned LinkedHashMap.<br>
+	 * If there are duplicate values they will come together at the values ordering order but ordering between same multiple values is random.<br>
+	 * Passed Map will be intact.
 	 * @param inMap Map to be sorted
-	 * @param comparator Values will be sorted as per passed Comparater
+	 * @param comparator Values will be sorted as per passed Comparator
 	 * @return LinkedHashMap Sorted new LinkedHashMap
 	 */
 	@SuppressWarnings("rawtypes")
@@ -53,11 +53,10 @@ public class ValueSortMap
 	}
 	
 	/**
-	 * This method returns the new LinkedHashMap sorted with values for passed ascendingOrder. If null values exist they
-	 * will be put in the last for true value of ascendingOrder or will be put on top of the returned LinkedHashMap for
-	 * false value of ascendingOrder. If there are duplicate values they will come together at the values ordering order
-	 * but ordering between same multiple values is ramdom. Passed Map will be intect.
-	 * 
+	 * This method returns the new LinkedHashMap sorted with values for passed ascendingOrder.<br>
+	 * If null values exist they will be put in the last for true value of ascendingOrder or will be put on top of the returned LinkedHashMap for false value of ascendingOrder.<br>
+	 * If there are duplicate values they will come together at the values ordering order but ordering between same multiple values is random.<br>
+	 * Passed Map will be intact.
 	 * @param inMap Map to be sorted
 	 * @param ascendingOrder Values will be sorted as per value of ascendingOrder
 	 * @return LinkedHashMap Sorted new LinkedHashMap
@@ -69,10 +68,10 @@ public class ValueSortMap
 	}
 	
 	/**
-	 * This method returns the new LinkedHashMap sorted with values in ascending order. If null values exist they will
-	 * be put in the last of the returned LinkedHashMap. If there are duplicate values they will come together at the
-	 * values ordering order but ordering between same multiple values is ramdom. Passed Map will be intect.
-	 * 
+	 * This method returns the new LinkedHashMap sorted with values in ascending order.<br>
+	 * If null values exist they will be put in the last of the returned LinkedHashMap.<br>
+	 * If there are duplicate values they will come together at the values ordering order but ordering between same multiple values is random.<br>
+	 * Passed Map will be intact.
 	 * @param inMap Map to be sorted
 	 * @return LinkedHashMap Sorted new LinkedHashMap
 	 */
@@ -83,18 +82,21 @@ public class ValueSortMap
 	}
 	
 	/**
-	 * This method returns the new LinkedHashMap sorted with values. Values will be sorted as value of passed comparator
-	 * if ascendingOrder is null or in order of passed ascendingOrder if it is not null. If null values exist they will
-	 * be put in the last for true value of ascendingOrder or will be put on top of the returned LinkedHashMap for false
-	 * value of ascendingOrder. If there are duplicate values they will come together at the values ordering order but
-	 * ordering between same multiple values is ramdom. Passed Map will be intect.
-	 * 
+	 * This method returns the new LinkedHashMap sorted with values.<br>
+	 * Values will be sorted as value of passed comparator if ascendingOrder is null or in order of passed ascendingOrder if it is not null.<br>
+	 * If null values exist they will be put in the last for true value of ascendingOrder or will be put on top of the returned LinkedHashMap for false value of ascendingOrder.<br>
+	 * If there are duplicate values they will come together at the values ordering order but ordering between same multiple values is random.<br>
+	 * Passed Map will be intact.
 	 * @param inMap Map to be sorted
-	 * @param comparator Values will be sorted as per passed Comparater
+	 * @param comparator Values will be sorted as per passed Comparator
 	 * @param ascendingOrder Values will be sorted as per value of ascendingOrder
 	 * @return LinkedHashMap Sorted new LinkedHashMap
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings(
+	{
+		"rawtypes",
+		"null"
+	})
 	private static LinkedHashMap sortMapByValue(Map inMap, Comparator comparator, Boolean ascendingOrder)
 	{
 		int iSize = inMap.size();
@@ -144,7 +146,9 @@ public class ValueSortMap
 		// Check if there are multiple same values exist in passed Map (not considering null values)
 		boolean bAllDistinct = true;
 		if (iSize != (distinctValues.size() + iNullValueCount))
+		{
 			bAllDistinct = false;
+		}
 		
 		Object key = null, value = null, sortedValue;
 		Set keySet = null;
@@ -163,12 +167,16 @@ public class ValueSortMap
 				value = inMap.get(key);
 				
 				if (value != null)
+				{
 					hmTmpMap.put(value, key); // Prepare new temp HashMap with value=key combination
+				}
 				else
+				{
 					hmNullValueMap.put(key, value); // Keep all null values in a new temp Map
+				}
 			}
 			
-			if (ascendingOrder != null && !ascendingOrder)
+			if ((ascendingOrder != null) && !ascendingOrder)
 			{
 				// As it is descending order, Add Null Values in first place of the LinkedHasMap
 				sortedMap.putAll(hmNullValueMap);
@@ -183,7 +191,7 @@ public class ValueSortMap
 				sortedMap.put(key, value);
 			}
 			
-			if (ascendingOrder == null || ascendingOrder)
+			if ((ascendingOrder == null) || ascendingOrder)
 			{
 				// Add Null Values in the last of the LinkedHasMap
 				sortedMap.putAll(hmNullValueMap);
@@ -200,12 +208,16 @@ public class ValueSortMap
 				value = inMap.get(key);
 				
 				if (value != null)
+				{
 					hmTmpMap.put(key, value); // Prepare new temp HashMap with key=value combination
+				}
 				else
+				{
 					hmNullValueMap.put(key, value); // Keep all null values in a new temp Map
+				}
 			}
 			
-			if (ascendingOrder != null && !ascendingOrder)
+			if ((ascendingOrder != null) && !ascendingOrder)
 			{
 				// As it is descending order, Add Null Values in first place of the LinkedHasMap
 				sortedMap.putAll(hmNullValueMap);
@@ -232,13 +244,12 @@ public class ValueSortMap
 				}
 			}
 			
-			if (ascendingOrder == null || ascendingOrder)
+			if ((ascendingOrder == null) || ascendingOrder)
 			{
 				// Add Null Values in the last of the LinkedHasMap
 				sortedMap.putAll(hmNullValueMap);
 			}
 		}
-		
 		return sortedMap;
 	}
 }

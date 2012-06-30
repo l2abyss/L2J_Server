@@ -14,11 +14,11 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
-public class L2SiegeSummonInstance extends L2SummonInstance
+public class L2SiegeSummonInstance extends L2ServitorInstance
 {
 	public static final int SIEGE_GOLEM_ID = 14737;
 	public static final int HOG_CANNON_ID = 14768;

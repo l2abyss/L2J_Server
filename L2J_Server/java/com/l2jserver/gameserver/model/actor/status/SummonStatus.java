@@ -19,7 +19,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Duel;
-import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.util.Util;
 
 public class SummonStatus extends PlayableStatus
@@ -53,7 +53,7 @@ public class SummonStatus extends PlayableStatus
 					&& Util.checkIfInRange(1000, getActiveChar(), caster, true)
 					&& !caster.isDead() 
 					&& getActiveChar().getOwner() != caster
-					&& getActiveChar().getParty().getPartyMembers().contains(caster))
+					&& getActiveChar().getParty().getMembers().contains(caster))
 			{
 				int transferDmg = 0;
 
@@ -62,7 +62,7 @@ public class SummonStatus extends PlayableStatus
 				if (transferDmg > 0 && attacker instanceof L2Playable)
 				{
 					int membersInRange = 0;
-					for (L2PcInstance member : caster.getParty().getPartyMembers())
+					for (L2PcInstance member : caster.getParty().getMembers())
 					{
 						if (Util.checkIfInRange(1000, member, caster, false) && member != caster)
 							membersInRange++;

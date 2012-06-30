@@ -22,7 +22,6 @@ import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author mrTJO
- *
  */
 public class PlayerTracert extends BaseRecievePacket
 {
@@ -44,7 +43,7 @@ public class PlayerTracert extends BaseRecievePacket
 		LoginController.getInstance().setAccountLastTracert(account, pcIp, hop1, hop2, hop3, hop4);
 		if (Config.DEBUG)
 		{
-			_log.info("Saved "+account+" last tracert");
+			_log.info("Saved " + account + " last tracert");
 		}
 	}
 }

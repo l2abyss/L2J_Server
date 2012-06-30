@@ -58,7 +58,7 @@ public class Auction
 	private long _currentBid = 0;
 	private long _startingBid = 0;
 	
-	private Map<Integer, Bidder> _bidders = new FastMap<Integer, Bidder>();
+	private Map<Integer, Bidder> _bidders = new FastMap<>();
 	
 	private static final String[] ItemTypeName =
 	{
@@ -168,14 +168,11 @@ public class Auction
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
-			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("Select * from auction where id = ?");
+			PreparedStatement statement = con.prepareStatement("Select * from auction where id = ?");
 			statement.setInt(1, getId());
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
 			{
@@ -214,14 +211,11 @@ public class Auction
 		Connection con = null;
 		try
 		{
-			PreparedStatement statement;
-			ResultSet rs;
-			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			statement = con.prepareStatement("SELECT bidderId, bidderName, maxBid, clan_name, time_bid FROM auction_bid WHERE auctionId = ? ORDER BY maxBid DESC");
+			PreparedStatement statement = con.prepareStatement("SELECT bidderId, bidderName, maxBid, clan_name, time_bid FROM auction_bid WHERE auctionId = ? ORDER BY maxBid DESC");
 			statement.setInt(1, getId());
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			
 			while (rs.next())
 			{
@@ -360,7 +354,6 @@ public class Auction
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
-			
 			if (getBidders().get(bidder.getClanId()) != null)
 			{
 				statement = con.prepareStatement("UPDATE auction_bid SET bidderId=?, bidderName=?, maxBid=?, time_bid=? WHERE auctionId=? AND bidderId=?");
@@ -370,8 +363,6 @@ public class Auction
 				statement.setLong(4, System.currentTimeMillis());
 				statement.setInt(5, getId());
 				statement.setInt(6, bidder.getClanId());
-				statement.execute();
-				statement.close();
 			}
 			else
 			{
@@ -383,11 +374,12 @@ public class Auction
 				statement.setLong(5, bid);
 				statement.setString(6, bidder.getClan().getName());
 				statement.setLong(7, System.currentTimeMillis());
-				statement.execute();
-				statement.close();
 				if (L2World.getInstance().getPlayer(_highestBidderName) != null)
 					L2World.getInstance().getPlayer(_highestBidderName).sendMessage("You have been out bidded");
 			}
+			statement.execute();
+			statement.close();
+			
 			_highestBidderId = bidder.getClanId();
 			_highestBidderMaxBid = bid;
 			_highestBidderName = bidder.getClan().getLeaderName();
@@ -417,9 +409,7 @@ public class Auction
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("DELETE FROM auction_bid WHERE auctionId=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM auction_bid WHERE auctionId=?");
 			statement.setInt(1, getId());
 			statement.execute();
 			
@@ -435,7 +425,7 @@ public class Auction
 		}
 		for (Bidder b : _bidders.values())
 		{
-			if (ClanTable.getInstance().getClanByName(b.getClanName()).getHasHideout() == 0)
+			if (ClanTable.getInstance().getClanByName(b.getClanName()).getHideoutId() == 0)
 				returnItem(b.getClanName(), b.getBid(), true); // 10 % tax
 			else
 			{
@@ -455,8 +445,7 @@ public class Auction
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("DELETE FROM auction WHERE itemId=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM auction WHERE itemId=?");
 			statement.setInt(1, _itemId);
 			statement.execute();
 			statement.close();

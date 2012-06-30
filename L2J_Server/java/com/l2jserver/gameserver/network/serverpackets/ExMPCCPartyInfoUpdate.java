@@ -39,7 +39,7 @@ public class ExMPCCPartyInfoUpdate extends L2GameServerPacket
 	{
 		_party = party;
 		_name = _party.getLeader().getName();
-		_LeaderOID = _party.getPartyLeaderOID();
+		_LeaderOID = _party.getLeaderObjectId();
 		_memberCount = _party.getMemberCount();
 		_mode = mode;
 	}

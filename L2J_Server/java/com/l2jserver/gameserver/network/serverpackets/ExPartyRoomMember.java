@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
@@ -41,23 +40,29 @@ public class ExPartyRoomMember extends L2GameServerPacket
 		writeH(0x08);
 		writeD(_mode);
 		writeD(_room.getMembers());
-		for(L2PcInstance _member : _room.getPartyMembers())
+		for (L2PcInstance member : _room.getPartyMembers())
 		{
-			writeD(_member.getObjectId());
-			writeS(_member.getName());
-			writeD(_member.getActiveClass());
-			writeD(_member.getLevel());
-			writeD(MapRegionManager.getInstance().getMapRegion(_member).getBbs());
-			if (_room.getOwner().equals(_member))
+			writeD(member.getObjectId());
+			writeS(member.getName());
+			writeD(member.getActiveClass());
+			writeD(member.getLevel());
+			writeD(0); // TODO: Closes town
+			if (_room.getOwner().equals(member))
+			{
 				writeD(1);
+			}
 			else
 			{
-				if((_room.getOwner().isInParty() && _member.isInParty()) && (_room.getOwner().getParty().getPartyLeaderOID() == _member.getParty().getPartyLeaderOID()))
+				if ((_room.getOwner().isInParty() && member.isInParty()) && (_room.getOwner().getParty().getLeaderObjectId() == member.getParty().getLeaderObjectId()))
+				{
 					writeD(2);
+				}
 				else
+				{
 					writeD(0);
+				}
 			}
-			writeD(0x00);
+			writeD(0x00); // TODO: Instance datas there is more if that is not 0!
 		}
 	}
 	

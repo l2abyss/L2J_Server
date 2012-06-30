@@ -17,17 +17,16 @@ package com.l2jserver.gameserver.ai;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * @author mkizub
  */
 public class L2DoorAI extends L2CharacterAI
 {
-	
 	public L2DoorAI(L2DoorInstance.AIAccessor accessor)
 	{
 		super(accessor);

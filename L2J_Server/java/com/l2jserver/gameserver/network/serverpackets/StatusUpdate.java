@@ -102,7 +102,7 @@ public final class StatusUpdate extends L2GameServerPacket
 	 */
 	public StatusUpdate(int objectId)
 	{
-		_attributes = new ArrayList<Attribute>();
+		_attributes = new ArrayList<>();
 		_objectId = objectId;
 		L2Object obj = L2World.getInstance().findObject(objectId);
 		if (obj != null && obj instanceof L2Attackable)
@@ -117,7 +117,7 @@ public final class StatusUpdate extends L2GameServerPacket
 	 */
 	public StatusUpdate(L2Object object)
 	{
-		_attributes = new ArrayList<Attribute>();
+		_attributes = new ArrayList<>();
 		_objectId = object.getObjectId();
 		if (object instanceof L2Attackable)
 			_maxHp = ((L2Character) object).getMaxVisibleHp();

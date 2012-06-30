@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -24,14 +25,13 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ExListPartyMatchingWaitingRoom extends L2GameServerPacket
 {
-	@SuppressWarnings("unused")
 	private final L2PcInstance _activeChar;
 	@SuppressWarnings("unused")
-	private int _page;
-	private int _minlvl;
-	private int _maxlvl;
-	private int _mode;
-	private FastList<L2PcInstance> _members;
+	private final int _page;
+	private final int _minlvl;
+	private final int _maxlvl;
+	private final int _mode;
+	private final List<L2PcInstance> _members;
 	
 	public ExListPartyMatchingWaitingRoom(L2PcInstance player, int page, int minlvl, int maxlvl, int mode)
 	{
@@ -40,7 +40,7 @@ public class ExListPartyMatchingWaitingRoom extends L2GameServerPacket
 		_minlvl = minlvl;
 		_maxlvl = maxlvl;
 		_mode = mode;
-		_members = new FastList<L2PcInstance>();
+		_members = new ArrayList<>();
 	}
 	
 	@Override
@@ -55,37 +55,34 @@ public class ExListPartyMatchingWaitingRoom extends L2GameServerPacket
 			return;
 		}
 		
-		//if (_activeChar.isInPartyMatchRoom())
-		//	return;
-		
-		for(L2PcInstance cha : PartyMatchWaitingList.getInstance().getPlayers())
+		for (L2PcInstance cha : PartyMatchWaitingList.getInstance().getPlayers())
 		{
-			if(cha == null)
+			if ((cha == null) || (cha == _activeChar))
+			{
 				continue;
+			}
 			
-			if(!cha.isPartyWaiting())
+			if (!cha.isPartyWaiting())
 			{
 				PartyMatchWaitingList.getInstance().removePlayer(cha);
 				continue;
 			}
 			
-			if((cha.getLevel() < _minlvl) || (cha.getLevel() > _maxlvl))
+			else if ((cha.getLevel() < _minlvl) || (cha.getLevel() > _maxlvl))
+			{
 				continue;
+			}
 			
 			_members.add(cha);
 		}
 		
-		int _count = 0;
-		int _size = _members.size();
-		
 		writeD(1);
-		writeD(_size);
-		while(_size > _count)
+		writeD(_members.size());
+		for (L2PcInstance member : _members)
 		{
-			writeS(_members.get(_count).getName());
-			writeD(_members.get(_count).getActiveClass());
-			writeD(_members.get(_count).getLevel());
-			_count++;
+			writeS(member.getName());
+			writeD(member.getActiveClass());
+			writeD(member.getLevel());
 		}
 	}
 	

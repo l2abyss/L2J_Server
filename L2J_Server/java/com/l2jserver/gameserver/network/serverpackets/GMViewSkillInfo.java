@@ -15,22 +15,22 @@
 
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.Collection;
+
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 public class GMViewSkillInfo extends L2GameServerPacket
 {
 	private static final String _S__91_GMViewSkillInfo = "[S] 97 GMViewSkillInfo";
 	private final L2PcInstance _activeChar;
-	private L2Skill[] _skills;
+	private Collection<L2Skill> _skills;
 	
-	public GMViewSkillInfo (L2PcInstance cha)
+	public GMViewSkillInfo(L2PcInstance cha)
 	{
 		_activeChar = cha;
 		_skills = _activeChar.getAllSkills();
-		if (_skills.length == 0)
-			_skills = new L2Skill[0];
 	}
 	
 	@Override
@@ -38,13 +38,11 @@ public class GMViewSkillInfo extends L2GameServerPacket
 	{
 		writeC(0x97);
 		writeS(_activeChar.getName());
-		writeD(_skills.length);
+		writeD(_skills.size());
 		
-		boolean isDisabled = false;
-		if (_activeChar.getClan() != null)
-			isDisabled = _activeChar.getClan().getReputationScore() < 0;
+		boolean isDisabled = (_activeChar.getClan() != null) ? (_activeChar.getClan().getReputationScore() < 0) : false;
 		
-		for (L2Skill skill: _skills)
+		for (L2Skill skill : _skills)
 		{
 			writeD(skill.isPassive() ? 1 : 0);
 			writeD(skill.getLevel());

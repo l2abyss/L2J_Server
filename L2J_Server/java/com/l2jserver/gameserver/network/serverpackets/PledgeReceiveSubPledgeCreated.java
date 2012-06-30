@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Clan.SubPledge;
 
@@ -27,7 +25,6 @@ import com.l2jserver.gameserver.model.L2Clan.SubPledge;
 public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 {
 	private static final String _S__FE_3F_PLEDGERECEIVESUBPLEDGECREATED = "[S] FE:40 PledgeReceiveSubPledgeCreated";
-	private static Logger _log = Logger.getLogger(PledgeReceiveSubPledgeCreated.class.getName());
 	private SubPledge _subPledge;
 	private L2Clan _clan;
 	

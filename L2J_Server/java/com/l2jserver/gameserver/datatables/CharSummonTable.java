@@ -30,12 +30,12 @@ import com.l2jserver.gameserver.model.L2SummonItem;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
-import com.l2jserver.gameserver.skills.l2skills.L2SkillSummon;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author Nyaran
@@ -135,7 +135,7 @@ public class CharSummonTable
 		return _pets;
 	}
 	
-	public void saveSummon(L2SummonInstance summon)
+	public void saveSummon(L2ServitorInstance summon)
 	{
 		if (summon == null || summon.getTimeRemaining() <= 0)
 			return;
@@ -181,7 +181,7 @@ public class CharSummonTable
 			ResultSet rset = statement.executeQuery();
 			
 			L2NpcTemplate summonTemplate;
-			L2SummonInstance summon;
+			L2ServitorInstance summon;
 			L2SkillSummon skill;
 			
 			while (rset.next())
@@ -212,16 +212,18 @@ public class CharSummonTable
 				else if (summonTemplate.isType("L2MerchantSummon"))
 				{
 					// TODO: Confirm L2Merchant summon = new L2MerchantSummonInstance(id, summonTemplate, activeChar, skill);
-					summon = new L2SummonInstance(id, summonTemplate, activeChar, skill);
+					summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
 				}
 				else
 				{
-					summon = new L2SummonInstance(id, summonTemplate, activeChar, skill);
+					summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
 				}
 				
 				summon.setName(summonTemplate.getName());
 				summon.setTitle(activeChar.getName());
 				summon.setExpPenalty(skill.getExpPenalty());
+				summon.setSharedElementals(skill.getInheritElementals());
+				summon.setSharedElementalsValue(skill.getElementalSharePercent());
 				
 				if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 				{
@@ -266,7 +268,6 @@ public class CharSummonTable
 			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(REMOVE_SUMMON);
 			statement.setInt(1, activeChar.getObjectId());
-			
 			statement.execute();
 			statement.close();
 			_servitors.remove(activeChar.getObjectId());
@@ -327,7 +328,6 @@ public class CharSummonTable
 		petSummon.broadcastStatusUpdate();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CharSummonTable _instance = new CharSummonTable();

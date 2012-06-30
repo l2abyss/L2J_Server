@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
 
 /**
- * 
  * @author Pere, DS
  */
 public class OlympiadGameTeams extends AbstractOlympiadGame
@@ -66,8 +65,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				par = teamOne[i];
 				_teamOne[i] = par;
-				if (par.player != null)
-					par.player.setOlympiadGameId(id);
+				if (par.getPlayer() != null)
+					par.getPlayer().setOlympiadGameId(id);
 			}
 			else
 				_teamOne[i] = new Participant(IdFactory.getInstance().getNextId(), 1);
@@ -76,8 +75,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				par = teamTwo[i];
 				_teamTwo[i] = par;
-				if (par.player != null)
-					par.player.setOlympiadGameId(id);
+				if (par.getPlayer() != null)
+					par.getPlayer().setOlympiadGameId(id);
 			}
 			else
 				_teamTwo[i] = new Participant(IdFactory.getInstance().getNextId(), 2);
@@ -92,8 +91,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		List<Integer> teamOne = null;
 		List<Integer> teamTwo = null;
 		L2PcInstance player;
-		List<L2PcInstance> teamOnePlayers = new ArrayList<L2PcInstance>(MAX_TEAM_SIZE);
-		List<L2PcInstance> teamTwoPlayers = new ArrayList<L2PcInstance>(MAX_TEAM_SIZE);
+		List<L2PcInstance> teamOnePlayers = new ArrayList<>(MAX_TEAM_SIZE);
+		List<L2PcInstance> teamTwoPlayers = new ArrayList<>(MAX_TEAM_SIZE);
 
 		while (list.size() > 1)
 		{
@@ -196,13 +195,13 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 	{
 		for (int i = _teamOneSize; --i >= 0;)
 		{
-			if (_teamOne[i].objectId == playerId)
+			if (_teamOne[i].getObjectId() == playerId)
 				return true;
 		}
 
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
-			if (_teamTwo[i].objectId == playerId)
+			if (_teamTwo[i].getObjectId() == playerId)
 				return true;
 		}
 		return false;
@@ -235,9 +234,10 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = 0; i < _teamOneSize; i++)
 		{
 			par = _teamOne[i];
-			par.updatePlayer();
-			if (par.player != null)
-				par.player.sendPacket(packet);
+			if (par.updatePlayer())
+			{
+				par.getPlayer().sendPacket(packet);
+			}
 		}
 
 		for (int i = 0; i < _teamTwoSize; i++)
@@ -245,8 +245,8 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			par = _teamTwo[i];
 			par.
 			updatePlayer();
-			if (par.player != null)
-				par.player.sendPacket(packet);
+			if (par.getPlayer() != null)
+				par.getPlayer().sendPacket(packet);
 		}
 	}
 
@@ -281,10 +281,10 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 	protected final void removals()
 	{
 		for (int i = _teamOneSize; --i >= 0;)
-			removals(_teamOne[i].player, false);
+			removals(_teamOne[i].getPlayer(), false);
 
 		for (int i = _teamTwoSize; --i >= 0;)
-			removals(_teamTwo[i].player, false);
+			removals(_teamTwo[i].getPlayer(), false);
 	}
 
 	@Override
@@ -297,21 +297,21 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = 0; i < _teamOneSize; i++)
 		{
 			par = _teamOne[i];
-			if (par.player == null)
+			if (par.getPlayer() == null)
 				return false;
 
-			par.player.setIsOlympiadStart(true);
-			par.player.updateEffectIcons();
+			par.getPlayer().setIsOlympiadStart(true);
+			par.getPlayer().updateEffectIcons();
 		}
 
 		for (int i = 0; i < _teamTwoSize; i++)
 		{
 			par = _teamTwo[i];
-			if (par.player == null)
+			if (par.getPlayer() == null)
 				return false;
 
-			par.player.setIsOlympiadStart(true);
-			par.player.updateEffectIcons();
+			par.getPlayer().setIsOlympiadStart(true);
+			par.getPlayer().updateEffectIcons();
 		}
 		return true;
 	}
@@ -323,21 +323,21 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
-			if (par.player != null
-					&& !par.defaulted
-					&& !par.disconnected
-					&& par.player.getOlympiadGameId() == _stadiumID)
-				cleanEffects(par.player);
+			if (par.getPlayer() != null
+					&& !par.isDefaulted()
+					&& !par.isDisconnected()
+					&& par.getPlayer().getOlympiadGameId() == _stadiumID)
+				cleanEffects(par.getPlayer());
 		}
 
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
 			par = _teamTwo[i];
-			if (par.player != null
-					&& !par.defaulted
-					&& !par.disconnected
-					&& par.player.getOlympiadGameId() == _stadiumID)
-				cleanEffects(par.player);
+			if (par.getPlayer() != null
+					&& !par.isDefaulted()
+					&& !par.isDisconnected()
+					&& par.getPlayer().getOlympiadGameId() == _stadiumID)
+				cleanEffects(par.getPlayer());
 		}
 	}
 
@@ -348,19 +348,19 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
-			if (par.player != null
-					&& !par.defaulted
-					&& !par.disconnected)
-				portPlayerBack(par.player);
+			if (par.getPlayer() != null
+					&& !par.isDefaulted()
+					&& !par.isDisconnected())
+				portPlayerBack(par.getPlayer());
 		}
 
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
 			par = _teamTwo[i];
-			if (par.player != null
-					&& !par.defaulted
-					&& !par.disconnected)
-				portPlayerBack(par.player);
+			if (par.getPlayer() != null
+					&& !par.isDefaulted()
+					&& !par.isDisconnected())
+				portPlayerBack(par.getPlayer());
 		}
 	}
 
@@ -371,21 +371,21 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
-			if (par.player != null
-					&& !par.defaulted
-					&& !par.disconnected
-					&& par.player.getOlympiadGameId() == _stadiumID)
-				playerStatusBack(par.player);
+			if (par.getPlayer() != null
+					&& !par.isDefaulted()
+					&& !par.isDisconnected()
+					&& par.getPlayer().getOlympiadGameId() == _stadiumID)
+				playerStatusBack(par.getPlayer());
 		}
 
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
 			par = _teamTwo[i];
-			if (par.player != null
-					&& !par.defaulted
-					&& !par.disconnected
-					&& par.player.getOlympiadGameId() == _stadiumID)
-				playerStatusBack(par.player);
+			if (par.getPlayer() != null
+					&& !par.isDefaulted()
+					&& !par.isDisconnected()
+					&& par.getPlayer().getOlympiadGameId() == _stadiumID)
+				playerStatusBack(par.getPlayer());
 		}
 	}
 
@@ -395,14 +395,14 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = 0; i < MAX_TEAM_SIZE; i++)
 		{
 			if (i < _teamOneSize)
-				_teamOne[i].player = null;
+				_teamOne[i].setPlayer(null);
 			else
-				IdFactory.getInstance().releaseId(_teamOne[i].objectId);
+				IdFactory.getInstance().releaseId(_teamOne[i].getObjectId());
 
 			if (i < _teamTwoSize)
-				_teamTwo[i].player = null;
+				_teamTwo[i].setPlayer(null);
 			else
-				IdFactory.getInstance().releaseId(_teamTwo[i].objectId);
+				IdFactory.getInstance().releaseId(_teamTwo[i].getObjectId());
 
 			_teamOne[i] = null;
 			_teamTwo[i] = null;
@@ -416,9 +416,9 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
-			if (par.objectId == player.getObjectId())
+			if (par.getObjectId() == player.getObjectId())
 			{
-				par.disconnected = true;
+				par.setDisconnected(true);
 				return;
 			}
 		}
@@ -426,9 +426,9 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
 			par = _teamTwo[i];
-			if (par.objectId == player.getObjectId())
+			if (par.getObjectId() == player.getObjectId())
 			{
-				par.disconnected = true;
+				par.setDisconnected(true);
 				return;
 			}
 		}
@@ -446,20 +446,20 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
-			if (!par.disconnected)
+			if (!par.isDisconnected())
 			{
-				if (par.player != null && par.player.getOlympiadGameId() == _stadiumID)
-					teamOneLost &= par.player.isDead();
+				if (par.getPlayer() != null && par.getPlayer().getOlympiadGameId() == _stadiumID)
+					teamOneLost &= par.getPlayer().isDead();
 			}
 		}
 
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
 			par = _teamTwo[i];
-			if (!par.disconnected)
+			if (!par.isDisconnected())
 			{
-				if (par.player != null && par.player.getOlympiadGameId() == _stadiumID)
-					teamTwoLost &= par.player.isDead();
+				if (par.getPlayer() != null && par.getPlayer().getOlympiadGameId() == _stadiumID)
+					teamTwoLost &= par.getPlayer().isDead();
 			}
 		}
 		
@@ -504,8 +504,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					for (int i = _teamOneSize; --i >= 0;)
 					{
 						par = _teamOne[i];
-						removePointsFromParticipant(par, Math.min(par.stats.getInteger(POINTS) / 3, Config.ALT_OLY_MAX_POINTS));
-						par.updateNobleStats();
+						removePointsFromParticipant(par, Math.min(par.getStats().getInteger(POINTS) / 3, Config.ALT_OLY_MAX_POINTS));
 					}
 				}
 				if (_teamTwoDefaulted)
@@ -513,8 +512,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					for (int i = _teamTwoSize; --i >= 0;)
 					{
 						par = _teamTwo[i];
-						removePointsFromParticipant(par, Math.min(par.stats.getInteger(POINTS) / 3, Config.ALT_OLY_MAX_POINTS));
-						par.updateNobleStats();
+						removePointsFromParticipant(par, Math.min(par.getStats().getInteger(POINTS) / 3, Config.ALT_OLY_MAX_POINTS));
 					}
 				}
 			}
@@ -534,7 +532,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		int totalPointsTeamTwo = 0;
 		for (int i = 0; i < _teamOneSize; i++)
 		{
-			points = _teamOne[i].stats.getInteger(POINTS) / getDivider();
+			points = _teamOne[i].getStats().getInteger(POINTS) / getDivider();
 			if (points <= 0)
 				points = 1;
 			else if (points > Config.ALT_OLY_MAX_POINTS)
@@ -547,7 +545,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
-			points = _teamTwo[i].stats.getInteger(POINTS) / getDivider();
+			points = _teamTwo[i].getStats().getInteger(POINTS) / getDivider();
 			if (points <= 0)
 				points = 1;
 			else if (points > Config.ALT_OLY_MAX_POINTS)
@@ -612,7 +610,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				if (tTwoCrash && !tOneCrash)
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
-					sm.addString(_teamOne[0].name);
+					sm.addString(_teamOne[0].getName());
 					stadium.broadcastPacket(sm);
 
 					for (int i = 0; i < _teamTwoSize; i++)
@@ -632,12 +630,12 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					}
 
 					for (int i = 0; i < _teamOneSize; i++)
-						rewardParticipant(_teamOne[i].player, getReward());
+						rewardParticipant(_teamOne[i].getPlayer(), getReward());
 				}
 				else if (tOneCrash && !tTwoCrash)
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
-					sm.addString(_teamTwo[0].name);
+					sm.addString(_teamTwo[0].getName());
 					stadium.broadcastPacket(sm);
 
 					for (int i = 0; i < _teamOneSize; i++)
@@ -657,7 +655,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					}
 
 					for (int i = 0; i < _teamTwoSize; i++)
-						rewardParticipant(_teamTwo[i].player, getReward());
+						rewardParticipant(_teamTwo[i].getPlayer(), getReward());
 				}
 				else if (tOneCrash && tTwoCrash)
 				{
@@ -684,7 +682,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					par.updateStat(COMP_DONE, 1);
 					par.updateStat(COMP_DONE_WEEK, 1);
 					par.updateStat(getWeeklyMatchType(), 1);
-					par.updateNobleStats();
 				}
 
 				for (int i = _teamTwoSize; --i >= 0;)
@@ -693,7 +690,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					par.updateStat(COMP_DONE, 1);
 					par.updateStat(COMP_DONE_WEEK, 1);
 					par.updateStat(getWeeklyMatchType(), 1);
-					par.updateNobleStats();
 				}
 			}
 			catch (Exception e)
@@ -712,11 +708,11 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			for (int i = _teamOneSize; --i >= 0;)
 			{
 				par = _teamOne[i];
-				if (!par.disconnected
-						&& par.player != null
-						&& !par.player.isDead())
+				if (!par.isDisconnected()
+						&& par.getPlayer() != null
+						&& !par.getPlayer().isDead())
 				{
-					hp = par.player.getCurrentHp() + par.player.getCurrentCp();
+					hp = par.getPlayer().getCurrentHp() + par.getPlayer().getCurrentCp();
 					if (hp >= 0.5)
 						teamOneHp += hp;
 				}
@@ -726,11 +722,11 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			for (int i = _teamTwoSize; --i >= 0;)
 			{
 				par = _teamTwo[i];
-				if (!par.disconnected
-						&& par.player != null
-						&& !par.player.isDead())
+				if (!par.isDisconnected()
+						&& par.getPlayer() != null
+						&& !par.getPlayer().isDead())
 				{
-					hp = par.player.getCurrentHp() + par.player.getCurrentCp();
+					hp = par.getPlayer().getCurrentHp() + par.getPlayer().getCurrentCp();
 					if (hp >= 0.5)
 						teamTwoHp += hp;
 				}
@@ -741,7 +737,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 					|| (_damageT1 > _damageT2 && teamTwoHp != 0 && teamOneHp != 0))
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
-				sm.addString(_teamOne[0].name);
+				sm.addString(_teamOne[0].getName());
 				stadium.broadcastPacket(sm);
 
 				for (int i = 0; i < _teamTwoSize; i++)
@@ -761,13 +757,13 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				}
 
 				for (int i = 0; i < _teamOneSize; i++)
-					rewardParticipant(_teamOne[i].player, getReward());
+					rewardParticipant(_teamOne[i].getPlayer(), getReward());
 			}
 			else if ((teamOneHp == 0 && teamTwoHp != 0)
 					|| (_damageT2 > _damageT1 && teamOneHp != 0 && teamTwoHp != 0))
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_WON_THE_GAME);
-				sm.addString(_teamTwo[0].name);
+				sm.addString(_teamTwo[0].getName());
 				stadium.broadcastPacket(sm);
 
 				for (int i = 0; i < _teamOneSize; i++)
@@ -787,7 +783,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				}
 
 				for (int i = 0; i < _teamTwoSize; i++)
-					rewardParticipant(_teamTwo[i].player, getReward());
+					rewardParticipant(_teamTwo[i].getPlayer(), getReward());
 			}
 			else
 			{
@@ -797,7 +793,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				{
 					par = _teamOne[i];
 					par.updateStat(COMP_DRAWN, 1);
-					points = Math.min(par.stats.getInteger(POINTS) / getDivider(), Config.ALT_OLY_MAX_POINTS);
+					points = Math.min(par.getStats().getInteger(POINTS) / getDivider(), Config.ALT_OLY_MAX_POINTS);
 					removePointsFromParticipant(par, points);
 				}
 
@@ -805,7 +801,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				{
 					par = _teamTwo[i];
 					par.updateStat(COMP_DRAWN, 1);
-					points = Math.min(par.stats.getInteger(POINTS) / getDivider(), Config.ALT_OLY_MAX_POINTS);
+					points = Math.min(par.getStats().getInteger(POINTS) / getDivider(), Config.ALT_OLY_MAX_POINTS);
 					removePointsFromParticipant(par, points);
 				}
 			}
@@ -816,7 +812,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				par.updateStat(COMP_DONE, 1);
 				par.updateStat(COMP_DONE_WEEK, 1);
 				par.updateStat(getWeeklyMatchType(), 1);
-				par.updateNobleStats();
 			}
 
 			for (int i = _teamTwoSize; --i >= 0;)
@@ -825,7 +820,6 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 				par.updateStat(COMP_DONE, 1);
 				par.updateStat(COMP_DONE_WEEK, 1);
 				par.updateStat(getWeeklyMatchType(), 1);
-				par.updateNobleStats();
 			}
 		}
 		catch (Exception e)
@@ -841,9 +835,9 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = _teamOneSize; --i >= 0;)
 		{
 			par = _teamOne[i];
-			if (par.objectId == player.getObjectId())
+			if (par.getObjectId() == player.getObjectId())
 			{
-				if (!par.disconnected)
+				if (!par.isDisconnected())
 					_damageT1 += damage;
 				return;
 			}
@@ -852,9 +846,9 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
 			par = _teamTwo[i];
-			if (par.objectId == player.getObjectId())
+			if (par.getObjectId() == player.getObjectId())
 			{
-				if (!par.disconnected)
+				if (!par.isDisconnected())
 					_damageT2 += damage;
 				return;
 			}
@@ -864,7 +858,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 	@Override
 	public final String[] getPlayerNames()
 	{
-		return new String[] {_teamOne[0].name, _teamTwo[0].name};
+		return new String[] {_teamOne[0].getName(), _teamTwo[0].getName()};
 	}
 
 	@Override
@@ -878,17 +872,17 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				par = _teamOne[i];
 				par.updatePlayer();
-				reason = checkDefaulted(par.player);
+				reason = checkDefaulted(par.getPlayer());
 				if (reason != null)
 				{
-					par.defaulted = true;
+					par.setDefaulted(true);
 					if (!_teamOneDefaulted)
 					{
 						_teamOneDefaulted = true;
 						for (Participant t : _teamTwo)
 						{
-							if (t.player != null)
-								t.player.sendPacket(reason);
+							if (t.getPlayer() != null)
+								t.getPlayer().sendPacket(reason);
 						}
 					}
 				}
@@ -899,17 +893,17 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 			{
 				par = _teamTwo[i];
 				par.updatePlayer();
-				reason = checkDefaulted(par.player);
+				reason = checkDefaulted(par.getPlayer());
 				if (reason != null)
 				{
-					par.defaulted = true;
+					par.setDefaulted(true);
 					if (!_teamTwoDefaulted)
 					{
 						_teamTwoDefaulted = true;
 						for (Participant t : _teamOne)
 						{
-							if (t.player != null)
-								t.player.sendPacket(reason);
+							if (t.getPlayer() != null)
+								t.getPlayer().sendPacket(reason);
 						}
 					}
 				}
@@ -935,7 +929,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 	{
 		for (int i = _teamOneSize; --i >= 0;)
 		{
-			if (!_teamOne[i].disconnected)
+			if (!_teamOne[i].isDisconnected())
 				return false;
 		}
 
@@ -946,7 +940,7 @@ public class OlympiadGameTeams extends AbstractOlympiadGame
 	{
 		for (int i = _teamTwoSize; --i >= 0;)
 		{
-			if (!_teamTwo[i].disconnected)
+			if (!_teamTwo[i].isDisconnected())
 				return false;
 		}
 

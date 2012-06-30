@@ -27,14 +27,6 @@ public class AdminBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	private AdminBBSManager()
-	{
-	}
-	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.communitybbs.Manager.BaseBBSManager#parsecmd(java.lang.String, com.l2jserver.gameserver.model.actor.instance.L2PcInstance)
-	 */
 	@Override
 	public void parsecmd(String command, L2PcInstance activeChar)
 	{
@@ -73,7 +65,6 @@ public class AdminBBSManager extends BaseBBSManager
 		
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AdminBBSManager _instance = new AdminBBSManager();

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * Format: (ch)ddd
@@ -24,16 +24,16 @@ public class ExPutItemResultForVariationCancel extends L2GameServerPacket
 {
 	private static final String _S__FE_56_EXCONFIRMCANCELITEM = "[S] FE:57 ExPutItemResultForVariationCancel";
 	
-	private int _itemObjId;
-	private int _itemId;
-	private int _itemAug1;
-	private int _itemAug2;
-	private int _price;
+	private final int _itemObjId;
+	private final int _itemId;
+	private final int _itemAug1;
+	private final int _itemAug2;
+	private final int _price;
 	
 	public ExPutItemResultForVariationCancel(L2ItemInstance item, int price)
 	{
 		_itemObjId = item.getObjectId();
-		_itemId = item.getItemId();
+		_itemId = item.getDisplayId();
 		_price = price;
 		_itemAug1 = ((short)item.getAugmentation().getAugmentationId());
 		_itemAug2 = item.getAugmentation().getAugmentationId() >> 16;

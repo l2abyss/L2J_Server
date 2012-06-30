@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -27,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeReceiveMemberInfo;
  */
 public final class RequestPledgeMemberInfo extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestPledgeMemberInfo.class.getName());
 	private static final String _C__D0_16_REQUESTPLEDGEMEMBERINFO = "[C] D0:16 RequestPledgeMemberInfo";
 	@SuppressWarnings("unused")
 	private int _unk1;

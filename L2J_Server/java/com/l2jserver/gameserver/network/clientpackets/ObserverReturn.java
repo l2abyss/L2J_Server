@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class ObserverReturn extends L2GameClientPacket
 {
 	private static final String __C__C1_OBSERVERRETURN = "[C] C1 ObserverReturn";
-	//private static Logger _log = Logger.getLogger(Action.class.getName());
 	
 	@Override
 	protected void readImpl()

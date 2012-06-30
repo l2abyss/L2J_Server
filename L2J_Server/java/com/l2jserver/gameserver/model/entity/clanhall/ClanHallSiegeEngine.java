@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
@@ -39,15 +40,16 @@ import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author BiggBoss
@@ -67,7 +69,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	
 	protected final Logger _log;
 	
-	private FastMap<Integer, L2SiegeClan> _attackers = new FastMap<Integer, L2SiegeClan>();
+	private FastMap<Integer, L2SiegeClan> _attackers = new FastMap<>();
 	private FastList<L2Spawn> _guards;
 
 	public SiegableHall _hall;
@@ -109,8 +111,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		}
 		catch(Exception e)
 		{
-			_log.warning(getName()+": Could not load siege attackers!:");
-			e.printStackTrace();
+			_log.warning(getName() + ": Could not load siege attackers!:");
 		}
 		finally
 		{
@@ -145,8 +146,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		}
 		catch(Exception e)
 		{
-			_log.warning(getName()+": Couldnt save attacker list!");
-			e.printStackTrace();
+			_log.warning(getName() + ": Couldnt save attacker list!");
 		}
 		finally
 		{
@@ -158,8 +158,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	{
 		if(_guards == null)
 		{
-			_guards = new FastList<L2Spawn>();
-		
+			_guards = new FastList<>();
 			Connection con = null;
 			try
 			{
@@ -185,8 +184,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			}
 			catch(Exception e)
 			{
-				_log.warning(getName()+": Couldnt load siege guards!:");
-				e.printStackTrace();
+				_log.warning(getName() + ": Couldnt load siege guards!:");
 			}
 			finally
 			{
@@ -266,7 +264,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	@Override
 	public List<L2SiegeClan> getAttackerClans()
 	{
-		FastList<L2SiegeClan> result = new FastList<L2SiegeClan>();
+		FastList<L2SiegeClan> result = new FastList<>();
 		result.addAll(_attackers.values());
 		return result;
 	}
@@ -274,8 +272,8 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
-		final FastList<L2PcInstance> list = _hall.getSiegeZone().getAllPlayers();
-		FastList<L2PcInstance> attackers = new FastList<L2PcInstance>();
+		final Collection<L2PcInstance> list = _hall.getSiegeZone().getPlayersInside();
+		List<L2PcInstance> attackers = new FastList<>();
 		
 		for(L2PcInstance pc : list)
 		{
@@ -381,7 +379,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		if(_missionAccomplished && winner != null)
 		{
 			_hall.setOwner(winner);
-			winner.setHasHideout(_hall.getId());
+			winner.setHideoutId(_hall.getId());
 			finalMsg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_VICTORIOUS_OVER_S2_S_SIEGE);
 			finalMsg.addString(winner.getName());
 			finalMsg.addString(_hall.getName());
@@ -415,10 +413,14 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			}
 		}
 		
-		// Update pvp flag for winners when siege zone becomes unactive
-		for(Object obj : _hall.getSiegeZone().getCharactersInside().values())
-			if(obj != null && obj instanceof L2PcInstance)
-				((L2PcInstance)obj).startPvPFlag();
+		// Update pvp flag for winners when siege zone becomes inactive
+		for(L2Character chr : _hall.getSiegeZone().getCharactersInside())
+		{
+			if((chr != null) && chr.isPlayer())
+			{
+				chr.getActingPlayer().startPvPFlag();
+			}
+		}
 		
 		getAttackers().clear();
 		
@@ -476,11 +478,11 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	public final void broadcastNpcSay(final L2Npc npc, final int type, final int messageId)
 	{
 		final NpcSay npcSay = new NpcSay(npc.getObjectId(), type, npc.getNpcId(), NpcStringId.getNpcStringId(messageId));
-		int sourceRegion = MapRegionManager.getInstance().getMapRegion(npc.getX(), npc.getY()).getLocId();
+		int sourceRegion = MapRegionManager.getInstance().getMapRegionLocId(npc);
 		final L2PcInstance[] charsInside = L2World.getInstance().getAllPlayersArray();
 		
 		for(L2PcInstance pc : charsInside)
-			if(pc != null && MapRegionManager.getInstance().getMapRegion(pc.getX(), pc.getY()).getLocId() == sourceRegion)
+			if(pc != null && MapRegionManager.getInstance().getMapRegionLocId(pc) == sourceRegion)
 				pc.sendPacket(npcSay);
 	}
 	

@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author Migi, DS
@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 public class ExReplyPostItemList extends L2GameServerPacket
 {
 	L2PcInstance _activeChar;
-	private L2ItemInstance[] _itemList;
+	private final L2ItemInstance[] _itemList;
 	
 	public ExReplyPostItemList(L2PcInstance activeChar)
 	{
@@ -42,7 +42,7 @@ public class ExReplyPostItemList extends L2GameServerPacket
 		for (L2ItemInstance item : _itemList)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItemId());
+			writeD(item.getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

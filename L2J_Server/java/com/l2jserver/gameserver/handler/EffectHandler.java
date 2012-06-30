@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.gameserver.model.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 
 /**
@@ -28,17 +28,12 @@ import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
  */
 public final class EffectHandler
 {
-	private static final class SingletonHolder
-	{
-		private static final EffectHandler _instance = new EffectHandler();
-	}
-	
 	private static final Logger _log = Logger.getLogger(EffectHandler.class.getName());
 	private final FastMap<Integer, Class<? extends L2Effect>> _handlers;
 	
-	private EffectHandler()
+	protected EffectHandler()
 	{
-		_handlers = new FastMap<Integer, Class<? extends L2Effect>>();
+		_handlers = new FastMap<>();
 	}
 	
 	public void registerHandler(String name, Class<? extends L2Effect> func)
@@ -67,7 +62,11 @@ public final class EffectHandler
 		{
 			_log.log(Level.WARNING, "Problems while running EffectMansterHandler", e);
 		}
-		_log.config("Loaded " + size() + " Effect handlers");
+	}
+	
+	private static final class SingletonHolder
+	{
+		protected static final EffectHandler _instance = new EffectHandler();
 	}
 	
 	public static EffectHandler getInstance()

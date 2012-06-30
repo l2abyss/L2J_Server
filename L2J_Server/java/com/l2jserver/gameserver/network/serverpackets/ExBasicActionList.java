@@ -45,10 +45,10 @@ public final class ExBasicActionList extends L2GameServerPacket
 			_defaultActionList[count1 + count2 + i] = 5000 + i;
 	}
 	
-	private final static ExBasicActionList STATIC_PACKET_TRANSFORMED = new ExBasicActionList(_actionsOnTransform);
-	private final static ExBasicActionList STATIC_PACKET = new ExBasicActionList(_defaultActionList);
+	private static final ExBasicActionList STATIC_PACKET_TRANSFORMED = new ExBasicActionList(_actionsOnTransform);
+	private static final ExBasicActionList STATIC_PACKET = new ExBasicActionList(_defaultActionList);
 	
-	public final static ExBasicActionList getStaticPacket(final L2PcInstance player)
+	public static final ExBasicActionList getStaticPacket(final L2PcInstance player)
 	{
 		return player.isTransformed() ? STATIC_PACKET_TRANSFORMED : STATIC_PACKET;
 	}

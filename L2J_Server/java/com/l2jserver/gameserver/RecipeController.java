@@ -14,38 +14,27 @@
  */
 package com.l2jserver.gameserver;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import javolution.util.FastList;
 import javolution.util.FastMap;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2RecipeInstance;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.L2RecipeStatInstance;
-import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.TempItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
@@ -56,98 +45,39 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeShopItemInfo;
 import com.l2jserver.gameserver.network.serverpackets.SetupGauge;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 public class RecipeController
 {
-	protected static final Logger _log = Logger.getLogger(RecipeController.class.getName());
+	protected static final FastMap<Integer, RecipeItemMaker> _activeMakers = new FastMap<>();
 	
-	private static final Map<Integer, L2RecipeList> _lists = new FastMap<Integer, L2RecipeList>();
-	private static final Map<Integer, RecipeItemMaker> _activeMakers = new FastMap<Integer, RecipeItemMaker>().shared();
-	private static final String RECIPES_FILE = "recipes.xml";
-	
-	public static RecipeController getInstance()
+	protected RecipeController()
 	{
-		return SingletonHolder._instance;
+		_activeMakers.shared();
 	}
 	
-	private RecipeController()
+	public void requestBookOpen(L2PcInstance player, boolean isDwarvenCraft)
 	{
-		try
-		{
-			loadFromXML();
-			_log.info("RecipeController: Loaded " + _lists.size() + " recipes.");
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Failed loading recipe list", e);
-		}
-	}
-	
-	public int getRecipesCount()
-	{
-		return _lists.size();
-	}
-	
-	public L2RecipeList getRecipeList(int listId)
-	{
-		return _lists.get(listId);
-	}
-	
-	public L2RecipeList getRecipeByItemId(int itemId)
-	{
-		for (L2RecipeList find : _lists.values())
-		{
-			if (find.getRecipeId() == itemId)
-			{
-				return find;
-			}
-		}
-		return null;
-	}
-	
-	public int[] getAllItemIds()
-	{
-		int[] idList = new int[_lists.size()];
-		int i = 0;
-		for (L2RecipeList rec : _lists.values())
-		{
-			idList[i++] = rec.getRecipeId();
-		}
-		return idList;
-	}
-	
-	public synchronized void requestBookOpen(L2PcInstance player, boolean isDwarvenCraft)
-	{
-		RecipeItemMaker maker = null;
-		if (Config.ALT_GAME_CREATION)
-		{
-			maker = _activeMakers.get(player.getObjectId());
-		}
-		
-		if (maker == null)
+		// Check if player is trying to alter recipe book while engaged in manufacturing.
+		if (!_activeMakers.containsKey(player.getObjectId()))
 		{
 			RecipeBookItemList response = new RecipeBookItemList(isDwarvenCraft, player.getMaxMp());
 			response.addRecipes(isDwarvenCraft ? player.getDwarvenRecipeBook() : player.getCommonRecipeBook());
 			player.sendPacket(response);
 			return;
 		}
-		
 		player.sendPacket(SystemMessageId.CANT_ALTER_RECIPEBOOK_WHILE_CRAFTING);
 	}
 	
-	public synchronized void requestMakeItemAbort(L2PcInstance player)
+	public void requestMakeItemAbort(L2PcInstance player)
 	{
 		_activeMakers.remove(player.getObjectId()); // TODO: anything else here?
 	}
 	
-	public synchronized void requestManufactureItem(L2PcInstance manufacturer, int recipeListId, L2PcInstance player)
+	public void requestManufactureItem(L2PcInstance manufacturer, int recipeListId, L2PcInstance player)
 	{
-		L2RecipeList recipeList = getValidRecipeList(player, recipeListId);
-		
+		final L2RecipeList recipeList = RecipeData.getInstance().getValidRecipeList(player, recipeListId);
 		if (recipeList == null)
 		{
 			return;
@@ -162,15 +92,14 @@ public class RecipeController
 			return;
 		}
 		
-		RecipeItemMaker maker;
-		
-		if (Config.ALT_GAME_CREATION && ((maker = _activeMakers.get(manufacturer.getObjectId())) != null)) // check if busy
+		// Check if manufacturer is under manufacturing store or private store.
+		if (Config.ALT_GAME_CREATION && (_activeMakers.containsKey(manufacturer.getObjectId()) || manufacturer.isInStoreMode()))
 		{
-			player.sendMessage("Manufacturer is busy, please try later.");
+			player.sendPacket(SystemMessageId.CLOSE_STORE_WINDOW_AND_TRY_AGAIN);
 			return;
 		}
 		
-		maker = new RecipeItemMaker(manufacturer, recipeList, player);
+		final RecipeItemMaker maker = new RecipeItemMaker(manufacturer, recipeList, player);
 		if (maker._isValid)
 		{
 			if (Config.ALT_GAME_CREATION)
@@ -185,16 +114,16 @@ public class RecipeController
 		}
 	}
 	
-	public synchronized void requestMakeItem(L2PcInstance player, int recipeListId)
+	public void requestMakeItem(L2PcInstance player, int recipeListId)
 	{
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
+		// Check if player is trying to operate a private store or private workshop while engaged in combat.
+		if (player.isInCombat() || player.isInDuel())
 		{
 			player.sendPacket(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT);
 			return;
 		}
 		
-		L2RecipeList recipeList = getValidRecipeList(player, recipeListId);
-		
+		final L2RecipeList recipeList = RecipeData.getInstance().getValidRecipeList(player, recipeListId);
 		if (recipeList == null)
 		{
 			return;
@@ -209,19 +138,17 @@ public class RecipeController
 			return;
 		}
 		
-		RecipeItemMaker maker;
-		
-		// check if already busy (possible in alt mode only)
-		if (Config.ALT_GAME_CREATION && ((maker = _activeMakers.get(player.getObjectId())) != null))
+		// Check if player is busy (possible if alt game creation is enabled)
+		if (Config.ALT_GAME_CREATION && _activeMakers.containsKey(player.getObjectId()))
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1);
 			sm.addItemName(recipeList.getItemId());
-			sm.addString("You are busy creating");
+			sm.addString("You are busy creating.");
 			player.sendPacket(sm);
 			return;
 		}
 		
-		maker = new RecipeItemMaker(player, recipeList, player);
+		final RecipeItemMaker maker = new RecipeItemMaker(player, recipeList, player);
 		if (maker._isValid)
 		{
 			if (Config.ALT_GAME_CREATION)
@@ -236,163 +163,9 @@ public class RecipeController
 		}
 	}
 	
-	private void loadFromXML() throws SAXException, IOException, ParserConfigurationException
-	{
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setValidating(false);
-		factory.setIgnoringComments(true);
-		File file = new File(Config.DATAPACK_ROOT + "/data/" + RECIPES_FILE);
-		if (file.exists())
-		{
-			Document doc = factory.newDocumentBuilder().parse(file);
-			List<L2RecipeInstance> recipePartList = new FastList<L2RecipeInstance>();
-			List<L2RecipeStatInstance> recipeStatUseList = new FastList<L2RecipeStatInstance>();
-			List<L2RecipeStatInstance> recipeAltStatChangeList = new FastList<L2RecipeStatInstance>();
-			
-			for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
-			{
-				if ("list".equalsIgnoreCase(n.getNodeName()))
-				{
-					recipesFile: for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
-					{
-						if ("item".equalsIgnoreCase(d.getNodeName()))
-						{
-							recipePartList.clear();
-							recipeStatUseList.clear();
-							recipeAltStatChangeList.clear();
-							NamedNodeMap attrs = d.getAttributes();
-							Node att;
-							int id = -1;
-							boolean haveRare = false;
-							StatsSet set = new StatsSet();
-							
-							att = attrs.getNamedItem("id");
-							if (att == null)
-							{
-								_log.severe("Missing id for recipe item, skipping");
-								continue;
-							}
-							id = Integer.parseInt(att.getNodeValue());
-							set.set("id", id);
-							
-							att = attrs.getNamedItem("recipeId");
-							if (att == null)
-							{
-								_log.severe("Missing recipeId for recipe item id: " + id + ", skipping");
-								continue;
-							}
-							set.set("recipeId", Integer.parseInt(att.getNodeValue()));
-							
-							att = attrs.getNamedItem("name");
-							if (att == null)
-							{
-								_log.severe("Missing name for recipe item id: " + id + ", skipping");
-								continue;
-							}
-							set.set("recipeName", att.getNodeValue());
-							
-							att = attrs.getNamedItem("craftLevel");
-							if (att == null)
-							{
-								_log.severe("Missing level for recipe item id: " + id + ", skipping");
-								continue;
-							}
-							set.set("craftLevel", Integer.parseInt(att.getNodeValue()));
-							
-							att = attrs.getNamedItem("type");
-							if (att == null)
-							{
-								_log.severe("Missing type for recipe item id: " + id + ", skipping");
-								continue;
-							}
-							set.set("isDwarvenRecipe", att.getNodeValue().equalsIgnoreCase("dwarven"));
-							
-							att = attrs.getNamedItem("successRate");
-							if (att == null)
-							{
-								_log.severe("Missing successRate for recipe item id: " + id + ", skipping");
-								continue;
-							}
-							set.set("successRate", Integer.parseInt(att.getNodeValue()));
-							
-							for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
-							{
-								if ("statUse".equalsIgnoreCase(c.getNodeName()))
-								{
-									String statName = c.getAttributes().getNamedItem("name").getNodeValue();
-									int value = Integer.parseInt(c.getAttributes().getNamedItem("value").getNodeValue());
-									try
-									{
-										recipeStatUseList.add(new L2RecipeStatInstance(statName, value));
-									}
-									catch (Exception e)
-									{
-										_log.severe("Error in StatUse parameter for recipe item id: " + id + ", skipping");
-										continue recipesFile;
-									}
-								}
-								else if ("altStatChange".equalsIgnoreCase(c.getNodeName()))
-								{
-									String statName = c.getAttributes().getNamedItem("name").getNodeValue();
-									int value = Integer.parseInt(c.getAttributes().getNamedItem("value").getNodeValue());
-									try
-									{
-										recipeAltStatChangeList.add(new L2RecipeStatInstance(statName, value));
-									}
-									catch (Exception e)
-									{
-										_log.severe("Error in AltStatChange parameter for recipe item id: " + id + ", skipping");
-										continue recipesFile;
-									}
-								}
-								else if ("ingredient".equalsIgnoreCase(c.getNodeName()))
-								{
-									int ingId = Integer.parseInt(c.getAttributes().getNamedItem("id").getNodeValue());
-									int ingCount = Integer.parseInt(c.getAttributes().getNamedItem("count").getNodeValue());
-									recipePartList.add(new L2RecipeInstance(ingId, ingCount));
-								}
-								else if ("production".equalsIgnoreCase(c.getNodeName()))
-								{
-									set.set("itemId", Integer.parseInt(c.getAttributes().getNamedItem("id").getNodeValue()));
-									set.set("count", Integer.parseInt(c.getAttributes().getNamedItem("count").getNodeValue()));
-								}
-								else if ("productionRare".equalsIgnoreCase(c.getNodeName()))
-								{
-									set.set("rareItemId", Integer.parseInt(c.getAttributes().getNamedItem("id").getNodeValue()));
-									set.set("rareCount", Integer.parseInt(c.getAttributes().getNamedItem("count").getNodeValue()));
-									set.set("rarity", Integer.parseInt(c.getAttributes().getNamedItem("rarity").getNodeValue()));
-									haveRare = true;
-								}
-							}
-							
-							L2RecipeList recipeList = new L2RecipeList(set, haveRare);
-							for (L2RecipeInstance recipePart : recipePartList)
-							{
-								recipeList.addRecipe(recipePart);
-							}
-							for (L2RecipeStatInstance recipeStatUse : recipeStatUseList)
-							{
-								recipeList.addStatUse(recipeStatUse);
-							}
-							for (L2RecipeStatInstance recipeAltStatChange : recipeAltStatChangeList)
-							{
-								recipeList.addAltStatChange(recipeAltStatChange);
-							}
-							
-							_lists.put(id, recipeList);
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			_log.severe("Recipes file (" + file.getAbsolutePath() + ") doesnt exists.");
-		}
-	}
-	
 	private static class RecipeItemMaker implements Runnable
 	{
+		private static final Logger _log = Logger.getLogger(RecipeItemMaker.class.getName());
 		protected boolean _isValid;
 		protected List<TempItem> _items = null;
 		protected final L2RecipeList _recipeList;
@@ -542,7 +315,7 @@ public class RecipeController
 				return;
 			}
 			
-			if (Config.ALT_GAME_CREATION && (_activeMakers.get(_player.getObjectId()) == null))
+			if (Config.ALT_GAME_CREATION && !_activeMakers.containsKey(_player.getObjectId()))
 			{
 				if (_target != _player)
 				{
@@ -826,7 +599,7 @@ public class RecipeController
 		{
 			L2RecipeInstance[] recipes = _recipeList.getRecipes();
 			Inventory inv = _target.getInventory();
-			List<TempItem> materials = new FastList<TempItem>();
+			List<TempItem> materials = new ArrayList<>();
 			SystemMessage sm;
 			
 			for (L2RecipeInstance recipe : recipes)
@@ -991,31 +764,19 @@ public class RecipeController
 					_sp /= 4;
 				}
 				
-				// Added multiplication of Creation speed with XP/SP gain
-				// slower crafting -> more XP, faster crafting -> less XP
-				// you can use ALT_GAME_CREATION_XP_RATE/SP to
-				// modify XP/SP gained (default = 1)
-				
+				// Added multiplication of Creation speed with XP/SP gain slower crafting -> more XP,
+				// faster crafting -> less XP you can use ALT_GAME_CREATION_XP_RATE/SP to modify XP/SP gained (default = 1)
 				_player.addExpAndSp((int) _player.calcStat(Stats.EXPSP_RATE, _exp * Config.ALT_GAME_CREATION_XP_RATE * Config.ALT_GAME_CREATION_SPEED, null, null), (int) _player.calcStat(Stats.EXPSP_RATE, _sp * Config.ALT_GAME_CREATION_SP_RATE * Config.ALT_GAME_CREATION_SPEED, null, null));
 			}
 			updateMakeInfo(true); // success
 		}
 	}
 	
-	private L2RecipeList getValidRecipeList(L2PcInstance player, int id)
+	public static RecipeController getInstance()
 	{
-		L2RecipeList recipeList = getRecipeList(id);
-		
-		if ((recipeList == null) || (recipeList.getRecipes().length == 0))
-		{
-			player.sendMessage("No recipe for: " + id);
-			player.isInCraftMode(false);
-			return null;
-		}
-		return recipeList;
+		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final RecipeController _instance = new RecipeController();

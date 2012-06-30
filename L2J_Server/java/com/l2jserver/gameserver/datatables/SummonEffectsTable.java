@@ -18,8 +18,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * @author Nyaran
@@ -33,7 +33,7 @@ public class SummonEffectsTable
 	 * 		key: classIndex, value: servitors Map
 	 * 			key: servitorSkillId, value: Effects list
 	 */
-	private TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> _servitorEffects = new TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>>();
+	private TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> _servitorEffects = new TIntObjectHashMap<>();
 	
 	public TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> getServitorEffectsOwner()
 	{
@@ -51,7 +51,7 @@ public class SummonEffectsTable
 	}
 	
 	/** Pets **/
-	private TIntObjectHashMap<List<SummonEffect>> _petEffects = new TIntObjectHashMap<List<SummonEffect>>(); // key: petItemObjectId, value: Effects list
+	private TIntObjectHashMap<List<SummonEffect>> _petEffects = new TIntObjectHashMap<>(); // key: petItemObjectId, value: Effects list
 	
 	public TIntObjectHashMap<List<SummonEffect>> getPetEffects()
 	{
@@ -95,7 +95,6 @@ public class SummonEffectsTable
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SummonEffectsTable _instance = new SummonEffectsTable();

@@ -64,7 +64,7 @@ public final class NpcSay extends L2GameServerPacket
 	public NpcSay addStringParameter(String text)
 	{
 		if (_parameters == null)
-			_parameters = new ArrayList<String>();
+			_parameters = new ArrayList<>();
 		_parameters.add(text);
 		return this;
 	}

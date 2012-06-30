@@ -109,9 +109,6 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 							case 0x36:
 								msg = new RequestGotoLobby();
 								break;
-							case 0x5a:
-								msg = new RequestExCubeGameChangeTeam();
-								break;
 							case 0x93:
 								msg = new RequestEx2ndPasswordCheck();
 								break;
@@ -342,7 +339,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								// SendL2ParamSetting
 								break;
 							default:
-								this.printDebugDoubleOpcode(opcode, id_2, buf, state, client);
+								printDebugDoubleOpcode(opcode, id_2, buf, state, client);
 								break;
 						}
 						break;
@@ -646,11 +643,11 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xc2:
 						// Unused (RequestEvaluate/VoteSociality)
 						break;
-					case 0xc3: // RequestHennaItemList
-						msg = new RequestHennaDrawList();
+					case 0xc3:
+						msg = new RequestHennaItemList();
 						break;
 					case 0xc4:
-						msg = new RequestHennaItemDrawInfo();
+						msg = new RequestHennaItemInfo();
 						break;
 					case 0xc5:
 						msg = new RequestBuySeed();
@@ -712,6 +709,23 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								break;
 							case 0x05:
 								msg = new RequestWriteHeroWords();
+								break;
+							case 0x5F:
+								/**
+								 * Server Packets:
+								 * 	ExMpccRoomInfo FE:9B
+									ExListMpccWaiting FE:9C
+									ExDissmissMpccRoom FE:9D
+									ExManageMpccRoomMember FE:9E
+									ExMpccRoomMember FE:9F
+								 */
+								//TODO: RequestJoinMpccRoom chdd
+								break;
+							case 0x5E:
+								// TODO: RequestManageMpccRoom chdddddS
+								break;
+							case 0x5D:
+								// TODO: RequestListMpccWaiting chddd
 								break;
 							case 0x06:
 								msg = new RequestExAskJoinMPCC();
@@ -961,7 +975,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 										// RequestChangeBookMarkSlot
 										break;
 									default:
-										this.printDebugDoubleOpcode(opcode, id3, buf, state, client);
+										printDebugDoubleOpcode(opcode, id3, buf, state, client);
 										break;
 								}
 								break;
@@ -1121,25 +1135,13 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 							case 0x92:
 								// RequestUseGoodsInventoryItem 
 								break;
-							case 0x93:
-								// RequestEx2ndPasswordCheck 
-								break;
-							case 0x94:
-								// RequestEx2ndPasswordVerify  
-								break;
-							case 0x95:
-								// RequestEx2ndPasswordReq 
-								break;
 							default:
-								this.printDebugDoubleOpcode(opcode, id2, buf, state, client);
+								printDebugDoubleOpcode(opcode, id2, buf, state, client);
 								break;
 						}
 						break;
-						/*case 0xee:
-						msg = new RequestChangePartyLeader(data, _client);
-						break;*/
 					default:
-						this.printDebug(opcode, buf, state, client);
+						printDebug(opcode, buf, state, client);
 						break;
 				}
 				break;

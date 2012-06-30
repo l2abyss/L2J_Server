@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * Sdh(h dddhh [dhhh] d)
@@ -57,7 +57,7 @@ public class GMViewWarehouseWithdrawList extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItemId());
+			writeD(item.getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

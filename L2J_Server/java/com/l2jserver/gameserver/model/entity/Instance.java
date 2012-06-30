@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javolution.util.FastList;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
@@ -28,25 +29,25 @@ import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2DoorTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-
 
 /**
  * @author evill33t, GodKratos
- * 
  */
 public class Instance
 {
-	private final static Logger _log = Logger.getLogger(Instance.class.getName());
+	private static final Logger _log = Logger.getLogger(Instance.class.getName());
 	
 	private int _id;
 	private String _name;
@@ -225,13 +226,13 @@ public class Instance
 	
 	/**
 	 * Adds a door into the instance
-	 * @param doorId - from doors.csv
-	 * @param open - initial state of the door
+	 * @param doorId - from doorData.xml
+	 * @param set - statset for initializing door
 	 */
-	private void addDoor(int doorId, boolean open)
+	private void addDoor(int doorId, StatsSet set)
 	{
 		if (_doors == null)
-			_doors = new ArrayList<L2DoorInstance>(2);
+			_doors = new ArrayList<>(2);
 		
 		for (L2DoorInstance door: _doors)
 		{
@@ -242,25 +243,11 @@ public class Instance
 			}
 		}
 		
-		L2DoorInstance temp = DoorTable.getInstance().getDoor(doorId);
-		L2DoorInstance newdoor = new L2DoorInstance(IdFactory.getInstance().getNextId(), temp.getTemplate(), temp.getDoorId(), temp.getName(), temp.isUnlockable());
+		L2DoorTemplate temp = DoorTable.getInstance().getDoorTemplate(doorId);
+		L2DoorInstance newdoor = new L2DoorInstance(IdFactory.getInstance().getNextId(), temp, set);
 		newdoor.setInstanceId(getId());
-		newdoor.setRange(temp.getXMin(), temp.getYMin(), temp.getZMin(), temp.getXMax(), temp.getYMax(), temp.getZMax());
-		try
-		{
-			newdoor.setMapRegion(MapRegionManager.getInstance().getMapRegionLocId(temp));
-		}
-		catch (Exception e)
-		{
-			_log.severe("Error in door data, ID:" + temp.getDoorId());
-		}
-		newdoor.getStatus().setCurrentHpMp(newdoor.getMaxHp(), newdoor.getMaxMp());
-		newdoor.setOpen(open);
-		newdoor.getPosition().setXYZInvisible(temp.getX(), temp.getY(), temp.getZ());
-		newdoor.spawnMe(newdoor.getX(), newdoor.getY(), newdoor.getZ());
-		newdoor.setEmitter(temp.getEmitter());
-		newdoor.setTargetable(temp.getTargetable());
-		newdoor.setMeshIndex(temp.getMeshIndex());
+		newdoor.setCurrentHp(newdoor.getMaxHp());
+		newdoor.spawnMe(temp.posX, temp.posY, temp.posZ);
 		_doors.add(newdoor);
 	}
 	
@@ -473,13 +460,21 @@ public class Instance
 				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
 					int doorId = 0;
-					boolean doorState = false;
 					if ("door".equalsIgnoreCase(d.getNodeName()))
 					{
 						doorId = Integer.parseInt(d.getAttributes().getNamedItem("doorId").getNodeValue());
-						if (d.getAttributes().getNamedItem("open") != null)
-							doorState = Boolean.parseBoolean(d.getAttributes().getNamedItem("open").getNodeValue());
-						addDoor(doorId, doorState);
+						StatsSet set = new StatsSet();
+						for (Node bean = d.getFirstChild(); bean != null; bean = bean.getNextSibling())
+						{
+							if ("set".equalsIgnoreCase(bean.getNodeName()))
+							{
+								NamedNodeMap attrs = bean.getAttributes();
+								String setname = attrs.getNamedItem("name").getNodeValue();
+								String value = attrs.getNamedItem("val").getNodeValue();
+								set.set(setname, value);
+							}
+						}
+						addDoor(doorId, set);
 					}
 				}
 			}

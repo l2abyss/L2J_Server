@@ -29,14 +29,15 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager.ArenaParticipantsHolder;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2BlockInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
@@ -46,7 +47,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExCubeGameEnd;
 import com.l2jserver.gameserver.network.serverpackets.ExCubeGameExtendedChangePoints;
 import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -54,26 +54,26 @@ import com.l2jserver.util.Rnd;
  */
 public final class BlockCheckerEngine
 {
-	private static final Logger _log = Logger.getLogger(BlockCheckerEngine.class.getName());
+	protected static final Logger _log = Logger.getLogger(BlockCheckerEngine.class.getName());
 	// The object which holds all basic members info
-	private HandysBlockCheckerManager.ArenaParticipantsHolder _holder;
+	protected HandysBlockCheckerManager.ArenaParticipantsHolder _holder;
 	// Maps to hold player of each team and his points
-	private FastMap<L2PcInstance, Integer> _redTeamPoints = new FastMap<L2PcInstance, Integer>();
-	private FastMap<L2PcInstance, Integer> _blueTeamPoints = new FastMap<L2PcInstance, Integer>();
+	protected FastMap<L2PcInstance, Integer> _redTeamPoints = new FastMap<>();
+	protected FastMap<L2PcInstance, Integer> _blueTeamPoints = new FastMap<>();
 	// The initial points of the event
-	private int _redPoints = 15;
-	private int _bluePoints = 15;
+	protected int _redPoints = 15;
+	protected int _bluePoints = 15;
 	// Current used arena
-	private int _arena = -1;
+	protected int _arena = -1;
 	// All blocks
-	private FastList<L2Spawn> _spawns = new FastList<L2Spawn>();
+	protected FastList<L2Spawn> _spawns = new FastList<>();
 	// Sets if the red team won the event at the end of this (used for packets)
-	private boolean _isRedWinner;
+	protected boolean _isRedWinner;
 	// Time when the event starts. Used on packet sending
-	private long _startedTime;
+	protected long _startedTime;
 	// The needed arena coordinates
 	// Arena X: team1X, team1Y, team2X, team2Y, ArenaCenterX, ArenaCenterY
-	private static final int[][] _arenaCoordinates =
+	protected static final int[][] _arenaCoordinates =
 	{
 		// Arena 0 - Team 1 XY, Team 2 XY - CENTER XY
 		{ -58368, -62745, -57751, -62131, -58053, -62417 },
@@ -87,15 +87,15 @@ public final class BlockCheckerEngine
 	// Common z coordinate
 	private static final int _zCoord = -2405;
 	// List of dropped items in event (for later deletion)
-	private FastList<L2ItemInstance> _drops = new FastList<L2ItemInstance>();
+	protected FastList<L2ItemInstance> _drops = new FastList<>();
 	// Default arena
 	private static final byte DEFAULT_ARENA = -1;
 	// Event is started
-	private boolean _isStarted = false;
+	protected boolean _isStarted = false;
 	// Event end
-	private ScheduledFuture<?> _task;
+	protected ScheduledFuture<?> _task;
 	// Preserve from exploit reward by logging out
-	private boolean _abnormalEnd = false;
+	protected boolean _abnormalEnd = false;
 	
 	public BlockCheckerEngine(HandysBlockCheckerManager.ArenaParticipantsHolder holder, int arena)
 	{
@@ -229,7 +229,7 @@ public final class BlockCheckerEngine
 	}
 	
 	/**
-	 * Will return true if the event is alredy
+	 * Will return true if the event is already
 	 * started
 	 * @return boolean
 	 */
@@ -243,7 +243,7 @@ public final class BlockCheckerEngine
 	 * the relation info
 	 * @param plr 
 	 */
-	private void broadcastRelationChanged(L2PcInstance plr)
+	protected void broadcastRelationChanged(L2PcInstance plr)
 	{
 		for(L2PcInstance p : _holder.getAllPlayers())
 		{
@@ -354,7 +354,7 @@ public final class BlockCheckerEngine
 				// Give the player start up effects
 				// Freeze
 				_freeze.getEffects(player, player);
-				// Tranformation
+				// Transformation
 				if(_holder.getPlayerTeam(player) == 0)
 					_transformationRed.getEffects(player, player);
 				else
@@ -458,7 +458,7 @@ public final class BlockCheckerEngine
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			}
 			
 			// Spawn the block carrying girl
@@ -482,8 +482,7 @@ public final class BlockCheckerEngine
 				catch(Exception e) 
 				{
 					_log.warning("Couldnt Spawn Block Checker NPCs! Wrong instance type at npc table?");
-					if(Config.DEBUG) 
-						e.printStackTrace(); 
+					_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 				}
 			}
 			
@@ -500,7 +499,7 @@ public final class BlockCheckerEngine
 	{
 		private L2Spawn _spawn;
 		
-		private CarryingGirlUnspawn(L2Spawn spawn)
+		protected CarryingGirlUnspawn(L2Spawn spawn)
 		{
 			_spawn = spawn;
 		}
@@ -537,7 +536,7 @@ public final class BlockCheckerEngine
 	 * blocks, runs a garbage collector and set as free
 	 * the used arena
 	 */
-	private class EndEvent implements Runnable
+	protected class EndEvent implements Runnable
 	{		
 		// Garbage collector and arena free setter
 		private void clearMe()

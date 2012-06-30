@@ -44,16 +44,14 @@ public class AnswerCoupleAction extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		L2PcInstance activeChar = getActiveChar();
 		L2PcInstance target = L2World.getInstance().getPlayer(_charObjId);
 		if(activeChar == null || target == null)
 			return;
-		if (target.getMultiSocialTarget() != activeChar.getObjectId()
-				|| target.getMultiSociaAction() != _actionId)
+		if (target.getMultiSocialTarget() != activeChar.getObjectId() || target.getMultiSociaAction() != _actionId)
 			return;
 		if (_answer == 0) // cancel
 		{
-			target.setMultiSocialAction(0, 0);
 			target.sendPacket(SystemMessageId.COUPLE_ACTION_DENIED);
 		}
 		else if (_answer == 1) // approve
@@ -80,6 +78,7 @@ public class AnswerCoupleAction extends L2GameClientPacket
 			sm.addPcName(activeChar);
 			target.sendPacket(sm);
 		}
+		target.setMultiSocialAction(0, 0);
 	}
 	
 	@Override

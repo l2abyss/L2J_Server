@@ -20,9 +20,9 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Armor;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.L2Armor;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 public class PreparedListContainer extends ListContainer
 {
@@ -38,9 +38,7 @@ public class PreparedListContainer extends ListContainer
 		if (npc != null)
 		{
 			_npcObjectId = npc.getObjectId();
-			if (template.getApplyTaxes()
-					&& npc.getIsInTown()
-					&& npc.getCastle().getOwnerId() > 0)
+			if (template.getApplyTaxes() && npc.getIsInTown() && (npc.getCastle().getOwnerId() > 0))
 			{
 				_applyTaxes = true;
 				taxRate = npc.getCastle().getTaxRate();
@@ -50,22 +48,27 @@ public class PreparedListContainer extends ListContainer
 		if (inventoryOnly)
 		{
 			if (player == null)
+			{
 				return;
+			}
 			
 			final L2ItemInstance[] items;
 			if (_maintainEnchantment)
+			{
 				items = player.getInventory().getUniqueItemsByEnchantLevel(false, false, false);
+			}
 			else
+			{
 				items = player.getInventory().getUniqueItems(false, false, false);
+			}
 			
 			// size is not known - using FastList
-			_entries = new FastList<Entry>();
+			_entries = new FastList<>();
 			for (L2ItemInstance item : items)
 			{
-				// only do the matchup on equipable items that are not currently equipped
+				// only do the match up on equippable items that are not currently equipped
 				// so for each appropriate item, produce a set of entries for the multisell list.
-				if (!item.isEquipped()
-						&& ((item.getItem() instanceof L2Armor) || (item.getItem() instanceof L2Weapon)))
+				if (!item.isEquipped() && ((item.getItem() instanceof L2Armor) || (item.getItem() instanceof L2Weapon)))
 				{
 					// loop through the entries to see which ones we wish to include
 					for (Entry ent : template.getEntries())
@@ -85,9 +88,11 @@ public class PreparedListContainer extends ListContainer
 		}
 		else
 		{
-			_entries = new ArrayList<Entry>(template.getEntries().size());
+			_entries = new ArrayList<>(template.getEntries().size());
 			for (Entry ent : template.getEntries())
+			{
 				_entries.add(new PreparedEntry(ent, null, _applyTaxes, false, taxRate));
+			}
 		}
 	}
 	

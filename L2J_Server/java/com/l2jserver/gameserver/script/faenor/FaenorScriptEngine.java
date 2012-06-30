@@ -15,14 +15,11 @@
 package com.l2jserver.gameserver.script.faenor;
 
 import java.io.File;
-import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
 
 import javax.script.ScriptContext;
 
@@ -33,150 +30,35 @@ import com.l2jserver.gameserver.script.Parser;
 import com.l2jserver.gameserver.script.ParserNotCreatedException;
 import com.l2jserver.gameserver.script.ScriptDocument;
 import com.l2jserver.gameserver.script.ScriptEngine;
-import com.l2jserver.gameserver.script.ScriptPackage;
-import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
+import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
  * @author Luis Arias
- *
  */
 public class FaenorScriptEngine extends ScriptEngine
 {
-	static Logger _log = Logger.getLogger(FaenorScriptEngine.class.getName());
-	public final static String PACKAGE_DIRECTORY = "data/faenor/";
-	public final static boolean DEBUG = true;
+	private static final Logger _log = Logger.getLogger(FaenorScriptEngine.class.getName());
+	public static final String PACKAGE_DIRECTORY = "data/faenor/";
 	
-	private LinkedList<ScriptDocument> _scripts;
-	
-	public static FaenorScriptEngine getInstance()
+	protected FaenorScriptEngine()
 	{
-		return SingletonHolder._instance;
-	}
-	
-	private FaenorScriptEngine()
-	{
-		_scripts = new LinkedList<ScriptDocument>();
-		loadPackages();
-		parsePackages();
-		
-	}
-	
-	public void reloadPackages()
-	{
-		_scripts = new LinkedList<ScriptDocument>();
-		parsePackages();
-	}
-	
-	private void loadPackages()
-	{
-		File packDirectory = new File(Config.DATAPACK_ROOT, PACKAGE_DIRECTORY);//_log.sss(packDirectory.getAbsolutePath());
-		
-		FileFilter fileFilter = new FileFilter() {
-			@Override
-			public boolean accept(File file)
-			{
-				return file.getName().endsWith(".zip");
-			}
-		};
-		
-		File[] files = packDirectory.listFiles(fileFilter);
-		if (files == null)
-			return;
-		ZipFile zipPack;
-		
+		final File packDirectory = new File(Config.DATAPACK_ROOT, PACKAGE_DIRECTORY);
+		final File[] files = packDirectory.listFiles(new XMLFilter());
 		for (File file : files)
 		{
-			try
+			try (InputStream in = new FileInputStream(file))
 			{
-				zipPack = new ZipFile(file);
-			}
-			catch (ZipException e)
-			{
-				_log.log(Level.WARNING, "", e);
-				continue;
+				parseScript(new ScriptDocument(file.getName(), in), null);
 			}
 			catch (IOException e)
 			{
-				_log.log(Level.WARNING, "", e);
-				continue;
+				_log.log(Level.WARNING, e.getMessage(), e);
 			}
-			
-			ScriptPackage module = new ScriptPackage(zipPack);
-			
-			List<ScriptDocument> scrpts = module.getScriptFiles();
-			for (ScriptDocument script : scrpts)
-			{
-				_scripts.add(script);
-			}
-			try
-			{
-				zipPack.close();
-			}
-			catch (IOException e)
-			{
-			}
-		}
-		/*for (ScriptDocument script : scripts)
-		 {
-		 _log.sss("Script: "+script);
-		 }
-		 _log.sss("Sorting");
-		 orderScripts();
-		 for (ScriptDocument script : scripts)
-		 {
-		 _log.sss("Script: "+script);
-		 }*/
-	}
-	
-	public void orderScripts()
-	{
-		if (_scripts.size() > 1)
-		{
-			//ScriptDocument npcInfo = null;
-			
-			for (int i = 0; i < _scripts.size();)
-			{
-				if (_scripts.get(i).getName().contains("NpcStatData"))
-				{
-					_scripts.addFirst(_scripts.remove(i));
-					//scripts.set(i, scripts.get(0));
-					//scripts.set(0, npcInfo);
-				}
-				else
-				{
-					i++;
-				}
-			}
-		}
-	}
-	
-	public void parsePackages()
-	{
-		L2ScriptEngineManager sem = L2ScriptEngineManager.getInstance();
-		ScriptContext context = sem.getScriptContext("beanshell");
-		try
-		{
-			sem.eval("beanshell", "double log1p(double d) { return Math.log1p(d); }");
-			sem.eval("beanshell", "double pow(double d, double p) { return Math.pow(d,p); }");
-			
-			for (ScriptDocument script : _scripts)
-			{
-				parseScript(script, context);
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "", e);
 		}
 	}
 	
 	public void parseScript(ScriptDocument script, ScriptContext context)
 	{
-		if (DEBUG)
-		{
-			_log.fine("Parsing Script: " + script.getName());
-		}
-		
 		Node node = script.getDocument().getFirstChild();
 		String parserClass = "faenor.Faenor" + node.getNodeName() + "Parser";
 		
@@ -199,7 +81,7 @@ public class FaenorScriptEngine extends ScriptEngine
 		try
 		{
 			parser.parseScript(node, context);
-			_log.fine(script.getName() + "Script Sucessfullty Parsed.");
+			_log.info(getClass().getSimpleName() + ": Loaded  " + script.getName() + " successfully.");
 		}
 		catch (Exception e)
 		{
@@ -207,23 +89,11 @@ public class FaenorScriptEngine extends ScriptEngine
 		}
 	}
 	
-	@Override
-	public String toString()
+	public static FaenorScriptEngine getInstance()
 	{
-		if (_scripts.isEmpty())
-			return "No Packages Loaded.";
-		
-		StringBuilder out = new StringBuilder();
-		out.append("Script Packages currently loaded:\n");
-		
-		for (ScriptDocument script : _scripts)
-		{
-			out.append(script);
-		}
-		return out.toString();
+		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FaenorScriptEngine _instance = new FaenorScriptEngine();

@@ -28,12 +28,12 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.model.ClanWarehouse;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.util.Rnd;
@@ -43,7 +43,6 @@ import com.l2jserver.util.Rnd;
  * Handles all schedule for manor
  * @author l3x
  */
-
 public class CastleManorManager
 {
 	protected static final Logger _log = Logger.getLogger(CastleManorManager.class.getName());
@@ -181,9 +180,8 @@ public class CastleManorManager
 		}
 	}
 	
-	private CastleManorManager()
+	protected CastleManorManager()
 	{
-		_log.info("Initializing CastleManorManager");
 		load(); // load data from database
 		init(); // schedule all manor related events
 		_underMaintenance = false;
@@ -213,10 +211,10 @@ public class CastleManorManager
 			PreparedStatement statementProcure = con.prepareStatement(CASTLE_MANOR_LOAD_PROCURE);
 			for (Castle castle : CastleManager.getInstance().getCastles())
 			{
-				FastList<SeedProduction> production = new FastList<SeedProduction>();
-				FastList<SeedProduction> productionNext = new FastList<SeedProduction>();
-				FastList<CropProcure> procure = new FastList<CropProcure>();
-				FastList<CropProcure> procureNext = new FastList<CropProcure>();
+				FastList<SeedProduction> production = new FastList<>();
+				FastList<SeedProduction> productionNext = new FastList<>();
+				FastList<CropProcure> procure = new FastList<>();
+				FastList<CropProcure> procureNext = new FastList<>();
 				
 				// restore seed production info
 				statementProduction.setInt(1, castle.getCastleId());
@@ -441,7 +439,7 @@ public class CastleManorManager
 			}
 			else
 			{
-				FastList<SeedProduction> production = new FastList<SeedProduction>();
+				FastList<SeedProduction> production = new FastList<>();
 				for (SeedProduction s : c.getSeedProduction(PERIOD_CURRENT))
 				{
 					s.setCanProduce(s.getStartProduce());
@@ -449,7 +447,7 @@ public class CastleManorManager
 				}
 				c.setSeedProduction(production, PERIOD_NEXT);
 				
-				FastList<CropProcure> procure = new FastList<CropProcure>();
+				FastList<CropProcure> procure = new FastList<>();
 				for (CropProcure cr : c.getCropProcure(PERIOD_CURRENT))
 				{
 					cr.setAmount(cr.getStartAmount());
@@ -539,7 +537,7 @@ public class CastleManorManager
 	
 	private FastList<SeedProduction> getNewSeedsList(int castleId)
 	{
-		FastList<SeedProduction> seeds = new FastList<SeedProduction>();
+		FastList<SeedProduction> seeds = new FastList<>();
 		FastList<Integer> seedsIds = L2Manor.getInstance().getSeedsForCastle(castleId);
 		for (int sd : seedsIds)
 		{
@@ -550,7 +548,7 @@ public class CastleManorManager
 	
 	private FastList<CropProcure> getNewCropsList(int castleId)
 	{
-		FastList<CropProcure> crops = new FastList<CropProcure>();
+		FastList<CropProcure> crops = new FastList<>();
 		FastList<Integer> cropsIds = L2Manor.getInstance().getCropsForCastle(castleId);
 		for (int cr : cropsIds)
 			crops.add(new CropProcure(cr));
@@ -597,7 +595,6 @@ public class CastleManorManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CastleManorManager _instance = new CastleManorManager();

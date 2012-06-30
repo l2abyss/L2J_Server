@@ -26,8 +26,8 @@ import com.l2jserver.loginserver.network.loginserverpackets.AuthResponse;
 import com.l2jserver.loginserver.network.loginserverpackets.LoginServerFail;
 import com.l2jserver.util.network.BaseRecievePacket;
 
-
 /**
+ * <pre>
  * Format: cccddb
  * c desired ID
  * c accept alternative ID
@@ -37,25 +37,25 @@ import com.l2jserver.util.network.BaseRecievePacket;
  * d max players
  * d hexid size
  * b hexid
+ * </pre>
  * @author -Wooden-
- *
  */
 public class GameServerAuth extends BaseRecievePacket
 {
 	protected static Logger _log = Logger.getLogger(GameServerAuth.class.getName());
 	GameServerThread _server;
-	private byte[] _hexId;
-	private int _desiredId;
+	private final byte[] _hexId;
+	private final int _desiredId;
 	@SuppressWarnings("unused")
-	private boolean _hostReserved;
-	private boolean _acceptAlternativeId;
-	private int _maxPlayers;
-	private int _port;
-	private String[] _hosts;
+	private final boolean _hostReserved;
+	private final boolean _acceptAlternativeId;
+	private final int _maxPlayers;
+	private final int _port;
+	private final String[] _hosts;
 	
 	/**
 	 * @param decrypt
-	 * @param server 
+	 * @param server
 	 */
 	public GameServerAuth(byte[] decrypt, GameServerThread server)
 	{
@@ -71,10 +71,14 @@ public class GameServerAuth extends BaseRecievePacket
 		size = 2 * readD();
 		_hosts = new String[size];
 		for (int i = 0; i < size; i++)
+		{
 			_hosts[i] = readS();
+		}
 		
 		if (Config.DEBUG)
+		{
 			_log.info("Auth request received");
+		}
 		
 		if (handleRegProcess())
 		{
@@ -82,9 +86,9 @@ public class GameServerAuth extends BaseRecievePacket
 			server.sendPacket(ar);
 			if (Config.DEBUG)
 			{
-				_log.info("Authed: id: "+server.getGameServerInfo().getId());
+				_log.info("Authed: id: " + server.getGameServerInfo().getId());
 			}
-			server.broadcastToTelnet("GameServer ["+server.getServerId()+"] "+GameServerTable.getInstance().getServerNameById(server.getServerId())+" is connected");
+			server.broadcastToTelnet("GameServer [" + server.getServerId() + "] " + GameServerTable.getInstance().getServerNameById(server.getServerId()) + " is connected");
 			server.setLoginConnectionState(GameServerState.AUTHED);
 		}
 	}

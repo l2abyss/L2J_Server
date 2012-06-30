@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
 
 /**
  * Format: (ch) S
@@ -24,7 +23,6 @@ import java.util.logging.Logger;
 public final class RequestPCCafeCouponUse extends L2GameClientPacket
 {
 	private static final String _C__D0_19_REQUESTPCCAFECOUPONUSE = "[C] D0:19 RequestPCCafeCouponUse";
-	protected static final Logger _log = Logger.getLogger(RequestPCCafeCouponUse.class.getName());
 	private String _str;
 	
 	@Override

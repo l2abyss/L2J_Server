@@ -14,12 +14,12 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
-// This class is here mostly for convinience and for avoidance of hardcoded IDs.
+// This class is here mostly for convenience and for avoidance of hardcoded IDs.
 // It refers to Beast (mobs) that can be attacked but can also be fed
 // For example, the Beast Farm's Alpen Buffalo.
-// This class is only trully used by the handlers in order to check the correctness
+// This class is only truly used by the handlers in order to check the correctness
 // of the target.  However, no additional tasks are needed, since they are all
 // handled by scripted AI.
 public class L2FeedableBeastInstance extends L2MonsterInstance

@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestFriendInvite extends L2GameClientPacket
 {
 	private static final String _C__77_REQUESTFRIENDINVITE = "[C] 77 RequestFriendInvite";
-	//private static Logger _log = Logger.getLogger(RequestFriendInvite.class.getName());
 	
 	private String _name;
 	

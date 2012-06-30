@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -29,7 +28,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 public final class RequestSetPledgeCrest extends L2GameClientPacket
 {
 	private static final String _C__09_REQUESTSETPLEDGECREST = "[C] 09 RequestSetPledgeCrest";
-	static Logger _log = Logger.getLogger(RequestSetPledgeCrest.class.getName());
 	
 	private int _length;
 	private byte[] _data;

@@ -1,11 +1,4 @@
 /*
- * $HeadURL: $
- *
- * $Author: $
- * $Date: $
- * $Revision: $
- *
- *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation, either version 3 of the License, or (at your option) any later
@@ -22,11 +15,9 @@
 package com.l2jserver.gameserver.util;
 
 /**
- * This interface can be implemented by extensions to register simple functions with the DynamicExtension handler
- * It's in the responsibility of the extensions to interpret the get and set functions
- *
- * @version $Revision: $ $Date: $
- * @author  Galun
+ * This interface can be implemented by extensions to register simple functions with the DynamicExtension handler.<br>
+ * It's in the responsibility of the extensions to interpret the get and set functions.
+ * @author Galun
  */
 public interface ExtensionFunction
 {

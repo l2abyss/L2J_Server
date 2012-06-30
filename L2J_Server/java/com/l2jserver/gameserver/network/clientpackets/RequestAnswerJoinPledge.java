@@ -95,9 +95,9 @@ public final class RequestAnswerJoinPledge extends L2GameClientPacket
 				clan.broadcastToOnlineMembers(sm);
 				sm = null;
 				
-				if (activeChar.getClan().getHasCastle() > 0)
+				if (activeChar.getClan().getCastleId() > 0)
 					CastleManager.getInstance().getCastleByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
-				if (activeChar.getClan().getHasFort() > 0)
+				if (activeChar.getClan().getFortId() > 0)
 					FortManager.getInstance().getFortByOwner(activeChar.getClan()).giveResidentialSkills(activeChar);
 				activeChar.sendSkillList();
 				

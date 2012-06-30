@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
-import com.l2jserver.gameserver.skills.AbnormalEffect;
 
 /**
  * L2AbnormalZone zones give entering players abnormal effects
@@ -74,7 +74,4 @@ public class L2AbnormalZone extends L2ZoneType
 	{
 		onEnter(character);
 	}
-	
-	
-	
 }

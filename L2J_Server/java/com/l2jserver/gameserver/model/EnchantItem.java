@@ -14,35 +14,36 @@
  */
 package com.l2jserver.gameserver.model;
 
-import java.util.Arrays;
+import java.util.List;
 
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author UnAfraid
  */
 public class EnchantItem
 {
+	protected final int _id;
 	protected final boolean _isWeapon;
 	protected final int _grade;
 	protected final int _maxEnchantLevel;
 	protected final double _chanceAdd;
-	protected final int[] _itemIds;
+	protected final List<Integer> _itemIds;
 	
 	/**
-	 * @param wep
-	 * @param type
-	 * @param level
-	 * @param chance
+	 * @param set
 	 * @param items
 	 */
-	public EnchantItem(boolean wep, int type, int level, double chance, int[] items)
+	public EnchantItem(StatsSet set, List<Integer> items)
 	{
-		_isWeapon = wep;
-		_grade = type;
-		_maxEnchantLevel = level;
-		_chanceAdd = chance;
+		_id = set.getInteger("id");
+		_isWeapon = set.getBool("isWeapon", true);
+		_grade = ItemTable._crystalTypes.get(set.getString("targetGrade", "none"));
+		_maxEnchantLevel = set.getInteger("maxEnchant", Config.MAX_ENCHANT_LEVEL);
+		_chanceAdd = set.getDouble("successRate", Config.ENCHANT_CHANCE);
 		_itemIds = items;
 	}
 	
@@ -60,16 +61,17 @@ public class EnchantItem
 		
 		else if (!isValidItemType(enchantItem.getItem().getType2()))
 			return false;
-
+		
 		else if (_maxEnchantLevel != 0 && enchantItem.getEnchantLevel() >= _maxEnchantLevel)
 			return false;
 		
 		else if (_grade != enchantItem.getItem().getItemGradeSPlus())
 			return false;
 		
-		else if ((enchantItem.isEnchantable() > 1 && (_itemIds == null || Arrays.binarySearch(_itemIds, enchantItem.getItemId()) < 0)) || _itemIds != null && Arrays.binarySearch(_itemIds, enchantItem.getItemId()) < 0)
+		else if ((enchantItem.isEnchantable() > 1 && (_itemIds.isEmpty() || !_itemIds.contains(enchantItem.getItemId())))
+				|| !_itemIds.isEmpty() && !_itemIds.contains(enchantItem.getItemId()))
 			return false;
-				
+		
 		return true;
 	}
 	
@@ -85,11 +87,17 @@ public class EnchantItem
 		}
 		return false;
 	}
+	
 	/**
 	 * @return chance increase
 	 */
 	public final double getChanceAdd()
 	{
 		return _chanceAdd;
+	}
+	
+	public int getScrollId()
+	{
+		return _id;
 	}
 }

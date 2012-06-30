@@ -20,7 +20,6 @@ import org.w3c.dom.Node;
 
 /**
  * @author Luis Arias
- *
  */
 public abstract class Parser
 {

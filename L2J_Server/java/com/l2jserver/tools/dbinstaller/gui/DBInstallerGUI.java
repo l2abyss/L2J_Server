@@ -35,9 +35,9 @@ public class DBInstallerGUI extends JFrame implements DBOutputInterface
 {
 	private static final long serialVersionUID = -1005504757826370170L;
 	
-	private JProgressBar _progBar;
-	private JTextArea _progArea;
-	private Connection _con;
+	private final JProgressBar _progBar;
+	private final JTextArea _progArea;
+	private final Connection _con;
 	
 	public DBInstallerGUI(Connection con)
 	{

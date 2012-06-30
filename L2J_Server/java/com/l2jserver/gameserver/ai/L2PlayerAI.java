@@ -25,12 +25,12 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_REST;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Character.AIAccessor;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
-import com.l2jserver.gameserver.templates.skills.L2TargetType;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 
 public class L2PlayerAI extends L2PlayableAI
 {
@@ -252,7 +252,7 @@ public class L2PlayerAI extends L2PlayableAI
 	{
 		L2Character target = getCastTarget();
 		if (Config.DEBUG)
-			_log.warning("L2PlayerAI: thinkCast -> Start");
+			_log.warning(getClass().getSimpleName() + ": thinkCast -> Start");
 		
 		if (_skill.getTargetType() == L2TargetType.TARGET_GROUND && _actor instanceof L2PcInstance)
 		{

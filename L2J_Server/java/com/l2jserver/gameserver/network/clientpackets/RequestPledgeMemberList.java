@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListAll;
 public final class RequestPledgeMemberList extends L2GameClientPacket
 {
 	private static final String _C__4D_REQUESTPLEDGEMEMBERLIST = "[C] 4D RequestPledgeMemberList";
-	//private static Logger _log = Logger.getLogger(RequestPledgeMemberList.class.getName());
 	
 	@Override
 	protected void readImpl()

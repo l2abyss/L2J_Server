@@ -12,14 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-/**
-	coded by Balancer
-	balancer@balancer.ru
-	http://balancer.ru
-
-	version 0.1, 2005-03-12
- */
-
 package com.l2jserver.gameserver.model;
 
 import java.util.List;
@@ -29,6 +21,10 @@ import javolution.util.FastList;
 
 import com.l2jserver.util.Rnd;
 
+/**
+ * @version 0.1, 2005-03-12
+ * @author Balancer
+ */
 public class L2Territory
 {
 	private static Logger _log = Logger.getLogger(L2Territory.class.getName());
@@ -58,7 +54,7 @@ public class L2Territory
 	
 	public L2Territory(int terr)
 	{
-		_points = new FastList<Point>();
+		_points = new FastList<>();
 		_terr = terr;
 		_xMin = 999999;
 		_xMax =-999999;

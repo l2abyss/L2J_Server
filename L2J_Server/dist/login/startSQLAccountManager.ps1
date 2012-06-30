@@ -5,13 +5,13 @@ java "-Djava.util.logging.config.file=console.cfg" -cp "./../libs/*;l2jlogin.jar
 if ($LASTEXITCODE -like 0)
 {
     ""
-    "Execution succesful"
+    "Execution successful"
     ""
 }
 else
 {
     ""
-    "An error has ocurred while running the L2J Account Manager!"
+    "An error has occurred while running the L2J Account Manager!"
     ""
     "Possible reasons for this to happen:"
     ""

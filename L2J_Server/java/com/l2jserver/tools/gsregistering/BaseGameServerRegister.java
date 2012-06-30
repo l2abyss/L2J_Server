@@ -39,6 +39,7 @@ import com.l2jserver.tools.i18n.LanguageControl;
 import com.l2jserver.util.Util;
 
 /**
+ * The Class BaseGameServerRegister.
  * @author KenM
  */
 public abstract class BaseGameServerRegister
@@ -46,6 +47,10 @@ public abstract class BaseGameServerRegister
 	private boolean _loaded = false;
 	private ResourceBundle _bundle;
 	
+	/**
+	 * The main method.
+	 * @param args the arguments
+	 */
 	public static void main(String[] args)
 	{
 		Locale locale = null;
@@ -68,33 +73,27 @@ public abstract class BaseGameServerRegister
 		}
 		
 		String arg;
-		for (int i = 0 ; i < args.length; i++)
+		for (int i = 0; i < args.length; i++)
 		{
 			arg = args[i];
 			
-			/* --cmd : no gui */
+			// --cmd : no gui
 			if (arg.equals("-c") || arg.equals("--cmd"))
 			{
 				gui = false;
 			}
-			/* --force
-			 * Forces GameServer register operations to overwrite a server if necessary
-			 */
+			// --force : Forces GameServer register operations to overwrite a server if necessary
 			else if (arg.equals("-f") || arg.equals("--force"))
 			{
 				force = true;
 			}
-			/* --fallback
-			 * If an register operation fails due to ID already being in use it will then try to register first available ID
-			 */
+			// --fallback : If an register operation fails due to ID already being in use it will then try to register first available ID
 			else if (arg.equals("-b") || arg.equals("--fallback"))
 			{
 				fallback = true;
 			}
-			/* --register <id> <hexid_dest_dir>
-			 * Register GameServer with ID <id> and output hexid on <hexid_dest_dir>
-			 * Fails if <id> already in use, unless -force is used (overwrites)
-			 */
+			// --register <id> <hexid_dest_dir> : Register GameServer with ID <id> and output hexid on <hexid_dest_dir>
+			// Fails if <id> already in use, unless -force is used (overwrites)
 			else if (arg.equals("-r") || arg.equals("--register"))
 			{
 				gui = false;
@@ -104,9 +103,7 @@ public abstract class BaseGameServerRegister
 				
 				task = new RegisterTask(id, dir, force, fallback);
 			}
-			/* --unregister <id>
-			 * Removes GameServer denoted by <id>
-			 */
+			// --unregister <id> : Removes GameServer denoted by <id>
 			else if (arg.equals("-u") || arg.equals("--unregister"))
 			{
 				gui = false;
@@ -125,20 +122,21 @@ public abstract class BaseGameServerRegister
 					}
 					catch (NumberFormatException e)
 					{
-						System.out.printf(bundle.getString("wrongUnregisterArg")+'\n',gsId);
+						if (bundle != null)
+						{
+							System.out.printf(bundle.getString("wrongUnregisterArg") + '\n', gsId);
+						}
 						System.exit(1);
 					}
 				}
 			}
-			/* --language <locale>
-			 * Sets the app to use the specified locale, overriding auto-detection
-			 */
+			// --language <locale> : Sets the app to use the specified locale, overriding auto-detection
 			else if (arg.equals("-l") || arg.equals("--language"))
 			{
 				String loc = args[++i];
 				Locale[] availableLocales = Locale.getAvailableLocales();
 				Locale l;
-				for (int j = 0; j < availableLocales.length && locale == null; j++)
+				for (int j = 0; (j < availableLocales.length) && (locale == null); j++)
 				{
 					l = availableLocales[j];
 					if (l.toString().equals(loc))
@@ -148,7 +146,7 @@ public abstract class BaseGameServerRegister
 				}
 				if (locale == null)
 				{
-					System.out.println("Specified locale '"+loc+"' was not found, using default behaviour.");
+					System.out.println("Specified locale '" + loc + "' was not found, using default behaviour.");
 				}
 				else
 				{
@@ -162,9 +160,7 @@ public abstract class BaseGameServerRegister
 					}
 				}
 			}
-			/* --help
-			 * Prints usage/arguments/credits
-			 */
+			// --help : Prints usage/arguments/credits
 			else if (arg.equals("-h") || arg.equals("--help"))
 			{
 				gui = false;
@@ -188,8 +184,7 @@ public abstract class BaseGameServerRegister
 				}
 				else
 				{
-					// if there is a task, do it
-					// else the app has already finished
+					// if there is a task, do it, else the app has already finished
 					if (task != null)
 					{
 						task.setBundle(bundle);
@@ -204,42 +199,37 @@ public abstract class BaseGameServerRegister
 		}
 	}
 	
+	/**
+	 * Prints the help.
+	 * @param bundle the bundle
+	 */
 	private static void printHelp(ResourceBundle bundle)
 	{
 		String[] help =
 		{
-				bundle.getString("purpose") ,
-				"",
-				bundle.getString("options"),
-				"-b, --fallback\t\t\t\t"+bundle.getString("fallbackOpt"),
-				"-c, --cmd\t\t\t\t"+bundle.getString("cmdOpt"),
-				"-f, --force\t\t\t\t"+bundle.getString("forceOpt"),
-				"-h, --help\t\t\t\t"+bundle.getString("helpOpt"),
-				"-l, --language\t\t\t\t"+bundle.getString("languageOpt"),
-				"-r, --register <id> <hexid_dest_dir>\t"+bundle.getString("registerOpt1"),
-				"\t\t\t\t\t"+bundle.getString("registerOpt2"),
-				"\t\t\t\t\t"+bundle.getString("registerOpt3"),
-				"",
-				"-u, --unregister <id>|all\t\t"+bundle.getString("unregisterOpt"),
-				"",
-				bundle.getString("credits"),
-				bundle.getString("bugReports")+" http://www.l2jserver.com"
-				
-				/*
-				"-b, --fallback\t\t\t\tIf an register operation fails due to ID already being in use it will then try to register first available ID",
-				"-c, --cmd\t\t\t\tForces application to run in command-line mode even if the GUI is supported.",
-				"-f, --force\t\t\t\tForces GameServer register operations to overwrite a server if necessary",
-				"-h, --help\t\t\t\tPrints this help message",
-				"-l, --language <locale>\t\t\t\tAsks the application to use the specified locale, overriding auto-detection",
-				"-r, --register <id> <hexid_dest_dir>\tRegister GameServer with ID <id> and output hexid on <hexid_dest_dir>",
-				"\t\t\t\t\tUse a negative value on <id> to register the first available ID",
-				"\t\t\t\t\tFails if <id> already in use, unless --force is used (overwrites)",
-				"",
-				"-u, --unregister <id>|all\t\tRemoves GameServer denoted by <id>, use \"all\" for removing all registered GameServers",
-				"",
-				"Copyright (C) L2J Team 2008-2009.",
-				"Report bugs: http://www.l2jserver.com"
-				 */
+			bundle.getString("purpose"),
+			"",
+			bundle.getString("options"),
+			"-b, --fallback\t\t\t\t" + bundle.getString("fallbackOpt"),
+			"-c, --cmd\t\t\t\t" + bundle.getString("cmdOpt"),
+			"-f, --force\t\t\t\t" + bundle.getString("forceOpt"),
+			"-h, --help\t\t\t\t" + bundle.getString("helpOpt"),
+			"-l, --language\t\t\t\t" + bundle.getString("languageOpt"),
+			"-r, --register <id> <hexid_dest_dir>\t" + bundle.getString("registerOpt1"),
+			"\t\t\t\t\t" + bundle.getString("registerOpt2"),
+			"\t\t\t\t\t" + bundle.getString("registerOpt3"),
+			"",
+			"-u, --unregister <id>|all\t\t" + bundle.getString("unregisterOpt"),
+			"",
+			bundle.getString("credits"),
+			bundle.getString("bugReports") + " http://www.l2jserver.com"
+		
+		/*
+		 * "-b, --fallback\t\t\t\tIf an register operation fails due to ID already being in use it will then try to register first available ID", "-c, --cmd\t\t\t\tForces application to run in command-line mode even if the GUI is supported.",
+		 * "-f, --force\t\t\t\tForces GameServer register operations to overwrite a server if necessary", "-h, --help\t\t\t\tPrints this help message", "-l, --language <locale>\t\t\t\tAsks the application to use the specified locale, overriding auto-detection",
+		 * "-r, --register <id> <hexid_dest_dir>\tRegister GameServer with ID <id> and output hexid on <hexid_dest_dir>", "\t\t\t\t\tUse a negative value on <id> to register the first available ID", "\t\t\t\t\tFails if <id> already in use, unless --force is used (overwrites)", "",
+		 * "-u, --unregister <id>|all\t\tRemoves GameServer denoted by <id>, use \"all\" for removing all registered GameServers", "", "Copyright (C) L2J Team 2008-2012.", "Report bugs: http://www.l2jserver.com"
+		 */
 		};
 		
 		for (String str : help)
@@ -248,6 +238,10 @@ public abstract class BaseGameServerRegister
 		}
 	}
 	
+	/**
+	 * Start the GUI.
+	 * @param bundle the bundle.
+	 */
 	private static void startGUI(final ResourceBundle bundle)
 	{
 		try
@@ -260,20 +254,21 @@ public abstract class BaseGameServerRegister
 			// couldn't care less
 		}
 		
-		SwingUtilities.invokeLater
-		(
-				new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						GUserInterface gui = new GUserInterface(bundle);
-						gui.getFrame().setVisible(true);
-					}
-				}
-		);
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				GUserInterface gui = new GUserInterface(bundle);
+				gui.getFrame().setVisible(true);
+			}
+		});
 	}
 	
+	/**
+	 * Start the CMD.
+	 * @param bundle the bundle.
+	 */
 	private static void startCMD(final ResourceBundle bundle)
 	{
 		GameServerRegister cmdUi = new GameServerRegister(bundle);
@@ -287,47 +282,40 @@ public abstract class BaseGameServerRegister
 		}
 	}
 	
+	/**
+	 * Instantiates a new base game server register.
+	 * @param bundle the bundle.
+	 */
 	public BaseGameServerRegister(ResourceBundle bundle)
 	{
 		setBundle(bundle);
 	}
 	
-	public void load()
-	{
-		try
-		{
-			this.loadImp();
-		}
-		catch (Exception e)
-		{
-			this.showError(this.getBundle().getString("gsListRetrieveError"), e);
-		}
-	}
-	
 	/**
-	 * Loads Configs and SQL.<BR>
-	 * This method must be invoked manually as to allow the given interface
-	 * to do in the most convenient way.<BR>
-	 * 
-	 * @throws Exception
+	 * Load.
 	 */
-	protected void loadImp() throws Exception
+	public void load()
 	{
 		Server.serverMode = Server.MODE_LOGINSERVER;
 		
 		Config.load();
-		GameServerTable.load();
+		GameServerTable.getInstance();
 		
 		_loaded = true;
 	}
 	
+	/**
+	 * Checks if is loaded.
+	 * @return true, if is loaded
+	 */
 	public boolean isLoaded()
 	{
 		return _loaded;
 	}
 	
 	/**
-	 * @param bundle The bundle to set.
+	 * Sets the bundle.
+	 * @param bundle the bundle to set.
 	 */
 	public void setBundle(ResourceBundle bundle)
 	{
@@ -335,28 +323,33 @@ public abstract class BaseGameServerRegister
 	}
 	
 	/**
-	 * @return Returns the bundle.
+	 * Gets the bundle.
+	 * @return the bundle.
 	 */
 	public ResourceBundle getBundle()
 	{
 		return _bundle;
 	}
 	
+	/**
+	 * Show the error.
+	 * @param msg the msg.
+	 * @param t the t.
+	 */
 	public abstract void showError(String msg, Throwable t);
 	
 	/**
-	 * @param id
-	 * @throws SQLException
+	 * Unregister the game server.
+	 * @param id the game server id.
+	 * @throws SQLException the SQL exception.
 	 */
 	public static void unregisterGameServer(int id) throws SQLException
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM gameservers WHERE server_id = ?");
+			final PreparedStatement statement = con.prepareStatement("DELETE FROM gameservers WHERE server_id = ?");
 			statement.setInt(1, id);
 			statement.executeUpdate();
 			GameServerTable.getInstance().getRegisteredGameServers().remove(id);
@@ -368,36 +361,33 @@ public abstract class BaseGameServerRegister
 		}
 	}
 	
+	/**
+	 * Unregister all game servers.
+	 * @throws SQLException the SQL exception
+	 */
 	public static void unregisterAllGameServers() throws SQLException
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM gameservers");
+			final PreparedStatement statement = con.prepareStatement("DELETE FROM gameservers");
 			statement.executeUpdate();
+			statement.close();
 			GameServerTable.getInstance().getRegisteredGameServers().clear();
 		}
 		finally
 		{
-			try
-			{
-				statement.close();
-			}
-			catch (SQLException e)
-			{
-				// nothing
-			}
-			
-			if (con != null)
-			{
-				L2DatabaseFactory.close(con);
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
+	/**
+	 * Register a game server.
+	 * @param id the id of the game server.
+	 * @param outDir the out dir.
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void registerGameServer(int id, String outDir) throws IOException
 	{
 		byte[] hexId = Util.generateHex(16);
@@ -405,15 +395,21 @@ public abstract class BaseGameServerRegister
 		
 		Properties hexSetting = new Properties();
 		File file = new File(outDir, "hexid.txt");
-		//Create a new empty file only if it doesn't exist
+		// Create a new empty file only if it doesn't exist
 		file.createNewFile();
 		OutputStream out = new FileOutputStream(file);
-		hexSetting.setProperty("ServerID",String.valueOf(id));
+		hexSetting.setProperty("ServerID", String.valueOf(id));
 		hexSetting.setProperty("HexID", new BigInteger(hexId).toString(16));
-		hexSetting.store(out,"The HexId to Auth into LoginServer");
+		hexSetting.store(out, "The HexId to Auth into LoginServer");
 		out.close();
 	}
 	
+	/**
+	 * Register first available.
+	 * @param outDir the out dir
+	 * @return the int
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static int registerFirstAvailable(String outDir) throws IOException
 	{
 		for (Entry<Integer, String> e : GameServerTable.getInstance().getServerNames().entrySet())
@@ -427,11 +423,15 @@ public abstract class BaseGameServerRegister
 		return -1;
 	}
 	
-	static abstract class BaseTask implements Runnable
+	/**
+	 * The Class BaseTask.
+	 */
+	protected static abstract class BaseTask implements Runnable
 	{
 		private ResourceBundle _bundle;
 		
 		/**
+		 * Sets the bundle.
 		 * @param bundle The bundle to set.
 		 */
 		public void setBundle(ResourceBundle bundle)
@@ -440,6 +440,7 @@ public abstract class BaseGameServerRegister
 		}
 		
 		/**
+		 * Gets the bundle.
 		 * @return Returns the bundle.
 		 */
 		public ResourceBundle getBundle()
@@ -447,31 +448,45 @@ public abstract class BaseGameServerRegister
 			return _bundle;
 		}
 		
+		/**
+		 * Show the error.
+		 * @param msg the msg
+		 * @param t the t
+		 */
 		public void showError(String msg, Throwable t)
 		{
 			String title;
-			if (this.getBundle() != null)
+			if (getBundle() != null)
 			{
-				title = this.getBundle().getString("error");
-				msg += '\n'+this.getBundle().getString("reason")+' '+t.getLocalizedMessage();
+				title = getBundle().getString("error");
+				msg += '\n' + getBundle().getString("reason") + ' ' + t.getLocalizedMessage();
 			}
 			else
 			{
 				title = "Error";
-				msg += "\nCause: "+t.getLocalizedMessage();
+				msg += "\nCause: " + t.getLocalizedMessage();
 			}
-			System.out.println(title+": "+msg);
+			System.out.println(title + ": " + msg);
 		}
 	}
 	
-	static class RegisterTask extends BaseTask
+	/**
+	 * The Class RegisterTask.
+	 */
+	private static class RegisterTask extends BaseTask
 	{
-		
 		private final int _id;
 		private final String _outDir;
 		private boolean _force;
 		private boolean _fallback;
 		
+		/**
+		 * Instantiates a new register task.
+		 * @param id the id.
+		 * @param outDir the out dir.
+		 * @param force the force.
+		 * @param fallback the fallback.
+		 */
 		public RegisterTask(int id, String outDir, boolean force, boolean fallback)
 		{
 			_id = id;
@@ -480,15 +495,18 @@ public abstract class BaseGameServerRegister
 			_fallback = fallback;
 		}
 		
+		/**
+		 * Sets the actions.
+		 * @param force the force.
+		 * @param fallback the fallback.
+		 */
+		@SuppressWarnings("unused")
 		public void setActions(boolean force, boolean fallback)
 		{
 			_force = force;
 			_fallback = fallback;
 		}
 		
-		/**
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{
@@ -498,34 +516,32 @@ public abstract class BaseGameServerRegister
 				{
 					int registeredId = BaseGameServerRegister.registerFirstAvailable(_outDir);
 					
-					
 					if (registeredId < 0)
 					{
 						System.out.println(getBundle().getString("noFreeId"));
 					}
 					else
 					{
-						System.out.printf(getBundle().getString("registrationOk")+'\n', registeredId);
+						System.out.printf(getBundle().getString("registrationOk") + '\n', registeredId);
 					}
 				}
 				else
 				{
-					System.out.printf(getBundle().getString("checkingIdInUse")+'\n', _id);
+					System.out.printf(getBundle().getString("checkingIdInUse") + '\n', _id);
 					if (GameServerTable.getInstance().hasRegisteredGameServerOnId(_id))
 					{
 						System.out.println(getBundle().getString("yes"));
 						if (_force)
 						{
-							System.out.printf(getBundle().getString("forcingRegistration")+'\n', _id);
+							System.out.printf(getBundle().getString("forcingRegistration") + '\n', _id);
 							BaseGameServerRegister.unregisterGameServer(_id);
 							BaseGameServerRegister.registerGameServer(_id, _outDir);
-							System.out.printf(getBundle().getString("registrationOk")+'\n', _id);
+							System.out.printf(getBundle().getString("registrationOk") + '\n', _id);
 						}
 						else if (_fallback)
 						{
 							System.out.println(getBundle().getString("fallingBack"));
 							int registeredId = BaseGameServerRegister.registerFirstAvailable(_outDir);
-							
 							
 							if (registeredId < 0)
 							{
@@ -533,7 +549,7 @@ public abstract class BaseGameServerRegister
 							}
 							else
 							{
-								System.out.printf(getBundle().getString("registrationOk")+'\n', registeredId);
+								System.out.printf(getBundle().getString("registrationOk") + '\n', registeredId);
 							}
 						}
 						else
@@ -550,50 +566,52 @@ public abstract class BaseGameServerRegister
 			}
 			catch (SQLException e)
 			{
-				this.showError(getBundle().getString("sqlErrorRegister"), e);
+				showError(getBundle().getString("sqlErrorRegister"), e);
 			}
 			catch (IOException e)
 			{
-				this.showError(getBundle().getString("ioErrorRegister"), e);
+				showError(getBundle().getString("ioErrorRegister"), e);
 			}
 		}
-		
 	}
 	
-	static class UnregisterTask extends BaseTask
+	/**
+	 * The Class UnregisterTask.
+	 */
+	private static class UnregisterTask extends BaseTask
 	{
 		private final int _id;
 		
+		/**
+		 * Instantiates a new unregister task.
+		 * @param id the task id.
+		 */
 		public UnregisterTask(int id)
 		{
 			_id = id;
 			
 		}
 		
-		/**
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{
-			System.out.printf(getBundle().getString("removingGsId")+'\n', _id);
+			System.out.printf(getBundle().getString("removingGsId") + '\n', _id);
 			try
 			{
 				BaseGameServerRegister.unregisterGameServer(_id);
 			}
 			catch (SQLException e)
 			{
-				this.showError(getBundle().getString("sqlErrorRegister"), e);
+				showError(getBundle().getString("sqlErrorRegister"), e);
 			}
 		}
-		
 	}
 	
-	static class UnregisterAllTask extends BaseTask
+	/**
+	 * The Class UnregisterAllTask.
+	 */
+	protected static class UnregisterAllTask extends BaseTask
 	{
-		/**
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{
@@ -603,9 +621,8 @@ public abstract class BaseGameServerRegister
 			}
 			catch (SQLException e)
 			{
-				this.showError(getBundle().getString("sqlErrorUnregisterAll"), e);
+				showError(getBundle().getString("sqlErrorUnregisterAll"), e);
 			}
 		}
-		
 	}
 }

@@ -42,9 +42,9 @@ public class TopicBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	private TopicBBSManager()
+	protected TopicBBSManager()
 	{
-		_table = new FastList<Topic>();
+		_table = new FastList<>();
 		_maxId = new FastMap<Forum, Integer>().shared();
 	}
 	
@@ -442,7 +442,6 @@ public class TopicBBSManager extends BaseBBSManager
 		separateAndSend(html.toString(), activeChar);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TopicBBSManager _instance = new TopicBBSManager();

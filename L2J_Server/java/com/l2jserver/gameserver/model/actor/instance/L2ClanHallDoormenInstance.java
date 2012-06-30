@@ -20,15 +20,15 @@ import java.util.StringTokenizer;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Evolve;
 
 public class L2ClanHallDoormenInstance extends L2DoormenInstance
 {
-	private boolean _init = false;
+	private volatile boolean _init = false;
 	private ClanHall _clanHall = null;
 	private boolean _hasEvolve = false;
 	

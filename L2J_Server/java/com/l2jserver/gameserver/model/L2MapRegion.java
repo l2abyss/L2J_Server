@@ -15,10 +15,9 @@
 package com.l2jserver.gameserver.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.base.Race;
@@ -29,11 +28,11 @@ import com.l2jserver.util.Rnd;
  */
 public class L2MapRegion
 {
-	private String _name = null;
-	private String _town = null;
-	private int _locId = -1;
-	private int _castle = -1;
-	private int _bbs = -1;
+	private final String _name;
+	private final String _town;
+	private final int _locId;
+	private final int _castle;
+	private final int _bbs;
 	private List<int[]> _maps = null;
 	
 	private List<Location> _spawnLocs = null;
@@ -41,7 +40,7 @@ public class L2MapRegion
 	private List<Location> _chaoticSpawnLocs = null;
 	private List<Location> _banishSpawnLocs = null;
 	
-	private Map<Race, String> _bannedRace = new FastMap<Race, String>();
+	private final Map<Race, String> _bannedRace = new HashMap<>();
 	
 	public L2MapRegion(String name, String town, int locId, int castle, int bbs)
 	{
@@ -80,9 +79,15 @@ public class L2MapRegion
 	public final void addMap(int x, int y)
 	{
 		if (_maps == null)
-			_maps = new ArrayList<int[]>();
+		{
+			_maps = new ArrayList<>();
+		}
 		
-		_maps.add(new int[] { x, y });
+		_maps.add(new int[]
+		{
+			x,
+			y
+		});
 	}
 	
 	public final List<int[]> getMaps()
@@ -93,12 +98,16 @@ public class L2MapRegion
 	public final boolean isZoneInRegion(int x, int y)
 	{
 		if (_maps == null)
+		{
 			return false;
+		}
 		
 		for (int[] map : _maps)
 		{
-			if (map[0] == x && map[1] == y)
+			if ((map[0] == x) && (map[1] == y))
+			{
 				return true;
+			}
 		}
 		return false;
 	}
@@ -107,7 +116,9 @@ public class L2MapRegion
 	public final void addSpawn(int x, int y, int z)
 	{
 		if (_spawnLocs == null)
-			_spawnLocs = new ArrayList<Location>();
+		{
+			_spawnLocs = new ArrayList<>();
+		}
 		
 		_spawnLocs.add(new Location(x, y, z));
 	}
@@ -115,7 +126,9 @@ public class L2MapRegion
 	public final void addOtherSpawn(int x, int y, int z)
 	{
 		if (_otherSpawnLocs == null)
-			_otherSpawnLocs = new ArrayList<Location>();
+		{
+			_otherSpawnLocs = new ArrayList<>();
+		}
 		
 		_otherSpawnLocs.add(new Location(x, y, z));
 	}
@@ -123,7 +136,9 @@ public class L2MapRegion
 	public final void addChaoticSpawn(int x, int y, int z)
 	{
 		if (_chaoticSpawnLocs == null)
-			_chaoticSpawnLocs = new ArrayList<Location>();
+		{
+			_chaoticSpawnLocs = new ArrayList<>();
+		}
 		
 		_chaoticSpawnLocs.add(new Location(x, y, z));
 	}
@@ -131,7 +146,9 @@ public class L2MapRegion
 	public final void addBanishSpawn(int x, int y, int z)
 	{
 		if (_banishSpawnLocs == null)
-			_banishSpawnLocs = new ArrayList<Location>();
+		{
+			_banishSpawnLocs = new ArrayList<>();
+		}
 		
 		_banishSpawnLocs.add(new Location(x, y, z));
 	}
@@ -144,7 +161,9 @@ public class L2MapRegion
 	public final Location getSpawnLoc()
 	{
 		if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
+		{
 			return _spawnLocs.get(Rnd.get(_spawnLocs.size()));
+		}
 		return _spawnLocs.get(0);
 	}
 	
@@ -153,7 +172,9 @@ public class L2MapRegion
 		if (_otherSpawnLocs != null)
 		{
 			if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
+			{
 				return _otherSpawnLocs.get(Rnd.get(_otherSpawnLocs.size()));
+			}
 			return _otherSpawnLocs.get(0);
 		}
 		return getSpawnLoc();
@@ -164,7 +185,9 @@ public class L2MapRegion
 		if (_chaoticSpawnLocs != null)
 		{
 			if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
+			{
 				return _chaoticSpawnLocs.get(Rnd.get(_chaoticSpawnLocs.size()));
+			}
 			return _chaoticSpawnLocs.get(0);
 		}
 		return getSpawnLoc();
@@ -175,7 +198,9 @@ public class L2MapRegion
 		if (_banishSpawnLocs != null)
 		{
 			if (Config.RANDOM_RESPAWN_IN_TOWN_ENABLED)
+			{
 				return _banishSpawnLocs.get(Rnd.get(_banishSpawnLocs.size()));
+			}
 			return _banishSpawnLocs.get(0);
 		}
 		return getSpawnLoc();

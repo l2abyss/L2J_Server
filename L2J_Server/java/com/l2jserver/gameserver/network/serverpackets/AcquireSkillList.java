@@ -16,6 +16,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import javolution.util.FastList;
 
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
+
 /**
  * TODO: Gather samples from newer chronicles.
  * @version 1.4
@@ -23,24 +25,8 @@ import javolution.util.FastList;
 public final class AcquireSkillList extends L2GameServerPacket
 {
 	private static final String _S__90_AQUIRESKILLLIST = "[S] 90 AquireSkillList";
-	
-	/**
-	 * Enumerate containing learning skill types.
-	 */
-	public enum SkillType
-	{
-		//TODO: Transform is 0 or 4?
-		ClassTransform, //0
-		Fishing, //1
-		Pledge, //2
-		SubPledge, //3
-		Transfer, //4
-		SubClass, //5
-		Collect, //6
-	}
-	
-	private FastList<Skill> _skills;
-	private SkillType _skillType;
+	private final FastList<Skill> _skills;
+	private final AcquireSkillType _skillType;
 	
 	/**
 	 * Private class containing learning skill information.
@@ -63,17 +49,14 @@ public final class AcquireSkillList extends L2GameServerPacket
 		}
 	}
 	
-	public AcquireSkillList(SkillType type)
+	public AcquireSkillList(AcquireSkillType type)
 	{
 		_skillType = type;
+		_skills = new FastList<>();
 	}
 	
 	public void addSkill(int id, int nextLevel, int maxLevel, int spCost, int requirements)
 	{
-		if (_skills == null)
-		{
-			_skills = new FastList<Skill>();
-		}
 		_skills.add(new Skill(id, nextLevel, maxLevel, spCost, requirements));
 	}
 	
@@ -81,7 +64,9 @@ public final class AcquireSkillList extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		if (_skills == null)
+		{
 			return;
+		}
 		
 		writeC(0x90);
 		writeD(_skillType.ordinal());
@@ -94,9 +79,9 @@ public final class AcquireSkillList extends L2GameServerPacket
 			writeD(temp.maxLevel);
 			writeD(temp.spCost);
 			writeD(temp.requirements);
-			if (_skillType == SkillType.SubPledge)
+			if (_skillType == AcquireSkillType.SubPledge)
 			{
-				writeD(0); //TODO: ?
+				writeD(0); // TODO: ?
 			}
 		}
 	}

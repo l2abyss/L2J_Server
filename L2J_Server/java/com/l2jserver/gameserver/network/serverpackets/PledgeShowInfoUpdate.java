@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.L2Clan;
  */
 public class PledgeShowInfoUpdate extends L2GameServerPacket
 {
-	private static final String _S__A1_PLEDGESHOWINFOUPDATE = "[S] 8e PledgeShowInfoUpdate";
+	private static final String _S__8E_PLEDGESHOWINFOUPDATE = "[S] 8E PledgeShowInfoUpdate";
 	private L2Clan _clan;
 	
 	public PledgeShowInfoUpdate(L2Clan clan)
@@ -35,14 +35,14 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		//dddddddddddSdd
-		writeC(0x8e);
+		writeC(0x8E);
 		//sending empty data so client will ask all the info in response ;)
 		writeD(_clan.getClanId());
 		writeD(_clan.getCrestId());
 		writeD(_clan.getLevel()); //clan level
-		writeD(_clan.getHasCastle());
-		writeD(_clan.getHasHideout());
-		writeD(_clan.getHasFort());
+		writeD(_clan.getCastleId());
+		writeD(_clan.getHideoutId());
+		writeD(_clan.getFortId());
 		writeD(_clan.getRank());
 		writeD(_clan.getReputationScore()); // clan reputation score
 		writeD(0);
@@ -56,7 +56,7 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__A1_PLEDGESHOWINFOUPDATE;
+		return _S__8E_PLEDGESHOWINFOUPDATE;
 	}
 	
 }

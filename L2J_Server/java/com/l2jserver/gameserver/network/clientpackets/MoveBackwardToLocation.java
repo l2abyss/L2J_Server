@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.util.Util;
 public class MoveBackwardToLocation extends L2GameClientPacket
 {
 	private static final String _C__0F_MOVEBACKWARDTOLOC = "[C] 0F MoveBackwardToLoc";
-	//private static Logger _log = Logger.getLogger(MoveBackwardToLocation.class.getName());
+	
 	// cdddddd
 	private int _targetX;
 	private int _targetY;

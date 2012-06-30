@@ -44,9 +44,9 @@ public class HerbDropTable
 		return SingletonHolder._instance;
 	}
 	
-	private HerbDropTable()
+	protected HerbDropTable()
 	{
-		_herbGroups = new TIntObjectHashMap<FastList<L2DropCategory>>();
+		_herbGroups = new TIntObjectHashMap<>();
 		restoreData();
 	}
 	
@@ -73,7 +73,7 @@ public class HerbDropTable
 					category = _herbGroups.get(groupId);
 				else
 				{
-					category = new FastList<L2DropCategory>();
+					category = new FastList<>();
 					_herbGroups.put(groupId, category);
 				}
 				
@@ -128,7 +128,6 @@ public class HerbDropTable
 		return _herbGroups.get(groupId);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final HerbDropTable _instance = new HerbDropTable();

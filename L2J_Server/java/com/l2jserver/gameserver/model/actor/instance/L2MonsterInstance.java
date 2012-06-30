@@ -20,7 +20,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.knownlist.MonsterKnownList;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.util.MinionList;
 import com.l2jserver.util.Rnd;
 
@@ -37,9 +37,7 @@ import com.l2jserver.util.Rnd;
  */
 public class L2MonsterInstance extends L2Attackable
 {
-	//private static Logger _log = Logger.getLogger(L2MonsterInstance.class.getName());
-	
-	private boolean _enableMinions = true;
+	protected boolean _enableMinions = true;
 	
 	private L2MonsterInstance _master = null;
 	private MinionList _minionList = null;
@@ -216,5 +214,11 @@ public class L2MonsterInstance extends L2Attackable
 			_minionList = new MinionList(this);
 
 		return _minionList;
+	}
+	
+	@Override
+	public boolean isMonster()
+	{
+		return true;
 	}
 }

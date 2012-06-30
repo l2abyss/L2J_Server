@@ -41,11 +41,11 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.DimensionalRift;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -55,7 +55,7 @@ import com.l2jserver.util.Rnd;
 public class DimensionalRiftManager
 {
 	private static Logger _log = Logger.getLogger(DimensionalRiftManager.class.getName());
-	private final TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>>(7);
+	private final TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<>(7);
 	private final int DIMENSIONAL_FRAGMENT_ITEM_ID = 7079;
 	
 	public static DimensionalRiftManager getInstance()
@@ -63,7 +63,7 @@ public class DimensionalRiftManager
 		return SingletonHolder._instance;
 	}
 	
-	private DimensionalRiftManager()
+	protected DimensionalRiftManager()
 	{
 		loadRooms();
 		loadSpawns();
@@ -275,7 +275,7 @@ public class DimensionalRiftManager
 			return;
 		}
 		
-		if (player.getParty().getPartyLeaderOID() != player.getObjectId())
+		if (player.getParty().getLeaderObjectId() != player.getObjectId())
 		{
 			showHtmlFile(player, "data/html/seven_signs/rift/NotPartyLeader.htm", npc);
 			return;
@@ -304,7 +304,7 @@ public class DimensionalRiftManager
 			return;
 		}
 		
-		for (L2PcInstance p : player.getParty().getPartyMembers())
+		for (L2PcInstance p : player.getParty().getMembers())
 			if (!checkIfInPeaceZone(p.getX(), p.getY(), p.getZ()))
 			{
 				canPass = false;
@@ -319,7 +319,7 @@ public class DimensionalRiftManager
 		
 		L2ItemInstance i;
 		int count = getNeededItems(type);
-		for (L2PcInstance p : player.getParty().getPartyMembers())
+		for (L2PcInstance p : player.getParty().getMembers())
 		{
 			i = p.getInventory().getItemByItemId(DIMENSIONAL_FRAGMENT_ITEM_ID);
 			
@@ -354,7 +354,7 @@ public class DimensionalRiftManager
 			return;
 		}
 		
-		for (L2PcInstance p : player.getParty().getPartyMembers())
+		for (L2PcInstance p : player.getParty().getMembers())
 		{
 			i = p.getInventory().getItemByItemId(DIMENSIONAL_FRAGMENT_ITEM_ID);
 			if (!p.destroyItem("RiftEntrance", i, count, null, false))
@@ -429,8 +429,8 @@ public class DimensionalRiftManager
 			_zMax = zMax;
 			_teleportCoords = new int[] { xT, yT, zT };
 			_isBossRoom = isBossRoom;
-			_roomSpawns = new FastList<L2Spawn>();
-			_roomMobs = new FastList<L2Npc>();
+			_roomSpawns = new FastList<>();
+			_roomMobs = new FastList<>();
 			_s = new Polygon(new int[] { xMin, xMax, xMax, xMin }, new int[] { yMin, yMin, yMax, yMax }, 4);
 		}
 		
@@ -550,7 +550,7 @@ public class DimensionalRiftManager
 	
 	public FastList<Byte> getFreeRooms(byte type)
 	{
-		FastList<Byte> list = new FastList<Byte>();
+		FastList<Byte> list = new FastList<>();
 		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
 		{
 			if (!room.ispartyInside())
@@ -559,7 +559,6 @@ public class DimensionalRiftManager
 		return list;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final DimensionalRiftManager _instance = new DimensionalRiftManager();

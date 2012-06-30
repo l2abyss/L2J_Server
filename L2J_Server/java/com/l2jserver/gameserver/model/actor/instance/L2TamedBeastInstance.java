@@ -25,9 +25,11 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
@@ -35,8 +37,6 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
@@ -56,10 +56,10 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	private static final int BUFF_INTERVAL = 5000;	// 5 seconds
 	private int _remainingTime = MAX_DURATION;
 	private int _homeX, _homeY, _homeZ;
-	private L2PcInstance _owner;
+	protected L2PcInstance _owner;
 	private Future<?> _buffTask = null;
 	private Future<?> _durationCheckTask = null;
-	private static boolean _isFreyaBeast;
+	protected boolean _isFreyaBeast;
 	private List<L2Skill> _beastSkills = null;
 	
 	public L2TamedBeastInstance(int objectId, L2NpcTemplate template)
@@ -189,7 +189,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	public void addBeastSkill(L2Skill skill)
 	{
 		if (_beastSkills == null)
-			_beastSkills = new FastList<L2Skill>();
+			_beastSkills = new FastList<>();
 		_beastSkills.add(skill);
 	}
 	
@@ -249,7 +249,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			{
 				// instead of calculating this value each time, let's get this now and pass it on
 				int totalBuffsAvailable = 0;
-				for (L2Skill skill: getTemplate().getSkillsArray())
+				for (L2Skill skill: getTemplate().getSkills().values())
 				{
 					// if the skill is a buff, check if the owner has it already [  owner.getEffect(L2Skill skill) ]
 					if (skill.getSkillType() == L2SkillType.BUFF)
@@ -325,7 +325,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		// use of more than one debuff at this moment is acceptable
 		if (HPRatio >= 0.8)
 		{
-			for (L2Skill skill: getTemplate().getSkillsArray())
+			for (L2Skill skill: getTemplate().getSkills().values())
 			{
 				// if the skill is a debuff, check if the attacker has it already [  attacker.getEffect(L2Skill skill) ]
 				if ((skill.getSkillType() == L2SkillType.DEBUFF) && Rnd.get(3) < 1 && (attacker != null && attacker.getFirstEffect(skill) != null))
@@ -343,7 +343,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 				chance = 2;
 			
 			// if the owner has a lot of HP, then debuff the enemy with a random debuff among the available skills
-			for (L2Skill skill: getTemplate().getSkillsArray())
+			for (L2Skill skill: getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [  owner.getEffect(L2Skill skill) ]
 				if ( (Rnd.get(5) < chance) && ((skill.getSkillType() == L2SkillType.HEAL) ||
@@ -375,7 +375,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	 * @param skill 
 	 * @param target 
 	 *
-	 * @see com.l2jserver.gameserver.model.actor.L2Character#doCast(com.l2jserver.gameserver.model.L2Skill)
+	 * @see com.l2jserver.gameserver.model.actor.L2Character#doCast(com.l2jserver.gameserver.model.skills.L2Skill)
 	 */
 	protected void sitCastAndFollow(L2Skill skill, L2Character target)
 	{
@@ -404,7 +404,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			L2PcInstance owner = _tamedBeast.getOwner();
 			
 			L2ItemInstance item = null;
-			if (_isFreyaBeast)
+			if (_tamedBeast._isFreyaBeast)
 			{
 				item = owner.getInventory().getItemByItemId(foodTypeSkillId);
 				if (item != null && item.getCount() >= 1)
@@ -499,7 +499,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			L2Skill buffToGive = null;
 			
 			// get this npc's skills:  getSkills()
-			for (L2Skill skill: _tamedBeast.getTemplate().getSkillsArray())
+			for (L2Skill skill: _tamedBeast.getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [  owner.getEffect(L2Skill skill) ]
 				if (skill.getSkillType() == L2SkillType.BUFF)

@@ -36,9 +36,9 @@ public class AdminCommandHandler
 		return SingletonHolder._instance;
 	}
 	
-	private AdminCommandHandler()
+	protected AdminCommandHandler()
 	{
-		_datatable = new TIntObjectHashMap<IAdminCommandHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	public void registerHandler(IAdminCommandHandler handler)
@@ -72,7 +72,6 @@ public class AdminCommandHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AdminCommandHandler _instance = new AdminCommandHandler();

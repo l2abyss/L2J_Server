@@ -42,14 +42,14 @@ public class MailManager
 {
 	private static Logger _log = Logger.getLogger(MailManager.class.getName());
 	
-	private L2TIntObjectHashMap<Message> _messages = new L2TIntObjectHashMap<Message>();
+	private L2TIntObjectHashMap<Message> _messages = new L2TIntObjectHashMap<>();
 	
 	public static MailManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	private MailManager()
+	protected MailManager()
 	{
 		load();
 	}
@@ -148,7 +148,7 @@ public class MailManager
 	
 	public final List<Message> getInbox(int objectId)
 	{
-		List<Message> inbox = new FastList<Message>();
+		List<Message> inbox = new FastList<>();
 		for (Message msg : getMessages())
 		{
 			if (msg != null
@@ -161,7 +161,7 @@ public class MailManager
 	
 	public final List<Message> getOutbox(int objectId)
 	{
-		List<Message> outbox = new FastList<Message>();
+		List<Message> outbox = new FastList<>();
 		for (Message msg : getMessages())
 		{
 			if (msg != null
@@ -177,11 +177,10 @@ public class MailManager
 		_messages.put(msg.getId(), msg);
 		
 		Connection con = null;
-		PreparedStatement stmt = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			stmt = Message.getStatement(msg, con);
+			PreparedStatement stmt = Message.getStatement(msg, con);
 			stmt.execute();
 			stmt.close();
 		}
@@ -201,8 +200,10 @@ public class MailManager
 		ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msg.getId()), msg.getExpiration() - System.currentTimeMillis());
 	}
 	
-	class MessageDeletionTask implements Runnable
+	private class MessageDeletionTask implements Runnable
 	{
+		private final Logger _log = Logger.getLogger(MessageDeletionTask.class.getName());
+		
 		final int _msgId;
 		
 		public MessageDeletionTask(int msgId)
@@ -253,11 +254,10 @@ public class MailManager
 	public final void markAsReadInDb(int msgId)
 	{
 		Connection con = null;
-		PreparedStatement stmt = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			stmt = con.prepareStatement("UPDATE messages SET isUnread = 'false' WHERE messageId = ?");
+			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET isUnread = 'false' WHERE messageId = ?");
 			stmt.setInt(1, msgId);
 			stmt.execute();
 			stmt.close();
@@ -325,12 +325,11 @@ public class MailManager
 	public final void removeAttachmentsInDb(int msgId)
 	{
 		Connection con = null;
-		PreparedStatement stmt = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			stmt = con.prepareStatement("UPDATE messages SET hasAttachments = 'false' WHERE messageId = ?");
+			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET hasAttachments = 'false' WHERE messageId = ?");
 			
 			stmt.setInt(1, msgId);
 			
@@ -350,12 +349,11 @@ public class MailManager
 	public final void deleteMessageInDb(int msgId)
 	{
 		Connection con = null;
-		PreparedStatement stmt = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			stmt = con.prepareStatement("DELETE FROM messages WHERE messageId = ?");
+			PreparedStatement stmt = con.prepareStatement("DELETE FROM messages WHERE messageId = ?");
 			
 			stmt.setInt(1, msgId);
 			
@@ -370,12 +368,10 @@ public class MailManager
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		_messages.remove(msgId);
 		IdFactory.getInstance().releaseId(msgId);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final MailManager _instance = new MailManager();

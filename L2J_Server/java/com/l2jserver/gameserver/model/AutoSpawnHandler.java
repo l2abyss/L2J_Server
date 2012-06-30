@@ -36,7 +36,7 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -78,10 +78,10 @@ public class AutoSpawnHandler
 	
 	protected boolean _activeState = true;
 	
-	private AutoSpawnHandler()
+	protected AutoSpawnHandler()
 	{
-		_registeredSpawns = new FastMap<Integer, AutoSpawnInstance>();
-		_runningSpawns = new FastMap<Integer, ScheduledFuture<?>>();
+		_registeredSpawns = new FastMap<>();
+		_runningSpawns = new FastMap<>();
 		
 		restoreSpawnData();
 	}
@@ -112,8 +112,8 @@ public class AutoSpawnHandler
 		}
 		
 		// create clean list
-		_registeredSpawns = new FastMap<Integer, AutoSpawnInstance>();
-		_runningSpawns = new FastMap<Integer, ScheduledFuture<?>>();
+		_registeredSpawns = new FastMap<>();
+		_runningSpawns = new FastMap<>();
 		
 		// load
 		restoreSpawnData();
@@ -126,18 +126,12 @@ public class AutoSpawnHandler
 		
 		try
 		{
-			PreparedStatement statement = null;
-			PreparedStatement statement2 = null;
-			ResultSet rs = null;
-			ResultSet rs2 = null;
-			
 			con = L2DatabaseFactory.getInstance().getConnection();
 			
 			// Restore spawn group data, then the location data.
-			statement = con.prepareStatement("SELECT * FROM random_spawn ORDER BY groupId ASC");
-			rs = statement.executeQuery();
-			
-			statement2 = con.prepareStatement("SELECT * FROM random_spawn_loc WHERE groupId=?");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM random_spawn ORDER BY groupId ASC");
+			ResultSet rs = statement.executeQuery();
+			PreparedStatement statement2 = con.prepareStatement("SELECT * FROM random_spawn_loc WHERE groupId=?");
 			while (rs.next())
 			{
 				// Register random spawn group, set various options on the
@@ -151,7 +145,7 @@ public class AutoSpawnHandler
 				
 				// Restore the spawn locations for this spawn group/instance.
 				statement2.setInt(1, rs.getInt("groupId"));
-				rs2 = statement2.executeQuery();
+				ResultSet rs2 = statement2.executeQuery();
 				statement2.clearParameters();
 				
 				while (rs2.next())
@@ -386,7 +380,7 @@ public class AutoSpawnHandler
 	
 	public Map<Integer, AutoSpawnInstance> getAutoSpawnInstances(int npcId)
 	{
-		Map<Integer, AutoSpawnInstance> spawnInstList = new FastMap<Integer, AutoSpawnInstance>();
+		Map<Integer, AutoSpawnInstance> spawnInstList = new FastMap<>();
 		
 		for (AutoSpawnInstance spawnInst : _registeredSpawns.values())
 			if (spawnInst.getNpcId() == npcId)
@@ -533,9 +527,10 @@ public class AutoSpawnHandler
 				
 				// Announce to all players that the spawn has taken place, with
 				// the nearest town location.
-				if (spawnInst.isBroadcasting())
+				if (spawnInst.isBroadcasting() && (npcInst != null))
+				{
 					Announcements.getInstance().announceToAll("The " + npcInst.getName() + " has spawned near " + nearestTown + "!");
-				
+				}
 				if (Config.DEBUG)
 					_log.info("AutoSpawnHandler: Spawned NPC ID " + spawnInst.getNpcId() + " at " + x + ", " + y + ", " + z + " (Near "
 							+ nearestTown + ") for " + (spawnInst.getRespawnDelay() / 60000) + " minute(s).");
@@ -628,9 +623,9 @@ public class AutoSpawnHandler
 		
 		protected int _lastLocIndex = -1;
 		
-		private List<L2Npc> _npcList = new FastList<L2Npc>();
+		private List<L2Npc> _npcList = new FastList<>();
 		
-		private List<Location> _locList = new FastList<Location>();
+		private List<Location> _locList = new FastList<>();
 		
 		private boolean _spawnActive;
 		
@@ -710,7 +705,7 @@ public class AutoSpawnHandler
 		
 		public L2Spawn[] getSpawns()
 		{
-			List<L2Spawn> npcSpawns = new FastList<L2Spawn>();
+			List<L2Spawn> npcSpawns = new FastList<>();
 			
 			for (L2Npc npcInst : _npcList)
 				npcSpawns.add(npcInst.getSpawn());
@@ -774,7 +769,6 @@ public class AutoSpawnHandler
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AutoSpawnHandler _instance = new AutoSpawnHandler();

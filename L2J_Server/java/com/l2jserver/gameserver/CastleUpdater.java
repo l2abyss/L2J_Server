@@ -25,10 +25,8 @@ import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 
 
 /**
- *
- * Thorgrim - 2005
  * Class managing periodical events with castle
- *
+ * @author Thorgrim - 2005
  */
 public class CastleUpdater implements Runnable
 {
@@ -49,9 +47,9 @@ public class CastleUpdater implements Runnable
 		{
 			// Move current castle treasury to clan warehouse every 2 hour
 			ItemContainer warehouse = _clan.getWarehouse();
-			if ((warehouse != null) && (_clan.getHasCastle() > 0))
+			if ((warehouse != null) && (_clan.getCastleId() > 0))
 			{
-				Castle castle = CastleManager.getInstance().getCastleById(_clan.getHasCastle());
+				Castle castle = CastleManager.getInstance().getCastleById(_clan.getCastleId());
 				if (!Config.ALT_MANOR_SAVE_ALL_ACTIONS)
 				{
 					if (_runCount % Config.ALT_MANOR_SAVE_PERIOD_RATE == 0)

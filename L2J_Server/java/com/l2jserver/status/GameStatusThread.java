@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.ITelnetHandler;
@@ -31,6 +32,8 @@ import com.l2jserver.gameserver.handler.TelnetHandler;
 
 public class GameStatusThread extends Thread
 {
+	private static final Logger _log = Logger.getLogger(GameStatusThread.class.getName());
+	
 	private final Socket _cSocket;
 	
 	private final PrintWriter _print;
@@ -43,21 +46,33 @@ public class GameStatusThread extends Thread
 		if (Config.DEVELOPER)
 		{
 			if (type == 1)
+			{
 				System.out.println("TELNET | " + text);
+			}
 			else if (type == 2)
+			{
 				System.out.print("TELNET | " + text);
+			}
 			else if (type == 3)
+			{
 				System.out.print(text);
+			}
 			else if (type == 4)
+			{
 				System.out.println(text);
+			}
 			else
+			{
 				System.out.println("TELNET | " + text);
+			}
 		}
 		else
 		{
 			// only print output if the message is rejected
 			if (type == 5)
+			{
 				System.out.println("TELNET | " + text);
+			}
 		}
 	}
 	
@@ -73,19 +88,22 @@ public class GameStatusThread extends Thread
 		
 		// read and loop thru list of IPs, compare with newIP
 		if (Config.DEVELOPER)
+		{
 			telnetOutput(2, "");
+		}
 		
-		InputStream telnetIS = null;
-		try
+		final File file = new File(Config.TELNET_FILE);
+		try (InputStream telnetIS = new FileInputStream(file);)
 		{
 			Properties telnetSettings = new Properties();
-			telnetIS = new FileInputStream(new File(Config.TELNET_FILE));
 			telnetSettings.load(telnetIS);
 			
 			String HostList = telnetSettings.getProperty("ListOfHosts", "127.0.0.1,localhost,::1");
 			
 			if (Config.DEVELOPER)
+			{
 				telnetOutput(3, "Comparing ip to list...");
+			}
 			
 			// compare
 			String ipToCompare = null;
@@ -95,31 +113,29 @@ public class GameStatusThread extends Thread
 				{
 					ipToCompare = InetAddress.getByName(ip).getHostAddress();
 					if (clientStringIP.equals(ipToCompare))
+					{
 						result = true;
+					}
 					if (Config.DEVELOPER)
+					{
 						telnetOutput(3, clientStringIP + " = " + ipToCompare + "(" + ip + ") = " + result);
+					}
 				}
 			}
 		}
 		catch (IOException e)
 		{
 			if (Config.DEVELOPER)
+			{
 				telnetOutput(4, "");
+			}
 			telnetOutput(1, "Error: " + e);
-		}
-		finally
-		{
-			try
-			{
-				telnetIS.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 		
 		if (Config.DEVELOPER)
+		{
 			telnetOutput(4, "Allow IP: " + result);
+		}
 		return result;
 	}
 	
@@ -179,7 +195,7 @@ public class GameStatusThread extends Thread
 		String _usrCommand = "";
 		try
 		{
-			while (_usrCommand.compareTo("quit") != 0 && _usrCommand.compareTo("exit") != 0)
+			while ((_usrCommand.compareTo("quit") != 0) && (_usrCommand.compareTo("exit") != 0))
 			{
 				_usrCommand = _read.readLine();
 				if (_usrCommand == null)
@@ -190,14 +206,17 @@ public class GameStatusThread extends Thread
 				
 				final ITelnetHandler handler = TelnetHandler.getInstance().getHandler(_usrCommand);
 				if (handler != null)
+				{
 					handler.useCommand(_usrCommand, _print, _cSocket, _uptime);
-				
-				else if (_usrCommand.equalsIgnoreCase("quit") || _usrCommand.equalsIgnoreCase("exit") || _usrCommand.length() == 0)
+				}
+				else if (_usrCommand.equalsIgnoreCase("quit") || _usrCommand.equalsIgnoreCase("exit") || (_usrCommand.length() == 0))
 				{
 					/* Do Nothing :p - Just here to save us from the "Command Not Understood" Text */
 				}
 				else
+				{
 					_print.print("Command: " + _usrCommand + " was not found!");
+				}
 				
 				_print.print("");
 				_print.flush();
@@ -212,7 +231,7 @@ public class GameStatusThread extends Thread
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 }

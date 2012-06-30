@@ -14,19 +14,15 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.entity.Message;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author Migi, DS
  */
 public class ExReplySentPost extends L2GameServerPacket
-{
-	private static final Logger _log = Logger.getLogger(ExReplyReceivedPost.class.getName());
-	
+{	
 	private Message _msg;
 	private L2ItemInstance[] _items = null;
 	
@@ -60,7 +56,7 @@ public class ExReplySentPost extends L2GameServerPacket
 			for (L2ItemInstance item : _items)
 			{
 				writeD(0x00);
-				writeD(item.getItemId());
+				writeD(item.getDisplayId());
 				writeD(item.getLocationSlot());
 				writeQ(item.getCount());
 				writeH(item.getItem().getType2());

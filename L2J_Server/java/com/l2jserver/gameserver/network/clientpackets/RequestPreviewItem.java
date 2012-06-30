@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
@@ -31,13 +30,13 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MercManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Armor;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.type.L2ArmorType;
-import com.l2jserver.gameserver.model.item.type.L2WeaponType;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.L2Armor;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.type.L2ArmorType;
+import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ShopPreviewInfo;
@@ -50,9 +49,7 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestPreviewItem extends L2GameClientPacket
 {
 	private static final String _C__C7_REQUESTPREVIEWITEM = "[C] C7 RequestPreviewItem";
-	
-	protected static final Logger _log = Logger.getLogger(RequestPreviewItem.class.getName());
-	
+		
 	private L2PcInstance _activeChar;
 	private Map<Integer, Integer> _item_list;
 	@SuppressWarnings("unused")
@@ -64,13 +61,20 @@ public final class RequestPreviewItem extends L2GameClientPacket
 	
 	private class RemoveWearItemsTask implements Runnable
 	{
+		private L2PcInstance activeChar;
+		
+		protected RemoveWearItemsTask(L2PcInstance player)
+		{
+			activeChar = player;
+		}
+		
 		@Override
 		public void run()
 		{
 			try
 			{
-				_activeChar.sendPacket(SystemMessageId.NO_LONGER_TRYING_ON);
-				_activeChar.sendPacket(new UserInfo(_activeChar));
+				activeChar.sendPacket(SystemMessageId.NO_LONGER_TRYING_ON);
+				activeChar.sendPacket(new UserInfo(activeChar));
 			}
 			catch (Exception e)
 			{
@@ -169,7 +173,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		
 		long totalPrice = 0;
 		_listId = list.getListId();		
-		_item_list = new FastMap<Integer, Integer>();
+		_item_list = new FastMap<>();
 		
 		for (int i = 0; i < _count; i++)
 		{
@@ -230,7 +234,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		{
 			_activeChar.sendPacket(new ShopPreviewInfo(_item_list));		
 			// Schedule task
-			ThreadPoolManager.getInstance().scheduleGeneral(new RemoveWearItemsTask(), Config.WEAR_DELAY * 1000);
+			ThreadPoolManager.getInstance().scheduleGeneral(new RemoveWearItemsTask(_activeChar), Config.WEAR_DELAY * 1000);
 		}
 	}
 	

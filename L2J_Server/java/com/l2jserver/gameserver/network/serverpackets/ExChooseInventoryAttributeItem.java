@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.Elementals;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 
 /**
@@ -23,13 +23,13 @@ import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
  */
 public class ExChooseInventoryAttributeItem extends L2GameServerPacket
 {
-	private int _itemId;
-	private byte _atribute;
-	private int _level;
+	private final int _itemId;
+	private final byte _atribute;
+	private final int _level;
 	
 	public ExChooseInventoryAttributeItem(L2ItemInstance item)
 	{
-		_itemId = item.getItemId();
+		_itemId = item.getDisplayId();
 		_atribute = Elementals.getItemElement(_itemId);
 		if (_atribute == Elementals.NONE)
 			throw new IllegalArgumentException("Undefined Atribute item: "+ item);

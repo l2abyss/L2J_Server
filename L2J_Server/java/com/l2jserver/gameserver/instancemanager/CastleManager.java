@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 public class CastleManager implements InstanceListManager
 {
@@ -41,22 +41,10 @@ public class CastleManager implements InstanceListManager
 	{
 		return SingletonHolder._instance;
 	}
-	// =========================================================
 	
-	// =========================================================
-	// Data Field
 	private List<Castle> _castles;
 	
-	// =========================================================
-	// Constructor
 	private static final int _castleCirclets[] = { 0, 6838, 6835, 6839, 6837, 6840, 6834, 6836, 8182, 8183 };
-	
-	private CastleManager()
-	{
-	}
-	
-	// =========================================================
-	// Method - Public
 	
 	public final int findNearestCastleIndex(L2Object obj)
 	{
@@ -84,9 +72,6 @@ public class CastleManager implements InstanceListManager
 		}
 		return index;
 	}
-	
-	// =========================================================
-	// Property - Public
 	
 	public final Castle getCastleById(int castleId)
 	{
@@ -165,7 +150,7 @@ public class CastleManager implements InstanceListManager
 	public final List<Castle> getCastles()
 	{
 		if (_castles == null)
-			_castles = new FastList<Castle>();
+			_castles = new FastList<>();
 		return _castles;
 	}
 	
@@ -264,7 +249,6 @@ public class CastleManager implements InstanceListManager
 	@Override
 	public void loadInstances()
 	{
-		_log.info("Initializing CastleManager");
 		Connection con = null;
 		try
 		{
@@ -306,7 +290,6 @@ public class CastleManager implements InstanceListManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CastleManager _instance = new CastleManager();

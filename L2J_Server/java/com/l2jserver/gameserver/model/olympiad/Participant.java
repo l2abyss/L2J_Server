@@ -19,21 +19,19 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * 
- * @author DS
- *
+ * @author DS, Zoey76
  */
 public final class Participant
 {
-	public final int objectId;
-	public L2PcInstance player;
-	public final String name;
-	public final int side;
-	public final int baseClass;
-	public boolean disconnected = false;
-	public boolean defaulted = false;
-	public final StatsSet stats;
-
+	private final int objectId;
+	private L2PcInstance player;
+	private final String name;
+	private final int side;
+	private final int baseClass;
+	private boolean disconnected = false;
+	private boolean defaulted = false;
+	private final StatsSet stats;
+	
 	public Participant(L2PcInstance plr, int olympiadSide)
 	{
 		objectId = plr.getObjectId();
@@ -41,9 +39,9 @@ public final class Participant
 		name = plr.getName();
 		side = olympiadSide;
 		baseClass = plr.getBaseClass();
-		stats = Olympiad.getNobleStats(objectId);
+		stats = Olympiad.getNobleStats(getObjectId());
 	}
-
+	
 	public Participant(int objId, int olympiadSide)
 	{
 		objectId = objId;
@@ -53,20 +51,114 @@ public final class Participant
 		baseClass = 0;
 		stats = null;
 	}
-
-	public final void updatePlayer()
+	
+	/**
+	 * Updates the reference to {@link #player}, if it's null or appears off-line.
+	 * @return {@code true} if after the update the player isn't null, {@code false} otherwise.
+	 */
+	public final boolean updatePlayer()
 	{
-		if (player == null || !player.isOnline())
-			player = L2World.getInstance().getPlayer(objectId);
+		if ((player == null) || !player.isOnline())
+		{
+			player = L2World.getInstance().getPlayer(getObjectId());
+		}
+		return (player != null);
 	}
-
+	
+	/**
+	 * @param statName
+	 * @param increment
+	 */
 	public final void updateStat(String statName, int increment)
 	{
 		stats.set(statName, Math.max(stats.getInteger(statName) + increment, 0));
 	}
-
-	public final void updateNobleStats()
+	
+	/**
+	 * @return the name the player's name.
+	 */
+	public String getName()
 	{
-		Olympiad.updateNobleStats(objectId, stats);
+		return name;
+	}
+	
+	/**
+	 * @return the player
+	 */
+	public L2PcInstance getPlayer()
+	{
+		return player;
+	}
+
+	/**
+	 * @return the objectId
+	 */
+	public int getObjectId()
+	{
+		return objectId;
+	}
+
+	/**
+	 * @return the stats
+	 */
+	public StatsSet getStats()
+	{
+		return stats;
+	}
+
+	/**
+	 * @param noble the player to set
+	 */
+	public void setPlayer(L2PcInstance noble)
+	{
+		player = noble;
+	}
+
+	/**
+	 * @return the side
+	 */
+	public int getSide()
+	{
+		return side;
+	}
+	
+	/**
+	 * @return the baseClass
+	 */
+	public int getBaseClass()
+	{
+		return baseClass;
+	}
+	
+	/**
+	 * @return the disconnected
+	 */
+	public boolean isDisconnected()
+	{
+		return disconnected;
+	}
+	
+	/**
+	 * @param val the disconnected to set
+	 */
+	public void setDisconnected(boolean val)
+	{
+		disconnected = val;
+	}
+	
+	/**
+	 * @return the defaulted
+	 */
+	public boolean isDefaulted()
+	{
+		return defaulted;
+	}
+	
+	/**
+	 * @param val the value to set.
+	 */
+	public void setDefaulted(boolean val)
+	{
+		defaulted = val;
 	}
 }

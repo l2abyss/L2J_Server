@@ -14,20 +14,16 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2TransformManagerInstance;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillInfo;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 
 /**
  * @author Zoey76
@@ -35,7 +31,6 @@ import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType
 public final class RequestAcquireSkillInfo extends L2GameClientPacket
 {
 	private static final String _C__73_REQUESTACQUIRESKILLINFO = "[C] 73 RequestAcquireSkillInfo";
-	private static final Logger _log = Logger.getLogger(RequestAcquireSkillInfo.class.getName());
 	
 	private int _id;
 	private int _level;
@@ -54,18 +49,17 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 	{
 		if ((_id <= 0) || (_level <= 0))
 		{
+			_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Invalid Id: " + _id + " or level: " + _level + "!");
 			return;
 		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		
 		if (activeChar == null)
 		{
 			return;
 		}
 		
 		final L2Npc trainer = activeChar.getLastFolkNPC();
-		
 		if (!(trainer instanceof L2NpcInstance))
 		{
 			return;
@@ -77,107 +71,52 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 		}
 		
 		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
-		
 		if (skill == null)
 		{
 			_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Skill Id: " + _id + " level: " + _level + " is undefined. " + RequestAcquireSkillInfo.class.getName() + " failed.");
 			return;
 		}
 		
-		final SkillType skillType = SkillType.values()[_skillType];
-		
-		//Doesn't apply to all Skill Types
-		if (((skillType != SkillType.Transfer) && ((_level > 1) && (activeChar.getKnownSkill(_id) == null))) || ((activeChar.getKnownSkill(_id) != null) && (activeChar.getKnownSkill(_id).getLevel() != (_level - 1))))
+		// Hack check. Doesn't apply to all Skill Types
+		final int prevSkillLevel = activeChar.getSkillLevel(_id);
+		final AcquireSkillType skillType = AcquireSkillType.values()[_skillType];
+		if ((prevSkillLevel > 0) && !((skillType == AcquireSkillType.Transfer) || (skillType == AcquireSkillType.SubPledge)))
 		{
-			_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Player " + activeChar.getName() + " is requesting info for skill Id: " + _id + " level " + _level + " without knowing it's previous level!");
+			if (prevSkillLevel == _level)
+			{
+				_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Player " + activeChar.getName() + " is trequesting info for a skill that already knows, Id: " + _id + " level: " + _level + "!");
+			}
+			else if (prevSkillLevel != (_level - 1))
+			{
+				_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Player " + activeChar.getName() + " is requesting info for skill Id: " + _id + " level " + _level + " without knowing it's previous level!");
+			}
+		}
+		
+		final L2SkillLearn s = SkillTreesData.getInstance().getSkillLearn(skillType, _id, _level, activeChar);
+		if (s == null)
+		{
+			return;
 		}
 		
 		switch (skillType)
 		{
-			case ClassTransform:
+			case Class:
 			{
-				if (trainer instanceof L2TransformManagerInstance)
+				if (trainer.getTemplate().canTeach(activeChar.getLearningClass()))
 				{
-					final L2SkillLearn s = SkillTreesData.getInstance().getTransformSkill(_id, _level);
-					if (s != null)
-					{
-						int itemId = -1;
-						int itemCount = -1;
-						final int levelUpSp = s.getLevelUpSp();
-						
-						final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.ClassTransform);
-						if (s.getItemsIdCount() != null)
-						{
-							for (int[] itemIdCount : s.getItemsIdCount())
-							{
-								itemId = itemIdCount[0];
-								itemCount = itemIdCount[1];
-								
-								if ((itemId > 0) && (itemCount > 0))
-								{
-									asi.addRequirement(99, itemId, itemCount, 50);
-								}
-							}
-						}
-						sendPacket(asi);
-					}
-					return;
+					final int customSp = s.getCalculatedLevelUpSp(activeChar.getClassId(), activeChar.getLearningClass());
+					sendPacket(new AcquireSkillInfo(skillType, s, customSp));
 				}
-				else if (trainer.getTemplate().canTeach(activeChar.getLearningClass()))
-				{
-					final L2SkillLearn s = SkillTreesData.getInstance().getClassSkill(_id, _level, activeChar.getLearningClass());
-					if (s != null)
-					{
-						int itemId = -1;
-						int itemCount = -1;
-						final int levelUpSp = s.getCalculatedLevelUpSp(activeChar.getClassId(), activeChar.getLearningClass());
-						final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.ClassTransform);
-						
-						if (s.getItemsIdCount() != null)
-						{
-							for (int[] itemIdCount : s.getItemsIdCount())
-							{
-								if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == L2Skill.SKILL_DIVINE_INSPIRATION))
-								{
-									continue;
-								}
-								
-								itemId = itemIdCount[0];
-								itemCount = itemIdCount[1];
-								
-								if ((itemId > 0) && (itemCount > 0))
-								{
-									asi.addRequirement(99, itemId, itemCount, 50);
-								}
-							}
-						}
-						sendPacket(asi);
-					}
-				}
+				break;
+			}
+			case Transform:
+			{
+				sendPacket(new AcquireSkillInfo(skillType, s));
 				break;
 			}
 			case Fishing:
 			{
-				final L2SkillLearn s = SkillTreesData.getInstance().getFishingSkill(_id, _level);
-				if (s != null)
-				{
-					int itemId = -1;
-					int itemCount = -1;
-					final int levelUpSp = s.getLevelUpSp();
-					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.Fishing);
-					for (int[] itemIdCount : s.getItemsIdCount())
-					{
-						itemId = itemIdCount[0];
-						itemCount = itemIdCount[1];
-						
-						if ((itemId > 0) && (itemCount > 0))
-						{
-							asi.addRequirement(4, itemId, itemCount, 0);
-						}
-					}
-					sendPacket(asi);
-				}
+				sendPacket(new AcquireSkillInfo(skillType, s));
 				break;
 			}
 			case Pledge:
@@ -186,31 +125,7 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 				{
 					return;
 				}
-				
-				final L2SkillLearn s = SkillTreesData.getInstance().getPledgeSkill(_id, _level);
-				if (s != null)
-				{
-					int itemId = -1;
-					int itemCount = -1;
-					final int requiredRep = s.getLevelUpSp();
-					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, requiredRep, SkillType.Pledge);
-					
-					if (Config.LIFE_CRYSTAL_NEEDED)
-					{
-						for (int[] itemIdCount : s.getItemsIdCount())
-						{
-							itemId = itemIdCount[0];
-							itemCount = itemIdCount[1];
-							
-							if ((itemId > 0) && (itemCount > 0))
-							{
-								asi.addRequirement(1, itemId, itemCount, 0);
-							}
-						}
-					}
-					sendPacket(asi);
-				}
+				sendPacket(new AcquireSkillInfo(skillType, s));
 				break;
 			}
 			case SubPledge:
@@ -220,106 +135,26 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 					return;
 				}
 				
-				if (trainer instanceof L2SquadTrainer)
+				if (!(trainer instanceof L2SquadTrainer))
 				{
-					final L2SkillLearn s = SkillTreesData.getInstance().getSubPledgeSkill(_id, _level);
-					if (s != null)
-					{
-						int itemId = -1;
-						int itemCount = -1;
-						final int levelUpSp = s.getLevelUpSp();
-						
-						final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.SubPledge);
-						for (int[] itemIdCount : s.getItemsIdCount())
-						{
-							itemId = itemIdCount[0];
-							itemCount = itemIdCount[1];
-							
-							if ((itemId > 0) && (itemCount > 0))
-							{
-								asi.addRequirement(0, itemId, itemCount, 0);
-							}
-						}
-						sendPacket(asi);
-					}
+					return;
 				}
+				sendPacket(new AcquireSkillInfo(skillType, s));
 				break;
 			}
 			case SubClass:
 			{
-				final L2SkillLearn s = SkillTreesData.getInstance().getSubClassSkill(_id, _level);
-				
-				if (s != null)
-				{
-					int itemId = -1;
-					int itemCount = -1;
-					final int levelUpSp = s.getLevelUpSp();
-					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.SubClass);
-					for (int[] itemIdCount : s.getItemsIdCount())
-					{
-						itemId = itemIdCount[0];
-						itemCount = itemIdCount[1];
-						
-						if ((itemId > 0) && (itemCount > 0))
-						{
-							asi.addRequirement(99, itemId, itemCount, 50);
-						}
-					}
-					sendPacket(asi);
-				}
+				sendPacket(new AcquireSkillInfo(skillType, s));
 				break;
 			}
 			case Collect:
 			{
-				final L2SkillLearn s = SkillTreesData.getInstance().getCollectSkill(_id, _level);
-				if (s != null)
-				{
-					int itemId = -1;
-					int itemCount = -1;
-					final int levelUpSp = s.getLevelUpSp();
-					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.Collect);
-					for (int[] itemIdCount : s.getItemsIdCount())
-					{
-						itemId = itemIdCount[0];
-						itemCount = itemIdCount[1];
-						
-						if ((itemId > 0) && (itemCount > 0))
-						{
-							asi.addRequirement(6, itemId, itemCount, 0);
-						}
-					}
-					sendPacket(asi);
-				}
+				sendPacket(new AcquireSkillInfo(skillType, s));
 				break;
 			}
 			case Transfer:
 			{
-				final L2SkillLearn s = SkillTreesData.getInstance().getTransferSkill(_id, _level, activeChar.getClassId());
-				if (s != null)
-				{
-					int itemId = -1;
-					int itemCount = -1;
-					final int levelUpSp = s.getLevelUpSp();
-					
-					final AcquireSkillInfo asi = new AcquireSkillInfo(_id, _level, levelUpSp, SkillType.Transfer);
-					for (int[] itemIdCount : s.getItemsIdCount())
-					{
-						itemId = itemIdCount[0];
-						itemCount = itemIdCount[1];
-						
-						if ((itemId > 0) && (itemCount > 0))
-						{
-							asi.addRequirement(4, itemId, itemCount, 0);
-						}
-					}
-					sendPacket(asi);
-				}
-				else
-				{
-					_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Null L2SkillLearn for id: " + _id + " and level " + _level + " in Transfer Skill Tree for skill learning class " + activeChar.getClassId() + "!");
-				}
+				sendPacket(new AcquireSkillInfo(skillType, s));
 				break;
 			}
 		}

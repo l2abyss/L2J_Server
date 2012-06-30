@@ -1,14 +1,16 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under the terms of the
- * GNU General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License along with this program. If
- * not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.loginserver;
 
@@ -28,14 +30,12 @@ import com.l2jserver.loginserver.network.serverpackets.Init;
 import com.l2jserver.util.IPv4Filter;
 
 /**
- * 
  * @author KenM
  */
-public class SelectorHelper implements IMMOExecutor<L2LoginClient>,
-IClientFactory<L2LoginClient>, IAcceptFilter
+public class SelectorHelper implements IMMOExecutor<L2LoginClient>, IClientFactory<L2LoginClient>, IAcceptFilter
 {
-	private ThreadPoolExecutor _generalPacketsThreadPool;
-	private IPv4Filter _ipv4filter;
+	private final ThreadPoolExecutor _generalPacketsThreadPool;
+	private final IPv4Filter _ipv4filter;
 	
 	public SelectorHelper()
 	{
@@ -44,7 +44,6 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	}
 	
 	/**
-	 * 
 	 * @see org.mmocore.network.IMMOExecutor#execute(org.mmocore.network.ReceivablePacket)
 	 */
 	@Override
@@ -54,7 +53,6 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	}
 	
 	/**
-	 * 
 	 * @see org.mmocore.network.IClientFactory#create(org.mmocore.network.MMOConnection)
 	 */
 	@Override
@@ -66,7 +64,6 @@ IClientFactory<L2LoginClient>, IAcceptFilter
 	}
 	
 	/**
-	 * 
 	 * @see org.mmocore.network.IAcceptFilter#accept(java.nio.channels.SocketChannel)
 	 */
 	@Override

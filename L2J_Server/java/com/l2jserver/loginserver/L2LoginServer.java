@@ -16,7 +16,6 @@ package com.l2jserver.loginserver;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,15 +40,14 @@ import com.l2jserver.loginserver.network.L2LoginPacketHandler;
 import com.l2jserver.status.Status;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
-public class L2LoginServer
+public final class L2LoginServer
 {
-	public static final int PROTOCOL_REV = 0x0106;
-	
-	private static L2LoginServer _instance;
 	private final Logger _log = Logger.getLogger(L2LoginServer.class.getName());
+	
+	public static final int PROTOCOL_REV = 0x0106;
+	private static L2LoginServer _instance;
 	private GameServerListener _gameServerListener;
 	private SelectorThread<L2LoginClient> _selectorThread;
 	private Status _statusServer;
@@ -78,30 +76,14 @@ public class L2LoginServer
 		logFolder.mkdir();
 		
 		// Create input stream for log file -- or store file data into memory
-		InputStream is = null;
-		try
+		
+		try (InputStream is = new FileInputStream(new File(LOG_NAME)))
 		{
-			is = new FileInputStream(new File(LOG_NAME));
 			LogManager.getLogManager().readConfiguration(is);
-			is.close();
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (is != null)
-				{
-					is.close();
-				}
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 		
 		// Load Config
@@ -128,20 +110,7 @@ public class L2LoginServer
 			System.exit(1);
 		}
 		
-		try
-		{
-			GameServerTable.load();
-		}
-		catch (GeneralSecurityException e)
-		{
-			_log.log(Level.SEVERE, "FATAL: Failed to load GameServerTable. Reason: " + e.getMessage(), e);
-			System.exit(1);
-		}
-		catch (SQLException e)
-		{
-			_log.log(Level.SEVERE, "FATAL: Failed to load GameServerTable. Reason: " + e.getMessage(), e);
-			System.exit(1);
-		}
+		GameServerTable.getInstance();
 		
 		loadBanFile();
 		
@@ -173,7 +142,7 @@ public class L2LoginServer
 		final SelectorHelper sh = new SelectorHelper();
 		try
 		{
-			_selectorThread = new SelectorThread<L2LoginClient>(sc, sh, lph, sh, sh);
+			_selectorThread = new SelectorThread<>(sc, sh, lph, sh, sh);
 		}
 		catch (IOException e)
 		{
@@ -236,32 +205,18 @@ public class L2LoginServer
 	
 	private void loadBanFile()
 	{
-		File bannedFile = new File("./banned_ip.cfg");
+		final File bannedFile = new File("./banned_ip.cfg");
 		if (bannedFile.exists() && bannedFile.isFile())
 		{
-			FileInputStream fis = null;
-			try
-			{
-				fis = new FileInputStream(bannedFile);
-			}
-			catch (FileNotFoundException e)
-			{
-				_log.log(Level.WARNING, "Failed to load banned IPs file (" + bannedFile.getName() + ") for reading. Reason: " + e.getMessage(), e);
-				return;
-			}
-			
-			LineNumberReader reader = null;
 			String line;
 			String[] parts;
-			try
+			try (FileInputStream fis = new FileInputStream(bannedFile); InputStreamReader is = new InputStreamReader(fis); LineNumberReader reader = new LineNumberReader(is))
 			{
-				reader = new LineNumberReader(new InputStreamReader(fis));
-				
 				while ((line = reader.readLine()) != null)
 				{
 					line = line.trim();
-					// check if this line isnt a comment line
-					if (line.length() > 0 && line.charAt(0) != '#')
+					// check if this line isn't a comment line
+					if ((line.length() > 0) && (line.charAt(0) != '#'))
 					{
 						// split comments if any
 						parts = line.split("#", 2);
@@ -302,24 +257,6 @@ public class L2LoginServer
 			catch (IOException e)
 			{
 				_log.log(Level.WARNING, "Error while reading the bans file (" + bannedFile.getName() + "). Details: " + e.getMessage(), e);
-			}
-			finally
-			{
-				try
-				{
-					reader.close();
-				}
-				catch (Exception e)
-				{
-				}
-				
-				try
-				{
-					fis.close();
-				}
-				catch (Exception e)
-				{
-				}
 			}
 			_log.info("Loaded " + LoginController.getInstance().getBannedIps().size() + " IP Bans.");
 		}

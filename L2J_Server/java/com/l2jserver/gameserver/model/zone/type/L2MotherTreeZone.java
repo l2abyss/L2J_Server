@@ -20,10 +20,8 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * A mother-trees zone
- * Basic type zone for Hp, MP regen
- *
- * @author  durgus
+ * A mother-trees zone Basic type zone for Hp, MP regen
+ * @author durgus
  */
 public class L2MotherTreeZone extends L2ZoneType
 {
@@ -42,47 +40,51 @@ public class L2MotherTreeZone extends L2ZoneType
 	{
 		if (name.equals("enterMsgId"))
 		{
-			_enterMsg = Integer.valueOf(value);
+			_enterMsg = Integer.parseInt(value);
 		}
 		else if (name.equals("leaveMsgId"))
 		{
-			_leaveMsg = Integer.valueOf(value);
+			_leaveMsg = Integer.parseInt(value);
 		}
 		else if (name.equals("MpRegenBonus"))
 		{
-			_mpRegen = Integer.valueOf(value);
+			_mpRegen = Integer.parseInt(value);
 		}
 		else if (name.equals("HpRegenBonus"))
 		{
-			_hpRegen = Integer.valueOf(value);
+			_hpRegen = Integer.parseInt(value);
 		}
 		else
+		{
 			super.setParameter(name, value);
-		
+		}
 	}
-	
 	
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) character;
+			L2PcInstance player = character.getActingPlayer();
 			character.setInsideZone(L2Character.ZONE_MOTHERTREE, true);
 			if (_enterMsg != 0)
+			{
 				player.sendPacket(SystemMessage.getSystemMessage(_enterMsg));
+			}
 		}
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) character;
+			L2PcInstance player = character.getActingPlayer();
 			player.setInsideZone(L2Character.ZONE_MOTHERTREE, false);
 			if (_leaveMsg != 0)
+			{
 				player.sendPacket(SystemMessage.getSystemMessage(_leaveMsg));
+			}
 		}
 	}
 	

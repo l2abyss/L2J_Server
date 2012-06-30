@@ -14,11 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.util.Point3D;
@@ -31,7 +29,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestExMagicSkillUseGround extends L2GameClientPacket
 {
 	private static final String _C__D0_44_REQUESTEXMAGICSKILLUSEGROUND = "[C] D0:44 RequestExMagicSkillUseGround";
-	private static Logger _log = Logger.getLogger(RequestExMagicSkillUseGround.class.getName());
 	
 	private int _x;
 	private int _y;

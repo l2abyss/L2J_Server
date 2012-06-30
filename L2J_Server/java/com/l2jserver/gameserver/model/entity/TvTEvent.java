@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
@@ -31,7 +32,6 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -39,9 +39,11 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -49,7 +51,9 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.scripting.scriptengine.events.TvtKillEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.events.TvTListener;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
 
@@ -81,6 +85,8 @@ public class TvTEvent
 	private static L2Npc _lastNpcSpawn = null;
 	/** Instance id<br> */
 	private static int _TvTEventInstance = 0;
+	
+	private static FastList<TvTListener> tvtListeners = new FastList<TvTListener>().shared();
 	
 	/**
 	 * No instance of this class!<br>
@@ -144,6 +150,7 @@ public class TvTEvent
 		}
 		
 		setState(EventState.PARTICIPATING);
+		fireTvtEventListeners(EventStage.REGISTRATION_BEGIN);
 		return true;
 	}
 	
@@ -177,7 +184,7 @@ public class TvTEvent
 		setState(EventState.STARTING);
 		
 		// Randomize and balance team distribution
-		Map< Integer, L2PcInstance > allParticipants = new FastMap< Integer, L2PcInstance >();
+		Map< Integer, L2PcInstance > allParticipants = new FastMap<>();
 		allParticipants.putAll(_teams[0].getParticipatedPlayers());
 		allParticipants.putAll(_teams[1].getParticipatedPlayers());
 		_teams[0].cleanMe();
@@ -289,6 +296,7 @@ public class TvTEvent
 				}
 			}
 		}
+		fireTvtEventListeners(EventStage.START);
 		
 		return true;
 	}
@@ -333,6 +341,7 @@ public class TvTEvent
 		// Get team which has more points
 		TvTEventTeam team = _teams[_teams[0].getPoints() > _teams[1].getPoints() ? 0 : 1];
 		rewardTeam(team);
+		fireTvtEventListeners(EventStage.END);
 		return "TvT Event: Event finish. Team " + team.getName() + " won with " + team.getPoints() + " kills.";
 	}
 	
@@ -862,7 +871,7 @@ public class TvTEvent
 		
 		L2PcInstance killerPlayerInstance = null;
 		
-		if (killerCharacter instanceof L2PetInstance || killerCharacter instanceof L2SummonInstance)
+		if (killerCharacter instanceof L2PetInstance || killerCharacter instanceof L2ServitorInstance)
 		{
 			killerPlayerInstance = ((L2Summon) killerCharacter).getOwner();
 			
@@ -897,6 +906,7 @@ public class TvTEvent
 					playerInstance.sendPacket(cs);
 				}
 			}
+			fireTvtKillListeners(killerPlayerInstance,killedPlayerInstance,killerTeam);
 		}
 	}
 	
@@ -1159,9 +1169,10 @@ public class TvTEvent
 	public static String[] getTeamNames()
 	{
 		return new String[]
-		                  {
-				_teams[0].getName(), _teams[1].getName()
-		                  };
+		{
+			_teams[0].getName(),
+			_teams[1].getName()
+		};
 	}
 	
 	/**
@@ -1172,9 +1183,10 @@ public class TvTEvent
 	public static int[] getTeamsPlayerCounts()
 	{
 		return new int[]
-		               {
-				_teams[0].getParticipatedPlayerCount(), _teams[1].getParticipatedPlayerCount()
-		               };
+		{
+			_teams[0].getParticipatedPlayerCount(),
+			_teams[1].getParticipatedPlayerCount()
+		};
 	}
 	
 	/**
@@ -1185,13 +1197,95 @@ public class TvTEvent
 	public static int[] getTeamsPoints()
 	{
 		return new int[]
-		               {
-				_teams[0].getPoints(), _teams[1].getPoints()
-		               };
+		{
+			_teams[0].getPoints(), 
+			_teams[1].getPoints()
+		};
 	}
 	
 	public static int getTvTEventInstance()
 	{
 		return _TvTEventInstance;
+	}
+	
+	// Listeners
+	/**
+	 * Fires all the TvTListener.onKill() methods, if any
+	 * @param killer
+	 * @param victim
+	 * @param killerTeam
+	 */
+	private static void fireTvtKillListeners(L2PcInstance killer, L2PcInstance victim, TvTEventTeam killerTeam)
+	{
+		if (!tvtListeners.isEmpty() && killer != null && victim != null && killerTeam != null)
+		{
+			TvtKillEvent event = new TvtKillEvent();
+			event.setKiller(killer);
+			event.setVictim(victim);
+			event.setKillerTeam(killerTeam);
+			for (TvTListener listener : tvtListeners)
+			{
+				listener.onKill(event);
+			}
+		}
+	}
+	
+	/**
+	 * Fires the appropriate TvtEventListeners, if any
+	 * @param stage
+	 */
+	private static void fireTvtEventListeners(EventStage stage)
+	{
+		if (!tvtListeners.isEmpty())
+		{
+			switch (stage)
+			{
+				case REGISTRATION_BEGIN:
+				{
+					for (TvTListener listener : tvtListeners)
+					{
+						listener.onRegistrationStart();
+					}
+					break;
+				}
+				case START:
+				{
+					for (TvTListener listener : tvtListeners)
+					{
+						listener.onBegin();
+					}
+					break;
+				}
+				case END:
+				{
+					for (TvTListener listener : tvtListeners)
+					{
+						listener.onEnd();
+					}
+					break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Adds a TvT listener
+	 * @param listener
+	 */
+	public static void addTvTListener(TvTListener listener)
+	{
+		if (!tvtListeners.contains(listener))
+		{
+			tvtListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a TvT listener
+	 * @param listener
+	 */
+	public static void removeTvtListener(TvTListener listener)
+	{
+		tvtListeners.remove(listener);
 	}
 }

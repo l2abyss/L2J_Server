@@ -14,29 +14,29 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
+import com.l2jserver.Config;
+import com.l2jserver.gameserver.model.L2SkillLearn;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
- * Sample:
- * <code>
- * a4
- * 4d000000 01000000 98030000 			Attack Aura, level 1, sp cost
- * 01000000 							number of requirements
- * 05000000 47040000 0100000 000000000	   1 x spellbook advanced ATTACK                                                 .
- * </code>
- * <br>
- * format   dddd d (ddQd)
- *
- * @version  1.5
+ * format dddd d (ddQd)
+ * @version 1.5
+ * @author Zoey76
  */
 public class AcquireSkillInfo extends L2GameServerPacket
 {
 	private static final String _S__91_ACQUIRESKILLINFO = "[S] 91 AcquireSkillInfo";
-	private FastList<Req> _reqs;
-	private int _id, _level, _spCost;
-	private SkillType _type;
+	
+	private final AcquireSkillType _type;
+	private final int _id;
+	private final int _level;
+	private final int _spCost;
+	private final List<Req> _reqs;
 	
 	/**
 	 * Private class containing learning skill requisites.
@@ -44,31 +44,68 @@ public class AcquireSkillInfo extends L2GameServerPacket
 	private static class Req
 	{
 		public int itemId;
-		public int count;
+		public long count;
 		public int type;
 		public int unk;
 		
-		public Req(int pType, int pItemId, int pCount, int pUnk)
+		/**
+		 * @param pType TODO identify.
+		 * @param pItemId the item Id.
+		 * @param itemCount the item count.
+		 * @param pUnk TODO identify.
+		 */
+		public Req(int pType, int pItemId, long itemCount, int pUnk)
 		{
 			itemId = pItemId;
 			type = pType;
-			count = pCount;
+			count = itemCount;
 			unk = pUnk;
 		}
 	}
 	
-	public AcquireSkillInfo(int id, int level, int spCost, SkillType type)
+	/**
+	 * Constructor for the acquire skill info object.
+	 * @param skillType the skill learning type.
+	 * @param skillLearn the skill learn.
+	 */
+	public AcquireSkillInfo(AcquireSkillType skillType, L2SkillLearn skillLearn)
 	{
-		_reqs = new FastList<Req>();
-		_id = id;
-		_level = level;
-		_spCost = spCost;
-		_type = type;
+		_id = skillLearn.getSkillId();
+		_level = skillLearn.getSkillLevel();
+		_spCost = skillLearn.getLevelUpSp();
+		_type = skillType;
+		_reqs = new ArrayList<>();
+		if ((skillType != AcquireSkillType.Pledge) || Config.LIFE_CRYSTAL_NEEDED)
+		{
+			for (ItemHolder item : skillLearn.getRequiredItems())
+			{
+				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == L2Skill.SKILL_DIVINE_INSPIRATION))
+				{
+					continue;
+				}
+				_reqs.add(new Req(99, item.getId(), item.getCount(), 50));
+			}
+		}
 	}
 	
-	public void addRequirement(int type, int id, int count, int unk)
+	/**
+	 * Special constructor for Alternate Skill Learning system.<br>
+	 * Sets a custom amount of SP.
+	 * @param skillType the skill learning type.
+	 * @param skillLearn the skill learn.
+	 * @param sp the custom SP amount.
+	 */
+	public AcquireSkillInfo(AcquireSkillType skillType, L2SkillLearn skillLearn, int sp)
 	{
-		_reqs.add(new Req(type, id, count, unk));
+		_id = skillLearn.getSkillId();
+		_level = skillLearn.getSkillLevel();
+		_spCost = sp;
+		_type = skillType;
+		_reqs = new ArrayList<>();
+		for (ItemHolder item : skillLearn.getRequiredItems())
+		{
+			_reqs.add(new Req(99, item.getId(), item.getCount(), 50));
+		}
 	}
 	
 	@Override
@@ -79,9 +116,7 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		writeD(_level);
 		writeD(_spCost);
 		writeD(_type.ordinal());
-		
 		writeD(_reqs.size());
-		
 		for (Req temp : _reqs)
 		{
 			writeD(temp.type);

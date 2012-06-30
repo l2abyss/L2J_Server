@@ -23,8 +23,7 @@ import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public class LanguageControl extends Control
 {
@@ -43,7 +42,7 @@ public class LanguageControl extends Control
 	@Override
 	public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IOException
 	{
-		if (baseName == null || locale == null || format == null || loader == null)
+		if ((baseName == null) || (locale == null) || (format == null) || (loader == null))
 		{
 			throw new NullPointerException();
 		}
@@ -53,18 +52,12 @@ public class LanguageControl extends Control
 			format = "properties";
 			String bundleName = toBundleName(baseName, locale);
 			String resourceName = LANGUAGES_DIRECTORY + toResourceName(bundleName, format);
-			BufferedInputStream bis = null;
-			try
+			
+			try (FileInputStream fis = new FileInputStream(resourceName); BufferedInputStream bis = new BufferedInputStream(fis))
 			{
-				bis = new BufferedInputStream(new FileInputStream(resourceName));
 				bundle = new PropertyResourceBundle(bis);
-			}
-			finally
-			{
-				bis.close();
 			}
 		}
 		return bundle;
 	}
-	
 }

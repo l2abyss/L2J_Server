@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.quest.Quest;
 
 public class GraciaSeedsManager
 {
-	private static final Logger _log = Logger.getLogger(GraciaSeedsManager.class.getName());
+	protected static final Logger _log = Logger.getLogger(GraciaSeedsManager.class.getName());
 
 	public static String qn = "EnergySeeds";
 	
@@ -36,9 +36,8 @@ public class GraciaSeedsManager
 	private int _SoDState = 1;
 	private Calendar _SoDLastStateChangeDate;
 
-	private GraciaSeedsManager()
+	protected GraciaSeedsManager()
 	{
-		_log.info(getClass().getSimpleName()+": Initializing");
 		_SoDLastStateChangeDate = Calendar.getInstance();
 		loadData();
 		handleSodStages();

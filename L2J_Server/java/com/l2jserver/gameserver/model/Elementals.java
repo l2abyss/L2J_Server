@@ -16,15 +16,14 @@ package com.l2jserver.gameserver.model;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.skills.funcs.FuncAdd;
-import com.l2jserver.gameserver.skills.funcs.LambdaConst;
+import com.l2jserver.gameserver.model.skills.funcs.FuncAdd;
+import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
+import com.l2jserver.gameserver.model.stats.Stats;
 
 public final class Elementals
 {
-	private static final TIntObjectHashMap<ElementalItems> TABLE = new TIntObjectHashMap<ElementalItems>();
+	private static final TIntObjectHashMap<ElementalItems> TABLE = new TIntObjectHashMap<>();
 	
 	static
 	{
@@ -32,19 +31,19 @@ public final class Elementals
 			TABLE.put(item._itemId, item);
 	}
 	
-	public final static byte NONE = -1;
-	public final static byte FIRE = 0;
-	public final static byte WATER = 1;
-	public final static byte WIND = 2;
-	public final static byte EARTH = 3;
-	public final static byte HOLY = 4;
-	public final static byte DARK = 5;
+	public static final byte NONE = -1;
+	public static final byte FIRE = 0;
+	public static final byte WATER = 1;
+	public static final byte WIND = 2;
+	public static final byte EARTH = 3;
+	public static final byte HOLY = 4;
+	public static final byte DARK = 5;
 	
-	public final static int FIRST_WEAPON_BONUS = 20;
-	public final static int NEXT_WEAPON_BONUS = 5;
-	public final static int ARMOR_BONUS = 6;
+	public static final int FIRST_WEAPON_BONUS = 20;
+	public static final int NEXT_WEAPON_BONUS = 5;
+	public static final int ARMOR_BONUS = 6;
 	
-	public final static int[] WEAPON_VALUES =
+	public static final int[] WEAPON_VALUES =
 	{
 		0,   // Level 1
 		25,  // Level 2
@@ -62,7 +61,7 @@ public final class Elementals
 		Integer.MAX_VALUE  // TODO: Higher stones
 	};
 	
-	public final static int[] ARMOR_VALUES =
+	public static final int[] ARMOR_VALUES =
 	{
 		0,  // Level 1
 		12, // Level 2
@@ -256,7 +255,7 @@ public final class Elementals
 			if (!_active)
 				return;
 			
-			((L2Character) player).removeStatsOwner(this);
+			player.removeStatsOwner(this);
 			
 			_active = false;
 		}

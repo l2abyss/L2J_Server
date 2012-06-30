@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 public final class CharacterRestore extends L2GameClientPacket
 {
 	private static final String _C__7B_CHARACTERRESTORE = "[C] 7B CharacterRestore";
-	//private static Logger _log = Logger.getLogger(CharacterRestore.class.getName());
 	
 	// cd
 	private int _charSlot;
@@ -41,10 +40,7 @@ public final class CharacterRestore extends L2GameClientPacket
 		if (!getClient().getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterRestore"))
 			return;
 		
-		try
-		{
-			getClient().markRestoredChar(_charSlot);
-		} catch (Exception e){}
+		getClient().markRestoredChar(_charSlot);
 		CharSelectionInfo cl = new CharSelectionInfo(getClient().getAccountName(), getClient().getSessionId().playOkID1, 0);
 		sendPacket(cl);
 		getClient().setCharSelection(cl.getCharInfo());

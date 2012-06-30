@@ -14,13 +14,11 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * 0x53 WareHouseDepositList  dh (h dddhh dhhh d)
@@ -33,7 +31,6 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	public static final int CLAN = 4;
 	public static final int CASTLE = 3; //not sure
 	public static final int FREIGHT = 1;
-	private static Logger _log = Logger.getLogger(WareHouseDepositList.class.getName());
 	private static final String _S__53_WAREHOUSEDEPOSITLIST = "[S] 41 WareHouseDepositList";
 	private final long _playerAdena;
 	private final FastList<L2ItemInstance> _items;
@@ -43,7 +40,7 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	{
 		_whType = type;
 		_playerAdena = player.getAdena();
-		_items = new FastList<L2ItemInstance>();
+		_items = new FastList<>();
 		
 		final boolean isPrivate = _whType == PRIVATE;
 		for (L2ItemInstance temp : player.getInventory().getAvailableItems(true, isPrivate, false))
@@ -71,7 +68,7 @@ public final class WareHouseDepositList extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItemId());
+			writeD(item.getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());

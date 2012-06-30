@@ -39,9 +39,9 @@ public class ChatHandler
 	/**
 	 * Singleton constructor
 	 */
-	private ChatHandler()
+	protected ChatHandler()
 	{
-		_datatable = new TIntObjectHashMap<IChatHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	/**
@@ -78,7 +78,6 @@ public class ChatHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ChatHandler _instance = new ChatHandler();

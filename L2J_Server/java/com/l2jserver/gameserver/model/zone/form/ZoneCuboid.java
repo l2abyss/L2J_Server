@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.zone.form;
 
+import java.awt.Rectangle;
+
 import com.l2jserver.gameserver.GeoEngine;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
@@ -27,92 +29,41 @@ import com.l2jserver.util.Rnd;
  */
 public class ZoneCuboid extends L2ZoneForm
 {
-	private int _x1, _x2, _y1, _y2, _z1, _z2;
+	private int _z1, _z2;
+	Rectangle _r;
 	
 	public ZoneCuboid(int x1, int x2, int y1, int y2, int z1, int z2)
 	{
-		_x1 = x1;
-		_x2 = x2;
-		if (_x1 > _x2) // switch them if alignment is wrong
-		{
-			_x1 = x2;
-			_x2 = x1;
-		}
+		int _x1 = Math.min(x1, x2);
+		int _x2 = Math.max(x1, x2);
+		int _y1 = Math.min(y1, y2);
+		int _y2 = Math.max(y1, y2);
 		
-		_y1 = y1;
-		_y2 = y2;
-		if (_y1 > _y2) // switch them if alignment is wrong
-		{
-			_y1 = y2;
-			_y2 = y1;
-		}
+		_r = new Rectangle(_x1, _y1, _x2 - _x1, _y2 - _y1);
 		
-		_z1 = z1;
-		_z2 = z2;
-		if (_z1 > _z2) // switch them if alignment is wrong
-		{
-			_z1 = z2;
-			_z2 = z1;
-		}
+		_z1 = Math.min(z1, z2);
+		_z2 = Math.max(z1, z2);
 	}
 	
 	@Override
 	public boolean isInsideZone(int x, int y, int z)
 	{
-		if (x < _x1 || x > _x2 || y < _y1 || y > _y2 || z < _z1 || z > _z2)
-			return false;
-		return true;
+		return (_r.contains(x, y) && z >= _z1 && z <= _z2);
 	}
 	
 	@Override
 	public boolean intersectsRectangle(int ax1, int ax2, int ay1, int ay2)
 	{
-		// Check if any point inside this rectangle
-		if (isInsideZone(ax1, ay1, (_z2 - 1)))
-			return true;
-		if (isInsideZone(ax1, ay2, (_z2 - 1)))
-			return true;
-		if (isInsideZone(ax2, ay1, (_z2 - 1)))
-			return true;
-		if (isInsideZone(ax2, ay2, (_z2 - 1)))
-			return true;
-		
-		// Check if any point from this rectangle is inside the other one
-		if (_x1 > ax1 && _x1 < ax2 && _y1 > ay1 && _y1 < ay2)
-			return true;
-		if (_x1 > ax1 && _x1 < ax2 && _y2 > ay1 && _y2 < ay2)
-			return true;
-		if (_x2 > ax1 && _x2 < ax2 && _y1 > ay1 && _y1 < ay2)
-			return true;
-		if (_x2 > ax1 && _x2 < ax2 && _y2 > ay1 && _y2 < ay2)
-			return true;
-		
-		// Horizontal lines may intersect vertical lines
-		if (lineSegmentsIntersect(_x1, _y1, _x2, _y1, ax1, ay1, ax1, ay2))
-			return true;
-		if (lineSegmentsIntersect(_x1, _y1, _x2, _y1, ax2, ay1, ax2, ay2))
-			return true;
-		if (lineSegmentsIntersect(_x1, _y2, _x2, _y2, ax1, ay1, ax1, ay2))
-			return true;
-		if (lineSegmentsIntersect(_x1, _y2, _x2, _y2, ax2, ay1, ax2, ay2))
-			return true;
-		
-		// Vertical lines may intersect horizontal lines
-		if (lineSegmentsIntersect(_x1, _y1, _x1, _y2, ax1, ay1, ax2, ay1))
-			return true;
-		if (lineSegmentsIntersect(_x1, _y1, _x1, _y2, ax1, ay2, ax2, ay2))
-			return true;
-		if (lineSegmentsIntersect(_x2, _y1, _x2, _y2, ax1, ay1, ax2, ay1))
-			return true;
-		if (lineSegmentsIntersect(_x2, _y1, _x2, _y2, ax1, ay2, ax2, ay2))
-			return true;
-		
-		return false;
+		return (_r.intersects(Math.min(ax1, ax2), Math.min(ay1, ay2), Math.abs(ax2 - ax1), Math.abs(ay2 - ay1)));
 	}
 	
 	@Override
 	public double getDistanceToZone(int x, int y)
 	{
+		int _x1 = _r.x;
+		int _x2 = _r.x + _r.width;
+		int _y1 = _r.y;
+		int _y2 = _r.y + _r.height;
 		double test, shortestDist = Math.pow(_x1 - x, 2) + Math.pow(_y1 - y, 2);
 		
 		test = Math.pow(_x1 - x, 2) + Math.pow(_y2 - y, 2);
@@ -131,7 +82,7 @@ public class ZoneCuboid extends L2ZoneForm
 	}
 	
 	/* getLowZ() / getHighZ() - These two functions were added to cope with the demand of the new
-	 * fishing algorithms, wich are now able to correctly place the hook in the water, thanks to getHighZ().
+	 * fishing algorithms, which are now able to correctly place the hook in the water, thanks to getHighZ().
 	 * getLowZ() was added, considering potential future modifications.
 	 */
 	@Override
@@ -149,6 +100,11 @@ public class ZoneCuboid extends L2ZoneForm
 	@Override
 	public void visualizeZone(int z)
 	{
+		int _x1 = _r.x;
+		int _x2 = _r.x + _r.width;
+		int _y1 = _r.y;
+		int _y2 = _r.y + _r.height;
+		
 		//x1->x2
 		for (int x = _x1; x < _x2; x = x + STEP)
 		{
@@ -166,8 +122,8 @@ public class ZoneCuboid extends L2ZoneForm
 	@Override
 	public int[] getRandomPoint()
 	{
-		int x = Rnd.get(_x1, _x2);
-		int y = Rnd.get(_y1, _y2);
+		int x = Rnd.get(_r.x, _r.x + _r.width);
+		int y = Rnd.get(_r.y, _r.y + _r.height);
 		
 		return new int[] { x, y, GeoEngine.getInstance().getHeight(x, y, _z1) };
 	}

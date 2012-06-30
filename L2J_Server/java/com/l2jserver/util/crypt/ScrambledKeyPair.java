@@ -38,7 +38,7 @@ public class ScrambledKeyPair
 	{
 		byte[] scrambledMod = modulus.toByteArray();
 		
-		if (scrambledMod.length == 0x81 && scrambledMod[0] == 0x00)
+		if ((scrambledMod.length == 0x81) && (scrambledMod[0] == 0x00))
 		{
 			byte[] temp = new byte[0x80];
 			System.arraycopy(scrambledMod, 1, temp, 0, 0x80);
@@ -51,7 +51,7 @@ public class ScrambledKeyPair
 			scrambledMod[0x00 + i] = scrambledMod[0x4d + i];
 			scrambledMod[0x4d + i] = temp;
 		}
-		// step 2 : xor first 0x40 bytes with  last 0x40 bytes
+		// step 2 : xor first 0x40 bytes with last 0x40 bytes
 		for (int i = 0; i < 0x40; i++)
 		{
 			scrambledMod[i] = (byte) (scrambledMod[i] ^ scrambledMod[0x40 + i]);
@@ -61,7 +61,7 @@ public class ScrambledKeyPair
 		{
 			scrambledMod[0x0d + i] = (byte) (scrambledMod[0x0d + i] ^ scrambledMod[0x34 + i]);
 		}
-		// step 4 : xor last 0x40 bytes with  first 0x40 bytes
+		// step 4 : xor last 0x40 bytes with first 0x40 bytes
 		for (int i = 0; i < 0x40; i++)
 		{
 			scrambledMod[0x40 + i] = (byte) (scrambledMod[0x40 + i] ^ scrambledMod[i]);

@@ -39,8 +39,8 @@ import com.l2jserver.loginserver.mail.MailSystem.MailContent;
  */
 public class BaseMail implements Runnable
 {
-	private final static Logger _log = Logger.getLogger(BaseMail.class.getName());
-		
+	private static final Logger _log = Logger.getLogger(BaseMail.class.getName());
+	
 	private final Properties _mailProp = new Properties();
 	private final SmtpAuthenticator _authenticator;
 	private MimeMessage _messageMime = null;
@@ -75,11 +75,15 @@ public class BaseMail implements Runnable
 		String mailAddr = getUserMail(account);
 		
 		if (mailAddr == null)
+		{
 			return;
+		}
 		
 		MailContent content = MailSystem.getInstance().getMailContent(mailId);
 		if (content == null)
+		{
 			return;
+		}
 		
 		String message = compileHtml(account, content.getText(), args);
 		
@@ -102,7 +106,7 @@ public class BaseMail implements Runnable
 		}
 		catch (MessagingException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 	
@@ -112,7 +116,7 @@ public class BaseMail implements Runnable
 		{
 			for (int i = 0; i < args.length; i++)
 			{
-				html = html.replace("%var"+i+"%", args[i]);
+				html = html.replace("%var" + i + "%", args[i]);
 			}
 		}
 		html = html.replace("%accountname%", account);
@@ -142,13 +146,7 @@ public class BaseMail implements Runnable
 		}
 		finally
 		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 		return null;
 	}
@@ -159,7 +157,9 @@ public class BaseMail implements Runnable
 		try
 		{
 			if (_messageMime != null)
+			{
 				Transport.send(_messageMime);
+			}
 		}
 		catch (MessagingException e)
 		{

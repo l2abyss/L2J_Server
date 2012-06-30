@@ -40,7 +40,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -53,8 +53,6 @@ public class FortSiegeManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private int _attackerMaxClans = 500; // Max number of clans
 	
 	// Fort Siege settings
@@ -67,16 +65,11 @@ public class FortSiegeManager
 	private int _suspiciousMerchantRespawnDelay = 180; // Time in minute. Changeable in fortsiege.properties
 	private List<FortSiege> _sieges;
 	
-	// =========================================================
-	// Constructor
-	private FortSiegeManager()
+	protected FortSiegeManager()
 	{
-		_log.info("Initializing FortSiegeManager");
 		load();
 	}
 	
-	// =========================================================
-	// Method - Public
 	public final void addSiegeSkills(L2PcInstance character)
 	{
 		character.addSkill(SkillTable.FrequentSkill.SEAL_OF_RULER.getSkill(), false);
@@ -157,14 +150,11 @@ public class FortSiegeManager
 		character.removeSkill(SkillTable.FrequentSkill.BUILD_HEADQUARTERS.getSkill());
 	}
 	
-	// =========================================================
-	// Method - Private
 	private final void load()
 	{
-		InputStream is = null;
-		try
+		final File file = new File(Config.FORTSIEGE_CONFIGURATION_FILE);
+		try (InputStream is = new FileInputStream(file))
 		{
-			is = new FileInputStream(new File(Config.FORTSIEGE_CONFIGURATION_FILE));
 			Properties siegeSettings = new Properties();
 			siegeSettings.load(is);
 			
@@ -177,13 +167,13 @@ public class FortSiegeManager
 			_suspiciousMerchantRespawnDelay = Integer.decode(siegeSettings.getProperty("SuspiciousMerchantRespawnDelay", "180"));
 			
 			// Siege spawns settings
-			_commanderSpawnList = new FastMap<Integer, FastList<SiegeSpawn>>();
-			_flagList = new FastMap<Integer, FastList<CombatFlag>>();
+			_commanderSpawnList = new FastMap<>();
+			_flagList = new FastMap<>();
 			
 			for (Fort fort : FortManager.getInstance().getForts())
 			{
-				FastList<SiegeSpawn> _commanderSpawns = new FastList<SiegeSpawn>();
-				FastList<CombatFlag> _flagSpawns = new FastList<CombatFlag>();
+				FastList<SiegeSpawn> _commanderSpawns = new FastList<>();
+				FastList<CombatFlag> _flagSpawns = new FastList<>();
 				for (int i = 1; i < 5; i++)
 				{
 					String _spawnParams = siegeSettings.getProperty(fort.getName().replace(" ", "") + "Commander" + i, "");
@@ -236,23 +226,10 @@ public class FortSiegeManager
 		}
 		catch (Exception e)
 		{
-			//_initialized = false;
 			_log.log(Level.WARNING, "Error while loading fortsiege data." + e.getMessage(), e);
-		}
-		finally
-		{
-			try
-			{
-				is.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final FastList<SiegeSpawn> getCommanderSpawnList(int _fortId)
 	{
 		if (_commanderSpawnList.containsKey(_fortId))
@@ -315,14 +292,14 @@ public class FortSiegeManager
 	public final List<FortSiege> getSieges()
 	{
 		if (_sieges == null)
-			_sieges = new FastList<FortSiege>();
+			_sieges = new FastList<>();
 		return _sieges;
 	}
 	
 	public final void addSiege(FortSiege fortSiege)
 	{
 		if (_sieges == null)
-			_sieges = new FastList<FortSiege>();
+			_sieges = new FastList<>();
 		_sieges.add(fortSiege);
 	}
 	
@@ -443,7 +420,6 @@ public class FortSiegeManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FortSiegeManager _instance = new FortSiegeManager();

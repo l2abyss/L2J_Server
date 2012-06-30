@@ -29,7 +29,7 @@ public class GeoEditorListener extends Thread
 	private static final int PORT = 9011;
 	private static Logger _log = Logger.getLogger(GeoEditorListener.class.getName());
 	private ServerSocket _serverSocket;
-	private static GeoEditorThread _geoEditor;
+	private GeoEditorThread _geoEditor;
 	
 	public static GeoEditorListener getInstance()
 	{
@@ -75,12 +75,10 @@ public class GeoEditorListener extends Thread
 	@Override
 	public void run()
 	{
-		Socket connection = null;
-		try
+		try (Socket connection = _serverSocket.accept())
 		{
-			while (true)
+			while (!isInterrupted())
 			{
-				connection = _serverSocket.accept();
 				if (_geoEditor != null && _geoEditor.isWorking())
 				{
 					_log.warning("Geoeditor already connected!");
@@ -95,13 +93,6 @@ public class GeoEditorListener extends Thread
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "GeoEditorListener: " + e.getMessage(), e);
-			try
-			{
-				connection.close();
-			}
-			catch (Exception e2)
-			{
-			}
 		}
 		finally
 		{
@@ -109,9 +100,9 @@ public class GeoEditorListener extends Thread
 			{
 				_serverSocket.close();
 			}
-			catch (IOException io)
+			catch (Exception e)
 			{
-				_log.log(Level.INFO, "", io);
+				_log.log(Level.WARNING, "GeoEditorListener: " + e.getMessage(), e);
 			}
 			_log.warning("GeoEditorListener Closed!");
 		}

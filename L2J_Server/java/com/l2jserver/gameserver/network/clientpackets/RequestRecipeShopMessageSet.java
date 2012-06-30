@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.util.Util;
 public class RequestRecipeShopMessageSet extends L2GameClientPacket
 {
 	private static final String _C__BA_RequestRecipeShopMessageSet = "[C] BA RequestRecipeShopMessageSet";
-	//private static Logger _log = Logger.getLogger(RequestRecipeShopMessageSet.class.getName());
 	
 	private static final int MAX_MSG_LENGTH = 29;
 	

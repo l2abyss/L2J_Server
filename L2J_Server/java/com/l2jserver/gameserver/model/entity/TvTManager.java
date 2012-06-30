@@ -36,7 +36,7 @@ public class TvTManager
 	/**
 	 * New instance only by getInstance()<br>
 	 */
-	private TvTManager()
+	protected TvTManager()
 	{
 		if (Config.TVT_EVENT_ENABLED)
 		{
@@ -90,8 +90,11 @@ public class TvTManager
 					nextStartTime = testStartTime;
 				}
 			}
-			_task = new TvTStartTask(nextStartTime.getTimeInMillis());
-			ThreadPoolManager.getInstance().executeTask(_task);
+			if (nextStartTime != null)
+			{
+				_task = new TvTStartTask(nextStartTime.getTimeInMillis());
+				ThreadPoolManager.getInstance().executeTask(_task);
+			}
 		}
 		catch (Exception e)
 		{
@@ -290,7 +293,6 @@ public class TvTManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TvTManager _instance = new TvTManager();

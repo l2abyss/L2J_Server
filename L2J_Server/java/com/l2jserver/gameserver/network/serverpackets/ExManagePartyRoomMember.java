@@ -14,17 +14,16 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author Gnacik
- * 
- * Mode :
- * 		0 - add
- * 		1 - modify
- * 		2 - quit
+ * Mode: <ul>
+ * <li>0 - add </li>
+ * <li>1 - modify </li>
+ * <li>2 - quit</li>
+ * </ul>
+ * @author Gnacik 
  */
 public class ExManagePartyRoomMember extends L2GameServerPacket
 {
@@ -49,15 +48,21 @@ public class ExManagePartyRoomMember extends L2GameServerPacket
 		writeS(_activeChar.getName());
 		writeD(_activeChar.getActiveClass());
 		writeD(_activeChar.getLevel());
-		writeD(MapRegionManager.getInstance().getMapRegion(_activeChar).getBbs());
+		writeD(0); // TODO: Closes town
 		if (_room.getOwner().equals(_activeChar))
+		{
 			writeD(1);
+		}
 		else
 		{
-			if((_room.getOwner().isInParty() && _activeChar.isInParty()) && (_room.getOwner().getParty().getPartyLeaderOID() == _activeChar.getParty().getPartyLeaderOID()))
+			if ((_room.getOwner().isInParty() && _activeChar.isInParty()) && (_room.getOwner().getParty().getLeaderObjectId() == _activeChar.getParty().getLeaderObjectId()))
+			{
 				writeD(2);
+			}
 			else
+			{
 				writeD(0);
+			}
 		}
 	}
 	

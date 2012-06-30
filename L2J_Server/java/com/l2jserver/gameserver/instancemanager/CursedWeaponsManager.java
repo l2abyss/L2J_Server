@@ -20,14 +20,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import javolution.util.FastMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -46,13 +45,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2GuardInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
 
 /**
- *
  * @author Micht
  */
 public class CursedWeaponsManager
@@ -64,21 +62,16 @@ public class CursedWeaponsManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private Map<Integer, CursedWeapon> _cursedWeapons;
 	
-	// =========================================================
-	// Constructor
-	private CursedWeaponsManager()
+	protected CursedWeaponsManager()
 	{
 		init();
 	}
 	
 	private void init()
 	{
-		_log.info("Initializing CursedWeaponsManager");
-		_cursedWeapons = new FastMap<Integer, CursedWeapon>();
+		_cursedWeapons = new HashMap<>();
 		
 		if (!Config.ALLOW_CURSED_WEAPONS)
 			return;
@@ -89,8 +82,6 @@ public class CursedWeaponsManager
 		_log.info("Loaded : " + _cursedWeapons.size() + " cursed weapon(s).");
 	}
 	
-	// =========================================================
-	// Method - Private
 	public final void reload()
 	{
 		init();
@@ -196,7 +187,6 @@ public class CursedWeaponsManager
 			
 			PreparedStatement statement = con.prepareStatement("SELECT itemId, charId, playerKarma, playerPkKills, nbKills, endTime FROM cursed_weapons");
 			ResultSet rset = statement.executeQuery();
-			
 			while (rset.next())
 			{
 				int itemId = rset.getInt("itemId");
@@ -224,8 +214,6 @@ public class CursedWeaponsManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore CursedWeapons data: " + e.getMessage(), e);
-			
-			return;
 		}
 		finally
 		{
@@ -322,13 +310,10 @@ public class CursedWeaponsManager
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		if (Config.DEBUG)
 			_log.info("DONE");
 	}
 	
-	// =========================================================
-	// Properties - Public
 	public synchronized void checkDrop(L2Attackable attackable, L2PcInstance player)
 	{
 		if (attackable instanceof L2DefenderInstance || attackable instanceof L2RiftInvaderInstance
@@ -461,7 +446,6 @@ public class CursedWeaponsManager
 		}
 	}
 	
-	// =========================================================
 	public boolean isCursed(int itemId)
 	{
 		return _cursedWeapons.containsKey(itemId);
@@ -494,7 +478,6 @@ public class CursedWeaponsManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CursedWeaponsManager _instance = new CursedWeaponsManager();

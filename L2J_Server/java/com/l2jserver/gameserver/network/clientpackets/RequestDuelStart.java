@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -30,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestDuelStart extends L2GameClientPacket
 {
 	private static final String _C__D0_1B_REQUESTDUELSTART = "[C] D0:1B RequestDuelStart";
-	private static Logger _log = Logger.getLogger(RequestDuelStart.class.getName());
+
 	private String _player;
 	private int _partyDuel;
 	
@@ -96,14 +94,14 @@ public final class RequestDuelStart extends L2GameClientPacket
 				return;
 			}
 			// Target may not be of the same party
-			else if (activeChar.getParty().getPartyMembers().contains(targetChar))
+			else if (activeChar.getParty().containsPlayer(targetChar))
 			{
 				activeChar.sendMessage("This player is a member of your own party.");
 				return;
 			}
 			
 			// Check if every player is ready for a duel
-			for (L2PcInstance temp : activeChar.getParty().getPartyMembers())
+			for (L2PcInstance temp : activeChar.getParty().getMembers())
 			{
 				if (!temp.canDuel())
 				{
@@ -112,7 +110,7 @@ public final class RequestDuelStart extends L2GameClientPacket
 				}
 			}
 			L2PcInstance partyLeader = null; // snatch party leader of targetChar's party
-			for (L2PcInstance temp : targetChar.getParty().getPartyMembers())
+			for (L2PcInstance temp : targetChar.getParty().getMembers())
 			{
 				if (partyLeader == null) partyLeader = temp;
 				if (!temp.canDuel())
@@ -123,27 +121,30 @@ public final class RequestDuelStart extends L2GameClientPacket
 			}
 			
 			// Send request to targetChar's party leader
-			if (!partyLeader.isProcessingRequest())
+			if (partyLeader != null)
 			{
-				activeChar.onTransactionRequest(partyLeader);
-				partyLeader.sendPacket(new ExDuelAskStart(activeChar.getName(), _partyDuel));
-				
-				if (Config.DEBUG)
-					_log.fine(activeChar.getName() + " requested a duel with " + partyLeader.getName());
-				
-				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PARTY_HAS_BEEN_CHALLENGED_TO_A_DUEL);
-				msg.addString(partyLeader.getName());
-				activeChar.sendPacket(msg);
-				
-				msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PARTY_HAS_CHALLENGED_YOUR_PARTY_TO_A_DUEL);
-				msg.addString(activeChar.getName());
-				targetChar.sendPacket(msg);
-			}
-			else
-			{
-				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
-				msg.addString(partyLeader.getName());
-				activeChar.sendPacket(msg);
+				if (!partyLeader.isProcessingRequest())
+				{
+					activeChar.onTransactionRequest(partyLeader);
+					partyLeader.sendPacket(new ExDuelAskStart(activeChar.getName(), _partyDuel));
+					
+					if (Config.DEBUG)
+						_log.fine(activeChar.getName() + " requested a duel with " + partyLeader.getName());
+					
+					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PARTY_HAS_BEEN_CHALLENGED_TO_A_DUEL);
+					msg.addString(partyLeader.getName());
+					activeChar.sendPacket(msg);
+					
+					msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PARTY_HAS_CHALLENGED_YOUR_PARTY_TO_A_DUEL);
+					msg.addString(activeChar.getName());
+					targetChar.sendPacket(msg);
+				}
+				else
+				{
+					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
+					msg.addString(partyLeader.getName());
+					activeChar.sendPacket(msg);
+				}
 			}
 		}
 		else // 1vs1 duel

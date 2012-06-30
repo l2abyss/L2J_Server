@@ -14,23 +14,17 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.network.serverpackets.NewCharacterSuccess;
-import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
 
 /**
- * This class ...
- *
- * @version $Revision: 1.3.4.5 $ $Date: 2005/03/27 15:29:30 $
+ * @author Zoey76
  */
 public final class NewCharacter extends L2GameClientPacket
 {
 	private static final String _C__13_NEWCHARACTER = "[C] 13 NewCharacter";
-	private static Logger _log = Logger.getLogger(NewCharacter.class.getName());
 	
 	@Override
 	protected void readImpl()
@@ -41,46 +35,23 @@ public final class NewCharacter extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (Config.DEBUG) _log.fine("CreateNewChar");
+		if (Config.DEBUG)
+		{
+			_log.fine(_C__13_NEWCHARACTER);
+		}
 		
-		NewCharacterSuccess ct = new NewCharacterSuccess();
-		
-		L2PcTemplate template = CharTemplateTable.getInstance().getTemplate(0);
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.fighter);	// human fighter
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.mage);	// human mage
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.elvenFighter);	// elf fighter
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.elvenMage);	// elf mage
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.darkFighter);	// dark elf fighter
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.darkMage);	// dark elf mage
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.orcFighter);	// orc fighter
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.orcMage);	// orc mage
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.dwarvenFighter);	// dwarf fighter
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.maleSoldier); //kamael male soldier
-		ct.addChar(template);
-		
-		template = CharTemplateTable.getInstance().getTemplate(ClassId.femaleSoldier); // kamael female soldier
-		ct.addChar(template);
-		
+		final NewCharacterSuccess ct = new NewCharacterSuccess();
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.fighter)); // Human Figther
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.mage)); // Human Mystic
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.elvenFighter)); // Elven Fighter
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.elvenMage)); // Elven Mystic
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.darkFighter)); // Dark Fighter
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.darkMage)); // Dark Mystic
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.orcFighter)); // Orc Fighter
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.orcMage)); // Orc Mystic
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.dwarvenFighter)); // Dwarf Fighter
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.maleSoldier)); // Male Kamael Soldier
+		ct.addChar(CharTemplateTable.getInstance().getTemplate(ClassId.femaleSoldier)); // Female Kamael Soldier
 		sendPacket(ct);
 	}
 	

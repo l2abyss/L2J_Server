@@ -44,9 +44,9 @@ public class SummonSkillsTable
 		load();
 	}
 	
-	private SummonSkillsTable()
+	protected SummonSkillsTable()
 	{
-		_skillTrees = new FastMap<Integer, Map<Integer, L2PetSkillLearn>>();
+		_skillTrees = new FastMap<>();
 		load();
 	}
 	
@@ -69,7 +69,7 @@ public class SummonSkillsTable
 				PreparedStatement statement2 = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl");
 				while (petlist.next())
 				{
-					map = new FastMap<Integer, L2PetSkillLearn>();
+					map = new FastMap<>();
 					npcId = petlist.getInt("id");
 					statement2.setInt(1, npcId);
 					ResultSet skilltree = statement2.executeQuery();
@@ -151,7 +151,7 @@ public class SummonSkillsTable
 	
 	public FastList<Integer> getAvailableSkills(L2Summon cha)
 	{
-		FastList<Integer> skillIds = new FastList<Integer>();
+		FastList<Integer> skillIds = new FastList<>();
 		if (!_skillTrees.containsKey(cha.getNpcId()))
 		{
 			_log.warning("Pet id " + cha.getNpcId() + " does not have any skills assigned.");
@@ -196,7 +196,6 @@ public class SummonSkillsTable
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SummonSkillsTable _instance = new SummonSkillsTable();

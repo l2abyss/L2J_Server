@@ -30,15 +30,17 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbnormalStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.skills.L2EffectType;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 public class CharEffectList
 {
@@ -567,8 +569,8 @@ public class CharEffectList
 	{
 		if (_queuesInitialized)
 			return;
-		_addQueue = new LinkedBlockingQueue<L2Effect>();
-		_removeQueue = new LinkedBlockingQueue<L2Effect>();
+		_addQueue = new LinkedBlockingQueue<>();
+		_removeQueue = new LinkedBlockingQueue<>();
 		_queuesInitialized = true;
 	}
 	
@@ -918,7 +920,7 @@ public class CharEffectList
 		L2Effect effectToAdd = null;
 		L2Effect effectToRemove = null;
 		if (_stackedEffects == null)
-			_stackedEffects = new FastMap<String, List<L2Effect>>();
+			_stackedEffects = new FastMap<>();
 		
 		// Get the list of all stacked effects corresponding to the stack type of the L2Effect to add
 		stackQueue = _stackedEffects.get(newEffect.getAbnormalType());
@@ -964,7 +966,7 @@ public class CharEffectList
 		}
 		else
 		{
-			stackQueue = new FastList<L2Effect>();
+			stackQueue = new FastList<>();
 			stackQueue.add(0, newEffect);
 		}
 		
@@ -1141,13 +1143,13 @@ public class CharEffectList
 				if (summonOwner != null)
 				{
 					if (summonOwner.isInParty())
-						summonOwner.getParty().broadcastToPartyMembers(ps);
+						summonOwner.getParty().broadcastPacket(ps);
 					else
 						summonOwner.sendPacket(ps);
 				}
 			}
 			else if (_owner instanceof L2PcInstance && _owner.isInParty())
-				_owner.getParty().broadcastToPartyMembers(ps);
+				_owner.getParty().broadcastPacket(ps);
 		}
 		
 		if (os != null)
@@ -1269,6 +1271,7 @@ public class CharEffectList
 			_debuffs = null;
 			_stackedEffects = null;
 			_queuesInitialized = false;
+			_effectCache = null;
 		}
 		catch (Exception e)
 		{

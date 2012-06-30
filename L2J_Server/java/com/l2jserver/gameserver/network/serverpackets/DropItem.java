@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * 16
@@ -35,8 +35,8 @@ import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 public class DropItem extends L2GameServerPacket
 {
 	private static final String _S__16_DROPITEM = "[S] 16 DropItem";
-	private L2ItemInstance _item;
-	private int _charObjId;
+	private final L2ItemInstance _item;
+	private final int _charObjId;
 	
 	/**
 	 * Constructor of the DropItem server packet
@@ -55,7 +55,7 @@ public class DropItem extends L2GameServerPacket
 		writeC(0x16);
 		writeD(_charObjId);
 		writeD(_item.getObjectId());
-		writeD(_item.getItemId());
+		writeD(_item.getDisplayId());
 		
 		writeD(_item.getX());
 		writeD(_item.getY());

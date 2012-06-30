@@ -15,13 +15,12 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.ItemInfo;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  *
@@ -50,14 +49,13 @@ import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 
 public class InventoryUpdate extends L2GameServerPacket
 {
-	private static final Logger _log = Logger.getLogger(InventoryUpdate.class.getName());
 	private static final String _S__37_INVENTORYUPDATE = "[S] 21 InventoryUpdate";
 	
 	private List<ItemInfo> _items;
 	
 	public InventoryUpdate()
 	{
-		_items = new FastList<ItemInfo>();
+		_items = new FastList<>();
 		if (Config.DEBUG)
 		{
 			showDebug();
@@ -126,7 +124,7 @@ public class InventoryUpdate extends L2GameServerPacket
 		{
 			writeH(item.getChange()); // Update type : 01-add, 02-modify, 03-remove
 			writeD(item.getObjectId()); // ObjectId
-			writeD(item.getItem().getItemId()); // ItemId
+			writeD(item.getItem().getDisplayId()); // ItemId
 			writeD(item.getLocation()); // T1
 			writeQ(item.getCount()); // Quantity
 			writeH(item.getItem().getType2()); // Item Type 2 : 00-weapon, 01-shield/armor, 02-ring/earring/necklace, 03-questitem, 04-adena, 05-item

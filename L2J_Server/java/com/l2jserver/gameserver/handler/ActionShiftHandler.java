@@ -19,9 +19,9 @@ import java.util.Map;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
+
 /**
  * @author UnAfraid
- * 
  */
 public class ActionShiftHandler
 {
@@ -32,9 +32,9 @@ public class ActionShiftHandler
 		return SingletonHolder._instance;
 	}
 	
-	private ActionShiftHandler()
+	protected ActionShiftHandler()
 	{
-		_actionsShift = new FastMap<InstanceType, IActionHandler>();
+		_actionsShift = new FastMap<>();
 	}
 	
 	public void registerHandler(IActionHandler handler)
@@ -59,7 +59,6 @@ public class ActionShiftHandler
 		return _actionsShift.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ActionShiftHandler _instance = new ActionShiftHandler();

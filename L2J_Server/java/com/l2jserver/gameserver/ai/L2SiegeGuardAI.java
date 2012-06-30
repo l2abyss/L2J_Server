@@ -18,15 +18,14 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ACTIVE;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_ATTACK;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_IDLE;
 
+import java.util.Collection;
 import java.util.concurrent.Future;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -36,7 +35,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -45,8 +46,6 @@ import com.l2jserver.util.Rnd;
  */
 public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 {
-	//protected static final Logger _log = Logger.getLogger(L2SiegeGuardAI.class.getName());
-	
 	private static final int MAX_ATTACK_TIMEOUT = 300; // int ticks, i.e. 30 seconds
 	
 	/** The L2Attackable AI task executed every 1s (call onEvtThink method)*/
@@ -171,7 +170,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	synchronized void changeIntention(CtrlIntention intention, Object arg0, Object arg1)
 	{
 		if (Config.DEBUG)
-			_log.info("L2SiegeAI.changeIntention(" + intention + ", " + arg0 + ", " + arg1 + ")");
+			_log.info(getClass().getSimpleName() + ": changeIntention(" + intention + ", " + arg0 + ", " + arg1 + ")");
 		
 		if (intention == AI_INTENTION_IDLE /*|| intention == AI_INTENTION_ACTIVE*/) // active becomes idle if only a summon is present
 		{
@@ -321,7 +320,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	private void thinkAttack()
 	{
 		if (Config.DEBUG)
-			_log.info("L2SiegeGuardAI.thinkAttack(); timeout=" + (_attackTimeout - GameTimeController.getGameTicks()));
+			_log.info(getClass().getSimpleName() + ": thinkAttack(); timeout=" + (_attackTimeout - GameTimeController.getGameTicks()));
 		
 		if (_attackTimeout < GameTimeController.getGameTicks())
 		{
@@ -466,7 +465,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 	private void attackPrepare()
 	{
 		// Get all information needed to choose between physical or magical attack
-		L2Skill[] skills = null;
+		Collection<L2Skill> skills = null;
 		double dist_2 = 0;
 		int range = 0;
 		L2DefenderInstance sGuard = (L2DefenderInstance) _actor;
@@ -483,7 +482,6 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		}
 		catch (NullPointerException e)
 		{
-			//_log.warning("AttackableAI: Attack target is NULL.");
 			_actor.setTarget(null);
 			setIntention(AI_INTENTION_IDLE, null, null);
 			return;

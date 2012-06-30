@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -30,7 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class RequestGiveNickName extends L2GameClientPacket
 {
 	private static final String _C__0B_REQUESTGIVENICKNAME = "[C] 0B RequestGiveNickName";
-	static Logger _log = Logger.getLogger(RequestGiveNickName.class.getName());
 	
 	private String _target;
 	private String _title;

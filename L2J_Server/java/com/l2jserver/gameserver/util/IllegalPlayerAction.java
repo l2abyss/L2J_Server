@@ -19,22 +19,20 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GmListTable;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
 
 /**
  * This class ...
- * 
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
 public final class IllegalPlayerAction implements Runnable
 {
 	private static Logger _logAudit = Logger.getLogger("audit");
 	
-	private String _message;
-	private int _punishment;
-	private L2PcInstance _actor;
+	private final String _message;
+	private final int _punishment;
+	private final L2PcInstance _actor;
 	
 	public static final int PUNISH_BROADCAST = 1;
 	public static final int PUNISH_KICK = 2;
@@ -53,8 +51,8 @@ public final class IllegalPlayerAction implements Runnable
 				_actor.sendMessage("You will be kicked for illegal action, GM informed.");
 				break;
 			case PUNISH_KICKBAN:
-				_actor.setAccessLevel(-100);
-				_actor.setAccountAccesslevel(-100);
+				_actor.setAccessLevel(-1);
+				_actor.setAccountAccesslevel(-1);
 				_actor.sendMessage("You are banned for illegal action, GM informed.");
 				break;
 			case PUNISH_JAIL:
@@ -70,12 +68,13 @@ public final class IllegalPlayerAction implements Runnable
 		LogRecord record = new LogRecord(Level.INFO, "AUDIT:" + _message);
 		record.setLoggerName("audit");
 		record.setParameters(new Object[]
-		                                {
-				_actor, _punishment
-		                                });
+		{
+			_actor,
+			_punishment
+		});
 		_logAudit.log(record);
 		
-		GmListTable.broadcastMessageToGMs(_message);
+		AdminTable.getInstance().broadcastMessageToGMs(_message);
 		
 		switch (_punishment)
 		{

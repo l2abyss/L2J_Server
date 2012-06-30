@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
 
 /**
  * Format: (ch)
@@ -23,7 +22,6 @@ import java.util.logging.Logger;
  */
 public final class RequestExFishRanking extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(RequestExFishRanking.class.getName());
 	private static final String _C__D0_18_REQUESTEXFISHRANKING = "[C] D0:18 RequestExFishRanking";
 	
 	@Override

@@ -21,7 +21,7 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.L2TradeList.L2TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * 
@@ -32,10 +32,10 @@ public class ExBuySellListPacket extends L2GameServerPacket
 {
 	private static final String _S__B7_ExBuySellListPacket = "[S] B7 ExBuySellListPacket";
 	
-	private List<L2TradeItem> _buyList = new FastList<L2TradeItem>();
+	private final List<L2TradeItem> _buyList = new FastList<>();
 	private L2ItemInstance[] _sellList = null;
 	private L2ItemInstance[] _refundList = null;
-	private boolean _done;
+	private final boolean _done;
 	
 	public ExBuySellListPacket(L2PcInstance player, L2TradeList list, double taxRate, boolean done)
 	{
@@ -64,7 +64,7 @@ public class ExBuySellListPacket extends L2GameServerPacket
 			for (L2ItemInstance item : _sellList)
 			{
 				writeD(item.getObjectId());
-				writeD(item.getItemId());
+				writeD(item.getDisplayId());
 				writeD(item.getLocationSlot());
 				writeQ(item.getCount());
 				writeH(item.getItem().getType2());
@@ -101,7 +101,7 @@ public class ExBuySellListPacket extends L2GameServerPacket
 			for (L2ItemInstance item : _refundList)
 			{
 				writeD(item.getObjectId());
-				writeD(item.getItemId());
+				writeD(item.getDisplayId());
 				writeD(0x00);
 				writeQ(item.getCount());
 				writeH(item.getItem().getType2());

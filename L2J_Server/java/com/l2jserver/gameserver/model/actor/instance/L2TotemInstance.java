@@ -19,20 +19,20 @@ import java.util.concurrent.ScheduledFuture;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author UnAfraid
  */
 public class L2TotemInstance extends L2Npc
 {
-	private ScheduledFuture<?> _aiTask;
+	protected ScheduledFuture<?> _aiTask;
 	
-	private L2Skill _skill;
+	protected L2Skill _skill;
 	
 	private class TotemAI implements Runnable
 	{

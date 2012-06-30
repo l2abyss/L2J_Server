@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -25,8 +24,8 @@ import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Augmentation;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.multisell.Entry;
 import com.l2jserver.gameserver.model.multisell.Ingredient;
 import com.l2jserver.gameserver.model.multisell.PreparedListContainer;
@@ -41,7 +40,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public class MultiSellChoose extends L2GameClientPacket
 {
 	private static final String _C__B0_MULTISELLCHOOSE = "[C] B0 MultiSellChoose";
-	private static Logger _log = Logger.getLogger(MultiSellChoose.class.getName());
+
 	private int _listId;
 	private int _entryId;
 	private long _amount;
@@ -161,7 +160,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					return;
 				}
 				
-				ArrayList<Ingredient> ingredientsList = new ArrayList<Ingredient>(entry.getIngredients().size());
+				ArrayList<Ingredient> ingredientsList = new ArrayList<>(entry.getIngredients().size());
 				// Generate a list of distinct ingredients and counts in order to check if the correct item-counts
 				// are possessed by the player
 				boolean newIng;

@@ -18,18 +18,23 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.loginserver.LoginController;
 import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
- * 
  * @author mrTJO
  */
 public class RequestTempBan extends BaseRecievePacket
 {
-	String _accountName, _banReason, _ip;
+	private static final Logger _log = Logger.getLogger(RequestTempBan.class.getName());
+	
+	private final String _accountName;
+	@SuppressWarnings("unused")
+	private String _banReason;
+	private final String _ip;
 	long _banTime;
 	
 	/**
@@ -65,7 +70,7 @@ public class RequestTempBan extends BaseRecievePacket
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 		}
 		finally
 		{

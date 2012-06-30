@@ -25,17 +25,13 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * @author evill33t
- *
  */
 public class Couple
 {
 	private static final Logger _log = Logger.getLogger(Couple.class.getName());
 	
-	// =========================================================
-	// Data Field
 	private int _Id = 0;
 	private int _player1Id = 0;
 	private int _player2Id = 0;
@@ -43,8 +39,6 @@ public class Couple
 	private Calendar _affiancedDate;
 	private Calendar _weddingDate;
 	
-	// =========================================================
-	// Constructor
 	public Couple(int coupleId)
 	{
 		_Id = coupleId;
@@ -132,9 +126,7 @@ public class Couple
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?");
+			PreparedStatement statement = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?");
 			statement.setBoolean(1, true);
 			_weddingDate = Calendar.getInstance();
 			statement.setLong(2, _weddingDate.getTimeInMillis());
@@ -159,9 +151,7 @@ public class Couple
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?");
+			PreparedStatement statement = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?");
 			statement.setInt(1, _Id);
 			statement.execute();
 			statement.close();

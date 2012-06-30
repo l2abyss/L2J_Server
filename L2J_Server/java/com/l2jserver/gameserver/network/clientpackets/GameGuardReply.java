@@ -18,7 +18,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.network.L2GameClient;
 
@@ -29,7 +28,6 @@ import com.l2jserver.gameserver.network.L2GameClient;
  */
 public class GameGuardReply extends L2GameClientPacket
 {
-	protected static final Logger _log = Logger.getLogger(GameGuardReply.class.getName());
 	private static final String _C__CB_GAMEGUARDREPLY = "[C] CB GameGuardReply";
 	
 	private static final byte[] VALID =

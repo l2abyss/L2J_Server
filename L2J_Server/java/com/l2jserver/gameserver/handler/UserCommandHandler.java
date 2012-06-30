@@ -36,9 +36,9 @@ public class UserCommandHandler
 		return SingletonHolder._instance;
 	}
 	
-	private UserCommandHandler()
+	protected UserCommandHandler()
 	{
-		_datatable = new TIntObjectHashMap<IUserCommandHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	public void registerHandler(IUserCommandHandler handler)
@@ -67,7 +67,6 @@ public class UserCommandHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final UserCommandHandler _instance = new UserCommandHandler();

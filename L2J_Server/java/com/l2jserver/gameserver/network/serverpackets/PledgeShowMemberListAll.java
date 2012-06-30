@@ -18,7 +18,7 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Clan.SubPledge;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-//import java.util.logging.Logger;
+
 /**
  * sample from gracia final:
  * 
@@ -67,7 +67,6 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 	private L2PcInstance _activeChar;
 	private L2ClanMember[] _members;
 	private int _pledgeType;
-	//private static Logger _log = Logger.getLogger(PledgeShowMemberListAll.class.getName());
 	
 	public PledgeShowMemberListAll(L2Clan clan, L2PcInstance activeChar)
 	{
@@ -100,7 +99,7 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		
 	}
 	
-	void writePledge(int mainOrSubpledge)
+	private void writePledge(int mainOrSubpledge)
 	{
 		writeC(0x5a);
 		
@@ -112,9 +111,9 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		
 		writeD(_clan.getCrestId()); // crest id .. is used again
 		writeD(_clan.getLevel());
-		writeD(_clan.getHasCastle());
-		writeD(_clan.getHasHideout());
-		writeD(_clan.getHasFort());
+		writeD(_clan.getCastleId());
+		writeD(_clan.getHideoutId());
+		writeD(_clan.getFortId());
 		writeD(_clan.getRank());
 		writeD(_clan.getReputationScore());
 		writeD(0); //0
@@ -153,5 +152,4 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 	{
 		return _S__68_PLEDGESHOWMEMBERLISTALL;
 	}
-	
 }

@@ -22,14 +22,12 @@ import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
-import com.l2jserver.gameserver.skills.Stats;
-
 
 /**
  * A damage zone
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2DamageZone extends L2ZoneType
 {
@@ -43,7 +41,7 @@ public class L2DamageZone extends L2ZoneType
 	private int _startTask;
 	private int _reuseTask;
 	
-	private boolean _enabled;
+	protected boolean _enabled;
 	
 	public L2DamageZone(int id)
 	{
@@ -61,7 +59,7 @@ public class L2DamageZone extends L2ZoneType
 		_castleId = 0;
 		_castle = null;
 		
-		//enabled by default
+		// enabled by default
 		_enabled = true;
 		
 		setTargetType(InstanceType.L2Playable); // default only playabale
@@ -95,7 +93,9 @@ public class L2DamageZone extends L2ZoneType
 			_enabled = Boolean.parseBoolean(value);
 		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
@@ -105,9 +105,14 @@ public class L2DamageZone extends L2ZoneType
 		{
 			L2PcInstance player = character.getActingPlayer();
 			if (getCastle() != null) // Castle zone
+			{
 				if (!(getCastle().getSiege().getIsInProgress() && player != null && player.getSiegeState() != 2)) // Siege and no defender
+				{
 					return;
-			synchronized(this)
+				}
+			}
+			
+			synchronized (this)
 			{
 				if (_task == null)
 					_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), _startTask, _reuseTask);
@@ -143,20 +148,20 @@ public class L2DamageZone extends L2ZoneType
 		}
 	}
 	
-	private Castle getCastle()
+	protected Castle getCastle()
 	{
-		if (_castleId > 0 &&_castle == null)
+		if (_castleId > 0 && _castle == null)
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
 		
 		return _castle;
 	}
 	
-	class ApplyDamage implements Runnable
+	private final class ApplyDamage implements Runnable
 	{
 		private final L2DamageZone _dmgZone;
 		private final Castle _castle;
 		
-		ApplyDamage(L2DamageZone zone)
+		protected ApplyDamage(L2DamageZone zone)
 		{
 			_dmgZone = zone;
 			_castle = zone.getCastle();
@@ -164,7 +169,12 @@ public class L2DamageZone extends L2ZoneType
 		
 		@Override
 		public void run()
-		{
+		{	
+			if (!_enabled)
+			{
+				return;
+			}
+			
 			boolean siege = false;
 			
 			if (_castle != null)
@@ -178,10 +188,7 @@ public class L2DamageZone extends L2ZoneType
 				}
 			}
 			
-			if (!_enabled)
-				return;
-			
-			for (L2Character temp : _dmgZone.getCharactersInsideArray())
+			for (L2Character temp : _dmgZone.getCharactersInside())
 			{
 				if (temp != null && !temp.isDead())
 				{
@@ -193,7 +200,7 @@ public class L2DamageZone extends L2ZoneType
 							continue;
 					}
 					
-					double multiplier =  1 + (temp.calcStat(Stats.DAMAGE_ZONE_VULN, 0, null, null) / 100);
+					double multiplier = 1 + (temp.calcStat(Stats.DAMAGE_ZONE_VULN, 0, null, null) / 100);
 					
 					if (getHPDamagePerSecond() != 0)
 						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond() * multiplier, null, null);
@@ -218,5 +225,4 @@ public class L2DamageZone extends L2ZoneType
 	public void onReviveInside(L2Character character)
 	{
 	}
-	
 }

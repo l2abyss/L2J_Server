@@ -44,19 +44,19 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Point3D;
 
 /**
- *
  * @author -Nemesiss-
  */
 public class GeoEngine extends GeoData
 {
-	private static Logger _log = Logger.getLogger(GeoData.class.getName());
+	private static final Logger _log = Logger.getLogger(GeoEngine.class.getName());
+	
 	private static final byte EAST = 1;
 	private static final byte WEST = 2;
 	private static final byte SOUTH = 4;
 	private static final byte NORTH = 8;
 	private static final byte NSWE_ALL = 15;
-	private static TShortObjectHashMap<MappedByteBuffer> _geodata = new TShortObjectHashMap<MappedByteBuffer>();
-	private static TShortObjectHashMap<IntBuffer> _geodataIndex = new TShortObjectHashMap<IntBuffer>();
+	private static TShortObjectHashMap<MappedByteBuffer> _geodata = new TShortObjectHashMap<>();
+	private static TShortObjectHashMap<IntBuffer> _geodataIndex = new TShortObjectHashMap<>();
 	private static BufferedOutputStream _geoBugsOut;
 	
 	public static GeoEngine getInstance()
@@ -64,24 +64,18 @@ public class GeoEngine extends GeoData
 		return SingletonHolder._instance;
 	}
 	
-	private GeoEngine()
+	protected GeoEngine()
 	{
 		nInitGeodata();
 	}
 	
 	//Public Methods
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#getType(int, int)
-	 */
 	@Override
 	public short getType(int x, int y)
 	{
 		return nGetType((x - L2World.MAP_MIN_X) >> 4, (y - L2World.MAP_MIN_Y) >> 4);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#getHeight(int, int, int)
-	 */
 	@Override
 	public short getHeight(int x, int y, int z)
 	{
@@ -94,9 +88,6 @@ public class GeoEngine extends GeoData
 		return nGetSpawnHeight((x - L2World.MAP_MIN_X) >> 4, (y - L2World.MAP_MIN_Y) >> 4, zmin, zmax, spawn);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#geoPosition(int, int)
-	 */
 	@Override
 	public String geoPosition(int x, int y)
 	{
@@ -106,22 +97,16 @@ public class GeoEngine extends GeoData
 		+ getRegionOffset(gx, gy);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#canSeeTarget(L2Object, Point3D)
-	 */
 	@Override
 	public boolean canSeeTarget(L2Object cha, Point3D target)
 	{
-		if (DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), cha.getZ(), target.getX(), target.getY(), target.getZ(), cha.getInstanceId()))
+		if (DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), cha.getZ(), target.getX(), target.getY(), target.getZ(), cha.getInstanceId(), true))
 			return false;
 		if (cha.getZ() >= target.getZ())
 			return canSeeTarget(cha.getX(), cha.getY(), cha.getZ(), target.getX(), target.getY(), target.getZ());
 		return canSeeTarget(target.getX(), target.getY(), target.getZ(), cha.getX(), cha.getY(), cha.getZ());
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#canSeeTarget(com.l2jserver.gameserver.model.L2Object, com.l2jserver.gameserver.model.L2Object)
-	 */
 	@Override
 	public boolean canSeeTarget(L2Object cha, L2Object target)
 	{
@@ -141,7 +126,7 @@ public class GeoEngine extends GeoData
 			z += 30; // well they don't move closer to balcony fence at the moment :(
 		int z2 = target.getZ() + 45;
 		if (!(target instanceof L2DoorInstance)
-				&& DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), z, target.getX(), target.getY(), z2, cha.getInstanceId()))
+				&& DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), z, target.getX(), target.getY(), z2, cha.getInstanceId(), true))
 			return false;
 		if (target instanceof L2DoorInstance)
 			return true; // door coordinates are hinge coords..
@@ -152,9 +137,6 @@ public class GeoEngine extends GeoData
 		return canSeeTarget(target.getX(), target.getY(), z2, cha.getX(), cha.getY(), z);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#canSeeTargetDebug(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, com.l2jserver.gameserver.model.L2Object)
-	 */
 	@Override
 	public boolean canSeeTargetDebug(L2PcInstance gm, L2Object target)
 	{
@@ -172,9 +154,6 @@ public class GeoEngine extends GeoData
 		return canSeeDebug(gm, (target.getX() - L2World.MAP_MIN_X) >> 4, (target.getY() - L2World.MAP_MIN_Y) >> 4, z2, (gm.getX() - L2World.MAP_MIN_X) >> 4, (gm.getY() - L2World.MAP_MIN_Y) >> 4, z);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#getNSWE(int, int, int)
-	 */
 	@Override
 	public short getNSWE(int x, int y, int z)
 	{
@@ -188,9 +167,6 @@ public class GeoEngine extends GeoData
 		return (destiny.getX() == tx && destiny.getY() == ty && destiny.getZ() == tz);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#moveCheck(int, int, int, int, int, int, int)
-	 */
 	@Override
 	public Location moveCheck(int x, int y, int z, int tx, int ty, int tz, int instanceId)
 	{
@@ -202,9 +178,6 @@ public class GeoEngine extends GeoData
 		return moveCheck(startpoint, destiny, (x - L2World.MAP_MIN_X) >> 4, (y - L2World.MAP_MIN_Y) >> 4, z, (tx - L2World.MAP_MIN_X) >> 4, (ty - L2World.MAP_MIN_Y) >> 4, tz);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.GeoData#addGeoDataBug(com.l2jserver.gameserver.model.actor.instance.L2PcInstance, java.lang.String)
-	 */
 	@Override
 	public void addGeoDataBug(L2PcInstance gm, String comment)
 	{
@@ -489,8 +462,17 @@ public class GeoEngine extends GeoData
 		return true;
 	}
 	
-	/*
+	/**
 	 *  MoveCheck
+	 * @param startpoint 
+	 * @param destiny 
+	 * @param x 
+	 * @param y 
+	 * @param z 
+	 * @param tx 
+	 * @param ty 
+	 * @param tz 
+	 * @return 
 	 */
 	private static Location moveCheck(Location startpoint, Location destiny, int x, int y, double z, int tx, int ty, int tz)
 	{
@@ -628,24 +610,13 @@ public class GeoEngine extends GeoData
 	//GeoEngine
 	private static void nInitGeodata()
 	{
-		LineNumberReader lnr = null;
-		try
+		final File file = new File("./data/geodata/geo_index.txt");
+		try (FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			LineNumberReader lnr = new LineNumberReader(br))
 		{
 			_log.info("Geo Engine: - Loading Geodata...");
-			File Data = new File("./data/geodata/geo_index.txt");
-			if (!Data.exists())
-				return;
-			
-			lnr = new LineNumberReader(new BufferedReader(new FileReader(Data)));
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "", e);
-			throw new Error("Failed to Load geo_index File.");
-		}
-		String line;
-		try
-		{
+			String line;
 			while ((line = lnr.readLine()) != null)
 			{
 				if (line.trim().length() == 0)
@@ -661,16 +632,7 @@ public class GeoEngine extends GeoData
 			_log.log(Level.WARNING, "", e);
 			throw new Error("Failed to Read geo_index File.");
 		}
-		finally
-		{
-			try
-			{
-				lnr.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
+		
 		try
 		{
 			File geo_bugs = new File("./data/geodata/geo_bugs.txt");
@@ -701,13 +663,13 @@ public class GeoEngine extends GeoData
 		String fname = "./data/geodata/" + rx + "_" + ry + ".l2j";
 		short regionoffset = (short) ((rx << 5) + ry);
 		_log.info("Geo Engine: - Loading: " + fname + " -> region offset: " + regionoffset + "X: " + rx + " Y: " + ry);
-		File Geo = new File(fname);
+		
 		int size, index = 0, block = 0, flor = 0;
-		FileChannel roChannel = null;
-		try
+		// Create a read-only memory-mapped file
+		final File Geo = new File(fname);
+		try (RandomAccessFile raf = new RandomAccessFile(Geo, "r");
+			FileChannel roChannel = raf.getChannel())
 		{
-			// Create a read-only memory-mapped file
-			roChannel = new RandomAccessFile(Geo, "r").getChannel();
 			size = (int) roChannel.size();
 			MappedByteBuffer geo;
 			if (Config.FORCE_GEODATA) //Force O/S to Loads this buffer's content into physical memory.
@@ -753,16 +715,6 @@ public class GeoEngine extends GeoData
 		{
 			_log.log(Level.WARNING, "Failed to Load GeoFile at block: " + block, e);
 			return false;
-		}
-		finally
-		{
-			try
-			{
-				roChannel.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 		return true;
 	}
@@ -1526,7 +1478,6 @@ public class GeoEngine extends GeoData
 		return true;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GeoEngine _instance = new GeoEngine();

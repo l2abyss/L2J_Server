@@ -216,7 +216,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 	private static CharSelectInfoPackage[] loadCharacterSelectInfo(String loginName)
 	{
 		CharSelectInfoPackage charInfopackage;
-		List<CharSelectInfoPackage> characterList = new FastList<CharSelectInfoPackage>();
+		List<CharSelectInfoPackage> characterList = new FastList<>();
 		
 		Connection con = null;
 		try
@@ -277,7 +277,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		}
 		finally
 		{
-			try { L2DatabaseFactory.close(con); } catch (Exception e) {}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -390,7 +390,10 @@ public class CharSelectionInfo extends L2GameServerPacket
 			{
 				_log.log(Level.WARNING, "Could not restore augmentation info: " + e.getMessage(), e);
 			}
-			finally { try { L2DatabaseFactory.close(con); } catch (Exception e) {} }
+			finally
+			{
+				L2DatabaseFactory.close(con);
+			}
 		}
 		
 		/*

@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.Calendar;
-import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
@@ -48,7 +47,6 @@ import com.l2jserver.gameserver.model.entity.ClanHall;
 public class SiegeInfo extends L2GameServerPacket
 {
 	private static final String _S__C9_SIEGEINFO = "[S] c9 SiegeInfo";
-	private static Logger _log = Logger.getLogger(SiegeInfo.class.getName());
 	private Castle _castle;
 	private ClanHall _hall;
 	

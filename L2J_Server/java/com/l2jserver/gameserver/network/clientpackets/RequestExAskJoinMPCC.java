@@ -66,7 +66,7 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 			if (activeParty.getLeader().equals(activeChar))
 			{
 				// if activeChars Party is in CC, is activeChar CCLeader?
-				if (activeParty.isInCommandChannel() && activeParty.getCommandChannel().getChannelLeader().equals(activeChar))
+				if (activeParty.isInCommandChannel() && activeParty.getCommandChannel().getLeader().equals(activeChar))
 				{
 					// in CC and the CCLeader
 					// target in a party?
@@ -92,7 +92,7 @@ public final class RequestExAskJoinMPCC extends L2GameClientPacket
 					}
 					
 				}
-				else if (activeParty.isInCommandChannel() && !activeParty.getCommandChannel().getChannelLeader().equals(activeChar))
+				else if (activeParty.isInCommandChannel() && !activeParty.getCommandChannel().getLeader().equals(activeChar))
 				{
 					// in CC, but not the CCLeader
 					sm = SystemMessage.getSystemMessage(SystemMessageId.CANNOT_INVITE_TO_COMMAND_CHANNEL);

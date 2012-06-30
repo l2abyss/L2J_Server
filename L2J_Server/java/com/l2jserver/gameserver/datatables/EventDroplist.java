@@ -37,11 +37,11 @@ public class EventDroplist
 	/**
 	 * The table containing all DataDrop object
 	 */
-	private static final List<DateDrop> _allNpcDateDrops = new FastList<DateDrop>();
+	private static final List<DateDrop> _allNpcDateDrops = new FastList<>();
 	
 	public static class DateDrop
 	{
-		private final DateRange _dateRange;
+		protected final DateRange _dateRange;
 		private final EventDrop _eventDrop;
 		
 		public DateDrop(DateRange dateRange, EventDrop eventDrop)
@@ -94,7 +94,7 @@ public class EventDroplist
 	 */
 	public List<DateDrop> getAllDrops()
 	{
-		final List<DateDrop> list = new FastList<DateDrop>();
+		final List<DateDrop> list = new FastList<>();
 		final Date currentDate = new Date();
 		for (DateDrop drop : _allNpcDateDrops)
 		{
@@ -115,7 +115,6 @@ public class EventDroplist
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final EventDroplist _instance = new EventDroplist();

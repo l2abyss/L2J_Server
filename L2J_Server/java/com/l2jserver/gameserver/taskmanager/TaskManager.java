@@ -50,20 +50,21 @@ import com.l2jserver.gameserver.taskmanager.tasks.TaskShutdown;
 
 /**
  * @author Layane
- * 
  */
 public final class TaskManager
 {
 	protected static final Logger _log = Logger.getLogger(TaskManager.class.getName());
 	
-	protected static final String[] SQL_STATEMENTS = {
+	private final FastMap<Integer, Task> _tasks = new FastMap<>();
+	protected final FastList<ExecutedTask> _currentTasks = new FastList<>();
+	
+	protected static final String[] SQL_STATEMENTS =
+	{
 		"SELECT id,task,type,last_activation,param1,param2,param3 FROM global_tasks",
-		"UPDATE global_tasks SET last_activation=? WHERE id=?", "SELECT id FROM global_tasks WHERE task=?",
+		"UPDATE global_tasks SET last_activation=? WHERE id=?",
+		"SELECT id FROM global_tasks WHERE task=?",
 		"INSERT INTO global_tasks (task,type,last_activation,param1,param2,param3) VALUES(?,?,?,?,?,?)"
 	};
-	
-	private final FastMap<Integer, Task> _tasks = new FastMap<Integer, Task>();
-	protected final FastList<ExecutedTask> _currentTasks = new FastList<ExecutedTask>();
 	
 	public class ExecutedTask implements Runnable
 	{
@@ -80,7 +81,12 @@ public final class TaskManager
 			type = ptype;
 			id = rset.getInt("id");
 			lastActivation = rset.getLong("last_activation");
-			params = new String[] { rset.getString("param1"), rset.getString("param2"), rset.getString("param3") };
+			params = new String[]
+			{
+				rset.getString("param1"),
+				rset.getString("param2"),
+				rset.getString("param3")
+			};
 		}
 		
 		@Override
@@ -88,9 +94,7 @@ public final class TaskManager
 		{
 			task.onTimeElapsed(this);
 			lastActivation = System.currentTimeMillis();
-			
 			Connection con = null;
-			
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
@@ -109,7 +113,7 @@ public final class TaskManager
 				L2DatabaseFactory.close(con);
 			}
 			
-			if (type == TYPE_SHEDULED || type == TYPE_TIME)
+			if ((type == TYPE_SHEDULED) || (type == TYPE_TIME))
 			{
 				stopTask();
 			}
@@ -118,7 +122,21 @@ public final class TaskManager
 		@Override
 		public boolean equals(Object object)
 		{
-			return object == null ? false : id == ((ExecutedTask) object).id;
+			if (this == object)
+			{
+				return true;
+			}
+			if (!(object instanceof ExecutedTask))
+			{
+				return false;
+			}
+			return id == ((ExecutedTask) object).id;
+		}
+		
+		@Override
+		public int hashCode()
+		{
+			return id;
 		}
 		
 		public Task getTask()
@@ -151,7 +169,9 @@ public final class TaskManager
 			task.onDestroy();
 			
 			if (scheduled != null)
+			{
 				scheduled.cancel(true);
+			}
 			
 			_currentTasks.remove(this);
 		}
@@ -163,7 +183,7 @@ public final class TaskManager
 		return SingletonHolder._instance;
 	}
 	
-	private TaskManager()
+	protected TaskManager()
 	{
 		initializate();
 		startAllTasks();
@@ -171,19 +191,19 @@ public final class TaskManager
 	
 	private void initializate()
 	{
+		registerTask(new TaskBirthday());
 		registerTask(new TaskCleanUp());
-		registerTask(new TaskScript());
-		registerTask(new TaskJython());
+		registerTask(new TaskDailyQuestClean());
+		registerTask(new TaskDailySkillReuseClean());
 		registerTask(new TaskGlobalVariablesSave());
+		registerTask(new TaskJython());
 		registerTask(new TaskOlympiadSave());
 		registerTask(new TaskRaidPointsReset());
 		registerTask(new TaskRecom());
 		registerTask(new TaskRestart());
+		registerTask(new TaskScript());
 		registerTask(new TaskSevenSignsUpdate());
 		registerTask(new TaskShutdown());
-		registerTask(new TaskDailyQuestClean());
-		registerTask(new TaskDailySkillReuseClean());
-		registerTask(new TaskBirthday());
 	}
 	
 	public void registerTask(Task task)
@@ -202,30 +222,30 @@ public final class TaskManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[0]);
-			ResultSet rset = statement.executeQuery();
-			
+			final PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[0]);
+			final ResultSet rset = statement.executeQuery();
 			while (rset.next())
 			{
 				Task task = _tasks.get(rset.getString("task").trim().toLowerCase().hashCode());
 				
 				if (task == null)
+				{
 					continue;
+				}
 				
-				TaskTypes type = TaskTypes.valueOf(rset.getString("type"));
-				
+				final TaskTypes type = TaskTypes.valueOf(rset.getString("type"));
 				if (type != TYPE_NONE)
 				{
 					ExecutedTask current = new ExecutedTask(task, type, rset);
 					if (launchTask(current))
+					{
 						_currentTasks.add(current);
+					}
 				}
 				
 			}
-			
 			rset.close();
 			statement.close();
-			
 		}
 		catch (Exception e)
 		{
@@ -233,13 +253,7 @@ public final class TaskManager
 		}
 		finally
 		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -248,8 +262,7 @@ public final class TaskManager
 		final ThreadPoolManager scheduler = ThreadPoolManager.getInstance();
 		final TaskTypes type = task.getType();
 		long delay, interval;
-		
-		switch(type)
+		switch (type)
 		{
 			case TYPE_STARTUP:
 				task.run();
@@ -315,19 +328,15 @@ public final class TaskManager
 				
 				delay = min.getTimeInMillis() - System.currentTimeMillis();
 				
-				if (check.after(min) || delay < 0)
+				if (check.after(min) || (delay < 0))
 				{
 					delay += interval;
 				}
-				
 				task.scheduled = scheduler.scheduleGeneralAtFixedRate(task, delay, interval);
-				
 				return true;
-				
 			default:
 				return false;
 		}
-		
 		return false;
 	}
 	
@@ -339,7 +348,6 @@ public final class TaskManager
 	public static boolean addUniqueTask(String task, TaskTypes type, String param1, String param2, String param3, long lastActivation)
 	{
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -358,10 +366,8 @@ public final class TaskManager
 				statement.setString(6, param3);
 				statement.execute();
 			}
-			
 			rset.close();
 			statement.close();
-			
 			return true;
 		}
 		catch (SQLException e)
@@ -370,15 +376,8 @@ public final class TaskManager
 		}
 		finally
 		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
-		
 		return false;
 	}
 	
@@ -390,7 +389,6 @@ public final class TaskManager
 	public static boolean addTask(String task, TaskTypes type, String param1, String param2, String param3, long lastActivation)
 	{
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -412,19 +410,11 @@ public final class TaskManager
 		}
 		finally
 		{
-			try
-			{
-				L2DatabaseFactory.close(con);
-			}
-			catch (Exception e)
-			{
-			}
+			L2DatabaseFactory.close(con);
 		}
-		
 		return false;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TaskManager _instance = new TaskManager();

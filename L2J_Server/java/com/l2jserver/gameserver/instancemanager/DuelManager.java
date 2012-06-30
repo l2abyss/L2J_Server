@@ -14,39 +14,27 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.util.logging.Logger;
-
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.entity.Duel;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 public class DuelManager
-{
-	private static final Logger _log = Logger.getLogger(DuelManager.class.getName());
-	
+{	
 	public static final DuelManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private FastList<Duel> _duels;
 	private int _currentDuelId = 0x90;
 	
-	// =========================================================
-	// Constructor
-	private DuelManager()
+	protected DuelManager()
 	{
-		_log.info("Initializing DuelManager");
-		_duels = new FastList<Duel>();
+		_duels = new FastList<>();
 	}
-	
-	// =========================================================
-	// Method - Private
 	
 	private int getNextDuelId()
 	{
@@ -55,9 +43,6 @@ public class DuelManager
 			_currentDuelId = 1;
 		return _currentDuelId;
 	}
-	
-	// =========================================================
-	// Method - Public
 	
 	public Duel getDuel(int duelId)
 	{
@@ -79,7 +64,7 @@ public class DuelManager
 		if (partyDuel == 1)
 		{
 			boolean playerInPvP = false;
-			for (L2PcInstance temp : playerA.getParty().getPartyMembers())
+			for (L2PcInstance temp : playerA.getParty().getMembers())
 			{
 				if (temp.getPvpFlag() != 0)
 				{
@@ -89,7 +74,7 @@ public class DuelManager
 			}
 			if (!playerInPvP)
 			{
-				for (L2PcInstance temp : playerB.getParty().getPartyMembers())
+				for (L2PcInstance temp : playerB.getParty().getMembers())
 				{
 					if (temp.getPvpFlag() != 0)
 					{
@@ -101,11 +86,11 @@ public class DuelManager
 			// A player has PvP flag
 			if (playerInPvP)
 			{
-				for (L2PcInstance temp : playerA.getParty().getPartyMembers())
+				for (L2PcInstance temp : playerA.getParty().getMembers())
 				{
 					temp.sendMessage(engagedInPvP);
 				}
-				for (L2PcInstance temp : playerB.getParty().getPartyMembers())
+				for (L2PcInstance temp : playerB.getParty().getMembers())
 				{
 					temp.sendMessage(engagedInPvP);
 				}
@@ -141,7 +126,7 @@ public class DuelManager
 	
 	/**
 	 * Updates player states.
-	 * @param player - the dieing player
+	 * @param player - the dying player
 	 */
 	public void onPlayerDefeat(L2PcInstance player)
 	{
@@ -204,18 +189,17 @@ public class DuelManager
 		}
 		else if (duel.isPartyDuel())
 		{
-			if (duel.getPlayerA().getParty() != null && duel.getPlayerA().getParty().getPartyMembers().contains(player))
+			if (duel.getPlayerA().getParty() != null && duel.getPlayerA().getParty().getMembers().contains(player))
 			{
 				duel.broadcastToTeam2(packet);
 			}
-			else if (duel.getPlayerB().getParty() != null && duel.getPlayerB().getParty().getPartyMembers().contains(player))
+			else if (duel.getPlayerB().getParty() != null && duel.getPlayerB().getParty().getMembers().contains(player))
 			{
 				duel.broadcastToTeam1(packet);
 			}
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final DuelManager _instance = new DuelManager();

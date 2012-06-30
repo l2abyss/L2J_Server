@@ -21,14 +21,13 @@ import javax.swing.ImageIcon;
 import javolution.util.FastMap;
 
 /**
- * Usage of this class causes images to be loaded and kept in memory, and therefore should only be used by helper applications.
+ * Usage of this class causes images to be loaded and kept in memory, and therefore should only be used by helper applications.<br>
  * Some icons from famfamfam (http://www.famfamfam.com/) credit *MUST* be given.
- * 
- * @author  KenM
+ * @author KenM
  */
 public class ImagesTable
 {
-	private static final Map<String, ImageIcon> IMAGES = new FastMap<String, ImageIcon>();
+	private static final Map<String, ImageIcon> IMAGES = new FastMap<>();
 	
 	public static final String IMAGES_DIRECTORY = "../images/";
 	
@@ -36,13 +35,8 @@ public class ImagesTable
 	{
 		if (!IMAGES.containsKey(name))
 		{
-			IMAGES.put(name, new ImageIcon(IMAGES_DIRECTORY+name));
+			IMAGES.put(name, new ImageIcon(IMAGES_DIRECTORY + name));
 		}
 		return IMAGES.get(name);
-	}
-	
-	private ImagesTable()
-	{
-		//none
 	}
 }

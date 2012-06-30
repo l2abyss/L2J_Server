@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.zone.type;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
@@ -35,7 +34,7 @@ public class L2JailZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			character.setInsideZone(L2Character.ZONE_JAIL, true);
 			if (Config.JAIL_IS_PVP)
@@ -53,7 +52,7 @@ public class L2JailZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
 			character.setInsideZone(L2Character.ZONE_JAIL, false);
 			if (Config.JAIL_IS_PVP)
@@ -61,7 +60,7 @@ public class L2JailZone extends L2ZoneType
 				character.setInsideZone(L2Character.ZONE_PVP, false);
 				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 			}
-			if (((L2PcInstance) character).isInJail())
+			if (character.getActingPlayer().isInJail())
 			{
 				// when a player wants to exit jail even if he is still jailed, teleport him back to jail
 				ThreadPoolManager.getInstance().scheduleGeneral(new BackToJail(character), 2000);
@@ -84,13 +83,13 @@ public class L2JailZone extends L2ZoneType
 	{
 	}
 	
-	static class BackToJail implements Runnable
+	private static class BackToJail implements Runnable
 	{
-		private final L2PcInstance _activeChar;
+		private final L2Character _activeChar;
 		
-		BackToJail(L2Character character)
+		protected BackToJail(L2Character character)
 		{
-			_activeChar = (L2PcInstance) character;
+			_activeChar = character;
 		}
 		
 		@Override

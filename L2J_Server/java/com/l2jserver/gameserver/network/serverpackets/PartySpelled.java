@@ -20,7 +20,7 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 
 /**
  * This class ...
@@ -49,7 +49,7 @@ public class PartySpelled extends L2GameServerPacket
 	
 	public PartySpelled(L2Character cha)
 	{
-		_effects = new FastList<Effect>();
+		_effects = new FastList<>();
 		_activeChar = cha;
 	}
 	
@@ -57,7 +57,7 @@ public class PartySpelled extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0xf4);
-		writeD(_activeChar instanceof L2SummonInstance ? 2 : _activeChar instanceof L2PetInstance ? 1 : 0);
+		writeD(_activeChar instanceof L2ServitorInstance ? 2 : _activeChar instanceof L2PetInstance ? 1 : 0);
 		writeD(_activeChar.getObjectId());
 		writeD(_effects.size());
 		for (Effect temp : _effects)

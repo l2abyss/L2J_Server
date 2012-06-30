@@ -34,8 +34,8 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 	
 	int _tabNum;
 	
-	Map<Integer, List<ActionKey>> _keyMap = new FastMap<Integer, List<ActionKey>>();
-	Map<Integer, List<Integer>> _catMap = new FastMap<Integer, List<Integer>>();
+	Map<Integer, List<ActionKey>> _keyMap = new FastMap<>();
+	Map<Integer, List<Integer>> _catMap = new FastMap<>();
 	
 	@Override
 	protected void readImpl()
@@ -84,7 +84,7 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 			_catMap.get(cat).add(cmd);
 		else
 		{
-			List<Integer> tmp = new FastList<Integer>();
+			List<Integer> tmp = new FastList<>();
 			tmp.add(cmd);
 			_catMap.put(cat, tmp);
 		}
@@ -97,7 +97,7 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 			_keyMap.get(cat).add(tmk);
 		else
 		{
-			List<ActionKey> tmp = new FastList<ActionKey>();
+			List<ActionKey> tmp = new FastList<>();
 			tmp.add(tmk);
 			_keyMap.put(cat, tmp);
 		}

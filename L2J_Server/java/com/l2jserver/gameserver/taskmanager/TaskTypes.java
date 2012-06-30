@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.taskmanager;
 
 /**
  * @author Layane
- * 
  */
 public enum TaskTypes
 {

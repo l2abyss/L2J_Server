@@ -15,12 +15,10 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
  * A landing zone
- *
  * @author  Kerberos
  */
 public class L2LandingZone extends L2ZoneType
@@ -33,28 +31,26 @@ public class L2LandingZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
+		{
 			character.setInsideZone(L2Character.ZONE_LANDING, true);
+		}
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
+		{
 			character.setInsideZone(L2Character.ZONE_LANDING, false);
+		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.model.zone.L2ZoneType#onDieInside(com.l2jserver.gameserver.model.actor.L2Character)
-	 */
 	@Override
 	public void onDieInside(L2Character character)
 	{
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.model.zone.L2ZoneType#onReviveInside(com.l2jserver.gameserver.model.actor.L2Character)
-	 */
 	@Override
 	public void onReviveInside(L2Character character)
 	{

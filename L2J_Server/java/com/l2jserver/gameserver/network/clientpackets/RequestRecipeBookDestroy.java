@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.RecipeController;
+import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.RecipeBookItemList;
@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeBookItemList;
 public final class RequestRecipeBookDestroy extends L2GameClientPacket
 {
 	private static final String _C__B6_REQUESTRECIPEBOOKDESTROY = "[C] B6 RequestRecipeBookDestroy";
-	//private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
 	
 	private int _recipeID;
 	
@@ -46,7 +45,7 @@ public final class RequestRecipeBookDestroy extends L2GameClientPacket
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("RecipeDestroy"))
 			return;
 		
-		final L2RecipeList rp = RecipeController.getInstance().getRecipeList(_recipeID);
+		final L2RecipeList rp = RecipeData.getInstance().getRecipeList(_recipeID);
 		if (rp == null)
 			return;
 		activeChar.unregisterRecipeList(_recipeID);

@@ -26,18 +26,12 @@ import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
 public class RaceManagerKnownList extends NpcKnownList
 {
 	protected static final Logger _log = Logger.getLogger(RaceManagerKnownList.class.getName());
-	// =========================================================
-	// Data Field
 	
-	// =========================================================
-	// Constructor
 	public RaceManagerKnownList(L2RaceManagerInstance activeChar)
 	{
 		super(activeChar);
 	}
 	
-	// =========================================================
-	// Method - Public
 	@Override
 	public boolean addKnownObject(L2Object object)
 	{
@@ -72,11 +66,6 @@ public class RaceManagerKnownList extends NpcKnownList
 		return true;
 	}
 	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	@Override
 	public L2RaceManagerInstance getActiveChar() { return (L2RaceManagerInstance)super.getActiveChar(); }
 }

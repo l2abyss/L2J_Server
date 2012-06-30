@@ -14,49 +14,53 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2HennaInstance;
+import java.util.List;
 
+import com.l2jserver.gameserver.datatables.HennaData;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.items.L2Henna;
+
+/**
+ * @author Zoey76
+ */
 public class HennaEquipList extends L2GameServerPacket
 {
-	private static final String _S__E2_HennaEquipList = "[S] ee HennaEquipList";
+	private static final String _S__EE_HENNAEQUIPLIST = "[S] EE HennaEquipList";
 	
-	private L2PcInstance _player;
-	private L2HennaInstance[] _hennaEquipList;
+	private final L2PcInstance _player;
+	private final List<L2Henna> _hennaEquipList;
 	
-	public HennaEquipList(L2PcInstance player,L2HennaInstance[] hennaEquipList)
+	public HennaEquipList(L2PcInstance player)
 	{
 		_player = player;
-		_hennaEquipList = hennaEquipList;
+		_hennaEquipList = HennaData.getInstance().getHennaList(player.getClassId());
+	}
+	
+	public HennaEquipList(L2PcInstance player, List<L2Henna> list)
+	{
+		_player = player;
+		_hennaEquipList = list;
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xee);
-		writeQ(_player.getAdena()); //activeChar current amount of adena
-		writeD(3); //available equip slot
-		writeD(_hennaEquipList.length);
+		writeC(0xEE);
+		writeQ(_player.getAdena()); // activeChar current amount of Adena
+		writeD(3); // available equip slot
+		writeD(_hennaEquipList.size());
 		
-		for (L2HennaInstance temp: _hennaEquipList)
+		for (L2Henna henna : _hennaEquipList)
 		{
 			// Player must have at least one dye in inventory
-			// to be able to see the henna that can be applied with it.
-			if ((_player.getInventory().getItemByItemId(temp.getItemIdDye())) != null)
+			// to be able to see the Henna that can be applied with it.
+			if ((_player.getInventory().getItemByItemId(henna.getDyeItemId())) != null)
 			{
-				writeD(temp.getSymbolId()); //symbolId
-				writeD(temp.getItemIdDye()); //itemId of dye
-				writeQ(temp.getAmountDyeRequire()); //amount of dye require
-				writeQ(temp.getPrice()); //amount of adena required
-				writeD(1); //meet the requirement or not
-			}
-			else
-			{
-				writeD(0x00);
-				writeD(0x00);
-				writeQ(0x00);
-				writeQ(0x00);
-				writeD(0x00);
+				writeD(henna.getDyeId()); // dye Id
+				writeD(henna.getDyeItemId()); // item Id of the dye
+				writeQ(henna.getWearCount()); // amount of dyes required
+				writeQ(henna.getWearFee()); // amount of Adena required
+				writeD(henna.isAllowedClass(_player.getClassId()) ? 0x01 : 0x00); // meet the requirement or not
 			}
 		}
 	}
@@ -64,6 +68,6 @@ public class HennaEquipList extends L2GameServerPacket
 	@Override
 	public String getType()
 	{
-		return _S__E2_HennaEquipList;
+		return _S__EE_HENNAEQUIPLIST;
 	}
 }

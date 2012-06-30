@@ -61,19 +61,10 @@ public class ItemRequest
 		{
 			return true;
 		}
-		if (obj == null)
+		if (!(obj instanceof ItemRequest))
 		{
 			return false;
 		}
-		if (getClass() != obj.getClass())
-		{
-			return false;
-		}
-		ItemRequest other = (ItemRequest) obj;
-		if (_objectId != other._objectId)
-		{
-			return false;
-		}
-		return true;
+		return (_objectId != ((ItemRequest) obj)._objectId);
 	}
 }

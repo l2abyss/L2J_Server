@@ -14,9 +14,12 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
+import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSignsFestival;
@@ -28,7 +31,7 @@ import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.network.serverpackets.RestartResponse;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerDespawnListener;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 
 /**
@@ -39,8 +42,8 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 public final class RequestRestart extends L2GameClientPacket
 {
 	private static final String _C__57_REQUESTRESTART = "[C] 57 RequestRestart";
-	private static final Logger _log = Logger.getLogger(RequestRestart.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
+	private static List<PlayerDespawnListener> despawnListeners = new FastList<>();
 	
 	@Override
 	protected void readImpl()
@@ -101,8 +104,14 @@ public final class RequestRestart extends L2GameClientPacket
 			final L2Party playerParty = player.getParty();
 			
 			if (playerParty != null)
-				player.getParty().broadcastToPartyMembers(SystemMessage.sendString(player.getName() + " has been removed from the upcoming festival."));
+				player.getParty().broadcastString(player.getName() + " has been removed from the upcoming festival.");
 		}
+
+		for (PlayerDespawnListener listener : despawnListeners)
+		{
+			listener.onDespawn(player);
+		}
+
 		// Remove player from Boss Zone
 		player.removeFromBossZone();
 		
@@ -135,5 +144,27 @@ public final class RequestRestart extends L2GameClientPacket
 	public String getType()
 	{
 		return _C__57_REQUESTRESTART;
+	}
+	
+	// Listeners
+	/**
+	 * Adds a despawn listener which will get triggered when a player despawns
+	 * @param listener
+	 */
+	public static void addDespawnListener(PlayerDespawnListener listener)
+	{
+		if (!despawnListeners.contains(listener))
+		{
+			despawnListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a despawn listener
+	 * @param listener
+	 */
+	public static void removeDespawnListener(PlayerDespawnListener listener)
+	{
+		despawnListeners.remove(listener);
 	}
 }

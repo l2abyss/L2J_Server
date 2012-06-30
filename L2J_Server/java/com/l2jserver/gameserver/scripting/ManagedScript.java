@@ -21,26 +21,24 @@ import javax.script.ScriptException;
 
 /**
  * Abstract class for classes that are meant to be implemented by scripts.<BR>
- * 
- * @author  KenM
+ * @author KenM
  */
 public abstract class ManagedScript
 {
-	private File _scriptFile;
+	private final File _scriptFile;
 	private long _lastLoadTime;
 	private boolean _isActive;
 	
 	public ManagedScript()
 	{
 		_scriptFile = L2ScriptEngineManager.getInstance().getCurrentLoadingScript();
-		this.setLastLoadTime(System.currentTimeMillis());
+		setLastLoadTime(System.currentTimeMillis());
 	}
 	
 	/**
 	 * Attempts to reload this script and to refresh the necessary bindings with it ScriptControler.<BR>
 	 * Subclasses of this class should override this method to properly refresh their bindings when necessary.
-	 * 
-	 * @return true if and only if the scrip was reloaded, false otherwise.
+	 * @return true if and only if the script was reloaded, false otherwise.
 	 */
 	public boolean reload()
 	{

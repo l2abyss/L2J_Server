@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.communitybbs.Manager;
 
+import gnu.trove.iterator.TIntObjectIterator;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.StringTokenizer;
@@ -26,6 +28,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameServer;
+import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2World;
@@ -42,9 +45,14 @@ public class RegionBBSManager extends BaseBBSManager
 {
 	private static Logger _logChat = Logger.getLogger("chat");
 	
-	private RegionBBSManager()
+	private static final Comparator<L2PcInstance> playerNameComparator = new Comparator<L2PcInstance>()
 	{
-	}
+		@Override
+		public int compare(L2PcInstance p1, L2PcInstance p2)
+		{
+			return p1.getName().compareToIgnoreCase(p2.getName());
+		}
+	};
 	
 	@Override
 	public void parsecmd(String command, L2PcInstance activeChar)
@@ -120,7 +128,7 @@ public class RegionBBSManager extends BaseBBSManager
 			else if (player.getLevel() >= 20)
 				levelApprox = "medium";
 			
-			StringUtil.append(htmlCode, "<table border=0><tr><td>", player.getName(), " (", sex, " ", player.getTemplate().className, "):</td></tr>"
+			StringUtil.append(htmlCode, "<table border=0><tr><td>", player.getName(), " (", sex, " ", ClassListData.getInstance().getClass(player.getClassId()).getClientCode(), "):</td></tr>"
 					+ "<tr><td>Level: ", levelApprox, "</td></tr>" + "<tr><td><br></td></tr>");
 			
 			if (activeChar != null
@@ -267,18 +275,19 @@ public class RegionBBSManager extends BaseBBSManager
 		return SingletonHolder._instance;
 	}
 	
-	public/*synchronized */void changeCommunityBoard()
+	public void changeCommunityBoard()
 	{
-		FastList<L2PcInstance> sortedPlayers = new FastList<L2PcInstance>();
-		Collections.addAll(sortedPlayers, L2World.getInstance().getAllPlayersArray());
-		Collections.sort(sortedPlayers, new Comparator<L2PcInstance>()
+		final FastList<L2PcInstance> sortedPlayers = new FastList<>();
+		final TIntObjectIterator<L2PcInstance> it = L2World.getInstance().getAllPlayers().iterator();
+		while (it.hasNext())
 		{
-			@Override
-			public int compare(L2PcInstance p1, L2PcInstance p2)
+			it.advance();
+			if (it.value() != null)
 			{
-				return p1.getName().compareToIgnoreCase(p2.getName());
+				sortedPlayers.add(it.value());
 			}
-		});
+		}
+		Collections.sort(sortedPlayers, playerNameComparator);
 		
 		_onlinePlayers.clear();
 		_onlineCount = 0;
@@ -320,7 +329,7 @@ public class RegionBBSManager extends BaseBBSManager
 		
 		if (!added)
 		{
-			FastList<L2PcInstance> temp = new FastList<L2PcInstance>();
+			FastList<L2PcInstance> temp = new FastList<>();
 			int page = _onlinePlayers.size() + 1;
 			if (temp.add(player))
 			{
@@ -343,7 +352,7 @@ public class RegionBBSManager extends BaseBBSManager
 		
 		for (int page : _onlinePlayers.keySet())
 		{
-			FastMap<String, String> communityPage = new FastMap<String, String>();
+			FastMap<String, String> communityPage = new FastMap<>();
 			htmlCode.setLength(0);
 			StringUtil.append(htmlCode, "<html><body><br>" + "<table>" + trOpen + "<td align=left valign=top>Server Restarted: ", String.valueOf(GameServer.dateTimeServerStarted.getTime()), tdClose
 					+ trClose + "</table>" + "<table>" + trOpen + tdOpen + "XP Rate: x", String.valueOf(Config.RATE_XP), tdClose
@@ -555,7 +564,6 @@ public class RegionBBSManager extends BaseBBSManager
 		return null;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final RegionBBSManager _instance = new RegionBBSManager();

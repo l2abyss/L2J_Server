@@ -18,16 +18,16 @@ import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.model.L2CharPosition;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.knownlist.StaticObjectKnownList;
 import com.l2jserver.gameserver.model.actor.stat.StaticObjStat;
 import com.l2jserver.gameserver.model.actor.status.StaticObjStatus;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ShowTownMap;
 import com.l2jserver.gameserver.network.serverpackets.StaticObject;
-import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 
 /**
  * GODSON ROX!

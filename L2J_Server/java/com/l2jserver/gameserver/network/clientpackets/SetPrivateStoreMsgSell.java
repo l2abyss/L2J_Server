@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.util.Util;
 public class SetPrivateStoreMsgSell extends L2GameClientPacket
 {
 	private static final String _C__97_SETPRIVATESTOREMSGSELL = "[C] 97 SetPrivateStoreMsgSell";
-	//private static Logger _log = Logger.getLogger(SetPrivateStoreMsgSell.class.getName());
 	
 	private static final int MAX_MSG_LENGTH = 29;
 	

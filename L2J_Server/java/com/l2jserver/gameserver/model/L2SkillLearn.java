@@ -14,34 +14,64 @@
  */
 package com.l2jserver.gameserver.model;
 
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.model.base.SocialClass;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 
 /**
  * @author Zoey76
  */
 public final class L2SkillLearn
 {
-	private static final Logger _log = Logger.getLogger(L2SkillLearn.class.getName());
-	
 	private final String _skillName;
 	private final int _skillId;
 	private final int _skillLvl;
 	private final int _getLevel;
 	private final boolean _autoGet;
 	private final int _levelUpSp;
-	private final int[][] _itemsIdCount;
-	private final Race[] _races;
-	private final int[] _preReqSkillIdLvl;
-	private final int _socialClass;
+	private final List<ItemHolder> _requiredItems = new ArrayList<>();
+	private final List<Race> _races = new ArrayList<>();
+	private final List<SkillHolder> _preReqSkills = new ArrayList<>();
+	private SocialClass _socialClass;
 	private final boolean _residenceSkill;
-	private final int[] _residenceIds;
-	private final int[][] _subClassLvlNumber;
+	private final List<Integer> _residenceIds = new ArrayList<>();
+	private final List<SubClassData> _subClassLvlNumber = new ArrayList<>();
 	private final boolean _learnedByNpc;
 	private final boolean _learnedByFS;
+	
+	public class SubClassData
+	{
+		private final int slot;
+		private final int lvl;
+		
+		public SubClassData(int pSlot, int pLvl)
+		{
+			slot = pSlot;
+			lvl = pLvl;
+		}
+		
+		/**
+		 * @return the sub-class slot.
+		 */
+		public int getSlot()
+		{
+			return slot;
+		}
+		
+		/**
+		 * @return the required sub-class level.
+		 */
+		public int getLvl()
+		{
+			return lvl;
+		}
+	}
 	
 	/**
 	 * Constructor for L2SkillLearn.
@@ -55,93 +85,7 @@ public final class L2SkillLearn
 		_getLevel = set.getInteger("getLevel");
 		_autoGet = set.getBool("autoGet", false);
 		_levelUpSp = set.getInteger("levelUpSp", 0);
-		if (!set.getString("itemsIdCount", "").isEmpty())
-		{
-			final String[] items = set.getString("itemsIdCount").split(";");
-			_itemsIdCount = new int[items.length][2];
-			int i = 0;
-			for (String itemIdCount : items)
-			{
-				try
-				{
-					_itemsIdCount[i][0] = Integer.parseInt(itemIdCount.split(",")[0]);// Id
-					_itemsIdCount[i][1] = Integer.parseInt(itemIdCount.split(",")[1]);// Count
-					i++;
-				}
-				catch (Exception e)
-				{
-					_log.severe(getClass().getSimpleName() + ": Malformed itemsIdCount for Learn Skill Id " + _skillId + " and level " + _skillLvl + "!");
-				}
-			}
-		}
-		else
-		{
-			_itemsIdCount = null;
-		}
-		if (!set.getString("race", "").isEmpty())
-		{
-			final int[] allowedRaces = set.getIntegerArray("race");
-			final int totalRaces = allowedRaces.length;
-			_races = new Race[totalRaces];
-			for (int i = 0; i < totalRaces; i++)
-			{
-				_races[i] = Race.values()[allowedRaces[i]];
-			}
-		}
-		else
-		{
-			_races = null;
-		}
-		if (!set.getString("preReqSkillIdLvl", "").isEmpty())
-		{
-			_preReqSkillIdLvl = new int[2];
-			try
-			{
-				_preReqSkillIdLvl[0] = Integer.parseInt(set.getString("preReqSkillIdLvl").split(",")[0]);
-				_preReqSkillIdLvl[1] = Integer.parseInt(set.getString("preReqSkillIdLvl").split(",")[1]);
-			}
-			catch (Exception e)
-			{
-				_log.severe(getClass().getSimpleName() + ": Malformed preReqSkillIdLvl for Learn Skill Id " + _skillId + " and level " + _skillLvl + "!");
-			}
-		}
-		else
-		{
-			_preReqSkillIdLvl = null;
-		}
-		_socialClass = set.getInteger("socialClass", 0);
 		_residenceSkill = set.getBool("residenceSkill", false);
-		if (!set.getString("residenceIds", "").isEmpty())
-		{
-			_residenceIds = set.getIntegerArray("residenceIds");
-		}
-		else
-		{
-			_residenceIds = null;
-		}
-		if (!set.getString("subClassLvlNumber", "").isEmpty())
-		{
-			final String[] subLvLNumList = set.getString("subClassLvlNumber").split(";");
-			_subClassLvlNumber = new int[subLvLNumList.length][2];
-			int i = 0;
-			for (String subLvlNum : subLvLNumList)
-			{
-				try
-				{
-					_subClassLvlNumber[i][0] = Integer.parseInt(subLvlNum.split(",")[0]);
-					_subClassLvlNumber[i][1] = Integer.parseInt(subLvlNum.split(",")[1]);
-					i++;
-				}
-				catch (Exception e)
-				{
-					_log.severe(getClass().getSimpleName() + ": Malformed subClassLvlNumber for Learn Skill Id " + _skillId + " and level " + _skillLvl + "!");
-				}
-			}
-		}
-		else
-		{
-			_subClassLvlNumber = null;
-		}
 		_learnedByNpc = set.getBool("learnedByNpc", false);
 		_learnedByFS = set.getBool("learnedByFS", false);
 	}
@@ -195,35 +139,74 @@ public final class L2SkillLearn
 	}
 	
 	/**
-	 * @return the multidimensional array with the item IDs and amounts required to acquire this skill.
+	 * @return the list with the item holders required to acquire this skill.
 	 */
-	public int[][] getItemsIdCount()
+	public List<ItemHolder> getRequiredItems()
 	{
-		return _itemsIdCount;
+		return _requiredItems;
 	}
 	
 	/**
-	 * @return the array with the races that can acquire this skill.
+	 * Adds a required item holder to learn this skill.
+	 * @param item the required item holder.
 	 */
-	public Race[] getRaces()
+	public void addRequiredItem(ItemHolder item)
+	{
+		_requiredItems.add(item);
+	}
+	
+	/**
+	 * @return a list with the races that can acquire this skill.
+	 */
+	public List<Race> getRaces()
 	{
 		return _races;
 	}
 	
 	/**
-	 * @return the array with required skill IDs and levels to acquire this skill.
+	 * Adds a required race to learn this skill.
+	 * @param race the required race.
 	 */
-	public int[] getPreReqSkillIdLvl()
+	public void addRace(Race race)
 	{
-		return _preReqSkillIdLvl;
+		_races.add(race);
+	}
+	
+	/**
+	 * @return the list of skill holders required to acquire this skill.
+	 */
+	public List<SkillHolder> getPreReqSkills()
+	{
+		return _preReqSkills;
+	}
+	
+	/**
+	 * Adds a required skill holder to learn this skill.
+	 * @param skill the required skill holder.
+	 */
+	public void addPreReqSkill(SkillHolder skill)
+	{
+		_preReqSkills.add(skill);
 	}
 	
 	/**
 	 * @return the social class required to get this skill.
 	 */
-	public int getSocialClass()
+	public SocialClass getSocialClass()
 	{
 		return _socialClass;
+	}
+	
+	/**
+	 * Sets the social class if hasn't been set before.
+	 * @param socialClass the social class to set.
+	 */
+	public void setSocialClass(SocialClass socialClass)
+	{
+		if (_socialClass == null)
+		{
+			_socialClass = socialClass;
+		}
 	}
 	
 	/**
@@ -235,19 +218,38 @@ public final class L2SkillLearn
 	}
 	
 	/**
-	 * @return the array with the IDs where this skill is available.
+	 * @return a list with the Ids where this skill is available.
 	 */
-	public int[] getRecidenceIds()
+	public List<Integer> getResidenceIds()
 	{
 		return _residenceIds;
 	}
 	
 	/**
-	 * @return the array with Sub-Class conditions, amount of subclasses and level.
+	 * Adds a required residence Id.
+	 * @param id the residence Id to add.
 	 */
-	public int[][] getSubClassConditions()
+	public void addResidenceId(Integer id)
+	{
+		_residenceIds.add(id);
+	}
+	
+	/**
+	 * @return a list with Sub-Class conditions, amount of subclasses and level.
+	 */
+	public List<SubClassData> getSubClassConditions()
 	{
 		return _subClassLvlNumber;
+	}
+	
+	/**
+	 * Adds a required residence Id.
+	 * @param slot the sub-class slot.
+	 * @param lvl the required sub-class level.
+	 */
+	public void addSubclassConditions(int slot, int lvl)
+	{
+		_subClassLvlNumber.add(new SubClassData(slot, lvl));
 	}
 	
 	/**

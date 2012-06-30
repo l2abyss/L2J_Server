@@ -82,7 +82,7 @@ public abstract class BaseBBSManager
 	 */
 	protected void send1002(L2PcInstance activeChar, String string, String string2, String string3)
 	{
-		List<String> _arg = new FastList<String>();
+		List<String> _arg = new FastList<>();
 		_arg.add("0");
 		_arg.add("0");
 		_arg.add("0");

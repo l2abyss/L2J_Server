@@ -18,8 +18,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class PcAppearance
 {
-	// =========================================================
-	// Data Field
 	private L2PcInstance _owner;
 	
 	private byte _face;
@@ -46,8 +44,6 @@ public class PcAppearance
 	/** The hexadecimal Color of players name (white is 0xFFFFFF) */
 	private int _titleColor = 0xFFFF77;
 	
-	// =========================================================
-	// Constructor
 	public PcAppearance(byte face, byte hColor, byte hStyle, boolean sex)
 	{
 		_face = face;
@@ -55,12 +51,6 @@ public class PcAppearance
 		_hairStyle = hStyle;
 		_sex = sex;
 	}
-	
-	// =========================================================
-	// Method - Public
-	
-	// =========================================================
-	// Method - Private
 	
 	/**
 	 * @param visibleName
@@ -104,8 +94,6 @@ public class PcAppearance
 		return _visibleTitle;
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final byte getFace()
 	{
 		return _face;

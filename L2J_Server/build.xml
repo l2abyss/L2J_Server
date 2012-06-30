@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="L2J_Server" default="dist" basedir=".">
+<project name="L2J_Server" default="build" basedir=".">
 	<description>
 		This script will build the L2J Server.
 
@@ -21,19 +21,18 @@
 		http://www.gnu.org/copyleft/gpl.html
 	</description>
 
-	<property name="src" location="java" />
-	<property name="lib" location="lib" />
 	<property name="build" location="build" />
-	<property name="build.classes" location="${build}/classes" />
+	<property name="build.bin" location="${build}/bin" />
 	<property name="build.dist" location="${build}/dist" />
 	<property name="build.dist.doc" location="${build.dist}/doc" />
 	<property name="build.dist.game" location="${build.dist}/game" />
-	<property name="build.dist.libs" location="${build.dist}/libs" />
 	<property name="build.dist.login" location="${build.dist}/login" />
 	<property name="build.dist.tools" location="${build.dist}/tools" />
+	<property name="libs" location="dist/libs" />
+	<property name="src" location="java" />
 
 	<path id="classpath">
-		<fileset dir="${lib}">
+		<fileset dir="${libs}">
 			<include name="*.jar" />
 		</fileset>
 	</path>
@@ -48,20 +47,53 @@
 		</mapper>
 	</pathconvert>
 
-	<target name="init" depends="clean,checkRequirements,getChangelogDateVersion" description="Create the output directories.">
-		<mkdir dir="${build}" />
-		<mkdir dir="${build.classes}" />
+	<target name="init" depends="checkRequirements,getChangelogDateVersion" description="Create the output directories.">
+		<delete dir="${build.bin}" quiet="true" />
+		<mkdir dir="${build.bin}" />
 	</target>
 
-	<target name="compile" depends="init" description="Compile the source.">
-		<javac srcdir="${src}" classpathref="classpath" destdir="${build.classes}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
+	<target name="dist" depends="init" description="Export the files to the output directory.">
+		<sync todir="${build.dist}" includeemptydirs="true">
+			<fileset dir="dist" />
+		</sync>
+		<concat destfile="${build.dist.doc}/L2J_Server_CHANGELOG.txt">${l2j.changelog}</concat>
+		<concat destfile="${build.dist.game}/config/l2j-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
 	</target>
 
-	<target name="jar" depends="compile" description="Create the jar files">
-		<jar destfile="${build.dist.login}/l2jlogin.jar">
-			<fileset dir="${build.classes}">
+	<target name="compile" depends="dist" description="Compile the source.">
+		<javac srcdir="${src}" classpathref="classpath" destdir="${build.bin}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
+	</target>
+
+	<target name="jar" depends="compile" description="Create the jar files.">
+		<jar destfile="${build.dist.login}/l2jlogin.jar" level="9">
+			<fileset dir="${build.bin}">
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/gameserver/**" />
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
+			</manifest>
+		</jar>
+		<jar destfile="${build.dist.login}/L2J_Configurator.jar" level="9">
+			<fileset dir="${build.bin}">
+				<include name="**/configurator/**" />
+				<include name="**/i18n/**" />
+				<include name="**/images/**" />
+				<exclude name="**/accountmanager/**" />
+				<exclude name="**/dbinstaller/**" />
+				<exclude name="**/gameserver/**" />
+				<exclude name="**/gsregistering/**" />
+				<exclude name="**/log/**" />
+				<exclude name="**/loginserver/**" />
+				<exclude name="**/ngl/**" />
+				<exclude name="**/status/**" />
+				<exclude name="**/util/**" />
+				<exclude name="**/Config/**" />
+				<exclude name="**/L2DatabaseFactory/**" />
+				<exclude name="**/Server/**" />
 			</fileset>
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
@@ -69,11 +101,11 @@
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
-				<attribute name="Main-Class" value="com.l2jserver.loginserver.L2LoginServer" />
+				<attribute name="Main-Class" value="com.l2jserver.tools.configurator.ConfigUserInterface" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.game}/l2jserver.jar">
-			<fileset dir="${build.classes}">
+		<jar destfile="${build.dist.game}/l2jserver.jar" level="9">
+			<fileset dir="${build.bin}">
 				<exclude name="**/dbinstaller/**" />
 				<exclude name="**/loginserver/**" />
 				<exclude name="**/accountmanager/**" />
@@ -82,14 +114,39 @@
 			<manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
+				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
+				<attribute name="Implementation-Version" value="${l2j.version}" />
+			</manifest>
+		</jar>
+		<jar destfile="${build.dist.game}/L2J_Configurator.jar" level="9">
+			<fileset dir="${build.bin}">
+				<include name="**/configurator/**" />
+				<include name="**/i18n/**" />
+				<include name="**/images/**" />
+				<exclude name="**/accountmanager/**" />
+				<exclude name="**/dbinstaller/**" />
+				<exclude name="**/gameserver/**" />
+				<exclude name="**/gsregistering/**" />
+				<exclude name="**/log/**" />
+				<exclude name="**/loginserver/**" />
+				<exclude name="**/ngl/**" />
+				<exclude name="**/status/**" />
+				<exclude name="**/util/**" />
+				<exclude name="**/Config/**" />
+				<exclude name="**/L2DatabaseFactory/**" />
+				<exclude name="**/Server/**" />
+			</fileset>
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
 				<attribute name="Implementation-Version" value="${l2j.version}" />
-				<attribute name="Main-Class" value="com.l2jserver.gameserver.GameServer" />
+				<attribute name="Main-Class" value="com.l2jserver.tools.configurator.ConfigUserInterface" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.tools}/dbinst_cs.jar">
-			<fileset dir="${build.classes}">
+		<jar destfile="${build.dist.tools}/dbinst_cs.jar" level="9">
+			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
@@ -105,8 +162,8 @@
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherCS" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.tools}/dbinst_gs.jar">
-			<fileset dir="${build.classes}">
+		<jar destfile="${build.dist.tools}/dbinst_gs.jar" level="9">
+			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
@@ -122,8 +179,8 @@
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherGS" />
 			</manifest>
 		</jar>
-		<jar destfile="${build.dist.tools}/dbinst_ls.jar">
-			<fileset dir="${build.classes}">
+		<jar destfile="${build.dist.tools}/dbinst_ls.jar" level="9">
+			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
@@ -141,37 +198,15 @@
 		</jar>
 	</target>
 
-	<target name="dist" depends="jar">
-		<copy todir="${build.dist}">
-			<fileset dir="dist" />
-		</copy>
-		<concat destfile="${build.dist.doc}/L2J_Server_CHANGELOG.txt">${l2j.changelog}</concat>
-		<copy todir="${build.dist.game}">
-			<fileset dir="misc" />
-		</copy>
-		<concat destfile="${build.dist.game}/config/l2j-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
-		<copy todir="${build.dist.libs}">
-			<fileset dir="lib" />
-		</copy>
-		<copy todir="${build.dist.login}">
-			<fileset dir="misc" />
-		</copy>
-		<fixcrlf srcdir="${build.dist.game}" eol="crlf" eof="remove" includes="**/*.bat" />
-		<fixcrlf srcdir="${build.dist.game}" eol="lf" eof="remove" includes="**/*.sh" />
-		<fixcrlf srcdir="${build.dist.login}" eol="crlf" eof="remove" includes="**/*.bat" />
-		<fixcrlf srcdir="${build.dist.login}" eol="lf" eof="remove" includes="**/*.sh" />
-		<zip destfile="${build}/L2J_Server.zip" basedir="${build.dist}" />
+	<target name="build" depends="jar" description="Create the Zip file.">
+		<zip destfile="${build}/L2J_Server.zip" basedir="${build.dist}" level="9" />
 	</target>
 
-	<target name="clean" description="Remove the output directories">
-		<delete dir="${build}" />
-	</target>
-
-	<target name="checkRequirements" description="Check Requirements">
-		<fail message="Ant 1.8.2 is required. But your version is ${ant.version}">
+	<target name="checkRequirements" description="Check Requirements.">
+		<fail message="Ant 1.8.3 is required. But your version is ${ant.version} and if you are using Eclipse probably is outdated.">
 			<condition>
 				<not>
-					<antversion atleast="1.8.2" />
+					<antversion atleast="1.8.3" />
 				</not>
 			</condition>
 		</fail>
@@ -179,14 +214,14 @@
 		<fail unless="JDK7.present" message="Java 1.7 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
 	</target>
 
-	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version">
-		<exec dir="." executable="svn" outputproperty="l2j.changelog">
+	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version.">
+		<exec dir="${basedir}" executable="svn" outputproperty="l2j.changelog">
 			<arg value="log" />
 			<arg value="--stop-on-copy" />
 		</exec>
 		<tstamp>
 			<format property="build.tstamp" pattern="dd/MM/yyyy HH:mm" />
 		</tstamp>
-		<exec dir="." executable="svnversion" outputproperty="l2j.version" />
+		<exec dir="${basedir}" executable="svnversion" outputproperty="l2j.version" />
 	</target>
 </project>

@@ -23,20 +23,18 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Point3D;
 
-
 /**
- *
  * @author  -Nemesiss-
  */
 public class GeoData
 {
-	private static Logger _log = Logger.getLogger(GeoData.class.getName());
+	private static final Logger _log = Logger.getLogger(GeoData.class.getName());
 	
 	protected GeoData()
 	{
 	}
 	
-	private GeoData(final boolean disabled)
+	protected GeoData(final boolean disabled)
 	{
 		if (disabled)
 		{
@@ -190,7 +188,6 @@ public class GeoData
 		return false;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GeoData _instance = Config.GEODATA > 0 ? GeoEngine.getInstance() : new GeoData(true);

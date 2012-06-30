@@ -22,7 +22,6 @@ import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
  * @author -Wooden-
- *
  */
 public class ChangeAccessLevel extends BaseRecievePacket
 {
@@ -30,7 +29,7 @@ public class ChangeAccessLevel extends BaseRecievePacket
 	
 	/**
 	 * @param decrypt
-	 * @param server 
+	 * @param server
 	 */
 	public ChangeAccessLevel(byte[] decrypt, GameServerThread server)
 	{
@@ -39,6 +38,6 @@ public class ChangeAccessLevel extends BaseRecievePacket
 		String account = readS();
 		
 		LoginController.getInstance().setAccountAccessLevel(account, level);
-		_log.info("Changed "+account+" access level to "+level);
-	}	
+		_log.info("Changed " + account + " access level to " + level);
+	}
 }

@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.instancemanager;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -34,21 +35,13 @@ public class QuestManager extends ScriptManager<Quest>
 	{
 		return SingletonHolder._instance;
 	}
-	// =========================================================
 	
-	// =========================================================
-	// Data Field
-	private Map<String, Quest> _quests = new FastMap<String, Quest>();
+	private Map<String, Quest> _quests = new FastMap<>();
 	
-	// =========================================================
-	// Constructor
-	private QuestManager()
+	protected QuestManager()
 	{
-		_log.info("Initializing QuestManager");
 	}
 	
-	// =========================================================
-	// Method - Public
 	public final boolean reload(String questFolder)
 	{
 		Quest q = getQuest(questFolder);
@@ -77,25 +70,26 @@ public class QuestManager extends ScriptManager<Quest>
 	
 	public final void reloadAllQuests()
 	{
-		_log.info("Reloading Server Scripts");
+		_log.info("Reloading all server scripts.");
+		// unload all scripts
+		for (Quest quest : _quests.values())
+		{
+			if (quest != null)
+			{
+				quest.unload(false);
+			}
+		}
+		_quests.clear();
+		
 		try
 		{
-			// unload all scripts
-			for (Quest quest : _quests.values())
-			{
-				if (quest != null)
-					quest.unload(false);
-			}
-			
-			_quests.clear();
 			// now load all scripts
-			File scripts = new File(Config.DATAPACK_ROOT + "/data/scripts.cfg");
-			L2ScriptEngineManager.getInstance().executeScriptList(scripts);
+			L2ScriptEngineManager.getInstance().executeScriptList(new File(Config.DATAPACK_ROOT, "data/scripts.cfg"));
 			QuestManager.getInstance().report();
 		}
-		catch (IOException ioe)
+		catch (IOException e)
 		{
-			_log.severe("Failed loading scripts.cfg, no script going to be loaded");
+			_log.log(Level.SEVERE, "Failed loading scripts.cfg, no script going to be loaded!", e);
 		}
 	}
 	
@@ -112,8 +106,6 @@ public class QuestManager extends ScriptManager<Quest>
 		}
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final Quest getQuest(String name)
 	{
 		return _quests.get(name);
@@ -188,7 +180,6 @@ public class QuestManager extends ScriptManager<Quest>
 		return "QuestManager";
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final QuestManager _instance = new QuestManager();

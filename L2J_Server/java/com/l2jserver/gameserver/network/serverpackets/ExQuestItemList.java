@@ -16,8 +16,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * Structure:<BR>
@@ -36,8 +36,8 @@ public class ExQuestItemList extends L2GameServerPacket
 {
 	private static final String _S__FE_C6_EXQUESTITEMLIST = "[S] FE:C6 ExQuestItemList";
 	
-	private FastList<L2ItemInstance> _items;
-	private PcInventory _inventory;
+	private final FastList<L2ItemInstance> _items;
+	private final PcInventory _inventory;
 	
 	public ExQuestItemList(FastList<L2ItemInstance> items, PcInventory inv)
 	{
@@ -54,7 +54,7 @@ public class ExQuestItemList extends L2GameServerPacket
 		for (L2ItemInstance item : _items)
 		{
 			writeD(item.getObjectId());
-			writeD(item.getItemId());
+			writeD(item.getDisplayId());
 			writeD(item.getLocationSlot());
 			writeQ(item.getCount());
 			writeD(item.getItem().getType2());

@@ -21,13 +21,11 @@ import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
 
 /**
- * 
  * @author mrTJO
  */
 public interface WinConsole extends StdCallLibrary
 {
-	WinConsole INSTANCE = (WinConsole)Native.loadLibrary("kernel32", WinConsole.class, 
-    		W32APIOptions.UNICODE_OPTIONS);
+	WinConsole INSTANCE = (WinConsole) Native.loadLibrary("kernel32", WinConsole.class, W32APIOptions.UNICODE_OPTIONS);
 	
 	public boolean SetConsoleOutputCP(int codePage);
 	
@@ -35,6 +33,5 @@ public interface WinConsole extends StdCallLibrary
 	
 	public Pointer GetStdHandle(int stream);
 	
-	public boolean WriteConsoleW(Pointer stream, char[] text, int textLen, 
-			IntByReference caretPosition, Pointer reservedNull);
+	public boolean WriteConsoleW(Pointer stream, char[] text, int textLen, IntByReference caretPosition, Pointer reservedNull);
 }

@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
@@ -33,21 +32,44 @@ public class L2HqZone extends L2ZoneType
 	@Override
 	public void setParameter(String name, String value)
 	{
-		
+		if ("castleId".equals(name))
+		{
+			// TODO
+		}
+		else if ("fortId".equals(name))
+		{
+			// TODO			
+		}
+		else if ("clanHallId".equals(name))
+		{
+			// TODO
+		}
+		else if ("territoryId".equals(name))
+		{
+			// TODO
+		}
+		else
+		{
+			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
 	protected void onEnter(final L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
+		{
 			character.setInsideZone(L2Character.ZONE_HQ, true);
+		}
 	}
 	
 	@Override
 	protected void onExit(final L2Character character)
 	{
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
+		{
 			character.setInsideZone(L2Character.ZONE_HQ, false);
+		}
 	}
 	
 	@Override

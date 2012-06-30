@@ -14,9 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-//import java.util.Calendar; //signed time related
-//import java.util.logging.Logger;
-
 import java.util.Collection;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
@@ -24,6 +21,7 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+
 /**
  * Populates the Siege Attacker List in the SiegeInfo Window<BR>
  * <BR>
@@ -53,7 +51,7 @@ import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 public final class SiegeAttackerList extends L2GameServerPacket
 {
 	private static final String _S__CA_SiegeAttackerList = "[S] ca SiegeAttackerList";
-	//private static Logger _log = Logger.getLogger(SiegeAttackerList.class.getName());
+	
 	private Castle _castle;
 	private SiegableHall _hall;
 	
@@ -148,5 +146,4 @@ public final class SiegeAttackerList extends L2GameServerPacket
 	{
 		return _S__CA_SiegeAttackerList;
 	}
-	
 }

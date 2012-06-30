@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
@@ -42,8 +40,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
  */
 public class SSQStatus extends L2GameServerPacket
 {
-	private static Logger _log = Logger.getLogger(SSQStatus.class.getName());
-	
 	private static final String _S__F5_SSQStatus = "[S] fb SSQStatus";
 	private int _objectId;
 	private int _page;

@@ -19,7 +19,7 @@ import java.util.Collection;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.L2TradeList.L2TradeItem;
-import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.items.L2Item;
 
 
 public class ShopPreviewList extends L2GameServerPacket

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  *
@@ -47,7 +47,7 @@ public final class ExRpItemLink extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x6c);
 		writeD(_item.getObjectId());
-		writeD(_item.getItemId());
+		writeD(_item.getDisplayId());
 		writeD(_item.getLocationSlot());
 		writeQ(_item.getCount());
 		writeH(_item.getItem().getType2());

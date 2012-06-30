@@ -32,20 +32,21 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.util.file.filter.BMPFilter;
+import com.l2jserver.util.file.filter.OldPledgeFilter;
 
 /**
  * @author Layane
- *
  */
 public class CrestCache
 {
 	private static Logger _log = Logger.getLogger(CrestCache.class.getName());
 	
-	private final FastMRUCache<Integer, byte[]> _cachePledge = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cachePledge = new FastMRUCache<>();
 	
-	private final FastMRUCache<Integer, byte[]> _cachePledgeLarge = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cachePledgeLarge = new FastMRUCache<>();
 	
-	private final FastMRUCache<Integer, byte[]> _cacheAlly = new FastMRUCache<Integer, byte[]>();
+	private final FastMRUCache<Integer, byte[]> _cacheAlly = new FastMRUCache<>();
 	
 	private int _loadedFiles;
 	
@@ -56,7 +57,7 @@ public class CrestCache
 		return SingletonHolder._instance;
 	}
 	
-	private CrestCache()
+	protected CrestCache()
 	{
 		convertOldPedgeFiles();
 		reload();
@@ -64,11 +65,9 @@ public class CrestCache
 	
 	public void reload()
 	{
-		FileFilter filter = new BmpFilter();
-		
-		File dir = new File(Config.DATAPACK_ROOT, "data/crests/");
-		
-		File[] files = dir.listFiles(filter);
+		final FileFilter filter = new BMPFilter();
+		final File dir = new File(Config.DATAPACK_ROOT, "data/crests/");
+		final File[] files = dir.listFiles(filter);
 		byte[] content;
 		synchronized (this)
 		{
@@ -85,33 +84,32 @@ public class CrestCache
 		FastMap<Integer, byte[]> _mapAlly = _cacheAlly.getContentMap();
 		
 		final L2Clan[] clans = ClanTable.getInstance().getClans();
-		
 		for (File file : files)
 		{
-			RandomAccessFile f = null;
 			synchronized (this)
 			{
-				try
+				try (RandomAccessFile rfa = new RandomAccessFile(file, "r"))
 				{
-					f = new RandomAccessFile(file, "r");
-					content = new byte[(int) f.length()];
-					f.readFully(content);
+					content = new byte[(int) rfa.length()];
+					rfa.readFully(content);
 					
 					boolean erase = true;
 					int crestId = 0;
 					
 					if (file.getName().startsWith("Crest_Large_"))
 					{
-						crestId = Integer.valueOf(file.getName().substring(12, file.getName().length() - 4));
-						if(Config.CLEAR_CREST_CACHE)
+						crestId = Integer.parseInt(file.getName().substring(12, file.getName().length() - 4));
+						if (Config.CLEAR_CREST_CACHE)
 						{
-							for(final L2Clan clan : clans)
-								if(clan.getCrestLargeId() == crestId)
+							for (final L2Clan clan : clans)
+							{
+								if (clan.getCrestLargeId() == crestId)
 								{
 									erase = false;
 									break;
 								}
-							if(erase)
+							}
+							if (erase)
 							{
 								file.delete();
 								continue;
@@ -121,16 +119,18 @@ public class CrestCache
 					}
 					else if (file.getName().startsWith("Crest_"))
 					{
-						crestId = Integer.valueOf(file.getName().substring(6, file.getName().length() - 4));
-						if(Config.CLEAR_CREST_CACHE)
+						crestId = Integer.parseInt(file.getName().substring(6, file.getName().length() - 4));
+						if (Config.CLEAR_CREST_CACHE)
 						{
-							for(final L2Clan clan : clans)
-								if(clan.getCrestId() == crestId)
+							for (final L2Clan clan : clans)
+							{
+								if (clan.getCrestId() == crestId)
 								{
 									erase = false;
 									break;
 								}
-							if(erase)
+							}
+							if (erase)
 							{
 								file.delete();
 								continue;
@@ -140,16 +140,18 @@ public class CrestCache
 					}
 					else if (file.getName().startsWith("AllyCrest_"))
 					{
-						crestId = Integer.valueOf(file.getName().substring(10, file.getName().length() - 4));
-						if(Config.CLEAR_CREST_CACHE)
+						crestId = Integer.parseInt(file.getName().substring(10, file.getName().length() - 4));
+						if (Config.CLEAR_CREST_CACHE)
 						{
-							for(final L2Clan clan : clans)
-								if(clan.getAllyCrestId() == crestId)
+							for (final L2Clan clan : clans)
+							{
+								if (clan.getAllyCrestId() == crestId)
 								{
 									erase = false;
 									break;
 								}
-							if(erase)
+							}
+							if (erase)
 							{
 								file.delete();
 								continue;
@@ -163,16 +165,6 @@ public class CrestCache
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, "Problem with crest bmp file " + e.getMessage(), e);
-				}
-				finally
-				{
-					try
-					{
-						f.close();
-					}
-					catch (Exception e1)
-					{
-					}
 				}
 			}
 		}
@@ -208,36 +200,26 @@ public class CrestCache
 			}
 		}
 		
-		_log.info("Cache[Crest]: " + String.format("%.3f", getMemoryUsage()) + "MB on " + getLoadedFiles()
-				+ " files loaded. (Forget Time: " + (_cachePledge.getForgetTime() / 1000) + "s , Capacity: " + _cachePledge.capacity()
-				+ ")");
+		_log.info("Cache[Crest]: " + String.format("%.3f", getMemoryUsage()) + "MB on " + getLoadedFiles() + " files loaded. (Forget Time: " + (_cachePledge.getForgetTime() / 1000) + "s , Capacity: " + _cachePledge.capacity() + ")");
 	}
 	
 	public void convertOldPedgeFiles()
 	{
-		File dir = new File(Config.DATAPACK_ROOT, "data/crests/");
-		
-		File[] files = dir.listFiles(new OldPledgeFilter());
-		
+		final File dir = new File(Config.DATAPACK_ROOT, "data/crests/");
+		final File[] files = dir.listFiles(new OldPledgeFilter());
 		for (File file : files)
 		{
 			int clanId = Integer.parseInt(file.getName().substring(7, file.getName().length() - 4));
-			
 			_log.info("Found old crest file \"" + file.getName() + "\" for clanId " + clanId);
-			
-			int newId = IdFactory.getInstance().getNextId();
-			
-			L2Clan clan = ClanTable.getInstance().getClan(clanId);
-			
+			final L2Clan clan = ClanTable.getInstance().getClan(clanId);
 			if (clan != null)
 			{
 				removeOldPledgeCrest(clan.getCrestId());
-				
+				int newId = IdFactory.getInstance().getNextId();
 				file.renameTo(new File(Config.DATAPACK_ROOT, "data/crests/Crest_" + newId + ".bmp"));
 				_log.info("Renamed Clan crest to new format: Crest_" + newId + ".bmp");
 				
 				Connection con = null;
-				
 				try
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
@@ -255,7 +237,6 @@ public class CrestCache
 				{
 					L2DatabaseFactory.close(con);
 				}
-				
 				clan.setCrestId(newId);
 			}
 			else
@@ -344,11 +325,9 @@ public class CrestCache
 	
 	public boolean savePledgeCrest(int newId, byte[] data)
 	{
-		File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/Crest_" + newId + ".bmp");
-		FileOutputStream out = null;
-		try
+		final File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/Crest_" + newId + ".bmp");
+		try (FileOutputStream out = new FileOutputStream(crestFile))
 		{
-			out = new FileOutputStream(crestFile);
 			out.write(data);
 			_cachePledge.getContentMap().put(newId, data);
 			return true;
@@ -358,25 +337,13 @@ public class CrestCache
 			_log.log(Level.INFO, "Error saving pledge crest" + crestFile + ":", e);
 			return false;
 		}
-		finally
-		{
-			try
-			{
-				out.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
 	public boolean savePledgeCrestLarge(int newId, byte[] data)
 	{
-		File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/Crest_Large_" + newId + ".bmp");
-		FileOutputStream out = null;
-		try
+		final File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/Crest_Large_" + newId + ".bmp");
+		try (FileOutputStream out = new FileOutputStream(crestFile))
 		{
-			out = new FileOutputStream(crestFile);
 			out.write(data);
 			_cachePledgeLarge.getContentMap().put(newId, data);
 			return true;
@@ -386,25 +353,13 @@ public class CrestCache
 			_log.log(Level.INFO, "Error saving Large pledge crest" + crestFile + ":", e);
 			return false;
 		}
-		finally
-		{
-			try
-			{
-				out.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
 	public boolean saveAllyCrest(int newId, byte[] data)
 	{
-		File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/AllyCrest_" + newId + ".bmp");
-		FileOutputStream out = null;
-		try
+		final File crestFile = new File(Config.DATAPACK_ROOT, "data/crests/AllyCrest_" + newId + ".bmp");
+		try (FileOutputStream out = new FileOutputStream(crestFile))
 		{
-			out = new FileOutputStream(crestFile);
 			out.write(data);
 			_cacheAlly.getContentMap().put(newId, data);
 			return true;
@@ -414,37 +369,8 @@ public class CrestCache
 			_log.log(Level.INFO, "Error saving ally crest" + crestFile + ":", e);
 			return false;
 		}
-		finally
-		{
-			try
-			{
-				out.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
-	private static class BmpFilter implements FileFilter
-	{
-		@Override
-		public boolean accept(File file)
-		{
-			return (file.getName().endsWith(".bmp"));
-		}
-	}
-	
-	private static class OldPledgeFilter implements FileFilter
-	{
-		@Override
-		public boolean accept(File file)
-		{
-			return (file.getName().startsWith("Pledge_"));
-		}
-	}
-	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CrestCache _instance = new CrestCache();

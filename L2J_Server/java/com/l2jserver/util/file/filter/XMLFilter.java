@@ -25,8 +25,12 @@ import java.io.FileFilter;
 public class XMLFilter implements FileFilter
 {
 	@Override
-	public boolean accept(File pathname)
+	public boolean accept(File f)
 	{
-		return pathname.getName().endsWith(".xml");
+		if ((f == null) || !f.isFile())
+		{
+			return false;
+		}
+		return f.getName().toLowerCase().endsWith(".xml");
 	}
 }

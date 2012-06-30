@@ -41,7 +41,6 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
@@ -51,14 +50,15 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.L2Properties;
 
@@ -71,8 +71,6 @@ public class TerritoryWarManager implements Siegable
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	public static String qn = "TerritoryWarSuperClass";
 	public static int DEFENDERMAXCLANS; // Max number of clans
 	public static int DEFENDERMAXPLAYERS; // Max number of individual player
@@ -91,32 +89,28 @@ public class TerritoryWarManager implements Siegable
 	private FastMap<Integer, FastList<L2Clan>> _registeredClans;
 	private FastMap<Integer, FastList<Integer>> _registeredMercenaries;
 	private FastMap<Integer, Territory> _territoryList;
-	private FastList<Integer> _disguisedPlayers;
+	protected FastList<Integer> _disguisedPlayers;
 	private FastList<TerritoryWard> _territoryWards;
 	private FastMap<L2Clan, L2SiegeFlagInstance> _clanFlags;
-	private Map<Integer,Integer[]> _participantPoints = new FastMap<Integer,Integer[]>();
-	private Calendar _startTWDate = Calendar.getInstance();
-	private boolean _isRegistrationOver = true;
-	private boolean _isTWChannelOpen = false;
+	private Map<Integer,Integer[]> _participantPoints = new FastMap<>();
+	protected Calendar _startTWDate = Calendar.getInstance();
+	protected boolean _isRegistrationOver = true;
+	protected boolean _isTWChannelOpen = false;
 	private boolean _isTWInProgress = false;
 	protected ScheduledFuture<?> _scheduledStartTWTask = null;
 	protected ScheduledFuture<?> _scheduledEndTWTask = null;
 	protected ScheduledFuture<?> _scheduledRewardOnlineTask = null;
 	
-	// =========================================================
-	// Constructor
-	private TerritoryWarManager()
-	{
-		_log.info("Initializing TerritoryWarManager");
-		
+	protected TerritoryWarManager()
+	{		
 		// init lists
-		_registeredClans = new FastMap<Integer, FastList<L2Clan>>();
-		_registeredMercenaries = new FastMap<Integer, FastList<Integer>>();
-		_territoryList = new FastMap<Integer, Territory>();
-		_territoryWards = new FastList<TerritoryWard>();
-		_clanFlags = new FastMap<L2Clan, L2SiegeFlagInstance>();
-		_disguisedPlayers = new FastList<Integer>();
-		TERRITORY_ITEM_IDS = new FastMap<Integer,Integer>();
+		_registeredClans = new FastMap<>();
+		_registeredMercenaries = new FastMap<>();
+		_territoryList = new FastMap<>();
+		_territoryWards = new FastList<>();
+		_clanFlags = new FastMap<>();
+		_disguisedPlayers = new FastList<>();
+		TERRITORY_ITEM_IDS = new FastMap<>();
 		
 		// Constant data
 		TERRITORY_ITEM_IDS.put(81, 13757);
@@ -128,20 +122,25 @@ public class TerritoryWarManager implements Siegable
 		TERRITORY_ITEM_IDS.put(87, 13763);
 		TERRITORY_ITEM_IDS.put(88, 13764);
 		TERRITORY_ITEM_IDS.put(89, 13765);
+		
+		_registeredClans.shared();
+		_registeredMercenaries.shared();
+		_territoryList.shared();
+		_territoryWards.shared();
+		_clanFlags.shared();
+		_disguisedPlayers.shared();
 		// load data from database
 		load();
 	}
 	
-	// =========================================================
-	// Method - Public
 	public int getRegisteredTerritoryId(L2PcInstance player)
 	{
 		if (player == null || !_isTWChannelOpen || player.getLevel() < PLAYERMINLEVEL)
 			return 0;
 		if (player.getClan() != null)
 		{
-			if (player.getClan().getHasCastle() > 0)
-				return player.getClan().getHasCastle() + 80;
+			if (player.getClan().getCastleId() > 0)
+				return player.getClan().getCastleId() + 80;
 			for(int cId:_registeredClans.keySet())
 				if (_registeredClans.get(cId).contains(player.getClan()))
 					return cId + 80;
@@ -175,8 +174,8 @@ public class TerritoryWarManager implements Siegable
 		if (clan == null)
 			return false;
 		
-		if (clan.getHasCastle() > 0)
-			return (castleId == -1 ? true : (clan.getHasCastle() == castleId));
+		if (clan.getCastleId() > 0)
+			return (castleId == -1 ? true : (clan.getCastleId() == castleId));
 		
 		if (castleId == -1)
 		{
@@ -212,7 +211,7 @@ public class TerritoryWarManager implements Siegable
 	
 	public FastList<Territory> getAllTerritories()
 	{
-		FastList<Territory> ret = new FastList<Territory>();
+		FastList<Territory> ret = new FastList<>();
 		for (Territory t : _territoryList.values())
 			if (t.getOwnerClan() != null)
 				ret.add(t);
@@ -334,6 +333,7 @@ public class TerritoryWarManager implements Siegable
 			door.openMe();
 	}
 	
+	@SuppressWarnings("null")
 	public L2Npc addTerritoryWard(int territoryId, int newOwnerId, int oldOwnerId, boolean broadcastMessage)
 	{
 		L2Npc ret = null;
@@ -352,7 +352,7 @@ public class TerritoryWarManager implements Siegable
 				{
 					for(int wardId : terNew.getOwnedWardIds())
 					{
-						final FastList<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(wardId);
+						final List<L2SkillLearn> residentialSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(wardId);
 						for (L2SkillLearn s : residentialSkills)
 						{
 							final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
@@ -380,12 +380,13 @@ public class TerritoryWarManager implements Siegable
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_HAS_SUCCEDED_IN_CAPTURING_S2_TERRITORY_WARD);
 					sm.addString(terNew.getOwnerClan().getName());
+					// TODO: Unhardcode using territory Id.
 					sm.addString(ward.getNpc().getName().replaceAll(" Ward", ""));
 					announceToParticipants(sm, 135000, 13500);
 				}
 				if (terOld.getOwnerClan() != null)
 				{
-					final FastList<L2SkillLearn> territorySkills = SkillTreesData.getInstance().getAvailableResidentialSkills(territoryId);
+					final List<L2SkillLearn> territorySkills = SkillTreesData.getInstance().getAvailableResidentialSkills(territoryId);
 					for (L2SkillLearn s : territorySkills)
 					{
 						final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
@@ -402,7 +403,7 @@ public class TerritoryWarManager implements Siegable
 					{
 						for(int wardId : terOld.getOwnedWardIds())
 						{
-							final FastList<L2SkillLearn> wardSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(wardId);
+							final List<L2SkillLearn> wardSkills = SkillTreesData.getInstance().getAvailableResidentialSkills(wardId);
 							for (L2SkillLearn s : wardSkills)
 							{
 								final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
@@ -426,8 +427,8 @@ public class TerritoryWarManager implements Siegable
 	
 	public L2SiegeFlagInstance getHQForClan(L2Clan clan)
 	{
-		if (clan.getHasCastle() > 0)
-			return _territoryList.get(clan.getHasCastle()).getHQ();
+		if (clan.getCastleId() > 0)
+			return _territoryList.get(clan.getCastleId()).getHQ();
 		return null;
 	}
 	
@@ -440,8 +441,8 @@ public class TerritoryWarManager implements Siegable
 	
 	public void setHQForClan(L2Clan clan, L2SiegeFlagInstance hq)
 	{
-		if (clan.getHasCastle() > 0)
-			_territoryList.get(clan.getHasCastle()).setHQ(hq);
+		if (clan.getCastleId() > 0)
+			_territoryList.get(clan.getCastleId()).setHQ(hq);
 	}
 	
 	public void addClanFlag(L2Clan clan, L2SiegeFlagInstance flag)
@@ -537,7 +538,7 @@ public class TerritoryWarManager implements Siegable
 		if (victimSide == 0)
 			return;
 		if (killer.getParty() != null && type < 5)
-			for(L2PcInstance pl : killer.getParty().getPartyMembers())
+			for(L2PcInstance pl : killer.getParty().getMembers())
 			{
 				if (pl.getSiegeSide() == victimSide || pl.getSiegeSide() == 0 || !Util.checkIfInRange(2000, killer, pl, false))
 					continue;
@@ -624,8 +625,6 @@ public class TerritoryWarManager implements Siegable
 		}
 	}
 	
-	// =========================================================
-	// Method - Private
 	public L2Npc spawnNPC(int npcId, Location loc)
 	{
 		L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
@@ -708,10 +707,9 @@ public class TerritoryWarManager implements Siegable
 	
 	private final void load()
 	{
-		InputStream is = null;
-		try
+		
+		try (InputStream is = new FileInputStream(new File(Config.TW_CONFIGURATION_FILE)))
 		{
-			is = new FileInputStream(new File(Config.TW_CONFIGURATION_FILE));
 			L2Properties territoryWarSettings = new L2Properties();
 			territoryWarSettings.load(is);
 			
@@ -850,26 +848,16 @@ public class TerritoryWarManager implements Siegable
 			//_initialized = false;
 			_log.log(Level.WARNING, "Error while loading Territory War Manager! " + e.getMessage(), e);
 		}
-		finally
-		{
-			try
-			{
-				is.close();
-			}
-			catch (Exception e)
-			{
-			}
-		}
 	}
 	
-	private void startTerritoryWar()
+	protected void startTerritoryWar()
 	{
 		if (_territoryList == null)
 		{
 			_log.warning("TerritoryWarManager: TerritoryList is NULL!");
 			return;
 		}
-		FastList<Territory> activeTerritoryList = new FastList<Territory>();
+		FastList<Territory> activeTerritoryList = new FastList<>();
 		for(Territory t : _territoryList.values())
 		{
 			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
@@ -940,7 +928,7 @@ public class TerritoryWarManager implements Siegable
 		Announcements.getInstance().announceToAll(sm);
 	}
 	
-	private void endTerritoryWar()
+	protected void endTerritoryWar()
 	{
 		_isTWInProgress = false;
 		if (_territoryList == null)
@@ -948,7 +936,7 @@ public class TerritoryWarManager implements Siegable
 			_log.warning("TerritoryWarManager: TerritoryList is NULL!");
 			return;
 		}
-		FastList<Territory> activeTerritoryList = new FastList<Territory>();
+		FastList<Territory> activeTerritoryList = new FastList<>();
 		for(Territory t : _territoryList.values())
 		{
 			Castle castle = CastleManager.getInstance().getCastleById(t.getCastleId());
@@ -1027,7 +1015,7 @@ public class TerritoryWarManager implements Siegable
 		Announcements.getInstance().announceToAll(sm);
 	}
 	
-	private boolean updatePlayerTWStateFlags(boolean clear)
+	protected boolean updatePlayerTWStateFlags(boolean clear)
 	{
 		Quest twQuest = QuestManager.getInstance().getQuest(qn);
 		if (twQuest == null)
@@ -1109,12 +1097,8 @@ public class TerritoryWarManager implements Siegable
 		return true;
 	}
 	
-	private class RewardOnlineParticipants implements Runnable
+	protected class RewardOnlineParticipants implements Runnable
 	{
-		public RewardOnlineParticipants()
-		{
-		}
-		
 		@Override
 		public void run()
 		{
@@ -1129,11 +1113,9 @@ public class TerritoryWarManager implements Siegable
 		}
 	}
 	
-	private class ScheduleStartTWTask implements Runnable
+	protected class ScheduleStartTWTask implements Runnable
 	{
-		public ScheduleStartTWTask()
-		{
-		}
+		private final Logger _log = Logger.getLogger(ScheduleStartTWTask.class.getName());
 		
 		@Override
 		public void run()
@@ -1208,7 +1190,9 @@ public class TerritoryWarManager implements Siegable
 	
 	private class ScheduleEndTWTask implements Runnable
 	{
-		public ScheduleEndTWTask()
+		private final Logger _log = Logger.getLogger(ScheduleEndTWTask.class.getName());
+		
+		protected ScheduleEndTWTask()
 		{
 		}
 		
@@ -1229,28 +1213,28 @@ public class TerritoryWarManager implements Siegable
 				else if ((timeRemaining <= 3600000) && (timeRemaining > 600000))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_TERRITORY_WAR_WILL_END_IN_S1_MINUTES);
-					sm.addNumber(Math.round(timeRemaining / 60000));
+					sm.addNumber((int) (timeRemaining / 60000));
 					announceToParticipants(sm, 0, 0);
 					_scheduledEndTWTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndTWTask(), timeRemaining - 600000); // Prepare task for 10 minute left.
 				}
 				else if ((timeRemaining <= 600000) && (timeRemaining > 300000))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_TERRITORY_WAR_WILL_END_IN_S1_MINUTES);
-					sm.addNumber(Math.round(timeRemaining / 60000));
+					sm.addNumber((int) (timeRemaining / 60000));
 					announceToParticipants(sm, 0, 0);
 					_scheduledEndTWTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndTWTask(), timeRemaining - 300000); // Prepare task for 5 minute left.
 				}
 				else if ((timeRemaining <= 300000) && (timeRemaining > 10000))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_TERRITORY_WAR_WILL_END_IN_S1_MINUTES);
-					sm.addNumber(Math.round(timeRemaining / 60000));
+					sm.addNumber((int) (timeRemaining / 60000));
 					announceToParticipants(sm, 0, 0);
 					_scheduledEndTWTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndTWTask(), timeRemaining - 10000); // Prepare task for 10 seconds count down
 				}
 				else if ((timeRemaining <= 10000) && (timeRemaining > 0))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_SECONDS_TO_THE_END_OF_TERRITORY_WAR);
-					sm.addNumber(Math.round(timeRemaining / 1000));
+					sm.addNumber((int) (timeRemaining / 1000));
 					announceToParticipants(sm, 0, 0);
 					_scheduledEndTWTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndTWTask(), timeRemaining); // Prepare task for second count down
 				}
@@ -1315,12 +1299,11 @@ public class TerritoryWarManager implements Siegable
 				}
 			}
 	}
-	// =========================================================
-	// Property - Public
+	
 	public static class TerritoryNPCSpawn
 	{
 		private Location _location;
-		private int _npcId;
+		protected int _npcId;
 		private int _castleId;
 		private int _type;
 		private L2Npc _npc;
@@ -1369,9 +1352,11 @@ public class TerritoryWarManager implements Siegable
 	
 	public class Territory
 	{
+		private final Logger _log = Logger.getLogger(Territory.class.getName());
+		
 		private final int _territoryId;
 		private final int _castleId; // territory Castle
-		private int _fortId; // territory Fortress
+		protected int _fortId; // territory Fortress
 		private L2Clan _ownerClan;
 		private FastList<TerritoryNPCSpawn> _spawnList;
 		private TerritoryNPCSpawn[] _territoryWardSpawnPlaces;
@@ -1383,12 +1368,12 @@ public class TerritoryWarManager implements Siegable
 		{
 			_castleId = castleId;
 			_territoryId = castleId + 80;
-			_spawnList = new FastList<TerritoryNPCSpawn>();
+			_spawnList = new FastList<>();
 			_territoryWardSpawnPlaces = new TerritoryNPCSpawn[9];
 			_questDone = new int[2];
 		}
 		
-		private void addWardSpawnPlace(Location loc)
+		protected void addWardSpawnPlace(Location loc)
 		{
 			for(int i = 0; i < _territoryWardSpawnPlaces.length; i++)
 				if (_territoryWardSpawnPlaces[i] == null)
@@ -1398,7 +1383,7 @@ public class TerritoryWarManager implements Siegable
 				}
 		}
 		
-		private TerritoryNPCSpawn getFreeWardSpawnPlace()
+		protected TerritoryNPCSpawn getFreeWardSpawnPlace()
 		{
 			for(int i = 0; i < _territoryWardSpawnPlaces.length; i++)
 				if (_territoryWardSpawnPlaces[i] != null && _territoryWardSpawnPlaces[i].getNpc() == null)
@@ -1419,7 +1404,7 @@ public class TerritoryWarManager implements Siegable
 			return _spawnList;
 		}
 		
-		private void changeNPCsSpawn(int type, boolean isSpawn)
+		protected void changeNPCsSpawn(int type, boolean isSpawn)
 		{
 			if (type < 0 || type > 3)
 			{
@@ -1442,7 +1427,7 @@ public class TerritoryWarManager implements Siegable
 			}
 		}
 		
-		private void removeWard(int wardId)
+		protected void removeWard(int wardId)
 		{
 			for(TerritoryNPCSpawn wardSpawn : _territoryWardSpawnPlaces)
 				if (wardSpawn.getNpcId() == wardId)
@@ -1502,7 +1487,7 @@ public class TerritoryWarManager implements Siegable
 		
 		public FastList<Integer> getOwnedWardIds()
 		{
-			FastList<Integer> ret = new FastList<Integer>();
+			FastList<Integer> ret = new FastList<>();
 			for(TerritoryNPCSpawn wardSpawn : _territoryWardSpawnPlaces)
 				if (wardSpawn.getNpcId() > 0)
 					ret.add(wardSpawn.getNpcId());
@@ -1519,7 +1504,7 @@ public class TerritoryWarManager implements Siegable
 			_isInProgress = val;
 		}
 	}
-	@SuppressWarnings("synthetic-access")
+	
 	private static class SingletonHolder
 	{
 		protected static final TerritoryWarManager _instance = new TerritoryWarManager();

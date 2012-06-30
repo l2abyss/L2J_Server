@@ -16,7 +16,6 @@ package com.l2jserver.loginserver;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.2.4.2 $ $Date: 2005/03/27 15:30:09 $
  */
 
@@ -27,7 +26,7 @@ public class HackingException extends Exception
 	 */
 	private static final long serialVersionUID = 4050762693478463029L;
 	String _ip;
-	private int _connects;
+	private final int _connects;
 	
 	public HackingException(String ip, int connects)
 	{
@@ -47,6 +46,5 @@ public class HackingException extends Exception
 	{
 		return _connects;
 	}
-	
 	
 }

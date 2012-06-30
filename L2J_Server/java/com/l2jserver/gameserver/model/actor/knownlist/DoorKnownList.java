@@ -21,24 +21,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class DoorKnownList extends CharKnownList
 {
-	// =========================================================
-	// Data Field
-	
-	// =========================================================
-	// Constructor
 	public DoorKnownList(L2DoorInstance activeChar)
 	{
 		super(activeChar);
 	}
 	
-	// =========================================================
-	// Method - Public
-	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	@Override
 	public final L2DoorInstance getActiveChar() { return (L2DoorInstance)super.getActiveChar(); }
 	
@@ -58,6 +45,6 @@ public class DoorKnownList extends CharKnownList
 		if (object instanceof L2DefenderInstance) return 600;
 		if (!(object instanceof L2PcInstance))
 			return 0;
-		return 3000;
+		return 3500;
 	}
 }

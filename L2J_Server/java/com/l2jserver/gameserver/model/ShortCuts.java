@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.network.serverpackets.ExAutoSoulShot;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
@@ -39,7 +39,7 @@ public class ShortCuts
 	private static Logger _log = Logger.getLogger(ShortCuts.class.getName());
 	private static final int MAX_SHORTCUTS_PER_BAR = 12;
 	private final L2PcInstance _owner;
-	private final Map<Integer, L2ShortCut> _shortCuts = new TreeMap<Integer, L2ShortCut>();
+	private final Map<Integer, L2ShortCut> _shortCuts = new TreeMap<>();
 	
 	public ShortCuts(L2PcInstance owner)
 	{
@@ -76,10 +76,7 @@ public class ShortCuts
 			{
 				return;
 			}
-			if (item.isEtcItem())
-			{
-				shortcut.setSharedReuseGroup(item.getEtcItem().getSharedReuseGroup());
-			}
+			shortcut.setSharedReuseGroup(item.getSharedReuseGroup());
 		}
 		final L2ShortCut oldShortCut = _shortCuts.put(shortcut.getSlot() + (shortcut.getPage() * MAX_SHORTCUTS_PER_BAR), shortcut);
 		registerShortCutInDb(shortcut, oldShortCut);

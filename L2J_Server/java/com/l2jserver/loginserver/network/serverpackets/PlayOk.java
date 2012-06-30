@@ -21,7 +21,7 @@ import com.l2jserver.loginserver.SessionKey;
  */
 public final class PlayOk extends L2LoginServerPacket
 {
-	private int _playOk1, _playOk2;
+	private final int _playOk1, _playOk2;
 	
 	public PlayOk(SessionKey sessionKey)
 	{

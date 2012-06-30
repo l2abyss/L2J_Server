@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.network.serverpackets.SiegeDefenderList;
 public final class RequestConfirmSiegeWaitingList extends L2GameClientPacket
 {
 	private static final String _C__AE_RequestConfirmSiegeWaitingList = "[C] AE RequestConfirmSiegeWaitingList";
-	//private static Logger _log = Logger.getLogger(RequestConfirmSiegeWaitingList.class.getName());
 	
 	private int _approved;
 	private int _castleId;

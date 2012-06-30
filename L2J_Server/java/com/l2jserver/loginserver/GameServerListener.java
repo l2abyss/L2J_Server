@@ -24,13 +24,12 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public class GameServerListener extends FloodProtectedListener
 {
 	private static Logger _log = Logger.getLogger(GameServerListener.class.getName());
-	private static List<GameServerThread> _gameServers = new FastList<GameServerThread>();
+	private static List<GameServerThread> _gameServers = new FastList<>();
 	
 	public GameServerListener() throws IOException
 	{
@@ -46,7 +45,7 @@ public class GameServerListener extends FloodProtectedListener
 	{
 		if (Config.DEBUG)
 		{
-			_log.info("Received gameserver connection from: "+s.getInetAddress().getHostAddress());
+			_log.info("Received gameserver connection from: " + s.getInetAddress().getHostAddress());
 		}
 		GameServerThread gst = new GameServerThread(s);
 		_gameServers.add(gst);

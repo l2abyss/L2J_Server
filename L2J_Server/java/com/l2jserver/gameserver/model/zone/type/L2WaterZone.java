@@ -35,27 +35,33 @@ public class L2WaterZone extends L2ZoneType
 	{
 		character.setInsideZone(L2Character.ZONE_WATER, true);
 		
-		if (character instanceof L2PcInstance)
+		// TODO: update to only send speed status when that packet is known
+		if (character.isPlayer())
 		{
-			if (((L2PcInstance) character).isTransformed() && !((L2PcInstance) character).isCursedWeaponEquipped())
+			L2PcInstance player = character.getActingPlayer();
+			if (player.isTransformed() && !player.isCursedWeaponEquipped())
 			{
 				character.stopTransformation(true);
-				//((L2PcInstance) character).untransform();
 			}
-			// TODO: update to only send speed status when that packet is known
 			else
-				((L2PcInstance) character).broadcastUserInfo();
+			{
+				player.broadcastUserInfo();
+			}
 		}
-		else if (character instanceof L2Npc)
+		else if (character.isNpc())
 		{
 			Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
 			
 			for (L2PcInstance player : plrs)
 			{
 				if (character.getRunSpeed() == 0)
+				{
 					player.sendPacket(new ServerObjectInfo((L2Npc) character, player));
+				}
 				else
+				{
 					player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) character, player));
+				}
 			}
 		}
 	}
@@ -66,19 +72,23 @@ public class L2WaterZone extends L2ZoneType
 		character.setInsideZone(L2Character.ZONE_WATER, false);
 		
 		// TODO: update to only send speed status when that packet is known
-		if (character instanceof L2PcInstance)
+		if (character.isPlayer())
 		{
-			((L2PcInstance) character).broadcastUserInfo();
+			character.getActingPlayer().broadcastUserInfo();
 		}
-		else if (character instanceof L2Npc)
+		else if (character.isNpc())
 		{
 			Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
 			for (L2PcInstance player : plrs)
 			{
 				if (character.getRunSpeed() == 0)
+				{
 					player.sendPacket(new ServerObjectInfo((L2Npc) character, player));
+				}
 				else
+				{
 					player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) character, player));
+				}
 			}
 		}
 	}

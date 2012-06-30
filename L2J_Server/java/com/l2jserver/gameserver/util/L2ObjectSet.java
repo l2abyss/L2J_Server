@@ -20,12 +20,10 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 
-
 /**
  * This class ...
- *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
- * @param <T> 
+ * @param <T>
  */
 public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 {
@@ -34,9 +32,9 @@ public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 		switch (Config.SET_TYPE)
 		{
 			case WorldObjectSet:
-				return new WorldObjectSet<L2Object>();
+				return new WorldObjectSet<>();
 			default:
-				return new L2ObjectHashSet<L2Object>();
+				return new L2ObjectHashSet<>();
 		}
 	}
 	
@@ -45,9 +43,9 @@ public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 		switch (Config.SET_TYPE)
 		{
 			case WorldObjectSet:
-				return new WorldObjectSet<L2Playable>();
+				return new WorldObjectSet<>();
 			default:
-				return new L2ObjectHashSet<L2Playable>();
+				return new L2ObjectHashSet<>();
 		}
 	}
 	
@@ -65,5 +63,4 @@ public abstract class L2ObjectSet<T extends L2Object> implements Iterable<T>
 	
 	@Override
 	public abstract Iterator<T> iterator();
-	
 }

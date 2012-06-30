@@ -18,7 +18,6 @@ import com.l2jserver.loginserver.mail.MailSystem;
 import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
- * 
  * @author mrTJO
  */
 public class RequestSendMail extends BaseRecievePacket

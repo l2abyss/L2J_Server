@@ -31,9 +31,9 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 
 /**
  * @author Advi
@@ -108,7 +108,7 @@ public abstract class ItemContainer
 	 */
 	public List<L2ItemInstance> getItemsByItemId(int itemId)
 	{
-		List<L2ItemInstance> returnList = new FastList<L2ItemInstance>();
+		List<L2ItemInstance> returnList = new FastList<>();
 		for (L2ItemInstance item : _items)
 		{
 			if (item != null && item.getItemId() == itemId)
@@ -614,14 +614,36 @@ public abstract class ItemContainer
 		}
 	}
 	
-	public boolean validateCapacity(int slots)
+	public boolean validateCapacity(long slots)
 	{
 		return true;
 	}
 	
-	public boolean validateWeight(int weight)
+	public boolean validateWeight(long weight)
 	{
 		return true;
 	}
 	
+	/**
+	 * If the item is stackable validates 1 slot, if the item isn't stackable validates the item count.
+	 * @param itemId the item Id to verify
+	 * @param count amount of item's weight to validate
+	 * @return {@code true} if the item doesn't exists or it validates its slot count
+	 */
+	public boolean validateCapacityByItemId(int itemId, long count)
+	{
+		final L2Item template = ItemTable.getInstance().getTemplate(itemId);
+		return (template == null) || (template.isStackable() ? validateCapacity(1) : validateCapacity(count));
+	}
+	
+	/**
+	 * @param itemId the item Id to verify
+	 * @param count amount of item's weight to validate
+	 * @return {@code true} if the item doesn't exists or it validates its weight
+	 */
+	public boolean validateWeightByItemId(int itemId, long count)
+	{
+		final L2Item template = ItemTable.getInstance().getTemplate(itemId);
+		return (template == null) || validateWeight(template.getWeight() * count);
+	}
 }

@@ -12,11 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @author godson
- */
-
 package com.l2jserver.gameserver.model.olympiad;
 
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -52,6 +47,9 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.L2FastList;
 
+/**
+ * @author godson
+ */
 public class Olympiad
 {
 	protected static final Logger _log = Logger.getLogger(Olympiad.class.getName());
@@ -59,7 +57,7 @@ public class Olympiad
 	
 	private static final Map<Integer, StatsSet> _nobles = new FastMap<>();
 	protected static L2FastList<StatsSet> _heroesToBe;
-	private static TIntIntHashMap _noblesRank;
+	private static final TIntIntHashMap _noblesRank = new TIntIntHashMap();
 	
 	private static final String OLYMPIAD_DATA_FILE = "config/olympiad.properties";
 	public static final String OLYMPIAD_HTML_PATH = "data/html/olympiad/";
@@ -80,7 +78,41 @@ public class Olympiad
 	private static final String OLYMPIAD_MONTH_CREATE = "INSERT INTO olympiad_nobles_eom SELECT charId, class_id, olympiad_points, competitions_done, competitions_won, competitions_lost, competitions_drawn FROM olympiad_nobles";
 	private static final int[] HERO_IDS =
 	{
-		88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 131, 132, 133, 134
+		88,
+		89,
+		90,
+		91,
+		92,
+		93,
+		94,
+		95,
+		96,
+		97,
+		98,
+		99,
+		100,
+		101,
+		102,
+		103,
+		104,
+		105,
+		106,
+		107,
+		108,
+		109,
+		110,
+		111,
+		112,
+		113,
+		114,
+		115,
+		116,
+		117,
+		118,
+		131,
+		132,
+		133,
+		134
 	};
 	
 	private static final int COMP_START = Config.ALT_OLY_START_TIME; // 6PM
@@ -133,7 +165,7 @@ public class Olympiad
 		return SingletonHolder._instance;
 	}
 	
-	private Olympiad()
+	protected Olympiad()
 	{
 		load();
 		AntiFeedManager.getInstance().registerEvent(AntiFeedManager.OLYMPIAD_ID);
@@ -182,27 +214,15 @@ public class Olympiad
 			_log.log(Level.INFO, "Olympiad System: failed to load data from database, trying to load from file.");
 			
 			Properties OlympiadProperties = new Properties();
-			InputStream is = null;
-			try
+			try (InputStream is = new FileInputStream(new File("./" + OLYMPIAD_DATA_FILE)))
 			{
-				is = new FileInputStream(new File("./" + OLYMPIAD_DATA_FILE));
+				
 				OlympiadProperties.load(is);
 			}
 			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Olympiad System: Error loading olympiad properties: ", e);
 				return;
-			}
-			finally
-			{
-				try
-				{
-					is.close();
-				}
-				catch (Exception e)
-				{
-					_log.log(Level.WARNING, "", e);
-				}
 			}
 			
 			_currentCycle = Integer.parseInt(OlympiadProperties.getProperty("CurrentCycle", "1"));
@@ -246,13 +266,12 @@ public class Olympiad
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(OLYMPIAD_LOAD_NOBLES);
-			ResultSet rset = statement.executeQuery();
-			
+			final PreparedStatement statement = con.prepareStatement(OLYMPIAD_LOAD_NOBLES);
+			final ResultSet rset = statement.executeQuery();
+			StatsSet statData;
 			while (rset.next())
 			{
-				StatsSet statData = new StatsSet();
-				int charId = rset.getInt(CHAR_ID);
+				statData = new StatsSet();
 				statData.set(CLASS_ID, rset.getInt(CLASS_ID));
 				statData.set(CHAR_NAME, rset.getString(CHAR_NAME));
 				statData.set(POINTS, rset.getInt(POINTS));
@@ -266,7 +285,7 @@ public class Olympiad
 				statData.set(COMP_DONE_WEEK_TEAM, rset.getInt(COMP_DONE_WEEK_TEAM));
 				statData.set("to_save", false);
 				
-				_nobles.put(charId, statData);
+				addNobleStats(rset.getInt(CHAR_ID), statData);
 			}
 			
 			rset.close();
@@ -303,13 +322,13 @@ public class Olympiad
 				milliToEnd = getMillisToValidationEnd();
 			}
 			
-			_log.info("Olympiad System: " + Math.round(milliToEnd / 60000) + " minutes until period ends");
+			_log.info("Olympiad System: " + (milliToEnd / 60000) + " minutes until period ends");
 			
 			if (_period == 0)
 			{
 				milliToEnd = getMillisToWeekChange();
 				
-				_log.info("Olympiad System: Next weekly change is in " + Math.round(milliToEnd / 60000) + " minutes");
+				_log.info("Olympiad System: Next weekly change is in " + (milliToEnd / 60000) + " minutes");
 			}
 		}
 		
@@ -319,7 +338,7 @@ public class Olympiad
 	
 	public void loadNoblesRank()
 	{
-		_noblesRank = new TIntIntHashMap();
+		_noblesRank.clear();
 		TIntIntHashMap tmpPlace = new TIntIntHashMap();
 		
 		Connection con = null;
@@ -462,12 +481,6 @@ public class Olympiad
 		return _nobles.get(playerId);
 	}
 	
-	protected static synchronized void updateNobleStats(int playerId, StatsSet stats)
-	{
-		_nobles.remove(playerId);
-		_nobles.put(playerId, stats);
-	}
-	
 	private void updateCompStatus()
 	{
 		// _compStarted = false;
@@ -477,7 +490,7 @@ public class Olympiad
 			long milliToStart = getMillisToCompBegin();
 			
 			double numSecs = (milliToStart / 1000) % 60;
-			double countDown = ((milliToStart / 1000) - numSecs) / 60;
+			double countDown = ((milliToStart / 1000.) - numSecs) / 60;
 			int numMins = (int) Math.floor(countDown % 60);
 			countDown = (countDown - numMins) / 60;
 			int numHours = (int) Math.floor(countDown % 24);
@@ -695,14 +708,12 @@ public class Olympiad
 			return;
 		}
 		
-		for (Entry<Integer, StatsSet> entry : _nobles.entrySet())
+		int currentPoints;
+		for (StatsSet nobleInfo : _nobles.values())
 		{
-			final StatsSet nobleInfo = entry.getValue();
-			int currentPoints = nobleInfo.getInteger(POINTS);
+			currentPoints = nobleInfo.getInteger(POINTS);
 			currentPoints += WEEKLY_POINTS;
 			nobleInfo.set(POINTS, currentPoints);
-			
-			updateNobleStats(entry.getKey(), nobleInfo);
 		}
 	}
 	
@@ -716,15 +727,12 @@ public class Olympiad
 			return;
 		}
 		
-		for (Entry<Integer, StatsSet> entry : _nobles.entrySet())
+		for (StatsSet nobleInfo : _nobles.values())
 		{
-			StatsSet nobleInfo = entry.getValue();
 			nobleInfo.set(COMP_DONE_WEEK, 0);
 			nobleInfo.set(COMP_DONE_WEEK_CLASSED, 0);
 			nobleInfo.set(COMP_DONE_WEEK_NON_CLASSED, 0);
 			nobleInfo.set(COMP_DONE_WEEK_TEAM, 0);
-			
-			updateNobleStats(entry.getKey(), nobleInfo);
 		}
 	}
 	
@@ -791,8 +799,6 @@ public class Olympiad
 					statement.setInt(11, compDoneWeekTeam);
 					
 					nobleInfo.set("to_save", false);
-					
-					updateNobleStats(charId, nobleInfo);
 				}
 				else
 				{
@@ -911,10 +917,10 @@ public class Olympiad
 		if (_nobles != null)
 		{
 			_logResults.info("Noble,charid,classid,compDone,points");
-			
+			StatsSet nobleInfo;
 			for (Entry<Integer, StatsSet> entry : _nobles.entrySet())
 			{
-				final StatsSet nobleInfo = entry.getValue();
+				nobleInfo = entry.getValue();
 				if (nobleInfo == null)
 				{
 					continue;
@@ -929,13 +935,16 @@ public class Olympiad
 				record = new LogRecord(Level.INFO, charName);
 				record.setParameters(new Object[]
 				{
-					charId, classId, compDone, points
+					charId,
+					classId,
+					compDone,
+					points
 				});
 				_logResults.log(record);
 			}
 		}
 		
-		_heroesToBe = new L2FastList<StatsSet>();
+		_heroesToBe = new L2FastList<>();
 		
 		Connection con = null;
 		try
@@ -944,7 +953,7 @@ public class Olympiad
 			PreparedStatement statement = con.prepareStatement(OLYMPIAD_GET_HEROS);
 			ResultSet rset;
 			StatsSet hero;
-			L2FastList<StatsSet> soulHounds = new L2FastList<StatsSet>();
+			L2FastList<StatsSet> soulHounds = new L2FastList<>();
 			for (int element : HERO_IDS)
 			{
 				statement.setInt(1, element);
@@ -969,7 +978,8 @@ public class Olympiad
 						record = new LogRecord(Level.INFO, "Hero " + hero.getString(CHAR_NAME));
 						record.setParameters(new Object[]
 						{
-							hero.getInteger(CHAR_ID), hero.getInteger(CLASS_ID)
+							hero.getInteger(CHAR_ID),
+							hero.getInteger(CLASS_ID)
 						});
 						_logResults.log(record);
 						_heroesToBe.add(hero);
@@ -996,7 +1006,8 @@ public class Olympiad
 					record = new LogRecord(Level.INFO, "Hero " + hero.getString(CHAR_NAME));
 					record.setParameters(new Object[]
 					{
-						hero.getInteger(CHAR_ID), hero.getInteger(CLASS_ID)
+						hero.getInteger(CHAR_ID),
+						hero.getInteger(CLASS_ID)
 					});
 					_logResults.log(record);
 					_heroesToBe.add(hero);
@@ -1053,7 +1064,8 @@ public class Olympiad
 					record = new LogRecord(Level.INFO, "Hero " + hero.getString(CHAR_NAME));
 					record.setParameters(new Object[]
 					{
-						hero.getInteger(CHAR_ID), hero.getInteger(CLASS_ID)
+						hero.getInteger(CHAR_ID),
+						hero.getInteger(CLASS_ID)
 					});
 					_logResults.log(record);
 					_heroesToBe.add(hero);
@@ -1164,7 +1176,6 @@ public class Olympiad
 		if (clear)
 		{
 			noble.set(POINTS, 0);
-			updateNobleStats(objId, noble);
 		}
 		points *= Config.ALT_OLY_GP_PER_POINT;
 		return points;
@@ -1363,7 +1374,16 @@ public class Olympiad
 		_nobles.clear();
 	}
 	
-	@SuppressWarnings("synthetic-access")
+	/**
+	 * @param charId the noble object Id.
+	 * @param data the stats set data to add.
+	 * @return the old stats set if the noble is already present, null otherwise.
+	 */
+	protected static StatsSet addNobleStats(int charId, StatsSet data)
+	{
+		return _nobles.put(Integer.valueOf(charId), data);
+	}
+	
 	private static class SingletonHolder
 	{
 		protected static final Olympiad _instance = new Olympiad();

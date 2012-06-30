@@ -19,12 +19,12 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.funcs.FuncAdd;
+import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
-import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.skills.funcs.FuncAdd;
-import com.l2jserver.gameserver.skills.funcs.LambdaConst;
 
 /**
  * Used to store an augmentation and its boni
@@ -48,9 +48,6 @@ public final class L2Augmentation
 	{
 		this(effects, skill != 0 ? SkillTable.getInstance().getInfo(skill, skillLevel) : null);
 	}
-	
-	// =========================================================
-	// Nested Class
 	
 	public static class AugmentationStatBoni
 	{
@@ -81,7 +78,7 @@ public final class L2Augmentation
 			if (_active) return;
 			
 			for (int i=0; i < _stats.length; i++)
-				((L2Character)player).addStatFunc(new FuncAdd(_stats[i], 0x40, this, new LambdaConst(_values[i])));
+				player.addStatFunc(new FuncAdd(_stats[i], 0x40, this, new LambdaConst(_values[i])));
 			
 			_active = true;
 		}
@@ -89,9 +86,11 @@ public final class L2Augmentation
 		public void removeBonus(L2PcInstance player)
 		{
 			// make sure the bonuses are not removed twice
-			if (!_active) return;
-			
-			((L2Character)player).removeStatsOwner(this);
+			if (!_active)
+			{
+				return;
+			}
+			player.removeStatsOwner(this);
 			
 			_active = false;
 		}
@@ -131,19 +130,18 @@ public final class L2Augmentation
 			player.addSkill(_skill);
 			if (_skill.isActive())
 			{
-				if (!player.getReuseTimeStamp().isEmpty() && player.getReuseTimeStamp().containsKey(_skill.getReuseHashCode()))
+				final long delay = player.getSkillRemainingReuseTime(_skill.getReuseHashCode());
+				if (delay > 0)
 				{
-					final long delay = player.getReuseTimeStamp().get(_skill.getReuseHashCode()).getRemaining();
-					if (delay > 0)
-					{
-						player.disableSkill(_skill, delay);
-						updateTimeStamp = true;
-					}
+					player.disableSkill(_skill, delay);
+					updateTimeStamp = true;
 				}
 			}
 			player.sendSkillList();
 			if (updateTimeStamp)
+			{
 				player.sendPacket(new SkillCoolTime(player));
+			}
 		}
 	}
 	

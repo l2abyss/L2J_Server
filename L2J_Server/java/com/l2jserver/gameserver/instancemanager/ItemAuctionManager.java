@@ -50,9 +50,9 @@ public final class ItemAuctionManager
 	private final TIntObjectHashMap<ItemAuctionInstance> _managerInstances;
 	private final AtomicInteger _auctionIds;
 	
-	private ItemAuctionManager()
+	protected ItemAuctionManager()
 	{
-		_managerInstances = new TIntObjectHashMap<ItemAuctionInstance>();
+		_managerInstances = new TIntObjectHashMap<>();
 		_auctionIds = new AtomicInteger(1);
 		
 		if (!Config.ALT_ITEM_AUCTION_ENABLED)
@@ -144,7 +144,7 @@ public final class ItemAuctionManager
 		return _auctionIds.getAndIncrement();
 	}
 	
-	public final static void deleteAuction(final int auctionId)
+	public static final void deleteAuction(final int auctionId)
 	{
 		Connection con = null;
 		try
@@ -170,7 +170,6 @@ public final class ItemAuctionManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ItemAuctionManager _instance = new ItemAuctionManager();

@@ -56,9 +56,9 @@ public class LevelUpData
 		return SingletonHolder._instance;
 	}
 	
-	private LevelUpData()
+	protected LevelUpData()
 	{
-		_lvlTable = new TIntObjectHashMap<L2LvlupData>();
+		_lvlTable = new TIntObjectHashMap<>();
 		Connection con = null;
 		try
 		{
@@ -114,7 +114,6 @@ public class LevelUpData
 		return _lvlTable.get(classId.getId());
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final LevelUpData _instance = new LevelUpData();

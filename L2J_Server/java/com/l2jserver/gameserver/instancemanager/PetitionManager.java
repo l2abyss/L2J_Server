@@ -16,15 +16,15 @@ package com.l2jserver.gameserver.instancemanager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GmListTable;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -89,7 +89,7 @@ public final class PetitionManager
 		private PetitionState _state = PetitionState.Pending;
 		private String _content;
 		
-		private List<CreatureSay> _messageLog = new FastList<CreatureSay>();
+		private List<CreatureSay> _messageLog = new FastList<>();
 		
 		private L2PcInstance _petitioner;
 		private L2PcInstance _responder;
@@ -230,11 +230,10 @@ public final class PetitionManager
 		}
 	}
 	
-	private PetitionManager()
+	protected PetitionManager()
 	{
-		_log.info("Initializing PetitionManager");
-		_pendingPetitions = new FastMap<Integer, Petition>();
-		_completedPetitions = new FastMap<Integer, Petition>();
+		_pendingPetitions = new HashMap<>();
+		_completedPetitions = new HashMap<>();
 	}
 	
 	public void clearCompletedPetitions()
@@ -554,7 +553,7 @@ public final class PetitionManager
 		
 		// Notify all GMs that a new petition has been submitted.
 		String msgContent = petitioner.getName() + " has submitted a new petition."; //(ID: " + newPetitionId + ").";
-		GmListTable.broadcastToGMs(new CreatureSay(petitioner.getObjectId(), Say2.HERO_VOICE, "Petition System", msgContent));
+		AdminTable.getInstance().broadcastToGMs(new CreatureSay(petitioner.getObjectId(), Say2.HERO_VOICE, "Petition System", msgContent));
 		
 		return newPetitionId;
 	}
@@ -582,7 +581,6 @@ public final class PetitionManager
 		activeChar.sendPacket(html);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final PetitionManager _instance = new PetitionManager();

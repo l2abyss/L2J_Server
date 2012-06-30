@@ -33,7 +33,7 @@ public final class PartySmallWindowAdd extends L2GameServerPacket
 	public PartySmallWindowAdd(L2PcInstance member, L2Party party)
 	{
 		_member = member;
-		_leaderId = party.getPartyLeaderOID();
+		_leaderId = party.getLeaderObjectId();
 		_distribution = party.getLootDistribution();
 	}
 	

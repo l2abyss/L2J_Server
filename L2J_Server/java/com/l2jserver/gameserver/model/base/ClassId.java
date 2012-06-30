@@ -318,4 +318,16 @@ public enum ClassId
 	{
 		return _parent;
 	}
+	
+	public static ClassId getClassId(int cId)
+	{
+		try
+		{
+			return ClassId.values()[cId];
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
 }

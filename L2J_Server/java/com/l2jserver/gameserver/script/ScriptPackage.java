@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.script;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -27,14 +28,16 @@ import javolution.util.FastList;
  */
 public class ScriptPackage
 {
-	private List<ScriptDocument> _scriptFiles;
-	private List<String> _otherFiles;
-	private String _name;
+	private static final Logger _log = Logger.getLogger(ScriptPackage.class.getName());
+	
+	private final List<ScriptDocument> _scriptFiles;
+	private final List<String> _otherFiles;
+	private final String _name;
 	
 	public ScriptPackage(ZipFile pack)
 	{
-		_scriptFiles = new FastList<ScriptDocument>();
-		_otherFiles = new FastList<String>();
+		_scriptFiles = new FastList<>();
+		_otherFiles = new FastList<>();
 		_name = pack.getName();
 		addFiles(pack);
 	}
@@ -56,7 +59,7 @@ public class ScriptPackage
 	}
 	
 	/**
-	 * @param pack 
+	 * @param pack
 	 */
 	private void addFiles(ZipFile pack)
 	{
@@ -70,9 +73,9 @@ public class ScriptPackage
 					ScriptDocument newScript = new ScriptDocument(entry.getName(), pack.getInputStream(entry));
 					_scriptFiles.add(newScript);
 				}
-				catch (IOException e1)
+				catch (IOException io)
 				{
-					e1.printStackTrace();
+					_log.warning(getClass().getSimpleName() + ": " + io.getMessage());
 				}
 			}
 			else if (!entry.isDirectory())
@@ -81,6 +84,7 @@ public class ScriptPackage
 			}
 		}
 	}
+	
 	/**
 	 * @return Returns the name.
 	 */
@@ -93,12 +97,14 @@ public class ScriptPackage
 	public String toString()
 	{
 		if (getScriptFiles().isEmpty() && getOtherFiles().isEmpty())
+		{
 			return "Empty Package.";
+		}
 		
 		StringBuilder out = new StringBuilder();
 		out.append("Package Name: ");
 		out.append(getName());
-		out.append("\n");
+		out.append('\n');
 		
 		if (!getScriptFiles().isEmpty())
 		{
@@ -106,7 +112,7 @@ public class ScriptPackage
 			for (ScriptDocument script : getScriptFiles())
 			{
 				out.append(script.getName());
-				out.append("\n");
+				out.append('\n');
 			}
 		}
 		
@@ -116,7 +122,7 @@ public class ScriptPackage
 			for (String fileName : getOtherFiles())
 			{
 				out.append(fileName);
-				out.append("\n");
+				out.append('\n');
 			}
 		}
 		return out.toString();

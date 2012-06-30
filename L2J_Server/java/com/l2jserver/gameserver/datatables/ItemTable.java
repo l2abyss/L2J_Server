@@ -25,27 +25,30 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.Item;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.engines.DocumentEngine;
+import com.l2jserver.gameserver.engines.items.Item;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.instance.L2EventMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Armor;
-import com.l2jserver.gameserver.model.item.L2EtcItem;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.model.item.type.L2ArmorType;
-import com.l2jserver.gameserver.model.item.type.L2WeaponType;
-import com.l2jserver.gameserver.skills.SkillsEngine;
+import com.l2jserver.gameserver.model.items.L2Armor;
+import com.l2jserver.gameserver.model.items.L2EtcItem;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.items.type.L2ArmorType;
+import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemCreateEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.NewItemListener;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
@@ -58,11 +61,13 @@ public class ItemTable
 	private static Logger _log = Logger.getLogger(ItemTable.class.getName());
 	private static Logger _logItems = Logger.getLogger("item");
 	
-	public static final Map<String, Integer> _materials = new FastMap<String, Integer>();
-	public static final Map<String, Integer> _crystalTypes = new FastMap<String, Integer>();
-	public static final Map<String, Integer> _slots = new FastMap<String, Integer>();
-	public static final Map<String, L2WeaponType> _weaponTypes = new FastMap<String, L2WeaponType>();
-	public static final Map<String, L2ArmorType> _armorTypes = new FastMap<String, L2ArmorType>();
+	private static FastList<NewItemListener> newItemListeners = new FastList<NewItemListener>().shared();
+	
+	public static final Map<String, Integer> _materials = new FastMap<>();
+	public static final Map<String, Integer> _crystalTypes = new FastMap<>();
+	public static final Map<String, Integer> _slots = new FastMap<>();
+	public static final Map<String, L2WeaponType> _weaponTypes = new FastMap<>();
+	public static final Map<String, L2ArmorType> _armorTypes = new FastMap<>();
 	
 	
 	private L2Item[] _allTemplates;
@@ -181,11 +186,11 @@ public class ItemTable
 	/**
 	 * Constructor.
 	 */
-	private ItemTable()
+	protected ItemTable()
 	{
-		_etcItems = new FastMap<Integer, L2EtcItem>();
-		_armors = new FastMap<Integer, L2Armor>();
-		_weapons = new FastMap<Integer, L2Weapon>();
+		_etcItems = new FastMap<>();
+		_armors = new FastMap<>();
+		_weapons = new FastMap<>();
 		load();
 	}
 	
@@ -195,7 +200,7 @@ public class ItemTable
 		_armors.clear();
 		_etcItems.clear();
 		_weapons.clear();
-		for (L2Item item :  SkillsEngine.getInstance().loadItems())
+		for (L2Item item :  DocumentEngine.getInstance().loadItems())
 		{
 			if (highest < item.getItemId())
 				highest = item.getItemId();
@@ -245,7 +250,7 @@ public class ItemTable
 	 */
 	public L2Item getTemplate(int id)
 	{
-		if (id >= _allTemplates.length)
+		if (id >= _allTemplates.length || id < 0)
 			return null;
 		
 		return _allTemplates[id];
@@ -268,6 +273,11 @@ public class ItemTable
 	 */
 	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
 	{
+		if(!fireNewItemListeners(process,itemId,count,actor,reference))
+		{
+			return null;
+		}
+		
 		// Create and Init the L2ItemInstance corresponding to the Item Identifier
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 		
@@ -280,7 +290,7 @@ public class ItemTable
 				// if in CommandChannel and was killing a World/RaidBoss
 				if (raid.getFirstCommandChannelAttacked() != null && !Config.AUTO_LOOT_RAIDS)
 				{
-					item.setOwnerId(raid.getFirstCommandChannelAttacked().getChannelLeader().getObjectId());
+					item.setOwnerId(raid.getFirstCommandChannelAttacked().getLeaderObjectId());
 					itemLootShedule = ThreadPoolManager.getInstance().scheduleGeneral(new ResetOwner(item), Config.LOOT_RAIDS_PRIVILEGE_INTERVAL);
 					item.setItemLootShedule(itemLootShedule);
 				}
@@ -412,7 +422,7 @@ public class ItemTable
 			}
 			
 			// if it's a pet control item, delete the pet as well
-			if (PetDataTable.isPetItem(item.getItemId()))
+			if (item.getItem().isPetItem())
 			{
 				Connection con = null;
 				try
@@ -474,9 +484,62 @@ public class ItemTable
 		return _allTemplates.length;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ItemTable _instance = new ItemTable();
+	}
+	
+	// Listeners
+	
+	/**
+	 * Fires all the new item listeners, if any
+	 * @param process
+	 * @param itemId
+	 * @param count
+	 * @param actor
+	 * @param reference
+	 * @return
+	 */
+	private boolean fireNewItemListeners(String process, int itemId, long count, L2PcInstance actor, Object reference)
+	{
+		if (!newItemListeners.isEmpty() && actor != null)
+		{
+			ItemCreateEvent event = new ItemCreateEvent();
+			event.setItemId(itemId);
+			event.setPlayer(actor);
+			event.setCount(count);
+			event.setProcess(process);
+			event.setReference(reference);
+			for (NewItemListener listener : newItemListeners)
+			{
+				if (listener.containsItemId(itemId))
+				{
+					if (!listener.onCreate(event))
+						return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Adds a new item listener
+	 * @param listener
+	 */
+	public static void addNewItemListener(NewItemListener listener)
+	{
+		if (!newItemListeners.contains(listener))
+		{
+			newItemListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a new item listener
+	 * @param listener
+	 */
+	public static void removeNewItemListener(NewItemListener listener)
+	{
+		newItemListeners.remove(listener);
 	}
 }

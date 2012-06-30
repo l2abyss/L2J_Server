@@ -14,12 +14,11 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.clientpackets.RequestBypassToServer;
 
 
 
@@ -133,7 +132,6 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	// d is usually 0, S is the html text starting with <html> and ending with </html>
 	//
 	private static final String _S__1B_NPCHTMLMESSAGE = "[S] 19 NpcHtmlMessage";
-	private static Logger _log = Logger.getLogger(RequestBypassToServer.class.getName());
 	private int _npcObjId;
 	private String _html;
 	private int _itemId = 0;
@@ -181,12 +179,17 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	
 	public void setHtml(String text)
 	{
-		if(!text.contains("<html>"))
+		if (text.length() > 17200)
+		{
+			_log.log(Level.WARNING, "Html is too long! this will crash the client!", new Throwable());
+			_html = text.substring(0, 17200);
+		}
+		if (!text.contains("<html>"))
 			text = "<html><body>" + text + "</body></html>";
-
+		
 		_html = text;
 	}
-	
+
 	public boolean setFile(String prefix, String path)
 	{
 		String content = HtmCache.getInstance().getHtm(prefix, path);

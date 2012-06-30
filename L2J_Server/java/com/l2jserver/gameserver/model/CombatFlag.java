@@ -17,13 +17,12 @@ package com.l2jserver.gameserver.model;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-@SuppressWarnings("unused")
 public class CombatFlag
 {
 	// private static final Logger _log = Logger.getLogger(CombatFlag.class.getName());
@@ -34,14 +33,13 @@ public class CombatFlag
 	private L2ItemInstance _itemInstance;
 	private final Location _location;
 	private final int _itemId;
-	private final int _heading;
+	@SuppressWarnings("unused")
 	private final int _fortId;
 	
 	public CombatFlag(int fort_id, int x, int y, int z, int heading, int item_id)
 	{
 		_fortId = fort_id;
 		_location = new Location(x, y, z, heading);
-		_heading = heading;
 		_itemId = item_id;
 	}
 	

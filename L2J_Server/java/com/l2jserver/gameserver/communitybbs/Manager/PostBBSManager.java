@@ -32,17 +32,11 @@ import com.l2jserver.util.StringUtil;
 
 public class PostBBSManager extends BaseBBSManager
 {
-	
 	private Map<Topic, Post> _postByTopic;
 	
-	public static PostBBSManager getInstance()
+	protected PostBBSManager()
 	{
-		return SingletonHolder._instance;
-	}
-	
-	private PostBBSManager()
-	{
-		_postByTopic = new FastMap<Topic, Post>();
+		_postByTopic = new FastMap<>();
 	}
 	
 	public Post getGPosttByTopic(Topic t)
@@ -51,7 +45,7 @@ public class PostBBSManager extends BaseBBSManager
 		post = _postByTopic.get(t);
 		if (post == null)
 		{
-			post = load(t);
+			post = new Post(t);
 			_postByTopic.put(t, post);
 		}
 		return post;
@@ -71,17 +65,6 @@ public class PostBBSManager extends BaseBBSManager
 		{
 			_postByTopic.put(t, p);
 		}
-	}
-	
-	/**
-	 * @param t
-	 * @return
-	 */
-	private Post load(Topic t)
-	{
-		Post p;
-		p = new Post(t);
-		return p;
 	}
 	
 	@Override
@@ -305,31 +288,34 @@ public class PostBBSManager extends BaseBBSManager
 			}
 			else
 			{
-				CPost cp = null;
-				Post p = getGPosttByTopic(t);
+				final Post p = getGPosttByTopic(t);
 				if (p != null)
 				{
-					cp = p.getCPost(idp);
-				}
-				if (cp == null)
-				{
-					ShowBoard sb = new ShowBoard("<html><body><br><br><center>the post: " + idp
-							+ " does not exist !</center><br><br></body></html>", "101");
-					activeChar.sendPacket(sb);
-					activeChar.sendPacket(new ShowBoard(null, "102"));
-					activeChar.sendPacket(new ShowBoard(null, "103"));
-				}
-				else
-				{
-					p.getCPost(idp).postTxt = ar4;
-					p.updatetxt(idp);
-					parsecmd("_bbsposts;read;" + f.getID() + ";" + t.getID(), activeChar);
+					final CPost cp = p.getCPost(idp);
+					if (cp == null)
+					{
+						ShowBoard sb = new ShowBoard("<html><body><br><br><center>the post: " + idp
+								+ " does not exist !</center><br><br></body></html>", "101");
+						activeChar.sendPacket(sb);
+						activeChar.sendPacket(new ShowBoard(null, "102"));
+						activeChar.sendPacket(new ShowBoard(null, "103"));
+					}
+					else
+					{
+						p.getCPost(idp).postTxt = ar4;
+						p.updatetxt(idp);
+						parsecmd("_bbsposts;read;" + f.getID() + ";" + t.getID(), activeChar);
+					}
 				}
 			}
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
+	public static PostBBSManager getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
 	private static class SingletonHolder
 	{
 		protected static final PostBBSManager _instance = new PostBBSManager();

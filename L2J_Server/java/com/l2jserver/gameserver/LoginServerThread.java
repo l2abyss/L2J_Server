@@ -33,7 +33,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -109,13 +108,13 @@ public class LoginServerThread extends Thread
 	private final boolean _reserveHost;
 	private int _maxPlayer;
 	private final List<WaitingClient> _waitingClients;
-	private final Map<String, L2GameClient> _accountsInGameServer;
+	private final FastMap<String, L2GameClient> _accountsInGameServer = new FastMap<>();
 	private int _status;
 	private String _serverName;
 	private final String[] _subnets;
 	private final String[] _hosts;
 	
-	private LoginServerThread()
+	protected LoginServerThread()
 	{
 		super("LoginServerThread");
 		_port = Config.GAME_SERVER_LOGIN_PORT;
@@ -135,8 +134,8 @@ public class LoginServerThread extends Thread
 		_reserveHost = Config.RESERVE_HOST_ON_LOGIN;
 		_subnets = Config.GAME_SERVER_SUBNETS;
 		_hosts = Config.GAME_SERVER_HOSTS;
-		_waitingClients = new FastList<WaitingClient>();
-		_accountsInGameServer = new FastMap<String, L2GameClient>().shared();
+		_waitingClients = new FastList<>();
+		_accountsInGameServer.shared();
 		_maxPlayer = Config.MAXIMUM_ONLINE_USERS;
 	}
 	
@@ -294,7 +293,7 @@ public class LoginServerThread extends Thread
 							sendPacket(st);
 							if (L2World.getInstance().getAllPlayersCount() > 0)
 							{
-								FastList<String> playerList = new FastList<String>();
+								FastList<String> playerList = new FastList<>();
 								for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 								{
 									playerList.add(player.getAccountName());
@@ -537,7 +536,7 @@ public class LoginServerThread extends Thread
 	{
 		Connection con = null;
 		int chars = 0;
-		List<Long> charToDel = new ArrayList<Long>();
+		List<Long> charToDel = new ArrayList<>();
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -761,7 +760,6 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final LoginServerThread _instance = new LoginServerThread();

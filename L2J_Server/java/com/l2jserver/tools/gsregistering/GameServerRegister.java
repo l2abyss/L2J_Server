@@ -23,7 +23,6 @@ import java.util.ResourceBundle;
 
 import com.l2jserver.loginserver.GameServerTable;
 
-
 public class GameServerRegister extends BaseGameServerRegister
 {
 	private LineNumberReader _in;
@@ -35,18 +34,17 @@ public class GameServerRegister extends BaseGameServerRegister
 	}
 	
 	/**
-	 * 
 	 * @param bundle
 	 */
 	public GameServerRegister(ResourceBundle bundle)
 	{
 		super(bundle);
-		this.load();
+		load();
 		
 		int size = GameServerTable.getInstance().getServerNames().size();
 		if (size == 0)
 		{
-			System.out.println(this.getBundle().getString("noServerNames"));
+			System.out.println(getBundle().getString("noServerNames"));
 			System.exit(1);
 		}
 	}
@@ -59,18 +57,18 @@ public class GameServerRegister extends BaseGameServerRegister
 		
 		while (true)
 		{
-			this.hr();
+			hr();
 			System.out.println("GSRegister");
 			System.out.println('\n');
-			System.out.println("1 - "+this.getBundle().getString("cmdMenuRegister"));
-			System.out.println("2 - "+this.getBundle().getString("cmdMenuListNames"));
-			System.out.println("3 - "+this.getBundle().getString("cmdMenuRemoveGS"));
-			System.out.println("4 - "+this.getBundle().getString("cmdMenuRemoveAll"));
-			System.out.println("5 - "+this.getBundle().getString("cmdMenuExit"));
+			System.out.println("1 - " + getBundle().getString("cmdMenuRegister"));
+			System.out.println("2 - " + getBundle().getString("cmdMenuListNames"));
+			System.out.println("3 - " + getBundle().getString("cmdMenuRemoveGS"));
+			System.out.println("4 - " + getBundle().getString("cmdMenuRemoveAll"));
+			System.out.println("5 - " + getBundle().getString("cmdMenuExit"));
 			
 			do
 			{
-				System.out.print(this.getBundle().getString("yourChoice")+' ');
+				System.out.print(getBundle().getString("yourChoice") + ' ');
 				choice = _in.readLine();
 				try
 				{
@@ -80,29 +78,29 @@ public class GameServerRegister extends BaseGameServerRegister
 					switch (choiceNumber)
 					{
 						case 1:
-							this.registerNewGS();
+							registerNewGS();
 							break;
 						case 2:
-							this.listGSNames();
+							listGSNames();
 							break;
 						case 3:
-							this.unregisterSingleGS();
+							unregisterSingleGS();
 							break;
 						case 4:
-							this.unregisterAllGS();
+							unregisterAllGS();
 							break;
 						case 5:
 							System.exit(0);
 							break;
 						default:
-							System.out.printf(this.getBundle().getString("invalidChoice")+'\n', choice);
+							System.out.printf(getBundle().getString("invalidChoice") + '\n', choice);
 							choiceOk = false;
 					}
 					
 				}
 				catch (NumberFormatException nfe)
 				{
-					System.out.printf(this.getBundle().getString("invalidChoice")+'\n', choice);
+					System.out.printf(getBundle().getString("invalidChoice") + '\n', choice);
 				}
 			}
 			while (!choiceOk);
@@ -140,8 +138,8 @@ public class GameServerRegister extends BaseGameServerRegister
 		
 		String id;
 		boolean inUse;
-		String gsInUse = this.getBundle().getString("gsInUse");
-		String gsFree = this.getBundle().getString("gsFree");
+		String gsInUse = getBundle().getString("gsInUse");
+		String gsFree = getBundle().getString("gsFree");
 		int gsStatusMaxLen = Math.max(gsInUse.length(), gsFree.length()) + 2;
 		for (Entry<Integer, String> e : GameServerTable.getInstance().getServerNames().entrySet())
 		{
@@ -176,20 +174,19 @@ public class GameServerRegister extends BaseGameServerRegister
 	
 	/**
 	 * @throws IOException
-	 * 
 	 */
 	private void unregisterAllGS() throws IOException
 	{
-		if (this.yesNoQuestion(this.getBundle().getString("confirmRemoveAllText")))
+		if (yesNoQuestion(getBundle().getString("confirmRemoveAllText")))
 		{
 			try
 			{
 				BaseGameServerRegister.unregisterAllGameServers();
-				System.out.println(this.getBundle().getString("unregisterAllOk"));
+				System.out.println(getBundle().getString("unregisterAllOk"));
 			}
 			catch (SQLException e)
 			{
-				this.showError(this.getBundle().getString("sqlErrorUnregisterAll"), e);
+				showError(getBundle().getString("sqlErrorUnregisterAll"), e);
 			}
 		}
 	}
@@ -199,24 +196,27 @@ public class GameServerRegister extends BaseGameServerRegister
 		
 		do
 		{
-			this.hr();
+			hr();
 			System.out.println(question);
-			System.out.println("1 - "+this.getBundle().getString("yes"));
-			System.out.println("2 - "+this.getBundle().getString("no"));
-			System.out.print(this.getBundle().getString("yourChoice")+' ');
+			System.out.println("1 - " + getBundle().getString("yes"));
+			System.out.println("2 - " + getBundle().getString("no"));
+			System.out.print(getBundle().getString("yourChoice") + ' ');
 			String choice;
 			choice = _in.readLine();
-			if (choice.equals("1"))
+			if (choice != null)
 			{
-				return true;
-			}
-			else if (choice.equals("2"))
-			{
-				return false;
-			}
-			else
-			{
-				System.out.printf(this.getBundle().getString("invalidChoice")+'\n', choice);
+				if (choice.equals("1"))
+				{
+					return true;
+				}
+				else if (choice.equals("2"))
+				{
+					return false;
+				}
+				else
+				{
+					System.out.printf(getBundle().getString("invalidChoice") + '\n', choice);
+				}
 			}
 		}
 		while (true);
@@ -224,7 +224,6 @@ public class GameServerRegister extends BaseGameServerRegister
 	
 	/**
 	 * @throws IOException
-	 * 
 	 */
 	private void unregisterSingleGS() throws IOException
 	{
@@ -233,7 +232,7 @@ public class GameServerRegister extends BaseGameServerRegister
 		
 		do
 		{
-			System.out.print(this.getBundle().getString("enterDesiredId")+' ');
+			System.out.print(getBundle().getString("enterDesiredId") + ' ');
 			line = _in.readLine();
 			try
 			{
@@ -241,7 +240,7 @@ public class GameServerRegister extends BaseGameServerRegister
 			}
 			catch (NumberFormatException e)
 			{
-				System.out.printf(this.getBundle().getString("invalidChoice")+'\n', line);
+				System.out.printf(getBundle().getString("invalidChoice") + '\n', line);
 			}
 		}
 		while (id == Integer.MIN_VALUE);
@@ -249,30 +248,29 @@ public class GameServerRegister extends BaseGameServerRegister
 		String name = GameServerTable.getInstance().getServerNameById(id);
 		if (name == null)
 		{
-			System.out.printf(this.getBundle().getString("noNameForId")+'\n', id);
+			System.out.printf(getBundle().getString("noNameForId") + '\n', id);
 		}
 		else
 		{
 			if (GameServerTable.getInstance().hasRegisteredGameServerOnId(id))
 			{
-				System.out.printf(this.getBundle().getString("confirmRemoveText")+'\n', id, name);
+				System.out.printf(getBundle().getString("confirmRemoveText") + '\n', id, name);
 				try
 				{
 					BaseGameServerRegister.unregisterGameServer(id);
-					System.out.printf(this.getBundle().getString("unregisterOk")+'\n', id);
+					System.out.printf(getBundle().getString("unregisterOk") + '\n', id);
 				}
 				catch (SQLException e)
 				{
-					this.showError(this.getBundle().getString("sqlErrorUnregister"), e);
+					showError(getBundle().getString("sqlErrorUnregister"), e);
 				}
 				
 			}
 			else
 			{
-				System.out.printf(this.getBundle().getString("noServerForId")+'\n', id);
+				System.out.printf(getBundle().getString("noServerForId") + '\n', id);
 			}
 		}
-		
 		
 	}
 	
@@ -283,7 +281,7 @@ public class GameServerRegister extends BaseGameServerRegister
 		
 		do
 		{
-			System.out.println(this.getBundle().getString("enterDesiredId"));
+			System.out.println(getBundle().getString("enterDesiredId"));
 			line = _in.readLine();
 			try
 			{
@@ -291,22 +289,21 @@ public class GameServerRegister extends BaseGameServerRegister
 			}
 			catch (NumberFormatException e)
 			{
-				System.out.printf(this.getBundle().getString("invalidChoice")+'\n', line);
+				System.out.printf(getBundle().getString("invalidChoice") + '\n', line);
 			}
 		}
 		while (id == Integer.MIN_VALUE);
 		
-		
 		String name = GameServerTable.getInstance().getServerNameById(id);
 		if (name == null)
 		{
-			System.out.printf(this.getBundle().getString("noNameForId")+'\n', id);
+			System.out.printf(getBundle().getString("noNameForId") + '\n', id);
 		}
 		else
 		{
 			if (GameServerTable.getInstance().hasRegisteredGameServerOnId(id))
 			{
-				System.out.println(this.getBundle().getString("idIsNotFree"));
+				System.out.println(getBundle().getString("idIsNotFree"));
 			}
 			else
 			{
@@ -316,7 +313,7 @@ public class GameServerRegister extends BaseGameServerRegister
 				}
 				catch (IOException e)
 				{
-					this.showError(getBundle().getString("ioErrorRegister"), e);
+					showError(getBundle().getString("ioErrorRegister"), e);
 				}
 			}
 		}
@@ -329,16 +326,16 @@ public class GameServerRegister extends BaseGameServerRegister
 	public void showError(String msg, Throwable t)
 	{
 		String title;
-		if (this.getBundle() != null)
+		if (getBundle() != null)
 		{
-			title = this.getBundle().getString("error");
-			msg += '\n'+this.getBundle().getString("reason")+' '+t.getLocalizedMessage();
+			title = getBundle().getString("error");
+			msg += '\n' + getBundle().getString("reason") + ' ' + t.getLocalizedMessage();
 		}
 		else
 		{
 			title = "Error";
-			msg += "\nCause: "+t.getLocalizedMessage();
+			msg += "\nCause: " + t.getLocalizedMessage();
 		}
-		System.out.println(title+": "+msg);
+		System.out.println(title + ": " + msg);
 	}
 }

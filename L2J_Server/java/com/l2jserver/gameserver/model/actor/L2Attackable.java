@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.actor;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javolution.util.FastList;
@@ -43,26 +44,26 @@ import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.AttackableKnownList;
 import com.l2jserver.gameserver.model.actor.status.AttackableStatus;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.skills.Stats;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -309,13 +310,13 @@ public class L2Attackable extends L2Npc
 	
 	private L2Character _overhitAttacker;
 	
-	private L2CommandChannel _firstCommandChannelAttacked = null;
+	private volatile L2CommandChannel _firstCommandChannelAttacked = null;
 	private CommandChannelTimer _commandChannelTimer = null;
 	private long _commandChannelLastAttack = 0;
 	
 	private boolean _absorbed;
 	
-	private final L2TIntObjectHashMap<AbsorberInfo> _absorbersList = new L2TIntObjectHashMap<AbsorberInfo>();
+	private final L2TIntObjectHashMap<AbsorberInfo> _absorbersList = new L2TIntObjectHashMap<>();
 	
 	private boolean _mustGiveExpSp;
 	
@@ -408,7 +409,7 @@ public class L2Attackable extends L2Npc
 		if (getCurrentHp() <= skill.getHpConsume())
 			return;
 		
-		if (!skill.ignoreSkillMute())
+		if (!skill.isStatic())
 		{
 			if (skill.isMagic())
 			{
@@ -466,7 +467,7 @@ public class L2Attackable extends L2Npc
 							_commandChannelTimer = new CommandChannelTimer(this);
 							_commandChannelLastAttack = System.currentTimeMillis();
 							ThreadPoolManager.getInstance().scheduleGeneral(_commandChannelTimer, 10000); // check for last attack
-							_firstCommandChannelAttacked.broadcastToChannelMembers(new CreatureSay(0, Say2.PARTYROOM_ALL, "", "You have looting rights!")); //TODO: retail msg
+							_firstCommandChannelAttacked.broadcastPacket(new CreatureSay(0, Say2.PARTYROOM_ALL, "", "You have looting rights!")); //TODO: retail msg
 						}
 					}
 				}
@@ -581,7 +582,7 @@ public class L2Attackable extends L2Npc
 	 * Distribute Exp and SP rewards to L2PcInstance (including Summon owner) that hit the L2Attackable and to their Party members.
 	 *
 	 * Actions:
-	 * Get the L2PcInstance owner of the L2SummonInstance (if necessary) and L2Party in progress
+	 * Get the L2PcInstance owner of the L2ServitorInstance (if necessary) and L2Party in progress
 	 * Calculate the Experience and SP rewards in function of the level difference
 	 * Add Exp and SP rewards to L2PcInstance (including Summon penalty) and to Party members in the known area of the last attacker
 	 *
@@ -601,12 +602,11 @@ public class L2Attackable extends L2Npc
 			
 			int damage;
 			L2Character attacker, ddealer;
-			RewardInfo reward;
 			
 			L2PcInstance maxDealer = null;
 			int maxDamage = 0;
 			
-			// While Interating over This Map Removing Object is Not Allowed
+			// While Iterating over This Map Removing Object is Not Allowed
 			// Go through the _aggroList of the L2Attackable
 			for (AggroInfo info : getAggroList().values())
 			{
@@ -622,7 +622,7 @@ public class L2Attackable extends L2Npc
 				// Prevent unwanted behavior
 				if (damage > 1)
 				{
-					if ((attacker instanceof L2SummonInstance) || ((attacker instanceof L2PetInstance) && ((L2PetInstance) attacker).getPetLevelData().getOwnerExpTaken() > 0))
+					if ((attacker instanceof L2ServitorInstance) || ((attacker instanceof L2PetInstance) && ((L2PetInstance) attacker).getPetLevelData().getOwnerExpTaken() > 0))
 						ddealer = ((L2Summon) attacker).getOwner();
 					else
 						ddealer = info.getAttacker();
@@ -632,7 +632,7 @@ public class L2Attackable extends L2Npc
 						continue;
 					
 					// Calculate real damages (Summoners should get own damage plus summon's damage)
-					reward = rewards.get(ddealer);
+					RewardInfo reward = rewards.get(ddealer);
 					
 					if (reward == null)
 						reward = new RewardInfo(ddealer, damage);
@@ -650,7 +650,7 @@ public class L2Attackable extends L2Npc
 			}
 			
 			// Manage Base, Quests and Sweep drops of the L2Attackable
-			doItemDrop(maxDealer != null && maxDealer.isOnline() == true ? maxDealer : lastAttacker);
+			doItemDrop(maxDealer != null && maxDealer.isOnline() ? maxDealer : lastAttacker);
 			
 			// Manage drop of Special Events created by GM for a defined period
 			doEventDrop(lastAttacker);
@@ -666,14 +666,8 @@ public class L2Attackable extends L2Npc
 				float partyMul, penalty;
 				RewardInfo reward2;
 				int[] tmp;
-				
-				for (FastMap.Entry<L2Character, RewardInfo> entry = rewards.head(), end = rewards.tail(); (entry = entry.getNext()) != end;)
+				for (RewardInfo reward : rewards.values())
 				{
-					if (entry == null)
-						continue;
-					
-					reward = entry.getValue();
-					
 					if (reward == null)
 						continue;
 					
@@ -694,9 +688,9 @@ public class L2Attackable extends L2Npc
 					else
 						return;
 					
-					// If this attacker is a L2PcInstance with a summoned L2SummonInstance, get Exp Penalty applied for the current summoned L2SummonInstance
-					if (attacker instanceof L2PcInstance && ((L2PcInstance) attacker).getPet() instanceof L2SummonInstance)
-						penalty = ((L2SummonInstance) ((L2PcInstance) attacker).getPet()).getExpPenalty();
+					// If this attacker is a L2PcInstance with a summoned L2ServitorInstance, get Exp Penalty applied for the current summoned L2SummonInstance
+					if (attacker instanceof L2PcInstance && ((L2PcInstance) attacker).getPet() instanceof L2ServitorInstance)
+						penalty = ((L2ServitorInstance) ((L2PcInstance) attacker).getPet()).getExpPenalty();
 					
 					// We must avoid "over damage", if any
 					if (damage > getMaxHp())
@@ -708,7 +702,7 @@ public class L2Attackable extends L2Npc
 						// Calculate Exp and SP rewards
 						if (attacker.getKnownList().knowsObject(this))
 						{
-							// Calculate the difference of level between this attacker (L2PcInstance or L2SummonInstance owner) and the L2Attackable
+							// Calculate the difference of level between this attacker (L2PcInstance or L2ServitorInstance owner) and the L2Attackable
 							// mob = 24, atk = 10, diff = -14 (full xp)
 							// mob = 24, atk = 28, diff = 4 (some xp)
 							// mob = 24, atk = 50, diff = 26 (no xp)
@@ -768,14 +762,14 @@ public class L2Attackable extends L2Npc
 						partyLvl = 0;
 						
 						// Get all L2Character that can be rewarded in the party
-						List<L2Playable> rewardedMembers = new FastList<L2Playable>();
+						List<L2Playable> rewardedMembers = new FastList<>();
 						// Go through all L2PcInstance in the party
 						List<L2PcInstance> groupMembers;
 						
 						if (attackerParty.isInCommandChannel())
 							groupMembers = attackerParty.getCommandChannel().getMembers();
 						else
-							groupMembers = attackerParty.getPartyMembers();
+							groupMembers = attackerParty.getMembers();
 						
 						for (L2PcInstance pl : groupMembers)
 						{
@@ -821,7 +815,7 @@ public class L2Attackable extends L2Npc
 							}
 							L2Playable summon = pl.getPet();
 							
-							if (summon != null && summon instanceof L2PetInstance)
+							if (summon != null && summon.isPet())
 							{
 								reward2 = rewards.get(summon);
 								
@@ -1098,7 +1092,7 @@ public class L2Attackable extends L2Npc
 		L2Character mostHated = null;
 		L2Character secondMostHated = null;
 		int maxHate = 0;
-		List<L2Character> result = new FastList<L2Character>();
+		List<L2Character> result = new FastList<>();
 		
 		// While iterating over this map removing objects is not allowed
 		// Go through the aggroList of the L2Attackable
@@ -1128,7 +1122,7 @@ public class L2Attackable extends L2Npc
 	{
 		if (getAggroList().isEmpty() || isAlikeDead())
 			return null;
-		List<L2Character> result = new FastList<L2Character>();
+		List<L2Character> result = new FastList<>();
 		
 		for (AggroInfo ai : getAggroList().values())
 		{
@@ -1618,7 +1612,7 @@ public class L2Attackable extends L2Npc
 				// according to sh1ny, seeded mobs CAN be spoiled and swept.
 				if (isSpoil()/* && !isSeeded() */)
 				{
-					FastList<RewardItem> sweepList = new FastList<RewardItem>();
+					FastList<RewardItem> sweepList = new FastList<>();
 					
 					for (L2DropData drop : cat.getAllDrops())
 					{
@@ -1865,7 +1859,7 @@ public class L2Attackable extends L2Npc
 	 */
 	public FastList<L2Item> getSpoilLootItems()
 	{
-		final FastList<L2Item> lootItems = new FastList<L2Item>();
+		final FastList<L2Item> lootItems = new FastList<>();
 		if (isSweepActive())
 		{
 			for (RewardItem item : _sweepItems)
@@ -2058,10 +2052,10 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Calculate the Experience and SP to distribute to attacker (L2PcInstance, L2SummonInstance or L2Party) of the L2Attackable.
+	 * Calculate the Experience and SP to distribute to attacker (L2PcInstance, L2ServitorInstance or L2Party) of the L2Attackable.
 	 *
-	 * @param diff The difference of level between attacker (L2PcInstance, L2SummonInstance or L2Party) and the L2Attackable
-	 * @param damage The damages given by the attacker (L2PcInstance, L2SummonInstance or L2Party)
+	 * @param diff The difference of level between attacker (L2PcInstance, L2ServitorInstance or L2Party) and the L2Attackable
+	 * @param damage The damages given by the attacker (L2PcInstance, L2ServitorInstance or L2Party)
 	 * @return 
 	 */
 	private int[] calculateExpAndSp(int diff, int damage)
@@ -2215,7 +2209,7 @@ public class L2Attackable extends L2Npc
 		_seedType = id;
 		int count = 1;
 		
-		int[] skillIds = getTemplate().getSkills().keys();
+		Set<Integer> skillIds = getTemplate().getSkills().keySet();
 		
 		if (skillIds != null)
 		{
@@ -2257,7 +2251,7 @@ public class L2Attackable extends L2Npc
 		if (diff > 0)
 			count += diff;
 		
-		FastList<RewardItem> harvested = new FastList<RewardItem>();
+		FastList<RewardItem> harvested = new FastList<>();
 		
 		harvested.add(new RewardItem(L2Manor.getInstance().getCropType(_seedType), count * Config.RATE_DROP_MANOR));
 		
@@ -2460,5 +2454,11 @@ public class L2Attackable extends L2Npc
 	public boolean isChampion()
 	{
 		return _champion;
+	}
+	
+	@Override
+	public boolean isL2Attackable()
+	{
+		return true;
 	}
 }

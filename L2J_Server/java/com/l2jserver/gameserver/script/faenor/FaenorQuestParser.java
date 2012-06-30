@@ -26,45 +26,41 @@ import com.l2jserver.gameserver.script.ScriptEngine;
 
 /**
  * @author Luis Arias
- *
  */
 public class FaenorQuestParser extends FaenorParser
 {
 	protected static final Logger _log = Logger.getLogger(FaenorQuestParser.class.getName());
+	
 	@Override
 	public void parseScript(Node questNode, ScriptContext context)
 	{
-		if (DEBUG)
-			_log.info("Parsing Quest.");
-		
 		String questID = attribute(questNode, "ID");
 		
-		for (Node node = questNode.getFirstChild(); node != null; node = node.getNextSibling()) {
+		for (Node node = questNode.getFirstChild(); node != null; node = node.getNextSibling())
+		{
 			if (isNodeName(node, "DROPLIST"))
 			{
 				parseQuestDropList(node.cloneNode(true), questID);
 			}
 			else if (isNodeName(node, "DIALOG WINDOWS"))
 			{
-				//parseDialogWindows(node.cloneNode(true));
+				// parseDialogWindows(node.cloneNode(true));
 			}
 			else if (isNodeName(node, "INITIATOR"))
 			{
-				//parseInitiator(node.cloneNode(true));
+				// parseInitiator(node.cloneNode(true));
 			}
 			else if (isNodeName(node, "STATE"))
 			{
-				//parseState(node.cloneNode(true));
+				// parseState(node.cloneNode(true));
 			}
 		}
 	}
 	
 	private void parseQuestDropList(Node dropList, String questID) throws NullPointerException
 	{
-		if (DEBUG)
-			_log.info("Parsing Droplist.");
-		
-		for (Node node = dropList.getFirstChild(); node != null; node = node.getNextSibling()) {
+		for (Node node = dropList.getFirstChild(); node != null; node = node.getNextSibling())
+		{
 			if (isNodeName(node, "DROP"))
 			{
 				parseQuestDrop(node.cloneNode(true), questID);
@@ -72,11 +68,8 @@ public class FaenorQuestParser extends FaenorParser
 		}
 	}
 	
-	private void parseQuestDrop(Node drop, String questID)// throws NullPointerException
+	private void parseQuestDrop(Node drop, String questID)
 	{
-		if (DEBUG)
-			_log.info("Parsing Drop.");
-		
 		int npcID;
 		int itemID;
 		int min;
@@ -97,9 +90,6 @@ public class FaenorQuestParser extends FaenorParser
 			throw new NullPointerException("Incorrect Drop Data");
 		}
 		
-		if (DEBUG)
-			_log.info("Adding Drop to NpcID: "+npcID);
-		
 		_bridge.addQuestDrop(npcID, itemID, min, max, chance, questID, states);
 	}
 	
@@ -108,7 +98,7 @@ public class FaenorQuestParser extends FaenorParser
 		@Override
 		public Parser create()
 		{
-			return(new FaenorQuestParser());
+			return (new FaenorQuestParser());
 		}
 	}
 	

@@ -23,10 +23,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GmListTable;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -92,12 +90,12 @@ public final class L2World
 	/**
 	 * Constructor of L2World.<BR><BR>
 	 */
-	private L2World()
+	protected L2World()
 	{
-		_allPlayers = new L2TIntObjectHashMap<L2PcInstance>();
-		_allObjects = new L2TIntObjectHashMap<L2Object>();
-		_allObjectsDebug = new L2TIntObjectHashMap<String>();
-		_petsInstance = new L2TIntObjectHashMap<L2PetInstance>();
+		_allPlayers = new L2TIntObjectHashMap<>();
+		_allObjects = new L2TIntObjectHashMap<>();
+		_allObjectsDebug = new L2TIntObjectHashMap<>();
+		_petsInstance = new L2TIntObjectHashMap<>();
 		
 		initRegions();
 	}
@@ -207,9 +205,9 @@ public final class L2World
 	/**
 	 * @return a table containing all GMs.
 	 */
-	public FastList<L2PcInstance> getAllGMs()
+	public List<L2PcInstance> getAllGMs()
 	{
-		return GmListTable.getInstance().getAllGms(true);
+		return AdminTable.getInstance().getAllGms(true);
 	}
 	
 	public L2TIntObjectHashMap<L2PcInstance> getAllPlayers()
@@ -491,7 +489,7 @@ public final class L2World
 			return null;
 		
 		// Create an FastList in order to contain all visible L2Object
-		List<L2Object> result = new ArrayList<L2Object>();
+		List<L2Object> result = new ArrayList<>();
 		
 		// Go through the FastList of region
 		for (L2WorldRegion regi : reg.getSurroundingRegions())
@@ -530,14 +528,14 @@ public final class L2World
 	public List<L2Object> getVisibleObjects(L2Object object, int radius)
 	{
 		if (object == null || !object.isVisible())
-			return new ArrayList<L2Object>();
+			return new ArrayList<>();
 		
 		int x = object.getX();
 		int y = object.getY();
 		int sqRadius = radius * radius;
 		
 		// Create an FastList in order to contain all visible L2Object
-		List<L2Object> result = new ArrayList<L2Object>();
+		List<L2Object> result = new ArrayList<>();
 		
 		// Go through the FastList of region
 		for (L2WorldRegion regi : object.getWorldRegion().getSurroundingRegions())
@@ -581,7 +579,7 @@ public final class L2World
 	public List<L2Object> getVisibleObjects3D(L2Object object, int radius)
 	{
 		if (object == null || !object.isVisible())
-			return new ArrayList<L2Object>();
+			return new ArrayList<>();
 		
 		int x = object.getX();
 		int y = object.getY();
@@ -589,7 +587,7 @@ public final class L2World
 		int sqRadius = radius * radius;
 		
 		// Create an FastList in order to contain all visible L2Object
-		List<L2Object> result = new ArrayList<L2Object>();
+		List<L2Object> result = new ArrayList<>();
 		
 		// Go through visible object of the selected region
 		for (L2WorldRegion regi : object.getWorldRegion().getSurroundingRegions())
@@ -635,7 +633,7 @@ public final class L2World
 			return null;
 		
 		// Create an FastList in order to contain all visible L2Object
-		List<L2Playable> result = new ArrayList<L2Playable>();
+		List<L2Playable> result = new ArrayList<>();
 		
 		// Go through the FastList of region
 		for (L2WorldRegion regi : reg.getSurroundingRegions())
@@ -764,7 +762,6 @@ public final class L2World
 		_log.info("All visible NPC's deleted.");
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final L2World _instance = new L2World();

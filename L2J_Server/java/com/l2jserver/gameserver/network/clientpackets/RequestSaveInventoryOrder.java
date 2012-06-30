@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 
 /**
  * Format:(ch) d[dd]
@@ -40,7 +40,7 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 	{
 		int sz = readD();
 		sz = Math.min(sz, LIMIT);
-		_order = new ArrayList<InventoryOrder>(sz);
+		_order = new ArrayList<>(sz);
 		for (int i = 0; i < sz; i++)
 		{
 			int objectId = readD();

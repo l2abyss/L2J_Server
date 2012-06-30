@@ -40,32 +40,36 @@ import com.l2jserver.util.crypt.ScrambledKeyPair;
 
 /**
  * Represents a client connected into the LoginServer
- *
- * @author  KenM
+ * @author KenM
  */
 public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 {
 	private static Logger _log = Logger.getLogger(L2LoginClient.class.getName());
 	
-	public static enum LoginClientState { CONNECTED, AUTHED_GG, AUTHED_LOGIN}
+	public static enum LoginClientState
+	{
+		CONNECTED,
+		AUTHED_GG,
+		AUTHED_LOGIN
+	}
 	
 	private LoginClientState _state;
 	
 	// Crypt
-	private LoginCrypt _loginCrypt;
-	private ScrambledKeyPair _scrambledPair;
-	private byte[] _blowfishKey;
+	private final LoginCrypt _loginCrypt;
+	private final ScrambledKeyPair _scrambledPair;
+	private final byte[] _blowfishKey;
 	
 	private String _account;
 	private int _accessLevel;
 	private int _lastServer;
 	private SessionKey _sessionKey;
-	private int _sessionId;
+	private final int _sessionId;
 	private boolean _joinedGS;
 	private Map<Integer, Integer> _charsOnServers;
 	private Map<Integer, long[]> _charsToDelete;
 	
-	private long _connectionStartTime;
+	private final long _connectionStartTime;
 	
 	/**
 	 * @param con
@@ -95,8 +99,8 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
-			super.getConnection().close((SendablePacket<L2LoginClient>)null);
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
+			super.getConnection().close((SendablePacket<L2LoginClient>) null);
 			return false;
 		}
 		
@@ -104,8 +108,8 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		{
 			byte[] dump = new byte[size];
 			System.arraycopy(buf.array(), buf.position(), dump, 0, size);
-			_log.warning("Wrong checksum from client: "+toString());
-			super.getConnection().close((SendablePacket<L2LoginClient>)null);
+			_log.warning("Wrong checksum from client: " + toString());
+			super.getConnection().close((SendablePacket<L2LoginClient>) null);
 		}
 		
 		return ret;
@@ -124,7 +128,7 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			return false;
 		}
 		
@@ -240,7 +244,9 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	public void setCharsOnServ(int servId, int chars)
 	{
 		if (_charsOnServers == null)
-			_charsOnServers = new HashMap<Integer, Integer>();
+		{
+			_charsOnServers = new HashMap<>();
+		}
 		_charsOnServers.put(servId, chars);
 	}
 	
@@ -252,7 +258,9 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	public void serCharsWaitingDelOnServ(int servId, long[] charsToDel)
 	{
 		if (_charsToDelete == null)
-			_charsToDelete = new HashMap<Integer, long[]>();
+		{
+			_charsToDelete = new HashMap<>();
+		}
 		_charsToDelete.put(servId, charsToDel);
 	}
 	
@@ -266,10 +274,10 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 	{
 		if (Config.DEBUG)
 		{
-			_log.info("DISCONNECTED: "+toString());
+			_log.info("DISCONNECTED: " + toString());
 		}
 		
-		if (!hasJoinedGS() || (getConnectionStartTime() + LoginController.LOGIN_TIMEOUT) < System.currentTimeMillis())
+		if (!hasJoinedGS() || ((getConnectionStartTime() + LoginController.LOGIN_TIMEOUT) < System.currentTimeMillis()))
 		{
 			LoginController.getInstance().removeAuthedLoginClient(getAccount());
 		}
@@ -281,9 +289,9 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		InetAddress address = getConnection().getInetAddress();
 		if (getState() == LoginClientState.AUTHED_LOGIN)
 		{
-			return "["+getAccount()+" ("+(address == null ? "disconnected" : address.getHostAddress())+")]";
+			return "[" + getAccount() + " (" + (address == null ? "disconnected" : address.getHostAddress()) + ")]";
 		}
-		return "["+(address == null ? "disconnected" : address.getHostAddress())+"]";
+		return "[" + (address == null ? "disconnected" : address.getHostAddress()) + "]";
 	}
 	
 	@Override

@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class RequestOustPartyMember extends L2GameClientPacket
 {
 	private static final String _C__45_REQUESTOUSTPARTYMEMBER = "[C] 45 RequestOustPartyMember";
-	//private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
 	
 	private String _name;
 	

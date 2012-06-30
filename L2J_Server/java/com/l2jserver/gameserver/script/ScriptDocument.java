@@ -28,36 +28,43 @@ import org.xml.sax.SAXException;
 
 /**
  *
- *
  */
 public class ScriptDocument
 {
-	protected static final Logger _log = Logger.getLogger(ScriptDocument.class.getName());
+	private static final Logger _log = Logger.getLogger(ScriptDocument.class.getName());
+	
 	private Document _document;
-	private String _name;
+	private final String _name;
 	
 	public ScriptDocument(String name, InputStream input)
 	{
 		_name = name;
 		
-		DocumentBuilderFactory factory =
-			DocumentBuilderFactory.newInstance();
-		try {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try
+		{
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			_document = builder.parse( input );
+			_document = builder.parse(input);
 			
-		} catch (SAXException sxe) {
+		}
+		catch (SAXException sxe)
+		{
 			// Error generated during parsing)
-			Exception  x = sxe;
+			Exception x = sxe;
 			if (sxe.getException() != null)
+			{
 				x = sxe.getException();
-			x.printStackTrace();
-			
-		} catch (ParserConfigurationException pce) {
+			}
+			_log.warning(getClass().getSimpleName() + ": " + x.getMessage());
+		}
+		catch (ParserConfigurationException pce)
+		{
 			// Parser with specified options can't be built
 			_log.log(Level.WARNING, "", pce);
 			
-		} catch (IOException ioe) {
+		}
+		catch (IOException ioe)
+		{
 			// I/O error
 			_log.log(Level.WARNING, "", ioe);
 		}

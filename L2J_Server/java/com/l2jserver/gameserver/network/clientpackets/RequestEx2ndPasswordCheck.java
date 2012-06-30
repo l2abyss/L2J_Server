@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.Ex2ndPasswordCheck;
 public class RequestEx2ndPasswordCheck extends L2GameClientPacket
 {
 	private static final String _C__D0_AD_REQUESTEX2NDPASSWORDCHECK = "[C] D0:AD RequestEx2ndPasswordCheck";
-	//private static Logger _log = Logger.getLogger(RequestEx2ndPasswordCheck.class.getName());
 	
 	@Override
 	protected void readImpl()

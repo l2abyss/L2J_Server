@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
@@ -23,7 +22,7 @@ import javolution.util.FastMap;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
 import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * format(packet 0xFE) ch dd [ddddcdcdddc] c - id h - sub id
@@ -46,8 +45,8 @@ public class ExShowSellCropList extends L2GameServerPacket
 	public ExShowSellCropList(L2PcInstance player, int manorId, List<CropProcure> crops)
 	{
 		_manorId = manorId;
-		_castleCrops = new FastMap<Integer, CropProcure>();
-		_cropsItems = new FastMap<Integer, L2ItemInstance>();
+		_castleCrops = new FastMap<>();
+		_cropsItems = new FastMap<>();
 		
 		FastList<Integer> allCrops = L2Manor.getInstance().getAllCrops();
 		for (int cropId : allCrops)
@@ -86,7 +85,7 @@ public class ExShowSellCropList extends L2GameServerPacket
 		for (L2ItemInstance item : _cropsItems.values())
 		{
 			writeD(item.getObjectId()); // Object id
-			writeD(item.getItemId()); // crop id
+			writeD(item.getDisplayId()); // crop id
 			writeD(L2Manor.getInstance().getSeedLevelByCrop(item.getItemId())); // seed level
 			writeC(1);
 			writeD(L2Manor.getInstance().getRewardItem(item.getItemId(), 1)); // reward 1 id

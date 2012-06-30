@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -27,21 +28,28 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
+import com.l2jserver.gameserver.scripting.scriptengine.events.AddToInventoryEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDestroyEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDropEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ItemTransferEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ItemTracker;
 import com.l2jserver.gameserver.util.Util;
 
 public class PcInventory extends Inventory
 {
+	private static final Logger _log = Logger.getLogger(PcInventory.class.getName());
+	
 	public static final int ADENA_ID = 57;
 	public static final int ANCIENT_ADENA_ID = 5575;
-	public static final long MAX_ADENA = 99900000000L;
+	public static final long MAX_ADENA = Config.MAX_ADENA;
 	
 	private final L2PcInstance _owner;
 	private L2ItemInstance _adena;
@@ -61,6 +69,8 @@ public class PcInventory extends Inventory
 	 * </UL>
 	 */
 	private int _blockMode = -1;
+	
+	private static FastList<ItemTracker> itemTrackers = new FastList<ItemTracker>().shared();
 	
 	public PcInventory(L2PcInstance owner)
 	{
@@ -123,24 +133,31 @@ public class PcInventory extends Inventory
 		FastList<L2ItemInstance> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
+			if (item == null)
+			{
+				continue;
+			}
 			if ((!allowAdena && item.getItemId() == ADENA_ID))
+			{
 				continue;
+			}
 			if ((!allowAncientAdena && item.getItemId() == ANCIENT_ADENA_ID))
+			{
 				continue;
-			
+			}
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
 			{
-				if (item == null)
-					continue;
-				
 				if (litem.getItemId() == item.getItemId())
 				{
 					isDuplicate = true;
 					break;
 				}
 			}
-			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false, false)))) list.add(item);
+			if (!isDuplicate && (!onlyAvailable || item.isSellable() && item.isAvailable(getOwner(), false, false)))
+			{
+				list.add(item);
+			}
 		}
 		
 		L2ItemInstance[] result = list.toArray(new L2ItemInstance[list.size()]);
@@ -167,11 +184,17 @@ public class PcInventory extends Inventory
 		for (L2ItemInstance item : _items)
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			if ((!allowAdena && item.getItemId() == ADENA_ID))
+			{
 				continue;
+			}
 			if ((!allowAncientAdena && item.getItemId() == ANCIENT_ADENA_ID))
+			{
 				continue;
+			}
 			
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
@@ -182,8 +205,11 @@ public class PcInventory extends Inventory
 					break;
 				}
 			}
+			
 			if (!isDuplicate && (!onlyAvailable || (item.isSellable() && item.isAvailable(getOwner(), false, false))))
+			{
 				list.add(item);
+			}
 		}
 		
 		L2ItemInstance[] result = list.toArray(new L2ItemInstance[list.size()]);
@@ -460,6 +486,7 @@ public class PcInventory extends Inventory
 		if (item != null && item.getItemId() == ANCIENT_ADENA_ID && !item.equals(_ancientAdena))
 			_ancientAdena = item;
 		
+		fireTrackerEvents(TrackerEvent.ADD_TO_INVENTORY,actor,item,null);
 		return item;
 	}
 	
@@ -498,7 +525,10 @@ public class PcInventory extends Inventory
 			StatusUpdate su = new StatusUpdate(actor);
 			su.addAttribute(StatusUpdate.CUR_LOAD, actor.getCurrentLoad());
 			actor.sendPacket(su);
+			
+			fireTrackerEvents(TrackerEvent.ADD_TO_INVENTORY,actor,item,null);
 		}
+		
 		
 		return item;
 	}
@@ -524,6 +554,7 @@ public class PcInventory extends Inventory
 		if (_ancientAdena != null && (_ancientAdena.getCount() <= 0 || _ancientAdena.getOwnerId() != getOwnerId()))
 			_ancientAdena = null;
 		
+		fireTrackerEvents(TrackerEvent.TRANSFER,actor,item,target);
 		return item;
 	}
 	
@@ -560,6 +591,8 @@ public class PcInventory extends Inventory
 		if (_ancientAdena != null && _ancientAdena.getCount() <= 0)
 			_ancientAdena = null;
 		
+		fireTrackerEvents(TrackerEvent.DESTROY,actor,item,null);
+
 		return item;
 	}
 	
@@ -622,6 +655,7 @@ public class PcInventory extends Inventory
 		if (_ancientAdena != null && (_ancientAdena.getCount() <= 0 || _ancientAdena.getOwnerId() != getOwnerId()))
 			_ancientAdena = null;
 		
+		fireTrackerEvents(TrackerEvent.DROP,actor,item,null);
 		return item;
 	}
 	
@@ -645,6 +679,7 @@ public class PcInventory extends Inventory
 		if (_ancientAdena != null && (_ancientAdena.getCount() <= 0 || _ancientAdena.getOwnerId() != getOwnerId()))
 			_ancientAdena = null;
 		
+		fireTrackerEvents(TrackerEvent.DROP,actor,item,null);
 		return item;
 	}
 	
@@ -707,12 +742,10 @@ public class PcInventory extends Inventory
 	{
 		int[][] paperdoll = new int[31][3];
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement2 = con.prepareStatement(
-			"SELECT object_id,item_id,loc_data,enchant_level FROM items WHERE owner_id=? AND loc='PAPERDOLL'");
+			PreparedStatement statement2 = con.prepareStatement("SELECT object_id,item_id,loc_data,enchant_level FROM items WHERE owner_id=? AND loc='PAPERDOLL'");
 			statement2.setInt(1, objectId);
 			ResultSet invdata = statement2.executeQuery();
 			
@@ -811,12 +844,12 @@ public class PcInventory extends Inventory
 	}
 	
 	@Override
-	public boolean validateCapacity(int slots)
+	public boolean validateCapacity(long slots)
 	{
 		return validateCapacity(slots, false);
 	}
 	
-	public boolean validateCapacity(int slots, boolean questItem)
+	public boolean validateCapacity(long slots, boolean questItem)
 	{
 		if (!questItem)
 			return (_items.size() - _questSlots + slots <= _owner.getInventoryLimit());
@@ -824,7 +857,7 @@ public class PcInventory extends Inventory
 	}
 	
 	@Override
-	public boolean validateWeight(int weight)
+	public boolean validateWeight(long weight)
 	{
 		// Disable weight check for GMs.
 		if (_owner.isGM() && _owner.getDietMode() && _owner.getAccessLevel().allowTransaction())
@@ -943,5 +976,113 @@ public class PcInventory extends Inventory
 		{
 			item.giveSkillsToOwner();
 		}
+	}
+	
+	// LISTENERS
+	private static enum TrackerEvent
+	{
+		DROP,
+		ADD_TO_INVENTORY,
+		DESTROY,
+		TRANSFER
+	}
+	
+	/**
+	 * Fires the appropriate item tracker events, if any
+	 * @param tEvent
+	 * @param actor
+	 * @param item
+	 * @param target
+	 */
+	private void fireTrackerEvents(TrackerEvent tEvent, L2PcInstance actor, L2ItemInstance item, ItemContainer target)
+	{
+		if (item != null && actor != null && !itemTrackers.isEmpty())
+		{
+			switch (tEvent)
+			{
+				case ADD_TO_INVENTORY:
+				{
+					AddToInventoryEvent event = new AddToInventoryEvent();
+					event.setItem(item);
+					event.setPlayer(actor);
+					for (ItemTracker tracker : itemTrackers)
+					{
+						if (tracker.containsItemId(item.getItemId()))
+						{
+							tracker.onAddToInventory(event);
+						}
+					}
+					return;
+				}
+				case DROP:
+				{
+					ItemDropEvent event = new ItemDropEvent();
+					event.setItem(item);
+					event.setDropper(actor);
+					event.setLocation(actor.getLocation());
+					for (ItemTracker tracker : itemTrackers)
+					{
+						if (tracker.containsItemId(item.getItemId()))
+						{
+							tracker.onDrop(event);
+						}
+					}
+					return;
+				}
+				case DESTROY:
+				{
+					ItemDestroyEvent event = new ItemDestroyEvent();
+					event.setItem(item);
+					event.setPlayer(actor);
+					for (ItemTracker tracker : itemTrackers)
+					{
+						if (tracker.containsItemId(item.getItemId()))
+						{
+							tracker.onDestroy(event);
+						}
+					}
+					return;
+				}
+				case TRANSFER:
+				{
+					if (target != null)
+					{
+						ItemTransferEvent event = new ItemTransferEvent();
+						event.setItem(item);
+						event.setPlayer(actor);
+						event.setTarget(target);
+						for (ItemTracker tracker : itemTrackers)
+						{
+							if (tracker.containsItemId(item.getItemId()))
+							{
+								tracker.onTransfer(event);
+							}
+						}
+					}
+					return;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Adds an item tracker
+	 * @param tracker
+	 */
+	public static void addItemTracker(ItemTracker tracker)
+	{
+		if (!itemTrackers.contains(tracker))
+		{
+			itemTrackers.add(tracker);
+		}
+	}
+	
+	/**
+	 * Removes an item tracker
+	 * @param tracker
+	 */
+	public static void removeItemTracker(ItemTracker tracker)
+	{
+		itemTrackers.remove(tracker);
 	}
 }

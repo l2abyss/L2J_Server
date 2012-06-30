@@ -61,9 +61,9 @@ public class MultiSell
 		return SingletonHolder._instance;
 	}
 	
-	private MultiSell()
+	protected MultiSell()
 	{
-		_entries = new TIntObjectHashMap<ListContainer>();
+		_entries = new TIntObjectHashMap<>();
 		load();
 	}
 	
@@ -215,7 +215,7 @@ public class MultiSell
 	{
 		Document doc = null;
 		int id = 0;
-		List<File> files = new FastList<File>();
+		List<File> files = new FastList<>();
 		hashFiles("data/multisell", files);
 		if (Config.CUSTOM_MULTISELL_LOAD)
 			hashFiles("data/multisell/custom", files);
@@ -286,18 +286,15 @@ public class MultiSell
 						}
 						catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | DOMException e1)
 						{
-							_log.warning(e.getLocalizedMessage() + doc.getLocalName());
+							_log.warning(e.getMessage() + doc.getLocalName());
 							list.setUseRate(1.0);
-							e.printStackTrace();
 						}
 
 					}
 					catch (DOMException e) 
 					{
-						_log.warning(e.getLocalizedMessage() + doc.getLocalName());
-						e.printStackTrace();
+						_log.warning(e.getMessage() + doc.getLocalName());
 					}
-					
 				}
 				
 				attribute = n.getAttributes().getNamedItem("maintainEnchantment");
@@ -419,7 +416,6 @@ public class MultiSell
 		return false;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final MultiSell _instance = new MultiSell();

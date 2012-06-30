@@ -19,8 +19,8 @@ import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
 /**
@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 public final class RequestPetGetItem extends L2GameClientPacket
 {
 	private static final String _C__98_REQUESTPETGETITEM = "[C] 98 RequestPetGetItem";
-	//private static Logger _log = Logger.getLogger(RequestPetGetItem.class.getName());
 	
 	private int _objectId;
 	
@@ -55,7 +54,7 @@ public final class RequestPetGetItem extends L2GameClientPacket
 			return;
 		}
 		
-		if(getClient().getActiveChar().getPet() instanceof L2SummonInstance)
+		if(getClient().getActiveChar().getPet() instanceof L2ServitorInstance)
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;

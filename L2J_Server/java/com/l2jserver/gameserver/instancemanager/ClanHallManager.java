@@ -44,7 +44,7 @@ public final class ClanHallManager
 	private Map<Integer, AuctionableHall> _clanHall;
 	private Map<Integer, AuctionableHall> _freeClanHall;
 	private Map<Integer, AuctionableHall> _allAuctionableClanHalls;
-	private static Map<Integer, ClanHall> _allClanHalls = new FastMap<Integer, ClanHall>();
+	private static Map<Integer, ClanHall> _allClanHalls = new FastMap<>();
 	private boolean _loaded = false;
 	
 	public static ClanHallManager getInstance()
@@ -57,12 +57,11 @@ public final class ClanHallManager
 		return _loaded;
 	}
 	
-	private ClanHallManager()
+	protected ClanHallManager()
 	{
-		_log.info("Initializing ClanHallManager");
-		_clanHall = new FastMap<Integer, AuctionableHall>();
-		_freeClanHall = new FastMap<Integer, AuctionableHall>();
-		_allAuctionableClanHalls = new FastMap<Integer, AuctionableHall>();
+		_clanHall = new FastMap<>();
+		_freeClanHall = new FastMap<>();
+		_allAuctionableClanHalls = new FastMap<>();
 		load();
 	}
 	
@@ -186,7 +185,7 @@ public final class ClanHallManager
 	public final synchronized void setFree(int chId)
 	{
 		_freeClanHall.put(chId, _clanHall.get(chId));
-		ClanTable.getInstance().getClan(_freeClanHall.get(chId).getOwnerId()).setHasHideout(0);
+		ClanTable.getInstance().getClan(_freeClanHall.get(chId).getOwnerId()).setHideoutId(0);
 		_freeClanHall.get(chId).free();
 		_clanHall.remove(chId);
 	}
@@ -205,7 +204,7 @@ public final class ClanHallManager
 		}
 		else
 			_clanHall.get(chId).free();
-		ClanTable.getInstance().getClan(clan.getClanId()).setHasHideout(chId);
+		ClanTable.getInstance().getClan(clan.getClanId()).setHideoutId(chId);
 		_clanHall.get(chId).setOwner(clan);
 	}
 	
@@ -305,7 +304,6 @@ public final class ClanHallManager
 		return null;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ClanHallManager _instance = new ClanHallManager();

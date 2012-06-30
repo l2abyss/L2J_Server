@@ -80,7 +80,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	public V get(int key)
 	{
 		if (!_tempLocksDisable)
+		{
 			_readLock.lock();
+		}
 		
 		try
 		{
@@ -89,7 +91,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		finally
 		{
 			if (!_tempLocksDisable)
+			{
 				_readLock.unlock();
+			}
 		}
 	}
 	
@@ -97,7 +101,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	public void clear()
 	{
 		if (!_tempLocksDisable)
+		{
 			_writeLock.lock();
+		}
 		try
 		{
 			super.clear();
@@ -105,7 +111,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		finally
 		{
 			if (!_tempLocksDisable)
+			{
 				_writeLock.unlock();
+			}
 		}
 	}
 	
@@ -113,7 +121,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	public V remove(int key)
 	{
 		if (!_tempLocksDisable)
+		{
 			_writeLock.lock();
+		}
 		try
 		{
 			return super.remove(key);
@@ -121,14 +131,15 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		finally
 		{
 			if (!_tempLocksDisable)
+			{
 				_writeLock.unlock();
+			}
 		}
 	}
 	
 	/**
 	 * Unsynchronized operation, its free from any locks.<br>
-	 * Its useful while the readLock is taken by a thread 
-	 * (forEach operation for example)<br>
+	 * Its useful while the readLock is taken by a thread (forEach operation for example)<br>
 	 * and you need to remove something in the map without causing a deadlock<br>
 	 * by taking the writeLock before the readLock is unlocked.
 	 * @param key
@@ -157,7 +168,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	public V[] values()
 	{
 		if (!_tempLocksDisable)
+		{
 			_readLock.lock();
+		}
 		try
 		{
 			return super.values();
@@ -165,7 +178,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		finally
 		{
 			if (!_tempLocksDisable)
+			{
 				_readLock.unlock();
+			}
 		}
 	}
 	
@@ -173,7 +188,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	public V[] values(V[] arg0)
 	{
 		if (!_tempLocksDisable)
+		{
 			_readLock.lock();
+		}
 		try
 		{
 			return super.values(arg0);
@@ -181,7 +198,9 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 		finally
 		{
 			if (!_tempLocksDisable)
+			{
 				_readLock.unlock();
+			}
 		}
 	}
 	
@@ -362,8 +381,8 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	/**
 	 * A safe from deadlock loop.<br>
 	 * put and remove synchronizers are disabled while this loop is running.<br>
-	 * Keep in mind that this uses writeLock instead of readLock,
-	 * <br>and its intended only if you are trying to put/remove something while looping<br>
+	 * Keep in mind that this uses writeLock instead of readLock, <br>
+	 * and its intended only if you are trying to put/remove something while looping<br>
 	 * the values of this map.
 	 * @param arg0
 	 * @return

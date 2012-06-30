@@ -15,25 +15,23 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.List;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
+import java.util.Map;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
-import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.status.FolkStatus;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.StringUtil;
 
 public class L2NpcInstance extends L2Npc
@@ -90,8 +88,8 @@ public class L2NpcInstance extends L2Npc
 		final int npcId = npc.getTemplate().getNpcId();
 		if (npcId == 32611) //Tolonis (Officer)
 		{
-			final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableCollectSkills(player);
-			final AcquireSkillList asl = new AcquireSkillList(SkillType.Collect);
+			final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableCollectSkills(player);
+			final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Collect);
 			
 			int counts = 0;
 			for (L2SkillLearn s : skills)
@@ -150,8 +148,8 @@ public class L2NpcInstance extends L2Npc
 		}
 		
 		// Normal skills, No LearnedByFS, no AutoGet skills.
-		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSkills(player, classId, false, false);
-		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.ClassTransform);
+		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSkills(player, classId, false, false);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Class);
 		int count = 0;
 		player.setLearningClass(classId);
 		for (L2SkillLearn s : skills)
@@ -165,7 +163,7 @@ public class L2NpcInstance extends L2Npc
 		
 		if (count == 0)
 		{
-			final FastMap<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(classId);
+			final Map<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(classId);
 			final int minLevel = SkillTreesData.getInstance().getMinLevelForNewSkill(player, skillTree);
 			if (minLevel > 0)
 			{

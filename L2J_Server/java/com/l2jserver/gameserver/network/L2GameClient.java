@@ -120,7 +120,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		_crypt = new GameCrypt();
 		_stats = new ClientStats();
 		
-		_packetQueue = new ArrayBlockingQueue<ReceivablePacket<L2GameClient>>(Config.CLIENT_PACKET_QUEUE_SIZE);
+		_packetQueue = new ArrayBlockingQueue<>(Config.CLIENT_PACKET_QUEUE_SIZE);
 		
 		if (Config.CHAR_STORE_INTERVAL > 0)
 		{
@@ -549,6 +549,15 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			statement.setInt(1, objid);
 			statement.execute();
 			statement.close();
+			
+			if (Config.L2JMOD_ALLOW_WEDDING)
+			{
+				statement = con.prepareStatement("DELETE FROM mods_wedding WHERE player1Id = ? OR player2Id = ?");
+				statement.setInt(1, objid);
+				statement.setInt(2, objid);
+				statement.execute();
+				statement.close();
+			}
 		}
 		catch (Exception e)
 		{
@@ -733,12 +742,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 	}
 	
-	private class DisconnectTask implements Runnable
+	protected class DisconnectTask implements Runnable
 	{
-		
-		/**
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{
@@ -797,7 +802,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	 * @param player the player to be check.
 	 * @return {@code true} if the player is allowed to remain as off-line shop.
 	 */
-	private boolean offlineMode(L2PcInstance player)
+	protected boolean offlineMode(L2PcInstance player)
 	{
 		boolean canSetShop = false;
 		if (player.isInOlympiadMode() || player.isFestivalParticipant() || TvTEvent.isPlayerParticipant(player.getObjectId()) || player.isInJail() || (player.getVehicle() != null))
@@ -839,11 +844,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 	}
 	
-	private class CleanupTask implements Runnable
+	protected class CleanupTask implements Runnable
 	{
-		/**
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{
@@ -891,7 +893,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 	}
 	
-	private class AutoSaveTask implements Runnable
+	protected class AutoSaveTask implements Runnable
 	{
 		@Override
 		public void run()

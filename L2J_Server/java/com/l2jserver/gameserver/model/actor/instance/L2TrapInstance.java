@@ -18,23 +18,23 @@ import java.util.List;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Trap;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.TrapAction;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public class L2TrapInstance extends L2Trap
 {
 	private L2PcInstance _owner;
 	private int _level;
 	private boolean _isInArena = false;
-	private final List<Integer> _playersWhoDetectedMe = new FastList<Integer>();
+	private final List<Integer> _playersWhoDetectedMe = new FastList<>();
 	
 	/**
 	 * @param objectId
@@ -188,7 +188,7 @@ public class L2TrapInstance extends L2Trap
 		
 		if (_owner.isInParty()
 				&& cha.isInParty()
-				&& _owner.getParty().getPartyLeaderOID() == cha.getParty().getPartyLeaderOID())
+				&& _owner.getParty().getLeaderObjectId() == cha.getParty().getLeaderObjectId())
 			return true;
 		
 		return false;
@@ -245,6 +245,12 @@ public class L2TrapInstance extends L2Trap
 				return false;
 		}
 		
+		return true;
+	}
+	
+	@Override
+	public boolean isTrap()
+	{
 		return true;
 	}
 }

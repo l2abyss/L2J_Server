@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -41,7 +39,6 @@ import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 public final class RequestRestartPoint extends L2GameClientPacket
 {
 	private static final String _C__7D_REQUESTRESTARTPOINT = "[C] 7D RequestRestartPoint";
-	private static Logger _log = Logger.getLogger(RequestRestartPoint.class.getName());
 	
 	protected int     _requestedPointType;
 	protected boolean _continuation;
@@ -62,7 +59,6 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		}
 		
 		@Override
-		@SuppressWarnings("synthetic-access")
 		public void run()
 		{
 			RequestRestartPoint.this.portPlayer(activeChar);
@@ -111,7 +107,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		portPlayer(activeChar);
 	}
 	
-	private final void portPlayer(final L2PcInstance activeChar) 
+	protected final void portPlayer(final L2PcInstance activeChar) 
 	{
 		Location loc = null;
 		Castle castle = null;
@@ -132,7 +128,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		switch (_requestedPointType)
 		{
 			case 1: // to clanhall
-				if (activeChar.getClan() == null || activeChar.getClan().getHasHideout() == 0)
+				if (activeChar.getClan() == null || activeChar.getClan().getHideoutId() == 0)
 				{
 					_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Clanhall and he doesn't have Clanhall!");
 					return;
@@ -165,7 +161,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				}
 				else
 				{
-					if (activeChar.getClan() == null || activeChar.getClan().getHasCastle() == 0)
+					if (activeChar.getClan() == null || activeChar.getClan().getCastleId() == 0)
 						return;
 					loc = MapRegionManager.getInstance().getTeleToLocation(activeChar, MapRegionManager.TeleportWhereType.Castle);
 				}
@@ -179,7 +175,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			case 3: // to fortress
 				//fort = FortManager.getInstance().getFort(activeChar);
 				
-				if ((activeChar.getClan() == null || activeChar.getClan().getHasFort() == 0) && !isInDefense)
+				if ((activeChar.getClan() == null || activeChar.getClan().getFortId() == 0) && !isInDefense)
 				{
 					_log.warning("Player ["+activeChar.getName()+"] called RestartPointPacket - To Fortress and he doesn't have Fortress!");
 					return;
@@ -239,11 +235,13 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		}
 		
 		// Teleport and revive
-		activeChar.setInstanceId(instanceId);
-		activeChar.setIsIn7sDungeon(false);
-		activeChar.setIsPendingRevive(true);
-		activeChar.teleToLocation(loc, true);
-
+		if (loc != null)
+		{
+			activeChar.setInstanceId(instanceId);
+			activeChar.setIsIn7sDungeon(false);
+			activeChar.setIsPendingRevive(true);
+			activeChar.teleToLocation(loc, true);
+		}
 	}
 	
 	@Override

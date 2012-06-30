@@ -32,14 +32,13 @@ import org.w3c.dom.Node;
 import com.l2jserver.Config;
 
 /**
- * 
  * @author mrTJO
  */
 public class MailSystem
 {
-	private final static Logger _log = Logger.getLogger(MailSystem.class.getName());
-	private final Map<String, MailContent> _mailData = new FastMap<String, MailContent>();
-		
+	private static final Logger _log = Logger.getLogger(MailSystem.class.getName());
+	private final Map<String, MailContent> _mailData = new FastMap<>();
+	
 	public static MailSystem getInstance()
 	{
 		return SingletonHolder._instance;
@@ -72,9 +71,11 @@ public class MailSystem
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Could not parse MailList.xml file: " + e.getMessage(), e);
+				return;
 			}
 			
 			Node n = doc.getFirstChild();
+			File mailFile;
 			for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 			{
 				if (d.getNodeName().equals("mail"))
@@ -83,10 +84,9 @@ public class MailSystem
 					String subject = d.getAttributes().getNamedItem("subject").getNodeValue();
 					String maFile = d.getAttributes().getNamedItem("file").getNodeValue();
 					
-					try
+					mailFile = new File(Config.DATAPACK_ROOT, "data/mail/" + maFile);
+					try (FileInputStream fis = new FileInputStream(mailFile); BufferedInputStream bis = new BufferedInputStream(fis);)
 					{
-						FileInputStream fis = new FileInputStream(new File(Config.DATAPACK_ROOT, "data/mail/"+maFile));
-						BufferedInputStream bis = new BufferedInputStream(fis);
 						int bytes = bis.available();
 						byte[] raw = new byte[bytes];
 						
@@ -100,24 +100,26 @@ public class MailSystem
 					}
 					catch (IOException e)
 					{
-						_log.warning("IOException while reading "+maFile);
+						_log.warning("IOException while reading " + maFile);
 					}
 				}
 			}
 			_log.info("eMail System Loaded");
 		}
 		else
+		{
 			_log.warning("Cannot load eMail System - Missing file MailList.xml");
+		}
 	}
 	
-	class MailContent
+	public class MailContent
 	{
 		private final String _subject;
 		private final String _text;
 		
 		/**
-		 * @param subject 
-		 * @param text 
+		 * @param subject
+		 * @param text
 		 */
 		public MailContent(String subject, String text)
 		{
@@ -141,7 +143,6 @@ public class MailSystem
 		return _mailData.get(mailId);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final MailSystem _instance = new MailSystem();

@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
@@ -56,7 +56,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestSellItem extends L2GameClientPacket
 {
 	private static final String _C__37_REQUESTSELLITEM = "[C] 37 RequestSellItem";
-	//private static Logger _log = Logger.getLogger(RequestSellItem.class.getName());
 	
 	private static final int BATCH_LENGTH = 16; // length of the one item
 	

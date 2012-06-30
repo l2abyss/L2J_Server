@@ -29,7 +29,6 @@ import com.l2jserver.loginserver.GameServerThread;
 import com.l2jserver.util.Base64;
 import com.l2jserver.util.network.BaseRecievePacket;
 
-
 /**
  * @author Nik
  */
@@ -47,20 +46,28 @@ public class ChangePassword extends BaseRecievePacket
 		String curpass = readS();
 		String newpass = readS();
 		
-		//get the GameServerThread
+		// get the GameServerThread
 		Collection<GameServerInfo> serverList = GameServerTable.getInstance().getRegisteredGameServers().values();
 		for (GameServerInfo gsi : serverList)
-			if (gsi.getGameServerThread() != null && gsi.getGameServerThread().hasAccountOnGameServer(accountName))
+		{
+			if ((gsi.getGameServerThread() != null) && gsi.getGameServerThread().hasAccountOnGameServer(accountName))
+			{
 				gst = gsi.getGameServerThread();
+			}
+		}
 		
 		if (gst == null)
+		{
 			return;
+		}
 		
-		if (curpass == null || newpass == null)
+		if ((curpass == null) || (newpass == null))
+		{
 			gst.ChangePasswordResponse((byte) 0, characterName, "Invalid password data! Try again.");
+		}
 		else
 		{
-			Connection con = null;	
+			Connection con = null;
 			try
 			{
 				MessageDigest md = MessageDigest.getInstance("SHA");
@@ -77,7 +84,9 @@ public class ChangePassword extends BaseRecievePacket
 				statement.setString(1, accountName);
 				ResultSet rset = statement.executeQuery();
 				if (rset.next())
+				{
 					pass = rset.getString("password");
+				}
 				rset.close();
 				statement.close();
 				
@@ -95,15 +104,18 @@ public class ChangePassword extends BaseRecievePacket
 					
 					_log.log(Level.INFO, "The password for account " + accountName + " has been changed from " + curpassEnc + " to " + Base64.encodeBytes(password));
 					if (passUpdated > 0)
+					{
 						gst.ChangePasswordResponse((byte) 1, characterName, "You have successfully changed your password!");
+					}
 					else
 					{
 						gst.ChangePasswordResponse((byte) 0, characterName, "The password change was unsuccessful!");
-						L2DatabaseFactory.close(con);
 					}
 				}
 				else
+				{
 					gst.ChangePasswordResponse((byte) 0, characterName, "The typed current password doesn't match with your current one.");
+				}
 			}
 			catch (Exception e)
 			{

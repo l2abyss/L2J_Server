@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -52,9 +52,9 @@ public class HellboundManager
 	private ScheduledFuture<?> _engine = null;
 	private final List<HellboundSpawn> _population;
 	
-	private HellboundManager()
+	protected HellboundManager()
 	{
-		_population = new FastList<HellboundSpawn>();
+		_population = new FastList<>();
 		
 		loadData();
 		loadSpawns();
@@ -212,7 +212,7 @@ public class HellboundManager
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			}
 		}
 		
@@ -301,6 +301,7 @@ public class HellboundManager
 				}
 			}
 			rset.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -384,7 +385,6 @@ public class HellboundManager
 		return SingletonHolder._instance;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final HellboundManager _instance = new HellboundManager();

@@ -24,10 +24,6 @@ import com.l2jserver.util.StringUtil;
 
 public class ClanBBSManager extends BaseBBSManager
 {
-	private ClanBBSManager()
-	{
-	}
-	
 	public static ClanBBSManager getInstance()
 	{
 		return SingletonHolder._instance;
@@ -278,7 +274,6 @@ public class ClanBBSManager extends BaseBBSManager
 		clanhome(activeChar, activeChar.getClan().getClanId());
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ClanBBSManager _instance = new ClanBBSManager();

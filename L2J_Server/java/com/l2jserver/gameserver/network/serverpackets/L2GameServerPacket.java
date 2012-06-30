@@ -23,17 +23,15 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.network.L2GameClient;
 
 /**
- *
  * @author  KenM
  */
 public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 {
-	private static final Logger _log = Logger.getLogger(L2GameServerPacket.class.getName());
+	protected final Logger _log = Logger.getLogger(getClass().getName());
 	
 	protected boolean _invisible = false;
 	
 	/**
-	 * 
 	 * @return True if packet originated from invisible character.
 	 */
 	public boolean isInvisible()
@@ -76,7 +74,7 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 	protected abstract void writeImpl();
 	
 	/**
-	 * @return A String with this packet name for debuging purposes
+	 * @return A String with this packet name for debugging purposes
 	 */
 	public abstract String getType();
 }

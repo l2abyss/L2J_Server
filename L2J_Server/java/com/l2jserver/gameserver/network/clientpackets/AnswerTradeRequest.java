@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.network.serverpackets.TradeDone;
 public final class AnswerTradeRequest extends L2GameClientPacket
 {
 	private static final String _C__55_ANSWERTRADEREQUEST = "[C] 55 AnswerTradeRequest";
-	//private static Logger _log = Logger.getLogger(AnswerTradeRequest.class.getName());
 	
 	private int _response;
 	

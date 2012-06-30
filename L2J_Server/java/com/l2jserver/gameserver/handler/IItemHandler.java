@@ -17,16 +17,11 @@ package com.l2jserver.gameserver.handler;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- * Mother class of all itemHandlers.<BR><BR>
- * an IItemHandler implementation has to be stateless
- *
- * @version $Revision: 1.1.4.3 $ $Date: 2005/03/27 15:30:09 $
+ * Mother class of all Item Handlers.
  */
-
 public interface IItemHandler
 {
 	public static Logger _log = Logger.getLogger(IItemHandler.class.getName());
@@ -36,6 +31,7 @@ public interface IItemHandler
 	 * @param playable L2PlayableInstance designating the player
 	 * @param item L2ItemInstance designating the item to use
 	 * @param forceUse ctrl hold on item use
+	 * @return {@code true} if the item all conditions are met and the item is used, {@code false} otherwise.
 	 */
-	public void useItem(L2Playable playable, L2ItemInstance item, boolean forceUse);
+	public boolean useItem(L2Playable playable, L2ItemInstance item, boolean forceUse);
 }

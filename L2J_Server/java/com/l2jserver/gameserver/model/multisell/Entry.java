@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * @author DS
- *
  */
 public class Entry
 {
@@ -33,13 +31,12 @@ public class Entry
 	public Entry(int entryId)
 	{
 		_entryId = entryId;
-		_products = new ArrayList<Ingredient>();
-		_ingredients = new ArrayList<Ingredient>();
+		_products = new ArrayList<>();
+		_ingredients = new ArrayList<>();
 	}
 	
 	/**
-	 * This constructor used in PreparedEntry only
-	 * ArrayLists not created
+	 * This constructor used in PreparedEntry only, ArrayLists not created.
 	 */
 	protected Entry()
 	{
@@ -60,7 +57,9 @@ public class Entry
 		_products.add(product);
 		
 		if (!product.isStackable())
+		{
 			_stackable = false;
+		}
 	}
 	
 	public final List<Ingredient> getProducts()

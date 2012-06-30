@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.model.itemcontainer;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 
 public class PcWarehouse extends Warehouse
 {
@@ -47,7 +47,7 @@ public class PcWarehouse extends Warehouse
 	}
 	
 	@Override
-	public boolean validateCapacity(int slots)
+	public boolean validateCapacity(long slots)
 	{
 		return (_items.size() + slots <= _owner.getWareHouseLimit());
 	}

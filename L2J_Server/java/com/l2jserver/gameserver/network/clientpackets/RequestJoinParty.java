@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2Party;
@@ -39,7 +37,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestJoinParty extends L2GameClientPacket
 {
 	private static final String _C__42_REQUESTJOINPARTY = "[C] 42 RequestJoinParty";
-	private static Logger _log = Logger.getLogger(RequestJoinParty.class.getName());
 	
 	private String _name;
 	private int _itemDistribution;
@@ -66,7 +63,13 @@ public final class RequestJoinParty extends L2GameClientPacket
 			return;
 		}
 		
-		if (target.getAppearance().getInvisible())
+		if ((target.getClient() == null) || target.getClient().isDetached())
+		{
+			requestor.sendMessage("Player is in offline mode.");
+			return;
+		}
+		
+		if (!requestor.isGM() && target.getAppearance().getInvisible())
 		{
 			requestor.sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 			return;
@@ -104,12 +107,6 @@ public final class RequestJoinParty extends L2GameClientPacket
 		if (target.isInJail() || requestor.isInJail())
 		{
 			requestor.sendMessage("You cannot invite a player while is in Jail.");
-			return;
-		}
-		
-		if (target.getClient().isDetached())
-		{
-			requestor.sendMessage("Player is in offline mode.");
 			return;
 		}
 		

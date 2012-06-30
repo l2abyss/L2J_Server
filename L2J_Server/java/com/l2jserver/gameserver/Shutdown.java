@@ -49,7 +49,7 @@ import com.l2jserver.gameserver.util.Broadcast;
 /**
  *
  * This class provides the functions for shutting down and restarting the server
- * It closes all open clientconnections and saves all data.
+ * It closes all open client connections and saves all data.
  *
  * @version $Revision: 1.2.4.5 $ $Date: 2005/03/27 15:29:09 $
  */
@@ -144,10 +144,10 @@ public class Shutdown extends Thread
 	}
 	
 	/**
-	 * Default constucter is only used internal to create the shutdown-hook instance
+	 * Default constructor is only used internal to create the shutdown-hook instance
 	 *
 	 */
-	private Shutdown()
+	protected Shutdown()
 	{
 		_secondsShut = -1;
 		_shutdownMode = SIGTERM;
@@ -607,11 +607,13 @@ public class Shutdown extends Thread
 	 */
 	private void disconnectAllCharacters()
 	{
-		L2World.getInstance().getAllPlayers().safeForEachValue(new disconnectAllCharacters());
+		L2World.getInstance().getAllPlayers().safeForEachValue(new DisconnectAllCharacters());
 	}
 	
-	private final class disconnectAllCharacters implements TObjectProcedure<L2PcInstance>
+	protected final class DisconnectAllCharacters implements TObjectProcedure<L2PcInstance>
 	{
+		private final Logger _log = Logger.getLogger(DisconnectAllCharacters.class.getName());
+		
 		@Override
 		public final boolean execute(final L2PcInstance player)
 		{
@@ -647,30 +649,29 @@ public class Shutdown extends Thread
 	{
 		private long _startTime;
 		
-		private TimeCounter()
+		protected TimeCounter()
 		{
 			restartCounter();
 		}
 		
-		private void restartCounter()
+		protected void restartCounter()
 		{
 			_startTime = System.currentTimeMillis();
 		}
 		
-		private long getEstimatedTimeAndRestartCounter()
+		protected long getEstimatedTimeAndRestartCounter()
 		{
 			final long toReturn = System.currentTimeMillis() - _startTime;
 			restartCounter();
 			return toReturn;
 		}
 		
-		private long getEstimatedTime()
+		protected long getEstimatedTime()
 		{
 			return System.currentTimeMillis() - _startTime;
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Shutdown _instance = new Shutdown();

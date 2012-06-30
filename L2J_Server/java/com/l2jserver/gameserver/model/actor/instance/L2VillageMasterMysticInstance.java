@@ -14,10 +14,10 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassType;
 import com.l2jserver.gameserver.model.base.PlayerClass;
 import com.l2jserver.gameserver.model.base.Race;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public final class L2VillageMasterMysticInstance extends L2VillageMasterInstance
 {

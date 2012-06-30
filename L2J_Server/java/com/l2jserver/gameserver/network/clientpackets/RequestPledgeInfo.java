@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
@@ -32,9 +31,7 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeInfo;
 public final class RequestPledgeInfo extends L2GameClientPacket
 {
 	private static final String _C__65_REQUESTPLEDGEINFO = "[C] 65 RequestPledgeInfo";
-	
-	private static Logger _log = Logger.getLogger(RequestPledgeInfo.class.getName());
-	
+		
 	private int _clanId;
 	
 	@Override

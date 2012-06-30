@@ -20,26 +20,30 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class RequestReplySurrenderPledgeWar extends L2GameClientPacket
 {
 	private static final String _C__08_REQUESTREPLYSURRENDERPLEDGEWAR = "[C] 08 RequestReplySurrenderPledgeWar";
-	//private static Logger _log = Logger.getLogger(RequestReplySurrenderPledgeWar.class.getName());
 	
+	private String _reqName;
 	private int _answer;
 	
 	@Override
 	protected void readImpl()
 	{
-		@SuppressWarnings("unused") String _reqName = readS();
-		_answer  = readD();
+		_reqName = readS();
+		_answer = readD();
 	}
 	
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getActiveChar();
 		if (activeChar == null)
+		{
 			return;
-		L2PcInstance requestor = activeChar.getActiveRequester();
+		}
+		final L2PcInstance requestor = activeChar.getActiveRequester();
 		if (requestor == null)
+		{
 			return;
+		}
 		
 		if (_answer == 1)
 		{
@@ -48,10 +52,9 @@ public final class RequestReplySurrenderPledgeWar extends L2GameClientPacket
 		}
 		else
 		{
-			//TODO: is there something missing?
+			_log.info(getClass().getSimpleName() + ": Missing implementation for answer: " + _answer + " and name: " + _reqName + "!");
 		}
-		
-		activeChar.onTransactionRequest(null);
+		activeChar.onTransactionRequest(requestor);
 	}
 	
 	@Override

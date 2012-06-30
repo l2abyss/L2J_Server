@@ -36,7 +36,6 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 public final class Logout extends L2GameClientPacket
 {
 	private static final String _C__00_LOGOUT = "[C] 00 Logout";
-	private static final Logger _log = Logger.getLogger(Logout.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
 	@Override
@@ -97,7 +96,7 @@ public final class Logout extends L2GameClientPacket
 			final L2Party playerParty = player.getParty();
 			
 			if (playerParty != null)
-				player.getParty().broadcastToPartyMembers(SystemMessage.sendString(player.getName() + " has been removed from the upcoming Festival."));
+				player.getParty().broadcastPacket(SystemMessage.sendString(player.getName() + " has been removed from the upcoming Festival."));
 		}
 		
 		// Remove player from Boss Zone

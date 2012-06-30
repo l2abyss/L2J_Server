@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- */
 public class PetDelete extends L2GameServerPacket
 {
 	private static final String _S__B7_PETDELETE = "[S] b7 PetDelete";

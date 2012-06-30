@@ -15,10 +15,10 @@
 package com.l2jserver.gameserver.ai;
 
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Character.AIAccessor;
 import com.l2jserver.gameserver.model.actor.L2Playable;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
@@ -97,7 +97,7 @@ public abstract class L2PlayableAI extends L2CharacterAI
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.ai.L2CharacterAI#onIntentionCast(com.l2jserver.gameserver.model.L2Skill, com.l2jserver.gameserver.model.L2Object)
+	 * @see com.l2jserver.gameserver.ai.L2CharacterAI#onIntentionCast(com.l2jserver.gameserver.model.skills.L2Skill, com.l2jserver.gameserver.model.L2Object)
 	 */
 	@Override
 	protected void onIntentionCast(L2Skill skill, L2Object target)

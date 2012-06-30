@@ -14,8 +14,7 @@
  */
 package com.l2jserver.gameserver.model;
 
-import com.l2jserver.gameserver.RecipeController;
-
+import com.l2jserver.gameserver.datatables.RecipeData;
 
 /**
  * This class ...
@@ -32,8 +31,7 @@ public class L2ManufactureItem
 	{
 		_recipeId = recipeId;
 		_cost = cost;
-		
-		_isDwarven = RecipeController.getInstance().getRecipeList(_recipeId).isDwarvenRecipe();
+		_isDwarven = RecipeData.getInstance().getRecipeList(_recipeId).isDwarvenRecipe();
 	}
 	
 	public int getRecipeId()

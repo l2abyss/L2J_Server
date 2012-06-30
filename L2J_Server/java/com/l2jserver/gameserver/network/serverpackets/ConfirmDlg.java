@@ -16,16 +16,16 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.model.L2Effect;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author kombat
@@ -45,7 +45,7 @@ public class ConfirmDlg extends L2GameServerPacket
 	private static final int TYPE_NUMBER = 1;
 	private static final int TYPE_TEXT = 0;
 	
-	private final FastList<CnfDlgData> _info = new FastList<CnfDlgData>();
+	private final FastList<CnfDlgData> _info = new FastList<>();
 	
 	private int _time = 0;
 	private int _requesterId = 0;

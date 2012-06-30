@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -97,7 +97,7 @@ public class L2Spawn
 	private boolean _customSpawn;
 	
 	private L2Npc _lastSpawn;
-	private static List<SpawnListener> _spawnListeners = new FastList<SpawnListener>();
+	private static List<SpawnListener> _spawnListeners = new FastList<>();
 	
 	/** The task launching the function doSpawn() */
 	class SpawnTask implements Runnable
@@ -159,7 +159,7 @@ public class L2Spawn
 			return;
 		
 		// Create the generic constructor of L2NpcInstance managed by this L2Spawn
-		Class<?>[] parameters = {int.class, Class.forName("com.l2jserver.gameserver.templates.chars.L2NpcTemplate")};
+		Class<?>[] parameters = {int.class, Class.forName("com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate")};
 		_constructor = Class.forName("com.l2jserver.gameserver.model.actor.instance." + _template.getType() + "Instance").getConstructor(parameters);
 	}
 	

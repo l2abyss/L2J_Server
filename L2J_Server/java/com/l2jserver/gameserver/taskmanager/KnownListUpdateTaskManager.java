@@ -30,27 +30,21 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2GuardInstance;
 
-
 public class KnownListUpdateTaskManager
 {
 	protected static final Logger _log = Logger.getLogger(KnownListUpdateTaskManager.class.getName());
 	
-	private final static int FULL_UPDATE_TIMER = 100;
+	private static final int FULL_UPDATE_TIMER = 100;
 	public static boolean updatePass = true;
 	
 	// Do full update every FULL_UPDATE_TIMER * KNOWNLIST_UPDATE_INTERVAL
 	public static int _fullUpdateTimer = FULL_UPDATE_TIMER;
 	
-	private static final FastSet<L2WorldRegion> _failedRegions = new FastSet<L2WorldRegion>(1);
+	protected static final FastSet<L2WorldRegion> _failedRegions = new FastSet<>(1);
 	
-	private KnownListUpdateTaskManager()
+	protected KnownListUpdateTaskManager()
 	{
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new KnownListUpdate(), 1000, Config.KNOWNLIST_UPDATE_INTERVAL);
-	}
-	
-	public static KnownListUpdateTaskManager getInstance()
-	{
-		return SingletonHolder._instance;
 	}
 	
 	private class KnownListUpdate implements Runnable
@@ -75,10 +69,12 @@ public class KnownListUpdateTaskManager
 							failed = _failedRegions.contains(r); // failed on last pass
 							if (r.isActive()) // and check only if the region is active
 							{
-								updateRegion(r, (_fullUpdateTimer == FULL_UPDATE_TIMER || failed), updatePass);
+								updateRegion(r, ((_fullUpdateTimer == FULL_UPDATE_TIMER) || failed), updatePass);
 							}
 							if (failed)
+							{
 								_failedRegions.remove(r); // if all ok, remove
+							}
 						}
 						catch (Exception e)
 						{
@@ -90,9 +86,13 @@ public class KnownListUpdateTaskManager
 				updatePass = !updatePass;
 				
 				if (_fullUpdateTimer > 0)
+				{
 					_fullUpdateTimer--;
+				}
 				else
+				{
 					_fullUpdateTimer = FULL_UPDATE_TIMER;
+				}
 			}
 			catch (Exception e)
 			{
@@ -110,12 +110,13 @@ public class KnownListUpdateTaskManager
 			{
 				for (L2Object object : vObj) // and for all members in region
 				{
-					if (object == null || !object.isVisible())
+					if ((object == null) || !object.isVisible())
+					{
 						continue; // skip dying objects
+					}
 					
 					// Some mobs need faster knownlist update
-					final boolean aggro = (Config.GUARD_ATTACK_AGGRO_MOB && object instanceof L2GuardInstance)
-					|| (object instanceof L2Attackable && ((L2Attackable)object).getEnemyClan() != null);
+					final boolean aggro = (Config.GUARD_ATTACK_AGGRO_MOB && (object instanceof L2GuardInstance)) || ((object instanceof L2Attackable) && (((L2Attackable) object).getEnemyClan() != null));
 					
 					if (forgetObjects)
 					{
@@ -124,16 +125,18 @@ public class KnownListUpdateTaskManager
 					}
 					for (L2WorldRegion regi : region.getSurroundingRegions())
 					{
-						if (object instanceof L2Playable
-								|| (aggro && regi.isActive())
-								|| fullUpdate)
+						if ((object instanceof L2Playable) || (aggro && regi.isActive()) || fullUpdate)
 						{
 							Collection<L2Object> inrObj = regi.getVisibleObjects().values();
 							// synchronized (regi.getVisibleObjects())
 							{
 								for (L2Object _object : inrObj)
+								{
 									if (_object != object)
+									{
 										object.getKnownList().addKnownObject(_object);
+									}
+								}
 							}
 						}
 						else if (object instanceof L2Character)
@@ -144,8 +147,12 @@ public class KnownListUpdateTaskManager
 								// synchronized (regi.getVisiblePlayable())
 								{
 									for (L2Object _object : inrPls)
+									{
 										if (_object != object)
+										{
 											object.getKnownList().addKnownObject(_object);
+										}
+									}
 								}
 							}
 						}
@@ -155,7 +162,11 @@ public class KnownListUpdateTaskManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
+	public static KnownListUpdateTaskManager getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
 	private static class SingletonHolder
 	{
 		protected static final KnownListUpdateTaskManager _instance = new KnownListUpdateTaskManager();

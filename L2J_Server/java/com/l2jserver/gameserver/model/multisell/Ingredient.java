@@ -15,10 +15,10 @@
 package com.l2jserver.gameserver.model.multisell;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.item.L2Armor;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.L2Armor;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author DS
@@ -27,8 +27,8 @@ public class Ingredient
 {
 	private int _itemId;
 	private long _itemCount;
-	private boolean _isTaxIngredient, _maintainIngredient;
-	
+	private boolean _isTaxIngredient;
+	private boolean _maintainIngredient;
 	private L2Item _template = null;
 	private ItemInfo _itemInfo = null;
 	
@@ -39,7 +39,9 @@ public class Ingredient
 		_isTaxIngredient = isTaxIngredient;
 		_maintainIngredient = maintainIngredient;
 		if (_itemId > 0)
+		{
 			_template = ItemTable.getInstance().getTemplate(_itemId);
+		}
 	}
 	
 	/**
@@ -114,6 +116,7 @@ public class Ingredient
 	{
 		return _maintainIngredient;
 	}
+	
 	public final boolean isStackable()
 	{
 		return _template == null ? true : _template.isStackable();
@@ -121,7 +124,7 @@ public class Ingredient
 	
 	public final boolean isArmorOrWeapon()
 	{
-		return _template == null ? false : _template instanceof L2Armor || _template instanceof L2Weapon;
+		return _template == null ? false : (_template instanceof L2Armor) || (_template instanceof L2Weapon);
 	}
 	
 	public final int getWeight()

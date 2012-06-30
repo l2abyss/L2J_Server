@@ -55,7 +55,7 @@ public class SecondaryPasswordAuth
 	private static final String INSERT_ATTEMPT = "INSERT INTO account_gsdata VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value=?";
 	
 	/**
-	 * @param activeClient 
+	 * @param activeClient
 	 */
 	public SecondaryPasswordAuth(L2GameClient activeClient)
 	{
@@ -107,7 +107,7 @@ public class SecondaryPasswordAuth
 	{
 		if (passwordExist())
 		{
-			_log.warning("[SecondaryPasswordAuth]"+_activeClient.getAccountName()+" forced savePassword");
+			_log.warning("[SecondaryPasswordAuth]" + _activeClient.getAccountName() + " forced savePassword");
 			_activeClient.closeNow();
 			return false;
 		}
@@ -174,13 +174,15 @@ public class SecondaryPasswordAuth
 	{
 		if (!passwordExist())
 		{
-			_log.warning("[SecondaryPasswordAuth]"+_activeClient.getAccountName()+" forced changePassword");
+			_log.warning("[SecondaryPasswordAuth]" + _activeClient.getAccountName() + " forced changePassword");
 			_activeClient.closeNow();
 			return false;
 		}
 		
 		if (!checkPassword(oldPassword, true))
+		{
 			return false;
+		}
 		
 		if (!validatePassword(newPassword))
 		{
@@ -230,12 +232,8 @@ public class SecondaryPasswordAuth
 			else
 			{
 				LoginServerThread.getInstance().sendTempBan(_activeClient.getAccountName(), _activeClient.getConnectionAddress().getHostAddress(), Config.SECOND_AUTH_BAN_TIME);
-				LoginServerThread.getInstance().sendMail(_activeClient.getAccountName(), "SATempBan", 
-						_activeClient.getConnectionAddress().getHostAddress(), Integer.toString(Config.SECOND_AUTH_MAX_ATTEMPTS),
-						Long.toString(Config.SECOND_AUTH_BAN_TIME), Config.SECOND_AUTH_REC_LINK);
-				_log.warning(_activeClient.getAccountName()+" - ("+
-						_activeClient.getConnectionAddress().getHostAddress()+") has inputted the wrong password "+
-						_wrongAttempts+" times in row.");
+				LoginServerThread.getInstance().sendMail(_activeClient.getAccountName(), "SATempBan", _activeClient.getConnectionAddress().getHostAddress(), Integer.toString(Config.SECOND_AUTH_MAX_ATTEMPTS), Long.toString(Config.SECOND_AUTH_BAN_TIME), Config.SECOND_AUTH_REC_LINK);
+				_log.warning(_activeClient.getAccountName() + " - (" + _activeClient.getConnectionAddress().getHostAddress() + ") has inputted the wrong password " + _wrongAttempts + " times in row.");
 				insertWrongAttempt(0);
 				_activeClient.close(new Ex2ndPasswordVerify(Ex2ndPasswordVerify.PASSWORD_BAN, Config.SECOND_AUTH_MAX_ATTEMPTS));
 			}
@@ -258,9 +256,13 @@ public class SecondaryPasswordAuth
 	public void openDialog()
 	{
 		if (passwordExist())
+		{
 			_activeClient.sendPacket(new Ex2ndPasswordCheck(Ex2ndPasswordCheck.PASSWORD_PROMPT));
+		}
 		else
+		{
 			_activeClient.sendPacket(new Ex2ndPasswordCheck(Ex2ndPasswordCheck.PASSWORD_NEW));
+		}
 	}
 	
 	public boolean isAuthed()
@@ -291,33 +293,47 @@ public class SecondaryPasswordAuth
 	private boolean validatePassword(String password)
 	{
 		if (!Util.isDigit(password))
-			return false;
-		
-		if (password.length() < 6 || password.length() > 8)
-			return false;
-		
-		for (int i = 0; i < password.length()-1; i++)
 		{
-			char curCh = password.charAt(i);
-			char nxtCh = password.charAt(i+1);
-			
-			if (curCh+1 == nxtCh)
-				return false;
-			else if (curCh-1 == nxtCh)
-				return false;
-			else if (curCh == nxtCh)
-				return false;
+			return false;
 		}
 		
-		for (int i = 0; i < password.length()-2; i++)
+		if ((password.length() < 6) || (password.length() > 8))
 		{
-			String toChk = password.substring(i+1);
-			StringBuffer chkEr = new StringBuffer(password.substring(i, i+2));
+			return false;
+		}
+		
+		for (int i = 0; i < (password.length() - 1); i++)
+		{
+			char curCh = password.charAt(i);
+			char nxtCh = password.charAt(i + 1);
+			
+			if ((curCh + 1) == nxtCh)
+			{
+				return false;
+			}
+			else if ((curCh - 1) == nxtCh)
+			{
+				return false;
+			}
+			else if (curCh == nxtCh)
+			{
+				return false;
+			}
+		}
+		
+		for (int i = 0; i < (password.length() - 2); i++)
+		{
+			String toChk = password.substring(i + 1);
+			StringBuffer chkEr = new StringBuffer(password.substring(i, i + 2));
 			
 			if (toChk.contains(chkEr))
+			{
 				return false;
+			}
 			else if (toChk.contains(chkEr.reverse()))
+			{
 				return false;
+			}
 		}
 		_wrongAttempts = 0;
 		return true;

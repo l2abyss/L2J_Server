@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeShopSellList;
 public final class RequestRecipeShopManagePrev extends L2GameClientPacket
 {
 	private static final String _C__C0_RequestRecipeShopPrev = "[C] C0 RequestRecipeShopPrev";
-	//private static Logger _log = Logger.getLogger(RequestPrivateStoreManage.class.getName());
 	
 	@Override
 	protected void readImpl()

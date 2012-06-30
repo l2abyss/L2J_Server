@@ -19,7 +19,7 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
@@ -40,17 +40,12 @@ public class TerritoryWard
 	private int _itemId;
 	private int _ownerCastleId;
 	
-	@SuppressWarnings("unused")
-	private int _heading;
 	private int _territoryId;
 	
-	// =========================================================
-	// Constructor
 	public TerritoryWard(int territory_id, int x, int y, int z, int heading, int item_id, int castleId, L2Npc npc)
 	{
 		_territoryId = territory_id;
 		_location = new Location(x,y,z,heading);
-		_heading = heading;
 		_itemId = item_id;
 		_ownerCastleId = castleId;
 		_npc = npc;

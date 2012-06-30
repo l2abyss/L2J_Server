@@ -27,12 +27,12 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 
 public class BoatManager
 {
-	private Map<Integer, L2BoatInstance> _boats = new FastMap<Integer, L2BoatInstance>();
+	private Map<Integer, L2BoatInstance> _boats = new FastMap<>();
 	private boolean[] _docksBusy = new boolean[3];
 	
 	public static final int TALKING_ISLAND = 1;
@@ -44,7 +44,7 @@ public class BoatManager
 		return SingletonHolder._instance;
 	}
 	
-	private BoatManager()
+	protected BoatManager()
 	{
 		for (int i = 0; i < _docksBusy.length; i++)
 			_docksBusy[i] = false;
@@ -176,7 +176,7 @@ public class BoatManager
 		VehiclePathPoint _point1, _point2;
 		L2GameServerPacket[] _packets;
 		
-		private ForEachPlayerBroadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket ... packets)
+		protected ForEachPlayerBroadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket ... packets)
 		{
 			_point1 = point1;
 			_point2 = point2;
@@ -211,7 +211,6 @@ public class BoatManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final BoatManager _instance = new BoatManager();

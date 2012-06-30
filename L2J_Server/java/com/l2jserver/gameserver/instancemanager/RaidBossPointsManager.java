@@ -34,12 +34,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 /**
  * @author Kerberos
  * JIV update 24.8.10
- * 
  */
-
 public class RaidBossPointsManager
 {
-	private final static Logger _log = Logger.getLogger(RaidBossPointsManager.class.getName());
+	private static final Logger _log = Logger.getLogger(RaidBossPointsManager.class.getName());
 	
 	private FastMap<Integer, Map<Integer, Integer>> _list;
 	
@@ -63,7 +61,7 @@ public class RaidBossPointsManager
 	
 	private final void init()
 	{
-		_list = new FastMap<Integer, Map<Integer, Integer>>();
+		_list = new FastMap<>();
 		Connection con = null;
 		try
 		{
@@ -78,7 +76,7 @@ public class RaidBossPointsManager
 				Map<Integer, Integer> values = _list.get(charId);
 				if (values == null)
 				{
-					values = new FastMap<Integer, Integer>();
+					values = new FastMap<>();
 				}
 				values.put(bossId, points);
 				_list.put(charId, values);
@@ -103,8 +101,7 @@ public class RaidBossPointsManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("REPLACE INTO character_raid_points (`charId`,`boss_id`,`points`) VALUES (?,?,?)");
+			PreparedStatement statement = con.prepareStatement("REPLACE INTO character_raid_points (`charId`,`boss_id`,`points`) VALUES (?,?,?)");
 			statement.setInt(1, player.getObjectId());
 			statement.setInt(2, raidId);
 			statement.setInt(3, points);
@@ -127,7 +124,7 @@ public class RaidBossPointsManager
 		Map<Integer, Integer> tmpPoint = _list.get(ownerId);
 		if(tmpPoint == null)
 		{
-			tmpPoint = new FastMap<Integer, Integer>();
+			tmpPoint = new FastMap<>();
 			tmpPoint.put(bossId, points);
 			updatePointsInDB(player, bossId, points);
 		}
@@ -168,8 +165,7 @@ public class RaidBossPointsManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("DELETE from character_raid_points WHERE charId > 0");
+			final PreparedStatement statement = con.prepareStatement("DELETE from character_raid_points WHERE charId > 0");
 			statement.executeUpdate();
 			statement.close();
 			_list.clear();
@@ -194,8 +190,8 @@ public class RaidBossPointsManager
 	
 	public Map<Integer, Integer> getRankList()
 	{
-		Map<Integer, Integer> tmpRanking = new FastMap<Integer, Integer>();
-		Map<Integer, Integer> tmpPoints = new FastMap<Integer, Integer>();
+		Map<Integer, Integer> tmpRanking = new FastMap<>();
+		Map<Integer, Integer> tmpPoints = new FastMap<>();
 		
 		for(int ownerId : _list.keySet())
 		{
@@ -205,7 +201,7 @@ public class RaidBossPointsManager
 				tmpPoints.put(ownerId, totalPoints);
 			}
 		}
-		ArrayList<Entry<Integer, Integer>> list = new ArrayList<Map.Entry<Integer, Integer>>(tmpPoints.entrySet());
+		ArrayList<Entry<Integer, Integer>> list = new ArrayList<>(tmpPoints.entrySet());
 		
 		Collections.sort(list, _comparator);
 		
@@ -216,7 +212,6 @@ public class RaidBossPointsManager
 		return tmpRanking;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final RaidBossPointsManager _instance = new RaidBossPointsManager();

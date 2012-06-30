@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.pathfinding.AbstractNode;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 
 /**
- *
  * @author -Nemesiss-
  */
 public class GeoNode extends AbstractNode
@@ -40,7 +39,7 @@ public class GeoNode extends AbstractNode
 	
 	public void setCost(int cost)
 	{
-		_cost = (short)cost;
+		_cost = (short) cost;
 	}
 	
 	public GeoNode[] getNeighbors()
@@ -50,8 +49,13 @@ public class GeoNode extends AbstractNode
 	
 	public void attachNeighbors()
 	{
-		if(getLoc() == null) _neighbors = null;
-		else _neighbors = GeoPathFinding.getInstance().readNeighbors(this, _neighborsIdx);
+		if (getLoc() == null)
+		{
+			_neighbors = null;
+		}
+		else
+		{
+			_neighbors = GeoPathFinding.getInstance().readNeighbors(this, _neighborsIdx);
+		}
 	}
-	
 }

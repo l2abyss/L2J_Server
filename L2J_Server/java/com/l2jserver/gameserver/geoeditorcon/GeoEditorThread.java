@@ -49,7 +49,7 @@ public class GeoEditorThread extends Thread
 	{
 		_geSocket = ge;
 		_working = true;
-		_gms = new FastList<L2PcInstance>();
+		_gms = new FastList<>();
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 
 /**
  * This class ...
@@ -42,9 +42,9 @@ public class PetStatusUpdate extends L2GameServerPacket
 			_curFed = pet.getCurrentFed(); // how fed it is
 			_maxFed = pet.getMaxFed(); //max fed it can be
 		}
-		else if (_summon instanceof L2SummonInstance)
+		else if (_summon instanceof L2ServitorInstance)
 		{
-			L2SummonInstance sum = (L2SummonInstance)_summon;
+			L2ServitorInstance sum = (L2ServitorInstance)_summon;
 			_curFed = sum.getTimeRemaining();
 			_maxFed = sum.getTotalLifeTime();
 		}

@@ -29,11 +29,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.skills.Stats;
-import com.l2jserver.gameserver.skills.funcs.FuncTemplate;
-import com.l2jserver.gameserver.skills.funcs.LambdaConst;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
+import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
+import com.l2jserver.gameserver.model.stats.Stats;
 
 /**
  * @author  MrPoke
@@ -42,7 +42,7 @@ public class EnchantHPBonusData
 {
 	protected static final Logger _log = Logger.getLogger(EnchantHPBonusData.class.getName());
 	
-	private final TIntObjectHashMap<Integer[]> _armorHPBonus = new TIntObjectHashMap<Integer[]>();
+	private final TIntObjectHashMap<Integer[]> _armorHPBonus = new TIntObjectHashMap<>();
 	private static final float fullArmorModifier = 1.5f;
 	
 	public static final EnchantHPBonusData getInstance()
@@ -50,7 +50,7 @@ public class EnchantHPBonusData
 		return SingletonHolder._instance;
 	}
 	
-	private EnchantHPBonusData()
+	protected EnchantHPBonusData()
 	{
 		load();
 	}
@@ -189,7 +189,6 @@ public class EnchantHPBonusData
 		return values[Math.min(item.getOlyEnchantLevel(), values.length) - 1];
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final EnchantHPBonusData _instance = new EnchantHPBonusData();

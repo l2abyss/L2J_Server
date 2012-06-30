@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.script;
 
 /**
  * @author Luis Arias
- *
  */
 public class IntList
 {
@@ -31,7 +30,10 @@ public class IntList
 			return getIntegerList(range.split(","));
 		}
 		
-		int[] list = { getInt(range) };
+		int[] list =
+		{
+			getInt(range)
+		};
 		return list;
 	}
 	
@@ -44,7 +46,9 @@ public class IntList
 	{
 		int[] list = new int[numbers.length];
 		for (int i = 0; i < list.length; i++)
+		{
 			list[i] = getInt(numbers[i]);
+		}
 		return list;
 	}
 	
@@ -52,9 +56,11 @@ public class IntList
 	{
 		int min = getInt(numbers[0]);
 		int max = getInt(numbers[1]);
-		int[] list = new int[max - min + 1];
+		int[] list = new int[(max - min) + 1];
 		for (int i = 0; i < list.length; i++)
+		{
 			list[i] = min + i;
+		}
 		return list;
 	}
 }

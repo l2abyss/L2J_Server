@@ -19,26 +19,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 
-
 /**
  * This class ...
- *
  * @version $Revision: 1.3.2.1.2.7 $ $Date: 2005/04/11 10:06:12 $
  */
 public class StackIDFactory extends IdFactory
 {
-	private static Logger _log = Logger.getLogger(IdFactory.class.getName());
-	
 	private int _curOID;
 	private int _tempOID;
 	
-	private Stack<Integer> _freeOIDStack = new Stack<Integer>();
+	private final Stack<Integer> _freeOIDStack = new Stack<>();
 	
 	protected StackIDFactory()
 	{
@@ -50,7 +44,7 @@ public class StackIDFactory extends IdFactory
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			//con.createStatement().execute("drop table if exists tmp_obj_id");
+			// con.createStatement().execute("drop table if exists tmp_obj_id");
 			
 			int[] tmp_obj_ids = extractUsedObjectIDTable();
 			if (tmp_obj_ids.length > 0)
@@ -71,7 +65,7 @@ public class StackIDFactory extends IdFactory
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "ID Factory could not be initialized correctly:" + e.getMessage(), e);
+			_log.severe(getClass().getSimpleName() + ": Could not be initialized properly:" + e.getMessage());
 		}
 		finally
 		{
@@ -94,7 +88,7 @@ public class StackIDFactory extends IdFactory
 			{
 				PreparedStatement ps = con.prepareStatement(check);
 				ps.setInt(1, _tempOID);
-				//ps.setInt(1, _curOID);
+				// ps.setInt(1, _curOID);
 				ps.setInt(2, id);
 				ResultSet rs = ps.executeQuery();
 				while (rs.next())
@@ -108,19 +102,23 @@ public class StackIDFactory extends IdFactory
 			}
 		}
 		
-		//int hole = id - _curOID;
+		// int hole = id - _curOID;
 		int hole = id - _tempOID;
-		if (hole > N - idx)
+		if (hole > (N - idx))
+		{
 			hole = N - idx;
+		}
 		for (int i = 1; i <= hole; i++)
 		{
-			//log.info("Free ID added " + (_tempOID));
+			// log.info("Free ID added " + (_tempOID));
 			_freeOIDStack.push(_tempOID);
 			_tempOID++;
-			//_curOID++;
+			// _curOID++;
 		}
-		if (hole < N - idx)
+		if (hole < (N - idx))
+		{
 			_tempOID++;
+		}
 		return N - hole;
 	}
 	
@@ -134,7 +132,9 @@ public class StackIDFactory extends IdFactory
 	{
 		int id;
 		if (!_freeOIDStack.empty())
+		{
 			id = _freeOIDStack.pop();
+		}
 		else
 		{
 			id = _curOID;
@@ -156,6 +156,6 @@ public class StackIDFactory extends IdFactory
 	@Override
 	public int size()
 	{
-		return FREE_OBJECT_ID_SIZE - _curOID + FIRST_OID + _freeOIDStack.size();
+		return (FREE_OBJECT_ID_SIZE - _curOID) + FIRST_OID + _freeOIDStack.size();
 	}
 }

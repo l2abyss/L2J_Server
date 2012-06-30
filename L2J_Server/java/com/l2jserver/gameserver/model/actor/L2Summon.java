@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Attackable.AggroInfo;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
@@ -33,15 +32,18 @@ import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SummonInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.SummonKnownList;
 import com.l2jserver.gameserver.model.actor.stat.SummonStat;
 import com.l2jserver.gameserver.model.actor.status.SummonStatus;
-import com.l2jserver.gameserver.model.item.L2EtcItem;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
+import com.l2jserver.gameserver.model.items.L2EtcItem;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -57,8 +59,6 @@ import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.skills.L2TargetType;
 
 public abstract class L2Summon extends L2Playable
 {
@@ -260,6 +260,7 @@ public abstract class L2Summon extends L2Playable
 		return getOwner() != null ? getOwner().getPvpFlag() : 0;
 	}
 	
+	@Override
 	public final int getTeam()
 	{
 		return getOwner() != null ? getOwner().getTeam() : 0;
@@ -273,11 +274,6 @@ public abstract class L2Summon extends L2Playable
 	public final int getNpcId()
 	{
 		return getTemplate().getNpcId();
-	}
-	
-	public int getMaxLoad()
-	{
-		return 0;
 	}
 	
 	public short getSoulShotsPerHit()
@@ -752,7 +748,7 @@ public abstract class L2Summon extends L2Playable
 		if (target.getObjectId() != getOwner().getObjectId())
 		{
 			if (pcrit || mcrit)
-				if (this instanceof L2SummonInstance)
+				if (this instanceof L2ServitorInstance)
 					sendPacket(SystemMessageId.CRITICAL_HIT_BY_SUMMONED_MOB);
 				else
 					sendPacket(SystemMessageId.CRITICAL_HIT_BY_PET);
@@ -900,7 +896,7 @@ public abstract class L2Summon extends L2Playable
 			activeChar.sendPacket(new PetInfo(this, 0));
 			// The PetInfo packet wipes the PartySpelled (list of active  spells' icons).  Re-add them
 			updateEffectIcons(true);
-			if (this instanceof L2PetInstance)
+			if (isPet())
 			{
 				activeChar.sendPacket(new PetItemList((L2PetInstance) this));
 			}
@@ -940,5 +936,11 @@ public abstract class L2Summon extends L2Playable
 	{
 		if (getOwner() != null)
 			getOwner().sendPacket(id);
+	}
+	
+	@Override
+	public boolean isSummon()
+	{
+		return true;
 	}
 }

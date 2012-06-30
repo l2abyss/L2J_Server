@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.model.multisell;
 
 import com.l2jserver.gameserver.model.Elementals;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author DS

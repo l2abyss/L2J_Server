@@ -14,27 +14,18 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
-import com.l2jserver.gameserver.templates.chars.L2PcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
 
 /**
- * This class ...
- *
- * @version $Revision: 1.3.2.1.2.7 $ $Date: 2005/03/27 15:29:39 $
+ * Example: dddddddddddddddddddd
  */
-public class NewCharacterSuccess extends L2GameServerPacket
+public final class NewCharacterSuccess extends L2GameServerPacket
 {
-	// dddddddddddddddddddd
-	private static final String _S__23_CHARTEMPLATES = "[S] 0d CharTemplates";
-	private List<L2PcTemplate> _chars = new FastList<L2PcTemplate>();
-	
-	public NewCharacterSuccess()
-	{
-		
-	}
+	private static final String _S__0D_NEWCHARACTERSUCCESS = "[S] 0D NewCharacterSuccess";
+	private final List<L2PcTemplate> _chars = new ArrayList<>();
 	
 	public void addChar(L2PcTemplate template)
 	{
@@ -44,40 +35,42 @@ public class NewCharacterSuccess extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0x0d);
+		writeC(0x0D);
 		writeD(_chars.size());
 		
-		for (L2PcTemplate temp : _chars)
+		for (L2PcTemplate chr : _chars)
 		{
-			if (temp == null)
+			if (chr == null)
+			{
 				continue;
+			}
 			
-			writeD(temp.race.ordinal());
-			writeD(temp.classId.getId());
+			writeD(chr.getRace().ordinal());
+			writeD(chr.getClassId().getId());
 			writeD(0x46);
-			writeD(temp.getBaseSTR());
-			writeD(0x0a);
+			writeD(chr.getBaseSTR());
+			writeD(0x0A);
 			writeD(0x46);
-			writeD(temp.getBaseDEX());
-			writeD(0x0a);
+			writeD(chr.getBaseDEX());
+			writeD(0x0A);
 			writeD(0x46);
-			writeD(temp.getBaseCON());
-			writeD(0x0a);
+			writeD(chr.getBaseCON());
+			writeD(0x0A);
 			writeD(0x46);
-			writeD(temp.getBaseINT());
-			writeD(0x0a);
+			writeD(chr.getBaseINT());
+			writeD(0x0A);
 			writeD(0x46);
-			writeD(temp.getBaseWIT());
-			writeD(0x0a);
+			writeD(chr.getBaseWIT());
+			writeD(0x0A);
 			writeD(0x46);
-			writeD(temp.getBaseMEN());
-			writeD(0x0a);
+			writeD(chr.getBaseMEN());
+			writeD(0x0A);
 		}
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _S__23_CHARTEMPLATES;
+		return _S__0D_NEWCHARACTERSUCCESS;
 	}
 }

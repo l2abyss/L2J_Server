@@ -35,12 +35,12 @@ import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.VehicleKnownList;
 import com.l2jserver.gameserver.model.actor.stat.VehicleStat;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -51,7 +51,7 @@ import com.l2jserver.gameserver.util.Util;
 public abstract class L2Vehicle extends L2Character
 {
 	protected int _dockId = 0;
-	protected final FastList<L2PcInstance> _passengers = new FastList<L2PcInstance>();
+	protected final FastList<L2PcInstance> _passengers = new FastList<>();
 	protected Location _oustLoc = null;
 	private Runnable _engine = null;
 	

@@ -14,17 +14,17 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import javolution.util.FastList;
+import java.util.List;
 
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 public final class L2FishermanInstance extends L2MerchantInstance
 {
@@ -66,8 +66,8 @@ public final class L2FishermanInstance extends L2MerchantInstance
 	
 	public static void showFishSkillList(L2PcInstance player)
 	{
-		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableFishingSkills(player);
-		final AcquireSkillList asl = new AcquireSkillList(SkillType.Fishing);
+		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableFishingSkills(player);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Fishing);
 		
 		int count = 0;
 		
@@ -86,7 +86,6 @@ public final class L2FishermanInstance extends L2MerchantInstance
 		if (count == 0)
 		{
 			final int minlLevel = SkillTreesData.getInstance().getMinLevelForNewSkill(player, SkillTreesData.getInstance().getFishingSkillTree());
-			
 			if (minlLevel > 0)
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);

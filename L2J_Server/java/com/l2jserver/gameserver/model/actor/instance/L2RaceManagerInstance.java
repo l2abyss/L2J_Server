@@ -23,8 +23,9 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.knownlist.RaceManagerKnownList;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
@@ -34,7 +35,6 @@ import com.l2jserver.gameserver.network.serverpackets.MonRaceInfo;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Broadcast;
 
 public class L2RaceManagerInstance extends L2Npc
@@ -42,14 +42,13 @@ public class L2RaceManagerInstance extends L2Npc
 	public static final int LANES = 8;
 	public static final int WINDOW_START = 0;
 	
-	@SuppressWarnings("unused")
-	private static List<Race> _history;
+	// private static List<Race> _history;
 	private static List<L2RaceManagerInstance> _managers;
 	protected static int _raceNumber = 4;
 	
 	//Time Constants
-	private final static long SECOND = 1000;
-	private final static long MINUTE = 60 * SECOND;
+	private static final long SECOND = 1000;
+	private static final long MINUTE = 60 * SECOND;
 	
 	private static int _minutes = 5;
 	
@@ -72,9 +71,9 @@ public class L2RaceManagerInstance extends L2Npc
 		if (_notInitialized)
 		{
 			_notInitialized = false;
-			//*
-			_history = new FastList<Race>();
-			_managers = new FastList<L2RaceManagerInstance>();
+			
+			// _history = new FastList<>();
+			_managers = new FastList<>();
 			
 			ThreadPoolManager s = ThreadPoolManager.getInstance();
 			s.scheduleGeneralAtFixedRate(

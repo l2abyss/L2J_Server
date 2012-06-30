@@ -16,33 +16,27 @@ package com.l2jserver.gameserver.model.actor.stat;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Elementals;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2WeaponType;
-import com.l2jserver.gameserver.skills.Calculator;
-import com.l2jserver.gameserver.skills.Env;
-import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.stats.Calculator;
+import com.l2jserver.gameserver.model.stats.Env;
+import com.l2jserver.gameserver.model.stats.Stats;
 
 public class CharStat
 {
-	// =========================================================
-	// Data Field
 	private L2Character _activeChar;
 	private long _exp = 0;
 	private int _sp = 0;
 	private byte _level = 1;
 	
-	// =========================================================
-	// Constructor
 	public CharStat(L2Character activeChar)
 	{
 		_activeChar = activeChar;
 	}
 	
-	// =========================================================
-	// Method - Public
 	/**
 	 * Calculate the new value of the state with modifiers that will be applied
 	 * on the targeted L2Character.<BR>
@@ -93,14 +87,15 @@ public class CharStat
 		
 		// Create and init an Env object to pass parameters to the Calculator
 		Env env = new Env();
-		env.player = _activeChar;
-		env.target = target;
-		env.skill = skill;
-		env.value = init;
+		env.setCharacter(_activeChar);
+		env.setTarget(target);
+		env.setSkill(skill);
+		env.setValue(init);
+		
 		// Launch the calculation
 		c.calc(env);
 		// avoid some troubles with negative stats (some stats should never be negative)
-		if (env.value <= 0)
+		if (env.getValue() <= 0)
 		{
 			switch(stat)
 			{
@@ -120,18 +115,11 @@ public class CharStat
 				case STAT_MEN:
 				case STAT_STR:
 				case STAT_WIT:
-					env.value = 1;
+					env.setValue(1);
 			}
 		}
-		
-		return env.value;
+		return env.getValue();
 	}
-	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	
 	/**
 	 * @return the Accuracy (base+modifier) of the L2Character in function of the Weapon Expertise Penalty.
@@ -500,18 +488,6 @@ public class CharStat
 	}
 	
 	/**
-	 * @param skill 
-	 * @return the PReuse rate (base+modifier) of the L2Character.
-	 */
-	public final double getPReuseRate(L2Skill skill)
-	{
-		if (_activeChar == null)
-			return 1;
-		
-		return calcStat(Stats.P_REUSE, _activeChar.getTemplate().getBaseMReuseRate(), null, skill);
-	}
-	
-	/**
 	 * @param target 
 	 * @return the PAtk (base+modifier) of the L2Character.
 	 */
@@ -789,12 +765,13 @@ public class CharStat
 		if (skill == null)
 			return 1;
 		double mpConsume = skill.getMpConsume();
+		double nextDanceMpCost = Math.ceil(skill.getMpConsume() / 2.);
 		if (skill.isDance())
 		{
 			if (Config.DANCE_CONSUME_ADDITIONAL_MP
 					&& _activeChar != null
 					&& _activeChar.getDanceCount() > 0)
-				mpConsume += _activeChar.getDanceCount() * skill.getNextDanceMpCost();
+				mpConsume += _activeChar.getDanceCount() * nextDanceMpCost;
 		}
 		
 		mpConsume = calcStat(Stats.MP_CONSUME, mpConsume, null, skill);

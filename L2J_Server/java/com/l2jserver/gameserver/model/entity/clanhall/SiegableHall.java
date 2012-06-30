@@ -17,13 +17,9 @@ package com.l2jserver.gameserver.model.entity.clanhall;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Level;
 
-import javolution.util.FastList;
-
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
@@ -42,8 +38,6 @@ public final class SiegableHall extends ClanHall
 {	
 	private static final String SQL_SAVE = "UPDATE siegable_clanhall SET ownerId=?, nextSiege=? WHERE clanHallId=?";
 		
-	protected List<String> _doorDefault;
-	
 	private Calendar _nextSiege;
 	private long _siegeLength;
 	private int[] _scheduleConfig = {7,0,0,12,0};
@@ -56,7 +50,6 @@ public final class SiegableHall extends ClanHall
 	public SiegableHall(StatsSet set)
 	{
 		super(set);
-		_doorDefault = new FastList<String>();
 		_siegeLength = set.getLong("siegeLenght");
 		String[] rawSchConfig = set.getString("scheduleConfig").split(";");
 		if(rawSchConfig.length == 5)
@@ -83,11 +76,6 @@ public final class SiegableHall extends ClanHall
 		else
 			_nextSiege.setTimeInMillis(nextSiege);
 	}
-			
-	public List<String> getDoorDefault()
-	{
-		return _doorDefault;
-	}
 	
 	public void spawnDoor()
 	{
@@ -96,20 +84,18 @@ public final class SiegableHall extends ClanHall
 	
 	public void spawnDoor(boolean isDoorWeak)
 	{
-		for (int i = 0; i < getDoors().size(); i++)
+		for (L2DoorInstance door : this.getDoors())
 		{
-			L2DoorInstance door = getDoors().get(i);
-			if (door.getCurrentHp() <= 0)
+			if (door.isDead())
 			{
-				door.decayMe(); // Kill current if not killed already
-				door = DoorTable.parseList(_doorDefault.get(i), false);
-				DoorTable.getInstance().putDoor(door); //Readd the new door to the DoorTable By Erb
+				door.doRevive();
 				if (isDoorWeak)
 					door.setCurrentHp(door.getMaxHp() / 2);
-				door.spawnMe(door.getX(), door.getY(), door.getZ());
-				getDoors().set(i, door);
+				else
+					door.setCurrentHp(door.getMaxHp());
 			}
-			else if (door.getOpen())
+			
+			if (door.getOpen())
 				door.closeMe();
 		}
 	}
@@ -121,9 +107,7 @@ public final class SiegableHall extends ClanHall
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			
-			statement = con.prepareStatement(SQL_SAVE);
+			PreparedStatement statement = con.prepareStatement(SQL_SAVE);
 			statement.setInt(1, getOwnerId());
 			statement.setLong(2, getNextSiegeTime());
 			statement.setInt(3, getId());

@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model.actor.stat;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
@@ -23,6 +25,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.entity.RecoBonus;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExVitalityPointInfo;
@@ -32,15 +35,12 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerLevelListener;
+import com.l2jserver.gameserver.util.Util;
 
 public class PcStat extends PlayableStat
-{
-	//private static Logger _log = Logger.getLogger(PcStat.class.getName());
-	
-	// =========================================================
-	// Data Field
-	
+{	
 	private int _oldMaxHp; // stats watch
 	private int _oldMaxMp; // stats watch
 	private int _oldMaxCp; // stats watch
@@ -51,15 +51,14 @@ public class PcStat extends PlayableStat
 	public static final int MAX_VITALITY_POINTS = VITALITY_LEVELS[4];
 	public static final int MIN_VITALITY_POINTS = 1;
 	
-	// =========================================================
-	// Constructor
+	public FastList<PlayerLevelListener> levelListeners = new FastList<PlayerLevelListener>().shared();
+	public static FastList<PlayerLevelListener> globalLevelListeners = new FastList<PlayerLevelListener>().shared();
+	
 	public PcStat(L2PcInstance activeChar)
 	{
 		super(activeChar);
 	}
 	
-	// =========================================================
-	// Method - Public
 	@Override
 	public boolean addExp(long value)
 	{
@@ -131,9 +130,8 @@ public class PcStat extends PlayableStat
 		
 		float ratioTakenByPlayer = 0;
 		
-		// if this player has a pet that takes from the owner's Exp, give the pet Exp now
-		
-		if (activeChar.getPet() instanceof L2PetInstance)
+		// if this player has a pet and it is in his range he takes from the owner's Exp, give the pet Exp now
+		if (activeChar.hasPet() && activeChar.getPet().isPet() && Util.checkIfInShortRadius(Config.ALT_PARTY_RANGE, activeChar, activeChar.getPet(), false))
 		{
 			L2PetInstance pet = (L2PetInstance) activeChar.getPet();
 			ratioTakenByPlayer = pet.getPetLevelData().getOwnerExpTaken() / 100f;
@@ -218,9 +216,9 @@ public class PcStat extends PlayableStat
 	{
 		if (getLevel() + value > ExperienceTable.getInstance().getMaxLevel() - 1)
 			return false;
+		fireLevelChangeListeners(value);
 		
 		boolean levelIncreased = super.addLevel(value);
-		
 		if (levelIncreased)
 		{
 			if (!Config.DISABLE_TUTORIAL)
@@ -289,11 +287,6 @@ public class PcStat extends PlayableStat
 		return ExperienceTable.getInstance().getExpForLevel(level);
 	}
 	
-	// =========================================================
-	// Method - Private
-	
-	// =========================================================
-	// Property - Public
 	@Override
 	public final L2PcInstance getActiveChar()
 	{
@@ -306,6 +299,11 @@ public class PcStat extends PlayableStat
 		if (getActiveChar().isSubClassActive())
 			return getActiveChar().getSubClasses().get(getActiveChar().getClassIndex()).getExp();
 		
+		return super.getExp();
+	}
+	
+	public final long getBaseExp()
+	{
 		return super.getExp();
 	}
 	
@@ -324,6 +322,11 @@ public class PcStat extends PlayableStat
 		if (getActiveChar().isSubClassActive())
 			return getActiveChar().getSubClasses().get(getActiveChar().getClassIndex()).getLevel();
 		
+		return super.getLevel();
+	}
+	
+	public final byte getBaseLevel()
+	{
 		return super.getLevel();
 	}
 	
@@ -396,6 +399,11 @@ public class PcStat extends PlayableStat
 		if (getActiveChar().isSubClassActive())
 			return getActiveChar().getSubClasses().get(getActiveChar().getClassIndex()).getSp();
 		
+		return super.getSp();
+	}
+	
+	public final int getBaseSp()
+	{
 		return super.getSp();
 	}
 	
@@ -640,7 +648,7 @@ public class PcStat extends PlayableStat
 		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
 		
 		// Bonus from Nevit's Hunting
-		// TODO: Nevit's hutning bonus
+		// TODO: Nevit's hunting bonus
 		
 		// Bonus exp from skills
 		bonusExp = calcStat(Stats.BONUS_EXP, 1.0, null, null);
@@ -657,15 +665,6 @@ public class PcStat extends PlayableStat
 		// Check for abnormal bonuses
 		bonus = Math.max(bonus, 1);
 		bonus = Math.min(bonus, Config.MAX_BONUS_EXP);
-		
-		if (getActiveChar().isDebug())
-		{
-			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
-			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
-			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
-			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusExp);
-			getActiveChar().sendDebugMessage("Total Exp Multiplier: " + bonus);
-		}
 		
 		return bonus;
 	}
@@ -685,7 +684,7 @@ public class PcStat extends PlayableStat
 		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
 		
 		// Bonus from Nevit's Hunting
-		// TODO: Nevit's hutning bonus
+		// TODO: Nevit's hunting bonus
 		
 		// Bonus sp from skills
 		bonusSp = calcStat(Stats.BONUS_SP, 1.0, null, null);
@@ -703,15 +702,74 @@ public class PcStat extends PlayableStat
 		bonus = Math.max(bonus, 1);
 		bonus = Math.min(bonus, Config.MAX_BONUS_SP);
 		
-		if (getActiveChar().isDebug())
-		{
-			getActiveChar().sendDebugMessage("Vitality Multiplier: " + vitality);
-			getActiveChar().sendDebugMessage("Nevit's Multiplier: " + nevits);
-			getActiveChar().sendDebugMessage("Hunting Multiplier: " + hunting);
-			getActiveChar().sendDebugMessage("Bonus Multiplier: " + bonusSp);
-			getActiveChar().sendDebugMessage("Total Sp Multiplier: " + bonus);
-		}
-		
 		return bonus;
+	}
+	
+	/**
+	 * Listeners
+	 */
+	/**
+	 * Fires all the level change listeners, if any.
+	 * @param value
+	 */
+	private void fireLevelChangeListeners(byte value)
+	{
+		if (!levelListeners.isEmpty() || !globalLevelListeners.isEmpty())
+		{
+			PlayerLevelChangeEvent event = new PlayerLevelChangeEvent();
+			event.setPlayer(getActiveChar());
+			event.setOldLevel(getLevel());
+			event.setNewLevel(getLevel() + value);
+			for (PlayerLevelListener listener : levelListeners)
+			{
+				listener.levelChanged(event);
+			}
+			for (PlayerLevelListener listener : globalLevelListeners)
+			{
+				listener.levelChanged(event);
+			}
+		}
+	}
+	
+	/**
+	 * Adds a global player level listener
+	 * @param listener
+	 */
+	public static void addGlobalLevelListener(PlayerLevelListener listener)
+	{
+		if (!globalLevelListeners.contains(listener))
+		{
+			globalLevelListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a global player level listener
+	 * @param listener
+	 */
+	public static void removeGlobalLevelListener(PlayerLevelListener listener)
+	{
+		globalLevelListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a player level listener
+	 * @param listener
+	 */
+	public void addLevelListener(PlayerLevelListener listener)
+	{
+		if (!levelListeners.contains(listener))
+		{
+			levelListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a player level listener
+	 * @param listener
+	 */
+	public void removeLevelListener(PlayerLevelListener listener)
+	{
+		levelListeners.remove(listener);
 	}
 }

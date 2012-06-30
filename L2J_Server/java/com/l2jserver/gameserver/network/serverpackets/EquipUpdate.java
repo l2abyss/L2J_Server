@@ -14,11 +14,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 
 /**
@@ -55,7 +53,6 @@ import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 public final class EquipUpdate extends L2GameServerPacket
 {
 	private static final String _S__5E_EQUIPUPDATE = "[S] 4b EquipUpdate";
-	private static Logger _log = Logger.getLogger(EquipUpdate.class.getName());
 	
 	private L2ItemInstance _item;
 	private int _change;

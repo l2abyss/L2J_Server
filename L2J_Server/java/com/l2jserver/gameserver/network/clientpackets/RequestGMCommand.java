@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
@@ -36,7 +34,6 @@ import com.l2jserver.gameserver.network.serverpackets.GmViewQuestInfo;
 public final class RequestGMCommand extends L2GameClientPacket
 {
 	private static final String _C__7E_REQUESTGMCOMMAND = "[C] 7E RequestGMCommand";
-	static Logger _log = Logger.getLogger(RequestGMCommand.class.getName());
 	
 	private String _targetName;
 	private int _command;
@@ -77,7 +74,7 @@ public final class RequestGMCommand extends L2GameClientPacket
 			}
 			case 2: // player clan
 			{
-				if (player.getClan() != null)
+				if ((player != null) && (player.getClan() != null))
 					sendPacket(new GMViewPledgeInfo(player.getClan(),player));
 				break;
 			}

@@ -31,8 +31,9 @@ import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.Earthquake;
 import com.l2jserver.gameserver.network.serverpackets.ExRedSky;
@@ -47,7 +48,7 @@ import com.l2jserver.util.Rnd;
 
 public class CursedWeapon
 {
-	private static final Logger _log = Logger.getLogger(CursedWeaponsManager.class.getName());
+	private static final Logger _log = Logger.getLogger(CursedWeapon.class.getName());
 	
 	// _name is the name of the cursed weapon associated with its ID.
 	private final String _name;
@@ -80,8 +81,6 @@ public class CursedWeapon
 	
 	private static final int[] TRANSFORM_IDS = new int[]{3630,3631};
 	
-	// =========================================================
-	// Constructor
 	public CursedWeapon(int itemId, int skillId, String name)
 	{
 		_name = name;
@@ -90,8 +89,6 @@ public class CursedWeapon
 		_skillMaxLevel = SkillTable.getInstance().getMaxLevel(_skillId);
 	}
 	
-	// =========================================================
-	// Private
 	public void endOfLife()
 	{
 		if (_isActivated)
@@ -374,8 +371,6 @@ public class CursedWeapon
 		_player.sendSkillList();
 	}
 	
-	// =========================================================
-	// Public
 	public void reActivate()
 	{
 		_isActivated = true;
@@ -555,11 +550,6 @@ public class CursedWeapon
 		saveData();
 	}
 	
-	
-	
-	
-	// =========================================================
-	// Setter
 	public void setDisapearChance(int disapearChance)
 	{
 		_disapearChance = disapearChance;
@@ -617,10 +607,6 @@ public class CursedWeapon
 		_item = item;
 	}
 	
-	
-	
-	// =========================================================
-	// Getter
 	public boolean isActivated()
 	{
 		return _isActivated;

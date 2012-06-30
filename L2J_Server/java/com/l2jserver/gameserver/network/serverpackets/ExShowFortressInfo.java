@@ -20,29 +20,20 @@ import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.entity.Fort;
 
-
 /**
  * format: d (dSdd)
  * cnt:%d (fortressID:%d ownerName:%s, siegeState:%d, lastOwnedTime:%d)
  * 
- * @author  KenM
+ * @author KenM
  */
 public class ExShowFortressInfo extends L2GameServerPacket
 {
-	//private static final Logger _log = Logger.getLogger(ExShowFortressInfo.class.getName());
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return "[S] FE:15 ExShowFortressInfo";
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -76,5 +67,4 @@ public class ExShowFortressInfo extends L2GameServerPacket
 			writeD(fort.getOwnedTime());
 		}
 	}
-	
 }

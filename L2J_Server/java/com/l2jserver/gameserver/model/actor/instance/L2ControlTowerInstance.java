@@ -15,21 +15,19 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.GeoData;
-import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.L2Tower;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
-public class L2ControlTowerInstance extends L2Npc
+/**
+ * Class for Control Tower instance.
+ */
+public class L2ControlTowerInstance extends L2Tower
 {
 	private List<L2Spawn> _guards;
 	
@@ -37,66 +35,6 @@ public class L2ControlTowerInstance extends L2Npc
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2ControlTowerInstance);
-		setIsInvul(false);
-	}
-	
-	@Override
-	public boolean isAttackable()
-	{
-		// Attackable during siege by attacker only
-		return (getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress());
-	}
-	
-	@Override
-	public boolean isAutoAttackable(L2Character attacker)
-	{
-		// Attackable during siege by attacker only
-		return (attacker != null && attacker instanceof L2PcInstance && getCastle() != null && getCastle().getCastleId() > 0 && getCastle().getSiege().getIsInProgress() && getCastle().getSiege()
-				.checkIsAttacker(((L2PcInstance) attacker).getClan()));
-	}
-	
-	@Override
-	public void onForcedAttack(L2PcInstance player)
-	{
-		onAction(player);
-	}
-	
-	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		if (!canTarget(player))
-			return;
-		
-		// Check if the L2PcInstance already target the L2NpcInstance
-		if (this != player.getTarget())
-		{
-			// Set the target of the L2PcInstance player
-			player.setTarget(this);
-			
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
-			StatusUpdate su = new StatusUpdate(this);
-			su.addAttribute(StatusUpdate.CUR_HP, (int) getStatus().getCurrentHp());
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			player.sendPacket(su);
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
-		}
-		else if (interact)
-		{
-			if (isAutoAttackable(player) && Math.abs(player.getZ() - getZ()) < 100 // Less then max height difference, delete check when geo
-					&& GeoData.getInstance().canSeeTarget(player, this))
-			{
-				// Notify the L2PcInstance AI with AI_INTENTION_INTERACT
-				player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
-			}
-		}
-		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
-		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
 	@Override
@@ -106,19 +44,23 @@ public class L2ControlTowerInstance extends L2Npc
 		{
 			getCastle().getSiege().killedCT(this);
 			
-			if (_guards != null && !_guards.isEmpty())
+			if ((_guards != null) && !_guards.isEmpty())
 			{
 				for (L2Spawn spawn : _guards)
 				{
 					if (spawn == null)
+					{
 						continue;
+					}
 					try
 					{
 						spawn.stopRespawn();
-						//spawn.getLastSpawn().doDie(spawn.getLastSpawn());
+						// spawn.getLastSpawn().doDie(spawn.getLastSpawn());
 					}
 					catch (Exception e)
-					{}
+					{
+						_log.log(Level.WARNING, "Error at L2ControlTowerInstance", e);
+					}
 				}
 				_guards.clear();
 			}
@@ -131,17 +73,18 @@ public class L2ControlTowerInstance extends L2Npc
 		getGuards().add(guard);
 	}
 	
-	public final List<L2Spawn> getGuards()
+	private final List<L2Spawn> getGuards()
 	{
 		if (_guards == null)
 		{
 			synchronized (this)
 			{
 				if (_guards == null)
-					_guards = new FastList<L2Spawn>();
+				{
+					_guards = new FastList<>();
+				}
 			}
 		}
-		
 		return _guards;
 	}
 }

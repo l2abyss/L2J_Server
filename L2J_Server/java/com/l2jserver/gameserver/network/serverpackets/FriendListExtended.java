@@ -42,11 +42,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  * d: Player Level
  *
  * @author mrTJO & UnAfraid
- * 
  */
 public class FriendListExtended extends L2GameServerPacket
 {
-	// private static Logger _log = Logger.getLogger(FriendList.class.getName());
 	private static final String _S__FA_FRIENDLISTEXTENDED = "[S] 75 FriendListExtended";
 	private final List<FriendInfo> _info;
 	
@@ -70,7 +68,7 @@ public class FriendListExtended extends L2GameServerPacket
 	
 	public FriendListExtended(L2PcInstance player)
 	{
-		_info = new FastList<FriendInfo>(player.getFriendList().size());
+		_info = new FastList<>(player.getFriendList().size());
 		for (int objId : player.getFriendList())
 		{
 			String name = CharNameTable.getInstance().getNameById(objId);

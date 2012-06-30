@@ -1,14 +1,16 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under the terms of the
- * GNU General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License along with this program. If
- * not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
@@ -18,8 +20,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.model.L2Skill;
-import com.l2jserver.gameserver.skills.SkillsEngine;
+import com.l2jserver.gameserver.engines.DocumentEngine;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * 
@@ -37,9 +39,9 @@ public class SkillTable
 		return SingletonHolder._instance;
 	}
 	
-	private SkillTable()
+	protected SkillTable()
 	{
-		_skills = new TIntObjectHashMap<L2Skill>();
+		_skills = new TIntObjectHashMap<>();
 		_skillMaxLevel = new TIntIntHashMap();
 		_enchantable = new TIntArrayList();
 		load();
@@ -55,7 +57,7 @@ public class SkillTable
 	private void load()
 	{
 		_skills.clear();
-		SkillsEngine.getInstance().loadAllSkills(_skills);
+		DocumentEngine.getInstance().loadAllSkills(_skills);
 		
 		_skillMaxLevel.clear();
 		for (final L2Skill skill : _skills.values(new L2Skill[0]))
@@ -157,7 +159,6 @@ public class SkillTable
 		return temp;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SkillTable _instance = new SkillTable();
@@ -187,9 +188,9 @@ public class SkillTable
 		THE_VANQUISHED_OF_WAR(5075, 1),
 		SPECIAL_TREE_RECOVERY_BONUS(2139, 1);
 		
-		private final int _id;
-		private final int _level;
-		private L2Skill _skill = null;
+		protected final int _id;
+		protected final int _level;
+		protected L2Skill _skill = null;
 		
 		private FrequentSkill(int id, int level)
 		{

@@ -18,18 +18,18 @@ import java.util.Collection;
 import java.util.logging.Level;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.TrapKnownList;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.TrapAction;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  *
@@ -39,11 +39,11 @@ public class L2Trap extends L2Character
 {
 	protected static final int TICK = 1000; // 1s
 	
-	private boolean _isTriggered;
-	private final L2Skill _skill;
-	private final int _lifeTime;
-	private int _timeRemaining;
-	private boolean _hasLifeTime;
+	protected boolean _isTriggered;
+	protected final L2Skill _skill;
+	protected final int _lifeTime;
+	protected int _timeRemaining;
+	protected boolean _hasLifeTime;
 	
 	/**
 	 * @param objectId
@@ -284,7 +284,7 @@ public class L2Trap extends L2Character
 		return L2Skill.checkForAreaOffensiveSkills(this, target, _skill, false);
 	}
 	
-	private class TrapTask implements Runnable
+	protected class TrapTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -354,7 +354,7 @@ public class L2Trap extends L2Character
 		ThreadPoolManager.getInstance().scheduleGeneral(new TriggerTask(), 300);
 	}
 	
-	private class TriggerTask implements Runnable
+	protected class TriggerTask implements Runnable
 	{
 		@Override
 		public void run()
@@ -371,7 +371,7 @@ public class L2Trap extends L2Character
 		}
 	}
 	
-	private class UnsummonTask implements Runnable
+	protected class UnsummonTask implements Runnable
 	{
 		@Override
 		public void run()

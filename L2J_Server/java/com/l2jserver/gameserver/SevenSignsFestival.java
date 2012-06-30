@@ -50,24 +50,24 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 /**
- *Seven Signs Festival of Darkness Engine
- *
- *TODO:
- *- Archer mobs should target healer characters over other party members.
- *- ADDED 29 Sep: Players that leave a party during the Seven Signs Festival will now take damage and cannot be healed.
- *
+ * Seven Signs Festival of Darkness Engine.<br>
+ * TODO:<br>
+ * <ul>
+ * <li>Archer mobs should target healer characters over other party members.</li>
+ * <li>Added 29 Sep: Players that leave a party during the Seven Signs Festival will now take damage and cannot be healed.</li>
+ * </ul>
  *@author Tempy
  */
 public class SevenSignsFestival implements SpawnListener
@@ -780,19 +780,19 @@ public class SevenSignsFestival implements SpawnListener
 	 */
 	private Map<Integer, Map<Integer, StatsSet>> _festivalData;
 	
-	private SevenSignsFestival()
+	protected SevenSignsFestival()
 	{
-		_accumulatedBonuses = new FastList<Integer>();
+		_accumulatedBonuses = new FastList<>();
 		
-		_dawnFestivalParticipants = new FastMap<Integer, List<Integer>>();
-		_dawnPreviousParticipants = new FastMap<Integer, List<Integer>>();
-		_dawnFestivalScores = new FastMap<Integer, Long>();
+		_dawnFestivalParticipants = new FastMap<>();
+		_dawnPreviousParticipants = new FastMap<>();
+		_dawnFestivalScores = new FastMap<>();
 		
-		_duskFestivalParticipants = new FastMap<Integer, List<Integer>>();
-		_duskPreviousParticipants = new FastMap<Integer, List<Integer>>();
-		_duskFestivalScores = new FastMap<Integer, Long>();
+		_duskFestivalParticipants = new FastMap<>();
+		_duskPreviousParticipants = new FastMap<>();
+		_duskFestivalScores = new FastMap<>();
 		
-		_festivalData = new FastMap<Integer, Map<Integer, StatsSet>>();
+		_festivalData = new FastMap<>();
 		
 		restoreFestivalData();
 		
@@ -969,7 +969,7 @@ public class SevenSignsFestival implements SpawnListener
 				Map<Integer, StatsSet> tempData = _festivalData.get(festivalCycle);
 				
 				if (tempData == null)
-					tempData = new FastMap<Integer, StatsSet>();
+					tempData = new FastMap<>();
 				
 				tempData.put(festivalId, festivalDat);
 				_festivalData.put(festivalCycle, tempData);
@@ -990,7 +990,7 @@ public class SevenSignsFestival implements SpawnListener
 				
 			query.append("accumulated_bonus");
 			query.append(String.valueOf(FESTIVAL_COUNT - 1));
-			query.append(" ");
+			query.append(' ');
 			query.append("FROM seven_signs_status WHERE id=0");
 			
 			statement = con.prepareStatement(query.toString());
@@ -1219,7 +1219,7 @@ public class SevenSignsFestival implements SpawnListener
 		_duskFestivalScores.clear();
 		
 		// Set up a new data set for the current cycle of festivals
-		Map<Integer, StatsSet> newData = new FastMap<Integer, StatsSet>();
+		Map<Integer, StatsSet> newData = new FastMap<>();
 		
 		for (int i = 0; i < FESTIVAL_COUNT * 2; i++)
 		{
@@ -1281,12 +1281,12 @@ public class SevenSignsFestival implements SpawnListener
 		_nextFestivalStart = System.currentTimeMillis() + milliFromNow;
 	}
 	
-	public final int getMinsToNextCycle()
+	public final long getMinsToNextCycle()
 	{
 		if (SevenSigns.getInstance().isSealValidationPeriod())
 			return -1;
 		
-		return Math.round((_nextFestivalCycleStart - System.currentTimeMillis()) / 60000);
+		return (_nextFestivalCycleStart - System.currentTimeMillis()) / 60000;
 	}
 	
 	public final int getMinsToNextFestival()
@@ -1294,7 +1294,7 @@ public class SevenSignsFestival implements SpawnListener
 		if (SevenSigns.getInstance().isSealValidationPeriod())
 			return -1;
 		
-		return Math.round((_nextFestivalStart - System.currentTimeMillis()) / 60000) + 1;
+		return (int) (((_nextFestivalStart - System.currentTimeMillis()) / 60000) + 1);
 	}
 	
 	public final String getTimeToNextFestivalStr()
@@ -1388,8 +1388,8 @@ public class SevenSignsFestival implements SpawnListener
 		
 		if (festivalParty != null)
 		{
-			participants = new ArrayList<Integer>(festivalParty.getMemberCount());
-			for (L2PcInstance player : festivalParty.getPartyMembers())
+			participants = new ArrayList<>(festivalParty.getMemberCount());
+			for (L2PcInstance player : festivalParty.getMembers())
 			{
 				if (player == null)
 					continue;
@@ -1397,7 +1397,7 @@ public class SevenSignsFestival implements SpawnListener
 			}
 			
 			if (Config.DEBUG)
-				_log.info("SevenSignsFestival: " + festivalParty.getPartyMembers().toString() + " have signed up to the "
+				_log.info("SevenSignsFestival: " + festivalParty.getMembers().size() + " have signed up to the "
 						+ SevenSigns.getCabalShortName(oracle) + " " + getFestivalName(festivalId) + " festival.");
 		}
 		
@@ -1571,11 +1571,11 @@ public class SevenSignsFestival implements SpawnListener
 		{
 			// If the current score is greater than that for the other cabal,
 			// then they already have the points from this festival.
-			if (thisCabalHighScore < otherCabalHighScore)
+			if (thisCabalHighScore > otherCabalHighScore)
 				return false;
 			
 			List<Integer> prevParticipants = getPreviousParticipants(oracle, festivalId);
-			partyMembers = new ArrayList<String>(prevParticipants.size());
+			partyMembers = new ArrayList<>(prevParticipants.size());
 			
 			// Record a string list of the party members involved.
 			for (Integer partyMember : prevParticipants)
@@ -1770,7 +1770,7 @@ public class SevenSignsFestival implements SpawnListener
 		
 		public FestivalManager()
 		{
-			_festivalInstances = new FastMap<Integer, L2DarknessFestival>();
+			_festivalInstances = new FastMap<>();
 			_managerInstance = this;
 			
 			// Increment the cycle counter.
@@ -2059,8 +2059,8 @@ public class SevenSignsFestival implements SpawnListener
 		{
 			_cabal = cabal;
 			_levelRange = levelRange;
-			_originalLocations = new FastMap<Integer, FestivalSpawn>();
-			_npcInsts = new FastList<L2FestivalMonsterInstance>();
+			_originalLocations = new FastMap<>();
+			_npcInsts = new FastList<>();
 			
 			if (cabal == SevenSigns.CABAL_DAWN)
 			{
@@ -2077,7 +2077,7 @@ public class SevenSignsFestival implements SpawnListener
 			
 			// FOR TESTING!
 			if (_participants == null)
-				_participants = new ArrayList<Integer>();
+				_participants = new ArrayList<>();
 			
 			festivalInit();
 		}
@@ -2266,6 +2266,8 @@ public class SevenSignsFestival implements SpawnListener
 				case 3:
 					_npcSpawns = (_cabal == SevenSigns.CABAL_DAWN) ? FESTIVAL_DAWN_CHEST_SPAWNS[_levelRange] : FESTIVAL_DUSK_CHEST_SPAWNS[_levelRange];
 					break;
+				default:
+					return;
 			}
 			
 			for (int i = 0; i < _npcSpawns.length; i++)
@@ -2457,7 +2459,7 @@ public class SevenSignsFestival implements SpawnListener
 		}
 	}
 	
-	private final class ForEachPlayerRemoveUnusedBloodOfferings implements TObjectProcedure<L2PcInstance>
+	protected final class ForEachPlayerRemoveUnusedBloodOfferings implements TObjectProcedure<L2PcInstance>
 	{	
 		@Override
 		public final boolean execute(final L2PcInstance onlinePlayer)
@@ -2476,7 +2478,6 @@ public class SevenSignsFestival implements SpawnListener
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SevenSignsFestival _instance = new SevenSignsFestival();

@@ -15,14 +15,13 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * This class ...
@@ -32,11 +31,10 @@ import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 public class SellList extends L2GameServerPacket
 {
 	private static final String _S__10_SELLLIST = "[S] 06 SellList";
-	private static Logger _log = Logger.getLogger(SellList.class.getName());
 	private final L2PcInstance _activeChar;
 	private final L2MerchantInstance _lease;
 	private long _money;
-	private List<L2ItemInstance> _selllist = new FastList<L2ItemInstance>();
+	private List<L2ItemInstance> _selllist = new FastList<>();
 	
 	public SellList(L2PcInstance player)
 	{
@@ -85,7 +83,7 @@ public class SellList extends L2GameServerPacket
 		{
 			writeH(item.getItem().getType1());
 			writeD(item.getObjectId());
-			writeD(item.getItemId());
+			writeD(item.getDisplayId());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());
 			writeH(0x00);

@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -28,7 +27,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class RequestAnswerFriendInvite extends L2GameClientPacket
 {
 	private static final String _C__78_REQUESTANSWERFRIENDINVITE = "[C] 78 RequestAnswerFriendInvite";
-	private static Logger _log = Logger.getLogger(RequestAnswerFriendInvite.class.getName());
 	
 	private int _response;
 	
@@ -88,7 +86,8 @@ public final class RequestAnswerFriendInvite extends L2GameClientPacket
 				{
 					L2DatabaseFactory.close(con);
 				}
-			} else
+			}
+			else
 			{
 				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_INVITE_A_FRIEND);
 				requestor.sendPacket(msg);

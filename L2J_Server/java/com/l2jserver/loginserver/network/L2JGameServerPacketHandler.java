@@ -34,13 +34,18 @@ import com.l2jserver.loginserver.network.loginserverpackets.LoginServerFail;
 import com.l2jserver.util.network.BaseRecievePacket;
 
 /**
- * 
  * @author mrTJO
  */
 public class L2JGameServerPacketHandler
 {
 	protected static Logger _log = Logger.getLogger(L2JGameServerPacketHandler.class.getName());
-	public static enum GameServerState { CONNECTED, BF_CONNECTED, AUTHED }
+	
+	public static enum GameServerState
+	{
+		CONNECTED,
+		BF_CONNECTED,
+		AUTHED
+	}
 	
 	public static BaseRecievePacket handlePacket(byte[] data, GameServerThread server)
 	{
@@ -56,7 +61,7 @@ public class L2JGameServerPacketHandler
 						msg = new BlowFishKey(data, server);
 						break;
 					default:
-						_log.warning("Unknown Opcode ("+Integer.toHexString(opcode).toUpperCase()+") in state "+state.name()+" from GameServer, closing connection.");
+						_log.warning("Unknown Opcode (" + Integer.toHexString(opcode).toUpperCase() + ") in state " + state.name() + " from GameServer, closing connection.");
 						server.forceClose(LoginServerFail.NOT_AUTHED);
 						break;
 				}
@@ -68,7 +73,7 @@ public class L2JGameServerPacketHandler
 						msg = new GameServerAuth(data, server);
 						break;
 					default:
-						_log.warning("Unknown Opcode ("+Integer.toHexString(opcode).toUpperCase()+") in state "+state.name()+" from GameServer, closing connection.");
+						_log.warning("Unknown Opcode (" + Integer.toHexString(opcode).toUpperCase() + ") in state " + state.name() + " from GameServer, closing connection.");
 						server.forceClose(LoginServerFail.NOT_AUTHED);
 						break;
 				}
@@ -99,7 +104,9 @@ public class L2JGameServerPacketHandler
 						break;
 					case 0x09:
 						if (Config.EMAIL_SYS_ENABLED)
+						{
 							msg = new RequestSendMail(data);
+						}
 						break;
 					case 0x0A:
 						msg = new RequestTempBan(data);
@@ -108,7 +115,7 @@ public class L2JGameServerPacketHandler
 						new ChangePassword(data);
 						break;
 					default:
-						_log.warning("Unknown Opcode ("+Integer.toHexString(opcode).toUpperCase()+") in state "+state.name()+" from GameServer, closing connection.");
+						_log.warning("Unknown Opcode (" + Integer.toHexString(opcode).toUpperCase() + ") in state " + state.name() + " from GameServer, closing connection.");
 						server.forceClose(LoginServerFail.NOT_AUTHED);
 						break;
 				}

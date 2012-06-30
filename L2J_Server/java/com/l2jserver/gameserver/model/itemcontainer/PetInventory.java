@@ -16,10 +16,10 @@ package com.l2jserver.gameserver.model.itemcontainer;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class PetInventory extends Inventory
 {
@@ -73,7 +73,7 @@ public class PetInventory extends Inventory
 	}
 	
 	@Override
-	public boolean validateCapacity(int slots)
+	public boolean validateCapacity(long slots)
 	{
 		return (_items.size() + slots <= _owner.getInventoryLimit());
 	}
@@ -88,7 +88,7 @@ public class PetInventory extends Inventory
 	}
 	
 	@Override
-	public boolean validateWeight(int weight)
+	public boolean validateWeight(long weight)
 	{
 		return (_totalWeight + weight <= _owner.getMaxLoad());
 	}

@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeList;
@@ -30,7 +28,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 public final class TradeDone extends L2GameClientPacket
 {
 	private static final String _C__1C_TRADEDONE = "[C] 1C TradeDone";
-	private static Logger _log = Logger.getLogger(TradeDone.class.getName());
 	
 	private int _response;
 	

@@ -32,10 +32,6 @@ public class PetNameTable
 {
 	private static Logger _log = Logger.getLogger(PetNameTable.class.getName());
 	
-	private PetNameTable()
-	{
-	}
-	
 	public static PetNameTable getInstance()
 	{
 		return SingletonHolder._instance;
@@ -116,7 +112,6 @@ public class PetNameTable
 		return result;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final PetNameTable _instance = new PetNameTable();

@@ -14,12 +14,10 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
@@ -30,9 +28,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 public final class RequestGiveItemToPet extends L2GameClientPacket
 {
 	private static final String _C__95_REQUESTCIVEITEMTOPET = "[C] 95 RequestGiveItemToPet";
-	
-	private static Logger _log = Logger.getLogger(RequestGetItemFromPet.class.getName());
-	
+		
 	private int _objectId;
 	private long _amount;
 	

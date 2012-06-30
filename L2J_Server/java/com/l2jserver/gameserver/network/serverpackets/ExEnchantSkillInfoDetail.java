@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
+import com.l2jserver.gameserver.datatables.EnchantGroupsData;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
@@ -45,14 +45,14 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 	public ExEnchantSkillInfoDetail(int type, int skillid, int skilllvl, L2PcInstance ply)
 	{
 		
-		L2EnchantSkillLearn enchantLearn = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(skillid);
-		EnchantSkillDetail esd = null;
+		L2EnchantSkillLearn enchantLearn = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(skillid);
+		EnchantSkillHolder esd = null;
 		// do we have this skill?
 		if (enchantLearn != null)
 		{
 			if (skilllvl > 100)
 			{
-				esd = enchantLearn.getEnchantSkillDetail(skilllvl);
+				esd = enchantLearn.getEnchantSkillHolder(skilllvl);
 			}
 			else
 				esd = enchantLearn.getFirstRouteGroup().getEnchantGroupDetails().get(0);
@@ -62,9 +62,9 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 			throw new IllegalArgumentException("Skill "+skillid + " dont have enchant data for level "+skilllvl);
 		
 		if (type == 0)
-			multi = EnchantGroupsTable.NORMAL_ENCHANT_COST_MULTIPLIER;
+			multi = EnchantGroupsData.NORMAL_ENCHANT_COST_MULTIPLIER;
 		else if (type == 1)
-			multi = EnchantGroupsTable.SAFE_ENCHANT_COST_MULTIPLIER;
+			multi = EnchantGroupsData.SAFE_ENCHANT_COST_MULTIPLIER;
 		_chance = esd.getRate(ply);
 		_sp = esd.getSpCost();
 		if (type == TYPE_UNTRAIN_ENCHANT)
@@ -77,19 +77,19 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		switch (type)
 		{
 			case TYPE_NORMAL_ENCHANT:
-				bookId = EnchantGroupsTable.NORMAL_ENCHANT_BOOK;
+				bookId = EnchantGroupsData.NORMAL_ENCHANT_BOOK;
 				reqCount = ((_skilllvl % 100 > 1) ? 0 : 1) ;
 				break;
 			case TYPE_SAFE_ENCHANT:
-				bookId = EnchantGroupsTable.SAFE_ENCHANT_BOOK;
+				bookId = EnchantGroupsData.SAFE_ENCHANT_BOOK;
 				reqCount = 1;
 				break;
 			case TYPE_UNTRAIN_ENCHANT:
-				bookId = EnchantGroupsTable.UNTRAIN_ENCHANT_BOOK;
+				bookId = EnchantGroupsData.UNTRAIN_ENCHANT_BOOK;
 				reqCount = 1;
 				break;
 			case TYPE_CHANGE_ENCHANT:
-				bookId = EnchantGroupsTable.CHANGE_ENCHANT_BOOK;
+				bookId = EnchantGroupsData.CHANGE_ENCHANT_BOOK;
 				reqCount = 1;
 				break;
 			default:
@@ -100,18 +100,12 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 			reqCount = 0;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{
 		return "[S] FE:5E ExEnchantSkillInfoDetail";
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -129,5 +123,4 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		writeD(bookId); // ItemId Required
 		writeD(reqCount);
 	}
-	
 }

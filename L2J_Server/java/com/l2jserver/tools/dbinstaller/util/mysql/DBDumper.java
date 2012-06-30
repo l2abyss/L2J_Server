@@ -15,11 +15,9 @@
 package com.l2jserver.tools.dbinstaller.util.mysql;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
@@ -78,26 +76,36 @@ public class DBDumper
 				ps.println("(");
 				PreparedStatement desc = con.prepareStatement("DESC " + rset.getString(1));
 				ResultSet dset = desc.executeQuery();
-				Map<String, List<String>> keys = new HashMap<String, List<String>>();
+				Map<String, List<String>> keys = new HashMap<>();
 				boolean isFirst = true;
 				while (dset.next())
 				{
 					if (!isFirst)
+					{
 						ps.println(",");
+					}
 					ps.print("\t`" + dset.getString(1) + "`");
 					ps.print(" " + dset.getString(2));
 					if (dset.getString(3).equals("NO"))
+					{
 						ps.print(" NOT NULL");
+					}
 					if (!dset.getString(4).isEmpty())
 					{
 						if (!keys.containsKey(dset.getString(4)))
+						{
 							keys.put(dset.getString(4), new ArrayList<String>());
+						}
 						keys.get(dset.getString(4)).add(dset.getString(1));
 					}
 					if (dset.getString(5) != null)
+					{
 						ps.print(" DEFAULT '" + dset.getString(5) + "'");
+					}
 					if (!dset.getString(6).isEmpty())
+					{
 						ps.print(" " + dset.getString(6));
+					}
 					isFirst = false;
 				}
 				if (keys.containsKey("PRI"))
@@ -108,7 +116,9 @@ public class DBDumper
 					for (String key : keys.get("PRI"))
 					{
 						if (!isFirst)
+						{
 							ps.print(", ");
+						}
 						ps.print("`" + key + "`");
 						isFirst = false;
 					}
@@ -121,7 +131,9 @@ public class DBDumper
 					for (String key : keys.get("MUL"))
 					{
 						if (!isFirst)
+						{
 							ps.println(", ");
+						}
 						ps.print("\tKEY `key_" + key + "` (`" + key + "`)");
 						isFirst = false;
 					}
@@ -139,32 +151,46 @@ public class DBDumper
 				while (dset.next())
 				{
 					if ((cnt % 100) == 0)
+					{
 						ps.println("INSERT INTO `" + rset.getString(1) + "` VALUES ");
+					}
 					else
+					{
 						ps.println(",");
+					}
 					
 					ps.print("\t(");
 					boolean isInFirst = true;
 					for (int i = 1; i <= dset.getMetaData().getColumnCount(); i++)
 					{
 						if (!isInFirst)
+						{
 							ps.print(", ");
+						}
 						
 						if (dset.getString(i) == null)
+						{
 							ps.print("NULL");
+						}
 						else
+						{
 							ps.print("'" + dset.getString(i).replace("\'", "\\\'") + "'");
+						}
 						isInFirst = false;
 					}
 					ps.print(")");
 					isFirst = false;
 					
 					if ((cnt % 100) == 99)
+					{
 						ps.println(";");
+					}
 					cnt++;
 				}
-				if (!isFirst && (cnt % 100) != 0)
+				if (!isFirst && ((cnt % 100) != 0))
+				{
 					ps.println(";");
+				}
 				ps.println();
 				ps.flush();
 				dset.close();
@@ -175,11 +201,7 @@ public class DBDumper
 			ps.flush();
 			ps.close();
 		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}

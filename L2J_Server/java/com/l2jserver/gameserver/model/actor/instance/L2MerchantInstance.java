@@ -19,10 +19,10 @@ import com.l2jserver.gameserver.TradeController;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable.MerchantPriceConfig;
 import com.l2jserver.gameserver.model.L2TradeList;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.BuyList;
 import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * This class ...

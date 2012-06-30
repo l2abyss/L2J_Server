@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.handler;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-import com.l2jserver.gameserver.model.item.L2EtcItem;
+import com.l2jserver.gameserver.model.items.L2EtcItem;
 
 /**
  * This class manages handlers of items
@@ -48,9 +48,9 @@ public class ItemHandler
 	/**
 	 * Constructor of ItemHandler
 	 */
-	private ItemHandler()
+	protected ItemHandler()
 	{
-		_datatable = new TIntObjectHashMap<IItemHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	/**
@@ -77,7 +77,6 @@ public class ItemHandler
 		return _datatable.get(item.getHandlerName().hashCode());
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ItemHandler _instance = new ItemHandler();

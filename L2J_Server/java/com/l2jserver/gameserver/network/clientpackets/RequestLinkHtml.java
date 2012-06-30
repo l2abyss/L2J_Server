@@ -16,7 +16,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -28,7 +27,6 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
  */
 public final class RequestLinkHtml extends L2GameClientPacket
 {
-	private static Logger _log = Logger.getLogger(RequestLinkHtml.class.getName());
 	private static final String _C__22_REQUESTLINKHTML = "[C] 22 RequestLinkHtml";
 	private String _link;
 	

@@ -17,9 +17,11 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
+import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExClosePartyRoom;
+import com.l2jserver.gameserver.network.serverpackets.ListPartyWating;
 
 /**
  * format (ch) d
@@ -40,30 +42,46 @@ public final class RequestOustFromPartyRoom extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null)
+		L2PcInstance player = getActiveChar();
+		if (player == null)
+		{
 			return;
+		}
 		
 		L2PcInstance member = L2World.getInstance().getPlayer(_charid);
 		if (member == null)
-			return;
-		
-		PartyMatchRoom _room = PartyMatchRoomList.getInstance().getPlayerRoom(member);
-		if (_room == null)
-			return;
-		
-		if (_room.getOwner() != activeChar)
-			return;
-		
-		if (activeChar.isInParty() && member.isInParty() && activeChar.getParty().getPartyLeaderOID() == member.getParty().getPartyLeaderOID())
 		{
-			activeChar.sendPacket(SystemMessageId.CANNOT_DISMISS_PARTY_MEMBER);
+			return;
+		}
+		
+		PartyMatchRoom room = PartyMatchRoomList.getInstance().getPlayerRoom(member);
+		if (room == null || room.getOwner() != player)
+		{
+			return;
+		}
+		
+		if (player.isInParty() && member.isInParty() && (player.getParty().getLeaderObjectId() == member.getParty().getLeaderObjectId()))
+		{
+			player.sendPacket(SystemMessageId.CANNOT_DISMISS_PARTY_MEMBER);
 		}
 		else
 		{
-			_room.deleteMember(member);
+			// Remove member from party room
+			room.deleteMember(member);
 			member.setPartyRoom(0);
+			
+			// Close the PartyRoom window
 			member.sendPacket(new ExClosePartyRoom());
+			
+			// Add player back on waiting list
+			PartyMatchWaitingList.getInstance().addPlayer(member);
+			
+			// Send Room list
+			int loc = 0; // TODO: Closes town
+			member.sendPacket(new ListPartyWating(member, 0, loc, member.getLevel()));
+			
+			// Clean player's LFP title
+			member.broadcastUserInfo();
 			member.sendPacket(SystemMessageId.OUSTED_FROM_PARTY_ROOM);
 		}
 	}

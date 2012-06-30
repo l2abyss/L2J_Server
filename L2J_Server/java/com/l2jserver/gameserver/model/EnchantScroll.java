@@ -14,38 +14,30 @@
  */
 package com.l2jserver.gameserver.model;
 
-import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import java.util.List;
 
+import com.l2jserver.Config;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author UnAfraid
- *
  */
 public class EnchantScroll extends EnchantItem
 {
 	private final boolean _isBlessed;
-	private final boolean _isCrystal;
 	private final boolean _isSafe;
 	
 	/**
-	 * @param wep
-	 * @param bless
-	 * @param crystal
-	 * @param safe
-	 * @param type
-	 * @param level
-	 * @param chance
+	 * @param set
 	 * @param items
 	 */
-	public EnchantScroll(boolean wep, boolean bless, boolean crystal, boolean safe, int type, int level, double chance, int[] items)
+	public EnchantScroll(StatsSet set, List<Integer> items)
 	{
-		super(wep, type, level, chance, items);
+		super(set, items);
 		
-		_isBlessed = bless;
-		_isCrystal = crystal;
-		_isSafe = safe;
+		_isBlessed = set.getBool("isBlessed", false);
+		_isSafe = set.getBool("isSafe", false);
 	}
 	
 	/**
@@ -54,14 +46,6 @@ public class EnchantScroll extends EnchantItem
 	public final boolean isBlessed()
 	{
 		return _isBlessed;
-	}
-	
-	/**
-	 * @return true for crystal scrolls
-	 */
-	public final boolean isCrystal()
-	{
-		return _isCrystal;
 	}
 	
 	/**
@@ -97,8 +81,7 @@ public class EnchantScroll extends EnchantItem
 			return -1;
 		
 		boolean fullBody = enchantItem.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR;
-		if (enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX
-				|| (fullBody && enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL))
+		if (enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX || (fullBody && enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL))
 			return 100;
 		
 		double chance = _chanceAdd;

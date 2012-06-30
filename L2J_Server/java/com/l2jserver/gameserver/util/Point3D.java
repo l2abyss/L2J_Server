@@ -18,7 +18,6 @@ import java.io.Serializable;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
 public class Point3D implements Serializable
@@ -28,7 +27,6 @@ public class Point3D implements Serializable
 	 */
 	private static final long serialVersionUID = 4638345252031872576L;
 	
-	/* since using volatile vars, removing all synchronizations */
 	private volatile int _x, _y, _z;
 	
 	public Point3D(int pX, int pY, int pZ)
@@ -77,10 +75,14 @@ public class Point3D implements Serializable
 	@Override
 	public boolean equals(Object o)
 	{
+		if (this == o)
+		{
+			return true;
+		}
 		if (o instanceof Point3D)
 		{
 			Point3D point3D = (Point3D) o;
-			boolean ret = point3D._x == _x && point3D._y == _y && point3D._z == _z;
+			boolean ret = (point3D._x == _x) && (point3D._y == _y) && (point3D._z == _z);
 			return ret;
 		}
 		return false;
@@ -88,7 +90,7 @@ public class Point3D implements Serializable
 	
 	public boolean equals(int pX, int pY, int pZ)
 	{
-		return _x == pX && _y == pY && _z == pZ;
+		return (_x == pX) && (_y == pY) && (_z == pZ);
 	}
 	
 	public long distanceSquaredTo(Point3D point)
@@ -109,7 +111,7 @@ public class Point3D implements Serializable
 	
 	public static boolean distanceLessThan(Point3D point1, Point3D point2, double distance)
 	{
-		return distanceSquared(point1, point2) < distance * distance;
+		return distanceSquared(point1, point2) < (distance * distance);
 	}
 	
 	public int getX()
@@ -148,8 +150,4 @@ public class Point3D implements Serializable
 		_y = pY;
 		_z = pZ;
 	}
-	
-	/* note by Deedlit: we are using volatile variable types here. We dont need to additionally 
-	 * use synchronized, cause volatile vars are synced vars. Removed all, please test if all is ok. Need to
-	 * look through code and remove similar pointless lockings if any more there. */
 }

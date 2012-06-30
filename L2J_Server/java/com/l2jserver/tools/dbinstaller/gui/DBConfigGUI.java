@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingConstants;
 
 import com.l2jserver.tools.dbinstaller.RunTasks;
 import com.l2jserver.tools.dbinstaller.util.mysql.MySqlConnect;
@@ -74,7 +75,7 @@ public class DBConfigGUI extends JFrame
 		_prop = Preferences.userRoot();
 		
 		// Host
-		JLabel labelDbHost = new JLabel("Host: ", JLabel.LEFT);
+		JLabel labelDbHost = new JLabel("Host: ", SwingConstants.LEFT);
 		add(labelDbHost);
 		_dbHost = new JTextField(15);
 		_dbHost.setText(_prop.get("dbHost_" + db, "localhost"));
@@ -82,7 +83,7 @@ public class DBConfigGUI extends JFrame
 		add(_dbHost);
 		
 		// Port
-		JLabel labelDbPort = new JLabel("Port: ", JLabel.LEFT);
+		JLabel labelDbPort = new JLabel("Port: ", SwingConstants.LEFT);
 		add(labelDbPort);
 		_dbPort = new JTextField(15);
 		_dbPort.setText(_prop.get("dbPort_" + db, "3306"));
@@ -90,7 +91,7 @@ public class DBConfigGUI extends JFrame
 		add(_dbPort);
 		
 		// Username
-		JLabel labelDbUser = new JLabel("Username: ", JLabel.LEFT);
+		JLabel labelDbUser = new JLabel("Username: ", SwingConstants.LEFT);
 		add(labelDbUser);
 		_dbUser = new JTextField(15);
 		_dbUser.setText(_prop.get("dbUser_" + db, "root"));
@@ -98,7 +99,7 @@ public class DBConfigGUI extends JFrame
 		add(_dbUser);
 		
 		// Password
-		JLabel labelDbPass = new JLabel("Password: ", JLabel.LEFT);
+		JLabel labelDbPass = new JLabel("Password: ", SwingConstants.LEFT);
 		add(labelDbPass);
 		_dbPass = new JPasswordField(15);
 		_dbPass.setText(_prop.get("dbPass_" + db, ""));
@@ -106,7 +107,7 @@ public class DBConfigGUI extends JFrame
 		add(_dbPass);
 		
 		// Database
-		JLabel labelDbDbse = new JLabel("Database: ", JLabel.LEFT);
+		JLabel labelDbDbse = new JLabel("Database: ", SwingConstants.LEFT);
 		add(labelDbDbse);
 		_dbDbse = new JTextField(15);
 		_dbDbse.setText(_prop.get("dbDbse_" + db, db));
@@ -147,19 +148,25 @@ public class DBConfigGUI extends JFrame
 					
 					Object[] options =
 					{
-						"Full Install", "Upgrade", "Exit"
+						"Full Install",
+						"Upgrade",
+						"Exit"
 					};
 					int n = JOptionPane.showOptionDialog(null, "Select Installation Type", "Installation Type", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 					
-					if (n == 2 || n == -1)
+					if ((n == 2) || (n == -1))
+					{
 						System.exit(0);
+					}
 					
 					if (n == 0)
 					{
 						int conf = JOptionPane.showConfirmDialog(null, "Do you really want to destroy your db?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 						
 						if (conf == 1)
+						{
 							System.exit(0);
+						}
 						
 						cleanInstall = true;
 					}

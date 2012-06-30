@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
@@ -27,22 +26,23 @@ import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.Race;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2ArmorType;
-import com.l2jserver.gameserver.model.item.type.L2WeaponType;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.items.L2EtcItem;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2ArmorType;
+import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.ExUseSharedGroupItem;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
-import com.l2jserver.gameserver.network.serverpackets.ShowCalculator;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.skills.SkillHolder;
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
 
 /**
  * This class ...
@@ -52,7 +52,6 @@ import com.l2jserver.gameserver.templates.skills.L2SkillType;
 public final class UseItem extends L2GameClientPacket
 {
 	private static final String _C__19_USEITEM = "[C] 19 UseItem";
-	private static Logger _log = Logger.getLogger(UseItem.class.getName());
 	
 	private int _objectId;
 	private boolean _ctrlPressed;
@@ -94,7 +93,14 @@ public final class UseItem extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
+		
+		if (Config.DEBUG)
+		{
+			_log.log(Level.INFO, activeChar + ": use item " + _objectId);
+		}
 		
 		// Flood protect UseItem
 		if (!getClient().getFloodProtectors().getUseItem().tryPerformAction("use item"))
@@ -142,13 +148,12 @@ public final class UseItem extends L2GameClientPacket
 		if (!item.isEquipped() && !item.getItem().checkCondition(activeChar, activeChar, true))
 			return;
 		
-		if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
+		_itemId = item.getItemId();
+		if (!activeChar.getInventory().canManipulateWithItemId(_itemId))
 		{
 			activeChar.sendMessage("Cannot use this item.");
 			return;
 		}
-		
-		_itemId = item.getItemId();
 		
 		if (activeChar.isFishing() && (_itemId < 6535 || _itemId > 6540))
 		{
@@ -172,11 +177,31 @@ public final class UseItem extends L2GameClientPacket
 
 		}
 		
-		if (Config.DEBUG)
-			_log.log(Level.INFO, activeChar.getObjectId() + ": use item " + _objectId);
+		// If the item has reuse time and it has not passed.
+		// Message from reuse delay must come from item.
+		final int reuseDelay = item.getReuseDelay();
+		final int sharedReuseGroup = item.getSharedReuseGroup();
+		if (reuseDelay > 0)
+		{
+			final long reuse = activeChar.getItemRemainingReuseTime(item.getObjectId());
+			if (reuse > 0)
+			{
+				reuseData(activeChar, item);
+				sendSharedGroupUpdate(activeChar, sharedReuseGroup, reuse, reuseDelay);
+				return;
+			}
+			
+			final long reuseOnGroup = activeChar.getReuseDelayOnGroup(sharedReuseGroup); 
+			if (reuseOnGroup > 0)
+			{
+				reuseData(activeChar, item);
+				sendSharedGroupUpdate(activeChar, sharedReuseGroup, reuseOnGroup, reuseDelay);
+				return;
+			}
+		}
 		
 		if (item.isEquipable())
-		{	
+		{
 			// Don't allow to put formal wear while a cursed weapon is equipped.
 			if (activeChar.isCursedWeaponEquipped() && _itemId == 6408)
 			{
@@ -184,7 +209,7 @@ public final class UseItem extends L2GameClientPacket
 			}
 			
 			// Equip or unEquip
-			if (FortSiegeManager.getInstance().isCombat(item.getItemId()))
+			if (FortSiegeManager.getInstance().isCombat(_itemId))
 				return;	//no message
 			else if (activeChar.isCombatFlagEquipped())
 				return;
@@ -308,16 +333,12 @@ public final class UseItem extends L2GameClientPacket
 		else
 		{
 			if(activeChar.isCastingNow() && !(item.isPotion() || item.isElixir()))
-				return;
-			
-			L2Weapon weaponItem = activeChar.getActiveWeaponItem();
-			int itemid = item.getItemId();
-			if (itemid == 4393)
 			{
-				activeChar.sendPacket(new ShowCalculator(4393));
+				return;
 			}
-			else if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.FISHINGROD)
-					&& ((itemid >= 6519 && itemid <= 6527) || (itemid >= 7610 && itemid <= 7613) || (itemid >= 7807 && itemid <= 7809) || (itemid >= 8484 && itemid <= 8486) || (itemid >= 8505 && itemid <= 8513)))
+			
+			final L2Weapon weaponItem = activeChar.getActiveWeaponItem();
+			if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.FISHINGROD) && ((_itemId >= 6519 && _itemId <= 6527) || (_itemId >= 7610 && _itemId <= 7613) || (_itemId >= 7807 && _itemId <= 7809) || (_itemId >= 8484 && _itemId <= 8486) || (_itemId >= 8505 && _itemId <= 8513)))
 			{
 				activeChar.getInventory().setPaperdollItem(Inventory.PAPERDOLL_LHAND, item);
 				activeChar.broadcastUserInfo();
@@ -325,14 +346,69 @@ public final class UseItem extends L2GameClientPacket
 				sendPacket(new ItemList(activeChar, false));
 				return;
 			}
-			else
+			
+			final L2EtcItem etcItem = item.getEtcItem();
+			final IItemHandler handler = ItemHandler.getInstance().getHandler(etcItem);
+			if (handler == null)
 			{
-				IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
-				if (handler != null)
-					handler.useItem(activeChar, item, _ctrlPressed);
+				if ((etcItem != null) && (etcItem.getHandlerName() != null))
+				{
+					_log.log(Level.WARNING, "Unmanaged Item handler: " + etcItem.getHandlerName() + " for Item Id: " + _itemId + "!");
+				}
 				else if (Config.DEBUG)
-					_log.log(Level.WARNING, "No item handler registered for item ID " + item.getItemId() + ".");
+				{
+					_log.log(Level.WARNING, "No Item handler registered for Item Id: " + _itemId + "!");
+				}
+				return;
 			}
+			
+			// Item reuse time should be added if the item is successfully used.
+			// Skill reuse delay is done at handlers.itemhandlers.ItemSkillsTemplate;
+			if (handler.useItem(activeChar, item, _ctrlPressed))
+			{
+				if (reuseDelay > 0)
+				{
+					activeChar.addTimeStampItem(item, reuseDelay);
+					sendSharedGroupUpdate(activeChar, sharedReuseGroup, reuseDelay, reuseDelay);
+				}
+			}
+		}
+	}
+	
+	private void reuseData(L2PcInstance activeChar, L2ItemInstance item)
+	{
+		SystemMessage sm = null;
+		final long remainingTime = activeChar.getItemRemainingReuseTime(item.getObjectId());
+		final int hours = (int) (remainingTime / 3600000L);
+		final int minutes = (int) (remainingTime % 3600000L) / 60000;
+		final int seconds = (int) (remainingTime / 1000 % 60);
+		if (hours > 0)
+		{
+			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1);
+			sm.addItemName(item);
+			sm.addNumber(hours);
+			sm.addNumber(minutes);
+		}
+		else if (minutes > 0)
+		{
+			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1);
+			sm.addItemName(item);
+			sm.addNumber(minutes);
+		}
+		else
+		{
+			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_SECONDS_REMAINING_FOR_REUSE_S1);
+			sm.addItemName(item);
+		}
+		sm.addNumber(seconds);
+		activeChar.sendPacket(sm);
+	}
+	
+	private void sendSharedGroupUpdate(L2PcInstance activeChar, int group, long remaining, int reuse)
+	{
+		if (group > 0)
+		{
+			activeChar.sendPacket(new ExUseSharedGroupItem(_itemId, group, remaining, reuse));
 		}
 	}
 	

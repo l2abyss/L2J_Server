@@ -19,16 +19,13 @@ import java.util.Iterator;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 
-
 /**
  * This class ...
- *
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
- * @param <T> 
+ * @param <T>
  */
 public abstract class L2ObjectMap<T extends L2Object> implements Iterable<T>
 {
-	
 	public abstract int size();
 	
 	public abstract boolean isEmpty();
@@ -51,9 +48,9 @@ public abstract class L2ObjectMap<T extends L2Object> implements Iterable<T>
 		switch (Config.MAP_TYPE)
 		{
 			case WorldObjectMap:
-				return new WorldObjectMap<L2Object>();
+				return new WorldObjectMap<>();
 			default:
-				return new WorldObjectTree<L2Object>();
+				return new WorldObjectTree<>();
 		}
 	}
 }

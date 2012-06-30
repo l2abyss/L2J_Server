@@ -14,10 +14,10 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.datatables.EnchantItemTable;
+import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.model.EnchantItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPutEnchantSupportItemResult;
 
@@ -52,7 +52,7 @@ public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
 				if (item == null || support == null)
 					return;
 				
-				EnchantItem supportTemplate = EnchantItemTable.getInstance().getSupportItem(support);
+				EnchantItem supportTemplate = EnchantItemData.getInstance().getSupportItem(support);
 				
 				if (supportTemplate == null || !supportTemplate.isValid(item))
 				{

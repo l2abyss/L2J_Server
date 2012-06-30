@@ -28,9 +28,9 @@ public class TelnetHandler
 		return SingletonHolder._instance;
 	}
 	
-	private TelnetHandler()
+	protected TelnetHandler()
 	{
-		_telnetHandlers = new TIntObjectHashMap<ITelnetHandler>();
+		_telnetHandlers = new TIntObjectHashMap<>();
 	}
 	
 	public void registerHandler(ITelnetHandler handler)
@@ -58,7 +58,6 @@ public class TelnetHandler
 		return _telnetHandlers.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TelnetHandler _instance = new TelnetHandler();

@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
  *
  * Close to this task is the task of AI.
  * If a player's character is attacking a mob, his ATTACK may be
- * iterrupted by an event, that temporary disable attacking.
+ * interrupted by an event, that temporary disable attacking.
  * But when the possibility to ATTACK will be enabled, the
  * character must continue the ATTACK. For mobs it may be
  * more complex, since we want them to decide when to use magic,
@@ -42,24 +42,22 @@ import com.l2jserver.gameserver.model.actor.L2Character;
  * set a desired, simple "wish" of a character, and the implementation
  * of this interface will take care about the rest.
  * The goal of a character may be like "ATTACK", "random walk" and so on.
- * To reach the goal inplementation will split it into several small
+ * To reach the goal implementation will split it into several small
  * actions, several steps (possibly repeatable). Like "run to target"
  * then "hit it", then if target is not dead - repeat.
- * This flow of simplier steps may be interrupted by incoming events.
+ * This flow of simpler steps may be interrupted by incoming events.
  * Like a character's movement was disabled (by Root spell, for instance).
  * Depending on character's ability AI may choose to wait, or to use
  * magic ATTACK and so on.
  * Additionally incoming events are compared with client's state
  * of the character, and required network messages are sent to
  * client's, i.e. if we have incoming event that character's movement
- * was disabled, it causes changing if its behavour, and if client's
+ * was disabled, it causes changing if its behavior, and if client's
  * state for the character is "moving" we send messages to clients
  * to stop the avatar/mob.
- *
  */
 public interface Ctrl
 {
-	
 	/**
 	 * the character this AI serves 
 	 * @return

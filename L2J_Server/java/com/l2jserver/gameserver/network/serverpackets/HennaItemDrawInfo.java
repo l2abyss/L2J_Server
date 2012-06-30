@@ -15,16 +15,19 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2HennaInstance;
+import com.l2jserver.gameserver.model.items.L2Henna;
 
+/**
+ * @author Zoey76
+ */
 public class HennaItemDrawInfo extends L2GameServerPacket
 {
-	private static final String _S__E3_HennaItemDrawInfo = "[S] e4 HennaItemDrawInfo";
+	private static final String _S__E4_HENNAITEMDRAWINFO = "[S] E4 HennaItemDrawInfo";
 	
-	private L2PcInstance _activeChar;
-	private L2HennaInstance _henna;
+	private final L2PcInstance _activeChar;
+	private final L2Henna _henna;
 	
-	public HennaItemDrawInfo(L2HennaInstance henna, L2PcInstance player)
+	public HennaItemDrawInfo(L2Henna henna, L2PcInstance player)
 	{
 		_henna = henna;
 		_activeChar = player;
@@ -33,30 +36,30 @@ public class HennaItemDrawInfo extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xe4);
-		writeD(_henna.getSymbolId()); //symbol Id
-		writeD(_henna.getItemIdDye()); //item id of dye
-		writeQ(_henna.getAmountDyeRequire()); // total amount of dye require
-		writeQ(_henna.getPrice()); //total amount of aden require to draw symbol
-		writeD(1); //able to draw or not 0 is false and 1 is true
+		writeC(0xE4);
+		writeD(_henna.getDyeId()); // symbol Id
+		writeD(_henna.getDyeItemId()); // item id of dye
+		writeQ(_henna.getWearCount()); // total amount of dye require
+		writeQ(_henna.getWearFee()); // total amount of Adena require to draw symbol
+		writeD(_henna.isAllowedClass(_activeChar.getClassId()) ? 0x01 : 0x00); // able to draw or not 0 is false and 1 is true
 		writeQ(_activeChar.getAdena());
-		writeD(_activeChar.getINT()); //current INT
-		writeC(_activeChar.getINT() + _henna.getStatINT()); //equip INT
-		writeD(_activeChar.getSTR()); //current STR
-		writeC(_activeChar.getSTR() + _henna.getStatSTR()); //equip STR
-		writeD(_activeChar.getCON()); //current CON
-		writeC(_activeChar.getCON() + _henna.getStatCON()); //equip CON
-		writeD(_activeChar.getMEN()); //current MEM
-		writeC(_activeChar.getMEN() + _henna.getStatMEM());	//equip MEM
-		writeD(_activeChar.getDEX()); //current DEX
-		writeC(_activeChar.getDEX() + _henna.getStatDEX());	//equip DEX
-		writeD(_activeChar.getWIT()); //current WIT
-		writeC(_activeChar.getWIT() + _henna.getStatWIT()); //equip WIT
+		writeD(_activeChar.getINT()); // current INT
+		writeC(_activeChar.getINT() + _henna.getStatINT()); // equip INT
+		writeD(_activeChar.getSTR()); // current STR
+		writeC(_activeChar.getSTR() + _henna.getStatSTR()); // equip STR
+		writeD(_activeChar.getCON()); // current CON
+		writeC(_activeChar.getCON() + _henna.getStatCON()); // equip CON
+		writeD(_activeChar.getMEN()); // current MEN
+		writeC(_activeChar.getMEN() + _henna.getStatMEN()); // equip MEN
+		writeD(_activeChar.getDEX()); // current DEX
+		writeC(_activeChar.getDEX() + _henna.getStatDEX()); // equip DEX
+		writeD(_activeChar.getWIT()); // current WIT
+		writeC(_activeChar.getWIT() + _henna.getStatWIT()); // equip WIT
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _S__E3_HennaItemDrawInfo;
+		return _S__E4_HENNAITEMDRAWINFO;
 	}
 }

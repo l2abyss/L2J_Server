@@ -36,12 +36,12 @@ import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.PlayerEventStatus;
 import com.l2jserver.util.ValueSortMap;
 
@@ -58,12 +58,12 @@ public class L2Event
 	public static String _eventCreator = "";
 	public static String _eventInfo = "";
 	public static int _teamsNumber = 0;
-	public static final Map<Integer, String> _teamNames = new FastMap<Integer, String>();
-	public static final List<L2PcInstance> _registeredPlayers = new FastList<L2PcInstance>();
-	public static final Map<Integer, FastList<L2PcInstance>> _teams = new FastMap<Integer, FastList<L2PcInstance>>();
+	public static final Map<Integer, String> _teamNames = new FastMap<>();
+	public static final List<L2PcInstance> _registeredPlayers = new FastList<>();
+	public static final Map<Integer, FastList<L2PcInstance>> _teams = new FastMap<>();
 	public static int _npcId = 0;
 	//public static final List<L2Npc> _npcs = new FastList<L2Npc>();
-	private static final Map<L2PcInstance, PlayerEventStatus> _connectionLossData = new FastMap<L2PcInstance, PlayerEventStatus>();
+	private static final Map<L2PcInstance, PlayerEventStatus> _connectionLossData = new FastMap<>();
 	
 	public enum EventState
 	{
@@ -93,7 +93,7 @@ public class L2Event
 	
 	public static List<L2PcInstance> getTopNKillers(int n)
 	{
-		Map<L2PcInstance, Integer> tmp = new FastMap<L2PcInstance, Integer>();
+		Map<L2PcInstance, Integer> tmp = new FastMap<>();
 		
 		for (FastList<L2PcInstance> teamList : _teams.values())
 		{
@@ -111,12 +111,12 @@ public class L2Event
 		// If the map size is less than "n", n will be as much as the map size
 		if (tmp.size() <= n)
 		{
-			List<L2PcInstance> toReturn = new FastList<L2PcInstance>();
+			List<L2PcInstance> toReturn = new FastList<>();
 			toReturn.addAll(tmp.keySet());
 			return toReturn;
 		}
 		
-		List<L2PcInstance> toReturn = new FastList<L2PcInstance>();
+		List<L2PcInstance> toReturn = new FastList<>();
 		toReturn.addAll(tmp.keySet());
 		return toReturn.subList(1, n);
 	}
@@ -371,7 +371,7 @@ public class L2Event
 			_eventCreator = inbr.readLine();
 			_eventInfo = inbr.readLine();
 			
-			List<L2PcInstance> temp = new FastList<L2PcInstance>();
+			List<L2PcInstance> temp = new FastList<>();
 			for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
 			{
 				if (!player.isOnline()) // Offline shops? 
@@ -391,7 +391,7 @@ public class L2Event
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.warning("L2Event: " + e.getMessage());
 			return "Cannot start event participation, an error has occured.";
 		}
 		
@@ -459,7 +459,7 @@ public class L2Event
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			_log.warning("L2Event: " + e.getMessage());
 			return "Cannot start event, an error has occured.";
 		}
 		

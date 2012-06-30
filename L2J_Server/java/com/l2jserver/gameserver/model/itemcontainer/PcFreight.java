@@ -20,9 +20,9 @@ import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.stats.Stats;
 
 public class PcFreight extends ItemContainer
 {
@@ -77,7 +77,7 @@ public class PcFreight extends ItemContainer
 	@Override
 	public L2ItemInstance[] getItems()
 	{
-		List<L2ItemInstance> list = new FastList<L2ItemInstance>();
+		List<L2ItemInstance> list = new FastList<>();
 		for (L2ItemInstance item : _items)
 		{
 			if (item.isFreightable())
@@ -109,7 +109,7 @@ public class PcFreight extends ItemContainer
 	}
 	
 	@Override
-	public boolean validateCapacity(int slots)
+	public boolean validateCapacity(long slots)
 	{
 		int curSlots = _owner == null ? Config.ALT_FREIGHT_SLOTS : Config.ALT_FREIGHT_SLOTS + (int)_owner.getStat().calcStat(Stats.FREIGHT_LIM, 0, null, null);
 		return (getSize() + slots <= curSlots);

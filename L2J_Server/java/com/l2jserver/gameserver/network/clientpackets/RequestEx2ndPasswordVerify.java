@@ -26,8 +26,7 @@ public class RequestEx2ndPasswordVerify extends L2GameClientPacket
 {
 	private static final String _C__D0_AE_REQUESTEX2NDPASSWORDVERIFY = "[C] D0:AE RequestEx2ndPasswordVerify";
 	
-	//private static Logger _log = Logger.getLogger(RequestEx2ndPasswordVerify.class.getName());
-	String _password;
+	private String _password;
 	
 	@Override
 	protected void readImpl()

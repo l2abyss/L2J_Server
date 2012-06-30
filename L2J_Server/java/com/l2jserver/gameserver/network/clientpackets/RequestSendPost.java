@@ -18,18 +18,16 @@ import static com.l2jserver.gameserver.model.actor.L2Character.ZONE_PEACE;
 import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
 import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.AccessLevels;
+import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Mail;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostSent;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -44,7 +42,6 @@ import com.l2jserver.util.StringUtil;
 public final class RequestSendPost extends L2GameClientPacket
 {
 	private static final String _C__D0_66_REQUESTSENDPOST = "[C] D0:66 RequestSendPost";
-	private static final Logger _log = Logger.getLogger(RequestSendPost.class.getName());
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
 	
@@ -205,20 +202,9 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		L2AccessLevel accessLevel;
+		
 		final int level = CharNameTable.getInstance().getAccessLevelById(receiverId);
-		if (level == AccessLevels._masterAccessLevelNum)
-			accessLevel = AccessLevels._masterAccessLevel;
-		else if (level == AccessLevels._userAccessLevelNum)
-		{
-			accessLevel = AccessLevels._userAccessLevel;
-		}
-		else
-		{
-			accessLevel = AccessLevels.getInstance().getAccessLevel(level);
-			if (accessLevel == null)
-				accessLevel = AccessLevels._userAccessLevel;
-		}
+		final L2AccessLevel accessLevel = AdminTable.getInstance().getAccessLevel(level);
 		
 		if (accessLevel.isGm() && !activeChar.getAccessLevel().isGm())
 		{

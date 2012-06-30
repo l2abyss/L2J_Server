@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.model.actor.stat;
 
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.skills.Stats;
+import com.l2jserver.gameserver.model.stats.Stats;
 
 public class NpcStat extends CharStat
 {

@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.util.lib.Log;
 
-
 public class GMAudit
 {
 	static
@@ -33,37 +32,33 @@ public class GMAudit
 	}
 	
 	private static final Logger _log = Logger.getLogger(Log.class.getName());
-	private static final SimpleDateFormat _formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
 	
+	/**
+	 * @param gmName
+	 * @param action
+	 * @param target
+	 * @param params
+	 */
 	public static void auditGMAction(String gmName, String action, String target, String params)
 	{
-		String today = _formatter.format(new Date());
-		
-		FileWriter save = null;
-		try
+		final File file = new File("log/GMAudit/" + gmName + ".txt");
+		final SimpleDateFormat _formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
+		try (FileWriter save = new FileWriter(file, true))
 		{
-			File file = new File("log/GMAudit/" + gmName + ".txt");
-			save = new FileWriter(file, true);
-			
-			String out = (today + ">" + gmName + ">" + action + ">" + target + ">" + params + "\r\n");
-			save.write(out);
+			save.write(_formatter.format(new Date()) + ">" + gmName + ">" + action + ">" + target + ">" + params + "\r\n");
 		}
 		catch (IOException e)
 		{
-			_log.log(Level.SEVERE, "GMAudit for GM " + gmName +" could not be saved: ", e);
-		}
-		finally
-		{
-			try
-			{
-				save.close();
-			}
-			catch (Exception e)
-			{
-			}
+			_log.log(Level.SEVERE, "GMAudit for GM " + gmName + " could not be saved: ", e);
 		}
 	}
 	
+	/**
+	 * Wrapper method.
+	 * @param gmName
+	 * @param action
+	 * @param target
+	 */
 	public static void auditGMAction(String gmName, String action, String target)
 	{
 		auditGMAction(gmName, action, target, "");

@@ -16,29 +16,45 @@ package com.l2jserver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+/**
+ * This class manages the database connections.
+ */
 public class L2DatabaseFactory
 {
-	static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
+	private static final Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
 	
+	/**
+	 * The Enum ProviderType.
+	 */
 	public static enum ProviderType
 	{
-		MySql, MsSql
+		MySql,
+		MsSql
 	}
 	
 	private static L2DatabaseFactory _instance;
-	private static ScheduledExecutorService _executor;
+	private static volatile ScheduledExecutorService _executor;
+	private static Map<Connection, ScheduledFuture<?>> _connectionClosers = new FastMap<Connection, ScheduledFuture<?>>().shared();
 	private ProviderType _providerType;
 	private ComboPooledDataSource _source;
 	
+	/**
+	 * Instantiates a new l2 database factory.
+	 * @throws SQLException the SQL exception
+	 */
 	public L2DatabaseFactory() throws SQLException
 	{
 		try
@@ -95,28 +111,46 @@ public class L2DatabaseFactory
 			_source.getConnection().close();
 			
 			if (Config.DEBUG)
+			{
 				_log.fine("Database Connection Working");
+			}
 			
 			if (Config.DATABASE_DRIVER.toLowerCase().contains("microsoft"))
+			{
 				_providerType = ProviderType.MsSql;
+			}
 			else
+			{
 				_providerType = ProviderType.MySql;
+			}
 		}
 		catch (SQLException x)
 		{
 			if (Config.DEBUG)
+			{
 				_log.fine("Database Connection FAILED");
+			}
 			// re-throw the exception
 			throw x;
 		}
 		catch (Exception e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.fine("Database Connection FAILED");
+			}
 			throw new SQLException("Could not init DB connection:" + e.getMessage());
 		}
 	}
 	
+	/**
+	 * Prepared query select.
+	 * @param fields the fields
+	 * @param tableName the table name
+	 * @param whereClause the where clause
+	 * @param returnOnlyTopRecord the return only top record
+	 * @return the string
+	 */
 	public final String prepQuerySelect(String[] fields, String tableName, String whereClause, boolean returnOnlyTopRecord)
 	{
 		String msSqlTop1 = "";
@@ -124,14 +158,21 @@ public class L2DatabaseFactory
 		if (returnOnlyTopRecord)
 		{
 			if (getProviderType() == ProviderType.MsSql)
+			{
 				msSqlTop1 = " Top 1 ";
+			}
 			if (getProviderType() == ProviderType.MySql)
+			{
 				mySqlTop1 = " Limit 1 ";
+			}
 		}
 		String query = "SELECT " + msSqlTop1 + safetyString(fields) + " FROM " + tableName + " WHERE " + whereClause + mySqlTop1;
 		return query;
 	}
 	
+	/**
+	 * Shutdown.
+	 */
 	public void shutdown()
 	{
 		try
@@ -152,9 +193,14 @@ public class L2DatabaseFactory
 		}
 	}
 	
+	/**
+	 * Safety string.
+	 * @param whatToCheck the what to check
+	 * @return the string
+	 */
 	public final String safetyString(String... whatToCheck)
 	{
-		// NOTE: Use brace as a safty precaution just incase name is a reserved word
+		// NOTE: Use brace as a safety precaution just in case name is a reserved word
 		final char braceLeft;
 		final char braceRight;
 		
@@ -193,6 +239,11 @@ public class L2DatabaseFactory
 		return sbResult.toString();
 	}
 	
+	/**
+	 * Gets the single instance of L2DatabaseFactory.
+	 * @return single instance of L2DatabaseFactory
+	 * @throws SQLException the SQL exception
+	 */
 	public static L2DatabaseFactory getInstance() throws SQLException
 	{
 		synchronized (L2DatabaseFactory.class)
@@ -205,19 +256,26 @@ public class L2DatabaseFactory
 		return _instance;
 	}
 	
+	/**
+	 * Gets the connection.
+	 * @return the connection
+	 */
 	public Connection getConnection()
 	{
 		Connection con = null;
-		
 		while (con == null)
 		{
 			try
 			{
 				con = _source.getConnection();
 				if (Server.serverMode == Server.MODE_GAMESERVER)
-					ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME);
+				{
+					_connectionClosers.put(con, ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME));
+				}
 				else
+				{
 					getExecutor().schedule(new ConnectionCloser(con, new RuntimeException()), 60, TimeUnit.SECONDS);
+				}
 			}
 			catch (SQLException e)
 			{
@@ -227,11 +285,24 @@ public class L2DatabaseFactory
 		return con;
 	}
 	
+	/**
+	 * The Class ConnectionCloser.
+	 */
 	private static class ConnectionCloser implements Runnable
 	{
+		private static final Logger _log = Logger.getLogger(ConnectionCloser.class.getName());
+		
+		/** The connection. */
 		private final Connection c;
+		
+		/** The exception. */
 		private final RuntimeException exp;
 		
+		/**
+		 * Instantiates a new connection closer.
+		 * @param con the con
+		 * @param e the e
+		 */
 		public ConnectionCloser(Connection con, RuntimeException e)
 		{
 			c = con;
@@ -255,14 +326,26 @@ public class L2DatabaseFactory
 		}
 	}
 	
+	/**
+	 * Close the connection.
+	 * @param con the con
+	 */
 	public static void close(Connection con)
 	{
 		if (con == null)
+		{
 			return;
+		}
 		
 		try
 		{
 			con.close();
+			ScheduledFuture<?> conCloser = _connectionClosers.remove(con);
+			if (conCloser != null)
+			{
+				conCloser.cancel(true);
+				conCloser = null;
+			}
 		}
 		catch (SQLException e)
 		{
@@ -270,6 +353,10 @@ public class L2DatabaseFactory
 		}
 	}
 	
+	/**
+	 * Gets the executor.
+	 * @return the executor
+	 */
 	private static ScheduledExecutorService getExecutor()
 	{
 		if (_executor == null)
@@ -277,22 +364,38 @@ public class L2DatabaseFactory
 			synchronized (L2DatabaseFactory.class)
 			{
 				if (_executor == null)
+				{
 					_executor = Executors.newSingleThreadScheduledExecutor();
+				}
 			}
 		}
 		return _executor;
 	}
 	
+	/**
+	 * Gets the busy connection count.
+	 * @return the busy connection count
+	 * @throws SQLException the SQL exception
+	 */
 	public int getBusyConnectionCount() throws SQLException
 	{
 		return _source.getNumBusyConnectionsDefaultUser();
 	}
 	
+	/**
+	 * Gets the idle connection count.
+	 * @return the idle connection count
+	 * @throws SQLException the SQL exception
+	 */
 	public int getIdleConnectionCount() throws SQLException
 	{
 		return _source.getNumIdleConnectionsDefaultUser();
 	}
 	
+	/**
+	 * Gets the provider type.
+	 * @return the provider type
+	 */
 	public final ProviderType getProviderType()
 	{
 		return _providerType;

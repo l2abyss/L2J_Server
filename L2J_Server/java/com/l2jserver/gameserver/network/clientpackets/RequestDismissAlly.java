@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 public final class RequestDismissAlly extends L2GameClientPacket
 {
 	private static final String _C__90_REQUESTDISMISSALLY = "[C] 90 RequestDismissAlly";
-	//static Logger _log = Logger.getLogger(RequestDismissAlly.class.getName());
 	
 	@Override
 	protected void readImpl()

@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import javolution.util.FastList;
+import java.util.List;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
@@ -24,19 +24,18 @@ import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
-import com.l2jserver.gameserver.templates.skills.L2EffectType;
 import com.l2jserver.util.Rnd;
 
 /**
- * @author Kerberos | ZaKaX
+ * @author Kerberos, ZaKaX
  */
 public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTrainer
 {
@@ -321,15 +320,8 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 				}
 			}
 			
-			if (player.destroyItemByItemId("ExchangeKE", 9912, 10, this, false))
+			if (player.exchangeItemsById("ExchangeKE", this, 9912, 10, item, 1, true))
 			{
-				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-				msg.addItemName(9912);
-				msg.addNumber(10);
-				player.sendPacket(msg);
-				
-				player.addItem("ExchangeKE", item, 1, player, true);
-				
 				filename = "data/html/castlemagician/magician-KE-Exchange.htm";
 			}
 			else
@@ -366,8 +358,8 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		{
 			if (player.isClanLeader())
 			{
-				final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
-				final AcquireSkillList asl = new AcquireSkillList(SkillType.SubPledge);
+				final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
+				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubPledge);
 				int count = 0;
 				
 				for (L2SkillLearn s : skills)

@@ -24,10 +24,10 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 
 /**
  * @author Kerberos
@@ -128,7 +128,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 		int _region;
 		NpcSay _cs;
 		
-		private ForEachPlayerInRegionSendPacket(int region, NpcSay cs)
+		protected ForEachPlayerInRegionSendPacket(int region, NpcSay cs)
 		{
 			_region = region;
 			_cs = cs;

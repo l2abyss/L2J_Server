@@ -14,12 +14,13 @@
  */
 package com.l2jserver.gameserver.model.zone;
 
-import gnu.trove.procedure.TObjectProcedure;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
@@ -28,14 +29,12 @@ import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 
 /**
- * Abstract base class for any zone type
- * Handles basic operations
- *
- * @author  durgus
+ * Abstract base class for any zone type Handles basic operations
+ * @author durgus
  */
 public abstract class L2ZoneType
 {
@@ -43,7 +42,7 @@ public abstract class L2ZoneType
 	
 	private final int _id;
 	protected L2ZoneForm _zone;
-	protected L2TIntObjectHashMap<L2Character> _characterList;
+	protected FastMap<Integer, L2Character> _characterList;
 	
 	/** Parameters to affect specific characters */
 	private boolean _checkAffected = false;
@@ -56,13 +55,15 @@ public abstract class L2ZoneType
 	private int[] _race;
 	private int[] _class;
 	private char _classType;
-	private Map<Quest.QuestEventType, FastList<Quest>> _questEvents;
+	private Map<QuestEventType, List<Quest>> _questEvents;
 	private InstanceType _target = InstanceType.L2Character; // default all chars
+	private boolean _allowStore;
 	
 	protected L2ZoneType(int id)
 	{
 		_id = id;
-		_characterList = new L2TIntObjectHashMap<L2Character>();
+		_characterList = new FastMap<>();
+		_characterList.shared();
 		
 		_minLvl = 0;
 		_maxLvl = 0xFF;
@@ -71,6 +72,7 @@ public abstract class L2ZoneType
 		
 		_race = null;
 		_class = null;
+		_allowStore = true;
 	}
 	
 	/**
@@ -174,14 +176,19 @@ public abstract class L2ZoneType
 		{
 			_target = Enum.valueOf(InstanceType.class, value);
 		}
+		else if (name.equals("allowStore"))
+		{
+			_allowStore = Boolean.parseBoolean(value);
+		}
 		else
-			_log.info(getClass().getSimpleName()+": Unknown parameter - "+name+" in zone: "+getId());
+		{
+			_log.info(getClass().getSimpleName() + ": Unknown parameter - " + name + " in zone: " + getId());
+		}
 	}
 	
 	/**
-	 * Checks if the given character is affected by this zone
-	 * @param character
-	 * @return
+	 * @param character the player to verify.
+	 * @return {@code true} if the given character is affected by this zone, {@code false} otherwise.
 	 */
 	private boolean isAffected(L2Character character)
 	{
@@ -265,7 +272,7 @@ public abstract class L2ZoneType
 	{
 		return _zone;
 	}
-
+	
 	/**
 	 * Set the zone name.
 	 * @param name
@@ -274,7 +281,7 @@ public abstract class L2ZoneType
 	{
 		_name = name;
 	}
-
+	
 	/**
 	 * Returns zone name
 	 * @return
@@ -292,7 +299,7 @@ public abstract class L2ZoneType
 	{
 		_instanceId = instanceId;
 	}
-
+	
 	/**
 	 * Returns zone instanceId
 	 * @return
@@ -310,12 +317,12 @@ public abstract class L2ZoneType
 	{
 		return _instanceTemplate;
 	}
-
+	
 	/**
 	 * Checks if the given coordinates are within zone's plane
 	 * @param x
 	 * @param y
-	 * @return 
+	 * @return
 	 */
 	public boolean isInsideZone(int x, int y)
 	{
@@ -327,7 +334,7 @@ public abstract class L2ZoneType
 	 * @param x
 	 * @param y
 	 * @param z
-	 * @return 
+	 * @return
 	 */
 	public boolean isInsideZone(int x, int y, int z)
 	{
@@ -335,13 +342,12 @@ public abstract class L2ZoneType
 	}
 	
 	/**
-	 * Checks if the given coordinates are within the zone and the instanceId used
-	 * matched the zone's instanceId
+	 * Checks if the given coordinates are within the zone and the instanceId used matched the zone's instanceId
 	 * @param x
 	 * @param y
 	 * @param z
 	 * @param instanceId
-	 * @return 
+	 * @return
 	 */
 	public boolean isInsideZone(int x, int y, int z, int instanceId)
 	{
@@ -355,9 +361,8 @@ public abstract class L2ZoneType
 	
 	/**
 	 * Checks if the given object is inside the zone.
-	 *
 	 * @param object
-	 * @return 
+	 * @return
 	 */
 	public boolean isInsideZone(L2Object object)
 	{
@@ -389,7 +394,7 @@ public abstract class L2ZoneType
 			// Was the character not yet inside this zone?
 			if (!_characterList.containsKey(character.getObjectId()))
 			{
-				FastList<Quest> quests = this.getQuestByEvent(Quest.QuestEventType.ON_ENTER_ZONE);
+				List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_ENTER_ZONE);
 				if (quests != null)
 				{
 					for (Quest quest : quests)
@@ -406,7 +411,7 @@ public abstract class L2ZoneType
 			// Was the character inside this zone?
 			if (_characterList.containsKey(character.getObjectId()))
 			{
-				FastList<Quest> quests = this.getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
+				List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
 				if (quests != null)
 				{
 					for (Quest quest : quests)
@@ -421,15 +426,14 @@ public abstract class L2ZoneType
 	}
 	
 	/**
-	 * Force fully removes a character from the zone
-	 * Should use during teleport / logoff
+	 * Force fully removes a character from the zone Should use during teleport / logoff
 	 * @param character
 	 */
 	public void removeCharacter(L2Character character)
 	{
 		if (_characterList.containsKey(character.getObjectId()))
 		{
-			FastList<Quest> quests = this.getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
+			List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
 			if (quests != null)
 			{
 				for (Quest quest : quests)
@@ -460,29 +464,43 @@ public abstract class L2ZoneType
 	
 	public abstract void onReviveInside(L2Character character);
 	
-	public L2TIntObjectHashMap<L2Character> getCharactersInside()
+	public Map<Integer, L2Character> getCharacters()
 	{
 		return _characterList;
 	}
 	
-	public L2Character[] getCharactersInsideArray()
+	public Collection<L2Character> getCharactersInside()
 	{
-		return _characterList.values(new L2Character[0]);
+		return _characterList.values();
+	}
+	
+	public List<L2PcInstance> getPlayersInside()
+	{
+		List<L2PcInstance> players = new ArrayList<>();
+		for (L2Character ch : _characterList.values())
+		{
+			if (ch != null && ch.isPlayer())
+			{
+				players.add(ch.getActingPlayer());
+			}
+		}
+		
+		return players;
 	}
 	
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
 	{
 		if (_questEvents == null)
-			_questEvents = new FastMap<Quest.QuestEventType, FastList<Quest>>();
-		FastList<Quest> questByEvents = _questEvents.get(EventType);
+			_questEvents = new HashMap<>();
+		List<Quest> questByEvents = _questEvents.get(EventType);
 		if (questByEvents == null)
-			questByEvents = new FastList<Quest>();
+			questByEvents = new ArrayList<>();
 		if (!questByEvents.contains(q))
 			questByEvents.add(q);
 		_questEvents.put(EventType, questByEvents);
 	}
 	
-	public FastList<Quest> getQuestByEvent(Quest.QuestEventType EventType)
+	public List<Quest> getQuestByEvent(Quest.QuestEventType EventType)
 	{
 		if (_questEvents == null)
 			return null;
@@ -491,30 +509,19 @@ public abstract class L2ZoneType
 	
 	/**
 	 * Broadcasts packet to all players inside the zone
-	 * @param packet 
+	 * @param packet
 	 */
 	public void broadcastPacket(L2GameServerPacket packet)
 	{
 		if (_characterList.isEmpty())
 			return;
 		
-		_characterList.forEachValue(new BroadcastPacket(packet));
-	}
-	
-	private final class BroadcastPacket implements TObjectProcedure<L2Character>
-	{
-		final L2GameServerPacket _packet;
-		private BroadcastPacket(L2GameServerPacket packet)
+		for (L2Character character : _characterList.values())
 		{
-			_packet = packet;
-		}
-		
-		@Override
-		public final boolean execute(final L2Character character)
-		{
-			if (character != null && character instanceof L2PcInstance)
-				character.sendPacket(_packet);
-			return true;
+			if (character != null && character.isPlayer())
+			{
+				character.sendPacket(packet);
+			}
 		}
 	}
 	
@@ -529,10 +536,15 @@ public abstract class L2ZoneType
 		_checkAffected = true;
 	}
 	
+	public boolean getAllowStore()
+	{
+		return _allowStore;
+	}
+	
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+"["+ _id + "]";
+		return getClass().getSimpleName() + "[" + _id + "]";
 	}
 	
 	public void visualizeZone(int z)

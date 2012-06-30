@@ -17,6 +17,7 @@ package com.l2jserver.loginserver.network.serverpackets;
 import com.l2jserver.loginserver.network.L2LoginClient;
 
 /**
+ * <pre>
  * Format: dd b dddd s
  * d: session id
  * d: protocol revision
@@ -27,14 +28,14 @@ import com.l2jserver.loginserver.network.L2LoginClient;
  * d: unknow
  * d: unknow
  * s: blowfish key
- *
+ * </pre>
  */
 public final class Init extends L2LoginServerPacket
 {
-	private int _sessionId;
+	private final int _sessionId;
 	
-	private byte[] _publicKey;
-	private byte[] _blowfishKey;
+	private final byte[] _publicKey;
+	private final byte[] _blowfishKey;
 	
 	public Init(L2LoginClient client)
 	{

@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import gnu.trove.procedure.TObjectProcedure;
 
+import java.util.List;
 import java.util.concurrent.Future;
 
 import com.l2jserver.Config;
@@ -25,7 +26,8 @@ import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
@@ -36,7 +38,6 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -50,8 +51,8 @@ public class L2SepulcherNpcInstance extends L2Npc
 	protected Future<?> _spawnNextMysteriousBoxTask = null;
 	protected Future<?> _spawnMonsterTask = null;
 	
-	private final static String HTML_FILE_PATH = "data/html/SepulcherNpc/";
-	private final static int HALLS_KEY = 7260;
+	private static final String HTML_FILE_PATH = "data/html/SepulcherNpc/";
+	private static final int HALLS_KEY = 7260;
 	
 	public L2SepulcherNpcInstance(int objectID, L2NpcTemplate template)
 	{
@@ -251,14 +252,22 @@ public class L2SepulcherNpcInstance extends L2Npc
 				
 			default:
 			{
-				Quest[] qlsa = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
-				if ( (qlsa != null) && qlsa.length > 0)
+				List<Quest> qlsa = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
+				List<Quest> qlst = getTemplate().getEventQuests(Quest.QuestEventType.ON_FIRST_TALK);
+				
+				if ((qlsa != null) && !qlsa.isEmpty())
+				{
 					player.setLastQuestNpcObject(getObjectId());
-				Quest[] qlst = getTemplate().getEventQuests(Quest.QuestEventType.ON_FIRST_TALK);
-				if ( (qlst != null) && qlst.length == 1)
-					qlst[0].notifyFirstTalk(this, player);
+				}
+				
+				if ((qlst != null) && qlst.size() == 1)
+				{
+					qlst.get(0).notifyFirstTalk(this, player);
+				}
 				else
+				{
 					showChatWindow(player, 0);
+				}
 			}
 		}
 		player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -342,7 +351,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 						openNextDoor(getNpcId());
 						if (player.getParty() != null)
 						{
-							for (L2PcInstance mem : player.getParty().getPartyMembers())
+							for (L2PcInstance mem : player.getParty().getMembers())
 							{
 								if (mem != null && mem.getInventory().getItemByItemId(HALLS_KEY) != null)
 									mem.destroyItemByItemId("Quest", HALLS_KEY, mem.getInventory().getItemByItemId(HALLS_KEY).getCount(), mem, true);
@@ -447,11 +456,12 @@ public class L2SepulcherNpcInstance extends L2Npc
 		L2SepulcherNpcInstance _npc;
 		CreatureSay _sm;
 		
-		private SayInShout(L2SepulcherNpcInstance npc, CreatureSay sm)
+		protected SayInShout(L2SepulcherNpcInstance npc, CreatureSay sm)
 		{
 			_npc = npc;
 			_sm = sm;
 		}
+		
 		@Override
 		public final boolean execute(final L2PcInstance player)
 		{

@@ -64,9 +64,9 @@ public class HelperBuffTable
 	/**
 	 * Create and Load the Newbie Helper Buff list from SQL Table helper_buff_list
 	 */
-	private HelperBuffTable()
+	protected HelperBuffTable()
 	{
-		_helperBuff = new FastList<L2HelperBuff>();
+		_helperBuff = new FastList<>();
 		restoreHelperBuffData();
 		
 	}
@@ -220,7 +220,6 @@ public class HelperBuffTable
 		return _servitorHighestLevel;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final HelperBuffTable _instance = new HelperBuffTable();

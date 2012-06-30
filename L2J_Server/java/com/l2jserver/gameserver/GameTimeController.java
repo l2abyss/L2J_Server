@@ -43,7 +43,7 @@ public class GameTimeController
 	protected static boolean _isNight = false;
 	protected static boolean _interruptRequest = false;
 	
-	private static final TIntObjectHashMap<L2Character> _movingObjects = new TIntObjectHashMap<L2Character>();
+	protected static final TIntObjectHashMap<L2Character> _movingObjects = new TIntObjectHashMap<>();
 	private static final ReentrantLock _lock = new ReentrantLock();
 	
 	protected static TimerThread _timer;
@@ -57,7 +57,7 @@ public class GameTimeController
 		return SingletonHolder._instance;
 	}
 	
-	private GameTimeController()
+	protected GameTimeController()
 	{
 		_gameStartTime = System.currentTimeMillis() - 3600000; // offset so that the server starts a day begin
 		_gameTicks = 3600000 / MILLIS_IN_TICK; // offset so that the server starts a day begin
@@ -134,7 +134,7 @@ public class GameTimeController
 		}
 	}
 	
-	private final class MoveObjects implements TObjectProcedure<L2Character>
+	protected final class MoveObjects implements TObjectProcedure<L2Character>
 	{
 		@Override
 		public final boolean execute(final L2Character ch)
@@ -259,7 +259,6 @@ public class GameTimeController
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GameTimeController _instance = new GameTimeController();

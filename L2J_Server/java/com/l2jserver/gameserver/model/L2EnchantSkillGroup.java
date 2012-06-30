@@ -14,23 +14,22 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public final class L2EnchantSkillGroup
 {
 	private final int _id;
-	private List<EnchantSkillDetail> _enchantDetails = new FastList<EnchantSkillDetail>();
+	private List<EnchantSkillHolder> _enchantDetails = new ArrayList<>();
 	
 	public L2EnchantSkillGroup(int id)
 	{
 		_id = id;
 	}
 	
-	public void addEnchantDetail(EnchantSkillDetail detail)
+	public void addEnchantDetail(EnchantSkillHolder detail)
 	{
 		_enchantDetails.add(detail);
 	}
@@ -40,12 +39,12 @@ public final class L2EnchantSkillGroup
 		return _id;
 	}
 	
-	public List<EnchantSkillDetail> getEnchantGroupDetails()
+	public List<EnchantSkillHolder> getEnchantGroupDetails()
 	{
 		return _enchantDetails;
 	}
 	
-	public static class EnchantSkillDetail
+	public static class EnchantSkillHolder
 	{
 		private final int _level;
 		private final int _adenaCost;
@@ -53,23 +52,17 @@ public final class L2EnchantSkillGroup
 		private final int _spCost;
 		private final byte[] _rate;
 		
-		public EnchantSkillDetail(int lvl, int adena, int exp, int sp, byte rate76, byte rate77, byte rate78, byte rate79, byte rate80, byte rate81, byte rate82, byte rate83, byte rate84, byte rate85)
+		public EnchantSkillHolder(StatsSet set)
 		{
-			_level = lvl;
-			_adenaCost = adena;
-			_expCost = exp;
-			_spCost = sp;
-			_rate = new byte[10];
-			_rate[0] = rate76;
-			_rate[1] = rate77;
-			_rate[2] = rate78;
-			_rate[3] = rate79;
-			_rate[4] = rate80;
-			_rate[5] = rate81;
-			_rate[6] = rate82;
-			_rate[7] = rate83;
-			_rate[8] = rate84;
-			_rate[9] = rate85;
+			_level = set.getInteger("level");
+			_adenaCost = set.getInteger("adena");
+			_expCost = set.getInteger("exp");
+			_spCost = set.getInteger("sp");
+			_rate = new byte[24];
+			for (int i = 0; i < 24; i++)
+			{
+				_rate[i] = set.getByte("chance" + (76 + i), (byte) 0);
+			}
 		}
 		
 		/**
@@ -87,10 +80,12 @@ public final class L2EnchantSkillGroup
 		{
 			return _spCost;
 		}
+		
 		public int getExpCost()
 		{
 			return _expCost;
 		}
+		
 		public int getAdenaCost()
 		{
 			return _adenaCost;

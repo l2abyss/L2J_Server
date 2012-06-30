@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.RecipeController;
+import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2RecipeList;
@@ -40,7 +40,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestRecipeShopListSet extends L2GameClientPacket
 {
 	private static final String _C__BB_RequestRecipeShopListSet = "[C] BB RequestRecipeShopListSet";
-	//private static Logger _log = Logger.getLogger(RequestRecipeShopListSet.class.getName());
 	
 	private static final int BATCH_LENGTH = 12; // length of the one item
 	
@@ -103,11 +102,10 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 		
 		List<L2RecipeList> dwarfRecipes = Arrays.asList(player.getDwarvenRecipeBook());
 		List<L2RecipeList> commonRecipes = Arrays.asList(player.getCommonRecipeBook());
-		
+		final RecipeData rd = RecipeData.getInstance();
 		for (Recipe i : _items)
 		{
-			L2RecipeList list = RecipeController.getInstance().getRecipeList(i.getRecipeId());
-			
+			L2RecipeList list = rd.getRecipeList(i.getRecipeId());
 			if (!dwarfRecipes.contains(list) && !commonRecipes.contains(list))
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Player " + player.getName() + " of account " + player.getAccountName()

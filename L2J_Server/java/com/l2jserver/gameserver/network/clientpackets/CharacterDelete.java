@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.network.serverpackets.CharDeleteFail;
@@ -30,7 +29,6 @@ import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 public final class CharacterDelete extends L2GameClientPacket
 {
 	private static final String _C__0C_CHARACTERDELETE = "[C] 0D CharacterDelete";
-	private static Logger _log = Logger.getLogger(CharacterDelete.class.getName());
 	
 	// cd
 	private int _charSlot;

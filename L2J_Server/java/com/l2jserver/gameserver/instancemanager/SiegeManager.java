@@ -35,12 +35,12 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Siege;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 public class SiegeManager
 {
@@ -51,13 +51,10 @@ public class SiegeManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private int _attackerMaxClans = 500; // Max number of clans
 	private int _attackerRespawnDelay = 0; // Time in ms. Changeable in siege.config
 	private int _defenderMaxClans = 500; // Max number of clans
 	
-	// Siege settings
 	private TIntObjectHashMap<FastList<SiegeSpawn>> _artefactSpawnList;
 	private TIntObjectHashMap<FastList<SiegeSpawn>> _controlTowerSpawnList;
 	private TIntObjectHashMap<FastList<SiegeSpawn>> _flameTowerSpawnList;
@@ -67,19 +64,14 @@ public class SiegeManager
 	private int _siegeLength = 120; // Time in minute. Changeable in siege.config
 	private int _bloodAllianceReward = 0; // Number of Blood Alliance items reward for successful castle defending
 	
-	// =========================================================
-	// Constructor
-	private SiegeManager()
+	protected SiegeManager()
 	{
-		_log.info("Initializing SiegeManager");
 		load();
 	}
 	
-	// =========================================================
-	// Method - Public
 	public final void addSiegeSkills(L2PcInstance character)
 	{
-		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getHasCastle() > 0))
+		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getCastleId() > 0))
 		{
 			character.addSkill(sk, false);
 		}
@@ -123,7 +115,7 @@ public class SiegeManager
 		if (clan == null)
 			return false;
 		
-		if (clan.getHasCastle() > 0)
+		if (clan.getCastleId() > 0)
 			return true;
 		
 		Connection con = null;
@@ -158,20 +150,17 @@ public class SiegeManager
 	
 	public final void removeSiegeSkills(L2PcInstance character)
 	{
-		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getHasCastle() > 0))
+		for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(character.isNoble(), character.getClan().getCastleId() > 0))
 		{
 			character.removeSkill(sk);
 		}
 	}
 	
-	// =========================================================
-	// Method - Private
 	private final void load()
 	{
-		InputStream is = null;
-		try
+		final File file = new File(Config.SIEGE_CONFIGURATION_FILE);
+		try (InputStream is = new FileInputStream(file))
 		{
-			is = new FileInputStream(new File(Config.SIEGE_CONFIGURATION_FILE));
 			Properties siegeSettings = new Properties();
 			siegeSettings.load(is);
 			
@@ -185,13 +174,13 @@ public class SiegeManager
 			_bloodAllianceReward = Integer.decode(siegeSettings.getProperty("BloodAllianceReward", "0"));
 			
 			// Siege spawns settings
-			_controlTowerSpawnList = new TIntObjectHashMap<FastList<SiegeSpawn>>();
-			_artefactSpawnList = new TIntObjectHashMap<FastList<SiegeSpawn>>();
-			_flameTowerSpawnList = new TIntObjectHashMap<FastList<SiegeSpawn>>();
+			_controlTowerSpawnList = new TIntObjectHashMap<>();
+			_artefactSpawnList = new TIntObjectHashMap<>();
+			_flameTowerSpawnList = new TIntObjectHashMap<>();
 			
 			for (Castle castle : CastleManager.getInstance().getCastles())
 			{
-				FastList<SiegeSpawn> _controlTowersSpawns = new FastList<SiegeSpawn>();
+				FastList<SiegeSpawn> _controlTowersSpawns = new FastList<>();
 				
 				for (int i = 1; i < 0xFF; i++)
 				{
@@ -218,7 +207,7 @@ public class SiegeManager
 					}
 				}
 				
-				FastList<SiegeSpawn> _flameTowersSpawns = new FastList<SiegeSpawn>();
+				FastList<SiegeSpawn> _flameTowersSpawns = new FastList<>();
 				
 				for (int i = 1; i < 0xFF; i++)
 				{
@@ -245,7 +234,7 @@ public class SiegeManager
 					}
 				}
 				
-				FastList<SiegeSpawn> _artefactSpawns = new FastList<SiegeSpawn>();
+				FastList<SiegeSpawn> _artefactSpawns = new FastList<>();
 				
 				for (int i = 1; i < 0xFF; i++)
 				{
@@ -283,23 +272,10 @@ public class SiegeManager
 		}
 		catch (Exception e)
 		{
-			//_initialized = false;
 			_log.log(Level.WARNING, "Error while loading siege data: " + e.getMessage(), e);
-		}
-		finally
-		{
-			try
-			{
-				is.close();
-			}
-			catch (Exception e)
-			{
-			}
 		}
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final FastList<SiegeSpawn> getArtefactSpawnList(int _castleId)
 	{
 		return _artefactSpawnList.get(_castleId);
@@ -365,7 +341,7 @@ public class SiegeManager
 	
 	public final List<Siege> getSieges()
 	{
-		FastList<Siege> sieges = new FastList<Siege>();
+		FastList<Siege> sieges = new FastList<>();
 		for (Castle castle : CastleManager.getInstance().getCastles())
 			sieges.add(castle.getSiege());
 		return sieges;
@@ -422,7 +398,6 @@ public class SiegeManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SiegeManager _instance = new SiegeManager();

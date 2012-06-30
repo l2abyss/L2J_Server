@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.l2jserver.gameserver.network.serverpackets;
 
 import javolution.util.FastMap;
@@ -41,7 +40,7 @@ public class ExShowProcureCropDetail extends L2GameServerPacket
 	public ExShowProcureCropDetail(int cropId)
 	{
 		_cropId = cropId;
-		_castleCrops = new FastMap<Integer, CropProcure>();
+		_castleCrops = new FastMap<>();
 		
 		for (Castle c : CastleManager.getInstance().getCastles())
 		{

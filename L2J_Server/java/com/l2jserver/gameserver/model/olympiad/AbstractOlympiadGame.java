@@ -20,22 +20,22 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.datatables.HeroSkillTable;
+import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Party.messageType;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMode;
@@ -45,9 +45,7 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * 
  * @author godson, GodKratos, Pere, DS
- *
  */
 public abstract class AbstractOlympiadGame
 {
@@ -93,14 +91,14 @@ public abstract class AbstractOlympiadGame
 	{
 		par.updateStat(POINTS, points);
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_GAINED_S2_OLYMPIAD_POINTS);
-		sm.addString(par.name);
+		sm.addString(par.getName());
 		sm.addNumber(points);
 		broadcastPacket(sm);
 		
 		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
 		{
 			if (quest != null && quest.isOlympiadUse())
-				quest.notifyOlympiadWin(par.player, getType());
+				quest.notifyOlympiadWin(par.getPlayer(), getType());
 		}
 	}
 
@@ -108,14 +106,14 @@ public abstract class AbstractOlympiadGame
 	{
 		par.updateStat(POINTS, -points);
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
-		sm.addString(par.name);
+		sm.addString(par.getName());
 		sm.addNumber(points);
 		broadcastPacket(sm);
 		
 		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
 		{
 			if (quest != null && quest.isOlympiadUse())
-				quest.notifyOlympiadLoose(par.player, getType());
+				quest.notifyOlympiadLose(par.getPlayer(), getType());
 		}
 	}
 
@@ -173,7 +171,7 @@ public abstract class AbstractOlympiadGame
 
 	protected static final boolean portPlayerToArena(Participant par, Location loc, int id)
 	{
-		final L2PcInstance player = par.player;
+		final L2PcInstance player = par.getPlayer();
 		if (player == null || !player.isOnline())
 			return false;
 
@@ -187,7 +185,7 @@ public abstract class AbstractOlympiadGame
 			player.setOlympiadGameId(id);
 			player.setIsInOlympiadMode(true);
 			player.setIsOlympiadStart(false);
-			player.setOlympiadSide(par.side);
+			player.setOlympiadSide(par.getSide());
 			player.olyBuff = 5;
 			player.setInstanceId(OlympiadGameManager.getInstance().getOlympiadTask(id).getZone().getInstanceId());
 			player.teleToLocation(loc, false);
@@ -215,9 +213,9 @@ public abstract class AbstractOlympiadGame
 			if (player.getClan() != null)
 			{
 				player.getClan().removeSkillEffects(player);
-				if (player.getClan().getHasCastle() > 0)
+				if (player.getClan().getCastleId() > 0)
 					CastleManager.getInstance().getCastleByOwner(player.getClan()).removeResidentialSkills(player);
-				if (player.getClan().getHasFort() > 0)
+				if (player.getClan().getFortId() > 0)
 					FortManager.getInstance().getFortByOwner(player.getClan()).removeResidentialSkills(player);
 			}
 			// Abort casting if player casting
@@ -230,8 +228,10 @@ public abstract class AbstractOlympiadGame
 			// Remove Hero Skills
 			if (player.isHero())
 			{
-				for (L2Skill skill : HeroSkillTable.getHeroSkills())
+				for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+				{
 					player.removeSkill(skill, false);
+				}
 			}
 			
 			// Heal Player fully
@@ -353,17 +353,19 @@ public abstract class AbstractOlympiadGame
 			if (player.getClan() != null)
 			{
 				player.getClan().addSkillEffects(player);
-				if (player.getClan().getHasCastle() > 0)
+				if (player.getClan().getCastleId() > 0)
 					CastleManager.getInstance().getCastleByOwner(player.getClan()).giveResidentialSkills(player);
-				if (player.getClan().getHasFort() > 0)
+				if (player.getClan().getFortId() > 0)
 					FortManager.getInstance().getFortByOwner(player.getClan()).giveResidentialSkills(player);
 			}
 			
 			// Add Hero Skills
 			if (player.isHero())
 			{
-				for (L2Skill skill : HeroSkillTable.getHeroSkills())
+				for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+				{
 					player.addSkill(skill, false);
+				}
 			}
 			player.sendSkillList();
 

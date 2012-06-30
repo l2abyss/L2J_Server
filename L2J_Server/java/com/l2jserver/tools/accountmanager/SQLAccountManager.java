@@ -34,7 +34,6 @@ import com.l2jserver.util.Base64;
 
 /**
  * This class SQL Account Manager
- *
  * @author netimperia
  * @version $Revision: 2.3.2.1.2.3 $ $Date: 2005/08/08 22:47:12 $
  */
@@ -53,12 +52,18 @@ public class SQLAccountManager
 		if (args.length > 0)
 		{
 			if (LocaleCodes.getInstance().getLanguage(args[0]) != null)
+			{
 				cl = new ConsoleLocalizator("accountmanager", "SQLAccountManager", LocaleCodes.getInstance().getLanguage(args[0]));
+			}
 			else
+			{
 				cl = new ConsoleLocalizator("accountmanager", "SQLAccountManager", args[0]);
+			}
 		}
 		else
+		{
 			cl = new ConsoleLocalizator("accountmanager", "SQLAccountManager", Locale.getDefault());
+		}
 		
 		while (true)
 		{
@@ -120,10 +125,14 @@ public class SQLAccountManager
 			{
 				// Delete
 				String yesno = cl.inputString("functDeleteAccountConfirm");
-				if (yesno != null && yesno.equalsIgnoreCase(cl.getString("yesChar")))
+				if ((yesno != null) && yesno.equalsIgnoreCase(cl.getString("yesChar")))
+				{
 					deleteAccount(_uname.trim());
+				}
 				else
+				{
 					cl.println("functDeleteAccountCancel");
+				}
 			}
 			else if (_mode.equals("4"))
 			{
@@ -163,11 +172,17 @@ public class SQLAccountManager
 		con = L2DatabaseFactory.getInstance().getConnection();
 		String q = "SELECT login, accessLevel FROM accounts ";
 		if (m.equals("1"))
+		{
 			q = q.concat("WHERE accessLevel < 0");
+		}
 		else if (m.equals("2"))
+		{
 			q = q.concat("WHERE accessLevel > 0");
+		}
 		else if (m.equals("3"))
+		{
 			q = q.concat("WHERE accessLevel = 0");
+		}
 		q = q.concat(" ORDER BY login ASC");
 		
 		PreparedStatement statement = con.prepareStatement(q);
@@ -263,9 +278,9 @@ public class SQLAccountManager
 			statement.setString(1, account);
 			rset = statement.executeQuery();
 			
-			FastList<String> objIds = new FastList<String>();
-			FastList<String> charNames = new FastList<String>();
-			FastList<String> clanIds = new FastList<String>();
+			FastList<String> objIds = new FastList<>();
+			FastList<String> charNames = new FastList<>();
+			FastList<String> clanIds = new FastList<>();
 			
 			while (rset.next())
 			{
@@ -326,17 +341,17 @@ public class SQLAccountManager
 					statement = con.prepareStatement("DELETE FROM clan_data WHERE clan_id=?;");
 					statement.setString(1, clanIds.get(index));
 					statement.executeUpdate();
-					//Clan privileges
+					// Clan privileges
 					statement.close();
 					statement = con.prepareStatement("DELETE FROM clan_privs WHERE clan_id=?;");
 					statement.setString(1, clanIds.get(index));
 					statement.executeUpdate();
-					//Clan subpledges
+					// Clan subpledges
 					statement.close();
 					statement = con.prepareStatement("DELETE FROM clan_subpledges WHERE clan_id=?;");
 					statement.setString(1, clanIds.get(index));
 					statement.executeUpdate();
-					//Clan skills
+					// Clan skills
 					statement.close();
 					statement = con.prepareStatement("DELETE FROM clan_skills WHERE clan_id=?;");
 					statement.setString(1, clanIds.get(index));
@@ -344,7 +359,9 @@ public class SQLAccountManager
 					
 				}
 				else
+				{
 					rcln.close();
+				}
 				
 				// skills
 				statement.close();

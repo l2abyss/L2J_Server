@@ -24,15 +24,15 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2Effect;
 import com.l2jserver.gameserver.model.L2PetData.L2PetSkillLearn;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.skills.SkillHolder;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -46,14 +46,14 @@ public final class L2BabyPetInstance extends L2PetInstance
 	private static final int BUFF_CONTROL = 5771;
 	private static final int AWAKENING = 5753;
 	
-	private FastList<SkillHolder> _buffs = null;
-	private SkillHolder _majorHeal = null;
-	private SkillHolder _minorHeal = null;
-	private SkillHolder _recharge = null;
+	protected FastList<SkillHolder> _buffs = null;
+	protected SkillHolder _majorHeal = null;
+	protected SkillHolder _minorHeal = null;
+	protected SkillHolder _recharge = null;
 	
 	private Future<?> _castTask;
 	
-	private boolean _bufferMode = true;
+	protected boolean _bufferMode = true;
 	
 	public L2BabyPetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control)
 	{
@@ -76,7 +76,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 		double healPower = 0;
 		for (L2PetSkillLearn psl : PetDataTable.getInstance().getPetData(getNpcId()).getAvailableSkills())
 		{
-			int id = psl.getId();
+			int id = psl.getSkillId();
 			int lvl = PetDataTable.getInstance().getPetData(getNpcId()).getAvailableLevel(id, getLevel());
 			if (lvl == 0) // not enough pet lvl
 				continue;
@@ -107,7 +107,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 						break;
 					case BUFF:
 						if (_buffs == null)
-							_buffs = new FastList<SkillHolder>();
+							_buffs = new FastList<>();
 						_buffs.add(new SkillHolder(skill));
 						break;
 					case MANAHEAL:
@@ -208,7 +208,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 	private class CastTask implements Runnable
 	{
 		private final L2BabyPetInstance _baby;
-		private List<L2Skill> _currentBuffs = new FastList<L2Skill>();
+		private List<L2Skill> _currentBuffs = new FastList<>();
 		
 		public CastTask(L2BabyPetInstance baby)
 		{

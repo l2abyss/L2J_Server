@@ -29,8 +29,8 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.item.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 /**
  * This class manage all items on ground.
@@ -44,11 +44,11 @@ public class ItemsOnGroundManager
 	protected List<L2ItemInstance> _items = null;
 	private final StoreInDb _task = new StoreInDb();
 	
-	private ItemsOnGroundManager()
+	protected ItemsOnGroundManager()
 	{
 		if (Config.SAVE_DROPPED_ITEM)
 		{
-			_items = new FastList<L2ItemInstance>();
+			_items = new FastList<>();
 		}
 		if (Config.SAVE_DROPPED_ITEM_INTERVAL > 0)
 		{
@@ -156,14 +156,8 @@ public class ItemsOnGroundManager
 			}
 			rset.close();
 			statement.close();
-			if (count > 0)
-			{
-				_log.info("ItemsOnGroundManager: restored " + count + " items.");
-			}
-			else
-			{
-				_log.info("Initializing ItemsOnGroundManager.");
-			}
+			
+			_log.info("ItemsOnGroundManager: Loaded " + count + " items.");
 		}
 		catch (Exception e)
 		{
@@ -297,12 +291,11 @@ public class ItemsOnGroundManager
 			
 			if (Config.DEBUG)
 			{
-				_log.warning("ItemsOnGroundManager: " + _items.size() + " items on ground saved");
+				_log.info(getClass().getSimpleName() + ": Saved " + _items.size() + " items on ground.");
 			}
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final ItemsOnGroundManager _instance = new ItemsOnGroundManager();

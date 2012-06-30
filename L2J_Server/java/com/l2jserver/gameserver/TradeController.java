@@ -42,7 +42,7 @@ public class TradeController
 	private static Logger _log = Logger.getLogger(TradeController.class.getName());
 	
 	private int _nextListId;
-	private Map<Integer, L2TradeList> _lists = new FastMap<Integer, L2TradeList>();
+	private Map<Integer, L2TradeList> _lists = new FastMap<>();
 	
 	//**
 	// * Task launching the function for restore count of Item (Clan Hall) 
@@ -69,7 +69,7 @@ public class TradeController
 		return SingletonHolder._instance;
 	}
 	
-	private TradeController()
+	protected TradeController()
 	{
 		_lists.clear();
 		Connection con = null;
@@ -282,7 +282,7 @@ public class TradeController
 	
 	public List<L2TradeList> getBuyListByNpcId(int npcId)
 	{
-		List<L2TradeList> lists = new FastList<L2TradeList>();
+		List<L2TradeList> lists = new FastList<>();
 		Collection<L2TradeList> values = _lists.values();
 		
 		for (L2TradeList list : values)
@@ -345,7 +345,6 @@ public class TradeController
 		return _nextListId++;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TradeController _instance = new TradeController();

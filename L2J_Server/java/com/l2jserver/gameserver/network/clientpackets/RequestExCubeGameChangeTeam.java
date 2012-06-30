@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
@@ -29,10 +27,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class RequestExCubeGameChangeTeam extends L2GameClientPacket
 {
 	private static final String _C__D0_5A_REQUESTEXCUBEGAMECHANGETEAM = "[C] D0:5A RequestExCubeGameChangeTeam";
-	private static Logger _log = Logger.getLogger(RequestExCubeGameChangeTeam.class.getName());
 	
-	int _arena;
-	int _team;
+	private int _arena;
+	private int _team;
 	
 	@Override
 	protected void readImpl()

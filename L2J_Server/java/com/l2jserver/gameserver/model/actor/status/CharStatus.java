@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.stat.CharStat;
-import com.l2jserver.gameserver.skills.Formulas;
+import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.util.Rnd;
 
 

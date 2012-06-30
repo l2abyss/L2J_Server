@@ -41,8 +41,9 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TimeStamp;
+import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
@@ -63,6 +64,13 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanCreationEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanJoinEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaderChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaveEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLevelUpEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreationListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -74,17 +82,20 @@ public class L2Clan
 {
 	private static final Logger _log = Logger.getLogger(L2Clan.class.getName());
 	
+	private static List<ClanCreationListener> clanCreationListeners = new FastList<ClanCreationListener>().shared();
+	private static List<ClanMembershipListener> clanMembershipListeners = new FastList<ClanMembershipListener>().shared();
+	
 	private String _name;
 	private int _clanId;
 	private L2ClanMember _leader;
-	private final Map<Integer, L2ClanMember> _members = new FastMap<Integer, L2ClanMember>();
+	private final Map<Integer, L2ClanMember> _members = new FastMap<>();
 	
 	private String _allyName;
 	private int _allyId;
 	private int _level;
-	private int _hasCastle;
-	private int _hasFort;
-	private int _hasHideout;
+	private int _castleId;
+	private int _fortId;
+	private int _hideoutId;
 	private int _hiredGuards;
 	private int _crestId;
 	private int _crestLargeId;
@@ -105,8 +116,8 @@ public class L2Clan
 	public static final int PENALTY_TYPE_DISSOLVE_ALLY = 4;
 	
 	private final ItemContainer _warehouse = new ClanWarehouse(this);
-	private final List<Integer> _atWarWith = new FastList<Integer>();
-	private final List<Integer> _atWarAttackers = new FastList<Integer>();
+	private final List<Integer> _atWarWith = new FastList<>();
+	private final List<Integer> _atWarAttackers = new FastList<>();
 	
 	private Forum _forum;
 	
@@ -162,10 +173,10 @@ public class L2Clan
 	public static final int SUBUNIT_KNIGHT4 = 2002;
 	
 	/** FastMap(Integer, L2Skill) containing all skills of the L2Clan */
-	private final Map<Integer, L2Skill> _skills = new FastMap<Integer, L2Skill>();
-	private final Map<Integer, RankPrivs> _privs = new FastMap<Integer, RankPrivs>();
-	private final Map<Integer, SubPledge> _subPledges = new FastMap<Integer, SubPledge>();
-	private final Map<Integer, L2Skill> _subPledgeSkills = new FastMap<Integer, L2Skill>();
+	private final Map<Integer, L2Skill> _skills = new FastMap<>();
+	private final Map<Integer, RankPrivs> _privs = new FastMap<>();
+	private final Map<Integer, SubPledge> _subPledges = new FastMap<>();
+	private final Map<Integer, L2Skill> _subPledgeSkills = new FastMap<>();
 	
 	private int _reputationScore = 0;
 	private int _rank = 0;
@@ -199,6 +210,7 @@ public class L2Clan
 		_clanId = clanId;
 		_name = clanName;
 		initializePrivs();
+		fireClanCreationListeners();
 	}
 	
 	/**
@@ -258,6 +270,12 @@ public class L2Clan
 		}
 		
 		L2PcInstance exLeader = getLeader().getPlayerInstance();
+		L2PcInstance newLeader = member.getPlayerInstance();
+		if (!fireClanLeaderChangeListeners(newLeader, exLeader))
+		{
+			return;
+		}
+		
 		SiegeManager.getInstance().removeSiegeSkills(exLeader);
 		exLeader.setClan(this);
 		exLeader.setClanPrivileges(L2Clan.CP_NOTHING);
@@ -269,7 +287,6 @@ public class L2Clan
 		exLeader.setPledgeClass(exLeader.getClan().getClanMember(exLeader.getObjectId()).calculatePledgeClass(exLeader));
 		exLeader.broadcastUserInfo();
 		exLeader.checkItemRestriction();
-		L2PcInstance newLeader = member.getPlayerInstance();
 		newLeader.setClan(this);
 		newLeader.setPledgeClass(member.calculatePledgeClass(newLeader));
 		newLeader.setClanPrivileges(L2Clan.CP_ALL);
@@ -278,13 +295,14 @@ public class L2Clan
 			SiegeManager.getInstance().addSiegeSkills(newLeader);
 			
 			// Transferring siege skills TimeStamps from old leader to new leader to prevent unlimited headquarters
-			if (!exLeader.getReuseTimeStamp().isEmpty())
+			if (!exLeader.getSkillReuseTimeStamps().isEmpty())
 			{
-				for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble(), getHasCastle() > 0))
+				TimeStamp t;
+				for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble(), getCastleId() > 0))
 				{
-					if (exLeader.getReuseTimeStamp().containsKey(sk.getReuseHashCode()))
+					if (exLeader.hasSkillReuse(sk.getReuseHashCode()))
 					{
-						TimeStamp t = exLeader.getReuseTimeStamp().get(sk.getReuseHashCode());
+						t = exLeader.getSkillReuseTimeStamp(sk.getReuseHashCode());
 						newLeader.addTimeStamp(sk, t.getReuse(), t.getStamp());
 					}
 				}
@@ -347,6 +365,11 @@ public class L2Clan
 	 */
 	public void addClanMember(L2PcInstance player)
 	{
+		if (!fireClanJoinListeners(player))
+		{
+			return;
+		}
+		
 		final L2ClanMember member = new L2ClanMember(this, player);
 		// store in memory
 		addClanMember(member);
@@ -404,6 +427,11 @@ public class L2Clan
 	 */
 	public void removeClanMember(int objectId, long clanJoinExpiryTime)
 	{
+		if (!fireClanLeaveListeners(objectId))
+		{
+			return;
+		}
+		
 		final L2ClanMember exMember = _members.remove(objectId);
 		if (exMember == null)
 		{
@@ -448,7 +476,7 @@ public class L2Clan
 		exMember.saveApprenticeAndSponsor(0, 0);
 		if (Config.REMOVE_CASTLE_CIRCLETS)
 		{
-			CastleManager.getInstance().removeCirclet(exMember, getHasCastle());
+			CastleManager.getInstance().removeCirclet(exMember, getCastleId());
 		}
 		if (exMember.isOnline())
 		{
@@ -469,9 +497,9 @@ public class L2Clan
 			removeSkillEffects(player);
 			
 			// remove Residential skills
-			if (player.getClan().getHasCastle() > 0)
+			if (player.getClan().getCastleId() > 0)
 				CastleManager.getInstance().getCastleByOwner(player.getClan()).removeResidentialSkills(player);
-			if (player.getClan().getHasFort() > 0)
+			if (player.getClan().getFortId() > 0)
 				FortManager.getInstance().getFortByOwner(player.getClan()).removeResidentialSkills(player);
 			player.sendSkillList();
 			
@@ -589,7 +617,7 @@ public class L2Clan
 	 */
 	public FastList<L2PcInstance> getOnlineMembers(int exclude)
 	{
-		final FastList<L2PcInstance> onlineMembers = new FastList<L2PcInstance>();
+		final FastList<L2PcInstance> onlineMembers = new FastList<>();
 		for (L2ClanMember temp : _members.values())
 		{
 			if ((temp != null) && temp.isOnline() && (temp.getObjectId() != exclude))
@@ -679,27 +707,27 @@ public class L2Clan
 	}
 	
 	/**
-	 * @return {code true} if the clan has a castle.
+	 * @return the castle Id for this clan if owns a castle, zero otherwise.
 	 */
-	public int getHasCastle()
+	public int getCastleId()
 	{
-		return _hasCastle;
+		return _castleId;
 	}
 	
 	/**
-	 * @return {code true} if the clan has a fort.
+	 * @return the fort Id for this clan if owns a fort, zero otherwise.
 	 */
-	public int getHasFort()
+	public int getFortId()
 	{
-		return _hasFort;
+		return _fortId;
 	}
 	
 	/**
-	 * @return {code true} if the clan has a hideout.
+	 * @return the hideout Id for this clan if owns a hideout, zero otherwise.
 	 */
-	public int getHasHideout()
+	public int getHideoutId()
 	{
-		return _hasHideout;
+		return _hideoutId;
 	}
 	
 	/**
@@ -751,27 +779,27 @@ public class L2Clan
 	}
 	
 	/**
-	 * @param hasCastle The hasCastle to set.
+	 * @param castleId the castle Id to set.
 	 */
-	public void setHasCastle(int hasCastle)
+	public void setCastleId(int castleId)
 	{
-		_hasCastle = hasCastle;
+		_castleId = castleId;
 	}
 	
 	/**
-	 * @param hasFort The hasFort to set.
+	 * @param fortId the fort Id to set.
 	 */
-	public void setHasFort(int hasFort)
+	public void setFortId(int fortId)
 	{
-		_hasFort = hasFort;
+		_fortId = fortId;
 	}
 	
 	/**
-	 * @param hasHideout The hasHideout to set.
+	 * @param hideoutId the hideout Id to set.
 	 */
-	public void setHasHideout(int hasHideout)
+	public void setHideoutId(int hideoutId)
 	{
-		_hasHideout = hasHideout;
+		_hideoutId = hideoutId;
 	}
 	
 	/**
@@ -865,7 +893,7 @@ public class L2Clan
 	 * 	<li>Clan leader Id</li>
 	 * 	<li>Clan crest Id</li>
 	 * 	<li>Clan large crest Id</li>
-	 * 	<li>Allaince crest Id</li>
+	 * 	<li>Alliance crest Id</li>
 	 * </ul>
 	 */
 	public void store()
@@ -878,7 +906,7 @@ public class L2Clan
 			statement.setInt(1, getClanId());
 			statement.setString(2, getName());
 			statement.setInt(3, getLevel());
-			statement.setInt(4, getHasCastle());
+			statement.setInt(4, getCastleId());
 			statement.setInt(5, getAllyId());
 			statement.setString(6, getAllyName());
 			statement.setInt(7, getLeaderId());
@@ -908,11 +936,10 @@ public class L2Clan
 	private void removeMemberInDatabase(L2ClanMember member, long clanJoinExpiryTime, long clanCreateExpiryTime)
 	{
 		Connection con = null;
-		PreparedStatement statement = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("UPDATE characters SET clanid=0, title=?, clan_join_expiry_time=?, clan_create_expiry_time=?, clan_privs=0, wantspeace=0, subpledge=0, lvl_joined_academy=0, apprentice=0, sponsor=0 WHERE charId=?");
+			PreparedStatement statement = con.prepareStatement("UPDATE characters SET clanid=0, title=?, clan_join_expiry_time=?, clan_create_expiry_time=?, clan_privs=0, wantspeace=0, subpledge=0, lvl_joined_academy=0, apprentice=0, sponsor=0 WHERE charId=?");
 			statement.setString(1, "");
 			statement.setLong(2, clanJoinExpiryTime);
 			statement.setLong(3, clanCreateExpiryTime);
@@ -979,7 +1006,7 @@ public class L2Clan
 			{
 				setName(clanData.getString("clan_name"));
 				setLevel(clanData.getInt("clan_level"));
-				setHasCastle(clanData.getInt("hasCastle"));
+				setCastleId(clanData.getInt("hasCastle"));
 				setAllyId(clanData.getInt("ally_id"));
 				setAllyName(clanData.getString("ally_name"));
 				setAllyPenaltyExpiryTime(clanData.getLong("ally_penalty_expiry_time"), clanData.getInt("ally_penalty_type"));
@@ -1068,7 +1095,6 @@ public class L2Clan
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 	}
 	
 	private void storeNotice(String notice, boolean enabled)
@@ -1190,6 +1216,14 @@ public class L2Clan
 			return new L2Skill[0];
 		
 		return _skills.values().toArray(new L2Skill[_skills.values().size()]);
+	}
+	
+	/**
+	 * @return the map containing this clan skills.
+	 */
+	public Map<Integer, L2Skill> getSkills()
+	{
+		return _skills;
 	}
 	
 	/** 
@@ -1532,7 +1566,7 @@ public class L2Clan
 		private final int _id;
 		private String _subPledgeName;
 		private int _leaderId;
-		private final Map<Integer, L2Skill> _subPledgeSkills = new FastMap<Integer, L2Skill>();
+		private final Map<Integer, L2Skill> _subPledgeSkills = new FastMap<>();
 		
 		public SubPledge(int id, String name, int leaderId)
 		{
@@ -1574,6 +1608,11 @@ public class L2Clan
 		public Collection<L2Skill> getSkills()
 		{
 			return _subPledgeSkills.values();
+		}
+		
+		public L2Skill getSkill(int id)
+		{
+			return _subPledgeSkills.get(id);
 		}
 	}
 	
@@ -1878,7 +1917,6 @@ public class L2Clan
 			_privs.get(rank).setPrivs(privs);
 			
 			Connection con = null;
-			
 			try
 			{
 				//_log.warning("requested store clan privs in db for rank: "+rank+", privs: "+privs);
@@ -1890,7 +1928,6 @@ public class L2Clan
 				statement.setInt(3, 0);
 				statement.setInt(4, privs);
 				statement.setInt(5, privs);
-				
 				statement.execute();
 				statement.close();
 			}
@@ -2392,6 +2429,11 @@ public class L2Clan
 		
 		boolean increaseClanLevel = false;
 		
+		if (!fireClanLevelUpListeners())
+		{
+			return false;
+		}
+		
 		switch (getLevel())
 		{
 			case 0:
@@ -2809,13 +2851,13 @@ public class L2Clan
 		// is first level?
 		if ((current == null) && (skillLevel == 1))
 			return true;
-		// other subpledges
+		// other sub-pledges
 		for (SubPledge subunit : _subPledges.values())
 		{
 			//disable academy
-			if (subunit._id == -1)
+			if (subunit.getId() == -1)
 				continue;
-			current = subunit._subPledgeSkills.get(skillId);
+			current = subunit.getSkill(skillId);
 			// is next level?
 			if ((current != null) && ((current.getLevel() + 1) == skillLevel))
 				return true;
@@ -2840,7 +2882,7 @@ public class L2Clan
 		}
 		else
 		{
-			current = _subPledges.get(subType)._subPledgeSkills.get(id);
+			current = _subPledges.get(subType).getSkill(id);
 		}
 		// is next level?
 		if ((current != null) && (current.getLevel() + 1) == skill.getLevel())
@@ -2859,9 +2901,164 @@ public class L2Clan
 			list.add(new SubPledgeSkill(0, skill.getId(), skill.getLevel()));
 		for (SubPledge subunit: _subPledges.values())
 			for (L2Skill skill : subunit.getSkills())
-				list.add(new SubPledgeSkill(subunit._id, skill.getId(), skill.getLevel()));
+				list.add(new SubPledgeSkill(subunit.getId(), skill.getId(), skill.getLevel()));
 		SubPledgeSkill[] result = list.toArray(new SubPledgeSkill[list.size()]);
 		FastList.recycle(list);
 		return result;
+	}
+	
+	// Listeners
+	/**
+	 * Fires the clan creation listeners, if any.
+	 */
+	private void fireClanCreationListeners()
+	{
+		if (!clanCreationListeners.isEmpty())
+		{
+			ClanCreationEvent event = new ClanCreationEvent();
+			event.setClan(this);
+			for (ClanCreationListener listener : clanCreationListeners)
+			{
+				listener.onClanCreate(event);
+			}
+		}
+	}
+	
+	/**
+	 * Fires all the ClanMemberShipListener.onLeaderChange() methods, if any. Prevents the clan leader change if it returns false;
+	 * @param newLeader
+	 * @param exLeader
+	 * @return
+	 */
+	private boolean fireClanLeaderChangeListeners(L2PcInstance newLeader, L2PcInstance exLeader)
+	{
+		if (!clanMembershipListeners.isEmpty() && newLeader != null && exLeader != null)
+		{
+			ClanLeaderChangeEvent event = new ClanLeaderChangeEvent();
+			event.setClan(this);
+			event.setNewLeader(newLeader);
+			event.setOldLeader(exLeader);
+			for (ClanMembershipListener listener : clanMembershipListeners)
+			{
+				if (!listener.onLeaderChange(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanMembershipListener.onJoin() methods, if any<br>
+	 * Returns true/false -> allow the player to join or not
+	 * @param player
+	 * @return
+	 */
+	private boolean fireClanJoinListeners(L2PcInstance player)
+	{
+		if (!clanMembershipListeners.isEmpty() && player != null)
+		{
+			ClanJoinEvent event = new ClanJoinEvent();
+			event.setClan(this);
+			event.setPlayer(player);
+			for (ClanMembershipListener listener : clanMembershipListeners)
+			{
+				if (!listener.onJoin(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanMembershipListener.onLeave() methods, if any<br>
+	 * Returns true/false -> the player can leave the clan or not
+	 * @param objectId - the clan member's objectId
+	 * @return
+	 */
+	private boolean fireClanLeaveListeners(int objectId)
+	{
+		if (!clanMembershipListeners.isEmpty())
+		{
+			ClanLeaveEvent event = new ClanLeaveEvent();
+			event.setPlayerId(objectId);
+			event.setClan(this);
+			for (ClanMembershipListener listener : clanMembershipListeners)
+			{
+				if (!listener.onLeave(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the ClanCreationListener.onClanLevelUp() methods, if any<br>
+	 * Blocks the level up if it returns false
+	 * @return
+	 */
+	private boolean fireClanLevelUpListeners()
+	{
+		if (!clanCreationListeners.isEmpty())
+		{
+			ClanLevelUpEvent event = new ClanLevelUpEvent();
+			event.setClan(this);
+			event.setOldLevel(_level);
+			for (ClanCreationListener listener : clanCreationListeners)
+			{
+				if (!listener.onClanLevelUp(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Adds a clan creation listener
+	 * @param listener
+	 */
+	public static void addClanCreationListener(ClanCreationListener listener)
+	{
+		if (!clanCreationListeners.contains(listener))
+		{
+			clanCreationListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a clan creation listener
+	 * @param listener
+	 */
+	public static void removeClanCreationListener(ClanCreationListener listener)
+	{
+		clanCreationListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a clan join listener (a player just joined the clan)
+	 * @param listener
+	 */
+	public static void addClanMembershipListener(ClanMembershipListener listener)
+	{
+		if (!clanMembershipListeners.contains(listener))
+		{
+			clanMembershipListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a clan join listener (a player left the clan)
+	 * @param listener
+	 */
+	public static void removeClanMembershipListener(ClanMembershipListener listener)
+	{
+		clanMembershipListeners.remove(listener);
 	}
 }

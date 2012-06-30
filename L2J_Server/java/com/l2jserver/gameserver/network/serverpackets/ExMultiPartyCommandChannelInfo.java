@@ -57,7 +57,7 @@ public class ExMultiPartyCommandChannelInfo extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x31);
 		
-		writeS(_channel.getChannelLeader().getName()); // Channelowner
+		writeS(_channel.getLeader().getName()); // Channelowner
 		writeD(0); // Channelloot 0 or 1
 		writeD(_channel.getMemberCount());
 		
@@ -65,7 +65,7 @@ public class ExMultiPartyCommandChannelInfo extends L2GameServerPacket
 		for(L2Party p : _channel.getPartys())
 		{
 			writeS(p.getLeader().getName()); // Leadername
-			writeD(p.getPartyLeaderOID()); // Leaders ObjId
+			writeD(p.getLeaderObjectId()); // Leaders ObjId
 			writeD(p.getMemberCount()); // Membercount
 		}
 	}

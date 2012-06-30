@@ -37,9 +37,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 /**
- * 
- *
- * @author  KenM
+ * @author KenM
  */
 public class JIPTextField extends JPanel implements FocusListener
 {
@@ -56,9 +54,9 @@ public class JIPTextField extends JPanel implements FocusListener
 		
 		initIPTextField(textIp);
 		
-		for (int i = 0; i < _textFields.length; i++)
+		for (JTextField _textField : _textFields)
 		{
-			_textFields[i].addFocusListener(this);
+			_textField.addFocusListener(this);
 		}
 	}
 	
@@ -75,7 +73,6 @@ public class JIPTextField extends JPanel implements FocusListener
 		this(value.getHostAddress());
 	}
 	
-	
 	private void initIPTextField(String textIp)
 	{
 		final ActionListener nextfocusaction = new ActionListener()
@@ -87,7 +84,7 @@ public class JIPTextField extends JPanel implements FocusListener
 			}
 		};
 		
-		this.setLayout(new GridBagLayout());
+		setLayout(new GridBagLayout());
 		_textFields = new JTextField[4];
 		
 		GridBagConstraints cons = new GridBagConstraints();
@@ -96,7 +93,6 @@ public class JIPTextField extends JPanel implements FocusListener
 		cons.insets = new Insets(1, 1, 1, 1);
 		cons.gridx = 0;
 		cons.gridy = 0;
-		
 		
 		MaxLengthDocument previous = null;
 		String[] parts = textIp.split("\\.");
@@ -117,7 +113,7 @@ public class JIPTextField extends JPanel implements FocusListener
 				previous.setNext(_textFields[i]);
 			}
 			previous = maxDoc;
-			//ic.weightx = 1;
+			// ic.weightx = 1;
 			add(_textFields[i], cons);
 			_textFields[i].addActionListener(nextfocusaction);
 			cons.gridx++;
@@ -129,10 +125,10 @@ public class JIPTextField extends JPanel implements FocusListener
 	{
 		if (_focusListeners == null)
 		{
-			_focusListeners = new LinkedList<FocusListener>();
+			_focusListeners = new LinkedList<>();
 		}
 		
-		if (fl != null && !_focusListeners.contains(fl))
+		if ((fl != null) && !_focusListeners.contains(fl))
 		{
 			_focusListeners.add(fl);
 		}
@@ -153,12 +149,18 @@ public class JIPTextField extends JPanel implements FocusListener
 		for (int i = 0; i < 4; i++)
 		{
 			if (_textFields[i].getText().length() == 0)
-				str.append("0");
+			{
+				str.append('0');
+			}
 			else
+			{
 				str.append(_textFields[i].getText());
+			}
 			
 			if (i < 3)
-				str.append(".");
+			{
+				str.append('.');
+			}
 		}
 		return str.toString();
 	}
@@ -201,11 +203,11 @@ public class JIPTextField extends JPanel implements FocusListener
 	@Override
 	public void setEnabled(boolean enabled)
 	{
-		for(int i=0;i<_textFields.length;i++)
+		for (JTextField _textField : _textFields)
 		{
-			if(_textFields[i] != null)
+			if (_textField != null)
 			{
-				_textFields[i].setEnabled(enabled);
+				_textField.setEnabled(enabled);
 			}
 		}
 	}
@@ -233,7 +235,6 @@ public class JIPTextField extends JPanel implements FocusListener
 		}
 		return true;
 	}
-	
 	
 	@Override
 	public void focusGained(FocusEvent event)
@@ -270,7 +271,7 @@ public class JIPTextField extends JPanel implements FocusListener
 		 */
 		private static final long serialVersionUID = 1L;
 		
-		private int _max;
+		private final int _max;
 		private JTextField _next;
 		
 		public MaxLengthDocument(int maxLength)
@@ -287,17 +288,17 @@ public class JIPTextField extends JPanel implements FocusListener
 		@Override
 		public void insertString(int offset, String str, AttributeSet a) throws BadLocationException
 		{
-			if (getLength() + str.length() > _max)
+			if ((getLength() + str.length()) > _max)
 			{
 				if (getNext() != null)
 				{
-					if (this.getNext().getText().length() > 0)
+					if (getNext().getText().length() > 0)
 					{
-						this.getNext().select(0, this.getNext().getText().length());
+						getNext().select(0, getNext().getText().length());
 					}
 					else
 					{
-						this.getNext().getDocument().insertString(0, str, a);
+						getNext().getDocument().insertString(0, str, a);
 					}
 					getNext().requestFocusInWindow();
 				}

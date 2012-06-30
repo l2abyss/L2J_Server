@@ -15,196 +15,163 @@
 package com.l2jserver.gameserver.model;
 
 /**
- * Stats definition for each pet level
- * @author JIV
- *
+ * Stats definition for each pet level.
+ * @author JIV, Zoey76
  */
 public class L2PetLevelData
 {
-	private int _ownerExpTaken;
-	private long _petMaxExp;
-	private float _petMaxHP;
-	private float _petMaxMP;
-	private float _petPAtk;
-	private float _petPDef;
-	private float _petMAtk;
-	private float _petMDef;
-	private int _petMaxFeed;
-	private int _petFeedBattle;
-	private int _petFeedNormal;
-	private float _petRegenHP;
-	private float _petRegenMP;
-	private short _petSoulShot;
-	private short _petSpiritShot;
+	private final int _ownerExpTaken;
+	private final int _petFeedBattle;
+	private final int _petFeedNormal;
+	private final float _petMAtk;
+	private final long _petMaxExp;
+	private final int _petMaxFeed;
+	private final float _petMaxHP;
+	private final float _petMaxMP;
+	private final float _petMDef;
+	private final float _petPAtk;
+	private final float _petPDef;
+	private final float _petRegenHP;
+	private final float _petRegenMP;
+	private final short _petSoulShot;
+	private final short _petSpiritShot;
 	
-	//  Max Exp
-	public long getPetMaxExp()
+	public L2PetLevelData(StatsSet set)
 	{
-		return _petMaxExp;
+		_ownerExpTaken = set.getInteger("get_exp_type");
+		_petMaxExp = set.getLong("exp");
+		_petMaxHP = set.getFloat("org_hp");
+		_petMaxMP = set.getFloat("org_mp");
+		_petPAtk = set.getFloat("org_pattack");
+		_petPDef = set.getFloat("org_pdefend");
+		_petMAtk = set.getFloat("org_mattack");
+		_petMDef = set.getFloat("org_mdefend");
+		_petMaxFeed = set.getInteger("max_meal");
+		_petFeedBattle = set.getInteger("consume_meal_in_battle");
+		_petFeedNormal = set.getInteger("consume_meal_in_normal");
+		_petRegenHP = set.getFloat("org_hp_regen");
+		_petRegenMP = set.getFloat("org_mp_regen");
+		_petSoulShot = set.getShort("soulshot_count");
+		_petSpiritShot = set.getShort("spiritshot_count");
 	}
 	
-	public void setPetMaxExp(long pPetMaxExp)
-	{
-		_petMaxExp = pPetMaxExp;
-	}
-	
+	/**
+	 * @return the owner's experience points consumed by the pet.
+	 */
 	public int getOwnerExpTaken()
 	{
 		return _ownerExpTaken;
 	}
 	
-	public void setOwnerExpTaken(int pOwnerExpTaken)
-	{
-		_ownerExpTaken = pOwnerExpTaken;
-	}
-	
-	//  Max HP
-	public float getPetMaxHP()
-	{
-		return _petMaxHP;
-	}
-	
-	public void setPetMaxHP(float pPetMaxHP)
-	{
-		_petMaxHP = pPetMaxHP;
-	}
-	
-	//  Max Mp
-	public float getPetMaxMP()
-	{
-		return _petMaxMP;
-	}
-	
-	public void setPetMaxMP(float pPetMaxMP)
-	{
-		_petMaxMP = pPetMaxMP;
-	}
-	
-	//  PAtk
-	public float getPetPAtk()
-	{
-		return _petPAtk;
-	}
-	
-	public void setPetPAtk(float pPetPAtk)
-	{
-		_petPAtk = pPetPAtk;
-	}
-	
-	//  PDef
-	public float getPetPDef()
-	{
-		return _petPDef;
-	}
-	
-	public void setPetPDef(float pPetPDef)
-	{
-		_petPDef = pPetPDef;
-	}
-	
-	//  MAtk
-	public float getPetMAtk()
-	{
-		return _petMAtk;
-	}
-	
-	public void setPetMAtk(float pPetMAtk)
-	{
-		_petMAtk = pPetMAtk;
-	}
-	
-	//  MDef
-	public float getPetMDef()
-	{
-		return _petMDef;
-	}
-	
-	public void setPetMDef(float pPetMDef)
-	{
-		_petMDef = pPetMDef;
-	}
-	
-	//  MaxFeed
-	public int getPetMaxFeed()
-	{
-		return _petMaxFeed;
-	}
-	
-	public void setPetMaxFeed(int pPetMaxFeed)
-	{
-		_petMaxFeed = pPetMaxFeed;
-	}
-	
-	//  Normal Feed
-	public int getPetFeedNormal()
-	{
-		return _petFeedNormal;
-	}
-	
-	public void setPetFeedNormal(int pPetFeedNormal)
-	{
-		_petFeedNormal = pPetFeedNormal;
-	}
-	
-	//  Battle Feed
+	/**
+	 * @return the pet's food consume rate at battle state.
+	 */
 	public int getPetFeedBattle()
 	{
 		return _petFeedBattle;
 	}
 	
-	public void setPetFeedBattle(int pPetFeedBattle)
+	/**
+	 * @return the pet's food consume rate at normal state.
+	 */
+	public int getPetFeedNormal()
 	{
-		_petFeedBattle = pPetFeedBattle;
+		return _petFeedNormal;
 	}
 	
-	//  Regen HP
+	/**
+	 * @return the pet's Magical Attack.
+	 */
+	public float getPetMAtk()
+	{
+		return _petMAtk;
+	}
+	
+	/**
+	 * @return the pet's maximum experience points.
+	 */
+	public long getPetMaxExp()
+	{
+		return _petMaxExp;
+	}
+	
+	/**
+	 * @return the pet's maximum feed points.
+	 */
+	public int getPetMaxFeed()
+	{
+		return _petMaxFeed;
+	}
+	
+	/**
+	 * @return the pet's maximum HP.
+	 */
+	public float getPetMaxHP()
+	{
+		return _petMaxHP;
+	}
+	
+	/**
+	 * @return the pet's maximum MP.
+	 */
+	public float getPetMaxMP()
+	{
+		return _petMaxMP;
+	}
+	
+	/**
+	 * @return the pet's Magical Defense.
+	 */
+	public float getPetMDef()
+	{
+		return _petMDef;
+	}
+	
+	/**
+	 * @return the pet's Physical Attack.
+	 */
+	public float getPetPAtk()
+	{
+		return _petPAtk;
+	}
+	
+	/**
+	 * @return the pet's Physical Defense.
+	 */
+	public float getPetPDef()
+	{
+		return _petPDef;
+	}
+	
+	/**
+	 * @return the pet's HP regeneration rate.
+	 */
 	public float getPetRegenHP()
 	{
 		return _petRegenHP;
 	}
 	
-	public void setPetRegenHP(float pPetRegenHP)
-	{
-		_petRegenHP = pPetRegenHP;
-	}
-	
-	//  Regen MP
+	/**
+	 * @return the pet's MP regeneration rate.
+	 */
 	public float getPetRegenMP()
 	{
 		return _petRegenMP;
 	}
 	
-	public void setPetRegenMP(float pPetRegenMP)
-	{
-		_petRegenMP = pPetRegenMP;
-	}
-	
 	/**
-	 * @return the _petSoulShot
+	 * @return the pet's soulshot use count.
 	 */
 	public short getPetSoulShot()
 	{
 		return _petSoulShot;
 	}
+	
 	/**
-	 * @param soulShot the _petSoulShot to set
-	 */
-	public void setPetSoulShot(short soulShot)
-	{
-		_petSoulShot = soulShot;
-	}
-	/**
-	 * @return the _petSpiritShot
+	 * @return the pet's spiritshot use count.
 	 */
 	public short getPetSpiritShot()
 	{
 		return _petSpiritShot;
-	}
-	/**
-	 * @param spiritShot the _petSpiritShot to set
-	 */
-	public void setPetSpiritShot(short spiritShot)
-	{
-		_petSpiritShot = spiritShot;
 	}
 }

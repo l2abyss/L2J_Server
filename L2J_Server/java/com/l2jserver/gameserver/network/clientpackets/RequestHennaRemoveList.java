@@ -21,23 +21,23 @@ public final class RequestHennaRemoveList extends L2GameClientPacket
 {
 	private static final String _C__70_REQUESTHENNAREMOVELIST = "[C] 70 RequestHennaRemoveList";
 	
-	// This is just a trigger packet...
 	@SuppressWarnings("unused")
 	private int _unknown;
 	
 	@Override
 	protected void readImpl()
 	{
-		_unknown = readD(); // ??
+		_unknown = readD(); // TODO: Identify.
 	}
 	
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getActiveChar();
 		if (activeChar == null)
+		{
 			return;
-		
+		}
 		activeChar.sendPacket(new HennaRemoveList(activeChar));
 	}
 	

@@ -13,6 +13,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +83,7 @@ public final class CreatureSay extends L2GameServerPacket
 	public void addStringParameter(String text)
 	{
 		if (_parameters == null)
-			_parameters = new ArrayList<String>();
+			_parameters = new ArrayList<>();
 		_parameters.add(text);
 	}
 	

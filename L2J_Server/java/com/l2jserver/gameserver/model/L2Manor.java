@@ -27,7 +27,7 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 
 /**
@@ -40,9 +40,9 @@ public class L2Manor
 	
 	private static L2TIntObjectHashMap<SeedData> _seeds;
 	
-	private L2Manor()
+	protected L2Manor()
 	{
-		_seeds = new L2TIntObjectHashMap<SeedData>();
+		_seeds = new L2TIntObjectHashMap<>();
 		parseData();
 	}
 	
@@ -58,7 +58,7 @@ public class L2Manor
 	
 	public FastList<Integer> getAllCrops()
 	{
-		FastList<Integer> crops = new FastList<Integer>();
+		FastList<Integer> crops = new FastList<>();
 		
 		for (SeedData seed : getSeedsDataArray())
 		{
@@ -216,7 +216,7 @@ public class L2Manor
 	 */
 	public FastList<Integer> getCropsForCastle(int castleId)
 	{
-		FastList<Integer> crops = new FastList<Integer>();
+		FastList<Integer> crops = new FastList<>();
 		
 		for (SeedData seed : getSeedsDataArray())
 		{
@@ -236,7 +236,7 @@ public class L2Manor
 	 */
 	public FastList<Integer> getSeedsForCastle(int castleId)
 	{
-		FastList<Integer> seedsID = new FastList<Integer>();
+		FastList<Integer> seedsID = new FastList<>();
 		
 		for (SeedData seed : getSeedsDataArray())
 		{
@@ -386,6 +386,7 @@ public class L2Manor
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not parse seeds.xml file: " + e.getMessage(), e);
+			return;
 		}
 		
 		doc.getDocumentElement().normalize();
@@ -450,10 +451,7 @@ public class L2Manor
 
 
 	}
-
 	
-	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final L2Manor _instance = new L2Manor();

@@ -23,13 +23,7 @@ import java.util.Map;
 import javolution.util.FastList;
 
 /**
- *  Descending Integer Sort Algorithm
- *
- * - Fast ordering system.
- * - Can easily be ported elsewhere.
- * - Can handle any number of values, from a list or even from a map.
- * - Handles duplicate values.
- *
+ * Descending Integer Sort Algorithm - Fast ordering system. - Can easily be ported elsewhere. - Can handle any number of values, from a list or even from a map. - Handles duplicate values.
  * @author Tempy
  */
 public class MultiSort
@@ -75,7 +69,9 @@ public class MultiSort
 		Integer[] tempIntList = new Integer[valueList.length];
 		
 		for (int i = 0; i < valueList.length; i++)
+		{
 			tempIntList[i] = Integer.valueOf(valueList[i]);
+		}
 		
 		return Arrays.asList(tempIntList);
 	}
@@ -98,12 +94,16 @@ public class MultiSort
 	public final int getHarmonicMean()
 	{
 		if (getValues().isEmpty())
+		{
 			return -1;
+		}
 		
 		int totalValue = 0;
 		
 		for (int currValue : getValues())
+		{
 			totalValue += (1 / currValue);
+		}
 		
 		return (getCount() / totalValue);
 	}
@@ -111,7 +111,9 @@ public class MultiSort
 	public final List<?> getKeys()
 	{
 		if (_keyList == null)
-			return new FastList<Object>();
+		{
+			return new FastList<>();
+		}
 		
 		return _keyList;
 	}
@@ -134,7 +136,9 @@ public class MultiSort
 	public final int getMean()
 	{
 		if (getValues().isEmpty())
+		{
 			return -1;
+		}
 		
 		return (getTotalValue() / getCount());
 	}
@@ -142,9 +146,11 @@ public class MultiSort
 	public final double getStandardDeviation()
 	{
 		if (getValues().isEmpty())
+		{
 			return -1;
+		}
 		
-		List<Double> tempValList = new FastList<Double>();
+		List<Double> tempValList = new FastList<>();
 		
 		int meanValue = getMean();
 		int numValues = getCount();
@@ -158,7 +164,9 @@ public class MultiSort
 		double totalValue = 0;
 		
 		for (double storedVal : tempValList)
+		{
 			totalValue += storedVal;
+		}
 		
 		return Math.sqrt(totalValue / (numValues - 1));
 	}
@@ -166,12 +174,16 @@ public class MultiSort
 	public final int getTotalValue()
 	{
 		if (getValues().isEmpty())
+		{
 			return 0;
+		}
 		
 		int totalValue = 0;
 		
 		for (int currValue : getValues())
+		{
 			totalValue += currValue;
+		}
 		
 		return totalValue;
 	}
@@ -179,7 +191,9 @@ public class MultiSort
 	public final List<Integer> getValues()
 	{
 		if (_valueList == null)
-			return new FastList<Integer>();
+		{
+			return new FastList<>();
+		}
 		
 		return _valueList;
 	}
@@ -203,8 +217,8 @@ public class MultiSort
 	{
 		try
 		{
-			List<Object> newKeyList = new FastList<Object>();
-			List<Integer> newValueList = new FastList<Integer>();
+			List<Object> newKeyList = new FastList<>();
+			List<Integer> newValueList = new FastList<>();
 			
 			// Sort the list of values in ascending numerical order.
 			Collections.sort(getValues());
@@ -215,7 +229,9 @@ public class MultiSort
 			{
 				// If there are no keys, just return the ascendingly sorted values.
 				if (getKeys().isEmpty())
+				{
 					return true;
+				}
 				
 				// Iterate through the list of ordered numerical values.
 				for (int i = getValues().size() - 1; i > -1; i--)
@@ -225,7 +241,9 @@ public class MultiSort
 					// If the current value is equal to the last value, we have at least one
 					// duplicate that has been outputted already, so continue.
 					if (currValue == lastValue)
+					{
 						continue;
+					}
 					
 					// Set the last value to the current value, to prevent duplication.
 					lastValue = currValue;
@@ -259,7 +277,9 @@ public class MultiSort
 					int currValue = getValues().get(i);
 					
 					if (currValue == lastValue)
+					{
 						continue;
+					}
 					
 					lastValue = currValue;
 					

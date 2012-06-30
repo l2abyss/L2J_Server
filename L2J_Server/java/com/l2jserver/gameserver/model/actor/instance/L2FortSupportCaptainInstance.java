@@ -14,20 +14,18 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import java.util.List;
 import java.util.StringTokenizer;
-
-import javolution.util.FastList;
 
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -41,7 +39,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 		setInstanceType(InstanceType.L2FortSupportCaptainInstance);
 	}
 	
-	private final static int[] TalismanIds = { 9914, 9915, 9917, 9918, 9919, 9920, 9921, 9922, 9923, 9924, 9926, 9927, 9928, 9930, 9931, 9932, 9933, 9934, 9935, 9936, 9937, 9938, 9939, 9940, 9941, 9942, 9943, 9944, 9945, 9946, 9947, 9948, 9949, 9950, 9951, 9952, 9953, 9954, 9955, 9956, 9957, 9958, 9959, 9960, 9961, 9962, 9963, 9964, 9965, 9966, 10141, 10142, 10158 };
+	private static final int[] TalismanIds = { 9914, 9915, 9917, 9918, 9919, 9920, 9921, 9922, 9923, 9924, 9926, 9927, 9928, 9930, 9931, 9932, 9933, 9934, 9935, 9936, 9937, 9938, 9939, 9940, 9941, 9942, 9943, 9944, 9945, 9946, 9947, 9948, 9949, 9950, 9951, 9952, 9953, 9954, 9955, 9956, 9957, 9958, 9959, 9960, 9961, 9962, 9963, 9964, 9965, 9966, 10141, 10142, 10158 };
 	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
@@ -78,17 +76,9 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 		}
 		else if (actualCommand.equalsIgnoreCase("ExchangeKE"))
 		{
-			int item = TalismanIds[Rnd.get(TalismanIds.length)];
-			
-			if (player.destroyItemByItemId("FortSupportUnit", 9912, 10, this, false))
+			final int itemId = TalismanIds[Rnd.get(TalismanIds.length)];
+			if (player.exchangeItemsById("FortSupportUnitExchangeKE", this, 9912, 10, itemId, 1, true))
 			{
-				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
-				msg.addItemName(9912);
-				msg.addNumber(10);
-				player.sendPacket(msg);
-				
-				player.addItem("FortSupportUnit", item, 1, player, true);
-				
 				showChatWindow(player, "data/html/fortress/supportunit-talisman.htm");
 			}
 			else
@@ -100,8 +90,8 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 		{
 			if (player.isClanLeader())
 			{
-				final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
-				final AcquireSkillList asl = new AcquireSkillList(SkillType.SubPledge);
+				final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
+				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubPledge);
 				int count = 0;
 				
 				for (L2SkillLearn s : skills)

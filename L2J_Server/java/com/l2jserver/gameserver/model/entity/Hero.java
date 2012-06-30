@@ -12,11 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @author godson
- */
-
 package com.l2jserver.gameserver.model.entity;
 
 import java.sql.Connection;
@@ -29,6 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,16 +35,17 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.CharNameTable;
-import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
@@ -56,33 +53,33 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.util.StringUtil;
 
+/**
+ * @author godson
+ */
 public class Hero
 {
-	private static Logger _log = Logger.getLogger(Hero.class.getName());
+	private static final Logger _log = Logger.getLogger(Hero.class.getName());
 	
-	private static final String GET_HEROES = "SELECT heroes.charId, " + "characters.char_name, heroes.class_id, heroes.count, heroes.played " + "FROM heroes, characters WHERE characters.charId = heroes.charId " + "AND heroes.played = 1";
-	private static final String GET_ALL_HEROES = "SELECT heroes.charId, " + "characters.char_name, heroes.class_id, heroes.count, heroes.played " + "FROM heroes, characters WHERE characters.charId = heroes.charId";
+	private static final String GET_HEROES = "SELECT heroes.charId, characters.char_name, heroes.class_id, heroes.count, heroes.played FROM heroes, characters WHERE characters.charId = heroes.charId AND heroes.played = 1";
+	private static final String GET_ALL_HEROES = "SELECT heroes.charId, characters.char_name, heroes.class_id, heroes.count, heroes.played FROM heroes, characters WHERE characters.charId = heroes.charId";
 	private static final String UPDATE_ALL = "UPDATE heroes SET played = 0";
 	private static final String INSERT_HERO = "INSERT INTO heroes (charId, class_id, count, played) VALUES (?,?,?,?)";
-	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, " + "played = ?" + " WHERE charId = ?";
-	private static final String GET_CLAN_ALLY = "SELECT characters.clanid " + "AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters " + "LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid " + "WHERE characters.charId = ?";
-	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data " + "WHERE clan_id = (SELECT clanid FROM characters WHERE charId = ?)";
+	private static final String UPDATE_HERO = "UPDATE heroes SET count = ?, played = ? WHERE charId = ?";
+	private static final String GET_CLAN_ALLY = "SELECT characters.clanid AS clanid, coalesce(clan_data.ally_Id, 0) AS allyId FROM characters LEFT JOIN clan_data ON clan_data.clan_id = characters.clanid WHERE characters.charId = ?";
+	private static final String GET_CLAN_NAME = "SELECT clan_name FROM clan_data WHERE clan_id = (SELECT clanid FROM characters WHERE charId = ?)";
 	// delete hero items
-	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN " + "(6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) " + "AND owner_id NOT IN (SELECT charId FROM characters WHERE accesslevel > 0)";
+	private static final String DELETE_ITEMS = "DELETE FROM items WHERE item_id IN (6842, 6611, 6612, 6613, 6614, 6615, 6616, 6617, 6618, 6619, 6620, 6621, 9388, 9389, 9390) AND owner_id NOT IN (SELECT charId FROM characters WHERE accesslevel > 0)";
 	
-	private static Map<Integer, StatsSet> _heroes;
-	private static Map<Integer, StatsSet> _completeHeroes;
+	private static final Map<Integer, StatsSet> _heroes = new FastMap<>();
+	private static final Map<Integer, StatsSet> _completeHeroes = new FastMap<>();
 	
-	private static Map<Integer, StatsSet> _herocounts;
-	private static Map<Integer, List<StatsSet>> _herofights;
-	private static List<StatsSet> _fights;
+	private static final Map<Integer, StatsSet> _herocounts = new FastMap<>();
+	private static final Map<Integer, List<StatsSet>> _herofights = new FastMap<>();
 	
-	private static Map<Integer, List<StatsSet>> _herodiary;
-	private static Map<Integer, String> _heroMessage;
-	private static List<StatsSet> _diary;
+	private static final Map<Integer, List<StatsSet>> _herodiary = new FastMap<>();
+	private static final Map<Integer, String> _heroMessage = new FastMap<>();
 	
 	public static final String COUNT = "count";
 	public static final String PLAYED = "played";
@@ -100,20 +97,19 @@ public class Hero
 		return SingletonHolder._instance;
 	}
 	
-	private Hero()
+	protected Hero()
 	{
 		init();
 	}
 	
 	private void init()
 	{
-		_heroes = new FastMap<Integer, StatsSet>();
-		_completeHeroes = new FastMap<Integer, StatsSet>();
-		
-		_herofights = new FastMap<Integer, List<StatsSet>>();
-		_herocounts = new FastMap<Integer, StatsSet>();
-		_herodiary = new FastMap<Integer, List<StatsSet>>();
-		_heroMessage = new FastMap<Integer, String>();
+		_heroes.clear();
+		_completeHeroes.clear();
+		_herocounts.clear();
+		_herofights.clear();
+		_herodiary.clear();
+		_heroMessage.clear();
 		
 		Connection con = null;
 		try
@@ -122,7 +118,6 @@ public class Hero
 			PreparedStatement statement = con.prepareStatement(GET_HEROES);
 			ResultSet rset = statement.executeQuery();
 			PreparedStatement statement2 = con.prepareStatement(GET_CLAN_ALLY);
-			ResultSet rset2 = null;
 			
 			while (rset.next())
 			{
@@ -137,39 +132,7 @@ public class Hero
 				loadDiary(charId);
 				loadMessage(charId);
 				
-				statement2.setInt(1, charId);
-				rset2 = statement2.executeQuery();
-				
-				if (rset2.next())
-				{
-					int clanId = rset2.getInt("clanid");
-					int allyId = rset2.getInt("allyId");
-					
-					String clanName = "";
-					String allyName = "";
-					int clanCrest = 0;
-					int allyCrest = 0;
-					
-					if (clanId > 0)
-					{
-						clanName = ClanTable.getInstance().getClan(clanId).getName();
-						clanCrest = ClanTable.getInstance().getClan(clanId).getCrestId();
-						
-						if (allyId > 0)
-						{
-							allyName = ClanTable.getInstance().getClan(clanId).getAllyName();
-							allyCrest = ClanTable.getInstance().getClan(clanId).getAllyCrestId();
-						}
-					}
-					
-					hero.set(CLAN_CREST, clanCrest);
-					hero.set(CLAN_NAME, clanName);
-					hero.set(ALLY_CREST, allyCrest);
-					hero.set(ALLY_NAME, allyName);
-				}
-				
-				rset2.close();
-				statement2.clearParameters();
+				processHeros(statement2, charId, hero);
 				
 				_heroes.put(charId, hero);
 			}
@@ -189,39 +152,7 @@ public class Hero
 				hero.set(COUNT, rset.getInt(COUNT));
 				hero.set(PLAYED, rset.getInt(PLAYED));
 				
-				statement2.setInt(1, charId);
-				rset2 = statement2.executeQuery();
-				
-				if (rset2.next())
-				{
-					int clanId = rset2.getInt("clanid");
-					int allyId = rset2.getInt("allyId");
-					
-					String clanName = "";
-					String allyName = "";
-					int clanCrest = 0;
-					int allyCrest = 0;
-					
-					if (clanId > 0)
-					{
-						clanName = ClanTable.getInstance().getClan(clanId).getName();
-						clanCrest = ClanTable.getInstance().getClan(clanId).getCrestId();
-						
-						if (allyId > 0)
-						{
-							allyName = ClanTable.getInstance().getClan(clanId).getAllyName();
-							allyCrest = ClanTable.getInstance().getClan(clanId).getAllyCrestId();
-						}
-					}
-					
-					hero.set(CLAN_CREST, clanCrest);
-					hero.set(CLAN_NAME, clanName);
-					hero.set(ALLY_CREST, allyCrest);
-					hero.set(ALLY_NAME, allyName);
-				}
-				
-				rset2.close();
-				statement2.clearParameters();
+				processHeros(statement2, charId, hero);
 				
 				_completeHeroes.put(charId, hero);
 			}
@@ -232,11 +163,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Hero System: Couldnt load Heroes");
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
+			_log.log(Level.WARNING, "Hero System: Couldnt load Heroes", e);
 		}
 		finally
 		{
@@ -245,6 +172,37 @@ public class Hero
 		
 		_log.info("Hero System: Loaded " + _heroes.size() + " Heroes.");
 		_log.info("Hero System: Loaded " + _completeHeroes.size() + " all time Heroes.");
+	}
+	
+	private void processHeros(PreparedStatement ps, int charId, StatsSet hero) throws SQLException
+	{
+		ps.setInt(1, charId);
+		ResultSet rs = ps.executeQuery();
+		if (rs.next())
+		{
+			int clanId = rs.getInt("clanid");
+			int allyId = rs.getInt("allyId");
+			String clanName = "";
+			String allyName = "";
+			int clanCrest = 0;
+			int allyCrest = 0;
+			if (clanId > 0)
+			{
+				clanName = ClanTable.getInstance().getClan(clanId).getName();
+				clanCrest = ClanTable.getInstance().getClan(clanId).getCrestId();
+				if (allyId > 0)
+				{
+					allyName = ClanTable.getInstance().getClan(clanId).getAllyName();
+					allyCrest = ClanTable.getInstance().getClan(clanId).getAllyCrestId();
+				}
+			}
+			hero.set(CLAN_CREST, clanCrest);
+			hero.set(CLAN_NAME, clanName);
+			hero.set(ALLY_CREST, allyCrest);
+			hero.set(ALLY_NAME, allyName);
+		}
+		rs.close();
+		ps.clearParameters();
 	}
 	
 	private String calcFightTime(long FightTime)
@@ -289,8 +247,7 @@ public class Hero
 	
 	public void loadDiary(int charId)
 	{
-		_diary = new FastList<StatsSet>();
-		
+		final List<StatsSet> _diary = new FastList<>();
 		int diaryentries = 0;
 		Connection con = null;
 		try
@@ -343,9 +300,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Hero System: Couldnt load Hero Diary for CharId: " + charId);
-			if (Config.DEBUG)
-				_log.log(Level.WARNING, "", e);
+			_log.log(Level.WARNING, "Hero System: Couldnt load Hero Diary for CharId: " + charId, e);
 		}
 		finally
 		{
@@ -355,10 +310,8 @@ public class Hero
 	
 	public void loadFights(int charId)
 	{
-		_fights = new FastList<StatsSet>();
-		
+		final List<StatsSet> _fights = new FastList<>();
 		StatsSet _herocountdata = new StatsSet();
-		
 		Calendar _data = Calendar.getInstance();
 		_data.set(Calendar.DAY_OF_MONTH, 1);
 		_data.set(Calendar.HOUR_OF_DAY, 0);
@@ -381,21 +334,29 @@ public class Hero
 			statement.setLong(3, from);
 			ResultSet rset = statement.executeQuery();
 			
+			int charOneId;
+			int charOneClass;
+			int charTwoId;
+			int charTwoClass;
+			int winner;
+			long start;
+			int time;
+			int classed;
 			while (rset.next())
 			{
-				int charOneId = rset.getInt("charOneId");
-				int charOneClass = rset.getInt("charOneClass");
-				int charTwoId = rset.getInt("charTwoId");
-				int charTwoClass = rset.getInt("charTwoClass");
-				int winner = rset.getInt("winner");
-				long start = rset.getLong("start");
-				int time = rset.getInt("time");
-				int classed = rset.getInt("classed");
+				charOneId = rset.getInt("charOneId");
+				charOneClass = rset.getInt("charOneClass");
+				charTwoId = rset.getInt("charTwoId");
+				charTwoClass = rset.getInt("charTwoClass");
+				winner = rset.getInt("winner");
+				start = rset.getLong("start");
+				time = rset.getInt("time");
+				classed = rset.getInt("classed");
 				
 				if (charId == charOneId)
 				{
 					String name = CharNameTable.getInstance().getNameById(charTwoId);
-					String cls = CharTemplateTable.getInstance().getClassNameById(charTwoClass);
+					String cls = ClassListData.getInstance().getClass(charTwoClass).getClientCode();
 					if(name != null && cls != null)
 					{
 						StatsSet fight = new StatsSet();
@@ -431,7 +392,7 @@ public class Hero
 				else if (charId == charTwoId)
 				{
 					String name = CharNameTable.getInstance().getNameById(charOneId);
-					String cls = CharTemplateTable.getInstance().getClassNameById(charOneClass);
+					String cls = ClassListData.getInstance().getClass(charOneClass).getClientCode();
 					if(name != null && cls != null)
 					{
 						StatsSet fight = new StatsSet();
@@ -479,9 +440,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Hero System: Couldnt load Hero fights history for CharId: " + charId);
-			if (Config.DEBUG)
-				_log.log(Level.WARNING, "", e);
+			_log.log(Level.WARNING, "Hero System: Couldnt load Hero fights history for CharId: " + charId, e);
 		}
 		finally
 		{
@@ -496,15 +455,11 @@ public class Hero
 	
 	public int getHeroByClass(int classid)
 	{
-		if (!_heroes.isEmpty())
+		for (Entry<Integer, StatsSet> e : _heroes.entrySet())
 		{
-			for (Integer heroId : _heroes.keySet())
+			if (e.getValue().getInteger(Olympiad.CLASS_ID) == classid)
 			{
-				StatsSet hero = _heroes.get(heroId);
-				if (hero.getInteger(Olympiad.CLASS_ID) == classid)
-				{
-					return heroId;
-				}
+				return e.getKey();
 			}
 		}
 		return 0;
@@ -751,7 +706,7 @@ public class Hero
 			return;
 		}
 		
-		Map<Integer, StatsSet> heroes = new FastMap<Integer, StatsSet>();
+		Map<Integer, StatsSet> heroes = new FastMap<>();
 		
 		for (StatsSet hero : newHeroes)
 		{
@@ -787,10 +742,10 @@ public class Hero
 		
 		updateHeroes(false);
 		
+		L2PcInstance player;
 		for(Integer charId : _heroes.keySet())
 		{
-			L2PcInstance player = L2World.getInstance().getPlayer(charId);
-			
+			player = L2World.getInstance().getPlayer(charId);
 			if (player != null)
 			{
 				player.setHero(true);
@@ -878,11 +833,13 @@ public class Hero
 			}
 			else
 			{
-				for (Integer heroId : _heroes.keySet())
+				StatsSet hero;
+				int heroId;
+				for (Entry<Integer, StatsSet> entry : _heroes.entrySet())
 				{
-					StatsSet hero = _heroes.get(heroId);
-					
-					if ((_completeHeroes == null) || !_completeHeroes.containsKey(heroId))
+					hero = entry.getValue();
+					heroId = entry.getKey();
+					if (_completeHeroes.isEmpty() || !_completeHeroes.containsKey(heroId))
 					{
 						statement = con.prepareStatement(INSERT_HERO);
 						statement.setInt(1, heroId);
@@ -946,11 +903,7 @@ public class Hero
 		}
 		catch (SQLException e)
 		{
-			_log.warning("Hero System: Couldnt update Heroes");
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
+			_log.log(Level.WARNING, "Hero System: Couldnt update Heroes", e);
 		}
 		finally
 		{
@@ -992,8 +945,7 @@ public class Hero
 		setDiaryData(charId, ACTION_CASTLE_TAKEN, castleId);
 		
 		Castle castle = CastleManager.getInstance().getCastleById(castleId);
-		
-		if (_herodiary.containsKey(charId) && (castle != null))
+		if ((castle != null) && _herodiary.containsKey(charId))
 		{
 			// Get Data
 			List<StatsSet> _list = _herodiary.get(charId);
@@ -1082,7 +1034,6 @@ public class Hero
 	private void deleteItemsInDb()
 	{
 		Connection con = null;
-		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
@@ -1118,10 +1069,9 @@ public class Hero
 	 */
 	public boolean isHero(int objectId)
 	{
-		return _heroes == null ? false : _heroes.containsKey(objectId);
+		return _heroes.containsKey(objectId);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Hero _instance = new Hero();

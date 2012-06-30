@@ -14,10 +14,10 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.datatables.EnchantItemTable;
+import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.model.EnchantScroll;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExPutEnchantTargetItemResult;
 
@@ -54,7 +54,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 			return;
 		
 		// template for scroll
-		EnchantScroll scrollTemplate = EnchantItemTable.getInstance().getEnchantScroll(scroll);
+		EnchantScroll scrollTemplate = EnchantItemData.getInstance().getEnchantScroll(scroll);
 		
 		if (!scrollTemplate.isValid(item))
 		{

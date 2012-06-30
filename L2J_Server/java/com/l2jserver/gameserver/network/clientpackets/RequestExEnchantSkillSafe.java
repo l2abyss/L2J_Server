@@ -19,14 +19,14 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillDetail;
+import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfo;
@@ -43,7 +43,6 @@ import com.l2jserver.util.Rnd;
 public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 {
 	private static final String _C__D0_32_REQUESTEXENCHANTSKILLSAFE = "[C] D0:32 RequestExEnchantSkillSafe";
-	private static final Logger _log = Logger.getLogger(RequestExEnchantSkillSafe.class.getName());
 	private static final Logger _logEnchant = Logger.getLogger("enchant");
 	
 	private int _skillId;
@@ -90,15 +89,15 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 			return;
 		}
 		
-		int costMultiplier = EnchantGroupsTable.SAFE_ENCHANT_COST_MULTIPLIER;
-		int reqItemId = EnchantGroupsTable.SAFE_ENCHANT_BOOK;
+		int costMultiplier = EnchantGroupsData.SAFE_ENCHANT_COST_MULTIPLIER;
+		int reqItemId = EnchantGroupsData.SAFE_ENCHANT_BOOK;
 		
-		L2EnchantSkillLearn s = EnchantGroupsTable.getInstance().getSkillEnchantmentBySkillId(_skillId);
+		L2EnchantSkillLearn s = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
 		{
 			return;
 		}
-		final EnchantSkillDetail esd = s.getEnchantSkillDetail(_skillLvl);
+		final EnchantSkillHolder esd = s.getEnchantSkillHolder(_skillLvl);
 		final int beforeEnchantSkillLevel = player.getSkillLevel(_skillId);
 		if (beforeEnchantSkillLevel != s.getMinSkillLevel(_skillLvl))
 		{

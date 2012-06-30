@@ -1,14 +1,16 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under the terms of the
- * GNU General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * You should have received a copy of the GNU General Public License along with this program. If
- * not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.taskmanager;
 
@@ -31,18 +33,12 @@ import com.l2jserver.gameserver.util.Broadcast;
  */
 public class AutoAnnounceTaskManager
 {
-	protected static final Logger _log = Logger.getLogger(AutoAnnounceTaskManager.class.getName());
+	private static final Logger _log = Logger.getLogger(AutoAnnounceTaskManager.class.getName());
 	
-	protected List<AutoAnnouncement> _announces = new FastList<AutoAnnouncement>();
-	
+	protected final List<AutoAnnouncement> _announces = new FastList<>();
 	private int _nextId = 1;
 	
-	public static AutoAnnounceTaskManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	private AutoAnnounceTaskManager()
+	protected AutoAnnounceTaskManager()
 	{
 		restore();
 	}
@@ -104,7 +100,6 @@ public class AutoAnnounceTaskManager
 	public void addAutoAnnounce(long initial, long delay, int repeat, String memo, boolean isCritical)
 	{
 		Connection conn = null;
-		
 		try
 		{
 			conn = L2DatabaseFactory.getInstance().getConnection();
@@ -143,7 +138,7 @@ public class AutoAnnounceTaskManager
 			
 			conn = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = conn.prepareStatement("DELETE FROM auto_announcements WHERE id = ?");
-			statement.setInt(1, a._id);
+			statement.setInt(1, a.getId());
 			statement.execute();
 			
 			statement.close();
@@ -180,6 +175,11 @@ public class AutoAnnounceTaskManager
 			{
 				_announces.add(this);
 			}
+		}
+		
+		public int getId()
+		{
+			return _id;
 		}
 		
 		public String[] getMemo()
@@ -229,7 +229,11 @@ public class AutoAnnounceTaskManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
+	public static AutoAnnounceTaskManager getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
 	private static class SingletonHolder
 	{
 		protected static final AutoAnnounceTaskManager _instance = new AutoAnnounceTaskManager();

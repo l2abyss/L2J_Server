@@ -42,10 +42,10 @@ public class CharNameTable
 	private final Map<Integer, String> _chars;
 	private final Map<Integer, Integer> _accessLevels;
 	
-	private CharNameTable()
+	protected CharNameTable()
 	{
-		_chars = new FastMap<Integer, String>();
-		_accessLevels = new FastMap<Integer, Integer>();
+		_chars = new FastMap<>();
+		_accessLevels = new FastMap<>();
 		if (Config.CACHE_CHAR_NAMES)
 			loadAll();
 	}
@@ -241,7 +241,6 @@ public class CharNameTable
 		{
 			L2DatabaseFactory.close(con);
 		}
-		
 		return number;
 	}
 	
@@ -250,12 +249,11 @@ public class CharNameTable
 		String name;
 		int id = -1;
 		int accessLevel = 0;
-		PreparedStatement statement = null;
 		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("SELECT charId,char_name,accesslevel FROM characters");
+			PreparedStatement statement = con.prepareStatement("SELECT charId,char_name,accesslevel FROM characters");
 			ResultSet rset = statement.executeQuery();
 			while (rset.next())
 			{
@@ -279,7 +277,6 @@ public class CharNameTable
 		_log.info(getClass().getSimpleName()+": Loaded "+_chars.size()+" char names.");
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final CharNameTable _instance = new CharNameTable();

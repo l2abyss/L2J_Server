@@ -14,23 +14,23 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import javolution.util.FastList;
+import java.util.List;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.MultiSell;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.L2SkillLearn;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.AcquireSkillType;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
-import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList.SkillType;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -274,8 +274,8 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 	 */
 	public static void showTransformSkillList(L2PcInstance player)
 	{
-		final FastList<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableTransformSkills(player);
-		final AcquireSkillList asl = new AcquireSkillList(SkillType.ClassTransform);
+		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableTransformSkills(player);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Transform);
 		int counts = 0;
 		
 		for (L2SkillLearn s : skills)
@@ -315,8 +315,8 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 	 */
 	public static void showSubClassSkillList(L2PcInstance player)
 	{
-		final FastList<L2SkillLearn> subClassSkills = SkillTreesData.getInstance().getAvailableSubClassSkills(player);
-		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillList.SkillType.SubClass);
+		final List<L2SkillLearn> subClassSkills = SkillTreesData.getInstance().getAvailableSubClassSkills(player);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubClass);
 		int count = 0;
 		
 		for (L2SkillLearn s : subClassSkills)

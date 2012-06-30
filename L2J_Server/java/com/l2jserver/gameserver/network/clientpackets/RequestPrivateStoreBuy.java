@@ -15,9 +15,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-
-import java.util.logging.Logger;
-
 import javolution.util.FastSet;
 
 import com.l2jserver.Config;
@@ -37,7 +34,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestPrivateStoreBuy extends L2GameClientPacket
 {
 	private static final String _C__83_REQUESTPRIVATESTOREBUY = "[C] 83 RequestPrivateStoreBuy";
-	private static Logger _log = Logger.getLogger(RequestPrivateStoreBuy.class.getName());
 	
 	private static final int BATCH_LENGTH = 20; // length of the one item
 	
@@ -53,7 +49,7 @@ public final class RequestPrivateStoreBuy extends L2GameClientPacket
 		{
 			return;
 		}
-		_items = new FastSet<ItemRequest>();
+		_items = new FastSet<>();
 		
 		for (int i = 0; i < count; i++)
 		{

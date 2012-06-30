@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.l2jserver.gameserver;
 
 import java.awt.Toolkit;
@@ -35,37 +34,38 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
 import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.datatables.AccessLevels;
-import com.l2jserver.gameserver.datatables.AdminCommandAccessRights;
-import com.l2jserver.gameserver.datatables.ArmorSetsTable;
+import com.l2jserver.gameserver.datatables.AdminTable;
+import com.l2jserver.gameserver.datatables.ArmorSetsData;
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.EnchantGroupsTable;
+import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
-import com.l2jserver.gameserver.datatables.EnchantItemTable;
+import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.FishTable;
-import com.l2jserver.gameserver.datatables.GMSkillTable;
+import com.l2jserver.gameserver.datatables.FishData;
+import com.l2jserver.gameserver.datatables.FishingMonstersData;
+import com.l2jserver.gameserver.datatables.FishingRodsData;
 import com.l2jserver.gameserver.datatables.HelperBuffTable;
-import com.l2jserver.gameserver.datatables.HennaTable;
-import com.l2jserver.gameserver.datatables.HennaTreeTable;
+import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.datatables.HerbDropTable;
-import com.l2jserver.gameserver.datatables.HeroSkillTable;
+import com.l2jserver.gameserver.datatables.HitConditionBonus;
+import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.LevelUpData;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
 import com.l2jserver.gameserver.datatables.MultiSell;
-import com.l2jserver.gameserver.datatables.NobleSkillTable;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
-import com.l2jserver.gameserver.datatables.NpcWalkerRoutesTable;
+import com.l2jserver.gameserver.datatables.NpcWalkerRoutesData;
 import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
+import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
@@ -125,7 +125,6 @@ import com.l2jserver.gameserver.network.L2GamePacketHandler;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
 import com.l2jserver.gameserver.script.faenor.FaenorScriptEngine;
-import com.l2jserver.gameserver.scripting.CompiledScriptCache;
 import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 import com.l2jserver.gameserver.taskmanager.AutoAnnounceTaskManager;
 import com.l2jserver.gameserver.taskmanager.KnownListUpdateTaskManager;
@@ -216,34 +215,35 @@ public class GameServer
 		
 		printSection("Skills");
 		EffectHandler.getInstance().executeScript();
-		EnchantGroupsTable.getInstance();
-		SkillTable.getInstance();
+		EnchantGroupsData.getInstance();
 		SkillTreesData.getInstance();
-		NobleSkillTable.getInstance();
-		GMSkillTable.getInstance();
-		HeroSkillTable.getInstance();
+		SkillTable.getInstance();
 		SummonSkillsTable.getInstance();
 		
 		printSection("Items");
 		ItemTable.getInstance();
-		EnchantItemTable.getInstance();
+		EnchantItemData.getInstance();
 		SummonItemsData.getInstance();
 		EnchantHPBonusData.getInstance();
 		MerchantPriceConfigTable.getInstance().loadInstances();
 		TradeController.getInstance();
 		MultiSell.getInstance();
-		RecipeController.getInstance();
-		ArmorSetsTable.getInstance();
-		FishTable.getInstance();
+		RecipeData.getInstance();
+		ArmorSetsData.getInstance();
+		FishData.getInstance();
+		FishingMonstersData.getInstance();
+		FishingRodsData.getInstance();
+		HennaData.getInstance();
 		
 		printSection("Characters");
+		ClassListData.getInstance();
+		InitialEquipmentData.getInstance();
 		ExperienceTable.getInstance();
+		HitConditionBonus.getInstance();
 		CharTemplateTable.getInstance();
 		CharNameTable.getInstance();
 		LevelUpData.getInstance();
-		AccessLevels.getInstance();
-		AdminCommandAccessRights.getInstance();
-		GmListTable.getInstance();
+		AdminTable.getInstance();
 		RaidBossPointsManager.getInstance();
 		PetDataTable.getInstance();
 		CharSummonTable.getInstance().init();
@@ -262,11 +262,11 @@ public class GameServer
 		printSection("NPCs");
 		HerbDropTable.getInstance();
 		NpcTable.getInstance();
-		NpcWalkerRoutesTable.getInstance();
+		NpcWalkerRoutesData.getInstance();
 		WalkingManager.getInstance();
+		StaticObjects.getInstance();
 		ZoneManager.getInstance();
 		DoorTable.getInstance();
-		StaticObjects.getInstance();
 		ItemAuctionManager.getInstance();
 		CastleManager.getInstance().loadInstances();
 		FortManager.getInstance().loadInstances();
@@ -301,8 +301,6 @@ public class GameServer
 		PartyMatchWaitingList.getInstance();
 		PartyMatchRoomList.getInstance();
 		PetitionManager.getInstance();
-		HennaTable.getInstance();
-		HennaTreeTable.getInstance();
 		HelperBuffTable.getInstance();
 		AugmentationData.getInstance();
 		CursedWeaponsManager.getInstance();
@@ -325,33 +323,7 @@ public class GameServer
 		{
 			_log.severe("Failed loading scripts.cfg, no script going to be loaded");
 		}
-		try
-		{
-			CompiledScriptCache compiledScriptCache = L2ScriptEngineManager.getInstance().getCompiledScriptCache();
-			if (compiledScriptCache == null)
-			{
-				_log.info("Compiled Scripts Cache is disabled.");
-			}
-			else
-			{
-				compiledScriptCache.purge();
-				
-				if (compiledScriptCache.isModified())
-				{
-					compiledScriptCache.save();
-					_log.info("Compiled Scripts Cache was saved.");
-				}
-				else
-				{
-					_log.info("Compiled Scripts Cache is up-to-date.");
-				}
-			}
-			
-		}
-		catch (IOException e)
-		{
-			_log.log(Level.SEVERE, "Failed to store Compiled Scripts Cache.", e);
-		}
+		
 		QuestManager.getInstance().report();
 		TransformationManager.getInstance().report();
 		
@@ -430,7 +402,7 @@ public class GameServer
 		sc.TCP_NODELAY = Config.MMO_TCP_NODELAY;
 		
 		_gamePacketHandler = new L2GamePacketHandler();
-		_selectorThread = new SelectorThread<L2GameClient>(sc, _gamePacketHandler, _gamePacketHandler, _gamePacketHandler, new IPv4Filter());
+		_selectorThread = new SelectorThread<>(sc, _gamePacketHandler, _gamePacketHandler, _gamePacketHandler, new IPv4Filter());
 		
 		InetAddress bindAddress = null;
 		if (!Config.GAMESERVER_HOSTNAME.equals("*"))

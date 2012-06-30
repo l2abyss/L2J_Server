@@ -38,15 +38,7 @@ public class FortManager implements InstanceListManager
 		return SingletonHolder._instance;
 	}
 	
-	// =========================================================
-	// Data Field
 	private List<Fort> _forts;
-	
-	// =========================================================
-	// Constructor
-	private FortManager()
-	{
-	}
 	
 	public final int findNearestFortIndex(L2Object obj)
 	{
@@ -76,8 +68,6 @@ public class FortManager implements InstanceListManager
 		return index;
 	}
 	
-	// =========================================================
-	// Property - Public
 	public final Fort getFortById(int fortId)
 	{
 		for (Fort f : getForts())
@@ -155,14 +145,13 @@ public class FortManager implements InstanceListManager
 	public final List<Fort> getForts()
 	{
 		if (_forts == null)
-			_forts = new FastList<Fort>();
+			_forts = new FastList<>();
 		return _forts;
 	}
 	
 	@Override
 	public void loadInstances()
 	{
-		_log.info("Initializing FortManager");
 		Connection con = null;
 		try
 		{
@@ -209,7 +198,6 @@ public class FortManager implements InstanceListManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final FortManager _instance = new FortManager();

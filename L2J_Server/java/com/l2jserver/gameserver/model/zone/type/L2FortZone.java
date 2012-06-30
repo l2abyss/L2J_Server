@@ -14,16 +14,14 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
 /**
  * A castle zone
- *
- * @author  durgus
+ * @author durgus
  */
 public class L2FortZone extends L2ZoneRespawn
 {
@@ -38,9 +36,13 @@ public class L2FortZone extends L2ZoneRespawn
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("fortId"))
+		{
 			_fortId = Integer.parseInt(value);
+		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
@@ -57,8 +59,7 @@ public class L2FortZone extends L2ZoneRespawn
 	
 	@Override
 	public void onDieInside(L2Character character)
-	{
-		
+	{	
 	}
 	
 	@Override
@@ -72,18 +73,17 @@ public class L2FortZone extends L2ZoneRespawn
 	
 	/**
 	 * Removes all foreigners from the fort
-	 * @param owningClan
+	 * @param owningClanId
 	 */
-	public void banishForeigners(L2Clan owningClan)
+	public void banishForeigners(int owningClanId)
 	{
-		for (L2Character temp : getCharactersInsideArray())
+		TeleportWhereType type = TeleportWhereType.Fortress_banish;
+		for (L2PcInstance temp : getPlayersInside())
 		{
-			if (!(temp instanceof L2PcInstance))
-				continue;
-			if (((L2PcInstance) temp).getClan() == owningClan)
+			if (temp.getClanId() == owningClanId)
 				continue;
 			
-			((L2PcInstance) temp).teleToLocation(MapRegionManager.TeleportWhereType.Fortress_banish);
+			temp.teleToLocation(type);
 		}
 	}
 	
@@ -91,5 +91,4 @@ public class L2FortZone extends L2ZoneRespawn
 	{
 		return _fortId;
 	}
-	
 }

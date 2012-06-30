@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2PeaceZone;
 
@@ -55,7 +56,7 @@ public final class L2WorldRegion
 	{
 		_allPlayable = new FastMap<Integer, L2Playable>().shared();
 		_visibleObjects = new FastMap<Integer, L2Object>().shared();
-		_surroundingRegions = new ArrayList<L2WorldRegion>();
+		_surroundingRegions = new ArrayList<>();
 		
 		_tileX = pTileX;
 		_tileY = pTileY;
@@ -65,7 +66,7 @@ public final class L2WorldRegion
 			_active = true;
 		else
 			_active = false;
-		_zones = new FastList<L2ZoneType>();
+		_zones = new FastList<>();
 	}
 	
 	public FastList<L2ZoneType> getZones()

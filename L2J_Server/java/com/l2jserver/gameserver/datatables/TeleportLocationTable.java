@@ -42,14 +42,14 @@ public class TeleportLocationTable
 		return SingletonHolder._instance;
 	}
 	
-	private TeleportLocationTable()
+	protected TeleportLocationTable()
 	{
 		reloadAll();
 	}
 	
 	public void reloadAll()
 	{
-		_teleports = new TIntObjectHashMap<L2TeleportLocation>();
+		_teleports = new TIntObjectHashMap<>();
 		
 		Connection con = null;
 		try
@@ -136,7 +136,6 @@ public class TeleportLocationTable
 		return _teleports.get(id);
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TeleportLocationTable _instance = new TeleportLocationTable();

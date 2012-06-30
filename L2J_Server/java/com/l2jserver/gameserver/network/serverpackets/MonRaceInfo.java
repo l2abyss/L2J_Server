@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.actor.L2Npc;
 
 
@@ -32,7 +30,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
  */
 public class MonRaceInfo extends L2GameServerPacket
 {
-	protected static final Logger _log = Logger.getLogger(MonRaceInfo.class.getName());
 	private static final String _S__DD_MonRaceInfo = "[S] e3 MonRaceInfo";
 	private int _unknown1;
 	private int _unknown2;

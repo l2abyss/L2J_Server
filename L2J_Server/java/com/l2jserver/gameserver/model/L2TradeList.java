@@ -30,7 +30,7 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.item.L2Item;
+import com.l2jserver.gameserver.model.items.L2Item;
 
 /**
  * This class ...
@@ -47,7 +47,7 @@ public class L2TradeList
 	
 	public L2TradeList(int listId)
 	{
-		_items = new FastMap<Integer, L2TradeItem>();
+		_items = new FastMap<Integer, L2TradeItem>().shared();
 		_listId = listId;
 	}
 	
@@ -138,7 +138,7 @@ public class L2TradeList
 	
 	public List<L2TradeItem> getItems(int start, int end)
 	{
-		List<L2TradeItem> list = new LinkedList<L2TradeItem>();
+		List<L2TradeItem> list = new LinkedList<>();
 		list.addAll(_items.values());
 		return list.subList(start, end);
 	}
@@ -248,9 +248,9 @@ public class L2TradeList
 		 */
 		public long getCurrentCount()
 		{
-			if (this.hasLimitedStock() && this.isPendingStockUpdate())
+			if (hasLimitedStock() && this.isPendingStockUpdate())
 			{
-				this.restoreInitialCount();
+				restoreInitialCount();
 			}
 			long ret = _currentCount.get();
 			return ret > 0 ? ret : 0;
@@ -263,13 +263,13 @@ public class L2TradeList
 		
 		public void restoreInitialCount()
 		{
-			this.setCurrentCount(this.getMaxCount());
+			setCurrentCount(getMaxCount());
 			_nextRestoreTime = _nextRestoreTime + this.getRestoreDelay();
 			
 			// consume until next update is on future
 			if (this.isPendingStockUpdate() && this.getRestoreDelay() > 0)
 			{
-				_nextRestoreTime = System.currentTimeMillis() + this.getRestoreDelay();
+				_nextRestoreTime = System.currentTimeMillis() + getRestoreDelay();
 			}
 			
 			// exec asynchronously
@@ -302,7 +302,7 @@ public class L2TradeList
 		
 		public boolean hasLimitedStock()
 		{
-			return this.getMaxCount() > -1;
+			return getMaxCount() > -1;
 		}
 		
 		/**

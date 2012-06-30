@@ -14,14 +14,12 @@
  */
 package com.l2jserver.loginserver.network.serverpackets;
 
-
 import org.mmocore.network.SendablePacket;
 
 import com.l2jserver.loginserver.network.L2LoginClient;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public abstract class L2LoginServerPacket extends SendablePacket<L2LoginClient>
 {

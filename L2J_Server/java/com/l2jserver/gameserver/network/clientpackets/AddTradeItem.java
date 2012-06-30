@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.TradeList;
@@ -32,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.TradeOwnAdd;
 public final class AddTradeItem extends L2GameClientPacket
 {
 	private static final String _C__1B_ADDTRADEITEM = "[C] 1B AddTradeItem";
-	private static final Logger _log = Logger.getLogger(AddTradeItem.class.getName());
 	
 	private int _tradeId;
 	private int _objectId;

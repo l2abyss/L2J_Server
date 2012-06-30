@@ -18,7 +18,7 @@ import java.util.Map;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.gameserver.templates.skills.L2TargetType;
+import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 
 /**
  * @author UnAfraid
@@ -32,9 +32,9 @@ public class TargetHandler
 		return SingletonHolder._instance;
 	}
 	
-	private TargetHandler()
+	protected TargetHandler()
 	{
-		_datatable = new FastMap<Enum<L2TargetType>, ITargetTypeHandler>();
+		_datatable = new FastMap<>();
 	}
 	
 	public void registerHandler(ITargetTypeHandler handler)
@@ -52,7 +52,6 @@ public class TargetHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final TargetHandler _instance = new TargetHandler();

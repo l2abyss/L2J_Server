@@ -28,51 +28,54 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
- * 
  * @author mrTJO
  */
 public class LocalizationParser
 {
 	private String LANGUAGES_DIRECTORY = "../languages/";
-	private Map<String, String> _msgMap = new HashMap<String, String>();
-	private final static Logger _log = Logger.getLogger(LocalizationParser.class.getName());
-	private String _baseName;
+	private final Map<String, String> _msgMap = new HashMap<>();
+	private static final Logger _log = Logger.getLogger(LocalizationParser.class.getName());
+	private final String _baseName;
 	
 	public LocalizationParser(String dir, String baseName, Locale locale)
 	{
-		LANGUAGES_DIRECTORY += dir+"/";
+		LANGUAGES_DIRECTORY += dir + "/";
 		_baseName = baseName;
 		
 		String language = locale.getLanguage();
-        //String script = locale.getScript();
-        String country = locale.getCountry();
-        String variant = locale.getVariant();
-        
+		// String script = locale.getScript();
+		String country = locale.getCountry();
+		String variant = locale.getVariant();
+		
 		StringBuilder sb = new StringBuilder();
-        sb.append(language);
-        if (country != "")
-        	sb.append(country);
-        if (variant != "")
-        	sb.append('_'+variant);
-        // Java 7 Function 
-        /*if (script != "")
-    		sb.append('_'+script);*/
-        
+		sb.append(language);
+		if (!country.isEmpty())
+		{
+			sb.append(country);
+		}
+		if (!variant.isEmpty())
+		{
+			sb.append('_' + variant);
+			// Java 7 Function
+			/*
+			 * if (script != "") sb.append('_'+script);
+			 */
+		}
+		
 		File xml = getTranslationFile(sb.toString());
-        parseXml(xml);
+		parseXml(xml);
 	}
 	
 	public LocalizationParser(String dir, String baseName, String locale)
 	{
-		LANGUAGES_DIRECTORY += dir+"/";
+		LANGUAGES_DIRECTORY += dir + "/";
 		_baseName = baseName;
 		File xml = getTranslationFile(locale);
-        parseXml(xml);
+		parseXml(xml);
 	}
 	
 	/**
 	 * Parse translation xml
-	 * 
 	 * @param xml
 	 */
 	private void parseXml(File xml)
@@ -81,7 +84,7 @@ public class LocalizationParser
 		factory.setValidating(false);
 		factory.setIgnoringComments(true);
 		Document doc = null;
-        
+		
 		if (xml.exists())
 		{
 			try
@@ -91,6 +94,7 @@ public class LocalizationParser
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Could not load localization file");
+				return;
 			}
 			
 			Node n = doc.getFirstChild();
@@ -115,7 +119,6 @@ public class LocalizationParser
 	
 	/**
 	 * Search the translation file
-	 * 
 	 * @param language
 	 * @return
 	 */
@@ -123,19 +126,24 @@ public class LocalizationParser
 	{
 		File xml = null;
 		if (language.length() > 0)
-			xml = new File(LANGUAGES_DIRECTORY+_baseName+'_'+language+".xml");
+		{
+			xml = new File(LANGUAGES_DIRECTORY + _baseName + '_' + language + ".xml");
+		}
 		
-		if (language.length() > 2 && (xml == null || !xml.exists()))
-			xml = new File(LANGUAGES_DIRECTORY+_baseName+'_'+language.substring(0, 2)+".xml");
+		if ((language.length() > 2) && ((xml == null) || !xml.exists()))
+		{
+			xml = new File(LANGUAGES_DIRECTORY + _baseName + '_' + language.substring(0, 2) + ".xml");
+		}
 		
-		if (xml == null || !xml.exists())
-        	xml = new File(LANGUAGES_DIRECTORY+_baseName+".xml");
+		if ((xml == null) || !xml.exists())
+		{
+			xml = new File(LANGUAGES_DIRECTORY + _baseName + ".xml");
+		}
 		return xml;
 	}
 	
 	/**
 	 * Return string from specified id
-	 * 
 	 * @param id
 	 * @return
 	 */

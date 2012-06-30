@@ -30,6 +30,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.model.clientstrings.Builder;
 import com.l2jserver.gameserver.network.serverpackets.ExShowScreenMessage;
 
 /**
@@ -25207,10 +25208,10 @@ public final class NpcStringId
 		buildFastLookupTable();
 	}
 	
-	private final static void buildFastLookupTable()
+	private static final void buildFastLookupTable()
 	{
 		final Field[] fields = NpcStringId.class.getDeclaredFields();
-		final ArrayList<NpcStringId> nsIds = new ArrayList<NpcStringId>(fields.length);
+		final ArrayList<NpcStringId> nsIds = new ArrayList<>(fields.length);
 		
 		int maxId = 0, mod;
 		NpcStringId nsId;
@@ -25381,56 +25382,6 @@ public final class NpcStringId
 		}
 	}
 	
-	private static final Builder newBuilder(final String text)
-	{
-		final ArrayList<Builder> builders = new ArrayList<Builder>();
-		
-		int index1 = 0, index2 = 0, paramId, subTextLen;
-		
-		final char[] array = text.toCharArray();
-		final int arrayLength = array.length;
-		
-		char c, c2, c3;
-		LOOP:
-		for (;index1 < arrayLength; index1++)
-		{
-			c = array[index1];
-			if (c == '$' && index1 < arrayLength - 2)
-			{
-				c2 = array[index1 + 1];
-				if (c2 == 'c' || c2 == 's' || c2 == 'p' || c2 == 'C' || c2 == 'S' || c2 == 'P')
-				{
-					c3 = array[index1 + 2];
-					if (Character.isDigit(c3))
-					{
-						paramId = Character.getNumericValue(c3);
-						subTextLen = index1 - index2;
-						if (subTextLen != 0)
-							builders.add(new BuilderText(new String(array, index2, subTextLen)));
-						
-						builders.add(new BuilderObject(paramId));
-						index1 += 2;
-						index2 = index1 + 1;
-						continue LOOP;
-					}
-				}
-			}
-		}
-		
-		if (arrayLength >= index1)
-		{
-			subTextLen = index1 - index2;
-			if (subTextLen != 0)
-				builders.add(new BuilderText(new String(array, index2, subTextLen)));
-		}
-		
-		if (builders.size() == 1)
-		{
-			return builders.get(0);
-		}
-		return new BuilderContainer(builders.toArray(new Builder[builders.size()]));
-	}
-	
 	private final int _id;
 	private String _name;
 	private byte _params;
@@ -25531,7 +25482,7 @@ public final class NpcStringId
 		public NSLocalisation(final String lang, final String text)
 		{
 			_lang = lang;
-			_builder = newBuilder(text);
+			_builder = Builder.newBuilder(text);
 		}
 		
 		public final String getLanguage()
@@ -25542,198 +25493,6 @@ public final class NpcStringId
 		public final String getLocalisation(final Object... params)
 		{
 			return _builder.toString(params);
-		}
-	}
-	
-	/**
-	 * 
-	 * @author Forsaiken
-	 *
-	 */
-	private static interface Builder
-	{
-		public String toString(final Object param);
-		
-		public String toString(final Object... params);
-		
-		public int getIndex();
-	}
-	
-	/**
-	 * 
-	 * @author Forsaiken
-	 *
-	 */
-	private static final class BuilderContainer implements Builder
-	{
-		private final Builder[] _builders;
-		
-		public BuilderContainer(final Builder[] builders)
-		{
-			_builders = builders;
-		}
-		
-		@Override
-		public final String toString(final Object param)
-		{
-			return toString(new Object[]{param});
-		}
-		
-		@Override
-		public final String toString(final Object... params)
-		{
-			final int buildersLength = _builders.length;
-			final int paramsLength = params.length;
-			final String[] builds = new String[buildersLength];
-			
-			Builder builder;
-			String build;
-			int i, paramIndex, buildTextLen = 0;
-			if (paramsLength != 0)
-			{
-				for (i = buildersLength; i-- > 0;)
-				{
-					builder = _builders[i];
-					paramIndex = builder.getIndex();
-					build = paramIndex != -1 && paramIndex < paramsLength ? builder.toString(params[paramIndex]) : builder.toString();
-					buildTextLen += build.length();
-					builds[i] = build;
-				}
-			}
-			else
-			{
-				for (i = buildersLength; i-- > 0;)
-				{
-					build = _builders[i].toString();
-					buildTextLen += build.length();
-					builds[i] = build;
-				}
-			}
-			
-			final FastStringBuilder fsb = new FastStringBuilder(buildTextLen);
-			for (i = 0; i < buildersLength; i++)
-			{
-				fsb.append(builds[i]);
-			}
-			return fsb.toString();
-		}
-		
-		@Override
-		public final int getIndex()
-		{
-			return -1;
-		}
-	}
-	
-	/**
-	 * 
-	 * @author Forsaiken
-	 *
-	 */
-	private static final class BuilderText implements Builder
-	{
-		private final String _text;
-		
-		public BuilderText(final String text)
-		{
-			_text = text;
-		}
-		
-		@Override
-		public final String toString(final Object param)
-		{
-			return toString();
-		}
-		
-		@Override
-		public final String toString(final Object... params)
-		{
-			return toString();
-		}
-		
-		@Override
-		public final int getIndex()
-		{
-			return -1;
-		}
-		
-		@Override
-		public final String toString()
-		{
-			return _text;
-		}
-	}
-	
-	/**
-	 * 
-	 * @author Forsaiken
-	 *
-	 */
-	private static final class BuilderObject implements Builder
-	{
-		private final int _index;
-		
-		public BuilderObject(final int id)
-		{
-			if (id < 1 || id > 9)
-				throw new RuntimeException("Illegal id " + id);
-			
-			_index = id - 1;
-		}
-		
-		@Override
-		public final String toString(final Object param)
-		{
-			return param == null ? "null" : param.toString();
-		}
-		
-		@Override
-		public final String toString(final Object... params)
-		{
-			if (params == null || params.length == 0)
-				return "null";
-			
-			return params[0].toString();
-		}
-		
-		@Override
-		public final int getIndex()
-		{
-			return _index;
-		}
-		
-		@Override
-		public final String toString()
-		{
-			return "[PARAM-" + (_index + 1) + "]";
-		}
-	}
-	
-	/**
-	 * 
-	 * @author Forsaiken
-	 *
-	 */
-	private static final class FastStringBuilder
-	{
-		private final char[] _array;
-		private int _len;
-		
-		public FastStringBuilder(final int capacity)
-		{
-			_array = new char[capacity];
-		}
-		
-		public final void append(final String text)
-		{
-			text.getChars(0, text.length(), _array, _len);
-			_len += text.length();
-		}
-		
-		@Override
-		public final String toString()
-		{
-			return new String(_array);
 		}
 	}
 }

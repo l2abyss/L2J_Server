@@ -38,7 +38,8 @@ import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 /**
- * A 1.4 file that provides utility methods for creating form- or grid-style layouts with SpringLayout. These utilities are used by several programs, such as SpringBox and SpringCompactGrid.
+ * A 1.4 file that provides utility methods for creating form- or grid-style layouts with SpringLayout.<br>
+ * These utilities are used by several programs, such as SpringBox and SpringCompactGrid.
  */
 public class SpringUtilities
 {
@@ -111,38 +112,50 @@ public class SpringUtilities
 		for (int i = 0; i < max; i++)
 		{
 			SpringLayout.Constraints cons = layout.getConstraints(parent.getComponent(i));
-			if (i % cols == 0)
+			if ((i % cols) == 0)
 			{ // start of new row
 				lastRowCons = lastCons;
 				cons.setX(initialXSpring);
 			}
 			else
-			{ // x position depends on previous component
-				cons.setX(Spring.sum(lastCons.getConstraint(SpringLayout.EAST), xPadSpring));
+			{
+				// x position depends on previous component
+				if (lastCons != null)
+				{
+					cons.setX(Spring.sum(lastCons.getConstraint(SpringLayout.EAST), xPadSpring));
+				}
 			}
 			
-			if (i / cols == 0)
-			{ // first row
+			if ((i / cols) == 0)
+			{
+				// first row
 				cons.setY(initialYSpring);
 			}
 			else
-			{ // y position depends on previous row
-				cons.setY(Spring.sum(lastRowCons.getConstraint(SpringLayout.SOUTH), yPadSpring));
+			{
+				// y position depends on previous row
+				if (lastRowCons != null)
+				{
+					cons.setY(Spring.sum(lastRowCons.getConstraint(SpringLayout.SOUTH), yPadSpring));
+				}
 			}
 			lastCons = cons;
 		}
 		
 		// Set the parent's size.
 		SpringLayout.Constraints pCons = layout.getConstraints(parent);
-		pCons.setConstraint(SpringLayout.SOUTH, Spring.sum(Spring.constant(yPad), lastCons.getConstraint(SpringLayout.SOUTH)));
-		pCons.setConstraint(SpringLayout.EAST, Spring.sum(Spring.constant(xPad), lastCons.getConstraint(SpringLayout.EAST)));
+		if (lastCons != null)
+		{
+			pCons.setConstraint(SpringLayout.SOUTH, Spring.sum(Spring.constant(yPad), lastCons.getConstraint(SpringLayout.SOUTH)));
+			pCons.setConstraint(SpringLayout.EAST, Spring.sum(Spring.constant(xPad), lastCons.getConstraint(SpringLayout.EAST)));
+		}
 	}
 	
 	/* Used by makeCompactGrid. */
 	private static SpringLayout.Constraints getConstraintsForCell(int row, int col, Container parent, int cols)
 	{
 		SpringLayout layout = (SpringLayout) parent.getLayout();
-		Component c = parent.getComponent(row * cols + col);
+		Component c = parent.getComponent((row * cols) + col);
 		return layout.getConstraints(c);
 	}
 	

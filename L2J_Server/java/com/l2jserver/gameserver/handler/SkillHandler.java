@@ -16,7 +16,7 @@ package com.l2jserver.gameserver.handler;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-import com.l2jserver.gameserver.templates.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 
 
 /**
@@ -33,9 +33,9 @@ public class SkillHandler
 		return SingletonHolder._instance;
 	}
 	
-	private SkillHandler()
+	protected SkillHandler()
 	{
-		_datatable = new TIntObjectHashMap<ISkillHandler>();
+		_datatable = new TIntObjectHashMap<>();
 	}
 	
 	public void registerHandler(ISkillHandler handler)
@@ -60,7 +60,6 @@ public class SkillHandler
 		return _datatable.size();
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final SkillHandler _instance = new SkillHandler();

@@ -15,16 +15,15 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.item.L2Armor;
-import com.l2jserver.gameserver.model.item.L2Item;
-import com.l2jserver.gameserver.model.item.L2Weapon;
-import com.l2jserver.gameserver.model.item.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.L2Armor;
+import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.L2Weapon;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 
@@ -40,7 +39,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	protected static final int GEMSTONE_C = 2131;
 	protected static final int GEMSTONE_B = 2132;
 	
-	private static final Map<Integer, LifeStone> _lifeStones = new FastMap<Integer, LifeStone>();
+	private static final Map<Integer, LifeStone> _lifeStones = new HashMap<>();
 	
 	protected static final class LifeStone
 	{
@@ -180,8 +179,13 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		return _lifeStones.get(itemId);
 	}
 	
-	/*
+	/**
 	 * Checks player, source item, lifestone and gemstone validity for augmentation process
+	 * @param player 
+	 * @param item 
+	 * @param refinerItem 
+	 * @param gemStones 
+	 * @return 
 	 */
 	protected static final boolean isValid(L2PcInstance player, L2ItemInstance item, L2ItemInstance refinerItem, L2ItemInstance gemStones)
 	{
@@ -196,7 +200,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			return false;
 		
 		final int grade = item.getItem().getItemGrade();
-		final LifeStone ls = getLifeStone(refinerItem.getItemId());
+		final LifeStone ls = _lifeStones.get(refinerItem.getItemId());
 		
 		// Check for item id
 		if (getGemStoneId(grade) != gemStones.getItemId())
@@ -208,8 +212,12 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		return true;
 	}
 	
-	/*
+	/**
 	 * Checks player, source item and lifestone validity for augmentation process
+	 * @param player 
+	 * @param item 
+	 * @param refinerItem 
+	 * @return 
 	 */
 	protected static final boolean isValid(L2PcInstance player, L2ItemInstance item, L2ItemInstance refinerItem)
 	{
@@ -223,7 +231,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		if (refinerItem.getLocation() != L2ItemInstance.ItemLocation.INVENTORY)
 			return false;
 		
-		final LifeStone ls = getLifeStone(refinerItem.getItemId());
+		final LifeStone ls = _lifeStones.get(refinerItem.getItemId());
 		if (ls == null)
 			return false;
 		// weapons can't be augmented with accessory ls
@@ -239,8 +247,11 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		return true;
 	}
 	
-	/*
+	/**
 	 * Check both player and source item conditions for augmentation process
+	 * @param player 
+	 * @param item 
+	 * @return 
 	 */
 	protected static final boolean isValid(L2PcInstance player, L2ItemInstance item)
 	{
@@ -311,8 +322,10 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		return true;
 	}
 	
-	/*
+	/**
 	 * Check if player's conditions valid for augmentation process
+	 * @param player 
+	 * @return 
 	 */
 	protected static final boolean isValid(L2PcInstance player)
 	{
@@ -354,8 +367,9 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		return true;
 	}
 	
-	/*
-	 * Returns GemStone itemId based on item grade
+	/**
+	 * @param itemGrade 
+	 * @return GemStone itemId based on item grade
 	 */
 	protected static final int getGemStoneId(int itemGrade)
 	{
@@ -375,9 +389,11 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		}
 	}
 	
-	/*
-	 * Returns GemStone count based on item grade and lifestone grade
-	 * (different for weapon and accessory augmentation)
+	/**
+	 * Different for weapon and accessory augmentation.
+	 * @param itemGrade 
+	 * @param lifeStoneGrade 
+	 * @return GemStone count based on item grade and life stone grade
 	 */
 	protected static final int getGemStoneCount(int itemGrade, int lifeStoneGrade)
 	{

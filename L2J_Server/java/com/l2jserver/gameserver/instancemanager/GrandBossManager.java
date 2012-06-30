@@ -100,18 +100,17 @@ public class GrandBossManager
 		return SingletonHolder._instance;
 	}
 	
-	private GrandBossManager()
+	protected GrandBossManager()
 	{
-		_log.info("Initializing GrandBossManager");
 		init();
 	}
 	
 	private void init()
 	{
-		_zones = new L2FastList<L2BossZone>();
+		_zones = new L2FastList<>();
 		
-		_bosses = new FastMap<Integer, L2GrandBossInstance>();
-		_storedInfo = new TIntObjectHashMap<StatsSet>();
+		_bosses = new FastMap<>();
+		_storedInfo = new TIntObjectHashMap<>();
 		_bossStatus = new TIntIntHashMap();
 		Connection con = null;
 		try
@@ -172,7 +171,7 @@ public class GrandBossManager
 	{
 		Connection con = null;
 		
-		FastMap<Integer, L2FastList<Integer>> zones = new FastMap<Integer, L2FastList<Integer>>();
+		FastMap<Integer, L2FastList<Integer>> zones = new FastMap<>();
 		
 		if (_zones == null)
 		{
@@ -471,7 +470,6 @@ public class GrandBossManager
 		return _zones;
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final GrandBossManager _instance = new GrandBossManager();

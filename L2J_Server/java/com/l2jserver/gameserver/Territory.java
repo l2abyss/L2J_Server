@@ -12,16 +12,6 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
-	coded by Balancer
-	ported to L2JRU by Mr
-	balancer@balancer.ru
-	http://balancer.ru
-
-	version 0.1.1, 2005-06-07
-	version 0.1, 2005-03-16
- */
-
 package com.l2jserver.gameserver;
 
 import java.util.Map;
@@ -32,17 +22,21 @@ import javolution.util.FastMap;
 import com.l2jserver.gameserver.model.L2Territory;
 import com.l2jserver.util.lib.SqlUtils;
 
+/**
+ * @author Balancer, Mr
+ */
 public class Territory
 {
-	private static Logger _log = Logger.getLogger(TradeController.class.getName());
-	private static Map<Integer, L2Territory> _territory;
+	private static Logger _log = Logger.getLogger(Territory.class.getName());
+	
+	private static final Map<Integer, L2Territory> _territory = new FastMap<>();
 	
 	public static Territory getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	private Territory()
+	protected Territory()
 	{
 		// load all data at server start
 		reload_data();
@@ -60,8 +54,7 @@ public class Territory
 	
 	public void reload_data()
 	{
-		_territory = new FastMap<Integer, L2Territory>();
-		
+		_territory.clear();
 		Integer[][] point = SqlUtils.get2DIntArray(new String[] { "loc_id", "loc_x", "loc_y", "loc_zmin", "loc_zmax", "proc" }, "locations", "loc_id > 0");
 		for (Integer[] row : point)
 		{
@@ -82,7 +75,6 @@ public class Territory
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final Territory _instance = new Territory();

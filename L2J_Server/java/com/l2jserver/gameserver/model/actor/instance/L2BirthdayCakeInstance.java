@@ -19,10 +19,10 @@ import java.util.concurrent.ScheduledFuture;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.L2Skill;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.templates.chars.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
  * @author Nyaran
@@ -31,7 +31,7 @@ public class L2BirthdayCakeInstance extends L2Npc
 {
 	private static final int BIRTHDAY_CAKE_24 = 106;
 	private static final int BIRTHDAY_CAKE = 139;
-	private static L2Skill _skill;
+	protected static L2Skill _skill;
 	private final ScheduledFuture<?> _aiTask;
 	
 	public L2BirthdayCakeInstance(int objectId, L2NpcTemplate template)
@@ -91,7 +91,7 @@ public class L2BirthdayCakeInstance extends L2Npc
 					}
 					else
 					{
-						for (L2PcInstance member : party.getPartyMembers())
+						for (L2PcInstance member : party.getMembers())
 						{
 							if ((member != null) && member.isInsideRadius(_cake, _skill.getSkillRadius(), true, true))
 							{

@@ -30,8 +30,8 @@ import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ControllableAirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ExAirShipTeleportList;
-import com.l2jserver.gameserver.templates.chars.L2CharTemplate;
 
 
 public class AirShipManager
@@ -43,16 +43,16 @@ public class AirShipManager
 	private static final String UPDATE_DB = "UPDATE airships SET fuel=? WHERE owner_id=?";
 	
 	private L2CharTemplate _airShipTemplate = null;
-	private TIntObjectHashMap<StatsSet> _airShipsInfo = new TIntObjectHashMap<StatsSet>();
-	private TIntObjectHashMap<L2AirShipInstance> _airShips = new TIntObjectHashMap<L2AirShipInstance>();
-	private TIntObjectHashMap<AirShipTeleportList> _teleports = new TIntObjectHashMap<AirShipTeleportList>();
+	private TIntObjectHashMap<StatsSet> _airShipsInfo = new TIntObjectHashMap<>();
+	private TIntObjectHashMap<L2AirShipInstance> _airShips = new TIntObjectHashMap<>();
+	private TIntObjectHashMap<AirShipTeleportList> _teleports = new TIntObjectHashMap<>();
 	
 	public static final AirShipManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	private AirShipManager()
+	protected AirShipManager()
 	{
 		StatsSet npcDat = new StatsSet();
 		npcDat.set("npcId", 9);
@@ -335,7 +335,6 @@ public class AirShipManager
 		}
 	}
 	
-	@SuppressWarnings("synthetic-access")
 	private static class SingletonHolder
 	{
 		protected static final AirShipManager _instance = new AirShipManager();
