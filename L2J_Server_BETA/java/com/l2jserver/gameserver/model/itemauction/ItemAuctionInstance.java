@@ -56,6 +56,13 @@ public final class ItemAuctionInstance
 	private static final long START_TIME_SPACE = TimeUnit.MILLISECONDS.convert(1, TimeUnit.MINUTES);
 	private static final long FINISH_TIME_SPACE = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
 	
+	// SQL queries
+	private static final String SELECT_AUCTION_ID_BY_INSTANCE_ID = "SELECT auctionId FROM item_auction WHERE instanceId = ?";
+	private static final String SELECT_AUCTION_INFO = "SELECT auctionItemId, startingTime, endingTime, auctionStateId FROM item_auction WHERE auctionId = ? ";
+	private static final String DELETE_AUCTION_INFO_BY_AUCTION_ID = "DELETE FROM item_auction WHERE auctionId = ?";
+	private static final String DELETE_AUCTION_BID_INFO_BY_AUCTION_ID = "DELETE FROM item_auction_bid WHERE auctionId = ?";
+	private static final String SELECT_PLAYERS_ID_BY_AUCTION_ID = "SELECT playerObjId, playerBid FROM item_auction_bid WHERE auctionId = ?";
+	
 	/**
 	 * Cached comparator to avoid initialization on each loop run.
 	 */
@@ -167,32 +174,33 @@ public final class ItemAuctionInstance
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT auctionId FROM item_auction WHERE instanceId=?");
-			statement.setInt(1, _instanceId);
-			ResultSet rset = statement.executeQuery();
-			
-			while (rset.next())
+			try (PreparedStatement ps = con.prepareStatement(SELECT_AUCTION_ID_BY_INSTANCE_ID))
 			{
-				final int auctionId = rset.getInt(1);
-				try
+				ps.setInt(1, _instanceId);
+				try (ResultSet rset = ps.executeQuery())
 				{
-					final ItemAuction auction = loadAuction(auctionId);
-					if (auction != null)
+					while (rset.next())
 					{
-						_auctions.put(auctionId, auction);
+						final int auctionId = rset.getInt(1);
+						try
+						{
+							final ItemAuction auction = loadAuction(auctionId);
+							if (auction != null)
+							{
+								_auctions.put(auctionId, auction);
+							}
+							else
+							{
+								ItemAuctionManager.deleteAuction(auctionId);
+							}
+						}
+						catch (final SQLException e)
+						{
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": Failed loading auction: " + auctionId, e);
+						}
 					}
-					else
-					{
-						ItemAuctionManager.deleteAuction(auctionId);
-					}
-				}
-				catch (final SQLException e)
-				{
-					_log.log(Level.WARNING, getClass().getSimpleName() + ": Failed loading auction: " + auctionId, e);
 				}
 			}
-			statement.close();
-			rset.close();
 		}
 		catch (final SQLException e)
 		{
@@ -555,22 +563,26 @@ public final class ItemAuctionInstance
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT auctionItemId,startingTime,endingTime,auctionStateId FROM item_auction WHERE auctionId=?");
-			statement.setInt(1, auctionId);
-			ResultSet rset = statement.executeQuery();
-			
-			if (!rset.next())
+			int auctionItemId = 0;
+			long startingTime = 0;
+			long endingTime = 0;
+			byte auctionStateId = 0;
+			try (PreparedStatement ps = con.prepareStatement(SELECT_AUCTION_INFO))
 			{
-				_log.log(Level.WARNING, getClass().getSimpleName() + ": Auction data not found for auction: " + auctionId);
-				return null;
+				ps.setInt(1, auctionId);
+				try (ResultSet rset = ps.executeQuery())
+				{
+					if (!rset.next())
+					{
+						_log.log(Level.WARNING, getClass().getSimpleName() + ": Auction data not found for auction: " + auctionId);
+						return null;
+					}
+					auctionItemId = rset.getInt(1);
+					startingTime = rset.getLong(2);
+					endingTime = rset.getLong(3);
+					auctionStateId = rset.getByte(4);
+				}
 			}
-			
-			final int auctionItemId = rset.getInt(1);
-			final long startingTime = rset.getLong(2);
-			final long endingTime = rset.getLong(3);
-			final byte auctionStateId = rset.getByte(4);
-			rset.close();
-			statement.close();
 			
 			if (startingTime >= endingTime)
 			{
@@ -595,32 +607,35 @@ public final class ItemAuctionInstance
 			if ((auctionState == ItemAuctionState.FINISHED) && (startingTime < (System.currentTimeMillis() - TimeUnit.MILLISECONDS.convert(Config.ALT_ITEM_AUCTION_EXPIRED_AFTER, TimeUnit.DAYS))))
 			{
 				_log.log(Level.INFO, getClass().getSimpleName() + ": Clearing expired auction: " + auctionId);
-				statement = con.prepareStatement("DELETE FROM item_auction WHERE auctionId=?");
-				statement.setInt(1, auctionId);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement(DELETE_AUCTION_INFO_BY_AUCTION_ID))
+				{
+					ps.setInt(1, auctionId);
+					ps.execute();
+				}
 				
-				statement = con.prepareStatement("DELETE FROM item_auction_bid WHERE auctionId=?");
-				statement.setInt(1, auctionId);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement(DELETE_AUCTION_BID_INFO_BY_AUCTION_ID))
+				{
+					ps.setInt(1, auctionId);
+					ps.execute();
+				}
 				return null;
 			}
 			
-			statement = con.prepareStatement("SELECT playerObjId,playerBid FROM item_auction_bid WHERE auctionId=?");
-			statement.setInt(1, auctionId);
-			rset = statement.executeQuery();
-			
 			final ArrayList<ItemAuctionBid> auctionBids = new ArrayList<>();
-			
-			while (rset.next())
+			try (PreparedStatement ps = con.prepareStatement(SELECT_PLAYERS_ID_BY_AUCTION_ID))
 			{
-				final int playerObjId = rset.getInt(1);
-				final long playerBid = rset.getLong(2);
-				final ItemAuctionBid bid = new ItemAuctionBid(playerObjId, playerBid);
-				auctionBids.add(bid);
+				ps.setInt(1, auctionId);
+				try (ResultSet rs = ps.executeQuery())
+				{
+					while (rs.next())
+					{
+						final int playerObjId = rs.getInt(1);
+						final long playerBid = rs.getLong(2);
+						final ItemAuctionBid bid = new ItemAuctionBid(playerObjId, playerBid);
+						auctionBids.add(bid);
+					}
+				}
 			}
-			
 			return new ItemAuction(auctionId, _instanceId, startingTime, endingTime, auctionItem, auctionBids, auctionState);
 		}
 		finally
