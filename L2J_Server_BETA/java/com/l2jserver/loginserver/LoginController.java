@@ -71,7 +71,13 @@ public class LoginController
 	protected byte[][] _blowfishKeys;
 	private static final int BLOWFISH_KEYS = 20;
 	
+	// SQL Queries
 	private static final String USER_INFO_SELECT = "SELECT password, IF(? > value OR value IS NULL, accessLevel, -1) AS accessLevel, lastServer, userIp " + "FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
+	private static final String AUTOCREATE_ACCOUNTS_INSERT = "INSERT INTO accounts (login, password, lastactive, accessLevel, lastIP) values (?, ?, ?, ?, ?)";
+	private static final String ACCOUNT_INFO_UPDATE = "UPDATE accounts SET lastactive = ?, lastIP = ? WHERE login = ?";
+	private static final String ACCOUNT_LAST_SERVER_UPDATE = "UPDATE accounts SET lastServer = ? WHERE login = ?";
+	private static final String ACCOUNT_ACCESS_LEVEL_UPDATE = "UPDATE accounts SET accessLevel = ? WHERE login = ?";
+	private static final String ACCOUNT_IPS_UPDATE = "UPDATE accounts SET pcIp = ?, hop1 = ?, hop2 = ?, hop3 = ?, hop4 = ? WHERE login = ?";
 	
 	public static void load() throws GeneralSecurityException
 	{
@@ -377,13 +383,12 @@ public class LoginController
 				try
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
-					
-					String stmt = "UPDATE accounts SET lastServer = ? WHERE login = ?";
-					PreparedStatement statement = con.prepareStatement(stmt);
-					statement.setInt(1, serverId);
-					statement.setString(2, client.getAccount());
-					statement.executeUpdate();
-					statement.close();
+					try (PreparedStatement ps = con.prepareStatement(ACCOUNT_LAST_SERVER_UPDATE))
+					{
+						ps.setInt(1, serverId);
+						ps.setString(2, client.getAccount());
+						ps.executeUpdate();
+					}
 				}
 				catch (Exception e)
 				{
@@ -405,13 +410,12 @@ public class LoginController
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			String stmt = "UPDATE accounts SET accessLevel=? WHERE login=?";
-			PreparedStatement statement = con.prepareStatement(stmt);
-			statement.setInt(1, banLevel);
-			statement.setString(2, account);
-			statement.executeUpdate();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement(ACCOUNT_ACCESS_LEVEL_UPDATE))
+			{
+				ps.setInt(1, banLevel);
+				ps.setString(2, account);
+				ps.executeUpdate();
+			}
 		}
 		catch (Exception e)
 		{
@@ -429,17 +433,16 @@ public class LoginController
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			String stmt = "UPDATE accounts SET pcIp=?, hop1=?, hop2=?, hop3=?, hop4=? WHERE login=?";
-			PreparedStatement statement = con.prepareStatement(stmt);
-			statement.setString(1, pcIp);
-			statement.setString(2, hop1);
-			statement.setString(3, hop2);
-			statement.setString(4, hop3);
-			statement.setString(5, hop4);
-			statement.setString(6, account);
-			statement.executeUpdate();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement(ACCOUNT_IPS_UPDATE))
+			{
+				ps.setString(1, pcIp);
+				ps.setString(2, hop1);
+				ps.setString(3, hop2);
+				ps.setString(4, hop3);
+				ps.setString(5, hop4);
+				ps.setString(6, account);
+				ps.executeUpdate();
+			}
 		}
 		catch (Exception e)
 		{
@@ -513,27 +516,29 @@ public class LoginController
 			String userIP = null;
 			
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(USER_INFO_SELECT);
-			statement.setString(1, Long.toString(System.currentTimeMillis()));
-			statement.setString(2, user);
-			ResultSet rset = statement.executeQuery();
-			if (rset.next())
+			try (PreparedStatement ps = con.prepareStatement(USER_INFO_SELECT);)
 			{
-				expected = Base64.decode(rset.getString("password"));
-				access = rset.getInt("accessLevel");
-				lastServer = rset.getInt("lastServer");
-				userIP = rset.getString("userIP");
-				if (lastServer <= 0)
+				ps.setString(1, Long.toString(System.currentTimeMillis()));
+				ps.setString(2, user);
+				try (ResultSet rset = ps.executeQuery())
 				{
-					lastServer = 1; // minServerId is 1 in Interlude
-				}
-				if (Config.DEBUG)
-				{
-					_log.fine("account exists");
+					if (rset.next())
+					{
+						expected = Base64.decode(rset.getString("password"));
+						access = rset.getInt("accessLevel");
+						lastServer = rset.getInt("lastServer");
+						userIP = rset.getString("userIP");
+						if (lastServer <= 0)
+						{
+							lastServer = 1; // minServerId is 1 in Interlude
+						}
+						if (Config.DEBUG)
+						{
+							_log.fine("account exists");
+						}
+					}
 				}
 			}
-			rset.close();
-			statement.close();
 			
 			// if account doesnt exists
 			if (expected == null)
@@ -542,14 +547,15 @@ public class LoginController
 				{
 					if ((user.length() >= 2) && (user.length() <= 14))
 					{
-						statement = con.prepareStatement("INSERT INTO accounts (login,password,lastactive,accessLevel,lastIP) values(?,?,?,?,?)");
-						statement.setString(1, user);
-						statement.setString(2, Base64.encodeBytes(hash));
-						statement.setLong(3, System.currentTimeMillis());
-						statement.setInt(4, 0);
-						statement.setString(5, address.getHostAddress());
-						statement.execute();
-						statement.close();
+						try (PreparedStatement ps = con.prepareStatement(AUTOCREATE_ACCOUNTS_INSERT))
+						{
+							ps.setString(1, user);
+							ps.setString(2, Base64.encodeBytes(hash));
+							ps.setLong(3, System.currentTimeMillis());
+							ps.setInt(4, 0);
+							ps.setString(5, address.getHostAddress());
+							ps.execute();
+						}
 						
 						if (Config.LOG_LOGIN_CONTROLLER)
 						{
@@ -649,12 +655,13 @@ public class LoginController
 			{
 				client.setAccessLevel(access);
 				client.setLastServer(lastServer);
-				statement = con.prepareStatement("UPDATE accounts SET lastactive=?, lastIP=? WHERE login=?");
-				statement.setLong(1, System.currentTimeMillis());
-				statement.setString(2, address.getHostAddress());
-				statement.setString(3, user);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement(ACCOUNT_INFO_UPDATE))
+				{
+					ps.setLong(1, System.currentTimeMillis());
+					ps.setString(2, address.getHostAddress());
+					ps.setString(3, user);
+					ps.execute();
+				}
 			}
 		}
 		catch (Exception e)
