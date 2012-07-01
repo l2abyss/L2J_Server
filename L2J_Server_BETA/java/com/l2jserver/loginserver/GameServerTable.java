@@ -78,10 +78,11 @@ public final class GameServerTable
 	private void loadGameServerNames()
 	{
 		final File xml = new File(Config.DATAPACK_ROOT, "data/servername.xml");
-		try (InputStream in = new FileInputStream(xml);)
+		try (InputStream in = new FileInputStream(xml);
+			UTF8StreamReader utf8 = new UTF8StreamReader())
 		{
 			final XMLStreamReaderImpl xpp = new XMLStreamReaderImpl();
-			xpp.setInput(new UTF8StreamReader().setInput(in));
+			xpp.setInput(utf8.setInput(in));
 			for (int e = xpp.getEventType(); e != XMLStreamConstants.END_DOCUMENT; e = xpp.next())
 			{
 				if (e == XMLStreamConstants.START_ELEMENT)

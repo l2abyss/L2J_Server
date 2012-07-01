@@ -569,6 +569,7 @@ public final class ItemAuctionInstance
 			final long startingTime = rset.getLong(2);
 			final long endingTime = rset.getLong(3);
 			final byte auctionStateId = rset.getByte(4);
+			rset.close();
 			statement.close();
 			
 			if (startingTime >= endingTime)

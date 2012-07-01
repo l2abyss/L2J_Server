@@ -204,8 +204,12 @@ public class ConsoleLocalizator extends LocalizationParser
 	 */
 	private String formatText(String text, Object... args)
 	{
-		Formatter form = new Formatter();
-		return form.format(text, args).toString();
+		String formattedText = null;
+		try (Formatter form = new Formatter())
+		{
+			formattedText = form.format(text, args).toString();
+		}
+		return formattedText;
 	}
 	
 	/**

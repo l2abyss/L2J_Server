@@ -31,10 +31,11 @@ public class MySqlConnect
 	
 	public MySqlConnect(String host, String port, String user, String password, String db, boolean console)
 	{
-		try
+		try (Formatter form = new Formatter())
 		{
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			con = DriverManager.getConnection(new Formatter().format("jdbc:mysql://%1$s:%2$s", host, port).toString(), user, password);
+			final String formattedText = form.format("jdbc:mysql://%1$s:%2$s", host, port).toString();
+			con = DriverManager.getConnection(formattedText, user, password);
 			
 			Statement st = con.createStatement();
 			st.execute("CREATE DATABASE IF NOT EXISTS `" + db + "`");

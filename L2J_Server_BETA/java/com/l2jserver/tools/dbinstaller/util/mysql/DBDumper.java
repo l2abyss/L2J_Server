@@ -45,10 +45,9 @@ public class DBDumper
 	
 	public void createDump()
 	{
-		try
+		try (Formatter form = new Formatter())
 		{
 			Connection con = _frame.getConnection();
-			Formatter form = new Formatter();
 			PreparedStatement stmt = con.prepareStatement("SHOW TABLES");
 			ResultSet rset = stmt.executeQuery();
 			File dump = new File("dumps", form.format("%1$s_dump_%2$tY%2$tm%2$td-%2$tH%2$tM%2$tS.sql", _db, new GregorianCalendar().getTime()).toString());

@@ -14,11 +14,8 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -366,10 +363,12 @@ public class L2Event
 			if (NpcTable.getInstance().getTemplate(_npcId) == null)
 				return "Cannot start event, invalid npc id.";
 			
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(Config.DATAPACK_ROOT+"/data/events/" + _eventName)));
-			BufferedReader inbr = new BufferedReader(new InputStreamReader(in));
-			_eventCreator = inbr.readLine();
-			_eventInfo = inbr.readLine();
+			try (FileReader fr = new FileReader(Config.DATAPACK_ROOT + "/data/events/" + _eventName);
+				BufferedReader br = new BufferedReader(fr))
+			{
+				_eventCreator = br.readLine();
+				_eventInfo = br.readLine();
+			}
 			
 			List<L2PcInstance> temp = new FastList<>();
 			for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
