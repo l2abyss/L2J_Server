@@ -14,9 +14,7 @@
  */
 package com.l2jserver.gameserver.model.skills.funcs.formulas;
 
-import com.l2jserver.gameserver.model.actor.instance.L2BabyPetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.stats.BaseStats;
@@ -43,8 +41,7 @@ public class FuncMDefMod extends Func
 	@Override
 	public void calc(Env env)
 	{
-		float level = env.getCharacter().getLevel();
-		if (env.getCharacter() instanceof L2PcInstance)
+		if (env.getCharacter().isPlayer())
 		{
 			L2PcInstance p = env.getPlayer();
 			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LFINGER) != null)
@@ -69,21 +66,21 @@ public class FuncMDefMod extends Func
 			}
 			env.mulValue(BaseStats.MEN.calcBonus(env.getPlayer()) * env.getPlayer().getLevelMod());
 		}
-		else if ((env.getCharacter() instanceof L2PetInstance) || (env.getCharacter() instanceof L2BabyPetInstance))
+		else if (env.getCharacter().isPet())
 		{
 			if (env.getCharacter().getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_NECK) != 0)
 			{
 				env.subValue(13);
-				env.mulValue(BaseStats.MEN.calcBonus(env.getCharacter()) * ((level + 89) / 100));
+				env.mulValue(BaseStats.MEN.calcBonus(env.getCharacter()) * env.getCharacter().getLevelMod());
 			}
 			else
 			{
-				env.mulValue(BaseStats.MEN.calcBonus(env.getCharacter()) * ((level + 89) / 100));
+				env.mulValue(BaseStats.MEN.calcBonus(env.getCharacter()) * env.getCharacter().getLevelMod());
 			}
 		}
 		else
 		{
-			env.mulValue(BaseStats.MEN.calcBonus(env.getCharacter()) * ((level + 89) / 100));
+			env.mulValue(BaseStats.MEN.calcBonus(env.getCharacter()) * env.getCharacter().getLevelMod());
 		}
 	}
 }

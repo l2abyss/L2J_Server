@@ -15,8 +15,6 @@
 package com.l2jserver.gameserver.model.skills.funcs.formulas;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Summon;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -43,13 +41,17 @@ public class FuncMAtkCritical extends Func
 	public void calc(Env env)
 	{
 		L2Character p = env.getCharacter();
-		if (p instanceof L2Summon)
+		// CT2: The magic critical rate has been increased to 10 times.
+		if (p.isPlayer())
 		{
-			env.setValue(8); // TODO: needs retail value
+			if (p.getActiveWeaponInstance() != null)
+			{
+				env.mulValue(BaseStats.WIT.calcBonus(p) * 10);
+			}
 		}
-		else if ((p instanceof L2PcInstance) && (p.getActiveWeaponInstance() != null))
+		else
 		{
-			env.mulValue(BaseStats.WIT.calcBonus(p));
+			env.mulValue(BaseStats.WIT.calcBonus(p) * 10);
 		}
 	}
 }

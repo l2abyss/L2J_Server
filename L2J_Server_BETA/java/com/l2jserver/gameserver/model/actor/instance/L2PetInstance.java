@@ -307,12 +307,6 @@ public class L2PetInstance extends L2Summon
 		setStat(new PetStat(this));
 	}
 	
-	@Override
-	public double getLevelMod()
-	{
-		return (100.0 - 11 + getLevel()) / 100.0;
-	}
-	
 	public boolean isRespawned()
 	{
 		return _respawned;

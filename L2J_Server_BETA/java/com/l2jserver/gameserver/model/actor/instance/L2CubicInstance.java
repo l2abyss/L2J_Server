@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.model.entity.TvTEventTeam;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDrain;
+import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
@@ -261,8 +262,8 @@ public class L2CubicInstance
 	
 	public final int getMCriticalHit(L2Character target, L2Skill skill)
 	{
-		// TODO: Temporary now mcrit for cubics is the baseMCritRate of its owner
-		return _owner.getTemplate().getBaseMCritRate();
+		// Magical Critical Rate for cubics is the base Magical Critical Rate of its owner
+		return (int) (BaseStats.WIT.calcBonus(_owner) * 10);
 	}
 	
 	public int getMAtk()

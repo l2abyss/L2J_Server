@@ -28,17 +28,11 @@ import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2SiegeClan;
-import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.L2Summon;
-import com.l2jserver.gameserver.model.actor.instance.L2BabyPetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
@@ -114,7 +108,7 @@ public final class Formulas
 	 */
 	public static int getRegeneratePeriod(L2Character cha)
 	{
-		if (cha instanceof L2DoorInstance)
+		if (cha.isDoor())
 		{
 			return HP_REGENERATE_PERIOD * 100; // 5 mins
 		}
@@ -208,7 +202,7 @@ public final class Formulas
 	 */
 	public static void addFuncsToNewCharacter(L2Character cha)
 	{
-		if (cha instanceof L2PcInstance)
+		if (cha.isPlayer())
 		{
 			cha.addStatFunc(FuncMaxHpAdd.getInstance());
 			cha.addStatFunc(FuncMaxHpMul.getInstance());
@@ -250,42 +244,8 @@ public final class Formulas
 			cha.addStatFunc(FuncArmorSet.getInstance(Stats.STAT_CON));
 			cha.addStatFunc(FuncArmorSet.getInstance(Stats.STAT_WIT));
 		}
-		else if (cha instanceof L2PetInstance)
+		else if (cha.isSummon())
 		{
-			cha.addStatFunc(FuncMaxHpMul.getInstance());
-			cha.addStatFunc(FuncMaxMpMul.getInstance());
-			cha.addStatFunc(FuncPAtkMod.getInstance());
-			cha.addStatFunc(FuncMAtkMod.getInstance());
-			cha.addStatFunc(FuncPDefMod.getInstance());
-			cha.addStatFunc(FuncMDefMod.getInstance());
-			cha.addStatFunc(FuncAtkCritical.getInstance());
-			cha.addStatFunc(FuncMAtkCritical.getInstance());
-			cha.addStatFunc(FuncAtkAccuracy.getInstance());
-			cha.addStatFunc(FuncAtkEvasion.getInstance());
-			cha.addStatFunc(FuncMoveSpeed.getInstance());
-			cha.addStatFunc(FuncPAtkSpeed.getInstance());
-			cha.addStatFunc(FuncMAtkSpeed.getInstance());
-		}
-		else if (cha instanceof L2BabyPetInstance)
-		{
-			cha.addStatFunc(FuncMaxHpMul.getInstance());
-			cha.addStatFunc(FuncMaxMpMul.getInstance());
-			cha.addStatFunc(FuncPAtkMod.getInstance());
-			cha.addStatFunc(FuncMAtkMod.getInstance());
-			cha.addStatFunc(FuncPDefMod.getInstance());
-			cha.addStatFunc(FuncMDefMod.getInstance());
-			cha.addStatFunc(FuncAtkCritical.getInstance());
-			cha.addStatFunc(FuncMAtkCritical.getInstance());
-			cha.addStatFunc(FuncAtkAccuracy.getInstance());
-			cha.addStatFunc(FuncAtkEvasion.getInstance());
-			cha.addStatFunc(FuncMoveSpeed.getInstance());
-			cha.addStatFunc(FuncPAtkSpeed.getInstance());
-			cha.addStatFunc(FuncMAtkSpeed.getInstance());
-		}
-		else if (cha instanceof L2Summon)
-		{
-			// cha.addStatFunc(FuncMultRegenResting.getInstance(Stats.REGENERATE_HP_RATE));
-			// cha.addStatFunc(FuncMultRegenResting.getInstance(Stats.REGENERATE_MP_RATE));
 			cha.addStatFunc(FuncMaxHpMul.getInstance());
 			cha.addStatFunc(FuncMaxMpMul.getInstance());
 			cha.addStatFunc(FuncPAtkMod.getInstance());
@@ -318,9 +278,9 @@ public final class Formulas
 			hpRegenMultiplier *= Config.L2JMOD_CHAMPION_HP_REGEN;
 		}
 		
-		if (cha instanceof L2PcInstance)
+		if (cha.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) cha;
+			L2PcInstance player = cha.getActingPlayer();
 			
 			// Calculate correct baseHpReg value for certain level of PC
 			init += (player.getLevel() > 10) ? ((player.getLevel() - 1) / 10.0) : 0.5;
@@ -418,7 +378,7 @@ public final class Formulas
 			// Add CON bonus
 			init *= cha.getLevelMod() * BaseStats.CON.calcBonus(cha);
 		}
-		else if (cha instanceof L2PetInstance)
+		else if (cha.isPet())
 		{
 			init = ((L2PetInstance) cha).getPetLevelData().getPetRegenHP() * Config.PET_HP_REGEN_MULTIPLIER;
 		}
@@ -442,9 +402,9 @@ public final class Formulas
 		double mpRegenMultiplier = cha.isRaid() ? Config.RAID_MP_REGEN_MULTIPLIER : Config.MP_REGEN_MULTIPLIER;
 		double mpRegenBonus = 0;
 		
-		if (cha instanceof L2PcInstance)
+		if (cha.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) cha;
+			L2PcInstance player = cha.getActingPlayer();
 			
 			// Calculate correct baseMpReg value for certain level of PC
 			init += 0.3 * ((player.getLevel() - 1) / 10.0);
@@ -534,7 +494,7 @@ public final class Formulas
 			// Add MEN bonus
 			init *= cha.getLevelMod() * BaseStats.MEN.calcBonus(cha);
 		}
-		else if (cha instanceof L2PetInstance)
+		else if (cha.isPet())
 		{
 			init = ((L2PetInstance) cha).getPetLevelData().getPetRegenMP() * Config.PET_MP_REGEN_MULTIPLIER;
 		}
@@ -558,9 +518,9 @@ public final class Formulas
 		double cpRegenMultiplier = Config.CP_REGEN_MULTIPLIER;
 		double cpRegenBonus = 0;
 		
-		if (cha instanceof L2PcInstance)
+		if (cha.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) cha;
+			L2PcInstance player = cha.getActingPlayer();
 			
 			// Calculate correct baseHpReg value for certain level of PC
 			init += (player.getLevel() > 10) ? ((player.getLevel() - 1) / 10.0) : 0.5;
@@ -672,8 +632,8 @@ public final class Formulas
 				return 1;
 		}
 		
-		boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2PcInstance);
-		boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
+		boolean isPvP = attacker.isPlayable() && target.isPlayer();
+		boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
 		double power = skill.getPower(isPvP, isPvE);
 		double damage = 0;
 		double proximityBonus = 1;
@@ -681,7 +641,7 @@ public final class Formulas
 		double ssboost = ss ? (skill.getSSBoost() > 0 ? skill.getSSBoost() : 2.04) : 1; // 104% bonus with SS
 		double pvpBonus = 1;
 		
-		if ((attacker instanceof L2Playable) && (target instanceof L2Playable))
+		if (attacker.isPlayable() && target.isPlayable())
 		{
 			// Dmg bonusses in PvP fight
 			pvpBonus *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
@@ -719,7 +679,7 @@ public final class Formulas
 		// Random weapon damage
 		damage *= attacker.getRandomDamageMultiplier();
 		
-		if ((target instanceof L2Attackable) && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
+		if (target.isL2Attackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
 		{
 			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 1;
 			if (lvlDiff > Config.NPC_SKILL_DMG_PENALTY.size())
@@ -751,12 +711,12 @@ public final class Formulas
 	 */
 	public static final double calcPhysDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean crit, boolean dual, boolean ss)
 	{
-		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
-		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
+		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
+		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		damage += calcValakasTrait(attacker, target, skill);
-		if (attacker instanceof L2Npc)
+		if (attacker.isNpc())
 		{
 			if (((L2Npc) attacker)._soulshotcharged)
 			{
@@ -878,7 +838,7 @@ public final class Formulas
 		}
 		
 		// for summon use pet weapon vuln, since they cant hold weapon
-		if (attacker instanceof L2ServitorInstance)
+		if (attacker.isServitor())
 		{
 			stat = Stats.PET_WPN_VULN;
 		}
@@ -912,7 +872,7 @@ public final class Formulas
 			}
 		}
 		
-		if (target instanceof L2Npc)
+		if (target.isNpc())
 		{
 			switch (((L2Npc) target).getTemplate().getRace())
 			{
@@ -972,7 +932,7 @@ public final class Formulas
 		}
 		
 		damage *= calcElemental(attacker, target, skill);
-		if (target instanceof L2Attackable)
+		if (target.isL2Attackable())
 		{
 			if (isBow)
 			{
@@ -1033,12 +993,12 @@ public final class Formulas
 	
 	public static final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean bss, boolean mcrit)
 	{
-		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
-		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
+		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
+		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
 		// AI SpiritShot
-		if (attacker instanceof L2Npc)
+		if (attacker.isNpc())
 		{
 			if (((L2Npc) attacker)._spiritshotcharged)
 			{
@@ -1087,7 +1047,7 @@ public final class Formulas
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(attacker, target, skill))
 		{
-			if (attacker instanceof L2PcInstance)
+			if (attacker.isPlayer())
 			{
 				if (calcMagicSuccess(attacker, target, skill) && ((target.getLevel() - attacker.getLevel()) <= 9))
 				{
@@ -1113,7 +1073,7 @@ public final class Formulas
 				}
 			}
 			
-			if (target instanceof L2PcInstance)
+			if (target.isPlayer())
 			{
 				if (skill.getSkillType() == L2SkillType.DRAIN)
 				{
@@ -1131,7 +1091,7 @@ public final class Formulas
 		}
 		else if (mcrit)
 		{
-			if ((attacker instanceof L2PcInstance) && (target instanceof L2PcInstance))
+			if (attacker.isPlayer() && target.isPlayer())
 			{
 				damage *= 2.5;
 			}
@@ -1163,7 +1123,7 @@ public final class Formulas
 		
 		damage *= calcElemental(attacker, target, skill);
 		
-		if (target instanceof L2Attackable)
+		if (target.isL2Attackable())
 		{
 			damage *= attacker.calcStat(Stats.PVE_MAGICAL_DMG, 1, null, null);
 			if (!target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
@@ -1187,8 +1147,8 @@ public final class Formulas
 	{
 		// Current info include mAtk in the skill power.
 		// double mAtk = attacker.getMAtk();
-		final boolean isPvP = (target instanceof L2Playable);
-		final boolean isPvE = (target instanceof L2Attackable);
+		final boolean isPvP = target.isPlayable();
+		final boolean isPvE = target.isL2Attackable();
 		double mDef = target.getMDef(attacker.getOwner(), skill);
 		
 		switch (shld)
@@ -1228,7 +1188,7 @@ public final class Formulas
 				damage = 1;
 			}
 			
-			if (target instanceof L2PcInstance)
+			if (target.isPlayer())
 			{
 				if (skill.getSkillType() == L2SkillType.DRAIN)
 				{
@@ -1254,7 +1214,7 @@ public final class Formulas
 		
 		damage *= calcElemental(owner, target, skill);
 		
-		if (target instanceof L2Attackable)
+		if (target.isL2Attackable())
 		{
 			damage *= attacker.getOwner().calcStat(Stats.PVE_MAGICAL_DMG, 1, null, null);
 			if (!target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getOwner() != null) && ((target.getLevel() - attacker.getOwner().getLevel()) >= 2))
@@ -1370,7 +1330,7 @@ public final class Formulas
 				}
 				else if (target.isPlayer()) // If is a active player set his HP and CP to 1
 				{
-					L2PcInstance player = (L2PcInstance) target;
+					L2PcInstance player = target.getActingPlayer();
 					if (!player.isInvul())
 					{
 						if (!(activeChar.isPlayer() && (activeChar.isGM() && !activeChar.getAccessLevel().canGiveDamage())))
@@ -1502,9 +1462,9 @@ public final class Formulas
 	{
 		if (skill.isMagic())
 		{
-			return (int) ((skillTime * 333) / attacker.getMAtkSpd());
+			return (int) ((skillTime / attacker.getMAtkSpd()) * 333);
 		}
-		return (int) ((skillTime * 333) / attacker.getPAtkSpd());
+		return (int) ((skillTime / attacker.getPAtkSpd()) * 300);
 	}
 	
 	/**
@@ -1716,9 +1676,9 @@ public final class Formulas
 			shldSuccess = SHIELD_DEFENSE_SUCCEED;
 		}
 		
-		if (sendSysMsg && (target instanceof L2PcInstance))
+		if (sendSysMsg && target.isPlayer())
 		{
-			L2PcInstance enemy = (L2PcInstance) target;
+			L2PcInstance enemy = target.getActingPlayer();
 			
 			switch (shldSuccess)
 			{
@@ -2146,8 +2106,8 @@ public final class Formulas
 			return true;
 		}
 		
-		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
-		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
+		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
+		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
 		if (skill.ignoreResists())
 		{
 			if (attacker.isDebug())
@@ -2272,8 +2232,8 @@ public final class Formulas
 		{
 			return false;
 		}
-		final boolean isPvP = (target instanceof L2Playable);
-		final boolean isPvE = (target instanceof L2Attackable);
+		final boolean isPvP = target.isPlayable();
+		final boolean isPvE = target.isL2Attackable();
 		
 		if ((target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0) && skill.isDebuff() && !skill.ignoreResists())
 		{
@@ -2370,7 +2330,7 @@ public final class Formulas
 		int lvlDifference = (target.getLevel() - (skill.getSkillType() == L2SkillType.SPOIL ? skill.getMagicLevel() : attacker.getLevel()));
 		double lvlModifier = Math.pow(1.3, lvlDifference);
 		float targetModifier = 1;
-		if ((target instanceof L2Attackable) && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_MAGIC_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 3))
+		if (target.isL2Attackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_MAGIC_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 3))
 		{
 			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 2;
 			if (lvlDiff > Config.NPC_SKILL_CHANCE_PENALTY.size())
@@ -2416,7 +2376,7 @@ public final class Formulas
 	public static double calcManaDam(L2Character attacker, L2Character target, L2Skill skill, boolean ss, boolean bss)
 	{
 		// AI SpiritShot
-		if (attacker instanceof L2Npc)
+		if (attacker.isNpc())
 		{
 			if (((L2Npc) attacker)._spiritshotcharged)
 			{
@@ -2428,11 +2388,11 @@ public final class Formulas
 			}
 			((L2Npc) attacker)._spiritshotcharged = false;
 		}
-		// Mana Burnt = (SQR(M.Atk)*Power*(Target Max MP/97))/M.Def
+		// Mana Burn = (SQR(M.Atk)*Power*(Target Max MP/97))/M.Def
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
-		final boolean isPvP = (attacker instanceof L2Playable) && (target instanceof L2Playable);
-		final boolean isPvE = (attacker instanceof L2Playable) && (target instanceof L2Attackable);
+		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
+		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
 		double mp = target.getMaxMp();
 		if (bss)
 		{
@@ -2445,7 +2405,7 @@ public final class Formulas
 		
 		double damage = (Math.sqrt(mAtk) * skill.getPower(attacker, target, isPvP, isPvE) * (mp / 97)) / mDef;
 		damage *= (1 + (calcSkillVulnerability(attacker, target, skill) / 100));
-		if (target instanceof L2Attackable)
+		if (target.isL2Attackable())
 		{
 			damage *= attacker.calcStat(Stats.PVE_MAGICAL_DMG, 1, null, null);
 			if (!target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
@@ -2504,9 +2464,9 @@ public final class Formulas
 		
 		double val = actor.getStat().calcStat(Stats.SKILL_MASTERY, 0, null, null);
 		
-		if (actor instanceof L2PcInstance)
+		if (actor.isPlayer())
 		{
-			if (((L2PcInstance) actor).isMageClass())
+			if (actor.getActingPlayer().isMageClass())
 			{
 				val *= BaseStats.INT.calcBonus(actor);
 			}

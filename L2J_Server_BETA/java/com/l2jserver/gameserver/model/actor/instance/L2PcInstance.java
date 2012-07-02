@@ -7092,12 +7092,6 @@ public final class L2PcInstance extends L2Playable
 		return _accessLevel;
 	}
 	
-	@Override
-	public double getLevelMod()
-	{
-		return (100.0 - 11 + getLevel()) / 100.0;
-	}
-	
 	/**
 	 * Update Stats of the L2PcInstance client side by sending Server->Client packet UserInfo/StatusUpdate to this L2PcInstance and CharInfo/StatusUpdate to all L2PcInstance in its _KnownPlayers (broadcast).<BR><BR>
 	 * @param broadcastType 
