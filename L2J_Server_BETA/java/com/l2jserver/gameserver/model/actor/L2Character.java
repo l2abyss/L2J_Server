@@ -2395,7 +2395,6 @@ public abstract class L2Character extends L2Object
 	public void deleteMe()
 	{
 		setDebug(null);
-		setStatus(null);
 		
 		if (hasAI())
 			getAI().stopAITask();
