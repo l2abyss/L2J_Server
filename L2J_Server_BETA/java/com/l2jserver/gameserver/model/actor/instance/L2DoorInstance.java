@@ -82,9 +82,9 @@ public class L2DoorInstance extends L2Character
 	private int _openType = 0;
 	private int _meshindex = 1;
 	private int _level = 0;
-	int _closeTime = -1;
-	int _openTime = -1;
-	int _randomTime = -1;
+	protected int _closeTime = -1;
+	protected int _openTime = -1;
+	protected int _randomTime = -1;
 	// used for autoclose on open
 	private Future<?> _autoCloseTask;
 	
@@ -119,7 +119,7 @@ public class L2DoorInstance extends L2Character
 			ClanHall hall = ClanHallManager.getAllClanHalls().get(clanhallId);
 			if(hall != null)
 			{
-				this.setClanHall(hall);
+				setClanHall(hall);
 				hall.getDoors().add(this);
 			}
 		}
