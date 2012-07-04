@@ -2395,6 +2395,7 @@ public abstract class L2Character extends L2Object
 	public void deleteMe()
 	{
 		setDebug(null);
+		setStatus(null);
 		
 		if (hasAI())
 			getAI().stopAITask();
@@ -7086,11 +7087,11 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * @return 1.
+	 * @return (100 - 11 + level) / 100;.
 	 */
 	public double getLevelMod()
 	{
-		return 1;
+		return (100.0 - 11 + getLevel()) / 100.0;
 	}
 	
 	public final void setSkillCast(Future<?> newSkillCast)
