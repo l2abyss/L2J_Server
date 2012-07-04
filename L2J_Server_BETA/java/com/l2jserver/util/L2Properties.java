@@ -73,19 +73,13 @@ public final class L2Properties extends Properties
 	@Override
 	public void load(InputStream inStream) throws IOException
 	{
-		InputStreamReader reader = null;
-		try
+		try (InputStreamReader isr = new InputStreamReader(inStream, Charset.defaultCharset());)
 		{
-			reader = new InputStreamReader(inStream, Charset.defaultCharset());
-			super.load(reader);
+			super.load(isr);
 		}
 		finally
 		{
 			inStream.close();
-			if (reader != null)
-			{
-				reader.close();
-			}
 		}
 	}
 	

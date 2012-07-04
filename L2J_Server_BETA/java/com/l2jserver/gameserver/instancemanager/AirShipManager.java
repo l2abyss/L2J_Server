@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +33,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2ControllableAirShipInstan
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ExAirShipTeleportList;
-
 
 public class AirShipManager
 {
@@ -173,11 +173,12 @@ public class AirShipManager
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
 				
-				PreparedStatement statement = con.prepareStatement(ADD_DB);
-				statement.setInt(1, ownerId);
-				statement.setInt(2, info.getInteger("fuel"));
-				statement.executeUpdate();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement(ADD_DB))
+				{
+					ps.setInt(1, ownerId);
+					ps.setInt(2, info.getInteger("fuel"));
+					ps.executeUpdate();
+				}
 			}
 			catch (SQLException e)
 			{
@@ -258,21 +259,17 @@ public class AirShipManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			PreparedStatement statement = con.prepareStatement(LOAD_DB);
-			ResultSet rset = statement.executeQuery();
-			
-			while (rset.next())
+			try (Statement s = con.createStatement();
+				ResultSet rs = s.executeQuery(LOAD_DB))
 			{
-				StatsSet info = new StatsSet();
-				info.set("fuel", rset.getInt("fuel"));
-				
-				_airShipsInfo.put(rset.getInt("owner_id"), info);
-				info = null;
+				StatsSet info;
+				while (rs.next())
+				{
+					info = new StatsSet();
+					info.set("fuel", rs.getInt("fuel"));
+					_airShipsInfo.put(rs.getInt("owner_id"), info);
+				}
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -300,12 +297,12 @@ public class AirShipManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			PreparedStatement statement = con.prepareStatement(UPDATE_DB);
-			statement.setInt(1, info.getInteger("fuel"));
-			statement.setInt(2, ownerId);
-			statement.executeUpdate();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement(UPDATE_DB))
+			{
+				ps.setInt(1, info.getInteger("fuel"));
+				ps.setInt(2, ownerId);
+				ps.executeUpdate();
+			}
 		}
 		catch (SQLException e)
 		{

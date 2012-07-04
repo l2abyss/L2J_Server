@@ -56,10 +56,11 @@ public class TaskDailyQuestClean extends Task
 			con = L2DatabaseFactory.getInstance().getConnection();
 			for (String name : _daily_names)
 			{
-				PreparedStatement statement = con.prepareStatement("DELETE FROM character_quests WHERE name=? AND var='<state>' AND value='Completed';");
-				statement.setString(1, name);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_quests WHERE name=? AND var='<state>' AND value='Completed';"))
+				{
+					ps.setString(1, name);
+					ps.execute();
+				}
 			}
 		}
 		catch (Exception e)

@@ -223,11 +223,12 @@ public class CrestCache
 				try
 				{
 					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET crest_id = ? WHERE clan_id = ?");
-					statement.setInt(1, newId);
-					statement.setInt(2, clan.getClanId());
-					statement.executeUpdate();
-					statement.close();
+					try (PreparedStatement ps = con.prepareStatement("UPDATE clan_data SET crest_id = ? WHERE clan_id = ?"))
+					{
+						ps.setInt(1, newId);
+						ps.setInt(2, clan.getClanId());
+						ps.executeUpdate();
+					}
 				}
 				catch (SQLException e)
 				{

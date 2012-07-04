@@ -634,20 +634,20 @@ public class LoginServerThread extends Thread
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT deletetime FROM characters WHERE account_name=?");
-			statement.setString(1, account);
-			ResultSet rset = statement.executeQuery();
-			while (rset.next())
+			try (PreparedStatement ps = con.prepareStatement("SELECT deletetime FROM characters WHERE account_name=?"))
 			{
-				chars++;
-				long delTime = rset.getLong("deletetime");
-				if (delTime != 0)
+				ps.setString(1, account);
+				try (ResultSet rs = ps.executeQuery())
 				{
-					charToDel.add(delTime);
+					while (rs.next())
+					{
+						chars++;
+						long delTime = rs.getLong("deletetime");
+						if (delTime != 0)
+							charToDel.add(delTime);
+					}
 				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (SQLException e)
 		{

@@ -77,18 +77,20 @@ public class CompactionIDFactory extends IdFactory
 		{
 			for (String check : ID_CHECKS)
 			{
-				PreparedStatement ps = con.prepareStatement(check);
-				ps.setInt(1, _curOID);
-				ps.setInt(2, id);
-				ResultSet rs = ps.executeQuery();
-				while (rs.next())
+				try (PreparedStatement ps = con.prepareStatement(check))
 				{
-					int badId = rs.getInt(1);
-					_log.severe(getClass().getSimpleName() + ": Bad ID " + badId + " in DB found by: " + check);
-					throw new RuntimeException();
+					ps.setInt(1, _curOID);
+					ps.setInt(2, id);
+					try (ResultSet rs = ps.executeQuery())
+					{
+						while (rs.next())
+						{
+							int badId = rs.getInt(1);
+							_log.severe(getClass().getSimpleName() + ": Bad ID " + badId + " in DB found by: " + check);
+							throw new RuntimeException();
+						}
+					}
 				}
-				rs.close();
-				ps.close();
 			}
 		}
 		
@@ -103,11 +105,12 @@ public class CompactionIDFactory extends IdFactory
 			_log.info(getClass().getSimpleName() + ": Compacting DB object ID=" + id + " into " + (_curOID));
 			for (String update : ID_UPDATES)
 			{
-				PreparedStatement ps = con.prepareStatement(update);
-				ps.setInt(1, _curOID);
-				ps.setInt(2, id);
-				ps.execute();
-				ps.close();
+				try (PreparedStatement ps = con.prepareStatement(update))
+				{
+					ps.setInt(1, _curOID);
+					ps.setInt(2, id);
+					ps.execute();
+				}
 			}
 			_curOID++;
 		}

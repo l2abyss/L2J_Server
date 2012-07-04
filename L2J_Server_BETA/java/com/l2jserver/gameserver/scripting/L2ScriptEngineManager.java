@@ -188,59 +188,61 @@ public final class L2ScriptEngineManager
 		
 		if (list.isFile())
 		{
-			LineNumberReader lnr = new LineNumberReader(new InputStreamReader(new FileInputStream(list)));
-			String line;
-			
-			while ((line = lnr.readLine()) != null)
+			try (FileInputStream fis = new FileInputStream(list);
+				InputStreamReader isr = new InputStreamReader(fis);
+				LineNumberReader lnr = new LineNumberReader(isr))
 			{
-				if (Config.ALT_DEV_NO_HANDLERS && line.contains("MasterHandler.java"))
+				String line;
+				while ((line = lnr.readLine()) != null)
 				{
-					continue;
-				}
-				
-				String[] parts = line.trim().split("#");
-				
-				if ((parts.length > 0) && !parts[0].startsWith("#") && (parts[0].length() > 0))
-				{
-					line = parts[0];
-					
-					if (line.endsWith("/**"))
+					if (Config.ALT_DEV_NO_HANDLERS && line.contains("MasterHandler.java"))
 					{
-						line = line.substring(0, line.length() - 3);
-					}
-					else if (line.endsWith("/*"))
-					{
-						line = line.substring(0, line.length() - 2);
+						continue;
 					}
 					
-					file = new File(SCRIPT_FOLDER, line);
+					String[] parts = line.trim().split("#");
 					
-					if (file.isDirectory() && parts[0].endsWith("/**"))
+					if ((parts.length > 0) && !parts[0].startsWith("#") && (parts[0].length() > 0))
 					{
-						executeAllScriptsInDirectory(file, true, 32);
-					}
-					else if (file.isDirectory() && parts[0].endsWith("/*"))
-					{
-						executeAllScriptsInDirectory(file);
-					}
-					else if (file.isFile())
-					{
-						try
+						line = parts[0];
+						
+						if (line.endsWith("/**"))
 						{
-							executeScript(file);
+							line = line.substring(0, line.length() - 3);
 						}
-						catch (ScriptException e)
+						else if (line.endsWith("/*"))
 						{
-							reportScriptFileError(file, e);
+							line = line.substring(0, line.length() - 2);
 						}
-					}
-					else
-					{
-						_log.warning("Failed loading: (" + file.getCanonicalPath() + ") @ " + list.getName() + ":" + lnr.getLineNumber() + " - Reason: doesnt exists or is not a file.");
+						
+						file = new File(SCRIPT_FOLDER, line);
+						
+						if (file.isDirectory() && parts[0].endsWith("/**"))
+						{
+							executeAllScriptsInDirectory(file, true, 32);
+						}
+						else if (file.isDirectory() && parts[0].endsWith("/*"))
+						{
+							executeAllScriptsInDirectory(file);
+						}
+						else if (file.isFile())
+						{
+							try
+							{
+								executeScript(file);
+							}
+							catch (ScriptException e)
+							{
+								reportScriptFileError(file, e);
+							}
+						}
+						else
+						{
+							_log.warning("Failed loading: (" + file.getCanonicalPath() + ") @ " + list.getName() + ":" + lnr.getLineNumber() + " - Reason: doesnt exists or is not a file.");
+						}
 					}
 				}
 			}
-			lnr.close();
 		}
 		else
 		{

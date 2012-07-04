@@ -108,21 +108,22 @@ public class Forum
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM forums WHERE forum_id=?");
-			statement.setInt(1, _forumId);
-			ResultSet result = statement.executeQuery();
-			
-			if (result.next())
+			try (PreparedStatement ps = con.prepareStatement("SELECT * FROM forums WHERE forum_id=?"))
 			{
-				_forumName = result.getString("forum_name");
-				//_ForumParent = result.getInt("forum_parent");
-				_forumPost = result.getInt("forum_post");
-				_forumType = result.getInt("forum_type");
-				_forumPerm = result.getInt("forum_perm");
-				_ownerID = result.getInt("forum_owner_id");
+				ps.setInt(1, _forumId);
+				try (ResultSet rs = ps.executeQuery())
+				{
+					if (rs.next())
+					{
+						_forumName = rs.getString("forum_name");
+						//_ForumParent = result.getInt("forum_parent");
+						_forumPost = rs.getInt("forum_post");
+						_forumType = rs.getInt("forum_type");
+						_forumPerm = rs.getInt("forum_perm");
+						_ownerID = rs.getInt("forum_owner_id");
+					}
+				}
 			}
-			result.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -132,24 +133,26 @@ public class Forum
 		{
 			L2DatabaseFactory.close(con);
 		}
+		
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM topic WHERE topic_forum_id=? ORDER BY topic_id DESC");
-			statement.setInt(1, _forumId);
-			ResultSet result = statement.executeQuery();
-			
-			while (result.next())
+			try (PreparedStatement ps = con.prepareStatement("SELECT * FROM topic WHERE topic_forum_id=? ORDER BY topic_id DESC"))
 			{
-				Topic t = new Topic(Topic.ConstructorType.RESTORE, result.getInt("topic_id"), result.getInt("topic_forum_id"), result.getString("topic_name"), result.getLong("topic_date"), result.getString("topic_ownername"), result.getInt("topic_ownerid"), result.getInt("topic_type"), result.getInt("topic_reply"));
-				_topic.put(t.getID(), t);
-				if (t.getID() > TopicBBSManager.getInstance().getMaxID(this))
+				ps.setInt(1, _forumId);
+				try (ResultSet rs = ps.executeQuery())
 				{
-					TopicBBSManager.getInstance().setMaxID(t.getID(), this);
+					while (rs.next())
+					{
+						Topic t = new Topic(Topic.ConstructorType.RESTORE, rs.getInt("topic_id"), rs.getInt("topic_forum_id"), rs.getString("topic_name"), rs.getLong("topic_date"), rs.getString("topic_ownername"), rs.getInt("topic_ownerid"), rs.getInt("topic_type"), rs.getInt("topic_reply"));
+						_topic.put(t.getID(), t);
+						if (t.getID() > TopicBBSManager.getInstance().getMaxID(this))
+						{
+							TopicBBSManager.getInstance().setMaxID(t.getID(), this);
+						}
+					}
 				}
 			}
-			result.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -161,27 +164,25 @@ public class Forum
 		}
 	}
 	
-	/**
-	 *
-	 */
 	private void getChildren()
 	{
 		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT forum_id FROM forums WHERE forum_parent=?");
-			statement.setInt(1, _forumId);
-			ResultSet result = statement.executeQuery();
-			
-			while (result.next())
+			try (PreparedStatement ps = con.prepareStatement("SELECT forum_id FROM forums WHERE forum_parent=?"))
 			{
-				Forum f = new Forum(result.getInt("forum_id"), this);
-				_children.add(f);
-				ForumsBBSManager.getInstance().addForum(f);
+				ps.setInt(1, _forumId);
+				try (ResultSet rs = ps.executeQuery())
+				{
+					while (rs.next())
+					{
+						Forum f = new Forum(rs.getInt("forum_id"), this);
+						_children.add(f);
+						ForumsBBSManager.getInstance().addForum(f);
+					}
+				}
 			}
-			result.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -257,25 +258,23 @@ public class Forum
 		
 	}
 	
-	/**
-	 *
-	 */
 	public void insertIntoDb()
 	{
 		Connection con = null;
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO forums (forum_id,forum_name,forum_parent,forum_post,forum_type,forum_perm,forum_owner_id) VALUES (?,?,?,?,?,?,?)");
-			statement.setInt(1, _forumId);
-			statement.setString(2, _forumName);
-			statement.setInt(3, _fParent.getID());
-			statement.setInt(4, _forumPost);
-			statement.setInt(5, _forumType);
-			statement.setInt(6, _forumPerm);
-			statement.setInt(7, _ownerID);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("INSERT INTO forums (forum_id,forum_name,forum_parent,forum_post,forum_type,forum_perm,forum_owner_id) VALUES (?,?,?,?,?,?,?)"))
+			{
+				ps.setInt(1, _forumId);
+				ps.setString(2, _forumName);
+				ps.setInt(3, _fParent.getID());
+				ps.setInt(4, _forumPost);
+				ps.setInt(5, _forumType);
+				ps.setInt(6, _forumPerm);
+				ps.setInt(7, _ownerID);
+				ps.execute();
+			}
 		}
 		catch (Exception e)
 		{

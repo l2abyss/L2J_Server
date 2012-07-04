@@ -101,10 +101,10 @@ public class Status extends Thread
 		super("Status");
 		_mode = mode;
 		Properties telnetSettings = new Properties();
-		InputStream is = new FileInputStream(new File(Config.TELNET_FILE));
-		telnetSettings.load(is);
-		is.close();
-		
+		try (InputStream is = new FileInputStream(new File(Config.TELNET_FILE)))
+		{
+			telnetSettings.load(is);
+		}
 		_statusPort = Integer.parseInt(telnetSettings.getProperty("StatusPort", "12345"));
 		_statusPw = telnetSettings.getProperty("StatusPW");
 		

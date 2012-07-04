@@ -17,6 +17,7 @@ package com.l2jserver.gameserver;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -74,91 +75,88 @@ public class TradeController
 		_lists.clear();
 		Connection con = null;
 		
-		/*
-		 * Initialize Shop buylist
-		 */
+		// Initialize Shop buy list
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement1 = con.prepareStatement("SELECT  shop_id, npc_id FROM merchant_shopids");
-			ResultSet rset1 = statement1.executeQuery();
-			
-			int itemId, price, maxCount, currentCount, time;
-			long saveTimer;
-			PreparedStatement statement = con.prepareStatement("SELECT item_id, price, shop_id, "
-					+ L2DatabaseFactory.getInstance().safetyString("order")
-					+ ", count, currentCount, time, savetimer FROM merchant_buylists WHERE shop_id=? ORDER BY "
-					+ L2DatabaseFactory.getInstance().safetyString("order") + " ASC");
-			while (rset1.next())
+			try (Statement s = con.createStatement();
+				ResultSet rs1 = s.executeQuery("SELECT  shop_id, npc_id FROM merchant_shopids"))
 			{
-				statement.setString(1, String.valueOf(rset1.getInt("shop_id")));
-				ResultSet rset = statement.executeQuery();
-				statement.clearParameters();
-				
-				int shopId = rset1.getInt("shop_id");
-				L2TradeList buy1 = new L2TradeList(shopId);
-				
-				while (rset.next())
+				int itemId, price, maxCount, currentCount, time;
+				long saveTimer;
+				try (PreparedStatement ps = con.prepareStatement("SELECT item_id, price, shop_id, "
+						+ L2DatabaseFactory.getInstance().safetyString("order")
+						+ ", count, currentCount, time, savetimer FROM merchant_buylists WHERE shop_id=? ORDER BY "
+						+ L2DatabaseFactory.getInstance().safetyString("order") + " ASC"))
 				{
-					itemId = rset.getInt("item_id");
-					price = rset.getInt("price");
-					maxCount = rset.getInt("count");
-					currentCount = rset.getInt("currentCount");
-					time = rset.getInt("time");
-					saveTimer = rset.getLong("saveTimer");
-					
-					L2TradeItem item = new L2TradeItem(shopId, itemId);
-					if (ItemTable.getInstance().getTemplate(itemId) == null)
+					while (rs1.next())
 					{
-						_log.warning("Skipping itemId: " + itemId + " on buylistId: " + buy1.getListId() + ", missing data for that item.");
-						continue;
-					}
-					
-					if (price <= -1)
-					{
-						price = ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-					}
-					
-					if (Config.DEBUG)
-					{
-						// debug
-						double diff = ((double) (price)) / ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-						if (diff < 0.8 || diff > 1.2)
+						ps.setString(1, String.valueOf(rs1.getInt("shop_id")));
+						try (ResultSet rs2 = ps.executeQuery())
 						{
-							_log.severe("PRICING DEBUG: TradeListId: " + buy1.getListId() + " -  ItemId: " + itemId + " ("
-									+ ItemTable.getInstance().getTemplate(itemId).getName() + ") diff: " + diff + " - Price: " + price
-									+ " - Reference: " + ItemTable.getInstance().getTemplate(itemId).getReferencePrice());
+							ps.clearParameters();
+							
+							int shopId = rs1.getInt("shop_id");
+							L2TradeList buy1 = new L2TradeList(shopId);
+							
+							while (rs2.next())
+							{
+								itemId = rs2.getInt("item_id");
+								price = rs2.getInt("price");
+								maxCount = rs2.getInt("count");
+								currentCount = rs2.getInt("currentCount");
+								time = rs2.getInt("time");
+								saveTimer = rs2.getLong("saveTimer");
+								
+								L2TradeItem item = new L2TradeItem(shopId, itemId);
+								if (ItemTable.getInstance().getTemplate(itemId) == null)
+								{
+									_log.warning("Skipping itemId: " + itemId + " on buylistId: " + buy1.getListId() + ", missing data for that item.");
+									continue;
+								}
+								
+								if (price <= -1)
+								{
+									price = ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
+								}
+								
+								if (Config.DEBUG)
+								{
+									// debug
+									double diff = ((double) (price)) / ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
+									if (diff < 0.8 || diff > 1.2)
+									{
+										_log.severe("PRICING DEBUG: TradeListId: " + buy1.getListId() + " -  ItemId: " + itemId + " ("
+												+ ItemTable.getInstance().getTemplate(itemId).getName() + ") diff: " + diff + " - Price: " + price
+												+ " - Reference: " + ItemTable.getInstance().getTemplate(itemId).getReferencePrice());
+									}
+								}
+								
+								item.setPrice(price);
+								
+								item.setRestoreDelay(time);
+								item.setNextRestoreTime(saveTimer);
+								item.setMaxCount(maxCount);
+								
+								if (currentCount > -1)
+								{
+									item.setCurrentCount(currentCount);
+								}
+								else
+								{
+									item.setCurrentCount(maxCount);
+								}
+								
+								buy1.addItem(item);
+							}
+							
+							buy1.setNpcId(rs1.getString("npc_id"));
+							_lists.put(buy1.getListId(), buy1);
+							_nextListId = Math.max(_nextListId, buy1.getListId() + 1);
 						}
 					}
-					
-					item.setPrice(price);
-					
-					item.setRestoreDelay(time);
-					item.setNextRestoreTime(saveTimer);
-					item.setMaxCount(maxCount);
-					
-					if (currentCount > -1)
-					{
-						item.setCurrentCount(currentCount);
-					}
-					else
-					{
-						item.setCurrentCount(maxCount);
-					}
-					
-					buy1.addItem(item);
 				}
-				
-				buy1.setNpcId(rset1.getString("npc_id"));
-				_lists.put(buy1.getListId(), buy1);
-				_nextListId = Math.max(_nextListId, buy1.getListId() + 1);
-				
-				rset.close();
 			}
-			statement.close();
-			rset1.close();
-			statement1.close();
-			
 			_log.info("TradeController: Loaded " + _lists.size() + " Buylists.");
 		}
 		catch (Exception e)
@@ -171,9 +169,7 @@ public class TradeController
 			L2DatabaseFactory.close(con);
 		}
 		
-		/*
-		 * If enabled, initialize the custom buylist
-		 */
+		// If enabled, initialize the custom buy list
 		if (Config.CUSTOM_MERCHANT_TABLES)
 		{
 			try

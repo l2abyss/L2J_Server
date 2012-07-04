@@ -78,18 +78,18 @@ public class Topic
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO topic (topic_id,topic_forum_id,topic_name,topic_date,topic_ownername,topic_ownerid,topic_type,topic_reply) values (?,?,?,?,?,?,?,?)");
-			statement.setInt(1, _id);
-			statement.setInt(2, _forumId);
-			statement.setString(3, _topicName);
-			statement.setLong(4, _date);
-			statement.setString(5, _ownerName);
-			statement.setInt(6, _ownerId);
-			statement.setInt(7, _type);
-			statement.setInt(8, _cReply);
-			statement.execute();
-			statement.close();
-			
+			try (PreparedStatement ps = con.prepareStatement("INSERT INTO topic (topic_id,topic_forum_id,topic_name,topic_date,topic_ownername,topic_ownerid,topic_type,topic_reply) values (?,?,?,?,?,?,?,?)"))
+			{
+				ps.setInt(1, _id);
+				ps.setInt(2, _forumId);
+				ps.setString(3, _topicName);
+				ps.setLong(4, _date);
+				ps.setString(5, _ownerName);
+				ps.setInt(6, _ownerId);
+				ps.setInt(7, _type);
+				ps.setInt(8, _cReply);
+				ps.execute();
+			}
 		}
 		catch (Exception e)
 		{
@@ -144,11 +144,12 @@ public class Topic
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM topic WHERE topic_id=? AND topic_forum_id=?");
-			statement.setInt(1, getID());
-			statement.setInt(2, f.getID());
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM topic WHERE topic_id=? AND topic_forum_id=?"))
+			{
+				ps.setInt(1, getID());
+				ps.setInt(2, f.getID());
+				ps.execute();
+			}
 		}
 		catch (Exception e)
 		{

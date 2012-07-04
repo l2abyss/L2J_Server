@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.communitybbs.Manager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,16 +53,16 @@ public class ForumsBBSManager extends BaseBBSManager
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT forum_id FROM forums WHERE forum_type=0");
-			ResultSet result = statement.executeQuery();
-			while (result.next())
+			try (Statement s = con.createStatement();
+				ResultSet rs = s.executeQuery("SELECT forum_id FROM forums WHERE forum_type = 0"))
 			{
-				int forumId = result.getInt("forum_id");
-				Forum f = new Forum(forumId, null);
-				addForum(f);
+				while (rs.next())
+				{
+					int forumId = rs.getInt("forum_id");
+					Forum f = new Forum(forumId, null);
+					addForum(f);
+				}
 			}
-			result.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

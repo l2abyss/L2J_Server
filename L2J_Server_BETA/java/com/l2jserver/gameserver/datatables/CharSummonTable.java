@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,29 +62,20 @@ public class CharSummonTable
 	
 	public void init()
 	{
-		int ownerId;
-		int refId;
-		
 		Connection con = null;
-		
 		if (Config.RESTORE_SERVITOR_ON_RECONNECT)
 		{
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement(INIT_SUMMONS);
-				ResultSet rset = statement.executeQuery();
-				
-				while (rset.next())
+				try (Statement s = con.createStatement();
+					ResultSet rs = s.executeQuery(INIT_SUMMONS))
 				{
-					ownerId = rset.getInt("ownerId");
-					refId = rset.getInt("summonSkillId");
-					
-					_servitors.put(ownerId, refId);
+					while (rs.next())
+					{
+						_servitors.put(rs.getInt("ownerId"), rs.getInt("summonSkillId"));
+					}
 				}
-				
-				rset.close();
-				statement.close();
 			}
 			catch (Exception e)
 			{
@@ -100,19 +92,14 @@ public class CharSummonTable
 			try
 			{
 				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement(INIT_PET);
-				ResultSet rset = statement.executeQuery();
-				
-				while (rset.next())
+				try (Statement s = con.createStatement();
+					ResultSet rs = s.executeQuery(INIT_PET))
 				{
-					ownerId = rset.getInt("ownerId");
-					refId = rset.getInt("item_obj_id");
-					
-					_pets.put(ownerId, refId);
+					while (rs.next())
+					{
+						_pets.put(rs.getInt("ownerId"), rs.getInt("item_obj_id"));
+					}
 				}
-				
-				rset.close();
-				statement.close();
 			}
 			catch (Exception e)
 			{
@@ -144,17 +131,15 @@ public class CharSummonTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SAVE_SUMMON);
-			
-			statement.setInt(1, summon.getOwner().getObjectId());
-			statement.setInt(2, summon.getReferenceSkill());
-			statement.setInt(3, (int) Math.round(summon.getCurrentHp()));
-			statement.setInt(4, (int) Math.round(summon.getCurrentMp()));
-			statement.setInt(5, summon.getTimeRemaining());
-			
-			statement.execute();
-			statement.close();
-			
+			try (PreparedStatement ps = con.prepareStatement(SAVE_SUMMON))
+			{
+				ps.setInt(1, summon.getOwner().getObjectId());
+				ps.setInt(2, summon.getReferenceSkill());
+				ps.setInt(3, (int) Math.round(summon.getCurrentHp()));
+				ps.setInt(4, (int) Math.round(summon.getCurrentMp()));
+				ps.setInt(5, summon.getTimeRemaining());
+				ps.execute();
+			}
 			_servitors.put(summon.getOwner().getObjectId(), summon.getReferenceSkill());
 		}
 		catch (Exception e)
@@ -175,80 +160,81 @@ public class CharSummonTable
 			int skillId = _servitors.get(activeChar.getObjectId());
 			
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(LOAD_SUMMON);
-			statement.setInt(1, activeChar.getObjectId());
-			statement.setInt(2, skillId);
-			ResultSet rset = statement.executeQuery();
-			
-			L2NpcTemplate summonTemplate;
-			L2ServitorInstance summon;
-			L2SkillSummon skill;
-			
-			while (rset.next())
+			try (PreparedStatement ps = con.prepareStatement(LOAD_SUMMON))
 			{
-				int curHp = rset.getInt("curHp");
-				int curMp = rset.getInt("curMp");
-				int time = rset.getInt("time");
-				
-				skill = (L2SkillSummon) SkillTable.getInstance().getInfo(skillId, activeChar.getSkillLevel(skillId));
-				if (skill == null)
+				ps.setInt(1, activeChar.getObjectId());
+				ps.setInt(2, skillId);
+				try (ResultSet rs = ps.executeQuery())
 				{
-					removeServitor(activeChar);
-					return;
-				}
 				
-				summonTemplate = NpcTable.getInstance().getTemplate(skill.getNpcId());
-				if (summonTemplate == null)
-				{
-					_log.warning("[CharSummonTable] Summon attemp for nonexisting Skill ID:" + skillId);
-					return;
+					L2NpcTemplate summonTemplate;
+					L2ServitorInstance summon;
+					L2SkillSummon skill;
+					
+					while (rs.next())
+					{
+						int curHp = rs.getInt("curHp");
+						int curMp = rs.getInt("curMp");
+						int time = rs.getInt("time");
+						
+						skill = (L2SkillSummon) SkillTable.getInstance().getInfo(skillId, activeChar.getSkillLevel(skillId));
+						if (skill == null)
+						{
+							removeServitor(activeChar);
+							return;
+						}
+						
+						summonTemplate = NpcTable.getInstance().getTemplate(skill.getNpcId());
+						if (summonTemplate == null)
+						{
+							_log.warning("[CharSummonTable] Summon attemp for nonexisting Skill ID:" + skillId);
+							return;
+						}
+						
+						final int id = IdFactory.getInstance().getNextId();
+						if (summonTemplate.isType("L2SiegeSummon"))
+						{
+							summon = new L2SiegeSummonInstance(id, summonTemplate, activeChar, skill);
+						}
+						else if (summonTemplate.isType("L2MerchantSummon"))
+						{
+							// TODO: Confirm L2Merchant summon = new L2MerchantSummonInstance(id, summonTemplate, activeChar, skill);
+							summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
+						}
+						else
+						{
+							summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
+						}
+						
+						summon.setName(summonTemplate.getName());
+						summon.setTitle(activeChar.getName());
+						summon.setExpPenalty(skill.getExpPenalty());
+						summon.setSharedElementals(skill.getInheritElementals());
+						summon.setSharedElementalsValue(skill.getElementalSharePercent());
+						
+						if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
+						{
+							summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));
+							_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above "+ExperienceTable.getInstance().getMaxPetLevel()+". Please rectify.");
+						}
+						else
+						{
+							summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(summon.getLevel() % ExperienceTable.getInstance().getMaxPetLevel()));
+						}
+						summon.setCurrentHp(curHp);
+						summon.setCurrentMp(curMp);
+						summon.setHeading(activeChar.getHeading());
+						summon.setRunning();
+						if (!(summon instanceof L2MerchantSummonInstance))
+							activeChar.setPet(summon);
+						
+						summon.setTimeRemaining(time);
+						
+						//L2World.getInstance().storeObject(summon);
+						summon.spawnMe(activeChar.getX() + 20, activeChar.getY() + 20, activeChar.getZ());
+					}
 				}
-				
-				final int id = IdFactory.getInstance().getNextId();
-				if (summonTemplate.isType("L2SiegeSummon"))
-				{
-					summon = new L2SiegeSummonInstance(id, summonTemplate, activeChar, skill);
-				}
-				else if (summonTemplate.isType("L2MerchantSummon"))
-				{
-					// TODO: Confirm L2Merchant summon = new L2MerchantSummonInstance(id, summonTemplate, activeChar, skill);
-					summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
-				}
-				else
-				{
-					summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
-				}
-				
-				summon.setName(summonTemplate.getName());
-				summon.setTitle(activeChar.getName());
-				summon.setExpPenalty(skill.getExpPenalty());
-				summon.setSharedElementals(skill.getInheritElementals());
-				summon.setSharedElementalsValue(skill.getElementalSharePercent());
-				
-				if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
-				{
-					summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));
-					_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above "+ExperienceTable.getInstance().getMaxPetLevel()+". Please rectify.");
-				}
-				else
-				{
-					summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(summon.getLevel() % ExperienceTable.getInstance().getMaxPetLevel()));
-				}
-				summon.setCurrentHp(curHp);
-				summon.setCurrentMp(curMp);
-				summon.setHeading(activeChar.getHeading());
-				summon.setRunning();
-				if (!(summon instanceof L2MerchantSummonInstance))
-					activeChar.setPet(summon);
-				
-				summon.setTimeRemaining(time);
-				
-				//L2World.getInstance().storeObject(summon);
-				summon.spawnMe(activeChar.getX() + 20, activeChar.getY() + 20, activeChar.getZ());
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -266,10 +252,11 @@ public class CharSummonTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(REMOVE_SUMMON);
-			statement.setInt(1, activeChar.getObjectId());
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement(REMOVE_SUMMON))
+			{
+				ps.setInt(1, activeChar.getObjectId());
+				ps.execute();
+			}
 			_servitors.remove(activeChar.getObjectId());
 		}
 		catch (SQLException e)

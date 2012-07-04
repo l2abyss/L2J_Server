@@ -260,10 +260,11 @@ public final class Evolve
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?");
-			statement.setInt(1, removedItem.getObjectId());
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?"))
+			{
+				ps.setInt(1, removedItem.getObjectId());
+				ps.execute();
+			}
 		}
 		catch (Exception e)
 		{

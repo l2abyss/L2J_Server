@@ -4104,11 +4104,12 @@ public final class Config
 			File file = new File(fileName);
 			// Create a new empty file only if it doesn't exist
 			file.createNewFile();
-			OutputStream out = new FileOutputStream(file);
-			hexSetting.setProperty("ServerID", String.valueOf(serverId));
-			hexSetting.setProperty("HexID", hexId);
-			hexSetting.store(out, "the hexID to auth into login");
-			out.close();
+			try (OutputStream out = new FileOutputStream(file))
+			{
+				hexSetting.setProperty("ServerID", String.valueOf(serverId));
+				hexSetting.setProperty("HexID", hexId);
+				hexSetting.store(out, "the hexID to auth into login");
+			}
 		}
 		catch (Exception e)
 		{

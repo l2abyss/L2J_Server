@@ -68,33 +68,34 @@ public class ScriptExecutor
 			String line = "";
 			Connection con = _frame.getConnection();
 			Statement stmt = con.createStatement();
-			Scanner scn = new Scanner(file);
-			StringBuilder sb = new StringBuilder();
-			while (scn.hasNextLine())
+			try (Scanner scn = new Scanner(file))
 			{
-				line = scn.nextLine();
-				if (line.startsWith("--"))
+				StringBuilder sb = new StringBuilder();
+				while (scn.hasNextLine())
 				{
-					continue;
-				}
-				else if (line.contains("--"))
-				{
-					line = line.split("--")[0];
-				}
-				
-				line = line.trim();
-				if (!line.isEmpty())
-				{
-					sb.append(line + "\n");
-				}
-				
-				if (line.endsWith(";"))
-				{
-					stmt.execute(sb.toString());
-					sb = new StringBuilder();
+					line = scn.nextLine();
+					if (line.startsWith("--"))
+					{
+						continue;
+					}
+					else if (line.contains("--"))
+					{
+						line = line.split("--")[0];
+					}
+					
+					line = line.trim();
+					if (!line.isEmpty())
+					{
+						sb.append(line + "\n");
+					}
+					
+					if (line.endsWith(";"))
+					{
+						stmt.execute(sb.toString());
+						sb = new StringBuilder();
+					}
 				}
 			}
-			scn.close();
 		}
 		catch (FileNotFoundException e)
 		{

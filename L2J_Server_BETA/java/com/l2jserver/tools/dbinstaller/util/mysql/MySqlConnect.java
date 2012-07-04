@@ -37,10 +37,11 @@ public class MySqlConnect
 			final String formattedText = form.format("jdbc:mysql://%1$s:%2$s", host, port).toString();
 			con = DriverManager.getConnection(formattedText, user, password);
 			
-			Statement st = con.createStatement();
-			st.execute("CREATE DATABASE IF NOT EXISTS `" + db + "`");
-			st.execute("USE `" + db + "`");
-			st.close();
+			try (Statement s = con.createStatement())
+			{
+				s.execute("CREATE DATABASE IF NOT EXISTS `" + db + "`");
+				s.execute("USE `" + db + "`");
+			}
 		}
 		catch (SQLException e)
 		{

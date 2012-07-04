@@ -26,6 +26,7 @@ import java.security.spec.RSAKeyGenParameterSpec;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -133,16 +134,16 @@ public final class GameServerTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("SELECT * FROM gameservers");
-			final ResultSet rset = statement.executeQuery();
-			int id;
-			while (rset.next())
+			try (Statement ps = con.createStatement();
+				ResultSet rs = ps.executeQuery("SELECT * FROM gameservers"))
 			{
-				id = rset.getInt("server_id");
-				_gameServerTable.put(id, new GameServerInfo(id, stringToHex(rset.getString("hexid"))));
+				int id;
+				while (rs.next())
+				{
+					id = rs.getInt("server_id");
+					_gameServerTable.put(id, new GameServerInfo(id, stringToHex(rs.getString("hexid"))));
+				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -248,12 +249,13 @@ public final class GameServerTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("INSERT INTO gameservers (hexid,server_id,host) values (?,?,?)");
-			statement.setString(1, hexToString(hexId));
-			statement.setInt(2, id);
-			statement.setString(3, externalHost);
-			statement.executeUpdate();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("INSERT INTO gameservers (hexid,server_id,host) values (?,?,?)"))
+			{
+				ps.setString(1, hexToString(hexId));
+				ps.setInt(2, id);
+				ps.setString(3, externalHost);
+				ps.executeUpdate();
+			}
 			register(id, new GameServerInfo(id, hexId));
 		}
 		catch (Exception e)

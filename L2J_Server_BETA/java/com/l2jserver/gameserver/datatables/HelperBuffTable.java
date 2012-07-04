@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.datatables;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,12 +80,11 @@ public class HelperBuffTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM helper_buff_list");
-			ResultSet helperbuffdata = statement.executeQuery();
-			
-			fillHelperBuffTable(helperbuffdata);
-			helperbuffdata.close();
-			statement.close();
+			try (Statement s = con.createStatement();
+				ResultSet rs = s.executeQuery("SELECT * FROM helper_buff_list"))
+			{
+				fillHelperBuffTable(rs);
+			}
 		}
 		catch (Exception e)
 		{

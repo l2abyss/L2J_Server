@@ -162,10 +162,10 @@ public abstract class IdFactory
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			Statement statement = con.createStatement();
-			statement.executeUpdate("UPDATE characters SET online = 0");
-			statement.close();
-			
+			try (Statement s = con.createStatement())
+			{
+				s.executeUpdate("UPDATE characters SET online = 0");
+			}
 			_log.info("Updated characters online status.");
 		}
 		catch (SQLException e)
@@ -307,11 +307,11 @@ public abstract class IdFactory
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			Statement statement = con.createStatement();
-			statement.executeUpdate("DELETE FROM mods_wedding WHERE player1Id NOT IN (SELECT charId FROM characters)");
-			statement.executeUpdate("DELETE FROM mods_wedding WHERE player2Id NOT IN (SELECT charId FROM characters)");
-			statement.close();
-			
+			try (Statement s = con.createStatement())
+			{
+				s.executeUpdate("DELETE FROM mods_wedding WHERE player1Id NOT IN (SELECT charId FROM characters)");
+				s.executeUpdate("DELETE FROM mods_wedding WHERE player2Id NOT IN (SELECT charId FROM characters)");
+			}
 			_log.info("Cleaned up invalid Weddings.");
 		}
 		catch (SQLException e)

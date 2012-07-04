@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -349,11 +350,12 @@ public abstract class BaseGameServerRegister
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("DELETE FROM gameservers WHERE server_id = ?");
-			statement.setInt(1, id);
-			statement.executeUpdate();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM gameservers WHERE server_id = ?"))
+			{
+				ps.setInt(1, id);
+				ps.executeUpdate();
+			}
 			GameServerTable.getInstance().getRegisteredGameServers().remove(id);
-			statement.close();
 		}
 		finally
 		{
@@ -371,9 +373,10 @@ public abstract class BaseGameServerRegister
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("DELETE FROM gameservers");
-			statement.executeUpdate();
-			statement.close();
+			try (Statement s = con.createStatement())
+			{
+				s.executeUpdate("DELETE FROM gameservers");
+			}
 			GameServerTable.getInstance().getRegisteredGameServers().clear();
 		}
 		finally
@@ -397,11 +400,12 @@ public abstract class BaseGameServerRegister
 		File file = new File(outDir, "hexid.txt");
 		// Create a new empty file only if it doesn't exist
 		file.createNewFile();
-		OutputStream out = new FileOutputStream(file);
-		hexSetting.setProperty("ServerID", String.valueOf(id));
-		hexSetting.setProperty("HexID", new BigInteger(hexId).toString(16));
-		hexSetting.store(out, "The HexId to Auth into LoginServer");
-		out.close();
+		try (OutputStream out = new FileOutputStream(file))
+		{
+			hexSetting.setProperty("ServerID", String.valueOf(id));
+			hexSetting.setProperty("HexID", new BigInteger(hexId).toString(16));
+			hexSetting.store(out, "The HexId to Auth into LoginServer");
+		}
 	}
 	
 	/**

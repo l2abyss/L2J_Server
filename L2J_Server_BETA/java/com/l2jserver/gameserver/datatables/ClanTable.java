@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.datatables;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,24 +90,21 @@ public class ClanTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT clan_id FROM clan_data");
-			ResultSet result = statement.executeQuery();
-			
 			// Count the clans
 			int clanCount = 0;
-			
-			while (result.next())
+			try (Statement s = con.createStatement();
+				ResultSet rs = s.executeQuery("SELECT clan_id FROM clan_data"))
 			{
-				int clanId = result.getInt("clan_id");
-				_clans.put(clanId, new L2Clan(clanId));
-				clan = getClan(clanId);
-				if (clan.getDissolvingExpiryTime() != 0)
-					scheduleRemoveClan(clan.getClanId());
-				clanCount++;
+				while (rs.next())
+				{
+					int clanId = rs.getInt("clan_id");
+					_clans.put(clanId, new L2Clan(clanId));
+					clan = getClan(clanId);
+					if (clan.getDissolvingExpiryTime() != 0)
+						scheduleRemoveClan(clan.getClanId());
+					clanCount++;
+				}
 			}
-			result.close();
-			statement.close();
-			
 			_log.info("Restored " + clanCount + " clans from the database.");
 		}
 		catch (Exception e)
@@ -389,13 +387,14 @@ public class ClanTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("REPLACE INTO clan_wars (clan1, clan2, wantspeace1, wantspeace2) VALUES(?,?,?,?)");
-			statement.setInt(1, clanId1);
-			statement.setInt(2, clanId2);
-			statement.setInt(3, 0);
-			statement.setInt(4, 0);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("REPLACE INTO clan_wars (clan1, clan2, wantspeace1, wantspeace2) VALUES(?,?,?,?)"))
+			{
+				ps.setInt(1, clanId1);
+				ps.setInt(2, clanId2);
+				ps.setInt(3, 0);
+				ps.setInt(4, 0);
+				ps.execute();
+			}
 		}
 		catch (Exception e)
 		{
@@ -447,16 +446,16 @@ public class ClanTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM clan_wars WHERE clan1=? AND clan2=?");
-			statement.setInt(1, clanId1);
-			statement.setInt(2, clanId2);
-			statement.execute();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM clan_wars WHERE clan1=? AND clan2=?"))
+			{
+				ps.setInt(1, clanId1);
+				ps.setInt(2, clanId2);
+				ps.execute();
+			}
 			//statement = con.prepareStatement("DELETE FROM clan_wars WHERE clan1=? AND clan2=?");
 			//statement.setInt(1,clanId2);
 			//statement.setInt(2,clanId1);
 			//statement.execute();
-			
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -505,21 +504,22 @@ public class ClanTable
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT clan1, clan2 FROM clan_wars");
-			ResultSet rset = statement.executeQuery();
-			while (rset.next())
+			try (Statement statement = con.createStatement();
+				ResultSet rset = statement.executeQuery("SELECT clan1, clan2 FROM clan_wars"))
 			{
-				clan1 = getClan(rset.getInt("clan1"));
-				clan2 = getClan(rset.getInt("clan2"));
-				if (clan1 != null && clan2 != null)
+				while (rset.next())
 				{
-					clan1.setEnemyClan(rset.getInt("clan2"));
-					clan2.setAttackerClan(rset.getInt("clan1"));
+					clan1 = getClan(rset.getInt("clan1"));
+					clan2 = getClan(rset.getInt("clan2"));
+					if (clan1 != null && clan2 != null)
+					{
+						clan1.setEnemyClan(rset.getInt("clan2"));
+						clan2.setAttackerClan(rset.getInt("clan1"));
+					}
+					else
+						_log.log(Level.WARNING, "[ClanTable]: restorewars one of clans is null clan1:" + clan1 + " clan2:" + clan2);
 				}
-				else
-					_log.log(Level.WARNING, "[ClanTable]: restorewars one of clans is null clan1:" + clan1 + " clan2:" + clan2);
 			}
-			statement.close();
 		}
 		catch (Exception e)
 		{

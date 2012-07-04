@@ -80,15 +80,17 @@ public class ChangePassword extends BaseRecievePacket
 				
 				// SQL connection
 				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("SELECT password FROM accounts WHERE login=?");
-				statement.setString(1, accountName);
-				ResultSet rset = statement.executeQuery();
-				if (rset.next())
+				try (PreparedStatement ps = con.prepareStatement("SELECT password FROM accounts WHERE login=?"))
 				{
-					pass = rset.getString("password");
+					ps.setString(1, accountName);
+					try (ResultSet rs = ps.executeQuery())
+					{
+						if (rs.next())
+						{
+							pass = rs.getString("password");
+						}
+					}
 				}
-				rset.close();
-				statement.close();
 				
 				if (curpassEnc.equals(pass))
 				{
@@ -96,11 +98,12 @@ public class ChangePassword extends BaseRecievePacket
 					password = md.digest(password);
 					
 					// SQL connection
-					PreparedStatement ps = con.prepareStatement("UPDATE accounts SET password=? WHERE login=?");
-					ps.setString(1, Base64.encodeBytes(password));
-					ps.setString(2, accountName);
-					passUpdated = ps.executeUpdate();
-					ps.close();
+					try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET password=? WHERE login=?"))
+					{
+						ps.setString(1, Base64.encodeBytes(password));
+						ps.setString(2, accountName);
+						passUpdated = ps.executeUpdate();
+					}
 					
 					_log.log(Level.INFO, "The password for account " + accountName + " has been changed from " + curpassEnc + " to " + Base64.encodeBytes(password));
 					if (passUpdated > 0)
