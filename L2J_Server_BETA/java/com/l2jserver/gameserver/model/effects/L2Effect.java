@@ -654,8 +654,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 
 	/**
-	 * Return true if effect itself can be stolen
-	 * @return
+	 * @return {@code true} if effect itself can be stolen, {@code false} otherwise
 	 */
 	protected boolean effectCanBeStolen()
 	{

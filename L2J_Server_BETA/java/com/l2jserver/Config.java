@@ -4292,8 +4292,8 @@ public final class Config
 	}
 	
 	/**
-	 * @param line
-	 * @return
+	 * @param line the string line to parse
+	 * @return a parsed float map
 	 */
 	private static TIntFloatHashMap parseConfigLine(String line)
 	{

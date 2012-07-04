@@ -188,7 +188,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 * This is true if, and only if, obj is the same class represented by clazz, or a subclass of it or obj implements the interface represented by clazz.
 	 * @param obj
 	 * @param clazz
-	 * @return
+	 * @return {@code true} if the object can be assigned to the class, {@code false} otherwise
 	 */
 	public static boolean isAssignableTo(Object obj, Class<?> clazz)
 	{

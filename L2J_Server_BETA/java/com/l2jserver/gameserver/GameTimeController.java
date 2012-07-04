@@ -27,8 +27,8 @@ import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- * Removed TimerThread watcher [DrHouse]
- *
+ * Removed TimerThread watcher [DrHouse]<br>
+ * One in-game day is 240 real minutes.
  * @version $Date: 2010/02/02 22:43:00 $
  */
 public class GameTimeController
@@ -49,14 +49,17 @@ public class GameTimeController
 	protected static TimerThread _timer;
 	
 	/**
-	 * one ingame day is 240 real minutes
-	 * @return 
+	 * Gets the single instance of GameTimeController.
+	 * @return single instance of GameTimeController
 	 */
 	public static GameTimeController getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
+	/**
+	 * Instantiates a new game time controller.
+	 */
 	protected GameTimeController()
 	{
 		_gameStartTime = System.currentTimeMillis() - 3600000; // offset so that the server starts a day begin
@@ -69,29 +72,37 @@ public class GameTimeController
 		
 	}
 	
+	/**
+	 * Checks if is now night.
+	 * @return true, if is now night
+	 */
 	public boolean isNowNight()
 	{
 		return _isNight;
 	}
 	
+	/**
+	 * Gets the game time.
+	 * @return the game time
+	 */
 	public int getGameTime()
 	{
 		return (_gameTicks / (TICKS_PER_SECOND * 10));
 	}
 	
+	/**
+	 * Gets the game ticks.
+	 * @return the game ticks
+	 */
 	public static int getGameTicks()
 	{
 		return _gameTicks;
 	}
 	
 	/**
-	 * Add a L2Character to movingObjects of GameTimeController.<BR><BR>
-	 *
-	 * <B><U> Concept</U> :</B><BR><BR>
-	 * All L2Character in movement are identified in <B>movingObjects</B> of GameTimeController.<BR><BR>
-	 *
-	 * @param cha The L2Character to add to movingObjects of GameTimeController
-	 *
+	 * Add a L2Character to movingObjects of GameTimeController.<br>
+	 * All characters in movement are identified in <b>movingObjects</b> of GameTimeController.
+	 * @param cha the character to add to movingObjects of GameTimeController
 	 */
 	public void registerMovingObject(L2Character cha)
 	{
@@ -110,16 +121,12 @@ public class GameTimeController
 	}
 	
 	/**
-	 * Move all L2Characters contained in movingObjects of GameTimeController.<BR><BR>
-	 *
-	 * <B><U> Concept</U> :</B><BR><BR>
-	 * All L2Character in movement are identified in <B>movingObjects</B> of GameTimeController.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Move all characters contained in movingObjects of GameTimeController.<br>
+	 * All characters in movement are identified in <b>movingObjects</b> of GameTimeController.<br>
+	 * <b><u> Actions</u> :</b><br>
 	 * <li>Update the position of each L2Character </li>
 	 * <li>If movement is finished, the L2Character is removed from movingObjects </li>
-	 * <li>Create a task to update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED </li><BR><BR>
-	 *
+	 * <li>Create a task to update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED </li>
 	 */
 	protected void moveObjects()
 	{
@@ -150,6 +157,9 @@ public class GameTimeController
 		}
 	}
 	
+	/**
+	 * Stop timer.
+	 */
 	public void stopTimer()
 	{
 		_interruptRequest = true;
@@ -158,6 +168,9 @@ public class GameTimeController
 	
 	class TimerThread extends Thread
 	{
+		/**
+		 * Instantiates a new timer thread.
+		 */
 		public TimerThread()
 		{
 			super("GameTimeController");
@@ -210,12 +223,16 @@ public class GameTimeController
 	}
 	
 	/**
-	 * Update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED.<BR><BR>
+	 * Update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED.
 	 */
 	private static class MovingObjectArrived implements Runnable
 	{
 		private final L2Character _ended;
 		
+		/**
+		 * Instantiates a new moving object arrived.
+		 * @param ended the ended
+		 */
 		MovingObjectArrived(L2Character ended)
 		{
 			_ended = ended;
@@ -252,8 +269,9 @@ public class GameTimeController
 			tempIsNight = (h < 6);
 			
 			if (tempIsNight != _isNight)
-			{ // If diff day/night state
-				_isNight = tempIsNight; // Set current day/night varible to value of temp varible
+			{
+				// If diff day/night state
+				_isNight = tempIsNight; // Set current day/night variable to value of temp variable
 				DayNightSpawnManager.getInstance().notifyChangeMode();
 			}
 		}

@@ -108,7 +108,7 @@ public class Topic
 	}
 	
 	/**
-	 * @return
+	 * @return the topic Id
 	 */
 	public int getID()
 	{
@@ -121,7 +121,7 @@ public class Topic
 	}
 	
 	/**
-	 * @return
+	 * @return the topic name
 	 */
 	public String getName()
 	{
@@ -161,7 +161,7 @@ public class Topic
 	}
 	
 	/**
-	 * @return
+	 * @return the topic date
 	 */
 	public long getDate()
 	{

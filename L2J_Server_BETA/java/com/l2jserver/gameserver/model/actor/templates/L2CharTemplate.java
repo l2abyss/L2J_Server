@@ -746,7 +746,7 @@ public class L2CharTemplate
 	
 	/**
 	 * Overridden in L2NpcTemplate
-	 * @return
+	 * @return the characters skills
 	 */
 	public Map<Integer, L2Skill> getSkills()
 	{

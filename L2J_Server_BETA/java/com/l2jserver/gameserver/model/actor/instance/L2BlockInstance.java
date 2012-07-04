@@ -96,8 +96,7 @@ public class L2BlockInstance extends L2MonsterInstance
 	}
 	
 	/**
-	 * Return if the block is red at this momment
-	 * @return
+	 * @return {@code true} if the block is red at this moment, {@code false} otherwise
 	 */
 	@Override
 	public int getColorEffect()

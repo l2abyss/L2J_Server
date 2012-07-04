@@ -442,7 +442,7 @@ public class Quest extends ManagedScript
 	 * @param damage the damage dealt to the NPC by the player
 	 * @param isPet if {@code true}, the attack was actually made by the player's pet
 	 * @param skill the skill used to attack the NPC (can be null)
-	 * @return {@code true} or {@code false}
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
 	{
@@ -481,7 +481,7 @@ public class Quest extends ManagedScript
 	/**
 	 * @param item
 	 * @param player
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyItemUse(L2Item item, L2PcInstance player)
 	{
@@ -501,7 +501,7 @@ public class Quest extends ManagedScript
 	 * @param instance
 	 * @param player
 	 * @param skill
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
 	{
@@ -549,7 +549,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param npc
-	 * @return
+	 * @return {@code true} if there was an error, {@code false} otherwise
 	 */
 	public final boolean notifySpawn(L2Npc npc)
 	{
@@ -569,7 +569,7 @@ public class Quest extends ManagedScript
 	 * @param event
 	 * @param npc
 	 * @param player
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyEvent(String event, L2Npc npc, L2PcInstance player)
 	{
@@ -587,7 +587,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param player
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyEnterWorld(L2PcInstance player)
 	{
@@ -607,7 +607,7 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param killer
 	 * @param isPet
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isPet)
 	{
@@ -626,7 +626,7 @@ public class Quest extends ManagedScript
 	/**
 	 * @param npc
 	 * @param qs
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyTalk(L2Npc npc, QuestState qs)
 	{
@@ -676,7 +676,7 @@ public class Quest extends ManagedScript
 	 * TODO: Remove and replace with listeners.
 	 * @param npc
 	 * @param player
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyAcquireSkillList(L2Npc npc, L2PcInstance player)
 	{
@@ -697,7 +697,7 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param player
 	 * @param skill
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
@@ -718,7 +718,7 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param player
 	 * @param skill
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
@@ -785,7 +785,7 @@ public class Quest extends ManagedScript
 	 * @param skill
 	 * @param targets
 	 * @param isPet
-	 * @return
+	 * @return {@code true}
 	 */
 	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 	{
@@ -798,7 +798,7 @@ public class Quest extends ManagedScript
 	 * @param caller
 	 * @param attacker
 	 * @param isPet
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
 	{
@@ -848,7 +848,7 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param player
 	 * @param isPet
-	 * @return
+	 * @return {@code true}
 	 */
 	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
 	{
@@ -859,7 +859,7 @@ public class Quest extends ManagedScript
 	/**
 	 * @param character
 	 * @param zone
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyEnterZone(L2Character character, L2ZoneType zone)
 	{
@@ -886,7 +886,7 @@ public class Quest extends ManagedScript
 	/**
 	 * @param character
 	 * @param zone
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyExitZone(L2Character character, L2ZoneType zone)
 	{
@@ -912,7 +912,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param winner
-	 * @param type
+	 * @param type {@code false} if there was an error, {@code true} otherwise
 	 */
 	public final void notifyOlympiadWin(L2PcInstance winner, CompetitionType type)
 	{
@@ -928,7 +928,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param loser
-	 * @param type
+	 * @param type {@code false} if there was an error, {@code true} otherwise
 	 */
 	public final void notifyOlympiadLose(L2PcInstance loser, CompetitionType type)
 	{

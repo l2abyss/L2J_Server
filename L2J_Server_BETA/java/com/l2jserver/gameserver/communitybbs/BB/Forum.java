@@ -212,7 +212,7 @@ public class Forum
 	}
 	
 	/**
-	 * @return
+	 * @return the forum Id
 	 */
 	public int getID()
 	{
@@ -232,8 +232,8 @@ public class Forum
 	}
 	
 	/**
-	 * @param name
-	 * @return
+	 * @param name the forum name
+	 * @return the forum for the given name
 	 */
 	public Forum getChildByName(String name)
 	{

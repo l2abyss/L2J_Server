@@ -104,8 +104,9 @@ public class RegionBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * @param activeChar
-	 * @param name
+	 * Show old community player info.
+	 * @param activeChar the active char
+	 * @param name the player name
 	 */
 	private void showOldCommunityPI(L2PcInstance activeChar, String name)
 	{
@@ -174,8 +175,9 @@ public class RegionBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * @param activeChar
-	 * @param page 
+	 * Show old community.
+	 * @param activeChar the active char
+	 * @param page the page
 	 */
 	private void showOldCommunity(L2PcInstance activeChar, int page)
 	{
@@ -268,13 +270,17 @@ public class RegionBBSManager extends BaseBBSManager
 	private static FastMap<Integer, FastMap<String, String>> _communityPages = new FastMap<Integer, FastMap<String, String>>().shared();
 	
 	/**
-	 * @return
+	 * Gets the single instance of RegionBBSManager.
+	 * @return single instance of RegionBBSManager
 	 */
 	public static RegionBBSManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
+	/**
+	 * Change community board.
+	 */
 	public void changeCommunityBoard()
 	{
 		final FastList<L2PcInstance> sortedPlayers = new FastList<>();
@@ -302,6 +308,10 @@ public class RegionBBSManager extends BaseBBSManager
 		writeCommunityPages();
 	}
 
+	/**
+	 * Adds the online player.
+	 * @param player the player
+	 */
 	private void addOnlinePlayer(L2PcInstance player)
 	{
 		boolean added = false;
@@ -341,6 +351,9 @@ public class RegionBBSManager extends BaseBBSManager
 		}
 	}
 	
+	/**
+	 * Write community pages.
+	 */
 	private void writeCommunityPages()
 	{
 		final StringBuilder htmlCode = new StringBuilder(2000);
@@ -543,6 +556,11 @@ public class RegionBBSManager extends BaseBBSManager
 		}
 	}
 	
+	/**
+	 * Gets the online count.
+	 * @param type the type, Game Masters or normal players
+	 * @return the online count
+	 */
 	private int getOnlineCount(String type)
 	{
 		if (type.equalsIgnoreCase("gm"))
@@ -551,11 +569,22 @@ public class RegionBBSManager extends BaseBBSManager
 		return _onlineCount;
 	}
 	
+	/**
+	 * Gets the online players.
+	 * @param page the page
+	 * @return the online players
+	 */
 	private FastList<L2PcInstance> getOnlinePlayers(int page)
 	{
 		return _onlinePlayers.get(page);
 	}
 	
+	/**
+	 * Gets the community page.
+	 * @param page the page
+	 * @param type the type
+	 * @return the community page
+	 */
 	public String getCommunityPage(int page, String type)
 	{
 		if (_communityPages.get(page) != null)

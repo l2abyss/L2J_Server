@@ -96,7 +96,7 @@ public class LoginServerThread extends Thread
 	 * "_;v.]05-31!|+-%xT!^[$\00"<br>
 	 * <br>
 	 * and then after handshake, with a new key sent by<br>
-	 * loginserver during the handshake. This new key is stored<br>
+	 * login server during the handshake. This new key is stored<br>
 	 * in {@link #_blowfishKey}
 	 */
 	private NewCrypt _blowfish;
@@ -114,6 +114,9 @@ public class LoginServerThread extends Thread
 	private final String[] _subnets;
 	private final String[] _hosts;
 	
+	/**
+	 * Instantiates a new login server thread.
+	 */
 	protected LoginServerThread()
 	{
 		super("LoginServerThread");
@@ -139,6 +142,10 @@ public class LoginServerThread extends Thread
 		_maxPlayer = Config.MAXIMUM_ONLINE_USERS;
 	}
 	
+	/**
+	 * Gets the single instance of LoginServerThread.
+	 * @return single instance of LoginServerThread
+	 */
 	public static LoginServerThread getInstance()
 	{
 		return SingletonHolder._instance;
@@ -240,7 +247,7 @@ public class LoginServerThread extends Thread
 							sendPacket(bfk);
 							if (Config.DEBUG)
 								_log.info("Sent new blowfish key");
-							//now, only accept paket with the new encryption
+							//now, only accept packet with the new encryption
 							_blowfish = new NewCrypt(_blowfishKey);
 							if (Config.DEBUG)
 								_log.info("Changed blowfish key");
@@ -392,6 +399,12 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Adds the waiting client and send request.
+	 * @param acc the account
+	 * @param client the game client
+	 * @param key the session key
+	 */
 	public void addWaitingClientAndSendRequest(String acc, L2GameClient client, SessionKey key)
 	{
 		if (Config.DEBUG)
@@ -414,6 +427,10 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Removes the waiting client.
+	 * @param client the client
+	 */
 	public void removeWaitingClient(L2GameClient client)
 	{
 		WaitingClient toRemove = null;
@@ -431,6 +448,10 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Send logout for the given account.
+	 * @param account the account
+	 */
 	public void sendLogout(String account)
 	{
 		if (account == null)
@@ -453,11 +474,21 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Adds the game server login.
+	 * @param account the account
+	 * @param client the client
+	 */
 	public void addGameServerLogin(String account, L2GameClient client)
 	{
 		_accountsInGameServer.put(account, client);
 	}
 	
+	/**
+	 * Send access level.
+	 * @param account the account
+	 * @param level the access level
+	 */
 	public void sendAccessLevel(String account, int level)
 	{
 		ChangeAccessLevel cal = new ChangeAccessLevel(account, level);
@@ -472,9 +503,14 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
-	public void sendClientTracert(String account, String[] adress)
+	/**
+	 * Send client tracert.
+	 * @param account the account
+	 * @param address the address
+	 */
+	public void sendClientTracert(String account, String[] address)
 	{
-		PlayerTracert ptc = new PlayerTracert(account, adress[0], adress[1], adress[2], adress[3], adress[4]);
+		PlayerTracert ptc = new PlayerTracert(account, address[0], address[1], address[2], address[3], address[4]);
 		try
 		{
 			sendPacket(ptc);
@@ -486,6 +522,12 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Send mail.
+	 * @param account the account
+	 * @param mailId the mail id
+	 * @param args the args
+	 */
 	public void sendMail(String account, String mailId, String... args)
 	{
 		SendMail sem = new SendMail(account, mailId, args);
@@ -500,6 +542,12 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Send temp ban.
+	 * @param account the account
+	 * @param ip the ip
+	 * @param time the time
+	 */
 	public void sendTempBan(String account, String ip, long time)
 	{
 		TempBan tbn = new TempBan(account, ip, time);
@@ -514,11 +562,20 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Hex to string.
+	 * @param hex the hex value
+	 * @return the hex value as string
+	 */
 	private String hexToString(byte[] hex)
 	{
 		return new BigInteger(hex).toString(16);
 	}
 	
+	/**
+	 * Kick player for the given account.
+	 * @param account the account
+	 */
 	public void doKickPlayer(String account)
 	{
 		L2GameClient client = _accountsInGameServer.get(account);
@@ -532,6 +589,10 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Gets the chars on server.
+	 * @param account the account
+	 */
 	private void getCharsOnServer(String account)
 	{
 		Connection con = null;
@@ -572,12 +633,12 @@ public class LoginServerThread extends Thread
 			if (Config.DEBUG)
 				_log.log(Level.WARNING, "", e);
 		}
-		
 	}
 	
 	/**
-	 * @param sl
-	 * @throws IOException
+	 * Send packet.
+	 * @param sl the sendable packet
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private void sendPacket(BaseSendablePacket sl) throws IOException
 	{
@@ -598,6 +659,7 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
+	 * Sets the max player.
 	 * @param maxPlayer The maxPlayer to set.
 	 */
 	public void setMaxPlayer(int maxPlayer)
@@ -607,6 +669,7 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
+	 * Gets the max player.
 	 * @return Returns the maxPlayer.
 	 */
 	public int getMaxPlayer()
@@ -615,8 +678,9 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
-	 * @param id
-	 * @param value
+	 * Send server status.
+	 * @param id the id
+	 * @param value the value
 	 */
 	public void sendServerStatus(int id, int value)
 	{
@@ -634,7 +698,7 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
-	 * Send Server Type Config to LS
+	 * Send Server Type Config to LS.
 	 */
 	public void sendServerType()
 	{
@@ -651,6 +715,13 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	/**
+	 * Send change password.
+	 * @param accountName the account name
+	 * @param charName the char name
+	 * @param oldpass the old pass
+	 * @param newpass the new pass
+	 */
 	public void sendChangePassword(String accountName, String charName, String oldpass, String newpass)
 	{
 		ChangePassword cp = new ChangePassword(accountName, charName, oldpass, newpass);
@@ -666,7 +737,8 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
-	 * @return
+	 * Gets the status string.
+	 * @return the status string
 	 */
 	public String getStatusString()
 	{
@@ -674,7 +746,8 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
-	 * @return
+	 * Checks if is bracket shown.
+	 * @return true, if is bracket shown
 	 */
 	public boolean isBracketShown()
 	{
@@ -682,13 +755,18 @@ public class LoginServerThread extends Thread
 	}
 	
 	/**
-	 * @return Returns the serverName.
+	 * Gets the server name.
+	 * @return the server name.
 	 */
 	public String getServerName()
 	{
 		return _serverName;
 	}
 	
+	/**
+	 * Sets the server status.
+	 * @param status the new server status
+	 */
 	public void setServerStatus(int status)
 	{
 		switch (status)
@@ -729,6 +807,13 @@ public class LoginServerThread extends Thread
 		public int loginOkID1;
 		public int loginOkID2;
 		
+		/**
+		 * Instantiates a new session key.
+		 * @param loginOK1 the login o k1
+		 * @param loginOK2 the login o k2
+		 * @param playOK1 the play o k1
+		 * @param playOK2 the play o k2
+		 */
 		public SessionKey(int loginOK1, int loginOK2, int playOK1, int playOK2)
 		{
 			playOkID1 = playOK1;
@@ -751,6 +836,12 @@ public class LoginServerThread extends Thread
 		public L2GameClient gameClient;
 		public SessionKey session;
 		
+		/**
+		 * Instantiates a new waiting client.
+		 * @param acc the acc
+		 * @param client the client
+		 * @param key the key
+		 */
 		public WaitingClient(String acc, L2GameClient client, SessionKey key)
 		{
 			account = acc;
