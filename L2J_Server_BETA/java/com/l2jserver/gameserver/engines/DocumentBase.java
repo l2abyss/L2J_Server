@@ -96,6 +96,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionTargetAggro;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetClassIdRestriction;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetInvSize;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetLevel;
+import com.l2jserver.gameserver.model.conditions.ConditionTargetLevelRange;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcId;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcType;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetPlayable;
@@ -805,6 +806,17 @@ public abstract class DocumentBase
 			{
 				int lvl = Integer.decode(getValue(a.getNodeValue(), template));
 				cond = joinAnd(cond, new ConditionTargetLevel(lvl));
+			}
+			else if ("levelRange".equalsIgnoreCase(a.getNodeName()))
+			{
+				String[] range = getValue(a.getNodeValue(), template).split(";");
+				if (range.length == 2)
+				{
+					int[] lvlRange = new int[2];
+					lvlRange[0] = Integer.decode(getValue(a.getNodeValue(), template).split(";")[0]);
+					lvlRange[1] = Integer.decode(getValue(a.getNodeValue(), template).split(";")[1]);
+					cond = joinAnd(cond, new ConditionTargetLevelRange(lvlRange));
+				}
 			}
 			else if ("playable".equalsIgnoreCase(a.getNodeName()))
 			{
