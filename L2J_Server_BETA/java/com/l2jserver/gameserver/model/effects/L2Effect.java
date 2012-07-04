@@ -647,7 +647,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 				|| getSkill().isHeroSkill()
 				|| getSkill().isGMSkill()
 				|| getSkill().isStatic()
-				|| isHerbEffect()
 				|| !getSkill().canBeDispeled())
 			return false;
 		return true;
