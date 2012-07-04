@@ -222,9 +222,10 @@ public class Siege implements Siegable
 		}
 	}
 	
-	private final List<L2SiegeClan> _attackerClans = new ArrayList<>();
-	private final List<L2SiegeClan> _defenderClans = new ArrayList<>();
-	private final List<L2SiegeClan> _defenderWaitingClans = new ArrayList<>();
+	// must support Concurrent Modifications
+	private final List<L2SiegeClan> _attackerClans = new FastList<>();
+	private final List<L2SiegeClan> _defenderClans = new FastList<>();
+	private final List<L2SiegeClan> _defenderWaitingClans = new FastList<>();
 	
 	// Castle setting
 	private List<L2ControlTowerInstance> _controlTowers = new ArrayList<>();
