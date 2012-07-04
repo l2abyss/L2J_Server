@@ -14,28 +14,25 @@
  */
 package com.l2jserver.util.crypt;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
 /**
- * This class ...
- * @version $Revision: 1.3.4.1 $ $Date: 2005/03/27 15:30:09 $
+ * Class to use a blowfish cipher with ECB processing.<br>
+ * <br>
+ * Static methods are present to append/check the checksum of<br>
+ * packets exchanged between the following partners:<br>
+ * Login Server <-> Game Client<br>
+ * Login Server <-> Game Server<br>
+ * <br>
+ * Also a static method is provided for the initial xor encryption<br>
+ * between Login Server <-> Game Client.
  */
-public class NewCrypt
+public final class NewCrypt
 {
-	protected static Logger _log = Logger.getLogger(NewCrypt.class.getName());
-	BlowfishEngine _crypt;
-	BlowfishEngine _decrypt;
+	private final BlowfishEngine _cipher;
 	
-	/**
-	 * @param blowfishKey
-	 */
 	public NewCrypt(byte[] blowfishKey)
 	{
-		_crypt = new BlowfishEngine();
-		_crypt.init(true, blowfishKey);
-		_decrypt = new BlowfishEngine();
-		_decrypt.init(false, blowfishKey);
+		_cipher = new BlowfishEngine();
+		_cipher.init(blowfishKey);
 	}
 	
 	public NewCrypt(String key)
@@ -43,12 +40,29 @@ public class NewCrypt
 		this(key.getBytes());
 	}
 	
-	public static boolean verifyChecksum(byte[] raw)
+	/**
+	 * Equivalent to calling {@link #verifyChecksum(byte[], int, int)}<br>
+	 * with parameters (raw, 0, raw.length)
+	 * @param raw data array to be verified
+	 * @return true when the checksum of the data is valid, false otherwise
+	 * @see #verifyChecksum(byte[], int, int)
+	 */
+	public static boolean verifyChecksum(final byte[] raw)
 	{
 		return NewCrypt.verifyChecksum(raw, 0, raw.length);
 	}
 	
-	public static boolean verifyChecksum(byte[] raw, final int offset, final int size)
+	/**
+	 * Method to verify the checksum of a packet received by<br>
+	 * login server from game client.<br>
+	 * <br>
+	 * This is also used for game server <-> login server communication.
+	 * @param raw data array to be verified
+	 * @param offset at which offset to start verifying
+	 * @param size number of bytes to verify
+	 * @return true if the checksum of the data is valid, false otherwise
+	 */
+	public static boolean verifyChecksum(final byte[] raw, final int offset, final int size)
 	{
 		// check if size is multiple of 4 and if there is more then only the checksum
 		if (((size & 3) != 0) || (size <= 4))
@@ -79,12 +93,23 @@ public class NewCrypt
 		return check == chksum;
 	}
 	
-	public static void appendChecksum(byte[] raw)
+	/**
+	 * Equivalent to calling {@link #appendChecksum(byte[], int, int)}<br>
+	 * with parameters (raw, 0, raw.length)
+	 * @param raw data array to compute the checksum from
+	 */
+	public static void appendChecksum(final byte[] raw)
 	{
 		NewCrypt.appendChecksum(raw, 0, raw.length);
 	}
 	
-	public static void appendChecksum(byte[] raw, final int offset, final int size)
+	/**
+	 * Method to append packet checksum at the end of the packet.
+	 * @param raw data array to compute the checksum from
+	 * @param offset offset where to start in the data array
+	 * @param size number of bytes to compute the checksum from
+	 */
+	public static void appendChecksum(final byte[] raw, final int offset, final int size)
 	{
 		long chksum = 0;
 		int count = size - 4;
@@ -117,7 +142,7 @@ public class NewCrypt
 	 * @param raw The raw bytes to be encrypted
 	 * @param key The 4 bytes (int) XOR key
 	 */
-	public static void encXORPass(byte[] raw, int key)
+	public static void encXORPass(final byte[] raw, final int key)
 	{
 		NewCrypt.encXORPass(raw, 0, raw.length, key);
 	}
@@ -129,7 +154,7 @@ public class NewCrypt
 	 * @param size Length of the data to be encrypted
 	 * @param key The 4 bytes (int) XOR key
 	 */
-	public static void encXORPass(byte[] raw, final int offset, final int size, int key)
+	public static void encXORPass(final byte[] raw, final int offset, final int size, int key)
 	{
 		int stop = size - 8;
 		int pos = 4 + offset;
@@ -159,55 +184,39 @@ public class NewCrypt
 		raw[pos++] = (byte) ((ecx >> 24) & 0xFF);
 	}
 	
-	public byte[] decrypt(byte[] raw) throws IOException
+	/**
+	 * Method to decrypt using Blowfish-Blockcipher in ECB mode. The results<br>
+	 * will be directly placed inside {@code raw} array.<br>
+	 * <br>
+	 * This method does not do any error checking, since the calling code<br>
+	 * should ensure sizes.
+	 * @param raw the data array to be decrypted
+	 * @param offset the offset at which to start decrypting
+	 * @param size the number of bytes to be decrypted
+	 */
+	public void decrypt(byte[] raw, final int offset, final int size)
 	{
-		byte[] result = new byte[raw.length];
-		int count = raw.length / 8;
-		
-		for (int i = 0; i < count; i++)
+		for (int i = offset; i < (offset + size); i += 8)
 		{
-			_decrypt.processBlock(raw, i * 8, result, i * 8);
+			_cipher.decryptBlock(raw, i);
 		}
-		
-		return result;
 	}
 	
-	public void decrypt(byte[] raw, final int offset, final int size) throws IOException
+	/**
+	 * Method to encrypt using Blowfish-Blockcipher in ECB mode. The results<br>
+	 * will be directly placed inside {@code raw} array.<br>
+	 * <br>
+	 * This method does not do any error checking, since the calling code<br>
+	 * should ensure sizes.
+	 * @param raw the data array to be decrypted
+	 * @param offset the offset at which to start decrypting
+	 * @param size the number of bytes to be decrypted
+	 */
+	public void crypt(byte[] raw, final int offset, final int size)
 	{
-		byte[] result = new byte[size];
-		int count = size / 8;
-		
-		for (int i = 0; i < count; i++)
+		for (int i = offset; i < (offset + size); i += 8)
 		{
-			_decrypt.processBlock(raw, offset + (i * 8), result, i * 8);
+			_cipher.encryptBlock(raw, i);
 		}
-		// TODO can the crypt and decrypt go direct to the array
-		System.arraycopy(result, 0, raw, offset, size);
-	}
-	
-	public byte[] crypt(byte[] raw) throws IOException
-	{
-		int count = raw.length / 8;
-		byte[] result = new byte[raw.length];
-		
-		for (int i = 0; i < count; i++)
-		{
-			_crypt.processBlock(raw, i * 8, result, i * 8);
-		}
-		
-		return result;
-	}
-	
-	public void crypt(byte[] raw, final int offset, final int size) throws IOException
-	{
-		int count = size / 8;
-		byte[] result = new byte[size];
-		
-		for (int i = 0; i < count; i++)
-		{
-			_crypt.processBlock(raw, offset + (i * 8), result, i * 8);
-		}
-		// TODO can the crypt and decrypt go direct to the array
-		System.arraycopy(result, 0, raw, offset, size);
 	}
 }

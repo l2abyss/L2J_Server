@@ -116,7 +116,7 @@ public class GameServerThread extends Thread
 				}
 				
 				// decrypt if we have a key
-				data = _blowfish.decrypt(data);
+				_blowfish.decrypt(data, 0, data.length);
 				checksumOk = NewCrypt.verifyChecksum(data);
 				if (!checksumOk)
 				{
@@ -239,7 +239,7 @@ public class GameServerThread extends Thread
 			{
 				_log.finest("[S] " + sl.getClass().getSimpleName() + ":\n" + Util.printData(data));
 			}
-			data = _blowfish.crypt(data);
+			_blowfish.crypt(data, 0, data.length);
 			
 			int len = data.length + 2;
 			synchronized (_out)

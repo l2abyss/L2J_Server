@@ -168,14 +168,14 @@ public class LoginServerThread extends Thread
 				_in = _loginSocket.getInputStream();
 				_out = new BufferedOutputStream(_loginSocket.getOutputStream());
 				
-				//init Blowfish
+				// init Blowfish
 				_blowfishKey = Util.generateHex(40);
 				_blowfish = new NewCrypt("_;v.]05-31!|+-%xT!^[$\00");
 				while (!isInterrupted())
 				{
 					lengthLo = _in.read();
 					lengthHi = _in.read();
-					length = lengthHi * 256 + lengthLo;
+					length = (lengthHi * 256) + lengthLo;
 					
 					if (lengthHi < 0)
 					{
@@ -188,22 +188,22 @@ public class LoginServerThread extends Thread
 					int receivedBytes = 0;
 					int newBytes = 0;
 					int left = length - 2;
-					while (newBytes != -1 && receivedBytes < length - 2)
+					while ((newBytes != -1) && (receivedBytes < (length - 2)))
 					{
-						newBytes =  _in.read(incoming, receivedBytes, left);
+						newBytes = _in.read(incoming, receivedBytes, left);
 						receivedBytes = receivedBytes + newBytes;
 						left -= newBytes;
 					}
 					
-					if (receivedBytes != length - 2)
+					if (receivedBytes != (length - 2))
 					{
 						_log.warning("Incomplete Packet is sent to the server, closing connection.(LS)");
 						break;
 					}
 					
 					// decrypt if we have a key
-					byte[] decrypt = _blowfish.decrypt(incoming);
-					checksumOk = NewCrypt.verifyChecksum(decrypt);
+					_blowfish.decrypt(incoming, 0, incoming.length);
+					checksumOk = NewCrypt.verifyChecksum(incoming);
 					
 					if (!checksumOk)
 					{
@@ -212,18 +212,21 @@ public class LoginServerThread extends Thread
 					}
 					
 					if (Config.DEBUG)
-						_log.warning("[C]\n" + Util.printData(decrypt));
-					
-					int packetType = decrypt[0] & 0xff;
+					{
+						_log.warning("[C]\n" + Util.printData(incoming));
+					}
+					int packetType = incoming[0] & 0xff;
 					switch (packetType)
 					{
 						case 0x00:
-							InitLS init = new InitLS(decrypt);
+							InitLS init = new InitLS(incoming);
 							if (Config.DEBUG)
+							{
 								_log.info("Init received");
+							}
 							if (init.getRevision() != REVISION)
 							{
-								//TODO: revision mismatch
+								// TODO: revision mismatch
 								_log.warning("/!\\ Revision mismatch between LS and GS /!\\");
 								break;
 							}
@@ -234,7 +237,9 @@ public class LoginServerThread extends Thread
 								RSAPublicKeySpec kspec1 = new RSAPublicKeySpec(modulus, RSAKeyGenParameterSpec.F4);
 								_publicKey = (RSAPublicKey) kfac.generatePublic(kspec1);
 								if (Config.DEBUG)
+								{
 									_log.info("RSA key set up");
+								}
 							}
 							
 							catch (GeneralSecurityException e)
@@ -242,27 +247,33 @@ public class LoginServerThread extends Thread
 								_log.warning("Troubles while init the public key send by login");
 								break;
 							}
-							//send the blowfish key through the rsa encryption
+							// send the blowfish key through the rsa encryption
 							BlowFishKey bfk = new BlowFishKey(_blowfishKey, _publicKey);
 							sendPacket(bfk);
 							if (Config.DEBUG)
+							{
 								_log.info("Sent new blowfish key");
-							//now, only accept packet with the new encryption
+							}
+							// now, only accept packet with the new encryption
 							_blowfish = new NewCrypt(_blowfishKey);
 							if (Config.DEBUG)
+							{
 								_log.info("Changed blowfish key");
+							}
 							AuthRequest ar = new AuthRequest(_requestID, _acceptAlternate, _hexID, _gamePort, _reserveHost, _maxPlayer, _subnets, _hosts);
 							sendPacket(ar);
 							if (Config.DEBUG)
+							{
 								_log.info("Sent AuthRequest to login");
+							}
 							break;
 						case 0x01:
-							LoginServerFail lsf = new LoginServerFail(decrypt);
+							LoginServerFail lsf = new LoginServerFail(incoming);
 							_log.info("Damn! Registeration Failed: " + lsf.getReasonString());
 							// login will close the connection here
 							break;
 						case 0x02:
-							AuthResponse aresp = new AuthResponse(decrypt);
+							AuthResponse aresp = new AuthResponse(incoming);
 							_serverID = aresp.getServerId();
 							_serverName = aresp.getServerName();
 							Config.saveHexid(_serverID, hexToString(_hexID));
@@ -310,7 +321,7 @@ public class LoginServerThread extends Thread
 							}
 							break;
 						case 0x03:
-							PlayerAuthResponse par = new PlayerAuthResponse(decrypt);
+							PlayerAuthResponse par = new PlayerAuthResponse(incoming);
 							String account = par.getAccount();
 							WaitingClient wcToRemove = null;
 							synchronized (_waitingClients)
@@ -328,8 +339,9 @@ public class LoginServerThread extends Thread
 								if (par.isAuthed())
 								{
 									if (Config.DEBUG)
-										_log.info("Login accepted player " + wcToRemove.account + " waited("
-												+ (GameTimeController.getGameTicks() - wcToRemove.timestamp) + "ms)");
+									{
+										_log.info("Login accepted player " + wcToRemove.account + " waited(" + (GameTimeController.getGameTicks() - wcToRemove.timestamp) + "ms)");
+									}
 									PlayerInGame pig = new PlayerInGame(par.getAccount());
 									sendPacket(pig);
 									wcToRemove.gameClient.setState(GameClientState.AUTHED);
@@ -341,7 +353,7 @@ public class LoginServerThread extends Thread
 								else
 								{
 									_log.warning("Session key is not correct. Closing connection for account " + wcToRemove.account + ".");
-									//wcToRemove.gameClient.getConnection().sendPacket(new LoginFail(LoginFail.SYSTEM_ERROR_LOGIN_LATER));
+									// wcToRemove.gameClient.getConnection().sendPacket(new LoginFail(LoginFail.SYSTEM_ERROR_LOGIN_LATER));
 									wcToRemove.gameClient.close(new LoginFail(LoginFail.SYSTEM_ERROR_LOGIN_LATER));
 									_accountsInGameServer.remove(wcToRemove.account);
 								}
@@ -349,15 +361,15 @@ public class LoginServerThread extends Thread
 							}
 							break;
 						case 0x04:
-							KickPlayer kp = new KickPlayer(decrypt);
+							KickPlayer kp = new KickPlayer(incoming);
 							doKickPlayer(kp.getAccount());
 							break;
 						case 0x05:
-							RequestCharacters rc = new RequestCharacters(decrypt);
+							RequestCharacters rc = new RequestCharacters(incoming);
 							getCharsOnServer(rc.getAccount());
 							break;
 						case 0x06:
-							new ChangePasswordResponse(decrypt);
+							new ChangePasswordResponse(incoming);
 							break;
 					}
 				}
@@ -365,7 +377,9 @@ public class LoginServerThread extends Thread
 			catch (UnknownHostException e)
 			{
 				if (Config.DEBUG)
+				{
 					_log.log(Level.WARNING, "", e);
+				}
 			}
 			catch (SocketException e)
 			{
@@ -381,7 +395,9 @@ public class LoginServerThread extends Thread
 				{
 					_loginSocket.close();
 					if (isInterrupted())
+					{
 						return;
+					}
 				}
 				catch (Exception e)
 				{
@@ -408,7 +424,9 @@ public class LoginServerThread extends Thread
 	public void addWaitingClientAndSendRequest(String acc, L2GameClient client, SessionKey key)
 	{
 		if (Config.DEBUG)
+		{
 			_log.info(String.valueOf(key));
+		}
 		WaitingClient wc = new WaitingClient(acc, client, key);
 		synchronized (_waitingClients)
 		{
@@ -423,7 +441,9 @@ public class LoginServerThread extends Thread
 		{
 			_log.warning("Error while sending player auth request");
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
@@ -444,7 +464,9 @@ public class LoginServerThread extends Thread
 				}
 			}
 			if (toRemove != null)
+			{
 				_waitingClients.remove(toRemove);
+			}
 		}
 	}
 	
@@ -455,8 +477,9 @@ public class LoginServerThread extends Thread
 	public void sendLogout(String account)
 	{
 		if (account == null)
+		{
 			return;
-
+		}
 		PlayerLogout pl = new PlayerLogout(account);
 		try
 		{
@@ -466,7 +489,9 @@ public class LoginServerThread extends Thread
 		{
 			_log.warning("Error while sending logout packet to login");
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 		finally
 		{
@@ -499,7 +524,9 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
@@ -518,7 +545,9 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
@@ -538,7 +567,9 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
@@ -558,7 +589,9 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
@@ -609,7 +642,9 @@ public class LoginServerThread extends Thread
 				chars++;
 				long delTime = rset.getLong("deletetime");
 				if (delTime != 0)
+				{
 					charToDel.add(delTime);
+				}
 			}
 			rset.close();
 			statement.close();
@@ -631,7 +666,9 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
@@ -645,14 +682,16 @@ public class LoginServerThread extends Thread
 		byte[] data = sl.getContent();
 		NewCrypt.appendChecksum(data);
 		if (Config.DEBUG)
+		{
 			_log.finest("[S]\n" + Util.printData(data));
-		data = _blowfish.crypt(data);
+		}
+		_blowfish.crypt(data, 0, data.length);
 		
 		int len = data.length + 2;
-		synchronized (_out) //avoids tow threads writing in the mean time
+		synchronized (_out) // avoids tow threads writing in the mean time
 		{
 			_out.write(len & 0xff);
-			_out.write(len >> 8 & 0xff);
+			_out.write((len >> 8) & 0xff);
 			_out.write(data);
 			_out.flush();
 		}
@@ -693,7 +732,9 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
@@ -711,7 +752,9 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
@@ -732,7 +775,9 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			if (Config.DEBUG)
+			{
 				_log.log(Level.WARNING, "", e);
+			}
 		}
 	}
 	
