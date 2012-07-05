@@ -9148,17 +9148,18 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// skills can be used on Walls and Doors only during siege
-		if(target instanceof L2DoorInstance )
+		if(target.isDoor())
 		{
-			boolean isCastle = (((L2DoorInstance) target).getCastle() != null
-					&& ((L2DoorInstance) target).getCastle().getCastleId() > 0
-					&& ((L2DoorInstance) target).getCastle().getSiege().getIsInProgress());
-			boolean isFort = (((L2DoorInstance) target).getFort() != null
-					&& ((L2DoorInstance) target).getFort().getFortId() > 0
-					&& ((L2DoorInstance) target).getFort().getSiege().getIsInProgress()
-					&& !((L2DoorInstance) target).getIsShowHp());
-			if ((!isCastle && !isFort)&&(((L2DoorInstance) target).isOpenableBySkill() && skill.getSkillType() != L2SkillType.UNLOCK))
-				return false;
+			if (((L2DoorInstance) target).getCastle() != null && ((L2DoorInstance) target).getCastle().getCastleId() > 0) // If its castle door
+			{
+				if (!((L2DoorInstance) target).getCastle().getSiege().getIsInProgress()) // Skills can be used on castle doors only during siege.
+					return false;
+			}
+			else if (((L2DoorInstance) target).getFort() != null && ((L2DoorInstance) target).getFort().getFortId() > 0 && !((L2DoorInstance) target).getIsShowHp()) // If its fort door
+			{
+				if (!((L2DoorInstance) target).getFort().getSiege().getIsInProgress()) // Skills can be used on fort doors only during siege.
+					return false;
+			}
 		}
 		
 		// Are the target and the player in the same duel?
