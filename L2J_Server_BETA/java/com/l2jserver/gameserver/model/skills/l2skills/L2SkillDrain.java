@@ -180,7 +180,7 @@ public class L2SkillDrain extends L2Skill
 		}
 		// cast self effect if any
 		getEffectsSelf(activeChar);
-		activeChar.spsChecker(this);
+		activeChar.spsUncharge(this);
 	}
 	
 	public void useCubicSkill(L2CubicInstance activeCubic, L2Object[] targets)

@@ -53,9 +53,7 @@ public class L2SkillTeleport extends L2Skill
 	
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
-	{
-		activeChar.spsChecker(this);
-		
+	{	
 		if (activeChar.isPlayer())
 		{
 			// Thanks nbd
@@ -165,6 +163,8 @@ public class L2SkillTeleport extends L2Skill
 					target.teleToLocation(loc, true);
 				}
 			}
+			
+			activeChar.spsUncharge(this);
 		}
 		catch (Exception e)
 		{

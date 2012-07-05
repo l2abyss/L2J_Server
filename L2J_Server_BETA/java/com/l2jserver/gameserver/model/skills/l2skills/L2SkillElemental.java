@@ -117,7 +117,8 @@ public class L2SkillElemental extends L2Skill {
 			// activate attacked effects, if any
 			target.stopSkillEffects(getId());
 			getEffects(activeChar, target, new Env(shld, activeChar.isSpiritshotCharged(this), false, activeChar.isBlessedSpiritshotCharged(this)));
-			activeChar.spsChecker(this);
 		}
+		
+		activeChar.spsUncharge(this);
 	}
 }

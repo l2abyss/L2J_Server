@@ -7900,41 +7900,37 @@ public abstract class L2Character extends L2Object
 		globalSkillUseListeners.remove(listener);
 	}
 	
-	public void spsChecker(L2Skill skill)
+	/**
+	 * Sets the character's spiritshot charge to none, if the skill allows it.
+	 * @param skill 
+	 */
+	public void spsUncharge(L2Skill skill)
+	{
+		if (!skill.isStatic())
+			spsUncharge();
+	}
+	
+	/**
+	 * Sets the character's spiritshot charge to none.
+	 */
+	public void spsUncharge()
 	{
 		L2ItemInstance weaponInst = getActiveWeaponInstance();
 		
-		if (!skill.isStatic())
+		if (weaponInst != null && isPlayer())
 		{
-			if (weaponInst != null && isPlayer())
-			{
-				if (weaponInst.getChargedSpiritshot() != L2ItemInstance.CHARGED_NONE)
-				{
-					weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
-				}
-			}
-			// If there is no weapon equipped, check for an active summon.
-			else if (isSummon())
-			{
-				L2Summon activeSummon = (L2Summon) this;
-				
-				if (activeSummon.getChargedSpiritShot() != L2ItemInstance.CHARGED_NONE)
-				{
-					activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
-				}
-			}
-			else if (isNpc())
-			{
-				L2Npc activeNpc = (L2Npc) this;
-				if (activeNpc._soulshotcharged)
-				{
-					activeNpc._soulshotcharged = false;
-				}
-				else if(activeNpc._spiritshotcharged)
-				{
-					activeNpc._spiritshotcharged = false;
-				}
-			}
+			weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+		}
+		else if (isSummon()) // If there is no weapon equipped, check for an active summon.
+		{
+			L2Summon activeSummon = (L2Summon) this;
+			activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
+		}
+		else if (isNpc())
+		{
+			L2Npc activeNpc = (L2Npc) this;
+			//activeNpc._soulshotcharged = false; Should this be uncommented for some unreasonable reason?
+			activeNpc._spiritshotcharged = false;
 		}
 	}
 		
