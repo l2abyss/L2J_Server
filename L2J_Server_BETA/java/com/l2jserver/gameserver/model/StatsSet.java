@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -30,7 +32,17 @@ public final class StatsSet
 {
 	
 	private static final Logger _log = Logger.getLogger(StatsSet.class.getName());
-	private final Map<String, Object> _set = new FastMap<>();
+	private final Map<String, Object> _set;
+	
+	public StatsSet()
+	{
+		_set = new FastMap<>();
+	}
+	
+	public StatsSet(StatsSet set)
+	{
+		_set = new FastMap<>(set.getSet());
+	}
 	
 	/**
 	 * Returns the set of values
@@ -142,6 +154,53 @@ public final class StatsSet
 		{
 			throw new IllegalArgumentException("Byte value required, but found: " + val);
 		}
+	}
+	
+
+	/**
+	 * Returns the byte[] associated to the key put in parameter ("name"). If the value associated to the key is null, this method returns the value of the parameter deflt.
+	 * @param name : String designating the key in the set
+	 * @param splitOn 
+	 * @return byte[] : value associated to the key
+	 */
+	public byte[] getByteArray(String name, String splitOn)
+	{
+		Object val = _set.get(name);
+		if (val == null)
+			throw new IllegalArgumentException("Byte value required, but not specified");
+		if (val instanceof Number)
+		{
+			byte[] result =
+			{
+				((Number) val).byteValue()
+			};
+			return result;
+		}
+		int c = 0;
+		String[] vals = ((String) val).split(splitOn);
+		byte[] result = new byte[vals.length];
+		for (String v : vals)
+		{
+			try
+			{
+				result[c++] = Byte.parseByte(v);
+			}
+			catch (Exception e)
+			{
+				throw new IllegalArgumentException("Byte value required, but found: " + val);
+			}
+		}
+		return result;
+	}
+	
+	public List<Byte> getByteList(String name, String splitOn)
+	{
+		List<Byte> result = new ArrayList<>();
+		for (Byte i : getByteArray(name, splitOn))
+		{
+			result.add(i);
+		}
+		return result;
 	}
 	
 	/**
@@ -272,6 +331,16 @@ public final class StatsSet
 			{
 				throw new IllegalArgumentException("Integer value required, but found: " + val);
 			}
+		}
+		return result;
+	}
+	
+	public List<Integer> getIntegerList(String name, String splitOn)
+	{
+		List<Integer> result = new ArrayList<>();
+		for (int i : getIntegerArray(name, splitOn))
+		{
+			result.add(i);
 		}
 		return result;
 	}
