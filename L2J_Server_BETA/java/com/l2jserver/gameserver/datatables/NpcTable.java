@@ -1000,10 +1000,6 @@ public class NpcTable
 		{
 			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading NPC Elementals Data: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		return count;
 	}
 	
