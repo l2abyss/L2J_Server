@@ -7917,20 +7917,19 @@ public abstract class L2Character extends L2Object
 	{	
 		if (isPlayer())
 		{
-			L2ItemInstance weaponInst = getActiveWeaponInstance();
-			if (weaponInst != null)
-				weaponInst.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+			L2ItemInstance weapon = getActiveWeaponInstance();
+			if (weapon != null)
+			{
+				weapon.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
+			}
 		}
-		else if (isSummon()) // If there is no weapon equipped, check for an active summon.
+		else if (isSummon()) // If is not player, check for summon.
 		{
-			L2Summon activeSummon = (L2Summon) this;
-			activeSummon.setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
+			((L2Summon) this).setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
 		}
 		else if (isNpc())
 		{
-			L2Npc activeNpc = (L2Npc) this;
-			//activeNpc._soulshotcharged = false; Should this be uncommented for some unreasonable reason?
-			activeNpc._spiritshotcharged = false;
+			((L2Npc) this)._spiritshotcharged = false;
 		}
 	}
 	
@@ -7951,46 +7950,48 @@ public abstract class L2Character extends L2Object
 	{
 		if (isPlayer())
 		{
-			L2ItemInstance weaponInst = getActiveWeaponInstance();
-			if (weaponInst != null)
-				weaponInst.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
+			L2ItemInstance weapon = getActiveWeaponInstance();
+			if (weapon != null)
+			{
+				weapon.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
+			}
 		}
-		else if (isSummon()) // If there is no weapon equipped, check for an active summon.
+		else if (isSummon()) // If is not player, check for summon.
 		{
-			L2Summon activeSummon = (L2Summon) this;
-			activeSummon.setChargedSoulShot(L2ItemInstance.CHARGED_NONE);
+			((L2Summon) this).setChargedSoulShot(L2ItemInstance.CHARGED_NONE);
 		}
 		else if (isNpc())
 		{
-			L2Npc activeNpc = (L2Npc) this;
-			activeNpc._soulshotcharged = false;
+			((L2Npc) this)._soulshotcharged = false;
 		}
 	}
 		
 	public boolean isSoulshotCharged(L2Skill skill)
 	{
-		L2ItemInstance weaponInst = getActiveWeaponInstance();
-		if (isPlayer() && !skill.isMagic() && weaponInst.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT)
+		L2ItemInstance weapon = getActiveWeaponInstance();
+		if (isPlayer() && !skill.isMagic() && (weapon != null) && (weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT))
 		{
 			return true;
 		}
-
-		return isNpc() ? ((L2Npc) this)._soulshotcharged : false;
+		else if (isNpc() && ((L2Npc) this)._soulshotcharged)
+		{
+			return true;
+		}
+		return isSummon() && ((L2Summon) this).getChargedSoulShot() == L2ItemInstance.CHARGED_SOULSHOT;
 	}
 	
 	public boolean isSpiritshotCharged(L2Skill skill)
 	{
-		L2ItemInstance weaponInst = getActiveWeaponInstance();
-		if (isPlayer() && skill.isMagic() && weaponInst != null && weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT)
+		L2ItemInstance weapon = getActiveWeaponInstance();
+		if (isPlayer() && skill.isMagic() && (weapon != null) && (weapon.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT))
 		{
 			return true;
 		}
-		else if (isNpc() && ((L2Npc) this)._spiritshotcharged )
+		else if (isNpc() && ((L2Npc) this)._spiritshotcharged)
 		{
 			return true;
 		}
-		
-		return isSummon() ? ((L2Summon) this).getChargedSpiritShot() == L2ItemInstance.CHARGED_SPIRITSHOT : false;
+		return isSummon() && ((L2Summon) this).getChargedSpiritShot() == L2ItemInstance.CHARGED_SPIRITSHOT;
 	}
 	
 	public boolean isBlessedSpiritshotCharged(L2Skill skill)
@@ -8000,7 +8001,6 @@ public abstract class L2Character extends L2Object
 		{
 			return true;
 		}
-		
-		return isSummon() ? ((L2Summon) this).getChargedSpiritShot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT : false;
+		return isSummon() && ((L2Summon) this).getChargedSpiritShot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT;
 	}
 }
