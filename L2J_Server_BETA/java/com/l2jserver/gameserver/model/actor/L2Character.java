@@ -2103,7 +2103,7 @@ public abstract class L2Character extends L2Object
 	 */
 	protected boolean checkDoCastConditions(L2Skill skill)
 	{
-		if (skill == null || isSkillDisabled(skill) || ((skill.getFlyRadius() > 0 || skill.getFlyType() != null) && isMovementDisabled()))
+		if (skill == null || isSkillDisabled(skill))
 		{
 			// Send a Server->Client packet ActionFailed to the L2PcInstance
 			sendPacket(ActionFailed.STATIC_PACKET);
