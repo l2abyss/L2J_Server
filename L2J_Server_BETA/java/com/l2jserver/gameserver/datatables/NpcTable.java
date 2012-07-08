@@ -67,7 +67,7 @@ public class NpcTable
 	private static final String CUSTOM_SELECT_NPC_ALL = "SELECT * FROM custom_npc ORDER BY id";
 	private static final String CUSTOM_SELECT_NPC_BY_ID = "SELECT * FROM custom_npc WHERE id = ?";
 	
-	private static final String CUSTOM_SELECT_SKILLS_ALL = "SELECT * FROM custom_npcskills ORDER npcid";
+	private static final String CUSTOM_SELECT_SKILLS_ALL = "SELECT * FROM custom_npcskills ORDER BY npcid";
 	private static final String CUSTOM_SELECT_SKILLS_BY_ID = "SELECT * FROM custom_npcskills WHERE npcid = ?";
 	
 	private static final String CUSTOM_SELECT_DROPLIST_ALL = "SELECT * FROM custom_droplist ORDER BY mobId, chance DESC";
