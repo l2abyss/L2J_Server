@@ -14867,45 +14867,58 @@ public final class L2PcInstance extends L2Playable
 	
 	public double getCollisionRadius()
 	{
-		return getAppearance().getSex() ? getBaseTemplate().getFCollisionRadiusFemale() : getBaseTemplate().getfCollisionRadius();
+		return getMountType() != 0 ? (NpcTable.getInstance().getTemplate(getMountNpcId()).getfCollisionRadius()) 
+			: (isTransformed() && !getTransformation().isStance() ? getTransformation().getCollisionRadius() 
+				: (getAppearance().getSex() ? getBaseTemplate().getFCollisionRadiusFemale()
+					: getBaseTemplate().getfCollisionRadius()));
 	}
 	
 	public double getCollisionHeight()
 	{
-		return getAppearance().getSex() ? getBaseTemplate().getFCollisionHeightFemale() : getBaseTemplate().getfCollisionHeight();
+		return getMountType() != 0 ? (NpcTable.getInstance().getTemplate(getMountNpcId()).getfCollisionHeight()) 
+			: (isTransformed() && !getTransformation().isStance() ? getTransformation().getCollisionHeight() 
+				: (getAppearance().getSex() ? getBaseTemplate().getFCollisionHeightFemale() 
+					: getBaseTemplate().getfCollisionHeight()));
 	}
 	
 	public final int getClientX()
 	{
 		return _clientX;
 	}
+	
 	public final int getClientY()
 	{
 		return _clientY;
 	}
+	
 	public final int getClientZ()
 	{
 		return _clientZ;
 	}
+	
 	public final int getClientHeading()
 	{
 		return _clientHeading;
 	}
+	
 	public final void setClientX(int val)
 	{
-		_clientX=val;
+		_clientX = val;
 	}
+	
 	public final void setClientY(int val)
 	{
-		_clientY=val;
+		_clientY = val;
 	}
+	
 	public final void setClientZ(int val)
 	{
-		_clientZ=val;
+		_clientZ = val;
 	}
+	
 	public final void setClientHeading(int val)
 	{
-		_clientHeading=val;
+		_clientHeading = val;
 	}
 	
 	/**
