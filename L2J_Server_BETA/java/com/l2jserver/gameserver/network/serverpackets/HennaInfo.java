@@ -48,8 +48,11 @@ public final class HennaInfo extends L2GameServerPacket
 		writeD(_hennas.size()); // Size
 		for (L2Henna henna : _hennas)
 		{
-			writeD(henna.getDyeId());
-			writeD(0x01);
+			if (henna != null)
+			{
+				writeD(henna.getDyeId());
+				writeD(0x01);
+			}
 		}
 	}
 }
