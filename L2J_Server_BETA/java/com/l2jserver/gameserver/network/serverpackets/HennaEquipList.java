@@ -25,8 +25,6 @@ import com.l2jserver.gameserver.model.items.L2Henna;
  */
 public class HennaEquipList extends L2GameServerPacket
 {
-	private static final String _S__EE_HENNAEQUIPLIST = "[S] EE HennaEquipList";
-	
 	private final L2PcInstance _player;
 	private final List<L2Henna> _hennaEquipList;
 	
@@ -63,11 +61,5 @@ public class HennaEquipList extends L2GameServerPacket
 				writeD(henna.isAllowedClass(_player.getClassId()) ? 0x01 : 0x00); // meet the requirement or not
 			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__EE_HENNAEQUIPLIST;
 	}
 }

@@ -15,19 +15,13 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.SevenSigns;
+
 /**
- * Changes the sky color depending on the outcome
- * of the Seven Signs competition.
- *
- * packet type id 0xf8
- * format: c h
- *
+ * Changes the sky color depending on the outcome of the Seven Signs competition.
  * @author Tempy
  */
 public class SSQInfo extends L2GameServerPacket
 {
-	private static final String _S__F8_SSQINFO = "[S] 73 SSQInfo";
-	
 	private int _state = 0;
 	
 	public SSQInfo()
@@ -50,24 +44,6 @@ public class SSQInfo extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x73);
-		
-		if (_state == 2) // Dawn Sky
-		{
-			writeH(258);
-		}
-		else if (_state == 1) // Dusk Sky
-		{
-			writeH(257);
-		}
-		else
-		{
-			writeH(256);
-		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__F8_SSQINFO;
+		writeH(256 + _state);
 	}
 }

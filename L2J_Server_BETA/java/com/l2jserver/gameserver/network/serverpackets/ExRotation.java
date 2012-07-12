@@ -19,8 +19,6 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class ExRotation extends L2GameServerPacket
 {
-	private static final String TYPE = "[S] FE:C1 ExRotation";
-	
 	private final int _charObjId, _degree;
 	
 	public ExRotation(int charId, int degree)
@@ -36,11 +34,5 @@ public class ExRotation extends L2GameServerPacket
 		writeH(0xC1);
 		writeD(_charObjId);
 		writeD(_degree);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return TYPE;
 	}
 }

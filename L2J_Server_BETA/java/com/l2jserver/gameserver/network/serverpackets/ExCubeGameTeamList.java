@@ -18,28 +18,11 @@ import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
- * Format: (chd) ddd[dS]d[dS]
- * d: unknown
- * d: always -1
- * d: blue players number
- * [
- * 		d: player object id
- * 		S: player name
- * ]
- * d: blue players number
- * [
- * 		d: player object id
- * 		S: player name
- * ]
- * 
  * @author mrTJO
  */
 public class ExCubeGameTeamList extends L2GameServerPacket
 {
-	private static final String _S__FE_97_00_EXCUBEGAMETEAMLIST = "[S] FE:97:00 ExCubeGameTeamList";
-	
 	// Players Lists
 	List<L2PcInstance> _bluePlayers;
 	List<L2PcInstance> _redPlayers;
@@ -48,9 +31,7 @@ public class ExCubeGameTeamList extends L2GameServerPacket
 	int _roomNumber;
 	
 	/**
-	 * 
 	 * Show Minigame Waiting List to Player
-	 * 
 	 * @param redPlayers Red Players List
 	 * @param bluePlayers Blue Players List
 	 * @param roomNumber Arena/Room ID
@@ -84,11 +65,5 @@ public class ExCubeGameTeamList extends L2GameServerPacket
 			writeD(player.getObjectId());
 			writeS(player.getName());
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_97_00_EXCUBEGAMETEAMLIST;
 	}
 }

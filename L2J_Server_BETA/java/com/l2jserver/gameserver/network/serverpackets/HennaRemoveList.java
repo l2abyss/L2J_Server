@@ -22,8 +22,6 @@ import com.l2jserver.gameserver.model.items.L2Henna;
  */
 public class HennaRemoveList extends L2GameServerPacket
 {
-	private static final String _S__E6_HENNAREMOVELIST = "[S] E6 HennaRemoveList";
-	
 	private final L2PcInstance _player;
 	
 	public HennaRemoveList(L2PcInstance player)
@@ -52,11 +50,5 @@ public class HennaRemoveList extends L2GameServerPacket
 				writeD(0x01);
 			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__E6_HENNAREMOVELIST;
 	}
 }

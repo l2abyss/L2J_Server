@@ -14,25 +14,18 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.ItemInfo;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- * This class ...
- *
- * @author Yme
- * @version $Revision: 1.3.2.1.2.5 $ $Date: 2005/03/27 15:29:57 $
- * Rebuild 23.2.2006 by Advi
+ * @author Yme, Advi
  */
 public class PetInventoryUpdate extends L2GameServerPacket
 {
-	private static final String _S__37_INVENTORYUPDATE = "[S] b4 InventoryUpdate";
-	private List<ItemInfo> _items;
+	private final List<ItemInfo> _items;
 	
 	/**
 	 * @param items
@@ -40,15 +33,11 @@ public class PetInventoryUpdate extends L2GameServerPacket
 	public PetInventoryUpdate(List<ItemInfo> items)
 	{
 		_items = items;
-		if (Config.DEBUG)
-		{
-			showDebug();
-		}
 	}
 	
 	public PetInventoryUpdate()
 	{
-		this(new FastList<ItemInfo>());
+		this(new ArrayList<ItemInfo>());
 	}
 	
 	public void addItem(L2ItemInstance item)
@@ -77,19 +66,10 @@ public class PetInventoryUpdate extends L2GameServerPacket
 			_items.add(new ItemInfo(item));
 	}
 	
-	private void showDebug()
-	{
-		for (ItemInfo item : _items)
-		{
-			_log.fine("oid:" + Integer.toHexString(item.getObjectId()) +
-					" item:" + item.getItem().getName()+" last change:" + item.getChange());
-		}
-	}
-	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xb4);
+		writeC(0xB4);
 		int count = _items.size();
 		writeH(count);
 		for (ItemInfo item : _items)
@@ -119,11 +99,5 @@ public class PetInventoryUpdate extends L2GameServerPacket
 			writeH(0x00);
 			writeH(0x00);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__37_INVENTORYUPDATE;
 	}
 }

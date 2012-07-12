@@ -17,15 +17,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.Map;
 
 /**
- * Format: ch ddd [ddd]
- * @author  KenM
+ * @author KenM
  */
 public class ExGetBossRecord extends L2GameServerPacket
 {
-	private static final String _S__FE_33_EXGETBOSSRECORD = "[S] FE:34 ExGetBossRecord";
-	private Map<Integer, Integer> _bossRecordInfo;
-	private int _ranking;
-	private int _totalPoints;
+	private final Map<Integer, Integer> _bossRecordInfo;
+	private final int _ranking;
+	private final int _totalPoints;
 	
 	public ExGetBossRecord(int ranking, int totalScore, Map<Integer, Integer> list)
 	{
@@ -34,13 +32,10 @@ public class ExGetBossRecord extends L2GameServerPacket
 		_bossRecordInfo = list;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x34);
 		writeD(_ranking);
 		writeD(_totalPoints);
@@ -53,22 +48,13 @@ public class ExGetBossRecord extends L2GameServerPacket
 		}
 		else
 		{
-			writeD(_bossRecordInfo.size()); //list size
+			writeD(_bossRecordInfo.size()); // list size
 			for (int bossId : _bossRecordInfo.keySet())
 			{
 				writeD(bossId);
 				writeD(_bossRecordInfo.get(bossId));
-				writeD(0x00); //??
+				writeD(0x00); // ??
 			}
 		}
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_33_EXGETBOSSRECORD;
 	}
 }

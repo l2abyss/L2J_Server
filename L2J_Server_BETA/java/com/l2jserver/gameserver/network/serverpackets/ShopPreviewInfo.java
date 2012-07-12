@@ -23,13 +23,13 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
  */
 public class ShopPreviewInfo extends L2GameServerPacket
 {
-	private Map<Integer,Integer> _itemlist;
+	private final Map<Integer, Integer> _itemlist;
 	
 	public ShopPreviewInfo(Map<Integer, Integer> itemlist)
 	{
 		_itemlist = itemlist;
 	}
-
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -59,12 +59,6 @@ public class ShopPreviewInfo extends L2GameServerPacket
 	
 	private int getFromList(int key)
 	{
-		return ((_itemlist.get(key) != null) ? _itemlist.get(key) : 0);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] F6 ShopPreviewInfo".intern();
+		return (_itemlist.containsKey(key) ? _itemlist.get(key) : 0);
 	}
 }

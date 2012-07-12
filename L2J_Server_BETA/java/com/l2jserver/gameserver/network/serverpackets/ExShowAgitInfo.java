@@ -20,26 +20,11 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
 
-
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public class ExShowAgitInfo extends L2GameServerPacket
 {
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] FE:16 ExShowAgitInfo";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -52,7 +37,7 @@ public class ExShowAgitInfo extends L2GameServerPacket
 			writeD(ch.getId());
 			writeS(ch.getOwnerId() <= 0 ? "" : ClanTable.getInstance().getClan(ch.getOwnerId()).getName()); // owner clan name
 			writeS(ch.getOwnerId() <= 0 ? "" : ClanTable.getInstance().getClan(ch.getOwnerId()).getLeaderName()); // leader name
-			writeD(ch.getGrade()> 0 ? 0x00 : 0x01); // 0 - auction  1 - war clanhall  2 - ETC (rainbow spring clanhall)
+			writeD(ch.getGrade() > 0 ? 0x00 : 0x01); // 0 - auction 1 - war clanhall 2 - ETC (rainbow spring clanhall)
 		}
 	}
 	

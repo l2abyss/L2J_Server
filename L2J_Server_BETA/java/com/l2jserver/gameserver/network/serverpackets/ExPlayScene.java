@@ -15,25 +15,20 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- *
- * Format: ch
- * @author  devScarlet & mrTJO
+ * @author devScarlet, mrTJO
  */
 public class ExPlayScene extends L2GameServerPacket
 {
-	private static final String _S__FE_5B_EXSHOWSLIDESHOWKAMAEL = "[S] FE:5c ExPlayScene";
+	public static final ExPlayScene STATIC_PACKET = new ExPlayScene();
+	
+	private ExPlayScene()
+	{
+	}
 	
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x5c);
+		writeC(0xFE);
+		writeH(0x5C);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_5B_EXSHOWSLIDESHOWKAMAEL;
-	}
-	
 }

@@ -18,30 +18,23 @@ import com.l2jserver.gameserver.network.serverpackets.ExReplyDominionInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExShowOwnthingPos;
 
 /**
- *
- * @author  JIV
+ * @author JIV
  */
 public class RequestDominionInfo extends L2GameClientPacket
 {
 	private static final String _C__D0_58_REQUESTDOMINIONINFO = "[C] D0:58 RequestDominionInfo";
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
 		// nothing
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
-		sendPacket(new ExReplyDominionInfo());
-		sendPacket(new ExShowOwnthingPos());
+		sendPacket(ExReplyDominionInfo.STATIC_PACKET);
+		sendPacket(ExShowOwnthingPos.STATIC_PACKET);
 	}
 	
 	@Override
@@ -50,9 +43,6 @@ public class RequestDominionInfo extends L2GameClientPacket
 		return false;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -36,7 +36,7 @@ public class RequestSeedPhase extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		activeChar.sendPacket(new ExShowSeedMapInfo());
+		activeChar.sendPacket(ExShowSeedMapInfo.STATIC_PACKET);
 	}
 	
 	@Override

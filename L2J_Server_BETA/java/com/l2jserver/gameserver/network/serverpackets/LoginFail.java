@@ -14,15 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-/**
- * format  d   rev 417
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public class LoginFail extends L2GameServerPacket
 {
-	private static final String _S__12_AUTHLOGINFAIL = "[S] 0a LoginFail";
 	public static final int NO_TEXT = 0;
 	public static final int SYSTEM_ERROR_LOGIN_LATER = 1;
 	public static final int PASSWORD_DOES_NOT_MATCH_THIS_ACCOUNT = 2;
@@ -35,7 +28,7 @@ public class LoginFail extends L2GameServerPacket
 	public static final int ACCESS_FAILED_TRY_LATER4 = 9;
 	public static final int ACCESS_FAILED_TRY_LATER5 = 10;
 	
-	private int _reason;
+	private final int _reason;
 	
 	/**
 	 * @param reason
@@ -48,16 +41,7 @@ public class LoginFail extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0x0a);
+		writeC(0x0A);
 		writeD(_reason);
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__12_AUTHLOGINFAIL;
 	}
 }

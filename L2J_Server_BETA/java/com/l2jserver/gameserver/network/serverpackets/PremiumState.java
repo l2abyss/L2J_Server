@@ -15,12 +15,10 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * format: dc
- * @author  GodKratos
+ * @author GodKratos
  */
 public class PremiumState extends L2GameServerPacket
 {
-	private static final String _S__FE_AA_EXGETBOOKMARKINFO = "[S] FE:AA PremiumState";
 	private final int _objectId;
 	private final int _state;
 	
@@ -30,9 +28,6 @@ public class PremiumState extends L2GameServerPacket
 		_state = state;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -40,14 +35,5 @@ public class PremiumState extends L2GameServerPacket
 		writeH(0xAA);
 		writeD(_objectId);
 		writeC(_state);
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_AA_EXGETBOOKMARKINFO;
 	}
 }

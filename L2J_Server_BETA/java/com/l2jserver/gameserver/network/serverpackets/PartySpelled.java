@@ -22,16 +22,10 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public class PartySpelled extends L2GameServerPacket
 {
-	private static final String _S__EE_PartySpelled = "[S] f4 PartySpelled";
-	private List<Effect> _effects;
-	private L2Character _activeChar;
+	private final List<Effect> _effects;
+	private final L2Character _activeChar;
 	
 	private static class Effect
 	{
@@ -56,7 +50,7 @@ public class PartySpelled extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xf4);
+		writeC(0xF4);
 		writeD(_activeChar instanceof L2ServitorInstance ? 2 : _activeChar instanceof L2PetInstance ? 1 : 0);
 		writeD(_activeChar.getObjectId());
 		writeD(_effects.size());
@@ -72,11 +66,5 @@ public class PartySpelled extends L2GameServerPacket
 	public void addPartySpelledEffect(int skillId, int dat, int duration)
 	{
 		_effects.add(new Effect(skillId, dat, duration));
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__EE_PartySpelled;
 	}
 }

@@ -18,10 +18,8 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
-
 /**
- *
+ * <pre>
  * the HTML parser in the client knowns these standard and non-standard tags and attributes
  * VOLUMN
  * UNKNOWN
@@ -120,13 +118,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  * LINK
  * HREF
  * ACTION
- *
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
+ * </pre>
  */
 public final class NpcQuestHtmlMessage extends L2GameServerPacket
 {
-	private int _npcObjId;
+	private final int _npcObjId;
 	private String _html;
 	private int _questId = 0;
 	
@@ -149,9 +145,9 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 	
 	public void setHtml(String text)
 	{
-		if(!text.contains("<html>"))
+		if (!text.contains("<html>"))
 			text = "<html><body>" + text + "</body></html>";
-
+		
 		_html = text;
 	}
 	
@@ -161,8 +157,8 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 		
 		if (content == null)
 		{
-			setHtml("<html><body>My Text is missing:<br>"+path+"</body></html>");
-			_log.warning("missing html page "+path);
+			setHtml("<html><body>My Text is missing:<br>" + path + "</body></html>");
+			_log.warning("missing html page " + path);
 			return false;
 		}
 		
@@ -182,17 +178,17 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 		
 		activeChar.clearBypass();
 		int len = _html.length();
-		for(int i=0; i<len; i++)
+		for (int i = 0; i < len; i++)
 		{
 			int start = _html.indexOf("bypass -h", i);
 			int finish = _html.indexOf("\"", start);
 			
-			if(start < 0 || finish < 0)
+			if (start < 0 || finish < 0)
 				break;
 			
 			start += 10;
 			i = finish;
-			int finish2 = _html.indexOf("$",start);
+			int finish2 = _html.indexOf("$", start);
 			if (finish2 < finish && finish2 > 0)
 				activeChar.addBypass2(_html.substring(start, finish2).trim());
 			else
@@ -203,17 +199,10 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x8d);
+		writeC(0xFE);
+		writeH(0x8D);
 		writeD(_npcObjId);
 		writeS(_html);
 		writeD(_questId);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:8D NpcQuestHtmlMessage";
-	}
-	
 }

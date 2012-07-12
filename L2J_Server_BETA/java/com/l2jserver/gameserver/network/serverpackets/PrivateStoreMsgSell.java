@@ -16,15 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.2.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public class PrivateStoreMsgSell extends L2GameServerPacket
 {
-	private static final String _S__B5_PRIVATESTOREMSGSELL = "[S] a2 PrivateStoreMsgSell";
-	private int _objId;
+	private final int _objId;
 	private String _storeMsg;
 	
 	public PrivateStoreMsgSell(L2PcInstance player)
@@ -37,14 +31,8 @@ public class PrivateStoreMsgSell extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xa2);
+		writeC(0xA2);
 		writeD(_objId);
 		writeS(_storeMsg);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__B5_PRIVATESTOREMSGSELL;
 	}
 }

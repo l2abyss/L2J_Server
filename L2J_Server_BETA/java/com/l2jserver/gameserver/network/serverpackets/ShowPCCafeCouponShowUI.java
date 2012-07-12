@@ -15,31 +15,20 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (ch)
- *
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public class ShowPCCafeCouponShowUI extends L2GameServerPacket
 {
-	private static final String _S__FE_43_SHOWPCCAFECOUPONSHOWUI = "[S] FE:44 ShowPCCafeCouponShowUI";
+	public static final ShowPCCafeCouponShowUI STATIC_PACKET = new ShowPCCafeCouponShowUI();
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
+	private ShowPCCafeCouponShowUI()
+	{
+	}
+	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x44);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_43_SHOWPCCAFECOUPONSHOWUI;
-	}
-	
 }

@@ -17,19 +17,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.olympiad.Participant;
 
-
 /**
- * This class ...
- *
- * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- *
  * @author godson
  */
 public class ExOlympiadUserInfo extends L2GameServerPacket
 {
-	// chcdSddddd
-	private static final String _S__FE_29_OLYMPIADUSERINFO = "[S] FE:7A ExOlympiadUserInfo";
-	private L2PcInstance _player;
+	private final L2PcInstance _player;
 	private Participant _par = null;
 	private int _curHp;
 	private int _maxHp;
@@ -41,9 +34,9 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 		_player = player;
 		if (_player != null)
 		{
-			_curHp = (int)_player.getCurrentHp();
+			_curHp = (int) _player.getCurrentHp();
 			_maxHp = _player.getMaxVisibleHp();
-			_curCp = (int)_player.getCurrentCp();
+			_curCp = (int) _player.getCurrentCp();
 			_maxCp = _player.getMaxCp();
 		}
 		else
@@ -61,9 +54,9 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 		_player = par.getPlayer();
 		if (_player != null)
 		{
-			_curHp = (int)_player.getCurrentHp();
+			_curHp = (int) _player.getCurrentHp();
 			_maxHp = _player.getMaxVisibleHp();
-			_curCp = (int)_player.getCurrentCp();
+			_curCp = (int) _player.getCurrentCp();
 			_maxCp = _player.getMaxCp();
 		}
 		else
@@ -78,8 +71,8 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x7a);
+		writeC(0xFE);
+		writeH(0x7A);
 		if (_player != null)
 		{
 			writeC(_player.getOlympiadSide());
@@ -94,16 +87,10 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 			writeS(_par.getName());
 			writeD(_par.getBaseClass());
 		}
-
+		
 		writeD(_curHp);
 		writeD(_maxHp);
 		writeD(_curCp);
 		writeD(_maxCp);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_29_OLYMPIADUSERINFO;
 	}
 }

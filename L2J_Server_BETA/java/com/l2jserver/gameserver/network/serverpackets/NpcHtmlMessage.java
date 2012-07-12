@@ -20,10 +20,8 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
-
 /**
- *
+ * <pre>
  * the HTML parser in the client knowns these standard and non-standard tags and attributes
  * VOLUMN
  * UNKNOWN
@@ -122,17 +120,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  * LINK
  * HREF
  * ACTION
- *
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
+ * </pre>
  */
 public final class NpcHtmlMessage extends L2GameServerPacket
 {
-	// d S
-	// d is usually 0, S is the html text starting with <html> and ending with </html>
-	//
-	private static final String _S__1B_NPCHTMLMESSAGE = "[S] 19 NpcHtmlMessage";
-	private int _npcObjId;
+	private final int _npcObjId;
 	private String _html;
 	private int _itemId = 0;
 	private boolean _validate = true;
@@ -174,7 +166,7 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	public void runImpl()
 	{
 		if (Config.BYPASS_VALIDATION && _validate)
-			buildBypassCache(getClient().getActiveChar());		
+			buildBypassCache(getClient().getActiveChar());
 	}
 	
 	public void setHtml(String text)
@@ -189,15 +181,15 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 		
 		_html = text;
 	}
-
+	
 	public boolean setFile(String prefix, String path)
 	{
 		String content = HtmCache.getInstance().getHtm(prefix, path);
 		
 		if (content == null)
 		{
-			setHtml("<html><body>My Text is missing:<br>"+path+"</body></html>");
-			_log.warning("missing html page "+path);
+			setHtml("<html><body>My Text is missing:<br>" + path + "</body></html>");
+			_log.warning("missing html page " + path);
 			return false;
 		}
 		
@@ -224,7 +216,7 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 			if (start < 0 || finish < 0)
 				break;
 			
-			if (_html.substring(start+8, start+10).equals("-h"))
+			if (_html.substring(start + 8, start + 10).equals("-h"))
 				start += 11;
 			else
 				start += 8;
@@ -248,14 +240,4 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 		if (_npcObjId != 0)
 			writeD(_itemId);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__1B_NPCHTMLMESSAGE;
-	}
-	
 }

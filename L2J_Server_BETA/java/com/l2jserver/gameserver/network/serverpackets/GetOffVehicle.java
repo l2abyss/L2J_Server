@@ -16,11 +16,10 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * @author Maktakien
- *
  */
 public class GetOffVehicle extends L2GameServerPacket
 {
-	private int _charObjId, _boatObjId, _x, _y, _z;
+	private final int _charObjId, _boatObjId, _x, _y, _z;
 	
 	/**
 	 * @param charObjId
@@ -47,11 +46,5 @@ public class GetOffVehicle extends L2GameServerPacket
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] 6f GetOffVehicle";
 	}
 }

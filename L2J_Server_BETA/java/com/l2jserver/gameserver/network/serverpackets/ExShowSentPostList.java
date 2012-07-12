@@ -24,9 +24,7 @@ import com.l2jserver.gameserver.model.entity.Message;
  */
 public class ExShowSentPostList extends L2GameServerPacket
 {
-	private static final String _S__FE_AC_EXSHOWSENTPOSTLIST = "[S] FE:AC ExShowSentPostList";
-	
-	private List<Message> _outbox;
+	private final List<Message> _outbox;
 	
 	public ExShowSentPostList(int objectId)
 	{
@@ -36,9 +34,9 @@ public class ExShowSentPostList extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0xac);
-		writeD((int)(System.currentTimeMillis() / 1000));
+		writeC(0xFE);
+		writeH(0xAC);
+		writeD((int) (System.currentTimeMillis() / 1000));
 		if (_outbox != null && _outbox.size() > 0)
 		{
 			writeD(_outbox.size());
@@ -58,11 +56,5 @@ public class ExShowSentPostList extends L2GameServerPacket
 		{
 			writeD(0x00);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_AC_EXSHOWSENTPOSTLIST;
 	}
 }

@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public final class Ride extends L2GameServerPacket
 {
-	private static final String _S__8c_Ride = "[S] 8c Ride";
 	public static final int ACTION_MOUNT = 1;
 	public static final int ACTION_DISMOUNT = 0;
 	private final int _id;
@@ -37,6 +36,7 @@ public final class Ride extends L2GameServerPacket
 		_y = cha.getY();
 		_z = cha.getZ();
 		
+		// TODO: Unhardcode these
 		switch (rideClassId)
 		{
 			case 0: // dismount
@@ -59,7 +59,7 @@ public final class Ride extends L2GameServerPacket
 			case 16042: // White Fenrir Wolf
 				_rideType = 3;
 				break;
-			case 32:    //Jet Bike
+			case 32: // Jet Bike
 			case 13130: // Light Purple Maned Horse
 			case 13146: // Tawny-Maned Lion
 			case 13147: // Steam Sledge
@@ -68,12 +68,6 @@ public final class Ride extends L2GameServerPacket
 			default:
 				throw new IllegalArgumentException("Unsupported mount NpcId: " + rideClassId);
 		}
-	}
-	
-	@Override
-	public void runImpl()
-	{
-		
 	}
 	
 	public int getMountType()
@@ -92,11 +86,5 @@ public final class Ride extends L2GameServerPacket
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__8c_Ride;
 	}
 }

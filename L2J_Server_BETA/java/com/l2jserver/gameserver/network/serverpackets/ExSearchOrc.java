@@ -15,31 +15,20 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (ch)
- *
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public class ExSearchOrc extends L2GameServerPacket
 {
-	private static final String _S__FE_44_EXORCMOVE = "[S] FE:45 ExSearchOrc";
+	public static final ExSearchOrc STATIC_PACKET = new ExSearchOrc();
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
+	private ExSearchOrc()
+	{
+	}
+	
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x45);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_44_EXORCMOVE;
-	}
-	
 }

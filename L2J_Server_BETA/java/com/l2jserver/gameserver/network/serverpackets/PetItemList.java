@@ -14,39 +14,22 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.4.2.1.2.4 $ $Date: 2005/03/27 15:29:39 $
- */
 public class PetItemList extends L2GameServerPacket
 {
-	private static final String _S__cb_PETITEMLIST = "[S] b3 PetItemList";
-	private L2PetInstance _activeChar;
+	private final L2PetInstance _activeChar;
 	
 	public PetItemList(L2PetInstance character)
 	{
 		_activeChar = character;
-		if (Config.DEBUG)
-		{
-			L2ItemInstance[] items = _activeChar.getInventory().getItems();
-			for (L2ItemInstance temp : items)
-			{
-				_log.fine("item:" + temp.getItem().getName() +
-						" type1:" + temp.getItem().getType1() + " type2:" + temp.getItem().getType2());
-			}
-		}
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xb3);
+		writeC(0xB3);
 		
 		L2ItemInstance[] items = _activeChar.getInventory().getItems();
 		int count = items.length;
@@ -81,11 +64,5 @@ public class PetItemList extends L2GameServerPacket
 			writeH(0x00);
 			writeH(0x00);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__cb_PETITEMLIST;
 	}
 }

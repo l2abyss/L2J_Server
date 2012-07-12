@@ -20,29 +20,15 @@ import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
-
 /**
  * Seven Signs Record Update
- *
- * packet type id 0xf5
- * format:
- *
- * c cc	(Page Num = 1 -> 4, period)
- *
- * 1: [ddd cc dd ddd c ddd c]
- * 2: [hc [cd (dc (S))]
- * 3: [ccc (cccc)]
- * 4: [(cchh)]
  * @author Tempy
- * CT 2.3 [dddccQQQQQcQQQc.cdQc....Qc..ccc.cccc....ccd]
  * @editor shansoft
- *
  */
 public class SSQStatus extends L2GameServerPacket
 {
-	private static final String _S__F5_SSQStatus = "[S] fb SSQStatus";
-	private int _objectId;
-	private int _page;
+	private final int _objectId;
+	private final int _page;
 	
 	public SSQStatus(int objectId, int recordPage)
 	{
@@ -117,16 +103,15 @@ public class SSQStatus extends L2GameServerPacket
 				double totalStoneScore = duskStoneScore + dawnStoneScore;
 				
 				/*
-				 * Scoring seems to be proportionate to a set base value, so base this on
-				 * the maximum obtainable score from festivals, which is 500.
+				 * Scoring seems to be proportionate to a set base value, so base this on the maximum obtainable score from festivals, which is 500.
 				 */
 				int duskStoneScoreProp = 0;
 				int dawnStoneScoreProp = 0;
 				
 				if (totalStoneScore != 0)
 				{
-					duskStoneScoreProp = Math.round(((float)duskStoneScore / (float)totalStoneScore) * 500);
-					dawnStoneScoreProp = Math.round(((float)dawnStoneScore / (float)totalStoneScore) * 500);
+					duskStoneScoreProp = Math.round(((float) duskStoneScore / (float) totalStoneScore) * 500);
+					dawnStoneScoreProp = Math.round(((float) dawnStoneScore / (float) totalStoneScore) * 500);
 				}
 				
 				int duskTotalScore = SevenSigns.getInstance().getCurrentScore(SevenSigns.CABAL_DUSK);
@@ -136,23 +121,21 @@ public class SSQStatus extends L2GameServerPacket
 				
 				if (totalOverallScore != 0)
 				{
-					dawnPercent = Math.round(((float)dawnTotalScore / (float)totalOverallScore) * 100);
-					duskPercent = Math.round(((float)duskTotalScore / (float)totalOverallScore) * 100);
+					dawnPercent = Math.round(((float) dawnTotalScore / (float) totalOverallScore) * 100);
+					duskPercent = Math.round(((float) duskTotalScore / (float) totalOverallScore) * 100);
 				}
 				
-				if (Config.DEBUG) {
-					_log.info("Dusk Stone Score: " + duskStoneScore + " - Dawn Stone Score: "
-							+ dawnStoneScore);
-					_log.info("Dusk Festival Score: " + duskFestivalScore + " - Dawn Festival Score: "
-							+ dawnFestivalScore);
+				if (Config.DEBUG)
+				{
+					_log.info("Dusk Stone Score: " + duskStoneScore + " - Dawn Stone Score: " + dawnStoneScore);
+					_log.info("Dusk Festival Score: " + duskFestivalScore + " - Dawn Festival Score: " + dawnFestivalScore);
 					_log.info("Dusk Score: " + duskTotalScore + " - Dawn Score: " + dawnTotalScore);
 					_log.info("Overall Score: " + totalOverallScore);
 					_log.info("");
 					if (totalStoneScore == 0)
 						_log.info("Dusk Prop: 0 - Dawn Prop: 0");
 					else
-						_log.info("Dusk Prop: " + ((duskStoneScore / totalStoneScore) * 500) + " - Dawn Prop: "
-								+ ((dawnStoneScore / totalStoneScore) * 500));
+						_log.info("Dusk Prop: " + ((duskStoneScore / totalStoneScore) * 500) + " - Dawn Prop: " + ((dawnStoneScore / totalStoneScore) * 500));
 					_log.info("Dusk %: " + duskPercent + " - Dawn %: " + dawnPercent);
 				}
 				
@@ -233,9 +216,7 @@ public class SSQStatus extends L2GameServerPacket
 					int duskProportion = SevenSigns.getInstance().getSealProportion(i, SevenSigns.CABAL_DUSK);
 					
 					if (Config.DEBUG)
-						_log.info(SevenSigns.getSealName(i, true) + " = Dawn Prop: " + dawnProportion + "("
-								+ ((dawnProportion / totalDawnMembers) * 100) + "%)" + ", Dusk Prop: "
-								+ duskProportion + "(" + ((duskProportion / totalDuskMembers) * 100) + "%)");
+						_log.info(SevenSigns.getSealName(i, true) + " = Dawn Prop: " + dawnProportion + "(" + ((dawnProportion / totalDawnMembers) * 100) + "%)" + ", Dusk Prop: " + duskProportion + "(" + ((duskProportion / totalDuskMembers) * 100) + "%)");
 					
 					writeC(i);
 					writeC(SevenSigns.getInstance().getSealOwner(i));
@@ -250,20 +231,20 @@ public class SSQStatus extends L2GameServerPacket
 						else
 						{
 							writeC(0);
-							writeC(Math.round(((float)dawnProportion / (float)totalDawnMembers) * 100));
+							writeC(Math.round(((float) dawnProportion / (float) totalDawnMembers) * 100));
 						}
 					}
 					else
 					{
 						if (totalDawnMembers == 0)
 						{
-							writeC(Math.round(((float)duskProportion / (float)totalDuskMembers) * 100));
+							writeC(Math.round(((float) duskProportion / (float) totalDuskMembers) * 100));
 							writeC(0);
 						}
 						else
 						{
-							writeC(Math.round(((float)duskProportion / (float)totalDuskMembers) * 100));
-							writeC(Math.round(((float)dawnProportion / (float)totalDawnMembers) * 100));
+							writeC(Math.round(((float) duskProportion / (float) totalDuskMembers) * 100));
+							writeC(Math.round(((float) dawnProportion / (float) totalDawnMembers) * 100));
 						}
 					}
 				}
@@ -277,8 +258,8 @@ public class SSQStatus extends L2GameServerPacket
 				{
 					int dawnProportion = SevenSigns.getInstance().getSealProportion(i, SevenSigns.CABAL_DAWN);
 					int duskProportion = SevenSigns.getInstance().getSealProportion(i, SevenSigns.CABAL_DUSK);
-					dawnPercent = Math.round((dawnProportion / (totalDawnMembers == 0 ? 1 : (float)totalDawnMembers)) * 100);
-					duskPercent = Math.round((duskProportion / (totalDuskMembers == 0 ? 1 : (float)totalDuskMembers)) * 100);
+					dawnPercent = Math.round((dawnProportion / (totalDawnMembers == 0 ? 1 : (float) totalDawnMembers)) * 100);
+					duskPercent = Math.round((duskProportion / (totalDuskMembers == 0 ? 1 : (float) totalDuskMembers)) * 100);
 					int sealOwner = SevenSigns.getInstance().getSealOwner(i);
 					
 					writeC(i);
@@ -286,7 +267,7 @@ public class SSQStatus extends L2GameServerPacket
 					switch (sealOwner)
 					{
 						case SevenSigns.CABAL_NULL:
-							switch(winningCabal)
+							switch (winningCabal)
 							{
 								case SevenSigns.CABAL_NULL:
 									writeC(SevenSigns.CABAL_NULL);
@@ -319,7 +300,7 @@ public class SSQStatus extends L2GameServerPacket
 							}
 							break;
 						case SevenSigns.CABAL_DAWN:
-							switch(winningCabal)
+							switch (winningCabal)
 							{
 								case SevenSigns.CABAL_NULL:
 									if (dawnPercent >= 10)
@@ -365,7 +346,7 @@ public class SSQStatus extends L2GameServerPacket
 							}
 							break;
 						case SevenSigns.CABAL_DUSK:
-							switch(winningCabal)
+							switch (winningCabal)
 							{
 								case SevenSigns.CABAL_NULL:
 									if (duskPercent >= 10)
@@ -414,11 +395,5 @@ public class SSQStatus extends L2GameServerPacket
 				}
 				break;
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__F5_SSQStatus;
 	}
 }

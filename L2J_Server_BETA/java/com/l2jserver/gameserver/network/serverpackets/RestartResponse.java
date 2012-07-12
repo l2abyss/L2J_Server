@@ -14,15 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public final class RestartResponse extends L2GameServerPacket
 {
-	private static final String _S__74_RESTARTRESPONSE = "[S] 71 RestartResponse";
 	private static final RestartResponse STATIC_PACKET_TRUE = new RestartResponse(true);
 	private static final RestartResponse STATIC_PACKET_FALSE = new RestartResponse(false);
 	
@@ -31,7 +24,7 @@ public final class RestartResponse extends L2GameServerPacket
 		return result ? STATIC_PACKET_TRUE : STATIC_PACKET_FALSE;
 	}
 	
-	private boolean _result;
+	private final boolean _result;
 	
 	public RestartResponse(boolean result)
 	{
@@ -43,11 +36,5 @@ public final class RestartResponse extends L2GameServerPacket
 	{
 		writeC(0x71);
 		writeD(_result ? 1 : 0);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__74_RESTARTRESPONSE;
 	}
 }

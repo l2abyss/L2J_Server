@@ -15,25 +15,15 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * @author JIV
- * 
  * Possibly trigger packet only, need to be verified.
- * 
+ * @author JIV
  */
 public class ExDominionWarEnd extends L2GameServerPacket
 {
-	private static final String TYPE = "[S] FE:A4 ExDominionWarEnd";
-	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xFE);
 		writeH(0xA4);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return TYPE;
 	}
 }

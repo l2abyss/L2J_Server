@@ -16,15 +16,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.L2Clan;
 
-
 public class ManagePledgePower extends L2GameServerPacket
 {
-	private static final String _S__30_MANAGEPLEDGEPOWER = "[S] 2a ManagePledgePower";
 	
-	private int _action;
-	private L2Clan _clan;
-	private int _rank;
-	private int _privs;
+	private final int _action;
+	private final L2Clan _clan;
+	private final int _rank;
 	
 	public ManagePledgePower(L2Clan clan, int action, int rank)
 	{
@@ -36,31 +33,12 @@ public class ManagePledgePower extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0x2a);
-		if(_action == 1)
+		if (_action == 1)
 		{
-			_privs = _clan.getRankPrivs(_rank);
+			writeC(0x2a);
+			writeD(0);
+			writeD(0);
+			writeD(_clan.getRankPrivs(_rank));
 		}
-		else
-		{
-			return;
-			/*
-            if (L2World.getInstance().findObject(_clanId) == null)
-                return;
-
-			privs = ((L2PcInstance)L2World.getInstance().findObject(_clanId)).getClanPrivileges();
-			 */
-		}
-		
-		writeD(0);
-		writeD(0);
-		writeD(_privs);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__30_MANAGEPLEDGEPOWER;
-	}
-	
 }

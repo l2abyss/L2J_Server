@@ -17,20 +17,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.2.2.3.2.6 $ $Date: 2005/03/27 15:29:57 $
- */
 public class PrivateStoreListSell extends L2GameServerPacket
 {
-	private static final String _S__B4_PRIVATESTORELISTSELL = "[S] a1 PrivateStoreListSell";
 	private final int _objId;
 	private final long _playerAdena;
 	private final boolean _packageSale;
 	private final TradeItem[] _items;
 	
-	// player's private shop
 	public PrivateStoreListSell(L2PcInstance player, L2PcInstance storePlayer)
 	{
 		_objId = storePlayer.getObjectId();
@@ -42,7 +35,7 @@ public class PrivateStoreListSell extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xa1);
+		writeC(0xA1);
 		writeD(_objId);
 		writeD(_packageSale ? 1 : 0);
 		writeQ(_playerAdena);
@@ -61,9 +54,9 @@ public class PrivateStoreListSell extends L2GameServerPacket
 			writeH(item.getCustomType2());
 			// Player cannot sell/buy augmented, shadow or time-limited items
 			// probably so hardcode values here
-			writeD(0x00);	// Augment
-			writeD(-1);		// Mana
-			writeD(-9999);	// Time
+			writeD(0x00); // Augment
+			writeD(-1); // Mana
+			writeD(-9999); // Time
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
@@ -77,11 +70,5 @@ public class PrivateStoreListSell extends L2GameServerPacket
 			writeQ(item.getPrice());
 			writeQ(item.getItem().getReferencePrice() * 2);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__B4_PRIVATESTORELISTSELL;
 	}
 }

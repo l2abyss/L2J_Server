@@ -17,8 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public final class ExPartyPetWindowAdd extends L2GameServerPacket
 {
@@ -29,23 +28,10 @@ public final class ExPartyPetWindowAdd extends L2GameServerPacket
 		_summon = summon;
 	}
 	
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] FE:18 ExPartyPetWindowAdd";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x18);
 		writeD(_summon.getObjectId());
 		writeD(_summon.getTemplate().getIdTemplate() + 1000000);

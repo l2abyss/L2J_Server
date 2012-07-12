@@ -27,26 +27,24 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 public class SellListProcure extends L2GameServerPacket
 {
-	private static final String _S__E9_SELLLISTPROCURE = "[S] ef SellListProcure";
-	
 	private final L2PcInstance _activeChar;
-	private long _money;
-	private Map<L2ItemInstance,Long> _sellList = new FastMap<>();
+	private final long _money;
+	private final Map<L2ItemInstance, Long> _sellList = new FastMap<>();
 	private List<CropProcure> _procureList = new FastList<>();
-	private int _castle;
+	private final int _castle;
 	
 	public SellListProcure(L2PcInstance player, int castleId)
 	{
 		_money = player.getAdena();
 		_activeChar = player;
 		_castle = castleId;
-		_procureList =  CastleManager.getInstance().getCastleById(_castle).getCropProcure(0);
-		for(CropProcure c : _procureList)
+		_procureList = CastleManager.getInstance().getCastleById(_castle).getCropProcure(0);
+		for (CropProcure c : _procureList)
 		{
 			L2ItemInstance item = _activeChar.getInventory().getItemByItemId(c.getId());
-			if(item != null && c.getAmount() > 0)
+			if (item != null && c.getAmount() > 0)
 			{
-				_sellList.put(item,c.getAmount());
+				_sellList.put(item, c.getAmount());
 			}
 		}
 	}
@@ -54,26 +52,20 @@ public class SellListProcure extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xef);
-		writeQ(_money);         // money
-		writeD(0x00);           // lease ?
-		writeH(_sellList.size());         // list size
+		writeC(0xEF);
+		writeQ(_money); // money
+		writeD(0x00); // lease ?
+		writeH(_sellList.size()); // list size
 		
-		for(L2ItemInstance item : _sellList.keySet())
+		for (L2ItemInstance item : _sellList.keySet())
 		{
 			writeH(item.getItem().getType1());
 			writeD(item.getObjectId());
 			writeD(item.getDisplayId());
-			writeQ(_sellList.get(item));  // count
+			writeQ(_sellList.get(item)); // count
 			writeH(item.getItem().getType2());
-			writeH(0);  // unknown
-			writeQ(0);  // price, u shouldnt get any adena for crops, only raw materials
+			writeH(0); // unknown
+			writeQ(0); // price, u shouldnt get any adena for crops, only raw materials
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__E9_SELLLISTPROCURE;
-	}
+	}	
 }

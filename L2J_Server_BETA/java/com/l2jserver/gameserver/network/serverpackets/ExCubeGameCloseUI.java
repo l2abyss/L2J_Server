@@ -15,15 +15,10 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (chd)
- * 
  * @author mrTJO
  */
 public class ExCubeGameCloseUI extends L2GameServerPacket
 {
-	private static final String _S__FE_97_FFFFFFFF_EXCUBEGAMECLOSEUI = "[S] FE:97:FFFFFFFF ExCubeGameCloseUI";
-	int _seconds;
-	
 	/**
 	 * Close Minigame Waiting List
 	 */
@@ -38,11 +33,5 @@ public class ExCubeGameCloseUI extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x97);
 		writeD(0xffffffff);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_97_FFFFFFFF_EXCUBEGAMECLOSEUI;
 	}
 }

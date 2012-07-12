@@ -15,29 +15,21 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- *
- * @author  chris_00
- *
- * opens the CommandChannel Information window
- *
+ * Opens the CommandChannel Information window
+ * @author chris_00
  */
 public class ExOpenMPCC extends L2GameServerPacket
 {
+	public static final ExOpenMPCC STATIC_PACKET = new ExOpenMPCC();
 	
-	private static final String _S__FE_25_EXOPENMPCC = "[S] FE:12 ExOpenMPCC";
+	private ExOpenMPCC()
+	{
+	}
 	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x12);
-		
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_25_EXOPENMPCC;
-	}
-	
 }

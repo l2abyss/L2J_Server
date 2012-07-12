@@ -18,35 +18,29 @@ import java.util.List;
 
 import com.l2jserver.gameserver.util.Point3D;
 
-
 /**
  * Format: (ch) d[ddddd]
- *
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public class ExCursedWeaponLocation extends L2GameServerPacket
 {
-	private static final String _S__FE_46_EXCURSEDWEAPONLOCATION = "[S] FE:47 ExCursedWeaponLocation";
-	private List<CursedWeaponInfo> _cursedWeaponInfo;
+	private final List<CursedWeaponInfo> _cursedWeaponInfo;
 	
 	public ExCursedWeaponLocation(List<CursedWeaponInfo> cursedWeaponInfo)
 	{
 		_cursedWeaponInfo = cursedWeaponInfo;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x47);
 		
-		if(!_cursedWeaponInfo.isEmpty())
+		if (!_cursedWeaponInfo.isEmpty())
 		{
 			writeD(_cursedWeaponInfo.size());
-			for(CursedWeaponInfo w : _cursedWeaponInfo)
+			for (CursedWeaponInfo w : _cursedWeaponInfo)
 			{
 				writeD(w.id);
 				writeD(w.activated);
@@ -63,20 +57,11 @@ public class ExCursedWeaponLocation extends L2GameServerPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_46_EXCURSEDWEAPONLOCATION;
-	}
-	
 	public static class CursedWeaponInfo
 	{
 		public Point3D pos;
 		public int id;
-		public int activated; //0 - not activated ? 1 - activated
+		public int activated; // 0 - not activated ? 1 - activated
 		
 		public CursedWeaponInfo(Point3D p, int ID, int status)
 		{

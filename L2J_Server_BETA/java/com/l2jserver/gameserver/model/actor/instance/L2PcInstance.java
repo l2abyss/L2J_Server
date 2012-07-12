@@ -4690,8 +4690,8 @@ public final class L2PcInstance extends L2Playable
 	
 	public void queryGameGuard()
 	{
-		this.getClient().setGameGuardOk(false);
-		this.sendPacket(new GameGuardQuery());
+		getClient().setGameGuardOk(false);
+		sendPacket(GameGuardQuery.STATIC_PACKET);
 		if (Config.GAMEGUARD_ENFORCE)
 		{
 			ThreadPoolManager.getInstance().scheduleGeneral(new GameGuardCheck(), 30*1000);
@@ -6383,7 +6383,7 @@ public final class L2PcInstance extends L2Playable
 		SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_CONFIRMED_TRADE);
 		msg.addPcName(partner);
 		sendPacket(msg);
-		sendPacket(new TradeOtherDone());
+		sendPacket(TradeOtherDone.STATIC_PACKET);
 	}
 	
 	public void onTradeCancel(L2PcInstance partner)
@@ -13374,7 +13374,7 @@ public final class L2PcInstance extends L2Playable
 			addSkill(SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel()), false);
 	}
 	
-	private FastMap<Integer, TimeStamp> _reuseTimeStampsItems = new FastMap<>();
+	private final FastMap<Integer, TimeStamp> _reuseTimeStampsItems = new FastMap<>();
 	
 	public void addTimeStampItem(L2ItemInstance item, long reuse)
 	{

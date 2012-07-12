@@ -15,8 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Author: VISTALL
- *
+ * @author: VISTALL
  */
 public class ExSubPledgeSkillAdd extends L2GameServerPacket
 {
@@ -40,11 +39,4 @@ public class ExSubPledgeSkillAdd extends L2GameServerPacket
 		writeD(_skillId);
 		writeD(_skillLevel);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:76 ExSubPledgeSkillAdd".intern();
-	}
-	
 }

@@ -27,16 +27,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 
-/**
- * This class ...
- * @version $Revision: 1.7.2.4.2.9 $ $Date: 2005/04/11 10:05:54 $
- */
 public abstract class AbstractNpcInfo extends L2GameServerPacket
 {
-	// ddddddddddddddddddffffdddcccccSSddd dddddc
-	// ddddddddddddddddddffffdddcccccSSddd dddddccffd
-	
-	private static final String _S__22_NPCINFO = "[S] 0c NpcInfo";
 	protected int _x, _y, _z, _heading;
 	protected int _idTemplate;
 	protected boolean _isAttackable, _isSummoned;
@@ -68,12 +60,6 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		_pAtkSpd = cha.getPAtkSpd();
 		_runSpd = cha.getTemplate().getBaseRunSpd();
 		_walkSpd = cha.getTemplate().getBaseWalkSpd();
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__22_NPCINFO;
 	}
 	
 	/**
@@ -254,7 +240,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeC(1);
 			writeC(_trap.isInCombat() ? 1 : 0);
 			writeC(_trap.isAlikeDead() ? 1 : 0);
-			writeC(_isSummoned ? 2 : 0); // 0=teleported 1=default 2=summoned
+			writeC(_isSummoned ? 2 : 0); // invisible ?? 0=false 1=true 2=summoned (only works if model has a summon animation)
 			writeD(-1); // High Five NPCString ID
 			writeS(_name);
 			writeD(-1); // High Five NPCString ID
@@ -374,11 +360,11 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_rhand); // right hand weapon
 			writeD(_chest);
 			writeD(_lhand); // left hand weapon
-			writeC(1); // name above char 1=true ... ??
-			writeC(1); // always running 1=running 0=walking
+			writeC(0x01); // name above char 1=true ... ??
+			writeC(0x01); // always running 1=running 0=walking
 			writeC(_summon.isInCombat() ? 1 : 0);
 			writeC(_summon.isAlikeDead() ? 1 : 0);
-			writeC(_val); // 0=teleported 1=default 2=summoned
+			writeC(_val); // invisible ?? 0=false 1=true 2=summoned (only works if model has a summon animation)
 			writeD(-1); // High Five NPCString ID
 			writeS(_name);
 			writeD(-1); // High Five NPCString ID

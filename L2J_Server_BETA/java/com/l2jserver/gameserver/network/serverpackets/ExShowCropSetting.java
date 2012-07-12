@@ -23,53 +23,33 @@ import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.entity.Castle;
 
 /**
- * format(packet 0xFE) ch dd [ddcdcdddddddcddc] c - id h - sub id
- * 
- * d - manor id d - size
- *  [ d - crop id d - seed level c d - reward 1 id c d - reward 2 id d - next
- * sale limit d d - min crop price d - max crop price d - today buy d - today
- * price c - today reward d - next buy d - next price c - next reward ]
- * 
  * @author l3x
  */
 public class ExShowCropSetting extends L2GameServerPacket
 {
-	private static final String _S__FE_20_EXSHOWCROPSETTING = "[S] FE:20 ExShowCropSetting";
-	
-	private int _manorId;
-	
-	private int _count;
-	
-	private long[] _cropData; // data to send, size:_count*14
-	
-	@Override
-	public void runImpl()
-	{
-	}
+	private final int _manorId;
+	private final int _count;
+	private final long[] _cropData; // data to send, size:_count*14
 	
 	public ExShowCropSetting(int manorId)
 	{
 		_manorId = manorId;
 		Castle c = CastleManager.getInstance().getCastleById(_manorId);
-		FastList<Integer> crops = L2Manor.getInstance().getCropsForCastle(
-				_manorId);
+		FastList<Integer> crops = L2Manor.getInstance().getCropsForCastle(_manorId);
 		_count = crops.size();
 		_cropData = new long[_count * 14];
 		int i = 0;
 		for (int cr : crops)
 		{
 			_cropData[i * 14 + 0] = cr;
-			_cropData[i * 14 + 1] = L2Manor.getInstance()
-			.getSeedLevelByCrop(cr);
+			_cropData[i * 14 + 1] = L2Manor.getInstance().getSeedLevelByCrop(cr);
 			_cropData[i * 14 + 2] = L2Manor.getInstance().getRewardItem(cr, 1);
 			_cropData[i * 14 + 3] = L2Manor.getInstance().getRewardItem(cr, 2);
-			_cropData[i * 14 + 4] = L2Manor.getInstance().getCropPuchaseLimit(
-					cr);
+			_cropData[i * 14 + 4] = L2Manor.getInstance().getCropPuchaseLimit(cr);
 			_cropData[i * 14 + 5] = 0; // Looks like not used
 			_cropData[i * 14 + 6] = L2Manor.getInstance().getCropBasicPrice(cr) * 60 / 100;
 			_cropData[i * 14 + 7] = L2Manor.getInstance().getCropBasicPrice(cr) * 10;
-			CropProcure cropPr = c.getCrop(cr,
-					CastleManorManager.PERIOD_CURRENT);
+			CropProcure cropPr = c.getCrop(cr, CastleManorManager.PERIOD_CURRENT);
 			if (cropPr != null)
 			{
 				_cropData[i * 14 + 8] = cropPr.getStartAmount();
@@ -119,8 +99,8 @@ public class ExShowCropSetting extends L2GameServerPacket
 			
 			writeD((int) _cropData[i * 14 + 4]); // next sale limit
 			writeD((int) _cropData[i * 14 + 5]); // ???
-			writeD((int)_cropData[i * 14 + 6]); // min crop price
-			writeD((int)_cropData[i * 14 + 7]); // max crop price
+			writeD((int) _cropData[i * 14 + 6]); // min crop price
+			writeD((int) _cropData[i * 14 + 7]); // max crop price
 			
 			writeQ(_cropData[i * 14 + 8]); // today buy
 			writeQ(_cropData[i * 14 + 9]); // today price
@@ -130,11 +110,5 @@ public class ExShowCropSetting extends L2GameServerPacket
 			writeQ(_cropData[i * 14 + 12]); // next price
 			writeC((int) _cropData[i * 14 + 13]); // next reward
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_20_EXSHOWCROPSETTING;
 	}
 }

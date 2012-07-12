@@ -18,27 +18,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 
-
-/**
- *
- * sample for rev 377:
- *
- * 98
- * 05 00 		number of quests
- * ff 00 00 00
- * 0a 01 00 00
- * 39 01 00 00
- * 04 01 00 00
- * a2 00 00 00
- *
- * format h (d) h (dddh)   rev 377
- * format h (dd) h (dddd)  rev 417
- *
- * @version $Revision: 1.4.2.2.2.2 $ $Date: 2005/02/10 16:44:28 $
- */
 public class QuestList extends L2GameServerPacket
 {
-	private static final String _S__98_QUESTLIST = "[S] 86 QuestList";
 	private Quest[] _quests;
 	private L2PcInstance _activeChar;
 	
@@ -61,6 +42,7 @@ public class QuestList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		/**
+		 * <pre>
 		 * This text was wrote by XaKa
 		 * QuestList packet structure:
 		 * {
@@ -72,7 +54,7 @@ public class QuestList extends L2GameServerPacket
 		 * 			4 byte - Quest Status
 		 * 		}
 		 * }
-		 *
+		 * 
 		 * NOTE: The following special constructs are true for the 4-byte Quest Status:
 		 * If the most significant bit is 0, this means that no progress-step got skipped.
 		 * In this case, merely passing the rank of the latest step gets the client to mark
@@ -89,6 +71,7 @@ public class QuestList extends L2GameServerPacket
 		 * steps have been skipped.
 		 * However, the sequence "1000 0000 0000 0000 0000 0010 1101 1111" indicates that the current step is
 		 * the 10th but the 6th and 9th are not to be shown at all (not completed, either).
+		 * </pre>
 		 */
 		
 		writeC(0x86);
@@ -99,14 +82,14 @@ public class QuestList extends L2GameServerPacket
 			{
 				writeD(q.getQuestIntId());
 				QuestState qs = _activeChar.getQuestState(q.getName());
-				if(qs == null)
+				if (qs == null)
 				{
 					writeD(0);
 					continue;
 				}
 				
 				int states = qs.getInt("__compltdStateFlags");
-				if (states != 0 )
+				if (states != 0)
 					writeD(states);
 				else
 					writeD(qs.getInt("cond"));
@@ -118,11 +101,5 @@ public class QuestList extends L2GameServerPacket
 			writeH(0x00);
 		}
 		writeB(new byte[128]);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__98_QUESTLIST;
 	}
 }

@@ -36,7 +36,7 @@ public class RequestAllFortressInfo extends L2GameClientPacket
 		L2GameClient client = this.getClient();
 		if (client != null)
 		{
-			client.sendPacket(new ExShowFortressInfo());
+			client.sendPacket(ExShowFortressInfo.STATIC_PACKET);
 		}
 	}
 	

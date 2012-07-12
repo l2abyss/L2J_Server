@@ -16,11 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 public class EnchantResult extends L2GameServerPacket
 {
-	private static final String _S__87_ENCHANTRESULT = "[S] 87 EnchantResult";
-	
-	private int _result;
-	private int _crystal;
-	private int _count;
+	private final int _result;
+	private final int _crystal;
+	private final int _count;
 	
 	public EnchantResult(int result, int crystal, int count)
 	{
@@ -36,11 +34,5 @@ public class EnchantResult extends L2GameServerPacket
 		writeD(_result);
 		writeD(_crystal);
 		writeQ(_count);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__87_ENCHANTRESULT;
 	}
 }

@@ -19,22 +19,11 @@ import java.util.List;
 import javolution.util.FastList;
 
 /**
- * Format : (h) d [dS]
- * h  sub id
- *
- * d: number of manors
- * [
- * d: id
- * S: manor name
- * ]
  * @author l3x
- *
  */
 public class ExSendManorList extends L2GameServerPacket
 {
-	private static final String _S__FE_1B_EXSENDMANORLIST = "[S] FE:22 ExSendManorList";
-	
-	private List<String> _manors;
+	private final List<String> _manors;
 	
 	public ExSendManorList(FastList<String> manors)
 	{
@@ -53,11 +42,5 @@ public class ExSendManorList extends L2GameServerPacket
 			writeD(i++);
 			writeS(manor);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_1B_EXSENDMANORLIST;
 	}
 }

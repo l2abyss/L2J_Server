@@ -20,22 +20,10 @@ import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- * Structure:<BR>
- * FE C5 00 01 00 29 95 15 40 8B 3C 00 00 00 00 00
- * 00 E2 01 00 00 00 00 00 00 03 00 00 00 00 00 00
- * 00 00 00 00 00 00 00 00 00 00 00 FF FF FF FF F1
- * D8 FF FF FE FF 00 00 00 00 00 00 00 00 00 00 00
- * 00 00 00 00 00 00 00 00 00 00 00
- * <BR>
- * 
  * @author JIV
- * 
-
  */
 public class ExQuestItemList extends L2GameServerPacket
 {
-	private static final String _S__FE_C6_EXQUESTITEMLIST = "[S] FE:C6 ExQuestItemList";
-	
 	private final FastList<L2ItemInstance> _items;
 	private final PcInventory _inventory;
 	
@@ -59,7 +47,7 @@ public class ExQuestItemList extends L2GameServerPacket
 			writeQ(item.getCount());
 			writeD(item.getItem().getType2());
 			writeH(item.getCustomType1()); // item type3
-			//writeH(item.isEquipped() ? 0x01 : 0x00);
+			// writeH(item.isEquipped() ? 0x01 : 0x00);
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getEnchantLevel()); // enchant level
 			writeH(item.getCustomType2()); // item type3
@@ -85,17 +73,14 @@ public class ExQuestItemList extends L2GameServerPacket
 			writeH(_inventory.getBlockItems().length);
 			writeC(_inventory.getBlockMode());
 			for (int i : _inventory.getBlockItems())
+			{
 				writeD(i);
+			}
 		}
 		else
+		{
 			writeH(0x00);
+		}
 		FastList.recycle(_items);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_C6_EXQUESTITEMLIST;
-	}
-	
 }

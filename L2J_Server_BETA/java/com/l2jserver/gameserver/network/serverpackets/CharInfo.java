@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 
 public class CharInfo extends L2GameServerPacket
 {
-	private static final String _S__03_CHARINFO = "[S] 31 CharInfo";
 	private final L2PcInstance _activeChar;
 	private final Inventory _inv;
 	private int _objId;
@@ -288,10 +287,10 @@ public class CharInfo extends L2GameServerPacket
 			}
 			else
 			{
-				writeD(0);
-				writeD(0);
-				writeD(0);
-				writeD(0);
+				writeD(0x00);
+				writeD(0x00);
+				writeD(0x00);
+				writeD(0x00);
 			}
 			
 			writeC(_activeChar.isSitting() ? 0 : 1); // standing = 1 sitting = 0
@@ -357,11 +356,5 @@ public class CharInfo extends L2GameServerPacket
 			// T2.3
 			writeD(_activeChar.getSpecialEffect());
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__03_CHARINFO;
 	}
 }

@@ -22,8 +22,7 @@ import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 
 public final class ExEnchantSkillInfo extends L2GameServerPacket
 {
-	private static final String _S__FE_18_EXENCHANTSKILLINFO = "[S] FE:2a ExEnchantSkillInfo";
-	private FastList<Integer> _routes; //skill lvls for each route
+	private final FastList<Integer> _routes; // skill lvls for each route
 	
 	private final int _id;
 	private final int _lvl;
@@ -66,7 +65,7 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 				
 			}
 			else
-				// not already enchanted
+			// not already enchanted
 			{
 				for (int route : enchantLearn.getAllRoutes())
 				{
@@ -88,15 +87,9 @@ public final class ExEnchantSkillInfo extends L2GameServerPacket
 		writeD(_lvl > 100 ? 1 : 0); // enchanted?
 		writeD(_routes.size());
 		
-		for (Integer level : _routes)
+		for (int level : _routes)
 		{
 			writeD(level);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_18_EXENCHANTSKILLINFO;
 	}
 }

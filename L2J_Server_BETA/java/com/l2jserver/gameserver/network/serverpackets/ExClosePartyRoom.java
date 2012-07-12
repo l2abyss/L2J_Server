@@ -24,12 +24,6 @@ public class ExClosePartyRoom extends L2GameServerPacket
 	}
 	
 	@Override
-	public String getType()
-	{
-		return "[S] FE:09 ExClosePartyRoom";
-	}
-	
-	@Override
 	protected void writeImpl()
 	{
 		writeC(0xfe);

@@ -145,7 +145,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		catch (NumberFormatException e)
 		{
 		}
-		player.sendPacket(new TutorialCloseHtml());
+		player.sendPacket(TutorialCloseHtml.STATIC_PACKET);
 	}
 	
 	public static final void onTutorialQuestionMark(L2PcInstance player, int number)

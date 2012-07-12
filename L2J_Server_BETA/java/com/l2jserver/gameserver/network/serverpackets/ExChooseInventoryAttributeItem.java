@@ -17,9 +17,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-
 /**
- * @author  Kerberos
+ * @author Kerberos
  */
 public class ExChooseInventoryAttributeItem extends L2GameServerPacket
 {
@@ -32,7 +31,7 @@ public class ExChooseInventoryAttributeItem extends L2GameServerPacket
 		_itemId = item.getDisplayId();
 		_atribute = Elementals.getItemElement(_itemId);
 		if (_atribute == Elementals.NONE)
-			throw new IllegalArgumentException("Undefined Atribute item: "+ item);
+			throw new IllegalArgumentException("Undefined Atribute item: " + item);
 		_level = Elementals.getMaxElementLevel(_itemId);
 	}
 	
@@ -44,18 +43,12 @@ public class ExChooseInventoryAttributeItem extends L2GameServerPacket
 		writeD(_itemId);
 		// Structure for now
 		// Must be 0x01 for stone/crystal attribute type
-		writeD(_atribute == Elementals.FIRE ? 1 : 0);	// Fire
-		writeD(_atribute == Elementals.WATER ? 1 : 0);	// Water
-		writeD(_atribute == Elementals.WIND ? 1 : 0);	// Wind
-		writeD(_atribute == Elementals.EARTH ? 1 : 0);	// Earth
-		writeD(_atribute == Elementals.HOLY ? 1 : 0);	// Holy
-		writeD(_atribute == Elementals.DARK ? 1 : 0);	// Unholy
-		writeD(_level);	// Item max attribute level
-	}
-	
-	@Override
-	public final String getType()
-	{
-		return "[S] FE:62 ExChooseInventoryAttributeItem";
+		writeD(_atribute == Elementals.FIRE ? 1 : 0); // Fire
+		writeD(_atribute == Elementals.WATER ? 1 : 0); // Water
+		writeD(_atribute == Elementals.WIND ? 1 : 0); // Wind
+		writeD(_atribute == Elementals.EARTH ? 1 : 0); // Earth
+		writeD(_atribute == Elementals.HOLY ? 1 : 0); // Holy
+		writeD(_atribute == Elementals.DARK ? 1 : 0); // Unholy
+		writeD(_level); // Item max attribute level
 	}
 }

@@ -20,8 +20,6 @@ import com.l2jserver.gameserver.util.Point3D;
 
 public class ExGetOnAirShip extends L2GameServerPacket
 {
-	private static final String _S__FE_63_EXGETONAIRSHIP = "[S] FE:63 ExGetOnAirShip";
-	
 	private final int _playerId, _airShipId;
 	private final Point3D _pos;
 	
@@ -35,7 +33,7 @@ public class ExGetOnAirShip extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x63);
 		
 		writeD(_playerId);
@@ -43,11 +41,5 @@ public class ExGetOnAirShip extends L2GameServerPacket
 		writeD(_pos.getX());
 		writeD(_pos.getY());
 		writeD(_pos.getZ());
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_63_EXGETONAIRSHIP;
 	}
 }

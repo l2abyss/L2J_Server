@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 
 public final class UserInfo extends L2GameServerPacket
 {
-	private static final String _S__04_USERINFO = "[S] 32 UserInfo";
 	private final L2PcInstance _activeChar;
 	
 	/**
@@ -40,8 +39,8 @@ public final class UserInfo extends L2GameServerPacket
 	private final int _walkSpd;
 	private int _relation;
 	private final float _moveMultiplier;
-	//private int _territoryId;
-	//private boolean _isDisguised;
+	// private int _territoryId;
+	// private boolean _isDisguised;
 	private int _airShipHelm;
 	
 	/**
@@ -63,8 +62,9 @@ public final class UserInfo extends L2GameServerPacket
 			else
 				_relation |= 0x1000;
 		}
-		if (_activeChar.getSiegeState() == 2) _relation |= 0x80;
-		//_isDisguised = TerritoryWarManager.getInstance().isDisguised(character.getObjectId());
+		if (_activeChar.getSiegeState() == 2)
+			_relation |= 0x80;
+		// _isDisguised = TerritoryWarManager.getInstance().isDisguised(character.getObjectId());
 		if (_activeChar.isInAirShip() && _activeChar.getAirShip().isCaptain(_activeChar))
 			_airShipHelm = _activeChar.getAirShip().getHelmItemId();
 		else
@@ -90,8 +90,7 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeD(_activeChar.getLevel());
 		writeQ(_activeChar.getExp());
-		writeF((float)(_activeChar.getExp() - ExperienceTable.getInstance().getExpForLevel(_activeChar.getLevel())) /
-				(ExperienceTable.getInstance().getExpForLevel(_activeChar.getLevel() + 1) - ExperienceTable.getInstance().getExpForLevel(_activeChar.getLevel()))); // High Five exp %
+		writeF((float) (_activeChar.getExp() - ExperienceTable.getInstance().getExpForLevel(_activeChar.getLevel())) / (ExperienceTable.getInstance().getExpForLevel(_activeChar.getLevel() + 1) - ExperienceTable.getInstance().getExpForLevel(_activeChar.getLevel()))); // High Five exp %
 		writeD(_activeChar.getSTR());
 		writeD(_activeChar.getDEX());
 		writeD(_activeChar.getCON());
@@ -118,7 +117,7 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeD(_airShipHelm == 0 ? _activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_RHAND) : _airShipHelm);
 		writeD(_airShipHelm == 0 ? _activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_LHAND) : 0);
-	
+		
 		writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_GLOVES));
 		writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_CHEST));
 		writeD(_activeChar.getInventory().getPaperdollObjectId(Inventory.PAPERDOLL_LEGS));
@@ -174,7 +173,7 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeD(_airShipHelm == 0 ? _activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND) : _airShipHelm);
 		writeD(_airShipHelm == 0 ? _activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_LHAND) : 0);
-			
+		
 		writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_GLOVES));
 		writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_CHEST));
 		writeD(_activeChar.getInventory().getPaperdollAugmentationId(Inventory.PAPERDOLL_LEGS));
@@ -207,7 +206,7 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeD(_activeChar.getMDef(null, null));
 		
-		writeD(_activeChar.getPvpFlag()); // 0-non-pvp  1-pvp = violet name
+		writeD(_activeChar.getPvpFlag()); // 0-non-pvp 1-pvp = violet name
 		writeD(_activeChar.getKarma());
 		
 		writeD(_runSpd);
@@ -235,7 +234,7 @@ public final class UserInfo extends L2GameServerPacket
 		if (_activeChar.getPoly().isMorphed())
 		{
 			L2NpcTemplate polyObj = NpcTable.getInstance().getTemplate(_activeChar.getPoly().getPolyId());
-			if(polyObj != null)
+			if (polyObj != null)
 				title += " - " + polyObj.getName();
 		}
 		writeS(title);
@@ -266,8 +265,8 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeD(_activeChar.getClanPrivileges());
 		
-		writeH(_activeChar.getRecomLeft()); //c2  recommendations remaining
-		writeH(_activeChar.getRecomHave()); //c2  recommendations received
+		writeH(_activeChar.getRecomLeft()); // c2 recommendations remaining
+		writeH(_activeChar.getRecomHave()); // c2 recommendations received
 		writeD(_activeChar.getMountNpcId() > 0 ? _activeChar.getMountNpcId() + 1000000 : 0);
 		writeH(_activeChar.getInventoryLimit());
 		
@@ -277,27 +276,27 @@ public final class UserInfo extends L2GameServerPacket
 		writeD((int) _activeChar.getCurrentCp());
 		writeC(_activeChar.isMounted() || _airShipHelm != 0 ? 0 : _activeChar.getEnchantEffect());
 		
-		writeC(_activeChar.getTeam()); //team circle around feet 1= Blue, 2 = red
+		writeC(_activeChar.getTeam()); // team circle around feet 1= Blue, 2 = red
 		
 		writeD(_activeChar.getClanCrestLargeId());
-		writeC(_activeChar.isNoble() ? 1 : 0); //0x01: symbol on char menu ctrl+I
-		writeC(_activeChar.isHero() || (_activeChar.isGM() && Config.GM_HERO_AURA) ? 1 : 0); //0x01: Hero Aura
+		writeC(_activeChar.isNoble() ? 1 : 0); // 0x01: symbol on char menu ctrl+I
+		writeC(_activeChar.isHero() || (_activeChar.isGM() && Config.GM_HERO_AURA) ? 1 : 0); // 0x01: Hero Aura
 		
-		writeC(_activeChar.isFishing() ? 1 : 0); //Fishing Mode
-		writeD(_activeChar.getFishx()); //fishing x
-		writeD(_activeChar.getFishy()); //fishing y
-		writeD(_activeChar.getFishz()); //fishing z
+		writeC(_activeChar.isFishing() ? 1 : 0); // Fishing Mode
+		writeD(_activeChar.getFishx()); // fishing x
+		writeD(_activeChar.getFishy()); // fishing y
+		writeD(_activeChar.getFishz()); // fishing z
 		writeD(_activeChar.getAppearance().getNameColor());
 		
-		//new c5
-		writeC(_activeChar.isRunning() ? 0x01 : 0x00); //changes the Speed display on Status Window
+		// new c5
+		writeC(_activeChar.isRunning() ? 0x01 : 0x00); // changes the Speed display on Status Window
 		
-		writeD(_activeChar.getPledgeClass()); //changes the text above CP on Status Window
+		writeD(_activeChar.getPledgeClass()); // changes the text above CP on Status Window
 		writeD(_activeChar.getPledgeType());
 		
 		writeD(_activeChar.getAppearance().getTitleColor());
 		
-		writeD(_activeChar.isCursedWeaponEquipped() ? CursedWeaponsManager.getInstance().getLevel(_activeChar.getCursedWeaponEquippedId()) : 0);	
+		writeD(_activeChar.isCursedWeaponEquipped() ? CursedWeaponsManager.getInstance().getLevel(_activeChar.getCursedWeaponEquippedId()) : 0);
 		
 		// T1 Starts
 		writeD(_activeChar.getTransformationId());
@@ -315,18 +314,12 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.getAgathionId());
 		
 		// T2 Starts
-		writeD(_activeChar.getFame());  // Fame
-		writeD(_activeChar.isMinimapAllowed() ? 1: 0); // Minimap on Hellbound
-		writeD(_activeChar.getVitalityPoints());  // Vitality Points
+		writeD(_activeChar.getFame()); // Fame
+		writeD(_activeChar.isMinimapAllowed() ? 1 : 0); // Minimap on Hellbound
+		writeD(_activeChar.getVitalityPoints()); // Vitality Points
 		writeD(_activeChar.getSpecialEffect());
-		/*writeD(_territoryId); // CT2.3
-		writeD((_isDisguised ? 0x01: 0x00)); // CT2.3
-		writeD(_territoryId); // CT2.3*/
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__04_USERINFO;
+		// writeD(_territoryId); // CT2.3
+		// writeD((_isDisguised ? 0x01: 0x00)); // CT2.3
+		// writeD(_territoryId); // CT2.3
 	}
 }

@@ -24,14 +24,10 @@ import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
- * format dddd d (ddQd)
- * @version 1.5
  * @author Zoey76
  */
 public class AcquireSkillInfo extends L2GameServerPacket
 {
-	private static final String _S__91_ACQUIRESKILLINFO = "[S] 91 AcquireSkillInfo";
-	
 	private final AcquireSkillType _type;
 	private final int _id;
 	private final int _level;
@@ -124,11 +120,5 @@ public class AcquireSkillInfo extends L2GameServerPacket
 			writeQ(temp.count);
 			writeD(temp.unk);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__91_ACQUIRESKILLINFO;
 	}
 }

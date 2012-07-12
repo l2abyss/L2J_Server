@@ -18,11 +18,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 
 /**
  * @author Maktakien
- *
  */
-public class VehicleInfo  extends L2GameServerPacket
+public class VehicleInfo extends L2GameServerPacket
 {
-	// Store some parameters here because they can be changed during broadcast
 	private final int _objId, _x, _y, _z, _heading;
 	
 	public VehicleInfo(L2BoatInstance boat)
@@ -43,11 +41,5 @@ public class VehicleInfo  extends L2GameServerPacket
 		writeD(_y);
 		writeD(_z);
 		writeD(_heading);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] 59 VehicleInfo";
 	}
 }

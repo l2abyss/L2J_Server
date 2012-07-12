@@ -15,13 +15,11 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- *
- * @author  devScarlet & mrTJO
+ * @author devScarlet, mrTJO
  */
 public class ShowXMasSeal extends L2GameServerPacket
 {
-	private static final String _S__F2_SHOWXMASSEAL = "[S] f8 ShowXMasSeal";
-	private int _item;
+	private final int _item;
 	
 	public ShowXMasSeal(int item)
 	{
@@ -31,19 +29,7 @@ public class ShowXMasSeal extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xf8);
-		
+		writeC(0xF8);
 		writeD(_item);
 	}
-	
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__F2_SHOWXMASSEAL;
-	}
-	
 }

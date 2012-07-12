@@ -15,12 +15,10 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: ch d
- * @author  KenM
+ * @author KenM
  */
 public class ExSetCompassZoneCode extends L2GameServerPacket
 {
-	private static final String _S__FE_32_EXSETCOMPASSZONECODE = "[S] FE:33 ExSetCompassZoneCode";
 	
 	public static final int ALTEREDZONE = 0x08;
 	public static final int SIEGEWARZONE1 = 0x0A;
@@ -30,16 +28,13 @@ public class ExSetCompassZoneCode extends L2GameServerPacket
 	public static final int PVPZONE = 0x0E;
 	public static final int GENERALZONE = 0x0F;
 	
-	private int _zoneType;
+	private final int _zoneType;
 	
 	public ExSetCompassZoneCode(int val)
 	{
 		_zoneType = val;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -47,14 +42,4 @@ public class ExSetCompassZoneCode extends L2GameServerPacket
 		writeH(0x33);
 		writeD(_zoneType);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_32_EXSETCOMPASSZONECODE;
-	}
-	
 }

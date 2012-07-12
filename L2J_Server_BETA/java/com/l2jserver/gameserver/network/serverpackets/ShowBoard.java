@@ -20,8 +20,6 @@ import com.l2jserver.util.StringUtil;
 
 public class ShowBoard extends L2GameServerPacket
 {
-	private static final String _S__7B_SHOWBOARD = "[S] 7B ShowBoard";
-	
 	private final StringBuilder _htmlCode;
 	
 	public ShowBoard(String htmlCode, String id)
@@ -42,7 +40,7 @@ public class ShowBoard extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x7B);
-		writeC(0x01); //c4 1 to show community 00 to hide
+		writeC(0x01); // c4 1 to show community 00 to hide
 		writeS("bypass _bbshome"); // top
 		writeS("bypass _bbsgetfav"); // favorite
 		writeS("bypass _bbsloc"); // region
@@ -52,14 +50,5 @@ public class ShowBoard extends L2GameServerPacket
 		writeS("bypass _bbsfriends"); // friends
 		writeS("bypass bbs_add_fav"); // add fav.
 		writeS(_htmlCode.toString());
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__7B_SHOWBOARD;
 	}
 }

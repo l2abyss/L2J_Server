@@ -22,9 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class PartyMatchDetail extends L2GameServerPacket
 {
-	private static final String _S__9D_PARTYMATCHDETAIL = "[S] 9d PartyMatchDetail";
-	
-	private PartyMatchRoom _room;
+	private final PartyMatchRoom _room;
 	
 	/**
 	 * @param player
@@ -39,19 +37,13 @@ public class PartyMatchDetail extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x9d);
-		writeD(_room.getId());			// Room ID
-		writeD(_room.getMaxMembers());	// Max Members
-		writeD(_room.getMinLvl());		// Level Min
-		writeD(_room.getMaxLvl());		// Level Max
-		writeD(_room.getLootType());	// Loot Type
-		writeD(_room.getLocation());	// Room Location
-		writeS(_room.getTitle());		// Room title
-		writeH(0x00);					// Unknown
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__9D_PARTYMATCHDETAIL;
+		writeD(_room.getId()); // Room ID
+		writeD(_room.getMaxMembers()); // Max Members
+		writeD(_room.getMinLvl()); // Level Min
+		writeD(_room.getMaxLvl()); // Level Max
+		writeD(_room.getLootType()); // Loot Type
+		writeD(_room.getLocation()); // Room Location
+		writeS(_room.getTitle()); // Room title
+		writeH(0x00); // Unknown
 	}
 }

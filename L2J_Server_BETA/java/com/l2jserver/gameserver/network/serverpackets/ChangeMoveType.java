@@ -16,24 +16,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 
-/**
- *
- * sample
- *
- * 0000: 3e 2a 89 00 4c 01 00 00 00                         .|...
- *
- * format   dd
- *
- * @version $Revision: 1.3.2.1.2.4 $ $Date: 2005/03/27 15:29:57 $
- */
 public class ChangeMoveType extends L2GameServerPacket
 {
-	private static final String _S__3E_CHANGEMOVETYPE = "[S] 28 ChangeMoveType";
 	public static final int WALK = 0;
 	public static final int RUN = 1;
 	
-	private int _charObjId;
-	private boolean _running;
+	private final int _charObjId;
+	private final boolean _running;
 	
 	public ChangeMoveType(L2Character character)
 	{
@@ -47,12 +36,6 @@ public class ChangeMoveType extends L2GameServerPacket
 		writeC(0x28);
 		writeD(_charObjId);
 		writeD(_running ? RUN : WALK);
-		writeD(0); //c2
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__3E_CHANGEMOVETYPE;
+		writeD(0); // c2
 	}
 }

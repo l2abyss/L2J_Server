@@ -29,12 +29,10 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * @author kombat
- * Format: cd d[d s/d/dd/ddd]
  */
 public class ConfirmDlg extends L2GameServerPacket
 {
-	private static final String _S__ED_CONFIRMDLG = "[S] f3 ConfirmDlg";
-	private int _messageId;
+	private final int _messageId;
 	
 	private int _skillLvL = 1;
 	
@@ -87,11 +85,11 @@ public class ConfirmDlg extends L2GameServerPacket
 	public ConfirmDlg addCharName(L2Character cha)
 	{
 		if (cha instanceof L2Npc)
-			return addNpcName((L2Npc)cha);
+			return addNpcName((L2Npc) cha);
 		if (cha instanceof L2PcInstance)
-			return addPcName((L2PcInstance)cha);
+			return addPcName((L2PcInstance) cha);
 		if (cha instanceof L2Summon)
-			return addNpcName((L2Summon)cha);
+			return addNpcName((L2Summon) cha);
 		return addString(cha.getName());
 	}
 	
@@ -142,7 +140,12 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addZoneName(int x, int y, int z)
 	{
-		Integer[] coord = {x, y, z};
+		Integer[] coord =
+		{
+			x,
+			y,
+			z
+		};
 		_info.add(new CnfDlgData(TYPE_ZONE_NAME, coord));
 		return this;
 	}
@@ -154,7 +157,7 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addSkillName(L2Skill skill)
 	{
-		if (skill.getId() != skill.getDisplayId()) //custom skill -  need nameId or smth like this.
+		if (skill.getId() != skill.getDisplayId()) // custom skill - need nameId or smth like this.
 			return addString(skill.getName());
 		return addSkillName(skill.getId(), skill.getLevel());
 	}
@@ -199,6 +202,7 @@ public class ConfirmDlg extends L2GameServerPacket
 		{
 			writeD(_info.size());
 			
+			// TODO: Verify this i bet its same like SystemMessage
 			for (CnfDlgData data : _info)
 			{
 				writeD(data.type);
@@ -206,19 +210,19 @@ public class ConfirmDlg extends L2GameServerPacket
 				switch (data.type)
 				{
 					case TYPE_TEXT:
-						writeS((String)data.value);
+						writeS((String) data.value);
 						break;
 					case TYPE_NUMBER:
 					case TYPE_NPC_NAME:
 					case TYPE_ITEM_NAME:
-						writeD((Integer)data.value);
+						writeD((Integer) data.value);
 						break;
 					case TYPE_SKILL_NAME:
-						writeD((Integer)data.value); // Skill Id
+						writeD((Integer) data.value); // Skill Id
 						writeD(_skillLvL); // Skill lvl
 						break;
 					case TYPE_ZONE_NAME:
-						Integer[] array = (Integer[])data.value;
+						Integer[] array = (Integer[]) data.value;
 						writeD(array[0]);
 						writeD(array[1]);
 						writeD(array[2]);
@@ -226,15 +230,13 @@ public class ConfirmDlg extends L2GameServerPacket
 				}
 			}
 			if (_time != 0)
+			{
 				writeD(_time);
+			}
 			if (_requesterId != 0)
+			{
 				writeD(_requesterId);
+			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__ED_CONFIRMDLG;
 	}
 }

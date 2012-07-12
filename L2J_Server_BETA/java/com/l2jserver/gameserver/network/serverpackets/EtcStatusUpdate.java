@@ -18,17 +18,12 @@ import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-/* Packet format: F3 XX000000 YY000000 ZZ000000 */
-
 /**
- *
- * @author  Luca Baldi
+ * @author Luca Baldi
  */
 public class EtcStatusUpdate extends L2GameServerPacket
 {
-	private static final String _S__F3_ETCSTATUSUPDATE = "[S] f9 EtcStatusUpdate";
-	
-	private L2PcInstance _activeChar;
+	private final L2PcInstance _activeChar;
 	
 	public EtcStatusUpdate(L2PcInstance activeChar)
 	{
@@ -51,14 +46,5 @@ public class EtcStatusUpdate extends L2GameServerPacket
 		writeD(_activeChar.isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE) ? 1 : 0); // 1 = charm of courage (allows resurrection on the same spot upon death on the siege battlefield)
 		writeD(_activeChar.getDeathPenaltyBuffLevel()); // 1-15 death penalty, lvl (combat ability decreased due to death)
 		writeD(_activeChar.getSouls());
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__F3_ETCSTATUSUPDATE;
 	}
 }

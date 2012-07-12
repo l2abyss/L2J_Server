@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
@@ -22,29 +23,26 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author Gnacik
- * 
  */
 public class ListPartyWating extends L2GameServerPacket
 {
-	private static final String _S__9C_LISTPARTYWAITING = "[S] 9c ListPartyWating";
-	
-	private L2PcInstance _cha;
-	private int _loc;
-	private int _lim;
-	private FastList<PartyMatchRoom> _rooms;
+	private final L2PcInstance _cha;
+	private final int _loc;
+	private final int _lim;
+	private final List<PartyMatchRoom> _rooms;
 	
 	public ListPartyWating(L2PcInstance player, int auto, int location, int limit)
 	{
 		_cha = player;
 		_loc = location;
 		_lim = limit;
-		_rooms = new FastList<>();
+		_rooms = new ArrayList<>();
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
-		for(PartyMatchRoom room : PartyMatchRoomList.getInstance().getRooms())
+		for (PartyMatchRoom room : PartyMatchRoomList.getInstance().getRooms())
 		{
 			if (room.getMembers() < 1 || room.getOwner() == null || !room.getOwner().isOnline() || room.getOwner().getPartyRoom() != room.getId())
 			{
@@ -61,9 +59,9 @@ public class ListPartyWating extends L2GameServerPacket
 		
 		writeC(0x9c);
 		if (size > 0)
-			writeD(1);
+			writeD(0x01);
 		else
-			writeD(0);
+			writeD(0x00);
 		
 		writeD(_rooms.size());
 		for (PartyMatchRoom room : _rooms)
@@ -90,11 +88,5 @@ public class ListPartyWating extends L2GameServerPacket
 				}
 			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__9C_LISTPARTYWAITING;
 	}
 }

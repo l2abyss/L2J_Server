@@ -14,21 +14,13 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public class CharDeleteFail extends L2GameServerPacket
 {
-	private static final String _S__34_CHARDELETEFAIL = "[S] 1e CharDeleteFail";
-	
 	public static final int REASON_DELETION_FAILED = 0x01;
 	public static final int REASON_YOU_MAY_NOT_DELETE_CLAN_MEMBER = 0x02;
 	public static final int REASON_CLAN_LEADERS_MAY_NOT_BE_DELETED = 0x03;
 	
-	private int _error;
+	private final int _error;
 	
 	public CharDeleteFail(int errorCode)
 	{
@@ -40,11 +32,5 @@ public class CharDeleteFail extends L2GameServerPacket
 	{
 		writeC(0x1e);
 		writeD(_error);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__34_CHARDELETEFAIL;
 	}
 }

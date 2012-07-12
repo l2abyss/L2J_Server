@@ -21,8 +21,7 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.model.L2Object;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public final class ExShowTrace extends L2GameServerPacket
 {
@@ -35,7 +34,7 @@ public final class ExShowTrace extends L2GameServerPacket
 	
 	public void addTrace(L2Object obj, int time)
 	{
-		this.addTrace(obj.getX(), obj.getY(), obj.getZ(), time);
+		addTrace(obj.getX(), obj.getY(), obj.getZ(), time);
 	}
 	
 	static final class Trace
@@ -54,18 +53,6 @@ public final class ExShowTrace extends L2GameServerPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] FE:67 ExShowTrace";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -81,5 +68,4 @@ public final class ExShowTrace extends L2GameServerPacket
 			writeH(t._time);
 		}
 	}
-	
 }

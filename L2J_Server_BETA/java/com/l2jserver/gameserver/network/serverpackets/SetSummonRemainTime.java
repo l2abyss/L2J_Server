@@ -14,17 +14,10 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- *
- * format  (c) dd
- *
- * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:40 $
- */
 public final class SetSummonRemainTime extends L2GameServerPacket
 {
-	private static final String _S__D1_SET_SUMMON_REMAIN_TIME = "[S] d1 SetSummonRemainTime";
-	private int _maxTime;
-	private int _remainingTime;
+	private final int _maxTime;
+	private final int _remainingTime;
 	
 	public SetSummonRemainTime(int maxTime, int remainingTime)
 	{
@@ -39,11 +32,4 @@ public final class SetSummonRemainTime extends L2GameServerPacket
 		writeD(_maxTime);
 		writeD(_remainingTime);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__D1_SET_SUMMON_REMAIN_TIME;
-	}
-	
 }

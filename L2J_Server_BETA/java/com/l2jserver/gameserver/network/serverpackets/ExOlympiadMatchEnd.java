@@ -15,12 +15,12 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * @author  GodKratos
+ * @author GodKratos
  */
 public class ExOlympiadMatchEnd extends L2GameServerPacket
 {
 	public static final ExOlympiadMatchEnd STATIC_PACKET = new ExOlympiadMatchEnd();
-
+	
 	private ExOlympiadMatchEnd()
 	{
 	}
@@ -30,11 +30,5 @@ public class ExOlympiadMatchEnd extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x2D);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:2D ExOlympiadMatchEnd";
 	}
 }

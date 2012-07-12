@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author Migi, DS
- *
  */
 
 public class ExReplyPostItemList extends L2GameServerPacket
@@ -68,11 +67,5 @@ public class ExReplyPostItemList extends L2GameServerPacket
 			writeH(0);
 			writeH(0);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:B2 ExReplyPostItemList";
 	}
 }

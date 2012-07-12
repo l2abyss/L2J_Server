@@ -16,8 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 public final class TutorialShowHtml extends L2GameServerPacket
 {
-	private static final String _S__A6_TUTORIALSHOWHTML = "[S] a6 TutorialShowHtml";
-	private String _html;
+	private final String _html;
 	
 	public TutorialShowHtml(String html)
 	{
@@ -27,14 +26,7 @@ public final class TutorialShowHtml extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xa6);
+		writeC(0xA6);
 		writeS(_html);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__A6_TUTORIALSHOWHTML;
-	}
-	
 }

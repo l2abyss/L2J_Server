@@ -16,22 +16,15 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 public class TradeOtherDone extends L2GameServerPacket
 {
-	private static final String _S__82_SENDTRADEOTHERDONE = "[S] 82 SendTradeOtherDone";
+	public static final TradeOtherDone STATIC_PACKET = new TradeOtherDone();
 	
-	public TradeOtherDone()
+	private TradeOtherDone()
 	{
-		// trigger packet
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x82);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__82_SENDTRADEOTHERDONE;
 	}
 }

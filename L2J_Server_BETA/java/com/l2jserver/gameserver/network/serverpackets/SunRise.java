@@ -14,24 +14,17 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.2.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public class SunRise extends L2GameServerPacket
 {
-	private static final String _S__28_SUNRISE = "[S] 12 SunRise";
+	public static final SunRise STATIC_PACKET = new SunRise();
+	
+	private SunRise()
+	{
+	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x12);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__28_SUNRISE;
 	}
 }

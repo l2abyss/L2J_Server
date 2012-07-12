@@ -16,44 +16,33 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.instancemanager.GraciaSeedsManager;
 
-/**
- * format: 0xfe cd(dddd)
- * FE - packet id
- * A1 00 - packet subid
- * d - seed count
- * d - x pos
- * d - y pos
- * d - z pos
- * d - sys msg no
- *
- */
 public class ExShowSeedMapInfo extends L2GameServerPacket
 {
-	private static final String _S__FE_A1_EXSHOWSEEDMAPINFO = "[S] FE:A1 ExShowSeedMapInfo";
+	public static final ExShowSeedMapInfo STATIC_PACKET = new ExShowSeedMapInfo();
+	
+	private ExShowSeedMapInfo()
+	{
+	}
 	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xFE); // Id
-		writeH(0xa1); // SubId
+		writeH(0xA1); // SubId
 		
 		writeD(2); // seed count
+		
 		// Seed of Destruction
 		writeD(-246857); // x coord
 		writeD(251960); // y coord
 		writeD(4331); // z coord
 		writeD(2770 + GraciaSeedsManager.getInstance().getSoDState()); // sys msg id
+		
 		// Seed of Infinity
 		writeD(-213770); // x coord
 		writeD(210760); // y coord
 		writeD(4400); // z coord
 		// Manager not implemented yet
 		writeD(2766); // sys msg id
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_A1_EXSHOWSEEDMAPINFO;
 	}
 }

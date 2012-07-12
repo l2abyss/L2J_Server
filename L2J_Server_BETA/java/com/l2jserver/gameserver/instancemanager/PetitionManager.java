@@ -46,8 +46,8 @@ public final class PetitionManager
 {
 	protected static final Logger _log = Logger.getLogger(PetitionManager.class.getName());
 	
-	private Map<Integer, Petition> _pendingPetitions;
-	private Map<Integer, Petition> _completedPetitions;
+	private final Map<Integer, Petition> _pendingPetitions;
+	private final Map<Integer, Petition> _completedPetitions;
 	
 	private static enum PetitionState
 	{
@@ -82,16 +82,16 @@ public final class PetitionManager
 	
 	private class Petition
 	{
-		private long _submitTime = System.currentTimeMillis();
+		private final long _submitTime = System.currentTimeMillis();
 		
-		private int _id;
-		private PetitionType _type;
+		private final int _id;
+		private final PetitionType _type;
 		private PetitionState _state = PetitionState.Pending;
-		private String _content;
+		private final String _content;
 		
-		private List<CreatureSay> _messageLog = new FastList<>();
+		private final List<CreatureSay> _messageLog = new FastList<>();
 		
-		private L2PcInstance _petitioner;
+		private final L2PcInstance _petitioner;
 		private L2PcInstance _responder;
 		
 		public Petition(L2PcInstance petitioner, String petitionText, int petitionType)
@@ -149,7 +149,7 @@ public final class PetitionManager
 			if (getPetitioner() != null && getPetitioner().isOnline())
 			{
 				getPetitioner().sendPacket(SystemMessageId.THIS_END_THE_PETITION_PLEASE_PROVIDE_FEEDBACK);
-				getPetitioner().sendPacket(new PetitionVotePacket());
+				getPetitioner().sendPacket(PetitionVotePacket.STATIC_PACKET);
 			}
 			
 			getCompletedPetitions().put(getId(), this);

@@ -15,12 +15,10 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * @author  Kerberos
+ * @author Kerberos
  */
 public class AcquireSkillDone extends L2GameServerPacket
 {
-	private static final String _S__94_ACQUIRESKILLDONE = "[S] 94 AcquireSkillDone";
-	
 	public AcquireSkillDone()
 	{
 		//
@@ -30,11 +28,5 @@ public class AcquireSkillDone extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x94);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__94_ACQUIRESKILLDONE;
 	}
 }

@@ -18,12 +18,13 @@ import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Mode: <ul>
- * <li>0 - add </li>
- * <li>1 - modify </li>
+ * Mode:
+ * <ul>
+ * <li>0 - add</li>
+ * <li>1 - modify</li>
  * <li>2 - quit</li>
  * </ul>
- * @author Gnacik 
+ * @author Gnacik
  */
 public class ExManagePartyRoomMember extends L2GameServerPacket
 {
@@ -41,14 +42,14 @@ public class ExManagePartyRoomMember extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x0A);
 		writeD(_mode);
 		writeD(_activeChar.getObjectId());
 		writeS(_activeChar.getName());
 		writeD(_activeChar.getActiveClass());
 		writeD(_activeChar.getLevel());
-		writeD(0); // TODO: Closes town
+		writeD(0x00); // TODO: Closes town
 		if (_room.getOwner().equals(_activeChar))
 		{
 			writeD(1);
@@ -57,18 +58,12 @@ public class ExManagePartyRoomMember extends L2GameServerPacket
 		{
 			if ((_room.getOwner().isInParty() && _activeChar.isInParty()) && (_room.getOwner().getParty().getLeaderObjectId() == _activeChar.getParty().getLeaderObjectId()))
 			{
-				writeD(2);
+				writeD(0x02);
 			}
 			else
 			{
-				writeD(0);
+				writeD(0x00);
 			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:0A ExManagePartyRoomMember";
 	}
 }

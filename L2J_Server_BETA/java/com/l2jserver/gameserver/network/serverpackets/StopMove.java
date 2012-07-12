@@ -16,24 +16,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 
-/**
- * format   ddddd
- *
- * sample
- * 0000: 59 1a 95 20 48 44 17 02 00 03 f0 fc ff 98 f1 ff    Y.. HD..........
- * 0010: ff c1 1a 00 00                                     .....
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public final class StopMove extends L2GameServerPacket
 {
-	private static final String _S__59_STOPMOVE = "[S] 47 StopMove";
-	private int _objectId;
-	private int _x;
-	private int _y;
-	private int _z;
-	private int _heading;
-	
+	private final int _objectId;
+	private final int _x;
+	private final int _y;
+	private final int _z;
+	private final int _heading;
 	
 	public StopMove(L2Character cha)
 	{
@@ -65,14 +54,5 @@ public final class StopMove extends L2GameServerPacket
 		writeD(_y);
 		writeD(_z);
 		writeD(_heading);
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__59_STOPMOVE;
 	}
 }

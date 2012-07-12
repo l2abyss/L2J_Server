@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -25,21 +25,13 @@ import com.l2jserver.gameserver.model.items.L2Henna;
  */
 public final class GMHennaInfo extends L2GameServerPacket
 {
-	private static final String _S__F0_GMHENNAINFO = "[S] F0 GMHennaInfo";
-	
 	private final L2PcInstance _activeChar;
-	private final List<L2Henna> _hennas = new ArrayList<>();
+	private final List<L2Henna> _hennas;
 	
 	public GMHennaInfo(L2PcInstance player)
 	{
 		_activeChar = player;
-		for (L2Henna henna : _activeChar.getHennaList())
-		{
-			if (henna != null)
-			{
-				_hennas.add(henna);
-			}
-		}
+		_hennas = Arrays.asList(_activeChar.getHennaList());
 	}
 	
 	@Override
@@ -59,11 +51,5 @@ public final class GMHennaInfo extends L2GameServerPacket
 			writeD(henna.getDyeId());
 			writeD(0x01);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__F0_GMHENNAINFO;
 	}
 }

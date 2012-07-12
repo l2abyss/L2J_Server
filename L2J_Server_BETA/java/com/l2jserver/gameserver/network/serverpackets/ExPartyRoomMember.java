@@ -22,8 +22,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class ExPartyRoomMember extends L2GameServerPacket
 {
-	private static final String _S__FE_08_EXPARTYROOMMEMBER = "[S] FE:08 ExPartyRoomMember";
-	
 	private final PartyMatchRoom _room;
 	private final int _mode;
 	
@@ -46,29 +44,23 @@ public class ExPartyRoomMember extends L2GameServerPacket
 			writeS(member.getName());
 			writeD(member.getActiveClass());
 			writeD(member.getLevel());
-			writeD(0); // TODO: Closes town
+			writeD(0x00); // TODO: Closes town
 			if (_room.getOwner().equals(member))
 			{
-				writeD(1);
+				writeD(0x01);
 			}
 			else
 			{
 				if ((_room.getOwner().isInParty() && member.isInParty()) && (_room.getOwner().getParty().getLeaderObjectId() == member.getParty().getLeaderObjectId()))
 				{
-					writeD(2);
+					writeD(0x02);
 				}
 				else
 				{
-					writeD(0);
+					writeD(0x00);
 				}
 			}
 			writeD(0x00); // TODO: Instance datas there is more if that is not 0!
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_08_EXPARTYROOMMEMBER;
 	}
 }

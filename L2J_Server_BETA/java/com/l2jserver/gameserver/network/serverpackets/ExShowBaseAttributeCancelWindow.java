@@ -21,10 +21,8 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 {
-	private static final String		_S__FE_74_EXCSHOWBASEATTRIBUTECANCELWINDOW = "[S] FE:74 ExShowBaseAttributeCancelWindow";
-	
-	private L2ItemInstance[]		_items;
-	private long					_price;
+	private final L2ItemInstance[] _items;
+	private long _price;
 	
 	public ExShowBaseAttributeCancelWindow(L2PcInstance player)
 	{
@@ -34,7 +32,7 @@ public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x74);
 		writeD(_items.length);
 		for (L2ItemInstance item : _items)
@@ -44,9 +42,14 @@ public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 		}
 	}
 	
+	/**
+	 * TODO: Update prices for Top/Mid/Low S80/S84
+	 * @param item
+	 * @return
+	 */
 	private long getPrice(L2ItemInstance item)
 	{
-		switch(item.getItem().getCrystalType())
+		switch (item.getItem().getCrystalType())
 		{
 			case L2Item.CRYSTAL_S:
 				if (item.getItem() instanceof L2Weapon)
@@ -69,11 +72,5 @@ public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 		}
 		
 		return _price;
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_74_EXCSHOWBASEATTRIBUTECANCELWINDOW;
 	}
 }

@@ -17,8 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public class ExPrivateStoreSetWholeMsg extends L2GameServerPacket
 {
@@ -36,25 +35,12 @@ public class ExPrivateStoreSetWholeMsg extends L2GameServerPacket
 		this(player, player.getSellList().getTitle());
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] FE:80 ExPrivateStoreSetWholeMsg";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x80);
 		writeD(_objectId);
 		writeS(_msg);
 	}
-	
 }

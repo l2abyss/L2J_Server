@@ -21,32 +21,14 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.SeedProduction;
 
 /**
- * Format: c ddh[hdddhhd]
- * c - id (0xE8)
- *
- * d - money
- * d - manor id
- * h - size
- * [
- * h - item type 1
- * d - object id
- * d - item id
- * d - count
- * h - item type 2
- * h
- * d - price
- * ]
- *
  * @author l3x
  */
 
 public final class BuyListSeed extends L2GameServerPacket
 {
-	private static final String _S__E8_BUYLISTSEED = "[S] e9 BuyListSeed";
-	
-	private int _manorId;
+	private final int _manorId;
 	private List<Seed> _list = null;
-	private long _money;
+	private final long _money;
 	
 	public BuyListSeed(long currentMoney, int castleId, List<SeedProduction> seeds)
 	{
@@ -107,12 +89,6 @@ public final class BuyListSeed extends L2GameServerPacket
 		else
 			writeH(0x00);
 		
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__E8_BUYLISTSEED;
 	}
 	
 	private static class Seed

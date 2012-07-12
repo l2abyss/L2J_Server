@@ -16,14 +16,11 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * Asks the player to join a CC
- * @author  chris_00
+ * @author chris_00
  */
 public class ExAskJoinMPCC extends L2GameServerPacket
 {
-	
-	private static final String _S__FE_27_EXASKJOINMPCC = "[S] FE:1a ExAskJoinMPCC";
-	
-	private String _requestorName;
+	private final String _requestorName;
 	
 	/**
 	 * @param requestorName
@@ -38,13 +35,7 @@ public class ExAskJoinMPCC extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x1a);
-		writeS(_requestorName);  // name of CCLeader
+		writeS(_requestorName); // name of CCLeader
 		
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_27_EXASKJOINMPCC;
 	}
 }

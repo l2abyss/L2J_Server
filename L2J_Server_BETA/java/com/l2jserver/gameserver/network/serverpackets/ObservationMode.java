@@ -14,19 +14,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-
-/**
- * This class ...
- *
- * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public class ObservationMode extends L2GameServerPacket
 {
-	// ddSS
-	private static final String _S__DF_OBSERVMODE = "[S] eb ObservationMode";
-	private int _x, _y, _z;
-	
+	private final int _x, _y, _z;
 	
 	/**
 	 * @param x
@@ -40,22 +30,15 @@ public class ObservationMode extends L2GameServerPacket
 		_z = z;
 	}
 	
-	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xeb);
+		writeC(0xEB);
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-		writeC( 0x00);
-		writeC( 0xc0);
-		writeC( 0x00);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__DF_OBSERVMODE;
+		writeC(0x00); // ?
+		writeC(0xc0); // ?
+		writeC(0x00); // ?
 	}
 }

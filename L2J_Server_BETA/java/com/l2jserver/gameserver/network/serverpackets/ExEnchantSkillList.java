@@ -28,7 +28,6 @@ public class ExEnchantSkillList extends L2GameServerPacket
 		CHANGE_ROUTE,
 	}
 	
-	private static final String _S__FE_17_EXENCHANTSKILLLIST = "[S] FE:29 ExEnchantSkillList";
 	private final EnchantSkillType _type;
 	private final List<Skill> _skills;
 	
@@ -58,7 +57,7 @@ public class ExEnchantSkillList extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x29);
 		
 		writeD(_type.ordinal());
@@ -68,12 +67,5 @@ public class ExEnchantSkillList extends L2GameServerPacket
 			writeD(sk.id);
 			writeD(sk.nextLevel);
 		}
-		
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_17_EXENCHANTSKILLLIST;
 	}
 }

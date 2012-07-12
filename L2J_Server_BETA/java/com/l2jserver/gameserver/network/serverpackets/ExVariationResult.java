@@ -16,15 +16,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * Format: (ch)ddd
- *
  */
 public class ExVariationResult extends L2GameServerPacket
 {
-	private static final String _S__FE_55_EXVARIATIONRESULT = "[S] FE:56 ExVariationResult";
-	
-	private int _stat12;
-	private int _stat34;
-	private int _unk3;
+	private final int _stat12;
+	private final int _stat34;
+	private final int _unk3;
 	
 	public ExVariationResult(int unk1, int unk2, int unk3)
 	{
@@ -33,26 +30,13 @@ public class ExVariationResult extends L2GameServerPacket
 		_unk3 = unk3;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x56);
 		writeD(_stat12);
 		writeD(_stat34);
 		writeD(_unk3);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_55_EXVARIATIONRESULT;
-	}
-	
 }

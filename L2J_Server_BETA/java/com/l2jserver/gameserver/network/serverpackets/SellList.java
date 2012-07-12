@@ -18,23 +18,20 @@ import java.util.List;
 
 import javolution.util.FastList;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.4.2.3.2.4 $ $Date: 2005/03/27 15:29:39 $
  */
 public class SellList extends L2GameServerPacket
 {
-	private static final String _S__10_SELLLIST = "[S] 06 SellList";
 	private final L2PcInstance _activeChar;
 	private final L2MerchantInstance _lease;
-	private long _money;
-	private List<L2ItemInstance> _selllist = new FastList<>();
+	private final long _money;
+	private final List<L2ItemInstance> _selllist = new FastList<>();
 	
 	public SellList(L2PcInstance player)
 	{
@@ -58,14 +55,9 @@ public class SellList extends L2GameServerPacket
 		{
 			for (L2ItemInstance item : _activeChar.getInventory().getItems())
 			{
-				if (!item.isEquipped() &&														// Not equipped
-						item.isSellable() &&													// Item is sellable
-						(_activeChar.getPet() == null ||										// Pet not summoned or
-								item.getObjectId() != _activeChar.getPet().getControlObjectId()))			// Pet is summoned and not the item that summoned the pet
+				if (!item.isEquipped() && item.isSellable() && (_activeChar.getPet() == null || item.getObjectId() != _activeChar.getPet().getControlObjectId())) // Pet is summoned and not the item that summoned the pet
 				{
 					_selllist.add(item);
-					if (Config.DEBUG)
-						_log.fine("item added to selllist: " + item.getItem().getName());
 				}
 			}
 		}
@@ -86,12 +78,12 @@ public class SellList extends L2GameServerPacket
 			writeD(item.getDisplayId());
 			writeQ(item.getCount());
 			writeH(item.getItem().getType2());
-			writeH(0x00);
+			writeH(item.isEquipped() ? 0x01 : 0x00);
 			writeD(item.getItem().getBodyPart());
 			writeH(item.getEnchantLevel());
-			writeH(0x00);
+			writeH(0x00); // TODO: Verify me
 			writeH(item.getCustomType2());
-			writeQ(item.getItem().getReferencePrice()/2);
+			writeQ(item.getItem().getReferencePrice() / 2);
 			
 			// T1
 			writeH(item.getAttackElementType());
@@ -103,11 +95,5 @@ public class SellList extends L2GameServerPacket
 			writeH(0x00); // Enchant effect 2
 			writeH(0x00); // Enchant effect 3
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__10_SELLLIST;
 	}
 }

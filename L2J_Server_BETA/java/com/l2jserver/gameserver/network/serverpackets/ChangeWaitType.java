@@ -16,23 +16,11 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 
-/**
- *
- * sample
- *
- * 0000: 3f 2a 89 00 4c 01 00 00 00 0a 15 00 00 66 fe 00    ?*..L........f..
- * 0010: 00 7c f1 ff ff                                     .|...
- *
- * format   dd ddd
- *
- * @version $Revision: 1.3.2.1.2.4 $ $Date: 2005/03/27 15:29:57 $
- */
 public class ChangeWaitType extends L2GameServerPacket
 {
-	private static final String _S__3F_CHANGEWAITTYPE = "[S] 29 ChangeWaitType";
-	private int _charObjId;
-	private int _moveType;
-	private int _x, _y, _z;
+	private final int _charObjId;
+	private final int _moveType;
+	private final int _x, _y, _z;
 	
 	public static final int WT_SITTING = 0;
 	public static final int WT_STANDING = 1;
@@ -58,11 +46,5 @@ public class ChangeWaitType extends L2GameServerPacket
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__3F_CHANGEWAITTYPE;
-	}
+	}	
 }

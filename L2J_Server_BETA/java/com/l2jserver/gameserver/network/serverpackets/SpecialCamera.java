@@ -14,11 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
 public class SpecialCamera extends L2GameServerPacket
 {
-	private static final String _S__C7_SPECIALCAMERA = "[S] d6 SpecialCamera";
-	
 	private final int _id;
 	private final int _dist;
 	private final int _yaw;
@@ -72,11 +69,5 @@ public class SpecialCamera extends L2GameServerPacket
 		writeD(_rise);
 		writeD(_widescreen);
 		writeD(_unknown);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__C7_SPECIALCAMERA;
 	}
 }

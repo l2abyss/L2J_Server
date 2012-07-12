@@ -19,10 +19,10 @@ import com.l2jserver.gameserver.util.Point3D;
 
 public class ExMoveToLocationInAirShip extends L2GameServerPacket
 {
-	private int _charObjId;
-	private int _airShipId;
-	private Point3D _destination;
-	private int _heading;
+	private final int _charObjId;
+	private final int _airShipId;
+	private final Point3D _destination;
+	private final int _heading;
 	
 	/**
 	 * @param player
@@ -46,14 +46,5 @@ public class ExMoveToLocationInAirShip extends L2GameServerPacket
 		writeD(_destination.getY());
 		writeD(_destination.getZ());
 		writeD(_heading);
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] 6D MoveToLocationInAirShip";
 	}
 }

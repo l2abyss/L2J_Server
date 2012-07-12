@@ -17,26 +17,11 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-/**
- * 15
- * ee cc 11 43 		object id
- * 39 00 00 00 		item id
- * 8f 14 00 00 		x
- * b7 f1 00 00 		y
- * 60 f2 ff ff 		z
- * 01 00 00 00 		show item count
- * 7a 00 00 00      count                                         .
- *
- * format  dddddddd
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public final class SpawnItem extends L2GameServerPacket
 {
-	private static final String _S__15_SPAWNITEM = "[S] 05 SpawnItem";
-	private int _objectId;
+	private final int _objectId;
 	private int _itemId;
-	private int _x, _y, _z;
+	private final int _x, _y, _z;
 	private int _stackable;
 	private long _count;
 	
@@ -77,11 +62,5 @@ public final class SpawnItem extends L2GameServerPacket
 		writeQ(_count);
 		writeD(0x00); // c2
 		writeD(0x00); // freya unk
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__15_SPAWNITEM;
 	}
 }

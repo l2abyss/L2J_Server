@@ -15,34 +15,20 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- *
  * @author nBd
  */
 public class RequestEnchant extends L2GameServerPacket
 {
-	private int _unk;
-	private static final String _S__FE_81_REQUESTENCHANT = "[S] FE:81 RequestEnchant";
+	private final int _unk;
 	
 	/**
-	 * @param value 
+	 * @param value
 	 */
 	public RequestEnchant(int value)
 	{
 		_unk = value;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_81_REQUESTENCHANT;
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{

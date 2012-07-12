@@ -14,26 +14,12 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public class CharCreateOk extends L2GameServerPacket
 {
-	private static final String _S__25_CHARCREATEOK = "[S] 0f CharCreateOk";
-	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x0f);
 		writeD(0x01);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__25_CHARCREATEOK;
 	}
 }

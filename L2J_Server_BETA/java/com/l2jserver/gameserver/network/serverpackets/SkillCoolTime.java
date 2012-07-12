@@ -14,7 +14,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.TimeStamp;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -24,9 +25,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class SkillCoolTime extends L2GameServerPacket
 {
-	private static final String _S__C7_SKILLCOOLTIME = "[S] C7 SkillCoolTime";
-	
-	private final FastList<TimeStamp> _skillReuseTimeStamps = new FastList<>();
+	private final List<TimeStamp> _skillReuseTimeStamps = new ArrayList<>();
 	
 	public SkillCoolTime(L2PcInstance cha)
 	{
@@ -51,11 +50,5 @@ public class SkillCoolTime extends L2GameServerPacket
 			writeD((int) ts.getReuse() / 1000);
 			writeD((int) ts.getRemaining() / 1000);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__C7_SKILLCOOLTIME;
 	}
 }

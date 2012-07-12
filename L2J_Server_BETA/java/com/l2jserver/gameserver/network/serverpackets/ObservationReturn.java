@@ -16,18 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public class ObservationReturn extends L2GameServerPacket
 {
-	// ddSS
-	private static final String _S__E0_OBSERVRETURN = "[S] ec ObservationReturn";
-	private L2PcInstance _activeChar;
-	
+	private final L2PcInstance _activeChar;
 	
 	/**
 	 * @param observer
@@ -37,22 +28,12 @@ public class ObservationReturn extends L2GameServerPacket
 		_activeChar = observer;
 	}
 	
-	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC( 0xec );
-		writeD( _activeChar.getLastX() );
-		writeD( _activeChar.getLastY() );
-		writeD( _activeChar.getLastZ() );
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__E0_OBSERVRETURN;
+		writeC(0xEC);
+		writeD(_activeChar.getLastX());
+		writeD(_activeChar.getLastY());
+		writeD(_activeChar.getLastZ());
 	}
 }

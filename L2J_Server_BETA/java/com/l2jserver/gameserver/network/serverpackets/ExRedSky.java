@@ -15,22 +15,17 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: ch d
- * @author  KenM
+ * @author KenM
  */
 public class ExRedSky extends L2GameServerPacket
 {
-	private static final String _S__FE_40_EXREDSKYPACKET = "[S] FE:41 ExRedSkyPacket";
-	private int _duration;
+	private final int _duration;
 	
 	public ExRedSky(int duration)
 	{
 		_duration = duration;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -38,14 +33,4 @@ public class ExRedSky extends L2GameServerPacket
 		writeH(0x41);
 		writeD(_duration);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_40_EXREDSKYPACKET;
-	}
-	
 }

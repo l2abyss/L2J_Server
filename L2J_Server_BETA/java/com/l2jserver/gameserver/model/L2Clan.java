@@ -512,7 +512,7 @@ public class L2Clan
 			player.setPledgeClass(exMember.calculatePledgeClass(player));
 			player.broadcastUserInfo();
 			// disable clan tab
-			player.sendPacket(new PledgeShowMemberListDeleteAll());
+			player.sendPacket(PledgeShowMemberListDeleteAll.STATIC_PACKET);
 		}
 		else
 		{
@@ -1556,7 +1556,7 @@ public class L2Clan
 	{
 		for (L2PcInstance member : getOnlineMembers(0))
 		{
-			member.sendPacket(new PledgeShowMemberListDeleteAll());
+			member.sendPacket(PledgeShowMemberListDeleteAll.STATIC_PACKET);
 			member.sendPacket(new PledgeShowMemberListAll(this, member));
 		}
 	}

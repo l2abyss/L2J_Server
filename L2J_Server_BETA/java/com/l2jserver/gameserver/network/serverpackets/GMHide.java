@@ -14,17 +14,13 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-
 /**
  * @author Kerberos
  */
 @Deprecated
 public class GMHide extends L2GameServerPacket
 {
-	// cd
-	private int _mode;
-	
+	private final int _mode;
 	
 	/**
 	 * @param mode (0 = display windows, 1 = hide windows)
@@ -34,20 +30,10 @@ public class GMHide extends L2GameServerPacket
 		_mode = mode;
 	}
 	
-	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x93);
 		writeD(_mode);
-	}
-	
-	/**
-	 * @see  com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] 93 GMHide";
 	}
 }

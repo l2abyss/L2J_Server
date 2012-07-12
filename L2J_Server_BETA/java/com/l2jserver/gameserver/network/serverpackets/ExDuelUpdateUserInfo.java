@@ -17,46 +17,31 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Format: ch Sddddddddd
- * @author  KenM
+ * @author KenM
  */
 public class ExDuelUpdateUserInfo extends L2GameServerPacket
 {
-	private static final String _S__FE_4F_EXDUELUPDATEUSERINFO = "[S] FE:50 ExDuelUpdateUserInfo";
-	private L2PcInstance _activeChar;
+	private final L2PcInstance _activeChar;
 	
 	public ExDuelUpdateUserInfo(L2PcInstance cha)
 	{
 		_activeChar = cha;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x50);
 		writeS(_activeChar.getName());
 		writeD(_activeChar.getObjectId());
 		writeD(_activeChar.getClassId().getId());
 		writeD(_activeChar.getLevel());
-		writeD((int)_activeChar.getCurrentHp());
+		writeD((int) _activeChar.getCurrentHp());
 		writeD(_activeChar.getMaxVisibleHp());
-		writeD((int)_activeChar.getCurrentMp());
+		writeD((int) _activeChar.getCurrentMp());
 		writeD(_activeChar.getMaxMp());
-		writeD((int)_activeChar.getCurrentCp());
+		writeD((int) _activeChar.getCurrentCp());
 		writeD(_activeChar.getMaxCp());
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_4F_EXDUELUPDATEUSERINFO;
-	}
-	
 }

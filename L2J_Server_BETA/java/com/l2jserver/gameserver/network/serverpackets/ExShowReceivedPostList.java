@@ -24,9 +24,7 @@ import com.l2jserver.gameserver.model.entity.Message;
  */
 public class ExShowReceivedPostList extends L2GameServerPacket
 {
-	private static final String _S__FE_AA_EXSHOWRECEIVEDPOSTLIST = "[S] FE:AA ExShowReceivedPostList";
-	
-	private List<Message> _inbox;
+	private final List<Message> _inbox;
 	
 	public ExShowReceivedPostList(int objectId)
 	{
@@ -36,9 +34,9 @@ public class ExShowReceivedPostList extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0xaa);
-		writeD((int)(System.currentTimeMillis() / 1000));
+		writeC(0xFE);
+		writeH(0xAA);
+		writeD((int) (System.currentTimeMillis() / 1000));
 		if (_inbox != null && _inbox.size() > 0)
 		{
 			writeD(_inbox.size());
@@ -54,18 +52,12 @@ public class ExShowReceivedPostList extends L2GameServerPacket
 				writeD(msg.hasAttachments() ? 0x01 : 0x00);
 				writeD(msg.isReturned() ? 0x01 : 0x00);
 				writeD(msg.getSendBySystem());
-				writeD(0);
+				writeD(0x00);
 			}
 		}
 		else
 		{
 			writeD(0x00);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_AA_EXSHOWRECEIVEDPOSTLIST;
 	}
 }

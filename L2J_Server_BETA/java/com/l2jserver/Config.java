@@ -1152,7 +1152,7 @@ public final class Config
 				PET_NAME_TEMPLATE = serverSettings.getProperty("PetNameTemplate", ".*");
 				CLAN_NAME_TEMPLATE = serverSettings.getProperty("ClanNameTemplate", ".*");
 				
-				MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "0"));
+				MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "7"));
 				MAXIMUM_ONLINE_USERS = Integer.parseInt(serverSettings.getProperty("MaximumOnlineUsers", "100"));
 				
 				String[] protocols = serverSettings.getProperty("AllowedProtocolRevisions", "267;268;271;273").split(";");

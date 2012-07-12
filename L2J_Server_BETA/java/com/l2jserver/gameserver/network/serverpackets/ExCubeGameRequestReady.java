@@ -16,13 +16,10 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * Format: (chd)
- * 
  * @author mrTJO
  */
 public class ExCubeGameRequestReady extends L2GameServerPacket
 {
-	private static final String _S__FE_97_04_EXCUBEGAMEREQUESTREADY = "[S] FE:97:04 ExCubeGameRequestReady";
-	
 	/**
 	 * Show Confirm Dialog for 10 seconds
 	 */
@@ -37,11 +34,5 @@ public class ExCubeGameRequestReady extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x97);
 		writeD(0x04);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_97_04_EXCUBEGAMEREQUESTREADY;
 	}
 }

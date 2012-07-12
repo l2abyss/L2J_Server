@@ -15,31 +15,20 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (ch)
- *
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public class ExRestartClient extends L2GameServerPacket
 {
-	private static final String _S__FE_47_EXRESTARTCLIENT = "[S] FE:48 ExRestartClient";
+	public static final ExRestartClient STATIC_PACKET = new ExRestartClient();
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
+	private ExRestartClient()
+	{
+	}
+	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x48);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_47_EXRESTARTCLIENT;
-	}
-	
 }

@@ -1124,7 +1124,7 @@ public final class QuestState
 	
 	public void closeTutorialHtml()
 	{
-		_player.sendPacket(new TutorialCloseHtml());
+		_player.sendPacket(TutorialCloseHtml.STATIC_PACKET);
 	}
 	
 	public void onTutorialClientEvent(int number)

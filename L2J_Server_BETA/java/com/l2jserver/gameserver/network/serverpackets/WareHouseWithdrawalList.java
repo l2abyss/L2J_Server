@@ -18,19 +18,12 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-
-/**
- * 0x42 WarehouseWithdrawalList  dh (h dddhh dhhh d)
- *
- * @version $Revision: 1.3.2.1.2.5 $ $Date: 2005/03/29 23:15:10 $
- */
 public final class WareHouseWithdrawalList extends L2GameServerPacket
 {
 	public static final int PRIVATE = 1;
 	public static final int CLAN = 4;
-	public static final int CASTLE = 3; //not sure
+	public static final int CASTLE = 3; // not sure
 	public static final int FREIGHT = 1;
-	private static final String _S__54_WAREHOUSEWITHDRAWALLIST = "[S] 42 WareHouseWithdrawalList";
 	private L2PcInstance _activeChar;
 	private long _playerAdena;
 	private L2ItemInstance[] _items;
@@ -59,10 +52,9 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x42);
-		/* 0x01-Private Warehouse
-		 * 0x02-Clan Warehouse
-		 * 0x03-Castle Warehouse
-		 * 0x04-Warehouse */
+		/*
+		 * 0x01-Private Warehouse 0x02-Clan Warehouse 0x03-Castle Warehouse 0x04-Warehouse
+		 */
 		writeH(_whType);
 		writeQ(_playerAdena);
 		writeH(_items.length);
@@ -97,11 +89,5 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 			writeH(0x00);
 			writeD(item.getObjectId());
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__54_WAREHOUSEWITHDRAWALLIST;
 	}
 }

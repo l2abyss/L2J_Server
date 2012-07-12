@@ -18,42 +18,28 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Format: ch d[Sdd]
- * @author  chris_00
+ * @author chris_00
  */
 public class ExMPCCShowPartyMemberInfo extends L2GameServerPacket
 {
-	private static final String _S__FE_4A_EXMPCCSHOWPARTYMEMBERINFO = "[S] FE:4b ExMPCCShowPartyMemberInfo";
-	private L2Party _party;
+	private final L2Party _party;
 	
 	public ExMPCCShowPartyMemberInfo(L2Party party)
 	{
-		this._party = party;
+		_party = party;
 	}
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
+	
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x4b);
-		writeD(_party.getMemberCount()); // Number of Members
-		for(L2PcInstance pc : _party.getMembers())
+		writeC(0xFE);
+		writeH(0x4B);
+		writeD(_party.getMemberCount());
+		for (L2PcInstance pc : _party.getMembers())
 		{
-			writeS(pc.getName()); // Membername
-			writeD(pc.getObjectId()); // ObjId
-			writeD(pc.getClassId().getId()); // Classid
+			writeS(pc.getName());
+			writeD(pc.getObjectId());
+			writeD(pc.getClassId().getId());
 		}
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_4A_EXMPCCSHOWPARTYMEMBERINFO;
-	}
-	
 }

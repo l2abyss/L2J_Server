@@ -15,31 +15,21 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: ch
  * Trigger packet
- * @author  KenM
+ * @author KenM
  */
 public class ExRequestHackShield extends L2GameServerPacket
 {
-	private static final String _S__FE_48_EXREQUESTHACKSHIELD = "[S] FE:49 ExRequestHackShield";
+	public static final ExRequestHackShield STATIC_PACKET = new ExRequestHackShield();
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
+	private ExRequestHackShield()
+	{
+	}
+	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xfe);
 		writeH(0x49);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_48_EXREQUESTHACKSHIELD;
-	}
-	
 }

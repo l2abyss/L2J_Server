@@ -17,9 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 
 public class ExAirShipInfo extends L2GameServerPacket
-{
-	private static final String _S__FE_60_EXAIRSHIPINFO = "[S] FE:60 ExAirShipInfo";
-	
+{	
 	// store some parameters, because they can be changed during broadcast
 	private final L2AirShipInstance _ship;
 	private final int _x, _y, _z, _heading, _moveSpeed, _rotationSpeed, _captain, _helm;
@@ -55,6 +53,7 @@ public class ExAirShipInfo extends L2GameServerPacket
 		writeD(_helm);
 		if (_helm != 0)
 		{
+			// TODO: unhardcode these!
 			writeD(0x16e); // Controller X
 			writeD(0x00); // Controller Y
 			writeD(0x6b); // Controller Z
@@ -74,11 +73,5 @@ public class ExAirShipInfo extends L2GameServerPacket
 		
 		writeD(_ship.getFuel());
 		writeD(_ship.getMaxFuel());
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_60_EXAIRSHIPINFO;
 	}
 }
