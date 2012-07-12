@@ -14,9 +14,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Henna;
 
@@ -26,12 +23,10 @@ import com.l2jserver.gameserver.model.items.L2Henna;
 public final class HennaInfo extends L2GameServerPacket
 {
 	private final L2PcInstance _activeChar;
-	private final List<L2Henna> _hennas;
 	
 	public HennaInfo(L2PcInstance player)
 	{
 		_activeChar = player;
-		_hennas = Arrays.asList(_activeChar.getHennaList());
 	}
 	
 	@Override
@@ -45,8 +40,8 @@ public final class HennaInfo extends L2GameServerPacket
 		writeC(_activeChar.getHennaStatDEX()); // equip DEX
 		writeC(_activeChar.getHennaStatWIT()); // equip WIT
 		writeD(3); // Slots
-		writeD(_hennas.size()); // Size
-		for (L2Henna henna : _hennas)
+		writeD(3 - _activeChar.getHennaEmptySlots());
+		for (L2Henna henna : _activeChar.getHennaList())
 		{
 			if (henna != null)
 			{
