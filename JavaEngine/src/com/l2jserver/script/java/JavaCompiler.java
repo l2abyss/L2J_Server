@@ -89,7 +89,7 @@ public class JavaCompiler
 		
 		// javac options
 		List<String> options = new ArrayList<>();
-		options.add("-Xlint:all");
+		options.add("-warn:-switchDefault,enumSwitch");
 		options.add("-g");
 		options.add("-deprecation");
 		options.add("-1.7");
