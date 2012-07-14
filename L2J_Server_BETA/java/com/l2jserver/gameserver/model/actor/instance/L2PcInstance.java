@@ -4967,18 +4967,22 @@ public final class L2PcInstance extends L2Playable
 			else
 			{
 				addItem("Pickup", target, null, true);
-				//Auto-Equip arrows/bolts if player has a bow/crossbow and player picks up arrows/bolts.
-				final L2EtcItem etcItem = target.getEtcItem();
-				if (etcItem != null)
+				// Auto-Equip arrows/bolts if player has a bow/crossbow and player picks up arrows/bolts.
+				final L2ItemInstance weapon = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+				if (weapon != null)
 				{
-					final L2EtcItemType itemType = etcItem.getItemType();
-					if (itemType == L2EtcItemType.ARROW)
+					final L2EtcItem etcItem = target.getEtcItem();
+					if (etcItem != null)
 					{
-						checkAndEquipArrows();
-					}
-					else if (itemType == L2EtcItemType.BOLT)
-					{
-						checkAndEquipBolts();
+						final L2EtcItemType itemType = etcItem.getItemType();
+						if ((weapon.getItemType() == L2WeaponType.BOW) && (itemType == L2EtcItemType.ARROW))
+						{
+							checkAndEquipArrows();
+						}
+						else if ((weapon.getItemType() == L2WeaponType.CROSSBOW) && (itemType == L2EtcItemType.BOLT))
+						{
+							checkAndEquipBolts();
+						}
 					}
 				}
 			}
@@ -6621,7 +6625,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			// Get the L2ItemInstance of the arrows needed for this bow
 			_arrowItem = getInventory().findArrowForBow(getActiveWeaponItem());
-			
 			if (_arrowItem != null)
 			{
 				// Equip arrows needed in left hand
@@ -6637,7 +6640,6 @@ public final class L2PcInstance extends L2Playable
 			// Get the L2ItemInstance of arrows equiped in left hand
 			_arrowItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
 		}
-		
 		return _arrowItem != null;
 	}
 	
@@ -6652,7 +6654,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			// Get the L2ItemInstance of the arrows needed for this bow
 			_boltItem = getInventory().findBoltForCrossBow(getActiveWeaponItem());
-			
 			if (_boltItem != null)
 			{
 				// Equip arrows needed in left hand
@@ -6668,9 +6669,9 @@ public final class L2PcInstance extends L2Playable
 			// Get the L2ItemInstance of arrows equiped in left hand
 			_boltItem = getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
 		}
-		
 		return _boltItem != null;
 	}
+	
 	/**
 	 * Disarm the player's weapon.
 	 * @return {@code true} if the player was disarmed or doesn't have a weapon to disarm, {@code false} otherwise.
