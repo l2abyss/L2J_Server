@@ -1372,15 +1372,22 @@ public class L2PetInstance extends L2Summon
 	@Override
 	public void setName(String name)
 	{
-		L2ItemInstance controlItem = getControlItem();
-		if (getControlItem().getCustomType2() == (name == null ? 1 : 0))
+		final L2ItemInstance controlItem = getControlItem();
+		if (controlItem != null)
 		{
-			// name not set yet
-			controlItem.setCustomType2(name != null ? 1 : 0);
-			controlItem.updateDatabase();
-			InventoryUpdate iu = new InventoryUpdate();
-			iu.addModifiedItem(controlItem);
-			sendPacket(iu);
+			if (controlItem.getCustomType2() == (name == null ? 1 : 0))
+			{
+				// name not set yet
+				controlItem.setCustomType2(name != null ? 1 : 0);
+				controlItem.updateDatabase();
+				InventoryUpdate iu = new InventoryUpdate();
+				iu.addModifiedItem(controlItem);
+				sendPacket(iu);
+			}
+		}
+		else
+		{
+			_log.log(Level.WARNING, "Pet control item null!");
 		}
 		super.setName(name);
 	}
