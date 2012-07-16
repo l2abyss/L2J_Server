@@ -51,7 +51,7 @@ public final class HennaInfo extends L2GameServerPacket
 		writeC(_activeChar.getHennaStatMEN()); // equip MEN
 		writeC(_activeChar.getHennaStatDEX()); // equip DEX
 		writeC(_activeChar.getHennaStatWIT()); // equip WIT
-		writeD(3); // Slots 
+		writeD(3); // Slots
 		writeD(_hennas.size()); // Size
 		for (L2Henna henna : _hennas)
 		{

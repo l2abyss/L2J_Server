@@ -268,7 +268,6 @@ public class SpawnTable
 	
 	public void deleteSpawn(L2Spawn spawn, boolean updateDb)
 	{
-		
 		if (!_spawntable.remove(spawn))
 			return;
 		
@@ -297,7 +296,6 @@ public class SpawnTable
 			{
 				L2DatabaseFactory.close(con);
 			}
-			
 		}
 	}
 	

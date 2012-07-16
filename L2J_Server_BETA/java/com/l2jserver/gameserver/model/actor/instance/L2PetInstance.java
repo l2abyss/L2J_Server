@@ -1387,7 +1387,7 @@ public class L2PetInstance extends L2Summon
 		}
 		else
 		{
-			_log.log(Level.WARNING, "Pet control item null!");
+			_log.log(Level.WARNING, "Pet control item null, for pet: " + toString());
 		}
 		super.setName(name);
 	}

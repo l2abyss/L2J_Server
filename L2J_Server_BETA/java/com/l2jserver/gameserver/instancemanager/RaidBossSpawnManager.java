@@ -299,10 +299,11 @@ public class RaidBossSpawnManager
 	{
 		if (spawnDat == null)
 			return;
-		if (!_spawns.containsKey(spawnDat.getNpcid()))
-			return;
 		
 		int bossId = spawnDat.getNpcid();
+		
+		if (!_spawns.containsKey(bossId))
+			return;
 		
 		SpawnTable.getInstance().deleteSpawn(spawnDat, false);
 		_spawns.remove(bossId);

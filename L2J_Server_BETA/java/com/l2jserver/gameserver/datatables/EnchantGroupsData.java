@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
- * This class holds the Enchant Groups information.<br>
+ * This class holds the Enchant Groups information.
  * @author Micr0
  */
 public class EnchantGroupsData extends DocumentParser
