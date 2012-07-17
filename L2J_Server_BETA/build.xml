@@ -150,6 +150,7 @@
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
+				<include name="**/SQLFilter**" />
 				<exclude name="**/LauncherGS*" />
 				<exclude name="**/LauncherLS*" />
 			</fileset>
@@ -167,6 +168,7 @@
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
+				<include name="**/SQLFilter**" />
 				<exclude name="**/LauncherCS*" />
 				<exclude name="**/LauncherLS*" />
 			</fileset>
@@ -184,6 +186,7 @@
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
 				<include name="**/util/swing/**" />
+				<include name="**/SQLFilter**" />
 				<exclude name="**/LauncherCS*" />
 				<exclude name="**/LauncherGS*" />
 			</fileset>
