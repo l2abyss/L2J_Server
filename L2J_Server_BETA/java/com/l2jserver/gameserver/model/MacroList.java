@@ -116,11 +116,8 @@ public class MacroList
 	
 	private void registerMacroInDb(L2Macro macro)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("INSERT INTO character_macroses (charId,id,icon,name,descr,acronym,commands) values(?,?,?,?,?,?,?)");
 			statement.setInt(1, _owner.getObjectId());
 			statement.setInt(2, macro.id);
@@ -157,10 +154,6 @@ public class MacroList
 		{
 			_log.log(Level.WARNING, "could not store macro:", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/**
@@ -168,11 +161,8 @@ public class MacroList
 	 */
 	private void deleteMacroFromDb(L2Macro macro)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("DELETE FROM character_macroses WHERE charId=? AND id=?");
 			statement.setInt(1, _owner.getObjectId());
 			statement.setInt(2, macro.id);
@@ -183,19 +173,13 @@ public class MacroList
 		{
 			_log.log(Level.WARNING, "could not delete macro:", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void restore()
 	{
 		_macroses.clear();
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT charId, id, icon, name, descr, acronym, commands FROM character_macroses WHERE charId=?");
 			statement.setInt(1, _owner.getObjectId());
 			ResultSet rset = statement.executeQuery();
@@ -232,10 +216,6 @@ public class MacroList
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not store shortcuts:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 }

@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.datatables;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,20 +47,15 @@ public class OfflineTradersTable
 	
 	public static void storeOffliners()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement stm1 = con.prepareStatement(CLEAR_OFFLINE_TABLE);
+			PreparedStatement stm2 = con.prepareStatement(CLEAR_OFFLINE_TABLE_ITEMS);
+			PreparedStatement stm3 = con.prepareStatement(SAVE_OFFLINE_STATUS);
+			PreparedStatement stm_items = con.prepareStatement(SAVE_ITEMS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement stm = con.prepareStatement(CLEAR_OFFLINE_TABLE);
-			stm.execute();
-			stm.close();
-			stm = con.prepareStatement(CLEAR_OFFLINE_TABLE_ITEMS);
-			stm.execute();
-			stm.close();
-			
+			stm1.execute();
+			stm2.execute();
 			con.setAutoCommit(false); // avoid halfway done
-			stm = con.prepareStatement(SAVE_OFFLINE_STATUS);
-			PreparedStatement stm_items = con.prepareStatement(SAVE_ITEMS);
 			
 			//TextBuilder items = TextBuilder.newInstance();
 			for (L2PcInstance pc : L2World.getInstance().getAllPlayersArray())
@@ -68,9 +64,9 @@ public class OfflineTradersTable
 				{
 					if ((pc.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE) && (pc.getClient() == null || pc.getClient().isDetached()))
 					{
-						stm.setInt(1, pc.getObjectId()); //Char Id
-						stm.setLong(2, pc.getOfflineStartTime());
-						stm.setInt(3, pc.getPrivateStoreType()); //store type
+						stm3.setInt(1, pc.getObjectId()); //Char Id
+						stm3.setLong(2, pc.getOfflineStartTime());
+						stm3.setInt(3, pc.getPrivateStoreType()); //store type
 						String title = null;
 						
 						switch (pc.getPrivateStoreType())
@@ -118,9 +114,9 @@ public class OfflineTradersTable
 									stm_items.clearParameters();
 								}
 						}
-						stm.setString(4, title);
-						stm.executeUpdate();
-						stm.clearParameters();
+						stm3.setString(4, title);
+						stm3.executeUpdate();
+						stm3.clearParameters();
 						con.commit(); // flush
 					}
 				}
@@ -129,30 +125,22 @@ public class OfflineTradersTable
 					_log.log(Level.WARNING, "OfflineTradersTable[storeTradeItems()]: Error while saving offline trader: " + pc.getObjectId() + " " + e, e);
 				}
 			}
-			stm.close();
-			stm_items.close();
 			_log.info("Offline traders stored.");
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING,"OfflineTradersTable[storeTradeItems()]: Error while saving offline traders: " + e,e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public static void restoreOfflineTraders()
 	{
 		_log.info("Loading offline traders...");
-		Connection con = null;
 		int nTraders = 0;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(LOAD_OFFLINE_STATUS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement stm = con.prepareStatement(LOAD_OFFLINE_STATUS);
-			ResultSet rs = stm.executeQuery();
 			while (rs.next())
 			{
 				long time = rs.getLong("time");
@@ -184,43 +172,43 @@ public class OfflineTradersTable
 					player.setOfflineStartTime(time);
 					player.spawnMe(player.getX(), player.getY(), player.getZ());
 					LoginServerThread.getInstance().addGameServerLogin(player.getAccountName(), client);
-					PreparedStatement stm_items = con.prepareStatement(LOAD_OFFLINE_ITEMS);
-					stm_items.setInt(1, player.getObjectId());
-					ResultSet items = stm_items.executeQuery();
-					
-					switch (type)
+					try (PreparedStatement stm_items = con.prepareStatement(LOAD_OFFLINE_ITEMS))
 					{
-						case L2PcInstance.STORE_PRIVATE_BUY:
-							while (items.next())
+						stm_items.setInt(1, player.getObjectId());
+						try (ResultSet items = stm_items.executeQuery())
+						{
+							switch (type)
 							{
-								if (player.getBuyList().addItemByItemId(items.getInt(2), items.getLong(3), items.getLong(4)) == null)
-									throw new NullPointerException();
+								case L2PcInstance.STORE_PRIVATE_BUY:
+									while (items.next())
+									{
+										if (player.getBuyList().addItemByItemId(items.getInt(2), items.getLong(3), items.getLong(4)) == null)
+											throw new NullPointerException();
+									}
+									player.getBuyList().setTitle(rs.getString("title"));
+									break;
+								case L2PcInstance.STORE_PRIVATE_SELL:
+								case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
+									while (items.next())
+									{
+										if (player.getSellList().addItem(items.getInt(2), items.getLong(3), items.getLong(4)) == null)
+											throw new NullPointerException();
+									}
+									player.getSellList().setTitle(rs.getString("title"));
+									player.getSellList().setPackaged(type == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
+									break;
+								case L2PcInstance.STORE_PRIVATE_MANUFACTURE:
+									L2ManufactureList createList = new L2ManufactureList();
+									while (items.next())
+									{
+										createList.add(new L2ManufactureItem(items.getInt(2), items.getLong(4)));
+									}
+									player.setCreateList(createList);
+									player.getCreateList().setStoreName(rs.getString("title"));
+									break;
 							}
-							player.getBuyList().setTitle(rs.getString("title"));
-							break;
-						case L2PcInstance.STORE_PRIVATE_SELL:
-						case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
-							while (items.next())
-							{
-								if (player.getSellList().addItem(items.getInt(2), items.getLong(3), items.getLong(4)) == null)
-									throw new NullPointerException();
-							}
-							player.getSellList().setTitle(rs.getString("title"));
-							player.getSellList().setPackaged(type == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
-							break;
-						case L2PcInstance.STORE_PRIVATE_MANUFACTURE:
-							L2ManufactureList createList = new L2ManufactureList();
-							while (items.next())
-							{
-								createList.add(new L2ManufactureItem(items.getInt(2), items.getLong(4)));
-							}
-							player.setCreateList(createList);
-							player.getCreateList().setStoreName(rs.getString("title"));
-							break;
+						}
 					}
-					items.close();
-					stm_items.close();
-					
 					player.sitDown();
 					if (Config.OFFLINE_SET_NAME_COLOR)
 						player.getAppearance().setNameColor(Config.OFFLINE_NAME_COLOR);
@@ -239,23 +227,18 @@ public class OfflineTradersTable
 					}
 				}
 			}
-			rs.close();
-			stm.close();
+			
 			_log.info("Loaded: " +nTraders+ " offline trader(s)");
-			stm = con.prepareStatement(CLEAR_OFFLINE_TABLE);
-			stm.execute();
-			stm.close();
-			stm = con.prepareStatement(CLEAR_OFFLINE_TABLE_ITEMS);
-			stm.execute();
-			stm.close();
+			
+			try (Statement stm1 = con.createStatement())
+			{
+				stm1.execute(CLEAR_OFFLINE_TABLE);
+				stm1.execute(CLEAR_OFFLINE_TABLE_ITEMS);
+			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "OfflineTradersTable[loadOffliners()]: Error while loading offline traders: ",e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 }

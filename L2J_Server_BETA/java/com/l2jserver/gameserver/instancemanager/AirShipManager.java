@@ -168,17 +168,12 @@ public class AirShipManager
 			
 			_airShipsInfo.put(ownerId, info);
 			
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement(ADD_DB))
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				
-				try (PreparedStatement ps = con.prepareStatement(ADD_DB))
-				{
-					ps.setInt(1, ownerId);
-					ps.setInt(2, info.getInteger("fuel"));
-					ps.executeUpdate();
-				}
+				ps.setInt(1, ownerId);
+				ps.setInt(2, info.getInteger("fuel"));
+				ps.executeUpdate();
 			}
 			catch (SQLException e)
 			{
@@ -187,10 +182,6 @@ public class AirShipManager
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, getClass().getSimpleName()+": Error while initializing: " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}
@@ -255,20 +246,16 @@ public class AirShipManager
 	
 	private void load()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(LOAD_DB))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (Statement s = con.createStatement();
-				ResultSet rs = s.executeQuery(LOAD_DB))
+			StatsSet info;
+			while (rs.next())
 			{
-				StatsSet info;
-				while (rs.next())
-				{
-					info = new StatsSet();
-					info.set("fuel", rs.getInt("fuel"));
-					_airShipsInfo.put(rs.getInt("owner_id"), info);
-				}
+				info = new StatsSet();
+				info.set("fuel", rs.getInt("fuel"));
+				_airShipsInfo.put(rs.getInt("owner_id"), info);
 			}
 		}
 		catch (SQLException e)
@@ -279,11 +266,6 @@ public class AirShipManager
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName()+": Error while initializing: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		
 		_log.info(getClass().getSimpleName()+": Loaded " + _airShipsInfo.size() + " private airships");
 	}
 	
@@ -293,16 +275,12 @@ public class AirShipManager
 		if (info == null)
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(UPDATE_DB))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement(UPDATE_DB))
-			{
-				ps.setInt(1, info.getInteger("fuel"));
-				ps.setInt(2, ownerId);
-				ps.executeUpdate();
-			}
+			ps.setInt(1, info.getInteger("fuel"));
+			ps.setInt(2, ownerId);
+			ps.executeUpdate();
 		}
 		catch (SQLException e)
 		{
@@ -311,10 +289,6 @@ public class AirShipManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName()+": Error while save: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

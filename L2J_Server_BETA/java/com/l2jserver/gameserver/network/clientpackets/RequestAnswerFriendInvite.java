@@ -48,21 +48,18 @@ public final class RequestAnswerFriendInvite extends L2GameClientPacket
 			
 			if (_response == 1)
 			{
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement statement = con.prepareStatement("INSERT INTO character_friends (charId, friendId) VALUES (?, ?), (?, ?)"))
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement("INSERT INTO character_friends (charId, friendId) VALUES (?, ?), (?, ?)");
 					statement.setInt(1, requestor.getObjectId());
 					statement.setInt(2, player.getObjectId());
 					statement.setInt(3, player.getObjectId());
 					statement.setInt(4, requestor.getObjectId());
 					statement.execute();
-					statement.close();
 					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_SUCCEEDED_INVITING_FRIEND);
 					requestor.sendPacket(msg);
 					
-					//Player added to your friendlist
+					//Player added to your friend list
 					msg = SystemMessage.getSystemMessage(SystemMessageId.S1_ADDED_TO_FRIENDS);
 					msg.addString(player.getName());
 					requestor.sendPacket(msg);
@@ -74,17 +71,13 @@ public final class RequestAnswerFriendInvite extends L2GameClientPacket
 					player.sendPacket(msg);
 					player.getFriendList().add(requestor.getObjectId());
 					
-					//Send notificacions for both player in order to show them online
+					//Send notifications for both player in order to show them online
 					player.sendPacket(new FriendPacket(true, requestor.getObjectId()));
 					requestor.sendPacket(new FriendPacket(true, player.getObjectId()));
 				}
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, "Could not add friend objectid: "+ e.getMessage(), e);
-				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
 				}
 			}
 			else

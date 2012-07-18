@@ -1570,51 +1570,36 @@ public final class L2PcInstance extends L2Playable
 	
 	private void insertNewRecipeData(int recipeId, boolean isDwarf)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO character_recipebook (charId, id, classIndex, type) values(?,?,?,?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO character_recipebook (charId, id, classIndex, type) values(?,?,?,?)");
 			statement.setInt(1, getObjectId());
 			statement.setInt(2,recipeId);
 			statement.setInt(3, isDwarf ? _classIndex : 0);
 			statement.setInt(4, isDwarf ? 1 : 0);
 			statement.execute();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
 			if(_log.isLoggable(Level.SEVERE))
 				_log.log(Level.SEVERE, "SQL exception while inserting recipe: "+recipeId+" from character "+getObjectId(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void deleteRecipeData(int recipeId, boolean isDwarf)
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=? AND id=? AND classIndex=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=? AND id=? AND classIndex=?");
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, recipeId);
 			statement.setInt(3, isDwarf ? _classIndex : 0);
 			statement.execute();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
 			if (_log.isLoggable(Level.SEVERE))
 				_log.log(Level.SEVERE, "SQL exception while deleting recipe: "+recipeId+" from character "+getObjectId(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -3136,23 +3121,16 @@ public final class L2PcInstance extends L2Playable
 			}
 			if (zone != null)
 			{
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement statement = con.prepareStatement(UPDATE_ZONE_RESTART_LIMIT))
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
-					final PreparedStatement statement = con.prepareStatement(UPDATE_ZONE_RESTART_LIMIT);
 					statement.setInt(1, getObjectId());
 					statement.setLong(2, System.currentTimeMillis() + (zone.getRestartAllowedTime() * 1000));
 					statement.execute();
-					statement.close();
 				}
 				catch (SQLException e)
 				{
 					_log.log(Level.WARNING, "Cannot store zone norestart limit for character "+getObjectId(), e);
-				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
 				}
 			}
 		}
@@ -3160,31 +3138,26 @@ public final class L2PcInstance extends L2Playable
 	
 	private void restoreZoneRestartLimitTime()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps1 = con.prepareStatement(LOAD_ZONE_RESTART_LIMIT))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(LOAD_ZONE_RESTART_LIMIT);
-			statement.setInt(1, getObjectId());
-			final ResultSet rset = statement.executeQuery();
-			if (rset.next())
+			ps1.setInt(1, getObjectId());
+			try (ResultSet rset = ps1.executeQuery())
 			{
-				setZoneRestartLimitTime(rset.getLong("time_limit"));
-				statement.close();
-				statement = con.prepareStatement(DELETE_ZONE_RESTART_LIMIT);
-				statement.setInt(1, getObjectId());
-				statement.executeUpdate();
+				if (rset.next())
+				{
+					setZoneRestartLimitTime(rset.getLong("time_limit"));
+					try (PreparedStatement ps2 = con.prepareStatement(DELETE_ZONE_RESTART_LIMIT))
+					{
+						ps2.setInt(1, getObjectId());
+						ps2.executeUpdate();
+					}
+				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore "+this+" zone restart time: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -5160,25 +5133,16 @@ public final class L2PcInstance extends L2Playable
 				|| _transformationId == L2Transformation.TRANSFORM_ZARICHE)
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM);
-			
 			statement.setInt(1, _transformationId);
 			statement.setInt(2, getObjectId());
-			
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Transformation insert info: ",e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -5188,27 +5152,21 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public int transformSelectInfo()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(SELECT_CHAR_TRANSFORM))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SELECT_CHAR_TRANSFORM);
-			
 			statement.setInt(1, getObjectId());
-			ResultSet rset = statement.executeQuery();
-			rset.next();
-			_transformationId = rset.getInt("transform_id");
-			
-			rset.close();
-			statement.close();
+			try (ResultSet rset = statement.executeQuery())
+			{
+				if (rset.next())
+				{
+					_transformationId = rset.getInt("transform_id");
+				}
+			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Transformation select info: ",e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return _transformationId;
 	}
@@ -7173,24 +7131,17 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void updateOnlineStatus()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE characters SET online=?, lastAccess=? WHERE charId=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET online=?, lastAccess=? WHERE charId=?");
 			statement.setInt(1, isOnlineInt());
 			statement.setLong(2, System.currentTimeMillis());
 			statement.setInt(3, getObjectId());
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Failed updating character online status.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -7200,12 +7151,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private boolean createDb()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(INSERT_CHARACTER))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(INSERT_CHARACTER);
-			
 			statement.setString(1, _accountName);
 			statement.setInt(2, getObjectId());
 			statement.setString(3, getName());
@@ -7243,18 +7191,12 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(35, isNoble() ? 1 :0);
 			statement.setLong(36, 0);
 			statement.setDate(37, new Date(getCreateDate().getTimeInMillis()));
-			
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not insert char data: " + e.getMessage(), e);
 			return false;
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return true;
 	}
@@ -7276,12 +7218,9 @@ public final class L2PcInstance extends L2Playable
 	private static L2PcInstance restore(int objectId)
 	{
 		L2PcInstance player = null;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			final PreparedStatement statement = con.prepareStatement(RESTORE_CHARACTER);
 			statement.setInt(1, objectId);
 			final ResultSet rset = statement.executeQuery();
@@ -7532,10 +7471,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.SEVERE, "Failed loading character.", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		return player;
 	}
 	
@@ -7601,35 +7536,29 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private static boolean restoreSubClassData(L2PcInstance player)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(RESTORE_CHAR_SUBCLASSES))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(RESTORE_CHAR_SUBCLASSES);
 			statement.setInt(1, player.getObjectId());
-			ResultSet rset = statement.executeQuery();
-			while (rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				SubClass subClass = new SubClass();
-				subClass.setClassId(rset.getInt("class_id"));
-				subClass.setLevel(rset.getByte("level"));
-				subClass.setExp(rset.getLong("exp"));
-				subClass.setSp(rset.getInt("sp"));
-				subClass.setClassIndex(rset.getInt("class_index"));
-				
-				// Enforce the correct indexing of _subClasses against their class indexes.
-				player.getSubClasses().put(subClass.getClassIndex(), subClass);
+				while (rset.next())
+				{
+					SubClass subClass = new SubClass();
+					subClass.setClassId(rset.getInt("class_id"));
+					subClass.setLevel(rset.getByte("level"));
+					subClass.setExp(rset.getLong("exp"));
+					subClass.setSp(rset.getInt("sp"));
+					subClass.setClassIndex(rset.getInt("class_index"));
+					
+					// Enforce the correct indexing of _subClasses against their class indexes.
+					player.getSubClasses().put(subClass.getClassIndex(), subClass);
+				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore classes for " + player.getName() + ": " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return true;
 	}
@@ -7685,10 +7614,8 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private void restoreRecipeBook(boolean loadCommon)
 	{
-		Connection con = null;
-		
-		try {
-			con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		{
 			String sql = loadCommon ? "SELECT id, type, classIndex FROM character_recipebook WHERE charId=?" :
 				"SELECT id FROM character_recipebook WHERE charId=? AND classIndex=? AND type = 1";
 			PreparedStatement statement = con.prepareStatement(sql);
@@ -7724,10 +7651,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.SEVERE, "Could not restore recipe book data:" + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public Map<Integer, L2PremiumItem> getPremiumItemList()
@@ -7737,10 +7660,8 @@ public final class L2PcInstance extends L2Playable
 	
 	private void loadPremiumItemList()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			String sql = "SELECT itemNum, itemId, itemCount, itemSender FROM character_premium_items WHERE charId=?";
 			PreparedStatement statement = con.prepareStatement(sql);
 			statement.setInt(1, getObjectId());
@@ -7760,54 +7681,36 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.SEVERE, "Could not restore premium items: "+ e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void updatePremiumItem(int itemNum, long newcount)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE character_premium_items SET itemCount=? WHERE charId=? AND itemNum=? "))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE character_premium_items SET itemCount=? WHERE charId=? AND itemNum=? ");
 			statement.setLong(1, newcount);
 			statement.setInt(2, getObjectId());
 			statement.setInt(3, itemNum);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not update premium items: "+ e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void deletePremiumItem(int itemNum)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM character_premium_items WHERE charId=? AND itemNum=? "))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM character_premium_items WHERE charId=? AND itemNum=? ");
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, itemNum);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not delete premium item: " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -7841,15 +7744,13 @@ public final class L2PcInstance extends L2Playable
 	
 	private void storeCharBase()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			// Get the exp, level, and sp of base class to store in base table
 			long exp = getStat().getBaseExp();
 			int level = getStat().getBaseLevel();
 			int sp = getStat().getBaseSp();
 			
-			con = L2DatabaseFactory.getInstance().getConnection();
 			// Update base class
 			PreparedStatement statement = con.prepareStatement(UPDATE_CHARACTER);
 			
@@ -7920,10 +7821,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.WARNING, "Could not store char base data: "+this+" - " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void storeCharSub()
@@ -7931,11 +7828,9 @@ public final class L2PcInstance extends L2Playable
 		if (getTotalSubClasses() <= 0)
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_SUBCLASS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_SUBCLASS);
 			for (SubClass subClass : getSubClasses().values())
 			{
 				statement.setLong(1, subClass.getExp());
@@ -7948,15 +7843,10 @@ public final class L2PcInstance extends L2Playable
 				statement.execute();
 				statement.clearParameters();
 			}
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not store sub class data for " + getName() + ": " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -7966,12 +7856,8 @@ public final class L2PcInstance extends L2Playable
 		if (!Config.STORE_SKILL_COOLTIME)
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			
 			// Delete all current stored effects for char to avoid dupe
 			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE);
 			
@@ -8075,47 +7961,33 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.WARNING, "Could not store char effect data: ", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void storeItemReuseDelay()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps1 = con.prepareStatement(DELETE_ITEM_REUSE_SAVE);
+			PreparedStatement ps2 = con.prepareStatement(ADD_ITEM_REUSE_SAVE))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
+			ps1.setInt(1, getObjectId());
+			ps1.execute();
 			
-			PreparedStatement statement = con.prepareStatement(DELETE_ITEM_REUSE_SAVE);
-			
-			statement.setInt(1, getObjectId());
-			statement.execute();
-			statement.close();
-			
-			statement = con.prepareStatement(ADD_ITEM_REUSE_SAVE);
 			for (TimeStamp ts : _reuseTimeStampsItems.values())
 			{
 				if ((ts != null) && ts.hasNotPassed())
 				{
-					statement.setInt(1, getObjectId());
-					statement.setInt(2, ts.getItemId());
-					statement.setInt(3, ts.getItemObjectId());
-					statement.setLong(4, ts.getReuse());
-					statement.setDouble(5, ts.getStamp());
-					statement.execute();
+					ps2.setInt(1, getObjectId());
+					ps2.setInt(2, ts.getItemId());
+					ps2.setInt(3, ts.getItemObjectId());
+					ps2.setLong(4, ts.getReuse());
+					ps2.setDouble(5, ts.getStamp());
+					ps2.execute();
 				}
 			}
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not store char item reuse data: ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -8206,26 +8078,18 @@ public final class L2PcInstance extends L2Playable
 		final L2Skill oldSkill = super.removeSkill(skill);
 		if (oldSkill != null)
 		{
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement(DELETE_SKILL_FROM_CHAR))
 			{
 				// Remove or update a L2PcInstance skill from the character_skills table of the database
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement(DELETE_SKILL_FROM_CHAR);
-				
 				statement.setInt(1, oldSkill.getId());
 				statement.setInt(2, getObjectId());
 				statement.setInt(3, getClassIndex());
 				statement.execute();
-				statement.close();
 			}
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Error could not delete skill: " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 		
@@ -8256,10 +8120,8 @@ public final class L2PcInstance extends L2Playable
 		if (newClassIndex > -1)
 			classIndex = newClassIndex;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			
 			if (oldSkill != null && newSkill != null)
@@ -8291,10 +8153,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.WARNING, "Error could not store char skills: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/**
@@ -8302,13 +8160,10 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private void restoreSkills()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(RESTORE_SKILLS_FOR_CHAR))
 		{
 			// Retrieve all skills of this L2PcInstance from the database
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement(RESTORE_SKILLS_FOR_CHAR);
-			
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, getClassIndex());
 			final ResultSet rset = statement.executeQuery();
@@ -8343,15 +8198,10 @@ public final class L2PcInstance extends L2Playable
 				}
 			}
 			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore character " + this + " skills: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -8361,11 +8211,8 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public void restoreEffects()
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			ResultSet rset;
 			
@@ -8443,10 +8290,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.WARNING, "Could not restore "+this+" active effect data: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/**
@@ -8454,10 +8297,8 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private void restoreItemReuse()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(RESTORE_ITEM_REUSE_SAVE);
 			statement.setInt(1, getObjectId());
 			final ResultSet rset = statement.executeQuery();
@@ -8516,10 +8357,6 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.WARNING, "Could not restore "+this+" Item Reuse data: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/**
@@ -8527,10 +8364,8 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private void restoreHenna()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(RESTORE_CHAR_HENNAS);
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, getClassIndex());
@@ -8565,10 +8400,6 @@ public final class L2PcInstance extends L2Playable
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Failed restoing character " + this + " hennas.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		// Calculate Henna modifiers of this L2PcInstance
@@ -8625,26 +8456,17 @@ public final class L2PcInstance extends L2Playable
 		
 		_henna[slot] = null;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(DELETE_CHAR_HENNA))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement(DELETE_CHAR_HENNA);
-			
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, slot + 1);
 			statement.setInt(3, getClassIndex());
-			
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Failed remocing character henna.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		// Calculate Henna modifiers of this L2PcInstance
@@ -8688,27 +8510,18 @@ public final class L2PcInstance extends L2Playable
 				// Calculate Henna modifiers of this L2PcInstance
 				recalcHennaStats();
 				
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement statement = con.prepareStatement(ADD_CHAR_HENNA))
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement(ADD_CHAR_HENNA);
-					
 					statement.setInt(1, getObjectId());
 					statement.setInt(2, henna.getDyeId());
 					statement.setInt(3, i + 1);
 					statement.setInt(4, getClassIndex());
-					
 					statement.execute();
-					statement.close();
 				}
 				catch (Exception e)
 				{
 					_log.log(Level.SEVERE, "Failed saving character henna.", e);
-				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
 				}
 				
 				// Send Server->Client HennaInfo packet to this L2PcInstance
@@ -10784,32 +10597,21 @@ public final class L2PcInstance extends L2Playable
 			newClass.setClassId(classId);
 			newClass.setClassIndex(classIndex);
 			
-			Connection con = null;
-			PreparedStatement statement = null;
-			
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement(ADD_CHAR_SUBCLASS))
 			{
 				// Store the basic info about this new sub-class.
-				con = L2DatabaseFactory.getInstance().getConnection();
-				statement = con.prepareStatement(ADD_CHAR_SUBCLASS);
-				
 				statement.setInt(1, getObjectId());
 				statement.setInt(2, newClass.getClassId());
 				statement.setLong(3, newClass.getExp());
 				statement.setInt(4, newClass.getSp());
 				statement.setInt(5, newClass.getLevel());
 				statement.setInt(6, newClass.getClassIndex()); // <-- Added
-				
 				statement.execute();
-				statement.close();
 			}
 			catch (Exception e) {
 				_log.log(Level.WARNING, "WARNING: Could not add character sub class for " + getName() + ": " + e.getMessage(), e);
 				return false;
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 			
 			// Commit after database INSERT incase exception is thrown.
@@ -10870,11 +10672,8 @@ public final class L2PcInstance extends L2Playable
 			if (Config.DEBUG)
 				_log.info(getName() + " has requested to modify sub class index " + classIndex + " from class ID " + oldClassId + " to " + newClassId + ".");
 			
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				
 				// Remove all henna info stored for this sub-class.
 				PreparedStatement statement = con.prepareStatement(DELETE_CHAR_HENNAS);
 				statement.setInt(1, getObjectId());
@@ -10917,10 +10716,6 @@ public final class L2PcInstance extends L2Playable
 				// This must be done in order to maintain data consistency.
 				getSubClasses().remove(classIndex);
 				return false;
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 			
 			getSubClasses().remove(classIndex);
@@ -14030,24 +13825,17 @@ public final class L2PcInstance extends L2Playable
 		{
 			String req;
 			req = "UPDATE pets SET fed=? WHERE item_obj_id = ?";
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement(req))
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement(req);
 				statement.setInt(1, getCurrentFeed());
 				statement.setInt(2, _controlItemId);
 				statement.executeUpdate();
-				statement.close();
 				_controlItemId = 0;
 			}
 			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Failed to store Pet [NpcId: "+petId+"] data", e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}
@@ -14236,29 +14024,19 @@ public final class L2PcInstance extends L2Playable
 				tpbookmark.get(count)._tag = tag;
 				tpbookmark.get(count)._name = name;
 				
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement statement = con.prepareStatement(UPDATE_TP_BOOKMARK))
 				{
-					
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement(UPDATE_TP_BOOKMARK);
-					
 					statement.setInt(1, icon);
 					statement.setString(2, tag);
 					statement.setString(3, name);
 					statement.setInt(4, getObjectId());
 					statement.setInt(5, Id);
-					
 					statement.execute();
-					statement.close();
 				}
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, "Could not update character teleport bookmark data: " + e.getMessage(), e);
-				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
 				}
 			}
 			count++;
@@ -14270,26 +14048,16 @@ public final class L2PcInstance extends L2Playable
 	
 	public void teleportBookmarkDelete(int Id)
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(DELETE_TP_BOOKMARK))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(DELETE_TP_BOOKMARK);
-			
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, Id);
-			
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not delete character teleport bookmark data: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		int count = 0;
@@ -14463,14 +14231,9 @@ public final class L2PcInstance extends L2Playable
 		sm.addItemName(20033);
 		sendPacket(sm);
 		
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(INSERT_TP_BOOKMARK))
 		{
-			
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(INSERT_TP_BOOKMARK);
-			
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, id);
 			statement.setInt(3, x);
@@ -14479,18 +14242,11 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(6, icon);
 			statement.setString(7, tag);
 			statement.setString(8, name);
-			
-			
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not insert character teleport bookmark data: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		sendPacket(new ExGetBookMarkInfoPacket(this));
 	}
@@ -14499,10 +14255,9 @@ public final class L2PcInstance extends L2Playable
 	{
 		if(tpbookmark == null)
 			tpbookmark = new FastList<>();
-		Connection con = null;
-		try
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(RESTORE_TP_BOOKMARK);
 			statement.setInt(1, getObjectId());
 			ResultSet rset = statement.executeQuery();
@@ -14518,10 +14273,6 @@ public final class L2PcInstance extends L2Playable
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Failed restoing character teleport bookmark.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -14710,13 +14461,9 @@ public final class L2PcInstance extends L2Playable
 	{
 		_friendList.clear();
 		
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			String sqlQuery = "SELECT friendId FROM character_friends WHERE charId=? AND relation=0";
-			
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(sqlQuery);
 			statement.setInt(1, getObjectId());
 			ResultSet rset = statement.executeQuery();
@@ -14736,10 +14483,6 @@ public final class L2PcInstance extends L2Playable
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error found in " + getName() + "'s FriendList: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -14795,11 +14538,8 @@ public final class L2PcInstance extends L2Playable
 	
 	private void storeRecipeShopList()
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			L2ManufactureList list = getCreateList();
 			
@@ -14829,24 +14569,15 @@ public final class L2PcInstance extends L2Playable
 		{
 			_log.log(Level.SEVERE, "Could not store recipe shop for playerID " + getObjectId() + ": ", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void restoreRecipeShopList()
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT Recipeid,Price FROM character_recipeshoplist WHERE charId=? ORDER BY Pos ASC");
 			statement.setInt(1, getObjectId());
 			ResultSet rset = statement.executeQuery();
-			
-			
 			L2ManufactureList createList = new L2ManufactureList();
 			while (rset.next())
 			{
@@ -14859,10 +14590,6 @@ public final class L2PcInstance extends L2Playable
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not restore recipe shop list data for playerId: "+getObjectId(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -15262,27 +14989,21 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private void restorePetInventoryItems()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT object_id FROM `items` WHERE `owner_id`=? AND (`loc`='PET' OR `loc`='PET_EQUIP') LIMIT 1;"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT object_id FROM `items` WHERE `owner_id`=? AND (`loc`='PET' OR `loc`='PET_EQUIP') LIMIT 1;");
 			statement.setInt(1, getObjectId());
-			ResultSet rset = statement.executeQuery();
-			if (rset.next() && rset.getInt("object_id") > 0)
-				setPetInvItems(true);
-			else
-				setPetInvItems(false);			 
-			rset.close();
-			statement.close();
+			try (ResultSet rset = statement.executeQuery())
+			{
+				if (rset.next() && rset.getInt("object_id") > 0)
+					setPetInvItems(true);
+				else
+					setPetInvItems(false);			 
+			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not check Items in Pet Inventory for playerId: "+getObjectId(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 
@@ -15313,35 +15034,27 @@ public final class L2PcInstance extends L2Playable
 	private long loadRecommendations()
 	{
 		long _time_left = 0;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT rec_have,rec_left,time_left FROM character_reco_bonus WHERE charId=? LIMIT 1"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT rec_have,rec_left,time_left FROM character_reco_bonus WHERE charId=? LIMIT 1");
 			statement.setInt(1, getObjectId());
-			ResultSet rset = statement.executeQuery();
-			
-			if(rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				setRecomHave(rset.getInt("rec_have"));
-				setRecomLeft(rset.getInt("rec_left"));				
-				_time_left = rset.getLong("time_left");
+				if(rset.next())
+				{
+					setRecomHave(rset.getInt("rec_have"));
+					setRecomLeft(rset.getInt("rec_left"));				
+					_time_left = rset.getLong("time_left");
+				}
+				else
+				{
+					_time_left = 3600000;
+				}
 			}
-			else
-			{
-				_time_left = 3600000;
-			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not restore Recommendations for player: "+getObjectId(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return _time_left;
 	}
@@ -15355,11 +15068,9 @@ public final class L2PcInstance extends L2Playable
 		if(_recoBonusTask != null)
 			_recoTaskEnd = Math.max(0, _recoBonusTask.getDelay(TimeUnit.MILLISECONDS));
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO character_reco_bonus (charId,rec_have,rec_left,time_left) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE rec_have=?, rec_left=?, time_left=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO character_reco_bonus (charId,rec_have,rec_left,time_left) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE rec_have=?, rec_left=?, time_left=?");
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, getRecomHave());
 			statement.setInt(3, getRecomLeft());
@@ -15369,15 +15080,10 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(6, getRecomLeft());
 			statement.setLong(7, _recoTaskEnd);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not update Recommendations for player: "+getObjectId(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 

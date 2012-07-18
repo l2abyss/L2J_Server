@@ -73,52 +73,48 @@ public class TaskBirthday extends Task
 	
 	private void checkBirthday(int year, int month, int day)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(QUERY))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement(QUERY);
 			statement.setString(1, "%-" + getNum(month + 1) + "-" + getNum(day));
-			final ResultSet rset = statement.executeQuery();
-			while (rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				int playerId = rset.getInt("charId");
-				Calendar createDate = Calendar.getInstance();
-				createDate.setTime(rset.getDate("createDate"));
-				
-				int age = year - createDate.get(Calendar.YEAR);
-				if (age <= 0)
+				while (rset.next())
 				{
-					continue;
+					int playerId = rset.getInt("charId");
+					Calendar createDate = Calendar.getInstance();
+					createDate.setTime(rset.getDate("createDate"));
+					
+					int age = year - createDate.get(Calendar.YEAR);
+					if (age <= 0)
+					{
+						continue;
+					}
+					
+					String text = Config.ALT_BIRTHDAY_MAIL_TEXT;
+					
+					if (text.contains("$c1"))
+					{
+						text = text.replace("$c1", CharNameTable.getInstance().getNameById(playerId));
+					}
+					if (text.contains("$s1"))
+					{
+						text = text.replace("$s1", String.valueOf(age));
+					}
+					
+					Message msg = new Message(playerId, Config.ALT_BIRTHDAY_MAIL_SUBJECT, text, Message.SendBySystem.ALEGRIA);
+					
+					Mail attachments = msg.createAttachments();
+					attachments.addItem("Birthday", Config.ALT_BIRTHDAY_GIFT, 1, null, null);
+					
+					MailManager.getInstance().sendMessage(msg);
+					_count++;
 				}
-				
-				String text = Config.ALT_BIRTHDAY_MAIL_TEXT;
-				
-				if (text.contains("$c1"))
-				{
-					text = text.replace("$c1", CharNameTable.getInstance().getNameById(playerId));
-				}
-				if (text.contains("$s1"))
-				{
-					text = text.replace("$s1", String.valueOf(age));
-				}
-				
-				Message msg = new Message(playerId, Config.ALT_BIRTHDAY_MAIL_SUBJECT, text, Message.SendBySystem.ALEGRIA);
-				
-				Mail attachments = msg.createAttachments();
-				attachments.addItem("Birthday", Config.ALT_BIRTHDAY_GIFT, 1, null, null);
-				
-				MailManager.getInstance().sendMessage(msg);
-				_count++;
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Error checking birthdays. ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		// If character birthday is 29-Feb and year isn't leap, send gift on 28-feb

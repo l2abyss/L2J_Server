@@ -228,11 +228,8 @@ public class L2ClanMember
 	
 	public void updatePledgeType()
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE characters SET subpledge=? WHERE charId=?");
 			statement.setLong(1, _pledgeType);
 			statement.setInt(2, getObjectId());
@@ -242,10 +239,6 @@ public class L2ClanMember
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not update pledge type: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -278,11 +271,8 @@ public class L2ClanMember
 	 */
 	public void updatePowerGrade()
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE characters SET power_grade=? WHERE charId=?");
 			statement.setLong(1, _powerGrade);
 			statement.setInt(2, getObjectId());
@@ -292,10 +282,6 @@ public class L2ClanMember
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not update power _grade: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -623,10 +609,8 @@ public class L2ClanMember
 	
 	public void saveApprenticeAndSponsor(int apprentice, int sponsor)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE characters SET apprentice=?,sponsor=? WHERE charId=?");
 			statement.setInt(1, apprentice);
 			statement.setInt(2, sponsor);
@@ -637,10 +621,6 @@ public class L2ClanMember
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not save apprentice/sponsor: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 }

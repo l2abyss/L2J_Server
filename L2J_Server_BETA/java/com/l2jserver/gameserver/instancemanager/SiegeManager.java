@@ -118,11 +118,9 @@ public class SiegeManager
 		if (clan.getCastleId() > 0)
 			return true;
 		
-		Connection con = null;
 		boolean register = false;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT clan_id FROM siege_clans where clan_id=? and castle_id=?");
 			statement.setInt(1, clan.getClanId());
 			statement.setInt(2, castleid);
@@ -140,10 +138,6 @@ public class SiegeManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: checkIsRegistered(): " + e.getMessage() ,e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return register;
 	}

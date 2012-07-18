@@ -48,29 +48,20 @@ public class ForumsBBSManager extends BaseBBSManager
 	protected ForumsBBSManager()
 	{
 		_table = new FastList<>();
-		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT forum_id FROM forums WHERE forum_type = 0"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (Statement s = con.createStatement();
-				ResultSet rs = s.executeQuery("SELECT forum_id FROM forums WHERE forum_type = 0"))
+			while (rs.next())
 			{
-				while (rs.next())
-				{
-					int forumId = rs.getInt("forum_id");
-					Forum f = new Forum(forumId, null);
-					addForum(f);
-				}
+				int forumId = rs.getInt("forum_id");
+				Forum f = new Forum(forumId, null);
+				addForum(f);
 			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Data error on Forum (root): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

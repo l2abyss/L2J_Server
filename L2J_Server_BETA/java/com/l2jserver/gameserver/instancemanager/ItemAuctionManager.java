@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,26 +62,16 @@ public final class ItemAuctionManager
 			return;
 		}
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement statement = con.createStatement();
+			ResultSet rset = statement.executeQuery("SELECT auctionId FROM item_auction ORDER BY auctionId DESC LIMIT 0, 1"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT auctionId FROM item_auction ORDER BY auctionId DESC LIMIT 0, 1");
-			ResultSet rset = statement.executeQuery();
-			
 			if (rset.next())
 				_auctionIds.set(rset.getInt(1) + 1);
-			
-			rset.close();
-			statement.close();
 		}
 		catch (final SQLException e)
 		{
 			_log.log(Level.SEVERE, "ItemAuctionManager: Failed loading auctions.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		final File file = new File(Config.DATAPACK_ROOT + "/data/ItemAuctions.xml");
@@ -146,27 +137,23 @@ public final class ItemAuctionManager
 	
 	public static final void deleteAuction(final int auctionId)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM item_auction WHERE auctionId=?");
-			statement.setInt(1, auctionId);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement statement = con.prepareStatement("DELETE FROM item_auction WHERE auctionId=?"))
+			{
+				statement.setInt(1, auctionId);
+				statement.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM item_auction_bid WHERE auctionId=?");
-			statement.setInt(1, auctionId);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement statement = con.prepareStatement("DELETE FROM item_auction_bid WHERE auctionId=?"))
+			{
+				statement.setInt(1, auctionId);
+				statement.execute();
+			}
 		}
-		catch (final SQLException e)
+		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "L2ItemAuctionManagerInstance: Failed deleting auction: " + auctionId, e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

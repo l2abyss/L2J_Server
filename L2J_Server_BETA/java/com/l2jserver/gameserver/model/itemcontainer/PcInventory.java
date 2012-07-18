@@ -741,38 +741,30 @@ public class PcInventory extends Inventory
 	public static int[][] restoreVisibleInventory(int objectId)
 	{
 		int[][] paperdoll = new int[31][3];
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement2 = con.prepareStatement("SELECT object_id,item_id,loc_data,enchant_level FROM items WHERE owner_id=? AND loc='PAPERDOLL'"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement2 = con.prepareStatement("SELECT object_id,item_id,loc_data,enchant_level FROM items WHERE owner_id=? AND loc='PAPERDOLL'");
 			statement2.setInt(1, objectId);
-			ResultSet invdata = statement2.executeQuery();
-			
-			while (invdata.next())
+			try (ResultSet invdata = statement2.executeQuery())
 			{
-				int slot = invdata.getInt("loc_data");
-				paperdoll[slot][0] = invdata.getInt("object_id");
-				paperdoll[slot][1] = invdata.getInt("item_id");
-				paperdoll[slot][2] = invdata.getInt("enchant_level");
-				/*if (slot == Inventory.PAPERDOLL_RHAND)
+				while (invdata.next())
 				{
-					paperdoll[Inventory.PAPERDOLL_RHAND][0] = invdata.getInt("object_id");
-					paperdoll[Inventory.PAPERDOLL_RHAND][1] = invdata.getInt("item_id");
-					paperdoll[Inventory.PAPERDOLL_RHAND][2] = invdata.getInt("enchant_level");
-				}*/
+					int slot = invdata.getInt("loc_data");
+					paperdoll[slot][0] = invdata.getInt("object_id");
+					paperdoll[slot][1] = invdata.getInt("item_id");
+					paperdoll[slot][2] = invdata.getInt("enchant_level");
+					/*if (slot == Inventory.PAPERDOLL_RHAND)
+					{
+						paperdoll[Inventory.PAPERDOLL_RHAND][0] = invdata.getInt("object_id");
+						paperdoll[Inventory.PAPERDOLL_RHAND][1] = invdata.getInt("item_id");
+						paperdoll[Inventory.PAPERDOLL_RHAND][2] = invdata.getInt("enchant_level");
+					}*/
+				}
 			}
-			
-			invdata.close();
-			statement2.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore inventory: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return paperdoll;
 	}

@@ -301,71 +301,60 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			return -1;
 		}
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT clanId FROM characters WHERE charId=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			PreparedStatement statement = con.prepareStatement("SELECT clanId FROM characters WHERE charId=?");
 			statement.setInt(1, objid);
-			ResultSet rs = statement.executeQuery();
-			
-			rs.next();
-			
-			int clanId = rs.getInt(1);
 			byte answer = 0;
-			if (clanId != 0)
+			try (ResultSet rs = statement.executeQuery())
 			{
-				L2Clan clan = ClanTable.getInstance().getClan(clanId);
-				
-				if (clan == null)
+				int clanId = rs.next() ? rs.getInt(1) : 0;
+				if (clanId != 0)
 				{
-					answer = 0; // jeezes!
-				}
-				else if (clan.getLeaderId() == objid)
-				{
-					answer = 2;
-				}
-				else
-				{
-					answer = 1;
-				}
-			}
-			
-			rs.close();
-			statement.close();
-			
-			// Setting delete time
-			if (answer == 0)
-			{
-				if (Config.DELETE_DAYS == 0)
-				{
-					deleteCharByObjId(objid);
-				}
-				else
-				{
-					statement = con.prepareStatement("UPDATE characters SET deletetime=? WHERE charId=?");
-					statement.setLong(1, System.currentTimeMillis() + (Config.DELETE_DAYS * 86400000L)); // 24*60*60*1000 = 86400000
-					statement.setInt(2, objid);
-					statement.execute();
-					statement.close();
+					L2Clan clan = ClanTable.getInstance().getClan(clanId);
+					
+					if (clan == null)
+					{
+						answer = 0; // jeezes!
+					}
+					else if (clan.getLeaderId() == objid)
+					{
+						answer = 2;
+					}
+					else
+					{
+						answer = 1;
+					}
 				}
 				
-				LogRecord record = new LogRecord(Level.WARNING, "Delete");
-				record.setParameters(new Object[] { objid, this });
-				_logAccounting.log(record);
+				// Setting delete time
+				if (answer == 0)
+				{
+					if (Config.DELETE_DAYS == 0)
+					{
+						deleteCharByObjId(objid);
+					}
+					else
+					{
+						try (PreparedStatement ps2 = con.prepareStatement("UPDATE characters SET deletetime=? WHERE charId=?"))
+						{
+							ps2.setLong(1, System.currentTimeMillis() + (Config.DELETE_DAYS * 86400000L)); // 24*60*60*1000 = 86400000
+							ps2.setInt(2, objid);
+							ps2.execute();
+						}
+					}
+					
+					LogRecord record = new LogRecord(Level.WARNING, "Delete");
+					record.setParameters(new Object[] { objid, this });
+					_logAccounting.log(record);
+				}
 			}
-			
 			return answer;
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error updating delete time of character.", e);
 			return -1;
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -401,22 +390,15 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			return;
 		}
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE characters SET deletetime=0 WHERE charId=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET deletetime=0 WHERE charId=?");
 			statement.setInt(1, objid);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error restoring character.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		final LogRecord record = new LogRecord(Level.WARNING, "Restore");
@@ -433,11 +415,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		
 		CharNameTable.getInstance().removeName(objid);
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("DELETE FROM character_contacts WHERE charId=? OR contactId=?");
 			statement.setInt(1, objid);
 			statement.setInt(2, objid);
@@ -562,10 +541,6 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error deleting character.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

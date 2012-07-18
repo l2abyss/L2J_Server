@@ -73,29 +73,21 @@ public class Post
 	
 	public void insertindb(CPost cp)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO posts (post_id,post_owner_name,post_ownerid,post_date,post_topic_id,post_forum_id,post_txt) values (?,?,?,?,?,?,?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("INSERT INTO posts (post_id,post_owner_name,post_ownerid,post_date,post_topic_id,post_forum_id,post_txt) values (?,?,?,?,?,?,?)"))
-			{
-				ps.setInt(1, cp.postId);
-				ps.setString(2, cp.postOwner);
-				ps.setInt(3, cp.postOwnerId);
-				ps.setLong(4, cp.postDate);
-				ps.setInt(5, cp.postTopicId);
-				ps.setInt(6, cp.postForumId);
-				ps.setString(7, cp.postTxt);
-				ps.execute();
-			}
+			ps.setInt(1, cp.postId);
+			ps.setString(2, cp.postOwner);
+			ps.setInt(3, cp.postOwnerId);
+			ps.setLong(4, cp.postDate);
+			ps.setInt(5, cp.postTopicId);
+			ps.setInt(6, cp.postForumId);
+			ps.setString(7, cp.postTxt);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error while saving new Post to db " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -121,24 +113,16 @@ public class Post
 	public void deleteme(Topic t)
 	{
 		PostBBSManager.getInstance().delPostByTopic(t);
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM posts WHERE post_forum_id=? AND post_topic_id=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("DELETE FROM posts WHERE post_forum_id=? AND post_topic_id=?"))
-			{
-				ps.setInt(1, t.getForumID());
-				ps.setInt(2, t.getID());
-				ps.execute();
-			}
+			ps.setInt(1, t.getForumID());
+			ps.setInt(2, t.getID());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error while deleting post: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -147,38 +131,30 @@ public class Post
 	 */
 	private void load(Topic t)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM posts WHERE post_forum_id=? AND post_topic_id=? ORDER BY post_id ASC"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("SELECT * FROM posts WHERE post_forum_id=? AND post_topic_id=? ORDER BY post_id ASC"))
+			ps.setInt(1, t.getForumID());
+			ps.setInt(2, t.getID());
+			try (ResultSet rs = ps.executeQuery())
 			{
-				ps.setInt(1, t.getForumID());
-				ps.setInt(2, t.getID());
-				try (ResultSet rs = ps.executeQuery())
+				while(rs.next())
 				{
-					while(rs.next())
-					{
-						CPost cp = new CPost();
-						cp.postId = rs.getInt("post_id");
-						cp.postOwner = rs.getString("post_owner_name");
-						cp.postOwnerId = rs.getInt("post_ownerid");
-						cp.postDate = rs.getLong("post_date");
-						cp.postTopicId = rs.getInt("post_topic_id");
-						cp.postForumId = rs.getInt("post_forum_id");
-						cp.postTxt = rs.getString("post_txt");
-						_post.add(cp);
-					}
+					CPost cp = new CPost();
+					cp.postId = rs.getInt("post_id");
+					cp.postOwner = rs.getString("post_owner_name");
+					cp.postOwnerId = rs.getInt("post_ownerid");
+					cp.postDate = rs.getLong("post_date");
+					cp.postTopicId = rs.getInt("post_topic_id");
+					cp.postForumId = rs.getInt("post_forum_id");
+					cp.postTxt = rs.getString("post_txt");
+					_post.add(cp);
 				}
 			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Data error on Post " + t.getForumID() + "/"+t.getID()+" : " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -187,27 +163,19 @@ public class Post
 	 */
 	public void updatetxt(int i)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE posts SET post_txt=? WHERE post_id=? AND post_topic_id=? AND post_forum_id=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("UPDATE posts SET post_txt=? WHERE post_id=? AND post_topic_id=? AND post_forum_id=?"))
-			{
-				CPost cp = getCPost(i);
-				ps.setString(1, cp.postTxt);
-				ps.setInt(2, cp.postId);
-				ps.setInt(3, cp.postTopicId);
-				ps.setInt(4, cp.postForumId);
-				ps.execute();
-			}
+			CPost cp = getCPost(i);
+			ps.setString(1, cp.postTxt);
+			ps.setInt(2, cp.postId);
+			ps.setInt(3, cp.postTopicId);
+			ps.setInt(4, cp.postForumId);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error while saving new Post to db " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 }

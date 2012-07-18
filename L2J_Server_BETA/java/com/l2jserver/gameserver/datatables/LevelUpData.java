@@ -59,42 +59,34 @@ public class LevelUpData
 	protected LevelUpData()
 	{
 		_lvlTable = new TIntObjectHashMap<>();
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(SELECT_ALL))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (Statement s = con.createStatement();
-				ResultSet rs = s.executeQuery(SELECT_ALL))
+			L2LvlupData lvlDat;
+			while (rs.next())
 			{
-				L2LvlupData lvlDat;
-				while (rs.next())
-				{
-					lvlDat = new L2LvlupData();
-					lvlDat.setClassid(rs.getInt(CLASS_ID));
-					lvlDat.setClassLvl(rs.getInt(CLASS_LVL));
-					lvlDat.setClassHpBase(rs.getFloat(HP_BASE));
-					lvlDat.setClassHpAdd(rs.getFloat(HP_ADD));
-					lvlDat.setClassHpModifier(rs.getFloat(HP_MOD));
-					lvlDat.setClassCpBase(rs.getFloat(CP_BASE));
-					lvlDat.setClassCpAdd(rs.getFloat(CP_ADD));
-					lvlDat.setClassCpModifier(rs.getFloat(CP_MOD));
-					lvlDat.setClassMpBase(rs.getFloat(MP_BASE));
-					lvlDat.setClassMpAdd(rs.getFloat(MP_ADD));
-					lvlDat.setClassMpModifier(rs.getFloat(MP_MOD));
-					
-					_lvlTable.put(lvlDat.getClassid(), lvlDat);
-				}
+				lvlDat = new L2LvlupData();
+				lvlDat.setClassid(rs.getInt(CLASS_ID));
+				lvlDat.setClassLvl(rs.getInt(CLASS_LVL));
+				lvlDat.setClassHpBase(rs.getFloat(HP_BASE));
+				lvlDat.setClassHpAdd(rs.getFloat(HP_ADD));
+				lvlDat.setClassHpModifier(rs.getFloat(HP_MOD));
+				lvlDat.setClassCpBase(rs.getFloat(CP_BASE));
+				lvlDat.setClassCpAdd(rs.getFloat(CP_ADD));
+				lvlDat.setClassCpModifier(rs.getFloat(CP_MOD));
+				lvlDat.setClassMpBase(rs.getFloat(MP_BASE));
+				lvlDat.setClassMpAdd(rs.getFloat(MP_ADD));
+				lvlDat.setClassMpModifier(rs.getFloat(MP_MOD));
+				
+				_lvlTable.put(lvlDat.getClassid(), lvlDat);
 			}
-			_log.info("LevelUpData: Loaded " + _lvlTable.size() + " Character Level Up Templates.");
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error loading Level Up data.", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		_log.info("LevelUpData: Loaded " + _lvlTable.size() + " Character Level Up Templates.");
 	}
 	
 	/**

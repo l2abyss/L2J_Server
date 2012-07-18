@@ -346,21 +346,14 @@ public abstract class BaseGameServerRegister
 	 */
 	public static void unregisterGameServer(int id) throws SQLException
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM gameservers WHERE server_id = ?"))
+		
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("DELETE FROM gameservers WHERE server_id = ?"))
-			{
-				ps.setInt(1, id);
-				ps.executeUpdate();
-			}
-			GameServerTable.getInstance().getRegisteredGameServers().remove(id);
+			ps.setInt(1, id);
+			ps.executeUpdate();
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		GameServerTable.getInstance().getRegisteredGameServers().remove(id);
 	}
 	
 	/**
@@ -369,20 +362,12 @@ public abstract class BaseGameServerRegister
 	 */
 	public static void unregisterAllGameServers() throws SQLException
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (Statement s = con.createStatement())
-			{
-				s.executeUpdate("DELETE FROM gameservers");
-			}
-			GameServerTable.getInstance().getRegisteredGameServers().clear();
+			s.executeUpdate("DELETE FROM gameservers");
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		GameServerTable.getInstance().getRegisteredGameServers().clear();
 	}
 	
 	/**

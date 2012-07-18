@@ -628,34 +628,27 @@ public class LoginServerThread extends Thread
 	 */
 	private void getCharsOnServer(String account)
 	{
-		Connection con = null;
+		
 		int chars = 0;
 		List<Long> charToDel = new ArrayList<>();
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT deletetime FROM characters WHERE account_name=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("SELECT deletetime FROM characters WHERE account_name=?"))
+			ps.setString(1, account);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				ps.setString(1, account);
-				try (ResultSet rs = ps.executeQuery())
+				while (rs.next())
 				{
-					while (rs.next())
-					{
-						chars++;
-						long delTime = rs.getLong("deletetime");
-						if (delTime != 0)
-							charToDel.add(delTime);
-					}
+					chars++;
+					long delTime = rs.getLong("deletetime");
+					if (delTime != 0)
+						charToDel.add(delTime);
 				}
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Exception: getCharsOnServer: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		ReplyCharacters rec = new ReplyCharacters(account, chars, charToDel);

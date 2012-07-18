@@ -176,13 +176,9 @@ public abstract class ClanHall
 		
 		public void dbSave()
 		{
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				PreparedStatement statement;
-				
-				con = L2DatabaseFactory.getInstance().getConnection();
-				statement = con.prepareStatement("REPLACE INTO clanhall_functions (hall_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
+				PreparedStatement statement = con.prepareStatement("REPLACE INTO clanhall_functions (hall_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
 				statement.setInt(1, getId());
 				statement.setInt(2, getType());
 				statement.setInt(3, getLvl());
@@ -196,10 +192,6 @@ public abstract class ClanHall
 			{
 				_log.log(Level.SEVERE, "Exception: ClanHall.updateFunctions(int type, int lvl, int lease, long rate, long time, boolean addNew): "
 						+ e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}
@@ -415,10 +407,8 @@ public abstract class ClanHall
 	/** Load All Functions */
 	protected void loadFunctions()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("Select * from clanhall_functions where hall_id = ?");
 			statement.setInt(1, getId());
 			ResultSet rs = statement.executeQuery();
@@ -433,10 +423,6 @@ public abstract class ClanHall
 		{
 			_log.log(Level.SEVERE, "Exception: ClanHall.loadFunctions(): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/**
@@ -446,10 +432,8 @@ public abstract class ClanHall
 	public void removeFunction(int functionType)
 	{
 		_functions.remove(functionType);
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("DELETE FROM clanhall_functions WHERE hall_id=? AND type=?");
 			statement.setInt(1, getId());
 			statement.setInt(2, functionType);
@@ -459,10 +443,6 @@ public abstract class ClanHall
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Exception: ClanHall.removeFunctions(int functionType): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

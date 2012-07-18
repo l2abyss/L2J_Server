@@ -70,21 +70,16 @@ public final class RequestFriendDel extends L2GameClientPacket{
 			return;
 		}
 		
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM character_friends WHERE (charId=? AND friendId=?) OR (charId=? AND friendId=?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("DELETE FROM character_friends WHERE (charId=? AND friendId=?) OR (charId=? AND friendId=?)");
 			statement.setInt(1, activeChar.getObjectId());
 			statement.setInt(2, id);
 			statement.setInt(3, id);
 			statement.setInt(4, activeChar.getObjectId());
 			statement.execute();
-			statement.close();
 			
-			// Player deleted from your friendlist
+			// Player deleted from your friend list
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_BEEN_DELETED_FROM_YOUR_FRIENDS_LIST);
 			sm.addString(_name);
 			activeChar.sendPacket(sm);
@@ -102,10 +97,6 @@ public final class RequestFriendDel extends L2GameClientPacket{
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not del friend objectid: ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

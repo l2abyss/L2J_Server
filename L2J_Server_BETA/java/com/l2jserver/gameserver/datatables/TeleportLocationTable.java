@@ -50,19 +50,43 @@ public class TeleportLocationTable
 	public void reloadAll()
 	{
 		_teleports = new TIntObjectHashMap<>();
-		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM teleport"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (Statement s = con.createStatement();
-				ResultSet rs = s.executeQuery("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM teleport"))
+			L2TeleportLocation teleport;
+			while (rs.next())
+			{
+				teleport = new L2TeleportLocation();
+				
+				teleport.setTeleId(rs.getInt("id"));
+				teleport.setLocX(rs.getInt("loc_x"));
+				teleport.setLocY(rs.getInt("loc_y"));
+				teleport.setLocZ(rs.getInt("loc_z"));
+				teleport.setPrice(rs.getInt("price"));
+				teleport.setIsForNoble(rs.getInt("fornoble") == 1);
+				teleport.setItemId(rs.getInt("itemId"));
+				
+				_teleports.put(teleport.getTeleId(), teleport);
+			}
+			_log.info("TeleportLocationTable: Loaded " + _teleports.size() + " Teleport Location Templates.");
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "Error loading Teleport Table.", e);
+		}
+		
+		if (Config.CUSTOM_TELEPORT_TABLE)
+		{
+			int _cTeleCount = _teleports.size();
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				Statement s = con.createStatement();
+				ResultSet rs = s.executeQuery("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM custom_teleport"))
 			{
 				L2TeleportLocation teleport;
 				while (rs.next())
 				{
 					teleport = new L2TeleportLocation();
-					
 					teleport.setTeleId(rs.getInt("id"));
 					teleport.setLocX(rs.getInt("loc_x"));
 					teleport.setLocY(rs.getInt("loc_y"));
@@ -73,54 +97,15 @@ public class TeleportLocationTable
 					
 					_teleports.put(teleport.getTeleId(), teleport);
 				}
-			}
-			_log.info("TeleportLocationTable: Loaded " + _teleports.size() + " Teleport Location Templates.");
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Error loading Teleport Table.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		
-		if (Config.CUSTOM_TELEPORT_TABLE)
-		{
-			try
-			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				int _cTeleCount = _teleports.size();
-				try (Statement s = con.createStatement();
-					ResultSet rs = s.executeQuery("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM custom_teleport"))
-				{
-					L2TeleportLocation teleport;
-					
-					while (rs.next())
-					{
-						teleport = new L2TeleportLocation();
-						teleport.setTeleId(rs.getInt("id"));
-						teleport.setLocX(rs.getInt("loc_x"));
-						teleport.setLocY(rs.getInt("loc_y"));
-						teleport.setLocZ(rs.getInt("loc_z"));
-						teleport.setPrice(rs.getInt("price"));
-						teleport.setIsForNoble(rs.getInt("fornoble") == 1);
-						teleport.setItemId(rs.getInt("itemId"));
-						
-						_teleports.put(teleport.getTeleId(), teleport);
-					}
-				}
 				_cTeleCount = _teleports.size() - _cTeleCount;
 				if (_cTeleCount > 0)
+				{
 					_log.info("TeleportLocationTable: Loaded " + _cTeleCount + " Custom Teleport Location Templates.");
+				}
 			}
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Error while creating custom teleport table " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}

@@ -352,10 +352,8 @@ public class L2TradeList
 		
 		protected void saveDataTimer()
 		{
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement = con.prepareStatement("UPDATE merchant_buylists SET savetimer =? WHERE shop_id =? and item_id =?");
 				statement.setLong(1, _nextRestoreTime);
 				statement.setInt(2, _listId);
@@ -366,10 +364,6 @@ public class L2TradeList
 			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "L2TradeItem: Could not update Timer save in Buylist");
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}

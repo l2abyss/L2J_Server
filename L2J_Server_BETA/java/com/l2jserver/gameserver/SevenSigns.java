@@ -747,10 +747,8 @@ public class SevenSigns
 	 */
 	protected void restoreSevenSignsData()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			try (Statement s = con.createStatement();
 				ResultSet rs = s.executeQuery(LOAD_DATA))
 			{
@@ -776,6 +774,7 @@ public class SevenSigns
 					_signsPlayerData.put(charObjId, sevenDat);
 				}
 			}
+			
 			try (Statement s = con.createStatement();
 				ResultSet rs = s.executeQuery(LOAD_STATUS))
 			{
@@ -810,11 +809,6 @@ public class SevenSigns
 		{
 			_log.log(Level.SEVERE, "SevenSigns: Unable to load Seven Signs data from database: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		
 		// Festival data is loaded now after the Seven Signs engine data.
 	}
 	
@@ -827,52 +821,10 @@ public class SevenSigns
 		if (Config.DEBUG)
 			_log.info("SevenSigns: Saving data to disk.");
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(UPDATE_PLAYER))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement(UPDATE_PLAYER))
-			{
-				for (StatsSet sevenDat : _signsPlayerData.values())
-				{
-					ps.setString(1, sevenDat.getString("cabal"));
-					ps.setInt(2, sevenDat.getInteger("seal"));
-					ps.setInt(3, sevenDat.getInteger("red_stones"));
-					ps.setInt(4, sevenDat.getInteger("green_stones"));
-					ps.setInt(5, sevenDat.getInteger("blue_stones"));
-					ps.setDouble(6, sevenDat.getDouble("ancient_adena_amount"));
-					ps.setDouble(7, sevenDat.getDouble("contribution_score"));
-					ps.setInt(8, sevenDat.getInteger("charId"));
-					ps.execute();
-					ps.clearParameters();
-					if (Config.DEBUG)
-					{
-						_log.info("SevenSigns: Updated data in database for char ID " + sevenDat.getInteger("charId") + " (" + sevenDat.getString("cabal") + ")");
-					}
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			_log.log(Level.SEVERE, "SevenSigns: Unable to save data to database: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-	}
-	
-	public final void saveSevenSignsData(int objectId)
-	{
-		StatsSet sevenDat = _signsPlayerData.get(objectId);
-		if (sevenDat == null)
-			return;
-		
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement(UPDATE_PLAYER))
+			for (StatsSet sevenDat : _signsPlayerData.values())
 			{
 				ps.setString(1, sevenDat.getString("cabal"));
 				ps.setInt(2, sevenDat.getInteger("seal"));
@@ -883,62 +835,80 @@ public class SevenSigns
 				ps.setDouble(7, sevenDat.getDouble("contribution_score"));
 				ps.setInt(8, sevenDat.getInteger("charId"));
 				ps.execute();
+				ps.clearParameters();
+				if (Config.DEBUG)
+				{
+					_log.info("SevenSigns: Updated data in database for char ID " + sevenDat.getInteger("charId") + " (" + sevenDat.getString("cabal") + ")");
+				}
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "SevenSigns: Unable to save data to database: " + e.getMessage(), e);
 		}
-		finally
+	}
+	
+	public final void saveSevenSignsData(int objectId)
+	{
+		StatsSet sevenDat = _signsPlayerData.get(objectId);
+		if (sevenDat == null)
+			return;
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(UPDATE_PLAYER))
 		{
-			L2DatabaseFactory.close(con);
+			ps.setString(1, sevenDat.getString("cabal"));
+			ps.setInt(2, sevenDat.getInteger("seal"));
+			ps.setInt(3, sevenDat.getInteger("red_stones"));
+			ps.setInt(4, sevenDat.getInteger("green_stones"));
+			ps.setInt(5, sevenDat.getInteger("blue_stones"));
+			ps.setDouble(6, sevenDat.getDouble("ancient_adena_amount"));
+			ps.setDouble(7, sevenDat.getDouble("contribution_score"));
+			ps.setInt(8, sevenDat.getInteger("charId"));
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.SEVERE, "SevenSigns: Unable to save data to database: " + e.getMessage(), e);
 		}
 	}
 	
 	public final void saveSevenSignsStatus()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(UPDATE_STATUS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement(UPDATE_STATUS))
+			ps.setInt(1, _currentCycle);
+			ps.setInt(2, _activePeriod);
+			ps.setInt(3, _previousWinner);
+			ps.setDouble(4, _dawnStoneScore);
+			ps.setInt(5, _dawnFestivalScore);
+			ps.setDouble(6, _duskStoneScore);
+			ps.setInt(7, _duskFestivalScore);
+			ps.setInt(8, _signsSealOwners.get(SEAL_AVARICE));
+			ps.setInt(9, _signsSealOwners.get(SEAL_GNOSIS));
+			ps.setInt(10, _signsSealOwners.get(SEAL_STRIFE));
+			ps.setInt(11, _signsDawnSealTotals.get(SEAL_AVARICE));
+			ps.setInt(12, _signsDawnSealTotals.get(SEAL_GNOSIS));
+			ps.setInt(13, _signsDawnSealTotals.get(SEAL_STRIFE));
+			ps.setInt(14, _signsDuskSealTotals.get(SEAL_AVARICE));
+			ps.setInt(15, _signsDuskSealTotals.get(SEAL_GNOSIS));
+			ps.setInt(16, _signsDuskSealTotals.get(SEAL_STRIFE));
+			ps.setInt(17, SevenSignsFestival.getInstance().getCurrentFestivalCycle());
+			
+			for (int i = 0; i < SevenSignsFestival.FESTIVAL_COUNT; i++)
 			{
-				ps.setInt(1, _currentCycle);
-				ps.setInt(2, _activePeriod);
-				ps.setInt(3, _previousWinner);
-				ps.setDouble(4, _dawnStoneScore);
-				ps.setInt(5, _dawnFestivalScore);
-				ps.setDouble(6, _duskStoneScore);
-				ps.setInt(7, _duskFestivalScore);
-				ps.setInt(8, _signsSealOwners.get(SEAL_AVARICE));
-				ps.setInt(9, _signsSealOwners.get(SEAL_GNOSIS));
-				ps.setInt(10, _signsSealOwners.get(SEAL_STRIFE));
-				ps.setInt(11, _signsDawnSealTotals.get(SEAL_AVARICE));
-				ps.setInt(12, _signsDawnSealTotals.get(SEAL_GNOSIS));
-				ps.setInt(13, _signsDawnSealTotals.get(SEAL_STRIFE));
-				ps.setInt(14, _signsDuskSealTotals.get(SEAL_AVARICE));
-				ps.setInt(15, _signsDuskSealTotals.get(SEAL_GNOSIS));
-				ps.setInt(16, _signsDuskSealTotals.get(SEAL_STRIFE));
-				ps.setInt(17, SevenSignsFestival.getInstance().getCurrentFestivalCycle());
-				
-				for (int i = 0; i < SevenSignsFestival.FESTIVAL_COUNT; i++)
-				{
-					ps.setInt(18 + i, SevenSignsFestival.getInstance().getAccumulatedBonus(i));
-				}
-				_lastSave = Calendar.getInstance();
-				ps.setLong(18 + SevenSignsFestival.FESTIVAL_COUNT, _lastSave.getTimeInMillis());
-				ps.execute();
+				ps.setInt(18 + i, SevenSignsFestival.getInstance().getAccumulatedBonus(i));
 			}
+			_lastSave = Calendar.getInstance();
+			ps.setLong(18 + SevenSignsFestival.FESTIVAL_COUNT, _lastSave.getTimeInMillis());
+			ps.execute();
 			if (Config.DEBUG)
 				_log.info("SevenSigns: Updated data in database.");
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "SevenSigns: Unable to save data to database: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1003,29 +973,20 @@ public class SevenSigns
 			_signsPlayerData.put(objectId, currPlayerData);
 			
 			// Update data in database, as we have a new player signing up.
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement(INSERT_PLAYER))
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				try (PreparedStatement ps = con.prepareStatement(INSERT_PLAYER))
-				{
-					ps.setInt(1, objectId);
-					ps.setString(2, getCabalShortName(chosenCabal));
-					ps.setInt(3, chosenSeal);
-					ps.execute();
-				}
+				ps.setInt(1, objectId);
+				ps.setString(2, getCabalShortName(chosenCabal));
+				ps.setInt(3, chosenSeal);
+				ps.execute();
 				
 				if (Config.DEBUG)
-					_log.info("SevenSigns: Inserted data in DB for char ID " + currPlayerData.getInteger("charId") + " ("
-							+ currPlayerData.getString("cabal") + ")");
+					_log.info("SevenSigns: Inserted data in DB for char ID " + currPlayerData.getInteger("charId") + " (" + currPlayerData.getString("cabal") + ")");
 			}
 			catch (SQLException e)
 			{
 				_log.log(Level.SEVERE, "SevenSigns: Failed to save data: " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 		

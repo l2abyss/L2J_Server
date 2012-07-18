@@ -62,38 +62,35 @@ public class ScriptExecutor
 	
 	public void execSqlFile(File file, boolean skipErrors)
 	{
-		try
-		{
-			_frame.appendToProgressArea("Installing " + file.getName());
-			String line = "";
-			Connection con = _frame.getConnection();
+		_frame.appendToProgressArea("Installing " + file.getName());
+		String line = "";
+		try (Connection con = _frame.getConnection();
 			Statement stmt = con.createStatement();
-			try (Scanner scn = new Scanner(file))
+			Scanner scn = new Scanner(file))
+		{
+			StringBuilder sb = new StringBuilder();
+			while (scn.hasNextLine())
 			{
-				StringBuilder sb = new StringBuilder();
-				while (scn.hasNextLine())
+				line = scn.nextLine();
+				if (line.startsWith("--"))
 				{
-					line = scn.nextLine();
-					if (line.startsWith("--"))
-					{
-						continue;
-					}
-					else if (line.contains("--"))
-					{
-						line = line.split("--")[0];
-					}
-					
-					line = line.trim();
-					if (!line.isEmpty())
-					{
-						sb.append(line + "\n");
-					}
-					
-					if (line.endsWith(";"))
-					{
-						stmt.execute(sb.toString());
-						sb = new StringBuilder();
-					}
+					continue;
+				}
+				else if (line.contains("--"))
+				{
+					line = line.split("--")[0];
+				}
+				
+				line = line.trim();
+				if (!line.isEmpty())
+				{
+					sb.append(line + "\n");
+				}
+				
+				if (line.endsWith(";"))
+				{
+					stmt.execute(sb.toString());
+					sb = new StringBuilder();
 				}
 			}
 		}
@@ -110,8 +107,8 @@ public class ScriptExecutor
 					"Continue",
 					"Abort"
 				};
-				int n = JOptionPane.showOptionDialog(null, "MySQL Error: " + e.getMessage(), "Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 				
+				int n = JOptionPane.showOptionDialog(null, "MySQL Error: " + e.getMessage(), "Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 				if (n == 1)
 				{
 					System.exit(0);

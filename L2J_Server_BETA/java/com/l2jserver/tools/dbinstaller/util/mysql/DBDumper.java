@@ -15,6 +15,7 @@
 package com.l2jserver.tools.dbinstaller.util.mysql;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -47,8 +48,8 @@ public class DBDumper
 	{
 		try (Formatter form = new Formatter())
 		{
-			Connection con = _frame.getConnection();
-			try (Statement s = con.createStatement();
+			try (Connection con = _frame.getConnection();
+				Statement s = con.createStatement();
 				ResultSet rset = s.executeQuery("SHOW TABLES"))
 			{
 				File dump = new File("dumps", form.format("%1$s_dump_%2$tY%2$tm%2$td-%2$tH%2$tM%2$tS.sql", _db, new GregorianCalendar().getTime()).toString());
@@ -67,7 +68,8 @@ public class DBDumper
 					}
 				}
 				
-				try (FileWriterStdout fws = new FileWriterStdout(dump))
+				try (FileWriter fileWriter = new FileWriter(dump);
+					FileWriterStdout fws = new FileWriterStdout(fileWriter))
 				{
 					while (rset.next())
 					{

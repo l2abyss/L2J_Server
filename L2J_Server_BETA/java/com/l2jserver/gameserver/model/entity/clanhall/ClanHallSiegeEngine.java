@@ -93,53 +93,45 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	
 	public void loadAttackers()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(SQL_LOAD_ATTACKERS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SQL_LOAD_ATTACKERS);
 			statement.setInt(1, _hall.getId());
-			ResultSet rset = statement.executeQuery();
-			while(rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				final int id = rset.getInt("attacker_id");
-				L2SiegeClan clan = new L2SiegeClan(id, SiegeClanType.ATTACKER);
-				_attackers.put(id, clan);
+				while(rset.next())
+				{
+					final int id = rset.getInt("attacker_id");
+					L2SiegeClan clan = new L2SiegeClan(id, SiegeClanType.ATTACKER);
+					_attackers.put(id, clan);
+				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch(Exception e)
 		{
 			_log.warning(getName() + ": Could not load siege attackers!:");
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public final void saveAttackers()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement delStatement = con.prepareStatement("DELETE FROM clanhall_siege_attackers WHERE clanhall_id = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			PreparedStatement delStatement = con.prepareStatement("DELETE FROM clanhall_siege_attackers WHERE clanhall_id = ?");
 			delStatement.setInt(1, _hall.getId());
 			delStatement.execute();
-			delStatement.close();
 			
 			if(getAttackers().size() > 0)
 			{
-				for(L2SiegeClan clan : getAttackers().values())
+				try (PreparedStatement insert = con.prepareStatement(SQL_SAVE_ATTACKERS))
 				{
-					PreparedStatement insert = con.prepareStatement(SQL_SAVE_ATTACKERS);
-					insert.setInt(1, _hall.getId());
-					insert.setInt(2, clan.getClanId());
-					insert.execute();
-					insert.close();
+					for(L2SiegeClan clan : getAttackers().values())
+					{
+						insert.setInt(1, _hall.getId());
+						insert.setInt(2, clan.getClanId());
+						insert.execute();
+						insert.clearParameters();
+					}
 				}
 			}
 			_log.config(getName()+": Sucessfully saved attackers down to database!");
@@ -148,10 +140,6 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		{
 			_log.warning(getName() + ": Couldnt save attacker list!");
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public final void loadGuards()
@@ -159,36 +147,30 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		if(_guards == null)
 		{
 			_guards = new FastList<>();
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement(SQL_LOAD_GUARDS))
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement(SQL_LOAD_GUARDS);
 				statement.setInt(1, _hall.getId());
-				ResultSet rset = statement.executeQuery();
-				while(rset.next())
+				try (ResultSet rset = statement.executeQuery())
 				{
-					final int npcId = rset.getInt("npcId");
-					final L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
-					L2Spawn spawn = new L2Spawn(template);
-					spawn.setLocx(rset.getInt("x"));
-					spawn.setLocy(rset.getInt("y"));
-					spawn.setLocz(rset.getInt("z"));
-					spawn.setHeading(rset.getInt("heading"));
-					spawn.setRespawnDelay(rset.getInt("respawnDelay"));
-					spawn.setAmount(1);
-					_guards.add(spawn);
+					while(rset.next())
+					{
+						final int npcId = rset.getInt("npcId");
+						final L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
+						L2Spawn spawn = new L2Spawn(template);
+						spawn.setLocx(rset.getInt("x"));
+						spawn.setLocy(rset.getInt("y"));
+						spawn.setLocz(rset.getInt("z"));
+						spawn.setHeading(rset.getInt("heading"));
+						spawn.setRespawnDelay(rset.getInt("respawnDelay"));
+						spawn.setAmount(1);
+						_guards.add(spawn);
+					}
 				}
-				rset.close();
-				statement.close();
 			}
 			catch(Exception e)
 			{
 				_log.warning(getName() + ": Couldnt load siege guards!:");
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}

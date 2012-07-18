@@ -67,17 +67,15 @@ public class FriendListExtended extends L2GameServerPacket
 			
 			if (player1 == null)
 			{
-				try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement statement = con.prepareStatement("SELECT char_name, online, classid, level FROM characters WHERE charId = ?"))
 				{
-					try (PreparedStatement statement = con.prepareStatement("SELECT char_name, online, classid, level FROM characters WHERE charId = ?"))
+					statement.setInt(1, objId);
+					try (ResultSet rset = statement.executeQuery())
 					{
-						statement.setInt(1, objId);
-						try (ResultSet rset = statement.executeQuery())
+						if (rset.next())
 						{
-							if (rset.next())
-							{
-								_info.add(new FriendInfo(objId, rset.getString(1), rset.getInt(2) == 1, rset.getInt(3), rset.getInt(4)));
-							}
+							_info.add(new FriendInfo(objId, rset.getString(1), rset.getInt(2) == 1, rset.getInt(3), rset.getInt(4)));
 						}
 					}
 				}

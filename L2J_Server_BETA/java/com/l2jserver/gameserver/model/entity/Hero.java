@@ -111,10 +111,8 @@ public class Hero
 		_herodiary.clear();
 		_heroMessage.clear();
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(GET_HEROES);
 			ResultSet rset = statement.executeQuery();
 			PreparedStatement statement2 = con.prepareStatement(GET_CLAN_ALLY);
@@ -164,10 +162,6 @@ public class Hero
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Hero System: Couldnt load Heroes", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		_log.info("Hero System: Loaded " + _heroes.size() + " Heroes.");
@@ -221,11 +215,9 @@ public class Hero
 	 */
 	public void loadMessage(int charId)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			String message = null;
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT message FROM heroes WHERE charId=?");
 			statement.setInt(1, charId);
 			ResultSet rset = statement.executeQuery();
@@ -239,20 +231,14 @@ public class Hero
 		{
 			_log.log(Level.WARNING, "Hero System: Couldnt load Hero Message for CharId: " + charId, e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void loadDiary(int charId)
 	{
 		final List<StatsSet> _diary = new FastList<>();
 		int diaryentries = 0;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM  heroes_diary WHERE charId=? ORDER BY time ASC");
 			statement.setInt(1, charId);
 			ResultSet rset = statement.executeQuery();
@@ -302,10 +288,6 @@ public class Hero
 		{
 			_log.log(Level.WARNING, "Hero System: Couldnt load Hero Diary for CharId: " + charId, e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void loadFights(int charId)
@@ -324,10 +306,8 @@ public class Hero
 		int _losses = 0;
 		int _draws = 0;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM olympiad_fights WHERE (charOneId=? OR charTwoId=?) AND start<? ORDER BY start ASC");
 			statement.setInt(1, charId);
 			statement.setInt(2, charId);
@@ -441,10 +421,6 @@ public class Hero
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Hero System: Couldnt load Hero fights history for CharId: " + charId, e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -776,10 +752,8 @@ public class Hero
 				loadDiary(charId);
 				_heroMessage.put(charId, "");
 				
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
 					PreparedStatement statement = con.prepareStatement(GET_CLAN_NAME);
 					statement.setInt(1, charId);
 					ResultSet rset = statement.executeQuery();
@@ -807,10 +781,6 @@ public class Hero
 				{
 					_log.warning("could not get clan name of player with objectId:" + charId + ": " + e);
 				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
-				}
 			}
 		}
 	}
@@ -820,10 +790,8 @@ public class Hero
 		//_herofights = new FastMap<Integer, List<StatsSet>>();
 		//_herocounts = new FastMap<Integer, StatsSet>();
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			if (setDefault)
 			{
@@ -905,10 +873,6 @@ public class Hero
 		{
 			_log.log(Level.WARNING, "Hero System: Couldnt update Heroes", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void setHeroGained(int charId)
@@ -965,10 +929,8 @@ public class Hero
 	
 	public void setDiaryData(int charId, int action, int param)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("INSERT INTO heroes_diary (charId, time, action, param) values(?,?,?,?)");
 			statement.setInt(1, charId);
 			statement.setLong(2, System.currentTimeMillis());
@@ -983,10 +945,6 @@ public class Hero
 			{
 				_log.log(Level.SEVERE, "SQL exception while saving DiaryData.", e);
 			}
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1011,10 +969,8 @@ public class Hero
 		if (_heroMessage.get(charId) == null)
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE heroes SET message=? WHERE charId=?;");
 			statement.setString(1, _heroMessage.get(charId));
 			statement.setInt(2, charId);
@@ -1025,18 +981,12 @@ public class Hero
 		{
 			_log.log(Level.SEVERE, "SQL exception while saving HeroMessage.", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void deleteItemsInDb()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(DELETE_ITEMS);
 			statement.execute();
 			statement.close();
@@ -1044,10 +994,6 @@ public class Hero
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

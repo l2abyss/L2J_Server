@@ -202,11 +202,8 @@ public class CastleManorManager
 	
 	private void load()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			// Get Connection
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statementProduction = con.prepareStatement(CASTLE_MANOR_LOAD_PRODUCTION);
 			PreparedStatement statementProcure = con.prepareStatement(CASTLE_MANOR_LOAD_PROCURE);
 			for (Castle castle : CastleManager.getInstance().getCastles())
@@ -269,10 +266,6 @@ public class CastleManorManager
 		catch (Exception e)
 		{
 			_log.info("Error restoring manor data: " + e.getMessage());
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

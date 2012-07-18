@@ -35,11 +35,8 @@ public class SqlUtils
 	{
 		String query = "";
 		Integer res = null;
-		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[]
 			{
 				resultField
@@ -58,10 +55,6 @@ public class SqlUtils
 		{
 			_log.log(Level.WARNING, "Error in query '" + query + "':", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		return res;
 	}
 	
@@ -69,17 +62,15 @@ public class SqlUtils
 	{
 		String query = "";
 		Integer[] res = null;
-		
-		Connection con = null;
 		try
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[]
 			{
 				resultField
 			}, tableName, whereClause, false);
 			
-			try (PreparedStatement ps = con.prepareStatement(query);
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement(query);
 				ResultSet rs = ps.executeQuery())
 			{
 				int rows = 0;
@@ -108,10 +99,6 @@ public class SqlUtils
 		{
 			_log.log(Level.WARNING, "mSGI: Error in query '" + query + "':", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		return res;
 	}
 	
@@ -120,13 +107,11 @@ public class SqlUtils
 		long start = System.currentTimeMillis();
 		String query = "";
 		Integer res[][] = null;
-		
-		Connection con = null;
 		try
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(resultFields, usedTables, whereClause, false);
-			try (PreparedStatement ps = con.prepareStatement(query);
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement(query);
 				ResultSet rs = ps.executeQuery())
 			{
 				int rows = 0;
@@ -154,11 +139,6 @@ public class SqlUtils
 		{
 			_log.log(Level.WARNING, "Error in query '" + query + "':", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		
 		_log.fine("Get all rows in query '" + query + "' in " + (System.currentTimeMillis() - start) + "ms");
 		return res;
 	}

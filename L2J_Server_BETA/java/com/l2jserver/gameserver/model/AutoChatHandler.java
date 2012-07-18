@@ -64,11 +64,8 @@ public class AutoChatHandler implements SpawnListener
 	private void restoreChatData()
 	{
 		int numLoaded = 0;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM auto_chat ORDER BY groupId ASC");
 			ResultSet rs = statement.executeQuery();
 			
@@ -78,20 +75,20 @@ public class AutoChatHandler implements SpawnListener
 				numLoaded++;
 				
 				statement2.setInt(1, rs.getInt("groupId"));
-				ResultSet rs2 = statement2.executeQuery();
-				statement2.clearParameters();
-				
-				rs2.last();
-				String[] chatTexts = new String[rs2.getRow()];
-				int i = 0;
-				rs2.beforeFirst();
-				
-				while (rs2.next())
+				try (ResultSet rs2 = statement2.executeQuery())
 				{
-					chatTexts[i++] = rs2.getString("chatText");
+					statement2.clearParameters();
+					rs2.last();
+					String[] chatTexts = new String[rs2.getRow()];
+					int i = 0;
+					rs2.beforeFirst();
+					
+					while (rs2.next())
+					{
+						chatTexts[i++] = rs2.getString("chatText");
+					}
+					registerGlobalChat(rs.getInt("npcId"), chatTexts, rs.getLong("chatDelay"));
 				}
-				
-				registerGlobalChat(rs.getInt("npcId"), chatTexts, rs.getLong("chatDelay"));
 			}
 			statement2.close();
 			rs.close();
@@ -103,10 +100,6 @@ public class AutoChatHandler implements SpawnListener
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "AutoSpawnHandler: Could not restore chat data: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

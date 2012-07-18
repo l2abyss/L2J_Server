@@ -50,21 +50,15 @@ public class HerbDropTable
 		restoreData();
 	}
 	
-	/**
-	 *
-	 */
 	private void restoreData()
 	{
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT "
-					+ L2DatabaseFactory.getInstance().safetyString(new String[] { "groupId", "itemId", "min", "max", "category", "chance" })
-					+ " FROM herb_droplist_groups ORDER BY groupId, chance DESC");
-			ResultSet dropData = statement.executeQuery();
+				+ L2DatabaseFactory.getInstance().safetyString(new String[] { "groupId", "itemId", "min", "max", "category", "chance" })
+				+ " FROM herb_droplist_groups ORDER BY groupId, chance DESC");
+			ResultSet dropData = statement.executeQuery())
+		{
 			L2DropData dropDat = null;
-			
 			while (dropData.next())
 			{
 				int groupId = dropData.getInt("groupId");
@@ -109,17 +103,10 @@ public class HerbDropTable
 					category.add(cat);
 				}
 			}
-			
-			dropData.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "HerbDroplistGroupsTable: Error reading Herb dropdata. ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

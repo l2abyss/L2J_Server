@@ -170,34 +170,30 @@ public final class ItemAuctionInstance
 			throw new IllegalArgumentException("No items defined");
 		}
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(SELECT_AUCTION_ID_BY_INSTANCE_ID))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement(SELECT_AUCTION_ID_BY_INSTANCE_ID))
+			ps.setInt(1, _instanceId);
+			try (ResultSet rset = ps.executeQuery())
 			{
-				ps.setInt(1, _instanceId);
-				try (ResultSet rset = ps.executeQuery())
+				while (rset.next())
 				{
-					while (rset.next())
+					final int auctionId = rset.getInt(1);
+					try
 					{
-						final int auctionId = rset.getInt(1);
-						try
+						final ItemAuction auction = loadAuction(auctionId);
+						if (auction != null)
 						{
-							final ItemAuction auction = loadAuction(auctionId);
-							if (auction != null)
-							{
-								_auctions.put(auctionId, auction);
-							}
-							else
-							{
-								ItemAuctionManager.deleteAuction(auctionId);
-							}
+							_auctions.put(auctionId, auction);
 						}
-						catch (final SQLException e)
+						else
 						{
-							_log.log(Level.WARNING, getClass().getSimpleName() + ": Failed loading auction: " + auctionId, e);
+							ItemAuctionManager.deleteAuction(auctionId);
 						}
+					}
+					catch (final SQLException e)
+					{
+						_log.log(Level.WARNING, getClass().getSimpleName() + ": Failed loading auction: " + auctionId, e);
 					}
 				}
 			}
@@ -206,10 +202,6 @@ public final class ItemAuctionInstance
 		{
 			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading auctions.", e);
 			return;
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _items.size() + " item(s) and registered " + _auctions.size() + " auction(s) for instance " + _instanceId + ".");
@@ -559,10 +551,8 @@ public final class ItemAuctionInstance
 	
 	private final ItemAuction loadAuction(final int auctionId) throws SQLException
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			int auctionItemId = 0;
 			long startingTime = 0;
 			long endingTime = 0;
@@ -637,10 +627,6 @@ public final class ItemAuctionInstance
 				}
 			}
 			return new ItemAuction(auctionId, _instanceId, startingTime, endingTime, auctionItem, auctionBids, auctionState);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 }

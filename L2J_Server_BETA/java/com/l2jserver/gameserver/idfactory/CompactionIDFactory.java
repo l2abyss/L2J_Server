@@ -37,10 +37,8 @@ public class CompactionIDFactory extends IdFactory
 		_curOID = FIRST_OID;
 		_freeSize = 0;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			// con.createStatement().execute("drop table if exists tmp_obj_id");
 			
 			int[] tmp_obj_ids = extractUsedObjectIDTable();
@@ -57,10 +55,6 @@ public class CompactionIDFactory extends IdFactory
 		catch (Exception e)
 		{
 			_log.severe(getClass().getSimpleName() + ": Could not initialize properly: " + e.getMessage());
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

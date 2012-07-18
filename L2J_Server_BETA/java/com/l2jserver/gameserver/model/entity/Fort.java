@@ -215,13 +215,9 @@ public class Fort
 		
 		public void dbSave()
 		{
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				PreparedStatement statement;
-				
-				con = L2DatabaseFactory.getInstance().getConnection();
-				statement = con.prepareStatement("REPLACE INTO fort_functions (fort_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
+				PreparedStatement statement = con.prepareStatement("REPLACE INTO fort_functions (fort_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
 				statement.setInt(1, getFortId());
 				statement.setInt(2, getType());
 				statement.setInt(3, getLvl());
@@ -234,10 +230,6 @@ public class Fort
 			catch (Exception e)
 			{
 				_log.log(Level.SEVERE, "Exception: Fort.updateFunctions(int type, int lvl, int lease, long rate, long time, boolean addNew): " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}
@@ -540,25 +532,18 @@ public class Fort
 	
 	public void saveFortVariables()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE fort SET blood=?, supplyLvL=? WHERE id = ?");
 			statement.setInt(1, _blood);
 			statement.setInt(2, _supplyLvL);
 			statement.setInt(3, getFortId());
 			statement.execute();
 			statement.close();
-			
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: saveFortVariables(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -606,11 +591,8 @@ public class Fort
 	// This method loads fort
 	private void load()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort WHERE id = ?");
 			statement.setInt(1, getFortId());
 			ResultSet rs = statement.executeQuery();
@@ -662,21 +644,15 @@ public class Fort
 		{
 			_log.log(Level.WARNING, "Exception: loadFortData(): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/** Load All Functions */
 	private void loadFunctions()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			PreparedStatement statement;
 			ResultSet rs;
-			con = L2DatabaseFactory.getInstance().getConnection();
 			statement = con.prepareStatement("SELECT * FROM fort_functions WHERE fort_id = ?");
 			statement.setInt(1, getFortId());
 			rs = statement.executeQuery();
@@ -691,10 +667,6 @@ public class Fort
 		{
 			_log.log(Level.SEVERE, "Exception: Fort.loadFunctions(): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/**
@@ -704,10 +676,8 @@ public class Fort
 	public void removeFunction(int functionType)
 	{
 		_function.remove(functionType);
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("DELETE FROM fort_functions WHERE fort_id=? AND type=?");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, functionType);
@@ -717,10 +687,6 @@ public class Fort
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Exception: Fort.removeFunctions(int functionType): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -809,10 +775,8 @@ public class Fort
 	// This method loads fort door upgrade data from database
 	private void loadDoorUpgrade()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_doorupgrade WHERE fortId = ?");
 			statement.setInt(1, getFortId());
 			ResultSet rs = statement.executeQuery();
@@ -828,18 +792,12 @@ public class Fort
 		{
 			_log.log(Level.WARNING, "Exception: loadFortDoorUpgrade(): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void removeDoorUpgrade()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("DELETE FROM fort_doorupgrade WHERE WHERE fortId = ?");
 			statement.setInt(1, getFortId());
 			statement.execute();
@@ -849,18 +807,12 @@ public class Fort
 		{
 			_log.log(Level.WARNING, "Exception: removeDoorUpgrade(): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void saveDoorUpgrade(int doorId, int hp, int pDef, int mDef)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("INSERT INTO fort_doorupgrade (doorId, hp, pDef, mDef) VALUES (?,?,?,?)");
 			statement.setInt(1, doorId);
 			statement.setInt(2, hp);
@@ -872,10 +824,6 @@ public class Fort
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: saveDoorUpgrade(int doorId, int hp, int pDef, int mDef): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -891,10 +839,8 @@ public class Fort
 		else
 			_lastOwnedTime.setTimeInMillis(0);
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=?,blood=? WHERE id = ?");
 			statement.setInt(1, clanId);
 			statement.setLong(2, _lastOwnedTime.getTimeInMillis());
@@ -937,10 +883,6 @@ public class Fort
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: updateOwnerInDB(L2Clan clan): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1089,10 +1031,8 @@ public class Fort
 	{
 		_state = state;
 		_castleId = castleId;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE fort SET state=?,castleId=? WHERE id = ?");
 			statement.setInt(1, getFortState());
 			statement.setInt(2, getCastleId());
@@ -1103,10 +1043,6 @@ public class Fort
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: setFortState(int state, int castleId): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1205,11 +1141,8 @@ public class Fort
 	
 	private void initNpcs()
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 0);
@@ -1248,19 +1181,13 @@ public class Fort
 			// problem with initializing spawn, go to next one
 			_log.log(Level.WARNING, "Fort " + getFortId() + " initNpcs: Spawn could not be initialized: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void initSiegeNpcs()
 	{
-		Connection con = null;
 		_siegeNpcs.clear();
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 2);
@@ -1295,19 +1222,13 @@ public class Fort
 			// problem with initializing spawn, go to next one
 			_log.log(Level.WARNING, "Fort " + getFortId() + " initSiegeNpcs: Spawn could not be initialized: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void initNpcCommanders()
 	{
-		Connection con = null;
 		_npcCommanders.clear();
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 1);
@@ -1343,20 +1264,14 @@ public class Fort
 			// problem with initializing spawn, go to next one
 			_log.log(Level.WARNING, "Fort " + getFortId() + " initNpcCommanders: Spawn could not be initialized: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void initSpecialEnvoys()
 	{
-		Connection con = null;
 		_specialEnvoys.clear();
 		_envoyCastles.clear();
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading, castleId FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
 			statement.setInt(1, getFortId());
 			statement.setInt(2, 3);
@@ -1394,10 +1309,6 @@ public class Fort
 		{
 			// problem with initializing spawn, go to next one
 			_log.log(Level.WARNING, "Fort " + getFortId() + " initSpecialEnvoys: Spawn could not be initialized: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

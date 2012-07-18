@@ -36,7 +36,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskBirthday;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskCleanUp;
-import com.l2jserver.gameserver.taskmanager.tasks.TaskDailyQuestClean;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskDailySkillReuseClean;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskGlobalVariablesSave;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskJython;
@@ -94,23 +93,16 @@ public final class TaskManager
 		{
 			task.onTimeElapsed(this);
 			lastActivation = System.currentTimeMillis();
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[1]))
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[1]);
 				statement.setLong(1, lastActivation);
 				statement.setInt(2, id);
 				statement.executeUpdate();
-				statement.close();
 			}
 			catch (SQLException e)
 			{
 				_log.log(Level.WARNING, "Cannot updated the Global Task " + id + ": " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 			
 			if ((type == TYPE_SHEDULED) || (type == TYPE_TIME))
@@ -193,7 +185,6 @@ public final class TaskManager
 	{
 		registerTask(new TaskBirthday());
 		registerTask(new TaskCleanUp());
-		registerTask(new TaskDailyQuestClean());
 		registerTask(new TaskDailySkillReuseClean());
 		registerTask(new TaskGlobalVariablesSave());
 		registerTask(new TaskJython());
@@ -218,16 +209,13 @@ public final class TaskManager
 	
 	private void startAllTasks()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[0]);
+			ResultSet rset = statement.executeQuery())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[0]);
-			final ResultSet rset = statement.executeQuery();
 			while (rset.next())
 			{
 				Task task = _tasks.get(rset.getString("task").trim().toLowerCase().hashCode());
-				
 				if (task == null)
 				{
 					continue;
@@ -242,18 +230,11 @@ public final class TaskManager
 						_currentTasks.add(current);
 					}
 				}
-				
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error while loading Global Task table: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -347,36 +328,31 @@ public final class TaskManager
 	
 	public static boolean addUniqueTask(String task, TaskTypes type, String param1, String param2, String param3, long lastActivation)
 	{
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[2]);
-			statement.setString(1, task);
-			ResultSet rset = statement.executeQuery();
-			
-			if (!rset.next())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps1 = con.prepareStatement(SQL_STATEMENTS[2]))
 			{
-				statement = con.prepareStatement(SQL_STATEMENTS[3]);
-				statement.setString(1, task);
-				statement.setString(2, type.toString());
-				statement.setLong(3, lastActivation);
-				statement.setString(4, param1);
-				statement.setString(5, param2);
-				statement.setString(6, param3);
-				statement.execute();
+			ps1.setString(1, task);
+			try (ResultSet rs = ps1.executeQuery())
+			{
+				if (!rs.next())
+				{
+					try (PreparedStatement ps2 = con.prepareStatement(SQL_STATEMENTS[3]))
+					{
+						ps2.setString(1, task);
+						ps2.setString(2, type.toString());
+						ps2.setLong(3, lastActivation);
+						ps2.setString(4, param1);
+						ps2.setString(5, param2);
+						ps2.setString(6, param3);
+						ps2.execute();
+					}
+				}
 			}
-			rset.close();
-			statement.close();
 			return true;
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Cannot add the unique task: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return false;
 	}
@@ -388,11 +364,9 @@ public final class TaskManager
 	
 	public static boolean addTask(String task, TaskTypes type, String param1, String param2, String param3, long lastActivation)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[3]))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SQL_STATEMENTS[3]);
 			statement.setString(1, task);
 			statement.setString(2, type.toString());
 			statement.setLong(3, lastActivation);
@@ -400,17 +374,11 @@ public final class TaskManager
 			statement.setString(5, param2);
 			statement.setString(6, param3);
 			statement.execute();
-			
-			statement.close();
 			return true;
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Cannot add the task:  " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return false;
 	}

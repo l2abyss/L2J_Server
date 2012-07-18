@@ -49,10 +49,8 @@ public class Status extends Thread
 		
 		while (true)
 		{
-			try
+			try (Socket connection = statusServerSocket.accept())
 			{
-				Socket connection = statusServerSocket.accept();
-				
 				if (_mode == Server.MODE_GAMESERVER)
 				{
 					new GameStatusThread(connection, _uptime, _statusPw);

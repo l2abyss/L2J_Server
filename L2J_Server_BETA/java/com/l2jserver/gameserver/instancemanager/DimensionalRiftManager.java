@@ -77,11 +77,8 @@ public class DimensionalRiftManager
 	
 	private void loadRooms()
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM dimensional_rift");
 			ResultSet rs = statement.executeQuery();
 			
@@ -115,10 +112,6 @@ public class DimensionalRiftManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Can't load Dimension Rift zones. " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		int typeSize = _rooms.keys().length;

@@ -130,28 +130,20 @@ public final class GameServerTable
 	 */
 	private void loadRegisteredGameServers()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement ps = con.createStatement();
+			ResultSet rs = ps.executeQuery("SELECT * FROM gameservers"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (Statement ps = con.createStatement();
-				ResultSet rs = ps.executeQuery("SELECT * FROM gameservers"))
+			int id;
+			while (rs.next())
 			{
-				int id;
-				while (rs.next())
-				{
-					id = rs.getInt("server_id");
-					_gameServerTable.put(id, new GameServerInfo(id, stringToHex(rs.getString("hexid"))));
-				}
+				id = rs.getInt("server_id");
+				_gameServerTable.put(id, new GameServerInfo(id, stringToHex(rs.getString("hexid"))));
 			}
 		}
 		catch (Exception e)
 		{
 			_log.severe(getClass().getSimpleName() + ": Error loading registered game servers!");
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -245,26 +237,18 @@ public final class GameServerTable
 	 */
 	public void registerServerOnDB(byte[] hexId, int id, String externalHost)
 	{
-		Connection con = null;
-		try
+		register(id, new GameServerInfo(id, hexId));
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO gameservers (hexid,server_id,host) values (?,?,?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("INSERT INTO gameservers (hexid,server_id,host) values (?,?,?)"))
-			{
-				ps.setString(1, hexToString(hexId));
-				ps.setInt(2, id);
-				ps.setString(3, externalHost);
-				ps.executeUpdate();
-			}
-			register(id, new GameServerInfo(id, hexId));
+			ps.setString(1, hexToString(hexId));
+			ps.setInt(2, id);
+			ps.setString(3, externalHost);
+			ps.executeUpdate();
 		}
 		catch (Exception e)
 		{
 			_log.severe(getClass().getSimpleName() + ": Error while saving gameserver!");
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

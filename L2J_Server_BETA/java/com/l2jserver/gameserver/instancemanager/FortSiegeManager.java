@@ -114,11 +114,9 @@ public class FortSiegeManager
 		if (clan == null)
 			return false;
 		
-		Connection con = null;
 		boolean register = false;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT clan_id FROM fortsiege_clans where clan_id=? and fort_id=?");
 			statement.setInt(1, clan.getClanId());
 			statement.setInt(2, fortid);
@@ -136,10 +134,6 @@ public class FortSiegeManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: checkIsRegistered(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return register;
 	}

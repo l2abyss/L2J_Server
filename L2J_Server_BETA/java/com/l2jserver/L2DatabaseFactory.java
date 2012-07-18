@@ -328,8 +328,10 @@ public class L2DatabaseFactory
 	
 	/**
 	 * Close the connection.
-	 * @param con the con
+	 * @param con the con the connection
+	 * @deprecated now database connections are closed using try-with-resoruce.
 	 */
+	@Deprecated
 	public static void close(Connection con)
 	{
 		if (con == null)

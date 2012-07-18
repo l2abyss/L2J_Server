@@ -101,30 +101,22 @@ public class CharNameTable
 		int id = -1;
 		int accessLevel = 0;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT charId,accesslevel FROM characters WHERE char_name=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("SELECT charId,accesslevel FROM characters WHERE char_name=?"))
+			ps.setString(1, name);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				ps.setString(1, name);
-				try (ResultSet rs = ps.executeQuery())
+				while (rs.next())
 				{
-					while (rs.next())
-					{
-						id = rs.getInt(1);
-						accessLevel = rs.getInt(2);
-					}
+					id = rs.getInt(1);
+					accessLevel = rs.getInt(2);
 				}
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not check existing char name: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		if (id > 0)
@@ -150,20 +142,16 @@ public class CharNameTable
 			return null;
 		
 		int accessLevel = 0;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT char_name,accesslevel FROM characters WHERE charId=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("SELECT char_name,accesslevel FROM characters WHERE charId=?"))
+			ps.setInt(1, id);
+			try (ResultSet rset = ps.executeQuery())
 			{
-				ps.setInt(1, id);
-				try (ResultSet rset = ps.executeQuery())
+				while (rset.next())
 				{
-					while (rset.next())
-					{
-						name = rset.getString(1);
-						accessLevel = rset.getInt(2);
-					}
+					name = rset.getString(1);
+					accessLevel = rset.getInt(2);
 				}
 			}
 		}
@@ -171,10 +159,7 @@ public class CharNameTable
 		{
 			_log.log(Level.WARNING, "Could not check existing char id: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		
 		if (name != null && !name.isEmpty())
 		{
 			_chars.put(id, name);
@@ -196,58 +181,40 @@ public class CharNameTable
 	public synchronized boolean doesCharNameExist(String name)
 	{
 		boolean result = true;
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT account_name FROM characters WHERE char_name=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("SELECT account_name FROM characters WHERE char_name=?"))
+			ps.setString(1, name);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				ps.setString(1, name);
-				try (ResultSet rs = ps.executeQuery())
-				{
-					result = rs.next();
-				}
+				result = rs.next();
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not check existing charname: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		return result;
 	}
 	
 	public int accountCharNumber(String account)
 	{
-		Connection con = null;
 		int number = 0;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT COUNT(char_name) FROM characters WHERE account_name=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(char_name) FROM characters WHERE account_name=?"))
+			ps.setString(1, account);
+			try (ResultSet rset = ps.executeQuery())
 			{
-				ps.setString(1, account);
-				try (ResultSet rset = ps.executeQuery())
+				while (rset.next())
 				{
-					while (rset.next())
-					{
-						number = rset.getInt(1);
-					}
+					number = rset.getInt(1);
 				}
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not check existing char number: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return number;
 	}
@@ -257,30 +224,22 @@ public class CharNameTable
 		String name;
 		int id = -1;
 		int accessLevel = 0;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT charId,char_name,accesslevel FROM characters"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (Statement s = con.createStatement();
-				ResultSet rs = s.executeQuery("SELECT charId,char_name,accesslevel FROM characters"))
+			while (rs.next())
 			{
-				while (rs.next())
-				{
-					id = rs.getInt(1);
-					name = rs.getString(2);
-					accessLevel = rs.getInt(3);
-					_chars.put(id, name);
-					_accessLevels.put(id, accessLevel);
-				}
+				id = rs.getInt(1);
+				name = rs.getString(2);
+				accessLevel = rs.getInt(3);
+				_chars.put(id, name);
+				_accessLevels.put(id, accessLevel);
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not load char name: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		_log.info(getClass().getSimpleName()+": Loaded "+_chars.size()+" char names.");
 	}

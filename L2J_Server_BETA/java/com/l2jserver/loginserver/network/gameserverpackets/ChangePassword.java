@@ -67,7 +67,6 @@ public class ChangePassword extends BaseRecievePacket
 		}
 		else
 		{
-			Connection con = null;
 			try
 			{
 				MessageDigest md = MessageDigest.getInstance("SHA");
@@ -79,8 +78,8 @@ public class ChangePassword extends BaseRecievePacket
 				int passUpdated = 0;
 				
 				// SQL connection
-				con = L2DatabaseFactory.getInstance().getConnection();
-				try (PreparedStatement ps = con.prepareStatement("SELECT password FROM accounts WHERE login=?"))
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement ps = con.prepareStatement("SELECT password FROM accounts WHERE login=?"))
 				{
 					ps.setString(1, accountName);
 					try (ResultSet rs = ps.executeQuery())
@@ -98,7 +97,8 @@ public class ChangePassword extends BaseRecievePacket
 					password = md.digest(password);
 					
 					// SQL connection
-					try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET password=? WHERE login=?"))
+					try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+						PreparedStatement ps = con.prepareStatement("UPDATE accounts SET password=? WHERE login=?"))
 					{
 						ps.setString(1, Base64.encodeBytes(password));
 						ps.setString(2, accountName);
@@ -123,11 +123,6 @@ public class ChangePassword extends BaseRecievePacket
 			catch (Exception e)
 			{
 				_log.warning("Error while changing password for account " + accountName + " requested by player " + characterName + "! " + e);
-			}
-			finally
-			{
-				// close the database connection at the end
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}

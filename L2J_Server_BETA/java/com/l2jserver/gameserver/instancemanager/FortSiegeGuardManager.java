@@ -101,10 +101,8 @@ public class FortSiegeGuardManager
 	void loadSiegeGuard()
 	{
 		_siegeGuards.clear();
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_siege_guards Where fortId = ? ");
 			statement.setInt(1, getFort().getFortId());
 			ResultSet rs = statement.executeQuery();
@@ -141,10 +139,6 @@ public class FortSiegeGuardManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error loading siege guard for fort " + getFort().getName() + ": " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

@@ -125,28 +125,22 @@ public class BaseMail implements Runnable
 	
 	private String getUserMail(String username)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(Config.EMAIL_SYS_SELECTQUERY))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(Config.EMAIL_SYS_SELECTQUERY);
 			statement.setString(1, username);
-			ResultSet rset = statement.executeQuery();
-			if (rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				String mail = rset.getString(Config.EMAIL_SYS_DBFIELD);
-				return mail;
+				if (rset.next())
+				{
+					String mail = rset.getString(Config.EMAIL_SYS_DBFIELD);
+					return mail;
+				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.warning("Cannot select user mail: Exception");
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return null;
 	}

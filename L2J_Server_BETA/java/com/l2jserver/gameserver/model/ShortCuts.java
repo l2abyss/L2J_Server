@@ -89,11 +89,8 @@ public class ShortCuts
 			deleteShortCutFromDb(oldShortCut);
 		}
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("REPLACE INTO character_shortcuts (charId,slot,page,type,shortcut_id,level,class_index) values(?,?,?,?,?,?,?)");
 			statement.setInt(1, _owner.getObjectId());
 			statement.setInt(2, shortcut.getSlot());
@@ -108,10 +105,6 @@ public class ShortCuts
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not store character shortcut: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -165,11 +158,8 @@ public class ShortCuts
 	 */
 	private void deleteShortCutFromDb(L2ShortCut shortcut)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("DELETE FROM character_shortcuts WHERE charId=? AND slot=? AND page=? AND class_index=?");
 			statement.setInt(1, _owner.getObjectId());
 			statement.setInt(2, shortcut.getSlot());
@@ -182,19 +172,13 @@ public class ShortCuts
 		{
 			_log.log(Level.WARNING, "Could not delete character shortcut: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void restore()
 	{
 		_shortCuts.clear();
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT charId, slot, page, type, shortcut_id, level FROM character_shortcuts WHERE charId=? AND class_index=?");
 			statement.setInt(1, _owner.getObjectId());
 			statement.setInt(2, _owner.getClassIndex());
@@ -219,10 +203,6 @@ public class ShortCuts
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore character shortcuts: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		// Verify shortcuts

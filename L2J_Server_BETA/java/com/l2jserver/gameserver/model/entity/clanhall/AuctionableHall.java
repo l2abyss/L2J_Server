@@ -198,25 +198,18 @@ public final class AuctionableHall extends ClanHall
 	@Override
 	public final void updateDb()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE clanhall SET ownerId=?, paidUntil=?, paid=? WHERE id=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE clanhall SET ownerId=?, paidUntil=?, paid=? WHERE id=?");
 			statement.setInt(1, getOwnerId());
 			statement.setLong(2, getPaidUntil());
 			statement.setInt(3, (getPaid()) ? 1 : 0);
 			statement.setInt(4, getId());
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: updateOwnerInDB(L2Clan clan): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 }

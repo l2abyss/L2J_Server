@@ -573,44 +573,36 @@ public abstract class ItemContainer
 	 */
 	public void restore()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT object_id, item_id, count, enchant_level, loc, loc_data, custom_type1, custom_type2, mana_left, time FROM items WHERE owner_id=? AND (loc=?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT object_id, item_id, count, enchant_level, loc, loc_data, custom_type1, custom_type2, mana_left, time FROM items WHERE owner_id=? AND (loc=?)");
 			statement.setInt(1, getOwnerId());
 			statement.setString(2, getBaseLocation().name());
-			ResultSet inv = statement.executeQuery();
-			
-			L2ItemInstance item;
-			while (inv.next())
+			try (ResultSet inv = statement.executeQuery())
 			{
-				item = L2ItemInstance.restoreFromDb(getOwnerId(), inv);
-				if (item == null)
-					continue;
-				
-				L2World.getInstance().storeObject(item);
-				
-				L2PcInstance owner = getOwner() == null ? null : getOwner().getActingPlayer();
-				
-				// If stackable item is found in inventory just add to current quantity
-				if (item.isStackable() && getItemByItemId(item.getItemId()) != null)
-					addItem("Restore", item, owner, null);
-				else
-					addItem(item);
+				L2ItemInstance item;
+				while (inv.next())
+				{
+					item = L2ItemInstance.restoreFromDb(getOwnerId(), inv);
+					if (item == null)
+						continue;
+					
+					L2World.getInstance().storeObject(item);
+					
+					L2PcInstance owner = getOwner() == null ? null : getOwner().getActingPlayer();
+					
+					// If stackable item is found in inventory just add to current quantity
+					if (item.isStackable() && getItemByItemId(item.getItemId()) != null)
+						addItem("Restore", item, owner, null);
+					else
+						addItem(item);
+				}
 			}
-			
-			inv.close();
-			statement.close();
 			refreshWeight();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not restore container:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

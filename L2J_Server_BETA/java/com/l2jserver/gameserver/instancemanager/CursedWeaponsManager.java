@@ -179,12 +179,9 @@ public class CursedWeaponsManager
 	{
 		if (Config.DEBUG)
 			_log.info("  Restoring ... ");
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("SELECT itemId, charId, playerKarma, playerPkKills, nbKills, endTime FROM cursed_weapons");
 			ResultSet rset = statement.executeQuery();
 			while (rset.next())
@@ -215,10 +212,6 @@ public class CursedWeaponsManager
 		{
 			_log.log(Level.WARNING, "Could not restore CursedWeapons data: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private final void controlPlayers()
@@ -226,77 +219,61 @@ public class CursedWeaponsManager
 		if (Config.DEBUG)
 			_log.info("  Checking players ... ");
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			// Retrieve the L2PcInstance from the characters table of the database
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = null;
-			ResultSet rset = null;
-			
 			// TODO: See comments below...
 			// This entire for loop should NOT be necessary, since it is already handled by
 			// CursedWeapon.endOfLife().  However, if we indeed *need* to duplicate it for safety,
 			// then we'd better make sure that it FULLY cleans up inactive cursed weapons!
 			// Undesired effects result otherwise, such as player with no zariche but with karma
-			// or a lost-child entry in the cursedweapons table, without a corresponding one in items...
-			for (CursedWeapon cw : _cursedWeapons.values())
+			// or a lost-child entry in the cursed weapons table, without a corresponding one in items...
+			
+			// Retrieve the L2PcInstance from the characters table of the database
+			try (PreparedStatement statement = con.prepareStatement("SELECT owner_id FROM items WHERE item_id=?"))
 			{
-				if (cw.isActivated())
-					continue;
-				
-				// Do an item check to be sure that the cursed weapon isn't hold by someone
-				int itemId = cw.getItemId();
-				try
+				for (CursedWeapon cw : _cursedWeapons.values())
 				{
-					statement = con.prepareStatement("SELECT owner_id FROM items WHERE item_id=?");
-					statement.setInt(1, itemId);
-					rset = statement.executeQuery();
+					if (cw.isActivated())
+						continue;
 					
-					if (rset.next())
+					// Do an item check to be sure that the cursed weapon isn't hold by someone
+					int itemId = cw.getItemId();
+					statement.setInt(1, itemId);
+					try (ResultSet rset = statement.executeQuery())
 					{
-						// A player has the cursed weapon in his inventory ...
-						int playerId = rset.getInt("owner_id");
-						_log.info("PROBLEM : Player " + playerId + " owns the cursed weapon " + itemId + " but he shouldn't.");
-						
-						// Delete the item
-						statement.close();
-						statement = con.prepareStatement("DELETE FROM items WHERE owner_id=? AND item_id=?");
-						statement.setInt(1, playerId);
-						statement.setInt(2, itemId);
-						if (statement.executeUpdate() != 1)
+						if (rset.next())
 						{
-							_log.warning("Error while deleting cursed weapon " + itemId + " from userId " + playerId);
+							// A player has the cursed weapon in his inventory ...
+							int playerId = rset.getInt("owner_id");
+							_log.info("PROBLEM : Player " + playerId + " owns the cursed weapon " + itemId + " but he shouldn't.");
+							
+							// Delete the item
+							try (PreparedStatement delete = con.prepareStatement("DELETE FROM items WHERE owner_id=? AND item_id=?"))
+							{
+								delete.setInt(1, playerId);
+								delete.setInt(2, itemId);
+								if (delete.executeUpdate() != 1)
+								{
+									_log.warning("Error while deleting cursed weapon " + itemId + " from userId " + playerId);
+								}
+							}
+							
+							// Restore the player's old karma and pk count
+							try (PreparedStatement update = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?"))
+							{
+								update.setInt(1, cw.getPlayerKarma());
+								update.setInt(2, cw.getPlayerPkKills());
+								update.setInt(3, playerId);
+								if (update.executeUpdate() != 1)
+								{
+									_log.warning("Error while updating karma & pkkills for userId " + cw.getPlayerId());
+								}
+							}
+							// clean up the cursed weapons table.
+							removeFromDb(itemId);
 						}
-						statement.close();
-						
-						// Delete the skill
-						/*
-						statement = con.prepareStatement("DELETE FROM character_skills WHERE charId=? AND skill_id=");
-						statement.setInt(1, playerId);
-						statement.setInt(2, cw.getSkillId());
-						if (statement.executeUpdate() != 1)
-						{
-							_log.warning("Error while deleting cursed weapon "+itemId+" skill from userId "+playerId);
-						}
-						 */
-						// Restore the player's old karma and pk count
-						statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?");
-						statement.setInt(1, cw.getPlayerKarma());
-						statement.setInt(2, cw.getPlayerPkKills());
-						statement.setInt(3, playerId);
-						if (statement.executeUpdate() != 1)
-						{
-							_log.warning("Error while updating karma & pkkills for userId " + cw.getPlayerId());
-						}
-						// clean up the cursedweapons table.
-						removeFromDb(itemId);
 					}
-					rset.close();
-					statement.close();
-				}
-				catch (SQLException sqlE)
-				{
+					statement.clearParameters();
 				}
 			}
 		}
@@ -306,10 +283,7 @@ public class CursedWeaponsManager
 				_log.log(Level.WARNING, "Could not check CursedWeapons data: " + e.getMessage(), e);
 			return;
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		
 		if (Config.DEBUG)
 			_log.info("DONE");
 	}
@@ -416,25 +390,17 @@ public class CursedWeaponsManager
 	
 	public static void removeFromDb(int itemId)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			// Delete datas
 			PreparedStatement statement = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
 			statement.setInt(1, itemId);
 			statement.executeUpdate();
-			
 			statement.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "CursedWeaponsManager: Failed to remove data: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

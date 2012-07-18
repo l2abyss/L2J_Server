@@ -43,7 +43,6 @@ public class BitSetIDFactory extends IdFactory
 				}
 			}
 		}
-		
 	}
 	
 	protected BitSetIDFactory()

@@ -210,19 +210,17 @@ public class CharSelectionInfo extends L2GameServerPacket
 		CharSelectInfoPackage charInfopackage;
 		List<CharSelectInfoPackage> characterList = new FastList<>();
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language, vitality_points FROM characters WHERE account_name=?"))
 		{
-			try (PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language, vitality_points FROM characters WHERE account_name=?"))
+			statement.setString(1, loginName);
+			try (ResultSet charList = statement.executeQuery())
 			{
-				statement.setString(1, loginName);
-				try (ResultSet charList = statement.executeQuery())
+				while (charList.next())// fills the package
 				{
-					while (charList.next())// fills the package
-					{
-						charInfopackage = restoreChar(charList);
-						if (charInfopackage != null)
-							characterList.add(charInfopackage);
-					}
+					charInfopackage = restoreChar(charList);
+					if (charInfopackage != null)
+						characterList.add(charInfopackage);
 				}
 			}
 			return characterList.toArray(new CharSelectInfoPackage[characterList.size()]);
@@ -236,23 +234,20 @@ public class CharSelectionInfo extends L2GameServerPacket
 	
 	private static void loadCharacterSubclassInfo(CharSelectInfoPackage charInfopackage, int ObjectId, int activeClassId)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT exp, sp, level FROM character_subclasses WHERE charId=? && class_id=? ORDER BY charId"))
 		{
-			try (PreparedStatement statement = con.prepareStatement("SELECT exp, sp, level FROM character_subclasses WHERE charId=? && class_id=? ORDER BY charId"))
+			statement.setInt(1, ObjectId);
+			statement.setInt(2, activeClassId);
+			try (ResultSet charList = statement.executeQuery())
 			{
-				statement.setInt(1, ObjectId);
-				statement.setInt(2, activeClassId);
-				try (ResultSet charList = statement.executeQuery())
+				if (charList.next())
 				{
-					if (charList.next())
-					{
-						charInfopackage.setExp(charList.getLong("exp"));
-						charInfopackage.setSp(charList.getInt("sp"));
-						charInfopackage.setLevel(charList.getInt("level"));
-					}
+					charInfopackage.setExp(charList.getLong("exp"));
+					charInfopackage.setSp(charList.getInt("sp"));
+					charInfopackage.setLevel(charList.getInt("level"));
 				}
 			}
-			
 		}
 		catch (Exception e)
 		{
@@ -349,19 +344,16 @@ public class CharSelectionInfo extends L2GameServerPacket
 		
 		if (weaponObjId > 0)
 		{
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement("SELECT augAttributes FROM item_attributes WHERE itemId=?"))
 			{
-				try (PreparedStatement statement = con.prepareStatement("SELECT augAttributes FROM item_attributes WHERE itemId=?"))
+				statement.setInt(1, weaponObjId);
+				try (ResultSet result = statement.executeQuery())
 				{
-					statement.setInt(1, weaponObjId);
-					try (ResultSet result = statement.executeQuery())
+					if (result.next())
 					{
-						if (result.next())
-						{
-							int augment = result.getInt("augAttributes");
-							charInfopackage.setAugmentationId(augment == -1 ? 0 : augment);
-						}
-						
+						int augment = result.getInt("augAttributes");
+						charInfopackage.setAugmentationId(augment == -1 ? 0 : augment);
 					}
 				}
 			}
@@ -371,9 +363,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 			}
 		}
 		
-		/*
-		 * Check if the base class is set to zero and alse doesn't match with the current active class, otherwise send the base class ID. This prevents chars created before base class was introduced from being displayed incorrectly.
-		 */
+		// Check if the base class is set to zero and also doesn't match with the current active class, otherwise send the base class ID. This prevents chars created before base class was introduced from being displayed incorrectly.
 		if (baseClassId == 0 && activeClassId > 0)
 			charInfopackage.setBaseClassId(activeClassId);
 		else

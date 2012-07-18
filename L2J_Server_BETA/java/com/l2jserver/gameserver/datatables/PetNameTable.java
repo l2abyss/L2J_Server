@@ -39,35 +39,26 @@ public class PetNameTable
 	public boolean doesPetNameExist(String name, int petNpcId)
 	{
 		boolean result = true;
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT name FROM pets p, items i WHERE p.item_obj_id = i.object_id AND name=? AND i.item_id IN (?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			try (PreparedStatement ps = con.prepareStatement("SELECT name FROM pets p, items i WHERE p.item_obj_id = i.object_id AND name=? AND i.item_id IN (?)"))
+			ps.setString(1, name);
+			StringBuilder cond = new StringBuilder();
+			for (int it : PetDataTable.getPetItemsByNpc(petNpcId))
 			{
-				ps.setString(1, name);
-				StringBuilder cond = new StringBuilder();
-				for (int it : PetDataTable.getPetItemsByNpc(petNpcId))
-				{
-					if (!cond.toString().isEmpty())
-						cond.append(", ");
-					cond.append(it);
-				}
-				ps.setString(2, cond.toString());
-				try (ResultSet rs = ps.executeQuery())
-				{
-					result = rs.next();
-				}
+				if (!cond.toString().isEmpty())
+					cond.append(", ");
+				cond.append(it);
+			}
+			ps.setString(2, cond.toString());
+			try (ResultSet rs = ps.executeQuery())
+			{
+				result = rs.next();
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not check existing petname:" + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return result;
 	}

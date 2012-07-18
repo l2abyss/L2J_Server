@@ -71,12 +71,10 @@ public class BlockList
 	
 	private static List<Integer> loadList(int ObjId)
 	{
-		Connection con = null;
 		List<Integer> list = new FastList<>();
 		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=? AND relation=1");
 			statement.setInt(1, ObjId);
 			ResultSet rset = statement.executeQuery();
@@ -97,42 +95,35 @@ public class BlockList
 		{
 			_log.log(Level.WARNING, "Error found in " + ObjId + " FriendList while loading BlockList: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		return list;
 	}
 	
 	private void updateInDB(int targetId, boolean state)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
 			if (state) //add
 			{
-				statement = con.prepareStatement("INSERT INTO character_friends (charId, friendId, relation) VALUES (?, ?, 1)");
-				statement.setInt(1, _owner.getObjectId());
-				statement.setInt(2, targetId);
+				try (PreparedStatement statement = con.prepareStatement("INSERT INTO character_friends (charId, friendId, relation) VALUES (?, ?, 1)"))
+				{
+					statement.setInt(1, _owner.getObjectId());
+					statement.setInt(2, targetId);
+					statement.execute();
+				}
 			}
 			else //remove
 			{
-				statement = con.prepareStatement("DELETE FROM character_friends WHERE charId=? AND friendId=? AND relation=1");
-				statement.setInt(1, _owner.getObjectId());
-				statement.setInt(2, targetId);
+				try (PreparedStatement statement = con.prepareStatement("DELETE FROM character_friends WHERE charId=? AND friendId=? AND relation=1"))
+				{
+					statement.setInt(1, _owner.getObjectId());
+					statement.setInt(2, targetId);
+					statement.execute();
+				}
 			}
-			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not add block player: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
