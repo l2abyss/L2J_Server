@@ -449,7 +449,7 @@ public class ItemTable
 	public void reload()
 	{
 		load();
-		EnchantHPBonusData.getInstance().reload();
+		EnchantHPBonusData.getInstance().load();
 	}
 	
 	protected static class ResetOwner implements Runnable
