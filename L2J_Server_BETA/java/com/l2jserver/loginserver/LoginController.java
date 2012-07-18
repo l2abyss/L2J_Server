@@ -75,12 +75,13 @@ public class LoginController
 	private static final int BLOWFISH_KEYS = 20;
 	
 	// SQL Queries
-	private static final String USER_INFO_SELECT = "SELECT password, IF(? > value OR value IS NULL, accessLevel, -1) AS accessLevel, lastServer, userIp " + "FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
+	private static final String USER_INFO_SELECT = "SELECT password, IF(? > value OR value IS NULL, accessLevel, -1) AS accessLevel, lastServer FROM accounts LEFT JOIN (account_data) ON (account_data.account_name=accounts.login AND account_data.var=\"ban_temp\") WHERE login=?";
 	private static final String AUTOCREATE_ACCOUNTS_INSERT = "INSERT INTO accounts (login, password, lastactive, accessLevel, lastIP) values (?, ?, ?, ?, ?)";
 	private static final String ACCOUNT_INFO_UPDATE = "UPDATE accounts SET lastactive = ?, lastIP = ? WHERE login = ?";
 	private static final String ACCOUNT_LAST_SERVER_UPDATE = "UPDATE accounts SET lastServer = ? WHERE login = ?";
 	private static final String ACCOUNT_ACCESS_LEVEL_UPDATE = "UPDATE accounts SET accessLevel = ? WHERE login = ?";
 	private static final String ACCOUNT_IPS_UPDATE = "UPDATE accounts SET pcIp = ?, hop1 = ?, hop2 = ?, hop3 = ?, hop4 = ? WHERE login = ?";
+	private static final String ACCOUNT_IPAUTH_SELECT = "SELECT * FROM accounts_ipauth WHERE login = ?";
 	
 	public static void load() throws GeneralSecurityException
 	{
@@ -542,11 +543,10 @@ public class LoginController
 					}
 				}
 			}
-			try (PreparedStatement ps = con.prepareStatement("SELECT * FROM accounts_ipauth WHERE login = ?"))
+			try (PreparedStatement ps = con.prepareStatement(ACCOUNT_IPAUTH_SELECT))
 			{
 				ps.setString(1, user);
-				try (
-					ResultSet rset = ps.executeQuery())
+				try (ResultSet rset = ps.executeQuery())
 				{
 					String ip, type;
 					while (rset.next())
