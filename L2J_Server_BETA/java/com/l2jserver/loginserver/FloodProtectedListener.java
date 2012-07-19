@@ -54,10 +54,12 @@ public abstract class FloodProtectedListener extends Thread
 	@Override
 	public void run()
 	{
-		while (true)
+		Socket connection = null;
+		while (!isInterrupted())
 		{
-			try (Socket connection = _serverSocket.accept())
+			try
 			{
+				connection = _serverSocket.accept();
 				if (Config.FLOOD_PROTECTION)
 				{
 					ForeignConnection fConnection = _floodProtection.get(connection.getInetAddress().getHostAddress());
@@ -89,6 +91,7 @@ public abstract class FloodProtectedListener extends Thread
 						_floodProtection.put(connection.getInetAddress().getHostAddress(), fConnection);
 					}
 				}
+				
 				addClient(connection);
 			}
 			catch (Exception e)
