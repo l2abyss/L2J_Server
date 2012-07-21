@@ -17,18 +17,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TeleportBookmark;
 
-
-
 /**
- *
  * @author ShanSoft
- * @Structure d dd (ddddSdS)
  */
 public class ExGetBookMarkInfoPacket extends L2GameServerPacket
 {
-	private static final String _S__FE_84_EXGETBOOKMARKINFOPACKET = "[S] FE:84 ExGetBookMarkInfoPacket";
+	private final L2PcInstance player;
 	
-	private L2PcInstance player;
 	public ExGetBookMarkInfoPacket(L2PcInstance cha)
 	{
 		player = cha;
@@ -43,7 +38,6 @@ public class ExGetBookMarkInfoPacket extends L2GameServerPacket
 		writeD(player.getBookmarkslot());
 		writeD(player.getTpbookmark().size());
 		
-		
 		for (TeleportBookmark tpbm : player.getTpbookmark())
 		{
 			writeD(tpbm._id);
@@ -54,11 +48,5 @@ public class ExGetBookMarkInfoPacket extends L2GameServerPacket
 			writeD(tpbm._icon);
 			writeS(tpbm._tag);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_84_EXGETBOOKMARKINFOPACKET;
 	}
 }

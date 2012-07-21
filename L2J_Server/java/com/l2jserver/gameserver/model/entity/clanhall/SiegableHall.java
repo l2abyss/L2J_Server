@@ -103,24 +103,17 @@ public final class SiegableHall extends ClanHall
 	@Override
 	public final void updateDb()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(SQL_SAVE))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SQL_SAVE);
 			statement.setInt(1, getOwnerId());
 			statement.setLong(2, getNextSiegeTime());
 			statement.setInt(3, getId());
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: SiegableHall.updateDb(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

@@ -18,15 +18,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-/**
- * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public class GMViewItemList extends L2GameServerPacket
 {
-	private static final String _S__AD_GMVIEWITEMLIST = "[S] 9a GMViewItemList";
-	private L2ItemInstance[] _items;
-	private int _limit;
-	private String _playerName;
+	private final L2ItemInstance[] _items;
+	private final int _limit;
+	private final String _playerName;
 	
 	public GMViewItemList(L2PcInstance cha)
 	{
@@ -68,7 +64,7 @@ public class GMViewItemList extends L2GameServerPacket
 			else
 				writeD(0x00);
 			writeD(temp.getMana());
-			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime()/1000) : -9999);
+			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime() / 1000) : -9999);
 			writeH(temp.getAttackElementType());
 			writeH(temp.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
@@ -80,11 +76,5 @@ public class GMViewItemList extends L2GameServerPacket
 			writeH(0x00);
 			writeH(0x00);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__AD_GMVIEWITEMLIST;
 	}
 }

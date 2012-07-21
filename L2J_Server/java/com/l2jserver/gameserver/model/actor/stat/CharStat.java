@@ -178,8 +178,7 @@ public class CharStat
 		if (_activeChar == null)
 			return 1;
 		
-		int criticalHit = (int) Math.round(calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().getBaseCritRate(), target, skill)*10.0 + 0.5);
-		criticalHit /= 10;
+		int criticalHit = (int) calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().getBaseCritRate(), target, skill);
 		// Set a cap of Critical Hit at 500
 		if (criticalHit > Config.MAX_PCRIT_RATE)
 			criticalHit = Config.MAX_PCRIT_RATE;
@@ -409,7 +408,8 @@ public class CharStat
 		if (_activeChar == null)
 			return 1;
 		
-		double mrate = calcStat(Stats.MCRITICAL_RATE, _activeChar.getTemplate().getBaseMCritRate(), target, skill);
+		double mrate = calcStat(Stats.MCRITICAL_RATE, 1, target, skill) * 10;
+		// Set a cap of Magical Critical Hit at 200
 		if(mrate > Config.MAX_MCRIT_RATE)
 			mrate = Config.MAX_MCRIT_RATE;
 		return (int) mrate;
@@ -432,7 +432,7 @@ public class CharStat
 		if (_activeChar == null)
 			return 1;
 		
-		// Get the base MAtk of the L2Character
+		// Get the base MDef of the L2Character
 		double defence = _activeChar.getTemplate().getBaseMDef();
 		
 		// Calculate modifier for Raid Bosses

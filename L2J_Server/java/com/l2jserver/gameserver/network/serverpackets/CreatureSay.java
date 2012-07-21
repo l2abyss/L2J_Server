@@ -21,17 +21,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public final class CreatureSay extends L2GameServerPacket
 {
-	// ddSS
-	private static final String _S__4A_CREATURESAY = "[S] 4A CreatureSay";
-	private int _objectId;
-	private int _textType;
+	private final int _objectId;
+	private final int _textType;
 	private String _charName = null;
 	private int _charId = 0;
 	private String _text = null;
@@ -94,21 +87,25 @@ public final class CreatureSay extends L2GameServerPacket
 		writeD(_objectId);
 		writeD(_textType);
 		if (_charName != null)
+		{
 			writeS(_charName);
-		else
-			writeD(_charId);
-		writeD(_npcString); // High Five NPCString ID
-		if (_text != null)
-			writeS(_text);
+		}
 		else
 		{
-			if (_parameters != null)
+			writeD(_charId);
+		}
+		writeD(_npcString); // High Five NPCString ID
+		if (_text != null)
+		{
+			writeS(_text);
+		}
+		else if (_parameters != null)
+		{
+			for (String s : _parameters)
 			{
-				for (String s : _parameters)
-					writeS(s);
+				writeS(s);
 			}
 		}
-
 	}
 	
 	@Override
@@ -117,13 +114,7 @@ public final class CreatureSay extends L2GameServerPacket
 		L2PcInstance _pci = getClient().getActiveChar();
 		if (_pci != null)
 		{
-			_pci.broadcastSnoop(_textType,_charName,_text);
+			_pci.broadcastSnoop(_textType, _charName, _text);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__4A_CREATURESAY;
 	}
 }

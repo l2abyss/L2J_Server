@@ -15,13 +15,10 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: ch dddd
  * @author KenM
  */
 public class ExUseSharedGroupItem extends L2GameServerPacket
 {
-	private static final String _S__FE_4A_EXUSESHAREDGROUPITEM = "[S] FE:4A ExUseSharedGroupItem";
-	
 	private final int _itemId;
 	private final int _grpId;
 	private final int _remainingTime;
@@ -45,11 +42,5 @@ public class ExUseSharedGroupItem extends L2GameServerPacket
 		writeD(_grpId);
 		writeD(_remainingTime);
 		writeD(_totalTime);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_4A_EXUSESHAREDGROUPITEM;
 	}
 }

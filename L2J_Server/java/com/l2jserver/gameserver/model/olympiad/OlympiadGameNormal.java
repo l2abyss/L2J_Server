@@ -693,11 +693,9 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 	
 	protected static final void saveResults(Participant one, Participant two, int _winner, long _startTime, long _fightTime, CompetitionType type)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO olympiad_fights (charOneId, charTwoId, charOneClass, charTwoClass, winner, start, time, classed) values(?,?,?,?,?,?,?,?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO olympiad_fights (charOneId, charTwoId, charOneClass, charTwoClass, winner, start, time, classed) values(?,?,?,?,?,?,?,?)");
 			statement.setInt(1, one.getObjectId());
 			statement.setInt(2, two.getObjectId());
 			statement.setInt(3, one.getBaseClass());
@@ -707,7 +705,6 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 			statement.setLong(7, _fightTime);
 			statement.setInt(8, (type == CompetitionType.CLASSED ? 1 : 0));
 			statement.execute();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -715,10 +712,6 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 			{
 				_log.log(Level.SEVERE, "SQL exception while saving olympiad fight.", e);
 			}
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 }

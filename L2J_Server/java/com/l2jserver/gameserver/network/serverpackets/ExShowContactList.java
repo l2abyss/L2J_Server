@@ -16,36 +16,23 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import javolution.util.FastList;
-
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Format: (ch)d[S]
- * d: Number of Contacts
- * [
- * 	S: Character Name
- * ]
- * 
- * @author UnAfraid & mrTJO
+ * @author UnAfraid, mrTJO
  */
 public class ExShowContactList extends L2GameServerPacket
 {
-	private static final String _S__FE_D3_EXSHOWCONTACTLIST = "[S] FE:D3 ExShowContactList";
 	private final List<String> _contacts;
 	
 	public ExShowContactList(L2PcInstance player)
 	{
-		_contacts = new FastList<>();
-		_contacts.addAll(player.getContactList().getAllContacts());
+		_contacts = player.getContactList().getAllContacts();
 	}
 	
 	@Override
 	protected void writeImpl()
 	{
-		if (_contacts.size() < 1)
-			return;
-		
 		writeC(0xFE);
 		writeH(0xD3);
 		writeD(_contacts.size());
@@ -54,11 +41,4 @@ public class ExShowContactList extends L2GameServerPacket
 			writeS(name);
 		}
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_D3_EXSHOWCONTACTLIST;
-	}
-	
 }

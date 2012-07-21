@@ -16,30 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.L2ShortCut;
 
-/**
- *
- *
- * sample
- *
- * 56
- * 01000000 04000000 dd9fb640 01000000
- *
- * 56
- * 02000000 07000000 38000000 03000000 01000000
- *
- * 56
- * 03000000 00000000 02000000 01000000
- *
- * format   dd d/dd/d d
- *
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public final class ShortCutRegister extends L2GameServerPacket
 {
-	private static final String _S__56_SHORTCUTREGISTER = "[S] 44 ShortCutRegister";
-	
-	private L2ShortCut _shortcut;
+	private final L2ShortCut _shortcut;
 	
 	/**
 	 * Register new skill shortcut
@@ -57,22 +36,23 @@ public final class ShortCutRegister extends L2GameServerPacket
 		
 		writeD(_shortcut.getType());
 		writeD(_shortcut.getSlot() + _shortcut.getPage() * 12); // C4 Client
-		switch(_shortcut.getType())
+		switch (_shortcut.getType())
 		{
-			case L2ShortCut.TYPE_ITEM: //1
+			case L2ShortCut.TYPE_ITEM: // 1
 				writeD(_shortcut.getId());
 				writeD(_shortcut.getCharacterType());
 				writeD(_shortcut.getSharedReuseGroup());
-				writeD(0x00);  // unknown
-				writeD(0x00);  // unknown
-				writeD(0x00);  // item augment id
+				writeD(0x00); // unknown
+				writeD(0x00); // unknown
+				writeD(0x00); // item augment id
 				break;
-			case L2ShortCut.TYPE_SKILL: //2
+			case L2ShortCut.TYPE_SKILL: // 2
 				writeD(_shortcut.getId());
 				writeD(_shortcut.getLevel());
 				writeC(0x00); // C5
 				writeD(_shortcut.getCharacterType());
 				break;
+			//@formatter:off
 				/** these are same as default case, no need to duplicate, enable if packet get changed
 				 */
 				/*	case L2ShortCut.TYPE_ACTION: //3
@@ -88,20 +68,12 @@ public final class ShortCutRegister extends L2GameServerPacket
 				 *		writeD(_shortcut.getUserCommand());
 				 *		break;
 				 */
+				//@formatter:on
 			default:
 			{
 				writeD(_shortcut.getId());
 				writeD(_shortcut.getCharacterType());
 			}
 		}
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__56_SHORTCUTREGISTER;
 	}
 }

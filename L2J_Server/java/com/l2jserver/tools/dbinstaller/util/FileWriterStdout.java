@@ -15,7 +15,6 @@
 package com.l2jserver.tools.dbinstaller.util;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -24,9 +23,9 @@ import java.io.IOException;
  */
 public class FileWriterStdout extends BufferedWriter
 {
-	public FileWriterStdout(File file) throws IOException
+	public FileWriterStdout(FileWriter fileWriter)
 	{
-		super(new FileWriter(file));
+		super(fileWriter);
 	}
 	
 	public void println() throws IOException

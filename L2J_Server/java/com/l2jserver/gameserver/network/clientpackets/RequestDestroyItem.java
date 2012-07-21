@@ -145,28 +145,20 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		if (itemToRemove.getItem().isPetItem())
 		{
-			Connection con = null;
-			try
+			if (activeChar.getPet() != null && activeChar.getPet().getControlObjectId() == _objectId)
 			{
-				if (activeChar.getPet() != null && activeChar.getPet().getControlObjectId() == _objectId)
-				{
-					activeChar.getPet().unSummon(activeChar);
-				}
-				
-				// if it's a pet control item, delete the pet
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?");
+				activeChar.getPet().unSummon(activeChar);
+			}
+			
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?"))
+			{
 				statement.setInt(1, _objectId);
 				statement.execute();
-				statement.close();
 			}
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "could not delete pet objectid: ", e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 		if (itemToRemove.isTimeLimitedItem())

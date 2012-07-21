@@ -17,18 +17,15 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- * Format (ch)ddddd
  * @author -Wooden-
- *
  */
 public class ExFishingStart extends L2GameServerPacket
 {
-	private static final String _S__FE_13_EXFISHINGSTART = "[S] FE:1e ExFishingStart";
-	private L2Character _activeChar;
-	private int _x,_y,_z, _fishType;
-	private boolean _isNightLure;
+	private final L2Character _activeChar;
+	private final int _x, _y, _z, _fishType;
+	private final boolean _isNightLure;
 	
-	public ExFishingStart(L2Character character, int fishType, int x, int y,int z, boolean isNightLure)
+	public ExFishingStart(L2Character character, int fishType, int x, int y, int z, boolean isNightLure)
 	{
 		_activeChar = character;
 		_fishType = fishType;
@@ -41,21 +38,14 @@ public class ExFishingStart extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x1e);
+		writeC(0xFE);
+		writeH(0x1E);
 		writeD(_activeChar.getObjectId());
 		writeD(_fishType); // fish type
 		writeD(_x); // x position
 		writeD(_y); // y position
 		writeD(_z); // z position
 		writeC(_isNightLure ? 0x01 : 0x00); // night lure
-		writeC(0x00); //show fish rank result button
+		writeC(0x00); // show fish rank result button
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_13_EXFISHINGSTART;
-	}
-	
 }

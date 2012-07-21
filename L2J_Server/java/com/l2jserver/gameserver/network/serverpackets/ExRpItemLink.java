@@ -17,8 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public final class ExRpItemLink extends L2GameServerPacket
 {
@@ -29,30 +28,18 @@ public final class ExRpItemLink extends L2GameServerPacket
 		_item = item;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] FE:6C ExRpItemLink";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x6c);
+		writeC(0xFE);
+		writeH(0x6C);
 		writeD(_item.getObjectId());
 		writeD(_item.getDisplayId());
 		writeD(_item.getLocationSlot());
 		writeQ(_item.getCount());
 		writeH(_item.getItem().getType2());
 		writeH(_item.getCustomType1());
-		writeH(0x00);
+		writeH(_item.isEquipped() ? 0x01 : 0x00);
 		writeD(_item.getItem().getBodyPart());
 		writeH(_item.getEnchantLevel());
 		writeH(_item.getCustomType2());

@@ -42,25 +42,20 @@ public class TaskDailySkillReuseClean extends Task
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			for (int skill_id : _daily_skills)
 			{
-				PreparedStatement statement = con.prepareStatement("DELETE FROM character_skills_save WHERE skill_id=?;");
-				statement.setInt(1, skill_id);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_skills_save WHERE skill_id=?;"))
+				{
+					ps.setInt(1, skill_id);
+					ps.execute();
+				}
 			}
 		}
 		catch (Exception e)
 		{
 			_log.severe(getClass().getSimpleName() + ": Could not reset daily skill reuse: " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		_log.info("Daily skill reuse cleaned.");
 	}

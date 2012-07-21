@@ -18,12 +18,10 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
  * @author kerberos
- *
  */
 public class ExStopMoveAirShip extends L2GameServerPacket
 {
-	// store coords here because they can be changed from other threads
-	final int _objectId, _x, _y, _z, _heading;
+	private final int _objectId, _x, _y, _z, _heading;
 	
 	public ExStopMoveAirShip(L2Character ship)
 	{
@@ -37,18 +35,12 @@ public class ExStopMoveAirShip extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x66);
 		writeD(_objectId);
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
 		writeD(_heading);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:66 ExStopMoveAirShip".intern();
 	}
 }

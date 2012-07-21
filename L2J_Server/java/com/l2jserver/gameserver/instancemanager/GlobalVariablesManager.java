@@ -17,13 +17,16 @@ package com.l2jserver.gameserver.instancemanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Map;
+import java.sql.Statement;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
 
+/**
+ * @author Gigiikun
+ */
 public class GlobalVariablesManager
 {
 	private static final Logger _log = Logger.getLogger(GlobalVariablesManager.class.getName());
@@ -31,24 +34,20 @@ public class GlobalVariablesManager
 	private static final String LOAD_VAR = "SELECT var,value FROM global_variables";
 	private static final String SAVE_VAR = "INSERT INTO global_variables (var,value) VALUES (?,?) ON DUPLICATE KEY UPDATE value=?";
 	
-	private final Map<String, String> _variablesMap;
+	private final FastMap<String, String> _variablesMap = new FastMap<>();
 	
 	protected GlobalVariablesManager()
 	{
-		_variablesMap = new FastMap<>();
-		
+		_variablesMap.shared();
 		loadVars();
 	}
 	
 	private final void loadVars()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement statement = con.createStatement();
+			ResultSet rset = statement.executeQuery(LOAD_VAR))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(LOAD_VAR);
-			ResultSet rset = statement.executeQuery();
-			
 			String var, value;
 			while (rset.next())
 			{
@@ -57,46 +56,31 @@ public class GlobalVariablesManager
 				
 				_variablesMap.put(var, value);
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.warning("GlobalVariablesManager: problem while loading variables: " + e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public final void saveVars()
 	{
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(SAVE_VAR))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement(SAVE_VAR);
-
 			for(String var : _variablesMap.keySet())
 			{
 				statement.setString(1, var);
 				statement.setString(2, _variablesMap.get(var));
 				statement.setString(3, _variablesMap.get(var));
 				statement.execute();
+				statement.clearParameters();
 			}
-			statement.close();
-			_log.info("GlobalVariablesManager: Database updated.");
 		}
 		catch (Exception e)
 		{
 			_log.warning("GlobalVariablesManager: problem while saving variables: " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

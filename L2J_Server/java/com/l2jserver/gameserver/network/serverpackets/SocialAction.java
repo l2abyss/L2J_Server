@@ -14,30 +14,22 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public class SocialAction extends L2GameServerPacket
 {
 	public static final int LEVEL_UP = 2122;
 	
-	private static final String _S__3D_SOCIALACTION = "[S] 27 SocialAction";
 	private final int _charObjId;
 	private final int _actionId;
 	
 	/**
 	 * @param objectId
 	 * @param actionId
-	 */	
+	 */
 	public SocialAction(int objectId, int actionId)
 	{
 		_charObjId = objectId;
 		_actionId = actionId;
 	}
-
 	
 	@Override
 	protected final void writeImpl()
@@ -45,14 +37,5 @@ public class SocialAction extends L2GameServerPacket
 		writeC(0x27);
 		writeD(_charObjId);
 		writeD(_actionId);
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__3D_SOCIALACTION;
 	}
 }

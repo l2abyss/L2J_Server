@@ -37,7 +37,6 @@ public class TaskGlobalVariablesSave extends Task
 	public void onTimeElapsed(ExecutedTask task)
 	{
 		GlobalVariablesManager.getInstance().saveVars();
-		_log.info("GlobalVariablesManager: Data updated successfully.");
 	}
 	
 	@Override

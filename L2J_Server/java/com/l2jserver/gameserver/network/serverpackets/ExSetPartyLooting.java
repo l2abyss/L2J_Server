@@ -19,8 +19,6 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class ExSetPartyLooting extends L2GameServerPacket
 {
-	private static final String TYPE = "[S] FE:C0 ExSetPartyLooting";
-	
 	private final int _result;
 	private final byte _mode;
 	
@@ -37,11 +35,5 @@ public class ExSetPartyLooting extends L2GameServerPacket
 		writeH(0xC0);
 		writeD(_result);
 		writeD(_mode);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return TYPE;
 	}
 }

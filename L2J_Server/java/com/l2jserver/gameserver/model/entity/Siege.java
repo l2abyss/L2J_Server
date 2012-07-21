@@ -222,9 +222,10 @@ public class Siege implements Siegable
 		}
 	}
 	
-	private final List<L2SiegeClan> _attackerClans = new ArrayList<>();
-	private final List<L2SiegeClan> _defenderClans = new ArrayList<>();
-	private final List<L2SiegeClan> _defenderWaitingClans = new ArrayList<>();
+	// must support Concurrent Modifications
+	private final List<L2SiegeClan> _attackerClans = new FastList<>();
+	private final List<L2SiegeClan> _defenderClans = new FastList<>();
+	private final List<L2SiegeClan> _defenderWaitingClans = new FastList<>();
 	
 	// Castle setting
 	private List<L2ControlTowerInstance> _controlTowers = new ArrayList<>();
@@ -678,20 +679,19 @@ public class Siege implements Siegable
 	/** Clear all registered siege clans from database for castle */
 	public void clearSiegeClan()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=?");
 			statement.setInt(1, getCastle().getCastleId());
 			statement.execute();
-			statement.close();
 			
 			if (getCastle().getOwnerId() > 0)
 			{
-				statement = con.prepareStatement("DELETE FROM siege_clans WHERE clan_id=?");
-				statement.setInt(1, getCastle().getOwnerId());
-				statement.execute();
+				try (PreparedStatement delete = con.prepareStatement("DELETE FROM siege_clans WHERE clan_id=?"))
+				{
+					statement.setInt(1, getCastle().getOwnerId());
+					statement.execute();
+				}
 			}
 			
 			getAttackerClans().clear();
@@ -702,21 +702,14 @@ public class Siege implements Siegable
 		{
 			_log.log(Level.WARNING, "Exception: clearSiegeClan(): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/** Clear all siege clans waiting for approval from database for castle */
 	public void clearSiegeWaitingClan()
 	{
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=? and type = 2"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=? and type = 2");
 			statement.setInt(1, getCastle().getCastleId());
 			statement.execute();
 			
@@ -725,10 +718,6 @@ public class Siege implements Siegable
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: clearSiegeWaitingClan(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -919,12 +908,9 @@ public class Siege implements Siegable
 		if (clanId <= 0)
 			return;
 		
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=? and clan_id=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("DELETE FROM siege_clans WHERE castle_id=? and clan_id=?");
 			statement.setInt(1, getCastle().getCastleId());
 			statement.setInt(2, clanId);
 			statement.execute();
@@ -934,10 +920,6 @@ public class Siege implements Siegable
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: removeSiegeClan(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1146,9 +1128,9 @@ public class Siege implements Siegable
 	/** Load siege clans. */
 	private void loadSiegeClan()
 	{
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT clan_id,type FROM siege_clans where castle_id=?"))
 		{
 			getAttackerClans().clear();
 			getDefenderClans().clear();
@@ -1158,33 +1140,25 @@ public class Siege implements Siegable
 			if (getCastle().getOwnerId() > 0)
 				addDefender(getCastle().getOwnerId(), SiegeClanType.OWNER);
 			
-			ResultSet rs = null;
-			
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			statement = con.prepareStatement("SELECT clan_id,type FROM siege_clans where castle_id=?");
 			statement.setInt(1, getCastle().getCastleId());
-			rs = statement.executeQuery();
-			
-			int typeId;
-			while (rs.next())
+			try (ResultSet rs = statement.executeQuery())
 			{
-				typeId = rs.getInt("type");
-				if (typeId == DEFENDER)
-					addDefender(rs.getInt("clan_id"));
-				else if (typeId == ATTACKER)
-					addAttacker(rs.getInt("clan_id"));
-				else if (typeId == DEFENDER_NOT_APPROWED)
-					addDefenderWaiting(rs.getInt("clan_id"));
+				int typeId;
+				while (rs.next())
+				{
+					typeId = rs.getInt("type");
+					if (typeId == DEFENDER)
+						addDefender(rs.getInt("clan_id"));
+					else if (typeId == ATTACKER)
+						addAttacker(rs.getInt("clan_id"));
+					else if (typeId == DEFENDER_NOT_APPROWED)
+						addDefenderWaiting(rs.getInt("clan_id"));
+				}
 			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: loadSiegeClan(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1284,12 +1258,11 @@ public class Siege implements Siegable
 			_scheduledStartSiegeTask.cancel(true);
 			_scheduledStartSiegeTask = ThreadPoolManager.getInstance().scheduleGeneral(new Siege.ScheduleStartSiegeTask(getCastle()), 1000);
 		}
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
+		
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE castle SET siegeDate = ?, regTimeEnd = ?, regTimeOver = ?  WHERE id = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			statement = con.prepareStatement("UPDATE castle SET siegeDate = ?, regTimeEnd = ?, regTimeOver = ?  WHERE id = ?");
 			statement.setLong(1, getSiegeDate().getTimeInMillis());
 			statement.setLong(2, getTimeRegistrationOverDate().getTimeInMillis());
 			statement.setString(3, String.valueOf(getIsTimeRegistrationOver()));
@@ -1299,10 +1272,6 @@ public class Siege implements Siegable
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: saveSiegeDate(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1318,9 +1287,7 @@ public class Siege implements Siegable
 		if (clan.getCastleId() > 0)
 			return;
 		
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			if (typeId == DEFENDER || typeId == DEFENDER_NOT_APPROWED || typeId == OWNER)
 			{
@@ -1333,22 +1300,25 @@ public class Siege implements Siegable
 					return;
 			}
 			
-			con = L2DatabaseFactory.getInstance().getConnection();
 			if (!isUpdateRegistration)
 			{
-				statement = con.prepareStatement("INSERT INTO siege_clans (clan_id,castle_id,type,castle_owner) values (?,?,?,0)");
-				statement.setInt(1, clan.getClanId());
-				statement.setInt(2, getCastle().getCastleId());
-				statement.setInt(3, typeId);
-				statement.execute();
+				try (PreparedStatement statement = con.prepareStatement("INSERT INTO siege_clans (clan_id,castle_id,type,castle_owner) values (?,?,?,0)"))
+				{
+					statement.setInt(1, clan.getClanId());
+					statement.setInt(2, getCastle().getCastleId());
+					statement.setInt(3, typeId);
+					statement.execute();
+				}
 			}
 			else
 			{
-				statement = con.prepareStatement("UPDATE siege_clans SET type = ? WHERE castle_id = ? AND clan_id = ?");
-				statement.setInt(1, typeId);
-				statement.setInt(2, getCastle().getCastleId());
-				statement.setInt(3, clan.getClanId());
-				statement.execute();
+				try (PreparedStatement statement = con.prepareStatement("UPDATE siege_clans SET type = ? WHERE castle_id = ? AND clan_id = ?"))
+				{
+					statement.setInt(1, typeId);
+					statement.setInt(2, getCastle().getCastleId());
+					statement.setInt(3, clan.getClanId());
+					statement.execute();
+				}
 			}
 			
 			if (typeId == DEFENDER || typeId == OWNER)
@@ -1367,10 +1337,6 @@ public class Siege implements Siegable
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: saveSiegeClan(L2Clan clan, int typeId, boolean isUpdateRegistration): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

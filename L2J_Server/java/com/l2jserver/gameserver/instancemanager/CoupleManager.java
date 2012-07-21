@@ -55,11 +55,8 @@ public class CoupleManager
 	
 	private final void load()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("SELECT id FROM mods_wedding ORDER BY id");
 			ResultSet rs = statement.executeQuery();
 			
@@ -76,11 +73,6 @@ public class CoupleManager
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Exception: CoupleManager.load(): " + e.getMessage(), e);
-		}
-		
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

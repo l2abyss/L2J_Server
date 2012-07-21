@@ -18,16 +18,10 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public final class TradeStart extends L2GameServerPacket
 {
-	private static final String _S__2E_TRADESTART = "[S] 14 TradeStart";
-	private L2PcInstance _activeChar;
-	private L2ItemInstance[] _itemList;
+	private final L2PcInstance _activeChar;
+	private final L2ItemInstance[] _itemList;
 	
 	public TradeStart(L2PcInstance player)
 	{
@@ -37,14 +31,12 @@ public final class TradeStart extends L2GameServerPacket
 	
 	@Override
 	protected final void writeImpl()
-	{//0x2e TradeStart   d h (h dddhh dhhh)
+	{
 		if (_activeChar.getActiveTradeList() == null || _activeChar.getActiveTradeList().getPartner() == null)
 			return;
 		
 		writeC(0x14);
 		writeD(_activeChar.getActiveTradeList().getPartner().getObjectId());
-		//writeD((_activeChar != null || _activeChar.getTransactionRequester() != null)? _activeChar.getTransactionRequester().getObjectId() : 0);
-		
 		writeH(_itemList.length);
 		for (L2ItemInstance item : _itemList)
 		{
@@ -60,9 +52,9 @@ public final class TradeStart extends L2GameServerPacket
 			writeH(item.getCustomType2());
 			// Player cannot sell/buy augmented, shadow or time-limited items
 			// probably so hardcode values here
-			writeD(0x00);	// Augment
-			writeD(-1);		// Mana
-			writeD(-9999);	// Time
+			writeD(0x00); // Augment
+			writeD(-1); // Mana
+			writeD(-9999); // Time
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
@@ -74,11 +66,5 @@ public final class TradeStart extends L2GameServerPacket
 			writeH(0x00);
 			writeH(0x00);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__2E_TRADESTART;
 	}
 }

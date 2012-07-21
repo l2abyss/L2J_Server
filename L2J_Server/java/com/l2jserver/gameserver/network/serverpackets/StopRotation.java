@@ -14,15 +14,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.2.2.1.2.4 $ $Date: 2005/03/27 15:29:57 $
- */
 public class StopRotation extends L2GameServerPacket
 {
-	private static final String _S__78_STOPROTATION = "[S] 61 StopRotation";
-	private int _charObjId, _degree, _speed;
+	private final int _charObjId, _degree, _speed;
 	
 	public StopRotation(int objectId, int degree, int speed)
 	{
@@ -39,11 +33,5 @@ public class StopRotation extends L2GameServerPacket
 		writeD(_degree);
 		writeD(_speed);
 		writeC(0); // ?
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__78_STOPROTATION;
 	}
 }

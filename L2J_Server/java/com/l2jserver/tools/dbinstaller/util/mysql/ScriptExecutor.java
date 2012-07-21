@@ -62,13 +62,12 @@ public class ScriptExecutor
 	
 	public void execSqlFile(File file, boolean skipErrors)
 	{
-		try
-		{
-			_frame.appendToProgressArea("Installing " + file.getName());
-			String line = "";
-			Connection con = _frame.getConnection();
+		_frame.appendToProgressArea("Installing " + file.getName());
+		String line = "";
+		try (Connection con = _frame.getConnection();
 			Statement stmt = con.createStatement();
-			Scanner scn = new Scanner(file);
+			Scanner scn = new Scanner(file))
+		{
 			StringBuilder sb = new StringBuilder();
 			while (scn.hasNextLine())
 			{
@@ -94,7 +93,6 @@ public class ScriptExecutor
 					sb = new StringBuilder();
 				}
 			}
-			scn.close();
 		}
 		catch (FileNotFoundException e)
 		{
@@ -109,8 +107,8 @@ public class ScriptExecutor
 					"Continue",
 					"Abort"
 				};
-				int n = JOptionPane.showOptionDialog(null, "MySQL Error: " + e.getMessage(), "Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 				
+				int n = JOptionPane.showOptionDialog(null, "MySQL Error: " + e.getMessage(), "Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 				if (n == 1)
 				{
 					System.exit(0);

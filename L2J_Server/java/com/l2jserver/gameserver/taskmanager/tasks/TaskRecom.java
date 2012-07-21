@@ -39,30 +39,25 @@ public class TaskRecom extends Task
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
+			try (PreparedStatement ps = con.prepareStatement("UPDATE character_reco_bonus SET rec_left=?, time_left=?, rec_have=0 WHERE rec_have <=  20"))
+			{
+				ps.setInt(1, 0); // Rec left = 0
+				ps.setInt(2, 3600000); // Timer = 1 hour
+				ps.execute();
+			}
 			
-			PreparedStatement statement = con.prepareStatement("UPDATE character_reco_bonus SET rec_left=?, time_left=?, rec_have=0 WHERE rec_have <=  20");
-			statement.setInt(1, 0); // Rec left = 0
-			statement.setInt(2, 3600000); // Timer = 1 hour
-			statement.execute();
-			statement.close();
-			
-			statement = con.prepareStatement("UPDATE character_reco_bonus SET rec_left=?, time_left=?, rec_have=GREATEST(rec_have-20,0) WHERE rec_have > 20");
-			statement.setInt(1, 0); // Rec left = 0
-			statement.setInt(2, 3600000); // Timer = 1 hour
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("UPDATE character_reco_bonus SET rec_left=?, time_left=?, rec_have=GREATEST(rec_have-20,0) WHERE rec_have > 20"))
+			{
+				ps.setInt(1, 0); // Rec left = 0
+				ps.setInt(2, 3600000); // Timer = 1 hour
+				ps.execute();
+			}
 		}
 		catch (Exception e)
 		{
 			_log.severe(getClass().getSimpleName() + ": Could not reset Recommendations System: " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		_log.info("Recommendations System reseted");
 	}

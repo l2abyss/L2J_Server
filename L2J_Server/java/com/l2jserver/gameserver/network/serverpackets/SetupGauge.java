@@ -14,39 +14,31 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- *
- *
- *	sample
- *	0000: 85 00 00 00 00 f0 1a 00 00
- *
- * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public final class SetupGauge extends L2GameServerPacket
 {
-	private static final String _S__85_SETUPGAUGE = "[S] 6b SetupGauge";
 	public static final int BLUE = 0;
 	public static final int RED = 1;
 	public static final int CYAN = 2;
 	
-	private int _dat1;
-	private int _time;
-	private int _time2;
+	private final int _dat1;
+	private final int _time;
+	private final int _time2;
 	private int _charObjId;
 	
 	public SetupGauge(int dat1, int time)
 	{
-		_dat1 = dat1;// color  0-blue   1-red  2-cyan  3-green
+		_dat1 = dat1;// color 0-blue 1-red 2-cyan 3-green
 		_time = time;
 		_time2 = time;
 	}
 	
-	public SetupGauge (int color, int currentTime, int maxTime)
+	public SetupGauge(int color, int currentTime, int maxTime)
 	{
-		_dat1 = color;// color  0-blue   1-red  2-cyan  3-green
+		_dat1 = color;// color 0-blue 1-red 2-cyan 3-green
 		_time = currentTime;
 		_time2 = maxTime;
 	}
+	
 	@Override
 	protected final void writeImpl()
 	{
@@ -55,12 +47,6 @@ public final class SetupGauge extends L2GameServerPacket
 		writeD(_dat1);
 		writeD(_time);
 		writeD(_time2);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__85_SETUPGAUGE;
 	}
 	
 	@Override

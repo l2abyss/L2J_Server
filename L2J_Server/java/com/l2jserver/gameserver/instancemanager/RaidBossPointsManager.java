@@ -62,10 +62,8 @@ public class RaidBossPointsManager
 	private final void init()
 	{
 		_list = new FastMap<>();
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT `charId`,`boss_id`,`points` FROM `character_raid_points`");
 			ResultSet rset = statement.executeQuery();
 			while(rset.next())
@@ -89,18 +87,12 @@ public class RaidBossPointsManager
 		{
 			_log.log(Level.WARNING, "RaidPointsManager: Couldnt load raid points ", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public final void updatePointsInDB(L2PcInstance player, int raidId, int points)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("REPLACE INTO character_raid_points (`charId`,`boss_id`,`points`) VALUES (?,?,?)");
 			statement.setInt(1, player.getObjectId());
 			statement.setInt(2, raidId);
@@ -111,10 +103,6 @@ public class RaidBossPointsManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not update char raid points:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -161,10 +149,8 @@ public class RaidBossPointsManager
 	
 	public final void cleanUp()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			final PreparedStatement statement = con.prepareStatement("DELETE from character_raid_points WHERE charId > 0");
 			statement.executeUpdate();
 			statement.close();
@@ -173,10 +159,6 @@ public class RaidBossPointsManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not clean raid points: ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

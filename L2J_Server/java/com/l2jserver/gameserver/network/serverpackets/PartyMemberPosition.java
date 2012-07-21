@@ -14,21 +14,19 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.position.PcPosition;
 
 /**
  * @author zabbix
- *
  */
 public class PartyMemberPosition extends L2GameServerPacket
 {
-	Map<Integer, Location> locations = new FastMap<>();
+	private final Map<Integer, PcPosition> locations = new HashMap<>();
 	
 	public PartyMemberPosition(L2Party party)
 	{
@@ -42,7 +40,7 @@ public class PartyMemberPosition extends L2GameServerPacket
 		{
 			if (member == null)
 				continue;
-			locations.put(member.getObjectId(), new Location(member));
+			locations.put(member.getObjectId(), member.getPosition());
 		}
 	}
 	
@@ -51,19 +49,13 @@ public class PartyMemberPosition extends L2GameServerPacket
 	{
 		writeC(0xba);
 		writeD(locations.size());
-		for (Map.Entry<Integer, Location> entry : locations.entrySet())
+		for (Map.Entry<Integer, PcPosition> entry : locations.entrySet())
 		{
-			Location loc = entry.getValue();
+			PcPosition loc = entry.getValue();
 			writeD(entry.getKey());
 			writeD(loc.getX());
 			writeD(loc.getY());
 			writeD(loc.getZ());
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] ba PartyMemberPosition";
 	}
 }

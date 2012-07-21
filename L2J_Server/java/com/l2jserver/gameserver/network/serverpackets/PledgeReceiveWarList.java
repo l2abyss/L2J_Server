@@ -18,14 +18,12 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
 
 /**
- *
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public class PledgeReceiveWarList extends L2GameServerPacket
 {
-	private static final String _S__FE_3E_PLEDGERECEIVEWARELIST = "[S] FE:3F PledgeReceiveWarList";
-	private L2Clan _clan;
-	private int _tab;
+	private final L2Clan _clan;
+	private final int _tab;
 	
 	public PledgeReceiveWarList(L2Clan clan, int tab)
 	{
@@ -33,9 +31,6 @@ public class PledgeReceiveWarList extends L2GameServerPacket
 		_tab = tab;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -45,24 +40,15 @@ public class PledgeReceiveWarList extends L2GameServerPacket
 		writeD(_tab); // type : 0 = Declared, 1 = Under Attack
 		writeD(0x00); // page
 		writeD(_tab == 0 ? _clan.getWarList().size() : _clan.getAttackerList().size());
-		for(Integer i : _tab == 0 ? _clan.getWarList() : _clan.getAttackerList())
+		for (Integer i : _tab == 0 ? _clan.getWarList() : _clan.getAttackerList())
 		{
 			L2Clan clan = ClanTable.getInstance().getClan(i);
-			if (clan == null) continue;
+			if (clan == null)
+				continue;
 			
 			writeS(clan.getName());
-			writeD(_tab); //??
-			writeD(_tab); //??
+			writeD(_tab); // ??
+			writeD(_tab); // ??
 		}
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_3E_PLEDGERECEIVEWARELIST;
-	}
-	
 }

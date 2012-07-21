@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.taskmanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,13 +61,11 @@ public class AutoAnnounceTaskManager
 			_announces.clear();
 		}
 		
-		Connection conn = null;
 		int count = 0;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet data = s.executeQuery("SELECT * FROM auto_announcements"))
 		{
-			conn = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = conn.prepareStatement("SELECT * FROM auto_announcements");
-			ResultSet data = statement.executeQuery();
 			while (data.next())
 			{
 				int id = data.getInt("id");
@@ -83,27 +82,19 @@ public class AutoAnnounceTaskManager
 					_nextId = id + 1;
 				}
 			}
-			data.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "AutoAnnoucements: Failed to load announcements data.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(conn);
 		}
 		_log.log(Level.INFO, "AutoAnnoucements: Loaded " + count + " Auto Annoucement Data.");
 	}
 	
 	public void addAutoAnnounce(long initial, long delay, int repeat, String memo, boolean isCritical)
 	{
-		Connection conn = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO auto_announcements (id, initial, delay, cycle, memo, isCritical) VALUES (?,?,?,?,?,?)"))
 		{
-			conn = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = conn.prepareStatement("INSERT INTO auto_announcements (id, initial, delay, cycle, memo, isCritical) VALUES (?,?,?,?,?,?)");
 			statement.setInt(1, _nextId);
 			statement.setLong(2, initial);
 			statement.setLong(3, delay);
@@ -112,8 +103,6 @@ public class AutoAnnounceTaskManager
 			statement.setString(6, String.valueOf(isCritical));
 			statement.execute();
 			
-			statement.close();
-			
 			String[] text = memo.split("/n");
 			ThreadPoolManager.getInstance().scheduleGeneral(new AutoAnnouncement(_nextId++, delay, repeat, text, isCritical), initial);
 		}
@@ -121,37 +110,22 @@ public class AutoAnnounceTaskManager
 		{
 			_log.log(Level.SEVERE, "AutoAnnoucements: Failed to add announcements data.", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(conn);
-		}
 	}
 	
 	public void deleteAutoAnnounce(int index)
 	{
-		Connection conn = null;
-		
-		try
+		AutoAnnouncement a = _announces.remove(index);
+		a.stopAnnounce();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM auto_announcements WHERE id = ?"))
 		{
-			AutoAnnouncement a = _announces.get(index);
-			a.stopAnnounce();
-			
-			conn = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = conn.prepareStatement("DELETE FROM auto_announcements WHERE id = ?");
 			statement.setInt(1, a.getId());
 			statement.execute();
 			
-			statement.close();
-			
-			_announces.remove(index);
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "AutoAnnoucements: Failed to delete announcements data.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(conn);
 		}
 	}
 	

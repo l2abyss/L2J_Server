@@ -22,8 +22,7 @@ import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.entity.Fort;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public class ExShowFortressMapInfo extends L2GameServerPacket
 {
@@ -34,23 +33,11 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 		_fortress = fortress;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] FE:7D ExShowFortressMapInfo";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x7d);
+		writeC(0xFE);
+		writeH(0x7D);
 		
 		writeD(_fortress.getFortId());
 		writeD(_fortress.getSiege().getIsInProgress() ? 1 : 0); // fortress siege status
@@ -91,7 +78,7 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 		}
 		else
 		{
-			for (int i = 0; i <_fortress.getFortSize(); i++)
+			for (int i = 0; i < _fortress.getFortSize(); i++)
 			{
 				writeD(0);
 			}
@@ -108,7 +95,10 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 		for (L2Spawn spawn : _fortress.getSiege().getCommanders())
 		{
 			if (spawn.getNpcid() == npcId)
+			{
 				ret = true;
+				break;
+			}
 		}
 		return ret;
 	}

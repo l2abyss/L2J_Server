@@ -26,6 +26,7 @@ import java.security.spec.RSAKeyGenParameterSpec;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,10 +79,11 @@ public final class GameServerTable
 	private void loadGameServerNames()
 	{
 		final File xml = new File(Config.DATAPACK_ROOT, "data/servername.xml");
-		try (InputStream in = new FileInputStream(xml);)
+		try (InputStream in = new FileInputStream(xml);
+			UTF8StreamReader utf8 = new UTF8StreamReader())
 		{
 			final XMLStreamReaderImpl xpp = new XMLStreamReaderImpl();
-			xpp.setInput(new UTF8StreamReader().setInput(in));
+			xpp.setInput(utf8.setInput(in));
 			for (int e = xpp.getEventType(); e != XMLStreamConstants.END_DOCUMENT; e = xpp.next())
 			{
 				if (e == XMLStreamConstants.START_ELEMENT)
@@ -128,28 +130,20 @@ public final class GameServerTable
 	 */
 	private void loadRegisteredGameServers()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement ps = con.createStatement();
+			ResultSet rs = ps.executeQuery("SELECT * FROM gameservers"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("SELECT * FROM gameservers");
-			final ResultSet rset = statement.executeQuery();
 			int id;
-			while (rset.next())
+			while (rs.next())
 			{
-				id = rset.getInt("server_id");
-				_gameServerTable.put(id, new GameServerInfo(id, stringToHex(rset.getString("hexid"))));
+				id = rs.getInt("server_id");
+				_gameServerTable.put(id, new GameServerInfo(id, stringToHex(rs.getString("hexid"))));
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.severe(getClass().getSimpleName() + ": Error loading registered game servers!");
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -243,25 +237,18 @@ public final class GameServerTable
 	 */
 	public void registerServerOnDB(byte[] hexId, int id, String externalHost)
 	{
-		Connection con = null;
-		try
+		register(id, new GameServerInfo(id, hexId));
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO gameservers (hexid,server_id,host) values (?,?,?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("INSERT INTO gameservers (hexid,server_id,host) values (?,?,?)");
-			statement.setString(1, hexToString(hexId));
-			statement.setInt(2, id);
-			statement.setString(3, externalHost);
-			statement.executeUpdate();
-			statement.close();
-			register(id, new GameServerInfo(id, hexId));
+			ps.setString(1, hexToString(hexId));
+			ps.setInt(2, id);
+			ps.setString(3, externalHost);
+			ps.executeUpdate();
 		}
 		catch (Exception e)
 		{
 			_log.severe(getClass().getSimpleName() + ": Error while saving gameserver!");
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

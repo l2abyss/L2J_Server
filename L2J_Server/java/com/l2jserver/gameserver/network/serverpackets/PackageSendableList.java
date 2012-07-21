@@ -19,12 +19,10 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author -Wooden-
- * @author UnAfraid
- * Thanks mrTJO
+ * @author UnAfraid, mrTJO
  */
 public class PackageSendableList extends L2GameServerPacket
 {
-	private static final String _S__D2_PACKAGESENDABLELIST = "[S] D2 PackageSendableList";
 	private final L2ItemInstance[] _items;
 	private final int _playerObjId;
 	
@@ -34,14 +32,12 @@ public class PackageSendableList extends L2GameServerPacket
 		_playerObjId = playerObjId;
 	}
 	
-
 	@Override
 	protected void writeImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 			return;
-		
 		
 		writeC(0xD2);
 		writeD(_playerObjId);
@@ -77,11 +73,5 @@ public class PackageSendableList extends L2GameServerPacket
 			writeH(0x00);
 			writeD(item.getObjectId()); // object id THE REAL ONE
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__D2_PACKAGESENDABLELIST;
 	}
 }

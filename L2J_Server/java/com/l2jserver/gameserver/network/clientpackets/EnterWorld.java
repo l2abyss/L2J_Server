@@ -599,7 +599,7 @@ public class EnterWorld extends L2GameClientPacket
 		
 		if (!activeChar.getPremiumItemList().isEmpty())
 		{
-			activeChar.sendPacket(new ExNotifyPremiumItem());
+			activeChar.sendPacket(ExNotifyPremiumItem.STATIC_PACKET);
 		}
 		
 		for (PlayerSpawnListener listener : listeners)

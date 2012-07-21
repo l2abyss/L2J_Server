@@ -14,29 +14,14 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- * sample
- * <p>
- * 7d
- * c1 b2 e0 4a
- * 00 00 00 00
- * <p>
- *
- * format
- * cdd
- *
- * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public class AskJoinAlly extends L2GameServerPacket
 {
-	private static final String _S__A8_ASKJOINALLY_0XA8 = "[S] bb AskJoinAlly 0xa8";
-	
-	private String _requestorName;
-	private int _requestorObjId;
+	private final String _requestorName;
+	private final int _requestorObjId;
 	
 	/**
-	 * @param requestorObjId 
-	 * @param requestorName 
+	 * @param requestorObjId
+	 * @param requestorName
 	 */
 	public AskJoinAlly(int requestorObjId, String requestorName)
 	{
@@ -50,11 +35,5 @@ public class AskJoinAlly extends L2GameServerPacket
 		writeC(0xbb);
 		writeD(_requestorObjId);
 		writeS(_requestorName);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__A8_ASKJOINALLY_0XA8;
 	}
 }

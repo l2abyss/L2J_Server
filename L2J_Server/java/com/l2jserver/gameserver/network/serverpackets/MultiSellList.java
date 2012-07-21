@@ -20,15 +20,8 @@ import com.l2jserver.gameserver.model.multisell.Entry;
 import com.l2jserver.gameserver.model.multisell.Ingredient;
 import com.l2jserver.gameserver.model.multisell.ListContainer;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
- */
 public final class MultiSellList extends L2GameServerPacket
 {
-	private static final String _S__D0_MULTISELLLIST = "[S] d0 MultiSellList";
-	
 	private int _size, _index;
 	private final ListContainer _list;
 	private final boolean _finished;
@@ -51,11 +44,11 @@ public final class MultiSellList extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xd0);
-		writeD(_list.getListId());    // list id
+		writeD(_list.getListId()); // list id
 		writeD(1 + _index / PAGE_SIZE); // page started from 1
-		writeD(_finished ? 1 : 0);	// finished
-		writeD(PAGE_SIZE);	// size of pages
-		writeD(_size); //list length
+		writeD(_finished ? 1 : 0); // finished
+		writeD(PAGE_SIZE); // size of pages
+		writeD(_size); // list length
 		
 		Entry ent;
 		while (_size-- > 0)
@@ -78,7 +71,7 @@ public final class MultiSellList extends L2GameServerPacket
 			writeH(ent.getProducts().size());
 			writeH(ent.getIngredients().size());
 			
-			for(Ingredient ing: ent.getProducts())
+			for (Ingredient ing : ent.getProducts())
 			{
 				writeD(ing.getItemId());
 				if (ing.getTemplate() != null)
@@ -98,7 +91,7 @@ public final class MultiSellList extends L2GameServerPacket
 					writeD(ing.getItemInfo().getAugmentId()); // augment id
 					writeD(0x00); // mana
 					writeH(ing.getItemInfo().getElementId()); // attack element
-					writeH(ing.getItemInfo().getElementPower()); //element power
+					writeH(ing.getItemInfo().getElementPower()); // element power
 					writeH(ing.getItemInfo().getElementals()[0]); // fire
 					writeH(ing.getItemInfo().getElementals()[1]); // water
 					writeH(ing.getItemInfo().getElementals()[2]); // wind
@@ -112,7 +105,7 @@ public final class MultiSellList extends L2GameServerPacket
 					writeD(0x00); // augment id
 					writeD(0x00); // mana
 					writeH(0x00); // attack element
-					writeH(0x00); //element power
+					writeH(0x00); // element power
 					writeH(0x00); // fire
 					writeH(0x00); // water
 					writeH(0x00); // wind
@@ -122,7 +115,7 @@ public final class MultiSellList extends L2GameServerPacket
 				}
 			}
 			
-			for(Ingredient ing : ent.getIngredients())
+			for (Ingredient ing : ent.getIngredients())
 			{
 				writeD(ing.getItemId());
 				writeH(ing.getTemplate() != null ? ing.getTemplate().getType2() : 65535);
@@ -133,7 +126,7 @@ public final class MultiSellList extends L2GameServerPacket
 					writeD(ing.getItemInfo().getAugmentId()); // augment id
 					writeD(0x00); // mana
 					writeH(ing.getItemInfo().getElementId()); // attack element
-					writeH(ing.getItemInfo().getElementPower()); //element power
+					writeH(ing.getItemInfo().getElementPower()); // element power
 					writeH(ing.getItemInfo().getElementals()[0]); // fire
 					writeH(ing.getItemInfo().getElementals()[1]); // water
 					writeH(ing.getItemInfo().getElementals()[2]); // wind
@@ -147,7 +140,7 @@ public final class MultiSellList extends L2GameServerPacket
 					writeD(0x00); // augment id
 					writeD(0x00); // mana
 					writeH(0x00); // attack element
-					writeH(0x00); //element power
+					writeH(0x00); // element power
 					writeH(0x00); // fire
 					writeH(0x00); // water
 					writeH(0x00); // wind
@@ -157,11 +150,5 @@ public final class MultiSellList extends L2GameServerPacket
 				}
 			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__D0_MULTISELLLIST;
 	}
 }

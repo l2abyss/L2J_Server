@@ -16,22 +16,15 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import javolution.util.FastList;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-/**
- * 0x53 WareHouseDepositList  dh (h dddhh dhhh d)
- *
- * @version $Revision: 1.4.2.1.2.4 $ $Date: 2005/03/27 15:29:39 $
- */
 public final class WareHouseDepositList extends L2GameServerPacket
 {
 	public static final int PRIVATE = 1;
 	public static final int CLAN = 4;
-	public static final int CASTLE = 3; //not sure
+	public static final int CASTLE = 3; // not sure
 	public static final int FREIGHT = 1;
-	private static final String _S__53_WAREHOUSEDEPOSITLIST = "[S] 41 WareHouseDepositList";
 	private final long _playerAdena;
 	private final FastList<L2ItemInstance> _items;
 	private final int _whType;
@@ -54,15 +47,12 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x41);
-		/* 0x01-Private Warehouse
-		 * 0x02-Clan Warehouse
-		 * 0x03-Castle Warehouse
-		 * 0x04-Warehouse */
+		/*
+		 * 0x01-Private Warehouse 0x02-Clan Warehouse 0x03-Castle Warehouse 0x04-Warehouse
+		 */
 		writeH(_whType);
 		writeQ(_playerAdena);
 		final int count = _items.size();
-		if (Config.DEBUG)
-			_log.fine("count:" + count);
 		writeH(count);
 		
 		for (L2ItemInstance item : _items)
@@ -97,11 +87,5 @@ public final class WareHouseDepositList extends L2GameServerPacket
 			writeD(item.getObjectId());
 		}
 		_items.clear();
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__53_WAREHOUSEDEPOSITLIST;
 	}
 }

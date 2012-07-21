@@ -33,7 +33,7 @@ import java.io.IOException;
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,<br>
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-public class BlowfishEngine
+public final class BlowfishEngine
 {
 	private static final int[] KP =
 	{
@@ -1102,7 +1102,6 @@ public class BlowfishEngine
 	private static final int P_SZ = ROUNDS + 2;
 	private final int[] S0, S1, S2, S3; // the s-boxes
 	private final int[] P; // the p-array
-	private boolean encrypting = false;
 	private byte[] workingKey = null;
 	
 	public BlowfishEngine()
@@ -1116,50 +1115,17 @@ public class BlowfishEngine
 	
 	/**
 	 * Initialize a Blowfish cipher.
-	 * @param pEncrypting whether or not we are for encryption.
-	 * @param key the key used to set up the cipher.
-	 * @exception IllegalArgumentException if the params argument is inappropriate.
+	 * @param key the key used to set up the cipher
 	 */
-	public void init(boolean pEncrypting, byte[] key)
+	public void init(byte[] key)
 	{
-		encrypting = pEncrypting;
 		workingKey = key;
 		setKey(workingKey);
-		return;
 	}
 	
 	public String getAlgorithmName()
 	{
 		return "Blowfish";
-	}
-	
-	public final int processBlock(byte[] in, int inOff, byte[] out, int outOff) throws IOException
-	{
-		if (workingKey == null)
-		{
-			throw new IllegalStateException("Blowfish not initialised");
-		}
-		if ((inOff + BLOCK_SIZE) > in.length)
-		{
-			throw new IOException("input buffer too short");
-		}
-		if ((outOff + BLOCK_SIZE) > out.length)
-		{
-			throw new IOException("output buffer too short");
-		}
-		if (encrypting)
-		{
-			encryptBlock(in, inOff, out, outOff);
-		}
-		else
-		{
-			decryptBlock(in, inOff, out, outOff);
-		}
-		return BLOCK_SIZE;
-	}
-	
-	public void reset()
-	{
 	}
 	
 	public int getBlockSize()
@@ -1187,12 +1153,24 @@ public class BlowfishEngine
 		for (int s = 0; s < size; s += 2)
 		{
 			xl ^= P[0];
-			for (int i = 1; i < ROUNDS; i += 2)
-			{
-				xr ^= func(xl) ^ P[i];
-				xl ^= func(xr) ^ P[i + 1];
-			}
-			xr ^= P[ROUNDS + 1];
+			xr ^= func(xl) ^ P[1];
+			xl ^= func(xr) ^ P[2];
+			xr ^= func(xl) ^ P[3];
+			xl ^= func(xr) ^ P[4];
+			xr ^= func(xl) ^ P[5];
+			xl ^= func(xr) ^ P[6];
+			xr ^= func(xl) ^ P[7];
+			xl ^= func(xr) ^ P[8];
+			xr ^= func(xl) ^ P[9];
+			xl ^= func(xr) ^ P[10];
+			xr ^= func(xl) ^ P[11];
+			xl ^= func(xr) ^ P[12];
+			xr ^= func(xl) ^ P[13];
+			xl ^= func(xr) ^ P[14];
+			xr ^= func(xl) ^ P[15];
+			xl ^= func(xr) ^ P[16];
+			xr ^= P[17];
+			
 			table[s] = xr;
 			table[s + 1] = xl;
 			xr = xl; // end of cycle swap
@@ -1250,59 +1228,252 @@ public class BlowfishEngine
 	}
 	
 	/**
-	 * Encrypt the given input starting at the given offset and place the result in the provided buffer starting at the given offset. The input will be an exact multiple of our blocksize.
-	 * @param src
-	 * @param srcIndex
-	 * @param dst
-	 * @param dstIndex
+	 * Method to encrypt the block at the given index.<br>
+	 * The encrypted block goes directly to the source array at the given<br>
+	 * index.
+	 * @param src source array with the plain data
+	 * @param srcIndex index where the block to encrypt is located
+	 * @throws IllegalStateException The cipher was not yet initialized
+	 * @throws IOException The source array is too small to hold a block at the given index
 	 */
-	private void encryptBlock(byte[] src, int srcIndex, byte[] dst, int dstIndex)
+	public void tryEncryptBlock(byte[] src, final int srcIndex) throws IOException
+	{
+		if (workingKey == null)
+		{
+			throw new IllegalStateException("Blowfish not initialised");
+		}
+		if ((srcIndex + BLOCK_SIZE) > src.length)
+		{
+			throw new IOException("input buffer too short");
+		}
+		encryptBlock(src, srcIndex);
+	}
+	
+	/**
+	 * Method to encrypt the block at the given index.<br>
+	 * The encrypted block goes to the destination array at the given index.<br>
+	 * <br>
+	 * @param src source array with the plain data
+	 * @param srcIndex index where the block to encrypt is located
+	 * @param dst destination array the encryption will go to
+	 * @param dstIndex index where the encrypted block is to be stored
+	 * @throws IllegalStateException The cipher was not yet initialized
+	 * @throws IOException The source or destination array is too small to hold a block at the given index
+	 */
+	public void tryEncryptBlock(final byte[] src, final int srcIndex, byte[] dst, final int dstIndex) throws IOException
+	{
+		if (workingKey == null)
+		{
+			throw new IllegalStateException("Blowfish not initialised");
+		}
+		if ((srcIndex + BLOCK_SIZE) > src.length)
+		{
+			throw new IOException("input buffer too short");
+		}
+		if ((dstIndex + BLOCK_SIZE) > dst.length)
+		{
+			throw new IOException("output buffer too short");
+		}
+		encryptBlock(src, srcIndex, dst, dstIndex);
+	}
+	
+	/**
+	 * Method to encrypt the block at the given index.<br>
+	 * The encrypted block goes directly to the source array at the given<br>
+	 * index.<br>
+	 * <br>
+	 * This method does not perform any error checking. This could be<br>
+	 * usefull when code calling this method performs size checks already or<br>
+	 * perfroming steps to ensure nothing can go wrong.<br>
+	 * <br>
+	 * If you want error checking use {@link #tryEncryptBlock(byte[], int)}.
+	 * @param src source array with the plain data
+	 * @param srcIndex index where the block to encrypt is located
+	 */
+	public void encryptBlock(byte[] src, final int srcIndex)
+	{
+		encryptBlock(src, srcIndex, src, srcIndex);
+	}
+	
+	/**
+	 * Method to encrypt the block at the given index.<br>
+	 * The encrypted block goes to the destination array at the given index.<br>
+	 * <br>
+	 * This method does not perform any error checking. This could be<br>
+	 * usefull when code calling this method performs size checks already or<br>
+	 * perfroming steps to ensure nothing can go wrong.<br>
+	 * <br>
+	 * If you want error checking use {@link #tryEncryptBlock(byte[], int, byte[], int)}.
+	 * @param src source array with the plain data
+	 * @param srcIndex index where the block to encrypt is located
+	 * @param dst destination array the encryption will go to
+	 * @param dstIndex index where the encrypted block is to be stored
+	 */
+	public void encryptBlock(final byte[] src, final int srcIndex, byte[] dst, final int dstIndex)
 	{
 		int xl = bytesTo32bits(src, srcIndex);
 		int xr = bytesTo32bits(src, srcIndex + 4);
+		
 		xl ^= P[0];
-		for (int i = 1; i < ROUNDS; i += 2)
-		{
-			xr ^= func(xl) ^ P[i];
-			xl ^= func(xr) ^ P[i + 1];
-		}
-		xr ^= P[ROUNDS + 1];
+		xr ^= func(xl) ^ P[1];
+		xl ^= func(xr) ^ P[2];
+		xr ^= func(xl) ^ P[3];
+		xl ^= func(xr) ^ P[4];
+		xr ^= func(xl) ^ P[5];
+		xl ^= func(xr) ^ P[6];
+		xr ^= func(xl) ^ P[7];
+		xl ^= func(xr) ^ P[8];
+		xr ^= func(xl) ^ P[9];
+		xl ^= func(xr) ^ P[10];
+		xr ^= func(xl) ^ P[11];
+		xl ^= func(xr) ^ P[12];
+		xr ^= func(xl) ^ P[13];
+		xl ^= func(xr) ^ P[14];
+		xr ^= func(xl) ^ P[15];
+		xl ^= func(xr) ^ P[16];
+		xr ^= P[17];
+		
 		bits32ToBytes(xr, dst, dstIndex);
 		bits32ToBytes(xl, dst, dstIndex + 4);
 	}
 	
 	/**
-	 * Decrypt the given input starting at the given offset and place the result in the provided buffer starting at the given offset. The input will be an exact multiple of our blocksize.
-	 * @param src
-	 * @param srcIndex
-	 * @param dst
-	 * @param dstIndex
+	 * Method to decrypt the block at the given index.<br>
+	 * The decrypted block goes directly to the source array at the given<br>
+	 * index.
+	 * @param src source array with the encrypted data
+	 * @param srcIndex index where the block to decrypt is located
+	 * @throws IllegalStateException The cipher was not yet initialized
+	 * @throws IOException The source array is too small to hold a block at the given index
 	 */
-	private void decryptBlock(byte[] src, int srcIndex, byte[] dst, int dstIndex)
+	public void tryDecryptBlock(byte[] src, final int srcIndex) throws IOException
+	{
+		if (workingKey == null)
+		{
+			throw new IllegalStateException("Blowfish not initialised");
+		}
+		if ((srcIndex + BLOCK_SIZE) > src.length)
+		{
+			throw new IOException("input buffer too short");
+		}
+		decryptBlock(src, srcIndex);
+	}
+	
+	/**
+	 * Method to decrypt the block at the given index.<br>
+	 * The decrypted block goes to the destination array at the given index.<br>
+	 * @param src source array with the plain data
+	 * @param srcIndex index where the block to decrypt is located
+	 * @param dst destination array the decryption will go to
+	 * @param dstIndex index where the decrypted block is to be stored
+	 * @throws IllegalStateException The cipher was not yet initialized
+	 * @throws IOException The source or destination array is too small to hold a block at the given index
+	 */
+	public void tryDecryptBlock(final byte[] src, final int srcIndex, byte[] dst, final int dstIndex) throws IOException
+	{
+		if (workingKey == null)
+		{
+			throw new IllegalStateException("Blowfish not initialised");
+		}
+		if ((srcIndex + BLOCK_SIZE) > src.length)
+		{
+			throw new IOException("input buffer too short");
+		}
+		if ((dstIndex + BLOCK_SIZE) > src.length)
+		{
+			throw new IOException("output buffer too short");
+		}
+		decryptBlock(src, srcIndex, dst, dstIndex);
+	}
+	
+	/**
+	 * Method to decrypt the block at the given index.<br>
+	 * The decrypted block goes directly to the source array at the given<br>
+	 * index.<br>
+	 * <br>
+	 * This method does not perform any error checking. This could be<br>
+	 * usefull when code calling this method performs size checks already or<br>
+	 * perfroming steps to ensure nothing can go wrong.<br>
+	 * <br>
+	 * If you want error checking use {@link #tryDecryptBlock(byte[], int)}.
+	 * @param src source array with the encrypted data
+	 * @param srcIndex index where the block to decrypt is located
+	 */
+	public void decryptBlock(byte[] src, final int srcIndex)
+	{
+		decryptBlock(src, srcIndex, src, srcIndex);
+	}
+	
+	/**
+	 * Method to decrypt the block at the given index.<br>
+	 * The decrypted block goes to the destination array at the given index.<br>
+	 * <br>
+	 * This method does not perform any error checking. This could be<br>
+	 * usefull when code calling this method performs size checks already or<br>
+	 * perfroming steps to ensure nothing can go wrong.<br>
+	 * <br>
+	 * If you want error checking use {@link #tryDecryptBlock(byte[], int, byte[], int)}.
+	 * @param src source array with the plain data
+	 * @param srcIndex index where the block to decrypt is located
+	 * @param dst destination array the decryption will go to
+	 * @param dstIndex index where the decrypted block is to be stored
+	 * @throws IllegalStateException The cipher was not yet initialized
+	 */
+	public void decryptBlock(final byte[] src, final int srcIndex, byte[] dst, final int dstIndex)
 	{
 		int xl = bytesTo32bits(src, srcIndex);
 		int xr = bytesTo32bits(src, srcIndex + 4);
-		xl ^= P[ROUNDS + 1];
-		for (int i = ROUNDS; i > 0; i -= 2)
-		{
-			xr ^= func(xl) ^ P[i];
-			xl ^= func(xr) ^ P[i - 1];
-		}
+		
+		xl ^= P[17];
+		xr ^= func(xl) ^ P[16];
+		xl ^= func(xr) ^ P[15];
+		xr ^= func(xl) ^ P[14];
+		xl ^= func(xr) ^ P[13];
+		xr ^= func(xl) ^ P[12];
+		xl ^= func(xr) ^ P[11];
+		xr ^= func(xl) ^ P[10];
+		xl ^= func(xr) ^ P[9];
+		xr ^= func(xl) ^ P[8];
+		xl ^= func(xr) ^ P[7];
+		xr ^= func(xl) ^ P[6];
+		xl ^= func(xr) ^ P[5];
+		xr ^= func(xl) ^ P[4];
+		xl ^= func(xr) ^ P[3];
+		xr ^= func(xl) ^ P[2];
+		xl ^= func(xr) ^ P[1];
 		xr ^= P[0];
+		
 		bits32ToBytes(xr, dst, dstIndex);
 		bits32ToBytes(xl, dst, dstIndex + 4);
 	}
 	
-	private int bytesTo32bits(byte[] b, int i)
+	/**
+	 * Method to construct an int from the source array.<br>
+	 * 4 bytes are used from the given index.<br>
+	 * <br>
+	 * This method does not do any error checking.
+	 * @param src source array with the bytes
+	 * @param srcIndex the index to extract the int from
+	 * @return the extracted integer
+	 */
+	private int bytesTo32bits(byte[] src, int srcIndex)
 	{
-		return ((b[i + 3] & 0xff) << 24) | ((b[i + 2] & 0xff) << 16) | ((b[i + 1] & 0xff) << 8) | ((b[i] & 0xff));
+		return ((src[srcIndex + 3] & 0xff) << 24) | ((src[srcIndex + 2] & 0xff) << 16) | ((src[srcIndex + 1] & 0xff) << 8) | ((src[srcIndex] & 0xff));
 	}
 	
-	private void bits32ToBytes(int in, byte[] b, int offset)
+	/**
+	 * Method to decompose an int into a byte array.<br>
+	 * <br>
+	 * This method does not do any error checking.
+	 * @param in the integer to decompose into bytes
+	 * @param dst the destination array the decomposed int goes to
+	 * @param dstIndex the index in the destination array the decomposed int will be stored at
+	 */
+	private void bits32ToBytes(int in, byte[] dst, int dstIndex)
 	{
-		b[offset] = (byte) in;
-		b[offset + 1] = (byte) (in >> 8);
-		b[offset + 2] = (byte) (in >> 16);
-		b[offset + 3] = (byte) (in >> 24);
+		dst[dstIndex] = (byte) in;
+		dst[dstIndex + 1] = (byte) (in >> 8);
+		dst[dstIndex + 2] = (byte) (in >> 16);
+		dst[dstIndex + 3] = (byte) (in >> 24);
 	}
 }

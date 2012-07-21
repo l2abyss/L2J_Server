@@ -27,42 +27,29 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Support for "Chat with Friends" dialog.
- *
+ * Support for "Chat with Friends" dialog. <br />
  * This packet is sent only at login.
- *
- * Format: (c) d[dSdddd]
- * d: Total Friend Count
- *
- * d: Friend ID
- * S: Friend Name
- * d: Online/Offline
- * d: Player Object Id (0 if offline)
- * d: Player Class Id
- * d: Player Level
- *
- * @author mrTJO & UnAfraid
+ * @author mrTJO, UnAfraid
  */
 public class FriendListExtended extends L2GameServerPacket
 {
-	private static final String _S__FA_FRIENDLISTEXTENDED = "[S] 75 FriendListExtended";
 	private final List<FriendInfo> _info;
 	
 	private static class FriendInfo
 	{
-		int objId;
-		String name;
-		boolean online;
-		int classid;
-		int level;
+		int _objId;
+		String _name;
+		boolean _online;
+		int _classid;
+		int _level;
 		
 		public FriendInfo(int objId, String name, boolean online, int classid, int level)
 		{
-			this.objId = objId;
-			this.name = name;
-			this.online = online;
-			this.classid = classid;
-			this.level = level;
+			_objId = objId;
+			_name = name;
+			_online = online;
+			_classid = classid;
+			_level = level;
 		}
 	}
 	
@@ -80,29 +67,22 @@ public class FriendListExtended extends L2GameServerPacket
 			
 			if (player1 == null)
 			{
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement statement = con.prepareStatement("SELECT char_name, online, classid, level FROM characters WHERE charId = ?"))
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement("SELECT char_name, online, classid, level FROM characters WHERE charId = ?");
 					statement.setInt(1, objId);
-					ResultSet rset = statement.executeQuery();
-					if (rset.next())
+					try (ResultSet rset = statement.executeQuery())
 					{
-						_info.add(new FriendInfo(objId, rset.getString(1), rset.getInt(2) == 1, rset.getInt(3), rset.getInt(4)));
+						if (rset.next())
+						{
+							_info.add(new FriendInfo(objId, rset.getString(1), rset.getInt(2) == 1, rset.getInt(3), rset.getInt(4)));
+						}
 					}
-					else
-						continue;
 				}
 				catch (Exception e)
 				{
 					// Who cares?
 				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
-				}
-				
 				continue;
 			}
 			
@@ -123,18 +103,12 @@ public class FriendListExtended extends L2GameServerPacket
 		writeD(_info.size());
 		for (FriendInfo info : _info)
 		{
-			writeD(info.objId); // character id
-			writeS(info.name);
-			writeD(info.online ? 0x01 : 0x00); // online
-			writeD(info.online ? info.objId : 0x00); // object id if online
-			writeD(info.classid);
-			writeD(info.level);
+			writeD(info._objId); // character id
+			writeS(info._name);
+			writeD(info._online ? 0x01 : 0x00); // online
+			writeD(info._online ? info._objId : 0x00); // object id if online
+			writeD(info._classid);
+			writeD(info._level);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FA_FRIENDLISTEXTENDED;
 	}
 }

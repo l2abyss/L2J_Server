@@ -19,12 +19,8 @@ import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
 
-/**
- * Example: dddddddddddddddddddd
- */
 public final class NewCharacterSuccess extends L2GameServerPacket
 {
-	private static final String _S__0D_NEWCHARACTERSUCCESS = "[S] 0D NewCharacterSuccess";
 	private final List<L2PcTemplate> _chars = new ArrayList<>();
 	
 	public void addChar(L2PcTemplate template)
@@ -45,6 +41,7 @@ public final class NewCharacterSuccess extends L2GameServerPacket
 				continue;
 			}
 			
+			// TODO: Unhardcode these
 			writeD(chr.getRace().ordinal());
 			writeD(chr.getClassId().getId());
 			writeD(0x46);
@@ -66,11 +63,5 @@ public final class NewCharacterSuccess extends L2GameServerPacket
 			writeD(chr.getBaseMEN());
 			writeD(0x0A);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__0D_NEWCHARACTERSUCCESS;
 	}
 }

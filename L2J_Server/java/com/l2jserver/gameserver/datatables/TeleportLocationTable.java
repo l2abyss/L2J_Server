@@ -17,8 +17,8 @@ package com.l2jserver.gameserver.datatables;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,79 +50,62 @@ public class TeleportLocationTable
 	public void reloadAll()
 	{
 		_teleports = new TIntObjectHashMap<>();
-		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM teleport"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM teleport");
-			ResultSet rset = statement.executeQuery();
 			L2TeleportLocation teleport;
-			
-			while (rset.next())
+			while (rs.next())
 			{
 				teleport = new L2TeleportLocation();
 				
-				teleport.setTeleId(rset.getInt("id"));
-				teleport.setLocX(rset.getInt("loc_x"));
-				teleport.setLocY(rset.getInt("loc_y"));
-				teleport.setLocZ(rset.getInt("loc_z"));
-				teleport.setPrice(rset.getInt("price"));
-				teleport.setIsForNoble(rset.getInt("fornoble") == 1);
-				teleport.setItemId(rset.getInt("itemId"));
+				teleport.setTeleId(rs.getInt("id"));
+				teleport.setLocX(rs.getInt("loc_x"));
+				teleport.setLocY(rs.getInt("loc_y"));
+				teleport.setLocZ(rs.getInt("loc_z"));
+				teleport.setPrice(rs.getInt("price"));
+				teleport.setIsForNoble(rs.getInt("fornoble") == 1);
+				teleport.setItemId(rs.getInt("itemId"));
 				
 				_teleports.put(teleport.getTeleId(), teleport);
 			}
-			
-			rset.close();
-			statement.close();
-			
 			_log.info("TeleportLocationTable: Loaded " + _teleports.size() + " Teleport Location Templates.");
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error loading Teleport Table.", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		
 		if (Config.CUSTOM_TELEPORT_TABLE)
 		{
-			try
+			int _cTeleCount = _teleports.size();
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				Statement s = con.createStatement();
+				ResultSet rs = s.executeQuery("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM custom_teleport"))
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM custom_teleport");
-				ResultSet rset = statement.executeQuery();
 				L2TeleportLocation teleport;
-				int _cTeleCount = _teleports.size();
-				while (rset.next())
+				while (rs.next())
 				{
 					teleport = new L2TeleportLocation();
-					teleport.setTeleId(rset.getInt("id"));
-					teleport.setLocX(rset.getInt("loc_x"));
-					teleport.setLocY(rset.getInt("loc_y"));
-					teleport.setLocZ(rset.getInt("loc_z"));
-					teleport.setPrice(rset.getInt("price"));
-					teleport.setIsForNoble(rset.getInt("fornoble") == 1);
-					teleport.setItemId(rset.getInt("itemId"));
+					teleport.setTeleId(rs.getInt("id"));
+					teleport.setLocX(rs.getInt("loc_x"));
+					teleport.setLocY(rs.getInt("loc_y"));
+					teleport.setLocZ(rs.getInt("loc_z"));
+					teleport.setPrice(rs.getInt("price"));
+					teleport.setIsForNoble(rs.getInt("fornoble") == 1);
+					teleport.setItemId(rs.getInt("itemId"));
 					
 					_teleports.put(teleport.getTeleId(), teleport);
 				}
-				rset.close();
-				statement.close();
 				_cTeleCount = _teleports.size() - _cTeleCount;
 				if (_cTeleCount > 0)
+				{
 					_log.info("TeleportLocationTable: Loaded " + _cTeleCount + " Custom Teleport Location Templates.");
+				}
 			}
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Error while creating custom teleport table " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}

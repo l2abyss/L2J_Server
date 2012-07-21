@@ -18,9 +18,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 
 /**
- * 
- *
- * @author  KenM
+ * @author KenM
  */
 public class StaticObject extends L2GameServerPacket
 {
@@ -81,12 +79,5 @@ public class StaticObject extends L2GameServerPacket
 		writeD(_maxHp);
 		writeD(_showHp ? 1 : 0);
 		writeD(_damageGrade);
-	}
-	
-	
-	@Override
-	public String getType()
-	{
-		return "[S] 9f StaticObject";
 	}
 }

@@ -73,14 +73,10 @@ public class RaidBossSpawnManager
 		_storedInfo = new FastMap<>();
 		_spawns = new FastMap<>();
 		
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM raidboss_spawnlist ORDER BY boss_id");
-			ResultSet rset = statement.executeQuery();
-			
+			ResultSet rset = statement.executeQuery())
+		{
 			L2Spawn spawnDat;
 			L2NpcTemplate template;
 			long respawnTime;
@@ -109,9 +105,6 @@ public class RaidBossSpawnManager
 			
 			_log.info("RaidBossSpawnManager: Loaded " + _bosses.size() + " Instances");
 			_log.info("RaidBossSpawnManager: Scheduled " + _schedules.size() + " Instances");
-			
-			rset.close();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -120,10 +113,6 @@ public class RaidBossSpawnManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error while initializing RaidBossSpawnManager: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -266,11 +255,9 @@ public class RaidBossSpawnManager
 		
 		if (storeInDb)
 		{
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement("INSERT INTO raidboss_spawnlist (boss_id,amount,loc_x,loc_y,loc_z,heading,respawn_time,currentHp,currentMp) VALUES(?,?,?,?,?,?,?,?,?)"))
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("INSERT INTO raidboss_spawnlist (boss_id,amount,loc_x,loc_y,loc_z,heading,respawn_time,currentHp,currentMp) VALUES(?,?,?,?,?,?,?,?,?)");
 				statement.setInt(1, spawnDat.getNpcid());
 				statement.setInt(2, spawnDat.getAmount());
 				statement.setInt(3, spawnDat.getLocx());
@@ -281,16 +268,11 @@ public class RaidBossSpawnManager
 				statement.setDouble(8, currentHP);
 				statement.setDouble(9, currentMP);
 				statement.execute();
-				statement.close();
 			}
 			catch (Exception e)
 			{
 				// problem with storing spawn
 				_log.log(Level.WARNING, "RaidBossSpawnManager: Could not store raidboss #" + bossId + " in the DB:" + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 	}
@@ -299,10 +281,11 @@ public class RaidBossSpawnManager
 	{
 		if (spawnDat == null)
 			return;
-		if (!_spawns.containsKey(spawnDat.getNpcid()))
-			return;
 		
 		int bossId = spawnDat.getNpcid();
+		
+		if (!_spawns.containsKey(bossId))
+			return;
 		
 		SpawnTable.getInstance().deleteSpawn(spawnDat, false);
 		_spawns.remove(bossId);
@@ -322,35 +305,25 @@ public class RaidBossSpawnManager
 		
 		if (updateDb)
 		{
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement("DELETE FROM raidboss_spawnlist WHERE boss_id=?"))
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("DELETE FROM raidboss_spawnlist WHERE boss_id=?");
 				statement.setInt(1, bossId);
 				statement.execute();
-				statement.close();
 			}
 			catch (Exception e)
 			{
 				// problem with deleting spawn
 				_log.log(Level.WARNING, "RaidBossSpawnManager: Could not remove raidboss #" + bossId + " from DB: " + e.getMessage(), e);
 			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
-			}
 		}
 	}
 	
 	private void updateDb()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE raidboss_spawnlist SET respawn_time = ?, currentHP = ?, currentMP = ? WHERE boss_id = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE raidboss_spawnlist SET respawn_time = ?, currentHP = ?, currentMP = ? WHERE boss_id = ?");
-			
 			for (Integer bossId : _storedInfo.keySet())
 			{
 				if (bossId == null)
@@ -383,15 +356,10 @@ public class RaidBossSpawnManager
 					_log.log(Level.WARNING, "RaidBossSpawnManager: Couldnt update raidboss_spawnlist table " + e.getMessage(), e);
 				}
 			}
-			statement.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "SQL error while updating RaidBoss spawn to database: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

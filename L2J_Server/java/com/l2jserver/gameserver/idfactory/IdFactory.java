@@ -158,23 +158,15 @@ public abstract class IdFactory
 	 */
 	private void setAllCharacterOffline()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			Statement statement = con.createStatement();
-			statement.executeUpdate("UPDATE characters SET online = 0");
-			statement.close();
-			
+			s.executeUpdate("UPDATE characters SET online = 0");
 			_log.info("Updated characters online status.");
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not update characters online status: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -183,14 +175,11 @@ public abstract class IdFactory
 	 */
 	private void cleanUpDB()
 	{
-		Connection con = null;
-		Statement stmt = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement stmt = con.createStatement())
 		{
 			long cleanupStart = System.currentTimeMillis();
 			int cleanCount = 0;
-			con = L2DatabaseFactory.getInstance().getConnection();
-			stmt = con.createStatement();
 			// Misc/Account Related
 			// Please read the descriptions above each before uncommenting them. If you are still
 			// unsure of what exactly it does, leave it commented out. This is for those who know
@@ -289,65 +278,45 @@ public abstract class IdFactory
 			stmt.executeUpdate("UPDATE fort SET owner=0 WHERE owner NOT IN (SELECT clan_id FROM clan_data);");
 			
 			_log.info("Cleaned " + cleanCount + " elements from database in " + ((System.currentTimeMillis() - cleanupStart) / 1000) + " s");
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not clean up database: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void cleanInvalidWeddings()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			Statement statement = con.createStatement();
-			statement.executeUpdate("DELETE FROM mods_wedding WHERE player1Id NOT IN (SELECT charId FROM characters)");
-			statement.executeUpdate("DELETE FROM mods_wedding WHERE player2Id NOT IN (SELECT charId FROM characters)");
-			statement.close();
-			
+			s.executeUpdate("DELETE FROM mods_wedding WHERE player1Id NOT IN (SELECT charId FROM characters)");
+			s.executeUpdate("DELETE FROM mods_wedding WHERE player2Id NOT IN (SELECT charId FROM characters)");
 			_log.info("Cleaned up invalid Weddings.");
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not clean up invalid Weddings: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void cleanUpTimeStamps()
 	{
-		Connection con = null;
-		PreparedStatement stmt = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			int cleanCount = 0;
-			con = L2DatabaseFactory.getInstance().getConnection();
 			for (String line : TIMESTAMPS_CLEAN)
 			{
-				stmt = con.prepareStatement(line);
-				stmt.setLong(1, System.currentTimeMillis());
-				cleanCount += stmt.executeUpdate();
-				stmt.close();
+				try (PreparedStatement stmt = con.prepareStatement(line))
+				{
+					stmt.setLong(1, System.currentTimeMillis());
+					cleanCount += stmt.executeUpdate();
+				}
 			}
-			
 			_log.info("Cleaned " + cleanCount + " expired timestamps from database.");
 		}
 		catch (SQLException e)
 		{
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -358,12 +327,8 @@ public abstract class IdFactory
 	 */
 	protected final int[] extractUsedObjectIDTable() throws Exception
 	{
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			Statement statement = null;
 			ResultSet rset = null;
 			
@@ -373,55 +338,66 @@ public abstract class IdFactory
 			rset = statement.executeQuery("SELECT COUNT(*) FROM characters");
 			rset.next();
 			temp.ensureCapacity(rset.getInt(1));
+			rset.close();
+			
 			rset = statement.executeQuery("SELECT charId FROM characters");
 			while (rset.next())
 			{
 				temp.add(rset.getInt(1));
 			}
+			rset.close();
 			
 			rset = statement.executeQuery("SELECT COUNT(*) FROM items");
 			rset.next();
 			temp.ensureCapacity(temp.size() + rset.getInt(1));
+			rset.close();
+			
 			rset = statement.executeQuery("SELECT object_id FROM items");
 			while (rset.next())
 			{
 				temp.add(rset.getInt(1));
 			}
+			rset.close();
 			
 			rset = statement.executeQuery("SELECT COUNT(*) FROM clan_data");
 			rset.next();
 			temp.ensureCapacity(temp.size() + rset.getInt(1));
+			rset.close();
+			
 			rset = statement.executeQuery("SELECT clan_id FROM clan_data");
 			while (rset.next())
 			{
 				temp.add(rset.getInt(1));
 			}
+			rset.close();
 			
 			rset = statement.executeQuery("SELECT COUNT(*) FROM itemsonground");
 			rset.next();
 			temp.ensureCapacity(temp.size() + rset.getInt(1));
+			rset.close();
+			
 			rset = statement.executeQuery("SELECT object_id FROM itemsonground");
 			while (rset.next())
 			{
 				temp.add(rset.getInt(1));
 			}
+			rset.close();
 			
 			rset = statement.executeQuery("SELECT COUNT(*) FROM messages");
 			rset.next();
 			temp.ensureCapacity(temp.size() + rset.getInt(1));
+			rset.close();
+			
 			rset = statement.executeQuery("SELECT messageId FROM messages");
 			while (rset.next())
 			{
 				temp.add(rset.getInt(1));
 			}
+			rset.close();
+			statement.close();
 			
 			temp.sort();
-			
 			return temp.toArray();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

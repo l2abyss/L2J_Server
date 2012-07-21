@@ -14,18 +14,13 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- * format   dddddd
- *
- */
 public class Earthquake extends L2GameServerPacket
 {
-	private static final String _S__C4_EARTHQUAKE = "[S] d3 Earthquake";
-	private int _x;
-	private int _y;
-	private int _z;
-	private int _intensity;
-	private int _duration;
+	private final int _x;
+	private final int _y;
+	private final int _z;
+	private final int _intensity;
+	private final int _duration;
 	
 	/**
 	 * @param x
@@ -46,18 +41,12 @@ public class Earthquake extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xd3);
+		writeC(0xD3);
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
 		writeD(_intensity);
 		writeD(_duration);
-		writeD(0x00);       // Unknown
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__C4_EARTHQUAKE;
+		writeD(0x00); // Unknown
 	}
 }

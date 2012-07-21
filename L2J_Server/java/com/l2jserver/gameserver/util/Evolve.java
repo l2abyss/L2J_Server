@@ -256,21 +256,14 @@ public final class Evolve
 		}
 		
 		// pet control item no longer exists, delete the pet from the db
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?");
-			statement.setInt(1, removedItem.getObjectId());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, removedItem.getObjectId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return true;
 	}

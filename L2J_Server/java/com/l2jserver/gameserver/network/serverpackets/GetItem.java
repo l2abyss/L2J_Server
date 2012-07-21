@@ -16,19 +16,10 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-/**
- * sample
- * 0000: 17  1a 95 20 48  9b da 12 40  44 17 02 00  03 f0 fc ff  98 f1 ff ff                                     .....
- *
- * format  ddddd
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public final class GetItem extends L2GameServerPacket
 {
-	private static final String _S__17_GETITEM = "[S] 17 GetItem";
-	private L2ItemInstance _item;
-	private int _playerId;
+	private final L2ItemInstance _item;
+	private final int _playerId;
 	
 	public GetItem(L2ItemInstance item, int playerId)
 	{
@@ -46,11 +37,5 @@ public final class GetItem extends L2GameServerPacket
 		writeD(_item.getX());
 		writeD(_item.getY());
 		writeD(_item.getZ());
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__17_GETITEM;
 	}
 }

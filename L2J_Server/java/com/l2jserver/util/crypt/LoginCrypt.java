@@ -43,21 +43,52 @@ public class LoginCrypt
 		(byte) 0x6c
 	};
 	
-	private final NewCrypt _staticCrypt = new NewCrypt(STATIC_BLOWFISH_KEY);
-	private NewCrypt _crypt;
+	private static final NewCrypt _STATIC_CRYPT = new NewCrypt(STATIC_BLOWFISH_KEY);
+	private NewCrypt _crypt = null;
 	private boolean _static = true;
 	
+	/**
+	 * Method to initialize the the blowfish cipher with dynamic key.
+	 * @param key the blowfish key to initialize the dynamic blowish cipher with
+	 */
 	public void setKey(byte[] key)
 	{
 		_crypt = new NewCrypt(key);
 	}
 	
+	/**
+	 * Method to decrypt an incomming login client packet.<br>
+	 * @param raw array with encrypted data
+	 * @param offset offset where the encrypted data is located
+	 * @param size number of bytes of encrypted data
+	 * @return true when checksum could be verified, false otherwise
+	 * @throws IOException the size is not multiple of blowfishs block size or the raw array can't hold size bytes starting at offset due to it's size
+	 */
 	public boolean decrypt(byte[] raw, final int offset, final int size) throws IOException
 	{
+		if ((size % 8) != 0)
+		{
+			throw new IOException("size have to be multiple of 8");
+		}
+		if ((offset + size) > raw.length)
+		{
+			throw new IOException("raw array too short for size starting from offset");
+		}
+		
 		_crypt.decrypt(raw, offset, size);
 		return NewCrypt.verifyChecksum(raw, offset, size);
 	}
 	
+	/**
+	 * Method to encrypt an outgoing packet to login client.<br>
+	 * <br>
+	 * Performs padding and resizing of data array.<br>
+	 * @param raw array with plain data
+	 * @param offset offset where the plain data is located
+	 * @param size number of bytes of plain data
+	 * @return the new array size
+	 * @throws IOException packet is too long to make padding and add verification data
+	 */
 	public int encrypt(byte[] raw, final int offset, int size) throws IOException
 	{
 		// reserve checksum
@@ -70,15 +101,22 @@ public class LoginCrypt
 			
 			// padding
 			size += 8 - (size % 8);
+			if ((offset + size) > raw.length)
+			{
+				throw new IOException("packet too long");
+			}
 			NewCrypt.encXORPass(raw, offset, size, Rnd.nextInt());
-			_staticCrypt.crypt(raw, offset, size);
-			
+			_STATIC_CRYPT.crypt(raw, offset, size);
 			_static = false;
 		}
 		else
 		{
 			// padding
 			size += 8 - (size % 8);
+			if ((offset + size) > raw.length)
+			{
+				throw new IOException("packet too long");
+			}
 			NewCrypt.appendChecksum(raw, offset, size);
 			_crypt.crypt(raw, offset, size);
 		}

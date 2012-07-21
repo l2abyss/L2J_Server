@@ -60,6 +60,10 @@ public final class ItemAuction
 	private ItemAuctionBid _highestBid;
 	private int _lastBidPlayerObjId;
 	
+	// SQL
+	private static final String DELETE_ITEM_AUCTION_BID = "DELETE FROM item_auction_bid WHERE auctionId = ? AND playerObjId = ?";
+	private static final String INSERT_ITEM_AUCTION_BID = "INSERT INTO item_auction_bid (auctionId, playerObjId, playerBid) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE playerBid = ?";
+	
 	public ItemAuction(final int auctionId, final int instanceId, final long startingTime, final long endingTime, final AuctionItem auctionItem)
 	{
 		this(auctionId, instanceId, startingTime, endingTime, auctionItem, new ArrayList<ItemAuctionBid>(), ItemAuctionState.CREATED);
@@ -181,11 +185,9 @@ public final class ItemAuction
 	
 	public final void storeMe()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO item_auction (auctionId,instanceId,auctionItemId,startingTime,endingTime,auctionStateId) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE auctionStateId=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO item_auction (auctionId,instanceId,auctionItemId,startingTime,endingTime,auctionStateId) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE auctionStateId=?");
 			statement.setInt(1, _auctionId);
 			statement.setInt(2, _instanceId);
 			statement.setInt(3, _auctionItem.getAuctionItemId());
@@ -194,15 +196,10 @@ public final class ItemAuction
 			statement.setByte(6, _auctionState.getStateId());
 			statement.setByte(7, _auctionState.getStateId());
 			statement.execute();
-			statement.close();
 		}
 		catch (final SQLException e)
 		{
 			_log.log(Level.WARNING, "", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -221,36 +218,22 @@ public final class ItemAuction
 	
 	final void updatePlayerBidInternal(final ItemAuctionBid bid, final boolean delete)
 	{
-		Connection con = null;
-		try
+		final String query = delete ? DELETE_ITEM_AUCTION_BID : INSERT_ITEM_AUCTION_BID;
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(query))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement;
-			
-			if (delete)
+			ps.setInt(1, _auctionId);
+			ps.setInt(2, bid.getPlayerObjId());
+			if (!delete)
 			{
-				statement = con.prepareStatement("DELETE FROM item_auction_bid WHERE auctionId=? AND playerObjId=?");
-				statement.setInt(1, _auctionId);
-				statement.setInt(2, bid.getPlayerObjId());
+				ps.setLong(3, bid.getLastBid());
+				ps.setLong(4, bid.getLastBid());
 			}
-			else
-			{
-				statement = con.prepareStatement("INSERT INTO item_auction_bid (auctionId,playerObjId,playerBid) VALUES (?,?,?) ON DUPLICATE KEY UPDATE playerBid=?");
-				statement.setInt(1, _auctionId);
-				statement.setInt(2, bid.getPlayerObjId());
-				statement.setLong(3, bid.getLastBid());
-				statement.setLong(4, bid.getLastBid());
-			}
-			statement.execute();
-			statement.close();
+			ps.execute();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

@@ -27,7 +27,6 @@ import java.util.regex.PatternSyntaxException;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 
-
 public class PetNameTable
 {
 	private static Logger _log = Logger.getLogger(PetNameTable.class.getName());
@@ -40,14 +39,10 @@ public class PetNameTable
 	public boolean doesPetNameExist(String name, int petNpcId)
 	{
 		boolean result = true;
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT name FROM pets p, items i WHERE p.item_obj_id = i.object_id AND name=? AND i.item_id IN (?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT name FROM pets p, items i WHERE p.item_obj_id = i.object_id AND name=? AND i.item_id IN (?)");
-			statement.setString(1, name);
-			
+			ps.setString(1, name);
 			StringBuilder cond = new StringBuilder();
 			for (int it : PetDataTable.getPetItemsByNpc(petNpcId))
 			{
@@ -55,19 +50,15 @@ public class PetNameTable
 					cond.append(", ");
 				cond.append(it);
 			}
-			statement.setString(2, cond.toString());
-			ResultSet rset = statement.executeQuery();
-			result = rset.next();
-			rset.close();
-			statement.close();
+			ps.setString(2, cond.toString());
+			try (ResultSet rs = ps.executeQuery())
+			{
+				result = rs.next();
+			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Could not check existing petname:" + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return result;
 	}

@@ -61,37 +61,28 @@ public class L2ContactList
 	{
 		_contacts.clear();
 		
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(QUERY_LOAD))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(QUERY_LOAD);
 			statement.setInt(1, activeChar.getObjectId());
-			ResultSet rset = statement.executeQuery();
-			
-			int contactId;
-			String contactName;
-			while (rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				contactId = rset.getInt(1);
-				contactName = CharNameTable.getInstance().getNameById(contactId);
-				if (contactName == null || contactName.equals(activeChar.getName()) || contactId == activeChar.getObjectId())
-					continue;
-				
-				_contacts.add(contactName);
+				int contactId;
+				String contactName;
+				while (rset.next())
+				{
+					contactId = rset.getInt(1);
+					contactName = CharNameTable.getInstance().getNameById(contactId);
+					if (contactName == null || contactName.equals(activeChar.getName()) || contactId == activeChar.getObjectId())
+						continue;
+					
+					_contacts.add(contactName);
+				}
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error found in " + activeChar.getName() + "'s ContactsList: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -134,15 +125,12 @@ public class L2ContactList
 			}
 		}
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(QUERY_ADD))
 		{	
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(QUERY_ADD);
 			statement.setInt(1, activeChar.getObjectId());
 			statement.setInt(2, contactId);
 			statement.execute();
-			statement.close();
 			
 			_contacts.add(name);
 			
@@ -153,10 +141,6 @@ public class L2ContactList
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error found in " + activeChar.getName() + "'s ContactsList: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return true;
 	}
@@ -179,15 +163,13 @@ public class L2ContactList
 		
 		_contacts.remove(name);
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(QUERY_REMOVE))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(QUERY_REMOVE);
 			statement.setInt(1, activeChar.getObjectId());
 			statement.setInt(2, contactId);
 			statement.execute();
-			statement.close();
+			
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_SUCCESFULLY_DELETED_FROM_CONTACT_LIST);
 			sm.addString(name);
 			activeChar.sendPacket(sm);
@@ -195,10 +177,6 @@ public class L2ContactList
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error found in " + activeChar.getName() + "'s ContactsList: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

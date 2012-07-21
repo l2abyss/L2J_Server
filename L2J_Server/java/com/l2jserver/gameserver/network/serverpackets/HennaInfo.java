@@ -21,12 +21,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Henna;
 
 /**
+ * This server packet sends the player's henna information.
  * @author Zoey76
  */
 public final class HennaInfo extends L2GameServerPacket
 {
-	private static final String _S__E5_HENNAINFO = "[S] E5 HennaInfo";
-	
 	private final L2PcInstance _activeChar;
 	private final List<L2Henna> _hennas = new ArrayList<>();
 	
@@ -52,18 +51,12 @@ public final class HennaInfo extends L2GameServerPacket
 		writeC(_activeChar.getHennaStatMEN()); // equip MEN
 		writeC(_activeChar.getHennaStatDEX()); // equip DEX
 		writeC(_activeChar.getHennaStatWIT()); // equip WIT
-		writeD(3); // Slots 
+		writeD(3); // Slots
 		writeD(_hennas.size()); // Size
 		for (L2Henna henna : _hennas)
 		{
 			writeD(henna.getDyeId());
 			writeD(0x01);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__E5_HENNAINFO;
 	}
 }

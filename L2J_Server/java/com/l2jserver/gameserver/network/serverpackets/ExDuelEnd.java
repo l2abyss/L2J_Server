@@ -15,13 +15,11 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: ch d
- * @author  KenM
+ * @author KenM
  */
 public class ExDuelEnd extends L2GameServerPacket
 {
-	private static final String _S__FE_4E_EXDUELEND = "[S] FE:4f ExDuelEnd";
-	private int _unk1;
+	private final int _unk1;
 	
 	public ExDuelEnd(int unk1)
 	{
@@ -36,14 +34,4 @@ public class ExDuelEnd extends L2GameServerPacket
 		
 		writeD(_unk1);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_4E_EXDUELEND;
-	}
-	
 }

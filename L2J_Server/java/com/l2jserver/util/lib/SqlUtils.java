@@ -35,34 +35,25 @@ public class SqlUtils
 	{
 		String query = "";
 		Integer res = null;
-		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[]
 			{
 				resultField
 			}, tableName, whereClause, true);
 			
-			PreparedStatement statement = con.prepareStatement(query);
-			ResultSet rset = statement.executeQuery();
-			
-			if (rset.next())
+			try (PreparedStatement ps = con.prepareStatement(query);
+				ResultSet rs = ps.executeQuery())
 			{
-				res = rset.getInt(1);
+				if (rs.next())
+				{
+					res = rs.getInt(1);
+				}
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error in query '" + query + "':", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return res;
 	}
@@ -71,49 +62,42 @@ public class SqlUtils
 	{
 		String query = "";
 		Integer[] res = null;
-		
-		Connection con = null;
 		try
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(new String[]
 			{
 				resultField
 			}, tableName, whereClause, false);
-			PreparedStatement statement = con.prepareStatement(query);
-			ResultSet rset = statement.executeQuery();
 			
-			int rows = 0;
-			
-			while (rset.next())
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement(query);
+				ResultSet rs = ps.executeQuery())
 			{
-				rows++;
+				int rows = 0;
+				while (rs.next())
+				{
+					rows++;
+				}
+				
+				if (rows == 0)
+				{
+					return new Integer[0];
+				}
+				
+				res = new Integer[rows - 1];
+				
+				rs.first();
+				
+				int row = 0;
+				while (rs.next())
+				{
+					res[row] = rs.getInt(1);
+				}
 			}
-			
-			if (rows == 0)
-			{
-				return new Integer[0];
-			}
-			
-			res = new Integer[rows - 1];
-			
-			rset.first();
-			
-			int row = 0;
-			while (rset.next())
-			{
-				res[row] = rset.getInt(1);
-			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "mSGI: Error in query '" + query + "':", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return res;
 	}
@@ -123,46 +107,38 @@ public class SqlUtils
 		long start = System.currentTimeMillis();
 		String query = "";
 		Integer res[][] = null;
-		
-		Connection con = null;
 		try
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			query = L2DatabaseFactory.getInstance().prepQuerySelect(resultFields, usedTables, whereClause, false);
-			PreparedStatement statement = con.prepareStatement(query);
-			ResultSet rset = statement.executeQuery();
-			
-			int rows = 0;
-			while (rset.next())
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement(query);
+				ResultSet rs = ps.executeQuery())
 			{
-				rows++;
-			}
-			
-			res = new Integer[rows - 1][resultFields.length];
-			
-			rset.first();
-			
-			int row = 0;
-			while (rset.next())
-			{
-				for (int i = 0; i < resultFields.length; i++)
+				int rows = 0;
+				while (rs.next())
 				{
-					res[row][i] = rset.getInt(i + 1);
+					rows++;
 				}
-				row++;
+				
+				res = new Integer[rows - 1][resultFields.length];
+				
+				rs.first();
+				
+				int row = 0;
+				while (rs.next())
+				{
+					for (int i = 0; i < resultFields.length; i++)
+					{
+						res[row][i] = rs.getInt(i + 1);
+					}
+					row++;
+				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Error in query '" + query + "':", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		
 		_log.fine("Get all rows in query '" + query + "' in " + (System.currentTimeMillis() - start) + "ms");
 		return res;
 	}

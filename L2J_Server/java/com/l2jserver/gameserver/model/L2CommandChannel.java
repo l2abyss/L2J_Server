@@ -50,7 +50,7 @@ public class L2CommandChannel extends AbstractPlayerGroup
 		_channelLvl = leader.getParty().getLevel();
 		leader.getParty().setCommandChannel(this);
 		leader.getParty().broadcastMessage(SystemMessageId.COMMAND_CHANNEL_FORMED);
-		leader.getParty().broadcastPacket(new ExOpenMPCC());
+		leader.getParty().broadcastPacket(ExOpenMPCC.STATIC_PACKET);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class L2CommandChannel extends AbstractPlayerGroup
 		}
 		party.setCommandChannel(this);
 		party.broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.JOINED_COMMAND_CHANNEL));
-		party.broadcastPacket(new ExOpenMPCC());
+		party.broadcastPacket(ExOpenMPCC.STATIC_PACKET);
 	}
 	
 	/**

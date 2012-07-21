@@ -16,8 +16,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 public class CharCreateFail extends L2GameServerPacket
 {
-	private static final String _S__26_CHARCREATEFAIL = "[S] 10 CharCreateFail";
-	
 	public static final int REASON_CREATION_FAILED = 0x00; // "Your character creation has failed."
 	public static final int REASON_TOO_MANY_CHARACTERS = 0x01; // "You cannot create another character. Please delete the existing character and try again." Removes all settings that were selected (race, class, etc).
 	public static final int REASON_NAME_ALREADY_EXISTS = 0x02; // "This name already exists."
@@ -26,7 +24,7 @@ public class CharCreateFail extends L2GameServerPacket
 	public static final int REASON_CREATE_NOT_ALLOWED = 0x05; // "Characters cannot be created from this server."
 	public static final int REASON_CHOOSE_ANOTHER_SVR = 0x06; // "Unable to create character. You are unable to create a new character on the selected server. A restriction is in place which restricts users from creating characters on different servers where no previous character exists. Please choose another server."
 	
-	private int _error;
+	private final int _error;
 	
 	public CharCreateFail(int errorCode)
 	{
@@ -38,11 +36,5 @@ public class CharCreateFail extends L2GameServerPacket
 	{
 		writeC(0x10);
 		writeD(_error);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__26_CHARCREATEFAIL;
 	}
 }

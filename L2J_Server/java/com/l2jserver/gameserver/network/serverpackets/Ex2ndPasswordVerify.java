@@ -15,18 +15,15 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * 
  * @author mrTJO
  */
 public class Ex2ndPasswordVerify extends L2GameServerPacket
 {
-	private static final String _S__FE_10A_EX2NDPASSWORDVERIFYPACKET = "[S] FE:10A Ex2NDPasswordVerifyPacket";
-	
 	public static final int PASSWORD_OK = 0x00;
 	public static final int PASSWORD_WRONG = 0x01;
 	public static final int PASSWORD_BAN = 0x02;
 	
-	int _wrongTentatives, _mode;
+	private final int _wrongTentatives, _mode;
 	
 	public Ex2ndPasswordVerify(int mode, int wrongTentatives)
 	{
@@ -38,15 +35,9 @@ public class Ex2ndPasswordVerify extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		//writeH(0x109);
+		// writeH(0x109); GOD
 		writeH(0xe6);
 		writeD(_mode);
 		writeD(_wrongTentatives);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_10A_EX2NDPASSWORDVERIFYPACKET;
 	}
 }

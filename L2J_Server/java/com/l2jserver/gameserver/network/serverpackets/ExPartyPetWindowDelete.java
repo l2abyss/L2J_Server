@@ -17,8 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public class ExPartyPetWindowDelete extends L2GameServerPacket
 {
@@ -28,26 +27,14 @@ public class ExPartyPetWindowDelete extends L2GameServerPacket
 	{
 		_summon = summon;
 	}
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] FE:6a ExPartyPetWindowDelete";
-	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x6a);
+		writeC(0xFE);
+		writeH(0x6A);
 		writeD(_summon.getObjectId());
 		writeD(_summon.getOwner().getObjectId());
 		writeS(_summon.getName());
 	}
-	
 }

@@ -17,22 +17,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- * Format (ch)dddcccd
- * d: cahacter oid
- * d: time left
- * d: fish hp
- * c:
- * c:
- * c: 00 if fish gets damage 02 if fish regens
- * d:
  * @author -Wooden-
- *
  */
 public class ExFishingHpRegen extends L2GameServerPacket
 {
-	private static final String _S__FE_16_EXFISHINGHPREGEN = "[S] FE:28 ExFishingHPRegen";
-	private L2Character _activeChar;
-	private int _time, _fishHP, _hpMode, _anim, _goodUse, _penalty, _hpBarColor;
+	private final L2Character _activeChar;
+	private final int _time, _fishHP, _hpMode, _anim, _goodUse, _penalty, _hpBarColor;
 	
 	public ExFishingHpRegen(L2Character character, int time, int fishHP, int HPmode, int GoodUse, int anim, int penalty, int hpBarColor)
 	{
@@ -49,7 +39,7 @@ public class ExFishingHpRegen extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x28);
 		
 		writeD(_activeChar.getObjectId());
@@ -62,11 +52,4 @@ public class ExFishingHpRegen extends L2GameServerPacket
 		writeC(_hpBarColor); // 0 = normal hp bar, 1 = purple hp bar
 		
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_16_EXFISHINGHPREGEN;
-	}
-	
 }

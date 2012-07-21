@@ -698,7 +698,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 112<br>
-	 * Message: You may no longer adjust items in the trade because the trade has been confirmed.
+	 * Message: You have run out of arrows.
 	 */
 	public static final SystemMessageId NOT_ENOUGH_ARROWS;
 	

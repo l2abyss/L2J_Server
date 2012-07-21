@@ -15,15 +15,12 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (ch) dd
- *
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public class PledgeSkillListAdd extends L2GameServerPacket
 {
-	private static final String _S__FE_3A_PLEDGESKILLLISTADD = "[S] FE:3b PledgeSkillListAdd";
-	private int _id;
-	private int _lvl;
+	private final int _id;
+	private final int _lvl;
 	
 	public PledgeSkillListAdd(int id, int lvl)
 	{
@@ -31,25 +28,13 @@ public class PledgeSkillListAdd extends L2GameServerPacket
 		_lvl = lvl;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x3b);
+		writeC(0xFE);
+		writeH(0x3B);
 		
 		writeD(_id);
 		writeD(_lvl);
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_3A_PLEDGESKILLLISTADD;
 	}
 }

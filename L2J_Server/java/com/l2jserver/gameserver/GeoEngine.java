@@ -59,17 +59,23 @@ public class GeoEngine extends GeoData
 	private static TShortObjectHashMap<IntBuffer> _geodataIndex = new TShortObjectHashMap<>();
 	private static BufferedOutputStream _geoBugsOut;
 	
+	/**
+	 * Gets the single instance of GeoEngine.
+	 * @return single instance of GeoEngine
+	 */
 	public static GeoEngine getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
+	/**
+	 * Instantiates a new geo engine.
+	 */
 	protected GeoEngine()
 	{
 		nInitGeodata();
 	}
 	
-	//Public Methods
 	@Override
 	public short getType(int x, int y)
 	{
@@ -220,6 +226,16 @@ public class GeoEngine extends GeoData
 		return false;
 	}
 	
+	/**
+	 * Can see.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param z the z coordinate
+	 * @param tx the target's x coordinate
+	 * @param ty the target's y coordinate
+	 * @param tz the target's z coordinate
+	 * @return {@code true} if there is line of sight between the given coordinate sets, {@code false} otherwise
+	 */
 	private static boolean canSee(int x, int y, double z, int tx, int ty, int tz)
 	{
 		int dx = (tx - x);
@@ -336,13 +352,22 @@ public class GeoEngine extends GeoData
 	}
 	
 	/*
-	 * Debug function for checking if there's a line of sight between
-	 * two coordinates.
-	 *
-	 * Creates points for line of sight check (x,y,z towards target) and
-	 * in each point, layer and movement checks are made with NLOS function.
-	 *
-	 * Coordinates here are geodata x,y but z coordinate is world coordinate
+	 * Debug function for checking if there's a line of sight between two coordinates.<br>
+	 * Creates points for line of sight check (x,y,z towards target) and<br>
+	 * in each point, layer and movement checks are made with NLOS function.<br>
+	 * Coordinates here are geodata x,y but z coordinate is world coordinate<br>
+	 */
+	
+	/**
+	 * Can see debug.
+	 * @param gm the Game Master
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param z the z coordinate
+	 * @param tx the target's x coordinate
+	 * @param ty the target's y coordinate
+	 * @param tz the target's z coordinate
+	 * @return {@code true} if the Game Master can see the target target (LOS), {@code false} otherwise
 	 */
 	private static boolean canSeeDebug(L2PcInstance gm, int x, int y, double z, int tx, int ty, int tz)
 	{
@@ -463,16 +488,16 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 *  MoveCheck
-	 * @param startpoint 
-	 * @param destiny 
-	 * @param x 
-	 * @param y 
-	 * @param z 
-	 * @param tx 
-	 * @param ty 
-	 * @param tz 
-	 * @return 
+	 * Move check.
+	 * @param startpoint the start point location
+	 * @param destiny the destination location
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param z the z coordinate
+	 * @param tx the target's x coordinate
+	 * @param ty the target's y coordinate
+	 * @param tz the target's z coordinate
+	 * @return the location modified if it didn't pass the geodata checks
 	 */
 	private static Location moveCheck(Location startpoint, Location destiny, int x, int y, double z, int tx, int ty, int tz)
 	{
@@ -599,6 +624,11 @@ public class GeoEngine extends GeoData
 		return new Location(destiny.getX(), destiny.getY(), (int) z);
 	}
 	
+	/**
+	 * Sign of parameter x.
+	 * @param x the value to verify
+	 * @return +1 if x is positive, -1 otherwise
+	 */
 	private static byte sign(int x)
 	{
 		if (x >= 0)
@@ -608,6 +638,9 @@ public class GeoEngine extends GeoData
 	}
 	
 	//GeoEngine
+	/**
+	 * Initialize the geodata.
+	 */
 	private static void nInitGeodata()
 	{
 		final File file = new File("./data/geodata/geo_index.txt");
@@ -646,6 +679,11 @@ public class GeoEngine extends GeoData
 		}
 	}
 	
+	/**
+	 * Unload geodata.
+	 * @param rx the region x coordinate
+	 * @param ry the region y coordinate
+	 */
 	public static void unloadGeodata(byte rx, byte ry)
 	{
 		short regionoffset = (short) ((rx << 5) + ry);
@@ -653,6 +691,12 @@ public class GeoEngine extends GeoData
 		_geodata.remove(regionoffset);
 	}
 	
+	/**
+	 * Load geodata file.
+	 * @param rx the region x coordinate
+	 * @param ry the region y coordinate
+	 * @return {@code true} if successful, {@code false} otherwise
+	 */
 	public static boolean loadGeodataFile(byte rx, byte ry)
 	{
 		if (rx < Config.WORLD_X_MIN || rx > Config.WORLD_X_MAX || ry < Config.WORLD_Y_MIN || ry > Config.WORLD_Y_MAX)
@@ -721,9 +765,10 @@ public class GeoEngine extends GeoData
 	
 	//Geodata Methods
 	/**
-	 * @param x
-	 * @param y
-	 * @return Region Offset
+	 * Gets the region offset.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @return the region offset
 	 */
 	private static short getRegionOffset(int x, int y)
 	{
@@ -733,7 +778,8 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param geo_pos 
+	 * Gets the block.
+	 * @param geo_pos the geo-position
 	 * @return Block Index: 0-255
 	 */
 	private static int getBlock(int geo_pos)
@@ -742,7 +788,8 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param geo_pos 
+	 * Gets the cell.
+	 * @param geo_pos the geo-position
 	 * @return Cell Index: 0-7
 	 */
 	private static int getCell(int geo_pos)
@@ -753,8 +800,9 @@ public class GeoEngine extends GeoData
 	//Geodata Functions
 	
 	/**
-	 * @param x
-	 * @param y
+	 * Gets the type.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
 	 * @return Type of geo_block: 0-2
 	 */
 	private static short nGetType(int x, int y)
@@ -782,10 +830,11 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param geox 
-	 * @param geoy 
-	 * @param z
-	 * @return Nearest Z
+	 * Gets the height.
+	 * @param geox the geo-position x coordinate
+	 * @param geoy the geo-position y coordinate
+	 * @param z the z coordinate
+	 * @return the nearest z
 	 */
 	private static short nGetHeight(int geox, int geoy, int z)
 	{
@@ -860,10 +909,11 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param geox 
-	 * @param geoy 
-	 * @param z
-	 * @return One layer higher Z than parameter Z
+	 * Get upper height.
+	 * @param geox the geo-position x coordinate
+	 * @param geoy the geo-position y coordinate
+	 * @param z the z coordinate
+	 * @return One layer higher z than parameter z
 	 */
 	private static short nGetUpperHeight(int geox, int geoy, int z)
 	{
@@ -939,12 +989,13 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param geox 
-	 * @param geoy 
-	 * @param zmin
-	 * @param zmax
-	 * @param spawn 
-	 * @return Z between zmin and zmax
+	 * Get spawn height.
+	 * @param geox the geo-position x coordinate
+	 * @param geoy the geo-position y coordinate
+	 * @param zmin the minimum z coordinate
+	 * @param zmax the maximum z coordinate
+	 * @param spawn the spawn
+	 * @return a valid height between zmin and zmax
 	 */
 	private static short nGetSpawnHeight(int geox, int geoy, int zmin, int zmax, L2Spawn spawn)
 	{
@@ -1034,13 +1085,14 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param tx
-	 * @param ty
-	 * @param tz
-	 * @return True if char can move to (tx,ty,tz)
+	 * Can move next.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param z the z coordinate
+	 * @param tx the target's x coordinate
+	 * @param ty the target's y coordinate
+	 * @param tz the target's z coordinate
+	 * @return {@code true} if character can move to (tx,ty,tz), {@code false} otherwise
 	 */
 	private static double nCanMoveNext(int x, int y, int z, int tx, int ty, int tz)
 	{
@@ -1130,15 +1182,16 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param inc_x
-	 * @param inc_y
-	 * @param inc_z 
-	 * @param tz
-	 * @param debug 
-	 * @return True if Char can see target
+	 * Line of sight.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param z the z coordinate
+	 * @param inc_x the inc_x
+	 * @param inc_y the inc_y
+	 * @param inc_z the inc_z
+	 * @param tz the tz
+	 * @param debug if {@code true} there will be debug logs
+	 * @return {@code true} if the character can see the target
 	 */
 	private static boolean nLOS(int x, int y, int z, int inc_x, int inc_y, double inc_z, int tz, boolean debug)
 	{
@@ -1245,7 +1298,7 @@ public class GeoEngine extends GeoData
 				_log.warning("z:" + z + " x: " + cellX + " y:" + cellY + " la " + layers + " lo:" + lowerHeight + " up:" + upperHeight);
 			// Check if LOS goes under a layer/floor
 			// clearly under layer but not too much under
-			// lowerheight here only for geodata bug checking, layers very close? maybe could be removed
+			// lower height here only for geodata bug checking, layers very close? maybe could be removed
 			if ((z - upperHeight) < -10 && (z - upperHeight) > inc_z - 20 && (z - lowerHeight) > 40)
 			{
 				if (debug)
@@ -1279,9 +1332,10 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Get the NSWE for the given coordinates.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param z the z coordinate
 	 * @return NSWE: 0-15
 	 */
 	private static short nGetNSWE(int x, int y, int z)
@@ -1362,9 +1416,10 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Gets the height and NSWE.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param z the z coordinate
 	 * @return array [0] - height, [1] - NSWE
 	 */
 	@Override
@@ -1443,12 +1498,13 @@ public class GeoEngine extends GeoData
 	}
 	
 	/**
-	 * @param NSWE
-	 * @param x
-	 * @param y
-	 * @param tx
-	 * @param ty
-	 * @return True if NSWE dont block given direction
+	 * Check NSWE.
+	 * @param NSWE the NSWE
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @param tx the target's x coordinate
+	 * @param ty the target's y coordinate
+	 * @return {@code true} if NSWE don't block given direction, {@code false} otherwise
 	 */
 	private static boolean checkNSWE(short NSWE, int x, int y, int tx, int ty)
 	{

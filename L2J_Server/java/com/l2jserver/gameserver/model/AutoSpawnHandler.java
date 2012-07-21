@@ -122,12 +122,8 @@ public class AutoSpawnHandler
 	private void restoreSpawnData()
 	{
 		int numLoaded = 0;
-		Connection con = null;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			// Restore spawn group data, then the location data.
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM random_spawn ORDER BY groupId ASC");
 			ResultSet rs = statement.executeQuery();
@@ -165,10 +161,6 @@ public class AutoSpawnHandler
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "AutoSpawnHandler: Could not restore spawn data: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

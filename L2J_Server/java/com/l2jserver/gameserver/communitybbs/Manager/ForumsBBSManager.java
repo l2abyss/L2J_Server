@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.communitybbs.Manager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,42 +34,40 @@ public class ForumsBBSManager extends BaseBBSManager
 	private int _lastid = 1;
 	
 	/**
-	 * @return
+	 * Gets the single instance of ForumsBBSManager.
+	 * @return single instance of ForumsBBSManager
 	 */
 	public static ForumsBBSManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
+	/**
+	 * Instantiates a new forums bbs manager.
+	 */
 	protected ForumsBBSManager()
 	{
 		_table = new FastList<>();
-		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT forum_id FROM forums WHERE forum_type = 0"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT forum_id FROM forums WHERE forum_type=0");
-			ResultSet result = statement.executeQuery();
-			while (result.next())
+			while (rs.next())
 			{
-				int forumId = result.getInt("forum_id");
+				int forumId = rs.getInt("forum_id");
 				Forum f = new Forum(forumId, null);
 				addForum(f);
 			}
-			result.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Data error on Forum (root): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
+	/**
+	 * Inits the root.
+	 */
 	public void initRoot()
 	{
 		for (Forum f : _table)
@@ -77,6 +75,10 @@ public class ForumsBBSManager extends BaseBBSManager
 		_log.info("Loaded " + _table.size() + " forums. Last forum id used: " + _lastid);
 	}
 	
+	/**
+	 * Adds the forum.
+	 * @param ff the forum
+	 */
 	public void addForum(Forum ff)
 	{
 		if (ff == null)
@@ -96,30 +98,30 @@ public class ForumsBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * 
-	 * @param Name
-	 * @return
+	 * Gets the forum by name.
+	 * @param name the forum name
+	 * @return the forum by name
 	 */
-	public Forum getForumByName(String Name)
+	public Forum getForumByName(String name)
 	{
 		for (Forum f : _table)
 		{
-			if (f.getName().equals(Name))
+			if (f.getName().equals(name))
 			{
 				return f;
 			}
 		}
-		
 		return null;
 	}
 	
 	/**
-	 * @param name
-	 * @param parent
-	 * @param type
-	 * @param perm
-	 * @param oid
-	 * @return
+	 * Creates the new forum.
+	 * @param name the forum name
+	 * @param parent the parent forum
+	 * @param type the forum type
+	 * @param perm the perm
+	 * @param oid the oid
+	 * @return the new forum
 	 */
 	public Forum createNewForum(String name, Forum parent, int type, int perm, int oid)
 	{
@@ -129,7 +131,8 @@ public class ForumsBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * @return
+	 * Gets the a new Id.
+	 * @return the a new Id
 	 */
 	public int getANewID()
 	{
@@ -137,8 +140,9 @@ public class ForumsBBSManager extends BaseBBSManager
 	}
 	
 	/**
-	 * @param idf
-	 * @return
+	 * Gets the forum by Id.
+	 * @param idf the the forum Id
+	 * @return the forum by Id
 	 */
 	public Forum getForumByID(int idf)
 	{
@@ -155,6 +159,7 @@ public class ForumsBBSManager extends BaseBBSManager
 	@Override
 	public void parsewrite(String ar1, String ar2, String ar3, String ar4, String ar5, L2PcInstance activeChar)
 	{
+		
 	}
 	
 	private static class SingletonHolder

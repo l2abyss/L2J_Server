@@ -98,10 +98,8 @@ public class AuctionManager
 	
 	private final void load()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT id FROM auction ORDER BY id");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next())
@@ -113,10 +111,6 @@ public class AuctionManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: AuctionManager.load(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -163,10 +157,8 @@ public class AuctionManager
 			return;
 		}
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("INSERT INTO `auction` VALUES " + ITEM_INIT_DATA[i]);
 			statement.execute();
 			statement.close();
@@ -176,10 +168,6 @@ public class AuctionManager
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Exception: Auction.initNPC(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

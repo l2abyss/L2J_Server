@@ -16,11 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * @author Migi
- *
  */
 public class ExNoticePostArrived extends L2GameServerPacket
 {
-	private static final String _S__FE_A9_EXNOTICEPOSTARRIVED = "[S] A9 ExNoticePostArrived";
 	private static final ExNoticePostArrived STATIC_PACKET_TRUE = new ExNoticePostArrived(true);
 	private static final ExNoticePostArrived STATIC_PACKET_FALSE = new ExNoticePostArrived(false);
 	
@@ -29,7 +27,7 @@ public class ExNoticePostArrived extends L2GameServerPacket
 		return result ? STATIC_PACKET_TRUE : STATIC_PACKET_FALSE;
 	}
 	
-	boolean _showAnim;
+	private final boolean _showAnim;
 	
 	public ExNoticePostArrived(boolean showAnimation)
 	{
@@ -39,14 +37,8 @@ public class ExNoticePostArrived extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0xa9);
+		writeC(0xFE);
+		writeH(0xA9);
 		writeD(_showAnim ? 0x01 : 0x00);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_A9_EXNOTICEPOSTARRIVED;
 	}
 }

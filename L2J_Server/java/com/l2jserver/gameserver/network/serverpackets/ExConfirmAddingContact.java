@@ -15,15 +15,10 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (ch)Sd
- * S: Character Name
- * d: Status
- * 
  * @author mrTJO & UnAfraid
  */
 public class ExConfirmAddingContact extends L2GameServerPacket
 {
-	private static final String _S__FE_D2_EXCONFIRMADDINGCONTACT = "[S] FE:D2 ExConfirmAddingContact";
 	private final String _charName;
 	private final boolean _added;
 	
@@ -40,11 +35,5 @@ public class ExConfirmAddingContact extends L2GameServerPacket
 		writeH(0xD2);
 		writeS(_charName);
 		writeD(_added ? 0x01 : 0x00);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_D2_EXCONFIRMADDINGCONTACT;
 	}
 }

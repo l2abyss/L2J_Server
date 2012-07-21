@@ -18,17 +18,9 @@ import java.util.List;
 
 import javolution.util.FastList;
 
-/**
- *
- * MagicEffectIcons
- * format   h (dhd)
- *
- * @version $Revision: 1.3.2.1.2.6 $ $Date: 2005/04/05 19:41:08 $
- */
 public class AbnormalStatusUpdate extends L2GameServerPacket
 {
-	private static final String _S__97_ABNORMALSTATUSUPDATE = "[S] 85 AbnormalStatusUpdate";
-	private List<Effect> _effects;
+	private final List<Effect> _effects;
 	
 	private static class Effect
 	{
@@ -56,7 +48,7 @@ public class AbnormalStatusUpdate extends L2GameServerPacket
 	 */
 	public void addEffect(int skillId, int level, int duration)
 	{
-		if (skillId == 2031 ||skillId == 2032 ||skillId == 2037 || skillId == 26025 || skillId == 26026)
+		if (skillId == 2031 || skillId == 2032 || skillId == 2037 || skillId == 26025 || skillId == 26026)
 			return;
 		_effects.add(new Effect(skillId, level, duration));
 	}
@@ -78,11 +70,5 @@ public class AbnormalStatusUpdate extends L2GameServerPacket
 			else
 				writeD(temp._duration / 1000);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__97_ABNORMALSTATUSUPDATE;
 	}
 }

@@ -16,18 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.L2Object;
 
-/**
- * sample
- * 0000: 0c  9b da 12 40                                     ....@
- *
- * format  d
- *
- * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:40 $
- */
 public final class Revive extends L2GameServerPacket
 {
-	private static final String _S__0C_REVIVE = "[S] 01 Revive";
-	private int _objectId;
+	private final int _objectId;
 	
 	public Revive(L2Object obj)
 	{
@@ -40,11 +31,4 @@ public final class Revive extends L2GameServerPacket
 		writeC(0x01);
 		writeD(_objectId);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__0C_REVIVE;
-	}
-	
 }

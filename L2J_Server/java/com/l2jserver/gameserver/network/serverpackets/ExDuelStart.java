@@ -15,22 +15,17 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: ch d
- * @author  KenM
+ * @author KenM
  */
 public class ExDuelStart extends L2GameServerPacket
 {
-	private static final String _S__FE_4D_EXDUELSTART = "[S] FE:4e ExDuelStart";
-	private int _unk1;
+	private final int _unk1;
 	
 	public ExDuelStart(int unk1)
 	{
 		_unk1 = unk1;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -39,14 +34,4 @@ public class ExDuelStart extends L2GameServerPacket
 		
 		writeD(_unk1);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_4D_EXDUELSTART;
-	}
-	
 }

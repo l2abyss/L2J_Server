@@ -18,14 +18,6 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-/**
- * sample
- * 06 8f19904b 2522d04b 00000000 80 950c0000 4af50000 08f2ffff 0000    - 0 damage (missed 0x80)
- * 06 85071048 bc0e504b 32000000 10 fc41ffff fd240200 a6f5ffff 0100 bc0e504b 33000000 10                                     3....
-
- * format
- * dddc dddh (ddc)
- */
 public class Attack extends L2GameServerPacket
 {
 	public static final int HITFLAG_USESS = 0x10;
@@ -55,12 +47,11 @@ public class Attack extends L2GameServerPacket
 			// dirty fix for lags on olympiad
 			if (shld > 0 && !(target instanceof L2PcInstance && ((L2PcInstance) target).isInOlympiadMode()))
 				_flags |= HITFLAG_SHLD;
-			//			if (shld > 0)
-			//				_flags |= HITFLAG_SHLD;
+			// if (shld > 0)
+			// _flags |= HITFLAG_SHLD;
 		}
 	}
 	
-	private static final String _S__06_ATTACK = "[S] 33 Attack";
 	private final int _attackerObjId;
 	private final int _targetObjId;
 	public final boolean soulshot;
@@ -147,11 +138,5 @@ public class Attack extends L2GameServerPacket
 		writeD(_tx);
 		writeD(_ty);
 		writeD(_tz);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__06_ATTACK;
 	}
 }

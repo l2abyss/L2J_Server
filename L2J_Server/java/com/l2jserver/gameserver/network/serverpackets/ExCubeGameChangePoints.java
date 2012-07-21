@@ -15,23 +15,16 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (chd) ddd
- * d: Time Left
- * d: Blue Points
- * d: Red Points
- * 
  * @author mrTJO
  */
 public class ExCubeGameChangePoints extends L2GameServerPacket
 {
-	private static final String _S__FE_98_02_EXCUBEGAMECHANGEPOINTS = "[S] FE:98:02 ExCubeGameChangePoints";
 	int _timeLeft;
 	int _bluePoints;
 	int _redPoints;
 	
 	/**
 	 * Change Client Point Counter
-	 * 
 	 * @param timeLeft Time Left before Minigame's End
 	 * @param bluePoints Current Blue Team Points
 	 * @param redPoints Current Red Team Points
@@ -53,11 +46,5 @@ public class ExCubeGameChangePoints extends L2GameServerPacket
 		writeD(_timeLeft);
 		writeD(_bluePoints);
 		writeD(_redPoints);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_98_02_EXCUBEGAMECHANGEPOINTS;
 	}
 }

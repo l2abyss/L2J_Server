@@ -307,12 +307,6 @@ public class L2PetInstance extends L2Summon
 		setStat(new PetStat(this));
 	}
 	
-	@Override
-	public double getLevelMod()
-	{
-		return (100.0 - 11 + getLevel()) / 100.0;
-	}
-	
 	public boolean isRespawned()
 	{
 		return _respawned;
@@ -777,22 +771,15 @@ public class L2PetInstance extends L2Summon
 		}
 		
 		// pet control item no longer exists, delete the pet from the db
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?");
 			statement.setInt(1, getControlObjectId());
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_logPet.log(Level.SEVERE, "Failed to delete Pet [ObjectId: " + getObjectId() + "]", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -838,11 +825,9 @@ public class L2PetInstance extends L2Summon
 	
 	private static L2PetInstance restore(L2ItemInstance control, L2NpcTemplate template, L2PcInstance owner)
 	{
-		Connection con = null;
-		try
+		try  (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			L2PetInstance pet;
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT item_obj_id, name, level, curHp, curMp, exp, sp, fed FROM pets WHERE item_obj_id=?");
 			statement.setInt(1, control.getObjectId());
 			ResultSet rset = statement.executeQuery();
@@ -895,12 +880,8 @@ public class L2PetInstance extends L2Summon
 		catch (Exception e)
 		{
 			_logPet.log(Level.WARNING, "Could not restore pet data for owner: " + owner + " - " + e.getMessage(), e);
-			return null;
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		return null;
 	}
 	
 	@Override
@@ -941,10 +922,9 @@ public class L2PetInstance extends L2Summon
 			req = "INSERT INTO pets (name,level,curHp,curMp,exp,sp,fed,ownerId,restore,item_obj_id) " + "VALUES (?,?,?,?,?,?,?,?,?,?)";
 		else
 			req = "UPDATE pets SET name=?,level=?,curHp=?,curMp=?,exp=?,sp=?,fed=?,ownerId=?,restore=? " + "WHERE item_obj_id = ?";
-		Connection con = null;
-		try
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(req);
 			statement.setString(1, getName());
 			statement.setInt(2, getStat().getLevel());
@@ -970,10 +950,6 @@ public class L2PetInstance extends L2Summon
 		{
 			_logPet.log(Level.SEVERE, "Failed to store Pet [ObjectId: " + getObjectId() + "] data", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		
 		L2ItemInstance itemInst = getControlItem();
 		if (itemInst != null && itemInst.getEnchantLevel() != getStat().getLevel())
@@ -993,25 +969,19 @@ public class L2PetInstance extends L2Summon
 		if (SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
 			SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).clear();
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps1 = con.prepareStatement(DELETE_SKILL_SAVE);
+			PreparedStatement ps2 = con.prepareStatement(ADD_SKILL_SAVE))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			// Delete all current stored effects for summon to avoid dupe
-			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE);
-			
-			statement.setInt(1, getControlObjectId());
-			statement.execute();
-			statement.close();
+			ps1.setInt(1, getControlObjectId());
+			ps1.execute();
 			
 			int buff_index = 0;
 			
 			final List<Integer> storedSkills = new FastList<>();
 			
 			// Store all effect data along with calculated remaining
-			statement = con.prepareStatement(ADD_SKILL_SAVE);
-			
 			if (storeEffects)
 			{
 				for (L2Effect effect : getAllEffects())
@@ -1036,13 +1006,13 @@ public class L2PetInstance extends L2Summon
 					
 					if (!effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
 					{
-						statement.setInt(1, getControlObjectId());
-						statement.setInt(2, skill.getId());
-						statement.setInt(3, skill.getLevel());
-						statement.setInt(4, effect.getCount());
-						statement.setInt(5, effect.getTime());
-						statement.setInt(6, ++buff_index);
-						statement.execute();
+						ps2.setInt(1, getControlObjectId());
+						ps2.setInt(2, skill.getId());
+						ps2.setInt(3, skill.getLevel());
+						ps2.setInt(4, effect.getCount());
+						ps2.setInt(5, effect.getTime());
+						ps2.setInt(6, ++buff_index);
+						ps2.execute();
 						
 						if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
 							SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
@@ -1050,59 +1020,49 @@ public class L2PetInstance extends L2Summon
 						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getCount(), effect.getTime()));
 					}
 				}
-				statement.close();
 			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not store pet effect data: ", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	@Override
 	public void restoreEffects()
 	{
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps1 = con.prepareStatement(RESTORE_SKILL_SAVE);
+			PreparedStatement ps2 = con.prepareStatement(DELETE_SKILL_SAVE))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
 			{
-				statement = con.prepareStatement(RESTORE_SKILL_SAVE);
-				statement.setInt(1, getControlObjectId());
-				ResultSet rset = statement.executeQuery();
 				
-				while (rset.next())
+				ps1.setInt(1, getControlObjectId());
+				try (ResultSet rset = ps1.executeQuery())
 				{
-					int effectCount = rset.getInt("effect_count");
-					int effectCurTime = rset.getInt("effect_cur_time");
-					
-					final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
-					if (skill == null)
-						continue;
-					
-					if (skill.hasEffects())
+					while (rset.next())
 					{
-						if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
-							SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
+						int effectCount = rset.getInt("effect_count");
+						int effectCurTime = rset.getInt("effect_cur_time");
 						
-						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effectCount, effectCurTime));
+						final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
+						if (skill == null)
+							continue;
+						
+						if (skill.hasEffects())
+						{
+							if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
+								SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
+							
+							SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effectCount, effectCurTime));
+						}
 					}
 				}
-				
-				rset.close();
-				statement.close();
 			}
-			statement = con.prepareStatement(DELETE_SKILL_SAVE);
-			statement.setInt(1, getControlObjectId());
-			statement.executeUpdate();
-			statement.close();
+			
+			ps2.setInt(1, getControlObjectId());
+			ps2.executeUpdate();
 		}
 		catch (Exception e)
 		{
@@ -1110,8 +1070,6 @@ public class L2PetInstance extends L2Summon
 		}
 		finally
 		{
-			L2DatabaseFactory.close(con);
-			
 			if (SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()) == null)
 				return;
 			
@@ -1378,15 +1336,22 @@ public class L2PetInstance extends L2Summon
 	@Override
 	public void setName(String name)
 	{
-		L2ItemInstance controlItem = getControlItem();
-		if (getControlItem().getCustomType2() == (name == null ? 1 : 0))
+		final L2ItemInstance controlItem = getControlItem();
+		if (controlItem != null)
 		{
-			// name not set yet
-			controlItem.setCustomType2(name != null ? 1 : 0);
-			controlItem.updateDatabase();
-			InventoryUpdate iu = new InventoryUpdate();
-			iu.addModifiedItem(controlItem);
-			sendPacket(iu);
+			if (controlItem.getCustomType2() == (name == null ? 1 : 0))
+			{
+				// name not set yet
+				controlItem.setCustomType2(name != null ? 1 : 0);
+				controlItem.updateDatabase();
+				InventoryUpdate iu = new InventoryUpdate();
+				iu.addModifiedItem(controlItem);
+				sendPacket(iu);
+			}
+		}
+		else
+		{
+			_log.log(Level.WARNING, "Pet control item null, for pet: " + toString());
 		}
 		super.setName(name);
 	}

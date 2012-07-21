@@ -21,15 +21,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.ActionKey;
 
 /**
- *
- * @author  mrTJO
+ * @author mrTJO
  */
 public class ExUISetting extends L2GameServerPacket
 {
-	
 	private final L2UIKeysSettings _uiSettings;
 	private int buffsize, categories;
-	
 	
 	public ExUISetting(L2PcInstance player)
 	{
@@ -37,18 +34,9 @@ public class ExUISetting extends L2GameServerPacket
 		calcSize();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return null;
-	}
-	
 	private void calcSize()
 	{
-		int size = 16; //initial header and footer
+		int size = 16; // initial header and footer
 		int category = 0;
 		int numKeyCt = _uiSettings.getKeys().size();
 		for (int i = 0; i < numKeyCt; i++)
@@ -67,20 +55,17 @@ public class ExUISetting extends L2GameServerPacket
 				size = size + catElList2.size();
 			}
 			category++;
-			size = size+4;
+			size = size + 4;
 			if (_uiSettings.getKeys().containsKey(i))
 			{
 				List<ActionKey> keyElList = _uiSettings.getKeys().get(i);
-				size = size + (keyElList.size()*20);
+				size = size + (keyElList.size() * 20);
 			}
 		}
 		buffsize = size;
 		categories = category;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{

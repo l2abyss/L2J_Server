@@ -93,7 +93,7 @@ public class GameStatusThread extends Thread
 		}
 		
 		final File file = new File(Config.TELNET_FILE);
-		try (InputStream telnetIS = new FileInputStream(file);)
+		try (InputStream telnetIS = new FileInputStream(file))
 		{
 			Properties telnetSettings = new Properties();
 			telnetSettings.load(telnetIS);

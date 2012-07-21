@@ -57,12 +57,11 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 	{
 		try
 		{
-			//_log.info(this.getType());
 			writeImpl();
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed writing: " + getType() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + e.getMessage(), e);
+			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed writing: " + getClass().getSimpleName() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + e.getMessage(), e);
 		}
 	}
 	
@@ -72,9 +71,4 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 	}
 	
 	protected abstract void writeImpl();
-	
-	/**
-	 * @return A String with this packet name for debugging purposes
-	 */
-	public abstract String getType();
 }

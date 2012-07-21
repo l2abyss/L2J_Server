@@ -18,13 +18,12 @@ import com.l2jserver.gameserver.model.L2Object;
 
 public class ExSendUIEvent extends L2GameServerPacket
 {
-	private static final String _S__FE_8E_EXSENDUIEVENT = "[S] FE:8E ExSendUIEvent";
-	private L2Object _player;
-	private boolean _isHide;
-	private boolean _isIncrease;
-	private int _startTime;
-	private int _endTime;
-	private String _text;
+	private final L2Object _player;
+	private final boolean _isHide;
+	private final boolean _isIncrease;
+	private final int _startTime;
+	private final int _endTime;
+	private final String _text;
 	
 	public ExSendUIEvent(L2Object player, boolean isHide, boolean isIncrease, int startTime, int endTime, String text)
 	{
@@ -36,13 +35,17 @@ public class ExSendUIEvent extends L2GameServerPacket
 		_text = text;
 	}
 	
+	/**
+	 * FIXME: Structure is wrong <br />
+	 * _isHide = <s>0: show timer, 1: hide timer</s> Its a type of the UI actually
+	 */
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xFE);
 		writeH(0x8E);
 		writeD(_player.getObjectId());
-		writeD(_isHide ? 0x01 : 0x00); // 0: show timer, 1: hide timer
+		writeD(_isHide ? 0x01 : 0x00); // <s>0: show timer, 1: hide timer</s> Its a type of the UI actually
 		writeD(0x00); // unknown
 		writeD(0x00); // unknown
 		writeS(_isIncrease ? "1" : "0"); // "0": count negative, "1": count positive
@@ -51,11 +54,5 @@ public class ExSendUIEvent extends L2GameServerPacket
 		writeS(_text); // text above timer
 		writeS(String.valueOf(_endTime / 60)); // timer length minute(s) (timer will disappear 10 seconds before it ends)
 		writeS(String.valueOf(_endTime % 60)); // timer length second(s) (timer will disappear 10 seconds before it ends)
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_8E_EXSENDUIEVENT;
 	}
 }

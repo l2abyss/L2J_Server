@@ -225,10 +225,8 @@ public class CastleManager implements InstanceListManager
 				}
 			}
 			// else offline-player circlet removal
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE owner_id = ? and item_id = ?");
 				statement.setInt(1, member.getObjectId());
 				statement.setInt(2, circletId);
@@ -239,21 +237,14 @@ public class CastleManager implements InstanceListManager
 			{
 				_log.log(Level.WARNING, "Failed to remove castle circlets offline for player " + member.getName() + ": " + e.getMessage(), e);
 			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
-			}
 		}
 	}
 	
 	@Override
 	public void loadInstances()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("SELECT id FROM castle ORDER BY id");
 			ResultSet rs = statement.executeQuery();
 			
@@ -269,10 +260,6 @@ public class CastleManager implements InstanceListManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: loadCastleData(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

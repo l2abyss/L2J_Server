@@ -77,11 +77,9 @@ public final class ClanHallManager
 	/** Load All Clan Hall */
 	private final void load()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			int id, ownerId, lease;
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM clanhall ORDER BY id");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next())
@@ -126,10 +124,6 @@ public final class ClanHallManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: ClanHallManager.load(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

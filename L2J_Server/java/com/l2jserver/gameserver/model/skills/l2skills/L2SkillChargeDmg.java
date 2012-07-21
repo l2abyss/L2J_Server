@@ -23,8 +23,6 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.effects.L2Effect;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -55,10 +53,7 @@ public class L2SkillChargeDmg extends L2Skill
 			// thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
 			modifier = 0.8 + 0.201 * (getNumCharges() + caster.getActingPlayer().getCharges());
 		}
-		L2ItemInstance weapon = caster.getActiveWeaponInstance();
-		boolean soul = (weapon != null
-				&& weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT
-				&& weapon.getItemType() != L2WeaponType.DAGGER );
+		boolean soul = caster.isSoulshotCharged(this);
 		
 		for (L2Character target: (L2Character[]) targets)
 		{
@@ -163,8 +158,9 @@ public class L2SkillChargeDmg extends L2Skill
 						sm.addCharName(target);
 						caster.sendPacket(sm);
 					}
-					// Formula from Diego post, 700 from rpg tests
-					double vegdamage = (700 * target.getPAtk(caster) / (double)caster.getPDef(target));
+					// Formula from Diego Vargas post: http://www.l2guru.com/forum/showthread.php?p=3122630
+					// 1189 x Your PATK / PDEF of target
+					double vegdamage = (1189 * target.getPAtk(caster) / (double)caster.getPDef(target));
 					caster.reduceCurrentHp(vegdamage, target, this);
 				}
 				
@@ -176,8 +172,6 @@ public class L2SkillChargeDmg extends L2Skill
 				caster.sendDamageMessage(target, 0, false, false, true);
 			}
 		}
-		if (soul && weapon!= null)
-			weapon.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
 		
 		// effect self :]
 		if (hasSelfEffects())
@@ -191,5 +185,7 @@ public class L2SkillChargeDmg extends L2Skill
 			// cast self effect if any
 			getEffectsSelf(caster);
 		}
+		
+		caster.ssUncharge(this);
 	}
 }

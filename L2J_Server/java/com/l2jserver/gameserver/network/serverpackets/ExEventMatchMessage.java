@@ -15,18 +15,12 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (ch)cs
- * c: message type (0 - gm, 1 - finish, 2 - start, 3 - game over, 4 - 1, 5 - 2, 6 - 3, 7 - 4, 8 - 5)
- * s: message text (only when type is 0 - gm)
- * 
  * @author janiii
- *
  */
 public class ExEventMatchMessage extends L2GameServerPacket
 {
-	private static final String _S__FE_0F_EXEVENTMATCHMESSAGE = "[S] FE:0f ExEventMatchMessage";
-	private int _type;
-	private String _message;
+	private final int _type;
+	private final String _message;
 	
 	/**
 	 * Create an event match message.
@@ -42,15 +36,9 @@ public class ExEventMatchMessage extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x0f);
+		writeC(0xFE);
+		writeH(0x0F);
 		writeC(_type);
 		writeS(_message);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_0F_EXEVENTMATCHMESSAGE;
 	}
 }

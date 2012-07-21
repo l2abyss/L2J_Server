@@ -27,17 +27,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.7.2.4.2.9 $ $Date: 2005/04/11 10:05:54 $
- */
 public abstract class AbstractNpcInfo extends L2GameServerPacket
 {
-	//   ddddddddddddddddddffffdddcccccSSddd dddddc
-	//   ddddddddddddddddddffffdddcccccSSddd dddddccffd
-	
-	private static final String _S__22_NPCINFO = "[S] 0c NpcInfo";
 	protected int _x, _y, _z, _heading;
 	protected int _idTemplate;
 	protected boolean _isAttackable, _isSummoned;
@@ -71,12 +62,6 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		_walkSpd = cha.getTemplate().getBaseWalkSpd();
 	}
 	
-	@Override
-	public String getType()
-	{
-		return _S__22_NPCINFO;
-	}
-	
 	/**
 	 * Packet for Npcs
 	 */
@@ -102,14 +87,14 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_isAttackable = cha.isAutoAttackable(attacker);
 			if (cha.getTemplate().isServerSideName())
 				_name = cha.getName();// On every subclass
-			
+				
 			if (Config.L2JMOD_CHAMPION_ENABLE && cha.isChampion())
 				_title = (Config.L2JMOD_CHAMP_TITLE); // On every subclass
 			else if (cha.getTemplate().isServerSideTitle())
 				_title = cha.getTemplate().getTitle(); // On every subclass
 			else
 				_title = cha.getTitle(); // On every subclass
-			
+				
 			if (Config.SHOW_NPC_LVL && _npc instanceof L2MonsterInstance)
 			{
 				String t = "Lv " + cha.getLevel() + (cha.getAggroRange() > 0 ? "*" : "");
@@ -169,20 +154,21 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeC(_npc.isRunning() ? 1 : 0);
 			writeC(_npc.isInCombat() ? 1 : 0);
 			writeC(_npc.isAlikeDead() ? 1 : 0);
-			writeC(_isSummoned ? 2 : 0); // 0=teleported 1=default 2=summoned
+			writeC(_isSummoned ? 2 : 0); // invisible ?? 0=false 1=true 2=summoned (only works if model has a summon animation)
 			writeD(-1); // High Five NPCString ID
 			writeS(_name);
 			writeD(-1); // High Five NPCString ID
 			writeS(_title);
 			writeD(0x00); // Title color 0=client default
-			writeD(0x00); //pvp flag
+			writeD(0x00); // pvp flag
 			writeD(0x00); // karma
 			
 			writeD(_npc.getAbnormalEffect()); // C2
-			writeD(_clanId); //clan id
-			writeD(_clanCrest); //crest id
+			writeD(_clanId); // clan id
+			writeD(_clanCrest); // crest id
 			writeD(_allyId); // ally id
 			writeD(_allyCrest); // all crest
+			
 			writeC(_npc.isFlying() ? 2 : 0); // C2
 			writeC(_npc.getTeam()); // team color 0=none, 1 = blue, 2 = red
 			
@@ -191,7 +177,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_enchantEffect); // C4
 			writeD(_npc.isFlying() ? 1 : 0); // C6
 			writeD(0x00);
-			writeD(_npc.getColorEffect());// CT1.5 Pet form and skills, Color effect
+			writeD(_npc.getColorEffect()); // CT1.5 Pet form and skills, Color effect
 			writeC(_npc.isShowName() ? 0x01 : 0x00);
 			writeC(_npc.isTargetable() ? 0x01 : 0x00);
 			writeD(_npc.getSpecialEffect());
@@ -254,7 +240,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeC(1);
 			writeC(_trap.isInCombat() ? 1 : 0);
 			writeC(_trap.isAlikeDead() ? 1 : 0);
-			writeC(_isSummoned ? 2 : 0); //  0=teleported  1=default   2=summoned
+			writeC(_isSummoned ? 2 : 0); // invisible ?? 0=false 1=true 2=summoned (only works if model has a summon animation)
 			writeD(-1); // High Five NPCString ID
 			writeS(_name);
 			writeD(-1); // High Five NPCString ID
@@ -265,8 +251,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_trap.getKarma());
 			
 			writeD(_trap.getAbnormalEffect()); // C2
-			writeD(0x00); //clan id
-			writeD(0x00); //crest id
+			writeD(0x00); // clan id
+			writeD(0x00); // crest id
 			writeD(0000); // C2
 			writeD(0000); // C2
 			writeC(0000); // C2
@@ -278,7 +264,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(0x00); // C4
 			writeD(0x00); // C6
 			writeD(0x00);
-			writeD(0);//CT1.5 Pet form and skills
+			writeD(0);// CT1.5 Pet form and skills
 			writeC(0x01);
 			writeC(0x01);
 			writeD(0x00);
@@ -300,8 +286,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_summon = cha;
 			_val = val;
 			if (_summon.isShowSummonAnimation())
-				_val = 2; //override for spawn
-			
+				_val = 2; // override for spawn
+				
 			int npcId = cha.getTemplate().getNpcId();
 			
 			if (npcId == 16041 || npcId == 16042)
@@ -374,11 +360,11 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_rhand); // right hand weapon
 			writeD(_chest);
 			writeD(_lhand); // left hand weapon
-			writeC(1); // name above char 1=true ... ??
-			writeC(1); // always running 1=running 0=walking
+			writeC(0x01); // name above char 1=true ... ??
+			writeC(0x01); // always running 1=running 0=walking
 			writeC(_summon.isInCombat() ? 1 : 0);
 			writeC(_summon.isAlikeDead() ? 1 : 0);
-			writeC(_val); //  0=teleported  1=default   2=summoned
+			writeC(_val); // invisible ?? 0=false 1=true 2=summoned (only works if model has a summon animation)
 			writeD(-1); // High Five NPCString ID
 			writeS(_name);
 			writeD(-1); // High Five NPCString ID
@@ -390,8 +376,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			
 			writeD(gmSeeInvis ? _summon.getAbnormalEffect() | AbnormalEffect.STEALTH.getMask() : _summon.getAbnormalEffect());
 			
-			writeD(0x00); //clan id
-			writeD(0x00); //crest id
+			writeD(0x00); // clan id
+			writeD(0x00); // crest id
 			writeD(0000); // C2
 			writeD(0000); // C2
 			writeC(0000); // C2
@@ -403,7 +389,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_enchantEffect); // C4
 			writeD(0x00); // C6
 			writeD(0x00);
-			writeD(_form); //CT1.5 Pet form and skills
+			writeD(_form); // CT1.5 Pet form and skills
 			writeC(0x01);
 			writeC(0x01);
 			writeD(_summon.getSpecialEffect());

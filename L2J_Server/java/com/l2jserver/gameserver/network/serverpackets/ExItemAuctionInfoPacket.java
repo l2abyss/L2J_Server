@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.itemauction.ItemAuctionState;
 
 /**
  * @author Forsaiken
- * Format: (cdqd)(dddqhhhdhhdddhhhhhhhhhhh)(ddd)(dddqhhhdhhdddhhhhhhhhhhh)
  */
 public final class ExItemAuctionInfoPacket extends L2GameServerPacket
 {
@@ -39,7 +38,7 @@ public final class ExItemAuctionInfoPacket extends L2GameServerPacket
 			_timeRemaining = 0;
 		else
 			_timeRemaining = (int) (currentAuction.getFinishingTimeRemaining() / 1000); // in seconds
-		
+			
 		_refresh = refresh;
 		_currentAuction = currentAuction;
 		_nextAuction = nextAuction;
@@ -75,7 +74,7 @@ public final class ExItemAuctionInfoPacket extends L2GameServerPacket
 		writeQ(item.getCount());
 		writeH(item.getItem().getType2());
 		writeH(item.getCustomType1());
-		writeH(0x00); //Equipped ? ON AUCTION?
+		writeH(0x00); // Equipped ? ON AUCTION?
 		writeD(item.getItem().getBodyPart());
 		writeH(item.getEnchant());
 		writeH(item.getCustomType2());
@@ -86,16 +85,12 @@ public final class ExItemAuctionInfoPacket extends L2GameServerPacket
 		writeH(item.getAttackElementType());
 		writeH(item.getAttackElementPower());
 		for (byte i = 0; i < 6; i++)
-			super.writeH(item.getElementDefAttr(i));
+		{
+			writeH(item.getElementDefAttr(i));
+		}
 		
 		writeH(0x00); // enchant effect 1
 		writeH(0x00); // enchant effect 2
 		writeH(0x00); // enchant effect 3
-	}
-	
-	@Override
-	public final String getType()
-	{
-		return "[S] fe:68:00 ExItemAuctionInfoPacket";
 	}
 }

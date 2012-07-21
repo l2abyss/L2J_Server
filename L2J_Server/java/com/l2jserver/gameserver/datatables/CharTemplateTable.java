@@ -15,9 +15,9 @@
 package com.l2jserver.gameserver.datatables;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -40,12 +40,10 @@ public final class CharTemplateTable
 	
 	protected CharTemplateTable()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rset = s.executeQuery("SELECT * FROM char_templates, lvlupgain WHERE char_templates.classId = lvlupgain.classId ORDER BY char_templates.ClassId"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("SELECT * FROM char_templates, lvlupgain WHERE char_templates.classId = lvlupgain.classId ORDER BY char_templates.ClassId");
-			final ResultSet rset = statement.executeQuery();
 			StatsSet set;
 			int cId;
 			while (rset.next())
@@ -70,16 +68,13 @@ public final class CharTemplateTable
 				set.set("lvlCpMod", rset.getFloat("defaultCpMod"));
 				set.set("lvlMpAdd", rset.getFloat("defaultMpAdd"));
 				set.set("lvlMpMod", rset.getFloat("defaultMpMod"));
-				set.set("baseHpReg", 1.5);
+				set.set("baseHpReg", 2);
 				set.set("baseMpReg", 0.9);
 				set.set("basePAtk", rset.getInt("p_atk"));
-				set.set("basePDef", /* classId.isMage()? 77 : 129 */rset.getInt("p_def"));
+				set.set("basePDef", rset.getInt("p_def"));
 				set.set("baseMAtk", rset.getInt("m_atk"));
-				set.set("baseMDef", rset.getInt("char_templates.m_def"));
+				set.set("baseMDef", rset.getInt("m_def"));
 				set.set("classBaseLevel", rset.getInt("class_lvl"));
-				set.set("basePAtkSpd", rset.getInt("p_spd"));
-				set.set("baseMAtkSpd", /* classId.isMage()? 166 : 333 */rset.getInt("char_templates.m_spd"));
-				set.set("baseCritRate", rset.getInt("char_templates.critical") / 10);
 				set.set("baseRunSpd", rset.getInt("move_spd"));
 				set.set("baseWalkSpd", 0);
 				set.set("baseShldDef", 0);
@@ -98,17 +93,11 @@ public final class CharTemplateTable
 				final L2PcTemplate ct = new L2PcTemplate(set);
 				_charTemplates.put(ClassId.getClassId(cId), ct);
 			}
-			rset.close();
-			statement.close();
 			_log.info("CharTemplateTable: Loaded " + _charTemplates.size() + " Character Templates.");
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "Failed loading char templates", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

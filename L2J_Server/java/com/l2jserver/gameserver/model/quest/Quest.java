@@ -442,7 +442,7 @@ public class Quest extends ManagedScript
 	 * @param damage the damage dealt to the NPC by the player
 	 * @param isPet if {@code true}, the attack was actually made by the player's pet
 	 * @param skill the skill used to attack the NPC (can be null)
-	 * @return {@code true} or {@code false}
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
 	{
@@ -481,7 +481,7 @@ public class Quest extends ManagedScript
 	/**
 	 * @param item
 	 * @param player
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyItemUse(L2Item item, L2PcInstance player)
 	{
@@ -501,7 +501,7 @@ public class Quest extends ManagedScript
 	 * @param instance
 	 * @param player
 	 * @param skill
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
 	{
@@ -549,7 +549,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param npc
-	 * @return
+	 * @return {@code true} if there was an error, {@code false} otherwise
 	 */
 	public final boolean notifySpawn(L2Npc npc)
 	{
@@ -569,7 +569,7 @@ public class Quest extends ManagedScript
 	 * @param event
 	 * @param npc
 	 * @param player
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyEvent(String event, L2Npc npc, L2PcInstance player)
 	{
@@ -587,7 +587,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param player
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyEnterWorld(L2PcInstance player)
 	{
@@ -607,7 +607,7 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param killer
 	 * @param isPet
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isPet)
 	{
@@ -626,7 +626,7 @@ public class Quest extends ManagedScript
 	/**
 	 * @param npc
 	 * @param qs
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyTalk(L2Npc npc, QuestState qs)
 	{
@@ -676,7 +676,7 @@ public class Quest extends ManagedScript
 	 * TODO: Remove and replace with listeners.
 	 * @param npc
 	 * @param player
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyAcquireSkillList(L2Npc npc, L2PcInstance player)
 	{
@@ -697,7 +697,7 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param player
 	 * @param skill
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
@@ -718,7 +718,7 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param player
 	 * @param skill
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
@@ -785,7 +785,7 @@ public class Quest extends ManagedScript
 	 * @param skill
 	 * @param targets
 	 * @param isPet
-	 * @return
+	 * @return {@code true}
 	 */
 	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
 	{
@@ -798,7 +798,7 @@ public class Quest extends ManagedScript
 	 * @param caller
 	 * @param attacker
 	 * @param isPet
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
 	{
@@ -848,7 +848,7 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param player
 	 * @param isPet
-	 * @return
+	 * @return {@code true}
 	 */
 	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
 	{
@@ -859,7 +859,7 @@ public class Quest extends ManagedScript
 	/**
 	 * @param character
 	 * @param zone
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyEnterZone(L2Character character, L2ZoneType zone)
 	{
@@ -886,7 +886,7 @@ public class Quest extends ManagedScript
 	/**
 	 * @param character
 	 * @param zone
-	 * @return
+	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
 	public final boolean notifyExitZone(L2Character character, L2ZoneType zone)
 	{
@@ -912,7 +912,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param winner
-	 * @param type
+	 * @param type {@code false} if there was an error, {@code true} otherwise
 	 */
 	public final void notifyOlympiadWin(L2PcInstance winner, CompetitionType type)
 	{
@@ -928,7 +928,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param loser
-	 * @param type
+	 * @param type {@code false} if there was an error, {@code true} otherwise
 	 */
 	public final void notifyOlympiadLose(L2PcInstance loser, CompetitionType type)
 	{
@@ -1335,84 +1335,77 @@ public class Quest extends ManagedScript
 	 */
 	public static final void playerEnter(L2PcInstance player)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement invalidQuestData = con.prepareStatement("DELETE FROM character_quests WHERE charId = ? AND name = ?");
+			PreparedStatement invalidQuestDataVar = con.prepareStatement("DELETE FROM character_quests WHERE charId = ? AND name = ? AND var = ?");
+			PreparedStatement ps1 = con.prepareStatement("SELECT name, value FROM character_quests WHERE charId = ? AND var = ?"))
 		{
 			// Get list of quests owned by the player from database
-			con = L2DatabaseFactory.getInstance().getConnection();
 			
-			PreparedStatement invalidQuestData = con.prepareStatement("DELETE FROM character_quests WHERE charId=? AND name=?");
-			PreparedStatement invalidQuestDataVar = con.prepareStatement("DELETE FROM character_quests WHERE charId=? AND name=? AND var=?");
-			
-			PreparedStatement statement = con.prepareStatement("SELECT name,value FROM character_quests WHERE charId=? AND var=?");
-			statement.setInt(1, player.getObjectId());
-			statement.setString(2, "<state>");
-			ResultSet rs = statement.executeQuery();
-			while (rs.next())
+			ps1.setInt(1, player.getObjectId());
+			ps1.setString(2, "<state>");
+			try (ResultSet rs = ps1.executeQuery())
 			{
-				// Get ID of the quest and ID of its state
-				String questId = rs.getString("name");
-				String statename = rs.getString("value");
-				
-				// Search quest associated with the ID
-				Quest q = QuestManager.getInstance().getQuest(questId);
-				if (q == null)
+				while (rs.next())
 				{
-					_log.finer("Unknown quest " + questId + " for player " + player.getName());
-					if (Config.AUTODELETE_INVALID_QUEST_DATA)
+					// Get ID of the quest and ID of its state
+					String questId = rs.getString("name");
+					String statename = rs.getString("value");
+					
+					// Search quest associated with the ID
+					Quest q = QuestManager.getInstance().getQuest(questId);
+					if (q == null)
 					{
-						invalidQuestData.setInt(1, player.getObjectId());
-						invalidQuestData.setString(2, questId);
-						invalidQuestData.executeUpdate();
+						_log.finer("Unknown quest " + questId + " for player " + player.getName());
+						if (Config.AUTODELETE_INVALID_QUEST_DATA)
+						{
+							invalidQuestData.setInt(1, player.getObjectId());
+							invalidQuestData.setString(2, questId);
+							invalidQuestData.executeUpdate();
+						}
+						continue;
 					}
-					continue;
+					
+					// Create a new QuestState for the player that will be added to the player's list of quests
+					new QuestState(q, player, State.getStateId(statename));
 				}
-				
-				// Create a new QuestState for the player that will be added to the player's list of quests
-				new QuestState(q, player, State.getStateId(statename));
 			}
-			rs.close();
-			invalidQuestData.close();
-			statement.close();
 			
 			// Get list of quests owned by the player from the DB in order to add variables used in the quest.
-			statement = con.prepareStatement("SELECT name,var,value FROM character_quests WHERE charId=? AND var<>?");
-			statement.setInt(1, player.getObjectId());
-			statement.setString(2, "<state>");
-			rs = statement.executeQuery();
-			while (rs.next())
+			try (PreparedStatement ps2 = con.prepareStatement("SELECT name, var, value FROM character_quests WHERE charId = ? AND var <> ?"))
 			{
-				String questId = rs.getString("name");
-				String var = rs.getString("var");
-				String value = rs.getString("value");
-				// Get the QuestState saved in the loop before
-				QuestState qs = player.getQuestState(questId);
-				if (qs == null)
+				ps2.setInt(1, player.getObjectId());
+				ps2.setString(2, "<state>");
+				try (ResultSet rs = ps2.executeQuery())
 				{
-					_log.finer("Lost variable " + var + " in quest " + questId + " for player " + player.getName());
-					if (Config.AUTODELETE_INVALID_QUEST_DATA)
+					while (rs.next())
 					{
-						invalidQuestDataVar.setInt(1, player.getObjectId());
-						invalidQuestDataVar.setString(2, questId);
-						invalidQuestDataVar.setString(3, var);
-						invalidQuestDataVar.executeUpdate();
+						String questId = rs.getString("name");
+						String var = rs.getString("var");
+						String value = rs.getString("value");
+						// Get the QuestState saved in the loop before
+						QuestState qs = player.getQuestState(questId);
+						if (qs == null)
+						{
+							_log.finer("Lost variable " + var + " in quest " + questId + " for player " + player.getName());
+							if (Config.AUTODELETE_INVALID_QUEST_DATA)
+							{
+								invalidQuestDataVar.setInt(1, player.getObjectId());
+								invalidQuestDataVar.setString(2, questId);
+								invalidQuestDataVar.setString(3, var);
+								invalidQuestDataVar.executeUpdate();
+							}
+							continue;
+						}
+						// Add parameter to the quest
+						qs.setInternal(var, value);
 					}
-					continue;
 				}
-				// Add parameter to the quest
-				qs.setInternal(var, value);
 			}
-			rs.close();
-			invalidQuestDataVar.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not insert char quest:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		// events
@@ -1431,24 +1424,17 @@ public class Quest extends ManagedScript
 	 */
 	public final void saveGlobalQuestVar(String var, String value)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("REPLACE INTO quest_global_data (quest_name,var,value) VALUES (?,?,?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("REPLACE INTO quest_global_data (quest_name,var,value) VALUES (?,?,?)");
 			statement.setString(1, getName());
 			statement.setString(2, var);
 			statement.setString(3, value);
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not insert global quest variable:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1464,29 +1450,22 @@ public class Quest extends ManagedScript
 	public final String loadGlobalQuestVar(String var)
 	{
 		String result = "";
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT value FROM quest_global_data WHERE quest_name = ? AND var = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("SELECT value FROM quest_global_data WHERE quest_name = ? AND var = ?");
 			statement.setString(1, getName());
 			statement.setString(2, var);
-			ResultSet rs = statement.executeQuery();
-			if (rs.first())
+			try (ResultSet rs = statement.executeQuery())
 			{
-				result = rs.getString(1);
+				if (rs.first())
+				{
+					result = rs.getString(1);
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not load global quest variable:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return result;
 	}
@@ -1497,23 +1476,16 @@ public class Quest extends ManagedScript
 	 */
 	public final void deleteGlobalQuestVar(String var)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM quest_global_data WHERE quest_name = ? AND var = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM quest_global_data WHERE quest_name = ? AND var = ?");
 			statement.setString(1, getName());
 			statement.setString(2, var);
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not delete global quest variable:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1522,23 +1494,15 @@ public class Quest extends ManagedScript
 	 */
 	public final void deleteAllGlobalQuestVars()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM quest_global_data WHERE quest_name = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("DELETE FROM quest_global_data WHERE quest_name = ?");
 			statement.setString(1, getName());
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not delete global quest variables:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1550,26 +1514,19 @@ public class Quest extends ManagedScript
 	 */
 	public static void createQuestVarInDb(QuestState qs, String var, String value)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO character_quests (charId,name,var,value) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE value=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO character_quests (charId,name,var,value) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE value=?");
 			statement.setInt(1, qs.getPlayer().getObjectId());
 			statement.setString(2, qs.getQuestName());
 			statement.setString(3, var);
 			statement.setString(4, value);
 			statement.setString(5, value);
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not insert char quest:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1581,25 +1538,18 @@ public class Quest extends ManagedScript
 	 */
 	public static void updateQuestVarInDb(QuestState qs, String var, String value)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE character_quests SET value=? WHERE charId=? AND name=? AND var = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE character_quests SET value=? WHERE charId=? AND name=? AND var = ?");
 			statement.setString(1, value);
 			statement.setInt(2, qs.getPlayer().getObjectId());
 			statement.setString(3, qs.getQuestName());
 			statement.setString(4, var);
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not update char quest:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1610,25 +1560,17 @@ public class Quest extends ManagedScript
 	 */
 	public static void deleteQuestVarInDb(QuestState qs, String var)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=? AND name=? AND var=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=? AND name=? AND var=?");
 			statement.setInt(1, qs.getPlayer().getObjectId());
 			statement.setString(2, qs.getQuestName());
 			statement.setString(3, var);
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not delete char quest:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1639,34 +1581,20 @@ public class Quest extends ManagedScript
 	 */
 	public static void deleteQuestInDb(QuestState qs, boolean repeatable)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(repeatable ? QUEST_DELETE_FROM_CHAR_QUERY : QUEST_DELETE_FROM_CHAR_QUERY_NON_REPEATABLE_QUERY))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement;
-			if (repeatable)
+			ps.setInt(1, qs.getPlayer().getObjectId());
+			ps.setString(2, qs.getQuestName());
+			if (!repeatable)
 			{
-				statement = con.prepareStatement(QUEST_DELETE_FROM_CHAR_QUERY);
-				statement.setInt(1, qs.getPlayer().getObjectId());
-				statement.setString(2, qs.getQuestName());
+				ps.setString(3, "<state>");
 			}
-			else
-			{
-				statement = con.prepareStatement(QUEST_DELETE_FROM_CHAR_QUERY_NON_REPEATABLE_QUERY);
-				statement.setInt(1, qs.getPlayer().getObjectId());
-				statement.setString(2, qs.getQuestName());
-				statement.setString(3, "<state>");
-			}
-			statement.executeUpdate();
-			statement.close();
+			ps.executeUpdate();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not delete char quest:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

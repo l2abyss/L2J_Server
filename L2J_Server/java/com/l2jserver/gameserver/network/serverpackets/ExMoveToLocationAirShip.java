@@ -18,8 +18,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 
 public class ExMoveToLocationAirShip extends L2GameServerPacket
 {
-	private static final String _S__FE_65_EXAIRSHIPMOVETOLOCATION = "[S] FE:65 ExMoveToLocationAirShip";
-	
 	private final int _objId, _tx, _ty, _tz, _x, _y, _z;
 	
 	public ExMoveToLocationAirShip(L2Character cha)
@@ -46,11 +44,5 @@ public class ExMoveToLocationAirShip extends L2GameServerPacket
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_65_EXAIRSHIPMOVETOLOCATION;
 	}
 }

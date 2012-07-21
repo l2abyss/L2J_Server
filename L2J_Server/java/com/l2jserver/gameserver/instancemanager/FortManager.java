@@ -152,11 +152,8 @@ public class FortManager implements InstanceListManager
 	@Override
 	public void loadInstances()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("SELECT id FROM fort ORDER BY id");
 			ResultSet rs = statement.executeQuery();
 			
@@ -177,10 +174,6 @@ public class FortManager implements InstanceListManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: loadFortData(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

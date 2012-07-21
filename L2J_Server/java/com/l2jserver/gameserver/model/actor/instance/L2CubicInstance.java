@@ -39,13 +39,14 @@ import com.l2jserver.gameserver.model.entity.TvTEventTeam;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDrain;
+import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.util.Rnd;
 
-public class L2CubicInstance
+public final class L2CubicInstance
 {
 	protected static final Logger _log = Logger.getLogger(L2CubicInstance.class.getName());
 	
@@ -261,8 +262,8 @@ public class L2CubicInstance
 	
 	public final int getMCriticalHit(L2Character target, L2Skill skill)
 	{
-		// TODO: Temporary now mcrit for cubics is the baseMCritRate of its owner
-		return _owner.getTemplate().getBaseMCritRate();
+		// Magical Critical Rate for cubics is the base Magical Critical Rate of its owner
+		return (int) (BaseStats.WIT.calcBonus(_owner) * 10);
 	}
 	
 	public int getMAtk()
@@ -469,10 +470,9 @@ public class L2CubicInstance
 	{
 		private final int _chance;
 		
-		Action(int chance)
+		protected Action(int chance)
 		{
 			_chance = chance;
-			// run task
 		}
 		
 		@Override
@@ -726,65 +726,6 @@ public class L2CubicInstance
 			
 			switch (type)
 			{
-				case STUN:
-				{
-					if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
-					{
-						// if this is a debuff let the duel manager know about it
-						// so the debuff can be removed after the duel
-						// (player & target must be in the same duel)
-						if (target instanceof L2PcInstance
-								&& ((L2PcInstance) target).isInDuel()
-								&& skill.getSkillType() == L2SkillType.DEBUFF
-								&& activeCubic.getOwner().getDuelId() == ((L2PcInstance) target).getDuelId())
-						{
-							DuelManager dm = DuelManager.getInstance();
-							for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
-								if (debuff != null)
-									dm.onBuff(((L2PcInstance) target), debuff);
-						}
-						else
-							skill.getEffects(activeCubic, target, null);
-						if (Config.DEBUG)
-							_log.info("Disablers: useCubicSkill() -> success");
-					}
-					else
-					{
-						if (Config.DEBUG)
-							_log.info("Disablers: useCubicSkill() -> failed");
-					}
-					break;
-				}
-				case PARALYZE: // use same as root for now
-				{
-					if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
-					{
-						// if this is a debuff let the duel manager know about it
-						// so the debuff can be removed after the duel
-						// (player & target must be in the same duel)
-						if (target instanceof L2PcInstance
-								&& ((L2PcInstance) target).isInDuel()
-								&& skill.getSkillType() == L2SkillType.DEBUFF
-								&& activeCubic.getOwner().getDuelId() == ((L2PcInstance) target).getDuelId())
-						{
-							DuelManager dm = DuelManager.getInstance();
-							for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
-								if (debuff != null)
-									dm.onBuff(((L2PcInstance) target), debuff);
-						}
-						else
-							skill.getEffects(activeCubic, target, null);
-						
-						if (Config.DEBUG)
-							_log.info("Disablers: useCubicSkill() -> success");
-					}
-					else
-					{
-						if (Config.DEBUG)
-							_log.info("Disablers: useCubicSkill() -> failed");
-					}
-					break;
-				}
 				case CANCEL_DEBUFF:
 				{
 					L2Effect[] effects = target.getAllEffects();
@@ -810,6 +751,8 @@ public class L2CubicInstance
 					
 					break;
 				}
+				case STUN:
+				case PARALYZE:
 				case ROOT:
 				{
 					if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
@@ -967,14 +910,8 @@ public class L2CubicInstance
 		return _givenByOther;
 	}
 	
-	private class Heal implements Runnable
+	protected class Heal implements Runnable
 	{
-		
-		Heal()
-		{
-			// run task
-		}
-		
 		@Override
 		public void run()
 		{

@@ -106,29 +106,22 @@ public final class InitWorldInfo extends BaseWritePacket
 					super.writeD(p.getInteger("clanid"));
 					super.writeD(p.getInteger("accesslevel"));
 					super.writeC(p.getInteger("online"));
-					Connection con = null;
 					FastList<Integer> list = FastList.newInstance();
-					
-					try
+					try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+						PreparedStatement statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?"))
 					{
-						con = L2DatabaseFactory.getInstance().getConnection();
-						PreparedStatement statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?");
 						statement.setInt(1, p.getInteger("charId"));
-						ResultSet rset = statement.executeQuery();
-						
-						while (rset.next())
-							list.add(rset.getInt("friendId"));
-						
-						rset.close();
-						statement.close();
+						try (ResultSet rset = statement.executeQuery())
+						{
+							while (rset.next())
+							{
+								list.add(rset.getInt("friendId"));
+							}
+						}
 					}
 					catch (Exception e)
 					{
 						_log.log(Level.SEVERE, "Error restoring friend data for Community Board transfer.", e);
-					}
-					finally
-					{
-						L2DatabaseFactory.close(con);
 					}
 					super.writeD(list.size());
 					for (int j : list)

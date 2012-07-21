@@ -18,16 +18,15 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.RecoBonus;
 
 /**
- **	@author Gnacik
- **
+ ** @author Gnacik
  */
 public class ExVoteSystemInfo extends L2GameServerPacket
 {
-	private int _recomLeft;
-	private int _recomHave;
-	private int _bonusTime;
-	private int _bonusVal;
-	private int _bonusType;
+	private final int _recomLeft;
+	private final int _recomHave;
+	private final int _bonusTime;
+	private final int _bonusVal;
+	private final int _bonusType;
 	
 	public ExVoteSystemInfo(L2PcInstance player)
 	{
@@ -48,11 +47,5 @@ public class ExVoteSystemInfo extends L2GameServerPacket
 		writeD(_bonusTime);
 		writeD(_bonusVal);
 		writeD(_bonusType);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:C9 ExVoteSystemInfo";
 	}
 }

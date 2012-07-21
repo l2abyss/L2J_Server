@@ -15,30 +15,20 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: ch (trigger)
- * @author  KenM
+ * @author KenM
  */
 public class ExShowAdventurerGuideBook extends L2GameServerPacket
 {
-	private static final String _S__FE_37_EXSHOWADVENTURERGUIDEBOOK = "[S] FE:38 ExShowAdventurerGuideBook";
+	public static final ExShowAdventurerGuideBook STATIC_PACKET = new ExShowAdventurerGuideBook();
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
+	private ExShowAdventurerGuideBook()
+	{
+	}
+	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xFE);
 		writeH(0x38);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_37_EXSHOWADVENTURERGUIDEBOOK;
-	}
-	
 }

@@ -21,23 +21,8 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
-/**
- *
- * 01                // Packet Identifier <BR>
- * c6 37 50 40       // ObjectId <BR><BR>
- *
- * 01 00             // Number of Attribute Trame of the Packet <BR><BR>
- *
- * c6 37 50 40       // Attribute Identifier : 01-Level, 02-Experience, 03-STR, 04-DEX, 05-CON, 06-INT, 07-WIT, 08-MEN, 09-Current HP, 0a, Max HP...<BR>
- * cd 09 00 00       // Attribute Value <BR>
- *
- * format   d d(dd)
- *
- * @version $Revision: 1.3.2.1.2.5 $ $Date: 2005/03/27 15:29:39 $
- */
 public final class StatusUpdate extends L2GameServerPacket
 {
-	private static final String _S__1A_STATUSUPDATE = "[S] 18 StatusUpdate";
 	private static final int HP_MOD = 10000000;
 	
 	public static final int LEVEL = 0x01;
@@ -73,18 +58,14 @@ public final class StatusUpdate extends L2GameServerPacket
 	public static final int CUR_CP = 0x21;
 	public static final int MAX_CP = 0x22;
 	
-	private int _objectId;
+	private final int _objectId;
 	private int _maxHp = -1;
-	private ArrayList<Attribute> _attributes;
+	private final ArrayList<Attribute> _attributes;
 	
 	static class Attribute
 	{
-		/** id values
-		 * 09 - current health
-		 * 0a - max health
-		 * 0b - current mana
-		 * 0c - max mana
-		 *
+		/**
+		 * id values 09 - current health 0a - max health 0b - current mana 0c - max mana
 		 */
 		public int id;
 		public int value;
@@ -131,7 +112,7 @@ public final class StatusUpdate extends L2GameServerPacket
 				level = HP_MOD;
 			else if (id == CUR_HP)
 			{
-				level = (int) ((level / (float)_maxHp) * HP_MOD);
+				level = (int) ((level / (float) _maxHp) * HP_MOD);
 			}
 		}
 		_attributes.add(new Attribute(id, level));
@@ -144,16 +125,10 @@ public final class StatusUpdate extends L2GameServerPacket
 		writeD(_objectId);
 		writeD(_attributes.size());
 		
-		for (Attribute temp: _attributes)
+		for (Attribute temp : _attributes)
 		{
 			writeD(temp.id);
 			writeD(temp.value);
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__1A_STATUSUPDATE;
 	}
 }

@@ -14,18 +14,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public final class AutoAttackStart extends L2GameServerPacket
 {
-	// dh
-	
-	private static final String _S__3B_AUTOATTACKSTART = "[S] 25 AutoAttackStart";
-	private int _targetObjId;
+	private final int _targetObjId;
 	
 	/**
 	 * @param targetId
@@ -40,11 +31,5 @@ public final class AutoAttackStart extends L2GameServerPacket
 	{
 		writeC(0x25);
 		writeD(_targetObjId);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__3B_AUTOATTACKSTART;
 	}
 }

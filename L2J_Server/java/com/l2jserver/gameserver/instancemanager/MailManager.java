@@ -57,11 +57,8 @@ public class MailManager
 	private void load()
 	{
 		int count = 0;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM messages ORDER BY expiration");
 			// stmt2 = con.prepareStatement("SELECT * FROM attachments WHERE messageId = ?");
 			
@@ -89,10 +86,6 @@ public class MailManager
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Mail Manager: Error loading from database:" + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		_log.info("Mail Manager: Successfully loaded " + count + " messages.");
 	}
@@ -175,11 +168,8 @@ public class MailManager
 	public void sendMessage(Message msg)
 	{
 		_messages.put(msg.getId(), msg);
-		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement stmt = Message.getStatement(msg, con);
 			stmt.execute();
 			stmt.close();
@@ -187,10 +177,6 @@ public class MailManager
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Mail Manager: Error saving message:" + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
@@ -253,10 +239,8 @@ public class MailManager
 	
 	public final void markAsReadInDb(int msgId)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET isUnread = 'false' WHERE messageId = ?");
 			stmt.setInt(1, msgId);
 			stmt.execute();
@@ -266,108 +250,63 @@ public class MailManager
 		{
 			_log.log(Level.WARNING, "Mail Manager: Error marking as read message:" + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public final void markAsDeletedBySenderInDb(int msgId)
 	{
-		Connection con = null;
-		PreparedStatement stmt = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET isDeletedBySender = 'true' WHERE messageId = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			stmt = con.prepareStatement("UPDATE messages SET isDeletedBySender = 'true' WHERE messageId = ?");
-			
 			stmt.setInt(1, msgId);
-			
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Mail Manager: Error marking as deleted by sender message:" + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public final void markAsDeletedByReceiverInDb(int msgId)
 	{
-		Connection con = null;
-		PreparedStatement stmt = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET isDeletedByReceiver = 'true' WHERE messageId = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			stmt = con.prepareStatement("UPDATE messages SET isDeletedByReceiver = 'true' WHERE messageId = ?");
-			
 			stmt.setInt(1, msgId);
-			
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Mail Manager: Error marking as deleted by receiver message:" + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public final void removeAttachmentsInDb(int msgId)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET hasAttachments = 'false' WHERE messageId = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			PreparedStatement stmt = con.prepareStatement("UPDATE messages SET hasAttachments = 'false' WHERE messageId = ?");
-			
 			stmt.setInt(1, msgId);
-			
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Mail Manager: Error removing attachments in message:" + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public final void deleteMessageInDb(int msgId)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement("DELETE FROM messages WHERE messageId = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			PreparedStatement stmt = con.prepareStatement("DELETE FROM messages WHERE messageId = ?");
-			
 			stmt.setInt(1, msgId);
-			
 			stmt.execute();
-			stmt.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Mail Manager: Error deleting message:" + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		
 		_messages.remove(msgId);
 		IdFactory.getInstance().releaseId(msgId);
 	}

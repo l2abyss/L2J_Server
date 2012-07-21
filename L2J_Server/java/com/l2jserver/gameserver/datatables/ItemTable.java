@@ -424,23 +424,16 @@ public class ItemTable
 			// if it's a pet control item, delete the pet as well
 			if (item.getItem().isPetItem())
 			{
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?"))
 				{
 					// Delete the pet in db
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id=?");
 					statement.setInt(1, item.getObjectId());
 					statement.execute();
-					statement.close();
 				}
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, "could not delete pet objectid:", e);
-				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
 				}
 			}
 		}
@@ -449,7 +442,7 @@ public class ItemTable
 	public void reload()
 	{
 		load();
-		EnchantHPBonusData.getInstance().reload();
+		EnchantHPBonusData.getInstance().load();
 	}
 	
 	protected static class ResetOwner implements Runnable

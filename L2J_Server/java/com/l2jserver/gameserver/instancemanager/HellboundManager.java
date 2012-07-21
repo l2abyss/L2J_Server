@@ -259,10 +259,8 @@ public class HellboundManager
 	
 	private final void loadSpawns()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			final PreparedStatement statement = con.prepareStatement(LOAD_SPAWNS);
 			final ResultSet rset = statement.executeQuery();
 			
@@ -306,10 +304,6 @@ public class HellboundManager
 		catch (Exception e)
 		{
 			_log.warning("HellboundManager: problem while loading spawns: " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		_log.config("HellboundManager: Loaded " + _population.size() + " npc spawn locations.");
 	}

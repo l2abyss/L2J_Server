@@ -897,7 +897,14 @@ public final class L2ItemInstance extends L2Object
 			return false;
 		}
 		_augmentation = augmentation;
-		updateItemAttributes(null);
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		{
+			updateItemAttributes(con);
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.SEVERE, "Could not update atributes for item: " + this + " from DB:", e);
+		}
 		return true;
 	}
 	
@@ -914,77 +921,59 @@ public final class L2ItemInstance extends L2Object
 		}
 		_augmentation = null;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			PreparedStatement statement = null;
-			// Remove the entry
-			statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId = ?");
-			
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not remove augmentation for item: " + this + " from DB:", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void restoreAttributes()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps1 = con.prepareStatement("SELECT augAttributes,augSkillId,augSkillLevel FROM item_attributes WHERE itemId=?");
+			PreparedStatement ps2 = con.prepareStatement("SELECT elemType,elemValue FROM item_elementals WHERE itemId=?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT augAttributes,augSkillId,augSkillLevel FROM item_attributes WHERE itemId=?");
-			statement.setInt(1, getObjectId());
-			ResultSet rs = statement.executeQuery();
-			if (rs.next())
+			ps1.setInt(1, getObjectId());
+			try (ResultSet rs = ps1.executeQuery())
 			{
-				int aug_attributes = rs.getInt(1);
-				int aug_skillId = rs.getInt(2);
-				int aug_skillLevel = rs.getInt(3);
-				if (aug_attributes != -1 && aug_skillId != -1 && aug_skillLevel != -1)
-					_augmentation = new L2Augmentation(rs.getInt("augAttributes"), rs.getInt("augSkillId"), rs.getInt("augSkillLevel"));
+				if (rs.next())
+				{
+					int aug_attributes = rs.getInt(1);
+					int aug_skillId = rs.getInt(2);
+					int aug_skillLevel = rs.getInt(3);
+					if (aug_attributes != -1 && aug_skillId != -1 && aug_skillLevel != -1)
+						_augmentation = new L2Augmentation(rs.getInt("augAttributes"), rs.getInt("augSkillId"), rs.getInt("augSkillLevel"));
+				}
 			}
-			rs.close();
-			statement.close();
-			statement = con.prepareStatement("SELECT elemType,elemValue FROM item_elementals WHERE itemId=?");
-			statement.setInt(1, getObjectId());
-			rs = statement.executeQuery();
-			while (rs.next())
+			
+			ps2.setInt(1, getObjectId());
+			try (ResultSet rs = ps2.executeQuery())
 			{
-				byte elem_type = rs.getByte(1);
-				int elem_value = rs.getInt(2);
-				if (elem_type != -1 && elem_value != -1)
-					applyAttribute(elem_type, elem_value);
+				while (rs.next())
+				{
+					byte elem_type = rs.getByte(1);
+					int elem_value = rs.getInt(2);
+					if (elem_type != -1 && elem_value != -1)
+						applyAttribute(elem_type, elem_value);
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not restore augmentation and elemental data for item " + this + " from DB: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
-	private void updateItemAttributes(Connection pooledCon)
+	private void updateItemAttributes(Connection con)
 	{
-		Connection con = null;
 		try
 		{
-			con = pooledCon == null ? L2DatabaseFactory.getInstance().getConnection() : pooledCon;
 			PreparedStatement statement = con.prepareStatement("REPLACE INTO item_attributes VALUES(?,?,?,?)");
 			statement.setInt(1, getObjectId());
 			if (_augmentation == null)
@@ -1013,21 +1002,13 @@ public final class L2ItemInstance extends L2Object
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "Could not update atributes for item: " + this + " from DB:", e);
-			
-		}
-		finally
-		{
-			if (pooledCon == null)
-				L2DatabaseFactory.close(con);
 		}
 	}
 	
-	private void updateItemElements(Connection pooledCon)
+	private void updateItemElements(Connection con)
 	{
-		Connection con = null;
 		try
 		{
-			con = pooledCon == null ? L2DatabaseFactory.getInstance().getConnection() : pooledCon;
 			PreparedStatement statement = con.prepareStatement("DELETE FROM item_elementals WHERE itemId = ?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
@@ -1052,11 +1033,6 @@ public final class L2ItemInstance extends L2Object
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "Could not update elementals for item: " + this + " from DB:", e);
-		}
-		finally
-		{
-			if (pooledCon == null)
-				L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1151,7 +1127,14 @@ public final class L2ItemInstance extends L2Object
 	public void setElementAttr(byte element, int value)
 	{
 		applyAttribute(element, value);
-		updateItemElements(null);
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		{
+			updateItemElements(con);
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.SEVERE, "Could not update elementals for item: " + this + " from DB:", e);
+		}
 	}
 	
 	/**
@@ -1180,35 +1163,22 @@ public final class L2ItemInstance extends L2Object
 		}
 		_elementals = array;
 		
-		Connection con = null;
-		try
+		String query = (element != -1) ? "DELETE FROM item_elementals WHERE itemId = ? AND elemType = ?" : "DELETE FROM item_elementals WHERE itemId = ?";
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(query))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			PreparedStatement statement = null;
 			if (element != -1)
 			{
 				// Item can have still others
-				statement = con.prepareStatement("DELETE FROM item_elementals WHERE itemId = ? AND elemType = ?");
 				statement.setInt(2, element);
-			}
-			else
-			{
-				// Remove the entries
-				statement = con.prepareStatement("DELETE FROM item_elementals WHERE itemId = ?");
 			}
 			
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not remove elemental enchant for item: " + this + " from DB:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1643,11 +1613,9 @@ public final class L2ItemInstance extends L2Object
 		if (_storedInDb)
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=? " + "WHERE object_id = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=? " + "WHERE object_id = ?");
 			statement.setInt(1, _ownerId);
 			statement.setLong(2, getCount());
 			statement.setString(3, _loc.name());
@@ -1661,15 +1629,10 @@ public final class L2ItemInstance extends L2Object
 			statement.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not update item " + this + " in DB: Reason: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1683,11 +1646,9 @@ public final class L2ItemInstance extends L2Object
 		if (_wear)
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setInt(1, _ownerId);
 			statement.setInt(2, _itemId);
 			statement.setLong(3, getCount());
@@ -1703,7 +1664,6 @@ public final class L2ItemInstance extends L2Object
 			statement.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
-			statement.close();
 			
 			if (_augmentation != null)
 				updateItemAttributes(con);
@@ -1713,10 +1673,6 @@ public final class L2ItemInstance extends L2Object
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not insert item " + this + " into DB: Reason: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1730,10 +1686,8 @@ public final class L2ItemInstance extends L2Object
 		if (_wear)
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE object_id = ?");
 			statement.setInt(1, getObjectId());
 			statement.executeUpdate();
@@ -1754,10 +1708,6 @@ public final class L2ItemInstance extends L2Object
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Could not delete item " + this + " in DB: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

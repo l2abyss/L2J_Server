@@ -19,9 +19,9 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class ExNotifyPremiumItem extends L2GameServerPacket
 {
-	private static final String _S__FE_85_EXNOTIFYPREMIUMITEM = "[S] FE:85 ExNotifyPremiumItem";
+	public static final ExNotifyPremiumItem STATIC_PACKET = new ExNotifyPremiumItem();
 	
-	public ExNotifyPremiumItem()
+	private ExNotifyPremiumItem()
 	{
 	}
 	
@@ -30,11 +30,5 @@ public class ExNotifyPremiumItem extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x85);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_85_EXNOTIFYPREMIUMITEM;
 	}
 }

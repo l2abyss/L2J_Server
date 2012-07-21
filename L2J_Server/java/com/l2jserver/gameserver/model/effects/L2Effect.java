@@ -647,15 +647,13 @@ public abstract class L2Effect implements IChanceSkillTrigger
 				|| getSkill().isHeroSkill()
 				|| getSkill().isGMSkill()
 				|| getSkill().isStatic()
-				|| isHerbEffect()
 				|| !getSkill().canBeDispeled())
 			return false;
 		return true;
 	}
 
 	/**
-	 * Return true if effect itself can be stolen
-	 * @return
+	 * @return {@code true} if effect itself can be stolen, {@code false} otherwise
 	 */
 	protected boolean effectCanBeStolen()
 	{

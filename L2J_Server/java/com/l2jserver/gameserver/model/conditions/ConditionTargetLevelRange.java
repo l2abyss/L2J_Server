@@ -12,14 +12,34 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.instancemanager;
+package com.l2jserver.gameserver.model.conditions;
 
-public class Manager
+import com.l2jserver.gameserver.model.stats.Env;
+
+/**
+ * @author UnAfraid
+ */
+public class ConditionTargetLevelRange extends Condition
 {
+	private final int[] _levels;
 	
-	public static void reloadAll()
+	/**
+	 * Instantiates a new condition target levels range.
+	 * @param levels the {@code levels} range.
+	 */
+	public ConditionTargetLevelRange(int[] levels)
 	{
-		AuctionManager.getInstance().reload();
-		//		QuestManager.getInstance().reload();
+		_levels = levels;
+	}
+	
+	@Override
+	public boolean testImpl(Env env)
+	{
+		if (env.getTarget() == null)
+		{
+			return false;
+		}
+		final int level = env.getTarget().getLevel();
+		return ((level >= _levels[0]) && (level <= _levels[1]));
 	}
 }

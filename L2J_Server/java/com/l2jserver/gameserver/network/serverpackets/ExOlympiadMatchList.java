@@ -13,7 +13,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
- 
+
 import java.util.List;
 
 import com.l2jserver.gameserver.model.olympiad.AbstractOlympiadGame;
@@ -21,24 +21,12 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadGameClassed;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameNonClassed;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTeams;
- 
+
 /**
- * Format: (chd) ddd[dddS]
- * d: number of matches
- * d: unknown (always 0)
- * [
- *  d: arena
- *  d: match type
- *  d: status
- *  S: player 1 name
- *  S: player 2 name
- * ]
- * 
  * @author mrTJO
  */
 public class ExOlympiadMatchList extends L2GameServerPacket
 {
-	private static final String _S__FE_D4_OLYMPIADMATCHLIST = "[S] FE:D4 ExOlympiadMatchList";
 	private final List<OlympiadGameTask> _games;
 	
 	/**
@@ -52,9 +40,9 @@ public class ExOlympiadMatchList extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0xd4);
-		writeD(0x00);
+		writeC(0xFE);
+		writeH(0xD4);
+		writeD(0x00); // Type 0 = Match List, 1 = Match Result
 		
 		writeD(_games.size());
 		writeD(0x00);
@@ -80,11 +68,5 @@ public class ExOlympiadMatchList extends L2GameServerPacket
 				writeS(game.getPlayerNames()[1]); // Player 2 Name
 			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_D4_OLYMPIADMATCHLIST;
 	}
 }

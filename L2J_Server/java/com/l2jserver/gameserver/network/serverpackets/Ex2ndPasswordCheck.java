@@ -15,21 +15,15 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format (ch)dd
- * d: window type
- * d: ban user (1)
- * 
  * @author mrTJO
  */
 public class Ex2ndPasswordCheck extends L2GameServerPacket
 {
-	private static final String _S__FE_109_EX2NDPASSWORDCHECKPACKET = "[S] FE:109 Ex2NDPasswordCheckPacket";
-	
 	public static final int PASSWORD_NEW = 0x00;
 	public static final int PASSWORD_PROMPT = 0x01;
 	public static final int PASSWORD_OK = 0x02;
 	
-	int _windowType;
+	private final int _windowType;
 	
 	public Ex2ndPasswordCheck(int windowType)
 	{
@@ -40,15 +34,9 @@ public class Ex2ndPasswordCheck extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		//writeH(0x109);
+		// writeH(0x109); GOD
 		writeH(0xe5);
 		writeD(_windowType);
 		writeD(0x00);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_109_EX2NDPASSWORDCHECKPACKET;
 	}
 }

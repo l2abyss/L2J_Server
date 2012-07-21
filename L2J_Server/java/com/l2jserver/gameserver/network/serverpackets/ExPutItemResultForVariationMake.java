@@ -14,16 +14,10 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- * Format: (ch)ddd
- *
- */
 public class ExPutItemResultForVariationMake extends L2GameServerPacket
 {
-	private static final String _S__FE_52_EXCONFIRMVARIATIONITEM = "[S] FE:53 ExPutItemResultForVariationMake";
-	
-	private int _itemObjId;
-	private int _itemId;
+	private final int _itemObjId;
+	private final int _itemId;
 	
 	public ExPutItemResultForVariationMake(int itemObjId, int itemId)
 	{
@@ -31,26 +25,13 @@ public class ExPutItemResultForVariationMake extends L2GameServerPacket
 		_itemId = itemId;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x53);
 		writeD(_itemObjId);
 		writeD(_itemId);
-		writeD(1);
+		writeD(0x01);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_52_EXCONFIRMVARIATIONITEM;
-	}
-	
 }

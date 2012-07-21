@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
  * @author Kerberos
  */
@@ -38,15 +37,9 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 		
 		writeC(0xFE);
 		writeH(0xDA);
-		writeD(_charObjId); //object ID of Player
-		writeD(_val);		// event effect id
-		//writeC(0x00);		// Event flag, added only if event is active
+		writeD(_charObjId); // object ID of Player
+		writeD(_val); // event effect id
+		// writeC(0x00); // Event flag, added only if event is active
 		
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:DA ExBrExtraUSerInfo".intern();
 	}
 }

@@ -23,36 +23,25 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Support for "Chat with Friends" dialog.
- *
+ * Support for "Chat with Friends" dialog. <br />
  * This packet is sent only at login.
- *
- * Format: cd (dSdd)
- * d: Total Friend Count
- *
- * d: Player Object ID
- * S: Friend Name
- * d: Online/Offline
- * d: Unknown (0 if offline)
- *
  * @author Tempy
  */
 public class FriendList extends L2GameServerPacket
 {
-	private static final String _S__FA_FRIENDLIST = "[S] 75 FriendList";
-	private List<FriendInfo> _info;
+	private final List<FriendInfo> _info;
 	
 	private static class FriendInfo
 	{
-		int objId;
-		String name;
-		boolean online;
+		int _objId;
+		String _name;
+		boolean _online;
 		
 		public FriendInfo(int objId, String name, boolean online)
 		{
-			this.objId = objId;
-			this.name = name;
-			this.online = online;
+			_objId = objId;
+			_name = name;
+			_online = online;
 		}
 	}
 	
@@ -77,16 +66,10 @@ public class FriendList extends L2GameServerPacket
 		writeD(_info.size());
 		for (FriendInfo info : _info)
 		{
-			writeD(info.objId); // character id
-			writeS(info.name);
-			writeD(info.online ? 0x01 : 0x00); // online
-			writeD(info.online ? info.objId : 0x00); // object id if online
+			writeD(info._objId); // character id
+			writeS(info._name);
+			writeD(info._online ? 0x01 : 0x00); // online
+			writeD(info._online ? info._objId : 0x00); // object id if online
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FA_FRIENDLIST;
 	}
 }

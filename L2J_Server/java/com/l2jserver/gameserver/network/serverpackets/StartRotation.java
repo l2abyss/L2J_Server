@@ -16,8 +16,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 public final class StartRotation extends L2GameServerPacket
 {
-	private static final String _S__77_BEGINROTATION = "[S] 7a BeginRotation";
-	private int _charObjId, _degree, _side, _speed;
+	private final int _charObjId, _degree, _side, _speed;
 	
 	public StartRotation(int objectId, int degree, int side, int speed)
 	{
@@ -35,11 +34,5 @@ public final class StartRotation extends L2GameServerPacket
 		writeD(_degree);
 		writeD(_side);
 		writeD(_speed);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__77_BEGINROTATION;
 	}
 }

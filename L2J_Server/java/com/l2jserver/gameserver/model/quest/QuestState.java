@@ -401,24 +401,17 @@ public final class QuestState
 	// TODO: these methods should not be here, they could be used by other classes to save some variables, but they can't because they require to create a QuestState first.
 	public final void saveGlobalQuestVar(String var, String value)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("REPLACE INTO character_quest_global_data (charId, var, value) VALUES (?, ?, ?)"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("REPLACE INTO character_quest_global_data (charId, var, value) VALUES (?, ?, ?)");
 			statement.setInt(1, _player.getObjectId());
 			statement.setString(2, var);
 			statement.setString(3, value);
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not insert player's global quest variable: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -435,28 +428,22 @@ public final class QuestState
 	public final String getGlobalQuestVar(String var)
 	{
 		String result = "";
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT value FROM character_quest_global_data WHERE charId = ? AND var = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT value FROM character_quest_global_data WHERE charId = ? AND var = ?");
-			statement.setInt(1, _player.getObjectId());
-			statement.setString(2, var);
-			ResultSet rs = statement.executeQuery();
-			if (rs.first())
+			ps.setInt(1, _player.getObjectId());
+			ps.setString(2, var);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				result = rs.getString(1);
+				if (rs.first())
+				{
+					result = rs.getString(1);
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not load player's global quest variable: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return result;
 	}
@@ -467,23 +454,16 @@ public final class QuestState
 	 */
 	public final void deleteGlobalQuestVar(String var)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId = ? AND var = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId = ? AND var = ?");
 			statement.setInt(1, _player.getObjectId());
 			statement.setString(2, var);
 			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not delete player's global quest variable; charId = " + _player.getObjectId() + ", variable name = " + var + ". Exception: " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -1124,7 +1104,7 @@ public final class QuestState
 	
 	public void closeTutorialHtml()
 	{
-		_player.sendPacket(new TutorialCloseHtml());
+		_player.sendPacket(TutorialCloseHtml.STATIC_PACKET);
 	}
 	
 	public void onTutorialClientEvent(int number)

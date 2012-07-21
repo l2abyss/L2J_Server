@@ -21,23 +21,21 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.entity.Fort;
 
 /**
- * format: d (dSdd)
- * cnt:%d (fortressID:%d ownerName:%s, siegeState:%d, lastOwnedTime:%d)
- * 
  * @author KenM
  */
 public class ExShowFortressInfo extends L2GameServerPacket
 {
-	@Override
-	public String getType()
+	public static final ExShowFortressInfo STATIC_PACKET = new ExShowFortressInfo();
+	
+	private ExShowFortressInfo()
 	{
-		return "[S] FE:15 ExShowFortressInfo";
+		
 	}
 	
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x15);
 		List<Fort> forts = FortManager.getInstance().getForts();
 		writeD(forts.size());
@@ -45,24 +43,8 @@ public class ExShowFortressInfo extends L2GameServerPacket
 		{
 			L2Clan clan = fort.getOwnerClan();
 			writeD(fort.getFortId());
-			if (clan != null)
-			{
-				writeS(clan.getName());
-			}
-			else
-			{
-				writeS("");
-			}
-			
-			if (fort.getSiege().getIsInProgress())
-			{
-				writeD(1);
-			}
-			else
-			{
-				writeD(0);
-			}
-			
+			writeS(clan != null ? clan.getName() : "");
+			writeD(fort.getSiege().getIsInProgress() ? 0x01 : 0x00);
 			// Time of possession
 			writeD(fort.getOwnedTime());
 		}

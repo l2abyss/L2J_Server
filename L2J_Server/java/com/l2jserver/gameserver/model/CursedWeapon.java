@@ -127,11 +127,8 @@ public class CursedWeapon
 				// Remove from Db
 				_log.info(_name + " being removed offline." );
 				
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
-					
 					// Delete the item
 					PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE owner_id=? AND item_id=?");
 					statement.setInt(1, _playerId);
@@ -166,10 +163,6 @@ public class CursedWeapon
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, "Could not delete : " + e.getMessage(), e);
-				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
 				}
 			}
 		} else
@@ -475,15 +468,13 @@ public class CursedWeapon
 		if (Config.DEBUG)
 			_log.info("CursedWeapon: Saving data to disk.");
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			// Delete previous datas
 			PreparedStatement statement = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
 			statement.setInt(1, _itemId);
 			statement.executeUpdate();
+			statement.close();
 			
 			if (_isActivated)
 			{
@@ -501,10 +492,6 @@ public class CursedWeapon
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "CursedWeapon: Failed to save data.", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

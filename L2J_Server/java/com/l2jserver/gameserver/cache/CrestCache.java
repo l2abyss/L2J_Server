@@ -219,23 +219,16 @@ public class CrestCache
 				file.renameTo(new File(Config.DATAPACK_ROOT, "data/crests/Crest_" + newId + ".bmp"));
 				_log.info("Renamed Clan crest to new format: Crest_" + newId + ".bmp");
 				
-				Connection con = null;
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement ps = con.prepareStatement("UPDATE clan_data SET crest_id = ? WHERE clan_id = ?"))
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET crest_id = ? WHERE clan_id = ?");
-					statement.setInt(1, newId);
-					statement.setInt(2, clan.getClanId());
-					statement.executeUpdate();
-					statement.close();
+					ps.setInt(1, newId);
+					ps.setInt(2, clan.getClanId());
+					ps.executeUpdate();
 				}
 				catch (SQLException e)
 				{
 					_log.log(Level.WARNING, "Could not update the crest id:" + e.getMessage(), e);
-				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
 				}
 				clan.setCrestId(newId);
 			}

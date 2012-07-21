@@ -15,29 +15,19 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- *
- * @author  devScarlet & mrTJO
+ * @author devScarlet, mrTJO
  */
 public class ServerClose extends L2GameServerPacket
 {
-	private static final String _S__26_SERVERCLOSE = "[S] 20 ServerClose";
 	public static final ServerClose STATIC_PACKET = new ServerClose();
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
+	private ServerClose()
+	{
+	}
+	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0x20);
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__26_SERVERCLOSE;
 	}
 }

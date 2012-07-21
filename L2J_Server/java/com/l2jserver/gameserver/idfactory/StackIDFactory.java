@@ -40,10 +40,8 @@ public class StackIDFactory extends IdFactory
 		_curOID = FIRST_OID;
 		_tempOID = FIRST_OID;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			// con.createStatement().execute("drop table if exists tmp_obj_id");
 			
 			int[] tmp_obj_ids = extractUsedObjectIDTable();
@@ -67,10 +65,6 @@ public class StackIDFactory extends IdFactory
 		{
 			_log.severe(getClass().getSimpleName() + ": Could not be initialized properly:" + e.getMessage());
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private int insertUntil(int[] tmp_obj_ids, int idx, int N, Connection con) throws SQLException
@@ -86,19 +80,21 @@ public class StackIDFactory extends IdFactory
 		{
 			for (String check : ID_CHECKS)
 			{
-				PreparedStatement ps = con.prepareStatement(check);
-				ps.setInt(1, _tempOID);
-				// ps.setInt(1, _curOID);
-				ps.setInt(2, id);
-				ResultSet rs = ps.executeQuery();
-				while (rs.next())
+				try (PreparedStatement ps = con.prepareStatement(check))
 				{
-					int badId = rs.getInt(1);
-					_log.severe("Bad ID " + badId + " in DB found by: " + check);
-					throw new RuntimeException();
+					ps.setInt(1, _tempOID);
+					// ps.setInt(1, _curOID);
+					ps.setInt(2, id);
+					try (ResultSet rs = ps.executeQuery())
+					{
+						while (rs.next())
+						{
+							int badId = rs.getInt(1);
+							_log.severe("Bad ID " + badId + " in DB found by: " + check);
+							throw new RuntimeException();
+						}
+					}
 				}
-				rs.close();
-				ps.close();
 			}
 		}
 		

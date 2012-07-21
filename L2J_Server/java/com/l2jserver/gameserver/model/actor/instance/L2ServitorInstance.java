@@ -326,83 +326,72 @@ public class L2ServitorInstance extends L2Summon
 			)
 			SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).clear();
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			// Delete all current stored effects for summon to avoid dupe
-			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE);
-			
 			statement.setInt(1, getOwner().getObjectId());
 			statement.setInt(2, getOwner().getClassIndex());
 			statement.setInt(3, getReferenceSkill());
-			
 			statement.execute();
-			statement.close();
 			
 			int buff_index = 0;
 			
 			final List<Integer> storedSkills = new FastList<>();
 			
 			//Store all effect data along with calculated remaining
-			statement = con.prepareStatement(ADD_SKILL_SAVE);
-			
 			if (storeEffects)
 			{
-				for (L2Effect effect : getAllEffects())
+				try (PreparedStatement ps2 = con.prepareStatement(ADD_SKILL_SAVE))
 				{
-					if (effect == null)
-						continue;
-					
-					switch (effect.getEffectType())
+					for (L2Effect effect : getAllEffects())
 					{
-						case HEAL_OVER_TIME:
-						case CPHEAL_OVER_TIME:
-							// TODO: Fix me.
-						case HIDE:
+						if (effect == null)
 							continue;
-					}
-					
-					L2Skill skill = effect.getSkill();
-					if (storedSkills.contains(skill.getReuseHashCode()))
-						continue;
-					
-					storedSkills.add(skill.getReuseHashCode());
-					
-					if (!effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
-					{
-						statement.setInt(1, getOwner().getObjectId());
-						statement.setInt(2, getOwner().getClassIndex());
-						statement.setInt(3, getReferenceSkill());
-						statement.setInt(4, skill.getId());
-						statement.setInt(5, skill.getLevel());
-						statement.setInt(6, effect.getCount());
-						statement.setInt(7, effect.getTime());
-						statement.setInt(8, ++buff_index);
-						statement.execute();
 						
-						if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId())) // Check if charId exists in map
-							SummonEffectsTable.getInstance().getServitorEffectsOwner().put(getOwner().getObjectId(), new TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>());
-						if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex())) // Check if classIndex exists in charId map
-							SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).put(getOwner().getClassIndex(), new TIntObjectHashMap<List<SummonEffect>>());
-						if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())) // Check is summonSkillId exists in charId+classIndex map
-							SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
-
-						SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getCount(), effect.getTime()));
-
+						switch (effect.getEffectType())
+						{
+							case HEAL_OVER_TIME:
+							case CPHEAL_OVER_TIME:
+								// TODO: Fix me.
+							case HIDE:
+								continue;
+						}
+						
+						L2Skill skill = effect.getSkill();
+						if (storedSkills.contains(skill.getReuseHashCode()))
+							continue;
+						
+						storedSkills.add(skill.getReuseHashCode());
+						
+						if (!effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
+						{
+							ps2.setInt(1, getOwner().getObjectId());
+							ps2.setInt(2, getOwner().getClassIndex());
+							ps2.setInt(3, getReferenceSkill());
+							ps2.setInt(4, skill.getId());
+							ps2.setInt(5, skill.getLevel());
+							ps2.setInt(6, effect.getCount());
+							ps2.setInt(7, effect.getTime());
+							ps2.setInt(8, ++buff_index);
+							ps2.execute();
+							
+							if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId())) // Check if charId exists in map
+								SummonEffectsTable.getInstance().getServitorEffectsOwner().put(getOwner().getObjectId(), new TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>());
+							if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex())) // Check if classIndex exists in charId map
+								SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).put(getOwner().getClassIndex(), new TIntObjectHashMap<List<SummonEffect>>());
+							if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())) // Check is summonSkillId exists in charId+classIndex map
+								SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
+	
+							SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getCount(), effect.getTime()));
+						}
 					}
 				}
-				statement.close();
 			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not store summon effect data: ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -412,55 +401,53 @@ public class L2ServitorInstance extends L2Summon
 		if (getOwner().isInOlympiadMode())
 			return;
 		
-		Connection con = null;
-		PreparedStatement statement = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			if (
 					!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()) ||
 					!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()) ||
 					!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())
 				)
 			{
-				statement = con.prepareStatement(RESTORE_SKILL_SAVE);
+				try (PreparedStatement statement = con.prepareStatement(RESTORE_SKILL_SAVE))
+				{
+					statement.setInt(1, getOwner().getObjectId());
+					statement.setInt(2, getOwner().getClassIndex());
+					statement.setInt(3, getReferenceSkill());
+					try (ResultSet rset = statement.executeQuery())
+					{
+						while (rset.next())
+						{
+							int effectCount = rset.getInt("effect_count");
+							int effectCurTime = rset.getInt("effect_cur_time");
+							
+							final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
+							if (skill == null)
+								continue;
+							
+							if (skill.hasEffects())
+							{
+								if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId())) // Check if charId exists in map
+									SummonEffectsTable.getInstance().getServitorEffectsOwner().put(getOwner().getObjectId(), new TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>());
+								if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex())) // Check if classIndex exists in charId map
+									SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).put(getOwner().getClassIndex(), new TIntObjectHashMap<List<SummonEffect>>());
+								if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())) // Check is summonSkillId exists in charId+classIndex map
+									SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
+								
+								SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effectCount, effectCurTime));
+							}
+						}
+					}
+				}
+			}
+			
+			try (PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE))
+			{
 				statement.setInt(1, getOwner().getObjectId());
 				statement.setInt(2, getOwner().getClassIndex());
 				statement.setInt(3, getReferenceSkill());
-				ResultSet rset = statement.executeQuery();
-				
-				while (rset.next())
-				{
-					int effectCount = rset.getInt("effect_count");
-					int effectCurTime = rset.getInt("effect_cur_time");
-					
-					final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
-					if (skill == null)
-						continue;
-					
-					if (skill.hasEffects())
-					{
-						if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId())) // Check if charId exists in map
-							SummonEffectsTable.getInstance().getServitorEffectsOwner().put(getOwner().getObjectId(), new TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>());
-						if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex())) // Check if classIndex exists in charId map
-							SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).put(getOwner().getClassIndex(), new TIntObjectHashMap<List<SummonEffect>>());
-						if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())) // Check is summonSkillId exists in charId+classIndex map
-							SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
-						
-						SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effectCount, effectCurTime));
-					}
-				}
-				
-				rset.close();
-				statement.close();
+				statement.executeUpdate();
 			}
-			
-			statement = con.prepareStatement(DELETE_SKILL_SAVE);
-			statement.setInt(1, getOwner().getObjectId());
-			statement.setInt(2, getOwner().getClassIndex());
-			statement.setInt(3, getReferenceSkill());
-			statement.executeUpdate();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -468,7 +455,6 @@ public class L2ServitorInstance extends L2Summon
 		}
 		finally
 		{
-			L2DatabaseFactory.close(con);
 			if (
 					!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()) ||
 					!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()) ||

@@ -17,16 +17,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- * Format (ch)dddcc
  * @author -Wooden-
- *
  */
 public class ExFishingStartCombat extends L2GameServerPacket
 {
-	private static final String _S__FE_15_EXFISHINGSTARTCOMBAT = "[S] FE:27 ExFishingStartCombat";
-	private L2Character _activeChar;
-	private int _time,_hp;
-	private int _lureType, _deceptiveMode, _mode;
+	private final L2Character _activeChar;
+	private final int _time, _hp;
+	private final int _lureType, _deceptiveMode, _mode;
 	
 	public ExFishingStartCombat(L2Character character, int time, int hp, int mode, int lureType, int deceptiveMode)
 	{
@@ -41,7 +38,7 @@ public class ExFishingStartCombat extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x27);
 		
 		writeD(_activeChar.getObjectId());
@@ -51,11 +48,4 @@ public class ExFishingStartCombat extends L2GameServerPacket
 		writeC(_lureType); // 0 = newbie lure, 1 = normal lure, 2 = night lure
 		writeC(_deceptiveMode); // Fish Deceptive Mode: 0 = no, 1 = yes
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_15_EXFISHINGSTARTCOMBAT;
-	}
-	
 }

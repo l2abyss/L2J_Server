@@ -15,16 +15,16 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+
 /**
- * @author kerberos
- * JIV update 27.8.10
- *
+ * update 27.8.10
+ * @author kerberos, JIV
  */
 public class ExStopMoveInAirShip extends L2GameServerPacket
 {
-	private L2PcInstance _activeChar;
-	private int _shipObjId;
-	private int x, y, z, h;
+	private final L2PcInstance _activeChar;
+	private final int _shipObjId;
+	private final int x, y, z, h;
 	
 	public ExStopMoveInAirShip(L2PcInstance player, int shipObjId)
 	{
@@ -47,11 +47,5 @@ public class ExStopMoveInAirShip extends L2GameServerPacket
 		writeD(y);
 		writeD(z);
 		writeD(h);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:6e ExStopMoveAirShip".intern();
 	}
 }

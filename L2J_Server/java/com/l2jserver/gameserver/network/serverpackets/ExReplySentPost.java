@@ -22,8 +22,8 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  * @author Migi, DS
  */
 public class ExReplySentPost extends L2GameServerPacket
-{	
-	private Message _msg;
+{
+	private final Message _msg;
 	private L2ItemInstance[] _items = null;
 	
 	public ExReplySentPost(Message msg)
@@ -35,15 +35,15 @@ public class ExReplySentPost extends L2GameServerPacket
 			if (attachments != null && attachments.getSize() > 0)
 				_items = attachments.getItems();
 			else
-				_log.warning("Message "+msg.getId()+" has attachments but itemcontainer is empty.");
+				_log.warning("Message " + msg.getId() + " has attachments but itemcontainer is empty.");
 		}
 	}
 	
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0xad);
+		writeC(0xFE);
+		writeH(0xAD);
 		writeD(_msg.getId());
 		writeD(_msg.isLocked() ? 1 : 0);
 		writeS(_msg.getReceiverName());
@@ -87,15 +87,8 @@ public class ExReplySentPost extends L2GameServerPacket
 			writeD(_msg.getSendBySystem());
 		}
 		else
+		{
 			writeD(0x00);
-		
-		_items = null;
-		_msg = null;
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:AD ExReplySentPost";
+		}
 	}
 }

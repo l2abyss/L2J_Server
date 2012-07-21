@@ -18,18 +18,11 @@ import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-/**
- * This class ...
- * dddd d(ddd)
- * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public class RecipeShopSellList extends L2GameServerPacket
 {
+	private final L2PcInstance _buyer, _manufacturer;
 	
-	private static final String _S__D9_RecipeShopSellList = "[S] df RecipeShopSellList";
-	private L2PcInstance _buyer,_manufacturer;
-	
-	public RecipeShopSellList(L2PcInstance buyer,L2PcInstance manufacturer)
+	public RecipeShopSellList(L2PcInstance buyer, L2PcInstance manufacturer)
 	{
 		_buyer = buyer;
 		_manufacturer = manufacturer;
@@ -42,12 +35,11 @@ public class RecipeShopSellList extends L2GameServerPacket
 		
 		if (createList != null)
 		{
-			//dddd d(ddd)
-			writeC(0xdf);
+			writeC(0xDF);
 			writeD(_manufacturer.getObjectId());
-			writeD((int) _manufacturer.getCurrentMp());//Creator's MP
-			writeD(_manufacturer.getMaxMp());//Creator's MP
-			writeQ(_buyer.getAdena());//Buyer Adena
+			writeD((int) _manufacturer.getCurrentMp());// Creator's MP
+			writeD(_manufacturer.getMaxMp());// Creator's MP
+			writeQ(_buyer.getAdena());// Buyer Adena
 			
 			int count = createList.size();
 			writeD(count);
@@ -57,16 +49,9 @@ public class RecipeShopSellList extends L2GameServerPacket
 			{
 				temp = createList.getList().get(i);
 				writeD(temp.getRecipeId());
-				writeD(0x00); //unknown
+				writeD(0x00); // unknown
 				writeQ(temp.getCost());
 			}
 		}
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__D9_RecipeShopSellList;
-	}
-	
 }

@@ -14,19 +14,13 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- * Format: (ch)ddddd
- *
- */
 public class ExPutIntensiveResultForVariationMake extends L2GameServerPacket
 {
-	private static final String _S__FE_53_EXCONFIRMVARIATIONREFINER = "[S] FE:54 ExPutIntensiveResultForVariationMake";
-	
-	private int _refinerItemObjId;
-	private int _lifestoneItemId;
-	private int _gemstoneItemId;
-	private int _gemstoneCount;
-	private int _unk2;
+	private final int _refinerItemObjId;
+	private final int _lifestoneItemId;
+	private final int _gemstoneItemId;
+	private final int _gemstoneCount;
+	private final int _unk2;
 	
 	public ExPutIntensiveResultForVariationMake(int refinerItemObjId, int lifeStoneId, int gemstoneItemId, int gemstoneCount)
 	{
@@ -37,13 +31,10 @@ public class ExPutIntensiveResultForVariationMake extends L2GameServerPacket
 		_unk2 = 1;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x54);
 		writeD(_refinerItemObjId);
 		writeD(_lifestoneItemId);
@@ -51,14 +42,4 @@ public class ExPutIntensiveResultForVariationMake extends L2GameServerPacket
 		writeQ(_gemstoneCount);
 		writeD(_unk2);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_53_EXCONFIRMVARIATIONREFINER;
-	}
-	
 }

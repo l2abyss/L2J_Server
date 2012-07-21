@@ -16,13 +16,10 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * @author Gnat
- * 
  **/
 
 public class ExBirthdayPopup extends L2GameServerPacket
 {
-	private static final String _S__FE_8F_EXBIRTHDAYPOPUP = "[S] FE:8F ExBirthdayPopup";
-	
 	public ExBirthdayPopup()
 	{
 	}
@@ -32,11 +29,5 @@ public class ExBirthdayPopup extends L2GameServerPacket
 	{
 		writeC(0xfe);
 		writeH(0x8f);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_8F_EXBIRTHDAYPOPUP;
 	}
 }

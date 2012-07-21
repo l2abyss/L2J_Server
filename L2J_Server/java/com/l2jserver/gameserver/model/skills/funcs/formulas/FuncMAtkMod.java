@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.skills.funcs.formulas;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -40,7 +39,7 @@ public class FuncMAtkMod extends Func
 	@Override
 	public void calc(Env env)
 	{
-		if (env.getCharacter() instanceof L2PcInstance)
+		if (env.getCharacter().isPlayer())
 		{
 			double intb = BaseStats.INT.calcBonus(env.getPlayer());
 			double lvlb = env.getPlayer().getLevelMod();
@@ -48,9 +47,8 @@ public class FuncMAtkMod extends Func
 		}
 		else
 		{
-			float level = env.getCharacter().getLevel();
 			double intb = BaseStats.INT.calcBonus(env.getCharacter());
-			float lvlb = ((level + 89) / 100);
+			double lvlb = env.getCharacter().getLevelMod();
 			env.mulValue((lvlb * lvlb) * (intb * intb));
 		}
 	}

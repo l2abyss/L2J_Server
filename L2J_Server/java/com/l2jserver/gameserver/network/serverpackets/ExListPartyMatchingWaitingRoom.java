@@ -26,8 +26,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class ExListPartyMatchingWaitingRoom extends L2GameServerPacket
 {
 	private final L2PcInstance _activeChar;
-	@SuppressWarnings("unused")
-	private final int _page;
+	// private final int _page;
 	private final int _minlvl;
 	private final int _maxlvl;
 	private final int _mode;
@@ -36,7 +35,7 @@ public class ExListPartyMatchingWaitingRoom extends L2GameServerPacket
 	public ExListPartyMatchingWaitingRoom(L2PcInstance player, int page, int minlvl, int maxlvl, int mode)
 	{
 		_activeChar = player;
-		_page = page;
+		// _page = page;
 		_minlvl = minlvl;
 		_maxlvl = maxlvl;
 		_mode = mode;
@@ -46,7 +45,7 @@ public class ExListPartyMatchingWaitingRoom extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x36);
 		if (_mode == 0)
 		{
@@ -76,7 +75,7 @@ public class ExListPartyMatchingWaitingRoom extends L2GameServerPacket
 			_members.add(cha);
 		}
 		
-		writeD(1);
+		writeD(0x01); // Page?
 		writeD(_members.size());
 		for (L2PcInstance member : _members)
 		{
@@ -84,11 +83,5 @@ public class ExListPartyMatchingWaitingRoom extends L2GameServerPacket
 			writeD(member.getActiveClass());
 			writeD(member.getLevel());
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] FE:36 ExListPartyMatchingWaitingRoom";
 	}
 }

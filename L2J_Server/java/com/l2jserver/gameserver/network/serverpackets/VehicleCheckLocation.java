@@ -18,11 +18,10 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
  * @author Maktakien
- *
  */
 public class VehicleCheckLocation extends L2GameServerPacket
 {
-	private L2Character _boat;
+	private final L2Character _boat;
 	
 	/**
 	 * @param boat
@@ -33,8 +32,7 @@ public class VehicleCheckLocation extends L2GameServerPacket
 	}
 	
 	@Override
-	protected
-	void writeImpl()
+	protected void writeImpl()
 	{
 		writeC(0x6d);
 		writeD(_boat.getObjectId());
@@ -42,11 +40,5 @@ public class VehicleCheckLocation extends L2GameServerPacket
 		writeD(_boat.getY());
 		writeD(_boat.getZ());
 		writeD(_boat.getHeading());
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] 6D VehicleCheckLocation";
 	}
 }

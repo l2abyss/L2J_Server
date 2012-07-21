@@ -1152,7 +1152,7 @@ public final class Config
 				PET_NAME_TEMPLATE = serverSettings.getProperty("PetNameTemplate", ".*");
 				CLAN_NAME_TEMPLATE = serverSettings.getProperty("ClanNameTemplate", ".*");
 				
-				MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "0"));
+				MAX_CHARACTERS_NUMBER_PER_ACCOUNT = Integer.parseInt(serverSettings.getProperty("CharMaxNumber", "7"));
 				MAXIMUM_ONLINE_USERS = Integer.parseInt(serverSettings.getProperty("MaximumOnlineUsers", "100"));
 				
 				String[] protocols = serverSettings.getProperty("AllowedProtocolRevisions", "267;268;271;273").split(";");
@@ -4104,11 +4104,12 @@ public final class Config
 			File file = new File(fileName);
 			// Create a new empty file only if it doesn't exist
 			file.createNewFile();
-			OutputStream out = new FileOutputStream(file);
-			hexSetting.setProperty("ServerID", String.valueOf(serverId));
-			hexSetting.setProperty("HexID", hexId);
-			hexSetting.store(out, "the hexID to auth into login");
-			out.close();
+			try (OutputStream out = new FileOutputStream(file))
+			{
+				hexSetting.setProperty("ServerID", String.valueOf(serverId));
+				hexSetting.setProperty("HexID", hexId);
+				hexSetting.store(out, "the hexID to auth into login");
+			}
 		}
 		catch (Exception e)
 		{
@@ -4292,8 +4293,8 @@ public final class Config
 	}
 	
 	/**
-	 * @param line
-	 * @return
+	 * @param line the string line to parse
+	 * @return a parsed float map
 	 */
 	private static TIntFloatHashMap parseConfigLine(String line)
 	{

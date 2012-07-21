@@ -42,12 +42,18 @@ public final class L2Properties extends Properties
 	
 	public L2Properties(String name) throws IOException
 	{
-		load(new FileInputStream(name));
+		try (FileInputStream fis = new FileInputStream(name))
+		{
+			load(fis);
+		}
 	}
 	
 	public L2Properties(File file) throws IOException
 	{
-		load(new FileInputStream(file));
+		try (FileInputStream fis = new FileInputStream(file))
+		{
+			load(fis);
+		}
 	}
 	
 	public L2Properties(InputStream inStream) throws IOException
@@ -62,30 +68,29 @@ public final class L2Properties extends Properties
 	
 	public void load(String name) throws IOException
 	{
-		load(new FileInputStream(name));
+		try (FileInputStream fis = new FileInputStream(name))
+		{
+			load(fis);
+		}
 	}
 	
 	public void load(File file) throws IOException
-	{
-		load(new FileInputStream(file));
+	{try (FileInputStream fis = new FileInputStream(file))
+		{
+			load(fis);
+		}
 	}
 	
 	@Override
 	public void load(InputStream inStream) throws IOException
 	{
-		InputStreamReader reader = null;
-		try
+		try (InputStreamReader isr = new InputStreamReader(inStream, Charset.defaultCharset()))
 		{
-			reader = new InputStreamReader(inStream, Charset.defaultCharset());
-			super.load(reader);
+			super.load(isr);
 		}
 		finally
 		{
 			inStream.close();
-			if (reader != null)
-			{
-				reader.close();
-			}
 		}
 	}
 	

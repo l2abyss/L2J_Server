@@ -16,14 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * @author mochitto
- *
- * Format: (ch)cd
- * c: state 0 - pause 1 - started
- * d: left time in ms max is 16000 its 4m and state is automatically changed to quit
  */
 public class ExNevitAdventTimeChange extends L2GameServerPacket
 {
-	private static final String _S__FE_E1_EXNAVITADVENTTIMECHANGE = "[S] FE:E1 ExNavitAdventTimeChange";
 	private final boolean _paused;
 	private final int _time;
 	
@@ -38,13 +33,9 @@ public class ExNevitAdventTimeChange extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0xE1);
+		// state 0 - pause 1 - started
 		writeC(_paused ? 0x00 : 0x01);
-		writeD(_time); // time in ms (16000 = 4mins = state quit)
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_E1_EXNAVITADVENTTIMECHANGE;
+		// left time in ms max is 16000 its 4m and state is automatically changed to quit
+		writeD(_time);
 	}
 }

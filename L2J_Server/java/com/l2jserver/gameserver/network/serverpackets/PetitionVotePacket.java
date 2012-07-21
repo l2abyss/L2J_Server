@@ -19,9 +19,9 @@ package com.l2jserver.gameserver.network.serverpackets;
  */
 public class PetitionVotePacket extends L2GameServerPacket
 {
-	private static final String _S__FC_PETITIONVOTEPACKET = "[S] FC PetitionVotePacket";
+	public static final PetitionVotePacket STATIC_PACKET = new PetitionVotePacket();
 	
-	public PetitionVotePacket()
+	private PetitionVotePacket()
 	{
 	}
 	
@@ -29,11 +29,5 @@ public class PetitionVotePacket extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFC);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FC_PETITIONVOTEPACKET;
 	}
 }

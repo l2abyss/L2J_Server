@@ -21,8 +21,8 @@ import com.l2jserver.gameserver.model.actor.L2Character;
  */
 public class VehicleStarted extends L2GameServerPacket
 {
-	private int _objectId;
-	private int _state;
+	private final int _objectId;
+	private final int _state;
 	
 	/**
 	 * @param boat
@@ -34,9 +34,6 @@ public class VehicleStarted extends L2GameServerPacket
 		_state = state;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -44,14 +41,4 @@ public class VehicleStarted extends L2GameServerPacket
 		writeD(_objectId);
 		writeD(_state);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] C0 VehicleStarted";
-	}
-	
 }

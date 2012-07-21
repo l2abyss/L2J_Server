@@ -14,14 +14,11 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-
 /**
- * format: dc
- * @author  GodKratos
+ * @author GodKratos
  */
 public class ExBrPremiumState extends L2GameServerPacket
 {
-	private static final String _S__FE_D9_EXBRPREMIUMSTATE = "[S] FE:D9 ExBrPremiumState";
 	private final int _objId;
 	private final int _state;
 	
@@ -31,9 +28,6 @@ public class ExBrPremiumState extends L2GameServerPacket
 		_state = state;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -41,14 +35,5 @@ public class ExBrPremiumState extends L2GameServerPacket
 		writeH(0xD9);
 		writeD(_objId);
 		writeC(_state);
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_D9_EXBRPREMIUMSTATE;
 	}
 }

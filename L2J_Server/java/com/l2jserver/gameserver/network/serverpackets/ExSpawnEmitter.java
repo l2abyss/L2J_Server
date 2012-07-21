@@ -18,8 +18,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public class ExSpawnEmitter extends L2GameServerPacket
 {
@@ -37,27 +36,14 @@ public class ExSpawnEmitter extends L2GameServerPacket
 		this(player.getObjectId(), npc.getObjectId());
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] FE:5D ExSpawnEmitter";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x5d);
+		writeC(0xFE);
+		writeH(0x5D);
 		
 		writeD(_npcObjectId);
 		writeD(_playerObjectId);
 		writeD(0x00); // ?
 	}
-	
 }

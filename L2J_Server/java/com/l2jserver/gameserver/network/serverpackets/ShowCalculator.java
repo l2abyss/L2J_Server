@@ -14,21 +14,12 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- * sample
-
- * format
- * d
- *
- * @version $Revision: 1.1.2.1.2.3 $ $Date: 2005/03/27 15:29:39 $
- */
 public class ShowCalculator extends L2GameServerPacket
 {
-	private static final String _S__DC_SHOWCALCULATOR = "[S] e2 ShowCalculator";
-	private int _calculatorId;
+	private final int _calculatorId;
 	
 	/**
-	 * @param calculatorId 
+	 * @param calculatorId
 	 */
 	public ShowCalculator(int calculatorId)
 	{
@@ -40,11 +31,5 @@ public class ShowCalculator extends L2GameServerPacket
 	{
 		writeC(0xe2);
 		writeD(_calculatorId);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__DC_SHOWCALCULATOR;
 	}
 }

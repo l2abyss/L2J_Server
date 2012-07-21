@@ -26,14 +26,10 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- * This class ...
- *
- * @version $Revision: 1.2.2.1.2.3 $ $Date: 2005/03/27 15:29:30 $
+ * This packet manages the trade request.
  */
 public final class TradeRequest extends L2GameClientPacket
 {
-	private static final String _C__1A_TRADEREQUEST = "[C] 15 TradeRequest";
-	
 	private int _objectId;
 	
 	@Override
@@ -45,9 +41,11 @@ public final class TradeRequest extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance player = getClient().getActiveChar();
+		L2PcInstance player = getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (!player.getAccessLevel().allowTransaction())
 		{
@@ -56,32 +54,37 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
-		L2Object target = L2World.getInstance().findObject(_objectId);
-		if (target == null || !player.getKnownList().knowsObject(target) || !(target instanceof L2PcInstance))
+		final L2Object target = L2World.getInstance().findObject(_objectId);
+		// If there is no target, target is far away or
+		// they are in different instances (except multiverse)
+		// trade request is ignored and there is no system message.
+		if ((target == null) || !player.getKnownList().knowsObject(target) || ((target.getInstanceId() != player.getInstanceId()) && (player.getInstanceId() != -1)))
 		{
-			player.sendPacket(SystemMessageId.INCORRECT_TARGET);
 			return;
 		}
 		
+		// If target and acting player are the same, trade request is ignored
+		// and the following system message is sent to acting player.
 		if (target.getObjectId() == player.getObjectId())
 		{
 			player.sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 			return;
 		}
 		
-		L2PcInstance partner = (L2PcInstance) target;
-		
-		// cant trade with players from other instance except from multiverse
-		if (partner.getInstanceId() != player.getInstanceId() && player.getInstanceId() != -1)
+		if (!target.isPlayer())
+		{
+			player.sendPacket(SystemMessageId.INCORRECT_TARGET);
 			return;
+		}
 		
+		final L2PcInstance partner = target.getActingPlayer();
 		if (partner.isInOlympiadMode() || player.isInOlympiadMode())
 		{
 			player.sendMessage("A user currently participating in the Olympiad cannot accept or request a trade.");
 			return;
 		}
 		
-		// Alt game - Karma punishment
+		// L2J Customs: Karma punishment
 		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && (player.getKarma() > 0))
 		{
 			player.sendMessage("You cannot trade while you are in a chaotic state.");
@@ -100,7 +103,7 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.getPrivateStoreType() != 0 || partner.getPrivateStoreType() != 0)
+		if ((player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE) || (partner.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE))
 		{
 			player.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			return;
@@ -109,7 +112,9 @@ public final class TradeRequest extends L2GameClientPacket
 		if (player.isProcessingTransaction())
 		{
 			if (Config.DEBUG)
+			{
 				_log.fine("Already trading with someone else.");
+			}
 			player.sendPacket(SystemMessageId.ALREADY_TRADING);
 			return;
 		}
@@ -118,7 +123,9 @@ public final class TradeRequest extends L2GameClientPacket
 		if (partner.isProcessingRequest() || partner.isProcessingTransaction())
 		{
 			if (Config.DEBUG)
+			{
 				_log.info("Transaction already in progress.");
+			}
 			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_BUSY_TRY_LATER);
 			sm.addString(partner.getName());
 			player.sendPacket(sm);
@@ -155,6 +162,6 @@ public final class TradeRequest extends L2GameClientPacket
 	@Override
 	public String getType()
 	{
-		return _C__1A_TRADEREQUEST;
+		return "[C] 1A TradeRequest";
 	}
 }

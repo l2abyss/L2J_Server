@@ -14,18 +14,11 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.2.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public final class MagicSkillCanceld extends L2GameServerPacket
 {
-	private static final String _S__5B_MAGICSKILLCANCELD = "[S] 49 MagicSkillCanceld";
+	private final int _objectId;
 	
-	private int _objectId;
-	
-	public MagicSkillCanceld (int objectId)
+	public MagicSkillCanceld(int objectId)
 	{
 		_objectId = objectId;
 	}
@@ -35,11 +28,5 @@ public final class MagicSkillCanceld extends L2GameServerPacket
 	{
 		writeC(0x49);
 		writeD(_objectId);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__5B_MAGICSKILLCANCELD;
 	}
 }

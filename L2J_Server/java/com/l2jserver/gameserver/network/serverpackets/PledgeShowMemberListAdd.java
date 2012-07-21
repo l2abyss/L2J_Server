@@ -17,19 +17,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.3.2.1.2.4 $ $Date: 2005/03/27 15:29:39 $
- */
 public final class PledgeShowMemberListAdd extends L2GameServerPacket
 {
-	private static final String _S__55_PLEDGESHOWMEMBERLISTADD = "[S] 5c PledgeShowMemberListAdd";
-	private String _name;
-	private int _lvl;
-	private int _classId;
-	private int _isOnline;
-	private int _pledgeType;
+	private final String _name;
+	private final int _lvl;
+	private final int _classId;
+	private final int _isOnline;
+	private final int _pledgeType;
 	
 	public PledgeShowMemberListAdd(L2PcInstance player)
 	{
@@ -56,16 +50,9 @@ public final class PledgeShowMemberListAdd extends L2GameServerPacket
 		writeS(_name);
 		writeD(_lvl);
 		writeD(_classId);
-		writeD(0);
-		writeD(1);
-		writeD(_isOnline); // 1=online 0=offline
+		writeD(0x00);
+		writeD(0x01);
+		writeD(_isOnline); // 1 = online 0 = offline
 		writeD(_pledgeType);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__55_PLEDGESHOWMEMBERLISTADD;
-	}
-	
 }

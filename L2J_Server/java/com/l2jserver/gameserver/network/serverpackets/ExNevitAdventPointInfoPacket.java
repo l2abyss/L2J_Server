@@ -16,13 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * @author mochitto
- *
- * Format: (ch)d
- * d: points - max 7200 is 100%
  */
 public class ExNevitAdventPointInfoPacket extends L2GameServerPacket
 {
-	private static final String _S__FE_DF_EXNAVITADVENTPOINTINFOPACKET = "[S] FE:DF ExNavitAdventPointInfoPacket";
 	private final int _points;
 	
 	public ExNevitAdventPointInfoPacket(int points)
@@ -35,12 +31,6 @@ public class ExNevitAdventPointInfoPacket extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0xDF);
-		writeD(_points); // 72 = 1%
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_DF_EXNAVITADVENTPOINTINFOPACKET;
+		writeD(_points); // 72 = 1%, max 7200 = 100%
 	}
 }

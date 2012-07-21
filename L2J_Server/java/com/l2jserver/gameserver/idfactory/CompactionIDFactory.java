@@ -37,10 +37,8 @@ public class CompactionIDFactory extends IdFactory
 		_curOID = FIRST_OID;
 		_freeSize = 0;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			// con.createStatement().execute("drop table if exists tmp_obj_id");
 			
 			int[] tmp_obj_ids = extractUsedObjectIDTable();
@@ -58,10 +56,6 @@ public class CompactionIDFactory extends IdFactory
 		{
 			_log.severe(getClass().getSimpleName() + ": Could not initialize properly: " + e.getMessage());
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private int insertUntil(int[] tmp_obj_ids, int idx, int N, Connection con) throws SQLException
@@ -77,18 +71,20 @@ public class CompactionIDFactory extends IdFactory
 		{
 			for (String check : ID_CHECKS)
 			{
-				PreparedStatement ps = con.prepareStatement(check);
-				ps.setInt(1, _curOID);
-				ps.setInt(2, id);
-				ResultSet rs = ps.executeQuery();
-				while (rs.next())
+				try (PreparedStatement ps = con.prepareStatement(check))
 				{
-					int badId = rs.getInt(1);
-					_log.severe(getClass().getSimpleName() + ": Bad ID " + badId + " in DB found by: " + check);
-					throw new RuntimeException();
+					ps.setInt(1, _curOID);
+					ps.setInt(2, id);
+					try (ResultSet rs = ps.executeQuery())
+					{
+						while (rs.next())
+						{
+							int badId = rs.getInt(1);
+							_log.severe(getClass().getSimpleName() + ": Bad ID " + badId + " in DB found by: " + check);
+							throw new RuntimeException();
+						}
+					}
 				}
-				rs.close();
-				ps.close();
 			}
 		}
 		
@@ -103,11 +99,12 @@ public class CompactionIDFactory extends IdFactory
 			_log.info(getClass().getSimpleName() + ": Compacting DB object ID=" + id + " into " + (_curOID));
 			for (String update : ID_UPDATES)
 			{
-				PreparedStatement ps = con.prepareStatement(update);
-				ps.setInt(1, _curOID);
-				ps.setInt(2, id);
-				ps.execute();
-				ps.close();
+				try (PreparedStatement ps = con.prepareStatement(update))
+				{
+					ps.setInt(1, _curOID);
+					ps.setInt(2, id);
+					ps.execute();
+				}
 			}
 			_curOID++;
 		}

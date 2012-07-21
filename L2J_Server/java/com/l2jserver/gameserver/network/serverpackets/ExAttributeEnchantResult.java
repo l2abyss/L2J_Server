@@ -16,11 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 public class ExAttributeEnchantResult extends L2GameServerPacket
 {
-	private static final String _S__FE_61_EXATTRIBUTEENCHANTRESULT = "[S] FE:61 ExAttributeEnchantResult [d]";
+	private final int _result;
 	
-	private int _result;
-	
-	public ExAttributeEnchantResult (int result)
+	public ExAttributeEnchantResult(int result)
 	{
 		_result = result;
 	}
@@ -32,11 +30,5 @@ public class ExAttributeEnchantResult extends L2GameServerPacket
 		writeH(0x61);
 		
 		writeD(_result);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_61_EXATTRIBUTEENCHANTRESULT;
 	}
 }

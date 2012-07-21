@@ -113,10 +113,9 @@ public class InstanceManager extends DocumentParser
 		{
 			restoreInstanceTimes(playerObjId);
 		}
-		Connection con = null;
-		try
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(ADD_INSTANCE_TIME);
 			statement.setInt(1, playerObjId);
 			statement.setInt(2, id);
@@ -130,10 +129,6 @@ public class InstanceManager extends DocumentParser
 		{
 			_log.warning(getClass().getSimpleName() + ": Could not insert character instance time data: " + e.getMessage());
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	/**
@@ -142,10 +137,8 @@ public class InstanceManager extends DocumentParser
 	 */
 	public void deleteInstanceTime(int playerObjId, int id)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(DELETE_INSTANCE_TIME);
 			statement.setInt(1, playerObjId);
 			statement.setInt(2, id);
@@ -156,10 +149,6 @@ public class InstanceManager extends DocumentParser
 		catch (Exception e)
 		{
 			_log.warning(getClass().getSimpleName() + ": Could not delete character instance time data: " + e.getMessage());
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -173,10 +162,8 @@ public class InstanceManager extends DocumentParser
 			return; // already restored
 		}
 		_playerInstanceTimes.put(playerObjId, new FastMap<Integer, Long>());
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(RESTORE_INSTANCE_TIMES);
 			statement.setInt(1, playerObjId);
 			ResultSet rset = statement.executeQuery();
@@ -201,10 +188,6 @@ public class InstanceManager extends DocumentParser
 		catch (Exception e)
 		{
 			_log.warning(getClass().getSimpleName() + ": Could not delete character instance time data: " + e.getMessage());
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

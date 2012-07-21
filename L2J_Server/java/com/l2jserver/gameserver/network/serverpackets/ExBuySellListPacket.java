@@ -24,14 +24,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- * 
  * @author ShanSoft
- *
  */
 public class ExBuySellListPacket extends L2GameServerPacket
 {
-	private static final String _S__B7_ExBuySellListPacket = "[S] B7 ExBuySellListPacket";
-	
 	private final List<L2TradeItem> _buyList = new FastList<>();
 	private L2ItemInstance[] _sellList = null;
 	private L2ItemInstance[] _refundList = null;
@@ -129,16 +125,12 @@ public class ExBuySellListPacket extends L2GameServerPacket
 			}
 		}
 		else
+		{
 			writeH(0x00);
+		}
 		
 		writeC(_done ? 0x01 : 0x00);
 		
 		_buyList.clear();
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__B7_ExBuySellListPacket;
 	}
 }

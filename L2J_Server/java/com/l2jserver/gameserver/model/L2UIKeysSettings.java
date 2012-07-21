@@ -107,17 +107,10 @@ public class L2UIKeysSettings
 			}
 		}
 		query = query.substring(0, query.length() - 1) + "; ";
-		
-		Connection con = null;
-		PreparedStatement statement;
-		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(query))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
-			statement = con.prepareStatement(query);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -135,22 +128,14 @@ public class L2UIKeysSettings
 		}
 		query = query.substring(0, query.length() - 1) + ";";
 		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(query))
 		{
-			if (con == null)
-				con = L2DatabaseFactory.getInstance().getConnection();
-			
-			statement = con.prepareStatement(query);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: saveInDB(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		_saved = true;
 	}
@@ -163,10 +148,8 @@ public class L2UIKeysSettings
 		
 		_storedCategories = new FastMap<>();
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement("SELECT * FROM character_ui_categories WHERE `charId` = ? ORDER BY `catId`, `order`");
 			stmt.setInt(1, _player.getObjectId());
 			ResultSet rs = stmt.executeQuery();
@@ -184,10 +167,6 @@ public class L2UIKeysSettings
 		{
 			_log.log(Level.WARNING, "Exception: getCatsFromDB(): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		
 		if (_storedCategories.size() < 1)
 			_storedCategories = UITable.getInstance().getCategories();
@@ -200,10 +179,8 @@ public class L2UIKeysSettings
 		
 		_storedKeys = new FastMap<>();
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement("SELECT * FROM character_ui_actions WHERE `charId` = ? ORDER BY `cat`, `order`");
 			stmt.setInt(1, _player.getObjectId());
 			ResultSet rs = stmt.executeQuery();
@@ -224,10 +201,6 @@ public class L2UIKeysSettings
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: getKeysFromDB(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		if (_storedKeys.size() < 1)

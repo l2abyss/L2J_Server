@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.skills.funcs.formulas;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -40,32 +39,15 @@ public class FuncAtkAccuracy extends Func
 	public void calc(Env env)
 	{
 		final int level = env.getCharacter().getLevel();
-		if (env.getCharacter() instanceof L2PcInstance)
+		// [Square(DEX)] * 6 + lvl + weapon hitbonus;
+		env.addValue((Math.sqrt(env.getCharacter().getDEX()) * 6) + level);
+		if (level > 77)
 		{
-			// [Square(DEX)]*6 + lvl + weapon hitbonus;
-			env.addValue((Math.sqrt(env.getCharacter().getDEX()) * 6) + level);
-			if (level > 77)
-			{
-				env.addValue((level - 77) + 1);
-			}
-			if (level > 69)
-			{
-				env.addValue(level - 69);
-				// if (env.player instanceof L2Summon)
-				// env.value += (level < 60) ? 4 : 5;
-			}
+			env.addValue(level - 76);
 		}
-		else
+		if (level > 69)
 		{
-			env.addValue((Math.sqrt(env.getCharacter().getDEX()) * 6) + level);
-			if (level > 77)
-			{
-				env.addValue(level - 76);
-			}
-			if (level > 69)
-			{
-				env.addValue(level - 69);
-			}
+			env.addValue(level - 69);
 		}
 	}
 }

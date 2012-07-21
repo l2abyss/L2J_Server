@@ -15,19 +15,15 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: (chd) ddd
- * d: Winner Team
- * 
+ * *
  * @author mrTJO
  */
 public class ExCubeGameEnd extends L2GameServerPacket
 {
-	private static final String _S__FE_98_01_EXCUBEGAMEEND = "[S] FE:98:01 ExCubeGameEnd";
 	boolean _isRedTeamWin;
 	
 	/**
 	 * Show Minigame Results
-	 * 
 	 * @param isRedTeamWin Is Red Team Winner?
 	 */
 	public ExCubeGameEnd(boolean isRedTeamWin)
@@ -43,11 +39,5 @@ public class ExCubeGameEnd extends L2GameServerPacket
 		writeD(0x01);
 		
 		writeD(_isRedTeamWin ? 0x01 : 0x00);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_98_01_EXCUBEGAMEEND;
 	}
 }

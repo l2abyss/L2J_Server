@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.model.skills.funcs.formulas;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -40,9 +39,9 @@ public class FuncAtkEvasion extends Func
 	public void calc(Env env)
 	{
 		final int level = env.getCharacter().getLevel();
-		if (env.getCharacter() instanceof L2PcInstance)
+		if (env.getCharacter().isPlayer())
 		{
-			// [Square(DEX)]*6 + lvl;
+			// [Square(DEX)] * 6 + lvl;
 			env.addValue((Math.sqrt(env.getCharacter().getDEX()) * 6) + level);
 			if (level > 77)
 			{
@@ -55,7 +54,7 @@ public class FuncAtkEvasion extends Func
 		}
 		else
 		{
-			// [Square(DEX)]*6 + lvl;
+			// [Square(DEX)] * 6 + lvl;
 			env.addValue((Math.sqrt(env.getCharacter().getDEX()) * 6) + level);
 			if (level > 69)
 			{

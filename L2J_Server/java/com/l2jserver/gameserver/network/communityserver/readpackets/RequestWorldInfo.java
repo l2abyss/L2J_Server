@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.network.communityserver.readpackets;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,13 +80,11 @@ public final class RequestWorldInfo extends BaseReadPacket
 				_log.info("Transfering " + ClanTable.getInstance().getClans().length + " Clan data to CB server.");
 				
 				// players data
-				Connection con = null;
 				StatsSet[] charDatList = new StatsSet[MAX_ARRAY];
-				try
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					Statement statement = con.createStatement();
+					ResultSet charList = statement.executeQuery("SELECT account_name, charId, char_name, level, clanid, accesslevel, online FROM characters"))
 				{
-					con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, clanid, accesslevel, online FROM characters");
-					ResultSet charList = statement.executeQuery();
 					i = 0;
 					int charNumber = 0;
 					while (charList.next())
@@ -114,17 +112,10 @@ public final class RequestWorldInfo extends BaseReadPacket
 						_cst.sendPacket(new InitWorldInfo(charDatList, null, InitWorldInfo.TYPE_PLAYER, i), false);
 					}
 					_log.info("Transfering " + charNumber + " character data to CB server.");
-					charList.close();
-					statement.close();
-					
 				}
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, "Could not restore char info: " + e.getMessage(), e);
-				}
-				finally
-				{
-					L2DatabaseFactory.close(con);
 				}
 				
 				// Castles data

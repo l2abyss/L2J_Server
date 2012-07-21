@@ -53,31 +53,22 @@ public class RequestPetitionFeedback extends L2GameClientPacket
 		if (player == null || player.getLastPetitionGmName() == null)
 			return;
 		
-		if (_rate > 4 || _rate < 0) // Ilegal vote
+		if (_rate > 4 || _rate < 0) // Illegal vote
 			return;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(INSERT_FEEDBACK))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(INSERT_FEEDBACK);
 			statement.setString(1, player.getName());
 			statement.setString(2, player.getLastPetitionGmName());
 			statement.setInt(3, _rate);
 			statement.setString(4, _message);
 			statement.setLong(5, System.currentTimeMillis());
-			
 			statement.execute();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "Error while saving petition feedback");
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-			player.setLastPetitionGmName(null);
 		}
 	}
 	

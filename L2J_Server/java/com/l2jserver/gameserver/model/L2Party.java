@@ -298,7 +298,7 @@ public class L2Party extends AbstractPlayerGroup
 		{
 			if (member != null)
 			{
-				member.sendPacket(new PartySmallWindowDeleteAll());
+				member.sendPacket(PartySmallWindowDeleteAll.STATIC_PACKET);
 				member.sendPacket(new PartySmallWindowAll(member, this));
 				member.broadcastUserInfo();
 			}
@@ -406,7 +406,7 @@ public class L2Party extends AbstractPlayerGroup
 		// open the CCInformationwindow
 		if (isInCommandChannel())
 		{
-			player.sendPacket(new ExOpenMPCC());
+			player.sendPacket(ExOpenMPCC.STATIC_PACKET);
 		}
 		
 		if (_positionBroadcastTask == null)
@@ -494,7 +494,7 @@ public class L2Party extends AbstractPlayerGroup
 			}
 			
 			// UI update.
-			player.sendPacket(new PartySmallWindowDeleteAll());
+			player.sendPacket(PartySmallWindowDeleteAll.STATIC_PACKET);
 			player.setParty(null);
 			broadcastPacket(new PartySmallWindowDelete(player));
 			final L2Summon summon = player.getPet();

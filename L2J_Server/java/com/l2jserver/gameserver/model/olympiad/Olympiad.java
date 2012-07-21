@@ -179,14 +179,11 @@ public class Olympiad
 	private void load()
 	{
 		_nobles.clear();
-		Connection con = null;
 		boolean loaded = false;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(OLYMPIAD_LOAD_DATA);
-			ResultSet rset = statement.executeQuery();
-			
+			ResultSet rset = statement.executeQuery())
+		{
 			while (rset.next())
 			{
 				_currentCycle = rset.getInt("current_cycle");
@@ -196,17 +193,10 @@ public class Olympiad
 				_nextWeeklyChange = rset.getLong("next_weekly_change");
 				loaded = true;
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Olympiad System: Error loading olympiad data from database: ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		if (!loaded)
@@ -263,11 +253,10 @@ public class Olympiad
 				return;
 		}
 		
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(OLYMPIAD_LOAD_NOBLES);
+			ResultSet rset = statement.executeQuery())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement(OLYMPIAD_LOAD_NOBLES);
-			final ResultSet rset = statement.executeQuery();
 			StatsSet statData;
 			while (rset.next())
 			{
@@ -287,17 +276,10 @@ public class Olympiad
 				
 				addNobleStats(rset.getInt(CHAR_ID), statData);
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Olympiad System: Error loading noblesse data from database: ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		
 		synchronized (this)
@@ -340,31 +322,21 @@ public class Olympiad
 	{
 		_noblesRank.clear();
 		TIntIntHashMap tmpPlace = new TIntIntHashMap();
-		
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(GET_ALL_CLASSIFIED_NOBLESS);
-			ResultSet rset = statement.executeQuery();
-			
+			ResultSet rset = statement.executeQuery())
+		{
 			int place = 1;
 			while (rset.next())
 			{
 				tmpPlace.put(rset.getInt(CHAR_ID), place++);
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Olympiad System: Error loading noblesse data from database for Ranking: ", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		
 		int rank1 = (int) Math.round(tmpPlace.size() * 0.01);
 		int rank2 = (int) Math.round(tmpPlace.size() * 0.10);
 		int rank3 = (int) Math.round(tmpPlace.size() * 0.25);
@@ -756,11 +728,8 @@ public class Olympiad
 			return;
 		}
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
 			for (Entry<Integer, StatsSet> entry : _nobles.entrySet())
 			{
 				StatsSet nobleInfo = entry.getValue();
@@ -783,48 +752,44 @@ public class Olympiad
 				int compDoneWeekTeam = nobleInfo.getInteger(COMP_DONE_WEEK_TEAM);
 				boolean toSave = nobleInfo.getBool("to_save");
 				
-				if (toSave)
+				try (PreparedStatement statement = con.prepareStatement(toSave ? OLYMPIAD_SAVE_NOBLES : OLYMPIAD_UPDATE_NOBLES))
 				{
-					statement = con.prepareStatement(OLYMPIAD_SAVE_NOBLES);
-					statement.setInt(1, charId);
-					statement.setInt(2, classId);
-					statement.setInt(3, points);
-					statement.setInt(4, compDone);
-					statement.setInt(5, compWon);
-					statement.setInt(6, compLost);
-					statement.setInt(7, compDrawn);
-					statement.setInt(8, compDoneWeek);
-					statement.setInt(9, compDoneWeekClassed);
-					statement.setInt(10, compDoneWeekNonClassed);
-					statement.setInt(11, compDoneWeekTeam);
-					
-					nobleInfo.set("to_save", false);
+					if (toSave)
+					{
+						statement.setInt(1, charId);
+						statement.setInt(2, classId);
+						statement.setInt(3, points);
+						statement.setInt(4, compDone);
+						statement.setInt(5, compWon);
+						statement.setInt(6, compLost);
+						statement.setInt(7, compDrawn);
+						statement.setInt(8, compDoneWeek);
+						statement.setInt(9, compDoneWeekClassed);
+						statement.setInt(10, compDoneWeekNonClassed);
+						statement.setInt(11, compDoneWeekTeam);
+						
+						nobleInfo.set("to_save", false);
+					}
+					else
+					{
+						statement.setInt(1, points);
+						statement.setInt(2, compDone);
+						statement.setInt(3, compWon);
+						statement.setInt(4, compLost);
+						statement.setInt(5, compDrawn);
+						statement.setInt(6, compDoneWeek);
+						statement.setInt(7, compDoneWeekClassed);
+						statement.setInt(8, compDoneWeekNonClassed);
+						statement.setInt(9, compDoneWeekTeam);
+						statement.setInt(10, charId);
+					}
+					statement.execute();
 				}
-				else
-				{
-					statement = con.prepareStatement(OLYMPIAD_UPDATE_NOBLES);
-					statement.setInt(1, points);
-					statement.setInt(2, compDone);
-					statement.setInt(3, compWon);
-					statement.setInt(4, compLost);
-					statement.setInt(5, compDrawn);
-					statement.setInt(6, compDoneWeek);
-					statement.setInt(7, compDoneWeekClassed);
-					statement.setInt(8, compDoneWeekNonClassed);
-					statement.setInt(9, compDoneWeekTeam);
-					statement.setInt(10, charId);
-				}
-				statement.execute();
-				statement.close();
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "Olympiad System: Failed to save noblesse data to database: ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -835,12 +800,9 @@ public class Olympiad
 	{
 		saveNobleData();
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(OLYMPIAD_SAVE_DATA))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement(OLYMPIAD_SAVE_DATA);
-			
 			statement.setInt(1, _currentCycle);
 			statement.setInt(2, _period);
 			statement.setLong(3, _olympiadEnd);
@@ -851,22 +813,16 @@ public class Olympiad
 			statement.setLong(8, _olympiadEnd);
 			statement.setLong(9, _validationEnd);
 			statement.setLong(10, _nextWeeklyChange);
-			
 			statement.execute();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "Olympiad System: Failed to save olympiad data to database: ", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 		//@formatter:off
 		/*
 		Properties OlympiadProperties = new Properties();
-		try (FileOutputStream fos = new FileOutputStream(new File("./" + OLYMPIAD_DATA_FILE));)
+		try (FileOutputStream fos = new FileOutputStream(new File("./" + OLYMPIAD_DATA_FILE)))
 		{
 			OlympiadProperties.setProperty("CurrentCycle", String.valueOf(_currentCycle));
 			OlympiadProperties.setProperty("Period", String.valueOf(_period));
@@ -885,24 +841,16 @@ public class Olympiad
 	
 	protected void updateMonthlyData()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps1 = con.prepareStatement(OLYMPIAD_MONTH_CLEAR);
+			PreparedStatement ps2 = con.prepareStatement(OLYMPIAD_MONTH_CREATE))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(OLYMPIAD_MONTH_CLEAR);
-			statement.execute();
-			statement.close();
-			statement = con.prepareStatement(OLYMPIAD_MONTH_CREATE);
-			statement.execute();
-			statement.close();
+			ps1.execute();
+			ps2.execute();
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.SEVERE, "Olympiad System: Failed to update monthly noblese data: ", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -946,10 +894,8 @@ public class Olympiad
 		
 		_heroesToBe = new L2FastList<>();
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(OLYMPIAD_GET_HEROS);
 			ResultSet rset;
 			StatsSet hero;
@@ -1077,59 +1023,28 @@ public class Olympiad
 		{
 			_log.warning("Olympiad System: Couldnt load heros from DB");
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public L2FastList<String> getClassLeaderBoard(int classId)
 	{
 		// if (_period != 1) return;
 		final L2FastList<String> names = new L2FastList<>();
-		Connection con = null;
-		try
+		String query = Config.ALT_OLY_SHOW_MONTHLY_WINNERS ? ((classId == 132) ? GET_EACH_CLASS_LEADER_SOULHOUND : GET_EACH_CLASS_LEADER) : ((classId == 132) ? GET_EACH_CLASS_LEADER_CURRENT_SOULHOUND : GET_EACH_CLASS_LEADER_CURRENT);
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(query))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement;
-			if (Config.ALT_OLY_SHOW_MONTHLY_WINNERS)
+			ps.setInt(1, classId);
+			try (ResultSet rset = ps.executeQuery())
 			{
-				if (classId == 132)
+				while (rset.next())
 				{
-					statement = con.prepareStatement(GET_EACH_CLASS_LEADER_SOULHOUND);
-				}
-				else
-				{
-					statement = con.prepareStatement(GET_EACH_CLASS_LEADER);
+					names.add(rset.getString(CHAR_NAME));
 				}
 			}
-			else
-			{
-				if (classId == 132)
-				{
-					statement = con.prepareStatement(GET_EACH_CLASS_LEADER_CURRENT_SOULHOUND);
-				}
-				else
-				{
-					statement = con.prepareStatement(GET_EACH_CLASS_LEADER_CURRENT);
-				}
-			}
-			statement.setInt(1, classId);
-			final ResultSet rset = statement.executeQuery();
-			while (rset.next())
-			{
-				names.add(rset.getString(CHAR_NAME));
-			}
-			statement.close();
-			rset.close();
 		}
 		catch (SQLException e)
 		{
 			_log.warning("Olympiad System: Couldn't load olympiad leaders from DB!");
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return names;
 	}
@@ -1193,27 +1108,21 @@ public class Olympiad
 	public int getLastNobleOlympiadPoints(int objId)
 	{
 		int result = 0;
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT olympiad_points FROM olympiad_nobles_eom WHERE charId = ?"))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("SELECT olympiad_points FROM olympiad_nobles_eom WHERE charId = ?");
-			statement.setInt(1, objId);
-			final ResultSet rs = statement.executeQuery();
-			if (rs.first())
+			ps.setInt(1, objId);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				result = rs.getInt(1);
+				if (rs.first())
+				{
+					result = rs.getInt(1);
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not load last olympiad points:", e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		return result;
 	}
@@ -1355,21 +1264,14 @@ public class Olympiad
 	
 	protected void deleteNobles()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(OLYMPIAD_DELETE_ALL))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement(OLYMPIAD_DELETE_ALL);
 			statement.execute();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
 			_log.warning("Olympiad System: Couldn't delete nobles from DB!");
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		_nobles.clear();
 	}

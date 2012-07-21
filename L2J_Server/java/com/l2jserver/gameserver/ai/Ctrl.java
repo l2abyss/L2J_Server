@@ -58,42 +58,64 @@ import com.l2jserver.gameserver.model.actor.L2Character;
  */
 public interface Ctrl
 {
+	
 	/**
-	 * the character this AI serves 
-	 * @return
+	 * Gets the actor.
+	 * @return the actor
 	 */
 	L2Character getActor();
 	
 	/**
-	 * get current intention 
-	 * @return
+	 * Gets the intention.
+	 * @return the intention
 	 */
 	CtrlIntention getIntention();
 	
 	/**
-	 * get current ATTACK target 
-	 * @return
+	 * Gets the attack target.
+	 * @return the attack target
 	 */
 	L2Character getAttackTarget();
 	
 	/**
-	 * Set general state/intention for AI, with optional data 
-	 * @param intention
+	 * Set general state/intention for AI, with optional data.
+	 * @param intention the new intention
 	 */
 	void setIntention(CtrlIntention intention);
 	
+	/**
+	 * Sets the intention.
+	 * @param intention the intention
+	 * @param arg0 the arg0
+	 */
 	void setIntention(CtrlIntention intention, Object arg0);
 	
+	/**
+	 * Sets the intention.
+	 * @param intention the intention
+	 * @param arg0 the arg0
+	 * @param arg1 the arg1
+	 */
 	void setIntention(CtrlIntention intention, Object arg0, Object arg1);
 	
 	/**
-	 * Event, that notifies about previous step result, or user command,
-	 * that does not change current general intention 
-	 * @param evt
+	 * Event, that notifies about previous step result, or user command, that does not change current general intention.
+	 * @param evt the event
 	 */
 	void notifyEvent(CtrlEvent evt);
 	
+	/**
+	 * Notify an event.
+	 * @param evt the event
+	 * @param arg0 the arg0
+	 */
 	void notifyEvent(CtrlEvent evt, Object arg0);
 	
+	/**
+	 * Notify an event.
+	 * @param evt the event
+	 * @param arg0 the arg0
+	 * @param arg1 the arg1
+	 */
 	void notifyEvent(CtrlEvent evt, Object arg0, Object arg1);
 }

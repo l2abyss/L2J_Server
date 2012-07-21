@@ -15,20 +15,14 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * @author zabbix
  * Lets drink to code!
+ * @author zabbix
  */
 public class GameGuardQuery extends L2GameServerPacket
 {
-	private static final String _S__F9_GAMEGUARDQUERY = "[S] 74 GameGuardQuery";
+	public static final GameGuardQuery STATIC_PACKET = new GameGuardQuery();
 	
-	public GameGuardQuery()
-	{
-		
-	}
-	
-	@Override
-	public void runImpl()
+	private GameGuardQuery()
 	{
 		
 	}
@@ -41,11 +35,5 @@ public class GameGuardQuery extends L2GameServerPacket
 		writeD(0x2E72A51D);
 		writeD(0x2017038B);
 		writeD(0xC35B1EA3);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__F9_GAMEGUARDQUERY;
 	}
 }

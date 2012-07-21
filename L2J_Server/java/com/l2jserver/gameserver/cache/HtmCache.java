@@ -124,7 +124,7 @@ public class HtmCache
 		final int hashcode = relpath.hashCode();
 		String content = null;
 		try (FileInputStream fis = new FileInputStream(file);
-			BufferedInputStream bis = new BufferedInputStream(fis);)
+			BufferedInputStream bis = new BufferedInputStream(fis))
 		{
 			final int bytes = bis.available();
 			byte[] raw = new byte[bytes];

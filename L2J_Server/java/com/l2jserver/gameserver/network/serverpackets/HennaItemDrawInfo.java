@@ -22,8 +22,6 @@ import com.l2jserver.gameserver.model.items.L2Henna;
  */
 public class HennaItemDrawInfo extends L2GameServerPacket
 {
-	private static final String _S__E4_HENNAITEMDRAWINFO = "[S] E4 HennaItemDrawInfo";
-	
 	private final L2PcInstance _activeChar;
 	private final L2Henna _henna;
 	
@@ -55,11 +53,5 @@ public class HennaItemDrawInfo extends L2GameServerPacket
 		writeC(_activeChar.getDEX() + _henna.getStatDEX()); // equip DEX
 		writeD(_activeChar.getWIT()); // current WIT
 		writeC(_activeChar.getWIT() + _henna.getStatWIT()); // equip WIT
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__E4_HENNAITEMDRAWINFO;
 	}
 }

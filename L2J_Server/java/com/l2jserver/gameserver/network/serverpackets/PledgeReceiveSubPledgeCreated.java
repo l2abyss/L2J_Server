@@ -17,16 +17,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Clan.SubPledge;
 
-
 /**
- *
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 {
-	private static final String _S__FE_3F_PLEDGERECEIVESUBPLEDGECREATED = "[S] FE:40 PledgeReceiveSubPledgeCreated";
-	private SubPledge _subPledge;
-	private L2Clan _clan;
+	private final SubPledge _subPledge;
+	private final L2Clan _clan;
 	
 	/**
 	 * @param subPledge
@@ -38,9 +35,6 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 		_clan = clan;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -57,23 +51,17 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 	{
 		int LeaderId = _subPledge.getLeaderId();
 		if (_subPledge.getId() == L2Clan.SUBUNIT_ACADEMY || LeaderId == 0)
+		{
 			return "";
+		}
 		else if (_clan.getClanMember(LeaderId) == null)
 		{
-			_log.warning("SubPledgeLeader: "+ LeaderId + " is missing from clan: "+ _clan.getName()+"["+_clan.getClanId()+"]");
+			_log.warning("SubPledgeLeader: " + LeaderId + " is missing from clan: " + _clan.getName() + "[" + _clan.getClanId() + "]");
 			return "";
 		}
 		else
+		{
 			return _clan.getClanMember(LeaderId).getName();
+		}
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_3F_PLEDGERECEIVESUBPLEDGECREATED;
-	}
-	
 }

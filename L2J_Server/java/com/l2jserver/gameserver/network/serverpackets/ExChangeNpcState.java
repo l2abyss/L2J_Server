@@ -16,20 +16,17 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 /**
  * @author JIV
- *
  */
 public class ExChangeNpcState extends L2GameServerPacket
 {
+	private final int _objId;
+	private final int _state;
+	
 	public ExChangeNpcState(int objId, int state)
 	{
 		_objId = objId;
 		_state = state;
 	}
-	
-	private static final String _S__FE_BE__EXCHANGENPCSTATE = "[S] FE:BE ExChangeNpcState";
-	
-	private final int _objId;
-	private final int _state;
 	
 	@Override
 	protected void writeImpl()
@@ -39,11 +36,4 @@ public class ExChangeNpcState extends L2GameServerPacket
 		writeD(_objId);
 		writeD(_state);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_BE__EXCHANGENPCSTATE;
-	}
-	
 }

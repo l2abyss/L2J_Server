@@ -23,9 +23,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public class ExReplyReceivedPost extends L2GameServerPacket
 {
-	private static final String _S__FE_AB_EXSHOWRECEIVEDPOST = "[S] FE:AB ExShowReceivedPost";
-	
-	private Message _msg;
+	private final Message _msg;
 	private L2ItemInstance[] _items = null;
 	
 	public ExReplyReceivedPost(Message msg)
@@ -37,18 +35,18 @@ public class ExReplyReceivedPost extends L2GameServerPacket
 			if (attachments != null && attachments.getSize() > 0)
 				_items = attachments.getItems();
 			else
-				_log.warning("Message "+msg.getId()+" has attachments but itemcontainer is empty.");
+				_log.warning("Message " + msg.getId() + " has attachments but itemcontainer is empty.");
 		}
 	}
 	
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0xab);
 		writeD(_msg.getId());
 		writeD(_msg.isLocked() ? 1 : 0);
-		writeD(0x00); //Unknown
+		writeD(0x00); // Unknown
 		writeS(_msg.getSenderName());
 		writeS(_msg.getSubject());
 		writeS(_msg.getContent());
@@ -86,21 +84,14 @@ public class ExReplyReceivedPost extends L2GameServerPacket
 				writeH(0);
 				writeD(item.getObjectId());
 			}
-			_items = null;
 		}
 		else
+		{
 			writeD(0x00);
+		}
 		
 		writeQ(_msg.getReqAdena());
 		writeD(_msg.hasAttachments() ? 1 : 0);
 		writeD(_msg.getSendBySystem());
-		
-		_msg = null;
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_AB_EXSHOWRECEIVEDPOST;
 	}
 }

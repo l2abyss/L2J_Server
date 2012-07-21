@@ -16,19 +16,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 
-/**
- * 0000: 01  7a 73 10 4c  b2 0b 00 00  a3 fc 00 00  e8 f1 ff    .zs.L...........
- * 0010: ff  bd 0b 00 00  b3 fc 00 00  e8 f1 ff ff             .............
-
- *
- * ddddddd
- *
- * @version $Revision: 1.3.4.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public final class MoveToLocation extends L2GameServerPacket
 {
-	private static final String _S__01_CHARMOVETOLOCATION = "[S] 2f MoveToLocation";
-	private int _charObjId, _x, _y, _z, _xDst, _yDst, _zDst;
+	private final int _charObjId, _x, _y, _z, _xDst, _yDst, _zDst;
 	
 	public MoveToLocation(L2Character cha)
 	{
@@ -56,11 +46,4 @@ public final class MoveToLocation extends L2GameServerPacket
 		writeD(_y);
 		writeD(_z);
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__01_CHARMOVETOLOCATION;
-	}
-	
 }

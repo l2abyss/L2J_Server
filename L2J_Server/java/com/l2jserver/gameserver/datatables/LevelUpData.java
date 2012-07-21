@@ -17,8 +17,8 @@ package com.l2jserver.gameserver.datatables;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,45 +59,34 @@ public class LevelUpData
 	protected LevelUpData()
 	{
 		_lvlTable = new TIntObjectHashMap<>();
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(SELECT_ALL))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SELECT_ALL);
-			ResultSet rset = statement.executeQuery();
 			L2LvlupData lvlDat;
-			
-			while (rset.next())
+			while (rs.next())
 			{
 				lvlDat = new L2LvlupData();
-				lvlDat.setClassid(rset.getInt(CLASS_ID));
-				lvlDat.setClassLvl(rset.getInt(CLASS_LVL));
-				lvlDat.setClassHpBase(rset.getFloat(HP_BASE));
-				lvlDat.setClassHpAdd(rset.getFloat(HP_ADD));
-				lvlDat.setClassHpModifier(rset.getFloat(HP_MOD));
-				lvlDat.setClassCpBase(rset.getFloat(CP_BASE));
-				lvlDat.setClassCpAdd(rset.getFloat(CP_ADD));
-				lvlDat.setClassCpModifier(rset.getFloat(CP_MOD));
-				lvlDat.setClassMpBase(rset.getFloat(MP_BASE));
-				lvlDat.setClassMpAdd(rset.getFloat(MP_ADD));
-				lvlDat.setClassMpModifier(rset.getFloat(MP_MOD));
+				lvlDat.setClassid(rs.getInt(CLASS_ID));
+				lvlDat.setClassLvl(rs.getInt(CLASS_LVL));
+				lvlDat.setClassHpBase(rs.getFloat(HP_BASE));
+				lvlDat.setClassHpAdd(rs.getFloat(HP_ADD));
+				lvlDat.setClassHpModifier(rs.getFloat(HP_MOD));
+				lvlDat.setClassCpBase(rs.getFloat(CP_BASE));
+				lvlDat.setClassCpAdd(rs.getFloat(CP_ADD));
+				lvlDat.setClassCpModifier(rs.getFloat(CP_MOD));
+				lvlDat.setClassMpBase(rs.getFloat(MP_BASE));
+				lvlDat.setClassMpAdd(rs.getFloat(MP_ADD));
+				lvlDat.setClassMpModifier(rs.getFloat(MP_MOD));
 				
 				_lvlTable.put(lvlDat.getClassid(), lvlDat);
 			}
-			
-			rset.close();
-			statement.close();
-			
-			_log.info("LevelUpData: Loaded " + _lvlTable.size() + " Character Level Up Templates.");
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error loading Level Up data.", e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		_log.info("LevelUpData: Loaded " + _lvlTable.size() + " Character Level Up Templates.");
 	}
 	
 	/**

@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 
 /**
- * 
  * @author KenM
  */
 public class ExEnchantSkillInfoDetail extends L2GameServerPacket
@@ -59,7 +58,7 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		}
 		
 		if (esd == null)
-			throw new IllegalArgumentException("Skill "+skillid + " dont have enchant data for level "+skilllvl);
+			throw new IllegalArgumentException("Skill " + skillid + " dont have enchant data for level " + skilllvl);
 		
 		if (type == 0)
 			multi = EnchantGroupsData.NORMAL_ENCHANT_COST_MULTIPLIER;
@@ -78,7 +77,7 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		{
 			case TYPE_NORMAL_ENCHANT:
 				bookId = EnchantGroupsData.NORMAL_ENCHANT_BOOK;
-				reqCount = ((_skilllvl % 100 > 1) ? 0 : 1) ;
+				reqCount = ((_skilllvl % 100 > 1) ? 0 : 1);
 				break;
 			case TYPE_SAFE_ENCHANT:
 				bookId = EnchantGroupsData.SAFE_ENCHANT_BOOK;
@@ -101,23 +100,17 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 	}
 	
 	@Override
-	public String getType()
-	{
-		return "[S] FE:5E ExEnchantSkillInfoDetail";
-	}
-	
-	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
-		writeH(0x5e);
+		writeC(0xFE);
+		writeH(0x5E);
 		
 		writeD(_type);
 		writeD(_skillid);
 		writeD(_skilllvl);
 		writeD(_sp * multi); // sp
 		writeD(_chance); // exp
-		writeD(2); // items count?
+		writeD(0x02); // items count?
 		writeD(PcInventory.ADENA_ID); // Adena
 		writeD(_adenacount); // Adena count
 		writeD(bookId); // ItemId Required

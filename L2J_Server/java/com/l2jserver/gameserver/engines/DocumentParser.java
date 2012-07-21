@@ -115,22 +115,45 @@ public abstract class DocumentParser
 		return _currentDocument;
 	}
 	
+	
 	/**
-	 * Wrapper for {@link #parseDirectory(File)}.
+	 * Wrapper for {@link #parseDirectory(File, boolean)}.
+	 * @param file the path to the directory where the XML files are.
+	 * @return {@code false} if it fails to find the directory, {@code true} otherwise.
+	 */
+	protected boolean parseDirectory(File file)
+	{
+		return parseDirectory(file, false);
+	}
+	
+	/**
+	 * Wrapper for {@link #parseDirectory(File, boolean)}.
 	 * @param path the path to the directory where the XML files are.
 	 * @return {@code false} if it fails to find the directory, {@code true} otherwise.
 	 */
 	protected boolean parseDirectory(String path)
 	{
-		return parseDirectory(new File(path));
+		return parseDirectory(new File(path), false);
+	}
+	
+	/**
+	 * Wrapper for {@link #parseDirectory(File, boolean)}.
+	 * @param path the path to the directory where the XML files are.
+	 * @param recursive parses all sub folders if there is.
+	 * @return {@code false} if it fails to find the directory, {@code true} otherwise.
+	 */
+	protected boolean parseDirectory(String path, boolean recursive)
+	{
+		return parseDirectory(new File(path), recursive);
 	}
 	
 	/**
 	 * Loads all XML files from {@code path} and calls {@link #parseFile(File)} for each one of them.
 	 * @param dir the directory object to scan.
+	 * @param recursive parses all sub folders if there is.
 	 * @return {@code false} if it fails to find the directory, {@code true} otherwise.
 	 */
-	protected boolean parseDirectory(File dir)
+	protected boolean parseDirectory(File dir, boolean recursive)
 	{
 		if (!dir.exists())
 		{
@@ -138,10 +161,17 @@ public abstract class DocumentParser
 			return false;
 		}
 		
-		final File[] listOfFiles = dir.listFiles(xmlFilter);
+		final File[] listOfFiles = dir.listFiles();
 		for (File f : listOfFiles)
 		{
-			parseFile(f);
+			if (recursive && f.isDirectory())
+			{
+				parseDirectory(f, recursive);
+			}
+			else if (xmlFilter.accept(f))
+			{
+				parseFile(f);
+			}
 		}
 		return true;
 	}

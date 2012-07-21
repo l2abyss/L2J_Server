@@ -19,16 +19,10 @@ import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-/**
- * dd d(dd) d(ddd)
- * @version $Revision: 1.1.2.2.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
-public class RecipeShopManageList  extends L2GameServerPacket
+public class RecipeShopManageList extends L2GameServerPacket
 {
-	
-	private static final String _S__D8_RecipeShopManageList = "[S] de RecipeShopManageList";
-	private L2PcInstance _seller;
-	private boolean _isDwarven;
+	private final L2PcInstance _seller;
+	private final boolean _isDwarven;
 	private L2RecipeList[] _recipes;
 	
 	public RecipeShopManageList(L2PcInstance seller, boolean isDwarven)
@@ -58,7 +52,7 @@ public class RecipeShopManageList  extends L2GameServerPacket
 	{
 		writeC(0xde);
 		writeD(_seller.getObjectId());
-		writeD((int)_seller.getAdena());
+		writeD((int) _seller.getAdena());
 		writeD(_isDwarven ? 0x00 : 0x01);
 		
 		if (_recipes == null)
@@ -67,13 +61,13 @@ public class RecipeShopManageList  extends L2GameServerPacket
 		}
 		else
 		{
-			writeD(_recipes.length);//number of items in recipe book
+			writeD(_recipes.length);// number of items in recipe book
 			
 			for (int i = 0; i < _recipes.length; i++)
 			{
 				L2RecipeList temp = _recipes[i];
 				writeD(temp.getId());
-				writeD(i+1);
+				writeD(i + 1);
 			}
 		}
 		
@@ -93,11 +87,5 @@ public class RecipeShopManageList  extends L2GameServerPacket
 				writeQ(item.getCost());
 			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__D8_RecipeShopManageList;
 	}
 }

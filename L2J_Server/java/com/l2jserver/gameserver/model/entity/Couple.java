@@ -43,14 +43,10 @@ public class Couple
 	{
 		_Id = coupleId;
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			PreparedStatement statement;
 			ResultSet rs;
-			
-			con = L2DatabaseFactory.getInstance().getConnection();
-			
 			statement = con.prepareStatement("SELECT * FROM mods_wedding WHERE id = ?");
 			statement.setInt(1, _Id);
 			rs = statement.executeQuery();
@@ -74,10 +70,6 @@ public class Couple
 		{
 			_log.log(Level.SEVERE, "Exception: Couple.load(): " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public Couple(L2PcInstance player1, L2PcInstance player2)
@@ -94,10 +86,8 @@ public class Couple
 		_weddingDate = Calendar.getInstance();
 		_weddingDate.setTimeInMillis(Calendar.getInstance().getTimeInMillis());
 		
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement;
 			_Id = IdFactory.getInstance().getNextId();
 			statement = con.prepareStatement("INSERT INTO mods_wedding (id, player1Id, player2Id, married, affianceDate, weddingDate) VALUES (?, ?, ?, ?, ?, ?)");
@@ -114,18 +104,12 @@ public class Couple
 		{
 			_log.log(Level.SEVERE, "Could not create couple: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void marry()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?");
 			statement.setBoolean(1, true);
 			_weddingDate = Calendar.getInstance();
@@ -139,18 +123,12 @@ public class Couple
 		{
 			_log.log(Level.SEVERE, "Could not marry: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void divorce()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?");
 			statement.setInt(1, _Id);
 			statement.execute();
@@ -159,10 +137,6 @@ public class Couple
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Exception: Couple.divorce(): " + e.getMessage(), e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -345,20 +346,14 @@ public abstract class BaseGameServerRegister
 	 */
 	public static void unregisterGameServer(int id) throws SQLException
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM gameservers WHERE server_id = ?"))
+		
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("DELETE FROM gameservers WHERE server_id = ?");
-			statement.setInt(1, id);
-			statement.executeUpdate();
-			GameServerTable.getInstance().getRegisteredGameServers().remove(id);
-			statement.close();
+			ps.setInt(1, id);
+			ps.executeUpdate();
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		GameServerTable.getInstance().getRegisteredGameServers().remove(id);
 	}
 	
 	/**
@@ -367,19 +362,12 @@ public abstract class BaseGameServerRegister
 	 */
 	public static void unregisterAllGameServers() throws SQLException
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			final PreparedStatement statement = con.prepareStatement("DELETE FROM gameservers");
-			statement.executeUpdate();
-			statement.close();
-			GameServerTable.getInstance().getRegisteredGameServers().clear();
+			s.executeUpdate("DELETE FROM gameservers");
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
+		GameServerTable.getInstance().getRegisteredGameServers().clear();
 	}
 	
 	/**
@@ -397,11 +385,12 @@ public abstract class BaseGameServerRegister
 		File file = new File(outDir, "hexid.txt");
 		// Create a new empty file only if it doesn't exist
 		file.createNewFile();
-		OutputStream out = new FileOutputStream(file);
-		hexSetting.setProperty("ServerID", String.valueOf(id));
-		hexSetting.setProperty("HexID", new BigInteger(hexId).toString(16));
-		hexSetting.store(out, "The HexId to Auth into LoginServer");
-		out.close();
+		try (OutputStream out = new FileOutputStream(file))
+		{
+			hexSetting.setProperty("ServerID", String.valueOf(id));
+			hexSetting.setProperty("HexID", new BigInteger(hexId).toString(16));
+			hexSetting.store(out, "The HexId to Auth into LoginServer");
+		}
 	}
 	
 	/**

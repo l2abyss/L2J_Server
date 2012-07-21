@@ -18,13 +18,12 @@ import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * @author Maktakien
- *
  */
 public class GetOnVehicle extends L2GameServerPacket
 {
-	private int _charObjId;
-	private int _boatObjId;
-	private Point3D _pos;
+	private final int _charObjId;
+	private final int _boatObjId;
+	private final Point3D _pos;
 	
 	/**
 	 * @param charObjId
@@ -38,9 +37,6 @@ public class GetOnVehicle extends L2GameServerPacket
 		_pos = pos;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
@@ -51,14 +47,5 @@ public class GetOnVehicle extends L2GameServerPacket
 		writeD(_pos.getY());
 		writeD(_pos.getZ());
 		
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] 6e GetOnVehicle";
 	}
 }

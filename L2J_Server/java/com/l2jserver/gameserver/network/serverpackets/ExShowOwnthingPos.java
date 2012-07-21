@@ -20,32 +20,27 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.TerritoryWard;
 
 /**
- * Format: (ch) d[dddd]
- *
- * @author  -Gigiikun-
+ * @author -Gigiikun-
  */
 public class ExShowOwnthingPos extends L2GameServerPacket
 {
-	private static final String _S__FE_93_EXSHOWOWNTHINGPOS = "[S] FE:93 ExShowOwnthingPos";
+	public static final ExShowOwnthingPos STATIC_PACKET = new ExShowOwnthingPos();
 	
-	public ExShowOwnthingPos()
+	private ExShowOwnthingPos()
 	{
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x93);
 		
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
 			List<TerritoryWard> territoryWardList = TerritoryWarManager.getInstance().getAllTerritoryWards();
 			writeD(territoryWardList.size());
-			for(TerritoryWard ward : territoryWardList)
+			for (TerritoryWard ward : territoryWardList)
 			{
 				writeD(ward.getTerritoryId());
 				
@@ -63,25 +58,15 @@ public class ExShowOwnthingPos extends L2GameServerPacket
 				}
 				else
 				{
-					writeD(0);
-					writeD(0);
-					writeD(0);
+					writeD(0x00);
+					writeD(0x00);
+					writeD(0x00);
 				}
 			}
 		}
 		else
 		{
-			writeD(0);
-			//writeD(0);
+			writeD(0x00);
 		}
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_93_EXSHOWOWNTHINGPOS;
 	}
 }

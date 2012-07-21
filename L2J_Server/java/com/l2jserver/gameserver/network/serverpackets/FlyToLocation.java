@@ -18,8 +18,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public final class FlyToLocation extends L2GameServerPacket
 {
@@ -52,22 +51,10 @@ public final class FlyToLocation extends L2GameServerPacket
 		this(cha, dest.getX(), dest.getY(), dest.getZ(), type);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return "[S] 0xd4 FlyToLocation";
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xd4);
+		writeC(0xD4);
 		writeD(_chaObjId);
 		writeD(_destX);
 		writeD(_destY);
@@ -77,5 +64,4 @@ public final class FlyToLocation extends L2GameServerPacket
 		writeD(_chaZ);
 		writeD(_type.ordinal());
 	}
-	
 }

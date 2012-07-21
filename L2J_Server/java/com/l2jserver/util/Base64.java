@@ -344,7 +344,9 @@ public class Base64
 		byte[] value = null;
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Base64.OutputStream b64os = new Base64.OutputStream(baos, ENCODE | dontBreakLines);
-			ObjectOutputStream oos = new ObjectOutputStream((gzip == GZIP) ? new GZIPOutputStream(b64os) : b64os))
+			GZIPOutputStream gzipOutputStream = new GZIPOutputStream(b64os);
+			FilterOutputStream os = (gzip == GZIP) ? gzipOutputStream : b64os;
+			ObjectOutputStream oos = new ObjectOutputStream(os))
 		{
 			oos.writeObject(serializableObject);
 			value = baos.toByteArray();

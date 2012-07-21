@@ -66,6 +66,10 @@ public class TerritoryWarManager implements Siegable
 {
 	private static final Logger _log = Logger.getLogger(TerritoryWarManager.class.getName());
 	
+	// SQL
+	private static final String DELETE = "DELETE FROM territory_registrations WHERE castleId = ? and registeredId = ?";
+	private static final String INSERT = "INSERT INTO territory_registrations (castleId, registeredId) values (?, ?)";
+	
 	public static final TerritoryWarManager getInstance()
 	{
 		return SingletonHolder._instance;
@@ -656,36 +660,24 @@ public class TerritoryWarManager implements Siegable
 	
 	private void changeRegistration(int castleId, int objId, boolean delete)
 	{
-		Connection con = null;
-		try
+		final String query = delete ? DELETE : INSERT;
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(query))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement;
-			if (delete)
-				statement = con.prepareStatement("DELETE FROM territory_registrations WHERE castleId=? and registeredId=?");
-			else
-				statement = con.prepareStatement("INSERT INTO territory_registrations (castleId, registeredId) values (?,?)");
 			statement.setInt(1, castleId);
 			statement.setInt(2, objId);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception: Territory War registration: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private void updateTerritoryData(Territory ter)
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE territories SET ownedWardIds=? WHERE territoryId=?");
 			StringBuilder wardList = new StringBuilder();
 			for (int i : ter.getOwnedWardIds())
@@ -699,15 +691,10 @@ public class TerritoryWarManager implements Siegable
 		{
 			_log.log(Level.WARNING, "Exception: Territory Data update: " + e.getMessage(), e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	private final void load()
 	{
-		
 		try (InputStream is = new FileInputStream(new File(Config.TW_CONFIGURATION_FILE)))
 		{
 			L2Properties territoryWarSettings = new L2Properties();
@@ -726,10 +713,8 @@ public class TerritoryWarManager implements Siegable
 			MINTWBADGEFORSTRIDERS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForStriders", "50"));
 			MINTWBADGEFORBIGSTRIDER = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForBigStrider", "80"));
 			
-			Connection con = null;
-			try
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement = con.prepareStatement("SELECT * FROM territory_spawnlist");
 				ResultSet rs = statement.executeQuery();
 				
@@ -763,13 +748,9 @@ public class TerritoryWarManager implements Siegable
 			{
 				_log.log(Level.WARNING, "Territory War Manager: SpawnList error: " + e.getMessage(), e);
 			}
-			finally
+			
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				L2DatabaseFactory.close(con);
-			}
-			try
-			{
-				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement = con.prepareStatement("SELECT * FROM territories");
 				ResultSet rs = statement.executeQuery();
 				
@@ -804,13 +785,10 @@ public class TerritoryWarManager implements Siegable
 			{
 				_log.log(Level.WARNING, "Territory War Manager: territory list error(): " + e.getMessage(), e);
 			}
-			finally
+			
+			
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				L2DatabaseFactory.close(con);
-			}
-			try
-			{
-				con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement statement = con.prepareStatement("SELECT * FROM territory_registrations");
 				ResultSet rs = statement.executeQuery();
 				
@@ -837,10 +815,6 @@ public class TerritoryWarManager implements Siegable
 			catch (Exception e)
 			{
 				_log.log(Level.WARNING, "Territory War Manager: registration list error: " + e.getMessage(), e);
-			}
-			finally
-			{
-				L2DatabaseFactory.close(con);
 			}
 		}
 		catch (Exception e)
@@ -1513,14 +1487,12 @@ public class TerritoryWarManager implements Siegable
 	@Override
 	public void startSiege()
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public void endSiege()
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
@@ -1533,70 +1505,60 @@ public class TerritoryWarManager implements Siegable
 	@Override
 	public L2SiegeClan getAttackerClan(L2Clan clan)
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public List<L2SiegeClan> getAttackerClans()
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public List<L2PcInstance> getAttackersInZone()
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean checkIsAttacker(L2Clan clan)
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public L2SiegeClan getDefenderClan(int clanId)
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public L2SiegeClan getDefenderClan(L2Clan clan)
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public List<L2SiegeClan> getDefenderClans()
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public boolean checkIsDefender(L2Clan clan)
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public List<L2Npc> getFlag(L2Clan clan)
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	
 	@Override
 	public Calendar getSiegeDate()
 	{
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 	

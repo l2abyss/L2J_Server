@@ -20,29 +20,12 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 
-
 /**
- * Format: (ch) d [SdSdSdd]
- * d: size
- * [
- * S: hero name
- * d: hero class ID
- * S: hero clan name
- * d: hero clan crest id
- * S: hero ally name
- * d: hero Ally id
- * d: count
- * ]
- * @author -Wooden-
- * Format from KenM
- *
- * Re-written by godson
- *
+ * @author -Wooden-, KenM, godson
  */
 public class ExHeroList extends L2GameServerPacket
 {
-	private static final String _S__FE_23_EXHEROLIST = "[S] FE:79 ExHeroList";
-	private Map<Integer, StatsSet> _heroList;
+	private final Map<Integer, StatsSet> _heroList;
 	
 	public ExHeroList()
 	{
@@ -52,11 +35,11 @@ public class ExHeroList extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x79);
 		writeD(_heroList.size());
 		
-		for(Integer heroId : _heroList.keySet())
+		for (Integer heroId : _heroList.keySet())
 		{
 			StatsSet hero = _heroList.get(heroId);
 			writeS(hero.getString(Olympiad.CHAR_NAME));
@@ -67,13 +50,5 @@ public class ExHeroList extends L2GameServerPacket
 			writeD(hero.getInteger(Hero.ALLY_CREST, 0));
 			writeD(hero.getInteger(Hero.COUNT));
 		}
-		
 	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_23_EXHEROLIST;
-	}
-	
 }

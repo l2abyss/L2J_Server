@@ -18,13 +18,8 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 
-/**
- * TODO: Gather samples from newer chronicles.
- * @version 1.4
- */
 public final class AcquireSkillList extends L2GameServerPacket
 {
-	private static final String _S__90_AQUIRESKILLLIST = "[S] 90 AquireSkillList";
 	private final FastList<Skill> _skills;
 	private final AcquireSkillType _skillType;
 	
@@ -84,11 +79,5 @@ public final class AcquireSkillList extends L2GameServerPacket
 				writeD(0); // TODO: ?
 			}
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__90_AQUIRESKILLLIST;
 	}
 }

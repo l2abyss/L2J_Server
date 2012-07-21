@@ -115,14 +115,14 @@ public class L2CharTemplate
 		_baseMAtk = set.getInteger("baseMAtk", 0);
 		_basePDef = set.getInteger("basePDef", 0);
 		_baseMDef = set.getInteger("baseMDef", 0);
-		_basePAtkSpd = set.getInteger("basePAtkSpd", 0);
-		_baseMAtkSpd = set.getInteger("baseMAtkSpd", 0);
+		_basePAtkSpd = set.getInteger("basePAtkSpd", 300);
+		_baseMAtkSpd = set.getInteger("baseMAtkSpd", 333);
 		_baseMReuseRate = set.getFloat("baseMReuseDelay", 1.f);
 		_baseShldDef = set.getInteger("baseShldDef", 0);
 		_baseAtkRange = set.getInteger("baseAtkRange", 0);
 		_baseShldRate = set.getInteger("baseShldRate", 0);
-		_baseCritRate = set.getInteger("baseCritRate", 0);
-		_baseMCritRate = set.getInteger("baseMCritRate", 80); // CT2: The magic critical rate has been increased to 10 times.
+		_baseCritRate = set.getInteger("baseCritRate", 4);
+		_baseMCritRate = set.getInteger("baseMCritRate", 0);
 		_baseWalkSpd = set.getInteger("baseWalkSpd", 0);
 		_baseRunSpd = set.getInteger("baseRunSpd", 0);
 		
@@ -746,7 +746,7 @@ public class L2CharTemplate
 	
 	/**
 	 * Overridden in L2NpcTemplate
-	 * @return
+	 * @return the characters skills
 	 */
 	public Map<Integer, L2Skill> getSkills()
 	{

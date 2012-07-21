@@ -18,11 +18,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 
 /**
  * @author Maktakien
- *
  */
 public class VehicleDeparture extends L2GameServerPacket
 {
-	// Store parameters because they can be changed during broadcast
 	private final int _objId, _x, _y, _z, _moveSpeed, _rotationSpeed;
 	
 	/**
@@ -34,15 +32,14 @@ public class VehicleDeparture extends L2GameServerPacket
 		_x = boat.getXdestination();
 		_y = boat.getYdestination();
 		_z = boat.getZdestination();
-		_moveSpeed = (int)boat.getStat().getMoveSpeed();
+		_moveSpeed = (int) boat.getStat().getMoveSpeed();
 		_rotationSpeed = boat.getStat().getRotationSpeed();
 	}
 	
 	@Override
-	protected
-	void writeImpl()
+	protected void writeImpl()
 	{
-		writeC(0x6c);
+		writeC(0x6C);
 		writeD(_objId);
 		writeD(_moveSpeed);
 		writeD(_rotationSpeed);
@@ -50,11 +47,5 @@ public class VehicleDeparture extends L2GameServerPacket
 		writeD(_y);
 		writeD(_z);
 		
-	}
-	
-	@Override
-	public String getType()
-	{
-		return "[S] 5A VehicleDeparture";
 	}
 }

@@ -15,13 +15,10 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * 
  * @author mrTJO
  */
 public class Ex2ndPasswordAck extends L2GameServerPacket
 {
-	
-	private static final String _S__FE_10B_EX2NDPASSWORDACKPACKET = "[S] FE:10B Ex2NDPasswordAckPacket";
 	int _response;
 	
 	public static int SUCCESS = 0x00;
@@ -36,19 +33,10 @@ public class Ex2ndPasswordAck extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		writeC(0xFE);
-		//writeH(0x109);
-		writeH(0xe7);
+		// writeH(0x109); GOD
+		writeH(0xE7);
 		writeC(0x00);
-		if (_response == WRONG_PATTERN)
-			writeD(0x01);
-		else
-			writeD(0x00);
+		writeD(_response == WRONG_PATTERN ? 0x01 : 0x00);
 		writeD(0x00);
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__FE_10B_EX2NDPASSWORDACKPACKET;
 	}
 }

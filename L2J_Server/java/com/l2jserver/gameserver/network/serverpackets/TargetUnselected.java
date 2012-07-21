@@ -16,22 +16,12 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 
-/**
- * format  dddd
- *
- * sample
- * 0000: 3a  69 08 10 48  02 c1 00 00  f7 56 00 00  89 ea ff    :i..H.....V.....
- * 0010: ff  0c b2 d8 61                                     ....a
- *
- * @version $Revision: 1.3.2.1.2.3 $ $Date: 2005/03/27 15:29:57 $
- */
 public class TargetUnselected extends L2GameServerPacket
 {
-	private static final String _S__3A_TARGETUNSELECTED = "[S] 24 TargetUnselected";
-	private int _targetObjId;
-	private int _x;
-	private int _y;
-	private int _z;
+	private final int _targetObjId;
+	private final int _x;
+	private final int _y;
+	private final int _z;
 	
 	/**
 	 * @param character
@@ -52,15 +42,6 @@ public class TargetUnselected extends L2GameServerPacket
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-		writeD(0x00); //??
-	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__3A_TARGETUNSELECTED;
+		writeD(0x00); // ??
 	}
 }

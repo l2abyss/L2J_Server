@@ -18,18 +18,12 @@ import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.3.2.1.2.4 $ $Date: 2005/03/27 15:29:40 $
- */
 public class PrivateStoreManageListBuy extends L2GameServerPacket
 {
-	private static final String _S__D0_PRIVATESELLLISTBUY = "[S] bd PrivateStoreManageListBuy";
-	private int _objId;
-	private long _playerAdena;
-	private L2ItemInstance[] _itemList;
-	private TradeItem[] _buyList;
+	private final int _objId;
+	private final long _playerAdena;
+	private final L2ItemInstance[] _itemList;
+	private final TradeItem[] _buyList;
 	
 	public PrivateStoreManageListBuy(L2PcInstance player)
 	{
@@ -43,11 +37,11 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0xbd);
-		//section 1
+		// section 1
 		writeD(_objId);
 		writeQ(_playerAdena);
 		
-		//section2
+		// section2
 		writeD(_itemList.length); // inventory items for potential buy
 		for (L2ItemInstance item : _itemList)
 		{
@@ -63,9 +57,9 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 			writeH(item.getCustomType2());
 			// Player cannot sell/buy augmented, shadow or time-limited items
 			// probably so hardcode values here
-			writeD(0x00);	// Augment
-			writeD(-1);		// Mana
-			writeD(-9999);	// Time
+			writeD(0x00); // Augment
+			writeD(-1); // Mana
+			writeD(-9999); // Time
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
@@ -79,8 +73,8 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 			writeQ(item.getItem().getReferencePrice() * 2);
 		}
 		
-		//section 3
-		writeD(_buyList.length); //count for all items already added for buy
+		// section 3
+		writeD(_buyList.length); // count for all items already added for buy
 		for (TradeItem item : _buyList)
 		{
 			writeD(item.getObjectId());
@@ -95,9 +89,9 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 			writeH(item.getCustomType2());
 			// Player cannot sell/buy augmented, shadow or time-limited items
 			// probably so hardcode values here
-			writeD(0x00);	// Augment
-			writeD(-1);		// Mana
-			writeD(-9999);	// Time
+			writeD(0x00); // Augment
+			writeD(-1); // Mana
+			writeD(-9999); // Time
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
@@ -112,11 +106,5 @@ public class PrivateStoreManageListBuy extends L2GameServerPacket
 			writeQ(item.getItem().getReferencePrice() * 2);
 			writeQ(item.getCount());
 		}
-	}
-	
-	@Override
-	public String getType()
-	{
-		return _S__D0_PRIVATESELLLISTBUY;
 	}
 }

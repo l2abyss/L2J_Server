@@ -15,31 +15,21 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * Format: ch
  * Trigger packet
- * @author  KenM
+ * @author KenM
  */
 public class ExShowVariationMakeWindow extends L2GameServerPacket
 {
-	private static final String _S__FE_50_EXSHOWVARIATIONMAKEWINDOW = "[S] FE:51 ExShowVariationMakeWindow";
+	public static final ExShowVariationMakeWindow STATIC_PACKET = new ExShowVariationMakeWindow();
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
+	private ExShowVariationMakeWindow()
+	{
+	}
+	
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x51);
 	}
-	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#getType()
-	 */
-	@Override
-	public String getType()
-	{
-		return _S__FE_50_EXSHOWVARIATIONMAKEWINDOW;
-	}
-	
 }

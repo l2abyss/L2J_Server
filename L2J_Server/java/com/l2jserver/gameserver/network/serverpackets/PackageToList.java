@@ -17,22 +17,17 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javolution.util.FastMap;
-
 /**
  * @author -Wooden-
- * @author UnAfraid
- * Thanks mrTJO
+ * @author UnAfraid, mrTJO
  */
 public class PackageToList extends L2GameServerPacket
 {
-	private final String _S__C8_PACKAGETOLIST = "[S] C8 PackageToList";
+	private final Map<Integer, String> _players;
 	
-	private final Map<Integer,String> _players = new FastMap<>();
-
 	public PackageToList(Map<Integer, String> chars)
 	{
-		_players.putAll(chars);
+		_players = chars;
 	}
 	
 	@Override
@@ -40,17 +35,10 @@ public class PackageToList extends L2GameServerPacket
 	{
 		writeC(0xC8);
 		writeD(_players.size());
-		for (Entry<Integer,String> entry : _players.entrySet())
+		for (Entry<Integer, String> entry : _players.entrySet())
 		{
 			writeD(entry.getKey());
 			writeS(entry.getValue());
 		}
 	}
-
-	@Override
-	public String getType()
-	{
-		return _S__C8_PACKAGETOLIST;
-	}
-	
 }
