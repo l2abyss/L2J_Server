@@ -40,6 +40,7 @@ import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2PetLevelData;
 import com.l2jserver.gameserver.model.L2World;
@@ -565,7 +566,11 @@ public class L2PetInstance extends L2Summon
 			if (target.getItemLootShedule() != null && (target.getOwnerId() == getOwner().getObjectId() || getOwner().isInLooterParty(target.getOwnerId())))
 				target.resetOwnerTimer();
 			
-			target.pickupMe(this);
+			// If owner is in party and it isnt finders keepers, distribute the item instead of stealing it -.-
+			if (getOwner().isInParty() && getOwner().getParty().getLootDistribution() != L2Party.ITEM_LOOTER)
+				getOwner().getParty().distributeItem(getOwner(), target);
+			else
+				target.pickupMe(this);
 			
 			if (Config.SAVE_DROPPED_ITEM) // item must be removed from ItemsOnGroundManager if is active
 				ItemsOnGroundManager.getInstance().removeObject(target);
