@@ -18,14 +18,18 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javolution.text.TextBuilder;
+import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
+import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 import com.l2jserver.util.file.filter.ExtFilter;
 
 /**
@@ -471,5 +475,107 @@ public final class Util
 	{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.format(date.getTime());
+	}
+	
+	/**
+	 * Sends the given html to the player.
+	 * @param activeChar
+	 * @param html
+	 */
+	public static void sendHtml(L2PcInstance activeChar, String html)
+	{
+		NpcHtmlMessage npcHtml = new NpcHtmlMessage(0);
+		npcHtml.setHtml(html);
+		activeChar.sendPacket(npcHtml);
+	}
+	
+	/**
+	 * Sends the html using the community board window.
+	 * @param activeChar
+	 * @param html
+	 */
+	public static void sendCBHtml(L2PcInstance activeChar, String html)
+	{
+		sendCBHtml(activeChar, html, "");
+	}
+	
+	/**
+	 * Sends the html using the community board window.
+	 * @param activeChar
+	 * @param html
+	 * @param fillMultiEdit fills the multiedit window (if any) inside the community board.
+	 */
+	public static void sendCBHtml(L2PcInstance activeChar, String html, String fillMultiEdit)
+	{
+		if (activeChar == null)
+			return;
+		
+		if (html != null)
+		{
+			activeChar.clearBypass();
+			int len = html.length();
+			for (int i = 0; i < len; i++)
+			{
+				int start = html.indexOf("\"bypass ", i);
+				int finish = html.indexOf("\"", start + 1);
+				if (start < 0 || finish < 0)
+					break;
+				
+				if (html.substring(start + 8, start + 10).equals("-h"))
+					start += 11;
+				else
+					start += 8;
+				
+				i = finish;
+				int finish2 = html.indexOf("$", start);
+				if (finish2 < finish && finish2 > 0)
+					activeChar.addBypass2(html.substring(start, finish2).trim());
+				else
+					activeChar.addBypass(html.substring(start, finish).trim());
+			}
+		}
+		
+		if (fillMultiEdit != null)
+		{
+			activeChar.sendPacket(new ShowBoard(html, "1001"));
+			fillMultiEditContent(activeChar, fillMultiEdit);
+		}
+		else
+		{
+			activeChar.sendPacket(new ShowBoard(null, "101"));
+			activeChar.sendPacket(new ShowBoard(html, "101"));
+			activeChar.sendPacket(new ShowBoard(null, "102"));
+			activeChar.sendPacket(new ShowBoard(null, "103"));
+		}
+	}
+	
+	/**
+	*
+	* Fills the community board's multiedit window with text. Must send after sendCBHtml
+	* @param activeChar 
+	* @param text 
+	*/
+	public static void fillMultiEditContent(L2PcInstance activeChar, String text)
+	{
+		text = text.replaceAll("<br>", "\n");
+		List<String> arg = new FastList<>();
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add(activeChar.getName());
+		arg.add(Integer.toString(activeChar.getObjectId()));
+		arg.add(activeChar.getAccountName());
+		arg.add("9");
+		arg.add(" ");
+		arg.add(" ");
+		arg.add(text);
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		activeChar.sendPacket(new ShowBoard(arg));
 	}
 }
