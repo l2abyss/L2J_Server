@@ -33,9 +33,11 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
+import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.DropProtection;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Augmentation;
@@ -54,12 +56,16 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.items.type.L2ItemType;
+import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.DropItem;
 import com.l2jserver.gameserver.network.serverpackets.GetItem;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
+import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SpawnItem;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -2134,5 +2140,86 @@ public final class L2ItemInstance extends L2Object
 	public int getEquipReuseDelay()
 	{
 	        return _item.getEquipReuseDelay();
+	}
+	
+	/**
+	 * 
+	 * @param activeChar
+	 * @param command
+	 */
+	public void onBypassFeedback(L2PcInstance activeChar, String command)
+	{
+		if (command.startsWith("Quest"))
+		{
+			String questName = command.substring(6);
+			String content = null;
+			
+			String event = null;
+			int idx = questName.indexOf(' ');
+			if (idx > 0)
+			{
+				event = questName.substring(idx).trim();
+				questName = questName.substring(0, idx);
+			}
+			
+			Quest q = QuestManager.getInstance().getQuest(questName);
+			QuestState qs = activeChar.getQuestState(questName);
+			
+			if (q != null)
+			{
+				if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000) && (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder80(true)))
+				{
+					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
+					return;
+				}
+				
+				if (qs == null)
+				{
+					if (q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000)
+					{
+						if (activeChar.getAllActiveQuests().length > 40)
+						{
+							activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.TOO_MANY_QUESTS));
+							return;
+						}
+					}
+					qs = q.newQuestState(activeChar);
+				}
+			}
+			else
+				content = Quest.getNoQuestMsg(activeChar);
+			
+			if (qs != null)
+			{
+				if (event != null && !qs.getQuest().notifyItemEvent(this, activeChar, event))
+					return;
+				else if (!qs.getQuest().notifyItemTalk(this, activeChar))
+					return;
+				
+				questName = qs.getQuest().getName();
+				String stateId = State.getStateName(qs.getState());
+				String path = "data/scripts/quests/" + questName + "/" + stateId + ".htm";
+				content = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), path);
+			}
+			
+			if (content != null)
+				showChatWindow(activeChar, content);
+			
+			// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param activeChar
+	 * @param content
+	 */
+	public void showChatWindow(L2PcInstance activeChar, String content)
+	{
+		NpcHtmlMessage html = new NpcHtmlMessage(0, getItemId());
+		html.setHtml(content);
+		html.replace("%itemId%", String.valueOf(getObjectId()));
+		activeChar.sendPacket(html);
 	}
 }

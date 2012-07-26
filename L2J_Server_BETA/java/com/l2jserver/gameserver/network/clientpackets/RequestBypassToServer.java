@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShowCommunityBoard;
@@ -147,6 +148,31 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				}
 				
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+			}
+			else if (_command.startsWith("item_"))
+			{
+				if(!activeChar.validateBypass(_command))
+					return;
+				
+				int endOfId = _command.indexOf('_', 5);
+				String id;
+				if (endOfId > 0)
+					id = _command.substring(5, endOfId);
+				else
+					id = _command.substring(5);
+				try
+				{
+					L2ItemInstance item = activeChar.getInventory().getItemByObjectId(Integer.parseInt(id));
+					
+					if (item != null && endOfId > 0 )
+						item.onBypassFeedback(activeChar, _command.substring(endOfId+1));
+					
+					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				}
+				catch (NumberFormatException nfe)
+				{
+					_log.log(Level.WARNING, "NFE for command ["+_command+"]", nfe);
+				}
 			}
 			else if (_command.startsWith("summon_"))
 			{

@@ -745,6 +745,77 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
+	/**
+	 * 
+	 * @param item
+	 * @param player
+	 * @return
+	 */
+	public final boolean notifyItemTalk(L2ItemInstance item, L2PcInstance player)
+	{
+		String res = null;
+		try
+		{
+			res = onItemTalk(item, player);
+			if (res == "true")
+				return true;
+			else if (res == "false")
+				return false;
+		}
+		catch (Exception e)
+		{
+			return showError(player, e);
+		}
+		return showResult(player, res);
+	}
+	
+	/**
+	 * @param item
+	 * @param player
+	 * @return
+	 */
+	public String onItemTalk(L2ItemInstance item, L2PcInstance player)
+	{
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param item
+	 * @param player
+	 * @param event
+	 * @return
+	 */
+	public final boolean notifyItemEvent(L2ItemInstance item, L2PcInstance player, String event)
+	{
+		String res = null;
+		try
+		{
+			res = onItemEvent(item, player, event);
+			if (res == "true")
+				return true;
+			else if (res == "false")
+				return false;
+		}
+		catch (Exception e)
+		{
+			return showError(player, e);
+		}
+		return showResult(player, res);
+	}
+	
+	/**
+	 * 
+	 * @param item
+	 * @param player
+	 * @param event
+	 * @return
+	 */
+	public String onItemEvent(L2ItemInstance item, L2PcInstance player, String event)
+	{
+		return null;
+	}
+	
 	public class TmpOnSkillSee implements Runnable
 	{
 		private final L2Npc _npc;
