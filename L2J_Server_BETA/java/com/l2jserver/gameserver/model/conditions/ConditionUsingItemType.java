@@ -42,7 +42,7 @@ public final class ConditionUsingItemType extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (env.getPlayer() == null)
+		if (!env.getCharacter().isPlayer())
 		{
 			return false;
 		}
