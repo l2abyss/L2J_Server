@@ -47,10 +47,11 @@ public class Status extends Thread
 	{
 		setPriority(Thread.MAX_PRIORITY);
 		
-		while (true)
+		while (!isInterrupted())
 		{
-			try (Socket connection = statusServerSocket.accept())
+			try
 			{
+				Socket connection = statusServerSocket.accept();
 				if (_mode == Server.MODE_GAMESERVER)
 				{
 					new GameStatusThread(connection, _uptime, _statusPw);

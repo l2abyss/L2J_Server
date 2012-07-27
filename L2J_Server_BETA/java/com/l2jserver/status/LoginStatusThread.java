@@ -153,7 +153,7 @@ public class LoginStatusThread extends Thread
 			}
 			else
 			{
-				if (tmpLine.compareTo(StatusPW) != 0)
+				if (!tmpLine.equals(StatusPW))
 				{
 					_print.println("Incorrect Password!");
 					_print.println("Disconnected...");
