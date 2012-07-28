@@ -1595,7 +1595,7 @@ public abstract class L2Script extends Quest
 	
 	/**
 	 * Fired when client answer on dialog request<br>
-	 * Register using addDlgAnswerNotify()
+	 * Register using addRequestBypassToServerNotify()
 	 * @param event
 	 */
 	protected void onRequestBypassToServer(RequestBypassToServerEvent event)

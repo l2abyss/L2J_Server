@@ -2376,7 +2376,7 @@ public class Quest extends ManagedScript
 			if (content == null)
 			{
 				// UnAfraid: TODO: Temp fix must be removed once all quests are updated.
-				content = HtmCache.getInstance().getHtm(prefix, "data/scripts/" + getClass().getPackage().getName().replace(".", "/") + "/" + fileName);
+				content = HtmCache.getInstance().getHtm(prefix, "data/scripts/quests/Q" + String.format("%05d", getQuestIntId()) + "_" + getName().split("_")[1] + "/" + fileName);
 				if (content == null)
 				{
 					content = HtmCache.getInstance().getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
