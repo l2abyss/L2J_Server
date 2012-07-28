@@ -14,8 +14,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
+
+import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
@@ -39,6 +42,8 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShow
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.events.RequestBypassToServerEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.RequestBypassToServerListener;
 import com.l2jserver.gameserver.util.GMAudit;
 import com.l2jserver.gameserver.util.Util;
 
@@ -49,7 +54,8 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestBypassToServer extends L2GameClientPacket
 {
 	private static final String _C__23_REQUESTBYPASSTOSERVER = "[C] 23 RequestBypassToServer";
-	
+	private static final List<RequestBypassToServerListener> _listeners = new FastList<RequestBypassToServerListener>().shared();
+
 	// S
 	private String _command;
 	
@@ -324,6 +330,8 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				activeChar.sendPacket(msg);
 			}
 		}
+		
+		fireBypassListeners();
 	}
 	
 	/**
@@ -339,6 +347,43 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			L2Npc temp = (L2Npc) obj;
 			temp.setTarget(activeChar);
 			temp.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(activeChar.getX(), activeChar.getY(), activeChar.getZ(), 0));
+		}
+	}
+	
+	/**
+	 *  Fires the event when packet arrived.
+	 */
+	private void fireBypassListeners()
+	{
+		RequestBypassToServerEvent event = new RequestBypassToServerEvent();
+		event.setActiveChar(getActiveChar());
+		event.setCommand(_command);
+		
+		for (RequestBypassToServerListener listener : _listeners)
+		{
+			listener.onRequestBypassToServer(event);
+		}
+	}
+
+	/**
+	 * @param listener
+	 */
+	public static void addBypassListener(RequestBypassToServerListener listener)
+	{
+		if (!_listeners.contains(listener))
+		{
+			_listeners.add(listener);
+		}
+	}
+
+	/**
+	 * @param listener
+	 */
+	public static void removeBypassListener(RequestBypassToServerListener listener)
+	{
+		if (_listeners.contains(listener))
+		{
+			_listeners.remove(listener);
 		}
 	}
 	

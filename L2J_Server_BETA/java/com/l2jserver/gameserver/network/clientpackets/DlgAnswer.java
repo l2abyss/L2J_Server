@@ -14,12 +14,18 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.List;
+
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.scripting.scriptengine.events.DlgAnswerEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.DlgAnswerListener;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
@@ -29,7 +35,7 @@ import com.l2jserver.gameserver.util.GMAudit;
 public final class DlgAnswer extends L2GameClientPacket
 {
 	private static final String _C__C6_DLGANSWER = "[C] C6 DlgAnswer";
-	
+	private static final List<DlgAnswerListener> _listeners = new FastList<DlgAnswerListener>().shared();
 	private int _messageId;
 	private int _answer;
 	private int _requesterId;
@@ -83,6 +89,52 @@ public final class DlgAnswer extends L2GameClientPacket
 			activeChar.gatesAnswer(_answer, 1);
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_CLOSE_THE_GATE.getId())
 			activeChar.gatesAnswer(_answer, 0);
+		
+		fireDlgAnswerListener();
+	}
+	
+	/**
+	 *  Fires the event when packet arrived.
+	 */
+	private void fireDlgAnswerListener()
+	{
+		DlgAnswerEvent event = new DlgAnswerEvent();
+		event.setActiveChar(getActiveChar());
+		event.setMessageId(_messageId);
+		event.setAnswer(_answer);
+		event.setRequesterId(_requesterId);
+		
+		for (DlgAnswerListener listener : _listeners)
+		{
+			if (listener.getMessageId() == -1 || _messageId == listener.getMessageId())
+			{
+				listener.onDlgAnswer(event);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param listener
+	 */
+	public static void addDlgAnswerListener(DlgAnswerListener listener)
+	{
+		if (!_listeners.contains(listener))
+		{
+			_listeners.add(listener);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param listener
+	 */
+	public static void removeDlgAnswerListener(DlgAnswerListener listener)
+	{
+		if (_listeners.contains(listener))
+		{
+			_listeners.remove(listener);
+		}
 	}
 	
 	@Override

@@ -35,6 +35,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseAddIt
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseDeleteItemEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseTransferEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.DeathEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.DlgAnswerEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.EquipmentEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.FortSiegeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.HennaEvent;
@@ -45,6 +46,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.ItemPickupEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ItemTransferEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ProfessionChangeEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.RequestBypassToServerEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.SiegeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.SkillUseEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.TransformEvent;
@@ -73,6 +75,9 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.Professi
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.TransformListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatFilterListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.DlgAnswerListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.RequestBypassToServerListener;
+import com.l2jserver.gameserver.util.Util;
 
 /**
  * L2Script is an extension of Quest.java which makes use of the L2J listeners.<br>
@@ -80,8 +85,8 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListen
  * It is strongly recommended for the more advanced developers.<br>
  * Methods with boolean return values can be used as code blockers.<br>
  * This means that if the return is false, the action for which the listener was fired does not happen.<br>
- * New in this version: profession change + player level change.
- * TODO: pet item use listeners.
+ * New in this version: profession change + player level change.<br>
+ * TODO: pet item use listeners.<br>
  * TODO: player subclass listeners ?? (needed?)
  * @author TheOne
  */
@@ -1109,6 +1114,93 @@ public abstract class L2Script extends Quest
 		removeListeners(removeList);
 	}
 	
+	/**
+	 * You can use -1 to listen for all kinds of message id's
+	 * @param messageIds
+	 */
+	public void addDlgAnswerNotify(int ...messageIds)
+	{
+		for (int messageId : messageIds)
+		{
+			DlgAnswerListener dlgAnswer = new DlgAnswerListener(messageId)
+			{
+				@Override
+				public void onDlgAnswer(DlgAnswerEvent event)
+				{
+					L2Script.this.onDlgAnswer(event);
+				}
+			};
+			
+			_listeners.add(dlgAnswer);
+		}
+	}
+	
+	/**
+	 * Removes all Dlg Answer Listeners
+	 */
+	public void removeDlgAnswerNotify()
+	{
+		List<L2JListener> removeList = new ArrayList<>();
+		for (L2JListener listener : _listeners)
+		{
+			if (listener instanceof DlgAnswerListener)
+			{
+				removeList.add(listener);
+			}
+		}
+		removeListeners(removeList);
+	}
+	
+	/**
+	 * Removes specified Dlg Answer Listeners
+	 * @param messageIds
+	 */
+	public void removeDlgAnswerNotify(int... messageIds)
+	{
+		List<L2JListener> removeList = new ArrayList<>();
+		for (L2JListener listener : _listeners)
+		{
+			if (listener instanceof DlgAnswerListener && Util.contains(messageIds, ((DlgAnswerListener) listener).getMessageId()))
+			{
+				removeList.add(listener);
+			}
+		}
+		removeListeners(removeList);
+	}
+	
+	/**
+	 * Notify when RequestBypassToServer packet is received from client.
+	 */
+	public void addRequestBypassToServerNotify()
+	{
+		RequestBypassToServerListener bypass = new RequestBypassToServerListener()
+		{
+			@Override
+			public void onRequestBypassToServer(RequestBypassToServerEvent event)
+			{
+				L2Script.this.onRequestBypassToServer(event);
+			}
+		};
+		
+		_listeners.add(bypass);
+	}
+	
+	/**
+	 * Removes all RequestBypassToServer Listeners
+	 */
+	public void removeRequestBypassToServerNotify()
+	{
+		List<L2JListener> removeList = new ArrayList<>();
+		for (L2JListener listener : _listeners)
+		{
+			if (listener instanceof DlgAnswerListener)
+			{
+				removeList.add(listener);
+			}
+		}
+		removeListeners(removeList);
+	}
+	
 	// Script notifications
 	/**
 	 * Fired when a player logs in
@@ -1433,6 +1525,26 @@ public abstract class L2Script extends Quest
 	 * @param event
 	 */
 	public void onPlayerTalk(ChatEvent event)
+	{
+		
+	}
+	
+	/**
+	 * Fired when client answer on dialog request<br>
+	 * Register using addDlgAnswerNotify()
+	 * @param event
+	 */
+	public void onDlgAnswer(DlgAnswerEvent event)
+	{
+		
+	}
+	
+	/**
+	 * Fired when client answer on dialog request<br>
+	 * Register using addDlgAnswerNotify()
+	 * @param event
+	 */
+	protected void onRequestBypassToServer(RequestBypassToServerEvent event)
 	{
 		
 	}
