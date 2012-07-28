@@ -14,9 +14,12 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
+import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
@@ -29,28 +32,30 @@ import com.l2jserver.gameserver.network.serverpackets.CharSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
+import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.PlayerListener;
 
 /**
  * This class ...
- * 
  * @version $Revision: 1.5.2.1.2.5 $ $Date: 2005/03/27 15:29:30 $
  */
 public class CharacterSelect extends L2GameClientPacket
 {
 	private static final String _C__12_CHARACTERSELECT = "[C] 12 CharacterSelect";
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
+	private static final List<PlayerListener> _listeners = new FastList<PlayerListener>().shared();
 	
 	// cd
 	private int _charSlot;
 	
 	@SuppressWarnings("unused")
-	private int _unk1; 	// new in C4
+	private int _unk1; // new in C4
 	@SuppressWarnings("unused")
-	private int _unk2;	// new in C4
+	private int _unk2; // new in C4
 	@SuppressWarnings("unused")
-	private int _unk3;	// new in C4
+	private int _unk3; // new in C4
 	@SuppressWarnings("unused")
-	private int _unk4;	// new in C4
+	private int _unk4; // new in C4
 	
 	@Override
 	protected void readImpl()
@@ -67,7 +72,9 @@ public class CharacterSelect extends L2GameClientPacket
 	{
 		final L2GameClient client = getClient();
 		if (!client.getFloodProtectors().getCharacterSelect().tryPerformAction("CharacterSelect"))
+		{
 			return;
+		}
 		
 		if (Config.SECOND_AUTH_ENABLED && !client.getSecondaryAuth().isAuthed())
 		{
@@ -87,9 +94,11 @@ public class CharacterSelect extends L2GameClientPacket
 				{
 					final CharSelectInfoPackage info = client.getCharSelection(_charSlot);
 					if (info == null)
+					{
 						return;
+					}
 					
-					//Selected character is banned.
+					// Selected character is banned.
 					if (info.getAccessLevel() < 0)
 					{
 						client.close(ServerClose.STATIC_PACKET);
@@ -103,17 +112,25 @@ public class CharacterSelect extends L2GameClientPacket
 						client.sendPacket(msg);
 						return;
 					}
-
+					
 					// The L2PcInstance must be created here, so that it can be attached to the L2GameClient
 					if (Config.DEBUG)
 					{
 						_log.fine("selected slot:" + _charSlot);
 					}
 					
-					//load up character from disk
+					PlayerEvent event = new PlayerEvent();
+					event.setClient(client);
+					event.setObjectId(client.getCharSelection(_charSlot).getObjectId());
+					event.setName(client.getCharSelection(_charSlot).getName());
+					firePlayerListener(event);
+					
+					// load up character from disk
 					final L2PcInstance cha = client.loadCharFromDisk(_charSlot);
 					if (cha == null)
+					{
 						return; // handled in L2GameClient
+					}
 					
 					CharNameTable.getInstance().addName(cha);
 					
@@ -134,9 +151,33 @@ public class CharacterSelect extends L2GameClientPacket
 			}
 			
 			LogRecord record = new LogRecord(Level.INFO, "Logged in");
-			record.setParameters(new Object[]{ client });
+			record.setParameters(new Object[]
+			{
+				client
+			});
 			_logAccounting.log(record);
 		}
+	}
+	
+	private void firePlayerListener(PlayerEvent event)
+	{
+		for (PlayerListener listener : _listeners)
+		{
+			listener.onCharSelect(event);
+		}
+	}
+	
+	public static void addPlayerListener(PlayerListener listener)
+	{
+		if (!_listeners.contains(listener))
+		{
+			_listeners.add(listener);
+		}
+	}
+	
+	public static void removePlayerListener(PlayerListener listener)
+	{
+		_listeners.remove(listener);
 	}
 	
 	@Override

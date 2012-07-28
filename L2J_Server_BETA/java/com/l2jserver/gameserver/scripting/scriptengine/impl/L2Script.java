@@ -44,6 +44,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDestroyEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDropEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ItemPickupEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ItemTransferEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ProfessionChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.RequestBypassToServerEvent;
@@ -54,6 +55,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.TvtKillEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.AttackListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.DeathListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.PlayerListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.SkillUseListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreationListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
@@ -1118,7 +1120,7 @@ public abstract class L2Script extends Quest
 	 * You can use -1 to listen for all kinds of message id's
 	 * @param messageIds
 	 */
-	public void addDlgAnswerNotify(int ...messageIds)
+	public void addDlgAnswerNotify(int... messageIds)
 	{
 		for (int messageId : messageIds)
 		{
@@ -1194,6 +1196,58 @@ public abstract class L2Script extends Quest
 		for (L2JListener listener : _listeners)
 		{
 			if (listener instanceof DlgAnswerListener)
+			{
+				removeList.add(listener);
+			}
+		}
+		removeListeners(removeList);
+	}
+	
+	/**
+	 * Notify on player creation/delete/restore/select action.
+	 */
+	public void addPlayerNotify()
+	{
+		PlayerListener bypass = new PlayerListener()
+		{	
+			@Override
+			public void onCharCreate(PlayerEvent event)
+			{
+				L2Script.this.onCharCreate(event);
+				
+			}
+			
+			@Override
+			public void onCharDelete(PlayerEvent event)
+			{
+				L2Script.this.onCharDelete(event);
+			}
+			
+			@Override
+			public void onCharRestore(PlayerEvent event)
+			{
+				L2Script.this.onCharRestore(event);
+			}
+			
+			@Override
+			public void onCharSelect(PlayerEvent event)
+			{
+				L2Script.this.onCharSelect(event);
+			}
+		};
+		
+		_listeners.add(bypass);
+	}
+	
+	/**
+	 * Removes all player creation/delete/restore/select Listeners
+	 */
+	public void removePlayerNotify()
+	{
+		List<L2JListener> removeList = new ArrayList<>();
+		for (L2JListener listener : _listeners)
+		{
+			if (listener instanceof PlayerListener)
 			{
 				removeList.add(listener);
 			}
@@ -1545,6 +1599,46 @@ public abstract class L2Script extends Quest
 	 * @param event
 	 */
 	protected void onRequestBypassToServer(RequestBypassToServerEvent event)
+	{
+		
+	}
+	
+	/**
+	 * Fired when client select a player<br>
+	 * Register using addPlayerNotify()
+	 * @param event
+	 */
+	protected void onCharSelect(PlayerEvent event)
+	{
+		
+	}
+	
+	/**
+	 * Fired when client create a character<br>
+	 * Register using addPlayerNotify()
+	 * @param event
+	 */
+	protected void onCharCreate(PlayerEvent event)
+	{
+		
+	}
+	
+	/**
+	 * Fired when client select a character for delete<br>
+	 * Register using addPlayerNotify()
+	 * @param event
+	 */
+	protected void onCharDelete(PlayerEvent event)
+	{
+		
+	}
+	
+	/**
+	 * Fired when client select a character for restore<br>
+	 * Register using addPlayerNotify()
+	 * @param event
+	 */
+	protected void onCharRestore(PlayerEvent event)
 	{
 		
 	}
