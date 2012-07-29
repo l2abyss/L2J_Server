@@ -1229,8 +1229,7 @@ public final class BlowfishEngine
 	
 	/**
 	 * Method to encrypt the block at the given index.<br>
-	 * The encrypted block goes directly to the source array at the given<br>
-	 * index.
+	 * The encrypted block goes directly to the source array at the given index.
 	 * @param src source array with the plain data
 	 * @param srcIndex index where the block to encrypt is located
 	 * @throws IllegalStateException The cipher was not yet initialized

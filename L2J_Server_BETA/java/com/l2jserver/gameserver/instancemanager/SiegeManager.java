@@ -152,121 +152,120 @@ public class SiegeManager
 	
 	private final void load()
 	{
+		Properties siegeSettings = new Properties();
 		final File file = new File(Config.SIEGE_CONFIGURATION_FILE);
 		try (InputStream is = new FileInputStream(file))
 		{
-			Properties siegeSettings = new Properties();
 			siegeSettings.load(is);
-			
-			// Siege setting
-			_attackerMaxClans = Integer.decode(siegeSettings.getProperty("AttackerMaxClans", "500"));
-			_attackerRespawnDelay = Integer.decode(siegeSettings.getProperty("AttackerRespawn", "0"));
-			_defenderMaxClans = Integer.decode(siegeSettings.getProperty("DefenderMaxClans", "500"));
-			_flagMaxCount = Integer.decode(siegeSettings.getProperty("MaxFlags", "1"));
-			_siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "5"));
-			_siegeLength = Integer.decode(siegeSettings.getProperty("SiegeLength", "120"));
-			_bloodAllianceReward = Integer.decode(siegeSettings.getProperty("BloodAllianceReward", "0"));
-			
-			// Siege spawns settings
-			_controlTowerSpawnList = new TIntObjectHashMap<>();
-			_artefactSpawnList = new TIntObjectHashMap<>();
-			_flameTowerSpawnList = new TIntObjectHashMap<>();
-			
-			for (Castle castle : CastleManager.getInstance().getCastles())
-			{
-				FastList<SiegeSpawn> _controlTowersSpawns = new FastList<>();
-				
-				for (int i = 1; i < 0xFF; i++)
-				{
-					String _spawnParams = siegeSettings.getProperty(castle.getName() + "ControlTower" + i, "");
-					
-					if (_spawnParams.isEmpty())
-						break;
-					
-					StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
-					
-					try
-					{
-						int x = Integer.parseInt(st.nextToken());
-						int y = Integer.parseInt(st.nextToken());
-						int z = Integer.parseInt(st.nextToken());
-						int npc_id = Integer.parseInt(st.nextToken());
-						int hp = Integer.parseInt(st.nextToken());
-						
-						_controlTowersSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, 0, npc_id, hp));
-					}
-					catch (Exception e)
-					{
-						_log.warning("Error while loading control tower(s) for " + castle.getName() + " castle.");
-					}
-				}
-				
-				FastList<SiegeSpawn> _flameTowersSpawns = new FastList<>();
-				
-				for (int i = 1; i < 0xFF; i++)
-				{
-					String _spawnParams = siegeSettings.getProperty(castle.getName() + "FlameTower" + i, "");
-					
-					if (_spawnParams.isEmpty())
-						break;
-					
-					StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
-					
-					try
-					{
-						int x = Integer.parseInt(st.nextToken());
-						int y = Integer.parseInt(st.nextToken());
-						int z = Integer.parseInt(st.nextToken());
-						int npc_id = Integer.parseInt(st.nextToken());
-						int hp = Integer.parseInt(st.nextToken());
-						
-						_flameTowersSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, 0, npc_id, hp));
-					}
-					catch (Exception e)
-					{
-						_log.warning("Error while loading artefact(s) for " + castle.getName() + " castle.");
-					}
-				}
-				
-				FastList<SiegeSpawn> _artefactSpawns = new FastList<>();
-				
-				for (int i = 1; i < 0xFF; i++)
-				{
-					String _spawnParams = siegeSettings.getProperty(castle.getName() + "Artefact" + i, "");
-					
-					if (_spawnParams.isEmpty())
-						break;
-					
-					StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
-					
-					try
-					{
-						int x = Integer.parseInt(st.nextToken());
-						int y = Integer.parseInt(st.nextToken());
-						int z = Integer.parseInt(st.nextToken());
-						int heading = Integer.parseInt(st.nextToken());
-						int npc_id = Integer.parseInt(st.nextToken());
-						
-						_artefactSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, heading, npc_id));
-					}
-					catch (Exception e)
-					{
-						_log.warning("Error while loading artefact(s) for " + castle.getName() + " castle.");
-					}
-				}
-				
-				MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId()-1] = Integer.parseInt(siegeSettings.getProperty(castle.getName() + "MaxMercenaries",
-						Integer.toString(MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId()-1])).trim());
-				
-				_controlTowerSpawnList.put(castle.getCastleId(), _controlTowersSpawns);
-				_artefactSpawnList.put(castle.getCastleId(), _artefactSpawns);
-				_flameTowerSpawnList.put(castle.getCastleId(), _flameTowersSpawns);
-			}
-			
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error while loading siege data: " + e.getMessage(), e);
+			_log.log(Level.WARNING, "Error while loading Territory War Manager settings!", e);
+		}
+		
+		// Siege setting
+		_attackerMaxClans = Integer.decode(siegeSettings.getProperty("AttackerMaxClans", "500"));
+		_attackerRespawnDelay = Integer.decode(siegeSettings.getProperty("AttackerRespawn", "0"));
+		_defenderMaxClans = Integer.decode(siegeSettings.getProperty("DefenderMaxClans", "500"));
+		_flagMaxCount = Integer.decode(siegeSettings.getProperty("MaxFlags", "1"));
+		_siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "5"));
+		_siegeLength = Integer.decode(siegeSettings.getProperty("SiegeLength", "120"));
+		_bloodAllianceReward = Integer.decode(siegeSettings.getProperty("BloodAllianceReward", "0"));
+		
+		// Siege spawns settings
+		_controlTowerSpawnList = new TIntObjectHashMap<>();
+		_artefactSpawnList = new TIntObjectHashMap<>();
+		_flameTowerSpawnList = new TIntObjectHashMap<>();
+		
+		for (Castle castle : CastleManager.getInstance().getCastles())
+		{
+			FastList<SiegeSpawn> _controlTowersSpawns = new FastList<>();
+			
+			for (int i = 1; i < 0xFF; i++)
+			{
+				String _spawnParams = siegeSettings.getProperty(castle.getName() + "ControlTower" + i, "");
+				
+				if (_spawnParams.isEmpty())
+					break;
+				
+				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
+				
+				try
+				{
+					int x = Integer.parseInt(st.nextToken());
+					int y = Integer.parseInt(st.nextToken());
+					int z = Integer.parseInt(st.nextToken());
+					int npc_id = Integer.parseInt(st.nextToken());
+					int hp = Integer.parseInt(st.nextToken());
+					
+					_controlTowersSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, 0, npc_id, hp));
+				}
+				catch (Exception e)
+				{
+					_log.warning("Error while loading control tower(s) for " + castle.getName() + " castle.");
+				}
+			}
+			
+			FastList<SiegeSpawn> _flameTowersSpawns = new FastList<>();
+			
+			for (int i = 1; i < 0xFF; i++)
+			{
+				String _spawnParams = siegeSettings.getProperty(castle.getName() + "FlameTower" + i, "");
+				
+				if (_spawnParams.isEmpty())
+					break;
+				
+				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
+				
+				try
+				{
+					int x = Integer.parseInt(st.nextToken());
+					int y = Integer.parseInt(st.nextToken());
+					int z = Integer.parseInt(st.nextToken());
+					int npc_id = Integer.parseInt(st.nextToken());
+					int hp = Integer.parseInt(st.nextToken());
+					
+					_flameTowersSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, 0, npc_id, hp));
+				}
+				catch (Exception e)
+				{
+					_log.warning("Error while loading artefact(s) for " + castle.getName() + " castle.");
+				}
+			}
+			
+			FastList<SiegeSpawn> _artefactSpawns = new FastList<>();
+			
+			for (int i = 1; i < 0xFF; i++)
+			{
+				String _spawnParams = siegeSettings.getProperty(castle.getName() + "Artefact" + i, "");
+				
+				if (_spawnParams.isEmpty())
+					break;
+				
+				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
+				
+				try
+				{
+					int x = Integer.parseInt(st.nextToken());
+					int y = Integer.parseInt(st.nextToken());
+					int z = Integer.parseInt(st.nextToken());
+					int heading = Integer.parseInt(st.nextToken());
+					int npc_id = Integer.parseInt(st.nextToken());
+					
+					_artefactSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, heading, npc_id));
+				}
+				catch (Exception e)
+				{
+					_log.warning("Error while loading artefact(s) for " + castle.getName() + " castle.");
+				}
+			}
+			
+			MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId()-1] = Integer.parseInt(siegeSettings.getProperty(castle.getName() + "MaxMercenaries",
+					Integer.toString(MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId()-1])).trim());
+			
+			_controlTowerSpawnList.put(castle.getCastleId(), _controlTowersSpawns);
+			_artefactSpawnList.put(castle.getCastleId(), _artefactSpawns);
+			_flameTowerSpawnList.put(castle.getCastleId(), _flameTowersSpawns);
 		}
 	}
 	

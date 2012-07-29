@@ -49,7 +49,7 @@ public class LoginCrypt
 	
 	/**
 	 * Method to initialize the the blowfish cipher with dynamic key.
-	 * @param key the blowfish key to initialize the dynamic blowish cipher with
+	 * @param key the blowfish key to initialize the dynamic blowfish cipher with
 	 */
 	public void setKey(byte[] key)
 	{
@@ -57,7 +57,7 @@ public class LoginCrypt
 	}
 	
 	/**
-	 * Method to decrypt an incomming login client packet.<br>
+	 * Method to decrypt an incoming login client packet.
 	 * @param raw array with encrypted data
 	 * @param offset offset where the encrypted data is located
 	 * @param size number of bytes of encrypted data
@@ -81,8 +81,7 @@ public class LoginCrypt
 	
 	/**
 	 * Method to encrypt an outgoing packet to login client.<br>
-	 * <br>
-	 * Performs padding and resizing of data array.<br>
+	 * Performs padding and resizing of data array.
 	 * @param raw array with plain data
 	 * @param offset offset where the plain data is located
 	 * @param size number of bytes of plain data

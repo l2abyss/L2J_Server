@@ -305,7 +305,7 @@ public class HellboundManager
 		{
 			_log.warning("HellboundManager: problem while loading spawns: " + e);
 		}
-		_log.config("HellboundManager: Loaded " + _population.size() + " npc spawn locations.");
+		_log.info("HellboundManager: Loaded " + _population.size() + " npc spawn locations.");
 	}
 	
 	public static final class HellboundSpawn extends L2Spawn

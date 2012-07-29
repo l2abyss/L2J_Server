@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.instancemanager;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -695,132 +696,130 @@ public class TerritoryWarManager implements Siegable
 	
 	private final void load()
 	{
+		L2Properties territoryWarSettings = new L2Properties();
 		try (InputStream is = new FileInputStream(new File(Config.TW_CONFIGURATION_FILE)))
 		{
-			L2Properties territoryWarSettings = new L2Properties();
 			territoryWarSettings.load(is);
-			
-			// Siege setting
-			DEFENDERMAXCLANS = Integer.decode(territoryWarSettings.getProperty("DefenderMaxClans", "500"));
-			DEFENDERMAXPLAYERS = Integer.decode(territoryWarSettings.getProperty("DefenderMaxPlayers", "500"));
-			CLANMINLEVEL = Integer.decode(territoryWarSettings.getProperty("ClanMinLevel", "0"));
-			PLAYERMINLEVEL = Integer.decode(territoryWarSettings.getProperty("PlayerMinLevel", "40"));
-			WARLENGTH = Long.decode(territoryWarSettings.getProperty("WarLength", "120")) * 60000;
-			PLAYER_WITH_WARD_CAN_BE_KILLED_IN_PEACEZONE = Boolean.parseBoolean(territoryWarSettings.getProperty("PlayerWithWardCanBeKilledInPeaceZone", "False"));
-			SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS = Boolean.parseBoolean(territoryWarSettings.getProperty("SpawnWardsWhenTWIsNotInProgress", "False"));
-			RETURN_WARDS_WHEN_TW_STARTS = Boolean.parseBoolean(territoryWarSettings.getProperty("ReturnWardsWhenTWStarts", "False"));
-			MINTWBADGEFORNOBLESS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForNobless", "100"));
-			MINTWBADGEFORSTRIDERS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForStriders", "50"));
-			MINTWBADGEFORBIGSTRIDER = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForBigStrider", "80"));
-			
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
-			{
-				PreparedStatement statement = con.prepareStatement("SELECT * FROM territory_spawnlist");
-				ResultSet rs = statement.executeQuery();
-				
-				while (rs.next())
-				{
-					int castleId = rs.getInt("castleId");
-					int npcId = rs.getInt("npcId");
-					Location loc = new Location(rs.getInt("x"),rs.getInt("y"),rs.getInt("z"),rs.getInt("heading"));
-					int spawnType = rs.getInt("spawnType");
-					if (!_territoryList.containsKey(castleId))
-						_territoryList.put(castleId, new Territory(castleId));
-					switch(spawnType)
-					{
-						case 0: // town npcs
-						case 1: // fortress npcs
-						case 2: // castle npcs
-							_territoryList.get(castleId).getSpawnList().add(new TerritoryNPCSpawn(castleId, loc, npcId, spawnType, null));
-							break;
-						case 3: // ward spawns
-							_territoryList.get(castleId).addWardSpawnPlace(loc);
-							break;
-						default:
-							_log.warning("Territory War Manager: Unknown npc type for " + rs.getInt("id"));
-					}
-				}
-				
-				rs.close();
-				statement.close();
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "Territory War Manager: SpawnList error: " + e.getMessage(), e);
-			}
-			
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
-			{
-				PreparedStatement statement = con.prepareStatement("SELECT * FROM territories");
-				ResultSet rs = statement.executeQuery();
-				
-				while (rs.next())
-				{
-					int castleId = rs.getInt("castleId");
-					int fortId = rs.getInt("fortId");
-					String ownedWardIds = rs.getString("OwnedWardIds");
+		}
+		catch (IOException e)
+		{
+			_log.log(Level.WARNING, "Error while loading Territory War Manager settings!", e);
+		}
+		
+		// Siege setting
+		DEFENDERMAXCLANS = Integer.decode(territoryWarSettings.getProperty("DefenderMaxClans", "500"));
+		DEFENDERMAXPLAYERS = Integer.decode(territoryWarSettings.getProperty("DefenderMaxPlayers", "500"));
+		CLANMINLEVEL = Integer.decode(territoryWarSettings.getProperty("ClanMinLevel", "0"));
+		PLAYERMINLEVEL = Integer.decode(territoryWarSettings.getProperty("PlayerMinLevel", "40"));
+		WARLENGTH = Long.decode(territoryWarSettings.getProperty("WarLength", "120")) * 60000;
+		PLAYER_WITH_WARD_CAN_BE_KILLED_IN_PEACEZONE = Boolean.parseBoolean(territoryWarSettings.getProperty("PlayerWithWardCanBeKilledInPeaceZone", "False"));
+		SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS = Boolean.parseBoolean(territoryWarSettings.getProperty("SpawnWardsWhenTWIsNotInProgress", "False"));
+		RETURN_WARDS_WHEN_TW_STARTS = Boolean.parseBoolean(territoryWarSettings.getProperty("ReturnWardsWhenTWStarts", "False"));
+		MINTWBADGEFORNOBLESS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForNobless", "100"));
+		MINTWBADGEFORSTRIDERS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForStriders", "50"));
+		MINTWBADGEFORBIGSTRIDER = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForBigStrider", "80"));
 					
-					Territory t = _territoryList.get(castleId);
-					if (t != null)
-					{
-						t._fortId = fortId;
-						if (CastleManager.getInstance().getCastleById(castleId).getOwnerId() > 0)
-						{
-							t.setOwnerClan(ClanTable.getInstance().getClan(CastleManager.getInstance().getCastleById(castleId).getOwnerId()));
-							t.changeNPCsSpawn(0, true);
-						}
-						
-						if (!ownedWardIds.isEmpty())
-						{
-							for(String wardId:ownedWardIds.split(";"))
-								if (Integer.parseInt(wardId) > 0)
-									addTerritoryWard(Integer.parseInt(wardId), castleId, 0, false);
-						}
-					}
-				}
-				rs.close();
-				statement.close();
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "Territory War Manager: territory list error(): " + e.getMessage(), e);
-			}
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		{
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM territory_spawnlist");
+			ResultSet rs = statement.executeQuery();
 			
-			
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+			while (rs.next())
 			{
-				PreparedStatement statement = con.prepareStatement("SELECT * FROM territory_registrations");
-				ResultSet rs = statement.executeQuery();
-				
-				while (rs.next())
+				int castleId = rs.getInt("castleId");
+				int npcId = rs.getInt("npcId");
+				Location loc = new Location(rs.getInt("x"),rs.getInt("y"),rs.getInt("z"),rs.getInt("heading"));
+				int spawnType = rs.getInt("spawnType");
+				if (!_territoryList.containsKey(castleId))
+					_territoryList.put(castleId, new Territory(castleId));
+				switch(spawnType)
 				{
-					int castleId = rs.getInt("castleId");
-					int registeredId = rs.getInt("registeredId");
-					if (ClanTable.getInstance().getClan(registeredId) != null)
-					{
-						if (_registeredClans.get(castleId) == null)
-							_registeredClans.put(castleId, new FastList<L2Clan>());
-						_registeredClans.get(castleId).add(ClanTable.getInstance().getClan(registeredId));
-					}
-					else
-					{
-						if (_registeredMercenaries.get(castleId) == null)
-							_registeredMercenaries.put(castleId, new FastList<Integer>());
-						_registeredMercenaries.get(castleId).add(registeredId);
-					}
+					case 0: // town npcs
+					case 1: // fortress npcs
+					case 2: // castle npcs
+						_territoryList.get(castleId).getSpawnList().add(new TerritoryNPCSpawn(castleId, loc, npcId, spawnType, null));
+						break;
+					case 3: // ward spawns
+						_territoryList.get(castleId).addWardSpawnPlace(loc);
+						break;
+					default:
+						_log.warning("Territory War Manager: Unknown npc type for " + rs.getInt("id"));
 				}
-				rs.close();
-				statement.close();
 			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "Territory War Manager: registration list error: " + e.getMessage(), e);
-			}
+			
+			rs.close();
+			statement.close();
 		}
 		catch (Exception e)
 		{
-			//_initialized = false;
-			_log.log(Level.WARNING, "Error while loading Territory War Manager! " + e.getMessage(), e);
+			_log.log(Level.WARNING, "Territory War Manager: SpawnList error: " + e.getMessage(), e);
+		}
+			
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		{
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM territories");
+			ResultSet rs = statement.executeQuery();
+			
+			while (rs.next())
+			{
+				int castleId = rs.getInt("castleId");
+				int fortId = rs.getInt("fortId");
+				String ownedWardIds = rs.getString("OwnedWardIds");
+				
+				Territory t = _territoryList.get(castleId);
+				if (t != null)
+				{
+					t._fortId = fortId;
+					if (CastleManager.getInstance().getCastleById(castleId).getOwnerId() > 0)
+					{
+						t.setOwnerClan(ClanTable.getInstance().getClan(CastleManager.getInstance().getCastleById(castleId).getOwnerId()));
+						t.changeNPCsSpawn(0, true);
+					}
+					
+					if (!ownedWardIds.isEmpty())
+					{
+						for(String wardId:ownedWardIds.split(";"))
+							if (Integer.parseInt(wardId) > 0)
+								addTerritoryWard(Integer.parseInt(wardId), castleId, 0, false);
+					}
+				}
+			}
+			rs.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Territory War Manager: territory list error(): " + e.getMessage(), e);
+		}
+			
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		{
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM territory_registrations");
+			ResultSet rs = statement.executeQuery();
+			
+			while (rs.next())
+			{
+				int castleId = rs.getInt("castleId");
+				int registeredId = rs.getInt("registeredId");
+				if (ClanTable.getInstance().getClan(registeredId) != null)
+				{
+					if (_registeredClans.get(castleId) == null)
+						_registeredClans.put(castleId, new FastList<L2Clan>());
+					_registeredClans.get(castleId).add(ClanTable.getInstance().getClan(registeredId));
+				}
+				else
+				{
+					if (_registeredMercenaries.get(castleId) == null)
+						_registeredMercenaries.put(castleId, new FastList<Integer>());
+					_registeredMercenaries.get(castleId).add(registeredId);
+				}
+			}
+			rs.close();
+			statement.close();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Territory War Manager: registration list error: " + e.getMessage(), e);
 		}
 	}
 	

@@ -146,81 +146,80 @@ public class FortSiegeManager
 	
 	private final void load()
 	{
+		Properties siegeSettings = new Properties();
 		final File file = new File(Config.FORTSIEGE_CONFIGURATION_FILE);
 		try (InputStream is = new FileInputStream(file))
 		{
-			Properties siegeSettings = new Properties();
 			siegeSettings.load(is);
-			
-			// Siege setting
-			_attackerMaxClans = Integer.decode(siegeSettings.getProperty("AttackerMaxClans", "500"));
-			_flagMaxCount = Integer.decode(siegeSettings.getProperty("MaxFlags", "1"));
-			_siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "4"));
-			_siegeLength = Integer.decode(siegeSettings.getProperty("SiegeLength", "60"));
-			_countDownLength = Integer.decode(siegeSettings.getProperty("CountDownLength", "10"));
-			_suspiciousMerchantRespawnDelay = Integer.decode(siegeSettings.getProperty("SuspiciousMerchantRespawnDelay", "180"));
-			
-			// Siege spawns settings
-			_commanderSpawnList = new FastMap<>();
-			_flagList = new FastMap<>();
-			
-			for (Fort fort : FortManager.getInstance().getForts())
-			{
-				FastList<SiegeSpawn> _commanderSpawns = new FastList<>();
-				FastList<CombatFlag> _flagSpawns = new FastList<>();
-				for (int i = 1; i < 5; i++)
-				{
-					String _spawnParams = siegeSettings.getProperty(fort.getName().replace(" ", "") + "Commander" + i, "");
-					if (_spawnParams.length() == 0)
-						break;
-					StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
-					
-					try
-					{
-						int x = Integer.parseInt(st.nextToken());
-						int y = Integer.parseInt(st.nextToken());
-						int z = Integer.parseInt(st.nextToken());
-						int heading = Integer.parseInt(st.nextToken());
-						int npc_id = Integer.parseInt(st.nextToken());
-						
-						_commanderSpawns.add(new SiegeSpawn(fort.getFortId(), x, y, z, heading, npc_id, i));
-					}
-					catch (Exception e)
-					{
-						_log.warning("Error while loading commander(s) for " + fort.getName() + " fort.");
-					}
-				}
-				
-				_commanderSpawnList.put(fort.getFortId(), _commanderSpawns);
-				
-				for (int i = 1; i < 4; i++)
-				{
-					String _spawnParams = siegeSettings.getProperty(fort.getName().replace(" ", "") + "Flag" + i, "");
-					if (_spawnParams.length() == 0)
-						break;
-					StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
-					
-					try
-					{
-						int x = Integer.parseInt(st.nextToken());
-						int y = Integer.parseInt(st.nextToken());
-						int z = Integer.parseInt(st.nextToken());
-						int flag_id = Integer.parseInt(st.nextToken());
-						
-						_flagSpawns.add(new CombatFlag(fort.getFortId(), x, y, z, 0, flag_id));
-					}
-					catch (Exception e)
-					{
-						_log.warning("Error while loading flag(s) for " + fort.getName() + " fort.");
-					}
-				}
-				_flagList.put(fort.getFortId(), _flagSpawns);
-			}
-			
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error while loading fortsiege data." + e.getMessage(), e);
+			_log.log(Level.WARNING, "Error while loading Fort Siege Manager settings!", e);
+		}
+		
+		// Siege setting
+		_attackerMaxClans = Integer.decode(siegeSettings.getProperty("AttackerMaxClans", "500"));
+		_flagMaxCount = Integer.decode(siegeSettings.getProperty("MaxFlags", "1"));
+		_siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "4"));
+		_siegeLength = Integer.decode(siegeSettings.getProperty("SiegeLength", "60"));
+		_countDownLength = Integer.decode(siegeSettings.getProperty("CountDownLength", "10"));
+		_suspiciousMerchantRespawnDelay = Integer.decode(siegeSettings.getProperty("SuspiciousMerchantRespawnDelay", "180"));
+		
+		// Siege spawns settings
+		_commanderSpawnList = new FastMap<>();
+		_flagList = new FastMap<>();
+		
+		for (Fort fort : FortManager.getInstance().getForts())
+		{
+			FastList<SiegeSpawn> _commanderSpawns = new FastList<>();
+			FastList<CombatFlag> _flagSpawns = new FastList<>();
+			for (int i = 1; i < 5; i++)
+			{
+				String _spawnParams = siegeSettings.getProperty(fort.getName().replace(" ", "") + "Commander" + i, "");
+				if (_spawnParams.length() == 0)
+					break;
+				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
+				
+				try
+				{
+					int x = Integer.parseInt(st.nextToken());
+					int y = Integer.parseInt(st.nextToken());
+					int z = Integer.parseInt(st.nextToken());
+					int heading = Integer.parseInt(st.nextToken());
+					int npc_id = Integer.parseInt(st.nextToken());
+					
+					_commanderSpawns.add(new SiegeSpawn(fort.getFortId(), x, y, z, heading, npc_id, i));
+				}
+				catch (Exception e)
+				{
+					_log.warning("Error while loading commander(s) for " + fort.getName() + " fort.");
+				}
+			}
+			
+			_commanderSpawnList.put(fort.getFortId(), _commanderSpawns);
+			
+			for (int i = 1; i < 4; i++)
+			{
+				String _spawnParams = siegeSettings.getProperty(fort.getName().replace(" ", "") + "Flag" + i, "");
+				if (_spawnParams.length() == 0)
+					break;
+				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
+				
+				try
+				{
+					int x = Integer.parseInt(st.nextToken());
+					int y = Integer.parseInt(st.nextToken());
+					int z = Integer.parseInt(st.nextToken());
+					int flag_id = Integer.parseInt(st.nextToken());
+					
+					_flagSpawns.add(new CombatFlag(fort.getFortId(), x, y, z, 0, flag_id));
+				}
+				catch (Exception e)
+				{
+					_log.warning("Error while loading flag(s) for " + fort.getName() + " fort.");
+				}
+			}
+			_flagList.put(fort.getFortId(), _flagSpawns);
 		}
 	}
 	

@@ -44,7 +44,7 @@ import com.l2jserver.util.crypt.ScrambledKeyPair;
  */
 public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 {
-	private static Logger _log = Logger.getLogger(L2LoginClient.class.getName());
+	private static final Logger _log = Logger.getLogger(L2LoginClient.class.getName());
 	
 	public static enum LoginClientState
 	{
@@ -86,9 +86,6 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		_loginCrypt.setKey(_blowfishKey);
 	}
 	
-	/**
-	 * @see org.mmocore.network.MMOClient#decrypt(java.nio.ByteBuffer, int)
-	 */
 	@Override
 	public boolean decrypt(ByteBuffer buf, int size)
 	{
@@ -112,9 +109,6 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		}
 	}
 	
-	/**
-	 * @see org.mmocore.network.MMOClient#encrypt(java.nio.ByteBuffer, int)
-	 */
 	@Override
 	public boolean encrypt(ByteBuffer buf, int size)
 	{
@@ -128,7 +122,6 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			return false;
 		}
-		
 		buf.position(offset + size);
 		return true;
 	}
