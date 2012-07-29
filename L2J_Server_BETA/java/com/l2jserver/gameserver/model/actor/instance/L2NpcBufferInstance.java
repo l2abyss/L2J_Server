@@ -175,7 +175,7 @@ public class L2NpcBufferInstance extends L2Npc
 		}
 		else if (command.startsWith("Heal") || command.startsWith("PetHeal"))
 		{
-			if (!target.isInCombat() && !AttackStanceTaskManager.getInstance().getAttackStanceTask(target))
+			if (!target.isInCombat() && !AttackStanceTaskManager.getInstance().hasAttackStanceTask(target))
 			{
 				String[] healArray = command.substring(command.indexOf("Heal") + 5).split(" ");
 				

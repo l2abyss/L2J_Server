@@ -14389,7 +14389,7 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		if (isTransformed() || isInStance())
 			return false;
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(this))
+		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(this))
 			return false;
 		if (isCastingNow() || isCastingSimultaneouslyNow())
 			return false;
@@ -14866,7 +14866,7 @@ public final class L2PcInstance extends L2Playable
 				&& !isAlikeDead() && (!isAllSkillsDisabled() || isInDuel())
 				&& !isCastingNow() && !isCastingSimultaneouslyNow()
 				&& getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE
-				&& !AttackStanceTaskManager.getInstance().getAttackStanceTask(this)
+				&& !AttackStanceTaskManager.getInstance().hasAttackStanceTask(this)
 				&& !isInOlympiadMode())
 		{
 			return true;

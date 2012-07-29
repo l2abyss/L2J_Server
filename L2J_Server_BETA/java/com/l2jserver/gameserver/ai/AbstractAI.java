@@ -796,7 +796,7 @@ public abstract class AbstractAI implements Ctrl
 		}
 		if (_actor instanceof L2PcInstance)
 		{
-			if (!AttackStanceTaskManager.getInstance().getAttackStanceTask(_actor) && isAutoAttacking())
+			if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor) && isAutoAttacking())
 				AttackStanceTaskManager.getInstance().addAttackStanceTask(_actor);
 		}
 		else if (isAutoAttacking())

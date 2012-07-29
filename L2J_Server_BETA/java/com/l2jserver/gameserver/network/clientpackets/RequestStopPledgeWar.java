@@ -92,7 +92,7 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 		{
 			if (member == null || member.getPlayerInstance() == null)
 				continue;
-			if (AttackStanceTaskManager.getInstance().getAttackStanceTask(member.getPlayerInstance()))
+			if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(member.getPlayerInstance()))
 			{
 				player.sendPacket(SystemMessageId.CANT_STOP_CLAN_WAR_WHILE_IN_COMBAT);
 				return;

@@ -241,7 +241,7 @@ public final class SystemMessageId
 	public static final SystemMessageId UNABLE_COMBAT_PLEASE_GO_RESTART;
 	
 	/**
-	 * ID: 32<br>
+	 * ID: 33<br>
 	 * Message: You cannot move while casting.
 	 */
 	public static final SystemMessageId CANT_MOVE_CASTING;
@@ -1271,6 +1271,26 @@ public final class SystemMessageId
 	 * Message: $s2 of the clan $s1 requests declaration of war. Do you accept?
 	 */
 	public static final SystemMessageId S2_OF_THE_CLAN_S1_REQUESTS_WAR;
+	
+	/**
+	 * ID: 208<br>
+	 * Message: Please include file type when entering file path.
+	 */
+	
+	/**
+	 * ID: 209<br>
+	 * Message: The size of the image file is inappropriate. Please adjust to 16x12 pixels.
+	 */
+	
+	/**
+	 * ID: 210<br>
+	 * Message: Cannot find file. Please enter precise path.
+	 */
+	
+	/**
+	 * ID: 211<br>
+	 * Message: You can only register 16x12 pixel 256 color bmp files.
+	 */
 	
 	/**
 	 * ID: 212<br>
@@ -2635,7 +2655,7 @@ public final class SystemMessageId
 	public static final SystemMessageId ACCESS_FAILED;
 	
 	/**
-	 * ID: 461<br>
+	 * ID: 462<br>
 	 * Message: Please try again later.
 	 */
 	public static final SystemMessageId PLEASE_TRY_AGAIN_LATER;
@@ -3049,6 +3069,11 @@ public final class SystemMessageId
 	public static final SystemMessageId DISABLED_SPIRITSHOT;
 	
 	/**
+	 * ID: 535<br>
+	 * Message: Enter a name for your pet.
+	 */
+	
+	/**
 	 * ID: 536<br>
 	 * Message: How much adena do you wish to transfer to your Inventory?
 	 */
@@ -3245,6 +3270,17 @@ public final class SystemMessageId
 	 * Message: Cubic Summoning failed.
 	 */
 	public static final SystemMessageId CUBIC_SUMMONING_FAILED;
+	
+	/**
+	 * ID: 569<br>
+	 * Message: Caution -- this item's price greatly differs from non-player run shops. Do you wish to continue? 
+	 */
+	
+	/**
+	 * ID: 570<br>
+	 * ID: 571<br>
+	 * Message: How many  $s1(s) do you want to purchase?
+	 */
 	
 	/**
 	 * ID: 572<br>
@@ -3769,7 +3805,7 @@ public final class SystemMessageId
 	public static final SystemMessageId NOT_SIEGE_REGISTRATION_TIME1;
 	
 	/**
-	 * ID: 659<br>
+	 * ID: 660<br>
 	 * Message: This is not the time for siege registration and so registration and cancellation cannot be done.
 	 */
 	public static final SystemMessageId NOT_SIEGE_REGISTRATION_TIME2;
@@ -8762,7 +8798,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1504<br>
-	 * Message: You have registered on the waiting list for the non-class-limited individual match event.
+	 * Message: You are currently registered for a 1v1 class irrelevant match.
 	 */
 	public static final SystemMessageId YOU_HAVE_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_NO_CLASS_GAMES;
 	
@@ -11517,7 +11553,7 @@ public final class SystemMessageId
 	public static final SystemMessageId S1_OWNER;
 	
 	/**
-	 * ID: 1968<br>
+	 * ID: 1969<br>
 	 * Message: Area where $s1 appears.
 	 */
 	public static final SystemMessageId AREA_S1_APPEARS;
@@ -11757,7 +11793,7 @@ public final class SystemMessageId
 	public static final SystemMessageId CANT_EXCEED_1500_CHARACTERS;
 	
 	/**
-	 * ID: 2009<br>
+	 * ID: 2010<br>
 	 * Message: $s2 $s1
 	 */
 	public static final SystemMessageId S2_S1;
@@ -13341,10 +13377,50 @@ public final class SystemMessageId
 	public static final SystemMessageId SKILL_NOT_FOR_SUBCLASS;
 	
 	/**
+	 * ID: 2274<br>
+	 * Message: You entered an area where you cannot throw away items.
+	 */
+	
+	/**
+	 * ID: 2275<br>
+	 * Message: You are in an area where you cannot cancel pet summoning.
+	 */
+	
+	/**
 	 * ID: 2276<br>
 	 * Message: The rebel army recaptured the fortress.
 	 */
 	public static final SystemMessageId NPCS_RECAPTURED_FORTRESS;
+	
+	/** 
+	 * ID: 2277<br>
+	 * Message: Party of $s1
+	 */
+	
+	/**
+	 * ID: 2278<br>
+	 * Message: Remaining Time $s1:$s2
+	 */
+	
+	/**
+	 * ID: 2279<br>
+	 * Message: You can no longer add a quest to the Quest Alterts.
+	 */
+	
+	/**
+	 * ID: 2280
+	 * Message: Damage is decreased because $c1 resisted $c2's magic.
+	 */
+	
+	/**
+	 * ID: 2281
+	 * Message: $c1 hit you for $s3 damage and hit your servitor for $s4.
+	 */
+	
+	/**
+	 * ID: 2282
+	 * Message: Leave Fantasy Isle.
+	 */
 	
 	/**
 	 * ID: 2283<br>

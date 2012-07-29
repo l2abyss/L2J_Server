@@ -488,11 +488,11 @@ public final class L2CubicInstance
 					cancelDisappear();
 					return;
 				}
-				if (!AttackStanceTaskManager.getInstance().getAttackStanceTask(_owner))
+				if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_owner))
 				{
 					if (_owner.getPet() != null)
 					{
-						if (!AttackStanceTaskManager.getInstance().getAttackStanceTask(_owner.getPet()))
+						if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_owner.getPet()))
 						{
 							stopAction();
 							return;

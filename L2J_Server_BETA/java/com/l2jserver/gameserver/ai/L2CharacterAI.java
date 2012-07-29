@@ -528,7 +528,7 @@ public class L2CharacterAI extends AbstractAI
 	{
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(_actor))
+		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
 			AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
 		
 		// Stop Server AutoAttack also
@@ -546,7 +546,7 @@ public class L2CharacterAI extends AbstractAI
 	{
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(_actor))
+		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
 			AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
 		
 		// Stop Server AutoAttack also
@@ -574,7 +574,7 @@ public class L2CharacterAI extends AbstractAI
 	{
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(_actor))
+		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
 			AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
 		
 		// stop Server AutoAttack also
@@ -597,7 +597,7 @@ public class L2CharacterAI extends AbstractAI
 	{
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		//_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
-		//if (AttackStanceTaskManager.getInstance().getAttackStanceTask(_actor))
+		//if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
 		//    AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
 		
 		// Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)
@@ -844,7 +844,7 @@ public class L2CharacterAI extends AbstractAI
 		// Stop an AI Follow Task
 		stopFollow();
 		
-		if (!AttackStanceTaskManager.getInstance().getAttackStanceTask(_actor))
+		if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
 			_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
 		
 		// Launch actions corresponding to the Event Think

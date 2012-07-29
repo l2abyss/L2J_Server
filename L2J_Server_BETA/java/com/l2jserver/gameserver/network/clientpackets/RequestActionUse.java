@@ -1197,7 +1197,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			return;
 		}
 		
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(activeChar) || AttackStanceTaskManager.getInstance().getAttackStanceTask(player))
+		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(activeChar) || AttackStanceTaskManager.getInstance().hasAttackStanceTask(player))
 		{
 			activeChar.sendPacket(SystemMessageId.COUPLE_ACTION_CANCELED);
 			return;

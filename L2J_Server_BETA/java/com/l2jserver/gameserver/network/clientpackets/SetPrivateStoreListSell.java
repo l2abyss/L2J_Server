@@ -89,7 +89,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 			return;
 		}
 		
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
+		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(player) || player.isInDuel())
 		{
 			player.sendPacket(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT);
 			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
