@@ -32,7 +32,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="Compile the source.">
-		<javac srcdir="${src}" destdir="${build.classes}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
+		<javac srcdir="${src}" destdir="${build.classes}" compiler="javac1.7" createMissingPackageInfoClass="false" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar file">
