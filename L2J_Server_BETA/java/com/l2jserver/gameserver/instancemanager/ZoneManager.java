@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.procedure.TObjectProcedure;
-
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,6 +73,7 @@ public class ZoneManager extends DocumentParser
 		// Get the world regions
 		int count = 0;
 		L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
+		
 		// Backup old zone settings
 		for (Map<Integer, ? extends L2ZoneType> map : _classZones.values())
 		{
@@ -86,6 +85,7 @@ public class ZoneManager extends DocumentParser
 				}
 			}
 		}
+		
 		// Clear zones
 		for (int x = 0; x < worldRegions.length; x++)
 		{
@@ -100,19 +100,16 @@ public class ZoneManager extends DocumentParser
 		
 		// Load the zones
 		load();
-		L2World.getInstance().forEachObject(new ForEachCharacterRevalidateZone());
-		_settings.clear();
-	}
-	
-	protected final class ForEachCharacterRevalidateZone implements TObjectProcedure<L2Object>
-	{
-		@Override
-		public final boolean execute(final L2Object o)
+		
+		// Re-validate all characters in zones
+		for (L2Object obj : L2World.getInstance().getAllVisibleObjectsArray())
 		{
-			if (o instanceof L2Character)
-				((L2Character) o).revalidateZone(true);
-			return true;
+			if (obj instanceof L2Character)
+			{
+				((L2Character) obj).revalidateZone(true);
+			}
 		}
+		_settings.clear();
 	}
 	
 	@Override
