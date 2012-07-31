@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
- * Abstract base class for any zone type Handles basic operations
+ * Abstract base class for any zone type handles basic operations.
  * @author durgus
  */
 public abstract class L2ZoneType
@@ -46,7 +46,6 @@ public abstract class L2ZoneType
 	
 	/** Parameters to affect specific characters */
 	private boolean _checkAffected = false;
-	
 	private String _name = null;
 	private int _instanceId = -1;
 	private String _instanceTemplate = "";
@@ -58,6 +57,7 @@ public abstract class L2ZoneType
 	private Map<QuestEventType, List<Quest>> _questEvents;
 	private InstanceType _target = InstanceType.L2Character; // default all chars
 	private boolean _allowStore;
+	private AbstractZoneSettings _settings;
 	
 	protected L2ZoneType(int id)
 	{
@@ -454,6 +454,20 @@ public abstract class L2ZoneType
 	public boolean isCharacterInZone(L2Character character)
 	{
 		return _characterList.containsKey(character.getObjectId());
+	}
+	
+	public AbstractZoneSettings getSettings()
+	{
+		return _settings;
+	}
+	
+	public void setSettings(AbstractZoneSettings settings)
+	{
+		if (_settings != null)
+		{
+			_settings.clear();
+		}
+		_settings = settings;
 	}
 	
 	protected abstract void onEnter(L2Character character);

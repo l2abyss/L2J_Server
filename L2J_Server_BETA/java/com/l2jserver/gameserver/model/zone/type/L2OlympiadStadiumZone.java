@@ -20,6 +20,7 @@ import java.util.List;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -27,6 +28,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2OlympiadManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
+import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchEnd;
@@ -40,19 +42,61 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class L2OlympiadStadiumZone extends L2ZoneRespawn
 {
-	private final List<L2Spawn> _buffers;
-	
-	OlympiadGameTask _task = null;
 	
 	public L2OlympiadStadiumZone(int id)
 	{
 		super(id);
-		_buffers = new ArrayList<>(2);
+		AbstractZoneSettings settings = ZoneManager.getSettings(getName());
+		if (settings == null)
+		{
+			settings = new Settings();
+		}
+		setSettings(settings);
+	}
+	
+	private final class Settings extends AbstractZoneSettings
+	{
+		private final List<L2Spawn> _buffers;
+		
+		private OlympiadGameTask _task = null;
+
+		public Settings()
+		{
+			_buffers = new ArrayList<>(2);
+		}
+		
+		public OlympiadGameTask getOlympiadTask()
+		{
+			return _task;
+		}
+		
+		protected void setTask(OlympiadGameTask task)
+		{
+			_task = task;
+		}
+		
+		public List<L2Spawn> getBuffers()
+		{
+			return _buffers;
+		}
+		
+		@Override
+		public void clear()
+		{
+			_task = null;
+			_buffers.clear();
+		}
+	}
+	
+	@Override
+	public Settings getSettings()
+	{
+		return (Settings) super.getSettings();
 	}
 	
 	public final void registerTask(OlympiadGameTask task)
 	{
-		_task = task;
+		getSettings().setTask(task);
 	}
 	
 	public final void openDoors()
@@ -75,7 +119,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	
 	public final void spawnBuffers()
 	{
-		for (L2Spawn spawn : _buffers)
+		for (L2Spawn spawn : getSettings().getBuffers())
 		{
 			spawn.startRespawn();
 			spawn.respawnNpc(spawn.getLastSpawn());
@@ -85,7 +129,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	
 	public final void deleteBuffers()
 	{
-		for (L2Spawn spawn : _buffers)
+		for (L2Spawn spawn : getSettings().getBuffers())
 		{
 			if (spawn.getLastSpawn().isVisible())
 				spawn.getLastSpawn().deleteMe();
@@ -121,15 +165,15 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	@Override
 	protected final void onEnter(L2Character character)
 	{
-		if (_task != null)
+		if (getSettings().getOlympiadTask() != null)
 		{
-			if (_task.isBattleStarted())
+			if (getSettings().getOlympiadTask().isBattleStarted())
 			{
 				character.setInsideZone(L2Character.ZONE_PVP, true);
 				if (character.isPlayer())
 				{
 					character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
-					_task.getGame().sendOlympiadInfo(character);
+					getSettings().getOlympiadTask().getGame().sendOlympiadInfo(character);
 				}
 			}
 		}
@@ -147,9 +191,9 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 		else if (character instanceof L2OlympiadManagerInstance)
 		{
 			final L2Spawn spawn = ((L2OlympiadManagerInstance) character).getSpawn();
-			if (spawn != null && !_buffers.contains(spawn))
+			if (spawn != null && !getSettings().getBuffers().contains(spawn))
 			{
-				_buffers.add(spawn);
+				getSettings().getBuffers().add(spawn);
 				spawn.stopRespawn();
 				character.deleteMe();
 			}
@@ -159,9 +203,9 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	@Override
 	protected final void onExit(L2Character character)
 	{
-		if (_task != null)
+		if (getSettings().getOlympiadTask() != null)
 		{
-			if (_task.isBattleStarted())
+			if (getSettings().getOlympiadTask().isBattleStarted())
 			{
 				character.setInsideZone(L2Character.ZONE_PVP, false);
 				if (character.isPlayer())
@@ -175,10 +219,10 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	
 	public final void updateZoneStatusForCharactersInside()
 	{
-		if (_task == null)
+		if (getSettings().getOlympiadTask() == null)
 			return;
 		
-		final boolean battleStarted = _task.isBattleStarted();
+		final boolean battleStarted = getSettings().getOlympiadTask().isBattleStarted();
 		final SystemMessage sm;
 		if (battleStarted)
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ENTERED_COMBAT_ZONE);

@@ -14,13 +14,14 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import java.util.concurrent.Future;
-
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
 
 /**
  * A dynamic zone? Maybe use this for interlude skills like protection field :>
@@ -30,13 +31,7 @@ public class L2DynamicZone extends L2ZoneType
 {
 	private L2WorldRegion _region;
 	private L2Character _owner;
-	private Future<?> _task;
 	private L2Skill _skill;
-	
-	protected void setTask(Future<?> task)
-	{
-		_task = task;
-	}
 	
 	public L2DynamicZone(L2WorldRegion region, L2Character owner, L2Skill skill)
 	{
@@ -44,7 +39,12 @@ public class L2DynamicZone extends L2ZoneType
 		_region = region;
 		_owner = owner;
 		_skill = skill;
-		
+		AbstractZoneSettings settings = ZoneManager.getSettings(getName());
+		if (settings == null)
+		{
+			settings = new TaskZoneSettings();
+		}
+		setSettings(settings);
 		Runnable r = new Runnable()
 		{
 			@Override
@@ -53,7 +53,13 @@ public class L2DynamicZone extends L2ZoneType
 				remove();
 			}
 		};
-		setTask(ThreadPoolManager.getInstance().scheduleGeneral(r, skill.getBuffDuration()));
+		getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneral(r, skill.getBuffDuration()));
+	}
+	
+	@Override
+	public TaskZoneSettings getSettings()
+	{
+		return (TaskZoneSettings) super.getSettings();
 	}
 	
 	@Override
@@ -88,11 +94,10 @@ public class L2DynamicZone extends L2ZoneType
 	
 	protected void remove()
 	{
-		if (_task == null || _skill == null)
+		if (getSettings().getTask() == null || _skill == null)
 			return;
 		
-		_task.cancel(false);
-		_task = null;
+		getSettings().getTask().cancel(false);
 		
 		_region.removeZone(this);
 		for (L2Character member : getCharactersInside())

@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -36,6 +35,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.form.ZoneCuboid;
@@ -51,7 +51,7 @@ import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
  */
 public class ZoneManager extends DocumentParser
 {
-	private static final Logger _log = Logger.getLogger(ZoneManager.class.getName());
+	private static final Map<String, AbstractZoneSettings> _settings = new HashMap<>();
 	
 	private final Map<Class<? extends L2ZoneType>, Map<Integer, ? extends L2ZoneType>> _classZones = new HashMap<>();
 	private int _lastDynamicId = 300000;
@@ -75,6 +75,18 @@ public class ZoneManager extends DocumentParser
 		// Get the world regions
 		int count = 0;
 		L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
+		// Backup old zone settings
+		for (Map<Integer, ? extends L2ZoneType> map : _classZones.values())
+		{
+			for (L2ZoneType zone : map.values())
+			{
+				if (zone.getSettings() != null)
+				{
+					_settings.put(zone.getName(), zone.getSettings());
+				}
+			}
+		}
+		// Clear zones
 		for (int x = 0; x < worldRegions.length; x++)
 		{
 			for (int y = 0; y < worldRegions[x].length; y++)
@@ -89,6 +101,7 @@ public class ZoneManager extends DocumentParser
 		// Load the zones
 		load();
 		L2World.getInstance().forEachObject(new ForEachCharacterRevalidateZone());
+		_settings.clear();
 	}
 	
 	protected final class ForEachCharacterRevalidateZone implements TObjectProcedure<L2Object>
@@ -584,6 +597,11 @@ public class ZoneManager extends DocumentParser
 				it.remove();
 			}
 		}
+	}
+	
+	public static AbstractZoneSettings getSettings(String name)
+	{
+		return _settings.get(name);
 	}
 	
 	private static class SingletonHolder

@@ -15,16 +15,18 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import java.util.Map.Entry;
-import java.util.concurrent.Future;
 
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
@@ -41,8 +43,8 @@ public class L2EffectZone extends L2ZoneType
 	private boolean _enabled;
 	protected boolean _bypassConditions;
 	private boolean _isShowDangerIcon;
-	private volatile Future<?> _task;
-	protected volatile FastMap<Integer, Integer> _skills;
+	protected FastMap<Integer, Integer> _skills;
+
 	
 	public L2EffectZone(int id)
 	{
@@ -54,6 +56,18 @@ public class L2EffectZone extends L2ZoneType
 		setTargetType(InstanceType.L2Playable); // default only playabale
 		_bypassConditions = false;
 		_isShowDangerIcon = true;
+		AbstractZoneSettings settings = ZoneManager.getSettings(getName());
+		if (settings == null)
+		{
+			settings = new TaskZoneSettings();
+		}
+		setSettings(settings);
+	}
+	
+	@Override
+	public TaskZoneSettings getSettings()
+	{
+		return (TaskZoneSettings) super.getSettings();
 	}
 	
 	@Override
@@ -121,12 +135,12 @@ public class L2EffectZone extends L2ZoneType
 	{
 		if (_skills != null)
 		{
-			if (_task == null)
+			if (getSettings().getTask() == null)
 			{
 				synchronized (this)
 				{
-					if (_task == null)
-						_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplySkill(), _initialDelay, _reuse);
+					if (getSettings().getTask() == null)
+						getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplySkill(), _initialDelay, _reuse));
 				}
 			}
 		}
@@ -154,10 +168,9 @@ public class L2EffectZone extends L2ZoneType
 					character.sendPacket(new EtcStatusUpdate(character.getActingPlayer()));
 			}
 		}
-		if (_characterList.isEmpty() && _task != null)
+		if (_characterList.isEmpty() && getSettings().getTask() != null)
 		{
-			_task.cancel(true);
-			_task = null;
+			getSettings().clear();
 		}
 	}
 	

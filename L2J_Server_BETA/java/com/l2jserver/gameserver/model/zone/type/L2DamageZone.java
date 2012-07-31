@@ -14,16 +14,17 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import java.util.concurrent.Future;
-
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.stats.Stats;
+import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
 
 /**
  * A damage zone
@@ -33,7 +34,6 @@ public class L2DamageZone extends L2ZoneType
 {
 	private int _damageHPPerSec;
 	private int _damageMPPerSec;
-	private Future<?> _task;
 	
 	private int _castleId;
 	private Castle _castle;
@@ -63,6 +63,18 @@ public class L2DamageZone extends L2ZoneType
 		_enabled = true;
 		
 		setTargetType(InstanceType.L2Playable); // default only playabale
+		AbstractZoneSettings settings = ZoneManager.getSettings(getName());
+		if (settings == null)
+		{
+			settings = new TaskZoneSettings();
+		}
+		setSettings(settings);
+	}
+	
+	@Override
+	public TaskZoneSettings getSettings()
+	{
+		return (TaskZoneSettings) super.getSettings();
 	}
 	
 	@Override
@@ -101,7 +113,7 @@ public class L2DamageZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (_task == null && (_damageHPPerSec != 0 || _damageMPPerSec != 0))
+		if (getSettings().getTask() == null && (_damageHPPerSec != 0 || _damageMPPerSec != 0))
 		{
 			L2PcInstance player = character.getActingPlayer();
 			if (getCastle() != null) // Castle zone
@@ -114,8 +126,8 @@ public class L2DamageZone extends L2ZoneType
 			
 			synchronized (this)
 			{
-				if (_task == null)
-					_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), _startTask, _reuseTask);
+				if (getSettings().getTask()  == null)
+					getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), _startTask, _reuseTask));
 			}
 		}
 	}
@@ -123,7 +135,7 @@ public class L2DamageZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (_characterList.isEmpty() && _task != null)
+		if (_characterList.isEmpty() && getSettings().getTask() != null)
 		{
 			stopTask();
 		}
@@ -141,10 +153,9 @@ public class L2DamageZone extends L2ZoneType
 	
 	protected void stopTask()
 	{
-		if (_task != null)
+		if (getSettings().getTask() != null)
 		{
-			_task.cancel(false);
-			_task = null;
+			getSettings().getTask().cancel(false);
 		}
 	}
 	
@@ -169,7 +180,7 @@ public class L2DamageZone extends L2ZoneType
 		
 		@Override
 		public void run()
-		{	
+		{
 			if (!_enabled)
 			{
 				return;
