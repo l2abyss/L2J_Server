@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.scripting.scriptengine.listeners.character;
+package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
 import com.l2jserver.gameserver.network.clientpackets.CharacterCreate;
 import com.l2jserver.gameserver.network.clientpackets.CharacterDelete;

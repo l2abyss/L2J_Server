@@ -47,7 +47,7 @@ import com.l2jserver.gameserver.network.serverpackets.CharCreateFail;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateOk;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.PlayerListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 import com.l2jserver.gameserver.util.Util;
 
 @SuppressWarnings("unused")

@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
 import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.PlayerListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 
 /**
  * This class ...

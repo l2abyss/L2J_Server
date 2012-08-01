@@ -55,7 +55,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.TvtKillEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.AttackListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.DeathListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.PlayerListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.SkillUseListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreationListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
@@ -72,6 +71,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ItemTrac
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.NewItemListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerDespawnListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerLevelListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerSpawnListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ProfessionChangeListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.TransformListener;

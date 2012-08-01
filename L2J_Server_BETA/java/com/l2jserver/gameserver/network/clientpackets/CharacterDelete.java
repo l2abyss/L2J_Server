@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.CharDeleteFail;
 import com.l2jserver.gameserver.network.serverpackets.CharDeleteSuccess;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.PlayerListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 
 /**
  * This class ...
