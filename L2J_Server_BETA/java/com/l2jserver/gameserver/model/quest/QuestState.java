@@ -173,7 +173,7 @@ public final class QuestState
 		{
 			return false;
 		}
-		final boolean newQuest = isCreated(); 
+		final boolean newQuest = isCreated();
 		_state = state;
 		if (saveInDb)
 		{
@@ -538,11 +538,37 @@ public final class QuestState
 	}
 	
 	/**
+	 * @return the current quest progress ({@code cond})
+	 */
+	public int getCond()
+	{
+		if (isStarted())
+		{
+			return getInt("cond");
+		}
+		return 0;
+	}
+	
+	/**
+	 * Check if a given variable is set for this quest.
+	 * @param variable : the variable to check
+	 * @return {@code true} if the variable is set, {@code false} otherwise
+	 * @see #get(String)
+	 * @see #getInt(String)
+	 * @see #getCond()
+	 */
+	public boolean isSet(String variable)
+	{
+		return (get(variable) != null);
+	}
+	
+	/**
 	 * Sets the quest state progress ({@code cond}) to the specified step.
 	 * @param value the new value of the quest state progress
 	 * @param playQuestMiddle if {@code true}, plays "ItemSound.quest_middle"
 	 * @return this {@link QuestState} object
 	 * @see #set(String var, String val)
+	 * @see #setCond(int, boolean)
 	 * @see #setCond(int value)
 	 */
 	public QuestState setCond(int value, boolean playQuestMiddle)
