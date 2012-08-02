@@ -48,8 +48,8 @@ public class DBDumper
 	{
 		try (Formatter form = new Formatter())
 		{
-			try (Connection con = _frame.getConnection();
-				Statement s = con.createStatement();
+			Connection con = _frame.getConnection();
+			try (Statement s = con.createStatement();
 				ResultSet rset = s.executeQuery("SHOW TABLES"))
 			{
 				File dump = new File("dumps", form.format("%1$s_dump_%2$tY%2$tm%2$td-%2$tH%2$tM%2$tS.sql", _db, new GregorianCalendar().getTime()).toString());

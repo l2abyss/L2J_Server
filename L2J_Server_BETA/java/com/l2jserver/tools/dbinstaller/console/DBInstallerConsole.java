@@ -34,45 +34,44 @@ public class DBInstallerConsole implements DBOutputInterface
 		System.out.println("Welcome to L2J DataBase installer");
 		Preferences prop = Preferences.userRoot();
 		RunTasks rt = null;
-		try (Scanner scn = new Scanner(System.in))
+		Scanner scn = new Scanner(System.in);
+		
+		while (_con == null)
 		{
-			while (_con == null)
-			{
-				System.out.printf("%s (%s): ", "Host", prop.get("dbHost_" + db, "localhost"));
-				String dbHost = scn.nextLine();
-				System.out.printf("%s (%s): ", "Port", prop.get("dbPort_" + db, "3306"));
-				String dbPort = scn.nextLine();
-				System.out.printf("%s (%s): ", "Username", prop.get("dbUser_" + db, "root"));
-				String dbUser = scn.nextLine();
-				System.out.printf("%s (%s): ", "Password", "");
-				String dbPass = scn.nextLine();
-				System.out.printf("%s (%s): ", "Database", prop.get("dbDbse_" + db, db));
-				String dbDbse = scn.nextLine();
-				
-				dbHost = dbHost.isEmpty() ? prop.get("dbHost_" + db, "localhost") : dbHost;
-				dbPort = dbPort.isEmpty() ? prop.get("dbPort_" + db, "3306") : dbPort;
-				dbUser = dbUser.isEmpty() ? prop.get("dbUser_" + db, "root") : dbUser;
-				dbDbse = dbDbse.isEmpty() ? prop.get("dbDbse_" + db, db) : dbDbse;
-				
-				MySqlConnect connector = new MySqlConnect(dbHost, dbPort, dbUser, dbPass, dbDbse, true);
-				
-				_con = connector.getConnection();
-			}
+			System.out.printf("%s (%s): ", "Host", prop.get("dbHost_" + db, "localhost"));
+			String dbHost = scn.nextLine();
+			System.out.printf("%s (%s): ", "Port", prop.get("dbPort_" + db, "3306"));
+			String dbPort = scn.nextLine();
+			System.out.printf("%s (%s): ", "Username", prop.get("dbUser_" + db, "root"));
+			String dbUser = scn.nextLine();
+			System.out.printf("%s (%s): ", "Password", "");
+			String dbPass = scn.nextLine();
+			System.out.printf("%s (%s): ", "Database", prop.get("dbDbse_" + db, db));
+			String dbDbse = scn.nextLine();
 			
-			System.out.print("(C)lean install, (U)pdate or (E)xit? ");
-			String resp = scn.next();
-			if (resp.equalsIgnoreCase("c"))
+			dbHost = dbHost.isEmpty() ? prop.get("dbHost_" + db, "localhost") : dbHost;
+			dbPort = dbPort.isEmpty() ? prop.get("dbPort_" + db, "3306") : dbPort;
+			dbUser = dbUser.isEmpty() ? prop.get("dbUser_" + db, "root") : dbUser;
+			dbDbse = dbDbse.isEmpty() ? prop.get("dbDbse_" + db, db) : dbDbse;
+			
+			MySqlConnect connector = new MySqlConnect(dbHost, dbPort, dbUser, dbPass, dbDbse, true);
+			
+			_con = connector.getConnection();
+		}
+		
+		System.out.print("(C)lean install, (U)pdate or (E)xit? ");
+		String resp = scn.next();
+		if (resp.equalsIgnoreCase("c"))
+		{
+			System.out.print("Do you really want to destroy your db (Y/N)?");
+			if (scn.next().equalsIgnoreCase("y"))
 			{
-				System.out.print("Do you really want to destroy your db (Y/N)?");
-				if (scn.next().equalsIgnoreCase("y"))
-				{
-					rt = new RunTasks(this, db, dir, cleanUp, true);
-				}
+				rt = new RunTasks(this, db, dir, cleanUp, true);
 			}
-			else if (resp.equalsIgnoreCase("u"))
-			{
-				rt = new RunTasks(this, db, dir, cleanUp, false);
-			}
+		}
+		else if (resp.equalsIgnoreCase("u"))
+		{
+			rt = new RunTasks(this, db, dir, cleanUp, false);
 		}
 		
 		if (rt != null)
@@ -121,14 +120,14 @@ public class DBInstallerConsole implements DBOutputInterface
 	public int requestConfirm(String title, String message, int type)
 	{
 		System.out.print(message);
-		try (Scanner scn = new Scanner(System.in))
+		Scanner scn = new Scanner(System.in);
+		
+		String res = scn.next();
+		if (res.equalsIgnoreCase("y"))
 		{
-			String res = scn.next();
-			if (res.equalsIgnoreCase("y"))
-			{
-				return 0;
-			}
+			return 0;
 		}
+		
 		return 1;
 	}
 	
