@@ -14,12 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
-import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchList;
 
 /**
@@ -42,21 +37,10 @@ public class RequestExOlympiadMatchListRefresh extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null || !activeChar.inObserverMode())
+		if (activeChar == null)
 			return;
 		
-		List<OlympiadGameTask> games = new ArrayList<>();
-		OlympiadGameTask task;
-		for (int i = 0; i < OlympiadGameManager.getInstance().getNumberOfStadiums(); i++)
-		{
-			task = OlympiadGameManager.getInstance().getOlympiadTask(i);
-			if (task != null)
-			{
-				if (!task.isBattleFinished())
-					games.add(task);
-			}
-		}
-		activeChar.sendPacket(new ExOlympiadMatchList(games));
+		activeChar.sendPacket(new ExOlympiadMatchList());
 	}
 	
 	@Override

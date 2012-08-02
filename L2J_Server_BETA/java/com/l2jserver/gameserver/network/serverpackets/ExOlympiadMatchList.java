@@ -14,10 +14,12 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.olympiad.AbstractOlympiadGame;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameClassed;
+import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameNonClassed;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTeams;
@@ -27,14 +29,23 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadGameTeams;
  */
 public class ExOlympiadMatchList extends L2GameServerPacket
 {
-	private final List<OlympiadGameTask> _games;
+	private final List<OlympiadGameTask> _games = new ArrayList<>();
 	
-	/**
-	 * @param games competitions list
-	 */
-	public ExOlympiadMatchList(List<OlympiadGameTask> games)
+	public ExOlympiadMatchList()
 	{
-		_games = games;
+		OlympiadGameTask task;
+		for (int i = 0; i < OlympiadGameManager.getInstance().getNumberOfStadiums(); i++)
+		{
+			task = OlympiadGameManager.getInstance().getOlympiadTask(i);
+			if (task != null)
+			{
+				if (!task.isGameStarted() || task.isBattleFinished())
+				{
+					continue; //initial or finished state not shown
+				}
+				_games.add(task);
+			}
+		}
 	}
 	
 	@Override

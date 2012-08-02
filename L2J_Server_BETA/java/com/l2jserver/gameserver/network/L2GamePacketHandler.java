@@ -1103,7 +1103,7 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 								msg = new RequestExFriendListExtended();
 								break;
 							case 0x88:
-								//msg = new RequestExOlympiadMatchListRefresh();
+								msg = new RequestExOlympiadMatchListRefresh();
 								break;
 							case 0x89:
 								// RequestBRGamePoint

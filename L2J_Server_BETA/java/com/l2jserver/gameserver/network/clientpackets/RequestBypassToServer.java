@@ -297,6 +297,15 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					Hero.getInstance().showHeroDiary(activeChar, heroclass, heroid, heropage);
 				}
 			}
+			else if (_command.startsWith("_olympiad?command"))
+			{
+				int arenaId = Integer.parseInt(_command.split("=")[2]);
+				final IBypassHandler handler = BypassHandler.getInstance().getHandler("arenachange");
+				if (handler != null)
+				{
+					handler.useBypass("arenachange " + (arenaId - 1), activeChar, null);
+				}
+			}
 			else
 			{
 				final IBypassHandler handler = BypassHandler.getInstance().getHandler(_command);

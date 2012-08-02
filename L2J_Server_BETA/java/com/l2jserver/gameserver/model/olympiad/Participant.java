@@ -31,6 +31,8 @@ public final class Participant
 	private boolean disconnected = false;
 	private boolean defaulted = false;
 	private final StatsSet stats;
+	public String clanName;
+	public int clanId;
 	
 	public Participant(L2PcInstance plr, int olympiadSide)
 	{
@@ -40,6 +42,8 @@ public final class Participant
 		side = olympiadSide;
 		baseClass = plr.getBaseClass();
 		stats = Olympiad.getNobleStats(getObjectId());
+		clanName = plr.getClan() != null ? plr.getClan().getName() : "";
+		clanId = plr.getClanId();
 	}
 	
 	public Participant(int objId, int olympiadSide)
@@ -50,6 +54,8 @@ public final class Participant
 		side = olympiadSide;
 		baseClass = 0;
 		stats = null;
+		clanName = "";
+		clanId = 0;
 	}
 	
 	/**
@@ -80,6 +86,22 @@ public final class Participant
 	public String getName()
 	{
 		return name;
+	}
+	
+	/**
+	 * @return the name the player's clan name.
+	 */
+	public String getClanName()
+	{
+		return clanName;
+	}
+	
+	/**
+	 * @return the name the player's id.
+	 */
+	public int getClanId()
+	{
+		return clanId;
 	}
 	
 	/**
