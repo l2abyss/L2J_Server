@@ -158,7 +158,7 @@ public abstract class AbstractOlympiadGame
 			player.sendPacket(sm);
 			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
 		}
-		if (!player.isInventoryUnder80(true))
+		if (!player.isInventoryUnder90(true))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_INVENTORY_SLOT_EXCEEDS_80_PERCENT);
 			sm.addPcName(player);

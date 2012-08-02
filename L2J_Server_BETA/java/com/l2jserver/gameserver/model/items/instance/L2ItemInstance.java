@@ -2167,7 +2167,7 @@ public final class L2ItemInstance extends L2Object
 			
 			if (q != null)
 			{
-				if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000) && (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder80(true)))
+				if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000) && (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder90(true)))
 				{
 					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 					return;

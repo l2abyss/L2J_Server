@@ -321,7 +321,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		int newJobLevel = currentClassId.level() + 1;
 		
 		// Weight/Inventory check
-		if(!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty() && !player.isInventoryUnder80(false))
+		if(!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty() && !player.isInventoryUnder90(false))
 		{
 			player.sendPacket(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT);
 			return false;

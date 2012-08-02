@@ -448,7 +448,7 @@ public class OlympiadManager
 			return false;
 		}
 
-		if (!noble.isInventoryUnder80(true))
+		if (!noble.isInventoryUnder90(true))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_CANNOT_PARTICIPATE_IN_OLYMPIAD_INVENTORY_SLOT_EXCEEDS_80_PERCENT);
 			sm.addPcName(noble);

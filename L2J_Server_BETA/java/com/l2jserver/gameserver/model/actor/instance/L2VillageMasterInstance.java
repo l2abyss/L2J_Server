@@ -214,7 +214,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 				return;
 			}
 			// Subclasses may not be changed while you have exceeded your inventory limit.
-			if (!player.isInventoryUnder80(true))
+			if (!player.isInventoryUnder90(true))
 			{
 				player.sendPacket(SystemMessageId.NOT_SUBCLASS_WHILE_INVENTORY_FULL);
 				return;

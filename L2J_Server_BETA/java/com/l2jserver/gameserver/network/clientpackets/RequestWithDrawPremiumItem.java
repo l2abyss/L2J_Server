@@ -59,7 +59,7 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 			Util.handleIllegalPlayerAction(activeChar, "[RequestWithDrawPremiumItem] Player: " + activeChar.getName() + " try to get item with empty list!", Config.DEFAULT_PUNISH);
 			return;
 		}
-		else if (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder80(false))
+		else if (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder90(false))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_CANNOT_RECEIVE_THE_VITAMIN_ITEM);
 			return;
