@@ -19,9 +19,7 @@ import java.util.List;
 import com.l2jserver.Config;
 
 /**
- * 
  * @author DS
- *
  */
 public class OlympiadGameNonClassed extends OlympiadGameNormal
 {
@@ -29,25 +27,25 @@ public class OlympiadGameNonClassed extends OlympiadGameNormal
 	{
 		super(id, opponents);
 	}
-
+	
 	@Override
 	public final CompetitionType getType()
 	{
 		return CompetitionType.NON_CLASSED;
 	}
-
+	
 	@Override
 	protected final int getDivider()
 	{
 		return Config.ALT_OLY_DIVIDER_NON_CLASSED;
 	}
-
+	
 	@Override
 	protected final int[][] getReward()
 	{
 		return Config.ALT_OLY_NONCLASSED_REWARD;
 	}
-
+	
 	@Override
 	protected final String getWeeklyMatchType()
 	{
@@ -58,8 +56,10 @@ public class OlympiadGameNonClassed extends OlympiadGameNormal
 	{
 		final Participant[] opponents = OlympiadGameNormal.createListOfParticipants(list);
 		if (opponents == null)
+		{
 			return null;
-
+		}
+		
 		return new OlympiadGameNonClassed(id, opponents);
 	}
 }

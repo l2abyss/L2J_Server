@@ -111,7 +111,7 @@ public final class Participant
 	{
 		return player;
 	}
-
+	
 	/**
 	 * @return the objectId
 	 */
@@ -119,7 +119,7 @@ public final class Participant
 	{
 		return objectId;
 	}
-
+	
 	/**
 	 * @return the stats
 	 */
@@ -127,7 +127,7 @@ public final class Participant
 	{
 		return stats;
 	}
-
+	
 	/**
 	 * @param noble the player to set
 	 */
@@ -135,7 +135,7 @@ public final class Participant
 	{
 		player = noble;
 	}
-
+	
 	/**
 	 * @return the side
 	 */
