@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.olympiad;
 
 import gnu.trove.map.hash.TIntIntHashMap;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -59,7 +58,6 @@ public class Olympiad
 	protected static L2FastList<StatsSet> _heroesToBe;
 	private static final TIntIntHashMap _noblesRank = new TIntIntHashMap();
 	
-	private static final String OLYMPIAD_DATA_FILE = "config/Olympiad.properties";
 	public static final String OLYMPIAD_HTML_PATH = "data/html/olympiad/";
 	private static final String OLYMPIAD_LOAD_DATA = "SELECT current_cycle, period, olympiad_end, validation_end, " + "next_weekly_change FROM olympiad_data WHERE id = 0";
 	private static final String OLYMPIAD_SAVE_DATA = "INSERT INTO olympiad_data (id, current_cycle, " + "period, olympiad_end, validation_end, next_weekly_change) VALUES (0,?,?,?,?,?) " + "ON DUPLICATE KEY UPDATE current_cycle=?, period=?, olympiad_end=?, " + "validation_end=?, next_weekly_change=?";
@@ -204,7 +202,7 @@ public class Olympiad
 			_log.log(Level.INFO, "Olympiad System: failed to load data from database, trying to load from file.");
 			
 			Properties OlympiadProperties = new Properties();
-			try (InputStream is = new FileInputStream(new File("./" + OLYMPIAD_DATA_FILE)))
+			try (InputStream is = new FileInputStream(Config.OLYMPIAD_CONFIG_FILE))
 			{
 				
 				OlympiadProperties.load(is);

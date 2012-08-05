@@ -58,7 +58,6 @@ public class SevenSigns
 	protected static final Logger _log = Logger.getLogger(SevenSigns.class.getName());
 	
 	// Basic Seven Signs Constants \\
-	public static final String SEVEN_SIGNS_DATA_FILE = "config/signs.properties";
 	public static final String SEVEN_SIGNS_HTML_PATH = "data/html/seven_signs/";
 	
 	public static final int CABAL_NULL = 0;
