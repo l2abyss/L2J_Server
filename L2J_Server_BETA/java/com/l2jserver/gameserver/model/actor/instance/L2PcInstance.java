@@ -5615,8 +5615,6 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		
-		setPvpFlag(0); // Clear the pvp flag
-		
 		// Unsummon Cubics
 		if (!_cubics.isEmpty())
 		{
@@ -5632,14 +5630,22 @@ public final class L2PcInstance extends L2Playable
 			abortCast();
 		
 		for (L2Character character : getKnownList().getKnownCharacters())
+		{
 			if (character.getFusionSkill() != null && character.getFusionSkill().getTarget() == this)
+			{
 				character.abortCast();
+			}
+		}
 		
 		if (isInParty() && getParty().isInDimensionalRift())
+		{
 			getParty().getDimensionalRift().getDeadMemberList().add(this);
+		}
 		
 		if (getAgathionId() != 0)
+		{
 			setAgathionId(0);
+		}
 		
 		// calculate death penalty buff
 		calculateDeathPenaltyBuffLevel(killer);
@@ -5649,9 +5655,7 @@ public final class L2PcInstance extends L2Playable
 		
 		AntiFeedManager.getInstance().setLastDeathTime(getObjectId());
 		
-		if (isPhoenixBlessed())
-			reviveRequest(this, null, false);
-		else if (isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE) && this.isInSiege())
+		if (isPhoenixBlessed() || (isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE) && isInSiege()))
 		{
 			reviveRequest(this, null, false);
 		}
