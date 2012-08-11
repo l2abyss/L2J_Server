@@ -46,6 +46,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RaidBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate.AIType;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
@@ -428,8 +429,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			
 			for (L2Object obj : objs)
 			{
-				if (!(obj instanceof L2Character))
+				if (!(obj instanceof L2Character) || (obj instanceof L2StaticObjectInstance))
+				{
 					continue;
+				}
 				L2Character target = (L2Character) obj;
 				
 				/*

@@ -129,12 +129,10 @@ public class L2RaidBossInstance extends L2MonsterInstance
 	
 	protected void checkAndReturnToSpawn()
 	{
-		if (isDead() || isMovementDisabled())
+		if (isDead() || isMovementDisabled() || !canReturnToSpawnPoint())
+		{
 			return;
-		
-		// Gordon does not have permanent spawn
-		if (getNpcId() == 29095)
-			return;
+		}
 		
 		final L2Spawn spawn = getSpawn();
 		if (spawn == null)
