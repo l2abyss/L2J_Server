@@ -496,6 +496,7 @@ public final class Config
 	public static int WORLD_Y_MAX;
 	public static int GEODATA;
 	public static File GEODATA_DIR;
+	public static File PATHNODE_DIR;
 	public static boolean GEODATA_CELLFINDING;
 	public static String PATHFIND_BUFFERS;
 	public static float LOW_WEIGHT;
@@ -1985,7 +1986,16 @@ public final class Config
 			catch (IOException e)
 			{
 				_log.log(Level.WARNING, "Error setting geodata directory!", e);
-				GEODATA_DIR= new File("data/geodata");
+				GEODATA_DIR = new File("data/geodata");
+			}
+			try
+			{
+				PATHNODE_DIR = new File(General.getProperty("PathnodeDirectory", "data/pathnode").replaceAll("\\\\", "/")).getCanonicalFile();
+			}
+			catch (IOException e)
+			{
+				_log.log(Level.WARNING, "Error setting pathnode directory!", e);
+				PATHNODE_DIR = new File("data/pathnode");
 			}
 			GEODATA_CELLFINDING = Boolean.parseBoolean(General.getProperty("CellPathFinding", "False"));
 			PATHFIND_BUFFERS = General.getProperty("PathFindBuffers", "100x6;128x6;192x6;256x4;320x4;384x4;500x2");

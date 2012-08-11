@@ -710,7 +710,7 @@ public class GeoEngine extends GeoData
 		}
 		String fname = rx + "_" + ry + ".l2j";
 		short regionoffset = (short) ((rx << 5) + ry);
-		_log.info("Geo Engine: - Loading: " + fname + " -> region offset: " + regionoffset + "X: " + rx + " Y: " + ry);
+		_log.info("Geo Engine: - Loading: " + fname + " -> region offset: " + regionoffset + " X: " + rx + " Y: " + ry);
 		
 		int size, index = 0, block = 0, flor = 0;
 		// Create a read-only memory-mapped file
