@@ -28,9 +28,29 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 public class L2FortLogisticsInstance extends L2MerchantInstance
 {
 	private static final int BLOOD_OATH = 9910;
-	private static final int[] SUPPLY_BOX_IDS = { 35665, 35697, 35734, 35766, 35803, 35834,
-		35866, 35903, 35935, 35973, 36010, 36042, 36080, 36117, 36148, 36180, 36218, 36256,
-		36293, 36325, 36363
+	private static final int[] SUPPLY_BOX_IDS =
+	{
+		35665,
+		35697,
+		35734,
+		35766,
+		35803,
+		35834,
+		35866,
+		35903,
+		35935,
+		35973,
+		36010,
+		36042,
+		36080,
+		36117,
+		36148,
+		36180,
+		36218,
+		36256,
+		36293,
+		36325,
+		36363
 	};
 	
 	public L2FortLogisticsInstance(int objectID, L2NpcTemplate template)
@@ -49,23 +69,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
 		
-		String par = "";
-		if (st.countTokens() >= 1)
-			par = st.nextToken();
-		
-		if (actualCommand.equalsIgnoreCase("Chat"))
-		{
-			int val = 0;
-			try
-			{
-				val = Integer.parseInt(par);
-			}
-			catch (IndexOutOfBoundsException ioobe){}
-			catch (NumberFormatException nfe){}
-			
-			showMessageWindow(player, val);
-		}
-		else if (actualCommand.equalsIgnoreCase("rewards"))
+		if (actualCommand.equalsIgnoreCase("rewards"))
 		{
 			if (player.isClanLeader() && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan())
 			{
@@ -150,12 +154,12 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 					{
 						html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-supply.htm");
 						// spawn box
-						L2NpcTemplate BoxTemplate = NpcTable.getInstance().getTemplate(SUPPLY_BOX_IDS[level-1]);
+						L2NpcTemplate BoxTemplate = NpcTable.getInstance().getTemplate(SUPPLY_BOX_IDS[level - 1]);
 						L2MonsterInstance box = new L2MonsterInstance(IdFactory.getInstance().getNextId(), BoxTemplate);
 						box.setCurrentHp(box.getMaxHp());
 						box.setCurrentMp(box.getMaxMp());
 						box.setHeading(0);
-						//L2World.getInstance().storeObject(box);
+						// L2World.getInstance().storeObject(box);
 						box.spawnMe(getX() - 23, getY() + 41, getZ());
 						
 						getFort().setSupplyLvL(0);
@@ -205,6 +209,19 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		else
 			html.replace("%clanname%", "NPC");
 		player.sendPacket(html);
+	}
+	
+	@Override
+	public String getHtmlPath(int npcId, int val)
+	{
+		String pom = "";
+		
+		if (val == 0)
+			pom = "logistics";
+		else
+			pom = "logistics-" + val;
+		
+		return "data/html/fortress/" + pom + ".htm";
 	}
 	
 	@Override
