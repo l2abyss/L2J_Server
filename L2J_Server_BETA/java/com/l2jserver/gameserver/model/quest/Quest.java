@@ -2362,20 +2362,24 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Return HTML file contents
 	 * @param prefix player's language prefix.
 	 * @param fileName the html file to be get.
-	 * @return
+	 * @return the HTML file contents
 	 */
 	public String getHtm(String prefix, String fileName)
 	{
-		String content = HtmCache.getInstance().getHtm(prefix, fileName.startsWith("data/") ? fileName : "data/scripts/" + getDescr().toLowerCase() + "/" + getName() + "/" + fileName);
+		final HtmCache hc = HtmCache.getInstance();
+		String content = hc.getHtm(prefix, fileName.startsWith("data/") ? fileName : "data/scripts/" + getDescr().toLowerCase() + "/" + getName() + "/" + fileName);
 		if (content == null)
 		{
-			content = HtmCache.getInstance().getHtm(prefix, "data/scripts/quests/Q" + getName() + "/" + fileName);
+			content = hc.getHtm(prefix, "data/scripts/" + getDescr() + "/" + getName() + "/" + fileName);
 			if (content == null)
 			{
-				content = HtmCache.getInstance().getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
+				content = hc.getHtm(prefix, "data/scripts/quests/Q" + getName() + "/" + fileName);
+				if (content == null)
+				{
+					content = hc.getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
+				}
 			}
 		}
 		return content;

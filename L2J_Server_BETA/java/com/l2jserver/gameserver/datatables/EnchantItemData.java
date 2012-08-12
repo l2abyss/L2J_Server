@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
+ * This class holds the Enchant Item information.
  * @author UnAfraid
  */
 public class EnchantItemData extends DocumentParser
@@ -76,12 +77,11 @@ public class EnchantItemData extends DocumentParser
 						}
 						
 						List<Integer> items = new ArrayList<>();
-						
 						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 						{
 							if ("item".equalsIgnoreCase(cd.getNodeName()))
 							{
-								items.add(parseInt(cd.getAttributes(), "id"));
+								items.add(parseInteger(cd.getAttributes(), "id"));
 							}
 						}
 						EnchantScroll item = new EnchantScroll(set, items);
@@ -99,12 +99,11 @@ public class EnchantItemData extends DocumentParser
 						}
 						
 						List<Integer> items = new ArrayList<>();
-						
 						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 						{
 							if ("item".equalsIgnoreCase(cd.getNodeName()))
 							{
-								items.add(parseInt(cd.getAttributes(), "id"));
+								items.add(parseInteger(cd.getAttributes(), "id"));
 							}
 						}
 						EnchantItem item = new EnchantItem(set, items);
