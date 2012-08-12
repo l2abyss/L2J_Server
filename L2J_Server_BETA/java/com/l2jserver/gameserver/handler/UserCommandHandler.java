@@ -14,57 +14,56 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import java.util.logging.Logger;
-
-import com.l2jserver.Config;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * This class ...
- *
- * @version $Revision: 1.1.2.1.2.5 $ $Date: 2005/03/27 15:30:09 $
+ * @author UnAfraid
  */
-public class UserCommandHandler
+public class UserCommandHandler implements IHandler<IUserCommandHandler, Integer>
 {
-	private static Logger _log = Logger.getLogger(UserCommandHandler.class.getName());
+	private final Map<Integer, IUserCommandHandler> _datatable;
 	
-	private final TIntObjectHashMap<IUserCommandHandler> _datatable;
+	protected UserCommandHandler()
+	{
+		_datatable = new HashMap<>();
+	}
+	
+	@Override
+	public void registerHandler(IUserCommandHandler handler)
+	{
+		int[] ids = handler.getUserCommandList();
+		for (int id : ids)
+		{
+			_datatable.put(id, handler);
+		}
+	}
+	
+	@Override
+	public synchronized void removeHandler(IUserCommandHandler handler)
+	{
+		int[] ids = handler.getUserCommandList();
+		for (int id : ids)
+		{
+			_datatable.remove(id);
+		}
+	}
+	
+	@Override
+	public IUserCommandHandler getHandler(Integer userCommand)
+	{
+		return _datatable.get(userCommand);
+	}
+	
+	@Override
+	public int size()
+	{
+		return _datatable.size();
+	}
 	
 	public static UserCommandHandler getInstance()
 	{
 		return SingletonHolder._instance;
-	}
-	
-	protected UserCommandHandler()
-	{
-		_datatable = new TIntObjectHashMap<>();
-	}
-	
-	public void registerHandler(IUserCommandHandler handler)
-	{
-		int[] ids = handler.getUserCommandList();
-		for (int i = 0; i < ids.length; i++)
-		{
-			if (Config.DEBUG)
-				_log.fine("Adding handler for user command " + ids[i]);
-			_datatable.put(ids[i], handler);
-		}
-	}
-	
-	public IUserCommandHandler getHandler(int userCommand)
-	{
-		if (Config.DEBUG)
-			_log.fine("getting handler for user command: " + userCommand);
-		return _datatable.get(userCommand);
-	}
-	
-	/**
-	 * @return
-	 */
-	public int size()
-	{
-		return _datatable.size();
 	}
 	
 	private static class SingletonHolder

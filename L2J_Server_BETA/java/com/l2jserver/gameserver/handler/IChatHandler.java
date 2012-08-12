@@ -18,8 +18,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * Interface for chat handlers
- *
- * @author  durgus
+ * @author durgus
  */
 public interface IChatHandler
 {
@@ -28,7 +27,7 @@ public interface IChatHandler
 	 * @param type
 	 * @param activeChar
 	 * @param target
-	 * @param text 
+	 * @param text
 	 */
 	public void handleChat(int type, L2PcInstance activeChar, String target, String text);
 	

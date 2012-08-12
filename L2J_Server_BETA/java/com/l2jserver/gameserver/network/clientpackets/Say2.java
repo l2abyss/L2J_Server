@@ -69,6 +69,8 @@ public final class Say2 extends L2GameClientPacket
 	public static final int SCREEN_ANNOUNCE = 19;
 	public static final int BATTLEFIELD = 20;
 	public static final int MPCC_ROOM = 21;
+	public static final int NPC_ALL = 22;
+	public static final int NPC_SHOUT = 23;
 	
 	private static final String[] CHAT_NAMES =
 	{

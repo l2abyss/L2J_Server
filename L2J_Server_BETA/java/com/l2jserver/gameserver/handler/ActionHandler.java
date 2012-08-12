@@ -14,13 +14,15 @@
  */
 package com.l2jserver.gameserver.handler;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 
-public class ActionHandler
+/**
+ * @author UnAfraid
+ */
+public class ActionHandler implements IHandler<IActionHandler, InstanceType>
 {
 	private final Map<InstanceType, IActionHandler> _actions;
 	
@@ -31,14 +33,22 @@ public class ActionHandler
 	
 	protected ActionHandler()
 	{
-		_actions = new FastMap<>();
+		_actions = new HashMap<>();
 	}
 	
+	@Override
 	public void registerHandler(IActionHandler handler)
 	{
 		_actions.put(handler.getInstanceType(), handler);
 	}
 	
+	@Override
+	public synchronized void removeHandler(IActionHandler handler)
+	{
+		_actions.remove(handler.getInstanceType());
+	}
+	
+	@Override
 	public IActionHandler getHandler(InstanceType iType)
 	{
 		IActionHandler result = null;
@@ -46,11 +56,14 @@ public class ActionHandler
 		{
 			result = _actions.get(t);
 			if (result != null)
+			{
 				break;
+			}
 		}
 		return result;
 	}
 	
+	@Override
 	public int size()
 	{
 		return _actions.size();

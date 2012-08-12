@@ -18,15 +18,10 @@ import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.1.2.1.2.2 $ $Date: 2005/03/27 15:30:10 $
- */
 public interface IUserCommandHandler
 {
 	public static Logger _log = Logger.getLogger(IUserCommandHandler.class.getName());
+	
 	/**
 	 * this is the worker method that is called when someone uses an admin command.
 	 * @param id

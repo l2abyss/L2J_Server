@@ -14,30 +14,24 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 
-
 /**
- * This class ...
- *
- * @version $Revision: 1.1.4.4 $ $Date: 2005/04/03 15:55:06 $
+ * @author UnAfraid
  */
-public class SkillHandler
+public class SkillHandler implements IHandler<ISkillHandler, L2SkillType>
 {
-	private final TIntObjectHashMap<ISkillHandler> _datatable;
-	
-	public static SkillHandler getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<Integer, ISkillHandler> _datatable;
 	
 	protected SkillHandler()
 	{
-		_datatable = new TIntObjectHashMap<>();
+		_datatable = new HashMap<>();
 	}
 	
+	@Override
 	public void registerHandler(ISkillHandler handler)
 	{
 		L2SkillType[] types = handler.getSkillIds();
@@ -47,17 +41,31 @@ public class SkillHandler
 		}
 	}
 	
+	@Override
+	public synchronized void removeHandler(ISkillHandler handler)
+	{
+		L2SkillType[] types = handler.getSkillIds();
+		for (L2SkillType t : types)
+		{
+			_datatable.remove(t.ordinal());
+		}
+	}
+	
+	@Override
 	public ISkillHandler getHandler(L2SkillType skillType)
 	{
 		return _datatable.get(skillType.ordinal());
 	}
 	
-	/**
-	 * @return
-	 */
+	@Override
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	public static SkillHandler getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

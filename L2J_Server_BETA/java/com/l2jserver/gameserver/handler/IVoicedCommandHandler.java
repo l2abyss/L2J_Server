@@ -18,20 +18,15 @@ import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
-/**
- * This class ...
- *
- * @version $Revision: 1.1.4.2 $ $Date: 2005/03/27 15:30:09 $
- */
 public interface IVoicedCommandHandler
 {
 	public static Logger _log = Logger.getLogger(IVoicedCommandHandler.class.getName());
+	
 	/**
 	 * this is the worker method that is called when someone uses an admin command.
 	 * @param activeChar
 	 * @param command
-	 * @param params 
+	 * @param params
 	 * @return command success
 	 */
 	public boolean useVoicedCommand(String command, L2PcInstance activeChar, String params);

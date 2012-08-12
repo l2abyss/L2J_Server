@@ -31,11 +31,6 @@ public class QuestManager extends ScriptManager<Quest>
 {
 	protected static final Logger _log = Logger.getLogger(QuestManager.class.getName());
 	
-	public static final QuestManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	private Map<String, Quest> _quests = new FastMap<>();
 	
 	protected QuestManager()
@@ -60,7 +55,7 @@ public class QuestManager extends ScriptManager<Quest>
 	 */
 	public final boolean reload(int questId)
 	{
-		Quest q = this.getQuest(questId);
+		Quest q = getQuest(questId);
 		if (q == null)
 		{
 			return false;
@@ -131,7 +126,7 @@ public class QuestManager extends ScriptManager<Quest>
 		
 		// FIXME: unloading the old quest at this point is a tad too late.
 		// the new quest has already initialized itself and read the data, starting
-		// an unpredictable number of tasks with that data.  The old quest will now
+		// an unpredictable number of tasks with that data. The old quest will now
 		// save data which will never be read.
 		// However, requesting the newQuest to re-read the data is not necessarily a
 		// good option, since the newQuest may have already started timers, spawned NPCs
@@ -152,32 +147,28 @@ public class QuestManager extends ScriptManager<Quest>
 		return _quests.remove(q.getName()) != null;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.scripting.ScriptManager#getAllManagedScripts()
-	 */
 	@Override
 	public Iterable<Quest> getAllManagedScripts()
 	{
 		return _quests.values();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.scripting.ScriptManager#unload(com.l2jserver.gameserver.scripting.ManagedScript)
-	 */
 	@Override
 	public boolean unload(Quest ms)
 	{
 		ms.saveGlobalData();
-		return this.removeQuest(ms);
+		return removeQuest(ms);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.scripting.ScriptManager#getScriptManagerName()
-	 */
 	@Override
 	public String getScriptManagerName()
 	{
-		return "QuestManager";
+		return getClass().getSimpleName();
+	}
+	
+	public static final QuestManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

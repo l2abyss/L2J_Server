@@ -14,42 +14,50 @@
  */
 package com.l2jserver.gameserver.handler;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 
 /**
  * @author UnAfraid
  */
-public class TargetHandler
+public class TargetHandler implements IHandler<ITargetTypeHandler, Enum<L2TargetType>>
 {
 	private final Map<Enum<L2TargetType>, ITargetTypeHandler> _datatable;
 	
-	public static TargetHandler getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	protected TargetHandler()
 	{
-		_datatable = new FastMap<>();
+		_datatable = new HashMap<>();
 	}
 	
+	@Override
 	public void registerHandler(ITargetTypeHandler handler)
 	{
 		_datatable.put(handler.getTargetType(), handler);
 	}
 	
+	@Override
+	public synchronized void removeHandler(ITargetTypeHandler handler)
+	{
+		_datatable.remove(handler.getTargetType());
+	}
+	
+	@Override
 	public ITargetTypeHandler getHandler(Enum<L2TargetType> targetType)
 	{
 		return _datatable.get(targetType);
 	}
 	
+	@Override
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	public static TargetHandler getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

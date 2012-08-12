@@ -14,62 +14,61 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import java.util.logging.Logger;
-
-import com.l2jserver.Config;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * This class ...
- *
- * @version $Revision: 1.1.4.5 $ $Date: 2005/03/27 15:30:09 $
+ * @author UnAfraid
  */
-public class VoicedCommandHandler
+public class VoicedCommandHandler implements IHandler<IVoicedCommandHandler, String>
 {
-	private static Logger _log = Logger.getLogger(VoicedCommandHandler.class.getName());
+	private final Map<String, IVoicedCommandHandler> _datatable;
 	
-	private final TIntObjectHashMap<IVoicedCommandHandler> _datatable;
+	protected VoicedCommandHandler()
+	{
+		_datatable = new HashMap<>();
+	}
+	
+	@Override
+	public void registerHandler(IVoicedCommandHandler handler)
+	{
+		String[] ids = handler.getVoicedCommandList();
+		for (String id : ids)
+		{
+			_datatable.put(id, handler);
+		}
+	}
+	
+	@Override
+	public synchronized void removeHandler(IVoicedCommandHandler handler)
+	{
+		String[] ids = handler.getVoicedCommandList();
+		for (String id : ids)
+		{
+			_datatable.remove(id);
+		}
+	}
+	
+	@Override
+	public IVoicedCommandHandler getHandler(String voicedCommand)
+	{
+		String command = voicedCommand;
+		if (voicedCommand.contains(" "))
+		{
+			command = voicedCommand.substring(0, voicedCommand.indexOf(" "));
+		}
+		return _datatable.get(command);
+	}
+	
+	@Override
+	public int size()
+	{
+		return _datatable.size();
+	}
 	
 	public static VoicedCommandHandler getInstance()
 	{
 		return SingletonHolder._instance;
-	}
-	
-	protected VoicedCommandHandler()
-	{
-		_datatable = new TIntObjectHashMap<>();
-	}
-	
-	public void registerHandler(IVoicedCommandHandler handler)
-	{
-		String[] ids = handler.getVoicedCommandList();
-		for (int i = 0; i < ids.length; i++)
-		{
-			if (Config.DEBUG)
-				_log.fine("Adding handler for command " + ids[i]);
-			_datatable.put(ids[i].hashCode(), handler);
-		}
-	}
-	
-	public IVoicedCommandHandler getHandler(String voicedCommand)
-	{
-		String command = voicedCommand;
-		if (voicedCommand.indexOf(" ") != -1)
-		{
-			command = voicedCommand.substring(0, voicedCommand.indexOf(" "));
-		}
-		if (Config.DEBUG)
-			_log.fine("getting handler for command: " + command + " -> " + (_datatable.get(command.hashCode()) != null));
-		return _datatable.get(command.hashCode());
-	}
-	
-	/**
-	 * @return
-	 */
-	public int size()
-	{
-		return _datatable.size();
 	}
 	
 	private static class SingletonHolder

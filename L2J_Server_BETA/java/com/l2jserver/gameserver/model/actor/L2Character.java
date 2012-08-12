@@ -498,7 +498,7 @@ public abstract class L2Character extends L2Object
 	public void onSpawn()
 	{
 		super.onSpawn();
-		this.revalidateZone(true);
+		revalidateZone(true);
 	}
 	
 	public void onTeleported()

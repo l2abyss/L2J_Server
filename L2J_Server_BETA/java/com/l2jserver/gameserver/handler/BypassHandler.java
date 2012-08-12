@@ -14,63 +14,58 @@
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.l2jserver.Config;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 
- * @author nBd
- *
+ * @author nBd, UnAfraid
  */
-public class BypassHandler
+public class BypassHandler implements IHandler<IBypassHandler, String>
 {
-	private static Logger _log = Logger.getLogger(BypassHandler.class.getName());
-	
-	private final TIntObjectHashMap<IBypassHandler> _datatable;
-	
-	public static BypassHandler getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<String, IBypassHandler> _datatable;
 	
 	protected BypassHandler()
 	{
-		_datatable = new TIntObjectHashMap<>();
+		_datatable = new HashMap<>();
 	}
 	
+	@Override
 	public void registerHandler(IBypassHandler handler)
 	{
 		for (String element : handler.getBypassList())
 		{
-			if (Config.DEBUG)
-				_log.log(Level.FINE, "Adding handler for command " + element);
-			
-			_datatable.put(element.toLowerCase().hashCode(), handler);
+			_datatable.put(element.toLowerCase(), handler);
 		}
 	}
 	
-	public IBypassHandler getHandler(String BypassCommand)
+	@Override
+	public synchronized void removeHandler(IBypassHandler handler)
 	{
-		String command = BypassCommand;
-		
-		if (BypassCommand.indexOf(" ") != -1)
+		for (String element : handler.getBypassList())
 		{
-			command = BypassCommand.substring(0, BypassCommand.indexOf(" "));
+			_datatable.remove(element.toLowerCase());
 		}
-		
-		if (Config.DEBUG)
-			_log.log(Level.FINE, "getting handler for command: " + command + " -> " + (_datatable.get(command.hashCode()) != null));
-		
-		return _datatable.get(command.toLowerCase().hashCode());
 	}
 	
+	@Override
+	public IBypassHandler getHandler(String command)
+	{
+		if (command.contains(" "))
+		{
+			command = command.substring(0, command.indexOf(" "));
+		}
+		return _datatable.get(command.toLowerCase());
+	}
+	
+	@Override
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	public static BypassHandler getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

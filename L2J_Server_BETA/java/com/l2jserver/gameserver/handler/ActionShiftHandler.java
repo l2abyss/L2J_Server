@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.handler;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 
@@ -27,19 +26,19 @@ public class ActionShiftHandler
 {
 	private final Map<InstanceType, IActionHandler> _actionsShift;
 	
-	public static ActionShiftHandler getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	protected ActionShiftHandler()
 	{
-		_actionsShift = new FastMap<>();
+		_actionsShift = new HashMap<>();
 	}
 	
 	public void registerHandler(IActionHandler handler)
 	{
 		_actionsShift.put(handler.getInstanceType(), handler);
+	}
+	
+	public synchronized void removeHandler(IActionHandler handler)
+	{
+		_actionsShift.remove(handler.getInstanceType());
 	}
 	
 	public IActionHandler getHandler(InstanceType iType)
@@ -49,7 +48,9 @@ public class ActionShiftHandler
 		{
 			result = _actionsShift.get(t);
 			if (result != null)
+			{
 				break;
+			}
 		}
 		return result;
 	}
@@ -57,6 +58,11 @@ public class ActionShiftHandler
 	public int size()
 	{
 		return _actionsShift.size();
+	}
+	
+	public static ActionShiftHandler getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

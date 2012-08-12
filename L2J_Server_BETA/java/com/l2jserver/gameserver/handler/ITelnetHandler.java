@@ -28,7 +28,7 @@ public interface ITelnetHandler
 	/**
 	 * this is the worker method that is called when someone uses an bypass command
 	 * @param command
-	 * @param _print 
+	 * @param _print
 	 * @param _cSocket
 	 * @param __uptime
 	 * @return success
