@@ -93,7 +93,7 @@ public class RecipeController
 		}
 		
 		// Check if manufacturer is under manufacturing store or private store.
-		if (Config.ALT_GAME_CREATION && (_activeMakers.containsKey(manufacturer.getObjectId()) || manufacturer.isInStoreMode()))
+		if (Config.ALT_GAME_CREATION && _activeMakers.containsKey(manufacturer.getObjectId()))
 		{
 			player.sendPacket(SystemMessageId.CLOSE_STORE_WINDOW_AND_TRY_AGAIN);
 			return;
