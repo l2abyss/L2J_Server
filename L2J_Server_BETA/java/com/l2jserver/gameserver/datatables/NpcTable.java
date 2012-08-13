@@ -824,8 +824,8 @@ public class NpcTable
 					npcAIDat.setMaxSkillChance(rs.getInt("maxSkillChance"));
 					npcAIDat.setAggro(rs.getInt("aggro"));
 					npcAIDat.setCanMove(rs.getInt("canMove"));
-					npcAIDat.setShowName(rs.getBoolean("showName"));
-					npcAIDat.setTargetable(rs.getBoolean("targetable"));
+					npcAIDat.setShowName(rs.getInt("showName") == 1);
+					npcAIDat.setTargetable(rs.getInt("targetable") == 1);
 					npcAIDat.setSoulShot(rs.getInt("soulshot"));
 					npcAIDat.setSpiritShot(rs.getInt("spiritshot"));
 					npcAIDat.setSoulShotChance(rs.getInt("ssChance"));

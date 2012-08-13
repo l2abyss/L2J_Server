@@ -170,8 +170,8 @@ public class CharInfo extends L2GameServerPacket
 				writeD(0x00);
 				
 				writeD(0x00); // CT1.5 Pet form and skills, Color effect
-				writeC(template.getAIDataStatic().showName() ? 0x01 : 0x00); // show name
 				writeC(template.getAIDataStatic().isTargetable() ? 0x01 : 0x00); // targetable
+				writeC(template.getAIDataStatic().showName() ? 0x01 : 0x00); // show name
 				writeC(_activeChar.getSpecialEffect());
 				writeD(0x00);
 			}
