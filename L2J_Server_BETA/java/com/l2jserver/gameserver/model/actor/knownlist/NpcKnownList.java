@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.instance.L2CabaleBufferInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalGuideInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -62,11 +61,6 @@ public class NpcKnownList extends CharKnownList
 		if ((object instanceof L2NpcInstance) || !(object instanceof L2Character))
 		{
 			return 0;
-		}
-		
-		if (object instanceof L2CabaleBufferInstance)
-		{
-			return 900;
 		}
 		
 		if (object instanceof L2Playable)

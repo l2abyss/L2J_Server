@@ -1434,7 +1434,7 @@ public class L2Npc extends L2Character
 	 * <li>Remove L2Object object from _allObjects of L2World </li><BR><BR>
 	 * 
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND Server->Client packets to players</B></FONT><BR><BR>
-	 * 
+	 *  UnAfraid: TODO: Add Listener here
 	 */
 	@Override
 	public void deleteMe()
@@ -1465,7 +1465,7 @@ public class L2Npc extends L2Character
 		if (oldRegion != null)
 			oldRegion.removeFromZones(this);
 		
-		// Remove all L2Object from _knownObjects and _knownPlayer of the L2Character then cancel Attak or Cast and notify AI
+		// Remove all L2Object from _knownObjects and _knownPlayer of the L2Character then cancel Attack or Cast and notify AI
 		try
 		{
 			getKnownList().removeAllKnownObjects();

@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2TotemInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.util.Rnd;
@@ -39,7 +38,6 @@ public class L2SkillSpawn extends L2Skill
 	private final int _despawnDelay;
 	private final boolean _summonSpawn;
 	private final boolean _randomOffset;
-	private final int _skillToCast;
 	
 	public L2SkillSpawn(StatsSet set)
 	{
@@ -48,7 +46,6 @@ public class L2SkillSpawn extends L2Skill
 		_despawnDelay = set.getInteger("despawnDelay", 0);
 		_summonSpawn = set.getBool("isSummonSpawn", false);
 		_randomOffset = set.getBool("randomOffset", true);
-		_skillToCast = set.getInteger("skillToCast", 0);
 	}
 	
 	@Override
@@ -106,11 +103,5 @@ public class L2SkillSpawn extends L2Skill
 			npc.scheduleDespawn(_despawnDelay);
 		}
 		npc.setIsRunning(false); // Broadcast info
-		
-		if ((npc instanceof L2TotemInstance) && (_skillToCast > 0))
-		{
-			((L2TotemInstance) npc).setSkill(_skillToCast);
-			((L2TotemInstance) npc).setAITask();
-		}
 	}
 }
