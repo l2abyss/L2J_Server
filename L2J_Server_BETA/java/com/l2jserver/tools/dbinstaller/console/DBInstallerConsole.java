@@ -21,6 +21,7 @@ import java.util.prefs.Preferences;
 import com.l2jserver.tools.dbinstaller.DBOutputInterface;
 import com.l2jserver.tools.dbinstaller.RunTasks;
 import com.l2jserver.tools.dbinstaller.util.mysql.MySqlConnect;
+import com.l2jserver.util.CloseShieldedInputStream;
 
 /**
  * @author mrTJO
@@ -34,44 +35,45 @@ public class DBInstallerConsole implements DBOutputInterface
 		System.out.println("Welcome to L2J DataBase installer");
 		Preferences prop = Preferences.userRoot();
 		RunTasks rt = null;
-		Scanner scn = new Scanner(System.in);
-		
-		while (_con == null)
+		try (Scanner scn = new Scanner(new CloseShieldedInputStream(System.in)))
 		{
-			System.out.printf("%s (%s): ", "Host", prop.get("dbHost_" + db, "localhost"));
-			String dbHost = scn.nextLine();
-			System.out.printf("%s (%s): ", "Port", prop.get("dbPort_" + db, "3306"));
-			String dbPort = scn.nextLine();
-			System.out.printf("%s (%s): ", "Username", prop.get("dbUser_" + db, "root"));
-			String dbUser = scn.nextLine();
-			System.out.printf("%s (%s): ", "Password", "");
-			String dbPass = scn.nextLine();
-			System.out.printf("%s (%s): ", "Database", prop.get("dbDbse_" + db, db));
-			String dbDbse = scn.nextLine();
-			
-			dbHost = dbHost.isEmpty() ? prop.get("dbHost_" + db, "localhost") : dbHost;
-			dbPort = dbPort.isEmpty() ? prop.get("dbPort_" + db, "3306") : dbPort;
-			dbUser = dbUser.isEmpty() ? prop.get("dbUser_" + db, "root") : dbUser;
-			dbDbse = dbDbse.isEmpty() ? prop.get("dbDbse_" + db, db) : dbDbse;
-			
-			MySqlConnect connector = new MySqlConnect(dbHost, dbPort, dbUser, dbPass, dbDbse, true);
-			
-			_con = connector.getConnection();
-		}
-		
-		System.out.print("(C)lean install, (U)pdate or (E)xit? ");
-		String resp = scn.next();
-		if (resp.equalsIgnoreCase("c"))
-		{
-			System.out.print("Do you really want to destroy your db (Y/N)?");
-			if (scn.next().equalsIgnoreCase("y"))
+			while (_con == null)
 			{
-				rt = new RunTasks(this, db, dir, cleanUp, true);
+				System.out.printf("%s (%s): ", "Host", prop.get("dbHost_" + db, "localhost"));
+				String dbHost = scn.nextLine();
+				System.out.printf("%s (%s): ", "Port", prop.get("dbPort_" + db, "3306"));
+				String dbPort = scn.nextLine();
+				System.out.printf("%s (%s): ", "Username", prop.get("dbUser_" + db, "root"));
+				String dbUser = scn.nextLine();
+				System.out.printf("%s (%s): ", "Password", "");
+				String dbPass = scn.nextLine();
+				System.out.printf("%s (%s): ", "Database", prop.get("dbDbse_" + db, db));
+				String dbDbse = scn.nextLine();
+				
+				dbHost = dbHost.isEmpty() ? prop.get("dbHost_" + db, "localhost") : dbHost;
+				dbPort = dbPort.isEmpty() ? prop.get("dbPort_" + db, "3306") : dbPort;
+				dbUser = dbUser.isEmpty() ? prop.get("dbUser_" + db, "root") : dbUser;
+				dbDbse = dbDbse.isEmpty() ? prop.get("dbDbse_" + db, db) : dbDbse;
+				
+				MySqlConnect connector = new MySqlConnect(dbHost, dbPort, dbUser, dbPass, dbDbse, true);
+				
+				_con = connector.getConnection();
 			}
-		}
-		else if (resp.equalsIgnoreCase("u"))
-		{
-			rt = new RunTasks(this, db, dir, cleanUp, false);
+			
+			System.out.print("(C)lean install, (U)pdate or (E)xit? ");
+			String resp = scn.next();
+			if (resp.equalsIgnoreCase("c"))
+			{
+				System.out.print("Do you really want to destroy your db (Y/N)?");
+				if (scn.next().equalsIgnoreCase("y"))
+				{
+					rt = new RunTasks(this, db, dir, cleanUp, true);
+				}
+			}
+			else if (resp.equalsIgnoreCase("u"))
+			{
+				rt = new RunTasks(this, db, dir, cleanUp, false);
+			}
 		}
 		
 		if (rt != null)
@@ -120,15 +122,12 @@ public class DBInstallerConsole implements DBOutputInterface
 	public int requestConfirm(String title, String message, int type)
 	{
 		System.out.print(message);
-		Scanner scn = new Scanner(System.in);
-		
-		String res = scn.next();
-		if (res.equalsIgnoreCase("y"))
+		String res = "";
+		try (Scanner scn = new Scanner(new CloseShieldedInputStream(System.in)))
 		{
-			return 0;
+			res = scn.next();
 		}
-		
-		return 1;
+		return res.equalsIgnoreCase("y") ? 0 : 1;
 	}
 	
 	@Override

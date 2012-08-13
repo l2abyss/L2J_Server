@@ -149,7 +149,7 @@
 			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
-				<include name="**/util/swing/**" />
+				<include name="**/util/**" />
 				<include name="**/SQLFilter**" />
 				<exclude name="**/LauncherGS*" />
 				<exclude name="**/LauncherLS*" />
@@ -167,7 +167,7 @@
 			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
-				<include name="**/util/swing/**" />
+				<include name="**/util/**" />
 				<include name="**/SQLFilter**" />
 				<exclude name="**/LauncherCS*" />
 				<exclude name="**/LauncherLS*" />
@@ -185,7 +185,7 @@
 			<fileset dir="${build.bin}">
 				<include name="**/dbinstaller/**" />
 				<include name="**/images/**" />
-				<include name="**/util/swing/**" />
+				<include name="**/util/**" />
 				<include name="**/SQLFilter**" />
 				<exclude name="**/LauncherCS*" />
 				<exclude name="**/LauncherGS*" />
