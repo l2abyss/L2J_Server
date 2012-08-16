@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
@@ -286,7 +287,15 @@ public class L2DoorInstance extends L2Character
 		_open = open;
 		if (getChildId() > 0)
 		{
-			getSiblingDoor(getChildId()).notifyChildEvent(open);
+			L2DoorInstance sibling = getSiblingDoor(getChildId());
+			if (sibling != null)
+			{
+				sibling.notifyChildEvent(open);
+			}
+			else
+			{
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": cannot find child id: " + getChildId());
+			}
 		}
 	}
 	
