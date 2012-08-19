@@ -18,6 +18,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -197,7 +198,7 @@ public class DoorTable extends DocumentParser
 	 */
 	public boolean checkIfDoorsBetween(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean doubleFaceCheck)
 	{
-		ArrayList<L2DoorInstance> allDoors;
+		List<L2DoorInstance> allDoors;
 		if (instanceId > 0 && InstanceManager.getInstance().getInstance(instanceId) != null)
 			allDoors = InstanceManager.getInstance().getInstance(instanceId).getDoors();
 		else

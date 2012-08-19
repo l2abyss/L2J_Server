@@ -328,7 +328,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		}
 		
 		// check if player have all required items for class transfer
-		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keys())
+		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keySet())
 		{
 			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).get(_itemId);
 			if (player.getInventory().getInventoryItemCount(_itemId, -1) < _count)
@@ -339,7 +339,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		}
 		
 		// get all required items for class transfer
-		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keys())
+		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keySet())
 		{
 			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).get(_itemId);
 			if (!player.destroyItemByItemId("ClassMaster", _itemId, _count, player, true))
@@ -347,7 +347,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		}
 		
 		// reward player with items
-		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).keys())
+		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).keySet())
 		{
 			int _count = Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).get(_itemId);
 			player.addItem("ClassMaster", _itemId, _count, player, true);
@@ -432,7 +432,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		if (Config.CLASS_MASTER_SETTINGS.getRequireItems(level) == null || Config.CLASS_MASTER_SETTINGS.getRequireItems(level).isEmpty())
 			return "<tr><td>none</td></tr>";
 		StringBuilder sb = new StringBuilder();
-		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(level).keys())
+		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(level).keySet())
 		{
 			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(level).get(_itemId);
 			sb.append("<tr><td><font color=\"LEVEL\">" + _count + "</font></td><td>" + ItemTable.getInstance().getTemplate(_itemId).getName() + "</td></tr>");

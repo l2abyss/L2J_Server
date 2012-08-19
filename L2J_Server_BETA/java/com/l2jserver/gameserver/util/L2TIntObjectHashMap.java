@@ -165,7 +165,7 @@ public class L2TIntObjectHashMap<V extends Object> extends TIntObjectHashMap<V>
 	}
 	
 	@Override
-	public V[] values()
+	public Object[] values()
 	{
 		if (!_tempLocksDisable)
 		{

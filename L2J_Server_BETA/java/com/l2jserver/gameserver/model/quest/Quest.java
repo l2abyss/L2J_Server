@@ -1867,6 +1867,21 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Add this quest event to the collection of NPC Ids that will respond to for on kill events.
+	 * @param killIds the collection of NPC Ids
+	 * @return the list of NPC templates that has been associated with this event
+	 */
+	public List<L2NpcTemplate> addKillId(Collection<Integer> killIds)
+	{
+		final List<L2NpcTemplate> list = new ArrayList<>(killIds.size());
+		for (int killId : killIds)
+		{
+			list.add(addEventId(killId, QuestEventType.ON_KILL));
+		}
+		return list;
+	}
+	
+	/**
 	 * @param npcId
 	 * @return
 	 */

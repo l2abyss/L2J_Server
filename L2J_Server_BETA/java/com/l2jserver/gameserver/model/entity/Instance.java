@@ -1,11 +1,9 @@
 package com.l2jserver.gameserver.model.entity;
 
-import gnu.trove.procedure.TIntProcedure;
-import gnu.trove.set.hash.TIntHashSet;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +37,6 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
-import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
@@ -52,12 +49,10 @@ public class Instance
 	private int _id;
 	private String _name;
 	
-	private TIntHashSet _players = new TIntHashSet();
-	private final EjectPlayerProcedure _ejectProc;
-	
-	private FastList<L2Npc> _npcs = new FastList<L2Npc>().shared();
-	private ArrayList<L2DoorInstance> _doors = null;
-	private int[] _spawnLoc = new int[3];
+	private List<Integer> _players = new FastList<Integer>().shared();
+	private List<L2Npc> _npcs = new FastList<L2Npc>().shared();
+	private List<L2DoorInstance> _doors = null;
+	private int[] _spawnLoc = new int[3]; // TODO: Zoey76: Replace with Location object.
 	private boolean _allowSummon = true;
 	private long _emptyDestroyTime = -1;
 	private long _lastLeft = -1;
@@ -73,7 +68,6 @@ public class Instance
 	public Instance(int id)
 	{
 		_id = id;
-		_ejectProc = new EjectPlayerProcedure();
 		_instanceStartTime = System.currentTimeMillis();
 	}
 	
@@ -115,16 +109,18 @@ public class Instance
 		_allowSummon = b;
 	}
 	
-	/*
+	/**
 	 * Returns true if entire instance is PvP zone
+	 * @return 
 	 */
 	public boolean isPvPInstance()
 	{
 		return _isPvPInstance;
 	}
 	
-	/*
+	/**
 	 * Sets PvP zone status of the instance
+	 * @param b 
 	 */
 	public void setPvPInstance(boolean b)
 	{
@@ -169,10 +165,7 @@ public class Instance
 	 */
 	public void addPlayer(int objectId)
 	{
-		synchronized(_players)
-		{
-			_players.add(objectId);
-		}
+		_players.add(objectId);
 	}
 	
 	/**
@@ -181,10 +174,7 @@ public class Instance
 	 */
 	public void removePlayer(int objectId)
 	{
-		synchronized(_players)
-		{
-			_players.remove(objectId);
-		}
+		_players.remove(objectId);
 		
 		if (_players.isEmpty() && _emptyDestroyTime >= 0)
 		{
@@ -251,24 +241,24 @@ public class Instance
 		_doors.add(newdoor);
 	}
 	
-	public TIntHashSet getPlayers()
+	public List<Integer> getPlayers()
 	{
 		return _players;
 	}
 	
-	public FastList<L2Npc> getNpcs()
+	public List<L2Npc> getNpcs()
 	{
 		return _npcs;
 	}
 	
-	public ArrayList<L2DoorInstance> getDoors()
+	public List<L2DoorInstance> getDoors()
 	{
 		return _doors;
 	}
 	
 	public L2DoorInstance getDoor(int id)
 	{
-		for (L2DoorInstance temp: getDoors())
+		for (L2DoorInstance temp : _doors)
 		{
 			if (temp.getDoorId() == id)
 				return temp;
@@ -323,12 +313,12 @@ public class Instance
 	
 	public void removePlayers()
 	{
-		_players.forEach(_ejectProc);
-		
-		synchronized (_players)
+		// TODO: Zoey76: Implement IL2Procedure?
+		for (int objId : _players)
 		{
-			_players.clear();
+			ejectPlayer(objId);
 		}
+		_players.clear();
 	}
 	
 	public void removeNpcs()
@@ -615,8 +605,17 @@ public class Instance
 			remaining = remaining - 10000;
 		}
 		if (cs != null)
-			_players.forEach(new SendPacketToPlayerProcedure(cs));
-		
+		{
+			// TODO: Zoey76: Implement IL2Procedure?
+			for (int objId : _players)
+			{
+				L2PcInstance player = L2World.getInstance().getPlayer(objId);
+				if (player.getInstanceId() == getId())
+				{
+					player.sendPacket(cs);
+				}
+			}
+		}
 		cancelTimer();
 		if (remaining >= 10000)
 			_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(remaining), interval);
@@ -652,44 +651,6 @@ public class Instance
 		public void run()
 		{
 			InstanceManager.getInstance().destroyInstance(getId());
-		}
-	}
-	
-	
-	private final class EjectPlayerProcedure implements TIntProcedure
-	{
-		EjectPlayerProcedure()
-		{
-			
-		}
-		
-		@Override
-		public final boolean execute(final int objId)
-		{
-			ejectPlayer(objId);
-			return true;
-		}
-	}
-	
-	private final class SendPacketToPlayerProcedure implements TIntProcedure
-	{
-		private final L2GameServerPacket _packet;
-		
-		SendPacketToPlayerProcedure(final L2GameServerPacket packet)
-		{
-			_packet = packet;
-		}
-		
-		@Override
-		public final boolean execute(final int objId)
-		{
-			L2PcInstance player = L2World.getInstance().getPlayer(objId);
-			
-			if (player.getInstanceId() == getId())
-			{
-				player.sendPacket(_packet);
-			}
-			return true;
 		}
 	}
 }

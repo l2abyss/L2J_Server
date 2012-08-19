@@ -111,8 +111,8 @@ public class LoginServerThread extends Thread
 	private final FastMap<String, L2GameClient> _accountsInGameServer = new FastMap<>();
 	private int _status;
 	private String _serverName;
-	private final String[] _subnets;
-	private final String[] _hosts;
+	private final List<String> _subnets;
+	private final List<String> _hosts;
 	
 	/**
 	 * Instantiates a new login server thread.
