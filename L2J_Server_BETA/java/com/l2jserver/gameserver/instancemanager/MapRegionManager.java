@@ -260,7 +260,7 @@ public class MapRegionManager extends DocumentParser
 	 */
 	public Location getTeleToLocation(L2Character activeChar, TeleportWhereType teleportWhere)
 	{
-		int[] coord;
+		Location loc;
 		
 		if (activeChar instanceof L2PcInstance)
 		{
@@ -460,10 +460,10 @@ public class MapRegionManager extends DocumentParser
 				Instance inst = InstanceManager.getInstance().getInstance(player.getInstanceId());
 				if (inst != null)
 				{
-					coord = inst.getSpawnLoc();
-					if ((coord[0] != 0) && (coord[1] != 0) && (coord[2] != 0))
+					loc = inst.getSpawnLoc();
+					if (loc != null)
 					{
-						return new Location(coord[0], coord[1], coord[2]);
+						return loc;
 					}
 				}
 			}

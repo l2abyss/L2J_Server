@@ -324,6 +324,7 @@ public abstract class L2Object
 	}
 	
 	/**
+	 * UnAfraid: TODO: Add listener here.
 	 * @param instanceId The id of the instance zone the object is in - id 0 is global
 	 */
 	public void setInstanceId(int instanceId)
@@ -337,8 +338,9 @@ public abstract class L2Object
 		if (newI == null)
 			return;
 		
-		if (this instanceof L2PcInstance)
+		if (isPlayer())
 		{
+			L2PcInstance player = getActingPlayer();
 			if (_instanceId > 0 && oldI != null)
 			{
 				oldI.removePlayer(getObjectId());
@@ -347,9 +349,13 @@ public abstract class L2Object
 					int startTime = (int) ((System.currentTimeMillis() - oldI.getInstanceStartTime()) / 1000);
 					int endTime = (int) ((oldI.getInstanceEndTime() - oldI.getInstanceStartTime()) / 1000);
 					if (oldI.isTimerIncrease())
+					{
 						sendPacket(new ExSendUIEvent(this, true, true, startTime, endTime, oldI.getTimerText()));
+					}
 					else
+					{
 						sendPacket(new ExSendUIEvent(this, true, false, endTime - startTime, 0, oldI.getTimerText()));
+					}
 				}
 			}
 			if (instanceId > 0)
@@ -360,21 +366,32 @@ public abstract class L2Object
 					int startTime = (int) ((System.currentTimeMillis() - newI.getInstanceStartTime()) / 1000);
 					int endTime = (int) ((newI.getInstanceEndTime() - newI.getInstanceStartTime()) / 1000);
 					if (newI.isTimerIncrease())
+					{
 						sendPacket(new ExSendUIEvent(this, false, true, startTime, endTime, newI.getTimerText()));
+					}
 					else
+					{
 						sendPacket(new ExSendUIEvent(this, false, false, endTime - startTime, 0, newI.getTimerText()));
+					}
 				}
 			}
 			
-			if (((L2PcInstance) this).getPet() != null)
-				((L2PcInstance) this).getPet().setInstanceId(instanceId);
+			if (player.getPet() != null)
+			{
+				player.getPet().setInstanceId(instanceId);
+			}
 		}
-		else if (this instanceof L2Npc)
+		else if (isNpc())
 		{
+			L2Npc npc = (L2Npc) this;
 			if (_instanceId > 0 && oldI != null)
-				oldI.removeNpc(((L2Npc) this));
+			{
+				oldI.removeNpc(npc);
+			}
 			if (instanceId > 0)
-				newI.addNpc(((L2Npc) this));
+			{
+				newI.addNpc(npc);
+			}
 		}
 		
 		_instanceId = instanceId;
@@ -382,9 +399,8 @@ public abstract class L2Object
 		// If we change it for visible objects, me must clear & revalidates knownlists
 		if (_isVisible && _knownList != null)
 		{
-			if (this instanceof L2PcInstance)
+			if (isPlayer())
 			{
-				
 				// We don't want some ugly looking disappear/appear effects, so don't update
 				// the knownlist here, but players usually enter instancezones through teleporting
 				// and the teleport will do the revalidation for us.

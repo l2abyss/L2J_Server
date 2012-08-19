@@ -3884,7 +3884,10 @@ public final class L2PcInstance extends L2Playable
 			playerIU.addItem(item);
 			sendPacket(playerIU);
 		}
-		else sendPacket(new ItemList(this, false));
+		else
+		{
+			sendPacket(new ItemList(this, false));
+		}
 		
 		// Update current load as well
 		StatusUpdate su = new StatusUpdate(this);
@@ -3901,7 +3904,7 @@ public final class L2PcInstance extends L2Playable
 				sm.addItemNumber(count);
 				sendPacket(sm);
 			}
-			else 
+			else
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
 				sm.addItemName(itemId);
@@ -11939,15 +11942,15 @@ public final class L2PcInstance extends L2Playable
 				if (inst != null)
 				{
 					inst.removePlayer(getObjectId());
-					final int[] spawn = inst.getSpawnLoc();
-					if (spawn[0] != 0 && spawn[1] != 0 && spawn[2] != 0)
+					final Location loc = inst.getSpawnLoc();
+					if (loc != null)
 					{
-						final int x = spawn[0] + Rnd.get(-30, 30);
-						final int y = spawn[1] + Rnd.get(-30, 30);
-						setXYZInvisible(x, y, spawn[2]);
+						final int x = loc.getX() + Rnd.get(-30, 30);
+						final int y = loc.getY() + Rnd.get(-30, 30);
+						setXYZInvisible(x, y, loc.getZ());
 						if (getPet() != null) // dead pet
 						{
-							getPet().teleToLocation(x, y, spawn[2]);
+							getPet().teleToLocation(loc, true);
 							getPet().setInstanceId(0);
 						}
 					}

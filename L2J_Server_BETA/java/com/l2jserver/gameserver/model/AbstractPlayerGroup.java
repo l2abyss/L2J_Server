@@ -14,9 +14,8 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -27,7 +26,6 @@ import com.l2jserver.util.Rnd;
 
 /**
  * @author Battlecruiser
- * @thx Probe for comments
  */
 public abstract class AbstractPlayerGroup
 {
@@ -41,10 +39,9 @@ public abstract class AbstractPlayerGroup
 	 */
 	public List<Integer> getMembersObjectId()
 	{
-		final List<Integer> ids = new FastList<>();
+		final List<Integer> ids = new ArrayList<>();
 		forEachMember(new IL2Procedure<L2PcInstance>()
 		{
-			
 			@Override
 			public boolean execute(L2PcInstance member)
 			{
@@ -89,7 +86,6 @@ public abstract class AbstractPlayerGroup
 	{
 		forEachMember(new IL2Procedure<L2PcInstance>()
 		{
-			
 			@Override
 			public boolean execute(L2PcInstance member)
 			{
@@ -124,7 +120,6 @@ public abstract class AbstractPlayerGroup
 	{
 		forEachMember(new IL2Procedure<L2PcInstance>()
 		{
-			
 			@Override
 			public boolean execute(L2PcInstance member)
 			{

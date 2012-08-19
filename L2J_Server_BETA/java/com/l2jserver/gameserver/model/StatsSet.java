@@ -30,18 +30,17 @@ import javolution.util.FastMap;
  */
 public final class StatsSet
 {
-	
 	private static final Logger _log = Logger.getLogger(StatsSet.class.getName());
 	private final Map<String, Object> _set;
 	
 	public StatsSet()
 	{
-		_set = new FastMap<>();
+		this(new FastMap<String, Object>());
 	}
 	
-	public StatsSet(StatsSet set)
+	public StatsSet(Map<String, Object> map)
 	{
-		_set = new FastMap<>(set.getSet());
+		_set = map;
 	}
 	
 	/**
@@ -156,11 +155,10 @@ public final class StatsSet
 		}
 	}
 	
-
 	/**
 	 * Returns the byte[] associated to the key put in parameter ("name"). If the value associated to the key is null, this method returns the value of the parameter deflt.
 	 * @param name : String designating the key in the set
-	 * @param splitOn 
+	 * @param splitOn
 	 * @return byte[] : value associated to the key
 	 */
 	public byte[] getByteArray(String name, String splitOn)
@@ -302,7 +300,7 @@ public final class StatsSet
 	/**
 	 * Returns the int[] associated to the key put in parameter ("name"). If the value associated to the key is null, this method returns the value of the parameter deflt.
 	 * @param name : String designating the key in the set
-	 * @param splitOn 
+	 * @param splitOn
 	 * @return int[] : value associated to the key
 	 */
 	public int[] getIntegerArray(String name, String splitOn)
