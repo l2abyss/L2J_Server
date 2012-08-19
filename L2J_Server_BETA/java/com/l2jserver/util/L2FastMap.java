@@ -14,22 +14,56 @@
  */
 package com.l2jserver.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import javolution.util.FastMap;
+
+import com.l2jserver.gameserver.model.IL2Procedure;
+
 /**
- * A custom version of HashMap with extension for iterating without using temporary collection<br>
+ * A custom version of FastMap with extension for iterating without using temporary collection<br>
  * <br>
- * @author Julian Version 1.0.1 (2008-02-07)<br>
- *         Changes:<br>
- *         1.0.0 - Initial version.<br>
- *         1.0.1 - Made forEachP() final.<br>
+ * @author Julian
+ * @version 1.0.1 (2008-02-07)<br>
+ *          Changes:<br>
+ *          1.0.0 - Initial version.<br>
+ *          1.0.1 - Made forEachP() final.<br>
+ * @author UnAfraid
+ * @version 1.0.2 (2012-08-19)<br>
+ *          1.0.2 - Using IL2Procedure instead of I2ForEachKey/Value<br>
  * @param <K>
  * @param <V>
  */
-public class L2FastMap<K extends Object, V extends Object> extends HashMap<K, V>
+public class L2FastMap<K extends Object, V extends Object> extends FastMap<K, V>
 {
-	static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8503855490858805336L;
+	
+	public L2FastMap()
+	{
+		this(false);
+	}
+	
+	public L2FastMap(boolean shared)
+	{
+		if (shared)
+		{
+			shared();
+		}
+	}
+	
+	public L2FastMap(Map<K, V> map)
+	{
+		this(map, false);
+	}
+	
+	public L2FastMap(Map<K, V> map, boolean shared)
+	{
+		super(map);
+		if (shared)
+		{
+			shared();
+		}
+	}
 	
 	/**
 	 * Public inner interface used by ForEach iterations<br>
@@ -40,16 +74,6 @@ public class L2FastMap<K extends Object, V extends Object> extends HashMap<K, V>
 	public interface I2ForEach<K, V>
 	{
 		public boolean forEach(K key, V val);
-	}
-	
-	public interface I2ForEachKey<K>
-	{
-		public boolean forEach(K key);
-	}
-	
-	public interface I2ForEachValue<V>
-	{
-		public boolean forEach(V val);
 	}
 	
 	/**
@@ -71,11 +95,11 @@ public class L2FastMap<K extends Object, V extends Object> extends HashMap<K, V>
 		return true;
 	}
 	
-	public boolean ForEachKey(I2ForEachKey<K> func)
+	public boolean ForEachKey(IL2Procedure<K> proc)
 	{
 		for (K k : keySet())
 		{
-			if (!func.forEach(k))
+			if (!proc.execute(k))
 			{
 				return false;
 			}
@@ -83,11 +107,11 @@ public class L2FastMap<K extends Object, V extends Object> extends HashMap<K, V>
 		return true;
 	}
 	
-	public boolean ForEachValue(I2ForEachValue<V> func)
+	public boolean ForEachValue(IL2Procedure<V> proc)
 	{
 		for (V v : values())
 		{
-			if (!func.forEach(v))
+			if (!proc.execute(v))
 			{
 				return false;
 			}

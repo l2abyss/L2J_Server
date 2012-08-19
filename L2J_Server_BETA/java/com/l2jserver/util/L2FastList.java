@@ -18,52 +18,64 @@ import java.util.List;
 
 import javolution.util.FastList;
 
+import com.l2jserver.gameserver.model.IL2Procedure;
+
 /**
- * A custom version of LinkedList with extension for iterating without using temporary collection<br>
+ * A custom version of FastList with extension for iterating without using temporary collection<br>
  * It`s provide synchronization lock when iterating if needed<br>
  * <br>
- * @author Julian Version 1.0.1 (2008-02-07)<br>
- *         Changes:<br>
- *         1.0.0 - Initial version.<br>
- *         1.0.1 - Made forEachP() final.<br>
+ * @author Julian
+ * @version 1.0.1 (2008-02-07)<br>
+ *          1.0.0 - Initial version.<br>
+ *          1.0.1 - Made forEachP() final.<br>
+ * @author UnAfraid
+ * @version 1.0.2 (20012-08-19)<br>
+ *          1.0.2 - Using IL2Procedure instead of IForEach.
  * @param <T>
  */
 public class L2FastList<T extends Object> extends FastList<T>
 {
-	static final long serialVersionUID = 1L;
-	
-	/**
-	 * Public inner interface used by ForEach iterations<br>
-	 * @author Julian
-	 * @param <T>
-	 */
-	public interface I2ForEach<T>
-	{
-		public boolean ForEach(T obj);
-	}
+	private static final long serialVersionUID = 8354641653178203420L;
 	
 	public L2FastList()
 	{
-		super();
+		this(false);
+	}
+	
+	public L2FastList(boolean shared)
+	{
+		if (shared)
+		{
+			shared();
+		}
 	}
 	
 	public L2FastList(List<? extends T> list)
 	{
+		this(list, false);
+	}
+	
+	public L2FastList(List<? extends T> list, boolean shared)
+	{
 		super(list);
+		if (shared)
+		{
+			shared();
+		}
 	}
 	
 	/**
 	 * Public method that iterate entire collection.<br>
 	 * <br>
-	 * @param func - a class method that must be executed on every element of collection.<br>
+	 * @param proc - a class method that must be executed on every element of collection.<br>
 	 * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
-	 *         check method (I2ForEach.forEach())<br>
+	 *         check method (IL2Procedure.execute(T))<br>
 	 */
-	public boolean forEach(I2ForEach<T> func)
+	public boolean forEach(IL2Procedure<T> proc)
 	{
 		for (T e : this)
 		{
-			if (!func.ForEach(e))
+			if (!proc.execute(e))
 			{
 				return false;
 			}
