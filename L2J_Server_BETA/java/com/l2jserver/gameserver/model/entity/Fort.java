@@ -858,7 +858,7 @@ public class Fort
 				SystemMessage sm;
 				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2);
 				sm.addString(clan.getName());
-				sm.addFortId(getFortId());
+				sm.addCastleId(getFortId());
 				L2World.getInstance().forEachPlayer(new ForEachPlayerSendMessage(sm));
 				clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 				clan.broadcastToOnlineMembers(new PlaySound(1, "Siege_Victory", 0, 0, 0, 0, 0));

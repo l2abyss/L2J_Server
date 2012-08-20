@@ -12,12 +12,11 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver;
+package com.l2jserver.gameserver.datatables;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.L2Territory;
 import com.l2jserver.util.lib.SqlUtils;
@@ -25,40 +24,49 @@ import com.l2jserver.util.lib.SqlUtils;
 /**
  * @author Balancer, Mr
  */
-public class Territory
+public class TerritoryTable
 {
-	private static Logger _log = Logger.getLogger(Territory.class.getName());
+	private static final Logger _log = Logger.getLogger(TerritoryTable.class.getName());
 	
-	private static final Map<Integer, L2Territory> _territory = new FastMap<>();
+	private static final Map<Integer, L2Territory> _territory = new HashMap<>();
 	
-	public static Territory getInstance()
+	/**
+	 * Instantiates a new territory.
+	 */
+	protected TerritoryTable()
 	{
-		return SingletonHolder._instance;
+		load();
 	}
 	
-	protected Territory()
-	{
-		// load all data at server start
-		reload_data();
-	}
-	
+	/**
+	 * Gets the random point.
+	 * @param terr the territory Id?
+	 * @return the random point
+	 */
 	public int[] getRandomPoint(int terr)
 	{
 		return _territory.get(terr).getRandomPoint();
 	}
 	
+	/**
+	 * Gets the proc max.
+	 * @param terr the territory Id?
+	 * @return the proc max
+	 */
 	public int getProcMax(int terr)
 	{
 		return _territory.get(terr).getProcMax();
 	}
 	
-	public void reload_data()
+	/**
+	 * Load the data from database.
+	 */
+	public void load()
 	{
 		_territory.clear();
 		Integer[][] point = SqlUtils.get2DIntArray(new String[] { "loc_id", "loc_x", "loc_y", "loc_zmin", "loc_zmax", "proc" }, "locations", "loc_id > 0");
 		for (Integer[] row : point)
 		{
-			//			_log.info("row = "+row[0]);
 			Integer terr = row[0];
 			if (terr == null)
 			{
@@ -75,8 +83,17 @@ public class Territory
 		}
 	}
 	
+	/**
+	 * Gets the single instance of Territory.
+	 * @return single instance of Territory
+	 */
+	public static TerritoryTable getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
 	private static class SingletonHolder
 	{
-		protected static final Territory _instance = new Territory();
+		protected static final TerritoryTable _instance = new TerritoryTable();
 	}
 }

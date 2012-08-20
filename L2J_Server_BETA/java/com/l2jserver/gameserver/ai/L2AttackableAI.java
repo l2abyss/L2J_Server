@@ -26,9 +26,9 @@ import java.util.concurrent.Future;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.GeoData;
-import com.l2jserver.gameserver.Territory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.TerritoryTable;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
@@ -583,7 +583,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			if (npc.getSpawn().getLocx() == 0 && npc.getSpawn().getLocy() == 0)
 			{
 				// Calculate a destination point in the spawn area
-				int p[] = Territory.getInstance().getRandomPoint(npc.getSpawn().getLocation());
+				int p[] = TerritoryTable.getInstance().getRandomPoint(npc.getSpawn().getLocation());
 				x1 = p[0];
 				y1 = p[1];
 				z1 = p[2];
@@ -600,7 +600,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				
 				// If NPC with random fixed coord, don't move (unless needs to return to spawnpoint)
-				if (Territory.getInstance().getProcMax(npc.getSpawn().getLocation()) > 0 && !npc.isReturningToSpawnPoint())
+				if (TerritoryTable.getInstance().getProcMax(npc.getSpawn().getLocation()) > 0 && !npc.isReturningToSpawnPoint())
 					return;
 			}
 			else

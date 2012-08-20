@@ -23,8 +23,8 @@ import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
-import com.l2jserver.gameserver.Territory;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.datatables.TerritoryTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -503,7 +503,7 @@ public class L2Spawn
 				return mob;
 			
 			// Calculate the random position in the location area
-			int p[] = Territory.getInstance().getRandomPoint(getLocation());
+			int p[] = TerritoryTable.getInstance().getRandomPoint(getLocation());
 			
 			// Set the calculated position of the L2NpcInstance
 			newlocx = p[0];

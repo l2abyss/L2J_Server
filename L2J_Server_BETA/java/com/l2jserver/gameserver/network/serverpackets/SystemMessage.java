@@ -88,7 +88,7 @@ public final class SystemMessage extends L2GameServerPacket
 		}
 	}
 	
-	// UnAfraid: TODO: Check/Implement id's: 14,15.
+	// TODO: UnAfraid: Check/Implement id's: 14,15.
 	// 15 exists in goddess of destruction but also may works in h5 needs to be verified!
 	// private static final byte TYPE_CLASS_ID = 15;
 	// id 14 unknown
@@ -187,15 +187,18 @@ public final class SystemMessage extends L2GameServerPacket
 	}
 	
 	/**
-	 * Castlename-e.dat<br>
-	 * 0-9 Castle names<br>
-	 * 21-64 CH names<br>
-	 * 81-89 Territory names<br>
-	 * 101-121 Fortress names<br>
-	 * @param number
-	 * @return
+	 * Appends a Castle name parameter type, the name will be read from CastleName-e.dat.<br>
+	 * <ul>
+	 * <li>0-8 Castle names</li>
+	 * <li>9-64 Clan Hall names</li>
+	 * <li>81-89 Territory names</li>
+	 * <li>90-100 null</li>
+	 * <li>101-121 Fortress names</li>
+	 * </ul>
+	 * @param number the conquerable entity
+	 * @return the system message with the proper parameter
 	 */
-	public final SystemMessage addFortId(final int number)
+	public final SystemMessage addCastleId(final int number)
 	{
 		append(new SMParam(TYPE_CASTLE_NAME, number));
 		return this;

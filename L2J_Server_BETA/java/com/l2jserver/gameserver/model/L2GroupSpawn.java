@@ -18,7 +18,7 @@ import java.lang.reflect.Constructor;
 import java.util.logging.Level;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.Territory;
+import com.l2jserver.gameserver.datatables.TerritoryTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -67,7 +67,7 @@ public class L2GroupSpawn extends L2Spawn
 				if (getLocation() == 0)
 					return null;
 				
-				int p[] = Territory.getInstance().getRandomPoint(getLocation());
+				int p[] = TerritoryTable.getInstance().getRandomPoint(getLocation());
 				newlocx = p[0];
 				newlocy = p[1];
 				newlocz = p[2];
