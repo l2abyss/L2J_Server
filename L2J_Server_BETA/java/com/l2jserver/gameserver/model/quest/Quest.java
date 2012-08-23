@@ -2598,6 +2598,15 @@ public class Quest extends ManagedScript
 		return questItemIds;
 	}
 	
+	/**
+	 * Registers all items that have to be destroyed in case player abort the quest or finish it.
+	 * @param items
+	 */
+	public void registerQuestItems(int...items)
+	{
+		questItemIds = items;
+	}
+	
 	@Override
 	public String getScriptName()
 	{

@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -36,11 +36,9 @@ import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 
 public class DoorTable extends DocumentParser
 {
-	private static final Logger _log = Logger.getLogger(DoorTable.class.getName());
-	
 	private final Map<Integer, L2DoorInstance> _doors = new HashMap<>();
 	private static final Map<String, Set<Integer>> _groups = new HashMap<>();
-	private final Map<Integer, Collection<L2DoorInstance>> _regions = new HashMap<>();
+	private final Map<Integer, List<L2DoorInstance>> _regions = new HashMap<>();
 	
 	protected DoorTable()
 	{
@@ -50,15 +48,10 @@ public class DoorTable extends DocumentParser
 	@Override
 	public void load()
 	{
-		parseDatapackFile("data/doorData.xml");
-	}
-	
-	public void reloadAll()
-	{
 		_doors.clear();
 		_groups.clear();
 		_regions.clear();
-		load();
+		parseDatapackFile("data/doors.xml");
 	}
 	
 	@Override
@@ -123,7 +116,7 @@ public class DoorTable extends DocumentParser
 		L2DoorInstance door = new L2DoorInstance(IdFactory.getInstance().getNextId(), template, set);
 		door.setCurrentHp(door.getMaxHp());
 		door.spawnMe(template.posX, template.posY, template.posZ);
-		putDoor(door, MapRegionManager.getInstance().getMapRegionLocId(door.getX(), door.getY()));
+		putDoor(door, MapRegionManager.getInstance().getMapRegionLocId(door));
 	}
 	
 	public L2DoorTemplate getDoorTemplate(int doorId)
@@ -140,16 +133,11 @@ public class DoorTable extends DocumentParser
 	{
 		_doors.put(door.getDoorId(), door);
 		
-		if (_regions.containsKey(region))
+		if (!_regions.containsKey(region))
 		{
-			_regions.get(region).add(door);
+			_regions.put(region, new ArrayList<L2DoorInstance>());
 		}
-		else
-		{
-			final ArrayList<L2DoorInstance> list = new ArrayList<>();
-			list.add(door);
-			_regions.put(region, list);
-		}
+		_regions.get(region).add(door);
 	}
 	
 	public static void addDoorGroup(String groupName, int doorId)
@@ -158,13 +146,9 @@ public class DoorTable extends DocumentParser
 		if (set == null)
 		{
 			set = new HashSet<>();
-			set.add(doorId);
 			_groups.put(groupName, set);
 		}
-		else
-		{
-			set.add(doorId);
-		}
+		set.add(doorId);
 	}
 	
 	public static Set<Integer> getDoorsByGroup(String groupName)

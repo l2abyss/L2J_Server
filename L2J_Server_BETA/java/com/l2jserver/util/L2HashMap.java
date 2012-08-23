@@ -14,76 +14,48 @@
  */
 package com.l2jserver.util;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.model.IL2EntryProcedure;
 import com.l2jserver.gameserver.model.IL2Procedure;
 
 /**
- * A custom version of FastMap with extension for iterating without using temporary collection<br>
- * It's provide synchronization lock when iterating if needed<br>
- * @author Julian
- * @version 1.0.1 (2008-02-07)<br>
- *          Changes:<br>
- *          1.0.0 - Initial version.<br>
- *          1.0.1 - Made forEachP() final.<br>
+ * A custom version of HashMap: Extension for iterating without using temporary collection<br>
+ * Note that this implementation is not synchronized. If multiple threads access a hash map concurrently, and at least one of the threads modifies the map structurally, it must be synchronized externally. This is typically accomplished by synchronizing on some object that naturally encapsulates the
+ * map. If no such object exists, the map should be "wrapped" using the {@link L2FastMap}. This is best done at creation time, to prevent accidental unsynchronized access.
  * @author UnAfraid
- * @version 1.0.2 (2012-08-19)<br>
- *          1.0.2 - Using IL2Procedure instead of I2ForEachKey/Value<br>
  * @param <K>
  * @param <V>
  */
-public class L2FastMap<K, V> extends FastMap<K, V>
+public class L2HashMap<K, V> extends HashMap<K, V>
 {
 	private static final long serialVersionUID = 8503855490858805336L;
 	
-	public L2FastMap()
-	{
-		this(false);
-	}
+	private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 	
-	public L2FastMap(Map<? extends K, ? extends V> map)
-	{
-		this(map, false);
-	}
-	
-	public L2FastMap(int initialCapacity)
-	{
-		this(initialCapacity, false);
-	}
-	
-	public L2FastMap(boolean shared)
+	public L2HashMap()
 	{
 		super();
-		if (shared)
-		{
-			shared();
-		}
 	}
 	
-	public L2FastMap(Map<? extends K, ? extends V> map, boolean shared)
+	public L2HashMap(Map<? extends K, ? extends V> map)
 	{
 		super(map);
-		if (shared)
-		{
-			shared();
-		}
 	}
 	
-	public L2FastMap(int initialCapacity, boolean shared)
+	public L2HashMap(int initialCapacity)
 	{
-		super(initialCapacity);
-		if (shared)
-		{
-			shared();
-		}
+		this(initialCapacity, DEFAULT_LOAD_FACTOR);
+	}
+	
+	public L2HashMap(int initialCapacity, float loadFactor)
+	{
+		super(initialCapacity, loadFactor);
 	}
 	
 	/**
 	 * Public method that iterate entire collection.<br>
-	 * <br>
 	 * @param proc - a class method that must be executed on every element of collection.<br>
 	 * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
 	 *         check method (IL2EntryProcedure.execute())<br>

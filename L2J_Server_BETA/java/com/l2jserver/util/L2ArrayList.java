@@ -14,69 +14,35 @@
  */
 package com.l2jserver.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
-
-import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.IL2Procedure;
 
 /**
- * A custom version of FastList with extension for iterating without using temporary collection<br>
- * It's provide synchronization lock when iterating if needed<br>
- * <br>
- * @author Julian
- * @version 1.0.1 (2008-02-07)<br>
- *          1.0.0 - Initial version.<br>
- *          1.0.1 - Made forEachP() final.<br>
+ * A custom version of ArrayList: Extension for iterating without using temporary collection<br>
+ * Note that this implementation is not synchronized. If multiple threads access a array list concurrently, and at least one of the threads modifies the list structurally, it must be synchronized externally. This is typically accomplished by synchronizing on some object that naturally encapsulates
+ * the list. If no such object exists, the list should be "wrapped" using the {@link L2FastList}. This is best done at creation time, to prevent accidental unsynchronized access.
  * @author UnAfraid
- * @version 1.0.2 (20012-08-19)<br>
- *          1.0.2 - Using IL2Procedure instead of IForEach.
  * @param <T>
  */
-public class L2FastList<T> extends FastList<T>
+public class L2ArrayList<T> extends ArrayList<T>
 {
 	private static final long serialVersionUID = 8354641653178203420L;
 	
-	public L2FastList()
-	{
-		this(false);
-	}
-	
-	public L2FastList(int initialCapacity)
-	{
-		this(initialCapacity, false);
-	}
-	
-	public L2FastList(Collection<? extends T> c)
-	{
-		this(c, false);
-	}
-	
-	public L2FastList(boolean shared)
+	public L2ArrayList()
 	{
 		super();
-		if (shared)
-		{
-			shared();
-		}
 	}
 	
-	public L2FastList(int initialCapacity, boolean shared)
-	{
-		super(initialCapacity);
-		if (shared)
-		{
-			shared();
-		}
-	}
-	
-	public L2FastList(Collection<? extends T> c, boolean shared)
+	public L2ArrayList(Collection<? extends T> c)
 	{
 		super(c);
-		if (shared)
-		{
-			shared();
-		}
+	}
+	
+	public L2ArrayList(int initialCapacity)
+	{
+		super(initialCapacity);
 	}
 	
 	/**
