@@ -180,7 +180,10 @@ public class Instance
 	 */
 	public void removePlayer(int objectId)
 	{
-		_players.remove(objectId);
+		if (_players.contains(objectId))
+		{
+			_players.remove(_players.indexOf(objectId));
+		}
 		
 		if (_players.isEmpty() && (_emptyDestroyTime >= 0))
 		{
