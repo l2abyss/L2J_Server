@@ -10535,43 +10535,36 @@ public final class L2PcInstance extends L2Playable
 	
 	public void sendSkillList()
 	{
-		sendSkillList(this);
-	}
-	
-	public void sendSkillList(L2PcInstance player)
-	{
 		boolean isDisabled = false;
 		SkillList sl = new SkillList();
-		if (player != null)
+		
+		for (L2Skill s : getAllSkills())
 		{
-			for (L2Skill s : player.getAllSkills())
+			if (s == null)
+				continue;
+			if (s.getId() > 9000 && s.getId() < 9007)
+				continue; // Fake skills to change base stats
+			if (_transformation != null && (!containsAllowedTransformSkill(s.getId()) && !s.allowOnTransform()))
+				continue;
+			if (getClan() != null)
+				isDisabled = s.isClanSkill() && getClan().getReputationScore() < 0;
+			
+			boolean isEnchantable = SkillTable.getInstance().isEnchantable(s.getId());
+			if (isEnchantable)
 			{
-				if (s == null)
-					continue;
-				if (s.getId() > 9000 && s.getId() < 9007)
-					continue; // Fake skills to change base stats
-				if (_transformation != null && (!containsAllowedTransformSkill(s.getId()) && !s.allowOnTransform()))
-					continue;
-				if (player.getClan() != null)
-					isDisabled = s.isClanSkill() && player.getClan().getReputationScore() < 0;
-				
-				boolean isEnchantable = SkillTable.getInstance().isEnchantable(s.getId());
-				if (isEnchantable)
+				L2EnchantSkillLearn esl = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(s.getId());
+				if (esl != null)
 				{
-					L2EnchantSkillLearn esl = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(s.getId());
-					if (esl != null)
-					{
-						//if player dont have min level to enchant
-						if (s.getLevel() < esl.getBaseLevel())
-							isEnchantable = false;
-					}
-					// if no enchant data
-					else
+					// if player dont have min level to enchant
+					if (s.getLevel() < esl.getBaseLevel())
 						isEnchantable = false;
 				}
-				
-				sl.addSkill(s.getDisplayId(), s.getLevel(), s.isPassive(), isDisabled, isEnchantable);
+				// if no enchant data
+				else
+					isEnchantable = false;
 			}
+			
+			sl.addSkill(s.getDisplayId(), s.getLevel(), s.isPassive(), isDisabled, isEnchantable);
 		}
 		
 		sendPacket(sl);

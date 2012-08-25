@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.util;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import javolution.text.TextBuilder;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -577,5 +579,38 @@ public final class Util
 		arg.add("0");
 		arg.add("0");
 		activeChar.sendPacket(new ShowBoard(arg));
+	}
+	
+	/**
+	 * Return the number of players in a defined radius.<br>
+	 * @param range : the radius.
+	 * @param npc : the object to make the test on.
+	 * @param playable : true counts summons and pets.
+	 * @param invisible : true counts invisible characters.
+	 * @return the number of targets found.
+	 */
+	public static int getPlayersCountInRadius(int range, L2Object npc, boolean playable, boolean invisible)
+	{
+		int count = 0;
+		final Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
+		for (L2Object obj : objs)
+		{
+			if (obj != null && ((obj.isPlayable() && playable) || obj.isPet()))
+			{
+				if (obj.isPlayer() && !invisible)
+				{
+					if (obj.getActingPlayer().getAppearance().getInvisible())
+						continue;
+				}
+				
+				final L2Character cha = (L2Character) obj;
+				if (cha.getZ() < (npc.getZ() - 100) && cha.getZ() > (npc.getZ() + 100) || !(GeoData.getInstance().canSeeTarget(cha.getX(), cha.getY(), cha.getZ(), npc.getX(), npc.getY(), npc.getZ())))
+					continue;
+				
+				if (Util.checkIfInRange(range, npc, obj, true) && !cha.isDead())
+					count++;
+			}
+		}
+		return count;
 	}
 }

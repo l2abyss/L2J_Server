@@ -79,6 +79,11 @@ public final class FloodProtectorAction
 	{
 		final int curTick = GameTimeController.getGameTicks();
 		
+		if (_client.getActiveChar() != null && _client.getActiveChar().isGM())
+		{
+			return true;
+		}
+		
 		if ((curTick < _nextGameTick) || _punishmentInProgress)
 		{
 			if (_config.LOG_FLOODING && !_logged && _log.isLoggable(Level.WARNING))

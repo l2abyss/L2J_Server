@@ -150,7 +150,7 @@ public class AntiFeedManager
 			return false; // no such event registered
 
 		final Integer addrHash = Integer.valueOf(client.getConnectionAddress().hashCode());
-		int limit = Config.L2JMOD_DUALBOX_CHECK_WHITELIST.get(addrHash);
+		int limit = Config.L2JMOD_DUALBOX_CHECK_WHITELIST.containsKey(addrHash) ? Config.L2JMOD_DUALBOX_CHECK_WHITELIST.get(addrHash) : 0;
 		limit = limit < 0 ? Integer.MAX_VALUE : limit + max;
 
 		Connections conns;
