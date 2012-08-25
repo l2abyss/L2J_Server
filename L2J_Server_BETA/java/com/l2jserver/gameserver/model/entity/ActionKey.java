@@ -15,8 +15,7 @@
 package com.l2jserver.gameserver.model.entity;
 
 /**
- *
- * @author  mrTJO
+ * @author mrTJO
  */
 public class ActionKey
 {
@@ -78,7 +77,6 @@ public class ActionKey
 	
 	public String getSqlSaveString(int playerId, int order)
 	{
-		return "("+playerId+", "+_cat+", "+order+", "+_cmd+","
-		+_key+", "+_tgKey1+", "+_tgKey2+", "+_show+")";
+		return "(" + playerId + ", " + _cat + ", " + order + ", " + _cmd + "," + _key + ", " + _tgKey1 + ", " + _tgKey2 + ", " + _show + ")";
 	}
 }

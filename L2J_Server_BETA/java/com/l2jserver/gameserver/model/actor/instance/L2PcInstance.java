@@ -1787,19 +1787,21 @@ public final class L2PcInstance extends L2Playable
 		QuestState qs = getQuestState(quest);
 		if (qs == null && event.length() == 0)
 			return retval;
-		if (qs == null) {
+		if (qs == null)
+		{
 			Quest q = QuestManager.getInstance().getQuest(quest);
 			if (q == null)
 				return retval;
 			qs = q.newQuestState(this);
 		}
-		if (qs != null) {
+		if (qs != null)
+		{
 			if (getLastQuestNpcObject() > 0)
 			{
 				L2Object object = L2World.getInstance().findObject(getLastQuestNpcObject());
 				if (object instanceof L2Npc && isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 				{
-					L2Npc npc = (L2Npc)object;
+					L2Npc npc = (L2Npc) object;
 					QuestState[] states = getQuestsForTalk(npc.getNpcId());
 					
 					if (states != null)
