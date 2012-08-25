@@ -44,6 +44,7 @@ import com.l2jserver.util.L2FastList;
 import com.l2jserver.util.L2FastMap;
 
 /**
+ * Main class for game instances.
  * @author evill33t, GodKratos
  */
 public class Instance
@@ -67,7 +68,7 @@ public class Instance
 	private boolean _isTimerIncrease = true;
 	private String _timerText = "";
 	
-	protected ScheduledFuture<?> _CheckTimeUpTask = null;
+	protected ScheduledFuture<?> _checkTimeUpTask = null;
 	
 	public Instance(int id)
 	{
@@ -137,12 +138,12 @@ public class Instance
 	 */
 	public void setDuration(int duration)
 	{
-		if (_CheckTimeUpTask != null)
+		if (_checkTimeUpTask != null)
 		{
-			_CheckTimeUpTask.cancel(true);
+			_checkTimeUpTask.cancel(true);
 		}
 		
-		_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(duration), 500);
+		_checkTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(duration), 500);
 		_instanceEndTime = System.currentTimeMillis() + duration + 500;
 	}
 	
@@ -175,16 +176,12 @@ public class Instance
 	}
 	
 	/**
-	 * Removes the specified player from the instance list
-	 * @param objectId Players object ID
+	 * Removes the specified player from the instance list.
+	 * @param objectId the player's object Id
 	 */
-	public void removePlayer(int objectId)
+	public void removePlayer(Integer objectId)
 	{
-		if (_players.contains(objectId))
-		{
-			_players.remove(_players.indexOf(objectId));
-		}
-		
+		_players.remove(objectId);
 		if (_players.isEmpty() && (_emptyDestroyTime >= 0))
 		{
 			_lastLeft = System.currentTimeMillis();
@@ -379,7 +376,7 @@ public class Instance
 				a = n.getAttributes().getNamedItem("val");
 				if (a != null)
 				{
-					_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(Integer.parseInt(a.getNodeValue()) * 60000), 15000);
+					_checkTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(Integer.parseInt(a.getNodeValue()) * 60000), 15000);
 					_instanceEndTime = System.currentTimeMillis() + (Long.parseLong(a.getNodeValue()) * 60000) + 15000;
 				}
 			}
@@ -612,19 +609,19 @@ public class Instance
 		cancelTimer();
 		if (remaining >= 10000)
 		{
-			_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(remaining), interval);
+			_checkTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new CheckTimeUp(remaining), interval);
 		}
 		else
 		{
-			_CheckTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new TimeUp(), interval);
+			_checkTimeUpTask = ThreadPoolManager.getInstance().scheduleGeneral(new TimeUp(), interval);
 		}
 	}
 	
 	public void cancelTimer()
 	{
-		if (_CheckTimeUpTask != null)
+		if (_checkTimeUpTask != null)
 		{
-			_CheckTimeUpTask.cancel(true);
+			_checkTimeUpTask.cancel(true);
 		}
 	}
 	

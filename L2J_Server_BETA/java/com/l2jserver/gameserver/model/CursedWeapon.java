@@ -393,17 +393,14 @@ public class CursedWeapon
 	}
 	public void activate(L2PcInstance player, L2ItemInstance item)
 	{
-		// if the player is mounted, attempt to unmount first.  Only allow picking up
-		// the zariche if unmounting is successful.
-		if (player.isMounted())
+		// If the player is mounted, attempt to unmount first.
+		// Only allow picking up the cursed weapon if unmounting is successful.
+		if (player.isMounted() && !player.dismount())
 		{
-			if (!player.dismount())
-			{
-				// TODO: correct this custom message.
-				player.sendMessage("You may not pick up this item while riding in this territory");
-				player.dropItem("InvDrop", item, null, true);
-				return;
-			}
+			// TODO: Verify the following system message, may still be custom.
+			player.sendPacket(SystemMessageId.FAILED_TO_PICKUP_S1);
+			player.dropItem("InvDrop", item, null, true);
+			return;
 		}
 		
 		_isActivated = true;

@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.entity;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -961,9 +962,9 @@ public class TvTEvent
 		{
 			if ((Config.TVT_EVENT_MAGE_BUFFS != null) && !Config.TVT_EVENT_MAGE_BUFFS.isEmpty())
 			{
-				for (int i : Config.TVT_EVENT_MAGE_BUFFS.keySet())
+				for (Entry<Integer, Integer> e : Config.TVT_EVENT_MAGE_BUFFS.entrySet())
 				{
-					L2Skill skill = SkillTable.getInstance().getInfo(i, Config.TVT_EVENT_MAGE_BUFFS.get(i));
+					L2Skill skill = SkillTable.getInstance().getInfo(e.getKey(), e.getValue());
 					if (skill != null)
 					{
 						skill.getEffects(playerInstance, playerInstance);
@@ -975,9 +976,9 @@ public class TvTEvent
 		{
 			if ((Config.TVT_EVENT_FIGHTER_BUFFS != null) && !Config.TVT_EVENT_FIGHTER_BUFFS.isEmpty())
 			{
-				for (int i : Config.TVT_EVENT_FIGHTER_BUFFS.keySet())
+				for (Entry<Integer, Integer> e : Config.TVT_EVENT_FIGHTER_BUFFS.entrySet())
 				{
-					L2Skill skill = SkillTable.getInstance().getInfo(i, Config.TVT_EVENT_FIGHTER_BUFFS.get(i));
+					L2Skill skill = SkillTable.getInstance().getInfo(e.getKey(), e.getValue());
 					if (skill != null)
 					{
 						skill.getEffects(playerInstance, playerInstance);

@@ -258,7 +258,9 @@ public abstract class ItemContainer
 			item.changeCount(process, count, actor, reference);
 			item.setLastChange(L2ItemInstance.MODIFIED);
 			// Updates database
-			if (itemId == PcInventory.ADENA_ID && count < 10000 * Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID))
+			// If Adena drop rate is nor present it will be x1.
+			float adenaRate = Config.RATE_DROP_ITEMS_ID.containsKey(PcInventory.ADENA_ID) ? Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID) : 1;
+			if (itemId == PcInventory.ADENA_ID && count < 10000 * adenaRate)
 			{
 				// Small adena changes won't be saved to database all the time
 				if (GameTimeController.getGameTicks() % 5 == 0)

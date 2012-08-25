@@ -150,8 +150,11 @@ public class AntiFeedManager
 			return false; // no such event registered
 
 		final Integer addrHash = Integer.valueOf(client.getConnectionAddress().hashCode());
-		int limit = Config.L2JMOD_DUALBOX_CHECK_WHITELIST.containsKey(addrHash) ? Config.L2JMOD_DUALBOX_CHECK_WHITELIST.get(addrHash) : 0;
-		limit = limit < 0 ? Integer.MAX_VALUE : limit + max;
+		int limit = max;
+		if (Config.L2JMOD_DUALBOX_CHECK_WHITELIST.containsKey(addrHash))
+		{
+			limit += Config.L2JMOD_DUALBOX_CHECK_WHITELIST.get(addrHash);
+		}
 
 		Connections conns;
 		synchronized (event)
@@ -242,10 +245,14 @@ public class AntiFeedManager
 			return max;
 
 		final Integer addrHash = Integer.valueOf(client.getConnectionAddress().hashCode());
-		final int limit = Config.L2JMOD_DUALBOX_CHECK_WHITELIST.get(addrHash);
-		return limit < 0 ? 0 : limit + max;
+		int limit = max;
+		if (Config.L2JMOD_DUALBOX_CHECK_WHITELIST.containsKey(addrHash))
+		{
+			limit += Config.L2JMOD_DUALBOX_CHECK_WHITELIST.get(addrHash);
+		}
+		return limit;
 	}
-
+	
 	protected static final class Connections
 	{
 		private int _num = 0;
