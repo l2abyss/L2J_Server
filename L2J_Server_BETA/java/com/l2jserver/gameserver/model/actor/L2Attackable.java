@@ -1211,12 +1211,18 @@ public class L2Attackable extends L2Npc
 			dropChance = ((drop.getChance() - ((drop.getChance() * levelModifier) / 100)) / deepBlueDrop);
 		
 		// Applies Drop rates
-		if (Config.RATE_DROP_ITEMS_ID.get(drop.getItemId()) != 0)
+		if (Config.RATE_DROP_ITEMS_ID.containsKey(drop.getItemId()))
+		{
 			dropChance *= Config.RATE_DROP_ITEMS_ID.get(drop.getItemId());
+		}
 		else if (isSweep)
+		{
 			dropChance *= Config.RATE_DROP_SPOIL;
+		}
 		else
+		{
 			dropChance *= isRaid() && !isRaidMinion() ? Config.RATE_DROP_ITEMS_BY_RAID : Config.RATE_DROP_ITEMS;
+		}
 		
 		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion())
 			dropChance *= Config.L2JMOD_CHAMPION_REWARDS;
@@ -1344,12 +1350,18 @@ public class L2Attackable extends L2Npc
 			double dropChance = drop.getChance();
 			
 			if (Config.RATE_DROP_ITEMS_ID.containsKey(drop.getItemId()))
+			{
 				dropChance *= Config.RATE_DROP_ITEMS_ID.get(drop.getItemId());
+			}
 			else
+			{
 				dropChance *= isRaid() && !isRaidMinion() ? Config.RATE_DROP_ITEMS_BY_RAID : Config.RATE_DROP_ITEMS;
+			}
 			
 			if (Config.L2JMOD_CHAMPION_ENABLE && isChampion())
+			{
 				dropChance *= Config.L2JMOD_CHAMPION_REWARDS;
+			}
 			
 			dropChance = Math.round(dropChance);
 			
