@@ -33,15 +33,13 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- * This class ...
- * cd(dd)
- * @version $Revision: 1.1.2.3.2.3 $ $Date: 2005/03/27 15:29:30 $
+ * RequestRecipeShopListSet client packet class.
  */
 public final class RequestRecipeShopListSet extends L2GameClientPacket
 {
 	private static final String _C__BB_RequestRecipeShopListSet = "[C] BB RequestRecipeShopListSet";
 	
-	private static final int BATCH_LENGTH = 12; // length of the one item
+	private static final int BATCH_LENGTH = 12;
 	
 	private Recipe[] _items = null;
 	
@@ -49,15 +47,13 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 	protected void readImpl()
 	{
 		int count = readD();
-		if (count <= 0
-				|| count > Config.MAX_ITEM_IN_PACKET
-				|| count * BATCH_LENGTH != _buf.remaining())
+		if ((count <= 0) || (count > Config.MAX_ITEM_IN_PACKET) || ((count * BATCH_LENGTH) != _buf.remaining()))
 		{
 			return;
 		}
 		
 		_items = new Recipe[count];
-		for (int i = 0; i < count ; i++)
+		for (int i = 0; i < count; i++)
 		{
 			int id = readD();
 			long cost = readQ();
@@ -75,7 +71,9 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (_items == null)
 		{
@@ -108,18 +106,13 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			L2RecipeList list = rd.getRecipeList(i.getRecipeId());
 			if (!dwarfRecipes.contains(list) && !commonRecipes.contains(list))
 			{
-				Util.handleIllegalPlayerAction(player, "Warning!! Player " + player.getName() + " of account " + player.getAccountName()
-						+ " tried to set recipe which he dont have.", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(player, "Warning!! Player " + player.getName() + " of account " + player.getAccountName() + " tried to set recipe which he dont have.", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			if (!i.addToList(createList))
 			{
-				Util.handleIllegalPlayerAction(player, "Warning!! Character "
-						+ player.getName() + " of account "
-						+ player.getAccountName() + " tried to set price more than "
-						+ MAX_ADENA + " adena in Private Manufacture.",
-						Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " tried to set price more than " + MAX_ADENA + " adena in Private Manufacture.", Config.DEFAULT_PUNISH);
 				return;
 			}
 		}
@@ -148,7 +141,9 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 		public boolean addToList(L2ManufactureList list)
 		{
 			if (_cost > MAX_ADENA)
+			{
 				return false;
+			}
 			
 			list.add(new L2ManufactureItem(_recipeId, _cost));
 			return true;

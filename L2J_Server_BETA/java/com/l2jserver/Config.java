@@ -967,10 +967,6 @@ public final class Config
 	public static String GAME_SERVER_LOGIN_HOST;
 	public static List<String> GAME_SERVER_SUBNETS;
 	public static List<String> GAME_SERVER_HOSTS;
-	public static int NEW_NODE_ID;
-	public static int SELECTED_NODE_ID;
-	public static int LINKED_NODE_ID;
-	public static String NEW_NODE_TYPE;
 	public static String SERVER_VERSION;
 	public static String SERVER_BUILD_DATE;
 	public static String DATAPACK_VERSION;

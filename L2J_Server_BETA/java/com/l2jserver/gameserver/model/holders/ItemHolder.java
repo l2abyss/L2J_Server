@@ -21,11 +21,20 @@ package com.l2jserver.gameserver.model.holders;
 public final class ItemHolder
 {
 	private final int _id;
+	private final int _objectId;
 	private final long _count;
 	
 	public ItemHolder(int id, long count)
 	{
 		_id = id;
+		_objectId = -1;
+		_count = count;
+	}
+	
+	public ItemHolder(int id, int objectId, long count)
+	{
+		_id = id;
+		_objectId = objectId;
 		_count = count;
 	}
 	
@@ -35,6 +44,14 @@ public final class ItemHolder
 	public int getId()
 	{
 		return _id;
+	}
+	
+	/**
+	 * @return the object Id
+	 */
+	public int getObjectId()
+	{
+		return _objectId;
 	}
 	
 	/**
