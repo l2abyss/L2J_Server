@@ -792,7 +792,7 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * @return {@code true} if object Npc Walker
+	 * @return {@code true} if object Npc Walker or Vehicle
 	 */
 	public boolean isWalker()
 	{
@@ -800,7 +800,7 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * @return {@code true} if object Can be targetable
+	 * @return {@code true} if object Can be targeted
 	 */
 	public boolean isTargetable()
 	{

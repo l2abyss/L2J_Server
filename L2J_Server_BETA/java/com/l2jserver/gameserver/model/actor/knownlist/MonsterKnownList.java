@@ -33,15 +33,17 @@ public class MonsterKnownList extends AttackableKnownList
 	public boolean addKnownObject(L2Object object)
 	{
 		if (!super.addKnownObject(object))
+		{
 			return false;
+		}
 		
 		final L2CharacterAI ai = getActiveChar().getAI(); // force AI creation
-
+		
 		// Set the L2MonsterInstance Intention to AI_INTENTION_ACTIVE if the state was AI_INTENTION_IDLE
-		if (object instanceof L2PcInstance
-				&& ai != null
-				&& ai.getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+		if ((object instanceof L2PcInstance) && (ai != null) && (ai.getIntention() == CtrlIntention.AI_INTENTION_IDLE))
+		{
 			ai.setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+		}
 		
 		return true;
 	}
@@ -50,10 +52,14 @@ public class MonsterKnownList extends AttackableKnownList
 	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{
 		if (!super.removeKnownObject(object, forget))
+		{
 			return false;
+		}
 		
 		if (!(object instanceof L2Character))
+		{
 			return true;
+		}
 		
 		if (getActiveChar().hasAI())
 		{
@@ -61,15 +67,10 @@ public class MonsterKnownList extends AttackableKnownList
 			getActiveChar().getAI().notifyEvent(CtrlEvent.EVT_FORGET_OBJECT, object);
 		}
 		
-		if (getActiveChar().isVisible()
-				&& getKnownPlayers().isEmpty()
-				&& getKnownSummons().isEmpty())
+		if (getActiveChar().isVisible() && getKnownPlayers().isEmpty() && getKnownSummons().isEmpty())
 		{
 			// Clear the _aggroList of the L2MonsterInstance
 			getActiveChar().clearAggroList();
-			
-			// Remove all L2Object from _knownObjects and _knownPlayer of the L2MonsterInstance then cancel Attak or Cast and notify AI
-			//removeAllKnownObjects();
 		}
 		
 		return true;
@@ -78,6 +79,6 @@ public class MonsterKnownList extends AttackableKnownList
 	@Override
 	public final L2MonsterInstance getActiveChar()
 	{
-		return (L2MonsterInstance)super.getActiveChar();
+		return (L2MonsterInstance) super.getActiveChar();
 	}
 }

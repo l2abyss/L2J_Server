@@ -21,8 +21,6 @@ import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class AttackableKnownList extends NpcKnownList
@@ -36,17 +34,23 @@ public class AttackableKnownList extends NpcKnownList
 	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{
 		if (!super.removeKnownObject(object, forget))
+		{
 			return false;
+		}
 		
 		// Remove the L2Object from the _aggrolist of the L2Attackable
 		if (object instanceof L2Character)
+		{
 			getActiveChar().getAggroList().remove(object);
+		}
 		// Set the L2Attackable Intention to AI_INTENTION_IDLE
 		final Collection<L2PcInstance> known = getKnownPlayers().values();
 		
-		//FIXME: This is a temporary solution && support for Walking Manager
-		if (getActiveChar().hasAI() && (known == null || known.isEmpty()) && !WalkingManager.getInstance().isRegistered(getActiveChar()))
+		// FIXME: This is a temporary solution && support for Walking Manager
+		if (getActiveChar().hasAI() && ((known == null) || known.isEmpty()) && !WalkingManager.getInstance().isRegistered(getActiveChar()))
+		{
 			getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+		}
 		
 		return true;
 	}
@@ -54,7 +58,7 @@ public class AttackableKnownList extends NpcKnownList
 	@Override
 	public L2Attackable getActiveChar()
 	{
-		return (L2Attackable)super.getActiveChar();
+		return (L2Attackable) super.getActiveChar();
 	}
 	
 	@Override
@@ -66,12 +70,15 @@ public class AttackableKnownList extends NpcKnownList
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
-		if (object instanceof L2NpcInstance
-				|| !(object instanceof L2Character))
+		if (!(object instanceof L2Character))
+		{
 			return 0;
+		}
 		
-		if (object instanceof L2Playable)
+		if (object.isPlayable())
+		{
 			return object.getKnownList().getDistanceToWatchObject(getActiveObject());
+		}
 		
 		int max = Math.max(300, Math.max(getActiveChar().getAggroRange(), Math.max(getActiveChar().getFactionRange(), getActiveChar().getEnemyRange())));
 		

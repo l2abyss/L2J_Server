@@ -14,52 +14,31 @@
  */
 package com.l2jserver.gameserver.model.actor.knownlist;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.MonsterRace;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RaceManagerInstance;
 import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
 
-
 public class RaceManagerKnownList extends NpcKnownList
 {
-	protected static final Logger _log = Logger.getLogger(RaceManagerKnownList.class.getName());
-	
 	public RaceManagerKnownList(L2RaceManagerInstance activeChar)
 	{
 		super(activeChar);
 	}
 	
 	@Override
-	public boolean addKnownObject(L2Object object)
-	{
-		if (!super.addKnownObject(object)) return false;
-		
-		/* DONT KNOW WHY WE NEED THIS WHEN RACE MANAGER HAS A METHOD THAT BROADCAST TO ITS KNOW PLAYERS
-        if (object instanceof L2PcInstance) {
-            if (packet != null)
-                ((L2PcInstance) object).sendPacket(packet);
-        }
-		 */
-		
-		return true;
-	}
-	
-	@Override
 	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{
-		if (!super.removeKnownObject(object, forget)) return false;
-		
-		if (object instanceof L2PcInstance)
+		if (!super.removeKnownObject(object, forget))
 		{
-			//_log.info("Sending delete monsrac info.");
-			DeleteObject obj = null;
-			for (int i=0; i<8; i++)
+			return false;
+		}
+		
+		if (object.isPlayer())
+		{
+			for (int i = 0; i < 8; i++)
 			{
-				obj = new DeleteObject(MonsterRace.getInstance().getMonsters()[i]);
-				((L2PcInstance)object).sendPacket(obj);
+				object.sendPacket(new DeleteObject(MonsterRace.getInstance().getMonsters()[i]));
 			}
 		}
 		
@@ -67,5 +46,8 @@ public class RaceManagerKnownList extends NpcKnownList
 	}
 	
 	@Override
-	public L2RaceManagerInstance getActiveChar() { return (L2RaceManagerInstance)super.getActiveChar(); }
+	public L2RaceManagerInstance getActiveChar()
+	{
+		return (L2RaceManagerInstance) super.getActiveChar();
+	}
 }

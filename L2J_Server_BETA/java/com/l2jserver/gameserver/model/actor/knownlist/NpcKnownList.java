@@ -24,9 +24,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalGuideInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class NpcKnownList extends CharKnownList
@@ -53,17 +51,17 @@ public class NpcKnownList extends CharKnownList
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
+		if (!(object instanceof L2Character))
+		{
+			return 0;
+		}
+		
 		if (object instanceof L2FestivalGuideInstance)
 		{
 			return 4000;
 		}
 		
-		if ((object instanceof L2NpcInstance) || !(object instanceof L2Character))
-		{
-			return 0;
-		}
-		
-		if (object instanceof L2Playable)
+		if (object.isPlayable())
 		{
 			return 1500;
 		}
@@ -71,7 +69,7 @@ public class NpcKnownList extends CharKnownList
 		return 500;
 	}
 	
-	//L2Master mod - support for Walking monsters aggro
+	// L2Master mod - support for Walking monsters aggro
 	public void startTrackingTask()
 	{
 		if ((_trackingTask == null) && (getActiveChar().getAggroRange() > 0))
@@ -80,7 +78,7 @@ public class NpcKnownList extends CharKnownList
 		}
 	}
 	
-	//L2Master mod - support for Walking monsters aggro
+	// L2Master mod - support for Walking monsters aggro
 	public void stopTrackingTask()
 	{
 		if (_trackingTask != null)
@@ -90,7 +88,7 @@ public class NpcKnownList extends CharKnownList
 		}
 	}
 	
-	//L2Master mod - support for Walking monsters aggro
+	// L2Master mod - support for Walking monsters aggro
 	private class TrackingTask implements Runnable
 	{
 		public TrackingTask()

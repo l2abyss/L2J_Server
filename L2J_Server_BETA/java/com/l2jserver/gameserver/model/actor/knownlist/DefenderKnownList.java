@@ -17,9 +17,7 @@ package com.l2jserver.gameserver.model.actor.knownlist;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
@@ -35,30 +33,31 @@ public class DefenderKnownList extends AttackableKnownList
 	@Override
 	public boolean addKnownObject(L2Object object)
 	{
-		if (!super.addKnownObject(object)) return false;
+		if (!super.addKnownObject(object))
+		{
+			return false;
+		}
 		
 		Castle castle = getActiveChar().getCastle();
 		Fort fortress = getActiveChar().getFort();
 		SiegableHall hall = getActiveChar().getConquerableHall();
 		// Check if siege is in progress
-		if ((fortress != null && fortress.getZone().isActive())
-				|| (castle != null && castle.getZone().isActive())
-				|| (hall != null && hall.getSiegeZone().isActive()))
+		if (((fortress != null) && fortress.getZone().isActive()) || ((castle != null) && castle.getZone().isActive()) || ((hall != null) && hall.getSiegeZone().isActive()))
 		{
 			L2PcInstance player = null;
-			if (object instanceof L2PcInstance)
-				player = (L2PcInstance) object;
-			else if (object instanceof L2Summon)
-				player = ((L2Summon)object).getOwner();
-			int activeSiegeId = (fortress != null ? fortress.getFortId() : (castle != null ? castle.getCastleId() : hall != null? hall.getId() : 0));
+			if (object.isPlayable())
+			{
+				player = object.getActingPlayer();
+			}
+			int activeSiegeId = (fortress != null ? fortress.getFortId() : (castle != null ? castle.getCastleId() : hall != null ? hall.getId() : 0));
 			
 			// Check if player is an enemy of this defender npc
-			if (player != null && ((player.getSiegeState() == 2 && !player.isRegisteredOnThisSiegeField(activeSiegeId))
-					|| (player.getSiegeState() == 1 && !TerritoryWarManager.getInstance().isAllyField(player, activeSiegeId))
-					|| player.getSiegeState() == 0))
+			if ((player != null) && (((player.getSiegeState() == 2) && !player.isRegisteredOnThisSiegeField(activeSiegeId)) || ((player.getSiegeState() == 1) && !TerritoryWarManager.getInstance().isAllyField(player, activeSiegeId)) || (player.getSiegeState() == 0)))
 			{
 				if (getActiveChar().getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+				{
 					getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE, null);
+				}
 			}
 		}
 		return true;
@@ -67,8 +66,6 @@ public class DefenderKnownList extends AttackableKnownList
 	@Override
 	public final L2DefenderInstance getActiveChar()
 	{
-		if (super.getActiveChar() instanceof L2FortCommanderInstance)
-			return (L2FortCommanderInstance)super.getActiveChar();
-		return (L2DefenderInstance)super.getActiveChar();
+		return (L2DefenderInstance) super.getActiveChar();
 	}
 }

@@ -14,12 +14,10 @@
  */
 package com.l2jserver.gameserver.model.actor.knownlist;
 
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
@@ -33,43 +31,44 @@ public class PcKnownList extends PlayableKnownList
 	}
 	
 	/**
-	 * Add a visible L2Object to L2PcInstance _knownObjects and _knownPlayer (if necessary) and send Server-Client Packets needed to inform the L2PcInstance of its state and actions in progress.<BR><BR>
-	 *
-	 * <B><U> object is a L2ItemInstance </U> :</B><BR><BR>
-	 * <li> Send Server-Client Packet DropItem/SpawnItem to the L2PcInstance </li><BR><BR>
-	 *
-	 * <B><U> object is a L2DoorInstance </U> :</B><BR><BR>
-	 * <li> Send Server-Client Packets DoorInfo and DoorStatusUpdate to the L2PcInstance </li>
-	 * <li> Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance </li><BR><BR>
-	 *
-	 * <B><U> object is a L2NpcInstance </U> :</B><BR><BR>
-	 * <li> Send Server-Client Packet NpcInfo to the L2PcInstance </li>
-	 * <li> Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance </li><BR><BR>
-	 *
-	 * <B><U> object is a L2Summon </U> :</B><BR><BR>
-	 * <li> Send Server-Client Packet NpcInfo/PetItemList (if the L2PcInstance is the owner) to the L2PcInstance </li>
-	 * <li> Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance </li><BR><BR>
-	 *
-	 * <B><U> object is a L2PcInstance </U> :</B><BR><BR>
-	 * <li> Send Server-Client Packet CharInfo to the L2PcInstance </li>
-	 * <li> If the object has a private store, Send Server-Client Packet PrivateStoreMsgSell to the L2PcInstance </li>
-	 * <li> Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance </li><BR><BR>
-	 *
+	 * Add a visible L2Object to L2PcInstance _knownObjects and _knownPlayer (if necessary) and send Server-Client Packets needed to inform the L2PcInstance of its state and actions in progress.<BR>
+	 * <BR>
+	 * <B><U> object is a L2ItemInstance </U> :</B><BR>
+	 * <BR>
+	 * <li>Send Server-Client Packet DropItem/SpawnItem to the L2PcInstance</li><BR>
+	 * <BR>
+	 * <B><U> object is a L2DoorInstance </U> :</B><BR>
+	 * <BR>
+	 * <li>Send Server-Client Packets DoorInfo and DoorStatusUpdate to the L2PcInstance</li> <li>Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance</li><BR>
+	 * <BR>
+	 * <B><U> object is a L2NpcInstance </U> :</B><BR>
+	 * <BR>
+	 * <li>Send Server-Client Packet NpcInfo to the L2PcInstance</li> <li>Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance</li><BR>
+	 * <BR>
+	 * <B><U> object is a L2Summon </U> :</B><BR>
+	 * <BR>
+	 * <li>Send Server-Client Packet NpcInfo/PetItemList (if the L2PcInstance is the owner) to the L2PcInstance</li> <li>Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance</li><BR>
+	 * <BR>
+	 * <B><U> object is a L2PcInstance </U> :</B><BR>
+	 * <BR>
+	 * <li>Send Server-Client Packet CharInfo to the L2PcInstance</li> <li>If the object has a private store, Send Server-Client Packet PrivateStoreMsgSell to the L2PcInstance</li> <li>Send Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance</li><BR>
+	 * <BR>
 	 * @param object The L2Object to add to _knownObjects and _knownPlayer
 	 */
 	@Override
 	public boolean addKnownObject(L2Object object)
 	{
 		if (!super.addKnownObject(object))
-			return false;
-		
-		if (object.getPoly().isMorphed()
-				&& object.getPoly().getPolyType().equals("item"))
 		{
-			//if (object.getPolytype().equals("item"))
+			return false;
+		}
+		
+		if (object.getPoly().isMorphed() && object.getPoly().getPolyType().equals("item"))
+		{
+			// if (object.getPolytype().equals("item"))
 			getActiveChar().sendPacket(new SpawnItem(object));
-			//else if (object.getPolytype().equals("npc"))
-			//    sendPacket(new NpcInfoPoly(object, this));
+			// else if (object.getPolytype().equals("npc"))
+			// sendPacket(new NpcInfoPoly(object, this));
 		}
 		else
 		{
@@ -80,7 +79,9 @@ public class PcKnownList extends PlayableKnownList
 				// Update the state of the L2Character object client side by sending Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance
 				L2Character obj = (L2Character) object;
 				if (obj.hasAI())
+				{
 					obj.getAI().describeStateToPlayer(getActiveChar());
+				}
 			}
 		}
 		
@@ -88,31 +89,37 @@ public class PcKnownList extends PlayableKnownList
 	}
 	
 	/**
-	 * Remove a L2Object from L2PcInstance _knownObjects and _knownPlayer (if necessary) and send Server-Client Packet DeleteObject to the L2PcInstance.<BR><BR>
-	 *
+	 * Remove a L2Object from L2PcInstance _knownObjects and _knownPlayer (if necessary) and send Server-Client Packet DeleteObject to the L2PcInstance.<BR>
+	 * <BR>
 	 * @param object The L2Object to remove from _knownObjects and _knownPlayer
-	 *
 	 */
 	@Override
 	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{
 		if (!super.removeKnownObject(object, forget))
+		{
 			return false;
+		}
 		
 		if (object instanceof L2AirShipInstance)
 		{
-			if (((L2AirShipInstance)object).getCaptainId() != 0
-					&& ((L2AirShipInstance)object).getCaptainId() != getActiveChar().getObjectId())
-				getActiveChar().sendPacket(new DeleteObject(((L2AirShipInstance)object).getCaptainId()));
-			if (((L2AirShipInstance)object).getHelmObjectId() != 0)
-				getActiveChar().sendPacket(new DeleteObject(((L2AirShipInstance)object).getHelmObjectId()));
+			if ((((L2AirShipInstance) object).getCaptainId() != 0) && (((L2AirShipInstance) object).getCaptainId() != getActiveChar().getObjectId()))
+			{
+				getActiveChar().sendPacket(new DeleteObject(((L2AirShipInstance) object).getCaptainId()));
+			}
+			if (((L2AirShipInstance) object).getHelmObjectId() != 0)
+			{
+				getActiveChar().sendPacket(new DeleteObject(((L2AirShipInstance) object).getHelmObjectId()));
+			}
 		}
 		
 		// Send Server-Client Packet DeleteObject to the L2PcInstance
 		getActiveChar().sendPacket(new DeleteObject(object));
 		
-		if (Config.CHECK_KNOWN && object instanceof L2Npc && getActiveChar().isGM())
-			getActiveChar().sendMessage("Removed NPC: "+((L2Npc)object).getName());
+		if (Config.CHECK_KNOWN && (object instanceof L2Npc) && getActiveChar().isGM())
+		{
+			getActiveChar().sendMessage("Removed NPC: " + ((L2Npc) object).getName());
+		}
 		
 		return true;
 	}
@@ -120,45 +127,57 @@ public class PcKnownList extends PlayableKnownList
 	@Override
 	public final L2PcInstance getActiveChar()
 	{
-		return (L2PcInstance)super.getActiveChar();
+		return (L2PcInstance) super.getActiveChar();
 	}
 	
 	@Override
 	public int getDistanceToForgetObject(L2Object object)
 	{
-		if (object instanceof L2Vehicle)
+		if (object.isWalker())
+		{
 			return 10000;
-		else if (object != null && object.isWalker())
-			return 10000;
+		}
 		
 		// when knownlist grows, the distance to forget should be at least
 		// the same as the previous watch range, or it becomes possible that
 		// extra charinfo packets are being sent (watch-forget-watch-forget)
 		final int knownlistSize = getKnownObjects().size();
 		if (knownlistSize <= 25)
+		{
 			return 4000;
+		}
 		if (knownlistSize <= 35)
+		{
 			return 3500;
+		}
 		if (knownlistSize <= 70)
+		{
 			return 2910;
+		}
 		return 2310;
 	}
 	
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
-		if (object instanceof L2Vehicle)
-			return 8000;
-		else if (object != null && object.isWalker())
-			return 8000;
+		if (object.isWalker())
+		{
+			return 9000;
+		}
 		
 		final int knownlistSize = getKnownObjects().size();
 		if (knownlistSize <= 25)
+		{
 			return 3400; // empty field
+		}
 		if (knownlistSize <= 35)
+		{
 			return 2900;
+		}
 		if (knownlistSize <= 70)
+		{
 			return 2300;
+		}
 		return 1700; // Siege, TOI, city
 	}
 }

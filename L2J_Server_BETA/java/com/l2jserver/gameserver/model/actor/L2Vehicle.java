@@ -478,4 +478,10 @@ public abstract class L2Vehicle extends L2Character
 		public void detachAI()
 		{}
 	}
+	
+	@Override
+	public boolean isWalker()
+	{
+		return true;
+	}
 }
