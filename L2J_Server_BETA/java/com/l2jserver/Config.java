@@ -2317,7 +2317,7 @@ public final class Config
 					}
 				}
 			}
-			if (RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID) == 0f)
+			if (!RATE_DROP_ITEMS_ID.containsKey(PcInventory.ADENA_ID))
 			{
 				RATE_DROP_ITEMS_ID.put(PcInventory.ADENA_ID, RATE_DROP_ITEMS); // for Adena rate if not defined
 			}
