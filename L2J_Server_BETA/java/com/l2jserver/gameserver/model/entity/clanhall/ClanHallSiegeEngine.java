@@ -457,9 +457,9 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		return Config.CHS_FAME_FREQUENCY;
 	}
 				
-	public final void broadcastNpcSay(final L2Npc npc, final int type, final int messageId)
+	public final void broadcastNpcSay(final L2Npc npc, final int type, final NpcStringId messageId)
 	{
-		final NpcSay npcSay = new NpcSay(npc.getObjectId(), type, npc.getNpcId(), NpcStringId.getNpcStringId(messageId));
+		final NpcSay npcSay = new NpcSay(npc.getObjectId(), type, npc.getNpcId(), messageId);
 		int sourceRegion = MapRegionManager.getInstance().getMapRegionLocId(npc);
 		final L2PcInstance[] charsInside = L2World.getInstance().getAllPlayersArray();
 		

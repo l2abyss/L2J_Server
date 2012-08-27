@@ -84,7 +84,7 @@ public final class OlympiadAnnouncer implements Runnable
 					manager = spawn.getLastSpawn();
 					if (manager != null)
 					{
-						packet = new NpcSay(manager.getObjectId(), Say2.SHOUT, manager.getNpcId(), npcString);
+						packet = new NpcSay(manager.getObjectId(), Say2.NPC_SHOUT, manager.getNpcId(), npcString);
 						packet.addStringParameter(arenaId);
 						manager.broadcastPacket(packet);
 					}

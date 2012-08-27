@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.NpcStringId;
+import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 
@@ -109,7 +110,7 @@ public final class L2CastleTeleporterInstance extends L2Npc
 		{
 			try
 			{
-				NpcSay cs = new NpcSay(getObjectId(), 1, getNpcId(), NpcStringId.THE_DEFENDERS_OF_S1_CASTLE_WILL_BE_TELEPORTED_TO_THE_INNER_CASTLE);
+				NpcSay cs = new NpcSay(getObjectId(), Say2.NPC_SHOUT, getNpcId(), NpcStringId.THE_DEFENDERS_OF_S1_CASTLE_WILL_BE_TELEPORTED_TO_THE_INNER_CASTLE);
 				cs.addStringParameter(getCastle().getName());
 				int region = MapRegionManager.getInstance().getMapRegionLocId(getX(), getY());
 				L2World.getInstance().forEachPlayer(new ForEachPlayerInRegionSendPacket(region, cs));

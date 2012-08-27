@@ -75,9 +75,9 @@ public class L2NpcWalkerInstance extends L2Npc
 	{
 		NpcSay cs;
 		if (npcString == null)
-			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), chat);
+			cs = new NpcSay(getObjectId(), Say2.NPC_ALL, getNpcId(), chat);
 		else
-			cs = new NpcSay(getObjectId(), Say2.ALL, getNpcId(), npcString);
+			cs = new NpcSay(getObjectId(), Say2.NPC_ALL, getNpcId(), npcString);
 		Broadcast.toKnownPlayers(this, cs);
 	}
 	

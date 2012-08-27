@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.NpcStringId;
+import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 
 public class L2FortCommanderInstance extends L2DefenderInstance
@@ -132,7 +133,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 					}
 					if (npcString != null)
 					{
-						NpcSay ns = new NpcSay(getObjectId(), 1, getNpcId(), npcString);
+						NpcSay ns = new NpcSay(getObjectId(), Say2.NPC_SHOUT, getNpcId(), npcString);
 						if (npcString.getParamCount() == 1)
 							ns.addStringParameter(attacker.getName());
 						

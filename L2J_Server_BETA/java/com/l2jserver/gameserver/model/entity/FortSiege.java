@@ -48,6 +48,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.scripting.scriptengine.events.FortSiegeEvent;
@@ -655,7 +656,7 @@ public class FortSiege implements Siegable
 						}
 						if (npcString != null)
 						{
-							instance.broadcastPacket(new NpcSay(instance.getObjectId(), 1, instance.getNpcId(), npcString));
+							instance.broadcastPacket(new NpcSay(instance.getObjectId(), Say2.NPC_SHOUT, instance.getNpcId(), npcString));
 						}
 					}
 				}
