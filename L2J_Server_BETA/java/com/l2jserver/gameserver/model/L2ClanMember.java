@@ -79,7 +79,7 @@ public class L2ClanMember
 	 */
 	public L2ClanMember(L2Clan clan, L2PcInstance player)
 	{
-		if (player.getClan() == null)
+		if (clan == null)
 		{
 			throw new IllegalArgumentException("Cannot create a Clan Member if player has a null clan.");
 		}
