@@ -996,7 +996,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			final L2PcInstance leaderPlayer = leaderSubPledge.getPlayerInstance();
 			if (leaderPlayer != null)
 			{
-				leaderPlayer.setPledgeClass(leaderSubPledge.calculatePledgeClass(leaderPlayer));
+				leaderPlayer.setPledgeClass(L2ClanMember.calculatePledgeClass(leaderPlayer));
 				leaderPlayer.sendPacket(new UserInfo(leaderPlayer));
 				leaderPlayer.sendPacket(new ExBrExtraUserInfo(leaderPlayer));
 			}
@@ -1080,7 +1080,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		final L2PcInstance leaderPlayer = leaderSubPledge.getPlayerInstance();
 		if (leaderPlayer != null)
 		{
-			leaderPlayer.setPledgeClass(leaderSubPledge.calculatePledgeClass(leaderPlayer));
+			leaderPlayer.setPledgeClass(L2ClanMember.calculatePledgeClass(leaderPlayer));
 			leaderPlayer.sendPacket(new UserInfo(leaderPlayer));
 			leaderPlayer.sendPacket(new ExBrExtraUserInfo(leaderPlayer));
 		}

@@ -284,11 +284,11 @@ public class L2Clan
 		setLeader(member);
 		updateClanInDB();
 		
-		exLeader.setPledgeClass(exLeader.getClan().getClanMember(exLeader.getObjectId()).calculatePledgeClass(exLeader));
+		exLeader.setPledgeClass(L2ClanMember.calculatePledgeClass(exLeader));
 		exLeader.broadcastUserInfo();
 		exLeader.checkItemRestriction();
 		newLeader.setClan(this);
-		newLeader.setPledgeClass(member.calculatePledgeClass(newLeader));
+		newLeader.setPledgeClass(L2ClanMember.calculatePledgeClass(newLeader));
 		newLeader.setClanPrivileges(L2Clan.CP_ALL);
 		if (getLevel() >= SiegeManager.getInstance().getSiegeClanMinLevel())
 		{
@@ -375,7 +375,7 @@ public class L2Clan
 		addClanMember(member);
 		member.setPlayerInstance(player);
 		player.setClan(this);
-		player.setPledgeClass(member.calculatePledgeClass(player));
+		player.setPledgeClass(L2ClanMember.calculatePledgeClass(player));
 		player.sendPacket(new PledgeShowMemberListUpdate(player));
 		player.sendPacket(new PledgeSkillList(this));
 		addSkillEffects(player);
@@ -389,7 +389,7 @@ public class L2Clan
 	 */
 	public void updateClanMember(L2PcInstance player)
 	{
-		final L2ClanMember member = new L2ClanMember(player);
+		final L2ClanMember member = new L2ClanMember(player.getClan(), player);
 		if (player.isClanLeader())
 			setLeader(member);
 		
@@ -455,7 +455,7 @@ public class L2Clan
 				if (apprentice.getPlayerInstance() != null)
 					apprentice.getPlayerInstance().setSponsor(0);
 				else
-					apprentice.initApprenticeAndSponsor(0, 0);
+					apprentice.setApprenticeAndSponsor(0, 0);
 				
 				apprentice.saveApprenticeAndSponsor(0, 0);
 			}
@@ -468,7 +468,7 @@ public class L2Clan
 				if (sponsor.getPlayerInstance() != null)
 					sponsor.getPlayerInstance().setApprentice(0);
 				else
-					sponsor.initApprenticeAndSponsor(0, 0);
+					sponsor.setApprenticeAndSponsor(0, 0);
 				
 				sponsor.saveApprenticeAndSponsor(0, 0);
 			}
@@ -509,7 +509,7 @@ public class L2Clan
 			if (exMember.getPledgeType() != -1)
 				player.setClanJoinExpiryTime(clanJoinExpiryTime);
 			
-			player.setPledgeClass(exMember.calculatePledgeClass(player));
+			player.setPledgeClass(L2ClanMember.calculatePledgeClass(player));
 			player.broadcastUserInfo();
 			// disable clan tab
 			player.sendPacket(PledgeShowMemberListDeleteAll.STATIC_PACKET);
@@ -1002,17 +1002,16 @@ public class L2Clan
 					try (PreparedStatement select = con.prepareStatement("SELECT char_name,level,classid,charId,title,power_grade,subpledge,apprentice,sponsor,sex,race FROM characters WHERE clanid=?"))
 					{
 						select.setInt(1, getClanId());
-						try (ResultSet clanMembers = select.executeQuery())
+						try (ResultSet clanMember = select.executeQuery())
 						{
 							L2ClanMember member = null;
-							while (clanMembers.next())
+							while (clanMember.next())
 							{
-								member = new L2ClanMember(this, clanMembers.getString("char_name"), clanMembers.getInt("level"), clanMembers.getInt("classid"), clanMembers.getInt("charId"), clanMembers.getInt("subpledge"), clanMembers.getInt("power_grade"), clanMembers.getString("title"), (clanMembers.getInt("sex") != 0), clanMembers.getInt("race"));
+								member = new L2ClanMember(this, clanMember);
 								if (member.getObjectId() == leaderId)
 									setLeader(member);
 								else
 									addClanMember(member);
-								member.initApprenticeAndSponsor(clanMembers.getInt("apprentice"), clanMembers.getInt("sponsor"));
 							}
 						}
 					}

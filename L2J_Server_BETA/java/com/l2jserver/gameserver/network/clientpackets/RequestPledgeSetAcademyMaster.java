@@ -78,11 +78,11 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 			// test: do we get the current sponsor & apprentice from this packet or no?
 			if (apprentice != null) apprentice.setSponsor(0);
 			else // offline
-				apprenticeMember.initApprenticeAndSponsor(0, 0);
+				apprenticeMember.setApprenticeAndSponsor(0, 0);
 			
 			if (sponsor != null) sponsor.setApprentice(0);
 			else // offline
-				sponsorMember.initApprenticeAndSponsor(0, 0);
+				sponsorMember.setApprenticeAndSponsor(0, 0);
 			
 			apprenticeMember.saveApprenticeAndSponsor(0, 0);
 			sponsorMember.saveApprenticeAndSponsor(0, 0);
@@ -100,12 +100,12 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 			if (apprentice != null)
 				apprentice.setSponsor(sponsorMember.getObjectId());
 			else // offline
-				apprenticeMember.initApprenticeAndSponsor(0, sponsorMember.getObjectId());
+				apprenticeMember.setApprenticeAndSponsor(0, sponsorMember.getObjectId());
 			
 			if (sponsor != null)
 				sponsor.setApprentice(apprenticeMember.getObjectId());
 			else // offline
-				sponsorMember.initApprenticeAndSponsor(apprenticeMember.getObjectId(), 0);
+				sponsorMember.setApprenticeAndSponsor(apprenticeMember.getObjectId(), 0);
 			
 			// saving to database even if online, since both must match
 			apprenticeMember.saveApprenticeAndSponsor(0, sponsorMember.getObjectId());
