@@ -104,6 +104,110 @@ public class Quest extends ManagedScript
 	private boolean _isOlympiadUse = false;
 	
 	/**
+	 * This enum contains most, if not all, known sound effects used by quests.<br>
+	 * The idea is to have only a single object of each quest sound instead of constructing a new one every time a script calls the playSound method.<br>
+	 * This is pretty much just a memory and CPU cycle optimisation; avoids constructing/deconstructing objects all the time if they're all the same.<br>
+	 * For datapack scripts written in Java and extending the Quest class, this does not need an extra import.
+	 * @author jurchiks
+	 */
+	public static enum QuestSound
+	{
+		ITEMSOUND_QUEST_ACCEPT(new PlaySound("ItemSound.quest_accept")),
+		ITEMSOUND_QUEST_MIDDLE(new PlaySound("ItemSound.quest_middle")),
+		ITEMSOUND_QUEST_FINISH(new PlaySound("ItemSound.quest_finish")),
+		ITEMSOUND_QUEST_ITEMGET(new PlaySound("ItemSound.quest_itemget")),
+		// Newbie Guide tutorial (incl. some quests), Mutated Kaneus quests, Quest 192
+		ITEMSOUND_QUEST_TUTORIAL(new PlaySound("ItemSound.quest_tutorial")),
+		// Quests 107, 363, 364
+		ITEMSOUND_QUEST_GIVEUP(new PlaySound("ItemSound.quest_giveup")),
+		// Quests 212, 217, 224, 226, 416
+		ITEMSOUND_QUEST_BEFORE_BATTLE(new PlaySound("ItemSound.quest_before_battle")),
+		// Quests 211, 258, 266, 330
+		ITEMSOUND_QUEST_JACKPOT(new PlaySound("ItemSound.quest_jackpot")),
+		// Quests 508, 509 and 510
+		ITEMSOUND_QUEST_FANFARE_1(new PlaySound("ItemSound.quest_fanfare_1")),
+		// played ONLY after class transfer via Test Server Helpers (ID 31756 and 31757)
+		ITEMSOUND_QUEST_FANFARE_2(new PlaySound("ItemSound.quest_fanfare_2")),
+		
+		// Quest 114
+		ITEMSOUND_ARMOR_WOOD(new PlaySound("ItemSound.armor_wood_3")),
+		// Quest 21
+		ITEMSOUND_ARMOR_CLOTH(new PlaySound("ItemSound.item_drop_equip_armor_cloth")),
+		// Quest 23
+		ITEMSOUND_ARMOR_LEATHER(new PlaySound("ItemSound.itemdrop_armor_leather")),
+		// Quest 23
+		ITEMSOUND_WEAPON_SPEAR(new PlaySound("ItemSound.itemdrop_weapon_spear")),
+		
+		// Quest 648 and treasure chests
+		ITEMSOUND_BROKEN_KEY(new PlaySound("ItemSound.broken_key")),
+		// Quest 184
+		ITEMSOUND_SIREN(new PlaySound("ItemSound.sys_siren")),
+		// Quest 648
+		ITEMSOUND_ENCHANT_SUCCESS(new PlaySound("ItemSound.sys_enchant_success")),
+		// Quest 648
+		ITEMSOUND_ENCHANT_FAILED(new PlaySound("ItemSound.sys_enchant_failed")),
+		// Best farm mobs
+		ITEMSOUND_SOW_SUCCESS(new PlaySound("ItemSound.sys_sow_success")),
+		
+		// Elroki sounds - Quest 111
+		ETCSOUND_ELROKI_SOUND_FULL(new PlaySound("EtcSound.elcroki_song_full")),
+		ETCSOUND_ELROKI_SOUND_1ST(new PlaySound("EtcSound.elcroki_song_1st")),
+		ETCSOUND_ELROKI_SOUND_2ND(new PlaySound("EtcSound.elcroki_song_2nd")),
+		ETCSOUND_ELROKI_SOUND_3RD(new PlaySound("EtcSound.elcroki_song_3rd"));
+		
+		private final PlaySound playSound;
+		
+		private static Map<String, PlaySound> soundPackets = new HashMap<>();
+		
+		QuestSound(PlaySound playSound)
+		{
+			this.playSound = playSound;
+		}
+		
+		/**
+		 * Get a {@link PlaySound} packet by its name.
+		 * @param soundName : the name of the sound to look for
+		 * @return the {@link PlaySound} packet with the specified sound or {@code null} if one was not found
+		 */
+		public static PlaySound getSound(String soundName)
+		{
+			if (soundPackets.containsKey(soundName))
+			{
+				return soundPackets.get(soundName);
+			}
+			
+			for (QuestSound qs : QuestSound.values())
+			{
+				if (qs.playSound.getSoundName().equals(soundName))
+				{
+					soundPackets.put(soundName, qs.playSound); // cache in map to avoid looping repeatedly
+					return qs.playSound;
+				}
+			}
+			
+			_log.info("Missing QuestSound enum for sound: " + soundName);
+			soundPackets.put(soundName, new PlaySound(soundName));
+			return soundPackets.get(soundName);
+		}
+		
+		/**
+		 * @return the name of the sound of this QuestSound object
+		 */
+		public String getSoundName()
+		{
+			return playSound.getSoundName();
+		}
+		
+		/**
+		 * @return the {@link PlaySound} packet of this QuestSound object
+		 */
+		public PlaySound getPacket()
+		{
+			return playSound;
+		}
+	}
+	
+	/**
 	 * <b>Note: questItemIds will be overridden by child classes.</b><br>
 	 * Ideally, it should be protected instead of public.<br>
 	 * However, quest scripts written in Jython will have trouble with protected, as Jython only knows private and public...<br>
@@ -746,7 +850,6 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * 
 	 * @param item
 	 * @param player
 	 * @return
@@ -758,9 +861,13 @@ public class Quest extends ManagedScript
 		{
 			res = onItemTalk(item, player);
 			if (res == "true")
+			{
 				return true;
+			}
 			else if (res == "false")
+			{
 				return false;
+			}
 		}
 		catch (Exception e)
 		{
@@ -780,7 +887,6 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * 
 	 * @param item
 	 * @param player
 	 * @param event
@@ -793,9 +899,13 @@ public class Quest extends ManagedScript
 		{
 			res = onItemEvent(item, player, event);
 			if (res == "true")
+			{
 				return true;
+			}
 			else if (res == "false")
+			{
 				return false;
+			}
 		}
 		catch (Exception e)
 		{
@@ -805,7 +915,6 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * 
 	 * @param item
 	 * @param player
 	 * @param event
@@ -2605,7 +2714,7 @@ public class Quest extends ManagedScript
 	 * Registers all items that have to be destroyed in case player abort the quest or finish it.
 	 * @param items
 	 */
-	public void registerQuestItems(int...items)
+	public void registerQuestItems(int... items)
 	{
 		questItemIds = items;
 	}
@@ -3080,7 +3189,7 @@ public class Quest extends ManagedScript
 			
 			if (sound)
 			{
-				playSound(player, ((currentCount + itemCount) < neededCount) ? "Itemsound.quest_itemget" : "Itemsound.quest_middle");
+				playSound(player, ((currentCount + itemCount) < neededCount) ? QuestSound.ITEMSOUND_QUEST_ITEMGET : QuestSound.ITEMSOUND_QUEST_MIDDLE);
 			}
 		}
 		
@@ -3129,13 +3238,23 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Send a packet in order to play sound at client terminal
-	 * @param player
-	 * @param sound
+	 * Send a packet in order to play a sound to the player.
+	 * @param player : the player whom to send the packet
+	 * @param sound : the name of the sound to play
 	 */
 	public void playSound(L2PcInstance player, String sound)
 	{
-		player.sendPacket(new PlaySound(sound));
+		player.sendPacket(QuestSound.getSound(sound));
+	}
+	
+	/**
+	 * Send a packet in order to play a sound to the player.
+	 * @param player : the player whom to send the packet
+	 * @param sound : the {@link QuestSound} object of the sound to play
+	 */
+	public void playSound(L2PcInstance player, QuestSound sound)
+	{
+		player.sendPacket(sound.getPacket());
 	}
 	
 	/**

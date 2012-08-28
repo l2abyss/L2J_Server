@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.quest.Quest.QuestSound;
 import com.l2jserver.gameserver.network.serverpackets.ExShowQuestMark;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.QuestList;
@@ -581,7 +582,7 @@ public final class QuestState
 		
 		if (playQuestMiddle)
 		{
-			playSound("ItemSound.quest_middle");
+			playSound(QuestSound.ITEMSOUND_QUEST_MIDDLE);
 		}
 		return this;
 	}
@@ -725,10 +726,19 @@ public final class QuestState
 	}
 	
 	/**
-	 * Send a packet in order to play sound at client terminal
-	 * @param sound
+	 * Send a packet in order to play a sound to the player.
+	 * @param sound : the name of the sound to play
 	 */
 	public void playSound(String sound)
+	{
+		getQuest().playSound(getPlayer(), sound);
+	}
+	
+	/**
+	 * Send a packet in order to play a sound to the player.
+	 * @param sound : the {@link QuestSound} object of the sound to play
+	 */
+	public void playSound(QuestSound sound)
 	{
 		getQuest().playSound(getPlayer(), sound);
 	}
@@ -989,7 +999,7 @@ public final class QuestState
 		{
 			set("cond", "1");
 			setState(State.STARTED);
-			playSound("ItemSound.quest_accept");
+			playSound(QuestSound.ITEMSOUND_QUEST_ACCEPT);
 		}
 		return this;
 	}
@@ -1039,7 +1049,7 @@ public final class QuestState
 		exitQuest(type);
 		if (playExitQuest)
 		{
-			playSound("ItemSound.quest_finish");
+			playSound(QuestSound.ITEMSOUND_QUEST_FINISH);
 		}
 		return this;
 	}
@@ -1102,7 +1112,7 @@ public final class QuestState
 		exitQuest(repeatable);
 		if (playExitQuest)
 		{
-			playSound("ItemSound.quest_finish");
+			playSound(QuestSound.ITEMSOUND_QUEST_FINISH);
 		}
 		return this;
 	}
@@ -1112,6 +1122,7 @@ public final class QuestState
 		_player.sendPacket(new TutorialShowQuestionMark(number));
 	}
 	
+	// TODO make tutorial voices the same as quest sounds
 	public void playTutorialVoice(String voice)
 	{
 		_player.sendPacket(new PlaySound(2, voice, 0, 0, _player.getX(), _player.getY(), _player.getZ()));
