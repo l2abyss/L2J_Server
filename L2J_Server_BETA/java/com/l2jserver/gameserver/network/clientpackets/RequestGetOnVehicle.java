@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.instancemanager.BoatManager;
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -23,7 +24,6 @@ import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.1.4.3 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestGetOnVehicle extends L2GameClientPacket
@@ -49,7 +49,9 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		L2BoatInstance boat;
 		if (activeChar.isInBoat())
@@ -64,21 +66,19 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
 		else
 		{
 			boat = BoatManager.getInstance().getBoat(_boatId);
-			if (boat == null
-					|| boat.isMoving()
-					|| !activeChar.isInsideRadius(boat, 1000, true, false))
+			if ((boat == null) || boat.isMoving() || !activeChar.isInsideRadius(boat, 1000, true, false))
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
 		}
 		
-		
 		activeChar.setInVehiclePosition(_pos);
 		activeChar.setVehicle(boat);
 		activeChar.broadcastPacket(new GetOnVehicle(activeChar.getObjectId(), boat.getObjectId(), _pos));
 		
 		activeChar.setXYZ(boat.getX(), boat.getY(), boat.getZ());
+		activeChar.setInsideZone(L2Character.ZONE_PEACE, true);
 		activeChar.revalidateZone(true);
 	}
 	

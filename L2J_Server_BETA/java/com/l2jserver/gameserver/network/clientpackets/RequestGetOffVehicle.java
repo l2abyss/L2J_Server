@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.GetOffVehicle;
@@ -42,11 +43,10 @@ public final class RequestGetOffVehicle extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
-		if (!activeChar.isInBoat()
-				|| activeChar.getBoat().getObjectId() != _boatId
-				|| activeChar.getBoat().isMoving()
-				|| !activeChar.isInsideRadius(_x, _y, _z, 1000, true, false))
+		}
+		if (!activeChar.isInBoat() || (activeChar.getBoat().getObjectId() != _boatId) || activeChar.getBoat().isMoving() || !activeChar.isInsideRadius(_x, _y, _z, 1000, true, false))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -57,7 +57,8 @@ public final class RequestGetOffVehicle extends L2GameClientPacket
 		activeChar.setInVehiclePosition(null);
 		sendPacket(ActionFailed.STATIC_PACKET);
 		activeChar.broadcastPacket(new GetOffVehicle(activeChar.getObjectId(), _boatId, _x, _y, _z));
-		activeChar.setXYZ(_x, _y, _z + 50);
+		activeChar.setXYZ(_x, _y, _z);
+		activeChar.setInsideZone(L2Character.ZONE_PEACE, false);
 		activeChar.revalidateZone(true);
 	}
 	
