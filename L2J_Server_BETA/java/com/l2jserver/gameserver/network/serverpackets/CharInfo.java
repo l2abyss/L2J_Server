@@ -224,7 +224,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_UNDER));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HEAD));
 			
-			writeD(_airShipHelm == 0 ? _inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND) : 0);
+			writeD(_airShipHelm == 0 ? _inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND) : _airShipHelm);
 			writeD(_airShipHelm == 0 ? _inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LHAND) : 0);
 			
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_GLOVES));
