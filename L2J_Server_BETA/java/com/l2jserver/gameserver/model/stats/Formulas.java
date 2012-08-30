@@ -1220,9 +1220,9 @@ public final class Formulas
 			if (!target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getOwner() != null) && ((target.getLevel() - attacker.getOwner().getLevel()) >= 2))
 			{
 				int lvlDiff = target.getLevel() - attacker.getOwner().getLevel() - 1;
-				if (lvlDiff > Config.NPC_SKILL_DMG_PENALTY.size())
+				if (lvlDiff >= Config.NPC_SKILL_DMG_PENALTY.size())
 				{
-					damage *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size());
+					damage *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size() - 1);
 				}
 				else
 				{
