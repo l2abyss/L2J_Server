@@ -20,15 +20,15 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -70,6 +70,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.scripting.ManagedScript;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.gameserver.util.MinionList;
+import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
 
@@ -88,8 +89,8 @@ public class Quest extends ManagedScript
 	/**
 	 * Map containing lists of timers from the name of the timer.
 	 */
-	private final FastMap<String, List<QuestTimer>> _allEventTimers = new FastMap<>();
-	private final List<Integer> _questInvolvedNpcs = new ArrayList<>();
+	private final Map<String, List<QuestTimer>> _allEventTimers = new L2FastMap<>(true);
+	private final Set<Integer> _questInvolvedNpcs = new HashSet<>();
 	
 	private final ReentrantReadWriteLock _rwLock = new ReentrantReadWriteLock();
 	private final WriteLock _writeLock = _rwLock.writeLock();
@@ -261,7 +262,6 @@ public class Quest extends ManagedScript
 		_questId = questId;
 		_name = name;
 		_descr = descr;
-		_allEventTimers.shared();
 		if (questId != 0)
 		{
 			QuestManager.getInstance().addQuest(this);
@@ -536,6 +536,11 @@ public class Quest extends ManagedScript
 				}
 			}
 		}
+	}
+	
+	public Map<String, List<QuestTimer>> getQuestTimers()
+	{
+		return _allEventTimers;
 	}
 	
 	// These are methods to call within the core to call the quest events.
@@ -1852,11 +1857,7 @@ public class Quest extends ManagedScript
 				t.addQuestEvent(eventType, this);
 			}
 			
-			if (!_questInvolvedNpcs.contains(Integer.valueOf(npcId)))
-			{
-				_questInvolvedNpcs.add(npcId);
-			}
-			
+			_questInvolvedNpcs.add(npcId);
 			return t;
 		}
 		catch (Exception e)
@@ -2788,6 +2789,11 @@ public class Quest extends ManagedScript
 			return QuestManager.getInstance().removeQuest(this);
 		}
 		return true;
+	}
+	
+	public Set<Integer> getQuestInvolvedNpcs()
+	{
+		return _questInvolvedNpcs;
 	}
 	
 	@Override
