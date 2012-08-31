@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
@@ -31,6 +29,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
+import com.l2jserver.util.L2FastList;
 
 /**
  * This class manage all items on ground.
@@ -41,25 +40,16 @@ public class ItemsOnGroundManager
 {
 	static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
 	
-	protected List<L2ItemInstance> _items = null;
+	protected List<L2ItemInstance> _items = new L2FastList<>(true);
 	private final StoreInDb _task = new StoreInDb();
 	
 	protected ItemsOnGroundManager()
 	{
-		if (Config.SAVE_DROPPED_ITEM)
-		{
-			_items = new FastList<>();
-		}
 		if (Config.SAVE_DROPPED_ITEM_INTERVAL > 0)
 		{
 			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(_task, Config.SAVE_DROPPED_ITEM_INTERVAL, Config.SAVE_DROPPED_ITEM_INTERVAL);
 		}
 		load();
-	}
-	
-	public static final ItemsOnGroundManager getInstance()
-	{
-		return SingletonHolder._instance;
 	}
 	
 	private void load()
@@ -173,7 +163,7 @@ public class ItemsOnGroundManager
 	
 	public void removeObject(L2ItemInstance item)
 	{
-		if (Config.SAVE_DROPPED_ITEM && (_items != null))
+		if (Config.SAVE_DROPPED_ITEM)
 		{
 			_items.remove(item);
 		}
@@ -271,6 +261,11 @@ public class ItemsOnGroundManager
 				_log.info(getClass().getSimpleName() + ": Saved " + _items.size() + " items on ground.");
 			}
 		}
+	}
+	
+	public static final ItemsOnGroundManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
