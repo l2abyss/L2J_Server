@@ -1975,6 +1975,11 @@ public final class L2ItemInstance extends L2Object
 		return enchant;
 	}
 	
+	public int getDefaultEnchantLevel()
+	{
+		return _item.getDefaultEnchantLevel();
+	}
+	
 	public boolean hasPassiveSkills()
 	{
 		return getItemType() == L2EtcItemType.RUNE && getLocation() == ItemLocation.INVENTORY && getOwnerId() > 0 && getItem().hasSkills();

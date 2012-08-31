@@ -48,7 +48,9 @@ public final class AuctionItem
 	{
 		final L2Item item = ItemTable.getInstance().getTemplate(_itemId);
 		if (item == null)
+		{
 			return false;
+		}
 		return true;
 	}
 	
@@ -81,8 +83,7 @@ public final class AuctionItem
 	{
 		final L2ItemInstance item = ItemTable.getInstance().createItem("ItemAuction", _itemId, _itemCount, null, null);
 		
-		final int enchantLevel = _itemExtra.getInteger("enchant_level", 0);
-		item.setEnchantLevel(enchantLevel);
+		item.setEnchantLevel(item.getDefaultEnchantLevel());
 		
 		final int augmentationId = _itemExtra.getInteger("augmentation_id", 0);
 		if (augmentationId != 0)

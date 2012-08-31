@@ -193,6 +193,7 @@ public abstract class L2Item
 	private final boolean _heroItem;
 	private final boolean _pvpItem;
 	private final boolean _ex_immediate_effect;
+	private final int _defaultEnchantLevel;
 	private final L2ActionType _defaultAction;
 	
 	protected int _type1; // needed for item list (inventory)
@@ -250,6 +251,7 @@ public abstract class L2Item
 		//used for custom type select
 		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
 		_useSkillDisTime = set.getInteger("useSkillDisTime", 0);
+		_defaultEnchantLevel = set.getInteger("enchanted", 0);
 		_reuseDelay = set.getInteger("reuse_delay", 0);
 		_sharedReuseGroup = set.getInteger("shared_reuse_group", 0);
 		
@@ -1049,6 +1051,11 @@ public abstract class L2Item
 	public List<Quest> getQuestEvents()
 	{
 		return _questEvents;
+	}
+	
+	public int getDefaultEnchantLevel()
+	{
+		return _defaultEnchantLevel;
 	}
 	
 	public boolean isPetItem()
