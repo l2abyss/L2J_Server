@@ -239,6 +239,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				}
 				else // Festival Participant
 				{
+					instanceId = activeChar.getInstanceId();
 					loc = new Location(activeChar);
 				}
 				break;

@@ -37,7 +37,8 @@ public class Die extends L2GameServerPacket
 	private boolean _sweepable;
 	private L2AccessLevel _access = AdminTable.getInstance().getAccessLevel(0);
 	private L2Clan _clan;
-	L2Character _activeChar;
+	private final L2Character _activeChar;
+	private boolean _isJailed;
 	
 	/**
 	 * @param cha
@@ -45,16 +46,17 @@ public class Die extends L2GameServerPacket
 	public Die(L2Character cha)
 	{
 		_activeChar = cha;
-		if (cha instanceof L2PcInstance)
+		if (cha.isPlayer())
 		{
 			L2PcInstance player = (L2PcInstance) cha;
 			_access = player.getAccessLevel();
 			_clan = player.getClan();
+			_isJailed = player.isInJail();
 			
 		}
 		_charObjId = cha.getObjectId();
 		_canTeleport = !((cha.isPlayer() && TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(_charObjId)) || cha.isPendingRevive());
-		if (cha instanceof L2Attackable)
+		if (cha.isL2Attackable())
 		{
 			_sweepable = ((L2Attackable) cha).isSweepActive();
 		}
@@ -67,7 +69,7 @@ public class Die extends L2GameServerPacket
 		writeC(0x00);
 		writeD(_charObjId);
 		writeD(_canTeleport ? 0x01 : 0);
-		if (_canTeleport && (_clan != null) && !_activeChar.getActingPlayer().isInJail())
+		if (_canTeleport && (_clan != null) && !_isJailed)
 		{
 			boolean isInCastleDefense = false;
 			boolean isInFortDefense = false;
