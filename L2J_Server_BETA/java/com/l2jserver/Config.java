@@ -2603,21 +2603,23 @@ public final class Config
 			
 			L2JMOD_CHAT_ADMIN = Boolean.parseBoolean(L2JModSettings.getProperty("ChatAdmin", "false"));
 			
+			L2JMOD_MULTILANG_DEFAULT = L2JModSettings.getProperty("MultiLangDefault", "en");
 			L2JMOD_MULTILANG_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangEnable", "false"));
-			String[] allowed = L2JModSettings.getProperty("MultiLangAllowed", "en").split(";");
+			String[] allowed = L2JModSettings.getProperty("MultiLangAllowed", L2JMOD_MULTILANG_DEFAULT).split(";");
 			L2JMOD_MULTILANG_ALLOWED = new ArrayList<>(allowed.length);
 			for (String lang : allowed)
 			{
 				L2JMOD_MULTILANG_ALLOWED.add(lang);
 			}
-			L2JMOD_MULTILANG_DEFAULT = L2JModSettings.getProperty("MultiLangDefault", "en");
+			
 			if (!L2JMOD_MULTILANG_ALLOWED.contains(L2JMOD_MULTILANG_DEFAULT))
 			{
 				_log.warning("MultiLang[Config.load()]: default language: " + L2JMOD_MULTILANG_DEFAULT + " is not in allowed list !");
 			}
+			
 			L2JMOD_HELLBOUND_STATUS = Boolean.parseBoolean(L2JModSettings.getProperty("HellboundStatus", "False"));
 			L2JMOD_MULTILANG_VOICED_ALLOW = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangVoiceCommand", "True"));
-			L2JMOD_MULTILANG_SM_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangSystemMessageEnable", "false"));
+			L2JMOD_MULTILANG_SM_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangSystemMessageEnable", "False"));
 			allowed = L2JModSettings.getProperty("MultiLangSystemMessageAllowed", "").split(";");
 			L2JMOD_MULTILANG_SM_ALLOWED = new ArrayList<>(allowed.length);
 			for (String lang : allowed)
@@ -2627,7 +2629,7 @@ public final class Config
 					L2JMOD_MULTILANG_SM_ALLOWED.add(lang);
 				}
 			}
-			L2JMOD_MULTILANG_NS_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangNpcStringEnable", "false"));
+			L2JMOD_MULTILANG_NS_ENABLE = Boolean.parseBoolean(L2JModSettings.getProperty("MultiLangNpcStringEnable", "False"));
 			allowed = L2JModSettings.getProperty("MultiLangNpcStringAllowed", "").split(";");
 			L2JMOD_MULTILANG_NS_ALLOWED = new ArrayList<>(allowed.length);
 			for (String lang : allowed)
