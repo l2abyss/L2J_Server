@@ -995,8 +995,6 @@ public final class Config
 		WorldObjectSet
 	}
 	
-	public static ObjectMapType MAP_TYPE;
-	public static ObjectSetType SET_TYPE;
 	public static double ENCHANT_CHANCE;
 	public static int MAX_ENCHANT_LEVEL;
 	public static double ENCHANT_CHANCE_ELEMENT_STONE;
@@ -1779,8 +1777,6 @@ public final class Config
 				_log.log(Level.SEVERE, "Error while loading IdFactory settings!", e);
 			}
 			
-			MAP_TYPE = ObjectMapType.valueOf(IdFactory.getProperty("L2Map", "WorldObjectMap"));
-			SET_TYPE = ObjectSetType.valueOf(IdFactory.getProperty("L2Set", "WorldObjectSet"));
 			IDFACTORY_TYPE = IdFactoryType.valueOf(IdFactory.getProperty("IDFactory", "BitSet"));
 			BAD_ID_CHECKING = Boolean.parseBoolean(IdFactory.getProperty("BadIdChecking", "True"));
 			
