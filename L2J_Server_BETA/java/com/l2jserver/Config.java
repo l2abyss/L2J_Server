@@ -983,18 +983,6 @@ public final class Config
 	public static IdFactoryType IDFACTORY_TYPE;
 	public static boolean BAD_ID_CHECKING;
 	
-	public static enum ObjectMapType
-	{
-		L2ObjectHashMap,
-		WorldObjectMap
-	}
-	
-	public static enum ObjectSetType
-	{
-		L2ObjectHashSet,
-		WorldObjectSet
-	}
-	
 	public static double ENCHANT_CHANCE;
 	public static int MAX_ENCHANT_LEVEL;
 	public static double ENCHANT_CHANCE_ELEMENT_STONE;
