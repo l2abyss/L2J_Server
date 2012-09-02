@@ -1239,7 +1239,7 @@ public final class BlowfishEngine
 	{
 		if (workingKey == null)
 		{
-			throw new IllegalStateException("Blowfish not initialised");
+			throw new IllegalStateException("Blowfish not initialized");
 		}
 		if ((srcIndex + BLOCK_SIZE) > src.length)
 		{
@@ -1263,7 +1263,7 @@ public final class BlowfishEngine
 	{
 		if (workingKey == null)
 		{
-			throw new IllegalStateException("Blowfish not initialised");
+			throw new IllegalStateException("Blowfish not initialized");
 		}
 		if ((srcIndex + BLOCK_SIZE) > src.length)
 		{
@@ -1349,7 +1349,7 @@ public final class BlowfishEngine
 	{
 		if (workingKey == null)
 		{
-			throw new IllegalStateException("Blowfish not initialised");
+			throw new IllegalStateException("Blowfish not initialized");
 		}
 		if ((srcIndex + BLOCK_SIZE) > src.length)
 		{
@@ -1372,7 +1372,7 @@ public final class BlowfishEngine
 	{
 		if (workingKey == null)
 		{
-			throw new IllegalStateException("Blowfish not initialised");
+			throw new IllegalStateException("Blowfish not initialized");
 		}
 		if ((srcIndex + BLOCK_SIZE) > src.length)
 		{

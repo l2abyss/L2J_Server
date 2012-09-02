@@ -158,7 +158,7 @@ public class ValueSortMap
 		
 		if (bAllDistinct)
 		{
-			// There are no multiple same values in the passed map (without consedring null)
+			// There are no multiple same values in the passed map (without considering null)
 			keySet = inMap.keySet();
 			itKeyList = keySet.iterator();
 			while (itKeyList.hasNext())

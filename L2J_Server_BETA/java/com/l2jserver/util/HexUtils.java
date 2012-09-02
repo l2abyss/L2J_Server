@@ -17,7 +17,7 @@ package com.l2jserver.util;
 import java.util.Arrays;
 
 /**
- * @author Christian
+ * @author FBIagent
  */
 public class HexUtils
 {
@@ -250,7 +250,7 @@ public class HexUtils
 			else
 			{
 				// last line which shows _HEX_ED_BPL bytes
-				textData[lineAsciiDataStart - 1] = ' '; // seperate
+				textData[lineAsciiDataStart - 1] = ' '; // separate
 			}
 		}
 		return textData;
