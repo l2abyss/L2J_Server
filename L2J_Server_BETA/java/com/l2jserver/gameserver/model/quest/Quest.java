@@ -140,15 +140,15 @@ public class Quest extends ManagedScript
 		ITEMSOUND_WEAPON_SPEAR(new PlaySound("ItemSound.itemdrop_weapon_spear")),
 		
 		// Quest 648 and treasure chests
-		ITEMSOUND_BROKEN_KEY(new PlaySound("ItemSound.broken_key")),
+		ITEMSOUND_BROKEN_KEY(new PlaySound("ItemSound2.broken_key")),
 		// Quest 184
-		ITEMSOUND_SIREN(new PlaySound("ItemSound.sys_siren")),
+		ITEMSOUND_SIREN(new PlaySound("ItemSound3.sys_siren")),
 		// Quest 648
-		ITEMSOUND_ENCHANT_SUCCESS(new PlaySound("ItemSound.sys_enchant_success")),
+		ITEMSOUND_ENCHANT_SUCCESS(new PlaySound("ItemSound3.sys_enchant_success")),
 		// Quest 648
-		ITEMSOUND_ENCHANT_FAILED(new PlaySound("ItemSound.sys_enchant_failed")),
+		ITEMSOUND_ENCHANT_FAILED(new PlaySound("ItemSound3.sys_enchant_failed")),
 		// Best farm mobs
-		ITEMSOUND_SOW_SUCCESS(new PlaySound("ItemSound.sys_sow_success")),
+		ITEMSOUND_SOW_SUCCESS(new PlaySound("ItemSound3.sys_sow_success")),
 		
 		// Elroki sounds - Quest 111
 		ETCSOUND_ELROKI_SOUND_FULL(new PlaySound("EtcSound.elcroki_song_full")),
