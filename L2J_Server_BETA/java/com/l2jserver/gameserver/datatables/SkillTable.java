@@ -21,6 +21,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.engines.DocumentEngine;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
@@ -79,10 +80,6 @@ public class SkillTable
 		
 		// Sorting for binarySearch
 		_enchantable.sort();
-		
-		// Reloading as well FrequentSkill enumeration values
-		for (FrequentSkill sk : FrequentSkill.values())
-			sk._skill = getInfo(sk._id, sk._level);
 	}
 	
 	/**
@@ -188,19 +185,16 @@ public class SkillTable
 		THE_VANQUISHED_OF_WAR(5075, 1),
 		SPECIAL_TREE_RECOVERY_BONUS(2139, 1);
 		
-		protected final int _id;
-		protected final int _level;
-		protected L2Skill _skill = null;
+		private final SkillHolder _holder;
 		
 		private FrequentSkill(int id, int level)
 		{
-			_id = id;
-			_level = level;
+			_holder = new SkillHolder(id, level);
 		}
 		
 		public L2Skill getSkill()
 		{
-			return _skill;
+			return _holder.getSkill();
 		}
 	}
 }
