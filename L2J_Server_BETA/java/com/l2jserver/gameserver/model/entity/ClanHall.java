@@ -354,9 +354,9 @@ public abstract class ClanHall
 	{
 		_ownerId = 0;
 		_isFree = true;
-		for (Map.Entry<Integer, ClanHallFunction> fc : _functions.entrySet())
+		for (Integer fc : _functions.keySet())
 		{
-			removeFunction(fc.getKey());
+			removeFunction(fc);
 		}
 		_functions.clear();
 		updateDb();
@@ -444,7 +444,14 @@ public abstract class ClanHall
 	/** Banish Foreigner */
 	public void banishForeigners()
 	{
-		_zone.banishForeigners(getOwnerId());
+		if (_zone != null)
+		{
+			_zone.banishForeigners(getOwnerId());
+		}
+		else
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Zone is null for clan hall: " + getId() + " " + getName());
+		}
 	}
 	
 	/** Load All Functions */
@@ -452,7 +459,7 @@ public abstract class ClanHall
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			PreparedStatement statement = con.prepareStatement("Select * from clanhall_functions where hall_id = ?");
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM clanhall_functions WHERE hall_id = ?");
 			statement.setInt(1, getId());
 			ResultSet rs = statement.executeQuery();
 			while (rs.next())
