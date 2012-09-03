@@ -14,17 +14,16 @@
  */
 package com.l2jserver.gameserver.cache;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.file.filter.HTMLFilter;
 
 /**
@@ -36,26 +35,14 @@ public class HtmCache
 	
 	private static final HTMLFilter htmlFilter = new HTMLFilter();
 	
-	private final TIntObjectHashMap<String> _cache;
+	private final Map<String, String> _cache;
 	
 	private int _loadedFiles;
 	private long _bytesBuffLen;
 	
-	public static HtmCache getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	protected HtmCache()
 	{
-		if (Config.LAZY_CACHE)
-		{
-			_cache = new L2TIntObjectHashMap<>();
-		}
-		else
-		{
-			_cache = new TIntObjectHashMap<>();
-		}
+		_cache = new L2FastMap<>(Config.LAZY_CACHE);
 		reload();
 	}
 	
@@ -121,7 +108,6 @@ public class HtmCache
 		}
 		
 		final String relpath = Util.getRelativePath(Config.DATAPACK_ROOT, file);
-		final int hashcode = relpath.hashCode();
 		String content = null;
 		try (FileInputStream fis = new FileInputStream(file);
 			BufferedInputStream bis = new BufferedInputStream(fis))
@@ -133,7 +119,7 @@ public class HtmCache
 			content = new String(raw, "UTF-8");
 			content = content.replaceAll("\r\n", "\n");
 			
-			String oldContent = _cache.get(hashcode);
+			String oldContent = _cache.get(relpath);
 			if (oldContent == null)
 			{
 				_bytesBuffLen += bytes;
@@ -143,7 +129,7 @@ public class HtmCache
 			{
 				_bytesBuffLen = (_bytesBuffLen - oldContent.length()) + bytes;
 			}
-			_cache.put(hashcode, content);
+			_cache.put(relpath, content);
 		}
 		catch (Exception e)
 		{
@@ -180,7 +166,7 @@ public class HtmCache
 		content = getHtm(path);
 		if ((content != null) && (newPath != null))
 		{
-			_cache.put(newPath.hashCode(), content);
+			_cache.put(newPath, content);
 		}
 		
 		return content;
@@ -193,8 +179,7 @@ public class HtmCache
 			return ""; // avoid possible NPE
 		}
 		
-		final int hashCode = path.hashCode();
-		String content = _cache.get(hashCode);
+		String content = _cache.get(path);
 		if (Config.LAZY_CACHE && (content == null))
 		{
 			content = loadFile(new File(Config.DATAPACK_ROOT, path));
@@ -204,7 +189,7 @@ public class HtmCache
 	
 	public boolean contains(String path)
 	{
-		return _cache.containsKey(path.hashCode());
+		return _cache.containsKey(path);
 	}
 	
 	/**
@@ -214,6 +199,11 @@ public class HtmCache
 	public boolean isLoadable(String path)
 	{
 		return htmlFilter.accept(new File(path));
+	}
+	
+	public static HtmCache getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

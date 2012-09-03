@@ -14,11 +14,12 @@
  */
 package com.l2jserver.gameserver.cache;
 
-import javolution.util.FastMap;
+import java.util.Map;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.L2FastMap;
 
 /**
  *
@@ -26,18 +27,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public class WarehouseCacheManager
 {
-	protected final FastMap<L2PcInstance, Long> _cachedWh;
-	protected final long _cacheTime;
-	
-	public static WarehouseCacheManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	protected final Map<L2PcInstance, Long> _cachedWh = new L2FastMap<>(true);
+	protected final long _cacheTime = Config.WAREHOUSE_CACHE_TIME * 60000L;
 	
 	protected WarehouseCacheManager()
 	{
-		_cacheTime = Config.WAREHOUSE_CACHE_TIME * 60000L; // 60*1000 = 60000
-		_cachedWh = new FastMap<L2PcInstance, Long>().shared();
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new CacheScheduler(), 120000, 60000);
 	}
 	
@@ -66,6 +60,11 @@ public class WarehouseCacheManager
 				}
 			}
 		}
+	}
+	
+	public static WarehouseCacheManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
