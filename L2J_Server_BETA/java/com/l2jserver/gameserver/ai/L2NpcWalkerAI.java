@@ -129,7 +129,7 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 			long delay = _route.get(_currentPos).getDelay() * 1000;
 			
 			//sleeps between each move
-			if (delay <= 0)
+			if (delay < 0)
 			{
 				delay = DEFAULT_MOVE_DELAY;
 				if (Config.DEVELOPER)

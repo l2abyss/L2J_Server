@@ -139,7 +139,6 @@ public abstract class L2Object
 		L2FortSiegeNpcInstance(L2NpcWalkerInstance),
 		L2FortSupportCaptainInstance(L2MerchantInstance),
 		// Seven Signs
-		L2CabaleBufferInstance(L2Npc),
 		L2SignsPriestInstance(L2Npc),
 		L2DawnPriestInstance(L2SignsPriestInstance),
 		L2DuskPriestInstance(L2SignsPriestInstance),
@@ -159,7 +158,6 @@ public abstract class L2Object
 		L2RaceManagerInstance(L2Npc),
 		L2SymbolMakerInstance(L2Npc),
 		L2TeleporterInstance(L2Npc),
-		L2TotemInstance(L2NpcInstance),
 		L2TownPetInstance(L2Npc),
 		L2TrainerInstance(L2NpcInstance),
 		L2TrainerHealersInstance(L2TrainerInstance),
@@ -177,8 +175,7 @@ public abstract class L2Object
 		L2NpcBufferInstance(L2Npc),
 		L2TvTEventNpcInstance(L2Npc),
 		L2WeddingManagerInstance(L2Npc),
-		L2EventMobInstance(L2Npc),
-		L2BirthdayCakeInstance(L2Npc);
+		L2EventMobInstance(L2Npc);
 		
 		private final InstanceType _parent;
 		private final long _typeL;
