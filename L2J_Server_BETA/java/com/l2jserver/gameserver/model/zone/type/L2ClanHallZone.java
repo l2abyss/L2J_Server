@@ -100,7 +100,7 @@ public class L2ClanHallZone extends L2ZoneRespawn
 		TeleportWhereType type = TeleportWhereType.ClanHall_banish;
 		for (L2PcInstance temp : getPlayersInside())
 		{
-			if (temp.getClanId() == owningClanId)
+			if (temp.getClanId() == owningClanId && owningClanId != 0)
 				continue;
 			
 			temp.teleToLocation(type);
