@@ -16,8 +16,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
+import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
-import com.l2jserver.gameserver.model.L2Manor;
 
 /**
  * @author l3x
@@ -54,11 +54,11 @@ public class ExShowCropInfo extends L2GameServerPacket
 			writeQ(crop.getStartAmount()); // Buy
 			writeQ(crop.getPrice()); // Buy price
 			writeC(crop.getReward()); // Reward
-			writeD(L2Manor.getInstance().getSeedLevelByCrop(crop.getId())); // Seed Level
+			writeD(ManorData.getInstance().getSeedLevelByCrop(crop.getId())); // Seed Level
 			writeC(0x01); // rewrad 1 Type
-			writeD(L2Manor.getInstance().getRewardItem(crop.getId(), 1)); // Rewrad 1 Type Item Id
+			writeD(ManorData.getInstance().getRewardItem(crop.getId(), 1)); // Rewrad 1 Type Item Id
 			writeC(0x01); // rewrad 2 Type
-			writeD(L2Manor.getInstance().getRewardItem(crop.getId(), 2)); // Rewrad 2 Type Item Id
+			writeD(ManorData.getInstance().getRewardItem(crop.getId(), 2)); // Rewrad 2 Type Item Id
 		}
 	}
 }

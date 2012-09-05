@@ -14,12 +14,12 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.List;
 
+import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.SeedProduction;
-import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.entity.Castle;
 
 /**
@@ -35,20 +35,20 @@ public class ExShowSeedSetting extends L2GameServerPacket
 	{
 		_manorId = manorId;
 		Castle c = CastleManager.getInstance().getCastleById(_manorId);
-		FastList<Integer> seeds = L2Manor.getInstance().getSeedsForCastle(_manorId);
+		List<Integer> seeds = ManorData.getInstance().getSeedsForCastle(_manorId);
 		_count = seeds.size();
 		_seedData = new long[_count * 12];
 		int i = 0;
 		for (int s : seeds)
 		{
 			_seedData[i * 12 + 0] = s;
-			_seedData[i * 12 + 1] = L2Manor.getInstance().getSeedLevel(s);
-			_seedData[i * 12 + 2] = L2Manor.getInstance().getRewardItemBySeed(s, 1);
-			_seedData[i * 12 + 3] = L2Manor.getInstance().getRewardItemBySeed(s, 2);
-			_seedData[i * 12 + 4] = L2Manor.getInstance().getSeedSaleLimit(s);
-			_seedData[i * 12 + 5] = L2Manor.getInstance().getSeedBuyPrice(s);
-			_seedData[i * 12 + 6] = L2Manor.getInstance().getSeedBasicPrice(s) * 60 / 100;
-			_seedData[i * 12 + 7] = L2Manor.getInstance().getSeedBasicPrice(s) * 10;
+			_seedData[i * 12 + 1] = ManorData.getInstance().getSeedLevel(s);
+			_seedData[i * 12 + 2] = ManorData.getInstance().getRewardItemBySeed(s, 1);
+			_seedData[i * 12 + 3] = ManorData.getInstance().getRewardItemBySeed(s, 2);
+			_seedData[i * 12 + 4] = ManorData.getInstance().getSeedSaleLimit(s);
+			_seedData[i * 12 + 5] = ManorData.getInstance().getSeedBuyPrice(s);
+			_seedData[i * 12 + 6] = ManorData.getInstance().getSeedBasicPrice(s) * 60 / 100;
+			_seedData[i * 12 + 7] = ManorData.getInstance().getSeedBasicPrice(s) * 10;
 			SeedProduction seedPr = c.getSeed(s, CastleManorManager.PERIOD_CURRENT);
 			if (seedPr != null)
 			{

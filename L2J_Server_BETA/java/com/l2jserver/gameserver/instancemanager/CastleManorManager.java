@@ -17,7 +17,9 @@ package com.l2jserver.gameserver.instancemanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,8 +30,8 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -258,7 +260,7 @@ public class CastleManorManager
 				castle.setCropProcure(procureNext, PERIOD_NEXT);
 				
 				if (!procure.isEmpty() || !procureNext.isEmpty() || !production.isEmpty() || !productionNext.isEmpty())
-					_log.info(castle.getName() + ": Data loaded");
+					_log.info(getClass().getSimpleName() + ": " + castle.getName() + ": Data loaded");
 			}
 			statementProduction.close();
 			statementProcure.close();
@@ -412,7 +414,7 @@ public class CastleManorManager
 					}
 					if (count > 0)
 					{
-						cwh.addItem("Manor", L2Manor.getInstance().getMatureCrop(crop.getId()), count, null, null);
+						cwh.addItem("Manor", ManorData.getInstance().getMatureCrop(crop.getId()), count, null, null);
 					}
 				}
 				// reserved and not used money giving back to treasury
@@ -498,7 +500,7 @@ public class CastleManorManager
 				{
 					if (crop.getStartAmount() > 0)
 					{
-						if (cwh.getItemByItemId(L2Manor.getInstance().getMatureCrop(crop.getId())) == null)
+						if (cwh.getItemByItemId(ManorData.getInstance().getMatureCrop(crop.getId())) == null)
 							slots++;
 					}
 				}
@@ -528,10 +530,10 @@ public class CastleManorManager
 		}
 	}
 	
-	private FastList<SeedProduction> getNewSeedsList(int castleId)
+	private List<SeedProduction> getNewSeedsList(int castleId)
 	{
-		FastList<SeedProduction> seeds = new FastList<>();
-		FastList<Integer> seedsIds = L2Manor.getInstance().getSeedsForCastle(castleId);
+		List<SeedProduction> seeds = new ArrayList<>();
+		List<Integer> seedsIds = ManorData.getInstance().getSeedsForCastle(castleId);
 		for (int sd : seedsIds)
 		{
 			seeds.add(new SeedProduction(sd));
@@ -539,12 +541,14 @@ public class CastleManorManager
 		return seeds;
 	}
 	
-	private FastList<CropProcure> getNewCropsList(int castleId)
+	private List<CropProcure> getNewCropsList(int castleId)
 	{
-		FastList<CropProcure> crops = new FastList<>();
-		FastList<Integer> cropsIds = L2Manor.getInstance().getCropsForCastle(castleId);
+		List<CropProcure> crops = new ArrayList<>();
+		List<Integer> cropsIds = ManorData.getInstance().getCropsForCastle(castleId);
 		for (int cr : cropsIds)
+		{
 			crops.add(new CropProcure(cr));
+		}
 		
 		return crops;
 	}

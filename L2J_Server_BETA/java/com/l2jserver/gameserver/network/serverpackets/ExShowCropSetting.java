@@ -14,12 +14,12 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.List;
 
+import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
-import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.entity.Castle;
 
 /**
@@ -35,20 +35,20 @@ public class ExShowCropSetting extends L2GameServerPacket
 	{
 		_manorId = manorId;
 		Castle c = CastleManager.getInstance().getCastleById(_manorId);
-		FastList<Integer> crops = L2Manor.getInstance().getCropsForCastle(_manorId);
+		List<Integer> crops = ManorData.getInstance().getCropsForCastle(_manorId);
 		_count = crops.size();
 		_cropData = new long[_count * 14];
 		int i = 0;
 		for (int cr : crops)
 		{
 			_cropData[i * 14 + 0] = cr;
-			_cropData[i * 14 + 1] = L2Manor.getInstance().getSeedLevelByCrop(cr);
-			_cropData[i * 14 + 2] = L2Manor.getInstance().getRewardItem(cr, 1);
-			_cropData[i * 14 + 3] = L2Manor.getInstance().getRewardItem(cr, 2);
-			_cropData[i * 14 + 4] = L2Manor.getInstance().getCropPuchaseLimit(cr);
+			_cropData[i * 14 + 1] = ManorData.getInstance().getSeedLevelByCrop(cr);
+			_cropData[i * 14 + 2] = ManorData.getInstance().getRewardItem(cr, 1);
+			_cropData[i * 14 + 3] = ManorData.getInstance().getRewardItem(cr, 2);
+			_cropData[i * 14 + 4] = ManorData.getInstance().getCropPuchaseLimit(cr);
 			_cropData[i * 14 + 5] = 0; // Looks like not used
-			_cropData[i * 14 + 6] = L2Manor.getInstance().getCropBasicPrice(cr) * 60 / 100;
-			_cropData[i * 14 + 7] = L2Manor.getInstance().getCropBasicPrice(cr) * 10;
+			_cropData[i * 14 + 6] = ManorData.getInstance().getCropBasicPrice(cr) * 60 / 100;
+			_cropData[i * 14 + 7] = ManorData.getInstance().getCropBasicPrice(cr) * 10;
 			CropProcure cropPr = c.getCrop(cr, CastleManorManager.PERIOD_CURRENT);
 			if (cropPr != null)
 			{

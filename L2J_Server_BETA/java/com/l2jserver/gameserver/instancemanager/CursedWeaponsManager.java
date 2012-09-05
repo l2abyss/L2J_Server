@@ -51,16 +51,12 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
 
 /**
+ * UnAfraid: TODO: Rewrite with DocumentParser 
  * @author Micht
  */
 public class CursedWeaponsManager
 {
 	private static final Logger _log = Logger.getLogger(CursedWeaponsManager.class.getName());
-	
-	public static final CursedWeaponsManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	private Map<Integer, CursedWeapon> _cursedWeapons;
 	
@@ -79,7 +75,7 @@ public class CursedWeaponsManager
 		load();
 		restore();
 		controlPlayers();
-		_log.info("Loaded : " + _cursedWeapons.size() + " cursed weapon(s).");
+		_log.info(getClass().getSimpleName() + ": Loaded : " + _cursedWeapons.size() + " cursed weapon(s).");
 	}
 	
 	public final void reload()
@@ -89,8 +85,6 @@ public class CursedWeaponsManager
 	
 	private final void load()
 	{
-		if (Config.DEBUG)
-			_log.info("  Parsing ... ");
 		try
 		{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -100,8 +94,7 @@ public class CursedWeaponsManager
 			File file = new File(Config.DATAPACK_ROOT + "/data/cursedWeapons.xml");
 			if (!file.exists())
 			{
-				if (Config.DEBUG)
-					_log.info("NO FILE");
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't find data/" + file.getName());
 				return;
 			}
 			
@@ -163,9 +156,6 @@ public class CursedWeaponsManager
 					}
 				}
 			}
-			
-			if (Config.DEBUG)
-				_log.info("OK");
 		}
 		catch (Exception e)
 		{
@@ -177,8 +167,6 @@ public class CursedWeaponsManager
 	
 	private final void restore()
 	{
-		if (Config.DEBUG)
-			_log.info("  Restoring ... ");
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
@@ -204,9 +192,6 @@ public class CursedWeaponsManager
 			
 			rset.close();
 			statement.close();
-			
-			if (Config.DEBUG)
-				_log.info("OK");
 		}
 		catch (Exception e)
 		{
@@ -215,10 +200,7 @@ public class CursedWeaponsManager
 	}
 	
 	private final void controlPlayers()
-	{
-		if (Config.DEBUG)
-			_log.info("  Checking players ... ");
-		
+	{		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			// TODO: See comments below...
@@ -279,13 +261,8 @@ public class CursedWeaponsManager
 		}
 		catch (Exception e)
 		{
-			if (Config.DEBUG)
-				_log.log(Level.WARNING, "Could not check CursedWeapons data: " + e.getMessage(), e);
-			return;
+			_log.log(Level.WARNING, "Could not check CursedWeapons data: " + e.getMessage(), e);
 		}
-		
-		if (Config.DEBUG)
-			_log.info("DONE");
 	}
 	
 	public synchronized void checkDrop(L2Attackable attackable, L2PcInstance player)
@@ -442,6 +419,11 @@ public class CursedWeaponsManager
 		{
 			/***/
 		}
+	}
+	
+	public static final CursedWeaponsManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

@@ -96,18 +96,6 @@ public class TradeController
 								price = ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
 							}
 							
-							if (Config.DEBUG)
-							{
-								// debug
-								double diff = ((double) (price)) / ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-								if (diff < 0.8 || diff > 1.2)
-								{
-									_log.severe("PRICING DEBUG: TradeListId: " + buy1.getListId() + " -  ItemId: " + itemId + " ("
-											+ ItemTable.getInstance().getTemplate(itemId).getName() + ") diff: " + diff + " - Price: " + price
-											+ " - Reference: " + ItemTable.getInstance().getTemplate(itemId).getReferencePrice());
-								}
-							}
-							
 							item.setPrice(price);
 							
 							item.setRestoreDelay(time);
@@ -183,18 +171,6 @@ public class TradeController
 						if (price <= -1)
 						{
 							price = ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-						}
-						
-						if (Config.DEBUG)
-						{
-							// debug
-							double diff = ((double) (price)) / ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-							if (diff < 0.8 || diff > 1.2)
-							{
-								_log.severe("PRICING DEBUG: TradeListId: " + buy1.getListId() + " -  ItemId: " + itemId + " ("
-										+ ItemTable.getInstance().getTemplate(itemId).getName() + ") diff: " + diff + " - Price: " + price
-										+ " - Reference: " + ItemTable.getInstance().getTemplate(itemId).getReferencePrice());
-							}
 						}
 						
 						item.setPrice(price);

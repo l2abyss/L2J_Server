@@ -58,7 +58,7 @@ public class PetNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing petname:" + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing petname:" + e.getMessage(), e);
 		}
 		return result;
 	}
@@ -77,7 +77,7 @@ public class PetNameTable
 		}
 		catch (PatternSyntaxException e) // case of illegal pattern
 		{
-			_log.warning("ERROR : Pet name pattern of config is wrong!");
+			_log.warning(getClass().getSimpleName() + ": Pet name pattern of config is wrong!");
 			pattern = Pattern.compile(".*");
 		}
 		Matcher regexp = pattern.matcher(name);

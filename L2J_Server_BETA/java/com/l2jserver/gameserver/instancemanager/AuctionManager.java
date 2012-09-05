@@ -17,11 +17,10 @@ package com.l2jserver.gameserver.instancemanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javolution.util.FastList;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.entity.Auction;
@@ -29,7 +28,7 @@ import com.l2jserver.gameserver.model.entity.Auction;
 public class AuctionManager
 {
 	protected static final Logger _log = Logger.getLogger(AuctionManager.class.getName());
-	private List<Auction> _auctions;
+	private List<Auction> _auctions = new ArrayList<>();
 	
 	private static final String[] ITEM_INIT_DATA =
 	{
@@ -86,7 +85,6 @@ public class AuctionManager
 	
 	protected AuctionManager()
 	{
-		_auctions = new FastList<>();
 		load();
 	}
 	
@@ -103,14 +101,16 @@ public class AuctionManager
 			PreparedStatement statement = con.prepareStatement("SELECT id FROM auction ORDER BY id");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next())
+			{
 				_auctions.add(new Auction(rs.getInt("id")));
+			}
 			rs.close();
 			statement.close();
-			_log.info("Loaded: " + getAuctions().size() + " auction(s)");
+			_log.info(getClass().getSimpleName() + ": Loaded: " + getAuctions().size() + " auction(s)");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Exception: AuctionManager.load(): " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception: AuctionManager.load(): " + e.getMessage(), e);
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class AuctionManager
 		}
 		if (i >= ItemInitDataId.length || ItemInitDataId[i] != id)
 		{
-			_log.warning("Clan Hall auction not found for Id :" + id);
+			_log.warning(getClass().getSimpleName() + ": Clan Hall auction not found for Id :" + id);
 			return;
 		}
 		
@@ -163,11 +163,11 @@ public class AuctionManager
 			statement.execute();
 			statement.close();
 			_auctions.add(new Auction(id));
-			_log.info("Created auction for ClanHall: " + id);
+			_log.info(getClass().getSimpleName() + ": Created auction for ClanHall: " + id);
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Exception: Auction.initNPC(): " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Exception: Auction.initNPC(): " + e.getMessage(), e);
 		}
 	}
 	

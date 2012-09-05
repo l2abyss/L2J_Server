@@ -36,18 +36,17 @@ import com.l2jserver.util.L2FastList;
  * @author DiezelMax, original idea.
  * @author Enforcer, actual build.
  */
-public class ItemsOnGroundManager
+public class ItemsOnGroundManager implements Runnable
 {
-	static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
+	private static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
 	
 	protected List<L2ItemInstance> _items = new L2FastList<>(true);
-	private final StoreInDb _task = new StoreInDb();
 	
 	protected ItemsOnGroundManager()
 	{
 		if (Config.SAVE_DROPPED_ITEM_INTERVAL > 0)
 		{
-			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(_task, Config.SAVE_DROPPED_ITEM_INTERVAL, Config.SAVE_DROPPED_ITEM_INTERVAL);
+			ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, Config.SAVE_DROPPED_ITEM_INTERVAL, Config.SAVE_DROPPED_ITEM_INTERVAL);
 		}
 		load();
 	}
@@ -88,7 +87,7 @@ public class ItemsOnGroundManager
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error while updating table ItemsOnGround " + e.getMessage(), e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while updating table ItemsOnGround " + e.getMessage(), e);
 			}
 		}
 		
@@ -139,11 +138,11 @@ public class ItemsOnGroundManager
 			rset.close();
 			statement.close();
 			
-			_log.info("ItemsOnGroundManager: Loaded " + count + " items.");
+			_log.info(getClass().getSimpleName() + ": Loaded " + count + " items.");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error while loading ItemsOnGround " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading ItemsOnGround " + e.getMessage(), e);
 		}
 		
 		if (Config.EMPTY_DROPPED_ITEM_TABLE_AFTER_LOAD)
@@ -171,7 +170,7 @@ public class ItemsOnGroundManager
 	
 	public void saveInDb()
 	{
-		_task.run();
+		run();
 	}
 	
 	public void cleanUp()
@@ -189,77 +188,66 @@ public class ItemsOnGroundManager
 		}
 		catch (Exception e1)
 		{
-			_log.log(Level.SEVERE, "Error while cleaning table ItemsOnGround " + e1.getMessage(), e1);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while cleaning table ItemsOnGround " + e1.getMessage(), e1);
 		}
 	}
 	
-	protected class StoreInDb extends Thread
+
+	@Override
+	public synchronized void run()
 	{
-		@Override
-		public synchronized void run()
+		if (!Config.SAVE_DROPPED_ITEM)
 		{
-			if (!Config.SAVE_DROPPED_ITEM)
-			{
-				return;
-			}
+			return;
+		}
+		
+		emptyTable();
+		
+		if (_items.isEmpty())
+		{
+			return;
+		}
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		{
+			PreparedStatement statement = con.prepareStatement("INSERT INTO itemsonground(object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable) VALUES(?,?,?,?,?,?,?,?,?)");
 			
-			emptyTable();
-			
-			if (_items.isEmpty())
+			for (L2ItemInstance item : _items)
 			{
-				if (Config.DEBUG)
+				if (item == null)
 				{
-					_log.warning("ItemsOnGroundManager: nothing to save...");
+					continue;
 				}
-				return;
-			}
-			
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
-			{
-				PreparedStatement statement = con.prepareStatement("INSERT INTO itemsonground(object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable) VALUES(?,?,?,?,?,?,?,?,?)");
 				
-				for (L2ItemInstance item : _items)
+				if (CursedWeaponsManager.getInstance().isCursed(item.getItemId()))
 				{
-					if (item == null)
-					{
-						continue;
-					}
-					
-					if (CursedWeaponsManager.getInstance().isCursed(item.getItemId()))
-					{
-						continue; // Cursed Items not saved to ground, prevent double save
-					}
-					
-					try
-					{
-						statement.setInt(1, item.getObjectId());
-						statement.setInt(2, item.getItemId());
-						statement.setLong(3, item.getCount());
-						statement.setInt(4, item.getEnchantLevel());
-						statement.setInt(5, item.getX());
-						statement.setInt(6, item.getY());
-						statement.setInt(7, item.getZ());
-						statement.setLong(8, (item.isProtected() ? -1 : item.getDropTime())); // item is protected or AutoDestroyed
-						statement.setLong(9, (item.isEquipable() ? 1 : 0)); // set equip-able
-						statement.execute();
-						statement.clearParameters();
-					}
-					catch (Exception e)
-					{
-						_log.log(Level.SEVERE, "Error while inserting into table ItemsOnGround: " + e.getMessage(), e);
-					}
+					continue; // Cursed Items not saved to ground, prevent double save
 				}
-				statement.close();
+				
+				try
+				{
+					statement.setInt(1, item.getObjectId());
+					statement.setInt(2, item.getItemId());
+					statement.setLong(3, item.getCount());
+					statement.setInt(4, item.getEnchantLevel());
+					statement.setInt(5, item.getX());
+					statement.setInt(6, item.getY());
+					statement.setInt(7, item.getZ());
+					statement.setLong(8, (item.isProtected() ? -1 : item.getDropTime())); // item is protected or AutoDestroyed
+					statement.setLong(9, (item.isEquipable() ? 1 : 0)); // set equip-able
+					statement.execute();
+					statement.clearParameters();
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while inserting into table ItemsOnGround: " + e.getMessage(), e);
+				}
 			}
-			catch (SQLException e)
-			{
-				_log.log(Level.SEVERE, "SQL error while storing items on ground: " + e.getMessage(), e);
-			}
-			
-			if (Config.DEBUG)
-			{
-				_log.info(getClass().getSimpleName() + ": Saved " + _items.size() + " items on ground.");
-			}
+			statement.close();
+		}
+		catch (SQLException e)
+		{
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": SQL error while storing items on ground: " + e.getMessage(), e);
 		}
 	}
 	

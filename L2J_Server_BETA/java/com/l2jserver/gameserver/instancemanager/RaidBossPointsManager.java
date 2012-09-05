@@ -32,8 +32,8 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author Kerberos
- * JIV update 24.8.10
+ * @author Kerberos, JIV
+ * @version 8/24/10
  */
 public class RaidBossPointsManager
 {
@@ -41,18 +41,14 @@ public class RaidBossPointsManager
 	
 	private FastMap<Integer, Map<Integer, Integer>> _list;
 	
-	private final Comparator<Map.Entry<Integer, Integer>> _comparator = new Comparator<Map.Entry<Integer, Integer>>(){
+	private final Comparator<Map.Entry<Integer, Integer>> _comparator = new Comparator<Map.Entry<Integer, Integer>>()
+	{
 		@Override
 		public int compare(Map.Entry<Integer, Integer> entry, Map.Entry<Integer, Integer> entry1)
 		{
 			return entry.getValue().equals(entry1.getValue()) ? 0 : entry.getValue() < entry1.getValue() ? 1 : -1;
 		}
 	};
-	
-	public static final RaidBossPointsManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	public RaidBossPointsManager()
 	{
@@ -66,7 +62,7 @@ public class RaidBossPointsManager
 		{
 			PreparedStatement statement = con.prepareStatement("SELECT `charId`,`boss_id`,`points` FROM `character_raid_points`");
 			ResultSet rset = statement.executeQuery();
-			while(rset.next())
+			while (rset.next())
 			{
 				int charId = rset.getInt("charId");
 				int bossId = rset.getInt("boss_id");
@@ -81,11 +77,11 @@ public class RaidBossPointsManager
 			}
 			rset.close();
 			statement.close();
-			_log.info(getClass().getSimpleName()+": Loaded "+_list.size()+" Characters Raid Points.");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _list.size() + " Characters Raid Points.");
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "RaidPointsManager: Couldnt load raid points ", e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldnt load raid points ", e);
 		}
 	}
 	
@@ -102,7 +98,7 @@ public class RaidBossPointsManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "could not update char raid points:", e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't update char raid points for player: " + player, e);
 		}
 	}
 	
@@ -110,7 +106,7 @@ public class RaidBossPointsManager
 	{
 		int ownerId = player.getObjectId();
 		Map<Integer, Integer> tmpPoint = _list.get(ownerId);
-		if(tmpPoint == null)
+		if (tmpPoint == null)
 		{
 			tmpPoint = new FastMap<>();
 			tmpPoint.put(bossId, points);
@@ -135,7 +131,7 @@ public class RaidBossPointsManager
 		if (tmpPoint == null || tmpPoint.isEmpty())
 			return 0;
 		
-		for(int points : tmpPoint.values())
+		for (int points : tmpPoint.values())
 		{
 			totalPoints += points;
 		}
@@ -158,7 +154,7 @@ public class RaidBossPointsManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "could not clean raid points: ", e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't clean raid points", e);
 		}
 	}
 	
@@ -175,10 +171,10 @@ public class RaidBossPointsManager
 		Map<Integer, Integer> tmpRanking = new FastMap<>();
 		Map<Integer, Integer> tmpPoints = new FastMap<>();
 		
-		for(int ownerId : _list.keySet())
+		for (int ownerId : _list.keySet())
 		{
 			int totalPoints = getPointsByOwnerId(ownerId);
-			if(totalPoints != 0)
+			if (totalPoints != 0)
 			{
 				tmpPoints.put(ownerId, totalPoints);
 			}
@@ -188,10 +184,17 @@ public class RaidBossPointsManager
 		Collections.sort(list, _comparator);
 		
 		int ranking = 1;
-		for(Map.Entry<Integer, Integer> entry : list)
+		for (Map.Entry<Integer, Integer> entry : list)
+		{
 			tmpRanking.put(entry.getKey(), ranking++);
+		}
 		
 		return tmpRanking;
+	}
+	
+	public static final RaidBossPointsManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

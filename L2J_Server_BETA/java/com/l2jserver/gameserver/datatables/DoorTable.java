@@ -82,7 +82,7 @@ public class DoorTable extends DocumentParser
 			}
 		}
 		
-		_log.info("DoorTable: Loaded " + _doors.size() + " Door Templates for " + _regions.size() + " regions.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _doors.size() + " Door Templates for " + _regions.size() + " regions.");
 	}
 	
 	public void insertCollisionData(StatsSet set)

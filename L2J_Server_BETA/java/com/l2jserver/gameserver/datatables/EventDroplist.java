@@ -16,11 +16,9 @@ package com.l2jserver.gameserver.datatables;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.script.DateRange;
 import com.l2jserver.gameserver.script.EventDrop;
 
@@ -31,9 +29,7 @@ import com.l2jserver.gameserver.script.EventDrop;
  * Each Special Event has a start and end date to stop to drop extra Items automatically.
  */
 public class EventDroplist
-{
-	private static Logger _log = Logger.getLogger(EventDroplist.class.getName());
-	
+{	
 	/**
 	 * The table containing all DataDrop object
 	 */
@@ -98,10 +94,6 @@ public class EventDroplist
 		final Date currentDate = new Date();
 		for (DateDrop drop : _allNpcDateDrops)
 		{
-			if (Config.DEBUG)
-			{
-				_log.info(drop._dateRange.toString() + " Now: " + currentDate);
-			}
 			if (drop._dateRange.isWithinRange(currentDate))
 			{
 				list.add(drop);

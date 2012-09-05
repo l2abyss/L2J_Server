@@ -16,10 +16,13 @@ package com.l2jserver.gameserver.datatables;
 
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.engines.DocumentEngine;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -31,20 +34,12 @@ public class SkillTable
 {
 	private static Logger _log = Logger.getLogger(SkillTable.class.getName());
 	
-	private final TIntObjectHashMap<L2Skill> _skills;
-	private final TIntIntHashMap _skillMaxLevel;
-	private final TIntArrayList _enchantable;
-	
-	public static SkillTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<Integer, L2Skill> _skills = new HashMap<>();
+	private final TIntIntHashMap _skillMaxLevel = new TIntIntHashMap();
+	private final TIntArrayList _enchantable = new TIntArrayList();
 	
 	protected SkillTable()
 	{
-		_skills = new TIntObjectHashMap<>();
-		_skillMaxLevel = new TIntIntHashMap();
-		_enchantable = new TIntArrayList();
 		load();
 	}
 	
@@ -61,7 +56,7 @@ public class SkillTable
 		DocumentEngine.getInstance().loadAllSkills(_skills);
 		
 		_skillMaxLevel.clear();
-		for (final L2Skill skill : _skills.values(new L2Skill[0]))
+		for (final L2Skill skill : _skills.values())
 		{
 			final int skillId = skill.getId();
 			final int skillLvl = skill.getLevel();
@@ -118,9 +113,15 @@ public class SkillTable
 		final int maxLvl = _skillMaxLevel.get(skillId);
 		// requested level too high
 		if (maxLvl > 0 && level > maxLvl)
+		{
+			if (Config.DEBUG)
+			{
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": call to unexisting skill level id: " + skillId + " requested level: " + level + " max level: " + maxLvl, new Throwable());
+			}
 			return _skills.get(getSkillHashCode(skillId, maxLvl));
+		}
 		
-		_log.warning("No skill info found for skill id " + skillId + " and skill level " + level + ".");
+		_log.warning(getClass().getSimpleName() + ": No skill info found for skill id " + skillId + " and skill level " + level + ".");
 		return null;
 	}
 	
@@ -154,11 +155,6 @@ public class SkillTable
 			temp[i++] = _skills.get(SkillTable.getSkillHashCode(845, 1));
 		}
 		return temp;
-	}
-	
-	private static class SingletonHolder
-	{
-		protected static final SkillTable _instance = new SkillTable();
 	}
 	
 	/**
@@ -196,5 +192,15 @@ public class SkillTable
 		{
 			return _holder.getSkill();
 		}
+	}
+	
+	public static SkillTable getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final SkillTable _instance = new SkillTable();
 	}
 }

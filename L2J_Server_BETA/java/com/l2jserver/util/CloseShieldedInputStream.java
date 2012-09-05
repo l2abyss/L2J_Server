@@ -34,12 +34,18 @@ public class CloseShieldedInputStream extends InputStream
 		_in = in;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close()
 	{
 		_in = null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int read() throws IOException
 	{
@@ -50,6 +56,9 @@ public class CloseShieldedInputStream extends InputStream
 		return _in.read();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int read(byte b[]) throws IOException
 	{
@@ -60,6 +69,9 @@ public class CloseShieldedInputStream extends InputStream
 		return _in.read(b);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int read(byte b[], int off, int len) throws IOException
 	{
@@ -70,6 +82,9 @@ public class CloseShieldedInputStream extends InputStream
 		return _in.read(b, off, len);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public long skip(long n) throws IOException
 	{
@@ -80,6 +95,9 @@ public class CloseShieldedInputStream extends InputStream
 		return _in.skip(n);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public synchronized void mark(int readlimit)
 	{
@@ -89,6 +107,9 @@ public class CloseShieldedInputStream extends InputStream
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean markSupported()
 	{
@@ -99,6 +120,9 @@ public class CloseShieldedInputStream extends InputStream
 		return _in.markSupported();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public synchronized void reset() throws IOException
 	{

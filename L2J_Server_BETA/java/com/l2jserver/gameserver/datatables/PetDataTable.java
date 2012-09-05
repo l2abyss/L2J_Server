@@ -147,7 +147,7 @@ public final class PetDataTable extends DocumentParser
 	{
 		if (!_pets.containsKey(petId))
 		{
-			_log.info("Missing pet data for npcid: " + petId);
+			_log.info(getClass().getSimpleName() + ": Missing pet data for npcid: " + petId);
 		}
 		return _pets.get(petId);
 	}

@@ -93,11 +93,11 @@ public final class CharTemplateTable
 				final L2PcTemplate ct = new L2PcTemplate(set);
 				_charTemplates.put(ClassId.getClassId(cId), ct);
 			}
-			_log.info("CharTemplateTable: Loaded " + _charTemplates.size() + " Character Templates.");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _charTemplates.size() + " Character Templates.");
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.SEVERE, "Failed loading char templates", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading char templates", e);
 		}
 	}
 	

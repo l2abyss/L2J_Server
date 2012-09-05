@@ -70,7 +70,7 @@ public class TerritoryTable
 			Integer terr = row[0];
 			if (terr == null)
 			{
-				_log.warning("Null territory!");
+				_log.warning(getClass().getSimpleName() + ": Null territory!");
 				continue;
 			}
 			

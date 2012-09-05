@@ -15,12 +15,13 @@
 package com.l2jserver.gameserver.datatables;
 
 import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +32,7 @@ public class NpcBufferTable
 {
 	private static Logger _log = Logger.getLogger(NpcBufferTable.class.getName());
 	
-	private final TIntObjectHashMap<NpcBufferSkills> _buffers = new TIntObjectHashMap<>();
+	private final Map<Integer, NpcBufferSkills> _buffers = new HashMap<>();
 	
 	private static class NpcBufferSkills
 	{
@@ -114,7 +115,7 @@ public class NpcBufferTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.SEVERE, "NpcBufferTable: Error reading npc_buffer table: " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading npc_buffer table: " + e.getMessage(), e);
 		}
 		
 		if (Config.CUSTOM_NPCBUFFER_TABLES)
@@ -159,10 +160,10 @@ public class NpcBufferTable
 			}
 			catch (SQLException e)
 			{
-				_log.log(Level.SEVERE, "NpcBufferTable: Error reading custom_npc_buffer table: " + e.getMessage(), e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading custom_npc_buffer table: " + e.getMessage(), e);
 			}
 		}
-		_log.info("NpcBufferSkillIdsTable: Loaded " + _buffers.size() + " buffers and " + skillCount + " skills.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _buffers.size() + " buffers and " + skillCount + " skills.");
 	}
 	
 	public int[] getSkillInfo(int npcId, int buffGroup)

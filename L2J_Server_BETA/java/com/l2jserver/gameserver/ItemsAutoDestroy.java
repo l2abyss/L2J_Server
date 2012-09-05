@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -26,9 +25,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class ItemsAutoDestroy
-{
-	private static final Logger _log = Logger.getLogger(ItemsAutoDestroy.class.getName());
-	
+{	
 	protected List<L2ItemInstance> _items = null;
 	protected static long _sleep;
 	
@@ -54,9 +51,6 @@ public class ItemsAutoDestroy
 	
 	public synchronized void removeItems()
 	{
-		if (Config.DEBUG)
-			_log.info("[ItemsAutoDestroy] : " + _items.size() + " items to check.");
-		
 		if (_items.isEmpty())
 			return;
 		
@@ -98,10 +92,7 @@ public class ItemsAutoDestroy
 						ItemsOnGroundManager.getInstance().removeObject(item);
 				}
 			}
-		}
-		
-		if (Config.DEBUG)
-			_log.info("[ItemsAutoDestroy] : " + _items.size() + " items remaining.");
+		}		
 	}
 	
 	protected class CheckItemsForDestroy extends Thread

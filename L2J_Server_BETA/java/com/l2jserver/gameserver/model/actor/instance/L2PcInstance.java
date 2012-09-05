@@ -1831,10 +1831,7 @@ public final class L2PcInstance extends L2Playable
 		String content = HtmCache.getInstance().getHtm(getHtmlPrefix(), path);  //TODO path for quests html
 		
 		if (content != null)
-		{
-			if (Config.DEBUG)
-				_log.fine("Showing quest window for quest "+questId+" state "+stateId+" html path: " + path);
-			
+		{	
 			NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
 			npcReply.setHtml(content);
 			sendPacket(npcReply);
@@ -4513,8 +4510,6 @@ public final class L2PcInstance extends L2Playable
 						|| needHpUpdate
 						|| needMpUpdate(352)))
 		{
-			if (Config.DEBUG)
-				_log.fine("Send status for party window of " + getObjectId() + "(" + getName() + ") to his party. CP: " + getCurrentCp() + " HP: " + getCurrentHp() + " MP: " + getCurrentMp());
 			// Send the Server->Client packet PartySmallWindowUpdate with current HP, MP and Level to all other L2PcInstance of the Party
 			PartySmallWindowUpdate update = new PartySmallWindowUpdate(this);
 			party.broadcastToPartyMembers(this, update);
@@ -4558,10 +4553,7 @@ public final class L2PcInstance extends L2Playable
 		// Send a Server->Client packet UserInfo to this L2PcInstance
 		sendPacket(new UserInfo(this));
 		
-		// Send a Server->Client packet CharInfo to all L2PcInstance in _KnownPlayers of the L2PcInstance
-		if (Config.DEBUG)
-			_log.fine("players to notify:" + getKnownList().getKnownPlayers().size() + " packet: [S] 03 CharInfo");
-		
+		// Send a Server->Client packet CharInfo to all L2PcInstance in _KnownPlayers of the L2PcInstance		
 		broadcastPacket(new CharInfo(this));
 		broadcastPacket(new ExBrExtraUserInfo(this));
 		if (TerritoryWarManager.getInstance().isTWInProgress()
@@ -4579,8 +4571,6 @@ public final class L2PcInstance extends L2Playable
 		sendPacket(new ExBrExtraUserInfo(this));
 		
 		// Send a Server->Client packet TitleUpdate to all L2PcInstance in _KnownPlayers of the L2PcInstance
-		if (Config.DEBUG)
-			_log.fine("players to notify:" + getKnownList().getKnownPlayers().size() + " packet: [S] cc TitleUpdate");
 		
 		broadcastPacket(new NicknameChanged(this));
 	}
@@ -4814,8 +4804,6 @@ public final class L2PcInstance extends L2Playable
 		
 		// Send a Server->Client packet StopMove to this L2PcInstance
 		StopMove sm = new StopMove(this);
-		if (Config.DEBUG)
-			_log.fine("pickup pos: "+ target.getX() + " "+target.getY()+ " "+target.getZ() );
 		sendPacket(sm);
 		
 		SystemMessage smsg = null;
@@ -6099,9 +6087,6 @@ public final class L2PcInstance extends L2Playable
 				lostExp = 0;
 		}
 		
-		if (Config.DEBUG)
-			_log.fine(getName() + " died and lost " + lostExp + " experience.");
-		
 		// Set the new Experience value of the L2PcInstance
 		getStat().addExp(-lostExp);
 	}
@@ -6568,7 +6553,6 @@ public final class L2PcInstance extends L2Playable
 			else
 				_arrowItem = null;
 			
-			if (Config.DEBUG) _log.fine("removed arrows count");
 			sendPacket(new ItemList(this,false));
 			return;
 		}
@@ -8806,9 +8790,6 @@ public final class L2PcInstance extends L2Playable
 				return false;
 			}
 			
-			if (Config.DEBUG && getQueuedSkill() != null)
-				_log.info(getQueuedSkill().getSkill().getName() + " is already queued for " + getName() + ".");
-			
 			// Create a new SkillDat object and queue it in the player _queuedSkill
 			setQueuedSkill(skill, forceUse, dontMove);
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -9766,10 +9747,6 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void addCubic(int id, int level, double matk, int activationtime, int activationchance, int maxcount, int totalLifetime, boolean givenByOther)
 	{
-		if (Config.DEBUG)
-		{
-			_log.info("L2PcInstance(" + getName() + "): addCubic(" + id + "|" + level + "|" + matk + ")");
-		}
 		_cubics.put(id, new L2CubicInstance(this, id, level, (int) matk, activationtime, activationchance, maxcount, totalLifetime, givenByOther));
 	}
 	
@@ -10654,11 +10631,6 @@ public final class L2PcInstance extends L2Playable
 			// Commit after database INSERT incase exception is thrown.
 			getSubClasses().put(newClass.getClassIndex(), newClass);
 			
-			if (Config.DEBUG)
-			{
-				_log.info(getName() + " added class ID " + classId + " as a sub class at index " + classIndex + ".");
-			}
-			
 			final ClassId subTemplate = ClassId.getClassId(classId);
 			final Map<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(subTemplate);
 			final Map<Integer, L2Skill> prevSkillList = new HashMap<>();
@@ -11240,7 +11212,10 @@ public final class L2PcInstance extends L2Playable
 				CharSummonTable.getInstance().restorePet(this);
 		}
 		if (isTeleportProtected())
+		{
 			sendMessage("Teleport spawn protection ended.");
+			new Throwable(getName() + ": has requested action.").printStackTrace();
+		}
 		setProtection(false);
 		setTeleportProtection(false);
 	}
@@ -12516,17 +12491,10 @@ public final class L2PcInstance extends L2Playable
 	public void setCurrentSkill(L2Skill currentSkill, boolean ctrlPressed, boolean shiftPressed)
 	{
 		if (currentSkill == null)
-		{
-			if (Config.DEBUG)
-				_log.info("Setting current skill: NULL for " + getName() + ".");
-			
+		{			
 			_currentSkill = null;
 			return;
 		}
-		
-		if (Config.DEBUG)
-			_log.info("Setting current skill: " + currentSkill.getName() + " (ID: " + currentSkill.getId() + ") for " + getName() + ".");
-		
 		_currentSkill = new SkillDat(currentSkill, ctrlPressed, shiftPressed);
 	}
 	
@@ -12547,17 +12515,10 @@ public final class L2PcInstance extends L2Playable
 	public void setCurrentPetSkill(L2Skill currentSkill, boolean ctrlPressed, boolean shiftPressed)
 	{
 		if (currentSkill == null)
-		{
-			if (Config.DEBUG)
-				_log.info("Setting current pet skill: NULL for " + getName() + ".");
-			
+		{			
 			_currentPetSkill = null;
 			return;
 		}
-		
-		if (Config.DEBUG)
-			_log.info("Setting current Pet skill: " + currentSkill.getName() + " (ID: " + currentSkill.getId() + ") for " + getName() + ".");
-		
 		_currentPetSkill = new SkillDat(currentSkill, ctrlPressed, shiftPressed);
 	}
 	
@@ -12577,17 +12538,10 @@ public final class L2PcInstance extends L2Playable
 	public void setQueuedSkill(L2Skill queuedSkill, boolean ctrlPressed, boolean shiftPressed)
 	{
 		if (queuedSkill == null)
-		{
-			if (Config.DEBUG)
-				_log.info("Setting queued skill: NULL for " + getName() + ".");
-			
+		{			
 			_queuedSkill = null;
 			return;
-		}
-		
-		if (Config.DEBUG)
-			_log.info("Setting queued skill: " + queuedSkill.getName() + " (ID: " + queuedSkill.getId() + ") for " + getName() + ".");
-		
+		}		
 		_queuedSkill = new SkillDat(queuedSkill, ctrlPressed, shiftPressed);
 	}
 	

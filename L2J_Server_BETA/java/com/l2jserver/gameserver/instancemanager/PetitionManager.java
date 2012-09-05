@@ -100,7 +100,7 @@ public final class PetitionManager
 			_id = IdFactory.getInstance().getNextId();
 			if (petitionType >= PetitionType.values().length)
 			{
-				_log.warning("PetitionManager:Petition : invalid petition type (received type was +1) : " + petitionType);
+				_log.warning(getClass().getSimpleName() + ": Petition : invalid petition type (received type was +1) : " + petitionType);
 			}
 			_type = PetitionType.values()[petitionType];
 			_content = petitionText;
@@ -241,7 +241,7 @@ public final class PetitionManager
 		int numPetitions = getPendingPetitionCount();
 		
 		getCompletedPetitions().clear();
-		_log.info("PetitionManager: Completed petition data cleared. " + numPetitions + " petition(s) removed.");
+		_log.info(getClass().getSimpleName() + ": Completed petition data cleared. " + numPetitions + " petition(s) removed.");
 	}
 	
 	public void clearPendingPetitions()
@@ -249,7 +249,7 @@ public final class PetitionManager
 		int numPetitions = getPendingPetitionCount();
 		
 		getPendingPetitions().clear();
-		_log.info("PetitionManager: Pending petition queue cleared. " + numPetitions + " petition(s) removed.");
+		_log.info(getClass().getSimpleName() + ": Pending petition queue cleared. " + numPetitions + " petition(s) removed.");
 	}
 	
 	public boolean acceptPetition(L2PcInstance respondingAdmin, int petitionId)

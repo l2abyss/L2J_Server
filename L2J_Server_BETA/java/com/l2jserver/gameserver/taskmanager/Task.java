@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.taskmanager;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.taskmanager.TaskManager.ExecutedTask;
 
 /**
@@ -29,10 +28,6 @@ public abstract class Task
 	
 	public void initializate()
 	{
-		if (Config.DEBUG)
-		{
-			_log.info("Task" + getName() + " inializate");
-		}
 	}
 	
 	public ScheduledFuture<?> launchSpecial(ExecutedTask instance)

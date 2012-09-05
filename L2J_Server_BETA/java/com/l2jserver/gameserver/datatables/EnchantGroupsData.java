@@ -138,7 +138,7 @@ public class EnchantGroupsData extends DocumentParser
 			
 			return _enchantSkillGroups.get(group).getEnchantGroupDetails().size();
 		}
-		_log.log(Level.SEVERE, "Error while loading generating enchant skill id: " + skillId + "; route: " + route + "; missing group: " + group);
+		_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading generating enchant skill id: " + skillId + "; route: " + route + "; missing group: " + group);
 		return 0;
 	}
 	

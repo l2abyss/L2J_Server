@@ -71,11 +71,6 @@ public class TerritoryWarManager implements Siegable
 	private static final String DELETE = "DELETE FROM territory_registrations WHERE castleId = ? and registeredId = ?";
 	private static final String INSERT = "INSERT INTO territory_registrations (castleId, registeredId) values (?, ?)";
 	
-	public static final TerritoryWarManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	public static String qn = "TerritoryWarSuperClass";
 	public static int DEFENDERMAXCLANS; // Max number of clans
 	public static int DEFENDERMAXPLAYERS; // Max number of individual player
@@ -424,7 +419,7 @@ public class TerritoryWarManager implements Siegable
 			}
 		}
 		else
-			_log.warning("TerritoryWarManager: Missing territory for new Ward owner: " + newOwnerId + ";" + territoryId);
+			_log.warning(getClass().getSimpleName() + ": Missing territory for new Ward owner: " + newOwnerId + ";" + territoryId);
 		return ret;
 	}
 	
@@ -647,12 +642,12 @@ public class TerritoryWarManager implements Siegable
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "Territory War Manager: " + e.getMessage(), e);
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": " + e.getMessage(), e);
 			}
 		}
 		else
 		{
-			_log.warning("Territory War Manager: Data missing in NPC table for ID: " + npcId + ".");
+			_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + npcId + ".");
 		}
 		return null;
 	}
@@ -701,7 +696,7 @@ public class TerritoryWarManager implements Siegable
 		}
 		catch (IOException e)
 		{
-			_log.log(Level.WARNING, "Error while loading Territory War Manager settings!", e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while loading Territory War Manager settings!", e);
 		}
 		
 		// Siege setting
@@ -741,7 +736,7 @@ public class TerritoryWarManager implements Siegable
 						_territoryList.get(castleId).addWardSpawnPlace(loc);
 						break;
 					default:
-						_log.warning("Territory War Manager: Unknown npc type for " + rs.getInt("id"));
+						_log.warning(getClass().getSimpleName() + ": Unknown npc type for " + rs.getInt("id"));
 				}
 			}
 			
@@ -750,7 +745,7 @@ public class TerritoryWarManager implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Territory War Manager: SpawnList error: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": SpawnList error: " + e.getMessage(), e);
 		}
 			
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
@@ -787,7 +782,7 @@ public class TerritoryWarManager implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Territory War Manager: territory list error(): " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": territory list error(): " + e.getMessage(), e);
 		}
 			
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
@@ -817,7 +812,7 @@ public class TerritoryWarManager implements Siegable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Territory War Manager: registration list error: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": registration list error: " + e.getMessage(), e);
 		}
 	}
 	
@@ -825,7 +820,7 @@ public class TerritoryWarManager implements Siegable
 	{
 		if (_territoryList == null)
 		{
-			_log.warning("TerritoryWarManager: TerritoryList is NULL!");
+			_log.warning(getClass().getSimpleName() + ": TerritoryList is NULL!");
 			return;
 		}
 		FastList<Territory> activeTerritoryList = new FastList<>();
@@ -838,7 +833,7 @@ public class TerritoryWarManager implements Siegable
 					activeTerritoryList.add(t);
 			}
 			else
-				_log.warning("TerritoryWarManager: Castle missing! CastleId: " + t.getCastleId());
+				_log.warning(getClass().getSimpleName() + ": Castle missing! CastleId: " + t.getCastleId());
 		}
 		
 		if (activeTerritoryList.size() < 2)
@@ -863,7 +858,7 @@ public class TerritoryWarManager implements Siegable
 				castle.getZone().updateZoneStatusForCharactersInside();
 			}
 			else
-				_log.warning("TerritoryWarManager: Castle missing! CastleId: " + t.getCastleId());
+				_log.warning(getClass().getSimpleName() + ": Castle missing! CastleId: " + t.getCastleId());
 			if (fort != null)
 			{
 				t.changeNPCsSpawn(1, true);
@@ -873,7 +868,7 @@ public class TerritoryWarManager implements Siegable
 				fort.getZone().updateZoneStatusForCharactersInside();
 			}
 			else
-				_log.warning("TerritoryWarManager: Fort missing! FortId: " + t.getFortId());
+				_log.warning(getClass().getSimpleName() + ": Fort missing! FortId: " + t.getFortId());
 			for(TerritoryNPCSpawn ward : t.getOwnedWard())
 				if (ward.getNpc() != null && t.getOwnerClan() != null)
 				{
@@ -904,7 +899,7 @@ public class TerritoryWarManager implements Siegable
 		_isTWInProgress = false;
 		if (_territoryList == null)
 		{
-			_log.warning("TerritoryWarManager: TerritoryList is NULL!");
+			_log.warning(getClass().getSimpleName() + ": TerritoryList is NULL!");
 			return;
 		}
 		FastList<Territory> activeTerritoryList = new FastList<>();
@@ -917,7 +912,7 @@ public class TerritoryWarManager implements Siegable
 					activeTerritoryList.add(t);
 			}
 			else
-				_log.warning("TerritoryWarManager: Castle missing! CastleId: " + t.getCastleId());
+				_log.warning(getClass().getSimpleName() + ": Castle missing! CastleId: " + t.getCastleId());
 		}
 		
 		if (activeTerritoryList.size() < 2)
@@ -947,7 +942,7 @@ public class TerritoryWarManager implements Siegable
 				castle.getZone().setSiegeInstance(null);
 			}
 			else
-				_log.warning("TerritoryWarManager: Castle missing! CastleId: " + t.getCastleId());
+				_log.warning(getClass().getSimpleName() + ": Castle missing! CastleId: " + t.getCastleId());
 			
 			if (fort != null)
 			{
@@ -957,7 +952,7 @@ public class TerritoryWarManager implements Siegable
 				fort.getZone().setSiegeInstance(null);
 			}
 			else
-				_log.warning("TerritoryWarManager: Fort missing! FortId: " + t.getFortId());
+				_log.warning(getClass().getSimpleName() + ": Fort missing! FortId: " + t.getFortId());
 			
 			if (t.getHQ() != null)
 				t.getHQ().deleteMe();
@@ -991,7 +986,7 @@ public class TerritoryWarManager implements Siegable
 		Quest twQuest = QuestManager.getInstance().getQuest(qn);
 		if (twQuest == null)
 		{
-			_log.warning("TerritoryWarManager: missing main Quest!");
+			_log.warning(getClass().getSimpleName() + ": missing main Quest!");
 			return false;
 		}
 		for(int castleId : _registeredClans.keySet())
@@ -1359,14 +1354,14 @@ public class TerritoryWarManager implements Siegable
 			for(int i = 0; i < _territoryWardSpawnPlaces.length; i++)
 				if (_territoryWardSpawnPlaces[i] != null && _territoryWardSpawnPlaces[i].getNpc() == null)
 					return _territoryWardSpawnPlaces[i];
-			_log.log(Level.WARNING, "TerritoryWarManager: no free Ward spawn found for territory: " + _territoryId);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": no free Ward spawn found for territory: " + _territoryId);
 			for(int i = 0; i < _territoryWardSpawnPlaces.length; i++)
 				if (_territoryWardSpawnPlaces[i] == null)
-					_log.log(Level.WARNING, "TerritoryWarManager: territory ward spawn place " + i + " is null!");
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": territory ward spawn place " + i + " is null!");
 				else if (_territoryWardSpawnPlaces[i].getNpc() != null)
-					_log.log(Level.WARNING, "TerritoryWarManager: territory ward spawn place " + i + " has npc name: " + _territoryWardSpawnPlaces[i].getNpc().getName());
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": territory ward spawn place " + i + " has npc name: " + _territoryWardSpawnPlaces[i].getNpc().getName());
 				else
-					_log.log(Level.WARNING, "TerritoryWarManager: territory ward spawn place " + i + " is empty!");
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": territory ward spawn place " + i + " is empty!");
 			return null;
 		}
 		
@@ -1379,7 +1374,7 @@ public class TerritoryWarManager implements Siegable
 		{
 			if (type < 0 || type > 3)
 			{
-				_log.log(Level.WARNING, "TerritoryWarManager: wrong type(" + type + ") for NPCs spawn change!");
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": wrong type(" + type + ") for NPCs spawn change!");
 				return;
 			}
 			for(TerritoryNPCSpawn twSpawn : _spawnList)
@@ -1408,7 +1403,7 @@ public class TerritoryWarManager implements Siegable
 					wardSpawn._npcId = 0;
 					return;
 				}
-			_log.log(Level.WARNING, "TerritoryWarManager: cant delete wardId: " + wardId + " for territory: " + _territoryId);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Can't delete wardId: " + wardId + " for territory: " + _territoryId);
 		}
 		
 		public int getTerritoryId()
@@ -1474,11 +1469,6 @@ public class TerritoryWarManager implements Siegable
 		{
 			_isInProgress = val;
 		}
-	}
-	
-	private static class SingletonHolder
-	{
-		protected static final TerritoryWarManager _instance = new TerritoryWarManager();
 	}
 	
 	@Override
@@ -1581,5 +1571,15 @@ public class TerritoryWarManager implements Siegable
 	public void updateSiege()
 	{
 		
+	}
+	
+	public static final TerritoryWarManager getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final TerritoryWarManager _instance = new TerritoryWarManager();
 	}
 }

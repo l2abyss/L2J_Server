@@ -22,7 +22,6 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_MOVE_TO;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_PICK_UP;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_REST;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -64,13 +63,8 @@ public class L2PlayerAI extends L2PlayableAI
 	 *
 	 */
 	@Override
-	synchronized void changeIntention(CtrlIntention intention, Object arg0, Object arg1)
-	{
-		/*
-		 if (Config.DEBUG)
-		 _log.warning("L2PlayerAI: changeIntention -> " + intention + " " + arg0 + " " + arg1);
-		 */
-		
+	protected synchronized void changeIntention(CtrlIntention intention, Object arg0, Object arg1)
+	{	
 		// do nothing unless CAST intention
 		// however, forget interrupted actions when starting to use an offensive skill
 		if (intention != AI_INTENTION_CAST || (arg0 != null && ((L2Skill) arg0).isOffensive()))
@@ -152,10 +146,6 @@ public class L2PlayerAI extends L2PlayableAI
 			}
 			else
 			{
-				/*
-				 if (Config.DEBUG)
-				 _log.warning("L2PlayerAI: no previous intention set... Setting it to IDLE");
-				 */
 				// set intention to idle if skill doesn't change intention.
 				setIntention(AI_INTENTION_IDLE);
 			}
@@ -251,9 +241,6 @@ public class L2PlayerAI extends L2PlayableAI
 	private void thinkCast()
 	{
 		L2Character target = getCastTarget();
-		if (Config.DEBUG)
-			_log.warning(getClass().getSimpleName() + ": thinkCast -> Start");
-		
 		if (_skill.getTargetType() == L2TargetType.TARGET_GROUND && _actor instanceof L2PcInstance)
 		{
 			if (maybeMoveToPosition(((L2PcInstance) _actor).getCurrentSkillWorldPosition(), _actor.getMagicalAttackRange(_skill)))
@@ -330,11 +317,6 @@ public class L2PlayerAI extends L2PlayableAI
 	{
 		if (_thinking && getIntention() != AI_INTENTION_CAST) // casting must always continue
 			return;
-		
-		/*
-		 if (Config.DEBUG)
-		 _log.warning("L2PlayerAI: onEvtThink -> Check intention");
-		 */
 		
 		_thinking = true;
 		try

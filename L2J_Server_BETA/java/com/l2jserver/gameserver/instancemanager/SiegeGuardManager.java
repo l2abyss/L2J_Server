@@ -114,7 +114,7 @@ public class SiegeGuardManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error deleting hired siege guard at " + x + ',' + y + ',' + z + ": " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error deleting hired siege guard at " + x + ',' + y + ',' + z + ": " + e.getMessage(), e);
 		}
 	}
 	
@@ -132,7 +132,7 @@ public class SiegeGuardManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error deleting hired siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error deleting hired siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
 		}
 	}
 	
@@ -162,7 +162,7 @@ public class SiegeGuardManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error spawning siege guards for castle " + getCastle().getName(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error spawning siege guards for castle " + getCastle().getName(), e);
 		}
 	}
 	
@@ -219,7 +219,7 @@ public class SiegeGuardManager
 				}
 				else
 				{
-					_log.warning("Missing npc data in npc table for id: " + rs.getInt("npcId"));
+					_log.warning(getClass().getSimpleName() + ": Missing npc data in npc table for id: " + rs.getInt("npcId"));
 				}
 			}
 			rs.close();
@@ -227,7 +227,7 @@ public class SiegeGuardManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error loading siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error loading siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
 		}
 	}
 	
@@ -258,7 +258,7 @@ public class SiegeGuardManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error adding siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error adding siege guard for castle " + getCastle().getName() + ": " + e.getMessage(), e);
 		}
 	}
 	

@@ -75,7 +75,7 @@ public class CharSummonTable
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error while loading saved summons", e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading saved summons", e);
 			}
 		}
 		
@@ -92,7 +92,7 @@ public class CharSummonTable
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error while loading saved summons", e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading saved summons", e);
 			}
 		}
 	}
@@ -125,7 +125,7 @@ public class CharSummonTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Failed to store summon [SummonId: " + summon.getNpcId() + "] from Char [CharId: " + summon.getOwner().getObjectId() + "] data", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed to store summon [SummonId: " + summon.getNpcId() + "] from Char [CharId: " + summon.getOwner().getObjectId() + "] data", e);
 		}
 			
 	}
@@ -161,7 +161,7 @@ public class CharSummonTable
 					summonTemplate = NpcTable.getInstance().getTemplate(skill.getNpcId());
 					if (summonTemplate == null)
 					{
-						_log.warning("[CharSummonTable] Summon attemp for nonexisting Skill ID:" + skillId);
+						_log.warning(getClass().getSimpleName() + ": Summon attemp for nonexisting Skill ID:" + skillId);
 						return;
 					}
 					
@@ -189,7 +189,7 @@ public class CharSummonTable
 					if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 					{
 						summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));
-						_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above "+ExperienceTable.getInstance().getMaxPetLevel()+". Please rectify.");
+						_log.warning(getClass().getSimpleName() + ": Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above "+ExperienceTable.getInstance().getMaxPetLevel()+". Please rectify.");
 					}
 					else
 					{
@@ -211,7 +211,7 @@ public class CharSummonTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "[CharSummonTable]: Summon cannot be restored: ", e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Summon cannot be restored: ", e);
 		}
 	}
 	
@@ -226,7 +226,7 @@ public class CharSummonTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "[CharSummonTable]: Summon cannot be removed: ", e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Summon cannot be removed: ", e);
 		}
 	}
 	

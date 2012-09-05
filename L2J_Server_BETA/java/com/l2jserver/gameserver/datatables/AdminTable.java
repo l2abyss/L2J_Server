@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,9 +60,9 @@ public class AdminTable extends DocumentParser
 	{
 		_accessLevels.clear();
 		_adminCommandAccessRights.clear();
-		parseFile(new File(Config.DATAPACK_ROOT, "config/accessLevels.xml"));
+		parseDatapackFile("config/accessLevels.xml");
 		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _accessLevels.size() + " Access Levels");
-		parseFile(new File(Config.DATAPACK_ROOT, "config/adminCommands.xml"));
+		parseDatapackFile("config/adminCommands.xml");
 		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _adminCommandAccessRights.size() + " Access Commands");
 	}
 	
@@ -167,11 +166,11 @@ public class AdminTable extends DocumentParser
 			{
 				acar = new L2AdminCommandAccessRight(adminCommand, true, accessLevel.getLevel());
 				_adminCommandAccessRights.put(adminCommand, acar);
-				_log.info("AdminCommandAccessRights: No rights defined for admin command " + adminCommand + " auto setting accesslevel: " + accessLevel.getLevel() + " !");
+				_log.info(getClass().getSimpleName() + ": No rights defined for admin command " + adminCommand + " auto setting accesslevel: " + accessLevel.getLevel() + " !");
 			}
 			else
 			{
-				_log.info("AdminCommandAccessRights: No rights defined for admin command " + adminCommand + " !");
+				_log.info(getClass().getSimpleName() + ": No rights defined for admin command " + adminCommand + " !");
 				return false;
 			}
 		}
@@ -188,7 +187,7 @@ public class AdminTable extends DocumentParser
 		L2AdminCommandAccessRight acar = _adminCommandAccessRights.get(command);
 		if (acar == null)
 		{
-			_log.info("AdminCommandAccessRights: No rights defined for admin command " + command + ".");
+			_log.info(getClass().getSimpleName() + ": No rights defined for admin command " + command + ".");
 			return false;
 		}
 		return acar.getRequireConfirm();

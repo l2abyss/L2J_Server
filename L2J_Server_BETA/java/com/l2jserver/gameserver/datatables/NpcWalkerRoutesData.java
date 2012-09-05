@@ -87,7 +87,7 @@ public class NpcWalkerRoutesData extends DocumentParser
 								npcString = NpcStringId.getNpcStringId(node.getNodeValue());
 								if (npcString == null)
 								{
-									_log.log(Level.WARNING, "NpcWalkerRoutersTable: Unknown npcstring '" + node.getNodeValue() + ".");
+									_log.log(Level.WARNING, getClass().getSimpleName() + ": Unknown npcstring '" + node.getNodeValue() + ".");
 									continue;
 								}
 							}
@@ -99,7 +99,7 @@ public class NpcWalkerRoutesData extends DocumentParser
 									npcString = NpcStringId.getNpcStringId(parseInt(node));
 									if (npcString == null)
 									{
-										_log.log(Level.WARNING, "NpcWalkerRoutersTable: Unknown npcstring '" + node.getNodeValue() + ".");
+										_log.log(Level.WARNING, getClass().getSimpleName() + ": Unknown npcstring '" + node.getNodeValue() + ".");
 										continue;
 									}
 								}

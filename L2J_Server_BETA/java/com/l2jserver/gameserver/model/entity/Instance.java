@@ -76,6 +76,13 @@ public class Instance
 		_instanceStartTime = System.currentTimeMillis();
 	}
 	
+	public Instance(int id, String name)
+	{
+		_id = id;
+		_name = name;
+		_instanceStartTime = System.currentTimeMillis();
+	}
+	
 	/**
 	 * @return the ID of this instance.
 	 */
@@ -522,10 +529,6 @@ public class Instance
 					_spawnLoc = null;
 				}
 			}
-		}
-		if (Config.DEBUG)
-		{
-			_log.info(name + " Instance Template for Instance " + getId() + " loaded");
 		}
 	}
 	

@@ -76,7 +76,7 @@ public final class CHSiegeManager
 				_siegableHalls.put(id, hall);
 				ClanHallManager.addClanHall(hall);
 			}
-			_log.info("CHSiegeManager: Loaded " + _siegableHalls.size() + " conquerable clan halls.");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _siegableHalls.size() + " conquerable clan halls.");
 			rs.close();
 			statement.close();
 		}

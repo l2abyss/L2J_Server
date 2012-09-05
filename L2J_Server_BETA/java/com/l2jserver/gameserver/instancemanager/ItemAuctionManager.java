@@ -43,11 +43,6 @@ public final class ItemAuctionManager
 {
 	private static final Logger _log = Logger.getLogger(ItemAuctionManager.class.getName());
 	
-	public static final ItemAuctionManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	private final TIntObjectHashMap<ItemAuctionInstance> _managerInstances;
 	private final AtomicInteger _auctionIds;
 	
@@ -58,7 +53,7 @@ public final class ItemAuctionManager
 		
 		if (!Config.ALT_ITEM_AUCTION_ENABLED)
 		{
-			_log.log(Level.INFO, "ItemAuctionManager: Disabled by config.");
+			_log.log(Level.INFO, getClass().getSimpleName() + ": Disabled by config.");
 			return;
 		}
 		
@@ -71,13 +66,13 @@ public final class ItemAuctionManager
 		}
 		catch (final SQLException e)
 		{
-			_log.log(Level.SEVERE, "ItemAuctionManager: Failed loading auctions.", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading auctions.", e);
 		}
 		
 		final File file = new File(Config.DATAPACK_ROOT + "/data/ItemAuctions.xml");
 		if (!file.exists())
 		{
-			_log.log(Level.WARNING, "ItemAuctionManager: Missing ItemAuctions.xml!");
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Missing ItemAuctions.xml!");
 			return;
 		}
 		
@@ -108,11 +103,11 @@ public final class ItemAuctionManager
 					}
 				}
 			}
-			_log.log(Level.INFO, "ItemAuctionManager: Loaded " + _managerInstances.size() + " instance(s).");
+			_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _managerInstances.size() + " instance(s).");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "ItemAuctionManager: Failed loading auctions from xml.", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading auctions from xml.", e);
 		}
 	}
 	
@@ -155,6 +150,11 @@ public final class ItemAuctionManager
 		{
 			_log.log(Level.SEVERE, "L2ItemAuctionManagerInstance: Failed deleting auction: " + auctionId, e);
 		}
+	}
+	
+	public static final ItemAuctionManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

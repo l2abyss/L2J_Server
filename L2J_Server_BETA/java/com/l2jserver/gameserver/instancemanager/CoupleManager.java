@@ -68,7 +68,7 @@ public class CoupleManager
 			rs.close();
 			statement.close();
 			
-			_log.info("Loaded: " + getCouples().size() + " couples(s)");
+			_log.info(getClass().getSimpleName() + ": Loaded: " + getCouples().size() + " couples(s)");
 		}
 		catch (Exception e)
 		{

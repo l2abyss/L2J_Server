@@ -251,7 +251,7 @@ public class RecipeData extends DocumentParser
 		L2RecipeList recipeList = _recipes.get(id);
 		if ((recipeList == null) || (recipeList.getRecipes().length == 0))
 		{
-			player.sendMessage("No recipe for: " + id);
+			player.sendMessage(getClass().getSimpleName() + ": No recipe for: " + id);
 			player.isInCraftMode(false);
 			return null;
 		}

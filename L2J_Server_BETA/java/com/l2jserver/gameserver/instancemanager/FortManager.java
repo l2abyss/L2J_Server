@@ -165,7 +165,7 @@ public class FortManager implements InstanceListManager
 			rs.close();
 			statement.close();
 			
-			_log.info("Loaded: " + getForts().size() + " fortress");
+			_log.info(getClass().getSimpleName() + ": Loaded: " + getForts().size() + " fortress");
 			for (Fort fort : getForts())
 			{
 				fort.getSiege().getSiegeGuardManager().loadSiegeGuard();

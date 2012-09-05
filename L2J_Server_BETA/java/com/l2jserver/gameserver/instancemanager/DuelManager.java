@@ -23,11 +23,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 public class DuelManager
 {	
-	public static final DuelManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	private FastList<Duel> _duels;
 	private int _currentDuelId = 0x90;
 	
@@ -198,6 +193,11 @@ public class DuelManager
 				duel.broadcastToTeam1(packet);
 			}
 		}
+	}
+	
+	public static final DuelManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

@@ -14,15 +14,15 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javolution.util.FastList;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2DropCategory;
@@ -37,16 +37,10 @@ public class HerbDropTable
 {
 	private static Logger _log = Logger.getLogger(HerbDropTable.class.getName());
 	
-	private TIntObjectHashMap<FastList<L2DropCategory>> _herbGroups;
-	
-	public static HerbDropTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private Map<Integer, List<L2DropCategory>> _herbGroups = new HashMap<>();
 	
 	protected HerbDropTable()
 	{
-		_herbGroups = new TIntObjectHashMap<>();
 		restoreData();
 	}
 	
@@ -62,12 +56,12 @@ public class HerbDropTable
 			while (dropData.next())
 			{
 				int groupId = dropData.getInt("groupId");
-				FastList<L2DropCategory> category;
-				if (_herbGroups.contains(groupId))
+				List<L2DropCategory> category;
+				if (_herbGroups.containsKey(groupId))
 					category = _herbGroups.get(groupId);
 				else
 				{
-					category = new FastList<>();
+					category = new ArrayList<>();
 					_herbGroups.put(groupId, category);
 				}
 				
@@ -82,7 +76,7 @@ public class HerbDropTable
 				
 				if (ItemTable.getInstance().getTemplate(dropDat.getItemId()) == null)
 				{
-					_log.warning("Herb Drop data for undefined item template! GroupId: " + groupId+" itemId: "+dropDat.getItemId());
+					_log.warning(getClass().getSimpleName() + ": Data for undefined item template! GroupId: " + groupId+" itemId: "+dropDat.getItemId());
 					continue;
 				}
 				
@@ -106,13 +100,18 @@ public class HerbDropTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "HerbDroplistGroupsTable: Error reading Herb dropdata. ", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading Herb dropdata. ", e);
 		}
 	}
 	
-	public FastList<L2DropCategory> getHerbDroplist(int groupId)
+	public List<L2DropCategory> getHerbDroplist(int groupId)
 	{
 		return _herbGroups.get(groupId);
+	}
+	
+	public static HerbDropTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

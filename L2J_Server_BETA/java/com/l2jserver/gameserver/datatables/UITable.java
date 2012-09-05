@@ -40,17 +40,12 @@ public class UITable
 	private Map<Integer, List<ActionKey>> _storedKeys = new HashMap<>();
 	private Map<Integer, List<Integer>> _storedCategories = new HashMap<>();
 	
-	public static UITable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	protected UITable()
 	{
 		parseCatData();
 		parseKeyData();
-		_log.info("UITable: Loaded " + _storedCategories.size() + " Categories.");
-		_log.info("UITable: Loaded " + _storedKeys.size() + " Keys.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _storedCategories.size() + " Categories.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _storedKeys.size() + " Keys.");
 	}
 	
 	private void parseCatData()
@@ -76,11 +71,11 @@ public class UITable
 		}
 		catch (FileNotFoundException e)
 		{
-			_log.warning("uicats_en.csv is missing in data folder");
+			_log.warning(getClass().getSimpleName() + ": uicats_en.csv is missing in data folder");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error while creating UI Default Categories table " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while creating UI Default Categories table " + e.getMessage(), e);
 		}
 	}
 	
@@ -111,11 +106,11 @@ public class UITable
 		}
 		catch (FileNotFoundException e)
 		{
-			_log.warning("uikeys_en.csv is missing in data folder");
+			_log.warning(getClass().getSimpleName() + ": uikeys_en.csv is missing in data folder");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error while creating UI Default Keys table " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while creating UI Default Keys table " + e.getMessage(), e);
 		}
 	}
 	
@@ -152,6 +147,11 @@ public class UITable
 	public Map<Integer, List<ActionKey>> getKeys()
 	{
 		return _storedKeys;
+	}
+	
+	public static UITable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

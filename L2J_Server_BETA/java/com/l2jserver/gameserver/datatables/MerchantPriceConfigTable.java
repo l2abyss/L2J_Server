@@ -160,12 +160,12 @@ public class MerchantPriceConfigTable implements InstanceListManager
 	{
 		try
 		{
-			this.loadXML();
-			_log.info("MerchantPriceConfigTable: Loaded " + _mpcs.size() + " merchant price configs.");
+			loadXML();
+			_log.info(getClass().getSimpleName() + ": Loaded " + _mpcs.size() + " merchant price configs.");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Failed loading MerchantPriceConfigTable. Reason: " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading MerchantPriceConfigTable. Reason: " + e.getMessage(), e);
 		}
 	}
 	

@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.L2Transformation;
@@ -28,21 +28,15 @@ public class TransformationManager
 {
 	private static final Logger _log = Logger.getLogger(TransformationManager.class.getName());
 	
-	public static TransformationManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	private TIntObjectHashMap<L2Transformation> _transformations;
+	private Map<Integer, L2Transformation> _transformations = new HashMap<>();
 	
 	protected TransformationManager()
 	{
-		_transformations = new TIntObjectHashMap<>();
 	}
 	
 	public void report()
 	{
-		_log.info("Loaded: " + _transformations.size() + " transformations.");
+		_log.info(getClass().getSimpleName() + ": Loaded: " + _transformations.size() + " transformations.");
 	}
 	
 	public boolean transformPlayer(int id, L2PcInstance player)
@@ -65,6 +59,11 @@ public class TransformationManager
 	public L2Transformation registerTransformation(L2Transformation transformation)
 	{
 		return _transformations.put(transformation.getId(), transformation);
+	}
+	
+	public static TransformationManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

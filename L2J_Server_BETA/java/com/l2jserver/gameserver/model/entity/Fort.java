@@ -209,10 +209,6 @@ public class Fort
 						if (_cwh)
 						{
 							getOwnerClan().getWarehouse().destroyItemByItemId("CS_function_fee", PcInventory.ADENA_ID, fee, null, null);
-							if (Config.DEBUG)
-							{
-								_log.warning("Deducted " + fee + " adena from " + getName() + " owner's cwh for function id : " + getType());
-							}
 						}
 						ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
 					}
@@ -764,10 +760,6 @@ public class Fort
 		{
 			return false;
 		}
-		if (Config.DEBUG)
-		{
-			_log.warning("Called Fort.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerClan());
-		}
 		if (lease > 0)
 		{
 			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
@@ -788,10 +780,6 @@ public class Fort
 			else
 			{
 				int diffLease = lease - _function.get(type).getLease();
-				if (Config.DEBUG)
-				{
-					_log.warning("Called Fort.updateFunctions diffLease : " + diffLease);
-				}
 				if (diffLease > 0)
 				{
 					_function.remove(type);
@@ -822,10 +810,6 @@ public class Fort
 			{
 				_doors.add(door);
 			}
-		}
-		if (Config.DEBUG)
-		{
-			_log.info("Fort " + this + " loaded " + _doors.size() + " doors.");
 		}
 	}
 	

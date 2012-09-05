@@ -212,6 +212,10 @@ public class ItemTable
 				_weapons.put(item.getItemId(), (L2Weapon) item);
 		}
 		buildFastLookupTable(highest);
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _etcItems.size() + " Etc Items");
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _armors.size() + " Armor Items");
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _weapons.size() + " Weapon Items");
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + (_etcItems.size() + _armors.size() + _weapons.size())  + " Items in total.");
 	}
 	
 	/**
@@ -221,7 +225,7 @@ public class ItemTable
 	private void buildFastLookupTable(int size)
 	{
 		// Create a FastLookUp Table called _allTemplates of size : value of the highest item ID
-		_log.info("Highest item id used:" + size);
+		_log.info(getClass().getSimpleName() + ": Highest item id used:" + size);
 		_allTemplates = new L2Item[size + 1];
 		
 		// Insert armor item in Fast Look Up Table
@@ -304,7 +308,7 @@ public class ItemTable
 		}
 		
 		if (Config.DEBUG)
-			_log.fine("ItemTable: Item created  oid:" + item.getObjectId() + " itemid:" + itemId);
+			_log.fine(getClass().getSimpleName() + ": Item created  oid:" + item.getObjectId() + " itemid:" + itemId);
 		
 		// Add the L2ItemInstance object to _allObjects of L2world
 		L2World.getInstance().storeObject(item);

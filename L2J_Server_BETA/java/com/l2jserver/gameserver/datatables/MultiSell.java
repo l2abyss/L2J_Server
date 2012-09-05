@@ -14,11 +14,11 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.iterator.TIntObjectIterator;
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,24 +46,18 @@ import com.l2jserver.util.file.filter.XMLFilter;
 
 public class MultiSell
 {
+	private static final Logger _log = Logger.getLogger(MultiSell.class.getName());
+
 	public static final int PAGE_SIZE = 40;
 	
 	public static final int PC_BANG_POINTS = -100;
 	public static final int CLAN_REPUTATION = -200;
 	public static final int FAME = -300;
-	
-	private static final Logger _log = Logger.getLogger(MultiSell.class.getName());
-	
-	private final TIntObjectHashMap<ListContainer> _entries;
-	
-	public static MultiSell getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+		
+	private final Map<Integer, ListContainer> _entries = new HashMap<>();
 	
 	protected MultiSell()
 	{
-		_entries = new TIntObjectHashMap<>();
 		load();
 	}
 	
@@ -106,7 +100,7 @@ public class MultiSell
 		ListContainer template = _entries.get(listId);
 		if (template == null)
 		{
-			_log.warning("[MultiSell] can't find list id: " + listId + " requested by player: " + player.getName() + ", npcId:" + (npc != null ? npc.getNpcId() : 0));
+			_log.warning(getClass().getSimpleName() + ": can't find list id: " + listId + " requested by player: " + player.getName() + ", npcId:" + (npc != null ? npc.getNpcId() : 0));
 			return;
 		}
 		
@@ -232,7 +226,7 @@ public class MultiSell
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error loading file " + f, e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error loading file " + f, e);
 				continue;
 			}
 			
@@ -244,11 +238,11 @@ public class MultiSell
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error in file " + f, e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error in file " + f, e);
 			}
 		}
 		verify();
-		_log.log(Level.INFO, "MultiSell: Loaded " + _entries.size() + " lists.");
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _entries.size() + " lists.");
 	}
 	
 	private final ListContainer parseDocument(Document doc)
@@ -367,7 +361,7 @@ public class MultiSell
 		File dir = new File(Config.DATAPACK_ROOT, dirname);
 		if (!dir.exists())
 		{
-			_log.log(Level.WARNING, "Dir " + dir.getAbsolutePath() + " not exists");
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Dir " + dir.getAbsolutePath() + " not exists");
 			return;
 		}
 		
@@ -379,23 +373,22 @@ public class MultiSell
 	private final void verify()
 	{
 		ListContainer list;
-		final TIntObjectIterator<ListContainer> iter = _entries.iterator();
+		final Iterator<ListContainer> iter = _entries.values().iterator();
 		while (iter.hasNext())
 		{
-			iter.advance();
-			list = iter.value();
+			list = iter.next();
 			
 			for (Entry ent : list.getEntries())
 			{
 				for (Ingredient ing : ent.getIngredients())
 				{
 					if (!verifyIngredient(ing))
-						_log.warning("[MultiSell] can't find ingredient with itemId: " + ing.getItemId() + " in list: " + list.getListId());
+						_log.warning(getClass().getSimpleName() + ": can't find ingredient with itemId: " + ing.getItemId() + " in list: " + list.getListId());
 				}
 				for (Ingredient ing : ent.getProducts())
 				{
 					if (!verifyIngredient(ing))
-						_log.warning("[MultiSell] can't find product with itemId: " + ing.getItemId() + " in list: " + list.getListId());
+						_log.warning(getClass().getSimpleName() + ": can't find product with itemId: " + ing.getItemId() + " in list: " + list.getListId());
 				}
 			}
 		}
@@ -414,6 +407,11 @@ public class MultiSell
 		}
 		
 		return false;
+	}
+	
+	public static MultiSell getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

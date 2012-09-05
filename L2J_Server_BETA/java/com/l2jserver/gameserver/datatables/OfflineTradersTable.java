@@ -45,7 +45,7 @@ public class OfflineTradersTable
 	private static final String LOAD_OFFLINE_STATUS = "SELECT * FROM character_offline_trade";
 	private static final String LOAD_OFFLINE_ITEMS = "SELECT * FROM character_offline_trade_items WHERE charId = ?";
 	
-	public static void storeOffliners()
+	public void storeOffliners()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement stm1 = con.prepareStatement(CLEAR_OFFLINE_TABLE);
@@ -122,20 +122,20 @@ public class OfflineTradersTable
 				}
 				catch (Exception e)
 				{
-					_log.log(Level.WARNING, "OfflineTradersTable[storeTradeItems()]: Error while saving offline trader: " + pc.getObjectId() + " " + e, e);
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while saving offline trader: " + pc.getObjectId() + " " + e, e);
 				}
 			}
-			_log.info("Offline traders stored.");
+			_log.info(getClass().getSimpleName() + ": Offline traders stored.");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING,"OfflineTradersTable[storeTradeItems()]: Error while saving offline traders: " + e,e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while saving offline traders: " + e,e);
 		}
 	}
 	
-	public static void restoreOfflineTraders()
+	public void restoreOfflineTraders()
 	{
-		_log.info("Loading offline traders...");
+		_log.info(getClass().getSimpleName() + ": Loading offline traders...");
 		int nTraders = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement stm = con.createStatement();
@@ -220,7 +220,7 @@ public class OfflineTradersTable
 				}
 				catch (Exception e)
 				{
-					_log.log(Level.WARNING, "OfflineTradersTable[loadOffliners()]: Error loading trader: "+player,e);
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Error loading trader: "+player,e);
 					if (player != null)
 					{
 						player.deleteMe();
@@ -228,7 +228,7 @@ public class OfflineTradersTable
 				}
 			}
 			
-			_log.info("Loaded: " +nTraders+ " offline trader(s)");
+			_log.info(getClass().getSimpleName() + ": Loaded: " +nTraders+ " offline trader(s)");
 			
 			try (Statement stm1 = con.createStatement())
 			{
@@ -238,7 +238,21 @@ public class OfflineTradersTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "OfflineTradersTable[loadOffliners()]: Error while loading offline traders: ",e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while loading offline traders: ",e);
 		}
+	}
+	
+	/**
+	 * Gets the single instance of OfflineTradersTable.
+	 * @return single instance of OfflineTradersTable
+	 */
+	public static OfflineTradersTable getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final OfflineTradersTable _instance = new OfflineTradersTable();
 	}
 }

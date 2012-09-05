@@ -14,14 +14,12 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.L2ArmorSet;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
@@ -45,7 +43,7 @@ public final class ArmorSetsData extends DocumentParser
 	public void load()
 	{
 		_armorSets.clear();
-		parseDirectory(new File(Config.DATAPACK_ROOT, "data/stats/armorsets"));
+		parseDirectory("data/stats/armorsets");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _armorSets.size() + " Armor sets.");
 	}
 	

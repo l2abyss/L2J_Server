@@ -35,6 +35,7 @@ import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
+import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -46,7 +47,6 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2ArtefactInstance;
@@ -214,10 +214,6 @@ public class Castle
 						if (_cwh)
 						{
 							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", PcInventory.ADENA_ID, fee, null, null);
-							if (Config.DEBUG)
-							{
-								_log.warning("deducted " + fee + " adena from " + getName() + " owner's cwh for function id : " + getType());
-							}
 						}
 						ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
 					}
@@ -824,10 +820,6 @@ public class Castle
 		{
 			return false;
 		}
-		if (Config.DEBUG)
-		{
-			_log.warning("Called Castle.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerId());
-		}
 		if (lease > 0)
 		{
 			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
@@ -848,10 +840,6 @@ public class Castle
 			else
 			{
 				int diffLease = lease - _function.get(type).getLease();
-				if (Config.DEBUG)
-				{
-					_log.warning("Called Castle.updateFunctions diffLease : " + diffLease);
-				}
 				if (diffLease > 0)
 				{
 					_function.remove(type);
@@ -882,11 +870,6 @@ public class Castle
 			{
 				_doors.add(door);
 			}
-		}
-		
-		if (Config.DEBUG)
-		{
-			_log.info("Castle " + this + " loaded " + _doors.size() + " doors.");
 		}
 	}
 	
@@ -1178,7 +1161,7 @@ public class Castle
 		{
 			for (SeedProduction seed : production)
 			{
-				total += L2Manor.getInstance().getSeedBuyPrice(seed.getId()) * seed.getStartProduce();
+				total += ManorData.getInstance().getSeedBuyPrice(seed.getId()) * seed.getStartProduce();
 			}
 		}
 		if (procure != null)
@@ -1565,10 +1548,6 @@ public class Castle
 	 */
 	public void registerArtefact(L2ArtefactInstance artefact)
 	{
-		if (Config.DEBUG)
-		{
-			_log.info("ArtefactId: " + artefact.getObjectId() + " is registered to " + getName() + " castle.");
-		}
 		_artefacts.add(artefact);
 	}
 	

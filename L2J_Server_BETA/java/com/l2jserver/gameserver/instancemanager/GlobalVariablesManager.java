@@ -18,11 +18,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.util.L2FastMap;
 
 /**
  * @author Gigiikun
@@ -34,11 +34,10 @@ public class GlobalVariablesManager
 	private static final String LOAD_VAR = "SELECT var,value FROM global_variables";
 	private static final String SAVE_VAR = "INSERT INTO global_variables (var,value) VALUES (?,?) ON DUPLICATE KEY UPDATE value=?";
 	
-	private final FastMap<String, String> _variablesMap = new FastMap<>();
+	private final Map<String, String> _variablesMap = new L2FastMap<>(true);
 	
 	protected GlobalVariablesManager()
 	{
-		_variablesMap.shared();
 		loadVars();
 	}
 	
@@ -59,7 +58,7 @@ public class GlobalVariablesManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("GlobalVariablesManager: problem while loading variables: " + e);
+			_log.warning(getClass().getSimpleName() + ": problem while loading variables: " + e);
 		}
 	}
 	
@@ -80,7 +79,7 @@ public class GlobalVariablesManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("GlobalVariablesManager: problem while saving variables: " + e);
+			_log.warning(getClass().getSimpleName() + ": problem while saving variables: " + e);
 		}
 	}
 	

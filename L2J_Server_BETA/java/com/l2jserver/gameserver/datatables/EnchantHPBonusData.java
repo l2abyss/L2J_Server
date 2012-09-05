@@ -37,7 +37,7 @@ public class EnchantHPBonusData extends DocumentParser
 {
 	private final Map<Integer, List<Integer>> _armorHPBonuses = new HashMap<>();
 	
-	private static final float fullArmorModifier = 1.5f; // TODO: Config?
+	private static final float fullArmorModifier = 1.5f; // TODO: Move it to config!
 	
 	/**
 	 * Instantiates a new enchant hp bonus data.

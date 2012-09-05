@@ -14,13 +14,13 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,14 +43,9 @@ public class AirShipManager
 	private static final String UPDATE_DB = "UPDATE airships SET fuel=? WHERE owner_id=?";
 	
 	private L2CharTemplate _airShipTemplate = null;
-	private TIntObjectHashMap<StatsSet> _airShipsInfo = new TIntObjectHashMap<>();
-	private TIntObjectHashMap<L2AirShipInstance> _airShips = new TIntObjectHashMap<>();
-	private TIntObjectHashMap<AirShipTeleportList> _teleports = new TIntObjectHashMap<>();
-	
-	public static final AirShipManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private Map<Integer, StatsSet> _airShipsInfo = new HashMap<>();
+	private Map<Integer, L2AirShipInstance> _airShips = new HashMap<>();
+	private Map<Integer, AirShipTeleportList> _teleports = new HashMap<>();
 	
 	protected AirShipManager()
 	{
@@ -156,12 +151,12 @@ public class AirShipManager
 	
 	public boolean hasAirShipLicense(int ownerId)
 	{
-		return _airShipsInfo.contains(ownerId);
+		return _airShipsInfo.containsKey(ownerId);
 	}
 	
 	public void registerLicense(int ownerId)
 	{
-		if (!_airShipsInfo.contains(ownerId))
+		if (!_airShipsInfo.containsKey(ownerId))
 		{
 			final StatsSet info = new StatsSet();
 			info.set("fuel", 600);
@@ -213,7 +208,7 @@ public class AirShipManager
 			return;
 		
 		int dockId = ship.getDockId();
-		if (!_teleports.contains(dockId))
+		if (!_teleports.containsKey(dockId))
 			return;
 		
 		final AirShipTeleportList all = _teleports.get(dockId);
@@ -304,6 +299,11 @@ public class AirShipManager
 			fuel = f;
 			routes = r;
 		}
+	}
+	
+	public static final AirShipManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.model.entity.Fort;
 
 public class FortSiegeGuardManager
 {
-	
 	private static final Logger _log = Logger.getLogger(FortSiegeGuardManager.class.getName());
 	
 	private Fort _fort;

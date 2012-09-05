@@ -57,7 +57,7 @@ import com.l2jserver.gameserver.datatables.HerbDropTable;
 import com.l2jserver.gameserver.datatables.HitConditionBonus;
 import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.LevelUpData;
+import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
 import com.l2jserver.gameserver.datatables.MultiSell;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
@@ -113,7 +113,6 @@ import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.AutoChatHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
-import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
@@ -176,22 +175,22 @@ public class GameServer
 		long serverLoadStart = System.currentTimeMillis();
 		
 		gameServer = this;
-		_log.finest("used mem:" + getUsedMemoryMB() + "MB");
+		_log.finest(getClass().getSimpleName() + ": used mem:" + getUsedMemoryMB() + "MB");
 		
 		if (Config.SERVER_VERSION != null)
 		{
-			_log.info("L2J Server Version:    " + Config.SERVER_VERSION);
+			_log.info(getClass().getSimpleName() + ": L2J Server Version:    " + Config.SERVER_VERSION);
 		}
 		if (Config.DATAPACK_VERSION != null)
 		{
-			_log.info("L2J Datapack Version:  " + Config.DATAPACK_VERSION);
+			_log.info(getClass().getSimpleName() + ": L2J Datapack Version:  " + Config.DATAPACK_VERSION);
 		}
 		
 		_idFactory = IdFactory.getInstance();
 		
 		if (!_idFactory.isInitialized())
 		{
-			_log.severe("Could not read object IDs from DB. Please Check Your Data.");
+			_log.severe(getClass().getSimpleName() + ": Could not read object IDs from DB. Please Check Your Data.");
 			throw new Exception("Could not initialize the ID factory");
 		}
 		
@@ -242,7 +241,6 @@ public class GameServer
 		HitConditionBonus.getInstance();
 		CharTemplateTable.getInstance();
 		CharNameTable.getInstance();
-		LevelUpData.getInstance();
 		AdminTable.getInstance();
 		RaidBossPointsManager.getInstance();
 		PetDataTable.getInstance();
@@ -286,7 +284,7 @@ public class GameServer
 		TerritoryWarManager.getInstance();
 		CastleManorManager.getInstance();
 		MercTicketManager.getInstance();
-		L2Manor.getInstance();
+		ManorData.getInstance();
 		
 		printSection("Olympiad");
 		Olympiad.getInstance();
@@ -314,14 +312,14 @@ public class GameServer
 		
 		try
 		{
-			_log.info("Loading Server Scripts");
+			_log.info(getClass().getSimpleName() + ": Loading Server Scripts");
 			File scripts = new File(Config.DATAPACK_ROOT, "data/scripts.cfg");
 			if(!Config.ALT_DEV_NO_HANDLERS || !Config.ALT_DEV_NO_QUESTS)
 				L2ScriptEngineManager.getInstance().executeScriptList(scripts);
 		}
 		catch (IOException ioe)
 		{
-			_log.severe("Failed loading scripts.cfg, no script going to be loaded");
+			_log.severe(getClass().getSimpleName() + ": Failed loading scripts.cfg, no script going to be loaded");
 		}
 		
 		QuestManager.getInstance().report();
@@ -370,7 +368,7 @@ public class GameServer
 		KnownListUpdateTaskManager.getInstance();
 		
 		if ((Config.OFFLINE_TRADE_ENABLE || Config.OFFLINE_CRAFT_ENABLE) && Config.RESTORE_OFFLINERS)
-			OfflineTradersTable.restoreOfflineTraders();
+			OfflineTradersTable.getInstance().restoreOfflineTraders();
 		
 		if (Config.DEADLOCK_DETECTOR)
 		{
@@ -386,7 +384,7 @@ public class GameServer
 		// allocation pool
 		long freeMem = (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory() + Runtime.getRuntime().freeMemory()) / 1048576;
 		long totalMem = Runtime.getRuntime().maxMemory() / 1048576;
-		_log.info("GameServer Started, free memory " + freeMem + " Mb of " + totalMem + " Mb");
+		_log.info(getClass().getSimpleName() + ": Started, free memory " + freeMem + " Mb of " + totalMem + " Mb");
 		Toolkit.getDefaultToolkit().beep();
 		
 		_loginThread = LoginServerThread.getInstance();
@@ -413,7 +411,7 @@ public class GameServer
 			}
 			catch (UnknownHostException e1)
 			{
-				_log.log(Level.SEVERE, "WARNING: The GameServer bind address is invalid, using all avaliable IPs. Reason: " + e1.getMessage(), e1);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": WARNING: The GameServer bind address is invalid, using all avaliable IPs. Reason: " + e1.getMessage(), e1);
 			}
 		}
 		
@@ -423,7 +421,7 @@ public class GameServer
 		}
 		catch (IOException e)
 		{
-			_log.log(Level.SEVERE, "FATAL: Failed to open server socket. Reason: " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": FATAL: Failed to open server socket. Reason: " + e.getMessage(), e);
 			System.exit(1);
 		}
 		_selectorThread.start();
@@ -465,7 +463,7 @@ public class GameServer
 		}
 		else
 		{
-			_log.info("Telnet server is currently disabled.");
+			_log.info(GameServer.class.getSimpleName() + ": Telnet server is currently disabled.");
 		}
 	}
 	

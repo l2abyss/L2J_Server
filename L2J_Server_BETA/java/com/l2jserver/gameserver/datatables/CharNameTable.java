@@ -25,11 +25,10 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.L2FastMap;
 
 /**
  * This class ...
@@ -40,13 +39,11 @@ public class CharNameTable
 {
 	private static Logger _log = Logger.getLogger(CharNameTable.class.getName());
 	
-	private final Map<Integer, String> _chars;
-	private final Map<Integer, Integer> _accessLevels;
+	private final Map<Integer, String> _chars = new L2FastMap<>();
+	private final Map<Integer, Integer> _accessLevels = new L2FastMap<>();
 	
 	protected CharNameTable()
 	{
-		_chars = new FastMap<>();
-		_accessLevels = new FastMap<>();
 		if (Config.CACHE_CHAR_NAMES)
 			loadAll();
 	}
@@ -116,7 +113,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing char name: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char name: " + e.getMessage(), e);
 		}
 		
 		if (id > 0)
@@ -157,7 +154,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing char id: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char id: " + e.getMessage(), e);
 		}
 		
 		if (name != null && !name.isEmpty())
@@ -192,7 +189,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing charname: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing charname: " + e.getMessage(), e);
 		}
 		return result;
 	}
@@ -214,7 +211,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing char number: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char number: " + e.getMessage(), e);
 		}
 		return number;
 	}
@@ -239,9 +236,9 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not load char name: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not load char name: " + e.getMessage(), e);
 		}
-		_log.info(getClass().getSimpleName()+": Loaded "+_chars.size()+" char names.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _chars.size() + " char names.");
 	}
 	
 	private static class SingletonHolder

@@ -50,9 +50,7 @@ public class DayNightSpawnManager
 	{
 		_dayCreatures = new ArrayList<>();
 		_nightCreatures = new ArrayList<>();
-		_bosses = new FastMap<>();
-		
-		_log.info("DayNightSpawnManager: Day/Night handler initialized");
+		_bosses = new FastMap<>();		
 	}
 	
 	public void addDayCreature(L2Spawn spawnDat)

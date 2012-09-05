@@ -24,7 +24,6 @@ public class L2LogManager extends LogManager
 {
 	public L2LogManager()
 	{
-		super();
 	}
 	
 	@Override

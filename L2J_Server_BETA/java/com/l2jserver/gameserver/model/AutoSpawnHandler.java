@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 import javolution.util.FastMap;
 
-import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -121,7 +120,6 @@ public class AutoSpawnHandler
 	
 	private void restoreSpawnData()
 	{
-		int numLoaded = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			// Restore spawn group data, then the location data.
@@ -137,7 +135,6 @@ public class AutoSpawnHandler
 				spawnInst.setSpawnCount(rs.getInt("count"));
 				spawnInst.setBroadcast(rs.getBoolean("broadcastSpawn"));
 				spawnInst.setRandomSpawn(rs.getBoolean("randomSpawn"));
-				numLoaded++;
 				
 				// Restore the spawn locations for this spawn group/instance.
 				statement2.setInt(1, rs.getInt("groupId"));
@@ -154,9 +151,6 @@ public class AutoSpawnHandler
 			statement2.close();
 			rs.close();
 			statement.close();
-			
-			if (Config.DEBUG)
-				_log.info("AutoSpawnHandler: Loaded " + numLoaded + " spawn group(s) from the database.");
 		}
 		catch (Exception e)
 		{
@@ -198,10 +192,6 @@ public class AutoSpawnHandler
 		_registeredSpawns.put(newId, newSpawn);
 		
 		setSpawnActive(newSpawn, true);
-		
-		if (Config.DEBUG)
-			_log.info("AutoSpawnHandler: Registered auto spawn for NPC ID " + npcId + " (Object ID = " + newId + ").");
-		
 		return newSpawn;
 	}
 	
@@ -243,10 +233,6 @@ public class AutoSpawnHandler
 			// Cancel the currently associated running scheduled task.
 			ScheduledFuture<?> respawnTask = _runningSpawns.remove(spawnInst._objectId);
 			respawnTask.cancel(false);
-			
-			if (Config.DEBUG)
-				_log.info("AutoSpawnHandler: Removed auto spawn for NPC ID " + spawnInst._npcId + " (Object ID = " + spawnInst._objectId
-						+ ").");
 		}
 		catch (Exception e)
 		{
@@ -523,9 +509,6 @@ public class AutoSpawnHandler
 				{
 					Announcements.getInstance().announceToAll("The " + npcInst.getName() + " has spawned near " + nearestTown + "!");
 				}
-				if (Config.DEBUG)
-					_log.info("AutoSpawnHandler: Spawned NPC ID " + spawnInst.getNpcId() + " at " + x + ", " + y + ", " + z + " (Near "
-							+ nearestTown + ") for " + (spawnInst.getRespawnDelay() / 60000) + " minute(s).");
 				
 				// If there is no despawn time, do not create a despawn task.
 				if (spawnInst.getDespawnDelay() > 0)
@@ -578,9 +561,6 @@ public class AutoSpawnHandler
 					npcInst.deleteMe();
 					SpawnTable.getInstance().deleteSpawn(npcInst.getSpawn(), false);
 					spawnInst.removeNpcInstance(npcInst);
-					
-					if (Config.DEBUG)
-						_log.info("AutoSpawnHandler: Spawns removed for spawn instance (Object ID = " + _objectId + ").");
 				}
 			}
 			catch (Exception e)

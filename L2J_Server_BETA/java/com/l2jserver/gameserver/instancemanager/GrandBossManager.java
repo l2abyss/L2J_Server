@@ -95,11 +95,6 @@ public class GrandBossManager
 	
 	private L2FastList<L2BossZone> _zones;
 	
-	public static GrandBossManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	protected GrandBossManager()
 	{
 		init();
@@ -136,20 +131,20 @@ public class GrandBossManager
 				int status = rset.getInt("status");
 				_bossStatus.put(bossId, status);
 				_storedInfo.put(bossId, info);
-				_log.info("GrandBossManager: " +NpcTable.getInstance().getTemplate(bossId).getName()+"(" +bossId+ ") status is "+ status+".");
+				_log.info(getClass().getSimpleName() + ": " +NpcTable.getInstance().getTemplate(bossId).getName()+"(" +bossId+ ") status is "+ status+".");
 				if (status > 0)
-					_log.info("GrandBossManager: Next spawn date of " +NpcTable.getInstance().getTemplate(bossId).getName()+" is "+ new Date(info.getLong("respawn_time"))+".");
+					_log.info(getClass().getSimpleName() + ": Next spawn date of " +NpcTable.getInstance().getTemplate(bossId).getName()+" is "+ new Date(info.getLong("respawn_time"))+".");
 				
 				info = null;
 			}
-			_log.info("GrandBossManager: Loaded " + _storedInfo.size() + " Instances");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _storedInfo.size() + " Instances");
 			
 			rset.close();
 			statement.close();
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "GrandBossManager: Could not load grandboss_data table: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not load grandboss_data table: " + e.getMessage(), e);
 		}
 		catch (Exception e)
 		{
@@ -166,7 +161,7 @@ public class GrandBossManager
 		
 		if (_zones == null)
 		{
-			_log.warning("GrandBossManager: Could not read Grand Boss zone data");
+			_log.warning(getClass().getSimpleName() + ": Could not read Grand Boss zone data");
 			return;
 		}
 		
@@ -192,11 +187,11 @@ public class GrandBossManager
 			rset.close();
 			statement.close();
 			
-			_log.info("GrandBossManager: Initialized " + _zones.size() + " Grand Boss Zones");
+			_log.info(getClass().getSimpleName() + ": Initialized " + _zones.size() + " Grand Boss Zones");
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "GrandBossManager: Could not load grandboss_list table: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not load grandboss_list table: " + e.getMessage(), e);
 		}
 		catch (Exception e)
 		{
@@ -380,7 +375,7 @@ public class GrandBossManager
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "GrandBossManager: Couldn't store grandbosses to database:" + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't store grandbosses to database:" + e.getMessage(), e);
 		}
 	}
 	
@@ -426,7 +421,7 @@ public class GrandBossManager
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "GrandBossManager: Couldn't update grandbosses to database:" + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't update grandbosses to database:" + e.getMessage(), e);
 		}
 	}
 	
@@ -447,6 +442,11 @@ public class GrandBossManager
 	public L2FastList<L2BossZone> getZones()
 	{
 		return _zones;
+	}
+	
+	public static GrandBossManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

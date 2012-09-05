@@ -14,9 +14,9 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.model.L2SummonItem;
 public class SummonItemsData
 {
 	protected static final Logger _log = Logger.getLogger(SummonItemsData.class.getName());
-	private final TIntObjectHashMap<L2SummonItem> _summonitems = new TIntObjectHashMap<>();
+	private final Map<Integer, L2SummonItem> _summonitems = new HashMap<>();
 	
 	public static SummonItemsData getInstance()
 	{
@@ -75,7 +75,7 @@ public class SummonItemsData
 				}
 				catch (Exception e)
 				{
-					_log.warning("Summon items data: Error in line " + lineCount + " -> incomplete/invalid data or wrong seperator!");
+					_log.warning(getClass().getSimpleName() + ": Error in line " + lineCount + " -> incomplete/invalid data or wrong seperator!");
 					_log.warning("		" + line);
 					ok = false;
 				}
@@ -89,11 +89,11 @@ public class SummonItemsData
 				_summonitems.put(itemID, summonitem);
 			}
 			
-			_log.info("Summon items data: Loaded " + _summonitems.size() + " summon items.");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _summonitems.size() + " summon items.");
 		}
 		catch (Exception e)
 		{
-			_log.warning("Summon items data: Can not find '" + Config.DATAPACK_ROOT + "/data/summon_items.csv'");
+			_log.warning(getClass().getSimpleName() + ": Can not find '" + Config.DATAPACK_ROOT + "/data/summon_items.csv'");
 			return;
 		}
 	}
@@ -108,7 +108,7 @@ public class SummonItemsData
 		int size = _summonitems.size();
 		int[] result = new int[size];
 		int i = 0;
-		for (L2SummonItem si : _summonitems.values(new L2SummonItem[0]))
+		for (L2SummonItem si : _summonitems.values())
 		{
 			result[i++] = si.getItemId();
 		}

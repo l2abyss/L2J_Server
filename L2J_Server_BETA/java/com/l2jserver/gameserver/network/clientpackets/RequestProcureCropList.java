@@ -19,10 +19,10 @@ import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
-import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2ManorManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -251,7 +251,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			if ((MAX_ADENA / _count) < _crop.getPrice())
 				return false;
 			
-			_reward = L2Manor.getInstance().getRewardItem(_itemId, _crop.getReward());
+			_reward = ManorData.getInstance().getRewardItem(_itemId, _crop.getReward());
 			return true;
 		}
 		

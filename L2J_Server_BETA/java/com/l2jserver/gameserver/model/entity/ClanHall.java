@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
@@ -169,10 +168,6 @@ public abstract class ClanHall
 						if (_cwh)
 						{
 							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_function_fee", PcInventory.ADENA_ID, fee, null, null);
-							if (Config.DEBUG)
-							{
-								_log.warning("deducted " + fee + " adena from " + getName() + " owner's cwh for function id : " + getType());
-							}
 						}
 						ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
 					}
@@ -214,10 +209,6 @@ public abstract class ClanHall
 		_clanHallId = set.getInteger("id");
 		_name = set.getString("name");
 		_ownerId = set.getInteger("ownerId");
-		if (Config.DEBUG)
-		{
-			_log.warning("Init Owner : " + _ownerId);
-		}
 		_desc = set.getString("desc");
 		_location = set.getString("location");
 		_functions = new FastMap<>();
@@ -502,10 +493,7 @@ public abstract class ClanHall
 		{
 			return false;
 		}
-		if (Config.DEBUG)
-		{
-			_log.warning("Called ClanHall.updateFunctions(int type, int lvl, int lease, long rate, boolean addNew) Owner : " + getOwnerId());
-		}
+		
 		if (lease > 0)
 		{
 			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
@@ -526,10 +514,6 @@ public abstract class ClanHall
 			else
 			{
 				int diffLease = lease - _functions.get(type).getLease();
-				if (Config.DEBUG)
-				{
-					_log.warning("Called ClanHall.updateFunctions diffLease : " + diffLease);
-				}
 				if (diffLease > 0)
 				{
 					_functions.remove(type);

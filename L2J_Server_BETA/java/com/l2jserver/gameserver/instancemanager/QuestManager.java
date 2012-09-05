@@ -20,18 +20,17 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 import com.l2jserver.gameserver.scripting.ScriptManager;
+import com.l2jserver.util.L2FastMap;
 
 public class QuestManager extends ScriptManager<Quest>
 {
 	protected static final Logger _log = Logger.getLogger(QuestManager.class.getName());
 	
-	private Map<String, Quest> _quests = new FastMap<>();
+	private Map<String, Quest> _quests = new L2FastMap<>(true);
 	
 	protected QuestManager()
 	{
@@ -65,7 +64,7 @@ public class QuestManager extends ScriptManager<Quest>
 	
 	public final void reloadAllQuests()
 	{
-		_log.info("Reloading all server scripts.");
+		_log.info(getClass().getSimpleName() + ": Reloading all server scripts.");
 		// unload all scripts
 		for (Quest quest : _quests.values())
 		{
@@ -84,13 +83,13 @@ public class QuestManager extends ScriptManager<Quest>
 		}
 		catch (IOException e)
 		{
-			_log.log(Level.SEVERE, "Failed loading scripts.cfg, no script going to be loaded!", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading scripts.cfg, no script going to be loaded!", e);
 		}
 	}
 	
 	public final void report()
 	{
-		_log.info("Loaded: " + _quests.size() + " quests");
+		_log.info(getClass().getSimpleName() + ": Loaded: " + _quests.size() + " quests");
 	}
 	
 	public final void save()
@@ -136,7 +135,7 @@ public class QuestManager extends ScriptManager<Quest>
 		if (old != null)
 		{
 			old.unload();
-			_log.info("Replaced: (" + old.getName() + ") with a new version (" + newQuest.getName() + ")");
+			_log.info(getClass().getSimpleName() + ": Replaced: (" + old.getName() + ") with a new version (" + newQuest.getName() + ")");
 			
 		}
 		_quests.put(newQuest.getName(), newQuest);

@@ -134,11 +134,11 @@ public class HelperBuffTable
 				L2HelperBuff template = new L2HelperBuff(helperBuffDat);
 				_helperBuff.add(template);
 			}
-			_log.info("Helper Buff Table: Loaded " + _helperBuff.size() + " Templates.");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _helperBuff.size() + " Templates.");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Table helper_buff_list not found : Update your DataPack! Error : " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Table helper_buff_list not found : Update your DataPack! Error : " + e.getMessage(), e);
 		}
 	}
 	

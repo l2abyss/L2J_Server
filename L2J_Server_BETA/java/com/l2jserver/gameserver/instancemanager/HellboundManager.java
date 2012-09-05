@@ -17,11 +17,10 @@ package com.l2jserver.gameserver.instancemanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -50,12 +49,10 @@ public class HellboundManager
 	private int _minTrust = 0;
 	
 	private ScheduledFuture<?> _engine = null;
-	private final List<HellboundSpawn> _population;
+	private final List<HellboundSpawn> _population = new ArrayList<>();
 	
 	protected HellboundManager()
-	{
-		_population = new FastList<>();
-		
+	{	
 		loadData();
 		loadSpawns();
 	}
@@ -218,11 +215,11 @@ public class HellboundManager
 		
 		if (added > 0)
 		{
-			_log.info("HellboundManager: Spawned " + added + " NPCs.");
+			_log.info(getClass().getSimpleName() + ": Spawned " + added + " NPCs.");
 		}
 		if (deleted > 0)
 		{
-			_log.info("HellboundManager: Removed " + deleted + " NPCs.");
+			_log.info(getClass().getSimpleName() + ": Removed " + deleted + " NPCs.");
 		}
 	}
 	
@@ -295,7 +292,7 @@ public class HellboundManager
 				}
 				else
 				{
-					_log.warning("HellboundManager: Data missing in NPC table for ID: " + rset.getInt("npc_templateid") + ".");
+					_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + rset.getInt("npc_templateid") + ".");
 				}
 			}
 			rset.close();
@@ -303,9 +300,9 @@ public class HellboundManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("HellboundManager: problem while loading spawns: " + e);
+			_log.warning(getClass().getSimpleName() + ": problem while loading spawns: " + e);
 		}
-		_log.info("HellboundManager: Loaded " + _population.size() + " npc spawn locations.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _population.size() + " npc spawn locations.");
 	}
 	
 	public static final class HellboundSpawn extends L2Spawn

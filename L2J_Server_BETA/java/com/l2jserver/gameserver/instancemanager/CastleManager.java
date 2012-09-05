@@ -255,7 +255,7 @@ public class CastleManager implements InstanceListManager
 			rs.close();
 			statement.close();
 			
-			_log.info("Loaded: " + getCastles().size() + " castles");
+			_log.info(getClass().getSimpleName() + ": Loaded: " + getCastles().size() + " castles");
 		}
 		catch (Exception e)
 		{

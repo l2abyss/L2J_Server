@@ -26,7 +26,6 @@ import java.util.logging.Level;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -96,7 +95,7 @@ public class ZoneManager extends DocumentParser
 			}
 		}
 		GrandBossManager.getInstance().getZones().clear();
-		_log.info("Removed zones in " + count + " regions.");
+		_log.info(getClass().getSimpleName() + ": Removed zones in " + count + " regions.");
 		
 		// Load the zones
 		load();
@@ -170,7 +169,7 @@ public class ZoneManager extends DocumentParser
 						}
 						catch (Exception e)
 						{
-							_log.warning("ZoneData: No such zone type: " + zoneType + " in file: " + getCurrentFile().getName());
+							_log.warning(getClass().getSimpleName() + ": ZoneData: No such zone type: " + zoneType + " in file: " + getCurrentFile().getName());
 							continue;
 						}
 						
@@ -197,7 +196,7 @@ public class ZoneManager extends DocumentParser
 							
 							if (coords == null || coords.length == 0)
 							{
-								_log.warning("ZoneData: missing data for zone: " + zoneId + " XML file: " + getCurrentFile().getName());
+								_log.warning(getClass().getSimpleName() + ": ZoneData: missing data for zone: " + zoneId + " XML file: " + getCurrentFile().getName());
 								continue;
 							}
 							
@@ -212,7 +211,7 @@ public class ZoneManager extends DocumentParser
 									temp.setZone(new ZoneCuboid(coords[0][0], coords[1][0], coords[0][1], coords[1][1], minZ, maxZ));
 								else
 								{
-									_log.warning("ZoneData: Missing cuboid vertex in sql data for zone: " + zoneId + " in file: " + getCurrentFile().getName());
+									_log.warning(getClass().getSimpleName() + ": ZoneData: Missing cuboid vertex in sql data for zone: " + zoneId + " in file: " + getCurrentFile().getName());
 									continue;
 								}
 							}
@@ -232,7 +231,7 @@ public class ZoneManager extends DocumentParser
 								}
 								else
 								{
-									_log.warning("ZoneData: Bad data for zone: " + zoneId + " in file: " + getCurrentFile().getName());
+									_log.warning(getClass().getSimpleName() + ": ZoneData: Bad data for zone: " + zoneId + " in file: " + getCurrentFile().getName());
 									continue;
 								}
 							}
@@ -246,14 +245,14 @@ public class ZoneManager extends DocumentParser
 									temp.setZone(new ZoneCylinder(coords[0][0], coords[0][1], minZ, maxZ, zoneRad));
 								else
 								{
-									_log.warning("ZoneData: Bad data for zone: " + zoneId + " in file: " + getCurrentFile().getName());
+									_log.warning(getClass().getSimpleName() + ": ZoneData: Bad data for zone: " + zoneId + " in file: " + getCurrentFile().getName());
 									continue;
 								}
 							}
 						}
 						catch (Exception e)
 						{
-							_log.log(Level.WARNING, "ZoneData: Failed to load zone " + zoneId + " coordinates: " + e.getMessage(), e);
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": ZoneData: Failed to load zone " + zoneId + " coordinates: " + e.getMessage(), e);
 						}
 						
 						// Check for additional parameters
@@ -286,7 +285,7 @@ public class ZoneManager extends DocumentParser
 							}
 						}
 						if (checkId(zoneId))
-							_log.config("Caution: Zone (" + zoneId + ") from file: " + getCurrentFile().getName() + " overrides previos definition.");
+							_log.config(getClass().getSimpleName() + ": Caution: Zone (" + zoneId + ") from file: " + getCurrentFile().getName() + " overrides previos definition.");
 						
 						if (zoneName != null && !zoneName.isEmpty())
 							temp.setName(zoneName);
@@ -308,10 +307,6 @@ public class ZoneManager extends DocumentParser
 								
 								if (temp.getZone().intersectsRectangle(ax, bx, ay, by))
 								{
-									if (Config.DEBUG)
-									{
-										_log.info("Zone (" + zoneId + ") added to: " + x + " " + y);
-									}
 									worldRegions[x][y].addZone(temp);
 								}
 							}
@@ -325,7 +320,7 @@ public class ZoneManager extends DocumentParser
 	@Override
 	public final void load()
 	{
-		_log.info("Loading zones...");
+		_log.info(getClass().getSimpleName() + ": Loading zones...");
 		_classZones.clear();
 		
 		long started = System.currentTimeMillis();
@@ -333,7 +328,7 @@ public class ZoneManager extends DocumentParser
 		parseDirectory("data/zones");
 		
 		started = System.currentTimeMillis() - started;
-		_log.info("Done: loaded " + _classZones.size() + " zone classes and " + getSize() + " zones in " + (started / 1000) + " seconds.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _classZones.size() + " zone classes and " + getSize() + " zones in " + (started / 1000) + " seconds.");
 	}
 	
 	public int getSize()

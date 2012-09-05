@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
  * This class ...
  * @version $Revision: 1.7.4.4 $ $Date: 2005/03/27 18:46:19 $
  */
-@SuppressWarnings("unused")
 public final class Action extends L2GameClientPacket
 {
 	private static final String __C__1F_ACTION = "[C] 1F Action";
@@ -51,7 +50,7 @@ public final class Action extends L2GameClientPacket
 	{
 		if (Config.DEBUG)
 		{
-			_log.fine(getType() + ": Action:" + _actionId + " ObjId: " + _objectId);
+			_log.fine(getType() + ": Action: " + _actionId + " ObjId: " + _objectId + " orignX: " + _originX + " orignY: " + _originY + " orignZ: " + _originZ);
 		}
 		
 		// Get the current L2PcInstance of the player
@@ -145,6 +144,12 @@ public final class Action extends L2GameClientPacket
 				break;
 			}
 		}
+	}
+	
+	@Override
+	protected boolean triggersOnActionRequest()
+	{
+		return false;
 	}
 	
 	@Override

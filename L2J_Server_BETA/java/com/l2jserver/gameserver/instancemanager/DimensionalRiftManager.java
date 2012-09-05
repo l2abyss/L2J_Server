@@ -19,7 +19,6 @@ import gnu.trove.map.hash.TByteObjectHashMap;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,6 +66,7 @@ public class DimensionalRiftManager
 	{
 		loadRooms();
 		loadSpawns();
+		// UnAfraid: TODO: Move that quest to datapack lol!!!
 		new Quest(635, "RiftQuest", "Dummy Quest shown in players' questlist when inside the rift");
 	}
 	
@@ -120,7 +120,7 @@ public class DimensionalRiftManager
 		for (byte b : _rooms.keys())
 			roomSize += _rooms.get(b).keys().length;
 		
-		_log.info("DimensionalRiftManager: Loaded " + typeSize + " room types with " + roomSize + " rooms.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + typeSize + " room types with " + roomSize + " rooms.");
 	}
 	
 	public void loadSpawns()
@@ -132,9 +132,12 @@ public class DimensionalRiftManager
 			factory.setValidating(false);
 			factory.setIgnoringComments(true);
 			
-			File file = new File(Config.DATAPACK_ROOT + "/data/dimensionalRift.xml");
+			File file = new File(Config.DATAPACK_ROOT, "data/dimensionalRift.xml");
 			if (!file.exists())
-				throw new IOException();
+			{
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't find data/" + file.getName());
+				return;
+			}
 			
 			Document doc = factory.newDocumentBuilder().parse(file);
 			NamedNodeMap attrs;
@@ -222,7 +225,7 @@ public class DimensionalRiftManager
 		{
 			_log.log(Level.WARNING, "Error on loading dimensional rift spawns: " + e.getMessage(), e);
 		}
-		_log.info("DimensionalRiftManager: Loaded " + countGood + " dimensional rift spawns, " + countBad + " errors.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + countGood + " dimensional rift spawns, " + countBad + " errors.");
 	}
 	
 	public void reload()

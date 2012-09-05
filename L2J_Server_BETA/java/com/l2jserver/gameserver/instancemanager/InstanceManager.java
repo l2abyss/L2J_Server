@@ -51,14 +51,10 @@ public class InstanceManager extends DocumentParser
 	protected InstanceManager()
 	{
 		// Creates the multiverse.
-		final Instance multiverse = new Instance(-1);
-		multiverse.setName("multiverse");
-		_instanceList.put(-1, multiverse);
+		_instanceList.put(-1, new Instance(-1, "multiverse"));
 		_log.info(getClass().getSimpleName() + ": Multiverse Instance created.");
 		// Creates the universe.
-		final Instance universe = new Instance(0);
-		universe.setName("universe");
-		_instanceList.put(0, universe);
+		_instanceList.put(0, new Instance(0, "universe"));
 		_log.info(getClass().getSimpleName() + ": Universe Instance created.");
 		load();
 	}
