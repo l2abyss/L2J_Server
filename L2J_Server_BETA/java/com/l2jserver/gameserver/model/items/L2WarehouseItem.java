@@ -41,7 +41,12 @@ public class L2WarehouseItem
 	private int _elemAtkPower = 0;
 	private final int[] _elemDefAttr =
 	{
-		0, 0, 0, 0, 0, 0
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
 	};
 	private final int _time;
 	

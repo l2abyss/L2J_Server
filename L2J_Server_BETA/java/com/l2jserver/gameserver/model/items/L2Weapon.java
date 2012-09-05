@@ -450,14 +450,16 @@ public final class L2Weapon extends L2Item
 			return _emptyEffectSet;
 		}
 		
-		
 		final byte shld = Formulas.calcShldUse(caster, target, onCastSkill);
 		if (onCastSkill.isOffensive() && !Formulas.calcSkillSuccess(caster, target, onCastSkill, shld, false, false, false))
 		{
 			return _emptyEffectSet;
 		}
 		
-		L2Character[] targets = { target };
+		L2Character[] targets =
+		{
+			target
+		};
 		
 		// Launch the magic skill and calculate its effects
 		// Get the skill handler corresponding to the skill type
