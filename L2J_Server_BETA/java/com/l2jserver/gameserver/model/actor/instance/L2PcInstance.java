@@ -11214,7 +11214,6 @@ public final class L2PcInstance extends L2Playable
 		if (isTeleportProtected())
 		{
 			sendMessage("Teleport spawn protection ended.");
-			new Throwable(getName() + ": has requested action.").printStackTrace();
 		}
 		setProtection(false);
 		setTeleportProtection(false);
