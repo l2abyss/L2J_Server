@@ -590,23 +590,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		{
 			case DEATHLINK:
 			{
-				return getPower(isPvP, isPvE) * Math.pow(1.7165 - activeChar.getCurrentHp() / activeChar.getMaxHp(), 2) * 0.577;
-				/*
-				 * DrHouse:
-				 * Rolling back to old formula (look below) for DEATHLINK due to this one based on logarithm is not
-				 * accurate enough. Commented here because probably is a matter of just adjusting a constant
-    			if(activeChar.getCurrentHp() / activeChar.getMaxHp() > 0.005)
-            		return _power*(-0.45*Math.log(activeChar.getCurrentHp()/activeChar.getMaxHp())+1.);
-            	else
-            		return _power*(-0.45*Math.log(0.005)+1.);
-				 */
+				return getPower(isPvP, isPvE) * (-((activeChar.getCurrentHp() * 2) / activeChar.getMaxHp()) + 2);
 			}
 			case FATAL:
 			{
-				return getPower(isPvP, isPvE)*3.5*(1-target.getCurrentHp()/target.getMaxHp());
+				return getPower(isPvP, isPvE) * (-((target.getCurrentHp() * 2) / target.getMaxHp()) + 2);
 			}
 			default:
+			{
 				return getPower(isPvP, isPvE);
+			}
 		}
 	}
 	
