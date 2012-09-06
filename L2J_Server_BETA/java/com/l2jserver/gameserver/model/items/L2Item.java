@@ -49,7 +49,12 @@ import com.l2jserver.util.StringUtil;
 
 /**
  * This class contains all informations concerning the item (weapon, armor, etc).<BR>
- * Mother class of : <LI>L2Armor</LI> <LI>L2EtcItem</LI> <LI>L2Weapon</LI>
+ * Mother class of :
+ * <ul>
+ * <li>L2Armor</li>
+ * <li>L2EtcItem</li>
+ * <li>L2Weapon</li>
+ * </ul>
  * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
 public abstract class L2Item

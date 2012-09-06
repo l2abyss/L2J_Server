@@ -1168,11 +1168,7 @@ public class Quest extends ManagedScript
 	 */
 	public String onDeath(L2Character killer, L2Character victim, QuestState qs)
 	{
-		if (killer instanceof L2Npc)
-		{
-			return onAdvEvent("", (L2Npc) killer, qs.getPlayer());
-		}
-		return onAdvEvent("", null, qs.getPlayer());
+		return onAdvEvent("", ((killer instanceof L2Npc) ? ((L2Npc) killer) : null), qs.getPlayer());
 	}
 	
 	/**
@@ -1807,8 +1803,7 @@ public class Quest extends ManagedScript
 	 */
 	public static void updateQuestInDb(QuestState qs)
 	{
-		String val = State.getStateName(qs.getState());
-		updateQuestVarInDb(qs, "<state>", val);
+		updateQuestVarInDb(qs, "<state>", State.getStateName(qs.getState()));
 	}
 	
 	/**
@@ -1822,7 +1817,6 @@ public class Quest extends ManagedScript
 		{
 			return result;
 		}
-		
 		return DEFAULT_NO_QUEST_MSG;
 	}
 	
@@ -1837,7 +1831,6 @@ public class Quest extends ManagedScript
 		{
 			return result;
 		}
-		
 		return DEFAULT_ALREADY_COMPLETED_MSG;
 	}
 	
@@ -2521,7 +2514,7 @@ public class Quest extends ManagedScript
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha)
 	{
-		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, false);
+		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, false, 0);
 	}
 	
 	/**
@@ -2533,7 +2526,7 @@ public class Quest extends ManagedScript
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha, boolean isSummonSpawn)
 	{
-		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, isSummonSpawn);
+		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, isSummonSpawn, 0);
 	}
 	
 	/**
@@ -2548,7 +2541,7 @@ public class Quest extends ManagedScript
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffSet, long despawnDelay)
 	{
-		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false);
+		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false, 0);
 	}
 	
 	/**
@@ -2560,7 +2553,7 @@ public class Quest extends ManagedScript
 	 */
 	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffSet, long despawnDelay)
 	{
-		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffSet, despawnDelay, false);
+		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffSet, despawnDelay, false, 0);
 	}
 	
 	/**

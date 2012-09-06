@@ -19,7 +19,12 @@ import com.l2jserver.gameserver.model.items.type.L2ItemType;
 
 /**
  * This class contains L2ItemInstance<BR>
- * Use to sort L2ItemInstance of : <LI>L2Armor</LI> <LI>L2EtcItem</LI> <LI>L2Weapon</LI>
+ * Use to sort L2ItemInstance of :
+ * <ul>
+ * <li>L2Armor</li>
+ * <li>L2EtcItem</li>
+ * <li>L2Weapon</li>
+ * </ul>
  * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
 public class L2WarehouseItem
@@ -39,6 +44,7 @@ public class L2WarehouseItem
 	
 	private int _elemAtkType = -2;
 	private int _elemAtkPower = 0;
+	
 	private final int[] _elemDefAttr =
 	{
 		0,
@@ -48,6 +54,7 @@ public class L2WarehouseItem
 		0,
 		0
 	};
+	
 	private final int _time;
 	
 	public L2WarehouseItem(L2ItemInstance item)
@@ -227,9 +234,7 @@ public class L2WarehouseItem
 	
 	/**
 	 * @return the name of the item
-	 * @deprecated beware to use getItemName() instead because getName() is final in L2Object and could not be overridden! Allover L2Object.getName() may return null!
 	 */
-	@Deprecated
 	public String getName()
 	{
 		return _item.getName();
