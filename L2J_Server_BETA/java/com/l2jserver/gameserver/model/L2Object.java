@@ -164,7 +164,6 @@ public abstract class L2Object
 		L2TransformManagerInstance(L2MerchantInstance),
 		L2VillageMasterInstance(L2NpcInstance),
 		L2WyvernManagerInstance(L2NpcInstance),
-		L2XmassTreeInstance(L2NpcInstance),
 		// Doormens
 		L2DoormenInstance(L2NpcInstance),
 		L2CastleDoormenInstance(L2DoormenInstance),
