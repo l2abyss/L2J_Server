@@ -31,14 +31,14 @@ public class L2Seed
 	
 	public L2Seed(StatsSet set)
 	{
-		_seedId = set.getInteger("seed_id");
+		_cropId = set.getInteger("id");
+		_seedId = set.getInteger("seedId");
 		_level = set.getInteger("level");
-		_cropId = set.getInteger("cropId");
-		_matureId = set.getInteger("mature_id");
+		_matureId = set.getInteger("mature_Id");
 		_reward1 = set.getInteger("reward1");
 		_reward2 = set.getInteger("reward2");
 		_castleId = set.getInteger("castleId");
-		_isAlternative = set.getInteger("alternative") == 1;
+		_isAlternative = set.getBool("alternative");
 		_limitCrops = set.getInteger("limit_crops");
 		_limitSeeds = set.getInteger("limit_seed");
 	}
