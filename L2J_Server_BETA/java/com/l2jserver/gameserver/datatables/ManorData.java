@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
@@ -57,45 +57,31 @@ public class ManorData extends DocumentParser
 	@Override
 	protected void parseDocument()
 	{
-		Document doc = getCurrentDocument();
-		doc.getDocumentElement().normalize();
 		StatsSet set;
-		for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling())
+		NamedNodeMap attrs;
+		Node att;
+		int castleId;
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
-				// castle
 				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
 					if ("castle".equalsIgnoreCase(d.getNodeName()))
 					{
-						int castleId = parseInt(d.getAttributes(), "id");
-						// crop
+						castleId = parseInt(d.getAttributes(), "id");
 						for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
 						{
 							if ("crop".equalsIgnoreCase(c.getNodeName()))
 							{
 								set = new StatsSet();
-								set.set("cropId", parseString(c.getAttributes(), "id"));
 								set.set("castleId", castleId);
 								
-								for (Node a = c.getFirstChild(); a != null; a = a.getNextSibling())
+								attrs = c.getAttributes();
+								for (int i = 0; i < attrs.getLength(); i++)
 								{
-									switch (a.getNodeName())
-									{
-										case "seed_id":
-										case "mature_id":
-										case "reward1":
-										case "reward2":
-										case "alternative":
-										case "level":
-										case "limit_seed":
-										case "limit_crops":
-										{
-											set.set(a.getNodeName(), parseString(a.getAttributes(), "val"));
-											break;
-										}
-									}
+									att = attrs.item(i);
+									set.set(att.getNodeName(), att.getNodeValue());
 								}
 								
 								L2Seed seed = new L2Seed(set);
@@ -360,5 +346,10 @@ public class ManorData extends DocumentParser
 	private static class SingletonHolder
 	{
 		protected static final ManorData _instance = new ManorData();
+	}
+	
+	public static void main(String[] args)
+	{
+		getInstance();
 	}
 }
