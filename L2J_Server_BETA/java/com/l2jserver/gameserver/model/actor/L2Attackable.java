@@ -1940,7 +1940,7 @@ public class L2Attackable extends L2Npc
 	 * Set the over-hit values like the attacker who did the strike and the amount of damage done by the skill.
 	 *
 	 * @param attacker The L2Character who hit on the L2Attackable using the over-hit enabled skill
-	 * @param damage The ammount of damage done by the over-hit enabled skill on the L2Attackable
+	 * @param damage The amount of damage done by the over-hit enabled skill on the L2Attackable
 	 */
 	public void setOverhitValues(L2Character attacker, double damage)
 	{
@@ -1972,7 +1972,7 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Return the ammount of damage done on the L2Attackable using an over-hit enabled skill.
+	 * Return the amount of damage done on the L2Attackable using an over-hit enabled skill.
 	 *
 	 * @return double damage
 	 */

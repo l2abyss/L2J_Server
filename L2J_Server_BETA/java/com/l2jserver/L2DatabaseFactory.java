@@ -39,7 +39,7 @@ public class L2DatabaseFactory
 	/**
 	 * The Enum ProviderType.
 	 */
-	public static enum ProviderType
+	private static enum ProviderType
 	{
 		MySql,
 		MsSql
@@ -329,7 +329,7 @@ public class L2DatabaseFactory
 	/**
 	 * Close the connection.
 	 * @param con the con the connection
-	 * @deprecated now database connections are closed using try-with-resoruce.
+	 * @deprecated now database connections are closed using try-with-resource.
 	 */
 	@Deprecated
 	public static void close(Connection con)

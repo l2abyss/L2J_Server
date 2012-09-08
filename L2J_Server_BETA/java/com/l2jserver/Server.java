@@ -20,7 +20,7 @@ package com.l2jserver;
 public class Server
 {
 	// constants for the server mode
-	public static final int MODE_NONE = 0;
+	private static final int MODE_NONE = 0;
 	public static final int MODE_GAMESERVER = 1;
 	public static final int MODE_LOGINSERVER = 2;
 	
