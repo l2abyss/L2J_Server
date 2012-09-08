@@ -75,6 +75,7 @@ import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
 
 /**
+ * Quest main class.
  * @author Luis Arias
  */
 public class Quest extends ManagedScript
@@ -107,7 +108,7 @@ public class Quest extends ManagedScript
 	/**
 	 * This enum contains most, if not all, known sound effects used by quests.<br>
 	 * The idea is to have only a single object of each quest sound instead of constructing a new one every time a script calls the playSound method.<br>
-	 * This is pretty much just a memory and CPU cycle optimisation; avoids constructing/deconstructing objects all the time if they're all the same.<br>
+	 * This is pretty much just a memory and CPU cycle optimization; avoids constructing/deconstructing objects all the time if they're all the same.<br>
 	 * For datapack scripts written in Java and extending the Quest class, this does not need an extra import.
 	 * @author jurchiks
 	 */
@@ -127,9 +128,8 @@ public class Quest extends ManagedScript
 		ITEMSOUND_QUEST_JACKPOT(new PlaySound("ItemSound.quest_jackpot")),
 		// Quests 508, 509 and 510
 		ITEMSOUND_QUEST_FANFARE_1(new PlaySound("ItemSound.quest_fanfare_1")),
-		// played ONLY after class transfer via Test Server Helpers (ID 31756 and 31757)
+		// played ONLY after class transfer via Test Server Helpers (Id 31756 and 31757)
 		ITEMSOUND_QUEST_FANFARE_2(new PlaySound("ItemSound.quest_fanfare_2")),
-		
 		// Quest 114
 		ITEMSOUND_ARMOR_WOOD(new PlaySound("ItemSound.armor_wood_3")),
 		// Quest 21
@@ -138,7 +138,6 @@ public class Quest extends ManagedScript
 		ITEMSOUND_ARMOR_LEATHER(new PlaySound("ItemSound.itemdrop_armor_leather")),
 		// Quest 23
 		ITEMSOUND_WEAPON_SPEAR(new PlaySound("ItemSound.itemdrop_weapon_spear")),
-		
 		// Quest 648 and treasure chests
 		ITEMSOUND_BROKEN_KEY(new PlaySound("ItemSound2.broken_key")),
 		// Quest 184
@@ -149,20 +148,19 @@ public class Quest extends ManagedScript
 		ITEMSOUND_ENCHANT_FAILED(new PlaySound("ItemSound3.sys_enchant_failed")),
 		// Best farm mobs
 		ITEMSOUND_SOW_SUCCESS(new PlaySound("ItemSound3.sys_sow_success")),
-		
 		// Elroki sounds - Quest 111
 		ETCSOUND_ELROKI_SOUND_FULL(new PlaySound("EtcSound.elcroki_song_full")),
 		ETCSOUND_ELROKI_SOUND_1ST(new PlaySound("EtcSound.elcroki_song_1st")),
 		ETCSOUND_ELROKI_SOUND_2ND(new PlaySound("EtcSound.elcroki_song_2nd")),
 		ETCSOUND_ELROKI_SOUND_3RD(new PlaySound("EtcSound.elcroki_song_3rd"));
 		
-		private final PlaySound playSound;
+		private final PlaySound _playSound;
 		
 		private static Map<String, PlaySound> soundPackets = new HashMap<>();
 		
 		QuestSound(PlaySound playSound)
 		{
-			this.playSound = playSound;
+			_playSound = playSound;
 		}
 		
 		/**
@@ -179,10 +177,10 @@ public class Quest extends ManagedScript
 			
 			for (QuestSound qs : QuestSound.values())
 			{
-				if (qs.playSound.getSoundName().equals(soundName))
+				if (qs._playSound.getSoundName().equals(soundName))
 				{
-					soundPackets.put(soundName, qs.playSound); // cache in map to avoid looping repeatedly
-					return qs.playSound;
+					soundPackets.put(soundName, qs._playSound); // cache in map to avoid looping repeatedly
+					return qs._playSound;
 				}
 			}
 			
@@ -196,7 +194,7 @@ public class Quest extends ManagedScript
 		 */
 		public String getSoundName()
 		{
-			return playSound.getSoundName();
+			return _playSound.getSoundName();
 		}
 		
 		/**
@@ -204,16 +202,13 @@ public class Quest extends ManagedScript
 		 */
 		public PlaySound getPacket()
 		{
-			return playSound;
+			return _playSound;
 		}
 	}
 	
 	/**
-	 * <b>Note: questItemIds will be overridden by child classes.</b><br>
-	 * Ideally, it should be protected instead of public.<br>
-	 * However, quest scripts written in Jython will have trouble with protected, as Jython only knows private and public...<br>
-	 * In fact, protected will typically be considered private thus breaking the scripts.<br>
-	 * Leave this as public as a workaround.
+	 * Scripts written in Jython will have trouble with protected, as Jython only knows private and public.<br>
+	 * Zoey76: TODO: Same as we register NPCs with addTalkId(..) we can register this items in Jython scripts using registerQuestItems(..).
 	 */
 	public int[] questItemIds = null;
 	
@@ -253,7 +248,7 @@ public class Quest extends ManagedScript
 	/**
 	 * The Quest object constructor.<br>
 	 * Constructing a quest also calls the {@code init_LoadGlobalData} convenience method.
-	 * @param questId int pointing out the ID of the quest.
+	 * @param questId int pointing out the Id of the quest.
 	 * @param name String corresponding to the name of the quest.
 	 * @param descr String for the description of the quest.
 	 */
@@ -343,7 +338,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @return the ID of the quest
+	 * @return the Id of the quest
 	 */
 	public int getQuestIntId()
 	{
@@ -865,13 +860,16 @@ public class Quest extends ManagedScript
 		try
 		{
 			res = onItemTalk(item, player);
-			if (res == "true")
+			if (res != null)
 			{
-				return true;
-			}
-			else if (res == "false")
-			{
-				return false;
+				if (res.equalsIgnoreCase("true"))
+				{
+					return true;
+				}
+				else if (res.equalsIgnoreCase("false"))
+				{
+					return false;
+				}
 			}
 		}
 		catch (Exception e)
@@ -903,13 +901,16 @@ public class Quest extends ManagedScript
 		try
 		{
 			res = onItemEvent(item, player, event);
-			if (res == "true")
+			if (res != null)
 			{
-				return true;
-			}
-			else if (res == "false")
-			{
-				return false;
+				if (res.equalsIgnoreCase("true"))
+				{
+					return true;
+				}
+				else if (res.equalsIgnoreCase("false"))
+				{
+					return false;
+				}
 			}
 		}
 		catch (Exception e)
@@ -1532,11 +1533,11 @@ public class Quest extends ManagedScript
 			{
 				while (rs.next())
 				{
-					// Get ID of the quest and ID of its state
+					// Get Id of the quest and Id of its state
 					String questId = rs.getString("name");
 					String statename = rs.getString("value");
 					
-					// Search quest associated with the ID
+					// Search quest associated with the Id
 					Quest q = QuestManager.getInstance().getQuest(questId);
 					if (q == null)
 					{
@@ -1795,11 +1796,11 @@ public class Quest extends ManagedScript
 	 * Update informations regarding quest in database.<br>
 	 * Actions:<br>
 	 * <ul>
-	 * <li>Get ID state of the quest recorded in object qs</li>
-	 * <li>Test if quest is completed. If true, add a star (*) before the ID state</li>
-	 * <li>Save in database the ID state (with or without the star) for the variable called "&lt;state&gt;" of the quest</li>
+	 * <li>Get Id state of the quest recorded in object qs</li>
+	 * <li>Test if quest is completed. If true, add a star (*) before the Id state</li>
+	 * <li>Save in database the Id state (with or without the star) for the variable called "&lt;state&gt;" of the quest</li>
 	 * </ul>
-	 * @param qs : QuestState
+	 * @param qs the quest state
 	 */
 	public static void updateQuestInDb(QuestState qs)
 	{
@@ -1836,9 +1837,9 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
-	 * @param npcId : id of the NPC to register
-	 * @param eventType : type of event being registered
-	 * @return L2NpcTemplate : Npc Template corresponding to the npcId, or null if the id is invalid
+	 * @param npcId id of the NPC to register
+	 * @param eventType type of event being registered
+	 * @return L2NpcTemplate Npc Template corresponding to the npcId, or null if the id is invalid
 	 */
 	public L2NpcTemplate addEventId(int npcId, QuestEventType eventType)
 	{
@@ -1863,7 +1864,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Add the quest to the NPC's startQuest
 	 * @param npcIds
-	 * @return L2NpcTemplate : Start NPC
+	 * @return L2NpcTemplate Start NPC
 	 */
 	public L2NpcTemplate[] addStartNpc(int... npcIds)
 	{
@@ -1884,7 +1885,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Add the quest to the NPC's first-talk (default action dialog)
 	 * @param npcIds
-	 * @return L2NpcTemplate : Start NPC
+	 * @return L2NpcTemplate Start NPC
 	 */
 	public L2NpcTemplate[] addFirstTalkId(int... npcIds)
 	{
@@ -1909,7 +1910,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Add the NPC to the AcquireSkill dialog
 	 * @param npcIds
-	 * @return L2NpcTemplate : NPC
+	 * @return L2NpcTemplate NPC
 	 */
 	public L2NpcTemplate[] addAcquireSkillId(int... npcIds)
 	{
@@ -1934,7 +1935,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Attack Events.
 	 * @param npcIds
-	 * @return int : attackId
+	 * @return int attackId
 	 */
 	public L2NpcTemplate[] addAttackId(int... npcIds)
 	{
@@ -1959,7 +1960,7 @@ public class Quest extends ManagedScript
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Kill Events.
 	 * @param killIds
-	 * @return int : killId
+	 * @return int killId
 	 */
 	public L2NpcTemplate[] addKillId(int... killIds)
 	{
@@ -1998,8 +1999,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Talk Events.
-	 * @param talkIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param talkIds Id of the NPC
+	 * @return int Id of the NPC
 	 */
 	public L2NpcTemplate[] addTalkId(int... talkIds)
 	{
@@ -2023,8 +2024,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Spawn Events.
-	 * @param npcIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
+	 * @return int Id of the NPC
 	 */
 	public L2NpcTemplate[] addSpawnId(int... npcIds)
 	{
@@ -2048,8 +2049,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.
-	 * @param npcIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
+	 * @return int Id of the NPC
 	 */
 	public L2NpcTemplate[] addSkillSeeId(int... npcIds)
 	{
@@ -2121,8 +2122,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.
-	 * @param npcIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
+	 * @return int Id of the NPC
 	 */
 	public L2NpcTemplate[] addFactionCallId(int... npcIds)
 	{
@@ -2146,8 +2147,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.
-	 * @param npcIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
+	 * @return int Id of the NPC
 	 */
 	public L2NpcTemplate[] addAggroRangeEnterId(int... npcIds)
 	{
@@ -2444,7 +2445,7 @@ public class Quest extends ManagedScript
 	 * Show HTML file to client
 	 * @param player
 	 * @param fileName
-	 * @return String : message sent to client
+	 * @return String message sent to client
 	 */
 	public String showHtmlFile(L2PcInstance player, String fileName)
 	{
@@ -2747,8 +2748,7 @@ public class Quest extends ManagedScript
 		saveGlobalData();
 		// cancel all pending timers before reloading.
 		// if timers ought to be restarted, the quest can take care of it
-		// with its code (example: save global data indicating what timer must
-		// be restarted).
+		// with its code (example: save global data indicating what timer must be restarted).
 		for (List<QuestTimer> timers : _allEventTimers.values())
 		{
 			_readLock.lock();
@@ -2846,26 +2846,54 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param player this parameter contains a reference to the player to check.
-	 * @param itemId the item wanted to be count.
-	 * @return the quantity of one sort of item hold by the player.
+	 * Get the amount of an item in player's inventory.
+	 * @param player the player whose inventory to check
+	 * @param itemId the Id of the item whose amount to get
+	 * @return the amount of the specified item in player's inventory
 	 */
 	public long getQuestItemsCount(L2PcInstance player, int itemId)
+	{
+		return player.getInventory().getInventoryItemCount(itemId, -1);
+	}
+	
+	/**
+	 * Get the total amount of all specified items in player's inventory.
+	 * @param player the player whose inventory to check
+	 * @param itemIds a list of Ids of items whose amount to get
+	 * @return the summary amount of all listed items in player's inventory
+	 */
+	public long getQuestItemsCount(L2PcInstance player, int... itemIds)
 	{
 		long count = 0;
 		for (L2ItemInstance item : player.getInventory().getItems())
 		{
-			if ((item != null) && (item.getItemId() == itemId))
+			if (item == null)
 			{
-				count += item.getCount();
+				continue;
+			}
+			
+			for (int itemId : itemIds)
+			{
+				if (item.getItemId() == itemId)
+				{
+					try
+					{
+						count += item.getCount();
+					}
+					catch (Exception e)
+					{
+						return Long.MAX_VALUE;
+					}
+				}
 			}
 		}
 		return count;
 	}
 	
 	/**
+	 * Check for an item in player's inventory.
 	 * @param player the player whose inventory to check for quest items
-	 * @param itemId the ID of the item to check for
+	 * @param itemId the Id of the item to check for
 	 * @return {@code true} if the item exists in player's inventory, {@code false} otherwise
 	 */
 	public boolean hasQuestItems(L2PcInstance player, int itemId)
@@ -2874,8 +2902,9 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Check for multiple items in player's inventory.
 	 * @param player the player whose inventory to check for quest items
-	 * @param itemIds a list or array of item IDs to check for
+	 * @param itemIds a list of item Ids to check for
 	 * @return {@code true} if all items exist in player's inventory, {@code false} otherwise
 	 */
 	public boolean hasQuestItems(L2PcInstance player, int... itemIds)
@@ -2892,37 +2921,43 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Get the enchantment level of an item in player's inventory.
 	 * @param player the player whose item to check
-	 * @param itemId the ID of the item whose enchantment to check
-	 * @return the enchantment level of the item or 0 if no item was found
+	 * @param itemId the Id of the item whose enchantment level to get
+	 * @return the enchantment level of the item or 0 if the item was not found
 	 */
 	public int getEnchantLevel(L2PcInstance player, int itemId)
 	{
-		L2ItemInstance enchanteditem = player.getInventory().getItemByItemId(itemId);
-		
-		if (enchanteditem == null)
+		L2ItemInstance enchantedItem = player.getInventory().getItemByItemId(itemId);
+		if (enchantedItem == null)
 		{
 			return 0;
 		}
-		
-		return enchanteditem.getEnchantLevel();
+		return enchantedItem.getEnchantLevel();
 	}
 	
 	/**
 	 * Give Adena to the player.
 	 * @param player the player to whom to give the Adena
 	 * @param count the amount of Adena to give
-	 * @param applyRates if {@code true}, quest rates will be applied
+	 * @param applyRates if {@code true} quest rates will be applied to the amount
 	 */
 	public void giveAdena(L2PcInstance player, long count, boolean applyRates)
 	{
-		giveItems(player, PcInventory.ADENA_ID, count, applyRates ? 0 : 1);
+		if (applyRates)
+		{
+			rewardItems(player, PcInventory.ADENA_ID, count);
+		}
+		else
+		{
+			giveItems(player, PcInventory.ADENA_ID, count);
+		}
 	}
 	
 	/**
-	 * Give reward to player using multipliers.
+	 * Give a reward to player using multipliers.
 	 * @param player the player to whom to give the item
-	 * @param itemId the ID of the item to give
+	 * @param itemId the Id of the item to give
 	 * @param count the amount of items to give
 	 */
 	public void rewardItems(L2PcInstance player, int itemId, long count)
@@ -2939,38 +2974,45 @@ public class Quest extends ManagedScript
 			return;
 		}
 		
-		if (itemId == PcInventory.ADENA_ID)
+		try
 		{
-			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
-		}
-		else if (Config.RATE_QUEST_REWARD_USE_MULTIPLIERS)
-		{
-			if (_tmpItem.isEtcItem())
+			if (itemId == PcInventory.ADENA_ID)
 			{
-				switch (_tmpItem.getEtcItem().getItemType())
+				count *= Config.RATE_QUEST_REWARD_ADENA;
+			}
+			else if (Config.RATE_QUEST_REWARD_USE_MULTIPLIERS)
+			{
+				if (_tmpItem.isEtcItem())
 				{
-					case POTION:
-						count = (long) (count * Config.RATE_QUEST_REWARD_POTION);
-						break;
-					case SCRL_ENCHANT_WP:
-					case SCRL_ENCHANT_AM:
-					case SCROLL:
-						count = (long) (count * Config.RATE_QUEST_REWARD_SCROLL);
-						break;
-					case RECIPE:
-						count = (long) (count * Config.RATE_QUEST_REWARD_RECIPE);
-						break;
-					case MATERIAL:
-						count = (long) (count * Config.RATE_QUEST_REWARD_MATERIAL);
-						break;
-					default:
-						count = (long) (count * Config.RATE_QUEST_REWARD);
+					switch (_tmpItem.getEtcItem().getItemType())
+					{
+						case POTION:
+							count *= Config.RATE_QUEST_REWARD_POTION;
+							break;
+						case SCRL_ENCHANT_WP:
+						case SCRL_ENCHANT_AM:
+						case SCROLL:
+							count *= Config.RATE_QUEST_REWARD_SCROLL;
+							break;
+						case RECIPE:
+							count *= Config.RATE_QUEST_REWARD_RECIPE;
+							break;
+						case MATERIAL:
+							count *= Config.RATE_QUEST_REWARD_MATERIAL;
+							break;
+						default:
+							count *= Config.RATE_QUEST_REWARD;
+					}
 				}
 			}
+			else
+			{
+				count *= Config.RATE_QUEST_REWARD;
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			count = (long) (count * Config.RATE_QUEST_REWARD);
+			count = Long.MAX_VALUE;
 		}
 		
 		// Add items to player's inventory
@@ -3045,7 +3087,7 @@ public class Quest extends ManagedScript
 			return;
 		}
 		
-		// If item for reward is adena (ID=57), modify count with rate for quest reward if rates available
+		// If item for reward is adena (Id=57), modify count with rate for quest reward if rates available
 		if ((itemId == PcInventory.ADENA_ID) && !(enchantlevel > 0))
 		{
 			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
@@ -3196,29 +3238,25 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Remove items from player's inventory when talking to NPC in order to have rewards.<br>
-	 * <u><i>Actions :</i></u>
-	 * <ul>
-	 * <li>Destroy quantity of items wanted</li>
-	 * <li>Send new inventory list to player</li>
-	 * </ul>
-	 * @param player
-	 * @param itemId : Identifier of the item
-	 * @param count : Quantity of items to destroy
+	 * Take an amount of a specified item from player's inventory.
+	 * @param player the player whose item to take
+	 * @param itemId the Id of the item to take
+	 * @param amount the amount to take
+	 * @return {@code true} if any items were taken, {@code false} otherwise
 	 */
-	public void takeItems(L2PcInstance player, int itemId, long count)
+	public boolean takeItems(L2PcInstance player, int itemId, long amount)
 	{
 		// Get object item from player's inventory list
 		L2ItemInstance item = player.getInventory().getItemByItemId(itemId);
 		if (item == null)
 		{
-			return;
+			return false;
 		}
 		
 		// Tests on count value in order not to have negative value
-		if ((count < 0) || (count > item.getCount()))
+		if ((amount < 0) || (amount > item.getCount()))
 		{
-			count = item.getCount();
+			amount = item.getCount();
 		}
 		
 		// Destroy the quantity of items wanted
@@ -3233,13 +3271,39 @@ public class Quest extends ManagedScript
 			player.sendPacket(iu);
 			player.broadcastUserInfo();
 		}
-		player.destroyItemByItemId("Quest", itemId, count, player, true);
+		return player.destroyItemByItemId("Quest", itemId, amount, player, true);
+	}
+	
+	/**
+	 * Take an amount of all specified items from player's inventory.
+	 * @param player the player whose items to take
+	 * @param amount the amount to take of each item
+	 * @param itemIds a list or an array of Ids of the items to take
+	 * @return {@code true} if all items were taken, {@code false} otherwise
+	 */
+	public boolean takeItems(L2PcInstance player, int amount, int... itemIds)
+	{
+		boolean check = true;
+		for (int item : itemIds)
+		{
+			check &= takeItems(player, item, amount);
+		}
+		return check;
+	}
+	
+	/**
+	 * Remove all quest items associated with this quest from the specified player's inventory.
+	 * @param player the player whose quest items to remove
+	 */
+	public void removeRegisteredQuestItems(L2PcInstance player)
+	{
+		takeItems(player, -1, questItemIds);
 	}
 	
 	/**
 	 * Send a packet in order to play a sound to the player.
-	 * @param player : the player whom to send the packet
-	 * @param sound : the name of the sound to play
+	 * @param player the player whom to send the packet
+	 * @param sound the name of the sound to play
 	 */
 	public void playSound(L2PcInstance player, String sound)
 	{
@@ -3248,8 +3312,8 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Send a packet in order to play a sound to the player.
-	 * @param player : the player whom to send the packet
-	 * @param sound : the {@link QuestSound} object of the sound to play
+	 * @param player the player whom to send the packet
+	 * @param sound the {@link QuestSound} object of the sound to play
 	 */
 	public void playSound(L2PcInstance player, QuestSound sound)
 	{
@@ -3257,21 +3321,21 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Add XP and SP as quest reward
-	 * @param player
-	 * @param exp
-	 * @param sp
+	 * Add EXP and SP as quest reward.
+	 * @param player the player whom to reward with the EXP/SP
+	 * @param exp the amount of EXP to give to the player
+	 * @param sp the amount of SP to give to the player
 	 */
-	public void addExpAndSp(L2PcInstance player, int exp, int sp)
+	public void addExpAndSp(L2PcInstance player, long exp, int sp)
 	{
-		player.addExpAndSp((int) player.calcStat(Stats.EXPSP_RATE, exp * Config.RATE_QUEST_REWARD_XP, null, null), (int) player.calcStat(Stats.EXPSP_RATE, sp * Config.RATE_QUEST_REWARD_SP, null, null));
+		player.addExpAndSp((long) player.calcStat(Stats.EXPSP_RATE, exp * Config.RATE_QUEST_REWARD_XP, null, null), (int) player.calcStat(Stats.EXPSP_RATE, sp * Config.RATE_QUEST_REWARD_SP, null, null));
 	}
 	
 	/**
-	 * Gets a random integer number from 0 (inclusive) to {@code max} (exclusive).<br>
-	 * Use this method instead importing {@link com.l2jserver.util.Rnd} utility.
-	 * @param max this parameter represents the maximum value for randomization.
-	 * @return a random integer number from 0 to {@code max} - 1.
+	 * Get a random integer from 0 (inclusive) to {@code max} (exclusive).<br>
+	 * Use this method instead of importing {@link com.l2jserver.util.Rnd} utility.
+	 * @param max the maximum value for randomization
+	 * @return a random integer number from 0 to {@code max - 1}
 	 */
 	public static int getRandom(int max)
 	{
@@ -3279,11 +3343,11 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Gets a random integer number from {@code min} (inclusive) to {@code max} (inclusive).<br>
-	 * Use this method instead importing {@link com.l2jserver.util.Rnd} utility.
-	 * @param min this parameter represents the minimum value for randomization.
-	 * @param max this parameter represents the maximum value for randomization.
-	 * @return a random integer number from {@code min} to {@code max} .
+	 * Get a random integer from {@code min} (inclusive) to {@code max} (inclusive).<br>
+	 * Use this method instead of importing {@link com.l2jserver.util.Rnd} utility.
+	 * @param min the minimum value for randomization
+	 * @param max the maximum value for randomization
+	 * @return a random integer number from {@code min} to {@code max}
 	 */
 	public static int getRandom(int min, int max)
 	{
@@ -3291,9 +3355,10 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param player this parameter is a reference to the player.
-	 * @param slot this parameter represents the location in the player's inventory.
-	 * @return the item Id of the item present in the inventory slot {@code slot} if it's not null, 0 otherwise.
+	 * Get the Id of the item equipped in the specified inventory slot of the player.
+	 * @param player the player whose inventory to check
+	 * @param slot the location in the player's inventory to check
+	 * @return the Id of the item equipped in the specified inventory slot or 0 if the slot is empty or item is {@code null}.
 	 */
 	public int getItemEquipped(L2PcInstance player, int slot)
 	{

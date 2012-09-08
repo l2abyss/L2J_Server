@@ -42,6 +42,7 @@ import com.l2jserver.gameserver.network.serverpackets.TutorialShowQuestionMark;
 import com.l2jserver.gameserver.util.Util;
 
 /**
+ * Quest state class.
  * @author Luis Arias
  */
 public final class QuestState
@@ -194,8 +195,8 @@ public final class QuestState
 	
 	/**
 	 * Add parameter used in quests.
-	 * @param var : String pointing out the name of the variable for quest
-	 * @param val : String pointing out the value of the variable for quest
+	 * @param var String pointing out the name of the variable for quest
+	 * @param val String pointing out the value of the variable for quest
 	 * @return String (equal to parameter "val")
 	 */
 	public String setInternal(String var, String val)
@@ -225,8 +226,8 @@ public final class QuestState
 	 * The key is known as existing if the preceding value of the key (given as result of function put()) is not null.<br>
 	 * If the key doesn't exist, the couple is added/created in the database</li>
 	 * <ul>
-	 * @param var : String indicating the name of the variable for quest
-	 * @param val : String indicating the value of the variable for quest
+	 * @param var String indicating the name of the variable for quest
+	 * @param val String indicating the value of the variable for quest
 	 * @return String (equal to parameter "val")
 	 */
 	public String set(String var, String val)
@@ -506,7 +507,7 @@ public final class QuestState
 		}
 		catch (NumberFormatException nfe)
 		{
-			_log.log(Level.INFO, "Quest " + getQuestName() + ", method getInt(" + var + "), tried to parse a non-integer value (" + variable + "). Char ID: " + _player.getObjectId(), nfe);
+			_log.log(Level.INFO, "Quest " + getQuestName() + ", method getInt(" + var + "), tried to parse a non-integer value (" + variable + "). Char Id: " + _player.getObjectId(), nfe);
 		}
 		
 		return varint;
@@ -553,7 +554,7 @@ public final class QuestState
 	
 	/**
 	 * Check if a given variable is set for this quest.
-	 * @param variable : the variable to check
+	 * @param variable the variable to check
 	 * @return {@code true} if the variable is set, {@code false} otherwise
 	 * @see #get(String)
 	 * @see #getInt(String)
@@ -605,7 +606,7 @@ public final class QuestState
 	
 	/**
 	 * Return the quantity of one sort of item hold by the player
-	 * @param itemId the ID of the item wanted to be count
+	 * @param itemId the Id of the item wanted to be count
 	 * @return long
 	 */
 	public long getQuestItemsCount(int itemId)
@@ -614,7 +615,7 @@ public final class QuestState
 	}
 	
 	/**
-	 * @param itemId the ID of the item required
+	 * @param itemId the Id of the item required
 	 * @return true if item exists in player's inventory, false - if not
 	 */
 	public boolean hasQuestItems(int itemId)
@@ -624,7 +625,7 @@ public final class QuestState
 	
 	/**
 	 * Return the level of enchantment on the weapon of the player(Done specifically for weapon SA's)
-	 * @param itemId : ID of the item to check enchantment
+	 * @param itemId Id of the item to check enchantment
 	 * @return int
 	 */
 	public int getEnchantLevel(int itemId)
@@ -717,8 +718,8 @@ public final class QuestState
 	 * <li>Destroy quantity of items wanted</li>
 	 * <li>Send new inventory list to player</li>
 	 * </ul>
-	 * @param itemId : Identifier of the item
-	 * @param count : Quantity of items to destroy
+	 * @param itemId Identifier of the item
+	 * @param count Quantity of items to destroy
 	 */
 	public void takeItems(int itemId, long count)
 	{
@@ -727,7 +728,7 @@ public final class QuestState
 	
 	/**
 	 * Send a packet in order to play a sound to the player.
-	 * @param sound : the name of the sound to play
+	 * @param sound the name of the sound to play
 	 */
 	public void playSound(String sound)
 	{
@@ -736,7 +737,7 @@ public final class QuestState
 	
 	/**
 	 * Send a packet in order to play a sound to the player.
-	 * @param sound : the {@link QuestSound} object of the sound to play
+	 * @param sound the {@link QuestSound} object of the sound to play
 	 */
 	public void playSound(QuestSound sound)
 	{
@@ -846,7 +847,7 @@ public final class QuestState
 	/**
 	 * Add a temporary spawn of the specified npc.<br>
 	 * Player's coordinates will be used for the spawn.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
 	 * @see #addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
 	 */
@@ -858,7 +859,7 @@ public final class QuestState
 	/**
 	 * Add a temporary spawn of the specified npc.<br>
 	 * Player's coordinates will be used for the spawn.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param despawnDelay time in milliseconds till the npc is despawned (default: 0)
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
 	 * @see #addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
@@ -870,7 +871,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param x the X coordinate of the npc spawn location
 	 * @param y the Y coordinate of the npc spawn location
 	 * @param z the Z coordinate (height) of the npc spawn location
@@ -884,7 +885,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param x the X coordinate of the npc spawn location
 	 * @param y the Y coordinate of the npc spawn location
 	 * @param z the Z coordinate (height) of the npc spawn location
@@ -899,7 +900,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param cha the character whose coordinates will be used for the npc spawn
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
 	 * @see #addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
@@ -911,7 +912,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param cha the character whose coordinates will be used for the npc spawn
 	 * @param despawnDelay time in milliseconds till the npc is despawned (default: 0)
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
@@ -924,7 +925,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param cha the character whose coordinates will be used for the npc spawn
 	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
 	 * @param despawnDelay time in milliseconds till the npc is despawned (default: 0)
@@ -938,7 +939,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param x the X coordinate of the npc spawn location
 	 * @param y the Y coordinate of the npc spawn location
 	 * @param z the Z coordinate (height) of the npc spawn location
@@ -955,7 +956,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param x the X coordinate of the npc spawn location
 	 * @param y the Y coordinate of the npc spawn location
 	 * @param z the Z coordinate (height) of the npc spawn location
@@ -1073,14 +1074,7 @@ public final class QuestState
 		}
 		
 		// Clean registered quest items
-		int[] itemIdList = getQuest().getRegisteredItemIds();
-		if (itemIdList != null)
-		{
-			for (int element : itemIdList)
-			{
-				takeItems(element, -1);
-			}
-		}
+		getQuest().removeRegisteredQuestItems(_player);
 		
 		Quest.deleteQuestInDb(this, repeatable);
 		if (repeatable)
