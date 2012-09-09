@@ -3284,9 +3284,12 @@ public class Quest extends ManagedScript
 	public boolean takeItems(L2PcInstance player, int amount, int... itemIds)
 	{
 		boolean check = true;
-		for (int item : itemIds)
+		if (itemIds != null)
 		{
-			check &= takeItems(player, item, amount);
+			for (int item : itemIds)
+			{
+				check &= takeItems(player, item, amount);
+			}
 		}
 		return check;
 	}
