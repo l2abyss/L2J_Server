@@ -207,16 +207,18 @@ public class L2PetInstance extends L2Summon
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOUR_PET_IS_VERY_HUNGRY);
 						sendPacket(sm);
-						if (Rnd.get(100) < 30)
+						// High Five: Your Pet won't be gone even when you don't feed it.
+						/*if (Rnd.get(100) < 30)
 						{
 							stopFeed();
 							sm = SystemMessage.getSystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
 							sendPacket(sm);
 							_log.info("Hungry pet [" + getTemplate().getName() + "][" + getLevel() + "] deleted for player: " + getOwner() + " Control Item Id :" + getControlObjectId());
 							deleteMe(getOwner());
-						}
+						}*/
 					}
-					else if (getCurrentFed() < (0.10 * getPetLevelData().getPetMaxFeed()))
+					// High Five: Your Pet won't be gone even when you don't feed it.
+					/*else if (getCurrentFed() < (0.10 * getPetLevelData().getPetMaxFeed()))
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_CAN_RUN_AWAY_WHEN_HUNGER_BELOW_10_PERCENT);
 						sendPacket(sm);
@@ -228,7 +230,7 @@ public class L2PetInstance extends L2Summon
 							_log.info("Hungry pet [" + getTemplate().getName() + "][" + getLevel() + "] deleted for player: " + getOwner() + " Control Item Id :" + getControlObjectId());
 							deleteMe(getOwner());
 						}
-					}
+					}*/
 				}
 			}
 			catch (Exception e)
